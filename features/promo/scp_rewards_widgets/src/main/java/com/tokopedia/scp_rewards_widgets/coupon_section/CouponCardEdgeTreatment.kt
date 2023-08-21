@@ -103,39 +103,43 @@ class CouponCardEdgeTreatment(private val context: Context,
         val cutoutArcOffset = ARC_QUARTER - cornerRadiusArcLength
 
         // Draw the starting line up to the left rounded corner.
-        shapePath.lineTo( /* x= */leftRoundedCornerCircleX,  /* y= */0f)
+        shapePath.lineTo(
+            /* x= */leftRoundedCornerCircleX,
+            /* y= */0f)
 
         // Draw the arc for the left rounded corner circle. The bounding box is the area around the
         // circle's center which is at `(leftRoundedCornerCircleX, roundedCornerOffset)`.
-        shapePath.addArc( /* left= */
-            leftRoundedCornerCircleX - roundedCornerOffset,  /* top= */
-            0f,  /* right= */
-            leftRoundedCornerCircleX + roundedCornerOffset,  /* bottom= */
-            roundedCornerOffset * 2,  /* startAngle= */
-            ANGLE_UP.toFloat(),  /* sweepAngle= */
-            cornerRadiusArcLength)
+        shapePath.addArc(
+            /* left= */leftRoundedCornerCircleX - roundedCornerOffset,
+            /* top= */0f,
+            /* right= */leftRoundedCornerCircleX + roundedCornerOffset,
+            /* bottom= */roundedCornerOffset * 2,
+            /* startAngle= */ANGLE_UP.toFloat(),
+            /* sweepAngle= */cornerRadiusArcLength)
 
         // Draw the cutout circle.
-        shapePath.addArc( /* left= */
-            cradlePosition - cradleRadius,  /* top= */
-            -cradleRadius - verticalOffset,  /* right= */
-            cradlePosition + cradleRadius,  /* bottom= */
-            cradleRadius - verticalOffset,  /* startAngle= */
-            ANGLE_LEFT - cutoutArcOffset,  /* sweepAngle= */
-            cutoutArcOffset * 2 - ARC_HALF)
+        shapePath.addArc(
+            /* left= */cradlePosition - cradleRadius,
+            /* top= */-cradleRadius - verticalOffset,
+            /* right= */cradlePosition + cradleRadius,
+            /* bottom= */cradleRadius - verticalOffset,
+            /* startAngle= */ANGLE_LEFT - cutoutArcOffset,
+            /* sweepAngle= */cutoutArcOffset * 2 - ARC_HALF)
 
         // Draw an arc for the right rounded corner circle. The bounding box is the area around the
         // circle's center which is at `(rightRoundedCornerCircleX, roundedCornerOffset)`.
-        shapePath.addArc( /* left= */
-            rightRoundedCornerCircleX - roundedCornerOffset,  /* top= */
-            0f,  /* right= */
-            rightRoundedCornerCircleX + roundedCornerOffset,  /* bottom= */
-            roundedCornerOffset * 2,  /* startAngle= */
-            ANGLE_UP - cornerRadiusArcLength,  /* sweepAngle= */
-            cornerRadiusArcLength)
+        shapePath.addArc(
+            /* left= */rightRoundedCornerCircleX - roundedCornerOffset,
+            /* top= */0f,
+            /* right= */rightRoundedCornerCircleX + roundedCornerOffset,
+            /* bottom= */roundedCornerOffset * 2,
+            /* startAngle= */ANGLE_UP - cornerRadiusArcLength,
+            /* sweepAngle= */cornerRadiusArcLength)
 
         // Draw the ending line after the right rounded corner.
-        shapePath.lineTo( /* x= */length,  /* y= */0f)
+        shapePath.lineTo(
+            /* x= */length,
+            /* y= */0f)
     }
 
     /**
