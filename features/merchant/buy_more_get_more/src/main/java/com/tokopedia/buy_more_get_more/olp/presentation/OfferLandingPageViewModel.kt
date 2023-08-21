@@ -53,14 +53,14 @@ class OfferLandingPageViewModel @Inject constructor(
     private val _error = MutableLiveData<Throwable>()
     val error: LiveData<Throwable> get() = _error
 
-    val userId: String
+    private val userId: String
         get() = userSession.userId
 
     fun getOfferingInfo(
         offerIds: List<Int>,
-        shopIds: List<Int>? = emptyList(),
-        productIds: List<Int>? = emptyList(),
-        warehouseIds: List<Int>? = emptyList(),
+        shopIds: List<Int> = emptyList(),
+        productIds: List<Int> = emptyList(),
+        warehouseIds: List<Int> = emptyList(),
         localCacheModel: LocalCacheModel?
     ) {
         launchCatchError(
@@ -68,10 +68,10 @@ class OfferLandingPageViewModel @Inject constructor(
             block = {
                 val param = GetOfferingInfoForBuyerRequestParam(
                     offerIds = offerIds,
-                    shopIds = shopIds.orEmpty(),
+                    shopIds = shopIds,
                     productAnchor = GetOfferingInfoForBuyerRequestParam.ProductAnchor(
-                        productIds.orEmpty(),
-                        warehouseIds.orEmpty()
+                        productIds,
+                        warehouseIds
                     ),
                     userLocation = UserLocation(
                         addressId = localCacheModel?.address_id.toLongOrZero(),

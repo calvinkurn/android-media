@@ -16,7 +16,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
-import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.buy_more_get_more.R
 import com.tokopedia.buy_more_get_more.databinding.FragmentOfferLandingPageBinding
@@ -28,7 +27,6 @@ import com.tokopedia.buy_more_get_more.olp.presentation.adapter.OlpAdapter
 import com.tokopedia.buy_more_get_more.olp.presentation.adapter.OlpAdapterTypeFactoryImpl
 import com.tokopedia.buy_more_get_more.olp.presentation.listener.AtcProductListener
 import com.tokopedia.buy_more_get_more.olp.utils.BundleConstant
-import com.tokopedia.buy_more_get_more.olp.utils.DataEndlessScrollListener
 import com.tokopedia.buy_more_get_more.sort.activity.ShopProductSortActivity
 import com.tokopedia.buy_more_get_more.sort.listener.ProductSortListener
 import com.tokopedia.campaign.delegates.HasPaginatedList
@@ -37,6 +35,7 @@ import com.tokopedia.campaign.helper.BuyMoreGetMoreHelper
 import com.tokopedia.campaign.utils.extension.showToaster
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.product.detail.common.AtcVariantHelper
@@ -236,9 +235,21 @@ class OfferLandingPageFragment :
         setViewState(VIEW_LOADING)
         viewModel.getOfferingInfo(
             offerIds = listOf(offerId.toIntOrZero()),
-            shopIds = shopIds.split(",").map { it.toIntOrZero() },
-            productIds = productIds.split(",").map { it.toIntOrZero() },
-            warehouseIds = warehouseIds.split(",").map { it.toIntOrZero() },
+            shopIds = if (shopIds.isNotEmpty()) {
+                shopIds.split(",").map { it.toIntSafely() }
+            } else {
+                emptyList()
+            },
+            productIds = if (productIds.isNotEmpty()) {
+                productIds.split(",").map { it.toIntSafely() }
+            } else {
+                emptyList()
+            },
+            warehouseIds = if (warehouseIds.isNotEmpty()) {
+                warehouseIds.split(",").map { it.toIntSafely() }
+            } else {
+                emptyList()
+            },
             localCacheModel
         )
     }
@@ -290,15 +301,6 @@ class OfferLandingPageFragment :
             )
             attachPaging(this, config) { page, _ ->
                 getProductListData(page)
-            }
-        }
-    }
-
-    override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
-        return object :
-            DataEndlessScrollListener(getRecyclerView(view)?.layoutManager, olpAdapter) {
-            override fun onLoadMore(page: Int, totalItemsCount: Int) {
-//                getProductListData(page)
             }
         }
     }
