@@ -99,7 +99,7 @@
     <string name="review_create_neutral_title">Apa yang harus diperbaiki?</string>
     <string name="review_create_positive_title">Apa yang kamu suka?</string>
     <string name="review_create_best_title">Apa yang bikin kamu puas?</string>
-    <string name="review_create_add_picture_title">Fotoin dong barangnya</string>
+    <string name="review_create_add_picture_title">Kasih foto atau video barang</string>
     <string name="review_create_hide_name">Sembunyikan namamu</string>
     <string name="review_create_text_area_placeholder">Ceritakan pengalamanmu terkait barang ini.</string>
     <string name="review_create_empty_photo">Tambah foto</string>
