@@ -1,12 +1,12 @@
 package com.tokopedia.buy_more_get_more.sort.domain
 
+import com.tokopedia.buy_more_get_more.sort.data.OlpSortingProductResponse
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.shop.common.graphql.data.shopsort.GqlShopSortProductResponse
 import com.tokopedia.shop.common.graphql.data.shopsort.ShopProductSort
 import javax.inject.Inject
 
@@ -28,12 +28,12 @@ class GetProductSortUseCase @Inject constructor(
     """.trimIndent()
 
     override suspend fun executeOnBackground(): List<ShopProductSort> {
-        val request = GraphqlRequest(GQL_QUERY, GqlShopSortProductResponse::class.java)
+        val request = GraphqlRequest(GQL_QUERY, OlpSortingProductResponse::class.java)
         val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
         val gqlResponse = graphqlRepository.response(listOf(request), cacheStrategy)
-        val error = gqlResponse.getError(GqlShopSortProductResponse::class.java)
+        val error = gqlResponse.getError(OlpSortingProductResponse::class.java)
         if (error == null || error.isEmpty()) {
-            return gqlResponse.getData<GqlShopSortProductResponse>(GqlShopSortProductResponse::class.java).shopSort.data.sort
+            return gqlResponse.getData<OlpSortingProductResponse>(OlpSortingProductResponse::class.java).getOfferingSortingList.sort
         } else {
             throw MessageErrorException(error.joinToString(", ") { it.message })
         }
