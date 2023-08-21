@@ -2001,7 +2001,7 @@ class CheckoutFragment :
 
     override fun onCrossSellItemChecked(checked: Boolean, crossSellModel: CheckoutCrossSellModel) {
         val shipmentCartItemModels = viewModel.listData.value.filterIsInstance(CheckoutProductModel::class.java)
-        viewModel.updateCrossSell(checked, crossSellModel)
+        viewModel.updateCrossSell(checked)
         val digitalCategoryName = crossSellModel.crossSellModel.orderSummary.title
         val digitalProductId = crossSellModel.crossSellModel.id
         val eventLabel = "$digitalCategoryName - $digitalProductId"

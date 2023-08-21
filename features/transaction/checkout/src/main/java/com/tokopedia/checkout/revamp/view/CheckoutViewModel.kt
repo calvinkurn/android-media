@@ -1888,7 +1888,7 @@ class CheckoutViewModel @Inject constructor(
         }
     }
 
-    fun updateCrossSell(checked: Boolean, crossSellModel: CheckoutCrossSellModel) {
+    fun updateCrossSell(checked: Boolean) {
         val checkoutItems = listData.value.toMutableList()
         val crossSellGroup = checkoutItems.crossSellGroup()!!
         val newList: MutableList<CheckoutCrossSellItem> = arrayListOf()
