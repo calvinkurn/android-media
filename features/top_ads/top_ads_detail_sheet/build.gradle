@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-kapt.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 buildscript {
@@ -32,6 +32,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.track)
 
     implementation projectOrAar(rootProject.ext.libraries.graphql)
+    implementation rootProject.ext.supportLibDependencies.design
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.dagger
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions

@@ -1,7 +1,7 @@
 package com.tokopedia.topads.common.view.adapter.keyword.viewmodel
 
 import androidx.annotation.StringRes
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class HeadlineEditEmptyAdKeywordModel(@StringRes val titleText: Int,

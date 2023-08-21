@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-kapt.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
+apply plugin: 'kotlin-parcelize'
 
 buildscript {
     repositories {
@@ -76,6 +77,8 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
     implementation rootProject.ext.miscDependencies.viewModelKtx
+    implementation rootProject.ext.miscDependencies.dagger
+    kapt rootProject.ext.miscDependencies.daggerCompiler
 
     androidTestImplementation rootProject.ext.testDependencies.androidAnnotation
 

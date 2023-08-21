@@ -1,7 +1,6 @@
 package com.tokopedia.topads.common.domain.usecase
 
 import android.os.Bundle
-import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.topads.common.data.internal.ParamObject
@@ -35,8 +34,8 @@ import com.tokopedia.topads.common.data.internal.ParamObject.PRODUCT_BROWSE
 import com.tokopedia.topads.common.data.internal.ParamObject.PRODUCT_SEARCH
 import com.tokopedia.topads.common.data.internal.ParamObject.PUBLISHED
 import com.tokopedia.topads.common.data.internal.ParamObject.STRATEGIES
-import com.tokopedia.topads.common.data.raw.MANAGE_GROUP
 import com.tokopedia.topads.common.data.response.*
+import com.tokopedia.topads.common.domain.query.GetTopadsManagePromoGroupProduct
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -45,14 +44,13 @@ import javax.inject.Inject
  * Created by Pika on 24/5/20.
  */
 
-@GqlQuery("ManageGroupAdsQuery", MANAGE_GROUP)
-class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterface, graphqlRepository: GraphqlRepository) {
+class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterface) {
 
     private val graphql by lazy { GraphqlUseCase<FinalAdResponse>(graphqlRepository) }
 
     suspend fun execute(requestParams: RequestParams): FinalAdResponse {
         graphql.apply {
-            setGraphqlQuery(ManageGroupAdsQuery.GQL_QUERY)
+            setGraphqlQuery(GetTopadsManagePromoGroupProduct)
             setTypeClass(FinalAdResponse::class.java)
         }
 

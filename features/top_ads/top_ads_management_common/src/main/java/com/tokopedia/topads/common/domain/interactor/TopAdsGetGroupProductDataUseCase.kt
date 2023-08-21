@@ -1,11 +1,11 @@
 package com.tokopedia.topads.common.domain.interactor
 
-import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.internal.ParamObject.QUERY_INPUT
 import com.tokopedia.topads.common.data.response.nongroupItem.NonGroupResponse
+import com.tokopedia.topads.common.domain.query.GetTopadsDashboardProductsV4
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -15,39 +15,6 @@ import kotlin.collections.set
  * Created by Pika on 7/6/20.
  */
 
-private const val TOP_ADS_DASHBOARD_GROUP_PRODUCTS_QUERY: String = """
-               query topadsDashboardGroupProductsV4(${'$'}queryInput: topadsDashboardGroupProductsInputTypeV4!) {
-  topadsDashboardGroupProductsV4(queryInput: ${'$'}queryInput) {
-    separate_statistic
-       meta {
-              page {
-                per_page
-                current
-                total
-              }
-            }
-    data {
-      ad_id
-      item_id
-      ad_status
-      ad_status_desc
-      ad_price_bid
-      ad_price_bid_fmt
-      ad_price_daily
-      ad_price_daily_fmt
-      stat_total_gross_profit
-      ad_price_daily_spent_fmt
-      ad_price_daily_bar
-      product_name
-      product_image_uri
-      group_id
-      group_name
-    }
-  }
-}
-"""
-
-@GqlQuery("TopadsDashboardGroupProductsQuery", TOP_ADS_DASHBOARD_GROUP_PRODUCTS_QUERY)
 class TopAdsGetGroupProductDataUseCase @Inject constructor(
     private val userSession: UserSessionInterface,
     graphqlRepository: GraphqlRepository
@@ -57,7 +24,7 @@ class TopAdsGetGroupProductDataUseCase @Inject constructor(
 
     suspend fun execute(requestParams: RequestParams): NonGroupResponse {
         graphql.apply {
-            setGraphqlQuery(TopadsDashboardGroupProductsQuery.GQL_QUERY)
+            setGraphqlQuery(GetTopadsDashboardProductsV4)
             setTypeClass(NonGroupResponse::class.java)
         }
 

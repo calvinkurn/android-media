@@ -11,7 +11,6 @@ import com.tokopedia.topads.sdk.domain.model.TopAdsCarouselModel
 import com.tokopedia.topads.sdk.listener.TopAdsCarouselListener
 import com.tokopedia.topads.sdk.view.adapter.TopAdsCarouselAdapter
 import com.tokopedia.unifycomponents.BaseCustomView
-import kotlinx.android.synthetic.main.topads_carousel_layout.view.*
 
 class ToadsCarousel : BaseCustomView {
 
@@ -50,6 +49,7 @@ class ToadsCarousel : BaseCustomView {
     }
 
     private fun initTopAdsCarouselTitle(topAdsCarouselModel: TopAdsCarouselModel) {
+        val topAdsCarouselTitle = findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.topAdsCarouselTitle)
         topAdsCarouselTitle.text = topAdsCarouselModel.title
         topAdsCarouselTitle.showWithCondition(topAdsCarouselModel.title.isNotEmpty())
     }

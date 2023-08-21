@@ -3,7 +3,7 @@ package com.tokopedia.topads.sdk.domain.model
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 private const val KEY_META_DATA = "meta"
 private const val KEY_TOTAL_DATA = "total_data"

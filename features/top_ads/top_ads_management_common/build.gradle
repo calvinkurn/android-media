@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-kapt.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
+apply plugin: 'kotlin-parcelize'
 
 buildscript {
     repositories {
@@ -38,14 +39,15 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.remoteResourceRequest)
     implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.miscDependencies.dagger
+    kapt rootProject.ext.miscDependencies.daggerCompiler
 
     testImplementation rootProject.ext.testDependencies.junit
     androidTestImplementation(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
-    implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
-    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
+    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.adapterDelegate)
     implementation rootProject.ext.unifyDependencies.datepicker
 }

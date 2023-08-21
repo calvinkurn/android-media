@@ -20,7 +20,6 @@ import com.tokopedia.topads.common.domain.interactor.TopAdsProductActionUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetPromoUseCase
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.CoroutineDispatcher
-import rx.Subscriber
 import java.lang.reflect.Type
 import javax.inject.Inject
 import javax.inject.Named

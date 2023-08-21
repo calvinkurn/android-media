@@ -1,6 +1,5 @@
 package com.tokopedia.topads.common.domain.interactor
 
-import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.topads.common.data.internal.ParamObject
@@ -8,6 +7,7 @@ import com.tokopedia.topads.common.data.internal.ParamObject.ACTION
 import com.tokopedia.topads.common.data.internal.ParamObject.ADS
 import com.tokopedia.topads.common.data.internal.ParamObject.PRICE_BID
 import com.tokopedia.topads.common.data.response.ProductActionResponse
+import com.tokopedia.topads.common.domain.query.GetTopadsUpdateSingleAds
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -16,30 +16,13 @@ import javax.inject.Inject
  * Created by Pika on 5/6/20.
  */
 
-private const val UPDATE_SINGLE_ADS = """
-    mutation topadsUpdateSingleAds(${'$'}action: String!, ${'$'}ads: [topadsUpdateSingleAdsReqData]!, ${'$'}shopID: String!) {
-  topadsUpdateSingleAds(action: ${'$'}action, ads: ${'$'}ads, shopID: ${'$'}shopID) {
-        data {
-            action
-            shopID
-        }
-        errors {
-            code
-            detail
-            title
-        }
-    }
-}
-"""
-
-@GqlQuery("GetTopadsUpdateSingleAds", UPDATE_SINGLE_ADS)
 class TopAdsProductActionUseCase @Inject constructor(val userSession: UserSessionInterface, graphqlRepository: GraphqlRepository) {
 
     private val graphql by lazy { GraphqlUseCase<ProductActionResponse>(graphqlRepository) }
 
     suspend fun execute(requestParams: RequestParams): ProductActionResponse {
         graphql.apply {
-            setGraphqlQuery(GetTopadsUpdateSingleAds.GQL_QUERY)
+            setGraphqlQuery(GetTopadsUpdateSingleAds)
             setTypeClass(ProductActionResponse::class.java)
         }
 

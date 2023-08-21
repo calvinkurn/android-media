@@ -1,6 +1,5 @@
 package com.tokopedia.topads.common.domain.interactor
 
-import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.topads.common.data.internal.ParamObject
@@ -13,6 +12,7 @@ import com.tokopedia.topads.common.data.internal.ParamObject.SORT
 import com.tokopedia.topads.common.data.internal.ParamObject.START_DATE
 import com.tokopedia.topads.common.data.internal.ParamObject.STATUS
 import com.tokopedia.topads.common.data.response.groupitem.GroupItemResponse
+import com.tokopedia.topads.common.domain.query.GetTopadsDashboardGroupsV3
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -22,51 +22,13 @@ import kotlin.collections.set
  * Created by Pika on 6/9/20.
  */
 
-const val TOP_ADS_GET_GROUP_LIST_QUERY: String =
-    """query GetTopadsDashboardGroupsV3(${'$'}queryInput: GetTopadsDashboardGroupsInputTypeV3!) {
-  GetTopadsDashboardGroupsV3(queryInput: ${'$'}queryInput) {
-    separate_statistic
-       meta {
-          page {
-            per_page
-            current
-            total
-          }
-        }
-    data {
-      group_id
-      total_item
-      total_keyword
-      group_status
-      group_status_desc
-      group_status_toogle
-      group_price_bid
-      group_price_daily
-      group_price_daily_spent_fmt
-      group_price_daily_bar
-      group_name
-      group_type
-      group_end_date
-      stat_total_conversion
-      stat_total_spent
-      stat_total_ctr
-      stat_total_sold
-      stat_avg_click
-      stat_total_income
-      strategies
-    }
-  }
-}
-"""
-
-@GqlQuery("GetTopadsGroupDataQuery", TOP_ADS_GET_GROUP_LIST_QUERY)
-class TopAdsGetGroupDataUseCase @Inject constructor(private val userSession: UserSessionInterface, graphqlRepository: GraphqlRepository) {
+class TopAdsGetGroupDataUseCase @Inject constructor(private val userSession: UserSessionInterface) {
 
     private val graphql by lazy { GraphqlUseCase<GroupItemResponse>(graphqlRepository) }
 
     suspend fun execute(requestParams: RequestParams): GroupItemResponse {
         graphql.apply {
-            setGraphqlQuery(GetTopadsGroupDataQuery.GQL_QUERY)
+            setGraphqlQuery(GetTopadsDashboardGroupsV3)
             setTypeClass(GroupItemResponse::class.java)
         }
 

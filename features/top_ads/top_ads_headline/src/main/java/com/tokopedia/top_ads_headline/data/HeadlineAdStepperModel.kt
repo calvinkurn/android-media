@@ -6,7 +6,7 @@ import com.tokopedia.top_ads_headline_usecase.model.TopAdsManageHeadlineInput
 import com.tokopedia.topads.common.data.response.KeywordDataItem
 import com.tokopedia.topads.common.data.response.TopAdsProductModel
 import com.tokopedia.topads.sdk.domain.model.CpmModel
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 open class HeadlineAdStepperModel(
