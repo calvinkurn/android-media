@@ -4,6 +4,7 @@ import android.os.Parcelable
 import com.tokopedia.logisticcart.shipping.model.AnalyticsProductCheckoutData
 import com.tokopedia.logisticcart.shipping.model.ShopTypeInfoData
 import com.tokopedia.purchase_platform.common.feature.addons.data.model.AddOnProductDataModel
+import com.tokopedia.purchase_platform.common.feature.bmgm.data.response.BmGmTiersApplied
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.model.EthicalDrugDataModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingDataModel
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
@@ -65,15 +66,17 @@ data class Product(
     // bmgm
     var isBmgmItem: Boolean = false,
     var bmgmIconUrl: String = "",
+    var bmgmOfferId: Long = 0,
     var bmgmOfferName: String = "",
     var bmgmOfferMessage: String = "",
     var bmgmItemPosition: Int = 0,
     var bmgmTotalDiscount: Double = 0.0,
+    var bmgmTiersApplied: List<BmGmTiersApplied> = emptyList(),
 
     // new
     val shouldShowShopInfo: Boolean = false,
     val shopName: String = "",
     val shopTypeInfoData: ShopTypeInfoData = ShopTypeInfoData(),
     val originWarehouseIds: List<Long> = emptyList(),
-    var campaignId: Int = -1,
+    var campaignId: Int = -1
 ) : Parcelable

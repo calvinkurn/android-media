@@ -415,6 +415,7 @@ class ShipmentMapper @Inject constructor() {
                     if (cartDetail.cartDetailInfo.cartDetailType.lowercase() == CART_DETAIL_TYPE_BMGM) {
                         // TODO: [Misael] Map bmgm products
                         isBmgmItem = true
+                        bmgmOfferId = cartDetail.cartDetailInfo.bmgmData.offerId
                         bmgmIconUrl = cartDetail.cartDetailInfo.bmgmData.offerIcon
                         bmgmOfferName = cartDetail.cartDetailInfo.bmgmData.offerName
                         bmgmOfferMessage = cartDetail.cartDetailInfo.bmgmData.offerMessage
@@ -424,6 +425,7 @@ class ShipmentMapper @Inject constructor() {
                             BMGM_ITEM_DEFAULT
                         }
                         bmgmTotalDiscount = cartDetail.cartDetailInfo.bmgmData.totalDiscount
+                        bmgmTiersApplied = cartDetail.cartDetailInfo.bmgmData.tiersApplied
                     } else {
                         isBmgmItem = false
                     }

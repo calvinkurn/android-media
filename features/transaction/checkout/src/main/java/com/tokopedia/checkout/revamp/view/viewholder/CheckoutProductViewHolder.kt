@@ -5,18 +5,17 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.style.DynamicDrawableSpan
-import android.text.style.ForegroundColorSpan
 import android.text.style.ImageSpan
 import android.text.style.UnderlineSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
-import androidx.core.content.ContextCompat
 import androidx.core.text.bold
 import androidx.core.text.color
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.databinding.ItemCheckoutProductBinding
 import com.tokopedia.checkout.databinding.LayoutCheckoutProductBinding
@@ -24,6 +23,7 @@ import com.tokopedia.checkout.databinding.LayoutCheckoutProductBmgmBinding
 import com.tokopedia.checkout.databinding.LayoutCheckoutProductBundleBinding
 import com.tokopedia.checkout.domain.mapper.ShipmentMapper
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop
+import com.tokopedia.checkout.revamp.utils.CheckoutBmgmMapper
 import com.tokopedia.checkout.revamp.view.adapter.CheckoutAdapterListener
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
@@ -36,6 +36,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.getBitmapImageUrl
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
 import com.tokopedia.purchase_platform.common.databinding.ItemAddOnProductBinding
+import com.tokopedia.purchase_platform.common.feature.bmgm.data.uimodel.BmgmCommonDataModel
 import com.tokopedia.purchase_platform.common.utils.getHtmlFormat
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -333,7 +334,10 @@ class CheckoutProductViewHolder(
                 ivCheckoutBmgmBadge.setImageUrl(product.bmgmIconUrl)
                 tvCheckoutBmgmTitle.text = spannedTitle
                 ivCheckoutBmgmDetail.setOnClickListener {
-                    // TODO: [Misael] Applink show mini cart detail punya ka Ilham
+                    val bmgmCommonData = CheckoutBmgmMapper.mapBmgmCommonDataModel(product)
+                    PersistentCacheManager.instance.put(BmgmCommonDataModel.PARAM_KEY_BMGM_DATA, bmgmCommonData)
+
+                    // TODO: [Misael] Navigate mini cart detail punya ka Ilham
                 }
 
                 ivCheckoutBmgmBadge.show()
@@ -748,9 +752,9 @@ class CheckoutProductViewHolder(
     private fun renderCustomError(order: CheckoutOrderModel) {
         with(binding) {
             if ((
-                    !order.isError && order.isHasUnblockingError &&
-                        order.unblockingErrorMessage.isNotEmpty()
-                    ) &&
+                !order.isError && order.isHasUnblockingError &&
+                    order.unblockingErrorMessage.isNotEmpty()
+                ) &&
                 order.firstProductErrorIndex > -1
             ) {
                 val errorMessage = order.unblockingErrorMessage
