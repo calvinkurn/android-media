@@ -58,7 +58,7 @@ class OfferLandingPageViewModel @Inject constructor(
 
     fun getOfferingInfo(
         offerIds: List<Int>,
-        shopId: String,
+        shopIds: List<Int>? = emptyList(),
         productIds: List<Int>? = emptyList(),
         warehouseIds: List<Int>? = emptyList(),
         localCacheModel: LocalCacheModel?
@@ -68,7 +68,7 @@ class OfferLandingPageViewModel @Inject constructor(
             block = {
                 val param = GetOfferingInfoForBuyerRequestParam(
                     offerIds = offerIds,
-                    shopIds = listOf(shopId.toIntOrZero()),
+                    shopIds = shopIds.orEmpty(),
                     productAnchor = GetOfferingInfoForBuyerRequestParam.ProductAnchor(
                         productIds.orEmpty(),
                         warehouseIds.orEmpty()

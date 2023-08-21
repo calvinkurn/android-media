@@ -236,9 +236,9 @@ class OfferLandingPageFragment :
         setViewState(VIEW_LOADING)
         viewModel.getOfferingInfo(
             offerIds = listOf(offerId.toIntOrZero()),
-            shopId = shopIds,
-            productIds = productIds.map { it.digitToIntOrNull() ?: 0 },
-            warehouseIds = warehouseIds.map { it.digitToIntOrNull() ?: 0 },
+            shopIds = shopIds.split(",").map { it.toIntOrZero() },
+            productIds = productIds.split(",").map { it.toIntOrZero() },
+            warehouseIds = warehouseIds.split(",").map { it.toIntOrZero() },
             localCacheModel
         )
     }
