@@ -1,5 +1,6 @@
 package com.tokopedia.feedplus.presentation.adapter.viewholder
 
+import android.os.Build
 import androidx.annotation.LayoutRes
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.PagerSnapHelper
@@ -178,12 +179,12 @@ class FeedFollowRecommendationViewHolder(
 
         if (model.data.isEmpty() && model.isLoading) {
             profileAdapter.setItemsAndAnimateChanges(List(5) { FeedFollowProfileAdapter.Model.Loading })
-            binding.rvFollowRecommendation.suppressLayout(true)
+            freezeScrolling(true)
 
             binding.clMain.showWithCondition(true)
             binding.feedNoContent.root.showWithCondition(false)
         } else {
-            binding.rvFollowRecommendation.suppressLayout(false)
+            freezeScrolling(false)
 
             var isNeedForceScroll = false
             val finalSelectedPosition = if (selectedPosition >= model.data.size) {
@@ -224,6 +225,14 @@ class FeedFollowRecommendationViewHolder(
     private fun getSelectedPosition(): Int {
         val snappedView = snapHelper.findSnapView(layoutManager) ?: return 0
         return binding.rvFollowRecommendation.getChildAdapterPosition(snappedView)
+    }
+
+    private fun freezeScrolling(isFreeze: Boolean) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            binding.rvFollowRecommendation.suppressLayout(isFreeze)
+        } else {
+            binding.rvFollowRecommendation.isLayoutFrozen = isFreeze
+        }
     }
 
     override fun bind(element: FeedFollowRecommendationModel?) {

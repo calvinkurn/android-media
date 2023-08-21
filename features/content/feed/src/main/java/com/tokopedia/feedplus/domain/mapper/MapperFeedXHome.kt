@@ -94,6 +94,7 @@ class MapperFeedXHome @Inject constructor(
             cta = card.cta.let { cta ->
                 FeedCardCtaModel(
                     texts = cta.texts,
+                    subtitles = cta.subtitles,
                     color = cta.color,
                     colorGradient = cta.colorGradient.map { color ->
                         FeedCardCtaGradientModel(

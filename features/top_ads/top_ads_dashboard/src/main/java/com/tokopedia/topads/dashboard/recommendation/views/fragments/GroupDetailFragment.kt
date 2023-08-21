@@ -167,7 +167,16 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
         insightType = arguments?.getInt(INSIGHT_TYPE_KEY) ?: Int.ZERO
         viewModel.loadInsightTypeChips(adType, insightList ?: arrayListOf(), adGroupName)
         viewModel.selectDefaultChips(insightType)
-        if (adType != null && !adGroupId.isNullOrEmpty()) {
+
+        if (insightList?.isEmpty() == true) {
+            loadDetailPageOnAction(
+                utils.convertAdTypeToInt(adType),
+                adGroupId ?: "",
+                DEFAULT_SELECTED_INSIGHT_TYPE,
+                true,
+                adGroupName ?: ""
+            )
+        } else if (adType != null && !adGroupId.isNullOrEmpty()) {
             loadData(
                 utils.convertAdTypeToInt(adType),
                 adGroupId
@@ -328,8 +337,8 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
                 it.dialogPrimaryCTA.isLoading = false
             }
 
-            it.setPrimaryCTAText(getString(R.string.title_try_again))
-            it.setSecondaryCTAText(getString(R.string.label_close))
+            it.setPrimaryCTAText(getString(com.tokopedia.abstraction.R.string.title_try_again))
+            it.setSecondaryCTAText(getString(com.tokopedia.design.R.string.label_close))
         }
     }
 

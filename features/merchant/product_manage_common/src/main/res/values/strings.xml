@@ -69,4 +69,6 @@
     <string name="product_manage_confirm_inactive_dt_product_title">Produk ini terdaftar dalam gudang Dilayani Tokopedia</string>
     <string name="product_manage_confirm_inactive_dt_product_positive_button">Tetap Nonaktifkan</string>
     <string name="product_manage_confirm_dt_product_cancel_button">Batal</string>
+    <string name="oke">OKE</string>
+
 </resources>

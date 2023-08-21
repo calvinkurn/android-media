@@ -254,7 +254,7 @@ class ProductChooserIdGenerator {
     fun productChooserBottomSheet() {
         val scenario = launchFragment<ProductSetupFragment>(
             factory = fragmentFactory,
-            themeResId = R.style.AppTheme
+            themeResId = com.tokopedia.empty_state.R.style.AppTheme
         )
 
         scenario.moveToState(Lifecycle.State.RESUMED)
@@ -273,7 +273,7 @@ class ProductChooserIdGenerator {
     fun sortFilterBottomSheet() {
         val scenario = launchFragment<ProductSetupFragment>(
             factory = fragmentFactory,
-            themeResId = R.style.AppTheme
+            themeResId = com.tokopedia.empty_state.R.style.AppTheme
         )
 
         scenario.moveToState(Lifecycle.State.RESUMED)
@@ -296,7 +296,7 @@ class ProductChooserIdGenerator {
     fun etalaseListBottomSheet() {
         val scenario = launchFragment<ProductSetupFragment>(
             factory = fragmentFactory,
-            themeResId = R.style.AppTheme
+            themeResId = com.tokopedia.empty_state.R.style.AppTheme
         )
 
         scenario.moveToState(Lifecycle.State.RESUMED)

@@ -1,7 +1,5 @@
 package com.tokopedia.talk.feature.inbox.presentation.fragment
 
-import com.tokopedia.imageassets.TokopediaImageUrl
-
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -26,9 +24,7 @@ import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.inboxcommon.InboxFragment
-import com.tokopedia.inboxcommon.InboxFragmentContainer
-import com.tokopedia.inboxcommon.RoleType
+import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.kotlin.extensions.view.clearImage
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
@@ -70,8 +66,7 @@ open class TalkInboxFragment :
     BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapterTypeFactory>(),
     HasComponent<TalkInboxComponent>,
     TalkPerformanceMonitoringContract,
-    TalkInboxViewHolderListener,
-    InboxFragment {
+    TalkInboxViewHolderListener {
 
     companion object {
         const val TAB_PARAM = "tab_param"
@@ -95,15 +90,13 @@ open class TalkInboxFragment :
         const val SETTING_CHIP_POSITION = 3
 
         fun createNewInstance(
-            tab: TalkInboxTab? = null,
+            tab: TalkInboxTab,
             talkInboxListener: TalkInboxListener? = null
         ): TalkInboxFragment {
             return TalkInboxFragment().apply {
                 this.talkInboxListener = talkInboxListener
                 arguments = Bundle().apply {
-                    tab?.let {
-                        putString(TAB_PARAM, it.tabParam)
-                    }
+                    putString(TAB_PARAM, tab.tabParam)
                 }
             }
         }
@@ -126,9 +119,7 @@ open class TalkInboxFragment :
     private var talkPerformanceMonitoringListener: TalkPerformanceMonitoringListener? = null
     protected var talkInboxListener: TalkInboxListener? = null
     private var inboxType = ""
-    private var containerListener: InboxFragmentContainer? = null
     private lateinit var remoteConfigInstance: RemoteConfigInstance
-    private var shouldHitRoleChangedTracker = false
     private var talkInboxPreference: TalkInboxPreference? = null
     private var coachMark: CoachMark2? = null
 
@@ -226,9 +217,6 @@ open class TalkInboxFragment :
                 it.isUnread
             )
             goToReply(it.questionID)
-            if (it.isUnread || it.state.isUnresponded || it.state.hasProblem) {
-                containerListener?.decreaseDiscussionUnreadCounter()
-            }
         }
         talkInboxOldUiModel?.inboxDetail?.let {
             talkInboxTracking.eventClickThread(
@@ -243,28 +231,6 @@ open class TalkInboxFragment :
             )
             goToReply(it.questionID)
         }
-    }
-
-    override fun onSwipeRefresh() {
-        containerListener?.refreshNotificationCounter()
-        super.onSwipeRefresh()
-    }
-
-    override fun onRoleChanged(role: Int) {
-        if (!::viewModel.isInitialized) return
-        when (role) {
-            RoleType.BUYER -> inboxType = TalkInboxTab.BUYER_TAB
-            RoleType.SELLER -> inboxType = TalkInboxTab.SHOP_TAB
-        }
-        clearAllData()
-        setInboxType()
-        initSortFilter()
-        updateSettingsIconVisibility()
-        shouldHitRoleChangedTracker = true
-    }
-
-    override fun onPageClickedAgain() {
-        getRecyclerView(view)?.scrollToPosition(0)
     }
 
     override fun onPause() {
@@ -323,12 +289,6 @@ open class TalkInboxFragment :
         observeSmartReplyDecommissionConfig()
     }
 
-    override fun onAttachActivity(context: Context?) {
-        if (context is InboxFragmentContainer) {
-            containerListener = context
-        }
-    }
-
     override fun onHiddenChanged(hidden: Boolean) {
         if (hidden) {
             coachMark?.dismissCoachMark()
@@ -372,7 +332,6 @@ open class TalkInboxFragment :
                             hideFullPageLoading()
                             hideLoading()
                             if (it.page == TalkConstants.DEFAULT_INITIAL_PAGE) {
-                                hitOnRoleChangeTracker()
                                 talkInboxListener?.updateUnreadCounter(
                                     it.data.sellerUnread,
                                     it.data.buyerUnread
@@ -704,11 +663,7 @@ open class TalkInboxFragment :
 
     private fun setInboxType() {
         if (isSellerApp()) {
-            inboxType = if (containerListener?.role == RoleType.BUYER) {
-                TalkInboxTab.BUYER_TAB
-            } else {
-                TalkInboxTab.SHOP_TAB
-            }
+            inboxType = TalkInboxTab.SHOP_TAB
         }
         viewModel.setInboxType(inboxType)
     }
@@ -876,18 +831,6 @@ open class TalkInboxFragment :
             return viewModel.getUnrespondedCount()
         }
         return viewModel.getUnreadCount()
-    }
-
-    private fun hitOnRoleChangeTracker() {
-        if (shouldHitRoleChangedTracker) {
-            talkInboxTracking.eventClickTab(
-                inboxType,
-                viewModel.getUserId(),
-                viewModel.getShopId(),
-                getCounterForTracking()
-            )
-            shouldHitRoleChangedTracker = false
-        }
     }
 
     private fun initSharedPrefs() {

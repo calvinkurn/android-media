@@ -4,7 +4,7 @@ import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
 import com.tokopedia.play.ui.explorewidget.PlayExploreWidgetCoordinator
 import com.tokopedia.play.ui.explorewidget.adapter.delegate.WidgetAdapterDelegate
 import com.tokopedia.play.view.uimodel.TabMenuUiModel
-import com.tokopedia.play.view.uimodel.WidgetItemUiModel
+import com.tokopedia.play.view.uimodel.ExploreWidgetItemUiModel
 import com.tokopedia.play.view.uimodel.WidgetUiModel
 
 /**
@@ -18,7 +18,7 @@ class WidgetAdapter(coordinator: PlayExploreWidgetCoordinator) :
     }
 
     override fun areItemsTheSame(oldItem: WidgetUiModel, newItem: WidgetUiModel): Boolean {
-        return if (oldItem is WidgetItemUiModel && newItem is WidgetItemUiModel) oldItem.id == newItem.id
+        return if (oldItem is ExploreWidgetItemUiModel && newItem is ExploreWidgetItemUiModel) oldItem.id == newItem.id
         else if (oldItem is TabMenuUiModel && newItem is TabMenuUiModel) oldItem.items == newItem.items
         else oldItem == newItem
     }
