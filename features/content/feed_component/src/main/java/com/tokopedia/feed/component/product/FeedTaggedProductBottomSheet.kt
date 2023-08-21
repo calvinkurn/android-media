@@ -9,6 +9,8 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.content.common.ui.adapter.ContentTaggedProductBottomSheetAdapter
+import com.tokopedia.content.common.ui.viewholder.ContentTaggedProductBottomSheetViewHolder
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.feedcomponent.databinding.BottomSheetFeedTaggedProductBinding
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
@@ -42,7 +44,7 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
         (getScreenHeight() * MIN_HEIGHT_PERCENT).roundToInt()
     }
 
-    private val mAdapterListener = object : FeedTaggedProductBottomSheetViewHolder.Listener {
+    private val mAdapterListener = object : ContentTaggedProductBottomSheetViewHolder.Listener {
         override fun onProductCardClicked(product: ContentTaggedProductUiModel, itemPosition: Int) {
             mListener?.onProductCardClicked(product, itemPosition)
         }
@@ -62,8 +64,8 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private val mAdapter: FeedTaggedProductBottomSheetAdapter by lazy {
-        FeedTaggedProductBottomSheetAdapter(mAdapterListener)
+    private val mAdapter: ContentTaggedProductBottomSheetAdapter by lazy {
+        ContentTaggedProductBottomSheetAdapter(mAdapterListener)
     }
 
     private var mListener: Listener? = null

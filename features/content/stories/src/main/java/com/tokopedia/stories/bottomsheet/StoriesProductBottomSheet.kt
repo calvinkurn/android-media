@@ -9,11 +9,11 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.tokopedia.content.common.view.ContentTaggedProductBottomSheetItemView
+import com.tokopedia.content.common.ui.adapter.ContentTaggedProductBottomSheetAdapter
+import com.tokopedia.content.common.ui.viewholder.ContentTaggedProductBottomSheetViewHolder
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.kotlin.extensions.view.showToast
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
-import com.tokopedia.stories.bottomsheet.adapter.StoriesProductAdapter
 import com.tokopedia.stories.databinding.FragmentStoriesProductBinding
 import com.tokopedia.stories.utils.withCache
 import com.tokopedia.stories.view.model.BottomSheetType
@@ -28,7 +28,7 @@ import javax.inject.Inject
  */
 class StoriesProductBottomSheet @Inject constructor(
     private val viewModelFactory: ViewModelProvider.Factory,
-) : BottomSheetUnify(), ContentTaggedProductBottomSheetItemView.Listener {
+) : BottomSheetUnify(), ContentTaggedProductBottomSheetViewHolder.Listener {
 
     private val viewModel by activityViewModels<StoriesViewModel> { viewModelFactory }
 
@@ -36,7 +36,7 @@ class StoriesProductBottomSheet @Inject constructor(
     private val binding: FragmentStoriesProductBinding get() = _binding!!
 
     private val productAdapter by lazyThreadSafetyNone {
-        StoriesProductAdapter(this)
+        ContentTaggedProductBottomSheetAdapter(this)
     }
 
     override fun onCreateView(
@@ -70,7 +70,7 @@ class StoriesProductBottomSheet @Inject constructor(
     }
 
     private fun renderProducts(prevState: List<ContentTaggedProductUiModel>?, state: List<ContentTaggedProductUiModel>) {
-        if (prevState == null || prevState == state) return
+        if (prevState == state) return
         productAdapter.setItemsAndAnimateChanges(state)
     }
 
@@ -78,6 +78,24 @@ class StoriesProductBottomSheet @Inject constructor(
         super.onResume()
 
         viewModel.getProducts()
+    }
+
+    override fun onProductCardClicked(product: ContentTaggedProductUiModel, itemPosition: Int) {
+        showToast("Product Clicked")
+    }
+
+    override fun onAddToCartProductButtonClicked(
+        product: ContentTaggedProductUiModel,
+        itemPosition: Int
+    ) {
+        showToast("Product ATC")
+    }
+
+    override fun onBuyProductButtonClicked(
+        product: ContentTaggedProductUiModel,
+        itemPosition: Int
+    ) {
+        showToast("Product Buy")
     }
 
     fun show(fg: FragmentManager) {
@@ -112,26 +130,5 @@ class StoriesProductBottomSheet @Inject constructor(
                 StoriesProductBottomSheet::class.java.name
             ) as StoriesProductBottomSheet
         }
-    }
-
-    override fun onProductCardClicked(
-        view: ContentTaggedProductBottomSheetItemView,
-        product: ContentTaggedProductUiModel
-    ) {
-        showToast("Product Clicked")
-    }
-
-    override fun onAddToCartProductButtonClicked(
-        view: ContentTaggedProductBottomSheetItemView,
-        product: ContentTaggedProductUiModel
-    ) {
-        showToast("Product ATC")
-    }
-
-    override fun onBuyProductButtonClicked(
-        view: ContentTaggedProductBottomSheetItemView,
-        product: ContentTaggedProductUiModel
-    ) {
-        showToast("Product Buy")
     }
 }
