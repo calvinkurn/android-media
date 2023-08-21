@@ -17,9 +17,6 @@ import com.tokopedia.catalogcommon.uimodel.DummyUiModel
 import com.tokopedia.catalogcommon.uimodel.HeroBannerUiModel
 import com.tokopedia.catalogcommon.uimodel.PanelImageUiModel
 import com.tokopedia.catalogcommon.uimodel.TopFeaturesUiModel
-import com.tokopedia.home_component.model.ChannelBanner
-import com.tokopedia.home_component.model.ChannelModel
-import com.tokopedia.home_component.visitable.BannerRevampDataModel
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
@@ -106,17 +103,6 @@ class CatalogDetailPageFragment : BaseDaggerFragment() {
                 )
             )
             widgets.add(TopFeaturesUiModel.dummyTopFeatures())
-            widgets.add(
-                BannerRevampDataModel(
-                    channelModel = ChannelModel(
-                        id = "1",
-                        groupId = "1",
-                        channelBanner = ChannelBanner(
-                            imageUrl = "https://images.tokopedia.net/android/shop_page/image_product_empty_state_buyer.png"
-                        )
-                    )
-                )
-            )
             widgets.add(
                 PanelImageUiModel("1", "2", "2",
                     content = listOf(
