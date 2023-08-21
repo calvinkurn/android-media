@@ -306,6 +306,7 @@ class CartViewModel @Inject constructor(
                                 }
                             }
                         }
+                        data.cartShopGroupTicker.state = CartShopGroupTickerState.FIRST_LOAD
                         _globalEvent.value = CartGlobalEvent.AdapterItemChanged(index)
                     } else {
                         return@forEachIndexed
@@ -321,11 +322,6 @@ class CartViewModel @Inject constructor(
                     } else {
                         return@forEachIndexed
                     }
-                }
-
-                is CartShopBottomHolderData -> {
-                    data.shopData.cartShopGroupTicker.state = CartShopGroupTickerState.FIRST_LOAD
-                    _globalEvent.value = CartGlobalEvent.AdapterItemChanged(index)
                 }
 
                 is DisabledItemHeaderHolderData, is CartSectionHeaderHolderData -> {
