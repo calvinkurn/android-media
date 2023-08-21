@@ -64,12 +64,12 @@ class PlacementImageActivity : BaseActivity(), NavToolbarComponent.Listener {
     private fun initBundle(savedInstanceState: Bundle?) {
         (savedInstanceState?.getString(PLACEMENT_PARAM_KEY)
             ?: intent?.getStringExtra(PLACEMENT_PARAM_KEY))?.also {
-            viewModel.imagePath = it
+            viewModel.setImagePath(it)
         }
 
         (savedInstanceState?.getParcelable<ImagePlacementModel>(PLACEMENT_MODEL_KEY)
             ?: intent?.getParcelableExtra(PLACEMENT_MODEL_KEY))?.also {
-            viewModel.placementModel = it
+            viewModel.setPlacementModel(it)
         }
     }
 

@@ -23,39 +23,43 @@ class PlacementImageFragment @Inject constructor() : BaseEditorFragment(R.layout
     private val viewModel: PlacementImageViewModel by activityViewModels()
     private val viewBinding: FragmentPlacementBinding? by viewBinding()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
+    override fun initObserver() {
+        viewModel.imagePath.observe(viewLifecycleOwner) {
+            viewBinding?.cropArea?.let { ucropRef ->
+                ucropRef.getCropImageView()?.let { gestureCropImage ->
 
-    override fun initObserver() {}
+                    val outputPath = FileUtil.getTokopediaInternalDirectory(CACHE_FOLDER).path + RESULT_FILE_NAME
+                    gestureCropImage.setImageUri(
+                        Uri.fromFile(File(it)),
+                        Uri.parse(outputPath)
+                    )
 
-    override fun initView() {
-        viewBinding?.cropArea?.let { ucropRef ->
-            ucropRef.getCropImageView()?.let { gestureCropImage ->
+                    gestureCropImage.setTransformImageListener(object :
+                        TransformImageView.TransformImageListener {
+                        override fun onLoadComplete() {
+                            gestureCropImage.post {
+                                ucropRef.getOverlayView()?.setTargetAspectRatio(9/16f)
 
-                val outputPath = FileUtil.getTokopediaInternalDirectory(CACHE_FOLDER).path + RESULT_FILE_NAME
-                gestureCropImage.setImageUri(
-                    Uri.fromFile(File(viewModel.imagePath)),
-                    Uri.parse(outputPath)
-                )
-
-                gestureCropImage.setTransformImageListener(object :
-                    TransformImageView.TransformImageListener {
-                    override fun onLoadComplete() {
-                        gestureCropImage.post {
-                            ucropRef.getOverlayView()?.setTargetAspectRatio(9/16f)
+                                Handler().postDelayed({
+                                    viewModel.placementModel.value?.let { model ->
+                                        implementPreviousState(model)
+                                    }
+                                }, PREV_STATE_DELAY)
+                            }
                         }
-                    }
 
-                    override fun onLoadFailure(e: Exception) {}
+                        override fun onLoadFailure(e: Exception) {}
 
-                    override fun onRotate(currentAngle: Float) {}
+                        override fun onRotate(currentAngle: Float) {}
 
-                    override fun onScale(currentScale: Float) {}
-                })
+                        override fun onScale(currentScale: Float) {}
+                    })
+                }
             }
         }
     }
+
+    override fun initView() {}
 
     fun captureImage(onFinish: (placementModel: ImagePlacementModel) -> Unit) {
         viewBinding?.cropArea?.getCropImageView()?.let {
@@ -65,8 +69,33 @@ class PlacementImageFragment @Inject constructor() : BaseEditorFragment(R.layout
         }
     }
 
+    private fun implementPreviousState(placementModel: ImagePlacementModel) {
+        viewBinding?.let {
+            val cropImageView = it.cropArea.getCropImageView() ?: return
+
+            cropImageView.zoomInImage(placementModel.scale)
+            cropImageView.postRotate(placementModel.angle)
+
+            val currentImageMatrix = cropImageView.imageMatrix.values()
+            val currentTranslateX = currentImageMatrix[INDEX_CORD_X]
+            val currentTranslateY = currentImageMatrix[INDEX_CORD_Y]
+
+            Handler().postDelayed({
+                // waiting zoom & rotate process is done then move the image
+                // need reset image matrix value before implement previous state
+                cropImageView.postTranslate(-currentTranslateX, -currentTranslateY)
+                cropImageView.postTranslate(placementModel.translateX, placementModel.translateY)
+            },PREV_STATE_DELAY)
+        }
+    }
+
     companion object {
         private const val RESULT_FILE_NAME = "/stories_editor.png"
         private const val CACHE_FOLDER = "Tokopedia"
+
+        private const val INDEX_CORD_X = 2
+        private const val INDEX_CORD_Y = 5
+
+        private const val PREV_STATE_DELAY = 500L
     }
 }
