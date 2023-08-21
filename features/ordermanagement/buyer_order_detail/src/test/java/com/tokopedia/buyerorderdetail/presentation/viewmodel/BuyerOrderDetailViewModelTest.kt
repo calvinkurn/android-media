@@ -563,6 +563,25 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
         }
 
     @Test
+    fun `given bmgmList empty, when getProducts should return empty list of products when UI state is Showing`() =
+        runCollectingUiState { buyerDetailUiState ->
+
+            val productListShowingState =
+                mockk<ProductListUiState.HasData.Showing>(relaxed = true) {
+                    every { data.productBmgmList } returns emptyList()
+                }
+
+            createSuccessGetBuyerOrderDetailDataResult()
+            mockProductListUiStateMapper(showingState = productListShowingState) {
+                getBuyerOrderDetailData()
+
+                val actualBmgmUiModel = buyerDetailUiState.filterIsInstance(BuyerOrderDetailUiState.HasData.Showing::class.java)
+                    .last().productListUiState.data.productBmgmList
+                assertEquals(emptyList<ProductBmgmSectionUiModel>(), actualBmgmUiModel)
+            }
+        }
+
+    @Test
     fun `getProducts should return empty products list when ui state is not equals to Showing`() =
         runCollectingUiState {
             createFailedGetBuyerOrderDetailDataResult()

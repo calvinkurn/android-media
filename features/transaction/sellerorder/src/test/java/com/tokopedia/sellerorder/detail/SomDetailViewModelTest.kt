@@ -167,6 +167,45 @@ class SomDetailViewModelTest : SomOrderBaseViewModelTest<SomDetailViewModel>() {
     }
 
     @Test
+    fun `given the bmgm null when loadDetailOrder then should return success`() {
+        // given
+        val orderId = "123"
+        val bmgmDetailsResponse =
+            SomDetailOrder.GetSomDetail.Details(
+                bmgmIcon = "null",
+                bmgms = null
+            )
+
+        coEvery {
+            somGetOrderDetailUseCase.execute(orderId)
+        } returns Success(
+            GetSomDetailResponse(
+                getSomDetail = SomDetailOrder.GetSomDetail(
+                    details = bmgmDetailsResponse
+                )
+            )
+        )
+
+        // when
+        viewModel.loadDetailOrder(orderId)
+
+        // then
+        coVerify {
+            somGetOrderDetailUseCase.execute(orderId)
+        }
+
+        val detailsActual =
+            (viewModel.orderDetailResult.value as Success<GetSomDetailResponse>).data.getSomDetail!!.details
+
+        assert(viewModel.orderDetailResult.value is Success)
+        assertEquals(bmgmDetailsResponse.bmgmIcon, detailsActual.bmgmIcon)
+        assertEquals(
+            bmgmDetailsResponse.bmgms,
+            detailsActual.bmgms
+        )
+    }
+
+    @Test
     fun getOrderDetail_shouldReturnSuccess() = coroutineTestRule.runTest {
         // given
         coEvery {
