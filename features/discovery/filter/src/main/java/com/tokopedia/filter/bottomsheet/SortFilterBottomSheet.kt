@@ -186,7 +186,6 @@ class SortFilterBottomSheet: BottomSheetUnify() {
     private val sortFilterBottomSheetAdapter by lazyThreadSafetyNone {
         SortFilterBottomSheetAdapter(
             SortFilterBottomSheetTypeFactoryImpl(
-                isReimagine,
                 sortViewListener,
                 filterViewListener,
                 priceFilterListener,

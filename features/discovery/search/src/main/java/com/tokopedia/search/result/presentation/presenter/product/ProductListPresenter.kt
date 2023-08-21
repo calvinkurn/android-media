@@ -70,6 +70,8 @@ import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_P
 import com.tokopedia.search.result.product.performancemonitoring.runCustomMetric
 import com.tokopedia.search.result.product.postprocessing.PostProcessingFilter
 import com.tokopedia.search.result.product.recommendation.RecommendationPresenterDelegate
+import com.tokopedia.search.result.product.reimagine.Reimagine
+import com.tokopedia.search.result.product.reimagine.ReimagineDelegate
 import com.tokopedia.search.result.product.requestparamgenerator.RequestParamsGenerator
 import com.tokopedia.search.result.product.responsecode.ResponseCodeImpl
 import com.tokopedia.search.result.product.responsecode.ResponseCodeProvider
@@ -109,6 +111,7 @@ import rx.subscriptions.CompositeSubscription
 import javax.inject.Inject
 import javax.inject.Named
 import kotlin.math.max
+import com.tokopedia.filter.quick.SortFilterItem as SortFilterItemReimagine
 
 @Suppress("LongParameterList")
 class ProductListPresenter @Inject constructor(
@@ -159,6 +162,7 @@ class ProductListPresenter @Inject constructor(
     private val similarSearchOnBoardingPresenterDelegate: SimilarSearchOnBoardingPresenterDelegate,
     private val inspirationKeywordPresenter: InspirationKeywordPresenterDelegate,
     private val inspirationProductItemPresenter: InspirationProductPresenterDelegate,
+    private val reimagineDelegate: ReimagineDelegate,
     ): BaseDaggerPresenter<ProductListSectionContract.View>(),
     ProductListSectionContract.Presenter,
     Pagination by paginationImpl,
@@ -174,7 +178,8 @@ class ProductListPresenter @Inject constructor(
     InspirationCarouselPresenter by inspirationCarouselPresenter,
     ResponseCodeProvider by responseCodeImpl,
     InspirationKeywordPresenter by inspirationKeywordPresenter,
-    InspirationProductPresenter by inspirationProductItemPresenter{
+    InspirationProductPresenter by inspirationProductItemPresenter,
+    Reimagine by reimagineDelegate{
 
     companion object {
         private val generalSearchTrackingRelatedKeywordResponseCodeList = listOf("3", "4", "5", "6")
@@ -1002,28 +1007,41 @@ class ProductListPresenter @Inject constructor(
     }
 
     private fun processQuickFilter(quickFilterData: DataValue) {
-        val sortFilterItems = mutableListOf<SortFilterItem>()
         quickFilterList.clear()
         quickFilterList.addAll(quickFilterData.filter)
 
-        quickFilterData.filter.forEach { filter ->
-            val options = filter.options
-            sortFilterItems.add(createSortFilterItem(filter, options))
+        if (isReimagine()) {
+            val sortFilterItems = quickFilterData.mapFilter(::sortFilterItemReimagine)
+            if (sortFilterItems.isNotEmpty())
+                view.setQuickFilterReimagine(sortFilterItems)
+        } else {
+            val sortFilterItems = quickFilterData.mapFilter(::sortFilterItem)
+            if (sortFilterItems.isNotEmpty())
+                view.setQuickFilter(sortFilterItems)
         }
-
-        if (sortFilterItems.isNotEmpty())
-            view.setQuickFilter(sortFilterItems)
     }
 
-    private fun createSortFilterItem(filter: Filter, options: List<Option>): SortFilterItem {
+    private fun <T> DataValue.mapFilter(transform: (Filter) -> T): List<T> =
+        filter.map(transform)
+
+    private fun sortFilterItemReimagine(filter: Filter): SortFilterItemReimagine {
+        val (isChipSelected, title, isSingleFilter) = quickFilterData(filter)
+
+        return SortFilterItemReimagine(
+            title = title,
+            isSelected = isChipSelected,
+            hasChevron = !isSingleFilter,
+        )
+    }
+
+    private fun quickFilterData(filter: Filter): Triple<Boolean, String, Boolean> {
+        val options = filter.options
         val isChipSelected = options.any { view.isFilterSelected(it) }
         val selectedOptionsOnCurrentFilter = options.filter { view.isFilterSelected(it) }
-        val item = SortFilterItem(createSortFilterTitle(filter, selectedOptionsOnCurrentFilter))
+        val title = createSortFilterTitle(filter, selectedOptionsOnCurrentFilter)
+        val isSingleFilter = options.size == 1
 
-        setSortFilterItemListener(item, filter, options)
-        setSortFilterItemState(item, isChipSelected)
-
-        return item
+        return Triple(isChipSelected, title, isSingleFilter)
     }
 
     @Suppress("MagicNumber")
@@ -1037,6 +1055,16 @@ class ProductListPresenter @Inject constructor(
         }
     }
 
+    private fun sortFilterItem(filter: Filter): SortFilterItem {
+        val (isChipSelected, title, hasChevron) = quickFilterData(filter)
+        val item = SortFilterItem(title)
+
+        setSortFilterItemListener(item, filter, hasChevron)
+        setSortFilterItemState(item, isChipSelected)
+
+        return item
+    }
+
     private fun setSortFilterItemState(item: SortFilterItem, isChipSelected: Boolean) {
         if (isChipSelected) {
             item.type = ChipsUnify.TYPE_SELECTED
@@ -1047,10 +1075,14 @@ class ProductListPresenter @Inject constructor(
     }
 
     @Suppress("MagicNumber")
-    private fun setSortFilterItemListener(item: SortFilterItem, filter: Filter, options: List<Option>) {
-        if (options.size == 1) {
+    private fun setSortFilterItemListener(
+        item: SortFilterItem,
+        filter: Filter,
+        isSingleFilter: Boolean,
+    ) {
+        if (isSingleFilter) {
             item.listener = {
-                view.onQuickFilterSelected(filter, options.first(), dimension90)
+                view.onQuickFilterSelected(filter, filter.options.first(), dimension90)
             }
         } else {
             item.listener = {

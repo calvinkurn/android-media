@@ -21,7 +21,6 @@ import com.tokopedia.filter.bottomsheet.sort.SortViewListener
 import com.tokopedia.filter.bottomsheet.sort.SortViewModel
 
 internal class SortFilterBottomSheetTypeFactoryImpl(
-    private val isReimagine: Boolean,
     private val sortViewListener: SortViewListener,
     private val filterViewListener: FilterViewListener,
     private val priceFilterViewListener: PriceFilterViewListener,
@@ -54,14 +53,13 @@ internal class SortFilterBottomSheetTypeFactoryImpl(
             SortViewHolder.LAYOUT -> SortViewHolder(view, sortViewListener)
             FilterViewHolder.LAYOUT -> FilterViewHolder(
                 view,
-                isReimagine,
                 recycledViewPool,
                 filterViewListener,
             )
             PriceFilterViewHolder.LAYOUT ->
-                PriceFilterViewHolder(view, isReimagine, priceFilterViewListener)
+                PriceFilterViewHolder(view, priceFilterViewListener)
             KeywordFilterViewHolder.LAYOUT ->
-                KeywordFilterViewHolder(view, isReimagine, keywordFilterListener)
+                KeywordFilterViewHolder(view, keywordFilterListener)
             PriceRangeFilterCheckboxViewHolder.LAYOUT ->
                 PriceRangeFilterCheckboxViewHolder(
                     view,

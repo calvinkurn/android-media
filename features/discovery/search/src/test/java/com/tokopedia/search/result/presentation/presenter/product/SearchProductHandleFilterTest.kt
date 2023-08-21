@@ -9,6 +9,8 @@ import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.listShouldBe
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
+import com.tokopedia.search.result.product.reimagine.ReimagineDelegate.Companion.TEMP_REIMAGINE_EXP
+import com.tokopedia.search.result.product.reimagine.ReimagineDelegate.Companion.TEMP_REIMAGINE_VARIANT_FILTER
 import com.tokopedia.search.shouldBe
 import com.tokopedia.search.utils.createSearchProductDefaultQuickFilter
 import com.tokopedia.sortfilter.SortFilterItem
@@ -20,6 +22,7 @@ import org.hamcrest.core.Is.`is`
 import org.junit.Test
 import rx.Subscriber
 import java.util.*
+import com.tokopedia.filter.quick.SortFilterItem as SortFilterItemReimagine
 
 private const val searchProductModelWithQuickFilter = "searchproduct/quickfilter/with-quick-filter.json"
 private const val searchProductModelNoQuickFilter = "searchproduct/quickfilter/no-quick-filter.json"
@@ -29,6 +32,7 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
     private val requestParamsSlot = slot<RequestParams>()
     private val actualQuickFilterList = slot<List<Filter>>()
     private val listItemSlot = slot<ArrayList<SortFilterItem>>()
+    private val listItemReimagineSlot = slot<List<SortFilterItemReimagine>>()
     private val backendFiltersToggle = slot<String>()
 
     @Test
@@ -357,6 +361,35 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
         verify {
             productListView.applyDropdownQuickFilter(optionList)
             productListView.trackEventApplyDropdownQuickFilter(optionList, any())
+        }
+    }
+    
+    @Test
+    fun `Search Product initialize quick filter reimagine`() {
+        val searchProductModel = searchProductModelWithQuickFilter.jsonToObject<SearchProductModel>()
+
+        every {
+            abTestRemoteConfig.getString(TEMP_REIMAGINE_EXP, "")
+        } returns TEMP_REIMAGINE_VARIANT_FILTER
+
+        `Given Search Product API will return SearchProductModel`(searchProductModel)
+
+        `When Load Data`()
+
+        `Then verify setQuickFilterReimagine is called`()
+        `Then verify SortFilterItemReimagine list`(searchProductModel.quickFilterModel)
+    }
+
+    private fun `Then verify setQuickFilterReimagine is called`() {
+        verify {
+            productListView.setQuickFilterReimagine(capture(listItemReimagineSlot))
+        }
+    }
+
+    private fun `Then verify SortFilterItemReimagine list`(quickFilterModel: DataValue) {
+        val sortFilterItemList = listItemReimagineSlot.captured
+        sortFilterItemList.listShouldBe(quickFilterModel.filter) { sortFilterItem, filter ->
+            sortFilterItem.title shouldBe filter.chipName
         }
     }
 }
