@@ -383,7 +383,7 @@ class DeepLinkDFMapperSellerAppTest : DeepLinkDFMapperTestFixture() {
 
     @Test
     fun `check seller persona internal appLink should return DF_SELLER_FRONT_FUNNEL in seller app`() {
-        val appLink = ApplinkConstInternalSellerapp.INTERNAL_SELLERAPP+"/seller-persona"
+        val appLink = ApplinkConstInternalSellerapp.INTERNAL_SELLERAPP + "/seller-persona"
         assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_SELLER_FRONT_FUNNEL)
     }
 
@@ -417,4 +417,9 @@ class DeepLinkDFMapperSellerAppTest : DeepLinkDFMapperTestFixture() {
         assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_KYC_SELLERAPP)
     }
 
+    @Test
+    fun `check talk base appLink then should return DF_SELLER_TALK in sellerapp`() {
+        val appLink = "${ApplinkConstInternalGlobal.INTERNAL_GLOBAL}/inbox-talk"
+        assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_SELLER_TALK)
+    }
 }
