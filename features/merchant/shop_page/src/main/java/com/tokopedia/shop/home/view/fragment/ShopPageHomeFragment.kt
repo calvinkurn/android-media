@@ -4987,18 +4987,6 @@ open class ShopPageHomeFragment :
         RouteManager.route(context, uiModel.data.getOrNull(imageBannerPosition)?.listProductHotspot?.getOrNull(bubblePosition)?.productUrl.orEmpty())
     }
 
-    override fun onNavigationBannerViewAllShowcaseClick(viewAllCtaAppLink: String) {
-        RouteManager.route(activity ?: return, viewAllCtaAppLink)
-    }
-
-    override fun onNavigationBannerShowcaseClick(
-        selectedShowcase: Showcase
-    ) {
-        RouteManager.route(activity ?: return, selectedShowcase.ctaLink)
-    }
-
-    override val currentFragment: Fragment
-        get() = this
 
     override fun onProductClick(productId: String) {
         // TODO: Put tracker here
@@ -5034,8 +5022,23 @@ open class ShopPageHomeFragment :
         }
     }
 
+    override fun onNavigationBannerViewAllShowcaseClick(viewAllCtaAppLink: String) {
+        RouteManager.route(activity ?: return, viewAllCtaAppLink)
+    }
+
+    override fun onNavigationBannerShowcaseClick(
+        selectedShowcase: Showcase
+    ) {
+        RouteManager.route(activity ?: return, selectedShowcase.ctaLink)
+    }
+
     override val fragment: Fragment
         get() = this
+
     override val currentShopId: String
         get() = shopId
+
+    override val currentFragment: Fragment
+        get() = this
+
 }
