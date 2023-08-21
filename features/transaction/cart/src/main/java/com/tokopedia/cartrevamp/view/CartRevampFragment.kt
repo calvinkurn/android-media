@@ -91,7 +91,6 @@ import com.tokopedia.cartrevamp.view.uimodel.CartRecentViewItemHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartRecommendationItemHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartSectionHeaderHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartSelectedAmountHolderData
-import com.tokopedia.cartrevamp.view.uimodel.CartShopBottomHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartShopGroupTickerState
 import com.tokopedia.cartrevamp.view.uimodel.CartState
 import com.tokopedia.cartrevamp.view.uimodel.CartTrackerEvent
@@ -575,11 +574,11 @@ class CartRevampFragment :
 
     override fun onCartShopGroupTickerRefreshClicked(
         index: Int,
-        cartShopBottomHolderData: CartShopBottomHolderData
+        cartGroupHolderData: CartGroupHolderData
     ) {
-        cartShopBottomHolderData.shopData.cartShopGroupTicker.state = CartShopGroupTickerState.LOADING
+        cartGroupHolderData.cartShopGroupTicker.state = CartShopGroupTickerState.LOADING
         onNeedToUpdateViewItem(index)
-        viewModel.checkCartShopGroupTicker(cartShopBottomHolderData.shopData)
+        viewModel.checkCartShopGroupTicker(cartGroupHolderData)
     }
 
     override fun onViewCartShopGroupTicker(cartGroupHolderData: CartGroupHolderData) {
@@ -924,8 +923,7 @@ class CartRevampFragment :
         )
         if (shopIndex >= 0) {
             val cartGroupHolderData = groupData.first()
-            val cartShopBottomHolderData = groupData.last()
-            if (cartGroupHolderData is CartGroupHolderData && cartShopBottomHolderData is CartShopBottomHolderData) {
+            if (cartGroupHolderData is CartGroupHolderData) {
                 cartPageAnalytics.eventClickCollapsedProductImage(cartGroupHolderData.shop.shopId)
                 cartGroupHolderData.isCollapsed = false
                 cartGroupHolderData.clickedCollapsedProductIndex = index
@@ -935,9 +933,6 @@ class CartRevampFragment :
                     shopIndex + 1,
                     cartGroupHolderData.productUiModelList.size
                 )
-                val bottomIndex = shopIndex + 1 + cartGroupHolderData.productUiModelList.size
-                cartAdapter.getData()[bottomIndex] = CartShopBottomHolderData(cartGroupHolderData)
-                onNeedToUpdateViewItem(bottomIndex)
                 val layoutManager: RecyclerView.LayoutManager? = binding?.rvCart?.layoutManager
                 if (layoutManager is LinearLayoutManager) {
                     layoutManager.scrollToPositionWithOffset(
@@ -1218,19 +1213,14 @@ class CartRevampFragment :
         if (index >= 0) {
             val shopHeaderData = groupData.first()
             if (shopHeaderData is CartGroupHolderData) {
+                checkCartShopGroupTicker(shopHeaderData)
                 onNeedToUpdateViewItem(index)
             }
             onNeedToUpdateViewItem(itemPosition)
-            val shopBottomData = groupData.last()
-            if (shopBottomData is CartShopBottomHolderData) {
-                checkCartShopGroupTicker(shopBottomData.shopData)
-                onNeedToUpdateViewItem(index + groupData.lastIndex)
-            }
         }
     }
 
     override fun onNeedToRefreshWeight(cartItemHolderData: CartItemHolderData) {
-        // TODO: fix logic
         val (index, groupData) = cartAdapter.getCartGroupHolderDataAndIndexByCartString(
             cartItemHolderData.cartString,
             false
@@ -1238,12 +1228,8 @@ class CartRevampFragment :
         if (index >= 0) {
             val shopHeaderData = groupData.first()
             if (shopHeaderData is CartGroupHolderData) {
+                checkCartShopGroupTicker(shopHeaderData)
                 onNeedToUpdateViewItem(index)
-            }
-            val shopBottomData = groupData.last()
-            if (shopBottomData is CartShopBottomHolderData) {
-                checkCartShopGroupTicker(shopBottomData.shopData)
-                onNeedToUpdateViewItem(index + groupData.lastIndex)
             }
         }
     }
@@ -3157,7 +3143,7 @@ class CartRevampFragment :
         // Check if cart list has exactly 1 shop, and it's a toko now
         if (allShopGroupDataList.isNotEmpty() && allShopGroupDataList[0].isTokoNow) {
             allShopGroupDataList[0].let {
-                val (index, groupData) = cartAdapter.getCartGroupHolderDataAndIndexByCartString(
+                val (index, _) = cartAdapter.getCartGroupHolderDataAndIndexByCartString(
                     it.cartString,
                     it.isError
                 )
@@ -4389,13 +4375,12 @@ class CartRevampFragment :
     }
 
     private fun updateCartShopGroupTicker(cartGroupHolderData: CartGroupHolderData) {
-        // TODO: change logic
-        val (index, groupData) = cartAdapter.getCartGroupHolderDataAndIndexByCartString(
+        val (index, _) = cartAdapter.getCartGroupHolderDataAndIndexByCartString(
             cartGroupHolderData.cartString,
             cartGroupHolderData.isError
         )
         if (index >= 0) {
-            onNeedToUpdateViewItem(index + groupData.lastIndex)
+            onNeedToUpdateViewItem(index)
         }
     }
 
