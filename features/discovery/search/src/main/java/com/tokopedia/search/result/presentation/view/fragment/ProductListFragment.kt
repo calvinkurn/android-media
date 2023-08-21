@@ -32,6 +32,8 @@ import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityRe
 import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery.common.model.SearchParameter
+import com.tokopedia.discovery.common.reimagine.ReimagineRollence
+import com.tokopedia.discovery.common.reimagine.Search2Component
 import com.tokopedia.discovery.common.utils.Dimension90Utils
 import com.tokopedia.filter.bottomsheet.filtergeneraldetail.FilterGeneralDetailBottomSheet
 import com.tokopedia.filter.common.data.Filter
@@ -231,6 +233,10 @@ class ProductListFragment: BaseDaggerFragment(),
     @Suppress("LateinitUsage")
     @Inject
     lateinit var searchVideoPreference: SearchVideoPreference
+
+    @Suppress("LateinitUsage")
+    @Inject
+    lateinit var reimagineRollence: ReimagineRollence
 
     private var refreshLayout: SwipeRefreshLayout? = null
     private var gridLayoutLoadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
@@ -1150,7 +1156,7 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override fun configure(shouldRemove: Boolean) {
-        val sortFilterView = if (isReimagine()) searchSortFilterReimagine else searchSortFilter
+        val sortFilterView = getSortFilterView()
 
         if (shouldRemove)
             removeQuickFilterElevation(sortFilterView)
@@ -1158,7 +1164,11 @@ class ProductListFragment: BaseDaggerFragment(),
             applyQuickFilterElevation(context, sortFilterView)
     }
 
-    private fun isReimagine(): Boolean = presenter?.isReimagine() == true
+    private fun getSortFilterView() =
+        if (isReimagineQuickFilter()) searchSortFilterReimagine
+        else searchSortFilter
+
+    private fun isReimagineQuickFilter() = reimagineRollence.search2Component() == Search2Component.QF_VAR
 
     private fun hideSearchSortFilter() {
         searchSortFilterReimagine?.gone()
@@ -1170,7 +1180,7 @@ class ProductListFragment: BaseDaggerFragment(),
         val searchParameter = searchParameter ?: return
         val sortFilterCount = getSortFilterCount(searchParameter.getSearchParameterMap())
 
-        if (isReimagine())
+        if (isReimagineQuickFilter())
             searchSortFilterReimagine?.setSortFilterIndicatorCounter(
                 isAnySortActive,
                 sortFilterCount

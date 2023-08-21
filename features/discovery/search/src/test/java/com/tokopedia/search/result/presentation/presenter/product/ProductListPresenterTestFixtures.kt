@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.discovery.common.constants.SearchConstant
+import com.tokopedia.discovery.common.reimagine.ReimagineRollence
 import com.tokopedia.discovery.common.utils.CoachMarkLocalCache
 import com.tokopedia.discovery.common.utils.SimilarSearchCoachMarkLocalCache
 import com.tokopedia.filter.common.data.DynamicFilterModel
@@ -39,7 +40,6 @@ import com.tokopedia.search.result.product.lastfilter.LastFilterPresenterDelegat
 import com.tokopedia.search.result.product.pagination.PaginationImpl
 import com.tokopedia.search.result.product.productfilterindicator.ProductFilterIndicator
 import com.tokopedia.search.result.product.recommendation.RecommendationPresenterDelegate
-import com.tokopedia.search.result.product.reimagine.ReimagineDelegate
 import com.tokopedia.search.result.product.requestparamgenerator.RequestParamsGenerator
 import com.tokopedia.search.result.product.responsecode.ResponseCodeImpl
 import com.tokopedia.search.result.product.safesearch.MutableSafeSearchPreference
@@ -49,8 +49,8 @@ import com.tokopedia.search.result.product.samesessionrecommendation.SameSession
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationPresenterDelegate
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.InspirationKeywordPresenterDelegate
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.InspirationKeywordView
-import com.tokopedia.search.result.product.seamlessinspirationcard.seamlessproduct.InspirationProductView
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlessproduct.InspirationProductPresenterDelegate
+import com.tokopedia.search.result.product.seamlessinspirationcard.seamlessproduct.InspirationProductView
 import com.tokopedia.search.result.product.similarsearch.SimilarSearchOnBoardingPresenterDelegate
 import com.tokopedia.search.result.product.similarsearch.SimilarSearchOnBoardingView
 import com.tokopedia.search.result.product.suggestion.SuggestionPresenter
@@ -142,6 +142,7 @@ internal open class ProductListPresenterTestFixtures {
     protected val inspirationKeywordSeamlessView = mockk<InspirationKeywordView>(relaxed = true)
     protected val inspirationProductSeamlessView =
         mockk<InspirationProductView>(relaxed = true)
+    protected val reimagineRollence = mockk<ReimagineRollence>(relaxed = true)
 
     private val dynamicFilterModel = MutableDynamicFilterModelProviderDelegate()
     private val pagination = PaginationImpl()
@@ -284,7 +285,7 @@ internal open class ProductListPresenterTestFixtures {
             similarSearchOnBoardingPresenterDelegate,
             inspirationKeywordPresenterDelegate,
             inspirationProductPresenterDelegate,
-            ReimagineDelegate(abTestRemoteConfig),
+            reimagineRollence,
         )
         productListPresenter.attachView(productListView)
     }
