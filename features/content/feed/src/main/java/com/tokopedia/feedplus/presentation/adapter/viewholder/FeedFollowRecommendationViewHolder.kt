@@ -3,6 +3,7 @@ package com.tokopedia.feedplus.presentation.adapter.viewholder
 import android.os.Build
 import androidx.annotation.LayoutRes
 import androidx.lifecycle.LifecycleOwner
+import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -45,6 +46,11 @@ class FeedFollowRecommendationViewHolder(
     private var mData: FeedFollowRecommendationModel? = null
 
     init {
+        binding.rvFollowRecommendation.itemAnimator = object : DefaultItemAnimator() {
+            override fun canReuseUpdatedViewHolder(viewHolder: RecyclerView.ViewHolder): Boolean {
+                return true
+            }
+        }
         binding.rvFollowRecommendation.layoutManager = layoutManager
         binding.rvFollowRecommendation.addItemDecoration(FeedFollowProfileItemDecoration(itemView.context))
         snapHelper.attachToRecyclerView(binding.rvFollowRecommendation)
