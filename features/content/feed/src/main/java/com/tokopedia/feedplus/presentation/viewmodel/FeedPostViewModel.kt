@@ -448,17 +448,7 @@ class FeedPostViewModel @Inject constructor(
 
         try {
             feedHome.value?.let {
-                if (
-                    it is Success &&
-                    (
-                        // reload
-                        followRecomData.isError ||
-                            // load for the first time
-                            (followRecomData.data.isEmpty() && !followRecomData.hasNext && !followRecomData.isLoading) ||
-                            // load next page
-                            (followRecomData.hasNext && !followRecomData.isLoading)
-                        )
-                ) {
+                if (it is Success && isAllowFetchFollowRecommendation(followRecomData)) {
                     updateFollowRecom(followRecomData.id) { followRecom ->
                         followRecom.copy(status = FeedFollowRecommendationModel.Status.Loading)
                     }
@@ -485,6 +475,14 @@ class FeedPostViewModel @Inject constructor(
                 )
             }
         }
+    }
+
+    private fun isAllowFetchFollowRecommendation(followRecomData: FeedFollowRecommendationModel): Boolean {
+        return followRecomData.isError ||
+            // load for the first time
+            (followRecomData.data.isEmpty() && !followRecomData.hasNext && !followRecomData.isLoading) ||
+            // load next page
+            (followRecomData.hasNext && !followRecomData.isLoading)
     }
 
     fun suspendFollow(id: String, encryptedId: String, isShop: Boolean) {
