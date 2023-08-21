@@ -1,6 +1,7 @@
 package com.tokopedia.shop.common.data.mapper
 
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
@@ -194,20 +195,20 @@ object ShopPageWidgetMapper {
             ShowcaseTab(text = tab.text, imageUrl = tab.imageURL, showcases = showcases)
         }
 
+        val showcases = tabs.firstOrNull()?.showcases ?: emptyList()
+
         val appearance = when (response.header.widgetStyle) {
             ShowcaseNavigationBannerWidgetStyle.CIRCLE.id -> {
-                val showcases = tabs.firstOrNull()?.showcases ?: emptyList()
                 CarouselAppearance(response.header.title, showcases, response.header.ctaLink)
             }
             ShowcaseNavigationBannerWidgetStyle.ROUNDED_CORNER.id -> {
-                if (tabs.size == 1) {
-                    val showcases = tabs.firstOrNull()?.showcases ?: emptyList()
+                if (tabs.size == Int.ONE) {
                     TopMainBannerAppearance(response.header.title, showcases, response.header.ctaLink)
                 } else {
                     LeftMainBannerAppearance(tabs, response.header.title, response.header.ctaLink)
                 }
             }
-            else -> LeftMainBannerAppearance(tabs, response.header.title, response.header.ctaLink)
+            else -> TopMainBannerAppearance(response.header.title, showcases, response.header.ctaLink)
         }
 
 
