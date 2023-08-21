@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:text="@string/title_deactivate_location"
-        android:textColor="@color/Unify_NN950_96"
+        android:textColor="@color/Unify_NN950"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_2"

@@ -76,7 +76,7 @@ class ShopLocationItemAdapter(private val listener: ShopLocationItemAdapterListe
                 binding.tvShopLabel.setTextColor(
                     ContextCompat.getColor(
                         itemView.context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_G600
+                        com.tokopedia.unifyprinciples.R.color.Unify_GN600
                     )
                 )
                 binding.imgMarkIcon.setImageDrawable(itemView.context.getResDrawable(R.drawable.ic_mark_ico))
@@ -138,7 +138,7 @@ class ShopLocationItemAdapter(private val listener: ShopLocationItemAdapterListe
 
         private fun setPinpointStatus(shopLocation: Warehouse) {
             if (shopLocation.latLon.isNullOrEmpty()) {
-                binding.imgLocationState.setImage(newIconId = IconUnify.LOCATION_OFF, newLightEnable = MethodChecker.getColor(binding.root.context, com.tokopedia.unifyprinciples.R.color.Unify_N200))
+                binding.imgLocationState.setImage(newIconId = IconUnify.LOCATION_OFF, newLightEnable = MethodChecker.getColor(binding.root.context, com.tokopedia.unifyprinciples.R.color.Unify_NN500))
                 binding.tvPinpointState.text = itemView.context.getString(R.string.no_pinpoint)
             } else {
                 binding.imgLocationState.setImage(newIconId = IconUnify.LOCATION_FILLED, newLightEnable = MethodChecker.getColor(binding.root.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
