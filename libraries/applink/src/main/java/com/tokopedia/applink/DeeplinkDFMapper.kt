@@ -111,9 +111,12 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DYNAMIC_FEATURE
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.INBOX_TALK
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.OQR_PIN_URL_ENTRY
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.OVO_PAY_WITH_QR_ENTRY
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PRODUCT_TALK_BASE
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SALDO_DEPOSIT
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SALDO_INTRO
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SETTING_BANK
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.TALK_REPLY_BASE
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.TALK_SELLER_SETTINGS
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.ADD_ADDRESS_V1
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.ADD_ADDRESS_V2
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.ADD_ADDRESS_V3
@@ -1018,7 +1021,35 @@ object DeeplinkDFMapper : CoroutineScope {
                 DFP(
                     { it.startsWithPattern(INBOX_TALK) },
                     DF_SELLER_TALK,
-                    R.string.talk_title
+                    tokopedia.applink.R.string.title_talk_discuss
+                )
+            )
+            add(
+                DFP(
+                    { it.startsWithPattern(PRODUCT_TALK_BASE) },
+                    DF_SELLER_TALK,
+                    tokopedia.applink.R.string.title_talk_discuss
+                )
+            )
+            add(
+                DFP(
+                    { it.startsWithPattern(TALK_REPLY_BASE) },
+                    DF_SELLER_TALK,
+                    tokopedia.applink.R.string.title_reply_page
+                )
+            )
+            add(
+                DFP(
+                    { it.startsWithPattern(ADD_TALK) },
+                    DF_SELLER_TALK,
+                    tokopedia.applink.R.string.title_write_page
+                )
+            )
+            add(
+                DFP(
+                    { it.startsWithPattern(TALK_SELLER_SETTINGS) },
+                    DF_SELLER_TALK,
+                    tokopedia.applink.R.string.title_seller_settings_page
                 )
             )
             add(
