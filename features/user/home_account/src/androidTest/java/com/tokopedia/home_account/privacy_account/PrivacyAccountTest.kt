@@ -43,20 +43,6 @@ class PrivacyAccountTest {
     }
 
     @Test
-    fun account_linked_displayed() {
-        repositoryStub.setState(TestState.ACCOUNT_LINKED)
-        activityTestRule.launchActivity(Intent())
-        isAccountLinkingDisplayed()
-    }
-
-    @Test
-    fun account_not_linked_displayed() {
-        repositoryStub.setState(TestState.ACCOUNT_NOT_LINKED)
-        activityTestRule.launchActivity(Intent())
-        isAccountNotLinkingDisplayed()
-    }
-
-    @Test
     fun get_privacy_account_then_toggle_active() {
         repositoryStub.setState(TestState.GET_PRIVACY_ACCOUNT_ENABLED)
         activityTestRule.launchActivity(Intent())

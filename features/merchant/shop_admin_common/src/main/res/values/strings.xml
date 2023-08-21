@@ -20,4 +20,9 @@
     <string name="admin_title_shop_setting">Pengaturan Toko</string>
     <string name="admin_title_statistic">Statistik Toko</string>
     <string name="admin_title_ads_and_promotion">Iklan dan Promosi</string>
+    <string name="admin_title_shop_settings_info">Informasi Toko</string>
+    <string name="admin_title_shop_settings_notes">Catatan</string>
+    <string name="admin_title_shop_operational_hours">Jadwal Operasional Toko</string>
+    <string name="admin_title_shop_settings_address">Lokasi</string>
+    <string name="admin_title_shop_shipping_editor">Pengaturan Pengiriman</string>
 </resources>

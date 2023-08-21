@@ -228,6 +228,7 @@ object TokopediaImageUrl {
     const val ROUND_GREEN_CHECK_MARK_ICON = "https://images.tokopedia.net/img/android/product-service/aep/icons/round_green_checkmark_3x.png"
     const val INFORMATION_ICON = "https://images.tokopedia.net/img/android/product-service/aep/icons/information_icon_3x.png"
     const val PRICE_RECOMMENDATION_BANNER_URL = "https://images.tokopedia.net/img/android/product-add-edit/banner_price_recommendation.png"
+    const val AEP_SINGLE_VARIANT_WARNING = "https://images.tokopedia.net/img/android/add-edit-product/single_variant_warning.webp"
     const val REVIEW_INBOX_NO_PRODUCTS_BOUGHT_IMAGE = "https://images.tokopedia.net/img/android/review/review_pending_inbox_empty.png"
     const val REVIEW_INBOX_NO_PRODUCTS_SEARCH_IMAGE = "https://images.tokopedia.net/android/others/review_inbox_search_empty.png"
     const val REVIEW_INBOX_UNIFY_GLOBAL_ERROR_CONNECTION = "https://images.tokopedia.net/img/android/unify/unify_globalerrors_connection.png"
@@ -381,4 +382,5 @@ object TokopediaImageUrl {
     const val ILLUSTRATION_MVC_DETAIL_ENDED_VOUCHER = "https://images.tokopedia.net/img/android/mvc/illustration_recap.png"
     const val ILLUSTRATION_MVC_DETAIL_CARD_PERFORMANCE = "https://images.tokopedia.net/img/android/mvc/bg_image.png"
     const val IMG_OPEN_IN_MAIN_APP_WITHDRAW = "https://images.tokopedia.net/img/android/payment/update-app-to-withdraw.png"
+    const val ILLUSTRATION_SHOP_ETALASE_NOT_FOUND = "https://images.tokopedia.net/img/frontend/illustration/global_state_page_not_found.png"
 }

@@ -18,5 +18,8 @@ data class Product(
     var isFreeShipping: Boolean = false,
 
     @SerializedName("is_free_shipping_tc")
-    var isFreeShippingTc: Boolean = false
+    var isFreeShippingTc: Boolean = false,
+
+    @SerializedName("shop_id")
+    var shopId: Long = 0
 ) : Parcelable

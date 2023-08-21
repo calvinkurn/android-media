@@ -7,7 +7,6 @@ import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.Servi
 import com.tokopedia.logisticcart.R
 import com.tokopedia.logisticcart.shipping.model.DividerModel
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
-import com.tokopedia.logisticcart.shipping.model.NotifierModel
 import com.tokopedia.logisticcart.shipping.model.PreOrderModel
 import com.tokopedia.logisticcart.shipping.model.Product
 import com.tokopedia.logisticcart.shipping.model.RatesParam
@@ -306,10 +305,6 @@ class ShippingDurationPresenter @Inject constructor(
             if (it.display) {
                 uiModelList.add(0, it)
             }
-        }
-
-        if (!isOcc && eligibleServices.getOrNull(0)?.etaErrorCode == 1) {
-            uiModelList.add(0, NotifierModel(NotifierModel.TYPE_DEFAULT))
         }
 
         return uiModelList
