@@ -7,6 +7,8 @@ internal sealed interface StoriesWidgetIntent {
 
     data class GetStoriesStatus(val shopIds: List<String>) : StoriesWidgetIntent
 
+    data class SetAllStoriesSeen(val shopId: String) : StoriesWidgetIntent
+
     object ShowCoachMark : StoriesWidgetIntent
 
     object HasSeenCoachMark : StoriesWidgetIntent

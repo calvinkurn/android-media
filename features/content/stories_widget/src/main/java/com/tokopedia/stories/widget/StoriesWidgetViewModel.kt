@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.content.common.util.UiEventManager
 import com.tokopedia.stories.widget.domain.ShopStoriesState
-import com.tokopedia.stories.widget.domain.StoriesWidgetRepository
 import com.tokopedia.stories.widget.domain.StoriesKey
+import com.tokopedia.stories.widget.domain.StoriesWidgetRepository
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -42,6 +42,7 @@ internal class StoriesWidgetViewModel @AssistedInject constructor(
     fun onIntent(intent: StoriesWidgetIntent) {
         when (intent) {
             is StoriesWidgetIntent.GetStoriesStatus -> onGetStories(intent.shopIds)
+            is StoriesWidgetIntent.SetAllStoriesSeen -> onSetAllStoriesSeen(intent.shopId)
             StoriesWidgetIntent.ShowCoachMark -> onShowCoachMark()
             StoriesWidgetIntent.HasSeenCoachMark -> onHasSeenCoachMark()
         }
@@ -72,6 +73,15 @@ internal class StoriesWidgetViewModel @AssistedInject constructor(
             _storiesMap.update {
                 it + storiesStateMap
             }
+        }
+    }
+
+    private fun onSetAllStoriesSeen(shopId: String) {
+        _storiesMap.update {
+            val containShopId = it.contains(shopId)
+            if (!containShopId) return@update it
+            val oldState = it[shopId]!!
+            it + (shopId to oldState.copy(status = StoriesStatus.AllStoriesSeen))
         }
     }
 

@@ -17,7 +17,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.stories.widget.di.DaggerStoriesWidgetComponent
 import com.tokopedia.stories.widget.di.StoriesWidgetComponent
 import com.tokopedia.stories.widget.domain.StoriesKey
@@ -34,7 +33,8 @@ class StoriesWidgetManager private constructor(
     context: Context,
     private val lifecycleOwner: LifecycleOwner,
     private val viewModelStoreOwner: ViewModelStoreOwner,
-    private val options: Options
+    private val options: Options,
+    private val navigation: StoriesWidgetNavigation
 ) {
 
     private val component = createComponent(context)
@@ -46,7 +46,7 @@ class StoriesWidgetManager private constructor(
 
     private val storiesViewListener = object : StoriesWidgetLayout.Listener {
         override fun onClickedWhenHasStories(view: StoriesWidgetLayout, state: StoriesWidgetState) {
-            RouteManager.route(context, state.appLink)
+            navigation.launch(view.context, state.appLink)
             options.trackingManager.clickEntryPoints(key)
         }
     }
@@ -71,6 +71,13 @@ class StoriesWidgetManager private constructor(
     private var mShopIdCoachMarked: String? = null
 
     init {
+        navigation.setListener(object : StoriesWidgetNavigation.Listener {
+            override fun onNewResult(result: StoriesWidgetNavigation.ResultHolder) {
+                if (!result.isAllStoriesSeen) return
+                getViewModel().onIntent(StoriesWidgetIntent.SetAllStoriesSeen(result.shopId))
+            }
+        })
+
         lifecycleOwner.lifecycle.addObserver(object : LifecycleEventObserver {
             override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
                 if (event == Lifecycle.Event.ON_PAUSE) hideCoachMark()
@@ -271,20 +278,23 @@ class StoriesWidgetManager private constructor(
         private val key: StoriesKey,
         private val context: Context,
         private val lifecycleOwner: LifecycleOwner,
-        private val viewModelStoreOwner: ViewModelStoreOwner
+        private val viewModelStoreOwner: ViewModelStoreOwner,
+        private val navigation: StoriesWidgetNavigation
     ) {
 
         constructor(key: StoriesKey, fragment: Fragment) : this(
             key,
             fragment.requireContext(),
             fragment.viewLifecycleOwner,
-            fragment
+            fragment,
+            StoriesWidgetNavigation(fragment)
         )
         constructor(key: StoriesKey, activity: AppCompatActivity) : this(
             key,
             activity,
             activity,
-            activity
+            activity,
+            StoriesWidgetNavigation(activity)
         )
 
         private var mScrollingParent: View? = null
@@ -309,7 +319,8 @@ class StoriesWidgetManager private constructor(
                 context,
                 lifecycleOwner,
                 viewModelStoreOwner,
-                createOptions()
+                createOptions(),
+                navigation
             )
         }
 
@@ -327,7 +338,7 @@ class StoriesWidgetManager private constructor(
         }
     }
 
-    class Options(
+    class Options internal constructor(
         val scrollingParent: View?,
         val animStrategy: AnimationStrategy,
         val trackingManager: TrackingManager
