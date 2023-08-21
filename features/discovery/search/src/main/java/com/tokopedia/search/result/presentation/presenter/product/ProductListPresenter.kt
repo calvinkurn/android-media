@@ -19,6 +19,8 @@ import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEA
 import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_LOAD_MORE_USE_CASE
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel.AddToCartParams
+import com.tokopedia.discovery.common.reimagine.ReimagineRollence
+import com.tokopedia.discovery.common.reimagine.Search2Component
 import com.tokopedia.discovery.common.utils.CoachMarkLocalCache
 import com.tokopedia.discovery.common.utils.Dimension90Utils
 import com.tokopedia.filter.common.data.DataValue
@@ -70,8 +72,6 @@ import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_P
 import com.tokopedia.search.result.product.performancemonitoring.runCustomMetric
 import com.tokopedia.search.result.product.postprocessing.PostProcessingFilter
 import com.tokopedia.search.result.product.recommendation.RecommendationPresenterDelegate
-import com.tokopedia.search.result.product.reimagine.Reimagine
-import com.tokopedia.search.result.product.reimagine.ReimagineDelegate
 import com.tokopedia.search.result.product.requestparamgenerator.RequestParamsGenerator
 import com.tokopedia.search.result.product.responsecode.ResponseCodeImpl
 import com.tokopedia.search.result.product.responsecode.ResponseCodeProvider
@@ -102,7 +102,6 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
-import org.apache.commons.lang3.StringUtils
 import org.json.JSONArray
 import rx.Observable
 import rx.Subscriber
@@ -162,8 +161,8 @@ class ProductListPresenter @Inject constructor(
     private val similarSearchOnBoardingPresenterDelegate: SimilarSearchOnBoardingPresenterDelegate,
     private val inspirationKeywordPresenter: InspirationKeywordPresenterDelegate,
     private val inspirationProductItemPresenter: InspirationProductPresenterDelegate,
-    private val reimagineDelegate: ReimagineDelegate,
-    ): BaseDaggerPresenter<ProductListSectionContract.View>(),
+    private val reimagineRollence: ReimagineRollence,
+): BaseDaggerPresenter<ProductListSectionContract.View>(),
     ProductListSectionContract.Presenter,
     Pagination by paginationImpl,
     BannerAdsPresenter by BannerAdsPresenterDelegate(topAdsHeadlineHelper),
@@ -178,8 +177,7 @@ class ProductListPresenter @Inject constructor(
     InspirationCarouselPresenter by inspirationCarouselPresenter,
     ResponseCodeProvider by responseCodeImpl,
     InspirationKeywordPresenter by inspirationKeywordPresenter,
-    InspirationProductPresenter by inspirationProductItemPresenter,
-    Reimagine by reimagineDelegate{
+    InspirationProductPresenter by inspirationProductItemPresenter {
 
     companion object {
         private val generalSearchTrackingRelatedKeywordResponseCodeList = listOf("3", "4", "5", "6")
@@ -1010,7 +1008,7 @@ class ProductListPresenter @Inject constructor(
         quickFilterList.clear()
         quickFilterList.addAll(quickFilterData.filter)
 
-        if (isReimagine()) {
+        if (reimagineRollence.search2Component() == Search2Component.QF_VAR) {
             val sortFilterItems = quickFilterData.mapFilter(::sortFilterItemReimagine)
             if (sortFilterItems.isNotEmpty())
                 view.setQuickFilterReimagine(sortFilterItems)
