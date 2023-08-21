@@ -199,6 +199,7 @@ import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerProductHotspotU
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerTimerUiModel
 import com.tokopedia.shop.home.view.model.StatusCampaign
 import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselVerticalBannerVerticalBanner
+import com.tokopedia.shop.home.view.model.Showcase
 import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageHeaderActivity
 import com.tokopedia.shop.pageheader.presentation.fragment.InterfaceShopPageHeader
@@ -4987,12 +4988,12 @@ open class ShopPageHomeFragment :
         RouteManager.route(context, uiModel.data.getOrNull(imageBannerPosition)?.listProductHotspot?.getOrNull(bubblePosition)?.productUrl.orEmpty())
     }
 
-    override fun onNavigationBannerViewAllShowcaseClick(selectedShowcaseHeader: ShopHomeShowcaseNavigationUiModel.ShowcaseHeader) {
-        RouteManager.route(activity ?: return, selectedShowcaseHeader.ctaLink)
+    override fun onNavigationBannerViewAllShowcaseClick(viewAllCtaAppLink: String) {
+        RouteManager.route(activity ?: return, viewAllCtaAppLink)
     }
 
     override fun onNavigationBannerShowcaseClick(
-        selectedShowcase: ShopHomeShowcaseNavigationUiModel.Tab.Showcase
+        selectedShowcase: Showcase
     ) {
         RouteManager.route(activity ?: return, selectedShowcase.ctaLink)
     }

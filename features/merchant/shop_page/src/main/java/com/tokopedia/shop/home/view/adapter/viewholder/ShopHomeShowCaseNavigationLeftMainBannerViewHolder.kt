@@ -16,7 +16,9 @@ import com.tokopedia.shop.databinding.ItemShopHomeShowcaseNavigationLeftMainBann
 import com.tokopedia.shop.home.util.ShopHomeShowcaseNavigationDependencyProvider
 import com.tokopedia.shop.home.view.fragment.ShopShowcaseNavigationTabWidgetFragment
 import com.tokopedia.shop.home.view.listener.ShopHomeShowcaseNavigationListener
+import com.tokopedia.shop.home.view.model.LeftMainBanner
 import com.tokopedia.shop.home.view.model.ShopHomeShowcaseNavigationUiModel
+import com.tokopedia.shop.home.view.model.Tab
 import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.unifycomponents.setCustomText
 import com.tokopedia.utils.view.binding.viewBinding
@@ -39,20 +41,24 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
 
 
     override fun bind(model: ShopHomeShowcaseNavigationUiModel) {
-        setupShowcaseHeader(model)
-        setupTabs(model.tabs)
+        val tabs = if (model.appearance is LeftMainBanner) model.appearance.tabs else emptyList()
+        setupShowcaseHeader(model.appearance.title, model.appearance.viewAllCtaAppLink, tabs)
+        setupTabs(tabs)
     }
 
-    private fun setupShowcaseHeader(model: ShopHomeShowcaseNavigationUiModel) {
-        viewBinding?.tpgTitle?.text = model.showcaseHeader.title
-        viewBinding?.tpgTitle?.isVisible = model.showcaseHeader.title.isNotEmpty() && model.tabs.isNotEmpty()
+    private fun setupShowcaseHeader(title: String, viewAllCtaAppLink: String, tabs: List<Tab>) {
+        viewBinding?.tpgTitle?.text = title
+        viewBinding?.tpgTitle?.isVisible = title.isNotEmpty() && tabs.isNotEmpty()
 
-        viewBinding?.iconChevron?.setOnClickListener { listener.onNavigationBannerViewAllShowcaseClick(model.showcaseHeader) }
-        val showcases = model.tabs.getOrNull(0)?.showcases ?: emptyList()
+        viewBinding?.iconChevron?.setOnClickListener {
+            listener.onNavigationBannerViewAllShowcaseClick(viewAllCtaAppLink)
+        }
+
+        val showcases = tabs.getOrNull(0)?.showcases ?: emptyList()
         viewBinding?.iconChevron?.isVisible = showcases.size > SHOW_VIEW_ALL_SHOWCASE_THRESHOLD
     }
 
-    private fun setupTabs(tabs: List<ShopHomeShowcaseNavigationUiModel.Tab>) {
+    private fun setupTabs(tabs: List<Tab>) {
         val fragments = createFragments(tabs)
         val pagerAdapter = TabPagerAdapter(provider.currentFragment, fragments)
 
@@ -100,7 +106,7 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
         override fun createFragment(position: Int) = fragments[position].second
     }
 
-    private fun createFragments(tabs: List<ShopHomeShowcaseNavigationUiModel.Tab>): List<Pair<String, Fragment>> {
+    private fun createFragments(tabs: List<Tab>): List<Pair<String, Fragment>> {
         val pages = mutableListOf<Pair<String, Fragment>>()
 
         tabs.forEachIndexed { _, currentTab ->

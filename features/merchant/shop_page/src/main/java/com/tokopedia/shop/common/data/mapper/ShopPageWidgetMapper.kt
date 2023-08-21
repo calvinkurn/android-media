@@ -11,6 +11,8 @@ import com.tokopedia.shop.common.data.model.ShopPageWidgetUiModel
 import com.tokopedia.shop.home.data.model.ShopLayoutWidget
 import com.tokopedia.shop.home.data.model.ShopPageWidgetRequestModel
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
+import com.tokopedia.shop.home.view.model.Carousel
+import com.tokopedia.shop.home.view.model.LeftMainBanner
 import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeShowcaseNavigationUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerProductHotspotUiModel
@@ -21,6 +23,9 @@ import com.tokopedia.shop.home.view.model.StatusCampaign
 import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselUiModel.Tab.ComponentList.Data.BannerType
 import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselUiModel.Tab.ComponentList.ComponentType
 import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselUiModel.Tab.ComponentList.Data.LinkType
+import com.tokopedia.shop.home.view.model.Showcase
+import com.tokopedia.shop.home.view.model.Tab
+import com.tokopedia.shop.home.view.model.TopMainBanner
 
 //TODO need to migrate all other shop widget mapper on home mapper to this mapper
 object ShopPageWidgetMapper {
@@ -175,20 +180,9 @@ object ShopPageWidgetMapper {
     }
 
     fun mapToHomeShowcaseWidget(response: ShopLayoutWidget.Widget): ShopHomeShowcaseNavigationUiModel {
-        val widgetStyle = when (response.header.widgetStyle) {
-            ShowcaseNavigationBannerWidgetStyle.ROUNDED_CORNER.id -> {
-                ShopHomeShowcaseNavigationUiModel.WidgetStyle.ROUNDED_CORNER
-            }
-            ShowcaseNavigationBannerWidgetStyle.CIRCLE.id -> {
-                ShopHomeShowcaseNavigationUiModel.WidgetStyle.CIRCLE
-            }
-            else -> ShopHomeShowcaseNavigationUiModel.WidgetStyle.ROUNDED_CORNER
-
-        }
-
         val tabs = response.data.map { tab ->
             val showcases = tab.showcaseList.map { showcase ->
-                ShopHomeShowcaseNavigationUiModel.Tab.Showcase(
+                Showcase(
                     showcase.showcaseID,
                     showcase.name,
                     showcase.imageURL,
@@ -197,27 +191,28 @@ object ShopPageWidgetMapper {
                 )
             }
 
-            val mainBannerPosition = if (tab.mainBannerPosition == ShopHomeShowcaseNavigationUiModel.MainBannerPosition.TOP.id) {
-                ShopHomeShowcaseNavigationUiModel.MainBannerPosition.TOP
-            } else {
-                ShopHomeShowcaseNavigationUiModel.MainBannerPosition.LEFT
-            }
-
-            ShopHomeShowcaseNavigationUiModel.Tab(
-                text = tab.text,
-                imageUrl = tab.imageURL,
-                mainBannerPosition = mainBannerPosition,
-                showcases = showcases
-            )
+            Tab(text = tab.text, imageUrl = tab.imageURL, showcases = showcases)
         }
 
+        val appearance = when (response.header.widgetStyle) {
+            ShowcaseNavigationBannerWidgetStyle.CIRCLE.id -> {
+                val showcases = tabs.firstOrNull()?.showcases ?: emptyList()
+                Carousel(response.header.title, showcases, response.header.ctaLink)
+            }
+            ShowcaseNavigationBannerWidgetStyle.ROUNDED_CORNER.id -> {
+                if (tabs.size == 1) {
+                    val showcases = tabs.firstOrNull()?.showcases ?: emptyList()
+                    TopMainBanner(response.header.title, showcases, response.header.ctaLink)
+                } else {
+                    LeftMainBanner(tabs, response.header.title, response.header.ctaLink)
+                }
+            }
+            else -> LeftMainBanner(tabs, response.header.title, response.header.ctaLink)
+        }
+
+
         return ShopHomeShowcaseNavigationUiModel(
-            showcaseHeader = ShopHomeShowcaseNavigationUiModel.ShowcaseHeader(
-                title = response.header.title,
-                ctaLink = response.header.ctaLink,
-                widgetStyle = widgetStyle
-            ),
-            tabs = tabs,
+            appearance = appearance,
             widgetId = response.widgetID,
             layoutOrder = response.layoutOrder,
             name = response.name,
