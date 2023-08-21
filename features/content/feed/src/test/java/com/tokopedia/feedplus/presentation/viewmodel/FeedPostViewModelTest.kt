@@ -35,6 +35,7 @@ import com.tokopedia.feedcomponent.people.model.ProfileDoFollowModelBase
 import com.tokopedia.feedcomponent.people.model.ProfileDoFollowedData
 import com.tokopedia.feedcomponent.people.model.ProfileDoFollowedDataVal
 import com.tokopedia.feedcomponent.people.usecase.ProfileFollowUseCase
+import com.tokopedia.feedcomponent.people.usecase.ProfileUnfollowedUseCase
 import com.tokopedia.feedcomponent.presentation.utils.FeedResult
 import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
 import com.tokopedia.feedplus.R
@@ -42,6 +43,7 @@ import com.tokopedia.feedplus.data.FeedXCard
 import com.tokopedia.feedplus.domain.usecase.FeedCampaignCheckReminderUseCase
 import com.tokopedia.feedplus.domain.usecase.FeedCampaignReminderUseCase
 import com.tokopedia.feedplus.domain.usecase.FeedXHomeUseCase
+import com.tokopedia.feedplus.domain.usecase.FeedXRecomWidgetUseCase
 import com.tokopedia.feedplus.presentation.model.FeedAuthorModel
 import com.tokopedia.feedplus.presentation.model.FeedCardCampaignModel
 import com.tokopedia.feedplus.presentation.model.FeedCardCtaModel
@@ -107,6 +109,7 @@ class FeedPostViewModelTest {
     private val userSession: UserSessionInterface = mockk()
     private val shopFollowUseCase: ShopFollowUseCase = mockk()
     private val userFollowUseCase: ProfileFollowUseCase = mockk()
+    private val userUnfollowUseCase: ProfileUnfollowedUseCase = mockk()
     private val campaignReminderUseCase: FeedCampaignReminderUseCase = mockk()
     private val checkCampaignReminderUseCase: FeedCampaignCheckReminderUseCase = mockk()
     private val topAdsHeadlineUseCase: GetTopAdsHeadlineUseCase = mockk()
@@ -117,6 +120,7 @@ class FeedPostViewModelTest {
     private val trackReportViewerUseCase: BroadcasterReportTrackViewerUseCase = mockk()
     private val getReportListUseCase: GetUserReportListUseCase = mockk()
     private val postReportUseCase: PostUserReportUseCase = mockk()
+    private val feedXRecomWidgetUseCase: FeedXRecomWidgetUseCase = mockk()
     private val affiliateCookieHelper: AffiliateCookieHelper = mockk()
     private val submitReportUseCase: FeedComplaintSubmitReportUseCase = mockk()
     private val uiEventManager = UiEventManager<FeedPostEvent>()
@@ -134,6 +138,7 @@ class FeedPostViewModelTest {
             userSession = userSession,
             shopFollowUseCase = shopFollowUseCase,
             userFollowUseCase = userFollowUseCase,
+            userUnfollowUseCase = userUnfollowUseCase,
             setCampaignReminderUseCase = campaignReminderUseCase,
             checkCampaignReminderUseCase = checkCampaignReminderUseCase,
             topAdsHeadlineUseCase = topAdsHeadlineUseCase,
@@ -146,6 +151,7 @@ class FeedPostViewModelTest {
             submitReportUseCase = submitReportUseCase,
             getReportUseCase = getReportListUseCase,
             postReportUseCase = postReportUseCase,
+            feedXRecomWidgetUseCase = feedXRecomWidgetUseCase,
             uiEventManager = uiEventManager,
             feedXGetActivityProductsUseCase = feedXGetActivityProductsUseCase,
             dispatchers = testDispatcher

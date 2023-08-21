@@ -1,7 +1,9 @@
 package com.tokopedia.feedplus.presentation.adapter.viewholder
 
+import android.os.Build
 import androidx.annotation.LayoutRes
 import androidx.lifecycle.LifecycleOwner
+import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -15,7 +17,10 @@ import com.tokopedia.feedplus.presentation.adapter.itemdecoration.FeedFollowProf
 import com.tokopedia.feedplus.presentation.adapter.layoutmanager.FeedFollowProfileLayoutManager
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedFollowRecommendationListener
 import com.tokopedia.feedplus.presentation.model.FeedFollowRecommendationModel
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 
 /**
  * Created By : Jonathan Darwin on July 04, 2023
@@ -41,11 +46,15 @@ class FeedFollowRecommendationViewHolder(
     private var mData: FeedFollowRecommendationModel? = null
 
     init {
+        binding.rvFollowRecommendation.itemAnimator = object : DefaultItemAnimator() {
+            override fun canReuseUpdatedViewHolder(viewHolder: RecyclerView.ViewHolder): Boolean {
+                return true
+            }
+        }
         binding.rvFollowRecommendation.layoutManager = layoutManager
         binding.rvFollowRecommendation.addItemDecoration(FeedFollowProfileItemDecoration(itemView.context))
         snapHelper.attachToRecyclerView(binding.rvFollowRecommendation)
         binding.rvFollowRecommendation.adapter = profileAdapter
-        binding.rvFollowRecommendation.itemAnimator = null
 
         binding.rvFollowRecommendation.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -110,14 +119,66 @@ class FeedFollowRecommendationViewHolder(
 
         mData?.let { model ->
             setupHeader(model)
-            setupProfileList(model, selectedPosition, isViewHolderSelected)
-            setupEmptyLayout()
+            setupLayout(model, selectedPosition, isViewHolderSelected)
         }
     }
 
     private fun setupHeader(model: FeedFollowRecommendationModel) {
         binding.tvTitle.text = model.title
         binding.tvDesc.text = model.description
+    }
+
+    private fun setupLayout(
+        model: FeedFollowRecommendationModel,
+        selectedPosition: Int,
+        isViewHolderSelected: Boolean
+    ) {
+        when (model.status) {
+            FeedFollowRecommendationModel.Status.Loading -> {
+                if (model.data.isEmpty()) {
+                    freezeScrolling(true)
+                    profileAdapter.setItemsAndAnimateChanges(List(5) { FeedFollowProfileAdapter.Model.Loading })
+                }
+
+                binding.clMain.showWithCondition(true)
+                binding.feedNoContent.root.showWithCondition(false)
+            }
+            FeedFollowRecommendationModel.Status.Success -> {
+                freezeScrolling(false)
+                setupProfileList(model, selectedPosition, isViewHolderSelected)
+            }
+            FeedFollowRecommendationModel.Status.Error -> {
+                binding.feedNoContent.iconFeedNoContent.setImage(IconUnify.RELOAD)
+                binding.feedNoContent.tyFeedNoContentTitle.text =
+                    binding.root.context.getString(R.string.feed_load_follow_recommendation_error)
+                binding.feedNoContent.tyFeedNoContentSubtitle.hide()
+                binding.feedNoContent.btnShowOtherContent.text =
+                    binding.root.context.getString(R.string.feed_label_error_fetch_button)
+                binding.feedNoContent.btnShowOtherContent.setOnClickListener {
+                    listener.reloadProfileRecommendation()
+                }
+
+                binding.clMain.showWithCondition(false)
+                binding.feedNoContent.root.showWithCondition(true)
+            }
+            FeedFollowRecommendationModel.Status.NoInternet -> {
+                binding.feedNoContent.iconFeedNoContent.setImage(IconUnify.SIGNAL_INACTIVE)
+                binding.feedNoContent.tyFeedNoContentTitle.text =
+                    binding.root.context.getString(R.string.feed_label_error_fetch_title)
+                binding.feedNoContent.tyFeedNoContentSubtitle.show()
+                binding.feedNoContent.tyFeedNoContentSubtitle.text =
+                    binding.root.context.getString(R.string.feed_label_error_fetch_subtitle)
+                binding.feedNoContent.btnShowOtherContent.text =
+                    binding.root.context.getString(R.string.feed_label_error_fetch_button)
+                binding.feedNoContent.btnShowOtherContent.setOnClickListener {
+                    listener.reloadProfileRecommendation()
+                }
+
+                binding.clMain.showWithCondition(false)
+                binding.feedNoContent.root.showWithCondition(true)
+            }
+            else -> {}
+        }
     }
 
     private fun setupProfileList(
@@ -154,19 +215,25 @@ class FeedFollowRecommendationViewHolder(
         if (isNeedForceScroll)
             binding.rvFollowRecommendation.smoothScrollToPosition(finalSelectedPosition)
 
-        binding.clMain.showWithCondition(isDataAvailable)
-        binding.feedNoContent.root.showWithCondition(!isDataAvailable)
-    }
-
-    private fun setupEmptyLayout() {
         binding.feedNoContent.btnShowOtherContent.setOnClickListener {
             listener.onClickViewOtherContent()
         }
+
+        binding.clMain.showWithCondition(isDataAvailable)
+        binding.feedNoContent.root.showWithCondition(!isDataAvailable)
     }
 
     private fun getSelectedPosition(): Int {
         val snappedView = snapHelper.findSnapView(layoutManager) ?: return 0
         return binding.rvFollowRecommendation.getChildAdapterPosition(snappedView)
+    }
+
+    private fun freezeScrolling(isFreeze: Boolean) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            binding.rvFollowRecommendation.suppressLayout(isFreeze)
+        } else {
+            binding.rvFollowRecommendation.isLayoutFrozen = isFreeze
+        }
     }
 
     override fun bind(element: FeedFollowRecommendationModel?) {

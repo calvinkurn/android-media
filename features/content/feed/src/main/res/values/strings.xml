@@ -127,6 +127,9 @@ dari Feed.</string>
     <string name="feed_message_success_follow">Berhasil follow %s ini!</string>
     <string name="feed_message_failed_follow">Oops, gagal follow akun ini.</string>
 
+    <string name="feed_message_success_unfollow">Berhasil unfollow %s ini!</string>
+    <string name="feed_message_failed_unfollow">Oops, gagal unfollow akun ini.</string>
+
     <!-- Transcoding Livestream to VOD -->
     <string name="feed_transcoding_livestream_to_vod_message">Sedang menyimpan video. Kami akan infokan jika berhasil disimpan.</string>
     <string name="feed_transcoding_livestream_to_vod_action">Lihat</string>
@@ -160,4 +163,7 @@ dari Feed.</string>
     <string name="feed_bottom_action_comment_label">Ketik komentarmu…</string>
     <string name="feed_bottom_action_share_label">Bagikan konten</string>
 
+    <!-- Follow Recommendation -->
+    <string name="feed_load_follow_recommendation_error">Yaah, gagal memuat konten</string>
+    <string name="feed_load_follow_recommendation_failed">Gagal memuat rekomendasi akun. Coba lagi, ya</string>
 </resources>

@@ -23,7 +23,11 @@ interface FeedFollowRecommendationListener {
         profile: FeedFollowRecommendationModel.Profile
     )
 
+    fun reloadProfileRecommendation()
+
     fun onLoadNextProfileRecommendation()
 
     fun onClickViewOtherContent()
+
+    fun onErrorPlayingVideo()
 }

@@ -27,8 +27,10 @@ import com.tokopedia.createpost.common.domain.entity.SubmitPostData
 import com.tokopedia.feed.component.product.FeedTaggedProductUiModel
 import com.tokopedia.feedcomponent.domain.mapper.ProductMapper
 import com.tokopedia.feedcomponent.domain.usecase.FeedXGetActivityProductsUseCase
+import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowUseCase
 import com.tokopedia.feedcomponent.people.usecase.ProfileFollowUseCase
+import com.tokopedia.feedcomponent.people.usecase.ProfileUnfollowedUseCase
 import com.tokopedia.feedcomponent.presentation.utils.FeedResult
 import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TOPADS_HEADLINE_VALUE_SRC
@@ -37,6 +39,7 @@ import com.tokopedia.feedplus.domain.mapper.MapperTopAdsXFeed.transformCpmToFeed
 import com.tokopedia.feedplus.domain.usecase.FeedCampaignCheckReminderUseCase
 import com.tokopedia.feedplus.domain.usecase.FeedCampaignReminderUseCase
 import com.tokopedia.feedplus.domain.usecase.FeedXHomeUseCase
+import com.tokopedia.feedplus.domain.usecase.FeedXRecomWidgetUseCase
 import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
 import com.tokopedia.feedplus.presentation.fragment.FeedBaseFragment
 import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
@@ -102,6 +105,7 @@ class FeedPostViewModel @Inject constructor(
     private val userSession: UserSessionInterface,
     private val shopFollowUseCase: ShopFollowUseCase,
     private val userFollowUseCase: ProfileFollowUseCase,
+    private val userUnfollowUseCase: ProfileUnfollowedUseCase,
     private val setCampaignReminderUseCase: FeedCampaignReminderUseCase,
     private val checkCampaignReminderUseCase: FeedCampaignCheckReminderUseCase,
     private val topAdsHeadlineUseCase: GetTopAdsHeadlineUseCase,
@@ -114,6 +118,7 @@ class FeedPostViewModel @Inject constructor(
     private val submitReportUseCase: FeedComplaintSubmitReportUseCase,
     private val getReportUseCase: GetUserReportListUseCase,
     private val postReportUseCase: PostUserReportUseCase,
+    private val feedXRecomWidgetUseCase: FeedXRecomWidgetUseCase,
     private val uiEventManager: UiEventManager<FeedPostEvent>,
     private val feedXGetActivityProductsUseCase: FeedXGetActivityProductsUseCase,
     private val dispatchers: CoroutineDispatchers
@@ -126,6 +131,10 @@ class FeedPostViewModel @Inject constructor(
     private val _followResult = MutableLiveData<Result<String>>()
     val followResult: LiveData<Result<String>>
         get() = _followResult
+
+    private val _unfollowResult = MutableLiveData<Result<String>>()
+    val unfollowResult: LiveData<Result<String>>
+        get() = _unfollowResult
 
     private val _likeKolResp = MutableLiveData<FeedResult<LikeFeedDataModel>>()
     val getLikeKolResp: LiveData<FeedResult<LikeFeedDataModel>>
@@ -142,6 +151,10 @@ class FeedPostViewModel @Inject constructor(
     private val _feedTagProductList = MutableLiveData<Result<List<FeedTaggedProductUiModel>>?>()
     val feedTagProductList: LiveData<Result<List<FeedTaggedProductUiModel>>?>
         get() = _feedTagProductList
+
+    private val _followRecommendationResult = MutableLiveData<Result<String>>()
+    val followRecommendationResult: LiveData<Result<String>>
+        get() = _followRecommendationResult
 
     private val _suspendedFollowData = MutableLiveData<FollowShopModel>()
     private val _suspendedLikeData = MutableLiveData<LikeFeedDataModel>()
@@ -283,6 +296,10 @@ class FeedPostViewModel @Inject constructor(
                     }
                     else -> feedPosts
                 }
+
+                feedPosts.items.filterIsInstance<FeedFollowRecommendationModel>().forEach { item ->
+                    fetchFollowRecommendation(item.id)
+                }
             }
         }
     }
@@ -413,6 +430,61 @@ class FeedPostViewModel @Inject constructor(
         }
     }
 
+    fun fetchFollowRecommendation(position: Int) {
+        _feedHome.value?.let {
+            if (it is Success) {
+                val followRecomData = it.data.items.getOrNull(position)
+
+                if (followRecomData is FeedFollowRecommendationModel)
+                    viewModelScope.launch {
+                        fetchFollowRecommendation(followRecomData.id)
+                    }
+            }
+        }
+    }
+
+    private suspend fun fetchFollowRecommendation(widgetId: String) {
+        val followRecomData = getFollowRecomModel(widgetId)
+
+        try {
+            feedHome.value?.let {
+                if (it is Success && isAllowFetchFollowRecommendation(followRecomData)) {
+                    updateFollowRecom(followRecomData.id) { followRecom ->
+                        followRecom.copy(status = FeedFollowRecommendationModel.Status.Loading)
+                    }
+
+                    val request = feedXRecomWidgetUseCase.createFeedFollowRecomParams(followRecomData.cursor, followRecomData.id)
+                    val response = feedXRecomWidgetUseCase(request)
+
+                    updateFollowRecom(followRecomData.id) { followRecom ->
+                        response.copy(
+                            data = followRecom.data + response.data
+                        )
+                    }
+                }
+            }
+        } catch (throwable: Throwable) {
+            updateFollowRecom(followRecomData.id) { followRecom ->
+                followRecom.copy(
+                    status = if (followRecom.data.isEmpty()) {
+                        FeedFollowRecommendationModel.Status.getErrorStatus(throwable)
+                    } else {
+                        _followRecommendationResult.value = Fail(throwable)
+                        FeedFollowRecommendationModel.Status.Success
+                    }
+                )
+            }
+        }
+    }
+
+    private fun isAllowFetchFollowRecommendation(followRecomData: FeedFollowRecommendationModel): Boolean {
+        return followRecomData.isError ||
+            // load for the first time
+            (followRecomData.data.isEmpty() && !followRecomData.hasNext && !followRecomData.isLoading) ||
+            // load next page
+            (followRecomData.hasNext && !followRecomData.isLoading)
+    }
+
     fun suspendFollow(id: String, encryptedId: String, isShop: Boolean) {
         _suspendedFollowData.value = FollowShopModel(
             id = id,
@@ -432,37 +504,108 @@ class FeedPostViewModel @Inject constructor(
     fun doFollow(id: String, encryptedId: String, isShop: Boolean) {
         viewModelScope.launch {
             try {
-                val response = withContext(dispatchers.io) {
-                    if (isShop) {
-                        val response = shopFollowUseCase(shopFollowUseCase.createParams(id))
-                        FollowShopModel(
-                            id = id,
-                            encryptedId = encryptedId,
-                            success = response.followShop.success,
-                            isFollowing = response.followShop.isFollowing,
-                            isShop = true
-                        )
-                    } else {
-                        val response = userFollowUseCase.executeOnBackground(encryptedId)
-                        if (response.profileFollowers.errorCode.isNotEmpty()) {
-                            throw MessageErrorException(
-                                response.profileFollowers.messages.firstOrNull() ?: ""
-                            )
-                        }
-                        FollowShopModel(
-                            id = id,
-                            encryptedId = encryptedId,
-                            success = true,
-                            isFollowing = true,
-                            isShop = false
-                        )
-                    }
-                }
+                val response = followProfile(id, encryptedId, isShop)
 
                 updateFollowStatus(response.id, response.isFollowing)
                 _followResult.value = Success(if (isShop) SHOP else USER)
             } catch (it: Throwable) {
                 _followResult.value = Fail(it)
+            }
+        }
+    }
+
+    fun doFollowProfileRecommendation(id: String, encryptedId: String, isShop: Boolean) {
+        viewModelScope.launch {
+            try {
+                updateFollowStatus(id, true)
+
+                val response = followProfile(id, encryptedId, isShop)
+
+                if (response.success) {
+                    _followResult.value = Success(if (isShop) SHOP else USER)
+                } else {
+                    throw Exception()
+                }
+            } catch (throwable: Throwable) {
+                updateFollowStatus(id, false)
+                _followResult.value = Fail(throwable)
+            }
+        }
+    }
+
+    fun doUnfollowProfileRecommendation(id: String, encryptedId: String, isShop: Boolean) {
+        viewModelScope.launch {
+            try {
+                updateFollowStatus(id, false)
+
+                val response = unfollowProfile(id, encryptedId, isShop)
+
+                if (response.success) {
+                    _unfollowResult.value = Success(if (isShop) SHOP else USER)
+                } else {
+                    throw Exception()
+                }
+            } catch (throwable: Throwable) {
+                updateFollowStatus(id, true)
+                _unfollowResult.value = Fail(throwable)
+            }
+        }
+    }
+
+    private suspend fun followProfile(id: String, encryptedId: String, isShop: Boolean): FollowShopModel {
+        return withContext(dispatchers.io) {
+            if (isShop) {
+                val response = shopFollowUseCase(shopFollowUseCase.createParams(id))
+                FollowShopModel(
+                    id = id,
+                    encryptedId = encryptedId,
+                    success = response.followShop.success,
+                    isFollowing = response.followShop.isFollowing,
+                    isShop = true
+                )
+            } else {
+                val response = userFollowUseCase.executeOnBackground(encryptedId)
+                if (response.profileFollowers.errorCode.isNotEmpty()) {
+                    throw MessageErrorException(
+                        response.profileFollowers.messages.firstOrNull() ?: ""
+                    )
+                }
+                FollowShopModel(
+                    id = id,
+                    encryptedId = encryptedId,
+                    success = true,
+                    isFollowing = true,
+                    isShop = false
+                )
+            }
+        }
+    }
+
+    private suspend fun unfollowProfile(id: String, encryptedId: String, isShop: Boolean): FollowShopModel {
+        return withContext(dispatchers.io) {
+            if (isShop) {
+                val response = shopFollowUseCase(shopFollowUseCase.createParams(id, ShopFollowAction.UnFollow))
+                FollowShopModel(
+                    id = id,
+                    encryptedId = encryptedId,
+                    success = response.followShop.success,
+                    isFollowing = response.followShop.isFollowing,
+                    isShop = true
+                )
+            } else {
+                val response = userUnfollowUseCase.executeOnBackground(encryptedId)
+                if (response.profileFollowers.errorCode.isNotEmpty()) {
+                    throw MessageErrorException(
+                        response.profileFollowers.messages.firstOrNull() ?: ""
+                    )
+                }
+                FollowShopModel(
+                    id = id,
+                    encryptedId = encryptedId,
+                    success = true,
+                    isFollowing = false,
+                    isShop = false
+                )
             }
         }
     }
@@ -645,7 +788,7 @@ class FeedPostViewModel @Inject constructor(
             action = likeAction
         )
 
-    private fun updateFollowStatus(id: String, isFollowing: Boolean) {
+    fun updateFollowStatus(id: String, isFollowing: Boolean) {
         updateItems { item ->
             when {
                 item is FeedCardImageContentModel && item.author.id == id -> item.copy(
@@ -658,6 +801,17 @@ class FeedPostViewModel @Inject constructor(
                         isFollowed = isFollowing
                     )
                 )
+                item is FeedFollowRecommendationModel -> {
+                    item.copy(
+                        data = item.data.map {
+                            if (it.id == id) {
+                                it.copy(isFollowed = isFollowing)
+                            } else {
+                                it
+                            }
+                        }
+                    )
+                }
                 else -> item
             }
         }
@@ -723,6 +877,48 @@ class FeedPostViewModel @Inject constructor(
                         it.data.copy(
                             items = it.data.items.map { item ->
                                 onUpdate(item)
+                            }
+                        )
+                    )
+                }
+                else -> {}
+            }
+        }
+    }
+
+    private fun getFollowRecomModel(widgetId: String): FeedFollowRecommendationModel {
+        var followRecom = FeedFollowRecommendationModel.Empty
+
+        feedHome.value?.let {
+            if (it is Success) {
+                followRecom = it.data.items
+                    .filterIsInstance<FeedFollowRecommendationModel>()
+                    .firstOrNull { item -> item.id == widgetId }
+                    ?: FeedFollowRecommendationModel.Empty
+            }
+        }
+
+        return followRecom
+    }
+
+    private fun updateFollowRecom(
+        widgetId: String,
+        onUpdate: (FeedFollowRecommendationModel) -> FeedFollowRecommendationModel
+    ) {
+        val currentValue = feedHome.value
+
+        currentValue?.let {
+            when (it) {
+                is Success -> {
+                    _feedHome.value = Success(
+                        it.data.copy(
+                            items = it.data.items.map { item ->
+                                when {
+                                    item is FeedFollowRecommendationModel && item.id == widgetId -> {
+                                        onUpdate(item)
+                                    }
+                                    else -> item
+                                }
                             }
                         )
                     )

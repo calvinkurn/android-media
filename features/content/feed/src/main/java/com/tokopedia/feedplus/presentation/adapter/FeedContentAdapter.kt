@@ -103,15 +103,6 @@ class FeedContentAdapter(
                         add(FeedViewHolderPayloadActions.FEED_POST_COMMENT_COUNT)
                     }
                 }
-            } else if (oldItem.data is FeedFollowRecommendationModel && newItem.data is FeedFollowRecommendationModel) {
-                val payloads = buildList {
-                    if (oldItem.isSelected != newItem.isSelected) {
-                        add(FeedViewHolderPayloadActions.FEED_POST_SELECTED_CHANGED)
-                    }
-                }
-                if (payloads.isNotEmpty()) FeedViewHolderPayloads(payloads) else null
-            } else {
-                null
             }
 
             return if (payloads.isNotEmpty()) FeedViewHolderPayloads(payloads) else null

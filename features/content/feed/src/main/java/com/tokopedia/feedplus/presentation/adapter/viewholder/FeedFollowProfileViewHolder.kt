@@ -7,6 +7,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.Player
 import com.tokopedia.feedcomponent.view.widget.FeedExoPlayer
 import com.tokopedia.feedplus.databinding.ItemFeedFollowProfileBinding
@@ -19,6 +20,8 @@ import com.tokopedia.feedplus.presentation.adapter.listener.FeedFollowRecommenda
 import com.tokopedia.feedplus.presentation.model.FeedFollowRecommendationModel
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 
 /**
@@ -37,8 +40,6 @@ class FeedFollowProfileViewHolder private constructor() {
             FeedExoPlayer(itemView.context)
         }
 
-        private var mProfile: FeedFollowProfileAdapter.Model.Profile? = null
-
         init {
             player.getExoPlayer().addListener(object : Player.EventListener {
                 override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
@@ -54,6 +55,11 @@ class FeedFollowProfileViewHolder private constructor() {
                         }
                         else -> binding.playerView.hide()
                     }
+                }
+
+                override fun onPlayerError(error: ExoPlaybackException) {
+                    super.onPlayerError(error)
+                    followRecommendationListener.onErrorPlayingVideo()
                 }
             })
 
@@ -83,22 +89,16 @@ class FeedFollowProfileViewHolder private constructor() {
 
         fun bind(model: FeedFollowProfileAdapter.Model.Profile) {
 
-            mProfile = model
-
-            /** resume & pause video when user swipe the recommendation (left-right) / content (up-down) */
-            if (model.isSelected) {
-                player.start(model.data.videoUrl, isMute = false)
-                followRecommendationListener.onImpressProfile(model.data)
-            } else {
-                player.stop()
-                binding.playerView.hide()
-            }
+            setupProfile(model)
 
             binding.imgProfile.setImageUrl(model.data.imageUrl)
+            binding.imgBadge.shouldShowWithAction(model.data.badge.isNotEmpty()) {
+                binding.imgBadge.setImageUrl(model.data.badge)
+            }
             binding.imgThumbnail.setImageUrl(model.data.thumbnailUrl)
             binding.tvProfileName.text = model.data.name
             binding.btnFollow.apply {
-                if (model.data.isFollow) {
+                if (model.data.isFollowed) {
                     buttonVariant = UnifyButton.Variant.GHOST
                     text = itemView.context.getString(R.string.feed_following_label)
                 } else {
@@ -106,12 +106,27 @@ class FeedFollowProfileViewHolder private constructor() {
                     text = itemView.context.getString(contentCommonR.string.feed_component_follow)
                 }
             }
+        }
+
+        fun setupProfile(model: FeedFollowProfileAdapter.Model.Profile) {
+            /** resume & pause video when user swipe the recommendation (left-right) / content (up-down) */
+            if (model.isSelected) {
+                if (!player.getExoPlayer().isPlaying) {
+                    player.start(model.data.videoUrl, isMute = false)
+                }
+                followRecommendationListener.onImpressProfile(model.data)
+            } else {
+                player.stop()
+                binding.playerView.hide()
+            }
 
             setupListener(model)
         }
 
         private fun setupListener(model: FeedFollowProfileAdapter.Model.Profile) {
-            binding.root.setOnClickListener { listener.onScrollProfile(absoluteAdapterPosition) }
+            binding.root.setOnClickListener {
+                listener.onScrollProfile(absoluteAdapterPosition)
+            }
 
             binding.imgProfile.setOnClickListener { onClickProfile(model.data) }
             binding.tvProfileName.setOnClickListener { onClickProfile(model.data) }
