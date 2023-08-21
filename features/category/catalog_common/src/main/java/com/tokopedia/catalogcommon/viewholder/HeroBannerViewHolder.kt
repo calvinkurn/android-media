@@ -108,7 +108,7 @@ class HeroBannerViewHolder(itemView: View):
     }
 
     private fun WidgetItemBannerHeroNavigationBinding.setupNavigation(element: HeroBannerUiModel) {
-        val cardColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White_44)
+        val cardColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White_68)
         iconBack.background = createGradientDrawable(cardColor, cardColor, CIRCULAR_CARD_RADIUS)
         bgRightMenu.background = createGradientDrawable(cardColor, cardColor, CIRCULAR_CARD_RADIUS)
     }
