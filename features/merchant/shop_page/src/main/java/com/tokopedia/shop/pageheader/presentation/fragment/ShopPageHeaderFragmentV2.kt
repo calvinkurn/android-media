@@ -1754,14 +1754,14 @@ class ShopPageHeaderFragmentV2 :
     }
 
     private fun setShopLayoutDataToSelectedTab() {
-        val shopLayoutData = getShopLayoutDataBasedOnSelectedTab()
+        val initialShopLayoutData = getShopLayoutDataBasedOnSelectedTab()
         when (val selectedFragment = getSelectedFragmentInstance()) {
-            is ShopPageCampaignFragment -> {
-                selectedFragment.setListWidgetLayoutData(shopLayoutData)
-            }
-
-            is ShopPageHomeFragment -> {
-                selectedFragment.setListWidgetLayoutData(shopLayoutData)
+            is ShopPageHeaderFragmentTabContentWrapper -> {
+                when(selectedFragment.getTabData()?.name.orEmpty()){
+                    ShopPageHeaderTabName.HOME, ShopPageHeaderTabName.CAMPAIGN -> {
+                        selectedFragment.setInitialShopLayoutData(initialShopLayoutData)
+                    }
+                }
             }
 
             else -> {}

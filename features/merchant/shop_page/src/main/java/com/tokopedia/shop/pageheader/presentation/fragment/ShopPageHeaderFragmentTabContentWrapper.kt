@@ -46,6 +46,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE
 import com.tokopedia.shop.analytic.ShopPageTrackingSGCPlayWidget
 import com.tokopedia.shop.campaign.view.fragment.ShopPageCampaignFragment
 import com.tokopedia.shop.common.constant.ShopHomeType
+import com.tokopedia.shop.common.data.model.HomeLayoutData
 import com.tokopedia.shop.common.data.model.ShopPageGetDynamicTabResponse
 import com.tokopedia.shop.common.data.source.cloud.model.followshop.FollowShop
 import com.tokopedia.shop.common.data.source.cloud.model.followstatus.FollowStatus
@@ -136,6 +137,7 @@ class ShopPageHeaderFragmentTabContentWrapper :
     private var shopFollowButtonUiModel: ShopFollowButtonUiModel= ShopFollowButtonUiModel()
     private var tabFragment: Fragment? = null
     private var shopHeaderDynamicUspSharedViewModel: ShopHeaderDynamicUspSharedViewModel? = null
+    private var initialShopLayoutData : HomeLayoutData? = null
 
     override fun getComponent() = activity?.run {
         DaggerShopPageHeaderComponent.builder().shopPageHeaderModule(ShopPageHeaderModule())
@@ -490,6 +492,9 @@ class ShopPageHeaderFragmentTabContentWrapper :
                         setHomeTabListBackgroundColor(it.listBackgroundColor)
                         setHomeTabBackgroundPatternImage(it.backgroundImage)
                         setHomeTabLottieUrl(it.lottieUrl)
+                        if(initialShopLayoutData != null) {
+                            setListWidgetLayoutData(initialShopLayoutData)
+                        }
                     }
                 }
 
@@ -575,6 +580,9 @@ class ShopPageHeaderFragmentTabContentWrapper :
             setCampaignTabListBackgroundColor(tabData.listBackgroundColor)
             setListPatternImage(tabData.bgImages)
             setIsDarkTheme(tabData.isDark)
+            if(initialShopLayoutData != null) {
+                setListWidgetLayoutData(initialShopLayoutData)
+            }
         }
     }
 
@@ -686,5 +694,13 @@ class ShopPageHeaderFragmentTabContentWrapper :
 
     fun getTabFragment(): Fragment? {
         return tabFragment
+    }
+
+    fun getTabData(): ShopPageGetDynamicTabResponse.ShopPageGetDynamicTab.TabData? {
+        return tabData
+    }
+
+    fun setInitialShopLayoutData(initialShopLayoutData: HomeLayoutData?) {
+        this.initialShopLayoutData = initialShopLayoutData
     }
 }

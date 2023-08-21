@@ -130,7 +130,7 @@ class ShopHomeCarousellProductViewHolder(
     }
 
     private fun bindShopProductCarousel(shopHomeProductViewModelList: List<ShopHomeProductUiModel>) {
-        recyclerView?.isNestedScrollingEnabled = false
+        recyclerView?.findViewById<RecyclerView>(com.tokopedia.carouselproductcard.R.id.carouselProductCardRecyclerView)?.isNestedScrollingEnabled = false
         recyclerViewForSingleOrDoubleProductCard?.isNestedScrollingEnabled = false
         initProductCardListener(shopHomeProductViewModelList)
         val listProductCardModel = shopHomeProductViewModelList.map {

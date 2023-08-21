@@ -214,7 +214,7 @@ class ShopHomeAdvanceCarouselBannerViewHolder(
 
     private fun setImpressionListener(position: Int) {
         uiModel.data?.getOrNull(position)?.let {
-            listener.onDisplayItemClicked(
+            listener.onDisplayItemImpression(
                 uiModel,
                 it,
                 bindingAdapterPosition,
