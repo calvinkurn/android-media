@@ -5,20 +5,22 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.platform.LocalContext
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import com.tokopedia.content.common.view.ContentTaggedProductBottomSheetItemView
+import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.kotlin.extensions.view.showToast
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
+import com.tokopedia.stories.bottomsheet.adapter.StoriesProductAdapter
+import com.tokopedia.stories.databinding.FragmentStoriesProductBinding
+import com.tokopedia.stories.utils.withCache
 import com.tokopedia.stories.view.model.BottomSheetType
-import com.tokopedia.stories.view.model.StoriesUiState
 import com.tokopedia.stories.view.viewmodel.StoriesViewModel
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
 /**
@@ -26,35 +28,54 @@ import javax.inject.Inject
  */
 class StoriesProductBottomSheet @Inject constructor(
     private val viewModelFactory: ViewModelProvider.Factory,
-) : BottomSheetUnify() {
+) : BottomSheetUnify(), ContentTaggedProductBottomSheetItemView.Listener {
 
     private val viewModel by activityViewModels<StoriesViewModel> { viewModelFactory }
+
+    private var _binding: FragmentStoriesProductBinding? = null
+    private val binding: FragmentStoriesProductBinding get() = _binding!!
+
+    private val productAdapter by lazyThreadSafetyNone {
+        StoriesProductAdapter(this)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val composable = ComposeView(requireContext()).apply {
-            setContent {
-                val ctx = LocalContext.current
-                val state by viewModel.uiState.collectAsState(initial = StoriesUiState.Empty)
-                LaunchedEffect(Unit) {
-                    //observe  event
-                }
-                ProductPage(products = state.products,
-                    onCardClicked = { item, pos -> showToast("product clicked ${item.title}") },
-                    onBuyClicked = { item, pos -> showToast("product buy ${item.title}") },
-                    onAtcClicked = { item, pos -> showToast("product atc ${item.title}") })
-            }
-        }
-        setChild(composable)
+        _binding = FragmentStoriesProductBinding.inflate(inflater, container, false)
+
+        setChild(binding.root)
         setTitle("Produk pilihan")
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupView()
+        observeUiState()
+    }
+
+    private fun setupView() {
+        binding.rvStoriesProduct.adapter = productAdapter
+    }
+
+    private fun observeUiState() {
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            viewModel.uiState.withCache().collectLatest { (prevState, state) ->
+                renderProducts(prevState?.products, state.products)
+            }
+        }
+    }
+
+    private fun renderProducts(prevState: List<ContentTaggedProductUiModel>?, state: List<ContentTaggedProductUiModel>) {
+        if (prevState == null || prevState == state) return
+        productAdapter.setItemsAndAnimateChanges(state)
+    }
+
+    override fun onResume() {
+        super.onResume()
 
         viewModel.getProducts()
     }
@@ -91,5 +112,26 @@ class StoriesProductBottomSheet @Inject constructor(
                 StoriesProductBottomSheet::class.java.name
             ) as StoriesProductBottomSheet
         }
+    }
+
+    override fun onProductCardClicked(
+        view: ContentTaggedProductBottomSheetItemView,
+        product: ContentTaggedProductUiModel
+    ) {
+        showToast("Product Clicked")
+    }
+
+    override fun onAddToCartProductButtonClicked(
+        view: ContentTaggedProductBottomSheetItemView,
+        product: ContentTaggedProductUiModel
+    ) {
+        showToast("Product ATC")
+    }
+
+    override fun onBuyProductButtonClicked(
+        view: ContentTaggedProductBottomSheetItemView,
+        product: ContentTaggedProductUiModel
+    ) {
+        showToast("Product Buy")
     }
 }
