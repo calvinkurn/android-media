@@ -103,23 +103,6 @@ class FeedContentAdapter(
                         add(FeedViewHolderPayloadActions.FEED_POST_COMMENT_COUNT)
                     }
                 }
-            } else if (oldItem.data is FeedFollowRecommendationModel && newItem.data is FeedFollowRecommendationModel) {
-                val payloads = buildList {
-                    if (oldItem.isSelected != newItem.isSelected) {
-                        add(FeedViewHolderPayloadActions.FEED_POST_SELECTED_CHANGED)
-                    }
-
-                    if (oldItem.isScrolling != newItem.isScrolling) {
-                        if (newItem.isScrolling) {
-                            add(FeedViewHolderPayloadActions.FEED_POST_SCROLLING)
-                        } else {
-                            add(FeedViewHolderPayloadActions.FEED_POST_DONE_SCROLL)
-                        }
-                    }
-                }
-                if (payloads.isNotEmpty()) FeedViewHolderPayloads(payloads) else null
-            } else {
-                null
             }
 
             return if (payloads.isNotEmpty()) FeedViewHolderPayloads(payloads) else null
