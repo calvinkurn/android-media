@@ -347,14 +347,8 @@ class FeedBaseFragment :
 
             val topInsetsMargin = insets.systemWindowInsetTop + tabExtraTopOffset
 
-            if (topInsetsMargin > margin.top) {
-                getAllMotionScene().forEach {
-                    it.setMargin(binding.vMenuCenter.id, ConstraintSet.TOP, topInsetsMargin)
-                }
-            } else {
-                getAllMotionScene().forEach {
-                    it.setMargin(binding.vMenuCenter.id, ConstraintSet.TOP, margin.top)
-                }
+            getAllMotionScene().forEach {
+                it.setMargin(binding.vMenuCenter.id, ConstraintSet.TOP, topInsetsMargin.coerceAtLeast(margin.top))
             }
         }
     }
