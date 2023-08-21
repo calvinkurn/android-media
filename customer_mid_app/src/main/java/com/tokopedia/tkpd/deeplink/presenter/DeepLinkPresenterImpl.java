@@ -294,10 +294,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                      doTopAdsOperation(uriData);
                      screenName = "";
                      break;
-                case DeepLinkChecker.STORIES:
-                     openStories(linkSegment);
-                     screenName = "";
-                     break;
                 case DeepLinkChecker.DEALS:
                 case DeepLinkChecker.OTHER:
                 default:
@@ -503,32 +499,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             );
             intent.putExtras(bundle);
             viewListener.goToPage(intent);
-        }
-    }
-
-    private void openStories(List<String> linkSegment) {
-        if (linkSegment != null && linkSegment.size > 1) {
-            if (linkSegment.size > 2) {
-                String shopId = linkSegment.get(1);
-                String storiesId = linkSegment.get(2);
-
-                Intent intent = RouteManager.getIntent(
-                        context,
-                        ApplinkConst.STORIES_SHOPID_STORIESID.replace(
-                                "{shop_id}/{stories_id}",
-                                shopId + "/" + storiesId
-                        )
-                );
-                viewListener.goToPage(intent);
-            } else {
-                String shopId = linkSegment.get(1);
-
-                Intent intent = RouteManager.getIntent(
-                        context,
-                        ApplinkConst.STORIES_SHOPID.replace("{shop_id}", shopId)
-                );
-                viewListener.goToPage(intent);
-            }
         }
     }
 
