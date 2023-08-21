@@ -8,11 +8,13 @@ import com.tokopedia.catalogcommon.uimodel.HeroBannerUiModel
 import com.tokopedia.catalogcommon.uimodel.SliderImageTextUiModel
 import com.tokopedia.catalogcommon.uimodel.PanelImageUiModel
 import com.tokopedia.catalogcommon.uimodel.TopFeaturesUiModel
+import com.tokopedia.catalogcommon.uimodel.TrustMakerUiModel
 import com.tokopedia.catalogcommon.viewholder.DummyViewHolder
 import com.tokopedia.catalogcommon.viewholder.HeroBannerViewHolder
 import com.tokopedia.catalogcommon.viewholder.SliderImageTextViewHolder
 import com.tokopedia.catalogcommon.viewholder.PanelImageViewHolder
 import com.tokopedia.catalogcommon.viewholder.TopFeatureViewHolder
+import com.tokopedia.catalogcommon.viewholder.TrustmakerViewHolder
 
 class CatalogAdapterFactoryImpl : BaseAdapterTypeFactory(), CatalogAdapterFactory {
 
@@ -23,6 +25,7 @@ class CatalogAdapterFactoryImpl : BaseAdapterTypeFactory(), CatalogAdapterFactor
             DummyViewHolder.LAYOUT -> DummyViewHolder(view)
             SliderImageTextViewHolder.LAYOUT -> SliderImageTextViewHolder(view)
             PanelImageViewHolder.LAYOUT -> PanelImageViewHolder(view)
+            TrustmakerViewHolder.LAYOUT -> TrustmakerViewHolder(view)
             else -> super.createViewHolder(view, type)
         }
     }
@@ -45,5 +48,9 @@ class CatalogAdapterFactoryImpl : BaseAdapterTypeFactory(), CatalogAdapterFactor
 
     override fun type(uiModel: PanelImageUiModel): Int {
         return PanelImageViewHolder.LAYOUT
+    }
+
+    override fun type(uiModel: TrustMakerUiModel): Int {
+        return TrustmakerViewHolder.LAYOUT
     }
 }
