@@ -155,12 +155,12 @@ class EPharmacyReminderScreenBottomSheet : BottomSheetUnify() {
     private fun setupBottomSheetUiData() {
         binding?.let {
             with(it) {
-                reminderParentView.errorIllustration.loadImageFitCenter(REMINDER_ILLUSTRATION_IMAGE)
-                reminderParentView.errorTitle.text = getString(com.tokopedia.epharmacy.R.string.epharmacy_reminder_title)
-                reminderParentView.errorDescription.text = getMessageString()
-                reminderParentView.errorSecondaryAction.text = getString(com.tokopedia.epharmacy.R.string.epharmacy_reminder_button_text)
-                reminderParentView.errorSecondaryAction.show()
-                reminderParentView.setSecondaryActionClickListener {
+                epharmacyGlobalError.errorIllustration.loadImageFitCenter(REMINDER_ILLUSTRATION_IMAGE)
+                epharmacyGlobalError.errorTitle.text = getString(com.tokopedia.epharmacy.R.string.epharmacy_reminder_title)
+                epharmacyGlobalError.errorDescription.text = getMessageString()
+                epharmacyGlobalError.errorSecondaryAction.text = getString(com.tokopedia.epharmacy.R.string.epharmacy_reminder_button_text)
+                epharmacyGlobalError.errorSecondaryAction.show()
+                epharmacyGlobalError.setSecondaryActionClickListener {
                     requestParams()?.let { it1 ->
                         viewModel?.setForReminder(it1)
                         EPharmacyMiniConsultationAnalytics.clickIngatkanSaya(
@@ -170,7 +170,7 @@ class EPharmacyReminderScreenBottomSheet : BottomSheetUnify() {
                         )
                     }
                 }
-                reminderParentView.errorAction.hide()
+                epharmacyGlobalError.errorAction.hide()
             }
         }
     }

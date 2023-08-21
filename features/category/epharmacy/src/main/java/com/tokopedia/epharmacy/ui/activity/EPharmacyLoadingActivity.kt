@@ -10,6 +10,7 @@ import com.tokopedia.epharmacy.di.DaggerEPharmacyComponent
 import com.tokopedia.epharmacy.di.EPharmacyComponent
 import com.tokopedia.epharmacy.ui.fragment.EPharmacyLoadingFragment
 import com.tokopedia.epharmacy.utils.EPHARMACY_TOKO_CONSULTATION_ID
+import com.tokopedia.kotlin.extensions.view.hide
 
 class EPharmacyLoadingActivity : BaseSimpleActivity(), HasComponent<EPharmacyComponent> {
 
@@ -28,11 +29,16 @@ class EPharmacyLoadingActivity : BaseSimpleActivity(), HasComponent<EPharmacyCom
 
     override fun getNewFragment(): Fragment {
         extractArguments()
+        initView()
         return EPharmacyLoadingFragment.newInstance(
             Bundle().apply {
                 putString(EPHARMACY_TOKO_CONSULTATION_ID, tConsultationId)
             }
         )
+    }
+
+    private fun initView() {
+        updateTitle(" ")
     }
 
     private fun extractArguments() {

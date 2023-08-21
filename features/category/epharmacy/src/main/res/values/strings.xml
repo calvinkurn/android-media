@@ -56,4 +56,6 @@
     <string name="epharmacy_chooser_outside">Tersedia %s – %s WIB.</string>
     <string name="epharmacy_minimum_quantity_reached">Jumlah barang tidak boleh melebihi yang sudah diresepkan atau kurang dari 1.</string>
     <string name="epharmacy_subtotal_quantity_change">Subtotal (%s barang)</string>
+    <string name="epharmacy_chat_loading_title">Tunggu sebentar, ya!</string>
+    <string name="epharmacy_chat_loading_description">Kamu sedang diarahkan menuju \n chat dokter, ya.</string>
  </resources>

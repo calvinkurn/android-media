@@ -5,7 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import com.tkpd.remoteresourcerequest.view.DeferredImageView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.epharmacy.R
 import com.tokopedia.epharmacy.adapters.EPharmacyListener
 import com.tokopedia.epharmacy.databinding.EpharmacyReminderScreenBottomSheetBinding
@@ -15,8 +17,8 @@ import com.tokopedia.epharmacy.utils.CategoryKeys
 import com.tokopedia.epharmacy.utils.EPHARMACY_TOKO_CONSULTATION_ID
 import com.tokopedia.epharmacy.viewmodel.EPharmacyLoadingViewModel
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -29,6 +31,7 @@ import javax.inject.Inject
 class EPharmacyLoadingFragment : BaseDaggerFragment(), EPharmacyListener {
 
     private var ePharmacyGlobalError: GlobalError? = null
+    private var image: DeferredImageView? = null
     private var tConsultationId = ""
 
     @Inject
@@ -78,10 +81,15 @@ class EPharmacyLoadingFragment : BaseDaggerFragment(), EPharmacyListener {
     private fun initViews(view: View) {
         view.apply {
             ePharmacyGlobalError = findViewById(R.id.epharmacy_global_error)
+            image = findViewById(R.id.sample_image)
         }
     }
 
     private fun getData() {
+        setDataLoading(
+            getString(com.tokopedia.epharmacy.R.string.epharmacy_chat_loading_title),
+            getString(com.tokopedia.epharmacy.R.string.epharmacy_chat_loading_description)
+        )
         ePharmacyLoadingViewModel.getVerifyConsultationOrder(tConsultationId)
     }
 
@@ -98,14 +106,41 @@ class EPharmacyLoadingFragment : BaseDaggerFragment(), EPharmacyListener {
         }
     }
 
-    private fun showToasterError(throwable: Throwable) {
-        when (throwable) {
-            is UnknownHostException, is SocketTimeoutException -> showToast(Toaster.TYPE_ERROR, context?.resources?.getString(R.string.epharmacy_internet_error) ?: "")
-            else -> showToast(Toaster.TYPE_ERROR, context?.resources?.getString(R.string.epharmacy_reminder_fail) ?: "")
+    private fun onSuccessData(it: Success<EPharmacyVerifyConsultationResponse>) {
+        it.data.verifyConsultationOrder?.verifyConsultationOrderData?.pwaLink?.let { pwaLink ->
+            if(pwaLink.isNotBlank()){
+                routeAction(pwaLink)
+            }else {
+               invalidPwaLink(it.data.verifyConsultationOrder)
+            }
+        } ?: kotlin.run {
+            invalidPwaLink(it.data.verifyConsultationOrder)
         }
     }
 
-    private fun onSuccessData(it: Success<EPharmacyVerifyConsultationResponse>) {
+    private fun invalidPwaLink(verifyConsultationOrder: EPharmacyVerifyConsultationResponse.VerifyConsultationOrder?) {
+        setErrorData(
+            getString(com.tokopedia.epharmacy.R.string.epharmacy_chat_loading_title),
+            getString(com.tokopedia.epharmacy.R.string.epharmacy_chat_loading_description),
+            "",""
+        )
+    }
+
+    private fun setErrorData(title: String, description: String,ctaText: String, appLink: String) {
+        ePharmacyGlobalError?.errorTitle?.text = title
+        ePharmacyGlobalError?.errorDescription?.text = description
+        image?.hide()
+        ePharmacyGlobalError?.errorIllustration?.show()
+        ePharmacyGlobalError?.setType(GlobalError.SERVER_ERROR)
+        ePharmacyGlobalError?.errorAction?.show()
+        ePharmacyGlobalError?.errorAction?.text = ctaText
+        ePharmacyGlobalError?.setActionClickListener {
+            RouteManager.route(context,appLink)
+        }
+    }
+
+    private fun routeAction(applink: String){
+        RouteManager.route(context,applink)
     }
 
     private fun onFailData(it: Fail) {
@@ -116,11 +151,21 @@ class EPharmacyLoadingFragment : BaseDaggerFragment(), EPharmacyListener {
         }
     }
 
+    private fun setDataLoading(title: String, description: String) {
+        ePharmacyGlobalError?.show()
+        image?.show()
+        ePharmacyGlobalError?.errorIllustration?.hide()
+        ePharmacyGlobalError?.errorDescription?.text = description
+        ePharmacyGlobalError?.errorTitle?.text = title
+        ePharmacyGlobalError?.errorAction?.hide()
+    }
+
     private fun setGlobalErrors(errorType: Int) {
+        image?.hide()
+        ePharmacyGlobalError?.errorIllustration?.show()
         ePharmacyGlobalError?.setType(errorType)
-        ePharmacyGlobalError?.visible()
+        ePharmacyGlobalError?.errorAction?.show()
         ePharmacyGlobalError?.setActionClickListener {
-            ePharmacyGlobalError?.gone()
             getData()
         }
     }

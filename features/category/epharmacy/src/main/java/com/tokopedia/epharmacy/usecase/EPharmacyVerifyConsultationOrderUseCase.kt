@@ -1,6 +1,7 @@
 package com.tokopedia.epharmacy.usecase
 
 import com.tokopedia.epharmacy.network.gql.EPharmacyAtcQuery
+import com.tokopedia.epharmacy.network.gql.EPharmacyVerifyConsultationOrder
 import com.tokopedia.epharmacy.network.response.EPharmacyVerifyConsultationResponse
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -16,7 +17,7 @@ class EPharmacyVerifyConsultationOrderUseCase @Inject constructor(graphqlReposit
     ) {
         try {
             this.setTypeClass(EPharmacyVerifyConsultationResponse::class.java)
-            this.setGraphqlQuery(EPharmacyAtcQuery)
+            this.setGraphqlQuery(EPharmacyVerifyConsultationOrder)
             this.setRequestParams(createRequestParams(tokoConsultationId))
             this.execute(
                 { result ->
