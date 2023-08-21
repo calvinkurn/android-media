@@ -909,7 +909,6 @@ class ShopHomeViewModel @Inject constructor(
                     }
                 }
             }
-            delay(2000)
             _shopHomeWidgetContentData.emit(Success(mapShopHomeWidgetData))
         }) {
             _shopHomeWidgetContentDataError.emit(listWidgetLayout)
