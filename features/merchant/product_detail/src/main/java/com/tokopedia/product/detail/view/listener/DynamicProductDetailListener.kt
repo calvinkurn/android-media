@@ -540,5 +540,5 @@ interface DynamicProductDetailListener {
     /**
      * A+ Content
      */
-    fun onToggleAPlus(collapse: Boolean, componentTrackerData: ComponentTrackDataModel)
+    fun onToggleAPlus(expanded: Boolean, componentTrackerData: ComponentTrackDataModel)
 }

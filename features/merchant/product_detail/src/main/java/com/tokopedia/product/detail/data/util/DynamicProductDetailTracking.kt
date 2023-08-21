@@ -2541,7 +2541,7 @@ object DynamicProductDetailTracking {
 
     object APlusContent {
         fun eventClickToggleExpandCollapse(
-            collapsing: Boolean,
+            expanding: Boolean,
             componentTrackDataModel: ComponentTrackDataModel,
             productInfo: DynamicProductInfoP1?,
             userID: String
@@ -2549,10 +2549,10 @@ object DynamicProductDetailTracking {
             val action = StringBuilder(ProductTrackingConstant.Action.CLICK)
                 .append(" - ")
                 .append(
-                    if (collapsing) {
-                        ProductTrackingConstant.Action.A_PLUS_LESS
-                    } else {
+                    if (expanding) {
                         ProductTrackingConstant.Action.A_PLUS_MORE
+                    } else {
+                        ProductTrackingConstant.Action.A_PLUS_LESS
                     }
                 )
                 .append(" ${ProductTrackingConstant.Action.IN_A_PLUS}")
@@ -2568,10 +2568,10 @@ object DynamicProductDetailTracking {
                 action,
                 String.EMPTY
             )
-            mapEvent[ProductTrackingConstant.Tracking.KEY_TRACKER_ID] = if (collapsing) {
-                ProductTrackingConstant.TrackerId.TRACKER_ID_CLICK_A_PLUS_LESS
-            } else {
+            mapEvent[ProductTrackingConstant.Tracking.KEY_TRACKER_ID] = if (expanding) {
                 ProductTrackingConstant.TrackerId.TRACKER_ID_CLICK_A_PLUS_MORE
+            } else {
+                ProductTrackingConstant.TrackerId.TRACKER_ID_CLICK_A_PLUS_LESS
             }
             mapEvent[ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT] =
                 ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP

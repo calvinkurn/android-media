@@ -201,4 +201,6 @@ object ProductDetailConstant {
 
     const val HTTP_PREFIX = "http"
     const val WEBVIEW_URL_PARAM = "url"
+
+    const val A_PLUS_CONTENT_DEFAULT_EXPANDED_STATE = false
 }

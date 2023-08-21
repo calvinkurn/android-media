@@ -3301,7 +3301,7 @@ open class DynamicProductDetailFragment :
     }
 
     private fun updateUi() {
-        val newData = pdpUiUpdater?.getCurrentDataModels(viewModel.isAPlusContentCollapsed()).orEmpty()
+        val newData = pdpUiUpdater?.getCurrentDataModels(viewModel.isAPlusContentExpanded()).orEmpty()
         submitList(newData)
     }
 
@@ -3341,7 +3341,7 @@ open class DynamicProductDetailFragment :
         }
 
         setupProductVideoCoordinator()
-        submitInitialList(pdpUiUpdater?.getInitialItems(viewModel.isAPlusContentCollapsed()).orEmpty())
+        submitInitialList(pdpUiUpdater?.getInitialItems(viewModel.isAPlusContentExpanded()).orEmpty())
     }
 
     private fun setupProductVideoCoordinator() {
@@ -3568,15 +3568,15 @@ open class DynamicProductDetailFragment :
         viewModel.dismissProductMediaRecomBottomSheet()
     }
 
-    override fun onToggleAPlus(collapse: Boolean, componentTrackerData: ComponentTrackDataModel) {
-        viewModel.setAPlusContentCollapseState(collapse)
+    override fun onToggleAPlus(expanded: Boolean, componentTrackerData: ComponentTrackDataModel) {
+        viewModel.setAPlusContentExpandedState(expanded)
         updateUi()
-        if (viewModel.isAPlusContentCollapsed()) {
+        if (!viewModel.isAPlusContentExpanded()) {
             val seeMorePosition = adapter.getSeeMoreAPlusTogglePosition()
             if (seeMorePosition != RecyclerView.NO_POSITION) scrollToPosition(seeMorePosition)
         }
         DynamicProductDetailTracking.APlusContent.eventClickToggleExpandCollapse(
-            collapsing = viewModel.isAPlusContentCollapsed(),
+            expanding = viewModel.isAPlusContentExpanded(),
             componentTrackDataModel = componentTrackerData,
             productInfo = viewModel.getDynamicProductInfoP1,
             userID = viewModel.userId

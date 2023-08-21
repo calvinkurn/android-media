@@ -15,7 +15,7 @@ data class APlusImageUiModel(
     var description: String = "",
     var showOnCollapsed: Boolean = true,
     var ctaText: String = "",
-    var collapsed: Boolean = true,
+    var expanded: Boolean = true,
     var showTopDivider: Boolean = false,
     var trackerData: ComponentTrackDataModel = ComponentTrackDataModel()
 ) : DynamicPdpDataModel {

@@ -1193,11 +1193,11 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             .toList()
     }
 
-    fun getCurrentDataModels(collapsed: Boolean): List<DynamicPdpDataModel> {
+    fun getCurrentDataModels(expanded: Boolean): List<DynamicPdpDataModel> {
         return mapOfData
             .values
             .toMutableList()
-            .adjustAPlusMedia(collapsed)
+            .adjustAPlusMedia(expanded)
             .addVerticalRecommendation()
             .toList()
     }
@@ -1217,12 +1217,12 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     }
 
     private fun MutableList<DynamicPdpDataModel>.adjustAPlusMedia(
-        collapsed: Boolean
+        expanded: Boolean
     ): MutableList<DynamicPdpDataModel> {
-        if (collapsed) removeAll { it is APlusImageUiModel && !it.showOnCollapsed }
+        if (!expanded) removeAll { it is APlusImageUiModel && !it.showOnCollapsed }
         forEachIndexed { index, dataModel ->
-            if (dataModel is APlusImageUiModel && dataModel.collapsed != collapsed) {
-                this[index] = dataModel.copy(collapsed = collapsed)
+            if (dataModel is APlusImageUiModel && dataModel.expanded != expanded) {
+                this[index] = dataModel.copy(expanded = expanded)
             }
         }
         return this

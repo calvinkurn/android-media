@@ -80,30 +80,30 @@ class APlusImageViewHolder(
         binding.tvProductDetailAPlusImageToggle.apply {
             text = element.ctaText
             showWithCondition(
-                shouldShow = element.showOnCollapsed == element.collapsed && element.ctaText.isNotBlank()
+                shouldShow = element.showOnCollapsed != element.expanded && element.ctaText.isNotBlank()
             )
         }
         binding.icProductDetailAPlusImageToggle.apply {
             setImage(
-                newIconId = if (element.collapsed) {
-                    IconUnify.CHEVRON_DOWN
-                } else {
+                newIconId = if (element.expanded) {
                     IconUnify.CHEVRON_UP
+                } else {
+                    IconUnify.CHEVRON_DOWN
                 }
             )
             showWithCondition(
-                shouldShow = element.showOnCollapsed == element.collapsed && element.ctaText.isNotBlank()
+                shouldShow = element.showOnCollapsed != element.expanded && element.ctaText.isNotBlank()
             )
         }
         binding.tvProductDetailAPlusImageToggle.setOnClickListener {
             listener.onToggleAPlus(
-                !element.collapsed,
+                !element.expanded,
                 element.trackerData.copy(adapterPosition = bindingAdapterPosition)
             )
         }
         binding.icProductDetailAPlusImageToggle.setOnClickListener {
             listener.onToggleAPlus(
-                !element.collapsed,
+                !element.expanded,
                 element.trackerData.copy(adapterPosition = bindingAdapterPosition)
             )
         }

@@ -3071,15 +3071,15 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
     @Test
     fun `setAPlusContentCollapseState should update aPlusContentMediaCollapse value`() {
-        val initialValue = viewModel.isAPlusContentCollapsed()
+        val initialValue = viewModel.isAPlusContentExpanded()
         val expectedValue = !initialValue
-        viewModel.setAPlusContentCollapseState(expectedValue)
-        assertEquals(expectedValue, viewModel.isAPlusContentCollapsed())
+        viewModel.setAPlusContentExpandedState(expectedValue)
+        assertEquals(expectedValue, viewModel.isAPlusContentExpanded())
     }
 
     @Test
-    fun `initial aPlusContentMediaCollapse value should be false`() {
-        assertFalse(viewModel.isAPlusContentCollapsed())
+    fun `initial aPlusContentExpanded value should be false`() {
+        assertFalse(viewModel.isAPlusContentExpanded())
     }
 
     companion object {
