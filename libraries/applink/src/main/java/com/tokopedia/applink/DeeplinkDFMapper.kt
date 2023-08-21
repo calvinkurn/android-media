@@ -1021,35 +1021,35 @@ object DeeplinkDFMapper : CoroutineScope {
                 DFP(
                     { it.startsWithPattern(INBOX_TALK) },
                     DF_SELLER_TALK,
-                    tokopedia.applink.R.string.title_talk_discuss
+                    R.string.title_df_talk_discuss
                 )
             )
             add(
                 DFP(
                     { it.startsWithPattern(PRODUCT_TALK_BASE) },
                     DF_SELLER_TALK,
-                    tokopedia.applink.R.string.title_talk_discuss
+                    R.string.title_df_talk_discuss
                 )
             )
             add(
                 DFP(
                     { it.startsWithPattern(TALK_REPLY_BASE) },
                     DF_SELLER_TALK,
-                    tokopedia.applink.R.string.title_reply_page
+                    R.string.title_df_reply_page
                 )
             )
             add(
                 DFP(
                     { it.startsWithPattern(ADD_TALK) },
                     DF_SELLER_TALK,
-                    tokopedia.applink.R.string.title_write_page
+                    R.string.title_df_write_page
                 )
             )
             add(
                 DFP(
                     { it.startsWithPattern(TALK_SELLER_SETTINGS) },
                     DF_SELLER_TALK,
-                    tokopedia.applink.R.string.title_seller_settings_page
+                    R.string.title_df_seller_settings_page
                 )
             )
             add(

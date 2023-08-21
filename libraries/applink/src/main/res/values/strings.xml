@@ -126,10 +126,10 @@
     <string name="title_seller_feedback">Seller Feedback</string>
 
     <!-- Talk -->
-    <string name="title_talk_discuss">Diskusi</string>
-    <string name="title_reply_page">Balas Pertanyaan</string>
-    <string name="title_write_page">Kirim Pertanyaan</string>
-    <string name="title_seller_settings_page">Pengaturan Diskusi</string>
+    <string name="title_df_talk_discuss">Diskusi</string>
+    <string name="title_df_reply_page">Balas Pertanyaan</string>
+    <string name="title_df_write_page">Kirim Pertanyaan</string>
+    <string name="title_df_seller_settings_page">Pengaturan Diskusi</string>
 
 <!--    pms-->
     <string name="payment_title_payment_status">Menunggu Pembayaran</string>
