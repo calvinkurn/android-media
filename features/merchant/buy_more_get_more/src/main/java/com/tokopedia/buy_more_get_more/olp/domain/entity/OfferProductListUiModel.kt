@@ -14,10 +14,10 @@ data class OfferProductListUiModel(
     )
 
     data class Product(
-        val offerId: Int = 0,
-        val parentId: Int = 0,
-        val productId: Int = 0,
-        val warehouseId: Int = 0,
+        val offerId: Long = 0,
+        val parentId: Long = 0,
+        val productId: Long = 0,
+        val warehouseId: Long = 0,
         val productUrl: String = "",
         val imageUrl: String = "",
         val name: String = "",

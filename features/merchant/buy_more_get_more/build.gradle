@@ -39,6 +39,7 @@ dependencies {implementation rootProject.ext.supportLibDependencies.recyclerView
     implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
     implementation rootProject.ext.supportLibDependencies.supportV4
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation 'com.google.android.material:material:1.5.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'

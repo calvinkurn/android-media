@@ -15,6 +15,7 @@ import com.tokopedia.buy_more_get_more.olp.domain.usecase.GetOfferInfoForBuyerUs
 import com.tokopedia.buy_more_get_more.olp.domain.usecase.GetOfferProductListUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.searchbar.navigation_component.datamodel.TopNavNotificationModel
 import com.tokopedia.searchbar.navigation_component.domain.GetNotificationUseCase
@@ -73,12 +74,12 @@ class OfferLandingPageViewModel @Inject constructor(
                         warehouseIds.orEmpty()
                     ),
                     userLocation = UserLocation(
-                        addressId = localCacheModel?.address_id.toIntOrZero(),
-                        districtId = localCacheModel?.district_id.toIntOrZero(),
+                        addressId = localCacheModel?.address_id.toLongOrZero(),
+                        districtId = localCacheModel?.district_id.toLongOrZero(),
                         postalCode = localCacheModel?.postal_code.orEmpty(),
                         latitude = localCacheModel?.lat.orEmpty(),
                         longitude = localCacheModel?.long.orEmpty(),
-                        cityId = localCacheModel?.city_id.toIntOrZero()
+                        cityId = localCacheModel?.city_id.toLongOrZero()
                     )
                 )
                 val result = getOfferInfoForBuyerUseCase.execute(param)
@@ -106,14 +107,14 @@ class OfferLandingPageViewModel @Inject constructor(
                         warehouseIds.orEmpty()
                     ),
                     userLocation = GetOfferingProductListRequestParam.UserLocation(
-                        addressId = localCacheModel?.address_id.toIntOrZero(),
-                        districtId = localCacheModel?.district_id.toIntOrZero(),
+                        addressId = localCacheModel?.address_id.toLongOrZero(),
+                        districtId = localCacheModel?.district_id.toLongOrZero(),
                         postalCode = localCacheModel?.postal_code.orEmpty(),
                         latitude = localCacheModel?.lat.orEmpty(),
                         longitude = localCacheModel?.long.orEmpty(),
-                        cityId = localCacheModel?.city_id.toIntOrZero()
+                        cityId = localCacheModel?.city_id.toLongOrZero()
                     ),
-                    userId = userId.toIntOrZero(),
+                    userId = userId.toLongOrZero(),
                     page = page,
                     pageSize = 10,
                     orderBy = sortId.toIntOrZero()

@@ -25,13 +25,13 @@ data class OfferProductListResponse(
 
     data class Product(
         @SerializedName("offer_id")
-        val offerId: Int = 0,
+        val offerId: Long = 0,
         @SerializedName("parent_id")
-        val parentId: Int = 0,
+        val parentId: Long = 0,
         @SerializedName("product_id")
-        val productId: Int = 0,
+        val productId: Long = 0,
         @SerializedName("warehouse_id")
-        val warehouseId: Int = 0,
+        val warehouseId: Long = 0,
         @SerializedName("product_url")
         val productUrl: String = "",
         @SerializedName("image_url")
