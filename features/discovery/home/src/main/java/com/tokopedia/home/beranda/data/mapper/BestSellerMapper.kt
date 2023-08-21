@@ -103,6 +103,8 @@ class BestSellerMapper @Inject constructor() {
             categoryBreadcrumbs = recommendationItem.categoryBreadcrumbs,
             pageName = recommendationItem.pageName,
             header = recommendationItem.header,
-            warehouseId = recommendationItem.warehouseId.toString()
+            warehouseId = recommendationItem.warehouseId.toString(),
+            clickUrl = recommendationItem.clickUrl,
+            trackerImageUrl = recommendationItem.trackerImageUrl
         )
 }
