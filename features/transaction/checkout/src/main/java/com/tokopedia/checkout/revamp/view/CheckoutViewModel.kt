@@ -2392,7 +2392,7 @@ class CheckoutViewModel @Inject constructor(
         promoCode: String,
         order: CheckoutOrderModel
     ) {
-        viewModelScope.launch {
+        viewModelScope.launch(dispatchers.main) {
             val checkoutItems = listData.value.toMutableList()
             checkoutItems[position] =
                 order.copy(shipment = order.shipment.copy(courierItemData = null))

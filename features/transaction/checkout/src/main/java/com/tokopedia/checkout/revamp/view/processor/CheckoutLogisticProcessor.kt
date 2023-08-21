@@ -638,29 +638,6 @@ class CheckoutLogisticProcessor @Inject constructor(
         }
     }
 
-//    suspend fun getRatesApi(
-//        ratesParam: RatesParam,
-//        shopShipments: List<ShopShipment>,
-//        selectedSpId: Int
-//    ) {
-//        withContext(dispatchers.io) {
-//            try {
-//                var shippingRecommendationData = ratesApiUseCase(ratesParam)
-//                shippingRecommendationData = ratesResponseStateConverter.fillState(
-//                    shippingRecommendationData,
-//                    shopShipments,
-//                    selectedSpId,
-//                    0
-//                )
-//                CheckoutOrderShipment(
-//                    isLoading = false
-//                )
-//            } catch (t: Throwable) {
-//                Timber.d(t)
-//            }
-//        }
-//    }
-
     suspend fun getRatesWithScheduleDelivery(
         ratesParam: RatesParam,
         shopShipments: List<ShopShipment>,

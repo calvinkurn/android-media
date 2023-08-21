@@ -300,12 +300,148 @@ class CheckoutViewModelPromoTest : BaseCheckoutViewModelTest() {
                                 code = "boCode",
                                 uniqueId = "12",
                                 message = LastApplyMessageUiModel(state = "green"),
-                                cartStringGroup = "123"
+                                cartStringGroup = "123",
+                                type = "logistic"
                             )
                         )
                     )
                 ),
                 CheckoutCostModel(totalPriceString = "Rp0", hasSelectAllShipping = true),
+                CheckoutCrossSellGroupModel(),
+                CheckoutButtonPaymentModel(enable = true, totalPrice = "Rp0")
+            ),
+            viewModel.listData.value
+        )
+    }
+
+    @Test
+    fun cancel_promo() {
+        // given
+        coEvery {
+            clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground()
+        } returns ClearPromoUiModel(
+            SuccessDataUiModel(true)
+        )
+
+        coEvery {
+            validateUsePromoRevampUseCase.setParam(any()).executeOnBackground()
+        } returns ValidateUsePromoRevampUiModel(
+            status = "OK",
+            errorCode = "200"
+        )
+
+        val orderModel = CheckoutOrderModel(
+            "123",
+            boUniqueId = "12",
+            shipment = CheckoutOrderShipment(
+                courierItemData = CourierItemData(
+                    name = "",
+                    estimatedTimeDelivery = "",
+                    shipperFormattedPrice = "",
+                    insuranceUsedInfo = "",
+                    promoCode = "",
+                    checksum = "",
+                    ut = "",
+                    now = false,
+                    priorityInnactiveMessage = "",
+                    priorityFormattedPrice = "",
+                    priorityDurationMessage = "",
+                    priorityCheckboxMessage = "",
+                    priorityWarningboxMessage = "",
+                    priorityFeeMessage = "",
+                    priorityPdpMessage = "",
+                    ontimeDelivery = OntimeDelivery(
+                        textLabel = "",
+                        textDetail = "",
+                        urlDetail = ""
+                    ),
+                    codProductData = CashOnDeliveryProduct(0, "", 0, "", "", ""),
+                    etaText = "",
+                    etaErrorCode = -1,
+                    merchantVoucherProductModel = MerchantVoucherProductModel(0),
+                    isSelected = true,
+                    shipperProductId = 1,
+                    shipperId = 1,
+                    shipperName = "",
+                    logPromoCode = "boCode",
+                    logPromoMsg = "",
+                    promoTitle = "",
+                    logPromoDesc = ""
+                )
+            )
+        )
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(
+                recipientAddressModel = RecipientAddressModel().apply {
+                    id = "1"
+                    destinationDistrictId = "1"
+                    addressName = "jakarta"
+                    postalCode = "123"
+                    latitude = "123"
+                    longitude = "321"
+                }
+            ),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel("123", cartStringOrder = "12"),
+            orderModel,
+            CheckoutProductModel("234", cartStringOrder = "23"),
+            CheckoutOrderModel(
+                "234",
+                shipment = CheckoutOrderShipment(courierItemData = CourierItemData())
+            ),
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(
+                promo = LastApplyUiModel(
+                    voucherOrders = listOf(
+                        LastApplyVoucherOrdersItemUiModel(
+                            code = "boCode",
+                            uniqueId = "12",
+                            message = LastApplyMessageUiModel(state = "green"),
+                            cartStringGroup = "123"
+                        )
+                    )
+                )
+            ),
+            CheckoutCostModel(totalPriceString = "Rp0", hasSelectAllShipping = true),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel(enable = true, totalPrice = "Rp0")
+        )
+
+        // when
+        viewModel.cancelAutoApplyPromoStackLogistic(5, "boCode", orderModel)
+
+        // then
+        assertEquals(
+            listOf(
+                CheckoutTickerErrorModel(errorMessage = ""),
+                CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+                CheckoutAddressModel(
+                    recipientAddressModel = RecipientAddressModel().apply {
+                        id = "1"
+                        destinationDistrictId = "1"
+                        addressName = "jakarta"
+                        postalCode = "123"
+                        latitude = "123"
+                        longitude = "321"
+                    }
+                ),
+                CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+                CheckoutProductModel("123", cartStringOrder = "12"),
+                CheckoutOrderModel(
+                    "123",
+                    boUniqueId = "12",
+                    shipment = CheckoutOrderShipment()
+                ),
+                CheckoutProductModel("234", cartStringOrder = "23"),
+                CheckoutOrderModel(
+                    "234",
+                    shipment = CheckoutOrderShipment(courierItemData = CourierItemData())
+                ),
+                CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+                CheckoutPromoModel(promo = LastApplyUiModel()),
+                CheckoutCostModel(totalPriceString = "Rp0"),
                 CheckoutCrossSellGroupModel(),
                 CheckoutButtonPaymentModel(enable = true, totalPrice = "Rp0")
             ),
