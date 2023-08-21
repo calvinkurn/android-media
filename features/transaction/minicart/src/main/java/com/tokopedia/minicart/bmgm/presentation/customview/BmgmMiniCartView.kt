@@ -8,27 +8,28 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewTreeViewModelStoreOwner
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.minicart.R
 import com.tokopedia.minicart.bmgm.common.di.DaggerBmgmComponent
 import com.tokopedia.minicart.bmgm.domain.model.BmgmParamModel
 import com.tokopedia.minicart.bmgm.presentation.adapter.BmgmMiniCartAdapter
 import com.tokopedia.minicart.bmgm.presentation.adapter.itemdecoration.BmgmMiniCartItemDecoration
 import com.tokopedia.minicart.bmgm.presentation.model.BmgmMiniCartDataUiModel
 import com.tokopedia.minicart.bmgm.presentation.model.BmgmMiniCartVisitable
+import com.tokopedia.minicart.bmgm.presentation.model.BmgmState
 import com.tokopedia.minicart.bmgm.presentation.viewmodel.BmgmMiniCartViewModel
 import com.tokopedia.minicart.databinding.FragmentBmgmMiniCartWidgetBinding
 import com.tokopedia.minicart.databinding.ViewBmgmMiniCartSubTotalBinding
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 /**
@@ -47,6 +48,7 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener, Default
     lateinit var viewModelFactory: ViewModelFactory
 
     private var binding: FragmentBmgmMiniCartWidgetBinding? = null
+    private var footerBinding: ViewBmgmMiniCartSubTotalBinding? = null
     private val miniCartAdapter by lazy { BmgmMiniCartAdapter(this) }
     private val viewModel by lazy {
         ViewModelProvider(
@@ -57,8 +59,14 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener, Default
     init {
         binding = FragmentBmgmMiniCartWidgetBinding.inflate(
             LayoutInflater.from(context), this, true
-        )
+        ).apply {
+            footerBinding = ViewBmgmMiniCartSubTotalBinding.bind(root)
+        }
         setAsLifecycleObserver()
+        setupView()
+    }
+
+    private fun setupView() {
         setupRecyclerView()
     }
 
@@ -70,6 +78,7 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener, Default
     override fun onStart(owner: LifecycleOwner) {
         super.onStart(owner)
         observeCartData()
+        observeSetCarChecklistStatus()
     }
 
     override fun onDestroy(owner: LifecycleOwner) {
@@ -83,14 +92,12 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener, Default
     }
 
     fun fetchData(offerIds: List<Long>, offerJsonData: String, warehouseIds: List<String>) {
-        getLifecycleOwner()?.lifecycleScope?.launchWhenStarted {
-            val param = BmgmParamModel(
-                offerIds = offerIds,
-                offerJsonData = offerJsonData,
-                warehouseIds = warehouseIds
-            )
-            viewModel.getMiniCartData(param)
-        }
+        val param = BmgmParamModel(
+            offerIds = offerIds,
+            offerJsonData = offerJsonData,
+            warehouseIds = warehouseIds
+        )
+        viewModel.getMiniCartData(param)
     }
 
     private fun setAsLifecycleObserver() {
@@ -98,37 +105,99 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener, Default
     }
 
     private fun observeCartData() {
-        getLifecycleOwner()?.lifecycleScope?.launchWhenStarted {
-            getLifecycleOwner()?.observe(viewModel.cartData) {
+        getLifecycleOwner()?.let { lifecycleOwner ->
+            lifecycleOwner.observe(viewModel.cartData) {
                 when (it) {
-                    is Success -> setOnSuccessGetCartData(it.data)
-                    is Fail -> {
-                        it.throwable.printStackTrace()
-                    }
+                    is BmgmState.Loading -> showMiniCartLoadingState()
+                    is BmgmState.Success -> setOnSuccessGetCartData(it.data)
+                    is BmgmState.Error -> showErrorState(it.t)
                 }
             }
         }
     }
 
-    private fun getLifecycleOwner() = (context as? LifecycleOwner)
+    private fun showMiniCartLoadingState() {
+
+    }
+
+    private fun dismissMiniCartLoadingState() {
+
+    }
+
+    private fun observeSetCarChecklistStatus() {
+        getLifecycleOwner()?.let { liveCycleOwner ->
+            viewModel.setCheckListState.observe(liveCycleOwner) {
+                when (it) {
+                    is BmgmState.Loading -> showLoadingButton()
+                    is BmgmState.Success, is BmgmState.Error -> openCartPage()
+                }
+            }
+        }
+    }
+
+    private fun showErrorState(throwable: Throwable) {
+        dismissMiniCartLoadingState()
+    }
+
+    private fun openCartPage() {
+        dismissLoadingButton()
+        RouteManager.route(context, ApplinkConst.CART)
+    }
+
+    private fun showLoadingButton() {
+        footerBinding?.btnBmgmOpenCart?.isLoading = true
+    }
+
+    private fun dismissLoadingButton() {
+        footerBinding?.btnBmgmOpenCart?.isLoading = false
+    }
+
+    private fun getLifecycleOwner(): LifecycleOwner? {
+        return context as? LifecycleOwner
+    }
 
     private fun setOnSuccessGetCartData(data: BmgmMiniCartDataUiModel) {
+        dismissMiniCartLoadingState()
+        setupTiersApplied(data)
+        setupFooterView(data)
+    }
+
+    private fun setupTiersApplied(data: BmgmMiniCartDataUiModel) {
         binding?.run {
-            val checkoutView = ViewBmgmMiniCartSubTotalBinding.bind(root)
             if (data.tiersApplied.isNotEmpty()) {
                 tvBmgmCartDiscount.text = data.offerMessage.parseAsHtml()
                 tvBmgmCartDiscount.visible()
                 rvBmgmMiniCart.visible()
-                checkoutView.btnBmgmOpenCart.isEnabled = true
             } else {
                 tvBmgmCartDiscount.gone()
                 rvBmgmMiniCart.gone()
-                checkoutView.btnBmgmOpenCart.isEnabled = false
             }
 
             miniCartAdapter.clearAllElements()
             miniCartAdapter.addElement(getProductList(data))
         }
+    }
+
+    private fun setupFooterView(data: BmgmMiniCartDataUiModel) {
+        footerBinding?.run {
+            if (data.tiersApplied.isEmpty()) {
+                tvBmgmFinalPrice.text =
+                    context.getString(R.string.mini_cart_widget_label_total_price_unavailable_default)
+                btnBmgmOpenCart.isEnabled = false
+            } else {
+                btnBmgmOpenCart.isEnabled = true
+                tvBmgmFinalPrice.text = data.getPriceAfterDiscountStr()
+                tvBmgmPriceBeforeDiscount.text = data.getPriceBeforeDiscountStr()
+
+                btnBmgmOpenCart.setOnClickListener {
+                    viewModel.setCartListCheckboxState(getCartIds(data.tiersApplied))
+                }
+            }
+        }
+    }
+
+    private fun getCartIds(tiersApplied: List<BmgmMiniCartVisitable.TierUiModel>): List<String> {
+        return tiersApplied.map { it.products }.flatten().map { it.cartId }
     }
 
     private fun getProductList(data: BmgmMiniCartDataUiModel): List<BmgmMiniCartVisitable> {
@@ -151,7 +220,9 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener, Default
 
     private fun setupRecyclerView() {
         binding?.rvBmgmMiniCart?.run {
-            addItemDecoration(BmgmMiniCartItemDecoration())
+            if (itemDecorationCount == Int.ZERO) {
+                addItemDecoration(BmgmMiniCartItemDecoration())
+            }
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             adapter = miniCartAdapter
         }

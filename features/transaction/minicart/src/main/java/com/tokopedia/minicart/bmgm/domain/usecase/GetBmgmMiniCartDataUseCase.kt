@@ -70,6 +70,10 @@ class GetBmgmMiniCartDataUseCase @Inject constructor(
                 error_message
                 status
                 data {
+                  shopping_summary {
+                    total_original_value
+                    total_value
+                  }
                   available_section {
                     available_group {
                       cart_details {

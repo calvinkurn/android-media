@@ -22,6 +22,7 @@ class BmgmMiniCartDataMapper @Inject constructor() {
     fun mapToUiModel(data: MiniCartData): BmgmMiniCartDataUiModel {
         var bmgm: BmGmData? = null
         val productMap = mutableMapOf<String, Product>()
+        val shoppingSummary = data.data.shoppingSummary
         data.data.availableSection.availableGroup.forEach { group ->
             val detail = group.cartDetails.firstOrNull { detail ->
                 detail.cartDetailInfo.cartDetailType.equals(CART_DETAIL_TYPE, true)
@@ -39,6 +40,8 @@ class BmgmMiniCartDataMapper @Inject constructor() {
                 offerName = it.offerName,
                 offerMessage = it.offerMessage,
                 hasReachMaxDiscount = hasReachMaxDiscount,
+                priceBeforeBenefit = shoppingSummary.totalOriginalValue,
+                finalPrice = shoppingSummary.totalValue,
                 totalDiscount = it.totalDiscount,
                 tiersApplied = it.tiersApplied.map { tier ->
                     BmgmMiniCartVisitable.TierUiModel(
@@ -54,6 +57,7 @@ class BmgmMiniCartDataMapper @Inject constructor() {
                                     warehouseId = tierProduct.warehouseId.toString(),
                                     productName = p.productName,
                                     productImage = p.productImage.imageSrc100Square,
+                                    cartId = p.cartId,
                                     finalPrice = tierProduct.finalPrice,
                                     quantity = tierProduct.qty
                                 )
