@@ -111,10 +111,10 @@ class CategoryProductAdsTest : TokoNowCategoryViewModelTestFixture() {
 
         val expectedGetProductAdsParam = GetProductAdsParam(
             categoryId = categoryIdL1,
-            warehouseIds = "15125512,14231455",
             src = "directory_tokonow",
             page = 1,
-            userId = userId
+            userId = userId,
+            addressData = addressData
         )
 
         verifyGetProductAdsParam(expectedGetProductAdsParam)
@@ -204,10 +204,10 @@ class CategoryProductAdsTest : TokoNowCategoryViewModelTestFixture() {
 
         val expectedGetProductAdsParam = GetProductAdsParam(
             categoryId = categoryIdL1,
-            warehouseIds = "15125512,14231455",
             src = "directory_tokonow",
             page = 1,
-            userId = userId
+            userId = userId,
+            addressData = addressData
         )
 
         verifyGetProductAdsParam(expectedGetProductAdsParam)

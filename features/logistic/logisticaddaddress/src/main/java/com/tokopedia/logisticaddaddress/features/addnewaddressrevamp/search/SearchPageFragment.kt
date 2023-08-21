@@ -453,22 +453,21 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
                 .addOnFailureListener(
                     context,
                     OnFailureListener { e ->
-                        when ((e as ApiException).statusCode) {
-                            LocationSettingsStatusCodes.RESOLUTION_REQUIRED ->
-
-                                try {
-                                    // Show the dialog by calling startResolutionForResult(), and check the
-                                    // result in onActivityResult().
-                                    val rae = e as ResolvableApiException
-                                    val intentSenderRequest = IntentSenderRequest.Builder(rae.resolution.intentSender).build()
-                                    gpsResultResolutionContract.launch(intentSenderRequest)
-                                } catch (sie: IntentSender.SendIntentException) {
-                                    sie.printStackTrace()
+                        if (e is ApiException) {
+                            when (e.statusCode) {
+                                LocationSettingsStatusCodes.RESOLUTION_REQUIRED ->
+                                    try {
+                                        if (e is ResolvableApiException) {
+                                            val intentSenderRequest = IntentSenderRequest.Builder(e.resolution.intentSender).build()
+                                            gpsResultResolutionContract.launch(intentSenderRequest)
+                                        }
+                                    } catch (sie: IntentSender.SendIntentException) {
+                                        sie.printStackTrace()
+                                    }
+                                LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE -> {
+                                    val errorMessage = "Location settings are inadequate, and cannot be " + "fixed here. Fix in Settings."
+                                    Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
                                 }
-
-                            LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE -> {
-                                val errorMessage = "Location settings are inadequate, and cannot be " + "fixed here. Fix in Settings."
-                                Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
                             }
                         }
                     }
@@ -635,6 +634,7 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
         private const val REQUEST_ADDRESS_FORM_PAGE = 1599
         private const val REQUEST_PINPOINT_PAGE = 1998
         private const val REQUEST_CODE_PERMISSION = 9876
+        private const val REQUEST_CHECK_SETTINGS = 1986
 
         private const val LOCATION_REQUEST_INTERVAL = 10000L
         private const val LOCATION_REQUEST_FASTEST_INTERVAL = 2000L

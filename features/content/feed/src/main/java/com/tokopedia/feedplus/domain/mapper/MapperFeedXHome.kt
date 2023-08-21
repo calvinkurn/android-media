@@ -90,6 +90,7 @@ class MapperFeedXHome @Inject constructor(
             cta = card.cta.let { cta ->
                 FeedCardCtaModel(
                     texts = cta.texts,
+                    subtitles = cta.subtitles,
                     color = cta.color,
                     colorGradient = cta.colorGradient.map { color ->
                         FeedCardCtaGradientModel(
@@ -133,7 +134,7 @@ class MapperFeedXHome @Inject constructor(
             publishedAt = card.publishedAt,
             maxDiscountPercentage = card.maximumDiscountPercentage,
             maxDiscountPercentageFmt = card.maximumDiscountPercentageFmt,
-            topAdsId = if (isTopAdsPost(card)) card.id else ""
+            topAdsId = if (isTopAdsPost(card)) card.id else "",
         )
     }
 
@@ -235,6 +236,9 @@ class MapperFeedXHome @Inject constructor(
     private fun transformProduct(product: FeedXProduct): FeedCardProductModel =
         FeedCardProductModel(
             id = product.id,
+            isParent = product.isParent,
+            parentID = product.parentID,
+            hasVariant = product.hasVariant,
             name = product.name,
             coverUrl = product.coverUrl,
             weblink = product.weblink,
@@ -267,7 +271,8 @@ class MapperFeedXHome @Inject constructor(
             stockSoldPercentage = product.stockSoldPercentage,
             cartable = product.cartable,
             isCashback = product.isCashback,
-            cashbackFmt = product.cashbackFmt
+            cashbackFmt = product.cashbackFmt,
+            isAvailable = product.isAvailable,
         )
 
     private fun transformMedia(media: FeedXMedia): FeedMediaModel =

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.addon.presentation.uimodel.AddOnPageResult
 import com.tokopedia.cart.databinding.HolderItemCartTickerErrorBinding
 import com.tokopedia.cart.databinding.ItemCartChooseAddressBinding
 import com.tokopedia.cart.databinding.ItemCartDisabledAccordionBinding
@@ -22,6 +23,7 @@ import com.tokopedia.cart.databinding.ItemSelectAllBinding
 import com.tokopedia.cart.view.ActionListener
 import com.tokopedia.cart.view.adapter.recentview.CartRecentViewAdapter
 import com.tokopedia.cart.view.adapter.wishlist.CartWishlistAdapter
+import com.tokopedia.cart.view.uimodel.CartAddOnProductData
 import com.tokopedia.cart.view.uimodel.CartChooseAddressHolderData
 import com.tokopedia.cart.view.uimodel.CartEmptyHolderData
 import com.tokopedia.cart.view.uimodel.CartGroupHolderData
@@ -56,6 +58,9 @@ import com.tokopedia.cart.view.viewholder.DisabledAccordionViewHolder
 import com.tokopedia.cart.view.viewholder.DisabledItemHeaderViewHolder
 import com.tokopedia.cart.view.viewholder.DisabledReasonViewHolder
 import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ON_PRODUCT_STATUS_MANDATORY
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ON_PRODUCT_STATUS_UNCHECK
 import com.tokopedia.purchase_platform.common.feature.sellercashback.SellerCashbackListener
 import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackModel
 import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackViewHolder
@@ -1451,6 +1456,46 @@ class CartAdapter constructor(
 
     fun setCoachMark(coachMark: CoachMark2) {
         plusCoachMark = coachMark
+    }
+
+    fun updateAddOnByCartId(cartId: String, newAddOnWording: String, addOnPageResult: AddOnPageResult) {
+        val position: Int
+        loop@ for ((index, item) in cartDataList.withIndex()) {
+            if (item is CartItemHolderData) {
+                if (item.cartId == cartId) {
+                    position = index
+                    item.addOnsProduct.widget.wording = newAddOnWording
+                    item.addOnsProduct.listData.clear()
+                    addOnPageResult.aggregatedData.selectedAddons.forEach {
+                        if (it.getSaveAddonSelectedStatus().value == ADD_ON_PRODUCT_STATUS_CHECK ||
+                            it.getSaveAddonSelectedStatus().value == ADD_ON_PRODUCT_STATUS_MANDATORY
+                        ) {
+                            item.addOnsProduct.listData.add(
+                                CartAddOnProductData(
+                                    id = it.id,
+                                    uniqueId = it.uniqueId,
+                                    status = it.getSaveAddonSelectedStatus().value,
+                                    type = it.addOnType,
+                                    price = it.price.toDouble()
+                                )
+                            )
+                        } else if (it.getSaveAddonSelectedStatus().value == ADD_ON_PRODUCT_STATUS_UNCHECK) {
+                            item.addOnsProduct.deselectListData.add(
+                                CartAddOnProductData(
+                                    id = it.id,
+                                    uniqueId = it.uniqueId,
+                                    status = it.getSaveAddonSelectedStatus().value,
+                                    type = it.addOnType,
+                                    price = it.price.toDouble()
+                                )
+                            )
+                        }
+                    }
+                    notifyItemChanged(position)
+                    break@loop
+                }
+            }
+        }
     }
 
     override fun onNeedToRefreshSingleProduct(childPosition: Int) {

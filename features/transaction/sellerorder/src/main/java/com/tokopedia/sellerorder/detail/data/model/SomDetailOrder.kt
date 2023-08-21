@@ -3,9 +3,10 @@ package com.tokopedia.sellerorder.detail.data.model
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.sellerorder.common.domain.model.TickerInfo
 import com.tokopedia.sellerorder.common.presenter.model.PopUp
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 /**
  * Created by fwidjaja on 2019-08-27.
@@ -270,6 +271,9 @@ data class SomDetailOrder(
                 @Expose
                 val productName: String = "",
 
+                @SerializedName("courier_info")
+                val courierInfo: String = "",
+
                 @SerializedName("is_same_day")
                 @Expose
                 val isSameDay: Int = 0,
@@ -383,7 +387,10 @@ data class SomDetailOrder(
 
                 @SerializedName("color")
                 @Expose
-                val color: String = ""
+                val color: String = "",
+
+                @SerializedName("style")
+                val style: Int = Int.ZERO
             )
 
             data class Insurance(
@@ -465,7 +472,7 @@ data class SomDetailOrder(
 
                 @SerializedName("shipment_logo")
                 @Expose
-                val shipmentLogo: String = "",
+                val shipmentLogo: String = ""
             )
 
             data class LogisticInfo(

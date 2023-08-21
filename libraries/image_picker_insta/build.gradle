@@ -18,6 +18,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.imagepicker_insta'
+    testNamespace 'com.tokopedia.imagepicker_insta.test'
     packagingOptions {
         exclude 'META-INF/**'
     }
@@ -36,7 +38,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation rootProject.ext.supportLibDependencies.recyclerViewV7
     implementation rootProject.ext.networkDependencies.glide
-    implementation project(rootProject.ext.libraries.utils)
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.supportLibDependencies.constraintLayout
@@ -65,7 +66,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.imagePickerInstaCommon)
     implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
     implementation rootProject.ext.unifyDependencies.coach_mark
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation rootProject.ext.unifyDependencies.icons
 
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig

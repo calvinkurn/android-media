@@ -32,7 +32,7 @@
             android:layout_width="@dimen/dp_78"
             android:layout_height="wrap_content"
             android:text="@string/suggestion_top_shop_card_all"
-            android:textColor="@color/Unify_G500"
+            android:textColor="@color/Unify_GN500"
             android:maxLines="2"
             android:gravity="center"
             android:layout_marginTop="8dp"

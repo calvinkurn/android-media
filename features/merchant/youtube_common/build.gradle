@@ -18,6 +18,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.youtube_common'
+    testNamespace 'com.tokopedia.youtube_common.test'
     defaultConfig {
         multiDexEnabled true
     }

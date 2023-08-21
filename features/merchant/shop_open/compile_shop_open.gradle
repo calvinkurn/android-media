@@ -11,7 +11,8 @@ include "libraries:analytics"
 include "libraries:analytics_debugger"
 include "libraries:base_adapter"
 include "libraries:base_list"
-include "libraries:kotlin_extensions"
+
+
 include "libraries:applink"
 include "libraries:dynamic_features"
 include "libraries:image_picker"

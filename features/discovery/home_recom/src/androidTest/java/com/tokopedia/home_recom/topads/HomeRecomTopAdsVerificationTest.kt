@@ -120,7 +120,7 @@ class HomeRecomTopAdsVerificationTest {
                 activityRule.runOnUiThread { viewHolder.itemView.findViewById<View>(R.id.product_item).performClick() }
             }
             is RecommendationCarouselViewHolder -> {
-                clickOnEachItemRecyclerView(viewHolder.itemView, R.id.carouselProductCardRecyclerView, 0)
+                clickOnEachItemRecyclerView(viewHolder.itemView, com.tokopedia.carouselproductcard.R.id.carouselProductCardRecyclerView, 0)
             }
         }
     }

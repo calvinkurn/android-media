@@ -98,6 +98,7 @@ dari Feed.</string>
 
     <string name="feed_post_sebagai">Post sebagai</string>
     <string name="feed_selengkapnya_label">Selengkapnya</string>
+    <string name="feed_lihat_sedikit_label">Lihat sedikit</string>
 
     <!-- No Content -->
     <string name="feed_label_no_content_title">Yaah, belum ada konten</string>
@@ -149,10 +150,14 @@ dari Feed.</string>
     <string name="feed_video_time_less_than_hour">%d:%02d</string>
     <string name="feed_video_time_hours">%d:%02d:%02d</string>
     <string name="feed_campaign_start_from_label">Dimulai dalam</string>
+    <string name="feed_cancel">Batal</string>
 
     <string name="feed_cta_available_label">Tersedia</string>
     <string name="feed_cta_hyped_label">Lagi Diminati</string>
     <string name="feed_cta_almost_sold_label">Segera Habis</string>
     <string name="feed_cta_sold_label">Terjual Habis</string>
+    <string name="feed_success_report_video">Video berhasil dilaporkan</string>
+    <string name="feed_bottom_action_comment_label">Ketik komentarmu…</string>
+    <string name="feed_bottom_action_share_label">Bagikan konten</string>
 
 </resources>

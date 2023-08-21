@@ -17,6 +17,11 @@ class CategoryProductRecommendationTest : TokoNowCategoryViewModelTestFixture() 
         val userId = "12223"
         val deviceId = "11111"
 
+        setAddressData(
+            warehouseId = warehouseId,
+            warehouses = getLocalWarehouseModelList(),
+            shopId = shopId
+        )
         onUserSession_thenReturns(
             isLoggedIn = isLoggedIn,
             userId = userId,

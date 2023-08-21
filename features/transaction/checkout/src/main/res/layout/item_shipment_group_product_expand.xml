@@ -14,7 +14,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
-        android:background="@color/Unify_N100" />
+        android:background="@color/Unify_NN200" />
 
     <RelativeLayout
         android:id="@+id/rl_expand_other_product"
@@ -30,7 +30,7 @@
             android:layout_centerInParent="true"
             android:gravity="center"
             android:padding="16dp"
-            android:textColor="@color/Unify_G500"
+            android:textColor="@color/Unify_GN500"
             app:typographyType="body_3"
             app:typographyWeight="bold"
             tools:text="+3 Produk Lainnya" />
@@ -41,8 +41,8 @@
             android:layout_height="@dimen/layout_lvl3"
             android:layout_centerVertical="true"
             android:layout_toEndOf="@id/tv_expand_other_product"
-            app:icon_color_light_enable="@color/Unify_G500"
-            app:icon_color_night_enable="@color/Unify_G500"
+            app:icon_color_light_enable="@color/Unify_GN500"
+            app:icon_color_night_enable="@color/Unify_GN500"
             app:icon_name="CHEVRON_DOWN" />
 
     </RelativeLayout>
@@ -51,6 +51,6 @@
         android:id="@+id/v_separator_below_product"
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:background="@color/Unify_N100" />
+        android:background="@color/Unify_NN200" />
 
 </LinearLayout>

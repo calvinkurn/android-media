@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:text="@string/feed_component_edit"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         android:visibility="gone"
         app:typographyType="body_2"
         app:typographyWeight="bold"
@@ -35,7 +35,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:text="@string/feed_component_report_it"
-        android:textColor="@color/Unify_R600"
+        android:textColor="@color/Unify_RN500"
         app:typographyType="body_2"
         app:typographyWeight="bold" />
 
@@ -55,7 +55,7 @@
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginTop="18dp"
         android:text="@string/feed_component_unfollow"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:typographyType="body_2"
         app:typographyWeight="bold" />
 
@@ -75,7 +75,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:text="@string/feed_delete_comment"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         android:visibility="gone"
         app:typographyType="body_2"
         app:typographyWeight="bold"

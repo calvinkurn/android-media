@@ -1,0 +1,9 @@
+package com.tokopedia.notifcenter.view.adapter.viewholder.notification.v3.payload
+
+import com.tokopedia.notifcenter.data.entity.notification.ProductData
+import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
+
+class PayloadWishlistState(
+    val productData: ProductData,
+    val notification: NotificationUiModel
+)

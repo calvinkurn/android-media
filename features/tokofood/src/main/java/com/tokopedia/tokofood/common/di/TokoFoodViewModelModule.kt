@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
-import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModelOld
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -26,10 +25,5 @@ abstract class TokoFoodViewModelModule {
     @IntoMap
     @ViewModelKey(MultipleFragmentsViewModel::class)
     abstract fun bindMultipleFragmentsViewModel(viewModel: MultipleFragmentsViewModel): ViewModel
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(MultipleFragmentsViewModelOld::class)
-    abstract fun bindMultipleFragmentsViewModelOld(viewModel: MultipleFragmentsViewModelOld): ViewModel
 
 }

@@ -332,11 +332,9 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
 
     private fun getAdsProductListAsync(item: TokoNowAdsCarouselUiModel): Deferred<Unit?> {
         return asyncCatchError(block = {
-            val warehouseIds = addressData.getWarehouseIds()
-
             val params = GetProductAdsParam(
                 categoryId = categoryIdL2,
-                warehouseIds = warehouseIds,
+                addressData = addressData.getAddressData(),
                 src = SRC_DIRECTORY_TOKONOW,
                 userId = userSession.userId
             )

@@ -46,14 +46,14 @@ abstract class BaseListrikScreenShotTest: BaseRechargeGeneralScreenShotTest() {
 
         Thread.sleep(2000)
         CommonActions.findViewAndScreenShot(
-                R.id.view_container,
+                com.tokopedia.common.topupbills.R.id.view_container,
                 filePrefix(),
                 "recycler_view_operator_select"
         )
 
         // Choose "Token Listrik"
         Thread.sleep(2000)
-        Espresso.onView(ViewMatchers.withId(R.id.vg_input_dropdown_recycler_view)).check(ViewAssertions.matches(ViewMatchers.isDisplayed())).perform(
+        Espresso.onView(ViewMatchers.withId(com.tokopedia.common.topupbills.R.id.vg_input_dropdown_recycler_view)).check(ViewAssertions.matches(ViewMatchers.isDisplayed())).perform(
                 RecyclerViewActions.actionOnItemAtPosition<TopupBillsInputDropdownWidget.TopupBillsInputDropdownViewHolder>(
                         0, ViewActions.click()
                 )
@@ -71,7 +71,7 @@ abstract class BaseListrikScreenShotTest: BaseRechargeGeneralScreenShotTest() {
         Thread.sleep(2000)
 
         CommonActions.findViewAndScreenShot(
-                R.id.container_digital_search_number,
+                com.tokopedia.common.topupbills.R.id.container_digital_search_number,
                 filePrefix(),
                 "favorite_number"
         )

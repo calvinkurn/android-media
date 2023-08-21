@@ -2,29 +2,18 @@ package com.tokopedia.productcard.layout.label
 
 import android.content.Context
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.LinearLayout
+import android.widget.Space
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
-import androidx.core.content.ContextCompat
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
-import com.tokopedia.productcard.utils.EXTRA_CHAR_SPACE
-import com.tokopedia.productcard.utils.LABEL_VARIANT_CHAR_LIMIT
-import com.tokopedia.productcard.utils.LABEL_VARIANT_TAG
-import com.tokopedia.productcard.utils.MAX_LABEL_VARIANT_COUNT
-import com.tokopedia.productcard.utils.MIN_LABEL_VARIANT_COUNT
 import com.tokopedia.productcard.utils.applyConstraintSet
-import com.tokopedia.productcard.utils.createColorSampleDrawable
-import com.tokopedia.productcard.utils.findViewById
 import com.tokopedia.productcard.utils.initLabelGroup
 import com.tokopedia.productcard.utils.renderLabelCampaign
 import com.tokopedia.productcard.utils.renderLabelOverlay
-import com.tokopedia.productcard.utils.shouldShowWithAction
-import com.tokopedia.productcard.utils.toUnifyLabelType
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
@@ -84,8 +73,7 @@ internal class LabelLayoutStrategyControl: LabelLayoutStrategy {
         val hasLabelBestSeller = productCardModel.isShowLabelBestSeller()
 
         return if (hasLabelBestSeller)
-            context.resources.getDimensionPixelSize(R.dimen.product_card_label_best_seller_height) +
-                context.resources.getDimensionPixelSize(R.dimen.product_card_label_best_seller_margintop)
+            context.resources.getDimensionPixelSize(R.dimen.product_card_label_best_seller_height)
         else 0
     }
 
@@ -96,7 +84,7 @@ internal class LabelLayoutStrategyControl: LabelLayoutStrategy {
         val hasLabelBestSeller = productCardModel.isShowLabelBestSeller()
 
         return if (hasLabelBestSeller)
-            context.resources.getDimensionPixelSize(R.dimen.product_card_content_margin_top)
+            0
         else context.resources.getDimensionPixelSize(R.dimen.product_card_content_margin)
     }
 
@@ -157,6 +145,16 @@ internal class LabelLayoutStrategyControl: LabelLayoutStrategy {
                 R.id.textViewPrice,
                 ConstraintSet.BOTTOM,
             )
+
+            it.connect(
+                R.id.textViewSlashedPrice,
+                ConstraintSet.TOP,
+                R.id.labelDiscount,
+                ConstraintSet.TOP,
+                0.toPx()
+            )
+            it.setGoneMargin(R.id.textViewSlashedPrice, ConstraintSet.START, 0.toPx())
+            it.setMargin(R.id.textViewSlashedPrice, ConstraintSet.START, 4.toPx())
         }
     }
 
@@ -284,5 +282,12 @@ internal class LabelLayoutStrategyControl: LabelLayoutStrategy {
         productCardModel: ProductCardModel
     ) {
         labelProductStatus?.initLabelGroup(productCardModel.getLabelProductStatus())
+    }
+
+    override fun renderSpaceCampaignBestSeller(space: Space?, productCardModel: ProductCardModel) {
+        val isShowCampaign = productCardModel.isShowLabelCampaign()
+        val isShowBestSeller = productCardModel.isShowLabelBestSeller()
+        val isShowCampaignOrBestSeller = isShowCampaign || isShowBestSeller
+        space?.showWithCondition(isShowCampaignOrBestSeller)
     }
 }

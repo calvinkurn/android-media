@@ -72,7 +72,8 @@ abstract class BaseSearchCategoryTypeFactoryImpl(
     protected val categoryFilterListener: CategoryFilterListener,
     protected val productItemListener: ProductItemListener,
     protected val switcherWidgetListener: SwitcherWidgetListener,
-    protected val tokoNowEmptyStateNoResultListener: TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener,
+    private val tokoNowEmptyStateNoResultListener: TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener,
+    private val tokoNowEmptyStateNoResultTrackerListener: TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultTrackerListener? = null,
     private val feedbackWidgetListener: TokoNowFeedbackWidgetViewHolder.FeedbackWidgetListener,
     private val productCardCompactListener: ProductCardCompactView.ProductCardCompactListener,
     private val productCardCompactSimilarProductTrackerListener: ProductCardCompactSimilarProductTrackerListener,
@@ -164,7 +165,8 @@ abstract class BaseSearchCategoryTypeFactoryImpl(
             )
             TokoNowEmptyStateNoResultViewHolder.LAYOUT -> TokoNowEmptyStateNoResultViewHolder(
                 itemView = view,
-                tokoNowEmptyStateNoResultListener = tokoNowEmptyStateNoResultListener
+                tokoNowEmptyStateNoResultListener  = tokoNowEmptyStateNoResultListener,
+                tokoNowEmptyStateNoResultTrackerListener = tokoNowEmptyStateNoResultTrackerListener
             )
             TokoNowEmptyStateOocViewHolder.LAYOUT -> TokoNowEmptyStateOocViewHolder(
                 itemView = view,

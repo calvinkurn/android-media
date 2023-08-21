@@ -57,12 +57,12 @@ class ChatbotImageUploadViewHolder(
 
     private val bgSender = ViewUtil.generateBackgroundWithShadow(
         chatBalloon,
-        com.tokopedia.unifyprinciples.R.color.Unify_G200,
+        com.tokopedia.unifyprinciples.R.color.Unify_GN100,
         com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
         com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
         com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
         com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-        com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+        com.tokopedia.unifyprinciples.R.color.Unify_NN950_20,
         R.dimen.dp_chatbot_2,
         R.dimen.dp_chatbot_1,
         Gravity.CENTER,
@@ -71,16 +71,16 @@ class ChatbotImageUploadViewHolder(
     )
     private val bgOpposite = ViewUtil.generateBackgroundWithShadow(
         view = chatBalloon,
-        backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_N0,
+        backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_NN0,
         topLeftRadius = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
         topRightRadius = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
         bottomLeftRadius = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
         bottomRightRadius = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-        shadowColor = com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+        shadowColor = com.tokopedia.unifyprinciples.R.color.Unify_NN950_20,
         elevation = R.dimen.dp_chatbot_2,
         shadowRadius = R.dimen.dp_chatbot_1,
         shadowGravity = Gravity.CENTER,
-        strokeColor = com.tokopedia.unifyprinciples.R.color.Unify_N0,
+        strokeColor = com.tokopedia.unifyprinciples.R.color.Unify_NN0,
         strokeWidth = getStrokeWidthSenderDimenRes()
     )
 
@@ -120,7 +120,7 @@ class ChatbotImageUploadViewHolder(
         changeHourColor(
             MethodChecker.getColor(
                 itemView.context,
-                com.tokopedia.unifyprinciples.R.color.Unify_N0
+                com.tokopedia.unifyprinciples.R.color.Unify_NN0
             )
         )
         attachment?.scaleType = ImageView.ScaleType.CENTER_CROP

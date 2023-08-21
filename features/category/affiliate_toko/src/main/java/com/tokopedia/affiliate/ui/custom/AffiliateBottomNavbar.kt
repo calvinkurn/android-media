@@ -3,6 +3,7 @@ package com.tokopedia.affiliate.ui.custom
 import android.content.Context
 import com.tokopedia.affiliate.AFFILIATE_PROMOTE_HOME
 import com.tokopedia.affiliate_toko.R
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 
@@ -106,6 +107,10 @@ class AffiliateBottomNavbar(
 
     fun showBottomNav() {
         bottomNavigation?.show()
+    }
+
+    fun hideBottomNav() {
+        bottomNavigation?.hide()
     }
 
     fun selectBottomTab(position: Int) {

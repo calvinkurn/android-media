@@ -19,8 +19,10 @@ import androidx.test.espresso.matcher.ViewMatchers
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.test.application.espresso_component.CommonMatcher
 import com.tokopedia.tokofood.feature.ordertracking.presentation.partialview.OrderDetailStickyActionButton
+import com.tokopedia.tokofood.stub.base.presentation.activity.BaseTokofoodActivityStub
 import com.tokopedia.tokofood.stub.postpurchase.presentation.activity.TokoFoodOrderTrackingActivityStub
 import com.tokopedia.tokofood.stub.postpurchase.presentation.fragment.BaseTokoFoodOrderTrackingFragmentStub
+import com.tokopedia.tokofood.stub.purchase.presentation.fragment.TokoFoodPurchaseFragmentStub
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.UnifyButton
 import org.hamcrest.CoreMatchers
@@ -60,6 +62,17 @@ inline fun <reified T : Visitable<*>> Activity.scrollTo(isLastIndex: Boolean = f
         fragment.orderTrackingAdapter.list.indexOfLast { it is T }
     } else {
         fragment.orderTrackingAdapter.list.indexOfFirst { it is T }
+    }
+
+    smoothScrollTo(positionItem, recyclerViewId)
+}
+
+inline fun <reified T : Visitable<*>> Activity.purchasePageScrollTo(isLastIndex: Boolean = false, recyclerViewId: Int) {
+    val fragment = (this as BaseTokofoodActivityStub).getCheckoutFragment()
+    val positionItem = if (isLastIndex) {
+        fragment.getCurrentAdapter()?.list?.indexOfLast { it is T } ?: RecyclerView.NO_POSITION
+    } else {
+        fragment.getCurrentAdapter()?.list?.indexOfFirst { it is T } ?: RecyclerView.NO_POSITION
     }
 
     smoothScrollTo(positionItem, recyclerViewId)
@@ -146,4 +159,9 @@ fun clickClickableSpan(textToClick: CharSequence): ViewAction {
 
 fun TokoFoodOrderTrackingActivityStub.getBaseTokoFoodOrderTrackingFragment(): BaseTokoFoodOrderTrackingFragmentStub {
     return this.supportFragmentManager.findFragmentByTag("TAG_FRAGMENT") as BaseTokoFoodOrderTrackingFragmentStub
+}
+
+fun BaseTokofoodActivityStub.getCheckoutFragment(): TokoFoodPurchaseFragmentStub {
+    val fragment = this.supportFragmentManager.fragments.firstOrNull()
+    return this.supportFragmentManager.findFragmentByTag(fragment?.javaClass?.name.orEmpty()) as TokoFoodPurchaseFragmentStub
 }

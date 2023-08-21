@@ -409,7 +409,7 @@ class ChooseAddressWidget :
          * Int Color for Text label
          */
         fun onChangeTextColor(): Int {
-            return com.tokopedia.unifyprinciples.R.color.Unify_N700_96
+            return com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
         }
 
         /**

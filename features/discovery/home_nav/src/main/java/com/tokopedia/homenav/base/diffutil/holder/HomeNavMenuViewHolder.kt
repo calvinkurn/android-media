@@ -61,7 +61,7 @@ class HomeNavMenuViewHolder(
         binding?.menuImage?.gone()
         binding?.menuImageUnify?.visible()
 
-        binding?.menuImageUnify?.loadImage(element.srcImage, com.tokopedia.homenav.R.drawable.grey_button_rounded)
+        binding?.menuImageUnify?.loadImage(element.srcImage, com.tokopedia.resources.common.R.drawable.grey_button_rounded)
     }
 
     private fun setImageByMappingToIconUnify(element: HomeNavMenuDataModel) {

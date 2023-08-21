@@ -32,7 +32,7 @@ data class LoginEvent(val afterSuccess: () -> Unit) : PlayViewerNewUiEvent()
  * Real Time Notification
  */
 data class ShowRealTimeNotificationEvent(
-        val notification: RealTimeNotificationUiModel,
+    val notification: RealTimeNotificationUiModel
 ) : PlayViewerNewUiEvent()
 
 /**
@@ -48,13 +48,13 @@ sealed class ShowLikeBubbleEvent : PlayViewerNewUiEvent() {
     data class Single(
         override val count: Long,
         override val reduceOpacity: Boolean,
-        val config: PlayLikeBubbleConfig,
+        val config: PlayLikeBubbleConfig
     ) : ShowLikeBubbleEvent()
 
     data class Burst(
         override val count: Long,
         override val reduceOpacity: Boolean,
-        val config: PlayLikeBubbleConfig,
+        val config: PlayLikeBubbleConfig
     ) : ShowLikeBubbleEvent()
 }
 data class PreloadLikeBubbleIconEvent(val urls: Set<String>) : PlayViewerNewUiEvent()
@@ -62,11 +62,10 @@ data class PreloadLikeBubbleIconEvent(val urls: Set<String>) : PlayViewerNewUiEv
 /**
  * Sharing Experience
  */
-data class SaveTemporarySharingImage(val imageUrl: String): PlayViewerNewUiEvent()
 data class OpenSharingOptionEvent(val title: String, val coverUrl: String, val userId: String, val channelId: String) : PlayViewerNewUiEvent()
-data class OpenSelectedSharingOptionEvent(val linkerShareResult: LinkerShareResult?, val shareModel: ShareModel, val shareString: String): PlayViewerNewUiEvent()
-object CloseShareExperienceBottomSheet: PlayViewerNewUiEvent()
-object ErrorGenerateShareLink: PlayViewerNewUiEvent()
+data class OpenSelectedSharingOptionEvent(val linkerShareResult: LinkerShareResult?, val shareModel: ShareModel, val shareString: String) : PlayViewerNewUiEvent()
+object CloseShareExperienceBottomSheet : PlayViewerNewUiEvent()
+object ErrorGenerateShareLink : PlayViewerNewUiEvent()
 
 /**
  * Status
@@ -76,24 +75,24 @@ data class BuySuccessEvent(
     val isVariant: Boolean,
     val cartId: String,
     val sectionInfo: ProductSectionUiModel.Section?,
-    val isProductFeatured: Boolean,
+    val isProductFeatured: Boolean
 ) : PlayViewerNewUiEvent()
 data class AtcSuccessEvent(
     val product: PlayProductUiModel.Product,
     val isVariant: Boolean,
     val cartId: String,
     val sectionInfo: ProductSectionUiModel.Section?,
-    val isProductFeatured: Boolean,
+    val isProductFeatured: Boolean
 ) : PlayViewerNewUiEvent()
 data class OCCSuccessEvent(
     val product: PlayProductUiModel.Product,
     val isVariant: Boolean,
     val cartId: String,
     val sectionInfo: ProductSectionUiModel.Section?,
-    val isProductFeatured: Boolean,
+    val isProductFeatured: Boolean
 ) : PlayViewerNewUiEvent()
 
-//---------------------
+// ---------------------
 
 sealed class UiString {
 
@@ -109,7 +108,6 @@ data class AllowedWhenInactiveEvent(
         require(event !is AllowedWhenInactiveEvent)
     }
 }
-
 
 /**
  * Interactive
@@ -130,13 +128,12 @@ data class ChangeCampaignReminderFailed(val error: Throwable) : PlayViewerNewUiE
  */
 
 object FailedFollow: PlayViewerNewUiEvent()
+data class CommentVisibilityEvent(val isOpen: Boolean): PlayViewerNewUiEvent()
 
 /**
  * Explore Widget
  */
-object ExploreWidgetInitialState: PlayViewerNewUiEvent()
 
-data class CommentVisibilityEvent(val isOpen: Boolean): PlayViewerNewUiEvent()
+object ExploreWidgetNextTab: PlayViewerNewUiEvent()
 
 data class ShowVariantSheet(val product: PlayProductUiModel.Product, val forcePushTop: Boolean): PlayViewerNewUiEvent()
-

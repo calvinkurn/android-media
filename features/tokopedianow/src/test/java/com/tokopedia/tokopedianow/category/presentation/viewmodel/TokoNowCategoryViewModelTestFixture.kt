@@ -12,6 +12,7 @@ import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalWarehouseModel
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
@@ -29,6 +30,7 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.domain.model.GetProductAdsResponse
 import com.tokopedia.tokopedianow.common.domain.model.GetProductAdsResponse.ProductAdsResponse
 import com.tokopedia.tokopedianow.common.domain.model.GetTargetedTickerResponse
+import com.tokopedia.tokopedianow.common.domain.model.WarehouseData
 import com.tokopedia.tokopedianow.common.domain.param.GetProductAdsParam
 import com.tokopedia.tokopedianow.common.domain.usecase.GetProductAdsUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
@@ -74,7 +76,18 @@ open class TokoNowCategoryViewModelTestFixture {
     protected lateinit var addressData: LocalCacheModel
 
     protected val categoryIdL1: String = "123"
-    protected val warehouseId: String = "345"
+    protected val warehouseId: String = "15125512"
+    protected val serviceType: String = "2h"
+    protected val warehouses = listOf(
+        WarehouseData(
+            warehouseId = "15125512",
+            serviceType = "fc"
+        ),
+        WarehouseData(
+            warehouseId = "14231455",
+            serviceType = "hub"
+        )
+    )
     protected val shopId: String = "11122"
     protected val navToolbarHeight: Int = 100
 
@@ -178,6 +191,7 @@ open class TokoNowCategoryViewModelTestFixture {
         warehouses: List<LocalWarehouseModel> = emptyList()
     ) {
         addressData = LocalCacheModel(
+            warehouses = warehouses,
             warehouse_id = warehouseId,
             shop_id = shopId
         )
@@ -188,6 +202,13 @@ open class TokoNowCategoryViewModelTestFixture {
                 shop_id = shopId,
                 warehouses = warehouses
             )
+        )
+    }
+
+    protected fun getLocalWarehouseModelList(): List<LocalWarehouseModel> = warehouses.map {
+        LocalWarehouseModel(
+            warehouse_id = it.warehouseId.toLongOrZero(),
+            service_type = it.serviceType
         )
     }
 
@@ -204,8 +225,8 @@ open class TokoNowCategoryViewModelTestFixture {
     protected fun onCategoryDetail_thenReturns() {
         coEvery {
             getCategoryDetailUseCase.execute(
-                categoryIdL1 = categoryIdL1,
-                warehouseId = warehouseId
+                warehouses = warehouses,
+                categoryIdL1 = categoryIdL1
             )
         } returns categoryDetailResponse
     }
@@ -213,8 +234,8 @@ open class TokoNowCategoryViewModelTestFixture {
     protected fun onCategoryDetail_thenThrows() {
         coEvery {
             getCategoryDetailUseCase.execute(
-                categoryIdL1 = categoryIdL1,
-                warehouseId = warehouseId
+                warehouses = warehouses,
+                categoryIdL1 = categoryIdL1
             )
         } throws Exception()
     }
@@ -335,8 +356,8 @@ open class TokoNowCategoryViewModelTestFixture {
     protected fun verifyCategoryDetail() {
         coVerify {
             getCategoryDetailUseCase.execute(
-                categoryIdL1 = categoryIdL1,
-                warehouseId = warehouseId
+                warehouses = warehouses,
+                categoryIdL1 = categoryIdL1
             )
         }
     }

@@ -163,6 +163,12 @@ class FeedXCardItem(
 class FeedXProduct(
     @SerializedName("id")
     val id: String = "",
+    @SerializedName("isParent")
+    val isParent: Boolean = false,
+    @SerializedName("parentID")
+    val parentID: String = "",
+    @SerializedName("hasVariant")
+    val hasVariant: Boolean = false,
     @SerializedName("shopID")
     val shopId: String = "",
     @SerializedName("shopName")
@@ -218,7 +224,9 @@ class FeedXProduct(
     @SerializedName("isCashback")
     val isCashback: Boolean = false,
     @SerializedName("cashbackFmt")
-    val cashbackFmt: String = ""
+    val cashbackFmt: String = "",
+    @SerializedName("isStockAvailable")
+    val isAvailable: Boolean = false,
 )
 
 class FeedXProductAffiliate(
@@ -364,6 +372,8 @@ class FeedXScore(
 }
 
 class FeedXCta(
+    @SerializedName("subtitle")
+    val subtitles: List<String> = emptyList(),
     @SerializedName("texts")
     val texts: List<String> = emptyList(),
     @SerializedName("color")

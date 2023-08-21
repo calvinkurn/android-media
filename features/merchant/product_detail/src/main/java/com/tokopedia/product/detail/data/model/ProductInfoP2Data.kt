@@ -13,6 +13,7 @@ import com.tokopedia.product.detail.common.data.model.warehouse.NearestWarehouse
 import com.tokopedia.product.detail.data.model.bottom_sheet_edu.BottomSheetEduData
 import com.tokopedia.product.detail.data.model.bottom_sheet_edu.asUiModel
 import com.tokopedia.product.detail.data.model.custom_info_title.CustomInfoTitle
+import com.tokopedia.product.detail.data.model.dynamiconeliner.DynamicOneLiner
 import com.tokopedia.product.detail.data.model.financing.FtInstallmentCalculationDataResponse
 import com.tokopedia.product.detail.data.model.financing.PDPInstallmentRecommendationData
 import com.tokopedia.product.detail.data.model.generalinfo.ObatKeras
@@ -181,7 +182,11 @@ data class ProductInfoP2Data(
 
     @SerializedName("bottomSheetEdu")
     @Expose
-    val bottomSheetEdu: BottomSheetEduData = BottomSheetEduData()
+    val bottomSheetEdu: BottomSheetEduData = BottomSheetEduData(),
+
+    @SerializedName("dynamicOneLiner")
+    @Expose
+    val dynamicOneLiner: List<DynamicOneLiner> = emptyList()
 ) {
     data class Response(
         @SerializedName("pdpGetData")
@@ -225,5 +230,6 @@ fun ProductInfoP2Data.asUiModel() = ProductInfoP2UiData(
     customInfoTitle = customInfoTitle,
     socialProof = socialProof.asUiModel(),
     shopReview = shopReview.asUiModel(),
-    bottomSheetEdu = bottomSheetEdu.asUiModel()
+    bottomSheetEdu = bottomSheetEdu.asUiModel(),
+    dynamicOneLiner = dynamicOneLiner
 )

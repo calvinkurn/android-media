@@ -245,5 +245,9 @@ class TokoNowCategoryL2Fragment : BaseCategoryFragment() {
             product: ProductCardCompactCarouselItemUiModel
         ) {
         }
+
+        override fun onProductCardAddToCartBlocked() {
+
+        }
     }
 }

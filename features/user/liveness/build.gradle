@@ -21,6 +21,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.liveness'
+    testNamespace 'com.tokopedia.liveness.test'
     sourceSets.each {
         it.java.srcDirs += "src/$it.name/kotlin"
     }

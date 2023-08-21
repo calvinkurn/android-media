@@ -383,6 +383,10 @@ open class TokoNowCategoryL2TabFragment : Fragment() {
             ) {
                 openVariantBottomSheet(product.getProductId(), product.shopId)
             }
+
+            override fun onProductCardAddToCartBlocked() {
+
+            }
         }
     }
 

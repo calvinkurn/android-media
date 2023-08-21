@@ -76,7 +76,7 @@ class ProductPostTagViewHolder(val mainView: View,
                 if (text.isEmpty()) text = getString(com.tokopedia.content.common.R.string.empty_product)
                 setTextColor(ContextCompat.getColor(
                         context,
-                        if (isCTADisabled) unifyR.color.Unify_N200 else unifyR.color.Unify_N0
+                        if (isCTADisabled) com.tokopedia.unifyprinciples.R.color.Unify_NN500 else com.tokopedia.unifyprinciples.R.color.Unify_NN0
                 ))
             }
         } else btnBuy.gone()

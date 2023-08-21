@@ -128,7 +128,7 @@ abstract class BaseCategoryViewModel(
         launchCatchError(block = {
             val params = GetProductAdsParam(
                 categoryId = categoryId,
-                warehouseIds = addressData.getWarehouseIds(),
+                addressData = addressData.getAddressData(),
                 src = SRC_DIRECTORY_TOKONOW,
                 userId = getUserId()
             )

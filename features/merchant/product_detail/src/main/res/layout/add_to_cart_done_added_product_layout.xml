@@ -36,7 +36,7 @@
                 android:layout_height="wrap_content"
                 android:singleLine="true"
                 android:text="@string/atc_done_add_product_success"
-                android:textColor="@color/Unify_N700"
+                android:textColor="@color/Unify_NN950"
                 android:layout_marginStart="16dp"
                 android:layout_marginLeft="16dp"
                 app:typographyType="heading_5"

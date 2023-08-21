@@ -24,7 +24,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.affiliatecommon.data.util.AffiliatePreference
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
+import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
@@ -65,6 +65,7 @@ import com.tokopedia.play_common.shortsuploader.PlayShortsUploader
 import com.tokopedia.play_common.shortsuploader.analytic.PlayShortsUploadAnalytic
 import com.tokopedia.play_common.shortsuploader.const.PlayShortsUploadConst
 import com.tokopedia.searchbar.data.HintData
+import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
@@ -121,7 +122,6 @@ class FeedPlusContainerFragment :
         private const val BROADCAST_FEED = "BROADCAST_FEED"
         const val FEED_IS_VISIBLE = "FEED_IS_VISIBLE"
 
-        const val PARAM_FEED_TAB_POSITION = "FEED_TAB_POSITION"
         const val UPDATE_TAB_POSITION = "1"
         const val EXPLORE_TAB_POSITION = "2"
         const val VIDEO_TAB_POSITION = "3"
@@ -253,9 +253,10 @@ class FeedPlusContainerFragment :
         activity?.intent?.let {
             val args = Bundle()
             args.putString(
-                ARGS_FEED_TAB_POSITION,
-                it.extras?.getString(ARGS_FEED_TAB_POSITION)
+                ApplinkConstInternalContent.UF_EXTRA_FEED_TAB_NAME,
+                it.extras?.getString(ApplinkConstInternalContent.UF_EXTRA_FEED_TAB_NAME)
             )
+
             args.putString(
                 ARGS_FEED_VIDEO_TAB_SELECT_CHIP,
                 it.extras?.getString(ARGS_FEED_VIDEO_TAB_SELECT_CHIP)
@@ -325,7 +326,7 @@ class FeedPlusContainerFragment :
 
     private fun getToolbarIcons(): IconBuilder {
         val icons =
-            IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
+            IconBuilder(IconBuilderFlag(pageSource = NavSource.FEED))
                 .addIcon(getInboxIcon()) { onInboxButtonClick() }
 
         icons.addIcon(IconList.ID_NOTIFICATION) { onNotificationClick() }
@@ -351,9 +352,7 @@ class FeedPlusContainerFragment :
         handleArgument()
         addDataToArgument()
         registerNewFeedReceiver()
-        if (hasFeedTabParam()) {
-            openTabAsPerParamValue()
-        }
+        setActiveTab()
         feedFloatingButton.checkFabMenuStatusWithTimer {
             fabFeed.menuOpen
         }
@@ -612,7 +611,7 @@ class FeedPlusContainerFragment :
         val isNewlyBroadcastSaved = activity?.intent?.getBooleanExtra(PlayBroadcasterArgument.NEWLY_BROADCAST_CHANNEL_SAVED, false).orFalse()
         val appLinkSeeTranscodingChannel = activity?.intent?.getStringExtra(PlayBroadcasterArgument.EXTRA_SEE_TRANSCODING_CHANNEL_APPLINK).orEmpty()
 
-        if(isNewlyBroadcastSaved && appLinkSeeTranscodingChannel.isNotEmpty()) {
+        if (isNewlyBroadcastSaved && appLinkSeeTranscodingChannel.isNotEmpty()) {
             activity?.intent?.removeExtra(PlayBroadcasterArgument.NEWLY_BROADCAST_CHANNEL_SAVED)
             activity?.intent?.removeExtra(PlayBroadcasterArgument.EXTRA_SEE_TRANSCODING_CHANNEL_APPLINK)
 
@@ -746,12 +745,7 @@ class FeedPlusContainerFragment :
         tab_layout.visibility = View.VISIBLE
         viewPager?.visibility = View.VISIBLE
 
-        if (hasCategoryIdParam()) {
-            goToExplore()
-        }
-        if (hasFeedTabParam()) {
-            openTabAsPerParamValue()
-        }
+        setActiveTab()
 
         viewModel.getWhitelist()
         if (!userSession.isLoggedIn) {
@@ -759,10 +753,32 @@ class FeedPlusContainerFragment :
         }
     }
 
-    private fun openTabAsPerParamValue() {
-        when (arguments?.getString(PARAM_FEED_TAB_POSITION) ?: UPDATE_TAB_POSITION) {
-            EXPLORE_TAB_POSITION -> goToExplore()
-            VIDEO_TAB_POSITION -> goToVideo()
+    private fun setActiveTab() {
+        fun setActiveTabByName(name: String) {
+            when (name) {
+                "explore" -> goToExplore()
+                "video" -> goToVideo()
+                else -> {}
+            }
+        }
+
+        fun setActiveTabByPosition(position: String) {
+            when (position) {
+                EXPLORE_TAB_POSITION -> goToExplore()
+                VIDEO_TAB_POSITION -> goToVideo()
+            }
+        }
+
+        val tabName = arguments?.getString(ApplinkConstInternalContent.UF_EXTRA_FEED_TAB_NAME)
+        if (tabName != null) {
+            setActiveTabByName(tabName)
+            return
+        }
+
+        val tabPosition = arguments?.getString(ARGS_FEED_TAB_POSITION)
+        if (tabPosition != null) {
+            setActiveTabByPosition(tabPosition)
+            return
         }
     }
 
@@ -915,14 +931,6 @@ class FeedPlusContainerFragment :
     private fun setAdapter() {
         viewPager?.adapter = pagerAdapter
         viewPager?.let { tab_layout.setupWithViewPager(it) }
-    }
-
-    private fun hasCategoryIdParam(): Boolean {
-        return !arguments?.getString(ContentExploreFragment.PARAM_CATEGORY_ID).isNullOrBlank()
-    }
-
-    private fun hasFeedTabParam(): Boolean {
-        return !arguments?.getString(PARAM_FEED_TAB_POSITION).isNullOrBlank()
     }
 
     private fun canGoToExplore(): Boolean {

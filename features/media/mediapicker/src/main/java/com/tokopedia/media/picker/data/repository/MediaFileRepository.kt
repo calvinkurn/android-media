@@ -20,25 +20,29 @@ class MediaFileRepositoryImpl @Inject constructor(
     }
 
     override operator fun invoke(bucketId: Long, start: Int): Flow<List<Media>> {
-        val cursor = setupMediaQuery(bucketId, start, maxLimitSize())
-        val result = mutableListOf<Media>()
-
         return flow {
-            if (cursor?.moveToFirst() == true) {
-                do {
-                    val media = createMedia(cursor) ?: continue
-                    if (media.file.exists().not()) continue
+            try {
+                val cursor = setupMediaQuery(bucketId, start, maxLimitSize())
+                val result = mutableListOf<Media>()
 
-                    if (media.file.isVideo()) {
-                        media.duration = getVideoDuration(media.file)
-                    }
+                if (cursor?.moveToFirst() == true) {
+                    do {
+                        val media = createMedia(cursor) ?: continue
+                        if (media.file.exists().not()) continue
 
-                    result.add(media)
-                } while (cursor.moveToNext())
+                        if (media.file.isVideo()) {
+                            media.duration = getVideoDuration(media.file)
+                        }
+
+                        result.add(media)
+                    } while (cursor.moveToNext())
+                }
+
+                emit(result)
+                cursor?.close()
+            } catch (t: Throwable) {
+                emit(emptyList())
             }
-
-            emit(result)
-            cursor?.close()
         }
     }
 

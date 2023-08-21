@@ -14,6 +14,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.discovery2'
+    testNamespace 'com.tokopedia.discovery2.test'
     packagingOptions {
         exclude 'META-INF/**'
     }
@@ -31,6 +33,7 @@ android {
 dependencies {
 
     // Features Dependency
+    implementation projectOrAar(rootProject.ext.libraries.tkpddesign)
     implementation projectOrAar(rootProject.ext.features.medialoader)
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.features.searchbar)
@@ -59,7 +62,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.affiliateSDK)
 
     // Libraries Dependency
-    implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.analytics)
     implementation projectOrAar(rootProject.ext.libraries.trackingOptimizer)
@@ -70,7 +72,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.commonNetwork)
     implementation projectOrAar(rootProject.ext.libraries.applink)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation projectOrAar(rootProject.ext.libraries.cmPushNotifications)
     androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cassavaTest
@@ -99,6 +101,7 @@ dependencies {
     // miscDependencies Dependency
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    implementation rootProject.ext.miscDependencies.lottie
     testImplementation rootProject.ext.miscDependencies.coroutineTest
     testImplementation rootProject.ext.miscDependencies.coroutineCore
     androidTestImplementation rootProject.ext.miscDependencies.coroutineTest

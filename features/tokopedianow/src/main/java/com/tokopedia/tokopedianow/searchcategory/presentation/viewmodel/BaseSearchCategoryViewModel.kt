@@ -94,10 +94,12 @@ import com.tokopedia.tokopedianow.searchcategory.data.model.QuerySafeModel
 import com.tokopedia.tokopedianow.searchcategory.domain.mapper.ProductItemMapper.mapResponseToProductItem
 import com.tokopedia.tokopedianow.searchcategory.domain.mapper.VisitableMapper.updateWishlistStatus
 import com.tokopedia.tokopedianow.searchcategory.domain.mapper.mapChooseAddressToQuerySafeModel
+import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.Product
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.SearchProduct
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.SearchProductData
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.SearchProductHeader
+import com.tokopedia.tokopedianow.searchcategory.domain.usecase.GetFilterUseCase
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.BannerDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryFilterDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryFilterItemDataView
@@ -127,13 +129,14 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 abstract class BaseSearchCategoryViewModel(
     private val baseDispatcher: CoroutineDispatchers,
-    queryParamMap: Map<String, String>,
-    protected val getFilterUseCase: UseCase<DynamicFilterModel>,
+    private val queryParamMap: Map<String, String>,
+    protected val getFilterUseCase: GetFilterUseCase,
     protected val getProductCountUseCase: UseCase<String>,
     protected val getMiniCartListSimplifiedUseCase: GetMiniCartListSimplifiedUseCase,
     protected val cartService: CartService,
@@ -163,6 +166,8 @@ abstract class BaseSearchCategoryViewModel(
     private var currentProductPosition: Int = 1
     protected var feedbackFieldToggle = false
     private var isFeedbackFieldVisible = false
+    private var getFilterJob: Job? = null
+    private var excludeFilter: Option? = null
 
     val queryParam: Map<String, String> = queryParamMutable
     val hasGlobalMenu: Boolean
@@ -394,10 +399,12 @@ abstract class BaseSearchCategoryViewModel(
     protected open fun createRequestParams(): RequestParams {
         val tokonowQueryParam = createTokonowQueryParams()
         val productAdsParam = createProductAdsParam()
+            .generateQueryParams()
 
         val requestParams = RequestParams.create()
         requestParams.putObject(TOKONOW_QUERY_PARAMS, tokonowQueryParam)
-        requestParams.putObject(PRODUCT_ADS_PARAMS, productAdsParam.generateQueryParams())
+        requestParams.putObject(PRODUCT_ADS_PARAMS, productAdsParam)
+        requestParams.putObject(USER_WAREHOUSE_ID, warehouseId)
 
         return requestParams
     }
@@ -479,7 +486,7 @@ abstract class BaseSearchCategoryViewModel(
         val isEmptyProductList = contentDataView.aceSearchProductData.productList.isEmpty()
 
         initFilterController(headerDataView)
-        createVisitableListFirstPage(headerDataView, contentDataView, isEmptyProductList)
+        createVisitableListFirstPage(headerDataView, contentDataView, isEmptyProductList, searchProduct.data.violation)
         processEmptyState(isEmptyProductList)
         if (getKeywordForGeneralSearchTracking().isNotEmpty()) {
             sendGeneralSearchTracking(searchProduct)
@@ -492,9 +499,9 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     private fun initFilterController(headerDataView: HeaderDataView) {
-        val filterList =
-            headerDataView.quickFilterDataValue.filter +
-                headerDataView.categoryFilterDataValue.filter
+        if (dynamicFilterModelLiveData.value != null) return
+
+        val filterList = headerDataView.quickFilterDataValue.filter + headerDataView.categoryFilterDataValue.filter
 
         filterController.initFilterController(queryParamMutable, filterList)
     }
@@ -502,23 +509,37 @@ abstract class BaseSearchCategoryViewModel(
     private fun createVisitableListFirstPage(
         headerDataView: HeaderDataView,
         contentDataView: ContentDataView,
-        isEmptyProductList: Boolean
+        isEmptyProductList: Boolean,
+        violation: AceSearchProductModel.Violation
     ) {
         visitableList.clear()
 
         if (isEmptyProductList) {
-            createVisitableListWithEmptyProduct()
+            createVisitableListWithEmptyProduct(violation)
         } else {
             createVisitableListWithProduct(headerDataView, contentDataView)
         }
     }
 
-    protected open fun createVisitableListWithEmptyProduct() {
+    protected open fun createVisitableListWithEmptyProduct(
+        violation: AceSearchProductModel.Violation
+    ) {
         val activeFilterList = filterController.getActiveFilterOptionList()
+        val newActiveFilterList = activeFilterList.filter { queryParamMutable.containsValue(it.value) }
         isEmptyResult = true
 
         visitableList.add(chooseAddressDataView)
-        visitableList.add(TokoNowEmptyStateNoResultUiModel(activeFilterList = activeFilterList))
+        visitableList.add(
+            TokoNowEmptyStateNoResultUiModel(
+                activeFilterList = newActiveFilterList,
+                excludeFilter = excludeFilter,
+                defaultTitle = violation.headerText,
+                defaultDescription = violation.descriptionText,
+                defaultImage = violation.imageUrl,
+                defaultTextPrimaryButton = violation.buttonText,
+                defaultUrlPrimaryButton = violation.ctaUrl
+            )
+        )
         visitableList.add(
             TokoNowProductRecommendationUiModel(
                 requestParam = createProductRecommendationRequestParam(
@@ -635,8 +656,8 @@ abstract class BaseSearchCategoryViewModel(
         val sortFilterItem = SortFilterItem(filter.title, chipType)
         sortFilterItem.typeUpdated = false
 
+        val option = filter.options.firstOrNull() ?: Option()
         if (filter.options.size == 1) {
-            val option = filter.options.firstOrNull() ?: Option()
             sortFilterItem.listener = {
                 sendQuickFilterTrackingEvent(option, isSelected)
                 filter(option, !isSelected)
@@ -647,6 +668,9 @@ abstract class BaseSearchCategoryViewModel(
             }
             sortFilterItem.chevronListener = listener
             sortFilterItem.listener = listener
+            if (option.key.startsWith(OptionHelper.EXCLUDE_PREFIX)) {
+                excludeFilter = option
+            }
         }
 
         return sortFilterItem
@@ -685,16 +709,45 @@ abstract class BaseSearchCategoryViewModel(
         queryParamMutable.putAll(filterController.getParameter())
     }
 
-    open fun onViewReloadPage() {
+    open fun onViewReloadPage(
+        needToResetQueryParams: Boolean = true,
+        updateMoreQueryParams: () -> Unit = {}
+    ) {
+        resetQueryParam(
+            needToResetQueryParams = needToResetQueryParams,
+            updateMoreQueryParams = updateMoreQueryParams
+        )
+
         totalData = 0
         totalFetchedData = 0
         nextPage = 1
         chooseAddressData = chooseAddressWrapper.getChooseAddressData()
         chooseAddressDataView = ChooseAddressDataView(chooseAddressData)
-        dynamicFilterModelMutableLiveData.value = null
         isFeedbackFieldVisible = false
         showLoading()
         processLoadDataPage()
+    }
+
+    /**
+     * Reset the query param is needed to ensure the query param will be used is the previous query param,
+     * this reset mechanism will set the dynamic filter to null.
+     *
+     * @param needToResetQueryParams there will be a some cases where it needs to reset to query param,
+     * example case is when trying to pull and refresh the page. Otherwise there will be a few cases reset is not needed,
+     * example case is when reload page after the filter is selected.
+     * @param updateMoreQueryParams is used for child of BaseViewModel to update the query param needed on the page.
+     */
+    private fun resetQueryParam(
+        needToResetQueryParams: Boolean,
+        updateMoreQueryParams: () -> Unit
+    ) {
+        if (!needToResetQueryParams) return
+
+        dynamicFilterModelMutableLiveData.value = null
+        queryParamMutable.clear()
+        queryParamMutable.putAll(queryParamMap)
+        updateQueryParams()
+        updateMoreQueryParams.invoke()
     }
 
     private fun applyFilter() {
@@ -703,7 +756,6 @@ abstract class BaseSearchCategoryViewModel(
         nextPage = 1
         chooseAddressData = chooseAddressWrapper.getChooseAddressData()
         chooseAddressDataView = ChooseAddressDataView(chooseAddressData)
-        dynamicFilterModelMutableLiveData.value = null
 
         showProgressBar()
         processLoadDataPage()
@@ -988,30 +1040,42 @@ abstract class BaseSearchCategoryViewModel(
         updateVisitableListLiveData()
     }
 
-    open fun onViewOpenFilterPage() {
+    /**
+     * Dynamic filter will have null value when first time user clicks filter to open main bottomsheet.
+     * in that case need to fetch the data, so filter in bottomsheet will be up to date.
+     */
+    fun onViewOpenFilterPage() {
         if (isFilterPageOpenLiveData.value == true) return
 
-        isFilterPageOpenMutableLiveData.value = true
+        if (dynamicFilterModelLiveData.value == null) {
+            getFilter(
+                needToOpenBottomSheet = true
+            )
+        } else {
+            isFilterPageOpenMutableLiveData.value = true
+        }
+    }
 
-        if (dynamicFilterModelLiveData.value != null) return
+    /**
+     * Update filter in main bottomsheet to be up to date
+     *
+     * @param needToOpenBottomSheet is used only when clicking filter chip
+     */
+    private fun getFilter(
+        needToOpenBottomSheet: Boolean
+    ) {
+        getFilterJob?.cancel()
+        getFilterJob = launchCatchError(
+            block = {
+                val dynamicFilterModel = getFilterUseCase.execute(createTokonowQueryParams())
+                filterController.appendFilterList(queryParam, dynamicFilterModel.data.filter)
+                dynamicFilterModelMutableLiveData.postValue(dynamicFilterModel)
 
-        val getFilterRequestParams = RequestParams.create()
-        getFilterRequestParams.putAll(createTokonowQueryParams())
-
-        getFilterUseCase.cancelJobs()
-        getFilterUseCase.execute(
-            ::onGetFilterSuccess,
-            ::onGetFilterFailed,
-            getFilterRequestParams
+                if (needToOpenBottomSheet) {
+                    isFilterPageOpenMutableLiveData.postValue(true)
+                }
+            }, onError = { /* do nothing */ }
         )
-    }
-
-    protected open fun onGetFilterSuccess(dynamicFilterModel: DynamicFilterModel) {
-        filterController.appendFilterList(queryParam, dynamicFilterModel.data.filter)
-        dynamicFilterModelMutableLiveData.value = dynamicFilterModel
-    }
-
-    protected open fun onGetFilterFailed(throwable: Throwable) {
     }
 
     open fun onViewDismissFilterPage() {
@@ -1020,7 +1084,12 @@ abstract class BaseSearchCategoryViewModel(
 
     open fun onViewClickCategoryFilterChip(option: Option, isSelected: Boolean) {
         resetSortFilterIfExclude(option)
+        filterController.refreshMapParameter(queryParam)
         filter(option, isSelected)
+
+        getFilter(
+            needToOpenBottomSheet = false
+        )
     }
 
     private fun resetSortFilterIfExclude(option: Option) {
@@ -1031,14 +1100,24 @@ abstract class BaseSearchCategoryViewModel(
         queryParamMutable.remove(option.key)
         queryParamMutable.entries.retainAll { it.isNotFilterAndSortKey() }
         queryParamMutable[SearchApiConst.OB] = DEFAULT_VALUE_OF_PARAMETER_SORT
-        filterController.refreshMapParameter(queryParam)
+    }
+
+    private fun resetSortFilterIfPminPmax(option: Option) {
+        val isOptionKeyHasPminPmax = option.key == SearchApiConst.PMIN || option.key == SearchApiConst.PMAX
+
+        if (!isOptionKeyHasPminPmax) return
+
+        queryParamMutable.remove(SearchApiConst.PMIN)
+        queryParamMutable.remove(SearchApiConst.PMAX)
     }
 
     open fun onViewApplySortFilter(applySortFilterModel: ApplySortFilterModel) {
         filterController.refreshMapParameter(applySortFilterModel.mapParameter)
         refreshQueryParamFromFilterController()
 
-        onViewReloadPage()
+        onViewReloadPage(
+            needToResetQueryParams = false
+        )
     }
 
     open fun onViewGetProductCount(mapParameter: Map<String, String>) {
@@ -1087,6 +1166,10 @@ abstract class BaseSearchCategoryViewModel(
         onViewDismissL3FilterPage()
         removeAllCategoryFilter(chosenCategoryFilter)
         filter(chosenCategoryFilter, true)
+
+        getFilter(
+            needToOpenBottomSheet = false
+        )
     }
 
     private fun removeAllCategoryFilter(chosenCategoryFilter: Option) {
@@ -1314,7 +1397,13 @@ abstract class BaseSearchCategoryViewModel(
 
     fun onViewRemoveFilter(option: Option) {
         resetSortFilterIfExclude(option)
+        resetSortFilterIfPminPmax(option)
+        filterController.refreshMapParameter(queryParam)
         filter(option, false)
+
+        getFilter(
+            needToOpenBottomSheet = false
+        )
     }
 
     fun needToShowOnBoardBottomSheet(has20mBottomSheetBeenShown: Boolean): Boolean {

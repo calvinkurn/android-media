@@ -5,6 +5,7 @@ import android.content.Context
 import android.util.Log
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.carouselproductcard.paging.CarouselPagingGroupChangeDirection
 import com.tokopedia.cmhomewidget.domain.usecase.DeleteCMHomeWidgetUseCase
 import com.tokopedia.cmhomewidget.domain.usecase.GetCMHomeWidgetDataUseCase
 import com.tokopedia.gopayhomewidget.domain.usecase.ClosePayLaterWidgetUseCase
@@ -50,7 +51,6 @@ import com.tokopedia.home.beranda.domain.interactor.usecase.HomeSalamRecommendat
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeSearchUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeSuggestedReviewUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeTodoWidgetUseCase
-import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.domain.model.HomeData
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder
 import com.tokopedia.home.beranda.domain.model.SetInjectCouponTimeBased
@@ -81,10 +81,16 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
-import io.mockk.*
+import io.mockk.coEvery
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.mockkStatic
+import io.mockk.spyk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
 import java.util.concurrent.TimeoutException
+import com.tokopedia.home.beranda.data.mapper.BestSellerMapper as BestSellerRevampMapper
+import com.tokopedia.home_component.visitable.BestSellerDataModel as BestSellerRevampDataModel
 
 /**
  * Created by Lukas on 14/05/20.
@@ -149,6 +155,7 @@ fun createHomeViewModel(
 fun createHomeDynamicChannelUseCase(
     homeBalanceWidgetUseCase: HomeBalanceWidgetUseCase = mockk(relaxed = true),
     homeDataMapper: HomeDataMapper = mockk(relaxed = true),
+    bestSellerRevampMapper: BestSellerRevampMapper = mockk(relaxed = true),
     homeDynamicChannelsRepository: HomeDynamicChannelsRepository = mockk(relaxed = true),
     homeAtfRepository: HomeAtfRepository = mockk(relaxed = true),
     homeUserStatusRepository: HomeUserStatusRepository = mockk(relaxed = true),
@@ -178,6 +185,7 @@ fun createHomeDynamicChannelUseCase(
     return HomeDynamicChannelUseCase(
         homeBalanceWidgetUseCase = homeBalanceWidgetUseCase,
         homeDataMapper = homeDataMapper,
+        bestSellerRevampMapper = bestSellerRevampMapper,
         homeDynamicChannelsRepository = homeDynamicChannelsRepository,
         atfDataRepository = homeAtfRepository,
         homeUserStatusRepository = homeUserStatusRepository,
@@ -316,7 +324,11 @@ fun HomeSalamRecommendationUseCase.givenOnDeclineSalamRecommendationError() {
 }
 
 fun HomeRecommendationUseCase.givenOnHomeBestSellerFilterClickReturn(bestSellerDataModel: BestSellerDataModel = BestSellerDataModel()) {
-    coEvery { onHomeBestSellerFilterClick(any(), any(), any()) } returns bestSellerDataModel
+    coEvery { onHomeBestSellerFilterClick(any(), any(), any<Int>()) } returns bestSellerDataModel
+}
+
+fun HomeRecommendationUseCase.givenOnHomeBestSellerFilterClickReturn(bestSellerRevampDataModel: BestSellerRevampDataModel = BestSellerRevampDataModel(channelModel = ChannelModel("", ""))) {
+    coEvery { onHomeBestSellerFilterClick(any(), any(), any<CarouselPagingGroupChangeDirection>()) } returns bestSellerRevampDataModel
 }
 
 fun HomeRechargeBuWidgetUseCase.givenOnGetRechargeBuWidgetFromHolderReturn(rechargeBUWidgetDataModel: RechargeBUWidgetDataModel) {

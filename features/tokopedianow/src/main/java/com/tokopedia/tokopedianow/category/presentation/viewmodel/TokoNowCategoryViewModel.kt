@@ -121,10 +121,10 @@ class TokoNowCategoryViewModel @Inject constructor(
      */
 
     override suspend fun loadFirstPage(tickerList: List<TickerData>) {
-        val addressData = addressData.getAddressData()
+        val warehouses = addressData.getWarehousesData()
         val detailResponse = getCategoryDetailUseCase.execute(
-            warehouseId = getWarehouseId(),
-            categoryIdL1 = categoryIdL1
+            categoryIdL1 = categoryIdL1,
+            warehouses = warehouses
         )
 
         val categoryNavigationUiModel = detailResponse.mapToCategoryNavigation()
@@ -138,7 +138,7 @@ class TokoNowCategoryViewModel @Inject constructor(
         )
         visitableList.addChooseAddress(
             detailResponse = detailResponse,
-            addressData = addressData
+            addressData = addressData.getAddressData()
         )
         visitableList.addTicker(
             detailResponse = detailResponse,

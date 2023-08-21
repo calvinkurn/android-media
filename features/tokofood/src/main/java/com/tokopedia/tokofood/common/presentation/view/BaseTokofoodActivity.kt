@@ -18,7 +18,7 @@ import com.tokopedia.tokofood.feature.home.presentation.fragment.TokoFoodHomeFra
 import com.tokopedia.tokofood.feature.merchant.presentation.fragment.ManageLocationFragment
 import javax.inject.Inject
 
-class BaseTokofoodActivity : BaseMultiFragActivity(), HasViewModel<MultipleFragmentsViewModel> {
+open class BaseTokofoodActivity : BaseMultiFragActivity(), HasViewModel<MultipleFragmentsViewModel> {
 
     @Inject
     lateinit var viewModel: MultipleFragmentsViewModel
@@ -42,7 +42,7 @@ class BaseTokofoodActivity : BaseMultiFragActivity(), HasViewModel<MultipleFragm
     }
 
     override fun mapUriToFragment(uri: Uri): Fragment? {
-        return TokofoodRouteManager.mapUriToFragment(this, uri)
+        return TokofoodRouteManager.mapUriToFragment(uri)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

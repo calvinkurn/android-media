@@ -18,6 +18,11 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.internal_review'
+    testNamespace 'com.tokopedia.internal_review.test'
+}
+
 dependencies {
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
     implementation projectOrAar(rootProject.ext.libraries.imageAssets)
@@ -41,7 +46,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.track)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation projectOrAar(rootProject.ext.libraries.graphql)
 

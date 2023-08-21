@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="fallback_badge_width">189dp</dimen>
+    <dimen name="fallback_badge_height">211dp</dimen>
+    <dimen name="mdpi_device_top_margin">142dp</dimen>
+    <dimen name="mdp_header_height">320dp</dimen>
+    <dimen name="mdp_sparks_width">210dp</dimen>
+    <dimen name="mdp_sparks_height">210dp</dimen>
+    <dimen name="mdp_medal_width">158dp</dimen>
+    <dimen name="mdp_medal_height">176dp</dimen>
+    <dimen name="mdp_medal_base_width">230dp</dimen>
+    <dimen name="heading_2_large">22sp</dimen>
+    <dimen name="margin_20_dp">20dp</dimen>
+    <dimen name="dimen_53">53dp</dimen>
+    <dimen name="dimen_40">40dp</dimen>
+    <dimen name="dimen_44">44dp</dimen>
+    <dimen name="coupon_image_corner_radius">9dp</dimen>
+</resources>

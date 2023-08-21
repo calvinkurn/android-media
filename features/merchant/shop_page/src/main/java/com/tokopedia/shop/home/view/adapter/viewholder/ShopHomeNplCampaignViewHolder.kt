@@ -135,7 +135,7 @@ class ShopHomeNplCampaignViewHolder(
     private fun configNonFestivity() {
         val defaultTitleColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
         val defaultSubTitleColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
-        val defaultCtaColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+        val defaultCtaColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
         val defaultInformationIconColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN900)
         textTitle?.setTextColor(defaultTitleColor)
         textTimeDescription?.setTextColor(defaultSubTitleColor)
@@ -308,7 +308,7 @@ class ShopHomeNplCampaignViewHolder(
             val colorText = if(isRemindMe){
                 com.tokopedia.unifyprinciples.R.color.Unify_Background
             } else {
-                com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                com.tokopedia.unifyprinciples.R.color.Unify_NN950_68
             }
             val iconRemindMe = if (isRemindMe) {
                 IconUnify.BELL_FILLED

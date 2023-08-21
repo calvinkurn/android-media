@@ -82,7 +82,7 @@ class ReviewDetailSupplementaryInfo @JvmOverloads constructor(
     ) {
         val colorRes = when(source) {
             Source.REVIEW_DETAIL_FRAGMENT -> com.tokopedia.unifyprinciples.R.color.Unify_Static_White
-            Source.EXPANDED_REVIEW_DETAIL_BOTTOM_SHEET -> com.tokopedia.unifyprinciples.R.color.Unify_N700_96
+            Source.EXPANDED_REVIEW_DETAIL_BOTTOM_SHEET -> com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
         }
         val maxLines = when(source) {
             Source.REVIEW_DETAIL_FRAGMENT -> REVIEW_DETAIL_MAX_LINES_COLLAPSED
@@ -106,7 +106,7 @@ class ReviewDetailSupplementaryInfo @JvmOverloads constructor(
     ) {
         val colorRes = when(source) {
             Source.REVIEW_DETAIL_FRAGMENT -> com.tokopedia.unifyprinciples.R.color.Unify_Static_White
-            Source.EXPANDED_REVIEW_DETAIL_BOTTOM_SHEET -> com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+            Source.EXPANDED_REVIEW_DETAIL_BOTTOM_SHEET -> com.tokopedia.unifyprinciples.R.color.Unify_NN950_68
         }
         tvReviewDetailReviewComplaint.run {
             text = complaint

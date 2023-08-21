@@ -105,8 +105,8 @@ class TokoNowCategoryL2ViewModel @Inject constructor(
 
     private fun getCategoryDetailAsync(): Deferred<CategoryDetailResponse?> {
         return asyncCatchError(block = {
-            val warehouseId = addressData.getWarehouseId().toString()
-            getCategoryDetailUseCase.execute(warehouseId, categoryIdL1)
+            val warehouses = addressData.getWarehousesData()
+            getCategoryDetailUseCase.execute(warehouses, categoryIdL1)
         }) {
             null
         }
