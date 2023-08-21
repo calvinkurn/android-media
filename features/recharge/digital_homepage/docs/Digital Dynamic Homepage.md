@@ -82,16 +82,16 @@ Tech Design diagram: <https://drive.google.com/file/d/1IYPgRqP5taKQr6HUVgvZ512dt
 | 14 | `COUNTDOWN_PRODUCT_BANNER` | `RechargeHomepageProductBannerViewHolder` | ![](res/image-20210520-105628.png)<br/> |
 | 15 | `PRODUCT_CARD_CUSTOM_BANNER` | `RechargeHomepageProductCardCustomBannerViewHolder` | ![](res/image-20210520-110848.png)<br/> |
 | 16 | `MINI_CAROUSELL` | `RechargeHomepageCarousellViewHolder` | ![](res/image-20210520-115830.png)<br/> |
-| 17 | `SWIPE_BANNER` | `RechargeHomepageSwipeBannerViewHolder` | ![](res/Screen Shot 2023-02-17 at 18.41.09.png)<br/> |
-| 18 | `PRODUCT_CARD_DGU` | `RechargeHomepageProductCardUnifyViewHolder` | ![](res/Screen Shot 2023-02-17 at 18.46.30.png)<br/> |
-| 19 | `3_ICONS` | `RechargeHomepageThreeIconsViewHolder` | ![](res/Screen Shot 2023-02-15 at 19.52.24.png)<br/> |
-| 20 | `PRODUCT_CARD_CUSTOM_BANNER_V2` | `RechargeHomepageProductCardCustomBannerV2ViewHolder` | ![](res/Screen Shot 2023-02-15 at 19.51.47.png)<br/> |
-| 21 | `2X2_BANNER` | `RechargeHomepageRecommendationBannerViewHolder` | ![](res/Screen Shot 2023-02-15 at 19.52.51.png)<br/> |
-| 22 | `PRODUCT_CARD_CUSTOM_LAST_ITEM` | `RechargeHomepageProductCardCustomLastItemViewHolder` | ![](res/Screen Shot 2023-02-15 at 19.51.12.png)<br/> |
-| 23 | `OFFERING_WIDGET` | `RechargeHomepageOfferingWidgetViewHolder` | ![](res/Screen Shot 2023-02-15 at 19.47.47.png)<br/> |
-| 24 | `BILL_WIDGET` | `RechargeHomepageMyBillsWidgetViewHolder` | ![](res/Screen Shot 2023-02-15 at 19.47.00.png)<br/> |
-| 25 | `MYBILLS_ENTRYPOINT` | `RechargeHomepageMyBillsEntryPointWidgetViewHolder` | ![](res/Screen Shot 2023-02-15 at 19.46.45.png)<br/> |
-| 26 | `3_BUTTONS_MYBILLS_ENTRYPOINT` | `RechargeHomepageMyBillsTripleEntryPointWidgetViewHolder` | ![](res/Screen Shot 2023-05-22 at 12.55.51.png)<br/> |
+| 17 | `SWIPE_BANNER` | `RechargeHomepageSwipeBannerViewHolder` | ![](res/ScreenShot20230217at184109.png)<br/> |
+| 18 | `PRODUCT_CARD_DGU` | `RechargeHomepageProductCardUnifyViewHolder` | ![](res/ScreenShot20230217at184630.png)<br/> |
+| 19 | `3_ICONS` | `RechargeHomepageThreeIconsViewHolder` | ![](res/ScreenShot20230215at195224.png)<br/> |
+| 20 | `PRODUCT_CARD_CUSTOM_BANNER_V2` | `RechargeHomepageProductCardCustomBannerV2ViewHolder` | ![](res/ScreenShot20230215at195147.png)<br/> |
+| 21 | `2X2_BANNER` | `RechargeHomepageRecommendationBannerViewHolder` | ![](res/ScreenShot20230215at195251.png)<br/> |
+| 22 | `PRODUCT_CARD_CUSTOM_LAST_ITEM` | `RechargeHomepageProductCardCustomLastItemViewHolder` | ![](res/ScreenShot20230215at195112.png)<br/> |
+| 23 | `OFFERING_WIDGET` | `RechargeHomepageOfferingWidgetViewHolder` | ![](res/ScreenShot20230215at194747.png)<br/> |
+| 24 | `BILL_WIDGET` | `RechargeHomepageMyBillsWidgetViewHolder` | ![](res/ScreenShot20230215at194700.png)<br/> |
+| 25 | `MYBILLS_ENTRYPOINT` | `RechargeHomepageMyBillsEntryPointWidgetViewHolder` | ![](res/ScreenShot20230215at194645.png)<br/> |
+| 26 | `3_BUTTONS_MYBILLS_ENTRYPOINT` | `RechargeHomepageMyBillsTripleEntryPointWidgetViewHolder` | ![](res/ScreenShot20230522at125551.png)<br/> |
 | - | For loading purposes | `RechargeHomepageLoadingViewHolder` | ![](res/image-20210520-115856.png)<br/> |
 
 ### How sub-homepage’s search bar works?

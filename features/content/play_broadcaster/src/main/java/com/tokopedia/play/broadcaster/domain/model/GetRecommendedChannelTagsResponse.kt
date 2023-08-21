@@ -11,7 +11,13 @@ data class GetRecommendedChannelTagsResponse(
 ) {
 
     data class GetRecommendedTags(
-            @SerializedName("tags")
-            val tags: List<String> = emptyList()
+        @SerializedName("tags")
+        val tags: List<String> = emptyList(),
+
+        @SerializedName("minTags")
+        val minTags: Int = 0,
+
+        @SerializedName("maxTags")
+        val maxTags: Int = 0,
     )
 }

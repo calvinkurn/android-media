@@ -155,6 +155,7 @@ class ProductTagViewComponent(
     fun onDestroy() {
         rvProductTag.removeOnScrollListener(scrollListener)
         adapter.unregisterAdapterDataObserver(adapterObserver)
+        coachMark.dismissCoachMark()
     }
 
     companion object {

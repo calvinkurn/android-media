@@ -17,11 +17,11 @@ import com.tokopedia.fcmcommon.utils.FcmTokenUtils
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.remoteconfig.GraphqlHelper
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
-import com.tokopedia.abstraction.common.utils.GraphqlHelper.loadRawString as loadRaw
 
 @Module
 class FcmModule(@ApplicationContext private val context: Context) {
@@ -67,7 +67,7 @@ class FcmModule(@ApplicationContext private val context: Context) {
     fun provideFcmTokenUseCase(
         useCase: GraphqlUseCase<UpdateFcmTokenResponse>
     ): UpdateFcmTokenUseCase {
-        val query = loadRaw(context.resources, R.raw.query_update_fcm_token)
+        val query = GraphqlHelper.loadRawString(context.resources, R.raw.query_update_fcm_token)
         return UpdateFcmTokenUseCase(useCase, query)
     }
 
