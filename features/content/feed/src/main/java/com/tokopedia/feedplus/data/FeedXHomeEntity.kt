@@ -373,6 +373,8 @@ class FeedXScore(
 }
 
 class FeedXCta(
+    @SerializedName("subtitle")
+    val subtitles: List<String> = emptyList(),
     @SerializedName("texts")
     val texts: List<String> = emptyList(),
     @SerializedName("color")

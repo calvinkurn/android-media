@@ -25,6 +25,8 @@ import com.tokopedia.content.common.usecase.TrackVisitChannelBroadcasterUseCase
 import com.tokopedia.content.common.util.UiEventManager
 import com.tokopedia.createpost.common.domain.entity.SubmitPostData
 import com.tokopedia.feed.component.product.FeedTaggedProductUiModel
+import com.tokopedia.feedcomponent.domain.mapper.ProductMapper
+import com.tokopedia.feedcomponent.domain.usecase.FeedXGetActivityProductsUseCase
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowUseCase
 import com.tokopedia.feedcomponent.people.usecase.ProfileFollowUseCase
@@ -118,6 +120,7 @@ class FeedPostViewModel @Inject constructor(
     private val postReportUseCase: PostUserReportUseCase,
     private val feedXRecomWidgetUseCase: FeedXRecomWidgetUseCase,
     private val uiEventManager: UiEventManager<FeedPostEvent>,
+    private val feedXGetActivityProductsUseCase: FeedXGetActivityProductsUseCase,
     private val dispatchers: CoroutineDispatchers
 ) : ViewModel() {
 
@@ -144,6 +147,10 @@ class FeedPostViewModel @Inject constructor(
     private val _reminderResult = MutableLiveData<Result<FeedReminderResultModel>>()
     val reminderResult: LiveData<Result<FeedReminderResultModel>>
         get() = _reminderResult
+
+    private val _feedTagProductList = MutableLiveData<Result<List<FeedTaggedProductUiModel>>?>()
+    val feedTagProductList: LiveData<Result<List<FeedTaggedProductUiModel>>?>
+        get() = _feedTagProductList
 
     private val _followRecommendationResult = MutableLiveData<Result<String>>()
     val followRecommendationResult: LiveData<Result<String>>
@@ -385,9 +392,8 @@ class FeedPostViewModel @Inject constructor(
 
                     val defaultTopAdsUrlParams: MutableMap<String, Any> = getTopAdsParams()
                     val topAdsAddressData = topAdsAddressHelper.getAddressData()
-                    val indexToRemove = mutableListOf<Int>()
 
-                    val newItems = it.data.items.mapIndexed { index, item ->
+                    val newItems = it.data.items.mapNotNull { item ->
                         when {
                             item is FeedCardImageContentModel && item.isTopAds && !item.isFetched -> {
                                 val topAdsDeferred = async {
@@ -405,19 +411,13 @@ class FeedPostViewModel @Inject constructor(
                                         transformCpmToFeedTopAds(item, cpmModel)
                                     } else {
                                         // Error fetch TopAds, should remove the view
-                                        indexToRemove.add(index)
-                                        item.copy(isFetched = true)
+                                        null
                                     }
                                 }
                                 topAdsDeferred.await()
                             }
                             else -> item
                         }
-                    }.toMutableList()
-
-                    indexToRemove.forEach { indexNumber ->
-                        if (newItems.size <= indexNumber) return@forEach
-                        newItems.removeAt(indexNumber)
                     }
 
                     _feedHome.value = Success(
@@ -448,17 +448,7 @@ class FeedPostViewModel @Inject constructor(
 
         try {
             feedHome.value?.let {
-                if (
-                    it is Success &&
-                    (
-                        // reload
-                        followRecomData.isError ||
-                            // load for the first time
-                            (followRecomData.data.isEmpty() && !followRecomData.hasNext && !followRecomData.isLoading) ||
-                            // load next page
-                            (followRecomData.hasNext && !followRecomData.isLoading)
-                        )
-                ) {
+                if (it is Success && isAllowFetchFollowRecommendation(followRecomData)) {
                     updateFollowRecom(followRecomData.id) { followRecom ->
                         followRecom.copy(status = FeedFollowRecommendationModel.Status.Loading)
                     }
@@ -485,6 +475,14 @@ class FeedPostViewModel @Inject constructor(
                 )
             }
         }
+    }
+
+    private fun isAllowFetchFollowRecommendation(followRecomData: FeedFollowRecommendationModel): Boolean {
+        return followRecomData.isError ||
+            // load for the first time
+            (followRecomData.data.isEmpty() && !followRecomData.hasNext && !followRecomData.isLoading) ||
+            // load next page
+            (followRecomData.hasNext && !followRecomData.isLoading)
     }
 
     fun suspendFollow(id: String, encryptedId: String, isShop: Boolean) {
@@ -1035,8 +1033,8 @@ class FeedPostViewModel @Inject constructor(
     /**
      * Merchant Voucher
      */
-    private val _merchantVoucherLiveData = MutableLiveData<Result<TokopointsCatalogMVCSummary>>()
-    val merchantVoucherLiveData: LiveData<Result<TokopointsCatalogMVCSummary>>
+    private val _merchantVoucherLiveData = MutableLiveData<Result<TokopointsCatalogMVCSummary>?>()
+    val merchantVoucherLiveData: LiveData<Result<TokopointsCatalogMVCSummary>?>
         get() = _merchantVoucherLiveData
 
     fun getMerchantVoucher(shopId: String) {
@@ -1061,6 +1059,10 @@ class FeedPostViewModel @Inject constructor(
         }) {
             _merchantVoucherLiveData.value = Fail(it)
         }
+    }
+
+    fun clearMerchantVoucher() {
+        _merchantVoucherLiveData.value = null
     }
 
     fun getReport() {
@@ -1166,6 +1168,42 @@ class FeedPostViewModel @Inject constructor(
             }
         }) {
             _reportResponse.value = Fail(it)
+        }
+    }
+
+    fun fetchFeedProduct(
+        activityId: String,
+        products: List<FeedTaggedProductUiModel>,
+        sourceType: FeedTaggedProductUiModel.SourceType
+    ) {
+        viewModelScope.launch {
+            try {
+                _feedTagProductList.value = null
+
+                val currentList: List<FeedTaggedProductUiModel> = when {
+                    products.isNotEmpty() -> products
+                    else -> emptyList()
+                }
+
+                val response = withContext(dispatchers.io) {
+                    feedXGetActivityProductsUseCase(
+                        feedXGetActivityProductsUseCase.getFeedDetailParam(
+                            activityId,
+                            cursor
+                        )
+                    ).data
+                }
+
+                val mappedData = response.products.map {
+                    ProductMapper.transform(it, response.campaign, sourceType)
+                }
+                val distinctData = (currentList + mappedData).distinctBy {
+                    it.id
+                }
+                _feedTagProductList.value = Success(distinctData)
+            } catch (t: Throwable) {
+                _feedTagProductList.value = Fail(t)
+            }
         }
     }
 

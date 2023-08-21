@@ -371,6 +371,30 @@ object BuyerOrderDetailTracker {
             .sendGeneralEvent()
     }
 
+    fun sendClickOnOrderGroupWidget(orderId: String) {
+        mutableMapOf<String, Any>().appendGeneralEventData(
+            eventName = BuyerOrderDetailTrackerConstant.EVENT_NAME_CLICK_PG,
+            eventCategory = BuyerOrderDetailTrackerConstant.EVENT_CATEGORY_MY_PURCHASE_LIST_DETAIL_MP,
+            eventAction = BuyerOrderDetailTrackerConstant.EVENT_ACTION_CLICK_ON_ORDER_WIDGET,
+            eventLabel = orderId
+        ).appendBusinessUnit(BuyerOrderDetailTrackerConstant.BUSINESS_UNIT_PHYSICAL_GOODS)
+            .appendCurrentSite(BuyerOrderDetailTrackerConstant.CURRENT_SITE_TOKOPEDIA_MARKETPLACE)
+            .appendTrackerId(BuyerOrderDetailTrackerConstant.TRACKER_ID_44136)
+            .sendGeneralEvent()
+    }
+
+    fun sendClickViewDetailOnOrderGroupDetail(orderId: String) {
+        mutableMapOf<String, Any>().appendGeneralEventData(
+            eventName = BuyerOrderDetailTrackerConstant.EVENT_NAME_CLICK_PG,
+            eventCategory = BuyerOrderDetailTrackerConstant.EVENT_CATEGORY_MY_PURCHASE_LIST_DETAIL_MP,
+            eventAction = BuyerOrderDetailTrackerConstant.EVENT_ACTION_CLICK_VIEW_DETAIL_ORDER_GROUP,
+            eventLabel = orderId
+        ).appendBusinessUnit(BuyerOrderDetailTrackerConstant.BUSINESS_UNIT_PHYSICAL_GOODS)
+            .appendCurrentSite(BuyerOrderDetailTrackerConstant.CURRENT_SITE_TOKOPEDIA_MARKETPLACE)
+            .appendTrackerId(BuyerOrderDetailTrackerConstant.TRACKER_ID_44137)
+            .sendGeneralEvent()
+    }
+
     fun sendClickOnResolutionWidgetEvent(orderStatusCode: String, orderId: String) {
         val eventLabel = "$orderStatusCode - $orderId"
         val trackerId = "38355"
