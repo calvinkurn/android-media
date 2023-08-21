@@ -13,6 +13,7 @@ import com.tokopedia.catalog.di.DaggerCatalogComponent
 import com.tokopedia.catalog.ui.viewmodel.CatalogDetailPageViewModel
 import com.tokopedia.catalogcommon.adapter.CatalogAdapterFactoryImpl
 import com.tokopedia.catalogcommon.adapter.WidgetCatalogAdapter
+import com.tokopedia.catalogcommon.listener.HeroBannerListener
 import com.tokopedia.catalogcommon.uimodel.DummyUiModel
 import com.tokopedia.catalogcommon.uimodel.HeroBannerUiModel
 import com.tokopedia.catalogcommon.uimodel.PanelImageUiModel
@@ -20,7 +21,7 @@ import com.tokopedia.catalogcommon.uimodel.TopFeaturesUiModel
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class CatalogDetailPageFragment : BaseDaggerFragment() {
+class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener {
 
     @Inject
     lateinit var catalogDetailPageViewModel: CatalogDetailPageViewModel
@@ -28,7 +29,11 @@ class CatalogDetailPageFragment : BaseDaggerFragment() {
     private var binding by autoClearedNullable<FragmentCatalogReimagineDetailPageBinding>()
 
     private val widgetAdapter by lazy {
-        WidgetCatalogAdapter(CatalogAdapterFactoryImpl())
+        WidgetCatalogAdapter(
+            CatalogAdapterFactoryImpl(
+                heroBannerListener = this
+            )
+        )
     }
 
     private val widgets by  lazy {
@@ -118,6 +123,15 @@ class CatalogDetailPageFragment : BaseDaggerFragment() {
 
     }
 
+    override fun onNavBackClicked() {
+        activity?.finish()
+    }
 
+    override fun onNavShareClicked() {
+        // no-op
+    }
 
+    override fun onNavMoreMenuClicked() {
+        // no-op
+    }
 }

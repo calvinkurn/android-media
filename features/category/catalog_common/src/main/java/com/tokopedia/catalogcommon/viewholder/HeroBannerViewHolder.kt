@@ -1,20 +1,16 @@
 package com.tokopedia.catalogcommon.viewholder
 
-import android.annotation.SuppressLint
-import android.graphics.drawable.Drawable
-import android.graphics.drawable.GradientDrawable
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.core.view.isVisible
-import androidx.viewbinding.ViewBinding
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.catalogcommon.R
 import com.tokopedia.catalogcommon.databinding.WidgetItemBannerHeroBinding
 import com.tokopedia.catalogcommon.databinding.WidgetItemBannerHeroNavigationBinding
+import com.tokopedia.catalogcommon.listener.HeroBannerListener
 import com.tokopedia.catalogcommon.uimodel.HeroBannerUiModel
-import com.tokopedia.catalogcommon.util.DrawableExtension
 import com.tokopedia.catalogcommon.util.DrawableExtension.createGradientDrawable
 import com.tokopedia.home_component.customview.bannerindicator.BannerIndicator
 import com.tokopedia.home_component.customview.bannerindicator.BannerIndicatorListener
@@ -22,9 +18,10 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.utils.view.binding.viewBinding
 
-class HeroBannerViewHolder(itemView: View):
-    AbstractViewHolder<HeroBannerUiModel>(itemView)
-{
+class HeroBannerViewHolder(
+    itemView: View,
+    private val heroBannerListener: HeroBannerListener? = null
+): AbstractViewHolder<HeroBannerUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -111,6 +108,9 @@ class HeroBannerViewHolder(itemView: View):
         val cardColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White_68)
         iconBack.background = createGradientDrawable(cardColor, cardColor, CIRCULAR_CARD_RADIUS)
         bgRightMenu.background = createGradientDrawable(cardColor, cardColor, CIRCULAR_CARD_RADIUS)
+        iconBack.setOnClickListener { heroBannerListener?.onNavBackClicked() }
+        iconMoreMenu.setOnClickListener { heroBannerListener?.onNavMoreMenuClicked() }
+        iconShare.setOnClickListener { heroBannerListener?.onNavShareClicked() }
     }
 
     override fun bind(element: HeroBannerUiModel) {
