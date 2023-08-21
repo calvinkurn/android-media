@@ -181,6 +181,7 @@ class StoriesDetailFragment @Inject constructor(
                 TouchEventStories.RESUME -> resumeStories()
 
                 TouchEventStories.NEXT_PREV -> viewModelAction(PreviousDetail)
+                else -> {}
             }
         }
         flStoriesNext.onTouchEventStories { event ->
@@ -190,6 +191,12 @@ class StoriesDetailFragment @Inject constructor(
                 TouchEventStories.RESUME -> resumeStories()
 
                 TouchEventStories.NEXT_PREV -> viewModelAction(NextDetail)
+
+                TouchEventStories.SWIPE_UP -> {
+                    if (groupId != viewModel.groupId) return@onTouchEventStories
+                    viewModelAction(StoriesUiAction.OpenProduct)
+                }
+                else -> {}
             }
         }
         flStoriesProduct.setOnClickListener {

@@ -4,12 +4,14 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
@@ -32,8 +34,9 @@ fun StoriesProductNotch(productCount: Int, onClick: () -> Unit) {
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .wrapContentSize()
-                .background(color = NestTheme.colors.RN._950, shape = RoundedCornerShape(20.dp))
-                .clickable { onClick }
+                .background(color = Color(0x80000000), shape = RoundedCornerShape(20.dp))
+                .padding(4.dp)
+                .clickable { onClick() }
         ) {
             val iconDrawable = getIconUnifyDrawable(
                 ctx,
