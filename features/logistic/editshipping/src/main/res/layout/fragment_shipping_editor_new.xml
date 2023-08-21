@@ -154,6 +154,14 @@
                         app:layout_constraintTop_toBottomOf="@id/tv_antar_ke_agen"
                         android:text="@string/antar_ke_gerai_desc" />
 
+                    <com.tokopedia.unifycomponents.UnifyButton
+                        android:id="@+id/button_drop_off"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Cek Gerai Terdekat"
+                        app:layout_constraintTop_toBottomOf="@id/tv_antar_ke_agen_detail"
+                        app:layout_constraintStart_toStartOf="@id/tv_antar_ke_agen"/>
+
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rv_conventional"
                         android:layout_width="match_parent"
@@ -162,7 +170,7 @@
                         android:layout_marginStart="@dimen/unify_space_16"
                         android:layout_marginEnd="@dimen/unify_space_16"
                         android:descendantFocusability="blocksDescendants"
-                        app:layout_constraintTop_toBottomOf="@id/tv_antar_ke_agen_detail"/>
+                        app:layout_constraintTop_toBottomOf="@id/button_drop_off"/>
 
                     <View
                         android:id="@+id/divider_shipping_editor_2"
