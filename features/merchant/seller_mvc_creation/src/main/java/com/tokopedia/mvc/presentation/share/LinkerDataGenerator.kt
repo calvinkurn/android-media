@@ -15,17 +15,31 @@ class LinkerDataGenerator @Inject constructor() {
         shopDomain : String,
         shareModel: ShareModel,
         title : String,
-        outgoingDescription : String
+        outgoingDescription : String,
+        isProductVoucher: Boolean
     ): LinkerShareData {
+
+        val destinationId = if (isProductVoucher) {
+            "${shopId}/voucher/${galadrielVoucherId}?page_source=${ShareComponentConstant.FEATURE_NAME}"
+        } else {
+            "${shopId}?page_source=${ShareComponentConstant.FEATURE_NAME}"
+        }
+
+        val destinationUrl = if (isProductVoucher) {
+            "https://www.tokopedia.com/${shopDomain}/voucher/${galadrielVoucherId}?page_source=${ShareComponentConstant.FEATURE_NAME}"
+        } else {
+            "https://www.tokopedia.com/${shopDomain}?page_source=${ShareComponentConstant.FEATURE_NAME}"
+        }
+
         val linkerData = LinkerData()
         linkerData.apply {
             feature = shareModel.feature
             channel = shareModel.channel
             campaign = shareModel.campaign
-            id = "${shopId}/voucher/${galadrielVoucherId}?page_source=${ShareComponentConstant.FEATURE_NAME}"
+            id = destinationId
             linkerData.type = LinkerData.SHOP_TYPE
             name = title
-            uri = "https://www.tokopedia.com/${shopDomain}/voucher/${galadrielVoucherId}?page_source=${ShareComponentConstant.FEATURE_NAME}"
+            uri = destinationUrl
             ogTitle = title
             ogDescription = outgoingDescription
             if (!TextUtils.isEmpty(shareModel.ogImgUrl)) {
@@ -37,6 +51,5 @@ class LinkerDataGenerator @Inject constructor() {
         linkerShareData.linkerData = linkerData
         return linkerShareData
     }
-
 
 }
