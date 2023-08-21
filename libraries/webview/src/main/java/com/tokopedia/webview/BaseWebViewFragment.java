@@ -54,6 +54,10 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
@@ -886,12 +890,26 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         }
 
         if (url.contains("gift-card/redemption")) {
+            ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(
+                    new ActivityResultContracts.StartActivityForResult(),
+                    new ActivityResultCallback<ActivityResult>() {
+                        @Override
+                        public void onActivityResult(ActivityResult result) {
+                            if (result.getResultCode() == Activity.RESULT_OK) {
+                                // There are no request codes
+                                Intent data = result.getData();
+
+                            }
+                        }
+                    });
+
             Intent intent2 = new Intent(
                     Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
-            startActivityForResult(intent2, ContactPicker.CONTACT_PICKER_REQUEST_CODE);
+//            startActivityForResult(intent2, ContactPicker.CONTACT_PICKER_REQUEST_CODE);
+            someActivityResultLauncher.launch(intent2);
 //            contactPicker.openContactPicker(
 //                    BaseWebViewFragment.this,
-//                    intent -> startActivityForResult(intent2, ContactPicker.CONTACT_PICKER_REQUEST_CODE)
+//                    intent -> startActivityForReasult(intent2, ContactPicker.CONTACT_PICKER_REQUEST_CODE)
 //            );
             return true;
         }
