@@ -56,12 +56,12 @@ internal class StoriesBorderView : View {
 
     private var mBorderConfig = BorderConfiguration(
         unseenStoriesWidth = BorderValue.Adaptive,
-        seenStoriesWidth = BorderValue.Adaptive,
+        seenStoriesWidth = BorderValue.Adaptive
     )
-    set(value) {
-        field = value
-        invalidate()
-    }
+        set(value) {
+            field = value
+            invalidate()
+        }
 
     private var mStoriesStatus = StoriesStatus.NoStories
 
@@ -209,7 +209,7 @@ internal class StoriesBorderView : View {
         val alphaValue = 0
 
         val scaleDown = ValueAnimator.ofFloat(scaleX, scaleDownValue)
-            .setDuration(200)
+            .setDuration(400)
         scaleDown.addUpdateListener {
             val scaleValue = it.animatedValue as Float
             scaleX = scaleValue
@@ -217,7 +217,7 @@ internal class StoriesBorderView : View {
         }
 
         val scaleOriginal1 = ValueAnimator.ofFloat(scaleDownValue, scaleOriginalValue)
-            .setDuration(200)
+            .setDuration(400)
         scaleOriginal1.addUpdateListener {
             val scaleValue = it.animatedValue as Float
             scaleX = scaleValue
@@ -225,14 +225,14 @@ internal class StoriesBorderView : View {
         }
 
         val alphaDashed = ValueAnimator.ofInt(alphaValue, opaqueValue)
-            .setDuration(200)
+            .setDuration(400)
         alphaDashed.addUpdateListener {
             arcPaint.alpha = it.animatedValue as Int
             postInvalidateOnAnimation()
         }
 
         val rotateSlow = ValueAnimator.ofFloat(0f, 160f)
-            .setDuration(1200)
+            .setDuration(1600)
         rotateSlow.interpolator = LinearEasingInterpolator()
         rotateSlow.addUpdateListener {
             val rotationValue = it.animatedValue as Float
@@ -284,14 +284,15 @@ internal class StoriesBorderView : View {
 
     internal data class BorderConfiguration(
         val unseenStoriesWidth: BorderValue,
-        val seenStoriesWidth: BorderValue,
+        val seenStoriesWidth: BorderValue
     )
 
     internal sealed interface BorderValue {
         object Adaptive : BorderValue
+
         @JvmInline
         value class Fixed(val value: Float) : BorderValue {
-            constructor(value: Int): this(value.toFloat())
+            constructor(value: Int) : this(value.toFloat())
         }
     }
 }
