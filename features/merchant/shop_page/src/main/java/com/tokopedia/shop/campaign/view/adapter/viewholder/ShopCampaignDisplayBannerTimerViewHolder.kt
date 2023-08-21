@@ -151,28 +151,42 @@ class ShopCampaignDisplayBannerTimerViewHolder(
             textTimerDescription?.text = timeDescription
             textTimerDescription?.show()
             val days = model.data?.timeCounter?.millisecondsToDays().orZero()
-            val dateCampaign = when {
-                isStatusCampaignUpcoming(statusCampaign) -> {
-                    DateHelper.getDateFromString(model.data?.startDate.orEmpty())
-                }
-
-                isStatusCampaignOngoing(statusCampaign) -> {
-                    DateHelper.getDateFromString(model.data?.endDate.orEmpty())
-                }
-
-                else -> {
-                    Date()
-                }
-            }
             if (days >= Int.ONE) {
-                setTimerNonUnify(dateCampaign)
+                val formattedDate = getFormattedDate(statusCampaign, model,false)
+                setTimerNonUnify(formattedDate)
             } else {
-                setTimerUnify(dateCampaign, timeCounter, statusCampaign, model)
+                val formattedDate = getFormattedDate(statusCampaign, model, true)
+                setTimerUnify(formattedDate, timeCounter, statusCampaign, model)
             }
         } else {
             timerContainer?.gone()
             textTimerDescription?.gone()
             timerMoreThanOneDay?.gone()
+        }
+    }
+
+    private fun getFormattedDate(
+        statusCampaign: StatusCampaign?,
+        model: ShopWidgetDisplayBannerTimerUiModel,
+        isUseDefaultTimeZone: Boolean
+    ): Date {
+        val timeZone = if (isUseDefaultTimeZone) {
+            DateHelper.getDefaultTimeZone()
+        } else {
+            null
+        }
+        return when {
+            isStatusCampaignUpcoming(statusCampaign) -> {
+                DateHelper.getDateFromString(model.data?.startDate.orEmpty(), timeZone)
+            }
+
+            isStatusCampaignOngoing(statusCampaign) -> {
+                DateHelper.getDateFromString(model.data?.endDate.orEmpty(), timeZone)
+            }
+
+            else -> {
+                Date()
+            }
         }
     }
 
