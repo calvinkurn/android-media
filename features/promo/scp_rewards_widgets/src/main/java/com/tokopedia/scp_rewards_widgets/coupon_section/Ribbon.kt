@@ -9,6 +9,7 @@ import com.google.android.material.card.MaterialCardView
 import com.google.android.material.shape.CornerFamily
 import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.shape.ShapeAppearanceModel
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.scp_rewards_common.dpToPx
 import com.tokopedia.scp_rewards_common.parseColor
@@ -66,13 +67,19 @@ class Ribbon @JvmOverloads constructor(
         binding.cardView.elevation = 0f
     }
 
-    fun setData() {
-         binding.tvStatus.text = "asd"
-         binding.icStatus.visible()
-         applyBackgroundColor("#ffffff")
+    fun setData(statusBadgeText: String?, statusBadgeColor: String?) {
+        binding.tvStatus.text = statusBadgeText
+
+        if (statusBadgeText.contentEquals("Locked", true)) {
+            binding.icStatus.visible()
+        } else {
+            binding.icStatus.gone()
+        }
+
+        applyBackgroundColor(statusBadgeColor)
     }
 
-    private fun applyBackgroundColor(color: String) {
+    private fun applyBackgroundColor(color: String?) {
         background = background
             .apply {
                 setTint(darkenColor(parseColor(color)

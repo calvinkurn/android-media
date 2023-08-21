@@ -9,8 +9,12 @@ import androidx.core.content.ContextCompat
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.shape.ShapeAppearanceModel
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.scp_rewards_common.dpToPx
+import com.tokopedia.scp_rewards_common.parseColor
 import com.tokopedia.scp_rewards_widgets.databinding.ItemCouponLayoutBinding
+import com.tokopedia.scp_rewards_widgets.model.MedalBenefitModel
 
 @SuppressLint("RestrictedApi")
 class CouponViewCard @JvmOverloads constructor(
@@ -25,7 +29,7 @@ class CouponViewCard @JvmOverloads constructor(
     companion object {
         private const val SCALLOP_RADIUS = 30
         private const val CORNER_RADIUS = 12
-        private const val CARD_ELEVATION = 10f
+        private const val CARD_ELEVATION = 0f
     }
 
     private fun applyEdgeTreatment() {
@@ -42,9 +46,6 @@ class CouponViewCard @JvmOverloads constructor(
             .build()
 
         val shapeDrawable = MaterialShapeDrawable(shapeAppearanceModel)
-            .apply {
-                setTint(ContextCompat.getColor(context, com.tokopedia.scp_rewards_widgets.R.color.coupon_card_background))
-            }
 
         val innerShapeDrawable = MaterialShapeDrawable(shapeAppearanceModel)
             .apply {
@@ -64,14 +65,40 @@ class CouponViewCard @JvmOverloads constructor(
         clipToPadding = false
     }
 
-    fun setData() {
-        with(binding) {
-            tvTitle.text = "asda"
-            tvDescription.text = "asda\nasd\nasdf\nasdasd"
-            tvAdditional.text = "asda"
-            tvInfo.text = "asda"
+    fun setData(data: MedalBenefitModel, onApplyClick: (String?) -> Unit) {
 
-            ribbonStatus.setData()
+        background.setTint(parseColor(data.additionalInfoColor)
+            ?: ContextCompat.getColor(context, com.tokopedia.scp_rewards_widgets.R.color.coupon_card_background))
+
+        with(binding) {
+            tvTitle.text = data.title
+            if (data.tncList != null) {
+                if (data.tncList.size > 1) {
+                    tvDescription.text = data.tncList.joinToString(separator = "\n\u2022 ", prefix = "\u2022 ")
+                } else {
+                    tvDescription.text = data.tncList.first()
+                }
+            }
+
+            ivBackground.setImageUrl(data.backgroundImageURL.orEmpty())
+            ivMedalIcon.setImageUrl(data.medaliImageURL.orEmpty())
+            ivBadgeBase.setImageUrl(data.podiumImageURL.orEmpty())
+            ivRibbon.setImageUrl(data.typeImageURL.orEmpty())
+            tvAdditional.text = data.statusDescription
+            tvInfo.text = data.additionalInfoText
+
+            if (data.status.contentEquals("Active", true)) {
+                btnApply.visible()
+                ribbonStatus.gone()
+                btnApply.text = data.cta?.text
+                btnApply.setOnClickListener {
+                    onApplyClick(data.cta?.appLink)
+                }
+            } else {
+                ribbonStatus.visible()
+                btnApply.gone()
+                ribbonStatus.setData(data.statusBadgeText, data.statusBadgeColor)
+            }
         }
     }
 }

@@ -91,8 +91,8 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_description"
-                android:layout_width="274dp"
-                android:layout_height="20dp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_2"
                 android:layout_marginBottom="@dimen/dp_12"
                 android:ellipsize="end"
@@ -104,7 +104,7 @@
                 app:layout_constraintTop_toBottomOf="@id/tv_title"
                 app:layout_constraintVertical_bias="0.0"
                 app:typographyType="paragraph_3"
-                tools:text="Min. transaction Rp10k" />
+                tools:text="* Min. transaction Rp10k\n* Skin Care only" />
 
             <ImageView
                 android:id="@+id/divider"

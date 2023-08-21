@@ -9,9 +9,15 @@ import com.tokopedia.scp_rewards.common.utils.launchCatchError
 import com.tokopedia.scp_rewards.detail.domain.CouponAutoApplyUseCase
 import com.tokopedia.scp_rewards.detail.domain.GetMedalBenefitUseCase
 import com.tokopedia.scp_rewards.detail.domain.MedalDetailUseCase
+import com.tokopedia.scp_rewards.detail.domain.model.BenefitButton
+import com.tokopedia.scp_rewards.detail.domain.model.Info
 import com.tokopedia.scp_rewards.detail.domain.model.MedalBenefitResponseModel
 import com.tokopedia.scp_rewards.detail.domain.model.MedalDetailResponseModel
+import com.tokopedia.scp_rewards.detail.domain.model.MedaliBenefit
+import com.tokopedia.scp_rewards.detail.domain.model.MedaliBenefitList
+import com.tokopedia.scp_rewards.detail.domain.model.RewardsGetMedaliBenefit
 import com.tokopedia.scp_rewards.detail.domain.model.ScpRewardsCouponAutoApply
+import com.tokopedia.scp_rewards.detail.domain.model.Tnc
 import com.tokopedia.scp_rewards_widgets.medal_footer.FooterData
 import javax.inject.Inject
 
@@ -74,11 +80,27 @@ class MedalDetailViewModel @Inject constructor(
         sourceName: String,
         pageName: String = ""
     ): MedalBenefitResponseModel {
-        return getMedalBenefitUseCase.getMedalBenefits(
-            medaliSlug = medaliSlug,
-            sourceName = sourceName,
-            pageName = pageName
-        )
+
+        return MedalBenefitResponseModel(scpRewardsMedaliBenefitList = RewardsGetMedaliBenefit(
+            medaliBenefitList = MedaliBenefitList(
+                benefitList = listOf(
+                    MedaliBenefit(
+                        status = "Active",
+                        title = "Diskon Rp50 rb",
+                        tncList = listOf(Tnc(text = "Min. transaction Rp10k"), Tnc("Skin Care only")),
+                        isActive = true,
+                        info = Info("You can stack this coupon with other promos on Tokopedia ", "#F3E7FB"),
+                        benefitCTA = BenefitButton(text = "Use"))
+                )
+            )
+        ))
+
+
+        /* return getMedalBenefitUseCase.getMedalBenefits(
+             medaliSlug = medaliSlug,
+             sourceName = sourceName,
+             pageName = pageName
+         )*/
     }
 
     fun applyCoupon(footerData: FooterData, shopId: Int? = null, couponCode: String) {
