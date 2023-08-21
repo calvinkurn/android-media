@@ -7,16 +7,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.databinding.ItemShopHomeShowcaseNavigationBinding
 import com.tokopedia.shop.home.view.listener.ShopHomeShowcaseNavigationListener
-import com.tokopedia.shop.home.view.model.Carousel
-import com.tokopedia.shop.home.view.model.LeftMainBanner
-import com.tokopedia.shop.home.view.model.ShopHomeShowcaseNavigationBannerAppearance
-import com.tokopedia.shop.home.view.model.Showcase
-import com.tokopedia.shop.home.view.model.TopMainBanner
+import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.CarouselAppearance
+import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.LeftMainBannerAppearance
+import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.ShopHomeShowcaseNavigationBannerWidgetAppearance
+import com.tokopedia.shop.home.view.model.showcase_navigation.Showcase
+import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.TopMainBannerAppearance
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.toPx
 
 class ShopHomeShowCaseNavigationAdapter(
-    private val appearance: ShopHomeShowcaseNavigationBannerAppearance,
+    private val appearance: ShopHomeShowcaseNavigationBannerWidgetAppearance,
     private val listener: ShopHomeShowcaseNavigationListener
 ) : RecyclerView.Adapter<ShopHomeShowCaseNavigationAdapter.ShowCaseViewHolder>() {
 
@@ -50,7 +50,7 @@ class ShopHomeShowCaseNavigationAdapter(
     ) : RecyclerView.ViewHolder(binding.root) {
 
         init {
-            if (appearance is Carousel) {
+            if (appearance is CarouselAppearance) {
                 binding.imgBanner.layoutParams.height = SHOWCASE_CAROUSEL_SIZE_HEIGHT.toPx()
                 binding.imgBanner.layoutParams.width = SHOWCASE_CAROUSEL_SIZE_WIDTH.toPx()
                 binding.imgBanner.requestLayout()
@@ -69,11 +69,11 @@ class ShopHomeShowCaseNavigationAdapter(
 
         private fun ImageUnify.loadShowcaseImage(
             imageUrl: String,
-            appearance: ShopHomeShowcaseNavigationBannerAppearance
+            appearance: ShopHomeShowcaseNavigationBannerWidgetAppearance
         ) {
             type = when (appearance) {
-                is TopMainBanner -> ImageUnify.TYPE_RECT
-                is LeftMainBanner -> ImageUnify.TYPE_RECT
+                is TopMainBannerAppearance -> ImageUnify.TYPE_RECT
+                is LeftMainBannerAppearance -> ImageUnify.TYPE_RECT
                 else -> ImageUnify.TYPE_CIRCLE
             }
 

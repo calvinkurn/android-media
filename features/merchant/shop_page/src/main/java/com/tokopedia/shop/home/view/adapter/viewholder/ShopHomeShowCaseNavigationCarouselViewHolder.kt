@@ -8,10 +8,10 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.shop.R
 import com.tokopedia.shop.databinding.ItemShopHomeShowcaseNavigationCarouselBannerBinding
 import com.tokopedia.shop.home.view.listener.ShopHomeShowcaseNavigationListener
-import com.tokopedia.shop.home.view.model.Carousel
-import com.tokopedia.shop.home.view.model.ShopHomeShowcaseNavigationBannerAppearance
-import com.tokopedia.shop.home.view.model.ShopHomeShowcaseNavigationUiModel
-import com.tokopedia.shop.home.view.model.Showcase
+import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.CarouselAppearance
+import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.ShopHomeShowcaseNavigationBannerWidgetAppearance
+import com.tokopedia.shop.home.view.model.showcase_navigation.ShopHomeShowcaseNavigationUiModel
+import com.tokopedia.shop.home.view.model.showcase_navigation.Showcase
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopHomeShowCaseNavigationCarouselViewHolder(
@@ -30,7 +30,7 @@ class ShopHomeShowCaseNavigationCarouselViewHolder(
 
 
     override fun bind(model: ShopHomeShowcaseNavigationUiModel) {
-        if (model.appearance is Carousel) {
+        if (model.appearance is CarouselAppearance) {
             val showcases = model.appearance.showcases
             viewBinding?.tpgTitle?.text = model.appearance.title
             viewBinding?.tpgTitle?.isVisible = model.appearance.title.isNotEmpty() && showcases.isNotEmpty()
@@ -42,7 +42,7 @@ class ShopHomeShowCaseNavigationCarouselViewHolder(
     }
 
     private fun setupShowCaseRecyclerView(
-        appearance: ShopHomeShowcaseNavigationBannerAppearance,
+        appearance: ShopHomeShowcaseNavigationBannerWidgetAppearance,
         showcases: List<Showcase>
     ) {
         val showCaseAdapter = ShopHomeShowCaseNavigationAdapter(appearance, listener)

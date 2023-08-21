@@ -11,7 +11,7 @@ import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.databinding.FragmentShopShowcaseNavigationTabWidgetBinding
 import com.tokopedia.shop.home.di.component.DaggerShopPageHomeComponent
 import com.tokopedia.shop.home.di.module.ShopPageHomeModule
-import com.tokopedia.shop.home.view.model.Showcase
+import com.tokopedia.shop.home.view.model.showcase_navigation.Showcase
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlin.collections.ArrayList
 

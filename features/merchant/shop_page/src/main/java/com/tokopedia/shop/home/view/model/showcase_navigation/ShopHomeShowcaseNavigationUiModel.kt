@@ -1,13 +1,16 @@
-package com.tokopedia.shop.home.view.model
+package com.tokopedia.shop.home.view.model.showcase_navigation
 
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.shop.home.WidgetName
 import com.tokopedia.shop.home.WidgetType
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
 import com.tokopedia.shop.home.view.adapter.ShopWidgetTypeFactory
+import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
+import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.ShopHomeShowcaseNavigationBannerWidgetAppearance
+import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.TopMainBannerAppearance
 
 data class ShopHomeShowcaseNavigationUiModel(
-    val appearance: ShopHomeShowcaseNavigationBannerAppearance = TopMainBanner(
+    val appearance: ShopHomeShowcaseNavigationBannerWidgetAppearance = TopMainBannerAppearance(
         title = "",
         viewAllCtaAppLink = "",
         showcases = emptyList()

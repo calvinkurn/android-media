@@ -16,9 +16,9 @@ import com.tokopedia.shop.databinding.ItemShopHomeShowcaseNavigationLeftMainBann
 import com.tokopedia.shop.home.util.ShopHomeShowcaseNavigationDependencyProvider
 import com.tokopedia.shop.home.view.fragment.ShopShowcaseNavigationTabWidgetFragment
 import com.tokopedia.shop.home.view.listener.ShopHomeShowcaseNavigationListener
-import com.tokopedia.shop.home.view.model.LeftMainBanner
-import com.tokopedia.shop.home.view.model.ShopHomeShowcaseNavigationUiModel
-import com.tokopedia.shop.home.view.model.Tab
+import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.LeftMainBannerAppearance
+import com.tokopedia.shop.home.view.model.showcase_navigation.ShopHomeShowcaseNavigationUiModel
+import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseTab
 import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.unifycomponents.setCustomText
 import com.tokopedia.utils.view.binding.viewBinding
@@ -41,12 +41,12 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
 
 
     override fun bind(model: ShopHomeShowcaseNavigationUiModel) {
-        val tabs = if (model.appearance is LeftMainBanner) model.appearance.tabs else emptyList()
+        val tabs = if (model.appearance is LeftMainBannerAppearance) model.appearance.tabs else emptyList()
         setupShowcaseHeader(model.appearance.title, model.appearance.viewAllCtaAppLink, tabs)
         setupTabs(tabs)
     }
 
-    private fun setupShowcaseHeader(title: String, viewAllCtaAppLink: String, tabs: List<Tab>) {
+    private fun setupShowcaseHeader(title: String, viewAllCtaAppLink: String, tabs: List<ShowcaseTab>) {
         viewBinding?.tpgTitle?.text = title
         viewBinding?.tpgTitle?.isVisible = title.isNotEmpty() && tabs.isNotEmpty()
 
@@ -58,7 +58,7 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
         viewBinding?.iconChevron?.isVisible = showcases.size > SHOW_VIEW_ALL_SHOWCASE_THRESHOLD
     }
 
-    private fun setupTabs(tabs: List<Tab>) {
+    private fun setupTabs(tabs: List<ShowcaseTab>) {
         val fragments = createFragments(tabs)
         val pagerAdapter = TabPagerAdapter(provider.currentFragment, fragments)
 
@@ -106,7 +106,7 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
         override fun createFragment(position: Int) = fragments[position].second
     }
 
-    private fun createFragments(tabs: List<Tab>): List<Pair<String, Fragment>> {
+    private fun createFragments(tabs: List<ShowcaseTab>): List<Pair<String, Fragment>> {
         val pages = mutableListOf<Pair<String, Fragment>>()
 
         tabs.forEachIndexed { _, currentTab ->

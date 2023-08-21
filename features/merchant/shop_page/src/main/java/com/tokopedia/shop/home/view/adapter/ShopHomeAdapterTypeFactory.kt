@@ -98,9 +98,9 @@ import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeShowCaseNavigationLeftMainBannerViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeShowCaseNavigationTopMainBannerPlaceholderViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeShowCaseNavigationTopMainBannerViewHolder
-import com.tokopedia.shop.home.view.model.Carousel
-import com.tokopedia.shop.home.view.model.LeftMainBanner
-import com.tokopedia.shop.home.view.model.ShopHomeShowcaseNavigationUiModel
+import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.CarouselAppearance
+import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.LeftMainBannerAppearance
+import com.tokopedia.shop.home.view.model.showcase_navigation.ShopHomeShowcaseNavigationUiModel
 import com.tokopedia.shop.product.view.datamodel.ShopProductSortFilterUiModel
 import com.tokopedia.shop.product.view.viewholder.ShopProductSortFilterViewHolder
 import com.tokopedia.shop_widget.common.util.WidgetState
@@ -108,7 +108,7 @@ import com.tokopedia.shop_widget.thematicwidget.typefactory.ThematicWidgetTypeFa
 import com.tokopedia.shop_widget.thematicwidget.uimodel.ThematicWidgetUiModel
 import com.tokopedia.shop_widget.thematicwidget.viewholder.ThematicWidgetLoadingStateViewHolder
 import com.tokopedia.shop_widget.thematicwidget.viewholder.ThematicWidgetViewHolder
-import com.tokopedia.shop.home.view.model.TopMainBanner
+import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.TopMainBannerAppearance
 
 open class ShopHomeAdapterTypeFactory(
     private val listener: ShopHomeDisplayWidgetListener,
@@ -310,12 +310,12 @@ open class ShopHomeAdapterTypeFactory(
         val isLoading = uiModel.isWidgetShowPlaceholder().orFalse()
 
         return when {
-            isLoading && uiModel.appearance is Carousel -> ShopHomeShowCaseNavigationCarouselPlaceholderViewHolder.LAYOUT
-            isLoading && uiModel.appearance is LeftMainBanner -> ShopHomeShowCaseNavigationLeftMainBannerPlaceholderViewHolder.LAYOUT
-            isLoading && uiModel.appearance is TopMainBanner -> ShopHomeShowCaseNavigationTopMainBannerPlaceholderViewHolder.LAYOUT
-            !isLoading && uiModel.appearance is Carousel -> ShopHomeShowCaseNavigationCarouselViewHolder.LAYOUT
-            !isLoading && uiModel.appearance is LeftMainBanner  -> ShopHomeShowCaseNavigationLeftMainBannerViewHolder.LAYOUT
-            !isLoading && uiModel.appearance is TopMainBanner -> ShopHomeShowCaseNavigationTopMainBannerViewHolder.LAYOUT
+            isLoading && uiModel.appearance is CarouselAppearance -> ShopHomeShowCaseNavigationCarouselPlaceholderViewHolder.LAYOUT
+            isLoading && uiModel.appearance is LeftMainBannerAppearance -> ShopHomeShowCaseNavigationLeftMainBannerPlaceholderViewHolder.LAYOUT
+            isLoading && uiModel.appearance is TopMainBannerAppearance -> ShopHomeShowCaseNavigationTopMainBannerPlaceholderViewHolder.LAYOUT
+            !isLoading && uiModel.appearance is CarouselAppearance -> ShopHomeShowCaseNavigationCarouselViewHolder.LAYOUT
+            !isLoading && uiModel.appearance is LeftMainBannerAppearance -> ShopHomeShowCaseNavigationLeftMainBannerViewHolder.LAYOUT
+            !isLoading && uiModel.appearance is TopMainBannerAppearance -> ShopHomeShowCaseNavigationTopMainBannerViewHolder.LAYOUT
             else -> ShopHomeShowCaseNavigationTopMainBannerViewHolder.LAYOUT
         }
     }

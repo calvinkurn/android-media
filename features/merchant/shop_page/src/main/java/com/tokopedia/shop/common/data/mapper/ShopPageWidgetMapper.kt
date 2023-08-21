@@ -11,10 +11,10 @@ import com.tokopedia.shop.common.data.model.ShopPageWidgetUiModel
 import com.tokopedia.shop.home.data.model.ShopLayoutWidget
 import com.tokopedia.shop.home.data.model.ShopPageWidgetRequestModel
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
-import com.tokopedia.shop.home.view.model.Carousel
-import com.tokopedia.shop.home.view.model.LeftMainBanner
+import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.CarouselAppearance
+import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.LeftMainBannerAppearance
 import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselUiModel
-import com.tokopedia.shop.home.view.model.ShopHomeShowcaseNavigationUiModel
+import com.tokopedia.shop.home.view.model.showcase_navigation.ShopHomeShowcaseNavigationUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerProductHotspotUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerTimerUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetVoucherSliderUiModel
@@ -23,9 +23,9 @@ import com.tokopedia.shop.home.view.model.StatusCampaign
 import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselUiModel.Tab.ComponentList.Data.BannerType
 import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselUiModel.Tab.ComponentList.ComponentType
 import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselUiModel.Tab.ComponentList.Data.LinkType
-import com.tokopedia.shop.home.view.model.Showcase
-import com.tokopedia.shop.home.view.model.Tab
-import com.tokopedia.shop.home.view.model.TopMainBanner
+import com.tokopedia.shop.home.view.model.showcase_navigation.Showcase
+import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseTab
+import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.TopMainBannerAppearance
 
 //TODO need to migrate all other shop widget mapper on home mapper to this mapper
 object ShopPageWidgetMapper {
@@ -191,23 +191,23 @@ object ShopPageWidgetMapper {
                 )
             }
 
-            Tab(text = tab.text, imageUrl = tab.imageURL, showcases = showcases)
+            ShowcaseTab(text = tab.text, imageUrl = tab.imageURL, showcases = showcases)
         }
 
         val appearance = when (response.header.widgetStyle) {
             ShowcaseNavigationBannerWidgetStyle.CIRCLE.id -> {
                 val showcases = tabs.firstOrNull()?.showcases ?: emptyList()
-                Carousel(response.header.title, showcases, response.header.ctaLink)
+                CarouselAppearance(response.header.title, showcases, response.header.ctaLink)
             }
             ShowcaseNavigationBannerWidgetStyle.ROUNDED_CORNER.id -> {
                 if (tabs.size == 1) {
                     val showcases = tabs.firstOrNull()?.showcases ?: emptyList()
-                    TopMainBanner(response.header.title, showcases, response.header.ctaLink)
+                    TopMainBannerAppearance(response.header.title, showcases, response.header.ctaLink)
                 } else {
-                    LeftMainBanner(tabs, response.header.title, response.header.ctaLink)
+                    LeftMainBannerAppearance(tabs, response.header.title, response.header.ctaLink)
                 }
             }
-            else -> LeftMainBanner(tabs, response.header.title, response.header.ctaLink)
+            else -> LeftMainBannerAppearance(tabs, response.header.title, response.header.ctaLink)
         }
 
 
