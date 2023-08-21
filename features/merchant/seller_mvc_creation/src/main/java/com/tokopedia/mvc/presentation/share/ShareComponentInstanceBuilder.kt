@@ -11,16 +11,13 @@ import com.tokopedia.universal_sharing.constants.ImageGeneratorConstants
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.ShareModel
-import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
 import javax.inject.Inject
 
 /**
  * Docs are defined on: https://docs.google.com/spreadsheets/d/10Kee8re2G87hS5elK4XASlHYaav8nsvjjiU9L5qbGKQ/edit#gid=0
  */
-class ShareComponentInstanceBuilder @Inject constructor(
-    private val userSession: UserSessionInterface
-) {
+class ShareComponentInstanceBuilder @Inject constructor() {
 
     companion object {
         private const val FIRST_IMAGE_URL = 0
