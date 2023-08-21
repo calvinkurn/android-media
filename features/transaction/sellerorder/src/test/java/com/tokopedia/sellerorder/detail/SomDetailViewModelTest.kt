@@ -9,9 +9,12 @@ import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -86,6 +89,84 @@ class SomDetailViewModelTest : SomOrderBaseViewModelTest<SomDetailViewModel>() {
     }
 
     @Test
+    fun `given the bmgm data when loadDetailOrder then should return success`() {
+        // given
+        val orderId = "123"
+        val bmgmDetailsResponse =
+            SomDetailOrder.GetSomDetail.Details(
+                bmgmIcon = "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2023/2/8/60274de2-2dbc-48b4-b0cb-4f626792df2A.jpg",
+                bmgms = listOf(
+                    SomDetailOrder.GetSomDetail.Bmgm(
+                        bmgmTierName = "offers - Beli2DiskonDiskon30%",
+                        id = "1:3:0",
+                        priceBeforeBenefitFormatted = "Rp400.000",
+                        orderDetail = listOf(
+                            SomDetailOrder.GetSomDetail.Bmgm.OrderDetail(
+                                id = "2150865420",
+                                productName = "Power Bank Original - Pink",
+                                thumbnail = "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2023/2/8/60274de2-2dbc-48b4-b0cb-4f626792df2b.jpg",
+                                price = 75000.00,
+                                priceText = "Rp 75.000",
+                                quantity = 2
+                            ),
+                            SomDetailOrder.GetSomDetail.Bmgm.OrderDetail(
+                                id = "2150865421",
+                                productName = "Power Bank Original - Blue",
+                                thumbnail = "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2023/2/8/60274de2-2dbc-48b4-b0cb-4f626792df2b.jpg",
+                                price = 75000.00,
+                                priceText = "Rp 75.000",
+                                quantity = 2
+                            )
+                        )
+                    )
+                )
+            )
+
+        coEvery {
+            somGetOrderDetailUseCase.execute(orderId)
+        } returns Success(
+            GetSomDetailResponse(
+                getSomDetail = SomDetailOrder.GetSomDetail(
+                    details = bmgmDetailsResponse
+                )
+            )
+        )
+
+        // when
+        viewModel.loadDetailOrder(orderId)
+
+        // then
+        coVerify {
+            somGetOrderDetailUseCase.execute(orderId)
+        }
+
+        val detailsActual =
+            (viewModel.orderDetailResult.value as Success<GetSomDetailResponse>).data.getSomDetail!!.details
+
+        assert(viewModel.orderDetailResult.value is Success)
+        assertEquals(bmgmDetailsResponse.bmgmIcon, detailsActual.bmgmIcon)
+        assertEquals(
+            bmgmDetailsResponse.bmgms!!.first().bmgmTierName,
+            detailsActual.bmgms!!.first().bmgmTierName
+        )
+        assertEquals(
+            bmgmDetailsResponse.bmgms!!.first().priceBeforeBenefitFormatted,
+            detailsActual.bmgms!!.first().priceBeforeBenefitFormatted
+        )
+
+        bmgmDetailsResponse.bmgms!!.first().orderDetail.forEachIndexed { index, product ->
+            val productActual = detailsActual.bmgms!!.first().orderDetail[index]
+
+            assertEquals(product.id, productActual.id)
+            assertEquals(product.productName, productActual.productName)
+            assertTrue(product.price == productActual.price)
+            assertEquals(product.priceText, productActual.priceText)
+            assertEquals(product.thumbnail, productActual.thumbnail)
+            assertEquals(product.note, productActual.note)
+        }
+    }
+
+    @Test
     fun getOrderDetail_shouldReturnSuccess() = coroutineTestRule.runTest {
         // given
         coEvery {
@@ -135,7 +216,11 @@ class SomDetailViewModelTest : SomOrderBaseViewModelTest<SomDetailViewModel>() {
             somGetOrderDetailUseCase.execute(any())
         } returns Success(
             GetSomDetailResponse(
-                getSomDetail = SomDetailOrder.GetSomDetail(details = SomDetailOrder.GetSomDetail.Details(nonBundle = listProducts))
+                getSomDetail = SomDetailOrder.GetSomDetail(
+                    details = SomDetailOrder.GetSomDetail.Details(
+                        nonBundle = listProducts
+                    )
+                )
             )
         )
 
@@ -145,7 +230,8 @@ class SomDetailViewModelTest : SomOrderBaseViewModelTest<SomDetailViewModel>() {
         // then
         assert(viewModel.orderDetailResult.value is Success)
         assert(
-            (viewModel.orderDetailResult.value as Success<GetSomDetailResponse>).data.getSomDetail?.getProductList()?.isNotEmpty()
+            (viewModel.orderDetailResult.value as Success<GetSomDetailResponse>).data.getSomDetail?.getProductList()
+                ?.isNotEmpty()
                 ?: false
         )
     }
