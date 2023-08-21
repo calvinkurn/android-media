@@ -10,7 +10,8 @@
     android:clickable="true"
     android:focusable="true"
     android:foreground="?selectableItemBackground"
-    android:background="@drawable/bg_partial_navigation_tool">
+    android:background="@drawable/editor_bg_partial_navigation_tool"
+    tools:ignore="UnusedAttribute">
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/img_icon"
