@@ -137,7 +137,7 @@ open class MerchantVoucherListFragment : BaseListFragment<MerchantVoucherViewMod
         if (loadingUseMerchantVoucher == null) {
             loadingUseMerchantVoucher = ProgressDialog(activity)
             loadingUseMerchantVoucher!!.setCancelable(false)
-            loadingUseMerchantVoucher!!.setMessage(getString(R.string.title_loading))
+            loadingUseMerchantVoucher!!.setMessage(getString(com.tokopedia.abstraction.R.string.title_loading))
         }
         if (loadingUseMerchantVoucher!!.isShowing()) {
             loadingUseMerchantVoucher!!.dismiss()
@@ -188,7 +188,7 @@ open class MerchantVoucherListFragment : BaseListFragment<MerchantVoucherViewMod
 
     override fun getEmptyDataViewModel(): Visitable<*> {
         val emptyModel = EmptyModel()
-        emptyModel.iconRes = R.drawable.ic_empty_state
+        emptyModel.iconRes = com.tokopedia.design.R.drawable.ic_empty_state
         emptyModel.title = getString(R.string.no_voucher)
         return emptyModel
     }
@@ -210,7 +210,7 @@ open class MerchantVoucherListFragment : BaseListFragment<MerchantVoucherViewMod
         activity?.run {
             val snackbar = Snackbar.make(findViewById(android.R.id.content), getString(R.string.title_voucher_code_copied),
                     Snackbar.LENGTH_LONG)
-            snackbar.setAction(activity!!.getString(R.string.close)) { snackbar.dismiss() }
+            snackbar.setAction(activity!!.getString(com.tokopedia.design.R.string.close)) { snackbar.dismiss() }
             snackbar.setActionTextColor(androidx.core.content.ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_NN0))
             snackbar.show()
         }
@@ -222,7 +222,7 @@ open class MerchantVoucherListFragment : BaseListFragment<MerchantVoucherViewMod
             Dialog(it, Dialog.Type.PROMINANCE).apply {
                 setTitle(useMerchantVoucherQueryResult.errorMessageTitle)
                 setDesc(useMerchantVoucherQueryResult.errorMessage)
-                setBtnOk(getString(R.string.label_close))
+                setBtnOk(getString(com.tokopedia.design.R.string.label_close))
                 setOnOkClickListener {
                     dismiss()
                 }
@@ -243,7 +243,7 @@ open class MerchantVoucherListFragment : BaseListFragment<MerchantVoucherViewMod
                 Dialog(it, Dialog.Type.PROMINANCE).apply {
                     setTitle(e.errorMessageTitle)
                     setDesc(e.message)
-                    setBtnOk(getString(R.string.label_close))
+                    setBtnOk(getString(com.tokopedia.design.R.string.label_close))
                     setOnOkClickListener {
                         dismiss()
                     }

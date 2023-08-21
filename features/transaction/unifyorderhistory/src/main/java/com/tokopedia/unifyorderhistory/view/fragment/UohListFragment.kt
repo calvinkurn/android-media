@@ -448,11 +448,17 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                 onSuccessCreateReview(data?.getStringExtra(CREATE_REVIEW_MESSAGE) ?: getString(R.string.uoh_review_create_success_toaster, userSession.name))
             } else if (resultCode == Activity.RESULT_FIRST_USER) {
                 onFailCreateReview(data?.getStringExtra(CREATE_REVIEW_MESSAGE) ?: getString(R.string.uoh_review_create_invalid_to_review))
+            } else {
+                onCancelCreateReview()
             }
             currIndexNeedUpdate = -1
             orderIdNeedUpdated = ""
-        } else if (requestCode == BULK_REVIEW_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            onSuccessCreateReview(data?.getStringExtra(ApplinkConstInternalMarketplace.BULK_CREATE_REVIEW_MESSAGE) ?: getString(R.string.uoh_review_create_success_toaster, userSession.name))
+        } else if (requestCode == BULK_REVIEW_REQUEST_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
+                onSuccessCreateReview(data?.getStringExtra(ApplinkConstInternalMarketplace.BULK_CREATE_REVIEW_MESSAGE) ?: getString(R.string.uoh_review_create_success_toaster, userSession.name))
+            } else {
+                onCancelCreateReview()
+            }
             currIndexNeedUpdate = -1
             orderIdNeedUpdated = ""
         } else if (requestCode == UOH_CANCEL_ORDER) {
@@ -2304,7 +2310,18 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                         }
                     }
                 }
-                userSession.userId?.let { UohAnalytics.clickPrimaryButtonOnOrderCard(order.verticalCategory, button.label, it) }
+                userSession.userId?.let { userId ->
+                    val eventLabel = if (button.label.contains(other = UohConsts.ULAS_LABEL, ignoreCase = true)) {
+                        UohConsts.EVENT_LABEL_ULAS_BUTTON
+                    } else {
+                        button.label
+                    }
+                    UohAnalytics.clickPrimaryButtonOnOrderCard(
+                        verticalLabel = order.verticalCategory,
+                        primaryButton = eventLabel,
+                        userId = userId
+                    )
+                }
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -2448,6 +2465,15 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         }
     }
 
+    override fun onReviewRatingClicked(index: Int, order: UohListOrder.UohOrders.Order, appLink: String) {
+        UohAnalytics.clickPrimaryButtonOnOrderCard(
+            verticalLabel = order.verticalCategory,
+            primaryButton = UohConsts.EVENT_LABEL_STAR_RATING,
+            userId = userSession.userId
+        )
+        handleRouting(appLink, index, order)
+    }
+
     private fun doChatSeller(appUrl: String, order: UohListOrder.UohOrders.Order) {
         var invoiceCode = ""
         var invoiceUrl = ""
@@ -2561,6 +2587,10 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         loadUohItemDelay(orderIdNeedUpdated, currIndexNeedUpdate)
     }
 
+    private fun onCancelCreateReview() {
+        uohItemAdapter.resetReviewRatingWidgetAtIndex(orderIdNeedUpdated)
+    }
+
     private fun goToOrderExtension(order: UohListOrder.UohOrders.Order, index: Int) {
         val params = mapOf<String, Any>(ApplinkConstInternalOrder.PARAM_ORDER_ID to order.verticalID)
         val appLink = UriUtil.buildUriAppendParams(
@@ -2589,8 +2619,6 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
 
     private fun showFinishOrderToaster() {
         if (responseFinishOrder.success == 1) {
-            responseFinishOrder.message.firstOrNull()
-                ?.let { it1 -> showToaster(it1, Toaster.TYPE_NORMAL) }
             loadUohItemDelay(orderIdNeedUpdated, currIndexNeedUpdate)
         } else {
             if (responseFinishOrder.message.isNotEmpty()) {

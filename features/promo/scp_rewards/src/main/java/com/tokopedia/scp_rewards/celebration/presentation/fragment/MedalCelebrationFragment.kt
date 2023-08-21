@@ -56,6 +56,7 @@ import com.tokopedia.scp_rewards_common.parseColor
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
+import com.tokopedia.scp_rewards_common.R as scp_rewards_commonR
 
 @Suppress("UNCHECKED_CAST")
 class MedalCelebrationFragment : BaseDaggerFragment() {
@@ -518,7 +519,7 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
         val badgeDrawable = if (isFallbackCase) {
             CelebrationAnalytics.sendImpressionFallbackBadge(medaliSlug)
             changeBadgeSize()
-            ResourcesCompat.getDrawable(resources, R.drawable.fallback_badge, null)
+            ResourcesCompat.getDrawable(resources, scp_rewards_commonR.drawable.fallback_badge, null)
         } else {
             badgeImage
         }

@@ -44,6 +44,14 @@ object ProductResult {
         assertBuyButtonAt(position, not(isDisplayed()))
     }
 
+    fun hasProductName(position: Int, string: String) {
+        assertProductNameAt(position, withText(string))
+    }
+
+    fun hasProductPrice(position: Int, string: String) {
+        assertProductPrice(position, withText(string))
+    }
+
     private fun assertRemindMeButtonAt(position: Int, matcher: Matcher<View>) {
         assertViewInRecyclerViewAt(
             position = position,
@@ -72,6 +80,22 @@ object ProductResult {
         assertViewInRecyclerViewAt(
             position = position,
             viewId = R.id.tv_buy,
+            matcher = matcher
+        )
+    }
+
+    private fun assertProductNameAt(position: Int, matcher: Matcher<View>) {
+        assertViewInRecyclerViewAt(
+            position = position,
+            viewId = R.id.tv_product_name,
+            matcher = matcher
+        )
+    }
+
+    private fun assertProductPrice(position: Int, matcher: Matcher<View>) {
+        assertViewInRecyclerViewAt(
+            position = position,
+            viewId = R.id.tv_price,
             matcher = matcher
         )
     }
