@@ -18,6 +18,7 @@ import com.google.android.play.core.splitcompat.SplitCompat;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.device.info.model.AdditionalInfoModel;
 import com.tokopedia.devicefingerprint.header.FingerprintModelGenerator;
 import com.tokopedia.network.authentication.AuthConstant;
 import com.tokopedia.network.authentication.AuthHelper;
@@ -34,6 +35,7 @@ import com.tokopedia.webview.ext.HtmlWebHelperKt;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 /**
@@ -149,6 +151,18 @@ public class TkpdWebView extends WebView {
                     KEY_FINGERPRINT_HASH,
                     AuthHelper.Companion.getMD5Hash(hash + "+" + userSession.getUserId())
             );
+
+            byte[] additionalInfoJson = AdditionalInfoModel.Companion
+                    .generateJson(getContext().getApplicationContext())
+                    .getBytes(StandardCharsets.UTF_8);
+
+            String additionalInfoBase64 = Base64.encodeToString(additionalInfoJson, Base64.DEFAULT);
+
+            header.put(
+                    AdditionalInfoModel.KEY_ADDITIONAL_INFO,
+                    additionalInfoBase64
+            );
+
             loadUrl(urlToLoad, header);
         }
     }
