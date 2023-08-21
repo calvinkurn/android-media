@@ -3016,4 +3016,192 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
             viewModel.listData.value.filterIsInstance(CheckoutOrderModel::class.java)[3].prescriptionIds
         )
     }
+
+    @Test
+    fun `GIVEN has uploaded prescription WHEN validate on back pressed THEN should show reminder`() {
+        // Given
+        val uploadPrescriptionUiModel = UploadPrescriptionUiModel(
+            showImageUpload = true,
+            uploadedImageCount = 1
+        )
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(
+                recipientAddressModel = RecipientAddressModel().apply {
+                    id = "1"
+                    destinationDistrictId = "1"
+                    addressName = "jakarta"
+                    postalCode = "123"
+                    latitude = "123"
+                    longitude = "321"
+                }
+            ),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel("123"),
+            CheckoutOrderModel("123"),
+            CheckoutEpharmacyModel(epharmacy = uploadPrescriptionUiModel),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+
+        // When
+        val result = viewModel.validatePrescriptionOnBackPressed()
+
+        // Then
+        assertEquals(CheckoutEpharmacyModel(epharmacy = uploadPrescriptionUiModel), result)
+    }
+
+    @Test
+    fun `GIVEN has invalid prescription WHEN validate on back pressed THEN should show reminder`() {
+        // Given
+        val uploadPrescriptionUiModel = UploadPrescriptionUiModel(
+            showImageUpload = true,
+            hasInvalidPrescription = true
+        )
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(
+                recipientAddressModel = RecipientAddressModel().apply {
+                    id = "1"
+                    destinationDistrictId = "1"
+                    addressName = "jakarta"
+                    postalCode = "123"
+                    latitude = "123"
+                    longitude = "321"
+                }
+            ),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel("123"),
+            CheckoutOrderModel("123"),
+            CheckoutEpharmacyModel(epharmacy = uploadPrescriptionUiModel),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+
+        // When
+        val result = viewModel.validatePrescriptionOnBackPressed()
+
+        // Then
+        assertEquals(CheckoutEpharmacyModel(epharmacy = uploadPrescriptionUiModel), result)
+    }
+
+    @Test
+    fun `GIVEN has both valid & invalid prescriptions WHEN validate on back pressed THEN should show reminder`() {
+        // Given
+        val uploadPrescriptionUiModel = UploadPrescriptionUiModel(
+            showImageUpload = true,
+            hasInvalidPrescription = true,
+            uploadedImageCount = 1
+        )
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(
+                recipientAddressModel = RecipientAddressModel().apply {
+                    id = "1"
+                    destinationDistrictId = "1"
+                    addressName = "jakarta"
+                    postalCode = "123"
+                    latitude = "123"
+                    longitude = "321"
+                }
+            ),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel("123"),
+            CheckoutOrderModel("123"),
+            CheckoutEpharmacyModel(epharmacy = uploadPrescriptionUiModel),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+
+        // When
+        val result = viewModel.validatePrescriptionOnBackPressed()
+
+        // Then
+        assertEquals(CheckoutEpharmacyModel(epharmacy = uploadPrescriptionUiModel), result)
+    }
+
+    @Test
+    fun `GIVEN has not upload any prescription WHEN validate on back pressed THEN should not show reminder`() {
+        // Given
+        val uploadPrescriptionUiModel = UploadPrescriptionUiModel(
+            showImageUpload = true,
+            hasInvalidPrescription = false,
+            uploadedImageCount = 0
+        )
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(
+                recipientAddressModel = RecipientAddressModel().apply {
+                    id = "1"
+                    destinationDistrictId = "1"
+                    addressName = "jakarta"
+                    postalCode = "123"
+                    latitude = "123"
+                    longitude = "321"
+                }
+            ),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel("123"),
+            CheckoutOrderModel("123"),
+            CheckoutEpharmacyModel(epharmacy = uploadPrescriptionUiModel),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+
+        // When
+        val result = viewModel.validatePrescriptionOnBackPressed()
+
+        // Then
+        assertEquals(null, result)
+    }
+
+    @Test
+    fun `GIVEN not show upload widget WHEN validate on back pressed THEN should not show reminder`() {
+        // Given
+        val uploadPrescriptionUiModel = UploadPrescriptionUiModel(
+            showImageUpload = false,
+            hasInvalidPrescription = true,
+            uploadedImageCount = 1
+        )
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(
+                recipientAddressModel = RecipientAddressModel().apply {
+                    id = "1"
+                    destinationDistrictId = "1"
+                    addressName = "jakarta"
+                    postalCode = "123"
+                    latitude = "123"
+                    longitude = "321"
+                }
+            ),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel("123"),
+            CheckoutOrderModel("123"),
+            CheckoutEpharmacyModel(epharmacy = uploadPrescriptionUiModel),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+
+        // When
+        val result = viewModel.validatePrescriptionOnBackPressed()
+
+        // Then
+        assertEquals(null, result)
+    }
 }
