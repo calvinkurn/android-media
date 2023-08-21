@@ -45,19 +45,27 @@ private const val SCP_REWARDS_MEDAL_BENEFIT_QUERY = """
             categoryID
             backgroundImageURL
             podiumImageURL
-            iconImageURL
-            ribbonImageURL
-            dividerImageURL
-            statusImageURL
+            medaliImageURL
             isActive
             status
             title
             tnc {
               text
             }
+            type {
+              iconImageURL
+              backgroundColor
+            }
+            statusInfo {
+              text
+              backgroundColor
+            }
             statusDescription
             expiryCounter
-            info
+            info {
+              text
+              backgroundColor
+            }
             url
             appLink
             benefitCTA {
@@ -82,4 +90,3 @@ private const val SCP_REWARDS_MEDAL_BENEFIT_QUERY = """
       }
     }
 """
-

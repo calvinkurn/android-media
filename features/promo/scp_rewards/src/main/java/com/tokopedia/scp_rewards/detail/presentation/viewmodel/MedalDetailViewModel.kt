@@ -13,7 +13,6 @@ import com.tokopedia.scp_rewards.detail.domain.model.MedalBenefitResponseModel
 import com.tokopedia.scp_rewards.detail.domain.model.MedalDetailResponseModel
 import com.tokopedia.scp_rewards.detail.domain.model.ScpRewardsCouponAutoApply
 import com.tokopedia.scp_rewards_widgets.medal_footer.FooterData
-import kotlinx.coroutines.async
 import javax.inject.Inject
 
 const val MDP_SECTION_TYPE_BENEFIT = "benefit"

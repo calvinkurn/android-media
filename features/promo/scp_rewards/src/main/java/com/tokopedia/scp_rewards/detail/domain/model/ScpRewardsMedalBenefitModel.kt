@@ -31,26 +31,30 @@ data class Category(
 )
 
 data class MedaliBenefit(
-    @SerializedName("categoryID") val categoryId: Int? = null,
+    @SerializedName("categoryID") val categoryIdList: List<Int>? = null,
     @SerializedName("backgroundImageURL") val backgroundImageURL: String? = null,
     @SerializedName("podiumImageURL") val podiumImageURL: String? = null,
-    @SerializedName("iconImageURL") val iconImageURL: String? = null,
-    @SerializedName("ribbonImageURL") val ribbonImageURL: String? = null,
-    @SerializedName("dividerImageURL") val dividerImageURL: String? = null,
-    @SerializedName("statusInfo") val statusInfo: StatusInfo? = null,
+    @SerializedName("medaliImageURL") val medaliImageURL: String? = null,
+    @SerializedName("info") val info: Info? = null,
+    @SerializedName("statusInfo") val statusInfo: Info? = null,
     @SerializedName("isActive") val isActive: Boolean = false,
     @SerializedName("status") val status: String? = null,
     @SerializedName("title") val title: String? = null,
     @SerializedName("statusDescription") val statusDescription: String? = null,
     @SerializedName("expiryCounter") val expiryCounter: String? = null,
-    @SerializedName("info") val info: String? = null,
     @SerializedName("appLink") val appLink: String? = null,
     @SerializedName("tnc") val tncList: List<Tnc>? = null,
+    @SerializedName("type") val benefitType: BenefitType? = null,
     @SerializedName("benefitCTA") val benefitCTA: BenefitButton? = null
 )
 
-data class StatusInfo(
+data class Info(
     @SerializedName("text") val text: String? = null,
+    @SerializedName("backgroundColor") val backgroundColor: String? = null
+)
+
+data class BenefitType(
+    @SerializedName("iconImageURL") val iconImageURL: String? = null,
     @SerializedName("backgroundColor") val backgroundColor: String? = null
 )
 
