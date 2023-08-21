@@ -22,6 +22,7 @@ import com.tokopedia.stories.databinding.FragmentStoriesDetailBinding
 import com.tokopedia.stories.uimodel.StoryAuthor
 import com.tokopedia.stories.utils.withCache
 import com.tokopedia.stories.view.adapter.StoriesGroupAdapter
+import com.tokopedia.stories.view.animation.StoriesProductNotch
 import com.tokopedia.stories.view.components.indicator.StoriesDetailTimer
 import com.tokopedia.stories.view.model.BottomSheetType
 import com.tokopedia.stories.view.model.StoriesDetailUiModel
@@ -126,6 +127,7 @@ class StoriesDetailFragment @Inject constructor(
         storiesDetailsTimer(state)
         binding.ivStoriesDetailContent.setImageUrl(state.imageContent)
         renderAuthor(state)
+        renderNotch(state)
     }
 
     private fun observeBottomSheetStatus(
@@ -180,6 +182,7 @@ class StoriesDetailFragment @Inject constructor(
                 TouchEventStories.RESUME -> resumeStories()
 
                 TouchEventStories.NEXT_PREV -> viewModelAction(PreviousDetail)
+                else -> {}
             }
         }
         flStoriesNext.onTouchEventStories { event ->
@@ -189,6 +192,12 @@ class StoriesDetailFragment @Inject constructor(
                 TouchEventStories.RESUME -> resumeStories()
 
                 TouchEventStories.NEXT_PREV -> viewModelAction(NextDetail)
+
+                TouchEventStories.SWIPE_UP -> {
+                    if (groupId != viewModel.groupId) return@onTouchEventStories
+                    viewModelAction(StoriesUiAction.OpenProduct)
+                }
+                else -> {}
             }
         }
         flStoriesProduct.setOnClickListener {
@@ -206,6 +215,19 @@ class StoriesDetailFragment @Inject constructor(
         }
         vStoriesProductIcon.root.setOnClickListener {
             viewModelAction(StoriesUiAction.OpenProduct)
+        }
+    }
+
+    private fun renderNotch(state: StoriesDetailUiModel) {
+        with(binding.notchStoriesProduct) {
+            apply {
+                setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+                setContent {
+                    StoriesProductNotch(state.productCount) {
+                        viewModelAction(StoriesUiAction.OpenProduct)
+                    }
+                }
+            }
         }
     }
 
@@ -243,11 +265,15 @@ class StoriesDetailFragment @Inject constructor(
                             .show(childFragmentManager)
                     }
 
-                    StoriesUiEvent.OpenProduct -> StoriesProductBottomSheet.getOrCreateFragment(
-                        childFragmentManager,
-                        requireActivity().classLoader
-                    )
-                        .show(childFragmentManager)
+                    StoriesUiEvent.OpenProduct -> {
+                        if (groupId != viewModel.groupId) return@collectLatest
+
+                        StoriesProductBottomSheet.getOrCreateFragment(
+                            childFragmentManager,
+                            requireActivity().classLoader
+                        )
+                            .show(childFragmentManager)
+                    }
 
                     is StoriesUiEvent.TapSharing -> {
                         if (groupId != viewModel.groupId) return@collectLatest

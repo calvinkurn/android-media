@@ -3,6 +3,7 @@ package com.tokopedia.stories.view.viewmodel
 import android.os.Bundle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.stories.data.StoriesRepository
 import com.tokopedia.stories.view.model.BottomSheetStatusDefault
 import com.tokopedia.stories.view.model.BottomSheetType
@@ -13,6 +14,7 @@ import com.tokopedia.stories.view.model.StoriesUiState
 import com.tokopedia.stories.view.utils.StoriesSharingComponent
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction
 import com.tokopedia.stories.view.viewmodel.event.StoriesUiEvent
+import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -34,6 +36,7 @@ class StoriesViewModel @Inject constructor(
     private var _storiesGroup = MutableStateFlow(listOf<StoriesGroupUiModel>())
     private var _storiesDetail = MutableStateFlow(StoriesDetailUiModel.Empty)
     private val bottomSheetStatus = MutableStateFlow(BottomSheetStatusDefault)
+    private val products = MutableStateFlow(emptyList<ContentTaggedProductUiModel>())
 
     private val _uiEvent = MutableSharedFlow<StoriesUiEvent>(extraBufferCapacity = 100)
     val uiEvent: Flow<StoriesUiEvent>
@@ -42,20 +45,22 @@ class StoriesViewModel @Inject constructor(
     val uiState = combine(
         _storiesGroup,
         _storiesDetail,
-        bottomSheetStatus
-    ) { storiesCategories, storiesItem, bottomSheet ->
+        bottomSheetStatus,
+        products
+    ) { storiesCategories, storiesItem, bottomSheet, products ->
         StoriesUiState(
             storiesGroup = storiesCategories,
             storiesDetail = storiesItem,
             bottomSheetStatus = bottomSheet,
+            products = products,
         )
     }
 
-    val groupId : String
+    val groupId: String
         get() = _storiesGroup.value.firstOrNull { story -> story.selected }?.id.orEmpty()
 
-    val storyId : String
-        get()  {
+    val storyId: String
+        get() {
             val currentGroup = _storiesGroup.value.firstOrNull { story -> story.selected }
             return currentGroup?.details?.get(currentGroup.selectedDetail)?.id.orEmpty()
         }
@@ -169,8 +174,8 @@ class StoriesViewModel @Inject constructor(
     private fun handleOpenKebab() {
         viewModelScope.launch {
             _uiEvent.emit(StoriesUiEvent.OpenKebab)
-            bottomSheetStatus.update {
-                bottomSheet -> bottomSheet.mapValues {
+            bottomSheetStatus.update { bottomSheet ->
+                bottomSheet.mapValues {
                     if (it.key == BottomSheetType.Kebab)
                         true
                     else it.value
@@ -180,11 +185,13 @@ class StoriesViewModel @Inject constructor(
     }
 
     private fun handleDismissSheet(bottomSheetType: BottomSheetType) {
-        bottomSheetStatus.update { bottomSheet -> bottomSheet.mapValues {
-            if (it.key == bottomSheetType)
-                false
-            else it.value
-        } }
+        bottomSheetStatus.update { bottomSheet ->
+            bottomSheet.mapValues {
+                if (it.key == bottomSheetType)
+                    false
+                else it.value
+            }
+        }
     }
 
     private fun handleShowDialogDelete() {
@@ -196,6 +203,20 @@ class StoriesViewModel @Inject constructor(
     private fun handleOpenProduct() {
         viewModelScope.launch {
             _uiEvent.emit(StoriesUiEvent.OpenProduct)
+            bottomSheetStatus.update { bottomSheet ->
+                bottomSheet.mapValues {
+                    if (it.key == BottomSheetType.Product)
+                        true
+                    else it.value
+                }
+            }
+        }
+    }
+
+    fun getProducts() {
+        viewModelScope.launch {
+            val response = repository.getStoriesProducts()
+            products.value = response
         }
     }
 

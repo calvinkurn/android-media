@@ -1,16 +1,20 @@
 package com.tokopedia.stories.view.model
 
+import com.tokopedia.content.common.view.ContentTaggedProductUiModel
+
 data class StoriesUiState(
     val storiesGroup: List<StoriesGroupUiModel>,
     val storiesDetail: StoriesDetailUiModel,
-    val bottomSheetStatus: Map<BottomSheetType, Boolean>
+    val bottomSheetStatus: Map<BottomSheetType, Boolean>,
+    val products: List<ContentTaggedProductUiModel>,
 ) {
     companion object {
         val Empty
             get() = StoriesUiState(
                 storiesDetail = StoriesDetailUiModel.Empty,
                 storiesGroup = emptyList(),
-                bottomSheetStatus = BottomSheetStatusDefault
+                bottomSheetStatus = BottomSheetStatusDefault,
+                products = listProduct,
             )
     }
 }

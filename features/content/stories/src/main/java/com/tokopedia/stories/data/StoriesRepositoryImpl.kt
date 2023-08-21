@@ -1,10 +1,12 @@
 package com.tokopedia.stories.data
 
+import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.stories.uimodel.StoryAuthor
 import com.tokopedia.stories.view.model.StoriesDetailUiModel
 import com.tokopedia.stories.view.model.StoriesDetailUiModel.StoriesDetailUiEvent
 import com.tokopedia.stories.view.model.StoriesGroupUiModel
 import com.tokopedia.stories.view.model.StoriesUiModel
+import com.tokopedia.stories.view.model.listProduct
 import javax.inject.Inject
 
 class StoriesRepositoryImpl @Inject constructor() : StoriesRepository {
@@ -359,4 +361,7 @@ class StoriesRepositoryImpl @Inject constructor() : StoriesRepository {
         )
     }
 
+    override fun getStoriesProducts(): List<ContentTaggedProductUiModel> {
+        return listProduct
+    }
 }

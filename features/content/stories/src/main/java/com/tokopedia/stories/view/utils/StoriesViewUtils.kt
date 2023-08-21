@@ -1,12 +1,33 @@
 package com.tokopedia.stories.view.utils
 
+import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
+import androidx.core.view.GestureDetectorCompat
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
+import kotlin.math.atan2
 
 internal fun View.onTouchEventStories(
     eventAction: (event: TouchEventStories) -> Unit,
 ) {
     var longPressState = false
+
+    val gestureDetector by lazyThreadSafetyNone {
+        GestureDetectorCompat(this.context, object : GestureDetector.SimpleOnGestureListener() {
+            override fun onScroll(
+                e1: MotionEvent,
+                e2: MotionEvent,
+                distanceX: Float,
+                distanceY: Float
+            ): Boolean {
+                val angle: Float = Math.toDegrees(atan2(e1.x - e2.y, e2.x - e1.x).toDouble()).toFloat()
+                if (angle > 45 && angle <= 135) {
+                    eventAction.invoke(TouchEventStories.SWIPE_UP)
+                }
+                return false
+            }
+        })
+    }
 
     setOnLongClickListener {
         longPressState = true
@@ -21,10 +42,11 @@ internal fun View.onTouchEventStories(
                 eventAction.invoke(TouchEventStories.RESUME)
             } else eventAction.invoke(TouchEventStories.NEXT_PREV)
         }
+        gestureDetector.onTouchEvent(p1)
         false
     }
 }
 
 enum class TouchEventStories {
-    PAUSE, RESUME, NEXT_PREV
+    PAUSE, RESUME, NEXT_PREV, SWIPE_UP
 }
