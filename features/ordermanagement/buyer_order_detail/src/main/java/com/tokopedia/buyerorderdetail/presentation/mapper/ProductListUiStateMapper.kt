@@ -334,7 +334,6 @@ object ProductListUiStateMapper {
         singleAtcResultFlow: Map<String, AddToCartSingleRequestState>,
         collapseProductList: Boolean
     ): ProductListUiModel {
-
         /**
          * Map product bmgm response into UI model and limit the number of mapped items based on
          * MAX_PRODUCT_WHEN_COLLAPSED. The numOfRemovedProductBundle is indicating the number of
@@ -800,7 +799,7 @@ object ProductListUiStateMapper {
         product: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Details.Bmgm.OrderDetail,
         orderId: String,
         addOnLabel: String,
-        addOnIcon: String,
+        addOnIcon: String
     ): ProductBmgmSectionUiModel.ProductUiModel {
         return ProductBmgmSectionUiModel.ProductUiModel(
             orderId = orderId,
@@ -832,9 +831,9 @@ object ProductListUiStateMapper {
                             toStr = addOnNote?.to.orEmpty(),
                             fromStr = addOnNote?.from.orEmpty(),
                             message = addOnNote?.notes.orEmpty(),
-                            hasShop = true
+                            hasShop = false
                         )
-                    }.orEmpty(),
+                    }.orEmpty()
                 )
             }
         )
