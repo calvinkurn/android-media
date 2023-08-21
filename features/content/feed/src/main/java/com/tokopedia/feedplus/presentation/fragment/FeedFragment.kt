@@ -82,7 +82,6 @@ import com.tokopedia.feedplus.presentation.uiview.FeedProductTagView
 import com.tokopedia.feedplus.presentation.util.VideoPlayerManager
 import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
 import com.tokopedia.feedplus.presentation.viewmodel.FeedPostViewModel
-import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
@@ -169,7 +168,8 @@ class FeedFragment :
     @Inject
     lateinit var dispatchers: CoroutineDispatchers
 
-    @Inject lateinit var viewModelAssistedFactory: FeedMainViewModel.Factory
+    @Inject
+    lateinit var viewModelAssistedFactory: FeedMainViewModel.Factory
     private val feedMainViewModel: FeedMainViewModel by viewModels(
         ownerProducer = {
             parentFragment ?: this
@@ -186,7 +186,7 @@ class FeedFragment :
         isCdp = arguments?.getBoolean(ARGUMENT_IS_CDP, false) ?: false
 
         MapperFeedModelToTrackerDataModel(
-            if (isCdp) FeedBaseFragment.CDP else data?.type.orEmpty(),
+            if (isCdp) FeedBaseFragment.TAB_TYPE_CDP else data?.type.orEmpty(),
             arguments?.getString(ARGUMENT_ENTRY_POINT) ?: ENTRY_POINT_DEFAULT
         )
     }
@@ -202,7 +202,8 @@ class FeedFragment :
                 childFragmentManager.findFragmentByTag(TAG_FEED_MENU_BOTTOMSHEET) as? ContentThreeDotsMenuBottomSheet
             if (feedMenuSheet != null && userSession.isLoggedIn) {
                 val item = adapter.currentList[getCurrentPosition()]?.data
-                val isVideo = item is FeedCardVideoContentModel || item is FeedCardLivePreviewContentModel
+                val isVideo =
+                    item is FeedCardVideoContentModel || item is FeedCardLivePreviewContentModel
 
                 feedMenuSheet.showReportLayoutWhenLaporkanClicked(isVideo = isVideo, action = {
                     ContentReportBottomSheet.getOrCreate(
@@ -338,7 +339,7 @@ class FeedFragment :
             data?.type ?: "",
             isNewData = true,
             postSource = arguments?.getString(UF_EXTRA_FEED_SOURCE_ID)?.let { sourceId ->
-                PostSourceModel(sourceId, arguments?.getString(UF_EXTRA_FEED_SOURCE_NAME))
+                PostSourceModel(sourceId, arguments?.getString(UF_EXTRA_FEED_SOURCE_NAME), isCdp)
             }
         )
 
@@ -408,7 +409,8 @@ class FeedFragment :
                     onGoToLogin()
                 } else {
                     val item = adapter.currentList[getCurrentPosition()]?.data
-                    val isVideo = item is FeedCardVideoContentModel || item is FeedCardLivePreviewContentModel
+                    val isVideo =
+                        item is FeedCardVideoContentModel || item is FeedCardLivePreviewContentModel
                     (childFragmentManager.findFragmentByTag(TAG_FEED_MENU_BOTTOMSHEET) as? ContentThreeDotsMenuBottomSheet)?.showReportLayoutWhenLaporkanClicked(
                         isVideo = isVideo,
                         action = {

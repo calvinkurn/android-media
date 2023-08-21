@@ -5,5 +5,6 @@ package com.tokopedia.feedplus.presentation.model
  */
 data class PostSourceModel(
     val id: String,
-    val source: String?
+    val source: String?,
+    val isCdp: Boolean
 )
