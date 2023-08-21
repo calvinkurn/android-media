@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:card_type="border"
+    android:padding="16dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/groupIcon"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            app:srcCompat="@drawable/iconunify_folder"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:tint="@color/Unify_NN900"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/groupName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            tools:text="Group Name"
+            app:typographyType="display_2"
+            android:textSize="14sp"
+            app:typographyWeight="bold"
+            android:textColor="@color/Unify_NN950"
+            android:maxLines="1"
+            android:ellipsize="end"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@id/groupIcon"
+            app:layout_constraintEnd_toStartOf="@id/selectGroupCta"
+            app:layout_constraintHorizontal_bias="0.0"
+            android:layout_marginHorizontal="8dp" />
+
+        <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+            android:id="@+id/selectGroupCta"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="12 Produk"
+            android:textSize="12sp"
+            app:typographyType="display_3"
+            app:layout_constraintTop_toBottomOf="@id/groupIcon"
+            app:layout_constraintStart_toStartOf="@id/groupIcon"
+            android:layout_marginTop="8dp"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/productCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="12 Produk"
+            android:textSize="12sp"
+            app:typographyType="display_3"
+            app:layout_constraintTop_toBottomOf="@id/groupIcon"
+            app:layout_constraintStart_toStartOf="@id/groupIcon"
+            android:layout_marginTop="8dp"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/divider"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="•"
+            android:textSize="12sp"
+            app:typographyType="display_3"
+            android:layout_marginStart="8dp"
+            android:textColor="@color/Unify_NN600"
+            app:typographyWeight="bold"
+            app:layout_constraintTop_toTopOf="@id/productCount"
+            app:layout_constraintStart_toEndOf="@id/productCount" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/keywordCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="52 Kata Kunci"
+            android:textSize="12sp"
+            app:typographyType="display_3"
+            android:layout_marginStart="8dp"
+            app:layout_constraintTop_toTopOf="@id/divider"
+            app:layout_constraintStart_toEndOf="@id/divider"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.tokopedia.unifycomponents.CardUnify>

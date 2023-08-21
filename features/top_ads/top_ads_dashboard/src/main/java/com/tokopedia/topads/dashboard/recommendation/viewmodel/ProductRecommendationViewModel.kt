@@ -10,12 +10,13 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.model.DataSuggestions
+import com.tokopedia.topads.common.data.model.GetTopadsDashboardGroups
 import com.tokopedia.topads.common.data.response.ResponseGroupValidateName.TopAdsGroupValidateNameV2
 import com.tokopedia.topads.common.data.response.TopadsBidInfo
 import com.tokopedia.topads.common.data.response.groupitem.GroupItemResponse
 import com.tokopedia.topads.common.domain.interactor.BidInfoUseCase
-import com.tokopedia.topads.common.domain.interactor.TopAdsGetGroupDataUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsCreateUseCase
+import com.tokopedia.topads.common.domain.usecase.TopAdsGetGroupListUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGroupValidateNameUseCase
 import com.tokopedia.topads.dashboard.recommendation.common.TopAdsProductRecommendationConstants.INSIGHT_CENTRE_CREATE_GROUP_SOURCE
 import com.tokopedia.topads.dashboard.recommendation.common.TopAdsProductRecommendationConstants.INSIGHT_CENTRE_BID_INFO_SOURCE
@@ -33,7 +34,7 @@ class ProductRecommendationViewModel @Inject constructor(
     private val mapper: ProductRecommendationMapper,
     private val topAdsGroupValidateNameUseCase: TopAdsGroupValidateNameUseCase,
     private val topAdsCreateUseCase: TopAdsCreateUseCase,
-    private val topAdsGetGroupDataUseCase: TopAdsGetGroupDataUseCase,
+    private val topAdsGetGroupListUseCase: TopAdsGetGroupListUseCase,
 ) : BaseViewModel(dispatcher.main), CoroutineScope {
 
     private val _productItemsLiveData =
@@ -53,8 +54,8 @@ class ProductRecommendationViewModel @Inject constructor(
     val createGroupLiveData: LiveData<TopadsProductListState<String>>
         get() = _createGroupLiveData
 
-    private val _topadsGroupsLiveData = MutableLiveData<TopadsProductListState<GroupItemResponse.GetTopadsDashboardGroups>>()
-    val topadsGroupsLiveData: LiveData<TopadsProductListState<GroupItemResponse.GetTopadsDashboardGroups>>
+    private val _topadsGroupsLiveData = MutableLiveData<TopadsProductListState<GetTopadsDashboardGroups>>()
+    val topadsGroupsLiveData: LiveData<TopadsProductListState<GetTopadsDashboardGroups>>
         get() = _topadsGroupsLiveData
 
     fun loadProductList() {
@@ -131,25 +132,11 @@ class ProductRecommendationViewModel @Inject constructor(
     }
 
     fun getTopadsGroups(
-        page: Int,
         search: String,
-        sort: String,
-        status: Int?,
-        startDate: String,
-        endDate: String,
-        groupType: Int,
     ) {
-        val requestParams = topAdsGetGroupDataUseCase.setParams(
-            search,
-            page,
-            sort,
-            status,
-            startDate,
-            endDate,
-            groupType
-        )
         launchCatchError(block = {
-            val response = topAdsGetGroupDataUseCase.execute(requestParams)
+            val params = topAdsGetGroupListUseCase.setParamsForKeyWord(search)
+            val response = topAdsGetGroupListUseCase.execute(params)
             _topadsGroupsLiveData.value = TopadsProductListState.Success(response.getTopadsDashboardGroups)
         }, onError = {
             _topadsGroupsLiveData.value = TopadsProductListState.Fail(it)

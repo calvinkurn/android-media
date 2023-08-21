@@ -20,6 +20,8 @@
     <string name="add_product">Tambah Produk</string>
     <string name="product_count">%d Produk</string>
     <string name="keyword_count">%d Kata Kunci</string>
+    <string name="topads_common_product_count_with_bold_value"><![CDATA[<b>%d</b> Produk]]></string>
+    <string name="topads_common_keyword_count_with_bold_value"><![CDATA[<b>%d</b> Kata Kunci]]></string>
     <string name="add_keyword">Tambah Kata Kunci</string>
     <string name="add_keyword_positif">Tambah Kata Kunci Positif</string>
     <string name="add_keyword_negatif">Tambah Kata Kunci Negatif</string>

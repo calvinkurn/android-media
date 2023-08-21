@@ -99,7 +99,7 @@ class GroupSettingsFragment : BaseDaggerFragment() {
         }
 
         binding?.createNewGroupCta?.setOnClickListener {
-            if (currentGroupSettingsState != GROUP_SETTINGS_STATE_CREATE){
+            if (currentGroupSettingsState != GROUP_SETTINGS_STATE_CREATE) {
                 setUpCreateGroupPage()
                 currentGroupSettingsState = GROUP_SETTINGS_STATE_CREATE
                 binding?.choseGroupCta?.isChecked = false
@@ -107,7 +107,7 @@ class GroupSettingsFragment : BaseDaggerFragment() {
         }
 
         binding?.choseGroupCta?.setOnClickListener {
-            if (currentGroupSettingsState != GROUP_SETTINGS_STATE_CHOOSE_FROM_EXISTING){
+            if (currentGroupSettingsState != GROUP_SETTINGS_STATE_CHOOSE_FROM_EXISTING) {
                 setUpChooseGroupPage()
                 currentGroupSettingsState = GROUP_SETTINGS_STATE_CHOOSE_FROM_EXISTING
                 binding?.createNewGroupCta?.isChecked = false
@@ -119,15 +119,15 @@ class GroupSettingsFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun setUpCreateGroupPage(){
+    private fun setUpCreateGroupPage() {
         changeChildFragment(CreateNewGroupFragment.createInstance())
     }
 
-    private fun setUpChooseGroupPage(){
+    private fun setUpChooseGroupPage() {
         changeChildFragment(ChooseGroupFragment.createInstance())
     }
 
-    private fun changeChildFragment(fragment: Fragment){
+    private fun changeChildFragment(fragment: Fragment) {
         childFragmentManager.popBackStack()
         childFragmentManager.beginTransaction().setCustomAnimations(
             com.tokopedia.abstraction.R.anim.slide_in_right,

@@ -5,23 +5,31 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.databinding.FragmentTopadsChooseGroupBinding
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
+import com.tokopedia.topads.dashboard.recommendation.common.decoration.ChipsInsightItemDecoration
+import com.tokopedia.topads.dashboard.recommendation.data.mapper.ProductRecommendationMapper
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.ProductItemUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopadsProductListState
 import com.tokopedia.topads.dashboard.recommendation.viewmodel.ProductRecommendationViewModel
+import com.tokopedia.topads.dashboard.recommendation.views.adapter.recommendation.GroupListAdapter
 import javax.inject.Inject
 
 class ChooseGroupFragment : BaseDaggerFragment() {
 
     private var binding: FragmentTopadsChooseGroupBinding? = null
 
+    private val groupListAdapter by lazy { GroupListAdapter() }
+
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+
+    @Inject
+    lateinit var mapper: ProductRecommendationMapper
 
     private val viewModel: ProductRecommendationViewModel by lazy(LazyThreadSafetyMode.NONE) {
         ViewModelProvider(
@@ -58,15 +66,24 @@ class ChooseGroupFragment : BaseDaggerFragment() {
             }
             else -> {}
         }
+        viewModel.getTopadsGroups("")
 
-        viewModel.getTopadsGroups(1, "", "impression", 1, "", "", 1)
+        binding?.groupsRv?.layoutManager = LinearLayoutManager(
+            context,
+            LinearLayoutManager.VERTICAL,
+            false
+        )
+        binding?.groupsRv?.addItemDecoration(
+            ChipsInsightItemDecoration()
+        )
+        binding?.groupsRv?.adapter = groupListAdapter
     }
 
     private fun observeViewModel() {
         viewModel.topadsGroupsLiveData.observe(viewLifecycleOwner) {
-            when (val data = it) {
+            when (val groups = it) {
                 is TopadsProductListState.Success -> {
-                    data
+                    groupListAdapter.submitList(mapper.convertToGroupItemUiModel(groups.data.data))
                 }
                 else -> {
 
