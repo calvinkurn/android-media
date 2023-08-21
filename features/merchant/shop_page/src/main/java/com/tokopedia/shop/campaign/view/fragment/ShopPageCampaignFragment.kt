@@ -88,7 +88,7 @@ import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerTimerUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetVoucherSliderUiModel
 import com.tokopedia.shop.home.view.model.StatusCampaign
 import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
-import com.tokopedia.shop.pageheader.presentation.fragment.InterfaceShopPageHeader
+import com.tokopedia.shop.common.view.interfaces.InterfaceShopPageHeader
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragment
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragmentV2
 import com.tokopedia.shop.pageheader.util.ShopPageHeaderTabName

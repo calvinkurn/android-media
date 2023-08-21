@@ -1,4 +1,6 @@
-package com.tokopedia.shop.pageheader.presentation.fragment
+package com.tokopedia.shop.common.view.interfaces
+
+import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 
 interface InterfaceShopPageHeader {
 
@@ -10,6 +12,5 @@ interface InterfaceShopPageHeader {
     fun collapseAppBar()
     fun onTabFragmentWrapperFinishLoad(){}
     fun getCartCounterData(): Int{ return 0}
-    fun startDynamicUspCycle(){ return }
-    fun getCurrentDynamicUspValue(): String{ return ""}
+    fun getColorSchema(): ShopPageColorSchema?{ return null}
 }
