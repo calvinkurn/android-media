@@ -7,7 +7,7 @@
     android:layout_height="wrap_content">
 
     <com.tokopedia.unifycomponents.TabsUnify
-        android:id="@+id/tabsUnify"
+        android:id="@+id/catalogTabsUnify"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
