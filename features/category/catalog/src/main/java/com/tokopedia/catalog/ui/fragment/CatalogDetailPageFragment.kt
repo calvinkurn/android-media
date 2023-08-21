@@ -18,6 +18,7 @@ import com.tokopedia.catalogcommon.uimodel.DummyUiModel
 import com.tokopedia.catalogcommon.uimodel.HeroBannerUiModel
 import com.tokopedia.catalogcommon.uimodel.PanelImageUiModel
 import com.tokopedia.catalogcommon.uimodel.TopFeaturesUiModel
+import com.tokopedia.catalogcommon.uimodel.TrustMakerUiModel
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
@@ -107,6 +108,7 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener {
                     "konten"
                 )
             )
+            widgets.add(TrustMakerUiModel.dummyTrustMaker())
             widgets.add(TopFeaturesUiModel.dummyTopFeatures())
             widgets.add(
                 PanelImageUiModel("1", "2", "2",
