@@ -377,8 +377,8 @@ object DeeplinkMapperMerchant {
         return UriUtil.buildUri(ApplinkConstInternalSellerapp.SELLER_MVC_CREATE, voucherType)
     }
 
-    fun getRegisteredNavigationForOfferLandingPage(shopId: String, offerId: String): String {
-        return UriUtil.buildUri(ApplinkConstInternalMechant.BUY_MORE_GET_MORE_OLP, shopId, offerId)
+    fun getRegisteredNavigationForOfferLandingPage(deeplink: String): String {
+        return deeplink.replace("${ApplinkConst.APPLINK_CUSTOMER_SCHEME}://", "${ApplinkConstInternalMechant.INTERNAL_MERCHANT}/")
     }
 
     fun isShopPageSettingSellerApp(deeplink: String): Boolean {

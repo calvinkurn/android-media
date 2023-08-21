@@ -58,14 +58,14 @@ class OfferLandingPageFragment :
         fun newInstance(
             shopId: String,
             offerId: String,
-            warehouseIds: ArrayList<Int>? = arrayListOf(),
-            productIds: ArrayList<Int>? = arrayListOf()
+            warehouseIds: String,
+            productIds: String
         ) = OfferLandingPageFragment().apply {
             arguments = Bundle().apply {
                 putString(BundleConstant.BUNDLE_SHOP_ID, shopId)
                 putString(BundleConstant.BUNDLE_OFFER_ID, offerId)
-                putIntegerArrayList(BuyMoreGetMoreHelper.KEY_WAREHOUSE_IDS, warehouseIds)
-                putIntegerArrayList(BuyMoreGetMoreHelper.KEY_PRODUCT_IDS, productIds)
+                putString(BuyMoreGetMoreHelper.KEY_WAREHOUSE_IDS, warehouseIds)
+                putString(BuyMoreGetMoreHelper.KEY_PRODUCT_IDS, productIds)
             }
         }
 
@@ -94,14 +94,10 @@ class OfferLandingPageFragment :
 
     @Inject
     lateinit var viewModel: OfferLandingPageViewModel
-    private val shopId by lazy { arguments?.getString(BundleConstant.BUNDLE_SHOP_ID).orEmpty() }
+    private val shopIds by lazy { arguments?.getString(BundleConstant.BUNDLE_SHOP_ID).orEmpty() }
     private val offerId by lazy { arguments?.getString(BundleConstant.BUNDLE_OFFER_ID).orEmpty() }
-    private val warehouseIds by lazy {
-        arguments?.getIntegerArrayList(BuyMoreGetMoreHelper.KEY_WAREHOUSE_IDS).orEmpty()
-    }
-    private val productIds by lazy {
-        arguments?.getIntegerArrayList(BuyMoreGetMoreHelper.KEY_PRODUCT_IDS).orEmpty()
-    }
+    private val warehouseIds by lazy { arguments?.getString(BuyMoreGetMoreHelper.KEY_WAREHOUSE_IDS).orEmpty() }
+    private val productIds by lazy { arguments?.getString(BuyMoreGetMoreHelper.KEY_PRODUCT_IDS).orEmpty() }
 
     override fun getScreenName() = ""
 
@@ -240,9 +236,9 @@ class OfferLandingPageFragment :
         setViewState(VIEW_LOADING)
         viewModel.getOfferingInfo(
             offerIds = listOf(offerId.toIntOrZero()),
-            shopId = shopId,
-            productIds = productIds,
-            warehouseIds = listOf(1, 2),
+            shopId = shopIds,
+            productIds = productIds.map { it.digitToIntOrNull() ?: 0 },
+            warehouseIds = warehouseIds.map { it.digitToIntOrNull() ?: 0 },
             localCacheModel
         )
     }
@@ -391,7 +387,7 @@ class OfferLandingPageFragment :
     }
 
     private fun addToCartProduct(product: OfferProductListUiModel.Product) {
-        viewModel.addToCart(product, shopId)
+        viewModel.addToCart(product, shopIds)
     }
 
     private fun openAtcVariant(product: OfferProductListUiModel.Product) {
@@ -400,7 +396,7 @@ class OfferLandingPageFragment :
                 context = it,
                 productId = product.productId.toString(),
                 pageSource = VariantPageSource.BUY_MORE_GET_MORE,
-                shopId = shopId,
+                shopId = shopIds,
                 startActivitResult = this::startActivityForResult
             )
         }

@@ -8,6 +8,7 @@ object BuyMoreGetMoreHelper {
 
     const val KEY_WAREHOUSE_IDS = "warehouse_ids"
     const val KEY_PRODUCT_IDS = "product_ids"
+    const val KEY_SHOP_IDS = "shop_ids"
 
     /*
     ShopId & offerId are mandatory params

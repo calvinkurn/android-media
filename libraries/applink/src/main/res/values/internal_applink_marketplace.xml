@@ -132,5 +132,5 @@
     <string name="path_sellerapp_search" translatable="false">/seller-search</string>
     <string name="path_category_dynamic_picker">/category-dynamic-picker</string>
 
-    <string name="path_bmgm">/buymoresavemore/.*\\/.*\\/</string>
+    <string name="path_bmgm">/buymoresavemore/.*\\/</string>
 </resources>
