@@ -39,6 +39,7 @@ import com.tokopedia.topads.common.data.response.TopAdsBidSettingsModel
 import com.tokopedia.topads.common.data.response.TopadsBidInfo
 import com.tokopedia.topads.common.data.util.TopAdsEditUtils
 import com.tokopedia.topads.common.data.util.Utils.removeCommaRawString
+import com.tokopedia.topads.common.recommendation.RecommendationWidget
 import com.tokopedia.topads.common.view.TopadsAutoBidSwitchPartialLayout
 import com.tokopedia.topads.common.view.sheet.BidInfoBottomSheet
 import com.tokopedia.topads.common.view.sheet.TopAdsEditKeywordBidSheet
@@ -64,6 +65,8 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.MIN_
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.NAME_EDIT
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.NEG_KATA_KUNCI
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.PRODUK
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.SOURCE_ANDROID_HEADLINE
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.SOURCE_PRODUCT_GROUP_DETAIL_PAGE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.SUGGESTION_BID
 import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
 import com.tokopedia.topads.dashboard.data.model.DataStatistic
@@ -71,6 +74,9 @@ import com.tokopedia.topads.dashboard.data.model.FragmentTabItem
 import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.di.DaggerTopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsListAllInsightState
+import com.tokopedia.topads.dashboard.recommendation.views.activities.GroupDetailActivity
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsDashboardBasePagerAdapter
 import com.tokopedia.topads.dashboard.view.fragment.*
 import com.tokopedia.topads.dashboard.view.interfaces.ChangePlacementFilter
@@ -131,6 +137,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
     private var dailyBudgetSpent: Typography ? = null
     private var dailyBudget: Typography ? = null
     private var dailyBudgetProgressBar: ProgressBarUnify ? = null
+    private var entryPointProductGroup: RecommendationWidget ? = null
 
     private var dataStatistic: DataStatistic? = null
     private var selectedStatisticType: Int = 0
@@ -359,6 +366,30 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
                 }
             }
         })
+        viewModel.getGroupInsightData(groupId
+            ?: RecommendationConstants.DEFAULT_SELECTED_INSIGHT_TYPE.toString(), SOURCE_PRODUCT_GROUP_DETAIL_PAGE)
+        setUpObserver()
+    }
+
+    private fun setUpObserver() {
+        viewModel.groupInsightCount.observe(this) {
+            if (it is TopAdsListAllInsightState.Success) {
+                entryPointProductGroup?.renderWidgetOnDetailPage(it.data.topAdsBatchGetInsightCountByAdGroupID.groups.firstOrNull()?.groupData?.count
+                    ?: Int.ZERO)
+                entryPointProductGroup?.show()
+                entryPointProductGroup?.binding?.widgetCTAButton?.setOnClickListener {
+                    val bundle = Bundle()
+                    bundle.putString(RecommendationConstants.AD_GROUP_TYPE_KEY, RecommendationConstants.PRODUCT_KEY)
+                    bundle.putString(RecommendationConstants.AD_GROUP_NAME_KEY, groupName)
+                    bundle.putString(RecommendationConstants.AD_GROUP_ID_KEY, groupId)
+                    bundle.putInt(RecommendationConstants.INSIGHT_TYPE_KEY, Int.ZERO)
+                    Intent(this, GroupDetailActivity::class.java).apply {
+                        this.putExtra(RecommendationConstants.GROUP_DETAIL_BUNDLE_KEY, bundle)
+                        startActivity(this)
+                    }
+                }
+            }
+        }
     }
 
     private fun setClick() {
@@ -444,6 +475,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
         dailyBudgetSpent = findViewById(R.id.daily_budget_spent)
         dailyBudget = findViewById(R.id.daily_budget)
         dailyBudgetProgressBar = findViewById(R.id.daily_budget_progress_bar)
+        entryPointProductGroup = findViewById(R.id.entryPointProductGroup)
         descAutoAds = findViewById(R.id.desc_auto_ads_advantage)
     }
 

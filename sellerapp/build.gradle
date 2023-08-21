@@ -1,8 +1,10 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.firebase.crashlytics'
-apply plugin: 'io.hansel.preprocessor'
+if(project.hasProperty('enableEmbrace')) {
+    apply plugin: 'embrace-swazzler'
+}
 apply plugin: 'newrelic'
-apply plugin: 'embrace-swazzler'
+apply plugin: 'io.hansel.preprocessor'
 
 apply from: "$rootDir/buildconfig/aar/local-aar.gradle"
 apply from: '../tools/dynamic_feature_inclusion.gradle'
@@ -277,6 +279,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.attachvoucher)
 
     implementation projectOrAar(rootProject.ext.features.playCommon)
+    implementation projectOrAar(rootProject.ext.features.contentAnalytic)
     implementation projectOrAar(rootProject.ext.features.filter)
 
     implementation projectOrAar(rootProject.ext.features.additional_check)

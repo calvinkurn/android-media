@@ -19,4 +19,5 @@ annotation class ShopPageHeaderTabName {
         const val REVIEW = "ReviewTab"
         const val CAMPAIGN = "CampaignTab"
     }
+
 }

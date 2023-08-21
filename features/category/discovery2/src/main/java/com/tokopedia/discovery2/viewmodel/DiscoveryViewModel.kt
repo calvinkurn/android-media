@@ -52,6 +52,7 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Compa
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.COMPONENT_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.DYNAMIC_SUBTITLE
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.EMBED_CATEGORY
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.FORCED_NAVIGATION
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PIN_PRODUCT
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PRODUCT_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.QUERY_PARENT
@@ -324,8 +325,10 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
         })
     }
 
-    fun getDiscoveryData(queryParameterMap: MutableMap<String, String?>, userAddressData: LocalCacheModel?) {
+    fun getDiscoveryData(queryParameterMap: MutableMap<String, String?>, userAddressData: LocalCacheModel?, isFromTabNavigation: Boolean = false) {
         pageLoadTimePerformanceInterface?.stopPreparePagePerformanceMonitoring()
+        if (!isFromTabNavigation)
+            queryParameterMap.remove(FORCED_NAVIGATION)
         launchCatchError(
                 block = {
                     pageLoadTimePerformanceInterface?.startNetworkRequestPerformanceMonitoring()
@@ -337,7 +340,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
                             queryParameterMapWithoutRpc = it.queryParamMapWithoutRpc
                         }
                     } else {
-                        setParameterMap(queryParameterMap, queryParameterMapWithRpc, queryParameterMapWithoutRpc)
+                        setParameterMap(queryParameterMap[QUERY_PARENT], queryParameterMapWithRpc, queryParameterMapWithoutRpc)
                     }
                     val data = discoveryDataUseCase.getDiscoveryPageDataUseCase(pageIdentifier, queryParameterMap, queryParameterMapWithRpc, queryParameterMapWithoutRpc, userAddressData)
                     pageLoadTimePerformanceInterface?.stopNetworkRequestPerformanceMonitoring()
@@ -489,6 +492,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
                 QUERY_PARENT to bundle?.getString(QUERY_PARENT,""),
                 AFFILIATE_UNIQUE_ID to bundle?.getString(AFFILIATE_UNIQUE_ID, "")?.toDecodedString(),
                 CHANNEL to bundle?.getString(CHANNEL, ""),
+                FORCED_NAVIGATION to bundle?.getString(FORCED_NAVIGATION, ""),
         )
     }
 
@@ -576,22 +580,11 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
         }
     }
 
-    private fun setParameterMap(queryParameterMap: MutableMap<String, String?>, queryParameterMapWithRpc: MutableMap<String, String>, queryParameterMapWithoutRpc: MutableMap<String, String>) {
+    private fun setParameterMap(queryParameterMap: String?, queryParameterMapWithRpc: MutableMap<String, String>, queryParameterMapWithoutRpc: MutableMap<String, String>) {
         launchCatchError(
             (this + Dispatchers.Default).coroutineContext,
             block = {
-                val queryMap =
-                    URLParser(ApplinkConstInternalDiscovery.INTERNAL_DISCOVERY + "?" + queryParameterMap[QUERY_PARENT]).paramKeyValueMapDecoded
-                for ((key, value) in queryMap) {
-                    if (!value.isNullOrEmpty()) {
-                        if (key.startsWith(RPC_FILTER_KEY)) {
-                            val keyWithoutPrefix = key.removePrefix(RPC_FILTER_KEY)
-                            queryParameterMapWithRpc[keyWithoutPrefix] = value
-                        } else {
-                            queryParameterMapWithoutRpc[key] = value
-                        }
-                    }
-                }
+                Utils.setParameterMapUtil(queryParameterMap,queryParameterMapWithRpc,queryParameterMapWithoutRpc)
             },
             onError = {
                 it

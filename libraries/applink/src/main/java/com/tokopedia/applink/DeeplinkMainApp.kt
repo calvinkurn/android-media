@@ -50,11 +50,11 @@ import com.tokopedia.applink.order.DeeplinkMapperOrder
 import com.tokopedia.applink.powermerchant.PowerMerchantDeepLinkMapper
 import com.tokopedia.applink.productmanage.DeepLinkMapperProductManage
 import com.tokopedia.applink.promo.DeeplinkMapperPromo
+import com.tokopedia.applink.promo.DeeplinkMapperPromo.getCelebrationBottomsheetDeeplink
 import com.tokopedia.applink.promo.DeeplinkMapperPromo.getInternalDeeplinkForScpCelebration
 import com.tokopedia.applink.promo.DeeplinkMapperPromo.getInternalDeeplinkForScpMedalCabinet
 import com.tokopedia.applink.promo.DeeplinkMapperPromo.getInternalDeeplinkForScpMedalCabinetSeeMore
 import com.tokopedia.applink.promo.DeeplinkMapperPromo.getInternalDeeplinkForScpMedalDetail
-import com.tokopedia.applink.promo.DeeplinkMapperPromo.getCelebrationBottomsheetDeeplink
 import com.tokopedia.applink.promo.DeeplinkMapperPromo.invokeScpToasterUniversalAppLink
 import com.tokopedia.applink.purchaseplatform.DeeplinkMapperUoh
 import com.tokopedia.applink.purchaseplatform.DeeplinkMapperWishlist
@@ -82,6 +82,11 @@ object DeeplinkMainApp {
         ),
         "addname" to mutableListOf(
             DLP.matchPattern("", ApplinkConstInternalUserPlatform.MANAGE_NAME)
+        ),
+        "addon" to mutableListOf(
+            DLP.matchPattern("{addon_id}") { _, _, _, idList ->
+                UriUtil.buildUri(ApplinkConstInternalMechant.MERCHANT_ADDON, idList?.getOrNull(0))
+            }
         ),
         "affiliate" to mutableListOf(
             DLP.matchPattern("", DeeplinkMapperCategory::getRegisteredNavigationAffiliate),
@@ -194,11 +199,7 @@ object DeeplinkMainApp {
             DLP.goTo(DeeplinkMapperContactUs::getNavigationContactUs)
         ),
         "content" to mutableListOf(
-            DLP.matchPattern(
-                "explore/{tab_name}/{category_id}",
-                DeeplinkMapperHome::getRegisteredNavigationHomeContentExplore
-            ),
-            DLP.matchPattern("{source_id}", DeeplinkMapperContent::getContentFeedDeeplink)
+            DLP.goTo(DeeplinkMapperContent::getNavContentFromAppLink)
         ),
         "customercare" to mutableListOf(
             DLP.matchPattern("", ApplinkConstInternalOperational.INTERNAL_INBOX_LIST)
@@ -228,27 +229,7 @@ object DeeplinkMainApp {
             DLP.matchPattern("", ApplinkConstInternalUserPlatform.EXPLICIT_PROFILE)
         ),
         "feed" to mutableListOf(
-            DLP.matchPattern("", DeeplinkMapperHome::getRegisteredNavigationHomeFeed),
-            DLP.matchPattern(
-                "explore",
-                DeeplinkMapperContent::getRegisteredNavigationHomeFeedExplore
-            ),
-            DLP.matchPattern(
-                "video",
-                DeeplinkMapperContent::getRegisteredNavigationHomeFeedVideo
-            ),
-            DLP.startsWith(
-                "following",
-                DeeplinkMapperContent::getRegisteredNavigationHomeFeedFollowing
-            ),
-            DLP.startsWith(
-                "creation-product-search",
-                DeeplinkMapperContent::getContentCreatePostDeepLink
-            ),
-            DLP.startsWith(
-                "creation-shop-search",
-                DeeplinkMapperContent::getContentCreatePostDeepLink
-            )
+            DLP.goTo(DeeplinkMapperContent::getNavContentFromAppLink)
         ),
         "feedcommunicationdetail" to mutableListOf(
             DLP.goTo(DeepLinkMapperFeed::getRegisteredFeed)
@@ -376,11 +357,32 @@ object DeeplinkMainApp {
             DLP.startsWith("onboarding", ApplinkConstInternalMarketplace.ONBOARDING)
         ),
         "medali" to mutableListOf(
-            DLP.matchPattern(ApplinkConst.ScpRewards.CELEBRATION_BASE) { _, uri, _, _ -> getInternalDeeplinkForScpCelebration(uri) },
-            DLP.startsWith(ApplinkConst.ScpRewards.CELEBRATION_BOTTOMSHEET) { _, uri, _, _ -> getCelebrationBottomsheetDeeplink(uri) },
-            DLP.startsWith(ApplinkConst.ScpRewards.SCP_TOASTER) { ctx, uri, _, _ -> invokeScpToasterUniversalAppLink(ctx, uri) },
-            DLP.startsWith(ApplinkConst.ScpRewards.MEDAL_DETAIL_BASE) { _, uri, _, _ -> getInternalDeeplinkForScpMedalDetail(uri) },
-            DLP.startsWith(ApplinkConst.ScpRewards.SEE_MORE_MEDAL) { _, uri, _, _ -> getInternalDeeplinkForScpMedalCabinetSeeMore(uri) },
+            DLP.matchPattern(ApplinkConst.ScpRewards.CELEBRATION_BASE) { _, uri, _, _ ->
+                getInternalDeeplinkForScpCelebration(
+                    uri
+                )
+            },
+            DLP.startsWith(ApplinkConst.ScpRewards.CELEBRATION_BOTTOMSHEET) { _, uri, _, _ ->
+                getCelebrationBottomsheetDeeplink(
+                    uri
+                )
+            },
+            DLP.startsWith(ApplinkConst.ScpRewards.SCP_TOASTER) { ctx, uri, _, _ ->
+                invokeScpToasterUniversalAppLink(
+                    ctx,
+                    uri
+                )
+            },
+            DLP.startsWith(ApplinkConst.ScpRewards.MEDAL_DETAIL_BASE) { _, uri, _, _ ->
+                getInternalDeeplinkForScpMedalDetail(
+                    uri
+                )
+            },
+            DLP.startsWith(ApplinkConst.ScpRewards.SEE_MORE_MEDAL) { _, uri, _, _ ->
+                getInternalDeeplinkForScpMedalCabinetSeeMore(
+                    uri
+                )
+            },
             DLP.matchPattern("") { _, uri, _, _ -> getInternalDeeplinkForScpMedalCabinet(uri) }
         ),
         "media-editor" to mutableListOf(

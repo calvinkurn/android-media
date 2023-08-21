@@ -3,7 +3,7 @@ package com.tokopedia.inbox.universalinbox.test.robot.widget
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import com.tokopedia.inbox.R
-import com.tokopedia.inbox.common.viewmatcher.withRecyclerView
+import com.tokopedia.inbox.universalinbox.stub.common.withRecyclerView
 
 object WidgetRobot {
     fun clickWidgetOnPosition(position: Int) {

@@ -14,7 +14,7 @@ import com.tokopedia.home_account.privacy_account.listener.AccountItemListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
-
+@Deprecated("Remove this class after integrating SCP Login to Tokopedia")
 open class AccountViewHolder(
     private val listener: AccountItemListener,
     view: View

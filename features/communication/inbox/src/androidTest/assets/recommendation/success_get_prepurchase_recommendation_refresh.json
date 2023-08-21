@@ -1,0 +1,111 @@
+{
+  "productRecommendationWidget": {
+    "data": [
+      {
+        "tID": "doj5Lpf0Q4KWcmfn875_q_D4y8s=",
+        "source": "custom",
+        "title": "Produk serupa",
+        "subtitle": "",
+        "foreignTitle": "Related products",
+        "widgetUrl": "",
+        "pageName": "default",
+        "seeMoreAppLink": "",
+        "layoutType": "Infinite",
+        "pagination": {
+          "currentPage": 1,
+          "nextPage": 2,
+          "prevPage": -1,
+          "hasNext": true
+        },
+        "campaign": {
+          "appLandingPageLink": "",
+          "landingPageLink": "",
+          "thematicID": 0,
+          "assets": {
+            "banner": {
+              "apps": ""
+            }
+          }
+        },
+        "recommendation": [
+          {
+            "id": 2254818740,
+            "name": "Pre-purchase Product Refresh",
+            "categoryBreadcrumbs": "Fashion Pria/Celana Pria/Celana Chino Pria",
+            "url": "https://www.tokopedia.com/f2-clothing/celana-chino-panjang-pria-cinos-slim-fit-jumbo-katun-twill-adem-casual-dark-grey-27-572b?src=topads",
+            "appUrl": "tokopedia://product/2254818740?src=topads",
+            "clickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEH_UdopnhH_yFbm-xgVY789CBUsthbm-FQRo2PcB5QiUEHZFiPcBWgZUEH_ydosKFHpJFoZFiyRCsUsthHA1Fbm-xgVYpyfYagZUEoAndbsK7osjpoAnfo_nRo_ypbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1O_oAu6qMDa_Ozgo1Nkqp-vuVjO_M20H1B2PfBgHO-N3Ao6QVByZM2xe7jfZ32zP1OEZ_uozJJF_92-o1OJe_Co8jjOZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBk19xvucrF3uP3q1h1z9Pg8ju7_jP6QJOAH3BgqBJp_VzsHJOkgcx6uV-0_BzjqJOAZ9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojB2Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBk19Pvepe7_jzgo1OE19P6qBuR_S2uHjONZ9o-QjNkysoGQVKp_Mhg3J2ky1o-ojBk192o8_eF_M2s81OEu_C68MoR_1zz8JBXHA7ibm-Orfua9fBjUstiH_edHsnhHsjOUiFirfuprfB5QBY2gmUEUMuH6u2XoOYk1pgxoj2kHsPqrpgh_77EeuCC6_ViZJ-D1j2aQ1uae7hVHJBiZctRPS2ku32f1pVw1jBC1RyaZpPOgMuUgjgW3V2y8MWG69PZg_oj81rWzA-VQ1dN3ACFu_CBHBok83u_ZJg2y12uy7tprcPFb1xUHfxwr7oGHf2V3SBy13HO3V2e19UWrut73IBce3-5gIzo3Bz9zJWRo9HhrReibm-xQcri6i-sQIupPcua9Rya9R-ByfuXPIg2g9ribm-XP3Oig9-wQfgwy3zpUstdbm-XP3Oig9-wy3zp9R-BrZUE6mFiyfV79fBjraUE3pJRo_jDH_rdoaFpo_jd9ZFiQBYsy3Njq3zxPcuwy3zpUsthHsHDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-jg3yibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstpopeRoiFirI-2yfuwyMBjUsthHA1Fbm-SQfVD9fBjUstpwe?ob=0&t=android&sid=eL9Zn7_jS6a6Jj27Zs6qOM%3AAPA91bHBlRJrmErCLE0IbHj7vzjUjvS1_RIASv2K7ufeHfFmXZXzkJ9wRe3dyG-D2EmN9X0pU0e2SjyeSHFiaJUcJ3pgp-HH3h_sCJ3jEZyXQc5XZPQr-qZ4XyFAbodtMZTWDKw5s1st&src=recom_widget_default&dv=android-3.150&r=https%3A%2F%2Fwww.tokopedia.com%2Ff2-clothing%2Fcelana-chino-panjang-pria-cinos-slim-fit-jumbo-katun-twill-adem-casual-dark-grey-27-572b%3Fsrc%3Dtopads&page=1&management_type=1",
+            "wishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEH_UdopnhH_yFbm-xgVY789CBUsthbm-FQRo2PcB5QiUEHZFiPcBWgZUEH_ydosKFHpJFoZFiyRCsUsthHA1Fbm-xgVYpyfYagZUEoAndbsK7osjpoAnfo_nRo_ypbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1O_oAu6qMDa_Ozgo1Nkqp-vuVjO_M20H1B2PfBgHO-N3Ao6QVByZM2xe7jfZ32zP1OEZ_uozJJF_92-o1OJe_Co8jjOZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBk19xvucrF3uP3q1h1z9Pg8ju7_jP6QJOAH3BgqBJp_VzsHJOkgcx6uV-0_BzjqJOAZ9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojB2Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBk19Pvepe7_jzgo1OE19P6qBuR_S2uHjONZ9o-QjNkysoGQVKp_Mhg3J2ky1o-ojBk192o8_eF_M2s81OEu_C68MoR_1zz8JBXHA7ibm-Orfua9fBjUstiH_edHsnhHsjOUiFirfuprfB5QBY2gmUEUMuH6u2XoOYk1pgxoj2kHsPqrpgh_77EeuCC6_ViZJ-D1j2aQ1uae7hVHJBiZctRPS2ku32f1pVw1jBC1RyaZpPOgMuUgjgW3V2y8MWG69PZg_oj81rWzA-VQ1dN3ACFu_CBHBok83u_ZJg2y12uy7tprcPFb1xUHfxwr7oGHf2V3SBy13HO3V2e19UWrut73IBce3-5gIzo3Bz9zJWRo9HhrReibm-xQcri6i-sQIupPcua9Rya9R-ByfuXPIg2g9ribm-XP3Oig9-wQfgwy3zpUstdbm-XP3Oig9-wy3zp9R-BrZUE6mFiyfV79fBjraUE3pJRo_jDH_rdoaFpo_jd9ZFiQBYsy3Njq3zxPcuwy3zpUsthHsHDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-jg3yibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstpopeRoiFirI-2yfuwyMBjUsthHA1Fbm-SQfVD9fBjUstpwe?r=https%3A%2F%2Fwww.tokopedia.com%2Ff2-clothing%2Fcelana-chino-panjang-pria-cinos-slim-fit-jumbo-katun-twill-adem-casual-dark-grey-27-572b%3Fsrc%3Dtopads&dv=android-3.150&sid=eL9Zn7_jS6a6Jj27Zs6qOM%3AAPA91bHBlRJrmErCLE0IbHj7vzjUjvS1_RIASv2K7ufeHfFmXZXzkJ9wRe3dyG-D2EmN9X0pU0e2SjyeSHFiaJUcJ3pgp-HH3h_sCJ3jEZyXQc5XZPQr-qZ4XyFAbodtMZTWDKw5s1st&management_type=1&product_id=2254818740&ob=0&t=android&page=1&uid=148201295&src=recom_widget_default",
+            "trackerImageUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sJa6ArFH_JfHmFiy3zwPIBFgZUEHZFircYpq9z2Qfdi6sJDUSz2Q31i6sJf6AydHAHhHA1DUSCxPcKi6i-2Q3VSg9HXPcY0QRCBgcBxbMNBPmY2Q3r5yfVsqc15HpnFb9ohP3VagZY3r3-sQ175HsnaHi4hbpJdbpJdgAoi63zib3UN6cyWoAJh6m7N6cJhb_rOgsHOy_uBoAPjomNkrcribm-xgVYpyfYagZUEoAndbsK7osjpoAnfo_nRo_ypbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1O_oAu6qMDa_Ozgo1Nkqp-vuVjO_M20H1B2PfBgHO-N3Ao6QVByZM2xe7jfZ32zP1OEZ_uozJJF_92-o1OJe_Co8jjOZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBk19xvucrF3uP3q1h1z9Pg8ju7_jP6QJOAH3BgqBJp_VzsHJOkgcx6uV-0_BzjqJOAZ9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojB2Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBk19Pvepe7_jzgo1OE19P6qBuR_S2uHjONZ9o-QjNkysoGQVKp_Mhg3J2ky1o-ojBk192o8_eF_M2s81OEu_C68MoR_1zz8JBXHA7ibm-Orfua9fBjUstiH_edHsnhHsjOUiFirfuprfB5QBY2gmUEUMuH6u2XoOYk1pgxoj2kHsPqrpgh_77EeuCC6_ViZJ-D1j2aQ1uae7hVHJBiZctRPS2ku32f1pVw1jBC1RyaZpPOgMuUgjgW3V2y8MWG69PZg_oj81rWzA-VQ1dN3ACFu_CBHBok83u_ZJg2y12uy7tprcPFb1xUHfxwr7oGHf2V3SBy13HO3V2e19UWrut73IBce3-5gIzo3Bz9zJWRo9HhrReibm-xQcri6i-sQIupPcua9Rya9R-ByfuXPIg2g9ribm-XP3Oig9-wQfgwy3zpUstdbm-XP3Oig9-wy3zp9R-BrZUE6mFiQBYsy3Njq3zxPcuwy3zpUsthHsHDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6BDigcuMUB7DUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sHRoArfbm-FrMBsguYiq3ei6sJFo_nDUMP5y3hwq3ei6soY?management_type=1&sid=eL9Zn7_jS6a6Jj27Zs6qOM%3AAPA91bHBlRJrmErCLE0IbHj7vzjUjvS1_RIASv2K7ufeHfFmXZXzkJ9wRe3dyG-D2EmN9X0pU0e2SjyeSHFiaJUcJ3pgp-HH3h_sCJ3jEZyXQc5XZPQr-qZ4XyFAbodtMZTWDKw5s1st&page=1&ob=0&t=android&src=recom_widget_default&dv=android-3.150",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/1/18/18d3b9db-b98f-4118-98a1-75f35a5e47d4.jpg",
+            "price": "Rp99.000",
+            "priceInt": 99000,
+            "discountPercentage": 21,
+            "slashedPrice": "Rp125.000",
+            "slashedPriceInt": 125000,
+            "isWishlist": false,
+            "minOrder": 0,
+            "maxOrder": 0,
+            "shop": {
+              "id": 8779228,
+              "name": "F2 CLOTHING STORE",
+              "city": "Bandung",
+              "isGold": false,
+              "isOfficial": false
+            },
+            "departmentId": 3598,
+            "labels": [
+              {
+                "title": "Gratis Ongkir",
+                "color": "#42b549"
+              },
+              {
+                "title": "Cashback",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "promo",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 5.6 rb",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "campaign",
+                "title": "Galeri Fashion",
+                "type": "",
+                "url": "https://images.tokopedia.net/img/phOWBv/2023/6/9/34a239e6-cf7a-476e-86cb-92f45a54fc95.png"
+              }
+            ],
+            "badges": [
+              {
+                "title": "Power Merchant Pro",
+                "imageUrl": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro@2x.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png"
+            },
+            "rating": 5,
+            "countReview": 2866,
+            "ratingAverage": "4.9",
+            "recommendationType": "cluster_v2_recentview",
+            "stock": 195,
+            "isTopads": true,
+            "specificationLabels": [],
+            "parentID": 0
+          }
+        ]
+      }
+    ]
+  }
+}
