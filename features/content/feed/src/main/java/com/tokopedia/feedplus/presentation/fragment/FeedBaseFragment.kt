@@ -47,6 +47,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.navigation_common.listener.FragmentListener
 import com.tokopedia.play_common.shortsuploader.analytic.PlayShortsUploadAnalytic
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
+import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -207,6 +208,11 @@ class FeedBaseFragment :
         observeEvent()
 
         observeUpload()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        binding.vMenuCenter.requestApplyInsetsWhenAttached()
     }
 
     override fun onDestroyView() {
