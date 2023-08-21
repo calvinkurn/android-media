@@ -40,8 +40,6 @@ class FeedFollowProfileViewHolder private constructor() {
             FeedExoPlayer(itemView.context)
         }
 
-        private var mProfile: FeedFollowProfileAdapter.Model.Profile? = null
-
         init {
             player.getExoPlayer().addListener(object : Player.EventListener {
                 override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
@@ -111,8 +109,6 @@ class FeedFollowProfileViewHolder private constructor() {
         }
 
         fun setupProfile(model: FeedFollowProfileAdapter.Model.Profile) {
-            mProfile = model
-
             /** resume & pause video when user swipe the recommendation (left-right) / content (up-down) */
             if (model.isSelected) {
                 if (!player.getExoPlayer().isPlaying) {
