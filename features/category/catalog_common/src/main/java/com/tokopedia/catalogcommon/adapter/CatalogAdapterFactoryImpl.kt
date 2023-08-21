@@ -3,6 +3,7 @@ package com.tokopedia.catalogcommon.adapter
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.catalogcommon.listener.HeroBannerListener
 import com.tokopedia.catalogcommon.uimodel.DummyUiModel
 import com.tokopedia.catalogcommon.uimodel.HeroBannerUiModel
 import com.tokopedia.catalogcommon.uimodel.SliderImageTextUiModel
@@ -15,17 +16,22 @@ import com.tokopedia.catalogcommon.viewholder.SliderImageTextViewHolder
 import com.tokopedia.catalogcommon.viewholder.PanelImageViewHolder
 import com.tokopedia.catalogcommon.viewholder.TopFeatureViewHolder
 import com.tokopedia.catalogcommon.viewholder.TrustmakerViewHolder
+import com.tokopedia.home_component.HomeComponentTypeFactory
+import com.tokopedia.home_component.viewholders.BannerRevampViewHolder
 
-class CatalogAdapterFactoryImpl : BaseAdapterTypeFactory(), CatalogAdapterFactory {
+class CatalogAdapterFactoryImpl(
+    private val heroBannerListener: HeroBannerListener? = null
+): BaseAdapterTypeFactory(), HomeComponentTypeFactory, CatalogAdapterFactory {
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             TopFeatureViewHolder.LAYOUT -> TopFeatureViewHolder(view)
-            HeroBannerViewHolder.LAYOUT -> HeroBannerViewHolder(view)
+            HeroBannerViewHolder.LAYOUT -> HeroBannerViewHolder(view, heroBannerListener)
             DummyViewHolder.LAYOUT -> DummyViewHolder(view)
             SliderImageTextViewHolder.LAYOUT -> SliderImageTextViewHolder(view)
             PanelImageViewHolder.LAYOUT -> PanelImageViewHolder(view)
             TrustmakerViewHolder.LAYOUT -> TrustmakerViewHolder(view)
+            BannerRevampViewHolder.LAYOUT -> BannerRevampViewHolder(view, null)
             else -> super.createViewHolder(view, type)
         }
     }
