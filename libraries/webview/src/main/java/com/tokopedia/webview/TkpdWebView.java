@@ -54,6 +54,8 @@ public class TkpdWebView extends WebView {
     private static final String KEY_FINGERPRINT_DATA = "Fingerprint-Data";
     private static final String KEY_FINGERPRINT_HASH = "Fingerprint-Hash";
 
+    private static final String KEY_FINTECH_FINGERPRINT_DATA = "Fintech-Fingerprint-Data";
+
     private @Nullable
     TkpdWebView.WebviewScrollListener scrollListener = null;
 
@@ -159,7 +161,7 @@ public class TkpdWebView extends WebView {
             String additionalInfoBase64 = Base64.encodeToString(additionalInfoJson, Base64.DEFAULT);
 
             header.put(
-                    AdditionalInfoModel.KEY_ADDITIONAL_INFO,
+                    KEY_FINTECH_FINGERPRINT_DATA,
                     additionalInfoBase64
             );
 

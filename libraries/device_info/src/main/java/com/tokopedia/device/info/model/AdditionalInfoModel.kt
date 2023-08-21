@@ -22,7 +22,6 @@ data class AdditionalInfoModel(
 ) {
 
     companion object {
-        const val KEY_ADDITIONAL_INFO = "Additional-Info"
         private const val MOST_SIG_BITS = -0x121074568629b532L
         private const val LEAST_SIG_BITS = -0x5c37d8232ae2de13L
 
