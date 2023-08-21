@@ -351,7 +351,7 @@ class FeedFragment :
         }
 
         override fun onClickViewOtherContent() {
-            feedMainViewModel.changeCurrentTabByType(FeedBaseFragment.TAB_TYPE_FOR_YOU)
+            feedMainViewModel.setActiveTab(FeedBaseFragment.TAB_TYPE_FOR_YOU)
         }
 
         override fun onErrorPlayingVideo() {
