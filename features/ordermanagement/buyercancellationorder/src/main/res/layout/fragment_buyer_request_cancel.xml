@@ -24,9 +24,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <com.tokopedia.empty_state.EmptyStateUnify
-                android:id="@+id/empty_state_cancellation"
-                android:layout_width="match_parent"
+            <com.tokopedia.globalerror.GlobalError
+                android:id="@+id/global_error_cancellation"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -43,135 +43,85 @@
                     android:id="@+id/buyer_ticker_info"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_13"
-                    android:layout_marginLeft="@dimen/dp_13"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="@dimen/dp_13"
-                    android:layout_marginRight="@dimen/dp_13"
                     android:layout_marginBottom="16dp"
                     android:visibility="gone"
                     app:closeButtonVisibility="gone"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:tickerShapeType="loose"
-                    app:tickerType="announcement" />
-
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/label_shop_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginRight="16dp"
-                    android:textColor="@color/Unify_NN950_96"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/buyer_ticker_info"
-                    app:typographyType="body_1"
-                    app:typographyWeight="reguler" />
-
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/label_invoice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginRight="16dp"
-                    android:textColor="@color/Unify_NN950_32"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/label_shop_name"
-                    app:typographyType="body_2"
-                    app:typographyWeight="reguler" />
-
-                <com.tokopedia.unifycomponents.DividerUnify
-                    android:id="@+id/divider_1"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginTop="12dp"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginRight="16dp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/label_invoice" />
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cv_product_img"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginRight="16dp"
-                    app:cardCornerRadius="6dp"
-                    app:cardElevation="0dp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/divider_1">
-
-                    <ImageView
-                        android:id="@+id/iv_product"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        tools:ignore="ContentDescription" />
-
-                </androidx.cardview.widget.CardView>
-
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/label_product_name"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="12dp"
-                    android:layout_marginLeft="12dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="12dp"
-                    android:layout_marginRight="12dp"
-                    android:textColor="@color/Unify_NN950_96"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/cv_product_img"
-                    app:layout_constraintTop_toBottomOf="@id/divider_1"
-                    app:typographyType="body_1"
-                    app:typographyWeight="bold" />
-
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/label_price"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="12dp"
-                    android:layout_marginLeft="12dp"
-                    android:layout_marginTop="@dimen/dp_1"
-                    android:textColor="@color/Unify_NN950_96"
-                    app:layout_constraintStart_toEndOf="@id/cv_product_img"
-                    app:layout_constraintTop_toBottomOf="@id/label_product_name"
-                    app:typographyType="body_2"
-                    app:typographyWeight="reguler" />
-
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/label_see_all_products"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="12dp"
-                    android:layout_marginLeft="12dp"
-                    android:layout_marginTop="8dp"
-                    android:text="@string/see_all_placeholder"
-                    android:textColor="@color/Unify_GN500"
-                    android:visibility="gone"
-                    app:layout_constraintStart_toEndOf="@id/cv_product_img"
-                    app:layout_constraintTop_toBottomOf="@id/label_price"
-                    app:typographyType="body_2"
-                    app:typographyWeight="reguler"
-                    tools:text="@string/see_all_placeholder"
+                    app:tickerShapeType="full"
+                    app:tickerType="announcement"
                     tools:visibility="visible" />
+
+                <com.tokopedia.unifycomponents.ContainerUnify
+                    android:id="@+id/containerCardProductItem"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:orientation="vertical"
+                    app:container_color="YELLOW"
+                    app:layout_constraintBottom_toTopOf="@id/divider_2"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/buyer_ticker_info">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rvCardProductItem"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:clipToPadding="false"
+                        android:orientation="horizontal"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        tools:listitem="@layout/item_product_cancellation_order" />
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/cancellationOrderWarning"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:layout_marginBottom="20dp"
+                        android:visibility="visible">
+
+                        <androidx.constraintlayout.widget.Barrier
+                            android:id="@+id/barrierCancellationOrderWarning"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="20dp"
+                            app:barrierDirection="top"
+                            app:constraint_referenced_ids="icCancellationOrderWarning, tvCancellationOrderWarning" />
+
+                        <com.tokopedia.iconunify.IconUnify
+                            android:id="@+id/icCancellationOrderWarning"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            app:icon_color_light_enable="@color/Unify_YN300"
+                            app:icon_name="WARNING"
+                            app:layout_constraintBottom_toBottomOf="@id/tvCancellationOrderWarning"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="@id/tvCancellationOrderWarning" />
+
+                        <com.tokopedia.unifyprinciples.Typography
+                            android:id="@+id/tvCancellationOrderWarning"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginTop="12dp"
+                            android:layout_marginEnd="16dp"
+                            android:textColor="@color/Unify_NN600"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toEndOf="@id/icCancellationOrderWarning"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:typographyType="small"
+                            tools:text="Pesanan Dilayani Tokopedia yang dikirim bersamaan tidak bisa dibatalkan secara terpisah." />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </com.tokopedia.unifycomponents.ContainerUnify>
 
                 <com.tokopedia.unifycomponents.DividerUnify
                     android:id="@+id/divider_2"
                     android:layout_width="match_parent"
                     android:layout_height="8dp"
-                    android:layout_marginTop="16dp"
-                    app:layout_constraintTop_toBottomOf="@id/label_see_all_products" />
+                    app:layout_constraintTop_toBottomOf="@id/containerCardProductItem" />
 
                 <!--start layout cancel already requested-->
 
@@ -318,76 +268,127 @@
                     app:typographyType="body_1"
                     app:typographyWeight="bold" />
 
-                <com.tokopedia.unifycomponents.TextFieldUnify
-                    android:id="@+id/tf_choose_reason"
+                <com.tokopedia.unifycomponents.CardUnify
+                    android:id="@+id/cardUnifyChooseReason"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginRight="16dp"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginEnd="12dp"
                     android:visibility="gone"
+                    app:card_type="border"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tv_reason"
-                    app:text_field_append_drawable_icon_1="@drawable/ic_chevron_down"
-                    app:text_field_label=""
-                    app:text_field_label_static="true"
-                    app:text_field_placeholder="@string/reason_placeholder" />
+                    app:layout_constraintTop_toBottomOf="@id/tv_reason">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <com.tokopedia.unifyprinciples.Typography
+                            android:id="@+id/tvChooseReasonLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="12dp"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginBottom="16dp"
+                            android:text="@string/reason_placeholder"
+                            android:textColor="@color/Unify_NN950"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:typographyType="display_2" />
+
+                        <com.tokopedia.iconunify.IconUnify
+                            android:id="@+id/iconChooseReason"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_marginEnd="16dp"
+                            app:icon_color_light_enable="@color/Unify_NN900"
+                            app:icon_name="CHEVRON_DOWN"
+                            app:layout_constraintBottom_toBottomOf="@id/tvChooseReasonLabel"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="@id/tvChooseReasonLabel" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </com.tokopedia.unifycomponents.CardUnify>
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tv_sub_reason"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:layout_marginLeft="16dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"
-                    android:layout_marginRight="16dp"
                     android:text="@string/ask_2_placeholder"
                     android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tf_choose_reason"
+                    app:layout_constraintTop_toBottomOf="@id/cardUnifyChooseReason"
                     app:typographyType="body_1"
                     app:typographyWeight="bold" />
 
-                <com.tokopedia.unifycomponents.TextFieldUnify
-                    android:id="@+id/tf_choose_sub_reason"
+                <com.tokopedia.unifycomponents.CardUnify
+                    android:id="@+id/cardUnifyChooseSubReason"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginBottom="@dimen/spacing_lvl4"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginEnd="12dp"
+                    android:layout_marginBottom="16dp"
                     android:visibility="gone"
+                    app:card_type="border"
                     app:layout_constraintBottom_toTopOf="@id/btn_req_cancel"
                     app:layout_constraintTop_toBottomOf="@id/tv_sub_reason"
-                    app:layout_constraintVertical_bias="0"
-                    app:text_field_append_drawable_icon_1="@drawable/ic_chevron_down"
-                    app:text_field_label=""
-                    app:text_field_label_static="true"
-                    app:text_field_placeholder="@string/reason_placeholder" />
+                    app:layout_constraintVertical_bias="0">
 
-                <com.tokopedia.unifycomponents.TextFieldUnify
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <com.tokopedia.unifyprinciples.Typography
+                            android:id="@+id/tvChooseSubReasonLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="12dp"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginBottom="16dp"
+                            android:text="@string/reason_placeholder"
+                            android:textColor="@color/Unify_NN950"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:typographyType="display_2" />
+
+                        <com.tokopedia.iconunify.IconUnify
+                            android:id="@+id/iconChooseSubReason"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_marginEnd="16dp"
+                            app:icon_color_light_enable="@color/Unify_NN900"
+                            app:icon_name="CHEVRON_DOWN"
+                            app:layout_constraintBottom_toBottomOf="@id/tvChooseSubReasonLabel"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="@id/tvChooseSubReasonLabel" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </com.tokopedia.unifycomponents.CardUnify>
+
+                <com.tokopedia.unifycomponents.TextFieldUnify2
                     android:id="@+id/tf_choose_sub_reason_editable"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/tf_choose_reason"
                     android:layout_marginStart="16dp"
-                    android:layout_marginLeft="16dp"
                     android:layout_marginEnd="16dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginBottom="@dimen/spacing_lvl4"
+                    android:layout_marginBottom="16dp"
                     android:visibility="gone"
                     app:layout_constraintBottom_toTopOf="@id/btn_req_cancel"
                     app:layout_constraintTop_toBottomOf="@id/tv_sub_reason"
                     app:layout_constraintVertical_bias="0"
-                    app:text_field_label=""
+                    app:text_field_label="@string/buyer_cancellation_order_choose_reason"
                     app:text_field_label_static="true"
                     app:text_field_message="@string/error_message_buyer_request_cancel_reason_should_not_contains_special_chars"
-                    app:text_field_placeholder="@string/tulis_alasan" />
+                    app:text_field_placeholder="@string/buyer_cancellation_order_choose_reason" />
 
                 <com.tokopedia.unifycomponents.UnifyButton
                     android:id="@+id/btn_req_cancel"

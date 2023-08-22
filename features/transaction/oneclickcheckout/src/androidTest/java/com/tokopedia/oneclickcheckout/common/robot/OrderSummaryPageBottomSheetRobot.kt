@@ -136,7 +136,7 @@ class OrderPriceSummaryBottomSheetRobot {
     }
 
     fun assertPaymentFeeBottomSheetInfo(tooltipTitle: String, tooltipInfo: String) {
-        onView(withId(R.id.bottom_sheet_title)).check(matches(withText(tooltipTitle)))
+        onView(withId(com.tokopedia.unifycomponents.R.id.bottom_sheet_title)).check(matches(withText(tooltipTitle)))
         onView(withId(R.id.tv_info)).check(matches(withText(tooltipInfo)))
     }
 

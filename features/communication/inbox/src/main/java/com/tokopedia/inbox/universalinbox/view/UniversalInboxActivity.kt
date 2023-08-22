@@ -21,7 +21,7 @@ import com.tokopedia.inbox.universalinbox.util.UniversalInboxViewUtil.ICON_MAX_P
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxViewUtil.ICON_PERCENTAGE_Y_POSITION
 import com.tokopedia.inbox.universalinbox.view.listener.UniversalInboxCounterListener
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.NotificationUnify
 import javax.inject.Inject
 
@@ -130,7 +130,6 @@ class UniversalInboxActivity : BaseSimpleActivity(), HasComponent<UniversalInbox
 
     fun updateNotificationCounter(strCounter: String) {
         toolbarNotificationIcon?.apply {
-            notificationRef.showWithCondition(strCounter.isNotBlank())
             notificationRef.setNotification(
                 notif = strCounter,
                 notificationType = NotificationUnify.COUNTER_TYPE,
@@ -145,6 +144,12 @@ class UniversalInboxActivity : BaseSimpleActivity(), HasComponent<UniversalInbox
                 xPosition,
                 ICON_PERCENTAGE_Y_POSITION
             )
+            if (strCounter.isBlank()) {
+                notificationRef.setBackgroundDrawable(null)
+                notificationRef.gone()
+            } else {
+                notificationRef.show()
+            }
         }
         notificationCounter = strCounter
     }

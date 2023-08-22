@@ -86,7 +86,7 @@ import javax.inject.Named
         repository: SettingRepository,
         @TroubleshootContext context: Context
     ): GetUserSettingUseCase {
-        return getUseSettingUseCase(repository, context, R.raw.query_push_notif_setting)
+        return getUseSettingUseCase(repository, context, com.tokopedia.settingnotif.R.raw.query_push_notif_setting)
     }
 
     @Provides
@@ -95,7 +95,7 @@ import javax.inject.Named
         repository: SettingRepository,
         @TroubleshootContext context: Context
     ): GetUserSettingUseCase {
-        return getUseSettingUseCase(repository, context, R.raw.query_seller_notif_setting)
+        return getUseSettingUseCase(repository, context, com.tokopedia.settingnotif.R.raw.query_seller_notif_setting)
     }
 
     @Provides

@@ -22,6 +22,7 @@ buildscript {
 
 dependencies {
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
+    implementation projectOrAar(rootProject.ext.libraries.tkpddesign)
     implementation projectOrAar(rootProject.ext.libraries.baseList)
     implementation projectOrAar(rootProject.ext.features.topAdsManagementCommon)
     implementation projectOrAar(rootProject.ext.features.shopCommon)

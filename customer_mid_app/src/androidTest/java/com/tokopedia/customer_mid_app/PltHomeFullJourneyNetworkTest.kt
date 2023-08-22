@@ -66,8 +66,8 @@ class PltHomeFullJourneyNetworkTest {
         val sharedPrefs = InstrumentationRegistry
                 .getInstrumentation().context
                 .getSharedPreferences(NavConstant.KEY_FIRST_VIEW_NAVIGATION, Context.MODE_PRIVATE)
-        sharedPrefs.edit().putBoolean(
-                NavConstant.KEY_FIRST_VIEW_NAVIGATION_ONBOARDING, false).apply()
+//        sharedPrefs.edit().putBoolean(
+//                NavConstant.KEY_FIRST_VIEW_NAVIGATION_ONBOARDING, false).apply()
     }
 
     @Test
