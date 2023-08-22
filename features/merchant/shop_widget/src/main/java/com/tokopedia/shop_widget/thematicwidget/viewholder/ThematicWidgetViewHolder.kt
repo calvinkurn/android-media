@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.view.marginTop
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -39,9 +38,10 @@ import kotlin.math.abs
 
 //need to surpress this one, since there are no pii related data defined on this class
 @SuppressLint("PII Data Exposure")
-class ThematicWidgetViewHolder (
+class ThematicWidgetViewHolder(
     itemView: View,
-    private val listener: ThematicWidgetListener
+    private val listener: ThematicWidgetListener,
+    private val isShopHomeTabHasFestivity: Boolean
 ) : AbstractViewHolder<ThematicWidgetUiModel>(itemView), CoroutineScope, HeaderCustomViewListener {
 
     companion object {
@@ -134,8 +134,16 @@ class ThematicWidgetViewHolder (
         if (uiModel.isFestivity) {
             configFestivity(uiModel)
         } else {
-            configNonFestivity(uiModel)
+            if(isShopHomeTabHasFestivity){
+                configNonFestivity(uiModel)
+            } else {
+                configReimagined(uiModel)
+            }
         }
+    }
+
+    private fun configReimagined(uiModel: ThematicWidgetUiModel) {
+        dynamicHeaderCustomView?.configReimaginedColor(uiModel.header.colorSchema)
     }
 
     private fun configNonFestivity(uiModel: ThematicWidgetUiModel) {

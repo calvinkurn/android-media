@@ -458,7 +458,7 @@ open class ShopHomeAdapterTypeFactory(
             ShopHomeSliderSquarePlaceholderViewHolder.LAYOUT_RES -> ShopHomeSliderSquarePlaceholderViewHolder(parent)
             ShopHomeMultipleImageColumnPlaceholderViewHolder.LAYOUT_RES -> ShopHomeMultipleImageColumnPlaceholderViewHolder(parent)
             ShopHomeCardDonationViewHolder.LAYOUT -> ShopHomeCardDonationViewHolder(parent, shopHomeCardDonationListener)
-            ThematicWidgetViewHolder.LAYOUT -> ThematicWidgetViewHolder(parent, thematicWidgetListener)
+            ThematicWidgetViewHolder.LAYOUT -> ThematicWidgetViewHolder(parent, thematicWidgetListener, shopHomeListener.isShopHomeTabHasFestivity())
             ThematicWidgetLoadingStateViewHolder.LAYOUT -> ThematicWidgetLoadingStateViewHolder(parent)
             ShopHomePersoProductComparisonPlaceholderViewHolder.LAYOUT -> ShopHomePersoProductComparisonPlaceholderViewHolder(parent)
             ShopHomePersoProductComparisonViewHolder.LAYOUT -> ShopHomePersoProductComparisonViewHolder(parent, shopPersoProductComparisonListener, shopHomeListener)
