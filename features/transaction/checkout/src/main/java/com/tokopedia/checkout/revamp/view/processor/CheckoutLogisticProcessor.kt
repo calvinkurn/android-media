@@ -453,7 +453,7 @@ class CheckoutLogisticProcessor @Inject constructor(
                                                 shippingRecommendationData
                                             )
 //                                            return@withContext courierItemData
-                                            if (shippingCourierUiModel.productData.isUiRatesHidden && shippingCourierUiModel.serviceData.selectedShipperProductId == 0 && courierItemData.logPromoCode.isNullOrEmpty()) {
+                                            if (shippingCourierUiModel.productData.isUiRatesHidden && shippingCourierUiModel.serviceData.selectedShipperProductId == 0 && courierItemData.selectedShipper.logPromoCode.isNullOrEmpty()) {
                                                 // courier should only be used with BO, but no BO code found
                                                 CheckoutLogger.logOnErrorLoadCourierNew(
                                                     MessageErrorException("rates ui hidden but no promo"),
@@ -747,7 +747,7 @@ class CheckoutLogisticProcessor @Inject constructor(
                                                     shippingCourierUiModel,
                                                     shippingRecommendationData
                                                 )
-                                            if (shippingCourierUiModel.productData.isUiRatesHidden && shippingCourierUiModel.serviceData.selectedShipperProductId == 0 && courierItemData.logPromoCode.isNullOrEmpty()) {
+                                            if (shippingCourierUiModel.productData.isUiRatesHidden && shippingCourierUiModel.serviceData.selectedShipperProductId == 0 && courierItemData.selectedShipper.logPromoCode.isNullOrEmpty()) {
                                                 // courier should only be used with BO, but no BO code found
                                                 CheckoutLogger.logOnErrorLoadCourierNew(
                                                     MessageErrorException("rates ui hidden but no promo"),

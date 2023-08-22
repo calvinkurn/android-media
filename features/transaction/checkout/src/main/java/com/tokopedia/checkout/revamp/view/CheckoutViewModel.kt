@@ -961,7 +961,7 @@ class CheckoutViewModel @Inject constructor(
                         cartPosition,
                         orderModel.cartStringGroup,
                         validateUsePromoRequest,
-                        courierItemData.logPromoCode!!,
+                        courierItemData.selectedShipper.logPromoCode!!,
                         true,
                         courierItemData,
                         result.insurance
@@ -1092,7 +1092,7 @@ class CheckoutViewModel @Inject constructor(
                         cartPosition,
                         orderModel.cartStringGroup,
                         validateUsePromoRequest,
-                        courierItemData.logPromoCode!!,
+                        courierItemData.selectedShipper.logPromoCode!!,
                         false,
                         courierItemData,
                         result.insurance
@@ -1395,7 +1395,7 @@ class CheckoutViewModel @Inject constructor(
                 ClearPromoOrder(
                     order.boUniqueId,
                     order.boMetadata.boType,
-                    arrayListOf(courierItemData.logPromoCode!!),
+                    arrayListOf(courierItemData.selectedShipper.logPromoCode!!),
                     order.shopId,
                     order.isProductIsPreorder,
                     order.preOrderDurationDay.toString(),
@@ -1511,7 +1511,7 @@ class CheckoutViewModel @Inject constructor(
             ClearPromoOrder(
                 checkoutOrderModel.boUniqueId,
                 checkoutOrderModel.boMetadata.boType,
-                arrayListOf(courierItemData.logPromoCode!!),
+                arrayListOf(courierItemData.selectedShipper.logPromoCode!!),
                 checkoutOrderModel.shopId,
                 checkoutOrderModel.isProductIsPreorder,
                 checkoutOrderModel.preOrderDurationDay.toString(),
@@ -2081,7 +2081,7 @@ class CheckoutViewModel @Inject constructor(
             val cartPosition =
                 checkoutItems.indexOfFirst { it is CheckoutOrderModel && it.cartStringGroup == voucher.cartStringGroup }
             val order = checkoutItems[cartPosition] as CheckoutOrderModel
-            if (voucher.code == order.shipment.courierItemData?.logPromoCode) {
+            if (voucher.code == order.shipment.courierItemData?.selectedShipper?.logPromoCode) {
                 continue
             }
             val result = logisticProcessor.getRatesWithBoCode(
@@ -2152,7 +2152,7 @@ class CheckoutViewModel @Inject constructor(
                     checkoutItems = promoProcessor.validateUseLogisticPromo(
                         validateUsePromoRequest,
                         order.cartStringGroup,
-                        courierItemData.logPromoCode!!,
+                        courierItemData.selectedShipper.logPromoCode!!,
                         checkoutItems,
                         courierItemData,
                         isOneClickShipment,
@@ -2221,7 +2221,7 @@ class CheckoutViewModel @Inject constructor(
         var firstScrollIndex = -1
         for ((index, shipmentCartItemModel) in checkoutItems.withIndex()) {
             if (shipmentCartItemModel is CheckoutOrderModel) {
-                val logPromoCode = shipmentCartItemModel.shipment.courierItemData?.logPromoCode
+                val logPromoCode = shipmentCartItemModel.shipment.courierItemData?.selectedShipper?.logPromoCode
                 if (!logPromoCode.isNullOrEmpty() &&
                     unprocessedUniqueIds.contains(shipmentCartItemModel.cartStringGroup)
                 ) {
