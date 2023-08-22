@@ -19,8 +19,8 @@ import com.tokopedia.stories.databinding.FragmentStoryDetailBinding
 import com.tokopedia.stories.utils.withCache
 import com.tokopedia.stories.view.adapter.StoryGroupAdapter
 import com.tokopedia.stories.view.components.indicator.StoryDetailTimer
-import com.tokopedia.stories.view.model.StoryDetailUiModel
-import com.tokopedia.stories.view.model.StoryGroupUiModel
+import com.tokopedia.stories.view.model.StoryUiModel.StoryDetailUiModel
+import com.tokopedia.stories.view.model.StoryUiModel.StoryGroupUiModel
 import com.tokopedia.stories.view.utils.TouchEventStory
 import com.tokopedia.stories.view.utils.onTouchEventStory
 import com.tokopedia.stories.view.viewmodel.StoryViewModel

@@ -6,7 +6,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.tokopedia.stories.view.fragment.StoryDetailFragment
-import com.tokopedia.stories.view.model.StoryGroupUiModel
+import com.tokopedia.stories.view.model.StoryUiModel.StoryGroupUiModel
 
 class StoryGroupPagerAdapter(
     private val fragmentManager: FragmentManager,

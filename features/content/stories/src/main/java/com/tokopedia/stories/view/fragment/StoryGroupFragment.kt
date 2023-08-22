@@ -14,7 +14,7 @@ import com.tokopedia.stories.databinding.FragmentStoryGroupBinding
 import com.tokopedia.stories.utils.withCache
 import com.tokopedia.stories.view.adapter.StoryGroupPagerAdapter
 import com.tokopedia.stories.view.animation.ZoomOutPageTransformer
-import com.tokopedia.stories.view.model.StoryGroupUiModel
+import com.tokopedia.stories.view.model.StoryUiModel.StoryGroupUiModel
 import com.tokopedia.stories.view.viewmodel.StoryViewModel
 import com.tokopedia.stories.view.viewmodel.action.StoryUiAction
 import com.tokopedia.stories.view.viewmodel.event.StoryUiEvent

@@ -4,32 +4,36 @@ import android.os.Bundle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.stories.data.repository.StoryRepository
-import com.tokopedia.stories.view.model.StoryDetailUiModel
-import com.tokopedia.stories.view.model.StoryDetailUiModel.StoryDetailUiEvent
-import com.tokopedia.stories.view.model.StoryGroupUiModel
+import com.tokopedia.stories.domain.model.StoryAuthorType
+import com.tokopedia.stories.domain.model.StoryRequestModel
+import com.tokopedia.stories.domain.model.StorySource
+import com.tokopedia.stories.view.model.StoryUiModel
+import com.tokopedia.stories.view.model.StoryUiModel.StoryDetailUiModel.StoryDetailUiEvent
+import com.tokopedia.stories.view.model.StoryUiModel.StoryGroupUiModel
 import com.tokopedia.stories.view.model.StoryUiState
 import com.tokopedia.stories.view.viewmodel.action.StoryUiAction
 import com.tokopedia.stories.view.viewmodel.event.StoryUiEvent
+import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 class StoryViewModel @Inject constructor(
     private val repository: StoryRepository,
 ) : ViewModel() {
 
-    private var shopId: String = ""
-    private var storyId: String = ""
+    private var authorId: String = ""
     var mGroupPosition = 0
     var mDetailMaxInGroup = 0
     var mDetailPosition = 0
 
     private var _storyGroup = MutableStateFlow(listOf<StoryGroupUiModel>())
-    private var _storyDetail = MutableStateFlow(StoryDetailUiModel.Empty)
+    private var _storyDetail = MutableStateFlow(StoryUiModel.StoryDetailUiModel.Empty)
 
     private val _uiEvent = MutableSharedFlow<StoryUiEvent>(extraBufferCapacity = 100)
     val uiEvent: Flow<StoryUiEvent>
@@ -45,11 +49,6 @@ class StoryViewModel @Inject constructor(
         )
     }
 
-    init {
-//        val response = repository.getStoryData()
-//        _storyGroup.value = response.groups
-    }
-
     fun submitAction(action: StoryUiAction) {
         when (action) {
             is StoryUiAction.SetArgumentsData -> handleSetInitialData(action.data)
@@ -62,8 +61,20 @@ class StoryViewModel @Inject constructor(
     }
 
     private fun handleSetInitialData(data: Bundle?) {
-        shopId = data?.getString(SHOP_ID, "").orEmpty()
-        storyId = data?.getString(STORY_ID, "").orEmpty()
+        authorId = data?.getString(SHOP_ID, "").orEmpty()
+
+        viewModelScope.launchCatchError(block = {
+            val request = StoryRequestModel(
+                authorID = authorId,
+                authorType = StoryAuthorType.SHOP.value,
+                source = StorySource.SHOP_ENTRY_POINT.value,
+                sourceID = "",
+            )
+            val response = repository.getInitialStoryData(request)
+            _storyGroup.value = response.groups
+        }) { exception ->
+            Timber.d("fail $exception")
+        }
     }
 
     private fun handleGroupMainData(selectedGroup: Int) {
@@ -148,7 +159,6 @@ class StoryViewModel @Inject constructor(
 
     companion object {
         private const val SHOP_ID = "shop_id"
-        private const val STORY_ID = "story_id"
     }
 
 }

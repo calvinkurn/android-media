@@ -8,7 +8,7 @@ import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.stories.R
 import com.tokopedia.stories.databinding.ItemStoryGroupBinding
-import com.tokopedia.stories.view.model.StoryGroupUiModel
+import com.tokopedia.stories.view.model.StoryUiModel.StoryGroupUiModel
 
 class StoryGroupAdapter(
     listener: Listener

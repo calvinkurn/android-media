@@ -22,9 +22,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.tokopedia.stories.view.model.StoryDetailUiModel
-import com.tokopedia.stories.view.model.StoryDetailUiModel.StoryDetailUiEvent.PAUSE
-import com.tokopedia.stories.view.model.StoryDetailUiModel.StoryDetailUiEvent.START
+import com.tokopedia.stories.view.model.StoryUiModel.StoryDetailUiModel
+import com.tokopedia.stories.view.model.StoryUiModel.StoryDetailUiModel.StoryDetailUiEvent.PAUSE
+import com.tokopedia.stories.view.model.StoryUiModel.StoryDetailUiModel.StoryDetailUiEvent.START
 
 @Composable
 fun StoryDetailTimer(

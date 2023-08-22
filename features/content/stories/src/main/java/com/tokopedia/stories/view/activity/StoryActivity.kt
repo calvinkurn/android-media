@@ -8,7 +8,6 @@ import com.tokopedia.stories.di.StoryInjector
 import com.tokopedia.stories.view.fragment.StoryGroupFragment
 import javax.inject.Inject
 
-
 class StoryActivity : BaseActivity() {
 
     @Inject
@@ -42,7 +41,6 @@ class StoryActivity : BaseActivity() {
         val path = data.pathSegments
         bundle = Bundle().apply {
             putString(SHOP_ID, path[SHOP_ID_INDEX])
-            if (path.size > STORIES_ID_INDEX) putString(STORIES_ID, path[STORIES_ID_INDEX])
         }
     }
 
@@ -77,9 +75,7 @@ class StoryActivity : BaseActivity() {
 
     companion object {
         private const val SHOP_ID = "shop_id"
-        private const val STORIES_ID = "stories_id"
         private const val SHOP_ID_INDEX = 1
-        private const val STORIES_ID_INDEX = 2
     }
 
 }
