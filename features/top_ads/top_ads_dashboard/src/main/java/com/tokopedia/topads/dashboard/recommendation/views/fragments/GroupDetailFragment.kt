@@ -338,7 +338,7 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
             }
 
             it.setPrimaryCTAText(getString(com.tokopedia.abstraction.R.string.title_try_again))
-            it.setSecondaryCTAText(getString(com.tokopedia.design.R.string.label_close))
+            it.setSecondaryCTAText(getString(com.tokopedia.topads.dashboard.R.string.topads_label_close))
         }
     }
 

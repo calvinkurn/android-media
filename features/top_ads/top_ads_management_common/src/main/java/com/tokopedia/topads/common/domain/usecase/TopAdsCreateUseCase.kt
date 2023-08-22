@@ -44,7 +44,10 @@ import javax.inject.Inject
  * Created by Pika on 24/5/20.
  */
 
-class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterface) {
+class TopAdsCreateUseCase @Inject constructor(
+    val userSession: UserSessionInterface,
+    graphqlRepository: GraphqlRepository
+) {
 
     private val graphql by lazy { GraphqlUseCase<FinalAdResponse>(graphqlRepository) }
 

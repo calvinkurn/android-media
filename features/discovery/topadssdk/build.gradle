@@ -20,6 +20,7 @@ android {
     testNamespace 'com.tokopedia.topads.sdk.test'
     buildFeatures {
         buildConfig true
+        viewBinding true
     }
 }
 

@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -161,8 +160,7 @@ class AdContentFragment : BaseHeadlineStepperFragment<HeadlineAdStepperModel>(),
             ifLessProductSelected() -> {
                 productPickerErrorText?.show()
                 view?.let { it1 ->
-                    Toaster.toasterCustomBottomHeight =
-                        resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_60)
+                    Toaster.toasterCustomBottomHeight = resources.getDimensionPixelSize(com.tokopedia.top_ads_headline.R.dimen.toaster_custom_bottom_height)
                     Toaster.build(it1,
                         getString(R.string.topads_headline_submit_ad_detail_error),
                         Toaster.LENGTH_LONG,
@@ -172,8 +170,7 @@ class AdContentFragment : BaseHeadlineStepperFragment<HeadlineAdStepperModel>(),
             }
             stepperModel?.selectedTopAdsProducts?.size ?: 0 > MAX_PRODUCT_SELECTION -> {
                 view?.let {
-                    Toaster.toasterCustomBottomHeight =
-                        resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_60)
+                    Toaster.toasterCustomBottomHeight = resources.getDimensionPixelSize(com.tokopedia.top_ads_headline.R.dimen.toaster_custom_bottom_height)
                     Toaster.build(it,
                         getString(R.string.topads_headline_over_product_selection),
                         Toaster.LENGTH_LONG,

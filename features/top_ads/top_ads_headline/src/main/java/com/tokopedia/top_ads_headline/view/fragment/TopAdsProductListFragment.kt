@@ -511,7 +511,7 @@ class TopAdsProductListFragment : BaseDaggerFragment(),
 
     override fun onProductOverSelect() {
         view?.let {
-            Toaster.toasterCustomBottomHeight = resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_60)
+            Toaster.toasterCustomBottomHeight = resources.getDimensionPixelSize(com.tokopedia.top_ads_headline.R.dimen.toaster_custom_bottom_height)
             Toaster.build(it,
                 getString(R.string.topads_headline_over_product_selection),
                 Snackbar.LENGTH_LONG,

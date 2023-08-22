@@ -16,7 +16,10 @@ import kotlin.collections.set
 /**
  * Created by Pika on 29/5/20.
  */
-class TopAdsGetGroupListUseCase @Inject constructor(val userSession: UserSessionInterface) {
+class TopAdsGetGroupListUseCase @Inject constructor(
+    val userSession: UserSessionInterface,
+    graphqlRepository: GraphqlRepository
+) {
 
     private val graphql by lazy { GraphqlUseCase<DashGroupListResponse>(graphqlRepository) }
 

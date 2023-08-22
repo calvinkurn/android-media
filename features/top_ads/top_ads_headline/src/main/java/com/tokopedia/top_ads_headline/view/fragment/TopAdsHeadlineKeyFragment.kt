@@ -370,7 +370,7 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperM
 
     private fun showAlreadyExistError() {
         view?.let { it1 ->
-            Toaster.toasterCustomBottomHeight = resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_60)
+            Toaster.toasterCustomBottomHeight = resources.getDimensionPixelSize(com.tokopedia.top_ads_headline.R.dimen.toaster_custom_bottom_height)
             Toaster.build(it1,
                 getString(R.string.topads_headline_keyword_already_exist),
                 Toaster.LENGTH_LONG,

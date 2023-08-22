@@ -55,9 +55,6 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.layout_ads_banner_digital.view.*
-import kotlinx.android.synthetic.main.layout_ads_banner_shop_a_pager.view.*
-import kotlinx.android.synthetic.main.layout_ads_banner_shop_b_pager.view.*
 import org.apache.commons.text.StringEscapeUtils
 import java.util.Calendar
 import java.util.Date
@@ -135,7 +132,6 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
             val list = findViewById<RecyclerView>(R.id.list)
             list.layoutManager = LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false)
             list.adapter = bannerAdsAdapter
-            list.addOnScrollListener(CustomScrollListener(back_view))
             val snapHelper = GravitySnapHelper(Gravity.START)
             snapHelper.attachToRecyclerView(list)
 
@@ -198,8 +194,9 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                             shop_badge.hide()
                         }
                     }
-                    shop_name?.text = MethodChecker.fromHtml(cpmData.cpm.cpmShop.name)
-                    description?.text = cpmData.cpm.cpmShop.slogan
+                    findViewById<Typography>(R.id.shop_name)?.text = MethodChecker.fromHtml(cpmData.cpm.cpmShop.name)
+                    findViewById<Typography>(R.id.description)?.text = cpmData.cpm.cpmShop.slogan
+                    val btnFollow = findViewById<UnifyButton>(R.id.btnFollow)
                     if (cpmData.cpm.cpmShop.isFollowed != null && topAdsShopFollowBtnClickListener != null) {
                         bindFavorite(cpmData.cpm.cpmShop.isFollowed)
                         btnFollow.setOnClickListener {
@@ -648,6 +645,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
     }
 
     private fun bindFavorite(isFollowed: Boolean) {
+        val btnFollow = findViewById<UnifyButton>(R.id.btnFollow)
         if (isFollowed) {
             btnFollow.buttonVariant = UnifyButton.Variant.GHOST
             btnFollow.buttonType = UnifyButton.Type.ALTERNATE
@@ -795,6 +793,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                     .load(cpm.cpmImage.fullEcs)
                     .into(object : CustomTarget<Bitmap>() {
                         override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                            val image = findViewById<ImageView>(R.id.banner_digital_image)
                             if (image != null) {
                                 image.setImageBitmap(resource)
                                 topAdsUrlHitter.hitImpressionUrl(className, cpm.cpmImage.fullUrl, "", "", "")
@@ -805,9 +804,9 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
 
                         }
                     })
-            name.text = escapeHTML(if (cpm.name == null) "" else cpm.name)
-            description.text = escapeHTML(if (cpm.decription == null) "" else cpm.decription)
-            cta_btn.text = if (cpm.cta == null) "" else cpm.cta
+            findViewById<Typography>(R.id.banner_digital_name).text = escapeHTML(cpm.name)
+            findViewById<Typography>(R.id.banner_digital_description).text = escapeHTML(cpm.decription)
+            findViewById<Typography>(R.id.banner_digital_cta_button).text = cpm.cta
         } catch (e: Exception) {
             e.printStackTrace()
         }

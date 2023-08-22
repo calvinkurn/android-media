@@ -22,7 +22,10 @@ import kotlin.collections.set
  * Created by Pika on 6/9/20.
  */
 
-class TopAdsGetGroupDataUseCase @Inject constructor(private val userSession: UserSessionInterface) {
+class TopAdsGetGroupDataUseCase @Inject constructor(
+    private val userSession: UserSessionInterface,
+    graphqlRepository: GraphqlRepository
+) {
 
     private val graphql by lazy { GraphqlUseCase<GroupItemResponse>(graphqlRepository) }
 
