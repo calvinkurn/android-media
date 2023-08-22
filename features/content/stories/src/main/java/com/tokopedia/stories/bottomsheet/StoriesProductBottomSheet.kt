@@ -23,6 +23,7 @@ import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
+import com.tokopedia.stories.R
 
 /**
  * @author by astidhiyaa on 25/07/23
@@ -48,7 +49,7 @@ class StoriesProductBottomSheet @Inject constructor(
         _binding = FragmentStoriesProductBinding.inflate(inflater, container, false)
 
         setChild(binding.root)
-        setTitle("Produk pilihan")
+        setTitle(getString(R.string.stories_product_bottomsheet_title))
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 

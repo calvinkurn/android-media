@@ -29,6 +29,7 @@ import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.unifyprinciples.R as unifyR
+import com.tokopedia.stories.R
 
 /**
  * @author by astidhiyaa on 18/08/23
@@ -73,7 +74,7 @@ fun StoriesProductNotch(productCount: Int, onClick: () -> Unit) {
                         .size(24.dp)
                 )
             NestTypography(
-                text = "Lihat $productCount Produk", textStyle = NestTheme.typography.display2.copy(
+                text = ctx.getString(R.string.stories_product_notch, productCount.toString()), textStyle = NestTheme.typography.display2.copy(
                     color = colorResource(
                         id = unifyR.color.Unify_Static_White
                     )

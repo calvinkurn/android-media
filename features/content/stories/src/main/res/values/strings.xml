@@ -1,4 +1,6 @@
 <resources>
     <string name="stories_delete_story_title">Hapus Story</string>
     <string name="stories_delete_story_description">Kamu yakin ingin menghapus story ini?</string>
+    <string name="stories_product_bottomsheet_title">Produk pilihan</string>
+    <string name="stories_product_notch">Lihat %1s produk</string>
 </resources>

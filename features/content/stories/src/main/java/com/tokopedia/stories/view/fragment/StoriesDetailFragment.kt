@@ -127,6 +127,7 @@ class StoriesDetailFragment @Inject constructor(
 
         storiesDetailsTimer(state)
         binding.ivStoriesDetailContent.setImageUrl(state.imageContent)
+        binding.vStoriesProductIcon.tvPlayProductCount.text = state.productCount.toString() //TODO map as string
         renderAuthor(state)
         renderNotch(state)
     }
