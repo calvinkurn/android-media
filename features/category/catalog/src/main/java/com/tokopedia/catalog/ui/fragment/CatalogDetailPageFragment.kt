@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.catalog.databinding.FragmentCatalogReimagineDetailPageBinding
 import com.tokopedia.catalog.di.DaggerCatalogComponent
@@ -14,14 +15,16 @@ import com.tokopedia.catalogcommon.adapter.CatalogAdapterFactoryImpl
 import com.tokopedia.catalogcommon.adapter.WidgetCatalogAdapter
 import com.tokopedia.catalogcommon.uimodel.AccordionInformationUiModel
 import com.tokopedia.catalogcommon.uimodel.BaseCatalogUiModel
+import com.tokopedia.catalogcommon.listener.HeroBannerListener
 import com.tokopedia.catalogcommon.uimodel.DummyUiModel
 import com.tokopedia.catalogcommon.uimodel.HeroBannerUiModel
-import com.tokopedia.catalogcommon.uimodel.SliderImageTextUiModel
+import com.tokopedia.catalogcommon.uimodel.PanelImageUiModel
 import com.tokopedia.catalogcommon.uimodel.TopFeaturesUiModel
+import com.tokopedia.catalogcommon.uimodel.TrustMakerUiModel
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class CatalogDetailPageFragment : BaseDaggerFragment() {
+class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener {
 
     @Inject
     lateinit var catalogDetailPageViewModel: CatalogDetailPageViewModel
@@ -29,11 +32,15 @@ class CatalogDetailPageFragment : BaseDaggerFragment() {
     private var binding by autoClearedNullable<FragmentCatalogReimagineDetailPageBinding>()
 
     private val widgetAdapter by lazy {
-        WidgetCatalogAdapter(CatalogAdapterFactoryImpl())
+        WidgetCatalogAdapter(
+            CatalogAdapterFactoryImpl(
+                heroBannerListener = this
+            )
+        )
     }
 
-    private val widgets by lazy {
-        arrayListOf<BaseCatalogUiModel>()
+    private val widgets by  lazy {
+        arrayListOf<Visitable<*>>()
     }
 
     companion object {
@@ -81,6 +88,16 @@ class CatalogDetailPageFragment : BaseDaggerFragment() {
                     "",
                     widgetBackgroundColor = null,
                     widgetTextColor = null,
+                    brandTitle = "Samsung",
+                    brandDesc = "360 RTrfvds Dewsign",
+                    brandIconUrl = "https://www.samsung.com/etc.clientlibs/samsung/clientlibs/consumer/global/clientlib-common/resources/images/gnb-desktop-120x32.png",
+                    //brandIconUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/9/92/UNIQLO_logo.svg/1200px-UNIQLO_logo.svg.png",
+                    brandImageUrls = listOf(
+                        "https://placekitten.com/200/300",
+                        "https://placekitten.com/201/301",
+                        "https://placekitten.com/205/302"
+                    ),
+                    isPremium = true
                     content = "konten"
                 )
             )
@@ -94,7 +111,18 @@ class CatalogDetailPageFragment : BaseDaggerFragment() {
                     content = "konten"
                 )
             )
+            widgets.add(TrustMakerUiModel.dummyTrustMaker())
             widgets.add(TopFeaturesUiModel.dummyTopFeatures())
+            widgets.add(
+                PanelImageUiModel("1", "2", "2",
+                    content = listOf(
+                        PanelImageUiModel.PanelImageItemData(imageUrl = "https://images.tokopedia.net/android/shop_page/image_product_empty_state_buyer.png", highlight = "",
+                            title = "asd", description = "ad"),
+                        PanelImageUiModel.PanelImageItemData(imageUrl = "https://placekitten.com/200/300", highlight = "",
+                            title = "asd22", description = "ad22"),
+                    )
+                )
+            )
             widgets.add(SliderImageTextUiModel.dummySliderImageText())
             widgets.add(AccordionInformationUiModel.dummyAccordion())
             widgetAdapter.addWidget(widgets)
@@ -102,5 +130,15 @@ class CatalogDetailPageFragment : BaseDaggerFragment() {
 
     }
 
+    override fun onNavBackClicked() {
+        activity?.finish()
+    }
 
+    override fun onNavShareClicked() {
+        // no-op
+    }
+
+    override fun onNavMoreMenuClicked() {
+        // no-op
+    }
 }

@@ -38,29 +38,8 @@ class ImageSlidePagerAdapter(private var imageList: List<SliderImageTextUiModel.
             container,
             false
         )
-        val layoutParam = LinearLayout.LayoutParams(
-            binding.ivImage.layoutParams.width,
-            binding.ivImage.layoutParams.height
-        )
-        val displayMetrics = container.resources.displayMetrics
-
-        binding.ivImage.layoutParams = layoutParam
 
         imageList[position].let { item ->
-            when (imageList.indexOf(item)) {
-                Int.ZERO -> {
-                    layoutParam.marginStart = 16.dpToPx(displayMetrics)
-                }
-
-                imageList.size - 1 -> {
-                    layoutParam.marginEnd = 16.dpToPx(displayMetrics)
-                }
-
-                else -> {
-                    layoutParam.marginEnd = 16.dpToPx(displayMetrics)
-                    layoutParam.marginStart = 16.dpToPx(displayMetrics)
-                }
-            }
             binding.ivImage.loadImageRounded(item.image)
         }
 

@@ -6,6 +6,7 @@ import com.tokopedia.catalogcommon.uimodel.HeroBannerUiModel
 import com.tokopedia.catalogcommon.uimodel.PanelImageUiModel
 import com.tokopedia.catalogcommon.uimodel.SliderImageTextUiModel
 import com.tokopedia.catalogcommon.uimodel.TopFeaturesUiModel
+import com.tokopedia.catalogcommon.uimodel.TrustMakerUiModel
 
 interface CatalogAdapterFactory {
     fun type(uiModel: TopFeaturesUiModel): Int
@@ -16,5 +17,7 @@ interface CatalogAdapterFactory {
     fun type(uiModel: PanelImageUiModel): Int
 
     fun type(uiModel: AccordionInformationUiModel): Int
+
+    fun type(uiModel: TrustMakerUiModel): Int
 
 }
