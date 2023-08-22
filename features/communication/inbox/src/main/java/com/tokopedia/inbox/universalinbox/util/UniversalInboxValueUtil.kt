@@ -52,6 +52,14 @@ object UniversalInboxValueUtil {
         }
     }
 
+    const val ROLLENCE_REFRESH_RECOMMENDATION = "refresh_inboxUpdate"
+    fun shouldRefreshProductRecommendation(abTestPlatform: UniversalInboxAbPlatform): Boolean {
+        return abTestPlatform.getString(
+            ROLLENCE_REFRESH_RECOMMENDATION,
+            ""
+        ) == ROLLENCE_REFRESH_RECOMMENDATION
+    }
+
     /**
      * User Session
      */
@@ -90,7 +98,6 @@ object UniversalInboxValueUtil {
      * Recommendation
      */
     // PDP
-    const val REQUEST_FROM_PDP = 138
     const val PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition"
 
     // TopAds

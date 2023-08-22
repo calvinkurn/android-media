@@ -92,5 +92,5 @@
     <string name="pms_complete_credit_card_payment">Lanjut Bayar</string>
     <string name="pms_complete_payment_timeout">Gagal memuat pembayaran. Silakan coba lagi</string>
 
-
+    <string name="pms_va_ticker_description">Tidak disarankan transfer Virtual Account dari bank selain yang dipilih.</string>
 </resources>

@@ -2,6 +2,7 @@ package com.tokopedia.buy_more_get_more.olp.domain.entity
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.buy_more_get_more.olp.presentation.adapter.OlpAdapterTypeFactory
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 
 data class OfferInfoForBuyerUiModel(
     val responseHeader: ResponseHeader = ResponseHeader(),
@@ -53,5 +54,47 @@ data class OfferInfoForBuyerUiModel(
 
     override fun type(typeFactory: OlpAdapterTypeFactory): Int {
         return typeFactory.type(this)
+    }
+
+    data class OlpUiState(
+        val offerIds: List<Int> = emptyList(),
+        val shopIds: List<Int> = emptyList(),
+        val productIds: List<Int> = emptyList(),
+        val warehouseIds: List<Int> = emptyList(),
+        val localCacheModel: LocalCacheModel? = null,
+        val sortId: String = "0"
+    )
+
+    sealed class OlpEvent {
+        data class SetInitialUiState(
+            val offerIds: List<Int> = emptyList(),
+            val shopIds: List<Int> = emptyList(),
+            val productIds: List<Int> = emptyList(),
+            val warehouseIds: List<Int> = emptyList(),
+            val localCacheModel: LocalCacheModel?
+        ) : OlpEvent()
+
+        data class GetOfferingInfo(
+            val offerIds: List<Int> = emptyList(),
+            val shopIds: List<Int> = emptyList(),
+            val productIds: List<Int> = emptyList(),
+            val warehouseIds: List<Int> = emptyList(),
+            val localCacheModel: LocalCacheModel?
+        ) : OlpEvent()
+
+        data class GetOffreringProductList(
+            val offerIds: List<Int>,
+            val warehouseIds: List<Int>? = emptyList(),
+            val localCacheModel: LocalCacheModel?,
+            val page: Int,
+            val sortId: String
+        ) : OlpEvent()
+
+        object GetNotification : OlpEvent()
+
+        data class AddToCart(
+            val product: OfferProductListUiModel.Product,
+            val shopId: String
+        ) : OlpEvent()
     }
 }

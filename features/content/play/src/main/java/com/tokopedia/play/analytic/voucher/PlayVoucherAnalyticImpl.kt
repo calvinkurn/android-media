@@ -1,5 +1,10 @@
 package com.tokopedia.play.analytic.voucher
 
+import com.tokopedia.content.analytic.BusinessUnit
+import com.tokopedia.content.analytic.CurrentSite
+import com.tokopedia.content.analytic.Event
+import com.tokopedia.content.analytic.EventCategory
+import com.tokopedia.content.analytic.Key
 import com.tokopedia.play.analytic.*
 import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayChannelInfoUiModel
@@ -39,13 +44,13 @@ class PlayVoucherAnalyticImpl @Inject constructor(
 
     override fun impressVoucherWidget(voucherId: String) {
         Tracker.Builder()
-            .setEvent(KEY_TRACK_VIEW_CONTENT_IRIS)
+            .setEvent(Event.viewContentIris)
             .setEventAction("view - voucher widget")
-            .setEventCategory(KEY_TRACK_GROUP_CHAT_ROOM)
+            .setEventCategory(EventCategory.groupChatRoom)
             .setEventLabel("$channelId - $voucherId - $channelType")
-            .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
-            .setCurrentSite(KEY_TRACK_CURRENT_SITE)
-            .setCustomProperty(KEY_SESSION_IRIS, sessionIris)
+            .setBusinessUnit(BusinessUnit.play)
+            .setCurrentSite(CurrentSite.tokopediaMarketplace)
+            .setCustomProperty(Key.sessionIris, sessionIris)
             .setUserId(userId)
             .build()
             .send()
@@ -53,13 +58,13 @@ class PlayVoucherAnalyticImpl @Inject constructor(
 
     override fun clickVoucherWidget(voucherId: String) {
         Tracker.Builder()
-            .setEvent(KEY_TRACK_CLICK_CONTENT)
+            .setEvent(Event.clickContent)
             .setEventAction("click - voucher widget")
-            .setEventCategory(KEY_TRACK_GROUP_CHAT_ROOM)
+            .setEventCategory(EventCategory.groupChatRoom)
             .setEventLabel("$channelId - $voucherId - $channelType")
-            .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
-            .setCurrentSite(KEY_TRACK_CURRENT_SITE)
-            .setCustomProperty(KEY_SESSION_IRIS, sessionIris)
+            .setBusinessUnit(BusinessUnit.play)
+            .setCurrentSite(CurrentSite.tokopediaMarketplace)
+            .setCustomProperty(Key.sessionIris, sessionIris)
             .setUserId(userId)
             .build()
             .send()
@@ -69,13 +74,13 @@ class PlayVoucherAnalyticImpl @Inject constructor(
         if (voucherId.isBlank()) return
 
         Tracker.Builder()
-            .setEvent(KEY_TRACK_VIEW_CONTENT_IRIS)
+            .setEvent(Event.viewContentIris)
             .setEventAction("view - voucher bottomsheet")
-            .setEventCategory(KEY_TRACK_GROUP_CHAT_ROOM)
+            .setEventCategory(EventCategory.groupChatRoom)
             .setEventLabel("$channelId - $voucherId - $channelType")
-            .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
-            .setCurrentSite(KEY_TRACK_CURRENT_SITE)
-            .setCustomProperty(KEY_SESSION_IRIS, sessionIris)
+            .setBusinessUnit(BusinessUnit.play)
+            .setCurrentSite(CurrentSite.tokopediaMarketplace)
+            .setCustomProperty(Key.sessionIris, sessionIris)
             .setUserId(userId)
             .build()
             .send()
@@ -83,13 +88,13 @@ class PlayVoucherAnalyticImpl @Inject constructor(
 
     override fun impressToasterPrivate(voucherId: String) {
         Tracker.Builder()
-            .setEvent(KEY_TRACK_VIEW_CONTENT_IRIS)
+            .setEvent(Event.viewContentIris)
             .setEventAction("view - toaster private voucher")
-            .setEventCategory(KEY_TRACK_GROUP_CHAT_ROOM)
+            .setEventCategory(EventCategory.groupChatRoom)
             .setEventLabel("$channelId - $voucherId - $channelType")
-            .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
-            .setCurrentSite(KEY_TRACK_CURRENT_SITE)
-            .setCustomProperty(KEY_SESSION_IRIS, sessionIris)
+            .setBusinessUnit(BusinessUnit.play)
+            .setCurrentSite(CurrentSite.tokopediaMarketplace)
+            .setCustomProperty(Key.sessionIris, sessionIris)
             .setUserId(userId)
             .build()
             .send()
@@ -97,13 +102,13 @@ class PlayVoucherAnalyticImpl @Inject constructor(
 
     override fun clickToasterPrivate(voucherId: String) {
         Tracker.Builder()
-            .setEvent(KEY_TRACK_CLICK_CONTENT)
+            .setEvent(Event.clickContent)
             .setEventAction("click - lihat toaster private voucher")
-            .setEventCategory(KEY_TRACK_GROUP_CHAT_ROOM)
+            .setEventCategory(EventCategory.groupChatRoom)
             .setEventLabel("$channelId - $voucherId - $channelType")
-            .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
-            .setCurrentSite(KEY_TRACK_CURRENT_SITE)
-            .setCustomProperty(KEY_SESSION_IRIS, sessionIris)
+            .setBusinessUnit(BusinessUnit.play)
+            .setCurrentSite(CurrentSite.tokopediaMarketplace)
+            .setCustomProperty(Key.sessionIris, sessionIris)
             .setUserId(userId)
             .build()
             .send()
@@ -111,13 +116,13 @@ class PlayVoucherAnalyticImpl @Inject constructor(
 
     override fun clickToasterPublic() {
         Tracker.Builder()
-            .setEvent(KEY_TRACK_CLICK_CONTENT)
+            .setEvent(Event.clickContent)
             .setEventAction("click - toaster public voucher")
-            .setEventCategory(KEY_TRACK_GROUP_CHAT_ROOM)
+            .setEventCategory(EventCategory.groupChatRoom)
             .setEventLabel("$channelId - $channelType")
-            .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
-            .setCurrentSite(KEY_TRACK_CURRENT_SITE)
-            .setCustomProperty(KEY_SESSION_IRIS, sessionIris)
+            .setBusinessUnit(BusinessUnit.play)
+            .setCurrentSite(CurrentSite.tokopediaMarketplace)
+            .setCustomProperty(Key.sessionIris, sessionIris)
             .setUserId(userId)
             .build()
             .send()
@@ -125,13 +130,13 @@ class PlayVoucherAnalyticImpl @Inject constructor(
 
     override fun impressToasterPublic() {
         Tracker.Builder()
-            .setEvent(KEY_TRACK_VIEW_CONTENT_IRIS)
+            .setEvent(Event.viewContentIris)
             .setEventAction("view - toaster public voucher")
-            .setEventCategory(KEY_TRACK_GROUP_CHAT_ROOM)
+            .setEventCategory(EventCategory.groupChatRoom)
             .setEventLabel("$channelId - $channelType")
-            .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
-            .setCurrentSite(KEY_TRACK_CURRENT_SITE)
-            .setCustomProperty(KEY_SESSION_IRIS, sessionIris)
+            .setBusinessUnit(BusinessUnit.play)
+            .setCurrentSite(CurrentSite.tokopediaMarketplace)
+            .setCustomProperty(Key.sessionIris, sessionIris)
             .setUserId(userId)
             .build()
             .send()
@@ -139,13 +144,13 @@ class PlayVoucherAnalyticImpl @Inject constructor(
 
     override fun swipeWidget(voucherId: String) {
         Tracker.Builder()
-            .setEvent(KEY_TRACK_CLICK_CONTENT)
+            .setEvent(Event.clickContent)
             .setEventAction("swipe - voucher widget")
-            .setEventCategory(KEY_TRACK_GROUP_CHAT_ROOM)
+            .setEventCategory(EventCategory.groupChatRoom)
             .setEventLabel("$channelId - $voucherId - $channelType")
-            .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
-            .setCurrentSite(KEY_TRACK_CURRENT_SITE)
-            .setCustomProperty(KEY_SESSION_IRIS, sessionIris)
+            .setBusinessUnit(BusinessUnit.play)
+            .setCurrentSite(CurrentSite.tokopediaMarketplace)
+            .setCustomProperty(Key.sessionIris, sessionIris)
             .setUserId(userId)
             .build()
             .send()
@@ -153,14 +158,14 @@ class PlayVoucherAnalyticImpl @Inject constructor(
 
     override fun clickCopyVoucher(voucherId: String) {
         Tracker.Builder()
-            .setEvent(KEY_TRACK_CLICK_GROUP_CHAT)
+            .setEvent(Event.clickGroupChat)
             .setEventAction("click copy on private voucher")
-            .setEventCategory(KEY_TRACK_GROUP_CHAT_ROOM)
+            .setEventCategory(EventCategory.groupChatRoom)
             .setEventLabel("$channelId - $voucherId - $channelType")
-            .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
-            .setCurrentSite(KEY_TRACK_CURRENT_SITE)
-            .setCustomProperty(KEY_SESSION_IRIS, sessionIris)
-            .setCustomProperty(KEY_IS_LOGGED_IN_STATUS, userSession.isLoggedIn)
+            .setBusinessUnit(BusinessUnit.play)
+            .setCurrentSite(CurrentSite.tokopediaMarketplace)
+            .setCustomProperty(Key.sessionIris, sessionIris)
+            .setCustomProperty(Key.isLoggedInStatus, userSession.isLoggedIn)
             .setCustomProperty(KEY_CHANNEL, channelInfo.title)
             .setUserId(userId)
             .build()
@@ -169,14 +174,14 @@ class PlayVoucherAnalyticImpl @Inject constructor(
 
     override fun clickInfoVoucher() {
         Tracker.Builder()
-            .setEvent(KEY_TRACK_CLICK_CONTENT)
+            .setEvent(Event.clickContent)
             .setEventAction("click - entry point voucher bottomsheet")
-            .setEventCategory(KEY_TRACK_GROUP_CHAT_ROOM)
+            .setEventCategory(EventCategory.groupChatRoom)
             .setEventLabel("$channelId - $channelType")
-            .setCustomProperty(KEY_TRACK_TRACKER_ID, "40976")
-            .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
-            .setCurrentSite(KEY_TRACK_CURRENT_SITE)
-            .setCustomProperty(KEY_SESSION_IRIS, sessionIris)
+            .setCustomProperty(Key.trackerId, "40976")
+            .setBusinessUnit(BusinessUnit.play)
+            .setCurrentSite(CurrentSite.tokopediaMarketplace)
+            .setCustomProperty(Key.sessionIris, sessionIris)
             .setUserId(userId)
             .build()
             .send()
@@ -184,8 +189,8 @@ class PlayVoucherAnalyticImpl @Inject constructor(
 
     override fun impressInfoVoucher(voucher: PlayVoucherUiModel.Merchant) {
         val map = BaseTrackerBuilder().constructBasicPromotionView(
-            event = KEY_TRACK_PROMO_VIEW,
-            eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
+            event = Event.promoView,
+            eventCategory = EventCategory.groupChatRoom,
             eventAction = "view - entry point voucher bottomsheet",
             eventLabel = "$channelId - $channelType",
             promotions = listOf(
@@ -198,9 +203,9 @@ class PlayVoucherAnalyticImpl @Inject constructor(
             )
         )
             .appendUserId(userId)
-            .appendBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
-            .appendCurrentSite(KEY_TRACK_CURRENT_SITE)
-            .appendCustomKeyValue(KEY_TRACK_TRACKER_ID, "40973")
+            .appendBusinessUnit(BusinessUnit.play)
+            .appendCurrentSite(CurrentSite.tokopediaMarketplace)
+            .appendCustomKeyValue(Key.trackerId, "40973")
             .build()
 
         trackingQueue.putEETracking(map as? HashMap<String, Any>)

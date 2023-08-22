@@ -25,7 +25,7 @@ data class PlayShortsUiState(
     val coverForm: PlayShortsCoverFormUiState,
     val productSectionList: List<ProductTagSectionUiModel>,
 
-    val tags: NetworkResult<Set<PlayTagUiModel>>,
+    val tags: NetworkResult<PlayTagUiModel>,
     val uploadState: PlayShortsUploadUiState,
     val isAffiliate: Boolean,
     val bannerPreparation: List<PlayBroadcastPreparationBannerModel>,

@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
-import com.tokopedia.tokofood.stub.purchase.promo.presentation.viewmodel.TokoFoodPromoViewModelOldStub
+import com.tokopedia.tokofood.stub.purchase.promo.presentation.viewmodel.MerchantTokoFoodPromoViewModelStub
 import com.tokopedia.tokofood.stub.purchase.promo.presentation.viewmodel.TokoFoodPromoViewModelStub
 import dagger.Binds
 import dagger.Module
@@ -27,7 +27,7 @@ abstract class TokoFoodPromoViewModelModuleStub {
     @ActivityScope
     @Binds
     @IntoMap
-    @ViewModelKey(TokoFoodPromoViewModelOldStub::class)
-    internal abstract fun bindViewModelOld(viewModel: TokoFoodPromoViewModelOldStub): ViewModel
+    @ViewModelKey(MerchantTokoFoodPromoViewModelStub::class)
+    internal abstract fun bindViewModelOld(viewModel: MerchantTokoFoodPromoViewModelStub): ViewModel
 
 }

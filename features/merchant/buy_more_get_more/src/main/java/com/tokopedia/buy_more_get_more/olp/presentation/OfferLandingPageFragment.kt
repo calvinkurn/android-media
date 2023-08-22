@@ -1,5 +1,6 @@
 package com.tokopedia.buy_more_get_more.olp.presentation
 
+import android.R.color.transparent
 import android.app.Activity
 import android.content.Intent
 import android.os.Build
@@ -16,7 +17,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
-import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.buy_more_get_more.R
 import com.tokopedia.buy_more_get_more.databinding.FragmentOfferLandingPageBinding
@@ -28,14 +28,15 @@ import com.tokopedia.buy_more_get_more.olp.presentation.adapter.OlpAdapter
 import com.tokopedia.buy_more_get_more.olp.presentation.adapter.OlpAdapterTypeFactoryImpl
 import com.tokopedia.buy_more_get_more.olp.presentation.listener.AtcProductListener
 import com.tokopedia.buy_more_get_more.olp.utils.BundleConstant
-import com.tokopedia.buy_more_get_more.olp.utils.DataEndlessScrollListener
 import com.tokopedia.buy_more_get_more.sort.activity.ShopProductSortActivity
 import com.tokopedia.buy_more_get_more.sort.listener.ProductSortListener
+import com.tokopedia.campaign.delegates.HasPaginatedList
+import com.tokopedia.campaign.delegates.HasPaginatedListImpl
 import com.tokopedia.campaign.helper.BuyMoreGetMoreHelper
 import com.tokopedia.campaign.utils.extension.showToaster
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.showToast
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.product.detail.common.AtcVariantHelper
@@ -49,21 +50,22 @@ import javax.inject.Inject
 class OfferLandingPageFragment :
     BaseListFragment<Visitable<*>, AdapterTypeFactory>(),
     ProductSortListener,
-    AtcProductListener {
+    AtcProductListener,
+    HasPaginatedList by HasPaginatedListImpl() {
 
     companion object {
         @JvmStatic
         fun newInstance(
             shopId: String,
             offerId: String,
-            warehouseIds: ArrayList<Int>? = arrayListOf(),
-            productIds: ArrayList<Int>? = arrayListOf()
+            warehouseIds: String,
+            productIds: String
         ) = OfferLandingPageFragment().apply {
             arguments = Bundle().apply {
                 putString(BundleConstant.BUNDLE_SHOP_ID, shopId)
                 putString(BundleConstant.BUNDLE_OFFER_ID, offerId)
-                putIntegerArrayList(BuyMoreGetMoreHelper.KEY_WAREHOUSE_IDS, warehouseIds)
-                putIntegerArrayList(BuyMoreGetMoreHelper.KEY_PRODUCT_IDS, productIds)
+                putString(BuyMoreGetMoreHelper.KEY_WAREHOUSE_IDS, warehouseIds)
+                putString(BuyMoreGetMoreHelper.KEY_PRODUCT_IDS, productIds)
             }
         }
 
@@ -92,14 +94,10 @@ class OfferLandingPageFragment :
 
     @Inject
     lateinit var viewModel: OfferLandingPageViewModel
-    private val shopId by lazy { arguments?.getString(BundleConstant.BUNDLE_SHOP_ID).orEmpty() }
+    private val shopIds by lazy { arguments?.getString(BundleConstant.BUNDLE_SHOP_ID).orEmpty() }
     private val offerId by lazy { arguments?.getString(BundleConstant.BUNDLE_OFFER_ID).orEmpty() }
-    private val warehouseIds by lazy {
-        arguments?.getIntegerArrayList(BuyMoreGetMoreHelper.KEY_WAREHOUSE_IDS).orEmpty()
-    }
-    private val productIds by lazy {
-        arguments?.getIntegerArrayList(BuyMoreGetMoreHelper.KEY_PRODUCT_IDS).orEmpty()
-    }
+    private val warehouseIds by lazy { arguments?.getString(BuyMoreGetMoreHelper.KEY_WAREHOUSE_IDS).orEmpty() }
+    private val productIds by lazy { arguments?.getString(BuyMoreGetMoreHelper.KEY_PRODUCT_IDS).orEmpty() }
 
     override fun getScreenName() = ""
 
@@ -132,12 +130,7 @@ class OfferLandingPageFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupObservables()
-        getRecyclerView(view)?.let {
-            it.layoutManager = StaggeredGridLayoutManager(
-                2,
-                StaggeredGridLayoutManager.VERTICAL
-            )
-        }
+        setupProductRv()
     }
 
     private fun setupObservables() {
@@ -148,6 +141,7 @@ class OfferLandingPageFragment :
         viewModel.productList.observe(viewLifecycleOwner) { productList ->
             setupProductList(productList)
             setViewState(VIEW_CONTENT)
+            notifyLoadResult(productList.productList.size >= 10)
         }
 
         viewModel.navNotificationLiveData.observe(viewLifecycleOwner) { notification ->
@@ -159,6 +153,7 @@ class OfferLandingPageFragment :
                 is Success -> {
                     binding?.miniCartPlaceholder.showToaster(atc.data.data.success.toString())
                 }
+
                 is Fail -> {
                     binding?.miniCartPlaceholder.showToaster(message = atc.throwable.localizedMessage)
                 }
@@ -180,13 +175,7 @@ class OfferLandingPageFragment :
             )
         )
         viewModel.getNotification()
-        viewModel.getOfferingProductList(
-            offerIds = listOf(offerId.toIntOrZero()),
-            warehouseIds = listOf(1, 2),
-            localCacheModel = localCacheModel,
-            page = 1,
-            pageSize = 10
-        )
+        getProductListData(1)
     }
 
     private fun setupProductList(offerProductList: OfferProductListUiModel) {
@@ -217,7 +206,7 @@ class OfferLandingPageFragment :
         activity?.let {
             val transparent = MethodChecker.getColor(
                 context,
-                R.color.transparent
+                transparent
             )
             it.window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
             it.window.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
@@ -230,17 +219,40 @@ class OfferLandingPageFragment :
 
     private fun renderSortFilter(sortId: String, sortName: String) {
         olpAdapter?.changeSelectedSortFilter(sortId, sortName)
-        // update product list data
+        getProductListData(1, sortId)
+    }
+
+    private fun getProductListData(page: Int, sortId: String = "") {
+        viewModel.getOfferingProductList(
+            offerIds = listOf(offerId.toIntOrZero()),
+            warehouseIds = listOf(1, 2),
+            localCacheModel = localCacheModel,
+            page = page,
+            sortId = sortId
+        )
     }
 
     override fun loadInitialData() {
+        Log.d("Masuk", localCacheModel?.shop_id ?: "Kosong")
         setViewState(VIEW_LOADING)
         viewModel.getOfferingInfo(
             offerIds = listOf(offerId.toIntOrZero()),
-            shopId = shopId,
-            productIds = productIds,
-            warehouseIds = warehouseIds,
-            localCacheModel
+            shopIds = if (shopIds.isNotEmpty()) {
+                shopIds.split(",").map { it.toIntSafely() }
+            } else {
+                emptyList()
+            },
+            productIds = if (productIds.isNotEmpty()) {
+                productIds.split(",").map { it.toIntSafely() }
+            } else {
+                emptyList()
+            },
+            warehouseIds = if (warehouseIds.isNotEmpty()) {
+                warehouseIds.split(",").map { it.toIntSafely() }
+            } else {
+                emptyList()
+            },
+            localCacheModel = localCacheModel
         )
     }
 
@@ -274,11 +286,23 @@ class OfferLandingPageFragment :
         return OlpAdapter(olpAdapterTypeFactory)
     }
 
-    override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
-        return object :
-            DataEndlessScrollListener(getRecyclerView(view)?.layoutManager, olpAdapter) {
-            override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                Log.d("Masuk", "load more") // load more data
+    private fun setupProductRv() {
+        getRecyclerView(view)?.apply {
+            this.layoutManager = StaggeredGridLayoutManager(
+                2,
+                StaggeredGridLayoutManager.VERTICAL
+            )
+            val config = HasPaginatedList.Config(
+                pageSize = 10,
+                onLoadNextPage = {
+                    // TODO: Implement loading
+                },
+                onLoadNextPageFinished = {
+                    // TODO: Implement loading
+                }
+            )
+            attachPaging(this, config) { page, _ ->
+                getProductListData(page)
             }
         }
     }
@@ -291,6 +315,7 @@ class OfferLandingPageFragment :
                     groupHeader.gone()
                     stickyContent.gone()
                     errorPageLarge.gone()
+                    miniCartPlaceholder.gone()
                 }
             }
 
@@ -299,8 +324,16 @@ class OfferLandingPageFragment :
                     loadingStateOlp.root.gone()
                     groupHeader.gone()
                     stickyContent.gone()
-                    errorPageLarge.visible()
-                    errorPageLarge.setTitle(errorMsg)
+                    errorPageLarge.apply {
+                        visible()
+                        setTitle("Something Went Wrong")
+                        setDescription(errorMsg)
+                        setPrimaryCTAText("Coba lagi")
+                        setPrimaryCTAClickListener {
+                            loadInitialData()
+                        }
+                    }
+                    miniCartPlaceholder.gone()
                 }
             }
 
@@ -310,6 +343,7 @@ class OfferLandingPageFragment :
                     groupHeader.visible()
                     stickyContent.visible()
                     errorPageLarge.gone()
+                    miniCartPlaceholder.visible()
                 }
             }
         }
@@ -364,7 +398,7 @@ class OfferLandingPageFragment :
     }
 
     private fun addToCartProduct(product: OfferProductListUiModel.Product) {
-        viewModel.addToCart(product, shopId)
+        viewModel.addToCart(product, shopIds)
     }
 
     private fun openAtcVariant(product: OfferProductListUiModel.Product) {
@@ -373,7 +407,7 @@ class OfferLandingPageFragment :
                 context = it,
                 productId = product.productId.toString(),
                 pageSource = VariantPageSource.BUY_MORE_GET_MORE,
-                shopId = shopId,
+                shopId = shopIds,
                 startActivitResult = this::startActivityForResult
             )
         }

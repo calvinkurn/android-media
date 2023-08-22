@@ -17,6 +17,7 @@ includeIfEnabled("features:category:common_category")
 includeIfEnabled("features:category:kategori")
 includeIfEnabled("features:category:category_levels")
 
+includeIfEnabled("features:content:analytic")
 includeIfEnabled("features:content:affiliate_common")
 includeIfEnabled("features:content:content_common")
 includeIfEnabled("features:content:createpost")

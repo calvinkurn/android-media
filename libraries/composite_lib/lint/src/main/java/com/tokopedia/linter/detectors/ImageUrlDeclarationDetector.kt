@@ -12,6 +12,7 @@ import com.intellij.psi.PsiModifier
 import com.intellij.psi.PsiNamedElement
 import org.jetbrains.uast.UElement
 import org.jetbrains.uast.UField
+import org.jetbrains.uast.UFieldEx
 import org.jetbrains.uast.ULocalVariable
 
 /**
@@ -26,7 +27,7 @@ class ImageUrlDeclarationDetector : Detector(), Detector.UastScanner {
             id = "ImageUrlDeclarationDetector",
             briefDescription = "Image URL declaration outside of `libraries/images_assets` module is not allowed",
             explanation = "In order to make a centralized remote resources. So, you have to create the constant variable " +
-                    "for this in `libraries/images_assets` module instead.",
+                "for this in `libraries/images_assets` module instead.",
             category = Category.CORRECTNESS,
             priority = 5,
             severity = Severity.WARNING,
@@ -38,14 +39,14 @@ class ImageUrlDeclarationDetector : Detector(), Detector.UastScanner {
 
         private const val ERROR_MESSAGE =
             "You are not allowed to create image url declaration here. " +
-                    "Should be moved to `libraries/images_assets` module."
+                "Should be moved to `libraries/images_assets` module."
         private const val EXCLUDED_DIR = "src/main/java/com/tokopedia/imageassets"
         private const val IMAGE_URL_PATTERN = "(http.*?(gif|jpeg|png|jpg|bmp))"
         private val VARIABLES_MODIFIER = arrayOf("constval", "val", "constvar", "var")
     }
 
     override fun getApplicableUastTypes() = listOf<Class<out UElement>>(
-        UField::class.java,
+        UFieldEx::class.java,
         ULocalVariable::class.java
     )
 

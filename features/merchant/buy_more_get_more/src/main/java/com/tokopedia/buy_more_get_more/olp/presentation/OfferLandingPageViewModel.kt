@@ -10,17 +10,23 @@ import com.tokopedia.buy_more_get_more.olp.data.request.GetOfferingInfoForBuyerR
 import com.tokopedia.buy_more_get_more.olp.data.request.GetOfferingInfoForBuyerRequestParam.UserLocation
 import com.tokopedia.buy_more_get_more.olp.data.request.GetOfferingProductListRequestParam
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel
+import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel.*
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferProductListUiModel
 import com.tokopedia.buy_more_get_more.olp.domain.usecase.GetOfferInfoForBuyerUseCase
 import com.tokopedia.buy_more_get_more.olp.domain.usecase.GetOfferProductListUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.searchbar.navigation_component.datamodel.TopNavNotificationModel
 import com.tokopedia.searchbar.navigation_component.domain.GetNotificationUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 class OfferLandingPageViewModel @Inject constructor(
@@ -28,8 +34,15 @@ class OfferLandingPageViewModel @Inject constructor(
     private val getOfferInfoForBuyerUseCase: GetOfferInfoForBuyerUseCase,
     private val getOfferProductListUseCase: GetOfferProductListUseCase,
     private val getNotificationUseCase: GetNotificationUseCase,
-    private val addToCartUseCase: AddToCartUseCase
+    private val addToCartUseCase: AddToCartUseCase,
+    private val userSession: UserSessionInterface
 ) : BaseViewModel(dispatchers.main) {
+
+    private val _uiState = MutableStateFlow(OlpUiState())
+    val uiState = _uiState.asStateFlow()
+
+    private val currentState: OlpUiState
+        get() = _uiState.value
 
     private val _offeringInfo = MutableLiveData<OfferInfoForBuyerUiModel>()
     val offeringInfo: LiveData<OfferInfoForBuyerUiModel>
@@ -50,11 +63,69 @@ class OfferLandingPageViewModel @Inject constructor(
     private val _error = MutableLiveData<Throwable>()
     val error: LiveData<Throwable> get() = _error
 
+    private val userId: String
+        get() = userSession.userId
+
+    fun processEvent(event: OlpEvent) {
+        when (event) {
+            is OlpEvent.SetInitialUiState -> {
+                setInitialUiState(
+                    offerIds = event.offerIds,
+                    shopIds = event.shopIds,
+                    productIds = event.productIds,
+                    warehouseIds = event.warehouseIds,
+                    localCacheModel = event.localCacheModel
+                )
+            }
+
+            is OlpEvent.GetOfferingInfo -> {
+                getOfferingInfo(
+                    offerIds = event.offerIds,
+                    shopIds = event.shopIds,
+                    productIds = event.productIds,
+                    warehouseIds = event.warehouseIds,
+                    localCacheModel = event.localCacheModel
+                )
+            }
+
+            is OlpEvent.GetOffreringProductList -> {
+                getOfferingProductList(
+                    offerIds = event.offerIds,
+                    warehouseIds = event.warehouseIds,
+                    localCacheModel = event.localCacheModel,
+                    page = event.page,
+                    sortId = event.sortId
+                )
+            }
+
+            is OlpEvent.GetNotification -> {}
+            is OlpEvent.AddToCart -> {}
+        }
+    }
+
+    private fun setInitialUiState(
+        offerIds: List<Int>,
+        shopIds: List<Int> = emptyList(),
+        productIds: List<Int> = emptyList(),
+        warehouseIds: List<Int> = emptyList(),
+        localCacheModel: LocalCacheModel?
+    ) {
+        _uiState.update {
+            it.copy(
+                offerIds = offerIds,
+                shopIds = shopIds,
+                productIds = productIds,
+                warehouseIds = warehouseIds,
+                localCacheModel = localCacheModel
+            )
+        }
+    }
+
     fun getOfferingInfo(
         offerIds: List<Int>,
-        shopId: String,
-        productIds: List<Int>? = emptyList(),
-        warehouseIds: List<Int>? = emptyList(),
+        shopIds: List<Int> = emptyList(),
+        productIds: List<Int> = emptyList(),
+        warehouseIds: List<Int> = emptyList(),
         localCacheModel: LocalCacheModel?
     ) {
         launchCatchError(
@@ -62,18 +133,22 @@ class OfferLandingPageViewModel @Inject constructor(
             block = {
                 val param = GetOfferingInfoForBuyerRequestParam(
                     offerIds = offerIds,
-                    shopIds = listOf(shopId.toIntOrZero()),
-                    productAnchor = GetOfferingInfoForBuyerRequestParam.ProductAnchor(
-                        productIds.orEmpty(),
-                        warehouseIds.orEmpty()
-                    ),
+                    shopIds = shopIds,
+                    productAnchor = if (warehouseIds.isNotEmpty()) {
+                        GetOfferingInfoForBuyerRequestParam.ProductAnchor(
+                            productIds,
+                            warehouseIds
+                        )
+                    } else {
+                        null
+                    },
                     userLocation = UserLocation(
-                        addressId = localCacheModel?.address_id.toIntOrZero(),
-                        districtId = localCacheModel?.district_id.toIntOrZero(),
+                        addressId = localCacheModel?.address_id.toLongOrZero(),
+                        districtId = localCacheModel?.district_id.toLongOrZero(),
                         postalCode = localCacheModel?.postal_code.orEmpty(),
                         latitude = localCacheModel?.lat.orEmpty(),
                         longitude = localCacheModel?.long.orEmpty(),
-                        cityId = localCacheModel?.city_id.toIntOrZero()
+                        cityId = localCacheModel?.city_id.toLongOrZero()
                     )
                 )
                 val result = getOfferInfoForBuyerUseCase.execute(param)
@@ -90,7 +165,7 @@ class OfferLandingPageViewModel @Inject constructor(
         warehouseIds: List<Int>? = emptyList(),
         localCacheModel: LocalCacheModel?,
         page: Int,
-        pageSize: Int
+        sortId: String
     ) {
         launchCatchError(
             dispatchers.io,
@@ -101,15 +176,17 @@ class OfferLandingPageViewModel @Inject constructor(
                         warehouseIds.orEmpty()
                     ),
                     userLocation = GetOfferingProductListRequestParam.UserLocation(
-                        addressId = localCacheModel?.address_id.toIntOrZero(),
-                        districtId = localCacheModel?.district_id.toIntOrZero(),
+                        addressId = localCacheModel?.address_id.toLongOrZero(),
+                        districtId = localCacheModel?.district_id.toLongOrZero(),
                         postalCode = localCacheModel?.postal_code.orEmpty(),
                         latitude = localCacheModel?.lat.orEmpty(),
                         longitude = localCacheModel?.long.orEmpty(),
-                        cityId = localCacheModel?.city_id.toIntOrZero()
+                        cityId = localCacheModel?.city_id.toLongOrZero()
                     ),
+                    userId = userId.toLongOrZero(),
                     page = page,
-                    pageSize = pageSize
+                    pageSize = 10,
+                    orderBy = sortId.toIntOrZero()
                 )
 
                 val result = getOfferProductListUseCase.execute(param)
@@ -129,7 +206,6 @@ class OfferLandingPageViewModel @Inject constructor(
                 _navNotificationModel.postValue(result)
             },
             onError = {
-
             }
         )
     }
@@ -143,7 +219,7 @@ class OfferLandingPageViewModel @Inject constructor(
             block = {
                 val param = AddToCartUseCase.getMinimumParams(
                     productId = product.productId.toString(),
-                    shopId = shopId,
+                    shopId = shopId
                 )
                 addToCartUseCase.setParams(param)
                 val result = addToCartUseCase.executeOnBackground()
