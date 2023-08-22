@@ -124,14 +124,12 @@
         android:layout_width="28dp"
         android:layout_height="28dp"
         android:layout_marginEnd="16dp"
-        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/v_menu_center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/v_menu_center"
-        app:layout_constraintBottom_toBottomOf="@id/v_menu_center"
-        app:srcCompat="@drawable/ic_user_profile_default"
+        app:srcCompat="@drawable/iconunify_user"
         app:unify_image_type="circle"
-        tools:visibility="visible"
-        />
+        tools:visibility="visible" />
 
     <com.tokopedia.feedplus.presentation.customview.UploadInfoView
         android:id="@+id/upload_view"

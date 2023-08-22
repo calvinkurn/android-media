@@ -26,10 +26,10 @@ import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
 import java.util.*
 
+@Deprecated("Please use com.tokopedia.home_component_header.view.HomeChannelHeaderView")
 class DynamicChannelHeaderView : FrameLayout {
-    private val itemView: View
+    private var channelHeaderContainer: ConstraintLayout? = null
 
-    private val channelHeaderContainer: ConstraintLayout
     private var channelTitle: Typography? = null
     private var channelSubtitle: Typography? = null
     private var countDownView: TimerUnifySingle? = null
@@ -38,22 +38,12 @@ class DynamicChannelHeaderView : FrameLayout {
     private var headerCtaMode: Int = CTA_MODE_SEE_ALL
     private var listener: HeaderListener? = null
 
-    private val isUsingHeaderRevamp = HomeComponentRollenceController.isDynamicChannelHeaderUsingRollenceVariant()
-    private val layoutStrategy: HeaderLayoutStrategy = HeaderLayoutStrategyFactory.create(isUsingHeaderRevamp)
-
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
         initHeaderWithAttrs(attrs)
     }
     constructor(context: Context, attrs: AttributeSet?, @AttrRes defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
         initHeaderWithAttrs(attrs)
-    }
-
-    init {
-        val view = LayoutInflater.from(context).inflate(layoutStrategy.getLayout(), this)
-        this.itemView = view
-
-        channelHeaderContainer = view.findViewById(R.id.channel_title_container)
     }
 
     private fun initHeaderWithAttrs(attrs: AttributeSet?) {
@@ -66,12 +56,14 @@ class DynamicChannelHeaderView : FrameLayout {
         }
     }
 
+    @Deprecated("Please use com.tokopedia.home_component_header.view.HomeChannelHeaderView.bind()")
     fun setChannel(
         channelModel: ChannelModel,
         listener: HeaderListener,
         colorMode: Int? = null,
         ctaMode: Int? = null
     ) {
+        init(channelModel.channelHeader.layoutStrategy)
         this.listener = listener
         colorMode?.let {
             this.headerColorMode = it
@@ -82,18 +74,24 @@ class DynamicChannelHeaderView : FrameLayout {
         handleHeaderComponent(channelModel)
     }
 
+    private fun init(layoutStrategy: HeaderLayoutStrategy) {
+        inflate(context, layoutStrategy.getLayout(), this).also {
+            channelHeaderContainer = findViewById(com.tokopedia.home_component_header.R.id.channel_title_container)
+        }
+    }
+
     private fun handleHeaderComponent(channel: ChannelModel) {
-        val stubChannelTitle: View? = itemView.findViewById(R.id.channel_title)
-        val stubCountDownView: View? = itemView.findViewById(R.id.count_down)
-        val stubSeeAllButton: View? = itemView.findViewById(R.id.see_all_button)
-        val stubSeeAllButtonUnify: View? = itemView.findViewById(R.id.see_all_button_unify)
-        val stubChannelSubtitle: View? = itemView.findViewById(R.id.channel_subtitle)
-        val stubCtaButton: View? = itemView.findViewById(R.id.cta_button)
-        channelHeaderContainer.let {
+        val stubChannelTitle: View? = findViewById(com.tokopedia.home_component_header.R.id.channel_title)
+        val stubCountDownView: View? = findViewById(com.tokopedia.home_component_header.R.id.count_down)
+        val stubSeeAllButton: View? = findViewById(com.tokopedia.home_component_header.R.id.see_all_button)
+        val stubSeeAllButtonUnify: View? = findViewById(com.tokopedia.home_component_header.R.id.see_all_button_unify)
+        val stubChannelSubtitle: View? = findViewById(com.tokopedia.home_component_header.R.id.channel_subtitle)
+        val stubCtaButton: View? = findViewById(com.tokopedia.home_component_header.R.id.cta_button)
+        channelHeaderContainer?.let { channelHeaderContainer ->
             handleTitle(channel.channelHeader.name, channelHeaderContainer, stubChannelTitle, channel)
             handleSubtitle(channel.channelHeader.subtitle, stubChannelSubtitle, channel)
-            layoutStrategy.renderCta(
-                itemView,
+            channel.channelHeader.layoutStrategy.renderCta(
+                this,
                 channelHeaderContainer,
                 stubCtaButton,
                 stubSeeAllButton,
@@ -106,7 +104,7 @@ class DynamicChannelHeaderView : FrameLayout {
                 headerColorMode
             )
             handleHeaderExpiredTime(channel, stubCountDownView, channelHeaderContainer)
-            handleBackgroundColor(channel, it, stubCtaButton, stubSeeAllButtonUnify)
+            handleBackgroundColor(channel, channelHeaderContainer, stubCtaButton, stubSeeAllButtonUnify)
         }
     }
 
@@ -123,12 +121,12 @@ class DynamicChannelHeaderView : FrameLayout {
                 val stubChannelView = stubChannelTitle.inflate()
                 stubChannelView?.findViewById(R.id.channel_title)
             } else {
-                itemView.findViewById(R.id.channel_title)
+                findViewById(R.id.channel_title)
             }
             channelTitle?.text = channelHeaderName
             channelTitle?.gravity = Gravity.CENTER_VERTICAL
             channelTitle?.visibility = View.VISIBLE
-            layoutStrategy.renderTitle(
+            channel.channelHeader.layoutStrategy.renderTitle(
                 context,
                 channel.channelHeader,
                 channelTitle,
@@ -161,11 +159,11 @@ class DynamicChannelHeaderView : FrameLayout {
                 val stubChannelView = stubChannelSubtitle.inflate()
                 stubChannelView?.findViewById(R.id.channel_subtitle)
             } else {
-                itemView.findViewById(R.id.channel_subtitle)
+                findViewById(R.id.channel_subtitle)
             }
             channelSubtitle?.text = channelSubtitleName
             channelSubtitle?.visibility = View.VISIBLE
-            layoutStrategy.renderSubtitle(
+            channel.channelHeader.layoutStrategy.renderSubtitle(
                 context,
                 channel.channelHeader,
                 channelSubtitle,
@@ -190,7 +188,7 @@ class DynamicChannelHeaderView : FrameLayout {
                 val inflatedStubCountDownView = stubCountDownView.inflate()
                 inflatedStubCountDownView.findViewById(R.id.count_down)
             } else {
-                itemView.findViewById(R.id.count_down)
+                findViewById(R.id.count_down)
             }
 
             val expiredTime = DateHelper.getExpiredTime(channel.channelHeader.expiredTime)
@@ -222,8 +220,8 @@ class DynamicChannelHeaderView : FrameLayout {
                 it.visibility = View.GONE
             }
         }
-        layoutStrategy.setSubtitleConstraints(hasExpiredTime(channel), channelHeaderContainer, context.resources)
-        layoutStrategy.setContainerPadding(channelHeaderContainer, hasExpiredTime(channel), context.resources)
+        channel.channelHeader.layoutStrategy.setSubtitleConstraints(hasExpiredTime(channel), channelHeaderContainer, context.resources)
+        channel.channelHeader.layoutStrategy.setContainerPadding(channelHeaderContainer, hasExpiredTime(channel), context.resources)
     }
 
     private fun handleBackgroundColor(channel: ChannelModel, titleContainer: ConstraintLayout, stubSeeAllButton: View?, stubSeeAllButtonUnify: View?) {

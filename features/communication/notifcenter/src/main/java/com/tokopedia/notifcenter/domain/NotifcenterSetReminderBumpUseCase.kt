@@ -1,42 +1,26 @@
 package com.tokopedia.notifcenter.domain
 
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.google.gson.annotations.SerializedName
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.graphql.coroutines.data.extensions.request
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.GqlParam
+import com.tokopedia.graphql.domain.flow.FlowUseCase
 import com.tokopedia.notifcenter.data.entity.bumpreminder.BumpReminderResponse
 import com.tokopedia.notifcenter.data.state.Resource
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class NotifcenterSetReminderBumpUseCase @Inject constructor(
-        private val gqlUseCase: GraphqlUseCase<BumpReminderResponse>
+    @ApplicationContext private val repository: GraphqlRepository,
+    dispatchers: CoroutineDispatchers
+) : FlowUseCase<NotifcenterSetReminderBumpUseCase.Param, Resource<BumpReminderResponse>>(
+    dispatchers.io
 ) {
 
-    fun bumpReminder(
-            productId: String,
-            notifId: String
-    ) = flow {
-        emit(Resource.loading(null))
-        val param = generateParam(productId, notifId)
-        val response = gqlUseCase.apply {
-            setTypeClass(BumpReminderResponse::class.java)
-            setRequestParams(param)
-            setGraphqlQuery(query)
-        }.executeOnBackground()
-        emit(Resource.success(response))
-    }
-
-    private fun generateParam(
-            productId: String, notifId: String
-    ): Map<String, Any?> {
-        return mapOf(
-                PARAM_ID to productId,
-                PARAM_NOTIF_ID to notifId
-        )
-    }
-
-    companion object {
-        private const val PARAM_ID = "id"
-        private const val PARAM_NOTIF_ID = "notif_id"
-        private val query = """
+    override fun graphqlQuery(): String = """
             mutation notifcenter_setReminderBump(
                 $$PARAM_ID: String!,
                 $$PARAM_NOTIF_ID: String!
@@ -57,6 +41,26 @@ class NotifcenterSetReminderBumpUseCase @Inject constructor(
                 message_error
               }
             }
-        """.trimIndent()
+    """.trimIndent()
+
+    override suspend fun execute(params: Param): Flow<Resource<BumpReminderResponse>> = flow {
+        emit(Resource.loading(null))
+        val response = repository.request<Param, BumpReminderResponse>(
+            graphqlQuery(),
+            params
+        )
+        emit(Resource.success(response))
+    }
+
+    data class Param(
+        @SerializedName(PARAM_ID)
+        val productId: String,
+        @SerializedName(PARAM_NOTIF_ID)
+        val notifId: String
+    ) : GqlParam
+
+    companion object {
+        private const val PARAM_ID = "id"
+        private const val PARAM_NOTIF_ID = "notif_id"
     }
 }

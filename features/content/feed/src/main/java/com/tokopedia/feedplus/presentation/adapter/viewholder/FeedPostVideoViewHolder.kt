@@ -17,23 +17,23 @@ import com.tokopedia.feedplus.presentation.adapter.FeedContentAdapter
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_CLEAR_MODE
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_COMMENT_COUNT
+import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_DONE_SCROLL
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_LIKED_UNLIKED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_NOT_SELECTED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_REMINDER_CHANGED
+import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_SCROLLING
+import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_SCROLLING_CHANGED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_SELECTED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_SELECTED_CHANGED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloads
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
-import com.tokopedia.feedplus.presentation.adapter.util.animateAlpha
-import com.tokopedia.feedplus.presentation.adapter.viewholder.FeedPostImageViewHolder.Companion.FULL_OPACITY
-import com.tokopedia.feedplus.presentation.adapter.viewholder.FeedPostImageViewHolder.Companion.OPACITY_ANIMATE_DURATION
-import com.tokopedia.feedplus.presentation.adapter.viewholder.FeedPostImageViewHolder.Companion.SCROLL_OPACITY
 import com.tokopedia.feedplus.presentation.customview.FeedPlayerControl
 import com.tokopedia.feedplus.presentation.model.FeedCardVideoContentModel
 import com.tokopedia.feedplus.presentation.model.FeedLikeModel
 import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
 import com.tokopedia.feedplus.presentation.uiview.*
 import com.tokopedia.feedplus.presentation.util.animation.FeedLikeAnimationComponent
+import com.tokopedia.feedplus.presentation.util.animation.FeedPostAlphaAnimator
 import com.tokopedia.feedplus.presentation.util.animation.FeedSmallLikeIconAnimationComponent
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.hide
@@ -50,6 +50,12 @@ class FeedPostVideoViewHolder(
     private val listener: FeedListener,
     private val trackerMapper: MapperFeedModelToTrackerDataModel
 ) : AbstractViewHolder<FeedCardVideoContentModel>(binding.root) {
+
+    private val alphaAnimator = FeedPostAlphaAnimator(object : FeedPostAlphaAnimator.Listener {
+        override fun onAnimateAlpha(animator: FeedPostAlphaAnimator, alpha: Float) {
+            opacityViewList.forEach { it.alpha = alpha }
+        }
+    })
 
     private val captionViewListener = object : FeedCaptionView.Listener {
         override fun onExpanded(view: FeedCaptionView) {
@@ -98,7 +104,7 @@ class FeedPostVideoViewHolder(
         binding.productTagView.root,
         binding.productTagButton.root,
         binding.rvFeedAsgcTags,
-        binding.feedCampaignRibbon.root,
+        binding.feedCampaignRibbon.root
     )
 
     init {
@@ -203,7 +209,12 @@ class FeedPostVideoViewHolder(
     fun bind(item: FeedContentAdapter.Item) {
         val data = item.data as FeedCardVideoContentModel
         bind(data)
-        if (item.isSelected) onSelected(item.data)
+
+        if (item.isSelected) {
+            onSelected(data)
+        } else {
+            onNotSelected()
+        }
     }
 
     override fun bind(element: FeedCardVideoContentModel?) {
@@ -243,15 +254,21 @@ class FeedPostVideoViewHolder(
 
     fun bind(item: FeedContentAdapter.Item, payloads: MutableList<Any>) {
         val selectedPayload = if (item.isSelected) FEED_POST_SELECTED else FEED_POST_NOT_SELECTED
+        val scrollingPayload = if (item.isScrolling) FEED_POST_SCROLLING else FEED_POST_DONE_SCROLL
+
         val feedPayloads =
             payloads.firstOrNull { it is FeedViewHolderPayloads } as? FeedViewHolderPayloads
-        val newPayloads =
-            if (feedPayloads != null && feedPayloads.payloads.contains(FEED_POST_SELECTED_CHANGED)) {
-                payloads.toMutableList().also { it.add(selectedPayload) }
-            } else {
-                payloads
+
+        if (feedPayloads == null) {
+            bind(item.data as FeedCardVideoContentModel, payloads)
+        } else {
+            val newPayloads = mutableListOf<Any>().apply {
+                addAll(payloads)
+                if (feedPayloads.payloads.contains(FEED_POST_SELECTED_CHANGED)) add(selectedPayload)
+                if (feedPayloads.payloads.contains(FEED_POST_SCROLLING_CHANGED)) add(scrollingPayload)
             }
-        bind(item.data as FeedCardVideoContentModel, newPayloads)
+            bind(item.data as FeedCardVideoContentModel, newPayloads)
+        }
     }
 
     override fun bind(element: FeedCardVideoContentModel?, payloads: MutableList<Any>) {
@@ -287,12 +304,12 @@ class FeedPostVideoViewHolder(
                 bindAuthor(element)
             }
 
-            if (payloads.contains(FeedViewHolderPayloadActions.FEED_POST_SCROLLING)) {
-                onScrolling()
+            if (payloads.contains(FEED_POST_SCROLLING)) {
+                onScrolling(true)
             }
 
-            if (payloads.contains(FeedViewHolderPayloadActions.FEED_POST_DONE_SCROLL)) {
-                onDoneScroll()
+            if (payloads.contains(FEED_POST_DONE_SCROLL)) {
+                onScrolling(false)
             }
 
             payloads.forEach { payload ->
@@ -497,15 +514,12 @@ class FeedPostVideoViewHolder(
         productButtonView.showIfPossible()
     }
 
-    private fun onScrolling() {
-        opacityViewList.forEach {
-            it.animateAlpha(SCROLL_OPACITY, OPACITY_ANIMATE_DURATION)
-        }
-    }
-
-    private fun onDoneScroll() {
-        opacityViewList.forEach {
-            it.alpha = FULL_OPACITY
+    private fun onScrolling(isScrolling: Boolean) {
+        val startAlpha = opacityViewList.first().alpha
+        if (isScrolling) {
+            alphaAnimator.animateToAlpha(startAlpha)
+        } else {
+            alphaAnimator.animateToOpaque(startAlpha)
         }
     }
 
@@ -522,12 +536,14 @@ class FeedPostVideoViewHolder(
         campaignView.startAnimation()
         mVideoPlayer?.resume()
         listener.onWatchPostVideo(element, trackerModel)
+        onScrolling(false)
     }
 
     private fun onNotSelected() {
         mIsSelected = false
         mVideoPlayer?.pause()
         mVideoPlayer?.reset()
+        onScrolling(false)
 
         campaignView.resetView()
         hideClearView()

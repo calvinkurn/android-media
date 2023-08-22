@@ -38,6 +38,11 @@ class ProductItemDecoration(
         R.layout.search_result_product_big_grid_inspiration_card_layout,
         R.layout.search_result_product_small_grid_inspiration_card_layout,
         R.layout.search_result_same_session_recommendation_product_layout,
+        R.layout.search_inspiration_seamless_product_card,
+        R.layout.search_inspiration_seamless_product_card_with_viewstub,
+        R.layout.search_inspiration_seamless_product_card_list,
+        R.layout.search_inspiration_seamless_product_card_list_with_viewstub,
+        R.layout.search_inspiration_semless_keyword
     )
 
     override fun getItemOffsets(outRect: Rect,
@@ -77,6 +82,7 @@ class ProductItemDecoration(
         val staggeredGridLayoutParams = view.layoutParams as StaggeredGridLayoutManager.LayoutParams
         return staggeredGridLayoutParams.spanIndex
     }
+
     private fun getProductItemRelativePositionGrid(view: View): Int {
         val gridLayoutParams = view.layoutParams as GridLayoutManager.LayoutParams
         return gridLayoutParams.spanIndex

@@ -4,10 +4,12 @@ import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_UNKNOWN
 import com.tokopedia.play.broadcaster.pusher.state.PlayBroadcasterState
 import com.tokopedia.play.broadcaster.ui.model.beautification.FaceFilterUiModel
 import com.tokopedia.play.broadcaster.ui.model.beautification.PresetFilterUiModel
-import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.GameType
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormDataUiModel
+import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetPage
+import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetType
+import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
 import java.util.*
 
@@ -25,9 +27,12 @@ sealed interface PlayBroadcastAction {
 
     data class SetSchedule(val date: Date) : PlayBroadcastAction
     object DeleteSchedule : PlayBroadcastAction
-    object SuccessOnBoardingUGC: PlayBroadcastAction
-    data class GetConfiguration(val selectedType: String = TYPE_UNKNOWN): PlayBroadcastAction
+    object SuccessOnBoardingUGC : PlayBroadcastAction
+    data class GetConfiguration(val selectedType: String = TYPE_UNKNOWN) : PlayBroadcastAction
     data class SwitchAccount(val needLoading: Boolean = true) : PlayBroadcastAction
+
+    data class GetTickerBottomSheetConfig(val page: TickerBottomSheetPage) : PlayBroadcastAction
+    data class SetLiveToVodPref(val type: TickerBottomSheetType, val page: TickerBottomSheetPage) : PlayBroadcastAction
 
     /** Game */
     data class ClickGameOption(val gameType: GameType) : PlayBroadcastAction
@@ -71,8 +76,8 @@ sealed interface PlayBroadcastAction {
         val source: Int
     ) : PlayBroadcastAction
 
-    object SetShowSetupCoverCoachMark: PlayBroadcastAction
-    object ResetUploadState: PlayBroadcastAction
+    object SetShowSetupCoverCoachMark : PlayBroadcastAction
+    object ResetUploadState : PlayBroadcastAction
 
     /** Beautification */
     object ResetBeautification : PlayBroadcastAction
