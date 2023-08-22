@@ -3,7 +3,7 @@ package com.tokopedia.stories.widget.domain
 /**
  * Created by kenny.hadisaputra on 08/08/23
  */
-enum class StoriesKey(val key: String, internal val sourceName: String) {
+enum class StoriesEntryPoint(val key: String, internal val sourceName: String) {
     ShopPage("shop_page", "shop-page"),
     ProductDetail("product_detail", "pdp-page"),
     TopChatList("top_chat_list", "topchat-page"),

@@ -19,7 +19,7 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.stories.widget.di.DaggerStoriesWidgetComponent
 import com.tokopedia.stories.widget.di.StoriesWidgetComponent
-import com.tokopedia.stories.widget.domain.StoriesKey
+import com.tokopedia.stories.widget.domain.StoriesEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
@@ -29,12 +29,11 @@ import kotlinx.coroutines.launch
  * Created by kenny.hadisaputra on 27/07/23
  */
 class StoriesWidgetManager private constructor(
-    private val key: StoriesKey,
+    private val key: StoriesEntryPoint,
     context: Context,
     private val lifecycleOwner: LifecycleOwner,
     private val viewModelStoreOwner: ViewModelStoreOwner,
     private val options: Options,
-    private val navigation: StoriesWidgetNavigation
 ) {
 
     private val component = createComponent(context)
@@ -46,7 +45,7 @@ class StoriesWidgetManager private constructor(
 
     private val storiesViewListener = object : StoriesWidgetLayout.Listener {
         override fun onClickedWhenHasStories(view: StoriesWidgetLayout, state: StoriesWidgetState) {
-            navigation.launch(view.context, state.appLink)
+            component.router().route(view.context, state.appLink)
             options.trackingManager.clickEntryPoints(key)
         }
     }
@@ -71,16 +70,17 @@ class StoriesWidgetManager private constructor(
     private var mShopIdCoachMarked: String? = null
 
     init {
-        navigation.setListener(object : StoriesWidgetNavigation.Listener {
-            override fun onNewResult(result: StoriesWidgetNavigation.ResultHolder) {
-                if (!result.isAllStoriesSeen) return
-                getViewModel().onIntent(StoriesWidgetIntent.SetAllStoriesSeen(result.shopId))
-            }
-        })
-
         lifecycleOwner.lifecycle.addObserver(object : LifecycleEventObserver {
             override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
-                if (event == Lifecycle.Event.ON_PAUSE) hideCoachMark()
+                when (event) {
+                    Lifecycle.Event.ON_PAUSE -> {
+                        hideCoachMark()
+                    }
+                    Lifecycle.Event.ON_RESUME -> {
+                        getViewModel().onIntent(StoriesWidgetIntent.GetLatestStoriesStatus)
+                    }
+                    else -> {}
+                }
             }
         })
 
@@ -254,7 +254,7 @@ class StoriesWidgetManager private constructor(
     companion object {
 
         fun create(
-            key: StoriesKey,
+            key: StoriesEntryPoint,
             fragment: Fragment,
             builderOptions: Builder.() -> Unit
         ): StoriesWidgetManager {
@@ -264,7 +264,7 @@ class StoriesWidgetManager private constructor(
         }
 
         fun create(
-            key: StoriesKey,
+            key: StoriesEntryPoint,
             activity: AppCompatActivity,
             builderOptions: Builder.() -> Unit
         ): StoriesWidgetManager {
@@ -275,26 +275,23 @@ class StoriesWidgetManager private constructor(
     }
 
     class Builder private constructor(
-        private val key: StoriesKey,
+        private val key: StoriesEntryPoint,
         private val context: Context,
         private val lifecycleOwner: LifecycleOwner,
         private val viewModelStoreOwner: ViewModelStoreOwner,
-        private val navigation: StoriesWidgetNavigation
     ) {
 
-        constructor(key: StoriesKey, fragment: Fragment) : this(
+        constructor(key: StoriesEntryPoint, fragment: Fragment) : this(
             key,
             fragment.requireContext(),
             fragment.viewLifecycleOwner,
             fragment,
-            StoriesWidgetNavigation(fragment)
         )
-        constructor(key: StoriesKey, activity: AppCompatActivity) : this(
+        constructor(key: StoriesEntryPoint, activity: AppCompatActivity) : this(
             key,
             activity,
             activity,
             activity,
-            StoriesWidgetNavigation(activity)
         )
 
         private var mScrollingParent: View? = null
@@ -320,7 +317,6 @@ class StoriesWidgetManager private constructor(
                 lifecycleOwner,
                 viewModelStoreOwner,
                 createOptions(),
-                navigation
             )
         }
 

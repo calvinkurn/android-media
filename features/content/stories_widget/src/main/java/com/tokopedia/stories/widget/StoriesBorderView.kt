@@ -15,6 +15,7 @@ import android.graphics.Shader
 import android.util.AttributeSet
 import android.util.Log
 import android.view.View
+import androidx.core.animation.addListener
 import androidx.interpolator.view.animation.FastOutLinearInInterpolator
 import com.tokopedia.kotlin.extensions.view.pxToDp
 import com.tokopedia.stories.widget.animation.LinearEasingInterpolator
@@ -65,12 +66,13 @@ internal class StoriesBorderView : View {
 
     private var mStoriesStatus = StoriesStatus.NoStories
 
+    private var mAnimator: Animator? = null
+
     init {
         setWillNotDraw(false)
         seenStoriesPaint.color = Color.parseColor("#80BFC9D9")
 
-        scaleX = 0.97f
-        scaleY = 0.97f
+        setOriginalTransformationValue()
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
@@ -118,8 +120,20 @@ internal class StoriesBorderView : View {
     }
 
     internal fun startAnimation() {
-        val animator = getAnimator()
-        animator.start()
+        endAnimation()
+        mAnimator = getAnimator().apply {
+            addListener(
+                onEnd = {
+                    setOriginalTransformationValue()
+                    invalidate()
+                }
+            )
+        }
+        mAnimator?.start()
+    }
+
+    internal fun endAnimation() {
+        mAnimator?.cancel()
     }
 
     internal fun setBorderConfig(onNewConfig: (BorderConfiguration) -> BorderConfiguration) {
@@ -129,6 +143,14 @@ internal class StoriesBorderView : View {
     internal fun setStoriesStatus(status: StoriesStatus) {
         mStoriesStatus = status
         invalidate()
+    }
+
+    private fun setOriginalTransformationValue() {
+        scaleX = 0.97f
+        scaleY = 0.97f
+        rotation = 0f
+
+        arcPaint.alpha = 0
     }
 
     private fun getBorderWidth(): Float {

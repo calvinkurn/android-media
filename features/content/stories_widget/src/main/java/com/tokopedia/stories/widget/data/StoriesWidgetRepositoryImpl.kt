@@ -7,9 +7,12 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey.MAINAPP_DISABLED_STORIES_ENTRY_POINTS
 import com.tokopedia.remoteconfig.RemoteConfigKey.SELLERAPP_DISABLED_STORIES_ENTRY_POINTS
 import com.tokopedia.stories.internal.StoriesPreferenceUtil
+import com.tokopedia.stories.internal.storage.StoriesSeenStorage
+import com.tokopedia.stories.widget.StoriesStatus
+import com.tokopedia.stories.widget.StoriesWidgetState
+import com.tokopedia.stories.widget.TimeMillis
 import com.tokopedia.stories.widget.domain.GetShopStoriesStatusUseCase
-import com.tokopedia.stories.widget.domain.StoriesKey
-import com.tokopedia.stories.widget.domain.ShopStoriesState
+import com.tokopedia.stories.widget.domain.StoriesEntryPoint
 import com.tokopedia.stories.widget.domain.StoriesWidgetRepository
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
@@ -20,12 +23,11 @@ import javax.inject.Inject
  */
 internal class StoriesWidgetRepositoryImpl @Inject constructor(
     private val prefUtil: StoriesPreferenceUtil,
+    private val storiesSeenStorage: StoriesSeenStorage,
     private val getShopStoriesUseCase: GetShopStoriesStatusUseCase,
     private val remoteConfig: RemoteConfig,
     private val dispatchers: CoroutineDispatchers
 ) : StoriesWidgetRepository {
-
-    private var mHasSeen = false
 
     override suspend fun setHasSeenCoachMark() {
         prefUtil.setHasAckStoriesFeature()
@@ -35,21 +37,30 @@ internal class StoriesWidgetRepositoryImpl @Inject constructor(
         return prefUtil.hasAckStoriesFeature()
     }
 
-    override suspend fun getShopStoriesState(
-        key: StoriesKey,
+    override suspend fun getUpdatedSeenStatus(
+        shopId: String,
+        lastUpdated: TimeMillis
+    ): Boolean = withContext(dispatchers.io) {
+        return@withContext storiesSeenStorage.hasSeenAllAuthorStories(
+            StoriesSeenStorage.Author.Shop(shopId),
+            lastUpdated.time,
+        )
+    }
+
+    override suspend fun getStoriesWidgetState(
+        entryPoint: StoriesEntryPoint,
         shopIds: List<String>
-    ): List<ShopStoriesState> = withContext(dispatchers.io) {
-        val isEntryPointAllowed = isEntryPointAllowed(key)
+    ): List<StoriesWidgetState> = withContext(dispatchers.io) {
+        val isEntryPointAllowed = isEntryPointAllowed(entryPoint)
         if (!isEntryPointAllowed) return@withContext emptyList()
 
         delay(1000)
-        shopIds.map { shopId ->
-            val shopInt = shopId.toInt()
-            ShopStoriesState(
-                shopId,
-                anyStoryExisted = true,
-                hasUnseenStories = true,
-                "tokopedia://play/12669"
+        val result = shopIds.map { shopId ->
+            StoriesWidgetState(
+                shopId = shopId,
+                status = getStoriesStatus(anyStoryExists = true, hasUnseenStories = true),
+                appLink = "tokopedia://play/12669",
+                updatedAt = TimeMillis.now(),
             )
         }
 //        val response = getShopStoriesUseCase(
@@ -72,9 +83,25 @@ internal class StoriesWidgetRepositoryImpl @Inject constructor(
 //                appLink = it.appLink,
 //            )
 //        }
+
+        result.forEach {
+            storiesSeenStorage.setSeenAllAuthorStories(
+                StoriesSeenStorage.Author.Shop(it.shopId)
+            )
+        }
+
+        return@withContext result
     }
 
-    private fun isEntryPointAllowed(key: StoriesKey): Boolean {
+    private fun getStoriesStatus(anyStoryExists: Boolean, hasUnseenStories: Boolean): StoriesStatus {
+        return when {
+            !anyStoryExists -> StoriesStatus.NoStories
+            hasUnseenStories -> StoriesStatus.HasUnseenStories
+            else -> StoriesStatus.AllStoriesSeen
+        }
+    }
+
+    private fun isEntryPointAllowed(key: StoriesEntryPoint): Boolean {
         val disabledEntryPoints = getDisabledEntryPoints()
         return !disabledEntryPoints.contains(key.key)
     }

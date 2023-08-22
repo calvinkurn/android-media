@@ -3,8 +3,7 @@ package com.tokopedia.stories.widget
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.content.common.util.UiEventManager
-import com.tokopedia.stories.widget.domain.ShopStoriesState
-import com.tokopedia.stories.widget.domain.StoriesKey
+import com.tokopedia.stories.widget.domain.StoriesEntryPoint
 import com.tokopedia.stories.widget.domain.StoriesWidgetRepository
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -22,13 +21,13 @@ import kotlinx.coroutines.launch
  * Created by kenny.hadisaputra on 25/07/23
  */
 internal class StoriesWidgetViewModel @AssistedInject constructor(
-    @Assisted private val key: StoriesKey,
+    @Assisted private val key: StoriesEntryPoint,
     private val repository: StoriesWidgetRepository
 ) : ViewModel() {
 
     @AssistedFactory
     interface Factory {
-        fun create(key: StoriesKey): StoriesWidgetViewModel
+        fun create(key: StoriesEntryPoint): StoriesWidgetViewModel
     }
 
     private val _storiesMap = MutableStateFlow(emptyMap<String, StoriesWidgetState>())
@@ -42,7 +41,7 @@ internal class StoriesWidgetViewModel @AssistedInject constructor(
     fun onIntent(intent: StoriesWidgetIntent) {
         when (intent) {
             is StoriesWidgetIntent.GetStoriesStatus -> onGetStories(intent.shopIds)
-            is StoriesWidgetIntent.SetAllStoriesSeen -> onSetAllStoriesSeen(intent.shopId)
+            is StoriesWidgetIntent.GetLatestStoriesStatus -> onGetLatestStoriesStatus()
             StoriesWidgetIntent.ShowCoachMark -> onShowCoachMark()
             StoriesWidgetIntent.HasSeenCoachMark -> onHasSeenCoachMark()
         }
@@ -62,26 +61,30 @@ internal class StoriesWidgetViewModel @AssistedInject constructor(
         if (shopIds.isEmpty()) return
 
         viewModelScope.launch {
-            val storiesState = repository.getShopStoriesState(key, shopIds)
-            val storiesStateMap = storiesState.associate {
-                it.shopId to StoriesWidgetState(
-                    it.shopId,
-                    it.getStoriesStatus(),
-                    it.appLink
-                )
-            }
-            _storiesMap.update {
-                it + storiesStateMap
-            }
+            val storiesState = repository.getStoriesWidgetState(key, shopIds)
+            val storiesStateMap = storiesState.associateBy { it.shopId }
+            _storiesMap.update { it + storiesStateMap }
         }
     }
 
-    private fun onSetAllStoriesSeen(shopId: String) {
-        _storiesMap.update {
-            val containShopId = it.contains(shopId)
-            if (!containShopId) return@update it
-            val oldState = it[shopId]!!
-            it + (shopId to oldState.copy(status = StoriesStatus.AllStoriesSeen))
+    private fun onGetLatestStoriesStatus() {
+        viewModelScope.launch {
+            _storiesMap.update {
+                it.mapValues { entry ->
+                    val isStoriesSeen = repository.getUpdatedSeenStatus(
+                        entry.key,
+                        entry.value.updatedAt
+                    )
+
+                    entry.value.copy(
+                        status = if (entry.value.status != StoriesStatus.NoStories && isStoriesSeen) {
+                            StoriesStatus.AllStoriesSeen
+                        } else {
+                            entry.value.status
+                        }
+                    )
+                }
+            }
         }
     }
 
@@ -109,13 +112,5 @@ internal class StoriesWidgetViewModel @AssistedInject constructor(
 
     private suspend fun showCoachMark(shopId: String) {
         uiMessageManager.emitEvent(StoriesWidgetMessage.ShowCoachMark(shopId))
-    }
-
-    private fun ShopStoriesState.getStoriesStatus(): StoriesStatus {
-        return when {
-            !anyStoryExisted -> StoriesStatus.NoStories
-            hasUnseenStories -> StoriesStatus.HasUnseenStories
-            else -> StoriesStatus.AllStoriesSeen
-        }
     }
 }

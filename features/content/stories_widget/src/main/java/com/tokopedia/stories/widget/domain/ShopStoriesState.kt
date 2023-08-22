@@ -7,5 +7,5 @@ data class ShopStoriesState(
     val shopId: String,
     val anyStoryExisted: Boolean,
     val hasUnseenStories: Boolean,
-    val appLink: String
+    val appLink: String,
 )

@@ -83,6 +83,10 @@ class StoriesWidgetLayout @JvmOverloads constructor(
         binding.border.startAnimation()
     }
 
+    fun endAnimation() {
+        binding.border.endAnimation()
+    }
+
     fun setListener(listener: Listener?) {
         mListener = listener
     }

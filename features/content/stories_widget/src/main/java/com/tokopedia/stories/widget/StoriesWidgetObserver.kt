@@ -33,8 +33,9 @@ internal class StoriesWidgetObserver(
                         view.setState { newState ?: it }
 
                         if (newState == null) return@collectLatest
-                        if (newState.status != StoriesStatus.HasUnseenStories) return@collectLatest
-                        if (animationStrategy.shouldPlayAnimation(newState.shopId)) {
+                        if (newState.status != StoriesStatus.HasUnseenStories) {
+                            view.endAnimation()
+                        } else if (animationStrategy.shouldPlayAnimation(newState.shopId)) {
                             view.startAnimation()
                             animationStrategy.onAnimate(newState.shopId)
                         }
