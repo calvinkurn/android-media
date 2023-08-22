@@ -1,9 +1,9 @@
 package com.tokopedia.cartrevamp.view.uimodel
 
-import com.tokopedia.cartrevamp.data.model.response.promo.CartPromoTicker
-import com.tokopedia.cartrevamp.data.model.response.shopgroupsimplified.CartData
+import com.tokopedia.cart.data.model.response.promo.CartPromoTicker
+import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
+import com.tokopedia.cart.domain.model.updatecart.UpdateAndGetLastApplyData
 import com.tokopedia.cartrevamp.domain.model.cartlist.SummaryTransactionUiModel
-import com.tokopedia.cartrevamp.domain.model.updatecart.UpdateAndGetLastApplyData
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel

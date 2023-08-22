@@ -2,7 +2,7 @@ package com.tokopedia.cartrevamp.view.adapter.cart
 
 import android.widget.ImageView
 import com.airbnb.lottie.LottieAnimationView
-import com.tokopedia.cartrevamp.data.model.response.shopgroupsimplified.Action
+import com.tokopedia.cart.data.model.response.shopgroupsimplified.Action
 import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
 import com.tokopedia.iconunify.IconUnify
 
@@ -33,5 +33,7 @@ class CartItemAdapter {
         fun onVerificationClicked(applink: String)
         fun onCartShopNameClicked(shopId: String?, shopName: String?, isTokoNow: Boolean)
         fun onProductAddOnClicked(cartItemData: CartItemHolderData)
+        fun onAddOnsProductWidgetImpression(addOnType: Int, productId: String)
+        fun onClickAddOnsProductWidgetCart(addOnType: Int, productId: String)
     }
 }

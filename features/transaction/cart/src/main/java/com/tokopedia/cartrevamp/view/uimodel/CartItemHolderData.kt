@@ -1,8 +1,8 @@
 package com.tokopedia.cartrevamp.view.uimodel
 
-import com.tokopedia.cartrevamp.data.model.response.shopgroupsimplified.Action
-import com.tokopedia.cartrevamp.data.model.response.shopgroupsimplified.ProductInformationWithIcon
-import com.tokopedia.cartrevamp.data.model.response.shopgroupsimplified.WholesalePrice
+import com.tokopedia.cart.data.model.response.shopgroupsimplified.Action
+import com.tokopedia.cart.data.model.response.shopgroupsimplified.ProductInformationWithIcon
+import com.tokopedia.cart.data.model.response.shopgroupsimplified.WholesalePrice
 import com.tokopedia.purchase_platform.common.feature.bometadata.BoMetadata
 
 data class CartItemHolderData(
@@ -65,6 +65,7 @@ data class CartItemHolderData(
     var isFinalItem: Boolean = false,
     var isAlreadyShowMinimumQuantityPurchasedError: Boolean = false,
     var isAlreadyShowMaximumQuantityPurchasedError: Boolean = false,
+    var showBundlePrice: Boolean = false,
 
     // OWOC
     var shopHolderData: CartShopHolderData = CartShopHolderData(),

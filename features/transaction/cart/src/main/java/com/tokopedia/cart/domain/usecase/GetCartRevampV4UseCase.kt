@@ -24,14 +24,15 @@ class GetCartRevampV4UseCase @Inject constructor(
     @GqlQuery(QUERY_CART_REVAMP_V4, CART_REVAMP_V4_QUERY)
     override suspend fun execute(params: GetCartParam): CartData {
         val request = GraphqlRequest(
-            CartRevampQueryV4(),
+            CartRevampV4Query(),
             ShopGroupSimplifiedGqlResponse::class.java,
             mapOf(
                 PARAM_KEY_LANG to PARAM_VALUE_ID,
                 PARAM_KEY_SELECTED_CART_ID to params.cartId,
                 PARAM_KEY_ADDITIONAL to mapOf(
                     ChosenAddressRequestHelper.KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress(),
-                    PARAM_KEY_STATE to params.state
+                    PARAM_KEY_STATE to params.state,
+                    PARAM_KEY_IS_CART_REIMAGINE to params.isCartReimagine
                 )
             )
         )
@@ -51,17 +52,19 @@ class GetCartRevampV4UseCase @Inject constructor(
 
     companion object {
         private const val PARAM_KEY_LANG = "lang"
-        const val PARAM_KEY_SELECTED_CART_ID = "selected_cart_id"
+        private const val PARAM_KEY_SELECTED_CART_ID = "selected_cart_id"
         private const val PARAM_KEY_ADDITIONAL = "additional_params"
-        const val PARAM_KEY_STATE = "state"
+        private const val PARAM_KEY_STATE = "state"
+        private const val PARAM_KEY_IS_CART_REIMAGINE = "is_cart_reimagine"
 
         private const val PARAM_VALUE_ID = "id"
 
-        private const val QUERY_CART_REVAMP_V4 = "CartRevampQueryV4"
+        private const val QUERY_CART_REVAMP_V4 = "CartRevampV4Query"
     }
 }
 
 class GetCartParam(
     val cartId: String,
-    val state: Int
+    val state: Int,
+    val isCartReimagine: Boolean = false
 )
