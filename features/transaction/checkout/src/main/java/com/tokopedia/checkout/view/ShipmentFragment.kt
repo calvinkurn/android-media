@@ -239,7 +239,9 @@ class ShipmentFragment :
     ExpireTimeDialogListener,
     UploadPrescriptionListener {
 
-    private var binding by autoClearedNullable<FragmentShipmentBinding>()
+    private var binding by autoClearedNullable<FragmentShipmentBinding>() {
+        onDestroyViewBinding()
+    }
     private var progressDialogNormal: AlertDialog? = null
     private var shippingCourierBottomsheet: ShippingCourierBottomsheet? = null
     private var shipmentTracePerformance: PerformanceMonitoring? = null
@@ -366,12 +368,16 @@ class ShipmentFragment :
         hideLoading()
     }
 
+    private fun onDestroyViewBinding() {
+        val countDownTimer = binding?.partialCountdown?.countDown?.timer
+        countDownTimer?.cancel()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         toasterThrottleSubscription?.unsubscribe()
         shippingCourierBottomsheet = null
-        val countDownTimer = binding?.partialCountdown?.countDown?.timer
-        countDownTimer?.cancel()
+        onDestroyViewBinding()
         shipmentViewModel.detachView()
     }
 
@@ -1681,7 +1687,8 @@ class ShipmentFragment :
         promoFlag: Boolean,
         eventCategory: String,
         eventAction: String,
-        eventLabel: String
+        eventLabel: String,
+        step: String
     ) {
         checkoutAnalyticsCourierSelection.sendEnhancedECommerceCheckout(
             stringObjectMap,
@@ -1691,7 +1698,8 @@ class ShipmentFragment :
             promoFlag,
             eventCategory,
             eventAction,
-            eventLabel
+            eventLabel,
+            step
         )
         checkoutAnalyticsCourierSelection.flushEnhancedECommerceCheckout()
     }
@@ -3348,9 +3356,11 @@ class ShipmentFragment :
             binding?.partialCountdown?.tvCountDown?.text = timer.timerDescription
             binding?.partialCountdown?.countDown?.remainingMilliseconds = diff
             binding?.partialCountdown?.countDown?.onFinish = {
-                val dialog =
-                    newInstance(timer, checkoutAnalyticsCourierSelection, this@ShipmentFragment)
-                dialog.show(fragmentManager!!, "expired dialog")
+                fragmentManager?.let { fm ->
+                    val dialog =
+                        newInstance(timer, checkoutAnalyticsCourierSelection, this@ShipmentFragment)
+                    dialog.show(fm, "expired dialog")
+                }
             }
         }
     }

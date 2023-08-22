@@ -37,7 +37,6 @@ import io.mockk.mockkStatic
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import org.junit.Before
@@ -175,25 +174,12 @@ abstract class CreateReviewViewModelTestFixture {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        mockSuccessGetBadRatingCategory()
         mockIsVideoFormat()
         mockUserSession()
         mockkStatic(RemoteConfigInstance::class)
+        mockStringAb("review_inspiration", "experiment_variant", "experiment_variant")
+        setShouldRunReviewTopicsPeekAnimation()
         mockkObject(ErrorHandler)
-        viewModel = CreateReviewViewModel(
-            CoroutineTestDispatchersProvider,
-            getProductReputationForm,
-            getProductIncentiveOvo,
-            getReviewDetailUseCase,
-            submitReviewUseCase,
-            uploaderUseCase,
-            editReviewUseCase,
-            userSessionInterface,
-            getReviewTemplatesUseCase,
-            getBadRatingCategoryUseCase,
-            getPostSubmitBottomSheetUseCase,
-            cacheManager
-        )
     }
 
     private fun mockIsVideoFormat() {
@@ -230,6 +216,10 @@ abstract class CreateReviewViewModelTestFixture {
         coEvery { getProductReputationForm.getReputationForm(any()) } throws Exception()
     }
 
+    protected fun mockErrorGetReviewTemplate() {
+        coEvery { getReviewTemplatesUseCase.executeOnBackground() } throws Exception()
+    }
+
     protected fun mockSuccessGetReviewTemplate(
         response: ProductrevGetReviewTemplateResponseWrapper = getReviewTemplateUseCaseResultSuccessEmpty
     ) {
@@ -240,6 +230,10 @@ abstract class CreateReviewViewModelTestFixture {
         response: ProductRevIncentiveOvoDomain? = getProductIncentiveOvoUseCaseResultSuccessIncentive
     ) {
         coEvery { getProductIncentiveOvo.getIncentiveOvo(any(), any()) } returns response
+    }
+
+    protected fun mockErrorGetBadRatingCategory() {
+        coEvery { getBadRatingCategoryUseCase.executeOnBackground() } throws Exception()
     }
 
     protected fun mockSuccessGetBadRatingCategory(
@@ -312,10 +306,36 @@ abstract class CreateReviewViewModelTestFixture {
         } returns false
     }
 
-    protected fun runCollectingStateFlows(block: (List<CreateReviewToasterUiModel<Any>>) -> Unit) {
+    protected fun runCollectingStateFlows(
+        setupMock: () -> Unit = {
+            mockSuccessGetReputationForm()
+            mockSuccessGetBadRatingCategory()
+            mockSuccessGetReviewTemplate()
+            mockSuccessGetProductIncentiveOvo()
+            mockSuccessUploadMedia()
+            mockSuccessSubmitReview()
+            mockSuccessPostSubmitBottomSheet()
+        },
+        block: (List<CreateReviewToasterUiModel<Any>>) -> Unit
+    ) {
         val toasterQueue = mutableListOf<CreateReviewToasterUiModel<Any>>()
         val collectorJobs = mutableListOf<Job>()
         val scope = CoroutineScope(rule.dispatchers.coroutineDispatcher)
+        setupMock()
+        viewModel = CreateReviewViewModel(
+            CoroutineTestDispatchersProvider,
+            getProductReputationForm,
+            getProductIncentiveOvo,
+            getReviewDetailUseCase,
+            submitReviewUseCase,
+            uploaderUseCase,
+            editReviewUseCase,
+            userSessionInterface,
+            getReviewTemplatesUseCase,
+            getBadRatingCategoryUseCase,
+            getPostSubmitBottomSheetUseCase,
+            cacheManager
+        )
         collectorJobs.add(scope.launch { viewModel.createReviewBottomSheetUiState.collect {} })
         collectorJobs.add(scope.launch { viewModel.productCardUiState.collect {} })
         collectorJobs.add(scope.launch { viewModel.ratingUiState.collect {} })

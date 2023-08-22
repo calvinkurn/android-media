@@ -80,7 +80,7 @@ class RechargeGeneralAddBillsActivityTest {
 
     private fun close_ticker(){
         Thread.sleep(2000)
-        Espresso.onView(AllOf.allOf(ViewMatchers.withId(R.id.ticker_close_icon), hasSibling(AllOf.allOf(withId(R.id.ticker_content_single), withChild(withText("Tagihan baru akan otomatis terhapus pada 00:00 WIB malam ini kalau belum dibayar.")))))).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        Espresso.onView(AllOf.allOf(ViewMatchers.withId(com.tokopedia.unifycomponents.R.id.ticker_close_icon), hasSibling(AllOf.allOf(withId(com.tokopedia.unifycomponents.R.id.ticker_content_single), withChild(withText("Tagihan baru akan otomatis terhapus pada 00:00 WIB malam ini kalau belum dibayar.")))))).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
                 .perform(ViewActions.click())
         Thread.sleep(2000)
     }
@@ -92,7 +92,7 @@ class RechargeGeneralAddBillsActivityTest {
         Espresso.onView(withText("PLN Non-Taglis")).check(ViewAssertions.matches(isDisplayed()))
 
         Thread.sleep(1000)
-        Espresso.onView(withId(R.id.vg_input_dropdown_recycler_view)).check(ViewAssertions.matches(isDisplayed())).perform(
+        Espresso.onView(withId(com.tokopedia.common.topupbills.R.id.vg_input_dropdown_recycler_view)).check(ViewAssertions.matches(isDisplayed())).perform(
                 RecyclerViewActions.actionOnItemAtPosition<TopupBillsInputDropdownWidget.TopupBillsInputDropdownViewHolder>(
                         0, ViewActions.click()
                 )
@@ -133,7 +133,7 @@ class RechargeGeneralAddBillsActivityTest {
                 )
         )
         Thread.sleep(1000)
-        Espresso.onView(withId(R.id.bottom_sheet_close)).perform(click())
+        Espresso.onView(withId(com.tokopedia.unifycomponents.R.id.bottom_sheet_close)).perform(click())
         Thread.sleep(1000)
     }
 
@@ -145,7 +145,7 @@ class RechargeGeneralAddBillsActivityTest {
 
     private fun click_add_inquiry(){
         Thread.sleep(2000)
-        Espresso.onView(ViewMatchers.withId(R.id.btn_sbm_add_inquiry)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        Espresso.onView(ViewMatchers.withId(com.tokopedia.common.topupbills.R.id.btn_sbm_add_inquiry)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
                 .perform(ViewActions.click())
     }
 

@@ -53,7 +53,7 @@ abstract class BaseHotelPDPTest {
         Espresso.onView(ViewMatchers.withId(R.id.iv_first_photo_preview)).perform(ViewActions.click())
 
         Thread.sleep(3000)
-        Espresso.onView(ViewMatchers.withId(R.id.btn_arrow_back)).perform(ViewActions.click())
+        Espresso.onView(ViewMatchers.withId(com.tokopedia.imagepreviewslider.R.id.btn_arrow_back)).perform(ViewActions.click())
     }
 
     private fun clickOnSeeAllReview() {

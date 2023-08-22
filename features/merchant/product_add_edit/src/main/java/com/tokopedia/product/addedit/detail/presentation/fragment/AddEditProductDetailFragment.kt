@@ -92,6 +92,7 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.USED_PRODUCT_INDEX
 import com.tokopedia.product.addedit.detail.presentation.customview.TypoCorrectionView
 import com.tokopedia.product.addedit.detail.presentation.dialog.*
+import com.tokopedia.product.addedit.detail.presentation.model.CategoryMetadataInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PriceSuggestion
@@ -193,6 +194,7 @@ class AddEditProductDetailFragment :
     // product category
     private var productCategoryId: String = ""
     private var productCategoryName: String = ""
+    private var productCategoryManifestInputModel: CategoryMetadataInputModel? = null
     private var productCategoryLayout: ViewGroup? = null
     private var productCategoryRecListView: ListUnify? = null
     private var productCategoryPickerButton: AppCompatTextView? = null
@@ -620,6 +622,8 @@ class AddEditProductDetailFragment :
 
                     productCategoryId = categoryId.toString()
                     productCategoryName = categoryName ?: ""
+                    productCategoryManifestInputModel?.recommendationRank = Int.ZERO
+                    productCategoryManifestInputModel?.isFromRecommendation = false
 
                     val categoryRecommendationResult = viewModel.productCategoryRecommendationLiveData.value
                     val categoryList = if (categoryRecommendationResult != null && categoryRecommendationResult is Success) {
@@ -780,11 +784,11 @@ class AddEditProductDetailFragment :
     }
 
     private fun onFragmentResult() {
-        getNavigationResult(REQUEST_KEY_ADD_MODE)?.observe(viewLifecycleOwner, { bundle ->
+        getNavigationResult(REQUEST_KEY_ADD_MODE)?.observe(viewLifecycleOwner) { bundle ->
             setNavigationResult(bundle, REQUEST_KEY_ADD_MODE)
             removeNavigationResult(REQUEST_KEY_ADD_MODE)
             findNavController().navigateUp()
-        })
+        }
     }
 
     private fun sendDataBack() {
@@ -829,6 +833,7 @@ class AddEditProductDetailFragment :
             if (!productPictureList.isNullOrEmpty()) pictureList = productPictureList ?: listOf()
             if (productCategoryId.isNotBlank()) categoryId = productCategoryId
             if (productCategoryName.isNotBlank()) categoryName = productCategoryName
+            productCategoryManifestInputModel?.let { categoryMetadata = it }
             preorder.apply {
                 duration = preOrderDurationField.getTextIntOrZero()
                 timeUnit = selectedDurationPosition
@@ -2339,14 +2344,23 @@ class AddEditProductDetailFragment :
     private fun selectCategoryRecommendation(items: List<ListItemUnify>, position: Int) = productCategoryRecListView?.run {
         if (!hasCategoryFromPicker) {
             setSelected(items, position) {
-                val categoryId = it.getCategoryId().toString()
-                val categoryName = it.getCategoryName()
-                productCategoryId = categoryId
-                productCategoryName = categoryName
+                productCategoryId = it.getCategoryId().toString()
+                productCategoryName = it.getCategoryName()
                 getAnnotationCategory() // update annotation specification
                 true
             }
         }
+        productCategoryManifestInputModel = CategoryMetadataInputModel(
+            recommendationRank = position,
+            isFromRecommendation = true,
+            recommendationList = items.map {
+                CategoryMetadataInputModel.Recommendation(
+                    categoryID = it.getCategoryId(),
+                    confidenceScore = it.getConfidence(),
+                    precision = it.getPrecision()
+                )
+            }
+        )
     }
 
     private fun submitInput() {
