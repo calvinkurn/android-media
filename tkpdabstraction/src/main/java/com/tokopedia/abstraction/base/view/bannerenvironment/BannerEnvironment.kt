@@ -18,6 +18,18 @@ class BannerEnvironment {
     companion object {
         private const val DEV_OPT_ON_BANNER_ENVIRONMENT_ENABLED = "DEV_OPT_ON_BANNER_ENVIRONMENT_ENABLED"
         private const val IS_DEV_OPT_ON_BANNER_ENVIRONMENT_ENABLED = "IS_DEV_OPT_ON_BANNER_ENVIRONMENT_ENABLED"
+
+        fun isBannerEnvironmentEnabled(context: Context): Boolean {
+            val cache = context.getSharedPreferences(DEV_OPT_ON_BANNER_ENVIRONMENT_ENABLED, Context.MODE_PRIVATE)
+            return cache.getBoolean(IS_DEV_OPT_ON_BANNER_ENVIRONMENT_ENABLED, true)
+        }
+
+        fun setBannerEnvironmentEnabled(context: Context, isDevOptOnNotifEnabled: Boolean) {
+            context.getSharedPreferences(DEV_OPT_ON_BANNER_ENVIRONMENT_ENABLED, Context.MODE_PRIVATE)
+                .edit()
+                .putBoolean(IS_DEV_OPT_ON_BANNER_ENVIRONMENT_ENABLED, isDevOptOnNotifEnabled)
+                .apply()
+        }
     }
 
     private var bannerEnvironmentView: BannerEnvironmentView? = null
@@ -36,18 +48,6 @@ class BannerEnvironment {
 
     fun disable() {
         removeBannerIfVisible()
-    }
-
-    fun isBannerEnvironmentEnabled(context: Context): Boolean {
-        val cache = context.getSharedPreferences(DEV_OPT_ON_BANNER_ENVIRONMENT_ENABLED, Context.MODE_PRIVATE)
-        return cache.getBoolean(IS_DEV_OPT_ON_BANNER_ENVIRONMENT_ENABLED, true)
-    }
-
-    fun setBannerEnvironmentEnabled(context: Context, isDevOptOnNotifEnabled: Boolean) {
-        context.getSharedPreferences(DEV_OPT_ON_BANNER_ENVIRONMENT_ENABLED, Context.MODE_PRIVATE)
-            .edit()
-            .putBoolean(IS_DEV_OPT_ON_BANNER_ENVIRONMENT_ENABLED, isDevOptOnNotifEnabled)
-            .apply()
     }
 
     private fun addBanner(activity: Activity, liveStatus: String) {

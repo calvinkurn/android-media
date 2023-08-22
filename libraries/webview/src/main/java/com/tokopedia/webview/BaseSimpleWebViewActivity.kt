@@ -117,7 +117,7 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
 
     private fun disableBannerEnv() {
         if (GlobalConfig.isAllowDebuggingTools()) {
-            bannerEnv.disable()
+            bannerEnv?.disable()
         }
     }
 
