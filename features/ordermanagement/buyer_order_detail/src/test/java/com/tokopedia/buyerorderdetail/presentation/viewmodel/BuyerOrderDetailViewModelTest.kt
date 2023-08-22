@@ -498,7 +498,7 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
         }
 
     @Test
-    fun `given bmgmResponse, when getProducts should return list of products when UI state is Showing`() =
+    fun `given bmgmResponse, when getProducts then should return list of products when UI state is Showing`() =
         runCollectingUiState { buyerDetailUiState ->
 
             val bmgmDetailsResponse =
@@ -563,7 +563,7 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
         }
 
     @Test
-    fun `given bmgmList empty, when getProducts should return empty list of products when UI state is Showing`() =
+    fun `given bmgmList empty, when getProducts then should return empty list of products when UI state is Showing`() =
         runCollectingUiState { buyerDetailUiState ->
 
             val productListShowingState =
