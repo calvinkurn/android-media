@@ -5,11 +5,22 @@ import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.material.Divider
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Scaffold
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -35,6 +46,8 @@ import com.tokopedia.nest.components.NestButton
 import com.tokopedia.nest.components.NestTextField
 import com.tokopedia.nest.components.NestTextFieldProperty
 import com.tokopedia.nest.components.NestTips
+import com.tokopedia.nest.components.card.NestCard
+import com.tokopedia.nest.components.card.NestCardType
 import com.tokopedia.nest.components.rememberNestBottomSheetState
 import com.tokopedia.nest.components.ticker.NestTicker
 import com.tokopedia.nest.components.ticker.NestTickerData
@@ -188,10 +201,11 @@ private fun Title() {
 
 @Composable
 private fun OrderInfo(courier: String, invoice: String) {
-    Card(
+    NestCard(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp)
+            .padding(16.dp),
+        type = NestCardType.Shadow
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             OrderInfoItem(
