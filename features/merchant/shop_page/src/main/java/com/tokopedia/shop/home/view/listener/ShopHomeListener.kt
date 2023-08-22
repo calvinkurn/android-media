@@ -7,4 +7,6 @@ interface ShopHomeListener {
     fun getWidgetCarouselPositionSavedState(): SparseIntArray
 
     fun getFragmentTrackingQueue(): TrackingQueue?
+
+    fun isShopHomeTabHasFestivity(): Boolean
 }
