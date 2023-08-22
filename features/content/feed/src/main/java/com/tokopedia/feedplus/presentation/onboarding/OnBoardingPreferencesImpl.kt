@@ -8,9 +8,9 @@ import javax.inject.Inject
 /**
  * Created by kenny.hadisaputra on 06/03/23
  */
-class OnboardingPreferencesImpl @Inject constructor(
+class OnBoardingPreferencesImpl @Inject constructor(
     @ApplicationContext context: Context,
-) : OnboardingPreferences {
+) : OnBoardingPreferences {
 
     private val sharedPref = context.getSharedPreferences(FEED_ONBOARDING_PREFERENCES, Context.MODE_PRIVATE)
 
@@ -22,7 +22,7 @@ class OnboardingPreferencesImpl @Inject constructor(
         return sharedPref.getBoolean(KEY_PROFILE_ENTRY_POINT, false)
     }
 
-    override fun hasShownSwipeOnboarding(): Boolean {
+    override fun hasShownSwipeOnBoarding(): Boolean {
         return sharedPref.getBoolean(KEY_SWIPE_ONBOARDING, false)
     }
 
@@ -38,7 +38,7 @@ class OnboardingPreferencesImpl @Inject constructor(
         }
     }
 
-    override fun setHasShownSwipeOnboarding() {
+    override fun setHasShownSwipeOnBoarding() {
         sharedPref.edit(true) {
             putBoolean(KEY_SWIPE_ONBOARDING, true)
         }
