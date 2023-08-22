@@ -7,7 +7,7 @@ import com.tokopedia.unifyprinciples.Typography
 
 interface DoubleLineLayoutStrategy {
 
-    fun bindShopBadge(badgeImageView: AppCompatImageView, item: BaseSuggestionDataView)
+    fun bindIconTitle(badgeImageView: AppCompatImageView, item: BaseSuggestionDataView)
 
     fun bindAdsLabel(adsTypography: Typography, dotImage: AppCompatImageView, item: BaseSuggestionDataView)
 

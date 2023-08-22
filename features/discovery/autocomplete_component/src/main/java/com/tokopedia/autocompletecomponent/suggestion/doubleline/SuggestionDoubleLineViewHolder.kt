@@ -64,9 +64,9 @@ class SuggestionDoubleLineViewHolder(
         val iconTitle = if (isReimagineVariantControl)
             binding?.iconTitle
         else
-            binding?.iconShopBadge
+            binding?.autocompleteIconTitle
 
-        layoutStrategy.bindShopBadge(iconTitle ?: return, item)
+        layoutStrategy.bindIconTitle(iconTitle ?: return, item)
     }
 
     private fun bindIconSubtitle(item: BaseSuggestionDataView) {

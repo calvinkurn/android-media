@@ -20,7 +20,7 @@ class InitialStateReimagineLayoutStrategy : InitialStateRenderStrategy {
         title.setWeight(Typography.REGULAR)
     }
 
-    override fun bindShopBadge(badgeImageView: AppCompatImageView, item: BaseItemInitialStateSearch) {
+    override fun bindIconTitle(badgeImageView: AppCompatImageView, item: BaseItemInitialStateSearch) {
         badgeImageView.shouldShowWithAction(item.iconTitle.isNotEmpty()) {
             ImageHandler.loadImageWithoutPlaceholderAndError(badgeImageView, item.iconTitle)
         }

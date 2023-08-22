@@ -13,7 +13,7 @@ import com.tokopedia.unifyprinciples.Typography
 
 class DoubleLineControlLayoutStrategy : DoubleLineLayoutStrategy {
 
-    override fun bindShopBadge(badgeImageView: AppCompatImageView, item: BaseSuggestionDataView) {
+    override fun bindIconTitle(badgeImageView: AppCompatImageView, item: BaseSuggestionDataView) {
         badgeImageView.shouldShowWithAction(item.iconTitle.isNotEmpty()) {
             ImageHandler.loadImageWithoutPlaceholderAndError(badgeImageView, item.iconTitle)
         }

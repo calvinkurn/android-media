@@ -8,5 +8,5 @@ interface InitialStateRenderStrategy {
 
     fun bindTitle(titleView: Typography, item: BaseItemInitialStateSearch)
 
-    fun bindShopBadge(badgeImageView: AppCompatImageView, item: BaseItemInitialStateSearch)
+    fun bindIconTitle(badgeImageView: AppCompatImageView, item: BaseItemInitialStateSearch)
 }

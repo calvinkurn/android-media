@@ -14,7 +14,7 @@ import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.unifyprinciples.Typography
 
 class DoubleLineReimagineVariantLayoutStrategy : DoubleLineLayoutStrategy {
-    override fun bindShopBadge(badgeImageView: AppCompatImageView, item: BaseSuggestionDataView) {
+    override fun bindIconTitle(badgeImageView: AppCompatImageView, item: BaseSuggestionDataView) {
         badgeImageView.shouldShowWithAction(item.iconTitle.isNotEmpty()) {
             ImageHandler.loadImageWithoutPlaceholderAndError(badgeImageView, item.iconTitle)
         }

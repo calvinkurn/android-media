@@ -50,8 +50,8 @@ class RecentSearchDoubleLineItemViewHolder(
         val iconTitle = if (isReimagineVariantControl)
             binding?.iconTitle
         else
-            binding?.iconShopBadge
-        layoutStrategy.bindShopBadge(iconTitle ?: return, item)
+            binding?.autocompleteIconTitle
+        layoutStrategy.bindIconTitle(iconTitle ?: return, item)
     }
 
     private fun bindIconSubtitle(item: BaseItemInitialStateSearch) {
