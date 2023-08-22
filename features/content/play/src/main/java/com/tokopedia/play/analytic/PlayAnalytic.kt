@@ -182,7 +182,18 @@ class PlayAnalytic(
 
         val items = arrayListOf<Bundle>().apply {
             products.forEach {
-                add(productsToBundle(it.key.product, it.value, "bottom sheet"))
+                add(
+                    productsToBundle(
+                        product = it.key.product,
+                        position = it.value,
+                        sourceFrom = "bottom sheet",
+                        dimension90 = if (section == ProductSectionType.Active) {
+                            dimensionTrackingHelper.getDimension90()
+                        } else {
+                            ""
+                        }
+                    )
+                )
             }
         }
 
@@ -551,7 +562,12 @@ class PlayAnalytic(
         }
     }
 
-    private fun productsToBundle(product: PlayProductUiModel.Product, position: Int, sourceFrom: String): Bundle =
+    private fun productsToBundle(
+        product: PlayProductUiModel.Product,
+        position: Int,
+        sourceFrom: String,
+        dimension90: String,
+    ): Bundle =
         Bundle().apply {
             putString("item_name", product.title)
             putString("item_id", product.id)
@@ -566,6 +582,9 @@ class PlayAnalytic(
             putString("item_category", "")
             putString("item_variant", "")
             putString("dimension40", "/groupchat - $sourceFrom")
+            if (dimension90.isNotEmpty()) {
+                putString("dimension90", dimension90)
+            }
             putInt("index", position)
         }
 
