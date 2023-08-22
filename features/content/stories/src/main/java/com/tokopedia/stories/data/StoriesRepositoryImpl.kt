@@ -4,6 +4,8 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
+import com.tokopedia.mvcwidget.TokopointsCatalogMVCSummaryResponse
+import com.tokopedia.mvcwidget.usecases.MVCSummaryUseCase
 import com.tokopedia.stories.uimodel.StoryAuthor
 import com.tokopedia.stories.usecase.ProductMapper
 import com.tokopedia.stories.usecase.StoriesProductUseCase
@@ -19,6 +21,7 @@ class StoriesRepositoryImpl @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val storiesProductUseCase: StoriesProductUseCase,
     private val addToCartUseCase: AddToCartUseCase,
+    private val mvcSummaryUseCase: MVCSummaryUseCase,
     private val productMapper: ProductMapper,
     private val userSession: UserSessionInterface,
 ) : StoriesRepository {
@@ -592,4 +595,9 @@ class StoriesRepositoryImpl @Inject constructor(
             !response.isStatusError()
         }
     }
+
+    override suspend fun getMvcWidget(shopId: String): TokopointsCatalogMVCSummaryResponse =
+        withContext(dispatchers.io) {
+            mvcSummaryUseCase.getResponse(mvcSummaryUseCase.getQueryParams(shopId))
+        }
 }

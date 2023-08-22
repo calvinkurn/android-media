@@ -3,7 +3,10 @@ package com.tokopedia.stories.view.viewmodel
 import android.os.Bundle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.tokopedia.content.common.producttag.view.uimodel.NetworkResult
+import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
+import com.tokopedia.mvcwidget.TokopointsCatalogMVCSummaryResponse
 import com.tokopedia.stories.data.StoriesRepository
 import com.tokopedia.stories.view.model.BottomSheetStatusDefault
 import com.tokopedia.stories.view.model.BottomSheetType
@@ -13,6 +16,7 @@ import com.tokopedia.stories.view.model.StoriesGroupUiModel
 import com.tokopedia.stories.view.model.StoriesUiState
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction
 import com.tokopedia.stories.view.viewmodel.event.StoriesUiEvent
+import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.Flow
@@ -38,6 +42,7 @@ class StoriesViewModel @Inject constructor(
     private var _storiesDetail = MutableStateFlow(StoriesDetailUiModel.Empty)
     private val bottomSheetStatus = MutableStateFlow(BottomSheetStatusDefault)
     private val products = MutableStateFlow(emptyList<ContentTaggedProductUiModel>())
+    private val vouchers = MutableStateFlow(TokopointsCatalogMVCSummaryResponse())
 
     private val _uiEvent = MutableSharedFlow<StoriesUiEvent>(extraBufferCapacity = 100)
     val uiEvent: Flow<StoriesUiEvent>
@@ -215,9 +220,20 @@ class StoriesViewModel @Inject constructor(
     }
 
     fun getProducts() {
+        /**
+         * TODO() temp move to chain
+         */
+        getVouchers()
         viewModelScope.launchCatchError(block = {
             val response = repository.getStoriesProducts("", "")
             products.value = response
+        }, onError = {})
+    }
+
+    fun getVouchers() {
+        viewModelScope.launchCatchError(block = {
+            val response = repository.getMvcWidget("")
+            vouchers.value = response
         }, onError = {})
     }
 
