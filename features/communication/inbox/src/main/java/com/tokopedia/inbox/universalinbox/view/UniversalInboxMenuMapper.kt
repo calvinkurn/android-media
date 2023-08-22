@@ -11,13 +11,8 @@ import com.tokopedia.inbox.universalinbox.util.UniversalInboxResourceProvider
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.CHATBOT_TYPE
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.PAGE_SOURCE_KEY
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.PAGE_SOURCE_REVIEW_INBOX
-import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.ROLLENCE_TYPE_A
-import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.ROLLENCE_TYPE_B
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.WIDGET_PAGE_NAME
-import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.getVariant
-import com.tokopedia.inbox.universalinbox.util.toggle.UniversalInboxAbPlatform
 import com.tokopedia.inbox.universalinbox.view.uimodel.MenuItemType
-import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuSectionUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuSeparatorUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxShopInfoUiModel
@@ -35,8 +30,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 open class UniversalInboxMenuMapper @Inject constructor(
-    private val resourceProvider: UniversalInboxResourceProvider,
-    private val abTestPlatform: UniversalInboxAbPlatform
+    private val resourceProvider: UniversalInboxResourceProvider
 ) {
 
     fun getStaticMenu(userSession: UserSessionInterface): List<Any> {
@@ -48,13 +42,6 @@ open class UniversalInboxMenuMapper @Inject constructor(
     // Generate Chat Section
     private fun getChatSectionList(userSession: UserSessionInterface): List<Any> {
         val chatSectionList = arrayListOf<Any>()
-        if (isVariantA()) {
-            chatSectionList.add(
-                UniversalInboxMenuSectionUiModel(
-                    resourceProvider.getSectionChatTitle()
-                )
-            )
-        }
         chatSectionList.add(
             UniversalInboxMenuUiModel(
                 type = MenuItemType.CHAT_BUYER,
@@ -92,13 +79,6 @@ open class UniversalInboxMenuMapper @Inject constructor(
 
     private fun getOthersSectionList(): List<Any> {
         val othersSectionList = arrayListOf<Any>()
-        if (isVariantA()) {
-            othersSectionList.add(
-                UniversalInboxMenuSectionUiModel(
-                    resourceProvider.getSectionOthersTitle()
-                )
-            )
-        }
         othersSectionList.apply {
             add(
                 UniversalInboxMenuUiModel(
@@ -199,14 +179,5 @@ open class UniversalInboxMenuMapper @Inject constructor(
                 listPageName = RecommendationCarouselTrackingConst.List.INBOX
             )
         )
-    }
-
-    private fun isVariantA(): Boolean {
-        return getVariant(abTestPlatform) == VariantType.INBOX_VAR_A
-    }
-
-    enum class VariantType(val type: String) {
-        INBOX_VAR_A(ROLLENCE_TYPE_A),
-        INBOX_VAR_B(ROLLENCE_TYPE_B)
     }
 }
