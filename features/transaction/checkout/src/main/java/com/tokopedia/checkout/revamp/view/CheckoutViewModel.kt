@@ -138,7 +138,7 @@ class CheckoutViewModel @Inject constructor(
 
     var checkoutPageSource: String = CheckoutConstant.CHECKOUT_PAGE_SOURCE_PDP
 
-    var isPurchaseProtectionPage: Boolean = false
+    private var isPurchaseProtectionPage: Boolean = false
 
     val cornerId: String?
         get() = recipientAddressModel.cornerId
@@ -157,11 +157,9 @@ class CheckoutViewModel @Inject constructor(
 
     private var shipmentPlatformFeeData: ShipmentPlatformFeeData = ShipmentPlatformFeeData()
 
-    var cartDataForRates = ""
-        private set
+    private var cartDataForRates = ""
 
-    var codData: CodModel? = null
-        private set
+    private var codData: CodModel? = null
 
     // add ons product
     // list summary add on - ready to render

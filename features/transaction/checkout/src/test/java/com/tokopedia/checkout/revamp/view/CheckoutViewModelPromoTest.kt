@@ -24,6 +24,9 @@ import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.Order
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.ProductDetail
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.OrdersItem
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
@@ -41,6 +44,52 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class CheckoutViewModelPromoTest : BaseCheckoutViewModelTest() {
+
+    @Test
+    fun generate_coupon_list_recom_request() {
+        // given
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(
+                recipientAddressModel = RecipientAddressModel().apply {
+                    id = "1"
+                    destinationDistrictId = "1"
+                    addressName = "jakarta"
+                    postalCode = "123"
+                    latitude = "123"
+                    longitude = "321"
+                }
+            ),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel("123"),
+            CheckoutOrderModel("123"),
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+
+        // when
+        val result = viewModel.generateCouponListRecommendationRequest()
+
+        // then
+        assertEquals(
+            PromoRequest(
+                cartType = "default",
+                state = "checkout",
+                orders = listOf(
+                    Order(
+                        cartStringGroup = "123",
+                        product_details = listOf(ProductDetail(quantity = 0)),
+                        isChecked = true
+                    )
+                )
+            ),
+            result
+        )
+    }
 
     @Test
     fun validate_clear_all_bo() {
