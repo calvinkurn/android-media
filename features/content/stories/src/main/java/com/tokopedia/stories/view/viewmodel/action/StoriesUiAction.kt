@@ -1,6 +1,7 @@
 package com.tokopedia.stories.view.viewmodel.action
 
 import android.os.Bundle
+import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.stories.view.model.BottomSheetType
 
 sealed interface StoriesUiAction {
@@ -23,4 +24,10 @@ sealed interface StoriesUiAction {
     object ShowDeleteDialog : StoriesUiAction
 
     object OpenProduct : StoriesUiAction
+
+    data class ProductAction(val action: StoriesProductAction, val product: ContentTaggedProductUiModel) : StoriesUiAction
+}
+
+enum class StoriesProductAction {
+    ATC, Buy;
 }

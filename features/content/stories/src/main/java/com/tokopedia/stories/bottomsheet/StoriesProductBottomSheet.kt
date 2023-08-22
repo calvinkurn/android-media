@@ -18,6 +18,7 @@ import com.tokopedia.stories.databinding.FragmentStoriesProductBinding
 import com.tokopedia.stories.utils.withCache
 import com.tokopedia.stories.view.model.BottomSheetType
 import com.tokopedia.stories.view.viewmodel.StoriesViewModel
+import com.tokopedia.stories.view.viewmodel.action.StoriesProductAction
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.coroutines.flow.collectLatest
@@ -88,14 +89,14 @@ class StoriesProductBottomSheet @Inject constructor(
         product: ContentTaggedProductUiModel,
         itemPosition: Int
     ) {
-        showToast("Product ATC")
+        viewModel.submitAction(StoriesUiAction.ProductAction(StoriesProductAction.ATC, product))
     }
 
     override fun onBuyProductButtonClicked(
         product: ContentTaggedProductUiModel,
         itemPosition: Int
     ) {
-        showToast("Product Buy")
+        viewModel.submitAction(StoriesUiAction.ProductAction(StoriesProductAction.Buy, product))
     }
 
     fun show(fg: FragmentManager) {

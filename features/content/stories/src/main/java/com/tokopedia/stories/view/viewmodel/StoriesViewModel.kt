@@ -14,6 +14,7 @@ import com.tokopedia.stories.view.model.StoriesUiState
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction
 import com.tokopedia.stories.view.viewmodel.event.StoriesUiEvent
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,6 +25,7 @@ import javax.inject.Inject
 
 class StoriesViewModel @Inject constructor(
     private val repository: StoriesRepository,
+    private val userSession: UserSessionInterface,
 ) : ViewModel() {
 
     private var shopId: String = ""
@@ -216,6 +218,31 @@ class StoriesViewModel @Inject constructor(
             val response = repository.getStoriesProducts("", "")
             products.value = response
         }, onError = {})
+    }
+
+    private fun addToCart(product: ContentTaggedProductUiModel) {
+        requiredLogin {
+            viewModelScope.launchCatchError(block = {
+                val response = repository.addToCart(
+                    productId = product.id,
+                    price = product.finalPrice,
+                    shopId = "",
+                    productName = product.title
+                )
+            }, onError = {})
+        }
+    }
+
+    private fun requiredLogin(fn: (isLoggedIn: Boolean) -> Unit) {
+        if (userSession.isLoggedIn) {
+            fn(true)
+        } else {
+            viewModelScope.launch {
+                _uiEvent.emit(
+                    StoriesUiEvent.Login { fn(false) }
+                )
+            }
+        }
     }
 
     companion object {

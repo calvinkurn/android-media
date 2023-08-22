@@ -9,4 +9,6 @@ interface StoriesRepository {
 
     suspend fun getStoriesProducts(shopId: String, cursor: String) : List<ContentTaggedProductUiModel>
 
+    suspend fun addToCart(productId: String, productName: String, shopId: String, price: Double) : Boolean
+
 }

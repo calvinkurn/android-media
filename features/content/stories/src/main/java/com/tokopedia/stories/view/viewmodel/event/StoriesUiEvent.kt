@@ -5,4 +5,6 @@ sealed interface StoriesUiEvent {
     object OpenKebab : StoriesUiEvent
     object ShowDeleteDialog : StoriesUiEvent
     object OpenProduct : StoriesUiEvent
+
+    data class Login(val onLoggedIn: () -> Unit) : StoriesUiEvent
 }

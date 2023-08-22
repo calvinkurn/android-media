@@ -1,6 +1,8 @@
 package com.tokopedia.stories.data
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.atc_common.AtcFromExternalSource
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.stories.uimodel.StoryAuthor
 import com.tokopedia.stories.usecase.ProductMapper
@@ -9,13 +11,16 @@ import com.tokopedia.stories.view.model.StoriesDetailUiModel
 import com.tokopedia.stories.view.model.StoriesDetailUiModel.StoriesDetailUiEvent
 import com.tokopedia.stories.view.model.StoriesGroupUiModel
 import com.tokopedia.stories.view.model.StoriesUiModel
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class StoriesRepositoryImpl @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val storiesProductUseCase: StoriesProductUseCase,
+    private val addToCartUseCase: AddToCartUseCase,
     private val productMapper: ProductMapper,
+    private val userSession: UserSessionInterface,
 ) : StoriesRepository {
 
     override fun getStoriesData(): StoriesUiModel {
@@ -562,6 +567,29 @@ class StoriesRepositoryImpl @Inject constructor(
                 )
             )
             productMapper.mapProducts(response.data, "")
+        }
+    }
+
+    override suspend fun addToCart(
+        productId: String,
+        productName: String,
+        shopId: String,
+        price: Double
+    ): Boolean {
+        return withContext(dispatchers.io) {
+            val response = addToCartUseCase.apply {
+                setParams(
+                    AddToCartUseCase.getMinimumParams(
+                        productId = productId,
+                        shopId = shopId,
+                        atcExternalSource = AtcFromExternalSource.ATC_FROM_STORIES,
+                        productName = productName,
+                        price = price.toString(),
+                        userId = userSession.userId,
+                    )
+                )
+            }.executeOnBackground()
+            !response.isStatusError()
         }
     }
 }
