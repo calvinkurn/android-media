@@ -8,9 +8,9 @@ import com.google.gson.annotations.SerializedName
 
 data class BmgmParamModel(
     @SerializedName("offer_ids")
-    val offerIds: List<Long>,
+    val offerIds: List<Long> = emptyList(),
     @SerializedName("offer_json_data")
-    val offerJsonData: String,
+    val offerJsonData: String = "{}",
     @SerializedName("warehouse_ids")
-    val warehouseIds: List<String>
+    val warehouseIds: List<String> = emptyList()
 )

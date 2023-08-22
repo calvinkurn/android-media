@@ -55,6 +55,7 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener, Default
             ViewTreeViewModelStoreOwner.get(this)!!, viewModelFactory
         )[BmgmMiniCartViewModel::class.java]
     }
+    private var param = BmgmParamModel()
 
     init {
         binding = FragmentBmgmMiniCartWidgetBinding.inflate(
@@ -92,7 +93,7 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener, Default
     }
 
     fun fetchData(offerIds: List<Long>, offerJsonData: String, warehouseIds: List<String>) {
-        val param = BmgmParamModel(
+        this.param = BmgmParamModel(
             offerIds = offerIds,
             offerJsonData = offerJsonData,
             warehouseIds = warehouseIds
@@ -110,18 +111,23 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener, Default
                 when (it) {
                     is BmgmState.Loading -> showMiniCartLoadingState()
                     is BmgmState.Success -> setOnSuccessGetCartData(it.data)
-                    is BmgmState.Error -> showErrorState(it.t)
+                    is BmgmState.Error -> showErrorState()
                 }
             }
         }
     }
 
     private fun showMiniCartLoadingState() {
-
+        dismissErrorState()
+        binding?.run {
+            loadingStateGroup.visible()
+            rvBmgmMiniCart.gone()
+            tvBmgmCartDiscount.gone()
+        }
     }
 
     private fun dismissMiniCartLoadingState() {
-
+        binding?.loadingStateGroup?.gone()
     }
 
     private fun observeSetCarChecklistStatus() {
@@ -135,8 +141,21 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener, Default
         }
     }
 
-    private fun showErrorState(throwable: Throwable) {
+    private fun showErrorState() {
         dismissMiniCartLoadingState()
+        binding?.run {
+            errorStateGroup.visible()
+            rvBmgmMiniCart.gone()
+            tvBmgmCartDiscount.gone()
+            containerSubTotal.gone()
+            icBmgmReload.setOnClickListener {
+                viewModel.getMiniCartData(param)
+            }
+        }
+    }
+
+    private fun dismissErrorState() {
+        binding?.errorStateGroup?.gone()
     }
 
     private fun openCartPage() {
@@ -158,12 +177,16 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener, Default
 
     private fun setOnSuccessGetCartData(data: BmgmMiniCartDataUiModel) {
         dismissMiniCartLoadingState()
+        dismissErrorState()
         setupTiersApplied(data)
         setupFooterView(data)
     }
 
     private fun setupTiersApplied(data: BmgmMiniCartDataUiModel) {
         binding?.run {
+            rvBmgmMiniCart.visible()
+            tvBmgmCartDiscount.visible()
+
             if (data.tiersApplied.isNotEmpty()) {
                 tvBmgmCartDiscount.text = data.offerMessage.parseAsHtml()
                 tvBmgmCartDiscount.visible()
@@ -179,6 +202,7 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener, Default
     }
 
     private fun setupFooterView(data: BmgmMiniCartDataUiModel) {
+        binding?.containerSubTotal?.visible()
         footerBinding?.run {
             if (data.tiersApplied.isEmpty()) {
                 tvBmgmFinalPrice.text =
