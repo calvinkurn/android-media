@@ -26,6 +26,7 @@ data class AddonsUiModel(
         val warehouseId: String,
         val isFulfillment: Boolean,
         val selectedAddonsIds: List<String>,
+        val deselectedAddonsIds: List<String>,
         val categoryId: String,
         val shopId: String,
         val quantity: Long,

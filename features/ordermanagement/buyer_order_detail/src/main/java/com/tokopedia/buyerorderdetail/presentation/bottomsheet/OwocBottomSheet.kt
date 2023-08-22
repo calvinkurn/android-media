@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderDetailTracker
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
@@ -14,6 +15,7 @@ import com.tokopedia.buyerorderdetail.databinding.OwocBottomsheetBinding
 import com.tokopedia.buyerorderdetail.di.DaggerBuyerOrderDetailComponent
 import com.tokopedia.buyerorderdetail.presentation.adapter.OwocSectionGroupAdapter
 import com.tokopedia.buyerorderdetail.presentation.adapter.listener.OwocProductListHeaderListener
+import com.tokopedia.buyerorderdetail.presentation.adapter.listener.OwocRecyclerviewPoolListener
 import com.tokopedia.buyerorderdetail.presentation.adapter.listener.OwocSectionGroupListener
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.OwocSectionGroupTypeFactoryImpl
 import com.tokopedia.buyerorderdetail.presentation.model.OwocErrorUiModel
@@ -29,6 +31,7 @@ import javax.inject.Inject
 class OwocBottomSheet :
     BottomSheetUnify(),
     OwocSectionGroupListener,
+    OwocRecyclerviewPoolListener,
     OwocProductListHeaderListener {
 
     @Inject
@@ -53,7 +56,7 @@ class OwocBottomSheet :
     }
 
     private val typeFactory: OwocSectionGroupTypeFactoryImpl by lazy(LazyThreadSafetyMode.NONE) {
-        OwocSectionGroupTypeFactoryImpl(navigator, this, this)
+        OwocSectionGroupTypeFactoryImpl(navigator, this, this, this)
     }
 
     private val owocSectionGroupAdapter: OwocSectionGroupAdapter by lazy(LazyThreadSafetyMode.NONE) {
@@ -93,6 +96,9 @@ class OwocBottomSheet :
         navigator?.goToBomDetailPage(orderId)
         dismiss()
     }
+
+    override val parentPool: RecyclerView.RecycledViewPool
+        get() = binding?.rvOwocList?.recycledViewPool ?: RecyclerView.RecycledViewPool()
 
     fun show(fm: FragmentManager) {
         if (!isVisible) {

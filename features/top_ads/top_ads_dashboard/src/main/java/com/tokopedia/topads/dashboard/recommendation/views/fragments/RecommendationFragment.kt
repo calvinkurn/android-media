@@ -360,6 +360,10 @@ class RecommendationFragment : BaseDaggerFragment() {
         collapseStateCallBack?.setAppBarStateHeadline(state)
     }
 
+    fun selectTab(tabIndex: Int) {
+        saranAdsTypeTab?.getUnifyTabLayout()?.getTabAt(tabIndex)?.select()
+    }
+    
     companion object {
         fun createInstance(): RecommendationFragment {
             return RecommendationFragment()

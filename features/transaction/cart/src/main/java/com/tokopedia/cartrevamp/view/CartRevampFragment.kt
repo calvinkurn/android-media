@@ -1,5 +1,6 @@
 package com.tokopedia.cartrevamp.view
 
+import android.animation.Animator
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
@@ -1152,7 +1153,6 @@ class CartRevampFragment :
         bottomSheet.setListener(listener = { newNote ->
             data.notes = newNote
             playNoteAnimation(newNote, noteIcon, noteLottieIcon, position)
-            viewModel.cartDataList.notifyObserver()
         })
         if (bottomSheet.isAdded || childFragmentManager.isStateSaved) return
         bottomSheet.show(childFragmentManager, CartNoteBottomSheet.TAG)
@@ -3001,7 +3001,30 @@ class CartRevampFragment :
             noteLottieIcon.show()
             if (!noteLottieIcon.isAnimating) {
                 noteLottieIcon.playAnimation()
+                noteLottieIcon.addAnimatorListener(object : Animator.AnimatorListener {
+                    override fun onAnimationStart(p0: Animator) {
+                        // no-op
+                    }
+
+                    override fun onAnimationEnd(p0: Animator) {
+                        noteLottieIcon.gone()
+                        noteIcon.visible()
+                        onNeedToUpdateViewItem(position)
+                    }
+
+                    override fun onAnimationCancel(p0: Animator) {
+                        noteLottieIcon.gone()
+                        noteIcon.visible()
+                        onNeedToUpdateViewItem(position)
+                    }
+
+                    override fun onAnimationRepeat(p0: Animator) {
+                        // no-op
+                    }
+                })
             }
+        } else {
+            onNeedToUpdateViewItem(position)
         }
     }
 

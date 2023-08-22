@@ -1428,6 +1428,10 @@ class CartListPresenter @Inject constructor(
             setDimension45(cartItemHolderData.cartId)
             setDimension54(cartItemHolderData.isFulfillment)
             setDimension53(cartItemHolderData.productOriginalPrice > 0)
+            setShopId(cartItemHolderData.shopHolderData.shopId)
+            setShopName(cartItemHolderData.shopHolderData.shopName)
+            setShopType(cartItemHolderData.shopHolderData.shopTypeInfo.titleFmt)
+            setDimension82(cartItemHolderData.categoryId)
             setProductName(cartItemHolderData.productName)
             setProductID(cartItemHolderData.productId)
             setPrice(cartItemHolderData.productPrice.toString())
@@ -1439,9 +1443,6 @@ class CartListPresenter @Inject constructor(
             )
             setVariant(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
             setQty(cartItemHolderData.quantity)
-            setShopId(cartItemHolderData.shopHolderData.shopId)
-            setShopType(cartItemHolderData.shopHolderData.shopTypeInfo.titleFmt)
-            setShopName(cartItemHolderData.shopHolderData.shopName)
             setCategoryId(cartItemHolderData.categoryId)
             setWarehouseId(cartItemHolderData.warehouseId)
             setProductWeight(cartItemHolderData.productWeight.toString())
@@ -1463,6 +1464,7 @@ class CartListPresenter @Inject constructor(
             } else {
                 setBoAffordability("")
             }
+            setDimension136(cartItemHolderData.cartString)
         }
         return enhancedECommerceProductCartMapData
     }
@@ -2156,7 +2158,8 @@ class CartListPresenter @Inject constructor(
                         Product(
                             it.productId.toLong(),
                             it.isFreeShipping,
-                            it.isFreeShippingExtra
+                            it.isFreeShippingExtra,
+                            it.shopHolderData.shopId.toLongOrZero()
                         )
                     }
                 }

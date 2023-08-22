@@ -96,9 +96,6 @@ open class GetPdpLayoutUseCase @Inject constructor(
                     countTalk
                     rating
                   }
-                  postATCLayout {
-                    layoutID
-                  }
                 }
                 components {
                   name
@@ -313,9 +310,6 @@ open class GetPdpLayoutUseCase @Inject constructor(
                       sizeChart
                       maxFinalPrice
                       landingSubText
-                      postATCLayout {
-                        layoutID
-                      }
                       variants {
                         productVariantID
                         variantID

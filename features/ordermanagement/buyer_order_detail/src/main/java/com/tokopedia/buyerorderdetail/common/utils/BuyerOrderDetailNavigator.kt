@@ -21,7 +21,6 @@ import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailUiState
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.tokochat_common.view.customview.bottomsheet.MaskingPhoneNumberBottomSheet
-import java.net.URLDecoder
 
 class BuyerOrderDetailNavigator(
     private val activity: Activity,
@@ -77,17 +76,8 @@ class BuyerOrderDetailNavigator(
         applyTransition()
     }
 
-    fun goToTrackShipmentPage(orderId: String, trackingUrl: String) {
-        val decodedUrl = if (trackingUrl.startsWith(PREFIX_HTTPS)) {
-            trackingUrl
-        } else {
-            URLDecoder.decode(trackingUrl, BuyerOrderDetailMiscConstant.ENCODING_UTF_8)
-        }
-        val appLink = Uri.parse(ApplinkConst.ORDER_TRACKING).buildUpon()
-            .appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_URL_LIVE_TRACKING, decodedUrl)
-            .build()
-            .toString()
-        val intent = RouteManager.getIntent(activity, appLink, orderId)
+    fun goToTrackShipmentPage(appLink: String) {
+        val intent = RouteManager.getIntent(activity, appLink)
         fragment.startActivityForResult(intent, BuyerOrderDetailIntentCode.REQUEST_CODE_IGNORED)
         applyTransition()
     }

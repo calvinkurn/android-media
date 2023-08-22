@@ -11,13 +11,11 @@ import com.tokopedia.logisticcart.datamock.DummyProvider.getRatesResponseWithPro
 import com.tokopedia.logisticcart.datamock.DummyProvider.getShippingDataWithPromoAndPreOrderModel
 import com.tokopedia.logisticcart.datamock.DummyProvider.getShippingDataWithPromoEtaError
 import com.tokopedia.logisticcart.datamock.DummyProvider.getShippingDataWithPromoEtaErrorAndTextEta
-import com.tokopedia.logisticcart.datamock.DummyProvider.getShippingDataWithServiceError
 import com.tokopedia.logisticcart.datamock.DummyProvider.getShippingDataWithServiceUiRatesHidden
 import com.tokopedia.logisticcart.datamock.DummyProvider.getShippingDataWithoutEligibleCourierPromo
 import com.tokopedia.logisticcart.shipping.model.ChooseShippingDurationState
 import com.tokopedia.logisticcart.shipping.model.DividerModel
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
-import com.tokopedia.logisticcart.shipping.model.NotifierModel
 import com.tokopedia.logisticcart.shipping.model.Product
 import com.tokopedia.logisticcart.shipping.model.ProductShipmentDetailModel
 import com.tokopedia.logisticcart.shipping.model.RatesParam
@@ -447,51 +445,6 @@ class ShippingDurationViewModelTest {
         // Then
         val firstDuration = actual.find { it is ShippingDurationUiModel } as ShippingDurationUiModel
         assertFalse(firstDuration.isShowShowCase)
-    }
-
-    @Test
-    fun `When in checkout and duration has eta error code Then show notifier model`() {
-        // Given
-        val shippingRecommendationData = getShippingDataWithServiceError()
-
-        setRatesResponse(shippingRecommendationData)
-
-        // When
-        viewModel.loadDuration(0, 0, ratesParam, false, false)
-        val actual = (viewModel.shipmentData.value as ShippingDurationListState.ShowList).list
-
-        // Then
-        assert(actual.first() is NotifierModel)
-    }
-
-    @Test
-    fun `When in checkout and duration is hidden and has eta error code Then dont show notifier model`() {
-        // Given
-        val shippingRecommendationData = getShippingDataWithServiceError()
-        val hiddenServiceWithEtaError = shippingRecommendationData.shippingDurationUiModels.first()
-        hiddenServiceWithEtaError.serviceData.isUiRatesHidden = true
-        setRatesResponse(shippingRecommendationData)
-
-        // When
-        viewModel.loadDuration(0, 0, ratesParam, false, false)
-        val actual = (viewModel.shipmentData.value as ShippingDurationListState.ShowList).list
-
-        // Then
-        assertFalse(actual.first() is NotifierModel)
-    }
-
-    @Test
-    fun `When in occ and duration has eta error code Then show notifier model`() {
-        // Given
-        val shippingRecommendationData = getShippingDataWithServiceError()
-        setRatesResponse(shippingRecommendationData)
-
-        // When
-        viewModel.loadDuration(0, 0, ratesParam, false, true)
-        val actual = (viewModel.shipmentData.value as ShippingDurationListState.ShowList).list
-
-        // Then
-        assertFalse(actual.first() is NotifierModel)
     }
 
     /*
