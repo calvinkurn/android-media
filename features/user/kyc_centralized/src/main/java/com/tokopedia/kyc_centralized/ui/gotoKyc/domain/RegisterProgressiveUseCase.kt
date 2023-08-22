@@ -92,7 +92,7 @@ class RegisterProgressiveUseCase @Inject constructor(
     companion object {
         private const val KEY_EXHAUSTED = "KYC_CHALLENGE_CREATION_QUOTA_EXCEEDED"
         private const val ERROR_CODE_DATA_ALREADY_EXIST = "30006"
-        private val LIST_COMMON_ERROR_CODE = listOf("1508", "1536", "1533", "1513", "1541", "1539", "30009", "30004")
+        private val LIST_COMMON_ERROR_CODE = listOf("1508", "1536", "1533", "1513", "1541", "1539", "30009", "30004", "30003", "900", "1546")
     }
 }
 
