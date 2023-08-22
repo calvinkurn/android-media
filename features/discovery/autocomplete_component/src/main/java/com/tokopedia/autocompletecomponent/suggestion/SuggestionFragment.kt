@@ -29,6 +29,7 @@ import com.tokopedia.autocompletecomponent.util.SCREEN_UNIVERSEARCH
 import com.tokopedia.autocompletecomponent.util.getModifiedApplink
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.discovery.common.reimagine.Search1InstAuto
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
@@ -78,11 +79,14 @@ class SuggestionFragment :
     override val className: String
         get() = activity?.javaClass?.name ?: ""
 
+    private fun getReimagineVariant(): Search1InstAuto = presenter?.getReimagineVariant() ?: Search1InstAuto.CONTROL
+
     private var performanceMonitoring: PerformanceMonitoring? = null
     private val suggestionTypeFactory = SuggestionAdapterTypeFactory(
         suggestionListener = this,
         suggestionTopShopListener = this,
         suggestionChipListener = this,
+        getReimagineVariant()
     )
     private val suggestionAdapter = SuggestionAdapter(suggestionTypeFactory)
 

@@ -28,6 +28,7 @@ import com.tokopedia.autocompletecomponent.util.getProfileIdFromApplink
 import com.tokopedia.autocompletecomponent.util.getShopIdFromApplink
 import com.tokopedia.autocompletecomponent.util.isMps
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.discovery.common.reimagine.ReimagineRollence
 import com.tokopedia.discovery.common.utils.Dimension90Utils
 import com.tokopedia.discovery.common.utils.UrlParamUtils
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
@@ -56,6 +57,7 @@ class SuggestionPresenter @Inject constructor(
     private val userSession: UserSessionInterface,
     private val coachMarkLocalCache: CoachMarkLocalCache,
     private val schedulersProvider: SchedulersProvider,
+    private val reimagine: ReimagineRollence
 ) : BaseDaggerPresenter<SuggestionContract.View>(), SuggestionContract.Presenter {
 
     private val listVisitable = mutableListOf<Visitable<*>>()
@@ -72,6 +74,8 @@ class SuggestionPresenter @Inject constructor(
     init {
         initSuggestionCoachMarkObservation()
     }
+
+    override fun getReimagineVariant() = reimagine.search1InstAuto()
 
     private fun initSuggestionCoachMarkObservation() {
         suggestionSubscription = resultSubject.asObservable()

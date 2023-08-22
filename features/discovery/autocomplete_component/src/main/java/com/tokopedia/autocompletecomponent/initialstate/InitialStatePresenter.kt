@@ -29,6 +29,7 @@ import com.tokopedia.autocompletecomponent.initialstate.searchbareducation.conve
 import com.tokopedia.autocompletecomponent.util.getShopIdFromApplink
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.NAVSOURCE
+import com.tokopedia.discovery.common.reimagine.ReimagineRollence
 import com.tokopedia.discovery.common.utils.Dimension90Utils
 import com.tokopedia.discovery.common.utils.UrlParamUtils
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
@@ -47,6 +48,7 @@ class InitialStatePresenter @Inject constructor(
     @Named(REFRESH_INITIAL_STATE_USE_CASE)
     private val refreshInitialStateUseCase: UseCase<List<InitialStateData>>,
     private val userSession: UserSessionInterface,
+    private val reimagine: ReimagineRollence
 ) : BaseDaggerPresenter<InitialStateContract.View>(), InitialStateContract.Presenter {
 
     private var listVisitable = mutableListOf<Visitable<*>>()
@@ -58,6 +60,8 @@ class InitialStatePresenter @Inject constructor(
 
     override var seeMoreButtonPosition = -1
         private set
+
+    override fun getReimagineVariant() = reimagine.search1InstAuto()
 
     override fun getQueryKey(): String {
         return searchParameter[SearchApiConst.Q] ?: ""

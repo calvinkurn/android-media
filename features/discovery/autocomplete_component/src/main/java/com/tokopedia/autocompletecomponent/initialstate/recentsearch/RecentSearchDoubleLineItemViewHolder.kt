@@ -7,6 +7,9 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.autocompletecomponent.R
 import com.tokopedia.autocompletecomponent.databinding.LayoutAutocompleteDoubleLineItemBinding
 import com.tokopedia.autocompletecomponent.initialstate.BaseItemInitialStateSearch
+import com.tokopedia.autocompletecomponent.initialstate.renderstrategy.InitialStateLayoutStrategyFactory
+import com.tokopedia.autocompletecomponent.initialstate.renderstrategy.InitialStateRenderStrategy
+import com.tokopedia.discovery.common.reimagine.Search1InstAuto
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.utils.view.binding.viewBinding
@@ -14,6 +17,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 class RecentSearchDoubleLineItemViewHolder(
     itemView: View,
     private val listener: RecentSearchListener,
+    private val reimagineVariant: Search1InstAuto
 ) : RecyclerView.ViewHolder(itemView) {
 
     companion object {
@@ -21,6 +25,8 @@ class RecentSearchDoubleLineItemViewHolder(
     }
 
     private var binding: LayoutAutocompleteDoubleLineItemBinding? by viewBinding()
+
+    private val layoutStrategy: InitialStateRenderStrategy = InitialStateLayoutStrategyFactory.create(reimagineVariant)
 
     fun bind(item: BaseItemInitialStateSearch) {
         bindIconImage(item)
@@ -40,9 +46,12 @@ class RecentSearchDoubleLineItemViewHolder(
     }
 
     private fun bindIconTitle(item: BaseItemInitialStateSearch) {
-        binding?.iconTitle?.shouldShowOrHideWithAction(item.iconTitle.isNotEmpty()) {
-            ImageHandler.loadImageWithoutPlaceholderAndError(it, item.iconTitle)
-        }
+        val isReimagineVariantControl = reimagineVariant == Search1InstAuto.CONTROL
+        val iconTitle = if (isReimagineVariantControl)
+            binding?.iconTitle
+        else
+            binding?.iconShopBadge
+        layoutStrategy.bindShopBadge(iconTitle ?: return, item)
     }
 
     private fun bindIconSubtitle(item: BaseItemInitialStateSearch) {

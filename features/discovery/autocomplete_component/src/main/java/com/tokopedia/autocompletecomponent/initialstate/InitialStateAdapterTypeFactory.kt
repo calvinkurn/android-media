@@ -38,6 +38,7 @@ import com.tokopedia.autocompletecomponent.initialstate.recentview.RecentViewTit
 import com.tokopedia.autocompletecomponent.initialstate.searchbareducation.SearchBarEducationDataView
 import com.tokopedia.autocompletecomponent.initialstate.searchbareducation.SearchBarEducationListener
 import com.tokopedia.autocompletecomponent.initialstate.searchbareducation.SearchBarEducationViewHolder
+import com.tokopedia.discovery.common.reimagine.Search1InstAuto
 
 class InitialStateAdapterTypeFactory(
     private val recentViewListener: RecentViewListener,
@@ -49,6 +50,7 @@ class InitialStateAdapterTypeFactory(
     private val chipListener: InitialStateChipListener,
     private val searchBarEducationListener: SearchBarEducationListener,
     private val mpsChipListener: MpsInitialStateListener,
+    private val reimagineVariant: Search1InstAuto
 ) : BaseAdapterTypeFactory(), InitialStateTypeFactory {
     override fun type(popularSearchTitleDataView: PopularSearchTitleDataView): Int {
         return PopularSearchTitleViewHolder.LAYOUT
@@ -117,9 +119,9 @@ class InitialStateAdapterTypeFactory(
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             PopularSearchViewHolder.LAYOUT ->
-                PopularSearchViewHolder(parent, popularSearchListener)
+                PopularSearchViewHolder(parent, popularSearchListener, reimagineVariant)
             RecentSearchViewHolder.LAYOUT ->
-                RecentSearchViewHolder(parent, recentSearchListener)
+                RecentSearchViewHolder(parent, recentSearchListener, reimagineVariant)
             RecentViewViewHolder.LAYOUT ->
                 RecentViewViewHolder(parent, recentViewListener)
             PopularSearchTitleViewHolder.LAYOUT ->
@@ -133,7 +135,7 @@ class InitialStateAdapterTypeFactory(
             DynamicInitialStateTitleViewHolder.LAYOUT ->
                 DynamicInitialStateTitleViewHolder(parent, dynamicInitialStateListener)
             DynamicInitialStateViewHolder.LAYOUT ->
-                DynamicInitialStateViewHolder(parent, dynamicInitialStateListener)
+                DynamicInitialStateViewHolder(parent, dynamicInitialStateListener, reimagineVariant)
             CuratedCampaignViewHolder.LAYOUT ->
                 CuratedCampaignViewHolder(parent, curatedCampaignListener)
             InitialStateProductListViewHolder.LAYOUT ->

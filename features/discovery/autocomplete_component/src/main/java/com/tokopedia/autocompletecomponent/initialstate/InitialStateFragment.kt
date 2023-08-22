@@ -37,6 +37,7 @@ import com.tokopedia.autocompletecomponent.util.HasViewModelFactory
 import com.tokopedia.autocompletecomponent.util.OnScrollListenerAutocomplete
 import com.tokopedia.autocompletecomponent.util.SCREEN_UNIVERSEARCH
 import com.tokopedia.autocompletecomponent.util.getModifiedApplink
+import com.tokopedia.discovery.common.reimagine.Search1InstAuto
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
@@ -86,6 +87,9 @@ class InitialStateFragment:
     }
 
     private var performanceMonitoring: PerformanceMonitoring? = null
+
+    private fun getReimagineVariant(): Search1InstAuto = presenter?.getReimagineVariant() ?: Search1InstAuto.CONTROL
+
     private val initialStateAdapterTypeFactory = InitialStateAdapterTypeFactory(
         recentViewListener = this,
         recentSearchListener = this,
@@ -96,6 +100,7 @@ class InitialStateFragment:
         chipListener = this,
         searchBarEducationListener = this,
         mpsChipListener = this,
+        getReimagineVariant()
     )
     private val initialStateAdapter = InitialStateAdapter(initialStateAdapterTypeFactory)
 

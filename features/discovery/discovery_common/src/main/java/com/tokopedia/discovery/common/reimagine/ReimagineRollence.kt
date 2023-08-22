@@ -1,6 +1,5 @@
 package com.tokopedia.discovery.common.reimagine
 
-import android.content.Context
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey.SEARCH_1_INST_AUTO
@@ -8,7 +7,7 @@ import com.tokopedia.remoteconfig.RollenceKey.SEARCH_2_COMPONENT
 import com.tokopedia.remoteconfig.RollenceKey.SEARCH_3_PRODUCT_CARD
 import javax.inject.Inject
 
-class ReimagineRollence @Inject constructor(private val context: Context) {
+class ReimagineRollence @Inject constructor() {
 
     private fun getABTestPlatform(): RemoteConfig? =
         try { RemoteConfigInstance.getInstance().abTestPlatform } catch (_: Exception) { null }

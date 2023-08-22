@@ -12,13 +12,17 @@ import com.tokopedia.autocompletecomponent.R
 import com.tokopedia.autocompletecomponent.databinding.LayoutDynamicInitialStateBinding
 import com.tokopedia.autocompletecomponent.databinding.LayoutDynamicItemInitialStateBinding
 import com.tokopedia.autocompletecomponent.initialstate.BaseItemInitialStateSearch
+import com.tokopedia.autocompletecomponent.initialstate.renderstrategy.InitialStateLayoutStrategyFactory
+import com.tokopedia.autocompletecomponent.initialstate.renderstrategy.InitialStateRenderStrategy
 import com.tokopedia.autocompletecomponent.util.loadImageRounded
+import com.tokopedia.discovery.common.reimagine.Search1InstAuto
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.utils.view.binding.viewBinding
 
 class DynamicInitialStateViewHolder(
     itemView: View,
     private val listener: DynamicInitialStateListener,
+    reimagineVariant: Search1InstAuto
 ) : AbstractViewHolder<DynamicInitialStateSearchDataView>(itemView) {
 
     companion object {
@@ -28,6 +32,7 @@ class DynamicInitialStateViewHolder(
 
     private var binding: LayoutDynamicInitialStateBinding? by viewBinding()
 
+    private val layoutStrategy: InitialStateRenderStrategy = InitialStateLayoutStrategyFactory.create(reimagineVariant)
     override fun bind(element: DynamicInitialStateSearchDataView) {
         bindContent(element)
     }
@@ -104,10 +109,7 @@ class DynamicInitialStateViewHolder(
 
             private fun bindTitle(item: BaseItemInitialStateSearch) {
                 val title = binding?.initialStateDynamicItemTitle ?: return
-
-                title.shouldShowWithAction(item.title.isNotEmpty()) {
-                    title.text = MethodChecker.fromHtml(item.title).toString()
-                }
+                layoutStrategy.bindTitle(title, item)
             }
 
             private fun bindSubtitle(item: BaseItemInitialStateSearch) {
