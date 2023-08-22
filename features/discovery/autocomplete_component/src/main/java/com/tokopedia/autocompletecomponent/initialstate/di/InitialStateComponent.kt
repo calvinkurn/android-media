@@ -17,6 +17,7 @@ import dagger.Component
     InitialStateTrackingModule::class,
     InitialStatePresenterModule::class,
     InitialStateViewListenerModule::class,
+    InitialStateContextModule::class,
 ], dependencies = [BaseAppComponent::class])
 interface InitialStateComponent {
 

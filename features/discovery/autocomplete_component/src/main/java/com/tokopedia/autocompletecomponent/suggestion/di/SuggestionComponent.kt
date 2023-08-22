@@ -14,7 +14,8 @@ import dagger.Component
     SuggestionUrlTrackerUseCaseModule::class,
     SuggestionPresenterModule::class,
     SuggestionTrackingModule::class,
-    SuggestionViewListenerModule::class
+    SuggestionViewListenerModule::class,
+    SuggestionContextModule::class,
 ], dependencies = [BaseAppComponent::class])
 interface SuggestionComponent {
 

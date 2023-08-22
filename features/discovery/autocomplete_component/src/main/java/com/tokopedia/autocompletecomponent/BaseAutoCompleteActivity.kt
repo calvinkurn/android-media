@@ -33,6 +33,7 @@ import com.tokopedia.autocompletecomponent.initialstate.InitialStateFragment.Com
 import com.tokopedia.autocompletecomponent.initialstate.InitialStateFragment.InitialStateViewUpdateListener
 import com.tokopedia.autocompletecomponent.initialstate.di.DaggerInitialStateComponent
 import com.tokopedia.autocompletecomponent.initialstate.di.InitialStateComponent
+import com.tokopedia.autocompletecomponent.initialstate.di.InitialStateContextModule
 import com.tokopedia.autocompletecomponent.initialstate.di.InitialStateViewListenerModule
 import com.tokopedia.autocompletecomponent.searchbar.SearchBarKeyword
 import com.tokopedia.autocompletecomponent.searchbar.SearchBarKeywordAdapter
@@ -47,6 +48,7 @@ import com.tokopedia.autocompletecomponent.suggestion.SuggestionFragment.Compani
 import com.tokopedia.autocompletecomponent.suggestion.SuggestionFragment.SuggestionViewUpdateListener
 import com.tokopedia.autocompletecomponent.suggestion.di.DaggerSuggestionComponent
 import com.tokopedia.autocompletecomponent.suggestion.di.SuggestionComponent
+import com.tokopedia.autocompletecomponent.suggestion.di.SuggestionContextModule
 import com.tokopedia.autocompletecomponent.suggestion.di.SuggestionViewListenerModule
 import com.tokopedia.autocompletecomponent.util.HasViewModelFactory
 import com.tokopedia.autocompletecomponent.util.UrlParamHelper
@@ -340,6 +342,7 @@ open class BaseAutoCompleteActivity: BaseActivity(),
 
     protected open fun createInitialStateComponent(): InitialStateComponent =
         DaggerInitialStateComponent.builder()
+            .initialStateContextModule(InitialStateContextModule(this))
             .baseAppComponent(getBaseAppComponent())
             .initialStateViewListenerModule(getInitialStateViewListenerModule())
             .build()
@@ -349,6 +352,7 @@ open class BaseAutoCompleteActivity: BaseActivity(),
 
     protected open fun createSuggestionComponent(): SuggestionComponent =
         DaggerSuggestionComponent.builder()
+            .suggestionContextModule(SuggestionContextModule(this))
             .baseAppComponent(getBaseAppComponent())
             .suggestionViewListenerModule(getSuggestionViewListenerModule())
             .build()
