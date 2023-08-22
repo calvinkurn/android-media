@@ -16,23 +16,45 @@ import javax.inject.Inject
 class UpdateStoryUseCase @Inject constructor(
     private val repo: GraphqlRepository,
     dispatchers: CoroutineDispatchers
-) : CoroutineUseCase<Param, UpdateStoryResponse>(dispatchers.io) {
+) : CoroutineUseCase<UpdateStoryUseCase.ReqParam, UpdateStoryResponse>(dispatchers.io) {
 
     override fun graphqlQuery(): String = QUERY
 
-    override suspend fun execute(params: Param): UpdateStoryResponse {
+    override suspend fun execute(params: ReqParam): UpdateStoryResponse {
         return repo.request(graphqlQuery(), params.convertToMap())
     }
 
+    data class ReqParam(
+        val storyId: String,
+        val storyType: StoryType,
+        val storyAuthor: StoryAuthor,
+        val action: StoryActionType,
+        val mediaId: String,
+        val publishedAt: String,
+    ) {
+        fun convertToMap(): Map<String, Any> =
+            mapOf(
+                REQ_PARAM to mapOf(
+                    STORY_ID_PARAM to storyId,
+                    STORY_TYPE_PARAM to storyType.value,
+                    AUTHOR_ID_PARAM to storyAuthor.id,
+                    AUTHOR_TYPE_PARAM to storyAuthor.type.value,
+                    STATUS_PARAM to action.value,
+                    MEDIA_ID_PARAM to mediaId,
+                    PUBLISHED_AT_PARAM to publishedAt,
+                )
+            )
+    }
+
     companion object {
-        const val REQ_PARAM = "req"
-        const val STORY_ID_PARAM = "storyID"
-        const val STORY_TYPE_PARAM = "storyType"
-        const val AUTHOR_ID_PARAM = "authorID"
-        const val AUTHOR_TYPE_PARAM = "authorType"
-        const val STATUS_PARAM = "status"
-        const val MEDIA_ID_PARAM = "activeMediaID"
-        const val PUBLISHED_AT_PARAM = "publishedAt"
+        private const val REQ_PARAM = "req"
+        private const val STORY_ID_PARAM = "storyID"
+        private const val STORY_TYPE_PARAM = "storyType"
+        private const val AUTHOR_ID_PARAM = "authorID"
+        private const val AUTHOR_TYPE_PARAM = "authorType"
+        private const val STATUS_PARAM = "status"
+        private const val MEDIA_ID_PARAM = "activeMediaID"
+        private const val PUBLISHED_AT_PARAM = "publishedAt"
 
         //TODO() wait finalized contract
         private const val QUERY = """
@@ -53,26 +75,4 @@ class UpdateStoryUseCase @Inject constructor(
             }
         """
     }
-}
-
-data class Param(
-    val storyId: String,
-    val storyType: StoryType,
-    val storyAuthor: StoryAuthor,
-    val action: StoryActionType,
-    val mediaId: String,
-    val publishedAt: String,
-) {
-    fun convertToMap(): Map<String, Any> =
-        mapOf(
-            UpdateStoryUseCase.REQ_PARAM to mapOf(
-                UpdateStoryUseCase.STORY_ID_PARAM to storyId,
-                UpdateStoryUseCase.STORY_TYPE_PARAM to storyType.value,
-                UpdateStoryUseCase.AUTHOR_ID_PARAM to storyAuthor.id,
-                UpdateStoryUseCase.AUTHOR_TYPE_PARAM to storyAuthor.type.value,
-                UpdateStoryUseCase.STATUS_PARAM to action.value,
-                UpdateStoryUseCase.MEDIA_ID_PARAM to mediaId,
-                UpdateStoryUseCase.PUBLISHED_AT_PARAM to publishedAt,
-            )
-        )
 }
