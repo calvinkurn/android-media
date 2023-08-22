@@ -10,6 +10,7 @@ import com.tokopedia.buy_more_get_more.olp.data.request.GetOfferingInfoForBuyerR
 import com.tokopedia.buy_more_get_more.olp.data.request.GetOfferingInfoForBuyerRequestParam.UserLocation
 import com.tokopedia.buy_more_get_more.olp.data.request.GetOfferingProductListRequestParam
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel
+import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel.*
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferProductListUiModel
 import com.tokopedia.buy_more_get_more.olp.domain.usecase.GetOfferInfoForBuyerUseCase
 import com.tokopedia.buy_more_get_more.olp.domain.usecase.GetOfferProductListUseCase
@@ -23,6 +24,9 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 class OfferLandingPageViewModel @Inject constructor(
@@ -33,6 +37,12 @@ class OfferLandingPageViewModel @Inject constructor(
     private val addToCartUseCase: AddToCartUseCase,
     private val userSession: UserSessionInterface
 ) : BaseViewModel(dispatchers.main) {
+
+    private val _uiState = MutableStateFlow(OlpUiState())
+    val uiState = _uiState.asStateFlow()
+
+    private val currentState: OlpUiState
+        get() = _uiState.value
 
     private val _offeringInfo = MutableLiveData<OfferInfoForBuyerUiModel>()
     val offeringInfo: LiveData<OfferInfoForBuyerUiModel>
@@ -56,6 +66,61 @@ class OfferLandingPageViewModel @Inject constructor(
     private val userId: String
         get() = userSession.userId
 
+    fun processEvent(event: OlpEvent) {
+        when (event) {
+            is OlpEvent.SetInitialUiState -> {
+                setInitialUiState(
+                    offerIds = event.offerIds,
+                    shopIds = event.shopIds,
+                    productIds = event.productIds,
+                    warehouseIds = event.warehouseIds,
+                    localCacheModel = event.localCacheModel
+                )
+            }
+
+            is OlpEvent.GetOfferingInfo -> {
+                getOfferingInfo(
+                    offerIds = event.offerIds,
+                    shopIds = event.shopIds,
+                    productIds = event.productIds,
+                    warehouseIds = event.warehouseIds,
+                    localCacheModel = event.localCacheModel
+                )
+            }
+
+            is OlpEvent.GetOffreringProductList -> {
+                getOfferingProductList(
+                    offerIds = event.offerIds,
+                    warehouseIds = event.warehouseIds,
+                    localCacheModel = event.localCacheModel,
+                    page = event.page,
+                    sortId = event.sortId
+                )
+            }
+
+            is OlpEvent.GetNotification -> {}
+            is OlpEvent.AddToCart -> {}
+        }
+    }
+
+    private fun setInitialUiState(
+        offerIds: List<Int>,
+        shopIds: List<Int> = emptyList(),
+        productIds: List<Int> = emptyList(),
+        warehouseIds: List<Int> = emptyList(),
+        localCacheModel: LocalCacheModel?
+    ) {
+        _uiState.update {
+            it.copy(
+                offerIds = offerIds,
+                shopIds = shopIds,
+                productIds = productIds,
+                warehouseIds = warehouseIds,
+                localCacheModel = localCacheModel
+            )
+        }
+    }
+
     fun getOfferingInfo(
         offerIds: List<Int>,
         shopIds: List<Int> = emptyList(),
@@ -69,10 +134,14 @@ class OfferLandingPageViewModel @Inject constructor(
                 val param = GetOfferingInfoForBuyerRequestParam(
                     offerIds = offerIds,
                     shopIds = shopIds,
-                    productAnchor = GetOfferingInfoForBuyerRequestParam.ProductAnchor(
-                        productIds,
-                        warehouseIds
-                    ),
+                    productAnchor = if (warehouseIds.isNotEmpty()) {
+                        GetOfferingInfoForBuyerRequestParam.ProductAnchor(
+                            productIds,
+                            warehouseIds
+                        )
+                    } else {
+                        null
+                    },
                     userLocation = UserLocation(
                         addressId = localCacheModel?.address_id.toLongOrZero(),
                         districtId = localCacheModel?.district_id.toLongOrZero(),
