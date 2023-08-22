@@ -56,7 +56,8 @@
         </activity>
         <activity
             android:name="com.tokopedia.feedplus.browse.presentation.FeedBrowseActivity"
-            android:exported="false">
+            android:exported="false"
+            android:theme="@style/FeedTheme">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
