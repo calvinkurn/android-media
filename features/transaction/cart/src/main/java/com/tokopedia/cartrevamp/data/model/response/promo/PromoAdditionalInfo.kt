@@ -20,5 +20,8 @@ data class PromoAdditionalInfo(
     var usageSummaries: List<UsageSummaries> = emptyList(),
 
     @SerializedName("poml_auto_applied")
-    var pomlAutoApplied: Boolean = false
+    var pomlAutoApplied: Boolean = false,
+
+    @SerializedName("bebas_ongkir_info")
+    val bebasOngkirInfo: PromoBebasOngkirInfo = PromoBebasOngkirInfo()
 )

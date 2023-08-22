@@ -1,6 +1,7 @@
 package com.tokopedia.purchase_platform.common.feature.promo.domain.model
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.UserGroupMetadata
 
 data class Data(
     @SerializedName("codes")
@@ -19,5 +20,8 @@ data class Data(
     val additionalInfo: AdditionalInfo = AdditionalInfo(),
 
     @SerializedName("success")
-    val success: Boolean = false
+    val success: Boolean = false,
+
+    @SerializedName("user_group_metadata")
+    val userGroupMetadata: List<UserGroupMetadata> = emptyList()
 )

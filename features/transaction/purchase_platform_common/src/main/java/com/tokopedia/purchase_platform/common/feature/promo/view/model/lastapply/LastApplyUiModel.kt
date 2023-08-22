@@ -13,5 +13,6 @@ data class LastApplyUiModel(
     var listRedPromos: List<String> = emptyList(),
     var listAllPromoCodes: List<String> = emptyList(),
     var defaultEmptyPromoMessage: String = "",
-    var benefitSummaryInfo: BenefitSummaryInfoUiModel = BenefitSummaryInfoUiModel()
+    var benefitSummaryInfo: BenefitSummaryInfoUiModel = BenefitSummaryInfoUiModel(),
+    var userGroupPromoAbTest: String = ""
 ) : Parcelable

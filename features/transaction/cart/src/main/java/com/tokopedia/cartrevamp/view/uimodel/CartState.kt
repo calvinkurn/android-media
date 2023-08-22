@@ -6,6 +6,8 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.atcexternal.AddToCartExternalModel
 import com.tokopedia.cartcommon.data.response.common.OutOfService
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.promousage.domain.entity.PromoEntryPointInfo
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -192,6 +194,50 @@ sealed interface SeamlessLoginEvent {
 sealed interface AddToCartExternalEvent {
     data class Success(val model: AddToCartExternalModel) : AddToCartExternalEvent
     data class Failed(val throwable: Throwable) : AddToCartExternalEvent
+}
+
+sealed class EntryPointInfoEvent {
+
+    object Loading : EntryPointInfoEvent()
+
+    data class ActiveNew(
+        val lastApply: LastApplyUiModel,
+        val entryPointInfo: PromoEntryPointInfo
+    ) : EntryPointInfoEvent()
+
+    data class Active(
+        val lastApply: LastApplyUiModel,
+        val message: String
+    ) : EntryPointInfoEvent()
+
+    data class ActiveDefault(
+        val appliedPromos: List<String>
+    ) : EntryPointInfoEvent()
+
+    data class InactiveNew(
+        val lastApply: LastApplyUiModel,
+        val isNoItemSelected: Boolean = false,
+        val entryPointInfo: PromoEntryPointInfo? = null,
+    ) : EntryPointInfoEvent()
+
+    data class Inactive(
+        val message: String = "",
+        val isNoItemSelected: Boolean = false,
+    ) : EntryPointInfoEvent()
+
+    data class AppliedNew(
+        val lastApply: LastApplyUiModel,
+        val entryPointInfo: PromoEntryPointInfo
+    ) : EntryPointInfoEvent()
+
+    data class Applied(
+        val lastApply: LastApplyUiModel,
+        val message: String
+    ) : EntryPointInfoEvent()
+
+    data class Error(
+        val lastApply: LastApplyUiModel
+    ) : EntryPointInfoEvent()
 }
 
 @Suppress("UNCHECKED_CAST")

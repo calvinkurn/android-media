@@ -43,6 +43,7 @@ import com.tokopedia.cartrevamp.view.helper.CartDataHelper
 import com.tokopedia.cartrevamp.view.mapper.CartUiModelMapper
 import com.tokopedia.cartrevamp.view.mapper.PromoRequestMapper
 import com.tokopedia.cartrevamp.view.processor.CartCalculator
+import com.tokopedia.cartrevamp.view.processor.CartPromoEntryPointProcessor
 import com.tokopedia.cartrevamp.view.uimodel.AddCartToWishlistV2Event
 import com.tokopedia.cartrevamp.view.uimodel.AddToCartEvent
 import com.tokopedia.cartrevamp.view.uimodel.AddToCartExternalEvent
@@ -74,6 +75,7 @@ import com.tokopedia.cartrevamp.view.uimodel.DisabledAccordionHolderData
 import com.tokopedia.cartrevamp.view.uimodel.DisabledCollapsedHolderData
 import com.tokopedia.cartrevamp.view.uimodel.DisabledItemHeaderHolderData
 import com.tokopedia.cartrevamp.view.uimodel.DisabledReasonHolderData
+import com.tokopedia.cartrevamp.view.uimodel.EntryPointInfoEvent
 import com.tokopedia.cartrevamp.view.uimodel.LoadRecentReviewState
 import com.tokopedia.cartrevamp.view.uimodel.LoadRecommendationState
 import com.tokopedia.cartrevamp.view.uimodel.LoadWishlistV2State
@@ -169,6 +171,7 @@ class CartViewModel @Inject constructor(
     private val setCartlistCheckboxStateUseCase: SetCartlistCheckboxStateUseCase,
     private val followShopUseCase: FollowShopUseCase,
     private val cartShopGroupTickerAggregatorUseCase: CartShopGroupTickerAggregatorUseCase,
+    private val cartPromoEntryPointProcessor: CartPromoEntryPointProcessor,
     private val schedulers: ExecutorSchedulers,
     private val dispatchers: CoroutineDispatchers,
     private val cartCalculator: CartCalculator
@@ -240,6 +243,10 @@ class CartViewModel @Inject constructor(
     private val _tokoNowProductUpdater =
         MutableSharedFlow<Boolean>(replay = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
     val tokoNowProductUpdater: SharedFlow<Boolean> = _tokoNowProductUpdater
+
+    private val _entryPointInfoEvent = MutableLiveData<EntryPointInfoEvent>()
+    val entryPointInfoEvent: LiveData<EntryPointInfoEvent>
+        get() = _entryPointInfoEvent
 
     private var cartShopGroupTickerJob: Job? = null
 
@@ -2842,5 +2849,37 @@ class CartViewModel @Inject constructor(
     override fun onCleared() {
         cartShopGroupTickerJob?.cancel()
         super.onCleared()
+    }
+
+    fun getEntryPointInfoFromLastApply(lastApply: LastApplyUiModel) {
+        launchCatchError(
+            context = dispatchers.main,
+            block = {
+                _entryPointInfoEvent.postValue(EntryPointInfoEvent.Loading)
+                delay(1_000L)
+                val entryPointEvent = cartPromoEntryPointProcessor
+                    .getEntryPointInfoFromLastApply(lastApply, cartModel, cartDataList.value)
+                _entryPointInfoEvent.postValue(entryPointEvent)
+            },
+            onError = {
+                _entryPointInfoEvent.postValue(EntryPointInfoEvent.Error(lastApply))
+            }
+        )
+    }
+
+    fun getEntryPointInfoDefault(appliedPromos: List<String>) {
+        _entryPointInfoEvent.postValue(
+            cartPromoEntryPointProcessor.getEntryPointInfoActiveDefault(appliedPromos)
+        )
+    }
+
+    fun getEntryPointInfoNoItemSelected() {
+        _entryPointInfoEvent.postValue(
+            cartPromoEntryPointProcessor.getEntryPointInfoNoItemSelected()
+        )
+    }
+
+    fun reloadEntryPointInfo() {
+
     }
 }

@@ -2,6 +2,7 @@ package com.tokopedia.cartrevamp.data.model.response.promo
 
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.BenefitSummaryInfo
+import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.UserGroupMetadata
 
 data class LastApplyPromoData(
     @SerializedName("message")
@@ -15,5 +16,7 @@ data class LastApplyPromoData(
     @SerializedName("tracking_details")
     var trackingDetails: List<TrackingDetail> = emptyList(),
     @SerializedName("benefit_summary_info")
-    var benefitSummaryInfo: BenefitSummaryInfo = BenefitSummaryInfo()
+    var benefitSummaryInfo: BenefitSummaryInfo = BenefitSummaryInfo(),
+    @SerializedName("user_group_metadata")
+    var userGroupMetadata: List<UserGroupMetadata> = emptyList()
 )
