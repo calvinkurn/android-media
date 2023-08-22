@@ -31,7 +31,7 @@ class BCABalanceViewModel @Inject constructor(
             run {
                 try {
                     val bcaCheckBalanceResult = bcaLibrary.C_BCACheckBalance()
-                    val mappedResult = BCAResponseMapper.bcaMapper(bcaCheckBalanceResult)
+                    val mappedResult = BCAResponseMapper.bcaMapper(bcaCheckBalanceResult, false)
                     bcaInquiryMutable.postValue(mappedResult)
                 } catch (e: IOException) {
                     isoDep.close()

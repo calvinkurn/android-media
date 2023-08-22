@@ -65,7 +65,9 @@ class ETollUpdateBalanceResultView @JvmOverloads constructor(@NotNull context: C
             if (::listener.isInitialized) {
                 buttonTopup.setOnClickListener {
                     listener.onClick(inquiryBalanceModel.attributesEmoneyInquiry.operatorId,
-                            inquiryBalanceModel.attributesEmoneyInquiry.issuer_id)
+                            inquiryBalanceModel.attributesEmoneyInquiry.issuer_id,
+                        inquiryBalanceModel.isBCAGenOne
+                    )
                 }
             }
 
@@ -116,7 +118,7 @@ class ETollUpdateBalanceResultView @JvmOverloads constructor(@NotNull context: C
     }
 
     interface OnTopupETollClickListener {
-        fun onClick(operatorId: String, issuerId: Int)
+        fun onClick(operatorId: String, issuerId: Int, isBcaGenOne: Boolean)
         fun onClickTickerTapcash()
     }
 }

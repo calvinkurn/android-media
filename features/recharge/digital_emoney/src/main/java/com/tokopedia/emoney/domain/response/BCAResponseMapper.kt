@@ -8,7 +8,7 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 
 object BCAResponseMapper {
     private const val ISSUER_ID_BCA = 5
-    fun bcaMapper(result: CheckBalanceResult): EmoneyInquiry {
+    fun bcaMapper(result: CheckBalanceResult, isBCAGenOne: Boolean): EmoneyInquiry {
         return EmoneyInquiry(
             attributesEmoneyInquiry = AttributesEmoneyInquiry(
                 buttonText = "Top Up Sekarang",
@@ -20,7 +20,8 @@ object BCAResponseMapper {
                 formattedCardNumber = NFCUtils.formatCardUID(result.cardNo),
                 issuer_id = ISSUER_ID_BCA,
                 pendingBalance = Int.ZERO
-            )
+            ),
+            isBCAGenOne = isBCAGenOne
         )
     }
 }

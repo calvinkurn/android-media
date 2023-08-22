@@ -47,15 +47,28 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/unify_space_12"
                 android:layout_marginTop="@dimen/spacing_lvl3"
-                android:layout_marginBottom="@dimen/spacing_lvl4"
                 app:layout_constraintTop_toBottomOf="@id/emoneyPdpHeaderView" />
+
+            <com.tokopedia.unifycomponents.ticker.Ticker
+                android:id="@+id/tickerBCAGenOne"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/emoneyPdpInputCardWidget"
+                android:visibility="gone"
+                tools:visibility="visible"
+                app:tickerType="error"
+                app:tickerShapeType="loose"
+                app:closeButtonVisibility="gone"
+                android:layout_marginHorizontal="12dp"
+                app:descriptionText="@string/recharge_pdp_emoney_bca_gen_one"
+                />
 
             <com.tokopedia.unifycomponents.TabsUnify
                 android:id="@+id/emoneyPdpTab"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
-                app:layout_constraintTop_toBottomOf="@id/emoneyPdpInputCardWidget"
+                app:layout_constraintTop_toBottomOf="@id/tickerBCAGenOne"
                 tools:visibility="visible"
                 android:layout_marginTop="@dimen/spacing_lvl1" />
 

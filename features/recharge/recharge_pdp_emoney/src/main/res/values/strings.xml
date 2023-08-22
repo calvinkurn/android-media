@@ -35,5 +35,6 @@
     <string name="recharge_pdp_emoney_coachmark_title">Pilih mau top-up berapa banyak &#x1f4b0;</string>
     <string name="recharge_pdp_emoney_coachmark_subtitle">Ini nominal top-up yang bisa kamu pilih, lengkap dengan harga masing-masing.</string>
 
+    <string name="recharge_pdp_emoney_bca_gen_one">Kartu Flazz kamu ngga support transaksi ini, pastikan sudah pakai kartu Gen 2, ya</string>
 
 </resources>

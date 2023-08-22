@@ -33,6 +33,7 @@ import com.tokopedia.common_electronic_money.util.NfcCardErrorTypeDef
 import com.tokopedia.emoney.R
 import com.tokopedia.emoney.di.DaggerDigitalEmoneyComponent
 import com.tokopedia.emoney.domain.request.JakCardStatus
+import com.tokopedia.emoney.domain.response.BCAResponseMapper
 import com.tokopedia.emoney.integration.BCALibrary
 import com.tokopedia.emoney.util.DigitalEmoneyGqlQuery
 import com.tokopedia.emoney.viewmodel.BCABalanceViewModel
@@ -40,6 +41,7 @@ import com.tokopedia.emoney.viewmodel.EmoneyBalanceViewModel
 import com.tokopedia.emoney.viewmodel.JakCardBalanceViewModel
 import com.tokopedia.emoney.viewmodel.TapcashBalanceViewModel
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.exception.MessageErrorException
@@ -91,7 +93,7 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
         }
     }
 
-    override fun getPassData(operatorId: String, issuerId: Int): DigitalCategoryDetailPassData {
+    override fun getPassData(operatorId: String, issuerId: Int, isBCAGenOne: Boolean): DigitalCategoryDetailPassData {
         return DigitalCategoryDetailPassData.Builder()
                 .categoryId(ETOLL_CATEGORY_ID)
                 .operatorId(operatorId)
@@ -100,6 +102,7 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
                 .additionalETollLastBalance(eTollUpdateBalanceResultView.cardLastBalance)
                 .additionalETollLastUpdatedDate(eTollUpdateBalanceResultView.cardLastUpdatedDate)
                 .additionalETollOperatorName(getOperatorName(issuerId))
+                .isBCAGenOne(isBCAGenOne)
                 .build()
     }
 
@@ -155,8 +158,11 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
             processBrizzi(intent)
         } else {
             initializeBCALibs(tag)
+            val dataBalance = bcaLibrary.C_BCACheckBalance()
             if(bcaLibrary.C_BCAIsMyCard() == Int.ONE) {
                 bcaBalanceViewModel.processBCATagBalance(IsoDep.get(tag))
+            } else if(dataBalance.balance >= Int.ZERO){
+                showCardLastBalance(BCAResponseMapper.bcaMapper(dataBalance, true))
             } else {
                 context?.let { context ->
                     showError(

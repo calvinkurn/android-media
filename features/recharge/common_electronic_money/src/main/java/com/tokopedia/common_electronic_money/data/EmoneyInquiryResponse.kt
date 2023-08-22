@@ -22,7 +22,8 @@ data class EmoneyInquiry(
         @SerializedName("error")
         @Expose
         val error: EmoneyInquiryError? = null,
-        val isCheckSaldoTapcash : Boolean = false
+        val isCheckSaldoTapcash : Boolean = false,
+        val isBCAGenOne: Boolean = false,
 )
 
 data class AttributesEmoneyInquiry(

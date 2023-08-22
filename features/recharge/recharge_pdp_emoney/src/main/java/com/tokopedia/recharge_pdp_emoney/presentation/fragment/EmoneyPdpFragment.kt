@@ -169,6 +169,7 @@ open class EmoneyPdpFragment :
         emoneyPdpViewModel.getDppoConsent()
         loadData()
         renderCardState(detailPassData)
+        renderTickerBCAGenOne(detailPassData)
 
         binding.emoneyPdpHeaderView.actionListener = this
         binding.emoneyPdpInputCardWidget.initView(this)
@@ -521,6 +522,7 @@ open class EmoneyPdpFragment :
                         // renderProduct
                         detailPassData = this
                         renderCardState(this)
+                        renderTickerBCAGenOne(this)
                     }
                 }
 
@@ -659,6 +661,14 @@ open class EmoneyPdpFragment :
             )
         } else {
             binding.emoneyPdpHeaderView.configureCheckBalanceView()
+        }
+    }
+
+    private fun renderTickerBCAGenOne(detailPassData: DigitalCategoryDetailPassData) {
+        if (detailPassData.isBCAGenOne) {
+            binding.tickerBCAGenOne.show()
+        } else {
+            binding.tickerBCAGenOne.hide()
         }
     }
 
