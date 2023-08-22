@@ -111,7 +111,8 @@ fun RecommendationEntity.RecommendationData.toRecommendationWidget(): Recommenda
         hasNext = pagination.hasNext,
         pageName = pageName,
         recommendationBanner = campaign.mapToBannerData(),
-        isTokonow = isTokonow()
+        isTokonow = isTokonow(),
+        endDate = campaign.endDate,
     )
 }
 

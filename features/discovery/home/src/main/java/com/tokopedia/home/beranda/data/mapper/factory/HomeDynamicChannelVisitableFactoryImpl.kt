@@ -20,7 +20,7 @@ import com.tokopedia.home_component.util.ChannelStyleUtil.parseBorderStyle
 import com.tokopedia.home_component.util.ChannelStyleUtil.parseDividerSize
 import com.tokopedia.home_component.visitable.*
 import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleWidgetDataModel
-import com.tokopedia.home_component.widget.shop_flash_sale.item.ShopFlashSaleItemShimmerDataModel
+import com.tokopedia.home_component.widget.shop_flash_sale.item.ProductCardGridShimmerDataModel
 import com.tokopedia.home_component.widget.shop_flash_sale.tab.ShopFlashSaleTabDataModel
 import com.tokopedia.home_component.widget.special_release.SpecialReleaseRevampDataModel
 import com.tokopedia.home_component_header.model.ChannelHeader
@@ -974,7 +974,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
                             index == 0
                         )
                     },
-                    itemList = listOf(ShopFlashSaleItemShimmerDataModel())
+                    itemList = ProductCardGridShimmerDataModel.getAsList()
                 )
             )
         }

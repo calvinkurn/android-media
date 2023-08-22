@@ -41,6 +41,7 @@ import com.tokopedia.home_component.visitable.FeaturedShopDataModel
 import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.home_component.visitable.TodoWidgetListDataModel
+import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleTimerDataModel
 import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleWidgetDataModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.exception.MessageErrorException
@@ -459,12 +460,14 @@ class HomeDynamicChannelUseCase @Inject constructor(
                                 CarouselProductCardDataModel(
                                     productModel = item.toProductCardModel(cardType = CardUnify2.TYPE_BORDER),
                                     grid = item.mapToChannelGrid(index),
+                                    trackingAttributionModel = visitableFound.channelModel.trackingAttributionModel,
                                     applink = item.appUrl
                                 )
                             }
                             return@getWidgetDataIfExist visitableFound.copy(
                                 itemList = carouselProductCardList,
-                                endTime = data.first().endTime,
+                                timer = ShopFlashSaleTimerDataModel(data.first().endDate),
+                                useShopHeader = true,
                             )
                         }
                         visitableFound

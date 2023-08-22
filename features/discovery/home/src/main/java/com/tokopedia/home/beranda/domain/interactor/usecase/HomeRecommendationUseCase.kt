@@ -8,8 +8,8 @@ import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselPr
 import com.tokopedia.home_component.visitable.BestSellerChipDataModel
 import com.tokopedia.home_component.visitable.BestSellerChipProductDataModel
 import com.tokopedia.home_component.visitable.BestSellerProductDataModel
+import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleTimerDataModel
 import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleWidgetDataModel
-import com.tokopedia.home_component.widget.shop_flash_sale.item.ShopFlashSaleItemShimmerDataModel
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
@@ -220,10 +220,15 @@ class HomeRecommendationUseCase @Inject constructor(
                     CarouselProductCardDataModel(
                         productModel = item.toProductCardModel(cardType = CardUnify2.TYPE_BORDER),
                         grid = item.mapToChannelGrid(index),
-                        applink = item.appUrl
+                        trackingAttributionModel = currentDataModel.channelModel.trackingAttributionModel,
+                        applink = item.appUrl,
                     )
                 }
-                currentDataModel.copy(itemList = carouselProductCardList, endTime = recomWidget.endTime)
+                currentDataModel.copy(
+                    itemList = carouselProductCardList,
+                    timer = ShopFlashSaleTimerDataModel(recomWidget.endDate),
+                    useShopHeader = true,
+                )
             } else {
                 currentDataModel
             }

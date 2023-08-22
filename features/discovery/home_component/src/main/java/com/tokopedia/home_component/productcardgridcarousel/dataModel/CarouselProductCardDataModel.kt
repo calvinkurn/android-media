@@ -2,6 +2,8 @@ package com.tokopedia.home_component.productcardgridcarousel.dataModel
 
 import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCarouselProductCardTypeFactory
 import com.tokopedia.home_component.model.ChannelGrid
+import com.tokopedia.home_component.model.TrackingAttributionModel
+import com.tokopedia.home_component.productcardgridcarousel.listener.CommonProductCardCarouselListener
 import com.tokopedia.home_component.widget.common.carousel.HomeComponentCarouselVisitable
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ProductCardModel
@@ -11,9 +13,11 @@ class CarouselProductCardDataModel (
         val productModel: ProductCardModel,
         val blankSpaceConfig: BlankSpaceConfig = BlankSpaceConfig(),
         val grid: ChannelGrid,
+        val trackingAttributionModel: TrackingAttributionModel = TrackingAttributionModel(),
         val impressHolder: ImpressHolder = ImpressHolder(),
         val applink: String = "",
         val componentName: String = "",
+        val listener: CommonProductCardCarouselListener? = null,
 ): HomeComponentCarouselVisitable {
     override fun getId(): String {
         return grid.id

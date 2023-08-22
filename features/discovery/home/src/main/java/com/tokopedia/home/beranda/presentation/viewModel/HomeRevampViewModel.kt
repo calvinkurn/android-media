@@ -55,7 +55,7 @@ import com.tokopedia.home_component.visitable.RecommendationListCarouselDataMode
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.home_component.visitable.TodoWidgetListDataModel
 import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleWidgetDataModel
-import com.tokopedia.home_component.widget.shop_flash_sale.item.ShopFlashSaleItemShimmerDataModel
+import com.tokopedia.home_component.widget.shop_flash_sale.item.ProductCardGridShimmerDataModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
@@ -810,7 +810,7 @@ open class HomeRevampViewModel @Inject constructor(
             actionOnFound = { _, index ->
                 launch {
                     updateWidget(
-                        visitable = currentDataModel.copy(itemList = ShopFlashSaleItemShimmerDataModel.getAsList()),
+                        visitable = currentDataModel.copy(itemList = ProductCardGridShimmerDataModel.getAsList()),
                         visitableToChange = currentDataModel,
                         position = index
                     )

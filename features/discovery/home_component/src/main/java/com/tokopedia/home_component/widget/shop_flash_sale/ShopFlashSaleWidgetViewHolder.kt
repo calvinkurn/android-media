@@ -10,6 +10,7 @@ import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.model.TrackingAttributionModel
 import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.home_component.util.DateHelper
+import com.tokopedia.home_component.util.NpaLinearLayoutManager
 import com.tokopedia.home_component.widget.common.CarouselListAdapter
 import com.tokopedia.home_component.widget.common.carousel.HomeComponentCarouselDiffUtil
 import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleWidgetDataModel.Companion.PAYLOAD_ITEM_LIST_CHANGED
@@ -21,8 +22,10 @@ import com.tokopedia.home_component.widget.shop_flash_sale.tab.ShopFlashSaleTabD
 import com.tokopedia.home_component.widget.shop_flash_sale.tab.ShopFlashSaleTabListener
 import com.tokopedia.home_component_header.model.ChannelHeader
 import com.tokopedia.home_component_header.view.HomeChannelHeaderListener
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.utils.view.binding.viewBinding
-import java.util.*
 
 class ShopFlashSaleWidgetViewHolder(
     itemView: View,
@@ -36,17 +39,15 @@ class ShopFlashSaleWidgetViewHolder(
 
     private val binding: HomeComponentShopFlashSaleBinding? by viewBinding()
     private val tabLayoutManager by lazy {
-        LinearLayoutManager(
+        NpaLinearLayoutManager(
             itemView.context,
-            LinearLayoutManager.HORIZONTAL,
-            false
+            LinearLayoutManager.HORIZONTAL
         )
     }
     private val itemLayoutManager by lazy {
-        LinearLayoutManager(
+        NpaLinearLayoutManager(
             itemView.context,
-            LinearLayoutManager.HORIZONTAL,
-            false
+            LinearLayoutManager.HORIZONTAL
         )
     }
     private val tabAdapter by lazy {
@@ -57,7 +58,7 @@ class ShopFlashSaleWidgetViewHolder(
     }
     private val itemAdapter by lazy {
         CarouselListAdapter(
-            ShopFlashSaleItemTypeFactoryImpl(),
+            ShopFlashSaleItemTypeFactoryImpl(listener),
             HomeComponentCarouselDiffUtil()
         )
     }
@@ -75,12 +76,15 @@ class ShopFlashSaleWidgetViewHolder(
         setHeaderComponent(element.channelHeader, element.channelModel.trackingAttributionModel)
         updateTab(element)
         updateContent(element)
+        updateShopHeader(element)
     }
 
     override fun bind(element: ShopFlashSaleWidgetDataModel, payloads: MutableList<Any>) {
         shopFlashSaleWidgetDataModel = element
-        if((payloads.firstOrNull() as? Bundle)?.getBoolean(PAYLOAD_ITEM_LIST_CHANGED) == true) {
+        val payload = payloads.firstOrNull() as? Bundle
+        if(payload?.getBoolean(PAYLOAD_ITEM_LIST_CHANGED) == true) {
             updateContent(element)
+            updateShopHeader(element)
         } else {
             bind(element)
         }
@@ -110,42 +114,53 @@ class ShopFlashSaleWidgetViewHolder(
         )
     }
 
-    private fun renderShopHeader(shop: ShopFlashSaleTabDataModel) {
-        binding?.txtShopFlashSaleShopName?.text = shop.channelGrid.name
-        val shopNameClickListener = View.OnClickListener {
-            listener.onShopNameClicked(shop.trackingAttributionModel, shop.channelGrid)
-        }
-        binding?.txtShopFlashSaleShopName?.setOnClickListener(shopNameClickListener)
-        binding?.ctaShopFlashSaleShopName?.setOnClickListener(shopNameClickListener)
-    }
-
-    private fun renderTimer(model: ShopFlashSaleWidgetDataModel) {
-        val expiredTime = DateHelper.getExpiredTime(model.endTime)
-        if (!DateHelper.isExpired(0, expiredTime)) {
-            binding?.timerShopFlashSale?.run {
-                // calculate date diff
-                targetDate = Calendar.getInstance().apply {
-                    val currentDate = Date()
-                    val currentMillisecond: Long = currentDate.time + 0
-                    val timeDiff = expiredTime.time - currentMillisecond
-                    add(Calendar.SECOND, (timeDiff / 1000 % 60).toInt())
-                    add(Calendar.MINUTE, (timeDiff / (60 * 1000) % 60).toInt())
-                    add(Calendar.HOUR, (timeDiff / (60 * 60 * 1000)).toInt())
-                }
-                onFinish = {
-                }
-            }
-        }
-    }
-
     private fun updateTab(model: ShopFlashSaleWidgetDataModel) {
         tabAdapter.submitList(model.tabList)
     }
 
     private fun updateContent(model: ShopFlashSaleWidgetDataModel) {
         itemAdapter.submitList(model.itemList)
-        getActivatedTab(model.tabList)?.let { renderShopHeader(it) }
-        renderTimer(model)
+    }
+
+    private fun updateShopHeader(model: ShopFlashSaleWidgetDataModel) {
+        if(model.useShopHeader) {
+            binding?.containerShopFlashSaleShopHeader?.show()
+            renderShopName()
+            if(!model.isLoadingState()) renderTimer(model.timer)
+        } else binding?.containerShopFlashSaleShopHeader?.hide()
+    }
+
+    private fun renderShopName() {
+        if(shopFlashSaleWidgetDataModel?.useShopHeader == true) {
+            val shopTab = getActivatedTab() ?: return
+            binding?.txtShopFlashSaleShopName?.text = shopTab.channelGrid.name
+            val shopNameClickListener = View.OnClickListener {
+                listener.onShopNameClicked(shopTab.trackingAttributionModel, shopTab.channelGrid)
+            }
+            binding?.txtShopFlashSaleShopName?.setOnClickListener(shopNameClickListener)
+            binding?.ctaShopFlashSaleShopName?.setOnClickListener(shopNameClickListener)
+        }
+    }
+
+    private fun renderTimer(model: ShopFlashSaleTimerDataModel) {
+        try {
+            if(shopFlashSaleWidgetDataModel?.useShopHeader == true) {
+                if(model.endDate.isEmpty()) {
+                    hideTimer()
+                } else {
+                    binding?.timerShopFlashSale?.run {
+                        if (!DateHelper.isExpired(expiredTime = model.expiredTime)) {
+                            targetDate = DateHelper.getCountdownTimer(model.expiredTime)
+                            show()
+                        } else hide()
+                    }
+                }
+            }
+        } catch (_: Exception) { }
+    }
+
+    private fun hideTimer() {
+        binding?.timerShopFlashSale?.hide()
     }
 
     private fun initShopTabAdapter() {
@@ -167,26 +182,25 @@ class ShopFlashSaleWidgetViewHolder(
         }
     }
 
-    private fun getActivatedTab(list: List<ShopFlashSaleTabDataModel>) : ShopFlashSaleTabDataModel? {
-        return list.firstOrNull { it.isActivated }
-    }
-
     override fun onShopTabClick(element: ShopFlashSaleTabDataModel) {
-//        if(shopFlashSaleWidgetDataModel?.findShopTab(element.channelGrid.id)?.isActivated == false) {
-//
-//        }
-        shopFlashSaleWidgetDataModel?.let { activateShopTab(it, element) }
-        renderShopHeader(element)
+        activateShopTab(element)
+        renderShopName()
+        hideTimer()
         shopFlashSaleWidgetDataModel?.let {
             listener.onShopTabClicked(it, element.trackingAttributionModel, element.channelGrid)
         }
     }
 
-    private fun activateShopTab(widgetDataModel: ShopFlashSaleWidgetDataModel, element: ShopFlashSaleTabDataModel) {
+    private fun activateShopTab(element: ShopFlashSaleTabDataModel) {
+        val widgetDataModel = shopFlashSaleWidgetDataModel ?: return
         val newList = widgetDataModel.tabList.map {
             it.copy(isActivated = it.channelGrid.id == element.channelGrid.id)
         }
         shopFlashSaleWidgetDataModel = widgetDataModel.copy(tabList = newList)
         tabAdapter.submitList(newList)
+    }
+
+    private fun getActivatedTab(): ShopFlashSaleTabDataModel? {
+        return shopFlashSaleWidgetDataModel?.tabList?.firstOrNull { it.isActivated }
     }
 }

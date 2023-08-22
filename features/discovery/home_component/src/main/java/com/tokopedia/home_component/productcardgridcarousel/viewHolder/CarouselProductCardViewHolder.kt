@@ -39,7 +39,8 @@ class CarouselProductCardViewHolder (
                             element.grid.imageUrl,
                             element.componentName)
                 }
-                listener?.onProductCardImpressed(position = adapterPosition, channel = channels, channelGrid = element.grid)
+                element.listener?.onProductCardImpressed(position = adapterPosition, channel = channels, channelGrid = element.grid)
+                    ?: listener?.onProductCardImpressed(position = element.grid.position, trackingAttributionModel = element.trackingAttributionModel, channelGrid = element.grid)
             }
             setOnClickListener {
                 if(element.grid.isTopads){
@@ -49,7 +50,8 @@ class CarouselProductCardViewHolder (
                             element.grid.imageUrl,
                             element.componentName)
                 }
-                listener?.onProductCardClicked(position = adapterPosition, channel = channels, channelGrid = element.grid, applink = element.applink)
+                element.listener?.onProductCardClicked(position = adapterPosition, channel = channels, channelGrid = element.grid, applink = element.applink)
+                    ?: listener?.onProductCardClicked(position = element.grid.position, trackingAttributionModel = element.trackingAttributionModel, channelGrid = element.grid, applink = element.applink)
             }
         }
     }
