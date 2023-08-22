@@ -22,4 +22,6 @@ object Key {
 
     const val screenName = "screenName"
     const val clientId = "clientId"
+
+    const val pageSource = "pageSource"
 }
