@@ -16,7 +16,6 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.tokopedia.header.compose.NestHeader
@@ -198,12 +197,12 @@ private fun OrderInfo(courier: String, invoice: String) {
             OrderInfoItem(
                 title = stringResource(id = R.string.label_title_courier_reschedule_pick_up),
                 value = courier,
-                icon = com.tokopedia.iconunify.R.drawable.iconunify_courier
+                icon = IconUnify.COURIER
             )
             OrderInfoItem(
                 title = stringResource(id = R.string.label_title_invoice_reschedule_pick_up),
                 value = invoice,
-                icon = com.tokopedia.iconunify.R.drawable.iconunify_bill_all
+                icon = IconUnify.BILL_ALL
             )
         }
     }
@@ -217,10 +216,7 @@ private fun OrderInfoItem(title: String, value: String, icon: Int) {
             .padding(vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(
-            painter = painterResource(id = icon),
-            contentDescription = "icon order info $title"
-        )
+        NestIcon(modifier = Modifier.tag("icon order info $title"), iconId = icon)
         Column(modifier = Modifier.padding(start = 10.dp)) {
             NestTypography(
                 text = title,
@@ -406,6 +402,7 @@ private fun DropDownIcon(onClick: () -> Unit = {}) {
         modifier = Modifier
             .size(24.dp, 24.dp)
             .clickable { onClick() }
+            .tag("drop down")
     )
 }
 
