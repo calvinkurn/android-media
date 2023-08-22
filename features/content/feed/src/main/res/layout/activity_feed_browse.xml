@@ -5,4 +5,5 @@
     android:name="com.tokopedia.feedplus.browse.presentation.FeedBrowseFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/Unify_Background"
     tools:viewBindingIgnore="true" />
