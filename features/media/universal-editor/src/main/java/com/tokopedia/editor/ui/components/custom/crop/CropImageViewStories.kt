@@ -83,7 +83,7 @@ open class CropImageViewStories : CropImageView {
         val bitmapResult = Bitmap.createBitmap(mCropRect.width().toInt(), mCropRect.height().toInt(), Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmapResult)
 
-        canvas.drawRect(mCropRect.left, mCropRect.top, bitmapResult.width.toFloat(),bitmapResult.height.toFloat(), Paint())
+        canvas.drawRect(0f, 0f, bitmapResult.width.toFloat(),bitmapResult.height.toFloat(), Paint())
 
         viewBitmap?.let {
             val scaledWidth = (it.width * mCurrentScale).toInt()
@@ -102,7 +102,9 @@ open class CropImageViewStories : CropImageView {
             }
 
             val xPos = (mCropRect.left - mCurrentImageRect.left) * -1f
-            val yPos = (mCropRect.top - mCurrentImageRect.top) * -1f
+
+            // top use 0f since we override the value for visual purpose on OverlayViewStories.kt on setOnTargetAspectRatio
+            val yPos = (0f - mCurrentImageRect.top) * -1f
 
             canvas.drawBitmap(
                 finalBitmap,

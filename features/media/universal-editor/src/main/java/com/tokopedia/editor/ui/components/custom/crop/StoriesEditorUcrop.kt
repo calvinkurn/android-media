@@ -25,7 +25,7 @@ class StoriesEditorUcrop(context: Context, attrs: AttributeSet) : FrameLayout(co
         a.recycle()
         setListenersToViews()
 
-        mGestureCropImageView!!.setBackgroundColor(Color.RED)
+        mGestureCropImageView!!.setBackgroundColor(Color.BLACK)
     }
 
     private fun setListenersToViews() {

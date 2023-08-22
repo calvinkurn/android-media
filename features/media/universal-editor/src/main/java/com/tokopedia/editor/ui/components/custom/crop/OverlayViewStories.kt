@@ -12,4 +12,18 @@ class OverlayViewStories: OverlayView {
     fun processStyledAttributesOpen(a: TypedArray) {
         super.processStyledAttributes(a)
     }
+
+    override fun setTargetAspectRatio(targetAspectRatio: Float) {
+        super.setTargetAspectRatio(targetAspectRatio)
+
+        // set top space 0 then distribute the space to bottom
+        cropViewRect.let {
+            it.set(
+                it.left,
+                0f,
+                it.right,
+                it.bottom - it.top
+            )
+        }
+    }
 }
