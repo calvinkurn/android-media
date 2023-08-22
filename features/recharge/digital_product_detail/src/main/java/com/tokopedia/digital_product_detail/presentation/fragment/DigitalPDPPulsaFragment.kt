@@ -171,8 +171,7 @@ class DigitalPDPPulsaFragment :
 
     private val indosatCheckBalanceLauncher = registerForActivityResult(OpenRechargeCheckBalance()) { accessToken ->
         if (accessToken.isNotEmpty()) {
-            Toast.makeText(context, "Access Token: $accessToken", Toast.LENGTH_LONG).show()
-//            saveIndosatAccessToken(accessToken)
+            saveIndosatAccessToken(accessToken)
         } else {
             Toast.makeText(context, "Gagal melakukan verifikasi, mohon dicoba lagi nanti", Toast.LENGTH_LONG).show()
         }
@@ -632,6 +631,11 @@ class DigitalPDPPulsaFragment :
             hideCheckBalanceWidget()
             hideCheckBalanceWidgetShimmering()
 
+            if (checkBalanceData.widgetType.isEmpty()) {
+                setupDynamicScrollViewPadding()
+                return
+            }
+
             when (checkBalanceData.widgetType.lowercase()) {
                 INDOSAT_CHECK_BALANCE_TYPE_OTP -> {
                     renderCheckBalanceOTPWidget(
@@ -650,6 +654,7 @@ class DigitalPDPPulsaFragment :
                         DigitalPDPWidgetMapper.mapCheckBalanceToWidgetBalanceInfoModels(checkBalanceData),
                         DigitalPDPWidgetMapper.mapCheckBalanceToBottomSheetBalanceDetailModels(checkBalanceData)
                     )
+                    showCheckBalanceWidget()
                     digitalPDPAnalytics.impressionCheckBalanceInfo(
                         DigitalPDPCategoryUtil.getCategoryName(categoryId),
                         operator.attributes.name,
@@ -657,7 +662,6 @@ class DigitalPDPPulsaFragment :
                         checkBalanceData.campaignLabelText,
                         userSession.userId
                     )
-                    showCheckBalanceWidget()
                 }
                 else -> return
             }
