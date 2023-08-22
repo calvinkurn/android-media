@@ -986,14 +986,16 @@ object ShopPageHomeMapper {
         widgetModel: ShopLayoutWidget.Widget,
         isMyOwnProduct: Boolean,
         isEnableDirectPurchase: Boolean,
-        widgetLayout: ShopPageWidgetUiModel?
+        widgetLayout: ShopPageWidgetUiModel?,
+        isOverrideTheme: Boolean,
+        colorSchema: ShopPageColorSchema
     ): ShopHomeCarousellProductUiModel {
         return ShopHomeCarousellProductUiModel(
             widgetId = widgetModel.widgetID,
             layoutOrder = widgetModel.layoutOrder,
             name = "terlaris",
             type = widgetModel.type,
-            header = mapToHeaderModel(widgetModel.header, widgetLayout),
+            header = mapToHeaderModel(widgetModel.header, widgetLayout, isOverrideTheme, colorSchema),
             isFestivity = widgetLayout?.isFestivity.orFalse(),
             productList = getDummyData()
         )
