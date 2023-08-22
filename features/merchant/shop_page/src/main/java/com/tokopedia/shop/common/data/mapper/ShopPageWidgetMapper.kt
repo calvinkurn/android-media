@@ -12,9 +12,11 @@ import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.home.data.model.ShopLayoutWidget
 import com.tokopedia.shop.home.data.model.ShopPageWidgetRequestModel
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
+import com.tokopedia.shop.home.view.model.ShopHomeShowcaseNavigationUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerProductHotspotUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerTimerUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetVoucherSliderUiModel
+import com.tokopedia.shop.home.view.model.ShowcaseNavigationBannerWidgetStyle
 import com.tokopedia.shop.home.view.model.StatusCampaign
 
 //TODO need to migrate all other shop widget mapper on home mapper to this mapper
@@ -168,6 +170,52 @@ object ShopPageWidgetMapper {
         return PlayWidgetUseCase.WidgetType.ShopPageExclusiveLaunch(
             shopId = shopId,
             campaignId = campaignId
+        )
+    }
+
+    fun mapToHomeShowcaseWidget(response: ShopLayoutWidget.Widget): ShopHomeShowcaseNavigationUiModel {
+        val widgetStyle = if (response.header.widgetStyle == ShowcaseNavigationBannerWidgetStyle.ROUNDED_CORNER.id) {
+            ShopHomeShowcaseNavigationUiModel.WidgetStyle.ROUNDED_CORNER
+        } else {
+            ShopHomeShowcaseNavigationUiModel.WidgetStyle.CIRCLE
+        }
+
+        val tabs = response.data.map { tab ->
+            val showcases = tab.showcaseList.map { showcase ->
+                ShopHomeShowcaseNavigationUiModel.Tab.Showcase(
+                    showcase.showcaseID,
+                    showcase.name,
+                    showcase.imageURL,
+                    showcase.ctaLink,
+                    showcase.isMainBanner
+                )
+            }
+
+            val mainBannerPosition = if (tab.mainBannerPosition == ShopHomeShowcaseNavigationUiModel.MainBannerPosition.TOP.id) {
+                ShopHomeShowcaseNavigationUiModel.MainBannerPosition.TOP
+            } else {
+                ShopHomeShowcaseNavigationUiModel.MainBannerPosition.LEFT
+            }
+
+            ShopHomeShowcaseNavigationUiModel.Tab(
+                text = tab.text,
+                imageUrl = tab.imageURL,
+                mainBannerPosition = mainBannerPosition,
+                showcases = showcases
+            )
+        }
+
+        return ShopHomeShowcaseNavigationUiModel(
+            showcaseHeader = ShopHomeShowcaseNavigationUiModel.ShowcaseHeader(
+                title = response.header.title,
+                ctaLink = response.header.ctaLink,
+                widgetStyle = widgetStyle
+            ),
+            tabs = tabs,
+            widgetId = response.widgetID,
+            layoutOrder = response.layoutOrder,
+            name = response.name,
+            type = response.type
         )
     }
     private fun Int?.mapToStatusCampaign(): StatusCampaign {
