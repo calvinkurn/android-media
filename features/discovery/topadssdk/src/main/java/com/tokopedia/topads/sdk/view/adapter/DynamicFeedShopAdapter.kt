@@ -159,7 +159,7 @@ class DynamicFeedShopAdapter(private val itemClickListener: LocalAdsClickListene
                 shop.isShop_is_official -> {
                     ivBadge.show()
                     ivBadge.setImageDrawable(
-                            ImageLoader.getDrawable(ivBadge.context, com.tokopedia.design.R.drawable.ic_badge_shop_official)
+                            ImageLoader.getDrawable(ivBadge.context, com.tokopedia.topads.sdk.R.drawable.ic_badge_shop_official)
                     )
                     layoutParams.leftMargin = ivBadge.context.resources.getDimension(com.tokopedia.abstraction.R.dimen.dp_4).toInt()
                 }
