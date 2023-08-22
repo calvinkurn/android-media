@@ -401,10 +401,6 @@ class CartAdapter constructor(
         return cartDataList.size
     }
 
-    fun clearCompositeSubscription() {
-        compositeSubscription.clear()
-    }
-
     fun setShopSelected(position: Int, selected: Boolean) {
         val any = cartDataList[position]
         if (any is CartGroupHolderData) {
@@ -484,10 +480,6 @@ class CartAdapter constructor(
 
     fun setMainCoachMark(coachMark: CoachMark2, items: ArrayList<CoachMark2Item>) {
         mainCoachMark = Pair(coachMark, items)
-    }
-
-    fun setBulkActionCoachMark(coachMark: Pair<CoachMark2?, ArrayList<CoachMark2Item>>) {
-        bulkActionCoachMark = coachMark
     }
 
     override fun onNeedToRefreshSingleProduct(childPosition: Int) {
