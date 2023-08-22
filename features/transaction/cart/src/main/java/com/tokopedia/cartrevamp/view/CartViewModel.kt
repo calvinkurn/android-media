@@ -17,8 +17,13 @@ import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.cart.data.model.request.CartShopGroupTickerAggregatorParam
 import com.tokopedia.cart.data.model.request.UpdateCartWrapperRequest
+import com.tokopedia.cart.data.model.response.promo.LastApplyPromo
+import com.tokopedia.cart.data.model.response.promo.LastApplyPromoData
+import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
 import com.tokopedia.cart.domain.usecase.CartShopGroupTickerAggregatorUseCase
 import com.tokopedia.cart.domain.usecase.FollowShopUseCase
+import com.tokopedia.cart.domain.usecase.GetCartParam
+import com.tokopedia.cart.domain.usecase.GetCartRevampV4UseCase
 import com.tokopedia.cart.domain.usecase.UpdateAndReloadCartUseCase
 import com.tokopedia.cart.domain.usecase.UpdateCartAndGetLastApplyUseCase
 import com.tokopedia.cart.view.CartIdlingResource
@@ -32,11 +37,6 @@ import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
-import com.tokopedia.cartrevamp.data.model.response.promo.LastApplyPromo
-import com.tokopedia.cartrevamp.data.model.response.promo.LastApplyPromoData
-import com.tokopedia.cartrevamp.data.model.response.shopgroupsimplified.CartData
-import com.tokopedia.cartrevamp.domain.usecase.GetCartParam
-import com.tokopedia.cartrevamp.domain.usecase.GetCartRevampV4UseCase
 import com.tokopedia.cartrevamp.domain.usecase.SetCartlistCheckboxStateUseCase
 import com.tokopedia.cartrevamp.view.helper.CartDataHelper
 import com.tokopedia.cartrevamp.view.mapper.CartUiModelMapper
@@ -521,7 +521,13 @@ class CartViewModel @Inject constructor(
 
         launch {
             try {
-                val cartData = getCartRevampV4UseCase(GetCartParam(cartId, getCartState))
+                val cartData = getCartRevampV4UseCase(
+                    GetCartParam(
+                        cartId = cartId,
+                        state = getCartState,
+                        isCartReimagine = true
+                    )
+                )
                 onSuccessGetCartList(cartData, initialLoad)
             } catch (t: Throwable) {
                 onErrorGetCartList(t, initialLoad)

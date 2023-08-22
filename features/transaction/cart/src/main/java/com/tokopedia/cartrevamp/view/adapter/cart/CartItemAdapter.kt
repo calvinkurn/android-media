@@ -2,7 +2,7 @@ package com.tokopedia.cartrevamp.view.adapter.cart
 
 import android.widget.ImageView
 import com.airbnb.lottie.LottieAnimationView
-import com.tokopedia.cartrevamp.data.model.response.shopgroupsimplified.Action
+import com.tokopedia.cart.data.model.response.shopgroupsimplified.Action
 import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
 import com.tokopedia.iconunify.IconUnify
 

@@ -45,7 +45,5 @@ data class CartData(
     val coachmark: CoachmarkPlusResponse = CoachmarkPlusResponse(),
     @SuppressLint("Invalid Data Type")
     @SerializedName("show_bundle_price")
-    val showBundlePrice: Boolean = true,
-    @SerializedName("onboarding_data")
-    val onboardingData: List<CartOnBoardingData> = emptyList()
+    val showBundlePrice: Boolean = true
 )
