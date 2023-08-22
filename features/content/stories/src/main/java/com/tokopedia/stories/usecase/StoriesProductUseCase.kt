@@ -23,13 +23,13 @@ class StoriesProductUseCase @Inject constructor(
 
     override fun graphqlQuery(): String = QUERY
 
-    fun convertToMap(params: Param) : Map<String, Any> {
+    fun convertToMap(params: Param): Map<String, Any> {
         val whId = addressHelper.getChosenAddress().tokonow.warehouseId
         return mapOf(
             REQ_PARAM to mapOf(
                 SHOP_ID to params.id,
-                REQ_WAREHOUSE_ID to whId, //TODO hardcode
-                REQ_LIMIT to 5, //TODO() hardcode
+                REQ_WAREHOUSE_ID to whId,
+                REQ_LIMIT to 10,
                 REQ_WITH_TRACKING to false,
             )
         )
@@ -41,56 +41,57 @@ class StoriesProductUseCase @Inject constructor(
     )
 
     companion object {
-        private const val REQ_PARAM = "req"
+        private const val REQ_PARAM = "request"
         private const val SHOP_ID = "id"
         private const val REQ_WAREHOUSE_ID = "warehouseID"
         private const val REQ_LIMIT = "limit"
         private const val REQ_WITH_TRACKING = "withTracking"
 
         private const val QUERY = """
-            query StoriesProduct(${'$'}req: ContentStoryProductsRequest!){
-              contentStoryProducts(req:${'$'}req){
-                products {
-                    id
-                    shopID
-                    isParent
-                    parentID
-                    hasVariant
-                    name
-                    imageURL
-                    webLink
-                    appLink
-                    price
-                    priceFmt
-                    isDiscount
-                    discount
-                    discountFmt
-                    priceOriginal
-                    priceOriginalFmt
-                    priceDiscount
-                    priceDiscountFmt
-                    priceMasked
-                    priceMaskedFmt
-                    stockWording
-                    stockSoldPercentage
-                    isCartable
-                    totalSold
-                    isBebasOngkir
-                    bebasOngkirStatus
-                    bebasOngkirURL
-                    isStockAvailable
-                }
-                campaign {
+            query StoriesProduct(${'$'}request: ContentStoryProductsRequest!){
+              contentStoryProducts(request:${'$'}request){
+                campaign{
                     id
                     status
                     name
                     shortName
                     startTime
                     endTime
-                    restrictions {
-                        isActive
-                        label
+                    restrictions{
+                      isActive
+                      label
                     }
+                  }
+                products{
+                  id
+                  hasVariant
+                  isParent
+                  parentID
+                  name
+                  imageURL
+                  webLink
+                  appLink
+                  isDiscount
+                  discount
+                  discountFmt
+                  price
+                  priceFmt
+                  priceOriginal
+                  priceOriginalFmt
+                  priceDiscount
+                  priceDiscountFmt
+                  priceMasked
+                  priceMaskedFmt
+                  isBebasOngkir
+                  bebasOngkirStatus
+                  bebasOngkirURL
+                  totalSold
+                  totalSoldFmt
+                  isCartable
+                  isWishlisted
+                  isStockAvailable
+                  stockWording
+                  stockSoldPercentage
                 }
                 hasVoucher
                 nextCursor

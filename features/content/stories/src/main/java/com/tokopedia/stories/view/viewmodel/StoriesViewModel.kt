@@ -212,10 +212,10 @@ class StoriesViewModel @Inject constructor(
     }
 
     fun getProducts() {
-        viewModelScope.launch {
+        viewModelScope.launchCatchError(block = {
             val response = repository.getStoriesProducts("", "")
             products.value = response
-        }
+        }, onError = {})
     }
 
     companion object {
