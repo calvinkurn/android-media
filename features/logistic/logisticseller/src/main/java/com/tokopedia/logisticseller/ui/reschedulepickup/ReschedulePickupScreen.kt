@@ -361,9 +361,7 @@ private fun InputCustomReason(
                 .focusRequester(focusRequester)
                 .padding(vertical = 8.dp, horizontal = 16.dp),
             label = stringResource(id = R.string.label_detail_reason_reschedule_pickup),
-
             error = error,
-
             onValueChanged = { onOtherReasonChanged(it) },
             counter = 160
         )
