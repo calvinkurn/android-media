@@ -86,7 +86,6 @@ class SuggestionFragment :
         suggestionListener = this,
         suggestionTopShopListener = this,
         suggestionChipListener = this,
-        getReimagineVariant()
     )
     private val suggestionAdapter = SuggestionAdapter(suggestionTypeFactory)
 
@@ -114,6 +113,7 @@ class SuggestionFragment :
     }
 
     private fun prepareView() {
+        suggestionTypeFactory.initReimagineVariant(getReimagineVariant())
         recyclerViewSuggestion?.apply {
             adapter = suggestionAdapter
             layoutManager = LinearLayoutManager(context, VERTICAL, false)

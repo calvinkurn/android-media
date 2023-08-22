@@ -50,8 +50,12 @@ class InitialStateAdapterTypeFactory(
     private val chipListener: InitialStateChipListener,
     private val searchBarEducationListener: SearchBarEducationListener,
     private val mpsChipListener: MpsInitialStateListener,
-    private val reimagineVariant: Search1InstAuto
 ) : BaseAdapterTypeFactory(), InitialStateTypeFactory {
+    private var reimagineVariant: Search1InstAuto = Search1InstAuto.CONTROL
+
+    fun initReimagineVariant(reimagineVariant: Search1InstAuto) {
+        this.reimagineVariant = reimagineVariant
+    }
     override fun type(popularSearchTitleDataView: PopularSearchTitleDataView): Int {
         return PopularSearchTitleViewHolder.LAYOUT
     }

@@ -27,8 +27,13 @@ class SuggestionAdapterTypeFactory(
     private val suggestionListener: SuggestionListener,
     private val suggestionTopShopListener: SuggestionTopShopListener,
     private val suggestionChipListener: SuggestionChipListener,
-    private val reimagineVariant: Search1InstAuto
 ) : BaseAdapterTypeFactory(), SuggestionTypeFactory {
+
+    private var reimagineVariant: Search1InstAuto = Search1InstAuto.CONTROL
+
+    fun initReimagineVariant(reimagineVariant: Search1InstAuto) {
+        this.reimagineVariant = reimagineVariant
+    }
 
     override fun type(suggestionTitleDataView: SuggestionTitleDataView): Int {
         return SuggestionTitleViewHolder.LAYOUT

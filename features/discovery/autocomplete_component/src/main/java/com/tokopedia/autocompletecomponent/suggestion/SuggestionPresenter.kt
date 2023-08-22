@@ -29,6 +29,7 @@ import com.tokopedia.autocompletecomponent.util.getShopIdFromApplink
 import com.tokopedia.autocompletecomponent.util.isMps
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.reimagine.ReimagineRollence
+import com.tokopedia.discovery.common.reimagine.Search1InstAuto
 import com.tokopedia.discovery.common.utils.Dimension90Utils
 import com.tokopedia.discovery.common.utils.UrlParamUtils
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
@@ -200,7 +201,7 @@ class SuggestionPresenter @Inject constructor(
             if (shopSuggestionProcessing.shouldSkipSuggestionItem(item)) continue
 
             when (item.template) {
-                SUGGESTION_HEADER -> addTitleToVisitable(item)
+                SUGGESTION_HEADER  -> if(isReimagineVariantControl()) addTitleToVisitable(item)
                 SUGGESTION_SINGLE_LINE -> addSingleLineToVisitable(typePosition, item)
                 SUGGESTION_DOUBLE_LINE ->
                     addDoubleLineToVisitable(typePosition, item)
@@ -691,4 +692,7 @@ class SuggestionPresenter @Inject constructor(
     override fun markSuggestionCoachMark() {
         coachMarkLocalCache.markShowSuggestionCoachMark()
     }
+
+    private fun isReimagineVariantControl() = reimagine.search1InstAuto() == Search1InstAuto.CONTROL
+
 }

@@ -100,7 +100,6 @@ class InitialStateFragment:
         chipListener = this,
         searchBarEducationListener = this,
         mpsChipListener = this,
-        getReimagineVariant()
     )
     private val initialStateAdapter = InitialStateAdapter(initialStateAdapterTypeFactory)
 
@@ -122,6 +121,7 @@ class InitialStateFragment:
     }
 
     private fun prepareView() {
+        initialStateAdapterTypeFactory.initReimagineVariant(getReimagineVariant())
         recyclerViewInitialState?.also {
             it.adapter = initialStateAdapter
             it.layoutManager = LinearLayoutManager(context, VERTICAL, false)
