@@ -1,17 +1,23 @@
 package com.tokopedia.feedplus.browse.presentation
 
+import android.graphics.Color
+import android.graphics.Rect
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseAdapter
+import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseItemDecoration
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiModel
 import com.tokopedia.feedplus.databinding.FragmentFeedBrowseBinding
 import kotlinx.coroutines.flow.collectLatest
@@ -73,13 +79,28 @@ class FeedBrowseFragment @Inject constructor(
     }
 
     private fun setupView() {
+        (requireActivity() as AppCompatActivity)
+            .setSupportActionBar(binding.feedBrowseHeader)
+        binding.feedBrowseHeader.setBackgroundColor(Color.TRANSPARENT)
+
         binding.feedBrowseList.adapter = adapter
+        binding.feedBrowseList.addItemDecoration(
+            object : RecyclerView.ItemDecoration() {
+                override fun getItemOffsets(
+                    outRect: Rect,
+                    view: View,
+                    parent: RecyclerView,
+                    state: RecyclerView.State
+                ) {
+                    outRect.top = resources.getDimensionPixelOffset(R.dimen.feed_space_12)
+                    outRect.bottom = resources.getDimensionPixelOffset(R.dimen.feed_space_12)
+                }
+            }
+        )
     }
 
     private fun renderHeader(title: String) {
         binding.feedBrowseHeader.title = title
-        (requireActivity() as AppCompatActivity)
-            .setSupportActionBar(binding.feedBrowseHeader)
     }
 
     private fun renderContent(widgets: List<FeedBrowseUiModel>) {
