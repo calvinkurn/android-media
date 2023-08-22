@@ -19,6 +19,7 @@ import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.data.ProductAttachmentUiModel.Companion.statusActive
 import com.tokopedia.chat_common.data.ProductAttachmentUiModel.Companion.statusWarehouse
 import com.tokopedia.chat_common.view.adapter.BaseChatAdapter
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.reputation.common.constant.ReputationCommonConstants
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.topchat.chatroom.data.activityresult.UpdateProductStockResult
@@ -212,6 +213,14 @@ class TopChatRoomAdapter constructor(
     override fun addElement(position: Int, element: Visitable<*>?) {
         visitables.add(position, element)
         notifyItemInserted(position)
+    }
+
+    override fun removeElement(visitable: Visitable<*>?) {
+        val index = visitables.indexOf(visitable)
+        if (index >= Int.ZERO) {
+            visitables.remove(visitable)
+            notifyItemRemoved(index)
+        }
     }
 
     private fun postChangeToFallbackUiModel(lastKnownPosition: Int, element: ReviewUiModel) {
