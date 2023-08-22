@@ -1,7 +1,6 @@
 package com.tokopedia.product.detail.view.viewholder.a_plus_content
 
 import android.view.View
-import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintSet
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.iconunify.IconUnify
@@ -67,9 +66,7 @@ class APlusImageViewHolder(
             constraintSet.clone(binding.root)
             constraintSet.setDimensionRatio(binding.ivProductDetailAPlusImage.id, element.ratio)
             constraintSet.applyTo(binding.root)
-            binding.ivProductDetailAPlusImage.loadImage(element.url) {
-                listener(onSuccess = { bitmap, _ -> if (bitmap != null) makeImageScaleToFit() })
-            }
+            binding.ivProductDetailAPlusImage.loadImage(element.url)
             binding.ivProductDetailAPlusImage.show()
         } else {
             binding.ivProductDetailAPlusImage.gone()
@@ -118,19 +115,6 @@ class APlusImageViewHolder(
     }
 
     private fun resetImage() {
-        makeImageCenterFit()
         binding.ivProductDetailAPlusImage.clearImage()
-    }
-
-    // Used to make the image scale to fit the width and height
-    // Only call this when the image has successfully loaded
-    private fun makeImageScaleToFit() {
-        binding.ivProductDetailAPlusImage.scaleType = ImageView.ScaleType.FIT_XY
-    }
-
-    // Used to make the image scale to fit while keeping aspect ratio
-    // Call this when the view holder get recycled so that the image placeholder will not be stretched
-    private fun makeImageCenterFit() {
-        binding.ivProductDetailAPlusImage.scaleType = ImageView.ScaleType.FIT_CENTER
     }
 }

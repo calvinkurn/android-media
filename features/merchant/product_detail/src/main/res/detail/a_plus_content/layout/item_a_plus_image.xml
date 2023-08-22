@@ -84,8 +84,7 @@
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/iv_product_detail_a_plus_image"
-        app:typographyType="body_3"
-        app:typographyWeight="bold"
+        app:typographyType="display_3"
         tools:text="Baca Selengkapnya"
         tools:visibility="visible" />
 
