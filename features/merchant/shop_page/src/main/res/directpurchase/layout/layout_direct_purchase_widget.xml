@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:parentTag="androidx.appcompat.widget.LinearLayoutCompat"
+    tools:orientation="vertical"
+    tools:ignore="MissingDefaultResource"
+    android:clipChildren="false">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tp_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        app:typographyType="display_1"
+        app:typographyWeight="bold"
+        android:maxLines="1"
+        tools:text="Campaign Title Max.28"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="6dp"
+        />
+
+    <com.tokopedia.common.customview.FrameRatio
+        android:id="@+id/frame_banner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="6dp"
+        app:frame_ratio_width="6"
+        app:frame_ratio_height="1">
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/iv_title"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:unify_image_corner_radius="8"
+            android:scaleType="centerCrop"
+            android:layout_gravity="center_vertical"/>
+        <com.tokopedia.common.customview.MultipleContentSwitcher
+            android:id="@+id/switcher"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginStart="8dp"
+            android:layout_marginBottom="8dp"/>
+    </com.tokopedia.common.customview.FrameRatio>
+
+    <com.tokopedia.unifycomponents.TabsUnify
+        android:id="@+id/tabs"
+        android:layout_width="match_parent"
+        android:layout_height="82dp"
+        app:tabIndicatorGravity="stretch"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tabRippleColor="@null"
+        app:tabBackground = "@android:color/transparent"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="6dp"
+        android:clipToPadding="false"
+        android:clipChildren="false">
+
+        <!-- added programmatically -->
+    </com.tokopedia.unifycomponents.TabsUnify>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvProduct"
+        android:layout_width="match_parent"
+        android:layout_height="346dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:layout_marginTop="4dp"
+        android:clipToPadding="false"
+        android:clipChildren="false"/>
+
+</merge>

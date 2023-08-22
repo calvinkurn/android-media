@@ -29,6 +29,17 @@ android {
         viewBinding true
         buildConfig true
     }
+
+    sourceSets {
+        main {
+            res {
+                srcDirs = ['src/main/res/directpurchase',
+                           'src/main/res/common',
+                           'src/main/res'
+                ]
+            }
+        }
+    }
 }
 
 dependencies {
@@ -85,6 +96,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.empty_state
     implementation rootProject.ext.unifyDependencies.dialog
     implementation rootProject.ext.unifyDependencies.accordion
+    implementation rootProject.ext.unifyDependencies.viewAllCard
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
@@ -107,7 +119,7 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.swipeRefresh
     implementation rootProject.ext.supportLibDependencies.supportV4
     implementation rootProject.ext.miscDependencies.lottie
-    implementation (rootProject.ext.miscDependencies.flexBoxLayout){
+    implementation(rootProject.ext.miscDependencies.flexBoxLayout) {
         exclude group: 'com.android.support'
     }
     implementation rootProject.ext.miscDependencies.dagger
@@ -120,7 +132,7 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
-    implementation (rootProject.ext.firebase.crashlytics) {
+    implementation(rootProject.ext.firebase.crashlytics) {
         transitive = true
     }
     implementation projectOrAar(rootProject.ext.libraries.track)
@@ -150,7 +162,7 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
     androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
-    
+
     androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cassavaTest
 }
 
@@ -158,7 +170,7 @@ project.ext {
     artifactId = 'shop-page'
     groupId = 'com.tokopedia.merchant'
     versionName = "0.0.2"
-    artifactName ="shop_page-release"
+    artifactName = "shop_page-release"
 }
 
 apply from: '../../../publish_local.gradle'

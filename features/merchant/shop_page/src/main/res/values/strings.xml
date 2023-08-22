@@ -21,6 +21,8 @@
     <string name="shop_page_error_title_get_p1">Koneksi internetmu terganggu!</string>
     <string name="shop_page_error_sub_title_get_p1">Yuk, pastikan internetmu lancar dengan cek ulang paket data, WiFi, atau jaringan di tempatmu.</string>
     <string name="shop_page_atc_label_cta">Oke</string>
+    <string name="shop_page_see_more_product_desc">Cek produk lainnya di sini!</string>
+    <string name="shop_page_see_more">Lihat Semua</string>
 
     <!-- Shop Info -->
     <string name="shop_info_title">Shop Info</string>
