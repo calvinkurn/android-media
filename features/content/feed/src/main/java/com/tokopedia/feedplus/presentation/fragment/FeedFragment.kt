@@ -1254,7 +1254,7 @@ class FeedFragment :
 
     private fun getCurrentPosition(): Int {
         val snappedView = snapHelper.findSnapView(layoutManager) ?: return RecyclerView.NO_POSITION
-        return binding.rvFeedPost.getChildAdapterPosition(snappedView)
+        return _binding?.rvFeedPost?.getChildAdapterPosition(snappedView) ?: return RecyclerView.NO_POSITION
     }
 
     private fun onGoToLogin() {
