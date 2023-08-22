@@ -5,13 +5,11 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.core.view.WindowCompat
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -32,6 +30,7 @@ import com.tokopedia.buy_more_get_more.olp.presentation.bottomsheet.TncBottomShe
 import com.tokopedia.buy_more_get_more.olp.presentation.listener.AtcProductListener
 import com.tokopedia.buy_more_get_more.olp.presentation.listener.OfferingInfoListener
 import com.tokopedia.buy_more_get_more.olp.utils.BundleConstant
+import com.tokopedia.buy_more_get_more.olp.utils.Constant
 import com.tokopedia.buy_more_get_more.sort.activity.ShopProductSortActivity
 import com.tokopedia.buy_more_get_more.sort.listener.ProductSortListener
 import com.tokopedia.campaign.delegates.HasPaginatedList
@@ -184,7 +183,6 @@ class OfferLandingPageFragment :
                             warehouseIds = currentUiState.warehouseIds.map { it.toString() }
                         )
                     }
-
                 }
 
                 is Fail -> {
@@ -262,25 +260,26 @@ class OfferLandingPageFragment :
 
     override fun loadInitialData() {
         setViewState(VIEW_LOADING)
-        viewModel.processEvent(OlpEvent.SetInitialUiState(
-            offerIds = listOf(offerId.toIntOrZero()),
-            shopIds = if (shopIds.isNotEmpty()) {
-                shopIds.split(",").map { it.toIntSafely() }
-            } else {
-                emptyList()
-            },
-            productIds = if (productIds.isNotEmpty()) {
-                productIds.split(",").map { it.toIntSafely() }
-            } else {
-                emptyList()
-            },
-            warehouseIds = if (warehouseIds.isNotEmpty()) {
-                warehouseIds.split(",").map { it.toIntSafely() }
-            } else {
-                emptyList()
-            },
-            localCacheModel = localCacheModel
-        )
+        viewModel.processEvent(
+            OlpEvent.SetInitialUiState(
+                offerIds = listOf(offerId.toIntOrZero()),
+                shopIds = if (shopIds.isNotEmpty()) {
+                    shopIds.split(",").map { it.toIntSafely() }
+                } else {
+                    emptyList()
+                },
+                productIds = if (productIds.isNotEmpty()) {
+                    productIds.split(",").map { it.toIntSafely() }
+                } else {
+                    emptyList()
+                },
+                warehouseIds = if (warehouseIds.isNotEmpty()) {
+                    warehouseIds.split(",").map { it.toIntSafely() }
+                } else {
+                    emptyList()
+                },
+                localCacheModel = localCacheModel
+            )
         )
         viewModel.processEvent(OlpEvent.GetOfferingInfo)
     }
@@ -435,12 +434,20 @@ class OfferLandingPageFragment :
     }
 
     private fun openAtcVariant(product: OfferProductListUiModel.Product) {
+        val stringOfferIds = viewModel.currentState.offerIds.joinToString(",")
+        val stringWarehouseIds = viewModel.currentState.warehouseIds.joinToString(",")
         context?.let {
             AtcVariantHelper.goToAtcVariant(
                 context = it,
                 productId = product.productId.toString(),
                 pageSource = VariantPageSource.BUY_MORE_GET_MORE,
                 shopId = shopIds,
+                extParams = AtcVariantHelper.generateExtParams(
+                    mapOf(
+                        Constant.EXT_PARAM_OFFER_ID to stringOfferIds,
+                        Constant.EXT_PARAM_WAREHOUSE_ID to stringWarehouseIds
+                    )
+                ),
                 startActivitResult = this::startActivityForResult
             )
         }
