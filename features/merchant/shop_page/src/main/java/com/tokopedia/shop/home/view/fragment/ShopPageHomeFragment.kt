@@ -4289,6 +4289,10 @@ open class ShopPageHomeFragment :
         return trackingQueue
     }
 
+    override fun isShopHomeTabHasFestivity(): Boolean {
+        return shopHomeAdapter?.anyFestivityOnShopHomeWidget().orFalse()
+    }
+
     override fun onProductCardComparisonImpressed(
         recommendationItem: RecommendationItem,
         comparisonListModel: ComparisonListModel,
