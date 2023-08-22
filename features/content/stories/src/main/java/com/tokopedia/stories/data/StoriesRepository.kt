@@ -7,6 +7,6 @@ interface StoriesRepository {
 
     fun getStoriesData(): StoriesUiModel
 
-    fun getStoriesProducts() : List<ContentTaggedProductUiModel> //TODO() will handle pagination
+    suspend fun getStoriesProducts(shopId: String, cursor: String) : List<ContentTaggedProductUiModel>
 
 }

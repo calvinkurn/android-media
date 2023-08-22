@@ -213,7 +213,7 @@ class StoriesViewModel @Inject constructor(
 
     fun getProducts() {
         viewModelScope.launch {
-            val response = repository.getStoriesProducts()
+            val response = repository.getStoriesProducts("", "")
             products.value = response
         }
     }

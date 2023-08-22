@@ -1,15 +1,21 @@
 package com.tokopedia.stories.data
 
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.stories.uimodel.StoryAuthor
+import com.tokopedia.stories.usecase.ProductMapper
+import com.tokopedia.stories.usecase.StoriesProductUseCase
 import com.tokopedia.stories.view.model.StoriesDetailUiModel
 import com.tokopedia.stories.view.model.StoriesDetailUiModel.StoriesDetailUiEvent
 import com.tokopedia.stories.view.model.StoriesGroupUiModel
 import com.tokopedia.stories.view.model.StoriesUiModel
-import com.tokopedia.stories.view.model.listProduct
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class StoriesRepositoryImpl @Inject constructor() : StoriesRepository {
+class StoriesRepositoryImpl @Inject constructor(
+    private val dispatchers: CoroutineDispatchers,
+    private val storiesProductUseCase: StoriesProductUseCase,
+) : StoriesRepository {
 
     override fun getStoriesData(): StoriesUiModel {
         return StoriesUiModel(
@@ -27,21 +33,36 @@ class StoriesRepositoryImpl @Inject constructor() : StoriesRepository {
                             selected = 1,
                             event = StoriesDetailUiEvent.START,
                             imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/12/30/e1ada065-5330-4952-940c-4ff17220a47f.jpg",
-                            author = StoryAuthor.Shop(shopName = "Bukan Play 1", shopId = "11", avatarUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png", badgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png"),
+                            author = StoryAuthor.Shop(
+                                shopName = "Bukan Play 1",
+                                shopId = "11",
+                                avatarUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png",
+                                badgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png"
+                            ),
                         ),
                         StoriesDetailUiModel(
                             id = "2",
                             selected = 1,
                             event = StoriesDetailUiEvent.START,
                             imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2021/4/8/61592e1f-6c0d-408d-a535-57a4a6858bf0.jpg",
-                            author = StoryAuthor.Shop(shopName = "Bukan Play 1", shopId = "11", avatarUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png", badgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png"),
+                            author = StoryAuthor.Shop(
+                                shopName = "Bukan Play 1",
+                                shopId = "11",
+                                avatarUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png",
+                                badgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png"
+                            ),
                         ),
                         StoriesDetailUiModel(
                             id = "3",
                             selected = 1,
                             event = StoriesDetailUiEvent.START,
                             imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png",
-                            author = StoryAuthor.Shop(shopName = "Bukan Play 1", shopId = "11", avatarUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png", badgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png"),
+                            author = StoryAuthor.Shop(
+                                shopName = "Bukan Play 1",
+                                shopId = "11",
+                                avatarUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png",
+                                badgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png"
+                            ),
                         ),
                     ),
                 ),
@@ -57,42 +78,72 @@ class StoriesRepositoryImpl @Inject constructor() : StoriesRepository {
                             selected = 1,
                             event = StoriesDetailUiEvent.START,
                             imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/12/30/e1ada065-5330-4952-940c-4ff17220a47f.jpg",
-                            author = StoryAuthor.Shop(shopName = "Bukan Play 1", shopId = "11", avatarUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png", badgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png"),
+                            author = StoryAuthor.Shop(
+                                shopName = "Bukan Play 1",
+                                shopId = "11",
+                                avatarUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png",
+                                badgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png"
+                            ),
                         ),
                         StoriesDetailUiModel(
                             id = "5",
                             selected = 1,
                             event = StoriesDetailUiEvent.START,
                             imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2021/4/8/61592e1f-6c0d-408d-a535-57a4a6858bf0.jpg",
-                            author = StoryAuthor.Shop(shopName = "Bukan Play 1", shopId = "11", avatarUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png", badgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png"),
+                            author = StoryAuthor.Shop(
+                                shopName = "Bukan Play 1",
+                                shopId = "11",
+                                avatarUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png",
+                                badgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png"
+                            ),
                         ),
                         StoriesDetailUiModel(
                             id = "6",
                             selected = 1,
                             event = StoriesDetailUiEvent.START,
                             imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png",
-                            author = StoryAuthor.Shop(shopName = "Bukan Play 1", shopId = "11", avatarUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png", badgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png"),
+                            author = StoryAuthor.Shop(
+                                shopName = "Bukan Play 1",
+                                shopId = "11",
+                                avatarUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png",
+                                badgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png"
+                            ),
                         ),
                         StoriesDetailUiModel(
                             id = "7",
                             selected = 1,
                             event = StoriesDetailUiEvent.START,
                             imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/12/30/e1ada065-5330-4952-940c-4ff17220a47f.jpg",
-                            author = StoryAuthor.Shop(shopName = "Bukan Play 1", shopId = "11", avatarUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png", badgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png"),
+                            author = StoryAuthor.Shop(
+                                shopName = "Bukan Play 1",
+                                shopId = "11",
+                                avatarUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png",
+                                badgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png"
+                            ),
                         ),
                         StoriesDetailUiModel(
                             id = "8",
                             selected = 1,
                             event = StoriesDetailUiEvent.START,
                             imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2021/4/8/61592e1f-6c0d-408d-a535-57a4a6858bf0.jpg",
-                            author = StoryAuthor.Shop(shopName = "Bukan Play 1", shopId = "11", avatarUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png", badgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png"),
+                            author = StoryAuthor.Shop(
+                                shopName = "Bukan Play 1",
+                                shopId = "11",
+                                avatarUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png",
+                                badgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png"
+                            ),
                         ),
                         StoriesDetailUiModel(
                             id = "9",
                             selected = 1,
                             event = StoriesDetailUiEvent.START,
                             imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png",
-                            author = StoryAuthor.Shop(shopName = "Bukan Play 1", shopId = "11", avatarUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png", badgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png"),
+                            author = StoryAuthor.Shop(
+                                shopName = "Bukan Play 1",
+                                shopId = "11",
+                                avatarUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png",
+                                badgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png"
+                            ),
                         ),
                     ),
                 ),
@@ -108,14 +159,24 @@ class StoriesRepositoryImpl @Inject constructor() : StoriesRepository {
                             selected = 1,
                             event = StoriesDetailUiEvent.START,
                             imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png",
-                            author = StoryAuthor.Shop(shopName = "Bukan Play 1", shopId = "11", avatarUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png", badgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png"),
+                            author = StoryAuthor.Shop(
+                                shopName = "Bukan Play 1",
+                                shopId = "11",
+                                avatarUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png",
+                                badgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png"
+                            ),
                         ),
                         StoriesDetailUiModel(
                             id = "101",
                             selected = 1,
                             event = StoriesDetailUiEvent.START,
                             imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png",
-                            author = StoryAuthor.Shop(shopName = "Bukan Play 1", shopId = "11", avatarUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png", badgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png"),
+                            author = StoryAuthor.Shop(
+                                shopName = "Bukan Play 1",
+                                shopId = "11",
+                                avatarUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png",
+                                badgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png"
+                            ),
                         ),
                     ),
                 ),
@@ -131,42 +192,72 @@ class StoriesRepositoryImpl @Inject constructor() : StoriesRepository {
                             selected = 1,
                             event = StoriesDetailUiEvent.START,
                             imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/12/30/e1ada065-5330-4952-940c-4ff17220a47f.jpg",
-                            author = StoryAuthor.Shop(shopName = "Bukan Play 1", shopId = "11", avatarUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png", badgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png"),
+                            author = StoryAuthor.Shop(
+                                shopName = "Bukan Play 1",
+                                shopId = "11",
+                                avatarUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png",
+                                badgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png"
+                            ),
                         ),
                         StoriesDetailUiModel(
                             id = "12",
                             selected = 1,
                             event = StoriesDetailUiEvent.START,
                             imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2021/4/8/61592e1f-6c0d-408d-a535-57a4a6858bf0.jpg",
-                            author = StoryAuthor.Shop(shopName = "Bukan Play 1", shopId = "11", avatarUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png", badgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png"),
+                            author = StoryAuthor.Shop(
+                                shopName = "Bukan Play 1",
+                                shopId = "11",
+                                avatarUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png",
+                                badgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png"
+                            ),
                         ),
                         StoriesDetailUiModel(
                             id = "13",
                             selected = 1,
                             event = StoriesDetailUiEvent.START,
                             imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png",
-                            author = StoryAuthor.Shop(shopName = "Bukan Play 1", shopId = "11", avatarUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png", badgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png"),
+                            author = StoryAuthor.Shop(
+                                shopName = "Bukan Play 1",
+                                shopId = "11",
+                                avatarUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png",
+                                badgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png"
+                            ),
                         ),
                         StoriesDetailUiModel(
                             id = "14",
                             selected = 1,
                             event = StoriesDetailUiEvent.START,
                             imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/12/30/e1ada065-5330-4952-940c-4ff17220a47f.jpg",
-                            author = StoryAuthor.Shop(shopName = "Bukan Play 1", shopId = "11", avatarUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png", badgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png"),
+                            author = StoryAuthor.Shop(
+                                shopName = "Bukan Play 1",
+                                shopId = "11",
+                                avatarUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png",
+                                badgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png"
+                            ),
                         ),
                         StoriesDetailUiModel(
                             id = "15",
                             selected = 1,
                             event = StoriesDetailUiEvent.START,
                             imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2021/4/8/61592e1f-6c0d-408d-a535-57a4a6858bf0.jpg",
-                            author = StoryAuthor.Shop(shopName = "Bukan Play 1", shopId = "11", avatarUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png", badgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png"),
+                            author = StoryAuthor.Shop(
+                                shopName = "Bukan Play 1",
+                                shopId = "11",
+                                avatarUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png",
+                                badgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png"
+                            ),
                         ),
                         StoriesDetailUiModel(
                             id = "16",
                             selected = 1,
                             event = StoriesDetailUiEvent.START,
                             imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png",
-                            author = StoryAuthor.Shop(shopName = "Bukan Play 1", shopId = "11", avatarUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png", badgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png"),
+                            author = StoryAuthor.Shop(
+                                shopName = "Bukan Play 1",
+                                shopId = "11",
+                                avatarUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png",
+                                badgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png"
+                            ),
                         ),
                     ),
                 ),
@@ -182,14 +273,24 @@ class StoriesRepositoryImpl @Inject constructor() : StoriesRepository {
                             selected = 1,
                             event = StoriesDetailUiEvent.START,
                             imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/12/30/e1ada065-5330-4952-940c-4ff17220a47f.jpg",
-                            author = StoryAuthor.Shop(shopName = "Bukan Play 1", shopId = "11", avatarUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png", badgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png"),
+                            author = StoryAuthor.Shop(
+                                shopName = "Bukan Play 1",
+                                shopId = "11",
+                                avatarUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png",
+                                badgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png"
+                            ),
                         ),
                         StoriesDetailUiModel(
                             id = "18",
                             selected = 1,
                             event = StoriesDetailUiEvent.START,
                             imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/12/30/e1ada065-5330-4952-940c-4ff17220a47f.jpg",
-                            author = StoryAuthor.Shop(shopName = "Bukan Play 1", shopId = "11", avatarUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png", badgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png"),
+                            author = StoryAuthor.Shop(
+                                shopName = "Bukan Play 1",
+                                shopId = "11",
+                                avatarUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png",
+                                badgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png"
+                            ),
                         ),
                     ),
                 ),
@@ -205,28 +306,48 @@ class StoriesRepositoryImpl @Inject constructor() : StoriesRepository {
                             selected = 1,
                             event = StoriesDetailUiEvent.START,
                             imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/12/30/e1ada065-5330-4952-940c-4ff17220a47f.jpg",
-                            author = StoryAuthor.Shop(shopName = "Bukan Play 1", shopId = "11", avatarUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png", badgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png"),
+                            author = StoryAuthor.Shop(
+                                shopName = "Bukan Play 1",
+                                shopId = "11",
+                                avatarUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png",
+                                badgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png"
+                            ),
                         ),
                         StoriesDetailUiModel(
                             id = "20",
                             selected = 1,
                             event = StoriesDetailUiEvent.START,
                             imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2021/4/8/61592e1f-6c0d-408d-a535-57a4a6858bf0.jpg",
-                            author = StoryAuthor.Shop(shopName = "Bukan Play 1", shopId = "11", avatarUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png", badgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png"),
+                            author = StoryAuthor.Shop(
+                                shopName = "Bukan Play 1",
+                                shopId = "11",
+                                avatarUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png",
+                                badgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png"
+                            ),
                         ),
                         StoriesDetailUiModel(
                             id = "21",
                             selected = 1,
                             event = StoriesDetailUiEvent.START,
                             imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png",
-                            author = StoryAuthor.Shop(shopName = "Bukan Play 1", shopId = "11", avatarUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png", badgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png"),
+                            author = StoryAuthor.Shop(
+                                shopName = "Bukan Play 1",
+                                shopId = "11",
+                                avatarUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png",
+                                badgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png"
+                            ),
                         ),
                         StoriesDetailUiModel(
                             id = "22",
                             selected = 1,
                             event = StoriesDetailUiEvent.START,
                             imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/12/30/e1ada065-5330-4952-940c-4ff17220a47f.jpg",
-                            author = StoryAuthor.Shop(shopName = "Bukan Play 1", shopId = "11", avatarUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png", badgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png"),
+                            author = StoryAuthor.Shop(
+                                shopName = "Bukan Play 1",
+                                shopId = "11",
+                                avatarUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png",
+                                badgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png"
+                            ),
                         ),
                     ),
                 ),
@@ -242,21 +363,36 @@ class StoriesRepositoryImpl @Inject constructor() : StoriesRepository {
                             selected = 1,
                             event = StoriesDetailUiEvent.START,
                             imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/12/30/e1ada065-5330-4952-940c-4ff17220a47f.jpg",
-                            author = StoryAuthor.Shop(shopName = "Bukan Play 1", shopId = "11", avatarUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png", badgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png"),
+                            author = StoryAuthor.Shop(
+                                shopName = "Bukan Play 1",
+                                shopId = "11",
+                                avatarUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png",
+                                badgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png"
+                            ),
                         ),
                         StoriesDetailUiModel(
                             id = "24",
                             selected = 1,
                             event = StoriesDetailUiEvent.START,
                             imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2021/4/8/61592e1f-6c0d-408d-a535-57a4a6858bf0.jpg",
-                            author = StoryAuthor.Shop(shopName = "Bukan Play 1", shopId = "11", avatarUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png", badgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png"),
+                            author = StoryAuthor.Shop(
+                                shopName = "Bukan Play 1",
+                                shopId = "11",
+                                avatarUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png",
+                                badgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png"
+                            ),
                         ),
                         StoriesDetailUiModel(
                             id = "25",
                             selected = 1,
                             event = StoriesDetailUiEvent.START,
                             imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/2/9/11c96da3-c58d-47d8-8d01-b0b4b6f01364.jpg",
-                            author = StoryAuthor.Shop(shopName = "Bukan Play 1", shopId = "11", avatarUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png", badgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png"),
+                            author = StoryAuthor.Shop(
+                                shopName = "Bukan Play 1",
+                                shopId = "11",
+                                avatarUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png",
+                                badgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png"
+                            ),
                         ),
                     ),
                 ),
@@ -272,22 +408,37 @@ class StoriesRepositoryImpl @Inject constructor() : StoriesRepository {
                             selected = 1,
                             event = StoriesDetailUiEvent.START,
                             imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2021/4/8/61592e1f-6c0d-408d-a535-57a4a6858bf0.jpg",
-                            author = StoryAuthor.Shop(shopName = "Bukan Play 1", shopId = "11", avatarUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png", badgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png"),
+                            author = StoryAuthor.Shop(
+                                shopName = "Bukan Play 1",
+                                shopId = "11",
+                                avatarUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png",
+                                badgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png"
+                            ),
                         ),
                         StoriesDetailUiModel(
                             id = "266",
                             selected = 1,
                             event = StoriesDetailUiEvent.START,
                             imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2021/4/8/61592e1f-6c0d-408d-a535-57a4a6858bf0.jpg",
-                            author = StoryAuthor.Shop(shopName = "Bukan Play 1", shopId = "11", avatarUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png", badgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png"),
+                            author = StoryAuthor.Shop(
+                                shopName = "Bukan Play 1",
+                                shopId = "11",
+                                avatarUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png",
+                                badgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png"
+                            ),
                         ),
                         StoriesDetailUiModel(
                             id = "267",
                             selected = 1,
                             event = StoriesDetailUiEvent.START,
                             imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2021/4/8/61592e1f-6c0d-408d-a535-57a4a6858bf0.jpg",
-                            author = StoryAuthor.Shop(shopName = "Bukan Play 1", shopId = "11", avatarUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png", badgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png"),
+                            author = StoryAuthor.Shop(
+                                shopName = "Bukan Play 1",
+                                shopId = "11",
+                                avatarUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png",
+                                badgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png"
                             ),
+                        ),
                     ),
                 ),
                 StoriesGroupUiModel(
@@ -302,14 +453,24 @@ class StoriesRepositoryImpl @Inject constructor() : StoriesRepository {
                             selected = 1,
                             event = StoriesDetailUiEvent.START,
                             imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/12/30/e1ada065-5330-4952-940c-4ff17220a47f.jpg",
-                            author = StoryAuthor.Shop(shopName = "Bukan Play 1", shopId = "11", avatarUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png", badgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png"),
+                            author = StoryAuthor.Shop(
+                                shopName = "Bukan Play 1",
+                                shopId = "11",
+                                avatarUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png",
+                                badgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png"
+                            ),
                         ),
                         StoriesDetailUiModel(
                             id = "28",
                             selected = 1,
                             event = StoriesDetailUiEvent.START,
                             imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2021/4/8/61592e1f-6c0d-408d-a535-57a4a6858bf0.jpg",
-                            author = StoryAuthor.Shop(shopName = "Bukan Play 1", shopId = "11", avatarUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png", badgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png"),
+                            author = StoryAuthor.Shop(
+                                shopName = "Bukan Play 1",
+                                shopId = "11",
+                                avatarUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png",
+                                badgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png"
+                            ),
                         ),
                     ),
                 ),
@@ -325,35 +486,60 @@ class StoriesRepositoryImpl @Inject constructor() : StoriesRepository {
                             selected = 1,
                             event = StoriesDetailUiEvent.START,
                             imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/12/30/e1ada065-5330-4952-940c-4ff17220a47f.jpg",
-                            author = StoryAuthor.Shop(shopName = "Bukan Play 1", shopId = "11", avatarUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png", badgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png"),
+                            author = StoryAuthor.Shop(
+                                shopName = "Bukan Play 1",
+                                shopId = "11",
+                                avatarUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png",
+                                badgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png"
+                            ),
                         ),
                         StoriesDetailUiModel(
                             id = "30",
                             selected = 1,
                             event = StoriesDetailUiEvent.START,
                             imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2021/4/8/61592e1f-6c0d-408d-a535-57a4a6858bf0.jpg",
-                            author = StoryAuthor.Shop(shopName = "Bukan Play 1", shopId = "11", avatarUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png", badgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png"),
+                            author = StoryAuthor.Shop(
+                                shopName = "Bukan Play 1",
+                                shopId = "11",
+                                avatarUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png",
+                                badgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png"
+                            ),
                         ),
                         StoriesDetailUiModel(
                             id = "31",
                             selected = 1,
                             event = StoriesDetailUiEvent.START,
                             imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png",
-                            author = StoryAuthor.Shop(shopName = "Bukan Play 1", shopId = "11", avatarUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png", badgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png"),
+                            author = StoryAuthor.Shop(
+                                shopName = "Bukan Play 1",
+                                shopId = "11",
+                                avatarUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png",
+                                badgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png"
+                            ),
                         ),
                         StoriesDetailUiModel(
                             id = "32",
                             selected = 1,
                             event = StoriesDetailUiEvent.START,
                             imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/12/30/e1ada065-5330-4952-940c-4ff17220a47f.jpg",
-                            author = StoryAuthor.Shop(shopName = "Bukan Play 1", shopId = "11", avatarUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png", badgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png"),
+                            author = StoryAuthor.Shop(
+                                shopName = "Bukan Play 1",
+                                shopId = "11",
+                                avatarUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png",
+                                badgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png"
+                            ),
                         ),
                         StoriesDetailUiModel(
                             id = "33",
                             selected = 1,
                             event = StoriesDetailUiEvent.START,
                             imageContent = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2021/4/8/61592e1f-6c0d-408d-a535-57a4a6858bf0.jpg",
-                            author = StoryAuthor.Shop(shopName = "Bukan Play 1", shopId = "11", avatarUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png", badgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png"),
+                            author = StoryAuthor.Shop(
+                                shopName = "Bukan Play 1",
+                                shopId = "11",
+                                avatarUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/8/25/bc26363b-d20d-472b-9427-341c3d17d66e.png",
+                                badgeUrl = "https://images.tokopedia.net/img/official_store/badge_os.png"
+                            ),
                         ),
                     ),
                 ),
@@ -361,7 +547,20 @@ class StoriesRepositoryImpl @Inject constructor() : StoriesRepository {
         )
     }
 
-    override fun getStoriesProducts(): List<ContentTaggedProductUiModel> {
-        return listProduct
+    override suspend fun getStoriesProducts(
+        shopId: String,
+        cursor: String
+    ): List<ContentTaggedProductUiModel> {
+        return withContext(dispatchers.io) {
+            val response = storiesProductUseCase(
+                storiesProductUseCase.convertToMap(
+                    StoriesProductUseCase.Param(
+                        id = shopId,
+                        cursor = cursor
+                    )
+                )
+            )
+            ProductMapper.mapProducts(response.data, "")
+        }
     }
 }

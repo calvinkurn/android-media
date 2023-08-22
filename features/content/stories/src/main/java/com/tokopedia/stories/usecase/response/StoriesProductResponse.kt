@@ -1,6 +1,8 @@
 package com.tokopedia.stories.usecase.response
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.stories.usecase.response.StoriesProductResponse.Data.Campaign.Restriction.Companion.FOLLOWERS_ONLY_RESTRICTION
 
 /**
  * @author by astidhiyaa on 21/08/23
@@ -133,13 +135,22 @@ data class StoriesProductResponse(
             @SerializedName("restrictions")
             val restrictions: List<Restriction> = emptyList(),
         ) {
+            val isFollowRestriction: Boolean
+                get() = restrictions.firstOrNull()?.let {
+                    it.label == FOLLOWERS_ONLY_RESTRICTION && it.isActive
+                }.orFalse()
+
             data class Restriction(
                 @SerializedName("label")
                 val label: String = "",
 
                 @SerializedName("isActive")
                 val isActive: Boolean = false,
-            )
+            ) {
+                companion object {
+                    const val FOLLOWERS_ONLY_RESTRICTION = "followers_only"
+                }
+            }
         }
     }
 }

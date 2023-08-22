@@ -15,35 +15,34 @@ class StoriesProductUseCase @Inject constructor(
     private val repo: GraphqlRepository,
     dispatchers: CoroutineDispatchers,
     private val addressHelper: ChosenAddressRequestHelper,
-) : CoroutineUseCase<StoriesProductUseCase.Param, StoriesProductResponse>(dispatchers.io) {
+) : CoroutineUseCase<Map<String, Any>, StoriesProductResponse>(dispatchers.io) {
 
-    override suspend fun execute(params: Param): StoriesProductResponse {
-        return repo.request(graphqlQuery(), params.convertToMap())
+    override suspend fun execute(params: Map<String, Any>): StoriesProductResponse {
+        return repo.request(graphqlQuery(), params)
     }
 
     override fun graphqlQuery(): String = QUERY
 
+    fun convertToMap(params: Param) : Map<String, Any> {
+        val whId = addressHelper.getChosenAddress().tokonow.warehouseId
+        return mapOf(
+            REQ_PARAM to mapOf(
+                SHOP_ID to params.id,
+                REQ_WAREHOUSE_ID to whId, //TODO hardcode
+                REQ_LIMIT to 5, //TODO() hardcode
+                REQ_WITH_TRACKING to false,
+            )
+        )
+    }
+
     data class Param(
         val id: String,
-        val warehouseID: String,
-        val limit: Int,
         val cursor: String,
-    ) {
-        fun convertToMap() : Map<String, Any> {
-            return mapOf(
-                REQ_PARAM to mapOf(
-                    REQ_PRODUCT_ID to id,
-                    REQ_WAREHOUSE_ID to warehouseID, //TODO hardcode
-                    REQ_LIMIT to limit, //TODO() hardcode
-                    REQ_WITH_TRACKING to false,
-                )
-            )
-        }
-    }
+    )
 
     companion object {
         private const val REQ_PARAM = "req"
-        private const val REQ_PRODUCT_ID = "id"
+        private const val SHOP_ID = "id"
         private const val REQ_WAREHOUSE_ID = "warehouseID"
         private const val REQ_LIMIT = "limit"
         private const val REQ_WITH_TRACKING = "withTracking"
