@@ -7,6 +7,8 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.applyIconUnifyColor
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
@@ -68,9 +70,19 @@ class RechargeCheckBalanceWidget @JvmOverloads constructor(
         }
     }
 
-    fun showWarningMessage(message: String, iconUrl: String) {
-        showWidgetMessage(message, iconUrl)
+    fun showWarningMessage(message: String) {
+        showWidgetMessage(message)
         binding.run {
+            checkBalanceWarningIcon.run {
+                setImage(
+                    IconUnify.WARNING,
+                    MethodChecker.getColor(
+                        context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_YN500
+                    )
+                )
+                show()
+            }
             checkBalanceWarningContainer.setBackgroundColor(
                 MethodChecker.getColor(
                     context,
@@ -86,9 +98,19 @@ class RechargeCheckBalanceWidget @JvmOverloads constructor(
         }
     }
 
-    fun showCriticalMessage(message: String, iconUrl: String) {
-        showWidgetMessage(message, iconUrl)
+    fun showCriticalMessage(message: String) {
+        showWidgetMessage(message)
         binding.run {
+            checkBalanceWarningIcon.run {
+                setImage(
+                    IconUnify.WARNING,
+                    MethodChecker.getColor(
+                        context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_RN500
+                    )
+                )
+                show()
+            }
             checkBalanceWarningContainer.setBackgroundColor(
                 MethodChecker.getColor(
                     context,
@@ -104,9 +126,10 @@ class RechargeCheckBalanceWidget @JvmOverloads constructor(
         }
     }
 
-    fun showInformationMessage(message: String, iconUrl: String) {
-        showWidgetMessage(message, iconUrl)
+    fun showInformationMessage(message: String) {
+        showWidgetMessage(message)
         binding.run {
+            checkBalanceWarningIcon.hide()
             checkBalanceWarningContainer.setBackgroundColor(
                 MethodChecker.getColor(
                     context,
@@ -122,10 +145,9 @@ class RechargeCheckBalanceWidget @JvmOverloads constructor(
         }
     }
 
-    private fun showWidgetMessage(message: String, iconUrl: String) {
+    private fun showWidgetMessage(message: String) {
         binding.run {
             checkBalanceWarningContainer.show()
-            checkBalanceWarningIcon.loadImage(iconUrl)
             checkBalanceWarningTxt.text = MethodChecker.fromHtml(message)
             checkBalanceWarningContainer.setOnClickListener {
                 checkBalanceWidgetListener?.onClickWidget()

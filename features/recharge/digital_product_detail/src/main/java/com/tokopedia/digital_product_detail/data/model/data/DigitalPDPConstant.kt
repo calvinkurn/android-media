@@ -48,4 +48,5 @@ object DigitalPDPConstant {
     const val EXTRA_CHECK_BALANCE_ACCESS_TOKEN = "indosat_check_balance_access_token"
     const val INDOSAT_CHECK_BALANCE_TYPE_OTP = "otp"
     const val INDOSAT_CHECK_BALANCE_TYPE_WIDGET = "widget"
+    const val INDOSAT_CHECK_BALANCE_TYPE_ERROR = "error"
 }

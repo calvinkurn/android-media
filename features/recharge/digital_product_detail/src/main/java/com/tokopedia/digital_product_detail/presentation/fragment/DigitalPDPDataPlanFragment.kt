@@ -46,6 +46,7 @@ import com.tokopedia.digital_product_detail.R
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.APPLINK_OMNI_DATA_CODE
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.FAVNUM_PERMISSION_CHECKER_IS_DENIED
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.INDOSAT_CHECK_BALANCE_TYPE_ERROR
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.INDOSAT_CHECK_BALANCE_TYPE_OTP
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.INDOSAT_CHECK_BALANCE_TYPE_WIDGET
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.INPUT_ACTION_TRACKING_DELAY
@@ -79,6 +80,8 @@ import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPWidgetM
 import com.tokopedia.digital_product_detail.presentation.utils.setupDynamicScrollListener
 import com.tokopedia.digital_product_detail.presentation.utils.toggle
 import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPDataPlanViewModel
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
@@ -647,10 +650,12 @@ class DigitalPDPDataPlanFragment :
     }
 
     private fun getIndosatCheckBalance() {
-        val clientNumbers =
-            listOf(binding?.rechargePdpPaketDataClientNumberWidget?.getInputNumber() ?: "")
-        viewModel.setRechargeCheckBalanceLoading()
-        viewModel.getRechargeCheckBalance(clientNumbers, listOf(categoryId))
+        if (DigitalPDPCategoryUtil.isOperatorIndosat(operator.id)) {
+            val clientNumbers =
+                listOf(binding?.rechargePdpPaketDataClientNumberWidget?.getInputNumber() ?: "")
+            viewModel.setRechargeCheckBalanceLoading()
+            viewModel.getRechargeCheckBalance(clientNumbers, listOf(categoryId))
+        }
     }
 
     private fun saveIndosatAccessToken(accessToken: String) {
@@ -795,6 +800,7 @@ class DigitalPDPDataPlanFragment :
 
             when (checkBalanceData.widgetType.lowercase()) {
                 INDOSAT_CHECK_BALANCE_TYPE_OTP -> {
+                    viewModel.checkBalanceFailCounter = Int.ZERO
                     renderCheckBalanceOTPWidget(
                         DigitalPDPWidgetMapper.mapCheckBalanceOTPToWidgetModels(checkBalanceData)
                     )
@@ -807,6 +813,7 @@ class DigitalPDPDataPlanFragment :
                     )
                 }
                 INDOSAT_CHECK_BALANCE_TYPE_WIDGET -> {
+                    viewModel.checkBalanceFailCounter = Int.ZERO
                     renderCheckBalanceWidget(
                         DigitalPDPWidgetMapper.mapCheckBalanceToWidgetBalanceInfoModels(checkBalanceData),
                         DigitalPDPWidgetMapper.mapCheckBalanceToBottomSheetBalanceDetailModels(checkBalanceData)
@@ -820,6 +827,20 @@ class DigitalPDPDataPlanFragment :
                         userSession.userId
                     )
                 }
+                INDOSAT_CHECK_BALANCE_TYPE_ERROR -> {
+                    binding?.rechargePdpPaketDataClientNumberWidget?.showCheckBalanceWidgetLocalLoad {
+                        showCheckBalanceWidgetLocalLoad {
+                            viewModel.checkBalanceFailCounter++
+                            if (viewModel.isCheckBalanceFailedMoreThanThreeTimes()) {
+                                showCheckBalanceWarning(
+                                    checkBalanceData.subtitle,
+                                    checkBalanceData.campaignLabelTextColor)
+                            } else {
+                                getIndosatCheckBalance()
+                            }
+                        }
+                    }
+                }
                 else -> return
             }
 
@@ -827,7 +848,6 @@ class DigitalPDPDataPlanFragment :
             if (checkBalanceData.campaignLabelText.isNotEmpty()) {
                 showCheckBalanceWarning(
                     checkBalanceData.campaignLabelText,
-                    checkBalanceData.iconUrl,
                     checkBalanceData.campaignLabelTextColor
                 )
                 removeClientNumberBottomPadding()

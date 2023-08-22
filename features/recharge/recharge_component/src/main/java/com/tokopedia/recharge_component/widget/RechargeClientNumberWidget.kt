@@ -441,12 +441,12 @@ class RechargeClientNumberWidget @JvmOverloads constructor(
         }
     }
 
-    fun showCheckBalanceWarning(message: String, iconUrl: String, type: String) {
+    fun showCheckBalanceWarning(message: String, type: String) {
         binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetCheckBalance.run {
             when (type) {
-                CHECK_BALANCE_WARNING -> showWarningMessage(message, iconUrl)
-                CHECK_BALANCE_CRITICAL -> showCriticalMessage(message, iconUrl)
-                CHECK_BALANCE_INFORMATION -> showInformationMessage(message, iconUrl)
+                CHECK_BALANCE_WARNING -> showWarningMessage(message)
+                CHECK_BALANCE_CRITICAL -> showCriticalMessage(message)
+                CHECK_BALANCE_INFORMATION -> showInformationMessage(message)
             }
         }
     }

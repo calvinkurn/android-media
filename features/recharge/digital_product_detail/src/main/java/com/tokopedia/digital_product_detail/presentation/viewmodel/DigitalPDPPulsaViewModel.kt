@@ -59,6 +59,8 @@ class DigitalPDPPulsaViewModel @Inject constructor(
     var selectedGridProduct = SelectedProduct()
     var recomCheckoutUrl = ""
 
+    var checkBalanceFailCounter = 0
+
     val digitalCheckoutPassData = DigitalCheckoutPassData.Builder()
         .action(DigitalCheckoutPassData.DEFAULT_ACTION)
         .instantCheckout(CHECKOUT_NO_PROMO)
@@ -288,6 +290,10 @@ class DigitalPDPPulsaViewModel @Inject constructor(
         }
     }
 
+    fun isCheckBalanceFailedMoreThanThreeTimes(): Boolean {
+        return checkBalanceFailCounter > CHECK_BALANCE_FAIL_THRESHOLD
+    }
+
     fun updateCheckoutPassData(
         denomData: DenomData,
         idemPotencyKeyActive: String,
@@ -392,5 +398,9 @@ class DigitalPDPPulsaViewModel @Inject constructor(
                 delay(skipMs)
             }
         }
+    }
+
+    companion object {
+        private const val CHECK_BALANCE_FAIL_THRESHOLD = 3
     }
 }

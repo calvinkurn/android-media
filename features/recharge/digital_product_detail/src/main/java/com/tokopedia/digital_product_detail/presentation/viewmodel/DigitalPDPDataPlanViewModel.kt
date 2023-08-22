@@ -63,6 +63,8 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
     var selectedFullProduct = SelectedProduct()
     var recomCheckoutUrl = ""
 
+    var checkBalanceFailCounter = 0
+
     val digitalCheckoutPassData = DigitalCheckoutPassData.Builder()
         .action(DigitalCheckoutPassData.DEFAULT_ACTION)
         .instantCheckout(CHECKOUT_NO_PROMO)
@@ -311,6 +313,10 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
         }
     }
 
+    fun isCheckBalanceFailedMoreThanThreeTimes(): Boolean {
+        return checkBalanceFailCounter > CHECK_BALANCE_FAIL_THRESHOLD
+    }
+
     fun getMCCMProducts(clientNumbers: List<String>, dgCategoryIds: List<Int>) {
         mccmProductsJob = viewModelScope.launchCatchError(dispatchers.main, block = {
             delay(DELAY_MULTI_TAB)
@@ -503,5 +509,6 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
     companion object {
         const val FILTER_PARAM_NAME = "param_name"
         const val FILTER_VALUE = "value"
+        private const val CHECK_BALANCE_FAIL_THRESHOLD = 3
     }
 }
