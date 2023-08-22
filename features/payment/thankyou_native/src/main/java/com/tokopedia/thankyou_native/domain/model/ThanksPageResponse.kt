@@ -267,12 +267,14 @@ data class OrderGroupList(
     val id: String,
     @SerializedName("total_shipping_fee")
     val totalShippingFee: Float,
+    @SuppressLint("Invalid Data Type")
     @SerializedName("total_bebasongkir_price")
     val totalBebasongkirPrice: Float,
     @SerializedName("dest_address")
     val destAddress: String,
     @SerializedName("shipping_service_name")
     val shippingServiceName: String,
+    @SuppressLint("Invalid Data Type")
     @SerializedName("total_insurance_price")
     val totalInsurancePrice: Float,
     @SerializedName("shipper_name")

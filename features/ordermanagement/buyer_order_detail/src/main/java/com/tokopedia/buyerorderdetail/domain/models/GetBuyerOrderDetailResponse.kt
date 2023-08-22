@@ -45,6 +45,9 @@ data class GetBuyerOrderDetailResponse(
             @SerializedName("order_id")
             val orderId: String = "0",
             @Expose
+            @SerializedName("group_type")
+            val groupType: String = "0",
+            @Expose
             @SerializedName("order_status")
             val orderStatus: OrderStatus = OrderStatus(),
             @Expose
@@ -113,7 +116,7 @@ data class GetBuyerOrderDetailResponse(
                     @SerializedName("title")
                     val title: String = "",
                     @SerializedName("description")
-                    val description: String = "",
+                    val description: String = ""
                 )
                 data class EpharmacyData(
                     @SerializedName("consultation_date")

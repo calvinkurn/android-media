@@ -46,6 +46,7 @@ query $queryName(${"$"}param : OngkirRatesV3Input!) {
           text_service_desc
           text_eta_summarize
           error_code
+          text_service_ticker
         }
         features {
           dynamic_price {
@@ -314,6 +315,7 @@ internal fun ratesQuery() = """
               text_service_desc
               text_eta_summarize
               error_code
+              text_service_ticker
             }
             features {
               dynamic_price {

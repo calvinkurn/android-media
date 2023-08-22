@@ -9,6 +9,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.logisticCommon.data.constant.CourierConstant
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData
@@ -117,12 +119,7 @@ class ShippingCourierBottomsheet : ShippingCourierAdapterListener, BottomSheetUn
 
     private fun setupRecyclerView() {
         shippingCourierAdapter.setShippingCourierAdapterListener(this)
-        shippingCourierAdapter.setShippingCourierViewModels(
-            convertCourierListToUiModel(
-                mCourierModelList,
-                isOcc
-            )
-        )
+        shippingCourierAdapter.setShippingCourierViewModels(convertCourierListToUiModel(mCourierModelList, mPreOrderModel))
         shippingCourierAdapter.setCartPosition(cartPosition)
         val linearLayoutManager = LinearLayoutManager(
             activity,
@@ -165,17 +162,25 @@ class ShippingCourierBottomsheet : ShippingCourierAdapterListener, BottomSheetUn
         dismiss()
     }
 
+    private fun showErrorPage(message: String) {
+        pbLoading?.visibility = View.GONE
+        llContent?.visibility = View.GONE
+        llNetworkErrorView?.visibility = View.VISIBLE
+        NetworkErrorHelper.showEmptyState(activity, llNetworkErrorView, message) {
+            showLoading()
+        }
+    }
+
     private fun convertCourierListToUiModel(
         shippingCourierUiModels: List<ShippingCourierUiModel>,
-        isOcc: Boolean
+        preOrderModel: PreOrderModel?
     ): MutableList<RatesViewModelType> {
         val eligibleCourierList =
-            shippingCourierUiModels.filter { courier -> !courier.productData.isUiRatesHidden }
-                .toMutableList()
+            shippingCourierUiModels.filter { courier -> !courier.productData.isUiRatesHidden }.toMutableList()
         val uiModel: MutableList<RatesViewModelType> = mutableListOf()
         uiModel.addAll(eligibleCourierList)
         eligibleCourierList.getOrNull(0)?.let { firstCourier ->
-            setNotifierModel(uiModel, firstCourier, isOcc)
+            setNotifierModel(uiModel, firstCourier)
             firstCourier.productShipmentDetailModel?.let { productShipmentDetailModel ->
                 uiModel.add(
                     0,
@@ -188,15 +193,11 @@ class ShippingCourierBottomsheet : ShippingCourierAdapterListener, BottomSheetUn
 
     private fun setNotifierModel(
         uiModel: MutableList<RatesViewModelType>,
-        shippingCourierUiModel: ShippingCourierUiModel,
-        isOcc: Boolean
+        shippingCourierUiModel: ShippingCourierUiModel
     ) {
-        if (isOcc && shippingCourierUiModel.productData.shipperId in CourierConstant.INSTANT_SAMEDAY_COURIER) {
-            uiModel.add(0, NotifierModel(NotifierModel.TYPE_DEFAULT))
-        } else if (shippingCourierUiModel.serviceData.serviceName == INSTAN_VIEW_TYPE) {
-            uiModel.add(0, NotifierModel(NotifierModel.TYPE_INSTAN))
-        } else if (shippingCourierUiModel.serviceData.serviceName == SAME_DAY_VIEW_TYPE) {
-            uiModel.add(0, NotifierModel(NotifierModel.TYPE_SAMEDAY))
+        val textServiceTicker = shippingCourierUiModel.serviceData.texts.textServiceTicker
+        if (textServiceTicker.isNotEmpty()) {
+            uiModel.add(0, NotifierModel(textServiceTicker))
         }
     }
 }

@@ -54,7 +54,7 @@ class HashtagLandingItemAdapter(var listener: OnHashtagPostClick? = null)
 
     private val errorModel: ErrorNetworkModel by lazy {
         ErrorNetworkModel().apply {
-            this.iconDrawableRes = R.drawable.unify_globalerrors_connection
+            this.iconDrawableRes = com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection
         }
     }
 

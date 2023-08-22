@@ -5,14 +5,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.applink.teleporter.Teleporter
 import com.tokopedia.localizationchooseaddress.domain.response.GetDefaultChosenAddressResponse
 import com.tokopedia.thankyou_native.data.mapper.FeatureRecommendationMapper
 import com.tokopedia.thankyou_native.data.mapper.PaymentPageMapper
 import com.tokopedia.thankyou_native.di.qualifier.CoroutineMainDispatcher
 import com.tokopedia.thankyou_native.domain.model.FeatureEngineData
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
-import com.tokopedia.thankyou_native.domain.model.ThanksPageResponse
 import com.tokopedia.thankyou_native.domain.model.WalletBalance
 import com.tokopedia.thankyou_native.domain.usecase.*
 import com.tokopedia.thankyou_native.presentation.adapter.model.*
@@ -162,8 +160,8 @@ class ThanksPageDataViewModel @Inject constructor(
             arrayListOf(
                 TopAdsRequestParams.TAG,
                 GyroRecommendationWidgetModel.TAG,
-                HeadlineAdsWidgetModel.TAG,
                 MarketplaceRecommendationWidgetModel.TAG,
+                HeadlineAdsWidgetModel.TAG,
                 DigitalRecommendationWidgetModel.TAG,
                 BannerWidgetModel.TAG
             )
@@ -232,7 +230,9 @@ class ThanksPageDataViewModel @Inject constructor(
         if (widgetOrder.isEmpty()) {
             _bottomContentVisitableList.value = visitableList
         } else {
-            _bottomContentVisitableList.value = visitableList.sortedBy {
+            _bottomContentVisitableList.value = visitableList.filter {
+                widgetOrder.contains((it as WidgetTag).tag)
+            }.sortedBy {
                 widgetOrder.indexOf((it as WidgetTag).tag)
             }
         }

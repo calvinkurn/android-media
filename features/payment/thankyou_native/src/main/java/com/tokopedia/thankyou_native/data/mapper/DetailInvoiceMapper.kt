@@ -23,7 +23,6 @@ import com.tokopedia.thankyou_native.presentation.adapter.model.OrderedItem
 import com.tokopedia.thankyou_native.presentation.adapter.model.PaymentInfo
 import com.tokopedia.thankyou_native.presentation.adapter.model.PaymentModeMap
 import com.tokopedia.thankyou_native.presentation.adapter.model.PurchasedProductTag
-import com.tokopedia.thankyou_native.presentation.adapter.model.ShopDivider
 import com.tokopedia.thankyou_native.presentation.adapter.model.ShopInvoice
 import com.tokopedia.thankyou_native.presentation.adapter.model.TotalFee
 import com.tokopedia.utils.currency.CurrencyFormatUtil
@@ -201,9 +200,12 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
         var currentIndex = Int.ZERO
         val bundleToProductMap = mutableMapOf<String, ArrayList<OrderedItem>>()
         var bundleMap: MutableMap<String, BundleGroupItem>
-        if (thanksPageData.orderGroupList.size > 1 ) thanksPageData.shopOrder.sortBy { it.orderGroupId }
-        thanksPageData.shopOrder.forEachIndexed { index, shopOrder ->
 
+        // Check if order group list size is 2 or more then we need to order shop order by order
+        // group id, so it will be grouped when it rendered
+        if (thanksPageData.orderGroupList.size > ONE) thanksPageData.shopOrder.sortBy { it.orderGroupId }
+
+        thanksPageData.shopOrder.forEachIndexed { index, shopOrder ->
             val orderedItemList = arrayListOf<OrderedItem>()
             var totalProductProtectionForShop = 0.0
 
@@ -355,6 +357,10 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
         OrderItemType.BUNDLE,
         null
     )
+
+    companion object {
+        private const val ONE = 1
+    }
 }
 
 object PromoDataKey {

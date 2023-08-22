@@ -575,7 +575,7 @@ public class MainParentActivity extends BaseActivity implements
             Toaster.INSTANCE.showErrorWithAction(this.findViewById(android.R.id.content),
                     intent.getStringExtra(ApplinkConstInternalCategory.PARAM_EXTRA_SUCCESS),
                     Snackbar.LENGTH_INDEFINITE,
-                    getString(com.tokopedia.home.R.string.general_label_ok), (v) -> {
+                    getString(com.tokopedia.resources.common.R.string.general_label_ok), (v) -> {
                     });
         }
     }

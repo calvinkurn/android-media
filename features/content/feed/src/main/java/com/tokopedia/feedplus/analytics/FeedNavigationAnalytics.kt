@@ -7,6 +7,7 @@ import com.tokopedia.feedplus.analytics.FeedAnalytics.Companion.KEY_CURRENT_SITE
 import com.tokopedia.feedplus.analytics.FeedAnalytics.Companion.KEY_EVENT_USER_ID
 import com.tokopedia.feedplus.analytics.FeedAnalytics.Companion.KEY_TRACKER_ID
 import com.tokopedia.feedplus.analytics.FeedAnalytics.Companion.getPrefix
+import com.tokopedia.feedplus.presentation.model.FeedDataModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils.EVENT
 import com.tokopedia.track.TrackAppUtils.EVENT_ACTION
@@ -19,7 +20,7 @@ import javax.inject.Inject
  * Created By : Muhammad Furqan on 16/04/23
  */
 class FeedNavigationAnalytics @Inject constructor(
-    private val userSession: UserSessionInterface
+    userSession: UserSessionInterface
 ) {
 
     private object Event {
@@ -41,41 +42,51 @@ class FeedNavigationAnalytics @Inject constructor(
 
     private val userId = userSession.userId
 
-    fun eventClickCreationButton(tabType: String) {
+    private val activeTab: String
+        get() {
+            return getPrefix(_activeTab?.type.orEmpty())
+        }
+
+    private var _activeTab: FeedDataModel? = null
+    fun setActiveTab(data: FeedDataModel) {
+        _activeTab = data
+    }
+
+    fun eventClickCreationButton() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             generateGeneralTrackerData(
                 Action.CLICK_CREATE_BUTTON,
-                "$userId - ${getPrefix(tabType)}",
+                "$userId - $activeTab",
                 "41470"
             )
         )
     }
 
-    fun eventClickCreateVideo(tabType: String) {
+    fun eventClickCreateVideo() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             generateGeneralTrackerData(
                 Action.CLICK_CREATE_VIDEO,
-                "$userId - ${getPrefix(tabType)}",
+                "$userId -  $activeTab",
                 "41471"
             )
         )
     }
 
-    fun eventClickCreatePost(tabType: String) {
+    fun eventClickCreatePost() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             generateGeneralTrackerData(
                 Action.CLICK_CREATE_POST,
-                "$userId - ${getPrefix(tabType)}",
+                "$userId - $activeTab",
                 "41472"
             )
         )
     }
 
-    fun eventClickCreateLive(tabType: String) {
+    fun eventClickCreateLive() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             generateGeneralTrackerData(
                 Action.CLICK_CREATE_LIVE,
-                "$userId - ${getPrefix(tabType)}",
+                "$userId - $activeTab",
                 "41473"
             )
         )
@@ -121,21 +132,21 @@ class FeedNavigationAnalytics @Inject constructor(
         )
     }
 
-    fun eventClickLiveButton(tabType: String) {
+    fun eventClickLiveButton() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             generateGeneralTrackerData(
                 Action.CLICK_LIVE_BUTTON,
-                "$userId - ${getPrefix(tabType)}",
+                "$userId - $activeTab",
                 "41478"
             )
         )
     }
 
-    fun eventClickProfileButton(tabType: String) {
+    fun eventClickProfileButton() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             generateGeneralTrackerData(
                 Action.CLICK_PROFILE_BUTTON,
-                "$userId - ${getPrefix(tabType)}",
+                "$userId - $activeTab",
                 "41479"
             )
         )

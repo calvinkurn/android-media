@@ -11,6 +11,7 @@ import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.databinding.ItemOwocProductBundlingBinding
 import com.tokopedia.buyerorderdetail.presentation.adapter.OwocProductBundlingItemAdapter
 import com.tokopedia.buyerorderdetail.presentation.adapter.itemdecoration.ProductBundlingItemDecoration
+import com.tokopedia.buyerorderdetail.presentation.adapter.listener.OwocRecyclerviewPoolListener
 import com.tokopedia.buyerorderdetail.presentation.model.OwocProductListUiModel
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.media.loader.loadImage
@@ -18,7 +19,8 @@ import com.tokopedia.unifycomponents.Toaster
 
 class OwocProductBundlingViewHolder(
     view: View?,
-    private val navigator: BuyerOrderDetailNavigator?
+    private val navigator: BuyerOrderDetailNavigator?,
+    private val recyclerviewPoolListener: OwocRecyclerviewPoolListener
 ) : AbstractViewHolder<OwocProductListUiModel.ProductBundlingUiModel>(view),
     OwocProductBundlingItemAdapter.ViewHolder.Listener {
 
@@ -77,6 +79,9 @@ class OwocProductBundlingViewHolder(
             if (adapter != bundleItemAdapter) {
                 layoutManager = LinearLayoutManager(context)
                 adapter = bundleItemAdapter
+                itemAnimator = null
+                isNestedScrollingEnabled = false
+                setRecycledViewPool(recyclerviewPoolListener.parentPool)
             }
             if (itemDecorationCount.isZero()) {
                 bundleItemDecoration?.let { addItemDecoration(it) }
