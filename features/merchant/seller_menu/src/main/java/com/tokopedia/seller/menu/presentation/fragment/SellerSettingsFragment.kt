@@ -18,6 +18,7 @@ import com.tokopedia.seller.menu.presentation.adapter.SellerMenuAdapter
 import com.tokopedia.seller.menu.presentation.adapter.SellerMenuAdapterTypeFactory
 import com.tokopedia.seller.menu.presentation.util.SellerSettingsList
 import com.tokopedia.seller.menu.presentation.viewmodel.SellerSettingViewModel
+import com.tokopedia.shopadmin.common.util.AdminPermissionMapper
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -34,6 +35,9 @@ class SellerSettingsFragment : Fragment(), SettingTrackingListener {
 
     @Inject
     lateinit var viewModel: SellerSettingViewModel
+
+    @Inject
+    lateinit var adminPermissionMapper: AdminPermissionMapper
 
     private var binding by autoClearedNullable<FragmentSellerSettingsBinding>()
 
@@ -80,7 +84,12 @@ class SellerSettingsFragment : Fragment(), SettingTrackingListener {
 
     private fun setupSettingsList() {
         context?.let { context ->
-            val settingsList = SellerSettingsList.create(context)
+            val settingsList =
+                SellerSettingsList.create(
+                    context = context,
+                    userSession = userSession,
+                    adminPermissionMapper = adminPermissionMapper
+                )
 
             binding?.listSettings?.run {
                 this.adapter = sellerMenuAdapter
@@ -95,7 +104,14 @@ class SellerSettingsFragment : Fragment(), SettingTrackingListener {
     private fun setupLocationSettings(isEligibleMultiloc: Result<Boolean>) {
         when (isEligibleMultiloc) {
             is Success -> {
-                val settingsList = context?.let { SellerSettingsList.create(it, isEligibleMultiloc.data) }
+                val settingsList = context?.let {
+                    SellerSettingsList.create(
+                        it,
+                        isEligibleMultiloc.data,
+                        userSession,
+                        adminPermissionMapper
+                    )
+                }
                 sellerMenuAdapter.clearAllElements()
                 sellerMenuAdapter.addElement(settingsList)
                 sellerMenuAdapter.notifyDataSetChanged()

@@ -111,6 +111,7 @@ class PlayCoverSetupViewModel @AssistedInject constructor(
         val originalImageUrlList = getOriginalProductImageUseCase.apply {
             params = GetOriginalProductImageUseCase.createParams(productId)
         }.executeOnBackground()
+
         yield()
 
         val resizedUrlLastSegments = resizedImageUrl.split("/")
@@ -189,7 +190,7 @@ class PlayCoverSetupViewModel @AssistedInject constructor(
                 /**
                  * Upload Cover Image to remote store
                  */
-                val uploadedImageUri = Uri.parse(uploadImageToRemoteStore(validatedImagePath))
+                val uploadedImageUri = coverImageTransformer.parseToUri(uploadImageToRemoteStore(validatedImagePath))
                 setupDataStore.setFullCover(
                         PlayCoverUiModel(
                                 croppedCover = CoverSetupState.Cropped.Uploaded(validatedImageUri, uploadedImageUri, source),

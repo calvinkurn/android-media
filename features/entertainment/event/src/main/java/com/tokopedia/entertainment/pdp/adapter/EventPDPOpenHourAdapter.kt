@@ -1,23 +1,21 @@
 package com.tokopedia.entertainment.pdp.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.entertainment.R
+import com.tokopedia.entertainment.databinding.ItemEventPdpOpenHourBinding
 import com.tokopedia.entertainment.pdp.data.pdp.OpenHour
-import kotlinx.android.synthetic.main.item_event_pdp_open_hour.view.*
 
 class EventPDPOpenHourAdapter: RecyclerView.Adapter<EventPDPOpenHourAdapter.EventPDPOpenHourViewHolder>() {
 
     private var listOpenHour = emptyList<OpenHour>()
 
-    inner class EventPDPOpenHourViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    inner class EventPDPOpenHourViewHolder(val binding: ItemEventPdpOpenHourBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(openHour: OpenHour) {
-            with(itemView) {
-                tg_event_pdp_open_day.text = openHour.day
-                tg_event_pdp_open_hour.text = openHour.hour
+            with(binding) {
+                tgEventPdpOpenDay.text = openHour.day
+                tgEventPdpOpenHour.text = openHour.hour
             }
         }
     }
@@ -28,8 +26,12 @@ class EventPDPOpenHourAdapter: RecyclerView.Adapter<EventPDPOpenHourAdapter.Even
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, p1: Int): EventPDPOpenHourViewHolder {
-        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_event_pdp_open_hour, parent, false)
-        return EventPDPOpenHourViewHolder(itemView)
+        val binding = ItemEventPdpOpenHourBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
+        return EventPDPOpenHourViewHolder(binding)
     }
 
     fun setList(list: List<OpenHour>) {

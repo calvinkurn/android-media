@@ -10,7 +10,8 @@ import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 object ProductMapper {
     fun transform(
         product: FeedXProduct,
-        campaign: FeedXCampaign
+        campaign: FeedXCampaign,
+        sourceType: FeedTaggedProductUiModel.SourceType
     ): FeedTaggedProductUiModel {
         val newCampaign = mapCampaignProduct(product, campaign)
         return FeedTaggedProductUiModel(
@@ -48,6 +49,8 @@ object ProductMapper {
             ),
             parentID = product.parentID,
             showGlobalVariant = product.hasVariant && product.isParent,
+            stock = if (product.isAvailable || sourceType == FeedTaggedProductUiModel.SourceType.NonOrganic)
+                FeedTaggedProductUiModel.Stock.Available else FeedTaggedProductUiModel.Stock.OutOfStock
         )
     }
 

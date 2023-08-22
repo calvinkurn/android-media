@@ -98,6 +98,7 @@ dari Feed.</string>
 
     <string name="feed_post_sebagai">Post sebagai</string>
     <string name="feed_selengkapnya_label">Selengkapnya</string>
+    <string name="feed_lihat_sedikit_label">Lihat sedikit</string>
 
     <!-- No Content -->
     <string name="feed_label_no_content_title">Yaah, belum ada konten</string>
@@ -112,6 +113,8 @@ dari Feed.</string>
     <string name="feed_label_error_fetch_title">Koneksi internetmu terganggu!</string>
     <string name="feed_label_error_fetch_subtitle">Yuk, pastikan internetmu lancar dengan cek ulang paket data, WiFi, atau jaringan di tempatmu.</string>
     <string name="feed_label_error_fetch_button">Coba Lagi</string>
+    <string name="feed_failed_to_load_content">Yaah, gagal memuat konten</string>
+
     <string name="feed_onboarding_create_content_title">Baru! Bisa buat video pendek 🥳</string>
     <string name="feed_onboarding_create_content_subtitle">Buat video hingga 90 detik tentang pengalaman belanja atau promosi produk yang menginspirasi!</string>
     <string name="feed_onboarding_profile_entry_point_title">Cek profil kamu di sini, yuk!</string>
@@ -156,4 +159,7 @@ dari Feed.</string>
     <string name="feed_cta_almost_sold_label">Segera Habis</string>
     <string name="feed_cta_sold_label">Terjual Habis</string>
     <string name="feed_success_report_video">Video berhasil dilaporkan</string>
+    <string name="feed_bottom_action_comment_label">Ketik komentarmu…</string>
+    <string name="feed_bottom_action_share_label">Bagikan konten</string>
+
 </resources>

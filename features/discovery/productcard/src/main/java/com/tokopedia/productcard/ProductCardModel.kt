@@ -79,12 +79,14 @@ data class ProductCardModel (
         val hasAddToCartWishlist: Boolean = false,
         val hasSimilarProductWishlist: Boolean = false,
         val customVideoURL : String = "",
-        val cardInteraction: Boolean = false,
+        @Deprecated("replaced with animateOnPress")
+        val cardInteraction: Boolean? = null,
         val productListType: ProductListType = ProductListType.CONTROL,
         val isPortrait: Boolean = false,
         val seeOtherProductText: String = "",
         val isTopStockBar: Boolean = false,
         val cardType: Int = CardUnify2.TYPE_SHADOW,
+        val animateOnPress: Int = CardUnify2.ANIMATE_OVERLAY,
 ) {
     @Deprecated("replace with labelGroupList")
     var isProductSoldOut: Boolean = false
@@ -409,5 +411,7 @@ data class ProductCardModel (
         PORTRAIT,
         ETA,
         BEST_SELLER,
+        FIXED_GRID,
+        LIST_VIEW,
     }
 }

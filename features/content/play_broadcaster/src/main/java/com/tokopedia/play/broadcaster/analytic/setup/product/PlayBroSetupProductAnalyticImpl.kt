@@ -1,16 +1,10 @@
 package com.tokopedia.play.broadcaster.analytic.setup.product
 
+import com.tokopedia.content.analytic.BusinessUnit
+import com.tokopedia.content.analytic.Key
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.play.broadcaster.analytic.*
-import com.tokopedia.play.broadcaster.analytic.KEY_BUSINESS_UNIT
-import com.tokopedia.play.broadcaster.analytic.KEY_CURRENT_SITE
-import com.tokopedia.play.broadcaster.analytic.KEY_EVENT
-import com.tokopedia.play.broadcaster.analytic.KEY_EVENT_ACTION
-import com.tokopedia.play.broadcaster.analytic.KEY_EVENT_CATEGORY
-import com.tokopedia.play.broadcaster.analytic.KEY_EVENT_LABEL
-import com.tokopedia.play.broadcaster.analytic.KEY_TRACK_BUSINESS_UNIT
 import com.tokopedia.play.broadcaster.analytic.KEY_TRACK_CATEGORY
-import com.tokopedia.play.broadcaster.analytic.KEY_USER_ID
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -97,7 +91,7 @@ class PlayBroSetupProductAnalyticImpl @Inject constructor(
     }
 
     override fun clickCloseOnProductChooser(isProductSelected: Boolean) {
-        val productState = if(isProductSelected) "selected product list section" else "select product section"
+        val productState = if (isProductSelected) "selected product list section" else "select product section"
         sendEvent(
             "click - close button on product bottom sheet",
             "$shopId - $productState"
@@ -142,17 +136,17 @@ class PlayBroSetupProductAnalyticImpl @Inject constructor(
 
     private fun sendEvent(
         eventAction: String,
-        eventLabel: String = shopId,
+        eventLabel: String = shopId
     ) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
-                KEY_EVENT to KEY_TRACK_CLICK_EVENT,
-                KEY_EVENT_ACTION to eventAction,
-                KEY_EVENT_CATEGORY to KEY_TRACK_CATEGORY,
-                KEY_EVENT_LABEL to eventLabel,
-                KEY_CURRENT_SITE to currentSite,
-                KEY_USER_ID to userSession.userId,
-                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT
+                Key.event to KEY_TRACK_CLICK_EVENT,
+                Key.eventAction to eventAction,
+                Key.eventCategory to KEY_TRACK_CATEGORY,
+                Key.eventLabel to eventLabel,
+                Key.currentSite to currentSite,
+                Key.userId to userSession.userId,
+                Key.businessUnit to BusinessUnit.play
             )
         )
     }

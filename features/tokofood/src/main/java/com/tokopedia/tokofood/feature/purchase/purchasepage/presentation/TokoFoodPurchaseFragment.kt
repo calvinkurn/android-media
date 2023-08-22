@@ -83,7 +83,6 @@ import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.subview
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.toolbar.TokoFoodPurchaseToolbar
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.toolbar.TokoFoodPurchaseToolbarListener
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseProductTokoFoodPurchaseUiModel
-import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseProductTokoFoodPurchaseUiModelOld
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -1139,19 +1138,6 @@ open class TokoFoodPurchaseFragment :
             )
         }
     }
-
-    override fun onIconDeleteProductClicked(element: TokoFoodPurchaseProductTokoFoodPurchaseUiModelOld) {
-        // no-op
-    }
-
-    override fun onTextChangeNotesClicked(element: TokoFoodPurchaseProductTokoFoodPurchaseUiModelOld) {
-        // no-op
-    }
-
-    override fun onTextChangeNoteAndVariantClicked(element: TokoFoodPurchaseProductTokoFoodPurchaseUiModelOld) {
-        // no-op
-    }
-
     override fun onTextChangeNotesClicked(element: TokoFoodPurchaseProductTokoFoodPurchaseUiModel) {
         val addOnBottomSheet = TokoFoodPurchaseNoteBottomSheet(
             element.notes,

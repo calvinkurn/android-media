@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
-import com.tokopedia.scp_rewards_touchpoints.touchpoints.viewmodel.ScpRewardsMedaliTouchPointViewModel
+import com.tokopedia.scp_rewards_touchpoints.touchpoints.viewmodel.ScpRewardsMedalTouchPointViewModel
 import com.tokopedia.unifyorderhistory.view.viewmodel.UohListViewModel
 import dagger.Binds
 import dagger.Module
@@ -30,6 +30,6 @@ abstract class UohListViewModelModule {
     @UohListScope
     @Binds
     @IntoMap
-    @ViewModelKey(ScpRewardsMedaliTouchPointViewModel::class)
-    internal abstract fun scpRewardsMedaliTouchPointViewModel(viewModel: ScpRewardsMedaliTouchPointViewModel): ViewModel
+    @ViewModelKey(ScpRewardsMedalTouchPointViewModel::class)
+    internal abstract fun scpRewardsMedalTouchPointViewModel(viewModel: ScpRewardsMedalTouchPointViewModel): ViewModel
 }

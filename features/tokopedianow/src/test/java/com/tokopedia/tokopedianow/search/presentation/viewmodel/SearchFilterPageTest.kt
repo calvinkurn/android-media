@@ -48,6 +48,11 @@ class SearchFilterPageTest: SearchTestFixtures(), Callback {
     }
 
     @Test
+    fun `open filter page first time but getting filter failed`() {
+        filterPageTestHelper.`test open filter page first time but getting filter failed`()
+    }
+
+    @Test
     fun `open filter page cannot be spammed`() {
         filterPageTestHelper.`test open filter page cannot be spammed`()
     }
@@ -68,6 +73,16 @@ class SearchFilterPageTest: SearchTestFixtures(), Callback {
     }
 
     @Test
+    fun `apply price filter`() {
+        filterPageTestHelper.`test apply price filter`()
+    }
+
+    @Test
+    fun `apply and remove price filter`() {
+        filterPageTestHelper.`test apply and remove price filter`()
+    }
+
+    @Test
     fun `get filter count success when choosing filter`() {
         val mandatoryParams = createMandatoryTokonowQueryParams()
 
@@ -81,9 +96,4 @@ class SearchFilterPageTest: SearchTestFixtures(), Callback {
         filterPageTestHelper.`test get filter count fail when choosing filter`(mandatoryParams)
     }
 
-    @Test
-    fun `test open filter page after applying filter should update filter from API`() {
-        filterPageTestHelper.
-        `test open filter page after applying filter should update filter from API`()
-    }
 }

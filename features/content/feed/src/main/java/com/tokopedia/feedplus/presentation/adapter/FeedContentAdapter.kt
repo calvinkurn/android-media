@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.ErrorNetworkViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingMoreViewHolder
+import com.tokopedia.feedplus.presentation.adapter.viewholder.FeedErrorViewHolder
 import com.tokopedia.feedplus.presentation.adapter.viewholder.FeedNoContentViewHolder
 import com.tokopedia.feedplus.presentation.adapter.viewholder.FeedPostImageViewHolder
 import com.tokopedia.feedplus.presentation.adapter.viewholder.FeedPostLiveViewHolder
@@ -56,11 +57,21 @@ class FeedContentAdapter(
         }
 
         override fun getChangePayload(oldItem: Item, newItem: Item): Any? {
-            return if (oldItem.data is FeedCardImageContentModel && newItem.data is FeedCardImageContentModel) {
+            val payloads = mutableListOf<Int>()
+            with(payloads) {
+                if (oldItem.isSelected != newItem.isSelected) {
+                    add(FeedViewHolderPayloadActions.FEED_POST_SELECTED_CHANGED)
+                }
+                if (oldItem.isScrolling != newItem.isScrolling) {
+                    add(FeedViewHolderPayloadActions.FEED_POST_SCROLLING_CHANGED)
+                }
+            }
+
+            if (oldItem.data is FeedCardImageContentModel && newItem.data is FeedCardImageContentModel) {
                 if (oldItem.data.isTopAds && !oldItem.data.isFetched && newItem.data.isTopAds && newItem.data.isFetched) {
-                    null
+                    Unit
                 } else {
-                    val payloads = buildList {
+                    with(payloads) {
                         if (oldItem.data.followers.isFollowed != newItem.data.followers.isFollowed) {
                             add(FeedViewHolderPayloadActions.FEED_POST_FOLLOW_CHANGED)
                         }
@@ -73,14 +84,10 @@ class FeedContentAdapter(
                         if (oldItem.data.campaign.isReminderActive != newItem.data.campaign.isReminderActive) {
                             add(FeedViewHolderPayloadActions.FEED_POST_REMINDER_CHANGED)
                         }
-                        if (oldItem.isSelected != newItem.isSelected) {
-                            add(FeedViewHolderPayloadActions.FEED_POST_SELECTED_CHANGED)
-                        }
                     }
-                    if (payloads.isNotEmpty()) FeedViewHolderPayloads(payloads) else null
                 }
             } else if (oldItem.data is FeedCardVideoContentModel && newItem.data is FeedCardVideoContentModel) {
-                val payloads = buildList {
+                with(payloads) {
                     if (oldItem.data.followers.isFollowed != newItem.data.followers.isFollowed) {
                         add(FeedViewHolderPayloadActions.FEED_POST_FOLLOW_CHANGED)
                     }
@@ -90,31 +97,24 @@ class FeedContentAdapter(
                     if (oldItem.data.comments.countFmt != newItem.data.comments.countFmt) {
                         add(FeedViewHolderPayloadActions.FEED_POST_COMMENT_COUNT)
                     }
-                    if (oldItem.isSelected != newItem.isSelected) {
-                        add(FeedViewHolderPayloadActions.FEED_POST_SELECTED_CHANGED)
-                    }
                 }
-                if (payloads.isNotEmpty()) FeedViewHolderPayloads(payloads) else null
-            } else if (oldItem.data is FeedCardLivePreviewContentModel && newItem.data is FeedCardLivePreviewContentModel) {
-                val payloads = buildList {
-                    if (oldItem.isSelected != newItem.isSelected) {
-                        add(FeedViewHolderPayloadActions.FEED_POST_SELECTED_CHANGED)
-                    }
-                }
-                if (payloads.isNotEmpty()) FeedViewHolderPayloads(payloads) else null
-            } else {
-                null
             }
+
+            return if (payloads.isNotEmpty()) FeedViewHolderPayloads(payloads) else null
         }
     }
 ) {
 
-    private val loadingMoreModel = Item(LoadingMoreModel(), false)
-    private val errorNetworkModel = Item(ErrorNetworkModel(), false)
+    private val loadingMoreModel = Item(LoadingMoreModel(), isSelected = false)
+    private val errorNetworkModel = Item(ErrorNetworkModel(), isSelected = false)
 
     private var mSelectedPosition = RecyclerView.NO_POSITION
+    private var mIsScrolling = false
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<out Visitable<*>> {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): AbstractViewHolder<out Visitable<*>> {
         return typeFactory.createViewHolder(parent, viewType)!!
     }
 
@@ -136,7 +136,7 @@ class FeedContentAdapter(
             holder is LoadingMoreViewHolder && item.data is LoadingMoreModel -> {
                 holder.bind(item.data)
             }
-            holder is ErrorNetworkViewHolder && item.data is ErrorNetworkModel -> {
+            holder is FeedErrorViewHolder && item.data is ErrorNetworkModel -> {
                 holder.bind(item.data)
             }
         }
@@ -169,7 +169,7 @@ class FeedContentAdapter(
                 holder is LoadingMoreViewHolder && item.data is LoadingMoreModel -> {
                     holder.bind(item.data, payloads)
                 }
-                holder is ErrorNetworkViewHolder && item.data is ErrorNetworkModel -> {
+                holder is FeedErrorViewHolder && item.data is ErrorNetworkModel -> {
                     holder.bind(item.data, payloads)
                 }
             }
@@ -217,28 +217,65 @@ class FeedContentAdapter(
 
     fun addElement(element: Any) {
         val currentList = this.currentList
-        submitList(currentList + Item(element, false))
+        submitList(currentList + Item(element, isSelected = false))
     }
 
     fun select(position: Int) {
         mSelectedPosition = position
         val newList = currentList.mapIndexed { index, data ->
             if (index == position || data.isSelected) {
-                data.copy(isSelected = index == position)
+                data.copy(isSelected = index == position, isScrolling = false)
+            } else {
+                if (data.isScrolling) {
+                    data.copy(isScrolling = false)
+                } else {
+                    data
+                }
+            }
+        }
+        mIsScrolling = false
+        submitList(newList)
+    }
+
+    fun onScrolling() {
+        val currPosition = mSelectedPosition
+        val newList = currentList.mapIndexed { index, data ->
+            if (index == currPosition) {
+                data.copy(isScrolling = true)
+            } else {
+                if (data.isScrolling) {
+                    data.copy(isScrolling = false)
+                } else {
+                    data
+                }
+            }
+        }
+        mIsScrolling = true
+        submitList(newList)
+    }
+
+    fun stopScrolling() {
+        val newList = currentList.map { data ->
+            if (data.isScrolling) {
+                data.copy(isScrolling = false)
             } else {
                 data
             }
         }
+        mIsScrolling = false
         submitList(newList)
     }
 
     fun setList(elements: List<Any>, commitCallback: () -> Unit = {}) {
         if (mSelectedPosition > elements.size - 1) mSelectedPosition = RecyclerView.NO_POSITION
-        if (mSelectedPosition == RecyclerView.NO_POSITION) mSelectedPosition = elements.indexOfFirst { true }
+        if (mSelectedPosition == RecyclerView.NO_POSITION) {
+            mSelectedPosition =
+                elements.indexOfFirst { true }
+        }
 
         submitList(
             elements.mapIndexed { index, element ->
-                Item(element, index == mSelectedPosition)
+                Item(element, index == mSelectedPosition, if (mIsScrolling) index == mSelectedPosition else false)
             },
             commitCallback
         )
@@ -251,6 +288,7 @@ class FeedContentAdapter(
 
     data class Item(
         val data: Any,
-        val isSelected: Boolean
+        val isSelected: Boolean,
+        val isScrolling: Boolean = false
     )
 }

@@ -10,4 +10,7 @@
         <item>@color/Unify_GN700</item>
     </array>
 
+    <color name="dms_profile_management_toolbar">#F0F3F7</color>
+    <color name="dms_profile_management_black_static">#000000</color>
+
 </resources>

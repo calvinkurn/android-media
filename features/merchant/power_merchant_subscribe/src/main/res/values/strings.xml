@@ -83,7 +83,7 @@
     <string name="pm_shop_performance_sum_new_seller"><![CDATA[Proyeksi Performa Toko : <font color="%1$s">%2$s</font>]]></string>
 
     <string name="pm_shop_grade_shop_score_threshold_description_pm_active"><![CDATA[Pertahankan skor <font color="%1$s"><b>min. %2$d poin</b></font> agar %3$s-mu tetap aktif, ya.]]></string>
-    <string name="pm_shop_grade_shop_score_threshold_description_pm_active_new_seller"><![CDATA[<b>Sebagai Seller baru,</b> Tokomu akan dapat skor &amp; level sesuai dengan Performa setelah 90 hari (%1$s).]]></string>
+    <string name="pm_shop_grade_shop_score_threshold_description_pm_active_new_seller"><![CDATA[<b>Sebagai Seller baru,</b> Tokomu akan dapat skor &amp; level sesuai dengan Performa setelah 60 hari (%1$s).]]></string>
     <string name="pm_shop_grade_shop_score_threshold_description_pm_idle"><![CDATA[Yuk, tingkatkan skor jadi <font color="%1$s"><b>min. %2$d</b></font> poin agar tokomu jadi %3$s lagi minggu depan!]]></string>
     <string name="pm_deactivate_power_merchant_bottom_cta">Atur status keanggotaanmu <font color="#03AC0E"><b>di sini</b></font></string>
     <string name="pm_deactivate_power_merchant_pro_message_info"><![CDATA[Pengajuan penurunan menjadi %1$s berhasil. Perubahan akan efektif berlaku pada <b>%2$s WIB.</b>]]></string>

@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.kotlin.extensions.view.ONE
-import com.tokopedia.kotlin.extensions.view.goToFirst
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.moveTo
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.topchat.chatlist.domain.pojo.ChatAdminNoAccessUiModel
@@ -85,13 +85,20 @@ class ChatListAdapter constructor(
     fun pinChatItem(element: ItemChatListPojo, position: Int) {
         val chatItemPosition = getItemPosition(element, position)
         if (chatItemPosition != RecyclerView.NO_POSITION) {
-            val bubbleCount = visitables
-                .filterIsInstance<ChatListTickerUiModel>()
-                .size
+            var offset = Int.ZERO
+            run loop@{
+                visitables.forEach {
+                    if (it !is ItemChatListPojo) {
+                        offset++
+                    } else {
+                        return@loop
+                    }
+                }
+            }
 
-            visitables.moveTo(chatItemPosition, bubbleCount)
-            notifyItemMoved(chatItemPosition, bubbleCount)
-            notifyItemChanged(bubbleCount, PAYLOAD_UPDATE_PIN_STATUS)
+            visitables.moveTo(chatItemPosition, offset)
+            notifyItemMoved(chatItemPosition, offset)
+            notifyItemChanged(offset, PAYLOAD_UPDATE_PIN_STATUS)
         }
     }
 
@@ -240,9 +247,10 @@ class ChatListAdapter constructor(
     }
 
     private fun findElementFinalIndex(element: ItemChatListPojo, offset: Int): Int {
-        if (offset < 0 || offset >= visitables.size) return RecyclerView.NO_POSITION
+        val newOffset = calculateOffsetPinChat(offset)
+        if (newOffset < 0 || newOffset >= visitables.size) return RecyclerView.NO_POSITION
         var finalIndex = RecyclerView.NO_POSITION
-        for (i in offset until visitables.size) {
+        for (i in newOffset until visitables.size) {
             val chat = visitables[i]
             if (chat is ItemChatListPojo) {
                 val itemChatTimeStamp = chat.lastReplyTime
@@ -254,6 +262,20 @@ class ChatListAdapter constructor(
             }
         }
         return finalIndex
+    }
+
+    private fun calculateOffsetPinChat(offset: Int): Int {
+        var newOffset = offset
+        run loop@{
+            visitables.forEach {
+                if (it !is ItemChatListPojo) {
+                    newOffset++
+                } else {
+                    return@loop
+                }
+            }
+        }
+        return newOffset
     }
 
     fun findChat(newChat: IncomingChatWebSocketModel): Int {
