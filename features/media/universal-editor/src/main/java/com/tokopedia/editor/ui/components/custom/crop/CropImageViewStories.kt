@@ -83,7 +83,7 @@ open class CropImageViewStories : CropImageView {
         val bitmapResult = Bitmap.createBitmap(mCropRect.width().toInt(), mCropRect.height().toInt(), Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmapResult)
 
-        canvas.drawRect(0f, 0f, bitmapResult.width.toFloat(),bitmapResult.height.toFloat(), Paint())
+        canvas.drawRect(mCropRect.left, mCropRect.top, bitmapResult.width.toFloat(),bitmapResult.height.toFloat(), Paint())
 
         viewBitmap?.let {
             val scaledWidth = (it.width * mCurrentScale).toInt()

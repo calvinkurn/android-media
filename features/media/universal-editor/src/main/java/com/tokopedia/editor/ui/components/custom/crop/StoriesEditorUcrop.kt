@@ -16,7 +16,7 @@ class StoriesEditorUcrop(context: Context, attrs: AttributeSet) : FrameLayout(co
     private var mViewOverlay: OverlayViewStories? = null
 
     init {
-        LayoutInflater.from(context).inflate(R.layout.ucrop_clone_layout, this, true)
+        LayoutInflater.from(context).inflate(R.layout.ucrop_stories_layout, this, true)
         mGestureCropImageView = findViewById<View>(R.id.image_view_crop) as GestureCropImageViewStories
         mViewOverlay = findViewById<View>(R.id.view_overlay) as OverlayViewStories
         val a = context.obtainStyledAttributes(attrs, R.styleable.ucrop_UCropView)
@@ -25,7 +25,7 @@ class StoriesEditorUcrop(context: Context, attrs: AttributeSet) : FrameLayout(co
         a.recycle()
         setListenersToViews()
 
-        mGestureCropImageView!!.setBackgroundColor(Color.BLACK)
+        mGestureCropImageView!!.setBackgroundColor(Color.RED)
     }
 
     private fun setListenersToViews() {
