@@ -138,6 +138,15 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <include
+        android:id="@+id/item_cart_basket_building"
+        layout="@layout/item_cart_bmgm_ticker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="12dp"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_cart_item"
         android:layout_width="match_parent"

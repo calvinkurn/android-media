@@ -42,8 +42,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/desc_addon"
-        app:layout_constraintEnd_toStartOf="@id/iv_addon_chevron"
-        android:text="(Rp100.000)" />
+        app:layout_constraintEnd_toStartOf="@id/iv_addon_chevron" />
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/iv_addon_chevron"

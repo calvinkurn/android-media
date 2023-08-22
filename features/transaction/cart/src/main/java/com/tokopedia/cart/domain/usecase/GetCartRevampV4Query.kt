@@ -449,6 +449,7 @@ const val CART_REVAMP_V4_QUERY =
                 title
                 selected_unavailable_action_id
                 unavailable_description
+                products_count
                 action {
                   id
                   code
@@ -695,6 +696,7 @@ const val CART_REVAMP_V4_QUERY =
               total_product_count
               total_product_error
               global_checkbox_state
+              show_bundle_price
               tickers {
                 id
                 title
