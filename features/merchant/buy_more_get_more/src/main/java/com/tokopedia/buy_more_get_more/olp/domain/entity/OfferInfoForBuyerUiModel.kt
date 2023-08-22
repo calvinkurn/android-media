@@ -62,6 +62,8 @@ data class OfferInfoForBuyerUiModel(
         val productIds: List<Int> = emptyList(),
         val warehouseIds: List<Int> = emptyList(),
         val localCacheModel: LocalCacheModel? = null,
+        val startDate: String = "",
+        val endDate: String = "",
         val sortId: String = "0"
     )
 
@@ -74,21 +76,11 @@ data class OfferInfoForBuyerUiModel(
             val localCacheModel: LocalCacheModel?
         ) : OlpEvent()
 
-        data class GetOfferingInfo(
-            val offerIds: List<Int> = emptyList(),
-            val shopIds: List<Int> = emptyList(),
-            val productIds: List<Int> = emptyList(),
-            val warehouseIds: List<Int> = emptyList(),
-            val localCacheModel: LocalCacheModel?
-        ) : OlpEvent()
+        object GetOfferingInfo: OlpEvent()
 
-        data class GetOffreringProductList(
-            val offerIds: List<Int>,
-            val warehouseIds: List<Int>? = emptyList(),
-            val localCacheModel: LocalCacheModel?,
-            val page: Int,
-            val sortId: String
-        ) : OlpEvent()
+        data class GetOffreringProductList(val page: Int) : OlpEvent()
+
+        data class SetSortId(val sortId: String = ""): OlpEvent()
 
         object GetNotification : OlpEvent()
 

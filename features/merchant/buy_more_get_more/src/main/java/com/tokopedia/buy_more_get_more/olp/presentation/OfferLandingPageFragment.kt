@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.core.view.WindowCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -22,6 +23,7 @@ import com.tokopedia.buy_more_get_more.R
 import com.tokopedia.buy_more_get_more.databinding.FragmentOfferLandingPageBinding
 import com.tokopedia.buy_more_get_more.olp.di.component.DaggerBuyMoreGetMoreComponent
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel
+import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel.OlpEvent
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferProductListUiModel
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferProductSortingUiModel
 import com.tokopedia.buy_more_get_more.olp.presentation.adapter.OlpAdapter
@@ -34,6 +36,7 @@ import com.tokopedia.campaign.delegates.HasPaginatedList
 import com.tokopedia.campaign.delegates.HasPaginatedListImpl
 import com.tokopedia.campaign.helper.BuyMoreGetMoreHelper
 import com.tokopedia.campaign.utils.extension.showToaster
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toIntSafely
@@ -96,8 +99,12 @@ class OfferLandingPageFragment :
     lateinit var viewModel: OfferLandingPageViewModel
     private val shopIds by lazy { arguments?.getString(BundleConstant.BUNDLE_SHOP_ID).orEmpty() }
     private val offerId by lazy { arguments?.getString(BundleConstant.BUNDLE_OFFER_ID).orEmpty() }
-    private val warehouseIds by lazy { arguments?.getString(BuyMoreGetMoreHelper.KEY_WAREHOUSE_IDS).orEmpty() }
-    private val productIds by lazy { arguments?.getString(BuyMoreGetMoreHelper.KEY_PRODUCT_IDS).orEmpty() }
+    private val warehouseIds by lazy {
+        arguments?.getString(BuyMoreGetMoreHelper.KEY_WAREHOUSE_IDS).orEmpty()
+    }
+    private val productIds by lazy {
+        arguments?.getString(BuyMoreGetMoreHelper.KEY_PRODUCT_IDS).orEmpty()
+    }
 
     override fun getScreenName() = ""
 
@@ -174,7 +181,7 @@ class OfferLandingPageFragment :
                 OfferProductSortingUiModel()
             )
         )
-        viewModel.getNotification()
+        viewModel.processEvent(OlpEvent.GetNotification)
         getProductListData(1)
     }
 
@@ -219,23 +226,17 @@ class OfferLandingPageFragment :
 
     private fun renderSortFilter(sortId: String, sortName: String) {
         olpAdapter?.changeSelectedSortFilter(sortId, sortName)
-        getProductListData(1, sortId)
+        viewModel.processEvent(OlpEvent.SetSortId(sortId))
+        getProductListData(page = Int.ONE)
     }
 
-    private fun getProductListData(page: Int, sortId: String = "") {
-        viewModel.getOfferingProductList(
-            offerIds = listOf(offerId.toIntOrZero()),
-            warehouseIds = listOf(1, 2),
-            localCacheModel = localCacheModel,
-            page = page,
-            sortId = sortId
-        )
+    private fun getProductListData(page: Int) {
+        viewModel.processEvent(OlpEvent.GetOffreringProductList(page = page))
     }
 
     override fun loadInitialData() {
-        Log.d("Masuk", localCacheModel?.shop_id ?: "Kosong")
         setViewState(VIEW_LOADING)
-        viewModel.getOfferingInfo(
+        viewModel.processEvent(OlpEvent.SetInitialUiState(
             offerIds = listOf(offerId.toIntOrZero()),
             shopIds = if (shopIds.isNotEmpty()) {
                 shopIds.split(",").map { it.toIntSafely() }
@@ -253,7 +254,9 @@ class OfferLandingPageFragment :
                 emptyList()
             },
             localCacheModel = localCacheModel
+            )
         )
+        viewModel.processEvent(OlpEvent.GetOfferingInfo)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

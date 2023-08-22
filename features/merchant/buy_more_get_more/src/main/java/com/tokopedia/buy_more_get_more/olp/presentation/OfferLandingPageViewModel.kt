@@ -74,32 +74,14 @@ class OfferLandingPageViewModel @Inject constructor(
                     shopIds = event.shopIds,
                     productIds = event.productIds,
                     warehouseIds = event.warehouseIds,
-                    localCacheModel = event.localCacheModel
-                )
-            }
-
-            is OlpEvent.GetOfferingInfo -> {
-                getOfferingInfo(
-                    offerIds = event.offerIds,
-                    shopIds = event.shopIds,
-                    productIds = event.productIds,
-                    warehouseIds = event.warehouseIds,
-                    localCacheModel = event.localCacheModel
-                )
-            }
-
-            is OlpEvent.GetOffreringProductList -> {
-                getOfferingProductList(
-                    offerIds = event.offerIds,
-                    warehouseIds = event.warehouseIds,
                     localCacheModel = event.localCacheModel,
-                    page = event.page,
-                    sortId = event.sortId
                 )
             }
-
-            is OlpEvent.GetNotification -> {}
-            is OlpEvent.AddToCart -> {}
+            is OlpEvent.GetOfferingInfo -> { getOfferingInfo() }
+            is OlpEvent.GetOffreringProductList -> { getOfferingProductList(page = event.page)}
+            is OlpEvent.SetSortId -> { setSortId(event.sortId) }
+            is OlpEvent.GetNotification -> { getNotification() }
+            is OlpEvent.AddToCart -> { }
         }
     }
 
@@ -121,34 +103,28 @@ class OfferLandingPageViewModel @Inject constructor(
         }
     }
 
-    fun getOfferingInfo(
-        offerIds: List<Int>,
-        shopIds: List<Int> = emptyList(),
-        productIds: List<Int> = emptyList(),
-        warehouseIds: List<Int> = emptyList(),
-        localCacheModel: LocalCacheModel?
-    ) {
+    private fun getOfferingInfo() {
         launchCatchError(
             dispatchers.io,
             block = {
                 val param = GetOfferingInfoForBuyerRequestParam(
-                    offerIds = offerIds,
-                    shopIds = shopIds,
-                    productAnchor = if (warehouseIds.isNotEmpty()) {
+                    offerIds = currentState.offerIds,
+                    shopIds = currentState.shopIds,
+                    productAnchor = if (currentState.warehouseIds.isNotEmpty()) {
                         GetOfferingInfoForBuyerRequestParam.ProductAnchor(
-                            productIds,
-                            warehouseIds
+                            currentState.productIds,
+                            currentState.warehouseIds
                         )
                     } else {
                         null
                     },
                     userLocation = UserLocation(
-                        addressId = localCacheModel?.address_id.toLongOrZero(),
-                        districtId = localCacheModel?.district_id.toLongOrZero(),
-                        postalCode = localCacheModel?.postal_code.orEmpty(),
-                        latitude = localCacheModel?.lat.orEmpty(),
-                        longitude = localCacheModel?.long.orEmpty(),
-                        cityId = localCacheModel?.city_id.toLongOrZero()
+                        addressId = currentState.localCacheModel?.address_id.toLongOrZero(),
+                        districtId = currentState.localCacheModel?.district_id.toLongOrZero(),
+                        postalCode = currentState.localCacheModel?.postal_code.orEmpty(),
+                        latitude = currentState.localCacheModel?.lat.orEmpty(),
+                        longitude = currentState.localCacheModel?.long.orEmpty(),
+                        cityId = currentState.localCacheModel?.city_id.toLongOrZero()
                     )
                 )
                 val result = getOfferInfoForBuyerUseCase.execute(param)
@@ -160,33 +136,29 @@ class OfferLandingPageViewModel @Inject constructor(
         )
     }
 
-    fun getOfferingProductList(
-        offerIds: List<Int>,
-        warehouseIds: List<Int>? = emptyList(),
-        localCacheModel: LocalCacheModel?,
-        page: Int,
-        sortId: String
+    private fun getOfferingProductList(
+        page: Int
     ) {
         launchCatchError(
             dispatchers.io,
             block = {
                 val param = GetOfferingProductListRequestParam(
-                    offerIds = offerIds,
+                    offerIds = currentState.offerIds,
                     productAnchor = GetOfferingProductListRequestParam.ProductAnchor(
-                        warehouseIds.orEmpty()
+                        currentState.warehouseIds
                     ),
                     userLocation = GetOfferingProductListRequestParam.UserLocation(
-                        addressId = localCacheModel?.address_id.toLongOrZero(),
-                        districtId = localCacheModel?.district_id.toLongOrZero(),
-                        postalCode = localCacheModel?.postal_code.orEmpty(),
-                        latitude = localCacheModel?.lat.orEmpty(),
-                        longitude = localCacheModel?.long.orEmpty(),
-                        cityId = localCacheModel?.city_id.toLongOrZero()
+                        addressId = currentState.localCacheModel?.address_id.toLongOrZero(),
+                        districtId = currentState.localCacheModel?.district_id.toLongOrZero(),
+                        postalCode = currentState.localCacheModel?.postal_code.orEmpty(),
+                        latitude = currentState.localCacheModel?.lat.orEmpty(),
+                        longitude = currentState.localCacheModel?.long.orEmpty(),
+                        cityId = currentState.localCacheModel?.city_id.toLongOrZero()
                     ),
                     userId = userId.toLongOrZero(),
                     page = page,
                     pageSize = 10,
-                    orderBy = sortId.toIntOrZero()
+                    orderBy = currentState.sortId.toIntOrZero()
                 )
 
                 val result = getOfferProductListUseCase.execute(param)
@@ -198,7 +170,7 @@ class OfferLandingPageViewModel @Inject constructor(
         )
     }
 
-    fun getNotification() {
+    private fun getNotification() {
         launchCatchError(
             dispatchers.io,
             block = {
@@ -229,5 +201,13 @@ class OfferLandingPageViewModel @Inject constructor(
                 _miniCartAdd.postValue(Fail(it))
             }
         )
+    }
+
+    private fun setSortId(sortId: String) {
+        _uiState.update {
+            it.copy(
+                sortId = sortId
+            )
+        }
     }
 }
