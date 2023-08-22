@@ -75,7 +75,7 @@ abstract class BaseHotelDetailNonNearbyScreenshotTest {
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
             CommonActions.takeScreenShotVisibleViewInScreen(activity.window.decorView, filePrefix(), "image-preview")
         }
-        Espresso.onView(ViewMatchers.withId(R.id.btn_arrow_back)).perform(ViewActions.click())
+        Espresso.onView(ViewMatchers.withId(com.tokopedia.imagepreviewslider.R.id.btn_arrow_back)).perform(ViewActions.click())
 
         activityRule.runOnUiThread {
             scrollToMiddle()

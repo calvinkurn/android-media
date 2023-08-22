@@ -13,6 +13,7 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.CourierInf
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.DigitalRecommendationViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.DriverTippingInfoViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.EpharmacyInfoViewHolder
+import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OwocInfoViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OrderInsuranceViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OrderResolutionViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OrderStatusHeaderViewHolder
@@ -44,6 +45,7 @@ import com.tokopedia.buyerorderdetail.presentation.model.PlatformFeeInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PofHeaderLabelViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PofRefundInfoViewHolder
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.adapter.viewholder.ScpRewardsMedalTouchPointWidgetViewHolder
+import com.tokopedia.buyerorderdetail.presentation.model.OwocBomDetailSectionUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PofRefundInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ShipmentInfoUiModel
@@ -66,6 +68,7 @@ open class BuyerOrderDetailTypeFactory(
     private val productListToggleListener: ProductListToggleViewHolder.Listener,
     private val pofRefundInfoListener: PofRefundInfoViewHolder.Listener,
     private val scpRewardsMedalTouchPointWidgetListener: ScpRewardsMedalTouchPointWidgetViewHolder.ScpRewardsMedalTouchPointWidgetListener,
+    private val owocInfoListener: OwocInfoViewHolder.Listener,
     protected val productViewListener: PartialProductItemViewHolder.ProductViewListener,
     protected val navigator: BuyerOrderDetailNavigator,
     protected val buyerOrderDetailBindRecomWidgetListener: PgRecommendationViewHolder.BuyerOrderDetailBindRecomWidgetListener,
@@ -119,6 +122,7 @@ open class BuyerOrderDetailTypeFactory(
             PofHeaderLabelViewHolder.LAYOUT -> PofHeaderLabelViewHolder(parent)
             PofRefundInfoViewHolder.LAYOUT -> PofRefundInfoViewHolder(parent, pofRefundInfoListener)
             ScpRewardsMedalTouchPointWidgetViewHolder.LAYOUT -> ScpRewardsMedalTouchPointWidgetViewHolder(parent, scpRewardsMedalTouchPointWidgetListener)
+            OwocInfoViewHolder.LAYOUT -> OwocInfoViewHolder(parent, owocInfoListener)
             else -> super.createViewHolder(parent, type)
         }
     }
@@ -229,5 +233,9 @@ open class BuyerOrderDetailTypeFactory(
 
     fun type(pofRefundInfoUiModel: PofRefundInfoUiModel): Int {
         return PofRefundInfoViewHolder.LAYOUT
+    }
+
+    fun type(owocBomDetailSectionUiModel: OwocBomDetailSectionUiModel): Int {
+        return OwocInfoViewHolder.LAYOUT
     }
 }
