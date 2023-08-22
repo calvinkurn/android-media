@@ -187,7 +187,7 @@ class PlayAnalytic(
                         product = it.key.product,
                         position = it.value,
                         sourceFrom = "bottom sheet",
-                        dimension90 = if (section == ProductSectionType.Active) {
+                        dimension90 = if (section != ProductSectionType.Upcoming) {
                             dimensionTrackingHelper.getDimension90()
                         } else {
                             ""
