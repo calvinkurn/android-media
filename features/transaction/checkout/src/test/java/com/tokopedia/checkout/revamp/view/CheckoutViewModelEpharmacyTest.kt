@@ -3204,4 +3204,16 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
         // Then
         assertEquals(null, result)
     }
+
+    @Test
+    fun `GIVEN null data WHEN validate on back pressed THEN should not show reminder`() {
+        // Given
+        viewModel.listData.value = emptyList()
+
+        // When
+        val result = viewModel.validatePrescriptionOnBackPressed()
+
+        // Then
+        assertEquals(null, result)
+    }
 }

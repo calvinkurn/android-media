@@ -428,7 +428,7 @@ class CheckoutViewModel @Inject constructor(
         )
     }
 
-    internal fun generateCheckoutAnalyticsDataLayer(
+    private fun generateCheckoutAnalyticsDataLayer(
         step: String,
         pageSource: String
     ): Map<String, Any> {

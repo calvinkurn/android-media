@@ -1,5 +1,7 @@
 package com.tokopedia.checkout.revamp.view
 
+import com.tokopedia.addon.presentation.uimodel.AddOnPageResult
+import com.tokopedia.addon.presentation.uimodel.AddOnUIModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutAddressModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutButtonPaymentModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCostModel
@@ -15,6 +17,7 @@ import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.purchase_platform.common.feature.addons.data.model.AddOnProductDataItemModel
 import com.tokopedia.purchase_platform.common.feature.addons.data.model.AddOnProductDataModel
+import com.tokopedia.purchase_platform.common.feature.addons.data.response.SaveAddOnStateResponse
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingBottomSheetModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingButtonModel
@@ -61,6 +64,11 @@ class CheckoutViewModelAddOnsTest : BaseCheckoutViewModelTest() {
             CheckoutProductModel(
                 "123",
                 cartId = 1,
+                addOnGiftingProductLevelModel = AddOnGiftingDataModel()
+            ),
+            CheckoutProductModel(
+                "123",
+                cartId = 2,
                 addOnGiftingProductLevelModel = AddOnGiftingDataModel()
             ),
             CheckoutOrderModel("123"),
@@ -121,6 +129,8 @@ class CheckoutViewModelAddOnsTest : BaseCheckoutViewModelTest() {
             CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
             CheckoutProductModel("123"),
             CheckoutOrderModel("123", addOnsOrderLevelModel = AddOnGiftingDataModel()),
+            CheckoutProductModel("234"),
+            CheckoutOrderModel("234", addOnsOrderLevelModel = AddOnGiftingDataModel()),
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
             CheckoutCostModel(),
@@ -207,7 +217,7 @@ class CheckoutViewModelAddOnsTest : BaseCheckoutViewModelTest() {
         // given
         coEvery {
             saveAddOnProductUseCase.executeOnBackground()
-        }
+        } returns SaveAddOnStateResponse()
 
         viewModel.listData.value = listOf(
             CheckoutTickerErrorModel(errorMessage = ""),
@@ -226,7 +236,7 @@ class CheckoutViewModelAddOnsTest : BaseCheckoutViewModelTest() {
             CheckoutProductModel(
                 "123",
                 addOnProduct = AddOnProductDataModel(
-                    listAddOnProductData = listOf(
+                    listAddOnProductData = arrayListOf(
                         AddOnProductDataItemModel(uniqueId = "a1", status = 0),
                         AddOnProductDataItemModel(uniqueId = "a2", status = 0)
                     )
@@ -244,5 +254,152 @@ class CheckoutViewModelAddOnsTest : BaseCheckoutViewModelTest() {
         viewModel.setAddon(true, AddOnProductDataItemModel(uniqueId = "a2"), 4)
 
         // then
+        assertEquals(
+            AddOnProductDataModel(
+                listAddOnProductData = arrayListOf(
+                    AddOnProductDataItemModel(uniqueId = "a1", status = 0),
+                    AddOnProductDataItemModel(uniqueId = "a2", status = 1)
+                )
+            ),
+            (viewModel.listData.value[4] as CheckoutProductModel).addOnProduct
+        )
+    }
+
+    @Test
+    fun set_addon_result() {
+        // given
+        coEvery {
+            saveAddOnProductUseCase.executeOnBackground()
+        } returns SaveAddOnStateResponse()
+
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(
+                recipientAddressModel = RecipientAddressModel().apply {
+                    id = "1"
+                    destinationDistrictId = "1"
+                    addressName = "jakarta"
+                    postalCode = "123"
+                    latitude = "123"
+                    longitude = "321"
+                }
+            ),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel(
+                "123",
+                cartId = 1,
+                addOnProduct = AddOnProductDataModel(
+                    listAddOnProductData = arrayListOf(
+                        AddOnProductDataItemModel(uniqueId = "a1", status = 0, type = 1),
+                        AddOnProductDataItemModel(uniqueId = "a2", status = 0, type = 2)
+                    )
+                )
+            ),
+            CheckoutOrderModel("123"),
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+
+        // when
+        viewModel.setAddonResult(
+            1,
+            AddOnPageResult(
+                aggregatedData = AddOnPageResult.AggregatedData(
+                    selectedAddons = listOf(
+                        AddOnUIModel(
+                            uniqueId = "a2",
+                            addOnType = 2,
+                            isMandatory = false,
+                            isPreselected = false,
+                            isSelected = true
+                        )
+                    )
+                )
+            )
+        )
+
+        // then
+        assertEquals(
+            AddOnProductDataModel(
+                listAddOnProductData = arrayListOf(
+                    AddOnProductDataItemModel(uniqueId = "a1", status = 0, type = 1),
+                    AddOnProductDataItemModel(uniqueId = "a2", status = 1, type = 2)
+                )
+            ),
+            (viewModel.listData.value[4] as CheckoutProductModel).addOnProduct
+        )
+    }
+
+    @Test
+    fun set_addon_result_not_found() {
+        // given
+        coEvery {
+            saveAddOnProductUseCase.executeOnBackground()
+        } returns SaveAddOnStateResponse()
+
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(
+                recipientAddressModel = RecipientAddressModel().apply {
+                    id = "1"
+                    destinationDistrictId = "1"
+                    addressName = "jakarta"
+                    postalCode = "123"
+                    latitude = "123"
+                    longitude = "321"
+                }
+            ),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel(
+                "123",
+                cartId = 1,
+                addOnProduct = AddOnProductDataModel(
+                    listAddOnProductData = arrayListOf(
+                        AddOnProductDataItemModel(uniqueId = "a1", status = 0, type = 1),
+                        AddOnProductDataItemModel(uniqueId = "a2", status = 0, type = 2)
+                    )
+                )
+            ),
+            CheckoutOrderModel("123"),
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+
+        // when
+        viewModel.setAddonResult(
+            2,
+            AddOnPageResult(
+                aggregatedData = AddOnPageResult.AggregatedData(
+                    selectedAddons = listOf(
+                        AddOnUIModel(
+                            uniqueId = "a2",
+                            addOnType = 2,
+                            isMandatory = false,
+                            isPreselected = false,
+                            isSelected = true
+                        )
+                    )
+                )
+            )
+        )
+
+        // then
+        assertEquals(
+            AddOnProductDataModel(
+                listAddOnProductData = arrayListOf(
+                    AddOnProductDataItemModel(uniqueId = "a1", status = 0, type = 1),
+                    AddOnProductDataItemModel(uniqueId = "a2", status = 0, type = 2)
+                )
+            ),
+            (viewModel.listData.value[4] as CheckoutProductModel).addOnProduct
+        )
     }
 }

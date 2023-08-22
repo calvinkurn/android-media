@@ -105,7 +105,7 @@ open class BaseCheckoutViewModelTest {
     @MockK
     lateinit var epharmacyUseCase: EPharmacyPrepareProductsGroupUseCase
 
-    @MockK
+    @MockK(relaxUnitFun = true)
     lateinit var saveAddOnProductUseCase: SaveAddOnStateUseCase
 
     @MockK

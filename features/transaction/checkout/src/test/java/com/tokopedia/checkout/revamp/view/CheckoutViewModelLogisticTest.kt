@@ -599,7 +599,8 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
         coEvery {
             validateUsePromoRevampUseCase.setParam(any()).executeOnBackground()
         } returns ValidateUsePromoRevampUiModel(
-            status = "OK", errorCode = "200",
+            status = "OK",
+            errorCode = "200",
             promoUiModel = PromoUiModel(
                 voucherOrderUiModels = listOf(
                     PromoCheckoutVoucherOrdersItemUiModel("boCode2", "12", type = "logistic", messageUiModel = MessageUiModel(state = "green"), cartStringGroup = "123")
@@ -793,6 +794,53 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
                 CheckoutCostModel(totalPrice = 100.0, totalPriceString = "Rp100", hasSelectAllShipping = true, shippingInsuranceFee = 100.0, totalOtherFee = 100.0),
                 CheckoutCrossSellGroupModel(),
                 CheckoutButtonPaymentModel(totalPrice = "Rp100", enable = true, useInsurance = true)
+            ),
+            viewModel.listData.value
+        )
+    }
+
+    @Test
+    fun set_selected_courier_insurance_same_value() {
+        // given
+        val orderModel = CheckoutOrderModel(
+            "123",
+            shipment = CheckoutOrderShipment(courierItemData = CourierItemData(insurancePrice = 100))
+        )
+
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(recipientAddressModel = RecipientAddressModel()),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel("123"),
+            orderModel,
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+
+        // when
+        viewModel.setSelectedCourierInsurance(false, orderModel, 5)
+
+        // then
+        assertEquals(
+            listOf(
+                CheckoutTickerErrorModel(errorMessage = ""),
+                CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+                CheckoutAddressModel(recipientAddressModel = RecipientAddressModel()),
+                CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+                CheckoutProductModel("123"),
+                CheckoutOrderModel(
+                    "123",
+                    shipment = CheckoutOrderShipment(courierItemData = CourierItemData(insurancePrice = 100), insurance = CheckoutOrderInsurance())
+                ),
+                CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+                CheckoutPromoModel(promo = LastApplyUiModel()),
+                CheckoutCostModel(),
+                CheckoutCrossSellGroupModel(),
+                CheckoutButtonPaymentModel()
             ),
             viewModel.listData.value
         )
