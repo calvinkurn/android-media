@@ -22,8 +22,10 @@ internal class CarouselListAdapter<T: Visitable<F>, F: AdapterTypeFactory>(
     }
 
     override fun onBindViewHolder(holder: AbstractViewHolder<in T>, position: Int) {
-        val item = getItem(position)
-        holder.bind(item)
+        try {
+            val item = getItem(position)
+            holder.bind(item)
+        } catch (_: Exception) { }
     }
 
     override fun getItemViewType(position: Int): Int {
