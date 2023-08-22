@@ -413,16 +413,12 @@ class GotoKycEventTrackingProvider @Inject constructor(
                 }
             }
             MANUAL_IMAGE_CAPTURE_CLICKED -> {
-                when (eventProperties[CAPTURE_MODE]) {
-                    MANUAL_CAPTURE -> {
-                        when (eventProperties[TYPE]) {
-                            KTP -> {
-                                GotoKycAnalytics.sendClickOnButtonCaptureKtpPage(projectId)
-                            }
-                            SELFIE -> {
-                                GotoKycAnalytics.sendClickOnButtonCaptureSelfiePage(projectId)
-                            }
-                        }
+                when (eventProperties[TYPE]) {
+                    KTP -> {
+                        GotoKycAnalytics.sendClickOnButtonCaptureKtpPage(projectId)
+                    }
+                    SELFIE -> {
+                        GotoKycAnalytics.sendClickOnButtonCaptureSelfiePage(projectId)
                     }
                 }
             }
