@@ -401,10 +401,6 @@ class CartAdapter constructor(
         return cartDataList.size
     }
 
-    fun clearCompositeSubscription() {
-        compositeSubscription.clear()
-    }
-
     fun setShopSelected(position: Int, selected: Boolean) {
         val any = cartDataList[position]
         if (any is CartGroupHolderData) {
