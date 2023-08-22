@@ -30,7 +30,7 @@ There are 4 types of product cards in this section which are:
 - Non-bundling product card
 
 This product type only shows exactly 1 product item on each card. This product type shows the non-bundle product item that the buyer purchased without any add-on or with an add-on but from TokoCabang (a non-bundling product purchased alongside any add-on but bought from TokoCabang will be shown as a non-bundling product without add-on).
-![](../res/productlist/non_bundling_product_card_design.png)
+![](../../res/productlist/non_bundling_product_card_design.png)
 
 - Non-bundling product card with add-on
 
@@ -42,13 +42,13 @@ This product type only shows exactly 1 product item on each card plus the list o
 
 
 
-![](../res/productlist/non_bundling_product_with_add_on_collapsed.png)
+![](../../res/productlist/non_bundling_product_with_add_on_collapsed.png)
 
 
 
 
 
-![](../res/productlist/non_bundling_product_with_add_on_expanded.png)
+![](../../res/productlist/non_bundling_product_with_add_on_expanded.png)
 
 
 
@@ -60,7 +60,7 @@ This product type only shows exactly 1 product item on each card plus the list o
 
 This product type shows multiple product items on each card that belong to that specific bundle. In this product type, there will be no attached add-on on the product or the bundling itself because currently there’s no feature that allows the buyer to purchase an add-on on a product bundling.
 
-![](../res/productlist/bundling_product.png)
+![](../../res/productlist/bundling_product.png)
 
 - Add-on card
 
@@ -72,13 +72,13 @@ This product type shows exactly 1 add-on on each card. This product type shows t
 
 
 
-![](../res/productlist/addon_collapsed.png)
+![](../../res/productlist/addon_collapsed.png)
 
 
 
 
 
-![](../res/productlist/addon_expanded.png)
+![](../../res/productlist/addon_expanded.png)
 
 
 

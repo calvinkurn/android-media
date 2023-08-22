@@ -28,18 +28,18 @@ The buyer order detail page is built using a RecyclerView (except for the button
 
 
 
-| ![](res/buyerorderdetail/detail_menunggu_konfirmasi.png)<br/>            | ![](res/buyerorderdetail/detail_menunggu_konfirmasi_dibatalkan_2.png)<br/> | ![](res/buyerorderdetail/detail_menunggu_konfirmasi_dibatalkan_1.png)<br/> |
+| ![](../res/buyerorderdetail/detail_menunggu_konfirmasi.png)<br/>            | ![](../res/buyerorderdetail/detail_menunggu_konfirmasi_dibatalkan_2.png)<br/> | ![](../res/buyerorderdetail/detail_menunggu_konfirmasi_dibatalkan_1.png)<br/> |
 |--------------------------------------------------------------------------|----------------------------------------------------------------------------|-------------------------------------------------------------------------|
-| ![](res/buyerorderdetail/detail_menunggu_konfirmasi_dibatalkan.png)<br/> | ![](res/buyerorderdetail/detail_diproses.png)<br/>                         | ![](res/buyerorderdetail/detail_diproses_dibatalkan.png)<br/>           |
-| ![](res/buyerorderdetail/detail_sedang_dikirim_custom.png)<br/>          | ![](res/buyerorderdetail/detail_diproses_resi_tidak_valid.png)<br/>        | ![](res/buyerorderdetail/detail_menunggu_pickup_instan.png)<br/>        |
-| ![](res/buyerorderdetail/detail_sedang_dikirim_sameday.png)<br/>         | ![](res/buyerorderdetail/detail_sedang_dikirim_reguler.png)<br/>           | ![](res/buyerorderdetail/detail_sedang_dikirim_custom_2.png)<br/>       |
-| ![](res/buyerorderdetail/detail_menunggu_pengambilan_540.png)<br/>       | ![](res/buyerorderdetail/detail_sedang_dikirim_custom_1.png)<br/>          | ![](res/buyerorderdetail/detail_tiba_di_tujuan_600.png)<br/>            |
-| ![](res/buyerorderdetail/detail_dikomplain_601.png)<br/>                 | ![](res/buyerorderdetail/detail_selesai_700_1.png)<br/>                    | ![](res/buyerorderdetail/detail_selesai_700.png)<br/>                   |
-| ![](res/buyerorderdetail/detail_dibatalkan_15_4.png)<br/>                |                                                                            |                                                                         |
+| ![](../res/buyerorderdetail/detail_menunggu_konfirmasi_dibatalkan.png)<br/> | ![](../res/buyerorderdetail/detail_diproses.png)<br/>                         | ![](../res/buyerorderdetail/detail_diproses_dibatalkan.png)<br/>           |
+| ![](../res/buyerorderdetail/detail_sedang_dikirim_custom.png)<br/>          | ![](../res/buyerorderdetail/detail_diproses_resi_tidak_valid.png)<br/>        | ![](../res/buyerorderdetail/detail_menunggu_pickup_instan.png)<br/>        |
+| ![](../res/buyerorderdetail/detail_sedang_dikirim_sameday.png)<br/>         | ![](../res/buyerorderdetail/detail_sedang_dikirim_reguler.png)<br/>           | ![](../res/buyerorderdetail/detail_sedang_dikirim_custom_2.png)<br/>       |
+| ![](../res/buyerorderdetail/detail_menunggu_pengambilan_540.png)<br/>       | ![](../res/buyerorderdetail/detail_sedang_dikirim_custom_1.png)<br/>          | ![](../res/buyerorderdetail/detail_tiba_di_tujuan_600.png)<br/>            |
+| ![](../res/buyerorderdetail/detail_dikomplain_601.png)<br/>                 | ![](../res/buyerorderdetail/detail_selesai_700_1.png)<br/>                    | ![](../res/buyerorderdetail/detail_selesai_700.png)<br/>                   |
+| ![](../res/buyerorderdetail/detail_dibatalkan_15_4.png)<br/>                |                                                                            |                                                                         |
 
 # Flowchart
 
-![](res/buyerorderdetail/buyer_order_detail_flow.png)
+![](../res/buyerorderdetail/buyer_order_detail_flow.png)
 
 # Navigation
 
@@ -99,7 +99,7 @@ To check PLT performance we can use this trace name: `buyer_order_detail_layout_
 
 - You should make the UI react to the data changes. For example, if your UI has an accordion feature, you should have a flag on the UI model which indicates whether the accordion is expanded or collapsed so when you click the expand/collapse trigger you need to change the UI model value first through the ViewModel and then the adapter will rebind your ViewHolder and you can change the expand/collapse state on your UI based on the value on you UI model
 
-![](res/buyerorderdetail/buyer_order_detail_ui_event_flow_drawio.png)
+![](../res/buyerorderdetail/buyer_order_detail_ui_event_flow_drawio.png)
 
 - To prevent ViewHolder flicker when your UI model contents change, you should override the bind with payload function on your ViewHolder. You should also override the bind with payload function if there’s any chance that the UI model contents are changing when the user is refreshing the page. For example:
 
