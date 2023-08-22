@@ -82,7 +82,6 @@ class ProductDirectPurchaseViewHolder private constructor() {
                         ViewGroup.LayoutParams.WRAP_CONTENT
                     )
                 emptyStateCTAFullWidth = false
-                emptyStateImageID.setImage(TokopediaImageUrl.PRODUCT_EMPTY, 0f)
                 emptyStateOrientation = EmptyStateUnify.Orientation.VERTICAL
                 emptyStateType = EmptyStateUnify.Type.SECTION
                 findViewById<Typography>(com.tokopedia.empty_state.R.id.empty_state_title_id)?.visibility =
@@ -218,7 +217,8 @@ class ProductDirectPurchaseViewHolder private constructor() {
         }
     }
 
-    class ErrorVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    @Suppress("DEPRECATION")
+    class ErrorVH(val itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         private val emptyStateUnify = itemView as EmptyStateUnify
 
@@ -230,7 +230,8 @@ class ProductDirectPurchaseViewHolder private constructor() {
             ): ErrorVH {
                 return ErrorVH(
                     createEmptyStateView(parent.context, colorPallete).apply {
-                        setPrimaryCTAText(parent.context.getString(R.string.shop_page_reload))
+                        emptyStateImageID.setImage(TokopediaImageUrl.ERROR_NETWORK_IMAGE, 0f)
+                        setPrimaryCTAText(parent.context.getString(com.tokopedia.globalerror.R.string.authErrorAction))
                         setPrimaryCTAClickListener { listener?.onRetryClick() }
                     }
                 )
@@ -238,10 +239,15 @@ class ProductDirectPurchaseViewHolder private constructor() {
         }
 
         fun bind(model: ProductCarouselDirectPurchaseAdapter.Model.Error) {
-            emptyStateUnify.setDescription(model.errorMessage)
+            if (model.errorMessage.isEmpty()) {
+                emptyStateUnify.setDescription(itemView.context.getString(com.tokopedia.globalerror.R.string.noConnectionDesc))
+            } else {
+                emptyStateUnify.setDescription(model.errorMessage)
+            }
         }
     }
 
+    @Suppress("DEPRECATION")
     class EmptyVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
         companion object {
             fun create(
@@ -250,6 +256,7 @@ class ProductDirectPurchaseViewHolder private constructor() {
             ): EmptyVH {
                 return EmptyVH(
                     createEmptyStateView(parent.context, colorPallete).apply {
+                        emptyStateImageID.setImage(TokopediaImageUrl.PRODUCT_EMPTY, 0f)
                         setDescription(parent.context.getString(R.string.shop_product_empty_title_etalase_desc))
                     }
                 )

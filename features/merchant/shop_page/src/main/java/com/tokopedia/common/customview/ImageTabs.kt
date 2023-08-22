@@ -100,7 +100,7 @@ class ImageTabs(val tabsUnify: TabsUnify) {
         for (i in 0 until tabsUnify.tabLayout.tabCount) {
             val tab = tabsUnify.tabLayout.getTabAt(i)
             val tabView =
-                LayoutInflater.from(tabsUnify.context).inflate(R.layout.tab_image), tabsUnify, false)
+                LayoutInflater.from(tabsUnify.context).inflate(R.layout.layout_tab_image, tabsUnify, false)
 
             tabView.findViewById<ImageUnify>(R.id.icon).type = tabType
             tab?.customView = tabView
