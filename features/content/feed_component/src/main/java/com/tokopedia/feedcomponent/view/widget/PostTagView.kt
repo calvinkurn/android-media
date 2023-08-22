@@ -47,7 +47,7 @@ class PostTagView @JvmOverloads constructor(
     defStyleAttr: Int = 0,
 ) : ConstraintLayout(context, attrs, defStyleAttr), LifecycleObserver {
 
-    private var productTagDot: IconUnify
+    private var productTagDot: ImageView
     private var productTagPointerTop: ImageView
     private var productTagPointerBottom: ImageView
     private var finalPointerView: ImageView
