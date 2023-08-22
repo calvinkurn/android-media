@@ -61,6 +61,7 @@ data class OfferInfoForBuyerUiModel(
         val shopIds: List<Int> = emptyList(),
         val productIds: List<Int> = emptyList(),
         val warehouseIds: List<Int> = emptyList(),
+        val tnc: List<String> = emptyList(),
         val localCacheModel: LocalCacheModel? = null,
         val offeringJsonData: String = "",
         val startDate: String = "",
@@ -88,6 +89,8 @@ data class OfferInfoForBuyerUiModel(
         data class SetShopIds(val shopIds: List<Int>): OlpEvent()
 
         data class SetOfferingJsonData(val offeringJsonData: String): OlpEvent()
+
+        data class SetTncData(val tnc: List<String>): OlpEvent()
 
         object GetNotification : OlpEvent()
 

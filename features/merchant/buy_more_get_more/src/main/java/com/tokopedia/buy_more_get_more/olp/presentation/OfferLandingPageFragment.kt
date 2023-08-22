@@ -28,7 +28,9 @@ import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferProductListUiModel
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferProductSortingUiModel
 import com.tokopedia.buy_more_get_more.olp.presentation.adapter.OlpAdapter
 import com.tokopedia.buy_more_get_more.olp.presentation.adapter.OlpAdapterTypeFactoryImpl
+import com.tokopedia.buy_more_get_more.olp.presentation.bottomsheet.TncBottomSheet
 import com.tokopedia.buy_more_get_more.olp.presentation.listener.AtcProductListener
+import com.tokopedia.buy_more_get_more.olp.presentation.listener.OfferingInfoListener
 import com.tokopedia.buy_more_get_more.olp.utils.BundleConstant
 import com.tokopedia.buy_more_get_more.sort.activity.ShopProductSortActivity
 import com.tokopedia.buy_more_get_more.sort.listener.ProductSortListener
@@ -55,6 +57,7 @@ class OfferLandingPageFragment :
     BaseListFragment<Visitable<*>, AdapterTypeFactory>(),
     ProductSortListener,
     AtcProductListener,
+    OfferingInfoListener,
     HasPaginatedList by HasPaginatedListImpl() {
 
     companion object {
@@ -91,10 +94,11 @@ class OfferLandingPageFragment :
     }
 
     private val olpAdapterTypeFactory by lazy {
-        OlpAdapterTypeFactoryImpl(this, this)
+        OlpAdapterTypeFactoryImpl(this, this, this)
     }
     private var sortId = ""
     private var sortName = ""
+    private var tncBottomSheet: TncBottomSheet? = null
 
     @Inject
     lateinit var viewModel: OfferLandingPageViewModel
@@ -154,6 +158,8 @@ class OfferLandingPageFragment :
                 )
             )
             viewModel.processEvent(OlpEvent.SetOfferingJsonData(offerInfoForBuyer.offeringJsonData))
+            viewModel.processEvent(OlpEvent.SetTncData(offerInfoForBuyer.offerings.firstOrNull()?.tnc.orEmpty()))
+            setupTncBottomSheet()
         }
 
         viewModel.productList.observe(viewLifecycleOwner) { productList ->
@@ -330,6 +336,10 @@ class OfferLandingPageFragment :
         }
     }
 
+    private fun setupTncBottomSheet() {
+        tncBottomSheet = TncBottomSheet.newInstance(viewModel.currentState.tnc)
+    }
+
     private fun setViewState(viewState: Int, errorMsg: String = "") {
         when (viewState) {
             VIEW_LOADING -> {
@@ -439,6 +449,12 @@ class OfferLandingPageFragment :
     private fun updateCartCounter(cartCount: Int) {
         binding?.header?.apply {
             this.cartCount = cartCount
+        }
+    }
+
+    override fun onTncClicked() {
+        tncBottomSheet?.apply {
+            show(this@OfferLandingPageFragment)
         }
     }
 }

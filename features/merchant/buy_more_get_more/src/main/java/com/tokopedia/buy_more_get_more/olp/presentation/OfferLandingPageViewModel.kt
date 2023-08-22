@@ -86,6 +86,7 @@ class OfferLandingPageViewModel @Inject constructor(
             is OlpEvent.SetWarehouseIds -> setWarehouseIds(event.warehouseIds)
             is OlpEvent.SetShopIds -> setShopIds(event.shopIds)
             is OlpEvent.SetOfferingJsonData -> setOfferingJsonData(event.offeringJsonData)
+            is OlpEvent.SetTncData -> { setTncData(event.tnc) }
         }
     }
 
@@ -234,6 +235,14 @@ class OfferLandingPageViewModel @Inject constructor(
         _uiState.update {
             it.copy(
                 offeringJsonData = offeringJsonData
+            )
+        }
+    }
+
+    private fun setTncData(tnc: List<String>) {
+        _uiState.update {
+            it.copy(
+                tnc = tnc
             )
         }
     }
