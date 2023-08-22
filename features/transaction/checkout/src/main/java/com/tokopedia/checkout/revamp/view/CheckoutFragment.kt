@@ -1072,7 +1072,7 @@ class CheckoutFragment :
         product: CheckoutProductModel,
         bindingAdapterPosition: Int
     ) {
-        viewModel.setAddon(isChecked, addOnProductDataItemModel, product, bindingAdapterPosition)
+        viewModel.setAddon(isChecked, addOnProductDataItemModel, bindingAdapterPosition)
         checkoutAnalyticsCourierSelection.eventClickAddOnsProductServiceWidget(
             addOnProductDataItemModel.type,
             product.productId.toString(),

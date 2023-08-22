@@ -2062,7 +2062,7 @@ class CheckoutViewModel @Inject constructor(
             }
             validatePromo()
             pageState.value = CheckoutPageState.Normal
-            launch {
+            launch(dispatchers.io) {
                 cartProcessor.processSaveShipmentState(
                     listData.value,
                     listData.value.address()!!.recipientAddressModel
@@ -2262,7 +2262,6 @@ class CheckoutViewModel @Inject constructor(
     fun setAddon(
         checked: Boolean,
         addOnProductDataItemModel: AddOnProductDataItemModel,
-        product: CheckoutProductModel,
         position: Int
     ) {
         val checkoutItems = listData.value.toMutableList()
@@ -2286,7 +2285,7 @@ class CheckoutViewModel @Inject constructor(
             )
         )
         checkoutItems[position] = newProduct
-        viewModelScope.launch {
+        viewModelScope.launch(dispatchers.io) {
             addOnProcessor.saveAddonsProduct(newProduct, isOneClickShipment)
         }
         listData.value = checkoutItems
@@ -2321,7 +2320,7 @@ class CheckoutViewModel @Inject constructor(
                 )
             )
             checkoutItems[itemIndex] = newProduct
-            viewModelScope.launch {
+            viewModelScope.launch(dispatchers.io) {
                 addOnProcessor.saveAddonsProduct(newProduct, isOneClickShipment)
             }
             listData.value = checkoutItems
