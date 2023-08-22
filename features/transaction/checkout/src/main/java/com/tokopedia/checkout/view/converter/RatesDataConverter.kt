@@ -126,7 +126,7 @@ class RatesDataConverter @Inject constructor() {
         }
 
         fun getLogisticPromoCode(orderModel: CheckoutOrderModel): String {
-            return orderModel.voucherLogisticItemUiModel?.code ?: ""
+            return orderModel.shipment.courierItemData?.selectedShipper?.logPromoCode ?: ""
         }
     }
 }

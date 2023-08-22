@@ -9,5 +9,7 @@ data class BuyerCancellationOrderWrapperUiModel(
     val tickerInfo: BuyerGetCancellationReasonData.Data.GetCancellationReason.TickerInfo?
 ) {
 
-    fun isOwocType() = tickerInfo != null
+    fun isOwocType(): Boolean {
+        return tickerInfo != null && tickerInfo.text.isNotBlank()
+    }
 }

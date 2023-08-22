@@ -91,6 +91,7 @@ object ShipmentInfoUiStateMapper {
         return ShipmentInfoUiState.HasData.Showing(
             mapShipmentInfoUiModel(
                 buyerOrderDetailData.additionalData.groupOrderData,
+                buyerOrderDetailData.groupType,
                 buyerOrderDetailData.shipment,
                 buyerOrderDetailData.meta,
                 buyerOrderDetailData.orderId,
@@ -112,6 +113,7 @@ object ShipmentInfoUiStateMapper {
 
     private fun mapShipmentInfoUiModel(
         owocSection: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.BomAdditionalData.GroupOrderData?,
+        groupType: String,
         shipment: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shipment,
         meta: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Meta,
         orderId: String,
@@ -124,7 +126,8 @@ object ShipmentInfoUiStateMapper {
     ): ShipmentInfoUiModel {
         return ShipmentInfoUiModel(
             owocInfoUiModel = mapOwocBomDetailSectionUiModel(
-                owocSection
+                owocSection,
+                groupType
             ),
             awbInfoUiModel = mapAwbInfoUiModel(
                 shipment.shippingRefNum,
@@ -152,11 +155,13 @@ object ShipmentInfoUiStateMapper {
     }
 
     private fun mapOwocBomDetailSectionUiModel(
-        owocSection: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.BomAdditionalData.GroupOrderData?
+        owocSection: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.BomAdditionalData.GroupOrderData?,
+        groupType: String
     ): OwocBomDetailSectionUiModel? {
         return owocSection?.let {
             OwocBomDetailSectionUiModel(
                 txId = owocSection.txId,
+                groupType = groupType,
                 sectionTitle = owocSection.title,
                 sectionDesc = owocSection.description,
                 imageUrl = owocSection.iconUrl

@@ -103,12 +103,12 @@ class DigitalCartActivityWithDisableVoucher {
         //Info Cart Detail
         Thread.sleep(2000)
 
-        onView(withId(R.id.dialog_content)).check(matches(isDisplayed()))
-        onView(withId(R.id.dialog_title)).check(matches(withText("This is pop up")))
-        onView(withId(R.id.dialog_description)).check(matches(withText("Please enter okay")))
-        onView(withId(R.id.dialog_btn_primary)).check(matches(isDisplayed()))
-        onView(withId(R.id.dialog_btn_primary)).check(matches(withText("Yes")))
-        onView(withId(R.id.dialog_btn_primary)).perform(click())
+        onView(withId(com.tokopedia.dialog.R.id.dialog_content)).check(matches(isDisplayed()))
+        onView(withId(com.tokopedia.dialog.R.id.dialog_title)).check(matches(withText("This is pop up")))
+        onView(withId(com.tokopedia.dialog.R.id.dialog_description)).check(matches(withText("Please enter okay")))
+        onView(withId(com.tokopedia.dialog.R.id.dialog_btn_primary)).check(matches(isDisplayed()))
+        onView(withId(com.tokopedia.dialog.R.id.dialog_btn_primary)).check(matches(withText("Yes")))
+        onView(withId(com.tokopedia.dialog.R.id.dialog_btn_primary)).perform(click())
 
         Thread.sleep(1000)
         onView(withId(R.id.productTitle)).check(matches(withText("Angsuran Kredit")))
@@ -250,10 +250,10 @@ class DigitalCartActivityWithDisableVoucher {
 
         onView(AllOf.allOf(withId(R.id.digitalPromoBtnView))).perform(click())
 
-        onView(withId(R.id.tv_promo_checkout_title)).check(matches(isDisplayed()))
-        onView(withId(R.id.tv_promo_checkout_title)).check(matches(withText(mActivityRule.activity.resources.getString(R.string.digital_checkout_promo_disabled_title))))
-        onView(withId(R.id.tv_promo_checkout_desc)).check(matches(not(isDisplayed())))
-        onView(withId(R.id.iv_promo_checkout_right)).check(matches(not(isDisplayed())))
+        onView(withId(com.tokopedia.promocheckout.common.R.id.tv_promo_checkout_title)).check(matches(isDisplayed()))
+        onView(withId(com.tokopedia.promocheckout.common.R.id.tv_promo_checkout_title)).check(matches(withText(mActivityRule.activity.resources.getString(R.string.digital_checkout_promo_disabled_title))))
+        onView(withId(com.tokopedia.promocheckout.common.R.id.tv_promo_checkout_desc)).check(matches(not(isDisplayed())))
+        onView(withId(com.tokopedia.promocheckout.common.R.id.iv_promo_checkout_right)).check(matches(not(isDisplayed())))
         Thread.sleep(1000)
     }
 

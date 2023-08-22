@@ -5,6 +5,7 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutButtonPaymentModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCostModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCrossSellGroupModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutEpharmacyModel
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderInsurance
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderShipment
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPageToaster
@@ -18,6 +19,8 @@ import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.InsuranceData
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ProductData
+import com.tokopedia.logisticcart.scheduledelivery.domain.model.DeliveryProduct
+import com.tokopedia.logisticcart.scheduledelivery.domain.model.PromoStacking
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationConverter
 import com.tokopedia.logisticcart.shipping.model.CashOnDeliveryProduct
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
@@ -35,7 +38,9 @@ import com.tokopedia.purchase_platform.common.feature.bometadata.BoMetadata
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.SuccessDataUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyMessageUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyVoucherOrdersItemUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.MessageUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoCheckoutVoucherOrdersItemUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
@@ -530,6 +535,145 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
     }
 
     @Test
+    fun set_selected_schedule_delivery_with_clear_old_promo() {
+        // given
+        coEvery {
+            validateUsePromoRevampUseCase.setParam(any()).executeOnBackground()
+        } returns ValidateUsePromoRevampUiModel(status = "OK", errorCode = "200")
+
+        coEvery {
+            clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground()
+        } returns ClearPromoUiModel(
+            SuccessDataUiModel(true)
+        )
+
+        val orderModel = CheckoutOrderModel("123", boUniqueId = "12", shipment = CheckoutOrderShipment(courierItemData = CourierItemData(logPromoCode = "boCode")))
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(recipientAddressModel = RecipientAddressModel()),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel("123", cartStringOrder = "12"),
+            orderModel,
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(
+                promo = LastApplyUiModel(
+                    voucherOrders = listOf(
+                        LastApplyVoucherOrdersItemUiModel(code = "boCode", "12", message = LastApplyMessageUiModel(state = "green"), type = "logistic", cartStringGroup = "123")
+                    )
+                )
+            ),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+        val scheduleDeliveryUiModel = ScheduleDeliveryUiModel(false)
+        val courierItemData = CourierItemData(scheduleDeliveryUiModel = scheduleDeliveryUiModel)
+
+        // when
+        viewModel.setSelectedScheduleDelivery(
+            5,
+            orderModel,
+            orderModel.shipment.courierItemData!!,
+            scheduleDeliveryUiModel,
+            courierItemData
+        )
+
+        // then
+        assertEquals(
+            courierItemData,
+            (viewModel.listData.value[5] as CheckoutOrderModel).shipment.courierItemData
+        )
+        assertEquals(
+            LastApplyUiModel(),
+            (viewModel.listData.value[7] as CheckoutPromoModel).promo
+        )
+        coVerify(exactly = 1) {
+            clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground()
+        }
+    }
+
+    @Test
+    fun set_selected_schedule_delivery_with_clear_old_promo_and_apply_new() {
+        // given
+        coEvery {
+            validateUsePromoRevampUseCase.setParam(any()).executeOnBackground()
+        } returns ValidateUsePromoRevampUiModel(
+            status = "OK",
+            errorCode = "200",
+            promoUiModel = PromoUiModel(
+                voucherOrderUiModels = listOf(
+                    PromoCheckoutVoucherOrdersItemUiModel("boCode2", "12", type = "logistic", messageUiModel = MessageUiModel(state = "green"), cartStringGroup = "123")
+                )
+            )
+        )
+
+        coEvery {
+            clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground()
+        } returns ClearPromoUiModel(
+            SuccessDataUiModel(true)
+        )
+
+        val orderModel = CheckoutOrderModel("123", shipment = CheckoutOrderShipment(courierItemData = CourierItemData(logPromoCode = "boCode")))
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(recipientAddressModel = RecipientAddressModel()),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel("123"),
+            orderModel,
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(
+                promo = LastApplyUiModel(
+                    voucherOrders = listOf(
+                        LastApplyVoucherOrdersItemUiModel(code = "boCode", "12", message = LastApplyMessageUiModel(state = "green"), type = "logistic", cartStringGroup = "123")
+                    )
+                )
+            ),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+        val scheduleDeliveryUiModel = ScheduleDeliveryUiModel(true, deliveryProduct = DeliveryProduct(promoStacking = PromoStacking(disabled = false, promoCode = "boCode2")))
+        val courierItemData = CourierItemData(scheduleDeliveryUiModel = scheduleDeliveryUiModel)
+
+        // when
+        viewModel.setSelectedScheduleDelivery(
+            5,
+            orderModel,
+            orderModel.shipment.courierItemData!!,
+            scheduleDeliveryUiModel,
+            courierItemData
+        )
+
+        // then
+        assertEquals(
+            courierItemData,
+            (viewModel.listData.value[5] as CheckoutOrderModel).shipment.courierItemData
+        )
+        assertEquals(
+            LastApplyUiModel(
+                voucherOrders = listOf(
+                    LastApplyVoucherOrdersItemUiModel(
+                        code = "boCode2",
+                        "12",
+                        message = LastApplyMessageUiModel(state = "green"),
+                        type = "logistic",
+                        cartStringGroup = "123"
+                    )
+                )
+            ),
+            (viewModel.listData.value[7] as CheckoutPromoModel).promo
+        )
+        coVerify(exactly = 1) {
+            clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground()
+        }
+        coVerify(exactly = 2) {
+            validateUsePromoRevampUseCase.setParam(any()).executeOnBackground()
+        }
+    }
+
+    @Test
     fun prepare_full_checkout_page() {
         // given
         viewModel.listData.value = listOf(
@@ -605,6 +749,100 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
                 shippingCourierUiModels = listOf(shippingCourierUiModel)
             ),
             (viewModel.listData.value[5] as CheckoutOrderModel).shipment
+        )
+    }
+
+    @Test
+    fun set_selected_courier_insurance() {
+        // given
+        val orderModel = CheckoutOrderModel(
+            "123",
+            shipment = CheckoutOrderShipment(courierItemData = CourierItemData(insurancePrice = 100))
+        )
+
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(recipientAddressModel = RecipientAddressModel()),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel("123"),
+            orderModel,
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+
+        // when
+        viewModel.setSelectedCourierInsurance(true, orderModel, 5)
+
+        // then
+        assertEquals(
+            listOf(
+                CheckoutTickerErrorModel(errorMessage = ""),
+                CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+                CheckoutAddressModel(recipientAddressModel = RecipientAddressModel()),
+                CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+                CheckoutProductModel("123"),
+                CheckoutOrderModel(
+                    "123",
+                    shipment = CheckoutOrderShipment(courierItemData = CourierItemData(insurancePrice = 100), insurance = CheckoutOrderInsurance(true))
+                ),
+                CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+                CheckoutPromoModel(promo = LastApplyUiModel()),
+                CheckoutCostModel(totalPrice = 100.0, totalPriceString = "Rp100", hasSelectAllShipping = true, shippingInsuranceFee = 100.0, totalOtherFee = 100.0),
+                CheckoutCrossSellGroupModel(),
+                CheckoutButtonPaymentModel(totalPrice = "Rp100", enable = true, useInsurance = true)
+            ),
+            viewModel.listData.value
+        )
+    }
+
+    @Test
+    fun set_selected_courier_insurance_same_value() {
+        // given
+        val orderModel = CheckoutOrderModel(
+            "123",
+            shipment = CheckoutOrderShipment(courierItemData = CourierItemData(insurancePrice = 100))
+        )
+
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(recipientAddressModel = RecipientAddressModel()),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel("123"),
+            orderModel,
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+
+        // when
+        viewModel.setSelectedCourierInsurance(false, orderModel, 5)
+
+        // then
+        assertEquals(
+            listOf(
+                CheckoutTickerErrorModel(errorMessage = ""),
+                CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+                CheckoutAddressModel(recipientAddressModel = RecipientAddressModel()),
+                CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+                CheckoutProductModel("123"),
+                CheckoutOrderModel(
+                    "123",
+                    shipment = CheckoutOrderShipment(courierItemData = CourierItemData(insurancePrice = 100), insurance = CheckoutOrderInsurance())
+                ),
+                CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+                CheckoutPromoModel(promo = LastApplyUiModel()),
+                CheckoutCostModel(),
+                CheckoutCrossSellGroupModel(),
+                CheckoutButtonPaymentModel()
+            ),
+            viewModel.listData.value
         )
     }
 }

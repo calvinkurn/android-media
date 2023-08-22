@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.TokoFoodPurchaseViewModel
-import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.TokoFoodPurchaseViewModelOld
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.subview.TokoFoodPurchaseConsentViewModel
 import dagger.Binds
 import dagger.Module
@@ -23,12 +22,6 @@ abstract class TokoFoodPurchaseViewModelModule {
     @IntoMap
     @ViewModelKey(TokoFoodPurchaseViewModel::class)
     internal abstract fun bindTokoFoodPurchaseViewModel(viewModel: TokoFoodPurchaseViewModel): ViewModel
-
-    @TokoFoodPurchaseScope
-    @Binds
-    @IntoMap
-    @ViewModelKey(TokoFoodPurchaseViewModelOld::class)
-    internal abstract fun bindTokoFoodPurchaseViewModelOld(viewModel: TokoFoodPurchaseViewModelOld): ViewModel
 
     @TokoFoodPurchaseScope
     @Binds

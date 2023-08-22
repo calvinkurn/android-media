@@ -170,7 +170,7 @@ object CartUiModelMapper {
                 groupBadge = availableGroup.groupInformation.badgeUrl
                 groupAppLink = availableGroup.groupInformation.appLink
                 isFulfillment = availableGroup.isFulfillment
-                fulfillmentName = ""
+                fulfillmentName = availableGroup.groupInformation.description
                 fulfillmentBadgeUrl = availableGroup.groupInformation.descriptionBadgeUrl
                 estimatedTimeArrival = availableGroup.shipmentInformation.estimation
                 isShowPin = availableGroup.pinned.isPinned
