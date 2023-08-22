@@ -562,7 +562,8 @@ class CheckoutViewModel @Inject constructor(
             getPromoFlag(step),
             eventCategory,
             eventAction,
-            eventLabel
+            eventLabel,
+            step
         )
         mTrackerShipment.flushEnhancedECommerceCheckout()
     }
@@ -2285,19 +2286,21 @@ class CheckoutViewModel @Inject constructor(
         val oldList = checkoutProductModel.addOnProduct.listAddOnProductData
         val newProduct = checkoutProductModel.copy(
             addOnProduct = checkoutProductModel.addOnProduct.copy(
-                listAddOnProductData = oldList.map {
-                    it.copy(
-                        status = if (it.uniqueId == addOnProductDataItemModel.uniqueId) {
-                            if (checked) {
-                                AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK
+                listAddOnProductData = ArrayList(
+                    oldList.map {
+                        it.copy(
+                            status = if (it.uniqueId == addOnProductDataItemModel.uniqueId) {
+                                if (checked) {
+                                    AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK
+                                } else {
+                                    AddOnConstant.ADD_ON_PRODUCT_STATUS_UNCHECK
+                                }
                             } else {
-                                AddOnConstant.ADD_ON_PRODUCT_STATUS_UNCHECK
+                                it.status
                             }
-                        } else {
-                            it.status
-                        }
-                    )
-                }
+                        )
+                    }
+                )
             )
         )
         checkoutItems[position] = newProduct
@@ -2317,22 +2320,24 @@ class CheckoutViewModel @Inject constructor(
             val oldList = product.addOnProduct.listAddOnProductData
             val newProduct = product.copy(
                 addOnProduct = product.addOnProduct.copy(
-                    listAddOnProductData = oldList.map {
-                        for (addOnUiModel in addOnProductDataResult.aggregatedData.selectedAddons) {
-                            if (it.type == addOnUiModel.addOnType) {
-                                return@map it.copy(
-                                    id = addOnUiModel.id.toLongOrZero(),
-                                    uniqueId = addOnUiModel.uniqueId,
-                                    price = addOnUiModel.price.toDouble(),
-                                    infoLink = addOnUiModel.eduLink,
-                                    name = addOnUiModel.name,
-                                    type = addOnUiModel.addOnType,
-                                    status = addOnUiModel.getSaveAddonSelectedStatus().value
-                                )
+                    listAddOnProductData = ArrayList(
+                        oldList.map {
+                            for (addOnUiModel in addOnProductDataResult.aggregatedData.selectedAddons) {
+                                if (it.type == addOnUiModel.addOnType) {
+                                    return@map it.copy(
+                                        id = addOnUiModel.id.toLongOrZero(),
+                                        uniqueId = addOnUiModel.uniqueId,
+                                        price = addOnUiModel.price.toDouble(),
+                                        infoLink = addOnUiModel.eduLink,
+                                        name = addOnUiModel.name,
+                                        type = addOnUiModel.addOnType,
+                                        status = addOnUiModel.getSaveAddonSelectedStatus().value
+                                    )
+                                }
                             }
+                            return@map it
                         }
-                        return@map it
-                    }
+                    )
                 )
             )
             checkoutItems[itemIndex] = newProduct

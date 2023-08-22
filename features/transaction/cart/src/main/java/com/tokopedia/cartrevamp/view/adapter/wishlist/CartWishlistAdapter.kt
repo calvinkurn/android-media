@@ -4,7 +4,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.cart.R
 import com.tokopedia.cart.databinding.ItemProductWishlistBinding
 import com.tokopedia.cartrevamp.view.ActionListener
 import com.tokopedia.cartrevamp.view.uimodel.CartWishlistItemHolderData
@@ -24,7 +23,7 @@ class CartWishlistAdapter(val actionListener: ActionListener?) : RecyclerView.Ad
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val binding = ItemProductWishlistBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return CartWishlistItemViewHolder(binding, actionListener, parent.context.resources.getDimension(R.dimen.dp_120).toInt())
+        return CartWishlistItemViewHolder(binding, actionListener, parent.context.resources.getDimension(com.tokopedia.design.R.dimen.dp_120).toInt())
     }
 
     override fun getItemCount(): Int {

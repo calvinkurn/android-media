@@ -170,7 +170,7 @@ query $queryName(${"$"}param : OngkirRatesV3Input!) {
         is_applied
         image_url
         image_url_chosen
-        quota
+        quota_message
         discounted_rate
         shipping_rate
         benefit_amount
@@ -220,7 +220,7 @@ query $queryName(${"$"}param : OngkirRatesV3Input!) {
         is_applied
         image_url
         image_url_chosen
-        quota
+        quota_message
         discounted_rate
         shipping_rate
         benefit_amount
@@ -439,7 +439,7 @@ internal fun ratesQuery() = """
             is_applied
             image_url
             image_url_chosen
-            quota
+            quota_message
             discounted_rate
             shipping_rate
             benefit_amount
@@ -489,7 +489,7 @@ internal fun ratesQuery() = """
             is_applied
             image_url
             image_url_chosen
-            quota
+            quota_message
             discounted_rate
             shipping_rate
             benefit_amount

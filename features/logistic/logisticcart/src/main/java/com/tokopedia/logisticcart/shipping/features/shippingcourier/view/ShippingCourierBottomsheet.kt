@@ -9,9 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.logisticCommon.data.constant.CourierConstant
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData
 import com.tokopedia.logisticcart.R
@@ -119,7 +116,7 @@ class ShippingCourierBottomsheet : ShippingCourierAdapterListener, BottomSheetUn
 
     private fun setupRecyclerView() {
         shippingCourierAdapter.setShippingCourierAdapterListener(this)
-        shippingCourierAdapter.setShippingCourierViewModels(convertCourierListToUiModel(mCourierModelList, mPreOrderModel))
+        shippingCourierAdapter.setShippingCourierViewModels(convertCourierListToUiModel(mCourierModelList))
         shippingCourierAdapter.setCartPosition(cartPosition)
         val linearLayoutManager = LinearLayoutManager(
             activity,
@@ -162,18 +159,8 @@ class ShippingCourierBottomsheet : ShippingCourierAdapterListener, BottomSheetUn
         dismiss()
     }
 
-    private fun showErrorPage(message: String) {
-        pbLoading?.visibility = View.GONE
-        llContent?.visibility = View.GONE
-        llNetworkErrorView?.visibility = View.VISIBLE
-        NetworkErrorHelper.showEmptyState(activity, llNetworkErrorView, message) {
-            showLoading()
-        }
-    }
-
     private fun convertCourierListToUiModel(
-        shippingCourierUiModels: List<ShippingCourierUiModel>,
-        preOrderModel: PreOrderModel?
+        shippingCourierUiModels: List<ShippingCourierUiModel>
     ): MutableList<RatesViewModelType> {
         val eligibleCourierList =
             shippingCourierUiModels.filter { courier -> !courier.productData.isUiRatesHidden }.toMutableList()

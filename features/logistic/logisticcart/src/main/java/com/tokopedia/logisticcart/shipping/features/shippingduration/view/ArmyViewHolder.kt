@@ -42,7 +42,7 @@ class ArmyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             tvTitle.gone()
         }
 
-        if (data.bebasOngkirKuota != 0L) {
+        if (data.bebasOngkirKuota.isNotEmpty()) {
             val kuotaTextTemplate = itemView.context.getString(R.string.checkout_bebas_ongkir_view_holder_description_template, data.bebasOngkirKuota)
             tvKuota.text = HtmlLinkHelper(itemView.context, kuotaTextTemplate).spannedString
             tvKuota.visible()
@@ -72,9 +72,9 @@ class ArmyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         if (data.imageUrl.isNotEmpty()) {
             imgLogo.contentDescription = itemView.context.getString(R.string.content_description_img_logo_rates_promo_prefix, data.title)
             imgLogo.loadImage(data.imageUrl)
-            imgLogo.visible()
+            flImageContainer.visible()
         } else {
-            imgLogo.gone()
+            flImageContainer.gone()
         }
 
         val fontColor = if (data.disabled) {
