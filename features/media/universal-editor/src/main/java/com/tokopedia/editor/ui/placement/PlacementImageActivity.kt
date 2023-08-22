@@ -16,6 +16,8 @@ import com.tokopedia.picker.common.UniversalEditorParam
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.component.NavToolbarComponent
 import com.tokopedia.picker.common.component.ToolbarTheme
+import com.tokopedia.utils.file.FileUtil
+import com.tokopedia.utils.file.cleaner.InternalStorageCleaner
 import javax.inject.Inject
 
 class PlacementImageActivity : BaseActivity(), NavToolbarComponent.Listener {
@@ -45,6 +47,12 @@ class PlacementImageActivity : BaseActivity(), NavToolbarComponent.Listener {
         initBundle(savedInstanceState)
         initFragment()
         initView()
+
+        // clear cache file if more than 1 day old
+        InternalStorageCleaner.cleanUpInternalStorageIfNeeded(
+            this,
+            getEditorCacheFolderPath()
+        )
     }
 
     override fun onCloseClicked() {}
@@ -59,6 +67,10 @@ class PlacementImageActivity : BaseActivity(), NavToolbarComponent.Listener {
                 finish()
             }
         }
+    }
+
+    fun getEditorCacheFolderPath(): String {
+        return FileUtil.getTokopediaInternalDirectory(CACHE_FOLDER).path
     }
 
     private fun initBundle(savedInstanceState: Bundle?) {
@@ -105,6 +117,8 @@ class PlacementImageActivity : BaseActivity(), NavToolbarComponent.Listener {
     }
 
     companion object {
+        private const val CACHE_FOLDER = "Tokopedia/editor-stories"
+
         const val PLACEMENT_RESULT_KEY = "input_placement_result"
 
         const val PLACEMENT_PARAM_KEY = "placement_param_key"

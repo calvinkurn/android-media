@@ -1,10 +1,7 @@
 package com.tokopedia.editor.ui.placement
 
 import android.net.Uri
-import android.os.Bundle
 import android.os.Handler
-import android.util.Log
-import android.widget.Toast
 import androidx.core.graphics.values
 import androidx.fragment.app.activityViewModels
 import com.tokopedia.editor.R
@@ -28,10 +25,9 @@ class PlacementImageFragment @Inject constructor() : BaseEditorFragment(R.layout
             viewBinding?.cropArea?.let { ucropRef ->
                 ucropRef.getCropImageView()?.let { gestureCropImage ->
 
-                    val outputPath = FileUtil.getTokopediaInternalDirectory(CACHE_FOLDER).path + RESULT_FILE_NAME
                     gestureCropImage.setImageUri(
                         Uri.fromFile(File(it)),
-                        Uri.parse(outputPath)
+                        Uri.parse(getOutputPath())
                     )
 
                     gestureCropImage.setTransformImageListener(object :
@@ -89,10 +85,11 @@ class PlacementImageFragment @Inject constructor() : BaseEditorFragment(R.layout
         }
     }
 
-    companion object {
-        private const val RESULT_FILE_NAME = "/stories_editor.png"
-        private const val CACHE_FOLDER = "Tokopedia"
+    private fun getOutputPath(): String {
+        return (activity as PlacementImageActivity).getEditorCacheFolderPath() + FileUtil.generateUniqueFileName()
+    }
 
+    companion object {
         private const val INDEX_CORD_X = 2
         private const val INDEX_CORD_Y = 5
 
