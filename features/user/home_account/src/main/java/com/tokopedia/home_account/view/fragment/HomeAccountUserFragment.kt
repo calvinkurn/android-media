@@ -37,6 +37,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
+import com.tokopedia.applink.user.DeeplinkMapperUser
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.coachmark.util.ViewHelper
@@ -131,6 +132,7 @@ import com.tokopedia.unifycomponents.LocalLoad
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -274,6 +276,9 @@ open class HomeAccountUserFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val label = getLabelProfileManagement()
+        homeAccountAnalytic.sendViewOnAkunSayaPageEvent(label)
+
         binding?.homeAccountUserToolbar?.let {
             it.setIcon(
                 IconBuilder(
@@ -349,8 +354,17 @@ open class HomeAccountUserFragment :
         }
     }
 
+    private fun getLabelProfileManagement(): String {
+        return if (DeeplinkMapperUser.isProfileManagementM2Activated()) {
+            AccountConstants.Analytics.Label.LABEL_M2
+        } else {
+            AccountConstants.Analytics.Label.LABEL_EMPTY
+        }
+    }
+
     override fun onProfileClicked() {
-        homeAccountAnalytic.eventClickProfile()
+        val label = getLabelProfileManagement()
+        homeAccountAnalytic.eventClickProfile(label)
     }
 
     override fun onIconWarningClicked(profile: ProfileDataView) {
@@ -358,7 +372,8 @@ open class HomeAccountUserFragment :
     }
 
     override fun onEditProfileClicked() {
-        homeAccountAnalytic.eventClickProfile()
+        val label = getLabelProfileManagement()
+        homeAccountAnalytic.eventClickProfile(label)
         goToApplink(ApplinkConstInternalUserPlatform.SETTING_PROFILE)
     }
 
@@ -1320,24 +1335,19 @@ open class HomeAccountUserFragment :
                 homeAccountAnalytic.eventClickSetting(PAYMENT_METHOD)
                 goToApplink(item.applink)
             }
-
             AccountConstants.SettingCode.SETTING_TNC_ID -> {
                 homeAccountAnalytic.eventClickSetting(TERM_CONDITION)
                 homeAccountAnalytic.eventClickTermsAndConditionsAboutTokopedia()
-                RouteManager.route(
-                    activity,
-                    AccountConstants.Url.BASE_WEBVIEW_APPLINK + AccountConstants.Url.BASE_MOBILE + AccountConstants.Url.PATH_TERM_CONDITION
-                )
+                val urlTnc = "${TokopediaUrl.getInstance().WEB}${AccountConstants.Url.PATH_TERM_CONDITION}"
+                RouteManager.route(activity, ApplinkConstInternalGlobal.WEBVIEW, urlTnc)
             }
 
             AccountConstants.SettingCode.SETTING_ABOUT_US -> {
                 homeAccountAnalytic.eventClickSetting(ABOUT_US)
                 homeAccountAnalytic.eventClickGetToKnowAboutTokopedia()
+                val urlAboutUs = "${TokopediaUrl.getInstance().WEB}${AccountConstants.Url.PATH_ABOUT_US}"
                 RouteManager.getIntent(
-                    activity,
-                    AccountConstants.Url.BASE_WEBVIEW_APPLINK +
-                        AccountConstants.Url.BASE_MOBILE +
-                        AccountConstants.Url.PATH_ABOUT_US
+                    activity, ApplinkConstInternalGlobal.WEBVIEW, urlAboutUs
                 ).run {
                     startActivity(this)
                 }
@@ -1345,19 +1355,15 @@ open class HomeAccountUserFragment :
 
             AccountConstants.SettingCode.SETTING_IP -> {
                 homeAccountAnalytic.eventClickIpAboutTokopedia()
-                RouteManager.route(
-                    activity,
-                    AccountConstants.Url.BASE_WEBVIEW_APPLINK + AccountConstants.Url.BASE_MOBILE + AccountConstants.Url.PATH_IP
-                )
+                val urlSettingIp = "${TokopediaUrl.getInstance().WEB}${AccountConstants.Url.PATH_IP}"
+                RouteManager.route(activity, ApplinkConstInternalGlobal.WEBVIEW_TITLE, TITLE,  urlSettingIp)
             }
 
             AccountConstants.SettingCode.SETTING_PRIVACY_ID -> {
                 homeAccountAnalytic.eventClickSetting(PRIVACY_POLICY)
                 homeAccountAnalytic.eventClickPrivacyPolicyAboutTokopedia()
-                RouteManager.route(
-                    activity,
-                    AccountConstants.Url.BASE_WEBVIEW_APPLINK + AccountConstants.Url.BASE_MOBILE + AccountConstants.Url.PATH_PRIVACY_POLICY
-                )
+                val urlPrivacyPolicy = "${TokopediaUrl.getInstance().WEB}${AccountConstants.Url.PATH_PRIVACY_POLICY}"
+                RouteManager.route(activity, ApplinkConstInternalGlobal.WEBVIEW, urlPrivacyPolicy)
             }
 
             AccountConstants.SettingCode.SETTING_APP_REVIEW_ID -> {
@@ -1857,6 +1863,7 @@ open class HomeAccountUserFragment :
 
         private const val COACHMARK_DELAY_MS = 1000L
         private const val PRIVACY_POLICY = "Kebijakan Privasi"
+        private const val TITLE = "Tokopedia"
 
         fun newInstance(bundle: Bundle?): Fragment {
             return HomeAccountUserFragment().apply {

@@ -67,7 +67,7 @@ abstract class BaseHotelHomepageScreenshotTesting {
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
             CommonActions.takeScreenShotVisibleViewInScreen(activity.window.decorView, filePrefix(), "bs-menu")
         }
-        Espresso.onView(ViewMatchers.withId(R.id.bottom_sheet_close)).perform(ViewActions.click())
+        Espresso.onView(ViewMatchers.withId(com.tokopedia.unifycomponents.R.id.bottom_sheet_close)).perform(ViewActions.click())
 
         CommonActions.findViewAndScreenShot(R.id.hotel_search_form_container, filePrefix(), "search-container")
 
@@ -84,14 +84,14 @@ abstract class BaseHotelHomepageScreenshotTesting {
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
             CommonActions.takeScreenShotVisibleViewInScreen(activity.window.decorView, filePrefix(), "bs-guest-info")
         }
-        Espresso.onView(ViewMatchers.withId(R.id.bottom_sheet_close)).perform(ViewActions.click())
+        Espresso.onView(ViewMatchers.withId(com.tokopedia.unifycomponents.R.id.bottom_sheet_close)).perform(ViewActions.click())
 
         //SS testing calendar
         Espresso.onView(CommonMatcher.withTagStringValue(R.id.tv_hotel_homepage_checkout_date.toString())).perform(ViewActions.click())
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
             CommonActions.takeScreenShotVisibleViewInScreen(activity.window.decorView, filePrefix(), "bs-guest-info")
         }
-        Espresso.onView(ViewMatchers.withId(R.id.bottom_sheet_close)).perform(ViewActions.click())
+        Espresso.onView(ViewMatchers.withId(com.tokopedia.unifycomponents.R.id.bottom_sheet_close)).perform(ViewActions.click())
 
         CommonActions.findViewAndScreenShot(R.id.hotel_container_last_search, filePrefix(), "recent-search")
 

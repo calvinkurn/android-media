@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.buyerorderdetail.presentation.viewmodel.BuyerOrderDetailExtensionViewModel
 import com.tokopedia.buyerorderdetail.presentation.viewmodel.BuyerOrderDetailViewModel
+import com.tokopedia.buyerorderdetail.presentation.viewmodel.OwocViewModel
 import com.tokopedia.buyerorderdetail.presentation.viewmodel.PartialOrderFulfillmentViewModel
 import com.tokopedia.digital.digital_recommendation.di.DigitalRecommendationViewModelModule
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.viewmodel.ScpRewardsMedalTouchPointViewModel
@@ -38,4 +39,9 @@ abstract class BuyerOrderDetailViewModelModule {
     @IntoMap
     @ViewModelKey(ScpRewardsMedalTouchPointViewModel::class)
     internal abstract fun provideScpRewardsMedalTouchPointViewModel(viewModel: ScpRewardsMedalTouchPointViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(OwocViewModel::class)
+    internal abstract fun provideOwocViewModel(viewModel: OwocViewModel): ViewModel
 }

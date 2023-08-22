@@ -118,7 +118,7 @@ class ShopProductResultPageAnalyticTest {
             RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(clickedItemPosition, click())
         )
         Espresso.onView(firstView(withId(R.id.recycler_view))).perform(
-            RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(clickedItemPosition, CommonActions.clickChildViewWithId(R.id.imageThreeDots))
+            RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(clickedItemPosition, CommonActions.clickChildViewWithId(com.tokopedia.productcard.R.id.imageThreeDots))
         )
     }
 
@@ -132,7 +132,7 @@ class ShopProductResultPageAnalyticTest {
                 ComponentNameMatchers.hasClassName("com.tokopedia.shop.sort.view.activity.ShopProductSortActivity")
             )
         ).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, mockIntentData))
-        Espresso.onView(AllOf.allOf(withText("Urutkan"), isDescendantOfA(withId(R.id.sort_filter_items_wrapper))))
+        Espresso.onView(AllOf.allOf(withText("Urutkan"), isDescendantOfA(withId(com.tokopedia.sortfilter.R.id.sort_filter_items_wrapper))))
             .check(matches(isDisplayed())).perform(click())
     }
 }
