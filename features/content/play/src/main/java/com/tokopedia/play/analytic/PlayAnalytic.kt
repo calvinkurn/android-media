@@ -26,7 +26,8 @@ import java.util.concurrent.TimeUnit
  */
 class PlayAnalytic(
     private val userSession: UserSessionInterface,
-    private val trackingQueue: TrackingQueue
+    private val trackingQueue: TrackingQueue,
+    private val dimensionTrackingHelper: PlayDimensionTrackingHelper
 ) {
     val channelId: String
         get() = mChannelId
@@ -226,7 +227,18 @@ class PlayAnalytic(
                 "ecommerce" to hashMapOf(
                     "click" to hashMapOf(
                         "actionField" to hashMapOf("list" to "/groupchat - bottom sheet"),
-                        "products" to listOf(convertProductToHashMapWithList(product, position + 1, "bottom sheet"))
+                        "products" to listOf(
+                            convertProductToHashMapWithList(
+                                product = product,
+                                position = position + 1,
+                                sourceFrom = "bottom sheet",
+                                dimension90 = if (sectionInfo.config.type == ProductSectionType.Active) {
+                                    dimensionTrackingHelper.getDimension90()
+                                } else {
+                                    ""
+                                }
+                            )
+                        )
                     )
                 )
             ),
@@ -382,7 +394,12 @@ class PlayAnalytic(
                     "currencyCode" to "IDR",
                     "impressions" to mutableListOf<HashMap<String, Any>>().apply {
                         products.forEach {
-                            add(convertProductToHashMapWithList(it.first, it.second + 1, "featured product"))
+                            add(convertProductToHashMapWithList(
+                                product = it.first,
+                                position = it.second + 1,
+                                sourceFrom = "featured product",
+                                dimension90 = dimensionTrackingHelper.getDimension90()
+                            ))
                         }
                     }
                 )
@@ -408,7 +425,14 @@ class PlayAnalytic(
                 "ecommerce" to hashMapOf(
                     "click" to hashMapOf(
                         "actionField" to hashMapOf("list" to "/groupchat - featured product"),
-                        "products" to listOf(convertProductToHashMapWithList(featuredProduct, position, "featured product"))
+                        "products" to listOf(
+                            convertProductToHashMapWithList(
+                                product = featuredProduct,
+                                position = position,
+                                sourceFrom = "featured product",
+                                dimension90 = dimensionTrackingHelper.getDimension90()
+                            )
+                        )
                     )
                 )
             ),
@@ -496,25 +520,18 @@ class PlayAnalytic(
     /**
      * Private methods
      */
-    private fun convertProductsToListOfObject(
-        listOfProducts: List<PlayProductUiModel.Product>,
+    private fun convertProductToHashMapWithList(
+        product: PlayProductUiModel.Product,
+        position: Int,
         sourceFrom: String,
-        startPosition: Int = 0
-    ): MutableList<HashMap<String, Any>> {
-        val products = mutableListOf<HashMap<String, Any>>()
-        listOfProducts.forEachIndexed { index, product ->
-            val position = startPosition + index
-            products.add(convertProductToHashMapWithList(product, position, sourceFrom))
-        }
-        return products
-    }
-
-    private fun convertProductToHashMapWithList(product: PlayProductUiModel.Product, position: Int, sourceFrom: String): HashMap<String, Any> {
+        dimension90: String,
+    ): HashMap<String, Any> {
         val dimension115 = buildString {
             append("pinned.${product.isPinned}, ")
             append("ribbon.${product.label.rankType}")
         }
-        return hashMapOf(
+
+        return hashMapOf<String, Any>(
             "name" to product.title,
             "id" to product.id,
             "price" to when (product.price) {
@@ -527,7 +544,11 @@ class PlayAnalytic(
             "list" to "/groupchat - $sourceFrom",
             "position" to position,
             "dimension115" to dimension115
-        )
+        ).apply {
+            if (dimension90.isNotEmpty()) {
+                put("dimension90", dimension90)
+            }
+        }
     }
 
     private fun productsToBundle(product: PlayProductUiModel.Product, position: Int, sourceFrom: String): Bundle =

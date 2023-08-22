@@ -16,6 +16,7 @@ import com.tokopedia.play_common.model.result.PageInfo
 import com.tokopedia.play_common.model.result.PageResult
 import com.tokopedia.play_common.model.result.PageResultState
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.play.data.storage.PlayPageSourceStorage
 import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play_common.model.ui.ArchivedUiModel
 import com.tokopedia.play_common.util.event.Event
@@ -24,7 +25,6 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 /**
  * Created by jegul on 19/01/21
@@ -35,6 +35,7 @@ class PlayParentViewModel @AssistedInject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val userSession: UserSessionInterface,
     private val repo: PlayViewerRepository,
+    private val pageSourceStorage: PlayPageSourceStorage,
     pageMonitoring: PlayPltPerformanceCallback,
 ) : ViewModel() {
 
@@ -78,6 +79,7 @@ class PlayParentViewModel @AssistedInject constructor(
     )
 
     init {
+        pageSourceStorage.pageSource = source.type
         pageMonitoring.startNetworkRequestPerformanceMonitoring()
         loadNextPage()
     }
@@ -93,6 +95,8 @@ class PlayParentViewModel @AssistedInject constructor(
             handle.set(PLAY_KEY_SOURCE_ID, bundle.get(PLAY_KEY_SOURCE_ID))
             handle.set(KEY_START_TIME, bundle.get(KEY_START_TIME))
             handle.set(KEY_SHOULD_TRACK, bundle.get(KEY_SHOULD_TRACK))
+
+            pageSourceStorage.pageSource = bundle.getString(PLAY_KEY_SOURCE_TYPE, "")
 
             mNextKey = getNextChannelIdKey(channelId, source)
             loadNextPage()
