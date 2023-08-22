@@ -7,7 +7,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -15,12 +14,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.tokopedia.header.compose.NestHeader
 import com.tokopedia.header.compose.NestHeaderType
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.compose.NestIcon
 import com.tokopedia.logisticseller.R
 import com.tokopedia.logisticseller.ui.reschedulepickup.bottomsheet.RescheduleBottomSheetLayout
 import com.tokopedia.logisticseller.ui.reschedulepickup.dialog.RescheduleResultDialog
@@ -29,9 +31,12 @@ import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.ReschedulePickup
 import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.ReschedulePickupState
 import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.ReschedulePickupUiEvent
 import com.tokopedia.nest.components.ButtonSize
+import com.tokopedia.nest.components.NestBottomSheetScreen
 import com.tokopedia.nest.components.NestButton
 import com.tokopedia.nest.components.NestTextField
+import com.tokopedia.nest.components.NestTextFieldProperty
 import com.tokopedia.nest.components.NestTips
+import com.tokopedia.nest.components.rememberNestBottomSheetState
 import com.tokopedia.nest.components.ticker.NestTicker
 import com.tokopedia.nest.components.ticker.NestTickerData
 import com.tokopedia.nest.components.ticker.TickerType
@@ -51,9 +56,7 @@ fun ReschedulePickupScreen(
     onEvent: (ReschedulePickupUiEvent) -> Unit
 ) {
     val scope = rememberCoroutineScope()
-    val sheetState = rememberModalBottomSheetState(
-        initialValue = ModalBottomSheetValue.Hidden
-    )
+    val sheetState = rememberNestBottomSheetState()
 
     val (rescheduleBottomSheetState, setRescheduleBottomSheetState) = remember {
         mutableStateOf(RescheduleBottomSheetState.NONE)
@@ -64,43 +67,40 @@ fun ReschedulePickupScreen(
             if (bottomSheetState != RescheduleBottomSheetState.NONE) {
                 if (bottomSheetState != RescheduleBottomSheetState.TIME || input.day.isNotEmpty()) {
                     setRescheduleBottomSheetState(bottomSheetState)
-                    sheetState.show()
+                    sheetState.bottomSheetState.expand()
                 }
             } else {
-                sheetState.hide()
+                sheetState.bottomSheetState.collapse()
                 setRescheduleBottomSheetState(bottomSheetState)
             }
         }
     }
 
-    Scaffold(topBar = {
-        NestHeader(
-            type = NestHeaderType.SingleLine(
-                title = stringResource(id = R.string.title_reschedule_pickup_activity),
-                onBackClicked = {
-                    onEvent(ReschedulePickupUiEvent.PressBack)
-                }
+    NestBottomSheetScreen(
+        title = getBottomSheetTitle(currentScreen = rescheduleBottomSheetState),
+        state = sheetState,
+        showCloseIcon = true,
+        isHideable = true,
+        bottomSheetContent = {
+            RescheduleBottomSheetLayout(
+                rescheduleBottomSheetState,
+                state.options,
+                onEvent
+            ) { setBottomSheetContentState(RescheduleBottomSheetState.NONE) }
+        }
+    ) {
+        Scaffold(topBar = {
+            NestHeader(
+                type = NestHeaderType.SingleLine(
+                    title = stringResource(id = R.string.title_reschedule_pickup_activity),
+                    onBackClicked = {
+                        onEvent(ReschedulePickupUiEvent.PressBack)
+                    }
+                )
             )
-        )
-    }) { paddingValues ->
-        ModalBottomSheetLayout(
-            modifier = Modifier.padding(paddingValues),
-            sheetShape = RoundedCornerShape(
-                topStart = 20.dp,
-                topEnd = 20.dp,
-                bottomEnd = 0.dp,
-                bottomStart = 0.dp
-            ),
-            sheetState = sheetState,
-            sheetContent = {
-                RescheduleBottomSheetLayout(
-                    rescheduleBottomSheetState,
-                    state.options,
-                    onEvent
-                ) { setBottomSheetContentState(RescheduleBottomSheetState.NONE) }
-            }
-        ) {
+        }) { paddingValues ->
             ReschedulePickupScreenLayout(
+                modifier = Modifier.padding(paddingValues),
                 state = state,
                 input = input,
                 onEvent = onEvent,
@@ -115,11 +115,12 @@ private fun ReschedulePickupScreenLayout(
     state: ReschedulePickupState,
     input: ReschedulePickupInput,
     onEvent: (ReschedulePickupUiEvent) -> Unit,
-    onBottomSheetEvent: (RescheduleBottomSheetState) -> Unit
+    onBottomSheetEvent: (RescheduleBottomSheetState) -> Unit,
+    modifier: Modifier
 ) {
     Column {
         Column(
-            modifier = Modifier
+            modifier = modifier
                 .tag("reschedule_pickup_layout")
                 .fillMaxWidth()
                 .weight(1f)
@@ -284,6 +285,7 @@ private fun InputDay(onOpenBottomSheet: (RescheduleBottomSheetState) -> Unit, da
             .padding(vertical = 8.dp, horizontal = 16.dp)
             .clickable { onOpenBottomSheet(RescheduleBottomSheetState.DAY) },
         enabled = false,
+        property = ClickableNestTextFieldProperty(day.isNotEmpty()),
         label = stringResource(id = R.string.label_day_reschedule_pick_up),
         placeholder = stringResource(id = R.string.placeholder_day_reschedule_pick_up),
         icon1 = { DropDownIcon(onClick = { onOpenBottomSheet(RescheduleBottomSheetState.DAY) }) }
@@ -302,6 +304,7 @@ private fun InputTime(onOpenBottomSheet: (RescheduleBottomSheetState) -> Unit, t
                     RescheduleBottomSheetState.TIME
                 )
             },
+        property = ClickableNestTextFieldProperty(time.isNotEmpty()),
         enabled = false,
         label = stringResource(id = R.string.label_time_reschedule_pick_up),
         placeholder = stringResource(id = R.string.placeholder_time_reschedule_pick_up),
@@ -315,6 +318,13 @@ private fun InputTime(onOpenBottomSheet: (RescheduleBottomSheetState) -> Unit, t
     )
 }
 
+class ClickableNestTextFieldProperty(private val inputFilled: Boolean) : NestTextFieldProperty() {
+    @Composable
+    override fun inputColor(enabled: Boolean): Color {
+        return if (inputFilled) NestTheme.colors.NN._950 else NestTheme.colors.NN._200
+    }
+}
+
 @Composable
 private fun InputReason(onOpenBottomSheet: (RescheduleBottomSheetState) -> Unit, reason: String) {
     NestTextField(
@@ -324,6 +334,7 @@ private fun InputReason(onOpenBottomSheet: (RescheduleBottomSheetState) -> Unit,
             .padding(vertical = 8.dp, horizontal = 16.dp)
             .clickable { onOpenBottomSheet(RescheduleBottomSheetState.REASON) },
         enabled = false,
+        property = ClickableNestTextFieldProperty(reason.isNotEmpty()),
         label = stringResource(id = R.string.label_reason_reschedule_pickup),
         icon1 = { DropDownIcon(onClick = { onOpenBottomSheet(RescheduleBottomSheetState.REASON) }) }
     )
@@ -390,12 +401,20 @@ private fun ReschedulePickupSummary(summary: String) {
 
 @Composable
 private fun DropDownIcon(onClick: () -> Unit = {}) {
-    IconButton(
-        onClick = onClick
-    ) {
-        Icon(
-            painter = painterResource(id = com.tokopedia.iconunify.R.drawable.iconunify_chevron_down),
-            contentDescription = "drop down"
-        )
+    NestIcon(
+        iconId = IconUnify.CHEVRON_DOWN,
+        modifier = Modifier
+            .size(24.dp, 24.dp)
+            .clickable { onClick() }
+    )
+}
+
+@Composable
+fun getBottomSheetTitle(currentScreen: RescheduleBottomSheetState): String {
+    return when (currentScreen) {
+        RescheduleBottomSheetState.DAY -> stringResource(id = R.string.title_reschedule_day_bottomsheet)
+        RescheduleBottomSheetState.TIME -> stringResource(id = R.string.title_reschedule_time_bottomsheet)
+        RescheduleBottomSheetState.REASON -> stringResource(id = R.string.title_reschedule_reason_bottomsheet)
+        RescheduleBottomSheetState.NONE -> ""
     }
 }
