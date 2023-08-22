@@ -19,6 +19,7 @@ import com.tokopedia.catalogcommon.listener.HeroBannerListener
 import com.tokopedia.catalogcommon.uimodel.DummyUiModel
 import com.tokopedia.catalogcommon.uimodel.HeroBannerUiModel
 import com.tokopedia.catalogcommon.uimodel.PanelImageUiModel
+import com.tokopedia.catalogcommon.uimodel.SliderImageTextUiModel
 import com.tokopedia.catalogcommon.uimodel.TopFeaturesUiModel
 import com.tokopedia.catalogcommon.uimodel.TrustMakerUiModel
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -98,7 +99,6 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener {
                         "https://placekitten.com/205/302"
                     ),
                     isPremium = true
-                    content = "konten"
                 )
             )
             widgets.add(
