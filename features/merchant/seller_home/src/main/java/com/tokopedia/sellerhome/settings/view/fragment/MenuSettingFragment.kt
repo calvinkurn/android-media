@@ -9,7 +9,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
@@ -70,10 +69,10 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
 
         private const val URL_PLAY_STORE_HOST = "https://play.google.com/store/apps/details?id="
         private const val MARKET_DETAIL_HOST = "market://details?id="
-        private const val PATH_TERM_CONDITION = "terms.pl"
-        private const val PATH_PRIVACY_POLICY = "privacy.pl"
+        private const val PATH_TERM_CONDITION = "terms?lang=id"
+        private const val PATH_PRIVACY_POLICY = "privacy?lang=id"
 
-        private var MOBILE_DOMAIN = getInstance().MOBILEWEB
+        private val WEB_DOMAIN = getInstance().WEB
 
         private const val LOGOUT_BUTTON_NAME = "Logout"
         private const val TERM_CONDITION_BUTTON_NAME = "Syarat dan Ketentuan"
@@ -476,14 +475,14 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
 
     private fun showTermsAndConditions() {
         val termUrl =
-            String.format(APPLINK_FORMAT, ApplinkConst.WEBVIEW, MOBILE_DOMAIN, PATH_TERM_CONDITION)
+            String.format(APPLINK_FORMAT, ApplinkConst.WEBVIEW, WEB_DOMAIN, PATH_TERM_CONDITION)
         val intent = RouteManager.getIntent(context, termUrl)
         context?.startActivity(intent)
     }
 
     private fun showPrivacyPolicy() {
         val privacyUrl =
-            String.format(APPLINK_FORMAT, ApplinkConst.WEBVIEW, MOBILE_DOMAIN, PATH_PRIVACY_POLICY)
+            String.format(APPLINK_FORMAT, ApplinkConst.WEBVIEW, WEB_DOMAIN, PATH_PRIVACY_POLICY)
         val intent = RouteManager.getIntent(context, privacyUrl)
         context?.startActivity(intent)
     }

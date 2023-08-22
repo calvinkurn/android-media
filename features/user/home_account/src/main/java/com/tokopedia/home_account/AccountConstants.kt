@@ -154,11 +154,9 @@ object AccountConstants {
     }
 
     object Url {
-        const val BASE_MOBILE = "https://m.tokopedia.com/"
-        const val PATH_TERM_CONDITION = "terms.pl?isBack=true"
+        const val PATH_TERM_CONDITION = "terms?lang=id&isBack=true"
+        const val PATH_PRIVACY_POLICY = "privacy?lang=id&isBack=true"
         const val PATH_IP = "intellectual-property-protection"
-        const val PATH_PRIVACY_POLICY = "privacy.pl?isBack=true"
-        const val BASE_WEBVIEW_APPLINK = "tokopedia://webview?url="
         const val PATH_ABOUT_US = "about"
         const val PLAYSTORE_URL = "https://play.google.com/store/apps/details?id="
     }
