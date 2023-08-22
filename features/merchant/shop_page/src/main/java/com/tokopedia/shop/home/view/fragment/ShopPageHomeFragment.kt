@@ -193,6 +193,7 @@ import com.tokopedia.shop.home.view.model.StatusCampaign
 import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageHeaderActivity
 import com.tokopedia.shop.common.view.interfaces.InterfaceShopPageHeader
+import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragment
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragmentV2
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPageHeaderPerformanceMonitoringListener
@@ -1048,7 +1049,9 @@ open class ShopPageHomeFragment :
             isLogin,
             isThematicWidgetShown,
             isEnableDirectPurchase,
-            shopId
+            shopId,
+            getIsOverrideTheme(),
+            getColorSchema()
         )
         if (shopHomeWidgetContentData.isNotEmpty()) {
             shopHomeAdapter?.setHomeLayoutData(shopHomeWidgetContentData)
@@ -1697,7 +1700,9 @@ open class ShopPageHomeFragment :
             isLogin,
             isThematicWidgetShown,
             isEnableDirectPurchase,
-            shopId
+            shopId,
+            getIsOverrideTheme(),
+            getColorSchema()
         )
         if (shopHomeWidgetContentData.isNotEmpty()) {
             shopHomeAdapter?.setHomeLayoutData(shopHomeWidgetContentData)
@@ -1959,7 +1964,9 @@ open class ShopPageHomeFragment :
                 shopId,
                 widgetUserAddressLocalData,
                 isThematicWidgetShown,
-                isEnableDirectPurchase
+                isEnableDirectPurchase,
+                getIsOverrideTheme(),
+                getColorSchema()
             )
         }
     }
@@ -4956,5 +4963,13 @@ open class ShopPageHomeFragment :
 
     override fun onHotspotBubbleClicked(uiModel: ShopWidgetDisplayBannerProductHotspotUiModel, imageBannerPosition: Int, bubblePosition: Int) {
         RouteManager.route(context, uiModel.data.getOrNull(imageBannerPosition)?.listProductHotspot?.getOrNull(bubblePosition)?.productUrl.orEmpty())
+    }
+
+    private fun getIsOverrideTheme(): Boolean {
+        return (getRealParentFragment() as? InterfaceShopPageHeader)?.isOverrideTheme().orFalse()
+    }
+
+    private fun getColorSchema(): ShopPageColorSchema {
+        return (getRealParentFragment() as? InterfaceShopPageHeader)?.getColorSchema() ?: ShopPageColorSchema()
     }
 }

@@ -8,6 +8,7 @@ import com.tokopedia.shop.campaign.view.model.ShopCampaignWidgetCarouselProductU
 import com.tokopedia.shop.campaign.view.model.ShopWidgetDisplaySliderBannerHighlightUiModel
 import com.tokopedia.shop.common.data.model.DynamicRule
 import com.tokopedia.shop.common.data.model.ShopPageWidgetUiModel
+import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.home.data.model.ShopLayoutWidget
 import com.tokopedia.shop.home.data.model.ShopPageWidgetRequestModel
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
@@ -21,13 +22,15 @@ object ShopPageWidgetMapper {
 
     fun mapToBannerTimerWidget(
         widgetResponse: ShopLayoutWidget.Widget,
-        widgetLayout: ShopPageWidgetUiModel?
+        widgetLayout: ShopPageWidgetUiModel?,
+        isOverrideTheme: Boolean,
+        colorSchema: ShopPageColorSchema
     )= ShopWidgetDisplayBannerTimerUiModel(
         widgetId = widgetResponse.widgetID,
         layoutOrder = widgetResponse.layoutOrder,
         name = widgetResponse.name,
         type = widgetResponse.type,
-        header = ShopPageHomeMapper.mapToHeaderModel(widgetResponse.header, widgetLayout),
+        header = ShopPageHomeMapper.mapToHeaderModel(widgetResponse.header, widgetLayout, isOverrideTheme, colorSchema),
         isFestivity = widgetLayout?.isFestivity.orFalse(),
         data = mapToBannerItemWidget(widgetResponse.data.firstOrNull())
     )
@@ -68,7 +71,7 @@ object ShopPageWidgetMapper {
         layoutOrder = widgetResponse.layoutOrder,
         name = widgetResponse.name,
         type = widgetResponse.type,
-        header = ShopPageHomeMapper.mapToHeaderModel(widgetResponse.header, widgetLayout),
+        header = ShopPageHomeMapper.mapToHeaderModel(widgetResponse.header, widgetLayout, false, ShopPageColorSchema()),
         isFestivity = widgetLayout?.isFestivity.orFalse(),
         listHighlightProductData = mapToListHighlightProductData(widgetResponse.data)
     )
@@ -90,7 +93,7 @@ object ShopPageWidgetMapper {
         layoutOrder = widgetResponse.layoutOrder,
         name = widgetResponse.name,
         type = widgetResponse.type,
-        header = ShopPageHomeMapper.mapToHeaderModel(widgetResponse.header, widgetLayout),
+        header = ShopPageHomeMapper.mapToHeaderModel(widgetResponse.header, widgetLayout, false, ShopPageColorSchema()),
         isFestivity = widgetLayout?.isFestivity.orFalse(),
         productList = ShopPageHomeMapper.mapCampaignCarouselListProduct(
             widgetResponse.data.firstOrNull()?.listProduct.orEmpty()
@@ -106,7 +109,7 @@ object ShopPageWidgetMapper {
         widgetResponse.layoutOrder,
         widgetResponse.name,
         widgetResponse.type,
-        ShopPageHomeMapper.mapToHeaderModel(widgetResponse.header, widgetLayout),
+        ShopPageHomeMapper.mapToHeaderModel(widgetResponse.header, widgetLayout, false, ShopPageColorSchema()),
         widgetLayout?.isFestivity.orFalse()
     )
 
@@ -178,13 +181,15 @@ object ShopPageWidgetMapper {
 
     fun mapToBannerProductHotspotWidget(
         widgetResponse: ShopLayoutWidget.Widget,
-        widgetLayout: ShopPageWidgetUiModel?
+        widgetLayout: ShopPageWidgetUiModel?,
+        isOverrideTheme: Boolean,
+        colorSchema: ShopPageColorSchema
     )= ShopWidgetDisplayBannerProductHotspotUiModel(
         widgetId = widgetResponse.widgetID,
         layoutOrder = widgetResponse.layoutOrder,
         name = widgetResponse.name,
         type = widgetResponse.type,
-        header = ShopPageHomeMapper.mapToHeaderModel(widgetResponse.header, widgetLayout),
+        header = ShopPageHomeMapper.mapToHeaderModel(widgetResponse.header, widgetLayout, isOverrideTheme, colorSchema),
         isFestivity = widgetLayout?.isFestivity.orFalse(),
         data = mapToBannerProductHotspotItem(widgetResponse.data).toMutableList().apply {  }
     )

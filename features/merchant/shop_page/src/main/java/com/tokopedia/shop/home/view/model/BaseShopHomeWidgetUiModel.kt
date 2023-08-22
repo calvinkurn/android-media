@@ -1,6 +1,7 @@
 package com.tokopedia.shop.home.view.model
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.home.view.adapter.ShopWidgetTypeFactory
 import com.tokopedia.shop_widget.common.util.WidgetState
 
@@ -23,6 +24,8 @@ abstract class BaseShopHomeWidgetUiModel : Visitable<ShopWidgetTypeFactory> {
         val ratio: String = "",
         val isATC: Int = 0,
         val etalaseId: String = "",
+        val isOverrideTheme: Boolean = false,
+        val colorSchema: ShopPageColorSchema = ShopPageColorSchema(),
         val data: List<Data> = listOf()
     ){
         data class Data(
