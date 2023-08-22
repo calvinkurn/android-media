@@ -607,7 +607,11 @@ class OrderSummaryPageViewModel @Inject constructor(
                 globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE)
                 return@launch
             }
-            val result = logisticProcessor.savePinpoint(orderProfile.value.address, longitude, latitude, userSession.userId, userSession.deviceId)
+            val result = logisticProcessor.savePinpoint(
+                orderProfile.value.address,
+                longitude,
+                latitude
+            )
             globalEvent.value = result
         }
     }

@@ -5,7 +5,7 @@ import com.google.gson.Gson
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiExternalUseCase
 import com.tokopedia.localizationchooseaddress.data.repository.ChooseAddressRepository
 import com.tokopedia.localizationchooseaddress.domain.mapper.ChooseAddressMapper
-import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
+import com.tokopedia.logisticCommon.domain.usecase.UpdatePinpointUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
@@ -65,7 +65,7 @@ open class BaseOrderSummaryPageViewModelTest {
     lateinit var chooseAddressMapper: Lazy<ChooseAddressMapper>
 
     @MockK
-    lateinit var editAddressUseCase: Lazy<EditAddressUseCase>
+    lateinit var editAddressUseCase: UpdatePinpointUseCase
 
     @MockK(relaxed = true)
     lateinit var checkoutOccUseCase: CheckoutOccUseCase

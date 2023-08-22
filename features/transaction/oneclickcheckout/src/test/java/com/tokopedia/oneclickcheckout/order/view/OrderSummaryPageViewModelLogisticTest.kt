@@ -8,9 +8,11 @@ import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.Error
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.InsuranceData
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.PriceData
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ProductData
+import com.tokopedia.logisticCommon.data.response.KeroEditAddressResponse
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
+import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.DEFAULT_LOCAL_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
@@ -2229,7 +2231,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     fun `Save Pinpoint Success`() {
         // Given
         orderSummaryPageViewModel.orderProfile.value = helper.preference
-        every { editAddressUseCase.get().createObservable(any()) } returns Observable.just("{\"data\": {\"is_success\": 1}}")
+        coEvery { editAddressUseCase(any()) } returns KeroEditAddressResponse.Data(keroEditAddress = KeroEditAddressResponse.Data.KeroEditAddress(KeroEditAddressResponse.Data.KeroEditAddress.KeroEditAddressSuccessResponse(isSuccess = 1)))
 
         // When
         orderSummaryPageViewModel.savePinpoint("", "")
@@ -2247,7 +2249,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.savePinpoint("", "")
 
         // Then
-        verify(inverse = true) { editAddressUseCase.get().createObservable(any()) }
+        coVerify(inverse = true) { editAddressUseCase(any()) }
         assertEquals(OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE), orderSummaryPageViewModel.globalEvent.value)
     }
 
@@ -2255,13 +2257,13 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     fun `Save Pinpoint Error`() {
         // Given
         orderSummaryPageViewModel.orderProfile.value = helper.preference
-        every { editAddressUseCase.get().createObservable(any()) } returns Observable.just("{\"data\": {\"is_success\": 0},\"message_error\": [\"error\"]}")
+        coEvery { editAddressUseCase(any()) } returns KeroEditAddressResponse.Data(keroEditAddress = KeroEditAddressResponse.Data.KeroEditAddress(KeroEditAddressResponse.Data.KeroEditAddress.KeroEditAddressSuccessResponse(isSuccess = 0)))
 
         // When
         orderSummaryPageViewModel.savePinpoint("", "")
 
         // Then
-        assertEquals(OccGlobalEvent.Error(errorMessage = "error"), orderSummaryPageViewModel.globalEvent.value)
+        assertEquals(OccGlobalEvent.Error(errorMessage = DEFAULT_ERROR_MESSAGE), orderSummaryPageViewModel.globalEvent.value)
     }
 
     @Test
@@ -2269,7 +2271,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         // Given
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         val throwable = Throwable()
-        every { editAddressUseCase.get().createObservable(any()) } returns Observable.error(throwable)
+        coEvery { editAddressUseCase(any()) } throws throwable
 
         // When
         orderSummaryPageViewModel.savePinpoint("", "")
