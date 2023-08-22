@@ -192,7 +192,8 @@ class CheckoutFragment :
         ViewModelProvider(this, viewModelFactory)[CheckoutViewModel::class.java]
     }
 
-    private var binding by autoCleared<FragmentCheckoutBinding>() {
+    private var binding by autoCleared<FragmentCheckoutBinding> {
+        onDestroyViewBinding()
     }
 
     private var header by autoCleared<HeaderCheckoutBinding>()
@@ -943,6 +944,10 @@ class CheckoutFragment :
         checkCampaignTimer()
     }
 
+    private fun onDestroyViewBinding() {
+        binding.countDown.timer?.cancel()
+    }
+
     companion object {
 
         private const val REQUEST_CODE_COURIER_PINPOINT = 13
@@ -1088,9 +1093,12 @@ class CheckoutFragment :
         val productId = product.productId
         val cartId = product.cartId
         val addOnIds = arrayListOf<Long>()
+        val deselectAddOnIds = arrayListOf<Long>()
         product.addOnProduct.listAddOnProductData.forEach { addOnItem ->
             if (addOnItem.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK) {
                 addOnIds.add(addOnItem.id)
+            } else if (addOnItem.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_UNCHECK) {
+                deselectAddOnIds.add(addOnItem.id)
             }
         }
 
@@ -1114,18 +1122,19 @@ class CheckoutFragment :
                 AddOnConstant.QUERY_PARAM_CART_ID to cartId,
                 AddOnConstant.QUERY_PARAM_SELECTED_ADDON_IDS to addOnIds.toString().replace("[", "")
                     .replace("]", ""),
+                AddOnConstant.QUERY_PARAM_DESELECTED_ADDON_IDS to deselectAddOnIds.toString().replace("[", "").replace("]", ""),
                 AddOnConstant.QUERY_PARAM_PAGE_ATC_SOURCE to AddOnConstant.SOURCE_NORMAL_CHECKOUT,
                 ApplinkConstInternalMechant.QUERY_PARAM_WAREHOUSE_ID to product.warehouseId,
                 AddOnConstant.QUERY_PARAM_IS_TOKOCABANG to product.isTokoCabang,
                 AddOnConstant.QUERY_PARAM_CATEGORY_ID to product.productCatId,
                 AddOnConstant.QUERY_PARAM_SHOP_ID to product.shopId,
                 AddOnConstant.QUERY_PARAM_QUANTITY to product.quantity,
-                AddOnConstant.QUERY_PARAM_PRICE to price.toString().removeSingleDecimalSuffix(),
-                AddOnConstant.QUERY_PARAM_DISCOUNTED_PRICE to discountedPrice.toString()
-                    .removeSingleDecimalSuffix()
+                AddOnConstant.QUERY_PARAM_PRICE to price.toBigDecimal().toPlainString().removeSingleDecimalSuffix(),
+                AddOnConstant.QUERY_PARAM_DISCOUNTED_PRICE to discountedPrice.toBigDecimal().toPlainString().removeSingleDecimalSuffix()
             )
         )
 
+        checkoutAnalyticsCourierSelection.eventClickLihatSemuaAddOnsProductServiceWidget()
         activity?.let {
             val intent = RouteManager.getIntent(it, applink)
             startActivityForResult(
@@ -1133,7 +1142,6 @@ class CheckoutFragment :
                 ShipmentFragment.REQUEST_CODE_ADD_ON_PRODUCT_SERVICE_BOTTOMSHEET
             )
         }
-        checkoutAnalyticsCourierSelection.eventClickLihatSemuaAddOnsProductServiceWidget()
     }
 
     override fun onImpressionAddOnProductService(addonType: Int, productId: String) {
@@ -2363,13 +2371,15 @@ class CheckoutFragment :
             binding.tvCountDown.text = timer.timerDescription
             binding.countDown.remainingMilliseconds = diff
             binding.countDown.onFinish = {
-                val dialog =
-                    ExpiredTimeDialog.newInstance(
-                        timer,
-                        checkoutAnalyticsCourierSelection,
-                        this@CheckoutFragment
-                    )
-                dialog.show(parentFragmentManager, "expired dialog")
+                if (view != null) {
+                    val dialog =
+                        ExpiredTimeDialog.newInstance(
+                            timer,
+                            checkoutAnalyticsCourierSelection,
+                            this@CheckoutFragment
+                        )
+                    dialog.show(parentFragmentManager, "expired dialog")
+                }
             }
         } else {
             binding.tvCountDown.visibility = View.GONE
