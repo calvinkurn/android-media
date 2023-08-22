@@ -52,6 +52,7 @@ class BuyerRequestCancelActivity : BaseSimpleActivity(), HasComponent<BuyerCance
             bundle.putString(BuyerConsts.PARAM_STATUS_INFO, "")
             bundle.putBoolean(BuyerConsts.PARAM_IS_WAIT_TO_CANCEL, false)
             bundle.putString(BuyerConsts.PARAM_WAIT_MSG, "")
+            bundle.putString(BuyerConsts.PARAM_TX_ID, "")
         }
         return BuyerRequestCancelFragment.newInstance(bundle)
     }

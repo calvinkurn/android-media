@@ -1687,7 +1687,8 @@ class ShipmentFragment :
         promoFlag: Boolean,
         eventCategory: String,
         eventAction: String,
-        eventLabel: String
+        eventLabel: String,
+        step: String
     ) {
         checkoutAnalyticsCourierSelection.sendEnhancedECommerceCheckout(
             stringObjectMap,
@@ -1697,7 +1698,8 @@ class ShipmentFragment :
             promoFlag,
             eventCategory,
             eventAction,
-            eventLabel
+            eventLabel,
+            step
         )
         checkoutAnalyticsCourierSelection.flushEnhancedECommerceCheckout()
     }

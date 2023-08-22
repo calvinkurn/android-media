@@ -45,6 +45,9 @@ object IconHelper {
             PromoInfo.ICON_DOT -> {
                 return R.drawable.promo_checkout_marketplace_module_ic_dot
             }
+            PromoInfo.ICON_DT -> {
+                return IconUnify.DILAYANI_TOKOPEDIA
+            }
             SubSection.ICON_COUPON -> {
                 return IconUnify.COUPON
             }
