@@ -1,6 +1,8 @@
 package com.tokopedia.promousage.view.mapper
 
+import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.PromoValidateUseResponse
+import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.UserGroupMetadata
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.ValidateUseResponse
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.AdditionalInfoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.BenefitSummaryInfoUiModel

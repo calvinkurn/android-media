@@ -35,6 +35,8 @@ data class PromoItem(
     val couponType: List<String> = emptyList(),
     val secondaryPromo: SecondaryPromoItem = SecondaryPromoItem(),
 
+    val errorMessage: String = "",
+
     val state: PromoItemState = PromoItemState.Loading,
     val currentClashingPromoCodes: List<String> = emptyList(),
     val currentClashingSecondaryPromoCodes: List<String> = emptyList(),

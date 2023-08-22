@@ -74,7 +74,7 @@ class PromoUsageTncBottomSheet : BottomSheetUnify() {
         return when (this) {
             PromoPageEntryPoint.CART_PAGE -> "cart"
             PromoPageEntryPoint.CHECKOUT_PAGE -> "checkout"
-            PromoPageEntryPoint.ONE_CLICK_CHECKOUT_PAGE -> "occ"
+            PromoPageEntryPoint.OCC_PAGE -> "occ"
         }
     }
 

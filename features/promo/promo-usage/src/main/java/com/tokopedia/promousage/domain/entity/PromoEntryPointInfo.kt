@@ -1,13 +1,13 @@
 package com.tokopedia.promousage.domain.entity
 
 data class PromoEntryPointInfo(
-    val messages: List<String> = emptyList(),
     val iconUrl: String = "",
-    val state: String = "",
-    val clickable: Boolean = false
+    val messages: List<String> = emptyList(),
+    val color: String = "",
+    val isClickable: Boolean = false
 ) {
     companion object {
-        const val STATE_GREEN = "green"
-        const val STATE_GREY = "grey"
+        const val COLOR_GREEN = "green"
+        const val COLOR_GREY = "grey"
     }
 }

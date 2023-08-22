@@ -77,6 +77,7 @@ object DummyData {
             promoItemInfos = listOf(
                 PromoItemInfo(
                     type = PromoItemInfo.TYPE_PROMO_INFO,
+                    icon = "NONE",
                     title = "Disesuaikan jika pilih Bebas Ongkir"
                 )
             ),
@@ -124,6 +125,7 @@ object DummyData {
                 promoItemInfos = listOf(
                     PromoItemInfo(
                         type = PromoItemInfo.TYPE_PROMO_INFO,
+                        icon = "NONE",
                         title = "Disesuaikan jika pilih Bebas Ongkir"
                     )
                 ),
@@ -171,6 +173,7 @@ object DummyData {
                 promoItemInfos = listOf(
                     PromoItemInfo(
                         type = PromoItemInfo.TYPE_PROMO_INFO,
+                        icon = "NONE",
                         title = "Disesuaikan jika pilih Bebas Ongkir"
                     )
                 ),
@@ -217,6 +220,7 @@ object DummyData {
                 promoItemInfos = listOf(
                     PromoItemInfo(
                         type = PromoItemInfo.TYPE_PROMO_INFO,
+                        icon = "NONE",
                         title = "Disesuaikan jika pilih Bebas Ongkir"
                     )
                 ),
@@ -264,6 +268,7 @@ object DummyData {
                 promoItemInfos = listOf(
                     PromoItemInfo(
                         type = PromoItemInfo.TYPE_PROMO_INFO,
+                        icon = "NONE",
                         title = "Disesuaikan jika pilih Bebas Ongkir"
                     )
                 ),
@@ -303,6 +308,7 @@ object DummyData {
                 promoItemInfos = listOf(
                     PromoItemInfo(
                         type = PromoItemInfo.TYPE_PROMO_INFO,
+                        icon = "NONE",
                         title = "Disesuaikan jika pilih Bebas Ongkir"
                     )
                 ),
@@ -354,6 +360,7 @@ object DummyData {
                 promoItemInfos = listOf(
                     PromoItemInfo(
                         type = PromoItemInfo.TYPE_PROMO_INFO,
+                        icon = "NONE",
                         title = "Disesuaikan jika pilih Bebas Ongkir"
                     )
                 ),
@@ -400,6 +407,7 @@ object DummyData {
                 promoItemInfos = listOf(
                     PromoItemInfo(
                         type = PromoItemInfo.TYPE_PROMO_INFO,
+                        icon = "NONE",
                         title = "Disesuaikan jika pilih Bebas Ongkir"
                     )
                 ),
@@ -447,6 +455,7 @@ object DummyData {
                 promoItemInfos = listOf(
                     PromoItemInfo(
                         type = PromoItemInfo.TYPE_PROMO_INFO,
+                        icon = "NONE",
                         title = "Disesuaikan jika pilih Bebas Ongkir"
                     )
                 ),
@@ -493,6 +502,7 @@ object DummyData {
                 promoItemInfos = listOf(
                     PromoItemInfo(
                         type = PromoItemInfo.TYPE_PROMO_INFO,
+                        icon = "NONE",
                         title = "Disesuaikan jika pilih Bebas Ongkir"
                     )
                 ),
@@ -539,6 +549,7 @@ object DummyData {
                 promoItemInfos = listOf(
                     PromoItemInfo(
                         type = PromoItemInfo.TYPE_PROMO_INFO,
+                        icon = "NONE",
                         title = "Disesuaikan jika pilih Bebas Ongkir"
                     )
                 ),
@@ -558,7 +569,7 @@ object DummyData {
                 id = "13",
                 index = 13,
                 code = "DISCOUNT1",
-                shopId = 0,
+                shopId = 1,
                 uniqueId = "",
                 benefitAmount = 30000.0,
                 benefitAmountStr = "Rp30.000",
@@ -590,10 +601,12 @@ object DummyData {
                 promoItemInfos = listOf(
                     PromoItemInfo(
                         type = PromoItemInfo.TYPE_PROMO_INFO,
+                        icon = "DOT",
                         title = "Disesuaikan jika pilih Bebas Ongkir"
                     ),
                     PromoItemInfo(
                         type = PromoItemInfo.TYPE_PROMO_INFO,
+                        icon = "DOT",
                         title = "Disesuaikan jika pilih Bebas Ongkir"
                     )
                 ),
@@ -646,6 +659,7 @@ object DummyData {
                 promoItemInfos = listOf(
                     PromoItemInfo(
                         type = PromoItemInfo.TYPE_PROMO_INFO,
+                        icon = "NONE",
                         title = "Disesuaikan jika pilih Bebas Ongkir"
                     )
                 ),
@@ -692,6 +706,7 @@ object DummyData {
                 promoItemInfos = listOf(
                     PromoItemInfo(
                         type = PromoItemInfo.TYPE_PROMO_INFO,
+                        icon = "NONE",
                         title = "Disesuaikan jika pilih Bebas Ongkir"
                     )
                 ),
@@ -738,6 +753,7 @@ object DummyData {
                 promoItemInfos = listOf(
                     PromoItemInfo(
                         type = PromoItemInfo.TYPE_PROMO_INFO,
+                        icon = "NONE",
                         title = "Disesuaikan jika pilih Bebas Ongkir"
                     )
                 ),
@@ -784,6 +800,7 @@ object DummyData {
                 promoItemInfos = listOf(
                     PromoItemInfo(
                         type = PromoItemInfo.TYPE_PROMO_INFO,
+                        icon = "NONE",
                         title = "Disesuaikan jika pilih Bebas Ongkir"
                     )
                 ),
@@ -836,6 +853,7 @@ object DummyData {
                 promoItemInfos = listOf(
                     PromoItemInfo(
                         type = PromoItemInfo.TYPE_PROMO_INFO,
+                        icon = "NONE",
                         title = "Disesuaikan jika pilih Bebas Ongkir"
                     )
                 ),
@@ -885,6 +903,7 @@ object DummyData {
                 promoItemInfos = listOf(
                     PromoItemInfo(
                         type = PromoItemInfo.TYPE_PROMO_INFO,
+                        icon = "NONE",
                         title = "Disesuaikan jika pilih Bebas Ongkir"
                     )
                 ),
@@ -1010,7 +1029,8 @@ object DummyData {
                 messageSelected = "Kamu hemat Rp30.000 dari 2 promo!",
                 backgroundUrl = "https://images.tokopedia.net/img/Promo%20Recom%20Section@3x.png",
                 animationUrl = "https://assets.tokopedia.net/asts/android/shop_page/shop_campaign_tab_confetti.json",
-                selectedCodes = recommendedPromos.filter { it.state == PromoItemState.Selected }.map { it.code },
+//                selectedCodes = recommendedPromos.filter { it.state == PromoItemState.Selected }
+//                    .map { it.code },
             )
         )
         items.addAll(recommendedPromos)
@@ -1086,10 +1106,12 @@ object DummyData {
         // items.add(PromoAttemptItem(label = "Punya kode promo? Masukin di sini ✨"))
         // success attempt UI
         items.add(promoAttemptItemSuccess)
-        items.add(attemptedPromo.copy(
-            isExpanded = true,
-            isVisible = true
-        ))
+        items.add(
+            attemptedPromo.copy(
+                isExpanded = true,
+                isVisible = true
+            )
+        )
         // failed attempt UI
 //        items.add(promoAttemptItemError)
 

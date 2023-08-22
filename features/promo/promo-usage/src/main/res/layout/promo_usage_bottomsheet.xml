@@ -63,7 +63,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/clBottomSheetContent"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_above="@+id/clSavingInfo"
         android:layout_below="@id/clTickerInfo"
         android:layout_marginTop="-12dp">
@@ -123,7 +123,7 @@
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/lottieAnimationView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:scaleType="centerCrop"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
@@ -136,7 +136,6 @@
             android:id="@+id/rvPromo"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/clBottomSheetHeader"
@@ -150,6 +149,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:visibility="gone" />
+
+    <include
+        android:id="@+id/layoutGlobalError"
+        layout="@layout/promo_usage_error"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
 
     <!--Total Savings-->
     <androidx.constraintlayout.widget.ConstraintLayout

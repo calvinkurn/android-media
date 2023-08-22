@@ -16,7 +16,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.promousage.R
 import com.tokopedia.promousage.databinding.PromoUsageItemPromoAttemptBinding
 import com.tokopedia.promousage.domain.entity.list.PromoAttemptItem
-import com.tokopedia.promousage.util.TextDrawable
+import com.tokopedia.promousage.view.custom.TextDrawable
 import com.tokopedia.promousage.util.composite.DelegateAdapter
 
 internal class PromoAttemptCodeDelegateAdapter(

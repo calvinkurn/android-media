@@ -6,9 +6,7 @@ import android.view.animation.Animation
 import android.view.animation.Animation.AnimationListener
 import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
-import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.promousage.R
 import com.tokopedia.promousage.databinding.PromoUsageItemVoucherRecommendationBinding
@@ -16,7 +14,7 @@ import com.tokopedia.promousage.domain.entity.list.PromoRecommendationItem
 import com.tokopedia.promousage.util.composite.DelegateAdapter
 
 class PromoRecommendationDelegateAdapter(
-    private val onButtonUseRecommendedVoucherClick: () -> Unit
+    private val onClickUsePromoRecommendation: () -> Unit
 ) : DelegateAdapter<PromoRecommendationItem, PromoRecommendationDelegateAdapter.ViewHolder>(
     PromoRecommendationItem::class.java
 ) {
@@ -38,18 +36,19 @@ class PromoRecommendationDelegateAdapter(
         fun bind(item: PromoRecommendationItem) {
             val selectedRecommendedPromoCount = item.selectedCodes.size
             val recommendedPromoCount = item.codes.size
-            binding.tpgRecommendationTitle.text = item.title
             binding.btnRecommendationUseVoucher.setOnClickListener {
-                onButtonUseRecommendedVoucherClick()
                 binding.btnRecommendationUseVoucher.invisible()
                 binding.ivCheckmark.visible()
                 binding.ivCheckmarkOutline.visible()
+                onClickUsePromoRecommendation()
                 startButtonUseVoucherAnimation()
             }
-            if (selectedRecommendedPromoCount == recommendedPromoCount) {
+            if (item.selectedCodes.containsAll(item.codes)) {
+                binding.tpgRecommendationTitle.text = item.messageSelected
                 binding.ivCheckmark.visible()
                 binding.ivCheckmarkOutline.invisible()
             } else {
+                binding.tpgRecommendationTitle.text = item.message
                 binding.ivCheckmark.invisible()
                 binding.ivCheckmarkOutline.invisible()
             }

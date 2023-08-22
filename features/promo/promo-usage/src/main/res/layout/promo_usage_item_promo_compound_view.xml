@@ -124,40 +124,45 @@
 
             <com.tokopedia.unifycomponents.LoaderUnify
                 android:id="@+id/top_shimmer"
-                android:layout_width="189dp"
+                android:layout_width="0dp"
                 android:layout_height="16dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="6dp"
+                android:layout_marginEnd="16dp"
                 android:layout_marginBottom="6dp"
                 android:visibility="gone"
                 app:layout_constraintBottom_toTopOf="@id/middle_shimmer"
-                app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tpgPromoBenefitType"
+                app:layout_constraintWidth_percent="0.5"
                 app:loader_type="rect" />
 
             <com.tokopedia.unifycomponents.LoaderUnify
                 android:id="@+id/middle_shimmer"
-                android:layout_width="164dp"
+                android:layout_width="0dp"
                 android:layout_height="16dp"
                 android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
                 android:layout_marginBottom="6dp"
                 android:visibility="gone"
                 app:layout_constraintBottom_toTopOf="@id/bottom_shimmer"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintWidth_percent="0.3"
                 app:loader_type="rect" />
 
             <com.tokopedia.unifycomponents.LoaderUnify
                 android:id="@+id/bottom_shimmer"
-                android:layout_width="102dp"
+                android:layout_width="0dp"
                 android:layout_height="16dp"
                 android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
                 android:layout_marginBottom="12dp"
                 android:visibility="gone"
                 app:layout_constraintBottom_toTopOf="@id/tpgPromoExpiryInfo"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintWidth_percent="0.2"
                 app:loader_type="rect" />
 
             <LinearLayout

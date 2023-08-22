@@ -1,11 +1,10 @@
 package com.tokopedia.promousage.view.mapper
 
-import com.tokopedia.promousage.data.DummyData
 import com.tokopedia.promousage.data.response.BenefitDetail
 import com.tokopedia.promousage.data.response.Coupon
 import com.tokopedia.promousage.data.response.CouponCardDetail
 import com.tokopedia.promousage.data.response.CouponSection
-import com.tokopedia.promousage.data.response.GetCouponListRecommendationResponse
+import com.tokopedia.promousage.data.response.GetPromoListRecommendationResponse
 import com.tokopedia.promousage.data.response.PromoRecommendation
 import com.tokopedia.promousage.data.response.SecondaryCoupon
 import com.tokopedia.promousage.domain.entity.PromoAttemptedError
@@ -29,78 +28,72 @@ import com.tokopedia.promousage.domain.entity.list.PromoRecommendationItem
 import com.tokopedia.promousage.util.composite.DelegateAdapterItem
 import javax.inject.Inject
 
-internal class PromoUsageGetCouponListRecommendationMapper @Inject constructor() {
+class PromoUsageGetCouponListRecommendationMapper @Inject constructor() {
 
     fun mapCouponListRecommendationResponseToEntryPointInfo(
-        response: GetCouponListRecommendationResponse
+        response: GetPromoListRecommendationResponse
     ) : PromoEntryPointInfo {
         return PromoEntryPointInfo(
-            messages = response.couponListRecommendation.data.entryPointInfo.messages,
-            iconUrl = response.couponListRecommendation.data.entryPointInfo.iconUrl,
-            state = response.couponListRecommendation.data.entryPointInfo.state,
-            clickable = response.couponListRecommendation.data.entryPointInfo.clickable
+            messages = response.promoListRecommendation.data.entryPointInfo.messages,
+            iconUrl = response.promoListRecommendation.data.entryPointInfo.iconUrl,
+            color = response.promoListRecommendation.data.entryPointInfo.state,
+            isClickable = response.promoListRecommendation.data.entryPointInfo.clickable
         )
     }
 
     fun mapCouponListRecommendationResponseToPageTickerInfo(
-        response: GetCouponListRecommendationResponse
+        response: GetPromoListRecommendationResponse
     ): PromoPageTickerInfo {
         // TODO: Remove dummy data
-        return DummyData.promoPageTickerInfo
+//        return DummyData.promoPageTickerInfo
         return PromoPageTickerInfo(
-            message = response.couponListRecommendation.data.tickerInfo.message,
-            iconUrl = response.couponListRecommendation.data.tickerInfo.iconUrl,
-            backgroundUrl = response.couponListRecommendation.data.tickerInfo.backgroundUrl,
+            message = response.promoListRecommendation.data.tickerInfo.message,
+            iconUrl = response.promoListRecommendation.data.tickerInfo.iconUrl,
+            backgroundUrl = response.promoListRecommendation.data.tickerInfo.backgroundUrl,
         )
     }
 
     fun mapCouponListRecommendationResponseToSavingInfo(
-        response: GetCouponListRecommendationResponse
+        response: GetPromoListRecommendationResponse
     ) : PromoSavingInfo {
         return PromoSavingInfo(
-            message = "Yay, kamu hemat <b>Rp{benefit_amount}</b>"
+            message = response.promoListRecommendation.data.additionalMessage
         )
-        return PromoSavingInfo(
-            message = response.couponListRecommendation.data.additionalMessage
-        )
-    }
-
-    // TODO: Remove after BE ready
-    fun mapCouponListRecommendationResponseToPromoSectionsWithAttemptedCode() : List<DelegateAdapterItem> {
-        return DummyData.dummySectionWithAttemptedCode()
     }
 
     fun mapCouponListRecommendationResponseToPromoSections(
-        response: GetCouponListRecommendationResponse
+        response: GetPromoListRecommendationResponse
     ): List<DelegateAdapterItem> {
         // TODO: Remove dummy data
-        return DummyData.dummySections()
-        val recommendedPromoCodes = response.couponListRecommendation.data.promoRecommendation.codes
-        val selectedPromoCodes = response.couponListRecommendation.data.couponSections
+//        return DummyData.dummySections()
+        val recommendedPromoCodes = response.promoListRecommendation.data.promoRecommendation.codes
+        val selectedPromoCodes = response.promoListRecommendation.data.couponSections
             .flatMap { it.coupons }.filter { it.isSelected }.map { it.code }
 
         val items = mutableListOf<DelegateAdapterItem>()
-        response.couponListRecommendation.data.couponSections.map { couponSection ->
+        response.promoListRecommendation.data.couponSections.map { couponSection ->
             when (couponSection.id) {
                 PromoPageSection.SECTION_RECOMMENDATION -> {
-                    items.add(
-                        mapCouponSectionToPromoRecommendation(
-                            promoRecommendation = response.couponListRecommendation.data.promoRecommendation,
-                            couponSection = couponSection,
-                            recommendedPromoCodes = recommendedPromoCodes,
-                            selectedPromoCodes = selectedPromoCodes
-                        )
-                    )
-                    couponSection.coupons.forEachIndexed { index, coupon ->
+                    if (couponSection.coupons.isNotEmpty()) {
                         items.add(
-                            mapCouponToPromo(
-                                index = index,
+                            mapCouponSectionToPromoRecommendation(
+                                promoRecommendation = response.promoListRecommendation.data.promoRecommendation,
                                 couponSection = couponSection,
-                                coupon = coupon,
                                 recommendedPromoCodes = recommendedPromoCodes,
                                 selectedPromoCodes = selectedPromoCodes
                             )
                         )
+                        couponSection.coupons.forEachIndexed { index, coupon ->
+                            items.add(
+                                mapCouponToPromo(
+                                    index = index,
+                                    couponSection = couponSection,
+                                    coupon = coupon,
+                                    recommendedPromoCodes = recommendedPromoCodes,
+                                    selectedPromoCodes = selectedPromoCodes
+                                )
+                            )
+                        }
                     }
                 }
 
@@ -110,49 +103,53 @@ internal class PromoUsageGetCouponListRecommendationMapper @Inject constructor()
                             id = couponSection.id
                         )
                     )
-                    couponSection.coupons.forEachIndexed { index, coupon ->
-                        items.add(
-                            mapCouponToPromo(
-                                index = index,
-                                couponSection = couponSection,
-                                coupon = coupon,
-                                recommendedPromoCodes = recommendedPromoCodes,
-                                selectedPromoCodes = selectedPromoCodes
+                    if (couponSection.coupons.isNotEmpty()) {
+                        couponSection.coupons.forEachIndexed { index, coupon ->
+                            items.add(
+                                mapCouponToPromo(
+                                    index = index,
+                                    couponSection = couponSection,
+                                    coupon = coupon,
+                                    recommendedPromoCodes = recommendedPromoCodes,
+                                    selectedPromoCodes = selectedPromoCodes
+                                )
                             )
-                        )
+                        }
                     }
                 }
 
                 else -> {
-                    items.add(
-                        PromoAccordionHeaderItem(
-                            id = couponSection.id,
-                            title = couponSection.title,
-                            isExpanded = false
-                        )
-                    )
-                    couponSection.coupons.forEachIndexed { index, coupon ->
+                    if (couponSection.coupons.isNotEmpty()) {
                         items.add(
-                            mapCouponToPromo(
-                                index = index,
-                                couponSection = couponSection,
-                                coupon = coupon,
-                                recommendedPromoCodes = recommendedPromoCodes,
-                                selectedPromoCodes = selectedPromoCodes
+                            PromoAccordionHeaderItem(
+                                id = couponSection.id,
+                                title = couponSection.title,
+                                isExpanded = false
                             )
                         )
-                    }
-                    val totalPromoInSectionCount = couponSection.coupons.size
-                    if (totalPromoInSectionCount > 1) {
-                        val hiddenPromoCount = totalPromoInSectionCount - 1
-                        items.add(
-                            PromoAccordionViewAllItem(
-                                headerId = couponSection.id,
-                                hiddenPromoCount = hiddenPromoCount,
-                                isExpanded = !couponSection.isCollapse,
-                                isVisible = !couponSection.isCollapse
+                        couponSection.coupons.forEachIndexed { index, coupon ->
+                            items.add(
+                                mapCouponToPromo(
+                                    index = index,
+                                    couponSection = couponSection,
+                                    coupon = coupon,
+                                    recommendedPromoCodes = recommendedPromoCodes,
+                                    selectedPromoCodes = selectedPromoCodes
+                                )
                             )
-                        )
+                        }
+                        val totalPromoInSectionCount = couponSection.coupons.size
+                        if (totalPromoInSectionCount > 1) {
+                            val hiddenPromoCount = totalPromoInSectionCount - 1
+                            items.add(
+                                PromoAccordionViewAllItem(
+                                    headerId = couponSection.id,
+                                    hiddenPromoCount = hiddenPromoCount,
+                                    isExpanded = !couponSection.isCollapse,
+                                    isVisible = !couponSection.isCollapse
+                                )
+                            )
+                        }
                     }
                 }
             }
@@ -170,9 +167,11 @@ internal class PromoUsageGetCouponListRecommendationMapper @Inject constructor()
             id = PromoPageSection.SECTION_RECOMMENDATION,
             title = couponSection.title,
             message = promoRecommendation.message,
+            selectedCodes = selectedPromoCodes,
+            codes = recommendedPromoCodes,
             messageSelected = promoRecommendation.messageSelected,
             backgroundUrl = promoRecommendation.backgroundUrl,
-            animationUrl = promoRecommendation.animationUrl
+            animationUrl = promoRecommendation.animationUrl,
         )
     }
 
@@ -346,11 +345,11 @@ internal class PromoUsageGetCouponListRecommendationMapper @Inject constructor()
     }
 
     fun mapCouponListRecommendationResponseToAttemptedPromoCodeError(
-        response: GetCouponListRecommendationResponse
+        response: GetPromoListRecommendationResponse
     ) : PromoAttemptedError {
         return PromoAttemptedError(
-            code = response.couponListRecommendation.data.attemptedPromoCodeError.code,
-            message = response.couponListRecommendation.data.attemptedPromoCodeError.message
+            code = response.promoListRecommendation.data.attemptedPromoCodeError.code,
+            message = response.promoListRecommendation.data.attemptedPromoCodeError.message
         )
     }
 }

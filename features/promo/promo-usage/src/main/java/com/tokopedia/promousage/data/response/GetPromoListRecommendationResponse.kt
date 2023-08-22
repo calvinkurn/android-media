@@ -2,27 +2,17 @@ package com.tokopedia.promousage.data.response
 
 import com.google.gson.annotations.SerializedName
 
-data class GetCouponListRecommendationResponse(
-    @SerializedName("coupon_list_recommendation")
-    val couponListRecommendation: CouponListRecommendation = CouponListRecommendation()
+data class GetPromoListRecommendationResponse(
+    @SerializedName("GetPromoListRecommendation")
+    val promoListRecommendation: GetPromoListRecommendationResponseData = GetPromoListRecommendationResponseData()
+)
+
+data class GetPromoListRecommendationResponseData(
+    @SerializedName("data")
+    val data: CouponListRecommendation = CouponListRecommendation()
 )
 
 data class CouponListRecommendation(
-    @SerializedName("message")
-    val message: List<String> = emptyList(),
-    @SerializedName("error_code")
-    val errorCode: String = "",
-    @SerializedName("status")
-    var status: String = "",
-    @SerializedName("data")
-    val data: Data = Data()
-) {
-    companion object {
-        const val STATUS_OK = "OK"
-    }
-}
-
-data class Data(
     @SerializedName("result_status")
     val resultStatus: ResultStatus = ResultStatus(),
     @SerializedName("empty_state")
@@ -39,15 +29,19 @@ data class Data(
     val tickerInfo: TickerInfo = TickerInfo(),
     @SerializedName("attempted_promo_code_error")
     val attemptedPromoCodeError: AttemptedPromoCodeError = AttemptedPromoCodeError()
-)
+) {
+    companion object {
+        const val STATUS_OK = "OK"
+    }
+}
 
 data class ResultStatus(
     @SerializedName("code")
     val code: String = "",
     @SerializedName("message")
-    val message: List<String> = emptyList(),
-    @SerializedName("reason")
-    val reason: String = ""
+    val message: String = "",
+    @SerializedName("success")
+    val success: Boolean = false
 ) {
     companion object {
         const val STATUS_COUPON_LIST_EMPTY = "42050"
@@ -224,7 +218,7 @@ data class Cta(
     val type: String = "",
     @SerializedName("text")
     val text: String = "",
-    @SerializedName("applink")
+    @SerializedName("app_link")
     val applink: String = ""
 )
 
@@ -269,6 +263,8 @@ data class SecondaryCoupon(
     val benefitDetails: List<BenefitDetail> = emptyList(),
     @SerializedName("clashing_infos")
     val clashingInfos: List<ClashingInfo> = emptyList(),
+    @SerializedName("bo_clashing_infos")
+    val boClashingInfo: List<BoClashingInfo> = emptyList(),
     @SerializedName("additional_bo_datas")
     val boAdditionalData: List<AdditionalBoData> = emptyList(),
     @SerializedName("promo_infos")

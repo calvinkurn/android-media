@@ -1,6 +1,5 @@
 package com.tokopedia.promousage.view.viewmodel
 
-import com.tokopedia.promousage.data.response.PromoRecommendation
 import com.tokopedia.promousage.domain.entity.PromoCta
 import com.tokopedia.promousage.domain.entity.list.PromoRecommendationItem
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
@@ -60,7 +59,8 @@ sealed class AttemptPromoUiAction {
 sealed class ApplyPromoUiAction {
 
     data class Success(
-        val validateUse: ValidateUsePromoRevampUiModel
+        val validateUse: ValidateUsePromoRevampUiModel,
+        val lastValidateUsePromoRequest: ValidateUsePromoRequest
     ) : ApplyPromoUiAction()
 
     data class Failed(

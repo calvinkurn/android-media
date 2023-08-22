@@ -2,10 +2,10 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/tpgBottomSheetCloseIcon"
+        android:id="@+id/iuCloseIcon"
         android:layout_width="wrap_content"
         android:layout_height="24dp"
         android:layout_marginStart="16dp"
@@ -20,11 +20,11 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:text="@string/promo_voucher_promo"
-        app:layout_constraintBottom_toBottomOf="@+id/tpgBottomSheetCloseIcon"
+        app:layout_constraintBottom_toBottomOf="@+id/iuCloseIcon"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/tpgBottomSheetCloseIcon"
-        app:layout_constraintTop_toTopOf="@+id/tpgBottomSheetCloseIcon"
+        app:layout_constraintStart_toEndOf="@+id/iuCloseIcon"
+        app:layout_constraintTop_toTopOf="@+id/iuCloseIcon"
         app:typographyType="heading_3" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
@@ -35,7 +35,7 @@
         android:layout_marginTop="16dp"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tpgBottomSheetCloseIcon"
+        app:layout_constraintTop_toBottomOf="@id/iuCloseIcon"
         app:loader_type="rect" />
 
     <com.tokopedia.unifycomponents.LoaderUnify

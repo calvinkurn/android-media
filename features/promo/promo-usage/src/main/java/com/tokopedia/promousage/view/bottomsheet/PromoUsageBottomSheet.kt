@@ -1,13 +1,16 @@
 package com.tokopedia.promousage.view.bottomsheet
 
 import android.animation.Animator
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Outline
 import android.os.Bundle
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewOutlineProvider
+import android.widget.FrameLayout
 import android.widget.RelativeLayout
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
@@ -24,6 +27,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
@@ -47,7 +51,7 @@ import com.tokopedia.promousage.domain.entity.list.PromoAccordionViewAllItem
 import com.tokopedia.promousage.domain.entity.list.PromoItem
 import com.tokopedia.promousage.domain.entity.list.PromoRecommendationItem
 import com.tokopedia.promousage.domain.entity.list.PromoTncItem
-import com.tokopedia.promousage.util.BottomSheetUtil
+import com.tokopedia.promousage.util.view.BottomSheetUtil
 import com.tokopedia.promousage.util.analytics.PromoUsageAnalytics
 import com.tokopedia.promousage.util.composite.CompositeAdapter
 import com.tokopedia.promousage.util.composite.DelegateAdapterItem
@@ -77,6 +81,9 @@ import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
+import java.net.ConnectException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 import kotlin.math.max
 
@@ -100,11 +107,11 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
             entryPoint: PromoPageEntryPoint,
             promoRequest: PromoRequest,
             validateUsePromoRequest: ValidateUsePromoRequest,
-            boPromoCodes: List<String>,
             totalAmount: Double,
+            listener: Listener? = null,
+            boPromoCodes: List<String> = emptyList(),
             chosenAddress: ChosenAddress? = null,
-            isFlowMvcLockToCourrier: Boolean = false,
-            listener: Listener? = null
+            isFlowMvcLockToCourier: Boolean = false
         ): PromoUsageBottomSheet {
             return PromoUsageBottomSheet().apply {
                 this.arguments = Bundle().apply {
@@ -114,18 +121,18 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                     putStringArrayList(BUNDLE_KEY_BO_PROMO_CODES, ArrayList(boPromoCodes))
                     putParcelable(BUNDLE_KEY_CHOSEN_ADDRESS, chosenAddress)
                     putDouble(BUNDLE_KEY_TOTAL_AMOUNT, totalAmount)
-                    putBoolean(BUNDLE_KEY_IS_FLOW_MVC_LOCK_TO_COURIER, isFlowMvcLockToCourrier)
+                    putBoolean(BUNDLE_KEY_IS_FLOW_MVC_LOCK_TO_COURIER, isFlowMvcLockToCourier)
                 }
                 this.listener = listener
             }
         }
     }
 
-    private val isFlowMvcLockToCourier: Boolean
-        get() = arguments?.getBoolean(BUNDLE_KEY_IS_FLOW_MVC_LOCK_TO_COURIER) ?: false
     private val entryPoint: PromoPageEntryPoint
         get() = arguments?.getParcelable(BUNDLE_KEY_ENTRY_POINT)
             ?: PromoPageEntryPoint.CART_PAGE
+    private val isFlowMvcLockToCourier: Boolean
+        get() = arguments?.getBoolean(BUNDLE_KEY_IS_FLOW_MVC_LOCK_TO_COURIER) ?: false
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -145,7 +152,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
 
     private val recyclerViewAdapter by lazy {
         CompositeAdapter.Builder()
-            .add(PromoRecommendationDelegateAdapter(onClickApplyPromoRecommendation))
+            .add(PromoRecommendationDelegateAdapter(onClickUsePromoRecommendation))
             .add(PromoAccordionHeaderDelegateAdapter(onClickPromoAccordionHeader))
             .add(PromoAccordionItemDelegateAdapter(onClickPromoItem))
             .add(PromoAccordionViewAllDelegateAdapter(onClickPromoAccordionViewAll))
@@ -212,7 +219,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
     }
 
     private fun applyBottomSheetMaxHeightRule() {
-        val frameDialogView = binding.rlBottomSheetWrapper.parent as View
+        val frameDialogView = binding.rlBottomSheetWrapper.parent as FrameLayout
         frameDialogView.setBackgroundColor(Color.TRANSPARENT)
 
         frameDialogView.bringToFront()
@@ -232,6 +239,9 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         setupObservers()
         val promoRequest: PromoRequest? = arguments?.getParcelable(BUNDLE_KEY_PROMO_REQUEST)
         val chosenAddress: ChosenAddress? = arguments?.getParcelable(BUNDLE_KEY_CHOSEN_ADDRESS)
+        viewModel.setEntryPoint(entryPoint)
+        val defaultErrorMessage = context?.getString(R.string.promo_usage_global_error_promo) ?: ""
+        viewModel.setDefaultErrorMessage(defaultErrorMessage)
         viewModel.reloadPromoList(
             promoRequest = promoRequest,
             chosenAddress = chosenAddress
@@ -293,7 +303,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                 binding.buttonBackToShipment.gone()
             }
 
-            PromoPageEntryPoint.ONE_CLICK_CHECKOUT_PAGE -> {
+            PromoPageEntryPoint.OCC_PAGE -> {
                 binding.tpgTotalAmountLabel.visible()
                 binding.tpgTotalAmount.text = context?.getString(
                     R.string.promo_voucher_placeholder_total_price,
@@ -500,23 +510,30 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
             when (state) {
 
                 is PromoPageUiState.Initial -> {
+                    renderHeader(false)
                     renderContent(false)
                     renderLoadingDialog(false)
                     renderLoadingShimmer(true)
+                    renderError(false)
                 }
 
                 is PromoPageUiState.Success -> {
+                    renderHeader(true)
                     renderTickerInfo(state.tickerInfo)
                     renderRecyclerView(state.items)
                     renderLoadingDialog(false)
                     renderLoadingShimmer(false)
                     renderContent(true)
                     renderSavingInfo(state.savingInfo)
+                    renderError(false)
                 }
 
                 is PromoPageUiState.Error -> {
-                    //renderLoadingDialog(false)
-                    //renderContent(false)
+                    renderHeader(true)
+                    renderLoadingShimmer(false)
+                    renderLoadingDialog(false)
+                    renderContent(false)
+                    renderError(true, state.exception)
                 }
 
                 else -> {
@@ -586,6 +603,9 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
     private fun renderLoadingShimmer(isVisible: Boolean) {
         with(binding) {
             if (isVisible) {
+                layoutShimmer.iuCloseIcon.setOnClickListener {
+                    dismiss()
+                }
                 rlBottomSheetWrapper.background =
                     BottomSheetUtil.generateBackgroundDrawableWithColor(
                         root.context,
@@ -612,6 +632,10 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         }
     }
 
+    private fun renderHeader(isVisible: Boolean) {
+        binding.clBottomSheetHeader.isVisible = isVisible
+    }
+
     private fun renderContent(isVisible: Boolean) {
         with(binding) {
             rlBottomSheetWrapper.background =
@@ -635,7 +659,6 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
             }
             rlBottomSheetWrapper.clipToOutline = true
             clBottomSheetContent.clipChildren = true
-            clBottomSheetHeader.isVisible = isVisible
             rvPromo.isVisible = isVisible
             cvTotalAmount.isVisible = isVisible
         }
@@ -645,11 +668,62 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         with(binding) {
             val formattedTotalVoucherAmount =
                 promoSavingInfo.totalSelectedPromoBenefitAmount.splitByThousand()
-            val text = promoSavingInfo.message
-                .replace("{benefit_amount}", formattedTotalVoucherAmount)
+            val text = "${promoSavingInfo.message} <b>Rp{{benefit_amount}}</b> ({{promo_count}} promo)"
+                .replace("{{benefit_amount}}", formattedTotalVoucherAmount)
+                .replace("{{promo_count}}", promoSavingInfo.selectedPromoCount.toString())
             tpgTotalSavings.text = HtmlLinkHelper(root.context, text).spannedString
             clSavingInfo.isVisible = promoSavingInfo.selectedPromoCount > 0
                 && promoSavingInfo.totalSelectedPromoBenefitAmount > 0
+        }
+    }
+
+    private fun renderError(isVisible: Boolean, throwable: Throwable? = null) {
+        with(binding) {
+            if (isVisible) {
+                layoutGlobalError.iuCloseIcon.setOnClickListener {
+                    dismiss()
+                }
+                val errorType = if (throwable != null) {
+                    getGlobalErrorType(throwable)
+                } else {
+                    GlobalError.SERVER_ERROR
+                }
+                layoutGlobalError.globalErrorPromoUsage.setType(errorType)
+                layoutGlobalError.globalErrorPromoUsage.errorAction.text =
+                    context?.getText(com.tokopedia.promousage.R.string.promo_usage_error_try_again) ?: ""
+                if (errorType == GlobalError.NO_CONNECTION) {
+                    layoutGlobalError.globalErrorPromoUsage.errorSecondaryAction.text =
+                        context?.getText(com.tokopedia.promousage.R.string.promo_usage_error_to_settings) ?: ""
+                    layoutGlobalError.globalErrorPromoUsage.setActionClickListener {
+                        resetView()
+                    }
+                    layoutGlobalError.globalErrorPromoUsage.setSecondaryActionClickListener {
+                        openNetworkSettings()
+                    }
+                } else {
+                    layoutGlobalError.globalErrorPromoUsage.setActionClickListener {
+                        resetView()
+                    }
+                }
+            }
+            layoutGlobalError.root.isVisible = isVisible
+        }
+    }
+
+    private fun getGlobalErrorType(throwable: Throwable): Int {
+        return if (throwable is UnknownHostException || throwable is SocketTimeoutException || throwable is ConnectException) {
+            GlobalError.NO_CONNECTION
+        } else {
+            GlobalError.SERVER_ERROR
+        }
+    }
+
+    private fun openNetworkSettings() {
+        val intent = Intent(Settings.ACTION_WIRELESS_SETTINGS)
+        try {
+            startActivity(intent)
+        } catch (_: Exception) {
+            // no-op
         }
     }
 
@@ -691,7 +765,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
             when (uiAction) {
                 is ApplyPromoUiAction.Success -> {
                     renderLoadingDialog(false)
-                    listener?.onApplyPromoSuccess(uiAction.validateUse)
+                    listener?.onApplyPromoSuccess(uiAction.validateUse, uiAction.lastValidateUsePromoRequest)
                 }
 
                 is ApplyPromoUiAction.Failed -> {
@@ -721,7 +795,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         tncBottomSheet.show(childFragmentManager)
     }
 
-    private val onClickApplyPromoRecommendation: () -> Unit = {
+    private val onClickUsePromoRecommendation: () -> Unit = {
         viewModel.onUsePromoRecommendation()
     }
 
@@ -815,7 +889,12 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
 
     interface Listener {
 
-        fun onApplyPromoSuccess(validateUse: ValidateUsePromoRevampUiModel)
+        fun onClosePromo()
+
+        fun onApplyPromoSuccess(
+            validateUse: ValidateUsePromoRevampUiModel,
+            lastValidateUsePromoRequest: ValidateUsePromoRequest
+        )
 
         fun onApplyPromoFailed(throwable: Throwable)
 

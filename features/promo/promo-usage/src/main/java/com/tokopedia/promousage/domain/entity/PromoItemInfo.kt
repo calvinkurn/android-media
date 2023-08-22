@@ -10,5 +10,8 @@ data class PromoItemInfo(
         const val TYPE_PROMO_INFO = "promo_info"
         const val TYPE_BOTTOM_BANNER = "bottom_banner"
         const val TYPE_PROMO_VALIDITY = "promo_validity"
+
+        const val ICON_DOT = "DOT"
+        const val ICON_NONE = "NONE"
     }
 }

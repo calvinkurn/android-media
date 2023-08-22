@@ -5,16 +5,19 @@ import android.animation.TimeInterpolator
 import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Color
+import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
 import android.os.Handler
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.ViewConfiguration
+import android.view.ViewGroupOverlay
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -29,6 +32,7 @@ import com.tokopedia.promousage.domain.entity.PromoItemCardDetail
 import com.tokopedia.promousage.domain.entity.PromoItemInfo
 import com.tokopedia.promousage.domain.entity.PromoItemState
 import com.tokopedia.promousage.domain.entity.list.PromoItem
+import com.tokopedia.promousage.util.IconHelper
 import com.tokopedia.promousage.util.extension.isGreyscale
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.toPx
@@ -48,6 +52,7 @@ class PromoCompoundView @JvmOverloads constructor(
 
     private var scaleAnimator: ValueAnimator = ValueAnimator.ofFloat()
     private var overlayAnimator: ValueAnimator = ValueAnimator.ofFloat()
+    private var viewOverlay: ViewGroupOverlay? = null
     private var overlayDrawable: ColorDrawable? = null
     private val longPressHandler = Handler()
     private var isLongPress = false
@@ -61,6 +66,10 @@ class PromoCompoundView @JvmOverloads constructor(
     private var binding: PromoUsageItemPromoCompoundViewBinding? = null
 
     init {
+        viewOverlay = this.overlay
+        //overlayDrawable = ColorDrawable(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN300)).apply {
+        //    alpha = 0
+        //}
         binding = PromoUsageItemPromoCompoundViewBinding
             .inflate(LayoutInflater.from(context), this, true)
     }
@@ -156,6 +165,12 @@ class PromoCompoundView @JvmOverloads constructor(
             promoItemInfos.forEach { promoInfo ->
                 val promoInfoChildView = PromoUsageItemSubPromoInfoBinding
                     .inflate(LayoutInflater.from(context))
+                if (IconHelper.shouldShowIcon(promoInfo.icon)) {
+                    promoInfoChildView.iuPromoInfo
+                        .setImage(IconHelper.getIcon(promoInfo.icon))
+                } else {
+                    promoInfoChildView.iuPromoInfo.gone()
+                }
                 promoInfoChildView.tpgPromoInfo.text =
                     HtmlLinkHelper(context, promoInfo.title).spannedString
                 llPromoInfo.addView(promoInfoChildView.root)
@@ -312,6 +327,25 @@ class PromoCompoundView @JvmOverloads constructor(
 
             cardView.layoutParams = layoutParams
             cardView.requestLayout()
+        }
+    }
+
+    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+        super.onSizeChanged(w, h, oldw, oldh)
+        setupOverlay(w, h)
+    }
+
+    private fun setupOverlay(width: Int, height: Int) {
+        overlayDrawable?.bounds = Rect(
+            0,
+            0,
+            width,
+            height
+        )
+
+        viewOverlay?.clear()
+        overlayDrawable?.let {
+            viewOverlay?.add(it)
         }
     }
 

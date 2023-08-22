@@ -21,4 +21,6 @@
     <string name="promo_voucher_input_promo_code_label">Punya kode promo? Masukin di sini &#10024;</string>
     <string name="promo_usage_tnc_title">Syarat dan Ketentuan Promo</string>
     <string name="promo_usage_global_error_promo">Oops, terjadi kesalahan. Coba pilih promo lagi.</string>
+    <string name="promo_usage_error_try_again">Coba Lagi</string>
+    <string name="promo_usage_error_to_settings">Ke Pengaturan</string>
 </resources>
