@@ -634,12 +634,35 @@ class FeedPostViewModelTest {
         coEvery { feedXHomeUseCase(any()) } throws MessageErrorException("Failed")
 
         // when
-        viewModel.fetchFeedPosts("", true, null)
+        viewModel.fetchFeedPosts("", postSource = null)
 
         // then
         assert(viewModel.feedHome.value is Fail)
         assert((viewModel.feedHome.value as Fail).throwable is MessageErrorException)
         assert((viewModel.feedHome.value as Fail).throwable.message == "Failed")
+    }
+
+    @Test
+    fun onFetchFeedPosts_whenSuccessWithoutRelevantPostInCDP() {
+        // given
+        coEvery { feedXHomeUseCase.createParams(any(), any(), any(), any()) } returns emptyMap()
+        coEvery { feedXHomeUseCase(any()) } returns getDummyFeedModel()
+
+        // when
+        viewModel.fetchFeedPosts("", true, postSource = PostSourceModel("1", null, true))
+
+        // then
+        assert(!viewModel.shouldShowNoMoreContent)
+        assert(viewModel.feedHome.value is Success)
+        val data = (viewModel.feedHome.value as Success).data
+        assert(data.items.size == 7)
+        assert(data.items[0] is FeedCardImageContentModel)
+        assert(data.items[1] is FeedCardVideoContentModel)
+        assert(data.items[2] is FeedCardLivePreviewContentModel)
+        assert(data.items[3] is FeedCardImageContentModel)
+        assert(data.items[4] is FeedCardVideoContentModel)
+        assert(data.items[5] is FeedCardLivePreviewContentModel)
+        assert(data.items[6] is FeedNoContentModel)
     }
 
     @Test
@@ -649,7 +672,7 @@ class FeedPostViewModelTest {
         coEvery { feedXHomeUseCase(any()) } returns getDummyFeedModel()
 
         // when
-        viewModel.fetchFeedPosts("")
+        viewModel.fetchFeedPosts("", postSource = PostSourceModel("1", null, true))
 
         // then
         assert(!viewModel.shouldShowNoMoreContent)
@@ -674,7 +697,7 @@ class FeedPostViewModelTest {
         coEvery { feedXHomeUseCase(any()) } returns getDummyFeedModel()
 
         // when
-        viewModel.fetchFeedPosts("", true, PostSourceModel("1", null))
+        viewModel.fetchFeedPosts("", true, PostSourceModel("1", null, false))
 
         // then
         assert(!viewModel.shouldShowNoMoreContent)
