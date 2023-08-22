@@ -5,6 +5,7 @@ import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.home.view.adapter.ShopWidgetTypeFactory
 import com.tokopedia.shop_widget.common.util.WidgetState
 
+//TODO need to move shop widget UI model class to another package in the future
 abstract class BaseShopHomeWidgetUiModel : Visitable<ShopWidgetTypeFactory> {
     abstract val widgetId: String
     abstract val layoutOrder: Int
