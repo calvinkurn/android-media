@@ -2,7 +2,6 @@ package com.tokopedia.search.result.product.broadmatch
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
@@ -45,8 +44,6 @@ class BroadMatchViewHolder(
             showHeaderRevamp()
             hideOldHeader()
             bindHeaderViewRevamp(element)
-            setSearchBroadMatchListConstraintToRevampHeader()
-            erasePaddingOnContainerBroadMatchListConstraint()
         } else {
             hideHeaderRevamp()
             showOldHeader()
@@ -54,8 +51,6 @@ class BroadMatchViewHolder(
             bindSubtitle(element)
             bindSubtitleImage(element)
             bindSeeMore(element)
-            setSearchBroadMatchListConstraintToOldHeader()
-            restorePaddingOnContainerBroadMatchListConstraint()
         }
         setupRecyclerView(element)
     }
@@ -97,47 +92,6 @@ class BroadMatchViewHolder(
         binding?.searchBroadMatchSubtitle?.visible()
         binding?.searchBroadMatchSubtitleIcon?.visible()
         binding?.searchBroadMatchSeeMore?.visible()
-    }
-
-    private fun setSearchBroadMatchListConstraintToRevampHeader() {
-        val constraintContainerBroadMatchView = binding?.constraintContainerBroadMatchView ?: return
-        val recyclerViewBroadMatchList = binding?.searchBroadMatchList ?: return
-        val headerViewBroadMatchList = binding?.componentHeaderView ?: return
-        val constraintSet = ConstraintSet()
-        constraintSet.clone(constraintContainerBroadMatchView)
-        constraintSet.connect(recyclerViewBroadMatchList.id, ConstraintSet.TOP, headerViewBroadMatchList.id, ConstraintSet.BOTTOM, 0)
-        constraintSet.connect(recyclerViewBroadMatchList.id, ConstraintSet.START, constraintContainerBroadMatchView.id, ConstraintSet.START, 0)
-        constraintSet.connect(recyclerViewBroadMatchList.id, ConstraintSet.END, constraintContainerBroadMatchView.id, ConstraintSet.END, 0)
-        constraintSet.applyTo(constraintContainerBroadMatchView)
-    }
-
-    private fun setSearchBroadMatchListConstraintToOldHeader() {
-        val constraintContainerBroadMatchView = binding?.constraintContainerBroadMatchView ?: return
-        val recyclerViewBroadMatchList = binding?.searchBroadMatchList ?: return
-        val headerViewBroadMatchList = binding?.searchBroadMatchSubtitle ?: return
-        val resource = recyclerViewBroadMatchList.context.resources
-        val constraintSet = ConstraintSet()
-        constraintSet.clone(constraintContainerBroadMatchView)
-        constraintSet.connect(recyclerViewBroadMatchList.id, ConstraintSet.TOP, headerViewBroadMatchList.id, ConstraintSet.BOTTOM, resource.getDimensionPixelOffset(R.dimen.search_margin_top_inspiration_layout))
-        constraintSet.connect(recyclerViewBroadMatchList.id, ConstraintSet.START, constraintContainerBroadMatchView.id, ConstraintSet.START, 0)
-        constraintSet.connect(recyclerViewBroadMatchList.id, ConstraintSet.END, constraintContainerBroadMatchView.id, ConstraintSet.END, 0)
-        constraintSet.applyTo(constraintContainerBroadMatchView)
-    }
-
-    private fun erasePaddingOnContainerBroadMatchListConstraint() {
-        val constraintContainerBroadMatchView = binding?.constraintContainerBroadMatchView ?: return
-        constraintContainerBroadMatchView.setPadding(0,0,0,0)
-    }
-
-    private fun restorePaddingOnContainerBroadMatchListConstraint() {
-        val constraintContainerBroadMatchView = binding?.constraintContainerBroadMatchView ?: return
-        val resource = constraintContainerBroadMatchView.context.resources
-        constraintContainerBroadMatchView.setPadding(
-            0,
-            resource.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4),
-            0,
-            resource.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2)
-        )
     }
 
     private fun bindTitle(broadMatchDataView: BroadMatchDataView) {
