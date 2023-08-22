@@ -110,12 +110,6 @@ class GestureCropImageViewStories : CropImageViewStories {
             }
         }
     }
-//    private class ScaleListener : SimpleOnScaleGestureListener() {
-//        override fun onScale(detector: ScaleGestureDetector): Boolean {
-//            postScale(detector.scaleFactor, mMidPntX, mMidPntY)
-//            return true
-//        }
-//    }
 
     private fun gestureListener(): SimpleOnGestureListener {
         return object: SimpleOnGestureListener() {
@@ -141,28 +135,6 @@ class GestureCropImageViewStories : CropImageViewStories {
         }
     }
 
-//    private class GestureListener : SimpleOnGestureListener() {
-//        override fun onDoubleTap(e: MotionEvent): Boolean {
-//            zoomImageToPosition(
-//                getDoubleTapTargetScale(),
-//                e.x,
-//                e.y,
-//                DOUBLE_TAP_ZOOM_DURATION.toLong()
-//            )
-//            return super.onDoubleTap(e)
-//        }
-//
-//        override fun onScroll(
-//            e1: MotionEvent,
-//            e2: MotionEvent,
-//            distanceX: Float,
-//            distanceY: Float
-//        ): Boolean {
-//            postTranslate(-distanceX, -distanceY)
-//            return true
-//        }
-//    }
-
     private fun rotateListener(): SimpleOnRotationGestureListener {
         return object: SimpleOnRotationGestureListener(){
             override fun onRotation(rotationDetector: RotationGestureDetector): Boolean {
@@ -171,11 +143,4 @@ class GestureCropImageViewStories : CropImageViewStories {
             }
         }
     }
-
-//    private class RotateListener : SimpleOnRotationGestureListener() {
-//        override fun onRotation(rotationDetector: RotationGestureDetector): Boolean {
-//            postRotate(rotationDetector.angle, mMidPntX, mMidPntY)
-//            return true
-//        }
-//    }
 }

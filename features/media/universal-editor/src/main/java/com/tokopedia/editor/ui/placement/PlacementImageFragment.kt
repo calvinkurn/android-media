@@ -20,14 +20,17 @@ class PlacementImageFragment @Inject constructor() : BaseEditorFragment(R.layout
     private val viewModel: PlacementImageViewModel by activityViewModels()
     private val viewBinding: FragmentPlacementBinding? by viewBinding()
 
+    private var scale = 0f
+    private var translateX = 0f
+    private var translateY = 0f
+
     override fun initObserver() {
         viewModel.imagePath.observe(viewLifecycleOwner) {
             viewBinding?.cropArea?.let { ucropRef ->
                 ucropRef.getCropImageView()?.let { gestureCropImage ->
-
                     gestureCropImage.setImageUri(
-                        Uri.fromFile(File(it)),
-                        Uri.parse(getOutputPath())
+                        imageUri = Uri.fromFile(File(it)),
+                        outputUri = Uri.parse(getOutputPath())
                     )
 
                     gestureCropImage.setTransformImageListener(object :
@@ -37,6 +40,12 @@ class PlacementImageFragment @Inject constructor() : BaseEditorFragment(R.layout
                                 ucropRef.getOverlayView()?.setTargetAspectRatio(9/16f)
 
                                 Handler().postDelayed({
+                                    scale = gestureCropImage.currentScale
+                                    gestureCropImage.imageMatrix.values().let {
+                                        translateX = it[2]
+                                        translateY = it[5]
+                                    }
+
                                     viewModel.placementModel.value?.let { model ->
                                         implementPreviousState(model)
                                     }
@@ -55,7 +64,9 @@ class PlacementImageFragment @Inject constructor() : BaseEditorFragment(R.layout
         }
     }
 
-    override fun initView() {}
+    override fun initView() {
+        initListener()
+    }
 
     fun captureImage(onFinish: (placementModel: ImagePlacementModel) -> Unit) {
         viewBinding?.cropArea?.getCropImageView()?.let {
@@ -87,6 +98,28 @@ class PlacementImageFragment @Inject constructor() : BaseEditorFragment(R.layout
 
     private fun getOutputPath(): String {
         return (activity as PlacementImageActivity).getEditorCacheFolderPath() + FileUtil.generateUniqueFileName()
+    }
+
+    private fun initListener() {
+        viewBinding?.let {
+            it.resetCta.setOnClickListener {
+                resetUCrop()
+            }
+        }
+    }
+
+    private fun resetUCrop() {
+        viewBinding?.cropArea?.getCropImageView()?.let { gestureCropImage ->
+            gestureCropImage.postRotate(-gestureCropImage.currentAngle)
+            gestureCropImage.zoomOutImage(scale)
+
+            val currentImageMatrix = gestureCropImage.imageMatrix.values()
+            val currentTranslateX = currentImageMatrix[INDEX_CORD_X]
+            val currentTranslateY = currentImageMatrix[INDEX_CORD_Y]
+
+            gestureCropImage.postTranslate(-currentTranslateX, -currentTranslateY)
+            gestureCropImage.postTranslate(translateX, translateY)
+        }
     }
 
     companion object {
