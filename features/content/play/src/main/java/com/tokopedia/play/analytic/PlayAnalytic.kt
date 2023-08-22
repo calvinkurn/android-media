@@ -569,7 +569,12 @@ class PlayAnalytic(
             putInt("index", position)
         }
 
-    private fun convertProductAndShopToHashMapWithList(product: PlayProductUiModel.Product, shopInfo: PlayPartnerInfo, dimension39: String = ""): HashMap<String, Any> {
+    private fun convertProductAndShopToHashMapWithList(
+        product: PlayProductUiModel.Product,
+        shopInfo: PlayPartnerInfo,
+        dimension39: String,
+        dimension90: String,
+    ): HashMap<String, Any> {
         return hashMapOf(
             "name" to product.title,
             "id" to product.id,
@@ -581,6 +586,7 @@ class PlayAnalytic(
             "category" to "",
             "variant" to "",
             "dimension39" to dimension39,
+            "dimension90" to dimension90,
             "category_id" to "",
             "quantity" to product.minQty,
             "shop_id" to shopInfo.id,
@@ -629,7 +635,14 @@ class PlayAnalytic(
                 "ecommerce" to hashMapOf(
                     "currencyCode" to "IDR",
                     "add" to hashMapOf(
-                        "products" to listOf(convertProductAndShopToHashMapWithList(product, shopInfo, "/groupchat - bottom sheet"))
+                        "products" to listOf(
+                            convertProductAndShopToHashMapWithList(
+                                product = product,
+                                shopInfo = shopInfo,
+                                dimension39 = "/groupchat - bottom sheet",
+                                dimension90 = dimensionTrackingHelper.getDimension90()
+                            )
+                        )
                     )
                 )
             ),
@@ -659,81 +672,18 @@ class PlayAnalytic(
                 "ecommerce" to hashMapOf(
                     "currencyCode" to "IDR",
                     "add" to hashMapOf(
-                        "products" to listOf(convertProductAndShopToHashMapWithList(product, shopInfo, "/groupchat - bottom sheet"))
+                        "products" to listOf(
+                            convertProductAndShopToHashMapWithList(
+                                product = product,
+                                shopInfo = shopInfo,
+                                dimension39 = "/groupchat - bottom sheet",
+                                dimension90 = dimensionTrackingHelper.getDimension90()
+                            )
+                        )
                     )
                 )
             ),
             generateBaseTracking(product = product, sectionInfo.config.type)
-        )
-    }
-
-    private fun clickAtcButtonInVariant(
-        trackingQueue: TrackingQueue,
-        product: PlayProductUiModel.Product,
-        cartId: String,
-        shopInfo: PlayPartnerInfo
-    ) {
-        trackingQueue.putEETracking(
-            EventModel(
-                Event.addToCart,
-                EventCategory.groupChatRoom,
-                "click atc in varian page",
-                "$mChannelId - ${product.id} - ${mChannelType.value}"
-            ),
-            hashMapOf(
-                "ecommerce" to hashMapOf(
-                    "currencyCode" to "IDR",
-                    "add" to hashMapOf(
-                        "products" to listOf(convertProductAndShopToHashMapWithList(product, shopInfo, "/groupchat - varian page"))
-                    )
-                )
-            ),
-            hashMapOf(
-                Key.businessUnit to BusinessUnit.play,
-                Key.currentSite to CurrentSite.tokopediaMarketplace,
-                Key.sessionIris to TrackApp.getInstance().gtm.irisSessionId,
-                Key.userId to userId,
-                Key.isLoggedInStatus to isLoggedIn,
-                KEY_PRODUCT_ID to product.id,
-                KEY_PRODUCT_NAME to product.title,
-                KEY_PRODUCT_URL to product.applink.toString(),
-                KEY_CHANNEL to mChannelName
-            )
-        )
-    }
-
-    private fun clickBeliButtonInVariant(
-        trackingQueue: TrackingQueue,
-        product: PlayProductUiModel.Product,
-        cartId: String,
-        shopInfo: PlayPartnerInfo
-    ) {
-        trackingQueue.putEETracking(
-            EventModel(
-                Event.addToCart,
-                EventCategory.groupChatRoom,
-                "click beli in varian page",
-                "$mChannelId - ${product.id} - ${mChannelType.value}"
-            ),
-            hashMapOf(
-                "ecommerce" to hashMapOf(
-                    "currencyCode" to "IDR",
-                    "add" to hashMapOf(
-                        "products" to listOf(convertProductAndShopToHashMapWithList(product, shopInfo, "/groupchat - varian page"))
-                    )
-                )
-            ),
-            hashMapOf(
-                Key.businessUnit to BusinessUnit.play,
-                Key.currentSite to CurrentSite.tokopediaMarketplace,
-                Key.sessionIris to TrackApp.getInstance().gtm.irisSessionId,
-                Key.userId to userId,
-                Key.isLoggedInStatus to isLoggedIn,
-                KEY_PRODUCT_ID to product.id,
-                KEY_PRODUCT_NAME to product.title,
-                KEY_PRODUCT_URL to product.applink.toString(),
-                KEY_CHANNEL to mChannelName
-            )
         )
     }
 
