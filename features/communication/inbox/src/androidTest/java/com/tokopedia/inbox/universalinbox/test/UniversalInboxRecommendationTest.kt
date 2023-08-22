@@ -25,12 +25,12 @@ class UniversalInboxRecommendationTest : BaseUniversalInboxTest() {
         // When
         launchActivity()
         generalRobot {
-            scrollToPosition(9)
+            scrollToPosition(7)
         }
 
         // Then
-        assertPrePurchaseRecommendation(9)
-        assertProductRecommendation(11)
+        assertPrePurchaseRecommendation(7)
+        assertProductRecommendation(9)
     }
 
     @Test
@@ -41,11 +41,11 @@ class UniversalInboxRecommendationTest : BaseUniversalInboxTest() {
         // When
         launchActivity()
         generalRobot {
-            scrollToPosition(10)
+            scrollToPosition(8)
         }
 
         // Then
-        assertInboxRvTotalItem(10)
+        assertInboxRvTotalItem(8)
     }
 
     @Test
@@ -56,12 +56,12 @@ class UniversalInboxRecommendationTest : BaseUniversalInboxTest() {
         // When
         launchActivity()
         generalRobot {
-            scrollToPosition(9)
+            scrollToPosition(7)
         }
 
         // Then
-        assertPrePurchaseRecommendation(9)
-        assertPrePurchaseRecommendationGone(9)
+        assertPrePurchaseRecommendation(7)
+        assertPrePurchaseRecommendationGone(7)
     }
 
     @Test
@@ -73,12 +73,12 @@ class UniversalInboxRecommendationTest : BaseUniversalInboxTest() {
         // When
         launchActivity()
         generalRobot {
-            scrollToPosition(9)
+            scrollToPosition(7)
         }
 
         // Then
-        assertPrePurchaseRecommendation(9)
-        assertPrePurchaseRecommendationGone(9)
+        assertPrePurchaseRecommendation(7)
+        assertPrePurchaseRecommendationGone(7)
     }
 
     @Test
@@ -87,7 +87,7 @@ class UniversalInboxRecommendationTest : BaseUniversalInboxTest() {
         launchActivity()
         stubAllIntents()
         generalRobot {
-            scrollToPosition(11)
+            scrollToPosition(9)
         }
 
         // Given
@@ -102,15 +102,15 @@ class UniversalInboxRecommendationTest : BaseUniversalInboxTest() {
 
         // When
         recommendationRobot {
-            clickProductOnPosition(11) // trigger refresh
+            clickProductOnPosition(9) // trigger refresh
         }
         Thread.sleep(300) // wait for rv to populate
         generalRobot {
-            scrollToPosition(11)
+            scrollToPosition(9)
         }
 
         // Then
-        assertProductRecommendationName(11, "Product Refresh 1")
+        assertProductRecommendationName(9, "Product Refresh 1")
         assertProductWidgetRecommendationName(0, "Pre-purchase Product Refresh")
     }
 
@@ -124,7 +124,7 @@ class UniversalInboxRecommendationTest : BaseUniversalInboxTest() {
 //        launchActivity()
 //        stubAllIntents()
 //        generalRobot {
-//            scrollToPosition(11)
+//            scrollToPosition(9)
 //        }
 //
 //        // Given
@@ -143,11 +143,11 @@ class UniversalInboxRecommendationTest : BaseUniversalInboxTest() {
 //        }
 //        Thread.sleep(300) // wait for rv to populate
 //        generalRobot {
-//            scrollToPosition(11)
+//            scrollToPosition(9)
 //        }
 //
 //        // Then
-//        assertProductRecommendationName(11, "Product Refresh 1")
+//        assertProductRecommendationName(9, "Product Refresh 1")
 //        assertProductWidgetRecommendationName(0, "Pre-purchase Product Refresh")
 //    }
 
@@ -173,11 +173,11 @@ class UniversalInboxRecommendationTest : BaseUniversalInboxTest() {
         }
         Thread.sleep(300) // wait for rv to populate
         generalRobot {
-            scrollToPosition(11)
+            scrollToPosition(9)
         }
 
         // Then
-        assertProductRecommendationName(11, "Product Refresh 1")
+        assertProductRecommendationName(9, "Product Refresh 1")
         assertProductWidgetRecommendationName(0, "Pre-purchase Product Refresh")
     }
 
@@ -199,15 +199,15 @@ class UniversalInboxRecommendationTest : BaseUniversalInboxTest() {
 
         // When
         menuRobot {
-            clickMenuOnPosition(2) // trigger refresh
+            clickMenuOnPosition(1) // trigger refresh
         }
         Thread.sleep(300) // wait for rv to populate
         generalRobot {
-            scrollToPosition(11)
+            scrollToPosition(9)
         }
 
         // Then
-        assertProductRecommendationName(11, "Product Refresh 1")
+        assertProductRecommendationName(9, "Product Refresh 1")
         assertProductWidgetRecommendationName(0, "Pre-purchase Product Refresh")
     }
 
@@ -233,11 +233,11 @@ class UniversalInboxRecommendationTest : BaseUniversalInboxTest() {
         }
         Thread.sleep(300) // wait for rv to populate
         generalRobot {
-            scrollToPosition(11)
+            scrollToPosition(9)
         }
 
         // Then
-        assertProductRecommendationName(11, "Product Refresh 1")
+        assertProductRecommendationName(9, "Product Refresh 1")
         assertProductWidgetRecommendationName(0, "Pre-purchase Product Refresh")
     }
 
@@ -260,16 +260,16 @@ class UniversalInboxRecommendationTest : BaseUniversalInboxTest() {
 
         // When
         menuRobot {
-            clickMenuOnPosition(2) // trigger refresh
+            clickMenuOnPosition(1) // trigger refresh
         }
         Thread.sleep(300) // wait for rv to populate
         generalRobot {
-            scrollToPosition(11)
+            scrollToPosition(9)
         }
 
         // Then
         assertProductRecommendationName(
-            11,
+            9,
             "Tumbler Japan Hook Termos Travel 500 ml"
         )
         assertProductWidgetRecommendationName(
