@@ -1,5 +1,6 @@
 package com.tokopedia.utils.lifecycle
 
+import android.annotation.SuppressLint
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.produceState
@@ -41,6 +42,7 @@ import kotlin.coroutines.EmptyCoroutineContext
  * state again.
  * @param context [CoroutineContext] to use for collecting.
  */
+@SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun <T> StateFlow<T>.collectAsStateWithLifecycle(
     lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current,
@@ -75,6 +77,7 @@ fun <T> StateFlow<T>.collectAsStateWithLifecycle(
  * state again.
  * @param context [CoroutineContext] to use for collecting.
  */
+@SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun <T> StateFlow<T>.collectAsStateWithLifecycle(
     lifecycle: Lifecycle,
