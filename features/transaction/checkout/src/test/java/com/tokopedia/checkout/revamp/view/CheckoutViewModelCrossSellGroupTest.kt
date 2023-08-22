@@ -55,6 +55,9 @@ class CheckoutViewModelCrossSellGroupTest : BaseCheckoutViewModelTest() {
                         Donation(
                             nominal = 100
                         )
+                    ),
+                    CheckoutEgoldModel(
+                        EgoldAttributeModel()
                     )
                 )
             ),
@@ -149,6 +152,11 @@ class CheckoutViewModelCrossSellGroupTest : BaseCheckoutViewModelTest() {
                 crossSellList = listOf(
                     CheckoutEgoldModel(
                         EgoldAttributeModel()
+                    ),
+                    CheckoutDonationModel(
+                        Donation(
+                            nominal = 100
+                        )
                     )
                 )
             ),
@@ -240,6 +248,11 @@ class CheckoutViewModelCrossSellGroupTest : BaseCheckoutViewModelTest() {
                 crossSellList = listOf(
                     CheckoutCrossSellModel(
                         CrossSellModel()
+                    ),
+                    CheckoutDonationModel(
+                        Donation(
+                            nominal = 100
+                        )
                     )
                 )
             ),
