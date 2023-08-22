@@ -12,7 +12,7 @@ class BCALibrary {
 
     external fun C_BCAVersionDll(): String
 
-    external fun C_BCAIsMyCard(): Int
+    external fun C_BCAIsMyCard(): String
 
     external fun C_BCACheckBalance(): CheckBalanceResult
 

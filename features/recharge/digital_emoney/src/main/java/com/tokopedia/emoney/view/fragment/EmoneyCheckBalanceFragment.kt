@@ -34,6 +34,8 @@ import com.tokopedia.emoney.R
 import com.tokopedia.emoney.di.DaggerDigitalEmoneyComponent
 import com.tokopedia.emoney.domain.request.JakCardStatus
 import com.tokopedia.emoney.domain.response.BCAResponseMapper
+import com.tokopedia.emoney.integration.BCAConstResult.GEN_1_CARD
+import com.tokopedia.emoney.integration.BCAConstResult.GEN_2_CARD
 import com.tokopedia.emoney.integration.BCALibrary
 import com.tokopedia.emoney.util.DigitalEmoneyGqlQuery
 import com.tokopedia.emoney.viewmodel.BCABalanceViewModel
@@ -158,10 +160,11 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
             processBrizzi(intent)
         } else {
             initializeBCALibs(tag)
-            val dataBalance = bcaLibrary.C_BCACheckBalance()
-            if(bcaLibrary.C_BCAIsMyCard() == Int.ONE) {
+            val bcaIsMyCard = bcaLibrary.C_BCAIsMyCard()
+            if(bcaIsMyCard.startsWith(GEN_2_CARD)) {
                 bcaBalanceViewModel.processBCATagBalance(IsoDep.get(tag))
-            } else if(dataBalance.balance >= Int.ZERO){
+            } else if(bcaIsMyCard.startsWith(GEN_1_CARD)){
+                val dataBalance = bcaLibrary.C_BCACheckBalance()
                 showCardLastBalance(BCAResponseMapper.bcaMapper(dataBalance, true))
             } else {
                 context?.let { context ->
