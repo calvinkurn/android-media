@@ -314,13 +314,6 @@ private fun InputTime(onOpenBottomSheet: (RescheduleBottomSheetState) -> Unit, t
     )
 }
 
-class ClickableNestTextFieldProperty(private val inputFilled: Boolean) : NestTextFieldProperty() {
-    @Composable
-    override fun inputColor(enabled: Boolean): Color {
-        return if (inputFilled) NestTheme.colors.NN._950 else NestTheme.colors.NN._200
-    }
-}
-
 @Composable
 private fun InputReason(onOpenBottomSheet: (RescheduleBottomSheetState) -> Unit, reason: String) {
     NestTextField(
@@ -405,11 +398,18 @@ private fun DropDownIcon(onClick: () -> Unit = {}) {
 }
 
 @Composable
-fun getBottomSheetTitle(currentScreen: RescheduleBottomSheetState): String {
+private fun getBottomSheetTitle(currentScreen: RescheduleBottomSheetState): String {
     return when (currentScreen) {
         RescheduleBottomSheetState.DAY -> stringResource(id = R.string.title_reschedule_day_bottomsheet)
         RescheduleBottomSheetState.TIME -> stringResource(id = R.string.title_reschedule_time_bottomsheet)
         RescheduleBottomSheetState.REASON -> stringResource(id = R.string.title_reschedule_reason_bottomsheet)
         RescheduleBottomSheetState.NONE -> ""
+    }
+}
+
+class ClickableNestTextFieldProperty(private val inputFilled: Boolean) : NestTextFieldProperty() {
+    @Composable
+    override fun inputColor(enabled: Boolean): Color {
+        return if (inputFilled) NestTheme.colors.NN._950 else NestTheme.colors.NN._200
     }
 }
