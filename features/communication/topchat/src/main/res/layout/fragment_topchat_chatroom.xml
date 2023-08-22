@@ -213,44 +213,24 @@
                 app:barrierDirection="bottom"
                 app:constraint_referenced_ids="list_template" />
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/text_area_layout"
+            <com.tokopedia.topchat.chatroom.view.custom.ComposeMessageAreaConstraintLayout
+                android:id="@+id/reply_box"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@id/barrier_text_area"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent">
-
-                <com.tokopedia.topchat.chatroom.view.custom.ComposeMessageAreaConstraintLayout
-                    android:id="@+id/reply_box"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    android:paddingBottom="@dimen/dp_topchat_10"
-                    android:paddingStart="@dimen/spacing_lvl4"
-                    android:paddingTop="@dimen/unify_space_8"
-                    android:paddingEnd="@dimen/unify_space_12" />
-
-                <com.tokopedia.topchat.chatroom.view.custom.ChatTextAreaTabLayout
-                    android:id="@+id/layout_chat_text_area"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    android:visibility="gone"/>
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:paddingBottom="10dp"
+                android:paddingStart="16dp"
+                android:paddingTop="8dp"
+                android:paddingEnd="12dp" />
 
             <com.tokopedia.topchat.chatroom.view.custom.ChatMenuView
                 android:id="@+id/fl_chat_menu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/text_area_layout"
+                app:layout_constraintTop_toBottomOf="@id/reply_box"
                 android:visibility="gone"
                 tools:visibility="visible" />
 
@@ -259,7 +239,7 @@
                 android:layout_marginTop="@dimen/spacing_lvl5"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/layout_lvl0"
-                app:layout_constraintTop_toBottomOf="@id/text_area_layout"
+                app:layout_constraintTop_toBottomOf="@id/reply_box"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -267,18 +247,6 @@
                 android:visibility="gone"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <com.tokopedia.unifycomponents.LoaderUnify
-            android:id="@+id/chat_area_shimmer"
-            android:layout_width="match_parent"
-            android:layout_height="168dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
-            app:loader_corner_radius="8dp"
-            app:loader_type="rect"
-            tools:visibility="gone"/>
 
     </LinearLayout>
 
