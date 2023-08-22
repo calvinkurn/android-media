@@ -20,6 +20,7 @@ class CartNoteBottomSheet : BottomSheetUnify() {
         overlayClickDismiss = false
         showCloseIcon = true
         showHeader = true
+        isKeyboardOverlap = false
     }
 
     private var binding by autoClearedNullable<LayoutBottomsheetCartNoteBinding>()
