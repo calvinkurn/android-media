@@ -18,11 +18,12 @@ import com.tokopedia.abstraction.R
 
 internal class BannerEnvironmentView(context: Context, attrs: AttributeSet? = null) : FrameLayout(context, attrs) {
 
-    private val paint = Paint().apply { color = context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_GN500) }
+    private val paint = Paint().apply {
+        color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+    }
     private val path: Path = Path()
     private val textView: TextView by lazy { TextView(context) }
     private val bannerHeight: Float by lazy { dip(30).toFloat() }
-    var bannerGravity: BannerEnvironmentGravity = BannerEnvironmentGravity.START
 
     init {
         textView.apply {
