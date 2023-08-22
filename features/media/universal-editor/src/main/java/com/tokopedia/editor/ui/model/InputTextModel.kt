@@ -15,7 +15,7 @@ data class InputTextModel(
     var textColor: Int = DEFAULT_TEXT_COLOR,
     var backgroundColor: Pair<Int, Int>? = null,
     var textAlign: FontAlignment = FontAlignment.CENTER,
-    var textPlacement: TextPlacementModel? = null,
+    var config: AddTextModel? = null,
 ) : Parcelable {
     companion object {
         private const val DEFAULT_TEXT_COLOR = -1

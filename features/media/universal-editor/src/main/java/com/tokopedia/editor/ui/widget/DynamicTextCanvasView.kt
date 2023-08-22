@@ -8,18 +8,23 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.util.AttributeSet
+import android.util.TypedValue
 import android.view.Gravity
+import android.view.View
+import android.widget.Button
 import android.widget.FrameLayout
 import com.tokopedia.editor.ui.gesture.java.MultiTouchListener
+import com.tokopedia.editor.ui.gesture.listener.OnMultiTouchListener
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.image.ImageProcessingUtil
 
 class DynamicTextCanvasView @JvmOverloads constructor(
     private val context: Context,
     attributeSet: AttributeSet? = null
-) : FrameLayout(context, attributeSet) {
+) : FrameLayout(context, attributeSet), OnMultiTouchListener {
 
     private val guideline = GridGuidelineView(context)
+    private lateinit var buttonView: Button
 
     init {
         addGridGuidelineView()
@@ -29,13 +34,17 @@ class DynamicTextCanvasView @JvmOverloads constructor(
         val textView = createTextView(content)
 
         val layoutParams = LayoutParams(
-            LayoutParams.MATCH_PARENT,
+            LayoutParams.WRAP_CONTENT,
             LayoutParams.WRAP_CONTENT
         )
 
         layoutParams.gravity = Gravity.CENTER
 
         addView(textView, layoutParams)
+    }
+
+    fun addButtonView(view: Button) {
+        buttonView = view
     }
 
     // TODO: just for POC
@@ -62,14 +71,21 @@ class DynamicTextCanvasView @JvmOverloads constructor(
     private fun createTextView(content: String): Typography {
         val text = Typography(context)
 
-        text.setWeight(Typography.DISPLAY_3)
+        text.setWeight(Typography.BOLD)
+        text.setTextSize(TypedValue.COMPLEX_UNIT_SP, 24f)
         text.setTextColor(Color.WHITE)
         text.isFocusable = false
         text.isFocusableInTouchMode = false
         text.gravity = Gravity.CENTER
         text.text = content
 
-        val touchListener = MultiTouchListener(context, guideline)
+        val touchListener = MultiTouchListener(
+            context,
+            text,
+            guideline,
+            buttonView
+        ).apply { setOnMultiTouchListener(this@DynamicTextCanvasView) }
+
         text.setOnTouchListener(touchListener)
 
         return text
@@ -84,4 +100,9 @@ class DynamicTextCanvasView @JvmOverloads constructor(
         addView(guideline, layoutParams)
     }
 
+    override fun parentView() = this
+
+    override fun onRemoveView(view: View) {
+        removeView(view)
+    }
 }
