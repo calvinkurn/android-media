@@ -161,8 +161,8 @@ class ProductListPresenter @Inject constructor(
     private val similarSearchOnBoardingPresenterDelegate: SimilarSearchOnBoardingPresenterDelegate,
     private val inspirationKeywordPresenter: InspirationKeywordPresenterDelegate,
     private val inspirationProductItemPresenter: InspirationProductPresenterDelegate,
-    private val reimagineRollence: ReimagineRollence,
-): BaseDaggerPresenter<ProductListSectionContract.View>(),
+    private val reimagineRollence: ReimagineRollence
+) : BaseDaggerPresenter<ProductListSectionContract.View>(),
     ProductListSectionContract.Presenter,
     Pagination by paginationImpl,
     BannerAdsPresenter by BannerAdsPresenterDelegate(topAdsHeadlineHelper),
@@ -1099,6 +1099,11 @@ class ProductListPresenter @Inject constructor(
     override fun onApplyDropdownQuickFilter(optionList: List<Option>?) {
         view.applyDropdownQuickFilter(optionList)
         view.trackEventApplyDropdownQuickFilter(optionList, dimension90)
+    }
+
+    override fun isReimagine(): Boolean {
+        return reimagineRollence.search2Component() == Search2Component.CAROUSEL_VAR
+            || reimagineRollence.search2Component() == Search2Component.QF_VAR
     }
 
     private fun getViewToSendTrackingSearchAttempt(productDataView: ProductDataView) {
