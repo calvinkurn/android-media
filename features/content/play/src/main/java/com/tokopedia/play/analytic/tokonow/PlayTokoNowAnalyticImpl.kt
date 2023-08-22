@@ -235,7 +235,14 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
 
         val items = arrayListOf<Bundle>().apply {
             products.forEach {
-                add(productsToBundle(it.key.product, it.value, "bottom sheet"))
+                add(
+                    productsToBundle(
+                        product = it.key.product,
+                        position = it.value,
+                        sourceFrom = "bottom sheet",
+                        dimension90 = dimensionTrackingHelper.getDimension90()
+                    )
+                )
             }
         }
 
@@ -442,7 +449,12 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
         )
     }
 
-    private fun productsToBundle(product: PlayProductUiModel.Product, position: Int, sourceFrom: String): Bundle =
+    private fun productsToBundle(
+        product: PlayProductUiModel.Product,
+        position: Int,
+        sourceFrom: String,
+        dimension90: String,
+    ): Bundle =
         Bundle().apply {
             putString("item_name", product.title)
             putString("item_id", product.id)
@@ -457,6 +469,7 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
             putString("item_category", "")
             putString("item_variant", "")
             putString("dimension40", "/groupchat - $sourceFrom")
+            putString("dimension90", dimension90)
             putInt("index", position)
         }
 
