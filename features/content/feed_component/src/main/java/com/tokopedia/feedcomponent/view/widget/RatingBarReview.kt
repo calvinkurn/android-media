@@ -33,10 +33,10 @@ class RatingBarReview : BaseCustomView {
 
     private fun init(attrs: AttributeSet?) {
         init()
-        val styledAttributes = context.obtainStyledAttributes(attrs, R.styleable.RatingBarReview)
+        val styledAttributes = context.obtainStyledAttributes(attrs, com.tokopedia.content.common.R.styleable.RatingBarReview)
         try {
-            numstars = styledAttributes.getInt(R.styleable.RatingBarReview_numstars, DEFAULT_INPUT_VALUE_NUM_STARS)
-            rating = styledAttributes.getInt(R.styleable.RatingBarReview_rating, DEF_VALUE_EMPTY)
+            numstars = styledAttributes.getInt(com.tokopedia.content.common.R.styleable.RatingBarReview_numstars, DEFAULT_INPUT_VALUE_NUM_STARS)
+            rating = styledAttributes.getInt(com.tokopedia.content.common.R.styleable.RatingBarReview_rating, DEF_VALUE_EMPTY)
         } finally {
             styledAttributes.recycle()
         }

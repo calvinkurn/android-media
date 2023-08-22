@@ -145,12 +145,12 @@ open class OlpAdapter(
         refreshSticky()
     }
 
-    fun updateProductCount() {
+    fun updateProductCount(totalProducts: Int) {
         val newList = getNewVisitableItems()
         val sortFilter = newList
             .filterIsInstance<OfferProductSortingUiModel>().firstOrNull()
         sortFilter?.apply {
-            productCount = productListUiModel.size
+            productCount = totalProducts
         }
         submitList(newList)
         refreshSticky()
@@ -161,6 +161,5 @@ open class OlpAdapter(
         productListUiModel.addAll(productList)
         newList.addAll(productList)
         submitList(newList)
-        updateProductCount()
     }
 }

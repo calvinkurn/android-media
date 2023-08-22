@@ -8,16 +8,16 @@ class GetOfferProductListMapper @Inject constructor() {
 
     fun map(response: OfferProductListResponse): OfferProductListUiModel {
         return OfferProductListUiModel(
-            responseHeader = response.responseHeader.toResponseHeaderModel(),
-            productList = response.productList.toProductListModel()
+            responseHeader = response.offeringProductList.responseHeader.toResponseHeaderModel(),
+            productList = response.offeringProductList.productList.toProductListModel(),
+            totalProduct = response.offeringProductList.totalProduct
         )
     }
 
     private fun OfferProductListResponse.ResponseHeader.toResponseHeaderModel(): OfferProductListUiModel.ResponseHeader {
         return OfferProductListUiModel.ResponseHeader(
             success,
-            error_code,
-            processTime
+            errorMessage
         )
     }
 
@@ -28,16 +28,16 @@ class GetOfferProductListMapper @Inject constructor() {
                 parentId = it.parentId,
                 productId = it.productId,
                 warehouseId = it.warehouseId,
+                productUrl = it.productUrl,
                 imageUrl = it.imageUrl,
                 name = it.name,
                 price = it.price,
                 rating = it.rating,
                 soldCount = it.soldCount,
-                minOrder = it.minOrder,
-                maxOrder = it.maxOrder,
                 stock = it.stock,
                 isVbs = it.isVbs,
-                campaign = it.campaign.toCampaignModel()
+                campaign = it.campaign.toCampaignModel(),
+                labelGroup = it.labelGroup.toLabelGroup()
             )
         }
     }
@@ -48,9 +48,18 @@ class GetOfferProductListMapper @Inject constructor() {
             originalPrice,
             discountedPrice,
             discountedPercentage,
-            minOrder,
-            maxOrder,
             customStock
         )
+    }
+
+    private fun List<OfferProductListResponse.Product.LabelGroup>.toLabelGroup(): List<OfferProductListUiModel.Product.LabelGroup> {
+        return map {
+            OfferProductListUiModel.Product.LabelGroup(
+                position = it.position,
+                title = it.title,
+                type = it.type,
+                url = it.url
+            )
+        }
     }
 }

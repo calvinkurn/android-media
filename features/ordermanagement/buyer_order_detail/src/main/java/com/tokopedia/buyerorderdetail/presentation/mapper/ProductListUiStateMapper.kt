@@ -430,7 +430,7 @@ object ProductListUiStateMapper {
                 numOfRemovedProductBmgm = numOfRemovedProductBmgm,
                 numOfRemovedProductBundle = numOfRemovedProductBundle,
                 numOfRemovedNonProductBundle = numOfRemovedNonProductBundle,
-                numOfRemovedAddOnsList = numOfRemovedAddOn,
+                numOfRemovedAddOn = numOfRemovedAddOn,
                 numOfRemovedUnFulfilledProduct = numOfRemovedUnfulfilled
             ),
             tickerInfo = tickerDetails
@@ -442,12 +442,12 @@ object ProductListUiStateMapper {
         numOfRemovedProductBmgm: Int,
         numOfRemovedProductBundle: Int,
         numOfRemovedNonProductBundle: Int,
-        numOfRemovedAddOnsList: Int,
+        numOfRemovedAddOn: Int,
         numOfRemovedUnFulfilledProduct: Int
     ): ProductListUiModel.ProductListToggleUiModel? {
         return if (collapseProductList) {
             val numOfRemovedItems =
-                numOfRemovedProductBmgm + numOfRemovedProductBundle + numOfRemovedNonProductBundle + numOfRemovedAddOnsList + numOfRemovedUnFulfilledProduct
+                numOfRemovedProductBmgm + numOfRemovedProductBundle + numOfRemovedNonProductBundle + numOfRemovedAddOn + numOfRemovedUnFulfilledProduct
             if (numOfRemovedItems.isMoreThanZero()) {
                 ProductListUiModel.ProductListToggleUiModel(
                     collapsed = true,
@@ -674,6 +674,7 @@ object ProductListUiStateMapper {
                 }.orEmpty()
             )
         }
+
         return if (mappedAddOn?.addonsItemList.isNullOrEmpty()) {
             Int.ZERO to null
         } else {

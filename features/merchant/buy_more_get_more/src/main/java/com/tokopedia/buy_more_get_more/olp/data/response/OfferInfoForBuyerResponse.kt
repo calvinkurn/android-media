@@ -3,18 +3,28 @@ package com.tokopedia.buy_more_get_more.olp.data.response
 import com.google.gson.annotations.SerializedName
 
 data class OfferInfoForBuyerResponse(
-    @SerializedName("response_header")
-    val responseHeader: ResponseHeader = ResponseHeader(),
-    @SerializedName("offering_json_data")
-    val offeringJsonData: String = "",
-    @SerializedName("offering")
-    val offerings: List<Offering> = emptyList()
+    @SerializedName("GetOfferingInfoForBuyer")
+    val offeringInforBuyer: OfferInfoForBuyer = OfferInfoForBuyer()
 ) {
+
+    data class OfferInfoForBuyer(
+        @SerializedName("response_header")
+        val responseHeader: ResponseHeader = ResponseHeader(),
+        @SerializedName("offering_json_data")
+        val offeringJsonData: String = "",
+        @SerializedName("term_and_condition")
+        val tnc: List<String> = emptyList(),
+        @SerializedName("nearest_warehouse_ids")
+        val nearestWarehouseIds: List<Int> = emptyList(),
+        @SerializedName("offering")
+        val offerings: List<Offering> = emptyList()
+    )
+
     data class ResponseHeader(
         @SerializedName("success")
         val success: Boolean = true,
         @SerializedName("error_code")
-        val error_code: Long = 0,
+        val errorCode: Long = 0,
         @SerializedName("process_time")
         val processTime: String = ""
     )
@@ -33,8 +43,19 @@ data class OfferInfoForBuyerResponse(
         @SerializedName("max_applied_tier")
         val maxAppliedTier: Int = 0,
         @SerializedName("tier_list")
-        val tierList: List<Tier> = emptyList()
+        val tierList: List<Tier> = emptyList(),
+        @SerializedName("shop_data")
+        val shopData: ShopData = ShopData()
     ) {
+        data class ShopData(
+            @SerializedName("shop_id")
+            val shopId: Long = 0,
+            @SerializedName("shop_name")
+            val shopName: String = "",
+            @SerializedName("badge")
+            val badge: String = ""
+        )
+
         data class Tier(
             @SerializedName("tier_id")
             val tierId: Long = 0,

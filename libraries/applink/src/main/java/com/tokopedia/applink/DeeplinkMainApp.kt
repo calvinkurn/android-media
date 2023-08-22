@@ -158,12 +158,8 @@ object DeeplinkMainApp {
                 DeeplinkMapperUoh.getRegisteredNavigationUohOrder(c, d)
             }
         ),
-        "buy-more-get-more" to mutableListOf(
-            DLP.matchPattern("{shop_id}/olp") { _, _, _, idList ->
-                DeeplinkMapperMerchant.getRegisteredNavigationForOfferLandingPage(
-                    idList?.getOrNull(0).orEmpty()
-                )
-            }
+        "buymoresavemore" to mutableListOf(
+            DLP.goTo(DeeplinkMapperMerchant::getRegisteredNavigationForOfferLandingPage)
         ),
         "cart" to mutableListOf(
             DLP.goTo(DeeplinkMapperMarketplace::getRegisteredNavigationMarketplace)
@@ -206,12 +202,7 @@ object DeeplinkMainApp {
             DLP.goTo(DeeplinkMapperContactUs::getNavigationContactUs)
         ),
         "content" to mutableListOf(
-            DLP.matchPattern(
-                "explore/{tab_name}/{category_id}",
-                DeeplinkMapperHome::getRegisteredNavigationHomeContentExplore
-            ),
-            DLP.matchPattern("detail/{source_id}", DeepLinkMapperFeed::getRegisteredFeed),
-            DLP.matchPattern("{source_id}", DeeplinkMapperContent::getContentFeedDeeplink)
+            DLP.goTo(DeeplinkMapperContent::getNavContentFromAppLink)
         ),
         "customercare" to mutableListOf(
             DLP.matchPattern("", ApplinkConstInternalOperational.INTERNAL_INBOX_LIST)
@@ -241,27 +232,7 @@ object DeeplinkMainApp {
             DLP.matchPattern("", ApplinkConstInternalUserPlatform.EXPLICIT_PROFILE)
         ),
         "feed" to mutableListOf(
-            DLP.matchPattern("", DeeplinkMapperHome::getRegisteredNavigationHomeFeed),
-            DLP.matchPattern(
-                "explore",
-                DeeplinkMapperContent::getRegisteredNavigationHomeFeedExplore
-            ),
-            DLP.matchPattern(
-                "video",
-                DeeplinkMapperContent::getRegisteredNavigationHomeFeedVideo
-            ),
-            DLP.startsWith(
-                "following",
-                DeeplinkMapperContent::getRegisteredNavigationHomeFeedFollowing
-            ),
-            DLP.startsWith(
-                "creation-product-search",
-                DeeplinkMapperContent::getContentCreatePostDeepLink
-            ),
-            DLP.startsWith(
-                "creation-shop-search",
-                DeeplinkMapperContent::getContentCreatePostDeepLink
-            )
+            DLP.goTo(DeeplinkMapperContent::getNavContentFromAppLink)
         ),
         "feedcommunicationdetail" to mutableListOf(
             DLP.goTo(DeepLinkMapperFeed::getRegisteredFeed)

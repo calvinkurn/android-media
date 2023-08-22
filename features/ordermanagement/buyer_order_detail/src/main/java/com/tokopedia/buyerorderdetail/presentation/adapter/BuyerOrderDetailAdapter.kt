@@ -12,6 +12,7 @@ import com.tokopedia.buyerorderdetail.presentation.model.DigitalRecommendationUi
 import com.tokopedia.buyerorderdetail.presentation.model.EpharmacyInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.OrderInsuranceUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.OrderStatusUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.OwocBomDetailSectionUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PGRecommendationWidgetUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PaymentInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PlainHeaderUiModel
@@ -143,6 +144,7 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
         shipmentInfoUiModel: ShipmentInfoUiModel
     ) {
         addThickDividerSection()
+        addOwocSection(context, shipmentInfoUiModel.owocInfoUiModel)
         addPlainHeaderSection(context, shipmentInfoUiModel.headerUiModel)
         addTickerSection(context, shipmentInfoUiModel.ticker)
         addCourierInfoSection(context, shipmentInfoUiModel.courierInfoUiModel)
@@ -397,6 +399,15 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addPlatformFeeInfoSection() {
         add(PlatformFeeInfoUiModel())
+    }
+
+    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addOwocSection(
+        context: Context?,
+        owocBomDetailSectionUiModel: OwocBomDetailSectionUiModel?
+    ) {
+        if (owocBomDetailSectionUiModel?.shouldShow(context = context) == true) {
+            add(owocBomDetailSectionUiModel)
+        }
     }
 
     private inline fun <reified T : Any> removeRecommendationWidget() {

@@ -16,6 +16,7 @@ android {
         } else {
             testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
         }
+        testInstrumentationRunnerArguments clearPackageData: 'true'
     }
 
     buildFeatures {
