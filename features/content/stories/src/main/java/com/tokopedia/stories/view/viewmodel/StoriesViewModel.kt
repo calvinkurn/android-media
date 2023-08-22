@@ -83,6 +83,7 @@ class StoriesViewModel @Inject constructor(
             is StoriesUiAction.DismissSheet -> handleDismissSheet(action.type)
             StoriesUiAction.ShowDeleteDialog -> handleShowDialogDelete()
             StoriesUiAction.OpenProduct -> handleOpenProduct()
+            else -> {}
         }
     }
 

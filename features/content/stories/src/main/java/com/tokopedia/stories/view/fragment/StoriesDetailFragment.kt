@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.content.common.util.Router
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.showToast
@@ -43,6 +44,7 @@ import javax.inject.Inject
 
 class StoriesDetailFragment @Inject constructor(
     private val viewModelFactory: ViewModelProvider.Factory,
+    private val router: Router,
 ) : TkpdBaseV4Fragment() {
 
     private var _binding: FragmentStoriesDetailBinding? = null
@@ -275,6 +277,10 @@ class StoriesDetailFragment @Inject constructor(
                 }
             }
         }
+    }
+
+    private fun goTo(appLink: String) {
+        router.route(requireContext(), appLink)
     }
 
     override fun onDestroyView() {

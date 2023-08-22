@@ -6,16 +6,16 @@ import com.tokopedia.stories.view.model.BottomSheetType
 
 sealed interface StoriesUiAction {
 
-    data class SetArgumentsData(val data: Bundle?): StoriesUiAction
-    data class SetGroupMainData(val selectedGroup: Int): StoriesUiAction
+    data class SetArgumentsData(val data: Bundle?) : StoriesUiAction
+    data class SetGroupMainData(val selectedGroup: Int) : StoriesUiAction
 
-    object NextDetail: StoriesUiAction
+    object NextDetail : StoriesUiAction
 
-    object PreviousDetail: StoriesUiAction
+    object PreviousDetail : StoriesUiAction
 
-    object PauseStories: StoriesUiAction
+    object PauseStories : StoriesUiAction
 
-    object ResumeStories: StoriesUiAction
+    object ResumeStories : StoriesUiAction
 
     object OpenKebabMenu : StoriesUiAction
 
@@ -25,7 +25,14 @@ sealed interface StoriesUiAction {
 
     object OpenProduct : StoriesUiAction
 
-    data class ProductAction(val action: StoriesProductAction, val product: ContentTaggedProductUiModel) : StoriesUiAction
+    data class ProductAction(
+        val action: StoriesProductAction,
+        val product: ContentTaggedProductUiModel
+    ) : StoriesUiAction
+
+    data class Navigate(val appLink: String) : StoriesUiAction
+
+    data class ShowVariantSheet(val isShow: Boolean) : StoriesUiAction
 }
 
 enum class StoriesProductAction {
