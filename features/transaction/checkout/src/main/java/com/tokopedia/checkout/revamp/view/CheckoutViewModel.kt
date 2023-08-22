@@ -770,10 +770,7 @@ class CheckoutViewModel @Inject constructor(
                         checkoutItems[item.index] = product.copy(
                             addOnGiftingProductLevelModel = setAddOnsGiftingData(
                                 product.addOnGiftingProductLevelModel.copy(),
-                                addOnResult,
-                                0,
-                                product.cartStringGroup,
-                                product.cartId
+                                addOnResult
                             )
                         )
                     }
@@ -796,10 +793,7 @@ class CheckoutViewModel @Inject constructor(
                     checkoutItems[item.index] = order.copy(
                         addOnsOrderLevelModel = setAddOnsGiftingData(
                             order.addOnsOrderLevelModel.copy(),
-                            addOnResult,
-                            0,
-                            order.cartStringGroup,
-                            0L
+                            addOnResult
                         )
                     )
                 }
@@ -810,10 +804,7 @@ class CheckoutViewModel @Inject constructor(
 
     private fun setAddOnsGiftingData(
         addOnsDataModel: AddOnGiftingDataModel,
-        addOnResult: AddOnResult,
-        identifier: Int,
-        cartString: String,
-        cartId: Long
+        addOnResult: AddOnResult
     ): AddOnGiftingDataModel {
         addOnsDataModel.status = addOnResult.status
         val addOnButton = addOnResult.addOnButton
@@ -825,40 +816,36 @@ class CheckoutViewModel @Inject constructor(
             addOnButton.title
         )
         val addOnBottomSheet = addOnResult.addOnBottomSheet
-        val addOnBottomSheetModel = AddOnGiftingBottomSheetModel()
-        addOnBottomSheetModel.headerTitle = addOnBottomSheet.headerTitle
-        addOnBottomSheetModel.description = addOnBottomSheet.description
-        val addOnTickerModel = AddOnGiftingTickerModel()
-        addOnTickerModel.text = addOnBottomSheet.ticker.text
-        addOnBottomSheetModel.ticker = addOnTickerModel
-        val listProductAddOn = ArrayList<AddOnGiftingProductItemModel>()
-        for (product in addOnBottomSheet.products) {
-            val addOnProductItemModel = AddOnGiftingProductItemModel()
-            addOnProductItemModel.productName = product.productName
-            addOnProductItemModel.productImageUrl = product.productImageUrl
-            listProductAddOn.add(addOnProductItemModel)
-        }
-        addOnBottomSheetModel.products = listProductAddOn
-        addOnsDataModel.addOnsBottomSheetModel = addOnBottomSheetModel
-        val listAddOnDataItem = arrayListOf<AddOnGiftingDataItemModel>()
-        for (addOnData in addOnResult.addOnData) {
-            val addOnDataItemModel = AddOnGiftingDataItemModel()
-            val addOnNote = addOnData.addOnMetadata.addOnNote
-            addOnDataItemModel.addOnId = addOnData.addOnId
-            addOnDataItemModel.addOnUniqueId = addOnData.addOnUniqueId
-            addOnDataItemModel.addOnPrice = addOnData.addOnPrice
-            addOnDataItemModel.addOnQty = addOnData.addOnQty.toLong()
-            addOnDataItemModel.addOnMetadata = AddOnGiftingMetadataItemModel(
-                AddOnGiftingNoteItemModel(
-                    addOnNote.isCustomNote,
-                    addOnNote.to,
-                    addOnNote.from,
-                    addOnNote.notes
+        addOnsDataModel.addOnsBottomSheetModel = AddOnGiftingBottomSheetModel(
+            ticker = AddOnGiftingTickerModel(
+                text = addOnBottomSheet.ticker.text
+            ),
+            headerTitle = addOnBottomSheet.headerTitle,
+            description = addOnBottomSheet.description,
+            products = addOnBottomSheet.products.map {
+                AddOnGiftingProductItemModel(
+                    productName = it.productName,
+                    productImageUrl = it.productImageUrl
+                )
+            }
+        )
+        addOnsDataModel.addOnsDataItemModelList = addOnResult.addOnData.map {
+            val addOnNote = it.addOnMetadata.addOnNote
+            AddOnGiftingDataItemModel(
+                addOnId = it.addOnId,
+                addOnUniqueId = it.addOnUniqueId,
+                addOnPrice = it.addOnPrice,
+                addOnQty = it.addOnQty.toLong(),
+                addOnMetadata = AddOnGiftingMetadataItemModel(
+                    AddOnGiftingNoteItemModel(
+                        addOnNote.isCustomNote,
+                        addOnNote.to,
+                        addOnNote.from,
+                        addOnNote.notes
+                    )
                 )
             )
-            listAddOnDataItem.add(addOnDataItemModel)
         }
-        addOnsDataModel.addOnsDataItemModelList = listAddOnDataItem
         return addOnsDataModel
     }
 
