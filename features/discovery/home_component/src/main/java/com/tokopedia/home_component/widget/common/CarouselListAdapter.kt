@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
+import com.tokopedia.home_component.util.recordCrashlytics
 
 /**
  * Created by frenzel
@@ -25,12 +26,19 @@ internal class CarouselListAdapter<T: Visitable<F>, F: AdapterTypeFactory>(
         try {
             val item = getItem(position)
             holder.bind(item)
-        } catch (_: Exception) { }
+        } catch (e: Exception) {
+            e.recordCrashlytics()
+        }
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (position < 0 || position >= itemCount) {
+        return try {
+            if (position < 0 || position >= itemCount) {
+                HideViewHolder.LAYOUT
+            } else getItem(position).type(typeFactory)
+        } catch (e: Exception) {
+            e.recordCrashlytics()
             HideViewHolder.LAYOUT
-        } else getItem(position).type(typeFactory)
+        }
     }
 }
