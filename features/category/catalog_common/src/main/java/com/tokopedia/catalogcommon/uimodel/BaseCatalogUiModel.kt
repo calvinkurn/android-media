@@ -8,5 +8,6 @@ abstract class BaseCatalogUiModel(
     open val widgetType: String,
     open val widgetName: String,
     open val widgetBackgroundColor: Int? = null,
-    open val widgetTextColor: Int? = null
+    open val widgetTextColor: Int? = null,
+    open val darkMode: Boolean = false
 ) : Visitable<CatalogAdapterFactory>

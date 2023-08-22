@@ -9,8 +9,16 @@ data class TopFeaturesUiModel(
     override val widgetName: String,
     override val widgetBackgroundColor: Int? = null,
     override val widgetTextColor: Int? = null,
+    override val darkMode: Boolean = false,
     val items: List<ItemTopFeatureUiModel>
-) : BaseCatalogUiModel(idWidget, widgetType, widgetName, widgetBackgroundColor, widgetTextColor) {
+) : BaseCatalogUiModel(
+    idWidget,
+    widgetType,
+    widgetName,
+    widgetBackgroundColor,
+    widgetTextColor,
+    darkMode
+) {
 
     override fun type(typeFactory: CatalogAdapterFactory): Int {
         return typeFactory.type(this)

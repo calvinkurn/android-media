@@ -12,6 +12,7 @@ import com.tokopedia.catalog.di.DaggerCatalogComponent
 import com.tokopedia.catalog.ui.viewmodel.CatalogDetailPageViewModel
 import com.tokopedia.catalogcommon.adapter.CatalogAdapterFactoryImpl
 import com.tokopedia.catalogcommon.adapter.WidgetCatalogAdapter
+import com.tokopedia.catalogcommon.uimodel.AccordionInformationUiModel
 import com.tokopedia.catalogcommon.uimodel.BaseCatalogUiModel
 import com.tokopedia.catalogcommon.uimodel.DummyUiModel
 import com.tokopedia.catalogcommon.uimodel.HeroBannerUiModel
@@ -80,7 +81,7 @@ class CatalogDetailPageFragment : BaseDaggerFragment() {
                     "",
                     widgetBackgroundColor = null,
                     widgetTextColor = null,
-                    "konten"
+                    content = "konten"
                 )
             )
             widgets.add(
@@ -90,11 +91,12 @@ class CatalogDetailPageFragment : BaseDaggerFragment() {
                     "",
                     widgetBackgroundColor = null,
                     widgetTextColor = null,
-                    "konten"
+                    content = "konten"
                 )
             )
             widgets.add(TopFeaturesUiModel.dummyTopFeatures())
             widgets.add(SliderImageTextUiModel.dummySliderImageText())
+            widgets.add(AccordionInformationUiModel.dummyAccordion())
             widgetAdapter.addWidget(widgets)
         }
 

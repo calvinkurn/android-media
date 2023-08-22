@@ -9,8 +9,16 @@ data class SliderImageTextUiModel(
     override val widgetName: String,
     override val widgetBackgroundColor: Int? = null,
     override val widgetTextColor: Int? = null,
+    override val darkMode: Boolean = false,
     val items: List<ItemSliderImageText>
-) : BaseCatalogUiModel(idWidget, widgetType, widgetName, widgetBackgroundColor, widgetTextColor) {
+) : BaseCatalogUiModel(
+    idWidget,
+    widgetType,
+    widgetName,
+    widgetBackgroundColor,
+    widgetTextColor,
+    darkMode
+) {
 
     data class ItemSliderImageText(
         val image: String,

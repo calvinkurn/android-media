@@ -3,11 +3,13 @@ package com.tokopedia.catalogcommon.adapter
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.catalogcommon.uimodel.AccordionInformationUiModel
 import com.tokopedia.catalogcommon.uimodel.DummyUiModel
 import com.tokopedia.catalogcommon.uimodel.HeroBannerUiModel
 import com.tokopedia.catalogcommon.uimodel.SliderImageTextUiModel
 import com.tokopedia.catalogcommon.uimodel.PanelImageUiModel
 import com.tokopedia.catalogcommon.uimodel.TopFeaturesUiModel
+import com.tokopedia.catalogcommon.viewholder.AccordionInformationViewHolder
 import com.tokopedia.catalogcommon.viewholder.DummyViewHolder
 import com.tokopedia.catalogcommon.viewholder.HeroBannerViewHolder
 import com.tokopedia.catalogcommon.viewholder.SliderImageTextViewHolder
@@ -23,6 +25,7 @@ class CatalogAdapterFactoryImpl : BaseAdapterTypeFactory(), CatalogAdapterFactor
             DummyViewHolder.LAYOUT -> DummyViewHolder(view)
             SliderImageTextViewHolder.LAYOUT -> SliderImageTextViewHolder(view)
             PanelImageViewHolder.LAYOUT -> PanelImageViewHolder(view)
+            AccordionInformationViewHolder.LAYOUT -> AccordionInformationViewHolder(view)
             else -> super.createViewHolder(view, type)
         }
     }
@@ -45,5 +48,9 @@ class CatalogAdapterFactoryImpl : BaseAdapterTypeFactory(), CatalogAdapterFactor
 
     override fun type(uiModel: PanelImageUiModel): Int {
         return PanelImageViewHolder.LAYOUT
+    }
+
+    override fun type(uiModel: AccordionInformationUiModel): Int {
+        return AccordionInformationViewHolder.LAYOUT
     }
 }
