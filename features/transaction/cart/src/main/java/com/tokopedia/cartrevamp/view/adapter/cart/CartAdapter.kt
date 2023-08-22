@@ -486,10 +486,6 @@ class CartAdapter constructor(
         mainCoachMark = Pair(coachMark, items)
     }
 
-    fun setBulkActionCoachMark(coachMark: Pair<CoachMark2?, ArrayList<CoachMark2Item>>) {
-        bulkActionCoachMark = coachMark
-    }
-
     override fun onNeedToRefreshSingleProduct(childPosition: Int) {
         notifyItemChanged(childPosition)
         cartItemActionListener.onNeedToRecalculate()
