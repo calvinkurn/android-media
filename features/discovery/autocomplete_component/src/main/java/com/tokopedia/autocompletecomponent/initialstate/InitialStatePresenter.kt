@@ -62,8 +62,6 @@ class InitialStatePresenter @Inject constructor(
     override var seeMoreButtonPosition = -1
         private set
 
-    override fun getReimagineVariant() = reimagine.search1InstAuto()
-
     override fun getQueryKey(): String {
         return searchParameter[SearchApiConst.Q] ?: ""
     }

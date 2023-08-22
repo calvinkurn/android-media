@@ -37,7 +37,7 @@
         app:layout_constraintTop_toBottomOf="@id/doubleLineTitle" />
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/dotAds"
+        android:id="@+id/autoCompleteDotAds"
         android:layout_width="2dp"
         android:layout_height="2dp"
         android:layout_marginStart="4dp"
@@ -66,7 +66,7 @@
         app:layout_constraintTop_toBottomOf="@id/doubleLineTitle" />
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/autocompleteIconTitle"
+        android:id="@+id/autoCompleteIconTitleReimagine"
         android:layout_width="16dp"
         android:layout_height="16dp"
         android:contentDescription="@string/content_desc_dl_iconTitle"

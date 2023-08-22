@@ -7,8 +7,8 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.autocompletecomponent.R
 import com.tokopedia.autocompletecomponent.databinding.LayoutAutocompleteDoubleLineItemBinding
 import com.tokopedia.autocompletecomponent.initialstate.BaseItemInitialStateSearch
-import com.tokopedia.autocompletecomponent.initialstate.renderstrategy.InitialStateLayoutStrategyFactory
-import com.tokopedia.autocompletecomponent.initialstate.renderstrategy.InitialStateRenderStrategy
+import com.tokopedia.autocompletecomponent.initialstate.InitialStateLayoutStrategyFactory
+import com.tokopedia.autocompletecomponent.initialstate.InitialStateLayoutStrategy
 import com.tokopedia.discovery.common.reimagine.Search1InstAuto
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
@@ -26,7 +26,7 @@ class RecentSearchDoubleLineItemViewHolder(
 
     private var binding: LayoutAutocompleteDoubleLineItemBinding? by viewBinding()
 
-    private val layoutStrategy: InitialStateRenderStrategy = InitialStateLayoutStrategyFactory.create(reimagineVariant)
+    private val layoutStrategy: InitialStateLayoutStrategy = InitialStateLayoutStrategyFactory.create(reimagineVariant)
 
     fun bind(item: BaseItemInitialStateSearch) {
         bindIconImage(item)
@@ -50,7 +50,7 @@ class RecentSearchDoubleLineItemViewHolder(
         val iconTitle = if (isReimagineVariantControl)
             binding?.iconTitle
         else
-            binding?.autocompleteIconTitle
+            binding?.autoCompleteIconTitleReimagine
         layoutStrategy.bindIconTitle(iconTitle ?: return, item)
     }
 

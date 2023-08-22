@@ -1,10 +1,10 @@
-package com.tokopedia.autocompletecomponent.initialstate.renderstrategy
+package com.tokopedia.autocompletecomponent.initialstate
 
 import androidx.appcompat.widget.AppCompatImageView
 import com.tokopedia.autocompletecomponent.initialstate.BaseItemInitialStateSearch
 import com.tokopedia.unifyprinciples.Typography
 
-interface InitialStateRenderStrategy {
+internal interface InitialStateLayoutStrategy {
 
     fun bindTitle(titleView: Typography, item: BaseItemInitialStateSearch)
 

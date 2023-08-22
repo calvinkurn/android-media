@@ -58,7 +58,6 @@ class SuggestionPresenter @Inject constructor(
     private val userSession: UserSessionInterface,
     private val coachMarkLocalCache: CoachMarkLocalCache,
     private val schedulersProvider: SchedulersProvider,
-    private val reimagine: ReimagineRollence
 ) : BaseDaggerPresenter<SuggestionContract.View>(), SuggestionContract.Presenter {
 
     private val listVisitable = mutableListOf<Visitable<*>>()
@@ -75,8 +74,6 @@ class SuggestionPresenter @Inject constructor(
     init {
         initSuggestionCoachMarkObservation()
     }
-
-    override fun getReimagineVariant() = reimagine.search1InstAuto()
 
     private fun initSuggestionCoachMarkObservation() {
         suggestionSubscription = resultSubject.asObservable()
@@ -201,7 +198,7 @@ class SuggestionPresenter @Inject constructor(
             if (shopSuggestionProcessing.shouldSkipSuggestionItem(item)) continue
 
             when (item.template) {
-                SUGGESTION_HEADER  -> if(isReimagineVariantControl()) addTitleToVisitable(item)
+                SUGGESTION_HEADER -> addTitleToVisitable(item)
                 SUGGESTION_SINGLE_LINE -> addSingleLineToVisitable(typePosition, item)
                 SUGGESTION_DOUBLE_LINE ->
                     addDoubleLineToVisitable(typePosition, item)
@@ -692,7 +689,5 @@ class SuggestionPresenter @Inject constructor(
     override fun markSuggestionCoachMark() {
         coachMarkLocalCache.markShowSuggestionCoachMark()
     }
-
-    private fun isReimagineVariantControl() = reimagine.search1InstAuto() == Search1InstAuto.CONTROL
 
 }

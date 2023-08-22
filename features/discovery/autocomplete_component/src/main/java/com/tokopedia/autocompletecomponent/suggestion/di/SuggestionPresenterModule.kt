@@ -13,6 +13,7 @@ import dagger.Provides
         SuggestionTopAdsUrlHitter::class,
         LocalCacheModule::class,
         SchedulersProviderModule::class,
+        SuggestionContextModule::class,
     ]
 )
 class SuggestionPresenterModule {

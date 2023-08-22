@@ -12,8 +12,8 @@ import com.tokopedia.autocompletecomponent.R
 import com.tokopedia.autocompletecomponent.databinding.LayoutDynamicInitialStateBinding
 import com.tokopedia.autocompletecomponent.databinding.LayoutDynamicItemInitialStateBinding
 import com.tokopedia.autocompletecomponent.initialstate.BaseItemInitialStateSearch
-import com.tokopedia.autocompletecomponent.initialstate.renderstrategy.InitialStateLayoutStrategyFactory
-import com.tokopedia.autocompletecomponent.initialstate.renderstrategy.InitialStateRenderStrategy
+import com.tokopedia.autocompletecomponent.initialstate.InitialStateLayoutStrategyFactory
+import com.tokopedia.autocompletecomponent.initialstate.InitialStateLayoutStrategy
 import com.tokopedia.autocompletecomponent.util.loadImageRounded
 import com.tokopedia.discovery.common.reimagine.Search1InstAuto
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
@@ -32,7 +32,7 @@ class DynamicInitialStateViewHolder(
 
     private var binding: LayoutDynamicInitialStateBinding? by viewBinding()
 
-    private val layoutStrategy: InitialStateRenderStrategy = InitialStateLayoutStrategyFactory.create(reimagineVariant)
+    private val layoutStrategy: InitialStateLayoutStrategy = InitialStateLayoutStrategyFactory.create(reimagineVariant)
     override fun bind(element: DynamicInitialStateSearchDataView) {
         bindContent(element)
     }

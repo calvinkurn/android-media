@@ -7,6 +7,7 @@ import dagger.Provides
 
 @Module(includes = [
     InitialStateUserSessionInterfaceModule::class,
+    InitialStateContextModule::class,
 ])
 class InitialStatePresenterModule {
 

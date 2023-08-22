@@ -37,6 +37,7 @@ import com.tokopedia.autocompletecomponent.util.HasViewModelFactory
 import com.tokopedia.autocompletecomponent.util.OnScrollListenerAutocomplete
 import com.tokopedia.autocompletecomponent.util.SCREEN_UNIVERSEARCH
 import com.tokopedia.autocompletecomponent.util.getModifiedApplink
+import com.tokopedia.discovery.common.reimagine.ReimagineRollence
 import com.tokopedia.discovery.common.reimagine.Search1InstAuto
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
@@ -55,7 +56,8 @@ class InitialStateFragment:
     CuratedCampaignListener,
     InitialStateChipListener,
     SearchBarEducationListener,
-    MpsInitialStateListener {
+    MpsInitialStateListener,
+    InitialStateContract.ReimagineRollance {
 
     companion object {
         const val INITIAL_STATE_FRAGMENT_TAG = "INITIAL_STATE_FRAGMENT"
@@ -79,6 +81,9 @@ class InitialStateFragment:
     var initialStateTracking: InitialStateTracking? = null
         @Inject set
 
+    var reimagineRollence: ReimagineRollence? = null
+        @Inject set
+
     private val viewModel: SearchBarViewModel? by lazy {
         val activity = activity ?: return@lazy null
         if (activity !is HasViewModelFactory) return@lazy null
@@ -87,8 +92,6 @@ class InitialStateFragment:
     }
 
     private var performanceMonitoring: PerformanceMonitoring? = null
-
-    private fun getReimagineVariant(): Search1InstAuto = presenter?.getReimagineVariant() ?: Search1InstAuto.CONTROL
 
     private val initialStateAdapterTypeFactory = InitialStateAdapterTypeFactory(
         recentViewListener = this,
@@ -100,6 +103,7 @@ class InitialStateFragment:
         chipListener = this,
         searchBarEducationListener = this,
         mpsChipListener = this,
+        reimagineRollance = this
     )
     private val initialStateAdapter = InitialStateAdapter(initialStateAdapterTypeFactory)
 
@@ -121,7 +125,6 @@ class InitialStateFragment:
     }
 
     private fun prepareView() {
-        initialStateAdapterTypeFactory.initReimagineVariant(getReimagineVariant())
         recyclerViewInitialState?.also {
             it.adapter = initialStateAdapter
             it.layoutManager = LinearLayoutManager(context, VERTICAL, false)
@@ -432,5 +435,9 @@ class InitialStateFragment:
 
     override fun disableMps() {
         viewModel?.disableMps()
+    }
+
+    override fun getVariantReimagineRollance(): Search1InstAuto {
+        return reimagineRollence?.search1InstAuto() ?: Search1InstAuto.CONTROL
     }
 }

@@ -14,8 +14,6 @@ import com.tokopedia.autocompletecomponent.R
 import com.tokopedia.autocompletecomponent.databinding.LayoutAutocompleteDoubleLineItemBinding
 import com.tokopedia.autocompletecomponent.suggestion.BaseSuggestionDataView
 import com.tokopedia.autocompletecomponent.suggestion.SuggestionListener
-import com.tokopedia.autocompletecomponent.suggestion.doubleline.doublelinerenderstrategy.DoubleLineLayoutStrategy
-import com.tokopedia.autocompletecomponent.suggestion.doubleline.doublelinerenderstrategy.DoubleLineLayoutStrategyFactory
 import com.tokopedia.autocompletecomponent.util.safeSetSpan
 import com.tokopedia.discovery.common.reimagine.Search1InstAuto
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
@@ -60,13 +58,10 @@ class SuggestionDoubleLineViewHolder(
     }
 
     private fun bindIconTitle(item: BaseSuggestionDataView) {
-        val isReimagineVariantControl = reimagineVariant == Search1InstAuto.CONTROL
-        val iconTitle = if (isReimagineVariantControl)
-            binding?.iconTitle
-        else
-            binding?.autocompleteIconTitle
+        val iconTitle = binding?.iconTitle ?: return
+        val autoCompleteIconTitleReimagine = binding?.autoCompleteIconTitleReimagine ?: return
 
-        layoutStrategy.bindIconTitle(iconTitle ?: return, item)
+        layoutStrategy.bindIconTitle(iconTitle, autoCompleteIconTitleReimagine, item)
     }
 
     private fun bindIconSubtitle(item: BaseSuggestionDataView) {
@@ -85,16 +80,15 @@ class SuggestionDoubleLineViewHolder(
 
     private fun bindTextTitle(item: SuggestionDoubleLineDataDataView) {
         val doubleLineTitle = binding?.doubleLineTitle ?: return
-        layoutStrategy.bindTitle(doubleLineTitle) {
-            when {
-                item.data.isBoldAllText() -> {
-                    bindAllBoldTextTitle(item.data)
-                }
+        layoutStrategy.bindTitle(doubleLineTitle)
+        when {
+            item.data.isBoldAllText() -> {
+                bindAllBoldTextTitle(item.data)
+            }
 
-                else -> {
-                    setSearchQueryStartIndexInKeyword(item.data)
-                    bindBoldTextTitle(item.data)
-                }
+            else -> {
+                setSearchQueryStartIndexInKeyword(item.data)
+                bindBoldTextTitle(item.data)
             }
         }
     }
@@ -187,7 +181,7 @@ class SuggestionDoubleLineViewHolder(
 
     private fun bindAdText(item: BaseSuggestionDataView) {
         val adText = binding?.adText ?: return
-        val dotImage = binding?.dotAds ?: return
+        val dotImage = binding?.autoCompleteDotAds ?: return
         layoutStrategy.bindAdsLabel(adText, dotImage, item)
     }
 

@@ -38,7 +38,6 @@ import com.tokopedia.autocompletecomponent.initialstate.recentview.RecentViewTit
 import com.tokopedia.autocompletecomponent.initialstate.searchbareducation.SearchBarEducationDataView
 import com.tokopedia.autocompletecomponent.initialstate.searchbareducation.SearchBarEducationListener
 import com.tokopedia.autocompletecomponent.initialstate.searchbareducation.SearchBarEducationViewHolder
-import com.tokopedia.discovery.common.reimagine.Search1InstAuto
 
 class InitialStateAdapterTypeFactory(
     private val recentViewListener: RecentViewListener,
@@ -50,12 +49,8 @@ class InitialStateAdapterTypeFactory(
     private val chipListener: InitialStateChipListener,
     private val searchBarEducationListener: SearchBarEducationListener,
     private val mpsChipListener: MpsInitialStateListener,
+    private var reimagineRollance: InitialStateContract.ReimagineRollance
 ) : BaseAdapterTypeFactory(), InitialStateTypeFactory {
-    private var reimagineVariant: Search1InstAuto = Search1InstAuto.CONTROL
-
-    fun initReimagineVariant(reimagineVariant: Search1InstAuto) {
-        this.reimagineVariant = reimagineVariant
-    }
     override fun type(popularSearchTitleDataView: PopularSearchTitleDataView): Int {
         return PopularSearchTitleViewHolder.LAYOUT
     }
@@ -123,9 +118,9 @@ class InitialStateAdapterTypeFactory(
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             PopularSearchViewHolder.LAYOUT ->
-                PopularSearchViewHolder(parent, popularSearchListener, reimagineVariant)
+                PopularSearchViewHolder(parent, popularSearchListener, reimagineRollance.getVariantReimagineRollance())
             RecentSearchViewHolder.LAYOUT ->
-                RecentSearchViewHolder(parent, recentSearchListener, reimagineVariant)
+                RecentSearchViewHolder(parent, recentSearchListener, reimagineRollance.getVariantReimagineRollance())
             RecentViewViewHolder.LAYOUT ->
                 RecentViewViewHolder(parent, recentViewListener)
             PopularSearchTitleViewHolder.LAYOUT ->
@@ -139,7 +134,7 @@ class InitialStateAdapterTypeFactory(
             DynamicInitialStateTitleViewHolder.LAYOUT ->
                 DynamicInitialStateTitleViewHolder(parent, dynamicInitialStateListener)
             DynamicInitialStateViewHolder.LAYOUT ->
-                DynamicInitialStateViewHolder(parent, dynamicInitialStateListener, reimagineVariant)
+                DynamicInitialStateViewHolder(parent, dynamicInitialStateListener, reimagineRollance.getVariantReimagineRollance())
             CuratedCampaignViewHolder.LAYOUT ->
                 CuratedCampaignViewHolder(parent, curatedCampaignListener)
             InitialStateProductListViewHolder.LAYOUT ->

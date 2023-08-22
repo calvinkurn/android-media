@@ -21,19 +21,13 @@ import com.tokopedia.autocompletecomponent.suggestion.title.SuggestionTitleDataV
 import com.tokopedia.autocompletecomponent.suggestion.topshop.SuggestionTopShopListener
 import com.tokopedia.autocompletecomponent.suggestion.topshop.SuggestionTopShopWidgetViewHolder
 import com.tokopedia.autocompletecomponent.suggestion.topshop.SuggestionTopShopWidgetDataView
-import com.tokopedia.discovery.common.reimagine.Search1InstAuto
 
 class SuggestionAdapterTypeFactory(
     private val suggestionListener: SuggestionListener,
     private val suggestionTopShopListener: SuggestionTopShopListener,
     private val suggestionChipListener: SuggestionChipListener,
+    private var reimagineRollance: SuggestionContract.ReimagineRollance
 ) : BaseAdapterTypeFactory(), SuggestionTypeFactory {
-
-    private var reimagineVariant: Search1InstAuto = Search1InstAuto.CONTROL
-
-    fun initReimagineVariant(reimagineVariant: Search1InstAuto) {
-        this.reimagineVariant = reimagineVariant
-    }
 
     override fun type(suggestionTitleDataView: SuggestionTitleDataView): Int {
         return SuggestionTitleViewHolder.LAYOUT
@@ -71,7 +65,7 @@ class SuggestionAdapterTypeFactory(
         return when (type) {
             SuggestionTitleViewHolder.LAYOUT -> SuggestionTitleViewHolder(parent)
             SuggestionSingleLineViewHolder.LAYOUT -> SuggestionSingleLineViewHolder(parent, suggestionListener)
-            SuggestionDoubleLineViewHolder.LAYOUT -> SuggestionDoubleLineViewHolder(parent, suggestionListener, reimagineVariant)
+            SuggestionDoubleLineViewHolder.LAYOUT -> SuggestionDoubleLineViewHolder(parent, suggestionListener, reimagineRollance.getVariantReimagineRollance())
             SuggestionTopShopWidgetViewHolder.LAYOUT -> SuggestionTopShopWidgetViewHolder(parent, suggestionTopShopListener)
             SuggestionDoubleLineWithoutImageViewHolder.LAYOUT -> SuggestionDoubleLineWithoutImageViewHolder(parent, suggestionListener)
             SuggestionSeparatorViewHolder.LAYOUT -> SuggestionSeparatorViewHolder(parent)
