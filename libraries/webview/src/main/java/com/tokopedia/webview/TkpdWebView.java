@@ -158,7 +158,7 @@ public class TkpdWebView extends WebView {
                     .generateJson(getContext().getApplicationContext())
                     .getBytes(StandardCharsets.UTF_8);
 
-            String additionalInfoBase64 = Base64.encodeToString(additionalInfoJson, Base64.DEFAULT);
+            String additionalInfoBase64 = Base64.encodeToString(additionalInfoJson, Base64.DEFAULT).replace("\n", "").replace("\r", "").trim();
 
             header.put(
                     KEY_FINTECH_FINGERPRINT_DATA,
