@@ -22,14 +22,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.tokopedia.stories.view.model.StoriesDetailUiModel
-import com.tokopedia.stories.view.model.StoriesDetailUiModel.StoriesDetailUiEvent.PAUSE
-import com.tokopedia.stories.view.model.StoriesDetailUiModel.StoriesDetailUiEvent.START
+import com.tokopedia.stories.view.model.StoryDetailUiModel
+import com.tokopedia.stories.view.model.StoryDetailUiModel.StoryDetailUiEvent.PAUSE
+import com.tokopedia.stories.view.model.StoryDetailUiModel.StoryDetailUiEvent.START
 
 @Composable
-fun StoriesDetailTimer(
+fun StoryDetailTimer(
     itemCount: Int,
-    data: StoriesDetailUiModel,
+    data: StoryDetailUiModel,
     timerFinished: () -> Unit,
 ) {
     val anim = remember(data.selected, data.id) { Animatable(INITIAL_ANIMATION) }
@@ -51,7 +51,7 @@ fun StoriesDetailTimer(
         if (anim.value == anim.targetValue) timerFinished.invoke()
     }
 
-    StoriesDetailTimerContent(
+    StoryDetailTimerContent(
         count = itemCount,
         currentPosition = data.selected,
         progress = anim.value,
@@ -59,7 +59,7 @@ fun StoriesDetailTimer(
 }
 
 @Composable
-private fun StoriesDetailTimerContent(
+private fun StoryDetailTimerContent(
     count: Int,
     currentPosition: Int,
     progress: Float,
@@ -97,10 +97,10 @@ private fun StoriesDetailTimerContent(
 
 @Preview(showBackground = true)
 @Composable
-internal fun StoriesDetailTimerPreview() {
-    StoriesDetailTimer(
+internal fun StoryDetailTimerPreview() {
+    StoryDetailTimer(
         itemCount = 3,
-        data = StoriesDetailUiModel(
+        data = StoryDetailUiModel(
             id = "1",
             selected = 1,
             event = START,

@@ -3,19 +3,19 @@ package com.tokopedia.stories.view.activity
 import android.os.Bundle
 import androidx.fragment.app.FragmentFactory
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
-import com.tokopedia.stories.databinding.ActivityStoriesBinding
-import com.tokopedia.stories.di.StoriesInjector
-import com.tokopedia.stories.view.fragment.StoriesGroupFragment
+import com.tokopedia.stories.databinding.ActivityStoryBinding
+import com.tokopedia.stories.di.StoryInjector
+import com.tokopedia.stories.view.fragment.StoryGroupFragment
 import javax.inject.Inject
 
 
-class StoriesActivity : BaseActivity() {
+class StoryActivity : BaseActivity() {
 
     @Inject
     lateinit var fragmentFactory: FragmentFactory
 
-    private var _binding: ActivityStoriesBinding? = null
-    private val binding: ActivityStoriesBinding
+    private var _binding: ActivityStoryBinding? = null
+    private val binding: ActivityStoryBinding
         get() = _binding!!
 
     private var bundle: Bundle? = null
@@ -28,7 +28,7 @@ class StoriesActivity : BaseActivity() {
     }
 
     private fun inject() {
-        StoriesInjector.get(this).inject(this)
+        StoryInjector.get(this).inject(this)
         supportFragmentManager.fragmentFactory = fragmentFactory
     }
 
@@ -47,25 +47,25 @@ class StoriesActivity : BaseActivity() {
     }
 
     private fun setupViews() {
-        _binding = ActivityStoriesBinding.inflate(layoutInflater)
+        _binding = ActivityStoryBinding.inflate(layoutInflater)
         setContentView(binding.root)
         openFragment()
     }
 
     private fun openFragment() {
         supportFragmentManager.executePendingTransactions()
-        val existingFragment = supportFragmentManager.findFragmentByTag(StoriesGroupFragment.TAG)
-        if (existingFragment is StoriesGroupFragment && existingFragment.isVisible) return
+        val existingFragment = supportFragmentManager.findFragmentByTag(StoryGroupFragment.TAG)
+        if (existingFragment is StoryGroupFragment && existingFragment.isVisible) return
 
         supportFragmentManager.beginTransaction().apply {
             add(
                 binding.fragmentContainer.id,
-                StoriesGroupFragment.getFragment(
+                StoryGroupFragment.getFragment(
                     fragmentManager = supportFragmentManager,
                     classLoader = classLoader,
                     bundle = bundle ?: Bundle(),
                 ),
-                StoriesGroupFragment.TAG,
+                StoryGroupFragment.TAG,
             )
         }.commit()
     }

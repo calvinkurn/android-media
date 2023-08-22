@@ -10,29 +10,29 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
-import com.tokopedia.stories.databinding.FragmentStoriesGroupBinding
+import com.tokopedia.stories.databinding.FragmentStoryGroupBinding
 import com.tokopedia.stories.utils.withCache
-import com.tokopedia.stories.view.adapter.StoriesGroupPagerAdapter
+import com.tokopedia.stories.view.adapter.StoryGroupPagerAdapter
 import com.tokopedia.stories.view.animation.ZoomOutPageTransformer
-import com.tokopedia.stories.view.model.StoriesGroupUiModel
-import com.tokopedia.stories.view.viewmodel.StoriesViewModel
-import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction
-import com.tokopedia.stories.view.viewmodel.event.StoriesUiEvent
+import com.tokopedia.stories.view.model.StoryGroupUiModel
+import com.tokopedia.stories.view.viewmodel.StoryViewModel
+import com.tokopedia.stories.view.viewmodel.action.StoryUiAction
+import com.tokopedia.stories.view.viewmodel.event.StoryUiEvent
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
-class StoriesGroupFragment @Inject constructor(
+class StoryGroupFragment @Inject constructor(
     private val viewModelFactory: ViewModelProvider.Factory,
 ) : TkpdBaseV4Fragment() {
 
-    private var _binding: FragmentStoriesGroupBinding? = null
-    private val binding: FragmentStoriesGroupBinding
+    private var _binding: FragmentStoryGroupBinding? = null
+    private val binding: FragmentStoryGroupBinding
         get() = _binding!!
 
-    private val viewModel by activityViewModels<StoriesViewModel> { viewModelFactory }
+    private val viewModel by activityViewModels<StoryViewModel> { viewModelFactory }
 
-    private val pagerAdapter: StoriesGroupPagerAdapter by lazy(LazyThreadSafetyMode.NONE) {
-        StoriesGroupPagerAdapter(
+    private val pagerAdapter: StoryGroupPagerAdapter by lazy(LazyThreadSafetyMode.NONE) {
+        StoryGroupPagerAdapter(
             childFragmentManager,
             requireActivity(),
             lifecycle,
@@ -48,28 +48,28 @@ class StoriesGroupFragment @Inject constructor(
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentStoriesGroupBinding.inflate(inflater, container, false)
+        _binding = FragmentStoryGroupBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModelAction(StoriesUiAction.SetArgumentsData(arguments))
+        viewModelAction(StoryUiAction.SetArgumentsData(arguments))
 
         setupViewPager()
         setupObserver()
     }
 
-    private fun viewModelAction(event: StoriesUiAction) {
+    private fun viewModelAction(event: StoryUiAction) {
         viewModel.submitAction(event)
     }
 
-    private fun setupViewPager() = with(binding.storiesGroupViewPager) {
+    private fun setupViewPager() = with(binding.storyGroupViewPager) {
         setPageTransformer(ZoomOutPageTransformer())
         adapter = pagerAdapter
         registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
-                viewModelAction(StoriesUiAction.SetGroupMainData(position))
+                viewModelAction(StoryUiAction.SetGroupMainData(position))
                 super.onPageSelected(position)
             }
         })
@@ -83,7 +83,7 @@ class StoriesGroupFragment @Inject constructor(
     private fun setupUiStateObserver() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiState.withCache().collectLatest { (prevState, state) ->
-                renderStoriesGroup(prevState?.storiesGroup, state.storiesGroup)
+                renderStoryGroup(prevState?.storyGroup, state.storyGroup)
             }
         }
     }
@@ -92,22 +92,22 @@ class StoriesGroupFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiEvent.collect { event ->
                 when (event) {
-                    is StoriesUiEvent.SelectGroup -> manageNextPageEvent(event.position)
+                    is StoryUiEvent.SelectGroup -> manageNextPageEvent(event.position)
                 }
             }
         }
     }
 
-    private fun renderStoriesGroup(
-        prevState: List<StoriesGroupUiModel>?,
-        state: List<StoriesGroupUiModel>,
+    private fun renderStoryGroup(
+        prevState: List<StoryGroupUiModel>?,
+        state: List<StoryGroupUiModel>,
     ) {
         if (prevState == state) return
 
-        pagerAdapter.setStoriesGroup(state)
+        pagerAdapter.setStoryGroup(state)
     }
 
-    private fun manageNextPageEvent(position: Int) = with(binding.storiesGroupViewPager) {
+    private fun manageNextPageEvent(position: Int) = with(binding.storyGroupViewPager) {
         currentItem = position
     }
 
@@ -117,20 +117,20 @@ class StoriesGroupFragment @Inject constructor(
     }
 
     companion object {
-        const val TAG = "StoriesGroupFragment"
+        const val TAG = "StoryGroupFragment"
 
         fun getFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
             bundle: Bundle,
-        ): StoriesGroupFragment {
-            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? StoriesGroupFragment
+        ): StoryGroupFragment {
+            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? StoryGroupFragment
             return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
                 classLoader,
-                StoriesGroupFragment::class.java.name
+                StoryGroupFragment::class.java.name
             ).apply {
                 arguments = bundle
-            } as StoriesGroupFragment
+            } as StoryGroupFragment
         }
     }
 

@@ -20,10 +20,10 @@ import okhttp3.OkHttpClient
 import java.util.concurrent.TimeUnit
 
 @Module
-class StoriesModule(private val activityContext: Context) {
+class StoryModule(private val activityContext: Context) {
 
     @Provides
-    @StoriesScope
+    @StoryScope
     fun provideActivityContext() = activityContext
 
     @Provides
@@ -32,13 +32,13 @@ class StoriesModule(private val activityContext: Context) {
     }
 
     @Provides
-    @StoriesScope
+    @StoryScope
     fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
     }
 
     @Provides
-    @StoriesScope
+    @StoryScope
     fun provideOkHttpClient(
         okHttpRetryPolicy: OkHttpRetryPolicy,
         chuckInterceptor: ChuckerInterceptor,
@@ -60,26 +60,26 @@ class StoriesModule(private val activityContext: Context) {
     }
 
     @Provides
-    @StoriesScope
+    @StoryScope
     fun provideOkHttpRetryPolicy(): OkHttpRetryPolicy {
         return OkHttpRetryPolicy.createdDefaultOkHttpRetryPolicy()
     }
 
     @Provides
-    @StoriesScope
+    @StoryScope
     fun provideChuckerInterceptor(@ApplicationContext context: Context): ChuckerInterceptor {
         val collector = ChuckerCollector(context, GlobalConfig.isAllowDebuggingTools())
         return ChuckerInterceptor(context, collector)
     }
 
     @Provides
-    @StoriesScope
+    @StoryScope
     fun provideNetworkRouter(@ApplicationContext context: Context): NetworkRouter {
         return context as NetworkRouter
     }
 
     @Provides
-    @StoriesScope
+    @StoryScope
     fun provideTkpdAuthInterceptor(
         @ApplicationContext context: Context,
         networkRouter: NetworkRouter,
@@ -89,6 +89,6 @@ class StoriesModule(private val activityContext: Context) {
     }
 
     @Provides
-    @StoriesScope
+    @StoryScope
     fun provideTrackingQueue(@ApplicationContext context: Context) = TrackingQueue(context)
 }

@@ -7,28 +7,27 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.stories.R
-import com.tokopedia.stories.databinding.ItemStoriesGroupBinding
-import com.tokopedia.stories.view.model.StoriesGroupUiModel
+import com.tokopedia.stories.databinding.ItemStoryGroupBinding
+import com.tokopedia.stories.view.model.StoryGroupUiModel
 
-class StoriesGroupAdapter(
+class StoryGroupAdapter(
     listener: Listener
-) : BaseDiffUtilAdapter<StoriesGroupUiModel>() {
+) : BaseDiffUtilAdapter<StoryGroupUiModel>() {
 
     init {
-        delegatesManager
-            .addDelegate(StoriesGroupAdapterDelegate.StoriesGroup(listener))
+        delegatesManager.addDelegate(StoryGroupAdapterDelegate.StoryGroup(listener))
     }
 
     override fun areItemsTheSame(
-        oldItem: StoriesGroupUiModel,
-        newItem: StoriesGroupUiModel
+        oldItem: StoryGroupUiModel,
+        newItem: StoryGroupUiModel
     ): Boolean {
         return oldItem.id == newItem.id
     }
 
     override fun areContentsTheSame(
-        oldItem: StoriesGroupUiModel,
-        newItem: StoriesGroupUiModel
+        oldItem: StoryGroupUiModel,
+        newItem: StoryGroupUiModel
     ): Boolean {
         return oldItem == newItem
     }
@@ -39,16 +38,16 @@ class StoriesGroupAdapter(
 
 }
 
-internal class StoriesGroupAdapterDelegate {
+internal class StoryGroupAdapterDelegate {
 
-    internal class StoriesGroup(
-        private val listener: StoriesGroupAdapter.Listener
-    ) : TypedAdapterDelegate<StoriesGroupUiModel, StoriesGroupUiModel,
-        StoriesGroupViewHolder>(R.layout.layout_empty) {
+    internal class StoryGroup(
+        private val listener: StoryGroupAdapter.Listener
+    ) : TypedAdapterDelegate<StoryGroupUiModel, StoryGroupUiModel,
+        StoryGroupViewHolder>(R.layout.layout_empty) {
 
         override fun onBindViewHolder(
-            item: StoriesGroupUiModel,
-            holder: StoriesGroupViewHolder
+            item: StoryGroupUiModel,
+            holder: StoryGroupViewHolder
         ) {
             holder.bind(item)
         }
@@ -56,18 +55,18 @@ internal class StoriesGroupAdapterDelegate {
         override fun onCreateViewHolder(
             parent: ViewGroup,
             basicView: View
-        ): StoriesGroupViewHolder {
-            return StoriesGroupViewHolder.create(listener, parent)
+        ): StoryGroupViewHolder {
+            return StoryGroupViewHolder.create(listener, parent)
         }
     }
 }
 
-class StoriesGroupViewHolder(
-    private val listener: StoriesGroupAdapter.Listener,
-    private val binding: ItemStoriesGroupBinding,
+class StoryGroupViewHolder(
+    private val listener: StoryGroupAdapter.Listener,
+    private val binding: ItemStoryGroupBinding,
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(data: StoriesGroupUiModel) {
+    fun bind(data: StoryGroupUiModel) {
         binding.imgGroupImage.setImageUrl(data.image)
         binding.txtGroupTitle.text = data.title
 
@@ -91,11 +90,11 @@ class StoriesGroupViewHolder(
 
     companion object {
         fun create(
-            listener: StoriesGroupAdapter.Listener,
+            listener: StoryGroupAdapter.Listener,
             parent: ViewGroup,
-        ) = StoriesGroupViewHolder(
+        ) = StoryGroupViewHolder(
             listener,
-            ItemStoriesGroupBinding.inflate(
+            ItemStoryGroupBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false,

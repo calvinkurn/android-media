@@ -4,19 +4,19 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
-import com.tokopedia.stories.view.viewmodel.StoriesViewModel
+import com.tokopedia.stories.view.viewmodel.StoryViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
 
 @Module
-abstract class StoriesViewModelModule {
+abstract class StoryViewModelModule {
 
     @Binds
     abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
 
     @Binds
     @IntoMap
-    @ViewModelKey(StoriesViewModel::class)
-    abstract fun bindStoriesViewModel(viewModel: StoriesViewModel): ViewModel
+    @ViewModelKey(StoryViewModel::class)
+    abstract fun bindStoryViewModel(viewModel: StoryViewModel): ViewModel
 }

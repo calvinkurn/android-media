@@ -5,27 +5,27 @@ import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.tokopedia.stories.view.fragment.StoriesDetailFragment
-import com.tokopedia.stories.view.model.StoriesGroupUiModel
+import com.tokopedia.stories.view.fragment.StoryDetailFragment
+import com.tokopedia.stories.view.model.StoryGroupUiModel
 
-class StoriesGroupPagerAdapter(
+class StoryGroupPagerAdapter(
     private val fragmentManager: FragmentManager,
     private val fragmentActivity: FragmentActivity,
     lifecycle: Lifecycle,
 ) : FragmentStateAdapter(fragmentManager, lifecycle) {
 
-    private var _group: List<StoriesGroupUiModel> = emptyList()
-    private val group: List<StoriesGroupUiModel>
+    private var _group: List<StoryGroupUiModel> = emptyList()
+    private val group: List<StoryGroupUiModel>
         get() = _group
 
-    fun setStoriesGroup(group: List<StoriesGroupUiModel>) {
+    fun setStoryGroup(group: List<StoryGroupUiModel>) {
         _group = group
     }
 
     override fun getItemCount(): Int = group.size
 
     override fun createFragment(position: Int): Fragment {
-        return StoriesDetailFragment.getFragment(
+        return StoryDetailFragment.getFragment(
             fragmentManager = fragmentManager,
             classLoader = fragmentActivity.classLoader,
         )

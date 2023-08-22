@@ -7,7 +7,7 @@
     android:background="@color/Unify_Static_Black">
 
     <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/iv_stories_detail_content"
+        android:id="@+id/iv_story_detail_content"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintDimensionRatio="H,9:16"
@@ -19,7 +19,7 @@
         android:id="@+id/view_gradient_top"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@drawable/bg_overlay_top_stories"
+        android:background="@drawable/bg_overlay_top_story"
         app:layout_constraintBottom_toTopOf="@id/guideline_top_overlay"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -29,14 +29,14 @@
         android:id="@+id/view_gradient_bot"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@drawable/bg_overlay_bot_stories"
+        android:background="@drawable/bg_overlay_bot_story"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/guideline_bot_overlay" />
 
     <androidx.compose.ui.platform.ComposeView
-        android:id="@+id/cv_stories_detail_timer"
+        android:id="@+id/cv_story_detail_timer"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -54,10 +54,10 @@
         app:icon_color_night_enable="@color/Unify_Static_White"
         app:icon_name="CLOSE"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/rv_stories_category" />
+        app:layout_constraintTop_toTopOf="@id/rv_story_category" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_stories_category"
+        android:id="@+id/rv_story_category"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -65,9 +65,9 @@
         android:nestedScrollingEnabled="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/ic_close"
-        app:layout_constraintTop_toBottomOf="@id/cv_stories_detail_timer"
+        app:layout_constraintTop_toBottomOf="@id/cv_story_detail_timer"
         tools:itemCount="1"
-        tools:listitem="@layout/item_stories_group" />
+        tools:listitem="@layout/item_story_group" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_top"
@@ -98,29 +98,29 @@
         app:layout_constraintGuide_percent="0.85" />
 
     <FrameLayout
-        android:id="@+id/fl_stories_prev"
+        android:id="@+id/fl_story_prev"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@color/transparent"
         app:layout_constraintBottom_toTopOf="@id/guideline_bot"
-        app:layout_constraintEnd_toStartOf="@id/fl_stories_next"
+        app:layout_constraintEnd_toStartOf="@id/fl_story_next"
         app:layout_constraintHorizontal_weight="0.4"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/guideline_top" />
 
     <FrameLayout
-        android:id="@+id/fl_stories_next"
+        android:id="@+id/fl_story_next"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@color/transparent"
         app:layout_constraintBottom_toTopOf="@id/guideline_bot"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_weight="0.6"
-        app:layout_constraintStart_toEndOf="@id/fl_stories_prev"
+        app:layout_constraintStart_toEndOf="@id/fl_story_prev"
         app:layout_constraintTop_toBottomOf="@id/guideline_top" />
 
     <FrameLayout
-        android:id="@+id/fl_stories_product"
+        android:id="@+id/fl_story_product"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@color/transparent"

@@ -3,9 +3,9 @@
 
     <application>
         <activity
-            android:name=".view.activity.StoriesActivity"
+            android:name=".view.activity.StoryActivity"
             android:exported="false"
-            android:theme="@style/Stories.Theme">
+            android:theme="@style/Story.Theme">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 

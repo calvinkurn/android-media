@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="60dp"
     android:layout_height="wrap_content"
-    tools:background="@color/stories_background_dms">
+    tools:background="@color/story_background_dms">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/img_group_image"

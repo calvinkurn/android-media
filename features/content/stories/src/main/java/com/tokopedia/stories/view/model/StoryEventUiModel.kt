@@ -1,34 +1,34 @@
 package com.tokopedia.stories.view.model
 
-data class StoriesUiModel(
+data class StoryUiModel(
     val selectedGroup: Int,
-    val groups: List<StoriesGroupUiModel>,
+    val groups: List<StoryGroupUiModel>,
 )
 
-data class StoriesGroupUiModel(
+data class StoryGroupUiModel(
     val id: String,
     val image: String,
     val title: String,
     val selectedDetail: Int,
     val selected: Boolean,
-    val details: List<StoriesDetailUiModel>,
+    val details: List<StoryDetailUiModel>,
 )
 
-data class StoriesDetailUiModel(
+data class StoryDetailUiModel(
     val id: String,
     val selected: Int,
-    val event: StoriesDetailUiEvent,
+    val event: StoryDetailUiEvent,
     val imageContent: String,
 ) {
 
-    enum class StoriesDetailUiEvent {
+    enum class StoryDetailUiEvent {
         PAUSE, START,
     }
     companion object {
-        val Empty = StoriesDetailUiModel(
+        val Empty = StoryDetailUiModel(
             id = "0",
             selected = 1,
-            event = StoriesDetailUiEvent.START,
+            event = StoryDetailUiEvent.START,
             imageContent = "",
         )
     }
