@@ -313,7 +313,14 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
                 "ecommerce" to hashMapOf(
                     "currencyCode" to "IDR",
                     "add" to hashMapOf(
-                        "products" to listOf(convertProductAndShopToHashMapWithList(product, shopInfo, "/groupchat - bottom sheet"))
+                        "products" to listOf(
+                            convertProductAndShopToHashMapWithList(
+                                product = product,
+                                shopInfo = shopInfo,
+                                dimension39 = "/groupchat - bottom sheet",
+                                dimension90 = dimensionTrackingHelper.getDimension90()
+                            )
+                        )
                     )
                 )
             ),
@@ -338,7 +345,14 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
                 "ecommerce" to hashMapOf(
                     "currencyCode" to "IDR",
                     "add" to hashMapOf(
-                        "products" to listOf(convertProductAndShopToHashMapWithList(product, shopInfo, "/groupchat - bottom sheet"))
+                        "products" to listOf(
+                            convertProductAndShopToHashMapWithList(
+                                product = product,
+                                shopInfo = shopInfo,
+                                dimension39 = "/groupchat - bottom sheet",
+                                dimension90 = dimensionTrackingHelper.getDimension90(),
+                            )
+                        )
                     )
                 )
             ),
@@ -391,12 +405,17 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
             "variant" to "",
             "list" to "/groupchat - $sourceFrom",
             "position" to position,
-            "dimension115" to dimension115,
             "dimension90" to dimension90,
+            "dimension115" to dimension115,
         )
     }
 
-    private fun convertProductAndShopToHashMapWithList(product: PlayProductUiModel.Product, shopInfo: PlayPartnerInfo, dimension39: String = ""): HashMap<String, Any> {
+    private fun convertProductAndShopToHashMapWithList(
+        product: PlayProductUiModel.Product,
+        shopInfo: PlayPartnerInfo,
+        dimension39: String,
+        dimension90: String,
+    ): HashMap<String, Any> {
         val dimension115 = buildString {
             append("pinned.${product.isPinned}, ")
             append("ribbon.${product.label.rankType}")
@@ -418,7 +437,8 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
             "shop_id" to shopInfo.id,
             "shop_name" to shopInfo.name,
             "shop_type" to shopInfo.type.value,
-            "dimension115" to dimension115
+            "dimension90" to dimension90,
+            "dimension115" to dimension115,
         )
     }
 
