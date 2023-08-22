@@ -1335,6 +1335,11 @@
           "deeplink_variable": "ApplinkConstInternalFeed.INTERNAL_PLAY_LIVE_DETAILS"
      }, 
      {
+          "destination_activity": "com.tokopedia.feedplus.detail.FeedDetailActivity", 
+          "deeplink": "tokopedia-android-internal://content/detail/.*\\", 
+          "deeplink_variable": ""
+     }, 
+     {
           "destination_activity": "com.tokopedia.kol.feature.comment.view.activity.ContentCommentActivity", 
           "deeplink": "tokopedia-android-internal://content/comment/.*\\", 
           "deeplink_variable": "ApplinkConstInternalContent.COMMENT"
@@ -1668,6 +1673,11 @@
           "destination_activity": "com.tokopedia.gifting.presentation.activity.GiftingBottomsheetActivity", 
           "deeplink": "tokopedia-android-internal://merchant/gifting/.*\\/", 
           "deeplink_variable": "ApplinkConstInternalMechant.MERCHANT_GIFTING"
+     }, 
+     {
+          "destination_activity": "com.tokopedia.addon.presentation.activity.AddOnBottomsheetActivity", 
+          "deeplink": "tokopedia-android-internal://merchant/addon/.*\\/", 
+          "deeplink_variable": "ApplinkConstInternalMechant.MERCHANT_ADDON"
      }, 
      {
           "destination_activity": "com.tokopedia.tkpd.flashsale.presentation.list.container.FlashSaleListActivity", 
@@ -2068,6 +2078,16 @@
           "destination_activity": "com.tokopedia.wishlistcollection.view.activity.WishlistCollectionHostBottomSheetActivity", 
           "deeplink": "tokopedia-android-internal://transaction/wishlist-collection-bottomsheet", 
           "deeplink_variable": "ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_BOTTOMSHEET"
+     }, 
+     {
+          "destination_activity": "com.tokopedia.wishlistcollection.view.activity.WishlistCollectionEditActivity", 
+          "deeplink": "tokopedia-android-internal://transaction/wishlist-collection/edit", 
+          "deeplink_variable": "ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_EDIT"
+     }, 
+     {
+          "destination_activity": "com.tokopedia.wishlistcollection.view.activity.WishlistCollectionCreateHostBottomSheetActivity", 
+          "deeplink": "tokopedia-android-internal://transaction/wishlist-collection-create-bottomsheet", 
+          "deeplink_variable": "ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_CREATE_BOTTOMSHEET"
      }, 
      {
           "destination_activity": "com.tokopedia.addongifting.AddOnActivity", 

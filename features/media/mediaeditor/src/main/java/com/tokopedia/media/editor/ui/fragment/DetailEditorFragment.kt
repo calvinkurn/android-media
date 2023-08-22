@@ -7,6 +7,7 @@ import android.graphics.Canvas
 import android.graphics.Matrix
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,6 +32,7 @@ import com.tokopedia.media.editor.analytics.addTextToText
 import com.tokopedia.media.editor.analytics.cropRatioToText
 import com.tokopedia.media.editor.analytics.editordetail.EditorDetailAnalytics
 import com.tokopedia.media.editor.analytics.getToolEditorText
+import com.tokopedia.media.editor.analytics.getToolEditorTextAnalytics
 import com.tokopedia.media.editor.analytics.removeBackgroundToText
 import com.tokopedia.media.editor.analytics.watermarkToText
 import com.tokopedia.media.editor.R as editorR
@@ -87,6 +89,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
+import kotlin.math.abs
 import kotlin.math.max
 
 class DetailEditorFragment @Inject constructor(
@@ -131,7 +134,7 @@ class DetailEditorFragment @Inject constructor(
     private var removeBackgroundType = 0
 
     private var isEdited = false
-    private var initialImageMatrix: Matrix? = null
+    private var initialImageMatrix: FloatArray? = null
 
     private var initialRotateNumber = 0
 
@@ -380,7 +383,13 @@ class DetailEditorFragment @Inject constructor(
             // check if any crop state before
             if (data.cropRotateValue.cropRatio != EMPTY_RATIO) {
                 // if had crop state then compare if ratio is change
-                if (data.cropRotateValue.cropRatio != newRatioPair) {
+                val (cropRatioX, cropRatioY) = data.cropRotateValue.cropRatio
+
+                // need compare by value since image ratio can contain width height instead of direct ratio 3:4 / 2:1
+                val ratioValue = cropRatioX / cropRatioY
+                val newRatioValue = newRatioPair.first / newRatioPair.second
+
+                if (ratioValue != newRatioValue) {
                     setCropRatio(newRatioPair)
                 }
             } else if (data.originalRatio != ratio.getRatio()) { // if didn't have crop state, compare original ratio
@@ -395,7 +404,6 @@ class DetailEditorFragment @Inject constructor(
         viewBinding?.imgUcropPreview?.let {
             it.post {
                 readPreviousState()
-                initialImageMatrix = Matrix(it.cropImageView.imageMatrix)
             }
 
             // waiting for crop & rotate state implementation process for AddLogo overlay size
@@ -406,6 +414,10 @@ class DetailEditorFragment @Inject constructor(
                         it.overlayView.cropViewRect.height()
                     )
                 )
+
+                Handler().postDelayed(getRunnable{
+                    initialImageMatrix = it.cropImageView.imageMatrix.values()
+                }, INITIAL_MATRIX_DELAY)
             }, DELAY_CROP_ROTATE_PROCESS)
         }
     }
@@ -422,7 +434,10 @@ class DetailEditorFragment @Inject constructor(
     }
 
     override fun onUpload() {
-        editorDetailAnalytics.clickAddLogoUpload()
+        editorDetailAnalytics.clickAddLogoUpload(
+            addLogoComponent.getUploadState()
+        )
+
         if (!addLogoComponent.isUploadAvatarReady() && !isAddLogoTipsShowed) {
             showAddLogoUploadTips()
         } else {
@@ -430,8 +445,8 @@ class DetailEditorFragment @Inject constructor(
         }
     }
 
-    override fun onLoadRetry() {
-        editorDetailAnalytics.clickAddLogoLoadRetry()
+    override fun onLoadFailedToasterShow() {
+        editorDetailAnalytics.viewAddLogoLoadRetry()
     }
 
     override fun onLoadFailed() {
@@ -494,8 +509,8 @@ class DetailEditorFragment @Inject constructor(
     }
 
     override fun onTemplateSave(isSave: Boolean) {
-        editorDetailAnalytics.clickAddTextTemplate()
         if (isSave) {
+            editorDetailAnalytics.clickAddTextTemplate()
             showAddTextTemplateSaveDialog()
         } else {
             showAddTextTemplateLoadDialog()
@@ -975,12 +990,13 @@ class DetailEditorFragment @Inject constructor(
         viewBinding?.btnSave?.setOnClickListener {
             if (data.isToolCrop()) {
                 // check if user move crop area via image matrix translation, works for crop
-                initialImageMatrix?.values()?.let { initialMatrixValue ->
+                initialImageMatrix?.let { initialMatrixValue ->
                     val currentMatrix =
                         viewBinding?.imgUcropPreview?.cropImageView?.imageMatrix?.values()
                     currentMatrix?.let {
                         initialMatrixValue.forEachIndexed { index, value ->
-                            if (value != currentMatrix[index]) {
+                            val diffValue = abs(abs(value) - abs(currentMatrix[index]))
+                            if (diffValue > UCROP_MATRIX_TOLERANCE_VALUE) {
                                 isEdited = true
                             }
                         }
@@ -1198,13 +1214,14 @@ class DetailEditorFragment @Inject constructor(
             val addTextValue = data.addTextValue?.let {
                 addTextToText(
                     it,
-                    addTextColorProvider.getTextColorName(it.textColor)
+                    addTextColorProvider.getTextColorName(it.getTemplateColor())
                 )
             } ?: ""
 
             val currentEditorText =
-                requireContext().getText(getToolEditorText(data.editorToolType)).toString()
+                requireContext().getText(getToolEditorTextAnalytics(data.editorToolType)).toString()
             editorDetailAnalytics.clickSave(
+                data.editorToolType,
                 currentEditorText,
                 brightnessText,
                 contrastText,
@@ -1596,5 +1613,8 @@ class DetailEditorFragment @Inject constructor(
 
         private const val ORIENTATION_ORIGINAL = 0
         private const val ORIENTATION_ROTATED = 1
+
+        private const val UCROP_MATRIX_TOLERANCE_VALUE = 0.001f
+        private const val INITIAL_MATRIX_DELAY = 400L
     }
 }

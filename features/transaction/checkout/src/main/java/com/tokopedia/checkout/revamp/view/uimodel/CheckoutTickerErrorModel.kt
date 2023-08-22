@@ -1,6 +1,6 @@
 package com.tokopedia.checkout.revamp.view.uimodel
 
-class CheckoutTickerErrorModel(
+data class CheckoutTickerErrorModel(
     override val cartStringGroup: String = "",
     val errorMessage: String
 ) : CheckoutItem {

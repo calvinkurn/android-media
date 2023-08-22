@@ -11,10 +11,11 @@ import org.junit.Test
 class OwocViewModelTest : OwocViewModelTestFixture() {
 
     @Test
-    fun `when getBomGroupedOrder should set live data success`() {
+    fun `when fetchBomGroupedOrder should set live data success`() {
         runBlocking {
             // given
-            val partialOrderFulfillmentWrapperUiModel = OwocGroupedOrderWrapper()
+            val owocTitle = "3 Pesanan"
+            val partialOrderFulfillmentWrapperUiModel = OwocGroupedOrderWrapper(owocTitle = owocTitle)
             onGetBomGroupedOrderUseCase_thenReturn(
                 partialOrderFulfillmentWrapperUiModel,
                 orderId,
@@ -32,11 +33,12 @@ class OwocViewModelTest : OwocViewModelTestFixture() {
                 partialOrderFulfillmentWrapperUiModel.owocGroupedOrderList.size,
                 actualResult.owocGroupedOrderList.size
             )
+            assertEquals(owocTitle, actualResult.owocTitle)
         }
     }
 
     @Test
-    fun `when getPartialOrderFulfillment should set live data error`() {
+    fun `when fetchBomGroupedOrder should set live data error`() {
         runBlocking {
             // given
             val errorException = MessageErrorException()

@@ -764,6 +764,9 @@ class ShipmentViewModel @Inject constructor(
                     enhancedECommerceProductCartMapData.setDimension118(
                         cartItemModel.bundleId
                     )
+                    enhancedECommerceProductCartMapData.setDimension136(
+                        cartItemModel.cartStringGroup
+                    )
                     enhancedECommerceCheckout.addProduct(
                         enhancedECommerceProductCartMapData.getProduct()
                     )
@@ -813,7 +816,8 @@ class ShipmentViewModel @Inject constructor(
             getPromoFlag(step),
             eventCategory,
             eventAction,
-            eventLabel
+            eventLabel,
+            step
         )
     }
     // endregion
@@ -843,7 +847,8 @@ class ShipmentViewModel @Inject constructor(
                         cornerId,
                         deviceId,
                         checkoutLeasingId,
-                        isPlusSelected
+                        isPlusSelected,
+                        false
                     )
                 )
                 if (view != null) {
@@ -1304,6 +1309,7 @@ class ShipmentViewModel @Inject constructor(
     private fun setCheckoutRequestPromoData(data: List<Data>) {
         for (dataCheckoutRequest in data) {
             for (groupOrder in dataCheckoutRequest.groupOrders) {
+                var hasInsertLogisticPromoInGroupOrder = false
                 for (shopOrder in groupOrder.shopOrders) {
                     // reset promo to prevent duplicate bo promo in owoc order
                     shopOrder.promos = emptyList()
@@ -1311,6 +1317,12 @@ class ShipmentViewModel @Inject constructor(
                         if (groupOrder.cartStringGroup == voucherOrder.cartStringGroup && shopOrder.cartStringOrder == voucherOrder.uniqueId) {
                             if (voucherOrder.code.isNotEmpty() && voucherOrder.type.isNotEmpty()) {
                                 if (!hasInsertPromo(shopOrder.promos, voucherOrder.code)) {
+                                    if (voucherOrder.isTypeLogistic() && hasInsertLogisticPromoInGroupOrder) {
+                                        continue
+                                    }
+                                    if (voucherOrder.isTypeLogistic()) {
+                                        hasInsertLogisticPromoInGroupOrder = true
+                                    }
                                     val promoRequest = Promo()
                                     promoRequest.code = voucherOrder.code
                                     promoRequest.type = voucherOrder.type
@@ -2117,8 +2129,10 @@ class ShipmentViewModel @Inject constructor(
 
     private fun getBBOCount(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel): Int {
         var bboCount = 0
+        val cartStrings: MutableSet<String> = mutableSetOf()
         for (voucherOrder in validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels) {
-            if (voucherOrder.type.equals("logistic", ignoreCase = true)) {
+            if (voucherOrder.type.equals("logistic", ignoreCase = true) && !cartStrings.contains(voucherOrder.cartStringGroup)) {
+                cartStrings.add(voucherOrder.cartStringGroup)
                 bboCount++
             }
         }
@@ -2320,7 +2334,7 @@ class ShipmentViewModel @Inject constructor(
         for (voucherOrdersItemUiModel in validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels) {
             // voucher with shippingId not zero, spId not zero, and voucher type logistic as promo for BO
             if (voucherOrdersItemUiModel.shippingId > 0 && voucherOrdersItemUiModel.spId > 0 && voucherOrdersItemUiModel.type == "logistic") {
-                if (voucherOrdersItemUiModel.messageUiModel.state == "green") {
+                if (voucherOrdersItemUiModel.messageUiModel.state == "green" && unprocessedUniqueIds.contains(voucherOrdersItemUiModel.cartStringGroup)) {
                     toBeAppliedVoucherOrders.add(voucherOrdersItemUiModel)
                     unprocessedUniqueIds.remove(voucherOrdersItemUiModel.cartStringGroup)
                 }
@@ -5049,7 +5063,7 @@ class ShipmentViewModel @Inject constructor(
             listAddOnDataItem.add(addOnDataItemModel)
         }
         addOnsDataModel.addOnsDataItemModelList = listAddOnDataItem
-        updateAddOnsData(identifier, cartString, cartId)
+        view?.updateAddOnsData(identifier, cartString, cartId)
         if (isUsingDynamicDataPassing()) {
             view?.updateAddOnsDynamicDataPassing(
                 addOnResult,
@@ -5058,23 +5072,6 @@ class ShipmentViewModel @Inject constructor(
                 cartId
             )
         }
-    }
-
-    fun updateAddOnsData(
-        identifier: Int,
-        cartString: String,
-        cartId: Long
-    ) {
-        // identifier : 0 = product level, 1  = order level
-//        if (identifier == 0) {
-//            onNeedUpdateViewItem(
-//                shipmentAdapter.getAddOnProductLevelPosition(cartString, cartId)
-//            )
-//        } else {
-//            onNeedUpdateViewItem(shipmentAdapter.getAddOnOrderLevelPosition(cartString))
-//        }
-//        shipmentViewModel.updateShipmentCostModel()
-//        shipmentAdapter.checkHasSelectAllCourier(true, -1, "", false, false)
     }
     // endregion
 

@@ -34,7 +34,7 @@ abstract class BaseBottomSheet : BottomSheetUnify() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setStyle(DialogFragment.STYLE_NORMAL, R.style.UnifyBottomSheetNotOverlapStyle)
+        setStyle(DialogFragment.STYLE_NORMAL, com.tokopedia.unifycomponents.R.style.UnifyBottomSheetNotOverlapStyle)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -87,7 +87,7 @@ abstract class BaseBottomSheet : BottomSheetUnify() {
         }
 
         view?.let {
-            Toaster.toasterCustomBottomHeight = context.resources.getDimension(R.dimen.layout_lvl8).toInt()
+            Toaster.toasterCustomBottomHeight = context.resources.getDimension(com.tokopedia.unifycomponents.R.dimen.layout_lvl8).toInt()
             val toaster = Toaster.build(it.rootView, errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, context.getString(R.string.sir_ok))
             toaster.show()
         }

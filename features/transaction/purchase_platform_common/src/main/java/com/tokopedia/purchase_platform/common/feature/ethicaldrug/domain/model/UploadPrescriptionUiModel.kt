@@ -24,7 +24,9 @@ data class UploadPrescriptionUiModel(
     // data for trackers
     var enablerNames: List<String> = emptyList(),
     var shopIds: List<String> = emptyList(),
-    var cartIds: List<String> = emptyList()
+    var cartIds: List<String> = emptyList(),
+
+    var hasShowAnimation: Boolean = false
 ) : Parcelable {
 
     fun getWidgetState(): String {

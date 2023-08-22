@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-class BoMetadata(
+data class BoMetadata(
     @SerializedName("bo_type")
     val boType: Int = 0,
     @SerializedName("bo_eligibilities")
@@ -13,7 +13,7 @@ class BoMetadata(
 ) : Parcelable
 
 @Parcelize
-class BoEligibility(
+data class BoEligibility(
     @SerializedName("key")
     val key: String = "",
     @SerializedName("value")

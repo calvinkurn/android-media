@@ -80,7 +80,8 @@
       "userId": ".*",
       "eventAction": "click primary button on order card marketplace",
       "eventLabel": ".*",
-      "sessionIris": ".*"
+      "sessionIris": ".*",
+      "trackerId": "15422"
     },
     {
       "businessUnit": "order management",

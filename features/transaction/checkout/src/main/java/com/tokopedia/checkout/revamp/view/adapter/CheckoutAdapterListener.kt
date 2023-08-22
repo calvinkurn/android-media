@@ -1,6 +1,7 @@
 package com.tokopedia.checkout.revamp.view.adapter
 
 import androidx.fragment.app.FragmentManager
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCrossSellModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
 import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
@@ -68,6 +69,8 @@ interface CheckoutAdapterListener {
 
     fun onClickRefreshErrorLoadCourier()
 
+    fun onCancelVoucherLogisticClicked(promoCode: String, position: Int, order: CheckoutOrderModel)
+
     fun getHostFragmentManager(): FragmentManager
 
     fun onInsuranceCheckedForTrackingAnalytics()
@@ -91,6 +94,8 @@ interface CheckoutAdapterListener {
     fun showPlatformFeeTooltipInfoBottomSheet(platformFeeModel: ShipmentPaymentFeeModel)
 
     fun getParentWidth(): Int
+
+    fun onCrossSellItemChecked(checked: Boolean, crossSellModel: CheckoutCrossSellModel)
 
     fun onEgoldChecked(checked: Boolean)
 

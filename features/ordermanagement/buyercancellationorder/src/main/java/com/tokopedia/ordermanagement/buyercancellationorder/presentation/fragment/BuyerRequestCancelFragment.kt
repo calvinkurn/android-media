@@ -66,8 +66,10 @@ import javax.inject.Inject
 /**
  * Created by fwidjaja on 08/06/20.
  */
-class BuyerRequestCancelFragment: BaseDaggerFragment(),
-        GetCancelReasonBottomSheetAdapter.ActionListener, GetCancelSubReasonBottomSheetAdapter.ActionListener {
+class BuyerRequestCancelFragment :
+    BaseDaggerFragment(),
+    GetCancelReasonBottomSheetAdapter.ActionListener,
+    GetCancelSubReasonBottomSheetAdapter.ActionListener {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
@@ -78,8 +80,8 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     private var orderId = ""
     private var txId = ""
     private var uri = ""
-    private var isCancelAlreadyRequested : Boolean = false
-    private var isWaitToCancel : Boolean = false
+    private var isCancelAlreadyRequested: Boolean = false
+    private var isWaitToCancel: Boolean = false
     private var cancelRequestedTitle = ""
     private var cancelRequestedBody = ""
     private var waitMessage = ""
@@ -88,7 +90,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     private var invoiceUrl = ""
     private var statusId = ""
     private var statusInfo = ""
-    private var isFromUoh : Boolean = false
+    private var isFromUoh: Boolean = false
     private var helplinkUrl: String = ""
     private var listProduct = listOf<BuyerGetCancellationReasonData.Data.GetCancellationReason.OrderDetailsCancellation>()
     private var cancelReasonResponse = BuyerGetCancellationReasonData.Data.GetCancellationReason()
@@ -204,7 +206,6 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
                 setLayoutCancelIsAvailable()
             }
         }
-
     }
 
     private fun setupViews() {
@@ -264,7 +265,6 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
             btnReqCancel.visible()
 
             cardUnifyChooseReason.show()
-
         }
         setListenersCancelIsAvailable()
     }
@@ -428,7 +428,6 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         }
 
         binding?.run {
-
             // ticker
             if (buyerCancellationOrderWrapperUiModel.getCancellationReason.isShowTicker) {
                 renderTicker(cancelReasonResponse.tickerInfo)
@@ -436,10 +435,10 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
                 buyerTickerInfo.gone()
             }
 
-            //product card list
+            // product card list
             setupRecyclerViewCancellationProduct(buyerCancellationOrderWrapperUiModel.groupedOrders)
 
-            //container cancellation
+            // container cancellation
             setupContainerCancellationProduct(buyerCancellationOrderWrapperUiModel)
 
             // button
@@ -474,21 +473,23 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
                     else -> {
                         val subReasonLainnya =
                             tvChooseSubReasonLabel.text.toString().trimStart()
-                            tfChooseSubReasonEditable.editText.text.toString().trimStart()
+                        tfChooseSubReasonEditable.editText.text.toString().trimStart()
                         if (subReasonLainnya.isNotEmpty() && !isCancelAlreadyClicked) {
                             reasonCancel = subReasonLainnya
                             isCancelAlreadyClicked = true
                         }
-                        if (isEligibleInstantCancel) submitInstantCancel()
-                        else {
+                        if (isEligibleInstantCancel) {
+                            submitInstantCancel()
+                        } else {
                             submitRequestCancel()
                         }
                     }
                 }
             } else {
                 if (reasonCode != -1) {
-                    if (isEligibleInstantCancel) submitInstantCancel()
-                    else {
+                    if (isEligibleInstantCancel) {
+                        submitInstantCancel()
+                    } else {
                         submitRequestCancel()
                     }
                 }
@@ -612,7 +613,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
                     }
                 }
             } else {
-                //no op
+                // no op
             }
         }
     }
@@ -793,9 +794,9 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         dialog?.setImageDrawable(R.drawable.ic_terkirim)
         dialog?.setPrimaryCTAText(getString(R.string.mengerti_button))
         dialog?.setPrimaryCTAClickListener {
-                dialog.dismiss()
-                activity?.setResult(BuyerOrderIntentCode.RESULT_CODE_CANCEL_ORDER_DISABLE)
-                activity?.finish()
+            dialog.dismiss()
+            activity?.setResult(BuyerOrderIntentCode.RESULT_CODE_CANCEL_ORDER_DISABLE)
+            activity?.finish()
         }
         dialog?.show()
     }
@@ -805,9 +806,11 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
             visible()
             tickerType = BuyerUtils.getTickerType(tickerInfo.type)
             tickerShape = Ticker.SHAPE_FULL
-            setHtmlDescription(tickerInfo.text + " ${getString(R.string.buyer_ticker_info_selengkapnya)
+            setHtmlDescription(
+                tickerInfo.text + " ${getString(R.string.buyer_ticker_info_selengkapnya)
                     .replace(TICKER_URL, tickerInfo.actionUrl)
-                    .replace(TICKER_LABEL, tickerInfo.actionText)}")
+                    .replace(TICKER_LABEL, tickerInfo.actionText)}"
+            )
             setDescriptionClickEvent(object : TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
                     RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
@@ -815,7 +818,6 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
 
                 override fun onDismiss() {
                 }
-
             })
         }
     }
@@ -834,5 +836,4 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     private fun showKeyboard(context: Context) {
         (context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
     }
-
 }

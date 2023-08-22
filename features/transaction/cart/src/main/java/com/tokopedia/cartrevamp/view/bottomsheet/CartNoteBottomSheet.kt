@@ -15,7 +15,8 @@ class CartNoteBottomSheet : BottomSheetUnify() {
 
     init {
         isDragable = false
-        isHideable = true
+        isHideable = false
+        overlayClickDismiss = false
         showCloseIcon = true
         showHeader = true
     }

@@ -354,17 +354,6 @@
                 app:typographyWeight="bold"
                 tools:text="Rp100.000" />
 
-            <!--            <com.tokopedia.unifycomponents.Label-->
-            <!--                android:id="@+id/label_slash_price_percentage"-->
-            <!--                android:layout_width="wrap_content"-->
-            <!--                android:layout_height="wrap_content"-->
-            <!--                android:layout_marginEnd="4dp"-->
-            <!--                android:gravity="center_vertical"-->
-            <!--                android:visibility="gone"-->
-            <!--                app:labelType="general_light_red"-->
-            <!--                tools:labelTitle="60%"-->
-            <!--                tools:visibility="visible" />-->
-
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/text_slash_price"
                 android:layout_width="wrap_content"
@@ -452,6 +441,7 @@
             android:id="@+id/iu_prescription"
             android:layout_width="14dp"
             android:layout_height="14dp"
+            android:layout_marginTop="4dp"
             android:layout_marginStart="12dp"
             app:layout_constraintStart_toEndOf="@+id/iu_image_product"
             app:layout_constraintTop_toBottomOf="@+id/barrier_unavailable_action" />
@@ -469,7 +459,7 @@
             app:layout_constraintTop_toTopOf="@+id/iu_prescription"
             app:typographyType="small"
             tools:text="Upload Resep di Pengiriman"
-            tools:visibility="gone" />
+            tools:visibility="visible" />
 
         <View
             android:id="@+id/cart_add_on_separator"
@@ -504,7 +494,7 @@
             android:layout_marginTop="4dp"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
-            android:src="@drawable/ic_add_note"
+            app:srcCompat="@drawable/ic_cart_add_note"
             app:layout_constraintStart_toEndOf="@id/iu_image_product"
             app:layout_constraintTop_toBottomOf="@+id/item_addon_cart"
             tools:visibility="visible" />
@@ -557,7 +547,7 @@
             app:layout_constraintTop_toBottomOf="@+id/item_addon_cart" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/label_min_quantity_error"
+            android:id="@+id/label_quantity_error"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"

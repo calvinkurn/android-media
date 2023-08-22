@@ -6,7 +6,6 @@ import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
 import com.tokopedia.logisticcart.shipping.model.ShopTypeInfoData
-import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiModel
 import com.tokopedia.purchase_platform.common.feature.bometadata.BoMetadata
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingDataModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingWordingModel
@@ -99,7 +98,6 @@ data class CheckoutOrderModel(
 
     // promo stacking
     var hasPromoList: Boolean = false,
-    var voucherLogisticItemUiModel: VoucherLogisticItemUiModel? = null,
 
     val isLeasingProduct: Boolean = false,
     val bookingFee: Int = 0,

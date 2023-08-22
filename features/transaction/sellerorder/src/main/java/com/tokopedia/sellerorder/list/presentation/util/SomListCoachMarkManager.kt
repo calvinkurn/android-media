@@ -16,7 +16,8 @@ import com.tokopedia.sellerorder.databinding.FragmentSomListBinding
 
 class SomListCoachMarkManager(
     private val somListBinding: FragmentSomListBinding?,
-    private val userId: String
+    private val userId: String,
+    private val isEnabledCoachmark: Boolean
 ) {
 
     companion object {
@@ -137,13 +138,22 @@ class SomListCoachMarkManager(
     }
 
     fun showCoachMark() {
-        somListBinding?.root?.context?.let { context ->
-            if (!CoachMarkPreference.hasShown(context, SHARED_PREF_SOM_LIST_COACH_MARK) && Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
-                val coachMarkItems = createCoachMarkItems()
-                if (coachMarkItems.size == EXPECTED_COACH_MARK_ITEM_COUNT) {
-                    setupCoachMark()
-                    coachMark?.isDismissed = false
-                    coachMark?.showCoachMark(step = coachMarkItems, index = currentCoachMarkPosition)
+        if (isEnabledCoachmark) {
+            somListBinding?.root?.context?.let { context ->
+                if (!CoachMarkPreference.hasShown(
+                        context,
+                        SHARED_PREF_SOM_LIST_COACH_MARK
+                    ) && Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP
+                ) {
+                    val coachMarkItems = createCoachMarkItems()
+                    if (coachMarkItems.size == EXPECTED_COACH_MARK_ITEM_COUNT) {
+                        setupCoachMark()
+                        coachMark?.isDismissed = false
+                        coachMark?.showCoachMark(
+                            step = coachMarkItems,
+                            index = currentCoachMarkPosition
+                        )
+                    }
                 }
             }
         }

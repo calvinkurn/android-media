@@ -23,7 +23,11 @@ class CheckoutPaymentProcessor @Inject constructor(
     private val dispatchers: CoroutineDispatchers
 ) {
 
-    suspend fun checkPlatformFee(shipmentPlatformFeeData: ShipmentPlatformFeeData, cost: CheckoutCostModel, request: PaymentFeeCheckoutRequest): CheckoutCostModel {
+    suspend fun checkPlatformFee(
+        shipmentPlatformFeeData: ShipmentPlatformFeeData,
+        cost: CheckoutCostModel,
+        request: PaymentFeeCheckoutRequest
+    ): CheckoutCostModel {
         if (!cost.hasSelectAllShipping) {
             return cost.copy(dynamicPlatformFee = ShipmentPaymentFeeModel(isLoading = false))
         }
@@ -38,7 +42,11 @@ class CheckoutPaymentProcessor @Inject constructor(
                 if (paymentFee != null) {
                     val platformFee = ShipmentPaymentFeeModel()
                     for (fee in paymentFee.data) {
-                        if (fee.code.equals(CheckoutViewModel.PLATFORM_FEE_CODE, ignoreCase = true)) {
+                        if (fee.code.equals(
+                                CheckoutViewModel.PLATFORM_FEE_CODE,
+                                ignoreCase = true
+                            )
+                        ) {
                             platformFee.title = fee.title
                             platformFee.fee = fee.fee
                             platformFee.minRange = fee.minRange
@@ -52,13 +60,19 @@ class CheckoutPaymentProcessor @Inject constructor(
                     checkoutAnalyticsCourierSelection.eventViewPlatformFeeInCheckoutPage(
                         userSessionInterface.userId,
                         CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                            platformFeeModel.fee.toLong(),
+                            platformFee.fee.toLong(),
                             false
                         ).removeDecimalSuffix()
                     )
                     return cost.copy(dynamicPlatformFee = platformFee)
                 } else {
-                    return cost.copy(dynamicPlatformFee = cost.dynamicPlatformFee.copy(isLoading = false, isShowTicker = true, ticker = shipmentPlatformFeeData.errorWording))
+                    return cost.copy(
+                        dynamicPlatformFee = cost.dynamicPlatformFee.copy(
+                            isLoading = false,
+                            isShowTicker = true,
+                            ticker = shipmentPlatformFeeData.errorWording
+                        )
+                    )
                 }
             }
         }
