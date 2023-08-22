@@ -38,6 +38,7 @@ class GetOfferInfoForBuyerUseCase @Inject constructor(
                           processTime
                         }
                         offering_json_data
+                        nearest_warehouse_id
                         offering{
                           offer_id
                           shop_data{
@@ -61,6 +62,7 @@ class GetOfferInfoForBuyerUseCase @Inject constructor(
                               value
                             }
                           }
+                          term_and_condition
                         }
                       }
                     }

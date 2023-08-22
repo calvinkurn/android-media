@@ -8,7 +8,6 @@ data class OfferInfoForBuyerUiModel(
     val responseHeader: ResponseHeader = ResponseHeader(),
     val offeringJsonData: String = "",
     val offerings: List<Offering> = emptyList(),
-    val tnc: List<String> = emptyList(),
     val nearestWarehouseIds: List<Int> = emptyList()
 ) : Visitable<OlpAdapterTypeFactory> {
     data class ResponseHeader(
@@ -25,7 +24,8 @@ data class OfferInfoForBuyerUiModel(
         val endDate: String = "",
         val maxAppliedTier: Int = 0,
         val tierList: List<Tier> = emptyList(),
-        val shopData: ShopData = ShopData()
+        val shopData: ShopData = ShopData(),
+        val tnc: List<String> = emptyList(),
     ) {
         data class ShopData(
             val shopId: Long = 0,
@@ -62,6 +62,7 @@ data class OfferInfoForBuyerUiModel(
         val productIds: List<Int> = emptyList(),
         val warehouseIds: List<Int> = emptyList(),
         val localCacheModel: LocalCacheModel? = null,
+        val offeringJsonData: String = "",
         val startDate: String = "",
         val endDate: String = "",
         val sortId: String = "0"
@@ -80,13 +81,16 @@ data class OfferInfoForBuyerUiModel(
 
         data class GetOffreringProductList(val page: Int) : OlpEvent()
 
-        data class SetSortId(val sortId: String = ""): OlpEvent()
+        data class SetSortId(val sortId: String): OlpEvent()
+
+        data class SetWarehouseIds(val warehouseIds: List<Int>): OlpEvent()
+
+        data class SetShopIds(val shopIds: List<Int>): OlpEvent()
+
+        data class SetOfferingJsonData(val offeringJsonData: String): OlpEvent()
 
         object GetNotification : OlpEvent()
 
-        data class AddToCart(
-            val product: OfferProductListUiModel.Product,
-            val shopId: String
-        ) : OlpEvent()
+        data class AddToCart(val product: OfferProductListUiModel.Product) : OlpEvent()
     }
 }

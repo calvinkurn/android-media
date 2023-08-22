@@ -38,6 +38,7 @@ import com.tokopedia.campaign.helper.BuyMoreGetMoreHelper
 import com.tokopedia.campaign.utils.extension.showToaster
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kotlin.extensions.view.visible
@@ -143,6 +144,16 @@ class OfferLandingPageFragment :
     private fun setupObservables() {
         viewModel.offeringInfo.observe(viewLifecycleOwner) { offerInfoForBuyer ->
             setupHeader(offerInfoForBuyer)
+            viewModel.processEvent(OlpEvent.SetWarehouseIds(offerInfoForBuyer.nearestWarehouseIds))
+            viewModel.processEvent(
+                OlpEvent.SetShopIds(
+                    listOf(
+                        offerInfoForBuyer.offerings.firstOrNull()?.shopData?.shopId?.toInt()
+                            .orZero()
+                    )
+                )
+            )
+            viewModel.processEvent(OlpEvent.SetOfferingJsonData(offerInfoForBuyer.offeringJsonData))
         }
 
         viewModel.productList.observe(viewLifecycleOwner) { productList ->
@@ -158,7 +169,16 @@ class OfferLandingPageFragment :
         viewModel.miniCartAdd.observe(viewLifecycleOwner) { atc ->
             when (atc) {
                 is Success -> {
-                    binding?.miniCartPlaceholder.showToaster(atc.data.data.success.toString())
+                    binding?.apply {
+                        val currentUiState = viewModel.currentState
+                        miniCartPlaceholder.showToaster(atc.data.data.success.toString())
+                        miniCartPlaceholder.fetchData(
+                            offerIds = currentUiState.offerIds.map { it.toLong() },
+                            offerJsonData = currentUiState.offeringJsonData,
+                            warehouseIds = currentUiState.warehouseIds.map { it.toString() }
+                        )
+                    }
+
                 }
 
                 is Fail -> {
@@ -254,7 +274,7 @@ class OfferLandingPageFragment :
                 emptyList()
             },
             localCacheModel = localCacheModel
-            )
+        )
         )
         viewModel.processEvent(OlpEvent.GetOfferingInfo)
     }
@@ -401,7 +421,7 @@ class OfferLandingPageFragment :
     }
 
     private fun addToCartProduct(product: OfferProductListUiModel.Product) {
-        viewModel.addToCart(product, shopIds)
+        viewModel.processEvent(OlpEvent.AddToCart(product))
     }
 
     private fun openAtcVariant(product: OfferProductListUiModel.Product) {

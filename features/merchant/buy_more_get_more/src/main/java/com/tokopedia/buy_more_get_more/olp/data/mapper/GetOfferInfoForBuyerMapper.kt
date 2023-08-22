@@ -13,7 +13,6 @@ class GetOfferInfoForBuyerMapper @Inject constructor() {
         return OfferInfoForBuyerUiModel(
             responseHeader = response.offeringInforBuyer.responseHeader.toResponseHeaderModel(),
             offeringJsonData = response.offeringInforBuyer.offeringJsonData,
-            tnc = response.offeringInforBuyer.tnc,
             nearestWarehouseIds = response.offeringInforBuyer.nearestWarehouseIds,
             offerings = response.offeringInforBuyer.offerings.toOfferingUiModel()
         )
@@ -37,7 +36,8 @@ class GetOfferInfoForBuyerMapper @Inject constructor() {
                 endDate = it.endDate,
                 maxAppliedTier = it.maxAppliedTier,
                 tierList = it.tierList.toTierListUiModel(),
-                shopData = it.shopData.toShopData()
+                shopData = it.shopData.toShopData(),
+                tnc = it.tnc,
             )
         }
     }

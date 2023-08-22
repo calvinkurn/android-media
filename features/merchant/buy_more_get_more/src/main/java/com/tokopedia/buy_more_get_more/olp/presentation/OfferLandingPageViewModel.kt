@@ -15,6 +15,7 @@ import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferProductListUiModel
 import com.tokopedia.buy_more_get_more.olp.domain.usecase.GetOfferInfoForBuyerUseCase
 import com.tokopedia.buy_more_get_more.olp.domain.usecase.GetOfferProductListUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
@@ -41,7 +42,7 @@ class OfferLandingPageViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(OlpUiState())
     val uiState = _uiState.asStateFlow()
 
-    private val currentState: OlpUiState
+    val currentState: OlpUiState
         get() = _uiState.value
 
     private val _offeringInfo = MutableLiveData<OfferInfoForBuyerUiModel>()
@@ -81,7 +82,10 @@ class OfferLandingPageViewModel @Inject constructor(
             is OlpEvent.GetOffreringProductList -> { getOfferingProductList(page = event.page)}
             is OlpEvent.SetSortId -> { setSortId(event.sortId) }
             is OlpEvent.GetNotification -> { getNotification() }
-            is OlpEvent.AddToCart -> { }
+            is OlpEvent.AddToCart -> { addToCart(event.product) }
+            is OlpEvent.SetWarehouseIds -> setWarehouseIds(event.warehouseIds)
+            is OlpEvent.SetShopIds -> setShopIds(event.shopIds)
+            is OlpEvent.SetOfferingJsonData -> setOfferingJsonData(event.offeringJsonData)
         }
     }
 
@@ -182,16 +186,15 @@ class OfferLandingPageViewModel @Inject constructor(
         )
     }
 
-    fun addToCart(
-        product: OfferProductListUiModel.Product,
-        shopId: String
+    private fun addToCart(
+        product: OfferProductListUiModel.Product
     ) {
         launchCatchError(
             dispatchers.io,
             block = {
                 val param = AddToCartUseCase.getMinimumParams(
                     productId = product.productId.toString(),
-                    shopId = shopId
+                    shopId = currentState.shopIds.firstOrNull().orZero().toString()
                 )
                 addToCartUseCase.setParams(param)
                 val result = addToCartUseCase.executeOnBackground()
@@ -207,6 +210,30 @@ class OfferLandingPageViewModel @Inject constructor(
         _uiState.update {
             it.copy(
                 sortId = sortId
+            )
+        }
+    }
+
+    private fun setWarehouseIds(warehouseIds: List<Int>) {
+        _uiState.update {
+            it.copy(
+                warehouseIds = warehouseIds
+            )
+        }
+    }
+
+    private fun setShopIds(shopIds: List<Int>) {
+        _uiState.update {
+            it.copy(
+                shopIds = shopIds
+            )
+        }
+    }
+
+    private fun setOfferingJsonData(offeringJsonData: String) {
+        _uiState.update {
+            it.copy(
+                offeringJsonData = offeringJsonData
             )
         }
     }
