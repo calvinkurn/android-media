@@ -2,10 +2,12 @@ package com.tokopedia.logisticseller.ui.reschedulepickup.bottomsheet
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ListItem
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.RescheduleBottomSheetState
 import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.ReschedulePickupOptions
 import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.ReschedulePickupUiEvent
@@ -66,6 +68,9 @@ private fun <T> RescheduleBottomSheetContent(
                     )
                 }
             )
+            if (it != items.size - 1) {
+                Divider(thickness = 0.5.dp, color = NestTheme.colors.NN._300)
+            }
         }
     }
 }
