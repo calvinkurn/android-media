@@ -43,7 +43,7 @@
             app:typographyWeight="reguler" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <com.tokopedia.webview.TkpdWebView
+    <WebView
         android:id="@+id/scrooge_webview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
