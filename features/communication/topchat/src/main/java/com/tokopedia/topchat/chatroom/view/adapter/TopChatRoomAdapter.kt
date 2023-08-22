@@ -94,7 +94,18 @@ class TopChatRoomAdapter constructor(
     ) {
         val chatBubblePosition = getLocalIdMsgPosition(localId)
         if (chatBubblePosition == RecyclerView.NO_POSITION) return
-        visitables[chatBubblePosition] = visitable
+        val chatBubble = visitables[chatBubblePosition]
+        if (chatBubble is ProductCarouselUiModel) {
+            val productPosition = chatBubble.products.indexOfFirst {
+                (it as ProductAttachmentUiModel).localId == localId
+            }
+            chatBubble.products.toMutableList().also {
+                it[productPosition] = visitable
+                chatBubble.products = it // Update the product carousel
+            }
+        } else {
+            visitables[chatBubblePosition] = visitable
+        }
         notifyItemChanged(chatBubblePosition, Payload.REBIND)
     }
 
@@ -173,8 +184,22 @@ class TopChatRoomAdapter constructor(
         }
     }
 
-    private fun getLocalIdMsgPosition(localId: String) = visitables.indexOfFirst {
-        it is BaseChatUiModel && it.localId == localId
+    private fun getLocalIdMsgPosition(localId: String): Int {
+        var index = -1
+        visitables.forEachIndexed loop@{ i, value ->
+            if (value is ProductCarouselUiModel) { // Check if preview is inside carousel
+                value.products.find {
+                    it is ProductAttachmentUiModel && it.localId == localId
+                }?.let {
+                    index = i
+                    return@loop
+                }
+            } else if (value is BaseChatUiModel && value.localId == localId) {
+                index = i
+                return@loop
+            }
+        }
+        return index
     }
 
     override fun isOpposite(adapterPosition: Int, isSender: Boolean): Boolean {

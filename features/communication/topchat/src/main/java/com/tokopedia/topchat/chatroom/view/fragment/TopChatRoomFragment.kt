@@ -491,6 +491,12 @@ open class TopChatRoomFragment :
         if (!adapter.hasPreviewOnList(previewMsg.localId)) {
             adapter.addHeaderDateIfDifferent(previewMsg)
             adapter.addNewMessage(previewMsg)
+
+            if (previewMsg is ProductAttachmentUiModel) {
+                // Handle product attachment
+                mapToAttachmentCarouselIfEligible(previewMsg as Visitable<*>)
+            }
+
             topchatViewState?.scrollToBottom()
         }
     }
@@ -1143,20 +1149,16 @@ open class TopChatRoomFragment :
                     visitable
                 )
             )?.let { carousel ->
-                rv?.post {
-                    adapter.removeElement(lastVisitable) // Remove last product
-                    adapter.removeElement(visitable) // Remove current product
-                    adapter.addElement(index, carousel) // Add the new carousel
-                }
+                adapter.removeElement(lastVisitable) // Remove last product
+                adapter.removeElement(visitable) // Remove current product
+                adapter.addElement(index, carousel) // Add the new carousel
             }
             // Update existing carousel if needed
         } else if (shouldAddToCarouselProductAttachment(lastVisitable, visitable)) {
             (lastVisitable as ProductCarouselUiModel).apply {
                 this.products = this.products.toMutableList() + visitable
-                rv?.post {
-                    adapter.notifyItemChanged(index + Int.ONE) // Update product in carousel
-                    adapter.removeElement(visitable) // Remove current product
-                }
+                adapter.notifyItemChanged(index + Int.ONE) // Update product in carousel
+                adapter.removeElement(visitable) // Remove current product
             }
         }
     }
