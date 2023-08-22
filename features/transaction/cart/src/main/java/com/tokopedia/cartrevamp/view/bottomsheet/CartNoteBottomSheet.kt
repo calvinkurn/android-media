@@ -31,6 +31,8 @@ class CartNoteBottomSheet : BottomSheetUnify() {
         const val TAG = "CartNoteBottomSheet"
         private const val DATA = "data"
 
+        private const val NOTE_MAX_LENGTH = 144
+
         fun newInstance(data: CartNoteBottomSheetData): CartNoteBottomSheet {
             return CartNoteBottomSheet().apply {
                 arguments = Bundle().apply {
@@ -91,10 +93,13 @@ class CartNoteBottomSheet : BottomSheetUnify() {
             iuCartItem.loadImage(data.productImage)
             labelProductName.text = data.productName
             labelProductVariant.text = data.variant
+
+            textAreaNote.setCounter(NOTE_MAX_LENGTH)
             textAreaNote.editText.setText(data.note)
             textAreaNote.editText.addTextChangedListener {
                 btnSave.isEnabled = it.toString() != data.note
             }
+
             btnSave.isEnabled = data.note.isNotBlank() && textAreaNote.editText.text.toString() != data.note
             btnSave.setOnClickListener {
                 listener?.invoke(textAreaNote.editText.text.toString().trim())
