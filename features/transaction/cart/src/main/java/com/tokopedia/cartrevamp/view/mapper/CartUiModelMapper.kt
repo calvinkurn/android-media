@@ -175,7 +175,7 @@ object CartUiModelMapper {
                 groupBadge = availableGroup.groupInformation.badgeUrl
                 groupAppLink = availableGroup.groupInformation.appLink
                 isFulfillment = availableGroup.isFulfillment
-                fulfillmentName = ""
+                fulfillmentName = availableGroup.groupInformation.description
                 fulfillmentBadgeUrl = availableGroup.groupInformation.descriptionBadgeUrl
                 estimatedTimeArrival = availableGroup.shipmentInformation.estimation
                 isShowPin = availableGroup.pinned.isPinned
@@ -360,8 +360,8 @@ object CartUiModelMapper {
                     }
                     productUiModelList.lastOrNull()?.apply {
                         isFinalItem = true
-                        showErrorBottomDivider = sectionIndex != cartData.unavailableSections.lastIndex
-                            || (sectionIndex == cartData.unavailableSections.lastIndex && groupIndex != unavailableSection.unavailableGroups.lastIndex)
+                        showErrorBottomDivider = sectionIndex != cartData.unavailableSections.lastIndex ||
+                            (sectionIndex == cartData.unavailableSections.lastIndex && groupIndex != unavailableSection.unavailableGroups.lastIndex)
                         shouldDivideHalfErrorBottomDivider = showErrorBottomDivider && groupIndex != unavailableSection.unavailableGroups.lastIndex
                     }
                 }
