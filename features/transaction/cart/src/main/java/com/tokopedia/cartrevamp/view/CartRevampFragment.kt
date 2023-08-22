@@ -6,6 +6,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -14,6 +15,7 @@ import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowInsets
 import android.view.WindowManager
 import android.widget.CompoundButton
 import android.widget.ImageView
@@ -360,8 +362,6 @@ class CartRevampFragment :
         super.onCreate(savedInstanceState)
 
         activity?.let {
-            it.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
-
             if (viewModel.cartModel.wishlists == null && viewModel.cartModel.recentViewList == null) {
                 EmbraceMonitoring.startMoments(EmbraceKey.KEY_MP_CART)
                 cartPerformanceMonitoring = PerformanceMonitoring.start(CART_TRACE)
@@ -427,6 +427,16 @@ class CartRevampFragment :
     ): View? {
         binding = FragmentCartRevampBinding.inflate(inflater, container, false)
         val view = binding?.root
+        view?.setOnApplyWindowInsetsListener { _, windowInsets ->
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                val imeHeight = windowInsets.getInsets(WindowInsets.Type.ime()).bottom
+                view.setPadding(0, 0, 0, imeHeight)
+                val insets = windowInsets.getInsets(WindowInsets.Type.ime() or WindowInsets.Type.systemGestures())
+                insets
+            }
+
+            windowInsets
+        }
         view?.viewTreeObserver?.addOnGlobalLayoutListener {
             val heightDiff = view.rootView?.height?.minus(view.height) ?: 0
             val displayMetrics = DisplayMetrics()
@@ -1473,6 +1483,14 @@ class CartRevampFragment :
         }
 
         super.onStop()
+    }
+
+    override fun onAddOnsProductWidgetImpression(addOnType: Int, productId: String) {
+        cartPageAnalytics.eventViewAddOnsProductWidgetCart(addOnType, productId)
+    }
+
+    override fun onClickAddOnsProductWidgetCart(addOnType: Int, productId: String) {
+        cartPageAnalytics.eventClickAddOnsWidgetCart(addOnType, productId)
     }
 
     private fun addEndlessRecyclerViewScrollListener(

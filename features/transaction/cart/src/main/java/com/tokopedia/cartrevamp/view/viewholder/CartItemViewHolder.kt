@@ -14,6 +14,7 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.cart.R
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.Action
 import com.tokopedia.cart.databinding.ItemCartProductRevampBinding
@@ -670,15 +671,15 @@ class CartItemViewHolder constructor(
         if (data.addOnsProduct.listData.isNotEmpty() && data.addOnsProduct.widget.wording.isNotEmpty()) {
             binding.itemAddonCart.apply {
                 root.show()
-                this.descAddon.text = data.addOnsProduct.widget.wording
+                this.descAddon.text = MethodChecker.fromHtml(data.addOnsProduct.widget.wording)
+                val addOnType = data.addOnsProduct.listData.firstOrNull()?.type ?: 0
                 root.setOnClickListener {
                     actionListener?.onProductAddOnClicked(data)
+                    actionListener?.onClickAddOnsProductWidgetCart(addOnType, data.productId)
                 }
-            }
-            if (data.variant.isNotBlank()) {
-                binding.cartAddOnSeparator.show()
-            } else {
-                binding.cartAddOnSeparator.gone()
+                if (data.addOnsProduct.listData.isNotEmpty()) {
+                    actionListener?.onAddOnsProductWidgetImpression(addOnType, data.productId)
+                }
             }
         } else {
             binding.itemAddonCart.root.gone()

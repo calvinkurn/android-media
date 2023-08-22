@@ -33,5 +33,7 @@ class CartItemAdapter {
         fun onVerificationClicked(applink: String)
         fun onCartShopNameClicked(shopId: String?, shopName: String?, isTokoNow: Boolean)
         fun onProductAddOnClicked(cartItemData: CartItemHolderData)
+        fun onAddOnsProductWidgetImpression(addOnType: Int, productId: String)
+        fun onClickAddOnsProductWidgetCart(addOnType: Int, productId: String)
     }
 }
