@@ -15,6 +15,7 @@ import javax.inject.Inject
 class StoriesRepositoryImpl @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val storiesProductUseCase: StoriesProductUseCase,
+    private val productMapper: ProductMapper,
 ) : StoriesRepository {
 
     override fun getStoriesData(): StoriesUiModel {
@@ -560,7 +561,7 @@ class StoriesRepositoryImpl @Inject constructor(
                     )
                 )
             )
-            ProductMapper.mapProducts(response.data, "")
+            productMapper.mapProducts(response.data, "")
         }
     }
 }

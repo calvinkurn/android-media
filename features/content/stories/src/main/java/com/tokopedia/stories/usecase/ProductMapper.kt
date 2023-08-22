@@ -4,11 +4,12 @@ import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.stories.uimodel.StoriesCampaignStatus
 import com.tokopedia.stories.uimodel.StoriesCampaignType
 import com.tokopedia.stories.usecase.response.StoriesProductResponse
+import javax.inject.Inject
 
 /**
  * @author by astidhiyaa on 21/08/23
  */
-object ProductMapper {
+class ProductMapper @Inject constructor() {
     fun mapProducts(
         response: StoriesProductResponse.Data,
         shopId: String
