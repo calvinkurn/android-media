@@ -112,7 +112,7 @@ class WishlistCollectionSharingUtils {
                 tnTitle = data.collection.name,
                 tnImage = imgUrl
             )
-//            enableAffiliateCommission(createShareInput(data.collection.id.toString()))
+            enableAffiliateCommission(createShareInput(data.collection.id.toString()))
         }
         collectionShareBottomSheet?.show(childFragmentManager, fragment)
         WishlistCollectionAnalytics.sendViewOnSharingChannelCollectionEvent(data.collection.id, userId)

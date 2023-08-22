@@ -11,6 +11,7 @@ import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.model.BadgeItemDataView
 import com.tokopedia.search.result.presentation.model.FreeOngkirDataView
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView
+import com.tokopedia.search.result.presentation.model.LabelGroupDataView.Companion.hasFulfillment
 import com.tokopedia.search.result.presentation.model.StockBarDataView
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTracking.getInspirationCarouselUnificationListName
@@ -178,6 +179,7 @@ class InspirationCarouselDataView(
                     "dimension90", dimension90,
                     "dimension131", externalReference.orNone(),
                     "dimension56", warehouseID.ifNullOrBlank { "0" },
+                    "dimension58", hasFulfillment(labelGroupDataList).toString(),
                 )
             }
 
@@ -205,6 +207,7 @@ class InspirationCarouselDataView(
                     "shop_type", "none / other",
                     "variant", "none / other",
                     "dimension56", warehouseID.ifNullOrBlank { "0" },
+                    "dimension58", hasFulfillment(labelGroupDataList).toString(),
                 )
             }
 

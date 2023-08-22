@@ -35,11 +35,19 @@ class BannerCarouselItemViewHolder(itemView: View, private val fragment: Fragmen
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         bannerCarouselItemViewModel = discoveryBaseViewModel as BannerCarouselItemViewModel
         parentView.setOnClickListener {
-            bannerCarouselItemViewModel.getNavigationUrl()?.let {
-                RouteManager.route(fragment.activity, it)
-                bannerCarouselItemViewModel.getBannerData()?.let { itemData ->
-                    (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackCarouselBannerClick(itemData, adapterPosition, compType ?: "")
-                }
+            onClickHandling()
+            bannerCarouselItemViewModel.getBannerData()?.let { itemData ->
+                (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackCarouselBannerClick(itemData, adapterPosition, compType ?: "")
+            }
+        }
+    }
+
+    private fun onClickHandling() {
+        bannerCarouselItemViewModel.getBannerData()?.let {
+            if (it.moveAction?.type != null) {
+                Utils.routingBasedOnMoveAction(it.moveAction, fragment)
+            } else {
+                if (!it.imageClickUrl.isNullOrEmpty()) RouteManager.route(fragment.activity, it.imageClickUrl)
             }
         }
     }

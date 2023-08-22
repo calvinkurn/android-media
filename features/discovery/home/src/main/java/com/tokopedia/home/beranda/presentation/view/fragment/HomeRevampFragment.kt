@@ -60,7 +60,6 @@ import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getBannerImpre
 import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getOverlayBannerClick
 import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getOverlayBannerImpression
 import com.tokopedia.home.analytics.v2.BestSellerWidgetTracker
-import com.tokopedia.home.analytics.v2.LegoBannerTracking
 import com.tokopedia.home.analytics.v2.LoginWidgetTracking
 import com.tokopedia.home.analytics.v2.PopularKeywordTracking
 import com.tokopedia.home.analytics.v2.RecommendationListTracking
@@ -131,6 +130,7 @@ import com.tokopedia.home.beranda.presentation.view.listener.RechargeRecommendat
 import com.tokopedia.home.beranda.presentation.view.listener.RecommendationListCarouselComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.SalamWidgetCallback
 import com.tokopedia.home.beranda.presentation.view.listener.SpecialReleaseComponentCallback
+import com.tokopedia.home.beranda.presentation.view.listener.SpecialReleaseRevampCallback
 import com.tokopedia.home.beranda.presentation.view.listener.TodoWidgetComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.VpsWidgetComponentCallback
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
@@ -1471,6 +1471,7 @@ open class HomeRevampFragment :
             FlashSaleWidgetCallback(this),
             CarouselPlayWidgetCallback(getTrackingQueueObj(), userSession, this),
             BestSellerWidgetCallback(context, this, getHomeViewModel()),
+            SpecialReleaseRevampCallback(this),
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
             .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
@@ -1932,11 +1933,7 @@ open class HomeRevampFragment :
         val combinedTracking: MutableList<Any> = ArrayList()
         for (visitable in visitables) {
             if (visitable is HomeVisitable) {
-                if (visitable.isTrackingCombined && visitable.trackingDataForCombination != null) {
-                    getTrackingQueueObj()?.putEETracking(
-                        LegoBannerTracking.getHomeBannerImpression(visitable.trackingDataForCombination) as HashMap<String, Any>
-                    )
-                } else if (!visitable.isTrackingCombined && visitable.trackingData != null) {
+                if (!visitable.isTrackingCombined && visitable.trackingData != null) {
                     HomePageTracking.eventEnhancedImpressionWidgetHomePage(getTrackingQueueObj(), visitable.trackingData)
                 }
             }

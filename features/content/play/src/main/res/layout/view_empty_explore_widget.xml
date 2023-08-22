@@ -1,38 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cl_explore_widget_empty"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:clickable="true"
     android:focusable="true"
     android:gravity="center"
+    android:orientation="vertical"
     android:visibility="gone"
-    app:layout_constraintBottom_toTopOf="@id/v_bottom_overlay"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent"
     tools:visibility="visible">
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_empty_explore_widget"
         android:layout_width="@dimen/play_product_empty_illustration_width"
         android:layout_height="@dimen/play_product_empty_illustration_height"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_empty_explore_widget" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_empty_explore_widget"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/spacing_lvl3"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
         android:gravity="center"
         android:text="@string/play_empty_title_explore_widget"
         android:textColor="@color/Unify_NN950_96"
@@ -45,13 +34,8 @@
         android:id="@+id/tv_desc_empty_explore_widget"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/spacing_lvl2"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
         android:gravity="center"
         android:text="@string/play_empty_desc_explore_widget"
         android:textColor="@color/Unify_NN600"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_empty_explore_widget"
         app:typographyType="display_3" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

@@ -62,6 +62,7 @@ import com.tokopedia.shop.common.util.ShopPageExceptionHandler.logExceptionToCra
 import com.tokopedia.shop.common.util.ShopPageMapper
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.util.ShopUtil.setElement
+import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleItemUiModel
@@ -852,7 +853,9 @@ class ShopHomeViewModel @Inject constructor(
         shopId: String,
         widgetUserAddressLocalData: LocalCacheModel,
         isThematicWidgetShown: Boolean,
-        isEnableDirectPurchase: Boolean
+        isEnableDirectPurchase: Boolean,
+        isOverrideTheme: Boolean,
+        colorSchema: ShopPageColorSchema
     ) {
         launchCatchError(block = {
             val responseWidgetContent = withContext(dispatcherProvider.io) {
@@ -876,7 +879,9 @@ class ShopHomeViewModel @Inject constructor(
                 isThematicWidgetShown,
                 isEnableDirectPurchase,
                 shopId,
-                listWidgetLayout
+                listWidgetLayout,
+                isOverrideTheme,
+                colorSchema
             )
             updateProductCardQuantity(listShopHomeWidget.toMutableList())
             val mapShopHomeWidgetData = mutableMapOf<Pair<String, String>, Visitable<*>?>().apply {

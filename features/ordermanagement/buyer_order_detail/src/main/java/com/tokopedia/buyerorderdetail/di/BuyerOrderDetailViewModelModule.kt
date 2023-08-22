@@ -8,6 +8,7 @@ import com.tokopedia.buyerorderdetail.presentation.viewmodel.BuyerOrderDetailExt
 import com.tokopedia.buyerorderdetail.presentation.viewmodel.BuyerOrderDetailViewModel
 import com.tokopedia.buyerorderdetail.presentation.viewmodel.PartialOrderFulfillmentViewModel
 import com.tokopedia.digital.digital_recommendation.di.DigitalRecommendationViewModelModule
+import com.tokopedia.scp_rewards_touchpoints.touchpoints.viewmodel.ScpRewardsMedalTouchPointViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -32,4 +33,9 @@ abstract class BuyerOrderDetailViewModelModule {
     @IntoMap
     @ViewModelKey(PartialOrderFulfillmentViewModel::class)
     internal abstract fun providePartialOrderFulfillmentViewModel(viewModel: PartialOrderFulfillmentViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(ScpRewardsMedalTouchPointViewModel::class)
+    internal abstract fun provideScpRewardsMedalTouchPointViewModel(viewModel: ScpRewardsMedalTouchPointViewModel): ViewModel
 }

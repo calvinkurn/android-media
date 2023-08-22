@@ -138,6 +138,10 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.affiliateSDK)
     implementation project(rootProject.ext.libraries.foldable)
     implementation projectOrAar(rootProject.ext.features.recommendationWidgetCommon)
+    implementation projectOrAar(rootProject.ext.features.playCommon)
+    implementation rootProject.ext.miscDependencies.exoPlayerCore
+    implementation rootProject.ext.miscDependencies.exoPlayer
+    implementation rootProject.ext.miscDependencies.exoPlayerRtmp
 
     // UI Test
     androidTestImplementation projectOrAar(rootProject.ext.features.shopShowcase)

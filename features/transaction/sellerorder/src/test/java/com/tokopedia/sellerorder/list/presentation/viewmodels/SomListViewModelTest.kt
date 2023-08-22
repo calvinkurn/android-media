@@ -1478,6 +1478,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
         val result = viewModel.filterResult.observeAwaitValue()
 
         assert(result is Success && !result.data.fromCache)
+        assertEquals("", viewModel.getTabActiveFromAppLink())
     }
 
     @Test

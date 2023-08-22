@@ -24,6 +24,7 @@ import com.tokopedia.shop.databinding.ShopPageTabViewBinding
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderTabIconUrlModel
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderTabModel
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragmentTabContentWrapper
+import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageHeaderLayoutUiModel
 import com.tokopedia.utils.resources.isDarkMode
 import java.lang.ref.WeakReference
 
@@ -33,6 +34,8 @@ internal class ShopPageHeaderFragmentPagerAdapter(
 ) : FragmentStateAdapter(fragment) {
     private var listShopPageTabModel = listOf<ShopPageHeaderTabModel>()
     private val ctxRef = WeakReference(ctx)
+    private var isOverrideTheme: Boolean = false
+    private var patternColorType: String = ""
 
     companion object {
         @ColorRes
@@ -155,14 +158,33 @@ internal class ShopPageHeaderFragmentPagerAdapter(
                 iconDataJsonString,
                 ShopPageHeaderTabIconUrlModel::class.java
             ).run {
-                if (ctx?.isDarkMode() == true) {
-                    darkModeUrl
-                } else {
-                    lightModeUrl
+                if(isOverrideTheme){
+                    configIconColorByBackgroundTheme(lightModeUrl, darkModeUrl)
+                }else{
+                    configIconColorByDeviceTheme(lightModeUrl, darkModeUrl)
                 }
             }
         } catch (e: Exception) {
             ""
+        }
+    }
+
+    private fun configIconColorByDeviceTheme(lightModeUrl: String, darkModeUrl: String): String {
+        return if (ctx?.isDarkMode() == true) {
+            darkModeUrl
+        } else {
+            lightModeUrl
+        }
+    }
+
+    private fun configIconColorByBackgroundTheme(
+        lightModeUrl: String,
+        darkModeUrl: String
+    ): String {
+        return if (patternColorType == ShopPageHeaderLayoutUiModel.ColorType.DARK.value) {
+            lightModeUrl
+        } else {
+            darkModeUrl
         }
     }
 
@@ -240,5 +262,10 @@ internal class ShopPageHeaderFragmentPagerAdapter(
             } != null
         }
 
+    }
+
+    fun setPageTheme(isOverrideTheme: Boolean, patternColorType: String) {
+        this.isOverrideTheme = isOverrideTheme
+        this.patternColorType = patternColorType
     }
 }
