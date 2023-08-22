@@ -25,7 +25,7 @@ class MultiEditViewHolder(itemView: View, private val listener: MenuClickListene
             binding?.textMenu?.setTextColor(
                 ContextCompat.getColor(
                     itemView.context,
-                    com.tokopedia.unifycomponents.R.color.Unify_NN400
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN400
                 )
             )
         } else {
@@ -33,7 +33,7 @@ class MultiEditViewHolder(itemView: View, private val listener: MenuClickListene
             binding?.textMenu?.setTextColor(
                 ContextCompat.getColor(
                     itemView.context,
-                    com.tokopedia.unifycomponents.R.color.Unify_NN950
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN950
                 )
             )
         }

@@ -20,6 +20,6 @@ class InactivePhoneSubmitDataRobot {
     }
 
     fun clickOnButtonLanjutUbah() {
-        clickOnButton(R.id.dialog_btn_secondary)
+        clickOnButton(com.tokopedia.dialog.R.id.dialog_btn_secondary)
     }
 }

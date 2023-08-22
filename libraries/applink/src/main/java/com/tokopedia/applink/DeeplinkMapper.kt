@@ -195,20 +195,15 @@ object DeeplinkMapper {
     fun getRegisteredNavigationFromHttp(context: Context, uri: Uri, deeplink: String): String {
         val pathSize = uri.pathSegments.size
         if (pathSize == 1 && (
-                uri.pathSegments[0] == TOKOPOINTS ||
-                    uri.pathSegments[0] == ApplinkConst.RewardFallback.Reward.REWARDS
-                )
+            uri.pathSegments[0] == TOKOPOINTS ||
+                uri.pathSegments[0] == ApplinkConst.RewardFallback.Reward.REWARDS
+            )
         ) {
             return ApplinkConstInternalPromo.TOKOPOINTS_HOME
         }
 
-        val appLinkContent =
-            DeeplinkMapperContent.getRegisteredNavigationContentFromHttp(uri, deeplink)
+        val appLinkContent = DeeplinkMapperContent.getNavContentFromHttp(uri, deeplink)
         if (appLinkContent.isNotBlank()) return appLinkContent
-
-        val appLinkFeed =
-            DeeplinkMapperContent.getRegisteredNavigationFeedVideoFromHttp(uri, deeplink)
-        if (appLinkFeed.isNotBlank()) return appLinkFeed
 
         val applinkDigital =
             DeeplinkMapperDigital.getRegisteredNavigationFromHttpDigital(context, deeplink)

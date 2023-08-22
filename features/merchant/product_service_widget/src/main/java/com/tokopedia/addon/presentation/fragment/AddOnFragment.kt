@@ -31,6 +31,7 @@ class AddOnFragment : BaseDaggerFragment(), AddOnComponentListener {
             pageSource: String,
             cartId: Long,
             selectedAddonIds: List<String>,
+            deselectedAddonIds: List<String>,
             atcSource: String
         ): AddOnFragment {
             val fragment = AddOnFragment()
@@ -38,6 +39,7 @@ class AddOnFragment : BaseDaggerFragment(), AddOnComponentListener {
                 putParcelable(AddOnExtraConstant.ADDON_WIDGET_PARAM, addOnWidgetParam)
                 putString(AddOnExtraConstant.PAGE_SOURCE, pageSource)
                 putStringArrayList(AddOnExtraConstant.SELECTED_ADDON_IDS, ArrayList(selectedAddonIds))
+                putStringArrayList(AddOnExtraConstant.DESELECTED_ADDON_IDS, ArrayList(deselectedAddonIds))
                 putLong(AddOnExtraConstant.CART_ID, cartId)
                 putString(AddOnExtraConstant.ATC_SOURCE, atcSource)
             }
@@ -54,6 +56,7 @@ class AddOnFragment : BaseDaggerFragment(), AddOnComponentListener {
     private val pageSource by lazy { arguments?.getString(AddOnExtraConstant.PAGE_SOURCE) }
     private val cartId by lazy { arguments?.getLong(AddOnExtraConstant.CART_ID) }
     private val selectedAddonIds by lazy { arguments?.getStringArrayList(AddOnExtraConstant.SELECTED_ADDON_IDS) }
+    private val deselectedAddonIds by lazy { arguments?.getStringArrayList(AddOnExtraConstant.DESELECTED_ADDON_IDS) }
     private val atcSource by lazy { arguments?.getString(AddOnExtraConstant.ATC_SOURCE).orEmpty() }
 
     @Inject
@@ -82,6 +85,7 @@ class AddOnFragment : BaseDaggerFragment(), AddOnComponentListener {
         binding?.addonWidget?.apply {
             setListener(this@AddOnFragment)
             setSelectedAddons(selectedAddonIds.orEmpty())
+            setDeselectedAddons(deselectedAddonIds.orEmpty())
             getAddonData(addOnWidgetParam ?: AddOnParam())
         }
         binding?.btnSave?.setOnClickListener {
