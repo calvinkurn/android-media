@@ -15,6 +15,17 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.cart.data.model.request.CartShopGroupTickerAggregatorParam
+import com.tokopedia.cart.data.model.request.UpdateCartWrapperRequest
+import com.tokopedia.cart.data.model.response.promo.LastApplyPromo
+import com.tokopedia.cart.data.model.response.promo.LastApplyPromoData
+import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
+import com.tokopedia.cart.domain.usecase.CartShopGroupTickerAggregatorUseCase
+import com.tokopedia.cart.domain.usecase.FollowShopUseCase
+import com.tokopedia.cart.domain.usecase.GetCartParam
+import com.tokopedia.cart.domain.usecase.GetCartRevampV4UseCase
+import com.tokopedia.cart.domain.usecase.UpdateAndReloadCartUseCase
+import com.tokopedia.cart.domain.usecase.UpdateCartAndGetLastApplyUseCase
 import com.tokopedia.cart.view.CartIdlingResource
 import com.tokopedia.cart.view.analytics.EnhancedECommerceActionFieldData
 import com.tokopedia.cart.view.analytics.EnhancedECommerceClickData
@@ -26,18 +37,7 @@ import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
-import com.tokopedia.cartrevamp.data.model.request.CartShopGroupTickerAggregatorParam
-import com.tokopedia.cartrevamp.data.model.request.UpdateCartWrapperRequest
-import com.tokopedia.cartrevamp.data.model.response.promo.LastApplyPromo
-import com.tokopedia.cartrevamp.data.model.response.promo.LastApplyPromoData
-import com.tokopedia.cartrevamp.data.model.response.shopgroupsimplified.CartData
-import com.tokopedia.cartrevamp.domain.usecase.CartShopGroupTickerAggregatorUseCase
-import com.tokopedia.cartrevamp.domain.usecase.FollowShopUseCase
-import com.tokopedia.cartrevamp.domain.usecase.GetCartParam
-import com.tokopedia.cartrevamp.domain.usecase.GetCartRevampV4UseCase
 import com.tokopedia.cartrevamp.domain.usecase.SetCartlistCheckboxStateUseCase
-import com.tokopedia.cartrevamp.domain.usecase.UpdateAndReloadCartUseCase
-import com.tokopedia.cartrevamp.domain.usecase.UpdateCartAndGetLastApplyUseCase
 import com.tokopedia.cartrevamp.view.helper.CartDataHelper
 import com.tokopedia.cartrevamp.view.mapper.CartUiModelMapper
 import com.tokopedia.cartrevamp.view.mapper.PromoRequestMapper
@@ -312,6 +312,7 @@ class CartViewModel @Inject constructor(
                                 }
                             }
                         }
+                        data.cartShopGroupTicker.state = CartShopGroupTickerState.FIRST_LOAD
                         _globalEvent.value = CartGlobalEvent.AdapterItemChanged(index)
                     } else {
                         return@forEachIndexed
@@ -327,11 +328,6 @@ class CartViewModel @Inject constructor(
                     } else {
                         return@forEachIndexed
                     }
-                }
-
-                is CartShopBottomHolderData -> {
-                    data.shopData.cartShopGroupTicker.state = CartShopGroupTickerState.FIRST_LOAD
-                    _globalEvent.value = CartGlobalEvent.AdapterItemChanged(index)
                 }
 
                 is DisabledItemHeaderHolderData, is CartSectionHeaderHolderData -> {
@@ -553,6 +549,7 @@ class CartViewModel @Inject constructor(
             cartListData = cartData,
             summaryTransactionUiModel = CartUiModelMapper.mapSummaryTransactionUiModel(cartData),
             summariesAddOnUiModel = CartUiModelMapper.getShoppingSummaryAddOns(cartData.shoppingSummary.summaryAddOnList),
+            promoSummaryUiModel = CartUiModelMapper.mapPromoSummaryUiModel(cartData.promoSummary),
             showChoosePromoWidget = cartData.promo.showChoosePromoWidget,
             promoTicker = cartData.promo.ticker,
             recommendationPage = RECOMMENDATION_START_PAGE

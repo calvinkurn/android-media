@@ -24,7 +24,7 @@ interface ActionListener {
 
     fun onCartShopGroupTickerClicked(cartGroupHolderData: CartGroupHolderData)
 
-    fun onCartShopGroupTickerRefreshClicked(index: Int, cartShopBottomHolderData: CartShopBottomHolderData)
+    fun onCartShopGroupTickerRefreshClicked(index: Int, cartGroupHolderData: CartGroupHolderData)
 
     fun onViewCartShopGroupTicker(cartGroupHolderData: CartGroupHolderData)
 

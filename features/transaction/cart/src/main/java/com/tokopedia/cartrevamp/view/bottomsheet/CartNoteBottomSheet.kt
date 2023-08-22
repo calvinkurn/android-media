@@ -1,6 +1,7 @@
 package com.tokopedia.cartrevamp.view.bottomsheet
 
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.widget.addTextChangedListener
@@ -43,6 +44,8 @@ class CartNoteBottomSheet : BottomSheetUnify() {
         binding = LayoutBottomsheetCartNoteBinding
             .inflate(LayoutInflater.from(context), null, false)
         setChild(binding?.root)
+
+        initTextArea()
 
         data = arguments?.getParcelable(DATA)
         data?.let {
@@ -101,6 +104,15 @@ class CartNoteBottomSheet : BottomSheetUnify() {
 
     fun setListener(listener: (note: String) -> Unit) {
         this.listener = listener
+    }
+
+    private fun initTextArea() {
+        binding?.textAreaNote?.apply {
+            maxLine = 5
+            editText.hint = getString(R.string.cart_text_note_hint)
+            editText.setLines(5)
+            editText.gravity = Gravity.TOP or Gravity.START
+        }
     }
 
     override fun onDestroy() {
