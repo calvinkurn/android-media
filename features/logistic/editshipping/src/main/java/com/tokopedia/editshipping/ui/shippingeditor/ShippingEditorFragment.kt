@@ -52,6 +52,8 @@ import com.tokopedia.editshipping.ui.shippingeditor.adapter.WarehouseInactiveAda
 import com.tokopedia.editshipping.util.EditShippingConstant
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -62,6 +64,7 @@ import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.net.ConnectException
@@ -144,7 +147,15 @@ class ShippingEditorFragment :
     private fun initViews() {
         renderTickerOnDemand()
         renderTextDetailCourier()
-        binding?.btnSaveShipper?.setOnClickListener { saveButtonShippingEditor() }
+        binding?.run {
+            btnSaveShipper.setOnClickListener { saveButtonShippingEditor() }
+            buttonDropOff.let {
+                it.setDrawable(getIconUnifyDrawable(root.context, IconUnify.LOCATION))
+                it.setOnClickListener {
+                    RouteManager.route(root.context, "${ApplinkConst.WEBVIEW}?url=${TokopediaUrl.getInstance().WEB}dropoff-maps")
+                }
+            }
+        }
     }
 
     private fun renderTickerOnDemand() {
