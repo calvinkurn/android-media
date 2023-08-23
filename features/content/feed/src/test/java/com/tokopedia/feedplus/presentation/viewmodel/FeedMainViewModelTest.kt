@@ -317,7 +317,14 @@ class FeedMainViewModelTest {
         val expectedValue = mockValue.tab.data[0]
 
         viewModel.setActiveTab(0)
-        coVerify(exactly = 1) { uiEventManager.emitEvent(FeedMainEvent.SelectTab(expectedValue, 0)) }
+        coVerify(exactly = 1) {
+            uiEventManager.emitEvent(
+                FeedMainEvent.SelectTab(
+                    expectedValue,
+                    0
+                )
+            )
+        }
     }
 
     @Test
@@ -334,7 +341,14 @@ class FeedMainViewModelTest {
         val expectedValue = mockValue.tab.data[1]
 
         viewModel.setActiveTab(1)
-        coVerify(exactly = 1) { uiEventManager.emitEvent(FeedMainEvent.SelectTab(expectedValue, 1)) }
+        coVerify(exactly = 1) {
+            uiEventManager.emitEvent(
+                FeedMainEvent.SelectTab(
+                    expectedValue,
+                    1
+                )
+            )
+        }
     }
 
     @Test
@@ -366,7 +380,14 @@ class FeedMainViewModelTest {
         val expectedValue = mockValue.tab.data[0]
 
         viewModel.setActiveTab(expectedValue.type)
-        coVerify(exactly = 1) { uiEventManager.emitEvent(FeedMainEvent.SelectTab(expectedValue, 0)) }
+        coVerify(exactly = 1) {
+            uiEventManager.emitEvent(
+                FeedMainEvent.SelectTab(
+                    expectedValue,
+                    0
+                )
+            )
+        }
     }
 
     @Test
@@ -383,7 +404,14 @@ class FeedMainViewModelTest {
         val expectedValue = mockValue.tab.data[1]
 
         viewModel.setActiveTab(expectedValue.type)
-        coVerify(exactly = 1) { uiEventManager.emitEvent(FeedMainEvent.SelectTab(expectedValue, 1)) }
+        coVerify(exactly = 1) {
+            uiEventManager.emitEvent(
+                FeedMainEvent.SelectTab(
+                    expectedValue,
+                    1
+                )
+            )
+        }
     }
 
     @Test
@@ -399,5 +427,27 @@ class FeedMainViewModelTest {
 
         viewModel.setActiveTab("unknown")
         coVerify(exactly = 0) { uiEventManager.emitEvent(any()) }
+    }
+
+    @Test
+    fun onProvideFactory() {
+        // given
+        val factory: FeedMainViewModel.Factory = mockk()
+        val mActiveTabSource = ActiveTabSource("foryou", 0)
+
+        coEvery { factory.create(mActiveTabSource) } returns FeedMainViewModel(
+            mActiveTabSource,
+            repository,
+            deletePostCacheUseCase,
+            onBoardingPreferences,
+            userSession,
+            uiEventManager
+        )
+
+        val mViewModel = FeedMainViewModel.provideFactory(factory, mActiveTabSource)
+            .create(FeedMainViewModel::class.java)
+
+        assert(mViewModel.activeTabSource.tabName == mActiveTabSource.tabName)
+        assert(mViewModel.activeTabSource.index == mActiveTabSource.index)
     }
 }
