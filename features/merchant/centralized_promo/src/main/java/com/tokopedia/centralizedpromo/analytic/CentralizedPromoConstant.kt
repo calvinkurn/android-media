@@ -75,4 +75,6 @@ object CentralizedPromoConstant {
 
     const val ADS_PROMOTION = "/adspromotion"
 
+    const val CENTRALIZED_PROMO_COACHMARK_KEY = "coachmark"
+
 }

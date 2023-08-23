@@ -4,6 +4,7 @@ import android.content.SharedPreferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.CENTRALIZED_PROMO_COACHMARK_KEY
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.CENTRALIZED_PROMO_PREF
 import com.tokopedia.centralizedpromo.common.errorhandler.CentralizedPromoErrorHandler
 import com.tokopedia.centralizedpromo.domain.usecase.GetOnGoingPromotionUseCase
@@ -20,7 +21,6 @@ import com.tokopedia.centralizedpromo.view.model.CentralizedPromoEvent
 import com.tokopedia.centralizedpromo.view.model.CentralizedPromoEvent.CoachMarkShown
 import com.tokopedia.centralizedpromo.view.model.CentralizedPromoEvent.FilterUpdate
 import com.tokopedia.centralizedpromo.view.model.CentralizedPromoEvent.UpdateRbacBottomSheet
-import com.tokopedia.centralizedpromo.view.model.CentralizedPromoEvent.UpdateToasterState
 import com.tokopedia.centralizedpromo.view.model.CentralizedPromoUiState
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -69,11 +69,8 @@ class CentralizedPromoComposeViewModel @Inject constructor(
             is FilterUpdate -> {
                 updateFilter(event.selectedTabFilterData)
             }
-            is UpdateToasterState -> {
-                updateToasterState(event.showToaster)
-            }
             is CoachMarkShown -> {
-                setKeyRBAC(event.key + "coachmark")
+                setKeyRBAC(event.key + CENTRALIZED_PROMO_COACHMARK_KEY)
             }
             else -> {
                 swipeToRefresh()
@@ -81,12 +78,14 @@ class CentralizedPromoComposeViewModel @Inject constructor(
         }
     }
 
+    //Ensure this only called once in the compose, either remember it once or put in lambda
     fun getKeyRBAC(key: String): Boolean {
         return pref.getBoolean(key, false)
     }
 
+    //Ensure this only called once in the compose, either remember it once or put in lambda
     fun getCoachmarkSharedPref(pageId: String): Boolean {
-        return pref.getBoolean(pageId + "coachmark", false)
+        return pref.getBoolean(pageId + CENTRALIZED_PROMO_COACHMARK_KEY, false)
     }
 
     private fun setKeyRBAC(key: String) {
@@ -143,7 +142,7 @@ class CentralizedPromoComposeViewModel @Inject constructor(
                 }
 
                 if (updatedState.onGoingData is Fail || updatedState.promoCreationData is Fail) {
-                    updateToasterState(true)
+                    showToasterState()
                 }
 
                 updatedState.copy(isLoading = LoadingType.NONE, isSwipeRefresh = false)
@@ -151,9 +150,9 @@ class CentralizedPromoComposeViewModel @Inject constructor(
         }
     }
 
-    private fun updateToasterState(showToaster: Boolean) {
+    private fun showToasterState() {
         viewModelScope.launch {
-            _toasterState.emit(showToaster)
+            _toasterState.emit(true)
         }
     }
 

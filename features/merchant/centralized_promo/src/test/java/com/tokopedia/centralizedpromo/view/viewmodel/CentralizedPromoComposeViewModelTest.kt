@@ -30,6 +30,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.slot
 import io.mockk.unmockkAll
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
@@ -224,6 +225,8 @@ class CentralizedPromoComposeViewModelTest {
             viewModel.layoutList.collect()
         }
 
+        `ensure toaster value not emit`()
+
         advanceUntilIdle()
 
         coVerify {
@@ -277,9 +280,7 @@ class CentralizedPromoComposeViewModelTest {
             viewModel.layoutList.collect()
         }
 
-        val job2 = launch(UnconfinedTestDispatcher()) {
-            viewModel.toasterState.collect()
-        }
+        `ensure toaster value emit`()
 
         advanceUntilIdle()
 
@@ -300,11 +301,7 @@ class CentralizedPromoComposeViewModelTest {
         assertTrue(data.promoCreationData is Fail)
         assertTrue(data.onGoingData is Fail)
 
-        val toasterData = viewModel.toasterState.value
-        assertTrue(toasterData == true)
-
         job.cancel()
-        job2.cancel()
     }
 
     @Test
@@ -556,7 +553,52 @@ class CentralizedPromoComposeViewModelTest {
     }
 
     @Test
+    fun `success get shared pref coachmark`() = runTest {
+        val keyCoachMark = slot<String>()
+
+        every {
+            pref.getBoolean(capture(keyCoachMark), any())
+        } returns true
+
+        val dataValue = viewModel.getCoachmarkSharedPref("1")
+        assertEquals(dataValue, true)
+
+        assertEquals(keyCoachMark.captured, "1coachmark")
+    }
+
+    @Test
     fun `success change shared pref RBAC`() = runTest {
         viewModel.sendEvent(CentralizedPromoEvent.UpdateRbacBottomSheet("key"))
+    }
+
+    @Test
+    fun `success change shared pref coachmark`() = runTest {
+        viewModel.sendEvent(CentralizedPromoEvent.CoachMarkShown("1"))
+    }
+
+    private fun `ensure toaster value not emit`() = runTest {
+        var toasterInitialValue = false
+
+        val job2 = launch(UnconfinedTestDispatcher()) {
+            viewModel.toasterState.collect {
+                toasterInitialValue = it
+            }
+        }
+        advanceUntilIdle()
+        assertTrue(!toasterInitialValue)
+        job2.cancel()
+    }
+
+    private fun `ensure toaster value emit`() = runTest{
+        var toasterInitialValue = false
+
+        val job2 = launch(UnconfinedTestDispatcher()) {
+            viewModel.toasterState.collect {
+                toasterInitialValue = it
+            }
+        }
+        advanceUntilIdle()
+        assertTrue(toasterInitialValue)
+        job2.cancel()
     }
 }

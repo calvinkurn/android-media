@@ -17,10 +17,10 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.centralizedpromo.R.string
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoTracking
 import com.tokopedia.centralizedpromo.compose.CentralizedPromoScreen
-import com.tokopedia.centralizedpromo.view.model.CoachMarkAnchorWithKey
 import com.tokopedia.centralizedpromo.compose.ShowToaster
 import com.tokopedia.centralizedpromo.di.component.DaggerCentralizedPromoComponent
 import com.tokopedia.centralizedpromo.view.model.CentralizedPromoEvent.CoachMarkShown
+import com.tokopedia.centralizedpromo.view.model.CoachMarkAnchorWithKey
 import com.tokopedia.centralizedpromo.view.model.PromoCreationUiModel.Companion.PAGE_ID_SHOP_COUPON
 import com.tokopedia.centralizedpromo.view.viewmodel.CentralizedPromoComposeViewModel
 import com.tokopedia.nest.components.CoachMarkItem
@@ -62,7 +62,7 @@ class CentralizedPromoComposeActivity : AppCompatActivity() {
 
                 // Don't use mutableStateOf because
                 // we don't want to recomposition happen when this value change
-                val alreadyShowCoachMark = remember {
+                val alreadyShowCoachMark = remember(Unit) {
                     viewModel.getCoachmarkSharedPref(PAGE_ID_SHOP_COUPON)
                 }
 
