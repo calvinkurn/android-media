@@ -90,7 +90,7 @@ dependencies {
     testImplementation rootProject.ext.miscDependencies.coroutineCore
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
 
-    api group: 'org.jetbrains.kotlin', name: 'kotlin-parcelize-runtime', version: '1.7.10'
+    api rootProject.ext.kotlinParcelizeRuntimeDependencies
 }
 
 project.ext {

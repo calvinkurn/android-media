@@ -471,4 +471,10 @@ ext {
             composeVideoCoil    : "io.coil-kt:coil-video:$composeCoil",
             accompanistPager    : "com.google.accompanist:accompanist-pager:$accompanistPagerVersion"
     ]
+
+    kotlinParcelizeRuntimeDependencies = [
+            group: 'org.jetbrains.kotlin',
+            name: 'kotlin-parcelize-runtime',
+            version: '1.7.10'
+    ]
 }
