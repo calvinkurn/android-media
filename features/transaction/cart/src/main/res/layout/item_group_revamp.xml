@@ -74,12 +74,12 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/img_free_shipping"
-            android:layout_width="40dp"
+            android:layout_width="wrap_content"
             android:layout_height="20dp"
             android:gravity="center_vertical"
-            android:scaleType="fitXY"
+            android:adjustViewBounds="true"
             app:unify_image_corner_radius="0"
-            tools:src="@color/Unify_G500"
+            tools:src="@color/Unify_GN500"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
