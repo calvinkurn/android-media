@@ -50,7 +50,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
             android:text="@string/tokopedianow_text_dot"
-            android:textColor="@color/Neutral_N500"
+            android:textColor="@color/Unify_NN500"
             app:layout_constraintBottom_toBottomOf="@id/text_warehouse_status"
             app:layout_constraintStart_toEndOf="@id/text_warehouse_status"
             app:layout_constraintTop_toTopOf="@id/text_warehouse_status"
