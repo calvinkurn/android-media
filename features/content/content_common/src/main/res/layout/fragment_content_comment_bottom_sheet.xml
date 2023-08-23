@@ -51,7 +51,8 @@
             android:id="@+id/iv_user_photo"
             android:layout_width="@dimen/content_common_space_40"
             android:layout_height="@dimen/content_common_space_40"
-            android:scaleType="fitCenter"
+            android:scaleType="centerCrop"
+            android:adjustViewBounds="true"
             app:unify_image_type="circle" />
 
         <androidx.appcompat.widget.AppCompatEditText
