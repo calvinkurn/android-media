@@ -136,6 +136,7 @@ class FeedMainViewModelTest {
 
         coEvery { feedXHeaderUseCase.setRequestParams(any()) } coAnswers {}
         coEvery { feedXHeaderUseCase.executeOnBackground() } returns dummyResponse
+        coEvery { uiEventManager.emitEvent(any()) } coAnswers {}
 
         // when
         viewModel.fetchFeedTabs()
@@ -154,6 +155,12 @@ class FeedMainViewModelTest {
             assert(successFeedTabsData[index].type == items.type)
             assert(successFeedTabsData[index].position == items.position)
         }
+
+        viewModel.setActiveTab(0)
+        assert(viewModel.activeTab?.type == dummyResponse.feedXHeaderData.data.tab.items[0].type)
+
+        viewModel.setActiveTab("following")
+        assert(viewModel.activeTab?.type == "following")
     }
 
     @Test
@@ -505,6 +512,28 @@ class FeedMainViewModelTest {
 
         viewModel.setReadyToShowOnboarding()
         coVerify(exactly = 1) { uiEventManager.emitEvent(FeedMainEvent.ShowSwipeOnboarding) }
+    }
+
+    @Test
+    fun onProvideFactory() {
+        val factory: FeedMainViewModel.Factory = mockk()
+        val mActiveTabSource = ActiveTabSource("foryou", 0)
+
+        coEvery { factory.create(any()) } returns FeedMainViewModel(
+            mActiveTabSource,
+            feedXHeaderUseCase,
+            deletePostCacheUseCase,
+            testDispatcher,
+            onBoardingPreferences,
+            userSession,
+            uiEventManager
+        )
+
+        val mViewModel = FeedMainViewModel.provideFactory(factory, mActiveTabSource)
+            .create(FeedMainViewModel::class.java)
+
+        assert(mViewModel.activeTabSource.tabName == mActiveTabSource.tabName)
+        assert(mViewModel.activeTabSource.index == mActiveTabSource.index)
     }
 
     private fun getDummyFeedXHeaderData() = FeedXHeaderResponse(
