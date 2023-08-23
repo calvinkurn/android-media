@@ -22,9 +22,6 @@ import com.tokopedia.cartrevamp.view.adapter.cart.CartItemAdapter
 import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData.Companion.BUNDLING_ITEM_FOOTER
 import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData.Companion.BUNDLING_ITEM_HEADER
-import com.tokopedia.coachmark.CoachMark2
-import com.tokopedia.coachmark.CoachMark2Item
-import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
@@ -49,8 +46,7 @@ import java.util.*
 @SuppressLint("ClickableViewAccessibility")
 class CartItemViewHolder constructor(
     private val binding: ItemCartProductRevampBinding,
-    private var actionListener: CartItemAdapter.ActionListener?,
-    private var mainCoachMark: Pair<CoachMark2?, ArrayList<CoachMark2Item>>
+    private var actionListener: CartItemAdapter.ActionListener?
 ) : RecyclerView.ViewHolder(binding.root) {
 
     private var viewHolderListener: ViewHolderListener? = null
@@ -77,7 +73,6 @@ class CartItemViewHolder constructor(
         this.viewHolderListener = viewHolderListener
         this.dataSize = dataSize
 
-        initCoachmark()
         setNoteAnimationResource()
         renderAlpha(data)
         renderContainer(data)
@@ -87,32 +82,6 @@ class CartItemViewHolder constructor(
         renderProductInfo(data)
         renderQuantity(data, viewHolderListener)
         renderProductAction(data)
-    }
-
-    private fun initCoachmark() {
-        if (mainCoachMark.first != null && !CoachMarkPreference.hasShown(
-                itemView.context,
-                CART_MAIN_COACH_MARK
-            )
-        ) {
-            val coachMarkItems = mainCoachMark.second
-            val wishlistCoachMark = CoachMark2Item(
-                binding.buttonToggleWishlist,
-                "",
-                "Mau simpan produk di Wishlist juga bisa. Cukup dengan klik ikon hati ini aja!",
-                CoachMark2.POSITION_BOTTOM
-            )
-            val noteCoachMark = CoachMark2Item(
-                binding.buttonChangeNote,
-                "",
-                "Mau titip pesan ke penjual soal produk belanjaanmu? Klik ikon ini buat tulis catatanmu.",
-                CoachMark2.POSITION_BOTTOM
-            )
-            coachMarkItems.add(0, wishlistCoachMark)
-            coachMarkItems.add(0, noteCoachMark)
-            mainCoachMark.first!!.showCoachMark(coachMarkItems)
-            CoachMarkPreference.setShown(itemView.context, CART_MAIN_COACH_MARK, true)
-        }
     }
 
     private fun setNoteAnimationResource() {
@@ -1252,8 +1221,8 @@ class CartItemViewHolder constructor(
         }
     }
 
-    fun getMinQuantityView(): IconUnify {
-        return binding.qtyEditorProduct.subtractButton
+    fun getItemViewBinding(): ItemCartProductRevampBinding {
+        return binding
     }
 
     interface ViewHolderListener {
@@ -1277,8 +1246,6 @@ class CartItemViewHolder constructor(
         private const val RESET_QTY_DEBOUNCE_TIME = 1000L
         const val ALPHA_HALF = 0.5f
         const val ALPHA_FULL = 1.0f
-
-        private const val CART_MAIN_COACH_MARK = "cart_main_coach_mark"
 
         private const val DEFAULT_DIVIDER_HEIGHT = 2
         private const val IMAGE_PRODUCT_MARGIN_START_6 = 6

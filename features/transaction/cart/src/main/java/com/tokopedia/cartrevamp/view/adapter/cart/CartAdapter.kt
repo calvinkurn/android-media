@@ -56,7 +56,6 @@ import com.tokopedia.cartrevamp.view.viewholder.DisabledCollapsedViewHolder
 import com.tokopedia.cartrevamp.view.viewholder.DisabledItemHeaderViewHolder
 import com.tokopedia.cartrevamp.view.viewholder.DisabledReasonViewHolder
 import com.tokopedia.coachmark.CoachMark2
-import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.purchase_platform.common.feature.sellercashback.SellerCashbackListener
 import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackModel
 import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackViewHolder
@@ -79,8 +78,6 @@ class CartAdapter constructor(
     private var cartRecentViewAdapter: CartRecentViewAdapter? = null
 
     private var plusCoachMark: CoachMark2? = null
-    private var mainCoachMark: Pair<CoachMark2?, ArrayList<CoachMark2Item>> = Pair(null, arrayListOf())
-    private var bulkActionCoachMark: Pair<CoachMark2?, ArrayList<CoachMark2Item>> = Pair(null, arrayListOf())
 
     companion object {
         const val SELLER_CASHBACK_ACTION_INSERT = 1
@@ -153,7 +150,7 @@ class CartAdapter constructor(
                     parent,
                     false
                 )
-                return CartItemViewHolder(binding, cartItemActionListener, mainCoachMark)
+                return CartItemViewHolder(binding, cartItemActionListener)
             }
 
             CartShopBottomViewHolder.LAYOUT -> {
@@ -476,10 +473,6 @@ class CartAdapter constructor(
 
     fun setCoachMark(coachMark: CoachMark2) {
         plusCoachMark = coachMark
-    }
-
-    fun setMainCoachMark(coachMark: CoachMark2, items: ArrayList<CoachMark2Item>) {
-        mainCoachMark = Pair(coachMark, items)
     }
 
     override fun onNeedToRefreshSingleProduct(childPosition: Int) {
