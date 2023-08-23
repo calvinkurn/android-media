@@ -28,6 +28,7 @@ import com.tokopedia.cartrevamp.view.uimodel.CartGroupHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartItemTickerErrorHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartLoadingHolderData
+import com.tokopedia.cartrevamp.view.uimodel.CartMainCoachMarkUiModel
 import com.tokopedia.cartrevamp.view.uimodel.CartRecentViewHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartRecommendationItemHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartSectionHeaderHolderData
@@ -78,6 +79,7 @@ class CartAdapter constructor(
     private var cartRecentViewAdapter: CartRecentViewAdapter? = null
 
     private var plusCoachMark: CoachMark2? = null
+    private var mainCoachMark: CartMainCoachMarkUiModel = CartMainCoachMarkUiModel()
 
     companion object {
         const val SELLER_CASHBACK_ACTION_INSERT = 1
@@ -150,7 +152,7 @@ class CartAdapter constructor(
                     parent,
                     false
                 )
-                return CartItemViewHolder(binding, cartItemActionListener)
+                return CartItemViewHolder(binding, cartItemActionListener, mainCoachMark)
             }
 
             CartShopBottomViewHolder.LAYOUT -> {
@@ -473,6 +475,10 @@ class CartAdapter constructor(
 
     fun setCoachMark(coachMark: CoachMark2) {
         plusCoachMark = coachMark
+    }
+
+    fun setMainCoachMark(coachMark: CartMainCoachMarkUiModel) {
+        mainCoachMark = coachMark
     }
 
     override fun onNeedToRefreshSingleProduct(childPosition: Int) {

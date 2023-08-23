@@ -56,6 +56,7 @@ import com.tokopedia.cart.data.model.response.promo.LastApplyPromo
 import com.tokopedia.cart.data.model.response.promo.LastApplyPromoData
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.Action
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
+import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartOnBoardingData
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.LocalizationChooseAddress
 import com.tokopedia.cart.databinding.FragmentCartRevampBinding
 import com.tokopedia.cart.view.CartActivity
@@ -86,6 +87,7 @@ import com.tokopedia.cartrevamp.view.uimodel.CartCheckoutButtonState
 import com.tokopedia.cartrevamp.view.uimodel.CartGlobalEvent
 import com.tokopedia.cartrevamp.view.uimodel.CartGroupHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
+import com.tokopedia.cartrevamp.view.uimodel.CartMainCoachMarkUiModel
 import com.tokopedia.cartrevamp.view.uimodel.CartNoteBottomSheetData
 import com.tokopedia.cartrevamp.view.uimodel.CartRecentViewHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartRecentViewItemHolderData
@@ -1476,12 +1478,6 @@ class CartRevampFragment :
         cartPageAnalytics.eventClickAddOnsWidgetCart(addOnType, productId)
     }
 
-    private fun checkMainFlowCartCoachMark() {
-        if (!CoachMarkPreference.hasShown(requireContext(), CART_MAIN_COACH_MARK)) {
-            showMainFlowCoachMark()
-        }
-    }
-
     private fun addEndlessRecyclerViewScrollListener(
         cartRecyclerView: RecyclerView,
         gridLayoutManager: GridLayoutManager
@@ -1505,12 +1501,6 @@ class CartRevampFragment :
                     return
                 }
 
-                if (hasShowMainFlowCoachMark) {
-                    Handler(Looper.getMainLooper()).postDelayed({
-                        showMainFlowCoachMark()
-                    }, COACHMARK_VISIBLE_DELAY_DURATION)
-                }
-
                 handlePromoButtonVisibilityOnIdle(newState)
                 handleSelectedAmountVisibilityOnIdle(newState)
             }
@@ -1522,7 +1512,6 @@ class CartRevampFragment :
 
                 if (dy != 0) {
                     bulkActionCoachMark?.dismissCoachMark()
-                    mainFlowCoachMark?.dismissCoachMark()
                 }
 
                 handleSelectedAmountVisibilityOnScroll(dy)
@@ -2133,11 +2122,6 @@ class CartRevampFragment :
 
     private fun initRecyclerView() {
         val gridLayoutManager = object : GridLayoutManager(context, 2) {
-            override fun onLayoutCompleted(state: RecyclerView.State?) {
-                super.onLayoutCompleted(state)
-                checkMainFlowCartCoachMark()
-            }
-
             override fun supportsPredictiveItemAnimations() = false
 
             override fun onLayoutChildren(
@@ -3427,6 +3411,8 @@ class CartRevampFragment :
             return
         }
 
+        setMainFlowCoachMark(cartData)
+
         sendAnalyticsScreenNameCartPage()
         updateStateAfterFinishGetCartList()
 
@@ -4176,56 +4162,19 @@ class CartRevampFragment :
         }
     }
 
-    private fun showMainFlowCoachMark() {
-        plusCoachMark?.dismissCoachMark()
-        mainFlowCoachMark?.dismissCoachMark()
-        hasShowMainFlowCoachMark = false
-        if ((
-            viewModel.cartModel.cartListData?.onboardingData?.size
-                ?: 0
-            ) < MAIN_FLOW_ONBOARDING_SELECT_ALL_INDEX
-        ) {
-            return
-        }
-
-        mainFlowCoachMark = CoachMark2(requireContext())
-        mainFlowCoachMark?.setStepListener(object : CoachMark2.OnStepListener {
-            override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
-                mainFlowCoachMarkLastActiveIndex = currentIndex
-            }
-        })
-        mainFlowCoachMark?.simpleCloseIcon?.setOnClickListener {
-            mainFlowCoachMark?.dismissCoachMark()
-            hasShowMainFlowCoachMark = false
-            mainFlowCoachMarkLastActiveIndex = 0
-        }
-        mainFlowCoachMark?.stepCloseIcon?.setOnClickListener {
-            mainFlowCoachMark?.dismissCoachMark()
-            hasShowMainFlowCoachMark = false
-            mainFlowCoachMarkLastActiveIndex = 0
-        }
-        mainFlowCoachMark?.onFinishListener = {
-            hasShowMainFlowCoachMark = false
-            mainFlowCoachMarkLastActiveIndex = 0
-        }
-
-        val layoutManager: GridLayoutManager = binding?.rvCart?.layoutManager as GridLayoutManager
-        val position = layoutManager.findFirstCompletelyVisibleItemPosition()
+    private fun setMainFlowCoachMark(cartData: CartData) {
         val mainFlowCoachMarkItems = arrayListOf<CoachMark2Item>()
-
-        if (position > RecyclerView.NO_POSITION) {
-            generateNotesCoachMark(position, mainFlowCoachMarkItems)
-            generateWishlistCoachMark(position, mainFlowCoachMarkItems)
-        }
         generateSelectAllCoachMark(mainFlowCoachMarkItems)
-
-        mainFlowCoachMark?.showCoachMark(
-            mainFlowCoachMarkItems,
-            null,
-            mainFlowCoachMarkLastActiveIndex
-        )
-        hasShowMainFlowCoachMark = true
-        CoachMarkPreference.setShown(requireContext(), CART_MAIN_COACH_MARK, true)
+        mainFlowCoachMark?.let {
+            cartAdapter.setMainCoachMark(
+                CartMainCoachMarkUiModel(
+                    it,
+                    mainFlowCoachMarkItems,
+                    cartData.onboardingData.getOrNull(MAIN_FLOW_ONBOARDING_NOTES_INDEX) ?: CartOnBoardingData(),
+                    cartData.onboardingData.getOrNull(MAIN_FLOW_ONBOARDING_WISHLIST_INDEX) ?: CartOnBoardingData()
+                )
+            )
+        }
     }
 
     private fun showBulkActionCoachMark() {
