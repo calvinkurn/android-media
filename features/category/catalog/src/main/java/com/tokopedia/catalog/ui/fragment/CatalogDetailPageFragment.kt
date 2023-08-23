@@ -13,10 +13,13 @@ import com.tokopedia.catalog.di.DaggerCatalogComponent
 import com.tokopedia.catalog.ui.viewmodel.CatalogDetailPageViewModel
 import com.tokopedia.catalogcommon.adapter.CatalogAdapterFactoryImpl
 import com.tokopedia.catalogcommon.adapter.WidgetCatalogAdapter
+import com.tokopedia.catalogcommon.uimodel.AccordionInformationUiModel
+import com.tokopedia.catalogcommon.uimodel.BaseCatalogUiModel
 import com.tokopedia.catalogcommon.listener.HeroBannerListener
 import com.tokopedia.catalogcommon.uimodel.DummyUiModel
 import com.tokopedia.catalogcommon.uimodel.HeroBannerUiModel
 import com.tokopedia.catalogcommon.uimodel.PanelImageUiModel
+import com.tokopedia.catalogcommon.uimodel.SliderImageTextUiModel
 import com.tokopedia.catalogcommon.uimodel.TopFeaturesUiModel
 import com.tokopedia.catalogcommon.uimodel.TrustMakerUiModel
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -105,7 +108,7 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener {
                     "",
                     widgetBackgroundColor = null,
                     widgetTextColor = null,
-                    "konten"
+                    content = "konten"
                 )
             )
             widgets.add(TrustMakerUiModel.dummyTrustMaker())
@@ -120,6 +123,8 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener {
                     )
                 )
             )
+            widgets.add(SliderImageTextUiModel.dummySliderImageText())
+            widgets.add(AccordionInformationUiModel.dummyAccordion())
             widgetAdapter.addWidget(widgets)
         }
 

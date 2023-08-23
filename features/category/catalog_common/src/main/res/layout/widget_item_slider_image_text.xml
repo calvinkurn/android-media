@@ -5,6 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:paddingVertical="16dp"
+    android:background="@color/transparent"
     android:orientation="vertical">
 
     <androidx.viewpager.widget.ViewPager

@@ -26,7 +26,7 @@ class TrustmakerViewHolder(itemView: View) :
     private val displayMetrics = itemView.resources.displayMetrics
 
     override fun bind(element: TrustMakerUiModel) {
-        binding?.root?.setBackgroundColor(element.widgetBackgroundColor.orDefaultColor(itemView.context))
+//        binding?.root?.setBackgroundColor(element.widgetBackgroundColor.orDefaultColor(itemView.context))
         binding?.rvItems?.apply {
             adapter = ItemTrustMakerAdapter(element.items)
             layoutManager =

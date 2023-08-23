@@ -8,6 +8,7 @@ data class HeroBannerUiModel(
     override val widgetName: String,
     override val widgetBackgroundColor: Int? = null,
     override val widgetTextColor: Int? = null,
+    override val darkMode: Boolean = false,
     val brandTitle: String = "",
     val brandDesc: String = "",
     val brandIconUrl: String = "",
