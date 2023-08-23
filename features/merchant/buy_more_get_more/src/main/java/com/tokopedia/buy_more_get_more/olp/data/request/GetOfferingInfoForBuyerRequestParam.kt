@@ -9,7 +9,7 @@ data class GetOfferingInfoForBuyerRequestParam(
     @SerializedName("offer_ids")
     val offerIds: List<Int> = emptyList(),
     @SerializedName("shop_ids")
-    val shopIds: List<Int> = emptyList(),
+    val shopIds: List<Long> = emptyList(),
     @SerializedName("product_anchor")
     val productAnchor: ProductAnchor? = null,
     @SerializedName("user_location")

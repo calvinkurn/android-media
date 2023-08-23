@@ -30,8 +30,13 @@ class OfferingProductSortingViewHolder(
             chipsSorting.apply {
                 val filter = SortFilterItem(data.selectedSortName)
                 addItem(arrayListOf(filter))
-                filter.refChipUnify.setChevronClickListener {
-                    sortListener.onSortChipClicked()
+                filter.refChipUnify.apply {
+                    setChevronClickListener {
+                        sortListener.onSortChipClicked()
+                    }
+                    setOnClickListener {
+                        sortListener.onSortChipClicked()
+                    }
                 }
             }
         }

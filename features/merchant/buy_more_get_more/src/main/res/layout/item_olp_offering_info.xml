@@ -19,10 +19,12 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_shop_badge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
         android:layout_marginStart="4dp"
         android:layout_marginTop="16dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/tpg_shop_name"
         app:layout_constraintStart_toEndOf="@+id/tpg_dari_label"
         app:layout_constraintTop_toTopOf="parent" />
 

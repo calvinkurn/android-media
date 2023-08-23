@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +18,9 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.buy_more_get_more.R
 import com.tokopedia.buy_more_get_more.databinding.FragmentOfferLandingPageBinding
 import com.tokopedia.buy_more_get_more.olp.di.component.DaggerBuyMoreGetMoreComponent
@@ -38,16 +42,19 @@ import com.tokopedia.campaign.delegates.HasPaginatedListImpl
 import com.tokopedia.campaign.helper.BuyMoreGetMoreHelper
 import com.tokopedia.campaign.utils.extension.showToaster
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toIntSafely
+import com.tokopedia.kotlin.extensions.view.toLongSafely
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import javax.inject.Inject
@@ -79,6 +86,7 @@ class OfferLandingPageFragment :
         private const val VIEW_CONTENT = 1
         private const val VIEW_LOADING = 2
         private const val VIEW_ERROR = 3
+        private const val REQUEST_CODE_USER_LOGIN_CART = 102
     }
 
     private var binding by autoClearedNullable<FragmentOfferLandingPageBinding>()
@@ -148,14 +156,7 @@ class OfferLandingPageFragment :
         viewModel.offeringInfo.observe(viewLifecycleOwner) { offerInfoForBuyer ->
             setupHeader(offerInfoForBuyer)
             viewModel.processEvent(OlpEvent.SetWarehouseIds(offerInfoForBuyer.nearestWarehouseIds))
-            viewModel.processEvent(
-                OlpEvent.SetShopIds(
-                    listOf(
-                        offerInfoForBuyer.offerings.firstOrNull()?.shopData?.shopId?.toInt()
-                            .orZero()
-                    )
-                )
-            )
+            viewModel.processEvent(OlpEvent.SetShopData(offerInfoForBuyer.offerings.firstOrNull()?.shopData))
             viewModel.processEvent(OlpEvent.SetOfferingJsonData(offerInfoForBuyer.offeringJsonData))
             viewModel.processEvent(OlpEvent.SetTncData(offerInfoForBuyer.offerings.firstOrNull()?.tnc.orEmpty()))
             setupTncBottomSheet()
@@ -199,6 +200,7 @@ class OfferLandingPageFragment :
     private fun setupHeader(offerInfoForBuyer: OfferInfoForBuyerUiModel) {
         setupStatusBar()
         setupToolbar(offerInfoForBuyer)
+        binding?.headerBackground?.setBackgroundResource(R.drawable.olp_header)
         olpAdapter?.submitList(
             newList = listOf(
                 offerInfoForBuyer,
@@ -206,7 +208,7 @@ class OfferLandingPageFragment :
             )
         )
         viewModel.processEvent(OlpEvent.GetNotification)
-        getProductListData(1)
+        getProductListData(Int.ONE)
     }
 
     private fun setupProductList(offerProductList: OfferProductListUiModel) {
@@ -221,8 +223,8 @@ class OfferLandingPageFragment :
             title = getString(R.string.bmgm_title)
             subTitle = offerInfoForBuyer.offerings.firstOrNull()?.offerName.orEmpty()
             setNavigationOnClickListener { activity?.finish() }
-            cartButton?.setOnClickListener { TODO("Navigate to cart") }
-            moreMenuButton?.setOnClickListener { TODO("Navigate to more menu") }
+            cartButton?.setOnClickListener { redirectToCartPage() }
+            moreMenuButton?.setOnClickListener { redirectToShopInfoPage() }
         }
     }
 
@@ -255,6 +257,7 @@ class OfferLandingPageFragment :
     }
 
     private fun getProductListData(page: Int) {
+        if (page == Int.ONE) olpAdapter?.removeProductList()
         viewModel.processEvent(OlpEvent.GetOffreringProductList(page = page))
     }
 
@@ -262,12 +265,8 @@ class OfferLandingPageFragment :
         setViewState(VIEW_LOADING)
         viewModel.processEvent(
             OlpEvent.SetInitialUiState(
-                offerIds = listOf(offerId.toIntOrZero()),
-                shopIds = if (shopIds.isNotEmpty()) {
-                    shopIds.split(",").map { it.toIntSafely() }
-                } else {
-                    emptyList()
-                },
+                offerIds = listOf(offerId.toIntSafely()),
+                shopIds = shopIds.toLongSafely(),
                 productIds = if (productIds.isNotEmpty()) {
                     productIds.split(",").map { it.toIntSafely() }
                 } else {
@@ -322,12 +321,8 @@ class OfferLandingPageFragment :
             )
             val config = HasPaginatedList.Config(
                 pageSize = 10,
-                onLoadNextPage = {
-                    // TODO: Implement loading
-                },
-                onLoadNextPageFinished = {
-                    // TODO: Implement loading
-                }
+                onLoadNextPage = {},
+                onLoadNextPageFinished = {}
             )
             attachPaging(this, config) { page, _ ->
                 getProductListData(page)
@@ -358,7 +353,7 @@ class OfferLandingPageFragment :
                     stickyContent.gone()
                     errorPageLarge.apply {
                         visible()
-                        setTitle("Something Went Wrong")
+                        setTitle("Terjadi Kesalahan")
                         setDescription(errorMsg)
                         setPrimaryCTAText("Coba lagi")
                         setPrimaryCTAClickListener {
@@ -379,46 +374,6 @@ class OfferLandingPageFragment :
                 }
             }
         }
-    }
-
-    private fun generateDummyOfferingData(): OfferInfoForBuyerUiModel {
-        return OfferInfoForBuyerUiModel(
-            offerings = listOf(
-                OfferInfoForBuyerUiModel.Offering(
-                    tierList = listOf(
-                        OfferInfoForBuyerUiModel.Offering.Tier(
-                            rules = listOf(OfferInfoForBuyerUiModel.Offering.Tier.Rule(value = 3)),
-                            benefits = listOf(OfferInfoForBuyerUiModel.Offering.Tier.Benefit(value = 20))
-                        ),
-                        OfferInfoForBuyerUiModel.Offering.Tier(
-                            rules = listOf(OfferInfoForBuyerUiModel.Offering.Tier.Rule(value = 5)),
-                            benefits = listOf(OfferInfoForBuyerUiModel.Offering.Tier.Benefit(value = 15))
-                        )
-                    )
-                )
-            )
-        )
-    }
-
-    private fun generateDummyProductData(): List<OfferProductListUiModel.Product> {
-        val products: MutableList<OfferProductListUiModel.Product> = mutableListOf()
-        for (product in 1..50) {
-            products.add(
-                OfferProductListUiModel.Product(
-                    name = "Product $product",
-                    imageUrl = "https://images.tokopedia.net/img/cache/200-square/attachment/2018/8/9/3127195/3127195_e5b3e074-c897-4cf0-9ced-5572d0538e7c.jpg",
-                    price = "Rp.20.000",
-                    rating = "4.5",
-                    soldCount = 80,
-                    campaign = OfferProductListUiModel.Product.Campaign(
-                        discountedPrice = "Rp.10.000",
-                        originalPrice = "Rp.15.000",
-                        discountedPercentage = 50
-                    )
-                )
-            )
-        }
-        return products
     }
 
     override fun onProductAtcVariantClicked(product: OfferProductListUiModel.Product) {
@@ -463,5 +418,24 @@ class OfferLandingPageFragment :
         tncBottomSheet?.apply {
             show(this@OfferLandingPageFragment)
         }
+    }
+
+    private fun redirectToCartPage() {
+        context?.let {
+            val userSession = UserSession(it)
+            if (userSession.isLoggedIn) {
+                RouteManager.route(it, ApplinkConst.CART)
+            } else {
+                startActivityForResult(
+                    RouteManager.getIntent(it, ApplinkConst.LOGIN),
+                    REQUEST_CODE_USER_LOGIN_CART
+                )
+            }
+        }
+    }
+
+    private fun redirectToShopInfoPage() {
+        val shopId = viewModel.currentState.shopData.shopId.toString()
+        RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_INFO, shopId)
     }
 }

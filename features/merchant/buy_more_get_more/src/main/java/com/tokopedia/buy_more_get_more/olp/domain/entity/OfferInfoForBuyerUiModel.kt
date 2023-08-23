@@ -1,6 +1,7 @@
 package com.tokopedia.buy_more_get_more.olp.domain.entity
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel.Offering.ShopData
 import com.tokopedia.buy_more_get_more.olp.presentation.adapter.OlpAdapterTypeFactory
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 
@@ -58,7 +59,7 @@ data class OfferInfoForBuyerUiModel(
 
     data class OlpUiState(
         val offerIds: List<Int> = emptyList(),
-        val shopIds: List<Int> = emptyList(),
+        val shopData: ShopData = ShopData(),
         val productIds: List<Int> = emptyList(),
         val warehouseIds: List<Int> = emptyList(),
         val tnc: List<String> = emptyList(),
@@ -72,7 +73,7 @@ data class OfferInfoForBuyerUiModel(
     sealed class OlpEvent {
         data class SetInitialUiState(
             val offerIds: List<Int> = emptyList(),
-            val shopIds: List<Int> = emptyList(),
+            val shopIds: Long,
             val productIds: List<Int> = emptyList(),
             val warehouseIds: List<Int> = emptyList(),
             val localCacheModel: LocalCacheModel?
@@ -86,7 +87,7 @@ data class OfferInfoForBuyerUiModel(
 
         data class SetWarehouseIds(val warehouseIds: List<Int>): OlpEvent()
 
-        data class SetShopIds(val shopIds: List<Int>): OlpEvent()
+        data class SetShopData(val shopData: ShopData?): OlpEvent()
 
         data class SetOfferingJsonData(val offeringJsonData: String): OlpEvent()
 

@@ -11,10 +11,12 @@ import com.tokopedia.buy_more_get_more.olp.data.request.GetOfferingInfoForBuyerR
 import com.tokopedia.buy_more_get_more.olp.data.request.GetOfferingProductListRequestParam
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel.*
+import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel.Offering.ShopData
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferProductListUiModel
 import com.tokopedia.buy_more_get_more.olp.domain.usecase.GetOfferInfoForBuyerUseCase
 import com.tokopedia.buy_more_get_more.olp.domain.usecase.GetOfferProductListUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -72,27 +74,45 @@ class OfferLandingPageViewModel @Inject constructor(
             is OlpEvent.SetInitialUiState -> {
                 setInitialUiState(
                     offerIds = event.offerIds,
-                    shopIds = event.shopIds,
+                    shopId = event.shopIds,
                     productIds = event.productIds,
                     warehouseIds = event.warehouseIds,
                     localCacheModel = event.localCacheModel,
                 )
             }
-            is OlpEvent.GetOfferingInfo -> { getOfferingInfo() }
-            is OlpEvent.GetOffreringProductList -> { getOfferingProductList(page = event.page)}
-            is OlpEvent.SetSortId -> { setSortId(event.sortId) }
-            is OlpEvent.GetNotification -> { getNotification() }
-            is OlpEvent.AddToCart -> { addToCart(event.product) }
+
+            is OlpEvent.GetOfferingInfo -> {
+                getOfferingInfo()
+            }
+
+            is OlpEvent.GetOffreringProductList -> {
+                getOfferingProductList(page = event.page)
+            }
+
+            is OlpEvent.SetSortId -> {
+                setSortId(event.sortId)
+            }
+
+            is OlpEvent.GetNotification -> {
+                getNotification()
+            }
+
+            is OlpEvent.AddToCart -> {
+                addToCart(event.product)
+            }
+
             is OlpEvent.SetWarehouseIds -> setWarehouseIds(event.warehouseIds)
-            is OlpEvent.SetShopIds -> setShopIds(event.shopIds)
+            is OlpEvent.SetShopData -> setShopData(event.shopData)
             is OlpEvent.SetOfferingJsonData -> setOfferingJsonData(event.offeringJsonData)
-            is OlpEvent.SetTncData -> { setTncData(event.tnc) }
+            is OlpEvent.SetTncData -> {
+                setTncData(event.tnc)
+            }
         }
     }
 
     private fun setInitialUiState(
         offerIds: List<Int>,
-        shopIds: List<Int> = emptyList(),
+        shopId: Long,
         productIds: List<Int> = emptyList(),
         warehouseIds: List<Int> = emptyList(),
         localCacheModel: LocalCacheModel?
@@ -100,7 +120,7 @@ class OfferLandingPageViewModel @Inject constructor(
         _uiState.update {
             it.copy(
                 offerIds = offerIds,
-                shopIds = shopIds,
+                shopData = ShopData(shopId = shopId),
                 productIds = productIds,
                 warehouseIds = warehouseIds,
                 localCacheModel = localCacheModel
@@ -114,7 +134,11 @@ class OfferLandingPageViewModel @Inject constructor(
             block = {
                 val param = GetOfferingInfoForBuyerRequestParam(
                     offerIds = currentState.offerIds,
-                    shopIds = currentState.shopIds,
+                    shopIds = if (currentState.shopData.shopId.isMoreThanZero()) {
+                        listOf(currentState.shopData.shopId)
+                    } else {
+                        emptyList()
+                    },
                     productAnchor = if (currentState.warehouseIds.isNotEmpty()) {
                         GetOfferingInfoForBuyerRequestParam.ProductAnchor(
                             currentState.productIds,
@@ -195,7 +219,7 @@ class OfferLandingPageViewModel @Inject constructor(
             block = {
                 val param = AddToCartUseCase.getMinimumParams(
                     productId = product.productId.toString(),
-                    shopId = currentState.shopIds.firstOrNull().orZero().toString()
+                    shopId = currentState.shopData.shopId.orZero().toString()
                 )
                 addToCartUseCase.setParams(param)
                 val result = addToCartUseCase.executeOnBackground()
@@ -223,11 +247,13 @@ class OfferLandingPageViewModel @Inject constructor(
         }
     }
 
-    private fun setShopIds(shopIds: List<Int>) {
-        _uiState.update {
-            it.copy(
-                shopIds = shopIds
-            )
+    private fun setShopData(shopData: ShopData?) {
+        if (shopData != null) {
+            _uiState.update {
+                it.copy(
+                    shopData = shopData
+                )
+            }
         }
     }
 

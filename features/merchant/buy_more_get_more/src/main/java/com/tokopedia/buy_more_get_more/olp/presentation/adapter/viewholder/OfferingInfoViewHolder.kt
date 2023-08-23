@@ -10,7 +10,9 @@ import com.tokopedia.buy_more_get_more.databinding.ItemOlpOfferingInfoBinding
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel
 import com.tokopedia.buy_more_get_more.olp.presentation.adapter.widget.TierListAdapter
 import com.tokopedia.buy_more_get_more.olp.presentation.listener.OfferingInfoListener
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.unifyprinciples.R.color.Unify_TN50
 
 class OfferingInfoViewHolder(
     itemView: View,
@@ -27,8 +29,13 @@ class OfferingInfoViewHolder(
 
     override fun bind(data: OfferInfoForBuyerUiModel) {
         binding?.apply {
-            tpgShopName.text = data.offerings.firstOrNull()?.offerName.orEmpty()
-            ivShopBadge.setImageUrl(data.offerings.firstOrNull()?.shopData?.badge.orEmpty())
+            tpgShopName.text = data.offerings.firstOrNull()?.shopData?.shopName.orEmpty()
+            if (data.offerings.firstOrNull()?.shopData?.badge?.isNotEmpty() == true) {
+                ivShopBadge.apply {
+                    visible()
+                    setImageUrl(data.offerings.firstOrNull()?.shopData?.badge.orEmpty())
+                }
+            }
             tpgTnc.setOnClickListener { listener.onTncClicked() }
         }
         setupTierList(data)
@@ -42,7 +49,7 @@ class OfferingInfoViewHolder(
             cardTierInfo.setCardUnifyBackgroundColor(
                 MethodChecker.getColor(
                     itemView.context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_TN50
+                    Unify_TN50
                 )
             )
             rvTierList.apply {
