@@ -27,7 +27,7 @@ class StoryViewModel @Inject constructor(
     private val repository: StoryRepository,
 ) : ViewModel() {
 
-    private var authorId: String = ""
+    private var shopId: String = ""
     var mGroupPosition = 0
     var mDetailMaxInGroup = 0
     var mDetailPosition = 0
@@ -42,10 +42,10 @@ class StoryViewModel @Inject constructor(
     val uiState = combine(
         _storyGroup,
         _storyDetail,
-    ) { storyCategories, storyItem ->
+    ) { storyGroup, storyDetail ->
         StoryUiState(
-            storyGroup = storyCategories,
-            storyDetail = storyItem,
+            storyGroup = storyGroup,
+            storyDetail = storyDetail,
         )
     }
 
@@ -61,11 +61,10 @@ class StoryViewModel @Inject constructor(
     }
 
     private fun handleSetInitialData(data: Bundle?) {
-        authorId = data?.getString(SHOP_ID, "").orEmpty()
-
         viewModelScope.launchCatchError(block = {
+            shopId = data?.getString(SHOP_ID, "").orEmpty()
             val request = StoryRequestModel(
-                authorID = authorId,
+                authorID = shopId,
                 authorType = StoryAuthorType.SHOP.value,
                 source = StorySource.SHOP_ENTRY_POINT.value,
                 sourceID = "",
@@ -79,8 +78,8 @@ class StoryViewModel @Inject constructor(
 
     private fun handleGroupMainData(selectedGroup: Int) {
         viewModelScope.launch {
-            setGroupData(selectedGroup)
             selectGroup(selectedGroup)
+            setGroupData(selectedGroup)
         }
     }
 
@@ -112,6 +111,12 @@ class StoryViewModel @Inject constructor(
         updateStoryDetailData(event = StoryDetailUiEvent.START)
     }
 
+    private fun selectGroup(position: Int) {
+        viewModelScope.launch {
+            _uiEvent.emit(StoryUiEvent.SelectGroup(position))
+        }
+    }
+
     private fun setGroupData(groupPosition: Int) {
         mGroupPosition = groupPosition
         updateStoryGroupSelectedIndicator(groupPosition)
@@ -124,12 +129,6 @@ class StoryViewModel @Inject constructor(
         )
     }
 
-    private fun selectGroup(position: Int) {
-        viewModelScope.launch {
-            _uiEvent.emit(StoryUiEvent.SelectGroup(position))
-        }
-    }
-
     private fun selectDetail(position: Int) {
         updateStoryDetailData(detailPosition = position)
     }
@@ -137,7 +136,7 @@ class StoryViewModel @Inject constructor(
     private fun updateStoryGroupSelectedIndicator(position: Int) {
         _storyGroup.update { group ->
             group.mapIndexed { index, storyGroupUiModel ->
-                storyGroupUiModel.copy(selected = index == position)
+                storyGroupUiModel.copy(isSelected = index == position)
             }
         }
     }

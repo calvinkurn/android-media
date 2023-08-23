@@ -1,7 +1,6 @@
 package com.tokopedia.stories.data.repository
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.stories.data.mapper.StoryMapper
 import com.tokopedia.stories.data.mapper.StoryMapperImpl
 import com.tokopedia.stories.domain.model.StoryRequestModel
 import com.tokopedia.stories.domain.usecase.StoryDetailsUseCase

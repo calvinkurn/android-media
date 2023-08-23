@@ -19,9 +19,9 @@ class StoryMapperImpl @Inject constructor()  : StoryMapper {
                 StoryGroupUiModel(
                     id = group.value,
                     image = group.image,
-                    selectedDetail = dataDetail.data.meta.selectedStoryIndex,
+                    selectedDetail = dataGroup.data.meta.selectedGroupIndex,
                     title = group.name,
-                    selected = dataGroup.data.meta.selectedGroupIndex == index,
+                    isSelected = dataGroup.data.meta.selectedGroupIndex == index,
                     details = dataDetail.data.stories.mapIndexed { index, detail ->
                         StoryUiModel.StoryDetailUiModel(
                             id = detail.id,

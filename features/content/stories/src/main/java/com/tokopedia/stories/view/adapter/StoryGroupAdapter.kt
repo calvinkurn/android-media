@@ -70,7 +70,7 @@ class StoryGroupViewHolder(
         binding.imgGroupImage.setImageUrl(data.image)
         binding.txtGroupTitle.text = data.title
 
-        if (data.selected) selectedView()
+        if (data.isSelected) selectedView()
         else unSelectedView()
 
         binding.root.setOnClickListener {

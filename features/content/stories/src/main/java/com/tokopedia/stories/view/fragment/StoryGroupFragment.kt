@@ -65,8 +65,8 @@ class StoryGroupFragment @Inject constructor(
     }
 
     private fun setupViewPager() = with(binding.storyGroupViewPager) {
-        setPageTransformer(ZoomOutPageTransformer())
         adapter = pagerAdapter
+        setPageTransformer(ZoomOutPageTransformer())
         registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 viewModelAction(StoryUiAction.SetGroupMainData(position))
@@ -81,7 +81,7 @@ class StoryGroupFragment @Inject constructor(
     }
 
     private fun setupUiStateObserver() {
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
             viewModel.uiState.withCache().collectLatest { (prevState, state) ->
                 renderStoryGroup(prevState?.storyGroup, state.storyGroup)
             }
@@ -89,7 +89,7 @@ class StoryGroupFragment @Inject constructor(
     }
 
     private fun setupUiEventObserver() {
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
             viewModel.uiEvent.collect { event ->
                 when (event) {
                     is StoryUiEvent.SelectGroup -> manageNextPageEvent(event.position)
@@ -102,9 +102,10 @@ class StoryGroupFragment @Inject constructor(
         prevState: List<StoryGroupUiModel>?,
         state: List<StoryGroupUiModel>,
     ) {
-        if (prevState == state) return
+        if (prevState == null || prevState == state) return
 
-        pagerAdapter.setStoryGroup(state)
+        setupViewPager()
+        pagerAdapter.setStoryGroup(state.size)
     }
 
     private fun manageNextPageEvent(position: Int) = with(binding.storyGroupViewPager) {

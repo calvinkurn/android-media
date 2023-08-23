@@ -9,8 +9,8 @@ data class StoryUiModel(
         val id: String,
         val image: String,
         val title: String,
+        val isSelected: Boolean,
         val selectedDetail: Int,
-        val selected: Boolean,
         val details: List<StoryDetailUiModel>,
     )
 
