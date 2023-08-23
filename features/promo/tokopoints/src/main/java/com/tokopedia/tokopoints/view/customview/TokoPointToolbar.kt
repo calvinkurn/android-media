@@ -32,6 +32,7 @@ import com.tokopedia.tokopoints.view.util.ImageUtil
 import com.tokopedia.tokopoints.view.util.convertDpToPixel
 import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class TokoPointToolbar : Toolbar {
     private var currentToolbarState = ToolbarState.TOOLBAR_TRANSPARENT
@@ -65,10 +66,10 @@ class TokoPointToolbar : Toolbar {
 
     private fun setDarkmode(context: Context){
         navigationIcon?.setColorFilter(
-            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White),
+            ContextCompat.getColor(context, unifyprinciplesR.color.Unify_Static_White),
             PorterDuff.Mode.SRC_ATOP
         )
-        binding.tvTpToolbarTitle.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
+        binding.tvTpToolbarTitle.setTextColor(ContextCompat.getColor(context, unifyprinciplesR.color.Unify_Static_White))
     }
 
     private fun setNavIcon(context: Context) {
@@ -77,7 +78,7 @@ class TokoPointToolbar : Toolbar {
             val v = getChildAt(NAV_ICON_POSITION)
             if (v != null && v.layoutParams is LayoutParams && v is AppCompatImageButton) {
                 val lp = v.getLayoutParams() as LayoutParams
-                lp.width = context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_48)
+                lp.width = context.resources.getDimensionPixelSize(unifyprinciplesR.dimen.unify_space_48)
                 v.setLayoutParams(lp)
                 v.invalidate()
                 v.requestLayout()
@@ -103,9 +104,9 @@ class TokoPointToolbar : Toolbar {
         else {
             currentToolbarState = ToolbarState.TOOLBAR_DARK
             val whiteColor =
-                MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+                MethodChecker.getColor(context, unifyprinciplesR.color.Unify_NN0)
             val greyColor =
-                MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN600)
+                MethodChecker.getColor(context, unifyprinciplesR.color.Unify_NN600)
             toggleNavigationIconColor(whiteColor, greyColor)
             val colorAnim = ObjectAnimator.ofInt(
                 binding.tvTpToolbarTitle, "textColor",
@@ -132,9 +133,9 @@ class TokoPointToolbar : Toolbar {
         else {
             currentToolbarState = ToolbarState.TOOLBAR_TRANSPARENT
             val whiteColor =
-                MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+                MethodChecker.getColor(context, unifyprinciplesR.color.Unify_NN0)
             val greyColor =
-                MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN600)
+                MethodChecker.getColor(context, unifyprinciplesR.color.Unify_NN600)
             toggleNavigationIconColor(greyColor, whiteColor)
             val colorAnim = ObjectAnimator.ofInt(binding.tvTpToolbarTitle, "textColor", greyColor, whiteColor)
             colorAnim.duration = 200
@@ -144,7 +145,7 @@ class TokoPointToolbar : Toolbar {
     }
 
     fun applyAlphaToToolbarBackground(alpha: Float) {
-        mContext?.resources?.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN0)?.let { adjustAlpha(it, alpha) }?.let {
+        mContext?.resources?.getColor(unifyprinciplesR.color.Unify_NN0)?.let { adjustAlpha(it, alpha) }?.let {
             setBackgroundColor(it)
         }
     }

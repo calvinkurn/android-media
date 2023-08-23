@@ -37,7 +37,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
-import com.tokopedia.unifyprinciples.R as unifyPrinciplesR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedContract.View, View.OnClickListener, AdapterCallback, TokopointPerformanceMonitoringListener {
 
@@ -119,8 +119,8 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
         binding?.apply {
             mItemDecoration = SpacesItemDecoration(
                 0,
-                activityContext!!.resources.getDimensionPixelOffset(unifyPrinciplesR.dimen.unify_space_0),
-                activityContext!!.resources.getDimensionPixelOffset(unifyPrinciplesR.dimen.unify_space_0)
+                activityContext!!.resources.getDimensionPixelOffset(unifyprinciplesR.dimen.unify_space_0),
+                activityContext!!.resources.getDimensionPixelOffset(unifyprinciplesR.dimen.unify_space_0)
             )
             if (recyclerViewCoupons.itemDecorationCount > 0) {
                 recyclerViewCoupons.removeItemDecoration(mItemDecoration!!)
