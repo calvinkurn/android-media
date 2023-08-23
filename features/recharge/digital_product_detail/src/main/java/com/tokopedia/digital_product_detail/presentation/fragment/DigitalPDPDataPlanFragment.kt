@@ -80,7 +80,6 @@ import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPWidgetM
 import com.tokopedia.digital_product_detail.presentation.utils.setupDynamicScrollListener
 import com.tokopedia.digital_product_detail.presentation.utils.toggle
 import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPDataPlanViewModel
-import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isLessThanZero
@@ -828,18 +827,7 @@ class DigitalPDPDataPlanFragment :
                     )
                 }
                 INDOSAT_CHECK_BALANCE_TYPE_ERROR -> {
-                    binding?.rechargePdpPaketDataClientNumberWidget?.showCheckBalanceWidgetLocalLoad {
-                        showCheckBalanceWidgetLocalLoad {
-                            viewModel.checkBalanceFailCounter++
-                            if (viewModel.isCheckBalanceFailedMoreThanThreeTimes()) {
-                                showCheckBalanceWarning(
-                                    checkBalanceData.subtitle,
-                                    checkBalanceData.campaignLabelTextColor)
-                            } else {
-                                getIndosatCheckBalance()
-                            }
-                        }
-                    }
+                    onFailedGetCheckBalance(checkBalanceData = checkBalanceData)
                 }
                 else -> return
             }
@@ -858,12 +846,25 @@ class DigitalPDPDataPlanFragment :
         }
     }
 
-    private fun onFailedGetCheckBalance(throwable: Throwable) {
+    private fun onFailedGetCheckBalance(
+        throwable: Throwable? = null,
+        checkBalanceData: DigitalCheckBalanceModel? = null
+    ) {
         binding?.rechargePdpPaketDataClientNumberWidget?.run {
             hideCheckBalanceWidgetShimmering()
+            hideCheckBalanceOtpWidget()
             setupDynamicScrollViewPadding()
+            showCheckBalanceWidget()
             showCheckBalanceWidgetLocalLoad {
-                getIndosatCheckBalance()
+                viewModel.checkBalanceFailCounter++
+                if (viewModel.isCheckBalanceFailedMoreThanThreeTimes()) {
+                    showCheckBalanceWarning(
+                        checkBalanceData?.subtitle.orEmpty(),
+                        checkBalanceData?.campaignLabelTextColor.orEmpty()
+                    )
+                } else {
+                    getIndosatCheckBalance()
+                }
             }
         }
     }

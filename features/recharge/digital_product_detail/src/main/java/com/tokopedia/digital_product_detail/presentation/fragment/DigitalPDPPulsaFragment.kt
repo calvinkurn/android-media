@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -671,18 +670,7 @@ class DigitalPDPPulsaFragment :
                     )
                 }
                 INDOSAT_CHECK_BALANCE_TYPE_ERROR -> {
-                    binding?.rechargePdpPulsaClientNumberWidget?.run {
-                        showCheckBalanceWidgetLocalLoad {
-                            viewModel.checkBalanceFailCounter++
-                            if (viewModel.isCheckBalanceFailedMoreThanThreeTimes()) {
-                                showCheckBalanceWarning(
-                                    checkBalanceData.subtitle,
-                                    checkBalanceData.campaignLabelTextColor)
-                            } else {
-                                getIndosatCheckBalance()
-                            }
-                        }
-                    }
+                    onFailedGetCheckBalance(checkBalanceData = checkBalanceData)
                 }
                 else -> return
             }
@@ -701,12 +689,25 @@ class DigitalPDPPulsaFragment :
         }
     }
 
-    private fun onFailedGetCheckBalance(throwable: Throwable) {
+    private fun onFailedGetCheckBalance(
+        throwable: Throwable? = null,
+        checkBalanceData: DigitalCheckBalanceModel? = null
+    ) {
         binding?.rechargePdpPulsaClientNumberWidget?.run {
             hideCheckBalanceWidgetShimmering()
+            hideCheckBalanceOtpWidget()
             setupDynamicScrollViewPadding()
+            showCheckBalanceWidget()
             showCheckBalanceWidgetLocalLoad {
-                getIndosatCheckBalance()
+                viewModel.checkBalanceFailCounter++
+                if (viewModel.isCheckBalanceFailedMoreThanThreeTimes()) {
+                    showCheckBalanceWarning(
+                        checkBalanceData?.subtitle.orEmpty(),
+                        checkBalanceData?.campaignLabelTextColor.orEmpty()
+                    )
+                } else {
+                    getIndosatCheckBalance()
+                }
             }
         }
     }
