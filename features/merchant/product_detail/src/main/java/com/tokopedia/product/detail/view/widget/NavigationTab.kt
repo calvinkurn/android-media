@@ -122,6 +122,10 @@ class NavigationTab : FrameLayout, CoroutineScope {
         toggle(false, false)
     }
 
+    fun disableAutoShowHide() {
+        enableScrollUpListener = false
+    }
+
     private fun updateItems(items: List<Item>) {
         var shouldUpdateTab = false
         items.forEachIndexed { index, item ->

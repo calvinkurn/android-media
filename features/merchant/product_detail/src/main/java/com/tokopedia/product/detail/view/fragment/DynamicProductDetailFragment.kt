@@ -3573,7 +3573,10 @@ open class DynamicProductDetailFragment :
         updateUi()
         if (!viewModel.isAPlusContentExpanded()) {
             val seeMorePosition = adapter.getSeeMoreAPlusTogglePosition()
-            if (seeMorePosition != RecyclerView.NO_POSITION) scrollToPosition(seeMorePosition)
+            if (seeMorePosition != RecyclerView.NO_POSITION) {
+                binding?.pdpNavigation?.disableNavigationTabAutoShowHide()
+                scrollToPosition(seeMorePosition)
+            }
         }
         DynamicProductDetailTracking.APlusContent.eventClickToggleExpandCollapse(
             expanding = viewModel.isAPlusContentExpanded(),

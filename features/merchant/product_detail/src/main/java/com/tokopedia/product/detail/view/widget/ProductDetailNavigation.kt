@@ -123,6 +123,10 @@ class ProductDetailNavigation : FrameLayout, NavigationListener {
         navigationTab?.updateItemPosition()
     }
 
+    fun disableNavigationTabAutoShowHide() {
+        navigationTab?.disableAutoShowHide()
+    }
+
     private fun getConfiguration(offsetY: Int, firstItem: NavigationTab.Item?): Configuration {
         return if (firstItem?.componentName == ProductDetailConstant.MEDIA) {
             Configuration.Navbar4(offsetY)
