@@ -45,7 +45,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation projectOrAar(rootProject.ext.libraries.remoteResourceRequest)
     implementation projectOrAar(rootProject.ext.libraries.deviceInfo)
-    implementation group: 'org.jetbrains.kotlin', name: 'kotlin-parcelize-runtime', version: '1.7.10'
 }
 
 project.ext {
