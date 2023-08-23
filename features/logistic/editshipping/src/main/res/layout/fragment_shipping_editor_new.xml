@@ -159,7 +159,7 @@
                         android:id="@+id/button_drop_off"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Cek Gerai Terdekat"
+                        android:text="@string/dropoff_button_title"
                         app:unifyButtonType="alternate"
                         app:unifyButtonVariant="ghost"
                         app:unifyButtonSize="small"

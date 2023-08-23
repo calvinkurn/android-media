@@ -152,7 +152,7 @@ class ShippingEditorFragment :
             buttonDropOff.let {
                 it.setDrawable(getIconUnifyDrawable(root.context, IconUnify.LOCATION))
                 it.setOnClickListener {
-                    RouteManager.route(root.context, "${ApplinkConst.WEBVIEW}?url=${TokopediaUrl.getInstance().WEB}dropoff-maps")
+                    RouteManager.route(root.context, generateWebviewApplink("${TokopediaUrl.getInstance().WEB}dropoff-maps"))
                 }
             }
         }
