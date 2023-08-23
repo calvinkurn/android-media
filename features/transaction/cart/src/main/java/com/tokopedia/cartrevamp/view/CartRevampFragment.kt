@@ -4213,8 +4213,6 @@ class CartRevampFragment :
         val position = layoutManager.findFirstCompletelyVisibleItemPosition()
         val mainFlowCoachMarkItems = arrayListOf<CoachMark2Item>()
 
-        Log.d("<RESULT>", "showMainFlowCoachMark: $position")
-
         if (position > RecyclerView.NO_POSITION) {
             generateNotesCoachMark(position, mainFlowCoachMarkItems)
             generateWishlistCoachMark(position, mainFlowCoachMarkItems)
