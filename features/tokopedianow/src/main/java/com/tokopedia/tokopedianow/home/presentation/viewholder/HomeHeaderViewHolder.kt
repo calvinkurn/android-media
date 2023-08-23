@@ -68,10 +68,13 @@ class HomeHeaderViewHolder(
                 showDefaultContent()
                 hideLoading()
             }
-            else -> {
+            HomeLayoutItemState.LOADING -> {
                 showLoading()
                 hideBackground()
                 hideContent()
+            }
+            else -> {
+                // do nothing
             }
         }
     }

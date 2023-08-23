@@ -483,7 +483,7 @@ object HomeLayoutMapper {
         } else {
             val layout = (headerUiModel.layout as HomeHeaderUiModel)
                 .copy(warehouses = warehouses)
-            add(headerUiModel.copy(layout = layout))
+            add(headerUiModel.copy(layout = layout, state = HomeLayoutItemState.NOT_LOADED))
         }
     }
 
