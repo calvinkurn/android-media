@@ -96,8 +96,8 @@ ext {
     robolectricVersion = "4.9"
     orchestratorVersion = '1.4.1'
     leakCanaryVersion = '2.9.1'
-    embraceVersion = '4.15.0'
-    newRelicVersion = '6.6.0'
+    embraceVersion = '5.22.0'
+    newRelicVersion = '7.0.0'
     windowVersion = '1.0.0'
     localBroadcastManagerVersion = '1.0.0'
     gojekSSOVersion = '1.0.1-67-0738bd6'
@@ -445,7 +445,7 @@ ext {
             explore_promo   : "com.tokopedia.unify.compositions:explore_promo:${unifyExplorePromoVersion}@aar",
             icons           : "com.tokopedia.unify:icons:${unifyIconsVersion}@aar",
             imageGallery    : "com.tokopedia.unify.compositions:image_gallery:${unifyImageGalleryVersion}@aar",
-            viewAllCard     : "com.tokopedia.unify.compositions:view_all_card:${unifyViewAllCardVersion}",
+            viewAllCard     : "com.tokopedia.unify.compositions:view_all_card:${unifyViewAllCardVersion}@aar",
             nestPrinciples  : "com.tokopedia.nest:principles:${nestPrinciplesVersion}",
             nestComponents  : "com.tokopedia.nest:components:${nestComponentsVersion}"
     ]

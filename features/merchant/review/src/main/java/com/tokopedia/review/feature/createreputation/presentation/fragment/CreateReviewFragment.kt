@@ -25,6 +25,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.merchant.DeeplinkMapperMerchant
 import com.tokopedia.device.info.DevicePerformanceInfo
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.imageassets.TokopediaImageUrl
@@ -121,7 +122,7 @@ class CreateReviewFragment :
                 putString(REPUTATION_ID, reviewId)
                 putInt(REVIEW_CLICK_AT, reviewClickAt)
                 putString(ReviewConstants.PARAM_FEEDBACK_ID, feedbackId)
-                putString(ReviewConstants.PARAM_SOURCE, utmSource)
+                putString(DeeplinkMapperMerchant.PARAM_UTM_SOURCE, utmSource)
             }
         }
     }
@@ -222,7 +223,7 @@ class CreateReviewFragment :
             reviewClickAt = it.getInt(REVIEW_CLICK_AT, 0)
             reputationId = it.getString(REPUTATION_ID, "")
             feedbackId = it.getString(ReviewConstants.PARAM_FEEDBACK_ID, "")
-            utmSource = it.getString(ReviewConstants.PARAM_SOURCE, "")
+            utmSource = it.getString(DeeplinkMapperMerchant.PARAM_UTM_SOURCE, "")
         }
 
         CreateReviewTracking.openScreen(screenName, productId, reputationId, utmSource)

@@ -18,6 +18,7 @@ import com.tokopedia.inbox.databinding.UniversalInboxFragmentBinding
 import com.tokopedia.inbox.universalinbox.analytics.UniversalInboxAnalytics
 import com.tokopedia.inbox.universalinbox.analytics.UniversalInboxTopAdsAnalytic
 import com.tokopedia.inbox.universalinbox.data.entity.UniversalInboxAllCounterResponse
+import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.CHATBOT_TYPE
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.CLICK_TYPE_WISHLIST
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.COMPONENT_NAME_TOP_ADS
@@ -33,7 +34,6 @@ import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.VALUE_X
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.getHeadlineAdsParam
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.getRoleUser
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.getShopIdTracker
-import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.getVariantTracker
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.shouldRefreshProductRecommendation
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxViewUtil
 import com.tokopedia.inbox.universalinbox.util.toggle.UniversalInboxAbPlatform
@@ -545,7 +545,7 @@ class UniversalInboxFragment @Inject constructor(
         when (item.type) {
             CHATBOT_TYPE -> {
                 analytics.clickOnHelp(
-                    abVariant = getVariantTracker(abTestPlatform),
+                    abVariant = UniversalInboxValueUtil.VAR_B,
                     userRole = getRoleUser(userSession),
                     shopId = getShopIdTracker(userSession),
                     helpCounter = item.counter.toString()
@@ -553,7 +553,7 @@ class UniversalInboxFragment @Inject constructor(
             }
             GOJEK_TYPE -> {
                 analytics.clickOnChatDriver(
-                    abVariant = getVariantTracker(abTestPlatform),
+                    abVariant = UniversalInboxValueUtil.VAR_B,
                     userRole = getRoleUser(userSession),
                     shopId = getShopIdTracker(userSession),
                     chatDriverCounter = item.counter.toString()
@@ -594,7 +594,7 @@ class UniversalInboxFragment @Inject constructor(
             VALUE_X
         }
         analytics.viewOnInboxPage(
-            abVariant = getVariantTracker(abTestPlatform),
+            abVariant = UniversalInboxValueUtil.VAR_B,
             userRole = getRoleUser(userSession),
             shopId = shopId,
             sellerChatCounter = sellerChatCounter,
@@ -612,7 +612,7 @@ class UniversalInboxFragment @Inject constructor(
         when (item.type) {
             MenuItemType.CHAT_BUYER -> {
                 analytics.clickOnBuyerChat(
-                    abVariant = getVariantTracker(abTestPlatform),
+                    abVariant = UniversalInboxValueUtil.VAR_B,
                     userRole = getRoleUser(userSession),
                     shopId = getShopIdTracker(userSession),
                     buyerChatCounter = item.counter.toString()
@@ -620,7 +620,7 @@ class UniversalInboxFragment @Inject constructor(
             }
             MenuItemType.CHAT_SELLER -> {
                 analytics.clickOnSellerChat(
-                    abVariant = getVariantTracker(abTestPlatform),
+                    abVariant = UniversalInboxValueUtil.VAR_B,
                     userRole = getRoleUser(userSession),
                     shopId = getShopIdTracker(userSession),
                     sellerChatCounter = item.counter.toString()
@@ -629,7 +629,7 @@ class UniversalInboxFragment @Inject constructor(
             MenuItemType.DISCUSSION -> {
                 analytics.sendNewPageInboxTalkTracking(userSession.userId, item.counter.toString())
                 analytics.clickOnDiscussion(
-                    abVariant = getVariantTracker(abTestPlatform),
+                    abVariant = UniversalInboxValueUtil.VAR_B,
                     userRole = getRoleUser(userSession),
                     shopId = getShopIdTracker(userSession),
                     discussionCounter = item.counter.toString()
@@ -637,7 +637,7 @@ class UniversalInboxFragment @Inject constructor(
             }
             MenuItemType.REVIEW -> {
                 analytics.clickOnReview(
-                    abVariant = getVariantTracker(abTestPlatform),
+                    abVariant = UniversalInboxValueUtil.VAR_B,
                     userRole = getRoleUser(userSession),
                     shopId = getShopIdTracker(userSession),
                     reviewCounter = item.counter.toString()
@@ -652,7 +652,7 @@ class UniversalInboxFragment @Inject constructor(
 
     override fun onNotificationIconClicked(counter: String) {
         analytics.clickOnNotifCenter(
-            abVariant = getVariantTracker(abTestPlatform),
+            abVariant = UniversalInboxValueUtil.VAR_B,
             userRole = getRoleUser(userSession),
             shopId = getShopIdTracker(userSession),
             notifCenterCounter = counter

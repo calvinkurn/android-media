@@ -45,12 +45,10 @@ object UniversalInboxModuleStub {
     @ActivityScope
     @Provides
     fun provideUniversalInboxMenuMapper(
-        resourceProvider: UniversalInboxResourceProvider,
-        abTestPlatform: UniversalInboxAbPlatform
+        resourceProvider: UniversalInboxResourceProvider
     ): UniversalInboxMenuMapper {
         return UniversalInboxMenuMapperStub(
-            resourceProvider,
-            abTestPlatform
+            resourceProvider
         )
     }
 
