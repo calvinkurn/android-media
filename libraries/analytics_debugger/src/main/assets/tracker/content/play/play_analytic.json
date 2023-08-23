@@ -34,6 +34,7 @@
       "eventAction": "null",
       "eventCategory": "null",
       "eventLabel": "null",
+      "pageSource": ".*.null.null..*",
       "screenName": "/group-chat-room/\\d+/(live|vod)/is coachmark true",
       "sessionIris": ".*",
       "userId": ".*"
@@ -162,6 +163,7 @@
           "item_brand": ".*",
           "item_variant": ".*",
           "item_category": ".*",
+          "dimension90": ".*.null.null..*",
           "dimension115": "pinned.(true|false), ribbon.(diminati|terlaris|no ribbon)"
         }
       ],
@@ -200,7 +202,8 @@
           "shop_name": ".*",
           "item_brand": ".*",
           "item_variant": ".*",
-          "item_category": ".*"
+          "item_category": ".*",
+          "dimension90": ".*.null.null..*"
         }
       ],
       "sessionIris": ".*",
@@ -232,7 +235,8 @@
           "price": "\\d+\\..*",
           "item_variant": ".*",
           "index": "\\d+(.\\d+)?",
-          "dimension40": "/groupchat - bottom sheet"
+          "dimension40": "/groupchat - bottom sheet",
+          "dimension90": ".*.null.null..*"
         }
       ],
       "item_list": "/groupchat - bottom sheet"
@@ -253,6 +257,7 @@
           "price": ".*",
           "item_variant": ".*",
           "index": "\\d+(.\\d+)?",
+          "dimension90": ".*.null.null..*",
           "dimension115": "pinned.(true|false), ribbon.(diminati|terlaris|no ribbon)"
         }
       ],
@@ -300,6 +305,7 @@
           "item_variant": ".*",
           "dimension40": "/groupchat - bottom sheet",
           "index": "\\d+(.\\d+)?",
+          "dimension90": ".*.null.null..*",
           "dimension115": "pinned.(true|false), ribbon.(diminati|terlaris|no ribbon)"
         }
       ],
@@ -329,6 +335,7 @@
           "item_variant": ".*",
           "dimension40": "/groupchat - bottom sheet",
           "index": "\\d+(.\\d+)?",
+          "dimension90": ".*.null.null..*",
           "dimension115": "pinned.(true|false), ribbon.(diminati|terlaris|no ribbon)"
         }
       ],
@@ -381,6 +388,7 @@
           "item_brand": ".*",
           "item_variant": ".*",
           "item_category": ".*",
+          "dimension90": ".*.null.null..*",
           "dimension115": "pinned.(true|false), ribbon.(diminati|terlaris|no ribbon)"
         }
       ],
@@ -470,6 +478,7 @@
           "item_brand": ".*",
           "item_variant": ".*",
           "item_category": ".*",
+          "dimension90": ".*.null.null..*",
           "dimension115": "pinned.(true|false), ribbon.(diminati|terlaris|no ribbon)"
         }
       ],
@@ -535,6 +544,7 @@
           "item_category": ".*",
           "price": "\\d+\\..*",
           "item_variant": ".*",
+          "dimension90": ".*.null.null..*",
           "index": "\\d+(.\\d+)?"
         }
       ],
@@ -557,7 +567,8 @@
           "item_category": ".*",
           "price": "\\d+\\..*",
           "item_variant": ".*",
-          "index": "\\d+(.\\d+)?"
+          "index": "\\d+(.\\d+)?",
+          "dimension90": ".*.null.null..*"
         }
       ],
       "item_list": "/groupchat - featured product",
