@@ -43,7 +43,7 @@ internal class StoriesWidgetRepositoryImpl @Inject constructor(
     ): Boolean = withContext(dispatchers.io) {
         return@withContext storiesSeenStorage.hasSeenAllAuthorStories(
             StoriesSeenStorage.Author.Shop(shopId),
-            lastUpdated.time,
+            lastUpdated.time
         )
     }
 
@@ -60,7 +60,7 @@ internal class StoriesWidgetRepositoryImpl @Inject constructor(
                 shopId = shopId,
                 status = getStoriesStatus(anyStoryExists = true, hasUnseenStories = true),
                 appLink = "tokopedia://play/12669",
-                updatedAt = TimeMillis.now(),
+                updatedAt = TimeMillis.now()
             )
         }
 //        val response = getShopStoriesUseCase(
@@ -85,6 +85,7 @@ internal class StoriesWidgetRepositoryImpl @Inject constructor(
 //        }
 
         result.forEach {
+            if (it.status != StoriesStatus.AllStoriesSeen) return@forEach
             storiesSeenStorage.setSeenAllAuthorStories(
                 StoriesSeenStorage.Author.Shop(it.shopId)
             )
