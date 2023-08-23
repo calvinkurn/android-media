@@ -20,6 +20,8 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.stories.widget.di.DaggerStoriesWidgetComponent
 import com.tokopedia.stories.widget.di.StoriesWidgetComponent
 import com.tokopedia.stories.widget.domain.StoriesEntryPoint
+import com.tokopedia.stories.widget.tracking.DefaultTrackingManager
+import com.tokopedia.stories.widget.tracking.TrackingManager
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
@@ -33,7 +35,7 @@ class StoriesWidgetManager private constructor(
     context: Context,
     private val lifecycleOwner: LifecycleOwner,
     private val viewModelStoreOwner: ViewModelStoreOwner,
-    private val options: Options,
+    private val options: Options
 ) {
 
     private val component = createComponent(context)
@@ -278,20 +280,20 @@ class StoriesWidgetManager private constructor(
         private val key: StoriesEntryPoint,
         private val context: Context,
         private val lifecycleOwner: LifecycleOwner,
-        private val viewModelStoreOwner: ViewModelStoreOwner,
+        private val viewModelStoreOwner: ViewModelStoreOwner
     ) {
 
         constructor(key: StoriesEntryPoint, fragment: Fragment) : this(
             key,
             fragment.requireContext(),
             fragment.viewLifecycleOwner,
-            fragment,
+            fragment
         )
         constructor(key: StoriesEntryPoint, activity: AppCompatActivity) : this(
             key,
             activity,
             activity,
-            activity,
+            activity
         )
 
         private var mScrollingParent: View? = null
@@ -316,7 +318,7 @@ class StoriesWidgetManager private constructor(
                 context,
                 lifecycleOwner,
                 viewModelStoreOwner,
-                createOptions(),
+                createOptions()
             )
         }
 

@@ -1,4 +1,4 @@
-package com.tokopedia.stories.widget
+package com.tokopedia.stories.widget.tracking
 
 import com.tokopedia.stories.widget.domain.StoriesEntryPoint
 
@@ -10,13 +10,4 @@ interface TrackingManager {
     fun impressEntryPoints(key: StoriesEntryPoint)
 
     fun clickEntryPoints(key: StoriesEntryPoint)
-}
-
-class DefaultTrackingManager : TrackingManager {
-
-    override fun impressEntryPoints(key: StoriesEntryPoint) {
-    }
-
-    override fun clickEntryPoints(key: StoriesEntryPoint) {
-    }
 }
