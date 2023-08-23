@@ -53,6 +53,8 @@ import com.tokopedia.topchat.common.data.TopchatItemMenu.Companion.ID_REPORT_USE
 import com.tokopedia.topchat.common.data.TopchatItemMenu.Companion.ID_UNBLOCK_CHAT
 import com.tokopedia.topchat.common.data.TopchatItemMenu.Companion.ID_UNFOLLOW
 import com.tokopedia.topchat.common.util.ImageUtil
+import com.tokopedia.topchat.common.util.ViewUtil.FORTY_FIVE_DEGREE
+import com.tokopedia.topchat.common.util.ViewUtil.rotateView
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
@@ -106,7 +108,7 @@ open class TopChatViewStateImpl constructor(
     override fun getActionBoxId() = R.id.add_comment_area
     override fun getSendButtonId() = R.id.send_but
     override fun getNotifierId() = R.id.notifier
-    override fun getChatMenuId() = R.id.iv_chat_menu
+    override fun getChatMenuId() = R.id.topchat_icon_chat_menu
     override fun getAttachmentMenuId(): Int = View.NO_ID
     override fun getAttachmentMenuContainer(): Int = View.NO_ID
     override fun getRootViewId() = R.id.main
@@ -161,14 +163,18 @@ open class TopChatViewStateImpl constructor(
             if (isFromBubble) {
                 TopChatAnalyticsKt.clickAddAttachmentFromBubble(userSession.shopId)
             }
-            chatMenu?.toggleAttachmentMenu()
+            chatMenu?.toggleAttachmentMenu {
+                rotateAttachmentButton(it)
+            }
         }
     }
 
     private fun setupChatStickerMenu() {
         chatMenu?.setStickerMenuListener(stickerMenuListener)
         chatStickerMenuButton?.setOnClickListener {
-            chatMenu?.toggleStickerMenu()
+            chatMenu?.toggleStickerMenu {
+                rotateAttachmentButton(it)
+            }
         }
     }
 
@@ -183,8 +189,16 @@ open class TopChatViewStateImpl constructor(
     override fun onStickerClosed() {
         chatStickerMenuButton?.setImage(IconUnify.STICKER)
         chatStickerMenuButton?.setOnClickListener {
-            chatMenu?.toggleStickerMenu()
+            chatMenu?.toggleStickerMenu {
+                rotateAttachmentButton(it)
+            }
         }
+    }
+
+    private fun rotateAttachmentButton(shouldRotate: Boolean) {
+        val startDegree = if (shouldRotate) 0f else FORTY_FIVE_DEGREE
+        val endDegree = if (shouldRotate) FORTY_FIVE_DEGREE else 0f
+        rotateView(chatMenuButton, startDegree, endDegree)
     }
 
     override fun setChatBlockStatus(isBlocked: Boolean) {
@@ -200,6 +214,7 @@ open class TopChatViewStateImpl constructor(
         if (chatMenu?.isKeyboardOpened == false) {
             chatMenu?.isKeyboardOpened = true
             hideChatMenu()
+            rotateAttachmentButton(false)
             fragmentView?.collapseSrw()
         }
     }

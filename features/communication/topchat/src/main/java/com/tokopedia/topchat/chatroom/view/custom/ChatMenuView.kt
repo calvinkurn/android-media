@@ -63,27 +63,34 @@ class ChatMenuView : FrameLayout, AttachmentItemViewHolder.AttachmentViewHolderL
         attachmentMenu?.setAttachmentMenuViewHolderListener(this)
     }
 
-    fun toggleAttachmentMenu() {
+    fun toggleAttachmentMenu(additionalAction: (Boolean) -> Unit) {
         selectedMenu = attachmentMenu
-        toggleMenu {
+        toggleMenu(onShow = {
             previousSelectedMenu = selectedMenu
             attachmentMenu?.show()
             stickerMenu?.hide()
-        }
+            additionalAction(true)
+        }, onHide = {
+            additionalAction(false)
+        })
     }
 
-    fun toggleStickerMenu() {
+    fun toggleStickerMenu(additionalAction: (Boolean) -> Unit) {
         selectedMenu = stickerMenu
-        toggleMenu {
+        toggleMenu(onShow = {
             previousSelectedMenu = selectedMenu
             stickerMenu?.show()
             attachmentMenu?.hide()
-        }
+            additionalAction(false)
+        }, onHide = {
+            additionalAction(true)
+        })
     }
 
-    private fun toggleMenu(onShow: () -> Unit) {
+    private fun toggleMenu(onShow: () -> Unit, onHide: () -> Unit) {
         if (isShowing) return
         if (isVisible && previousSelectedMenu == selectedMenu) {
+            onHide()
             hideMenu()
         } else {
             onShow()
