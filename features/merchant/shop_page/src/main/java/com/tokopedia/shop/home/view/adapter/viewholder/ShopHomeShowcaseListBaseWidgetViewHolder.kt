@@ -7,12 +7,15 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.shop.R
+import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.ItemShopHomeBaseEtalaseListWidgetBinding
 import com.tokopedia.shop.home.view.adapter.ShopHomeShowcaseListWidgetAdapter
+import com.tokopedia.shop.home.view.listener.ShopHomeListener
 import com.tokopedia.shop.home.view.model.ShopHomeShowcaseListItemUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeShowcaseListSliderUiModel
 import com.tokopedia.utils.view.binding.viewBinding
@@ -25,7 +28,8 @@ class ShopHomeShowcaseListBaseWidgetViewHolder(
     itemView: View,
     private var childWidgetAdapter: ShopHomeShowcaseListWidgetAdapter,
     private var layoutManagerType: Int,
-    private var gridColumnSize: Int
+    private var gridColumnSize: Int,
+    private val shopHomeListener: ShopHomeListener
 ) : AbstractViewHolder<ShopHomeShowcaseListSliderUiModel>(itemView) {
 
     companion object {
@@ -82,6 +86,32 @@ class ShopHomeShowcaseListBaseWidgetViewHolder(
         childWidgetAdapter.setParentPosition(adapterPosition)
         childWidgetAdapter.updateDataSet(element.showcaseListItem)
         setWidgetImpressionListener(element)
+        configColorTheme()
+    }
+
+    private fun configColorTheme() {
+        if (shopHomeListener.isShopHomeTabHasFestivity()) {
+            configDefaultColor()
+        } else {
+            if (shopHomeListener.isOverrideTheme()) {
+                configReimaginedColor()
+            } else {
+                configDefaultColor()
+            }
+        }
+    }
+
+    private fun configDefaultColor() {
+        val titleColor = MethodChecker.getColor(
+            itemView.context,
+            com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
+        )
+        tvCarouselTitle?.setTextColor(titleColor)
+    }
+
+    private fun configReimaginedColor() {
+        val titleColor = shopHomeListener.getShopPageColorSchema().getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS)
+        tvCarouselTitle?.setTextColor(titleColor)
     }
 
     private fun setWidgetImpressionListener(model: ShopHomeShowcaseListSliderUiModel) {

@@ -1,4 +1,4 @@
-package com.tokopedia.shop.common.view.customview
+package com.tokopedia.shop.common.view.customview.bannerhotspot
 
 import android.content.Context
 import android.util.AttributeSet

@@ -16,6 +16,7 @@ import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.util.ShopUtilExt.isButtonAtcShown
+import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.ItemShopHomeProductCarouselBinding
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.adapter.ShopHomeCarouselProductAdapter
@@ -90,18 +91,33 @@ class ShopHomeCarousellProductViewHolder(
             }
         }
         setWidgetImpressionListener(shopHomeCarousellProductUiModel)
-        checkFestivity(shopHomeCarousellProductUiModel)
+        configColorTheme(shopHomeCarousellProductUiModel)
     }
 
-    private fun checkFestivity(shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel) {
+    private fun configColorTheme(shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel) {
         if (shopHomeCarousellProductUiModel.isFestivity) {
-            configFestivity()
+            configFestivityColor()
         } else {
-            configNonFestivity()
+            if (shopHomeListener.isShopHomeTabHasFestivity()) {
+                configDefaultColor()
+            } else {
+                if (shopHomeCarousellProductUiModel.header.isOverrideTheme) {
+                    configReimaginedColor(shopHomeCarousellProductUiModel.header.colorSchema)
+                } else {
+                    configDefaultColor()
+                }
+            }
         }
     }
 
-    private fun configFestivity() {
+    private fun configReimaginedColor(colorSchema: ShopPageColorSchema) {
+        val titleColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS)
+        val ctaColor  = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_LOW_EMPHASIS)
+        textViewTitle?.setTextColor(titleColor)
+        textViewCta?.setTextColor(ctaColor)
+    }
+
+    private fun configFestivityColor() {
         val festivityTextColor = MethodChecker.getColor(
             itemView.context,
             com.tokopedia.unifyprinciples.R.color.Unify_Static_White
@@ -110,7 +126,7 @@ class ShopHomeCarousellProductViewHolder(
         textViewCta?.setTextColor(festivityTextColor)
     }
 
-    private fun configNonFestivity() {
+    private fun configDefaultColor() {
         val defaultTitleColor = MethodChecker.getColor(
             itemView.context,
             com.tokopedia.unifyprinciples.R.color.Unify_NN950

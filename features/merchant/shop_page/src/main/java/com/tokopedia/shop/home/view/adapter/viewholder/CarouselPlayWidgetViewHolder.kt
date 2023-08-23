@@ -32,12 +32,29 @@ class CarouselPlayWidgetViewHolder(
 
 
     override fun bind(element: CarouselPlayWidgetUiModel) {
-        playWidgetViewHolder.bind(element.playWidgetState, this)
-        setupHeaderSection(element)
+        setContentSection(element)
+        setupHeaderSection()
         setWidgetImpressionListener(element)
+        configColorTheme(element)
     }
 
-    private fun setupHeaderSection(element: CarouselPlayWidgetUiModel) {
+    private fun setContentSection(element: CarouselPlayWidgetUiModel) {
+        playWidgetViewHolder.bind(element.playWidgetState, this)
+    }
+
+    private fun configColorTheme(element: CarouselPlayWidgetUiModel) {
+        if (shopHomeListener.isShopHomeTabHasFestivity()) {
+            setDefaultColorConfig()
+        } else {
+            if (element.header.isOverrideTheme) {
+                setReimaginedColorConfig(element.header.colorSchema)
+            } else {
+                setDefaultColorConfig()
+            }
+        }
+    }
+
+    private fun setupHeaderSection() {
         playWidgetView?.let {
             val customHeaderBinding = ViewPlayWidgetCustomHeaderShopHomeTabBinding.inflate(
                 LayoutInflater.from(itemView.context),
@@ -48,38 +65,34 @@ class CarouselPlayWidgetViewHolder(
             headerCta = customHeaderBinding.tvPlayWidgetAction
             it.setCustomHeader(customHeaderBinding.root)
             playWidgetViewHolder.coordinator.controlWidget(it)
-            if (shopHomeListener.isShopHomeTabHasFestivity()) {
-                setDefaultHeaderSectionConfig()
-            } else {
-                if (element.header.isOverrideTheme) {
-                    setReimaginedHeaderSectionConfig(element.header.colorSchema)
-                } else {
-                    setDefaultHeaderSectionConfig()
-                }
-            }
         }
     }
 
-    private fun setReimaginedHeaderSectionConfig(colorSchema: ShopPageColorSchema) {
-        val highEmphasisColor = colorSchema.getColorIntValue(
+    private fun setReimaginedColorConfig(colorSchema: ShopPageColorSchema) {
+        val titleColor = colorSchema.getColorIntValue(
             ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS
         )
-        val ctaLinkColor = colorSchema.getColorIntValue(
+        val ctaColor = colorSchema.getColorIntValue(
             ShopPageColorSchema.ColorSchemaName.CTA_TEXT_LINK_COLOR
         )
-        headerTitle?.setTextColor(highEmphasisColor)
-        headerCta?.setTextColor(ctaLinkColor)
+        setHeaderColor(titleColor, ctaColor)
     }
 
-    private fun setDefaultHeaderSectionConfig() {
-        headerTitle?.setTextColor(MethodChecker.getColor(
+    private fun setDefaultColorConfig() {
+        val titleColor = MethodChecker.getColor(
             itemView.context,
             com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
-        ))
-        headerCta?.setTextColor(MethodChecker.getColor(
+        )
+        val ctaColor = MethodChecker.getColor(
             itemView.context,
             com.tokopedia.unifyprinciples.R.color.Unify_GN500
-        ))
+        )
+        setHeaderColor(titleColor, ctaColor)
+    }
+
+    private fun setHeaderColor(titleColor: Int, ctaColor: Int) {
+        headerTitle?.setTextColor(titleColor)
+        headerCta?.setTextColor(ctaColor)
     }
 
     private fun setWidgetImpressionListener(model: CarouselPlayWidgetUiModel) {

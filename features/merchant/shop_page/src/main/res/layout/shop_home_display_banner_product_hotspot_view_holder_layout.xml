@@ -39,7 +39,7 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible">
 
-        <com.tokopedia.shop.common.view.customview.ImageHotspotView
+        <com.tokopedia.shop.common.view.customview.bannerhotspot.ImageHotspotView
             android:id="@+id/image_banner_hotspot"
             android:layout_width="match_parent"
             android:layout_height="0dp"

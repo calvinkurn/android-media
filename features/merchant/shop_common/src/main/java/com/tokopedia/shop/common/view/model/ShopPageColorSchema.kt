@@ -8,7 +8,7 @@ data class ShopPageColorSchema(
 ){
     enum class ColorSchemaName(val value: String) {
         TEXT_HIGH_EMPHASIS("textColorHighEmphasis"),
-        TEXT_COLOR_EMPHASIS("textColorLowEmphasis"),
+        TEXT_LOW_EMPHASIS("textColorLowEmphasis"),
         DISABLED_TEXT_COLOR("disabledTextColor"),
         CTA_TEXT_LINK_COLOR("ctaTextLinkColor"),
         ICON_ENABLED_HIGH_COLOR("iconEnableHighColor"),
