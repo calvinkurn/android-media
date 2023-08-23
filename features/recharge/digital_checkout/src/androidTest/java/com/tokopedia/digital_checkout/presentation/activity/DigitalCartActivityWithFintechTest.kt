@@ -119,12 +119,12 @@ class DigitalCartActivityWithFintechTest {
         //Info Cart Detail
         Thread.sleep(2000)
 
-        onView(withId(R.id.dialog_content)).check(matches(isDisplayed()))
-        onView(withId(R.id.dialog_title)).check(matches(withText("This is pop up")))
-        onView(withId(R.id.dialog_description)).check(matches(withText("Please enter okay")))
-        onView(withId(R.id.dialog_btn_primary)).check(matches(isDisplayed()))
-        onView(withId(R.id.dialog_btn_primary)).check(matches(withText("Yes")))
-        onView(withId(R.id.dialog_btn_primary)).perform(click())
+        onView(withId(com.tokopedia.dialog.R.id.dialog_content)).check(matches(isDisplayed()))
+        onView(withId(com.tokopedia.dialog.R.id.dialog_title)).check(matches(withText("This is pop up")))
+        onView(withId(com.tokopedia.dialog.R.id.dialog_description)).check(matches(withText("Please enter okay")))
+        onView(withId(com.tokopedia.dialog.R.id.dialog_btn_primary)).check(matches(isDisplayed()))
+        onView(withId(com.tokopedia.dialog.R.id.dialog_btn_primary)).check(matches(withText("Yes")))
+        onView(withId(com.tokopedia.dialog.R.id.dialog_btn_primary)).perform(click())
 
         Thread.sleep(1000)
         onView(withId(R.id.productTitle)).check(matches(withText("Angsuran Kredit")))
@@ -276,12 +276,12 @@ class DigitalCartActivityWithFintechTest {
 
         onView(withId(R.id.tvTotalPayment)).check(matches(withText("Rp16.000")))
 
-        onView(withId(R.id.tv_promo_checkout_title)).check(matches(isDisplayed()))
-        onView(withId(R.id.tv_promo_checkout_title)).check(matches(withText(dummyPromoTitle)))
-        onView(withId(R.id.tv_promo_checkout_desc)).check(matches(isDisplayed()))
-        onView(withId(R.id.tv_promo_checkout_desc)).check(matches(withText(dummyPromoDescription)))
+        onView(withId(com.tokopedia.promocheckout.common.R.id.tv_promo_checkout_title)).check(matches(isDisplayed()))
+        onView(withId(com.tokopedia.promocheckout.common.R.id.tv_promo_checkout_title)).check(matches(withText(dummyPromoTitle)))
+        onView(withId(com.tokopedia.promocheckout.common.R.id.tv_promo_checkout_desc)).check(matches(isDisplayed()))
+        onView(withId(com.tokopedia.promocheckout.common.R.id.tv_promo_checkout_desc)).check(matches(withText(dummyPromoDescription)))
 
-        onView(withId(R.id.iv_promo_checkout_right)).perform(click())
+        onView(withId(com.tokopedia.promocheckout.common.R.id.iv_promo_checkout_right)).perform(click())
         Thread.sleep(1000)
     }
 

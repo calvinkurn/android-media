@@ -56,6 +56,8 @@ object BuyerOrderDetailTrackerConstant {
     const val EVENT_ACTION_CLICK_SEE_ALL_PRODUCTS = "click lihat semua produk"
     const val EVENT_ACTION_CLICK_SEE_LESS_PRODUCTS = "click lihat lebih sedikit"
     const val EVENT_ACTION_CLICK_ESTIMATE_ICON_POF_BOM_DETAIL = "click icon estimasi dana dikembalikan"
+    const val EVENT_ACTION_CLICK_ON_ORDER_WIDGET = "click on order group widget"
+    const val EVENT_ACTION_CLICK_VIEW_DETAIL_ORDER_GROUP = "click lihat detail on order group detail"
 
     // pof
     const val EVENT_ACTION_CLICK_TOTAL_AVAILABLE_ITEM_POF = "click jumlah barang tersedia - popup pof"
@@ -114,6 +116,8 @@ object BuyerOrderDetailTrackerConstant {
     const val TRACKER_ID_41154 = "41154"
     const val TRACKER_ID_41155 = "41155"
     const val TRACKER_ID_41156 = "41156"
+    const val TRACKER_ID_44136 = "44136"
+    const val TRACKER_ID_44137 = "44137"
 
     // others
     const val MARKER_ORDER_LIST_DETAIL_MARKETPLACE = "/order list detail - marketplace"

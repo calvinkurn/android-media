@@ -104,7 +104,7 @@ class FlightSearchActivityTest {
 
     private fun quickFilter() {
         Thread.sleep(2000)
-        onView(AllOf.allOf(withId(R.id.chip_text), withText("Langsung"))).perform(click())
+        onView(AllOf.allOf(withId(com.tokopedia.analyticsdebugger.R.id.chip_text), withText("Langsung"))).perform(click())
         Thread.sleep(1000)
     }
 
@@ -124,33 +124,33 @@ class FlightSearchActivityTest {
         // change passengers
         onView(
             CommonMatcher.getElementFromMatchAtPosition(
-                withId(R.id.quantity_editor_add),
+                withId(com.tokopedia.unifycomponents.R.id.quantity_editor_add),
                 0
             )
         ).perform(click())
         onView(
             CommonMatcher.getElementFromMatchAtPosition(
-                withId(R.id.quantity_editor_add),
+                withId(com.tokopedia.unifycomponents.R.id.quantity_editor_add),
                 0
             )
         ).perform(click())
 
         onView(
             CommonMatcher.getElementFromMatchAtPosition(
-                withId(R.id.quantity_editor_add),
+                withId(com.tokopedia.unifycomponents.R.id.quantity_editor_add),
                 1
             )
         ).perform(click())
         onView(
             CommonMatcher.getElementFromMatchAtPosition(
-                withId(R.id.quantity_editor_add),
+                withId(com.tokopedia.unifycomponents.R.id.quantity_editor_add),
                 1
             )
         ).perform(click())
 
         onView(
             CommonMatcher.getElementFromMatchAtPosition(
-                withId(R.id.quantity_editor_add),
+                withId(com.tokopedia.unifycomponents.R.id.quantity_editor_add),
                 2
             )
         ).perform(click())
@@ -165,7 +165,7 @@ class FlightSearchActivityTest {
         Thread.sleep(3000)
 
         try {
-            onView(withId(R.id.text_next)).check(matches(isDisplayed())).perform(click())
+            onView(withId(com.tokopedia.showcase.R.id.text_next)).check(matches(isDisplayed())).perform(click())
         } catch (e: NoMatchingViewException) {
         }
 
