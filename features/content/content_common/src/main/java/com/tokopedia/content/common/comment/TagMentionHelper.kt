@@ -1,7 +1,6 @@
 package com.tokopedia.content.common.comment
 
 import android.content.Context
-import android.graphics.Color
 import android.text.Spanned
 import android.text.SpannedString
 import android.text.TextPaint
@@ -10,6 +9,7 @@ import android.text.style.ForegroundColorSpan
 import android.view.View
 import androidx.annotation.ColorInt
 import androidx.core.text.getSpans
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.content.common.comment.uimodel.CommentType
 import com.tokopedia.content.common.comment.uimodel.CommentUiModel
@@ -62,8 +62,8 @@ class MentionedSpanned(
     }
 }
 
-class BaseSpan(val fullText: String, val content: String, val shortName: String) :
-    ForegroundColorSpan(Color.BLACK) {
+class BaseSpan(val fullText: String, val content: String, val shortName: String, val ctx: Context) :
+    ForegroundColorSpan(MethodChecker.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Unify_NN1000)) {
     val sentText: String get() = fullText + content
 }
 
@@ -87,7 +87,7 @@ object TagMentionBuilder {
         }
     }
 
-    fun spanText(text: Spanned, textLength: Int): Spanned {
+    fun spanText(text: Spanned, textLength: Int, ctx: Context): Spanned {
         if (text.isBlank()) return buildSpannedString { append(text) }
 
         val find = regex.findAll(text)
@@ -100,7 +100,7 @@ object TagMentionBuilder {
             )
             val restructured =
                 "{${find.elementAt(0).value}|${find.elementAt(1).value}|${find.elementAt(2).value}}"
-            val span = BaseSpan(fullText = restructured, content = comment, shortName = name)
+            val span = BaseSpan(fullText = restructured, content = comment, shortName = name, ctx = ctx)
             buildSpannedString {
                 append(name, span, Spanned.SPAN_EXCLUSIVE_INCLUSIVE)
                 append(comment)
