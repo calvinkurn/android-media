@@ -71,16 +71,14 @@ class InputTextActivity : BaseActivity(), NavToolbarComponent.Listener {
         setupToolbar()
     }
 
-    private fun initObserver() {
-        viewModel.textValue.observe(this) {
-            toolbar.showContinueButtonAs(it.isNotEmpty())
-        }
-    }
+    private fun initObserver() {}
 
     private fun setupToolbar() {
         toolbar.onToolbarThemeChanged(ToolbarTheme.Transparent)
+        toolbar.setBackVisibility(false)
+        toolbar.setTitleVisibility(false)
+
         toolbar.showContinueButtonAs(true)
-        toolbar.setTitle(getString(R.string.universal_editor_nav_bar_add_text))
     }
 
     private fun initFragment() {
