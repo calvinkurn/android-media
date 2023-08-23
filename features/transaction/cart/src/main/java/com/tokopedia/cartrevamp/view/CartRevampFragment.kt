@@ -273,8 +273,6 @@ class CartRevampFragment :
     private var isFirstCheckEvent: Boolean = true
     private var hasShowBulkActionCoachMark: Boolean = false
     private var bulkActionCoachMarkLastActiveIndex: Int = 0
-    private var hasShowMainFlowCoachMark: Boolean = false
-    private var mainFlowCoachMarkLastActiveIndex: Int = 0
 
     private lateinit var editBundleActivityResult: ActivityResultLauncher<Intent>
     private lateinit var shipmentActivityResult: ActivityResultLauncher<Intent>
@@ -4181,7 +4179,6 @@ class CartRevampFragment :
         bulkActionCoachMark?.dismissCoachMark()
         plusCoachMark?.dismissCoachMark()
         mainFlowCoachMark?.dismissCoachMark()
-        hasShowMainFlowCoachMark = false
         if ((
             viewModel.cartModel.cartListData?.onboardingData?.size
                 ?: 0
