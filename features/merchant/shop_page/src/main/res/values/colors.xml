@@ -23,5 +23,7 @@
     <color name="clr_dms_2E3137">#2E3137</color>
     <color name="clr_dms_2E3137_70">#B32E3137</color>
     <color name="clr_dms_121212_50">#80121212</color>
+    <color name="dms_static_Unify_Unify_NN950_96_light">#F5212121</color>
+    <color name="dms_static_Unify_Unify_GN500_light">#00AA5B</color>
 
 </resources>
