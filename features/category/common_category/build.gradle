@@ -44,6 +44,7 @@ dependencies {
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation projectOrAar(rootProject.ext.libraries.remoteResourceRequest)
+
     implementation projectOrAar(rootProject.ext.libraries.deviceInfo)
 }
 
