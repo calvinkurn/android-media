@@ -9,6 +9,7 @@ import com.tokopedia.catalogcommon.uimodel.DummyUiModel
 import com.tokopedia.catalogcommon.uimodel.HeroBannerUiModel
 import com.tokopedia.catalogcommon.uimodel.SliderImageTextUiModel
 import com.tokopedia.catalogcommon.uimodel.PanelImageUiModel
+import com.tokopedia.catalogcommon.uimodel.TextDescriptionUiModel
 import com.tokopedia.catalogcommon.uimodel.TopFeaturesUiModel
 import com.tokopedia.catalogcommon.viewholder.AccordionInformationViewHolder
 import com.tokopedia.catalogcommon.uimodel.TrustMakerUiModel
@@ -16,6 +17,7 @@ import com.tokopedia.catalogcommon.viewholder.DummyViewHolder
 import com.tokopedia.catalogcommon.viewholder.HeroBannerViewHolder
 import com.tokopedia.catalogcommon.viewholder.SliderImageTextViewHolder
 import com.tokopedia.catalogcommon.viewholder.PanelImageViewHolder
+import com.tokopedia.catalogcommon.viewholder.TextDescriptionViewHolder
 import com.tokopedia.catalogcommon.viewholder.TopFeatureViewHolder
 import com.tokopedia.catalogcommon.viewholder.TrustmakerViewHolder
 import com.tokopedia.home_component.HomeComponentTypeFactory
@@ -35,6 +37,7 @@ class CatalogAdapterFactoryImpl(
             TrustmakerViewHolder.LAYOUT -> TrustmakerViewHolder(view)
             BannerRevampViewHolder.LAYOUT -> BannerRevampViewHolder(view, null)
             AccordionInformationViewHolder.LAYOUT -> AccordionInformationViewHolder(view)
+            TextDescriptionViewHolder.LAYOUT -> TextDescriptionViewHolder(view)
             else -> super.createViewHolder(view, type)
         }
     }
@@ -65,5 +68,9 @@ class CatalogAdapterFactoryImpl(
 
     override fun type(uiModel: TrustMakerUiModel): Int {
         return TrustmakerViewHolder.LAYOUT
+    }
+
+    override fun type(uiModel: TextDescriptionUiModel): Int {
+        return TextDescriptionViewHolder.LAYOUT
     }
 }
