@@ -1,11 +1,11 @@
 package com.tokopedia.cartrevamp.domain.usecase
 
+import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.cartrevamp.domain.model.bmgm.request.BmGmGetGroupProductTickerParams
 import com.tokopedia.cartrevamp.domain.model.bmgm.response.BmGmGetGroupProductTickerResponse
 import com.tokopedia.gql_query_annotation.GqlQuery
-import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import javax.inject.Inject
@@ -20,7 +20,31 @@ class BmGmGetGroupProductTickerUseCase @Inject constructor(
     override fun graphqlQuery(): String = query
 
     override suspend fun execute(params: BmGmGetGroupProductTickerParams): BmGmGetGroupProductTickerResponse {
-        return repository.request(GetGroupProductTickerQuery(), createVariables(params))
+        val jsonRaw = """
+            {
+                "status":"OK",
+                "error_message":[],
+                "data":{
+                    "type": "BMGM",
+                    "action": "", // need action from client, if empty means success and no action required
+                    "icon": {
+                        "url": "http://tokopedia.com/icon.png"
+                    },
+                    "message":[
+                        {
+                            "text": "Potongan harga Rp 10Rb . Summer Sale Clearance!",
+                            "url": ""
+                        }
+                    ],
+                    "discount_amount": 10000
+                }
+            }
+        """.trimIndent()
+
+        val gson = Gson()
+
+        // return repository.request(GetGroupProductTickerQuery(), createVariables(params))
+        return gson.fromJson(jsonRaw, BmGmGetGroupProductTickerResponse::class.java)
     }
 
     private fun createVariables(params: BmGmGetGroupProductTickerParams): Map<String, Any> {

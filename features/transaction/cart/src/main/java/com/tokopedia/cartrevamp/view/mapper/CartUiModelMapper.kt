@@ -29,6 +29,7 @@ import com.tokopedia.cartrevamp.view.uimodel.CartAddOnData
 import com.tokopedia.cartrevamp.view.uimodel.CartAddOnProductData
 import com.tokopedia.cartrevamp.view.uimodel.CartAddOnWidgetData
 import com.tokopedia.cartrevamp.view.uimodel.CartChooseAddressHolderData
+import com.tokopedia.cartrevamp.view.uimodel.CartDetailInfo
 import com.tokopedia.cartrevamp.view.uimodel.CartEmptyHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartGroupHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
@@ -609,6 +610,8 @@ object CartUiModelMapper {
             warehouseId = product.warehouseId
             bundleIds = product.bundleIds
             addOnsProduct = mapCartAddOnData(product.addOn)
+            isBmGmProduct = checkIsBmGmProduct(cartDetail)
+            bmGmCartInfoData = if (isBmGmProduct) mapBmGmProductData(cartDetail, shopData) else CartDetailInfo()
             isShowBmGmDivider = checkNeedToShowBmGmDivider(cartDetail, productId)
         }
     }
@@ -892,5 +895,49 @@ object CartUiModelMapper {
             true
         }
         return cartDetail.cartDetailInfo.cartDetailType == CART_DETAIL_TYPE_BMGM && !isLastIndexProduct
+    }
+
+    private fun checkIsBmGmProduct(cartDetail: CartDetail): Boolean {
+        return cartDetail.cartDetailInfo.cartDetailType == CART_DETAIL_TYPE_BMGM
+    }
+
+    private fun mapBmGmProductData(cartDetail: CartDetail, shopData: CartShopHolderData): CartDetailInfo {
+        val listTiersApplied = arrayListOf<CartDetailInfo.BmGmTiersAppliedData>()
+        val listProductTiersApplied = arrayListOf<CartDetailInfo.BmGmTiersAppliedData.BmGmProductData>()
+        cartDetail.cartDetailInfo.bmgmData.tiersApplied.forEach { tiersApplied ->
+            tiersApplied.listProduct.forEach { productTier ->
+                loop@ for (product in cartDetail.products) {
+                    if (product.productId == productTier.productId) {
+                        listProductTiersApplied.add(
+                            CartDetailInfo.BmGmTiersAppliedData.BmGmProductData(
+                                cartId = productTier.cartId,
+                                shopId = shopData.shopId,
+                                productId = productTier.productId,
+                                warehouseId = productTier.warehouseId,
+                                qty = productTier.qty,
+                                finalPrice = productTier.finalPrice,
+                                checkboxState = product.isCheckboxState
+                            )
+                        )
+                        break@loop
+                    }
+                }
+            }
+
+            listTiersApplied.add(
+                CartDetailInfo.BmGmTiersAppliedData(
+                    tierId = tiersApplied.tierId,
+                    listProduct = listProductTiersApplied
+                )
+            )
+        }
+        return CartDetailInfo(
+            cartDetailType = cartDetail.cartDetailInfo.cartDetailType,
+            bmGmData = CartDetailInfo.BmGmData(
+                offerId = cartDetail.cartDetailInfo.bmgmData.offerId,
+                offerJsonData = cartDetail.cartDetailInfo.bmgmData.offerJsonData
+            ),
+            bmGmTiersAppliedList = listTiersApplied
+        )
     }
 }

@@ -73,6 +73,7 @@ import com.tokopedia.cartrevamp.view.compoundview.CartToolbarListener
 import com.tokopedia.cartrevamp.view.decorator.CartItemDecoration
 import com.tokopedia.cartrevamp.view.di.DaggerCartRevampComponent
 import com.tokopedia.cartrevamp.view.helper.CartDataHelper
+import com.tokopedia.cartrevamp.view.mapper.BmGmTickerRequestMapper
 import com.tokopedia.cartrevamp.view.mapper.CartUiModelMapper
 import com.tokopedia.cartrevamp.view.mapper.PromoRequestMapper
 import com.tokopedia.cartrevamp.view.mapper.RecentViewMapper
@@ -100,6 +101,7 @@ import com.tokopedia.cartrevamp.view.uimodel.DeleteCartEvent
 import com.tokopedia.cartrevamp.view.uimodel.DisabledAccordionHolderData
 import com.tokopedia.cartrevamp.view.uimodel.DisabledItemHeaderHolderData
 import com.tokopedia.cartrevamp.view.uimodel.FollowShopEvent
+import com.tokopedia.cartrevamp.view.uimodel.GetBmGmGroupProductTickerState
 import com.tokopedia.cartrevamp.view.uimodel.LoadRecentReviewState
 import com.tokopedia.cartrevamp.view.uimodel.LoadRecommendationState
 import com.tokopedia.cartrevamp.view.uimodel.LoadWishlistV2State
@@ -296,6 +298,7 @@ class CartRevampFragment :
         const val KEY_IS_CHANGE_VARIANT = "is_variant_changed"
 
         private const val TOKONOW_UPDATER_DEBOUNCE = 500L
+        private const val BMGM_TICKER_RELOAD_ACTION = "RELOAD"
 
         @JvmStatic
         fun newInstance(bundle: Bundle?, args: String): CartRevampFragment {
@@ -1231,6 +1234,14 @@ class CartRevampFragment :
                 viewModel.emitTokonowUpdated(true)
             }
         }
+
+        if (cartItemHolderData.isBmGmProduct) {
+            val cartGroupHolderData = cartAdapter.getCartGroupHolderDataByCartItemHolderData(cartItemHolderData)
+            if (cartGroupHolderData != null) {
+                viewModel.getBmGmGroupProductTicker(
+                        BmGmTickerRequestMapper.generateGetGroupProductTickerRequestParams(cartGroupHolderData))
+            }
+        }
     }
 
     override fun onCartItemShowRemainingQty(productId: String) {
@@ -2143,6 +2154,8 @@ class CartRevampFragment :
         observeUpdateCartAndGetLastApply()
 
         observeWishlist()
+
+        observeBmGmGroupProductTicker()
     }
 
     private fun initToolbar() {
@@ -2661,6 +2674,19 @@ class CartRevampFragment :
                     }
                     renderPromoCheckoutButtonActiveDefault(emptyList())
                 }
+            }
+        }
+    }
+
+    private fun observeBmGmGroupProductTicker() {
+        viewModel.bmGmGroupProductTickerState.observe(viewLifecycleOwner) { data ->
+            when (data) {
+                is GetBmGmGroupProductTickerState.Success -> {
+                    if (data.bmGmTickerResponse.data.action == BMGM_TICKER_RELOAD_ACTION) refreshCartWithSwipeToRefresh()
+                    else // update ticker
+                }
+
+                is GetBmGmGroupProductTickerState.Failed -> {}
             }
         }
     }

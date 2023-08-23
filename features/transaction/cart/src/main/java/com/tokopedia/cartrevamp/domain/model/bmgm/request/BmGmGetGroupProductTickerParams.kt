@@ -7,14 +7,14 @@ data class BmGmGetGroupProductTickerParams(
     var lang: String = "id",
 
     @SerializedName("carts")
-    var carts: List<BmGmCart> = emptyList()
+    var carts: ArrayList<BmGmCart> = arrayListOf()
 ) {
     data class BmGmCart(
         @SerializedName("cart_string_order")
         var cartStringOrder: String = "",
 
         @SerializedName("cart_details")
-        var cartDetails: List<BmGmCartDetails> = emptyList()
+        var cartDetails: ArrayList<BmGmCartDetails> = arrayListOf()
     ) {
         data class BmGmCartDetails(
             @SerializedName("bundle_detail")
@@ -28,7 +28,7 @@ data class BmGmGetGroupProductTickerParams(
         ) {
             data class BundleDetail(
                 @SerializedName("bundle_id")
-                var bundleId: Long = 0L,
+                var bundleId: String = "",
 
                 @SerializedName("bundle_group_id")
                 var bundleGroupId: String = ""
@@ -44,7 +44,25 @@ data class BmGmGetGroupProductTickerParams(
 
             data class Product(
                 @SerializedName("cart_id")
-                var cartId: String = ""
+                var cartId: String = "",
+
+                @SerializedName("shop_id")
+                var shopId: String = "",
+
+                @SerializedName("product_id")
+                var productId: String = "",
+
+                @SerializedName("warehouse_id")
+                var warehouseId: Long = 0L,
+
+                @SerializedName("qty")
+                var qty: Int = 0,
+
+                @SerializedName("final_price")
+                var finalPrice: Double = 0.0,
+
+                @SerializedName("checkbox_state")
+                var checkboxState: Boolean = false
             )
         }
     }

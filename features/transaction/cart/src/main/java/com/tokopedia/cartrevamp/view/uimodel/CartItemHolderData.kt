@@ -101,6 +101,8 @@ data class CartItemHolderData(
     var addOnsProduct: CartAddOnData = CartAddOnData(),
 
     // BMGM
+    var bmGmCartInfoData: CartDetailInfo = CartDetailInfo(),
+    var isBmGmProduct: Boolean = false,
     var isShowBmGmDivider: Boolean = false
 ) {
     companion object {

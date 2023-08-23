@@ -31,6 +31,8 @@ import com.tokopedia.cartrevamp.data.model.request.UpdateCartWrapperRequest
 import com.tokopedia.cartrevamp.data.model.response.promo.LastApplyPromo
 import com.tokopedia.cartrevamp.data.model.response.promo.LastApplyPromoData
 import com.tokopedia.cartrevamp.data.model.response.shopgroupsimplified.CartData
+import com.tokopedia.cartrevamp.domain.model.bmgm.request.BmGmGetGroupProductTickerParams
+import com.tokopedia.cartrevamp.domain.usecase.BmGmGetGroupProductTickerUseCase
 import com.tokopedia.cartrevamp.domain.usecase.CartShopGroupTickerAggregatorUseCase
 import com.tokopedia.cartrevamp.domain.usecase.FollowShopUseCase
 import com.tokopedia.cartrevamp.domain.usecase.GetCartParam
@@ -74,6 +76,7 @@ import com.tokopedia.cartrevamp.view.uimodel.DisabledCollapsedHolderData
 import com.tokopedia.cartrevamp.view.uimodel.DisabledItemHeaderHolderData
 import com.tokopedia.cartrevamp.view.uimodel.DisabledReasonHolderData
 import com.tokopedia.cartrevamp.view.uimodel.FollowShopEvent
+import com.tokopedia.cartrevamp.view.uimodel.GetBmGmGroupProductTickerState
 import com.tokopedia.cartrevamp.view.uimodel.LoadRecentReviewState
 import com.tokopedia.cartrevamp.view.uimodel.LoadRecommendationState
 import com.tokopedia.cartrevamp.view.uimodel.LoadWishlistV2State
@@ -168,6 +171,7 @@ class CartViewModel @Inject constructor(
     private val setCartlistCheckboxStateUseCase: SetCartlistCheckboxStateUseCase,
     private val followShopUseCase: FollowShopUseCase,
     private val cartShopGroupTickerAggregatorUseCase: CartShopGroupTickerAggregatorUseCase,
+    private val getGroupProductTickerUseCase: BmGmGetGroupProductTickerUseCase,
     private val schedulers: ExecutorSchedulers,
     private val dispatchers: CoroutineDispatchers,
     private val cartCalculator: CartCalculator
@@ -239,8 +243,8 @@ class CartViewModel @Inject constructor(
     private val _followShopEvent: MutableLiveData<FollowShopEvent> = MutableLiveData()
     val followShopEvent: LiveData<FollowShopEvent> = _followShopEvent
 
-    private val _bmGmGroupProductTickerState: MutableLiveData<LoadWishlistV2State> = MutableLiveData()
-    val bmGmGroupProductTickerState: LiveData<LoadWishlistV2State> = _bmGmGroupProductTickerState
+    private val _bmGmGroupProductTickerState: MutableLiveData<GetBmGmGroupProductTickerState> = MutableLiveData()
+    val bmGmGroupProductTickerState: LiveData<GetBmGmGroupProductTickerState> = _bmGmGroupProductTickerState
 
     private val _tokoNowProductUpdater =
         MutableSharedFlow<Boolean>(replay = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
@@ -2828,6 +2832,21 @@ class CartViewModel @Inject constructor(
             } catch (t: Throwable) {
                 withContext(dispatchers.main) {
                     _followShopEvent.value = FollowShopEvent.Failed(t)
+                }
+            }
+        }
+    }
+
+    fun getBmGmGroupProductTicker(params: BmGmGetGroupProductTickerParams) {
+        launch(dispatchers.io) {
+            try {
+                val result = getGroupProductTickerUseCase(params)
+                withContext(dispatchers.main) {
+                    _bmGmGroupProductTickerState.value = GetBmGmGroupProductTickerState.Success(result)
+                }
+            } catch (t: Throwable) {
+                withContext(dispatchers.main) {
+                    _bmGmGroupProductTickerState.value = GetBmGmGroupProductTickerState.Failed(t)
                 }
             }
         }
