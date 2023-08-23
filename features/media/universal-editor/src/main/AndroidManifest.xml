@@ -12,6 +12,7 @@
 
     <application>
         <activity
+            android:theme="@style/MainEditor"
             android:name="com.tokopedia.editor.ui.main.MainEditorActivity"
             android:exported="false"
             android:label="Preview"
