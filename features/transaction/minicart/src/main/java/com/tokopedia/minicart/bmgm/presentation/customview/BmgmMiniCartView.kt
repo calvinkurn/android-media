@@ -3,11 +3,13 @@ package com.tokopedia.minicart.bmgm.presentation.customview
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewTreeViewModelStoreOwner
+import androidx.lifecycle.ViewTreeLifecycleOwner
+import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -16,7 +18,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.minicart.R
@@ -47,15 +48,16 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener, Default
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
+    private var param = BmgmParamModel()
     private var binding: ViewBmgmMiniCartWidgetBinding? = null
     private var footerBinding: ViewBmgmMiniCartSubTotalBinding? = null
     private val miniCartAdapter by lazy { BmgmMiniCartAdapter(this) }
-    private val viewModel by lazy {
-        ViewModelProvider(
-            ViewTreeViewModelStoreOwner.get(this)!!, viewModelFactory
+    private val viewModel: BmgmMiniCartViewModel by lazy {
+        val owner = context as AppCompatActivity
+        return@lazy ViewModelProvider(
+            owner, viewModelFactory
         )[BmgmMiniCartViewModel::class.java]
     }
-    private var param = BmgmParamModel()
 
     init {
         binding = ViewBmgmMiniCartWidgetBinding.inflate(
@@ -64,10 +66,6 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener, Default
             footerBinding = ViewBmgmMiniCartSubTotalBinding.bind(root)
         }
         setAsLifecycleObserver()
-        setupView()
-    }
-
-    private fun setupView() {
         setupRecyclerView()
     }
 
@@ -76,16 +74,17 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener, Default
         initInjector()
     }
 
-    override fun onStart(owner: LifecycleOwner) {
-        super.onStart(owner)
-        observeCartData()
-        observeSetCarChecklistStatus()
-    }
-
     override fun onDestroy(owner: LifecycleOwner) {
         viewModel.clearCartDataLocalCache()
         binding = null
         super.onDestroy(owner)
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        observeCartData()
+        observeSetCarChecklistStatus()
+        viewModel.getMiniCartData(param)
     }
 
     override fun setOnItemClickedListener() {
@@ -104,10 +103,14 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener, Default
     private fun setAsLifecycleObserver() {
         getLifecycleOwner()?.lifecycle?.addObserver(this)
     }
+    
+    private fun getLifecycleOwner(): LifecycleOwner? {
+        return ViewTreeLifecycleOwner.get(this) ?: context as? LifecycleOwner
+    }
 
     private fun observeCartData() {
         getLifecycleOwner()?.let { lifecycleOwner ->
-            lifecycleOwner.observe(viewModel.cartData) {
+            viewModel.cartData.observe(lifecycleOwner) {
                 when (it) {
                     is BmgmState.Loading -> showMiniCartLoadingState()
                     is BmgmState.Success -> setOnSuccessGetCartData(it.data)
@@ -121,6 +124,7 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener, Default
         dismissErrorState()
         binding?.run {
             loadingStateGroup.visible()
+            containerSubTotal.gone()
             rvBmgmMiniCart.gone()
             tvBmgmCartDiscount.gone()
         }
@@ -169,10 +173,6 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener, Default
 
     private fun dismissLoadingButton() {
         footerBinding?.btnBmgmOpenCart?.isLoading = false
-    }
-
-    private fun getLifecycleOwner(): LifecycleOwner? {
-        return context as? LifecycleOwner
     }
 
     private fun setOnSuccessGetCartData(data: BmgmMiniCartDataUiModel) {
