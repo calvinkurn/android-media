@@ -2169,7 +2169,7 @@ class CheckoutViewModel @Inject constructor(
                 }
                 promoProcessor.clearPromo(
                     ClearPromoOrder(
-                        order.boUniqueId,
+                        voucher.uniqueId,
                         order.boMetadata.boType,
                         arrayListOf(voucher.code),
                         order.shopId,

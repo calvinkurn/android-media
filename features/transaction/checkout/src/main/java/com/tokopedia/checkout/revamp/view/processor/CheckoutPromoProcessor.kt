@@ -724,13 +724,11 @@ class CheckoutPromoProcessor @Inject constructor(
         var hasBo = false
         for (shipmentCartItemModel in checkoutItems) {
             if (shipmentCartItemModel is CheckoutOrderModel && shipmentCartItemModel.shipment.courierItemData != null && !shipmentCartItemModel.shipment.courierItemData.selectedShipper.logPromoCode.isNullOrEmpty()) {
-                val boCodes = ArrayList<String>()
-                boCodes.add(shipmentCartItemModel.shipment.courierItemData.selectedShipper.logPromoCode!!)
                 clearOrders.add(
                     ClearPromoOrder(
                         shipmentCartItemModel.boUniqueId,
                         shipmentCartItemModel.boMetadata.boType,
-                        boCodes,
+                        arrayListOf(shipmentCartItemModel.shipment.courierItemData.selectedShipper.logPromoCode!!),
                         shipmentCartItemModel.shopId,
                         shipmentCartItemModel.isProductIsPreorder,
                         shipmentCartItemModel.preOrderDurationDay.toString(),
