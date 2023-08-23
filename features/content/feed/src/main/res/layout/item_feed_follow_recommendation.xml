@@ -68,7 +68,7 @@
 
     <include
         android:id="@+id/feed_no_content"
-        layout="@layout/item_feed_no_content"
+        layout="@layout/layout_feed_error"
         android:visibility="gone"
         />
 
