@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.common_epharmacy.EPHARMACY_PPG_QTY_CHANGE
 import com.tokopedia.epharmacy.R
 import com.tokopedia.epharmacy.adapters.EPharmacyAdapter
 import com.tokopedia.epharmacy.adapters.EPharmacyListener
@@ -20,7 +21,6 @@ import com.tokopedia.epharmacy.component.model.EPharmacyAccordionProductDataMode
 import com.tokopedia.epharmacy.component.model.EPharmacyAttachmentDataModel
 import com.tokopedia.epharmacy.component.model.EPharmacyDataModel
 import com.tokopedia.epharmacy.component.model.EPharmacyShimmerDataModel
-import com.tokopedia.epharmacy.databinding.EpharmacyCheckoutChatDokterFragmentBinding
 import com.tokopedia.epharmacy.databinding.EpharmacyQuantityChangeFragmentBinding
 import com.tokopedia.epharmacy.di.EPharmacyComponent
 import com.tokopedia.epharmacy.utils.CategoryKeys
@@ -36,10 +36,8 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.picker.common.basecomponent.utils.rootCurrentView
 import com.tokopedia.totalamount.TotalAmount
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography.Companion.BOLD
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -49,7 +47,7 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class EPharmacyQuantityChangeFragment: BaseDaggerFragment(), EPharmacyListener {
+class EPharmacyQuantityChangeFragment : BaseDaggerFragment(), EPharmacyListener {
 
     private var ePharmacyRecyclerView: RecyclerView? = null
     private var ePharmacyGlobalError: GlobalError? = null
@@ -126,7 +124,7 @@ class EPharmacyQuantityChangeFragment: BaseDaggerFragment(), EPharmacyListener {
 
     private fun getData() {
         addShimmer()
-        ePharmacyPrescriptionAttachmentViewModel.getPrepareProductGroup("QuantityChange")
+        ePharmacyPrescriptionAttachmentViewModel.getPrepareProductGroup(EPHARMACY_PPG_QTY_CHANGE)
     }
 
     private fun addShimmer() {
@@ -189,7 +187,6 @@ class EPharmacyQuantityChangeFragment: BaseDaggerFragment(), EPharmacyListener {
 
     private fun observerPrescriptionError() {
         ePharmacyPrescriptionAttachmentViewModel.uploadError.observe(viewLifecycleOwner) { error ->
-
         }
     }
 
@@ -283,5 +280,4 @@ class EPharmacyQuantityChangeFragment: BaseDaggerFragment(), EPharmacyListener {
             return EPharmacyQuantityChangeFragment()
         }
     }
-
 }

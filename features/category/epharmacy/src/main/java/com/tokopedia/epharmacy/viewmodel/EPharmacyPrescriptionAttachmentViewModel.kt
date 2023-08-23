@@ -3,6 +3,7 @@ package com.tokopedia.epharmacy.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
+import com.tokopedia.common_epharmacy.EPHARMACY_PPG_SOURCE_PAP
 import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultationResult
 import com.tokopedia.common_epharmacy.network.response.EPharmacyPrepareProductsGroupResponse
 import com.tokopedia.common_epharmacy.usecase.EPharmacyPrepareProductsGroupUseCase
@@ -48,12 +49,12 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
 
     var ePharmacyPrepareProductsGroupResponseData: EPharmacyPrepareProductsGroupResponse ? = null
 
-    fun getPrepareProductGroup(source: String = "PAP") {
+    fun getPrepareProductGroup(source: String = EPHARMACY_PPG_SOURCE_PAP) {
         ePharmacyPrepareProductsGroupUseCase.cancelJobs()
         ePharmacyPrepareProductsGroupUseCase.getEPharmacyPrepareProductsGroup(
-            source,
             ::onAvailablePrepareProductGroup,
-            ::onFailPrepareProductGroup
+            ::onFailPrepareProductGroup,
+            source
         )
     }
 
@@ -80,9 +81,9 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
         ePharmacyPrepareProductsGroupResponse.let { data ->
             if (data.detailData?.groupsData?.epharmacyGroups?.isNotEmpty() == true) {
                 _productGroupLiveData.postValue(Success(EPharmacyUtils.mapGroupsDataIntoDataModel(data)))
-                if(source == QUANTITY_PAGE_SOURCE){
+                if (source == QUANTITY_PAGE_SOURCE) {
                     _buttonSecondaryLiveData.postValue(ePharmacyPrepareProductsGroupResponse.detailData?.groupsData?.papPrimaryCTA?.papSecondaryCTA)
-                }else {
+                } else {
                     _buttonLiveData.postValue(ePharmacyPrepareProductsGroupResponse.detailData?.groupsData?.papPrimaryCTA)
                 }
                 showToastData(ePharmacyPrepareProductsGroupResponse.detailData?.groupsData?.toaster)

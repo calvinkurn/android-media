@@ -7,10 +7,9 @@ object GetEPharmacyPrepareProductsGroupQuery : GqlQueryInterface {
 
     override fun getOperationNameList() = listOf(OPERATION_NAME)
 
-
     override fun getQuery() = """
-            mutation $OPERATION_NAME() {
-              prepareProductsGroup()
+            mutation $OPERATION_NAME(${'$'}source: String!) {
+              prepareProductsGroup(source: ${'$'}source) 
               {
                 header {
                   process_time
@@ -19,32 +18,30 @@ object GetEPharmacyPrepareProductsGroupQuery : GqlQueryInterface {
                 data {
                   attachment_page_ticker_text
                   attachment_page_ticker_logo_url
-                  toaster {
-                      type
-                      message
-                  }
-                  pap_primary_cta {
-                      title
-                      redirect_link_apps
-                      redirect_link_web
-                      state
-                  }
                   epharmacy_groups {
                     epharmacy_group_id
                     prescription_source
+                    ticker {
+                      type
+                      title
+                    }
                     consultation_source {
                       id
                       enabler_name
                       enabler_logo_url
                       pwa_link
+                      price
                       operating_schedule {
                         daily {
                           open_time
                           close_time
                         }
                         close_days
+                        duration
+                        is_closing_hour
                       }
                       status
+                      note
                     }
                     number_prescription_images
                     prescription_images {
@@ -86,12 +83,19 @@ object GetEPharmacyPrepareProductsGroupQuery : GqlQueryInterface {
                       products {
                         product_id
                         product_id_str
+                        cart_id
                         name
                         quantity
                         is_ethical_drug
                         product_image
                         item_weight
                         product_total_weight_fmt
+                        qty_comparison {
+                          initial_qty
+                          recommended_qty
+                        }
+                        price
+                        price_fmt
                       }
                     }
                     prescription_cta {
@@ -101,6 +105,23 @@ object GetEPharmacyPrepareProductsGroupQuery : GqlQueryInterface {
                       action_type
                     }
                   }
+                  toaster {
+                      type
+                      message
+                      epharmacy_group_id
+                  }
+                  pap_primary_cta {
+                      title
+                      redirect_link_apps
+                      redirect_link_web
+                      state
+                      pap_secondary_cta {
+                        title
+                        redirect_link_apps
+                        redirect_link_web
+                        state
+                      }
+                  }
                 }
               }
             }
@@ -109,7 +130,7 @@ object GetEPharmacyPrepareProductsGroupQuery : GqlQueryInterface {
     /*
     override fun getQuery() = """
             mutation $OPERATION_NAME() {
-              prepareProductsGroup() 
+              prepareProductsGroup()
               {
                 header {
                   process_time
