@@ -2,8 +2,10 @@ package com.tokopedia.product.detail.view.viewholder.a_plus_content
 
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.view.updatePadding
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
@@ -14,6 +16,7 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.utils.extensions.validDimensionRatio
 import com.tokopedia.product.detail.databinding.ItemAPlusImageBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.unifycomponents.toPx
 
 class APlusImageViewHolder(
     itemView: View,
@@ -22,6 +25,8 @@ class APlusImageViewHolder(
 
     companion object {
         val LAYOUT = R.layout.item_a_plus_image
+
+        private const val LAST_ITEM_PADDING_BOTTOM = 16
     }
 
     private val binding = ItemAPlusImageBinding.bind(itemView)
@@ -32,6 +37,7 @@ class APlusImageViewHolder(
         setupDescription(element)
         setupImage(element)
         setupToggle(element)
+        setupBottomPadding(element.haveBottomPadding)
         setupImpressionListener(element)
     }
 
@@ -104,6 +110,12 @@ class APlusImageViewHolder(
                 element.trackerData.copy(adapterPosition = bindingAdapterPosition)
             )
         }
+    }
+
+    private fun setupBottomPadding(haveBottomPadding: Boolean) {
+        binding.root.updatePadding(
+            bottom = if (haveBottomPadding) LAST_ITEM_PADDING_BOTTOM.toPx() else Int.ZERO
+        )
     }
 
     private fun setupImpressionListener(element: APlusImageUiModel) {

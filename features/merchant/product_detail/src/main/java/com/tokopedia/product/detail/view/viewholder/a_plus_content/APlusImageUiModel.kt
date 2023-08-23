@@ -17,6 +17,7 @@ data class APlusImageUiModel(
     var ctaText: String = "",
     var expanded: Boolean = true,
     var showTopDivider: Boolean = false,
+    var haveBottomPadding: Boolean = false,
     var trackerData: ComponentTrackDataModel = ComponentTrackDataModel()
 ) : DynamicPdpDataModel {
     override fun type(): String = type

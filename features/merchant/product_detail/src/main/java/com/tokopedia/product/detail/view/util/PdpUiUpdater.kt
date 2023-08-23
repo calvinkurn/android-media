@@ -1221,8 +1221,11 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     ): MutableList<DynamicPdpDataModel> {
         if (!expanded) removeAll { it is APlusImageUiModel && !it.showOnCollapsed }
         forEachIndexed { index, dataModel ->
-            if (dataModel is APlusImageUiModel && dataModel.expanded != expanded) {
-                this[index] = dataModel.copy(expanded = expanded)
+            if (dataModel is APlusImageUiModel) {
+                this[index] = dataModel.copy(
+                    expanded = expanded,
+                    haveBottomPadding = getOrNull(index.inc()) !is APlusImageUiModel
+                )
             }
         }
         return this
