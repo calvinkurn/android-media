@@ -44,12 +44,12 @@ class CarouselPlayWidgetViewHolder(
 
     private fun configColorTheme(element: CarouselPlayWidgetUiModel) {
         if (shopHomeListener.isShopHomeTabHasFestivity()) {
-            setDefaultHeaderSectionColorConfig()
+            setDefaultColorConfig()
         } else {
             if (element.header.isOverrideTheme) {
-                setReimaginedHeaderSectionColorConfig(element.header.colorSchema)
+                setReimaginedColorConfig(element.header.colorSchema)
             } else {
-                setDefaultHeaderSectionColorConfig()
+                setDefaultColorConfig()
             }
         }
     }
@@ -68,7 +68,7 @@ class CarouselPlayWidgetViewHolder(
         }
     }
 
-    private fun setReimaginedHeaderSectionColorConfig(colorSchema: ShopPageColorSchema) {
+    private fun setReimaginedColorConfig(colorSchema: ShopPageColorSchema) {
         val titleColor = colorSchema.getColorIntValue(
             ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS
         )
@@ -78,7 +78,7 @@ class CarouselPlayWidgetViewHolder(
         setHeaderColor(titleColor, ctaColor)
     }
 
-    private fun setDefaultHeaderSectionColorConfig() {
+    private fun setDefaultColorConfig() {
         val titleColor = MethodChecker.getColor(
             itemView.context,
             com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
