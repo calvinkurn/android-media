@@ -1,6 +1,5 @@
 package com.tokopedia.editor.ui.main.fragment.image.main
 
-import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -10,6 +9,9 @@ import com.tokopedia.editor.base.BaseEditorFragment
 import com.tokopedia.editor.databinding.FragmentImageMainEditorBinding
 import com.tokopedia.editor.ui.main.EditorParamFetcher
 import com.tokopedia.editor.ui.main.MainEditorViewModel
+import com.tokopedia.editor.ui.main.uimodel.InputTextUiModel
+import com.tokopedia.editor.ui.main.uimodel.IsEdited
+import com.tokopedia.editor.ui.main.uimodel.MainEditorEvent
 import com.tokopedia.editor.ui.model.InputTextModel
 import com.tokopedia.editor.ui.widget.DynamicTextCanvasView
 import com.tokopedia.media.loader.loadImage
@@ -35,22 +37,31 @@ class ImageMainEditorFragment @Inject constructor(
     override fun initObserver() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                viewModel.state.collect {
-                    if (it.activeInputText != null) {
-                        addOrEditTextOnCanvas(it.activeInputText)
-                    }
+                viewModel.inputTextState.collect {
+                    addOrEditTextOnCanvas(it)
                 }
             }
         }
     }
 
     override fun onTextClick(text: Typography, model: InputTextModel) {
-        Toast.makeText(requireContext(), "text: ${model.text}", Toast.LENGTH_SHORT).show()
+        viewModel.onEvent(MainEditorEvent.ClickInputTextTool(model, IsEdited(true)))
     }
 
-    private fun addOrEditTextOnCanvas(model: InputTextModel) {
+    private fun addOrEditTextOnCanvas(state: InputTextUiModel) {
+        if (state.model == null) return
+
+        binding?.btnDelete?.let {
+            binding?.canvas?.addButtonView(it)
+        }
+
         binding?.canvas?.setListener(this)
-        binding?.canvas?.addText(model)
+
+        if (state.isEdited) {
+            binding?.canvas?.editText(state.previousString, state.model)
+        } else {
+            binding?.canvas?.addText(state.model)
+        }
     }
 
 }

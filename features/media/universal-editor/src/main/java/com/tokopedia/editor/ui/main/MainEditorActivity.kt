@@ -17,9 +17,11 @@ import com.tokopedia.editor.ui.EditorFragmentProvider
 import com.tokopedia.editor.ui.EditorFragmentProviderImpl
 import com.tokopedia.editor.ui.main.component.NavigationToolUiComponent
 import com.tokopedia.editor.ui.main.component.PagerContainerUiComponent
+import com.tokopedia.editor.ui.main.uimodel.MainEditorEffect
+import com.tokopedia.editor.ui.main.uimodel.MainEditorEvent
+import com.tokopedia.editor.ui.main.uimodel.MainEditorUiModel
 import com.tokopedia.editor.ui.model.InputTextModel
 import com.tokopedia.editor.ui.text.InputTextActivity
-import com.tokopedia.editor.ui.widget.DynamicTextCanvasView
 import com.tokopedia.picker.common.EXTRA_UNIVERSAL_EDITOR_PARAM
 import com.tokopedia.picker.common.RESULT_UNIVERSAL_EDITOR
 import com.tokopedia.picker.common.UniversalEditorParam
@@ -78,14 +80,11 @@ open class MainEditorActivity : AppCompatActivity(), NavToolbarComponent.Listene
         toolbar.setVisibility(true)
         navigationTool.setVisibility(true)
 
-        val result = it.data?.getParcelableExtra<InputTextModel>(
-            InputTextActivity.INPUT_TEXT_RESULT
-        ) ?: return@registerForActivityResult
-
-        if (result?.text?.isNotEmpty() != true) return@registerForActivityResult
+        val result = InputTextActivity.result(it)?: return@registerForActivityResult
+        if (result.text.isEmpty()) return@registerForActivityResult
 
         viewModel.setTextState(result)
-        viewModel.setAction(MainEditorEvent.InputText(result))
+        viewModel.setAction(MainEditorEvent.InputTextResult(result))
     }
 
     private val viewModel: MainEditorViewModel by viewModels { viewModelFactory }
@@ -114,17 +113,24 @@ open class MainEditorActivity : AppCompatActivity(), NavToolbarComponent.Listene
 
     @Suppress("DEPRECATION")
     private fun setDataParam() {
-        val param = intent?.getParcelableExtra<UniversalEditorParam>(
-            EXTRA_UNIVERSAL_EDITOR_PARAM
-        ) ?: error("Please provide the universal media editor parameter.")
+        val param = intent?.getParcelableExtra<UniversalEditorParam>(EXTRA_UNIVERSAL_EDITOR_PARAM)
+            ?: error("Please provide the universal media editor parameter.")
 
-        viewModel.setAction(MainEditorEvent.SetupView(param))
+        viewModel.onEvent(MainEditorEvent.SetupView(param))
     }
 
     private fun initObserver() {
         lifecycleScope.launchWhenCreated {
-            viewModel.state.collect {
-                initView(it)
+            viewModel.mainEditorState.collect(::initView)
+        }
+
+        lifecycleScope.launchWhenCreated {
+            viewModel.uiEffect.collect {
+                when (it) {
+                    is MainEditorEffect.OpenInputText -> {
+                        navigateToInputTextTool(it.model)
+                    }
+                }
             }
         }
     }
@@ -141,7 +147,9 @@ open class MainEditorActivity : AppCompatActivity(), NavToolbarComponent.Listene
                 toolbar.setVisibility(false)
                 navigationTool.setVisibility(false)
 
-                navigateToInputTextTool()
+                viewModel.onEvent(
+                    MainEditorEvent.ClickInputTextTool(InputTextModel())
+                )
             }
             ToolType.PLACEMENT -> {}
             ToolType.AUDIO_MUTE -> {}
@@ -150,7 +158,7 @@ open class MainEditorActivity : AppCompatActivity(), NavToolbarComponent.Listene
         }
     }
 
-    private fun navigateToInputTextTool() {
+    private fun navigateToInputTextTool(model: InputTextModel) {
         val intent = InputTextActivity.create(this)
         inputTextIntent.launch(intent)
         overridePendingTransition(0,0)

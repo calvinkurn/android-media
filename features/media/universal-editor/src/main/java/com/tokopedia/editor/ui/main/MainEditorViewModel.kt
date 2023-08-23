@@ -1,18 +1,19 @@
 package com.tokopedia.editor.ui.main
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.tokopedia.editor.data.repository.NavigationToolRepository
-import com.tokopedia.editor.ui.model.EditorModel
-import com.tokopedia.editor.ui.model.ImageModel
+import com.tokopedia.editor.ui.main.uimodel.InputTextUiModel
+import com.tokopedia.editor.ui.main.uimodel.IsEdited
+import com.tokopedia.editor.ui.main.uimodel.MainEditorEffect
+import com.tokopedia.editor.ui.main.uimodel.MainEditorEvent
+import com.tokopedia.editor.ui.main.uimodel.MainEditorUiModel
 import com.tokopedia.editor.ui.model.InputTextModel
-import com.tokopedia.editor.ui.model.VideoModel
+import com.tokopedia.editor.util.setValue
 import com.tokopedia.picker.common.UniversalEditorParam
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class MainEditorViewModel @Inject constructor(
@@ -20,33 +21,35 @@ class MainEditorViewModel @Inject constructor(
     private val paramFetcher: EditorParamFetcher
 ) : ViewModel() {
 
-    private var _event = MutableSharedFlow<MainEditorEvent>(replay = 50)
+    private var _uiEffect = MutableSharedFlow<MainEditorEffect>(replay = 50)
+    private var _mainEditorState = MutableStateFlow(MainEditorUiModel())
+    private var _inputTextState = MutableStateFlow(InputTextUiModel())
 
-    private var _state = MutableStateFlow(MainEditorUiModel())
-    val state = _state.asStateFlow()
+    val mainEditorState = _mainEditorState.asStateFlow()
 
-    init {
-        viewModelScope.launch {
-            _event.collect { event ->
-                when (event) {
-                    is MainEditorEvent.SetupView -> {
-                        setParam(event.param)
-                        initEditorModel(event.param)
-                        setAction(MainEditorEvent.GetNavigationTool)
-                    }
-                    is MainEditorEvent.GetNavigationTool -> {
-                        getNavigationTool()
-                    }
-                    is MainEditorEvent.InputText -> {
-                        setActiveInputTextModel(event.model)
-                    }
-                }
+    val inputTextState: Flow<InputTextUiModel>
+        get() = _inputTextState
+
+    val uiEffect: Flow<MainEditorEffect>
+        get() = _uiEffect
+
+    fun onEvent(event: MainEditorEvent) {
+        when (event) {
+            is MainEditorEvent.SetupView -> {
+                setParam(event.param)
+                fetchNavigationTool()
+            }
+            is MainEditorEvent.ClickInputTextTool -> {
+                setAction(MainEditorEffect.OpenInputText(event.model))
+                updateDataOnActiveText(event.model, event.isEdited)
+            }
+            is MainEditorEvent.InputTextResult -> {
+                updateActiveInputTextData(event.model)
+
+                // reset every single input text is added
+                _inputTextState.value = InputTextUiModel.reset()
             }
         }
-    }
-
-    fun setAction(action: MainEditorEvent) {
-        _event.tryEmit(action)
     }
 
     fun setTextState(textModel: InputTextModel) {
@@ -61,39 +64,36 @@ class MainEditorViewModel @Inject constructor(
         }
     }
 
-    private fun initEditorModel(param: UniversalEditorParam) {
-        val file = param.firstFile
-
-        val model = if (file.isImage()) {
-            EditorModel(image = ImageModel())
-        } else {
-            EditorModel(video = VideoModel())
-        }
-
-        _state.update {
-            it.copy(model = model)
-        }
-    }
-
-    private fun setActiveInputTextModel(model: InputTextModel) {
-        _state.update {
-            it.copy(
-                activeInputText = model
+    private fun updateDataOnActiveText(model: InputTextModel, isEdited: IsEdited) {
+        _inputTextState.setValue {
+            copy(
+                isEdited = isEdited.value,
+                previousString = model.text
             )
         }
     }
 
-    private fun getNavigationTool() {
-        _state.update {
-            it.copy(tools = navigationToolRepository.tools())
+    private fun updateActiveInputTextData(model: InputTextModel) {
+        _inputTextState.setValue {
+            copy(model = model)
+        }
+    }
+
+    private fun fetchNavigationTool() {
+        _mainEditorState.setValue {
+            copy(tools = navigationToolRepository.tools())
         }
     }
 
     private fun setParam(param: UniversalEditorParam) {
         paramFetcher.set(param)
 
-        _state.update {
-            it.copy(param = param)
+        _mainEditorState.setValue {
+            copy(param = param)
         }
+    }
+
+    private fun setAction(effect: MainEditorEffect) {
+        _uiEffect.tryEmit(effect)
     }
 }

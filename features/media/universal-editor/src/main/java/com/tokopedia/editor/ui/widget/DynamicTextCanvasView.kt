@@ -18,6 +18,7 @@ import com.tokopedia.editor.ui.gesture.listener.OnGestureControl
 import com.tokopedia.editor.ui.gesture.listener.OnMultiTouchListener
 import com.tokopedia.editor.ui.model.InputTextModel
 import com.tokopedia.editor.util.FontAlignment
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.image.ImageProcessingUtil
 
@@ -27,11 +28,22 @@ class DynamicTextCanvasView @JvmOverloads constructor(
 ) : FrameLayout(context, attributeSet), OnMultiTouchListener {
 
     private val guideline = GridGuidelineView(context)
-    private lateinit var buttonView: Button
+    private lateinit var buttonView: IconUnify
     private var listener: Listener? = null
 
     init {
         addGridGuidelineView()
+    }
+
+    fun editText(currentString: String, model: InputTextModel) {
+        for (index in 0..childCount) {
+            val view = getChildAt(index)
+            if (view is Typography) {
+                if (view.text == currentString) {
+                    view.text = model.text
+                }
+            }
+        }
     }
 
     fun addText(model: InputTextModel) {
@@ -47,7 +59,7 @@ class DynamicTextCanvasView @JvmOverloads constructor(
         addView(textView, layoutParams)
     }
 
-    fun addButtonView(view: Button) {
+    fun addButtonView(view: IconUnify) {
         buttonView = view
     }
 

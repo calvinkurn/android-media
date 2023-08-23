@@ -3,6 +3,7 @@ package com.tokopedia.editor.ui.text
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.result.ActivityResult
 import androidx.activity.viewModels
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProvider
@@ -135,7 +136,8 @@ class InputTextActivity : BaseActivity(), NavToolbarComponent.Listener {
     }
 
     companion object {
-        const val INPUT_TEXT_RESULT = "input_text_result"
+        private const val INPUT_TEXT_RESULT = "input_text_result"
+        const val EXTRA_INPUT_TEXT_MODEL = "extra_input_text_model"
         const val INPUT_TEXT_STATE = "input_text_state"
 
         fun create(context: Context): Intent {
@@ -143,6 +145,10 @@ class InputTextActivity : BaseActivity(), NavToolbarComponent.Listener {
                 it.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 it.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             }
+        }
+
+        fun result(result: ActivityResult): InputTextModel? {
+            return result.data?.getParcelableExtra(INPUT_TEXT_RESULT)
         }
     }
 }

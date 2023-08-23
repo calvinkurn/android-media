@@ -14,6 +14,7 @@ import com.tokopedia.editor.ui.gesture.listener.OnGestureControl;
 import com.tokopedia.editor.ui.gesture.listener.OnMultiTouchListener;
 import com.tokopedia.editor.ui.model.AddTextModel;
 import com.tokopedia.editor.ui.widget.GridGuidelineView;
+import com.tokopedia.iconunify.IconUnify;
 import com.tokopedia.unifyprinciples.Typography;
 
 public class MultiTouchListener implements View.OnTouchListener {
@@ -37,7 +38,7 @@ public class MultiTouchListener implements View.OnTouchListener {
     boolean isTextPinchZoomable;
 
     private final GridGuidelineView gridGuidelineView;
-    private final Button deleteView;
+    private final IconUnify deleteView;
 
     private float originalScaleX;
     private float originalScaleY;
@@ -45,7 +46,7 @@ public class MultiTouchListener implements View.OnTouchListener {
     boolean isSelectedViewDraggedToTrash = false;
     boolean isDragging = false;
 
-    public MultiTouchListener(Context context, Typography view, GridGuidelineView guideline, Button deleteView) {
+    public MultiTouchListener(Context context, Typography view, GridGuidelineView guideline, IconUnify deleteView) {
         this.deleteView = deleteView;
 
         // @Workaround: for initiate state
