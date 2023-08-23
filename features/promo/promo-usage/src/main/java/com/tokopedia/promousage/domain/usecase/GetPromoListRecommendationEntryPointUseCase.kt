@@ -31,18 +31,20 @@ class GetPromoListRecommendationEntryPointUseCase @Inject constructor(
         const val QUERY: String = """
             mutation GetPromoListRecommendation(${'$'}params: PromoDisplayPromoStackRequest, ${'$'}chosen_address: PromoDisplayChosenAddressParam, ${'$'}is_promo_revamp: Boolean) {
               GetPromoListRecommendation(params: ${'$'}params, chosen_address: ${'$'}chosen_address, is_promo_revamp: ${'$'}is_promo_revamp) {
-                result_status {
-                  success
-                  message
-                  code
+                data {
+                  result_status {
+                    success
+                    message
+                    code
+                  }
+                  entry_point_info {
+                    messages
+                    state
+                    icon_url
+                    clickable
+                  }
+                  user_group_metadata
                 }
-                entry_point_info {
-                  messages
-                  state
-                  icon_url
-                  clickable
-                }
-                user_group_metadata
               }
             }
         """

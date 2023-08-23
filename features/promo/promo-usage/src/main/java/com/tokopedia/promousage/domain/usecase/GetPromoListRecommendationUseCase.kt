@@ -49,6 +49,8 @@ class GetPromoListRecommendationUseCase @Inject constructor(
                     title
                     is_collapsed
                     coupons {
+                      index
+                      coupon_type
                       code
                       title
                       message
@@ -114,8 +116,6 @@ class GetPromoListRecommendationUseCase @Inject constructor(
                         icon_url
                         background_url
                       }
-                      index
-                      coupon_type
                     }
                   }
                   attempted_promo_code_error {
