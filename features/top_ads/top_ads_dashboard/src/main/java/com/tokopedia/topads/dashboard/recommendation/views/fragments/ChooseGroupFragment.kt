@@ -66,7 +66,7 @@ class ChooseGroupFragment : BaseDaggerFragment() {
             }
             else -> {}
         }
-        viewModel.getTopadsGroups("")
+        viewModel.getTopadsGroupList("")
 
         binding?.groupsRv?.layoutManager = LinearLayoutManager(
             context,
@@ -80,15 +80,8 @@ class ChooseGroupFragment : BaseDaggerFragment() {
     }
 
     private fun observeViewModel() {
-        viewModel.topadsGroupsLiveData.observe(viewLifecycleOwner) {
-            when (val groups = it) {
-                is TopadsProductListState.Success -> {
-                    groupListAdapter.submitList(mapper.convertToGroupItemUiModel(groups.data.data))
-                }
-                else -> {
-
-                }
-            }
+        viewModel.groupListLiveData.observe(viewLifecycleOwner) {
+            groupListAdapter.submitList(it)
         }
     }
 

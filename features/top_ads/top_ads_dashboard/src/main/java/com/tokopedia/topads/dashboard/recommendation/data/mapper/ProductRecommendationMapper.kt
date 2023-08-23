@@ -1,6 +1,8 @@
 package com.tokopedia.topads.dashboard.recommendation.data.mapper
 
+import com.tokopedia.topads.common.data.model.DashGroupListResponse
 import com.tokopedia.topads.common.data.model.GroupListDataItem
+import com.tokopedia.topads.dashboard.data.model.CountDataItem
 import com.tokopedia.topads.dashboard.data.model.ProductRecommendation
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.ProductItemUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.EmptyStateUiModel
@@ -10,6 +12,9 @@ import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupItemU
 import javax.inject.Inject
 
 class ProductRecommendationMapper @Inject constructor() {
+
+    var groupList = listOf<GroupListDataItem>()
+    var totalAdsKeywords = listOf<CountDataItem>()
 
     fun convertToProductItemUiModel(products: List<ProductRecommendation>): List<ProductItemUiModel> {
         val productList = mutableListOf<ProductItemUiModel>()
@@ -45,19 +50,35 @@ class ProductRecommendationMapper @Inject constructor() {
         return featuredProductsList
     }
 
-    fun convertToGroupItemUiModel(list: List<GroupListDataItem>): List<GroupItemUiModel>{
-        val groupList = mutableListOf<GroupItemUiModel>()
-        list.forEach {
-            groupList.add(
+    fun convertToGroupItemUiModel(
+        groupList: List<GroupListDataItem>,
+        totalAdsKeywords: List<CountDataItem>
+    ): List<GroupItemUiModel>{
+        val list = mutableListOf<GroupItemUiModel>()
+        groupList.forEach {
+            val item = getTotalAdsForGroupId(it.groupId, totalAdsKeywords)
+            list.add(
                 GroupItemUiModel(
-                    groupId = it.groupId,
                     groupName = it.groupName,
+                    groupId = it.groupId,
                     isSelected = false,
-                    keywordCount = 2,
-                    productCount = 3,
+                    keywordCount = item?.totalKeywords ?: 0,
+                    productCount = item?.totalProducts ?: 0
                 )
             )
         }
-        return groupList
+        return list
+    }
+
+    private fun getTotalAdsForGroupId(groupId: String, totalAdsKeywords: List<CountDataItem>): CountDataItem? {
+        return totalAdsKeywords.filter { it.iD == groupId }.firstOrNull()
+    }
+
+    fun getListOfGroupIds(groupList: DashGroupListResponse): List<String>{
+        val groupIds = mutableListOf<String>()
+        groupList.getTopadsDashboardGroups.data.forEach {
+            groupIds.add(it.groupId)
+        }
+        return groupIds
     }
 }
