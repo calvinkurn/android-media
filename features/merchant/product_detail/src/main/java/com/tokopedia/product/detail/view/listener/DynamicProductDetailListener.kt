@@ -536,4 +536,7 @@ interface DynamicProductDetailListener {
     fun onProductMediaRecomBottomSheetDismissed()
 
     fun onClickDynamicOneLiner(title: String, component: ComponentTrackDataModel)
+
+    // region BMGM
+    fun onBMGMClicked(title: String, component: ComponentTrackDataModel)
 }
