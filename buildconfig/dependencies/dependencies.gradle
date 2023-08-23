@@ -445,7 +445,7 @@ ext {
             explore_promo   : "com.tokopedia.unify.compositions:explore_promo:${unifyExplorePromoVersion}@aar",
             icons           : "com.tokopedia.unify:icons:${unifyIconsVersion}@aar",
             imageGallery    : "com.tokopedia.unify.compositions:image_gallery:${unifyImageGalleryVersion}@aar",
-            viewAllCard     : "com.tokopedia.unify.compositions:view_all_card:${unifyViewAllCardVersion}",
+            viewAllCard     : "com.tokopedia.unify.compositions:view_all_card:${unifyViewAllCardVersion}@aar",
             nestPrinciples  : "com.tokopedia.nest:principles:${nestPrinciplesVersion}",
             nestComponents  : "com.tokopedia.nest:components:${nestComponentsVersion}"
     ]
