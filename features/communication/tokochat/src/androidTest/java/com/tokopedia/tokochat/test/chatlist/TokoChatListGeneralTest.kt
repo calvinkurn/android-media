@@ -104,7 +104,7 @@ class TokoChatListGeneralTest : BaseTokoChatListTest() {
 
         // When
         launchChatListActivity()
-        Thread.sleep(1000)
+        Thread.sleep(300)
 
         // Then
         generalResult {
@@ -123,6 +123,7 @@ class TokoChatListGeneralTest : BaseTokoChatListTest() {
 
         // When
         launchChatListActivity()
+        Thread.sleep(300)
 
         // Then
         generalResult {
@@ -141,6 +142,7 @@ class TokoChatListGeneralTest : BaseTokoChatListTest() {
 
         // When
         launchChatListActivity()
+        Thread.sleep(300)
 
         // Then
         generalResult {
@@ -200,7 +202,7 @@ class TokoChatListGeneralTest : BaseTokoChatListTest() {
         generalResult {
             assertChatListItemTotal(10)
         }
-        Thread.sleep(1000)
+        Thread.sleep(300)
 
         // Given
         ApiResponseStub.channelListResponse = ApiResponseModelStub(
@@ -212,7 +214,7 @@ class TokoChatListGeneralTest : BaseTokoChatListTest() {
         generalRobot {
             scrollToPosition(10)
         }
-        Thread.sleep(300)
+        Thread.sleep(40000)
 
         // Then
         generalResult {

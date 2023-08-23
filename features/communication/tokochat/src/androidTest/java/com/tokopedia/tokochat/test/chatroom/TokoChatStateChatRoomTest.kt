@@ -78,6 +78,7 @@ class TokoChatStateChatRoomTest : BaseTokoChatRoomTest() {
 
         // When
         launchChatRoomActivity()
+        Thread.sleep(300)
 
         // Then
         StateResult.assertReadOnlyReplyArea()
