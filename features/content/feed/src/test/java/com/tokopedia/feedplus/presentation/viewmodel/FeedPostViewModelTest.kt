@@ -667,6 +667,7 @@ class FeedPostViewModelTest {
         assert(data.items[5] is FeedCardLivePreviewContentModel)
         assert(data.items[6] is FeedFollowRecommendationModel)
         assert(data.items[7] is FeedNoContentModel)
+        assert(viewModel.hasNext)
     }
 
     @Test

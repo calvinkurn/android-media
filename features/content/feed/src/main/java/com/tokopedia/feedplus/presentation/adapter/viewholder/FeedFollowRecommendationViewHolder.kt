@@ -60,6 +60,10 @@ class FeedFollowRecommendationViewHolder(
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
 
+                if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                    listener.onSwipeProfileRecommendation()
+                }
+
                 if (profileAdapter.itemCount == 0) return
                 if (newState != RecyclerView.SCROLL_STATE_IDLE) return
 
@@ -134,17 +138,8 @@ class FeedFollowRecommendationViewHolder(
         isViewHolderSelected: Boolean
     ) {
         when (model.status) {
-            FeedFollowRecommendationModel.Status.Loading -> {
-                if (model.data.isEmpty()) {
-                    freezeScrolling(true)
-                    profileAdapter.setItemsAndAnimateChanges(List(5) { FeedFollowProfileAdapter.Model.Loading })
-                }
-
-                binding.clMain.showWithCondition(true)
-                binding.feedNoContent.root.showWithCondition(false)
-            }
+            FeedFollowRecommendationModel.Status.Loading,
             FeedFollowRecommendationModel.Status.Success -> {
-                freezeScrolling(false)
                 setupProfileList(model, selectedPosition, isViewHolderSelected)
             }
             FeedFollowRecommendationModel.Status.Error -> {
@@ -188,39 +183,49 @@ class FeedFollowRecommendationViewHolder(
     ) {
         if (model == null) return
 
-        var isNeedForceScroll = false
-        val finalSelectedPosition = if (selectedPosition >= model.data.size) {
-            isNeedForceScroll = true
-            (model.data.size - 1).coerceAtLeast(0)
+        if (model.data.isEmpty() && model.isLoading) {
+            profileAdapter.setItemsAndAnimateChanges(List(5) { FeedFollowProfileAdapter.Model.Loading })
+            freezeScrolling(true)
+
+            binding.clMain.showWithCondition(true)
+            binding.feedNoContent.root.showWithCondition(false)
         } else {
-            selectedPosition
+            freezeScrolling(false)
+
+            var isNeedForceScroll = false
+            val finalSelectedPosition = if (selectedPosition >= model.data.size) {
+                isNeedForceScroll = true
+                (model.data.size - 1).coerceAtLeast(0)
+            } else {
+                selectedPosition
+            }
+
+            val mappedList = model.data.mapIndexed { idx, item ->
+                FeedFollowProfileAdapter.Model.Profile(
+                    data = item,
+                    isSelected = if (isViewHolderSelected) idx == finalSelectedPosition else false,
+                )
+            }
+
+            val finalList = if (model.hasNext)
+                mappedList + listOf(FeedFollowProfileAdapter.Model.Loading)
+            else
+                mappedList
+
+            val isDataAvailable = finalList.isNotEmpty()
+
+            profileAdapter.setItemsAndAnimateChanges(finalList)
+
+            if (isNeedForceScroll)
+                binding.rvFollowRecommendation.smoothScrollToPosition(finalSelectedPosition)
+
+            binding.feedNoContent.btnShowOtherContent.setOnClickListener {
+                listener.onClickViewOtherContent()
+            }
+
+            binding.clMain.showWithCondition(isDataAvailable)
+            binding.feedNoContent.root.showWithCondition(!isDataAvailable)
         }
-
-        val mappedList = model.data.mapIndexed { idx, item ->
-            FeedFollowProfileAdapter.Model.Profile(
-                data = item,
-                isSelected = if (isViewHolderSelected) idx == finalSelectedPosition else false,
-            )
-        }
-
-        val finalList = if (model.hasNext)
-            mappedList + listOf(FeedFollowProfileAdapter.Model.Loading)
-        else
-            mappedList
-
-        val isDataAvailable = finalList.isNotEmpty()
-
-        profileAdapter.setItemsAndAnimateChanges(finalList)
-
-        if (isNeedForceScroll)
-            binding.rvFollowRecommendation.smoothScrollToPosition(finalSelectedPosition)
-
-        binding.feedNoContent.btnShowOtherContent.setOnClickListener {
-            listener.onClickViewOtherContent()
-        }
-
-        binding.clMain.showWithCondition(isDataAvailable)
-        binding.feedNoContent.root.showWithCondition(!isDataAvailable)
     }
 
     private fun getSelectedPosition(): Int {

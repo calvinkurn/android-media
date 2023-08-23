@@ -55,6 +55,7 @@ import com.tokopedia.feedcomponent.util.FeedVideoCache
 import com.tokopedia.feedcomponent.util.util.DataMapper
 import com.tokopedia.feedcomponent.view.widget.FeedExoPlayer
 import com.tokopedia.feedplus.analytics.FeedAnalytics
+import com.tokopedia.feedplus.analytics.FeedFollowRecommendationAnalytics
 import com.tokopedia.feedplus.analytics.FeedMVCAnalytics
 import com.tokopedia.feedplus.data.FeedXCard
 import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_TOP_ADS
@@ -146,7 +147,7 @@ class FeedFragment :
                 feedFollowRecommendationListener,
             )
         ) {
-            if (feedPostViewModel.shouldShowNoMoreContent) return@FeedContentAdapter
+            if (feedPostViewModel.shouldShowNoMoreContent || !feedPostViewModel.hasNext) return@FeedContentAdapter
             adapter.showLoading()
             feedPostViewModel.fetchFeedPosts(data?.type ?: "")
         }
@@ -171,6 +172,9 @@ class FeedFragment :
 
     @Inject
     lateinit var commentAnalytics: ContentCommentAnalytics.Creator
+
+    @Inject
+    lateinit var feedFollowRecommendationAnalytics: FeedFollowRecommendationAnalytics
 
     @Inject
     lateinit var fragmentFactory: FragmentFactory
@@ -323,10 +327,16 @@ class FeedFragment :
     private val feedFollowRecommendationListener = object : FeedFollowRecommendationListener {
 
         override fun onImpressProfile(profile: FeedFollowRecommendationModel.Profile) {
-            /** TODO: handle this */
+            feedFollowRecommendationAnalytics.eventImpressProfileRecommendation(
+                trackerModelMapper.transformProfileRecommendationToTrackerModel(profile)
+            )
         }
 
         override fun onClickFollow(profile: FeedFollowRecommendationModel.Profile) {
+            feedFollowRecommendationAnalytics.eventClickFollowProfileRecommendation(
+                trackerModelMapper.transformProfileRecommendationToTrackerModel(profile)
+            )
+
             if (profile.isFollowed) {
                 feedPostViewModel.doUnfollowProfileRecommendation(profile.id, profile.encryptedId, profile.isShop)
             } else {
@@ -335,10 +345,18 @@ class FeedFragment :
         }
 
         override fun onCloseProfileRecommendation(profile: FeedFollowRecommendationModel.Profile) {
+            feedFollowRecommendationAnalytics.eventClickRemoveProfileRecommendation(
+                trackerModelMapper.transformProfileRecommendationToTrackerModel(profile)
+            )
+
             feedPostViewModel.removeProfileRecommendation(profile)
         }
 
         override fun onClickProfileRecommendation(profile: FeedFollowRecommendationModel.Profile) {
+            feedFollowRecommendationAnalytics.eventClickProfileRecommendation(
+                trackerModelMapper.transformProfileRecommendationToTrackerModel(profile)
+            )
+
             goToProfilePage(profile.applink, profile.isShop)
         }
 
@@ -352,6 +370,13 @@ class FeedFragment :
 
         override fun onClickViewOtherContent() {
             feedMainViewModel.setActiveTab(FeedBaseFragment.TAB_TYPE_FOR_YOU)
+        }
+
+        override fun onSwipeProfileRecommendation() {
+            feedFollowRecommendationAnalytics.eventSwipeProfileRecommendation(
+                tabType = trackerModelMapper.tabType,
+                entryPoint = trackerModelMapper.entryPoint,
+            )
         }
 
         override fun onErrorPlayingVideo() {
@@ -381,7 +406,11 @@ class FeedFragment :
                     Lifecycle.Event.ON_RESUME -> {
                         if (checkResume(isOnResume = true)) resumeCurrentVideo()
                     }
-                    Lifecycle.Event.ON_PAUSE -> pauseCurrentVideo()
+                    Lifecycle.Event.ON_PAUSE -> {
+                        pauseCurrentVideo()
+
+                        feedFollowRecommendationAnalytics.sendAll()
+                    }
                     else -> {}
                 }
             }
@@ -1237,6 +1266,8 @@ class FeedFragment :
                 resumeCurrentVideo()
             } else {
                 pauseCurrentVideo()
+
+                feedFollowRecommendationAnalytics.sendAll()
             }
         }
     }
