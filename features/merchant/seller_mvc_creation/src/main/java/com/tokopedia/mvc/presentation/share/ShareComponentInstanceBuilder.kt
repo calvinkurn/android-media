@@ -34,7 +34,7 @@ class ShareComponentInstanceBuilder @Inject constructor() {
         val isVoucherProduct: Boolean,
         val voucherStartDate: Date,
         val voucherEndDate: Date,
-        val voucherId: Long,
+        val galadrielVoucherId: Long,
         val isPublic: Boolean,
         val voucherCode: String,
         val promoType: PromoType,
@@ -81,7 +81,7 @@ class ShareComponentInstanceBuilder @Inject constructor() {
             setUtmCampaignData(
                 pageName = ShareComponentConstant.PAGE_NAME,
                 userId = userSession.userId,
-                pageIdConstituents = listOf(userSession.shopId, param.voucherId.toString()),
+                pageIdConstituents = listOf(userSession.shopId, param.galadrielVoucherId.toString()),
                 feature = ShareComponentConstant.FEATURE_NAME
             )
 
