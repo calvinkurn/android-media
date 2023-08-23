@@ -13,6 +13,7 @@ import com.tokopedia.searchbar.navigation_component.util.StatusBarUtil
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.databinding.ActivityTokopedianowBaseBinding
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 abstract class BaseTokoNowActivity : BaseActivity() {
 
@@ -63,7 +64,7 @@ abstract class BaseTokoNowActivity : BaseActivity() {
             binding?.let {
                 it.fragmentContainer.systemUiVisibility = flags
                 window.statusBarColor = ContextCompat.getColor(
-                    this, com.tokopedia.unifyprinciples.R.color.Unify_NN0
+                    this, unifyprinciplesR.color.Unify_NN0
                 )
             }
         }
@@ -90,7 +91,7 @@ abstract class BaseTokoNowActivity : BaseActivity() {
 
     private fun setBackgroundColor() {
         val bgColor = ContextCompat.getColor(this,
-            com.tokopedia.unifyprinciples.R.color.Unify_Background)
+            unifyprinciplesR.color.Unify_Background)
         window?.decorView?.setBackgroundColor(bgColor)
     }
 

@@ -29,6 +29,7 @@ import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeHeaderUiModel
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeChooseAddressWidgetListener
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class HomeHeaderViewHolder(
     itemView: View,
@@ -133,7 +134,7 @@ class HomeHeaderViewHolder(
             val backgroundData = header.background
             val defaultColor = ContextCompat.getColor(
                 itemView.context,
-                com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                unifyprinciplesR.color.Unify_GN500
             )
             val backgroundColor = ViewUtil.safeParseColor(backgroundData.color, defaultColor)
             val imageUrl = backgroundData.imageUrl
@@ -176,7 +177,7 @@ class HomeHeaderViewHolder(
         binding?.apply {
             val defaultColor = ContextCompat.getColor(
                 itemView.context,
-                com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                unifyprinciplesR.color.Unify_GN500
             )
 
             textTitle.text = itemView.context
@@ -198,7 +199,7 @@ class HomeHeaderViewHolder(
         binding?.apply {
             val color = ContextCompat.getColor(
                 itemView.context,
-                com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+                unifyprinciplesR.color.Unify_Static_White
             )
 
             shimmerIcon.setBackgroundColor(color)

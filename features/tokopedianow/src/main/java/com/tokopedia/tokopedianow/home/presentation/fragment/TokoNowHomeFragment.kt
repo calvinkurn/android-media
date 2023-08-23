@@ -182,6 +182,7 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.resources.isDarkMode
 import java.util.*
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class TokoNowHomeFragment :
     Fragment(),
@@ -314,7 +315,7 @@ class TokoNowHomeFragment :
             ).orZero()
             val height = (navToolbar?.height ?: defaultHeight)
             val padding = context?.resources?.getDimensionPixelSize(
-                com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3
+                unifyprinciplesR.dimen.spacing_lvl3
             ).orZero()
 
             return height + padding
@@ -1386,7 +1387,7 @@ class TokoNowHomeFragment :
                 getMiniCartHeight()
             } else {
                 context?.resources?.getDimensionPixelSize(
-                    com.tokopedia.unifyprinciples.R.dimen.layout_lvl0
+                    unifyprinciplesR.dimen.layout_lvl0
                 ).orZero()
             }
             binding?.swipeRefreshLayout?.setPadding(0, 0, 0, paddingBottom)
@@ -1768,11 +1769,11 @@ class TokoNowHomeFragment :
                         override fun onSwitchToLightToolbar() {
                             if (context.isDarkMode()) {
                                 toolbar.setBackButtonColor(
-                                    com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+                                    unifyprinciplesR.color.Unify_Static_White
                                 )
                             } else {
                                 toolbar.setBackButtonColor(
-                                    com.tokopedia.unifyprinciples.R.color.Unify_Static_Black
+                                    unifyprinciplesR.color.Unify_Static_Black
                                 )
                             }
                             switchToLightToolbar()
@@ -1781,13 +1782,13 @@ class TokoNowHomeFragment :
                         override fun onSwitchToDarkToolbar() {
                             if (viewModelTokoNow.isEmptyState && !context.isDarkMode()) {
                                 toolbar.setBackButtonColor(
-                                    com.tokopedia.unifyprinciples.R.color.Unify_Static_Black
+                                    unifyprinciplesR.color.Unify_Static_Black
                                 )
                                 toolbar.switchToLightToolbar()
                                 switchToLightToolbar()
                             } else {
                                 toolbar.setBackButtonColor(
-                                    com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+                                    unifyprinciplesR.color.Unify_Static_White
                                 )
                                 switchToDarkToolbar()
                             }
@@ -2119,7 +2120,8 @@ class TokoNowHomeFragment :
     }
 
     private fun getMiniCartHeight(): Int {
-        return miniCartWidget?.height.orZero() - context?.resources?.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)?.toInt().orZero()
+        return miniCartWidget?.height.orZero() - context?.resources?.getDimension(
+            unifyprinciplesR.dimen.unify_space_16)?.toInt().orZero()
     }
 
     override fun permissionAction(action: String, label: String) {

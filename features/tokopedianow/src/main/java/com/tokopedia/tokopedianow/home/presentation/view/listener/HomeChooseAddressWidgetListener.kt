@@ -5,6 +5,7 @@ import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder.TokoNowChooseAddressWidgetListener
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class HomeChooseAddressWidgetListener(
     private val tokoNowView: TokoNowView,
@@ -48,6 +49,6 @@ class HomeChooseAddressWidgetListener(
     }
 
     override fun onChangeTextColor(): Int {
-        return com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+        return unifyprinciplesR.color.Unify_Static_White
     }
 }

@@ -18,6 +18,7 @@ import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.SOURCE_TRACKING
 import com.tokopedia.utils.resources.isDarkMode
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class TokoNowChooseAddressWidgetViewHolder(
         itemView: View,
@@ -75,7 +76,7 @@ class TokoNowChooseAddressWidgetViewHolder(
                 }
 
                 override fun onChangeTextColor(): Int {
-                    return com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
+                    return unifyprinciplesR.color.Unify_NN950_96
                 }
             })
         }

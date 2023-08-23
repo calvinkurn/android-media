@@ -10,6 +10,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopedianow.buyercomm.presentation.data.ShipmentOptionData
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowBuyerCommunicationShipmentBinding
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class BuyerCommunicationShipmentItemView @JvmOverloads constructor(
     context: Context,
@@ -59,12 +60,12 @@ class BuyerCommunicationShipmentItemView @JvmOverloads constructor(
             if (!shipment.available) {
                 textTitle.setTextColor(
                     getColor(
-                        com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                        unifyprinciplesR.color.Unify_NN600
                     )
                 )
                 textDescription.setTextColor(
                     getColor(
-                        com.tokopedia.unifyprinciples.R.color.Unify_NN400
+                        unifyprinciplesR.color.Unify_NN400
                     )
                 )
             }
@@ -82,7 +83,7 @@ class BuyerCommunicationShipmentItemView @JvmOverloads constructor(
                 if (shipmentDetails.count() == ONE_LINE_SHIPMENT_DETAIL) {
                     textDescription.setTextColor(
                         getColor(
-                            com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                            unifyprinciplesR.color.Unify_NN600
                         )
                     )
                 }
