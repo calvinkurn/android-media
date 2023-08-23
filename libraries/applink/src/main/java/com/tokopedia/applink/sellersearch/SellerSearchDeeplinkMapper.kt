@@ -18,7 +18,7 @@ object SellerSearchDeeplinkMapper {
 
     private fun isSellerSearchCompose(context: Context): Boolean {
         return FirebaseRemoteConfigInstance.get(context)
-            .getBoolean(RemoteConfigKey.IS_SHOP_PENALTY_NEW_PAGE)
+            .getBoolean(RemoteConfigKey.SELLER_SEARCH_COMPOSE, true)
             .orFalse()
     }
 }
