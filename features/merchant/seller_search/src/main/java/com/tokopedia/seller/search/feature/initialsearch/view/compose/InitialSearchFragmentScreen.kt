@@ -9,9 +9,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.key
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.intl.Locale
@@ -21,6 +25,8 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.google.accompanist.flowlayout.FlowRow
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.nest.components.NestChips
 import com.tokopedia.nest.components.NestChipsSize
 import com.tokopedia.nest.components.NestChipsState
@@ -39,6 +45,9 @@ import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearc
 import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.ItemInitialSearchUiModel
 import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.ItemTitleHighlightInitialSearchUiModel
 import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.ItemTitleInitialSearchUiModel
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.map
 
 const val OPACITY_68 = 0.68f
 
@@ -47,7 +56,13 @@ fun InitialSearchFragmentScreen(
     uiState: InitialSearchUiState?,
     uiEvent: (InitialSearchUiEvent) -> Unit
 ) {
-    LazyColumn(Modifier.fillMaxSize()) {
+    val lazyListState = rememberLazyListState()
+    val localView = LocalView.current
+
+    LazyColumn(
+        Modifier.fillMaxSize(),
+        state = lazyListState
+    ) {
         itemsIndexed(uiState?.initialStateList.orEmpty()) { index, item ->
             when (item) {
                 is SellerSearchNoHistoryUiModel -> {
@@ -71,6 +86,16 @@ fun InitialSearchFragmentScreen(
                 }
             }
         }
+    }
+
+    LaunchedEffect(lazyListState) {
+        snapshotFlow { lazyListState.firstVisibleItemIndex }
+            .map { index -> index > Int.ZERO }
+            .distinctUntilChanged()
+            .filter { it }
+            .collect {
+                KeyboardHandler.DropKeyboard(localView.context, localView)
+            }
     }
 }
 

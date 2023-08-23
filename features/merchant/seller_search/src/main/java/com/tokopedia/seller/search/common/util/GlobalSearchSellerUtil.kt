@@ -19,7 +19,9 @@ internal fun indexOfSearchQuery(displayName: String, searchTerm: String): Int {
     return if (!TextUtils.isEmpty(searchTerm)) {
         displayName.lowercase(Locale.getDefault())
             .indexOf(searchTerm.lowercase(Locale.getDefault()))
-    } else -1
+    } else {
+        -1
+    }
 }
 
 internal fun Typography.bindTitleText(title: String, keyword: String) {
@@ -30,12 +32,15 @@ internal fun Typography.bindTitleText(title: String, keyword: String) {
         val highlightedTitle = SpannableString(title)
         highlightedTitle.safeSetSpan(
             TextAppearanceSpan(context, R.style.searchTextHiglight),
-            0, startIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            0,
+            startIndex,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
         )
         highlightedTitle.safeSetSpan(
             TextAppearanceSpan(context, R.style.searchTextHiglight),
             startIndex + keyword.length.orZero(),
-            title.length.orZero(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            title.length.orZero(),
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
         )
         highlightedTitle
     }
@@ -53,7 +58,9 @@ internal fun View.setRippleEffect() {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
         foreground = with(TypedValue()) {
             context.theme.resolveAttribute(
-                android.R.attr.selectableItemBackground, this, true
+                android.R.attr.selectableItemBackground,
+                this,
+                true
             )
             ContextCompat.getDrawable(context, resourceId)
         }

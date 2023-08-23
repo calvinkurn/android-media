@@ -13,14 +13,18 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.key
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
@@ -34,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.google.accompanist.flowlayout.FlowRow
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.compose.NestIcon
 import com.tokopedia.kotlin.extensions.view.ONE
@@ -69,6 +74,9 @@ import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.Ti
 import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.hightlights.HighlightSuggestionSearchUiModel
 import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.hightlights.ItemHighlightSuggestionSearchUiModel
 import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.hightlights.ItemTitleHighlightSuggestionSearchUiModel
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.map
 
 @Composable
 fun SuggestionSearchScreen(
@@ -78,10 +86,14 @@ fun SuggestionSearchScreen(
     if (uiState?.isLoadingState == true) {
         SellerSearchShimmerCompose()
     } else {
+        val lazyListState = rememberLazyListState()
+        val localView = LocalView.current
+
         LazyColumn(
             Modifier
-                .padding(bottom = 8.dp)
                 .fillMaxSize()
+                .padding(bottom = 8.dp),
+            state = lazyListState
         ) {
             itemsIndexed(uiState?.suggestionSellerSearchList.orEmpty()) { index, item ->
                 when (item) {
@@ -133,6 +145,16 @@ fun SuggestionSearchScreen(
                     }
                 }
             }
+        }
+
+        LaunchedEffect(lazyListState) {
+            snapshotFlow { lazyListState.firstVisibleItemIndex }
+                .map { index -> index > Int.ZERO }
+                .distinctUntilChanged()
+                .filter { it }
+                .collect {
+                    KeyboardHandler.DropKeyboard(localView.context, localView)
+                }
         }
     }
 }
@@ -425,7 +447,10 @@ fun SearchResultOrderItem(
     ) {
         val (tvSearchResultOrderTitle, tvSearchResultOrderDesc) = createRefs()
 
-        val spannedAnnotatedString = getSpannableAnnotatedString(keyword = item.keyword.orEmpty(), title = item.title.orEmpty())
+        val spannedAnnotatedString = getSpannableAnnotatedString(
+            keyword = item.keyword.orEmpty(),
+            title = item.title.orEmpty()
+        )
 
         NestTypography(
             text = spannedAnnotatedString,
