@@ -38,7 +38,9 @@ abstract class BaseTokoNowActivity : BaseActivity() {
     fun switchToLightToolbar() {
         binding?.let {
             var flags: Int = it.fragmentContainer.systemUiVisibility
-            flags = flags or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                flags = flags or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+            }
 
             setStatusBarFlag(flags)
             setTransparentStatusBar()
