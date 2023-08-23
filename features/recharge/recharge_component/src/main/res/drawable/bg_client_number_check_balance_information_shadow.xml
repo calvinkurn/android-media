@@ -9,7 +9,7 @@
     </item>
     <item>
         <shape>
-            <solid android:color="@color/Unify_YN50"/>
+            <solid android:color="@color/Unify_NN50"/>
             <corners android:bottomLeftRadius="8dp" android:bottomRightRadius="8dp"/>
         </shape>
     </item>

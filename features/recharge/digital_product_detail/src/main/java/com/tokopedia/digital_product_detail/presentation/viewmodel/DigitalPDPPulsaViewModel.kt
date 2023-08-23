@@ -291,7 +291,7 @@ class DigitalPDPPulsaViewModel @Inject constructor(
     }
 
     fun isCheckBalanceFailedMoreThanThreeTimes(): Boolean {
-        return checkBalanceFailCounter > CHECK_BALANCE_FAIL_THRESHOLD
+        return checkBalanceFailCounter >= CHECK_BALANCE_FAIL_THRESHOLD
     }
 
     fun updateCheckoutPassData(

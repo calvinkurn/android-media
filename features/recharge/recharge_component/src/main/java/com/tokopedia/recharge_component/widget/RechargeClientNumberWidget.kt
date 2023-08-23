@@ -14,6 +14,8 @@ import android.view.animation.DecelerateInterpolator
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
+import androidx.core.view.marginStart
+import androidx.core.view.marginTop
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsAutoCompleteAdapter
 import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactModel
 import com.tokopedia.iconunify.IconUnify
@@ -430,6 +432,7 @@ class RechargeClientNumberWidget @JvmOverloads constructor(
         balanceDetailBottomSheetModel: RechargeCheckBalanceDetailBottomSheetModel
     ) {
         binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetCheckBalance.run {
+            showCheckBalanceRV()
             setBalanceInfo(balanceInfo)
             if (balanceDetailBottomSheetModel.details.isNotEmpty()) {
                 setListener(object : RechargeCheckBalanceWidget.RechargeCheckBalanceWidgetListener {
@@ -441,8 +444,18 @@ class RechargeClientNumberWidget @JvmOverloads constructor(
         }
     }
 
-    fun showCheckBalanceWarning(message: String, type: String) {
+    fun showCheckBalanceWarning(
+        message: String,
+        type: String,
+        isShowOnlyWarning: Boolean = false
+    ) {
         binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetCheckBalance.run {
+            if (isShowOnlyWarning) {
+                hideCheckBalanceRV()
+                setWarningContainerMargin(marginTop = Int.ZERO)
+            } else {
+                setWarningContainerMargin()
+            }
             when (type) {
                 CHECK_BALANCE_WARNING -> showWarningMessage(message)
                 CHECK_BALANCE_CRITICAL -> showCriticalMessage(message)

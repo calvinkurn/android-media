@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.applyIconUnifyColor
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.recharge_component.R
@@ -19,6 +20,8 @@ import com.tokopedia.recharge_component.presentation.adapter.RechargeCheckBalanc
 import com.tokopedia.recharge_component.presentation.adapter.viewholder.RechargeCheckBalanceUnitViewHolder
 import com.tokopedia.recharge_component.presentation.util.CustomDividerItemDecorator
 import com.tokopedia.unifycomponents.BaseCustomView
+import com.tokopedia.unifycomponents.toDp
+import com.tokopedia.unifycomponents.toPx
 import org.jetbrains.annotations.NotNull
 
 class RechargeCheckBalanceWidget @JvmOverloads constructor(
@@ -83,11 +86,9 @@ class RechargeCheckBalanceWidget @JvmOverloads constructor(
                 )
                 show()
             }
-            checkBalanceWarningContainer.setBackgroundColor(
-                MethodChecker.getColor(
-                    context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_YN50
-                )
+            checkBalanceWarningContainer.background = MethodChecker.getDrawable(
+                context,
+                R.drawable.bg_client_number_check_balance_warning_shadow
             )
             checkBalanceWarningTxt.setTextColor(
                 MethodChecker.getColor(
@@ -111,11 +112,9 @@ class RechargeCheckBalanceWidget @JvmOverloads constructor(
                 )
                 show()
             }
-            checkBalanceWarningContainer.setBackgroundColor(
-                MethodChecker.getColor(
-                    context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_RN50
-                )
+            checkBalanceWarningContainer.background = MethodChecker.getDrawable(
+                context,
+                R.drawable.bg_client_number_check_balance_error_shadow
             )
             checkBalanceWarningTxt.setTextColor(
                 MethodChecker.getColor(
@@ -130,11 +129,9 @@ class RechargeCheckBalanceWidget @JvmOverloads constructor(
         showWidgetMessage(message)
         binding.run {
             checkBalanceWarningIcon.hide()
-            checkBalanceWarningContainer.setBackgroundColor(
-                MethodChecker.getColor(
-                    context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN50
-                )
+            checkBalanceWarningContainer.background = MethodChecker.getDrawable(
+                context,
+                R.drawable.bg_client_number_check_balance_information_shadow
             )
             checkBalanceWarningTxt.setTextColor(
                 MethodChecker.getColor(
@@ -191,6 +188,25 @@ class RechargeCheckBalanceWidget @JvmOverloads constructor(
             checkBalanceLocalload.setOnClickListener { }
             checkBalanceLocalload.hide()
         }
+    }
+
+    fun showCheckBalanceRV() {
+        binding.checkBalanceRv.show()
+    }
+
+    fun hideCheckBalanceRV() {
+        binding.checkBalanceRv.hide()
+    }
+
+    fun setWarningContainerMargin(
+        marginStart: Int = 0,
+        marginTop: Int = 12,
+        marginEnd: Int = 0,
+        marginBottom: Int = 0
+    ) {
+        binding.checkBalanceWarningContainer.setMargin(
+            marginStart.toDp(), marginTop.toDp(), marginEnd.toDp(), marginBottom.toDp()
+        )
     }
 
     interface RechargeCheckBalanceWidgetListener {

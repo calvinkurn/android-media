@@ -675,7 +675,6 @@ class DigitalPDPPulsaFragment :
                 else -> return
             }
 
-            // =======
             if (checkBalanceData.campaignLabelText.isNotEmpty()) {
                 showCheckBalanceWarning(
                     checkBalanceData.campaignLabelText,
@@ -701,10 +700,14 @@ class DigitalPDPPulsaFragment :
             showCheckBalanceWidgetLocalLoad {
                 viewModel.checkBalanceFailCounter++
                 if (viewModel.isCheckBalanceFailedMoreThanThreeTimes()) {
+                    hideCheckBalanceWidgetLocalLoad()
+                    removeClientNumberBottomPadding()
                     showCheckBalanceWarning(
                         checkBalanceData?.subtitle.orEmpty(),
-                        checkBalanceData?.campaignLabelTextColor.orEmpty()
+                        checkBalanceData?.campaignLabelTextColor.orEmpty(),
+                        isShowOnlyWarning = true
                     )
+                    setupDynamicScrollViewPadding()
                 } else {
                     getIndosatCheckBalance()
                 }
