@@ -3,12 +3,14 @@ package com.tokopedia.feed.component.product
 import android.content.Context
 import android.graphics.Paint
 import android.util.AttributeSet
+import android.util.Log
 import android.view.LayoutInflater
 import androidx.core.content.ContextCompat
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.databinding.ViewFeedTaggedProductBottomSheetCardBinding
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.unifycomponents.CardUnify
 import kotlin.math.roundToInt
 
@@ -59,6 +61,8 @@ class FeedTaggedProductBottomSheetItemView(
                 mListener?.onProductCardClicked(this, product)
             }
         }
+
+        bindStock(product.stock)
     }
 
     private fun bindPrice(price: FeedTaggedProductUiModel.Price) {
@@ -109,6 +113,14 @@ class FeedTaggedProductBottomSheetItemView(
             binding.llProductActionButton.show()
             binding.btnProductLongAtc.hide()
         }
+    }
+
+    private fun bindStock(stock: FeedTaggedProductUiModel.Stock) {
+        val isShown = stock is FeedTaggedProductUiModel.Stock.Available
+        binding.btnProductBuy.isEnabled = isShown
+        binding.btnProductAtc.isEnabled = isShown
+        binding.viewOverlayOos.showWithCondition(!isShown)
+        binding.labelOutOfStock.showWithCondition(!isShown)
     }
 
     interface Listener {

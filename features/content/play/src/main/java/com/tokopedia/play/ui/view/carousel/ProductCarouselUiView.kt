@@ -2,29 +2,41 @@ package com.tokopedia.play.ui.view.carousel
 
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.databinding.ViewProductFeaturedBinding
 import com.tokopedia.play.ui.product.ProductBasicViewHolder
 import com.tokopedia.play.ui.productfeatured.itemdecoration.ProductFeaturedItemDecoration
+import com.tokopedia.play.ui.productfeatured.viewholder.ProductFeaturedViewHolder
 import com.tokopedia.play.ui.view.carousel.adapter.ProductCarouselAdapter
 import com.tokopedia.play.ui.view.carousel.viewholder.ProductCarouselViewHolder
 import com.tokopedia.play.view.type.ProductAction
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
+import com.tokopedia.unifyprinciples.UnifyMotion
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 /**
  * Created by kenny.hadisaputra on 06/07/22
  */
 class ProductCarouselUiView(
     private val binding: ViewProductFeaturedBinding,
+    private val scope: CoroutineScope,
     private val listener: Listener,
-) {
+    private val dispatchers: CoroutineDispatchers,
+    ) {
 
     private val context = binding.root.context
 
     private val scrollListener = object: RecyclerView.OnScrollListener(){
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-            if (newState == RecyclerView.SCROLL_STATE_IDLE) sendImpression()
+            if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                sendImpression()
+                startAnimation()
+            }
         }
     }
 
@@ -64,6 +76,7 @@ class ProductCarouselUiView(
     private val layoutManager = object : LinearLayoutManager(context, RecyclerView.HORIZONTAL, false) {
         override fun onLayoutCompleted(state: RecyclerView.State?) {
             super.onLayoutCompleted(state)
+            startAnimation()
             sendImpression()
         }
     }
@@ -166,6 +179,29 @@ class ProductCarouselUiView(
 
     fun cleanUp() {
         binding.rvProductFeatured.removeOnScrollListener(scrollListener)
+    }
+
+    private fun startAnimation() {
+        val products = adapter.getItems()
+        if (products.isEmpty()) return
+
+        scope.launch(dispatchers.main) {
+            delay(delayAnimDuration)
+            val startPosition = layoutManager.findFirstCompletelyVisibleItemPosition()
+            val endPosition = layoutManager.findLastCompletelyVisibleItemPosition()
+            if (startPosition in products.indices) {
+                for (i in startPosition..endPosition) {
+                    when (val vh = binding.rvProductFeatured.findViewHolderForAdapterPosition(i)) {
+                        is ProductFeaturedViewHolder -> vh.startAnimation()
+                        is ProductCarouselViewHolder.PinnedProduct -> vh.startAnimation()
+                    }
+                }
+            }
+        }
+    }
+
+    companion object {
+        private const val delayAnimDuration = 2000L
     }
 
     interface Listener {

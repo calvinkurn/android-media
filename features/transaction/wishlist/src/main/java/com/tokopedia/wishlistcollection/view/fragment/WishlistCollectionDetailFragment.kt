@@ -26,6 +26,7 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_DETAIL_INTERNAL
@@ -116,6 +117,7 @@ import com.tokopedia.wishlistcollection.di.WishlistCollectionModule
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.DELAY_REFETCH_PROGRESS_DELETION
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.DELAY_SHOW_COACHMARK_TOOLBAR
+import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.EXTRA_CHANNEL
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.EXTRA_COLLECTION_ID_DESTINATION
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.EXTRA_COLLECTION_NAME_DESTINATION
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.EXTRA_IS_BULK_ADD
@@ -131,7 +133,6 @@ import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.TYPE_COLLE
 import com.tokopedia.wishlistcollection.util.WishlistCollectionSharingUtils
 import com.tokopedia.wishlistcollection.util.WishlistCollectionUtils.getStringCollectionType
 import com.tokopedia.wishlistcollection.view.activity.WishlistCollectionDetailActivity
-import com.tokopedia.wishlistcollection.view.activity.WishlistCollectionEditActivity
 import com.tokopedia.wishlistcollection.view.adapter.BottomSheetWishlistCollectionAdapter
 import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetAddCollectionWishlist
 import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetCreateNewCollectionWishlist
@@ -140,6 +141,7 @@ import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetWishlistColl
 import com.tokopedia.wishlistcollection.view.bottomsheet.listener.ActionListenerBottomSheetMenu
 import com.tokopedia.wishlistcollection.view.bottomsheet.listener.ActionListenerFromPdp
 import com.tokopedia.wishlistcollection.view.viewmodel.WishlistCollectionDetailViewModel
+import com.tokopedia.wishlistcommon.data.params.UpdateWishlistCollectionParams
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
@@ -151,6 +153,7 @@ import kotlinx.coroutines.Dispatchers
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 import kotlin.coroutines.CoroutineContext
 import kotlin.math.roundToInt
 import com.tokopedia.wishlist.R as Rv2
@@ -226,6 +229,8 @@ class WishlistCollectionDetailFragment :
     private var _toasterMaxBulk = ""
     private var _isNeedRefreshAndTurnOffBulkModeFromOthers = false
     private var _bulkModeIsAlreadyTurnedOff = false
+    private var affiliateUniqueId = ""
+    private var affiliateChannel = ""
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -278,6 +283,18 @@ class WishlistCollectionDetailFragment :
                         EXTRA_COLLECTION_NAME_DESTINATION,
                         this.getString(
                             EXTRA_COLLECTION_NAME_DESTINATION
+                        )
+                    )
+                    putString(
+                        ApplinkConstInternalPurchasePlatform.PATH_AFFILIATE_UNIQUE_ID,
+                        this.getString(
+                            ApplinkConstInternalPurchasePlatform.PATH_AFFILIATE_UNIQUE_ID
+                        )
+                    )
+                    putString(
+                        EXTRA_CHANNEL,
+                        this.getString(
+                            EXTRA_CHANNEL
                         )
                     )
                 }
@@ -728,6 +745,11 @@ class WishlistCollectionDetailFragment :
                             StringUtils.convertListToStringDelimiter(it.data.data.message, ",")
                         showToasterAtc(successMsg, Toaster.TYPE_NORMAL)
                         WishlistCollectionAnalytics.sendClickAddToCartOnWishlistPageEvent(collectionId, wishlistItemOnAtc, userSession.userId, indexOnAtc, it.data.data.cartId)
+                        wishlistCollectionDetailViewModel.checkShouldCreateAffiliateCookieAtcProduct(
+                            affiliateUniqueId,
+                            affiliateChannel,
+                            wishlistItemOnAtc
+                        )
                     }
                 }
                 is Fail -> {
@@ -1036,6 +1058,7 @@ class WishlistCollectionDetailFragment :
             when (result) {
                 is Success -> {
                     finishRefresh()
+                    hitWishlistAffiliateCookie()
                     result.data.let { listData ->
                         if (!onLoadMore) {
                             collectionItemsAdapter.addList(listData)
@@ -1131,6 +1154,8 @@ class WishlistCollectionDetailFragment :
         isShowingCleanerBottomSheet = arguments?.getBoolean(EXTRA_IS_SHOW_CLEANER_BOTTOMSHEET) ?: false
         collectionIdDestination = arguments?.getString(EXTRA_COLLECTION_ID_DESTINATION) ?: ""
         collectionNameDestination = arguments?.getString(EXTRA_COLLECTION_NAME_DESTINATION) ?: ""
+        affiliateUniqueId = arguments?.getString(ApplinkConstInternalPurchasePlatform.PATH_AFFILIATE_UNIQUE_ID) ?: ""
+        affiliateChannel = arguments?.getString(EXTRA_CHANNEL) ?: ""
         paramGetCollectionItems.collectionId = collectionId
 
         var titleToolbar = ""
@@ -1199,6 +1224,14 @@ class WishlistCollectionDetailFragment :
                 setTypeLayoutIcon()
             }
         }
+    }
+
+    private fun hitWishlistAffiliateCookie() {
+        wishlistCollectionDetailViewModel.hitAffiliateCookie(
+            affiliateUniqueId,
+            affiliateChannel,
+            collectionId
+        )
     }
 
     private fun setupGearIcon() {
@@ -2467,16 +2500,11 @@ class WishlistCollectionDetailFragment :
         )
 
         activity?.let {
-            val intent: Intent
+            val uri = UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, wishlistItem.id)
+            val appLink = wishlistCollectionDetailViewModel.createAffiliateLink(uri)
+            val intent = RouteManager.getIntent(context, appLink)
             if (wishlistItem.url.isNotEmpty()) {
-                intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, wishlistItem.id)
                 intent.data = Uri.parse(wishlistItem.url)
-            } else {
-                intent = RouteManager.getIntent(
-                    it,
-                    ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-                    wishlistItem.id
-                )
             }
             startActivityForResult(intent, REQUEST_CODE_GO_TO_PDP)
         }
@@ -3641,10 +3669,14 @@ class WishlistCollectionDetailFragment :
     }
 
     private fun goToEditCollectionPage() {
-        val intent = Intent(context, WishlistCollectionEditActivity::class.java)
-        intent.putExtra(WishlistCollectionConsts.COLLECTION_ID, collectionId)
-        intent.putExtra(WishlistCollectionConsts.COLLECTION_NAME, collectionName)
-        startActivityForResult(intent, EDIT_WISHLIST_COLLECTION_REQUEST_CODE)
+        val intentEditWishlistCollection =
+            RouteManager.getIntent(context, ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_EDIT)
+        intentEditWishlistCollection.putExtra(WishlistCollectionConsts.COLLECTION_ID, collectionId)
+        intentEditWishlistCollection.putExtra(WishlistCollectionConsts.COLLECTION_NAME, collectionName)
+        startActivityForResult(
+            intentEditWishlistCollection,
+            EDIT_WISHLIST_COLLECTION_REQUEST_CODE
+        )
     }
 
     override fun onDeleteCollection(collectionId: String, collectionName: String, actionText: String) {

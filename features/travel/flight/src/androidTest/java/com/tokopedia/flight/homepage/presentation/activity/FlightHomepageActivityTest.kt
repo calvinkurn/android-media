@@ -233,13 +233,13 @@ class FlightHomepageActivityTest {
         onView(withId(R.id.tvFlightPassenger)).perform(click())
 
         // set passengers, 3 adult, 2 child, 1 infant
-        onView(getElementFromMatchAtPosition(withId(R.id.quantity_editor_add), 0)).perform(click())
-        onView(getElementFromMatchAtPosition(withId(R.id.quantity_editor_add), 0)).perform(click())
+        onView(getElementFromMatchAtPosition(withId(com.tokopedia.unifycomponents.R.id.quantity_editor_add), 0)).perform(click())
+        onView(getElementFromMatchAtPosition(withId(com.tokopedia.unifycomponents.R.id.quantity_editor_add), 0)).perform(click())
 
-        onView(getElementFromMatchAtPosition(withId(R.id.quantity_editor_add), 1)).perform(click())
-        onView(getElementFromMatchAtPosition(withId(R.id.quantity_editor_add), 1)).perform(click())
+        onView(getElementFromMatchAtPosition(withId(com.tokopedia.unifycomponents.R.id.quantity_editor_add), 1)).perform(click())
+        onView(getElementFromMatchAtPosition(withId(com.tokopedia.unifycomponents.R.id.quantity_editor_add), 1)).perform(click())
 
-        onView(getElementFromMatchAtPosition(withId(R.id.quantity_editor_add), 2)).perform(click())
+        onView(getElementFromMatchAtPosition(withId(com.tokopedia.unifycomponents.R.id.quantity_editor_add), 2)).perform(click())
         Thread.sleep(1000)
 
         onView(withId(R.id.btnFlightPassenger)).perform(click())

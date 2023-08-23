@@ -200,7 +200,7 @@ open class TokoChatFragment :
 
     override fun onFragmentBackPressed(): Boolean {
         val shouldShowBubblesAwarenessBottomSheet =
-            TokoChatValueUtil.shouldShowBubblesAwareness() &&
+            TokoChatValueUtil.shouldShowBubblesAwareness(context) &&
                 (activity?.isFromBubble() == false) &&
                 viewModel.shouldShowBottomsheetBubblesCache() &&
                 !viewModel.isFromBubble
@@ -619,7 +619,7 @@ open class TokoChatFragment :
     }
 
     private fun addBubbleTicker() {
-        if (TokoChatValueUtil.shouldShowBubblesAwareness() &&
+        if (TokoChatValueUtil.shouldShowBubblesAwareness(context) &&
             viewModel.shouldShowTickerBubblesCache() &&
             (activity?.isFromBubble() == false) &&
             !viewModel.isFromBubble

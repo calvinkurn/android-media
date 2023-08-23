@@ -91,14 +91,14 @@ class ProductHighlightItem(
                 ConstraintSet.END,
                 productHighlightView.id,
                 ConstraintSet.START,
-                context.resources.getDimensionPixelSize(R.dimen.dp_4)
+                context.resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_4)
             )
             constraintSet.connect(
                 productHighlightView.id,
                 ConstraintSet.START,
                 previousProductHighlightItem.productHighlightView.id,
                 ConstraintSet.END,
-                context.resources.getDimensionPixelSize(R.dimen.dp_4)
+                context.resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_4)
             )
         }
 
@@ -112,7 +112,7 @@ class ProductHighlightItem(
             )
         }
         constraintSet.connect(productHighlightView.id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, context.resources.getDimensionPixelSize(R.dimen.dp_16))
-        constraintSet.connect(productHighlightView.id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, context.resources.getDimensionPixelSize(R.dimen.dp_4))
+        constraintSet.connect(productHighlightView.id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, context.resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_4))
         constraintSet.applyTo(constraintLayout)
     }
 
@@ -123,7 +123,9 @@ class ProductHighlightItem(
             with(singleBinding) {
                 if (this != null) {
                     try {
-                        bgImage.backgroundTintList = ColorStateList.valueOf(Color.parseColor(productHighlightData.boxColor))
+                        if(!productHighlightData.boxColor.isNullOrEmpty()) {
+                            bgImage.setColorFilter(Color.parseColor(productHighlightData.boxColor))
+                        }
                     } catch (e: Exception) {
                         Utils.logException(e)
                     }
@@ -234,7 +236,9 @@ class ProductHighlightItem(
             with(multipleBinding) {
                 if (this != null) {
                     try {
-                        bgImage.backgroundTintList = ColorStateList.valueOf(Color.parseColor(productHighlightData.boxColor))
+                        if(!productHighlightData.boxColor.isNullOrEmpty()) {
+                            bgImage.setColorFilter(Color.parseColor(productHighlightData.boxColor))
+                        }
                     } catch (e: Exception) {
                         Utils.logException(e)
                     }
@@ -350,9 +354,9 @@ class ProductHighlightItem(
                 phProductPrice.setType(com.tokopedia.unifyprinciples.Typography.DISPLAY_3)
                 phProductPrice.setWeight(com.tokopedia.unifyprinciples.Typography.BOLD)
                 phProductDiscount.setPadding(
-                    context.resources.getDimensionPixelOffset(R.dimen.dp_4),
+                    context.resources.getDimensionPixelOffset(com.tokopedia.abstraction.R.dimen.dp_4),
                     context.resources.getDimensionPixelOffset(R.dimen.dp_2),
-                    context.resources.getDimensionPixelOffset(R.dimen.dp_4),
+                    context.resources.getDimensionPixelOffset(com.tokopedia.abstraction.R.dimen.dp_4),
                     context.resources.getDimensionPixelOffset(R.dimen.dp_2)
                 )
                 productHighlightImage.layoutParams.width = getScreenWidth() / 3 - context.resources.getDimensionPixelSize(R.dimen.dp_24)

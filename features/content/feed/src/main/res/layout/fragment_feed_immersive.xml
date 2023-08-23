@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?><!--Name can be changed later to avoid misunderstanding after removing the old Feed-->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/Unify_Static_Black">
@@ -9,10 +10,11 @@
         android:id="@+id/swipe_refresh_feed_layout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@id/feed_load_more"
+        app:layout_constraintBottom_toTopOf="@id/container_bottom_action"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_feed_post"
@@ -26,17 +28,31 @@
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    <com.tokopedia.unifycomponents.LoaderUnify
-        android:id="@+id/feed_load_more"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:layout_gravity="center_horizontal"
+    <LinearLayout
+        android:id="@+id/container_bottom_action"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/feed_dms_bottom_action_background"
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        android:padding="@dimen/unify_space_16"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/swipe_refresh_feed_layout"
-        app:loader_type="decorative_white" />
+        app:layout_constraintVertical_chainStyle="packed"
+        tools:visibility="visible">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/ty_bottom_action"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:textColor="@color/feed_dms_bottom_action_text"
+            app:typographyType="paragraph_2"
+            tools:text="@string/feed_bottom_action_comment_label" />
+    </LinearLayout>
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/feed_loading"

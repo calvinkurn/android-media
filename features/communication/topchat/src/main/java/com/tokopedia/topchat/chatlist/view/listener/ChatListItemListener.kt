@@ -29,5 +29,4 @@ interface ChatListItemListener {
     fun onOperationalInsightTickerShown(element: ShopChatTicker)
     fun onOperationalInsightTickerClicked(element: ShopChatTicker)
     fun onOperationalInsightCloseButtonClicked(visitable: Visitable<*>)
-    fun getRollenceValue(key: String): Boolean
 }

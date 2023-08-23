@@ -329,7 +329,7 @@ class ChatListFragment :
     private fun markBroadcastNewLabel() {
         if (shouldShowBroadcastFabNewLabel()) {
             chatItemListViewModel.saveBooleanCache(
-                cacheName = BROADCAST_FAB_LABEL_PREF_NAME,
+                cacheName = "${BROADCAST_FAB_LABEL_PREF_NAME}_${userSession.userId}",
                 value = false
             )
             broadCastButton?.toggleBroadcastLabel(
@@ -340,7 +340,7 @@ class ChatListFragment :
 
     private fun shouldShowBroadcastFabNewLabel(): Boolean {
         val labelCache = chatItemListViewModel.getBooleanCache(
-            BROADCAST_FAB_LABEL_PREF_NAME
+            "${BROADCAST_FAB_LABEL_PREF_NAME}_${userSession.userId}"
         )
         val rollenceValue = getRollenceValue(BROADCAST_FAB_LABEL_ROLLENCE_KEY)
         return labelCache && rollenceValue
@@ -1038,7 +1038,7 @@ class ChatListFragment :
         }
     }
 
-    override fun getRollenceValue(key: String): Boolean {
+    private fun getRollenceValue(key: String): Boolean {
         return try {
             abTestPlatform.getString(key, "").isNotEmpty()
         } catch (t: Throwable) {

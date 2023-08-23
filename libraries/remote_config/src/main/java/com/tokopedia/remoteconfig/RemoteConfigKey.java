@@ -252,6 +252,14 @@ public class RemoteConfigKey {
 
     public static final String ANDROID_FINTECH_ENABLE_RISK_BASED_PRICING = "android_fintech_enable_risk_based_pricing";
 
+    public static final String IS_TOKOCHAT_BUBBLES_ENABLED = "android_tokochat_bubbles_enabled";
+
+    public static final String HOME_NEW_LEGO_TRACKING = "android_home_enable_new_lego_tracking";
+
+    public static final String CONTACT_US_DISABLE_FORCE_RELOAD_URLS = "android_contact_us_disable_force_reload_urls";
+
+    public static final String ENABLE_BANNER_ENVIRONMENT = "android_enable_banner_environment";
+
     public static final String MAINAPP_DISABLED_STORIES_ENTRY_POINTS = "android_main_app_disabled_stories_entry_points";
 
     public static final String SELLERAPP_DISABLED_STORIES_ENTRY_POINTS = "android_seller_app_disabled_stories_entry_points";
