@@ -13,7 +13,8 @@ import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 object DeeplinkMapperUser {
 
     const val KEY_ROLLENCE_PROFILE_MANAGEMENT_M2 = "M2_Profile_Mgmt"
-    const val ROLLENCE_GOTO_KYC = "goto_kyc_apps"
+    const val ROLLENCE_GOTO_KYC_MA = "goto_kyc_apps"
+    const val ROLLENCE_GOTO_KYC_SA = "goto_kyc_sellerapp"
     const val ROLLENCE_PRIVACY_CENTER = "privacy_center_and_3"
 
     fun getRegisteredNavigationUser(deeplink: String): String {
@@ -52,7 +53,7 @@ object DeeplinkMapperUser {
     }
 
     private fun getApplinkGotoKyc(deeplink: String): String {
-        return if (isRollenceGotoKycActivated() && !GlobalConfig.isSellerApp()) {
+        return if (isRollenceGotoKycActivated()) {
             deeplink.replace("${ApplinkConst.APPLINK_CUSTOMER_SCHEME}://", "${ApplinkConstInternalUserPlatform.NEW_INTERNAL_USER}/")
         } else {
             ApplinkConstInternalUserPlatform.KYC_INFO_BASE + "?" + deeplink.substringAfter("?")
@@ -60,10 +61,16 @@ object DeeplinkMapperUser {
     }
 
     private fun isRollenceGotoKycActivated(): Boolean {
+        val rollenceKey = if (GlobalConfig.isSellerApp()) {
+            ROLLENCE_GOTO_KYC_SA
+        } else {
+            ROLLENCE_GOTO_KYC_MA
+        }
+
         val rollence = getAbTestPlatform()
-            .getFilteredKeyByKeyName(ROLLENCE_GOTO_KYC)
+            .getFilteredKeyByKeyName(rollenceKey)
         return if (rollence.isNotEmpty()) {
-            getAbTestPlatform().getString(ROLLENCE_GOTO_KYC).isNotEmpty()
+            getAbTestPlatform().getString(rollenceKey).isNotEmpty()
         } else {
             true
         }
