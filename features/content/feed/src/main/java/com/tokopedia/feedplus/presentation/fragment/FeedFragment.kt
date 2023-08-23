@@ -63,6 +63,7 @@ import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
 import com.tokopedia.feedplus.presentation.adapter.FeedContentAdapter
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
 import com.tokopedia.feedplus.presentation.adapter.util.FeedPostLayoutManager
+import com.tokopedia.feedplus.presentation.model.ActiveTabSource
 import com.tokopedia.feedplus.presentation.model.FeedAuthorModel
 import com.tokopedia.feedplus.presentation.model.FeedCardCampaignModel
 import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
@@ -168,13 +169,15 @@ class FeedFragment :
     @Inject
     lateinit var dispatchers: CoroutineDispatchers
 
+    @Inject lateinit var viewModelAssistedFactory: FeedMainViewModel.Factory
     private val feedMainViewModel: FeedMainViewModel by viewModels(
         ownerProducer = {
             parentFragment ?: this
         },
         factoryProducer = {
-            viewModelFactory
+            FeedMainViewModel.provideFactory(viewModelAssistedFactory, ActiveTabSource.Empty)
         }
+
     )
     private val feedPostViewModel: FeedPostViewModel by viewModels { viewModelFactory }
 
@@ -581,7 +584,7 @@ class FeedFragment :
     }
 
     override fun changeTab() {
-        feedMainViewModel.changeCurrentTabByType(FeedBaseFragment.TAB_TYPE_FOR_YOU)
+        feedMainViewModel.setActiveTab(FeedBaseFragment.TAB_TYPE_FOR_YOU)
     }
 
     override fun reload() {

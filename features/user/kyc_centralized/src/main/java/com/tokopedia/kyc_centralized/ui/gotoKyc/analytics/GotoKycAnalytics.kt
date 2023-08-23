@@ -124,6 +124,7 @@ object GotoKycAnalytics {
     private const val VALUE_CURRENT_SITE = "tokopediamarketplace"
     private const val AUTO = "auto"
     private const val MANUAL = "manual"
+    const val KYC_FLOW_NON_PROGRESSIVE = "non progressive"
     const val PENDING = "pending"
     const val FAILED = "failed"
     const val SUCCESS = "success"
@@ -253,7 +254,7 @@ object GotoKycAnalytics {
     }
 
     //A6i or A6
-    fun sendViewStatusPage(status: String, errorReason: String = "", projectId: String) {
+    fun sendViewStatusPage(kycFlowType: String, status: String, errorReason: String = "", projectId: String) {
         val finalStatus = if (errorReason.isNotEmpty()) {
             "$status - $errorReason"
         } else {
@@ -263,7 +264,7 @@ object GotoKycAnalytics {
             .setEvent(EVENT_VIEW_ACCOUNT_IRIS)
             .setEventAction(ACTION_VIEW_STATUS_PAGE)
             .setEventCategory(CATEGORY_STATUS_PAGE)
-            .setEventLabel("$finalStatus - $projectId")
+            .setEventLabel("$kycFlowType - $finalStatus - $projectId")
             .setCustomProperty(KEY_TRACKER_ID, VALUE_TRACKER_ID_43616)
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
@@ -272,12 +273,12 @@ object GotoKycAnalytics {
     }
 
     //A18 or A15
-    fun sendClickOnButtonVerifikasiUlangRejectPage(errorMessage: String, projectId: String) {
+    fun sendClickOnButtonVerifikasiUlangRejectPage(kycFlowType: String, errorMessage: String, projectId: String) {
         Tracker.Builder()
             .setEvent(EVENT_CLICK_ACCOUNT)
             .setEventAction(ACTION_CLICK_VERIFIKASI_ULANG)
             .setEventCategory(CATEGORY_STATUS_PAGE)
-            .setEventLabel("$FAILED - $errorMessage - $projectId")
+            .setEventLabel("$kycFlowType - $FAILED - $errorMessage - $projectId")
             .setCustomProperty(KEY_TRACKER_ID, VALUE_TRACKER_ID_43890)
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)

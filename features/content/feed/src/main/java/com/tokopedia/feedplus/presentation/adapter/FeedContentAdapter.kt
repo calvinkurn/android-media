@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.ErrorNetworkViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingMoreViewHolder
+import com.tokopedia.feedplus.presentation.adapter.viewholder.FeedErrorViewHolder
 import com.tokopedia.feedplus.presentation.adapter.viewholder.FeedNoContentViewHolder
 import com.tokopedia.feedplus.presentation.adapter.viewholder.FeedPostImageViewHolder
 import com.tokopedia.feedplus.presentation.adapter.viewholder.FeedPostLiveViewHolder
@@ -135,7 +136,7 @@ class FeedContentAdapter(
             holder is LoadingMoreViewHolder && item.data is LoadingMoreModel -> {
                 holder.bind(item.data)
             }
-            holder is ErrorNetworkViewHolder && item.data is ErrorNetworkModel -> {
+            holder is FeedErrorViewHolder && item.data is ErrorNetworkModel -> {
                 holder.bind(item.data)
             }
         }
@@ -168,7 +169,7 @@ class FeedContentAdapter(
                 holder is LoadingMoreViewHolder && item.data is LoadingMoreModel -> {
                     holder.bind(item.data, payloads)
                 }
-                holder is ErrorNetworkViewHolder && item.data is ErrorNetworkModel -> {
+                holder is FeedErrorViewHolder && item.data is ErrorNetworkModel -> {
                     holder.bind(item.data, payloads)
                 }
             }

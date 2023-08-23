@@ -856,6 +856,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     }
 
     public Boolean shouldReloadContactUsUrl(String url) {
+        if (!userSession.isLoggedIn()) return false;
         if (getContext() != null) {
             return WebViewHelper.shouldReloadContactUsUrl(getContext(), url);
         }

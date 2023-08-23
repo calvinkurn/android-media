@@ -32,7 +32,7 @@ class BenefitAdapter(private val context: Context, var benefitList: List<Benefit
                 context,
                 holder.imageView,
                 item.iconUrl,
-                R.drawable.ic_loading_image
+                com.tokopedia.design.R.drawable.ic_loading_image
         )
 
         holder.textView?.text = item.label
