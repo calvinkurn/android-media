@@ -139,8 +139,8 @@ import com.tokopedia.product.detail.common.data.model.ar.ProductArInfo
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkir
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirImage
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
+import com.tokopedia.product.detail.common.data.model.carttype.PostAtcLayout
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
-import com.tokopedia.product.detail.common.data.model.pdplayout.BasicInfo
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailGallery
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
@@ -153,6 +153,7 @@ import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
+import com.tokopedia.product.detail.common.postatc.PostAtcParams
 import com.tokopedia.product.detail.common.showImmediately
 import com.tokopedia.product.detail.common.showToasterError
 import com.tokopedia.product.detail.common.showToasterSuccess
@@ -2449,7 +2450,7 @@ open class DynamicProductDetailFragment :
             }) { throwable ->
                 view?.showToasterError(
                     throwable.message ?: "",
-                    ctaText = getString(R.string.oke)
+                    ctaText = getString(com.tokopedia.design.R.string.oke)
                 )
                 logException(throwable)
             }
@@ -2463,7 +2464,7 @@ open class DynamicProductDetailFragment :
             }) { throwable ->
                 view?.showToasterError(
                     throwable.message ?: "",
-                    ctaText = getString(R.string.pdp_common_oke)
+                    ctaText = getString(com.tokopedia.product.detail.common.R.string.pdp_common_oke)
                 )
                 logException(throwable)
             }
@@ -3654,32 +3655,49 @@ open class DynamicProductDetailFragment :
     }
 
     private fun showAddToCartDoneBottomSheet(cartDataModel: DataModel) {
-        val productInfo = viewModel.getDynamicProductInfoP1 ?: return
-        val basicInfo = productInfo.basic
-        val postATCLayoutId = basicInfo.postAtcLayout.layoutId
+        val cartRedirData = viewModel.p2Data.value?.cartRedirection?.get(cartDataModel.productId)
+        val postAtcLayout = cartRedirData?.postAtcLayout
 
         val remoteNewATC = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_POST_ATC_PDP, true)
-        if (postATCLayoutId.isNotBlank() && remoteNewATC) {
-            showGlobalPostATC(cartDataModel, basicInfo)
+        if (postAtcLayout?.showPostAtc == true && remoteNewATC) {
+            showGlobalPostATC(cartDataModel, cartDataModel.productId, postAtcLayout)
         } else {
             showOldPostATC(cartDataModel.cartId)
         }
     }
 
-    private fun showGlobalPostATC(cartDataModel: DataModel, basicInfo: BasicInfo) {
+    private fun showGlobalPostATC(
+        cartDataModel: DataModel,
+        productId: String,
+        postAtcLayout: PostAtcLayout
+    ) {
         val context = context ?: return
-        PostAtcHelper.start(
-            context,
-            basicInfo.productID,
-            layoutId = basicInfo.postAtcLayout.layoutId,
-            cartId = cartDataModel.cartId,
-            selectedAddonsIds = cartDataModel.addOns.mapNotNull { item ->
-                item.id.takeIf { item.status == 1 }
-            },
+
+        val addonsIds = cartDataModel.addOns.groupBy(
+            keySelector = { it.status },
+            valueTransform = { it.id }
+        )
+
+        val addons = PostAtcParams.Addons(
+            deselectedAddonsIds = addonsIds[2] ?: emptyList(),
             isFulfillment = cartDataModel.isFulfillment,
-            pageSource = PostAtcHelper.Source.PDP,
+            selectedAddonsIds = addonsIds[1] ?: emptyList(),
             warehouseId = cartDataModel.warehouseId,
             quantity = cartDataModel.quantity
+        )
+
+        val postAtcParams = PostAtcParams(
+            cartId = cartDataModel.cartId,
+            layoutId = postAtcLayout.layoutId,
+            pageSource = PostAtcParams.Source.PDP.name,
+            session = postAtcLayout.postAtcSession,
+            addons = addons
+        )
+
+        PostAtcHelper.start(
+            context,
+            productId,
+            postAtcParams
         )
     }
 
@@ -4285,7 +4303,7 @@ open class DynamicProductDetailFragment :
     private fun onErrorRemoveWishList(errorMsg: String?) {
         view?.showToasterError(
             getErrorMessage(errorMsg),
-            ctaText = getString(R.string.pdp_common_oke)
+            ctaText = getString(com.tokopedia.product.detail.common.R.string.pdp_common_oke)
         )
     }
 
@@ -4301,7 +4319,7 @@ open class DynamicProductDetailFragment :
     private fun onErrorAddWishList(errorMessage: String?) {
         view?.showToasterError(
             getErrorMessage(errorMessage),
-            ctaText = getString(R.string.pdp_common_oke)
+            ctaText = getString(com.tokopedia.product.detail.common.R.string.pdp_common_oke)
         )
     }
 
@@ -5184,7 +5202,7 @@ open class DynamicProductDetailFragment :
         val dataModel = pdpUiUpdater?.notifyMeMap
         view?.showToasterError(
             getErrorMessage(t),
-            ctaText = getString(R.string.pdp_common_oke)
+            ctaText = getString(com.tokopedia.product.detail.common.R.string.pdp_common_oke)
         )
         if (dataModel != null) {
             pdpUiUpdater?.updateNotifyMeButton(dataModel.notifyMe)

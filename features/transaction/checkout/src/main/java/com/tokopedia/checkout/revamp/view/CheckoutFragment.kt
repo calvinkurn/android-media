@@ -54,6 +54,7 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutItem
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPageState
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
+import com.tokopedia.checkout.revamp.view.viewholder.CheckoutButtonPaymentViewHolder
 import com.tokopedia.checkout.revamp.view.viewholder.CheckoutEpharmacyViewHolder
 import com.tokopedia.checkout.utils.CheckoutFingerprintUtil
 import com.tokopedia.checkout.view.ShipmentFragment
@@ -192,7 +193,8 @@ class CheckoutFragment :
         ViewModelProvider(this, viewModelFactory)[CheckoutViewModel::class.java]
     }
 
-    private var binding by autoCleared<FragmentCheckoutBinding>() {
+    private var binding by autoCleared<FragmentCheckoutBinding> {
+        onDestroyViewBinding()
     }
 
     private var header by autoCleared<HeaderCheckoutBinding>()
@@ -210,38 +212,34 @@ class CheckoutFragment :
         get() = arguments?.getBoolean(ShipmentFragment.ARG_IS_PLUS_SELECTED, false) ?: false
 
     private val deviceId: String
-        get() = if (arguments?.getString(ShipmentFormRequest.EXTRA_DEVICE_ID) != null) {
-            arguments!!.getString(ShipmentFormRequest.EXTRA_DEVICE_ID)!!
-        } else {
-            ""
-        }
+        get() = arguments?.getString(ShipmentFormRequest.EXTRA_DEVICE_ID) ?: ""
 
     private val isOneClickShipment: Boolean
-        get() = arguments != null && arguments!!.getBoolean(ShipmentFragment.ARG_IS_ONE_CLICK_SHIPMENT)
+        get() = arguments?.getBoolean(ShipmentFragment.ARG_IS_ONE_CLICK_SHIPMENT) ?: false
 
     private val checkoutLeasingId: String
         get() {
             var leasingId = "0"
-            if (arguments != null && arguments!!.getString(ShipmentFragment.ARG_CHECKOUT_LEASING_ID) != null &&
-                !arguments!!.getString(ShipmentFragment.ARG_CHECKOUT_LEASING_ID)
+            if (arguments != null && arguments?.getString(ShipmentFragment.ARG_CHECKOUT_LEASING_ID) != null &&
+                !requireArguments().getString(ShipmentFragment.ARG_CHECKOUT_LEASING_ID)
                     .equals("null", ignoreCase = true)
             ) {
-                leasingId = arguments!!.getString(ShipmentFragment.ARG_CHECKOUT_LEASING_ID)!!
+                leasingId = requireArguments().getString(ShipmentFragment.ARG_CHECKOUT_LEASING_ID)!!
             }
             return leasingId
         }
 
     private val isTradeIn: Boolean
-        get() = arguments != null && arguments!!.getString(
+        get() = arguments != null && arguments?.getString(
             ShipmentFormRequest.EXTRA_DEVICE_ID,
             ""
-        ) != null && arguments!!.getString(ShipmentFormRequest.EXTRA_DEVICE_ID, "").isNotEmpty()
+        ) != null && requireArguments().getString(ShipmentFormRequest.EXTRA_DEVICE_ID, "").isNotEmpty()
 
     private val checkoutPageSource: String
         get() {
             var pageSource: String = CheckoutConstant.CHECKOUT_PAGE_SOURCE_PDP
-            if (arguments != null && arguments!!.getString(ShipmentFragment.ARG_CHECKOUT_PAGE_SOURCE) != null) {
-                pageSource = arguments!!.getString(ShipmentFragment.ARG_CHECKOUT_PAGE_SOURCE)!!
+            if (arguments != null && arguments?.getString(ShipmentFragment.ARG_CHECKOUT_PAGE_SOURCE) != null) {
+                pageSource = requireArguments().getString(ShipmentFragment.ARG_CHECKOUT_PAGE_SOURCE)!!
             }
             return pageSource
         }
@@ -256,10 +254,10 @@ class CheckoutFragment :
 
     override fun initInjector() {
         if (activity != null) {
-            val baseMainApplication = activity!!.application as BaseMainApplication
+            val baseMainApplication = requireActivity().application as BaseMainApplication
             DaggerCheckoutComponent.builder()
                 .baseAppComponent(baseMainApplication.baseAppComponent)
-                .checkoutModule(CheckoutModule(this))
+                .checkoutModule(CheckoutModule())
                 .build()
                 .inject(this)
         }
@@ -381,6 +379,9 @@ class CheckoutFragment :
                     header.icCheckoutHeaderAddress.animateGone()
                     header.tvCheckoutHeaderAddressName.animateGone()
                 }
+                if (recyclerView.isVisible) {
+                    setupButtonPaymentViewRunnable()
+                }
             }
         })
 
@@ -411,9 +412,11 @@ class CheckoutFragment :
             if (binding.rvCheckout.isComputingLayout) {
                 binding.rvCheckout.post {
                     diffResult.dispatchUpdatesTo(adapter)
+                    setupButtonPaymentView()
                 }
             } else {
                 diffResult.dispatchUpdatesTo(adapter)
+                setupButtonPaymentView()
             }
 
             it.address()?.recipientAddressModel?.also { address ->
@@ -433,7 +436,7 @@ class CheckoutFragment :
                     // no-op
                 }
 
-                CheckoutPageState.EmptyData -> {
+                is CheckoutPageState.EmptyData -> {
                     onEmptyData()
                     stopTrace()
                 }
@@ -456,7 +459,7 @@ class CheckoutFragment :
                     stopTrace()
                 }
 
-                CheckoutPageState.Loading -> {
+                is CheckoutPageState.Loading -> {
                     showLoading()
                 }
 
@@ -521,14 +524,9 @@ class CheckoutFragment :
                     }
                     stopTrace()
                     sendErrorAnalytics()
-                    // todo improve first load shipping
-//                    if (it.cartShipmentAddressFormData.epharmacyData.showImageUpload) {
-//                        val uploadPrescriptionUiModel =
-//                            viewModel.listData.value.firstOrNullInstanceOf(CheckoutEpharmacyModel::class.java)?.epharmacy
-//                        delayEpharmacyProcess(uploadPrescriptionUiModel)
-//                    }
                     setCampaignTimer()
                     viewModel.prepareFullCheckoutPage()
+                    setupButtonPaymentView()
                 }
 
                 is CheckoutPageState.Normal -> {
@@ -552,6 +550,10 @@ class CheckoutFragment :
                 is CheckoutPageState.EpharmacyCoachMark -> {
                     showCoachMarkEpharmacy()
                 }
+
+                is CheckoutPageState.AkamaiRatesError -> {
+                    showToastErrorAkamai(it.message)
+                }
             }
         }
 
@@ -574,18 +576,14 @@ class CheckoutFragment :
     }
 
     private fun onCacheExpired(message: String?) {
-        if (activity != null && view != null) {
-            val intent = Intent()
-            intent.putExtra(CheckoutConstant.EXTRA_CACHE_EXPIRED_ERROR_MESSAGE, message)
-            activity!!.setResult(CheckoutConstant.RESULT_CHECKOUT_CACHE_EXPIRED, intent)
-            activity!!.finish()
-        }
+        val intent = Intent()
+        intent.putExtra(CheckoutConstant.EXTRA_CACHE_EXPIRED_ERROR_MESSAGE, message)
+        activity?.setResult(CheckoutConstant.RESULT_CHECKOUT_CACHE_EXPIRED, intent)
+        activity?.finish()
     }
 
     private fun onEmptyData() {
-        if (activity != null) {
-            activity!!.finish()
-        }
+        activity?.finish()
     }
 
     private fun onNoMatchedAddress(
@@ -601,7 +599,7 @@ class CheckoutFragment :
     private fun showToastNormal(message: String) {
         view?.let { v ->
             val actionText =
-                activity!!.getString(com.tokopedia.purchase_platform.common.R.string.checkout_flow_toaster_action_ok)
+                v.context.getString(com.tokopedia.purchase_platform.common.R.string.checkout_flow_toaster_action_ok)
             val listener = View.OnClickListener { }
             Toaster.build(
                 v,
@@ -618,7 +616,7 @@ class CheckoutFragment :
     private fun showPopUp(popUpData: PopUpData) {
         if (activity != null) {
             val popUpDialog =
-                DialogUnify(activity!!, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
+                DialogUnify(requireActivity(), DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
             popUpDialog.setTitle(popUpData.title)
             popUpDialog.setDescription(popUpData.description)
             popUpDialog.setPrimaryCTAText(popUpData.button.text)
@@ -629,20 +627,22 @@ class CheckoutFragment :
         }
     }
 
-    fun showToastErrorAkamai(message: String?) {
-        if (toasterErrorAkamai == null) {
-            val actionText =
-                activity!!.getString(com.tokopedia.purchase_platform.common.R.string.checkout_flow_toaster_action_ok)
-            toasterErrorAkamai = Toaster.build(
-                view!!,
-                message!!,
-                Toaster.LENGTH_LONG,
-                Toaster.TYPE_ERROR,
-                actionText
-            )
-        }
-        if (toasterErrorAkamai?.isShownOrQueued == false) {
-            toasterErrorAkamai?.show()
+    fun showToastErrorAkamai(message: String) {
+        view?.let { v ->
+            if (toasterErrorAkamai == null) {
+                val actionText =
+                    v.context.getString(com.tokopedia.purchase_platform.common.R.string.checkout_flow_toaster_action_ok)
+                toasterErrorAkamai = Toaster.build(
+                    v,
+                    message,
+                    Toaster.LENGTH_LONG,
+                    Toaster.TYPE_ERROR,
+                    actionText
+                )
+            }
+            if (toasterErrorAkamai?.isShownOrQueued == false) {
+                toasterErrorAkamai?.show()
+            }
         }
     }
 
@@ -868,11 +868,12 @@ class CheckoutFragment :
                 isReloadAfterPriceChangeHigher = false
             )
         }
+        setupButtonPaymentView()
     }
 
     fun showLoading() {
         if (context != null && loader?.dialog?.isShowing != true) {
-            loader = LoaderDialog(context!!)
+            loader = LoaderDialog(requireContext())
             loader!!.show()
         }
     }
@@ -949,6 +950,11 @@ class CheckoutFragment :
     override fun onResume() {
         super.onResume()
         checkCampaignTimer()
+        setupButtonPaymentView()
+    }
+
+    private fun onDestroyViewBinding() {
+        binding.countDown.timer?.cancel()
     }
 
     companion object {
@@ -1080,7 +1086,7 @@ class CheckoutFragment :
         product: CheckoutProductModel,
         bindingAdapterPosition: Int
     ) {
-        viewModel.setAddon(isChecked, addOnProductDataItemModel, product, bindingAdapterPosition)
+        viewModel.setAddon(isChecked, addOnProductDataItemModel, bindingAdapterPosition)
         checkoutAnalyticsCourierSelection.eventClickAddOnsProductServiceWidget(
             addOnProductDataItemModel.type,
             product.productId.toString(),
@@ -1096,9 +1102,12 @@ class CheckoutFragment :
         val productId = product.productId
         val cartId = product.cartId
         val addOnIds = arrayListOf<Long>()
+        val deselectAddOnIds = arrayListOf<Long>()
         product.addOnProduct.listAddOnProductData.forEach { addOnItem ->
             if (addOnItem.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK) {
                 addOnIds.add(addOnItem.id)
+            } else if (addOnItem.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_UNCHECK) {
+                deselectAddOnIds.add(addOnItem.id)
             }
         }
 
@@ -1122,18 +1131,19 @@ class CheckoutFragment :
                 AddOnConstant.QUERY_PARAM_CART_ID to cartId,
                 AddOnConstant.QUERY_PARAM_SELECTED_ADDON_IDS to addOnIds.toString().replace("[", "")
                     .replace("]", ""),
+                AddOnConstant.QUERY_PARAM_DESELECTED_ADDON_IDS to deselectAddOnIds.toString().replace("[", "").replace("]", ""),
                 AddOnConstant.QUERY_PARAM_PAGE_ATC_SOURCE to AddOnConstant.SOURCE_NORMAL_CHECKOUT,
                 ApplinkConstInternalMechant.QUERY_PARAM_WAREHOUSE_ID to product.warehouseId,
                 AddOnConstant.QUERY_PARAM_IS_TOKOCABANG to product.isTokoCabang,
                 AddOnConstant.QUERY_PARAM_CATEGORY_ID to product.productCatId,
                 AddOnConstant.QUERY_PARAM_SHOP_ID to product.shopId,
                 AddOnConstant.QUERY_PARAM_QUANTITY to product.quantity,
-                AddOnConstant.QUERY_PARAM_PRICE to price.toString().removeSingleDecimalSuffix(),
-                AddOnConstant.QUERY_PARAM_DISCOUNTED_PRICE to discountedPrice.toString()
-                    .removeSingleDecimalSuffix()
+                AddOnConstant.QUERY_PARAM_PRICE to price.toBigDecimal().toPlainString().removeSingleDecimalSuffix(),
+                AddOnConstant.QUERY_PARAM_DISCOUNTED_PRICE to discountedPrice.toBigDecimal().toPlainString().removeSingleDecimalSuffix()
             )
         )
 
+        checkoutAnalyticsCourierSelection.eventClickLihatSemuaAddOnsProductServiceWidget()
         activity?.let {
             val intent = RouteManager.getIntent(it, applink)
             startActivityForResult(
@@ -1141,7 +1151,6 @@ class CheckoutFragment :
                 ShipmentFragment.REQUEST_CODE_ADD_ON_PRODUCT_SERVICE_BOTTOMSHEET
             )
         }
-        checkoutAnalyticsCourierSelection.eventClickLihatSemuaAddOnsProductServiceWidget()
     }
 
     override fun onImpressionAddOnProductService(addonType: Int, productId: String) {
@@ -1679,18 +1688,20 @@ class CheckoutFragment :
     }
 
     override fun onNoCourierAvailable(message: String?) {
-        if (message!!.contains(getString(R.string.corner_error_stub))) mTrackerCorner.sendViewCornerError()
         if (activity != null) {
+            if (message!!.contains(getString(R.string.corner_error_stub))) {
+                mTrackerCorner.sendViewCornerError()
+            }
             checkoutAnalyticsCourierSelection.eventViewCourierImpressionErrorCourierNoAvailable()
             val generalBottomSheet = GeneralBottomSheet()
-            generalBottomSheet.setTitle(activity!!.getString(R.string.label_no_courier_bottomsheet_title))
+            generalBottomSheet.setTitle(getString(R.string.label_no_courier_bottomsheet_title))
             generalBottomSheet.setDesc(message)
-            generalBottomSheet.setButtonText(activity!!.getString(R.string.label_no_courier_bottomsheet_button))
+            generalBottomSheet.setButtonText(getString(R.string.label_no_courier_bottomsheet_button))
             generalBottomSheet.setIcon(R.drawable.checkout_module_ic_dropshipper)
             generalBottomSheet.setButtonOnClickListener { bottomSheet: BottomSheetUnify ->
                 bottomSheet.dismiss()
             }
-            generalBottomSheet.show(activity!!, parentFragmentManager)
+            generalBottomSheet.show(requireActivity(), parentFragmentManager)
         }
         if (isTradeIn) {
             checkoutTradeInAnalytics.eventTradeInClickCourierGetOutOfCoverageError(
@@ -1730,11 +1741,10 @@ class CheckoutFragment :
     override fun onChangeShippingCourier(order: CheckoutOrderModel, position: Int) {
         if (!viewModel.isLoading()) {
             sendAnalyticsOnClickChangeCourierShipmentRecommendation(order)
-            val activity: Activity? = activity
             if (activity != null) {
                 val shippingCourierUiModels = order.shipment.shippingCourierUiModels
                 ShippingCourierBottomsheet.show(
-                    fragmentManager!!,
+                    parentFragmentManager,
                     this,
                     shippingCourierUiModels,
                     viewModel.listData.value.address()!!.recipientAddressModel,
@@ -2008,7 +2018,7 @@ class CheckoutFragment :
 
     override fun onCrossSellItemChecked(checked: Boolean, crossSellModel: CheckoutCrossSellModel) {
         val shipmentCartItemModels = viewModel.listData.value.filterIsInstance(CheckoutProductModel::class.java)
-        viewModel.updateCrossSell(checked, crossSellModel)
+        viewModel.updateCrossSell(checked)
         val digitalCategoryName = crossSellModel.crossSellModel.orderSummary.title
         val digitalProductId = crossSellModel.crossSellModel.id
         val eventLabel = "$digitalCategoryName - $digitalProductId"
@@ -2101,7 +2111,7 @@ class CheckoutFragment :
         if (activity != null) {
             val message = priceValidationData.message
             val priceValidationDialog =
-                DialogUnify(activity!!, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
+                DialogUnify(requireActivity(), DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
             priceValidationDialog.setTitle(message.title)
             priceValidationDialog.setDescription(message.desc)
             priceValidationDialog.setPrimaryCTAText(message.action)
@@ -2146,6 +2156,10 @@ class CheckoutFragment :
             promptDialog.setCancelable(false)
             promptDialog.show()
         }
+    }
+
+    override fun onBindButtonPayment() {
+        setupButtonPaymentView()
     }
     // endregion
 
@@ -2193,7 +2207,7 @@ class CheckoutFragment :
     fun showCoachMarkEpharmacy() {
         val uploadPrescriptionUiModel = viewModel.listData.value.epharmacy()?.epharmacy
         if (uploadPrescriptionUiModel != null && activity != null && !CoachMarkPreference.hasShown(
-                activity!!,
+                requireActivity(),
                 KEY_PREFERENCE_COACHMARK_EPHARMACY
             )
         ) {
@@ -2208,8 +2222,8 @@ class CheckoutFragment :
                     if (viewHolder is CheckoutEpharmacyViewHolder) {
                         val item = CoachMark2Item(
                             viewHolder.itemView,
-                            activity!!.getString(R.string.checkout_epharmacy_coachmark_title),
-                            activity!!.getString(R.string.checkout_epharmacy_coachmark_description),
+                            requireActivity().getString(R.string.checkout_epharmacy_coachmark_title),
+                            requireActivity().getString(R.string.checkout_epharmacy_coachmark_description),
                             CoachMark2.POSITION_TOP
                         )
                         val list = ArrayList<CoachMark2Item>()
@@ -2217,7 +2231,7 @@ class CheckoutFragment :
                         val coachMark = CoachMark2(requireContext())
                         coachMark.showCoachMark(list, null, 0)
                         CoachMarkPreference.setShown(
-                            activity!!,
+                            requireActivity(),
                             KEY_PREFERENCE_COACHMARK_EPHARMACY,
                             true
                         )
@@ -2247,7 +2261,7 @@ class CheckoutFragment :
                     viewModel.setPrescriptionIds(prescriptions!!)
                 }
                 if (!isApi) {
-                    showToastNormal(activity!!.getString(com.tokopedia.purchase_platform.common.R.string.pp_epharmacy_upload_success_text))
+                    showToastNormal(requireActivity().getString(com.tokopedia.purchase_platform.common.R.string.pp_epharmacy_upload_success_text))
                 }
                 updateUploadPrescription()
             }
@@ -2301,7 +2315,7 @@ class CheckoutFragment :
         }
         reminderDialog.show()
         ePharmacyAnalytics.viewAbandonCheckoutPage(
-            activity!!,
+            requireActivity(),
             epharmacyGroupIds,
             hasAttachedPrescription
         )
@@ -2370,13 +2384,15 @@ class CheckoutFragment :
             binding.tvCountDown.text = timer.timerDescription
             binding.countDown.remainingMilliseconds = diff
             binding.countDown.onFinish = {
-                val dialog =
-                    ExpiredTimeDialog.newInstance(
-                        timer,
-                        checkoutAnalyticsCourierSelection,
-                        this@CheckoutFragment
-                    )
-                dialog.show(parentFragmentManager, "expired dialog")
+                if (view != null) {
+                    val dialog =
+                        ExpiredTimeDialog.newInstance(
+                            timer,
+                            checkoutAnalyticsCourierSelection,
+                            this@CheckoutFragment
+                        )
+                    dialog.show(parentFragmentManager, "expired dialog")
+                }
             }
         } else {
             binding.tvCountDown.visibility = View.GONE
@@ -2395,9 +2411,8 @@ class CheckoutFragment :
                     ARGS_PROMO_ERROR
                 ) == ARGS_FINISH_ERROR && activity != null
             ) {
-                activity!!.finish()
+                activity?.finish()
             } else {
-//                shipmentViewModel.couponStateChanged = true
                 val validateUsePromoRequest =
                     data.getParcelableExtra<ValidateUsePromoRequest>(ARGS_LAST_VALIDATE_USE_REQUEST)
                 if (validateUsePromoRequest != null) {
@@ -2432,37 +2447,13 @@ class CheckoutFragment :
                             }
                         }
                     }
-//                    shipmentViewModel.setLastValidateUseRequest(validateUsePromoRequest)
-//                    if (!stillHasPromo) {
-//                        doResetButtonPromoCheckout()
-//                    }
                 }
                 val validateUsePromoRevampUiModel =
                     data.getParcelableExtra<ValidateUsePromoRevampUiModel>(
                         ARGS_VALIDATE_USE_DATA_RESULT
                     )
-//                var reloadedUniqueIds = ArrayList<String>()
                 if (validateUsePromoRevampUiModel != null) {
-//                    val messageInfo =
-//                        validateUsePromoRevampUiModel.promoUiModel.additionalInfoUiModel.errorDetailUiModel.message
-//                    shipmentViewModel.validateUsePromoRevampUiModel =
-//                        validateUsePromoRevampUiModel
-//                    doUpdateButtonPromoCheckout(validateUsePromoRevampUiModel.promoUiModel)
-//                    updatePromoTrackingData(validateUsePromoRevampUiModel.promoUiModel.trackingDetailUiModels)
-//                    sendEEStep3()
-//                    val validateBoResult =
                     viewModel.validateBoPromo(validateUsePromoRevampUiModel)
-//                    reloadedUniqueIds = validateBoResult.first
-//                    val unappliedUniqueIds = validateBoResult.second
-//                    if (messageInfo.isNotEmpty()) {
-//                        showToastNormal(messageInfo)
-//                    } else if (unappliedUniqueIds.size > 0) {
-//                        // when messageInfo is empty and has unapplied BO show hard coded toast
-//                        showToastNormal(getString(com.tokopedia.purchase_platform.common.R.string.pp_auto_unapply_bo_toaster_message))
-//                    }
-//                    doSetPromoBenefit(
-//                        validateUsePromoRevampUiModel.promoUiModel.benefitSummaryInfoUiModel.summaries
-//                    )
                 }
                 val clearPromoUiModel =
                     data.getParcelableExtra<ClearPromoUiModel>(ARGS_CLEAR_PROMO_RESULT)
@@ -2470,12 +2461,9 @@ class CheckoutFragment :
                     val promoUiModel = PromoUiModel()
                     promoUiModel.titleDescription =
                         clearPromoUiModel.successDataModel.defaultEmptyPromoMessage
-//                    doUpdateButtonPromoCheckout(promoUiModel)
-//                    shipmentViewModel.validateUsePromoRevampUiModel = null
                     if (validateUsePromoRequest != null) {
                         viewModel.validateClearAllBoPromo(validateUsePromoRequest, promoUiModel)
                     }
-//                    shipmentAdapter.checkHasSelectAllCourier(false, -1, "", false, false)
                 }
             }
         }
@@ -2491,8 +2479,41 @@ class CheckoutFragment :
         if (activity != null) {
             releaseBookingIfAny()
             viewModel.clearAllBoOnTemporaryUpsell()
-//            activity?.setResult(resultCode)
             activity?.finish()
+        }
+    }
+
+    private fun setupButtonPaymentView() {
+        if (view != null) {
+            if (binding.rvCheckout.isVisible) {
+                binding.rvCheckout.post {
+                    setupButtonPaymentViewRunnable()
+                }
+            } else {
+                binding.itemCheckoutButtonPayment.root.isVisible = false
+            }
+        }
+    }
+
+    private fun setupButtonPaymentViewRunnable() {
+        val layoutManager = binding.rvCheckout.layoutManager as? LinearLayoutManager
+        if (layoutManager != null) {
+            val firstCompletelyVisibleItemPosition = layoutManager.findFirstCompletelyVisibleItemPosition()
+            val size = viewModel.listData.value.size
+            if (firstCompletelyVisibleItemPosition == 0) {
+                val lastCompletelyVisibleItemPosition =
+                    layoutManager.findLastCompletelyVisibleItemPosition()
+                if (lastCompletelyVisibleItemPosition == (size - 1)) {
+                    binding.itemCheckoutButtonPayment.root.isVisible = true
+                    (binding.rvCheckout.findViewHolderForAdapterPosition(size - 1) as? CheckoutButtonPaymentViewHolder)?.hide()
+                } else {
+                    binding.itemCheckoutButtonPayment.root.isVisible = false
+                    (binding.rvCheckout.findViewHolderForAdapterPosition(size - 1) as? CheckoutButtonPaymentViewHolder)?.show()
+                }
+            } else {
+                binding.itemCheckoutButtonPayment.root.isVisible = false
+                (binding.rvCheckout.findViewHolderForAdapterPosition(size - 1) as? CheckoutButtonPaymentViewHolder)?.show()
+            }
         }
     }
 }

@@ -7,7 +7,9 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.shop.campaign.domain.entity.ExclusiveLaunchVoucher
@@ -297,12 +299,21 @@ class ShopCampaignViewModel @Inject constructor(
 
     fun updateBannerTimerWidgetUiModel(
         newList: MutableList<Visitable<*>>,
-        bannerTimerUiModel: ShopWidgetDisplayBannerTimerUiModel
+        newBannerTimerUiModel: ShopWidgetDisplayBannerTimerUiModel
     ) {
         launchCatchError(dispatcherProvider.io, block = {
             val position = newList.indexOfFirst{ it is ShopWidgetDisplayBannerTimerUiModel }
+            val currentBannerTimerUiModel = (newList.getOrNull(position) as? ShopWidgetDisplayBannerTimerUiModel) ?: ShopWidgetDisplayBannerTimerUiModel()
             if(position != -1){
-                newList.setElement(position, bannerTimerUiModel.copy().apply {
+                newList.setElement(position, currentBannerTimerUiModel.copy(
+                    data = currentBannerTimerUiModel.data?.copy(
+                        totalNotify = newBannerTimerUiModel.data?.totalNotify.orZero(),
+                        totalNotifyWording = newBannerTimerUiModel.data?.totalNotifyWording.orEmpty(),
+                        isRemindMe = newBannerTimerUiModel.data?.isRemindMe.orFalse(),
+                        showRemindMeLoading = newBannerTimerUiModel.data?.showRemindMeLoading.orFalse(),
+                        isHideRemindMeTextAfterXSeconds = newBannerTimerUiModel.data?.isHideRemindMeTextAfterXSeconds.orFalse()
+                    )
+                ).apply {
                     isNewData = true
                 })
             }

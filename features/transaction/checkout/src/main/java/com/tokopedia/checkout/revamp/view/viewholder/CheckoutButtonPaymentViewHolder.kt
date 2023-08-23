@@ -16,6 +16,7 @@ import com.tokopedia.kotlin.extensions.view.setOnClickDebounceListener
 class CheckoutButtonPaymentViewHolder(private val binding: ItemCheckoutButtonPaymentBinding, private val listener: CheckoutAdapterListener) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(buttonPayment: CheckoutButtonPaymentModel) {
+        binding.root.visibility = View.INVISIBLE
         if (buttonPayment.useInsurance) {
             val text = "Dengan melanjutkan, saya menyetujui S&K Asuransi & Proteksi."
             val span = SpannableString(text)
@@ -36,7 +37,9 @@ class CheckoutButtonPaymentViewHolder(private val binding: ItemCheckoutButtonPay
             binding.tvCheckoutTerms.text = span
             binding.tvCheckoutTerms.isVisible = true
             binding.tvCheckoutTerms.setOnClickListener {
-                listener.onInsuranceTncClicked()
+                if (binding.root.visibility == View.VISIBLE) {
+                    listener.onInsuranceTncClicked()
+                }
             }
         } else {
             binding.tvCheckoutTerms.isVisible = false
@@ -44,8 +47,20 @@ class CheckoutButtonPaymentViewHolder(private val binding: ItemCheckoutButtonPay
 
         binding.btnCheckoutPay.isEnabled = buttonPayment.enable
         binding.btnCheckoutPay.setOnClickDebounceListener {
-            listener.onProcessToPayment()
+            if (binding.root.visibility == View.VISIBLE) {
+                listener.onProcessToPayment()
+            }
         }
+
+        listener.onBindButtonPayment()
+    }
+
+    fun hide() {
+        binding.root.visibility = View.INVISIBLE
+    }
+
+    fun show() {
+        binding.root.visibility = View.VISIBLE
     }
 
     companion object {

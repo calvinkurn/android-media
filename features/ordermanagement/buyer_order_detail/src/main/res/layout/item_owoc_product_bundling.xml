@@ -42,11 +42,14 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_owoc_bundling"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/divider_owoc_bundling_top"
-            tools:listitem="@layout/item_buyer_order_detail_product_bundling_list_item"
+            tools:listitem="@layout/item_owoc_product_bundling_list_item"
             tools:itemCount="3"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

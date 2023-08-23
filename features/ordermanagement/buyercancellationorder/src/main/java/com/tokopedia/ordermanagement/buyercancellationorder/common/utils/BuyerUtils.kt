@@ -21,8 +21,11 @@ object BuyerUtils {
             BuyerConsts.TICKER_TYPE_WARNING -> {
                 Ticker.TYPE_WARNING
             }
-            else -> {
+            BuyerConsts.TICKER_TYPE_ANNOUNCEMENT -> {
                 Ticker.TYPE_ANNOUNCEMENT
+            }
+            else -> {
+                Ticker.TYPE_INFORMATION
             }
         }
     }

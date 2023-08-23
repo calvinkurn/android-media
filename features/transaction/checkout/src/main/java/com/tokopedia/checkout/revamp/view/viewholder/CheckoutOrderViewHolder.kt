@@ -129,7 +129,7 @@ class CheckoutOrderViewHolder(
                         // Now Shipment
                         // label
                         logPromoDesc = courierItemData.logPromoDesc ?: "",
-                        voucherLogisticExists = !courierItemData.logPromoCode.isNullOrEmpty(),
+                        voucherLogisticExists = !courierItemData.selectedShipper.logPromoCode.isNullOrEmpty(),
                         isHasShownCourierError = false,
 
                         // CourierItemData.name
@@ -168,7 +168,7 @@ class CheckoutOrderViewHolder(
                         // Now Shipment
                         // label
                         logPromoDesc = courierItemData.logPromoDesc ?: "",
-                        voucherLogisticExists = !courierItemData.logPromoCode.isNullOrEmpty(),
+                        voucherLogisticExists = !courierItemData.selectedShipper.logPromoCode.isNullOrEmpty(),
                         isHasShownCourierError = false,
 
                         // CourierItemData.name
@@ -187,7 +187,7 @@ class CheckoutOrderViewHolder(
                         )
                     )
                 )
-            } else if (courierItemData.logPromoCode?.isNotEmpty() == true) {
+            } else if (courierItemData.selectedShipper.logPromoCode?.isNotEmpty() == true) {
                 binding.shippingWidget.prepareLoadCourierState()
                 binding.shippingWidget.hideShippingStateLoading()
                 binding.shippingWidget.showContainerShippingExperience()
@@ -199,7 +199,7 @@ class CheckoutOrderViewHolder(
                 if (order.isError) {
                     if (bindingAdapterPosition > RecyclerView.NO_POSITION) {
                         listener.onCancelVoucherLogisticClicked(
-                            courierItemData.logPromoCode!!,
+                            courierItemData.selectedShipper.logPromoCode!!,
                             bindingAdapterPosition,
                             order
                         )

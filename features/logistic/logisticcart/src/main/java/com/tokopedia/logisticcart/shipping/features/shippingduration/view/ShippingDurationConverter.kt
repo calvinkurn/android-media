@@ -212,7 +212,7 @@ class ShippingDurationConverter @Inject constructor() {
             promo.freeShippingMetadata.benefitClass,
             promo.freeShippingMetadata.shippingSubsidy,
             promo.boCampaignId,
-            promo.quota,
+            promo.quotaMessage,
             promo.imageUrlChosen
         )
     }

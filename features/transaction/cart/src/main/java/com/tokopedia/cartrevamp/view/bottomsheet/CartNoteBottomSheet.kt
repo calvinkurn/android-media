@@ -1,6 +1,7 @@
 package com.tokopedia.cartrevamp.view.bottomsheet
 
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.widget.addTextChangedListener
@@ -15,9 +16,11 @@ class CartNoteBottomSheet : BottomSheetUnify() {
 
     init {
         isDragable = false
-        isHideable = true
+        isHideable = false
+        overlayClickDismiss = false
         showCloseIcon = true
         showHeader = true
+        isKeyboardOverlap = false
     }
 
     private var binding by autoClearedNullable<LayoutBottomsheetCartNoteBinding>()
@@ -27,6 +30,8 @@ class CartNoteBottomSheet : BottomSheetUnify() {
     companion object {
         const val TAG = "CartNoteBottomSheet"
         private const val DATA = "data"
+
+        private const val NOTE_MAX_LENGTH = 144
 
         fun newInstance(data: CartNoteBottomSheetData): CartNoteBottomSheet {
             return CartNoteBottomSheet().apply {
@@ -42,6 +47,8 @@ class CartNoteBottomSheet : BottomSheetUnify() {
         binding = LayoutBottomsheetCartNoteBinding
             .inflate(LayoutInflater.from(context), null, false)
         setChild(binding?.root)
+
+        initTextArea()
 
         data = arguments?.getParcelable(DATA)
         data?.let {
@@ -86,10 +93,13 @@ class CartNoteBottomSheet : BottomSheetUnify() {
             iuCartItem.loadImage(data.productImage)
             labelProductName.text = data.productName
             labelProductVariant.text = data.variant
+
+            textAreaNote.setCounter(NOTE_MAX_LENGTH)
             textAreaNote.editText.setText(data.note)
             textAreaNote.editText.addTextChangedListener {
                 btnSave.isEnabled = it.toString() != data.note
             }
+
             btnSave.isEnabled = data.note.isNotBlank() && textAreaNote.editText.text.toString() != data.note
             btnSave.setOnClickListener {
                 listener?.invoke(textAreaNote.editText.text.toString().trim())
@@ -100,6 +110,15 @@ class CartNoteBottomSheet : BottomSheetUnify() {
 
     fun setListener(listener: (note: String) -> Unit) {
         this.listener = listener
+    }
+
+    private fun initTextArea() {
+        binding?.textAreaNote?.apply {
+            maxLine = 5
+            editText.hint = getString(R.string.cart_text_note_hint)
+            editText.setLines(5)
+            editText.gravity = Gravity.TOP or Gravity.START
+        }
     }
 
     override fun onDestroy() {

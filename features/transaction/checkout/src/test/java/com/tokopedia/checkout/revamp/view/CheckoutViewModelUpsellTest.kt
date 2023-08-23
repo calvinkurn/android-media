@@ -437,4 +437,24 @@ class CheckoutViewModelUpsellTest : BaseCheckoutViewModelTest() {
             clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground()
         }
     }
+
+    @Test
+    fun `GIVEN no data WHEN clear all BO THEN should not try clear all BO`() {
+        // Given
+        viewModel.listData.value = emptyList()
+        coEvery { clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground() } returns
+            ClearPromoUiModel(
+                successDataModel = SuccessDataUiModel(
+                    success = true
+                )
+            )
+
+        // When
+        viewModel.clearAllBoOnTemporaryUpsell()
+
+        // Then
+        coVerify(inverse = true) {
+            clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground()
+        }
+    }
 }

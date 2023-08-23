@@ -1,8 +1,5 @@
 package com.tokopedia.thankyou_native.domain.usecase
 
-import com.google.gson.Gson
-import com.google.gson.JsonParser
-import com.tokopedia.applink.teleporter.Teleporter
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.thankyou_native.GQL_THANK_YOU_PAGE_DATA

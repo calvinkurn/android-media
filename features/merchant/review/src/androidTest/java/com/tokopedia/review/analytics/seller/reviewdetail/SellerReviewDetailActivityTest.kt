@@ -201,7 +201,7 @@ class SellerReviewDetailActivityTest: CassavaTestFixture() {
         scrollToRecyclerViewItem(R.id.rvRatingDetail, 4)
         onView(
             CoreMatchers.allOf(
-                isDescendantOfA(withId(R.id.sort_filter_items_wrapper)), withText(
+                isDescendantOfA(withId(com.tokopedia.sortfilter.R.id.sort_filter_items_wrapper)), withText(
                     startsWith(
                         QUALITY_TOPIC
                     )
@@ -216,7 +216,7 @@ class SellerReviewDetailActivityTest: CassavaTestFixture() {
             firstView(
                 CoreMatchers.allOf(
                     isDescendantOfA(withId(R.id.rvRatingDetail)),
-                    withId(R.id.rv_review_media_thumbnail),
+                    withId(com.tokopedia.reviewcommon.R.id.rv_review_media_thumbnail),
                     isDisplayed()
                 )
             )

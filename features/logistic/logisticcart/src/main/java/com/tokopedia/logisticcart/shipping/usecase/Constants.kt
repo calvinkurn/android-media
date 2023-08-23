@@ -46,6 +46,7 @@ query $queryName(${"$"}param : OngkirRatesV3Input!) {
           text_service_desc
           text_eta_summarize
           error_code
+          text_service_ticker
         }
         features {
           dynamic_price {
@@ -169,7 +170,7 @@ query $queryName(${"$"}param : OngkirRatesV3Input!) {
         is_applied
         image_url
         image_url_chosen
-        quota
+        quota_message
         discounted_rate
         shipping_rate
         benefit_amount
@@ -219,7 +220,7 @@ query $queryName(${"$"}param : OngkirRatesV3Input!) {
         is_applied
         image_url
         image_url_chosen
-        quota
+        quota_message
         discounted_rate
         shipping_rate
         benefit_amount
@@ -314,6 +315,7 @@ internal fun ratesQuery() = """
               text_service_desc
               text_eta_summarize
               error_code
+              text_service_ticker
             }
             features {
               dynamic_price {
@@ -437,7 +439,7 @@ internal fun ratesQuery() = """
             is_applied
             image_url
             image_url_chosen
-            quota
+            quota_message
             discounted_rate
             shipping_rate
             benefit_amount
@@ -487,7 +489,7 @@ internal fun ratesQuery() = """
             is_applied
             image_url
             image_url_chosen
-            quota
+            quota_message
             discounted_rate
             shipping_rate
             benefit_amount

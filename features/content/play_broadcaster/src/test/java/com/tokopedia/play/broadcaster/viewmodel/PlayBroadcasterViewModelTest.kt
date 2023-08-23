@@ -37,6 +37,7 @@ import com.tokopedia.play.broadcaster.util.assertFailed
 import com.tokopedia.play.broadcaster.util.assertFalse
 import com.tokopedia.play.broadcaster.util.assertNotEqualTo
 import com.tokopedia.play.broadcaster.util.assertTrue
+import com.tokopedia.play.broadcaster.util.assertType
 import com.tokopedia.play.broadcaster.util.getOrAwaitValue
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
@@ -644,7 +645,7 @@ class PlayBroadcasterViewModelTest {
     }
 
     @Test
-    fun `when user only have buyer and not eligible then selected account is buyer with info`() {
+    fun `when user only have buyer and is not enabled then user can't livestream at all`() {
         val configMock = uiModelBuilder.buildConfigurationUiModel()
         val accountMock = uiModelBuilder.buildAccountListModel(tncBuyer = false, onlyBuyer = true)
 
@@ -660,14 +661,12 @@ class PlayBroadcasterViewModelTest {
         )
 
         robot.use {
-            val state = robot.recordState {
+            robot.recordState {
                 it.getAccountConfiguration()
             }
-            state.selectedContentAccount.type.assertEqualTo(TYPE_USER)
-            state.accountStateInfo.type.assertEqualTo(AccountStateInfoType.NotAcceptTNC)
-            state.accountStateInfo.selectedAccount.type.assertEqualTo(TYPE_USER)
-            it.getViewModel().isAllowChangeAccount.assertFalse()
-            it.getViewModel().warningInfoType.assertEqualTo(WarningInfoBottomSheet.WarningType.UNKNOWN)
+
+            val configInfo = it.getViewModel().observableConfigInfo.getOrAwaitValue()
+            configInfo.assertFailed()
         }
     }
 
@@ -773,7 +772,7 @@ class PlayBroadcasterViewModelTest {
     }
 
     @Test
-    fun `when shop account not eligible and buyer account not eligible then selected account is shop with info`() {
+    fun `when shop account not eligible and buyer account is not enabled then selected account is shop with info`() {
         val configMock = uiModelBuilder.buildConfigurationUiModel()
         val accountMock = uiModelBuilder.buildAccountListModel(tncShop = false, usernameBuyer = false, tncBuyer = false)
 
@@ -793,8 +792,8 @@ class PlayBroadcasterViewModelTest {
                 it.getAccountConfiguration()
             }
             state.selectedContentAccount.type.assertEqualTo(TYPE_SHOP)
-            state.accountStateInfo.type.assertEqualTo(AccountStateInfoType.NoUsername)
-            state.accountStateInfo.selectedAccount.type.assertEqualTo(TYPE_USER)
+            state.accountStateInfo.type.assertEqualTo(AccountStateInfoType.NotWhitelisted)
+            state.accountStateInfo.selectedAccount.type.assertEqualTo(TYPE_SHOP)
         }
     }
 

@@ -190,7 +190,7 @@ class ShipmentDataRequestConverter @Inject constructor(private val _gson: Gson) 
                                 isOrderPriority = if (shipmentDetailData.isOrderPriority == true) 1 else 0
                             ),
                             promos = promoRequests,
-                            shopId = shipmentCartItemModel.shopId,
+                            shopId = it.value.first().shopId.toLongOrZero(),
                             warehouseId = shipmentCartItemModel.fulfillmentId,
                             isTokoNow = shipmentCartItemModel.isTokoNow
                         )
@@ -298,7 +298,7 @@ class ShipmentDataRequestConverter @Inject constructor(private val _gson: Gson) 
     private fun mapProduct(it: CartItemModel): Product {
         val product = Product().apply {
             productId = it.productId.toString()
-            isPpp = it.isProtectionOptIn
+            isPpp = getRealIsPpp(it)
             checkoutGiftingProductLevel = mapAddOnsProduct(it.addOnGiftingProductLevelModel, it.addOnProduct)
             cartId = it.cartId.toString()
             productCategoryId = it.analyticsProductCheckoutData.productCategoryId
@@ -307,6 +307,14 @@ class ShipmentDataRequestConverter @Inject constructor(private val _gson: Gson) 
             isProtectionAvailable = it.isProtectionAvailable
         }
         return product
+    }
+
+    private fun getRealIsPpp(it: CartItemModel): Boolean {
+        return if (it.addOnProduct.listAddOnProductData.firstOrNull { addon -> addon.type == AddOnConstant.PRODUCT_PROTECTION_INSURANCE_TYPE } == null) {
+            it.isProtectionOptIn
+        } else {
+            false
+        }
     }
 
     private fun mapAddOnsProduct(addOnsData: AddOnGiftingDataModel, addOnProduct: AddOnProductDataModel): List<CheckoutGiftingAddOn> {

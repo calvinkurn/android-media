@@ -3,6 +3,7 @@ package com.tokopedia.checkout.revamp.view
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
 import com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics
 import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase
 import com.tokopedia.checkout.domain.usecase.CheckoutUseCase
@@ -76,7 +77,8 @@ open class BaseCheckoutViewModelTest {
     @MockK
     lateinit var ratesWithScheduleUseCase: GetRatesWithScheduleDeliveryCoroutineUseCase
 
-    private val ratesResponseStateConverter: RatesResponseStateConverter = RatesResponseStateConverter()
+    private val ratesResponseStateConverter: RatesResponseStateConverter =
+        RatesResponseStateConverter()
 
     private val shippingCourierConverter: ShippingCourierConverter = ShippingCourierConverter()
 
@@ -103,7 +105,7 @@ open class BaseCheckoutViewModelTest {
     @MockK
     lateinit var epharmacyUseCase: EPharmacyPrepareProductsGroupUseCase
 
-    @MockK
+    @MockK(relaxUnitFun = true)
     lateinit var saveAddOnProductUseCase: SaveAddOnStateUseCase
 
     @MockK
@@ -115,14 +117,18 @@ open class BaseCheckoutViewModelTest {
     @MockK(relaxed = true)
     lateinit var checkoutAnalyticsCourierSelection: CheckoutAnalyticsCourierSelection
 
-    private val shipmentDataRequestConverter: ShipmentDataRequestConverter = ShipmentDataRequestConverter(
-        Gson()
-    )
+    private val shipmentDataRequestConverter: ShipmentDataRequestConverter =
+        ShipmentDataRequestConverter(
+            Gson()
+        )
 
     var dataConverter: CheckoutDataConverter = CheckoutDataConverter()
 
     @MockK(relaxed = true)
     lateinit var mTrackerTradeIn: CheckoutTradeInAnalytics
+
+    @MockK(relaxed = true)
+    lateinit var mTrackerPurchaseProtection: CheckoutAnalyticsPurchaseProtection
 
     private val dispatchers: CoroutineDispatchers = CoroutineTestDispatchers
 
@@ -180,6 +186,9 @@ open class BaseCheckoutViewModelTest {
             CheckoutProcessor(
                 checkoutGqlUseCase,
                 shipmentDataRequestConverter,
+                mTrackerShipment,
+                userSessionInterface,
+                helper,
                 dispatchers
             ),
             CheckoutCalculator(helper, dispatchers),
@@ -187,6 +196,7 @@ open class BaseCheckoutViewModelTest {
             dataConverter,
             mTrackerShipment,
             mTrackerTradeIn,
+            mTrackerPurchaseProtection,
             helper,
             userSessionInterface,
             dispatchers

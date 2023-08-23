@@ -3,6 +3,8 @@ package com.tokopedia.ordermanagement.buyercancellationorder.presentation.adapte
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.ordermanagement.buyercancellationorder.databinding.ItemProductCancellationOrderBinding
 import com.tokopedia.ordermanagement.buyercancellationorder.presentation.adapter.uimodel.BuyerCancellationProductUiModel
@@ -34,7 +36,12 @@ class BuyerNewCancellationOrderAdapter(
 
         fun bind(item: BuyerCancellationProductUiModel) {
             with(binding) {
-                icShopGrade.loadImage(item.shopIcon)
+                if (item.shopIcon.isNotBlank()) {
+                    icShopGrade.show()
+                    icShopGrade.loadImage(item.shopIcon)
+                } else {
+                    icShopGrade.hide()
+                }
                 ivProductThumbnail.loadImage(item.productThumbnailUrl)
                 tvOrderNumber.text = item.orderNumberLabel
                 tvShopName.text = item.shopName
