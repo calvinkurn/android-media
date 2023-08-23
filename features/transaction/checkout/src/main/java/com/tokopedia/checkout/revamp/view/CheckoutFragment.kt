@@ -54,6 +54,7 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutItem
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPageState
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
+import com.tokopedia.checkout.revamp.view.viewholder.CheckoutButtonPaymentItemView
 import com.tokopedia.checkout.revamp.view.viewholder.CheckoutButtonPaymentViewHolder
 import com.tokopedia.checkout.revamp.view.viewholder.CheckoutEpharmacyViewHolder
 import com.tokopedia.checkout.utils.CheckoutFingerprintUtil
@@ -2491,6 +2492,9 @@ class CheckoutFragment :
                 }
             } else {
                 binding.itemCheckoutButtonPayment.root.isVisible = false
+            }
+            viewModel.listData.value.buttonPayment()?.let {
+                CheckoutButtonPaymentItemView.renderButtonPayment(it, binding.itemCheckoutButtonPayment, this)
             }
         }
     }
