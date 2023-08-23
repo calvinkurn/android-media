@@ -166,7 +166,7 @@ class OfferLandingPageFragment :
     }
 
     private fun setupHeader(offerInfoForBuyer: OfferInfoForBuyerUiModel) {
-//        setupStatusBar()
+        setupStatusBar()
         setupToolbar(offerInfoForBuyer)
         olpAdapter?.submitList(
             newList = listOf(
