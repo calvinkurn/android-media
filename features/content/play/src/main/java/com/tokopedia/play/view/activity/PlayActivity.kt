@@ -19,6 +19,7 @@ import com.tokopedia.play.PLAY_KEY_IS_CHANNEL_RECOM
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play.cast.PlayCastNotificationAction
+import com.tokopedia.play.data.storage.PlayPageSourceStorage
 import com.tokopedia.play.databinding.ActivityPlayBinding
 import com.tokopedia.play.di.PlayInjector
 import com.tokopedia.play.util.PlayCastHelper
@@ -86,6 +87,9 @@ class PlayActivity :
 
     @Inject
     lateinit var analytic: PlayAnalytic
+
+    @Inject
+    lateinit var pageSourceStorage: PlayPageSourceStorage
 
     private lateinit var binding: ActivityPlayBinding
 
@@ -244,6 +248,8 @@ class PlayActivity :
     }
 
     override fun onPageSelected(position: Int) {
+        pageSourceStorage.pageSelected = position
+
         activeFragment?.setFragmentActive(position)
         swipeCoachMarkView.hideAnimated()
     }
