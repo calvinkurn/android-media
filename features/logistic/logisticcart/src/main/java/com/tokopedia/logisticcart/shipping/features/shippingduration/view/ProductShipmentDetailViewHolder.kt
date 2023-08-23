@@ -29,7 +29,7 @@ class ProductShipmentDetailViewHolder(val binding: ItemProductShipmentDetailBind
         }
 
         if (data.preOrderModel != null && data.preOrderModel.display) {
-            binding.tvPreorderInfo.text = data.preOrderModel.label
+            binding.tvPreorderInfo.text = "${data.preOrderModel.header} (${data.preOrderModel.label})"
             binding.groupPreorder.visible()
         } else {
             binding.groupPreorder.gone()
