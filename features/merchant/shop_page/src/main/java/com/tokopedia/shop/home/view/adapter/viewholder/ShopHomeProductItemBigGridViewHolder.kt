@@ -13,6 +13,7 @@ import com.tokopedia.shop.common.util.ShopUtilExt.isButtonAtcShown
 import com.tokopedia.shop.databinding.ItemShopHomeProductCardBigGridBinding
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.listener.ShopHomeEndlessProductListener
+import com.tokopedia.shop.home.view.listener.ShopHomeListener
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -23,7 +24,8 @@ import com.tokopedia.utils.view.binding.viewBinding
 open class ShopHomeProductItemBigGridViewHolder(
     itemView: View,
     private val shopHomeEndlessProductListener: ShopHomeEndlessProductListener?,
-    private val isShowTripleDot: Boolean
+    private val isShowTripleDot: Boolean,
+    shopHomeListener: ShopHomeListener
 ) : AbstractViewHolder<ShopHomeProductUiModel>(itemView) {
     private var productCard: ProductCardGridView? = null
     private val viewBinding: ItemShopHomeProductCardBigGridBinding? by viewBinding()

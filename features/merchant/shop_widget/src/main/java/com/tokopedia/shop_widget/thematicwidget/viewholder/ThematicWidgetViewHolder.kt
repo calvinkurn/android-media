@@ -41,7 +41,8 @@ import kotlin.math.abs
 class ThematicWidgetViewHolder(
     itemView: View,
     private val listener: ThematicWidgetListener,
-    private val isShopHomeTabHasFestivity: Boolean
+    private val isShopHomeTabHasFestivity: Boolean,
+    private val isOverrideTheme: Boolean
 ) : AbstractViewHolder<ThematicWidgetUiModel>(itemView), CoroutineScope, HeaderCustomViewListener {
 
     companion object {
@@ -118,7 +119,7 @@ class ThematicWidgetViewHolder(
             imageBanner = element.imageBanner
         )
         resetShopReimaginedContainerMargin()
-        checkFestivity(element)
+        configColorTheme(element)
         checkTotalProduct(element)
     }
 
@@ -130,14 +131,18 @@ class ThematicWidgetViewHolder(
         }
     }
 
-    private fun checkFestivity(uiModel: ThematicWidgetUiModel) {
+    private fun configColorTheme(uiModel: ThematicWidgetUiModel) {
         if (uiModel.isFestivity) {
             configFestivity(uiModel)
         } else {
-            if(isShopHomeTabHasFestivity){
-                configNonFestivity(uiModel)
+            if (isShopHomeTabHasFestivity) {
+                configDefaultColor(uiModel)
             } else {
-                configReimagined(uiModel)
+                if (isOverrideTheme) {
+                    configReimagined(uiModel)
+                } else {
+                    configDefaultColor(uiModel)
+                }
             }
         }
     }
@@ -146,7 +151,7 @@ class ThematicWidgetViewHolder(
         dynamicHeaderCustomView?.configReimaginedColor(uiModel.header.colorSchema)
     }
 
-    private fun configNonFestivity(uiModel: ThematicWidgetUiModel) {
+    private fun configDefaultColor(uiModel: ThematicWidgetUiModel) {
         dynamicHeaderCustomView?.configNonFestivity()
         configMarginNonFestivity()
         setupBackgroundColor(

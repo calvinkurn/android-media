@@ -18,9 +18,11 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.util.ShopUtil
+import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.home.util.DateHelper
 import com.tokopedia.shop.home.view.adapter.ShopCampaignFlashSaleProductCarouselAdapter
 import com.tokopedia.shop.home.view.listener.ShopHomeFlashSaleWidgetListener
+import com.tokopedia.shop.home.view.listener.ShopHomeListener
 import com.tokopedia.shop.home.view.model.ShopHomeFlashSaleUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 import com.tokopedia.shop.home.view.model.StatusCampaign
@@ -35,7 +37,8 @@ import java.util.Date
 
 class ShopHomeFlashSaleViewHolder(
     itemView: View,
-    private val listener: ShopHomeFlashSaleWidgetListener
+    private val listener: ShopHomeFlashSaleWidgetListener,
+    private val shopHomeListener: ShopHomeListener
 ) : AbstractViewHolder<ShopHomeFlashSaleUiModel>(itemView) {
 
     private var uiModel: ShopHomeFlashSaleUiModel? = null
@@ -92,18 +95,47 @@ class ShopHomeFlashSaleViewHolder(
         if (!GlobalConfig.isSellerApp())
             setupFlashSaleReminder(flashSaleItem)
         setupProductCardCarousel(element)
-        checkFestivity(element)
+        configColorTheme(element)
     }
 
-    private fun checkFestivity(element: ShopHomeFlashSaleUiModel) {
+    private fun configColorTheme(element: ShopHomeFlashSaleUiModel) {
         if (element.isFestivity) {
             configFestivity()
         } else {
-            configNonFestivity(element)
+            if (shopHomeListener.isShopHomeTabHasFestivity()) {
+                configDefaultColor(element)
+            } else {
+                if (element.header.isOverrideTheme) {
+                    configReimaginedColor(element)
+                } else {
+                    configDefaultColor(element)
+                }
+            }
         }
     }
 
-    private fun configNonFestivity(element: ShopHomeFlashSaleUiModel) {
+    private fun configReimaginedColor(element: ShopHomeFlashSaleUiModel) {
+        val colorSchema = element.header.colorSchema
+        val titleColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS)
+        val subTitleColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_LOW_EMPHASIS)
+        val ctaColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.CTA_TEXT_LINK_COLOR)
+        val informationIconColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.ICON_CTA_LINK_COLOR)
+        flashSaleCampaignNameView?.setTextColor(titleColor)
+        timerDescriptionView?.setTextColor(subTitleColor)
+        ctaSeeAllView?.setTextColor(ctaColor)
+        tncInfoIconView?.setColorFilter(informationIconColor)
+        timerView?.timerVariant = TimerUnifySingle.VARIANT_MAIN
+        val flashSaleItem = element.data?.firstOrNull()
+        setupFlashSaleBackgroundView(
+            productList = flashSaleItem?.productList.orEmpty(),
+            startBackGroundColor = flashSaleItem?.firstBackgroundColor,
+            endBackGroundColor = flashSaleItem?.secondBackgroundColor
+        )
+        configMarginNonFestivity()
+        setShopReimaginedContainerMargin()
+    }
+
+    private fun configDefaultColor(element: ShopHomeFlashSaleUiModel) {
         val defaultTitleColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
         val defaultSubTitleColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
         val defaultCtaColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)

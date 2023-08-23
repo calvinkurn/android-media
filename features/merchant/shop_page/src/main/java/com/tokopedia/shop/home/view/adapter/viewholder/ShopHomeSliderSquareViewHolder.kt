@@ -6,15 +6,18 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shop.R
+import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.WidgetShopPageHomeSliderSquareBinding
 import com.tokopedia.shop.home.view.adapter.PaddingItemDecorationShopPage
 import com.tokopedia.shop.home.view.adapter.ShopHomeSliderSquareAdapter
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
+import com.tokopedia.shop.home.view.listener.ShopHomeListener
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
@@ -26,7 +29,8 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopHomeSliderSquareViewHolder(
     itemView: View,
-    private val listener: ShopHomeDisplayWidgetListener
+    private val listener: ShopHomeDisplayWidgetListener,
+    private val shopHomeListener: ShopHomeListener
 ) : AbstractViewHolder<ShopHomeDisplayWidgetUiModel>(itemView) {
 
     companion object {
@@ -73,6 +77,38 @@ class ShopHomeSliderSquareViewHolder(
                 text = title
             }
         }
+        configColorTheme(element)
+    }
+
+    private fun configColorTheme(element: ShopHomeDisplayWidgetUiModel) {
+        if (shopHomeListener.isShopHomeTabHasFestivity()) {
+            setDefaultColorConfig()
+        } else {
+            if (element.header.isOverrideTheme) {
+                setReimaginedColorConfig(element.header.colorSchema)
+            } else {
+                setDefaultColorConfig()
+            }
+        }
+    }
+
+    private fun setReimaginedColorConfig(colorSchema: ShopPageColorSchema) {
+        val titleColor = colorSchema.getColorIntValue(
+            ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS
+        )
+        setHeaderColor(titleColor)
+    }
+
+    private fun setDefaultColorConfig() {
+        val titleColor = MethodChecker.getColor(
+            itemView.context,
+            com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
+        )
+        setHeaderColor(titleColor)
+    }
+
+    private fun setHeaderColor(titleColor: Int) {
+        tgHeaderSliderSquare?.setTextColor(titleColor)
     }
 
     private fun getIndexRatio(data: ShopHomeDisplayWidgetUiModel, index: Int): Int {

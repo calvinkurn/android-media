@@ -22,6 +22,7 @@ import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.view.ShopCarouselBannerImageUnify
+import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.ItemShopHomeNewProductLaunchCampaignBinding
 import com.tokopedia.shop.home.util.DateHelper
 import com.tokopedia.shop.home.util.DateHelper.SHOP_NPL_CAMPAIGN_WIDGET_MORE_THAT_1_DAY_DATE_FORMAT
@@ -30,6 +31,7 @@ import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.adapter.ShopCampaignCarouselProductAdapter
 import com.tokopedia.shop.home.view.adapter.ShopCampaignCarouselProductAdapterTypeFactory
 import com.tokopedia.shop.home.view.listener.ShopHomeCampaignNplWidgetListener
+import com.tokopedia.shop.home.view.listener.ShopHomeListener
 import com.tokopedia.shop.home.view.model.BannerType
 import com.tokopedia.shop.home.view.model.ShopHomeCampaignCarouselClickableBannerAreaUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeNewProductLaunchCampaignUiModel
@@ -52,7 +54,8 @@ import java.util.Date
 
 class ShopHomeNplCampaignViewHolder(
     itemView: View,
-    private val shopHomeCampaignNplWidgetListener: ShopHomeCampaignNplWidgetListener
+    private val shopHomeCampaignNplWidgetListener: ShopHomeCampaignNplWidgetListener,
+    private val shopHomeListener: ShopHomeListener
 ) : AbstractViewHolder<ShopHomeNewProductLaunchCampaignUiModel>(itemView), CoroutineScope {
 
     private val viewBinding: ItemShopHomeNewProductLaunchCampaignBinding? by viewBinding()
@@ -112,15 +115,40 @@ class ShopHomeNplCampaignViewHolder(
         setWidgetImpressionListener(model)
         setFollowersOnlyView(model)
         setVoucherPromoOffer(model)
-        checkFestivity(model)
+        configColorTheme(model)
     }
 
-    private fun checkFestivity(model: ShopHomeNewProductLaunchCampaignUiModel) {
+    private fun configColorTheme(model: ShopHomeNewProductLaunchCampaignUiModel) {
         if (model.isFestivity) {
             configFestivity()
         } else {
-            configNonFestivity()
+            if (shopHomeListener.isShopHomeTabHasFestivity()) {
+                configDefaultColor()
+            } else {
+                if (model.header.isOverrideTheme) {
+                    configReimaginedColor(model.header.colorSchema)
+                } else {
+                    configDefaultColor()
+                }
+            }
         }
+    }
+
+    private fun configReimaginedColor(colorSchema: ShopPageColorSchema) {
+        val titleColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS)
+        val subTitleColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_LOW_EMPHASIS)
+        val ctaColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.CTA_TEXT_LINK_COLOR)
+        val informationIconColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.ICON_CTA_LINK_COLOR)
+        textTitle?.setTextColor(titleColor)
+        textTimeDescription?.setTextColor(subTitleColor)
+        textSeeAll?.setTextColor(ctaColor)
+        imageTnc?.setColorFilter(informationIconColor)
+        timerUnify?.timerVariant = TimerUnifySingle.VARIANT_MAIN
+        timerMoreThanOneDay?.apply {
+            background = MethodChecker.getDrawable(itemView.context, R.drawable.bg_shop_timer_red_rect)
+            setTextColor(titleColor)
+        }
+        setShopReimaginedContainerMargin()
     }
 
     private fun configFestivity() {
@@ -136,7 +164,7 @@ class ShopHomeNplCampaignViewHolder(
         }
     }
 
-    private fun configNonFestivity() {
+    private fun configDefaultColor() {
         val defaultTitleColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
         val defaultSubTitleColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
         val defaultCtaColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)

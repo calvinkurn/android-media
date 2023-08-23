@@ -17,6 +17,7 @@ import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.mvcwidget.views.MvcView
 import com.tokopedia.shop.R
 import com.tokopedia.shop.databinding.ItemShopHomeMerchantVoucherBinding
+import com.tokopedia.shop.home.view.listener.ShopHomeListener
 import com.tokopedia.shop.home.view.model.ShopHomeVoucherUiModel
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -28,7 +29,8 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopHomeVoucherViewHolder(
     itemView: View,
-    private val shopHomeVoucherViewHolderListener: ShopHomeVoucherViewHolderListener
+    private val shopHomeVoucherViewHolderListener: ShopHomeVoucherViewHolderListener,
+    shopHomeListener: ShopHomeListener
 ) : AbstractViewHolder<ShopHomeVoucherUiModel>(itemView) {
 
     interface ShopHomeVoucherViewHolderListener {

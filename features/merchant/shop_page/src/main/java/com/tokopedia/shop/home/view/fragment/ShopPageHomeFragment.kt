@@ -1061,7 +1061,7 @@ open class ShopPageHomeFragment :
             isThematicWidgetShown,
             isEnableDirectPurchase,
             shopId,
-            getIsOverrideTheme(),
+            isOverrideTheme(),
             getColorSchema()
         )
         if (shopHomeWidgetContentData.isNotEmpty()) {
@@ -1712,7 +1712,7 @@ open class ShopPageHomeFragment :
             isThematicWidgetShown,
             isEnableDirectPurchase,
             shopId,
-            getIsOverrideTheme(),
+            isOverrideTheme(),
             getColorSchema()
         )
         if (shopHomeWidgetContentData.isNotEmpty()) {
@@ -1976,7 +1976,7 @@ open class ShopPageHomeFragment :
                 widgetUserAddressLocalData,
                 isThematicWidgetShown,
                 isEnableDirectPurchase,
-                getIsOverrideTheme(),
+                isOverrideTheme(),
                 getColorSchema()
             )
         }
@@ -4293,6 +4293,11 @@ open class ShopPageHomeFragment :
         return shopHomeAdapter?.anyFestivityOnShopHomeWidget().orFalse()
     }
 
+    override fun getShopPageColorSchema(): ShopPageColorSchema {
+        return (getRealParentFragment() as? InterfaceShopPageHeader)?.getColorSchema()
+            ?: ShopPageColorSchema()
+    }
+
     override fun onProductCardComparisonImpressed(
         recommendationItem: RecommendationItem,
         comparisonListModel: ComparisonListModel,
@@ -4998,7 +5003,7 @@ open class ShopPageHomeFragment :
         RouteManager.route(context, ApplinkConst.PRODUCT_INFO, productId)
     }
 
-    private fun getIsOverrideTheme(): Boolean {
+    override fun isOverrideTheme(): Boolean {
         return (getRealParentFragment() as? InterfaceShopPageHeader)?.isOverrideTheme().orFalse()
     }
 
