@@ -13,7 +13,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalCommunication
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.tokochat.analytics.TokoChatAnalytics
 import com.tokopedia.tokochat.common.util.TokoChatNetworkUtil
 import com.tokopedia.tokochat.common.util.TokoChatTimeUtil.getRelativeTime
@@ -79,27 +78,6 @@ class TokoChatListFragment @Inject constructor(
                 isFirstLoad = true
                 loadChatListData(BATCH_LIMIT)
                 viewModel.setupChatListSource()
-                observerChatList()
-            }
-        }
-    }
-
-    private fun observerChatList() {
-        removeObservers(viewModel.chatList)
-        viewModel.chatList.observe(viewLifecycleOwner) {
-            when (it) {
-                is Success -> {
-                    setChatListData(it.data, isFirstLoad)
-                    if (isFirstLoad) {
-                        isFirstLoad = false
-                        if (it.data.size > BATCH_LIMIT) {
-                            loadChatListData(it.data.size - BATCH_LIMIT)
-                        }
-                    }
-                }
-                is Fail -> {
-                    showErrorLayout()
-                }
             }
         }
     }
@@ -174,6 +152,23 @@ class TokoChatListFragment @Inject constructor(
                 userSession.deviceId.orEmpty(),
                 it.second
             )
+        }
+
+        viewModel.chatList.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    setChatListData(it.data, isFirstLoad)
+                    if (isFirstLoad) {
+                        isFirstLoad = false
+                        if (it.data.size > BATCH_LIMIT) {
+                            loadChatListData(it.data.size - BATCH_LIMIT)
+                        }
+                    }
+                }
+                is Fail -> {
+                    showErrorLayout()
+                }
+            }
         }
     }
 

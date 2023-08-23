@@ -204,8 +204,8 @@ class TokoChatOrderProgressViewModelTest : TokoChatViewModelTestFixture() {
 
             // Then
             Assert.assertEquals(
-                TKPD_ORDER_ID_DUMMY,
-                (viewModel.tkpdOrderIdLiveData.value as Success).data
+                false,
+                viewModel.isTkpdOrderStatusFailed.value
             )
         }
     }
@@ -223,8 +223,8 @@ class TokoChatOrderProgressViewModelTest : TokoChatViewModelTestFixture() {
 
             // Then
             Assert.assertEquals(
-                throwableDummy.message,
-                (viewModel.tkpdOrderIdLiveData.value as Fail).throwable.message
+                true,
+                viewModel.isTkpdOrderStatusFailed.value
             )
         }
     }

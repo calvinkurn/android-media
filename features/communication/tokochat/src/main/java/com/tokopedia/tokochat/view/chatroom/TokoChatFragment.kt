@@ -96,6 +96,7 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 import java.io.File
 import javax.inject.Inject
@@ -283,15 +284,10 @@ open class TokoChatFragment @Inject constructor(
     }
 
     private fun observeTkpdOrderId() {
-        observe(viewModel.tkpdOrderIdLiveData) {
-            when (it) {
-                is Success -> {
-                    viewModel.loadOrderCompletedStatus(viewModel.tkpdOrderId, viewModel.source)
-                }
-                is Fail -> {
-                    hideTransactionLocalLoad()
-                    setShowTransactionLocalLoad()
-                }
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.isTkpdOrderStatusFailed.collectLatest {
+                hideTransactionLocalLoad()
+                setShowTransactionLocalLoad()
             }
         }
     }
@@ -318,7 +314,6 @@ open class TokoChatFragment @Inject constructor(
         removeObservers(viewModel.isChatConnected)
         removeObservers(viewModel.channelDetail)
         removeObservers(viewModel.error)
-        removeObservers(viewModel.tkpdOrderIdLiveData)
         viewModel.cancelCheckConnection()
         super.onDestroy()
     }
