@@ -151,11 +151,11 @@ class OfferLandingPageFragment :
         viewModel.miniCartAdd.observe(viewLifecycleOwner) { atc ->
             when (atc) {
                 is Success -> {
-                    binding?.miniCartPlaceholder.showToaster(atc.data.data.success.toString())
+                    binding?.miniCartView.showToaster(atc.data.data.success.toString())
                 }
 
                 is Fail -> {
-                    binding?.miniCartPlaceholder.showToaster(message = atc.throwable.localizedMessage)
+                    binding?.miniCartView.showToaster(message = atc.throwable.localizedMessage)
                 }
             }
         }
@@ -166,7 +166,7 @@ class OfferLandingPageFragment :
     }
 
     private fun setupHeader(offerInfoForBuyer: OfferInfoForBuyerUiModel) {
-        setupStatusBar()
+//        setupStatusBar()
         setupToolbar(offerInfoForBuyer)
         olpAdapter?.submitList(
             newList = listOf(
@@ -315,7 +315,7 @@ class OfferLandingPageFragment :
                     groupHeader.gone()
                     stickyContent.gone()
                     errorPageLarge.gone()
-                    miniCartPlaceholder.gone()
+                    miniCartView.gone()
                 }
             }
 
@@ -333,7 +333,7 @@ class OfferLandingPageFragment :
                             loadInitialData()
                         }
                     }
-                    miniCartPlaceholder.gone()
+                    miniCartView.gone()
                 }
             }
 
@@ -343,7 +343,7 @@ class OfferLandingPageFragment :
                     groupHeader.visible()
                     stickyContent.visible()
                     errorPageLarge.gone()
-                    miniCartPlaceholder.visible()
+                    miniCartView.visible()
                 }
             }
         }
