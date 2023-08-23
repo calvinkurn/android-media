@@ -118,12 +118,6 @@
     <string name="review_form_progress_bar_bad_need_bad_rating_reason">Pilih dulu alasanmu, yuk</string>
     <string name="review_form_add_photo">Kasih liat foto barang</string>
     <string name="review_form_add_media">Kasih liat foto atau video barang</string>
-    <string name="review_form_send_rating_only_dialog_title">Mau coba kasih rating dulu?</string>
-    <string name="review_form_send_rating_only_body">Selama 30 hari ke depan, kamu bisa ubah &amp; lengkapi ulasanmu di halaman Riwayat.</string>
-    <string name="review_form_send_rating_only_exit">Keluar Halaman</string>
-    <string name="review_form_send_rating_only">Kasih Rating</string>
-    <string name="review_form_dismiss_form_dialog_title">Ulasanmu belum dikirim, lho</string>
-    <string name="review_form_dismiss_form_dialog_body">Ulasanmu nggak akan tersimpan kalau kamu keluar dari halaman ini. Yakin tetap mau keluar?</string>
     <string name="review_form_dismiss_form_dialog_stay">Lanjutkan Ulasan</string>
     <string name="review_form_neutral_title">Apa yang bikin kamu kurang puas?</string>
     <string name="review_form_bad_title">Apa yang bikin kamu tidak puas?</string>

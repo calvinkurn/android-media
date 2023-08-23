@@ -8,6 +8,7 @@ import com.tokopedia.developer_options.presentation.model.AccessTokenUiModel
 import com.tokopedia.developer_options.presentation.model.AnalyticsLogOnNotificationUiModel
 import com.tokopedia.developer_options.presentation.model.AppVersionUiModel
 import com.tokopedia.developer_options.presentation.model.ApplinkLogOnNotificationUiModel
+import com.tokopedia.developer_options.presentation.model.BannerEnvironmentUiModel
 import com.tokopedia.developer_options.presentation.model.BranchLinkUiModel
 import com.tokopedia.developer_options.presentation.model.CassavaUiModel
 import com.tokopedia.developer_options.presentation.model.ConvertResourceIdUiModel
@@ -61,6 +62,7 @@ import com.tokopedia.developer_options.presentation.viewholder.AccessTokenViewHo
 import com.tokopedia.developer_options.presentation.viewholder.AnalyticsLogOnNotificationViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.AppVersionViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.ApplinkLogOnNotificationViewHolder
+import com.tokopedia.developer_options.presentation.viewholder.BannerEnvironmentViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.BranchLinkViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.CassavaViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.ConvertResourceIdViewHolder
@@ -181,6 +183,7 @@ class DeveloperOptionTypeFactoryImpl(
     override fun type(uiModel: DeprecatedApiSwitcherToasterUiModel): Int = DeprecatedAPISwitcherToasterViewHolder.LAYOUT
     override fun type(uiModel: BranchLinkUiModel): Int = BranchLinkViewHolder.LAYOUT
     override fun type(uiModel: FpiMonitoringUiModel): Int = EnableFpiMonitoringViewHolder.LAYOUT
+    override fun type(uiModel: BannerEnvironmentUiModel): Int = BannerEnvironmentViewHolder.LAYOUT
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
@@ -237,6 +240,7 @@ class DeveloperOptionTypeFactoryImpl(
             DeprecatedAPISwitcherToasterViewHolder.LAYOUT -> DeprecatedAPISwitcherToasterViewHolder(view)
             BranchLinkViewHolder.LAYOUT -> BranchLinkViewHolder(branchListener, view)
             EnableFpiMonitoringViewHolder.LAYOUT -> EnableFpiMonitoringViewHolder(view)
+            BannerEnvironmentViewHolder.LAYOUT -> BannerEnvironmentViewHolder(view)
             else -> super.createViewHolder(view, type)
         }
     }
