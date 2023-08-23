@@ -113,6 +113,8 @@ dari Feed.</string>
     <string name="feed_label_error_fetch_title">Koneksi internetmu terganggu!</string>
     <string name="feed_label_error_fetch_subtitle">Yuk, pastikan internetmu lancar dengan cek ulang paket data, WiFi, atau jaringan di tempatmu.</string>
     <string name="feed_label_error_fetch_button">Coba Lagi</string>
+    <string name="feed_failed_to_load_content">Yaah, gagal memuat konten</string>
+
     <string name="feed_onboarding_create_content_title">Baru! Bisa buat video pendek 🥳</string>
     <string name="feed_onboarding_create_content_subtitle">Buat video hingga 90 detik tentang pengalaman belanja atau promosi produk yang menginspirasi!</string>
     <string name="feed_onboarding_profile_entry_point_title">Cek profil kamu di sini, yuk!</string>

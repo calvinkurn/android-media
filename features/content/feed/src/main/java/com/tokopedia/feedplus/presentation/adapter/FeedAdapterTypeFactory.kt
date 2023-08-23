@@ -12,8 +12,8 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.ErrorNetworkViewH
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingMoreViewHolder
 import com.tokopedia.feedplus.databinding.ItemFeedFollowRecommendationBinding
 import com.tokopedia.feedplus.databinding.ItemFeedLoadMoreContentBinding
-import com.tokopedia.feedplus.databinding.ItemFeedNoContentBinding
 import com.tokopedia.feedplus.databinding.ItemFeedPostBinding
+import com.tokopedia.feedplus.databinding.ItemFeedPostErrorBinding
 import com.tokopedia.feedplus.databinding.ItemFeedPostLiveBinding
 import com.tokopedia.feedplus.databinding.ItemFeedPostVideoBinding
 import com.tokopedia.feedplus.domain.mapper.MapperFeedModelToTrackerDataModel
@@ -91,7 +91,7 @@ class FeedAdapterTypeFactory(
                 trackerMapper
             )
             FeedNoContentViewHolder.LAYOUT -> FeedNoContentViewHolder(
-                ItemFeedNoContentBinding.inflate(
+                ItemFeedPostErrorBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent as ViewGroup,
                     false
@@ -115,7 +115,7 @@ class FeedAdapterTypeFactory(
                 )
             )
             ErrorNetworkViewHolder.LAYOUT -> FeedErrorViewHolder(
-                ItemFeedNoContentBinding.inflate(
+                ItemFeedPostErrorBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent as ViewGroup,
                     false
