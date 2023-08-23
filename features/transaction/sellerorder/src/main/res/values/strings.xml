@@ -234,6 +234,7 @@
 
     <string name="som_detail_som_print_not_available">Fitur ini hanya tersedia di aplikasi Tokopedia Seller</string>
     <string name="som_detail_other_bottomsheet_title">Lainnya</string>
+    <string name="som_detail_dropoff_button_title">Cek Gerai Terdekat</string>
 
     <string name="som_detail_ticker_description">%1$s &lt;a href="#"&gt;%2$s&lt;/a&gt;</string>
     <string name="som_list_failed_refresh_order">Gagal memperbarui informasi pesanan!</string>

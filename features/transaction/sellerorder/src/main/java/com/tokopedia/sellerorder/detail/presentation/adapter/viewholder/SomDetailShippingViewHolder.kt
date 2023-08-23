@@ -5,6 +5,8 @@ import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -251,6 +253,20 @@ class SomDetailShippingViewHolder(
                 tvSomDropshipperLabel.showWithCondition(
                     numberPhoneDropShipper.isNotBlank() || item.dataObject.dropshipperName.isNotBlank()
                 )
+
+                // drop off maps
+                btnDropOff.run {
+                    if (item.dataObject.dropoffMapsUrl.isNotEmpty()) {
+                        setDrawable(getIconUnifyDrawable(context, IconUnify.LOCATION))
+                        setOnClickListener {
+                            actionListener?.onDropOffButtonClicked(item.dataObject.dropoffMapsUrl)
+                        }
+                        visible()
+                    } else {
+                        gone()
+                    }
+
+                }
             }
         }
     }
