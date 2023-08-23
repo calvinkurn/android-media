@@ -10,13 +10,18 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tkpd.atcvariant.view.bottomsheet.AtcVariantBottomSheet
+import com.tkpd.atcvariant.view.viewmodel.AtcVariantSharedViewModel
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.content.common.util.Router
+import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.showToast
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
+import com.tokopedia.product.detail.common.VariantPageSource
+import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
+import com.tokopedia.product.detail.common.showImmediately
 import com.tokopedia.stories.bottomsheet.StoriesProductBottomSheet
 import com.tokopedia.stories.bottomsheet.StoriesThreeDotsBottomSheet
 import com.tokopedia.stories.databinding.FragmentStoriesDetailBinding
@@ -29,6 +34,7 @@ import com.tokopedia.stories.view.model.BottomSheetType
 import com.tokopedia.stories.view.model.StoriesDetailUiModel
 import com.tokopedia.stories.view.model.StoriesGroupUiModel
 import com.tokopedia.stories.view.model.isAnyShown
+import com.tokopedia.stories.view.utils.SHOP_ID
 import com.tokopedia.stories.view.utils.STORIES_GROUP_ID
 import com.tokopedia.stories.view.utils.TouchEventStories
 import com.tokopedia.stories.view.utils.onTouchEventStories
@@ -65,8 +71,17 @@ class StoriesDetailFragment @Inject constructor(
         LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
     }
 
+    private lateinit var variantSheet : AtcVariantBottomSheet
+
+    private val atcVariantViewModel by lazyThreadSafetyNone {
+        ViewModelProvider(requireActivity())[AtcVariantSharedViewModel::class.java]
+    }
+
     private val groupId: String
         get() = arguments?.getString(STORIES_GROUP_ID).orEmpty()
+
+    private val shopId: String
+        get() = arguments?.getString(SHOP_ID).orEmpty()
 
     override fun getScreenName(): String {
         return TAG
@@ -282,6 +297,25 @@ class StoriesDetailFragment @Inject constructor(
         router.route(requireContext(), appLink)
     }
 
+    private fun openVariantBottomSheet(product: ContentTaggedProductUiModel) {
+        atcVariantViewModel.setAtcBottomSheetParams(
+            ProductVariantBottomSheetParams(
+                pageSource = VariantPageSource.STORIES_PAGESOURCE.source,
+                productId = product.id,
+                shopId = shopId,
+                dismissAfterTransaction = false,
+                trackerCdListName = viewModel.storyId,
+            )
+        )
+
+        showImmediately(childFragmentManager, VARIANT_BOTTOM_SHEET_TAG) {
+            variantSheet = AtcVariantBottomSheet()
+            variantSheet.setOnDismissListener {  }
+            variantSheet.bottomSheetClose.setOnClickListener {  }
+            variantSheet
+        }
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
@@ -289,6 +323,7 @@ class StoriesDetailFragment @Inject constructor(
 
     companion object {
         private const val TAG = "StoriesDetailFragment"
+        private const val VARIANT_BOTTOM_SHEET_TAG = "atc variant bottom sheet"
 
         fun getFragment(
             fragmentManager: FragmentManager,
