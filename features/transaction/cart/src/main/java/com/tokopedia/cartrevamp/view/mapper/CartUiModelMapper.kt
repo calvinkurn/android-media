@@ -667,9 +667,11 @@ object CartUiModelMapper {
             additionalInfo = mapAdditionalInfo(lastApplyPromoData.additionalInfo),
             message = mapMessageGlobalPromo(lastApplyPromoData.message),
             benefitSummaryInfo = mapBenefitSummaryInfo(lastApplyPromoData.benefitSummaryInfo),
-            userGroupPromoAbTest = lastApplyPromoData.userGroupMetadata
-                .firstOrNull { it.key == UserGroupMetadata.KEY_PROMO_AB_TEST_USER_GROUP }?.value
-                .ifNullOrBlank { "" }
+            // TODO: Get from response when ready
+//            userGroupPromoAbTest = lastApplyPromoData.userGroupMetadata
+//                .firstOrNull { it.key == UserGroupMetadata.KEY_PROMO_AB_TEST_USER_GROUP }?.value
+//                .ifNullOrBlank { "" }
+            userGroupPromoAbTest = UserGroupMetadata.PROMO_USER_GROUP_A
         )
     }
 

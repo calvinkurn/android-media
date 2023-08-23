@@ -128,7 +128,6 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.hideLoading
 import com.tokopedia.kotlin.extensions.view.ifNull
-import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.pxToDp
 import com.tokopedia.kotlin.extensions.view.show
@@ -165,7 +164,6 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.C
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
-import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.UserGroupMetadata
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.LastApplyUiMapper
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
@@ -2624,22 +2622,24 @@ class CartRevampFragment :
                         data.entryPointInfo?.messages?.firstOrNull().ifNull { "" }
                     }
                     val isClickable = data.entryPointInfo?.isClickable ?: false
-                    binding?.promoCheckoutBtnCart?.showInactive(
-                        message,
-                        onClickListener = {
-                            if (data.isNoItemSelected) {
-                                showToastMessageGreen(getString(R.string.promo_choose_item_cart))
-                                PromoRevampAnalytics.eventCartViewPromoMessage(getString(R.string.promo_choose_item_cart))
-                            } else if (isClickable) {
-                                checkGoToPromo()
-                                PromoRevampAnalytics.eventCartClickPromoSection(
-                                    listPromoCodes = viewModel.getAllPromosApplied(data.lastApply),
-                                    isApplied = false,
-                                    userId = userSession.userId
-                                )
+                    if (message.isNotBlank()) {
+                        binding?.promoCheckoutBtnCart?.showInactive(
+                            message,
+                            onClickListener = {
+                                if (data.isNoItemSelected) {
+                                    showToastMessageGreen(getString(R.string.promo_choose_item_cart))
+                                    PromoRevampAnalytics.eventCartViewPromoMessage(getString(R.string.promo_choose_item_cart))
+                                } else if (isClickable) {
+                                    checkGoToPromo()
+                                    PromoRevampAnalytics.eventCartClickPromoSection(
+                                        listPromoCodes = viewModel.getAllPromosApplied(data.lastApply),
+                                        isApplied = false,
+                                        userId = userSession.userId
+                                    )
+                                }
                             }
-                        }
-                    )
+                        )
+                    }
                 }
 
                 is EntryPointInfoEvent.Inactive -> {
@@ -2649,35 +2649,59 @@ class CartRevampFragment :
                     } else {
                         data.message
                     }
-                    binding?.promoCheckoutBtnCart?.showInactive(
-                        message,
-                        onClickListener = {
-                            if (data.isNoItemSelected) {
-                                showToastMessageGreen(getString(R.string.promo_choose_item_cart))
-                                PromoRevampAnalytics.eventCartViewPromoMessage(getString(R.string.promo_choose_item_cart))
+                    if (message.isNotBlank()) {
+                        binding?.promoCheckoutBtnCart?.showInactive(
+                            message,
+                            onClickListener = {
+                                if (data.isNoItemSelected) {
+                                    showToastMessageGreen(getString(R.string.promo_choose_item_cart))
+                                    PromoRevampAnalytics.eventCartViewPromoMessage(getString(R.string.promo_choose_item_cart))
+                                }
                             }
-                        }
-                    )
+                        )
+                    }
                 }
 
                 is EntryPointInfoEvent.ActiveNew -> {
                     binding?.promoCheckoutBtnCart?.hideLoading()
-                    val message = data.entryPointInfo.messages.firstOrNull().ifNull { "" }
-                    binding?.promoCheckoutBtnCart?.showActiveNew(
-                        leftImageUrl = data.entryPointInfo.iconUrl,
-                        wording = message,
-                        rightIcon = IconUnify.CHEVRON_RIGHT,
-                        onClickListener = {
-                            if (data.entryPointInfo.isClickable) {
-                                checkGoToPromo()
-                                PromoRevampAnalytics.eventCartClickPromoSection(
-                                    listPromoCodes = viewModel.getAllPromosApplied(data.lastApply),
-                                    isApplied = false,
-                                    userId = userSession.userId
-                                )
+                    val messages = data.entryPointInfo.messages.filter { it.isNotBlank() }
+                    if (messages.size > 1) {
+                        binding?.promoCheckoutBtnCart?.showActiveFlipping(
+                            leftImageUrl = data.entryPointInfo.iconUrl,
+                            wordings = messages,
+                            rightIcon = IconUnify.CHEVRON_RIGHT,
+                            flippingDurationInMs = 5_000,
+                            maximumFlippingCount = 5,
+                            onClickListener = {
+                                if (data.entryPointInfo.isClickable) {
+                                    checkGoToPromo()
+                                    PromoRevampAnalytics.eventCartClickPromoSection(
+                                        listPromoCodes = viewModel.getAllPromosApplied(data.lastApply),
+                                        isApplied = false,
+                                        userId = userSession.userId
+                                    )
+                                }
                             }
-                        }
-                    )
+                        )
+                    } else if (messages.size == 1) {
+                        binding?.promoCheckoutBtnCart?.showActiveNew(
+                            leftImageUrl = data.entryPointInfo.iconUrl,
+                            wording = messages.first(),
+                            rightIcon = IconUnify.CHEVRON_RIGHT,
+                            onClickListener = {
+                                if (data.entryPointInfo.isClickable) {
+                                    checkGoToPromo()
+                                    PromoRevampAnalytics.eventCartClickPromoSection(
+                                        listPromoCodes = viewModel.getAllPromosApplied(data.lastApply),
+                                        isApplied = false,
+                                        userId = userSession.userId
+                                    )
+                                }
+                            }
+                        )
+                    } else {
+                        binding?.promoCheckoutBtnCart?.gone()
+                    }
                 }
 
                 is EntryPointInfoEvent.ActiveDefault -> {
@@ -2698,29 +2722,31 @@ class CartRevampFragment :
 
                 is EntryPointInfoEvent.Active -> {
                     binding?.promoCheckoutBtnCart?.hideLoading()
-                    binding?.promoCheckoutBtnCart?.showActive(
-                        wording = data.message,
-                        rightIcon = IconUnify.CHEVRON_RIGHT,
-                        onClickListener = {
-                            checkGoToPromo()
-                            PromoRevampAnalytics.eventCartClickPromoSection(
-                                listPromoCodes = viewModel.getAllPromosApplied(data.lastApply),
-                                isApplied = false,
-                                userId = userSession.userId
-                            )
-                        }
-                    )
+                    if (data.message.isNotBlank()) {
+                        binding?.promoCheckoutBtnCart?.showActive(
+                            wording = data.message,
+                            rightIcon = IconUnify.CHEVRON_RIGHT,
+                            onClickListener = {
+                                checkGoToPromo()
+                                PromoRevampAnalytics.eventCartClickPromoSection(
+                                    listPromoCodes = viewModel.getAllPromosApplied(data.lastApply),
+                                    isApplied = false,
+                                    userId = userSession.userId
+                                )
+                            }
+                        )
+                    }
                 }
 
-                is EntryPointInfoEvent.AppliedNew -> {
+                is EntryPointInfoEvent.Applied -> {
                     binding?.promoCheckoutBtnCart?.hideLoading()
-                    binding?.promoCheckoutBtnCart?.showApplied(
-                        title = data.entryPointInfo.messages.first(),
-                        desc = data.lastApply.additionalInfo.messageInfo.detail,
-                        rightIcon = IconUnify.CHEVRON_RIGHT,
-                        summaries = emptyList(),
-                        onClickListener = {
-                            if (data.entryPointInfo.isClickable) {
+                    if (data.message.isNotBlank() && data.lastApply.additionalInfo.messageInfo.detail.isNotEmpty()) {
+                        binding?.promoCheckoutBtnCart?.showApplied(
+                            title = data.message,
+                            desc = data.lastApply.additionalInfo.messageInfo.detail,
+                            rightIcon = IconUnify.CHEVRON_RIGHT,
+                            summaries = emptyList(),
+                            onClickListener = {
                                 checkGoToPromo()
                                 PromoRevampAnalytics.eventCartClickPromoSection(
                                     listPromoCodes = viewModel.getAllPromosApplied(data.lastApply),
@@ -2728,28 +2754,9 @@ class CartRevampFragment :
                                     userId = userSession.userId
                                 )
                             }
-                        }
-                    )
-                    PromoRevampAnalytics.eventCartViewPromoAlreadyApplied()
-                }
-
-                is EntryPointInfoEvent.Applied -> {
-                    binding?.promoCheckoutBtnCart?.hideLoading()
-                    binding?.promoCheckoutBtnCart?.showApplied(
-                        title = data.message,
-                        desc = data.lastApply.additionalInfo.messageInfo.detail,
-                        rightIcon = IconUnify.CHEVRON_RIGHT,
-                        summaries = emptyList(),
-                        onClickListener = {
-                            checkGoToPromo()
-                            PromoRevampAnalytics.eventCartClickPromoSection(
-                                listPromoCodes = viewModel.getAllPromosApplied(data.lastApply),
-                                isApplied = true,
-                                userId = userSession.userId
-                            )
-                        }
-                    )
-                    PromoRevampAnalytics.eventCartViewPromoAlreadyApplied()
+                        )
+                        PromoRevampAnalytics.eventCartViewPromoAlreadyApplied()
+                    }
                 }
 
                 is EntryPointInfoEvent.Error -> {
@@ -3656,7 +3663,7 @@ class CartRevampFragment :
     }
 
     private fun renderPromoCheckoutButtonActiveDefault(listPromoApplied: List<String>) {
-        viewModel.getEntryPointInfoDefault(listPromoApplied)
+        viewModel.getEntryPointInfoDefault()
     }
 
     private fun renderPromoCheckoutButtonNoItemIsSelected() {
@@ -4787,6 +4794,7 @@ class CartRevampFragment :
     }
 
     override fun onApplyPromoSuccess(
+        entryPoint: PromoPageEntryPoint,
         validateUse: ValidateUsePromoRevampUiModel,
         lastValidateUsePromoRequest: ValidateUsePromoRequest
     ) {
@@ -4806,9 +4814,10 @@ class CartRevampFragment :
     }
 
     override fun onClearPromoSuccess(
+        entryPoint: PromoPageEntryPoint,
         clearPromo: ClearPromoUiModel,
         lastValidateUsePromoRequest: ValidateUsePromoRequest,
-        isFlowMvcLockToCourrier: Boolean
+        isFlowMvcLockToCourier: Boolean
     ) {
         viewModel.cartModel.apply {
             isLastApplyResponseStillValid = false

@@ -1,6 +1,7 @@
 package com.tokopedia.promousage.view.viewmodel
 
 import com.tokopedia.promousage.domain.entity.PromoCta
+import com.tokopedia.promousage.domain.entity.PromoPageEntryPoint
 import com.tokopedia.promousage.domain.entity.list.PromoRecommendationItem
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
@@ -27,6 +28,7 @@ sealed class UsePromoRecommendationUiAction {
 sealed class ClearPromoUiAction {
 
     data class Success(
+        val entryPoint: PromoPageEntryPoint,
         val clearPromo: ClearPromoUiModel,
         val lastValidateUseRequest: ValidateUsePromoRequest
     ) : ClearPromoUiAction()
@@ -59,6 +61,7 @@ sealed class AttemptPromoUiAction {
 sealed class ApplyPromoUiAction {
 
     data class Success(
+        val entryPoint: PromoPageEntryPoint,
         val validateUse: ValidateUsePromoRevampUiModel,
         val lastValidateUsePromoRequest: ValidateUsePromoRequest
     ) : ApplyPromoUiAction()

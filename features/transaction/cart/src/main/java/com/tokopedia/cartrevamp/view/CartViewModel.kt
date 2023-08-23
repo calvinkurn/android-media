@@ -2865,7 +2865,6 @@ class CartViewModel @Inject constructor(
             context = dispatchers.main,
             block = {
                 _entryPointInfoEvent.postValue(EntryPointInfoEvent.Loading)
-                delay(1_000L)
                 val entryPointEvent = cartPromoEntryPointProcessor
                     .getEntryPointInfoFromLastApply(lastApply, cartModel, cartDataList.value)
                 _entryPointInfoEvent.postValue(entryPointEvent)
@@ -2876,9 +2875,24 @@ class CartViewModel @Inject constructor(
         )
     }
 
-    fun getEntryPointInfoDefault(appliedPromos: List<String>) {
-        _entryPointInfoEvent.postValue(
-            cartPromoEntryPointProcessor.getEntryPointInfoActiveDefault(appliedPromos)
+    fun getEntryPointInfoDefault() {
+        launchCatchError(
+            context = dispatchers.main,
+            block = {
+                _entryPointInfoEvent.postValue(EntryPointInfoEvent.Loading)
+                cartModel.cartListData?.let { data ->
+                    val lastApply = CartUiModelMapper.mapLastApplySimplified(data.promo.lastApplyPromo.lastApplyPromoData)
+                    val entryPointEvent = cartPromoEntryPointProcessor
+                        .getEntryPointInfoFromLastApply(lastApply, cartModel, cartDataList.value)
+                    _entryPointInfoEvent.postValue(entryPointEvent)
+                }
+            },
+            onError = {
+                cartModel.cartListData?.let { data ->
+                    val lastApply = CartUiModelMapper.mapLastApplySimplified(data.promo.lastApplyPromo.lastApplyPromoData)
+                    _entryPointInfoEvent.postValue(EntryPointInfoEvent.Error(lastApply))
+                }
+            }
         )
     }
 
@@ -2886,9 +2900,5 @@ class CartViewModel @Inject constructor(
         _entryPointInfoEvent.postValue(
             cartPromoEntryPointProcessor.getEntryPointInfoNoItemSelected()
         )
-    }
-
-    fun reloadEntryPointInfo() {
-
     }
 }

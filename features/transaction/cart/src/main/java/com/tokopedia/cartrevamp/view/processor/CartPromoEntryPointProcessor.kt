@@ -9,7 +9,7 @@ import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.promousage.data.request.GetPromoListRecommendationParam
 import com.tokopedia.promousage.domain.entity.PromoEntryPointInfo
 import com.tokopedia.promousage.domain.usecase.GetPromoListRecommendationEntryPointUseCase
-import com.tokopedia.promousage.view.mapper.PromoUsageGetCouponListRecommendationMapper
+import com.tokopedia.promousage.view.mapper.PromoUsageGetPromoListRecommendationMapper
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.UserGroupMetadata
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
@@ -18,7 +18,7 @@ import javax.inject.Inject
 
 class CartPromoEntryPointProcessor @Inject constructor(
     private val getPromoListRecommendationEntryPointUseCase: GetPromoListRecommendationEntryPointUseCase,
-    private val getCouponListRecommendationMapper: PromoUsageGetCouponListRecommendationMapper,
+    private val getCouponListRecommendationMapper: PromoUsageGetPromoListRecommendationMapper,
     private val chosenAddressRequestHelper: ChosenAddressRequestHelper
 ) {
 
@@ -143,12 +143,6 @@ class CartPromoEntryPointProcessor @Inject constructor(
                 }
             }
         }
-    }
-
-    fun getEntryPointInfoActiveDefault(appliedPromos: List<String>) : EntryPointInfoEvent {
-        return EntryPointInfoEvent.ActiveDefault(
-            appliedPromos = appliedPromos
-        )
     }
 
     fun getEntryPointInfoNoItemSelected() : EntryPointInfoEvent {
