@@ -258,4 +258,6 @@ public class RemoteConfigKey {
 
     public static final String CONTACT_US_DISABLE_FORCE_RELOAD_URLS = "android_contact_us_disable_force_reload_urls";
 
+    public static final String ENABLE_BANNER_ENVIRONMENT = "android_enable_banner_environment";
+
 }
