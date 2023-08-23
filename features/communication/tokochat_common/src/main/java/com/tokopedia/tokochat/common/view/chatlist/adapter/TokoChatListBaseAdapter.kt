@@ -90,6 +90,7 @@ class TokoChatListBaseAdapter(
                 }
             }
         }
+        sortChatListDescending()
     }
 
     private fun isChatListDataComplete(newItem: TokoChatListItemUiModel): Boolean {
@@ -98,6 +99,14 @@ class TokoChatListBaseAdapter(
             newItem.driverName.isNotBlank() &&
             newItem.business.isNotBlank() &&
             newItem.serviceType != Int.ZERO
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private fun sortChatListDescending() {
+        if (itemList.all { it is Comparable<*> }) {
+            val comparableList = itemList as List<Comparable<Any>>
+            setItemsAndAnimateChanges(comparableList.sortedDescending())
+        }
     }
 
     private fun getChatListDataPositionIfExist(newItem: TokoChatListItemUiModel): Int {

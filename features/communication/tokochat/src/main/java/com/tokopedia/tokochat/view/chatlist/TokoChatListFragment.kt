@@ -168,6 +168,7 @@ class TokoChatListFragment @Inject constructor(
                 is Fail -> {
                     showErrorLayout()
                 }
+                else -> Unit // no op
             }
         }
     }
@@ -182,6 +183,7 @@ class TokoChatListFragment @Inject constructor(
     private fun resetChatList() {
         endlessRecyclerViewScrollListener?.resetState()
         adapter.clearAllItemsAndAnimateChanges()
+        viewModel.resetChatListData()
         lifecycleScope.launch {
             chatListJob?.cancelAndJoin()
             initChatListData()

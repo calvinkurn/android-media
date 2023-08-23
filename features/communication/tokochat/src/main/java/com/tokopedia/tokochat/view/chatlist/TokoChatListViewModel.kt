@@ -35,8 +35,8 @@ class TokoChatListViewModel @Inject constructor(
         get() = _error
 
     private val _chatList:
-        MediatorLiveData<Result<List<TokoChatListItemUiModel>>> = MediatorLiveData()
-    val chatList: LiveData<Result<List<TokoChatListItemUiModel>>>
+        MediatorLiveData<Result<List<TokoChatListItemUiModel>>?> = MediatorLiveData()
+    val chatList: LiveData<Result<List<TokoChatListItemUiModel>>?>
         get() = _chatList.distinctUntilChanged()
 
     fun setupChatListSource() {
@@ -110,5 +110,9 @@ class TokoChatListViewModel @Inject constructor(
             it.expiresAt > System.currentTimeMillis()
         }
         return mapper.mapToListChat(filteredChannel)
+    }
+
+    fun resetChatListData() {
+        _chatList.value = null
     }
 }
