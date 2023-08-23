@@ -20,6 +20,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Assert
@@ -368,5 +369,44 @@ class ThankPageViewModelUnitTest {
         Assert.assertEquals(viewModel.bottomContentVisitableList.value?.first(), bannerWidgetModel)
         Assert.assertEquals(viewModel.bottomContentVisitableList.value?.get(1), headlineAdsVisitable)
         Assert.assertEquals(viewModel.bottomContentVisitableList.value?.last(), gyroVisitable)
+    }
+
+    @Test
+    fun `Show Tokomember Widget`() {
+        val thankPageData = mockk<ThanksPageData>(relaxed = true)
+        val validateEngineResponse = ValidateEngineResponse(
+            true,
+            "",
+            "",
+            FeatureEngineData(
+                "",
+                "",
+                arrayListOf(
+                    FeatureEngineItem(
+                        id = 67,
+                        detail = "{\"type\":\"tokomember\"}"
+                    )
+                )
+            )
+        )
+        val queryParamTokomember = TokoMemberRequestParam(shopID=0, amount=0.0F, pageType=null, paymentID="", source=1, orderData= listOf(), sectionTitle="", sectionSubtitle="", isFirstElement=false)
+
+        // given
+        `check for wallet activation`()
+        coEvery {
+            gyroEngineRequestUseCase.getFeatureEngineData(thankPageData, any(), any())
+        } coAnswers {
+            thirdArg<(ValidateEngineResponse) -> Unit>().invoke(validateEngineResponse)
+        }
+
+        // when
+        viewModel.checkForGoPayActivation(thankPageData)
+
+        // verify
+        verify {
+            gyroEngineMapperUseCase.getFeatureListData(
+                any(), queryParamTokomember, any(), any()
+            )
+        }
     }
 }

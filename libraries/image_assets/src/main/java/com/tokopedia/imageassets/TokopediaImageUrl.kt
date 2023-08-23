@@ -228,6 +228,7 @@ object TokopediaImageUrl {
     const val ROUND_GREEN_CHECK_MARK_ICON = "https://images.tokopedia.net/img/android/product-service/aep/icons/round_green_checkmark_3x.png"
     const val INFORMATION_ICON = "https://images.tokopedia.net/img/android/product-service/aep/icons/information_icon_3x.png"
     const val PRICE_RECOMMENDATION_BANNER_URL = "https://images.tokopedia.net/img/android/product-add-edit/banner_price_recommendation.png"
+    const val AEP_SINGLE_VARIANT_WARNING = "https://images.tokopedia.net/img/android/add-edit-product/single_variant_warning.webp"
     const val REVIEW_INBOX_NO_PRODUCTS_BOUGHT_IMAGE = "https://images.tokopedia.net/img/android/review/review_pending_inbox_empty.png"
     const val REVIEW_INBOX_NO_PRODUCTS_SEARCH_IMAGE = "https://images.tokopedia.net/android/others/review_inbox_search_empty.png"
     const val REVIEW_INBOX_UNIFY_GLOBAL_ERROR_CONNECTION = "https://images.tokopedia.net/img/android/unify/unify_globalerrors_connection.png"

@@ -414,14 +414,16 @@ class HomeDynamicChannelVisitableFactoryImpl(
         channel: DynamicHomeChannel.Channels,
         verticalPosition: Int,
     ) {
-        visitableList.add(
-            BestSellerDataModel(
-                channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(
-                    channel = channel.copy(header = channel.header.copy(applink = VALUE_EMPTY_APPLINK)),
-                    verticalPosition = verticalPosition,
-                ),
+        if(!isCache) {
+            visitableList.add(
+                BestSellerDataModel(
+                    channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(
+                        channel = channel.copy(header = channel.header.copy(applink = VALUE_EMPTY_APPLINK)),
+                        verticalPosition = verticalPosition,
+                    ),
+                )
             )
-        )
+        }
     }
 
     private fun createCampaignWidget(
