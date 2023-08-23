@@ -84,7 +84,7 @@ open class CommonCarouselProductCardTypeFactoryImpl(
                 CarouselFeaturedShopViewHolder(view, channels, cardInteraction)
             }
             CarouselViewAllCardViewHolder.LAYOUT -> {
-                CarouselViewAllCardViewHolder(view, channels, cardInteraction)
+                CarouselViewAllCardViewHolder(view, channels, cardInteraction, listener)
             }
             CarouselCampaignCardViewHolder.LAYOUT -> {
                 CarouselCampaignCardViewHolder(view, channels, cardInteraction)

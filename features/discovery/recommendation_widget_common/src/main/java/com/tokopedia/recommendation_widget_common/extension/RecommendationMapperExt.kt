@@ -128,10 +128,12 @@ fun RecommendationItem.toProductCardModel(
     hasAddToCartButton: Boolean = false,
     addToCartButtonType: Int = UnifyButton.Type.TRANSACTION,
     hasThreeDots: Boolean = false,
-    cardInteraction: Boolean = false,
+    cardInteraction: Boolean? = null,
     productCardListType: ProductListType = ProductListType.CONTROL,
     cardType: Int = CardUnify2.TYPE_SHADOW,
+    animateOnPress: Int = CardUnify2.ANIMATE_OVERLAY,
 ): ProductCardModel {
+    val productCardAnimate = if(cardInteraction == true) CardUnify2.ANIMATE_OVERLAY_BOUNCE else animateOnPress
     var variant: ProductCardModel.Variant? = null
     var nonVariant: ProductCardModel.NonVariant? = null
     var hasThreeDotsFinalValue = hasThreeDots
@@ -168,7 +170,7 @@ fun RecommendationItem.toProductCardModel(
         addToCartButtonType = addToCartButtonType,
         variant = if (isProductHasParentID()) variant else null,
         nonVariant = if (isProductHasParentID()) null else nonVariant,
-        cardInteraction = cardInteraction,
+        animateOnPress = productCardAnimate,
         cardType = cardType,
         productListType = productCardListType,
     )

@@ -11,7 +11,7 @@ import com.tokopedia.home.beranda.data.datasource.local.entity.AtfCacheEntity
 import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
 import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
 import com.tokopedia.home.beranda.data.mapper.ReminderWidgetMapper
-import com.tokopedia.home.beranda.data.mapper.factory.DynamicChannelComponentMapper.mapToChannelGrid
+import com.tokopedia.home.beranda.data.mapper.ShopFlashSaleMapper
 import com.tokopedia.home.beranda.data.model.*
 import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.domain.interactor.repository.*
@@ -30,7 +30,6 @@ import com.tokopedia.home.constant.AtfKey
 import com.tokopedia.home.util.HomeServerLogger
 import com.tokopedia.home.util.QueryParamUtils.convertToLocationParams
 import com.tokopedia.home_component.model.ReminderEnum
-import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselProductCardDataModel
 import com.tokopedia.home_component.usecase.featuredshop.DisplayHeadlineAdsEntity
 import com.tokopedia.home_component.usecase.featuredshop.mappingTopAdsHeaderToChannelGrid
 import com.tokopedia.home_component.usecase.missionwidget.GetMissionWidget
@@ -41,14 +40,12 @@ import com.tokopedia.home_component.visitable.FeaturedShopDataModel
 import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.home_component.visitable.TodoWidgetListDataModel
-import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleTimerDataModel
 import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleWidgetDataModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
-import com.tokopedia.recommendation_widget_common.extension.toProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
@@ -455,22 +452,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
                             )
                         },
                     ) { visitableFound, data, position ->
-                        if(!recommendationListIsEmpty(data)) {
-                            val carouselProductCardList = data.first().recommendationItemList.mapIndexed { index, item ->
-                                CarouselProductCardDataModel(
-                                    productModel = item.toProductCardModel(cardType = CardUnify2.TYPE_BORDER),
-                                    grid = item.mapToChannelGrid(index),
-                                    trackingAttributionModel = visitableFound.channelModel.trackingAttributionModel,
-                                    applink = item.appUrl
-                                )
-                            }
-                            return@getWidgetDataIfExist visitableFound.copy(
-                                itemList = carouselProductCardList,
-                                timer = ShopFlashSaleTimerDataModel(data.first().endDate),
-                                useShopHeader = true,
-                            )
-                        }
-                        visitableFound
+                        ShopFlashSaleMapper.mapShopFlashSaleItemList(visitableFound, data)
                     }
 
                     emit(
