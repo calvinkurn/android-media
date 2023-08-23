@@ -1,7 +1,9 @@
 package com.tokopedia.tokochat.view.chatlist
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.distinctUntilChanged
 import androidx.lifecycle.viewModelScope
 import com.gojek.conversations.babble.channel.data.ChannelType
 import com.gojek.conversations.channel.ConversationsChannel
@@ -14,16 +16,8 @@ import com.tokopedia.tokochat.domain.usecase.TokoChatChannelUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.flow.transformLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 import javax.inject.Inject
 
 class TokoChatListViewModel @Inject constructor(
@@ -40,27 +34,22 @@ class TokoChatListViewModel @Inject constructor(
     val error: LiveData<Pair<Throwable, String>>
         get() = _error
 
-    fun getChatListFlow(): Flow<Result<List<TokoChatListItemUiModel>>> {
-        return try {
-            chatChannelUseCase.getAllCachedChannels(listOf(ChannelType.GroupBooking))
-                .onStart {
-                    setPaginationTimeStamp(0L) // reset
+    private val _chatList:
+        MediatorLiveData<Result<List<TokoChatListItemUiModel>>?> = MediatorLiveData()
+    val chatList: LiveData<Result<List<TokoChatListItemUiModel>>?>
+        get() = _chatList.distinctUntilChanged()
+
+    fun setupChatListSource() {
+        viewModelScope.launch {
+            try {
+                setPaginationTimeStamp(0L) // reset
+                val cachedChannels = chatChannelUseCase.getAllCachedChannels(listOf(ChannelType.GroupBooking))
+                _chatList.addSource(cachedChannels!!) { // expected to use !!
+                    _chatList.value = Success(filterExpiredChannelAndMap(it))
                 }
-                .map {
-                    filterExpiredChannelAndMap(it)
-                }
-                .transformLatest { value ->
-                    emit(Success(value) as Result<List<TokoChatListItemUiModel>>)
-                }
-                .catch {
-                    _error.value = Pair(it, ::getChatListFlow.name)
-                    emit(Fail(it))
-                }
-                .flowOn(dispatcher.io)
-        } catch (throwable: Throwable) {
-            Timber.d(throwable)
-            flow {
-                emit(Fail(throwable))
+            } catch (throwable: Throwable) {
+                _error.value = Pair(throwable, ::setupChatListSource.name)
+                _chatList.value = Fail(throwable)
             }
         }
     }
@@ -68,7 +57,7 @@ class TokoChatListViewModel @Inject constructor(
     fun loadNextPageChatList(
         localSize: Int = Int.ZERO,
         isLoadMore: Boolean,
-        onCompleted: (Boolean) -> Unit = {}
+        onCompleted: (Pair<Boolean, Int?>) -> Unit = {}
     ) {
         viewModelScope.launch {
             try {
@@ -82,13 +71,13 @@ class TokoChatListViewModel @Inject constructor(
                             if (!isLoadMore) {
                                 emitChatListPairData(channelList = it)
                             }
-                            onCompleted(true)
+                            onCompleted(Pair(true, it.size))
                         },
                         onError = {
                             it?.let { error ->
                                 _error.postValue(Pair(error, ::loadNextPageChatList.name))
                             }
-                            onCompleted(false)
+                            onCompleted(Pair(false, null))
                         }
                     )
                 }
@@ -121,5 +110,9 @@ class TokoChatListViewModel @Inject constructor(
             it.expiresAt > System.currentTimeMillis()
         }
         return mapper.mapToListChat(filteredChannel)
+    }
+
+    fun resetChatListData() {
+        _chatList.value = null
     }
 }

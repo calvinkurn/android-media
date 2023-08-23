@@ -48,4 +48,10 @@ object HeaderResult {
             withId(com.tokopedia.tokochat_common.R.id.tokochat_tp_estimate_value)
         ).check(matches(withText(timeDelivery)))
     }
+
+    fun assertOrderHistoryLocalLoad() {
+        onView(
+            withId(com.tokopedia.tokochat_common.R.id.tokochat_localload_error_transaction_widget)
+        ).check(matches(isDisplayed()))
+    }
 }

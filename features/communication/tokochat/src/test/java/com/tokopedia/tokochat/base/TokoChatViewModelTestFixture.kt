@@ -66,6 +66,9 @@ abstract class TokoChatViewModelTestFixture {
     protected lateinit var getNeedConsentUseCase: GetNeedConsentUseCase
 
     @RelaxedMockK
+    protected lateinit var getTokopediaOrderIdUseCase: TokoChatGetTokopediaOrderIdUseCase
+
+    @RelaxedMockK
     protected lateinit var imageAttachmentExtensionProvider: TokoChatImageAttachmentExtensionProvider
 
     @RelaxedMockK
@@ -94,6 +97,7 @@ abstract class TokoChatViewModelTestFixture {
                 getImageUrlUseCase,
                 uploadImageUseCase,
                 getNeedConsentUseCase,
+                getTokopediaOrderIdUseCase,
                 viewUtil,
                 imageAttachmentExtensionProvider,
                 cacheManager,

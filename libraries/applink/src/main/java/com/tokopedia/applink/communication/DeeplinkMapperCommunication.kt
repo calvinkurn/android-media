@@ -78,7 +78,7 @@ object DeeplinkMapperCommunication {
     }
 
     fun getRegisteredNavigationTokoChatList(context: Context, deeplink: String): String {
-        return if (isRemoteConfigActive(context, deeplink)) {
+        return if (isRemoteConfigActive(context, TOKOCHAT_LIST_REMOTE_CONFIG)) {
             ApplinkConstInternalCommunication.TOKOCHAT_LIST
         } else {
             ApplinkConstInternalOrder.UNIFY_ORDER_TOKOFOOD

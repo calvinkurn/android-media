@@ -4,10 +4,7 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.inbox.universalinbox.domain.UniversalInboxGetAllDriverChannelsUseCase
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
-import com.tokopedia.tokochat.config.di.qualifier.TokoChatQualifier
-import com.tokopedia.tokochat.config.repository.TokoChatRepository
 import com.tokopedia.topads.sdk.domain.usecase.GetTopAdsHeadlineUseCase
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
@@ -48,13 +45,5 @@ object UniversalInboxUseCaseModule {
         @ApplicationContext graphqlRepository: GraphqlRepository
     ): GetTopAdsHeadlineUseCase {
         return GetTopAdsHeadlineUseCase(graphqlRepository)
-    }
-
-    @ActivityScope
-    @Provides
-    fun provideGetAllDriverChannelUseCase(
-        @TokoChatQualifier tokoChatRepository: TokoChatRepository
-    ): UniversalInboxGetAllDriverChannelsUseCase {
-        return UniversalInboxGetAllDriverChannelsUseCase(tokoChatRepository)
     }
 }

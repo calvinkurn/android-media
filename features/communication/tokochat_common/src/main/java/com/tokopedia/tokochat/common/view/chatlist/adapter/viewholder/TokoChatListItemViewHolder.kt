@@ -3,10 +3,8 @@ package com.tokopedia.tokochat.common.view.chatlist.adapter.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.adapterdelegate.BaseViewHolder
-import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImage
@@ -30,13 +28,14 @@ class TokoChatListItemViewHolder(
 
     fun bind(element: TokoChatListItemUiModel) {
         bindDriver(element)
+        bindOrderType(element)
         bindMessage(element)
         bindBusiness(element)
         bindListener(element)
     }
 
     private fun bindDriver(element: TokoChatListItemUiModel) {
-        binding?.tokochatListTvDriverName?.text = getDriverNameWithOrder(element)
+        binding?.tokochatListTvDriverName?.text = element.driverName
         if (imageUrl != element.imageUrl) {
             binding?.tokochatListIvDriver?.loadImage(element.imageUrl)
             imageUrl = element.imageUrl
@@ -48,19 +47,12 @@ class TokoChatListItemViewHolder(
         binding?.tokochatListIvLogo?.loadImage(logoUrl)
     }
 
-    private fun getDriverName(fullName: String): String {
-        return if (fullName.length > THRESHOLD_NAME) {
-            fullName.substring(Int.ZERO, THRESHOLD_NAME + Int.ONE) + ELLIPSIZE
-        } else {
-            fullName
-        }
-    }
-
-    private fun getDriverNameWithOrder(element: TokoChatListItemUiModel): String {
-        val driverName = getDriverName(element.driverName)
-        val orderName = getString(
-            R.string.tokochat_list_driver_order_type, element.getStringOrderType())
-        return "$driverName $orderName"
+    private fun bindOrderType(element: TokoChatListItemUiModel) {
+        val orderName = " ${getString(
+            R.string.tokochat_list_driver_order_type,
+            element.getStringOrderType()
+        )}"
+        binding?.tokochatListTvOrderType?.text = orderName
     }
 
     private fun bindMessage(element: TokoChatListItemUiModel) {
@@ -97,14 +89,14 @@ class TokoChatListItemViewHolder(
     private fun bindCounter(element: TokoChatListItemUiModel, shouldShow: Boolean) {
         binding?.tokochatListCounter?.apply {
             if (element.counter > Int.ZERO && shouldShow) {
+                show()
                 setNotification(
                     notif = element.counter.toString(),
                     notificationType = NotificationUnify.COUNTER_TYPE,
                     NotificationUnify.COLOR_PRIMARY
                 )
-                show()
             } else {
-                invisible()
+                hide()
             }
         }
     }
@@ -118,8 +110,5 @@ class TokoChatListItemViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.tokochat_list_item_chat_list
-
-        private const val THRESHOLD_NAME = 10
-        private const val ELLIPSIZE = "…"
     }
 }

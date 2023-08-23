@@ -63,5 +63,5 @@
     <string name="tokochat_list_empty_chat_subtitle">Coba ngobrol dengan driver, yuk!</string>
 
     <string name="tokochat_list_default_message">Ayo chat driver buat lacak pesananmu.</string>
-    <string name="tokochat_list_driver_order_type"> · %s</string>
+    <string name="tokochat_list_driver_order_type">· %s</string>
 </resources>

@@ -6,10 +6,10 @@ import com.gojek.conversations.channel.ConversationsChannel
 import com.tokopedia.tokochat.config.repository.TokoChatRepository
 import javax.inject.Inject
 
-class UniversalInboxGetAllDriverChannelsUseCase @Inject constructor(
+open class UniversalInboxGetAllDriverChannelsUseCase @Inject constructor(
     private val repository: TokoChatRepository
 ) {
-    fun getAllChannels(): LiveData<List<ConversationsChannel>>? {
+    open fun getAllChannels(): LiveData<List<ConversationsChannel>>? {
         return repository.getConversationRepository()?.getAllChannels(
             listOf(ChannelType.GroupBooking)
         )

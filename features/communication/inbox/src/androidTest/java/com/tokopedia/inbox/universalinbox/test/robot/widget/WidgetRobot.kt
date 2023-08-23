@@ -12,4 +12,11 @@ object WidgetRobot {
                 .atPositionOnView(position, R.id.inbox_card_widget)
         ).perform(click())
     }
+
+    fun clickIndividualLocalLoad(position: Int) {
+        onView(
+            withRecyclerView(R.id.inbox_rv_widget_meta)
+                .atPositionOnView(position, R.id.refreshID)
+        ).perform(click())
+    }
 }

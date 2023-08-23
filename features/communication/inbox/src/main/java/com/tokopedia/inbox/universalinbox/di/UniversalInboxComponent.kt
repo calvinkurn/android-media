@@ -11,6 +11,7 @@ import dagger.Component
     modules = [
         UniversalInboxModule::class,
         UniversalInboxUseCaseModule::class,
+        UniversalInboxTokoChatUseCaseModule::class,
         UniversalInboxViewModelModule::class,
         UniversalInboxFragmentModule::class
     ],
