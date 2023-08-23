@@ -136,4 +136,13 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener {
     override fun onNavMoreMenuClicked() {
         // no-op
     }
+
+    // Call this methods if you want to override the CTA & Price widget's theme
+    private fun setPriceCtaWidgetTheme(fontColor: Int, bgColor: Int) {
+        binding?.let {
+            it.containerPriceCta.setBackgroundColor(bgColor)
+            it.tgpCatalogName.setTextColor(fontColor)
+            it.tgpPriceRanges.setTextColor(fontColor)
+        }
+    }
 }

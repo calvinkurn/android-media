@@ -1,11 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.recyclerview.widget.RecyclerView
-    android:background="@color/Blue_B300"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/rvContent"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
 
-</androidx.recyclerview.widget.RecyclerView>
+    <androidx.recyclerview.widget.RecyclerView
+        android:background="@color/Blue_B300"
+        android:id="@+id/rvContent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <LinearLayout
+        android:id="@+id/container_price_cta"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        tools:background="@color/yellow_1"
+        android:layout_alignParentBottom="true">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:orientation="vertical"
+            android:layout_marginTop="12dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="12dp"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tgp_catalog_name"
+                tools:text="{05} Out west"
+                android:textSize="12sp"
+                android:textColor="@color/Unify_NN950"
+                app:typographyWeight="reguler"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tgp_price_ranges"
+                tools:text="Rp100 rb - 250 rb"
+                android:textSize="14sp"
+                android:textColor="@color/Unify_NN950"
+                app:typographyWeight="reguler"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/globalerrors_action"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Lihat Pilihan"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="16dp"
+            app:unifyButtonSize="medium" />
+
+    </LinearLayout>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
