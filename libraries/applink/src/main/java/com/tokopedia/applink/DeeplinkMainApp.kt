@@ -158,12 +158,8 @@ object DeeplinkMainApp {
                 DeeplinkMapperUoh.getRegisteredNavigationUohOrder(c, d)
             }
         ),
-        "buy-more-get-more" to mutableListOf(
-            DLP.matchPattern("{shop_id}/olp") { _, _, _, idList ->
-                DeeplinkMapperMerchant.getRegisteredNavigationForOfferLandingPage(
-                    idList?.getOrNull(0).orEmpty()
-                )
-            }
+        "buymoresavemore" to mutableListOf(
+            DLP.goTo(DeeplinkMapperMerchant::getRegisteredNavigationForOfferLandingPage)
         ),
         "cart" to mutableListOf(
             DLP.goTo(DeeplinkMapperMarketplace::getRegisteredNavigationMarketplace)

@@ -23,7 +23,10 @@ class OfferingInfoViewHolder(itemView: View) :
     }
 
     override fun bind(data: OfferInfoForBuyerUiModel) {
-        binding?.tpgShopName?.text = data.offerings.firstOrNull()?.offerName ?: "Hakuna Matata"
+        binding?.apply {
+            tpgShopName.text = data.offerings.firstOrNull()?.offerName.orEmpty()
+            ivShopBadge.setImageUrl(data.offerings.firstOrNull()?.shopData?.badge.orEmpty())
+        }
         setupTierList(data)
     }
 

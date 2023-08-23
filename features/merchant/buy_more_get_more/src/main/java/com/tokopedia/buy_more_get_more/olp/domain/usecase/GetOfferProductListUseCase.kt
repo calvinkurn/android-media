@@ -2,7 +2,6 @@ package com.tokopedia.buy_more_get_more.olp.domain.usecase
 
 import com.tokopedia.buy_more_get_more.olp.data.mapper.GetOfferProductListMapper
 import com.tokopedia.buy_more_get_more.olp.data.request.GetOfferingProductListRequestParam
-import com.tokopedia.buy_more_get_more.olp.data.response.OfferInfoForBuyerResponse
 import com.tokopedia.buy_more_get_more.olp.data.response.OfferProductListResponse
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferProductListUiModel
 import com.tokopedia.gql_query_annotation.GqlQueryInterface
@@ -24,46 +23,51 @@ class GetOfferProductListUseCase @Inject constructor(
     }
 
     companion object {
-        private const val REQUEST_PARAMS = "params"
+        private const val REQUEST_PARAMS = "input"
     }
 
     private val query = object : GqlQueryInterface {
         private val OPERATION_NAME = "getOfferingProductList"
         private val QUERY = """
               query $OPERATION_NAME(${'$'}input: GetOfferingProductListRequest!) {
-                  GetOfferingProductList(params: ${'$'}params) {
-                     response_header{
+                  GetOfferingProductList(input: ${'$'}input) {
+                     response_header {
                           status
                           errorMessage
                           success
                           processTime
                         }
-                     products{
+                        products {
                           offer_id
                           parent_id
                           product_id
                           warehouse_id
+                          product_url
                           image_url
                           name
                           price
                           rating
                           sold_count
-                          min_order
-                          max_order
                           stock
                           is_vbs
-                          campaign{
+                          campaign {
                             name
                             original_price
                             discounted_price
                             discounted_percentage
-                            min_order
-                            max_order
                             custom_stock
-                          }  
+                          }
+                          label_group {
+                            position
+                            title
+                            type
+                            url
+                          }
+                        }
+                        total_product
+                      }
                     }
-                  }
-                }
+
 
 
         """.trimIndent()
@@ -87,7 +91,7 @@ class GetOfferProductListUseCase @Inject constructor(
 
         return GraphqlRequest(
             query,
-            OfferInfoForBuyerResponse::class.java,
+            OfferProductListResponse::class.java,
             params
         )
     }

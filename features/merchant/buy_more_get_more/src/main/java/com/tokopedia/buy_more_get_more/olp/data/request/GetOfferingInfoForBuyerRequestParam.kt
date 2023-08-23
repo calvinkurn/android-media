@@ -1,6 +1,7 @@
 package com.tokopedia.buy_more_get_more.olp.data.request
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.config.GlobalConfig
 
 data class GetOfferingInfoForBuyerRequestParam(
     @SerializedName("request_header")
@@ -9,6 +10,8 @@ data class GetOfferingInfoForBuyerRequestParam(
     val offerIds: List<Int> = emptyList(),
     @SerializedName("shop_ids")
     val shopIds: List<Int> = emptyList(),
+    @SerializedName("product_anchor")
+    val productAnchor: ProductAnchor = ProductAnchor(),
     @SerializedName("user_location")
     val userLocation: UserLocation = UserLocation()
 
@@ -19,23 +22,30 @@ data class GetOfferingInfoForBuyerRequestParam(
         @SerializedName("usecase")
         val useCase: String = "offer landing page",
         @SerializedName("version")
-        val version: String = "1.2",
+        val version: String = GlobalConfig.VERSION_NAME,
         @SerializedName("device")
         val device: String = "android"
     )
 
+    data class ProductAnchor(
+        @SerializedName("product_ids")
+        val productIds: List<Int> = emptyList(),
+        @SerializedName("warehouse_ids")
+        val warehouseIds: List<Int> = emptyList()
+    )
+
     data class UserLocation(
         @SerializedName("address_id")
-        val addressId: Int = 0,
+        val addressId: Long = 0,
         @SerializedName("district_id")
-        val districtId: Int = 0,
+        val districtId: Long = 0,
         @SerializedName("postal_code")
-        val postalCode: Int = 0,
+        val postalCode: String = "",
         @SerializedName("latitude")
         val latitude: String = "",
         @SerializedName("longitude")
         val longitude: String = "",
         @SerializedName("city_id")
-        val cityId: Int = 0
+        val cityId: Long = 0
     )
 }

@@ -466,7 +466,10 @@ public interface ApplinkConst {
 
     String OCC = "tokopedia://occ";
 
-    String BUY_MORE_GET_MORE_OLP = "tokopedia://buy-more-get-more/{shop_id}/olp";
+    String BUY_MORE_GET_MORE_OLP = "tokopedia://buymoresavemore/{offer_id}" +
+            "?warehouse_ids={warehouseIds}&" +
+            "product_ids={productIds}&" +
+            "shop_ids={shopIds}";
 
     String SELLER_MIGRATION = "tokopedia://seller/seller-migration";
 
@@ -670,6 +673,9 @@ public interface ApplinkConst {
     interface Query {
         String ORDER_TRACKING_ORDER_ID = "order_id";
         String ORDER_TRACKING_URL_LIVE_TRACKING = "url_live_tracking";
+
+        String TX_ID = "tx_id";
+        String GROUP_TYPE = "group_type";
         String ORDER_TRACKING_CALLER = "caller";
 
         String IMAGE_PREVIEW_FILELOC = "fileloc";
