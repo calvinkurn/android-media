@@ -7,18 +7,19 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.activityViewModels
-import com.tokopedia.editor.R as resourceR
 import com.tokopedia.editor.base.BaseEditorFragment
 import com.tokopedia.editor.databinding.FragmentInputTextBinding
-import com.tokopedia.editor.util.FontAlignment
-import com.tokopedia.editor.util.ColorProvider
-import com.tokopedia.editor.util.FontDetail
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.editor.ui.components.InputTextColorItemView
 import com.tokopedia.editor.ui.components.InputTextStyleItemView
+import com.tokopedia.editor.util.ColorProvider
+import com.tokopedia.editor.util.FontAlignment
+import com.tokopedia.editor.util.FontDetail
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.utils.view.binding.viewBinding
-import com.tokopedia.unifyprinciples.getTypeface as unifyTypeFaceGetter
 import javax.inject.Inject
+import com.tokopedia.editor.R as resourceR
+import com.tokopedia.unifyprinciples.getTypeface as unifyTypeFaceGetter
+
 
 class InputTextFragment @Inject constructor(
     private val colorProvider: ColorProvider
@@ -27,15 +28,16 @@ class InputTextFragment @Inject constructor(
     private val viewModel: InputTextViewModel by activityViewModels()
     private val viewBinding: FragmentInputTextBinding? by viewBinding()
 
-    private var defaultPadding = 0
-
     override fun initView() {
         initFontSelection()
         initFontColor()
 
         initListener()
 
-        viewBinding?.addTextInput?.setText(viewModel.textValue.value)
+        viewBinding?.addTextInput?.let {
+            it.setText(viewModel.textValue.value)
+            it.requestFocus()
+        }
     }
 
     override fun initObserver() {
@@ -92,7 +94,7 @@ class InputTextFragment @Inject constructor(
     }
 
     private fun initListener() {
-        viewBinding?.let { it ->
+        viewBinding?.let {
             it.alignmentIconContainer.setOnClickListener {
                 viewModel.increaseAlignment()
             }
@@ -119,7 +121,7 @@ class InputTextFragment @Inject constructor(
             }
 
             it.addTextInput.addTextChangedListener { newText ->
-                viewModel.updateText(newText.toString() ?: "")
+                viewModel.updateText(newText.toString())
             }
         }
     }

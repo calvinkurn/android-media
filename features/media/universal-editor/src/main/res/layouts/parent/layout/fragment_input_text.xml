@@ -35,6 +35,8 @@
             android:layout_height="wrap_content">
 
             <EditText
+                android:focusable="true"
+                android:focusableInTouchMode="true"
                 android:textCursorDrawable="@null"
                 android:background="@drawable/bg_text_rounded"
                 android:padding="4dp"

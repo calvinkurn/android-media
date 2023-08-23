@@ -31,6 +31,7 @@
         </activity>
 
         <activity
+            android:windowSoftInputMode="stateAlwaysVisible"
             android:noHistory="true"
             android:name="com.tokopedia.editor.ui.text.InputTextActivity"
             android:exported="false"
