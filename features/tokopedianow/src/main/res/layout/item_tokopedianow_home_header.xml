@@ -29,6 +29,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:scaleType="fitXY"
+        android:tileMode="repeat"
         app:layout_constraintBottom_toBottomOf="parent"
         app:unify_image_corner_radius="0"
         app:unify_image_type="rect" />
