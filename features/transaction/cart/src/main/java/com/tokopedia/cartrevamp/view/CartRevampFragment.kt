@@ -539,7 +539,6 @@ class CartRevampFragment :
 
         val params = viewModel.generateParamGetLastApplyPromo()
         if (isNeedHitUpdateCartAndValidateUse(params)) {
-            renderPromoCheckoutLoading()
             viewModel.doUpdateCartAndGetLastApply(params)
         } else {
             updatePromoCheckoutManualIfNoSelected(getAllAppliedPromoCodes(params))
@@ -1275,7 +1274,6 @@ class CartRevampFragment :
         validateGoToCheckout()
         val params = generateParamGetLastApplyPromo()
         if (isNeedHitUpdateCartAndValidateUse(params)) {
-            renderPromoCheckoutLoading()
             viewModel.doUpdateCartAndGetLastApply(params)
         } else if (cartItemHolderData.isTokoNow) {
             viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
@@ -2432,7 +2430,6 @@ class CartRevampFragment :
 
                         val params = generateParamGetLastApplyPromo()
                         if (!removeAllItems && (isNeedHitUpdateCartAndValidateUse(params))) {
-                            renderPromoCheckoutLoading()
                             viewModel.doUpdateCartAndGetLastApply(params)
                         }
                         viewModel.processUpdateCartCounter()
@@ -2615,7 +2612,6 @@ class CartRevampFragment :
                 }
 
                 is EntryPointInfoEvent.InactiveNew -> {
-                    binding?.promoCheckoutBtnCart?.hideLoading()
                     val message = if (data.isNoItemSelected) {
                         getString(R.string.promo_desc_no_selected_item)
                     } else {
@@ -2643,7 +2639,6 @@ class CartRevampFragment :
                 }
 
                 is EntryPointInfoEvent.Inactive -> {
-                    binding?.promoCheckoutBtnCart?.hideLoading()
                     val message = if (data.isNoItemSelected) {
                         getString(R.string.promo_desc_no_selected_item)
                     } else {
@@ -2663,7 +2658,6 @@ class CartRevampFragment :
                 }
 
                 is EntryPointInfoEvent.ActiveNew -> {
-                    binding?.promoCheckoutBtnCart?.hideLoading()
                     val messages = data.entryPointInfo.messages.filter { it.isNotBlank() }
                     if (messages.size > 1) {
                         binding?.promoCheckoutBtnCart?.showActiveFlipping(
@@ -2705,7 +2699,6 @@ class CartRevampFragment :
                 }
 
                 is EntryPointInfoEvent.ActiveDefault -> {
-                    binding?.promoCheckoutBtnCart?.hideLoading()
                     binding?.promoCheckoutBtnCart?.showActive(
                         wording = getString(com.tokopedia.purchase_platform.common.R.string.promo_funnel_label),
                         rightIcon = IconUnify.CHEVRON_RIGHT,
@@ -2721,7 +2714,6 @@ class CartRevampFragment :
                 }
 
                 is EntryPointInfoEvent.Active -> {
-                    binding?.promoCheckoutBtnCart?.hideLoading()
                     if (data.message.isNotBlank()) {
                         binding?.promoCheckoutBtnCart?.showActive(
                             wording = data.message,
@@ -2739,7 +2731,6 @@ class CartRevampFragment :
                 }
 
                 is EntryPointInfoEvent.Applied -> {
-                    binding?.promoCheckoutBtnCart?.hideLoading()
                     if (data.message.isNotBlank() && data.lastApply.additionalInfo.messageInfo.detail.isNotEmpty()) {
                         binding?.promoCheckoutBtnCart?.showApplied(
                             title = data.message,
@@ -2760,7 +2751,6 @@ class CartRevampFragment :
                 }
 
                 is EntryPointInfoEvent.Error -> {
-                    binding?.promoCheckoutBtnCart?.hideLoading()
                     binding?.promoCheckoutBtnCart?.showError {
                         renderPromoCheckout(data.lastApply)
                     }
@@ -3327,7 +3317,6 @@ class CartRevampFragment :
     private fun reloadAppliedPromoFromGlobalCheck() {
         val params = generateParamGetLastApplyPromo()
         if (isNeedHitUpdateCartAndValidateUse(params)) {
-            renderPromoCheckoutLoading()
             viewModel.doUpdateCartAndGetLastApply(params)
         } else {
             updatePromoCheckoutManualIfNoSelected(getAllAppliedPromoCodes(params))
@@ -3670,10 +3659,6 @@ class CartRevampFragment :
         viewModel.getEntryPointInfoNoItemSelected()
     }
 
-    private fun renderPromoCheckoutLoading() {
-        binding?.promoCheckoutBtnCart?.showLoading()
-    }
-
     private fun renderRecentView(recommendationWidget: RecommendationWidget?) {
         var cartRecentViewItemHolderDataList: MutableList<CartRecentViewItemHolderData> =
             ArrayList()
@@ -3907,13 +3892,9 @@ class CartRevampFragment :
         }
     }
 
-    private fun useNewPromoPage(): Boolean {
-        return true
-    }
-
     private fun routeToPromoCheckoutMarketplacePage() {
         activity?.let {
-            if (useNewPromoPage()) {
+            if (viewModel.useNewPromoPage()) {
                 val bottomSheetPromo = PromoUsageBottomSheet.newInstance(
                     entryPoint = PromoPageEntryPoint.CART_PAGE,
                     promoRequest = generateParamsCouponList(),
@@ -4635,7 +4616,6 @@ class CartRevampFragment :
         validateGoToCheckout()
         val params = generateParamGetLastApplyPromo()
         if (isNeedHitUpdateCartAndValidateUse(params)) {
-            renderPromoCheckoutLoading()
             viewModel.doUpdateCartAndGetLastApply(params)
         } else {
             updatePromoCheckoutManualIfNoSelected(getAllAppliedPromoCodes(params))

@@ -109,6 +109,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.C
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoOrderData
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
+import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.UserGroupMetadata
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
@@ -2860,6 +2861,16 @@ class CartViewModel @Inject constructor(
         super.onCleared()
     }
 
+    fun useNewPromoPage(): Boolean {
+        cartModel.cartListData?.let { data ->
+            val lastApply = CartUiModelMapper.mapLastApplySimplified(data.promo.lastApplyPromo.lastApplyPromoData)
+            return true
+            return lastApply.userGroupPromoAbTest == UserGroupMetadata.PROMO_USER_GROUP_A
+                || lastApply.userGroupPromoAbTest == UserGroupMetadata.PROMO_USER_GROUP_B
+        }
+        return false
+    }
+
     fun getEntryPointInfoFromLastApply(lastApply: LastApplyUiModel) {
         launchCatchError(
             context = dispatchers.main,
@@ -2870,6 +2881,7 @@ class CartViewModel @Inject constructor(
                 _entryPointInfoEvent.postValue(entryPointEvent)
             },
             onError = {
+                Timber.e(it)
                 _entryPointInfoEvent.postValue(EntryPointInfoEvent.Error(lastApply))
             }
         )
