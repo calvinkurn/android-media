@@ -22,7 +22,6 @@ import com.tokopedia.applink.imagepicker.DeeplinkMapperImagePicker
 import com.tokopedia.applink.inbox.DeeplinkMapperInbox
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory
-import com.tokopedia.applink.internal.ApplinkConstInternalCommunication
 import com.tokopedia.applink.internal.ApplinkConstInternalDilayaniTokopedia
 import com.tokopedia.applink.internal.ApplinkConstInternalFeed
 import com.tokopedia.applink.internal.ApplinkConstInternalFintech
@@ -992,7 +991,7 @@ object DeeplinkMainApp {
             ),
             DLP.matchPattern(
                 "list",
-                ApplinkConstInternalCommunication.TOKOCHAT_LIST
+                DeeplinkMapperCommunication::getRegisteredNavigationTokoChatList
             )
         ),
         "tokopoints" to mutableListOf(

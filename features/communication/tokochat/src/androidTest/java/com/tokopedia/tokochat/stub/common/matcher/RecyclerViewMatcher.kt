@@ -61,7 +61,7 @@ fun smoothScrollTo(position: Int): ViewAction {
         }
 
         override fun getDescription(): String {
-            return "smooth scroll order widget"
+            return "smooth scroll"
         }
 
         override fun perform(uiController: UiController?, view: View?) {

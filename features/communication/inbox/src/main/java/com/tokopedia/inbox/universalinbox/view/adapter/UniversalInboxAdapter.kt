@@ -171,9 +171,18 @@ class UniversalInboxAdapter(
         position: Int,
         uiModel: UniversalInboxWidgetUiModel
     ) {
-        (itemList.firstOrNull() as? UniversalInboxWidgetMetaUiModel)
-            ?.widgetList?.add(position, uiModel)
-        notifyItemChanged(Int.ZERO) // notify item changed in page rv, first item
+        var widgetMetaUiModel = itemList.firstOrNull() as? UniversalInboxWidgetMetaUiModel
+        if (widgetMetaUiModel == null) {
+            // Widget meta rv not added
+            widgetMetaUiModel = UniversalInboxWidgetMetaUiModel()
+            addItem(Int.ZERO, widgetMetaUiModel)
+        }
+        widgetMetaUiModel.widgetList.add(position, uiModel)
+        notifyItemRangeChanged(
+            Int.ZERO,
+            getProductRecommendationFirstPosition() ?: itemList.size
+        ) // notify item ranged changed in page rv
+        // item ranged needed for addition & update meta
     }
 
     fun updateWidgetCounter(

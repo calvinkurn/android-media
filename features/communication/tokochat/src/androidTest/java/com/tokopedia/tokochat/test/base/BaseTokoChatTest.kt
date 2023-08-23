@@ -6,6 +6,7 @@ import androidx.test.espresso.idling.CountingIdlingResource
 import androidx.test.espresso.intent.Intents
 import androidx.test.platform.app.InstrumentationRegistry
 import com.gojek.conversations.ConversationsRepository
+import com.gojek.conversations.babble.channel.data.ChannelType
 import com.gojek.conversations.babble.network.data.OrderChatType
 import com.gojek.conversations.database.ConversationsDatabase
 import com.gojek.conversations.groupbooking.ConversationsGroupBookingListener
@@ -139,6 +140,10 @@ abstract class BaseTokoChatTest {
         runBlocking(Dispatchers.Main) {
             idlingResourceDatabaseMessage.increment()
             database.messageDao().deleteAll()
+            val result = database.channelDao().getChannelIds(listOf(ChannelType.GroupBooking.name))
+            result.forEach {
+                database.channelDao().deleteChannelById(it)
+            }
             idlingResourceDatabaseMessage.decrement()
         }
     }

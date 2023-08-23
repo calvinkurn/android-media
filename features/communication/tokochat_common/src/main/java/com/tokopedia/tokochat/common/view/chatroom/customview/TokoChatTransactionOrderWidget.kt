@@ -13,12 +13,12 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.tokochat.common.util.CommonUtil
+import com.tokopedia.tokochat.common.view.chatroom.uimodel.TokoChatOrderProgressUiModel
 import com.tokopedia.tokochat_common.R
 import com.tokopedia.tokochat_common.databinding.TokochatItemOrderStatusShimmerBinding
 import com.tokopedia.tokochat_common.databinding.TokochatPartialOrderStatusWidgetBinding
 import com.tokopedia.tokochat_common.databinding.TokochatTransactionWidgetBinding
-import com.tokopedia.tokochat.common.util.CommonUtil
-import com.tokopedia.tokochat.common.view.chatroom.uimodel.TokoChatOrderProgressUiModel
 
 class TokoChatTransactionOrderWidget : LinearLayout {
 
@@ -75,10 +75,9 @@ class TokoChatTransactionOrderWidget : LinearLayout {
     }
 
     fun showTransactionWidget(
-        listener: Listener?,
         orderProgressUiModel: TokoChatOrderProgressUiModel?
     ) {
-        assignFields(listener, orderProgressUiModel)
+        this.tokoChatOrderProgressUiModel = orderProgressUiModel
         binding?.tokochatLocalloadErrorTransactionWidget?.hide()
         shimmerOrderStatusWidgetBinding?.root?.hide()
         partialOrderStatusWidgetBinding?.root?.show()
@@ -160,11 +159,7 @@ class TokoChatTransactionOrderWidget : LinearLayout {
         saveCurrentState()
     }
 
-    private fun assignFields(
-        listener: Listener?,
-        orderProgressUiModel: TokoChatOrderProgressUiModel?
-    ) {
-        this.tokoChatOrderProgressUiModel = orderProgressUiModel
+    fun assignListener(listener: Listener?) {
         this.listener = listener
     }
 

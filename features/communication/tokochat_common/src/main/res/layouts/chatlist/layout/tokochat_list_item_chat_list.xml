@@ -10,9 +10,9 @@
         android:id="@+id/tokochat_list_iv_driver"
         android:layout_width="52dp"
         android:layout_height="52dp"
-        app:layout_constraintTop_toTopOf="@id/tokochat_list_layout_message"
+        app:layout_constraintTop_toTopOf="@id/tokochat_list_layout_driver"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintBottom_toBottomOf="@id/tokochat_list_layout_message"
+        app:layout_constraintBottom_toBottomOf="@id/tokochat_list_tv_business_name"
         android:layout_marginStart="16dp"
         app:unify_image_corner_radius="0"
         app:unify_image_type="circle" />
@@ -21,7 +21,7 @@
         android:id="@+id/tokochat_list_iv_logo"
         android:layout_width="20dp"
         android:layout_height="20dp"
-        app:layout_constraintRight_toLeftOf="@id/tokochat_list_layout_message"
+        app:layout_constraintRight_toLeftOf="@id/tokochat_list_layout_driver"
         app:layout_constraintBottom_toBottomOf="@id/tokochat_list_iv_driver"
         app:unify_image_corner_radius="0"
         app:unify_image_type="circle"
@@ -39,7 +39,7 @@
         android:background="@drawable/tokochat_list_bg_icon_logo" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/tokochat_list_layout_message"
+        android:id="@+id/tokochat_list_layout_driver"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
@@ -47,69 +47,85 @@
         app:layout_constraintRight_toLeftOf="@id/tokochat_list_tv_time"
         android:layout_marginTop="12dp"
         android:layout_marginStart="8dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginBottom="12dp"
-        app:layout_goneMarginEnd="54dp"
-        app:layout_constraintHorizontal_weight="8">
+        app:layout_goneMarginEnd="70dp">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tokochat_list_tv_driver_name"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/tokochat_list_tv_order_type"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintHorizontal_bias="0"
             app:typographyWeight="bold"
             app:typographyType="display_2"
             android:ellipsize="end"
             android:maxLines="1"
-            tools:text="Kartolo · GoSend" />
+            tools:text="@tools:sample/lorem/random" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tokochat_list_tv_message"
-            android:layout_width="0dp"
+            android:id="@+id/tokochat_list_tv_order_type"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/tokochat_list_tv_driver_name"
-            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tokochat_list_tv_driver_name"
+            app:layout_constraintLeft_toRightOf="@id/tokochat_list_tv_driver_name"
             app:layout_constraintRight_toRightOf="parent"
-            app:typographyWeight="reguler"
-            app:typographyType="paragraph_3"
+            app:layout_constraintBottom_toBottomOf="@id/tokochat_list_tv_driver_name"
+            app:layout_constrainedWidth="true"
+            app:typographyWeight="bold"
+            app:typographyType="display_2"
             android:ellipsize="end"
             android:maxLines="1"
-            tools:text="Kak saya otw ya, udah mau samp..." />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tokochat_list_tv_business_name"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/tokochat_list_tv_message"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            android:layout_marginTop="8dp"
-            app:typographyWeight="reguler"
-            app:typographyType="small"
-            android:ellipsize="end"
-            android:maxLines="1"
-            tools:text="Micahel Jordan Official Store, Karet.." />
+            tools:text=" · GoSend" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tokochat_list_tv_message"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tokochat_list_layout_driver"
+        app:layout_constraintLeft_toLeftOf="@id/tokochat_list_layout_driver"
+        app:layout_constraintRight_toRightOf="@id/tokochat_list_layout_driver"
+        app:typographyWeight="reguler"
+        app:typographyType="paragraph_3"
+        android:ellipsize="end"
+        android:maxLines="1"
+        tools:text="Kak saya otw ya, udah mau samp..." />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tokochat_list_tv_business_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tokochat_list_tv_message"
+        app:layout_constraintLeft_toLeftOf="@id/tokochat_list_layout_driver"
+        app:layout_constraintRight_toRightOf="@id/tokochat_list_layout_driver"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="12dp"
+        app:typographyWeight="reguler"
+        app:typographyType="small"
+        android:ellipsize="end"
+        android:maxLines="1"
+        tools:text="Micahel Jordan Official Store, Karet.." />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tokochat_list_tv_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/tokochat_list_layout_message"
+        app:layout_constraintTop_toTopOf="@id/tokochat_list_layout_driver"
+        app:layout_constraintLeft_toRightOf="@id/tokochat_list_layout_driver"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toBottomOf="@id/tokochat_list_counter"
-        android:layout_marginTop="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="8dp"
         app:typographyWeight="reguler"
         app:typographyType="display_3"
         android:ellipsize="end"
         android:maxLines="1"
-        app:layout_constraintHorizontal_weight="2"
         android:visibility="gone"
         tools:visibility="visible"
         tools:text="Baru saja" />
@@ -120,16 +136,16 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/tokochat_list_tv_time"
         app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
+        app:layout_constraintVertical_bias="0"
         android:visibility="gone"
         tools:visibility="visible"/>
 
     <View
         android:layout_width="0dp"
         android:layout_height="1dp"
-        app:layout_constraintTop_toBottomOf="@id/tokochat_list_layout_message"
-        app:layout_constraintLeft_toLeftOf="@id/tokochat_list_layout_message"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginTop="12dp"

@@ -1,5 +1,6 @@
 package com.tokopedia.tokochat.test.chatlist
 
+import androidx.lifecycle.liveData
 import com.gojek.conversations.babble.network.data.ChannelMetaData
 import com.gojek.conversations.babble.network.data.OrderInfo
 import com.gojek.conversations.channel.ConversationsChannel
@@ -8,13 +9,10 @@ import com.tokopedia.tokochat.base.TokoChatListViewModelTestFixture
 import com.tokopedia.tokochat.common.util.TokoChatValueUtil.TOKOFOOD
 import com.tokopedia.tokochat.common.view.chatlist.uimodel.TokoChatListItemUiModel
 import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.every
 import io.mockk.invoke
 import io.mockk.verify
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
@@ -33,22 +31,22 @@ class TokoChatChannelListViewModelTest : TokoChatListViewModelTestFixture() {
             )
             every {
                 chatChannelUseCase.getAllCachedChannels(any())
-            } returns flowOf(dummyChannelList)
+            } returns liveData {
+                this.emit(dummyChannelList)
+            }
             every {
                 mapper.mapToListChat(any())
             } returns listOf(dummChatList)
 
             // When
-            var result: Result<List<TokoChatListItemUiModel>>? = null
-            viewModel.getChatListFlow()?.collectLatest {
-                result = it
+            viewModel.setupChatListSource()
+            viewModel.chatList.observe({ lifecycle }) {
+                // Then
+                Assert.assertEquals(
+                    dummyChannelList.first().name,
+                    (it as Success).data.first().orderId
+                )
             }
-
-            // Then
-            Assert.assertEquals(
-                dummyChannelList.first().name,
-                (result as Success).data.first().orderId
-            )
         }
     }
 
@@ -59,19 +57,19 @@ class TokoChatChannelListViewModelTest : TokoChatListViewModelTestFixture() {
             val dummyChannelList: List<ConversationsChannel> = listOf()
             every {
                 chatChannelUseCase.getAllCachedChannels(any())
-            } returns flowOf(dummyChannelList)
-
-            // When
-            var result: Result<List<TokoChatListItemUiModel>>? = null
-            viewModel.getChatListFlow()?.collectLatest {
-                result = it
+            } returns liveData {
+                this.emit(dummyChannelList)
             }
 
-            // Then
-            Assert.assertEquals(
-                dummyChannelList.firstOrNull(),
-                (result as Success).data.firstOrNull()
-            )
+            // When
+            viewModel.setupChatListSource()
+            viewModel.chatList.observe({ lifecycle }) {
+                // Then
+                Assert.assertEquals(
+                    dummyChannelList.firstOrNull(),
+                    (it as Success).data.firstOrNull()
+                )
+            }
         }
     }
 
@@ -82,22 +80,22 @@ class TokoChatChannelListViewModelTest : TokoChatListViewModelTestFixture() {
             val dummyChannelList = getDummyConversationChannelList()
             every {
                 chatChannelUseCase.getAllCachedChannels(any())
-            } returns flowOf(dummyChannelList)
+            } returns liveData {
+                this.emit(dummyChannelList)
+            }
             every {
                 mapper.mapToListChat(any())
             } throws throwableDummy
 
             // When
-            var result: Result<List<TokoChatListItemUiModel>>? = null
-            viewModel.getChatListFlow()?.collectLatest {
-                result = it
+            viewModel.setupChatListSource()
+            viewModel.chatList.observe({ lifecycle }) {
+                // Then
+                Assert.assertEquals(
+                    throwableDummy.message,
+                    (it as Fail).throwable.message
+                )
             }
-
-            // Then
-            Assert.assertEquals(
-                throwableDummy.message,
-                (result as Fail).throwable.message
-            )
         }
     }
 
@@ -110,16 +108,14 @@ class TokoChatChannelListViewModelTest : TokoChatListViewModelTestFixture() {
             } throws throwableDummy
 
             // When
-            var result: Result<List<TokoChatListItemUiModel>>? = null
-            viewModel.getChatListFlow()?.collectLatest {
-                result = it
+            viewModel.setupChatListSource()
+            viewModel.chatList.observe({ lifecycle }) {
+                // Then
+                Assert.assertEquals(
+                    throwableDummy.message,
+                    (it as Fail).throwable.message
+                )
             }
-
-            // Then
-            Assert.assertEquals(
-                throwableDummy.message,
-                (result as Fail).throwable.message
-            )
         }
     }
 
@@ -140,6 +136,7 @@ class TokoChatChannelListViewModelTest : TokoChatListViewModelTestFixture() {
             } returns result
 
             // When
+            viewModel.setupChatListSource()
             viewModel.loadNextPageChatList(isLoadMore = false)
 
             // Then
@@ -166,10 +163,11 @@ class TokoChatChannelListViewModelTest : TokoChatListViewModelTestFixture() {
             } returns result
 
             // When
+            viewModel.setupChatListSource()
             viewModel.loadNextPageChatList(isLoadMore = true)
 
             // Then
-            verify(exactly = 1) {
+            verify(exactly = 2) {
                 chatChannelUseCase.setLastTimeStamp(any())
             }
         }
@@ -191,6 +189,7 @@ class TokoChatChannelListViewModelTest : TokoChatListViewModelTestFixture() {
             } returns result
 
             // When
+            viewModel.setupChatListSource()
             viewModel.loadNextPageChatList(isLoadMore = false)
 
             // Then
@@ -218,6 +217,7 @@ class TokoChatChannelListViewModelTest : TokoChatListViewModelTestFixture() {
             } returns result
 
             // When
+            viewModel.setupChatListSource()
             viewModel.loadNextPageChatList(localSize = 100, isLoadMore = false)
 
             // Then
@@ -235,7 +235,9 @@ class TokoChatChannelListViewModelTest : TokoChatListViewModelTestFixture() {
             val dummyError = ConversationsNetworkError(throwableDummy)
             every {
                 chatChannelUseCase.getAllCachedChannels(any())
-            } returns flowOf(listOf())
+            } returns liveData {
+                this.emit(listOf())
+            }
             every {
                 chatChannelUseCase.getAllChannel(any(), any(), any(), captureLambda())
             } answers {
@@ -244,6 +246,7 @@ class TokoChatChannelListViewModelTest : TokoChatListViewModelTestFixture() {
             }
 
             // When
+            viewModel.setupChatListSource()
             viewModel.loadNextPageChatList(isLoadMore = false)
 
             // Then
@@ -260,7 +263,9 @@ class TokoChatChannelListViewModelTest : TokoChatListViewModelTestFixture() {
             // Given
             every {
                 chatChannelUseCase.getAllCachedChannels(any())
-            } returns flowOf(listOf())
+            } returns liveData {
+                this.emit(listOf())
+            }
             every {
                 chatChannelUseCase.getAllChannel(any(), any(), any(), captureLambda())
             } answers {
@@ -269,6 +274,7 @@ class TokoChatChannelListViewModelTest : TokoChatListViewModelTestFixture() {
             }
 
             // When
+            viewModel.setupChatListSource()
             viewModel.loadNextPageChatList(isLoadMore = false)
 
             // Then
@@ -288,12 +294,36 @@ class TokoChatChannelListViewModelTest : TokoChatListViewModelTestFixture() {
             } throws throwableDummy
 
             // When
+            viewModel.setupChatListSource()
             viewModel.loadNextPageChatList(isLoadMore = false)
 
             // Then
             Assert.assertEquals(
                 throwableDummy.message,
                 viewModel.error.value?.first?.message
+            )
+        }
+    }
+
+    @Test
+    fun `should empty chatlist data when reset`() {
+        runBlocking {
+            // Given
+            val dummyChannelList: List<ConversationsChannel> = listOf()
+            every {
+                chatChannelUseCase.getAllCachedChannels(any())
+            } returns liveData {
+                this.emit(dummyChannelList)
+            }
+
+            // When
+            viewModel.setupChatListSource()
+            viewModel.resetChatListData()
+
+            // Then
+            Assert.assertEquals(
+                null,
+                viewModel.chatList.value
             )
         }
     }

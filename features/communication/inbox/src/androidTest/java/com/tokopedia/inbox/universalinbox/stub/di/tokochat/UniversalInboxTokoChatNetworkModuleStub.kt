@@ -1,6 +1,7 @@
 package com.tokopedia.inbox.universalinbox.stub.di.tokochat
 
 import android.content.Context
+import com.chuckerteam.chucker.api.ChuckerCollector
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -112,7 +113,12 @@ object UniversalInboxTokoChatNetworkModuleStub {
     fun provideChuckerInterceptor(
         @TokoChatQualifier context: Context
     ): ChuckerInterceptor {
-        return ChuckerInterceptor(context)
+        val collector = ChuckerCollector(
+            context,
+            true
+        )
+        collector.showNotification = true
+        return ChuckerInterceptor(context, collector)
     }
 
     @Provides

@@ -268,5 +268,6 @@ class TokoChatCourierRemoteConfigImpl @Inject constructor(
         private const val STACKTRACE_KEY = "stacktrace"
 
         const val SHOULD_TRACK_MESSAGE_RECEIVE_EVENT = "android_tokochat_shouldTrackMessageReceiveEvent"
+        const val LOCAL_PUSH_NOTIFICATION = "android_tokochat_local_push_notif_enabled"
     }
 }
