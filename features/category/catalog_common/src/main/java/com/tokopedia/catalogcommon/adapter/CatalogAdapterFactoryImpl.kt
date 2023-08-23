@@ -3,12 +3,14 @@ package com.tokopedia.catalogcommon.adapter
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.catalogcommon.uimodel.AccordionInformationUiModel
 import com.tokopedia.catalogcommon.listener.HeroBannerListener
 import com.tokopedia.catalogcommon.uimodel.DummyUiModel
 import com.tokopedia.catalogcommon.uimodel.HeroBannerUiModel
 import com.tokopedia.catalogcommon.uimodel.SliderImageTextUiModel
 import com.tokopedia.catalogcommon.uimodel.PanelImageUiModel
 import com.tokopedia.catalogcommon.uimodel.TopFeaturesUiModel
+import com.tokopedia.catalogcommon.viewholder.AccordionInformationViewHolder
 import com.tokopedia.catalogcommon.uimodel.TrustMakerUiModel
 import com.tokopedia.catalogcommon.viewholder.DummyViewHolder
 import com.tokopedia.catalogcommon.viewholder.HeroBannerViewHolder
@@ -32,6 +34,7 @@ class CatalogAdapterFactoryImpl(
             PanelImageViewHolder.LAYOUT -> PanelImageViewHolder(view)
             TrustmakerViewHolder.LAYOUT -> TrustmakerViewHolder(view)
             BannerRevampViewHolder.LAYOUT -> BannerRevampViewHolder(view, null)
+            AccordionInformationViewHolder.LAYOUT -> AccordionInformationViewHolder(view)
             else -> super.createViewHolder(view, type)
         }
     }
@@ -54,6 +57,10 @@ class CatalogAdapterFactoryImpl(
 
     override fun type(uiModel: PanelImageUiModel): Int {
         return PanelImageViewHolder.LAYOUT
+    }
+
+    override fun type(uiModel: AccordionInformationUiModel): Int {
+        return AccordionInformationViewHolder.LAYOUT
     }
 
     override fun type(uiModel: TrustMakerUiModel): Int {

@@ -2,6 +2,7 @@ package com.tokopedia.catalogcommon.uimodel
 
 import com.tokopedia.catalogcommon.adapter.CatalogAdapterFactory
 import com.tokopedia.catalogcommon.util.stringHexColorParseToInt
+import com.tokopedia.catalogcommon.util.textColorMapping
 
 data class TrustMakerUiModel(
     override val idWidget: String,
@@ -21,7 +22,8 @@ data class TrustMakerUiModel(
         val icon: String,
         val title: String,
         val subTitle: String,
-        val textColor: Int
+        val textColorTitle: Int,
+        val textColorSubTitle: Int
     )
 
     companion object {
@@ -33,21 +35,24 @@ data class TrustMakerUiModel(
                     "https://images.tokopedia.net/ta/icon/badge/OS-Badge-80.png",
                     "Lorep Ipsum",
                     subTitle = "Lorep Ipsum",
-                    "#F5F6FF".stringHexColorParseToInt()
+                    textColorTitle = textColorMapping(true,"#F5F6FF", "#212121"),
+                    textColorSubTitle = textColorMapping(true,"#AEB2BF", "#6D7588")
                 ),
                 ItemTrustMakerUiModel(
                     "",
                     "https://images.tokopedia.net/ta/icon/badge/OS-Badge-80.png",
                     "Futuristik TV 2022",
                     subTitle = "IF Design Award",
-                    "#F5F6FF".stringHexColorParseToInt()
+                    textColorTitle = textColorMapping(true,"#F5F6FF", "#212121"),
+                    textColorSubTitle = textColorMapping(true,"#AEB2BF", "#6D7588")
                 ),
                 ItemTrustMakerUiModel(
                     "",
                     "https://images.tokopedia.net/ta/icon/badge/OS-Badge-80.png",
                     "Lorep Ipsum",
                     subTitle = "Lorep Ipsum",
-                    "#F5F6FF".stringHexColorParseToInt()
+                    textColorTitle = textColorMapping(true,"#F5F6FF", "#212121"),
+                    textColorSubTitle = textColorMapping(true,"#AEB2BF", "#6D7588")
                 ),
             )
         )

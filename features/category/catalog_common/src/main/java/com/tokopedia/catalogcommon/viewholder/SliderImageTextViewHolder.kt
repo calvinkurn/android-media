@@ -26,13 +26,17 @@ class SliderImageTextViewHolder(itemView: View) :
 
     override fun bind(element: SliderImageTextUiModel) {
         val imageSlideAdapter = ImageSlidePagerAdapter(element.items)
-        binding?.root?.setBackgroundColor(element.widgetBackgroundColor.orDefaultColor(itemView.context))
+//        binding?.root?.setBackgroundColor(element.widgetBackgroundColor.orDefaultColor(itemView.context))
         binding?.viewPager?.adapter = imageSlideAdapter
         binding?.viewPager?.currentItem = Int.ZERO
         binding?.tvHighlight?.text = element.items[Int.ZERO].textHighlight
         binding?.tvTitle?.text = element.items[Int.ZERO].textTitle
         binding?.tvDescription?.text = element.items[Int.ZERO].textDescription
-        overrideWidgetTheme(element.widgetTextColor.orDefaultColor(itemView.context))
+
+        binding?.tvHighlight?.setTextColor(element.items[Int.ZERO].textHighlightColor)
+        binding?.tvTitle?.setTextColor(element.items[Int.ZERO].textTitleColor)
+        binding?.tvDescription?.setTextColor(element.items[Int.ZERO].textDescriptionColor)
+
         val animation = AnimationUtils.loadAnimation(itemView.context, R.anim.fade_in)
 
         binding?.viewPager?.addOnPageChangeListener(object : ViewPager.OnPageChangeListener{
@@ -61,11 +65,5 @@ class SliderImageTextViewHolder(itemView: View) :
             }
 
         })
-    }
-
-    private fun overrideWidgetTheme(fontColor: Int){
-        binding?.tvHighlight?.setTextColor(fontColor)
-        binding?.tvTitle?.setTextColor(fontColor)
-        binding?.tvDescription?.setTextColor(fontColor)
     }
 }
