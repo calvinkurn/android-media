@@ -341,7 +341,9 @@ public class CMInAppManager implements CmInAppListener,
     public void onCMInAppLinkClick(String appLink, CMInApp cmInApp, ElementType elementType) {
         Activity activity = activityLifecycleHandler.getCurrentActivity();
         if (activity != null) {
-            activity.startActivity(RouteManager.getIntent(activity, appLink));
+            if (!appLink.equalsIgnoreCase("tokopedia://device-notification-settings")) {
+                activity.startActivity(RouteManager.getIntent(activity, appLink));
+            }
             CMNotificationUtils.INSTANCE.sendUTMParamsInGTM(appLink);
         } else {
             Map<String, String> messageMap = new HashMap<>();
