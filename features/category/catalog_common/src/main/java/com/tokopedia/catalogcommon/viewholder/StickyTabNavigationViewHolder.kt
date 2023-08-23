@@ -26,15 +26,18 @@ class StickyTabNavigationViewHolder(itemView: View): AbstractViewHolder<StickyNa
     }
 
     private fun setupTabs(tabs: List<StickyNavigationUiModel.StickyNavigationItemData>) {
-//        binding?.run {
-//            tabsUnify.tabLayout.isTabIndicatorFullWidth = false
-//            tabsUnify.tabLayout.setBackgroundColor(Color.TRANSPARENT)
+        binding?.run {
+//            tabs.forEach {
+//                catalogTabsUnify.addNewTab(it.title)
+//            }
+//            catalogTabsUnify.tabLayout.isTabIndicatorFullWidth = false
+//            catalogTabsUnify.tabLayout.setBackgroundColor(Color.TRANSPARENT)
 //            val centeredTabIndicator = ContextCompat.getDrawable(
-//                tabsUnify.tabLayout.context,
+//                catalogTabsUnify.tabLayout.context,
 //                R.drawable.shape_showcase_tab_indicator_color
 //            )
-//            tabsUnify.tabLayout.setSelectedTabIndicator(centeredTabIndicator)
-//        }
+//            catalogTabsUnify.tabLayout.setSelectedTabIndicator(centeredTabIndicator)
+        }
     }
 
 

@@ -6,7 +6,7 @@ data class StickyNavigationUiModel(
     override val idWidget: String,
     override val widgetType: String,
     override val widgetName: String,
-    val backgroundColorWidget: Int? = null,
+    override val widgetBackgroundColor: Int? = null,
     val content: List<StickyNavigationItemData>
 ): BaseCatalogUiModel(idWidget, widgetType, widgetName) {
 
