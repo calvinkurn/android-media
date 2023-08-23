@@ -40,7 +40,6 @@ import org.json.JSONObject
 import java.util.*
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
-import kotlin.jvm.internal.Intrinsics.Kotlin
 
 class PushController(val context: Context) : CoroutineScope {
 
@@ -74,19 +73,24 @@ class PushController(val context: Context) : CoroutineScope {
             .inject(this)
     }
 
-    fun handleProcessedPushPayload(aidlApiBundle : Bundle?,
-                                   baseNotificationModel: BaseNotificationModel,
-                                   advanceTargetingData: AdvanceTargetingData){
+    fun handleProcessedPushPayload(
+        aidlApiBundle: Bundle?,
+        baseNotificationModel: BaseNotificationModel,
+        advanceTargetingData: AdvanceTargetingData
+    ) {
         postEventForLiveNotification(baseNotificationModel)
         NotificationAdvanceTargetingHandler().checkForValidityAndAdvanceTargeting(
             context.applicationContext,
             aidlApiBundle,
             baseNotificationModel,
-            advanceTargetingData, onValid = {
+            advanceTargetingData,
+            onValid = {
                 notificationDeliveryValidation(baseNotificationModel)
-            }, onCancel = {
+            },
+            onCancel = {
                 cancelPushNotification(baseNotificationModel)
-            })
+            }
+        )
     }
 
     private fun notificationDeliveryValidation(model: BaseNotificationModel) {
@@ -115,28 +119,37 @@ class PushController(val context: Context) : CoroutineScope {
 
     private fun handleNotificationBundle(model: BaseNotificationModel) {
         launchCatchError(
-                block = {
-                    if(model.isAmplification){
-                        if(!isAmpNotificationValid(model.notificationId))
-                            return@launchCatchError
+            block = {
+                if (model.isAmplification) {
+                    if (!isAmpNotificationValid(model.notificationId)) {
+                        return@launchCatchError
                     }
-                    if (model.notificationMode == NotificationMode.OFFLINE) {
-                        if (isOfflinePushEnabled)
-                            onOfflinePushPayloadReceived(model)
-                    } else {
-                        onLivePushPayloadReceived(model)
+                }
+                if (model.notificationMode == NotificationMode.OFFLINE) {
+                    if (isOfflinePushEnabled) {
+                        onOfflinePushPayloadReceived(model)
                     }
-                }, onError = {
-            ServerLogger.log(Priority.P2, "CM_VALIDATION",
-                    mapOf("type" to "exception",
-                            "err" to Log.getStackTraceString(it).take(CMConstant.TimberTags.MAX_LIMIT),
-                            "data" to model.toString().take(CMConstant.TimberTags.MAX_LIMIT)))
-        })
+                } else {
+                    onLivePushPayloadReceived(model)
+                }
+            },
+            onError = {
+                ServerLogger.log(
+                    Priority.P2,
+                    "CM_VALIDATION",
+                    mapOf(
+                        "type" to "exception",
+                        "err" to Log.getStackTraceString(it).take(CMConstant.TimberTags.MAX_LIMIT),
+                        "data" to model.toString().take(CMConstant.TimberTags.MAX_LIMIT)
+                    )
+                )
+            }
+        )
     }
 
     private suspend fun isAmpNotificationValid(notificationID: Int): Boolean {
         val baseNotificationModel = PushRepository.getInstance(context)
-                .pushDataStore.getNotificationById(notificationID)
+            .pushDataStore.getNotificationById(notificationID)
 
         return baseNotificationModel == null
     }
@@ -154,9 +167,9 @@ class PushController(val context: Context) : CoroutineScope {
         if (baseNotificationModel.type == CMConstant.NotificationType.DELETE_NOTIFICATION) {
             baseNotificationModel.status = NotificationStatus.COMPLETED
             createAndPostNotification(baseNotificationModel)
-        } else if (baseNotificationModel.startTime == 0L
-                || baseNotificationModel.endTime > System.currentTimeMillis()) {
-
+        } else if (baseNotificationModel.startTime == 0L ||
+            baseNotificationModel.endTime > System.currentTimeMillis()
+        ) {
             updatedBaseNotificationModel = ImageDownloadManager.downloadImages(context, baseNotificationModel)
             updatedBaseNotificationModel?.let {
                 createAndPostNotification(updatedBaseNotificationModel)
@@ -165,22 +178,32 @@ class PushController(val context: Context) : CoroutineScope {
             baseNotificationModel.status = NotificationStatus.ACTIVE
         } else {
             baseNotificationModel.status = NotificationStatus.COMPLETED
-            sendPushExpiryLog(baseNotificationModel)
+            sendPushExpiryEventAndLog(baseNotificationModel)
         }
         updatedBaseNotificationModel?.let {
             PushRepository.getInstance(context)
-                    .insertNotificationModel(updatedBaseNotificationModel)
+                .insertNotificationModel(updatedBaseNotificationModel)
         } ?: PushRepository.getInstance(context)
-                .insertNotificationModel(baseNotificationModel)
+            .insertNotificationModel(baseNotificationModel)
     }
 
-    private fun sendPushExpiryLog(baseNotificationModel: BaseNotificationModel){
+    private fun sendPushExpiryEventAndLog(baseNotificationModel: BaseNotificationModel) {
+        IrisAnalyticsEvents.sendPushEvent(
+            context,
+            IrisAnalyticsEvents.PUSH_EXPIRED,
+            baseNotificationModel
+        )
         try {
-            ServerLogger.log(Priority.P2, "CM_VALIDATION",
-                mapOf("type" to "exception",
+            ServerLogger.log(
+                Priority.P2,
+                "CM_VALIDATION",
+                mapOf(
+                    "type" to "exception",
                     "err" to "PUSH_PAYLOAD_EXPIRED",
-                    "data" to baseNotificationModel.toString().take(CMConstant.TimberTags.MAX_LIMIT)))
-        }catch (_: Exception){}
+                    "data" to baseNotificationModel.toString().take(CMConstant.TimberTags.MAX_LIMIT)
+                )
+            )
+        } catch (_: Exception) {}
     }
 
     private suspend fun onOfflinePushPayloadReceived(baseNotificationModel: BaseNotificationModel) {
@@ -203,7 +226,7 @@ class PushController(val context: Context) : CoroutineScope {
 
     private suspend fun isOfflineNotificationActive(notificationID: Int): Boolean {
         val baseNotificationModel = PushRepository.getInstance(context)
-                .pushDataStore.getNotificationById(notificationID)
+            .pushDataStore.getNotificationById(notificationID)
         baseNotificationModel?.let {
             return baseNotificationModel.status == NotificationStatus.ACTIVE
         } ?: return false
@@ -221,7 +244,7 @@ class PushController(val context: Context) : CoroutineScope {
         notificationManager.cancel(baseNotificationModel.notificationId)
         baseNotificationModel.status = NotificationStatus.COMPLETED
         PushRepository.getInstance(context).updateNotificationModel(baseNotificationModel)
-        sendPushExpiryLog(baseNotificationModel)
+        sendPushExpiryEventAndLog(baseNotificationModel)
     }
 
     private suspend fun createAndPostNotification(baseNotificationModel: BaseNotificationModel) {
@@ -251,10 +274,15 @@ class PushController(val context: Context) : CoroutineScope {
                 }
             }
         } catch (e: Exception) {
-            ServerLogger.log(Priority.P2, "CM_VALIDATION",
-                    mapOf("type" to "exception",
-                            "err" to Log.getStackTraceString(e).take(CMConstant.TimberTags.MAX_LIMIT),
-                            "data" to baseNotificationModel.toString().take(CMConstant.TimberTags.MAX_LIMIT)))
+            ServerLogger.log(
+                Priority.P2,
+                "CM_VALIDATION",
+                mapOf(
+                    "type" to "exception",
+                    "err" to Log.getStackTraceString(e).take(CMConstant.TimberTags.MAX_LIMIT),
+                    "data" to baseNotificationModel.toString().take(CMConstant.TimberTags.MAX_LIMIT)
+                )
+            )
         }
     }
 
@@ -288,7 +316,7 @@ class PushController(val context: Context) : CoroutineScope {
     private fun checkOtpPushNotif(applink: String?): Boolean {
         val keyguardManager = context.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
         return if (Build.VERSION.SDK_INT < ANDROID_12_SDK_VERSION &&
-                !keyguardManager.isKeyguardLocked &&
+            !keyguardManager.isKeyguardLocked &&
             isAutoRedirect
         ) {
             applink?.startsWith(ApplinkConst.OTP_PUSH_NOTIF_RECEIVER) == true
@@ -304,7 +332,7 @@ class PushController(val context: Context) : CoroutineScope {
         context.startActivities(arrayOf(intentHome, intent))
     }
 
-    private fun postEventForLiveNotification(baseNotificationModel: BaseNotificationModel){
+    private fun postEventForLiveNotification(baseNotificationModel: BaseNotificationModel) {
         if (baseNotificationModel.notificationMode == NotificationMode.OFFLINE) return
         if (baseNotificationModel.type == CMConstant.NotificationType.SILENT_PUSH &&
             NotificationManagerCompat.from(context).areNotificationsEnabled()
@@ -319,10 +347,12 @@ class PushController(val context: Context) : CoroutineScope {
         }
     }
 
-    private fun checkNotificationChannelAndSendEvent(baseNotificationModel: BaseNotificationModel){
-        when (NotificationSettingsUtils(context).checkNotificationsModeForSpecificChannel(
-            baseNotificationModel.channelName
-        )) {
+    private fun checkNotificationChannelAndSendEvent(baseNotificationModel: BaseNotificationModel) {
+        when (
+            NotificationSettingsUtils(context).checkNotificationsModeForSpecificChannel(
+                baseNotificationModel.channelName
+            )
+        ) {
             NotificationSettingsUtils.NotificationMode.ENABLED -> {
                 IrisAnalyticsEvents.sendPushEvent(
                     context,
@@ -345,7 +375,7 @@ class PushController(val context: Context) : CoroutineScope {
     private fun trackTokoChatPushNotification(baseNotificationModel: BaseNotificationModel) {
         launch {
             try {
-                if (baseNotificationModel.customValues.isNullOrEmpty())  return@launch
+                if (baseNotificationModel.customValues.isNullOrEmpty()) return@launch
                 val tokochatPNId = JSONObject(baseNotificationModel.customValues ?: "")
                     .optString(CMConstant.CustomValuesKeys.TOKOCHAT_PN_ID)
                 if (!tokochatPNId.isNullOrEmpty()) {

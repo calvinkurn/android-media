@@ -29,7 +29,6 @@ object PersistentEvent {
 
     const val EVENT_CATEGORY = "cm_persistent_push"
     const val EVENT_ACTION_CANCELED = "click close button"
-
 }
 
 object IrisAnalyticsEvents {
@@ -39,6 +38,7 @@ object IrisAnalyticsEvents {
     const val PUSH_DISMISSED = "pushDismissed"
     const val PUSH_CANCELLED = "pushCancelled"
     const val PUSH_DELETED = "pushDeleted"
+    const val PUSH_EXPIRED = "pushExpired"
     const val INAPP_RECEIVED = "inappReceived"
     const val INAPP_CLICKED = "inappClicked"
     const val INAPP_DISMISSED = "inappDismissed"
@@ -68,28 +68,29 @@ object IrisAnalyticsEvents {
 
     private const val AMPLIFICATION = "amplification"
 
-
     private const val IRIS_ANALYTICS_APP_SITE_OPEN = "appSiteOpen"
     private const val IRIS_ANALYTICS_EVENT_KEY = "event"
 
-
-    fun trackCmINAppEvent(context: Context?,  cmInApp: CMInApp?,
-                          eventName: String?,  elementId: String?){
+    fun trackCmINAppEvent(
+        context: Context?,
+        cmInApp: CMInApp?,
+        eventName: String?,
+        elementId: String?
+    ) {
         cmInApp?.let {
             context?.let { context ->
-                if(eventName!= null){
-                    if(elementId!= null) {
+                if (eventName != null) {
+                    if (elementId != null) {
                         sendInAppEvent(context.applicationContext, eventName, cmInApp, elementId)
-                    }else {
+                    } else {
                         sendInAppEvent(context.applicationContext, eventName, cmInApp)
                     }
                 }
             }
         }
-
     }
 
-    fun sendFirstScreenEvent(context: Context?){
+    fun sendFirstScreenEvent(context: Context?) {
         context?.let {
             val map: MutableMap<String, Any> = mutableMapOf(
                 IRIS_ANALYTICS_EVENT_KEY to IRIS_ANALYTICS_APP_SITE_OPEN
@@ -98,7 +99,6 @@ object IrisAnalyticsEvents {
         }
     }
 
-
     fun sendPushEvent(context: Context, eventName: String, baseNotificationModel: BaseNotificationModel) {
         if (baseNotificationModel.isTest) return
         val irisAnalytics = IrisAnalytics.getInstance(context)
@@ -106,13 +106,14 @@ object IrisAnalyticsEvents {
         if (baseNotificationModel.isAmplification) {
             values[LABEL] = AMPLIFICATION
         }
-        checkEventAndAddShopId(eventName,values,baseNotificationModel.shopId)
+        checkEventAndAddShopId(eventName, values, baseNotificationModel.shopId)
         trackEvent(context, irisAnalytics, values)
     }
 
     fun sendPushEvent(context: Context, eventName: String, baseNotificationModel: BaseNotificationModel, elementID: String?) {
-        if (baseNotificationModel.isTest)
+        if (baseNotificationModel.isTest) {
             return
+        }
         val irisAnalytics = IrisAnalytics.Companion.getInstance(context.applicationContext)
         val values = addBaseValues(context, eventName, baseNotificationModel)
         if (baseNotificationModel.isAmplification) {
@@ -121,7 +122,7 @@ object IrisAnalyticsEvents {
         if (elementID != null) {
             values[CLICKED_ELEMENT_ID] = elementID
         }
-        checkEventAndAddShopId(eventName,values,baseNotificationModel.shopId)
+        checkEventAndAddShopId(eventName, values, baseNotificationModel.shopId)
         trackEvent(context, irisAnalytics, values)
     }
 
@@ -142,22 +143,22 @@ object IrisAnalyticsEvents {
         values[EVENT_MESSAGE_ID] = baseNotificationModel.campaignUserToken?.let { it } ?: ""
         addTrackingExtras(eventName, baseNotificationModel.payloadExtra, values)
         return values
-
     }
 
     fun sendInAppEvent(context: Context, eventName: String, cmInApp: CMInApp) {
-        if (cmInApp.isTest)
+        if (cmInApp.isTest) {
             return
+        }
         val irisAnalytics = IrisAnalytics.Companion.getInstance(context.applicationContext)
         val values = addBaseValues(context, eventName, cmInApp)
         checkEventAndAddShopId(eventName, values, cmInApp.shopId)
         trackEvent(context, irisAnalytics, values)
-
     }
 
     fun sendInAppEvent(context: Context, eventName: String, cmInApp: CMInApp, elementID: String?) {
-        if (cmInApp.isTest)
+        if (cmInApp.isTest) {
             return
+        }
         val irisAnalytics = IrisAnalytics.Companion.getInstance(context.applicationContext)
         val values = addBaseValues(context, eventName, cmInApp)
         elementID?.let {
@@ -170,51 +171,87 @@ object IrisAnalyticsEvents {
     fun sendAmplificationInAppEvent(context: Context, eventName: String, cmInApp: CMInApp) {
         if (cmInApp.isTest) return
         val irisAnalytics = IrisAnalytics.getInstance(context)
-        trackEvent(context, irisAnalytics, addBaseValues(context, eventName, cmInApp).apply {
-            put(LABEL, AMPLIFICATION)
-        })
+        trackEvent(
+            context, irisAnalytics,
+            addBaseValues(context, eventName, cmInApp).apply {
+                put(LABEL, AMPLIFICATION)
+            }
+        )
     }
 
     private fun trackEvent(context: Context, irisAnalytics: Iris, values: HashMap<String, Any>) {
         logTimber(values)
-        if (CMNotificationUtils.isNetworkAvailable(context))
+        if (CMNotificationUtils.isNetworkAvailable(context)) {
             irisAnalytics.sendEvent(values)
-        else irisAnalytics.saveEvent(values)
+        } else {
+            irisAnalytics.saveEvent(values)
+        }
     }
 
     private fun logTimber(values: HashMap<String, Any>) {
         val push = "_push'"
         val inapp = "_inapp'"
-        if (values.containsKey(CAMPAIGN_ID) && TextUtils.isEmpty(values[CAMPAIGN_ID].toString()))
-            ServerLogger.log(Priority.P2, "CM_VALIDATION",
-                mapOf("type" to "validation",
-                    "reason" to "no_campaignId".plus(if(values.containsKey(PUSH_TYPE)) push else inapp),
-                    "data" to values.toString().take(CMConstant.TimberTags.MAX_LIMIT)))
-        else if (!values.containsKey(CAMPAIGN_ID))
-            ServerLogger.log(Priority.P2, "CM_VALIDATION",
-                mapOf("type" to "validation",
-                    "reason" to "campaignId_removed".plus(if(values.containsKey(PUSH_TYPE)) push else inapp),
-                    "data" to values.toString().take(CMConstant.TimberTags.MAX_LIMIT)))
-        else if (values.containsKey(PARENT_ID) && TextUtils.isEmpty(values[PARENT_ID].toString()))
-            ServerLogger.log(Priority.P2, "CM_VALIDATION",
-                mapOf("type" to "validation",
-                    "reason" to "no_parentId".plus(if(values.containsKey(PUSH_TYPE)) push else inapp),
-                    "data" to values.toString().take(CMConstant.TimberTags.MAX_LIMIT)))
-        else if (!values.containsKey(PARENT_ID))
-            ServerLogger.log(Priority.P2, "CM_VALIDATION",
-                mapOf("type" to "validation",
-                    "reason" to "parentId_removed".plus(if(values.containsKey(PUSH_TYPE)) push else inapp),
-                    "data" to values.toString().take(CMConstant.TimberTags.MAX_LIMIT)))
-        else if (values.containsKey(NOTIFICATION_ID) && TextUtils.isEmpty(values[NOTIFICATION_ID].toString()))
-            ServerLogger.log(Priority.P2, "CM_VALIDATION",
-                mapOf("type" to "validation",
-                    "reason" to "no_notificationId".plus(if(values.containsKey(PUSH_TYPE)) push else inapp),
-                    "data" to values.toString().take(CMConstant.TimberTags.MAX_LIMIT)))
-        else if (!values.containsKey(NOTIFICATION_ID))
-            ServerLogger.log(Priority.P2, "CM_VALIDATION",
-                mapOf("type" to "validation",
-                    "reason" to "notificationId_removed".plus(if(values.containsKey(PUSH_TYPE)) push else inapp),
-                    "data" to values.toString().take(CMConstant.TimberTags.MAX_LIMIT)))
+        if (values.containsKey(CAMPAIGN_ID) && TextUtils.isEmpty(values[CAMPAIGN_ID].toString())) {
+            ServerLogger.log(
+                Priority.P2,
+                "CM_VALIDATION",
+                mapOf(
+                    "type" to "validation",
+                    "reason" to "no_campaignId".plus(if (values.containsKey(PUSH_TYPE)) push else inapp),
+                    "data" to values.toString().take(CMConstant.TimberTags.MAX_LIMIT)
+                )
+            )
+        } else if (!values.containsKey(CAMPAIGN_ID)) {
+            ServerLogger.log(
+                Priority.P2,
+                "CM_VALIDATION",
+                mapOf(
+                    "type" to "validation",
+                    "reason" to "campaignId_removed".plus(if (values.containsKey(PUSH_TYPE)) push else inapp),
+                    "data" to values.toString().take(CMConstant.TimberTags.MAX_LIMIT)
+                )
+            )
+        } else if (values.containsKey(PARENT_ID) && TextUtils.isEmpty(values[PARENT_ID].toString())) {
+            ServerLogger.log(
+                Priority.P2,
+                "CM_VALIDATION",
+                mapOf(
+                    "type" to "validation",
+                    "reason" to "no_parentId".plus(if (values.containsKey(PUSH_TYPE)) push else inapp),
+                    "data" to values.toString().take(CMConstant.TimberTags.MAX_LIMIT)
+                )
+            )
+        } else if (!values.containsKey(PARENT_ID)) {
+            ServerLogger.log(
+                Priority.P2,
+                "CM_VALIDATION",
+                mapOf(
+                    "type" to "validation",
+                    "reason" to "parentId_removed".plus(if (values.containsKey(PUSH_TYPE)) push else inapp),
+                    "data" to values.toString().take(CMConstant.TimberTags.MAX_LIMIT)
+                )
+            )
+        } else if (values.containsKey(NOTIFICATION_ID) && TextUtils.isEmpty(values[NOTIFICATION_ID].toString())) {
+            ServerLogger.log(
+                Priority.P2,
+                "CM_VALIDATION",
+                mapOf(
+                    "type" to "validation",
+                    "reason" to "no_notificationId".plus(if (values.containsKey(PUSH_TYPE)) push else inapp),
+                    "data" to values.toString().take(CMConstant.TimberTags.MAX_LIMIT)
+                )
+            )
+        } else if (!values.containsKey(NOTIFICATION_ID)) {
+            ServerLogger.log(
+                Priority.P2,
+                "CM_VALIDATION",
+                mapOf(
+                    "type" to "validation",
+                    "reason" to "notificationId_removed".plus(if (values.containsKey(PUSH_TYPE)) push else inapp),
+                    "data" to values.toString().take(CMConstant.TimberTags.MAX_LIMIT)
+                )
+            )
+        }
     }
 
     private fun addBaseValues(context: Context, eventName: String, cmInApp: CMInApp): HashMap<String, Any> {
@@ -232,19 +269,19 @@ object IrisAnalyticsEvents {
 
         addTrackingExtras(eventName, cmInApp.payloadExtra, values)
         return values
-
     }
 
-
-    private fun addTrackingExtras(eventName: String,
-                                  payloadExtra: PayloadExtra?,
-                                  values: HashMap<String, Any>){
+    private fun addTrackingExtras(
+        eventName: String,
+        payloadExtra: PayloadExtra?,
+        values: HashMap<String, Any>
+    ) {
         payloadExtra?.let {
-            it.campaignName?.let {cmpName ->
+            it.campaignName?.let { cmpName ->
                 values[CAMPAIGN_NAME] = cmpName
             }
 
-            it.journeyId?.let {journeyId ->
+            it.journeyId?.let { journeyId ->
                 values[JOURNEY_ID] = journeyId
             }
 
@@ -257,10 +294,11 @@ object IrisAnalyticsEvents {
         }
     }
 
-    private fun setSessionId(eventName : String,
-                             values : HashMap<String, Any>,
-                             sessionId : String){
-
+    private fun setSessionId(
+        eventName: String,
+        values: HashMap<String, Any>,
+        sessionId: String
+    ) {
         val allowedEvents = listOf(
             INAPP_RECEIVED,
             INAPP_CLICKED,
@@ -268,6 +306,7 @@ object IrisAnalyticsEvents {
             PUSH_RECEIVED,
             PUSH_CLICKED,
             PUSH_DISMISSED,
+            PUSH_EXPIRED,
             DEVICE_NOTIFICATION_OFF
         )
 
@@ -281,7 +320,6 @@ object IrisAnalyticsEvents {
         values: HashMap<String, Any>,
         shopId: String?
     ) {
-
         val allowedEvents = listOf(
             INAPP_RECEIVED,
             INAPP_CLICKED,
@@ -289,14 +327,14 @@ object IrisAnalyticsEvents {
             PUSH_RECEIVED,
             PUSH_CLICKED,
             PUSH_DISMISSED,
-            PUSH_CANCELLED
+            PUSH_CANCELLED,
+            PUSH_EXPIRED
         )
 
         if (!shopId.isNullOrBlank() && (eventName in allowedEvents)) {
             values[SHOP_ID] = shopId
         }
     }
-
 }
 
 object CMEvents {
@@ -306,7 +344,13 @@ object CMEvents {
     @JvmStatic
     fun postGAEvent(event: String, category: String, action: String, label: String) {
         Timber.d("$TAG-$event&$category&$action&$label")
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-            event, category, action, label))
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            TrackAppUtils.gtmData(
+                event,
+                category,
+                action,
+                label
+            )
+        )
     }
 }
