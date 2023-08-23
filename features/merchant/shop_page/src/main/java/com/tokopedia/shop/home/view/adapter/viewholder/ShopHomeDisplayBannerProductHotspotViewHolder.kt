@@ -17,7 +17,7 @@ import com.tokopedia.kotlin.extensions.view.setLayoutHeight
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.shop.R
-import com.tokopedia.shop.common.view.customview.ImageHotspotView
+import com.tokopedia.shop.common.view.customview.bannerhotspot.ImageHotspotView
 import com.tokopedia.shop.common.view.model.ImageHotspotData
 import com.tokopedia.shop.databinding.ShopHomeDisplayBannerProductHotspotViewHolderLayoutBinding
 import com.tokopedia.shop.home.view.adapter.ShopWidgetProductHotspotAdapter

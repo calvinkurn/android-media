@@ -1,7 +1,7 @@
 package com.tokopedia.shop.common.view.model
 
-import com.tokopedia.shop.common.view.customview.HotspotBubbleView
-import com.tokopedia.shop.common.view.customview.HotspotTagView
+import com.tokopedia.shop.common.view.customview.bannerhotspot.HotspotBubbleView
+import com.tokopedia.shop.common.view.customview.bannerhotspot.HotspotTagView
 
 data class ImageHotspotData(
     val imageBannerUrl: String = "",
