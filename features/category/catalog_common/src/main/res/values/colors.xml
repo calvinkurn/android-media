@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--put your custom color here-->
+    <color name="dms_static_Unify_NN950_light">#212121</color>
+    <color name="dms_static_Unify_NN600_light">#6D7588</color>
+
+
+
 </resources>
