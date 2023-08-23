@@ -583,7 +583,7 @@ object ProductListUiStateMapper {
                 bmgmIconUrl = bmgmIcon,
                 totalPrice = bmgm.priceBeforeBenefit,
                 totalPriceText = bmgm.priceBeforeBenefitFormatted,
-                totalPriceReductionInfoText = bmgm.tierDiscountAmountFormatted,
+                totalPriceReductionInfoText = bmgm.totalPriceNote,
                 bmgmItemList = bmgm.orderDetail.map { orderDetail ->
                     mapProductBmgmItem(
                         orderDetail,

@@ -150,6 +150,8 @@ data class SomDetailOrder(
         data class Bmgm(
             @SerializedName("bmgm_tier_name")
             val bmgmTierName: String = "",
+            @SerializedName("total_price_note")
+            val totalPriceNote: String = "",
             @SerializedName("id")
             val id: String = "",
             @SerializedName("order_detail")

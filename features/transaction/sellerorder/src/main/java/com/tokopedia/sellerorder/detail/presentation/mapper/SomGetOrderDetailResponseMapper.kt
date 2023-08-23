@@ -32,7 +32,7 @@ object SomGetOrderDetailResponseMapper {
                 bmgmIconUrl = bmgmIconUrl,
                 totalPrice = bmgm.priceBeforeBenefit,
                 totalPriceText = bmgm.priceBeforeBenefitFormatted,
-                totalPriceReductionInfoText = bmgm.tierDiscountAmountFormatted,
+                totalPriceReductionInfoText = bmgm.totalPriceNote,
                 bmgmItemList = bmgm.orderDetail.map {
                     ProductBmgmSectionUiModel.ProductUiModel(
                         orderId = orderId,

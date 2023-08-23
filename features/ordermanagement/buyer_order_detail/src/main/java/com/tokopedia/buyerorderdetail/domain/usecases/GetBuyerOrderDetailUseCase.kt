@@ -405,6 +405,7 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                   bmgms {
                     id
                     bmgm_tier_name
+                    total_price_note
                     tier_discount_amount
                     tier_discount_amount_formatted
                     price_before_benefit
