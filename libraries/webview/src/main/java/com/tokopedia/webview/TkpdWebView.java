@@ -154,20 +154,24 @@ public class TkpdWebView extends WebView {
                     AuthHelper.Companion.getMD5Hash(hash + "+" + userSession.getUserId())
             );
 
-            if (remoteConfig.getBoolean(RemoteConfigKey.FINTECH_ENABLE_ADDITIONAL_DEVICE_INFO_HEADER, true)) {
-                byte[] additionalInfoJson = AdditionalInfoModel.Companion
-                        .generateJson(getContext().getApplicationContext())
-                        .getBytes(StandardCharsets.UTF_8);
-
-                String additionalInfoBase64 = Base64.encodeToString(additionalInfoJson, Base64.DEFAULT).replace("\n", "").replace("\r", "").trim();
-
-                header.put(
-                        KEY_FINTECH_FINGERPRINT_DATA,
-                        additionalInfoBase64
-                );
-            }
+            addAdditionalInfoHeader(header);
 
             loadUrl(urlToLoad, header);
+        }
+    }
+
+    private void addAdditionalInfoHeader(Map<String, String> header) {
+        if (remoteConfig.getBoolean(RemoteConfigKey.FINTECH_ENABLE_ADDITIONAL_DEVICE_INFO_HEADER, true)) {
+            byte[] additionalInfoJson = AdditionalInfoModel.Companion
+                    .generateJson(getContext().getApplicationContext())
+                    .getBytes(StandardCharsets.UTF_8);
+
+            String additionalInfoBase64 = Base64.encodeToString(additionalInfoJson, Base64.DEFAULT).replace("\n", "").replace("\r", "").trim();
+
+            header.put(
+                    KEY_FINTECH_FINGERPRINT_DATA,
+                    additionalInfoBase64
+            );
         }
     }
 

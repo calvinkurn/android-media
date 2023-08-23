@@ -7,7 +7,7 @@ import android.util.Base64
 import com.google.gson.Gson
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.device.info.DeviceInfo
-import java.util.*
+import java.util.UUID
 
 data class AdditionalInfoModel(
     val time: Long,
