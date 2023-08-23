@@ -68,10 +68,7 @@ class APlusImageViewHolder(
         if (element.url.isNotBlank() && element.ratio.validDimensionRatio()) {
             // Update the image ratio
             // Note: please make sure that all direct descendant views of root have id to prevent crash
-            val constraintSet = ConstraintSet()
-            constraintSet.clone(binding.root)
-            constraintSet.setDimensionRatio(binding.ivProductDetailAPlusImage.id, element.ratio)
-            constraintSet.applyTo(binding.root)
+            setImageRatio(element.ratio)
             binding.ivProductDetailAPlusImage.loadImage(element.url)
             binding.ivProductDetailAPlusImage.show()
         } else {
@@ -128,5 +125,12 @@ class APlusImageViewHolder(
 
     private fun resetImage() {
         binding.ivProductDetailAPlusImage.clearImage()
+    }
+
+    private fun setImageRatio(ratio: String) {
+        val constraintSet = ConstraintSet()
+        constraintSet.clone(binding.root)
+        constraintSet.setDimensionRatio(binding.ivProductDetailAPlusImage.id, ratio)
+        constraintSet.applyTo(binding.root)
     }
 }
