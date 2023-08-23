@@ -1,18 +1,20 @@
 package com.tokopedia.catalogcommon.adapter
 
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.catalogcommon.adapter.BaseCatalogAdapter
-import com.tokopedia.catalogcommon.adapter.CatalogAdapterFactoryImpl
-import com.tokopedia.catalogcommon.adapter.CatalogDifferImpl
-
+import com.tokopedia.catalogcommon.OnStickySingleHeaderListener
 
 class WidgetCatalogAdapter(
-    baseListAdapterTypeFactory: CatalogAdapterFactoryImpl,
+    baseListAdapterTypeFactory: CatalogAdapterFactoryImpl
 ) : BaseCatalogAdapter<Visitable<*>, CatalogAdapterFactoryImpl>(
-    baseListAdapterTypeFactory) {
+    baseListAdapterTypeFactory
+) {
 
+    private var recyclerView: RecyclerView? = null
     private val differ = CatalogDifferImpl()
+
+    private var onStickySingleHeaderViewListener: OnStickySingleHeaderListener? = null
 
     override fun addWidget(itemList: List<Visitable<*>>) {
         val diffUtilCallback = differ.create(visitables, itemList)
@@ -22,4 +24,9 @@ class WidgetCatalogAdapter(
         result.dispatchUpdatesTo(this)
     }
 
+    fun refreshSticky() {
+        if (onStickySingleHeaderViewListener != null) {
+            recyclerView?.post { onStickySingleHeaderViewListener?.refreshSticky() }
+        }
+    }
 }
