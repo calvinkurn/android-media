@@ -10,4 +10,13 @@ import javax.inject.Inject
 class PlayPageSourceStorage @Inject constructor() {
 
     var pageSource: String = ""
+        private set
+
+    fun setPageSource(sourceType: String, isChannelRecom: Boolean) {
+        pageSource = if (isChannelRecom) HOME_DYNAMIC_ICON else sourceType
+    }
+
+    companion object {
+        private const val HOME_DYNAMIC_ICON = "HOME_DYNAMIC_ICON"
+    }
 }

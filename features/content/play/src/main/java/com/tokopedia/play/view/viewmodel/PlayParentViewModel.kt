@@ -16,6 +16,8 @@ import com.tokopedia.play_common.model.result.PageInfo
 import com.tokopedia.play_common.model.result.PageResult
 import com.tokopedia.play_common.model.result.PageResultState
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.play.PLAY_KEY_CHANNEL_RECOMMENDATION
+import com.tokopedia.play.PLAY_KEY_IS_CHANNEL_RECOM
 import com.tokopedia.play.data.storage.PlayPageSourceStorage
 import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play_common.model.ui.ArchivedUiModel
@@ -67,6 +69,9 @@ class PlayParentViewModel @AssistedInject constructor(
     val startingChannelId: String?
         get() = handle[PLAY_KEY_CHANNEL_ID]
 
+    private val isChannelRecom: Boolean
+        get() = handle[PLAY_KEY_IS_CHANNEL_RECOM] ?: false
+
     private val mVideoStartMillis: String?
         get() = handle[KEY_START_TIME]
 
@@ -79,7 +84,7 @@ class PlayParentViewModel @AssistedInject constructor(
     )
 
     init {
-        pageSourceStorage.pageSource = source.type
+        pageSourceStorage.setPageSource(source.type, isChannelRecom)
         pageMonitoring.startNetworkRequestPerformanceMonitoring()
         loadNextPage()
     }
@@ -90,13 +95,17 @@ class PlayParentViewModel @AssistedInject constructor(
         val isFromPiP = bundle.getBoolean(IS_FROM_PIP, false)
 
         if (!isFromPiP && !channelId.isNullOrEmpty()) {
+            val sourceType: String = bundle.getString(PLAY_KEY_SOURCE_TYPE, "")
+            val isChannelRecom = bundle.getBoolean(PLAY_KEY_CHANNEL_RECOMMENDATION, false)
+
             handle.set(PLAY_KEY_CHANNEL_ID, channelId)
-            handle.set(PLAY_KEY_SOURCE_TYPE, bundle.get(PLAY_KEY_SOURCE_TYPE))
+            handle.set(PLAY_KEY_SOURCE_TYPE, sourceType)
             handle.set(PLAY_KEY_SOURCE_ID, bundle.get(PLAY_KEY_SOURCE_ID))
+            handle.set(PLAY_KEY_IS_CHANNEL_RECOM, isChannelRecom)
             handle.set(KEY_START_TIME, bundle.get(KEY_START_TIME))
             handle.set(KEY_SHOULD_TRACK, bundle.get(KEY_SHOULD_TRACK))
 
-            pageSourceStorage.pageSource = bundle.getString(PLAY_KEY_SOURCE_TYPE, "")
+            pageSourceStorage.setPageSource(sourceType, isChannelRecom)
 
             mNextKey = getNextChannelIdKey(channelId, source)
             loadNextPage()
