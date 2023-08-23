@@ -5,9 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.buyerorderdetail.domain.usecases.GetBomGroupedOrderUseCase
-import com.tokopedia.buyerorderdetail.domain.usecases.GetPartialOrderFulfillmentInfoUseCase
 import com.tokopedia.buyerorderdetail.presentation.model.OwocGroupedOrderWrapper
-import com.tokopedia.buyerorderdetail.presentation.model.RejectPartialOrderFulfillmentUiModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -17,7 +15,7 @@ import javax.inject.Inject
 
 class OwocViewModel @Inject constructor(
     private val dispatcher: CoroutineDispatchers,
-    private val getBomGroupedOrderUseCase: dagger.Lazy<GetBomGroupedOrderUseCase>,
+    private val getBomGroupedOrderUseCase: dagger.Lazy<GetBomGroupedOrderUseCase>
 ) : BaseViewModel(dispatcher.main) {
 
     private val _owocGroupedOrderWrapper: MutableLiveData<Result<OwocGroupedOrderWrapper>> =
@@ -33,7 +31,7 @@ class OwocViewModel @Inject constructor(
             }
             _owocGroupedOrderWrapper.value = Success(response)
         }, onError = {
-            _owocGroupedOrderWrapper.value = Fail(it)
-        })
+                _owocGroupedOrderWrapper.value = Fail(it)
+            })
     }
 }

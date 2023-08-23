@@ -2,28 +2,28 @@ package com.tokopedia.cartrevamp.view.mapper
 
 import android.content.Context
 import com.tokopedia.cart.R
-import com.tokopedia.cartrevamp.data.model.response.promo.LastApplyPromoData
-import com.tokopedia.cartrevamp.data.model.response.promo.MessageGlobalPromo
-import com.tokopedia.cartrevamp.data.model.response.promo.MessageVoucherOrders
-import com.tokopedia.cartrevamp.data.model.response.promo.PromoAdditionalInfo
-import com.tokopedia.cartrevamp.data.model.response.promo.PromoEmptyCartInfo
-import com.tokopedia.cartrevamp.data.model.response.promo.PromoErrorDetail
-import com.tokopedia.cartrevamp.data.model.response.promo.PromoMessageInfo
-import com.tokopedia.cartrevamp.data.model.response.promo.VoucherOrders
-import com.tokopedia.cartrevamp.data.model.response.shopgroupsimplified.Action
-import com.tokopedia.cartrevamp.data.model.response.shopgroupsimplified.AddOn
-import com.tokopedia.cartrevamp.data.model.response.shopgroupsimplified.AvailableGroup
-import com.tokopedia.cartrevamp.data.model.response.shopgroupsimplified.CartData
-import com.tokopedia.cartrevamp.data.model.response.shopgroupsimplified.CartDetail
-import com.tokopedia.cartrevamp.data.model.response.shopgroupsimplified.GiftingAddOn
-import com.tokopedia.cartrevamp.data.model.response.shopgroupsimplified.GroupShopCart
-import com.tokopedia.cartrevamp.data.model.response.shopgroupsimplified.Product
-import com.tokopedia.cartrevamp.data.model.response.shopgroupsimplified.PromoSummary
-import com.tokopedia.cartrevamp.data.model.response.shopgroupsimplified.Shop
-import com.tokopedia.cartrevamp.data.model.response.shopgroupsimplified.ShopShipment
-import com.tokopedia.cartrevamp.data.model.response.shopgroupsimplified.ShoppingSummary
-import com.tokopedia.cartrevamp.data.model.response.shopgroupsimplified.UnavailableGroup
-import com.tokopedia.cartrevamp.data.model.response.shopgroupsimplified.UnavailableSection
+import com.tokopedia.cart.data.model.response.promo.LastApplyPromoData
+import com.tokopedia.cart.data.model.response.promo.MessageGlobalPromo
+import com.tokopedia.cart.data.model.response.promo.MessageVoucherOrders
+import com.tokopedia.cart.data.model.response.promo.PromoAdditionalInfo
+import com.tokopedia.cart.data.model.response.promo.PromoEmptyCartInfo
+import com.tokopedia.cart.data.model.response.promo.PromoErrorDetail
+import com.tokopedia.cart.data.model.response.promo.PromoMessageInfo
+import com.tokopedia.cart.data.model.response.promo.VoucherOrders
+import com.tokopedia.cart.data.model.response.shopgroupsimplified.Action
+import com.tokopedia.cart.data.model.response.shopgroupsimplified.AddOn
+import com.tokopedia.cart.data.model.response.shopgroupsimplified.AvailableGroup
+import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
+import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartDetail
+import com.tokopedia.cart.data.model.response.shopgroupsimplified.GiftingAddOn
+import com.tokopedia.cart.data.model.response.shopgroupsimplified.GroupShopCart
+import com.tokopedia.cart.data.model.response.shopgroupsimplified.Product
+import com.tokopedia.cart.data.model.response.shopgroupsimplified.PromoSummary
+import com.tokopedia.cart.data.model.response.shopgroupsimplified.Shop
+import com.tokopedia.cart.data.model.response.shopgroupsimplified.ShopShipment
+import com.tokopedia.cart.data.model.response.shopgroupsimplified.ShoppingSummary
+import com.tokopedia.cart.data.model.response.shopgroupsimplified.UnavailableGroup
+import com.tokopedia.cart.data.model.response.shopgroupsimplified.UnavailableSection
 import com.tokopedia.cartrevamp.domain.model.cartlist.SummaryTransactionUiModel
 import com.tokopedia.cartrevamp.view.uimodel.CartAddOnData
 import com.tokopedia.cartrevamp.view.uimodel.CartAddOnProductData
@@ -80,16 +80,12 @@ object CartUiModelMapper {
         )
     }
 
-    fun mapChooseAddressUiModel(): CartChooseAddressHolderData {
-        return CartChooseAddressHolderData()
-    }
-
     fun mapCartEmptyUiModel(context: Context?): CartEmptyHolderData {
         return CartEmptyHolderData(
             title = context?.getString(R.string.checkout_module_keranjang_belanja_kosong_new)
                 ?: "",
             desc = context?.getString(R.string.checkout_empty_cart_sub_message_new) ?: "",
-            imgUrl = CartConstant.CART_EMPTY_DEFAULT_IMG_URL,
+            imgUrl = CartConstant.CART_EMPTY_NEW_DEFAULT_IMG_URL,
             btnText = context?.getString(R.string.checkout_module_mulai_belanja) ?: ""
         )
     }
@@ -177,7 +173,7 @@ object CartUiModelMapper {
                 groupBadge = availableGroup.groupInformation.badgeUrl
                 groupAppLink = availableGroup.groupInformation.appLink
                 isFulfillment = availableGroup.isFulfillment
-                fulfillmentName = ""
+                fulfillmentName = availableGroup.groupInformation.description
                 fulfillmentBadgeUrl = availableGroup.groupInformation.descriptionBadgeUrl
                 estimatedTimeArrival = availableGroup.shipmentInformation.estimation
                 isShowPin = availableGroup.pinned.isPinned
@@ -610,6 +606,7 @@ object CartUiModelMapper {
             warehouseId = product.warehouseId
             bundleIds = product.bundleIds
             addOnsProduct = mapCartAddOnData(product.addOn)
+            showBundlePrice = cartData.showBundlePrice
             isBmGmProduct = checkIsBmGmProduct(cartDetail)
             bmGmCartInfoData = if (isBmGmProduct) mapBmGmProductData(cartDetail, shopData) else CartDetailInfo()
             isShowBmGmDivider = checkNeedToShowBmGmDivider(cartDetail, productId)

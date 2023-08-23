@@ -150,7 +150,7 @@ class FeedPlusDetailFragment :
                 override fun onErrorCreatingUrl(linkerError: LinkerError?) {
                     showToast(
                         message = linkerError?.errorMessage
-                            ?: getString(R.string.default_request_error_unknown),
+                            ?: getString(com.tokopedia.abstraction.R.string.default_request_error_unknown),
                         type = Toaster.TYPE_ERROR
                     )
                 }

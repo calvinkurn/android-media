@@ -140,8 +140,7 @@ class CheckoutAddOnProcessor @Inject constructor(
                                                                         checkoutItems[i] =
                                                                             cartItemModel.copy(
                                                                                 isError = true,
-                                                                                errorMessage =
-                                                                                uploadPrescriptionUiModel.rejectedWording
+                                                                                errorMessage = uploadPrescriptionUiModel.rejectedWording
                                                                             )
                                                                         shouldResetCourier = true
                                                                     } else {

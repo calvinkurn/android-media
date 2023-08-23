@@ -1,5 +1,6 @@
 package com.tokopedia.cartrevamp.view.helper
 
+import com.tokopedia.cart.view.uimodel.CartItemHolderData.Companion.BUNDLING_ITEM_FOOTER
 import com.tokopedia.cartrevamp.view.uimodel.CartGroupHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartModel
@@ -179,6 +180,24 @@ object CartDataHelper {
         }
 
         return null
+    }
+
+    fun getNearestCartItemHolderDataPosition(startingIndex: Int, cartDataList: ArrayList<Any>): Int {
+        outer@ for (i in startingIndex until cartDataList.size) {
+            when (val data = cartDataList[i]) {
+                is CartItemHolderData -> {
+                    if (data.isBundlingItem && data.isMultipleBundleProduct && data.bundlingItemPosition != BUNDLING_ITEM_FOOTER) {
+                        continue@outer
+                    }
+                    if (data.isError) {
+                        return -1
+                    }
+                    return i
+                }
+                hasReachAllShopItems(data) -> return -1
+            }
+        }
+        return -1
     }
 
     fun getSelectedAvailableCartItemData(cartDataList: ArrayList<Any>): List<CartItemHolderData> {

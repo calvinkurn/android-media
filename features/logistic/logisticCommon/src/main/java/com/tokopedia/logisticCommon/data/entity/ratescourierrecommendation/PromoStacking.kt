@@ -89,6 +89,6 @@ data class PromoStacking(
     @SerializedName("bo_campaign_id")
     val boCampaignId: Long = 0,
 
-    @SerializedName("quota")
-    val quota: Long = 0
+    @SerializedName("quota_message")
+    val quotaMessage: String = ""
 )

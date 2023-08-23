@@ -564,6 +564,7 @@ public interface ApplinkConst {
         String GOLD_MERCHANT = "sellerapp://gold";
         String SELLER_APP_HOME = "sellerapp://home";
         String TOPADS_DASHBOARD = "sellerapp://topads";
+        String TOPADS_DASH_BOARD = "sellerapp://topads/dashboard";
         String POWER_MERCHANT_SUBSCRIBE = "sellerapp://power_merchant/subscribe";
         String PM_BENEFIT_PACKAGE = "sellerapp://power_merchant/benefit-package";
         String BROWSER = "sellerapp://browser";
@@ -667,6 +668,9 @@ public interface ApplinkConst {
     interface Query {
         String ORDER_TRACKING_ORDER_ID = "order_id";
         String ORDER_TRACKING_URL_LIVE_TRACKING = "url_live_tracking";
+
+        String TX_ID = "tx_id";
+        String GROUP_TYPE = "group_type";
         String ORDER_TRACKING_CALLER = "caller";
 
         String IMAGE_PREVIEW_FILELOC = "fileloc";

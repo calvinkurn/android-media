@@ -5,8 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/Unify_Background"
-    android:foreground="?selectableItemBackground"
-    android:paddingTop="16dp">
+    android:foreground="?selectableItemBackground" >
 
 
     <com.tokopedia.iconunify.IconUnify
@@ -27,6 +26,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -48,6 +48,7 @@
         android:text="@string/tersedia_bayar_di_tempat"
         android:visibility="visible"
         app:labelType="general_light_grey"
+        android:layout_marginTop="16dp"
         android:layout_marginStart="4dp"
         app:layout_goneMarginStart="0dp"
         app:layout_constraintStart_toEndOf="@id/fl_image_container"
@@ -59,11 +60,10 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
-        app:layout_goneMarginStart="0dp"
         android:layout_weight="1"
         android:textColor="@color/Unify_NN600"
         app:layout_constraintStart_toEndOf="@id/lbl_cod_available_eta"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@id/fl_image_container"
         app:typographyType="display_3"
         tools:text="Kuota: 5x" />
 
@@ -80,8 +80,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="12dp"
-        app:layout_goneMarginTop="16dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="12dp"
         android:lineSpacingExtra="4sp"
         android:textColor="@color/Unify_NN950"

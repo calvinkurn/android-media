@@ -1,5 +1,7 @@
 apply plugin: 'com.android.application'
-apply plugin: 'embrace-swazzler'
+if(project.hasProperty('enableEmbrace')) {
+    apply plugin: 'embrace-swazzler'
+}
 apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'kotlin-android'
 apply plugin: 'newrelic'

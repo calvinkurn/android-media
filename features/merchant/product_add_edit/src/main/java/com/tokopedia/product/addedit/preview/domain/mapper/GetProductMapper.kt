@@ -151,22 +151,22 @@ class GetProductMapper @Inject constructor() {
 
     private fun mapDetailInputModel(product: Product): DetailInputModel =
         DetailInputModel(
-            product.productName,
-            product.productName,
-            product.category.name,
-            product.category.id,
-            product.price,
-            product.stock,
-            product.minOrder,
-            product.condition,
-            product.sku,
-            getActiveStatus(product.status),
+            productName = product.productName,
+            currentProductName = product.productName,
+            categoryName = product.category.name,
+            categoryId = product.category.id,
+            price = product.price,
+            stock = product.stock,
+            minOrder = product.minOrder,
+            condition = product.condition,
+            sku = product.sku,
+            status = getActiveStatus(product.status),
             imageUrlOrPathList = mapImageUrlOrPathList(product),
             preorder = mapPreorderInputModel(product.preorder),
             wholesaleList = mapWholeSaleInputModel(product.wholesales),
             pictureList = mapPictureInputModel(product.pictures),
             productShowCases = mapProductShowCaseInputModel(product.menus),
-            null
+            specifications = null
         )
 
     private fun mapImageUrlOrPathList(product: Product): MutableList<String> {

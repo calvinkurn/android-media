@@ -1,7 +1,9 @@
 package com.tokopedia.checkout.revamp.view
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
 import com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics
 import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase
 import com.tokopedia.checkout.domain.usecase.CheckoutUseCase
@@ -19,6 +21,7 @@ import com.tokopedia.checkout.revamp.view.processor.CheckoutPaymentProcessor
 import com.tokopedia.checkout.revamp.view.processor.CheckoutProcessor
 import com.tokopedia.checkout.revamp.view.processor.CheckoutPromoProcessor
 import com.tokopedia.checkout.revamp.view.processor.CheckoutToasterProcessor
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPageToaster
 import com.tokopedia.checkout.view.converter.ShipmentDataRequestConverter
 import com.tokopedia.common_epharmacy.usecase.EPharmacyPrepareProductsGroupUseCase
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
@@ -37,6 +40,7 @@ import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import io.mockk.MockKAnnotations
+import io.mockk.coEvery
 import io.mockk.impl.annotations.MockK
 import org.junit.Before
 import org.junit.Rule
@@ -49,7 +53,7 @@ open class BaseCheckoutViewModelTest {
     @MockK
     lateinit var getShipmentAddressFormV4UseCase: GetShipmentAddressFormV4UseCase
 
-    @MockK
+    @MockK(relaxed = true)
     lateinit var saveShipmentStateGqlUseCase: SaveShipmentStateGqlUseCase
 
     @MockK
@@ -73,13 +77,12 @@ open class BaseCheckoutViewModelTest {
     @MockK
     lateinit var ratesWithScheduleUseCase: GetRatesWithScheduleDeliveryCoroutineUseCase
 
-    @MockK
-    lateinit var ratesResponseStateConverter: RatesResponseStateConverter
+    private val ratesResponseStateConverter: RatesResponseStateConverter =
+        RatesResponseStateConverter()
 
-    @MockK
-    lateinit var shippingCourierConverter: ShippingCourierConverter
+    private val shippingCourierConverter: ShippingCourierConverter = ShippingCourierConverter()
 
-    @MockK
+    @MockK(relaxed = true)
     lateinit var userSessionInterface: UserSessionInterface
 
     @MockK
@@ -88,14 +91,13 @@ open class BaseCheckoutViewModelTest {
     @MockK
     lateinit var validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase
 
-    @MockK
+    @MockK(relaxed = true)
     lateinit var mTrackerShipment: CheckoutAnalyticsCourierSelection
 
     @MockK(relaxed = true)
     lateinit var toasterProcessor: CheckoutToasterProcessor
 
-    @MockK
-    lateinit var helper: CheckoutDataHelper
+    var helper: CheckoutDataHelper = CheckoutDataHelper()
 
     @MockK
     lateinit var prescriptionIdsUseCase: GetPrescriptionIdsUseCaseCoroutine
@@ -103,7 +105,7 @@ open class BaseCheckoutViewModelTest {
     @MockK
     lateinit var epharmacyUseCase: EPharmacyPrepareProductsGroupUseCase
 
-    @MockK
+    @MockK(relaxUnitFun = true)
     lateinit var saveAddOnProductUseCase: SaveAddOnStateUseCase
 
     @MockK
@@ -112,25 +114,36 @@ open class BaseCheckoutViewModelTest {
     @MockK
     lateinit var checkoutGqlUseCase: CheckoutUseCase
 
-    @MockK
+    @MockK(relaxed = true)
     lateinit var checkoutAnalyticsCourierSelection: CheckoutAnalyticsCourierSelection
 
-    @MockK
-    lateinit var shipmentDataRequestConverter: ShipmentDataRequestConverter
+    private val shipmentDataRequestConverter: ShipmentDataRequestConverter =
+        ShipmentDataRequestConverter(
+            Gson()
+        )
 
-    @MockK
-    lateinit var dataConverter: CheckoutDataConverter
+    var dataConverter: CheckoutDataConverter = CheckoutDataConverter()
 
-    @MockK
+    @MockK(relaxed = true)
     lateinit var mTrackerTradeIn: CheckoutTradeInAnalytics
+
+    @MockK(relaxed = true)
+    lateinit var mTrackerPurchaseProtection: CheckoutAnalyticsPurchaseProtection
 
     private val dispatchers: CoroutineDispatchers = CoroutineTestDispatchers
 
     lateinit var viewModel: CheckoutViewModel
 
+    var latestToaster: CheckoutPageToaster? = null
+
     @Before
     fun setup() {
         MockKAnnotations.init(this)
+        coEvery {
+            toasterProcessor.commonToaster.emit(any())
+        } answers {
+            latestToaster = it.invocation.args[0] as CheckoutPageToaster
+        }
         viewModel = CheckoutViewModel(
             CheckoutCartProcessor(
                 getShipmentAddressFormV4UseCase,
@@ -173,6 +186,9 @@ open class BaseCheckoutViewModelTest {
             CheckoutProcessor(
                 checkoutGqlUseCase,
                 shipmentDataRequestConverter,
+                mTrackerShipment,
+                userSessionInterface,
+                helper,
                 dispatchers
             ),
             CheckoutCalculator(helper, dispatchers),
@@ -180,6 +196,7 @@ open class BaseCheckoutViewModelTest {
             dataConverter,
             mTrackerShipment,
             mTrackerTradeIn,
+            mTrackerPurchaseProtection,
             helper,
             userSessionInterface,
             dispatchers
