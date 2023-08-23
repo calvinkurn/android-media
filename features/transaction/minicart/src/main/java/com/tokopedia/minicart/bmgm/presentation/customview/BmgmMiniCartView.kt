@@ -28,8 +28,8 @@ import com.tokopedia.minicart.bmgm.presentation.model.BmgmMiniCartDataUiModel
 import com.tokopedia.minicart.bmgm.presentation.model.BmgmMiniCartVisitable
 import com.tokopedia.minicart.bmgm.presentation.model.BmgmState
 import com.tokopedia.minicart.bmgm.presentation.viewmodel.BmgmMiniCartViewModel
-import com.tokopedia.minicart.databinding.FragmentBmgmMiniCartWidgetBinding
 import com.tokopedia.minicart.databinding.ViewBmgmMiniCartSubTotalBinding
+import com.tokopedia.minicart.databinding.ViewBmgmMiniCartWidgetBinding
 import javax.inject.Inject
 
 /**
@@ -47,7 +47,7 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener, Default
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
-    private var binding: FragmentBmgmMiniCartWidgetBinding? = null
+    private var binding: ViewBmgmMiniCartWidgetBinding? = null
     private var footerBinding: ViewBmgmMiniCartSubTotalBinding? = null
     private val miniCartAdapter by lazy { BmgmMiniCartAdapter(this) }
     private val viewModel by lazy {
@@ -58,7 +58,7 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener, Default
     private var param = BmgmParamModel()
 
     init {
-        binding = FragmentBmgmMiniCartWidgetBinding.inflate(
+        binding = ViewBmgmMiniCartWidgetBinding.inflate(
             LayoutInflater.from(context), this, true
         ).apply {
             footerBinding = ViewBmgmMiniCartSubTotalBinding.bind(root)
