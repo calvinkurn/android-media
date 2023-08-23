@@ -308,7 +308,7 @@ object CartUiModelMapper {
         unavailableSectionList.add(disabledItemHeaderUiModel)
 
         var showAccordion = false
-        if (cartData.unavailableSections.size > 1) {
+        if (cartData.unavailableSections.size > 3) {
             showAccordion = true
         }
 
