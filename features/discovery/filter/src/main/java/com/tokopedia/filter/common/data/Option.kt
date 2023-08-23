@@ -3,13 +3,13 @@ package com.tokopedia.filter.common.data
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.filter.bottomsheet.filtergeneraldetail.OptionFilterShort
+import com.tokopedia.filter.bottomsheet.filtergeneraldetail.GeneralFilterSortOptions
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 class Option(@SerializedName("name")
              @Expose
-             var name: String = "",
+             override var name: String = "",
 
              @SerializedName("key")
              @Expose
@@ -63,23 +63,23 @@ class Option(@SerializedName("name")
              @Expose
              var levelTwoCategoryList: List<LevelTwoCategory> = listOf(),
 
-             var inputState: String = "") : Parcelable, Cloneable, OptionFilterShort {
+             override var inputState: String = "") : Parcelable, Cloneable, GeneralFilterSortOptions {
 
     public override fun clone(): Option {
         return Option(
-                name = name,
-                key = key,
-                value = value,
-                inputType = inputType,
-                hexColor = hexColor,
-                metric = metric,
-                totalData = totalData,
-                valMin = valMin,
-                iconUrl = iconUrl,
-                description = description,
-                isPopular = isPopular,
-                isNew = isNew,
-                inputState = inputState
+            name = name,
+            key = key,
+            value = value,
+            inputType = inputType,
+            hexColor = hexColor,
+            metric = metric,
+            totalData = totalData,
+            valMin = valMin,
+            iconUrl = iconUrl,
+            description = description,
+            isPopular = isPopular,
+            isNew = isNew,
+            inputState = inputState
         )
     }
 
@@ -92,7 +92,7 @@ class Option(@SerializedName("name")
     val isOfficialOption: Boolean
         get() = KEY_OFFICIAL == key
 
-    val uniqueId: String
+    override val uniqueId: String
         get() = key + UID_FIRST_SEPARATOR_SYMBOL + value + UID_SECOND_SEPARATOR_SYMBOL + name
 
     val isTypeRadio: Boolean
@@ -119,8 +119,24 @@ class Option(@SerializedName("name")
     val isRatingOption: Boolean
         get() = key == KEY_RATING
 
-    override fun getTitle(): String {
-        return name
+    override fun isTypeOptionRadio(): Boolean {
+        return true
+    }
+
+    override fun getHexColorOption(): String {
+        return hexColor
+    }
+
+    override fun getOptionsIconUrl(): String {
+        return iconUrl
+    }
+
+    override fun isNewOption(): Boolean {
+        return isNew
+    }
+
+    override fun getDescriptionOption(): String {
+        return description
     }
 
     override fun equals(other: Any?): Boolean {
@@ -131,8 +147,8 @@ class Option(@SerializedName("name")
         val option = other as Option
 
         return (this.key == option.key
-                && this.value == option.value
-                && this.name == option.name)
+            && this.value == option.value
+            && this.name == option.name)
     }
 
     companion object {

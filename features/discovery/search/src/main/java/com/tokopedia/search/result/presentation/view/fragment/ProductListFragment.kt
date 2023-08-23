@@ -36,6 +36,7 @@ import com.tokopedia.discovery.common.reimagine.ReimagineRollence
 import com.tokopedia.discovery.common.reimagine.Search2Component
 import com.tokopedia.discovery.common.utils.Dimension90Utils
 import com.tokopedia.filter.bottomsheet.filtergeneraldetail.FilterGeneralDetailBottomSheet
+import com.tokopedia.filter.bottomsheet.filtergeneraldetail.GeneralFilterSortOptions
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.common.helper.getSortFilterCount
@@ -594,8 +595,8 @@ class ProductListFragment: BaseDaggerFragment(),
 
     override fun trackScreenAuthenticated() {
         if (userVisibleHint
-            && activity != null
-            && activity?.applicationContext != null) {
+                && activity != null
+                && activity?.applicationContext != null) {
             SearchTracking.screenTrackSearchSectionFragment(screenName)
         }
     }
@@ -689,14 +690,14 @@ class ProductListFragment: BaseDaggerFragment(),
         activity?.let {
             AdultManager.handleActivityResult(it, requestCode, resultCode, data)
             handleProductCardOptionsActivityResult(
-                requestCode = requestCode,
-                resultCode = resultCode,
-                data = data,
-                wishlistCallback = object : ProductCardOptionsWishlistCallback {
-                    override fun onReceiveWishlistResult(productCardOptionsModel: ProductCardOptionsModel) {
-                        handleWishlistAction(productCardOptionsModel)
+                    requestCode = requestCode,
+                    resultCode = resultCode,
+                    data = data,
+                    wishlistCallback = object : ProductCardOptionsWishlistCallback {
+                        override fun onReceiveWishlistResult(productCardOptionsModel: ProductCardOptionsModel) {
+                            handleWishlistAction(productCardOptionsModel)
+                        }
                     }
-                }
             )
 
             atcVariantBottomSheetLauncher.onActivityResult(requestCode, resultCode, data)
@@ -801,8 +802,8 @@ class ProductListFragment: BaseDaggerFragment(),
     private fun createTopAdsProductFreeOngkirForTracking(item: ProductItemDataView?): FreeOngkir {
         return if (item?.freeOngkirDataView != null) {
             FreeOngkir(
-                item.freeOngkirDataView.isActive,
-                item.freeOngkirDataView.imageUrl
+                    item.freeOngkirDataView.isActive,
+                    item.freeOngkirDataView.imageUrl
             )
         } else FreeOngkir()
     }
@@ -1298,9 +1299,9 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override fun sendTrackingEventMoEngageSearchAttempt(
-        query: String?,
-        hasProductList: Boolean,
-        category: HashMap<String?, String?>?,
+            query: String?,
+            hasProductList: Boolean,
+            category: HashMap<String?, String?>?,
     ) {
         SearchTracking.trackMoEngageSearchAttempt(query, hasProductList, category)
     }
@@ -1358,9 +1359,9 @@ class ProductListFragment: BaseDaggerFragment(),
 
     override val lastProductItemPositionFromCache: Int
         get() = activity?.applicationContext?.let {
-            val cache = LocalCacheHandler(it, SEARCH_RESULT_ENHANCE_ANALYTIC)
-            return cache.getInt(LAST_POSITION_ENHANCE_PRODUCT, 0)
-        } ?: 0
+                val cache = LocalCacheHandler(it, SEARCH_RESULT_ENHANCE_ANALYTIC)
+                return cache.getInt(LAST_POSITION_ENHANCE_PRODUCT, 0)
+            } ?: 0
     //endregion
 
     //region on boarding / coachmark
@@ -1380,9 +1381,11 @@ class ProductListFragment: BaseDaggerFragment(),
     }
     //endregion
 
+    //region Bottom Sheet Sort
     private fun openBottomSheetSortRevamp() {
         presenter?.openSortPage(getSearchParameter()?.getSearchParameterMap())
     }
+    //endregion
 
     override fun onLocalizingAddressSelected() {
         presenter?.onLocalizingAddressSelected()
@@ -1391,8 +1394,8 @@ class ProductListFragment: BaseDaggerFragment(),
     //region dropdown quick filter
     override fun openBottomsheetMultipleOptionsQuickFilter(filter: Filter) {
         val filterDetailCallback = object: FilterGeneralDetailBottomSheet.Callback {
-            override fun onApplyButtonClicked(optionList: List<Option>?) {
-                presenter?.onApplyDropdownQuickFilter(optionList)
+            override fun onApplyButtonClicked(optionList: List<GeneralFilterSortOptions>?) {
+                presenter?.onApplyDropdownQuickFilter(optionList?.filterIsInstance<Option>())
             }
         }
 

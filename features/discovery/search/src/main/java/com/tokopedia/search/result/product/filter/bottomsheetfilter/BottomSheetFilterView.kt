@@ -9,11 +9,10 @@ interface BottomSheetFilterView {
         dynamicFilterModel: DynamicFilterModel?,
         callback: BottomSheetFilterCallback,
     )
-    fun setDynamicFilter(dynamicFilterModel: DynamicFilterModel)
 
     fun openBottomSheetSort(
         dynamicFilterModel: DynamicFilterModel?,
         callback: BottomSheetFilterCallback,
     )
-    fun setDynamicSort(dynamicFilterModel: DynamicFilterModel)
+    fun setDynamicFilter(dynamicFilterModel: DynamicFilterModel, isSortFilterPage: Boolean)
 }

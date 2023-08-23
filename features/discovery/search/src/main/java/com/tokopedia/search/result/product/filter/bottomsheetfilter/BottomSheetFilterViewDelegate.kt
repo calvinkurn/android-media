@@ -6,9 +6,8 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import com.tokopedia.discovery.common.utils.Dimension90Utils
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
-import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet.*
 import com.tokopedia.filter.bottomsheet.filtergeneraldetail.FilterGeneralDetailBottomSheet
-import com.tokopedia.filter.bottomsheet.filtergeneraldetail.SortListener
+import com.tokopedia.filter.bottomsheet.filtergeneraldetail.GeneralFilterSortOptions
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Sort
 import com.tokopedia.filter.common.helper.toMapParam
@@ -44,7 +43,7 @@ class BottomSheetFilterViewDelegate @Inject constructor(
     FragmentProvider by fragmentProvider,
     SearchParameterProvider by searchParameterProvider,
     ScreenNameProvider by screenNameProvider,
-    Callback,
+    SortFilterBottomSheet.Callback,
     LifecycleObserver {
 
     private var sortFilterBottomSheet: SortFilterBottomSheet? = null
@@ -84,34 +83,25 @@ class BottomSheetFilterViewDelegate @Inject constructor(
         }
     }
 
-    override fun setDynamicFilter(dynamicFilterModel: DynamicFilterModel) {
-        val searchParameterMap = getSearchParameter()?.getSearchParameterHashMap() ?: mapOf()
-
-        filterController.appendFilterList(searchParameterMap, dynamicFilterModel.data.filter)
-
-        sortFilterBottomSheet?.setDynamicFilterModel(dynamicFilterModel)
-    }
-
     override fun openBottomSheetSort(
         dynamicFilterModel: DynamicFilterModel?,
-        callback: BottomSheetFilterCallback,
+        callback: BottomSheetFilterCallback
     ) {
         if (!getFragment().isAdded) return
         val context = context ?: return
         this.callback = callback
         val listSort = dynamicFilterModel?.data?.sort
-        val paramsQuery = getSearchParameter()?.getSearchParameterHashMap() ?: hashMapOf()
-        val selectedSort = dynamicFilterModel?.findSelectedSort(paramsQuery)
+        val title = context.resources.getString(com.tokopedia.filter.R.string.title_sort_but)
+        val selectedSort = dynamicFilterModel?.getSelectedSort()
 
         sortBottomSheet = FilterGeneralDetailBottomSheet().also {
             it.show(
-                fragmentManager= getFragment().parentFragmentManager,
-                sortOptions = listSort,
-                selectedOption= selectedSort,
-                callback= createSortListener(),
-                titleBottomSheet= context.resources.getString(com.tokopedia.filter.R.string.title_sort_but),
-                buttonApplyFilterDetailText= context.resources.getString(com.tokopedia.filter.R.string.dynamic_filter_finish_button_text),
-                isNeedShowLoader = listSort.isNullOrEmpty()
+                fragmentManager = getFragment().parentFragmentManager,
+                filter = listSort.generalDetailOptionsMapper(title, selectedSort),
+                selectedOption = selectedSort,
+                isNeedShowLoader = listSort.isNullOrEmpty(),
+                callback = createSortListener(),
+                enableResetButton = false
             )
         }
 
@@ -122,18 +112,18 @@ class BottomSheetFilterViewDelegate @Inject constructor(
         }
     }
 
-    private fun createSortListener() = object : SortListener {
-        override fun onSortOptionClick(sort: Sort) {
-            callback?.getProductCount(createMapParameterSortFilter(sort))
-        }
-
-        override fun onApplySort(sort: Sort) {
-            val mapParameter = createMapParameterSortFilter(sort)
-            val applySortFilterModel = createApplySortFilterModel(sort)
+    private fun createSortListener() = object : FilterGeneralDetailBottomSheet.Callback {
+        override fun onApplyButtonClicked(optionList: List<GeneralFilterSortOptions>?) {
+            val optionsSelected = optionList?.toSelectedSort() ?: return
+            val mapParameter = createMapParameterSortFilter(optionsSelected)
+            val applySortFilterModel = createApplySortFilterModel(optionsSelected)
 
             sortBottomSheet = null
             callback?.onApplySortFilter(mapParameter)
             onApplySortFilter(applySortFilterModel)
+        }
+        override fun onOptionClick(option: GeneralFilterSortOptions, isChecked: Boolean, position: Int){
+            callback?.getProductCount(createMapParameterSortFilter(option as Sort))
         }
     }
 
@@ -142,13 +132,13 @@ class BottomSheetFilterViewDelegate @Inject constructor(
         mapParameter[sort.key] = sort.value
         return mapParameter
     }
-    private fun createApplySortFilterModel(sort: Sort): ApplySortFilterModel {
+    private fun createApplySortFilterModel(sort: Sort): SortFilterBottomSheet.ApplySortFilterModel {
         val mapParameter = getSearchParameter()?.getSearchParameterHashMap() ?: hashMapOf()
         mapParameter[sort.key] = sort.value
         val selectedFilterMap = filterController.getActiveFilterMap()
         val selectedSortMap = mapSelectedSort(sort)
         val sortAutoFilterMap = getSortAutoFilterMap(sort)
-        return ApplySortFilterModel(
+        return SortFilterBottomSheet.ApplySortFilterModel(
             mapParameter,
             selectedFilterMap,
             selectedSortMap,
@@ -170,16 +160,25 @@ class BottomSheetFilterViewDelegate @Inject constructor(
         return if (hasNoDuplicateFilter) autoSort else emptyMap()
     }
 
-    override fun setDynamicSort(dynamicFilterModel: DynamicFilterModel) {
+    override fun setDynamicFilter(dynamicFilterModel: DynamicFilterModel, isSortFilterPage: Boolean) {
+        val searchParameterMap = getSearchParameter()?.getSearchParameterHashMap() ?: mapOf()
+        val sortList = dynamicFilterModel.data.sort
+        val selectedSort = dynamicFilterModel.getSelectedSort()
+
+        filterController.appendFilterList(searchParameterMap, dynamicFilterModel.data.filter)
+        if(isSortFilterPage)
+            sortFilterBottomSheet?.setDynamicFilterModel(dynamicFilterModel)
+        else
+            sortBottomSheet?.setDynamicItem(sortList.generalDetailOptionsMapper(selectedSort = selectedSort), selectedSort)
+    }
+
+    private fun DynamicFilterModel.getSelectedSort(): Sort? {
         val paramsQuery = getSearchParameter()?.getSearchParameterHashMap() ?: hashMapOf()
-
-        filterController.appendFilterList(paramsQuery, dynamicFilterModel.data.filter)
-
-        sortBottomSheet?.setDynamicSortItem(dynamicFilterModel.data.sort, dynamicFilterModel.findSelectedSort(paramsQuery))
+        return this.findSelectedSort(paramsQuery)
     }
 
     override fun onApplySortFilter(
-        applySortFilterModel: ApplySortFilterModel,
+        applySortFilterModel: SortFilterBottomSheet.ApplySortFilterModel,
     ) {
         callback?.onApplySortFilter(applySortFilterModel.mapParameter)
 
@@ -198,7 +197,7 @@ class BottomSheetFilterViewDelegate @Inject constructor(
         parameterListener.reloadData()
     }
 
-    private fun applySortAndFilter(applySortFilterModel: ApplySortFilterModel) {
+    private fun applySortAndFilter(applySortFilterModel: SortFilterBottomSheet.ApplySortFilterModel) {
         SearchSortFilterTracking.eventApplyFilter(
             keyword = getSearchParameter()?.getSearchQuery().orEmpty(),
             pageSource = pageSource,

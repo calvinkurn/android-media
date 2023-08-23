@@ -4,7 +4,6 @@ import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.GET_PRODUCT_COUNT_USE_CASE
 import com.tokopedia.filter.common.data.DynamicFilterModel
-import com.tokopedia.filter.common.data.Sort
 import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.result.product.QueryKeyProvider
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressPresenterDelegate
@@ -72,9 +71,7 @@ class BottomSheetFilterPresenterDelegate @Inject constructor(
         if (searchParameter == null) return
         if (!isBottomSheetFilterEnabled) return
 
-        isBottomSheetFilterEnabled = false
-
-        view.sendTrackingOpenFilterPage()
+        initialOpenFilterSortPage()
         view.openBottomSheetFilter(dynamicFilterModel, this)
 
         if (dynamicFilterModel == null) {
@@ -92,33 +89,31 @@ class BottomSheetFilterPresenterDelegate @Inject constructor(
     override fun openSortPage(searchParameter: Map<String, Any>?) {
         if (searchParameter == null) return
         if (!isBottomSheetFilterEnabled) return
-
-        isBottomSheetFilterEnabled = false
-
-        view.sendTrackingOpenFilterPage()
-        view.openBottomSheetSort(
-            dynamicFilterModel,
-            this
-        )
-
+        initialOpenFilterSortPage()
+        view.openBottomSheetSort(dynamicFilterModel, this)
         if (dynamicFilterModel == null) {
             val getDynamicFilterRequestParams = requestParamsGenerator.createRequestDynamicFilterParams(
                 searchParameter,
-                chooseAddressDelegate.getChooseAddressParams()
+                chooseAddressDelegate.getChooseAddressParams(),
             )
             getDynamicFilterUseCase.get().execute(
                 getDynamicFilterRequestParams,
-                createGetDynamicSortModelSubscriber()
+                createGetDynamicFilterModelSubscriber(isSortFilterPage = false)
             )
         }
     }
 
-    private fun createGetDynamicFilterModelSubscriber(): Subscriber<DynamicFilterModel> {
+    private fun initialOpenFilterSortPage() {
+        isBottomSheetFilterEnabled = false
+        view.sendTrackingOpenFilterPage()
+    }
+
+    private fun createGetDynamicFilterModelSubscriber(isSortFilterPage: Boolean = true): Subscriber<DynamicFilterModel> {
         return object : Subscriber<DynamicFilterModel>() {
             override fun onCompleted() {}
 
             override fun onNext(dynamicFilterModel: DynamicFilterModel) {
-                handleGetDynamicFilterSuccess(dynamicFilterModel)
+                handleGetDynamicFilterSuccess(dynamicFilterModel, isSortFilterPage)
             }
 
             override fun onError(e: Throwable) {
@@ -127,52 +122,21 @@ class BottomSheetFilterPresenterDelegate @Inject constructor(
         }
     }
 
-    private fun createGetDynamicSortModelSubscriber(): Subscriber<DynamicFilterModel> {
-        return object : Subscriber<DynamicFilterModel>() {
-            override fun onCompleted() {}
-
-            override fun onNext(dynamicFilterModel: DynamicFilterModel) {
-                handleGetDynamicSortSuccess(dynamicFilterModel)
-            }
-
-            override fun onError(e: Throwable) {
-                handleGetDynamicFilterFailed()
-            }
-        }
-    }
-
-    private fun handleGetDynamicFilterSuccess(dynamicFilterModel: DynamicFilterModel) {
+    private fun handleGetDynamicFilterSuccess(dynamicFilterModel: DynamicFilterModel, isSortFilterPage: Boolean) {
         if (!dynamicFilterModel.isEmpty()) {
             this.dynamicFilterModel = dynamicFilterModel
-            getViewToSetDynamicFilterModel(dynamicFilterModel)
+            getViewToSetDynamicFilterModel(dynamicFilterModel, isSortFilterPage)
         } else {
             handleGetDynamicFilterFailed()
         }
     }
 
-    private fun handleGetDynamicSortSuccess(dynamicFilterModel: DynamicFilterModel) {
-        if (!dynamicFilterModel.isEmpty()) {
-            this.dynamicFilterModel = dynamicFilterModel
-            getViewToSetDynamicSortModel(dynamicFilterModel)
-        } else {
-            handleGetDynamicSortFailed()
-        }
-    }
-
-    private fun getViewToSetDynamicFilterModel(dynamicFilterModel: DynamicFilterModel) {
-        view.setDynamicFilter(dynamicFilterModel)
-    }
-
-    private fun getViewToSetDynamicSortModel(dynamicFilterModel: DynamicFilterModel) {
-        view.setDynamicSort(dynamicFilterModel)
+    private fun getViewToSetDynamicFilterModel(dynamicFilterModel: DynamicFilterModel, isSortFilterPage: Boolean = true) {
+        view.setDynamicFilter(dynamicFilterModel, isSortFilterPage)
     }
 
     private fun handleGetDynamicFilterFailed() {
         getViewToSetDynamicFilterModel(createSearchProductDefaultFilter())
-    }
-
-    private fun handleGetDynamicSortFailed() {
-        getViewToSetDynamicSortModel(createSearchProductDefaultFilter())
     }
 
     override fun onBottomSheetFilterDismissed() {
