@@ -1,6 +1,7 @@
 package com.tokopedia.search.result.presentation.presenter.product
 
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.discovery.common.reimagine.Search2Component
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
@@ -9,19 +10,21 @@ import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.listShouldBe
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
-import com.tokopedia.search.result.product.reimagine.ReimagineDelegate.Companion.TEMP_REIMAGINE_EXP
-import com.tokopedia.search.result.product.reimagine.ReimagineDelegate.Companion.TEMP_REIMAGINE_VARIANT_FILTER
 import com.tokopedia.search.shouldBe
 import com.tokopedia.search.utils.createSearchProductDefaultQuickFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.RequestParams
-import io.mockk.*
+import io.mockk.every
+import io.mockk.just
+import io.mockk.runs
+import io.mockk.slot
+import io.mockk.verify
+import io.mockk.verifyOrder
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.core.Is.`is`
 import org.junit.Test
 import rx.Subscriber
-import java.util.*
 import com.tokopedia.filter.quick.SortFilterItem as SortFilterItemReimagine
 
 private const val searchProductModelWithQuickFilter = "searchproduct/quickfilter/with-quick-filter.json"
@@ -368,9 +371,7 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
     fun `Search Product initialize quick filter reimagine`() {
         val searchProductModel = searchProductModelWithQuickFilter.jsonToObject<SearchProductModel>()
 
-        every {
-            abTestRemoteConfig.getString(TEMP_REIMAGINE_EXP, "")
-        } returns TEMP_REIMAGINE_VARIANT_FILTER
+        every { reimagineRollence.search2Component() } returns Search2Component.QF_VAR
 
         `Given Search Product API will return SearchProductModel`(searchProductModel)
 

@@ -49,7 +49,7 @@ object GqlResponseStub {
         prePurchaseProductRecommendationResponse = ResponseStub(
             filePath = "recommendation/success_get_prepurchase_recommendation.json",
             type = RecommendationEntity::class.java,
-            query = "productRecommendationWidget(userID",
+            query = "productRecommendationWidget",
             isError = false
         )
     }
