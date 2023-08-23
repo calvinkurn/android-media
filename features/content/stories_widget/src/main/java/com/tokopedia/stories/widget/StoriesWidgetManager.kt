@@ -31,7 +31,7 @@ import kotlinx.coroutines.launch
  * Created by kenny.hadisaputra on 27/07/23
  */
 class StoriesWidgetManager private constructor(
-    private val key: StoriesEntryPoint,
+    private val entryPoint: StoriesEntryPoint,
     context: Context,
     private val lifecycleOwner: LifecycleOwner,
     private val viewModelStoreOwner: ViewModelStoreOwner,
@@ -48,7 +48,7 @@ class StoriesWidgetManager private constructor(
     private val storiesViewListener = object : StoriesWidgetLayout.Listener {
         override fun onClickedWhenHasStories(view: StoriesWidgetLayout, state: StoriesWidgetState) {
             component.router().route(view.context, state.appLink)
-            options.trackingManager.clickEntryPoints(key)
+            options.trackingManager.clickEntryPoints(entryPoint)
         }
     }
 
@@ -58,7 +58,7 @@ class StoriesWidgetManager private constructor(
             viewModelStoreOwner,
             object : ViewModelProvider.Factory {
                 override fun <T : ViewModel> create(modelClass: Class<T>, extras: CreationExtras): T {
-                    return viewModelFactory.create(key) as T
+                    return viewModelFactory.create(entryPoint) as T
                 }
             }
         )
@@ -256,41 +256,41 @@ class StoriesWidgetManager private constructor(
     companion object {
 
         fun create(
-            key: StoriesEntryPoint,
+            entryPoint: StoriesEntryPoint,
             fragment: Fragment,
             builderOptions: Builder.() -> Unit
         ): StoriesWidgetManager {
-            val builder = Builder(key, fragment)
+            val builder = Builder(entryPoint, fragment)
             builder.builderOptions()
             return builder.build()
         }
 
         fun create(
-            key: StoriesEntryPoint,
+            entryPoint: StoriesEntryPoint,
             activity: AppCompatActivity,
             builderOptions: Builder.() -> Unit
         ): StoriesWidgetManager {
-            val builder = Builder(key, activity)
+            val builder = Builder(entryPoint, activity)
             builder.builderOptions()
             return builder.build()
         }
     }
 
     class Builder private constructor(
-        private val key: StoriesEntryPoint,
+        private val entryPoint: StoriesEntryPoint,
         private val context: Context,
         private val lifecycleOwner: LifecycleOwner,
         private val viewModelStoreOwner: ViewModelStoreOwner
     ) {
 
-        constructor(key: StoriesEntryPoint, fragment: Fragment) : this(
-            key,
+        constructor(entryPoint: StoriesEntryPoint, fragment: Fragment) : this(
+            entryPoint,
             fragment.requireContext(),
             fragment.viewLifecycleOwner,
             fragment
         )
-        constructor(key: StoriesEntryPoint, activity: AppCompatActivity) : this(
-            key,
+        constructor(entryPoint: StoriesEntryPoint, activity: AppCompatActivity) : this(
+            entryPoint,
             activity,
             activity,
             activity
@@ -298,7 +298,7 @@ class StoriesWidgetManager private constructor(
 
         private var mScrollingParent: View? = null
         private var mAnimationStrategy: AnimationStrategy = NoAnimateAnimationStrategy()
-        private var mTrackingManager: TrackingManager = DefaultTrackingManager()
+        private var mTrackingManager: TrackingManager = DefaultTrackingManager(entryPoint)
 
         fun setScrollingParent(view: View?) = builder {
             this.mScrollingParent = view
@@ -314,7 +314,7 @@ class StoriesWidgetManager private constructor(
 
         fun build(): StoriesWidgetManager {
             return StoriesWidgetManager(
-                key,
+                entryPoint,
                 context,
                 lifecycleOwner,
                 viewModelStoreOwner,
