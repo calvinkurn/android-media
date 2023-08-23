@@ -36,12 +36,6 @@
         app:sub_title="Kasdasdassad"
         app:title="Smasung" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:background="@color/Blue_B300"
-        android:id="@+id/rvContent"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
     <LinearLayout
         android:id="@+id/container_price_cta"
         app:layout_constraintBottom_toBottomOf="parent"
