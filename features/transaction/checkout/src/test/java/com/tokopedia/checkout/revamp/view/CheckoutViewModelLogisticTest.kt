@@ -1391,4 +1391,61 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             viewModel.listData.value
         )
     }
+
+    @Test
+    fun is_loading() {
+        // when
+        val result = viewModel.isLoading()
+
+        // then
+        assertEquals(false, result)
+    }
+
+    @Test
+    fun is_loading_true() {
+        // given
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(recipientAddressModel = RecipientAddressModel()),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel("123"),
+            CheckoutOrderModel("123", shipment = CheckoutOrderShipment(isLoading = true)),
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+
+        // when
+        val result = viewModel.isLoading()
+
+        // then
+        assertEquals(true, result)
+    }
+
+    @Test
+    fun is_loading_false() {
+        // given
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(recipientAddressModel = RecipientAddressModel()),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel("123"),
+            CheckoutOrderModel("123", shipment = CheckoutOrderShipment(isLoading = false)),
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+
+        // when
+        val result = viewModel.isLoading()
+
+        // then
+        assertEquals(false, result)
+    }
 }

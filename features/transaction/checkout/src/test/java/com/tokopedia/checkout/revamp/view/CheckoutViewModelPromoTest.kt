@@ -497,4 +497,32 @@ class CheckoutViewModelPromoTest : BaseCheckoutViewModelTest() {
             viewModel.listData.value
         )
     }
+
+    @Test
+    fun get_bbo_promo_codes() {
+        // given
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(recipientAddressModel = RecipientAddressModel()),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel("123"),
+            CheckoutOrderModel(
+                "123",
+                shipment = CheckoutOrderShipment(courierItemData = CourierItemData(logPromoCode = "boCode"))
+            ),
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+
+        // when
+        viewModel.generateValidateUsePromoRequest(null)
+        val result = viewModel.getBboPromoCodes()
+
+        // then
+        assertEquals(arrayListOf("boCode"), result)
+    }
 }
