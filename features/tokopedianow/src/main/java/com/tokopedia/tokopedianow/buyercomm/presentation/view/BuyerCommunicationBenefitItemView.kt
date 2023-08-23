@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowBuyerCommunicationBenefitBinding
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class BuyerCommunicationBenefitItemView @JvmOverloads constructor(
     context: Context,
@@ -31,11 +32,11 @@ class BuyerCommunicationBenefitItemView @JvmOverloads constructor(
             val endIndex = benefitText.length - 1
             val boldTextColor = ContextCompat.getColor(
                 context,
-                com.tokopedia.unifyprinciples.R.color.Unify_NN950
+                unifyprinciplesR.color.Unify_NN950
             )
             val normalTextColor = ContextCompat.getColor(
                 context,
-                com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                unifyprinciplesR.color.Unify_NN600
             )
             val boldSpan = StyleSpan(Typeface.BOLD)
 

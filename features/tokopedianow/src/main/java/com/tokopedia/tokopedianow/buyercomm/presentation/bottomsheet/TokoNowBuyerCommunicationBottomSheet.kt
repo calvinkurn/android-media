@@ -32,8 +32,9 @@ import com.tokopedia.tokopedianow.databinding.BottomsheetTokopedianowBuyerCommun
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
-class TokoNowBuyerCommunicationBottomSheet: BottomSheetUnify() {
+class TokoNowBuyerCommunicationBottomSheet : BottomSheetUnify() {
 
     companion object {
         fun newInstance(
@@ -107,12 +108,16 @@ class TokoNowBuyerCommunicationBottomSheet: BottomSheetUnify() {
     private fun showOperationHour(data: BuyerCommunicationData) {
         binding?.apply {
             context?.let { context ->
-                val warehouseStatusTextColor = if(data.isWarehouseOpen()) {
-                    ContextCompat.getColor(context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+                val warehouseStatusTextColor = if (data.isWarehouseOpen()) {
+                    ContextCompat.getColor(
+                        context,
+                        unifyprinciplesR.color.Unify_GN500
+                    )
                 } else {
-                    ContextCompat.getColor(context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_NN600)
+                    ContextCompat.getColor(
+                        context,
+                        unifyprinciplesR.color.Unify_NN600
+                    )
                 }
                 textOperationalHour.text = data.operationHour
                 textWarehouseStatus.text = data.warehouseStatus
@@ -144,17 +149,23 @@ class TokoNowBuyerCommunicationBottomSheet: BottomSheetUnify() {
 
     private fun showIllustrationImage() {
         binding?.imageIllustration?.loadImage(
-            TokopediaImageUrl.TOKOPEDIANOW_BUYER_COMMUNICATION_ILLUSTRATION)
+            TokopediaImageUrl.TOKOPEDIANOW_BUYER_COMMUNICATION_ILLUSTRATION
+        )
     }
 
     private fun showTermsAndConditionText() {
         context?.let { context ->
-            val text = SpannableString(getString(
-                R.string.tokopedianow_buyer_communication_tnc))
+            val text = SpannableString(
+                getString(
+                    R.string.tokopedianow_buyer_communication_tnc
+                )
+            )
             val tncText = getString(
-                R.string.tokopedianow_buyer_communication_tnc_label)
+                R.string.tokopedianow_buyer_communication_tnc_label
+            )
             val colorSpan = ForegroundColorSpan(
-                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
+                ContextCompat.getColor(context, unifyprinciplesR.color.Unify_GN500)
+            )
             val boldSpan = StyleSpan(Typeface.BOLD)
             val startIndex = text.indexOf(tncText)
             val endIndex = text.length - 1
