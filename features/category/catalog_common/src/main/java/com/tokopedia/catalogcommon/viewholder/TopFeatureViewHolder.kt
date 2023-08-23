@@ -11,6 +11,7 @@ import com.tokopedia.catalogcommon.R
 import com.tokopedia.catalogcommon.databinding.WidgetItemTopFeatureBinding
 import com.tokopedia.catalogcommon.uimodel.TopFeaturesUiModel
 import com.tokopedia.catalogcommon.util.orDefaultColor
+import com.tokopedia.catalogcommon.util.stringHexColorParseToInt
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.unifycomponents.ImageUnify
@@ -24,6 +25,8 @@ class TopFeatureViewHolder(itemView: View) : AbstractViewHolder<TopFeaturesUiMod
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.widget_item_top_feature
+
+        private const val BORDER_COLOR = "#AAB4C8"
     }
 
     private val binding by viewBinding<WidgetItemTopFeatureBinding>()
@@ -31,7 +34,7 @@ class TopFeatureViewHolder(itemView: View) : AbstractViewHolder<TopFeaturesUiMod
 
 
     override fun bind(element: TopFeaturesUiModel) {
-        binding?.lnRootUi?.setBackgroundColor(element.backgroundColorWidget.orDefaultColor(itemView.context))
+//        binding?.lnRootUi?.setBackgroundColor(element.widgetBackgroundColor.orDefaultColor(itemView.context))
         element.items.forEachIndexed { index, item ->
             createItem(item)
             if (index < element.items.size - 1) {
@@ -42,8 +45,7 @@ class TopFeatureViewHolder(itemView: View) : AbstractViewHolder<TopFeaturesUiMod
 
     private fun createItem(item: TopFeaturesUiModel.ItemTopFeatureUiModel) {
         val linearLayout = createLinearLayout(
-            backgroundColor = item.backgroundColor,
-            borderColor = item.borderColor
+            backgroundColor = item.backgroundColor
         )
         val icon = createIcon(item.icon)
         val text = createTypography(item.name, item.textColor)
@@ -56,8 +58,7 @@ class TopFeatureViewHolder(itemView: View) : AbstractViewHolder<TopFeaturesUiMod
         width: Int = LinearLayout.LayoutParams.MATCH_PARENT,
         height: Int = LinearLayout.LayoutParams.WRAP_CONTENT,
         backgroundColor: Int? = null,
-        cornerRadius: Float = 12f.dpToPx(),
-        borderColor: Int? = null
+        cornerRadius: Float = 12f.dpToPx()
     ): LinearLayout {
         val linearLayout = LinearLayout(itemView.context)
         val layoutParam = LinearLayout.LayoutParams(width, height)
@@ -71,11 +72,16 @@ class TopFeatureViewHolder(itemView: View) : AbstractViewHolder<TopFeaturesUiMod
         shapeDrawable.cornerRadius = cornerRadius
         shapeDrawable.setStroke(
             1.dpToPx(displayMetrics),
-            borderColor.orDefaultColor(itemView.context)
+            BORDER_COLOR.stringHexColorParseToInt(30)
         )
         shapeDrawable.setColor(backgroundColor.orDefaultColor(itemView.context))
         linearLayout.background = shapeDrawable
-        linearLayout.setPadding(0, 8.dpToPx(displayMetrics), 0, 8.dpToPx(displayMetrics))
+        linearLayout.setPadding(
+            8.dpToPx(displayMetrics),
+            8.dpToPx(displayMetrics),
+            8.dpToPx(displayMetrics),
+            8.dpToPx(displayMetrics)
+        )
         return linearLayout
     }
 

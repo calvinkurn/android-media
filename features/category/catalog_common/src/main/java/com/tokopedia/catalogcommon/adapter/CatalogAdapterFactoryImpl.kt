@@ -13,15 +13,24 @@ import com.tokopedia.catalogcommon.viewholder.HeroBannerViewHolder
 import com.tokopedia.catalogcommon.viewholder.PanelImageViewHolder
 import com.tokopedia.catalogcommon.viewholder.StickyTabNavigationViewHolder
 import com.tokopedia.catalogcommon.viewholder.TopFeatureViewHolder
+import com.tokopedia.catalogcommon.viewholder.TrustmakerViewHolder
+import com.tokopedia.home_component.HomeComponentTypeFactory
+import com.tokopedia.home_component.viewholders.BannerRevampViewHolder
 
-class CatalogAdapterFactoryImpl : BaseAdapterTypeFactory(), CatalogAdapterFactory {
+class CatalogAdapterFactoryImpl(
+    private val heroBannerListener: HeroBannerListener? = null
+): BaseAdapterTypeFactory(), HomeComponentTypeFactory, CatalogAdapterFactory {
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             TopFeatureViewHolder.LAYOUT -> TopFeatureViewHolder(view)
-            HeroBannerViewHolder.LAYOUT -> HeroBannerViewHolder(view)
+            HeroBannerViewHolder.LAYOUT -> HeroBannerViewHolder(view, heroBannerListener)
             DummyViewHolder.LAYOUT -> DummyViewHolder(view)
+            SliderImageTextViewHolder.LAYOUT -> SliderImageTextViewHolder(view)
             PanelImageViewHolder.LAYOUT -> PanelImageViewHolder(view)
+            TrustmakerViewHolder.LAYOUT -> TrustmakerViewHolder(view)
+            BannerRevampViewHolder.LAYOUT -> BannerRevampViewHolder(view, null)
+            AccordionInformationViewHolder.LAYOUT -> AccordionInformationViewHolder(view)
             else -> super.createViewHolder(view, type)
         }
     }
@@ -38,11 +47,23 @@ class CatalogAdapterFactoryImpl : BaseAdapterTypeFactory(), CatalogAdapterFactor
         return DummyViewHolder.LAYOUT
     }
 
+    override fun type(uiModel: SliderImageTextUiModel): Int {
+        return SliderImageTextViewHolder.LAYOUT
+    }
+
     override fun type(uiModel: PanelImageUiModel): Int {
         return PanelImageViewHolder.LAYOUT
     }
 
     override fun type(uiModel: StickyNavigationUiModel): Int {
         return StickyTabNavigationViewHolder.LAYOUT
+    }
+
+    override fun type(uiModel: AccordionInformationUiModel): Int {
+        return AccordionInformationViewHolder.LAYOUT
+    }
+
+    override fun type(uiModel: TrustMakerUiModel): Int {
+        return TrustmakerViewHolder.LAYOUT
     }
 }
