@@ -223,7 +223,9 @@ data class EPharmacyPrepareProductsGroupResponse(
                             @SerializedName("current_qty")
                             var currentQty: Int = 0,
                             @SerializedName("price")
-                            val productPrice: Double?
+                            val productPrice: Double?,
+                            @SerializedName("sub_total")
+                            var subTotal: Double?,
                         ) : Parcelable
                     }
                 }

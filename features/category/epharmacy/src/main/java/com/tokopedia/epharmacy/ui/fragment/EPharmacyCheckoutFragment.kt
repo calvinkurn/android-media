@@ -8,6 +8,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Group
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.epharmacy.R
 import com.tokopedia.epharmacy.databinding.EpharmacyCheckoutChatDokterFragmentBinding
 import com.tokopedia.epharmacy.di.EPharmacyComponent
@@ -20,11 +21,13 @@ import com.tokopedia.epharmacy.utils.EPHARMACY_ENABLER_ID
 import com.tokopedia.epharmacy.utils.EPHARMACY_GROUP_ID
 import com.tokopedia.epharmacy.utils.EPHARMACY_TOKO_CONSULTATION_ID
 import com.tokopedia.epharmacy.utils.EPharmacyUtils
+import com.tokopedia.epharmacy.utils.PRESCRIPTION_ATTACH_SUCCESS
 import com.tokopedia.epharmacy.viewmodel.EPharmacyCheckoutViewModel
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showToast
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.LENGTH_LONG
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
@@ -248,12 +251,18 @@ class EPharmacyCheckoutFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessCartCheckout(result: Success<EPharmacyCartGeneralCheckoutResponse>) {
-        val ePharmacyBottomComponentBottomSheet = EPharmacyComponentBottomSheet()
-        ePharmacyBottomComponentBottomSheet.show(childFragmentManager,"")
+        when(result.data.checkout?.data?.success){
+            0 -> showToast(TYPE_ERROR,result.data.checkout?.data?.message ?: "")
+            1 -> successCheckout(result.data.checkout?.data?.data?.redirectUrl)
+        }
     }
 
-    private fun onFailCartCheckout(result: Fail) {
+    private fun successCheckout(redirectUrl: String?) {
+        RouteManager.route(context,redirectUrl)
+    }
 
+    private fun onFailCartCheckout(fail: Fail) {
+        showToast(TYPE_ERROR,getString(com.tokopedia.epharmacy.R.string.epharmacy_internet_error))
     }
 
     override fun getScreenName() = EPHARMACY_CHECKOUT_PAGE

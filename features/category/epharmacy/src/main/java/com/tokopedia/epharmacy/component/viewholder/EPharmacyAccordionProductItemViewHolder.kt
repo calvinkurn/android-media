@@ -69,7 +69,9 @@ class EPharmacyAccordionProductItemViewHolder(val view: View, private val ePharm
             if(quantityChangedEditor.getValue() >= (dataModel?.product?.qtyComparison?.recommendedQty ?: 0)){
                 quantityChangedEditor.addButton.isEnabled = false
             }
-            totalAmount.displayTextOrHide(EPharmacyUtils.getTotalAmount(dataModel?.product?.qtyComparison?.currentQty, dataModel?.product?.qtyComparison?.productPrice))
+            val subtotal = EPharmacyUtils.getTotalAmount(dataModel?.product?.qtyComparison?.currentQty, dataModel?.product?.qtyComparison?.productPrice)
+            dataModel?.product?.qtyComparison?.subTotal = subtotal
+            totalAmount.displayTextOrHide(EPharmacyUtils.getTotalAmountFmt(subtotal))
             totalQuantity.displayTextOrHide(java.lang.String.format(
                 itemView.context.getString(com.tokopedia.epharmacy.R.string.epharmacy_subtotal_quantity_change),
                 dataModel?.product?.qtyComparison?.currentQty.toString()

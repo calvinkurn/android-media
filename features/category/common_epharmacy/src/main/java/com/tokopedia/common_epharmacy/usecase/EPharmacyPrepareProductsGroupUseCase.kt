@@ -10,13 +10,13 @@ import javax.inject.Inject
 class EPharmacyPrepareProductsGroupUseCase @Inject constructor(@ApplicationContext graphqlRepository: GraphqlRepository) :
     GraphqlUseCase<EPharmacyPrepareProductsGroupResponse>(graphqlRepository) {
 
-    fun getEPharmacyPrepareProductsGroup(source: String, onSuccess: (EPharmacyPrepareProductsGroupResponse) -> Unit,
+    fun getEPharmacyPrepareProductsGroup(source: String, onSuccess: (String, EPharmacyPrepareProductsGroupResponse) -> Unit,
                                    onError: (Throwable) -> Unit) {
         try {
             this.setParams()
             this.execute(
                 { result ->
-                    onSuccess(result)
+                    onSuccess(source, result)
                 }, { error ->
                     onError(error)
                 }

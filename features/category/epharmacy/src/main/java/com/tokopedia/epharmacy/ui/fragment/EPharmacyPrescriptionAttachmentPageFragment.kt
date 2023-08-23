@@ -18,7 +18,6 @@ import com.tokopedia.common_epharmacy.EPHARMACY_MINI_CONSULTATION_REQUEST_CODE
 import com.tokopedia.common_epharmacy.EPHARMACY_REDIRECT_CART_RESULT_CODE
 import com.tokopedia.common_epharmacy.EPHARMACY_REDIRECT_CHECKOUT_RESULT_CODE
 import com.tokopedia.common_epharmacy.EPHARMACY_UPLOAD_REQUEST_CODE
-import com.tokopedia.common_epharmacy.network.response.EPharmacyPrepareProductsGroupResponse
 import com.tokopedia.epharmacy.R
 import com.tokopedia.epharmacy.adapters.EPharmacyAdapter
 import com.tokopedia.epharmacy.adapters.EPharmacyListener
@@ -46,6 +45,7 @@ import com.tokopedia.epharmacy.utils.EPHARMACY_ENABLER_ID
 import com.tokopedia.epharmacy.utils.EPHARMACY_ENABLER_NAME
 import com.tokopedia.epharmacy.utils.EPHARMACY_GROUP_ID
 import com.tokopedia.epharmacy.utils.EPHARMACY_IS_ONLY_CONSULT
+import com.tokopedia.epharmacy.utils.EPHARMACY_IS_OUTSIDE_WORKING_HOURS
 import com.tokopedia.epharmacy.utils.EPHARMACY_NOTE
 import com.tokopedia.epharmacy.utils.EPHARMACY_TOKO_CONSULTATION_ID
 import com.tokopedia.epharmacy.utils.EPharmacyAttachmentUiUpdater
@@ -59,7 +59,6 @@ import com.tokopedia.epharmacy.utils.EXTRA_CHECKOUT_ID_STRING
 import com.tokopedia.epharmacy.utils.EXTRA_SOURCE_STRING
 import com.tokopedia.epharmacy.utils.LabelKeys.Companion.FAILED
 import com.tokopedia.epharmacy.utils.LabelKeys.Companion.SUCCESS
-import com.tokopedia.epharmacy.utils.OPEN_TIME
 import com.tokopedia.epharmacy.utils.PrescriptionActionType
 import com.tokopedia.epharmacy.utils.SHIMMER_COMPONENT
 import com.tokopedia.epharmacy.utils.SHIMMER_COMPONENT_1
@@ -82,8 +81,8 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
-import java.util.*
 import javax.inject.Inject
+import com.tokopedia.common_epharmacy.network.response.EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup as EG
 
 class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharmacyListener {
 
@@ -526,10 +525,10 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
         enablerName: String?,
         chooserLogo: String?,
         groupId: String?,
-        prescriptionCTA: EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.PrescriptionCTA?,
+        prescriptionCTA: EG.PrescriptionCTA?,
         tokoConsultationId: String?,
         price: String?,
-        operatingSchedule: EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ConsultationSource.OperatingSchedule?,
+        operatingSchedule: EG.ConsultationSource.OperatingSchedule?,
         note: String?
     ) {
         when (prescriptionCTA?.actionType) {
@@ -560,7 +559,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
         ePharmacyGroupId: String?,
         enablerName: String?,
         price: String?,
-        operatingSchedule: EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ConsultationSource.OperatingSchedule?,
+        operatingSchedule: EG.ConsultationSource.OperatingSchedule?,
         note: String?,
         isOnlyConsult: Boolean = false
     ) {
@@ -570,24 +569,12 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
             putExtra(EPHARMACY_ENABLER_NAME, enablerName)
             putExtra(EPHARMACY_CONS_PRICE, price)
             putExtra(EPHARMACY_CONS_DURATION, operatingSchedule?.duration)
-            putExtra(EPHARMACY_NOTE, getChatDokterNote(operatingSchedule, note))
+            putExtra(EPHARMACY_IS_OUTSIDE_WORKING_HOURS, operatingSchedule?.isClosingHour)
+            putExtra(EPHARMACY_NOTE, EPharmacyUtils.getChatDokterNote(context, operatingSchedule, note))
             putExtra(EPHARMACY_IS_ONLY_CONSULT, isOnlyConsult)
         }.also {
             startActivityForResult(it, EPHARMACY_CHOOSER_REQUEST_CODE)
         }
-    }
-
-    private fun getChatDokterNote(operatingSchedule: EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ConsultationSource.OperatingSchedule?, note: String?): String {
-        if(operatingSchedule?.isClosingHour == true){
-            val openTimeLocal: Date? = EPharmacyUtils.formatDateToLocal(dateString = operatingSchedule.daily?.openTime ?: "")
-            val closeTimeLocal: Date? = EPharmacyUtils.formatDateToLocal(dateString = operatingSchedule.daily?.closeTime ?: "")
-            return getString(
-                com.tokopedia.epharmacy.R.string.epharmacy_chooser_outside,
-                EPharmacyUtils.getTimeFromDate(openTimeLocal),
-                EPharmacyUtils.getTimeFromDate(closeTimeLocal)
-            )
-        }
-        return note ?: ""
     }
 
     private fun startPhotoUpload(enablerName: String?, groupId: String?, requestCode: Int = EPHARMACY_UPLOAD_REQUEST_CODE) {

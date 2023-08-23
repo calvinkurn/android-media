@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 import com.google.gson.annotations.Expose
 
 data class EPharmacyCartGeneralCheckoutResponse(
-    @SerializedName("checkout")
+    @SerializedName("checkout_cart_general")
     @Expose
     val checkout: Checkout?
 ) {

@@ -136,7 +136,9 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
             if(quantityChangedEditor.getValue() >= (dataModel?.quantityChangedModel?.recommendedQty ?: 0)){
                 quantityChangedEditor.addButton.isEnabled = false
             }
-            totalAmount.displayTextOrHide(EPharmacyUtils.getTotalAmount(dataModel?.quantityChangedModel?.currentQty, dataModel?.quantityChangedModel?.productPrice))
+            val subtotal = EPharmacyUtils.getTotalAmount(dataModel?.quantityChangedModel?.currentQty, dataModel?.quantityChangedModel?.productPrice)
+            dataModel?.quantityChangedModel?.subTotal = subtotal
+            totalAmount.displayTextOrHide(EPharmacyUtils.getTotalAmountFmt(subtotal))
             totalQuantity.displayTextOrHide(java.lang.String.format(
                 itemView.context.getString(com.tokopedia.epharmacy.R.string.epharmacy_subtotal_quantity_change),
                 dataModel?.quantityChangedModel?.currentQty.toString()

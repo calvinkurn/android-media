@@ -3,21 +3,35 @@ package com.tokopedia.epharmacy.ui.bottomsheet
 import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
-import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.common_epharmacy.EPHARMACY_MINI_CONSULTATION_REQUEST_CODE
 import com.tokopedia.common_epharmacy.EPHARMACY_UPLOAD_REQUEST_CODE
+import com.tokopedia.epharmacy.R
 import com.tokopedia.epharmacy.databinding.EpharmacyChooserBottomSheetBinding
 import com.tokopedia.epharmacy.di.DaggerEPharmacyComponent
 import com.tokopedia.epharmacy.di.EPharmacyComponent
-import com.tokopedia.epharmacy.utils.*
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.epharmacy.utils.ENABLER_IMAGE_URL
+import com.tokopedia.epharmacy.utils.EPHARMACY_CONS_DURATION
+import com.tokopedia.epharmacy.utils.EPHARMACY_CONS_PRICE
+import com.tokopedia.epharmacy.utils.EPHARMACY_ENABLER_NAME
+import com.tokopedia.epharmacy.utils.EPHARMACY_GROUP_ID
+import com.tokopedia.epharmacy.utils.EPHARMACY_IS_ONLY_CONSULT
+import com.tokopedia.epharmacy.utils.EPHARMACY_IS_OUTSIDE_WORKING_HOURS
+import com.tokopedia.epharmacy.utils.EPHARMACY_NOTE
+import com.tokopedia.epharmacy.utils.EPharmacyMiniConsultationAnalytics
+import com.tokopedia.epharmacy.utils.EPharmacyUtils
+import com.tokopedia.epharmacy.utils.MINI_CONS_CHOOSER_IMAGE_URL
+import com.tokopedia.epharmacy.utils.MINI_CONS_CHOOSER_IMAGE_URL_DISABLED
+import com.tokopedia.epharmacy.utils.UPLOAD_CHOOSER_IMAGE_URL
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.unifycomponents.Label
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 class EPharmacyChooserBottomSheet : BottomSheetUnify() {
@@ -117,15 +131,15 @@ class EPharmacyChooserBottomSheet : BottomSheetUnify() {
                     chooserUpload.parent.hide()
                 }else {
                     chooserUpload.parent.show()
-                    chooserUpload.lblPAPTittleOptionBottomsheet.text = res.getString(com.tokopedia.epharmacy.R.string.epharmacy_upload_resep_dokter_chooser_title)
-                    chooserUpload.lblPAPDescriptionOptionBottomsheet.text = res.getString(com.tokopedia.epharmacy.R.string.epharmacy_upload_resep_dokter_chooser_subtitle)
+                    chooserUpload.lblPAPTittleOptionBottomsheet.text = res.getString(R.string.epharmacy_upload_resep_dokter_chooser_title)
+                    chooserUpload.lblPAPDescriptionOptionBottomsheet.text = res.getString(R.string.epharmacy_upload_resep_dokter_chooser_subtitle)
                     chooserUpload.stepIcon.loadImage(UPLOAD_CHOOSER_IMAGE_URL)
                     chooserUpload.parent.setOnClickListener {
                         uploadResepAction()
                     }
                 }
-                chooserMiniConsultation.lblPAPTittleOptionBottomsheet.text = res.getString(com.tokopedia.epharmacy.R.string.epharmacy_mini_consult_chooser_title)
-                chooserMiniConsultation.lblPAPDescriptionOptionBottomsheet.text = res.getString(com.tokopedia.epharmacy.R.string.eepharmacy_mini_consult_chooser_subtitle)
+                chooserMiniConsultation.lblPAPTittleOptionBottomsheet.text = res.getString(R.string.epharmacy_mini_consult_chooser_title)
+                chooserMiniConsultation.lblPAPDescriptionOptionBottomsheet.text = res.getString(R.string.eepharmacy_mini_consult_chooser_subtitle)
                 chooserMiniConsultation.stepIcon.loadImage(MINI_CONS_CHOOSER_IMAGE_URL)
                 chooserMiniConsultation.baruLabel.show()
                 if (enableImageURL.isNotBlank()) {
@@ -135,8 +149,13 @@ class EPharmacyChooserBottomSheet : BottomSheetUnify() {
                     bottomImageLogo.hide()
                 }
 
-                chooserMiniConsultation.parent.setOnClickListener {
-                    miniConsultationAction()
+                if(isOutsideWorkingHours){
+                    renderClosingHours()
+                    chooserMiniConsultation.parent.setOnClickListener(null)
+                }else {
+                    chooserMiniConsultation.parent.setOnClickListener {
+                        miniConsultationAction()
+                    }
                 }
 
                 renderNote(note)
@@ -146,6 +165,23 @@ class EPharmacyChooserBottomSheet : BottomSheetUnify() {
                     chooserMiniConsultation.durationValue.text = duration
                     chooserMiniConsultation.feeValue.text = price
                 }
+            }
+        }
+    }
+
+    private fun renderClosingHours() {
+        binding?.chooserMiniConsultation?.let {
+            with(it){
+                val disableColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN400)
+                lblPAPTittleOptionBottomsheet.setTextColor(disableColor)
+                lblPAPDescriptionOptionBottomsheet.setTextColor(disableColor)
+                baruLabel.setLabelType(Label.HIGHLIGHT_LIGHT_GREY)
+                fee.setTextColor(disableColor)
+                duration.setTextColor(disableColor)
+                feeValue.setTextColor(disableColor)
+                durationValue.setTextColor(disableColor)
+                chevron.isEnabled = false
+                stepIcon.loadImage(MINI_CONS_CHOOSER_IMAGE_URL_DISABLED)
             }
         }
     }

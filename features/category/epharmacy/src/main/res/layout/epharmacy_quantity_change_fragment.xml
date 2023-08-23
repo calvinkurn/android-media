@@ -28,6 +28,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:unify_total_amount_title_text="@string/epharmacy_total_harga"
+        app:unify_total_amount_cta_text="@string/epharmacy_perbarui_pesanan"
         />
 
     <com.tokopedia.unifycomponents.LoaderUnify

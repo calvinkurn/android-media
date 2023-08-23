@@ -7,7 +7,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.tkpd.remoteresourcerequest.view.DeferredImageView
-        android:id="@+id/sample_image"
+        android:id="@+id/ep_illustration_image"
         android:layout_height="210dp"
         android:layout_width="270dp"
         android:layout_marginTop="48dp"

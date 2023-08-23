@@ -1,6 +1,8 @@
 package com.tokopedia.epharmacy.ui.fragment
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,7 +21,6 @@ import com.tokopedia.epharmacy.viewmodel.EPharmacyLoadingViewModel
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -31,8 +32,11 @@ import javax.inject.Inject
 class EPharmacyLoadingFragment : BaseDaggerFragment(), EPharmacyListener {
 
     private var ePharmacyGlobalError: GlobalError? = null
-    private var image: DeferredImageView? = null
+    private var illustrationImage: DeferredImageView? = null
     private var tConsultationId = ""
+
+    private val mainHandler = Handler(Looper.getMainLooper())
+    private var verifyRunnable : Runnable? = null
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -81,7 +85,10 @@ class EPharmacyLoadingFragment : BaseDaggerFragment(), EPharmacyListener {
     private fun initViews(view: View) {
         view.apply {
             ePharmacyGlobalError = findViewById(R.id.epharmacy_global_error)
-            image = findViewById(R.id.sample_image)
+            illustrationImage = findViewById(R.id.ep_illustration_image)
+        }
+        verifyRunnable = Runnable {
+            ePharmacyLoadingViewModel.getVerifyConsultationOrder(tConsultationId)
         }
     }
 
@@ -90,7 +97,7 @@ class EPharmacyLoadingFragment : BaseDaggerFragment(), EPharmacyListener {
             getString(com.tokopedia.epharmacy.R.string.epharmacy_chat_loading_title),
             getString(com.tokopedia.epharmacy.R.string.epharmacy_chat_loading_description)
         )
-        ePharmacyLoadingViewModel.getVerifyConsultationOrder(tConsultationId)
+        if(verifyRunnable != null) { mainHandler.postDelayed(verifyRunnable!!, DELAY_MILLIS_VERIFY) }
     }
 
     private fun observerVerifyConsulatationOrder() {
@@ -129,7 +136,7 @@ class EPharmacyLoadingFragment : BaseDaggerFragment(), EPharmacyListener {
     private fun setErrorData(title: String, description: String,ctaText: String, appLink: String) {
         ePharmacyGlobalError?.errorTitle?.text = title
         ePharmacyGlobalError?.errorDescription?.text = description
-        image?.hide()
+        illustrationImage?.hide()
         ePharmacyGlobalError?.errorIllustration?.show()
         ePharmacyGlobalError?.setType(GlobalError.SERVER_ERROR)
         ePharmacyGlobalError?.errorAction?.show()
@@ -153,7 +160,7 @@ class EPharmacyLoadingFragment : BaseDaggerFragment(), EPharmacyListener {
 
     private fun setDataLoading(title: String, description: String) {
         ePharmacyGlobalError?.show()
-        image?.show()
+        illustrationImage?.show()
         ePharmacyGlobalError?.errorIllustration?.hide()
         ePharmacyGlobalError?.errorDescription?.text = description
         ePharmacyGlobalError?.errorTitle?.text = title
@@ -161,20 +168,12 @@ class EPharmacyLoadingFragment : BaseDaggerFragment(), EPharmacyListener {
     }
 
     private fun setGlobalErrors(errorType: Int) {
-        image?.hide()
+        illustrationImage?.hide()
         ePharmacyGlobalError?.errorIllustration?.show()
         ePharmacyGlobalError?.setType(errorType)
         ePharmacyGlobalError?.errorAction?.show()
         ePharmacyGlobalError?.setActionClickListener {
             getData()
-        }
-    }
-
-    private fun showToast(type: Int = Toaster.TYPE_NORMAL, message: String) {
-        if (message.isNotBlank()) {
-            binding?.root?.rootView?.let { safeView ->
-                Toaster.build(safeView, message, Toaster.LENGTH_LONG, type).show()
-            }
         }
     }
 
@@ -185,12 +184,17 @@ class EPharmacyLoadingFragment : BaseDaggerFragment(), EPharmacyListener {
     }
 
     companion object {
-
+        const val DELAY_MILLIS_VERIFY = 6000L
         @JvmStatic
         fun newInstance(bundle: Bundle): EPharmacyLoadingFragment {
             val fragment = EPharmacyLoadingFragment()
             fragment.arguments = bundle
             return fragment
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if(verifyRunnable != null) { mainHandler.removeCallbacks(verifyRunnable!!) }
     }
 }

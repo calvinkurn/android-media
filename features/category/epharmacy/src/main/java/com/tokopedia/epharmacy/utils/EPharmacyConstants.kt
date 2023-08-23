@@ -61,6 +61,7 @@ const val ENTRY_POINT_CHECKOUT = "Checkout"
 const val ENABLER_IMAGE_URL = "enabler_image_url"
 const val UPLOAD_CHOOSER_IMAGE_URL = "https://images.tokopedia.net/img/android/res/singleDpi/epharmacy_chooser_mini_cons.jpg"
 const val MINI_CONS_CHOOSER_IMAGE_URL = "https://images.tokopedia.net/img/android/res/singleDpi/epharmacy_chooser_mini_cons_doc.png"
+const val MINI_CONS_CHOOSER_IMAGE_URL_DISABLED = "https://images.tokopedia.net/img/android/res/singleDpi/epharmacy_chooser_mini_cons_doc_disabled.png"
 
 const val EPHARMACY_APPLINK = "tokopedia://epharmacy/"
 const val EPHARMACY_CHOOSER_APPLINK = "tokopedia://epharmacy/chooser/"
@@ -115,6 +116,7 @@ const val REMINDER_ILLUSTRATION_IMAGE = "https://images.tokopedia.net/img/pharma
 
 const val EPHARMACY_ANDROID_SOURCE = "ANDROID"
 const val UPLOAD_PAGE_SOURCE_PAP = "PAP"
+const val QUANTITY_PAGE_SOURCE = "QTY"
 const val OUTSIDE_WORKING_HOURS_SOURCE = "outside_working_hours"
 const val WORKING_HOURS_SOURCE = "working_hours"
 const val EPHARMACY_HALF_ALPHA = 0.5f

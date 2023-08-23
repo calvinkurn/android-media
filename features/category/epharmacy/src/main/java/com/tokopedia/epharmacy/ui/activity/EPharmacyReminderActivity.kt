@@ -38,6 +38,7 @@ class EPharmacyReminderActivity : BaseSimpleActivity(), HasComponent<EPharmacyCo
 
     override fun getNewFragment(): Fragment {
         extractArguments()
+        updateTitle("")
         return EPharmacyReminderScreenBottomSheet.newInstance(
             true,
             openTime, closeTime,

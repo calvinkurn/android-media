@@ -1,5 +1,6 @@
 package com.tokopedia.epharmacy.utils
 
+import android.content.Context
 import android.text.Html
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultationResult
@@ -268,8 +269,25 @@ object EPharmacyUtils {
             Html.fromHtml(htmlText)
         }
 
-    fun getTotalAmount(quantity: Int?, price: Double?): String {
-        return "Rp${(quantity?.toDouble() ?: 0.0) * ((price ?: 0.0))}"
+    fun getTotalAmount(quantity: Int?, price: Double?): Double {
+        return ((quantity?.toDouble() ?: 0.0) * ((price ?: 0.0)))
+    }
+
+    fun getTotalAmountFmt(subTotal: Double?): String {
+        return "Rp$subTotal"
+    }
+
+    fun getChatDokterNote(context: Context?, operatingSchedule: EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ConsultationSource.OperatingSchedule?, note: String?): String {
+        if(operatingSchedule?.isClosingHour == true){
+            val openTimeLocal: Date? = formatDateToLocal(dateString = operatingSchedule.daily?.openTime ?: "")
+            val closeTimeLocal: Date? = formatDateToLocal(dateString = operatingSchedule.daily?.closeTime ?: "")
+            return context?.resources?.getString(
+                com.tokopedia.epharmacy.R.string.epharmacy_chooser_outside,
+                getTimeFromDate(openTimeLocal),
+                getTimeFromDate(closeTimeLocal)
+            ) ?: ""
+        }
+        return note ?: ""
     }
 }
 

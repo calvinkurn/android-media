@@ -2,11 +2,14 @@ package com.tokopedia.epharmacy.ui.bottomsheet
 
 import android.app.Dialog
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.epharmacy.R
 import com.tokopedia.epharmacy.databinding.EpharmacyReminderScreenBottomSheetBinding
 import com.tokopedia.epharmacy.di.DaggerEPharmacyComponent
@@ -36,6 +39,7 @@ class EPharmacyReminderScreenBottomSheet : BottomSheetUnify() {
     private var openTime = ""
     private var closeTime = ""
     private var isOutsideWorkingHours = false
+
     companion object {
         fun newInstance(
             isOutsideWorkingHours: Boolean = false,
@@ -158,9 +162,9 @@ class EPharmacyReminderScreenBottomSheet : BottomSheetUnify() {
                 epharmacyGlobalError.errorIllustration.loadImageFitCenter(REMINDER_ILLUSTRATION_IMAGE)
                 epharmacyGlobalError.errorTitle.text = getString(com.tokopedia.epharmacy.R.string.epharmacy_reminder_title)
                 epharmacyGlobalError.errorDescription.text = getMessageString()
-                epharmacyGlobalError.errorSecondaryAction.text = getString(com.tokopedia.epharmacy.R.string.epharmacy_reminder_button_text)
-                epharmacyGlobalError.errorSecondaryAction.show()
-                epharmacyGlobalError.setSecondaryActionClickListener {
+                epharmacyGlobalError.errorAction.text = getString(com.tokopedia.epharmacy.R.string.epharmacy_reminder_button_text)
+                epharmacyGlobalError.errorAction.show()
+                epharmacyGlobalError.setActionClickListener {
                     requestParams()?.let { it1 ->
                         viewModel?.setForReminder(it1)
                         EPharmacyMiniConsultationAnalytics.clickIngatkanSaya(
@@ -170,7 +174,13 @@ class EPharmacyReminderScreenBottomSheet : BottomSheetUnify() {
                         )
                     }
                 }
-                epharmacyGlobalError.errorAction.hide()
+                epharmacyGlobalError.errorSecondaryAction.text = getString(com.tokopedia.epharmacy.R.string.epharmacy_reminder_back_text)
+                epharmacyGlobalError.errorSecondaryAction.show()
+                epharmacyGlobalError.setSecondaryActionClickListener {
+                    //activity?.finish()
+                    // TODO REMOVE
+                    RouteManager.route(context,"tokopedia://epharmacy/chat-loading?epharmacy_toko_consultation_id=123")
+                }
             }
         }
     }

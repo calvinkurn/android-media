@@ -37,6 +37,9 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
     private val _buttonLiveData = MutableLiveData<EPharmacyPrepareProductsGroupResponse.PapPrimaryCTA?>()
     val buttonLiveData: LiveData<EPharmacyPrepareProductsGroupResponse.PapPrimaryCTA?> = _buttonLiveData
 
+    private val _buttonSecondaryLiveData = MutableLiveData<EPharmacyPrepareProductsGroupResponse.PapPrimaryCTA.PapSecondaryCTA?>()
+    val buttonSecondaryLiveData: LiveData<EPharmacyPrepareProductsGroupResponse.PapPrimaryCTA.PapSecondaryCTA?> = _buttonSecondaryLiveData
+
     private val _uploadError = MutableLiveData<EPharmacyUploadError>()
     val uploadError: LiveData<EPharmacyUploadError> = _uploadError
 
@@ -72,12 +75,16 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
         )
     }
 
-    private fun onAvailablePrepareProductGroup(ePharmacyPrepareProductsGroupResponse: EPharmacyPrepareProductsGroupResponse) {
+    private fun onAvailablePrepareProductGroup(source: String, ePharmacyPrepareProductsGroupResponse: EPharmacyPrepareProductsGroupResponse) {
         ePharmacyPrepareProductsGroupResponseData = ePharmacyPrepareProductsGroupResponse
         ePharmacyPrepareProductsGroupResponse.let { data ->
             if (data.detailData?.groupsData?.epharmacyGroups?.isNotEmpty() == true) {
                 _productGroupLiveData.postValue(Success(EPharmacyUtils.mapGroupsDataIntoDataModel(data)))
-                _buttonLiveData.postValue(ePharmacyPrepareProductsGroupResponse.detailData?.groupsData?.papPrimaryCTA)
+                if(source == QUANTITY_PAGE_SOURCE){
+                    _buttonSecondaryLiveData.postValue(ePharmacyPrepareProductsGroupResponse.detailData?.groupsData?.papPrimaryCTA?.papSecondaryCTA)
+                }else {
+                    _buttonLiveData.postValue(ePharmacyPrepareProductsGroupResponse.detailData?.groupsData?.papPrimaryCTA)
+                }
                 showToastData(ePharmacyPrepareProductsGroupResponse.detailData?.groupsData?.toaster)
             } else {
                 onFailPrepareProductGroup(IllegalStateException("Data Invalid"))

@@ -53,9 +53,12 @@
     <string name="epharmacy_barang_quantity">%s barang</string>
     <string name="epharmacy_pesanan_awal">Pesanan Awal</string>
     <string name="epharmacy_sesuai_resep">Sesuai Resep</string>
-    <string name="epharmacy_chooser_outside">Tersedia %s – %s WIB.</string>
+    <string name="epharmacy_chooser_outside"><![CDATA[<b>Tersedia %s – %s WIB.</b>]]></string>
     <string name="epharmacy_minimum_quantity_reached">Jumlah barang tidak boleh melebihi yang sudah diresepkan atau kurang dari 1.</string>
     <string name="epharmacy_subtotal_quantity_change">Subtotal (%s barang)</string>
     <string name="epharmacy_chat_loading_title">Tunggu sebentar, ya!</string>
     <string name="epharmacy_chat_loading_description">Kamu sedang diarahkan menuju \n chat dokter, ya.</string>
- </resources>
+    <string name="epharmacy_total_harga">Total Harga</string>
+    <string name="epharmacy_perbarui_pesanan">Perbarui Pesanan</string>
+    <string name="epharmacy_reminder_back_text">Balik ke Home</string>
+</resources>
