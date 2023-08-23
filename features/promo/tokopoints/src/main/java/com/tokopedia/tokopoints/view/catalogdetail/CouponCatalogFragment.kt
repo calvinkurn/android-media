@@ -64,6 +64,7 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.iconunify.R as iconunifyR
 
 class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, View.OnClickListener, TokopointPerformanceMonitoringListener {
     private var mContainerMain: ViewFlipper? = null
@@ -280,7 +281,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
             tv_code?.setCompoundDrawablesRelativeWithIntrinsicBounds(
                 null,
                 null,
-                context?.let { ContextCompat.getDrawable(it, com.tokopedia.iconunify.R.drawable.iconunify_copy) },
+                context?.let { ContextCompat.getDrawable(it, iconunifyR.drawable.iconunify_copy) },
                 null
             )
             tv_dynamic_infos = binding.tpContentCouponCatalog.layoutCouponCode.tvDynamicInfos
