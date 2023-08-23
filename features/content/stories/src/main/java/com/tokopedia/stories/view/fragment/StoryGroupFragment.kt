@@ -31,6 +31,7 @@ class StoryGroupFragment @Inject constructor(
 
     private val viewModel by activityViewModels<StoryViewModel> { viewModelFactory }
 
+    private var mPagerSelectedState = -1
     private val pagerAdapter: StoryGroupPagerAdapter by lazy(LazyThreadSafetyMode.NONE) {
         StoryGroupPagerAdapter(
             childFragmentManager,
@@ -55,24 +56,11 @@ class StoryGroupFragment @Inject constructor(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModelAction(StoryUiAction.SetArgumentsData(arguments))
-
-        setupViewPager()
         setupObserver()
     }
 
     private fun viewModelAction(event: StoryUiAction) {
         viewModel.submitAction(event)
-    }
-
-    private fun setupViewPager() = with(binding.storyGroupViewPager) {
-        adapter = pagerAdapter
-        setPageTransformer(ZoomOutPageTransformer())
-        registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                viewModelAction(StoryUiAction.SetGroupMainData(position))
-                super.onPageSelected(position)
-            }
-        })
     }
 
     private fun setupObserver() {
@@ -104,8 +92,20 @@ class StoryGroupFragment @Inject constructor(
     ) {
         if (prevState == null || prevState == state) return
 
-        setupViewPager()
         pagerAdapter.setStoryGroup(state.size)
+        with(binding.storyGroupViewPager) {
+            if (adapter != null) return@with
+            adapter = pagerAdapter
+            setPageTransformer(ZoomOutPageTransformer())
+            registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+                override fun onPageSelected(position: Int) {
+                    if (mPagerSelectedState == position) return
+                    mPagerSelectedState = position
+                    viewModelAction(StoryUiAction.SetGroupMainData(position))
+                    super.onPageSelected(position)
+                }
+            })
+        }
     }
 
     private fun manageNextPageEvent(position: Int) = with(binding.storyGroupViewPager) {
