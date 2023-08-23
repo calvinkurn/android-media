@@ -11,12 +11,13 @@ import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiMode
 import com.tokopedia.buy_more_get_more.olp.presentation.adapter.widget.TierListAdapter
 import com.tokopedia.buy_more_get_more.olp.presentation.listener.OfferingInfoListener
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.unifyprinciples.R.color.Unify_TN50
+import com.tokopedia.utils.view.binding.viewBinding
 
 class OfferingInfoViewHolder(
     itemView: View,
-    val listener: OfferingInfoListener) :
+    val listener: OfferingInfoListener
+) :
     AbstractViewHolder<OfferInfoForBuyerUiModel>(itemView) {
 
     private val binding: ItemOlpOfferingInfoBinding? by viewBinding()
@@ -29,7 +30,16 @@ class OfferingInfoViewHolder(
 
     override fun bind(data: OfferInfoForBuyerUiModel) {
         binding?.apply {
-            tpgShopName.text = data.offerings.firstOrNull()?.shopData?.shopName.orEmpty()
+            tpgShopName.apply {
+                text = data.offerings.firstOrNull()?.shopData?.shopName.orEmpty()
+                setOnClickListener {
+                    data.offerings.firstOrNull()?.shopData?.shopId?.let { shopId ->
+                        listener.onShopNameClicked(
+                            shopId
+                        )
+                    }
+                }
+            }
             if (data.offerings.firstOrNull()?.shopData?.badge?.isNotEmpty() == true) {
                 ivShopBadge.apply {
                     visible()

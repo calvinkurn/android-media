@@ -5,7 +5,6 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,6 +19,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.buy_more_get_more.R
 import com.tokopedia.buy_more_get_more.databinding.FragmentOfferLandingPageBinding
@@ -42,10 +42,7 @@ import com.tokopedia.campaign.delegates.HasPaginatedListImpl
 import com.tokopedia.campaign.helper.BuyMoreGetMoreHelper
 import com.tokopedia.campaign.utils.extension.showToaster
 import com.tokopedia.kotlin.extensions.view.ONE
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kotlin.extensions.view.toLongSafely
 import com.tokopedia.kotlin.extensions.view.visible
@@ -109,6 +106,7 @@ class OfferLandingPageFragment :
 
     @Inject
     lateinit var viewModel: OfferLandingPageViewModel
+
     private val shopIds by lazy { arguments?.getString(BundleConstant.BUNDLE_SHOP_ID).orEmpty() }
     private val offerId by lazy { arguments?.getString(BundleConstant.BUNDLE_OFFER_ID).orEmpty() }
     private val warehouseIds by lazy {
@@ -224,7 +222,7 @@ class OfferLandingPageFragment :
             subTitle = offerInfoForBuyer.offerings.firstOrNull()?.offerName.orEmpty()
             setNavigationOnClickListener { activity?.finish() }
             cartButton?.setOnClickListener { redirectToCartPage() }
-            moreMenuButton?.setOnClickListener { redirectToShopInfoPage() }
+            moreMenuButton?.setOnClickListener { redirectToMainMenu() }
         }
     }
 
@@ -384,6 +382,10 @@ class OfferLandingPageFragment :
         }
     }
 
+    override fun onProductCardClicked(productId: Long) {
+        redirectToPDP(productId)
+    }
+
     private fun addToCartProduct(product: OfferProductListUiModel.Product) {
         viewModel.processEvent(OlpEvent.AddToCart(product))
     }
@@ -420,6 +422,10 @@ class OfferLandingPageFragment :
         }
     }
 
+    override fun onShopNameClicked(shopId: Long) {
+        redirectToShopPage(shopId)
+    }
+
     private fun redirectToCartPage() {
         context?.let {
             val userSession = UserSession(it)
@@ -434,8 +440,15 @@ class OfferLandingPageFragment :
         }
     }
 
-    private fun redirectToShopInfoPage() {
-        val shopId = viewModel.currentState.shopData.shopId.toString()
-        RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_INFO, shopId)
+    private fun redirectToShopPage(shopId: Long) {
+        RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_PAGE, shopId.toString())
+    }
+
+    private fun redirectToPDP(productId: Long) {
+        RouteManager.route(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId.toString())
+    }
+
+    private fun redirectToMainMenu() {
+        RouteManager.route(context, ApplinkConsInternalNavigation.MAIN_NAVIGATION)
     }
 }

@@ -10,8 +10,8 @@ import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferProductListUiModel
 import com.tokopedia.buy_more_get_more.olp.presentation.listener.AtcProductListener
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.unifyprinciples.R.color.Unify_NN0
+import com.tokopedia.utils.view.binding.viewBinding
 
 class OfferingProductListViewHolder(
     itemView: View,
@@ -36,6 +36,7 @@ class OfferingProductListViewHolder(
             productCard.apply {
                 setProductModel(element.mapToProductCardModel())
                 setAddToCartOnClickListener { atcProductListener.onProductAtcVariantClicked(element) }
+                setOnClickListener { atcProductListener.onProductCardClicked(element.productId) }
             }
         }
     }
