@@ -28,6 +28,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.tokopedia.header.compose.NestHeader
 import com.tokopedia.header.compose.NestHeaderType
@@ -37,6 +38,7 @@ import com.tokopedia.logisticseller.R
 import com.tokopedia.logisticseller.ui.reschedulepickup.bottomsheet.RescheduleBottomSheetLayout
 import com.tokopedia.logisticseller.ui.reschedulepickup.dialog.RescheduleResultDialog
 import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.RescheduleBottomSheetState
+import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.ReschedulePickupInfo
 import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.ReschedulePickupInput
 import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.ReschedulePickupState
 import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.ReschedulePickupUiEvent
@@ -426,4 +428,21 @@ class ClickableNestTextFieldProperty(private val inputFilled: Boolean) : NestTex
     override fun inputColor(enabled: Boolean): Color {
         return if (inputFilled) NestTheme.colors.NN._950 else NestTheme.colors.NN._200
     }
+}
+
+@Preview
+@Composable
+private fun ReschedulePickupPagePreview() {
+    val info = ReschedulePickupInfo(
+        invoice = "INV/20220406/MPL/20642990",
+        courier = "instant",
+        guide = "Pastikan pesanan yang mau diubah sudah benar.<br/>Ubah jadwal hanya bisa dilakukan sekali.",
+        applink = "https://www.tokopedia.com/help/article/cara-mencari-driver-baru-untuk-layanan-instant-courier",
+        summary = ""
+    )
+    val state = ReschedulePickupState(info = info)
+    val input = ReschedulePickupInput()
+    val onEvent: (ReschedulePickupUiEvent) -> Unit = {}
+
+    ReschedulePickupScreen(state = state, input = input, onEvent = onEvent)
 }
