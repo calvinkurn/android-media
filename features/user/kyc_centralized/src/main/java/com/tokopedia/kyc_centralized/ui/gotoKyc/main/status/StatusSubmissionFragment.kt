@@ -153,6 +153,7 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
         when(status) {
             KycStatus.REJECTED.code.toString() -> {
                 GotoKycAnalytics.sendViewStatusPage(
+                    kycFlowType = GotoKycAnalytics.KYC_FLOW_NON_PROGRESSIVE,
                     status = GotoKycAnalytics.FAILED,
                     errorReason = rejectionReason,
                     projectId = projectId
@@ -161,6 +162,7 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
             }
             KycStatus.PENDING.code.toString() -> {
                 GotoKycAnalytics.sendViewStatusPage(
+                    kycFlowType = GotoKycAnalytics.KYC_FLOW_NON_PROGRESSIVE,
                     status = GotoKycAnalytics.PENDING,
                     projectId = projectId
                 )
@@ -168,6 +170,7 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
             }
             KycStatus.VERIFIED.code.toString() -> {
                 GotoKycAnalytics.sendViewStatusPage(
+                    kycFlowType = GotoKycAnalytics.KYC_FLOW_NON_PROGRESSIVE,
                     status = GotoKycAnalytics.SUCCESS,
                     projectId = projectId
                 )
@@ -199,6 +202,7 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
                 }
                 KycStatus.REJECTED.code.toString() -> {
                     GotoKycAnalytics.sendClickOnButtonVerifikasiUlangRejectPage(
+                        kycFlowType = GotoKycAnalytics.KYC_FLOW_NON_PROGRESSIVE,
                         errorMessage = rejectionReason,
                         projectId = projectId
                     )

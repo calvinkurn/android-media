@@ -120,6 +120,7 @@ import com.tokopedia.product.addedit.tracking.ProductEditStepperTracking
 import com.tokopedia.product.addedit.tracking.ProductLimitationTracking
 import com.tokopedia.product.addedit.variant.presentation.activity.AddEditProductVariantActivity
 import com.tokopedia.product.addedit.variant.presentation.activity.AddEditProductVariantDetailActivity
+import com.tokopedia.product.addedit.variant.presentation.extension.getValueOrDefault
 import com.tokopedia.product.addedit.variant.presentation.model.ValidationResultModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantStockStatus
 import com.tokopedia.product_photo_adapter.PhotoItemTouchHelperCallback
@@ -313,6 +314,7 @@ class AddEditProductPreviewFragment :
         observeAdminPermission()
         observeMustFillParentWeight()
         observeIsShopModerated()
+        observeIsRemovingSingleVariant()
 
         // validate shop status information
         validateShopStatus()
@@ -649,8 +651,14 @@ class AddEditProductPreviewFragment :
         )
         val isAddingOrDuplicating = isAdding() || viewModel.isDuplicate
         val mustFillParentWeight = viewModel.mustFillParentWeight.value.orFalse()
+        val isSingleProductVariant =
+            viewModel.productInputModel.value?.variantInputModel?.isSingleProductVariant().orFalse()
 
-        if (mustFillParentWeight) {
+        if (isSingleProductVariant) {
+            DialogUtil.showSingleProductVariantDialog(context ?: return) {
+                viewModel.convertToNonVariant()
+            }
+        } else if (mustFillParentWeight) {
             Toaster.build(
                 view,
                 getString(R.string.error_weight_not_filled),
@@ -825,6 +833,20 @@ class AddEditProductPreviewFragment :
         }
     }
 
+    private fun displayRemoveVariantCoachmark() {
+        val items = listOf(
+            CoachMark2Item(
+                addEditProductDetailTitle ?: return,
+                "",
+                getString(R.string.product_add_edit_label_coachmark_variant_removed),
+                CoachMarkContentPosition.TOP.position
+            )
+        )
+        outOfStockCoachMark = CoachMark2(context ?: return)
+        outOfStockCoachMark?.showCoachMark(ArrayList(items))
+
+    }
+
     private fun displayAddModeDetail(productInputModel: ProductInputModel) {
         doneButton?.show()
         enablePhotoEdit()
@@ -991,11 +1013,11 @@ class AddEditProductPreviewFragment :
     }
 
     private fun observeProductVariant() {
-        viewModel.isVariantEmpty.observe(viewLifecycleOwner, {
+        viewModel.isVariantEmpty.observe(viewLifecycleOwner) {
             if (isDuplicate() || isEditing() || isDrafting()) {
                 showEmptyVariantState(it)
             }
-        })
+        }
     }
 
     private fun observeHasDTStock() {
@@ -1214,6 +1236,16 @@ class AddEditProductPreviewFragment :
                     AddEditProductErrorHandler.logExceptionToCrashlytics(it.throwable)
                     AddEditProductErrorHandler.logMessage("$TIMBER_PREFIX_LOCATION_VALIDATION: ${it.throwable.message}")
                 }
+            }
+        }
+    }
+
+    private fun observeIsRemovingSingleVariant() {
+        viewModel.isRemovingSingleVariant.observe(viewLifecycleOwner) {
+            if (it) {
+                displayRemoveVariantCoachmark()
+                showToasterNormal(getString(R.string.product_add_edit_label_toaster_variant_removed))
+                viewModel.productInputModel.value?.isRemovingSingleVariant = false
             }
         }
     }
@@ -1794,16 +1826,20 @@ class AddEditProductPreviewFragment :
         }
     }
 
-    private fun showToasterSuccessSetLocation() {
+    private fun showToasterNormal(message: String) {
         view?.let {
             Toaster.build(
                 it,
-                getString(R.string.label_for_toaster_success_set_shop_location),
+                message,
                 Snackbar.LENGTH_LONG,
                 Toaster.TYPE_NORMAL,
                 getString(R.string.label_for_action_text_toaster_success_set_shop_location)
             ).show()
         }
+    }
+
+    private fun showToasterSuccessSetLocation() {
+        showToasterNormal(getString(R.string.label_for_toaster_success_set_shop_location))
     }
 
     private fun showToasterErrorSetStatusCampaignActive(isChecked: Boolean) {

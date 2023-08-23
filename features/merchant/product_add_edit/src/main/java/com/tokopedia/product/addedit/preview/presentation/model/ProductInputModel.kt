@@ -2,8 +2,10 @@ package com.tokopedia.product.addedit.preview.presentation.model
 
 import android.os.Parcelable
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
+import com.tokopedia.product.addedit.preview.domain.constant.ProductMapperConstants
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.NO_DATA
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantInputModel
@@ -31,7 +33,8 @@ data class ProductInputModel(
     var isDataChanged: Boolean = false,
     var isDuplicate: Boolean = false,
     var hasDTStock: Boolean = false,
-    var isCampaignActive: Boolean = false
+    var isCampaignActive: Boolean = false,
+    var isRemovingSingleVariant: Boolean = false
 ) : Parcelable {
     @IgnoredOnParcel
     var lastVariantData = ProductVariantInputModel()
@@ -42,6 +45,18 @@ data class ProductInputModel(
         detailInputModel.price
     } else {
         lastVariantData.price
+    }
+
+    fun convertToNonVariant() {
+        val variantProduct = variantInputModel.products.firstOrNull() ?: ProductVariantInputModel()
+        detailInputModel.price = variantProduct.price
+        detailInputModel.sku = variantProduct.sku
+        detailInputModel.stock = variantProduct.stock.orZero()
+        shipmentInputModel.weight = variantProduct.weight.orZero()
+        shipmentInputModel.weightUnit = ProductMapperConstants.getWeightUnitConstant(variantProduct.weightUnit)
+        shipmentInputModel.isUsingParentWeight = true
+        isRemovingSingleVariant = true
+        resetVariantData()
     }
 
     fun resetVariantData() {

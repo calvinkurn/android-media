@@ -34,17 +34,17 @@ class EditAddressRevampRobot {
     }
 
     fun fillAddress(address: String) {
-        onView(allOf(withId(R.id.text_field_input), isDescendantOfA(withId(R.id.et_alamat_new))))
+        onView(allOf(withId(com.tokopedia.unifycomponents.R.id.text_field_input), isDescendantOfA(withId(R.id.et_alamat_new))))
             .perform(click(), clearText(), typeText(address), closeSoftKeyboard())
     }
 
     fun fillPhoneNumber(phone: String) {
-        onView(allOf(withId(R.id.text_field_input), isDescendantOfA(withId(R.id.et_nomor_hp))))
+        onView(allOf(withId(com.tokopedia.unifycomponents.R.id.text_field_input), isDescendantOfA(withId(R.id.et_nomor_hp))))
             .perform(click(), clearText(), typeText(phone), closeSoftKeyboard())
     }
 
     fun fillReceiver(receiver: String) {
-        onView(allOf(withId(R.id.text_field_input), isDescendantOfA(withId(R.id.et_nama_penerima))))
+        onView(allOf(withId(com.tokopedia.unifycomponents.R.id.text_field_input), isDescendantOfA(withId(R.id.et_nama_penerima))))
             .perform(click(), clearText(), typeText(receiver), closeSoftKeyboard())
     }
 
@@ -59,7 +59,7 @@ class EditAddressRevampRobot {
 
     fun searchAddressStreet(keyword: String) {
         onView(withId(R.id.search_page_input)).perform(click())
-        onView(withId(R.id.searchbar_textfield)).perform(typeText(keyword), pressImeActionButton())
+        onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield)).perform(typeText(keyword), pressImeActionButton())
         waitForData()
     }
 
@@ -86,7 +86,7 @@ class EditAddressRevampRobot {
 
     fun searchKotaKecamatan(keyword: String) {
         onView(withId(R.id.search_page_input)).perform(click())
-        onView(withId(R.id.searchbar_textfield))
+        onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield))
             .perform(click(), replaceText(keyword), closeSoftKeyboard())
         waitForData()
     }
