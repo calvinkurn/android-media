@@ -193,8 +193,7 @@ class AddressFormViewModel @Inject constructor(private val repo: KeroRepository)
         address1: String,
         address1Notes: String,
         addressName: String,
-        isAnaPositive: String,
-        isTokonow: Boolean
+        isAnaPositive: String
     ) {
         saveDataModel?.apply {
             this.receiverName = receiverName

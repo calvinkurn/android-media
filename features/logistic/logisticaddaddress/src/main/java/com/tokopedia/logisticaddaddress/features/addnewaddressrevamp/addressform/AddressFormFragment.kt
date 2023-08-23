@@ -1338,8 +1338,7 @@ class AddressFormFragment :
                 address1 = viewModel.removeUnprintableCharacter(address1),
                 address1Notes = address1Notes,
                 addressName = addressName,
-                isAnaPositive = isAnaPositive,
-                isTokonow = isTokonow
+                isAnaPositive = isAnaPositive
             )
         }
 

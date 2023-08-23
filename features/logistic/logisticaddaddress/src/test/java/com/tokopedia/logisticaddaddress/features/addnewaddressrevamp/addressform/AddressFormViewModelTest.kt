@@ -423,8 +423,7 @@ class AddressFormViewModelTest {
             address1 = address1,
             address1Notes = address1Notes,
             addressName = addressName,
-            isAnaPositive = isAnaPositive,
-            isTokonow = false
+            isAnaPositive = isAnaPositive
         )
 
         // Then
@@ -456,8 +455,7 @@ class AddressFormViewModelTest {
             address1 = address1,
             address1Notes = address1Notes,
             addressName = addressName,
-            isAnaPositive = isAnaPositive,
-            isTokonow = false
+            isAnaPositive = isAnaPositive
         )
 
         // Then
