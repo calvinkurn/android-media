@@ -108,30 +108,30 @@ class PromoRecommendationDelegateAdapter(
             val zoomOutAnimation =
                 AnimationUtils.loadAnimation(binding.root.context, R.anim.zoom_out)
             shrinkLeftAnimation.setAnimationListener(object : AnimationListener {
-                override fun onAnimationStart(p0: Animation?) {
+                override fun onAnimationStart(animation: Animation?) {
                     binding.btnRecommendationUseVoucher.visible()
                 }
 
-                override fun onAnimationEnd(p0: Animation?) {
+                override fun onAnimationEnd(animation: Animation?) {
                     binding.btnRecommendationUseVoucher.invisible()
                 }
 
-                override fun onAnimationRepeat(p0: Animation?) {
+                override fun onAnimationRepeat(animation: Animation?) {
                     // no-op
                 }
             })
             zoomOutAnimation.setAnimationListener(object : AnimationListener {
-                override fun onAnimationStart(p0: Animation?) {
+                override fun onAnimationStart(animation: Animation?) {
                     binding.ivCheckmark.visible()
                     binding.ivCheckmarkOutline.visible()
                 }
 
-                override fun onAnimationEnd(p0: Animation?) {
+                override fun onAnimationEnd(animation: Animation?) {
                     binding.ivCheckmarkOutline.invisible()
                     onClickUsePromoRecommendation()
                 }
 
-                override fun onAnimationRepeat(p0: Animation?) {
+                override fun onAnimationRepeat(animation: Animation?) {
                     // no-op
                 }
             })
