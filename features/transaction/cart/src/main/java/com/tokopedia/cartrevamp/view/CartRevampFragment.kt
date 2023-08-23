@@ -4279,62 +4279,6 @@ class CartRevampFragment :
         }
     }
 
-    private fun generateNotesCoachMark(
-        position: Int,
-        mainFlowCoachMarkItems: ArrayList<CoachMark2Item>
-    ) {
-        viewModel.cartModel.cartListData?.onboardingData?.get(MAIN_FLOW_ONBOARDING_NOTES_INDEX)
-            ?.let { onboardingData ->
-                val data = viewModel.cartDataList.value
-                val nearestItemHolderDataPosition =
-                    CartDataHelper.getNearestCartItemHolderDataPosition(position, data)
-                if (nearestItemHolderDataPosition != RecyclerView.NO_POSITION) {
-                    val nearestCartItemViewHolder =
-                        binding?.rvCart?.findViewHolderForAdapterPosition(
-                            nearestItemHolderDataPosition
-                        ) as CartItemViewHolder
-                    val quantityView =
-                        nearestCartItemViewHolder.getItemViewBinding().buttonChangeNote
-                    mainFlowCoachMarkItems.add(
-                        CoachMark2Item(
-                            quantityView,
-                            "",
-                            onboardingData.text,
-                            CoachMark2.POSITION_BOTTOM
-                        )
-                    )
-                }
-            }
-    }
-
-    private fun generateWishlistCoachMark(
-        position: Int,
-        mainFlowCoachMarkItems: ArrayList<CoachMark2Item>
-    ) {
-        viewModel.cartModel.cartListData?.onboardingData?.get(MAIN_FLOW_ONBOARDING_WISHLIST_INDEX)
-            ?.let { onboardingData ->
-                val data = viewModel.cartDataList.value
-                val nearestItemHolderDataPosition =
-                    CartDataHelper.getNearestCartItemHolderDataPosition(position, data)
-                if (nearestItemHolderDataPosition != RecyclerView.NO_POSITION) {
-                    val nearestCartItemViewHolder =
-                        binding?.rvCart?.findViewHolderForAdapterPosition(
-                            nearestItemHolderDataPosition
-                        ) as CartItemViewHolder
-                    val quantityView =
-                        nearestCartItemViewHolder.getItemViewBinding().buttonToggleWishlist
-                    mainFlowCoachMarkItems.add(
-                        CoachMark2Item(
-                            quantityView,
-                            "",
-                            onboardingData.text,
-                            CoachMark2.POSITION_BOTTOM
-                        )
-                    )
-                }
-            }
-    }
-
     private fun generateSelectAllCoachMark(mainFlowCoachMarkItems: ArrayList<CoachMark2Item>) {
         viewModel.cartModel.cartListData?.onboardingData?.get(MAIN_FLOW_ONBOARDING_SELECT_ALL_INDEX)
             ?.let { onboardingData ->
