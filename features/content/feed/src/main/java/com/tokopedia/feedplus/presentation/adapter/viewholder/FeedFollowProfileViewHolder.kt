@@ -15,13 +15,12 @@ import com.tokopedia.feedplus.databinding.ItemFeedFollowProfileShimmerBinding
 import com.tokopedia.feedplus.presentation.adapter.FeedFollowProfileAdapter
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.feedplus.R
-import com.tokopedia.content.common.R as contentCommonR
+import com.tokopedia.content.common.R as contentcommonR
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedFollowRecommendationListener
 import com.tokopedia.feedplus.presentation.model.FeedFollowRecommendationModel
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
-import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 
 /**
@@ -103,7 +102,7 @@ class FeedFollowProfileViewHolder private constructor() {
                     text = itemView.context.getString(R.string.feed_following_label)
                 } else {
                     buttonVariant = UnifyButton.Variant.FILLED
-                    text = itemView.context.getString(contentCommonR.string.feed_component_follow)
+                    text = itemView.context.getString(contentcommonR.string.feed_component_follow)
                 }
             }
         }

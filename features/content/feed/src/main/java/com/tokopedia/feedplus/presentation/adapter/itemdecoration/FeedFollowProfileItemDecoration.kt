@@ -7,8 +7,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.content.common.ui.itemdecoration.FocusedCarouselItemDecoration
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
-import com.tokopedia.content.common.R as contentCommonR
-import com.tokopedia.unifyprinciples.R as unifyR
+import com.tokopedia.content.common.R as contentommonR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created By : Jonathan Darwin on July 04, 2023
@@ -19,9 +19,9 @@ class FeedFollowProfileItemDecoration(
 
     override val maxShrink: Float = 0.85f
 
-    override val roundedOffset: Int = context.resources.getDimensionPixelOffset(contentCommonR.dimen.content_common_space_6)
+    override val roundedOffset: Int = context.resources.getDimensionPixelOffset(contentommonR.dimen.content_common_space_6)
 
-    override val overlayColor: Int = MethodChecker.getColor(context, unifyR.color.Unify_Static_Black)
+    override val overlayColor: Int = MethodChecker.getColor(context, unifyprinciplesR.color.Unify_Static_Black)
 
     override fun getItemOffsets(
         outRect: Rect,

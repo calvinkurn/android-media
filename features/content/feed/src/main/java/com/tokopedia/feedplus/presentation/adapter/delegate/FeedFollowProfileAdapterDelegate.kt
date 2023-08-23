@@ -9,7 +9,7 @@ import com.tokopedia.feedplus.presentation.adapter.FeedFollowProfileAdapter
 import com.tokopedia.feedplus.presentation.adapter.FeedFollowRecommendationPayload
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedFollowRecommendationListener
 import com.tokopedia.feedplus.presentation.adapter.viewholder.FeedFollowProfileViewHolder
-import com.tokopedia.content.common.R as contentCommonR
+import com.tokopedia.content.common.R as contentcommonR
 
 /**
  * Created By : Jonathan Darwin on July 04, 2023
@@ -24,7 +24,7 @@ class FeedFollowProfileAdapterDelegate private constructor() {
         FeedFollowProfileAdapter.Model.Profile,
         FeedFollowProfileAdapter.Model,
         FeedFollowProfileViewHolder.Profile
-    >(contentCommonR.layout.view_cc_empty) {
+    >(contentcommonR.layout.view_cc_empty) {
 
         override fun onBindViewHolder(
             item: FeedFollowProfileAdapter.Model.Profile,
@@ -61,7 +61,7 @@ class FeedFollowProfileAdapterDelegate private constructor() {
         FeedFollowProfileAdapter.Model.Loading,
         FeedFollowProfileAdapter.Model,
         FeedFollowProfileViewHolder.Loading
-    >(contentCommonR.layout.view_cc_empty) {
+    >(contentcommonR.layout.view_cc_empty) {
 
         override fun onBindViewHolder(
             item: FeedFollowProfileAdapter.Model.Loading,
