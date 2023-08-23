@@ -2,7 +2,6 @@ package com.tokopedia.product.detail.view.viewholder.a_plus_content
 
 import android.os.Bundle
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
 
@@ -17,8 +16,7 @@ data class APlusImageUiModel(
     var ctaText: String = "",
     var expanded: Boolean = true,
     var showTopDivider: Boolean = false,
-    var haveBottomPadding: Boolean = false,
-    var trackerData: ComponentTrackDataModel = ComponentTrackDataModel()
+    var haveBottomPadding: Boolean = false
 ) : DynamicPdpDataModel {
     override fun type(): String = type
 

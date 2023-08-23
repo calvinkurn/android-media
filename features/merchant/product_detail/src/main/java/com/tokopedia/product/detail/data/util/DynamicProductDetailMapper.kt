@@ -34,7 +34,6 @@ import com.tokopedia.product.detail.common.getCurrencyFormatted
 import com.tokopedia.product.detail.common.mapper.AtcVariantMapper
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.datamodel.ArButtonDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicOneLinerDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
@@ -321,29 +320,22 @@ object DynamicProductDetailMapper {
                     )
                 }
                 ProductDetailConstant.A_PLUS_IMAGE -> {
-                    val aPlusData = component.componentData.firstOrNull()
-                    val aPlusMediaData = aPlusData?.contentMedia?.firstOrNull()
+                    val aPlusData = component.componentData.firstOrNull() ?: return@forEachIndexed
+                    val aPlusMediaData = aPlusData.contentMedia.firstOrNull() ?: return@forEachIndexed
                     // only add to component list if the media url is not blank and media ratio is valid
                     // or it is used to show toggle button (CTA text is not blank)
-                    if (
-                        (aPlusData != null && aPlusData.requiredForContentMediaToggle()) ||
-                        (aPlusMediaData != null && aPlusMediaData.valid())
-                    ) {
+                    if (aPlusData.requiredForContentMediaToggle() || aPlusMediaData.valid()) {
                         listOfComponent.add(
                             APlusImageUiModel(
                                 type = component.type,
                                 name = component.componentName,
-                                url = aPlusMediaData?.url.orEmpty(),
-                                ratio = aPlusMediaData?.ratio.orEmpty(),
+                                url = aPlusMediaData.url,
+                                ratio = aPlusMediaData.ratio,
                                 title = aPlusData.title,
                                 description = aPlusData.description,
                                 showOnCollapsed = aPlusData.show,
                                 ctaText = aPlusData.ctaText,
-                                showTopDivider = firstAPlusMedia,
-                                trackerData = ComponentTrackDataModel(
-                                    componentType = component.type,
-                                    componentName = component.componentName
-                                )
+                                showTopDivider = firstAPlusMedia
                             )
                         )
                         firstAPlusMedia = false

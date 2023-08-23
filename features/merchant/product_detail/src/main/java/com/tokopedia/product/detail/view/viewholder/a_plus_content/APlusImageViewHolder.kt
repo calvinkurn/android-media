@@ -1,9 +1,8 @@
 package com.tokopedia.product.detail.view.viewholder.a_plus_content
 
 import android.view.View
-import androidx.constraintlayout.widget.ConstraintSet
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.updatePadding
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -13,15 +12,17 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.clearImage
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.utils.extensions.updateLayoutParams
 import com.tokopedia.product.detail.common.utils.extensions.validDimensionRatio
 import com.tokopedia.product.detail.databinding.ItemAPlusImageBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.viewholder.ProductDetailPageViewHolder
 import com.tokopedia.unifycomponents.toPx
 
 class APlusImageViewHolder(
     itemView: View,
     private val listener: DynamicProductDetailListener
-) : AbstractViewHolder<APlusImageUiModel>(itemView) {
+) : ProductDetailPageViewHolder<APlusImageUiModel>(itemView) {
 
     companion object {
         val LAYOUT = R.layout.item_a_plus_image
@@ -97,14 +98,14 @@ class APlusImageViewHolder(
         }
         binding.tvProductDetailAPlusImageToggle.setOnClickListener {
             listener.onToggleAPlus(
-                !element.expanded,
-                element.trackerData.copy(adapterPosition = bindingAdapterPosition)
+                expanded = !element.expanded,
+                componentTrackerData = getComponentTrackData(element)
             )
         }
         binding.icProductDetailAPlusImageToggle.setOnClickListener {
             listener.onToggleAPlus(
-                !element.expanded,
-                element.trackerData.copy(adapterPosition = bindingAdapterPosition)
+                expanded = !element.expanded,
+                componentTrackerData = getComponentTrackData(element)
             )
         }
     }
@@ -117,9 +118,7 @@ class APlusImageViewHolder(
 
     private fun setupImpressionListener(element: APlusImageUiModel) {
         binding.root.addOnImpressionListener(element.impressHolder) {
-            listener.onImpressComponent(
-                element.trackerData.copy(adapterPosition = bindingAdapterPosition)
-            )
+            listener.onImpressComponent(getComponentTrackData(element))
         }
     }
 
@@ -128,9 +127,8 @@ class APlusImageViewHolder(
     }
 
     private fun setImageRatio(ratio: String) {
-        val constraintSet = ConstraintSet()
-        constraintSet.clone(binding.root)
-        constraintSet.setDimensionRatio(binding.ivProductDetailAPlusImage.id, ratio)
-        constraintSet.applyTo(binding.root)
+        binding.ivProductDetailAPlusImage.updateLayoutParams<ConstraintLayout.LayoutParams> {
+            if (this != null) dimensionRatio = ratio
+        }
     }
 }

@@ -123,8 +123,8 @@ class ProductDetailNavigation : FrameLayout, NavigationListener {
         navigationTab?.updateItemPosition()
     }
 
-    fun disableNavigationTabAutoShowHide() {
-        navigationTab?.disableAutoShowHide()
+    fun disableScrollUpListener() {
+        navigationTab?.disableScrollUpListener()
     }
 
     private fun getConfiguration(offsetY: Int, firstItem: NavigationTab.Item?): Configuration {

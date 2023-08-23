@@ -1185,19 +1185,31 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         updateAction.invoke()
     }
 
-    fun getInitialItems(collapsed: Boolean): List<DynamicPdpDataModel> {
+    /**
+     * Return a new [List] of [DynamicPdpDataModel] filled with components that will be showed on PDP.
+     * Only call this to supply a list of components for [com.tokopedia.product.detail.view.fragment.DynamicProductDetailFragment.submitInitialList].
+     *
+     * @param aPlusContentExpanded A [Boolean] indicating whether A+ content section is expanded or not.
+     */
+    fun getInitialItems(aPlusContentExpanded: Boolean): List<DynamicPdpDataModel> {
         return mapOfData
             .values
             .toMutableList()
-            .adjustAPlusMedia(collapsed)
+            .adjustAPlusMedia(aPlusContentExpanded)
             .toList()
     }
 
-    fun getCurrentDataModels(expanded: Boolean): List<DynamicPdpDataModel> {
+    /**
+     * Return a new [List] of [DynamicPdpDataModel] filled with components that will be showed on PDP.
+     * Only call this to supply a list of components for [com.tokopedia.product.detail.view.fragment.DynamicProductDetailFragment.submitList].
+     *
+     * @param aPlusContentExpanded A [Boolean] indicating whether A+ content section is expanded or not.
+     */
+    fun getCurrentDataModels(aPlusContentExpanded: Boolean): List<DynamicPdpDataModel> {
         return mapOfData
             .values
             .toMutableList()
-            .adjustAPlusMedia(expanded)
+            .adjustAPlusMedia(aPlusContentExpanded)
             .addVerticalRecommendation()
             .toList()
     }

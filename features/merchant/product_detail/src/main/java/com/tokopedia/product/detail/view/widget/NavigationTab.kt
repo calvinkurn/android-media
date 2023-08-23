@@ -122,7 +122,7 @@ class NavigationTab : FrameLayout, CoroutineScope {
         toggle(false, false)
     }
 
-    fun disableAutoShowHide() {
+    fun disableScrollUpListener() {
         enableScrollUpListener = false
     }
 
