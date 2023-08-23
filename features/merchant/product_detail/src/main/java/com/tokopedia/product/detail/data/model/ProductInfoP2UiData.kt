@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.data.model
 
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.product.detail.data.model.bmgm.BMGMData
 import com.tokopedia.product.detail.common.data.model.ar.ProductArInfo
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkir
 import com.tokopedia.product.detail.common.data.model.bundleinfo.BundleInfo
@@ -73,7 +74,8 @@ data class ProductInfoP2UiData(
     var socialProof: List<SocialProofUiModel> = emptyList(),
     var shopReview: ProductShopReviewUiModel = ProductShopReviewUiModel(),
     var bottomSheetEdu: BottomSheetEduUiModel = BottomSheetEduUiModel(),
-    var dynamicOneLiner: List<DynamicOneLiner> = emptyList()
+    var dynamicOneLiner: List<DynamicOneLiner> = emptyList(),
+    var bmgm: BMGMData = BMGMData()
 ) {
     fun getTickerByProductId(productId: String): List<TickerDataResponse>? {
         return ticker.tickerInfo.firstOrNull {
