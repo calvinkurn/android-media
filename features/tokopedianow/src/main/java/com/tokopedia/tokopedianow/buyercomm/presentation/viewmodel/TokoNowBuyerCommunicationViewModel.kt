@@ -16,7 +16,7 @@ class TokoNowBuyerCommunicationViewModel @Inject constructor(
     private val getBuyerCommunicationUseCase: GetBuyerCommunicationUseCase,
     private val addressData: TokoNowLocalAddress,
     dispatchers: CoroutineDispatchers
-): BaseViewModel(dispatchers.io) {
+) : BaseViewModel(dispatchers.io) {
 
     val buyerCommunicationData: LiveData<BuyerCommunicationData>
         get() = _buyerCommunicationData
@@ -24,7 +24,7 @@ class TokoNowBuyerCommunicationViewModel @Inject constructor(
     private val _buyerCommunicationData = MutableLiveData<BuyerCommunicationData>()
 
     fun onViewCreated(data: BuyerCommunicationData?) {
-        if(data == null) {
+        if (data == null) {
             getBuyerCommunicationData()
         } else {
             updateBuyerCommunicationData(data)
@@ -41,11 +41,10 @@ class TokoNowBuyerCommunicationViewModel @Inject constructor(
             val data = BuyerCommunicationMapper.mapToBuyerCommunicationData(response)
             updateBuyerCommunicationData(data)
         }) {
-
         }
     }
 
-    private fun updateBuyerCommunicationData(data: BuyerCommunicationData?) {
+    private fun updateBuyerCommunicationData(data: BuyerCommunicationData) {
         _buyerCommunicationData.postValue(data)
     }
 }
