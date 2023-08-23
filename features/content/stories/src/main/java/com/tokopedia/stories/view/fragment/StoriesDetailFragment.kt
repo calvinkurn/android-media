@@ -194,26 +194,24 @@ class StoriesDetailFragment @Inject constructor(
                 TouchEventStories.RESUME -> resumeStories()
 
                 TouchEventStories.NEXT_PREV -> viewModelAction(NextDetail)
-
-                TouchEventStories.SWIPE_UP -> {
-                    if (groupId != viewModel.groupId) return@onTouchEventStories
-                    viewModelAction(StoriesUiAction.OpenProduct)
-                }
                 else -> {}
             }
-        }
-        flStoriesProduct.setOnClickListener {
-            showToast("show product bottom sheet")
-            // pause stories when product bottom sheet shown
-            // and resume when product bottom sheet dismissed
-            // pause -> viewModelAction(StoriesUiAction.PauseStories)
-            // resume -> viewModelAction(StoriesUiAction.ResumeStories)
         }
         vStoriesKebabIcon.setOnClickListener {
             viewModelAction(StoriesUiAction.OpenKebabMenu)
         }
         vStoriesProductIcon.root.setOnClickListener {
             viewModelAction(StoriesUiAction.OpenProduct)
+        }
+        flStoriesProduct.onTouchEventStories { event ->
+            when (event) {
+                TouchEventStories.SWIPE_UP -> {
+                    if (groupId != viewModel.groupId) return@onTouchEventStories
+                    viewModelAction(StoriesUiAction.OpenProduct)
+                }
+                else -> {}
+            }
+
         }
     }
 

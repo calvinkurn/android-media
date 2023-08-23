@@ -129,6 +129,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/guideline_bot" >
+
+        <androidx.compose.ui.platform.ComposeView
+            android:id="@+id/notch_stories_product"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/content_common_space_16"
+            android:layout_marginEnd="@dimen/content_common_space_16" />
     </FrameLayout>
 
     <include
@@ -186,15 +194,5 @@
         app:layout_constraintStart_toStartOf="@+id/v_stories_kebab_icon"
         app:icon_name="SHARE"
         app:unify_image_type="circle" />
-
-    <androidx.compose.ui.platform.ComposeView
-        android:id="@+id/notch_stories_product"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/content_common_space_16"
-        android:layout_marginEnd="@dimen/content_common_space_16"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/guideline_bot" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
