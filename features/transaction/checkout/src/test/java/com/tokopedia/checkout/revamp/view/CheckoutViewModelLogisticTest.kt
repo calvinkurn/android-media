@@ -17,6 +17,7 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutUpsellModel
 import com.tokopedia.checkout.view.DataProvider
 import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.InsuranceData
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ProductData
 import com.tokopedia.logisticcart.scheduledelivery.domain.model.DeliveryProduct
@@ -51,6 +52,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import org.junit.Assert.assertEquals
 import org.junit.Test
+import java.io.IOException
 
 class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
 
@@ -492,6 +494,550 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
         coVerify {
             ratesWithScheduleUseCase(any())
         }
+        assertEquals(false, (viewModel.listData.value[5] as CheckoutOrderModel).shipment.courierItemData!!.scheduleDeliveryUiModel!!.isSelected)
+    }
+
+    @Test
+    fun `WHEN get shipping rates and schedule delivery rates success with default selly THEN should render success with selly`() {
+        // Given
+        val ratesResponse = DataProvider.provideRatesV3Response()
+        val ratesScheduleDeliveryResponse =
+            DataProvider.provideScheduleDeliveryRecommendedRatesResponse()
+        val shippingRecommendationData =
+            shippingDurationConverter.convertModel(ratesResponse.ratesData)
+        shippingRecommendationData.scheduleDeliveryData =
+            ratesScheduleDeliveryResponse.ongkirGetScheduledDeliveryRates.scheduleDeliveryData
+
+        coEvery { ratesWithScheduleUseCase(any()) } returns shippingRecommendationData
+
+        coEvery {
+            validateUsePromoRevampUseCase.setParam(any()).executeOnBackground()
+        } returns ValidateUsePromoRevampUiModel(
+            status = "OK",
+            errorCode = "200",
+            promoUiModel = PromoUiModel(
+                voucherOrderUiModels = listOf(
+                    PromoCheckoutVoucherOrdersItemUiModel(
+                        code = "SICEPATTEST",
+                        shippingId = 10,
+                        spId = 28,
+                        cartStringGroup = "1"
+                    )
+                )
+            )
+        )
+
+        val orderModel = CheckoutOrderModel("1", ratesValidationFlow = true, shippingId = 1, spId = 1)
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(
+                recipientAddressModel = RecipientAddressModel().apply {
+                    id = "1"
+                    destinationDistrictId = "1"
+                    addressName = "jakarta"
+                    postalCode = "123"
+                    latitude = "123"
+                    longitude = "321"
+                }
+            ),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel("1"),
+            orderModel,
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+
+        // When
+        viewModel.loadShipping(orderModel, 5)
+
+        // Then
+        coVerify {
+            ratesWithScheduleUseCase(any())
+        }
+        assertEquals(true, (viewModel.listData.value[5] as CheckoutOrderModel).shipment.courierItemData!!.scheduleDeliveryUiModel!!.isSelected)
+    }
+
+    @Test
+    fun `WHEN get shipping rates and schedule delivery rates success with no matching sp id with auto courier selection THEN should render success`() {
+        // Given
+        val ratesResponse = DataProvider.provideRatesV3Response()
+        val ratesScheduleDeliveryResponse = DataProvider.provideScheduleDeliveryRatesResponse()
+        val shippingRecommendationData =
+            shippingDurationConverter.convertModel(ratesResponse.ratesData)
+        shippingRecommendationData.scheduleDeliveryData =
+            ratesScheduleDeliveryResponse.ongkirGetScheduledDeliveryRates.scheduleDeliveryData
+
+        coEvery { ratesWithScheduleUseCase(any()) } returns shippingRecommendationData
+
+        val orderModel = CheckoutOrderModel("1", ratesValidationFlow = true, isAutoCourierSelection = true, shippingId = 2, spId = 2)
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(
+                recipientAddressModel = RecipientAddressModel().apply {
+                    id = "1"
+                    destinationDistrictId = "1"
+                    addressName = "jakarta"
+                    postalCode = "123"
+                    latitude = "123"
+                    longitude = "321"
+                }
+            ),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel("1"),
+            orderModel,
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+
+        // When
+        viewModel.loadShipping(orderModel, 5)
+
+        // Then
+        coVerify {
+            ratesWithScheduleUseCase(any())
+        }
+        assertEquals(false, (viewModel.listData.value[5] as CheckoutOrderModel).shipment.courierItemData!!.scheduleDeliveryUiModel!!.isSelected)
+    }
+
+    @Test
+    fun `WHEN get shipping rates and schedule delivery rates success with disable change courier THEN should hit validate use`() {
+        // Given
+        val ratesResponse = DataProvider.provideRatesV3EnabledBoPromoResponse()
+        val ratesScheduleDeliveryResponse = DataProvider.provideScheduleDeliveryRatesResponse()
+        val shippingRecommendationData =
+            shippingDurationConverter.convertModel(ratesResponse.ratesData)
+        shippingRecommendationData.scheduleDeliveryData =
+            ratesScheduleDeliveryResponse.ongkirGetScheduledDeliveryRates.scheduleDeliveryData
+
+        coEvery { ratesWithScheduleUseCase(any()) } returns shippingRecommendationData
+
+        coEvery {
+            validateUsePromoRevampUseCase.setParam(any()).executeOnBackground()
+        } returns ValidateUsePromoRevampUiModel(
+            status = "OK",
+            errorCode = "200",
+            promoUiModel = PromoUiModel(
+                voucherOrderUiModels = listOf(
+                    PromoCheckoutVoucherOrdersItemUiModel(
+                        code = "WGOIN",
+                        shippingId = 1,
+                        spId = 1,
+                        cartStringGroup = "1"
+                    )
+                )
+            )
+        )
+
+        val orderModel = CheckoutOrderModel("1", ratesValidationFlow = true, isDisableChangeCourier = true, shippingId = 1, spId = 1)
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(
+                recipientAddressModel = RecipientAddressModel().apply {
+                    id = "1"
+                    destinationDistrictId = "1"
+                    addressName = "jakarta"
+                    postalCode = "123"
+                    latitude = "123"
+                    longitude = "321"
+                }
+            ),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel("1"),
+            orderModel,
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+
+        // When
+        viewModel.loadShipping(orderModel, 5)
+
+        // Then
+        coVerify {
+            validateUsePromoRevampUseCase.setParam(any()).executeOnBackground()
+        }
+        assertEquals("WGOIN", (viewModel.listData.value[5] as CheckoutOrderModel).shipment.courierItemData!!.selectedShipper.logPromoCode)
+    }
+
+    @Test
+    fun `WHEN get shipping rates and schedule delivery rates success with no matching spid & disable change courier THEN should hit validate use`() {
+        // Given
+        val ratesResponse = DataProvider.provideRatesV3EnabledBoPromoResponse()
+        val ratesScheduleDeliveryResponse = DataProvider.provideScheduleDeliveryRatesResponse()
+        val shippingRecommendationData =
+            shippingDurationConverter.convertModel(ratesResponse.ratesData)
+        shippingRecommendationData.scheduleDeliveryData =
+            ratesScheduleDeliveryResponse.ongkirGetScheduledDeliveryRates.scheduleDeliveryData
+
+        coEvery { ratesWithScheduleUseCase(any()) } returns shippingRecommendationData
+
+        coEvery {
+            validateUsePromoRevampUseCase.setParam(any()).executeOnBackground()
+        } returns ValidateUsePromoRevampUiModel(
+            status = "OK",
+            errorCode = "200",
+            promoUiModel = PromoUiModel(
+                voucherOrderUiModels = listOf(
+                    PromoCheckoutVoucherOrdersItemUiModel(
+                        code = "WGOIN",
+                        shippingId = 1,
+                        spId = 1,
+                        cartStringGroup = "1"
+                    )
+                )
+            )
+        )
+
+        val orderModel = CheckoutOrderModel("1", ratesValidationFlow = true, isDisableChangeCourier = true, shippingId = 0, spId = 0)
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(
+                recipientAddressModel = RecipientAddressModel().apply {
+                    id = "1"
+                    destinationDistrictId = "1"
+                    addressName = "jakarta"
+                    postalCode = "123"
+                    latitude = "123"
+                    longitude = "321"
+                }
+            ),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel("1"),
+            orderModel,
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+
+        // When
+        viewModel.loadShipping(orderModel, 5)
+
+        // Then
+        coVerify {
+            validateUsePromoRevampUseCase.setParam(any()).executeOnBackground()
+        }
+        assertEquals("WGOIN", (viewModel.listData.value[5] as CheckoutOrderModel).shipment.courierItemData!!.selectedShipper.logPromoCode)
+    }
+
+    @Test
+    fun `WHEN get shipping rates services null and get schedule delivery rates success THEN should render failed`() {
+        // Given
+        val ratesResponse = DataProvider.provideRatesV3EmptyServicesResponse()
+        val ratesScheduleDeliveryResponse = DataProvider.provideScheduleDeliveryRatesResponse()
+        val shippingRecommendationData =
+            shippingDurationConverter.convertModel(ratesResponse.ratesData)
+        shippingRecommendationData.scheduleDeliveryData =
+            ratesScheduleDeliveryResponse.ongkirGetScheduledDeliveryRates.scheduleDeliveryData
+
+        coEvery { ratesWithScheduleUseCase(any()) } returns shippingRecommendationData
+
+        val orderModel = CheckoutOrderModel("1", ratesValidationFlow = true, shippingId = 1, spId = 1)
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(
+                recipientAddressModel = RecipientAddressModel().apply {
+                    id = "1"
+                    destinationDistrictId = "1"
+                    addressName = "jakarta"
+                    postalCode = "123"
+                    latitude = "123"
+                    longitude = "321"
+                }
+            ),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel("1"),
+            orderModel,
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+
+        // When
+        viewModel.loadShipping(orderModel, 5)
+
+        // Then
+        coVerify {
+            ratesWithScheduleUseCase(any())
+        }
+        assertEquals(null, (viewModel.listData.value[5] as CheckoutOrderModel).shipment.courierItemData)
+    }
+
+    @Test
+    fun `WHEN get shipping rates services success and get schedule delivery rates null THEN should render failed`() {
+        // Given
+        val ratesResponse = DataProvider.provideRatesV3Response()
+        val shippingRecommendationData =
+            shippingDurationConverter.convertModel(ratesResponse.ratesData)
+        shippingRecommendationData.scheduleDeliveryData = null
+
+        coEvery { ratesWithScheduleUseCase(any()) } returns shippingRecommendationData
+
+        val orderModel = CheckoutOrderModel("1", ratesValidationFlow = true, shippingId = 1, spId = 1)
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(
+                recipientAddressModel = RecipientAddressModel().apply {
+                    id = "1"
+                    destinationDistrictId = "1"
+                    addressName = "jakarta"
+                    postalCode = "123"
+                    latitude = "123"
+                    longitude = "321"
+                }
+            ),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel("1"),
+            orderModel,
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+
+        // When
+        viewModel.loadShipping(orderModel, 5)
+
+        // Then
+        coVerify {
+            ratesWithScheduleUseCase(any())
+        }
+        assertEquals(null, (viewModel.listData.value[5] as CheckoutOrderModel).shipment.courierItemData)
+    }
+
+    @Test
+    fun `WHEN get shipping rates failed THEN should render failed`() {
+        // Given
+        val ratesResponse = DataProvider.provideRatesV3Response()
+        val shippingRecommendationData =
+            shippingDurationConverter.convertModel(ratesResponse.ratesData)
+        shippingRecommendationData.scheduleDeliveryData = null
+
+        coEvery { ratesWithScheduleUseCase(any()) } throws IOException()
+
+        val orderModel = CheckoutOrderModel("1", ratesValidationFlow = true, shippingId = 1, spId = 1)
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(
+                recipientAddressModel = RecipientAddressModel().apply {
+                    id = "1"
+                    destinationDistrictId = "1"
+                    addressName = "jakarta"
+                    postalCode = "123"
+                    latitude = "123"
+                    longitude = "321"
+                }
+            ),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel("1"),
+            orderModel,
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+
+        // When
+        viewModel.loadShipping(orderModel, 5)
+
+        // Then
+        coVerify {
+            ratesWithScheduleUseCase(any())
+        }
+        assertEquals(null, (viewModel.listData.value[5] as CheckoutOrderModel).shipment.courierItemData)
+    }
+
+    @Test
+    fun `WHEN get shipping rates schedule success with bo code THEN should hit validate use`() {
+        // Given
+        viewModel.logisticProcessor.isBoUnstackEnabled = true
+        val ratesResponse = DataProvider.provideRatesV3EnabledBoPromoResponse()
+        val ratesScheduleDeliveryResponse = DataProvider.provideScheduleDeliveryRatesResponse()
+        val shippingRecommendationData =
+            shippingDurationConverter.convertModel(ratesResponse.ratesData)
+        shippingRecommendationData.scheduleDeliveryData =
+            ratesScheduleDeliveryResponse.ongkirGetScheduledDeliveryRates.scheduleDeliveryData
+
+        coEvery { ratesWithScheduleUseCase(any()) } returns shippingRecommendationData
+
+        coEvery {
+            validateUsePromoRevampUseCase.setParam(any()).executeOnBackground()
+        } returns ValidateUsePromoRevampUiModel(
+            status = "OK",
+            errorCode = "200",
+            promoUiModel = PromoUiModel(
+                voucherOrderUiModels = listOf(
+                    PromoCheckoutVoucherOrdersItemUiModel(
+                        code = "WGOIN",
+                        shippingId = 1,
+                        spId = 1,
+                        cartStringGroup = "1"
+                    )
+                )
+            )
+        )
+
+        val orderModel = CheckoutOrderModel("1", ratesValidationFlow = true, boCode = "WGOIN", shippingId = 1, spId = 1)
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(
+                recipientAddressModel = RecipientAddressModel().apply {
+                    id = "1"
+                    destinationDistrictId = "1"
+                    addressName = "jakarta"
+                    postalCode = "123"
+                    latitude = "123"
+                    longitude = "321"
+                }
+            ),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel("1"),
+            orderModel,
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+
+        // When
+        viewModel.loadShipping(orderModel, 5)
+
+        // Then
+        coVerify {
+            validateUsePromoRevampUseCase.setParam(any()).executeOnBackground()
+        }
+    }
+
+    @Test
+    fun `WHEN get shipping rates schedule got error courier with bo code THEN should not hit validate use`() {
+        // Given
+        viewModel.logisticProcessor.isBoUnstackEnabled = true
+        val ratesResponse = DataProvider.provideRatesV3EnabledBoPromoResponse()
+        val ratesScheduleDeliveryResponse = DataProvider.provideScheduleDeliveryRatesResponse()
+        val shippingRecommendationData =
+            shippingDurationConverter.convertModel(ratesResponse.ratesData)
+        shippingRecommendationData.scheduleDeliveryData =
+            ratesScheduleDeliveryResponse.ongkirGetScheduledDeliveryRates.scheduleDeliveryData
+        val courier =
+            shippingRecommendationData.shippingDurationUiModels.first().shippingCourierViewModelList.first { it.productData.shipperProductId == 28 }
+        courier.productData = courier.productData.copy(
+            error =
+            ErrorProductData().apply {
+                errorMessage = "error"
+            }
+        )
+
+        coEvery { ratesWithScheduleUseCase(any()) } returns shippingRecommendationData
+
+        val orderModel = CheckoutOrderModel("1", ratesValidationFlow = true, boCode = "WGOIN", shippingId = 1, spId = 1)
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(
+                recipientAddressModel = RecipientAddressModel().apply {
+                    id = "1"
+                    destinationDistrictId = "1"
+                    addressName = "jakarta"
+                    postalCode = "123"
+                    latitude = "123"
+                    longitude = "321"
+                }
+            ),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel("1"),
+            orderModel,
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+
+        // When
+        viewModel.loadShipping(orderModel, 5)
+
+        // Then
+        coVerify(inverse = true) {
+            validateUsePromoRevampUseCase.setParam(any()).executeOnBackground()
+        }
+        assertEquals(null, (viewModel.listData.value[5] as CheckoutOrderModel).shipment.courierItemData)
+    }
+
+    @Test
+    fun `WHEN get shipping rates schedule got error courier THEN should not hit validate use`() {
+        // Given
+        viewModel.logisticProcessor.isBoUnstackEnabled = true
+        val ratesResponse = DataProvider.provideRatesV3Response()
+        val ratesScheduleDeliveryResponse = DataProvider.provideScheduleDeliveryRatesResponse()
+        val shippingRecommendationData =
+            shippingDurationConverter.convertModel(ratesResponse.ratesData)
+        shippingRecommendationData.scheduleDeliveryData =
+            ratesScheduleDeliveryResponse.ongkirGetScheduledDeliveryRates.scheduleDeliveryData
+        val courier =
+            shippingRecommendationData.shippingDurationUiModels[3].shippingCourierViewModelList.first { it.productData.shipperProductId == 1 }
+        courier.productData = courier.productData.copy(
+            error =
+            ErrorProductData().apply {
+                errorMessage = "error"
+            }
+        )
+
+        coEvery { ratesWithScheduleUseCase(any()) } returns shippingRecommendationData
+
+        val orderModel = CheckoutOrderModel("1", ratesValidationFlow = true, boCode = "WGOIN", shippingId = 1, spId = 1)
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(
+                recipientAddressModel = RecipientAddressModel().apply {
+                    id = "1"
+                    destinationDistrictId = "1"
+                    addressName = "jakarta"
+                    postalCode = "123"
+                    latitude = "123"
+                    longitude = "321"
+                }
+            ),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel("1"),
+            orderModel,
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+
+        // When
+        viewModel.loadShipping(orderModel, 5)
+
+        // Then
+        coVerify(inverse = true) {
+            validateUsePromoRevampUseCase.setParam(any()).executeOnBackground()
+        }
+        assertEquals(null, (viewModel.listData.value[5] as CheckoutOrderModel).shipment.courierItemData)
     }
 
     @Test
@@ -844,5 +1390,62 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             ),
             viewModel.listData.value
         )
+    }
+
+    @Test
+    fun is_loading() {
+        // when
+        val result = viewModel.isLoading()
+
+        // then
+        assertEquals(false, result)
+    }
+
+    @Test
+    fun is_loading_true() {
+        // given
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(recipientAddressModel = RecipientAddressModel()),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel("123"),
+            CheckoutOrderModel("123", shipment = CheckoutOrderShipment(isLoading = true)),
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+
+        // when
+        val result = viewModel.isLoading()
+
+        // then
+        assertEquals(true, result)
+    }
+
+    @Test
+    fun is_loading_false() {
+        // given
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(recipientAddressModel = RecipientAddressModel()),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel("123"),
+            CheckoutOrderModel("123", shipment = CheckoutOrderShipment(isLoading = false)),
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+
+        // when
+        val result = viewModel.isLoading()
+
+        // then
+        assertEquals(false, result)
     }
 }
