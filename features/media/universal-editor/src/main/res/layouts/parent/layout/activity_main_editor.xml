@@ -35,6 +35,7 @@
         tools:visibility="visible"/>
 
     <androidx.appcompat.widget.Toolbar
+        android:background="@drawable/bg_shadow_toolbar"
         android:id="@+id/toolbar_container"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
