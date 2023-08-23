@@ -3525,12 +3525,19 @@ open class DynamicProductDetailFragment :
         if (variantOptions.isEmpty()) { // lihat semua label clicked
             goToAtcVariant()
         } else { // chip variant clicked
-            val singleVariant = pdpUiUpdater?.productSingleVariant ?: return
-            singleVariant.mapOfSelectedVariant[variantOptions.variantCategoryKey] = variantOptions.variantId
-            val child = viewModel.getChildOfVariantSelected(singleVariant)
-            productId = child?.productId
+            onVariantContinuationToVBS(variantOptions)
             goToAtcVariant()
         }
+    }
+
+    private fun onVariantContinuationToVBS(variantOptions: VariantOptionWithAttribute) {
+        // do copy original instance for preventive miss data on change payload in View-Holder
+        val singleVariant = pdpUiUpdater?.productSingleVariant?.copy() ?: return
+        val selectedVariant = singleVariant.mapOfSelectedVariant.toMutableMap()
+        selectedVariant[variantOptions.variantCategoryKey] = variantOptions.variantId
+        singleVariant.mapOfSelectedVariant = selectedVariant
+        val child = viewModel.getChildOfVariantSelected(singleVariant)
+        productId = child?.productId
     }
 
     override fun onThumbnailVariantSelected(variantId: String, categoryKey: String) {
@@ -3636,13 +3643,13 @@ open class DynamicProductDetailFragment :
         }
     }
 
-    private fun determineInitialOptionId(productId: String?): MutableMap<String, String> {
+    private fun determineInitialOptionId(productId: String?): Map<String, String> {
         // thumbnail variant not auto-select when first open pdp or refresh event
-        val singleVariant = pdpUiUpdater?.productSingleVariant ?: return mutableMapOf()
+        val singleVariant = pdpUiUpdater?.productSingleVariant ?: return emptyMap()
         if (singleVariant.isThumbnailType) {
-            return mutableMapOf()
+            return emptyMap()
         }
-        val variantData = viewModel.variantData ?: return mutableMapOf()
+        val variantData = viewModel.variantData ?: return emptyMap()
         val selectedChild = variantData.children.firstOrNull { it.productId == productId.orEmpty() }
         singleVariant.mapOfSelectedVariant = DynamicProductDetailMapper.determineSelectedOptionIds(
             variantData,
