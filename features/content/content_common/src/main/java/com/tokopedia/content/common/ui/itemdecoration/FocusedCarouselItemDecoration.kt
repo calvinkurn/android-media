@@ -11,8 +11,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import kotlin.math.abs
 import kotlin.math.min
-import com.tokopedia.unifyprinciples.R as unifyR
-import com.tokopedia.content.common.R
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.content.common.R as contentcommonR
 
 /**
  * Created By : Jonathan Darwin on July 24, 2023
@@ -21,16 +21,16 @@ abstract class FocusedCarouselItemDecoration(
     context: Context
 ) : RecyclerView.ItemDecoration() {
 
-    protected val offset6 = context.resources.getDimensionPixelOffset(R.dimen.content_common_space_6)
-    protected open val roundedOffset = context.resources.getDimensionPixelOffset(R.dimen.content_common_space_12)
+    protected val offset6 = context.resources.getDimensionPixelOffset(contentcommonR.dimen.content_common_space_6)
+    protected open val roundedOffset = context.resources.getDimensionPixelOffset(contentcommonR.dimen.content_common_space_12)
 
     private val distanceBeforeScale = context.resources.getDimension(
-        R.dimen.content_common_dp_200
+        contentcommonR.dimen.content_common_dp_200
     )
     protected open val maxShrink = 0.96f
     private val maxAlphaOverlay = 0.5f
 
-    protected open val overlayColor = MethodChecker.getColor(context, unifyR.color.Unify_Static_White)
+    protected open val overlayColor = MethodChecker.getColor(context, unifyprinciplesR.color.Unify_Static_White)
 
     private val rect = Rect()
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
