@@ -874,12 +874,13 @@ class CartRevampFragment :
         if (cartShopBottomHolderData != null) {
             cartShopBottomHolderData.shopData.isCollapsed = true
             viewModel.cartDataList.value.removeAll(cartShopBottomHolderData.shopData.productUiModelList.toSet())
-            onNeedToUpdateViewItem(index)
-            onNeedToRemoveMultipleViewItem(
-                index - cartShopBottomHolderData.shopData.productUiModelList.size,
-                cartShopBottomHolderData.shopData.productUiModelList.size
-            )
-            onNeedToUpdateViewItem(index - 1 - cartShopBottomHolderData.shopData.productUiModelList.size)
+//            onNeedToUpdateViewItem(index)
+//            onNeedToRemoveMultipleViewItem(
+//                index - cartShopBottomHolderData.shopData.productUiModelList.size,
+//                cartShopBottomHolderData.shopData.productUiModelList.size
+//            )
+//            onNeedToUpdateViewItem(index - 1 - cartShopBottomHolderData.shopData.productUiModelList.size)
+            viewModel.cartDataList.notifyObserver()
             val layoutManager: RecyclerView.LayoutManager? = binding?.rvCart?.layoutManager
             if (layoutManager != null) {
                 (layoutManager as LinearLayoutManager).scrollToPositionWithOffset(
@@ -901,12 +902,13 @@ class CartRevampFragment :
 //            }
             cartShopBottomHolderData.shopData.isCollapsed = false
             viewModel.addItems(index, cartShopBottomHolderData.shopData.productUiModelList)
-            onNeedToInsertMultipleViewItem(
-                index,
-                cartShopBottomHolderData.shopData.productUiModelList.size
-            )
-            onNeedToUpdateViewItem(index - 1)
-            onNeedToUpdateViewItem(index + cartShopBottomHolderData.shopData.productUiModelList.size)
+            viewModel.cartDataList.notifyObserver()
+//            onNeedToInsertMultipleViewItem(
+//                index,
+//                cartShopBottomHolderData.shopData.productUiModelList.size
+//            )
+//            onNeedToUpdateViewItem(index - 1)
+//            onNeedToUpdateViewItem(index + cartShopBottomHolderData.shopData.productUiModelList.size)
         }
     }
 
@@ -4222,7 +4224,7 @@ class CartRevampFragment :
         position: Int,
         bulkActionCoachMarkItems: ArrayList<CoachMark2Item>
     ) {
-        viewModel.cartModel.cartListData?.onboardingData?.get(
+        viewModel.cartModel.cartListData?.onboardingData?.getOrNull(
             BULK_ACTION_ONBOARDING_SELECTED_AMOUNT_DELETE_INDEX
         )?.let { onboardingData ->
             if (position > 0) {
@@ -4256,7 +4258,7 @@ class CartRevampFragment :
         position: Int,
         bulkActionCoachMarkItems: ArrayList<CoachMark2Item>
     ) {
-        viewModel.cartModel.cartListData?.onboardingData?.get(
+        viewModel.cartModel.cartListData?.onboardingData?.getOrNull(
             BULK_ACTION_ONBOARDING_MIN_QUANTITY_INDEX
         )?.let { onboardingData ->
             val data = viewModel.cartDataList.value
@@ -4280,7 +4282,7 @@ class CartRevampFragment :
     }
 
     private fun generateSelectAllCoachMark(mainFlowCoachMarkItems: ArrayList<CoachMark2Item>) {
-        viewModel.cartModel.cartListData?.onboardingData?.get(MAIN_FLOW_ONBOARDING_SELECT_ALL_INDEX)
+        viewModel.cartModel.cartListData?.onboardingData?.getOrNull(MAIN_FLOW_ONBOARDING_SELECT_ALL_INDEX)
             ?.let { onboardingData ->
                 binding?.checkboxGlobal?.let {
                     mainFlowCoachMarkItems.add(
