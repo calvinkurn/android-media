@@ -52,6 +52,7 @@ import com.tokopedia.navigation_common.listener.FragmentListener
 import com.tokopedia.play_common.shortsuploader.analytic.PlayShortsUploadAnalytic
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
+import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Job
@@ -109,8 +110,12 @@ class FeedBaseFragment :
         resources.getDimensionPixelOffset(R.dimen.feed_toaster_bottom_margin)
     }
 
-    private val tabExtraTopOffset by lazy {
+    private val tabExtraTopOffset24 by lazy {
         resources.getDimensionPixelOffset(R.dimen.feed_space_24)
+    }
+
+    private val tabExtraTopOffset16 by lazy {
+        resources.getDimensionPixelOffset(R.dimen.feed_space_16)
     }
 
     private val adapter by lazy {
@@ -219,6 +224,7 @@ class FeedBaseFragment :
     override fun onStart() {
         super.onStart()
         binding.containerFeedTopNav.vMenuCenter.requestApplyInsetsWhenAttached()
+        binding.loaderFeedTopNav.root.requestApplyInsetsWhenAttached()
     }
 
     override fun onDestroyView() {
@@ -358,11 +364,21 @@ class FeedBaseFragment :
     private fun setupInsets() {
         binding.containerFeedTopNav.vMenuCenter.doOnApplyWindowInsets { _, insets, _, margin ->
 
-            val topInsetsMargin = insets.systemWindowInsetTop + tabExtraTopOffset
+            val topInsetsMargin = (insets.systemWindowInsetTop + tabExtraTopOffset24).coerceAtLeast(margin.top)
 
             getAllMotionScene().forEach {
-                it.setMargin(binding.containerFeedTopNav.vMenuCenter.id, ConstraintSet.TOP, topInsetsMargin.coerceAtLeast(margin.top))
+                it.setMargin(binding.containerFeedTopNav.vMenuCenter.id, ConstraintSet.TOP, topInsetsMargin)
             }
+        }
+
+        binding.loaderFeedTopNav.root.doOnApplyWindowInsets { v, insets, _, margin ->
+
+            val topInsetsMargin = (insets.systemWindowInsetTop + tabExtraTopOffset16).coerceAtLeast(margin.top)
+
+            val marginLayoutParams = v.layoutParams as ViewGroup.MarginLayoutParams
+            marginLayoutParams.updateMargins(top = topInsetsMargin)
+
+            v.parent.requestLayout()
         }
     }
 
