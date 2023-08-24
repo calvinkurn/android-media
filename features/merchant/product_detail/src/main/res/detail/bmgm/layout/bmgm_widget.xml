@@ -40,7 +40,7 @@
         app:layout_constraintTop_toTopOf="@+id/bmgm_icon_right" />
 
     <ViewStub
-        android:id="@+id/bmgm_product_list_stub"
+        android:id="@+id/bmgm_product_list"
         android:layout_width="match_parent"
         android:layout_marginTop="8dp"
         android:inflatedId="@+id/bmgm_product_list"

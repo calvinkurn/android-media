@@ -48,7 +48,7 @@ class BMGMWidget @JvmOverloads constructor(
     }
 
     private val productListBinding by lazyThreadSafetyNone {
-        val productListStub = binding.bmgmProductListStub.inflate()
+        val productListStub = binding.bmgmProductList.inflate()
         BmgmProductListBinding.bind(productListStub)
     }
 
@@ -127,7 +127,7 @@ class BMGMWidget @JvmOverloads constructor(
             productAdapter.submit(uiModel.products) {
                 setRouting(action = uiModel.action, router = router)
             }
-        } else if (binding.bmgmProductListStub.isInflated()) { // stub has already inflated
+        } else if (binding.bmgmProductList.isInflated()) { // stub has already inflated
             productListBinding.root.gone()
         }
     }
