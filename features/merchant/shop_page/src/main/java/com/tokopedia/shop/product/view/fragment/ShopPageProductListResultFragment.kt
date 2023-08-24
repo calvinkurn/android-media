@@ -116,6 +116,7 @@ import com.tokopedia.shop.product.view.activity.ShopProductListResultActivity.Co
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapter
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
+import com.tokopedia.shop.product.view.bottomsheet.ShopEtalaseNotFoundBottomSheet
 import com.tokopedia.shop.product.view.datamodel.BaseShopProductViewModel
 import com.tokopedia.shop.product.view.datamodel.GetShopProductSuggestionUiModel
 import com.tokopedia.shop.product.view.datamodel.GetShopProductUiModel
@@ -1452,7 +1453,7 @@ class ShopPageProductListResultFragment :
             shopStickySortFilter.sortList.firstOrNull { it.value == sortId }?.name
                 ?: ""
 
-        shouldShowEtalaseNotFoundBottomSheet()
+//        shouldShowEtalaseNotFoundBottomSheet()
 
         shopProductSortFilterUiModel = ShopProductSortFilterUiModel(
             selectedEtalaseId = selectedEtalaseId.takeIf { it.isNotEmpty() } ?: "",
@@ -2234,7 +2235,9 @@ class ShopPageProductListResultFragment :
 
     private fun hasEtalaseIdFromUri(data: Uri?, pathSegments: List<String>): Boolean {
         return if (pathSegments.size >= SHOWCASE_APP_LINK_MINIMUM_PATH_SEGMENTS) {
-            val etalaseId = data?.pathSegments?.getOrNull(ShopProductListResultActivity.SHOWCASE_ID_POSITION_ON_APP_LINK).orEmpty()
+            val etalaseId =
+                data?.pathSegments?.getOrNull(ShopProductListResultActivity.SHOWCASE_ID_POSITION_ON_APP_LINK)
+                    .orEmpty()
             etalaseId.isNotEmpty() && etalaseId != "0"
         } else {
             false
@@ -2242,23 +2245,23 @@ class ShopPageProductListResultFragment :
     }
 
     private fun shouldShowEtalaseNotFoundBottomSheet() {
-        //        context?.let {
-//            val pathEtalase = RouteManager.getIntent(
-//                it,
-//                activity?.intent?.data.toString()
-//            ).data
-//            if (hasEtalaseIdFromUri(
-//                    pathEtalase,
-//                    pathEtalase?.pathSegments.orEmpty()
-//                ) && selectedEtalaseId.isEmpty()
-//            ) {
-//                selectedEtalaseId = SEMUA_PRODUCT_ETALASE_ALIAS
-//                selectedEtalaseName = SEMUA_PRODUCT_ETALASE_NAME
-//                val shopEtalaseNotFound = ShopEtalaseNotFoundBottomSheet.createInstance {
-//                    RouteManager.route(it, UriUtil.buildUri(ApplinkConst.SHOP, shopId))
-//                }
-//                shopEtalaseNotFound.show(childFragmentManager)
-//            }
-//        }
+        context?.let {
+            val pathEtalase = RouteManager.getIntent(
+                it,
+                activity?.intent?.data.toString()
+            ).data
+            if (hasEtalaseIdFromUri(
+                    pathEtalase,
+                    pathEtalase?.pathSegments.orEmpty()
+                ) && selectedEtalaseId.isEmpty()
+            ) {
+                selectedEtalaseId = SEMUA_PRODUCT_ETALASE_ALIAS
+                selectedEtalaseName = SEMUA_PRODUCT_ETALASE_NAME
+                val shopEtalaseNotFound = ShopEtalaseNotFoundBottomSheet.createInstance {
+                    RouteManager.route(it, UriUtil.buildUri(ApplinkConst.SHOP, shopId))
+                }
+                shopEtalaseNotFound.show(childFragmentManager)
+            }
+        }
     }
 }
