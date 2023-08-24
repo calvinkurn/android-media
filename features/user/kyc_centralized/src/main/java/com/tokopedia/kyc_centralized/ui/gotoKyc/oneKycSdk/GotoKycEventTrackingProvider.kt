@@ -486,7 +486,7 @@ class GotoKycEventTrackingProvider @Inject constructor(
         private const val IMAGE_CAPTURE_MODE_BACK_PRESSED = "GP KYC Image Capture Mode Back Button Pressed"
         private const val SELFIE_PREPARE_SCREEN_VIEWED = "GP KYC Selfie Prepare Screen Viewed"
         private const val SELFIE_TIMER_EXHAUSTED_VIEW = "GP KYC Selfie Timer Exhausted"
-        private const val SELFIE_TIMER_EXHAUSTED_CLICK_READY = "GP KYC Selfie Timer Exhausted"
+        private const val SELFIE_TIMER_EXHAUSTED_CLICK_READY = "GP KYC Selfie Timer Exhausted Ready CTA Clicked"
         private const val SELFIE_TIMER_EXHAUSTED_CLICK_LATER = "GP KYC Selfie Timer Exhausted Close CTA Clicked"
         private const val CLICK_SELFIE_NEED_TIME = "GP KYC Selfie Prepare Need Time CTA Clicked"
         private const val SELFIE_PREPARE_READY_CLICKED = "GP KYC Selfie Prepare Ready CTA Clicked"
