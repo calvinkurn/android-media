@@ -123,11 +123,11 @@ class CheckoutProductViewHolder(
         productBinding.apply {
             ivProductImage.isVisible = false
             tvProductName.isVisible = false
-            textVariant.isVisible = false
+            tvProductVariant.isVisible = false
             tvProductPrice.isVisible = false
-            tvOptionalNoteToSeller.isVisible = false
-            tvCheckoutAddons.isVisible = false
-            tvCheckoutAddonsSeeAll.isVisible = false
+            tvProductNotes.isVisible = false
+            tvProductAddOnsSectionTitle.isVisible = false
+            tvProductAddOnsSeeAll.isVisible = false
             llAddonProductItems.isVisible = false
         }
     }
@@ -152,10 +152,10 @@ class CheckoutProductViewHolder(
             }
         }
         if (product.variant.isNotBlank()) {
-            productBinding.textVariant.text = product.variant
-            productBinding.textVariant.isVisible = true
+            productBinding.tvProductVariant.text = product.variant
+            productBinding.tvProductVariant.isVisible = true
         } else {
-            productBinding.textVariant.isVisible = false
+            productBinding.tvProductVariant.isVisible = false
         }
 
         val priceInRp =
@@ -165,10 +165,10 @@ class CheckoutProductViewHolder(
         productBinding.tvProductPrice.text = "$qty x $priceInRp"
 
         if (product.noteToSeller.isNotEmpty()) {
-            productBinding.tvOptionalNoteToSeller.text = "\"${product.noteToSeller}\""
-            productBinding.tvOptionalNoteToSeller.isVisible = true
+            productBinding.tvProductNotes.text = "\"${product.noteToSeller}\""
+            productBinding.tvProductNotes.isVisible = true
         } else {
-            productBinding.tvOptionalNoteToSeller.isVisible = false
+            productBinding.tvProductNotes.isVisible = false
         }
 
         renderAddOnProduct(product)
@@ -201,6 +201,7 @@ class CheckoutProductViewHolder(
             )
             binding.tvCheckoutOrderNumber.isVisible = true
             binding.bgCheckoutSupergraphicOrder.isVisible = true
+            binding.bgCheckoutSupergraphicOrder.setBackgroundResource(R.drawable.checkout_module_bg_order)
             if (product.groupInfoBadgeUrl.isNotEmpty()) {
                 binding.ivCheckoutOrderBadge.setImageUrl(product.groupInfoBadgeUrl)
                 if (product.uiGroupType == GroupShop.UI_GROUP_TYPE_NORMAL) {
@@ -219,21 +220,21 @@ class CheckoutProductViewHolder(
             binding.tvCheckoutOrderName.isVisible = true
             val freeShippingBadgeUrl = product.freeShippingBadgeUrl
             if (freeShippingBadgeUrl.isNotBlank()) {
-                binding.imgFreeShipping.setImageUrl(freeShippingBadgeUrl)
+                binding.ivCheckoutFreeShipping.setImageUrl(freeShippingBadgeUrl)
                 if (product.isFreeShippingPlus) {
-                    binding.imgFreeShipping.contentDescription =
+                    binding.ivCheckoutFreeShipping.contentDescription =
                         itemView.context.getString(com.tokopedia.purchase_platform.common.R.string.pp_cd_image_badge_plus)
                 } else {
-                    binding.imgFreeShipping.contentDescription =
+                    binding.ivCheckoutFreeShipping.contentDescription =
                         itemView.context.getString(com.tokopedia.purchase_platform.common.R.string.pp_cd_image_badge_bo)
                 }
-                binding.imgFreeShipping.isVisible = true
+                binding.ivCheckoutFreeShipping.isVisible = true
                 if (!product.hasSeenFreeShippingBadge && product.isFreeShippingPlus) {
                     product.hasSeenFreeShippingBadge = true
                     listener.onViewFreeShippingPlusBadge()
                 }
             } else {
-                binding.imgFreeShipping.isVisible = false
+                binding.ivCheckoutFreeShipping.isVisible = false
             }
         } else {
             binding.vDividerOrder.isVisible = false
@@ -241,7 +242,7 @@ class CheckoutProductViewHolder(
             binding.bgCheckoutSupergraphicOrder.isVisible = false
             binding.ivCheckoutOrderBadge.isVisible = false
             binding.tvCheckoutOrderName.isVisible = false
-            binding.imgFreeShipping.isVisible = false
+            binding.ivCheckoutFreeShipping.isVisible = false
         }
     }
 
@@ -272,22 +273,22 @@ class CheckoutProductViewHolder(
     private fun renderAddOnProduct(product: CheckoutProductModel) {
         val addOnProduct = product.addOnProduct
         if (addOnProduct.listAddOnProductData.isEmpty()) {
-            productBinding.tvCheckoutAddons.gone()
-            productBinding.tvCheckoutAddonsSeeAll.gone()
+            productBinding.tvProductAddOnsSectionTitle.gone()
+            productBinding.tvProductAddOnsSeeAll.gone()
             productBinding.llAddonProductItems.gone()
         } else {
             productBinding.llAddonProductItems.removeAllViews()
             if (addOnProduct.bottomsheet.isShown) {
-                productBinding.tvCheckoutAddons.text = addOnProduct.title
-                productBinding.tvCheckoutAddonsSeeAll.apply {
+                productBinding.tvProductAddOnsSectionTitle.text = addOnProduct.title
+                productBinding.tvProductAddOnsSeeAll.apply {
                     visible()
                     setOnClickListener {
                         listener.onClickSeeAllAddOnProductService(product)
                     }
                 }
             } else {
-                productBinding.tvCheckoutAddons.gone()
-                productBinding.tvCheckoutAddonsSeeAll.gone()
+                productBinding.tvProductAddOnsSectionTitle.gone()
+                productBinding.tvProductAddOnsSeeAll.gone()
             }
             val layoutInflater = LayoutInflater.from(itemView.context)
             addOnProduct.listAddOnProductData.forEach { addon ->
@@ -296,29 +297,29 @@ class CheckoutProductViewHolder(
                         ItemAddOnProductBinding.inflate(layoutInflater, productBinding.llAddonProductItems, false)
                     addOnView.apply {
 //                        icProductAddon.setImageUrl(addon)
-                        tvProductAddonName.text = SpannableString(addon.name).apply {
+                        tvCheckoutAddOnsItemName.text = SpannableString(addon.name).apply {
                             setSpan(UnderlineSpan(), 0, addon.name.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
                         }
-                        tvProductAddonPrice.text = " (${CurrencyFormatUtil
+                        tvCheckoutAddOnsItemPrice.text = " (${CurrencyFormatUtil
                             .convertPriceValueToIdrFormat(addon.price, false)
                             .removeDecimalSuffix()})"
-                        cbProductAddon.setOnCheckedChangeListener { _, _ -> }
+                        cbCheckoutAddOns.setOnCheckedChangeListener { _, _ -> }
                         when (addon.status) {
                             AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK -> {
-                                cbProductAddon.isChecked = true
-                                cbProductAddon.isEnabled = true
+                                cbCheckoutAddOns.isChecked = true
+                                cbCheckoutAddOns.isEnabled = true
                             }
                             AddOnConstant.ADD_ON_PRODUCT_STATUS_MANDATORY -> {
-                                cbProductAddon.isChecked = true
-                                cbProductAddon.isEnabled = false
+                                cbCheckoutAddOns.isChecked = true
+                                cbCheckoutAddOns.isEnabled = false
                             }
                             else -> {
-                                cbProductAddon.isChecked = false
-                                cbProductAddon.isEnabled = true
+                                cbCheckoutAddOns.isChecked = false
+                                cbCheckoutAddOns.isEnabled = true
                             }
                         }
-                        cbProductAddon.skipAnimation()
-                        cbProductAddon.setOnCheckedChangeListener { _, isChecked ->
+                        cbCheckoutAddOns.skipAnimation()
+                        cbCheckoutAddOns.setOnCheckedChangeListener { _, isChecked ->
                             delayChangeCheckboxAddOnState?.cancel()
                             delayChangeCheckboxAddOnState = GlobalScope.launch(Dispatchers.Main) {
                                 delay(DEBOUNCE_TIME_ADDON)
@@ -332,7 +333,7 @@ class CheckoutProductViewHolder(
                                 }
                             }
                         }
-                        tvProductAddonName.setOnClickListener {
+                        tvCheckoutAddOnsItemName.setOnClickListener {
                             listener.onClickAddonProductInfoIcon(addon.infoLink)
                         }
                     }
@@ -374,27 +375,27 @@ class CheckoutProductViewHolder(
                     val addOnView =
                         ItemAddOnProductBinding.inflate(layoutInflater, bundleBinding.llAddonProductBundleItems, false)
                     addOnView.apply {
-                        tvProductAddonName.text = addon.name
-                        tvProductAddonPrice.text = " (${CurrencyFormatUtil
+                        tvCheckoutAddOnsItemName.text = addon.name
+                        tvCheckoutAddOnsItemPrice.text = " (${CurrencyFormatUtil
                             .convertPriceValueToIdrFormat(addon.price, false)
                             .removeDecimalSuffix()})"
-                        cbProductAddon.setOnCheckedChangeListener { _, _ -> }
+                        cbCheckoutAddOns.setOnCheckedChangeListener { _, _ -> }
                         when (addon.status) {
                             AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK -> {
-                                cbProductAddon.isChecked = true
-                                cbProductAddon.isEnabled = true
+                                cbCheckoutAddOns.isChecked = true
+                                cbCheckoutAddOns.isEnabled = true
                             }
                             AddOnConstant.ADD_ON_PRODUCT_STATUS_MANDATORY -> {
-                                cbProductAddon.isChecked = true
-                                cbProductAddon.isEnabled = false
+                                cbCheckoutAddOns.isChecked = true
+                                cbCheckoutAddOns.isEnabled = false
                             }
                             else -> {
-                                cbProductAddon.isChecked = false
-                                cbProductAddon.isEnabled = true
+                                cbCheckoutAddOns.isChecked = false
+                                cbCheckoutAddOns.isEnabled = true
                             }
                         }
-                        cbProductAddon.skipAnimation()
-                        cbProductAddon.setOnCheckedChangeListener { _, isChecked ->
+                        cbCheckoutAddOns.skipAnimation()
+                        cbCheckoutAddOns.setOnCheckedChangeListener { _, isChecked ->
                             delayChangeCheckboxAddOnState?.cancel()
                             delayChangeCheckboxAddOnState = GlobalScope.launch(Dispatchers.Main) {
                                 delay(DEBOUNCE_TIME_ADDON)
@@ -408,7 +409,7 @@ class CheckoutProductViewHolder(
                                 }
                             }
                         }
-                        tvProductAddonName.setOnClickListener {
+                        tvCheckoutAddOnsItemName.setOnClickListener {
                             listener.onClickAddonProductInfoIcon(addon.infoLink)
                         }
                     }

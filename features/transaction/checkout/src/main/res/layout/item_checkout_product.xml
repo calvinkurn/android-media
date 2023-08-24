@@ -28,7 +28,6 @@
         android:id="@+id/bg_checkout_supergraphic_order"
         android:layout_width="118dp"
         android:layout_height="62dp"
-        android:background="@drawable/checkout_module_bg_order"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1"
         app:layout_constraintStart_toStartOf="parent"
@@ -102,7 +101,7 @@
         android:ellipsize="end"
         android:lines="1"
         android:textColor="@color/Unify_NN950"
-        app:layout_constraintEnd_toStartOf="@id/img_free_shipping"
+        app:layout_constraintEnd_toStartOf="@id/iv_checkout_free_shipping"
         app:layout_constraintStart_toEndOf="@id/iv_checkout_order_badge"
         app:layout_constraintTop_toBottomOf="@id/tv_checkout_order_number"
         app:layout_goneMarginStart="16dp"
@@ -112,7 +111,7 @@
         tools:visibility="visible" />
 
     <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/img_free_shipping"
+        android:id="@+id/iv_checkout_free_shipping"
         android:layout_width="wrap_content"
         android:layout_height="20dp"
         android:layout_marginEnd="16dp"
