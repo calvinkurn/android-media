@@ -42,6 +42,7 @@ data class ShopLayoutWidget(
         @SerializedName("data")
         val data: List<Data> = listOf()
     ) {
+        //TODO need to sync this model on layoutV2 with header data from dynamicTab in the future so that we can map the data easier on ShopPageHomeMapper.mapToWidgetUiModel()
         data class Header(
             @SerializedName("title")
             val title: String = "",
@@ -176,8 +177,15 @@ data class ShopLayoutWidget(
                 @SerializedName("productHotspot")
                 val productHotspot: List<ProductHotspot> = listOf(),
                 @SerializedName("text")
-                val text: String = ""
-
+                val text: String = "",
+                @SerializedName("ratio")
+                val ratio: String = "",
+                @SerializedName("title")
+                val title: String = "",
+                @SerializedName("Banner")
+                val banner: String = "",
+                @SerializedName("etalaseList")
+                val listEtalase: List<Etalase> = listOf(),
         ) {
             data class ShowcaseList(
                 @SerializedName("showcaseID")
@@ -190,6 +198,18 @@ data class ShopLayoutWidget(
                 val ctaLink: String = "",
                 @SerializedName("isMainBanner")
                 val isMainBanner: Boolean = false
+            )
+            data class Etalase(
+                @SerializedName("imageUrl")
+                val imageUrl: String = "",
+                @SerializedName("desktopImageUrl")
+                val desktopImageUrl: String = "",
+                @SerializedName("linkType")
+                val linkType: String = "",
+                @SerializedName("linkID")
+                val linkId: String = "",
+                @SerializedName("Name")
+                val name: String = ""
             )
             data class ProductBundleDetailsItem(
                 @SerializedName("bundleID")
