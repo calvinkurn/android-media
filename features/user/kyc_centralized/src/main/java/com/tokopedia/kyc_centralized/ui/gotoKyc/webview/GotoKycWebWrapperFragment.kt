@@ -1,4 +1,4 @@
-package com.tokopedia.kyc_centralized.ui.gotoKyc
+package com.tokopedia.kyc_centralized.ui.gotoKyc.webview
 
 import android.app.Activity
 import android.os.Bundle

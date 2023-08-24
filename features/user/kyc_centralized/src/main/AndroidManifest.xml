@@ -94,7 +94,7 @@
             android:screenOrientation="portrait"
             android:exported="false"/>
 
-        <activity android:name=".ui.gotoKyc.WebviewWithGotoKycActivity"
+        <activity android:name=".ui.gotoKyc.webview.WebviewWithGotoKycActivity"
             android:theme="@style/Theme.WhiteUnify"
             android:screenOrientation="portrait"
             android:exported="false">

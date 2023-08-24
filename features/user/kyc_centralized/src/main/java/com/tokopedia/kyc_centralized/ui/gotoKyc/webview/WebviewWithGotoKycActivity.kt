@@ -1,4 +1,4 @@
-package com.tokopedia.kyc_centralized.ui.gotoKyc
+package com.tokopedia.kyc_centralized.ui.gotoKyc.webview
 
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
