@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
+import android.nfc.NfcAdapter
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -126,6 +127,8 @@ open class EmoneyPdpFragment :
         FirebaseRemoteConfigImpl(context)
     }
 
+    private lateinit var nfcAdapter: NfcAdapter
+
     override fun getScreenName(): String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -158,6 +161,7 @@ open class EmoneyPdpFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initNFCAdapter()
 
         if (savedInstanceState != null) {
             emoneyCardNumber = savedInstanceState.getString(EXTRA_USER_INPUT_EMONEY_NUMBER) ?: ""
@@ -265,6 +269,7 @@ open class EmoneyPdpFragment :
             Observer {
                 renderOperatorIcon(it)
                 loadProducts(it)
+                renderTickerNFCNotSupported(it)
             }
         )
 
@@ -666,10 +671,27 @@ open class EmoneyPdpFragment :
 
     private fun renderTickerBCAGenOne(detailPassData: DigitalCategoryDetailPassData) {
         if (detailPassData.isBCAGenOne) {
-            binding.tickerBCAGenOne.show()
+            binding.tickerNotSupported.show()
         } else {
-            binding.tickerBCAGenOne.hide()
+            hideTickerNotSupported()
         }
+    }
+
+    private fun renderTickerNFCNotSupported(selectedOperator: RechargePrefix) {
+        if (selectedOperator.operator.attributes.name.equals("BCA Flazz")) {
+            if (this::nfcAdapter.isInitialized && nfcAdapter != null) {
+                hideTickerNotSupported()
+            } else {
+                binding.tickerNotSupported.show()
+                binding.tickerNotSupported.setHtmlDescription(getString(com.tokopedia.recharge_pdp_emoney.R.string.recharge_pdp_emoney_nfc_not_supported))
+            }
+        } else {
+            hideTickerNotSupported()
+        }
+    }
+
+    private fun hideTickerNotSupported() {
+        binding.tickerNotSupported.hide()
     }
 
     private fun loadProducts(prefix: RechargePrefix) {
@@ -925,6 +947,16 @@ open class EmoneyPdpFragment :
                     ctx.resources,
                     Bitmap.createScaledBitmap(it, TOOLBAR_ICON_SIZE, TOOLBAR_ICON_SIZE, true)
                 )
+            }
+        }
+    }
+
+    private fun initNFCAdapter() {
+        activity?.let {
+            try {
+                nfcAdapter = NfcAdapter.getDefaultAdapter(it)
+            } catch (e : Exception){
+                e.printStackTrace()
             }
         }
     }

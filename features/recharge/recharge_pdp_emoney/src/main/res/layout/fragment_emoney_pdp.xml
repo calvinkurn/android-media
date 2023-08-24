@@ -50,7 +50,7 @@
                 app:layout_constraintTop_toBottomOf="@id/emoneyPdpHeaderView" />
 
             <com.tokopedia.unifycomponents.ticker.Ticker
-                android:id="@+id/tickerBCAGenOne"
+                android:id="@+id/tickerNotSupported"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@id/emoneyPdpInputCardWidget"
@@ -68,7 +68,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
-                app:layout_constraintTop_toBottomOf="@id/tickerBCAGenOne"
+                app:layout_constraintTop_toBottomOf="@id/tickerNotSupported"
                 tools:visibility="visible"
                 android:layout_marginTop="@dimen/spacing_lvl1" />
 
