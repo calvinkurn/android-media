@@ -15,7 +15,7 @@ object CheckoutButtonPaymentItemView {
 
     fun renderButtonPayment(buttonPayment: CheckoutButtonPaymentModel, binding: ItemCheckoutButtonPaymentBinding, listener: CheckoutAdapterListener) {
         if (buttonPayment.useInsurance) {
-            val text = "Dengan melanjutkan, saya menyetujui S&K Asuransi & Proteksi."
+            val text = "Dengan melanjutkan, kamu menyetujui S&K Asuransi & Proteksi."
             val span = SpannableString(text)
             span.apply {
                 setSpan(

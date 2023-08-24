@@ -1,6 +1,5 @@
 package com.tokopedia.checkout.revamp.view.viewholder
 
-import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.databinding.ItemCheckoutButtonPaymentBinding
@@ -10,18 +9,18 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutButtonPaymentModel
 class CheckoutButtonPaymentViewHolder(private val binding: ItemCheckoutButtonPaymentBinding, private val listener: CheckoutAdapterListener) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(buttonPayment: CheckoutButtonPaymentModel) {
-        binding.root.visibility = View.INVISIBLE
+//        binding.root.visibility = View.VISIBLE
         CheckoutButtonPaymentItemView.renderButtonPayment(buttonPayment, binding, listener)
-        listener.onBindButtonPayment()
+//        listener.onBindButtonPayment()
     }
 
-    fun hide() {
-        binding.root.visibility = View.INVISIBLE
-    }
+//    fun hide() {
+//        binding.root.visibility = View.INVISIBLE
+//    }
 
-    fun show() {
-        binding.root.visibility = View.VISIBLE
-    }
+//    fun show() {
+//        binding.root.visibility = View.VISIBLE
+//    }
 
     companion object {
 
