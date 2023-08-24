@@ -857,8 +857,6 @@ class ShopHomeViewModel @Inject constructor(
         isOverrideTheme: Boolean,
         colorSchema: ShopPageColorSchema
     ) {
-        println(listWidgetLayout)
-
         launchCatchError(block = {
             val responseWidgetContent = withContext(dispatcherProvider.io) {
                 val useCase = getShopPageHomeLayoutV2UseCase.get()
