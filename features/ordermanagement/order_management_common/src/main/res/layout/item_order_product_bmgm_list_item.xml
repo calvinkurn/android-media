@@ -3,17 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingHorizontal="16dp"
-    android:paddingTop="16dp"
-    android:paddingBottom="14dp">
+    android:layout_height="wrap_content">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/container_product_info"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:animateLayoutChanges="true"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/iv_item_order_bmgm_thumbnail"
@@ -34,7 +32,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/iv_item_order_bmgm_thumbnail"
             app:layout_constraintTop_toTopOf="@id/iv_item_order_bmgm_thumbnail"
-            app:layout_constraintVertical_chainStyle="packed"
             app:typographyType="heading_6"
             tools:text="iPhone XR Garansi Resmi Apple indonesia IBOX - 256 GB, Black" />
 
@@ -56,33 +53,43 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_item_order_bmgm_product_note"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:ellipsize="end"
         android:maxLines="2"
         android:textColor="@color/Unify_NN950_68"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/container_product_info"
         app:typographyType="body_3"
         tools:text="43 Size. Packing rapi plis." />
 
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrierTopAddOnDivider"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="container_product_info, tv_item_order_bmgm_product_note"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_item_order_bmgm_product_note"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
     <View
         android:id="@+id/dividerAddOn"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="12dp"
+        android:layout_height="2dp"
         android:background="@drawable/om_detail_add_on_dash_divider"
+        android:layout_marginTop="12dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/itemBmgmAddonViewStub"
-        app:layout_constraintTop_toBottomOf="@id/tv_item_order_bmgm_product_note"
-        app:layout_constraintVertical_bias="0" />
+        app:layout_constraintTop_toBottomOf="@id/barrierTopAddOnDivider" />
 
     <ViewStub
         android:id="@+id/itemBmgmAddonViewStub"
         android:inflatedId="@id/itemBmgmAddonViewStub"
         android:layout="@layout/partial_bmgm_add_on_summary"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
         app:layout_constraintStart_toStartOf="parent"

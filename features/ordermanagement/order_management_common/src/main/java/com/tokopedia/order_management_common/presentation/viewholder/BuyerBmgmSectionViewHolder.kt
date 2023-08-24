@@ -4,23 +4,31 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.order_management_common.R
 import com.tokopedia.order_management_common.constants.OrderManagementConstants
 import com.tokopedia.order_management_common.databinding.ItemOrderProductBmgmSectionBinding
+import com.tokopedia.order_management_common.databinding.PartialBmgmAddOnSummaryBinding
 import com.tokopedia.order_management_common.presentation.adapter.ProductBmgmItemAdapter
 import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSectionUiModel
+import com.tokopedia.order_management_common.util.RecyclerViewItemDivider
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.toPx
 
 class BmgmSectionViewHolder(
     view: View?,
     private val listener: Listener,
-    private val recyclerViewSharedPool: RecyclerView.RecycledViewPool
+    recyclerViewSharedPool: RecyclerView.RecycledViewPool
 ) : AbstractViewHolder<ProductBmgmSectionUiModel>(view),
     ProductBmgmItemAdapter.ViewHolder.Listener {
 
     companion object {
         val LAYOUT = R.layout.item_order_product_bmgm_section
+
+        private const val ITEM_DECORATION_VERTICAL_MARGIN = 12
+        private const val ITEM_DECORATION_HORIZONTAL_MARGIN = 16
     }
 
     private val bmgmItemAdapter = ProductBmgmItemAdapter(this, recyclerViewSharedPool)
@@ -88,6 +96,30 @@ class BmgmSectionViewHolder(
         binding.rvOrderBmgm.run {
             layoutManager = LinearLayoutManager(itemView.context)
             adapter = bmgmItemAdapter
+            setupRecyclerViewItemDecoration()
+        }
+    }
+
+    private fun setupRecyclerViewItemDecoration() {
+        binding.rvOrderBmgm.run {
+            if (itemDecorationCount.isZero()) {
+                val dividerDrawable = try {
+                    MethodChecker.getDrawable(
+                        context,
+                        R.drawable.om_detail_add_on_solid_divider
+                    )
+                } catch (t: Throwable) {
+                    null
+                }
+                addItemDecoration(
+                    RecyclerViewItemDivider(
+                        dividerDrawable,
+                        ITEM_DECORATION_VERTICAL_MARGIN.toPx(),
+                        ITEM_DECORATION_VERTICAL_MARGIN.toPx(),
+                        ITEM_DECORATION_HORIZONTAL_MARGIN.toPx(),
+                    )
+                )
+            }
         }
     }
 

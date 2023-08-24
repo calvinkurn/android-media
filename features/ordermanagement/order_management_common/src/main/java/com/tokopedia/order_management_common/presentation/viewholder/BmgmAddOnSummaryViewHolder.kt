@@ -4,9 +4,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.order_management_common.R
 import com.tokopedia.order_management_common.databinding.PartialBmgmAddOnSummaryBinding
 import com.tokopedia.order_management_common.presentation.factory.AddOnAdapterFactory
@@ -64,7 +66,7 @@ class BmgmAddOnSummaryViewHolder(
                 RecyclerViewItemDivider(
                     dividerDrawable,
                     ITEM_DECORATION_VERTICAL_MARGIN.toPx(),
-                    ITEM_DECORATION_VERTICAL_MARGIN.toPx()
+                    Int.ZERO
                 )
             )
         }
@@ -76,10 +78,15 @@ class BmgmAddOnSummaryViewHolder(
                 root.hide()
             } else {
                 root.show()
+                setupAddOnSummaryIcon(element.addonsLogoUrl)
                 setupAddOnSummaryLabel(element.addonsTitle)
                 setupAddOnSummaryAddOns(element.addonItemList)
             }
         }
+    }
+
+    private fun PartialBmgmAddOnSummaryBinding.setupAddOnSummaryIcon(icon: String) {
+        ivAddOnSummary.loadImage(icon)
     }
 
     private fun PartialBmgmAddOnSummaryBinding.setupAddOnSummaryLabel(label: String) {

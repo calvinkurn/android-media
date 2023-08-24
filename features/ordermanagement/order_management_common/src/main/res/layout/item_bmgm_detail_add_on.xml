@@ -6,22 +6,13 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <View
-        android:id="@+id/addOnDashDivider"
-        android:layout_width="0dp"
-        android:layout_height="1dp"
-        android:background="@drawable/om_detail_add_on_dash_divider"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/ivAddOn"
         android:layout_width="46dp"
         android:layout_height="46dp"
         android:scaleType="fitCenter"
-        android:layout_marginTop="16dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/addOnDashDivider"
+        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/iconunify_image_broken" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -70,7 +61,8 @@
         android:id="@+id/layoutAddOnDescription"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/barrierTopAddOnDescription" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -13,6 +13,7 @@ class RecyclerViewItemDivider(
     private val divider: Drawable?,
     private val topMargin: Int,
     private val bottomMargin: Int,
+    private val horizontalMargin: Int? = null,
     private val applyMarginAfterLastItem: Boolean = false,
     private val drawDividerAfterLastItem: Boolean = false
 ) : RecyclerView.ItemDecoration() {
@@ -36,13 +37,18 @@ class RecyclerViewItemDivider(
         } else {
             layoutParams.bottomMargin = Int.ZERO
         }
+
+        if (horizontalMargin != null) {
+            layoutParams.marginEnd = horizontalMargin
+            layoutParams.marginStart = horizontalMargin
+        }
         view.layoutParams = layoutParams
     }
 
     override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
         divider?.let { divider ->
-            val left = parent.paddingLeft
-            val right = parent.width - parent.paddingRight
+            val left = horizontalMargin ?: parent.paddingLeft
+            val right = if (horizontalMargin != null) (parent.width - horizontalMargin) else (parent.width - parent.paddingRight)
             val childCount = parent.childCount
             val lastItem = if (drawDividerAfterLastItem) childCount else childCount.minus(1)
             for (i in 0 until lastItem) {

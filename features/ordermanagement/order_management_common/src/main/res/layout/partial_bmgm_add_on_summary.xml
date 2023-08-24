@@ -5,27 +5,24 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/icAddOn"
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/ivAddOnSummary"
         android:layout_width="16dp"
         android:layout_height="16dp"
-        app:icon_name="ADD_ON"
+        app:unify_image_corner_radius="0"
         app:layout_constraintBottom_toBottomOf="@id/tvAddOnLabel"
         app:layout_constraintEnd_toStartOf="@id/tvAddOnLabel"
-        app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/tvAddOnLabel" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvAddOnLabel"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
         android:textColor="@color/Unify_NN950"
-        app:layout_constrainedWidth="true"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/icAddOn"
+        app:layout_constraintStart_toEndOf="@id/ivAddOnSummary"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_3"
         app:typographyWeight="bold"
@@ -35,7 +32,6 @@
         android:id="@+id/rvAddOn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="12dp"
         android:nestedScrollingEnabled="false"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
