@@ -2,7 +2,9 @@ package com.tokopedia.topads.view.adapter.product.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.getResDrawable
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.view.adapter.product.viewmodel.ProductEmptyViewModel
 import com.tokopedia.unifycomponents.ImageUnify
@@ -12,7 +14,7 @@ import com.tokopedia.unifycomponents.ImageUnify
  */
 class ProductEmptyViewHolder(val view: View): ProductViewHolder<ProductEmptyViewModel>(view) {
 
-    private val imageView8 : ImageUnify? = view.findViewById(R.id.imageView8)
+    private val emptyStateProductList : GlobalError? = view.findViewById(R.id.emptyStateProductList)
 
     companion object {
         @LayoutRes
@@ -20,7 +22,11 @@ class ProductEmptyViewHolder(val view: View): ProductViewHolder<ProductEmptyView
     }
 
     override fun bind(item: ProductEmptyViewModel) {
-        imageView8?.setImageDrawable(view.context.getResDrawable(com.tokopedia.topads.common.R.drawable.no_products))
+        emptyStateProductList?.apply{
+            errorAction.hide()
+            errorTitle.text = "Tidak ada produk yang Belum Diiklankan"
+            errorDescription.text = "Kamu belum punya produk yang Belum Diiklankan. Coba cari dengan filter lain, ya."
+        }
     }
 
 }

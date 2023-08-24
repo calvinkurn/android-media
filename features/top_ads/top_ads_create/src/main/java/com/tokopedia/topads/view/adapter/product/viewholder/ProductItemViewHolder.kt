@@ -1,7 +1,9 @@
 package com.tokopedia.topads.view.adapter.product.viewholder
 
 import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.LayoutRes
+import androidx.appcompat.content.res.AppCompatResources
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.view.adapter.product.viewmodel.ProductItemViewModel
@@ -17,6 +19,7 @@ class ProductItemViewHolder(val view: View, var actionChecked: (() -> Unit)?) : 
     private val checkBox : CheckboxUnify? = view.findViewById(R.id.checkBox)
     private val productName : Typography? = view.findViewById(R.id.product_name)
     private val productPrice : Typography? = view.findViewById(R.id.product_price)
+    private val ratingCount : Typography? = view.findViewById(R.id.txt_rating_count)
     private val productImage : ImageUnify? = view.findViewById(R.id.product_image)
     private val imageViewRating1 : ImageUnify? = view.findViewById(R.id.imageViewRating1)
     private val imageViewRating2 : ImageUnify? = view.findViewById(R.id.imageViewRating2)
@@ -37,12 +40,9 @@ class ProductItemViewHolder(val view: View, var actionChecked: (() -> Unit)?) : 
     }
 
     override fun bind(item: ProductItemViewModel) {
-        item?.let {
-            imageViewRating1?.setImageDrawable(view.context.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_rating_active))
-            imageViewRating2?.setImageDrawable(view.context.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_rating_active))
-            imageViewRating3?.setImageDrawable(view.context.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_rating_active))
-            imageViewRating4?.setImageDrawable(view.context.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_rating_active))
-            imageViewRating5?.setImageDrawable(view.context.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_rating_active))
+        item.let {
+            manageRating(it.data.productRating)
+            ratingCount?.text = String.format("(%s)", it.data.productReviewCount)
             productName?.text = it.data.productName
             productPrice?.text = it.data.productPrice
             checkBox?.setOnCheckedChangeListener(null)
@@ -51,6 +51,57 @@ class ProductItemViewHolder(val view: View, var actionChecked: (() -> Unit)?) : 
             checkBox?.setOnCheckedChangeListener { buttonView, isChecked ->
                 item.isChecked = isChecked
                 actionChecked?.invoke()
+            }
+        }
+    }
+
+    private fun manageRating(productRating: Int) {
+        for (i in 1..5) {
+            showStar(i, i <= productRating)
+        }
+    }
+
+    private fun showStar(i: Int, show: Boolean) {
+        when (i) {
+            1 -> {
+                if (show)
+                    imageViewRating1?.setImageDrawable(AppCompatResources.getDrawable(view.context,
+                            com.tokopedia.topads.common.R.drawable.topads_ic_rating_active))
+                else
+                    imageViewRating1?.setImageDrawable(AppCompatResources.getDrawable(view.context,
+                            com.tokopedia.topads.common.R.drawable.topads_ic_rating_default))
+            }
+            2 -> {
+                if (show)
+                    imageViewRating2?.setImageDrawable(AppCompatResources.getDrawable(view.context,
+                            com.tokopedia.topads.common.R.drawable.topads_ic_rating_active))
+                else
+                    imageViewRating2?.setImageDrawable(AppCompatResources.getDrawable(view.context,
+                            com.tokopedia.topads.common.R.drawable.topads_ic_rating_default))
+            }
+            3 -> {
+                if (show)
+                    imageViewRating3?.setImageDrawable(AppCompatResources.getDrawable(view.context,
+                            com.tokopedia.topads.common.R.drawable.topads_ic_rating_active))
+                else
+                    imageViewRating3?.setImageDrawable(AppCompatResources.getDrawable(view.context,
+                            com.tokopedia.topads.common.R.drawable.topads_ic_rating_default))
+            }
+            4 -> {
+                if (show)
+                    imageViewRating4?.setImageDrawable(AppCompatResources.getDrawable(view.context,
+                        com.tokopedia.topads.common.R.drawable.topads_ic_rating_active))
+                else
+                    imageViewRating4?.setImageDrawable(AppCompatResources.getDrawable(view.context,
+                        com.tokopedia.topads.common.R.drawable.topads_ic_rating_default))
+            }
+            5 -> {
+                if (show)
+                    imageViewRating5?.setImageDrawable(AppCompatResources.getDrawable(view.context,
+                        com.tokopedia.topads.common.R.drawable.topads_ic_rating_active))
+                else
+                    imageViewRating5?.setImageDrawable(AppCompatResources.getDrawable(view.context,
+                        com.tokopedia.topads.common.R.drawable.topads_ic_rating_default))
             }
         }
     }

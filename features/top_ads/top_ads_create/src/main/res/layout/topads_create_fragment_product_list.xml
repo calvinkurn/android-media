@@ -13,70 +13,60 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintEnd_toStartOf="@+id/btn_sort"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:search_bar_placeholder="@string/cari_produk"
-        app:search_bar_show_icon="@drawable/topads_ic_search" />
+        app:search_bar_show_icon="false" />
 
-    <com.tokopedia.unifycomponents.UnifyImageButton
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/btn_sort"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="10dp"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="12dp"
         app:layout_constraintBottom_toBottomOf="@+id/searchInputView"
         app:layout_constraintEnd_toStartOf="@+id/view3"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/searchInputView"
         app:layout_constraintTop_toTopOf="@+id/searchInputView"
-        app:srcCompat="@drawable/topads_ic_sort"
-        app:unifyImageButtonSize="medium"
-        app:unifyImageButtonType="main"
-        app:unifyImageButtonVariant="image" />
-
+        app:icon_name="SORT"/>
 
     <View
         android:id="@+id/view3"
         android:layout_width="1dp"
-        android:layout_height="@dimen/dp_50"
-        android:background="@color/Unify_NN50"
+        android:layout_height="0dp"
+        android:layout_marginStart="12dp"
+        android:background="@color/Unify_NN200"
         app:layout_constraintBottom_toBottomOf="@+id/btn_sort"
         app:layout_constraintEnd_toStartOf="@+id/btn_filter"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/btn_sort"
         app:layout_constraintTop_toTopOf="@+id/btn_sort" />
 
-    <com.tokopedia.unifycomponents.UnifyImageButton
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/btn_filter"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="12dp"
         android:layout_marginEnd="16dp"
-        android:padding="10dp"
         app:layout_constraintBottom_toBottomOf="@+id/view3"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/view3"
         app:layout_constraintTop_toTopOf="@+id/view3"
-        app:srcCompat="@drawable/topads_ic_filter"
-        app:unifyImageButtonType="main"
-        app:unifyImageButtonVariant="image" />
+        app:icon_name="SORT_FILTER"/>
 
     <LinearLayout
         android:id="@+id/promotedGroup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
         android:orientation="horizontal"
         android:weightSum="1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/searchInputView">
-
 
         <com.tokopedia.unifycomponents.ChipsUnify
             android:id="@+id/not_promoted"
@@ -131,6 +121,7 @@
             android:id="@+id/product_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@color/Unify_NN0"
             tools:itemCount="10"
             tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/topads_create_layout_product_list_item_product" />
@@ -172,6 +163,7 @@
         app:layout_constraintStart_toEndOf="@+id/select_product_info"
         app:unifyButtonType="main"
         app:unifyButtonVariant="filled"
+        app:unifyButtonSize="medium"
         tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -186,7 +178,7 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/btn_next"
-        app:typographyType="heading_6"
+        app:typographyType="paragraph_2"
         tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

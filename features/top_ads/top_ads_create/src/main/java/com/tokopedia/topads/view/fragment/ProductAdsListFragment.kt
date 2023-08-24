@@ -10,8 +10,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.UrlConstant
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
@@ -51,8 +54,8 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
 
     private var rootLayout: ConstraintLayout? = null
     private var searchInputView: SearchBarUnify? = null
-    private var btnSort: UnifyImageButton? = null
-    private var btnFilter: UnifyImageButton? = null
+    private var btnSort: IconUnify? = null
+    private var btnFilter: IconUnify? = null
     private var notPromoted: ChipsUnify? = null
     private var promoted: ChipsUnify? = null
     private var swipeRefreshLayout: SwipeToRefresh? = null
@@ -66,6 +69,10 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
     private lateinit var filterSheetProductList: ProductFilterSheetList
     private lateinit var productListAdapter: ProductListAdapter
     private var items = mutableListOf<EtalaseUiModel>()
+    private val productData = mutableMapOf(
+        1 to mutableListOf<ProductItemViewModel>(),
+        2 to mutableListOf<ProductItemViewModel>()
+    )
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -168,6 +175,13 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         recyclerView.itemAnimator = null
         recyclerView.adapter = productListAdapter
         recyclerView.layoutManager = layoutManager
+        context?.let {
+            recyclerView.addItemDecoration(object : DividerItemDecoration(it, VERTICAL) {
+                override fun shouldDrawOnLastItem(): Boolean {
+                    return false
+                }
+            })
+        }
         recyclerView.addOnScrollListener(recyclerviewScrollListener)
     }
 
@@ -247,12 +261,12 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         notPromoted?.setOnClickListener {
             notPromoted?.chipType = ChipsUnify.TYPE_SELECTED
             promoted?.chipType = ChipsUnify.TYPE_NORMAL
-            refreshProduct()
+            setProducts(2)
         }
         promoted?.setOnClickListener {
             notPromoted?.chipType = ChipsUnify.TYPE_NORMAL
             promoted?.chipType = ChipsUnify.TYPE_SELECTED
-            refreshProduct()
+            setProducts(1)
         }
 
         if (searchInputView != null && rootLayout != null)
@@ -261,6 +275,20 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         swipeRefreshLayout?.setOnRefreshListener {
             refreshProduct()
         }
+    }
+
+    private fun setProducts(i: Int) {
+        productListAdapter.items.clear()
+        productData[i]?.let { productListAdapter.items.addAll(it) }
+        if (productListAdapter.items.isEmpty()) {
+            productListAdapter.items.addAll(mutableListOf(ProductEmptyViewModel()))
+        }
+        if (productListAdapter.items[0] !is ProductEmptyViewModel) {
+            stepperModel?.selectedProductIds?.let {
+                productListAdapter.setSelectedList(it)
+            }
+        }
+        productListAdapter.notifyDataSetChanged()
     }
 
     private fun refreshProduct() {
@@ -274,6 +302,8 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
     private fun clearShimmerList() {
         productListAdapter.items.clear()
         productListAdapter.notifyDataSetChanged()
+        productData[1]?.clear()
+        productData[2]?.clear()
     }
 
     private fun fetchEtalase() {
@@ -317,7 +347,11 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
             }
         }
         val count = stepperModel?.selectedProductIds?.size ?: 0
-        selectProductInfo?.text = String.format(getString(com.tokopedia.topads.common.R.string.format_selected_produk), count)
+//        selectProductInfo?.text = String.format(getString(com.tokopedia.topads.common.R.string.format_selected_produk), count)
+        selectProductInfo?.text = MethodChecker.fromHtml(String.format(
+            getString(com.tokopedia.topads.common.R.string.format_selected_produk),
+            count
+        ))
         btnNext?.isEnabled = count > 0
     }
 
@@ -326,7 +360,13 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         btnNext?.isEnabled = false
         productListAdapter.items = mutableListOf(ProductEmptyViewModel())
         productListAdapter.notifyDataSetChanged()
-        selectProductInfo?.text = String.format(getString(com.tokopedia.topads.common.R.string.format_selected_produk), 0)
+        selectProductInfo?.text = MethodChecker.fromHtml(String.format(
+            getString(com.tokopedia.topads.common.R.string.format_selected_produk),
+            0
+        ))
+        promoted?.chip_text?.text = String.format("Sudah Diiklankan (%d)", productData[1]?.size)
+
+        notPromoted?.chip_text?.text = String.format("Belum Diiklankan (%d)", productData[2]?.size)
     }
 
     private fun onError(t: Throwable) {
@@ -340,27 +380,26 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         prepareForNextFetch(eof)
         btnNext?.isEnabled = false
         data.forEach { result ->
-            if (promoted?.chipType == ChipsUnify.TYPE_SELECTED) {
-                if (result.adID.toFloat() > 0)
-                    productListAdapter.items.add(ProductItemViewModel(result))
-
-            } else {
-                if (result.adID == "0")
-                    productListAdapter.items.add(ProductItemViewModel(result))
+            if (result.adID.toFloat() > 0) {
+                productData[1]?.add(ProductItemViewModel(result))
+            } else if (result.adID == "0") {
+                productData[2]?.add(ProductItemViewModel(result))
             }
         }
-        if (productListAdapter.items.isEmpty()) {
-            productListAdapter.items.addAll(mutableListOf(ProductEmptyViewModel()))
-        }
-        if (productListAdapter.items[0] !is ProductEmptyViewModel) {
-            stepperModel?.selectedProductIds?.let {
-                productListAdapter.setSelectedList(it)
-            }
+        if (promoted?.chipType == ChipsUnify.TYPE_SELECTED) {
+            setProducts(1)
+        } else {
+            setProducts(2)
         }
         val count = stepperModel?.selectedProductIds?.size ?: 0
-        selectProductInfo?.text = String.format(getString(com.tokopedia.topads.common.R.string.format_selected_produk), count)
+        selectProductInfo?.text = MethodChecker.fromHtml(String.format(
+            getString(com.tokopedia.topads.common.R.string.format_selected_produk),
+            count
+        ))
         btnNext?.isEnabled = count > 0
         productListAdapter.notifyDataSetChanged()
+        promoted?.chip_text?.text = String.format("Sudah Diiklankan (%d)", productData[1]?.size)
+        notPromoted?.chip_text?.text = String.format("Belum Diiklankan (%d)", productData[2]?.size)
     }
 
     private fun prepareForNextFetch(eof: Boolean) {
