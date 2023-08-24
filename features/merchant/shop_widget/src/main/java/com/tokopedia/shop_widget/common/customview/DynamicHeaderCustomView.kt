@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop_widget.R
 import com.tokopedia.shop_widget.common.uimodel.DynamicHeaderUiModel
 import com.tokopedia.shop_widget.common.util.DateHelper
@@ -158,6 +159,16 @@ class DynamicHeaderCustomView: FrameLayout {
         tpTitle?.setTextColor(defaultTitleColor)
         tpSubtitle?.setTextColor(defaultSubTitleColor)
         tpSeeAll?.setTextColor(defaultCtaColor)
+        tusCountDown?.timerVariant = TimerUnifySingle.VARIANT_MAIN
+    }
+
+    fun configReimaginedColor(colorSchema: ShopPageColorSchema) {
+        val highEmphasizeColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS)
+        val lowEmphasizeColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_LOW_EMPHASIS)
+        val ctaTextColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.CTA_TEXT_LINK_COLOR)
+        tpTitle?.setTextColor(highEmphasizeColor)
+        tpSubtitle?.setTextColor(lowEmphasizeColor)
+        tpSeeAll?.setTextColor(ctaTextColor)
         tusCountDown?.timerVariant = TimerUnifySingle.VARIANT_MAIN
     }
 

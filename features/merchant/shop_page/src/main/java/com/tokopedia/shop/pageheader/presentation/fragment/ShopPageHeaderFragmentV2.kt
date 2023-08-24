@@ -53,6 +53,7 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.encodeToUtf8
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isValidGlideContext
 import com.tokopedia.kotlin.extensions.view.isZero
@@ -93,7 +94,6 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_SHARE_BOTT
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_SHARE_BOTTOM_SHEET_PAGE_NAME
 import com.tokopedia.shop.analytic.ShopPageTrackingSGCPlayWidget
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
-import com.tokopedia.shop.campaign.view.fragment.ShopPageCampaignFragment
 import com.tokopedia.shop.common.constant.ShopHomeType
 import com.tokopedia.shop.common.constant.ShopModerateRequestStatusCode
 import com.tokopedia.shop.common.constant.ShopPageConstant
@@ -115,9 +115,10 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.Broadcaster
 import com.tokopedia.shop.common.util.*
 import com.tokopedia.shop.common.util.ShopUtil.getShopPageWidgetUserAddressLocalData
 import com.tokopedia.shop.common.view.ShopPageCountDrawable
+import com.tokopedia.shop.common.view.interfaces.InterfaceShopPageHeader
+import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.common.view.model.ShopPageFabConfig
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
-import com.tokopedia.shop.common.view.viewmodel.ShopHeaderDynamicUspSharedViewModel
 import com.tokopedia.shop.common.view.viewmodel.ShopPageFeedTabSharedViewModel
 import com.tokopedia.shop.common.view.viewmodel.ShopPageFeedTabSharedViewModel.Companion.FAB_ACTION_HIDE
 import com.tokopedia.shop.common.view.viewmodel.ShopPageFeedTabSharedViewModel.Companion.FAB_ACTION_SETUP
@@ -148,6 +149,7 @@ import com.tokopedia.shop.pageheader.presentation.bottomsheet.ShopPageHeaderCont
 import com.tokopedia.shop.pageheader.presentation.bottomsheet.ShopPageHeaderRequestUnmoderateBottomSheet
 import com.tokopedia.shop.pageheader.presentation.holder.ShopPageHeaderFragmentViewHolderListener
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPageHeaderPerformanceMonitoringListener
+import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageHeaderLayoutUiModel
 import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageHeaderP1HeaderData
 import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageHeaderTickerData
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.BaseShopPageHeaderComponentUiModel
@@ -283,7 +285,6 @@ class ShopPageHeaderFragmentV2 :
         private const val WEBVIEW_ALLOW_OVERRIDE_FORMAT = "%s?allow_override=%b&url=%s"
         private const val AFFILIATE_SITE_ID = "1"
         private const val AFFILIATE_VERTICAL_ID = "1"
-        private const val CYCLE_DURATION = 5000L
 
         @JvmStatic
         fun createInstance() = ShopPageHeaderFragmentV2()
@@ -357,7 +358,6 @@ class ShopPageHeaderFragmentV2 :
     private var shopPageMiniCartSharedViewModel: ShopPageMiniCartSharedViewModel? = null
     private var shopPageFollowingStatusSharedViewModel: ShopPageFollowingStatusSharedViewModel? = null
     private var shopPageFeedTabSharedViewModel: ShopPageFeedTabSharedViewModel? = null
-    private var shopHeaderDynamicUspSharedViewModel: ShopHeaderDynamicUspSharedViewModel? = null
     private var sharedPreferences: SharedPreferences? = null
     private var isGeneralShareBottomSheet = false
     var selectedPosition = -1
@@ -382,8 +382,6 @@ class ShopPageHeaderFragmentV2 :
     private var queryParamTab: String = ""
     private var shopPageHeaderP1Data: ShopPageHeaderP1HeaderData? = null
     private var isAlreadyGetShopPageP2Data: Boolean = false
-    private var timer : Timer? = null
-    private var currentIndexUspDynamicValue = 0
 
     override fun getComponent() = activity?.run {
         DaggerShopPageHeaderComponent.builder().shopPageHeaderModule(ShopPageHeaderModule())
@@ -440,7 +438,6 @@ class ShopPageHeaderFragmentV2 :
         shopHeaderViewModel?.flush()
         removeTemporaryShopImage(shopImageFilePath)
         SharingUtil.clearState(screenShotDetector)
-        clearTimerDynamicUsp()
         super.onDestroy()
     }
 
@@ -1069,7 +1066,6 @@ class ShopPageHeaderFragmentV2 :
         )
         shopPageFollowingStatusSharedViewModel = ViewModelProviders.of(requireActivity()).get(ShopPageFollowingStatusSharedViewModel::class.java)
         shopPageFeedTabSharedViewModel = ViewModelProviders.of(requireActivity()).get(ShopPageFeedTabSharedViewModel::class.java)
-        shopHeaderDynamicUspSharedViewModel = ViewModelProviders.of(requireActivity()).get(ShopHeaderDynamicUspSharedViewModel::class.java)
         context?.let {
             remoteConfig = FirebaseRemoteConfigImpl(it)
             cartLocalCacheHandler = LocalCacheHandler(it, CART_LOCAL_CACHE_NAME)
@@ -1365,6 +1361,14 @@ class ShopPageHeaderFragmentV2 :
         return cartLocalCacheHandler?.getInt(TOTAL_CART_CACHE_KEY, 0).orZero()
     }
 
+    override fun getColorSchema(): ShopPageColorSchema? {
+        return getShopBodyConfig()?.colorSchema
+    }
+
+    override fun isOverrideTheme(): Boolean {
+        return shopPageHeaderP1Data?.shopHeaderLayoutData?.isOverrideTheme.orFalse()
+    }
+
     private fun redirectToSearchAutoCompletePage() {
         val shopSrpAppLink = URLEncoder.encode(
             UriUtil.buildUri(
@@ -1420,7 +1424,6 @@ class ShopPageHeaderFragmentV2 :
         refreshCartCounterData()
         // Add delay update mini cart when on resume, to prevent race condition with cart page's update cart
         updateMiniCartWidget(delay = DELAY_MINI_CART_RESUME)
-        startDynamicUspCycle()
     }
 
     private fun checkIfChooseAddressWidgetDataUpdated() {
@@ -1444,6 +1447,7 @@ class ShopPageHeaderFragmentV2 :
                 shopPageErrorState?.visibility = View.GONE
                 viewPager?.visibility = View.INVISIBLE
                 scrollToTopButton?.gone()
+                tabLayout?.invisible()
                 hideShopPageFab()
             }
             VIEW_ERROR -> {
@@ -1455,6 +1459,7 @@ class ShopPageHeaderFragmentV2 :
                 loadingState?.visibility = View.GONE
                 shopPageErrorState?.visibility = View.GONE
                 viewPager?.visibility = View.VISIBLE
+                tabLayout?.visible()
             }
         }
     }
@@ -1666,16 +1671,14 @@ class ShopPageHeaderFragmentV2 :
     override fun onPause() {
         super.onPause()
         shopPageTracking?.sendAllTrackingQueue()
-        pauseTimerDynamicUspCycle()
-    }
-
-    private fun pauseTimerDynamicUspCycle() {
-        timer?.cancel()
-        timer = null
     }
 
     private fun setupTabs() {
         listShopPageTabModel = (setupTabContentWrapper() as? List<ShopPageHeaderTabModel>) ?: listOf()
+        viewPagerAdapterHeader?.setPageTheme(
+            shopPageHeaderP1Data?.shopHeaderLayoutData?.isOverrideTheme.orFalse(),
+            getShopNavBarConfig()?.patternColorType.orEmpty()
+        )
         viewPagerAdapterHeader?.setTabData(listShopPageTabModel)
         selectedPosition = getSelectedDynamicTabPosition()
         tabLayout?.removeAllTabs()
@@ -1740,7 +1743,18 @@ class ShopPageHeaderFragmentV2 :
     }
 
     private fun setTabLayoutBackgroundColor() {
-        tabLayout?.background = ColorDrawable(Color.parseColor("#d7ecff"))
+        if(shopPageHeaderP1Data?.shopHeaderLayoutData?.isOverrideTheme == true) {
+            val fragmentBackgroundColor = getShopNavBarConfig()?.listBackgroundColor?.firstOrNull().orEmpty()
+            tabLayout?.background = ColorDrawable(ShopUtil.parseColorFromHexString(fragmentBackgroundColor))
+        }
+    }
+
+    private fun getShopNavBarConfig(): ShopPageHeaderLayoutUiModel.Config? {
+        return shopPageHeaderP1Data?.shopHeaderLayoutData?.getShopConfigListByName(ShopPageHeaderLayoutUiModel.ConfigName.SHOP_BOTTOM_NAVBAR)
+    }
+
+    private fun getShopBodyConfig(): ShopPageHeaderLayoutUiModel.Config? {
+        return shopPageHeaderP1Data?.shopHeaderLayoutData?.getShopConfigListByName(ShopPageHeaderLayoutUiModel.ConfigName.SHOP_BODY)
     }
 
     private fun checkShouldSendCampaignTabOpenScreenTracker() {
@@ -1935,7 +1949,6 @@ class ShopPageHeaderFragmentV2 :
 
     override fun refreshData() {
         hideShopPageFab()
-        clearTimerDynamicUsp()
         val shopProductListFragment: Fragment? = viewPagerAdapterHeader?.getRegisteredFragment(if (shopPageHeaderDataModel?.isOfficial == true) TAB_POSITION_HOME + 1 else TAB_POSITION_HOME)
         if (shopProductListFragment is ShopPageProductListFragment) {
             shopProductListFragment.clearCache()
@@ -1953,13 +1966,6 @@ class ShopPageHeaderFragmentV2 :
         getInitialData()
         setViewState(VIEW_LOADING)
         stickyLoginView?.loadContent()
-    }
-
-    private fun clearTimerDynamicUsp() {
-        timer?.cancel()
-        timer = null
-        currentIndexUspDynamicValue = Int.ZERO
-        shopHeaderDynamicUspSharedViewModel?.updateSharedDynamicUspValue("")
     }
 
     private fun resetShopProductFilterParameterSharedViewModel() {
@@ -2539,11 +2545,21 @@ class ShopPageHeaderFragmentV2 :
     }
 
     override fun onChangeTextColor(): Int {
-        return super.onChangeTextColor()
+        val headerLayoutData = shopPageHeaderP1Data?.shopHeaderLayoutData
+        val isOverrideTextColor = headerLayoutData?.isOverrideTheme.orFalse()
+        return if (isOverrideTextColor) {
+            if(getShopHeaderConfig()?.patternColorType == ShopPageHeaderLayoutUiModel.ColorType.DARK.value) {
+                R.color.dms_static_Unify_NN950_light
+            } else {
+                R.color.Unify_Static_White
+            }
+        } else {
+            super.onChangeTextColor()
+        }
     }
 
-    override fun iconLocationColor(): Int {
-        return super.iconLocationColor()
+    private fun getShopHeaderConfig(): ShopPageHeaderLayoutUiModel.Config? {
+        return shopPageHeaderP1Data?.shopHeaderLayoutData?.getShopConfigListByName(ShopPageHeaderLayoutUiModel.ConfigName.SHOP_HEADER)
     }
 
     fun expandHeader() {
@@ -3027,38 +3043,5 @@ class ShopPageHeaderFragmentV2 :
 
     override fun onTabFragmentWrapperFinishLoad() {
         getShopPageP2Data()
-    }
-
-    override fun startDynamicUspCycle() {
-        val listDynamicUspValue = shopPageHeaderP1Data?.listShopPageHeaderWidget?.getDynamicUspComponent()?.text?.map { it.textHtml }.orEmpty()
-        if (timer == null && listDynamicUspValue.isNotEmpty()) {
-            timer = Timer()
-            timer?.scheduleAtFixedRate(object : TimerTask() {
-                override fun run() {
-                    if (currentIndexUspDynamicValue == listDynamicUspValue.size - Int.ONE) {
-                        currentIndexUspDynamicValue = Int.ZERO
-                    } else {
-                        ++currentIndexUspDynamicValue
-                    }
-                    val currentValue = listDynamicUspValue[currentIndexUspDynamicValue]
-                    shopHeaderDynamicUspSharedViewModel?.updateSharedDynamicUspValue(currentValue)
-                }
-            }, CYCLE_DURATION, CYCLE_DURATION)
-        }
-    }
-
-    override fun getCurrentDynamicUspValue(): String {
-        val listDynamicUspValue = shopPageHeaderP1Data?.listShopPageHeaderWidget?.getDynamicUspComponent()?.text?.map { it.textHtml }.orEmpty()
-        return shopHeaderDynamicUspSharedViewModel?.sharedDynamicUspValue?.value.orEmpty().ifEmpty {
-            return listDynamicUspValue.firstOrNull().orEmpty()
-        }
-    }
-
-    private fun List<ShopPageHeaderWidgetUiModel>?.getDynamicUspComponent(): ShopPageHeaderBadgeTextValueComponentUiModel? {
-        return this?.firstOrNull {
-            it.type == ShopPageHeaderWidgetUiModel.WidgetType.SHOP_BASIC_INFO
-        }?.componentPages?.firstOrNull {
-            it.name == BaseShopPageHeaderComponentUiModel.ComponentName.SHOP_DYNAMIC_USP
-        } as? ShopPageHeaderBadgeTextValueComponentUiModel
     }
 }

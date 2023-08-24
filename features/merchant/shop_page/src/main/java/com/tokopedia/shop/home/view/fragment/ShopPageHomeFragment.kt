@@ -201,7 +201,8 @@ import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselVerticalBannerV
 import com.tokopedia.shop.home.view.model.showcase_navigation.Showcase
 import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageHeaderActivity
-import com.tokopedia.shop.pageheader.presentation.fragment.InterfaceShopPageHeader
+import com.tokopedia.shop.common.view.interfaces.InterfaceShopPageHeader
+import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragment
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragmentV2
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPageHeaderPerformanceMonitoringListener
@@ -1067,7 +1068,9 @@ open class ShopPageHomeFragment :
             isLogin,
             isThematicWidgetShown,
             isEnableDirectPurchase,
-            shopId
+            shopId,
+            isOverrideTheme(),
+            getColorSchema()
         )
         if (shopHomeWidgetContentData.isNotEmpty()) {
             shopHomeAdapter?.setHomeLayoutData(shopHomeWidgetContentData)
@@ -1726,7 +1729,9 @@ open class ShopPageHomeFragment :
             isLogin,
             isThematicWidgetShown,
             isEnableDirectPurchase,
-            shopId
+            shopId,
+            isOverrideTheme(),
+            getColorSchema()
         )
         if (shopHomeWidgetContentData.isNotEmpty()) {
             shopHomeAdapter?.setHomeLayoutData(shopHomeWidgetContentData)
@@ -1988,7 +1993,9 @@ open class ShopPageHomeFragment :
                 shopId,
                 widgetUserAddressLocalData,
                 isThematicWidgetShown,
-                isEnableDirectPurchase
+                isEnableDirectPurchase,
+                isOverrideTheme(),
+                getColorSchema()
             )
         }
     }
@@ -4300,6 +4307,15 @@ open class ShopPageHomeFragment :
         return trackingQueue
     }
 
+    override fun isShopHomeTabHasFestivity(): Boolean {
+        return shopHomeAdapter?.anyFestivityOnShopHomeWidget().orFalse()
+    }
+
+    override fun getShopPageColorSchema(): ShopPageColorSchema {
+        return (getRealParentFragment() as? InterfaceShopPageHeader)?.getColorSchema()
+            ?: ShopPageColorSchema()
+    }
+
     override fun onProductCardComparisonImpressed(
         recommendationItem: RecommendationItem,
         comparisonListModel: ComparisonListModel,
@@ -5041,4 +5057,16 @@ open class ShopPageHomeFragment :
     override val currentFragment: Fragment
         get() = this
 
+    override fun onProductClick(productId: String) {
+        // TODO: Put tracker here
+        RouteManager.route(context, ApplinkConst.PRODUCT_INFO, productId)
+    }
+
+    override fun isOverrideTheme(): Boolean {
+        return (getRealParentFragment() as? InterfaceShopPageHeader)?.isOverrideTheme().orFalse()
+    }
+
+    private fun getColorSchema(): ShopPageColorSchema {
+        return (getRealParentFragment() as? InterfaceShopPageHeader)?.getColorSchema() ?: ShopPageColorSchema()
+    }
 }

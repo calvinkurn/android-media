@@ -31,6 +31,7 @@ import com.tokopedia.home.util.ViewVisibilityIdlingResource
 import com.tokopedia.home_component.model.ReminderEnum
 import com.tokopedia.home_component.viewholders.*
 import com.tokopedia.home_component.visitable.*
+import com.tokopedia.home_component.widget.special_release.SpecialReleaseRevampDataModel
 import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
 import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.test.application.assertion.topads.TopAdsVerificationTestReportUtil
@@ -511,6 +512,19 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
         } validateAnalytics {
             addDebugEnd()
             hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_TODO_WIDGET)
+        }
+    }
+
+    @Test
+    fun testComponentSpecialReleaseRevampWidget() {
+        HomeDCCassavaTest {
+            initTest()
+            doActivityTestByModelClass(dataModelClass = SpecialReleaseRevampDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+                actionOnSpecialReleaseRevampWidget(viewHolder, i)
+            }
+        } validateAnalytics {
+            addDebugEnd()
+            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_SPECIAL_RELEASE_REVAMP)
         }
     }
 

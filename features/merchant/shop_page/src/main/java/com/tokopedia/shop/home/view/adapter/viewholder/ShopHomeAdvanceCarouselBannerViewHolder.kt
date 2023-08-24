@@ -9,16 +9,19 @@ import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.carousellayoutmanager.CarouselLayoutManager
 import com.tokopedia.carousellayoutmanager.CarouselZoomPostLayoutListener
 import com.tokopedia.carousellayoutmanager.CenterScrollListener
 import com.tokopedia.carousellayoutmanager.DefaultChildSelectionListener
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shop.R
+import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.ShopAdvanceCarouselBannerViewholderLayoutBinding
 import com.tokopedia.shop.home.WidgetName
 import com.tokopedia.shop.home.view.adapter.ShopWidgetAdvanceCarouselBannerAdapter
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
+import com.tokopedia.shop.home.view.listener.ShopHomeListener
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 import com.tokopedia.unifycomponents.PageControl
 import com.tokopedia.unifyprinciples.Typography
@@ -27,7 +30,8 @@ import java.util.*
 
 class ShopHomeAdvanceCarouselBannerViewHolder(
     view: View?,
-    private val listener: ShopHomeDisplayWidgetListener
+    private val listener: ShopHomeDisplayWidgetListener,
+    private val shopHomeListener: ShopHomeListener
 ) : AbstractViewHolder<ShopHomeDisplayWidgetUiModel>(view) {
 
     companion object {
@@ -106,7 +110,33 @@ class ShopHomeAdvanceCarouselBannerViewHolder(
             setBannerImageCarouselSection()
             setBannerIndicatorSection()
             setBannerAutoScroll()
+            configColorTheme()
         }
+    }
+
+    private fun configColorTheme() {
+        if (shopHomeListener.isShopHomeTabHasFestivity()) {
+            configDefaultColor()
+        } else {
+            if (shopHomeListener.isOverrideTheme()) {
+                configReimaginedColor(uiModel.header.colorSchema)
+            } else {
+                configDefaultColor()
+            }
+        }
+    }
+
+    private fun configReimaginedColor(colorSchema: ShopPageColorSchema) {
+        val titleColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS)
+        textViewTitle?.setTextColor(titleColor)
+    }
+
+    private fun configDefaultColor() {
+        val titleColor = MethodChecker.getColor(
+            itemView.context,
+            com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
+        )
+        textViewTitle?.setTextColor(titleColor)
     }
 
     private fun setBannerAutoScroll() {

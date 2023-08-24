@@ -1,9 +1,7 @@
 package com.tokopedia.shop.home.view.adapter.viewholder
 
 import android.view.View
-import android.widget.LinearLayout
 import androidx.annotation.LayoutRes
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.productbundlewidget.listener.ProductBundleWidgetListener
@@ -17,6 +15,7 @@ import com.tokopedia.shop.common.widget.bundle.viewholder.MultipleProductBundleL
 import com.tokopedia.shop.common.widget.bundle.viewholder.SingleProductBundleListener
 import com.tokopedia.shop.databinding.ItemShopHomeProductBundleParentWidgetBinding
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
+import com.tokopedia.shop.home.view.listener.ShopHomeListener
 import com.tokopedia.shop.home.view.model.ShopHomeProductBundleListUiModel
 import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.utils.view.binding.viewBinding
@@ -27,7 +26,8 @@ import com.tokopedia.utils.view.binding.viewBinding
 class ShopHomeProductBundleParentWidgetViewHolder(
     itemView: View,
     private val multipleProductBundleListener: MultipleProductBundleListener,
-    private val singleProductBundleListener: SingleProductBundleListener
+    private val singleProductBundleListener: SingleProductBundleListener,
+    shopHomeListener: ShopHomeListener
 ) : AbstractViewHolder<ShopHomeProductBundleListUiModel>(itemView), ProductBundleWidgetListener {
 
     companion object {

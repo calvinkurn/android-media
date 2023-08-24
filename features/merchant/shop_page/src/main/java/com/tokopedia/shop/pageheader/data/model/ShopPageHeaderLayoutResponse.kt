@@ -7,9 +7,48 @@ data class ShopPageHeaderLayoutResponse(
     val shopPageGetHeaderLayout: ShopPageGetHeaderLayout = ShopPageGetHeaderLayout()
 ) {
     data class ShopPageGetHeaderLayout(
+        @SerializedName("generalComponentConfigList")
+        val generalComponentConfigList: List<GeneralComponentConfigList> = listOf(),
+        @SerializedName("isOverrideTheme")
+        val isOverrideTheme: Boolean = false,
         @SerializedName("widgets")
-        val widgets: List<Widget> = listOf()
+        val widgets: List<Widget> = listOf(),
     ) {
+        data class GeneralComponentConfigList(
+            @SerializedName("name")
+            val name: String = "",
+            @SerializedName("type")
+            val type: String = "",
+            @SerializedName("data")
+            val data: DataComponentConfig = DataComponentConfig(),
+        ){
+            data class DataComponentConfig(
+                @SerializedName("patternColorType")
+                val patternColorType: String = "",
+                @SerializedName("bgColors")
+                val listBackgroundColor: List<String> = listOf(),
+                @SerializedName("bgObjects")
+                val listBackgroundObject: List<BackgroundObject> = listOf(),
+                @SerializedName("colorSchemaList")
+                val listColorSchema: List<ColorSchema> = listOf(),
+            ){
+                data class BackgroundObject(
+                    @SerializedName("url")
+                    val url: String = "",
+                    @SerializedName("type")
+                    val type: String = ""
+                )
+
+                data class ColorSchema(
+                    @SerializedName("name")
+                    val name: String = "",
+                    @SerializedName("type")
+                    val type: String = "",
+                    @SerializedName("value")
+                    val value: String = ""
+                )
+            }
+        }
         data class Widget(
             @SerializedName("component")
             val listComponent: List<Component> = listOf(),

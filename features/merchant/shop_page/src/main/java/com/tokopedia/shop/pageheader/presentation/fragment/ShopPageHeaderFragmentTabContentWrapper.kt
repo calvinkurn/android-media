@@ -3,15 +3,16 @@ package com.tokopedia.shop.pageheader.presentation.fragment
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -29,6 +30,8 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.content.common.analytic.entrypoint.PlayPerformanceDashboardEntryPointAnalytic
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.encodeToUtf8
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
@@ -39,6 +42,7 @@ import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
+import com.tokopedia.searchbar.navigation_component.util.StatusBarUtil
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
@@ -47,11 +51,13 @@ import com.tokopedia.shop.analytic.ShopPageTrackingSGCPlayWidget
 import com.tokopedia.shop.campaign.view.fragment.ShopPageCampaignFragment
 import com.tokopedia.shop.common.constant.ShopHomeType
 import com.tokopedia.shop.common.data.model.HomeLayoutData
+import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.common.data.model.ShopPageGetDynamicTabResponse
 import com.tokopedia.shop.common.data.source.cloud.model.followshop.FollowShop
 import com.tokopedia.shop.common.data.source.cloud.model.followstatus.FollowStatus
+import com.tokopedia.shop.common.util.ShopUtil
+import com.tokopedia.shop.common.view.interfaces.InterfaceShopPageHeader
 import com.tokopedia.shop.common.view.listener.InterfaceShopPageClickScrollToTop
-import com.tokopedia.shop.common.view.viewmodel.ShopHeaderDynamicUspSharedViewModel
 import com.tokopedia.shop.databinding.ShopHeaderFragmentTabContentBinding
 import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
@@ -62,6 +68,7 @@ import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.Shop
 import com.tokopedia.shop.pageheader.presentation.holder.ShopPageHeaderFragmentHeaderViewHolderV2
 import com.tokopedia.shop.pageheader.presentation.holder.ShopPageHeaderFragmentViewHolderListener
 import com.tokopedia.shop.pageheader.presentation.uimodel.ShopFollowButtonUiModel
+import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageHeaderLayoutUiModel
 import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageHeaderP1HeaderData
 import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageHeaderTickerData
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopPageHeaderWidgetUiModel
@@ -69,6 +76,7 @@ import com.tokopedia.shop.pageheader.util.ShopPageHeaderTabName
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.view.fragment.ShopPageProductListFragment
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import com.tokopedia.utils.resources.isDarkMode
 import java.net.URLEncoder
 import javax.inject.Inject
 import kotlin.math.abs
@@ -91,6 +99,7 @@ class ShopPageHeaderFragmentTabContentWrapper :
         private const val FEED_SHOP_FRAGMENT_SHOP_ID = "PARAM_SHOP_ID"
         private const val FEED_SHOP_FRAGMENT_CREATE_POST_URL = "PARAM_CREATE_POST_URL"
         private const val ARGS_SHOP_ID_FOR_REVIEW_TAB = "ARGS_SHOP_ID"
+        private const val MAX_ALPHA = 255f
 
         @JvmStatic
         fun createInstance() = ShopPageHeaderFragmentTabContentWrapper()
@@ -131,13 +140,14 @@ class ShopPageHeaderFragmentTabContentWrapper :
     private var initialProductListData: ShopProduct.GetShopProduct? = null
     private var shopPageHeaderDataModel: ShopPageHeaderDataModel ? = null
     private var shopPagePageHeaderWidgetList: List<ShopPageHeaderWidgetUiModel> = listOf()
+    private var shopHeaderLayoutData: ShopPageHeaderLayoutUiModel = ShopPageHeaderLayoutUiModel()
     private var tickerResultData: ShopPageHeaderTickerData? = null
     private var chooseAddressWidgetListener: ChooseAddressWidget.ChooseAddressWidgetListener? = null
     private var iconShareId: Int = IconList.ID_SHARE
     private var shopFollowButtonUiModel: ShopFollowButtonUiModel= ShopFollowButtonUiModel()
     private var tabFragment: Fragment? = null
-    private var shopHeaderDynamicUspSharedViewModel: ShopHeaderDynamicUspSharedViewModel? = null
     private var initialShopLayoutData : HomeLayoutData? = null
+    private var appbarOffsetRatio: Float = 0f
 
     override fun getComponent() = activity?.run {
         DaggerShopPageHeaderComponent.builder().shopPageHeaderModule(ShopPageHeaderModule())
@@ -197,60 +207,74 @@ class ShopPageHeaderFragmentTabContentWrapper :
         return parentFragment as? ShopPageHeaderFragmentViewHolderListener
     }
 
+    private fun getShopHeaderConfig(): ShopPageHeaderLayoutUiModel.Config? {
+        return shopHeaderLayoutData.getShopConfigListByName(ShopPageHeaderLayoutUiModel.ConfigName.SHOP_HEADER)
+    }
+
+    private fun getShopBodyConfig(): ShopPageHeaderLayoutUiModel.Config? {
+        return shopHeaderLayoutData.getShopConfigListByName(ShopPageHeaderLayoutUiModel.ConfigName.SHOP_BODY)
+    }
     private fun setupAppBarLayout() {
         appBarLayout?.addOnOffsetChangedListener { _, verticalOffset ->
             refreshLayout?.isEnabled = (verticalOffset == 0)
-            val startColor = Color.TRANSPARENT
-            //need to change color below to dynamic
-            val endColor = Color.parseColor("#0a0a6c")
-            // Calculate the scroll range
-            val scrollRange = appBarLayout?.totalScrollRange
-            // Calculate the offset ratio (between 0 and 1) based on the scroll position
-            val offsetRatio = abs(verticalOffset).toFloat() / (scrollRange?.toFloat() ?: 0f)
-            val blendedColor = blendColors(startColor, endColor , offsetRatio)
-
-            // Interpolate the color based on the offset ratio
-
-            // Set the toolbar background color
-            navToolbar?.background = ColorDrawable  (blendedColor)
-            navToolbar?.apply {
-                val drawable = background
-                drawable.alpha = (offsetRatio * 255f).toInt()
-                background = drawable
+            setNavToolbarScrollColorTransition(verticalOffset)
+            if (appbarOffsetRatio < Int.ONE.toFloat()) {
+                resumeHeaderVideo()
+            } else {
+                pauseHeaderVideo()
             }
         }
     }
 
-    private fun blendColors(color1: Int, color2: Int, ratio: Float): Int {
-        val inverseRatio = 1f - ratio
-        val r = (Color.red(color2) * ratio + Color.red(color1) * inverseRatio).toInt()
-        val g = (Color.green(color2) * ratio + Color.green(color1) * inverseRatio).toInt()
-        val b = (Color.blue(color2) * ratio + Color.blue(color1) * inverseRatio).toInt()
+    private fun setNavToolbarScrollColorTransition(verticalOffset: Int) {
+        val headerBackgroundColor = getShopHeaderConfig()?.listBackgroundColor?.firstOrNull().orEmpty()
+        val endColor = if(shopHeaderLayoutData.isOverrideTheme){
+            ShopUtil.parseColorFromHexString(headerBackgroundColor)
+        } else {
+            MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+        }
+        // Calculate the scroll range
+        val scrollRange = appBarLayout?.totalScrollRange
+        // Calculate the offset ratio (between 0 and 1) based on the scroll position
+        appbarOffsetRatio = abs(verticalOffset).toFloat() / (scrollRange?.toFloat() ?: Int.ZERO.toFloat())
+        val blendedColor = blendColors(endColor , appbarOffsetRatio)
+        // Set the toolbar background color
+        navToolbar?.background = ColorDrawable  (blendedColor)
+        navToolbar?.apply {
+            val drawable = background
+            drawable.alpha = (appbarOffsetRatio * MAX_ALPHA).toInt()
+            background = drawable
+        }
+    }
+
+    private fun blendColors(endColor: Int, ratio: Float): Int {
+        val startColor = Color.TRANSPARENT
+        val inverseRatio = Int.ONE.toFloat() - ratio
+        val r = (Color.red(endColor) * ratio + Color.red(startColor) * inverseRatio).toInt()
+        val g = (Color.green(endColor) * ratio + Color.green(startColor) * inverseRatio).toInt()
+        val b = (Color.blue(endColor) * ratio + Color.blue(startColor) * inverseRatio).toInt()
         return Color.rgb(r, g, b)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initViewModel()
-        observeShopHeaderDynamicUspSharedViewModel()
         initViews(view)
         iniSwipeRefreshLayout()
         isLoadInitialData = true
     }
 
-    private fun observeShopHeaderDynamicUspSharedViewModel() {
-        shopHeaderDynamicUspSharedViewModel?.sharedDynamicUspValue?.observe(viewLifecycleOwner){
-            shopPageHeaderFragmentHeaderViewHolder?.cycleDynamicUspText(it.orEmpty())
-        }
-    }
-
-    private fun initViewModel() {
-        shopHeaderDynamicUspSharedViewModel = ViewModelProviders.of(requireActivity()).get(ShopHeaderDynamicUspSharedViewModel::class.java)
-    }
-
     override fun onDestroy() {
-        shopHeaderDynamicUspSharedViewModel?.sharedDynamicUspValue?.removeObservers(this)
+        releaseHeaderVideo()
+        clearTimerDynamicUsp()
         super.onDestroy()
+    }
+
+    private fun clearTimerDynamicUsp() {
+        shopPageHeaderFragmentHeaderViewHolder?.clearTimerDynamicUsp()
+    }
+
+    private fun releaseHeaderVideo() {
+        shopPageHeaderFragmentHeaderViewHolder?.releaseVideo()
     }
 
     private fun iniSwipeRefreshLayout() {
@@ -263,15 +287,12 @@ class ShopPageHeaderFragmentTabContentWrapper :
         shopPageHeaderFragmentHeaderViewHolder?.setupShopHeader(
             shopPagePageHeaderWidgetList,
             shopFollowButtonUiModel,
-            getCurrentDynamicUspValue()
+            getShopHeaderConfig(),
+            shopHeaderLayoutData.isOverrideTheme
         )
     }
 
-    private fun getCurrentDynamicUspValue(): String {
-        return (parentFragment as? InterfaceShopPageHeader)?.getCurrentDynamicUspValue().orEmpty()
-    }
-
-    private fun setupTabFragment() {
+    private fun setupFragment() {
         createContentFragment()?.let {
             tabFragment = it
             val ft: FragmentTransaction = childFragmentManager.beginTransaction()
@@ -348,16 +369,27 @@ class ShopPageHeaderFragmentTabContentWrapper :
 
     private fun initToolbar() {
         navToolbar?.apply {
-            navToolbar?.setIconCustomColor(
-                darkColor = MethodChecker.getColor(
-                    context,
-                    R.color.dms_color_525A67
-                ),
-                lightColor = MethodChecker.getColor(
-                    context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
-            )
-            navToolbar?.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK)
+            val isOverrideTheme = shopHeaderLayoutData.isOverrideTheme
+            if (isOverrideTheme) {
+                val hexIconColor = getShopHeaderConfig()?.colorSchema?.getColorSchema(
+                    ShopPageColorSchema.ColorSchemaName.ICON_ENABLED_HIGH_COLOR
+                )?.value.orEmpty()
+                setupSearchBarWithStaticLightModeColor()
+                setNavToolbarIconCustomColor(
+                    navToolbarIconCustomLightColor = ShopUtil.parseColorFromHexString(hexIconColor),
+                    navToolbarIconCustomDarkColor = ShopUtil.parseColorFromHexString(hexIconColor)
+                )
+                setIconCustomColor(
+                    darkColor = ShopUtil.parseColorFromHexString(hexIconColor),
+                    lightColor = ShopUtil.parseColorFromHexString(hexIconColor)
+                )
+                if (getShopHeaderConfig()?.patternColorType == ShopPageHeaderLayoutUiModel.ColorType.LIGHT.value) {
+                    switchToDarkToolbar()
+                } else {
+                    switchToLightToolbar()
+                }
+            }
+            setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK)
             viewLifecycleOwner.lifecycle.addObserver(this)
             setToolbarPageName(SHOP_PAGE)
         }
@@ -407,44 +439,108 @@ class ShopPageHeaderFragmentTabContentWrapper :
     }
 
     override fun onResume() {
-        renderPageAfterOnViewCreated()
         super.onResume()
+        renderPageAfterOnViewCreated()
+        resumeHeaderVideo()
+        resumeTimerDynamicUspCycle()
     }
+
+    private fun resumeTimerDynamicUspCycle() {
+        shopPageHeaderFragmentHeaderViewHolder?.startDynamicUspCycle(shopPagePageHeaderWidgetList)
+    }
+
+    private fun resumeHeaderVideo() {
+        if (appbarOffsetRatio < Int.ONE.toFloat()) {
+            shopPageHeaderFragmentHeaderViewHolder?.resumeVideo()
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        pauseHeaderVideo()
+        pauseTimerDynamicUspCycle()
+    }
+
+    private fun pauseTimerDynamicUspCycle() {
+        shopPageHeaderFragmentHeaderViewHolder?.pauseTimerDynamicUspCycle()
+    }
+
+
+    private fun pauseHeaderVideo() {
+        if(appbarOffsetRatio >= Int.ONE.toFloat()) {
+            shopPageHeaderFragmentHeaderViewHolder?.pauseVideo()
+        }
+    }
+
 
     private fun renderPageAfterOnViewCreated() {
         if (isLoadInitialData) {
-            startDynamicUspCycle()
+            setStatusBarColor()
             setupToolbar()
             setupAppBarLayout()
             setupChooseAddressWidget()
             setShopHeaderData()
-            setupTabFragment()
-            setupTabBackgroundColor()
+            setupFragment()
+            setupFragmentBackgroundColor()
             setupTicker()
-            configHeaderTextColor()
             getShopP2Data()
             isLoadInitialData = false
         }
     }
 
-    private fun startDynamicUspCycle() {
-        (parentFragment as? InterfaceShopPageHeader)?.startDynamicUspCycle()
+    private fun setStatusBarColor() {
+        if (shopHeaderLayoutData.isOverrideTheme) {
+            if (getShopHeaderConfig()?.patternColorType == ShopPageHeaderLayoutUiModel.ColorType.LIGHT.value) {
+                setStatusBarLightColor()
+            } else {
+                setStatusBarDarkColor()
+            }
+        } else {
+            if (context?.isDarkMode() == false) {
+                setStatusBarDarkColor()
+            } else {
+                setStatusBarLightColor()
+            }
+        }
     }
 
-    private fun setupTabBackgroundColor() {
-        viewBinding?.tabFragment?.background = ColorDrawable(Color.parseColor("#d7ecff"))
+    @Suppress("DEPRECATION")
+    private fun setStatusBarLightColor() {
+        val flag = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+        activity?.window?.decorView?.systemUiVisibility = flag
+        StatusBarUtil.setWindowFlag(
+            activity,
+            WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
+            false
+        )
+        activity?.window?.statusBarColor = Color.TRANSPARENT
     }
 
-    private fun configHeaderTextColor() {
-        //need to set dynamically based on shop page background color theme
-        //light mode
-//        if (true) {
-//            newNavigationToolbar?.switchToDarkToolbar()
-//            shopPageHeaderFragmentHeaderViewHolder?.setTextToLightColor()
-//        } else {
-//            newNavigationToolbar?.switchToLightToolbar()
-//            shopPageHeaderFragmentHeaderViewHolder?.setTextToDarkColor()
-//        }
+    @Suppress("DEPRECATION")
+    private fun setStatusBarDarkColor() {
+        var flag = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+        var statusBarColor = MethodChecker.getColor(
+            context,
+            R.color.searchbar_dms_statusbar_darkmode
+        )
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            flag = flag or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+            statusBarColor = Color.TRANSPARENT
+        }
+        activity?.window?.decorView?.systemUiVisibility = flag
+        StatusBarUtil.setWindowFlag(
+            activity,
+            WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
+            false
+        )
+        activity?.window?.statusBarColor = statusBarColor
+    }
+
+    private fun setupFragmentBackgroundColor() {
+        if(shopHeaderLayoutData.isOverrideTheme){
+            val fragmentBackgroundColor = getShopBodyConfig()?.listBackgroundColor?.firstOrNull().orEmpty()
+            viewBinding?.tabFragment?.background = ColorDrawable(ShopUtil.parseColorFromHexString(fragmentBackgroundColor))
+        }
     }
 
     private fun getShopP2Data() {
@@ -612,6 +708,7 @@ class ShopPageHeaderFragmentTabContentWrapper :
             this.isEnableDirectPurchase = isEnableDirectPurchase
         }
         shopPagePageHeaderWidgetList = shopPageHeaderP1Data.listShopPageHeaderWidget
+        shopHeaderLayoutData = shopPageHeaderP1Data.shopHeaderLayoutData
     }
 
     fun setTabData(tabData: ShopPageGetDynamicTabResponse.ShopPageGetDynamicTab.TabData) {

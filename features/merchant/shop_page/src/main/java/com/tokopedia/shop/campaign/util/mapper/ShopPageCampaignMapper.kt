@@ -5,6 +5,7 @@ import com.tokopedia.shop.campaign.domain.entity.RedeemPromoVoucherResult
 import com.tokopedia.shop.campaign.domain.entity.ShopCampaignRedeemPromoVoucherResult
 import com.tokopedia.shop.common.data.mapper.ShopPageWidgetMapper
 import com.tokopedia.shop.common.data.model.ShopPageWidgetUiModel
+import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.home.WidgetName.BANNER_TIMER
 import com.tokopedia.shop.home.WidgetName.DISPLAY_DOUBLE_COLUMN
 import com.tokopedia.shop.home.WidgetName.DISPLAY_SINGLE_COLUMN
@@ -108,7 +109,9 @@ object ShopPageCampaignMapper {
         return ShopPageHomeMapper.mapToProductBundleListUiModel(
             widgetResponse,
             shopId,
-            widgetLayout
+            widgetLayout,
+            false,
+            ShopPageColorSchema()
         )
     }
 
@@ -118,7 +121,9 @@ object ShopPageCampaignMapper {
     ): Visitable<*> {
         return ShopPageHomeMapper.mapCarouselPlayWidget(
             widgetResponse,
-            widgetLayout
+            widgetLayout,
+            false,
+            ShopPageColorSchema()
         )
     }
 
@@ -144,11 +149,11 @@ object ShopPageCampaignMapper {
     ): Visitable<*>? {
         return when (widgetResponse.name) {
             DISPLAY_SINGLE_COLUMN, DISPLAY_DOUBLE_COLUMN, DISPLAY_TRIPLE_COLUMN, SLIDER_BANNER, SLIDER_SQUARE_BANNER, VIDEO -> {
-                ShopPageHomeMapper.mapToDisplayImageWidget(widgetResponse, widgetLayout)
+                ShopPageHomeMapper.mapToDisplayImageWidget(widgetResponse, widgetLayout, false, ShopPageColorSchema())
             }
 
             BANNER_TIMER -> {
-                ShopPageWidgetMapper.mapToBannerTimerWidget(widgetResponse, widgetLayout)
+                ShopPageWidgetMapper.mapToBannerTimerWidget(widgetResponse, widgetLayout,false, ShopPageColorSchema())
             }
 
             SLIDER_BANNER_HIGHLIGHT -> {

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:focusable="false"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical"
+    tools:ignore="MissingDefaultResource">
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/textViewShimmer2"
+        android:layout_width="244dp"
+        android:layout_height="244dp"
+        app:loader_corner_radius="12dp"
+        app:loader_type="rect" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:layout_width="100dp"
+        android:layout_height="12dp"
+        android:layout_marginTop="8dp"
+        app:loader_type="rect" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:layout_width="244dp"
+        android:layout_height="12dp"
+        android:layout_marginTop="8dp"
+        app:loader_type="rect" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:layout_width="244dp"
+        android:layout_height="12dp"
+        android:layout_marginTop="8dp"
+        app:loader_type="rect" />
+
+</androidx.appcompat.widget.LinearLayoutCompat>

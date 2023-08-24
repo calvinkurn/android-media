@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.view.marginTop
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -39,9 +38,11 @@ import kotlin.math.abs
 
 //need to surpress this one, since there are no pii related data defined on this class
 @SuppressLint("PII Data Exposure")
-class ThematicWidgetViewHolder (
+class ThematicWidgetViewHolder(
     itemView: View,
-    private val listener: ThematicWidgetListener
+    private val listener: ThematicWidgetListener,
+    private val isShopHomeTabHasFestivity: Boolean,
+    private val isOverrideTheme: Boolean
 ) : AbstractViewHolder<ThematicWidgetUiModel>(itemView), CoroutineScope, HeaderCustomViewListener {
 
     companion object {
@@ -118,7 +119,7 @@ class ThematicWidgetViewHolder (
             imageBanner = element.imageBanner
         )
         resetShopReimaginedContainerMargin()
-        checkFestivity(element)
+        configColorTheme(element)
         checkTotalProduct(element)
     }
 
@@ -130,15 +131,27 @@ class ThematicWidgetViewHolder (
         }
     }
 
-    private fun checkFestivity(uiModel: ThematicWidgetUiModel) {
+    private fun configColorTheme(uiModel: ThematicWidgetUiModel) {
         if (uiModel.isFestivity) {
             configFestivity(uiModel)
         } else {
-            configNonFestivity(uiModel)
+            if (isShopHomeTabHasFestivity) {
+                configDefaultColor(uiModel)
+            } else {
+                if (isOverrideTheme) {
+                    configReimagined(uiModel)
+                } else {
+                    configDefaultColor(uiModel)
+                }
+            }
         }
     }
 
-    private fun configNonFestivity(uiModel: ThematicWidgetUiModel) {
+    private fun configReimagined(uiModel: ThematicWidgetUiModel) {
+        dynamicHeaderCustomView?.configReimaginedColor(uiModel.header.colorSchema)
+    }
+
+    private fun configDefaultColor(uiModel: ThematicWidgetUiModel) {
         dynamicHeaderCustomView?.configNonFestivity()
         configMarginNonFestivity()
         setupBackgroundColor(

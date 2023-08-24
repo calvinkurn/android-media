@@ -737,4 +737,14 @@ open class ShopHomeAdapter(
     fun getShopHomeWidgetData(): List<BaseShopHomeWidgetUiModel> {
         return visitables.filterIsInstance<BaseShopHomeWidgetUiModel>()
     }
+
+    fun anyFestivityOnShopHomeWidget(): Boolean {
+        return visitables.filterIsInstance<Visitable<*>>().any {
+            when (it) {
+                is BaseShopHomeWidgetUiModel -> it.isFestivity
+                is ThematicWidgetUiModel -> it.isFestivity
+                else -> false
+            }
+        }
+    }
 }

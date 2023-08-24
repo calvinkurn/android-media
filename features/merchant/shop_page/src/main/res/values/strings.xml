@@ -21,6 +21,8 @@
     <string name="shop_page_error_title_get_p1">Koneksi internetmu terganggu!</string>
     <string name="shop_page_error_sub_title_get_p1">Yuk, pastikan internetmu lancar dengan cek ulang paket data, WiFi, atau jaringan di tempatmu.</string>
     <string name="shop_page_atc_label_cta">Oke</string>
+    <string name="shop_page_see_more_product_desc">Cek produk lainnya di sini!</string>
+    <string name="shop_page_see_more">Lihat Semua</string>
 
     <!-- Shop Info -->
     <string name="shop_info_title">Shop Info</string>
@@ -170,6 +172,7 @@
     <string name="shop_page_share_action_copy_success">Teks berhasil disalin</string>
     <string name="shop_page_share_text_with_link">Hai kamu! Belanja produk dari %1$s jadi makin mudah di Tokopedia! Cek barang-barang yang kamu suka, yuk. \n%2$s</string>
     <string name="shop_page_share_text">Hai kamu! Belanja produk dari %1$s jadi makin mudah di Tokopedia! Cek barang-barang yang kamu suka, yuk. \n</string>
+    <string name="shop_etalase_page_share_text">Yuk, cek produk menarik di Etalase %1$s dari Toko %2$s di @Tokopedia! \n</string>
     <string name="label_close">Tutup</string>
     <string name="shop_page_share_chat_bubble_operational_hour_format">Buka %1s WIB</string>
 
@@ -235,6 +238,12 @@
     <string name="shop_page_please_wait">Tunggu sebentar</string>
     <string name="shop_page_use_voucher_success">Kupon sudah terpasang, transaksi sekarang yuk!</string>
     <string name="shop_page_use_merchant_voucher">Belanja Pakai Promo</string>
+
+    <string name="shop_page_etalase_url">%1$s/etalase/%2$s</string>
+    <string name="text_title_etalase_not_found">Waduh, tujuanmu nggak ada!</string>
+    <string name="text_desc_etalase_not_found">Mungkin kamu salah jalan atau alamat. Ayo balik sebelum gelap!</string>
+    <string name="text_back_to_shop_page">Balik ke Halaman Toko</string>
+
 
     <string name="shop_page_dot_character">•</string>
     <string name="shop_page_placeholder_discount_percentage">%d%%</string>

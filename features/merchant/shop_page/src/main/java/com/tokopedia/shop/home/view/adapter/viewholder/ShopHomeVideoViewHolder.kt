@@ -9,21 +9,22 @@ import androidx.constraintlayout.widget.Group
 import com.google.android.youtube.player.YouTubeApiServiceUtil
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.view.ShopCarouselBannerImageUnify
+import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.WidgetShopPageVideoYoutubeBinding
 import com.tokopedia.shop.home.HomeConstant
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
+import com.tokopedia.shop.home.view.listener.ShopHomeListener
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
-import timber.log.Timber
-import java.util.*
 
 /**
  * Created by rizqiaryansa on 2020-02-26.
@@ -31,7 +32,8 @@ import java.util.*
 
 class ShopHomeVideoViewHolder(
     val view: View,
-    private val listener: ShopHomeDisplayWidgetListener
+    private val listener: ShopHomeDisplayWidgetListener,
+    private val shopHomeListener: ShopHomeListener
 ) : AbstractViewHolder<ShopHomeDisplayWidgetUiModel>(view), View.OnClickListener {
 
     companion object {
@@ -110,6 +112,38 @@ class ShopHomeVideoViewHolder(
                 show()
             }
         }
+        configColorTheme(model)
+    }
+
+    private fun configColorTheme(element: ShopHomeDisplayWidgetUiModel) {
+        if (shopHomeListener.isShopHomeTabHasFestivity()) {
+            setDefaultColorConfig()
+        } else {
+            if (element.header.isOverrideTheme) {
+                setReimaginedColorConfig(element.header.colorSchema)
+            } else {
+                setDefaultColorConfig()
+            }
+        }
+    }
+
+    private fun setReimaginedColorConfig(colorSchema: ShopPageColorSchema) {
+        val titleColor = colorSchema.getColorIntValue(
+            ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS
+        )
+        setHeaderColor(titleColor)
+    }
+
+    private fun setDefaultColorConfig() {
+        val titleColor = MethodChecker.getColor(
+            itemView.context,
+            com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
+        )
+        setHeaderColor(titleColor)
+    }
+
+    private fun setHeaderColor(titleColor: Int) {
+        textViewTitle?.setTextColor(titleColor)
     }
 
     override fun onClick(view: View?) {

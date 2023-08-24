@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/constraintLayout"
+    android:layout_width="244dp"
+    android:layout_height="wrap_content"
+    android:focusable="false"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical"
+    tools:ignore="MissingDefaultResource">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/iv_product"
+        android:layout_width="244dp"
+        android:layout_height="244dp"
+        android:layout_gravity="center_vertical"
+        android:scaleType="centerCrop"
+        app:layout_constraintLeft_toLeftOf="@id/constraintLayout"
+        app:layout_constraintTop_toTopOf="@id/constraintLayout"
+        app:unify_image_corner_radius="12" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/add_button"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="12dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?android:attr/selectableItemBackground"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="1dp"
+        app:layout_constraintBottom_toBottomOf="@id/iv_product"
+        app:layout_constraintRight_toRightOf="@id/iv_product">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivplus"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center"
+            android:tint="@color/Unify_NN900"
+            app:srcCompat="@drawable/iconunify_add" />
+    </androidx.cardview.widget.CardView>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvProductName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/Unify_NN950_96"
+        app:layout_constraintLeft_toLeftOf="@id/constraintLayout"
+        app:layout_constraintTop_toBottomOf="@id/iv_product"
+        app:typographyType="display_3"
+        tools:text="Product Name 78hbweb we fe wufe few fe wf ewf ew few f ewf we fwe f ew" />
+
+    <com.tokopedia.common.customview.ColorVariantLinearLayout
+        android:id="@+id/ll_variant_color"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:gravity="center_vertical"
+        android:visibility="gone"
+        app:layout_constraintLeft_toLeftOf="@id/constraintLayout"
+        app:layout_constraintTop_toBottomOf="@id/tvProductName"
+        app:typographyType="display_3"
+        tools:visibility="visible">
+
+        <!-- programmatically added -->
+
+    </com.tokopedia.common.customview.ColorVariantLinearLayout>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:ellipsize="end"
+        android:gravity="center_vertical"
+        android:maxLines="1"
+        android:textColor="@color/Unify_NN950_96"
+        app:layout_constraintLeft_toLeftOf="@id/constraintLayout"
+        app:layout_constraintTop_toBottomOf="@id/ll_variant_color"
+        app:typographyType="display_2"
+        app:typographyWeight="bold"
+        tools:text="Rp7.999.000"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/labelDiscount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        app:labelType="general_light_red"
+        app:layout_constraintBottom_toBottomOf="@id/tvPrice"
+        app:layout_constraintLeft_toRightOf="@id/tvPrice"
+        app:layout_constraintTop_toTopOf="@id/tvPrice"
+        tools:text="20%"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvSlashedPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/Unify_NN950_44"
+        app:layout_constraintBottom_toBottomOf="@id/tvPrice"
+        app:layout_constraintLeft_toRightOf="@id/labelDiscount"
+        app:layout_constraintTop_toTopOf="@id/tvPrice"
+        app:typographyType="small"
+        tools:text="Rp8.499.000" />
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/vgSales"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        app:layout_constraintLeft_toLeftOf="@id/constraintLayout"
+        app:layout_constraintTop_toBottomOf="@id/tvPrice">
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/iconRating"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:adjustViewBounds="true"
+            android:gravity="center"
+            android:scaleType="centerCrop"
+            app:icon_color_light_enable="@color/Unify_YN300"
+            app:icon_color_night_enable="@color/Unify_YN600"
+            app:icon_name="STAR_FILLED"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvSales"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="2dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/Unify_NN950_68"
+            app:typographyType="body_3"
+            tools:text="4.8 \u2022 Terjual 122" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

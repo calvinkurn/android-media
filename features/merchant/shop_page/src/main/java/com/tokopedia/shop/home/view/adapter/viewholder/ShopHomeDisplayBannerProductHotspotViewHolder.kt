@@ -6,6 +6,7 @@ import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.carousellayoutmanager.CarouselLayoutManager
 import com.tokopedia.carousellayoutmanager.CarouselZoomPostLayoutListener
 import com.tokopedia.carousellayoutmanager.CenterScrollListener
@@ -17,10 +18,12 @@ import com.tokopedia.kotlin.extensions.view.setLayoutHeight
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.shop.R
-import com.tokopedia.shop.common.view.customview.ImageHotspotView
+import com.tokopedia.shop.common.view.customview.bannerhotspot.ImageHotspotView
 import com.tokopedia.shop.common.view.model.ImageHotspotData
+import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.ShopHomeDisplayBannerProductHotspotViewHolderLayoutBinding
 import com.tokopedia.shop.home.view.adapter.ShopWidgetProductHotspotAdapter
+import com.tokopedia.shop.home.view.listener.ShopHomeListener
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerProductHotspotUiModel
 import com.tokopedia.unifycomponents.PageControl
 import com.tokopedia.unifyprinciples.Typography
@@ -29,7 +32,8 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopHomeDisplayBannerProductHotspotViewHolder(
     itemView: View,
-    private val listener: Listener
+    private val listener: Listener,
+    private val shopHomeListener: ShopHomeListener
 ) : AbstractViewHolder<ShopWidgetDisplayBannerProductHotspotUiModel>(itemView),
     ImageHotspotView.Listener {
 
@@ -73,7 +77,33 @@ class ShopHomeDisplayBannerProductHotspotViewHolder(
             setHeaderSection()
             setImageBannerHotspotSection()
             setBannerIndicatorSection()
+            configColorTheme()
         }
+    }
+
+    private fun configColorTheme() {
+        if (shopHomeListener.isShopHomeTabHasFestivity()) {
+            configDefaultColor()
+        } else {
+            if (shopHomeListener.isOverrideTheme()) {
+                configReimaginedColor(uiModel?.header?.colorSchema ?: ShopPageColorSchema())
+            } else {
+                configDefaultColor()
+            }
+        }
+    }
+
+    private fun configReimaginedColor(colorSchema: ShopPageColorSchema) {
+        val titleColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS)
+        textTitle?.setTextColor(titleColor)
+    }
+
+    private fun configDefaultColor() {
+        val titleColor = MethodChecker.getColor(
+            itemView.context,
+            com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
+        )
+        textTitle?.setTextColor(titleColor)
     }
 
     private fun showContentView() {

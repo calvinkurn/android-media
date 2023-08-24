@@ -32,7 +32,9 @@ import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 
 internal class NavToolbarIconAdapter(
     private var iconConfig: IconConfig,
-    private val topNavComponentListener: TopNavComponentListener
+    private val topNavComponentListener: TopNavComponentListener,
+    private val navToolbarIconCustomLightColor: Int?,
+    private val navToolbarIconCustomDarkColor: Int?
 ) :
     RecyclerView.Adapter<IconHolder>() {
     companion object {
@@ -51,7 +53,7 @@ internal class NavToolbarIconAdapter(
         when (viewType) {
             VIEW_TYPE_IMAGE -> {
                 val view = inflater.inflate(R.layout.toolbar_viewholder_icon, parent, false)
-                return ImageIconHolder(view, topNavComponentListener)
+                return ImageIconHolder(view, topNavComponentListener, navToolbarIconCustomLightColor, navToolbarIconCustomDarkColor)
             }
             VIEW_TYPE_LOTTIE -> {
                 val view = inflater.inflate(R.layout.toolbar_viewholder_icon_lottie, parent, false)
@@ -63,7 +65,7 @@ internal class NavToolbarIconAdapter(
             }
         }
         val view = inflater.inflate(R.layout.toolbar_viewholder_icon, parent, false)
-        return ImageIconHolder(view, topNavComponentListener)
+        return ImageIconHolder(view, topNavComponentListener, navToolbarIconCustomLightColor, navToolbarIconCustomDarkColor)
     }
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
@@ -181,7 +183,12 @@ internal abstract class IconHolder(view: View) : RecyclerView.ViewHolder(view) {
     abstract fun bind(iconToolbar: IconToolbar, themeState: Int)
 }
 
-internal class ImageIconHolder(view: View, val topNavComponentListener: TopNavComponentListener) : IconHolder(view) {
+internal class ImageIconHolder(
+    view: View,
+    val topNavComponentListener: TopNavComponentListener,
+    private val navToolbarIconCustomLightColor: Int?,
+    private val navToolbarIconCustomDarkColor: Int?
+) : IconHolder(view) {
     val iconImage = view.findViewById<IconNotification>(R.id.nav_icon_image)
     val iconImageContainer = view.findViewById<View>(R.id.nav_icon_container)
     val context = itemView.context
@@ -290,21 +297,32 @@ internal class ImageIconHolder(view: View, val topNavComponentListener: TopNavCo
     }
 
     private fun getLightIconColor(): Int {
-        val unifyColor = if (itemView.context.isDarkMode()) {
-            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN900)
+        return if (navToolbarIconCustomLightColor != null) {
+            navToolbarIconCustomLightColor
         } else {
-            ContextCompat.getColor(context, R.color.searchbar_dms_state_light_icon)
+            val unifyColor = if (itemView.context.isDarkMode()) {
+                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN900)
+            } else {
+                ContextCompat.getColor(context, R.color.searchbar_dms_state_light_icon)
+            }
+            unifyColor
         }
-        return unifyColor
     }
 
     private fun getDarkIconColor(): Int {
-        val unifyColor = if (itemView.context.isDarkMode()) {
-            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
-        } else {
-            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+        return if(navToolbarIconCustomDarkColor != null) {
+            navToolbarIconCustomDarkColor
+        }else {
+            val unifyColor = if (itemView.context.isDarkMode()) {
+                ContextCompat.getColor(
+                    context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+                )
+            } else {
+                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+            }
+            unifyColor
         }
-        return unifyColor
     }
 
     private fun constructCounterTagById(id: Int) =
