@@ -9,7 +9,6 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewTreeLifecycleOwner
-import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -44,6 +43,10 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener, Default
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
         context, attrs, defStyleAttr
     )
+
+    companion object {
+        private const val CROSSED_TEXT_FORMAT = "<del>%s</del>"
+    }
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -84,10 +87,11 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener, Default
         super.onAttachedToWindow()
         observeCartData()
         observeSetCarChecklistStatus()
-        viewModel.getMiniCartData(param)
+        refreshData()
     }
 
     override fun setOnItemClickedListener() {
+        viewModel.storeCartDataToLocalCache()
         RouteManager.route(context, ApplinkConstInternalGlobal.BMGM_MINI_CART)
     }
 
@@ -100,10 +104,14 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener, Default
         viewModel.getMiniCartData(param)
     }
 
+    fun refreshData() {
+        viewModel.getMiniCartData(param = param, showLoadingState = true)
+    }
+
     private fun setAsLifecycleObserver() {
         getLifecycleOwner()?.lifecycle?.addObserver(this)
     }
-    
+
     private fun getLifecycleOwner(): LifecycleOwner? {
         return ViewTreeLifecycleOwner.get(this) ?: context as? LifecycleOwner
     }
@@ -153,7 +161,7 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener, Default
             tvBmgmCartDiscount.gone()
             containerSubTotal.gone()
             icBmgmReload.setOnClickListener {
-                viewModel.getMiniCartData(param)
+                refreshData()
             }
         }
     }
@@ -211,7 +219,7 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener, Default
             } else {
                 btnBmgmOpenCart.isEnabled = true
                 tvBmgmFinalPrice.text = data.getPriceAfterDiscountStr()
-                tvBmgmPriceBeforeDiscount.text = data.getPriceBeforeDiscountStr()
+                tvBmgmPriceBeforeDiscount.text = String.format(CROSSED_TEXT_FORMAT, data.getPriceBeforeDiscountStr()).parseAsHtml()
 
                 btnBmgmOpenCart.setOnClickListener {
                     viewModel.setCartListCheckboxState(getCartIds(data.tiersApplied))

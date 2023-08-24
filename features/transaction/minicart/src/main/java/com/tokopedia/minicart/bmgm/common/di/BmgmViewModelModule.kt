@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
+import com.tokopedia.minicart.bmgm.presentation.viewmodel.BmgmMiniCartDetailViewModel
 import com.tokopedia.minicart.bmgm.presentation.viewmodel.BmgmMiniCartViewModel
 import dagger.Binds
 import dagger.Module
@@ -23,5 +24,10 @@ abstract class BmgmViewModelModule {
     @Binds
     @IntoMap
     @ViewModelKey(BmgmMiniCartViewModel::class)
-    internal abstract fun provideViewModel(viewModel: BmgmMiniCartViewModel): ViewModel
+    internal abstract fun provideMiniCartViewModel(viewModel: BmgmMiniCartViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(BmgmMiniCartDetailViewModel::class)
+    internal abstract fun provideMiniCartDetailViewModel(viewModel: BmgmMiniCartDetailViewModel): ViewModel
 }

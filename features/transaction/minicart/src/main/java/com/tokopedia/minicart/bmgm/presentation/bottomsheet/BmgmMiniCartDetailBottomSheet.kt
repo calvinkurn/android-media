@@ -85,10 +85,10 @@ class BmgmMiniCartDetailBottomSheet : BottomSheetUnify() {
         super.onViewCreated(view, savedInstanceState)
 
         setupProductList()
-        collectSetCartListState()
+        observeCartListState()
     }
 
-    private fun collectSetCartListState() {
+    private fun observeCartListState() {
         viewModel.setCheckListState.observe(viewLifecycleOwner) {
             when (it) {
                 is BmgmState.Loading -> showLoadingButton()
@@ -151,6 +151,7 @@ class BmgmMiniCartDetailBottomSheet : BottomSheetUnify() {
             tvBmgmPriceBeforeDiscount.paintFlags =
                 tvBmgmPriceBeforeDiscount.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
 
+            btnBmgmOpenCart.isEnabled = true
             btnBmgmOpenCart.setOnClickListener {
                 viewModel.setCartListCheckboxState(getCartIds(model.tiersApplied))
             }
