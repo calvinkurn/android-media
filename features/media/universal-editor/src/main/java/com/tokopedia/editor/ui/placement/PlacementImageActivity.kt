@@ -7,12 +7,12 @@ import androidx.activity.viewModels
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.editor.R
 import com.tokopedia.editor.di.ModuleInjector
 import com.tokopedia.editor.ui.EditorFragmentProvider
 import com.tokopedia.editor.ui.EditorFragmentProviderImpl
 import com.tokopedia.editor.ui.model.ImagePlacementModel
-import com.tokopedia.picker.common.UniversalEditorParam
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.component.NavToolbarComponent
 import com.tokopedia.picker.common.component.ToolbarTheme
@@ -28,6 +28,8 @@ class PlacementImageActivity : BaseActivity(), NavToolbarComponent.Listener {
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private val viewModel: PlacementImageViewModel by viewModels { viewModelFactory }
+
+    private var placementFragment: PlacementImageFragment? = null
 
     private val toolbar by uiComponent {
         NavToolbarComponent(
@@ -55,10 +57,12 @@ class PlacementImageActivity : BaseActivity(), NavToolbarComponent.Listener {
         )
     }
 
-    override fun onCloseClicked() {}
+    override fun onCloseClicked() {
+        onBackPressed()
+    }
 
     override fun onContinueClicked() {
-        (supportFragmentManager.findFragmentById(R.id.fragment_view) as PlacementImageFragment).let {
+        getFragment().let {
             it.captureImage { placementModel ->
                 val intent = Intent()
                 intent.putExtra(PLACEMENT_RESULT_KEY, placementModel)
@@ -67,6 +71,10 @@ class PlacementImageActivity : BaseActivity(), NavToolbarComponent.Listener {
                 finish()
             }
         }
+    }
+
+    override fun onBackPressed() {
+        onPageExit()
     }
 
     fun getEditorCacheFolderPath(): String {
@@ -114,6 +122,37 @@ class PlacementImageActivity : BaseActivity(), NavToolbarComponent.Listener {
 
     private fun initView() {
         setupToolbar()
+    }
+
+    private fun onPageExit() {
+        if (viewModel.isShowExitConfirmation(getFragment().getCurrentMatrixValue())) {
+            DialogUnify(this, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply dialog@ {
+                setTitle(getString(R.string.universal_editor_input_tool_confirmation_title))
+                setDescription(getString(R.string.universal_editor_input_tool_confirmation_desc))
+
+                dialogPrimaryCTA.apply {
+                    text = getString(R.string.universal_editor_input_tool_confirmation_primary_cta)
+                    setOnClickListener {
+                        onContinueClicked()
+                    }
+                }
+
+                dialogSecondaryLongCTA.apply {
+                    text = getString(R.string.universal_editor_input_tool_confirmation_secondary_cta)
+                    setOnClickListener {
+                        finish()
+                    }
+                }
+
+                show()
+            }
+        } else {
+            finish()
+        }
+    }
+
+    private fun getFragment(): PlacementImageFragment  {
+        return supportFragmentManager.findFragmentById(R.id.fragment_view) as PlacementImageFragment
     }
 
     companion object {

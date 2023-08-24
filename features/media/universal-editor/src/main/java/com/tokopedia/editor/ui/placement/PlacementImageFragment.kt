@@ -1,5 +1,6 @@
 package com.tokopedia.editor.ui.placement
 
+import android.graphics.Matrix
 import android.net.Uri
 import android.os.Handler
 import androidx.core.graphics.values
@@ -46,9 +47,7 @@ class PlacementImageFragment @Inject constructor() : BaseEditorFragment(R.layout
                                         translateY = it[5]
                                     }
 
-                                    viewModel.placementModel.value?.let { model ->
-                                        implementPreviousState(model)
-                                    }
+                                    implementPreviousState(viewModel.placementModel.value)
                                 }, PREV_STATE_DELAY)
                             }
                         }
@@ -76,23 +75,33 @@ class PlacementImageFragment @Inject constructor() : BaseEditorFragment(R.layout
         }
     }
 
-    private fun implementPreviousState(placementModel: ImagePlacementModel) {
+    fun getCurrentMatrixValue(): FloatArray? {
+        return viewBinding?.cropArea?.getCropImageView()?.imageMatrix?.values()
+    }
+
+    private fun implementPreviousState(placementModel: ImagePlacementModel?) {
         viewBinding?.let {
-            val cropImageView = it.cropArea.getCropImageView() ?: return
+            placementModel?.let { previousModel ->
+                val cropImageView = it.cropArea.getCropImageView() ?: return
 
-            cropImageView.zoomInImage(placementModel.scale)
-            cropImageView.postRotate(placementModel.angle)
+                cropImageView.zoomInImage(previousModel.scale)
+                cropImageView.postRotate(previousModel.angle)
 
-            val currentImageMatrix = cropImageView.imageMatrix.values()
-            val currentTranslateX = currentImageMatrix[INDEX_CORD_X]
-            val currentTranslateY = currentImageMatrix[INDEX_CORD_Y]
+                val currentImageMatrix = cropImageView.imageMatrix.values()
+                val currentTranslateX = currentImageMatrix[INDEX_CORD_X]
+                val currentTranslateY = currentImageMatrix[INDEX_CORD_Y]
 
-            Handler().postDelayed({
-                // waiting zoom & rotate process is done then move the image
-                // need reset image matrix value before implement previous state
-                cropImageView.postTranslate(-currentTranslateX, -currentTranslateY)
-                cropImageView.postTranslate(placementModel.translateX, placementModel.translateY)
-            },PREV_STATE_DELAY)
+                Handler().postDelayed({
+                    // waiting zoom & rotate process is done then move the image
+                    // need reset image matrix value before implement previous state
+                    cropImageView.postTranslate(-currentTranslateX, -currentTranslateY)
+                    cropImageView.postTranslate(previousModel.translateX, previousModel.translateY)
+
+                    viewModel.initialImageMatrix = it.cropArea.getCropImageView()?.imageMatrix?.values()
+                },PREV_STATE_DELAY)
+            } ?: run{
+                viewModel.initialImageMatrix = it.cropArea.getCropImageView()?.imageMatrix?.values()
+            }
         }
     }
 

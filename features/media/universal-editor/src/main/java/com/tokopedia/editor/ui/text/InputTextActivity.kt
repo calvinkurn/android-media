@@ -103,29 +103,6 @@ class InputTextActivity : BaseActivity(), NavToolbarComponent.Listener {
             .inject(this)
     }
 
-    private fun showExitConfirmationDialog() {
-        DialogUnify(this, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
-            setTitle(getString(editorR.string.universal_editor_input_tool_confirmation_title))
-            setDescription(getString(editorR.string.universal_editor_input_tool_confirmation_desc))
-
-            dialogPrimaryCTA.apply {
-                text = getString(editorR.string.universal_editor_input_tool_confirmation_primary_cta)
-                setOnClickListener {
-                    // TODO: implement function
-                }
-            }
-
-            dialogSecondaryLongCTA.apply {
-                text = getString(editorR.string.universal_editor_input_tool_confirmation_secondary_cta)
-                setOnClickListener {
-                    // TODO: implement function
-                }
-            }
-
-            show()
-        }
-    }
-
     companion object {
         const val INPUT_TEXT_RESULT = "input_text_result"
 

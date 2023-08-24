@@ -17,8 +17,8 @@
     <string name="universal_editor_input_text_style_text">Aa</string>
 
     <!-- Tool Exit Confirmation -->
-    <string name="universal_editor_input_tool_confirmation_title">Batal simpan edit media?</string>
-    <string name="universal_editor_input_tool_confirmation_desc">Hasil editan media kamu bakal hilang kalau nggak disimpan. Mau simpan hasil editanmu?</string>
+    <string name="universal_editor_input_tool_confirmation_title">Yakin batal simpan perubahan?</string>
+    <string name="universal_editor_input_tool_confirmation_desc">Hasilnya akan hilang jika tidak disimpan, lho.</string>
     <string name="universal_editor_input_tool_confirmation_primary_cta">Simpan dan Keluar</string>
     <string name="universal_editor_input_tool_confirmation_secondary_cta">Keluar tanpa Simpan</string>
 </resources>
