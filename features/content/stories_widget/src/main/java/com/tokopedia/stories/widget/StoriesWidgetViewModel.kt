@@ -21,13 +21,13 @@ import kotlinx.coroutines.launch
  * Created by kenny.hadisaputra on 25/07/23
  */
 internal class StoriesWidgetViewModel @AssistedInject constructor(
-    @Assisted private val key: StoriesEntryPoint,
+    @Assisted private val entryPoint: StoriesEntryPoint,
     private val repository: StoriesWidgetRepository
 ) : ViewModel() {
 
     @AssistedFactory
     interface Factory {
-        fun create(key: StoriesEntryPoint): StoriesWidgetViewModel
+        fun create(entryPoint: StoriesEntryPoint): StoriesWidgetViewModel
     }
 
     private val _storiesMap = MutableStateFlow(emptyMap<String, StoriesWidgetState>())
@@ -61,7 +61,7 @@ internal class StoriesWidgetViewModel @AssistedInject constructor(
         if (shopIds.isEmpty()) return
 
         viewModelScope.launch {
-            val storiesState = repository.getStoriesWidgetState(key, shopIds)
+            val storiesState = repository.getStoriesWidgetState(entryPoint, shopIds)
             val storiesStateMap = storiesState.associateBy { it.shopId }
             _storiesMap.update { it + storiesStateMap }
         }

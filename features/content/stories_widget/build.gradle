@@ -25,6 +25,14 @@ android {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
     }
+
+    testOptions {
+        kotlinOptions {
+            freeCompilerArgs += [
+                "-Xcontext-receivers",
+            ]
+        }
+    }
 }
 
 buildscript {
@@ -43,6 +51,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
+    implementation projectOrAar(rootProject.ext.libraries.trackingOptimizer)
     implementation projectOrAar(rootProject.ext.libraries.utils)
 
     implementation projectOrAar(rootProject.ext.features.contentCommon)
@@ -64,6 +73,8 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.nestComponents
 
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
+
+    testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
 }
 
 project.ext {
@@ -74,3 +85,5 @@ project.ext {
 }
 
 apply from: '../../../publish_local.gradle'
+apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'
