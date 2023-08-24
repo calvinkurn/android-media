@@ -4222,7 +4222,7 @@ class CartRevampFragment :
         position: Int,
         bulkActionCoachMarkItems: ArrayList<CoachMark2Item>
     ) {
-        viewModel.cartModel.cartListData?.onboardingData?.get(
+        viewModel.cartModel.cartListData?.onboardingData?.getOrNull(
             BULK_ACTION_ONBOARDING_SELECTED_AMOUNT_DELETE_INDEX
         )?.let { onboardingData ->
             if (position > 0) {
@@ -4256,7 +4256,7 @@ class CartRevampFragment :
         position: Int,
         bulkActionCoachMarkItems: ArrayList<CoachMark2Item>
     ) {
-        viewModel.cartModel.cartListData?.onboardingData?.get(
+        viewModel.cartModel.cartListData?.onboardingData?.getOrNull(
             BULK_ACTION_ONBOARDING_MIN_QUANTITY_INDEX
         )?.let { onboardingData ->
             val data = viewModel.cartDataList.value
@@ -4280,7 +4280,7 @@ class CartRevampFragment :
     }
 
     private fun generateSelectAllCoachMark(mainFlowCoachMarkItems: ArrayList<CoachMark2Item>) {
-        viewModel.cartModel.cartListData?.onboardingData?.get(MAIN_FLOW_ONBOARDING_SELECT_ALL_INDEX)
+        viewModel.cartModel.cartListData?.onboardingData?.getOrNull(MAIN_FLOW_ONBOARDING_SELECT_ALL_INDEX)
             ?.let { onboardingData ->
                 binding?.checkboxGlobal?.let {
                     mainFlowCoachMarkItems.add(
