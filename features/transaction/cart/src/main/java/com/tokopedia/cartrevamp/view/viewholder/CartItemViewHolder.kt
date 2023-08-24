@@ -111,7 +111,7 @@ class CartItemViewHolder constructor(
                 mainCoachMark.noteOnBoardingData.text,
                 CoachMark2.POSITION_BOTTOM
             )
-            coachMarkItems.addAll(Int.ZERO, listOf(wishlistCoachMark, noteCoachMark))
+            coachMarkItems.addAll(Int.ZERO, listOf(noteCoachMark, wishlistCoachMark))
             mainCoachMark.coachMark?.showCoachMark(coachMarkItems)
             CoachMarkPreference.setShown(itemView.context, CART_MAIN_COACH_MARK, true)
         }
