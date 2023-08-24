@@ -71,7 +71,12 @@ class PlayParentViewModel @AssistedInject constructor(
         get() = handle[PLAY_KEY_CHANNEL_ID]
 
     private val isChannelRecom: Boolean
-        get() = handle[PLAY_KEY_IS_CHANNEL_RECOM] ?: false
+        get() {
+            val isChannelRecom: String = handle[PLAY_KEY_IS_CHANNEL_RECOM] ?: ""
+
+            return if (isChannelRecom.isEmpty()) false
+            else isChannelRecom.toBoolean()
+        }
 
     private val widgetId: String
         get() = handle[PLAY_KEY_WIDGET_ID] ?: ""
