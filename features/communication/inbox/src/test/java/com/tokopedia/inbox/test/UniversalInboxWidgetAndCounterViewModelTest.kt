@@ -58,7 +58,7 @@ class UniversalInboxWidgetAndCounterViewModelTest : UniversalInboxViewModelTestF
             } returns dummyWidgetUi
 
             // When
-            viewModel.loadWidgetMetaAndCounter()
+            viewModel.loadWidgetMetaAndCounter {}
 
             // Then
             Assert.assertEquals(
@@ -89,7 +89,7 @@ class UniversalInboxWidgetAndCounterViewModelTest : UniversalInboxViewModelTestF
             } returns dummyWidgetUi
 
             // When
-            viewModel.loadWidgetMetaAndCounter()
+            viewModel.loadWidgetMetaAndCounter {}
 
             // Then
             Assert.assertEquals(
@@ -120,7 +120,7 @@ class UniversalInboxWidgetAndCounterViewModelTest : UniversalInboxViewModelTestF
             } returns dummyWidgetUiError
 
             // When
-            viewModel.loadWidgetMetaAndCounter()
+            viewModel.loadWidgetMetaAndCounter {}
 
             // Then
             Assert.assertEquals(
@@ -151,7 +151,7 @@ class UniversalInboxWidgetAndCounterViewModelTest : UniversalInboxViewModelTestF
             } throws dummyThrowable
 
             // When
-            viewModel.loadWidgetMetaAndCounter()
+            viewModel.loadWidgetMetaAndCounter {}
 
             // Then
             Assert.assertEquals(
