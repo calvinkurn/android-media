@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="16dp">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/edit_ad_item_ads_potential_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="display_2"
+        app:typographyWeight="bold"
+        tools:text="Potensi Tampil" />
+
+    <View
+        android:id="@+id/space"
+        android:layout_width="match_parent"
+        android:layout_height="16dp"
+        app:layout_constraintTop_toBottomOf="@id/edit_ad_item_ads_potential_title" />
+
+    <include
+        android:id="@+id/widget_1"
+        layout="@layout/topads_edit_item_ads_potential_widget_edit_ad_group"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/widget_2"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/space" />
+
+    <include
+        android:id="@+id/widget_2"
+        layout="@layout/topads_edit_item_ads_potential_widget_edit_ad_group"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintLeft_toRightOf="@id/widget_1"
+        app:layout_constraintRight_toLeftOf="@id/widget_3"
+        app:layout_constraintTop_toBottomOf="@id/space" />
+
+    <include
+        android:id="@+id/widget_3"
+        layout="@layout/topads_edit_item_ads_potential_widget_edit_ad_group"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintLeft_toRightOf="@id/widget_2"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/space" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
