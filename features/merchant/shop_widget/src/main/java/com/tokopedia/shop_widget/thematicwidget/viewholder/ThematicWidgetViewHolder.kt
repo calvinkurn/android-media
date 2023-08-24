@@ -144,6 +144,7 @@ class ThematicWidgetViewHolder(
 
     private fun configReimagined(uiModel: ThematicWidgetUiModel) {
         dynamicHeaderCustomView?.configReimaginedColor(uiModel.header.colorSchema)
+        setShopReimaginedContainerMargin()
     }
 
     private fun configDefaultColor(uiModel: ThematicWidgetUiModel) {
@@ -153,7 +154,6 @@ class ThematicWidgetViewHolder(
             startBackGroundColor = uiModel.firstBackgroundColor,
             endBackGroundColor = uiModel.secondBackgroundColor
         )
-        setShopReimaginedContainerMargin()
     }
 
     private fun configFestivity(uiModel: ThematicWidgetUiModel) {
