@@ -41,8 +41,9 @@ import org.junit.Rule
 abstract class BaseDigitalPDPDataPlanTest {
 
     @get:Rule
-    var mActivityRule: IntentsTestRule<DigitalPDPDataPlanActivity> = object: IntentsTestRule<DigitalPDPDataPlanActivity>(
-        DigitalPDPDataPlanActivity::class.java) {
+    var mActivityRule: IntentsTestRule<DigitalPDPDataPlanActivity> = object : IntentsTestRule<DigitalPDPDataPlanActivity>(
+        DigitalPDPDataPlanActivity::class.java
+    ) {
         override fun getActivityIntent(): Intent {
             val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
             return RouteManager.getIntent(targetContext, getApplink())
@@ -64,7 +65,8 @@ abstract class BaseDigitalPDPDataPlanTest {
                 ComponentNameMatchers.hasClassName(
                     TopupBillsPersoSavedNumberActivity::class.java.name
                 )
-            ))
+            )
+        )
             .respondWith(intentResult_returnContactNumber())
     }
 
@@ -74,7 +76,8 @@ abstract class BaseDigitalPDPDataPlanTest {
                 ComponentNameMatchers.hasClassName(
                     TopupBillsPersoSavedNumberActivity::class.java.name
                 )
-            ))
+            )
+        )
             .respondWith(intentResult_returnFavoriteNumber())
     }
 
@@ -149,10 +152,12 @@ abstract class BaseDigitalPDPDataPlanTest {
     }
 
     protected fun favoriteChips_clickChip_withText(text: String) {
-        onView(allOf(
-            withId(com.tokopedia.analyticsdebugger.R.id.chip_text),
-            isDescendantOfA(withId(com.tokopedia.sortfilter.R.id.sort_filter_items)),
-            withText(text))
+        onView(
+            allOf(
+                withId(com.tokopedia.analyticsdebugger.R.id.chip_text),
+                isDescendantOfA(withId(com.tokopedia.sortfilter.R.id.sort_filter_items)),
+                withText(text)
+            )
         ).perform(click())
     }
 
@@ -173,7 +178,8 @@ abstract class BaseDigitalPDPDataPlanTest {
 
     protected fun mccm_clickCard_withIndex(index: Int) {
         onView(withId(com.tokopedia.recharge_component.R.id.rv_mccm_full)).perform(
-            RecyclerViewActions.actionOnItemAtPosition<DenomFullViewHolder>(index, click()))
+            RecyclerViewActions.actionOnItemAtPosition<DenomFullViewHolder>(index, click())
+        )
     }
 
     protected fun mccm_clickCardChevron_withIndex(index: Int) {
@@ -187,7 +193,8 @@ abstract class BaseDigitalPDPDataPlanTest {
 
     protected fun mccm_vertical_clickCard_withIndex(index: Int) {
         onView(withId(com.tokopedia.recharge_component.R.id.rv_mccm_vertical_full)).perform(
-            RecyclerViewActions.actionOnItemAtPosition<DenomFullViewHolder>(index, click()))
+            RecyclerViewActions.actionOnItemAtPosition<DenomFullViewHolder>(index, click())
+        )
     }
 
     protected fun mccm_vertical_clickCardChevron_withIndex(index: Int) {
@@ -228,28 +235,32 @@ abstract class BaseDigitalPDPDataPlanTest {
     }
 
     protected fun filterChip_clickChip_withText(text: String) {
-        onView(allOf(
-            withId(com.tokopedia.analyticsdebugger.R.id.chip_text),
-            isDescendantOfA(withId(com.tokopedia.sortfilter.R.id.sort_filter_items)),
-            withText(text))
+        onView(
+            allOf(
+                withId(com.tokopedia.analyticsdebugger.R.id.chip_text),
+                isDescendantOfA(withId(com.tokopedia.sortfilter.R.id.sort_filter_items)),
+                withText(text)
+            )
         ).perform(click())
     }
 
     protected fun checkBalanceOTPBottomSheet_clickButton() {
-        onView(withId(com.tokopedia.digital_product_detail.R.id.bottomsheet_otp_button)).perform(click())
+        onView(withId(com.tokopedia.recharge_component.R.id.bottomsheet_otp_button)).perform(click())
     }
 
     protected fun checkBalanceBottomSheet_clickItem_withIndex(index: Int) {
-        onView(withId(com.tokopedia.digital_product_detail.R.id.recharge_check_balance_detail_rv))
-            .perform(RecyclerViewActions
-                .actionOnItemAtPosition<RechargeCheckBalanceDetailViewHolder>(
-                    index, CustomViewAction.clickChildViewWithId(com.tokopedia.digital_product_detail.R.id.check_balance_detail_buy_button)
-                )
+        onView(withId(com.tokopedia.recharge_component.R.id.recharge_check_balance_detail_rv))
+            .perform(
+                RecyclerViewActions
+                    .actionOnItemAtPosition<RechargeCheckBalanceDetailViewHolder>(
+                        index,
+                        CustomViewAction.clickChildViewWithId(com.tokopedia.recharge_component.R.id.check_balance_detail_buy_button)
+                    )
             )
     }
 
     protected fun checkBalanceBottomSheet_clickCloseIcon() {
-        onView(withId(com.tokopedia.digital_product_detail.R.id.bottom_sheet_close)).perform(click())
+        onView(withId(com.tokopedia.unifycomponents.R.id.bottom_sheet_close)).perform(click())
     }
 
     abstract fun getApplink(): String

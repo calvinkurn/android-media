@@ -6,7 +6,6 @@ import android.app.Instrumentation
 import android.content.Intent
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.contrib.RecyclerViewActions
@@ -14,7 +13,6 @@ import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.ComponentNameMatchers.hasClassName
 import androidx.test.espresso.intent.matcher.IntentMatchers
-import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.RootMatchers
 import androidx.test.espresso.matcher.ViewMatchers
@@ -133,11 +131,11 @@ abstract class BaseDigitalPDPPulsaTest {
     }
 
     protected fun clientNumberWidget_clickCheckBalanceOTPWidget() {
-        onView(withId(R.id.check_balance_otp_title)).perform(click())
+        onView(withId(com.tokopedia.recharge_component.R.id.check_balance_otp_title)).perform(click())
     }
 
     protected fun clientNumberWidget_clickCheckBalanceWidget() {
-        onView(withId(R.id.check_balance_rv)).perform(click())
+        onView(withId(com.tokopedia.recharge_component.R.id.check_balance_rv)).perform(click())
     }
 
     protected fun favoriteChips_clickChip_withText(text: String) {
@@ -174,8 +172,8 @@ abstract class BaseDigitalPDPPulsaTest {
     }
 
     protected fun denom_clickCard_withIndex(index: Int) {
-        onView(withId(R.id.tg_denom_grid_widget_title)).perform(nestedScrollTo())
-        onView(withId(R.id.rv_denom_grid_card))
+        onView(withId(com.tokopedia.recharge_component.R.id.tg_denom_grid_widget_title)).perform(nestedScrollTo())
+        onView(withId(com.tokopedia.recharge_component.R.id.rv_denom_grid_card))
             .perform(
                 scrollToPosition<DenomGridViewHolder>(index),
                 RecyclerViewActions.actionOnItemAtPosition<DenomGridViewHolder>(index, click())
@@ -183,20 +181,22 @@ abstract class BaseDigitalPDPPulsaTest {
     }
 
     protected fun checkBalanceOTPBottomSheet_clickButton() {
-        onView(withId(R.id.bottomsheet_otp_button)).perform(click())
+        onView(withId(com.tokopedia.recharge_component.R.id.bottomsheet_otp_button)).perform(click())
     }
 
     protected fun checkBalanceBottomSheet_clickItem_withIndex(index: Int) {
-        onView(withId(R.id.recharge_check_balance_detail_rv))
-            .perform(RecyclerViewActions
-                .actionOnItemAtPosition<RechargeCheckBalanceDetailViewHolder>(
-                    index, CustomViewAction.clickChildViewWithId(R.id.check_balance_detail_buy_button)
-                )
+        onView(withId(com.tokopedia.recharge_component.R.id.recharge_check_balance_detail_rv))
+            .perform(
+                RecyclerViewActions
+                    .actionOnItemAtPosition<RechargeCheckBalanceDetailViewHolder>(
+                        index,
+                        CustomViewAction.clickChildViewWithId(com.tokopedia.recharge_component.R.id.check_balance_detail_buy_button)
+                    )
             )
     }
 
     protected fun checkBalanceBottomSheet_clickCloseIcon() {
-        onView(withId(R.id.bottom_sheet_close)).perform(click())
+        onView(withId(com.tokopedia.unifycomponents.R.id.bottom_sheet_close)).perform(click())
     }
 
     abstract fun getApplink(): String
