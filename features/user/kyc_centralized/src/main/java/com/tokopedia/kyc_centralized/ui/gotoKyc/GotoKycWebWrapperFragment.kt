@@ -1,9 +1,8 @@
 package com.tokopedia.kyc_centralized.ui.gotoKyc
 
+import android.app.Activity
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.webkit.WebView
 import com.gojek.OneKycSdk
 import com.gojek.kyc.web.OneKycWebWrapper
 import com.tokopedia.kyc_centralized.di.GoToKycComponent
@@ -15,19 +14,7 @@ class GotoKycWebWrapperFragment : BaseSessionWebViewFragment() {
     @Inject
     lateinit var oneKycSdk: OneKycSdk
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val view = super.onCreateView(inflater, container, savedInstanceState)
-
-        addJavascriptInterfaceKyc()
-
-        return view
-    }
-
-    private fun addJavascriptInterfaceKyc() {
+    override fun addJavascriptInterface(webView: WebView, activity: Activity) {
         oneKycSdk.init()
         val wrapper = OneKycWebWrapper(oneKycSdk, requireActivity(), webView)
         webView.addJavascriptInterface(wrapper, OneKycWebWrapper.PLATFORM_CODE)
