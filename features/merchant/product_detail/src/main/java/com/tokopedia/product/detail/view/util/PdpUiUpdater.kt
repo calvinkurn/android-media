@@ -930,9 +930,9 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     // for now especially for level one only
     fun updateVariantOneLevel(variantOptions: VariantOptionWithAttribute) {
         updateData(ProductDetailConstant.MINI_VARIANT_OPTIONS) {
-            // do copy original instance for preventive miss data on change payload in View-Holder
             productSingleVariant?.let {
-                // copy this map for create new instance, prevent updating the original data in recyclerview
+                // copy by toMutableMap for create new instance the mapOfSelectedVariant
+                // to prevent updating the original data in recyclerview
                 val mapSelected = it.mapOfSelectedVariant.toMutableMap()
                 mapSelected[variantOptions.variantCategoryKey] = variantOptions.variantId
                 it.mapOfSelectedVariant = mapSelected
