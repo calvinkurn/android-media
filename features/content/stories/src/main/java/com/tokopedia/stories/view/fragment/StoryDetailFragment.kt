@@ -45,7 +45,7 @@ class StoryDetailFragment @Inject constructor(
     private val mAdapter: StoryGroupAdapter by lazyThreadSafetyNone {
         StoryGroupAdapter(object : StoryGroupAdapter.Listener {
             override fun onClickGroup(position: Int) {
-                viewModelAction(StoryUiAction.SetGroupMainData(position))
+                viewModelAction(StoryUiAction.SetGroup(position))
             }
         })
     }
@@ -102,7 +102,12 @@ class StoryDetailFragment @Inject constructor(
 
         storyDetailsTimer(state)
         val detailItem = state.detailItems[state.selectedDetail]
-        binding.ivStoryDetailContent.setImageUrl(detailItem.imageContent)
+        binding.ivStoryDetailContent.apply {
+            setImageUrl(detailItem.imageContent)
+            onUrlLoaded = {
+                viewModelAction(ResumeStory)
+            }
+        }
     }
 
     private fun storyDetailsTimer(state: StoryDetailUiModel) {

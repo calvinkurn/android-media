@@ -48,7 +48,7 @@ fun StoryDetailTimer(
             }
         }
 
-        if (anim.value == anim.targetValue) timerFinished.invoke()
+        if ((anim.value == anim.targetValue) && (anim.targetValue != 0F)) timerFinished.invoke()
     }
 
     StoryDetailTimerContent(

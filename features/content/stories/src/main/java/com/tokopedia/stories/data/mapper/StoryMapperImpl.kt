@@ -11,7 +11,7 @@ import javax.inject.Inject
 
 class StoryMapperImpl @Inject constructor() : StoryMapper {
 
-    override fun mapStoryData(
+    override fun mapInitialStoryData(
         dataGroup: StoryGroupsResponseModel,
         dataDetail: StoryDetailsResponseModel
     ): StoryGroupUiModel {
@@ -23,17 +23,33 @@ class StoryMapperImpl @Inject constructor() : StoryMapper {
                     image = group.image,
                     title = group.name,
                     isSelected = dataGroup.data.meta.selectedGroupIndex == indexGroup,
-                    detail = StoryDetailUiModel(
-                        selectedDetail = dataDetail.data.meta.selectedStoryIndex,
-                        detailItems = dataDetail.data.stories.mapIndexed { indexDetail, story ->
-                            StoryDetailItemUiModel(
-                                id = story.id,
-                                event = StoryDetailItemUiEvent.PAUSE,
-                                imageContent = story.media.link,
-                                isSelected = dataDetail.data.meta.selectedStoryIndex == indexDetail,
-                            )
-                        }
-                    )
+                    detail = if (dataGroup.data.meta.selectedGroupIndex == indexGroup) {
+                        StoryDetailUiModel(
+                            selectedDetail = dataDetail.data.meta.selectedStoryIndex,
+                            detailItems = dataDetail.data.stories.mapIndexed { indexDetail, story ->
+                                StoryDetailItemUiModel(
+                                    id = story.id,
+                                    event = StoryDetailItemUiEvent.PAUSE,
+                                    imageContent = story.media.link,
+                                    isSelected = dataDetail.data.meta.selectedStoryIndex == indexDetail,
+                                )
+                            }
+                        )
+                    } else StoryDetailUiModel()
+                )
+            }
+        )
+    }
+
+    override fun mapDetailStoryRequest(dataDetail: StoryDetailsResponseModel): StoryDetailUiModel {
+        return StoryDetailUiModel(
+            selectedDetail = dataDetail.data.meta.selectedStoryIndex,
+            detailItems = dataDetail.data.stories.mapIndexed { indexDetail, story ->
+                StoryDetailItemUiModel(
+                    id = story.id,
+                    event = StoryDetailItemUiEvent.PAUSE,
+                    imageContent = story.media.link,
+                    isSelected = dataDetail.data.meta.selectedStoryIndex == indexDetail,
                 )
             }
         )

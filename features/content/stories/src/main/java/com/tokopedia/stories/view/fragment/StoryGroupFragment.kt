@@ -31,7 +31,6 @@ class StoryGroupFragment @Inject constructor(
 
     private val viewModel by activityViewModels<StoryViewModel> { viewModelFactory }
 
-    private var mPagerSelectedState = -1
     private val pagerAdapter: StoryGroupPagerAdapter by lazy(LazyThreadSafetyMode.NONE) {
         StoryGroupPagerAdapter(
             childFragmentManager,
@@ -80,7 +79,7 @@ class StoryGroupFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
             viewModel.uiEvent.collect { event ->
                 when (event) {
-                    is StoryUiEvent.SelectGroup -> manageNextPageEvent(event.position)
+                    is StoryUiEvent.SelectGroup -> selectGroupEvent(event.position)
                 }
             }
         }
@@ -99,8 +98,6 @@ class StoryGroupFragment @Inject constructor(
             setPageTransformer(ZoomOutPageTransformer())
             registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
-                    if (mPagerSelectedState == position) return
-                    mPagerSelectedState = position
                     viewModelAction(StoryUiAction.SetGroupMainData(position))
                     super.onPageSelected(position)
                 }
@@ -108,7 +105,7 @@ class StoryGroupFragment @Inject constructor(
         }
     }
 
-    private fun manageNextPageEvent(position: Int) = with(binding.storyGroupViewPager) {
+    private fun selectGroupEvent(position: Int) = with(binding.storyGroupViewPager) {
         currentItem = position
     }
 
