@@ -174,7 +174,6 @@ import com.tokopedia.shop.home.view.listener.ShopHomeEndlessProductListener
 import com.tokopedia.shop.home.view.listener.ShopHomeFlashSaleWidgetListener
 import com.tokopedia.shop.home.view.listener.ShopHomeListener
 import com.tokopedia.shop.home.view.listener.ShopHomePlayWidgetListener
-import com.tokopedia.shop.home.view.listener.ShopHomeProductCarouselListener
 import com.tokopedia.shop.home.view.listener.ShopHomeShowcaseListWidgetListener
 import com.tokopedia.shop.home.view.listener.ShopHomeShowcaseNavigationListener
 import com.tokopedia.shop.home.view.model.CarouselPlayWidgetUiModel
@@ -203,6 +202,7 @@ import com.tokopedia.shop.pageheader.presentation.activity.ShopPageHeaderActivit
 import com.tokopedia.shop.common.view.interfaces.InterfaceShopPageHeader
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.home.util.ShopBannerProductGroupWidgetTabDependencyProvider
+import com.tokopedia.shop.home.view.listener.ShopBannerProductGroupListener
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragment
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragmentV2
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPageHeaderPerformanceMonitoringListener
@@ -261,7 +261,7 @@ open class ShopPageHomeFragment :
     ShopHomeShowcaseNavigationDependencyProvider,
     ShopHomeV4TerlarisViewHolder.ShopHomeV4TerlarisViewHolderListener,
     ShopBannerProductGroupWidgetTabDependencyProvider,
-    ShopHomeProductCarouselListener {
+    ShopBannerProductGroupListener {
 
     companion object {
         const val KEY_SHOP_ID = "SHOP_ID"
@@ -421,7 +421,7 @@ open class ShopPageHomeFragment :
             shopHomeShowcaseNavigationListener = this,
             shopHomeShowcaseNavigationDependencyProvider = this,
             shopHomeV4TerlarisViewHolderListener = this,
-            shopHomeProductCarouselListener = this,
+            shopBannerProductGroupListener = this,
             shopBannerProductGroupWidgetTabDependencyProvider = this
         )
     }

@@ -15,7 +15,7 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.databinding.ItemShopHomeProductCarouselViewpagerBinding
 import com.tokopedia.shop.home.util.ShopBannerProductGroupWidgetTabDependencyProvider
 import com.tokopedia.shop.home.view.fragment.ShopBannerProductGroupWidgetTabFragment
-import com.tokopedia.shop.home.view.listener.ShopHomeProductCarouselListener
+import com.tokopedia.shop.home.view.listener.ShopBannerProductGroupListener
 import com.tokopedia.shop.home.view.model.ShopWidgetComponentBannerProductGroupUiModel
 import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.unifycomponents.setCustomText
@@ -24,7 +24,7 @@ import com.tokopedia.shop.home.view.model.ShopWidgetComponentBannerProductGroupU
 
 class ShopHomeProductCarouselViewPagerViewHolder(
     itemView: View,
-    private val listener: ShopHomeProductCarouselListener,
+    private val listener: ShopBannerProductGroupListener,
     private val provider: ShopBannerProductGroupWidgetTabDependencyProvider
 ) : AbstractViewHolder<ShopWidgetComponentBannerProductGroupUiModel>(itemView) {
 

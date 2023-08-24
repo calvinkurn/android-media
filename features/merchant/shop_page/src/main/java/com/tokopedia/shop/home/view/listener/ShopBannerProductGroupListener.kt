@@ -4,7 +4,7 @@ import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselProductCard
 import com.tokopedia.shop.home.view.model.ShopWidgetComponentBannerProductGroupUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselVerticalBannerVerticalBanner
 
-interface ShopHomeProductCarouselListener {
+interface ShopBannerProductGroupListener {
     fun onProductCarouselMainBannerClick(mainBanner: ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.Data)
     fun onProductCarouselProductClick(selectedProduct: ShopHomeProductCarouselProductCard)
     fun onProductCarouselVerticalBannerClick(shopHomeProductCarouselVerticalBanner: ShopHomeProductCarouselVerticalBannerVerticalBanner)

@@ -135,7 +135,7 @@ open class ShopHomeAdapterTypeFactory(
     private val shopHomeShowcaseNavigationDependencyProvider: ShopHomeShowcaseNavigationDependencyProvider,
     private val shopHomeDisplayBannerProductHotspotListener: ShopHomeDisplayBannerProductHotspotViewHolder.Listener,
     private val shopHomeV4TerlarisViewHolderListener: ShopHomeV4TerlarisViewHolder.ShopHomeV4TerlarisViewHolderListener,
-    private val shopHomeProductCarouselListener: ShopHomeProductCarouselListener,
+    private val shopBannerProductGroupListener: ShopBannerProductGroupListener,
     private val shopBannerProductGroupWidgetTabDependencyProvider: ShopBannerProductGroupWidgetTabDependencyProvider
 ) : BaseAdapterTypeFactory(), TypeFactoryShopHome, ThematicWidgetTypeFactory, ShopWidgetTypeFactory {
     var productCardType: ShopProductViewGridType = ShopProductViewGridType.SMALL_GRID
@@ -441,7 +441,7 @@ open class ShopHomeAdapterTypeFactory(
                 ShopHomeShowCaseNavigationCarouselViewHolder(parent, shopHomeShowcaseNavigationListener)
             }
             ShopHomeProductCarouselViewPagerViewHolder.LAYOUT -> {
-                ShopHomeProductCarouselViewPagerViewHolder(parent, shopHomeProductCarouselListener, shopBannerProductGroupWidgetTabDependencyProvider)
+                ShopHomeProductCarouselViewPagerViewHolder(parent, shopBannerProductGroupListener, shopBannerProductGroupWidgetTabDependencyProvider)
             }
             ShopLayoutLoadingShimmerViewHolder.LAYOUT -> {
                 ShopLayoutLoadingShimmerViewHolder(parent)
