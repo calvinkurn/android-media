@@ -26,6 +26,7 @@ import com.tokopedia.shop.home.view.model.ShopWidgetComponentBannerProductGroupU
 import com.tokopedia.shop.home.view.model.ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.ComponentType
 import com.tokopedia.shop.home.view.model.ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.Data.LinkType
 import com.tokopedia.shop.home.view.model.showcase_navigation.Showcase
+import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseCornerShape
 import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseTab
 import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.TopMainBannerAppearance
 
@@ -183,7 +184,7 @@ object ShopPageWidgetMapper {
         )
     }
 
-    fun mapToHomeShowcaseWidget(response: ShopLayoutWidget.Widget): ShopHomeShowcaseNavigationUiModel {
+    fun mapToHomeShowcaseNavigationWidget(response: ShopLayoutWidget.Widget): ShopHomeShowcaseNavigationUiModel {
         val tabs = response.data.map { tab ->
             val showcases = tab.showcaseList.map { showcase ->
                 Showcase(
@@ -201,17 +202,25 @@ object ShopPageWidgetMapper {
         val showcases = tabs.firstOrNull()?.showcases ?: emptyList()
 
         val appearance = when (response.header.widgetStyle) {
-            ShowcaseNavigationBannerWidgetStyle.CIRCLE.id -> {
-                CarouselAppearance(response.header.title, showcases, response.header.ctaLink)
+            ShowcaseNavigationBannerWidgetStyle.TOP_ROUNDED_CORNER.id -> {
+                TopMainBannerAppearance(response.header.title, showcases, response.header.ctaLink, ShowcaseCornerShape.ROUNDED_CORNER)
             }
-            ShowcaseNavigationBannerWidgetStyle.ROUNDED_CORNER.id -> {
-                if (tabs.size == Int.ONE) {
-                    TopMainBannerAppearance(response.header.title, showcases, response.header.ctaLink)
-                } else {
-                    LeftMainBannerAppearance(tabs, response.header.title, response.header.ctaLink)
-                }
+            ShowcaseNavigationBannerWidgetStyle.TOP_CIRCLE.id -> {
+                TopMainBannerAppearance(response.header.title, showcases, response.header.ctaLink, ShowcaseCornerShape.CIRCLE)
             }
-            else -> TopMainBannerAppearance(response.header.title, showcases, response.header.ctaLink)
+            ShowcaseNavigationBannerWidgetStyle.LEFT_ROUNDED_CORNER.id -> {
+                LeftMainBannerAppearance(tabs, response.header.title, response.header.ctaLink, ShowcaseCornerShape.ROUNDED_CORNER)
+            }
+            ShowcaseNavigationBannerWidgetStyle.LEFT_CIRCLE.id -> {
+                LeftMainBannerAppearance(tabs, response.header.title, response.header.ctaLink, ShowcaseCornerShape.CIRCLE)
+            }
+            ShowcaseNavigationBannerWidgetStyle.CAROUSEL_ROUNDED_CORNER.id -> {
+                CarouselAppearance(response.header.title, showcases, response.header.ctaLink, ShowcaseCornerShape.CIRCLE)
+            }
+            ShowcaseNavigationBannerWidgetStyle.CAROUSEL_CIRCLE.id -> {
+                CarouselAppearance(response.header.title, showcases, response.header.ctaLink, ShowcaseCornerShape.CIRCLE)
+            }
+            else -> TopMainBannerAppearance(response.header.title, showcases, response.header.ctaLink, ShowcaseCornerShape.ROUNDED_CORNER)
         }
 
 

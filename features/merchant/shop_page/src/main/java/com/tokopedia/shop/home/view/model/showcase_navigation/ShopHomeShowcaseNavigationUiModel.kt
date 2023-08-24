@@ -13,7 +13,8 @@ data class ShopHomeShowcaseNavigationUiModel(
     val appearance: ShopHomeShowcaseNavigationBannerWidgetAppearance = TopMainBannerAppearance(
         title = "",
         viewAllCtaAppLink = "",
-        showcases = emptyList()
+        showcases = emptyList(),
+        cornerShape = ShowcaseCornerShape.ROUNDED_CORNER
     ),
     override val widgetId: String = "",
     override val layoutOrder: Int = -1,

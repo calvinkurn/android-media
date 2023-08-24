@@ -442,7 +442,7 @@ object ShopPageHomeMapper {
                         ShopPageWidgetMapper.mapToBannerTimerWidget(widgetResponse, widgetLayout, isOverrideTheme, colorSchema)
                     }
                     SHOWCASE_NAVIGATION_BANNER -> {
-                        ShopPageWidgetMapper.mapToHomeShowcaseWidget(widgetResponse)
+                        ShopPageWidgetMapper.mapToHomeShowcaseNavigationWidget(widgetResponse)
                     }
 
                     BANNER_PRODUCT_HOTSPOT -> {
