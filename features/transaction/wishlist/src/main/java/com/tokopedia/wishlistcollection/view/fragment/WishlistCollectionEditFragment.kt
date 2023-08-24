@@ -34,7 +34,7 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.wishlist.R
 import com.tokopedia.wishlist.databinding.FragmentWishlistCollectionEditBinding
 import com.tokopedia.wishlistcollection.analytics.WishlistCollectionAnalytics
-import com.tokopedia.wishlistcollection.data.params.UpdateWishlistCollectionParams
+import com.tokopedia.wishlistcommon.data.params.UpdateWishlistCollectionParams
 import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionByIdResponse
 import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionNamesResponse
 import com.tokopedia.wishlistcollection.di.DaggerWishlistCollectionComponent

@@ -34,14 +34,14 @@ class PartialButtonShopFollowersView private constructor(val view: View, private
 
     val shadowDrawable: Drawable? by lazy {
         view.generateBackgroundWithShadow(
-            com.tokopedia.unifyprinciples.R.color.Unify_N0,
-            com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
-            R.dimen.dp_12,
-            R.dimen.dp_12,
+            com.tokopedia.unifyprinciples.R.color.Unify_Background,
+            com.tokopedia.unifyprinciples.R.color.Unify_Static_Black_32,
+            com.tokopedia.abstraction.R.dimen.dp_12,
+            com.tokopedia.abstraction.R.dimen.dp_12,
             com.tokopedia.unifyprinciples.R.dimen.layout_lvl0,
             com.tokopedia.unifyprinciples.R.dimen.layout_lvl0,
-            R.dimen.dp_2,
-            R.dimen.dp_2,
+            com.tokopedia.abstraction.R.dimen.dp_2,
+            com.tokopedia.abstraction.R.dimen.dp_2,
             Gravity.TOP
         )
     }
@@ -194,6 +194,7 @@ class PartialButtonShopFollowersView private constructor(val view: View, private
             background = shadowDrawable
         }
     }
+
 }
 
 interface PartialButtonShopFollowersListener {

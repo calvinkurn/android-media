@@ -51,7 +51,7 @@
                 android:lineSpacingExtra="@dimen/hotel_6dp"
                 android:lines="1"
                 app:typographyType="body_3"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_NN950_68"
                 tools:text="18 Des 2019 - 20 Jan 2020" />
         </LinearLayout>
 
@@ -96,7 +96,7 @@
                     android:paddingEnd="@dimen/layout_lvl1"
                     android:paddingRight="@dimen/layout_lvl1"
                     app:typographyType="body_3"
-                    android:textColor="@color/Unify_N700_68"
+                    android:textColor="@color/Unify_NN950_68"
                     tools:text="1" />
             </LinearLayout>
 
@@ -125,7 +125,7 @@
                     android:paddingEnd="@dimen/layout_lvl1"
                     android:paddingRight="@dimen/layout_lvl1"
                     app:typographyType="body_3"
-                    android:textColor="@color/Unify_N700_68"
+                    android:textColor="@color/Unify_NN950_68"
                     tools:text="2" />
             </LinearLayout>
         </LinearLayout>

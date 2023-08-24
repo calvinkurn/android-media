@@ -121,7 +121,7 @@ abstract class BaseTokoFoodPostPurchaseTest {
     }
 
     protected fun closeBottomSheet() {
-        onIdView(R.id.bottom_sheet_close).onClick()
+        onIdView(com.tokopedia.unifycomponents.R.id.bottom_sheet_close).onClick()
     }
 
     protected fun intendingIntent() {

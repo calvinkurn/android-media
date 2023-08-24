@@ -39,6 +39,7 @@ public interface ApplinkConst {
     String SHOP_ETALASE_WITH_KEYWORD_AND_SORT = "tokopedia://shop/{shop_id}/etalase/{etalase_id}/?search={search}&sort={sort}";
     String PRODUCT_BUNDLE = "tokopedia://product-bundle/{product_id}";
     String GIFTING = "tokopedia://gifting/{addon_id}";
+    String ADDON = "tokopedia://addon/{addon_id}";
     String SHOP_REVIEW = "tokopedia://shop/{shop_id}/review?review-source={source}";
     String SHOP_NOTE = "tokopedia://shop/{shop_id}/note";
     String SHOP_INFO = "tokopedia://shop/{shop_id}/info";
@@ -51,6 +52,9 @@ public interface ApplinkConst {
     String SHOP_PENALTY_DETAIL = "tokopedia://shop-penalty-detail";
     String SHOP_FOLLOWER_LIST = "tokopedia://shop/{shop_id}/follower";
     String SHOP_SETTINGS_CUSTOMER_APP = "tokopedia://shop/{shop_id}/settings";
+
+    String SHOP_NIB_CUSTOMER_APP = "tokopedia://shop-nib";
+
     String TOKOPEDIA_CHAT_AUTO_REPLY_SETTINGS = "tokopedia://webview?url=https://m.tokopedia.com/chat/setting/auto-reply";
     //shop widget
     String SHOP_OPERATIONAL_HOUR = "tokopedia://shop/{shop_id}/operational-hour";
@@ -205,7 +209,7 @@ public interface ApplinkConst {
     String REGISTER_INIT = "tokopedia://register-init";
     String PROFILE = "tokopedia://people/{user_id}";
 
-    String PROFILE_SETTINGS = "tokopedia://people-settings/{user_id}";
+    String PROFILE_SETTINGS = "tokopedia://people/settings/{user_id}";
     String PROFILE_AFTER_POST = "tokopedia://people/{user_id}?after_post=true";
     String PROFILE_AFTER_EDIT = "tokopedia://people/{user_id}?after_edit=true";
     String PROFILE_SUCCESS_POST = "tokopedia://people/{user_id}?success_post=true";
@@ -516,6 +520,15 @@ public interface ApplinkConst {
         String HISTORY = "tokopedia://tokopoints/history";
     }
 
+    interface ScpRewards{
+        String CELEBRATION_BASE = "celebration/{slug}";
+        String MEDAL_DETAIL_BASE = "detail";
+        String MEDAL_CABINET = "medali";
+        String SEE_MORE_MEDAL = "more";
+        String CELEBRATION_BOTTOMSHEET = "celebration-bottomsheet";
+        String SCP_TOASTER = "celebration_toaster";
+    }
+
     String OQR_PIN_URL_ENTRY_LINK = "tokopedia://ovoqrthanks/";
     String DISCOVERY = "tokopedia://discovery";
     String DISCOVERY_DEALS = "tokopedia://discovery/deals";
@@ -552,6 +565,7 @@ public interface ApplinkConst {
         String GOLD_MERCHANT = "sellerapp://gold";
         String SELLER_APP_HOME = "sellerapp://home";
         String TOPADS_DASHBOARD = "sellerapp://topads";
+        String TOPADS_DASH_BOARD = "sellerapp://topads/dashboard";
         String POWER_MERCHANT_SUBSCRIBE = "sellerapp://power_merchant/subscribe";
         String PM_BENEFIT_PACKAGE = "sellerapp://power_merchant/benefit-package";
         String BROWSER = "sellerapp://browser";
@@ -627,6 +641,7 @@ public interface ApplinkConst {
         String RECIPE_HOME = "tokopedia://now/recipe";
         String RECIPE_SEARCH = "tokopedia://now/recipe/search";
         String RECIPE_AUTO_COMPLETE = "tokopedia://now/recipe/autocomplete";
+        String SEE_ALL_CATEGORY = "tokopedia://now/see-all-category";
     }
 
     interface TokoFood {
@@ -654,6 +669,9 @@ public interface ApplinkConst {
     interface Query {
         String ORDER_TRACKING_ORDER_ID = "order_id";
         String ORDER_TRACKING_URL_LIVE_TRACKING = "url_live_tracking";
+
+        String TX_ID = "tx_id";
+        String GROUP_TYPE = "group_type";
         String ORDER_TRACKING_CALLER = "caller";
 
         String IMAGE_PREVIEW_FILELOC = "fileloc";

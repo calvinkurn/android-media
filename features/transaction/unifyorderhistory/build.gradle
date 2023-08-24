@@ -33,6 +33,10 @@ android {
     }
     buildFeatures {
         viewBinding true
+        compose true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = rootProject.ext.composeVersion
     }
 }
 
@@ -41,11 +45,12 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.imageAssets)
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
 
+    implementation rootProject.ext.composeDependencies.composeCoil
+
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.commonNetwork)
     implementation projectOrAar(rootProject.ext.libraries.coreNetwork)
     implementation projectOrAar(rootProject.ext.libraries.graphql)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.track)
@@ -58,6 +63,8 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.empty_state
     implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.global_error
+    implementation rootProject.ext.unifyDependencies.nestComponents
+    implementation rootProject.ext.unifyDependencies.nestPrinciples
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.sortFilter
 
@@ -69,7 +76,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.usersession)
 
     implementation projectOrAar(rootProject.ext.libraries.logger)
-    implementation projectOrAar(rootProject.ext.libraries.utils)
 
     implementation projectOrAar(rootProject.ext.features.atc_common)
     implementation projectOrAar(rootProject.ext.features.localizationchooseaddress_common)
@@ -80,6 +86,8 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.features.searchbar)
     implementation projectOrAar(rootProject.ext.features.topAdsSdk)
+    implementation projectOrAar(rootProject.ext.features.scpRewardsTouchpoints)
+    implementation projectOrAar(rootProject.ext.features.reviewCommon)
 
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.dagger

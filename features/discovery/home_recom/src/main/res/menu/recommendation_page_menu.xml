@@ -5,7 +5,7 @@
         android:id="@+id/action_share"
         android:icon="@drawable/recom_ic_product_share_dark"
         android:orderInCategory="100"
-        android:iconTint="@color/Unify_N700"
+        android:iconTint="@color/Unify_NN950"
         android:title="@string/label_share"
         android:visible="false"
         app:showAsAction="ifRoom" />

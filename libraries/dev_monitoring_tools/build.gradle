@@ -19,7 +19,8 @@ android {
 }
 
 dependencies {
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+	implementation rootProject.ext.unifyDependencies.principles
+    implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.deviceInfo)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation projectOrAar(rootProject.ext.libraries.logger)

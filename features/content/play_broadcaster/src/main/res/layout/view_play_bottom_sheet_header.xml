@@ -26,7 +26,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/play_dp_12"
         android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:layout_constraintBottom_toBottomOf="@id/iv_back"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0"

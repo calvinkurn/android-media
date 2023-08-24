@@ -12,9 +12,12 @@ import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.product.broadmatch.BroadMatchPresenter
 import com.tokopedia.search.result.product.cpm.BannerAdsPresenter
 import com.tokopedia.search.result.product.filter.bottomsheetfilter.BottomSheetFilterPresenter
+import com.tokopedia.search.result.product.grid.ProductGridType
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselPresenter
 import com.tokopedia.search.result.product.pagination.Pagination
 import com.tokopedia.search.result.product.safesearch.SafeSearchPresenter
+import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.InspirationKeywordPresenter
+import com.tokopedia.search.result.product.seamlessinspirationcard.seamlessproduct.InspirationProductPresenter
 import com.tokopedia.search.result.product.ticker.TickerPresenter
 import com.tokopedia.search.result.product.wishlist.WishlistPresenter
 import com.tokopedia.sortfilter.SortFilterItem
@@ -42,6 +45,7 @@ interface ProductListSectionContract {
         fun showAdultRestriction()
         fun redirectSearchToAnotherPage(applink: String?)
         fun setDefaultLayoutType(defaultView: Int)
+        fun setProductGridType(productGridType: ProductGridType)
         fun showRefreshLayout()
         fun hideRefreshLayout()
         val isFirstActiveTab: Boolean
@@ -66,6 +70,7 @@ interface ProductListSectionContract {
         fun hideQuickFilterShimmering()
         fun setQuickFilter(items: List<SortFilterItem>)
         fun showOnBoarding(firstProductPosition: Int)
+        fun enableProductViewTypeOnBoarding()
         fun isFilterSelected(option: Option?): Boolean
         val className: String
         fun redirectionStartActivity(applink: String?, url: String?)
@@ -88,7 +93,9 @@ interface ProductListSectionContract {
         SafeSearchPresenter,
         WishlistPresenter,
         BottomSheetFilterPresenter,
-        InspirationCarouselPresenter {
+        InspirationCarouselPresenter,
+        InspirationKeywordPresenter,
+        InspirationProductPresenter {
 
         fun loadMoreData(searchParameter: Map<String, Any>)
         fun loadData(searchParameter: Map<String, Any>)

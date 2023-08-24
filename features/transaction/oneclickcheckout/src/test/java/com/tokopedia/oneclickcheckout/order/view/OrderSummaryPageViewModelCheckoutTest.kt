@@ -1099,7 +1099,6 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
             status = "",
             headerMessage = responseMessage
         )
-
         // When
         orderSummaryPageViewModel.finalUpdate({
             // do nothing

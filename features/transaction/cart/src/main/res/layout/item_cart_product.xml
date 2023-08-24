@@ -39,7 +39,7 @@
             android:layout_marginEnd="16dp"
             android:ellipsize="end"
             android:lines="1"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/image_shop_badge"
@@ -103,7 +103,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="4dp"
                 android:gravity="center_vertical"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950_96"
                 app:typographyType="body_2"
                 app:typographyWeight="bold"
                 tools:text="Rp100.000" />
@@ -213,7 +213,7 @@
             android:layout_marginStart="10dp"
             android:ellipsize="end"
             android:maxLines="1"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/iu_image_product"
             app:layout_constraintTop_toBottomOf="@+id/label_bundle_quantity"
@@ -227,7 +227,7 @@
             android:layout_marginStart="10dp"
             android:gravity="center_vertical"
             android:paddingTop="2dp"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             android:visibility="gone"
             app:layout_constraintStart_toEndOf="@+id/iu_image_product"
             app:layout_constraintTop_toBottomOf="@+id/text_product_name"
@@ -243,7 +243,7 @@
             android:layout_toEndOf="@+id/text_product_variant"
             android:gravity="center_vertical"
             android:paddingTop="2dp"
-            android:textColor="@color/Unify_R600"
+            android:textColor="@color/Unify_RN500"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -272,7 +272,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="4dp"
                 android:gravity="center_vertical"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950_96"
                 app:typographyType="body_2"
                 app:typographyWeight="bold"
                 tools:text="Rp100.000" />
@@ -322,13 +322,24 @@
             android:layout_marginStart="10dp"
             android:layout_toEndOf="@+id/iu_image_product"
             android:paddingTop="2dp"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             android:visibility="gone"
             app:layout_constraintStart_toEndOf="@+id/iu_image_product"
             app:layout_constraintTop_toBottomOf="@+id/layout_product_info"
             app:typographyType="body_3"
             tools:text="Incident"
             tools:visibility="gone" />
+
+        <include
+            android:id="@+id/item_addon_cart"
+            layout="@layout/item_cart_addon"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/iu_image_product"/>
 
         <com.tokopedia.unifycomponents.TextFieldUnify2
             android:id="@+id/text_field_notes"
@@ -340,7 +351,7 @@
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/v_bundling_product_separator"
-            app:layout_constraintTop_toBottomOf="@+id/iu_image_product"
+            app:layout_constraintTop_toBottomOf="@+id/item_addon_cart"
             app:unify_text_field_label="@string/cart_label_text_field_notes"
             app:unify_text_field_label_static="true"
             tools:layout_height="32dp"
@@ -359,7 +370,7 @@
             android:textColor="@color/Unify_GN500"
             android:visibility="gone"
             app:layout_constraintStart_toEndOf="@id/v_bundling_product_separator"
-            app:layout_constraintTop_toBottomOf="@+id/iu_image_product"
+            app:layout_constraintTop_toBottomOf="@+id/item_addon_cart"
             app:typographyType="body_3"
             tools:visibility="visible" />
 
@@ -380,7 +391,7 @@
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toEndOf="@id/v_bundling_product_separator"
-            app:layout_constraintTop_toBottomOf="@+id/iu_image_product"
+            app:layout_constraintTop_toBottomOf="@+id/item_addon_cart"
             app:typographyType="body_3"
             tools:text="Jangan Jangan Jangan Jangan Jangan Jangan Jangan "
             tools:visibility="visible" />
@@ -427,7 +438,7 @@
             android:paddingTop="8dp"
             android:paddingEnd="16dp"
             android:text="@string/label_move_to_wishlist"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -454,7 +465,7 @@
             android:layout_height="wrap_content"
             android:paddingStart="16dp"
             android:paddingEnd="0dp"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/button_delete_cart"
             app:layout_constraintEnd_toEndOf="parent"
@@ -468,7 +479,7 @@
             android:id="@+id/qty_editor_product"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -481,6 +492,6 @@
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
         android:layout_marginBottom="16dp"
-        android:background="@color/Unify_N100" />
+        android:background="@color/Unify_NN200" />
 
 </LinearLayout>

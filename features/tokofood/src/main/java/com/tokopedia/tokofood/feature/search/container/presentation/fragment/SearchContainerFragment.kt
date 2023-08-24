@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -16,9 +17,11 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.common.util.Constant
 import com.tokopedia.tokofood.databinding.FragmentSearchContainerBinding
@@ -183,7 +186,11 @@ class SearchContainerFragment : BaseMultiFragment(),
 
     override fun onGlobalNavClicked() {
         context?.let {
-            RouteManager.route(it, ApplinkConst.HOME_NAVIGATION)
+            RouteManager.route(
+                it,
+                bundleOf(Pair(ApplinkConsInternalNavigation.PARAM_PAGE_SOURCE, NavSource.TOKOFOOD.toString())),
+                ApplinkConst.HOME_NAVIGATION
+            )
         }
     }
 

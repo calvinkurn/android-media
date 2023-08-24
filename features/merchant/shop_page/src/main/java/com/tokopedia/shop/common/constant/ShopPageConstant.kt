@@ -44,6 +44,8 @@ object ShopPageConstant {
     const val SHARED_PREF_AFFILIATE_CHANNEL = "SHARED_PREF_AFFILIATE_CHANNEL"
     const val SHOP_PAGE_SHARED_PREFERENCE = "SHOP_PAGE_PREFERENCE"
     const val SHOP_COMPARISON_WIDGET_PAGE_NAME = "shop_comparison"
+    const val HACHIKO_VOUCHER_GRAPHQL_API_VERSION = "2.0.0"
+
     object ShopLayoutFeatures {
         const val DIRECT_PURCHASE = "direct_purchase"
     }

@@ -30,6 +30,7 @@ android {
 
 dependencies {
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
+    implementation projectOrAar(rootProject.ext.libraries.network)
     implementation (rootProject.ext.firebase.crashlytics) {
         transitive = true
     }
@@ -39,7 +40,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation rootProject.ext.supportLibDependencies.constraintLayout

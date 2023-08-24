@@ -110,6 +110,11 @@ class ProductDetailAdapter(asyncDifferConfig: AsyncDifferConfig<DynamicPdpDataMo
         }
     }
 
+    override fun onViewRecycled(holder: AbstractViewHolder<*>) {
+        super.onViewRecycled(holder)
+        holder.onViewRecycled()
+    }
+
     fun bind(holder: AbstractViewHolder<DynamicPdpDataModel>, item: DynamicPdpDataModel) {
         holder.bind(item)
     }

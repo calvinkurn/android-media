@@ -79,8 +79,8 @@ class LocationInfoBottomSheetFragment : BottomSheets() {
 
     override fun configView(parentView: View?) {
         super.configView(parentView)
-        parentView?.findViewById<View>(com.tokopedia.purchase_platform.common.R.id.layout_title)?.setOnClickListener(null)
-        parentView?.findViewById<View>(com.tokopedia.purchase_platform.common.R.id.btn_close)?.setOnClickListener {
+        parentView?.findViewById<View>(com.tokopedia.design.R.id.layout_title)?.setOnClickListener(null)
+        parentView?.findViewById<View>(com.tokopedia.design.R.id.btn_close)?.setOnClickListener {
             AddNewAddressAnalytics.eventClickButtonXOnBlockGps(isFullFlow, isLogisticLabel)
             onCloseButtonClick()
         }
@@ -103,30 +103,39 @@ class LocationInfoBottomSheetFragment : BottomSheets() {
             isGpsOn = true
         } else {
             mSettingsClient
-                    .checkLocationSettings(mLocationSettingsRequest)
-                    .addOnSuccessListener(context as Activity) {
-                        //  GPS is already enable, callback GPS status through listener
-                        isGpsOn = true
-                    }
-                    .addOnFailureListener(context, OnFailureListener { e ->
-                        when ((e as ApiException).statusCode) {
-                            LocationSettingsStatusCodes.RESOLUTION_REQUIRED ->
+                .checkLocationSettings(mLocationSettingsRequest)
+                .addOnSuccessListener(context as Activity) {
+                    //  GPS is already enable, callback GPS status through listener
+                    isGpsOn = true
+                }
+                .addOnFailureListener(
+                    context,
+                    OnFailureListener { e ->
+                        if (e is ApiException) {
+                            when (e.statusCode) {
+                                LocationSettingsStatusCodes.RESOLUTION_REQUIRED ->
+                                    try {
+                                        if (e is ResolvableApiException) {
+                                            // Show the dialog by calling startResolutionForResult(), and check the
+                                            // result in onActivityResult().
+                                            e.startResolutionForResult(
+                                                context,
+                                                AddressConstants.GPS_REQUEST
+                                            )
+                                        }
+                                    } catch (sie: IntentSender.SendIntentException) {
+                                        sie.printStackTrace()
+                                    }
 
-                                try {
-                                    // Show the dialog by calling startResolutionForResult(), and check the
-                                    // result in onActivityResult().
-                                    val rae = e as ResolvableApiException
-                                    rae.startResolutionForResult(context, AddressConstants.GPS_REQUEST)
-                                } catch (sie: IntentSender.SendIntentException) {
-                                    sie.printStackTrace()
+                                LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE -> {
+                                    val errorMessage =
+                                        "Location settings are inadequate, and cannot be " + "fixed here. Fix in Settings."
+                                    Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
                                 }
-
-                            LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE -> {
-                                val errorMessage = "Location settings are inadequate, and cannot be " + "fixed here. Fix in Settings."
-                                Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
                             }
                         }
-                    })
+                    }
+                )
         }
         return isGpsOn
     }

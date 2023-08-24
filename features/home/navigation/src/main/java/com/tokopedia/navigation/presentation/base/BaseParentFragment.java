@@ -22,8 +22,6 @@ public abstract class BaseParentFragment extends TkpdBaseV4Fragment {
     public abstract void loadData();
 
     boolean isLoaded = false;
-
-    public Toolbar toolbar;
     public View parentView;
 
     @Override
@@ -44,8 +42,7 @@ public abstract class BaseParentFragment extends TkpdBaseV4Fragment {
     }
 
     public void setTitle(String title) {
-        if (toolbar != null)
-            toolbar.setTitle(title);
+
     }
 
     public void setLoaded(boolean loaded) {
@@ -57,18 +54,10 @@ public abstract class BaseParentFragment extends TkpdBaseV4Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if (resLayout() > 0) {
             parentView = inflater.inflate(resLayout(), container, false);
-            setupToolbar(parentView);
             setHasOptionsMenu(true);
             initView(parentView);
             return parentView;
         }
         return super.onCreateView(inflater, container, savedInstanceState);
-    }
-
-    public void setupToolbar(View view) {
-        try {
-            toolbar = view.findViewById(R.id.toolbar);
-            ((MainParentActivity) getActivity()).setSupportActionBar(toolbar);
-        } catch (Exception ignored) {}
     }
 }

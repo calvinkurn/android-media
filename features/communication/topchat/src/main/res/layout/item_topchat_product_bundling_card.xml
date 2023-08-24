@@ -139,7 +139,7 @@
                 app:layout_constraintLeft_toRightOf="@id/tv_save"
                 app:typographyType="display_3"
                 android:layout_marginStart="@dimen/spacing_lvl2"
-                android:textColor="@color/Unify_R500_68"
+                android:textColor="@color/Unify_RN500_68"
                 tools:text="Rp155.000"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>

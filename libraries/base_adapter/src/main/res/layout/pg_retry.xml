@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:text="@string/pg_error_info"
-        android:textColor="@color/Unify_N700_44"
+        android:textColor="@color/Unify_NN950_44"
         android:textSize="12sp" />
 
     <TextView
@@ -26,7 +26,7 @@
         android:paddingTop="8dp"
         android:paddingBottom="8dp"
         android:text="@string/pg_label_retry"
-        android:textColor="@color/Unify_N0"
+        android:textColor="@color/Unify_NN0"
         android:textSize="14sp" />
 
 </LinearLayout>

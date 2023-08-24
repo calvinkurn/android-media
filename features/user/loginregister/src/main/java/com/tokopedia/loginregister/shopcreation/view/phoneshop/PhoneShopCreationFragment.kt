@@ -175,7 +175,7 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
 
     private fun initView() {
         viewBinding?.textFieldPhone?.textFieldInput?.setTextColor(
-            MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
+            MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96)
         )
         viewBinding?.textFieldPhone?.textFieldInput?.let {
             it.addTextChangedListener(object :
@@ -385,7 +385,7 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
             viewBinding?.errorMessage?.setTextColor(
                 MethodChecker.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_R500
+                    com.tokopedia.unifyprinciples.R.color.Unify_RN500
                 )
             )
         }
@@ -397,7 +397,7 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
             viewBinding?.errorMessage?.setTextColor(
                 MethodChecker.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_R500
+                    com.tokopedia.unifyprinciples.R.color.Unify_RN500
                 )
             )
         }

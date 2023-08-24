@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cl_user_report_sheet"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/Unify_Background"
+    android:clickable="true"
+    android:focusable="true"
+    app:behavior_skipCollapsed="true"
+    tools:parentTag="androidx.coordinatorlayout.widget.CoordinatorLayout">
+
+    <com.tokopedia.content.common.ui.custom.ContentHeaderView
+        android:id="@+id/header_content_report"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.content.common.util.scroll.NestedScrollableHost
+        android:id="@+id/cl_user_report_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constrainedWidth="true"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/header_content_report"
+        app:layout_constraintVertical_bias="0.0"
+        app:lockScroll="true">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_category"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </com.tokopedia.content.common.util.scroll.NestedScrollableHost>
+
+    <com.tokopedia.globalerror.GlobalError
+        android:id="@+id/global_error_user_report"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_lvl0"
+        android:clickable="true"
+        android:elevation="@dimen/unify_space_4"
+        android:focusable="true"
+        android:gravity="center"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/header_content_report"
+        tools:visibility="gone" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+

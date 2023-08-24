@@ -16,7 +16,7 @@
         android:gravity="center"
         android:padding="8dp"
         android:text="Coba kembali"
-        android:textColor="@color/Unify_N700"
+        android:textColor="@color/Unify_NN950"
         android:textStyle="bold" />
 
 </LinearLayout>

@@ -33,6 +33,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.LifecycleOwnerKt;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.android.material.snackbar.Snackbar;
@@ -47,6 +48,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.analytics.performance.perf.BlocksPerformanceTrace;
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback;
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface;
 import com.tokopedia.applink.ApplinkConst;
@@ -63,7 +65,6 @@ import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.devicefingerprint.submitdevice.service.SubmitDeviceWorker;
 import com.tokopedia.dynamicfeatures.DFInstaller;
-import com.tokopedia.graphql.interceptor.MockInterceptor;
 import com.tokopedia.home.HomeInternalRouter;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment;
 import com.tokopedia.inappupdate.AppUpdateManagerWrapper;
@@ -198,6 +199,8 @@ public class MainParentActivity extends BaseActivity implements
     private static final String DISCOVERY_END_POINT = "end_point";
     private static final String SOS_END_POINT = "sos";
 
+    private static final String PERFORMANCE_TRACE_HOME = "home";
+
     ArrayList<BottomMenu> menu = new ArrayList<>();
 
     @Inject
@@ -232,6 +235,8 @@ public class MainParentActivity extends BaseActivity implements
 
     private PerformanceMonitoring mainParentPerformanceMonitoring;
 
+    private BlocksPerformanceTrace performanceTrace;
+
     private PageLoadTimePerformanceCallback pageLoadTimePerformanceCallback;
     private PageLoadTimePerformanceCallback mainParentPageLoadTimePerformanceCallback;
 
@@ -258,6 +263,18 @@ public class MainParentActivity extends BaseActivity implements
         //changes for triggering unittest checker
         startSelectedPagePerformanceMonitoring();
         startMainParentPerformanceMonitoring();
+        try {
+            performanceTrace = new BlocksPerformanceTrace(
+                    this.getContext().getApplicationContext(),
+                    PERFORMANCE_TRACE_HOME,
+                    LifecycleOwnerKt.getLifecycleScope(this),
+                    this,
+                    null
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         if (pageLoadTimePerformanceCallback != null) {
             pageLoadTimePerformanceCallback.startCustomMetric(MAIN_PARENT_ON_CREATE_METRICS);
         }
@@ -558,7 +575,7 @@ public class MainParentActivity extends BaseActivity implements
             Toaster.INSTANCE.showErrorWithAction(this.findViewById(android.R.id.content),
                     intent.getStringExtra(ApplinkConstInternalCategory.PARAM_EXTRA_SUCCESS),
                     Snackbar.LENGTH_INDEFINITE,
-                    getString(com.tokopedia.home.R.string.general_label_ok), (v) -> {
+                    getString(com.tokopedia.resources.common.R.string.general_label_ok), (v) -> {
                     });
         }
     }
@@ -572,7 +589,7 @@ public class MainParentActivity extends BaseActivity implements
             int flags = fragmentContainer.getSystemUiVisibility();
             flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
             fragmentContainer.setSystemUiVisibility(flags);
-            getWindow().setStatusBarColor(androidx.core.content.ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0));
+            getWindow().setStatusBarColor(androidx.core.content.ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_NN0));
         }
 
         //make full transparent statusBar
@@ -636,7 +653,7 @@ public class MainParentActivity extends BaseActivity implements
         boolean isForceDarkMode = getIsFragmentForceDarkModeNavigationBar(fragment);
         bottomNavigation.forceDarkMode(isForceDarkMode);
 
-        int lineColorRes = isForceDarkMode ? R.color.navigation_dms_line_bottom_nav_darkmode : com.tokopedia.unifyprinciples.R.color.Unify_N75;
+        int lineColorRes = isForceDarkMode ? R.color.navigation_dms_line_bottom_nav_darkmode : com.tokopedia.unifyprinciples.R.color.Unify_NN50;
         lineBottomNav.setBackgroundResource(lineColorRes);
     }
 
@@ -1134,6 +1151,11 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     @Override
+    public BlocksPerformanceTrace getBlocksPerformanceMonitoring() {
+        return performanceTrace;
+    }
+
+    @Override
     public void requestStatusBarDark() {
         //for tokopedia lightmode, triggered when in top page
         //for tokopedia darkmode, triggered when not in top page
@@ -1245,11 +1267,11 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     public void populateBottomNavigationView() {
-        menu.add(new BottomMenu(R.id.menu_home, getResources().getString(R.string.home), R.raw.bottom_nav_home, R.raw.bottom_nav_home_to_enabled, R.raw.bottom_nav_home_dark, R.raw.bottom_nav_home_to_enabled_dark, R.drawable.ic_bottom_nav_home_active, R.drawable.ic_bottom_nav_home_enabled, com.tokopedia.unifyprinciples.R.color.Unify_G500, true, 1f, 1f));
-        menu.add(new BottomMenu(R.id.menu_feed, getResources().getString(R.string.feed), R.raw.bottom_nav_feed, R.raw.bottom_nav_feed_to_enabled, R.raw.bottom_nav_feed_dark, R.raw.bottom_nav_feed_to_enabled_dark, R.drawable.ic_bottom_nav_feed_active, R.drawable.ic_bottom_nav_feed_enabled, com.tokopedia.unifyprinciples.R.color.Unify_G500, true, 1f, 1f));
-        menu.add(new BottomMenu(R.id.menu_os, getResources().getString(R.string.official), R.raw.bottom_nav_official, R.raw.bottom_nav_os_to_enabled, R.raw.bottom_nav_official_dark, R.raw.bottom_nav_os_to_enabled_dark, R.drawable.ic_bottom_nav_os_active, R.drawable.ic_bottom_nav_os_enabled, com.tokopedia.unifyprinciples.R.color.Unify_G500, true, 1f, 1f));
-        menu.add(new BottomMenu(R.id.menu_wishlist, getResources().getString(R.string.wishlist), R.raw.bottom_nav_wishlist, R.raw.bottom_nav_wishlist_to_enabled, R.raw.bottom_nav_wishlist_dark, R.raw.bottom_nav_wishlist_to_enabled_dark, R.drawable.ic_bottom_nav_wishlist_active, R.drawable.ic_bottom_nav_wishlist_enabled, com.tokopedia.unifyprinciples.R.color.Unify_G500, true, 1f, 1f));
-        menu.add(new BottomMenu(R.id.menu_uoh, getResources().getString(R.string.uoh), R.raw.bottom_nav_transaction, R.raw.bottom_nav_transaction_to_enabled, R.raw.bottom_nav_transaction_dark, R.raw.bottom_nav_transaction_to_enabled_dark, R.drawable.ic_bottom_nav_uoh_active, R.drawable.ic_bottom_nav_uoh_enabled, com.tokopedia.unifyprinciples.R.color.Unify_G500, true, 1f, 1f));
+        menu.add(new BottomMenu(R.id.menu_home, getResources().getString(R.string.home), R.raw.bottom_nav_home, R.raw.bottom_nav_home_to_enabled, R.raw.bottom_nav_home_dark, R.raw.bottom_nav_home_to_enabled_dark, R.drawable.ic_bottom_nav_home_active, R.drawable.ic_bottom_nav_home_enabled, com.tokopedia.unifyprinciples.R.color.Unify_GN500, true, 1f, 1f));
+        menu.add(new BottomMenu(R.id.menu_feed, getResources().getString(R.string.feed), R.raw.bottom_nav_feed, R.raw.bottom_nav_feed_to_enabled, R.raw.bottom_nav_feed_dark, R.raw.bottom_nav_feed_to_enabled_dark, R.drawable.ic_bottom_nav_feed_active, R.drawable.ic_bottom_nav_feed_enabled, com.tokopedia.unifyprinciples.R.color.Unify_GN500, true, 1f, 1f));
+        menu.add(new BottomMenu(R.id.menu_os, getResources().getString(R.string.official), R.raw.bottom_nav_official, R.raw.bottom_nav_os_to_enabled, R.raw.bottom_nav_official_dark, R.raw.bottom_nav_os_to_enabled_dark, R.drawable.ic_bottom_nav_os_active, R.drawable.ic_bottom_nav_os_enabled, com.tokopedia.unifyprinciples.R.color.Unify_GN500, true, 1f, 1f));
+        menu.add(new BottomMenu(R.id.menu_wishlist, getResources().getString(R.string.wishlist), R.raw.bottom_nav_wishlist, R.raw.bottom_nav_wishlist_to_enabled, R.raw.bottom_nav_wishlist_dark, R.raw.bottom_nav_wishlist_to_enabled_dark, R.drawable.ic_bottom_nav_wishlist_active, R.drawable.ic_bottom_nav_wishlist_enabled, com.tokopedia.unifyprinciples.R.color.Unify_GN500, true, 1f, 1f));
+        menu.add(new BottomMenu(R.id.menu_uoh, getResources().getString(R.string.uoh), R.raw.bottom_nav_transaction, R.raw.bottom_nav_transaction_to_enabled, R.raw.bottom_nav_transaction_dark, R.raw.bottom_nav_transaction_to_enabled_dark, R.drawable.ic_bottom_nav_uoh_active, R.drawable.ic_bottom_nav_uoh_enabled, com.tokopedia.unifyprinciples.R.color.Unify_GN500, true, 1f, 1f));
         bottomNavigation.setMenu(menu);
         handleAppLinkBottomNavigation();
     }

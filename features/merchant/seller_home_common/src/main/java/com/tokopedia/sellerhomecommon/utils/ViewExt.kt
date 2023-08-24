@@ -17,7 +17,7 @@ internal const val DP_16 = 16
 
 fun TextView.setUnifyDrawableEnd(
     iconId: Int,
-    colorIcon: Int = context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N500),
+    colorIcon: Int = context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_NN600),
     width: Float = context.dpToPx(DP_16),
     height: Float = context.dpToPx(DP_16)
 ) {

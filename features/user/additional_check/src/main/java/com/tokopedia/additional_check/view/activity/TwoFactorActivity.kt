@@ -32,7 +32,7 @@ class TwoFactorActivity: BaseSimpleActivity(), ActivePageListener {
         super.onCreate(null)
         remoteConfig = FirebaseRemoteConfigImpl(this)
         enableBackBtn = intent?.extras?.getParcelable<TwoFactorResult>(TwoFactorFragment.RESULT_POJO_KEY)?.showSkipButton
-        toolbar.setTitleTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+        toolbar.setTitleTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96))
     }
 
     fun onFragmentCreated(){

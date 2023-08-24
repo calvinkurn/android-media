@@ -135,7 +135,7 @@ class ShopHomeNplCampaignViewHolder(
     private fun configNonFestivity() {
         val defaultTitleColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
         val defaultSubTitleColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
-        val defaultCtaColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+        val defaultCtaColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
         val defaultInformationIconColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN900)
         textTitle?.setTextColor(defaultTitleColor)
         textTimeDescription?.setTextColor(defaultSubTitleColor)
@@ -308,7 +308,7 @@ class ShopHomeNplCampaignViewHolder(
             val colorText = if(isRemindMe){
                 com.tokopedia.unifyprinciples.R.color.Unify_Background
             } else {
-                com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                com.tokopedia.unifyprinciples.R.color.Unify_NN950_68
             }
             val iconRemindMe = if (isRemindMe) {
                 IconUnify.BELL_FILLED
@@ -355,22 +355,11 @@ class ShopHomeNplCampaignViewHolder(
             textTimeDescription?.text = timeDescription
             textTimeDescription?.show()
             val days = model.data?.firstOrNull()?.timeCounter?.millisecondsToDays().orZero()
-            val dateCampaign = when {
-                isStatusCampaignUpcoming(statusCampaign) -> {
-                    DateHelper.getDateFromString(model.data?.firstOrNull()?.startDate.orEmpty())
-                }
-                isStatusCampaignOngoing(statusCampaign) -> {
-                    DateHelper.getDateFromString(model.data?.firstOrNull()?.endDate.orEmpty())
-                }
-                else -> {
-                    Date()
-                }
-            }
             if (days >= Int.ONE) {
                 timerUnify?.gone()
                 timerMoreThanOneDay?.apply {
-                    text =
-                        dateCampaign.toString(SHOP_NPL_CAMPAIGN_WIDGET_MORE_THAT_1_DAY_DATE_FORMAT)
+                    val dateFormatted = getFormattedDate(statusCampaign, model, false).toString(SHOP_NPL_CAMPAIGN_WIDGET_MORE_THAT_1_DAY_DATE_FORMAT)
+                    text = getString(R.string.shop_widget_date_format_wib, dateFormatted)
                     show()
                 }
             } else {
@@ -379,7 +368,7 @@ class ShopHomeNplCampaignViewHolder(
                     timerUnify?.apply {
                         show()
                         targetDate = Calendar.getInstance().apply {
-                            time = dateCampaign
+                            time = getFormattedDate(statusCampaign, model, true)
                         }
                         onFinish = {
                             shopHomeCampaignNplWidgetListener.onTimerFinished(model)
@@ -393,6 +382,31 @@ class ShopHomeNplCampaignViewHolder(
             timerUnify?.gone()
             textTimeDescription?.gone()
             timerMoreThanOneDay?.gone()
+        }
+    }
+
+    private fun getFormattedDate(
+        statusCampaign: String,
+        model: ShopHomeNewProductLaunchCampaignUiModel,
+        isUseDefaultTimeZone: Boolean
+    ): Date {
+        val timeZone = if (isUseDefaultTimeZone) {
+            DateHelper.getDefaultTimeZone()
+        } else {
+            null
+        }
+        return when {
+            isStatusCampaignUpcoming(statusCampaign) -> {
+                DateHelper.getDateFromString(model.data?.firstOrNull()?.startDate.orEmpty(), timeZone)
+            }
+
+            isStatusCampaignOngoing(statusCampaign) -> {
+                DateHelper.getDateFromString(model.data?.firstOrNull()?.endDate.orEmpty(), timeZone)
+            }
+
+            else -> {
+                Date()
+            }
         }
     }
 

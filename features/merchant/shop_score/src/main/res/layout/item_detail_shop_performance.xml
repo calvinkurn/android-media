@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         tools:text="Tingkat kesuksesan pesanan"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:typographyType="display_3"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
@@ -28,7 +28,7 @@
         android:layout_marginTop="4dp"
         tools:text="@string/item_detail_performance_value"
         app:typographyType="heading_2"
-        android:textColor="@color/Unify_N700"
+        android:textColor="@color/Unify_NN950"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvTitlePerformanceProgress"/>
 
@@ -38,7 +38,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         android:layout_marginEnd="12dp"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN950_68"
         tools:text="@string/item_detail_performance_target"
         app:typographyType="display_3"
         app:layout_constraintEnd_toStartOf="@id/ic_item_performance_right"

@@ -9,8 +9,8 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.databinding.ItemListEmptyBinding
 import com.tokopedia.sellerorder.list.presentation.models.SomListEmptyStateUiModel
@@ -40,7 +40,7 @@ class SomListOrderEmptyViewHolder(
             setIllustration(element.imageUrl)
             setTitle(element.title)
             setDescription(element.description)
-            if (element.showButton) {
+            if (element.buttonText.isNotBlank()) {
                 setButtonText(element.buttonText)
                 setButtonAppLink(element.buttonAppLink)
                 binding?.btnEmptyState?.show()

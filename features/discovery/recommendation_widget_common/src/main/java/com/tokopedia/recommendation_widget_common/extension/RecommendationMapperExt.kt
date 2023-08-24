@@ -5,6 +5,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemParentProduct
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.productcard.ProductCardModel.ProductListType
 import com.tokopedia.recommendation_widget_common.data.RecommendationEntity
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationBanner
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -13,6 +14,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationSpecificationLabelsBullet
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.viewtoview.ViewToViewItemData
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.UnifyButton
 
 /**
@@ -58,6 +60,7 @@ fun RecommendationEntity.RecommendationData.toRecommendationWidget(): Recommenda
                 position = index,
                 shopId = recommendation.shop.id,
                 shopName = recommendation.shop.name,
+                warehouseId = recommendation.warehouseId,
                 quantity = getItemQuantityBasedOnLayoutType(),
                 header = title,
                 pageName = pageName,
@@ -124,8 +127,11 @@ fun RecommendationItem.toProductCardModel(
     hasAddToCartButton: Boolean = false,
     addToCartButtonType: Int = UnifyButton.Type.TRANSACTION,
     hasThreeDots: Boolean = false,
-    cardInteraction: Boolean = false
+    cardInteraction: Boolean? = null,
+    productCardListType: ProductListType = ProductListType.CONTROL,
+    animateOnPress: Int = CardUnify2.ANIMATE_OVERLAY,
 ): ProductCardModel {
+    val productCardAnimate = if(cardInteraction == true) CardUnify2.ANIMATE_OVERLAY_BOUNCE else animateOnPress
     var variant: ProductCardModel.Variant? = null
     var nonVariant: ProductCardModel.NonVariant? = null
     var hasThreeDotsFinalValue = hasThreeDots
@@ -162,7 +168,8 @@ fun RecommendationItem.toProductCardModel(
         addToCartButtonType = addToCartButtonType,
         variant = if (isProductHasParentID()) variant else null,
         nonVariant = if (isProductHasParentID()) null else nonVariant,
-        cardInteraction = cardInteraction
+        animateOnPress = productCardAnimate,
+        productListType = productCardListType,
     )
 }
 

@@ -30,7 +30,7 @@ class ShipmentInsuranceTncViewHolder(private val binding: ItemInsuranceTncBindin
             val startSpan = messageTosAgreement.indexOf(formatText)
             val endSpan = messageTosAgreement.indexOf(formatText) + formatText.length
             val tosAgreementText: Spannable = SpannableString(messageTosAgreement)
-            val color = ContextCompat.getColor(binding.root.context, com.tokopedia.unifyprinciples.R.color.Unify_G400)
+            val color = ContextCompat.getColor(binding.root.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
             tosAgreementText.setSpan(ForegroundColorSpan(color), startSpan, endSpan, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             tosAgreementText.setSpan(TypefaceSpan("sans-serif-medium"), startSpan, endSpan, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             tosAgreementText.setSpan(ForegroundColorSpan(color), startSpan, endSpan, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)

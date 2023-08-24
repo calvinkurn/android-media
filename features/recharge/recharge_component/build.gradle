@@ -64,7 +64,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.icons
 
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 }

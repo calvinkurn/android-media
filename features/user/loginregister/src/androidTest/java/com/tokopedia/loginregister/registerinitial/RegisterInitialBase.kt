@@ -1,29 +1,38 @@
 package com.tokopedia.loginregister.registerinitial
 
+import android.Manifest
 import android.content.Intent
 import androidx.test.espresso.intent.rule.IntentsTestRule
-import com.tokopedia.loginregister.stub.usecase.GetProfileUseCaseStub
-import com.tokopedia.loginregister.stub.usecase.GraphqlUseCaseStub
+import androidx.test.rule.GrantPermissionRule
 import com.tokopedia.loginregister.di.FakeActivityComponentFactory
 import com.tokopedia.loginregister.di.RegisterInitialComponentStub
 import com.tokopedia.loginregister.login.behaviour.base.LoginRegisterBase
 import com.tokopedia.loginregister.login.di.ActivityComponentFactory
-import com.tokopedia.loginregister.stub.FakeGraphqlRepository
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckPojo
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity
+import com.tokopedia.loginregister.stub.FakeGraphqlRepository
+import com.tokopedia.loginregister.stub.usecase.GetProfileUseCaseStub
+import com.tokopedia.loginregister.stub.usecase.GraphqlUseCaseStub
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import javax.inject.Inject
 
-open class RegisterInitialBase: LoginRegisterBase() {
+open class RegisterInitialBase : LoginRegisterBase() {
 
     var isDefaultRegisterCheck = true
 
     @get:Rule
+    var grantPermission: GrantPermissionRule = GrantPermissionRule.grant(
+        Manifest.permission.READ_PHONE_STATE
+    )
+
+    @get:Rule
     var activityTestRule = IntentsTestRule(
-        RegisterInitialActivity::class.java, false, false
+        RegisterInitialActivity::class.java,
+        false,
+        false
     )
 
     @Inject
@@ -59,12 +68,12 @@ open class RegisterInitialBase: LoginRegisterBase() {
     }
 
     protected fun setRegisterCheckDefaultResponse() {
-        val data = RegisterCheckData(isExist = true , userID = "123456", registerType = "email", view = "yoris.prayogooooo@tokopedia.com")
+        val data = RegisterCheckData(isExist = true, userID = "123456", registerType = "email", view = "yoris.prayogooooo@tokopedia.com")
         registerCheckUseCase.response = RegisterCheckPojo(data)
     }
 
     fun runTest(test: () -> Unit) {
-        if(isDefaultRegisterCheck) {
+        if (isDefaultRegisterCheck) {
             setRegisterCheckDefaultResponse()
         }
         setupActivity()

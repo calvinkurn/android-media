@@ -358,7 +358,7 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
         if (toolbarThemeType != TOOLBAR_LIGHT_TYPE) {
             navIconAdapter?.setThemeState(NavToolbarIconAdapter.STATE_THEME_LIGHT)
             toolbarThemeType = TOOLBAR_LIGHT_TYPE
-            tvToolbarTitle.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+            tvToolbarTitle.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96))
             setBackButtonColorBasedOnTheme()
             setTitleTextColorBasedOnTheme()
         }
@@ -477,7 +477,10 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
         return layoutCustomView
     }
 
-    fun setBackButtonType(newBackType: Int? = null) {
+    fun setBackButtonType(
+        newBackType: Int? = null,
+        onClick: () -> Unit = { }
+    ) {
         newBackType?.let { backType = newBackType }
 
         if (backType != BACK_TYPE_NONE) {
@@ -491,6 +494,7 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
                         componentName = IconList.NAME_BACK_BUTTON,
                         userId = getUserId()
                     )
+                    onClick.invoke()
                     (context as? Activity)?.onBackPressed()
                 }
             }
@@ -812,8 +816,8 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
     private fun getLightBackgroundColor() = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
 
     private fun setTitleTextColorBasedOnTheme() {
-        val lightColorCondition = darkIconColor ?: ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
-        val darkCondition = lightIconColor ?: ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+        val lightColorCondition = darkIconColor ?: ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96)
+        val darkCondition = lightIconColor ?: ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
 
         toolbarThemeCondition(
             lightCondition = { tvToolbarTitle.setTextColor(lightColorCondition) },

@@ -147,7 +147,8 @@ class ShipmentViewModelEnhancedEcommerceTest : BaseShipmentViewModelTest() {
                 false,
                 eventCategory,
                 eventAction,
-                eventLabel
+                eventLabel,
+                step
             )
         }
     }
@@ -195,7 +196,8 @@ class ShipmentViewModelEnhancedEcommerceTest : BaseShipmentViewModelTest() {
                 pomlAutoApplied,
                 eventCategory,
                 eventAction,
-                eventLabel
+                eventLabel,
+                step
             )
         }
     }
@@ -239,7 +241,8 @@ class ShipmentViewModelEnhancedEcommerceTest : BaseShipmentViewModelTest() {
                 false,
                 eventCategory,
                 eventAction,
-                eventLabel
+                eventLabel,
+                step
             )
         }
     }
@@ -287,7 +290,8 @@ class ShipmentViewModelEnhancedEcommerceTest : BaseShipmentViewModelTest() {
                 pomlAutoApplied,
                 eventCategory,
                 eventAction,
-                eventLabel
+                eventLabel,
+                step
             )
         }
     }

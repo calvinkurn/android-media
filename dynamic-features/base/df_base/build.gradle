@@ -67,7 +67,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.catalogLibrary)
     implementation projectOrAar(rootProject.ext.features.kategori)
     implementation projectOrAar(rootProject.ext.features.categoryLevels)
-    implementation projectOrAar(rootProject.ext.features.affiliateToko)
+//    implementation projectOrAar(rootProject.ext.features.affiliateToko)
     implementation projectOrAar(rootProject.ext.features.ePharmacy)
     //implementation projectOrAar(rootProject.ext.features.agerestriction) //Need to fix the structure
 
@@ -120,6 +120,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.shopPage)
     implementation projectOrAar(rootProject.ext.features.shopPageWidget)
     implementation projectOrAar(rootProject.ext.features.feedShop)
+    implementation projectOrAar(rootProject.ext.features.sellerShopNib)
 
     //Operational
 

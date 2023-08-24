@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginTop="16dp"
-        android:background="@color/Unify_N50"
+        android:background="@color/Unify_NN50"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -77,7 +77,7 @@
             android:layout_centerVertical="true"
             android:layout_toStartOf="@+id/cart_shop_ticker_right_icon"
             android:layout_toEndOf="@+id/cart_shop_ticker_left_icon"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
             android:visibility="gone"

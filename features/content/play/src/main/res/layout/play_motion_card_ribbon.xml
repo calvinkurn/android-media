@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.motion.widget.MotionLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:elevation="1dp"
+    android:translationZ="1dp"
+    app:layoutDescription="@xml/play_motion_card_ribbon_scene">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_back_ribbon"
+        android:layout_width="wrap_content"
+        android:layout_height="21dp"
+        android:layout_marginTop="@dimen/unify_space_2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/iv_back_ribbon"
+        app:srcCompat="@drawable/ic_play_back_ribbon" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_tail_ribbon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="@+id/iv_back_ribbon"
+        app:layout_constraintTop_toBottomOf="@+id/iv_back_ribbon"
+        app:srcCompat="@drawable/ic_play_tail_ribbon" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/play_iv_ribbon"
+        android:layout_width="0dp"
+        android:layout_height="19dp"
+        android:layout_marginTop="@dimen/unify_space_2"
+        android:scaleType="fitXY"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/play_tv_ribbon"
+        app:layout_constraintStart_toEndOf="@+id/iv_back_ribbon"
+        app:layout_constraintTop_toTopOf="@+id/iv_back_ribbon"
+        app:layout_constraintVertical_bias="0.0"
+        tools:src="@drawable/bg_play_ribbon_front" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/play_tv_ribbon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/unify_space_2"
+        android:paddingTop="@dimen/unify_space_2"
+        android:paddingEnd="@dimen/unify_space_8"
+        android:paddingBottom="@dimen/unify_space_2"
+        tools:text="Terlaris"
+        android:textColor="@color/Unify_Static_White"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/iv_back_ribbon"
+        app:layout_constraintTop_toTopOf="@id/iv_back_ribbon"
+        app:layout_constraintVertical_bias="0.0"
+        app:typographyType="display_3"
+        app:typographyWeight="bold" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/glare"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:translationZ="1dp"
+        android:rotation="45"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/iv_back_ribbon"
+        app:srcCompat="@drawable/play_glare_shape" />
+</androidx.constraintlayout.motion.widget.MotionLayout>

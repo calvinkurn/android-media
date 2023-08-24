@@ -191,6 +191,24 @@ class GetOccCartUseCase @Inject constructor(
         }
         cart_details {
           products {
+            add_ons_product {
+				icon_url
+				title
+				bottomsheet {
+					title
+					applink
+					is_shown
+				}
+				data {
+					id
+					unique_id
+					price
+					info_link
+					name
+					status
+					type
+				}
+            }
             errors
             cart_id
             product_id
@@ -724,6 +742,10 @@ class GetOccCartUseCase @Inject constructor(
         invoice_not_sent_to_recipient
       }
       total_product_price
+      add_ons_summary {
+        wording
+        type
+      }
     }
   }
 }"""

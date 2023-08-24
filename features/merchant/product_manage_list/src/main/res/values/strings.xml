@@ -40,6 +40,7 @@
     <string name="product_manage_filter_active">Aktif (%d)</string>
     <string name="product_manage_filter_banned">Pelanggaran (%d)</string>
     <string name="product_manage_filter_inactive">Nonaktif (%d)</string>
+    <string name="product_manage_filter_archival">Diarsipkan (%d)</string>
     <string name="product_manage_bottom_sheet_title">Atur</string>
     <string name="product_manage_preview_menu">Lihat Preview Produk</string>
     <string name="product_manage_duplicate_product_menu">Duplikat Produk</string>
@@ -225,5 +226,16 @@
 
     <string name="product_manage_toaster_campaign_deactivate">Status produk tidak dapat diubah karena sedang dijadwalkan untuk memiliki promosi diskon.</string>
     <string name="product_manage_multi_edit_failed_toaster_campaign_deactivate">%1$d produk gagal dinonaktifkan karena sedang dijadwalkan untuk memiliki promosi diskon.</string>
+
+    <string name="text_potential_archival">Berpotensi Diarsipkan</string>
+    <string name="text_archival">Diarsipkan</string>
+    <string name="product_manage_more">Selengkapnya</string>
+    <string name="text_product_have_archived_by_tokopedia">Produk telah diarsipkan oleh Tokopedia</string>
+    <string name="product_manage_text_potential_product_to_archived">Produk berpotensi diarsipkan oleh Tokopedia</string>
+    <string name="product_manage_text_title_product_archival_bottom_sheet">Detail pengarsipan produk</string>
+    <string name="product_archival_info_time_grace_period"><![CDATA[Pada <b>%s</b>, produk ini akan diarsipkan karena:]]></string>
+    <string name="product_archival_info_time_archived"><![CDATA[Pada <b>%s</b>, produk ini diarsipkan karena:]]></string>
+    <string name="product_archival_edu"><![CDATA[Pelajari tentang produk yang diarsipkan <a href="%s" target="_blank"><span style=color:#00AA5B;>di sini</span></a>]]></string>
+    <string name="product_manage_go_to_help_page">Ke Halaman Bantuan</string>
 
 </resources>

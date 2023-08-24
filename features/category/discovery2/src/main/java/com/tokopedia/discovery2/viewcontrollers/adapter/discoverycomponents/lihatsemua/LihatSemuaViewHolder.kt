@@ -141,8 +141,8 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
                 lihatTitleTextView.setTextColor(MethodChecker.getColor(it, R.color.discovery2_dms_white))
                 lihatSubTitleTextView.setTextColor(MethodChecker.getColor(it, R.color.discovery2_dms_white_95))
             } else {
-                lihatTitleTextView.setTextColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
-                lihatSubTitleTextView.setTextColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+                lihatTitleTextView.setTextColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96))
+                lihatSubTitleTextView.setTextColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68))
             }
         }
     }
@@ -197,7 +197,7 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
             } else {
                 textTitleParent.setPadding(
                     if (isTitleImagePresent) {
-                        it.getDimensionPixelOffset(R.dimen.dp_4)
+                        it.getDimensionPixelOffset(com.tokopedia.abstraction.R.dimen.dp_4)
                     } else {
                         it.getDimensionPixelOffset(
                             R.dimen.dp_16
@@ -264,7 +264,11 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
     }
 
     private fun navigateToAppLink(data: DataItem) {
-        lihatSemuaViewModel?.navigate(fragment.activity, data.btnApplink)
+        if (data.moveAction?.type != null) {
+            Utils.routingBasedOnMoveAction(data.moveAction, fragment)
+        } else {
+            lihatSemuaViewModel?.navigate(fragment.activity, data.btnApplink)
+        }
     }
 
     interface OnLihatSemuaClickListener {

@@ -132,6 +132,13 @@ class GetCouponListRecommendationUseCase @Inject constructor(
                                         eta_txt
                                     }
                                     currency_details_str
+                                    cta {
+                                        text
+                                        url
+                                        app_link
+                                        type
+                                        json_metadata
+                                    }
                                     coachmark {
                                         is_shown
                                         title
@@ -151,6 +158,58 @@ class GetCouponListRecommendationUseCase @Inject constructor(
                                         amount_idr
                                         benefit_type
                                         data_type
+                                    }
+                                    benefit_adjustment_message
+                                    secondary_coupons {
+                                        promo_id
+                                        code
+                                        title
+                                        message
+                                        coupon_app_link
+                                        unique_id
+                                        shop_id
+                                        benefit_amount
+                                        is_recommended
+                                        is_selected
+                                        is_attempted
+                                        is_bebas_ongkir
+                                        clashing_infos {
+                                            code
+                                            message
+                                            icon
+                                        }
+                                        bo_clashing_infos {
+                                            code
+                                            message
+                                            icon
+                                        }
+                                        additional_bo_datas {
+                                            code
+                                            unique_id
+                                            shipping_id
+                                            sp_id
+                                            benefit_amount
+                                            promo_id
+                                            shipping_subsidy
+                                            shipping_price
+                                            benefit_class
+                                            bo_campaign_id
+                                            eta_txt
+                                        }
+                                        currency_details_str
+                                        is_highlighted
+                                        promo_infos {
+                                             type
+                                             title
+                                             icon
+                                             validation_type
+                                             methods
+                                        }
+                                        benefit_details {
+                                            amount_idr
+                                            benefit_type
+                                            data_type
+                                        }
                                     }
                                 }
                             }

@@ -6,12 +6,12 @@
     </style>
 
     <style name="Toolbar.SellerFeedback" parent="Base.Toolbar.Theme">
-        <item name="actionModeBackground">@color/Unify_N0</item>
-        <item name="colorControlNormal">@color/Unify_N0</item>
-        <item name="android:actionModeBackground">@color/Unify_N0</item>
-        <item name="android:textColorPrimary">@color/Unify_N700_96</item>
-        <item name="android:actionMenuTextColor">@color/Unify_N700_96</item>
-        <item name="android:textColorSecondary">@color/Unify_N700_96</item>
+        <item name="actionModeBackground">@color/Unify_NN0</item>
+        <item name="colorControlNormal">@color/Unify_NN0</item>
+        <item name="android:actionModeBackground">@color/Unify_NN0</item>
+        <item name="android:textColorPrimary">@color/Unify_NN950_96</item>
+        <item name="android:actionMenuTextColor">@color/Unify_NN950_96</item>
+        <item name="android:textColorSecondary">@color/Unify_NN950_96</item>
         <item name="android:background">@null</item>
     </style>
 </resources>
