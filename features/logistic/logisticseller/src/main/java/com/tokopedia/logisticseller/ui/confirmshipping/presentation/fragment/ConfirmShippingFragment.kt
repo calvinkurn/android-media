@@ -1,4 +1,4 @@
-package com.tokopedia.sellerorder.confirmshipping.presentation.fragment
+package com.tokopedia.logisticseller.ui.confirmshipping.presentation.fragment
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -16,24 +16,25 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.zxing.integration.android.IntentIntegrator
 import com.journeyapps.barcodescanner.CaptureActivity
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.logisticseller.R
+import com.tokopedia.kotlin.extensions.view.hideKeyboard
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.sellerorder.R
-import com.tokopedia.sellerorder.analytics.SomAnalytics
-import com.tokopedia.sellerorder.common.errorhandler.SomErrorHandler
-import com.tokopedia.sellerorder.common.util.SomConsts
-import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_CURR_IS_CHANGE_SHIPPING
-import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_ID
-import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_CONFIRM_SHIPPING
-import com.tokopedia.sellerorder.common.util.Utils
-import com.tokopedia.sellerorder.common.util.Utils.hideKeyboard
-import com.tokopedia.sellerorder.common.util.Utils.updateShopActive
-import com.tokopedia.sellerorder.confirmshipping.data.model.SomCourierList
-import com.tokopedia.sellerorder.confirmshipping.di.SomConfirmShippingComponent
-import com.tokopedia.sellerorder.confirmshipping.presentation.activity.SomConfirmShippingActivity
-import com.tokopedia.sellerorder.confirmshipping.presentation.adapter.SomBottomSheetCourierListAdapter
-import com.tokopedia.sellerorder.confirmshipping.presentation.viewmodel.SomConfirmShippingViewModel
-import com.tokopedia.sellerorder.databinding.FragmentSomConfirmShippingBinding
+import com.tokopedia.logisticseller.common.LogisticSellerConst
+import com.tokopedia.logisticseller.common.LogisticSellerConst.PARAM_CURR_IS_CHANGE_SHIPPING
+import com.tokopedia.logisticseller.common.LogisticSellerConst.PARAM_ORDER_ID
+import com.tokopedia.logisticseller.common.LogisticSellerConst.RESULT_CONFIRM_SHIPPING
+import com.tokopedia.logisticseller.common.Utils
+import com.tokopedia.logisticseller.common.Utils.updateShopActive
+import com.tokopedia.logisticseller.common.errorhandler.LogisticSellerErrorHandler
+import com.tokopedia.logisticseller.databinding.FragmentSomConfirmShippingBinding
+import com.tokopedia.logisticseller.ui.confirmshipping.data.model.SomCourierList
+import com.tokopedia.logisticseller.ui.confirmshipping.di.DaggerSomConfirmShippingComponent
+import com.tokopedia.logisticseller.ui.confirmshipping.di.ConfirmShippingComponent
+import com.tokopedia.logisticseller.ui.confirmshipping.presentation.activity.ConfirmShippingActivity
+import com.tokopedia.logisticseller.ui.confirmshipping.presentation.adapter.BottomSheetCourierListAdapter
+import com.tokopedia.logisticseller.ui.confirmshipping.presentation.viewmodel.ConfirmShippingViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -44,7 +45,8 @@ import javax.inject.Inject
 /**
  * Created by fwidjaja on 2019-11-15.
  */
-class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierListAdapter.ActionListener {
+class ConfirmShippingFragment : BaseDaggerFragment(), BottomSheetCourierListAdapter.ActionListener {
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
@@ -58,17 +60,17 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
     private var confirmShippingResponseMsg = ""
     private var courierListResponse = listOf<SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment.Shipment>()
     private var changeCourierResponseMsg = ""
-    private lateinit var somBottomSheetCourierListAdapter: SomBottomSheetCourierListAdapter
+    private lateinit var somBottomSheetCourierListAdapter: BottomSheetCourierListAdapter
     private lateinit var bottomSheetUnify: BottomSheetUnify
 
-    private val somConfirmShippingViewModel by lazy {
-        ViewModelProviders.of(this, viewModelFactory)[SomConfirmShippingViewModel::class.java]
+    private val confirmShippingViewModel by lazy {
+        ViewModelProviders.of(this, viewModelFactory)[ConfirmShippingViewModel::class.java]
     }
 
     @SuppressLint("ClickableViewAccessibility")
     private val hideKeyboardTouchListener = View.OnTouchListener { _, event ->
         if (event.action == MotionEvent.ACTION_DOWN) {
-            view.hideKeyboard()
+            view?.hideKeyboard()
         }
         false
     }
@@ -83,8 +85,8 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
         private const val TAG_BOTTOMSHEET = "bottomSheet"
 
         @JvmStatic
-        fun newInstance(bundle: Bundle): SomConfirmShippingFragment {
-            return SomConfirmShippingFragment().apply {
+        fun newInstance(bundle: Bundle): ConfirmShippingFragment {
+            return ConfirmShippingFragment().apply {
                 arguments = Bundle().apply {
                     putString(PARAM_ORDER_ID, bundle.getString(PARAM_ORDER_ID))
                     putBoolean(PARAM_CURR_IS_CHANGE_SHIPPING, bundle.getBoolean(PARAM_CURR_IS_CHANGE_SHIPPING))
@@ -103,8 +105,9 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        if (currIsChangeShipping) (activity as SomConfirmShippingActivity).supportActionBar?.title = getString(R.string.title_som_change_courier)
-        else (activity as SomConfirmShippingActivity).supportActionBar?.title = getString(R.string.title_som_confirm_shipping)
+        if (currIsChangeShipping) (activity as ConfirmShippingActivity).supportActionBar?.title =
+            getString(R.string.title_som_change_courier)
+        else (activity as ConfirmShippingActivity).supportActionBar?.title = getString(R.string.title_som_confirm_shipping)
         return inflater.inflate(R.layout.fragment_som_confirm_shipping, container, false)
     }
 
@@ -197,7 +200,12 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
     private fun setBtnToChangeCourier() {
         binding?.clChangeCourier?.visibility = View.VISIBLE
         binding?.btnConfirmShipping?.setOnClickListener {
-            processChangeCourier(currOrderId, binding?.tfNoResi?.textFieldInput?.text.toString(), currShipmentId, currShipmentProductId.toLongOrZero())
+            processChangeCourier(
+                currOrderId,
+                binding?.tfNoResi?.textFieldInput?.text.toString(),
+                currShipmentId,
+                currShipmentProductId.toLongOrZero()
+            )
         }
     }
 
@@ -212,7 +220,10 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
-        getComponent(SomConfirmShippingComponent::class.java).inject(this)
+        val component: ConfirmShippingComponent = DaggerSomConfirmShippingComponent.builder()
+            .baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
+            .build()
+        component.inject(this)
     }
 
     private fun requestBarcodeScanner() {
@@ -221,22 +232,22 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
     }
 
     private fun processConfirmShipping(orderId: String, shippingRef: String) {
-        somConfirmShippingViewModel.confirmShipping(orderId, shippingRef)
+        confirmShippingViewModel.confirmShipping(orderId, shippingRef)
     }
 
     private fun processChangeCourier(orderId: String, shippingRef: String, agencyId: Long, spId: Long) {
-        somConfirmShippingViewModel.changeCourier(orderId, shippingRef, agencyId, spId)
+        confirmShippingViewModel.changeCourier(orderId, shippingRef, agencyId, spId)
     }
 
     private fun getCourierList() {
-        somConfirmShippingViewModel.getCourierList()
+        confirmShippingViewModel.getCourierList()
     }
 
     private fun observingConfirmShipping() {
-        somConfirmShippingViewModel.confirmShippingResult.observe(viewLifecycleOwner, Observer {
+        confirmShippingViewModel.confirmShippingResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    SomAnalytics.eventClickKonfirmasi(true)
+//                    SomAnalytics.eventClickKonfirmasi(true)
                     confirmShippingResponseMsg = if (it.data.listMessage.isNotEmpty()) {
                         it.data.listMessage.first()
                     } else {
@@ -247,17 +258,18 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
                     })
                     activity?.finish()
                 }
+
                 is Fail -> {
-                    SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_CONFIRM_SHIPPING)
-                    SomAnalytics.eventClickKonfirmasi(false)
+                    LogisticSellerErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_CONFIRM_SHIPPING)
+//                    SomAnalytics.eventClickKonfirmasi(false)
                     context?.run {
-                        Utils.showToasterError(SomErrorHandler.getErrorMessage(it.throwable, this), view)
+                        Utils.showToasterError(LogisticSellerErrorHandler.getErrorMessage(it.throwable, this), view)
                     }
-                    SomErrorHandler.logExceptionToServer(
-                        errorTag = SomErrorHandler.SOM_TAG,
+                    LogisticSellerErrorHandler.logExceptionToServer(
+                        errorTag = LogisticSellerErrorHandler.SOM_TAG,
                         throwable = it.throwable,
                         errorType =
-                        SomErrorHandler.SomMessage.CONFIRM_SHIPPING_ERROR,
+                        LogisticSellerErrorHandler.SomMessage.CONFIRM_SHIPPING_ERROR,
                         deviceId = userSession.deviceId.orEmpty()
                     )
                 }
@@ -266,7 +278,7 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
     }
 
     private fun observingCourierList() {
-        somConfirmShippingViewModel.courierListResult.observe(viewLifecycleOwner, Observer {
+        confirmShippingViewModel.courierListResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     courierListResponse = it.data
@@ -283,25 +295,26 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
                     }
 
                     binding?.labelChoosenCourier?.setOnClickListener {
-                        view.hideKeyboard()
+                        view?.hideKeyboard()
                         showBottomSheetCourier(false)
                     }
                     binding?.ivChooseCourier?.setOnClickListener {
-                        view.hideKeyboard()
+                        view?.hideKeyboard()
                         showBottomSheetCourier(false)
                     }
 
                     binding?.labelChoosenCourierService?.setOnClickListener { showBottomSheetCourier(true) }
                     binding?.ivChooseCourierService?.setOnClickListener { showBottomSheetCourier(true) }
                 }
+
                 is Fail -> {
-                    SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_GET_COURIER_LIST)
+                    LogisticSellerErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_GET_COURIER_LIST)
                     Utils.showToasterError(getString(R.string.global_error), view)
-                    SomErrorHandler.logExceptionToServer(
-                        errorTag = SomErrorHandler.SOM_TAG,
+                    LogisticSellerErrorHandler.logExceptionToServer(
+                        errorTag = LogisticSellerErrorHandler.SOM_TAG,
                         throwable = it.throwable,
                         errorType =
-                        SomErrorHandler.SomMessage.GET_COURIER_LIST_ERROR,
+                        LogisticSellerErrorHandler.SomMessage.GET_COURIER_LIST_ERROR,
                         deviceId = userSession.deviceId.orEmpty()
                     )
                 }
@@ -310,7 +323,7 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
     }
 
     private fun observingChangeCourier() {
-        somConfirmShippingViewModel.changeCourierResult.observe(viewLifecycleOwner, Observer {
+        confirmShippingViewModel.changeCourierResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     if (it.data.mpLogisticChangeCourier.listMessage.isNotEmpty()) {
@@ -321,16 +334,17 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
                     })
                     activity?.finish()
                 }
+
                 is Fail -> {
-                    SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_CHANGE_COURIER)
+                    LogisticSellerErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_CHANGE_COURIER)
                     context?.run {
-                        Utils.showToasterError(SomErrorHandler.getErrorMessage(it.throwable, this), view)
+                        Utils.showToasterError(LogisticSellerErrorHandler.getErrorMessage(it.throwable, this), view)
                     }
-                    SomErrorHandler.logExceptionToServer(
-                        errorTag = SomErrorHandler.SOM_TAG,
+                    LogisticSellerErrorHandler.logExceptionToServer(
+                        errorTag = LogisticSellerErrorHandler.SOM_TAG,
                         throwable = it.throwable,
                         errorType =
-                        SomErrorHandler.SomMessage.CHANGE_COURIER_ERROR,
+                        LogisticSellerErrorHandler.SomMessage.CHANGE_COURIER_ERROR,
                         deviceId = userSession.deviceId.orEmpty()
                     )
                 }
@@ -339,7 +353,7 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
     }
 
     private fun showBottomSheetCourier(isCourierService: Boolean) {
-        somBottomSheetCourierListAdapter = SomBottomSheetCourierListAdapter(this)
+        somBottomSheetCourierListAdapter = BottomSheetCourierListAdapter(this)
         if (bottomSheetUnify.isAdded) bottomSheetUnify.dismiss()
         View.inflate(context, R.layout.bottomsheet_secondary, null).run {
             findViewById<RecyclerView>(R.id.rv_bottomsheet_secondary)?.apply {
@@ -361,7 +375,7 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
     }
 
     private fun setCourierServiceListData(shipmentId: Long) {
-        bottomSheetUnify.setTitle(SomConsts.TITLE_JENIS_LAYANAN)
+        bottomSheetUnify.setTitle(LogisticSellerConst.TITLE_JENIS_LAYANAN)
         courierListResponse.forEach {
             if (it.shipmentId.toLongOrZero() == shipmentId) {
                 somBottomSheetCourierListAdapter.listCourierService = it.listShipmentPackage.toMutableList()
@@ -372,7 +386,7 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
     }
 
     private fun setCourierListData() {
-        bottomSheetUnify.setTitle(SomConsts.TITLE_KURIR_PENGIRIMAN)
+        bottomSheetUnify.setTitle(LogisticSellerConst.TITLE_KURIR_PENGIRIMAN)
         somBottomSheetCourierListAdapter.listCourier = courierListResponse.toMutableList()
         somBottomSheetCourierListAdapter.isServiceCourier = false
         somBottomSheetCourierListAdapter.notifyDataSetChanged()

@@ -1,4 +1,4 @@
-package com.tokopedia.sellerorder.requestpickup.presentation.fragment
+package com.tokopedia.logisticseller.ui.requestpickup.presentation.fragment
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -15,30 +15,33 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
-import com.tokopedia.sellerorder.R
-import com.tokopedia.sellerorder.analytics.SomAnalytics
-import com.tokopedia.sellerorder.common.errorhandler.SomErrorHandler
-import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_ID
-import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_PROCESS_REQ_PICKUP
-import com.tokopedia.sellerorder.common.util.Utils
-import com.tokopedia.sellerorder.common.util.Utils.updateShopActive
-import com.tokopedia.sellerorder.databinding.FragmentSomConfirmReqPickupBinding
-import com.tokopedia.sellerorder.requestpickup.data.mapper.SchedulePickupMapper
-import com.tokopedia.sellerorder.requestpickup.data.model.ScheduleTime
-import com.tokopedia.sellerorder.requestpickup.data.model.SomConfirmReqPickup
-import com.tokopedia.sellerorder.requestpickup.data.model.SomConfirmReqPickupParam
-import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
-import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickupParam
-import com.tokopedia.sellerorder.requestpickup.di.SomConfirmReqPickupComponent
-import com.tokopedia.sellerorder.requestpickup.presentation.adapter.SomConfirmReqPickupCourierNotesAdapter
-import com.tokopedia.sellerorder.requestpickup.presentation.adapter.SomConfirmSchedulePickupAdapter
-import com.tokopedia.sellerorder.requestpickup.presentation.viewmodel.SomConfirmReqPickupViewModel
-import com.tokopedia.sellerorder.requestpickup.util.DateMapper
+import com.tokopedia.logisticseller.R
+import com.tokopedia.logisticseller.common.LogisticSellerConst.PARAM_ORDER_ID
+import com.tokopedia.logisticseller.common.LogisticSellerConst.RESULT_PROCESS_REQ_PICKUP
+import com.tokopedia.logisticseller.common.Utils
+import com.tokopedia.logisticseller.common.Utils.updateShopActive
+import com.tokopedia.logisticseller.common.errorhandler.LogisticSellerErrorHandler
+import com.tokopedia.logisticseller.databinding.FragmentSomConfirmReqPickupBinding
+import com.tokopedia.logisticseller.di.returntoshipper.DaggerReturnToShipperComponent
+import com.tokopedia.logisticseller.di.returntoshipper.ReturnToShipperComponent
+import com.tokopedia.logisticseller.ui.requestpickup.data.mapper.SchedulePickupMapper
+import com.tokopedia.logisticseller.ui.requestpickup.data.model.ScheduleTime
+import com.tokopedia.logisticseller.ui.requestpickup.data.model.SomConfirmReqPickup
+import com.tokopedia.logisticseller.ui.requestpickup.data.model.SomConfirmReqPickupParam
+import com.tokopedia.logisticseller.ui.requestpickup.data.model.SomProcessReqPickup
+import com.tokopedia.logisticseller.ui.requestpickup.data.model.SomProcessReqPickupParam
+import com.tokopedia.logisticseller.ui.requestpickup.di.DaggerSomConfirmReqPickupComponent
+import com.tokopedia.logisticseller.ui.requestpickup.di.SomConfirmReqPickupComponent
+import com.tokopedia.logisticseller.ui.requestpickup.presentation.adapter.RequestPickupCourierNotesAdapter
+import com.tokopedia.logisticseller.ui.requestpickup.presentation.adapter.SchedulePickupAdapter
+import com.tokopedia.logisticseller.ui.requestpickup.presentation.viewmodel.RequstPickupViewModel
+import com.tokopedia.logisticseller.ui.requestpickup.util.DateMapper
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
@@ -55,7 +58,8 @@ import javax.inject.Inject
 /**
  * Created by fwidjaja on 2019-11-12.
  */
-class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePickupAdapter.SomConfirmSchedulePickupAdapterListener {
+class RequestPickupFragment : BaseDaggerFragment(),
+    SchedulePickupAdapter.SomConfirmSchedulePickupAdapterListener {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
@@ -67,11 +71,11 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
     private var currSchedulePickupTime = ""
     private var confirmReqPickupResponse = SomConfirmReqPickup.Data.MpLogisticPreShipInfo()
     private var processReqPickupResponse = SomProcessReqPickup.Data.MpLogisticRequestPickup()
-    private lateinit var confirmReqPickupCourierNotesAdapter: SomConfirmReqPickupCourierNotesAdapter
+    private lateinit var confirmReqPickupCourierNotesAdapter: RequestPickupCourierNotesAdapter
 
     private var bottomSheetSchedulePickup: BottomSheetUnify? = null
-    private var bottomSheetSchedulePickupTodayAdapter = SomConfirmSchedulePickupAdapter(this)
-    private var bottomSheetSchedulePickupTomorrowAdapter = SomConfirmSchedulePickupAdapter(this)
+    private var bottomSheetSchedulePickupTodayAdapter = SchedulePickupAdapter(this)
+    private var bottomSheetSchedulePickupTomorrowAdapter = SchedulePickupAdapter(this)
     private var rvSchedulePickupToday: RecyclerView? = null
     private var rvSchedulePickupTomorrow: RecyclerView? = null
     private var tvSchedulePickupToday: Typography? = null
@@ -82,7 +86,7 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
     private val tomorrow: String = "Besok"
 
     private val somConfirmRequestPickupViewModel by lazy {
-        ViewModelProviders.of(this, viewModelFactory)[SomConfirmReqPickupViewModel::class.java]
+        ViewModelProviders.of(this, viewModelFactory)[RequstPickupViewModel::class.java]
     }
 
     private val binding by viewBinding(FragmentSomConfirmReqPickupBinding::bind)
@@ -92,8 +96,8 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
         private const val ERROR_PROCESSING_REQUEST_PICKUP = "Error when processing request pickup."
 
         @JvmStatic
-        fun newInstance(bundle: Bundle): SomConfirmReqPickupFragment {
-            return SomConfirmReqPickupFragment().apply {
+        fun newInstance(bundle: Bundle): RequestPickupFragment {
+            return RequestPickupFragment().apply {
                 arguments = Bundle().apply {
                     putString(PARAM_ORDER_ID, bundle.getString(PARAM_ORDER_ID))
                 }
@@ -127,7 +131,10 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
-        getComponent(SomConfirmReqPickupComponent::class.java).inject(this)
+        val component: SomConfirmReqPickupComponent = DaggerSomConfirmReqPickupComponent.builder()
+            .baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
+            .build()
+        component.inject(this)
     }
 
     private fun setupHeader() {
@@ -155,20 +162,21 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
                     confirmReqPickupResponse = it.data.mpLogisticPreShipInfo
                     renderConfirmReqPickup()
                 }
+
                 is Fail -> {
-                    SomErrorHandler.logExceptionToCrashlytics(
+                    LogisticSellerErrorHandler.logExceptionToCrashlytics(
                         it.throwable,
                         ERROR_GET_CONFIRM_REQUEST_PICKUP_DATA
                     )
-                    SomErrorHandler.logExceptionToServer(
-                        errorTag = SomErrorHandler.SOM_TAG,
+                    LogisticSellerErrorHandler.logExceptionToServer(
+                        errorTag = LogisticSellerErrorHandler.SOM_TAG,
                         throwable = it.throwable,
                         errorType =
-                        SomErrorHandler.SomMessage.GET_REQUEST_PICKUP_DATA_ERROR,
+                        LogisticSellerErrorHandler.SomMessage.GET_REQUEST_PICKUP_DATA_ERROR,
                         deviceId = userSession.deviceId.orEmpty()
                     )
                     context?.run {
-                        Utils.showToasterError(SomErrorHandler.getErrorMessage(it.throwable, this), view)
+                        Utils.showToasterError(LogisticSellerErrorHandler.getErrorMessage(it.throwable, this), view)
                     }
                 }
             }
@@ -181,25 +189,26 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
                 is Success -> {
                     processReqPickupResponse = it.data.mpLogisticRequestPickup
                     activity?.setResult(Activity.RESULT_OK, Intent().apply {
-                        putExtra(RESULT_PROCESS_REQ_PICKUP, processReqPickupResponse)
+                        putExtra(RESULT_PROCESS_REQ_PICKUP, processReqPickupResponse.listMessage.firstOrNull())
                     })
                     activity?.finish()
 
                 }
+
                 is Fail -> {
-                    SomErrorHandler.logExceptionToCrashlytics(
+                    LogisticSellerErrorHandler.logExceptionToCrashlytics(
                         it.throwable,
                         ERROR_PROCESSING_REQUEST_PICKUP
                     )
-                    SomErrorHandler.logExceptionToServer(
-                        errorTag = SomErrorHandler.SOM_TAG,
+                    LogisticSellerErrorHandler.logExceptionToServer(
+                        errorTag = LogisticSellerErrorHandler.SOM_TAG,
                         throwable = it.throwable,
                         errorType =
-                        SomErrorHandler.SomMessage.REQUEST_PICKUP_ERROR,
+                        LogisticSellerErrorHandler.SomMessage.REQUEST_PICKUP_ERROR,
                         deviceId = userSession.deviceId.orEmpty()
                     )
                     context?.run {
-                        Utils.showToasterError(SomErrorHandler.getErrorMessage(it.throwable, this), view)
+                        Utils.showToasterError(LogisticSellerErrorHandler.getErrorMessage(it.throwable, this), view)
                     }
                 }
             }
@@ -225,17 +234,18 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
                     tvCourierCount.text = htmlCourierCountService.spannedString
                 }
 
-                if(confirmReqPickupResponse.dataSuccess.detail.orchestraPartner.isEmpty()) {
+                if (confirmReqPickupResponse.dataSuccess.detail.orchestraPartner.isEmpty()) {
                     tvCourierNotes.text = confirmReqPickupResponse.dataSuccess.detail.listShippers[0].note
                 } else {
-                    tvCourierNotes.text = getString(R.string.courier_option_schedule, confirmReqPickupResponse.dataSuccess.detail.orchestraPartner)
+                    tvCourierNotes.text =
+                        getString(R.string.courier_option_schedule, confirmReqPickupResponse.dataSuccess.detail.orchestraPartner)
                 }
 
 
             }
 
             if (confirmReqPickupResponse.dataSuccess.notes.listNotes.isNotEmpty()) {
-                confirmReqPickupCourierNotesAdapter = SomConfirmReqPickupCourierNotesAdapter()
+                confirmReqPickupCourierNotesAdapter = RequestPickupCourierNotesAdapter()
                 labelPastikan.visibility = View.VISIBLE
                 rvCourierNotes.visibility = View.VISIBLE
                 rvCourierNotes.run {
@@ -243,7 +253,8 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
                     adapter = confirmReqPickupCourierNotesAdapter
                 }
 
-                confirmReqPickupCourierNotesAdapter.listCourierNotes = confirmReqPickupResponse.dataSuccess.notes.listNotes.toMutableList()
+                confirmReqPickupCourierNotesAdapter.listCourierNotes =
+                    confirmReqPickupResponse.dataSuccess.notes.listNotes.toMutableList()
                 confirmReqPickupCourierNotesAdapter.notifyDataSetChanged()
 
             } else {
@@ -260,8 +271,18 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
                 pickupSchedule.centerText = true
                 tvSchedule.text = confirmReqPickupResponse.dataSuccess.detail.listShippers[0].note
                 setActiveChips(pickupNow, pickupSchedule)
-                bottomSheetSchedulePickupTodayAdapter.setData(schedulePickupMapper.mapSchedulePickup(confirmReqPickupResponse.dataSuccess.schedule_time.today, today), currSchedulePickupKey)
-                bottomSheetSchedulePickupTomorrowAdapter.setData(schedulePickupMapper.mapSchedulePickup(confirmReqPickupResponse.dataSuccess.schedule_time.tomorrow, tomorrow), currSchedulePickupKey)
+                bottomSheetSchedulePickupTodayAdapter.setData(
+                    schedulePickupMapper.mapSchedulePickup(
+                        confirmReqPickupResponse.dataSuccess.schedule_time.today,
+                        today
+                    ), currSchedulePickupKey
+                )
+                bottomSheetSchedulePickupTomorrowAdapter.setData(
+                    schedulePickupMapper.mapSchedulePickup(
+                        confirmReqPickupResponse.dataSuccess.schedule_time.tomorrow,
+                        tomorrow
+                    ), currSchedulePickupKey
+                )
 
                 pickupNow.setOnClickListener {
                     setActiveChips(pickupNow, pickupSchedule)
@@ -280,16 +301,16 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
                             startTime = DateMapper.formatDate(bottomSheetSchedulePickupTodayAdapter.scheduleTime[0].start)
                             endTime = DateMapper.formatDate(bottomSheetSchedulePickupTodayAdapter.scheduleTime[0].end)
                             formattedTime = "$startTime - $endTime WIB"
-                            tvSchedule.text =  "${bottomSheetSchedulePickupTodayAdapter.scheduleTime[0].day}, $formattedTime"
+                            tvSchedule.text = "${bottomSheetSchedulePickupTodayAdapter.scheduleTime[0].day}, $formattedTime"
                         } else {
                             startTime = DateMapper.formatDate(bottomSheetSchedulePickupTomorrowAdapter.scheduleTime[0].start)
                             endTime = DateMapper.formatDate(bottomSheetSchedulePickupTomorrowAdapter.scheduleTime[0].end)
                             formattedTime = "$startTime - $endTime WIB"
-                            tvSchedule.text =  "${bottomSheetSchedulePickupTomorrowAdapter.scheduleTime[0].day}, $formattedTime"
+                            tvSchedule.text = "${bottomSheetSchedulePickupTomorrowAdapter.scheduleTime[0].day}, $formattedTime"
                         }
                         isFirstVisit = false
                     } else {
-                        tvSchedule.text =  currSchedulePickupTime
+                        tvSchedule.text = currSchedulePickupTime
                     }
                     setActiveChips(pickupSchedule, pickupNow)
                     btnArrow.visibility = View.VISIBLE
@@ -306,11 +327,16 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
             if (confirmReqPickupResponse.dataSuccess.ticker.text.isNotEmpty()) {
                 val tickerData = confirmReqPickupResponse.dataSuccess.ticker
                 tickerInfoCourier.run {
-                    val formattedDesc = getString(R.string.req_pickup_ticket_desc_template, tickerData.text, tickerData.urlDetail, tickerData.urlText)
+                    val formattedDesc = getString(
+                        R.string.req_pickup_ticket_desc_template,
+                        tickerData.text,
+                        tickerData.urlDetail,
+                        tickerData.urlText
+                    )
                     setHtmlDescription(formattedDesc)
                     tickerType = Utils.mapStringTickerTypeToUnifyTickerType(tickerData.type)
                     tickerShape = Ticker.SHAPE_LOOSE
-                    setDescriptionClickEvent(object: TickerCallback {
+                    setDescriptionClickEvent(object : TickerCallback {
                         override fun onDescriptionViewClick(linkUrl: CharSequence) {
                             RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
                         }
@@ -326,7 +352,7 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
             }
 
             btnReqPickup.setOnClickListener {
-                SomAnalytics.eventClickRequestPickupPopup()
+//                SomAnalytics.eventClickRequestPickupPopup()
                 processReqPickup()
                 observingProcessReqPickup()
             }

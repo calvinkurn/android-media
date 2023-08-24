@@ -1,14 +1,14 @@
-package com.tokopedia.sellerorder.confirmshipping.domain.query
+package com.tokopedia.logisticseller.ui.confirmshipping.domain.query
 
 import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.usecase.RequestParams
 
-object SomChangeCourierQuery : GqlQueryInterface {
+object ChangeCourierQuery : GqlQueryInterface {
 
     private const val OPERATION_NAME = "mpLogisticChangeCourier"
     private val CHANGE_COURIER_QUERY = """
-        mutation ${OPERATION_NAME}(${'$'}orderId: String!, ${'$'}shippingRef: String!, ${'$'}agencyId: Int!, ${'$'}spId: Int!){
-              ${OPERATION_NAME}(input: {
+        mutation $OPERATION_NAME(${'$'}orderId: String!, ${'$'}shippingRef: String!, ${'$'}agencyId: Int!, ${'$'}spId: Int!){
+              $OPERATION_NAME(input: {
                                 order_id: ${'$'}orderId,
                                 shipping_ref: ${'$'}shippingRef,
                                 agency_id: ${'$'}agencyId,

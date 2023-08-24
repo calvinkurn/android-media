@@ -1,19 +1,19 @@
-package com.tokopedia.sellerorder.confirmshipping.presentation.adapter
+package com.tokopedia.logisticseller.ui.confirmshipping.presentation.adapter
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.sellerorder.R
-import com.tokopedia.sellerorder.confirmshipping.data.model.SomCourierList
-import com.tokopedia.sellerorder.databinding.BottomsheetTextItemBinding
+import com.tokopedia.logisticseller.R
+import com.tokopedia.logisticseller.ui.confirmshipping.data.model.SomCourierList
+import com.tokopedia.logisticseller.databinding.BottomsheetTextItemBinding
 import com.tokopedia.utils.view.binding.viewBinding
 
 /**
  * Created by fwidjaja on 2019-11-05.
  */
-class SomBottomSheetCourierListAdapter(private var listener: ActionListener): RecyclerView.Adapter<SomBottomSheetCourierListAdapter.ViewHolder>()  {
+class BottomSheetCourierListAdapter(private var listener: ActionListener): RecyclerView.Adapter<BottomSheetCourierListAdapter.ViewHolder>()  {
     var listCourier = mutableListOf<SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment.Shipment>()
     var listCourierService = mutableListOf<SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment.Shipment.ShipmentPackage>()
     var isServiceCourier = false
