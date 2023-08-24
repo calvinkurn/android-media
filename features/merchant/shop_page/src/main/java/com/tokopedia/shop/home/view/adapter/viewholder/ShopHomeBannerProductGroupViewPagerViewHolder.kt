@@ -22,7 +22,7 @@ import com.tokopedia.unifycomponents.setCustomText
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.shop.home.view.model.ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.Data.BannerType
 
-class ShopHomeProductCarouselViewPagerViewHolder(
+class ShopHomeBannerProductGroupViewPagerViewHolder(
     itemView: View,
     private val listener: ShopBannerProductGroupListener,
     private val provider: ShopBannerProductGroupWidgetTabDependencyProvider

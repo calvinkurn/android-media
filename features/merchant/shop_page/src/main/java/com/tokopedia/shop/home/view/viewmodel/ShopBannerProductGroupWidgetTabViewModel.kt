@@ -8,10 +8,10 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.shop.common.constant.ShopPageConstant
-import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselProductCard
+import com.tokopedia.shop.home.view.model.banner_product_group.ProductCardItemType
 import com.tokopedia.shop.home.view.model.ShopWidgetComponentBannerProductGroupUiModel
-import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselVerticalBannerItemType
-import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselVerticalBannerVerticalBanner
+import com.tokopedia.shop.home.view.model.banner_product_group.ShopHomeBannerProductGroupItemType
+import com.tokopedia.shop.home.view.model.banner_product_group.VerticalBannerItemType
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import javax.inject.Inject
@@ -43,7 +43,7 @@ class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
 
     sealed class UiState {
         object Loading: UiState()
-        data class Success(val data: List<ShopHomeProductCarouselVerticalBannerItemType>): UiState()
+        data class Success(val data: List<ShopHomeBannerProductGroupItemType>): UiState()
         data class Error(val error: Throwable): UiState()
     }
 
@@ -92,7 +92,7 @@ class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
         shopId: String,
         userAddress: LocalCacheModel,
         productWidget: ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.Data,
-    ): List<ShopHomeProductCarouselProductCard> {
+    ): List<ProductCardItemType> {
         val showProductInfo = productWidget.isShowProductInfo
 
         return when(productWidget.linkType) {
@@ -121,7 +121,7 @@ class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
         userAddress: LocalCacheModel,
         sortId: Long,
         showProductInfo: Boolean
-    ): List<ShopHomeProductCarouselProductCard> {
+    ): List<ProductCardItemType> {
         getShopProductUseCase.params = GqlGetShopProductUseCase.createParams(
             shopId,
             ShopProductFilterInput().apply {
@@ -140,7 +140,7 @@ class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
         val products = response.data.map { product ->
             val soldLabel = product.labelGroupList.soldCount()
 
-            ShopHomeProductCarouselProductCard(
+            ProductCardItemType(
                 product.productId,
                 product.primaryImage.thumbnail,
                 product.name,
@@ -162,7 +162,7 @@ class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
         userId: String,
         userAddress: LocalCacheModel,
         showProductInfo: Boolean
-    ): List<ShopHomeProductCarouselProductCard> {
+    ): List<ProductCardItemType> {
         getShopFeaturedProductUseCase.params = GetShopFeaturedProductUseCase.createParams(
             ShopFeaturedProductParams(
                 shopId,
@@ -175,7 +175,7 @@ class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
         )
         val response = getShopFeaturedProductUseCase.executeOnBackground()
         val featuredProducts = response.map { product ->
-            ShopHomeProductCarouselProductCard(
+            ProductCardItemType(
                 product.productId,
                 product.imageUri,
                 product.name,
@@ -205,9 +205,9 @@ class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
 
     private fun getVerticalBanner(
         widget: ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.Data
-    ): List<ShopHomeProductCarouselVerticalBannerVerticalBanner> {
+    ): List<VerticalBannerItemType> {
         return listOf(
-            ShopHomeProductCarouselVerticalBannerVerticalBanner(
+            VerticalBannerItemType(
                 widget.imageUrl,
                 widget.bannerType,
                 widget.ctaLink,

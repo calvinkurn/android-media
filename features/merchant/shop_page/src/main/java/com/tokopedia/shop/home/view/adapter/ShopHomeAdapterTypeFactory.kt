@@ -82,7 +82,7 @@ import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomePersoProductCompa
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomePersoProductComparisonPlaceholderViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeDisplayBannerTimerViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeDisplayBannerTimerPlaceholderViewHolder
-import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductCarouselViewPagerViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeBannerProductGroupViewPagerViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeShowCaseNavigationCarouselPlaceholderViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeShowCaseNavigationCarouselViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeShowCaseNavigationLeftMainBannerPlaceholderViewHolder
@@ -152,7 +152,7 @@ open class ShopHomeAdapterTypeFactory(
             PRODUCT -> getShopHomeCarousellProductViewHolder(baseShopHomeWidgetUiModel)
             VOUCHER_STATIC -> ShopHomeVoucherViewHolder.LAYOUT
             SHOWCASE_NAVIGATION_BANNER -> determineShowcaseWidgetAppearance(baseShopHomeWidgetUiModel)
-            BANNER_PRODUCT_GROUP -> ShopHomeProductCarouselViewPagerViewHolder.LAYOUT
+            BANNER_PRODUCT_GROUP -> ShopHomeBannerProductGroupViewPagerViewHolder.LAYOUT
             RECENT_ACTIVITY, BUY_AGAIN, REMINDER, ADD_ONS, TRENDING -> getShopHomeCarouselProductPersonalizationViewHolder(baseShopHomeWidgetUiModel)
             NEW_PRODUCT_LAUNCH_CAMPAIGN -> getShopHomeNplCampaignViewHolder(baseShopHomeWidgetUiModel)
             FLASH_SALE_TOKO -> getShopFlashSaleViewHolder(baseShopHomeWidgetUiModel)
@@ -440,8 +440,8 @@ open class ShopHomeAdapterTypeFactory(
             ShopHomeShowCaseNavigationCarouselViewHolder.LAYOUT -> {
                 ShopHomeShowCaseNavigationCarouselViewHolder(parent, shopHomeShowcaseNavigationListener)
             }
-            ShopHomeProductCarouselViewPagerViewHolder.LAYOUT -> {
-                ShopHomeProductCarouselViewPagerViewHolder(parent, shopBannerProductGroupListener, shopBannerProductGroupWidgetTabDependencyProvider)
+            ShopHomeBannerProductGroupViewPagerViewHolder.LAYOUT -> {
+                ShopHomeBannerProductGroupViewPagerViewHolder(parent, shopBannerProductGroupListener, shopBannerProductGroupWidgetTabDependencyProvider)
             }
             ShopLayoutLoadingShimmerViewHolder.LAYOUT -> {
                 ShopLayoutLoadingShimmerViewHolder(parent)

@@ -15,16 +15,16 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.databinding.ItemShopHomeProductCarouselProductInfoCardBinding
 import com.tokopedia.shop.databinding.ItemShopHomeProductCarouselShimmerBinding
 import com.tokopedia.shop.databinding.ItemShopHomeProductCarouselVerticalBannerCardBinding
-import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselProductCard
-import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselShimmer
-import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselVerticalBannerItemType
-import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselVerticalBannerVerticalBanner
+import com.tokopedia.shop.home.view.model.banner_product_group.ProductCardItemType
+import com.tokopedia.shop.home.view.model.banner_product_group.ShimmerItemType
+import com.tokopedia.shop.home.view.model.banner_product_group.ShopHomeBannerProductGroupItemType
+import com.tokopedia.shop.home.view.model.banner_product_group.VerticalBannerItemType
 
 class ShopHomeBannerProductGroupTabAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private var items = mutableListOf<ShopHomeProductCarouselVerticalBannerItemType>()
-    private var onProductClick: (ShopHomeProductCarouselProductCard) -> Unit = {}
-    private var onVerticalBannerClick: (ShopHomeProductCarouselVerticalBannerVerticalBanner) -> Unit = {}
+    private var items = mutableListOf<ShopHomeBannerProductGroupItemType>()
+    private var onProductClick: (ProductCardItemType) -> Unit = {}
+    private var onVerticalBannerClick: (VerticalBannerItemType) -> Unit = {}
 
     companion object {
         private const val VIEW_TYPE_SHIMMER = 0
@@ -74,17 +74,17 @@ class ShopHomeBannerProductGroupTabAdapter : RecyclerView.Adapter<RecyclerView.V
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (val item = items[position]) {
-            ShopHomeProductCarouselShimmer -> {}
-            is ShopHomeProductCarouselProductCard -> (holder as ProductViewHolder).bind(item)
-            is ShopHomeProductCarouselVerticalBannerVerticalBanner -> (holder as VerticalBannerViewHolder).bind(item)
+            ShimmerItemType -> {}
+            is ProductCardItemType -> (holder as ProductViewHolder).bind(item)
+            is VerticalBannerItemType -> (holder as VerticalBannerViewHolder).bind(item)
         }
     }
 
     override fun getItemViewType(position: Int): Int {
         return when(items[position]) {
-            ShopHomeProductCarouselShimmer -> VIEW_TYPE_SHIMMER
-            is ShopHomeProductCarouselVerticalBannerVerticalBanner -> VIEW_TYPE_VERTICAL_BANNER
-            is ShopHomeProductCarouselProductCard -> VIEW_TYPE_PRODUCT
+            ShimmerItemType -> VIEW_TYPE_SHIMMER
+            is VerticalBannerItemType -> VIEW_TYPE_VERTICAL_BANNER
+            is ProductCardItemType -> VIEW_TYPE_PRODUCT
         }
     }
 
@@ -96,8 +96,8 @@ class ShopHomeBannerProductGroupTabAdapter : RecyclerView.Adapter<RecyclerView.V
         private val binding: ItemShopHomeProductCarouselProductInfoCardBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: ShopHomeProductCarouselVerticalBannerItemType) {
-            val product = item as? ShopHomeProductCarouselProductCard
+        fun bind(item: ShopHomeBannerProductGroupItemType) {
+            val product = item as? ProductCardItemType
             
             product?.let {
                 binding.imgProduct.loadImage(product.imageUrl)
@@ -114,13 +114,13 @@ class ShopHomeBannerProductGroupTabAdapter : RecyclerView.Adapter<RecyclerView.V
             }
         }
 
-        private fun renderProductSoldCount(product: ShopHomeProductCarouselProductCard) {
+        private fun renderProductSoldCount(product: ProductCardItemType) {
             val hasBeenPurchased = product.soldCount.isNotEmpty()
             binding.tpgProductSoldCount.text = product.soldCount
             binding.tpgProductSoldCount.isVisible = product.showProductInfo && hasBeenPurchased
         }
 
-        private fun renderProductRating(product: ShopHomeProductCarouselProductCard) {
+        private fun renderProductRating(product: ProductCardItemType) {
             val hasRating = product.rating.isNotEmpty()
 
             binding.imgStar.isVisible = product.showProductInfo && hasRating
@@ -130,12 +130,12 @@ class ShopHomeBannerProductGroupTabAdapter : RecyclerView.Adapter<RecyclerView.V
             binding.tpgRating.isVisible = product.showProductInfo && hasRating
         }
 
-        private fun renderProductPrice(product: ShopHomeProductCarouselProductCard) {
+        private fun renderProductPrice(product: ProductCardItemType) {
             binding.tpgProductPrice.text = product.price
             binding.tpgProductPrice.showIfOrInvisible(product.showProductInfo)
         }
 
-        private fun renderSlashedProductPrice(product: ShopHomeProductCarouselProductCard) {
+        private fun renderSlashedProductPrice(product: ProductCardItemType) {
             val isDiscounted = product.slashedPricePercent.isMoreThanZero()
             binding.tpgSlashedProductPrice.text = product.slashedPrice
             binding.tpgSlashedProductPrice.strikethrough()
@@ -156,8 +156,8 @@ class ShopHomeBannerProductGroupTabAdapter : RecyclerView.Adapter<RecyclerView.V
         private val binding: ItemShopHomeProductCarouselVerticalBannerCardBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: ShopHomeProductCarouselVerticalBannerItemType) {
-            val banner = item as? ShopHomeProductCarouselVerticalBannerVerticalBanner
+        fun bind(item: ShopHomeBannerProductGroupItemType) {
+            val banner = item as? VerticalBannerItemType
 
             banner?.let {
                 binding.imgVerticalBanner.loadImage(banner.imageUrl)
@@ -167,8 +167,8 @@ class ShopHomeBannerProductGroupTabAdapter : RecyclerView.Adapter<RecyclerView.V
     }
 
     inner class DiffCallback(
-        private val oldItems: List<ShopHomeProductCarouselVerticalBannerItemType>,
-        private val newItems: List<ShopHomeProductCarouselVerticalBannerItemType>
+        private val oldItems: List<ShopHomeBannerProductGroupItemType>,
+        private val newItems: List<ShopHomeBannerProductGroupItemType>
     ) : DiffUtil.Callback() {
 
         override fun getOldListSize() = oldItems.size
@@ -184,7 +184,7 @@ class ShopHomeBannerProductGroupTabAdapter : RecyclerView.Adapter<RecyclerView.V
 
     }
 
-    fun submit(newItems: List<ShopHomeProductCarouselVerticalBannerItemType>) {
+    fun submit(newItems: List<ShopHomeBannerProductGroupItemType>) {
         val diffCallback = DiffCallback(this.items, newItems)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
 
@@ -194,11 +194,11 @@ class ShopHomeBannerProductGroupTabAdapter : RecyclerView.Adapter<RecyclerView.V
         diffResult.dispatchUpdatesTo(this)
     }
 
-    fun setOnProductClick(onProductClick: (ShopHomeProductCarouselProductCard) -> Unit) {
+    fun setOnProductClick(onProductClick: (ProductCardItemType) -> Unit) {
         this.onProductClick = onProductClick
     }
 
-    fun setOnVerticalBannerClick(onVerticalBannerClick: (ShopHomeProductCarouselVerticalBannerVerticalBanner) -> Unit) {
+    fun setOnVerticalBannerClick(onVerticalBannerClick: (VerticalBannerItemType) -> Unit) {
         this.onVerticalBannerClick = onVerticalBannerClick
     }
 }

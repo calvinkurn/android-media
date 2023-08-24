@@ -17,11 +17,11 @@ import com.tokopedia.shop.databinding.FragmentShopBannerProductGroupWidgetTabBin
 import com.tokopedia.shop.home.di.component.DaggerShopPageHomeComponent
 import com.tokopedia.shop.home.di.module.ShopPageHomeModule
 import com.tokopedia.shop.home.view.adapter.ShopHomeBannerProductGroupTabAdapter
-import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselProductCard
-import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselShimmer
+import com.tokopedia.shop.home.view.model.banner_product_group.ProductCardItemType
+import com.tokopedia.shop.home.view.model.banner_product_group.ShimmerItemType
 import com.tokopedia.shop.home.view.model.ShopWidgetComponentBannerProductGroupUiModel
-import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselVerticalBannerItemType
-import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselVerticalBannerVerticalBanner
+import com.tokopedia.shop.home.view.model.banner_product_group.ShopHomeBannerProductGroupItemType
+import com.tokopedia.shop.home.view.model.banner_product_group.VerticalBannerItemType
 import com.tokopedia.shop.home.view.viewmodel.ShopBannerProductGroupWidgetTabViewModel
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
@@ -63,8 +63,8 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
     private val viewModel by lazy { viewModelProvider[ShopBannerProductGroupWidgetTabViewModel::class.java] }
 
     private var onMainBannerClick : (ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.Data) -> Unit = {}
-    private var onProductClick : (ShopHomeProductCarouselProductCard) -> Unit = {}
-    private var onVerticalBannerClick : (ShopHomeProductCarouselVerticalBannerVerticalBanner) -> Unit = {}
+    private var onProductClick : (ProductCardItemType) -> Unit = {}
+    private var onVerticalBannerClick : (VerticalBannerItemType) -> Unit = {}
 
     private var binding by autoClearedNullable<FragmentShopBannerProductGroupWidgetTabBinding>()
     private val bannerProductGroupAdapter = ShopHomeBannerProductGroupTabAdapter()
@@ -137,7 +137,9 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
         viewModel.carouselWidgets.observe(viewLifecycleOwner) { result ->
             when(result) {
                 ShopBannerProductGroupWidgetTabViewModel.UiState.Loading -> {
-                    bannerProductGroupAdapter.submit(listOf(ShopHomeProductCarouselShimmer))
+                    bannerProductGroupAdapter.submit(listOf(
+                        ShimmerItemType
+                    ))
                 }
 
                 is ShopBannerProductGroupWidgetTabViewModel.UiState.Success -> {
@@ -158,7 +160,7 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
         viewModel.getCarouselWidgets(widgets, shopId, userAddress)
     }
 
-    private fun showProductCarousel(widgets: List<ShopHomeProductCarouselVerticalBannerItemType>) {
+    private fun showProductCarousel(widgets: List<ShopHomeBannerProductGroupItemType>) {
         bannerProductGroupAdapter.submit(widgets)
     }
 
@@ -166,11 +168,11 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
         this.onMainBannerClick = onMainBannerClick
     }
 
-    fun setOnVerticalBannerClick(onVerticalBannerClick: (ShopHomeProductCarouselVerticalBannerVerticalBanner) -> Unit) {
+    fun setOnVerticalBannerClick(onVerticalBannerClick: (VerticalBannerItemType) -> Unit) {
         this.onVerticalBannerClick = onVerticalBannerClick
     }
 
-    fun setOnProductClick(onProductClick: (ShopHomeProductCarouselProductCard) -> Unit) {
+    fun setOnProductClick(onProductClick: (ProductCardItemType) -> Unit) {
         this.onProductClick = onProductClick
     }
 }

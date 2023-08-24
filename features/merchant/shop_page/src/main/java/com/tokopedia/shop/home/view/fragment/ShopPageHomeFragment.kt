@@ -180,7 +180,7 @@ import com.tokopedia.shop.home.view.model.CarouselPlayWidgetUiModel
 import com.tokopedia.shop.home.view.model.CheckCampaignNotifyMeUiModel
 import com.tokopedia.shop.home.view.model.GetCampaignNotifyMeUiModel
 import com.tokopedia.shop.home.view.model.NotifyMeAction
-import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselProductCard
+import com.tokopedia.shop.home.view.model.banner_product_group.ProductCardItemType
 import com.tokopedia.shop.home.view.model.ShopHomeCardDonationUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
@@ -195,7 +195,7 @@ import com.tokopedia.shop.home.view.model.ShopPageLayoutUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerProductHotspotUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerTimerUiModel
 import com.tokopedia.shop.home.view.model.StatusCampaign
-import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselVerticalBannerVerticalBanner
+import com.tokopedia.shop.home.view.model.banner_product_group.VerticalBannerItemType
 import com.tokopedia.shop.home.view.model.showcase_navigation.Showcase
 import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageHeaderActivity
@@ -5016,7 +5016,7 @@ open class ShopPageHomeFragment :
         }
     }
 
-    override fun onBannerProductGroupProductClick(selectedProduct: ShopHomeProductCarouselProductCard) {
+    override fun onBannerProductGroupProductClick(selectedProduct: ProductCardItemType) {
         try {
             RouteManager.route(activity ?: return, selectedProduct.appLink)
         } catch (_: Exception) {
@@ -5024,9 +5024,9 @@ open class ShopPageHomeFragment :
 
     }
 
-    override fun onBannerProductGroupVerticalBannerClick(shopHomeProductCarouselVerticalBanner: ShopHomeProductCarouselVerticalBannerVerticalBanner) {
+    override fun onBannerProductGroupVerticalBannerClick(shopHomeProductCarouselVerticalBannerItemType: VerticalBannerItemType) {
         try {
-            RouteManager.route(activity ?: return, shopHomeProductCarouselVerticalBanner.appLink)
+            RouteManager.route(activity ?: return, shopHomeProductCarouselVerticalBannerItemType.appLink)
         } catch (_: Exception) {
         }
     }

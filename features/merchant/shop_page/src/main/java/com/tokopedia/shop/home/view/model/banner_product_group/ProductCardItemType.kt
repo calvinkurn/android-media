@@ -1,6 +1,6 @@
-package com.tokopedia.shop.home.view.model
+package com.tokopedia.shop.home.view.model.banner_product_group
 
-data class ShopHomeProductCarouselProductCard(
+data class ProductCardItemType(
     val productId: String,
     val imageUrl: String,
     val name: String,
@@ -12,4 +12,4 @@ data class ShopHomeProductCarouselProductCard(
     val appLink: String,
     val showProductInfo: Boolean,
     override val id : String = productId
-) : ShopHomeProductCarouselVerticalBannerItemType
+) : ShopHomeBannerProductGroupItemType
