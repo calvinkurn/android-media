@@ -31,7 +31,6 @@ import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.adapter.ShopCampaignCarouselProductAdapter
 import com.tokopedia.shop.home.view.adapter.ShopCampaignCarouselProductAdapterTypeFactory
 import com.tokopedia.shop.home.view.listener.ShopHomeCampaignNplWidgetListener
-import com.tokopedia.shop.home.view.listener.ShopHomeListener
 import com.tokopedia.shop.home.view.model.BannerType
 import com.tokopedia.shop.home.view.model.ShopHomeCampaignCarouselClickableBannerAreaUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeNewProductLaunchCampaignUiModel
@@ -54,8 +53,7 @@ import java.util.Date
 
 class ShopHomeNplCampaignViewHolder(
     itemView: View,
-    private val shopHomeCampaignNplWidgetListener: ShopHomeCampaignNplWidgetListener,
-    private val shopHomeListener: ShopHomeListener
+    private val shopHomeCampaignNplWidgetListener: ShopHomeCampaignNplWidgetListener
 ) : AbstractViewHolder<ShopHomeNewProductLaunchCampaignUiModel>(itemView), CoroutineScope {
 
     private val viewBinding: ItemShopHomeNewProductLaunchCampaignBinding? by viewBinding()
@@ -122,14 +120,10 @@ class ShopHomeNplCampaignViewHolder(
         if (model.isFestivity) {
             configFestivity()
         } else {
-            if (shopHomeListener.isShopHomeTabHasFestivity()) {
-                configDefaultColor()
+            if (model.header.isOverrideTheme) {
+                configReimaginedColor(model.header.colorSchema)
             } else {
-                if (model.header.isOverrideTheme) {
-                    configReimaginedColor(model.header.colorSchema)
-                } else {
-                    configDefaultColor()
-                }
+                configDefaultColor()
             }
         }
     }

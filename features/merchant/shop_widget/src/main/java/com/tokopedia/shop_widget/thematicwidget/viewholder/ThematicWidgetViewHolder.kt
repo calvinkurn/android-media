@@ -41,7 +41,6 @@ import kotlin.math.abs
 class ThematicWidgetViewHolder(
     itemView: View,
     private val listener: ThematicWidgetListener,
-    private val isShopHomeTabHasFestivity: Boolean,
     private val isOverrideTheme: Boolean
 ) : AbstractViewHolder<ThematicWidgetUiModel>(itemView), CoroutineScope, HeaderCustomViewListener {
 
@@ -135,14 +134,10 @@ class ThematicWidgetViewHolder(
         if (uiModel.isFestivity) {
             configFestivity(uiModel)
         } else {
-            if (isShopHomeTabHasFestivity) {
-                configDefaultColor(uiModel)
+            if (isOverrideTheme) {
+                configReimagined(uiModel)
             } else {
-                if (isOverrideTheme) {
-                    configReimagined(uiModel)
-                } else {
-                    configDefaultColor(uiModel)
-                }
+                configDefaultColor(uiModel)
             }
         }
     }

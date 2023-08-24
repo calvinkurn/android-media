@@ -391,14 +391,10 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
         if (element.isFestivity) {
             configFestivity()
         } else {
-            if (shopHomeListener.isShopHomeTabHasFestivity()) {
-                configDefaultColor()
+            if (element.header.isOverrideTheme) {
+                configReimaginedColor(element.header.colorSchema)
             } else {
-                if (element.header.isOverrideTheme) {
-                    configReimaginedColor(element.header.colorSchema)
-                } else {
-                    configDefaultColor()
-                }
+                configDefaultColor()
             }
         }
     }

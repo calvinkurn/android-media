@@ -16,7 +16,6 @@ import com.tokopedia.shop.databinding.WidgetShopHomeMultipleImageColumnBinding
 import com.tokopedia.shop.home.view.adapter.PaddingItemDecorationShopPage
 import com.tokopedia.shop.home.view.adapter.ShopHomeMultipleImageColumnAdapter
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
-import com.tokopedia.shop.home.view.listener.ShopHomeListener
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
@@ -27,8 +26,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopHomeMultipleImageColumnViewHolder(
     itemView: View,
-    private val listener: ShopHomeDisplayWidgetListener,
-    private val shopHomeListener: ShopHomeListener
+    private val listener: ShopHomeDisplayWidgetListener
 ) : AbstractViewHolder<ShopHomeDisplayWidgetUiModel>(itemView) {
 
     companion object {
@@ -83,14 +81,10 @@ class ShopHomeMultipleImageColumnViewHolder(
     }
 
     private fun configColorTheme(element: ShopHomeDisplayWidgetUiModel) {
-        if (shopHomeListener.isShopHomeTabHasFestivity()) {
-            setDefaultColorConfig()
+        if (element.header.isOverrideTheme) {
+            setReimaginedColorConfig(element.header.colorSchema)
         } else {
-            if (element.header.isOverrideTheme) {
-                setReimaginedColorConfig(element.header.colorSchema)
-            } else {
-                setDefaultColorConfig()
-            }
+            setDefaultColorConfig()
         }
     }
 

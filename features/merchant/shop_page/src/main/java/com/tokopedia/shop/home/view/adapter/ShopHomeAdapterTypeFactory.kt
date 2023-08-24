@@ -373,23 +373,19 @@ open class ShopHomeAdapterTypeFactory(
         val viewHolder = when (type) {
             ShopHomeMultipleImageColumnViewHolder.LAYOUT_RES -> ShopHomeMultipleImageColumnViewHolder(
                 parent,
-                listener,
-                shopHomeListener
+                listener
             )
             ShopHomeSliderSquareViewHolder.LAYOUT_RES -> ShopHomeSliderSquareViewHolder(
                 parent,
-                listener,
-                shopHomeListener
+                listener
             )
             ShopHomeSliderBannerViewHolder.LAYOUT_RES -> ShopHomeSliderBannerViewHolder(
                 parent,
-                listener,
-                shopHomeListener
+                listener
             )
             ShopHomeVideoViewHolder.LAYOUT_RES -> ShopHomeVideoViewHolder(
                 parent,
-                listener,
-                shopHomeListener
+                listener
             )
             ShopHomeProductViewHolder.LAYOUT -> {
                 ShopHomeProductViewHolder(parent, shopHomeEndlessProductListener, isShowTripleDot, shopHomeListener)
@@ -433,19 +429,24 @@ open class ShopHomeAdapterTypeFactory(
             }
             ShopProductSortFilterViewHolder.LAYOUT -> return ShopProductSortFilterViewHolder(parent, shopProductEtalaseListViewHolderListener)
             ShopHomeNplCampaignViewHolder.LAYOUT -> {
-                ShopHomeNplCampaignViewHolder(parent, shopHomeCampaignNplWidgetListener, shopHomeListener)
+                ShopHomeNplCampaignViewHolder(parent, shopHomeCampaignNplWidgetListener)
             }
-            ShopHomeFlashSaleViewHolder.LAYOUT -> return ShopHomeFlashSaleViewHolder(parent, shopHomeFlashSaleWidgetListener, shopHomeListener)
+            ShopHomeFlashSaleViewHolder.LAYOUT -> return ShopHomeFlashSaleViewHolder(
+                parent,
+                shopHomeFlashSaleWidgetListener
+            )
             ShopHomeProductChangeGridSectionViewHolder.LAYOUT -> ShopHomeProductChangeGridSectionViewHolder(parent, shopProductChangeGridSectionListener, shopHomeListener)
-            CarouselPlayWidgetViewHolder.LAYOUT -> CarouselPlayWidgetViewHolder(PlayWidgetViewHolder(parent, playWidgetCoordinator), shopHomePlayWidgetListener, shopHomeListener)
+            CarouselPlayWidgetViewHolder.LAYOUT -> CarouselPlayWidgetViewHolder(
+                PlayWidgetViewHolder(parent, playWidgetCoordinator),
+                shopHomePlayWidgetListener
+            )
             ShopHomeCarouselProductPersonalizationViewHolder.LAYOUT -> ShopHomeCarouselProductPersonalizationViewHolder(parent, shopHomeCarouselProductListener, shopHomeListener)
             ShopHomeProductBundleParentWidgetViewHolder.LAYOUT -> ShopHomeProductBundleParentWidgetViewHolder(parent, multipleProductBundleListener, singleProductBundleListener, shopHomeListener)
             ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT -> ShopHomeShowcaseListBaseWidgetViewHolder(
                 parent,
                 ShopHomeShowcaseListWidgetAdapter(showcaseListWidgetListener = shopHomeShowcaseListWidgetListener),
                 showcaseWidgetLayoutType,
-                showcaseWidgetGridColumnSize,
-                shopHomeListener
+                showcaseWidgetGridColumnSize
             )
             ProductGridListPlaceholderViewHolder.LAYOUT -> ProductGridListPlaceholderViewHolder(parent)
             ShopHomeNplCampaignPlaceholderViewHolder.LAYOUT -> ShopHomeNplCampaignPlaceholderViewHolder(parent)
@@ -453,15 +454,27 @@ open class ShopHomeAdapterTypeFactory(
             ShopHomeSliderBannerPlaceholderViewHolder.LAYOUT_RES -> ShopHomeSliderBannerPlaceholderViewHolder(parent)
             ShopHomeSliderSquarePlaceholderViewHolder.LAYOUT_RES -> ShopHomeSliderSquarePlaceholderViewHolder(parent)
             ShopHomeMultipleImageColumnPlaceholderViewHolder.LAYOUT_RES -> ShopHomeMultipleImageColumnPlaceholderViewHolder(parent)
-            ShopHomeCardDonationViewHolder.LAYOUT -> ShopHomeCardDonationViewHolder(parent, shopHomeCardDonationListener, shopHomeListener)
-            ThematicWidgetViewHolder.LAYOUT -> ThematicWidgetViewHolder(parent, thematicWidgetListener, shopHomeListener.isShopHomeTabHasFestivity(), shopHomeListener.isOverrideTheme())
+            ShopHomeCardDonationViewHolder.LAYOUT -> ShopHomeCardDonationViewHolder(
+                parent,
+                shopHomeCardDonationListener
+            )
+            ThematicWidgetViewHolder.LAYOUT -> ThematicWidgetViewHolder(parent, thematicWidgetListener, shopHomeListener.isOverrideTheme())
             ThematicWidgetLoadingStateViewHolder.LAYOUT -> ThematicWidgetLoadingStateViewHolder(parent)
             ShopHomePersoProductComparisonPlaceholderViewHolder.LAYOUT -> ShopHomePersoProductComparisonPlaceholderViewHolder(parent)
             ShopHomePersoProductComparisonViewHolder.LAYOUT -> ShopHomePersoProductComparisonViewHolder(parent, shopPersoProductComparisonListener, shopHomeListener)
             ShopHomeDisplayBannerTimerPlaceholderViewHolder.LAYOUT -> ShopHomeDisplayBannerTimerPlaceholderViewHolder(parent)
-            ShopHomeDisplayBannerTimerViewHolder.LAYOUT -> ShopHomeDisplayBannerTimerViewHolder(parent, shopHomeDisplayBannerTimerWidgetListener, shopHomeListener)
-            ShopHomeDisplayBannerProductHotspotViewHolder.LAYOUT -> ShopHomeDisplayBannerProductHotspotViewHolder(parent, shopHomeDisplayBannerProductHotspotListener, shopHomeListener)
-            ShopHomeAdvanceCarouselBannerViewHolder.LAYOUT_RES -> ShopHomeAdvanceCarouselBannerViewHolder(parent, listener, shopHomeListener)
+            ShopHomeDisplayBannerTimerViewHolder.LAYOUT -> ShopHomeDisplayBannerTimerViewHolder(
+                parent,
+                shopHomeDisplayBannerTimerWidgetListener
+            )
+            ShopHomeDisplayBannerProductHotspotViewHolder.LAYOUT -> ShopHomeDisplayBannerProductHotspotViewHolder(
+                parent,
+                shopHomeDisplayBannerProductHotspotListener
+            )
+            ShopHomeAdvanceCarouselBannerViewHolder.LAYOUT_RES -> ShopHomeAdvanceCarouselBannerViewHolder(
+                parent,
+                listener
+            )
             // ========= Shop Home Revamp V4 - New widgets ========= //
             ShopHomeV4TerlarisPlaceholderViewHolder.LAYOUT -> ShopHomeV4TerlarisPlaceholderViewHolder(parent)
             ShopHomeV4TerlarisViewHolder.LAYOUT -> ShopHomeV4TerlarisViewHolder(parent, shopHomeV4TerlarisViewHolderListener)

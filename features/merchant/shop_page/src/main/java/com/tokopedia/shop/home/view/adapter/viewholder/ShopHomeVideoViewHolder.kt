@@ -19,7 +19,6 @@ import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.WidgetShopPageVideoYoutubeBinding
 import com.tokopedia.shop.home.HomeConstant
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
-import com.tokopedia.shop.home.view.listener.ShopHomeListener
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -32,8 +31,7 @@ import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
 
 class ShopHomeVideoViewHolder(
     val view: View,
-    private val listener: ShopHomeDisplayWidgetListener,
-    private val shopHomeListener: ShopHomeListener
+    private val listener: ShopHomeDisplayWidgetListener
 ) : AbstractViewHolder<ShopHomeDisplayWidgetUiModel>(view), View.OnClickListener {
 
     companion object {
@@ -116,14 +114,10 @@ class ShopHomeVideoViewHolder(
     }
 
     private fun configColorTheme(element: ShopHomeDisplayWidgetUiModel) {
-        if (shopHomeListener.isShopHomeTabHasFestivity()) {
-            setDefaultColorConfig()
+        if (element.header.isOverrideTheme) {
+            setReimaginedColorConfig(element.header.colorSchema)
         } else {
-            if (element.header.isOverrideTheme) {
-                setReimaginedColorConfig(element.header.colorSchema)
-            } else {
-                setDefaultColorConfig()
-            }
+            setDefaultColorConfig()
         }
     }
 
