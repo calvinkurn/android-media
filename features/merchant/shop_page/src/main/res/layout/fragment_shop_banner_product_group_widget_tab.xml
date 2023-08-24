@@ -27,6 +27,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imgMainBanner"
         tools:itemCount="2"
-        tools:listitem="@layout/item_shop_home_product_carousel_product_info_card" />
+        tools:listitem="@layout/item_shop_home_banner_product_group_product_info_card" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

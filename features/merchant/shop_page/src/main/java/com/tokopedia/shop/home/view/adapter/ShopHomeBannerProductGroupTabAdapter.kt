@@ -12,9 +12,9 @@ import com.tokopedia.kotlin.extensions.view.strikethrough
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.R
-import com.tokopedia.shop.databinding.ItemShopHomeProductCarouselProductInfoCardBinding
-import com.tokopedia.shop.databinding.ItemShopHomeProductCarouselShimmerBinding
-import com.tokopedia.shop.databinding.ItemShopHomeProductCarouselVerticalBannerCardBinding
+import com.tokopedia.shop.databinding.ItemShopHomeBannerProductGroupProductInfoCardBinding
+import com.tokopedia.shop.databinding.ItemShopHomeBannerProductGroupShimmerBinding
+import com.tokopedia.shop.databinding.ItemShopHomeBannerProductGroupVerticalBannerCardBinding
 import com.tokopedia.shop.home.view.model.banner_product_group.ProductCardItemType
 import com.tokopedia.shop.home.view.model.banner_product_group.ShimmerItemType
 import com.tokopedia.shop.home.view.model.banner_product_group.ShopHomeBannerProductGroupItemType
@@ -34,7 +34,7 @@ class ShopHomeBannerProductGroupTabAdapter : RecyclerView.Adapter<RecyclerView.V
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when(viewType) {
             VIEW_TYPE_SHIMMER -> {
-                val binding = ItemShopHomeProductCarouselShimmerBinding.inflate(
+                val binding = ItemShopHomeBannerProductGroupShimmerBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
@@ -43,7 +43,7 @@ class ShopHomeBannerProductGroupTabAdapter : RecyclerView.Adapter<RecyclerView.V
             }
 
             VIEW_TYPE_VERTICAL_BANNER -> {
-                val binding = ItemShopHomeProductCarouselVerticalBannerCardBinding.inflate(
+                val binding = ItemShopHomeBannerProductGroupVerticalBannerCardBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
@@ -51,7 +51,7 @@ class ShopHomeBannerProductGroupTabAdapter : RecyclerView.Adapter<RecyclerView.V
                 VerticalBannerViewHolder(binding)
             }
             VIEW_TYPE_PRODUCT -> {
-                val binding = ItemShopHomeProductCarouselProductInfoCardBinding.inflate(
+                val binding = ItemShopHomeBannerProductGroupProductInfoCardBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
@@ -59,7 +59,7 @@ class ShopHomeBannerProductGroupTabAdapter : RecyclerView.Adapter<RecyclerView.V
                 ProductViewHolder(binding)
             }
             else -> {
-                val binding = ItemShopHomeProductCarouselProductInfoCardBinding.inflate(
+                val binding = ItemShopHomeBannerProductGroupProductInfoCardBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
@@ -89,11 +89,11 @@ class ShopHomeBannerProductGroupTabAdapter : RecyclerView.Adapter<RecyclerView.V
     }
 
     inner class ShimmerViewHolder(
-        binding: ItemShopHomeProductCarouselShimmerBinding
+        binding: ItemShopHomeBannerProductGroupShimmerBinding
     ) : RecyclerView.ViewHolder(binding.root)
 
     inner class ProductViewHolder(
-        private val binding: ItemShopHomeProductCarouselProductInfoCardBinding
+        private val binding: ItemShopHomeBannerProductGroupProductInfoCardBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: ShopHomeBannerProductGroupItemType) {
@@ -153,7 +153,7 @@ class ShopHomeBannerProductGroupTabAdapter : RecyclerView.Adapter<RecyclerView.V
     }
     
     inner class VerticalBannerViewHolder(
-        private val binding: ItemShopHomeProductCarouselVerticalBannerCardBinding
+        private val binding: ItemShopHomeBannerProductGroupVerticalBannerCardBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: ShopHomeBannerProductGroupItemType) {
