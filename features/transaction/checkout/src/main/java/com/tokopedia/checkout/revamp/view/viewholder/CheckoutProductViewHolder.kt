@@ -68,12 +68,12 @@ class CheckoutProductViewHolder(
         renderGroupInfo(product)
         renderShopInfo(product)
 
-        bundleBinding.ivProductBundleImage.setImageUrl(product.imageUrl)
-        bundleBinding.tvProductBundleName.text = "${product.quantity} x ${product.name}"
+        bundleBinding.ivProductImageBundle.setImageUrl(product.imageUrl)
+        bundleBinding.tvProductNameBundle.text = "${product.quantity} x ${product.name}"
         if (product.ethicalDrugDataModel.needPrescription && product.ethicalDrugDataModel.iconUrl.isNotEmpty()) {
             product.ethicalDrugDataModel.iconUrl.getBitmapImageUrl(bundleBinding.root.context) {
                 try {
-                    bundleBinding.tvProductBundleName.text = SpannableStringBuilder("  ${product.quantity} x ${product.name}").apply {
+                    bundleBinding.tvProductNameBundle.text = SpannableStringBuilder("  ${product.quantity} x ${product.name}").apply {
                         setSpan(ImageSpan(bundleBinding.root.context, it, DynamicDrawableSpan.ALIGN_CENTER), 0, 1, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
                     }
                 } catch (t: Throwable) {
@@ -82,10 +82,10 @@ class CheckoutProductViewHolder(
             }
         }
         if (product.variant.isNotBlank()) {
-            bundleBinding.textVariantBundle.text = product.variant
-            bundleBinding.textVariantBundle.isVisible = true
+            bundleBinding.tvProductVariantBundle.text = product.variant
+            bundleBinding.tvProductVariantBundle.isVisible = true
         } else {
-            bundleBinding.textVariantBundle.isVisible = false
+            bundleBinding.tvProductVariantBundle.isVisible = false
         }
 
         if (product.bundlingItemPosition == 1) {
@@ -95,13 +95,13 @@ class CheckoutProductViewHolder(
                     .removeDecimalSuffix()
             val qty = product.bundleQuantity
             bundleBinding.tvCheckoutBundlePrice.text = "$qty x $priceInRp"
-            bundleBinding.tvCheckoutBundle.isVisible = true
+            bundleBinding.tvProductIdentifierBundle.isVisible = true
             bundleBinding.tvCheckoutBundleSeparator.isVisible = true
             bundleBinding.tvCheckoutBundleName.isVisible = true
             bundleBinding.tvCheckoutBundlePrice.isVisible = true
             (bundleBinding.vBundlingProductSeparator.layoutParams as? MarginLayoutParams)?.topMargin = 8.dpToPx(itemView.resources.displayMetrics)
         } else {
-            bundleBinding.tvCheckoutBundle.isVisible = false
+            bundleBinding.tvProductIdentifierBundle.isVisible = false
             bundleBinding.tvCheckoutBundleSeparator.isVisible = false
             bundleBinding.tvCheckoutBundleName.isVisible = false
             bundleBinding.tvCheckoutBundlePrice.isVisible = false
@@ -109,10 +109,10 @@ class CheckoutProductViewHolder(
         }
 
         if (product.noteToSeller.isNotEmpty()) {
-            bundleBinding.tvProductBundleNote.text = "\"${product.noteToSeller}\""
-            bundleBinding.tvProductBundleNote.isVisible = true
+            bundleBinding.tvProductNotesBundle.text = "\"${product.noteToSeller}\""
+            bundleBinding.tvProductNotesBundle.isVisible = true
         } else {
-            bundleBinding.tvProductBundleNote.isVisible = false
+            bundleBinding.tvProductNotesBundle.isVisible = false
         }
 
         renderAddOnProductBundle(product)
@@ -177,18 +177,18 @@ class CheckoutProductViewHolder(
 
     private fun hideBundleViews() {
         bundleBinding.apply {
-            tvCheckoutBundle.isVisible = false
+            tvProductIdentifierBundle.isVisible = false
             tvCheckoutBundleSeparator.isVisible = false
             tvCheckoutBundleName.isVisible = false
             tvCheckoutBundlePrice.isVisible = false
             vBundlingProductSeparator.isVisible = false
-            ivProductBundleImage.isVisible = false
-            tvProductBundleName.isVisible = false
-            textVariantBundle.isVisible = false
-            tvProductBundleNote.isVisible = false
-            tvCheckoutBundleAddons.isVisible = false
-            tvCheckoutBundleAddonsSeeAll.isVisible = false
-            llAddonProductBundleItems.isVisible = false
+            ivProductImageBundle.isVisible = false
+            tvProductNameBundle.isVisible = false
+            tvProductVariantBundle.isVisible = false
+            tvProductNotesBundle.isVisible = false
+            tvProductAddOnsSectionTitleBundle.isVisible = false
+            tvProductAddOnsSeeAllBundle.isVisible = false
+            llAddonProductItemsBundle.isVisible = false
         }
     }
 
@@ -282,6 +282,7 @@ class CheckoutProductViewHolder(
                 productBinding.tvProductAddOnsSectionTitle.text = addOnProduct.title
                 productBinding.tvProductAddOnsSeeAll.apply {
                     visible()
+                    text = addOnProduct.bottomsheet.title
                     setOnClickListener {
                         listener.onClickSeeAllAddOnProductService(product)
                     }
@@ -352,28 +353,29 @@ class CheckoutProductViewHolder(
     private fun renderAddOnProductBundle(product: CheckoutProductModel) {
         val addOnProduct = product.addOnProduct
         if (addOnProduct.listAddOnProductData.isEmpty()) {
-            bundleBinding.tvCheckoutBundleAddons.gone()
-            bundleBinding.tvCheckoutBundleAddonsSeeAll.gone()
-            bundleBinding.llAddonProductBundleItems.gone()
+            bundleBinding.tvProductAddOnsSectionTitleBundle.gone()
+            bundleBinding.tvProductAddOnsSeeAllBundle.gone()
+            bundleBinding.llAddonProductItemsBundle.gone()
         } else {
-            bundleBinding.llAddonProductBundleItems.removeAllViews()
+            bundleBinding.llAddonProductItemsBundle.removeAllViews()
             if (addOnProduct.bottomsheet.isShown) {
-                bundleBinding.tvCheckoutBundleAddons.text = addOnProduct.title
-                bundleBinding.tvCheckoutBundleAddonsSeeAll.apply {
+                bundleBinding.tvProductAddOnsSectionTitleBundle.text = addOnProduct.title
+                bundleBinding.tvProductAddOnsSeeAllBundle.apply {
                     visible()
+                    text = addOnProduct.bottomsheet.title
                     setOnClickListener {
                         listener.onClickSeeAllAddOnProductService(product)
                     }
                 }
             } else {
-                bundleBinding.tvCheckoutBundleAddons.gone()
-                bundleBinding.tvCheckoutBundleAddonsSeeAll.gone()
+                bundleBinding.tvProductAddOnsSectionTitleBundle.gone()
+                bundleBinding.tvProductAddOnsSeeAllBundle.gone()
             }
             val layoutInflater = LayoutInflater.from(itemView.context)
             addOnProduct.listAddOnProductData.forEach { addon ->
                 if (addon.name.isNotEmpty()) {
                     val addOnView =
-                        ItemAddOnProductBinding.inflate(layoutInflater, bundleBinding.llAddonProductBundleItems, false)
+                        ItemAddOnProductBinding.inflate(layoutInflater, bundleBinding.llAddonProductItemsBundle, false)
                     addOnView.apply {
                         tvCheckoutAddOnsItemName.text = addon.name
                         tvCheckoutAddOnsItemPrice.text = " (${CurrencyFormatUtil
@@ -413,8 +415,8 @@ class CheckoutProductViewHolder(
                             listener.onClickAddonProductInfoIcon(addon.infoLink)
                         }
                     }
-                    bundleBinding.llAddonProductBundleItems.addView(addOnView.root)
-                    bundleBinding.llAddonProductBundleItems.visible()
+                    bundleBinding.llAddonProductItemsBundle.addView(addOnView.root)
+                    bundleBinding.llAddonProductItemsBundle.visible()
                     listener.onImpressionAddOnProductService(
                         addon.type,
                         product.productId.toString()
