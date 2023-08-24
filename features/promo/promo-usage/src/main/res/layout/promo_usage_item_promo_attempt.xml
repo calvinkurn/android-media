@@ -4,13 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/Unify_Background"
+    android:paddingTop="16dp"
     android:orientation="vertical">
 
     <View
         android:id="@+id/topDivider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="16dp"
         android:background="@color/Unify_NN200" />
 
     <com.tokopedia.unifycomponents.TextAreaUnify2

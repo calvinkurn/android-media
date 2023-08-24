@@ -31,28 +31,12 @@ class PromoUsageGetPromoListRecommendationUseCase @Inject constructor(
         const val QUERY: String = """
             mutation getPromoListRecommendation(${'$'}params: GetPromoListRecomendationRequest, ${'$'}chosen_address: PromoDisplayChosenAddressParam, ${'$'}is_promo_revamp: Boolean) {
               GetPromoListRecommendation(params: ${'$'}params, chosen_address: ${'$'}chosen_address, is_promo_revamp: ${'$'}is_promo_revamp) {
-                status
-                message
-                error_code
-                header {
-                  process_time
-                  messages
-                  reason
-                  error_code
-                }
                 data {
                   result_status {
                     success
                     message
                     code
                   }
-                  empty_state {
-                    title
-                    description
-                    image_url
-                  }
-                  title
-                  sub_title
                   promo_recommendation {
                     codes
                     message
@@ -66,9 +50,6 @@ class PromoUsageGetPromoListRecommendationUseCase @Inject constructor(
                     sub_title
                     icon_url
                     is_enabled
-                    is_collapsed
-                    tags
-                    
                     coupons {
                       code
                       title
@@ -92,20 +73,15 @@ class PromoUsageGetPromoListRecommendationUseCase @Inject constructor(
                         is_selected
                         is_attempted
                         radio_check_state
-                        currency_details_str
                         is_highlighted
                         group_id
-                        is_group_header
                         promo_id
                         is_bebas_ongkir
                         benefit_adjustment_message
-                        benefit_type_str
-                        benefit_amount_str
                         index
                       }
                       unique_id
                       shop_id
-                      tag_image_urls
                       benefit_amount
                       is_recommended
                       is_selected
@@ -123,7 +99,6 @@ class PromoUsageGetPromoListRecommendationUseCase @Inject constructor(
                         type
                         json_metadata
                       }
-                      currency_details_str
                       coach_mark {
                         is_shown
                         title
@@ -138,7 +113,6 @@ class PromoUsageGetPromoListRecommendationUseCase @Inject constructor(
                       }
                       is_highlighted
                       group_id
-                      is_group_header
                       promo_infos {
                         title
                         icon
@@ -190,17 +164,6 @@ class PromoUsageGetPromoListRecommendationUseCase @Inject constructor(
                     message
                   }
                   additional_message
-                  section_tabs {
-                    id
-                    title
-                  }
-                  bottom_sheet {
-                    title
-                    content_title
-                    content_description
-                    image_url
-                    button_txt
-                  }
                   entry_point_info {
                     messages
                     state

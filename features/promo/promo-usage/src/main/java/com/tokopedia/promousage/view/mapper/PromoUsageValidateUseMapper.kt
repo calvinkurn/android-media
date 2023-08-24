@@ -130,7 +130,7 @@ internal class PromoUsageValidateUseMapper @Inject constructor() {
                 )
             },
             // TODO: Use backend response when ready
-            userGroupPromoAbTest = UserGroupMetadata.PROMO_USER_GROUP_C
+            userGroupPromoAbTest = UserGroupMetadata.PROMO_USER_GROUP_A
 //            userGroupPromoAbTest = promo.userGroupMetadata
 //                .firstOrNull { it.key == UserGroupMetadata.KEY_PROMO_AB_TEST_USER_GROUP }?.value
 //                .ifNull { "" }

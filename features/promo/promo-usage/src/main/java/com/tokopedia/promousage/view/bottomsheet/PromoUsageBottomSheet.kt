@@ -30,6 +30,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
@@ -51,11 +52,11 @@ import com.tokopedia.promousage.domain.entity.list.PromoAccordionViewAllItem
 import com.tokopedia.promousage.domain.entity.list.PromoItem
 import com.tokopedia.promousage.domain.entity.list.PromoRecommendationItem
 import com.tokopedia.promousage.domain.entity.list.PromoTncItem
-import com.tokopedia.promousage.util.view.BottomSheetUtil
 import com.tokopedia.promousage.util.analytics.PromoUsageAnalytics
 import com.tokopedia.promousage.util.composite.CompositeAdapter
 import com.tokopedia.promousage.util.composite.DelegateAdapterItem
 import com.tokopedia.promousage.util.extension.getErrorMessage
+import com.tokopedia.promousage.util.view.BottomSheetUtil
 import com.tokopedia.promousage.view.adapter.PromoAccordionHeaderDelegateAdapter
 import com.tokopedia.promousage.view.adapter.PromoAccordionItemDelegateAdapter
 import com.tokopedia.promousage.view.adapter.PromoAccordionViewAllDelegateAdapter
@@ -136,6 +137,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
@@ -149,6 +151,9 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
     private val binding: PromoUsageBottomsheetBinding
         get() = _binding!!
     var listener: Listener? = null
+    var currentPeekHeight: Int = 0
+    val maxPeekHeight: Int
+        get() = getScreenHeight() - BOTTOM_SHEET_MARGIN_TOP_IN_DP.toPx()
 
     private val recyclerViewAdapter by lazy {
         CompositeAdapter.Builder()
@@ -208,7 +213,9 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = PromoUsageBottomsheetBinding.inflate(inflater, container, false)
-        dialog?.setOnShowListener { applyBottomSheetMaxHeightRule() }
+        dialog?.setOnShowListener {
+            applyBottomSheetMaxHeightRule()
+        }
         return binding.root
     }
 
@@ -221,15 +228,8 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
     private fun applyBottomSheetMaxHeightRule() {
         val frameDialogView = binding.rlBottomSheetWrapper.parent as FrameLayout
         frameDialogView.setBackgroundColor(Color.TRANSPARENT)
-
         frameDialogView.bringToFront()
-
-        val screenHeight = getScreenHeight()
-        val maxPeekHeight: Int = screenHeight - BOTTOM_SHEET_MARGIN_TOP_IN_DP.toPx()
-        frameDialogView.layoutParams.height = maxPeekHeight
-
         val bottomSheetBehavior = BottomSheetBehavior.from(frameDialogView)
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
         bottomSheetBehavior.peekHeight = maxPeekHeight
     }
 
@@ -515,17 +515,19 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                     renderLoadingDialog(false)
                     renderLoadingShimmer(true)
                     renderError(false)
+                    refreshBottomSheetHeight(state)
                 }
 
                 is PromoPageUiState.Success -> {
                     renderHeader(true)
                     renderTickerInfo(state.tickerInfo)
-                    renderRecyclerView(state.items)
+                    submitItems(state.items)
                     renderLoadingDialog(false)
                     renderLoadingShimmer(false)
                     renderContent(true)
                     renderSavingInfo(state.savingInfo)
                     renderError(false)
+                    refreshBottomSheetHeight(state)
                 }
 
                 is PromoPageUiState.Error -> {
@@ -534,6 +536,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                     renderLoadingDialog(false)
                     renderContent(false)
                     renderError(true, state.exception)
+                    refreshBottomSheetHeight(state)
                 }
 
                 else -> {
@@ -596,7 +599,37 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         }
     }
 
-    private fun renderRecyclerView(items: List<DelegateAdapterItem>) {
+    private fun refreshBottomSheetHeight(state: PromoPageUiState) {
+        binding.root.addOneTimeGlobalLayoutListener {
+            val contentHeight = when (state) {
+                is PromoPageUiState.Initial -> {
+                    maxPeekHeight
+                }
+
+                is PromoPageUiState.Error -> {
+                    binding.layoutGlobalError.root.height
+                }
+
+                is PromoPageUiState.Success -> {
+                    binding.root.height
+                }
+            }
+            if (currentPeekHeight == contentHeight) {
+                return@addOneTimeGlobalLayoutListener
+            }
+            currentPeekHeight = if (currentPeekHeight < maxPeekHeight) {
+                contentHeight
+            } else {
+                maxPeekHeight
+            }
+            val frameDialogView = binding.rlBottomSheetWrapper.parent as FrameLayout
+            val bottomSheetBehavior = BottomSheetBehavior.from(frameDialogView)
+            currentPeekHeight = maxPeekHeight
+            bottomSheetBehavior.peekHeight = currentPeekHeight
+        }
+    }
+
+    private fun submitItems(items: List<DelegateAdapterItem>) {
         recyclerViewAdapter.submit(items)
     }
 
@@ -668,9 +701,10 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         with(binding) {
             val formattedTotalVoucherAmount =
                 promoSavingInfo.totalSelectedPromoBenefitAmount.splitByThousand()
-            val text = "${promoSavingInfo.message} <b>Rp{{benefit_amount}}</b> ({{promo_count}} promo)"
-                .replace("{{benefit_amount}}", formattedTotalVoucherAmount)
-                .replace("{{promo_count}}", promoSavingInfo.selectedPromoCount.toString())
+            val text =
+                "${promoSavingInfo.message} <b>Rp{{benefit_amount}}</b> ({{promo_count}} promo)"
+                    .replace("{{benefit_amount}}", formattedTotalVoucherAmount)
+                    .replace("{{promo_count}}", promoSavingInfo.selectedPromoCount.toString())
             tpgTotalSavings.text = HtmlLinkHelper(root.context, text).spannedString
             clSavingInfo.isVisible = promoSavingInfo.selectedPromoCount > 0
                 && promoSavingInfo.totalSelectedPromoBenefitAmount > 0
@@ -690,10 +724,12 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                 }
                 layoutGlobalError.globalErrorPromoUsage.setType(errorType)
                 layoutGlobalError.globalErrorPromoUsage.errorAction.text =
-                    context?.getText(com.tokopedia.promousage.R.string.promo_usage_error_try_again) ?: ""
+                    context?.getText(com.tokopedia.promousage.R.string.promo_usage_error_try_again)
+                        ?: ""
                 if (errorType == GlobalError.NO_CONNECTION) {
                     layoutGlobalError.globalErrorPromoUsage.errorSecondaryAction.text =
-                        context?.getText(com.tokopedia.promousage.R.string.promo_usage_error_to_settings) ?: ""
+                        context?.getText(com.tokopedia.promousage.R.string.promo_usage_error_to_settings)
+                            ?: ""
                     layoutGlobalError.globalErrorPromoUsage.setActionClickListener {
                         resetView()
                     }
