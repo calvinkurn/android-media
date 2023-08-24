@@ -123,7 +123,7 @@ class ProductDetailNavigation : FrameLayout, NavigationListener {
         navigationTab?.updateItemPosition()
     }
 
-    fun disableScrollUpListener() {
+    fun disableNavigationScrollUpListener() {
         navigationTab?.disableScrollUpListener()
     }
 

@@ -3582,7 +3582,7 @@ open class DynamicProductDetailFragment :
         if (!viewModel.isAPlusContentExpanded()) {
             val seeMorePosition = adapter.getSeeMoreAPlusTogglePosition()
             if (seeMorePosition != RecyclerView.NO_POSITION) {
-                binding?.pdpNavigation?.disableScrollUpListener()
+                binding?.pdpNavigation?.disableNavigationScrollUpListener()
                 scrollToPosition(seeMorePosition)
             }
         }
