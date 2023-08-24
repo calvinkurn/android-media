@@ -4,6 +4,7 @@ import com.tokopedia.stories.widget.domain.StoriesEntryPoint
 import com.tokopedia.unit.test.rule.StandardTestRule
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
@@ -35,7 +36,7 @@ class StoriesWidgetTest {
     fun `test observe stories with no shop id`() = runTest {
         val shopStoriesStates = List(5) {
             modelBuilder.buildStoriesWidgetState(
-                shopId = it.toString(),
+                shopId = it.toString()
             )
         }
         val repo = StoriesWidgetFakeRepository(
@@ -44,9 +45,10 @@ class StoriesWidgetTest {
         repo.setStoriesWidgetState(shopStoriesStates)
 
         val viewModel = StoriesWidgetViewModel(StoriesEntryPoint.ShopPage, repo)
-        viewModel.onIntent(StoriesWidgetIntent.GetStoriesStatus(emptyList())).waitUntilIdle()
+        viewModel.onIntent(StoriesWidgetIntent.GetStoriesStatus(emptyList()))
+        advanceUntilIdle()
 
-        viewModel.stories.createHelper()
+        viewModel.stories.createHelper(this)
             .onValues {
                 Assertions
                     .assertThat(it.last())
@@ -58,7 +60,7 @@ class StoriesWidgetTest {
     fun `test observe stories for specific entry point`() = runTest {
         val shopStoriesStates = List(5) {
             modelBuilder.buildStoriesWidgetState(
-                shopId = it.toString(),
+                shopId = it.toString()
             )
         }
         val repo = StoriesWidgetFakeRepository(
@@ -67,18 +69,20 @@ class StoriesWidgetTest {
         repo.setStoriesWidgetState(shopStoriesStates)
 
         val shopEPViewModel = StoriesWidgetViewModel(StoriesEntryPoint.ShopPage, repo)
-        val shopFlowHelper = shopEPViewModel.stories.createHelper()
+        val shopFlowHelper = shopEPViewModel.stories.createHelper(this)
         shopFlowHelper.run {
-            shopEPViewModel.onIntent(StoriesWidgetIntent.GetStoriesStatus(listOf("1"))).waitUntilIdle()
+            shopEPViewModel.onIntent(StoriesWidgetIntent.GetStoriesStatus(listOf("1")))
+            advanceUntilIdle()
         }.onValues {
             Assertions.assertThat(it.last().values)
                 .containsExactly(*shopStoriesStates.toTypedArray())
         }
 
         val pdpEPViewModel = StoriesWidgetViewModel(StoriesEntryPoint.ProductDetail, repo)
-        val pdpFlowHelper = pdpEPViewModel.stories.createHelper()
+        val pdpFlowHelper = pdpEPViewModel.stories.createHelper(this)
         pdpFlowHelper.run {
-            pdpEPViewModel.onIntent(StoriesWidgetIntent.GetStoriesStatus(listOf("1"))).waitUntilIdle()
+            pdpEPViewModel.onIntent(StoriesWidgetIntent.GetStoriesStatus(listOf("1")))
+            advanceUntilIdle()
         }.onValues {
             Assertions.assertThat(it.last().values)
                 .isEmpty()
@@ -89,22 +93,23 @@ class StoriesWidgetTest {
     fun `test observe specific shop id stories`() = runTest {
         val shopStoriesStates = List(5) {
             modelBuilder.buildStoriesWidgetState(
-                shopId = it.toString(),
+                shopId = it.toString()
             )
         }
         val repo = StoriesWidgetFakeRepository()
         repo.setStoriesWidgetState(shopStoriesStates)
 
         val viewModel = StoriesWidgetViewModel(StoriesEntryPoint.ShopPage, repo)
-        viewModel.onIntent(StoriesWidgetIntent.GetStoriesStatus(listOf("1"))).waitUntilIdle()
+        viewModel.onIntent(StoriesWidgetIntent.GetStoriesStatus(listOf("1")))
+        advanceUntilIdle()
 
-        viewModel.getStoriesState("0").createHelper()
+        viewModel.getStoriesState("0").createHelper(this)
             .onValues {
                 Assertions.assertThat(it.last())
                     .isEqualTo(shopStoriesStates[0])
             }
 
-        viewModel.getStoriesState("1").createHelper()
+        viewModel.getStoriesState("1").createHelper(this)
             .onValues {
                 Assertions.assertThat(it.last())
                     .isEqualTo(shopStoriesStates[1])
@@ -116,11 +121,11 @@ class StoriesWidgetTest {
         val shopStoriesStates = listOf(
             modelBuilder.buildStoriesWidgetState(
                 shopId = "0",
-                status = StoriesStatus.NoStories,
+                status = StoriesStatus.NoStories
             ),
             modelBuilder.buildStoriesWidgetState(
                 shopId = "1",
-                status = StoriesStatus.HasUnseenStories,
+                status = StoriesStatus.HasUnseenStories
             ),
             modelBuilder.buildStoriesWidgetState(
                 shopId = "2",
@@ -136,12 +141,13 @@ class StoriesWidgetTest {
         repo.setSeenStatus("1", true)
 
         val viewModel = StoriesWidgetViewModel(StoriesEntryPoint.ShopPage, repo)
-        viewModel.onIntent(StoriesWidgetIntent.GetStoriesStatus(listOf("1"))).waitUntilIdle()
+        viewModel.onIntent(StoriesWidgetIntent.GetStoriesStatus(listOf("1")))
+        advanceUntilIdle()
 
-        val firstStoryHelper = viewModel.getStoriesState("0").createHelper()
-        val secondStoryHelper = viewModel.getStoriesState("1").createHelper()
-        val thirdStoryHelper = viewModel.getStoriesState("2").createHelper()
-        val fourthStoryHelper = viewModel.getStoriesState("3").createHelper()
+        val firstStoryHelper = viewModel.getStoriesState("0").createHelper(this)
+        val secondStoryHelper = viewModel.getStoriesState("1").createHelper(this)
+        val thirdStoryHelper = viewModel.getStoriesState("2").createHelper(this)
+        val fourthStoryHelper = viewModel.getStoriesState("3").createHelper(this)
 
         firstStoryHelper.onValues {
             Assertions.assertThat(it.last())
@@ -160,7 +166,8 @@ class StoriesWidgetTest {
                 .isEqualTo(shopStoriesStates[3])
         }
 
-        viewModel.onIntent(StoriesWidgetIntent.GetLatestStoriesStatus).waitUntilIdle()
+        viewModel.onIntent(StoriesWidgetIntent.GetLatestStoriesStatus)
+        advanceUntilIdle()
 
         firstStoryHelper.onValues {
             Assertions.assertThat(it.last())
@@ -181,114 +188,122 @@ class StoriesWidgetTest {
     }
 
     @Test
-    fun `test calling show CoachMark if there is unseen stories and has not been shown`() = runTest {
-        val shopStoriesStates = listOf(
-            modelBuilder.buildStoriesWidgetState(
-                shopId = "0",
-                status = StoriesStatus.NoStories,
-            ),
-            modelBuilder.buildStoriesWidgetState(
-                shopId = "1",
-                status = StoriesStatus.HasUnseenStories
+    fun `test calling show CoachMark if there is unseen stories and has not been shown`() =
+        runTest {
+            val shopStoriesStates = listOf(
+                modelBuilder.buildStoriesWidgetState(
+                    shopId = "0",
+                    status = StoriesStatus.NoStories
+                ),
+                modelBuilder.buildStoriesWidgetState(
+                    shopId = "1",
+                    status = StoriesStatus.HasUnseenStories
+                )
             )
-        )
-        val repo = StoriesWidgetFakeRepository(initialHasSeenCoachMark = false)
-        repo.setStoriesWidgetState(shopStoriesStates)
+            val repo = StoriesWidgetFakeRepository(initialHasSeenCoachMark = false)
+            repo.setStoriesWidgetState(shopStoriesStates)
 
-        val viewModel = StoriesWidgetViewModel(StoriesEntryPoint.ShopPage, repo)
-        viewModel.onIntent(StoriesWidgetIntent.GetStoriesStatus(listOf("1")))
-        viewModel.onIntent(StoriesWidgetIntent.ShowCoachMark).waitUntilIdle()
-        viewModel.uiMessage.createHelper()
-            .onValues {
-                Assertions.assertThat(it)
-                    .hasAtLeastOneElementOfType(StoriesWidgetMessage.ShowCoachMark::class.java)
+            val viewModel = StoriesWidgetViewModel(StoriesEntryPoint.ShopPage, repo)
+            viewModel.onIntent(StoriesWidgetIntent.GetStoriesStatus(listOf("1")))
+            viewModel.onIntent(StoriesWidgetIntent.ShowCoachMark)
+            advanceUntilIdle()
+            viewModel.uiMessage.createHelper(this)
+                .onValues {
+                    Assertions.assertThat(it)
+                        .hasAtLeastOneElementOfType(StoriesWidgetMessage.ShowCoachMark::class.java)
 
-                Assertions.assertThat(it.last())
-                    .isEqualTo(StoriesWidgetMessage.ShowCoachMark("1"))
-            }
-    }
+                    Assertions.assertThat(it.last())
+                        .isEqualTo(StoriesWidgetMessage.ShowCoachMark("1"))
+                }
+        }
 
     @Test
-    fun `test calling show CoachMark if there is unseen stories but it has been shown previously`() = runTest {
-        val shopStoriesStates = listOf(
-            modelBuilder.buildStoriesWidgetState(
-                shopId = "0",
-                status = StoriesStatus.NoStories,
-            ),
-            modelBuilder.buildStoriesWidgetState(
-                shopId = "1",
-                status = StoriesStatus.HasUnseenStories
+    fun `test calling show CoachMark if there is unseen stories but it has been shown previously`() =
+        runTest {
+            val shopStoriesStates = listOf(
+                modelBuilder.buildStoriesWidgetState(
+                    shopId = "0",
+                    status = StoriesStatus.NoStories
+                ),
+                modelBuilder.buildStoriesWidgetState(
+                    shopId = "1",
+                    status = StoriesStatus.HasUnseenStories
+                )
             )
-        )
-        val repo = StoriesWidgetFakeRepository(initialHasSeenCoachMark = true)
-        repo.setStoriesWidgetState(shopStoriesStates)
+            val repo = StoriesWidgetFakeRepository(initialHasSeenCoachMark = true)
+            repo.setStoriesWidgetState(shopStoriesStates)
 
-        val viewModel = StoriesWidgetViewModel(StoriesEntryPoint.ShopPage, repo)
-        viewModel.onIntent(StoriesWidgetIntent.GetStoriesStatus(listOf("1")))
-        viewModel.onIntent(StoriesWidgetIntent.ShowCoachMark).waitUntilIdle()
-        viewModel.uiMessage.createHelper()
-            .onValues {
-                Assertions.assertThat(it)
-                    .doesNotHaveSameClassAs(StoriesWidgetMessage.ShowCoachMark(""))
-            }
-    }
+            val viewModel = StoriesWidgetViewModel(StoriesEntryPoint.ShopPage, repo)
+            viewModel.onIntent(StoriesWidgetIntent.GetStoriesStatus(listOf("1")))
+            viewModel.onIntent(StoriesWidgetIntent.ShowCoachMark)
+            advanceUntilIdle()
+            viewModel.uiMessage.createHelper(this)
+                .onValues {
+                    Assertions.assertThat(it)
+                        .doesNotHaveSameClassAs(StoriesWidgetMessage.ShowCoachMark(""))
+                }
+        }
 
     @Test
-    fun `test calling show CoachMark if there is no unseen stories and has not been shown`() = runTest {
-        val shopStoriesStates = listOf(
-            modelBuilder.buildStoriesWidgetState(
-                shopId = "0",
-                status = StoriesStatus.NoStories,
-            ),
-            modelBuilder.buildStoriesWidgetState(
-                shopId = "1",
-                status = StoriesStatus.AllStoriesSeen
+    fun `test calling show CoachMark if there is no unseen stories and has not been shown`() =
+        runTest {
+            val shopStoriesStates = listOf(
+                modelBuilder.buildStoriesWidgetState(
+                    shopId = "0",
+                    status = StoriesStatus.NoStories
+                ),
+                modelBuilder.buildStoriesWidgetState(
+                    shopId = "1",
+                    status = StoriesStatus.AllStoriesSeen
+                )
             )
-        )
-        val repo = StoriesWidgetFakeRepository(initialHasSeenCoachMark = false)
-        repo.setStoriesWidgetState(shopStoriesStates)
+            val repo = StoriesWidgetFakeRepository(initialHasSeenCoachMark = false)
+            repo.setStoriesWidgetState(shopStoriesStates)
 
-        val viewModel = StoriesWidgetViewModel(StoriesEntryPoint.ShopPage, repo)
-        viewModel.onIntent(StoriesWidgetIntent.GetStoriesStatus(listOf("1")))
-        viewModel.onIntent(StoriesWidgetIntent.ShowCoachMark).waitUntilIdle()
-        viewModel.uiMessage.createHelper()
-            .onValues {
-                Assertions.assertThat(it)
-                    .doesNotHaveSameClassAs(StoriesWidgetMessage.ShowCoachMark(""))
-            }
-    }
+            val viewModel = StoriesWidgetViewModel(StoriesEntryPoint.ShopPage, repo)
+            viewModel.onIntent(StoriesWidgetIntent.GetStoriesStatus(listOf("1")))
+            viewModel.onIntent(StoriesWidgetIntent.ShowCoachMark)
+            advanceUntilIdle()
+            viewModel.uiMessage.createHelper(this)
+                .onValues {
+                    Assertions.assertThat(it)
+                        .doesNotHaveSameClassAs(StoriesWidgetMessage.ShowCoachMark(""))
+                }
+        }
 
     @Test
-    fun `test calling show CoachMark if there is no unseen stories but has previously been shown`() = runTest {
-        val shopStoriesStates = listOf(
-            modelBuilder.buildStoriesWidgetState(
-                shopId = "0",
-                status = StoriesStatus.NoStories,
-            ),
-            modelBuilder.buildStoriesWidgetState(
-                shopId = "1",
-                status = StoriesStatus.AllStoriesSeen
+    fun `test calling show CoachMark if there is no unseen stories but has previously been shown`() =
+        runTest {
+            val shopStoriesStates = listOf(
+                modelBuilder.buildStoriesWidgetState(
+                    shopId = "0",
+                    status = StoriesStatus.NoStories
+                ),
+                modelBuilder.buildStoriesWidgetState(
+                    shopId = "1",
+                    status = StoriesStatus.AllStoriesSeen
+                )
             )
-        )
-        val repo = StoriesWidgetFakeRepository(initialHasSeenCoachMark = true)
-        repo.setStoriesWidgetState(shopStoriesStates)
+            val repo = StoriesWidgetFakeRepository(initialHasSeenCoachMark = true)
+            repo.setStoriesWidgetState(shopStoriesStates)
 
-        val viewModel = StoriesWidgetViewModel(StoriesEntryPoint.ShopPage, repo)
-        viewModel.onIntent(StoriesWidgetIntent.GetStoriesStatus(listOf("1")))
-        viewModel.onIntent(StoriesWidgetIntent.ShowCoachMark).waitUntilIdle()
-        viewModel.uiMessage.createHelper()
-            .onValues {
-                Assertions.assertThat(it)
-                    .doesNotHaveSameClassAs(StoriesWidgetMessage.ShowCoachMark(""))
-            }
-    }
+            val viewModel = StoriesWidgetViewModel(StoriesEntryPoint.ShopPage, repo)
+            viewModel.onIntent(StoriesWidgetIntent.GetStoriesStatus(listOf("1")))
+            viewModel.onIntent(StoriesWidgetIntent.ShowCoachMark)
+            advanceUntilIdle()
+            viewModel.uiMessage.createHelper(this)
+                .onValues {
+                    Assertions.assertThat(it)
+                        .doesNotHaveSameClassAs(StoriesWidgetMessage.ShowCoachMark(""))
+                }
+        }
 
     @Test
     fun `test calling set has seen CoachMark`() = runTest {
         val shopStoriesStates = listOf(
             modelBuilder.buildStoriesWidgetState(
                 shopId = "0",
-                status = StoriesStatus.NoStories,
+                status = StoriesStatus.NoStories
             ),
             modelBuilder.buildStoriesWidgetState(
                 shopId = "1",
@@ -300,8 +315,9 @@ class StoriesWidgetTest {
 
         val viewModel = StoriesWidgetViewModel(StoriesEntryPoint.ShopPage, repo)
         viewModel.onIntent(StoriesWidgetIntent.GetStoriesStatus(listOf("1")))
-        viewModel.onIntent(StoriesWidgetIntent.ShowCoachMark).waitUntilIdle()
-        viewModel.uiMessage.createHelper()
+        viewModel.onIntent(StoriesWidgetIntent.ShowCoachMark)
+        advanceUntilIdle()
+        viewModel.uiMessage.createHelper(this)
             .onValues {
                 val lastValue = it.last()
                 Assertions.assertThat(lastValue)
@@ -311,7 +327,8 @@ class StoriesWidgetTest {
             }
             .run {
                 viewModel.onIntent(StoriesWidgetIntent.HasSeenCoachMark)
-                viewModel.onIntent(StoriesWidgetIntent.ShowCoachMark).waitUntilIdle()
+                viewModel.onIntent(StoriesWidgetIntent.ShowCoachMark)
+                advanceUntilIdle()
             }.onValues {
                 Assertions.assertThat(it.lastOrNull())
                     .isEqualTo(null)
