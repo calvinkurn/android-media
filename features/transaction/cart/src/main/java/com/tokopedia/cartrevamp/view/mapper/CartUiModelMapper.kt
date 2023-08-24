@@ -316,29 +316,6 @@ object CartUiModelMapper {
         }
 
         cartData.unavailableSections.forEachIndexed { sectionIndex, unavailableSection ->
-//            val disabledReasonHolderData = mapDisabledReasonUiModel(unavailableSection)
-//            unavailableSectionList.add(disabledReasonHolderData)
-//            if (!showAccordion && unavailableSection.unavailableGroups.isNotEmpty()) {
-//                if (unavailableSection.unavailableGroups.size > 1) {
-//                    showAccordion = true
-//                } else {
-//                    loop@ for (unavailableGroup in unavailableSection.unavailableGroups) {
-//                        if (unavailableGroup.cartDetails.size > 1) {
-//                            showAccordion = true
-//                            break@loop
-//                        } else {
-//                            innerLoop@ for (cartDetail in unavailableGroup.cartDetails) {
-//                                if ((cartDetail.bundleDetail.bundleId.isBlank() || cartDetail.bundleDetail.bundleId == "0") &&
-//                                    cartDetail.products.size > 1
-//                                ) {
-//                                    showAccordion = true
-//                                    break@loop
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
-//            }
             unavailableSection.unavailableGroups.forEachIndexed { groupIndex, unavailableGroup ->
                 val productUiModelList = mutableListOf<CartItemHolderData>()
                 val shopUiModel = mapGroupShop(unavailableGroup.shop, unavailableGroup.cartDetails)
