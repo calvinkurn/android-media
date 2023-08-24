@@ -18,9 +18,9 @@ import com.google.zxing.integration.android.IntentIntegrator
 import com.journeyapps.barcodescanner.CaptureActivity
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.logisticseller.R
 import com.tokopedia.kotlin.extensions.view.hideKeyboard
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.logisticseller.R
 import com.tokopedia.logisticseller.common.LogisticSellerConst
 import com.tokopedia.logisticseller.common.LogisticSellerConst.PARAM_CURR_IS_CHANGE_SHIPPING
 import com.tokopedia.logisticseller.common.LogisticSellerConst.PARAM_ORDER_ID
@@ -30,8 +30,8 @@ import com.tokopedia.logisticseller.common.Utils.updateShopActive
 import com.tokopedia.logisticseller.common.errorhandler.LogisticSellerErrorHandler
 import com.tokopedia.logisticseller.databinding.FragmentSomConfirmShippingBinding
 import com.tokopedia.logisticseller.ui.confirmshipping.data.model.SomCourierList
-import com.tokopedia.logisticseller.ui.confirmshipping.di.DaggerSomConfirmShippingComponent
 import com.tokopedia.logisticseller.ui.confirmshipping.di.ConfirmShippingComponent
+import com.tokopedia.logisticseller.ui.confirmshipping.di.DaggerConfirmShippingComponent
 import com.tokopedia.logisticseller.ui.confirmshipping.presentation.activity.ConfirmShippingActivity
 import com.tokopedia.logisticseller.ui.confirmshipping.presentation.adapter.BottomSheetCourierListAdapter
 import com.tokopedia.logisticseller.ui.confirmshipping.presentation.viewmodel.ConfirmShippingViewModel
@@ -105,9 +105,12 @@ class ConfirmShippingFragment : BaseDaggerFragment(), BottomSheetCourierListAdap
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        if (currIsChangeShipping) (activity as ConfirmShippingActivity).supportActionBar?.title =
-            getString(R.string.title_som_change_courier)
-        else (activity as ConfirmShippingActivity).supportActionBar?.title = getString(R.string.title_som_confirm_shipping)
+        if (currIsChangeShipping) {
+            (activity as ConfirmShippingActivity).supportActionBar?.title =
+                getString(R.string.title_som_change_courier)
+        } else {
+            (activity as ConfirmShippingActivity).supportActionBar?.title = getString(R.string.title_som_confirm_shipping)
+        }
         return inflater.inflate(R.layout.fragment_som_confirm_shipping, container, false)
     }
 
@@ -143,7 +146,9 @@ class ConfirmShippingFragment : BaseDaggerFragment(), BottomSheetCourierListAdap
         val scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
         return if (scanResult?.contents != null) {
             scanResult.contents
-        } else ""
+        } else {
+            ""
+        }
     }
 
     private fun setupLayout() {
@@ -220,7 +225,7 @@ class ConfirmShippingFragment : BaseDaggerFragment(), BottomSheetCourierListAdap
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
-        val component: ConfirmShippingComponent = DaggerSomConfirmShippingComponent.builder()
+        val component: ConfirmShippingComponent = DaggerConfirmShippingComponent.builder()
             .baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
             .build()
         component.inject(this)
@@ -244,112 +249,127 @@ class ConfirmShippingFragment : BaseDaggerFragment(), BottomSheetCourierListAdap
     }
 
     private fun observingConfirmShipping() {
-        confirmShippingViewModel.confirmShippingResult.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
+        confirmShippingViewModel.confirmShippingResult.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> {
 //                    SomAnalytics.eventClickKonfirmasi(true)
-                    confirmShippingResponseMsg = if (it.data.listMessage.isNotEmpty()) {
-                        it.data.listMessage.first()
-                    } else {
-                        getString(R.string.default_confirm_shipping_success)
+                        confirmShippingResponseMsg = if (it.data.listMessage.isNotEmpty()) {
+                            it.data.listMessage.first()
+                        } else {
+                            getString(R.string.default_confirm_shipping_success)
+                        }
+                        activity?.setResult(
+                            Activity.RESULT_OK,
+                            Intent().apply {
+                                putExtra(RESULT_CONFIRM_SHIPPING, confirmShippingResponseMsg)
+                            }
+                        )
+                        activity?.finish()
                     }
-                    activity?.setResult(Activity.RESULT_OK, Intent().apply {
-                        putExtra(RESULT_CONFIRM_SHIPPING, confirmShippingResponseMsg)
-                    })
-                    activity?.finish()
-                }
 
-                is Fail -> {
-                    LogisticSellerErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_CONFIRM_SHIPPING)
+                    is Fail -> {
+                        LogisticSellerErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_CONFIRM_SHIPPING)
 //                    SomAnalytics.eventClickKonfirmasi(false)
-                    context?.run {
-                        Utils.showToasterError(LogisticSellerErrorHandler.getErrorMessage(it.throwable, this), view)
+                        context?.run {
+                            Utils.showToasterError(LogisticSellerErrorHandler.getErrorMessage(it.throwable, this), view)
+                        }
+                        LogisticSellerErrorHandler.logExceptionToServer(
+                            errorTag = LogisticSellerErrorHandler.SOM_TAG,
+                            throwable = it.throwable,
+                            errorType =
+                            LogisticSellerErrorHandler.SomMessage.CONFIRM_SHIPPING_ERROR,
+                            deviceId = userSession.deviceId.orEmpty()
+                        )
                     }
-                    LogisticSellerErrorHandler.logExceptionToServer(
-                        errorTag = LogisticSellerErrorHandler.SOM_TAG,
-                        throwable = it.throwable,
-                        errorType =
-                        LogisticSellerErrorHandler.SomMessage.CONFIRM_SHIPPING_ERROR,
-                        deviceId = userSession.deviceId.orEmpty()
-                    )
                 }
             }
-        })
+        )
     }
 
     private fun observingCourierList() {
-        confirmShippingViewModel.courierListResult.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    courierListResponse = it.data
+        confirmShippingViewModel.courierListResult.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> {
+                        courierListResponse = it.data
 
-                    if (courierListResponse.isNotEmpty()) {
-                        currShipmentId = courierListResponse.first().shipmentId.toLongOrZero()
-                        binding?.labelChoosenCourier?.text = courierListResponse.first().shipmentName
+                        if (courierListResponse.isNotEmpty()) {
+                            currShipmentId = courierListResponse.first().shipmentId.toLongOrZero()
+                            binding?.labelChoosenCourier?.text = courierListResponse.first().shipmentName
 
-                        val listServiceCourier = courierListResponse.first().listShipmentPackage
-                        if (listServiceCourier.isNotEmpty()) {
-                            currShipmentProductId = listServiceCourier.first().spId
-                            binding?.labelChoosenCourierService?.text = listServiceCourier.first().name
+                            val listServiceCourier = courierListResponse.first().listShipmentPackage
+                            if (listServiceCourier.isNotEmpty()) {
+                                currShipmentProductId = listServiceCourier.first().spId
+                                binding?.labelChoosenCourierService?.text = listServiceCourier.first().name
+                            }
                         }
+
+                        binding?.labelChoosenCourier?.setOnClickListener {
+                            view?.hideKeyboard()
+                            showBottomSheetCourier(false)
+                        }
+                        binding?.ivChooseCourier?.setOnClickListener {
+                            view?.hideKeyboard()
+                            showBottomSheetCourier(false)
+                        }
+
+                        binding?.labelChoosenCourierService?.setOnClickListener { showBottomSheetCourier(true) }
+                        binding?.ivChooseCourierService?.setOnClickListener { showBottomSheetCourier(true) }
                     }
 
-                    binding?.labelChoosenCourier?.setOnClickListener {
-                        view?.hideKeyboard()
-                        showBottomSheetCourier(false)
+                    is Fail -> {
+                        LogisticSellerErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_GET_COURIER_LIST)
+                        Utils.showToasterError(getString(R.string.global_error), view)
+                        LogisticSellerErrorHandler.logExceptionToServer(
+                            errorTag = LogisticSellerErrorHandler.SOM_TAG,
+                            throwable = it.throwable,
+                            errorType =
+                            LogisticSellerErrorHandler.SomMessage.GET_COURIER_LIST_ERROR,
+                            deviceId = userSession.deviceId.orEmpty()
+                        )
                     }
-                    binding?.ivChooseCourier?.setOnClickListener {
-                        view?.hideKeyboard()
-                        showBottomSheetCourier(false)
-                    }
-
-                    binding?.labelChoosenCourierService?.setOnClickListener { showBottomSheetCourier(true) }
-                    binding?.ivChooseCourierService?.setOnClickListener { showBottomSheetCourier(true) }
-                }
-
-                is Fail -> {
-                    LogisticSellerErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_GET_COURIER_LIST)
-                    Utils.showToasterError(getString(R.string.global_error), view)
-                    LogisticSellerErrorHandler.logExceptionToServer(
-                        errorTag = LogisticSellerErrorHandler.SOM_TAG,
-                        throwable = it.throwable,
-                        errorType =
-                        LogisticSellerErrorHandler.SomMessage.GET_COURIER_LIST_ERROR,
-                        deviceId = userSession.deviceId.orEmpty()
-                    )
                 }
             }
-        })
+        )
     }
 
     private fun observingChangeCourier() {
-        confirmShippingViewModel.changeCourierResult.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    if (it.data.mpLogisticChangeCourier.listMessage.isNotEmpty()) {
-                        changeCourierResponseMsg = it.data.mpLogisticChangeCourier.listMessage.first()
+        confirmShippingViewModel.changeCourierResult.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> {
+                        if (it.data.mpLogisticChangeCourier.listMessage.isNotEmpty()) {
+                            changeCourierResponseMsg = it.data.mpLogisticChangeCourier.listMessage.first()
+                        }
+                        activity?.setResult(
+                            Activity.RESULT_OK,
+                            Intent().apply {
+                                putExtra(RESULT_CONFIRM_SHIPPING, changeCourierResponseMsg)
+                            }
+                        )
+                        activity?.finish()
                     }
-                    activity?.setResult(Activity.RESULT_OK, Intent().apply {
-                        putExtra(RESULT_CONFIRM_SHIPPING, changeCourierResponseMsg)
-                    })
-                    activity?.finish()
-                }
 
-                is Fail -> {
-                    LogisticSellerErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_CHANGE_COURIER)
-                    context?.run {
-                        Utils.showToasterError(LogisticSellerErrorHandler.getErrorMessage(it.throwable, this), view)
+                    is Fail -> {
+                        LogisticSellerErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_CHANGE_COURIER)
+                        context?.run {
+                            Utils.showToasterError(LogisticSellerErrorHandler.getErrorMessage(it.throwable, this), view)
+                        }
+                        LogisticSellerErrorHandler.logExceptionToServer(
+                            errorTag = LogisticSellerErrorHandler.SOM_TAG,
+                            throwable = it.throwable,
+                            errorType =
+                            LogisticSellerErrorHandler.SomMessage.CHANGE_COURIER_ERROR,
+                            deviceId = userSession.deviceId.orEmpty()
+                        )
                     }
-                    LogisticSellerErrorHandler.logExceptionToServer(
-                        errorTag = LogisticSellerErrorHandler.SOM_TAG,
-                        throwable = it.throwable,
-                        errorType =
-                        LogisticSellerErrorHandler.SomMessage.CHANGE_COURIER_ERROR,
-                        deviceId = userSession.deviceId.orEmpty()
-                    )
                 }
             }
-        })
+        )
     }
 
     private fun showBottomSheetCourier(isCourierService: Boolean) {

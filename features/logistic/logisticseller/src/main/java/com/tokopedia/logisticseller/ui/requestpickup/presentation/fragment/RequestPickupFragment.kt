@@ -20,7 +20,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.logisticseller.R
 import com.tokopedia.logisticseller.common.LogisticSellerConst.PARAM_ORDER_ID
 import com.tokopedia.logisticseller.common.LogisticSellerConst.RESULT_PROCESS_REQ_PICKUP
@@ -28,8 +27,6 @@ import com.tokopedia.logisticseller.common.Utils
 import com.tokopedia.logisticseller.common.Utils.updateShopActive
 import com.tokopedia.logisticseller.common.errorhandler.LogisticSellerErrorHandler
 import com.tokopedia.logisticseller.databinding.FragmentSomConfirmReqPickupBinding
-import com.tokopedia.logisticseller.di.returntoshipper.DaggerReturnToShipperComponent
-import com.tokopedia.logisticseller.di.returntoshipper.ReturnToShipperComponent
 import com.tokopedia.logisticseller.ui.requestpickup.data.mapper.SchedulePickupMapper
 import com.tokopedia.logisticseller.ui.requestpickup.data.model.ScheduleTime
 import com.tokopedia.logisticseller.ui.requestpickup.data.model.SomConfirmReqPickup
@@ -42,6 +39,7 @@ import com.tokopedia.logisticseller.ui.requestpickup.presentation.adapter.Reques
 import com.tokopedia.logisticseller.ui.requestpickup.presentation.adapter.SchedulePickupAdapter
 import com.tokopedia.logisticseller.ui.requestpickup.presentation.viewmodel.RequstPickupViewModel
 import com.tokopedia.logisticseller.ui.requestpickup.util.DateMapper
+import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
@@ -58,7 +56,8 @@ import javax.inject.Inject
 /**
  * Created by fwidjaja on 2019-11-12.
  */
-class RequestPickupFragment : BaseDaggerFragment(),
+class RequestPickupFragment :
+    BaseDaggerFragment(),
     SchedulePickupAdapter.SomConfirmSchedulePickupAdapterListener {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -188,11 +187,13 @@ class RequestPickupFragment : BaseDaggerFragment(),
             when (it) {
                 is Success -> {
                     processReqPickupResponse = it.data.mpLogisticRequestPickup
-                    activity?.setResult(Activity.RESULT_OK, Intent().apply {
-                        putExtra(RESULT_PROCESS_REQ_PICKUP, processReqPickupResponse.listMessage.firstOrNull())
-                    })
+                    activity?.setResult(
+                        Activity.RESULT_OK,
+                        Intent().apply {
+                            putExtra(RESULT_PROCESS_REQ_PICKUP, processReqPickupResponse.listMessage.firstOrNull())
+                        }
+                    )
                     activity?.finish()
-
                 }
 
                 is Fail -> {
@@ -240,8 +241,6 @@ class RequestPickupFragment : BaseDaggerFragment(),
                     tvCourierNotes.text =
                         getString(R.string.courier_option_schedule, confirmReqPickupResponse.dataSuccess.detail.orchestraPartner)
                 }
-
-
             }
 
             if (confirmReqPickupResponse.dataSuccess.notes.listNotes.isNotEmpty()) {
@@ -256,7 +255,6 @@ class RequestPickupFragment : BaseDaggerFragment(),
                 confirmReqPickupCourierNotesAdapter.listCourierNotes =
                     confirmReqPickupResponse.dataSuccess.notes.listNotes.toMutableList()
                 confirmReqPickupCourierNotesAdapter.notifyDataSetChanged()
-
             } else {
                 labelPastikan.visibility = View.GONE
                 rvCourierNotes.visibility = View.GONE
@@ -275,13 +273,15 @@ class RequestPickupFragment : BaseDaggerFragment(),
                     schedulePickupMapper.mapSchedulePickup(
                         confirmReqPickupResponse.dataSuccess.schedule_time.today,
                         today
-                    ), currSchedulePickupKey
+                    ),
+                    currSchedulePickupKey
                 )
                 bottomSheetSchedulePickupTomorrowAdapter.setData(
                     schedulePickupMapper.mapSchedulePickup(
                         confirmReqPickupResponse.dataSuccess.schedule_time.tomorrow,
                         tomorrow
-                    ), currSchedulePickupKey
+                    ),
+                    currSchedulePickupKey
                 )
 
                 pickupNow.setOnClickListener {
@@ -319,7 +319,6 @@ class RequestPickupFragment : BaseDaggerFragment(),
                         openBottomSheetSchedulePickup()
                     }
                 }
-
             } else {
                 rlSchedulePickup.visibility = View.GONE
             }
@@ -342,9 +341,8 @@ class RequestPickupFragment : BaseDaggerFragment(),
                         }
 
                         override fun onDismiss() {
-                            //no-op
+                            // no-op
                         }
-
                     })
                 }
             } else {
@@ -405,7 +403,6 @@ class RequestPickupFragment : BaseDaggerFragment(),
         }
     }
 
-
     private fun setActiveChips(selected: ChipsUnify?, deselected: ChipsUnify?) {
         selected?.chipType = ChipsUnify.TYPE_SELECTED
         deselected?.chipType = ChipsUnify.TYPE_NORMAL
@@ -435,5 +432,4 @@ class RequestPickupFragment : BaseDaggerFragment(),
         clipboardManager.setPrimaryClip(ClipData.newPlainText(label, str))
         Toaster.build(requireView(), getString(R.string.success_invoice_copied), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
     }
-
 }
