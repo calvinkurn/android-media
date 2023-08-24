@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.tokopedia.autocompletecomponent.createFakeBaseAppComponent
 import com.tokopedia.autocompletecomponent.di.DaggerAutoCompleteComponent
+import com.tokopedia.autocompletecomponent.initialstate.di.InitialStateContextModule
 import com.tokopedia.autocompletecomponent.initialstate.di.InitialStateViewListenerModule
 import com.tokopedia.autocompletecomponent.test.R
 
@@ -19,6 +20,7 @@ class InitialStateActivityTest:
 
         val component = DaggerInitialStateTestComponent
             .builder()
+            .initialStateContextModule(InitialStateContextModule(this))
             .baseAppComponent(getBaseAppComponent())
             .initialStateViewListenerModule(InitialStateViewListenerModule(this))
             .build()
