@@ -15,6 +15,7 @@ import com.tokopedia.content.common.comment.uimodel.CommentType
 import com.tokopedia.content.common.comment.uimodel.CommentUiModel
 import com.tokopedia.content.common.comment.uimodel.UserType
 import com.tokopedia.content.common.util.buildSpannedString
+import com.tokopedia.unifyprinciples.R as unifyR
 
 /**
  * @author by astidhiyaa on 23/02/23
@@ -63,7 +64,7 @@ class MentionedSpanned(
 }
 
 class BaseSpan(val fullText: String, val content: String, val shortName: String, val ctx: Context) :
-    ForegroundColorSpan(MethodChecker.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Unify_NN1000)) {
+    ForegroundColorSpan(MethodChecker.getColor(ctx, unifyR.color.Unify_NN1000)) {
     val sentText: String get() = fullText + content
 }
 
