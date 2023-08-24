@@ -19,7 +19,6 @@ import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.thousandFormatted
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
@@ -29,7 +28,6 @@ import com.tokopedia.shop.home.util.DateHelper.SHOP_CAMPAIGN_BANNER_TIMER_MORE_T
 import com.tokopedia.shop.home.util.DateHelper.SHOP_NPL_CAMPAIGN_WIDGET_MORE_THAT_1_DAY_DATE_FORMAT
 import com.tokopedia.shop.home.util.DateHelper.millisecondsToDays
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayBannerTimerWidgetListener
-import com.tokopedia.shop.home.view.listener.ShopHomeListener
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerTimerUiModel
 import com.tokopedia.shop.home.view.model.StatusCampaign
 import com.tokopedia.unifycomponents.ImageUnify
@@ -47,8 +45,7 @@ import java.util.*
 
 class ShopHomeDisplayBannerTimerViewHolder(
     itemView: View,
-    private val listener: ShopHomeDisplayBannerTimerWidgetListener,
-    private val shopHomeListener: ShopHomeListener
+    private val listener: ShopHomeDisplayBannerTimerWidgetListener
 ) : AbstractViewHolder<ShopWidgetDisplayBannerTimerUiModel>(itemView), CoroutineScope {
 
     private val viewBinding: ItemShopHomeDisplayBannerTimerBinding? by viewBinding()
@@ -223,14 +220,10 @@ class ShopHomeDisplayBannerTimerViewHolder(
         if (model.isFestivity) {
             configFestivity()
         } else {
-            if (shopHomeListener.isShopHomeTabHasFestivity()) {
-                configDefaultColor()
+            if (model.header.isOverrideTheme) {
+                configReimaginedColor(model.header.colorSchema)
             } else {
-                if (shopHomeListener.isOverrideTheme()) {
-                    configReimaginedColor(model.header.colorSchema)
-                } else {
-                    configDefaultColor()
-                }
+                configDefaultColor()
             }
         }
     }
@@ -422,13 +415,4 @@ class ShopHomeDisplayBannerTimerViewHolder(
         return statusCampaign == StatusCampaign.UPCOMING
     }
 
-        private fun getIndexRatio(data: ShopWidgetDisplayBannerTimerUiModel, index: Int): Int {
-        return data.header.ratio.split(":").getOrNull(index).toIntOrZero()
-    }
-
-    private fun getHeightRatio(uiModel: ShopWidgetDisplayBannerTimerUiModel): Float {
-        val indexZero = getIndexRatio(uiModel, 0).toFloat()
-        val indexOne = getIndexRatio(uiModel, 1).toFloat()
-        return (indexOne / indexZero)
-    }
 }

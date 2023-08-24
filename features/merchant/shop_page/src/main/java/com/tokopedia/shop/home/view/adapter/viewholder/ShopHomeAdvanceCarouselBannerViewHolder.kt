@@ -21,7 +21,6 @@ import com.tokopedia.shop.databinding.ShopAdvanceCarouselBannerViewholderLayoutB
 import com.tokopedia.shop.home.WidgetName
 import com.tokopedia.shop.home.view.adapter.ShopWidgetAdvanceCarouselBannerAdapter
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
-import com.tokopedia.shop.home.view.listener.ShopHomeListener
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 import com.tokopedia.unifycomponents.PageControl
 import com.tokopedia.unifyprinciples.Typography
@@ -30,8 +29,7 @@ import java.util.*
 
 class ShopHomeAdvanceCarouselBannerViewHolder(
     view: View?,
-    private val listener: ShopHomeDisplayWidgetListener,
-    private val shopHomeListener: ShopHomeListener
+    private val listener: ShopHomeDisplayWidgetListener
 ) : AbstractViewHolder<ShopHomeDisplayWidgetUiModel>(view) {
 
     companion object {
@@ -115,14 +113,10 @@ class ShopHomeAdvanceCarouselBannerViewHolder(
     }
 
     private fun configColorTheme() {
-        if (shopHomeListener.isShopHomeTabHasFestivity()) {
-            configDefaultColor()
+        if (uiModel.header.isOverrideTheme) {
+            configReimaginedColor(uiModel.header.colorSchema)
         } else {
-            if (shopHomeListener.isOverrideTheme()) {
-                configReimaginedColor(uiModel.header.colorSchema)
-            } else {
-                configDefaultColor()
-            }
+            configDefaultColor()
         }
     }
 

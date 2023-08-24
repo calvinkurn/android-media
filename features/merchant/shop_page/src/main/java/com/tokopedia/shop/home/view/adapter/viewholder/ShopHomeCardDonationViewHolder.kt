@@ -14,7 +14,6 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.R
 import com.tokopedia.shop.home.view.listener.ShopHomeCardDonationListener
-import com.tokopedia.shop.home.view.listener.ShopHomeListener
 import com.tokopedia.shop.home.view.model.ShopHomeCardDonationUiModel
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.ImageUnify
@@ -22,8 +21,7 @@ import com.tokopedia.unifyprinciples.Typography
 
 class ShopHomeCardDonationViewHolder(
     itemView: View,
-    private val listener: ShopHomeCardDonationListener,
-    private val shopHomeListener: ShopHomeListener
+    private val listener: ShopHomeCardDonationListener
 ) : AbstractViewHolder<ShopHomeCardDonationUiModel>(itemView) {
 
     private val shopHomeCardDonationImage: ImageUnify =
@@ -36,7 +34,7 @@ class ShopHomeCardDonationViewHolder(
     private var descriptionTextColor: Int = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96)
     private var ctaDescriptionTextColor: Int = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
     override fun bind(element: ShopHomeCardDonationUiModel) {
-        configColorTheme()
+        configColorTheme(element)
         container.setCardBackgroundColor(cardBackgroundColor)
         // render image
         shopHomeCardDonationImage.loadImage(element.header.cover)
@@ -71,15 +69,11 @@ class ShopHomeCardDonationViewHolder(
         setWidgetImpressionListener(element)
     }
 
-    private fun configColorTheme() {
-        if(shopHomeListener.isShopHomeTabHasFestivity()){
+    private fun configColorTheme(element: ShopHomeCardDonationUiModel) {
+        if (element.header.isOverrideTheme) {
+            configReimaginedColor()
+        } else {
             configDefaultColor()
-        }else{
-            if(shopHomeListener.isOverrideTheme()){
-                configReimaginedColor()
-            }else{
-                configDefaultColor()
-            }
         }
     }
 

@@ -23,6 +23,7 @@ import com.tokopedia.shop.home.WidgetName.BANNER_PRODUCT_HOTSPOT
 import com.tokopedia.shop.home.WidgetName.BANNER_TIMER
 import com.tokopedia.shop.home.WidgetName.BIG_CAMPAIGN_THEMATIC
 import com.tokopedia.shop.home.WidgetName.BUY_AGAIN
+import com.tokopedia.shop.home.WidgetName.DIRECT_PURCHASED_BY_ETALASE
 import com.tokopedia.shop.home.WidgetName.DISPLAY_DOUBLE_COLUMN
 import com.tokopedia.shop.home.WidgetName.DISPLAY_SINGLE_COLUMN
 import com.tokopedia.shop.home.WidgetName.DISPLAY_TRIPLE_COLUMN
@@ -44,6 +45,7 @@ import com.tokopedia.shop.home.WidgetName.VOUCHER_STATIC
 import com.tokopedia.shop.home.WidgetType.BUNDLE
 import com.tokopedia.shop.home.WidgetType.CAMPAIGN
 import com.tokopedia.shop.home.WidgetType.CARD
+import com.tokopedia.shop.home.WidgetType.DIRECT_PURCHASE
 import com.tokopedia.shop.home.WidgetType.DISPLAY
 import com.tokopedia.shop.home.WidgetType.DYNAMIC
 import com.tokopedia.shop.home.WidgetType.COMPONENT
@@ -71,6 +73,7 @@ import com.tokopedia.shop.home.view.model.ShopHomeShowcaseListSliderUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeVoucherUiModel
 import com.tokopedia.shop.home.view.model.ShopPageLayoutUiModel
 import com.tokopedia.shop.home.view.model.StatusCampaign
+import com.tokopedia.shop.home.view.model.viewholder.ShopDirectPurchaseByEtalaseUiModel
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.view.datamodel.LabelGroupUiModel
 import com.tokopedia.shop_widget.common.uimodel.DynamicHeaderUiModel
@@ -538,9 +541,60 @@ object ShopPageHomeMapper {
             SHOWCASE.toLowerCase(Locale.getDefault()) -> mapToShowcaseListUiModel(widgetResponse, widgetLayout, isOverrideTheme, colorSchema)
             CARD.lowercase() -> mapToCardDonationUiModel(widgetResponse, widgetLayout, isOverrideTheme, colorSchema)
             BUNDLE.toLowerCase(Locale.getDefault()) -> mapToProductBundleListUiModel(widgetResponse, shopId, widgetLayout, isOverrideTheme, colorSchema)
+            DIRECT_PURCHASE.lowercase() -> mapToDirectPurchaseTypeWidget(widgetResponse, widgetLayout, isOverrideTheme, colorSchema)
             else -> {
                 null
             }
+        }
+    }
+
+    private fun mapToDirectPurchaseTypeWidget(
+        widgetResponse: ShopLayoutWidget.Widget,
+        widgetLayout: ShopPageWidgetUiModel?,
+        isOverrideTheme: Boolean,
+        colorSchema: ShopPageColorSchema
+    ): Visitable<*>? {
+        return when(widgetResponse.name){
+            DIRECT_PURCHASED_BY_ETALASE -> {
+               mapToDirectPurchaseByEtalase(widgetResponse, widgetLayout, isOverrideTheme, colorSchema)
+            } else ->{
+                null
+            }
+        }
+    }
+
+    private fun mapToDirectPurchaseByEtalase(
+        widgetResponse: ShopLayoutWidget.Widget,
+        widgetLayout: ShopPageWidgetUiModel?,
+        isOverrideTheme: Boolean,
+        colorSchema: ShopPageColorSchema
+    ) = ShopDirectPurchaseByEtalaseUiModel(
+        widgetId = widgetResponse.widgetID,
+        layoutOrder = widgetResponse.layoutOrder,
+        name = widgetResponse.name,
+        type = widgetResponse.type,
+        header = mapToHeaderModel(widgetResponse.header, widgetLayout, isOverrideTheme, colorSchema),
+        tabData = mapToDirectPurchaseByEtalaseTabData(widgetResponse.data)
+    )
+
+    private fun mapToDirectPurchaseByEtalaseTabData(
+        data: List<ShopLayoutWidget.Widget.Data>
+    ): List<ShopDirectPurchaseByEtalaseUiModel.TabData> {
+        return data.map {
+            ShopDirectPurchaseByEtalaseUiModel.TabData(
+                ratio = it.ratio,
+                title = it.title,
+                banner = it.banner,
+                listShowcase = it.listEtalase.map { etalase ->
+                    ShopDirectPurchaseByEtalaseUiModel.TabData.Showcase(
+                        imageUrl = etalase.imageUrl,
+                        desktopImageUrl = etalase.desktopImageUrl,
+                        linkType = etalase.linkType,
+                        linkId = etalase.linkId,
+                        name = etalase.name,
+                    )
+                }
+            )
         }
     }
 

@@ -4297,7 +4297,7 @@ open class ShopPageHomeFragment :
         return trackingQueue
     }
 
-    override fun isShopHomeTabHasFestivity(): Boolean {
+    private fun isShopHomeTabHasFestivity(): Boolean {
         return shopHomeAdapter?.anyFestivityOnShopHomeWidget().orFalse()
     }
 
@@ -5049,7 +5049,7 @@ open class ShopPageHomeFragment :
 
 
     override fun isOverrideTheme(): Boolean {
-        return (getRealParentFragment() as? InterfaceShopPageHeader)?.isOverrideTheme().orFalse()
+        return (getRealParentFragment() as? InterfaceShopPageHeader)?.isOverrideTheme().orFalse() && !isShopHomeTabHasFestivity()
     }
 
     private fun getColorSchema(): ShopPageColorSchema {

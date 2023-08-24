@@ -50,14 +50,10 @@ class ShopHomeProductEtalaseTitleViewHolder(
     }
 
     private fun configColorTheme() {
-        if (shopHomeListener.isShopHomeTabHasFestivity()) {
-            setDefaultColorConfig()
+        if (shopHomeListener.isOverrideTheme()) {
+            setReimaginedColorConfig(shopHomeListener.getShopPageColorSchema())
         } else {
-            if (shopHomeListener.isOverrideTheme()) {
-                setReimaginedColorConfig(shopHomeListener.getShopPageColorSchema())
-            } else {
-                setDefaultColorConfig()
-            }
+            setDefaultColorConfig()
         }
     }
 

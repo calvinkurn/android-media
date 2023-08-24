@@ -22,7 +22,6 @@ import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.home.util.DateHelper
 import com.tokopedia.shop.home.view.adapter.ShopCampaignFlashSaleProductCarouselAdapter
 import com.tokopedia.shop.home.view.listener.ShopHomeFlashSaleWidgetListener
-import com.tokopedia.shop.home.view.listener.ShopHomeListener
 import com.tokopedia.shop.home.view.model.ShopHomeFlashSaleUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 import com.tokopedia.shop.home.view.model.StatusCampaign
@@ -37,8 +36,7 @@ import java.util.Date
 
 class ShopHomeFlashSaleViewHolder(
     itemView: View,
-    private val listener: ShopHomeFlashSaleWidgetListener,
-    private val shopHomeListener: ShopHomeListener
+    private val listener: ShopHomeFlashSaleWidgetListener
 ) : AbstractViewHolder<ShopHomeFlashSaleUiModel>(itemView) {
 
     private var uiModel: ShopHomeFlashSaleUiModel? = null
@@ -102,14 +100,10 @@ class ShopHomeFlashSaleViewHolder(
         if (element.isFestivity) {
             configFestivity()
         } else {
-            if (shopHomeListener.isShopHomeTabHasFestivity()) {
-                configDefaultColor(element)
+            if (element.header.isOverrideTheme) {
+                configReimaginedColor(element)
             } else {
-                if (element.header.isOverrideTheme) {
-                    configReimaginedColor(element)
-                } else {
-                    configDefaultColor(element)
-                }
+                configDefaultColor(element)
             }
         }
     }

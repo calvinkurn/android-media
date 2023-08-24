@@ -98,14 +98,10 @@ class ShopHomeCarousellProductViewHolder(
         if (shopHomeCarousellProductUiModel.isFestivity) {
             configFestivityColor()
         } else {
-            if (shopHomeListener.isShopHomeTabHasFestivity()) {
-                configDefaultColor()
+            if (shopHomeCarousellProductUiModel.header.isOverrideTheme) {
+                configReimaginedColor(shopHomeCarousellProductUiModel.header.colorSchema)
             } else {
-                if (shopHomeCarousellProductUiModel.header.isOverrideTheme) {
-                    configReimaginedColor(shopHomeCarousellProductUiModel.header.colorSchema)
-                } else {
-                    configDefaultColor()
-                }
+                configDefaultColor()
             }
         }
     }

@@ -15,7 +15,6 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.ItemShopHomeBaseEtalaseListWidgetBinding
 import com.tokopedia.shop.home.view.adapter.ShopHomeShowcaseListWidgetAdapter
-import com.tokopedia.shop.home.view.listener.ShopHomeListener
 import com.tokopedia.shop.home.view.model.ShopHomeShowcaseListItemUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeShowcaseListSliderUiModel
 import com.tokopedia.utils.view.binding.viewBinding
@@ -28,8 +27,7 @@ class ShopHomeShowcaseListBaseWidgetViewHolder(
     itemView: View,
     private var childWidgetAdapter: ShopHomeShowcaseListWidgetAdapter,
     private var layoutManagerType: Int,
-    private var gridColumnSize: Int,
-    private val shopHomeListener: ShopHomeListener
+    private var gridColumnSize: Int
 ) : AbstractViewHolder<ShopHomeShowcaseListSliderUiModel>(itemView) {
 
     companion object {
@@ -86,18 +84,14 @@ class ShopHomeShowcaseListBaseWidgetViewHolder(
         childWidgetAdapter.setParentPosition(adapterPosition)
         childWidgetAdapter.updateDataSet(element.showcaseListItem)
         setWidgetImpressionListener(element)
-        configColorTheme()
+        configColorTheme(element)
     }
 
-    private fun configColorTheme() {
-        if (shopHomeListener.isShopHomeTabHasFestivity()) {
-            configDefaultColor()
+    private fun configColorTheme(element: ShopHomeShowcaseListSliderUiModel) {
+        if (element.header.isOverrideTheme) {
+            configReimaginedColor(element.header.colorSchema)
         } else {
-            if (shopHomeListener.isOverrideTheme()) {
-                configReimaginedColor()
-            } else {
-                configDefaultColor()
-            }
+            configDefaultColor()
         }
     }
 
@@ -109,8 +103,8 @@ class ShopHomeShowcaseListBaseWidgetViewHolder(
         tvCarouselTitle?.setTextColor(titleColor)
     }
 
-    private fun configReimaginedColor() {
-        val titleColor = shopHomeListener.getShopPageColorSchema().getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS)
+    private fun configReimaginedColor(colorSchema: ShopPageColorSchema) {
+        val titleColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS)
         tvCarouselTitle?.setTextColor(titleColor)
     }
 

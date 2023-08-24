@@ -521,7 +521,7 @@ class ShopPageHeaderFragmentTabContentWrapper :
         var flag = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
         var statusBarColor = MethodChecker.getColor(
             context,
-            R.color.searchbar_dms_statusbar_darkmode
+            R.color.dms_static_status_bar_dark_color
         )
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             flag = flag or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
