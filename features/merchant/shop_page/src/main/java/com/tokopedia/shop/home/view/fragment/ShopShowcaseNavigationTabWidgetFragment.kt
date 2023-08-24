@@ -76,25 +76,38 @@ class ShopShowcaseNavigationTabWidgetFragment : BaseDaggerFragment() {
     private fun renderShowcase(
         showcases: List<Showcase>
     ) {
-        val firstShowcase = showcases.getOrNull(FIRST_SHOWCASE_INDEX)
-        val secondShowcase = showcases.getOrNull(SECOND_SHOWCASE_INDEX)
-        val thirdShowcase = showcases.getOrNull(THIRD_SHOWCASE_INDEX)
-        val fourthShowcase = showcases.getOrNull(FOURTH_SHOWCASE_INDEX)
-        val fifthShowcase = showcases.getOrNull(FIFTH_SHOWCASE_INDEX)
+        val mainShowcase = showcases.getOrNull(FIRST_SHOWCASE_INDEX)
+        val firstShowcase = showcases.getOrNull(SECOND_SHOWCASE_INDEX)
+        val secondShowcase = showcases.getOrNull(THIRD_SHOWCASE_INDEX)
+        val thirdShowcase = showcases.getOrNull(FOURTH_SHOWCASE_INDEX)
+        val fourthShowcase = showcases.getOrNull(FIFTH_SHOWCASE_INDEX)
+
+        mainShowcase?.let {
+            binding?.imgMainBanner?.loadImage(mainShowcase.imageUrl)
+            binding?.imgMainBannerTitle?.text = mainShowcase.name
+
+            binding?.imgMainBanner?.visible()
+            binding?.imgMainBannerTitle?.visible()
+
+            binding?.imgMainBanner?.setOnClickListener { onShowcaseClick(mainShowcase) }
+            binding?.imgMainBannerTitle?.setOnClickListener { onShowcaseClick(mainShowcase) }
+        }
 
         firstShowcase?.let {
             binding?.imgFirstBanner?.loadImage(firstShowcase.imageUrl)
-            binding?.tpgFirstBannerTitle?.text = firstShowcase.name
+            binding?.imgFirstBannerTitle?.text = firstShowcase.name
+
             binding?.imgFirstBanner?.visible()
-            binding?.tpgFirstBannerTitle?.visible()
+            binding?.imgFirstBannerTitle?.visible()
 
             binding?.imgFirstBanner?.setOnClickListener { onShowcaseClick(firstShowcase) }
-            binding?.tpgFirstBannerTitle?.setOnClickListener { onShowcaseClick(firstShowcase) }
+            binding?.imgFirstBannerTitle?.setOnClickListener { onShowcaseClick(firstShowcase) }
         }
 
         secondShowcase?.let {
             binding?.imgSecondBanner?.loadImage(secondShowcase.imageUrl)
             binding?.tpgSecondBannerTitle?.text = secondShowcase.name
+
             binding?.imgSecondBanner?.visible()
             binding?.tpgSecondBannerTitle?.visible()
 
@@ -105,6 +118,7 @@ class ShopShowcaseNavigationTabWidgetFragment : BaseDaggerFragment() {
         thirdShowcase?.let {
             binding?.imgThirdBanner?.loadImage(thirdShowcase.imageUrl)
             binding?.tpgThirdBannerTitle?.text = thirdShowcase.name
+
             binding?.imgThirdBanner?.visible()
             binding?.tpgThirdBannerTitle?.visible()
 
@@ -114,22 +128,13 @@ class ShopShowcaseNavigationTabWidgetFragment : BaseDaggerFragment() {
 
         fourthShowcase?.let {
             binding?.imgFourthBanner?.loadImage(fourthShowcase.imageUrl)
-            binding?.tpgFourthBannerTitle?.text = fourthShowcase.name
+            binding?.imgFourthBannerTitle?.text = fourthShowcase.name
+
             binding?.imgFourthBanner?.visible()
-            binding?.tpgFourthBannerTitle?.visible()
+            binding?.imgFourthBannerTitle?.visible()
 
             binding?.imgFourthBanner?.setOnClickListener { onShowcaseClick(fourthShowcase) }
-            binding?.tpgFourthBannerTitle?.setOnClickListener { onShowcaseClick(fourthShowcase) }
-        }
-
-        fifthShowcase?.let {
-            binding?.imgFifthBanner?.loadImage(fifthShowcase.imageUrl)
-            binding?.tpgFifthBannerTitle?.text = fifthShowcase.name
-            binding?.imgFifthBanner?.visible()
-            binding?.tpgFifthBannerTitle?.visible()
-
-            binding?.imgFifthBanner?.setOnClickListener { onShowcaseClick(fifthShowcase) }
-            binding?.tpgFifthBannerTitle?.setOnClickListener { onShowcaseClick(fifthShowcase) }
+            binding?.imgFourthBannerTitle?.setOnClickListener { onShowcaseClick(fourthShowcase) }
         }
     }
 
