@@ -227,11 +227,15 @@ class InitialStatePresenter @Inject constructor(
                     addRecentSearchData(data, initialStateData.items, initialStateData.trackingOption)
                 }
                 InitialStateData.INITIAL_STATE_RECENT_VIEW -> {
-                    val title = RecentViewTitleDataView(initialStateData.header)
+                    if(initialStateData.header.isNotEmpty()) {
+                        val title = RecentViewTitleDataView(initialStateData.header)
+                        data.add(title)
+                    }
+
                     val recentViewDataView = initialStateData
                         .convertToRecentViewDataView(getDimension90(), keyword)
 
-                    data.addAll(listOf(title, recentViewDataView))
+                    data.addAll(listOf(recentViewDataView))
 
                     onRecentViewImpressed(recentViewDataView, initialStateData.items)
                 }
