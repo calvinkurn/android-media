@@ -960,7 +960,7 @@ class CheckoutViewModel @Inject constructor(
                         list,
                         validateUsePromoRequest
                     )
-                    doValidateUseLogisticPromoNew(
+                    doValidateUseLogisticPromo(
                         cartPosition,
                         orderModel.cartStringGroup,
                         validateUsePromoRequest,
@@ -1091,7 +1091,7 @@ class CheckoutViewModel @Inject constructor(
                         list,
                         validateUsePromoRequest
                     )
-                    doValidateUseLogisticPromoNew(
+                    doValidateUseLogisticPromo(
                         cartPosition,
                         orderModel.cartStringGroup,
                         validateUsePromoRequest,
@@ -1318,36 +1318,56 @@ class CheckoutViewModel @Inject constructor(
         insurance: InsuranceData
     ) {
         viewModelScope.launch(dispatchers.main) {
-            if (showLoading) {
-                pageState.value = CheckoutPageState.Loading
-                val checkoutItems = listData.value.toMutableList()
-                val checkoutOrderModel = checkoutItems[cartPosition] as CheckoutOrderModel
-                checkoutItems[cartPosition] =
-                    checkoutOrderModel.copy(
-                        shipment = checkoutOrderModel.shipment.copy(isLoading = true),
-                        isShippingBorderRed = false
-                    )
-                listData.value = checkoutItems
-            }
-            val newItems = promoProcessor.validateUseLogisticPromo(
-                validateUsePromoRequest,
+            doValidateUseLogisticPromo(
+                cartPosition,
                 cartString,
+                validateUsePromoRequest,
                 promoCode,
-                listData.value,
+                showLoading,
                 courierItemData,
-                isOneClickShipment,
-                isTradeIn,
-                isTradeInByDropOff
+                insurance
             )
-            listData.value = newItems
-            cartProcessor.processSaveShipmentState(
-                listData.value,
-                listData.value.address()!!.recipientAddressModel
-            )
-            pageState.value = CheckoutPageState.Normal
-            calculateTotal()
-            sendEEStep3()
         }
+    }
+
+    private suspend fun doValidateUseLogisticPromo(
+        cartPosition: Int,
+        cartString: String,
+        validateUsePromoRequest: ValidateUsePromoRequest,
+        promoCode: String,
+        showLoading: Boolean,
+        courierItemData: CourierItemData,
+        insurance: InsuranceData
+    ) {
+        if (showLoading) {
+            pageState.value = CheckoutPageState.Loading
+            val checkoutItems = listData.value.toMutableList()
+            val checkoutOrderModel = checkoutItems[cartPosition] as CheckoutOrderModel
+            checkoutItems[cartPosition] =
+                checkoutOrderModel.copy(
+                    shipment = checkoutOrderModel.shipment.copy(isLoading = true),
+                    isShippingBorderRed = false
+                )
+            listData.value = checkoutItems
+        }
+        val newItems = promoProcessor.validateUseLogisticPromo(
+            validateUsePromoRequest,
+            cartString,
+            promoCode,
+            listData.value,
+            courierItemData,
+            isOneClickShipment,
+            isTradeIn,
+            isTradeInByDropOff
+        )
+        listData.value = newItems
+        cartProcessor.processSaveShipmentState(
+            listData.value,
+            listData.value.address()!!.recipientAddressModel
+        )
+        pageState.value = CheckoutPageState.Normal
+        calculateTotal()
+        sendEEStep3()
     }
 
     fun setSelectedScheduleDelivery(

@@ -37,8 +37,8 @@
         android:id="@+id/checkout_ticker_shop_error"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="12dp"
         android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -162,14 +162,14 @@
         android:id="@+id/checkout_ticker_product_error"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-
         android:layout_marginStart="16dp"
+        android:layout_marginTop="6dp"
         android:layout_marginEnd="16dp"
         app:closeButtonVisibility="gone"
-        app:tickerShapeType="loose"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_checkout_shop_name"
+        app:tickerShapeType="loose"
         app:tickerType="error" />
 
     <FrameLayout
