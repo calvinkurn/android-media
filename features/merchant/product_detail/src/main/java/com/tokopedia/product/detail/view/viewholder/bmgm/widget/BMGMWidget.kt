@@ -6,6 +6,8 @@ import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.isInvisible
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -46,7 +48,7 @@ class BMGMWidget @JvmOverloads constructor(
     }
 
     private val productListBinding by lazyThreadSafetyNone {
-        val productListStub = binding.bmgmProductListStub.inflate()
+        val productListStub = binding.bmgmProductList.inflate()
         BmgmProductListBinding.bind(productListStub)
     }
 
@@ -103,6 +105,7 @@ class BMGMWidget @JvmOverloads constructor(
         setEvent(uiModel = uiModel, router = router, tracker = tracker)
         setBackgroundGradient(colors = uiModel.backgroundColor)
         setProductList(uiModel = uiModel, router = router)
+        setSeparator(uiModel = uiModel)
     }
     // endregion
 
@@ -124,7 +127,7 @@ class BMGMWidget @JvmOverloads constructor(
             productAdapter.submit(uiModel.products) {
                 setRouting(action = uiModel.action, router = router)
             }
-        } else if (binding.bmgmProductListStub.isInflated()) { // stub has already inflated
+        } else if (binding.bmgmProductList.isInflated()) { // stub has already inflated
             productListBinding.root.gone()
         }
     }
@@ -145,6 +148,12 @@ class BMGMWidget @JvmOverloads constructor(
         val color = it.trim()
         getStringUnifyColor(color = color, default = Int.ZERO)
     }.toIntArray()
+    // endregion
+
+    // region separator
+    private fun setSeparator(uiModel: BMGMWidgetUiModel) {
+        binding.bmgmSeparatorBottom.isInvisible = !uiModel.showSeparatorBottom
+    }
     // endregion
 
     // region event

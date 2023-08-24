@@ -1,5 +1,7 @@
 package com.tokopedia.product.detail.view.viewholder.bmgm.model
 
+import com.tokopedia.product.detail.data.util.Separator
+
 /**
  * Created by yovi.putra on 27/07/23"
  * Project name: android-tokopedia-core
@@ -29,4 +31,7 @@ data class BMGMWidgetUiModel(
             const val WEBVIEW = "webview"
         }
     }
+
+    val showSeparatorBottom
+        get() = separator == Separator.BOTTOM || separator == Separator.BOTH
 }

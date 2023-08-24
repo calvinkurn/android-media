@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/bmgm_component"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingBottom="12dp">
+    android:layout_height="wrap_content">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/bmgm_image_left"
@@ -41,7 +40,7 @@
         app:layout_constraintTop_toTopOf="@+id/bmgm_icon_right" />
 
     <ViewStub
-        android:id="@+id/bmgm_product_list_stub"
+        android:id="@+id/bmgm_product_list"
         android:layout_width="match_parent"
         android:layout_marginTop="8dp"
         android:inflatedId="@+id/bmgm_product_list"
@@ -50,7 +49,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/bmgm_icon_right"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_goneMarginTop="0dp" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/bmgm_separator_bottom"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/divider_height_component"
+        android:layout_marginTop="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/bmgm_product_list" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
