@@ -7,7 +7,8 @@
     android:layout_height="match_parent"
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/Unify_NN50">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/rv_container"
@@ -17,8 +18,7 @@
         android:layout_alignParentTop="true"
         android:layout_gravity="center"
         android:descendantFocusability="beforeDescendants"
-        android:scrollbars="vertical"
-        android:background="@color/Unify_NN50">
+        android:scrollbars="vertical">
 
         <com.tokopedia.topchat.chatroom.view.customview.BackgroundImageView
             android:id="@+id/iv_bg_chat"
@@ -147,6 +147,7 @@
             app:layout_constraintRight_toRightOf="parent"
             android:orientation="vertical"
             android:visibility="gone"
+            android:background="@color/Unify_NN0"
             tools:visibility="visible">
 
             <LinearLayout
