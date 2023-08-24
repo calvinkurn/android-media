@@ -60,7 +60,7 @@ class GetChallengeUseCase @Inject constructor(
         when {
             LIST_COMMON_ERROR_CODE.contains(errorCode)-> {
                 messageError = context.getString(R.string.goto_kyc_error_know_code)
-                keyKnowError = KYCConstant.KEY_KNOW_ERROR_CODE
+                keyKnowError = KYCConstant.KEY_KNOWN_ERROR_CODE
             }
             else -> {
                 messageError = message

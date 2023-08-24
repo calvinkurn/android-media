@@ -73,11 +73,11 @@ class RegisterProgressiveUseCase @Inject constructor(
         when {
             errorCode == ERROR_CODE_DATA_ALREADY_EXIST -> {
                 messageError = context.getString(R.string.goto_kyc_error_data_already_exist)
-                keyKnowError = KYCConstant.KEY_KNOW_ERROR_CODE
+                keyKnowError = KYCConstant.KEY_KNOWN_ERROR_CODE
             }
             LIST_COMMON_ERROR_CODE.contains(errorCode) -> {
                 messageError = context.getString(R.string.goto_kyc_error_know_code)
-                keyKnowError = KYCConstant.KEY_KNOW_ERROR_CODE
+                keyKnowError = KYCConstant.KEY_KNOWN_ERROR_CODE
             }
             else -> {
                 messageError = message

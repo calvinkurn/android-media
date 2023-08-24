@@ -21,7 +21,7 @@ fun Throwable?.getGotoKycErrorMessage(context: Context): String {
         else -> {
             var messageError = context.getString(R.string.goto_kyc_error_from_be)
             if (this != null) {
-                if (this is MessageErrorException && this.errorCode == KYCConstant.KEY_KNOW_ERROR_CODE) {
+                if (this is MessageErrorException && this.errorCode == KYCConstant.KEY_KNOWN_ERROR_CODE) {
                     // if errorCode is KYCConstant.KEY_KNOW_ERROR_CODE that mean the message already have valid errorCode
                     // link of errorCode: https://docs.google.com/spreadsheets/d/1pk5DOc1wAxUMUNNxeRAqZxPFGUHbLwBkmLijNI6cH8g/edit?usp=sharing
                     messageError = this.message.toString()
