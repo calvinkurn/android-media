@@ -177,15 +177,6 @@ open class ShopHomeAdapter(
         submitList(newList)
     }
 
-    fun setBannerProductGroupData(uiModel: ShopWidgetComponentBannerProductGroupUiModel) {
-        val newList = getNewVisitableItems()
-        newList.indexOfFirst { it is ShopWidgetComponentBannerProductGroupUiModel }.let { index ->
-            if (index >= 0) {
-                newList.setElement(index, uiModel)
-            }
-        }
-        submitList(newList)
-    }
     fun setProductComparisonData(uiModel: ShopHomePersoProductComparisonUiModel) {
         val newList = getNewVisitableItems()
         newList.indexOfFirst { it is ShopHomePersoProductComparisonUiModel }.let { index ->
