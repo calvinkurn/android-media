@@ -11,7 +11,7 @@ import com.tokopedia.topads.dashboard.recommendation.data.model.local.ProductIte
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.ProductListUiModel
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.recommendation.common.TopAdsProductRecommendationConstants.EMPTY_PRODUCT_LIST_IMG_URL
-import com.tokopedia.topads.dashboard.recommendation.data.model.local.EmptyStateUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.EmptyProductListUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.FeaturedProductsUiModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -55,13 +55,9 @@ class ProductListAdapter(
 
     inner class EmptyStateViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
         private val image: ImageUnify = view.findViewById(R.id.emptyStateImage)
-        private val title: com.tokopedia.unifyprinciples.Typography =
-            view.findViewById(R.id.emptyStateTitle)
-        private val desc: com.tokopedia.unifyprinciples.Typography =
-            view.findViewById(R.id.emptyStateDesc)
         private val reloadCta: UnifyButton = view.findViewById(R.id.emptyStateCta)
 
-        fun bind(item: EmptyStateUiModel, reloadPage: (() -> Unit)?) {
+        fun bind(item: EmptyProductListUiModel, reloadPage: (() -> Unit)?) {
             image.urlSrc = EMPTY_PRODUCT_LIST_IMG_URL
             reloadCta.setOnClickListener {
                 reloadPage?.invoke()
@@ -102,7 +98,7 @@ class ProductListAdapter(
             is ProductItemUiModel -> {
                 (holder as? ProductListItemViewHolder)?.bind(item, onItemCheckedChangeListener)
             }
-            is EmptyStateUiModel -> {
+            is EmptyProductListUiModel -> {
                 (holder as? EmptyStateViewHolder)?.bind(item, reloadPage)
             }
             is FeaturedProductsUiModel -> {
@@ -114,7 +110,7 @@ class ProductListAdapter(
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
             is ProductItemUiModel -> R.layout.topads_potential_product_item_layout
-            is EmptyStateUiModel -> R.layout.topads_insight_centre_empty_state_layout
+            is EmptyProductListUiModel -> R.layout.topads_insight_centre_empty_state_layout
             is FeaturedProductsUiModel -> R.layout.topads_insight_centre_featured_products_layout
             else -> throw IllegalArgumentException("Invalid item type")
         }

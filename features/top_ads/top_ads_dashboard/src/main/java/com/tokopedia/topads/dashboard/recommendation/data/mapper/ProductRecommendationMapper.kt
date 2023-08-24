@@ -4,11 +4,7 @@ import com.tokopedia.topads.common.data.model.DashGroupListResponse
 import com.tokopedia.topads.common.data.model.GroupListDataItem
 import com.tokopedia.topads.dashboard.data.model.CountDataItem
 import com.tokopedia.topads.dashboard.data.model.ProductRecommendation
-import com.tokopedia.topads.dashboard.recommendation.data.model.local.ProductItemUiModel
-import com.tokopedia.topads.dashboard.recommendation.data.model.local.EmptyStateUiModel
-import com.tokopedia.topads.dashboard.recommendation.data.model.local.ProductListUiModel
-import com.tokopedia.topads.dashboard.recommendation.data.model.local.FeaturedProductsUiModel
-import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupItemUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.*
 import javax.inject.Inject
 
 class ProductRecommendationMapper @Inject constructor() {
@@ -31,13 +27,13 @@ class ProductRecommendationMapper @Inject constructor() {
         return productList
     }
 
-    fun getEmptyProductListDefaultUIModel(): List<EmptyStateUiModel>{
-        return listOf(EmptyStateUiModel())
+    fun getEmptyProductListDefaultUiModel(): List<EmptyProductListUiModel>{
+        return listOf(EmptyProductListUiModel())
     }
 
-    fun convertProductItemToFeaturedProductsUiModel(products: List<ProductListUiModel>) : List<FeaturedProductsUiModel>{
+    fun convertProductItemToFeaturedProductsUiModel(products: List<ProductListUiModel>?) : List<FeaturedProductsUiModel>{
         val featuredProductsList = mutableListOf<FeaturedProductsUiModel>()
-        products.forEach {
+        products?.forEach {
             (it as? ProductItemUiModel)?.apply {
                 featuredProductsList.add(
                     FeaturedProductsUiModel(

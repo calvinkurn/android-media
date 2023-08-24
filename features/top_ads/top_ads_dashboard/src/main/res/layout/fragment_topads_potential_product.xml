@@ -65,7 +65,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/productsListRv"
         app:layout_constraintStart_toStartOf="@id/selectAllCheckbox"
-        app:unifyButtonSize="large" />
+        app:unifyButtonSize="large"
+        android:enabled="false"/>
 
     <include
         android:id="@+id/shimmerLoader"

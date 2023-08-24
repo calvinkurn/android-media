@@ -55,13 +55,13 @@ class PotentialProductFragment : BaseDaggerFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        initializeViews()
-        loadProducts()
+        init()
+        setUpProductsList()
         observeViewModel()
         attachClickListener()
     }
 
-    private fun initializeViews() {
+    private fun init() {
         if (binding?.productsListRv?.layoutManager == null)
             binding?.productsListRv?.layoutManager = LinearLayoutManager(
                 context,
@@ -69,7 +69,28 @@ class PotentialProductFragment : BaseDaggerFragment() {
                 false
             )
         binding?.productsListRv?.adapter = productListAdapter
-        updateSelectedItemsCount(DEFAULT_SELECTED_ITEMS_COUNT)
+    }
+
+    private fun setUpProductsList(){
+        if(viewModel.productItemsLiveData.value == null){
+            loadProducts()
+            updateSelectedItemsCount(DEFAULT_SELECTED_ITEMS_COUNT)
+        } else {
+            when (val products = viewModel.productItemsLiveData.value) {
+                is TopadsProductListState.Success -> {
+                    showProductsList()
+                    productListAdapter.submitList(products.data)
+                    val list = products.data.filter { (it as? ProductItemUiModel)?.isSelected ?: false }
+                    updateSelectAllCtaState()
+                    updateSelectedItemsCount(list.size)
+                }
+                is TopadsProductListState.Fail -> {
+                    showEmptyState()
+                    productListAdapter.submitList(mapper.getEmptyProductListDefaultUiModel())
+                }
+                else -> {}
+            }
+        }
     }
 
     private fun updateSelectedItemsCount(itemsSelectedCount: Int) {
@@ -119,7 +140,7 @@ class PotentialProductFragment : BaseDaggerFragment() {
                 }
                 is TopadsProductListState.Fail -> {
                     showEmptyState()
-                    productListAdapter.submitList(mapper.getEmptyProductListDefaultUIModel())
+                    productListAdapter.submitList(mapper.getEmptyProductListDefaultUiModel())
                 }
                 is TopadsProductListState.Loading -> {}
             }
@@ -168,6 +189,7 @@ class PotentialProductFragment : BaseDaggerFragment() {
                 val list = products.data.filter { (it as? ProductItemUiModel)?.isSelected ?: false }
                 updateSelectedItemsCount(list.size)
                 binding?.selectAllCheckbox?.isChecked = list.isNotEmpty()
+                binding?.selectProductsButton?.isEnabled = list.isNotEmpty()
                 binding?.selectAllCheckbox?.setIndeterminate(list.size != products.data.size)
             }
             else -> {}

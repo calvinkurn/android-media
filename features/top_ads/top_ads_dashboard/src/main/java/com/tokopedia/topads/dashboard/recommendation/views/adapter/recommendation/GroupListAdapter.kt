@@ -11,7 +11,7 @@ import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupItemUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupListUiModel
 
-class GroupListAdapter() :
+class GroupListAdapter(private val onItemCheckedChangeListener: (String) -> Unit) :
     ListAdapter<GroupListUiModel, RecyclerView.ViewHolder>(GroupListDiffUtilCallBack()) {
 
     inner class GroupListItemViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
@@ -24,9 +24,15 @@ class GroupListAdapter() :
         private val selectGroupCta: com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify =
             view.findViewById(R.id.selectGroupCta)
 
-        fun bind(item: GroupItemUiModel) {
+        fun bind(item: GroupItemUiModel, onItemCheckedChangeListener: (String) -> Unit) {
+            selectGroupCta.setOnCheckedChangeListener(null)
+            bindValues(item)
+            setSelected(item)
+            setOnCheckedChangeListener(item, onItemCheckedChangeListener)
+        }
+
+        private fun bindValues(item: GroupItemUiModel) {
             title.text = item.groupName
-            selectGroupCta.isChecked = item.isSelected
             productCount.text = HtmlCompat.fromHtml(
                 String.format(
                     view.context.getString(com.tokopedia.topads.common.R.string.topads_common_product_count_with_bold_value),
@@ -41,6 +47,20 @@ class GroupListAdapter() :
                 ),
                 HtmlCompat.FROM_HTML_MODE_LEGACY
             )
+        }
+
+        private fun setSelected(item: GroupItemUiModel){
+            selectGroupCta.isChecked = item.isSelected
+        }
+
+        private fun setOnCheckedChangeListener(
+            item: GroupItemUiModel,
+            onItemCheckedChangeListener: (String) -> Unit
+        ) {
+            selectGroupCta.setOnCheckedChangeListener { _, isChecked ->
+                if (isChecked)
+                    onItemCheckedChangeListener.invoke(item.groupId)
+            }
         }
     }
 
@@ -62,7 +82,7 @@ class GroupListAdapter() :
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (val item = getItem(position)) {
             is GroupItemUiModel -> {
-                (holder as? GroupListItemViewHolder)?.bind(item)
+                (holder as? GroupListItemViewHolder)?.bind(item, onItemCheckedChangeListener)
             }
         }
     }

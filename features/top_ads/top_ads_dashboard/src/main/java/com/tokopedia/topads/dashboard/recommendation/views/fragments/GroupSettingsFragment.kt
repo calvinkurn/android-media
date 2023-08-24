@@ -70,24 +70,15 @@ class GroupSettingsFragment : BaseDaggerFragment() {
         binding?.productsRv?.addItemDecoration(ChipsInsightItemDecoration())
         binding?.productsRv?.adapter = productListAdapter
 
-        when (val products = viewModel.productItemsLiveData.value) {
-            is TopadsProductListState.Success -> {
-                val selectedItems =
-                    products.data.filter {
-                        (it as? ProductItemUiModel)?.isSelected ?: false
-                    }
-                binding?.featuredProductsCount?.text = String.format(
-                    getString(R.string.topads_insight_centre_featured_products),
-                    selectedItems.size
-                )
-                productListAdapter.submitList(
-                    mapper.convertProductItemToFeaturedProductsUiModel(
-                        selectedItems
-                    )
-                )
-            }
-            else -> {}
-        }
+        binding?.featuredProductsCount?.text = String.format(
+            getString(R.string.topads_insight_centre_featured_products),
+            viewModel.getSelectedProductItems()?.size
+        )
+        productListAdapter.submitList(
+            mapper.convertProductItemToFeaturedProductsUiModel(
+                viewModel.getSelectedProductItems()
+            )
+        )
 
         setUpCreateGroupPage()
 

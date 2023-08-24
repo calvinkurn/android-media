@@ -35,7 +35,7 @@ import javax.inject.Inject
 class CreateNewGroupFragment : BaseDaggerFragment() {
 
     private var binding: FragmentTopadsCreateNewGroupBinding? = null
-    private var autofillGroupName: String? = null
+    private var isAutoFillGroupNameComplete = false
     private var validGroupName: Boolean = false
     private var validBudget: Boolean = false
     private var counter: Int = 0
@@ -64,7 +64,7 @@ class CreateNewGroupFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         init()
         observeViewModel()
-        autoFillGroupName()
+        checkForAutoFillGroupName()
         attachListeners()
     }
 
@@ -78,38 +78,51 @@ class CreateNewGroupFragment : BaseDaggerFragment() {
         )
     }
 
-
-    private fun autoFillGroupName() {
+    private fun checkForAutoFillGroupName() {
+        binding?.groupName?.isLoading = true
         val groupName: String =
             getString(com.tokopedia.topads.common.R.string.topads_common_group) + " " + DateUtil.getCurrentDate()
-                .formatTo(BASIC_DATE_FORMAT)
-        autofillGroupName = groupName
-        binding?.groupName?.editText?.text = Editable.Factory().newEditable(autofillGroupName)
+                .formatTo(BASIC_DATE_FORMAT) + (if (counter == 0) "" else " ($counter)")
+        counter++
         viewModel.validateGroup(groupName)
+    }
+
+    private fun autoFillGroupName(groupName: String) {
+        binding?.groupName?.editText?.text = Editable.Factory().newEditable(groupName)
+        binding?.groupName?.editText?.addTextChangedListener(groupNameTextWatcher)
+        isAutoFillGroupNameComplete = true
+        binding?.groupName?.isLoading = false
+        validGroupName = true
+        checkAllFieldsValidations()
     }
 
     private fun observeViewModel() {
         viewModel.validateNameLiveData.observe(viewLifecycleOwner) {
-            if (it.errors.isEmpty()) {
-                validGroupName = true
-                checkAllFieldsValidations()
+            if (!isAutoFillGroupNameComplete) {
+                if (it.errors.isEmpty()) {
+                    autoFillGroupName(it.data.groupName)
+                } else {
+                    checkForAutoFillGroupName()
+                }
             } else {
-                validGroupName = false
-                checkAllFieldsValidations()
-                binding?.groupName?.setMessage("Nama grup sudah digunakan.")
-//                viewModel.validateGroup(
-//                    "$autofillGroupName ($counter)"
-//                )
-//                counter++
-//                binding?.groupName?.isLoading = true
+                if (it.errors.isEmpty()) {
+                    validGroupName = true
+                    checkAllFieldsValidations()
+                    binding?.groupName?.isInputError = false
+                } else {
+                    validGroupName = false
+                    checkAllFieldsValidations()
+                    binding?.groupName?.setMessage("Nama grup sudah digunakan.")
+                    binding?.groupName?.isInputError = true
+                }
             }
-            binding?.groupName?.isLoading = false
         }
 
-        viewModel.bidInfoLiveData.observe(viewLifecycleOwner){data ->
+        viewModel.bidInfoLiveData.observe(viewLifecycleOwner) { data ->
             data.firstOrNull()?.let {
                 minDailyBudget = it.minDailyBudget
-                maxDailyBudget = if (it.maxDailyBudget == 0) MAXIMUM_DAILY_BUDGET_DEFAULT_VALUE else it.maxDailyBudget
+                maxDailyBudget =
+                    if (it.maxDailyBudget == 0) MAXIMUM_DAILY_BUDGET_DEFAULT_VALUE else it.maxDailyBudget
                 binding?.dailyBudget?.editText?.text = Editable.Factory()
                     .newEditable(CurrencyFormatHelper.convertToRupiah(it.minDailyBudget.toString()))
                 validBudget = true
@@ -117,11 +130,12 @@ class CreateNewGroupFragment : BaseDaggerFragment() {
             }
         }
 
-        viewModel.createGroupLiveData.observe(viewLifecycleOwner){
-            when(val data = it){
+        viewModel.createGroupLiveData.observe(viewLifecycleOwner) {
+            when (val data = it) {
                 is TopadsProductListState.Success -> {
                     openSuccessDialog(data.data)
-                } else -> {}
+                }
+                else -> {}
             }
         }
     }
@@ -160,35 +174,6 @@ class CreateNewGroupFragment : BaseDaggerFragment() {
             showDailyBudgetTipsBottomsheet()
         }
 
-        binding?.groupName?.editText?.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
-
-            override fun afterTextChanged(p0: Editable?) {
-                binding?.groupName?.setMessage("")
-                if (p0 != null && !p0.isEmpty()) {
-                    if (p0.toString().length > 70) {
-                        binding?.groupName?.setMessage("Grup iklan maksimal 70 karakter")
-                        binding?.groupName?.isInputError = true
-                        validGroupName = false
-                        checkAllFieldsValidations()
-                    } else {
-                        binding?.groupName?.isInputError = false
-                        viewModel.validateGroup(
-                            p0.toString()
-                        )
-                        binding?.groupName?.isLoading = true
-                    }
-                } else {
-                    binding?.groupName?.isInputError = true
-                    validGroupName = false
-                    checkAllFieldsValidations()
-                }
-            }
-        })
-
         binding?.dailyBudget?.editText?.addTextChangedListener(object :
             NumberTextWatcher(binding?.dailyBudget?.editText!!) {
             override fun onNumberChanged(number: Double) {
@@ -215,7 +200,7 @@ class CreateNewGroupFragment : BaseDaggerFragment() {
         binding?.btnSubmit?.setOnClickListener {
             if (binding?.btnSubmit?.isLoading != null && !(binding?.btnSubmit?.isLoading!!)) {
                 binding?.btnSubmit?.isLoading = true
-                viewModel.topAdsCreate(
+                viewModel.topAdsCreateGroup(
                     getSelectedProductIds(),
                     binding?.groupName?.editText?.text.toString(),
                     CurrencyFormatHelper.convertRupiahToDouble(binding?.dailyBudget?.editText?.text.toString()),
@@ -243,6 +228,33 @@ class CreateNewGroupFragment : BaseDaggerFragment() {
     companion object {
         fun createInstance(): CreateNewGroupFragment {
             return CreateNewGroupFragment()
+        }
+    }
+
+    private val groupNameTextWatcher = object : TextWatcher {
+        override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+        override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+        override fun afterTextChanged(p0: Editable?) {
+            binding?.groupName?.setMessage("")
+            if (p0 != null && !p0.isEmpty()) {
+                if (p0.toString().length > 70) {
+                    binding?.groupName?.setMessage("Grup iklan maksimal 70 karakter")
+                    binding?.groupName?.isInputError = true
+                    validGroupName = false
+                    checkAllFieldsValidations()
+                } else {
+                    binding?.groupName?.isInputError = false
+                    viewModel.validateGroup(
+                        p0.toString()
+                    )
+                }
+            } else {
+                binding?.groupName?.isInputError = true
+                validGroupName = false
+                checkAllFieldsValidations()
+            }
         }
     }
 

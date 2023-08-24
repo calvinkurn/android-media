@@ -21,7 +21,7 @@ data class ProductItemUiModel(
     }
 }
 
-data class EmptyStateUiModel(
+data class EmptyProductListUiModel(
     val productId: String = "",
     val productName: String = "",
     val imgUrl: String = "",

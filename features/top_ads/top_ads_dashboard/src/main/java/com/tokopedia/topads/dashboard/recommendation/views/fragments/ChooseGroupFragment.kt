@@ -8,13 +8,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.topads.common.data.util.Utils
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.databinding.FragmentTopadsChooseGroupBinding
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
-import com.tokopedia.topads.dashboard.recommendation.common.decoration.ChipsInsightItemDecoration
+import com.tokopedia.topads.dashboard.recommendation.common.TopAdsProductRecommendationConstants.DEFAULT_EMPTY_STRING
 import com.tokopedia.topads.dashboard.recommendation.data.mapper.ProductRecommendationMapper
-import com.tokopedia.topads.dashboard.recommendation.data.model.local.ProductItemUiModel
-import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopadsProductListState
 import com.tokopedia.topads.dashboard.recommendation.viewmodel.ProductRecommendationViewModel
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.recommendation.GroupListAdapter
 import javax.inject.Inject
@@ -23,7 +22,7 @@ class ChooseGroupFragment : BaseDaggerFragment() {
 
     private var binding: FragmentTopadsChooseGroupBinding? = null
 
-    private val groupListAdapter by lazy { GroupListAdapter() }
+    private val groupListAdapter by lazy { GroupListAdapter(::onItemCheckedChangeListener) }
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -53,36 +52,43 @@ class ChooseGroupFragment : BaseDaggerFragment() {
     }
 
     private fun init() {
-        when (val products = viewModel.productItemsLiveData.value) {
-            is TopadsProductListState.Success -> {
-                val selectedItems =
-                    products.data.filter {
-                        (it as? ProductItemUiModel)?.isSelected ?: false
-                    }
-                binding?.btnSubmit?.text = String.format(
-                    getString(R.string.topads_insight_centre_advertise_product_with_count),
-                    selectedItems.size
-                )
-            }
-            else -> {}
-        }
-        viewModel.getTopadsGroupList("")
+        binding?.btnSubmit?.text = String.format(
+            getString(R.string.topads_insight_centre_advertise_product_with_count),
+            viewModel.getSelectedProductItems()?.size
+        )
 
         binding?.groupsRv?.layoutManager = LinearLayoutManager(
             context,
             LinearLayoutManager.VERTICAL,
             false
         )
-        binding?.groupsRv?.addItemDecoration(
-            ChipsInsightItemDecoration()
-        )
         binding?.groupsRv?.adapter = groupListAdapter
+
+        viewModel.getTopadsGroupList(DEFAULT_EMPTY_STRING)
+
+        binding?.btnSubmit?.setOnClickListener {  }
+        binding?.searchGroup?.let {
+            Utils.setSearchListener(it, context, it, ::searchGroups)
+        }
+    }
+
+    private fun searchGroups(){
+        val searchEditable = binding?.searchGroup?.searchBarTextField?.text
+        val search = if(searchEditable.isNullOrEmpty()) DEFAULT_EMPTY_STRING else searchEditable.toString()
+        viewModel.getTopadsGroupList(search)
     }
 
     private fun observeViewModel() {
         viewModel.groupListLiveData.observe(viewLifecycleOwner) {
             groupListAdapter.submitList(it)
         }
+    }
+
+    private fun onItemCheckedChangeListener(groupId: String){
+        viewModel.groupListLiveData.value?.forEach {
+            it.isSelected = it.groupId == groupId
+        }
+        groupListAdapter.notifyDataSetChanged()
     }
 
     companion object {

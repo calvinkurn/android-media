@@ -109,7 +109,7 @@ class ProductRecommendationViewModel @Inject constructor(
         })
     }
 
-    fun topAdsCreate(
+    fun topAdsCreateGroup(
         productIds: List<String>,
         currentGroupName: String,
         dailyBudget: Double,

@@ -8,7 +8,7 @@ interface GroupListUiModel {
 data class GroupItemUiModel(
     val groupName: String = "",
     val groupId: String,
-    val isSelected: Boolean,
+    var isSelected: Boolean,
     val keywordCount: Int,
     val productCount: Int,
 ) : GroupListUiModel {

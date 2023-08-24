@@ -17,4 +17,5 @@ object TopAdsProductRecommendationConstants {
     const val AUTO_BID_CONST = "auto_bid"
     const val CONST_2 = 2
     const val KEYWORD = "keyword"
+    const val DEFAULT_EMPTY_STRING = ""
 }
