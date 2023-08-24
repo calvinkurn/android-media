@@ -5,8 +5,6 @@ import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.stories.uimodel.StoryActionType
-import com.tokopedia.stories.uimodel.StoryAuthor
-import com.tokopedia.stories.uimodel.StoryType
 import com.tokopedia.stories.usecase.response.UpdateStoryResponse
 import javax.inject.Inject
 
@@ -57,22 +55,13 @@ class UpdateStoryUseCase @Inject constructor(
 
 data class Param(
     val storyId: String,
-    val storyType: StoryType,
-    val storyAuthor: StoryAuthor,
     val action: StoryActionType,
-    val mediaId: String,
-    val publishedAt: String,
 ) {
     fun convertToMap(): Map<String, Any> =
         mapOf(
             UpdateStoryUseCase.REQ_PARAM to mapOf(
                 UpdateStoryUseCase.STORY_ID_PARAM to storyId,
-                UpdateStoryUseCase.STORY_TYPE_PARAM to storyType.value,
-                UpdateStoryUseCase.AUTHOR_ID_PARAM to storyAuthor.id,
-                UpdateStoryUseCase.AUTHOR_TYPE_PARAM to storyAuthor.type.value,
                 UpdateStoryUseCase.STATUS_PARAM to action.value,
-                UpdateStoryUseCase.MEDIA_ID_PARAM to mediaId,
-                UpdateStoryUseCase.PUBLISHED_AT_PARAM to publishedAt,
             )
         )
 }
