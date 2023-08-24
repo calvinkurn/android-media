@@ -13,6 +13,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import com.tokopedia.logisticorder.databinding.FragmentTippingDriverBinding
 import com.tokopedia.logisticorder.utils.TippingConstant.PARAM_ORDER_ID
+import com.tokopedia.logisticorder.utils.TippingConstant.PARAM_REF_NUM
 import com.tokopedia.logisticorder.view.bottomsheet.DriverTippingBottomSheet
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
@@ -22,11 +23,13 @@ class TippingDriverFragment : Fragment() {
     private var bottomSheet: DriverTippingBottomSheet? = null
 
     private var orderId: String = ""
+    private var refNum: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             orderId = it.getString(PARAM_ORDER_ID, "")
+            refNum = it.getString(PARAM_REF_NUM, "")
         }
     }
 
@@ -62,7 +65,7 @@ class TippingDriverFragment : Fragment() {
         bottomSheet?.setOnDismissListener {
             activity?.finish()
         }
-        bottomSheet?.show(parentFragmentManager, orderId, null)
+        bottomSheet?.show(parentFragmentManager, orderId, refNum)
     }
 
     private fun doFinishActivity(result: Int = RESULT_CANCELED) {
@@ -85,10 +88,11 @@ class TippingDriverFragment : Fragment() {
 
     companion object {
 
-        fun newInstance(orderId: String): TippingDriverFragment {
+        fun newInstance(orderId: String, refNum: String): TippingDriverFragment {
             return TippingDriverFragment().apply {
                 arguments = Bundle().apply {
                     putString(PARAM_ORDER_ID, orderId)
+                    putString(PARAM_REF_NUM, refNum)
                 }
             }
         }

@@ -58,6 +58,7 @@ class DriverTippingBottomSheet : BottomSheetUnify(), HasComponent<TrackingPageCo
     }
 
     private var orderId: String? = ""
+    private var refNum: String? = ""
     private var trackingDataModel: TrackingDataModel? = null
     private var tippingValueAdapter: TippingValueAdapter? = null
     private var selectedTippingValue: Int? = null
@@ -167,8 +168,8 @@ class DriverTippingBottomSheet : BottomSheetUnify(), HasComponent<TrackingPageCo
                 tvResiValue.gone()
                 tvResi.gone()
             }
-            trackingDataModel?.let {
-                tvResiValue.text = it.trackOrder.shippingRefNum
+            refNum?.let {
+                tvResiValue.text = it
             }
             tvInvoiceValue.text = orderId
             tvDriverNameValue.text = logisticDriverModel.lastDriver.name
@@ -325,6 +326,12 @@ class DriverTippingBottomSheet : BottomSheetUnify(), HasComponent<TrackingPageCo
     fun show(fm: FragmentManager, orderId: String?, trackingDataModel: TrackingDataModel?) {
         this.orderId = orderId
         this.trackingDataModel = trackingDataModel
+        show(fm, "TAG")
+    }
+
+    fun show(fm: FragmentManager, orderId: String?, refNum: String?) {
+        this.orderId = orderId
+        this.refNum = refNum
         show(fm, "TAG")
     }
 
