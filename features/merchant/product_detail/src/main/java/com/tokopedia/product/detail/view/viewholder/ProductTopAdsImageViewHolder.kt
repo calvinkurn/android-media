@@ -3,8 +3,6 @@ package com.tokopedia.product.detail.view.viewholder
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
@@ -31,7 +29,6 @@ class ProductTopAdsImageViewHolder(
                 val tdnBannerList = TdnHelper.categoriesTdnBanners(it)
                 val tdnBanner = tdnBannerList.toList().firstOrNull()
                 if (tdnBanner != null) {
-                    topAdsTdnView.show()
                     topAdsTdnView.renderTdnBanner(
                         tdnBanner,
                         onTdnBannerClicked = { applink ->
@@ -42,7 +39,7 @@ class ProductTopAdsImageViewHolder(
                                 bannerName
                             )
                         },
-                        onLoadFailed = { topAdsTdnView.hide() },
+                        onLoadFailed = { listener.removeComponent(element.name()) },
                         onTdnBannerImpressed = {
                             listener.onTopAdsImageViewImpression(element, bannerId, bannerName)
                         })
