@@ -4,6 +4,7 @@ import com.tokopedia.basemvvm.repository.BaseRepository
 import com.tokopedia.oldcatalog.model.raw.CatalogResponseData
 import com.tokopedia.oldcatalog.model.raw.gql.GQL_CATALOG_QUERY
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.oldcatalog.model.raw.gql.GQL_CATALOG_REIMAGINE_QUERY
 import com.tokopedia.usecase.RequestParams
 import java.lang.reflect.Type
 import javax.inject.Inject
@@ -15,15 +16,21 @@ class CatalogDetailRepository @Inject constructor() : BaseRepository() {
     private val KEY_DEVICE = "device"
     private val KEY_USER_ID = "user_id"
 
-    suspend fun getCatalogDetail(categoryID: String,comparedCatalogId : String, userId : String, device : String): GraphqlResponse? {
+    suspend fun getCatalogDetail(
+        categoryID: String,
+        comparedCatalogId: String,
+        userId: String,
+        device: String,
+        isReimagine: Boolean = false
+    ): GraphqlResponse? {
         val type: MutableList<Type> = ArrayList()
         type.add(CatalogResponseData::class.java)
-        return getGQLData(getQueries(), type, getRequests(categoryID,comparedCatalogId,userId,device))
+        return getGQLData(getQueries(isReimagine), type, getRequests(categoryID,comparedCatalogId,userId,device))
     }
 
-    private fun getQueries(): MutableList<String> {
+    private fun getQueries(isReimagine: Boolean): MutableList<String> {
         val queries: MutableList<String> = ArrayList()
-        queries.add(GQL_CATALOG_QUERY)
+        queries.add(if (isReimagine) GQL_CATALOG_REIMAGINE_QUERY else GQL_CATALOG_QUERY)
         return queries
     }
 

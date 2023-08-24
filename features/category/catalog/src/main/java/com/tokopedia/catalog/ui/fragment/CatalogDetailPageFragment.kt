@@ -34,13 +34,15 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener {
 
     @Inject
-    lateinit var catalogDetailPageViewModel: CatalogDetailPageViewModel
+    lateinit var viewModel: CatalogDetailPageViewModel
 
     private var binding by autoClearedNullable<FragmentCatalogReimagineDetailPageBinding>()
 
@@ -89,7 +91,19 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        catalogDetailPageViewModel.getA()
+
+        viewModel.catalogDetailDataModel.observe(viewLifecycleOwner) {
+            if (it is Success) {
+                widgetAdapter.addMoreData(it.data.widgets)
+            }
+            Toaster.build(view, (it as? Success)?.data.toString()).show()
+
+        }
+
+        viewModel.getProductCatalog(
+            "73177",
+            "73177", "213079258", "android")
+
         context?.let {
             binding?.setupRvWidgets(false, true)
             binding?.setupToolbar(false, true, "#ffffff")
