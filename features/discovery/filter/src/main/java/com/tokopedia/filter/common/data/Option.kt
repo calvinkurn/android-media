@@ -120,7 +120,7 @@ class Option(@SerializedName("name")
         get() = key == KEY_RATING
 
     override fun isTypeOptionRadio(): Boolean {
-        return true
+        return isTypeRadio
     }
 
     override fun getHexColorOption(): String {
