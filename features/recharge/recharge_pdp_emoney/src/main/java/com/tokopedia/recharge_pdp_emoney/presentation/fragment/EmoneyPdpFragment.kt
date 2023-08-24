@@ -671,7 +671,7 @@ open class EmoneyPdpFragment :
 
     private fun renderTickerBCAGenOne(detailPassData: DigitalCategoryDetailPassData) {
         if (detailPassData.isBCAGenOne) {
-            binding.tickerNotSupported.show()
+            showHideNotSupported()
         } else {
             hideTickerNotSupported()
         }
@@ -679,19 +679,24 @@ open class EmoneyPdpFragment :
 
     private fun renderTickerNFCNotSupported(selectedOperator: RechargePrefix) {
         if (selectedOperator.operator.attributes.name.equals("BCA Flazz")) {
-            if (this::nfcAdapter.isInitialized && nfcAdapter != null) {
+            if (this::nfcAdapter.isInitialized && !nfcAdapter.isEnabled) {
+                showHideNotSupported()
+                binding.tickerNotSupported.setHtmlDescription(getString(com.tokopedia.recharge_pdp_emoney.R.string.recharge_pdp_emoney_nfc_is_not))
+            } else if (this::nfcAdapter.isInitialized && nfcAdapter != null) {
                 hideTickerNotSupported()
             } else {
-                binding.tickerNotSupported.show()
+                showHideNotSupported()
                 binding.tickerNotSupported.setHtmlDescription(getString(com.tokopedia.recharge_pdp_emoney.R.string.recharge_pdp_emoney_nfc_not_supported))
             }
-        } else {
-            hideTickerNotSupported()
         }
     }
 
     private fun hideTickerNotSupported() {
         binding.tickerNotSupported.hide()
+    }
+
+    private fun showHideNotSupported() {
+        binding.tickerNotSupported.show()
     }
 
     private fun loadProducts(prefix: RechargePrefix) {
