@@ -58,13 +58,12 @@ class InputTextActivity : BaseActivity(), NavToolbarComponent.Listener {
     }
 
     override fun onContinueClicked() {
-        val resultData = viewModel.getTextDetail()
+        finishActivity()
+    }
 
-        val intent = Intent()
-        intent.putExtra(INPUT_TEXT_RESULT, resultData)
-
-        setResult(0, intent)
-        finish()
+    @Deprecated("Deprecated in Java")
+    override fun onBackPressed() {
+        finishActivity()
     }
 
     private fun initView() {
@@ -100,6 +99,16 @@ class InputTextActivity : BaseActivity(), NavToolbarComponent.Listener {
         ModuleInjector
             .get(this)
             .inject(this)
+    }
+
+    private fun finishActivity() {
+        val resultData = viewModel.getTextDetail()
+
+        val intent = Intent()
+        intent.putExtra(INPUT_TEXT_RESULT, resultData)
+
+        setResult(0, intent)
+        finish()
     }
 
     companion object {

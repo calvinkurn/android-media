@@ -80,7 +80,7 @@ open class MainEditorActivity : AppCompatActivity(), NavToolbarComponent.Listene
 
         val result = it.data?.getParcelableExtra<InputTextModel>(InputTextActivity.INPUT_TEXT_RESULT)
 
-        if (result?.text?.isNotEmpty() == true) return@registerForActivityResult
+        if (result?.text?.isNotEmpty() != true) return@registerForActivityResult
 
         // TODO, bind input text result to ImageModel & VideoModel (re-implement previous pos detail / create new if no detail yet)
         Toast.makeText(this, result?.text + "", Toast.LENGTH_LONG).show()
