@@ -19,29 +19,45 @@ object HomeHeaderMapper {
     ) {
         buyerCommunicationResponse?.let {
             val shopDetails = it.data.shopDetails
-            val shippingDetails = it.data.shippingDetails
-            val backgroundData = mapToHeaderBackgroundData(it)
-            val buyerCommunicationData = BuyerCommunicationMapper
-                .mapToBuyerCommunicationData(it)
-
             val title = shopDetails.title
             val logoUrl = shopDetails.logoURL
-            val shippingHint = shippingDetails.hint
 
-            val layoutUiModel = item.copy(
-                id = HomeStaticLayoutId.HOME_HEADER,
-                title = title,
-                shippingHint = shippingHint,
-                logoUrl = logoUrl,
-                background = backgroundData,
-                buyerCommunication = buyerCommunicationData,
-                warehouses = warehouses,
-                state = HomeLayoutItemState.LOADED
-            )
-
-            updateItemById(item.id) {
-                HomeLayoutItemUiModel(layoutUiModel, HomeLayoutItemState.LOADED)
+            if (title.isBlank() or logoUrl.isBlank()) {
+                mapHomeHeaderErrorState(item)
+            } else {
+                mapHomeHeaderLoadedState(it, item, warehouses)
             }
+        }
+    }
+
+    private fun MutableList<HomeLayoutItemUiModel?>.mapHomeHeaderLoadedState(
+        it: GetBuyerCommunicationResponse,
+        item: HomeHeaderUiModel,
+        warehouses: List<WarehouseData>
+    ) {
+        val shopDetails = it.data.shopDetails
+        val shippingDetails = it.data.shippingDetails
+        val backgroundData = mapToHeaderBackgroundData(it)
+        val buyerCommunicationData = BuyerCommunicationMapper
+            .mapToBuyerCommunicationData(it)
+
+        val title = shopDetails.title
+        val logoUrl = shopDetails.logoURL
+        val shippingHint = shippingDetails.hint
+
+        val layoutUiModel = item.copy(
+            id = HomeStaticLayoutId.HOME_HEADER,
+            title = title,
+            shippingHint = shippingHint,
+            logoUrl = logoUrl,
+            background = backgroundData,
+            buyerCommunication = buyerCommunicationData,
+            warehouses = warehouses,
+            state = HomeLayoutItemState.LOADED
+        )
+
+        updateItemById(item.id) {
+            HomeLayoutItemUiModel(layoutUiModel, HomeLayoutItemState.LOADED)
         }
     }
 
