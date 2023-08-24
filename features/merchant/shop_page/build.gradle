@@ -33,9 +33,12 @@ android {
     sourceSets {
         main {
             res {
-                srcDirs = ['src/main/res/directpurchase',
-                           'src/main/res/common',
-                           'src/main/res'
+                //TODO need to re arrange layout folder in the future so that it will be more readable
+                srcDirs = [
+                        'src/main/res/home_tab_viewholder/directpurchasebyetalase',
+                        'src/main/res/custom_view/directpurchase',
+                        'src/main/res/common',
+                        'src/main/res'
                 ]
             }
         }
