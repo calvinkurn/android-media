@@ -282,7 +282,7 @@ object DeeplinkMapper {
 
     fun getWebviewApplink(deeplink: String): String {
         return if (deeplink.contains("landing-dana-instant")) {
-            "tokopedia-android-internal://user/webviewkyc"
+            ApplinkConstInternalUserPlatform.GOTO_KYC_WEBVIEW
         } else {
             ApplinkConstInternalGlobal.WEBVIEW_BASE
         }
