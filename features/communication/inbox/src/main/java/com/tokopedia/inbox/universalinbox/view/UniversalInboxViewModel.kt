@@ -1,5 +1,6 @@
 package com.tokopedia.inbox.universalinbox.view
 
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -70,7 +71,8 @@ class UniversalInboxViewModel @Inject constructor(
     val morePageRecommendation: LiveData<Result<List<RecommendationItem>>>
         get() = _morePageRecommendation
 
-    private var _allChannelsLiveData: LiveData<List<ConversationsChannel>>? = null
+    @VisibleForTesting
+    var _allChannelsLiveData: LiveData<List<ConversationsChannel>>? = null
 
     var driverChatCounter: LiveData<Result<Pair<Int, Int>>>? = null
     var driverChatWidgetData: Pair<Int, UniversalInboxWidgetDataResponse>? = null
@@ -94,9 +96,11 @@ class UniversalInboxViewModel @Inject constructor(
                 val widgetMetaResponse = getWidgetMetaAsync().await()
                 resetDriver()
                 // Get driver data only when response has driver widget
-                widgetMetaResponse?.metaData?.forEachIndexed { index, response ->
-                    if (response.type == GOJEK_TYPE) {
-                        driverChatWidgetData = Pair(index, response)
+                if (widgetMetaResponse?.metaData != null) {
+                    widgetMetaResponse.metaData.forEachIndexed { index, response ->
+                        if (response.type == GOJEK_TYPE) {
+                            driverChatWidgetData = Pair(index, response)
+                        }
                     }
                 }
                 if (driverChatWidgetData != null) {
@@ -139,7 +143,8 @@ class UniversalInboxViewModel @Inject constructor(
         }
     }
 
-    private fun getDriverUnreadCount(
+    @VisibleForTesting
+    fun getDriverUnreadCount(
         channelList: List<ConversationsChannel>
     ): LiveData<Result<Pair<Int, Int>>> {
         val unreadDriverChatCount = MutableLiveData<Result<Pair<Int, Int>>>()
@@ -153,9 +158,13 @@ class UniversalInboxViewModel @Inject constructor(
                         unreadTotal += channel.unreadCount
                     }
                 }
-                unreadDriverChatCount.value = Success(
-                    Pair(activeChannel, unreadTotal)
-                )
+                if (unreadTotal >= Int.ZERO) {
+                    unreadDriverChatCount.value = Success(
+                        Pair(activeChannel, unreadTotal)
+                    )
+                } else {
+                    throw IllegalArgumentException()
+                }
             } catch (throwable: Throwable) {
                 _error.value = Pair(throwable, ::getDriverUnreadCount.name)
                 unreadDriverChatCount.value = Fail(throwable)
