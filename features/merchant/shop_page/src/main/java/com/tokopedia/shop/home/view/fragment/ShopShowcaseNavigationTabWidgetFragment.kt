@@ -83,58 +83,58 @@ class ShopShowcaseNavigationTabWidgetFragment : BaseDaggerFragment() {
         val fourthShowcase = showcases.getOrNull(FIFTH_SHOWCASE_INDEX)
 
         mainShowcase?.let {
-            binding?.imgMainBanner?.loadImage(mainShowcase.imageUrl)
-            binding?.imgMainBannerTitle?.text = mainShowcase.name
+            binding?.imgMainShowcase?.loadImage(mainShowcase.imageUrl)
+            binding?.imgMainShowcaseTitle?.text = mainShowcase.name
 
-            binding?.imgMainBanner?.visible()
-            binding?.imgMainBannerTitle?.visible()
+            binding?.imgMainShowcase?.visible()
+            binding?.imgMainShowcaseTitle?.visible()
 
-            binding?.imgMainBanner?.setOnClickListener { onShowcaseClick(mainShowcase) }
-            binding?.imgMainBannerTitle?.setOnClickListener { onShowcaseClick(mainShowcase) }
+            binding?.imgMainShowcase?.setOnClickListener { onShowcaseClick(mainShowcase) }
+            binding?.imgMainShowcaseTitle?.setOnClickListener { onShowcaseClick(mainShowcase) }
         }
 
         firstShowcase?.let {
-            binding?.imgFirstBanner?.loadImage(firstShowcase.imageUrl)
-            binding?.imgFirstBannerTitle?.text = firstShowcase.name
+            binding?.imgFirstShowcase?.loadImage(firstShowcase.imageUrl)
+            binding?.imgFirstShowcaseTitle?.text = firstShowcase.name
 
-            binding?.imgFirstBanner?.visible()
-            binding?.imgFirstBannerTitle?.visible()
+            binding?.imgFirstShowcase?.visible()
+            binding?.imgFirstShowcaseTitle?.visible()
 
-            binding?.imgFirstBanner?.setOnClickListener { onShowcaseClick(firstShowcase) }
-            binding?.imgFirstBannerTitle?.setOnClickListener { onShowcaseClick(firstShowcase) }
+            binding?.imgFirstShowcase?.setOnClickListener { onShowcaseClick(firstShowcase) }
+            binding?.imgFirstShowcaseTitle?.setOnClickListener { onShowcaseClick(firstShowcase) }
         }
 
         secondShowcase?.let {
-            binding?.imgSecondBanner?.loadImage(secondShowcase.imageUrl)
-            binding?.tpgSecondBannerTitle?.text = secondShowcase.name
+            binding?.imgSecondShowcase?.loadImage(secondShowcase.imageUrl)
+            binding?.tpgSecondShowcaseTitle?.text = secondShowcase.name
 
-            binding?.imgSecondBanner?.visible()
-            binding?.tpgSecondBannerTitle?.visible()
+            binding?.imgSecondShowcase?.visible()
+            binding?.tpgSecondShowcaseTitle?.visible()
 
-            binding?.imgSecondBanner?.setOnClickListener { onShowcaseClick(secondShowcase) }
-            binding?.tpgSecondBannerTitle?.setOnClickListener { onShowcaseClick(secondShowcase) }
+            binding?.imgSecondShowcase?.setOnClickListener { onShowcaseClick(secondShowcase) }
+            binding?.tpgSecondShowcaseTitle?.setOnClickListener { onShowcaseClick(secondShowcase) }
         }
 
         thirdShowcase?.let {
-            binding?.imgThirdBanner?.loadImage(thirdShowcase.imageUrl)
-            binding?.tpgThirdBannerTitle?.text = thirdShowcase.name
+            binding?.imgThirdShowcase?.loadImage(thirdShowcase.imageUrl)
+            binding?.tpgThirdShowcaseTitle?.text = thirdShowcase.name
 
-            binding?.imgThirdBanner?.visible()
-            binding?.tpgThirdBannerTitle?.visible()
+            binding?.imgThirdShowcase?.visible()
+            binding?.tpgThirdShowcaseTitle?.visible()
 
-            binding?.imgThirdBanner?.setOnClickListener { onShowcaseClick(thirdShowcase) }
-            binding?.tpgThirdBannerTitle?.setOnClickListener { onShowcaseClick(thirdShowcase) }
+            binding?.imgThirdShowcase?.setOnClickListener { onShowcaseClick(thirdShowcase) }
+            binding?.tpgThirdShowcaseTitle?.setOnClickListener { onShowcaseClick(thirdShowcase) }
         }
 
         fourthShowcase?.let {
-            binding?.imgFourthBanner?.loadImage(fourthShowcase.imageUrl)
-            binding?.imgFourthBannerTitle?.text = fourthShowcase.name
+            binding?.imgFourthShowcase?.loadImage(fourthShowcase.imageUrl)
+            binding?.imgFourthShowcaseTitle?.text = fourthShowcase.name
 
-            binding?.imgFourthBanner?.visible()
-            binding?.imgFourthBannerTitle?.visible()
+            binding?.imgFourthShowcase?.visible()
+            binding?.imgFourthShowcaseTitle?.visible()
 
-            binding?.imgFourthBanner?.setOnClickListener { onShowcaseClick(fourthShowcase) }
-            binding?.imgFourthBannerTitle?.setOnClickListener { onShowcaseClick(fourthShowcase) }
+            binding?.imgFourthShowcase?.setOnClickListener { onShowcaseClick(fourthShowcase) }
+            binding?.imgFourthShowcaseTitle?.setOnClickListener { onShowcaseClick(fourthShowcase) }
         }
     }
 
