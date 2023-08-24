@@ -111,9 +111,12 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DYNAMIC_FEATURE
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.INBOX_TALK
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.OQR_PIN_URL_ENTRY
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.OVO_PAY_WITH_QR_ENTRY
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PRODUCT_TALK_BASE
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SALDO_DEPOSIT
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SALDO_INTRO
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SETTING_BANK
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.TALK_REPLY_BASE
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.TALK_SELLER_SETTINGS
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.ADD_ADDRESS_V1
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.ADD_ADDRESS_V2
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.ADD_ADDRESS_V3
@@ -299,6 +302,7 @@ object DeeplinkDFMapper : CoroutineScope {
     const val DF_DILAYANI_TOKOPEDIA = "df_dilayanitokopedia"
     const val DF_CAMPAIGN_LIST = "df_campaign_list"
     const val DF_SELLER_FEEDBACK = "df_seller_feedback"
+    const val DF_SELLER_TALK = "df_seller_talk"
 
     const val SHARED_PREF_TRACK_DF_USAGE = "pref_track_df_usage"
     var dfUsageList = mutableListOf<String>()
@@ -1011,6 +1015,41 @@ object DeeplinkDFMapper : CoroutineScope {
                     { it.startsWithPattern(ApplinkConstInternalSellerapp.SELLER_FEEDBACK) },
                     DF_SELLER_FEEDBACK,
                     R.string.title_seller_feedback
+                )
+            )
+            add(
+                DFP(
+                    { it.startsWithPattern(INBOX_TALK) },
+                    DF_SELLER_TALK,
+                    R.string.title_df_talk_discuss
+                )
+            )
+            add(
+                DFP(
+                    { it.startsWithPattern(PRODUCT_TALK_BASE) },
+                    DF_SELLER_TALK,
+                    R.string.title_df_talk_discuss
+                )
+            )
+            add(
+                DFP(
+                    { it.startsWithPattern(TALK_REPLY_BASE) },
+                    DF_SELLER_TALK,
+                    R.string.title_df_reply_page
+                )
+            )
+            add(
+                DFP(
+                    { it.startsWithPattern(ADD_TALK) },
+                    DF_SELLER_TALK,
+                    R.string.title_df_write_page
+                )
+            )
+            add(
+                DFP(
+                    { it.startsWithPattern(TALK_SELLER_SETTINGS) },
+                    DF_SELLER_TALK,
+                    R.string.title_df_seller_settings_page
                 )
             )
             add(

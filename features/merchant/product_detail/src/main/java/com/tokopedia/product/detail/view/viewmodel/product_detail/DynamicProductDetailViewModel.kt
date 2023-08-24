@@ -498,7 +498,7 @@ class DynamicProductDetailViewModel @Inject constructor(
 
     fun processVariant(
         data: ProductVariant,
-        mapOfSelectedVariant: MutableMap<String, String>?
+        mapOfSelectedVariant: Map<String, String>?
     ) {
         launch(dispatcher.io) {
             runCatching {
