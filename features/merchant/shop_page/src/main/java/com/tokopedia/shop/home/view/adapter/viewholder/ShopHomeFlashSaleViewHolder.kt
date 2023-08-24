@@ -168,7 +168,6 @@ class ShopHomeFlashSaleViewHolder(
         doubleBackGroundView?.hide()
         multipleBackGroundView?.hide()
         configMarginFestivity()
-        setShopReimaginedContainerMargin()
     }
 
     private fun configMarginFestivity(){
