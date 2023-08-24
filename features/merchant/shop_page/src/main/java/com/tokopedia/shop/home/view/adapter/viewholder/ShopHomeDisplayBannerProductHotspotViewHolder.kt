@@ -23,7 +23,6 @@ import com.tokopedia.shop.common.view.model.ImageHotspotData
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.ShopHomeDisplayBannerProductHotspotViewHolderLayoutBinding
 import com.tokopedia.shop.home.view.adapter.ShopWidgetProductHotspotAdapter
-import com.tokopedia.shop.home.view.listener.ShopHomeListener
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerProductHotspotUiModel
 import com.tokopedia.unifycomponents.PageControl
 import com.tokopedia.unifyprinciples.Typography
@@ -32,8 +31,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopHomeDisplayBannerProductHotspotViewHolder(
     itemView: View,
-    private val listener: Listener,
-    private val shopHomeListener: ShopHomeListener
+    private val listener: Listener
 ) : AbstractViewHolder<ShopWidgetDisplayBannerProductHotspotUiModel>(itemView),
     ImageHotspotView.Listener {
 
@@ -82,14 +80,10 @@ class ShopHomeDisplayBannerProductHotspotViewHolder(
     }
 
     private fun configColorTheme() {
-        if (shopHomeListener.isShopHomeTabHasFestivity()) {
-            configDefaultColor()
+        if (uiModel?.header?.isOverrideTheme == true) {
+            configReimaginedColor(uiModel?.header?.colorSchema ?: ShopPageColorSchema())
         } else {
-            if (shopHomeListener.isOverrideTheme()) {
-                configReimaginedColor(uiModel?.header?.colorSchema ?: ShopPageColorSchema())
-            } else {
-                configDefaultColor()
-            }
+            configDefaultColor()
         }
     }
 

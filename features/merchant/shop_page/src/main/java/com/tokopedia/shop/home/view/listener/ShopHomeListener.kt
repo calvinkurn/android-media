@@ -9,8 +9,6 @@ interface ShopHomeListener {
 
     fun getFragmentTrackingQueue(): TrackingQueue?
 
-    fun isShopHomeTabHasFestivity(): Boolean
-
     fun getShopPageColorSchema(): ShopPageColorSchema
 
     fun isOverrideTheme(): Boolean

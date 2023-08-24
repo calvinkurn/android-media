@@ -16,7 +16,6 @@ import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.ViewmodelSliderBannerBinding
 import com.tokopedia.shop.databinding.WidgetSliderBannerItemBinding
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
-import com.tokopedia.shop.home.view.listener.ShopHomeListener
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
@@ -29,8 +28,7 @@ import java.util.*
 
 class ShopHomeSliderBannerViewHolder(
     view: View?,
-    private val listener: ShopHomeDisplayWidgetListener,
-    private val shopHomeListener: ShopHomeListener
+    private val listener: ShopHomeDisplayWidgetListener
 ) : AbstractViewHolder<ShopHomeDisplayWidgetUiModel>(view), CarouselUnify.OnActiveIndexChangedListener {
 
     companion object {
@@ -147,14 +145,10 @@ class ShopHomeSliderBannerViewHolder(
     }
 
     private fun configColorTheme(element: ShopHomeDisplayWidgetUiModel) {
-        if (shopHomeListener.isShopHomeTabHasFestivity()) {
-            setDefaultColorConfig()
+        if (element.header.isOverrideTheme) {
+            setReimaginedColorConfig(element.header.colorSchema)
         } else {
-            if (element.header.isOverrideTheme) {
-                setReimaginedColorConfig(element.header.colorSchema)
-            } else {
-                setDefaultColorConfig()
-            }
+            setDefaultColorConfig()
         }
     }
 

@@ -63,14 +63,10 @@ class ShopHomeProductChangeGridSectionViewHolder(
     }
 
     private fun configColorTheme() {
-        if (shopHomeListener.isShopHomeTabHasFestivity()) {
-            configDefaultColor()
+        if (shopHomeListener.isOverrideTheme()) {
+            configReimaginedColor()
         } else {
-            if (shopHomeListener.isOverrideTheme()) {
-                configReimaginedColor()
-            } else {
-                configDefaultColor()
-            }
+            configDefaultColor()
         }
     }
 

@@ -10,7 +10,6 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.ItemShopHomePlayWidgetBinding
 import com.tokopedia.shop.databinding.ViewPlayWidgetCustomHeaderShopHomeTabBinding
-import com.tokopedia.shop.home.view.listener.ShopHomeListener
 import com.tokopedia.shop.home.view.listener.ShopHomePlayWidgetListener
 import com.tokopedia.shop.home.view.model.CarouselPlayWidgetUiModel
 import com.tokopedia.unifyprinciples.Typography
@@ -21,8 +20,7 @@ import com.tokopedia.utils.view.binding.viewBinding
  */
 class CarouselPlayWidgetViewHolder(
     private val playWidgetViewHolder: PlayWidgetViewHolder,
-    private val shopHomePlayWidgetListener: ShopHomePlayWidgetListener,
-    private val shopHomeListener: ShopHomeListener
+    private val shopHomePlayWidgetListener: ShopHomePlayWidgetListener
 ) : AbstractViewHolder<CarouselPlayWidgetUiModel>(playWidgetViewHolder.itemView) {
 
     private val viewBinding: ItemShopHomePlayWidgetBinding? by viewBinding()
@@ -43,14 +41,10 @@ class CarouselPlayWidgetViewHolder(
     }
 
     private fun configColorTheme(element: CarouselPlayWidgetUiModel) {
-        if (shopHomeListener.isShopHomeTabHasFestivity()) {
-            setDefaultColorConfig()
+        if (element.header.isOverrideTheme) {
+            setReimaginedColorConfig(element.header.colorSchema)
         } else {
-            if (element.header.isOverrideTheme) {
-                setReimaginedColorConfig(element.header.colorSchema)
-            } else {
-                setDefaultColorConfig()
-            }
+            setDefaultColorConfig()
         }
     }
 
