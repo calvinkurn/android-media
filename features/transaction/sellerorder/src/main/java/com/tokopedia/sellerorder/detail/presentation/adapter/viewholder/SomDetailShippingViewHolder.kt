@@ -116,7 +116,9 @@ class SomDetailShippingViewHolder(
                             it.generateHapticFeedback()
                             val numberPhoneText = if (numberPhone.isNotBlank()) {
                                 "\n" + numberPhone
-                            } else ""
+                            } else {
+                                ""
+                            }
 
                             val receiverStreetText = if (receiverStreet.isNotBlank()) {
                                 "\n" + receiverStreet
@@ -136,18 +138,24 @@ class SomDetailShippingViewHolder(
                                 ""
                             }
 
-                            actionListener?.onCopiedAddress(root.context.getString(R.string.alamat_pengiriman), (receiverName +
-                                    numberPhoneText +
-                                    receiverStreetText +
-                                    receiverDistrictText +
-                                    receiverProvinceText))
+                            actionListener?.onCopiedAddress(
+                                root.context.getString(R.string.alamat_pengiriman),
+                                (
+                                    receiverName +
+                                        numberPhoneText +
+                                        receiverStreetText +
+                                        receiverDistrictText +
+                                        receiverProvinceText
+                                    )
+                            )
                         }
                     }
                 }
 
                 item.dataObject.shipmentLogo.isNotEmpty().let { isNotEmpty ->
-                    if (isNotEmpty)
+                    if (isNotEmpty) {
                         ivOrderDetailFreeShippingBadge.loadImage(item.dataObject.shipmentLogo)
+                    }
                     ivOrderDetailFreeShippingBadge.showWithCondition(isNotEmpty)
                 }
 
@@ -166,8 +174,9 @@ class SomDetailShippingViewHolder(
                 }
 
                 // booking online - driver
-                if (item.dataObject.driverName.isEmpty()) cardDriver.visibility = View.GONE
-                else {
+                if (item.dataObject.driverName.isEmpty()) {
+                    cardDriver.visibility = View.GONE
+                } else {
                     if (item.dataObject.driverName.isNotEmpty()) {
                         tvDriverName.text = item.dataObject.driverName
                     }
@@ -225,8 +234,9 @@ class SomDetailShippingViewHolder(
                                 text = StringBuilder("${item.dataObject.onlineBookingCode} >")
                                 setOnClickListener {
                                     actionListener?.onShowBookingCode(
-                                            item.dataObject.onlineBookingCode,
-                                            item.dataObject.onlineBookingType)
+                                        item.dataObject.onlineBookingCode,
+                                        item.dataObject.onlineBookingType
+                                    )
                                 }
                             }
                         }
@@ -257,8 +267,8 @@ class SomDetailShippingViewHolder(
 
                 // drop off maps
                 tickerDropOff.run {
-                    if (item.dataObject.dropoffMapsUrl.isNotEmpty()) {
-                        // todo set wording here
+                    if (item.dataObject.dropOffInfo.isNotEmpty()) {
+                        setHtmlDescription(item.dataObject.dropOffInfo)
                         setDescriptionClickEvent(object : TickerCallback {
                             override fun onDescriptionViewClick(linkUrl: CharSequence) {
                                 val intent = RouteManager.getIntent(itemView.context, "${ApplinkConst.WEBVIEW}?url=$linkUrl")
@@ -266,14 +276,13 @@ class SomDetailShippingViewHolder(
                             }
 
                             override fun onDismiss() {
-                                //no-op
+                                // no-op
                             }
                         })
                         visible()
                     } else {
                         gone()
                     }
-
                 }
             }
         }
