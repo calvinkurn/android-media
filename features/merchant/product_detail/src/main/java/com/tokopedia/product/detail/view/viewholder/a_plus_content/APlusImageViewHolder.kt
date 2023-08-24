@@ -27,7 +27,7 @@ class APlusImageViewHolder(
     companion object {
         val LAYOUT = R.layout.item_a_plus_image
 
-        private const val LAST_ITEM_PADDING_BOTTOM = 16
+        private val LAST_ITEM_PADDING_BOTTOM = 16.toPx()
     }
 
     private val binding = ItemAPlusImageBinding.bind(itemView)
@@ -112,7 +112,7 @@ class APlusImageViewHolder(
 
     private fun setupBottomPadding(haveBottomPadding: Boolean) {
         binding.root.updatePadding(
-            bottom = if (haveBottomPadding) LAST_ITEM_PADDING_BOTTOM.toPx() else Int.ZERO
+            bottom = if (haveBottomPadding) LAST_ITEM_PADDING_BOTTOM else Int.ZERO
         )
     }
 
