@@ -13,8 +13,8 @@ import com.tokopedia.tokochat.stub.domain.response.ApiResponseStub
 import com.tokopedia.tokochat.test.base.BaseTokoChatListTest
 import com.tokopedia.tokochat.test.chatlist.robot.generalResult
 import com.tokopedia.tokochat.test.chatlist.robot.generalRobot
-import com.tokopedia.tokochat_common.R
 import org.junit.Test
+import com.tokopedia.tokochat_common.R as tokochat_commonR
 
 @UiTest
 class TokoChatListGeneralTest : BaseTokoChatListTest() {
@@ -49,7 +49,7 @@ class TokoChatListGeneralTest : BaseTokoChatListTest() {
             assertDriverImageProfile(1)
             assertDriverBadge(1)
             assertDriverTypeOrder(1, "GoFood")
-            assertThumbnailMessage(1, activity.getString(R.string.tokochat_list_default_message))
+            assertThumbnailMessage(1, activity.getString(tokochat_commonR.string.tokochat_list_default_message))
             assertBusinessName(1, "Lorem ipsum")
             assertNoTimeStamp(1)
             assertNoCounter(1)

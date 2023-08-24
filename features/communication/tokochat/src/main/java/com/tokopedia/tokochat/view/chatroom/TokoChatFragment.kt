@@ -87,7 +87,6 @@ import com.tokopedia.tokochat.util.TokoChatValueUtil.CHAT_DOES_NOT_EXIST
 import com.tokopedia.tokochat.util.TokoChatValueUtil.NOTIFCENTER_NOTIFICATION_TEMPLATE_KEY
 import com.tokopedia.tokochat.util.isFromBubble
 import com.tokopedia.tokochat.view.chatroom.bottomsheet.TokoChatGeneralUnavailableBottomSheet
-import com.tokopedia.tokochat_common.R
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -100,6 +99,7 @@ import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 import java.io.File
 import javax.inject.Inject
+import com.tokopedia.tokochat_common.R as tokochat_commonR
 
 open class TokoChatFragment @Inject constructor(
     private var viewModel: TokoChatViewModel,
@@ -636,7 +636,7 @@ open class TokoChatFragment @Inject constructor(
             !viewModel.isFromBubble
         ) {
             val tickerBubble = TokoChatReminderTickerUiModel(
-                message = getString(R.string.tokochat_bubbles_ticker_desc),
+                message = getString(tokochat_commonR.string.tokochat_bubbles_ticker_desc),
                 tickerType = Ticker.TYPE_ANNOUNCEMENT,
                 showCloseButton = true,
                 tag = BUBBLES_NOTIF

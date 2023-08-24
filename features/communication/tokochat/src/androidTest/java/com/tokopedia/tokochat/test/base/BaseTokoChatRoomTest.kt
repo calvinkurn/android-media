@@ -19,6 +19,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
+import com.tokopedia.tokochat_common.R as tokochat_commonR
 
 abstract class BaseTokoChatRoomTest : BaseTokoChatTest() {
 
@@ -48,7 +49,7 @@ abstract class BaseTokoChatRoomTest : BaseTokoChatTest() {
     protected fun getTokoChatAdapter(): TokoChatBaseAdapter {
         return RecyclerViewUtil.getAdapter(
             activity = activity,
-            recyclerViewId = com.tokopedia.tokochat_common.R.id.tokochat_chatroom_rv
+            recyclerViewId = tokochat_commonR.id.tokochat_chatroom_rv
         )
     }
 
