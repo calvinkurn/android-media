@@ -20,7 +20,7 @@ import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselShimmer
 import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselVerticalBannerItemType
 import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselVerticalBannerVerticalBanner
 
-class ShopHomeProductCarouselTabAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ShopHomeBannerProductGroupTabAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var items = mutableListOf<ShopHomeProductCarouselVerticalBannerItemType>()
     private var onProductClick: (ShopHomeProductCarouselProductCard) -> Unit = {}

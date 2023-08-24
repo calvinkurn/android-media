@@ -13,22 +13,22 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.common.util.ShopUtil
-import com.tokopedia.shop.databinding.FragmentShopProductCarouselTabBinding
+import com.tokopedia.shop.databinding.FragmentShopBannerProductGroupWidgetTabBinding
 import com.tokopedia.shop.home.di.component.DaggerShopPageHomeComponent
 import com.tokopedia.shop.home.di.module.ShopPageHomeModule
-import com.tokopedia.shop.home.view.adapter.ShopHomeProductCarouselTabAdapter
+import com.tokopedia.shop.home.view.adapter.ShopHomeBannerProductGroupTabAdapter
 import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselProductCard
 import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselShimmer
 import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselVerticalBannerItemType
 import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselVerticalBannerVerticalBanner
-import com.tokopedia.shop.home.view.viewmodel.ShopProductCarouselTabViewModel
+import com.tokopedia.shop.home.view.viewmodel.ShopBannerProductGroupWidgetTabViewModel
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselUiModel.Tab.ComponentList.ComponentType
 
-class ShopProductCarouselTabFragment : BaseDaggerFragment() {
+class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
 
     companion object {
         private const val BUNDLE_KEY_SHOP_ID = "shop_id"
@@ -38,8 +38,8 @@ class ShopProductCarouselTabFragment : BaseDaggerFragment() {
         fun newInstance(
             shopId: String,
             widgets: List<ShopHomeProductCarouselUiModel.Tab.ComponentList>
-        ): ShopProductCarouselTabFragment {
-            return ShopProductCarouselTabFragment().apply {
+        ): ShopBannerProductGroupWidgetTabFragment {
+            return ShopBannerProductGroupWidgetTabFragment().apply {
                 arguments = Bundle().apply {
                     putString(BUNDLE_KEY_SHOP_ID, shopId)
                     putParcelableArrayList(BUNDLE_KEY_WIDGETS, ArrayList(widgets))
@@ -60,16 +60,16 @@ class ShopProductCarouselTabFragment : BaseDaggerFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
-    private val viewModel by lazy { viewModelProvider[ShopProductCarouselTabViewModel::class.java] }
+    private val viewModel by lazy { viewModelProvider[ShopBannerProductGroupWidgetTabViewModel::class.java] }
 
     private var onMainBannerClick : (ShopHomeProductCarouselUiModel.Tab.ComponentList.Data) -> Unit = {}
     private var onProductClick : (ShopHomeProductCarouselProductCard) -> Unit = {}
     private var onVerticalBannerClick : (ShopHomeProductCarouselVerticalBannerVerticalBanner) -> Unit = {}
 
-    private var binding by autoClearedNullable<FragmentShopProductCarouselTabBinding>()
-    private val productAdapter = ShopHomeProductCarouselTabAdapter()
+    private var binding by autoClearedNullable<FragmentShopBannerProductGroupWidgetTabBinding>()
+    private val bannerProductGroupAdapter = ShopHomeBannerProductGroupTabAdapter()
 
-    override fun getScreenName(): String = ShopProductCarouselTabFragment::class.java.canonicalName.orEmpty()
+    override fun getScreenName(): String = ShopBannerProductGroupWidgetTabFragment::class.java.canonicalName.orEmpty()
 
     override fun initInjector() {
         activity?.run {
@@ -78,7 +78,7 @@ class ShopProductCarouselTabFragment : BaseDaggerFragment() {
                 .shopPageHomeModule(ShopPageHomeModule())
                 .shopComponent(ShopComponentHelper().getComponent(application, this))
                 .build()
-                .inject(this@ShopProductCarouselTabFragment)
+                .inject(this@ShopBannerProductGroupWidgetTabFragment)
         }
     }
 
@@ -87,7 +87,7 @@ class ShopProductCarouselTabFragment : BaseDaggerFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentShopProductCarouselTabBinding.inflate(inflater, container, false)
+        binding = FragmentShopBannerProductGroupWidgetTabBinding.inflate(inflater, container, false)
         return binding?.root
     }
 
@@ -121,14 +121,14 @@ class ShopProductCarouselTabFragment : BaseDaggerFragment() {
 
     private fun setupRecyclerView() {
         binding?.recyclerView?.apply {
-            adapter = productAdapter
+            adapter = bannerProductGroupAdapter
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         }
-        productAdapter.setOnProductClick { selectedProduct ->
+        bannerProductGroupAdapter.setOnProductClick { selectedProduct ->
             onProductClick(selectedProduct)
         }
 
-        productAdapter.setOnVerticalBannerClick { verticalBanner ->
+        bannerProductGroupAdapter.setOnVerticalBannerClick { verticalBanner ->
             onVerticalBannerClick(verticalBanner)
         }
     }
@@ -136,17 +136,17 @@ class ShopProductCarouselTabFragment : BaseDaggerFragment() {
     private fun observeCarouselsWidgets() {
         viewModel.carouselWidgets.observe(viewLifecycleOwner) { result ->
             when(result) {
-                ShopProductCarouselTabViewModel.UiState.Loading -> {
-                    productAdapter.submit(listOf(ShopHomeProductCarouselShimmer))
+                ShopBannerProductGroupWidgetTabViewModel.UiState.Loading -> {
+                    bannerProductGroupAdapter.submit(listOf(ShopHomeProductCarouselShimmer))
                 }
 
-                is ShopProductCarouselTabViewModel.UiState.Success -> {
+                is ShopBannerProductGroupWidgetTabViewModel.UiState.Success -> {
                     showProductCarousel(result.data)
                     showMainBanner()
                 }
 
-                is ShopProductCarouselTabViewModel.UiState.Error -> {
-                    productAdapter.submit(emptyList())
+                is ShopBannerProductGroupWidgetTabViewModel.UiState.Error -> {
+                    bannerProductGroupAdapter.submit(emptyList())
                 }
             }
         }
@@ -159,7 +159,7 @@ class ShopProductCarouselTabFragment : BaseDaggerFragment() {
     }
 
     private fun showProductCarousel(widgets: List<ShopHomeProductCarouselVerticalBannerItemType>) {
-        productAdapter.submit(widgets)
+        bannerProductGroupAdapter.submit(widgets)
     }
 
     fun setOnMainBannerClick(onMainBannerClick: (ShopHomeProductCarouselUiModel.Tab.ComponentList.Data) -> Unit) {

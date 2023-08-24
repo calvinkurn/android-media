@@ -22,9 +22,8 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.shop.common.data.source.cloud.model.LabelGroup
 import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselUiModel.Tab.ComponentList.Data.LinkType
 import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselUiModel.Tab.ComponentList.Data.BannerType
-import kotlinx.coroutines.delay
 
-class ShopProductCarouselTabViewModel @Inject constructor(
+class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
     private val dispatcherProvider: CoroutineDispatchers,
     private val getShopProductUseCase: GqlGetShopProductUseCase,
     private val getShopFeaturedProductUseCase: GetShopFeaturedProductUseCase,
