@@ -15,8 +15,12 @@ import com.tokopedia.topads.common.data.response.TopadsBidInfo
 import com.tokopedia.topads.common.domain.interactor.BidInfoUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsCreateUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGroupValidateNameUseCase
+import com.tokopedia.topads.dashboard.recommendation.common.TopAdsProductRecommendationConstants.ADD_KEY
+import com.tokopedia.topads.dashboard.recommendation.common.TopAdsProductRecommendationConstants.DEFAULT_PRICE_BID
+import com.tokopedia.topads.dashboard.recommendation.common.TopAdsProductRecommendationConstants.DEFAULT_SUGGESTED_BID
 import com.tokopedia.topads.dashboard.recommendation.common.TopAdsProductRecommendationConstants.INSIGHT_CENTRE_CREATE_GROUP_SOURCE
 import com.tokopedia.topads.dashboard.recommendation.common.TopAdsProductRecommendationConstants.INSIGHT_CENTRE_BID_INFO_SOURCE
+import com.tokopedia.topads.dashboard.recommendation.common.TopAdsProductRecommendationConstants.TOPADS_MOVE_GROUP_SOURCE
 import com.tokopedia.topads.dashboard.recommendation.data.mapper.ProductRecommendationMapper
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupItemUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.ProductItemUiModel
@@ -118,14 +122,33 @@ class ProductRecommendationViewModel @Inject constructor(
             topAdsCreateUseCase.createRequestParamActionCreate(
                 productIds,
                 currentGroupName,
-                0.0,
-                0.0,
+                DEFAULT_PRICE_BID,
+                DEFAULT_SUGGESTED_BID,
                 dailyBudget,
                 INSIGHT_CENTRE_CREATE_GROUP_SOURCE
             )
         launchCatchError(block = {
             val response = topAdsCreateUseCase.execute(param)
 
+            val dataGroup = response.topadsManageGroupAds.groupResponse
+            val dataKeyword = response.topadsManageGroupAds.keywordResponse
+            if (dataGroup.errors.isNullOrEmpty() && dataKeyword.errors.isNullOrEmpty()) {
+                _createGroupLiveData.value = TopadsProductListState.Success(dataGroup.data.id)
+            } else {
+                _createGroupLiveData.value = TopadsProductListState.Fail(Exception())
+            }
+        }, onError = {
+            _createGroupLiveData.value = TopadsProductListState.Fail(it)
+        })
+    }
+
+    fun topAdsMoveGroup(
+        groupId: String,
+        productIds: List<String>
+    ){
+        val param = topAdsCreateUseCase.createRequestParamMoveGroup(groupId,TOPADS_MOVE_GROUP_SOURCE, productIds, ADD_KEY)
+        launchCatchError(block = {
+            val response = topAdsCreateUseCase.execute(param)
             val dataGroup = response.topadsManageGroupAds.groupResponse
             val dataKeyword = response.topadsManageGroupAds.keywordResponse
             if (dataGroup.errors.isNullOrEmpty() && dataKeyword.errors.isNullOrEmpty()) {

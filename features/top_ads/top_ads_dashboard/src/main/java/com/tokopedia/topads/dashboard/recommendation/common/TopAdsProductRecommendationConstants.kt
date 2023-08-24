@@ -18,4 +18,8 @@ object TopAdsProductRecommendationConstants {
     const val CONST_2 = 2
     const val KEYWORD = "keyword"
     const val DEFAULT_EMPTY_STRING = ""
+    const val DEFAULT_PRICE_BID = 0.0
+    const val DEFAULT_SUGGESTED_BID = 0.0
+    const val TOPADS_MOVE_GROUP_SOURCE = "top_ads_create"
+    const val ADD_KEY = "add"
 }

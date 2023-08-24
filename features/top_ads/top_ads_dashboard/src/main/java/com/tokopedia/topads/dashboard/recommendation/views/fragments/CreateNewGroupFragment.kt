@@ -162,6 +162,7 @@ class CreateNewGroupFragment : BaseDaggerFragment() {
             dialog.dismiss()
             requireActivity().finish()
         }
+        dialog.setSecondaryCTAClickListener { activity?.finish() }
         dialog.show()
     }
 
