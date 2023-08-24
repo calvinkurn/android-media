@@ -12,7 +12,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.shop.R
-import com.tokopedia.shop.databinding.ItemShopHomeProductCarouselViewpagerBinding
+import com.tokopedia.shop.databinding.ItemShopHomeBannerProductGroupViewpagerBinding
 import com.tokopedia.shop.home.util.ShopBannerProductGroupWidgetTabDependencyProvider
 import com.tokopedia.shop.home.view.fragment.ShopBannerProductGroupWidgetTabFragment
 import com.tokopedia.shop.home.view.listener.ShopBannerProductGroupListener
@@ -30,12 +30,12 @@ class ShopHomeBannerProductGroupViewPagerViewHolder(
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.item_shop_home_product_carousel_viewpager
+        val LAYOUT = R.layout.item_shop_home_banner_product_group_viewpager
         private const val ONE_TAB = 1
         private const val TWO_TAB = 2
     }
 
-    private val viewBinding: ItemShopHomeProductCarouselViewpagerBinding? by viewBinding()
+    private val viewBinding: ItemShopHomeBannerProductGroupViewpagerBinding? by viewBinding()
 
     init {
         disableTabSwipeBehavior()

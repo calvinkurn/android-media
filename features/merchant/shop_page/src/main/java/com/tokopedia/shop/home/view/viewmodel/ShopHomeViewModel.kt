@@ -249,10 +249,6 @@ class ShopHomeViewModel @Inject constructor(
     val updatedBannerTimerUiModelData: LiveData<ShopWidgetDisplayBannerTimerUiModel?>
         get() = _updatedBannerTimerUiModelData
 
-    private val _productCarouselWidgetData = MutableLiveData<Result<ShopWidgetComponentBannerProductGroupUiModel>>()
-    val productCarouselWidgetData: LiveData<Result<ShopWidgetComponentBannerProductGroupUiModel>>
-        get() = _productCarouselWidgetData
-
     fun getNewProductList(
         shopId: String,
         page: Int,

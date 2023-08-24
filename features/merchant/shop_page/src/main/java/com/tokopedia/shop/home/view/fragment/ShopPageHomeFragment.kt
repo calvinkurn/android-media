@@ -1295,16 +1295,6 @@ open class ShopPageHomeFragment :
             }
         )
 
-        viewModel?.productCarouselWidgetData?.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    is Success -> shopHomeAdapter?.setBannerProductGroupData(it.data)
-                    is Fail -> {}
-                }
-            }
-        )
-
         observePlayWidget()
         observePlayWidgetReminderEvent()
         observePlayWidgetReminder()
