@@ -827,7 +827,7 @@ class CartItemViewHolder constructor(
     }
 
     private fun renderQuantityLeft(data: CartItemHolderData) {
-        if (data.productQtyLeft.isNotBlank()) {
+        if (data.productQtyLeft.isNotBlank() && !data.isError) {
             binding.textQtyLeft.text = data.productQtyLeft
             binding.textQtyLeft.show()
             actionListener?.onCartItemShowRemainingQty(data.productId)
