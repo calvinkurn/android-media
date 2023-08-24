@@ -1,8 +1,6 @@
 package com.tokopedia.autocompletecomponent.suggestion.doubleline
 
-import android.content.Context
 import androidx.appcompat.widget.AppCompatImageView
-import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.autocompletecomponent.R
 import com.tokopedia.autocompletecomponent.suggestion.BaseSuggestionDataView
@@ -13,7 +11,7 @@ import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.unifyprinciples.Typography
 
-class DoubleLineLayoutStrategyControl : DoubleLineLayoutStrategy {
+internal class DoubleLineLayoutStrategyControl : DoubleLineLayoutStrategy {
 
     override fun bindIconTitle(titleImageView: AppCompatImageView, autoCompleteIconTitleReimagine: AppCompatImageView, item: BaseSuggestionDataView) {
         titleImageView.shouldShowWithAction(item.iconTitle.isNotEmpty()) {

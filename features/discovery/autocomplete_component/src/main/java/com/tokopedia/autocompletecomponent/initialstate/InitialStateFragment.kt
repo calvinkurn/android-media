@@ -56,8 +56,7 @@ class InitialStateFragment:
     CuratedCampaignListener,
     InitialStateChipListener,
     SearchBarEducationListener,
-    MpsInitialStateListener,
-    InitialStateContract.ReimagineRollance {
+    MpsInitialStateListener {
 
     companion object {
         const val INITIAL_STATE_FRAGMENT_TAG = "INITIAL_STATE_FRAGMENT"
@@ -81,9 +80,6 @@ class InitialStateFragment:
     var initialStateTracking: InitialStateTracking? = null
         @Inject set
 
-    var reimagineRollence: ReimagineRollence? = null
-        @Inject set
-
     private val viewModel: SearchBarViewModel? by lazy {
         val activity = activity ?: return@lazy null
         if (activity !is HasViewModelFactory) return@lazy null
@@ -93,19 +89,24 @@ class InitialStateFragment:
 
     private var performanceMonitoring: PerformanceMonitoring? = null
 
-    private val initialStateAdapterTypeFactory = InitialStateAdapterTypeFactory(
-        recentViewListener = this,
-        recentSearchListener = this,
-        productLineListener = this,
-        popularSearchListener = this,
-        dynamicInitialStateListener = this,
-        curatedCampaignListener = this,
-        chipListener = this,
-        searchBarEducationListener = this,
-        mpsChipListener = this,
-        reimagineRollance = this
-    )
-    private val initialStateAdapter = InitialStateAdapter(initialStateAdapterTypeFactory)
+    var reimagineRollence: ReimagineRollence? = null
+        @Inject set
+
+    private val initialStateAdapter by lazy {
+        val initialStateAdapterTypeFactory = InitialStateAdapterTypeFactory(
+            recentViewListener = this,
+            recentSearchListener = this,
+            productLineListener = this,
+            popularSearchListener = this,
+            dynamicInitialStateListener = this,
+            curatedCampaignListener = this,
+            chipListener = this,
+            searchBarEducationListener = this,
+            mpsChipListener = this,
+            isReimagine = reimagineRollence?.search1InstAuto() != Search1InstAuto.CONTROL
+        )
+        InitialStateAdapter(initialStateAdapterTypeFactory)
+    }
 
     private val recyclerViewInitialState by lazy {
         view?.findViewById<RecyclerView?>(R.id.recyclerViewInitialState)
@@ -435,9 +436,5 @@ class InitialStateFragment:
 
     override fun disableMps() {
         viewModel?.disableMps()
-    }
-
-    override fun getVariantReimagineRollance(): Search1InstAuto {
-        return reimagineRollence?.search1InstAuto() ?: Search1InstAuto.CONTROL
     }
 }

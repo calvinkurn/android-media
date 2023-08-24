@@ -115,10 +115,6 @@ interface SuggestionContract {
         val className: String
     }
 
-    interface ReimagineRollance {
-        fun getVariantReimagineRollance(): Search1InstAuto
-    }
-
     interface Presenter : CustomerPresenter<View> {
         fun getSearchParameter(): Map<String, String>
 

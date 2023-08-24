@@ -101,10 +101,6 @@ interface InitialStateContract {
         fun disableMps()
     }
 
-    interface ReimagineRollance {
-        fun getVariantReimagineRollance(): Search1InstAuto
-    }
-
     interface Presenter : CustomerPresenter<View> {
         val recentSearchPosition: Int
 

@@ -17,7 +17,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.autocompletecomponent.R
 import com.tokopedia.autocompletecomponent.searchbar.SearchBarKeyword
 import com.tokopedia.autocompletecomponent.searchbar.SearchBarViewModel
-import com.tokopedia.autocompletecomponent.suggestion.SuggestionContract.ReimagineRollance
 import com.tokopedia.autocompletecomponent.suggestion.analytics.SuggestionTracking
 import com.tokopedia.autocompletecomponent.suggestion.chips.SuggestionChipListener
 import com.tokopedia.autocompletecomponent.suggestion.di.SuggestionComponent
@@ -45,8 +44,7 @@ class SuggestionFragment :
     SuggestionContract.View,
     SuggestionListener,
     SuggestionTopShopListener,
-    SuggestionChipListener,
-    ReimagineRollance {
+    SuggestionChipListener {
 
     companion object {
         const val SUGGESTION_FRAGMENT_TAG = "SUGGESTION_FRAGMENT_TAG"
@@ -72,9 +70,6 @@ class SuggestionFragment :
     var suggestionTracking: SuggestionTracking? = null
         @Inject set
 
-    var reimagineRollence: ReimagineRollence? = null
-        @Inject set
-
     private val viewModel: SearchBarViewModel? by lazy {
         val activity = activity ?: return@lazy null
         if (activity !is HasViewModelFactory) return@lazy null
@@ -86,13 +81,19 @@ class SuggestionFragment :
         get() = activity?.javaClass?.name ?: ""
 
     private var performanceMonitoring: PerformanceMonitoring? = null
-    private val suggestionTypeFactory = SuggestionAdapterTypeFactory(
+
+    var reimagineRollence: ReimagineRollence? = null
+        @Inject set
+
+    private val suggestionAdapter by lazy {
+        val suggestionTypeFactory= SuggestionAdapterTypeFactory(
         suggestionListener = this,
         suggestionTopShopListener = this,
         suggestionChipListener = this,
-        reimagineRollance = this
-    )
-    private val suggestionAdapter = SuggestionAdapter(suggestionTypeFactory)
+        isReimagine = reimagineRollence?.search1InstAuto() != Search1InstAuto.CONTROL
+        )
+        SuggestionAdapter(suggestionTypeFactory)
+    }
 
     private val recyclerViewSuggestion by lazy {
         view?.findViewById<RecyclerView?>(R.id.recyclerViewSuggestion)
@@ -466,9 +467,5 @@ class SuggestionFragment :
 
         fun showSuggestionView()
         fun setSearchQuery(keyword: String)
-    }
-
-    override fun getVariantReimagineRollance(): Search1InstAuto {
-        return reimagineRollence?.search1InstAuto() ?: Search1InstAuto.CONTROL
     }
 }

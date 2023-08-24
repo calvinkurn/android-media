@@ -22,7 +22,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 class DynamicInitialStateViewHolder(
     itemView: View,
     private val listener: DynamicInitialStateListener,
-    reimagineVariant: Search1InstAuto
+    reimagineVariant: Boolean
 ) : AbstractViewHolder<DynamicInitialStateSearchDataView>(itemView) {
 
     companion object {

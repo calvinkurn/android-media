@@ -13,7 +13,7 @@ import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.unifyprinciples.Typography
 
-class DoubleLineLayoutStrategyReimagine : DoubleLineLayoutStrategy {
+internal class DoubleLineLayoutStrategyReimagine : DoubleLineLayoutStrategy {
     override fun bindIconTitle(titleImageView: AppCompatImageView, autoCompleteIconTitleReimagine: AppCompatImageView, item: BaseSuggestionDataView) {
         autoCompleteIconTitleReimagine.shouldShowWithAction(item.iconTitle.isNotEmpty()) {
             ImageHandler.loadImageWithoutPlaceholderAndError(autoCompleteIconTitleReimagine, item.iconTitle)

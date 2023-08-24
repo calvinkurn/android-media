@@ -49,7 +49,7 @@ class InitialStateAdapterTypeFactory(
     private val chipListener: InitialStateChipListener,
     private val searchBarEducationListener: SearchBarEducationListener,
     private val mpsChipListener: MpsInitialStateListener,
-    private var reimagineRollance: InitialStateContract.ReimagineRollance
+    private var isReimagine: Boolean
 ) : BaseAdapterTypeFactory(), InitialStateTypeFactory {
     override fun type(popularSearchTitleDataView: PopularSearchTitleDataView): Int {
         return PopularSearchTitleViewHolder.LAYOUT
@@ -118,9 +118,9 @@ class InitialStateAdapterTypeFactory(
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             PopularSearchViewHolder.LAYOUT ->
-                PopularSearchViewHolder(parent, popularSearchListener, reimagineRollance.getVariantReimagineRollance())
+                PopularSearchViewHolder(parent, popularSearchListener, isReimagine)
             RecentSearchViewHolder.LAYOUT ->
-                RecentSearchViewHolder(parent, recentSearchListener, reimagineRollance.getVariantReimagineRollance())
+                RecentSearchViewHolder(parent, recentSearchListener, isReimagine)
             RecentViewViewHolder.LAYOUT ->
                 RecentViewViewHolder(parent, recentViewListener)
             PopularSearchTitleViewHolder.LAYOUT ->
@@ -134,7 +134,7 @@ class InitialStateAdapterTypeFactory(
             DynamicInitialStateTitleViewHolder.LAYOUT ->
                 DynamicInitialStateTitleViewHolder(parent, dynamicInitialStateListener)
             DynamicInitialStateViewHolder.LAYOUT ->
-                DynamicInitialStateViewHolder(parent, dynamicInitialStateListener, reimagineRollance.getVariantReimagineRollance())
+                DynamicInitialStateViewHolder(parent, dynamicInitialStateListener, isReimagine)
             CuratedCampaignViewHolder.LAYOUT ->
                 CuratedCampaignViewHolder(parent, curatedCampaignListener)
             InitialStateProductListViewHolder.LAYOUT ->

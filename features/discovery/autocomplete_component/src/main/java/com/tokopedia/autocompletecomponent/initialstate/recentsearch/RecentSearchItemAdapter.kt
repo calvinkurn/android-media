@@ -4,11 +4,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.autocompletecomponent.initialstate.BaseItemInitialStateSearch
-import com.tokopedia.discovery.common.reimagine.Search1InstAuto
 
 class RecentSearchItemAdapter(
     private val listener: RecentSearchListener,
-    private val reimagineVariant: Search1InstAuto
+    private val isReimagine: Boolean
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object{
@@ -41,7 +40,7 @@ class RecentSearchItemAdapter(
                         parent,
                         false
                     )
-                RecentSearchDoubleLineItemViewHolder(itemView, listener, reimagineVariant)
+                RecentSearchDoubleLineItemViewHolder(itemView, listener, isReimagine)
             }
             else -> {
                 val itemView = LayoutInflater

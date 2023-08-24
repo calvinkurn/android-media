@@ -9,7 +9,6 @@ import com.tokopedia.autocompletecomponent.databinding.LayoutAutocompleteDoubleL
 import com.tokopedia.autocompletecomponent.initialstate.BaseItemInitialStateSearch
 import com.tokopedia.autocompletecomponent.initialstate.InitialStateLayoutStrategyFactory
 import com.tokopedia.autocompletecomponent.initialstate.InitialStateLayoutStrategy
-import com.tokopedia.discovery.common.reimagine.Search1InstAuto
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.utils.view.binding.viewBinding
@@ -17,7 +16,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 class RecentSearchDoubleLineItemViewHolder(
     itemView: View,
     private val listener: RecentSearchListener,
-    private val reimagineVariant: Search1InstAuto
+    private val isReimagine: Boolean
 ) : RecyclerView.ViewHolder(itemView) {
 
     companion object {
@@ -26,7 +25,7 @@ class RecentSearchDoubleLineItemViewHolder(
 
     private var binding: LayoutAutocompleteDoubleLineItemBinding? by viewBinding()
 
-    private val layoutStrategy: InitialStateLayoutStrategy = InitialStateLayoutStrategyFactory.create(reimagineVariant)
+    private val layoutStrategy: InitialStateLayoutStrategy = InitialStateLayoutStrategyFactory.create(isReimagine)
 
     fun bind(item: BaseItemInitialStateSearch) {
         bindIconImage(item)
@@ -46,8 +45,7 @@ class RecentSearchDoubleLineItemViewHolder(
     }
 
     private fun bindIconTitle(item: BaseItemInitialStateSearch) {
-        val isReimagineVariantControl = reimagineVariant == Search1InstAuto.CONTROL
-        val iconTitle = if (isReimagineVariantControl)
+        val iconTitle = if (isReimagine)
             binding?.iconTitle
         else
             binding?.autoCompleteIconTitleReimagine

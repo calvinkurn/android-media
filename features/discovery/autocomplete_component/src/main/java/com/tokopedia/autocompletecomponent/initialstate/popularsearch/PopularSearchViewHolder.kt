@@ -22,7 +22,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 class PopularSearchViewHolder(
     itemView: View,
     private val listener: PopularSearchListener,
-    reimagineVariant: Search1InstAuto
+    reimagineVariant: Boolean
 ) : AbstractViewHolder<PopularSearchDataView>(itemView) {
 
     companion object {

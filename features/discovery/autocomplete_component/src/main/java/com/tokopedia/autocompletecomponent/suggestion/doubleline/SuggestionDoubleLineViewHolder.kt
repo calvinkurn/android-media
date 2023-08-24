@@ -26,7 +26,7 @@ import java.util.*
 class SuggestionDoubleLineViewHolder(
     itemView: View,
     private val listener: SuggestionListener,
-    private val reimagineVariant: Search1InstAuto
+    isReimagine: Boolean
 ) : AbstractViewHolder<SuggestionDoubleLineDataDataView>(itemView) {
 
     companion object {
@@ -34,7 +34,7 @@ class SuggestionDoubleLineViewHolder(
         val LAYOUT = R.layout.layout_autocomplete_double_line_item
     }
 
-    private val layoutStrategy: DoubleLineLayoutStrategy = DoubleLineLayoutStrategyFactory.create(reimagineVariant)
+    private val layoutStrategy: DoubleLineLayoutStrategy = DoubleLineLayoutStrategyFactory.create(isReimagine)
 
     private var binding: LayoutAutocompleteDoubleLineItemBinding? by viewBinding()
 
