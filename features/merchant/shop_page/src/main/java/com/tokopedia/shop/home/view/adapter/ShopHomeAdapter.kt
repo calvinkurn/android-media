@@ -177,7 +177,7 @@ open class ShopHomeAdapter(
         submitList(newList)
     }
 
-    fun setProductCarousel(uiModel: ShopWidgetComponentBannerProductGroupUiModel) {
+    fun setBannerProductGroupData(uiModel: ShopWidgetComponentBannerProductGroupUiModel) {
         val newList = getNewVisitableItems()
         newList.indexOfFirst { it is ShopWidgetComponentBannerProductGroupUiModel }.let { index ->
             if (index >= 0) {

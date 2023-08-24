@@ -1299,7 +1299,7 @@ open class ShopPageHomeFragment :
             viewLifecycleOwner,
             Observer {
                 when (it) {
-                    is Success -> shopHomeAdapter?.setProductCarousel(it.data)
+                    is Success -> shopHomeAdapter?.setBannerProductGroupData(it.data)
                     is Fail -> {}
                 }
             }

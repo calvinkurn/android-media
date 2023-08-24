@@ -16,6 +16,7 @@ import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleDetailUiModel
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleItemUiModel
+import com.tokopedia.shop.home.WidgetName
 import com.tokopedia.shop.home.WidgetName.ADD_ONS
 import com.tokopedia.shop.home.WidgetName.ADVANCED_SLIDER_BANNER
 import com.tokopedia.shop.home.WidgetName.BANNER_PRODUCT_HOTSPOT
@@ -504,7 +505,10 @@ object ShopPageHomeMapper {
             }
             DYNAMIC.toLowerCase(Locale.getDefault()) -> mapCarouselPlayWidget(widgetResponse, widgetLayout, isOverrideTheme, colorSchema)
             COMPONENT.toLowerCase(Locale.getDefault()) -> {
-                ShopPageWidgetMapper.mapToHomeBannerProductGroupWidget(widgetResponse)
+                when (widgetResponse.name) {
+                    WidgetName.BANNER_PRODUCT_GROUP -> ShopPageWidgetMapper.mapToHomeBannerProductGroupWidget(widgetResponse)
+                    else -> null
+                }
             }
             PERSONALIZATION.toLowerCase(Locale.getDefault()) -> {
                 when (widgetResponse.name) {
