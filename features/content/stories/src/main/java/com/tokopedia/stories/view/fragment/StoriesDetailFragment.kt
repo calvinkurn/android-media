@@ -1,6 +1,7 @@
 package com.tokopedia.stories.view.fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +12,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.airbnb.lottie.LottieDrawable
 import com.tkpd.atcvariant.view.bottomsheet.AtcVariantBottomSheet
 import com.tkpd.atcvariant.view.viewmodel.AtcVariantSharedViewModel
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
@@ -58,6 +60,7 @@ import com.tokopedia.stories.view.viewmodel.event.StoriesUiEvent
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
+import com.tokopedia.stories.R
 
 class StoriesDetailFragment @Inject constructor(
     private val router: Router,
@@ -305,6 +308,22 @@ class StoriesDetailFragment @Inject constructor(
         showPageLoading(true)
 
         icClose.setOnClickListener { activity?.finish() }
+        /**
+         * Testing purpose
+         */
+
+        vStoriesOnboarding.swipeLottie.setAnimationFromUrl(getString(R.string.stories_onboard_tap_anim))
+        vStoriesOnboarding.swipeLottie.repeatCount = LottieDrawable.INFINITE
+        vStoriesOnboarding.swipeLottie.playAnimation()
+
+        vStoriesOnboarding.swipeLottie.setFailureListener {
+            Log.d("hello", it.toString())
+        }
+
+        binding.icClose.hide()
+        icClose.setOnClickListener {
+            activity?.finish()
+        }
 
         rvStoriesCategory.apply {
             adapter = mAdapter

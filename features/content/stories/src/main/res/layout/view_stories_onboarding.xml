@@ -61,9 +61,7 @@
         app:layout_constraintBottom_toTopOf="@+id/tv_stories_onboard_open_product"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:lottie_autoPlay="true"
-        app:lottie_loop="true"
-        app:lottie_url="@string/stories_onboard_swipe_anim" />
+        app:lottie_autoPlay="false" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_stories_onboard_open_product"
