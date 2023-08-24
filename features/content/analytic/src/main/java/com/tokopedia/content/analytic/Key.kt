@@ -23,5 +23,21 @@ object Key {
     const val screenName = "screenName"
     const val clientId = "clientId"
 
+    const val ecommerce = "ecommerce"
+    const val promotions = "promotions"
+    const val click = "click"
+    const val products = "products"
+
+    const val creative = "creative"
+    const val position = "position"
+    const val id = "id"
+    const val name = "name"
+
+    const val itemId = "item_id"
+    const val itemName = "item_name"
+    const val itemBrand = "item_brand"
+    const val itemCategory = "item_category"
+    const val itemVariant = "item_variant"
+
     const val pageSource = "pageSource"
 }
