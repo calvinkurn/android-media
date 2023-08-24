@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Stories.Theme" parent="@style/Theme.AppCompat.Light.NoActionBar">
+    <style name="Story.FullScreen" parent="@style/Theme.AppCompat.Light.NoActionBar">
         <item name="android:statusBarColor">@color/Unify_Static_Black</item>
         <item name="isLightTheme">false</item>
     </style>

@@ -4,8 +4,7 @@
     <application>
         <activity
             android:name=".view.activity.StoriesActivity"
-            android:exported="false"
-            android:theme="@style/Stories.Theme">
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -15,17 +14,6 @@
                 <data
                     android:host="@string/host_stories"
                     android:pathPattern="@string/path_stories_shop"
-                    android:scheme="@string/internal_scheme" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="com.tokopedia.internal.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="@string/host_stories"
-                    android:pathPattern="@string/path_stories_shop_stories"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>

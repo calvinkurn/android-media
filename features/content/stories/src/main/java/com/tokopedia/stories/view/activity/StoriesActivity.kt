@@ -1,13 +1,14 @@
 package com.tokopedia.stories.view.activity
 
+import android.content.res.Resources
 import android.os.Bundle
 import androidx.fragment.app.FragmentFactory
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.stories.R
 import com.tokopedia.stories.databinding.ActivityStoriesBinding
 import com.tokopedia.stories.di.StoriesInjector
 import com.tokopedia.stories.view.fragment.StoriesGroupFragment
 import javax.inject.Inject
-
 
 class StoriesActivity : BaseActivity() {
 
@@ -25,6 +26,12 @@ class StoriesActivity : BaseActivity() {
         getData()
         super.onCreate(savedInstanceState)
         setupViews()
+    }
+
+    override fun getTheme(): Resources.Theme {
+        val theme = super.getTheme()
+        theme.applyStyle(R.style.Story_FullScreen, true)
+        return theme
     }
 
     private fun inject() {
