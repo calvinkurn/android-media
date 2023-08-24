@@ -5,8 +5,8 @@ import com.tokopedia.shop.home.view.model.ShopWidgetComponentBannerProductGroupU
 import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselVerticalBannerVerticalBanner
 
 interface ShopBannerProductGroupListener {
-    fun onProductCarouselMainBannerClick(mainBanner: ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.Data)
-    fun onProductCarouselProductClick(selectedProduct: ShopHomeProductCarouselProductCard)
-    fun onProductCarouselVerticalBannerClick(shopHomeProductCarouselVerticalBanner: ShopHomeProductCarouselVerticalBannerVerticalBanner)
-    fun onProductCarouselChevronViewAllClick(ctaLink: String)
+    fun onBannerProductGroupMainBannerClick(mainBanner: ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.Data)
+    fun onBannerProductGroupProductClick(selectedProduct: ShopHomeProductCarouselProductCard)
+    fun onBannerProductGroupVerticalBannerClick(shopHomeProductCarouselVerticalBanner: ShopHomeProductCarouselVerticalBannerVerticalBanner)
+    fun onBannerProductGroupViewAllClick(ctaLink: String)
 }

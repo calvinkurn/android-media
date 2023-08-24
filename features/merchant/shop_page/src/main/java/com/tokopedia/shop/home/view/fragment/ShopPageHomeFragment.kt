@@ -5009,14 +5009,14 @@ open class ShopPageHomeFragment :
         RouteManager.route(context, ApplinkConst.PRODUCT_INFO, productId)
     }
 
-    override fun onProductCarouselMainBannerClick(mainBanner: ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.Data) {
+    override fun onBannerProductGroupMainBannerClick(mainBanner: ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.Data) {
         try {
             RouteManager.route(activity ?: return, mainBanner.ctaLink)
         } catch (_: Exception) {
         }
     }
 
-    override fun onProductCarouselProductClick(selectedProduct: ShopHomeProductCarouselProductCard) {
+    override fun onBannerProductGroupProductClick(selectedProduct: ShopHomeProductCarouselProductCard) {
         try {
             RouteManager.route(activity ?: return, selectedProduct.appLink)
         } catch (_: Exception) {
@@ -5024,14 +5024,14 @@ open class ShopPageHomeFragment :
 
     }
 
-    override fun onProductCarouselVerticalBannerClick(shopHomeProductCarouselVerticalBanner: ShopHomeProductCarouselVerticalBannerVerticalBanner) {
+    override fun onBannerProductGroupVerticalBannerClick(shopHomeProductCarouselVerticalBanner: ShopHomeProductCarouselVerticalBannerVerticalBanner) {
         try {
             RouteManager.route(activity ?: return, shopHomeProductCarouselVerticalBanner.appLink)
         } catch (_: Exception) {
         }
     }
 
-    override fun onProductCarouselChevronViewAllClick(ctaLink: String) {
+    override fun onBannerProductGroupViewAllClick(ctaLink: String) {
         try {
             RouteManager.route(activity ?: return, ctaLink)
         } catch (_: Exception) {

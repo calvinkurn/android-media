@@ -52,7 +52,7 @@ class ShopHomeProductCarouselViewPagerViewHolder(
 
         viewBinding?.iconChevron?.isVisible = hasVerticalBanner
         viewBinding?.iconChevron?.setOnClickListener {
-            listener.onProductCarouselChevronViewAllClick(model.viewAllChevronAppLink)
+            listener.onBannerProductGroupViewAllClick(model.viewAllChevronAppLink)
         }
     }
 
@@ -130,9 +130,9 @@ class ShopHomeProductCarouselViewPagerViewHolder(
 
         tabs.forEachIndexed { _, currentTab ->
             val fragment = ShopBannerProductGroupWidgetTabFragment.newInstance(provider.currentShopId, currentTab.componentList)
-            fragment.setOnMainBannerClick { mainBanner -> listener.onProductCarouselMainBannerClick(mainBanner) }
-            fragment.setOnProductClick { selectedShowcase -> listener.onProductCarouselProductClick(selectedShowcase) }
-            fragment.setOnVerticalBannerClick { verticalBanner -> listener.onProductCarouselVerticalBannerClick(verticalBanner) }
+            fragment.setOnMainBannerClick { mainBanner -> listener.onBannerProductGroupMainBannerClick(mainBanner) }
+            fragment.setOnProductClick { selectedShowcase -> listener.onBannerProductGroupProductClick(selectedShowcase) }
+            fragment.setOnVerticalBannerClick { verticalBanner -> listener.onBannerProductGroupVerticalBannerClick(verticalBanner) }
 
             val displayedTabName = currentTab.label
             pages.add(Pair(displayedTabName, fragment))
