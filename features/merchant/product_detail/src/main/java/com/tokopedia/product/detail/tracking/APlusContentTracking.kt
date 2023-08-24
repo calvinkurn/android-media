@@ -5,6 +5,9 @@ import com.tokopedia.product.detail.view.viewholder.a_plus_content.APlusImageUiM
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
+/**
+ * MyNakama: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4137
+ */
 object APlusContentTracking {
     fun trackImpressAPlusMedia(
         trackerData: APlusImageUiModel.TrackerData,
