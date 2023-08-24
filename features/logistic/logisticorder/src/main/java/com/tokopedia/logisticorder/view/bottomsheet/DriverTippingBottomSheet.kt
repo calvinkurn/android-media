@@ -323,12 +323,6 @@ class DriverTippingBottomSheet : BottomSheetUnify(), HasComponent<TrackingPageCo
         binding.etNominalTip.editText.setText(tippingValue.toString())
     }
 
-    fun show(fm: FragmentManager, orderId: String?, trackingDataModel: TrackingDataModel?) {
-        this.orderId = orderId
-        this.trackingDataModel = trackingDataModel
-        show(fm, "TAG")
-    }
-
     fun show(fm: FragmentManager, orderId: String?, refNum: String?) {
         this.orderId = orderId
         this.refNum = refNum
