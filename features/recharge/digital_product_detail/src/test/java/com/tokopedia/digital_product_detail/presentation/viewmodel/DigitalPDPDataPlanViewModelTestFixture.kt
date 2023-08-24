@@ -14,6 +14,7 @@ import com.tokopedia.digital_product_detail.data.model.data.InputMultiTabDenomMo
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
 import com.tokopedia.digital_product_detail.data.model.data.TelcoFilterTagComponent
 import com.tokopedia.digital_product_detail.domain.model.DigitalCheckBalanceModel
+import com.tokopedia.digital_product_detail.domain.model.DigitalSaveAccessTokenResultModel
 import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPTelcoRepository
 import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationWidgetModel
@@ -154,6 +155,18 @@ abstract class DigitalPDPDataPlanViewModelTestFixture {
         } throws errorThrowable
     }
 
+    protected fun onSaveRechargeUserAccessToken(response: DigitalSaveAccessTokenResultModel) {
+        coEvery {
+            repo.saveRechargeUserBalanceAccessToken(any(), any())
+        } returns response
+    }
+
+    protected fun onSaveRechargeUserAccessToken(errorThrowable: Throwable) {
+        coEvery {
+            repo.saveRechargeUserBalanceAccessToken(any(), any())
+        } throws errorThrowable
+    }
+
     protected fun onGetSelectedFullProduct_thenReturn(result: SelectedProduct) {
         viewModel.selectedFullProduct = result
     }
@@ -204,6 +217,10 @@ abstract class DigitalPDPDataPlanViewModelTestFixture {
 
     protected fun verifyGetRechargeCheckBalanceRepoGetCalled() {
         coVerify { repo.getRechargeCheckBalance(any(), any(), any(), any()) }
+    }
+
+    protected fun verifySaveRechargeUserAccessTokenGetCalled() {
+        coVerify { repo.saveRechargeUserBalanceAccessToken(any(), any()) }
     }
 
     protected fun verifyGetFavoriteNumberLoading(expectedResponse: RechargeNetworkResult.Loading) {
@@ -406,6 +423,24 @@ abstract class DigitalPDPDataPlanViewModelTestFixture {
 
     protected fun verifyGetRechargeCheckBalanceFail() {
         val actualResponse = viewModel.indosatCheckBalance.value
+        Assert.assertTrue(actualResponse is RechargeNetworkResult.Fail)
+    }
+
+    protected fun verifySaveRechargeUserAccessTokenLoading(expectedResponse: RechargeNetworkResult.Loading) {
+        val actualResponse = viewModel.saveAccessTokenResult.value
+        Assert.assertEquals(expectedResponse, actualResponse)
+    }
+
+    protected fun verifySaveRechargeUserAccessTokenSuccess(expectedResponse: DigitalSaveAccessTokenResultModel) {
+        val actualResponse = viewModel.saveAccessTokenResult.value
+        Assert.assertEquals(
+            expectedResponse,
+            (actualResponse as RechargeNetworkResult.Success).data
+        )
+    }
+
+    protected fun verifySaveRechargeUserAccessTokenFail() {
+        val actualResponse = viewModel.saveAccessTokenResult.value
         Assert.assertTrue(actualResponse is RechargeNetworkResult.Fail)
     }
 

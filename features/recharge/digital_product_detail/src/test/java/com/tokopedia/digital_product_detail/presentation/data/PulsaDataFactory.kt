@@ -13,6 +13,7 @@ import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.digital_product_detail.data.model.data.DigitalAtcResult
 import com.tokopedia.digital_product_detail.data.model.data.DigitalCatalogProductInputMultiTab
 import com.tokopedia.digital_product_detail.data.model.data.DigitalDigiPersoGetPersonalizedItem
+import com.tokopedia.digital_product_detail.data.model.data.DigitalSaveAccessTokenResponse
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
 import com.tokopedia.digital_product_detail.presentation.util.JsonToString
 import com.tokopedia.recharge_component.model.denom.DenomData
@@ -155,6 +156,13 @@ class PulsaDataFactory {
         )
     }
 
+    fun saveRechargeUserAccessToken(): DigitalSaveAccessTokenResponse {
+        return gson.fromJson(
+            gson.JsonToString(SAVE_RECHARGE_USER_ACCESS_TOKEN),
+            DigitalSaveAccessTokenResponse::class.java
+        )
+    }
+
     fun getAddToCartData(): ResponseCartData {
         return gson.fromJson(
             gson.JsonToString(GET_ADD_TO_CART),
@@ -201,6 +209,7 @@ class PulsaDataFactory {
         const val GET_MENU_DETAIL = "pulsa/get_menu_detail_mock.json"
         const val ERROR_UNVERIFIED_PHONE_NUMBER = "common_telco/unverified_phone_number_error_mock.json"
         const val GET_RECHARGE_CHECK_BALANCE = "pulsa/get_recharge_check_balance_mock.json"
+        const val SAVE_RECHARGE_USER_ACCESS_TOKEN = "common_telco/save_recharge_user_access_token_mock.json"
 
         const val CATEGORY_ID = "1"
         const val OPERATOR_ID = "5"

@@ -169,7 +169,7 @@ class DigitalPDPDataPlanViewModelTest : DigitalPDPDataPlanViewModelTestFixture()
     }
 
     @Test
-    fun `when getting rechargeCheckBalance should run and givefail result`() {
+    fun `when getting rechargeCheckBalance should run and give fail result`() {
         val exception = MessageErrorException("Tokopedia")
         onGetRechargeCheckBalance_thenReturn(exception)
 
@@ -184,6 +184,35 @@ class DigitalPDPDataPlanViewModelTest : DigitalPDPDataPlanViewModelTestFixture()
 
         viewModel.setRechargeCheckBalanceLoading()
         verifyGetRechargeCheckBalanceLoading(loadingResponse)
+    }
+
+    @Test
+    fun `when saveRechargeUserAccessToken called should run and give success result`() {
+        val response = dataFactory.saveRechargeUserAccessToken()
+        val mappedResponse = digitalPersoMapperFactory.mapSaveAccessTokenToAccessTokenResultModel(response.rechargeSaveTelcoUserBalanceAccessToken)
+        onSaveRechargeUserAccessToken(mappedResponse)
+
+        viewModel.saveRechargeUserAccessToken("", "")
+        verifySaveRechargeUserAccessTokenSuccess(mappedResponse)
+        verifySaveRechargeUserAccessTokenGetCalled()
+    }
+
+    @Test
+    fun `when saveRechargeUserAccessToken called should run and give fail result`() {
+        val exception = MessageErrorException("Tokopedia")
+        onSaveRechargeUserAccessToken(exception)
+
+        viewModel.saveRechargeUserAccessToken("", "")
+        verifySaveRechargeUserAccessTokenGetCalled()
+        verifySaveRechargeUserAccessTokenFail()
+    }
+
+    @Test
+    fun `given save loading state then should get loading state`() {
+        val loadingResponse = RechargeNetworkResult.Loading
+
+        viewModel.setRechargeUserAccessTokenLoading()
+        verifySaveRechargeUserAccessTokenLoading(loadingResponse)
     }
 
     @Test

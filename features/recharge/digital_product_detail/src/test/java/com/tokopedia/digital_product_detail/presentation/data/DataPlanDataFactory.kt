@@ -13,6 +13,7 @@ import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.digital_product_detail.data.model.data.DigitalAtcResult
 import com.tokopedia.digital_product_detail.data.model.data.DigitalCatalogProductInputMultiTab
 import com.tokopedia.digital_product_detail.data.model.data.DigitalDigiPersoGetPersonalizedItem
+import com.tokopedia.digital_product_detail.data.model.data.DigitalSaveAccessTokenResponse
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
 import com.tokopedia.digital_product_detail.data.model.data.TelcoFilterTagComponent
 import com.tokopedia.digital_product_detail.presentation.util.JsonToString
@@ -75,6 +76,13 @@ class DataPlanDataFactory {
         return gson.fromJson(
             gson.JsonToString(GET_RECHARGE_CHECK_BALANCE),
             DigitalDigiPersoGetPersonalizedItem::class.java
+        )
+    }
+
+    fun saveRechargeUserAccessToken(): DigitalSaveAccessTokenResponse {
+        return gson.fromJson(
+            gson.JsonToString(SAVE_RECHARGE_USER_ACCESS_TOKEN),
+            DigitalSaveAccessTokenResponse::class.java
         )
     }
 
@@ -250,6 +258,7 @@ class DataPlanDataFactory {
         const val GET_CATALOG_INPUT_MULTITAB = "dataplan/get_catalog_input_multitab_mock.json"
         const val GET_MENU_DETAIL = "dataplan/get_menu_detail_mock.json"
         const val GET_RECHARGE_CHECK_BALANCE = "dataplan/get_recharge_check_balance_mock.json"
+        const val SAVE_RECHARGE_USER_ACCESS_TOKEN = "common_telco/save_recharge_user_access_token_mock.json"
         const val ERROR_UNVERIFIED_PHONE_NUMBER = "common_telco/unverified_phone_number_error_mock.json"
 
         const val FILTER_PARAM_NAME = "param_name"
