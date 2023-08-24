@@ -14,9 +14,9 @@ class TopAdsGetGroupDetailListUseCase @Inject constructor(
     private val mapper: ProductRecommendationMapper,
 ) {
 
-    suspend fun executeOnBackground(search: String): List<GroupItemUiModel> {
+    suspend fun executeOnBackground(search: String,groupType: Int): List<GroupItemUiModel> {
         return coroutineScope {
-            val groupList = getTopadsGroups(search)
+            val groupList = getTopadsGroups(search,groupType)
             var groupIds = listOf<String>()
             when (val data = groupList) {
                 is TopadsProductListState.Success -> {
@@ -39,9 +39,10 @@ class TopAdsGetGroupDetailListUseCase @Inject constructor(
 
     private suspend fun getTopadsGroups(
         search: String,
+        groupType: Int
     ): TopadsProductListState<DashGroupListResponse> {
         return try {
-            topAdsGetDashboardGroupsV3UseCase(search)
+            topAdsGetDashboardGroupsV3UseCase(search,groupType)
         } catch (e: Exception) {
             TopadsProductListState.Fail(e)
         }

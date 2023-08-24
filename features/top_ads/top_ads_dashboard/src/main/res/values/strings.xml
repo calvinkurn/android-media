@@ -266,6 +266,7 @@
     <string name="topads_dash_insight_dialog_desc">Cek rekomendasi berikut agar performa iklanmu meningkat.</string>
     <string name="topads_dash_insight_dialog_btn">Cek Rekomendasi</string>
     <string name="topads_dash_product_suggestion_insight_count">Produk Berpotensi (%d)</string>
+    <string name="topads_insight_centre_suggestion_insight_count">Ada %d produk berpotensi</string>
     <string name="topads_dash_bid_suggestion_insight_count">Anggaran Harian  (%d)</string>
     <string name="topads_dash_insight_widget_title">Rekomendasi TopAds</string>
     <string name="topads_dash_insight_widget_desc">Performa iklanmu kurang maksimal? Rekomendasi berikut bisa meningkatkan performa iklanmu.</string>

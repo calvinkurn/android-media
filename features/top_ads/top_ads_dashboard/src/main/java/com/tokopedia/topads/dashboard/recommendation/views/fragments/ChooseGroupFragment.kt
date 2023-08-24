@@ -18,6 +18,7 @@ import com.tokopedia.topads.dashboard.databinding.FragmentTopadsChooseGroupBindi
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.recommendation.common.TopAdsProductRecommendationConstants
 import com.tokopedia.topads.dashboard.recommendation.common.TopAdsProductRecommendationConstants.DEFAULT_EMPTY_STRING
+import com.tokopedia.topads.dashboard.recommendation.common.TopAdsProductRecommendationConstants.DEFAULT_GROUP_TYPE
 import com.tokopedia.topads.dashboard.recommendation.data.mapper.ProductRecommendationMapper
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopadsProductListState
 import com.tokopedia.topads.dashboard.recommendation.viewmodel.ProductRecommendationViewModel
@@ -71,7 +72,7 @@ class ChooseGroupFragment : BaseDaggerFragment() {
         )
         binding?.groupsRv?.adapter = groupListAdapter
 
-        viewModel.getTopadsGroupList(DEFAULT_EMPTY_STRING)
+        viewModel.getTopadsGroupList(DEFAULT_EMPTY_STRING, DEFAULT_GROUP_TYPE)
 
         binding?.btnSubmit?.setOnClickListener { }
         binding?.searchGroup?.let {
@@ -83,7 +84,7 @@ class ChooseGroupFragment : BaseDaggerFragment() {
         val searchEditable = binding?.searchGroup?.searchBarTextField?.text
         val search =
             if (searchEditable.isNullOrEmpty()) DEFAULT_EMPTY_STRING else searchEditable.toString()
-        viewModel.getTopadsGroupList(search)
+        viewModel.getTopadsGroupList(search,DEFAULT_GROUP_TYPE)
     }
 
     private fun observeViewModel() {

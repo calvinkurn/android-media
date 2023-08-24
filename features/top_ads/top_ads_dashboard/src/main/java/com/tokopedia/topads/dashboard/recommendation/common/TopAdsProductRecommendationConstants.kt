@@ -22,4 +22,6 @@ object TopAdsProductRecommendationConstants {
     const val DEFAULT_SUGGESTED_BID = 0.0
     const val TOPADS_MOVE_GROUP_SOURCE = "top_ads_create"
     const val ADD_KEY = "add"
+    const val GROUP_TYPE_KEY = "group_type"
+    const val DEFAULT_GROUP_TYPE = 1
 }

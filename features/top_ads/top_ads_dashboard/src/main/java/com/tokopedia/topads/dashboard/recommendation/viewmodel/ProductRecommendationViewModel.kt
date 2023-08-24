@@ -104,9 +104,9 @@ class ProductRecommendationViewModel @Inject constructor(
         )
     }
 
-    fun getTopadsGroupList(search: String) {
+    fun getTopadsGroupList(search: String,groupType: Int) {
         launchCatchError(block = {
-            val response = topAdsGetGroupDetailListUseCase.executeOnBackground(search)
+            val response = topAdsGetGroupDetailListUseCase.executeOnBackground(search,groupType)
             _groupListLiveData.value = response
         }, onError = {
             _groupListLiveData.value = listOf()

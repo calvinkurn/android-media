@@ -19,10 +19,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.kotlin.extensions.view.ONE
-import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.model.FragmentTabItem
@@ -139,6 +136,7 @@ class RecommendationFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         setAppBarListener()
         viewModel?.loadRecommendationPage()
+        viewModel?.fetchRecommendationStatistics()
         setUpObserver()
         settingClickListener()
     }
@@ -208,6 +206,24 @@ class RecommendationFragment : BaseDaggerFragment() {
                     topLevelWidgetShimmer?.show()
                 }
                 is TopAdsListAllInsightState.Fail -> {
+                }
+            }
+        }
+
+        viewModel?.recommendationStatsLiveData?.observe(viewLifecycleOwner){
+            when(it){
+                is Success -> {
+                    if(it.data.productRecommendationStats.count > 0) {
+                        potentialProductCard?.showWithCondition(true)
+                        potentialProductCard?.findViewById<com.tokopedia.unifyprinciples.Typography>(
+                            R.id.title
+                        )?.text = String.format(getString(R.string.topads_insight_centre_suggestion_insight_count),it.data.productRecommendationStats.count)
+                    } else {
+                        potentialProductCard?.showWithCondition(false)
+                    }
+                }
+                is Fail -> {
+                    potentialProductCard?.showWithCondition(false)
                 }
             }
         }

@@ -21,8 +21,8 @@ class TopAdsGetDashboardGroupsV3UseCase @Inject constructor(
         setTypeClass(DashGroupListResponse::class.java)
     }
 
-    suspend operator fun invoke(search: String): TopadsProductListState<DashGroupListResponse> {
-        setRequestParams(createRequestParam(search).parameters)
+    suspend operator fun invoke(search: String, groupType: Int): TopadsProductListState<DashGroupListResponse> {
+        setRequestParams(createRequestParam(search, groupType).parameters)
         val data = executeOnBackground()
         return when {
             data.getTopadsDashboardGroups.data.isEmpty() -> TopadsProductListState.Fail(Exception())
@@ -30,11 +30,12 @@ class TopAdsGetDashboardGroupsV3UseCase @Inject constructor(
         }
     }
 
-    private fun createRequestParam(search: String): RequestParams {
+    private fun createRequestParam(search: String, groupType: Int): RequestParams {
         val requestParam = RequestParams.create()
         val queryMap = HashMap<String, Any?>()
         queryMap[TopAdsProductRecommendationConstants.SHOP_Id_KEY] = userSession.shopId
         queryMap[TopAdsProductRecommendationConstants.KEYWORD] = search
+        queryMap[TopAdsProductRecommendationConstants.GROUP_TYPE_KEY] = groupType
         requestParam.putAll(mapOf(ParamObject.QUERY_INPUT to queryMap))
         return requestParam
     }

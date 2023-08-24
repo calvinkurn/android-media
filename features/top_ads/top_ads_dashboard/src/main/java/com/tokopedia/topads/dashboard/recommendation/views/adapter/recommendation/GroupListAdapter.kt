@@ -1,8 +1,10 @@
 package com.tokopedia.topads.dashboard.recommendation.views.adapter.recommendation
 
+import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -15,6 +17,8 @@ class GroupListAdapter(private val onItemCheckedChangeListener: (String) -> Unit
     ListAdapter<GroupListUiModel, RecyclerView.ViewHolder>(GroupListDiffUtilCallBack()) {
 
     inner class GroupListItemViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
+        private val itemCard: com.tokopedia.unifycomponents.CardUnify =
+            view.findViewById(R.id.groupListItemCard)
         private val title: com.tokopedia.unifyprinciples.Typography =
             view.findViewById(R.id.groupName)
         private val productCount: com.tokopedia.unifyprinciples.Typography =
@@ -49,7 +53,12 @@ class GroupListAdapter(private val onItemCheckedChangeListener: (String) -> Unit
             )
         }
 
-        private fun setSelected(item: GroupItemUiModel){
+        private fun setSelected(item: GroupItemUiModel) {
+            if (item.isSelected) {
+                itemCard.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
+            } else
+                itemCard.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Unify_NN300))
+
             selectGroupCta.isChecked = item.isSelected
         }
 
