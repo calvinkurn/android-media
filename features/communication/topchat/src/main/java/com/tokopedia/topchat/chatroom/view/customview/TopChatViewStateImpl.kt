@@ -195,7 +195,7 @@ open class TopChatViewStateImpl constructor(
         }
     }
 
-    private fun rotateAttachmentButton(shouldRotate: Boolean) {
+    fun rotateAttachmentButton(shouldRotate: Boolean) {
         val startDegree = if (shouldRotate) 0f else FORTY_FIVE_DEGREE
         val endDegree = if (shouldRotate) FORTY_FIVE_DEGREE else 0f
         rotateView(chatMenuButton, startDegree, endDegree)
