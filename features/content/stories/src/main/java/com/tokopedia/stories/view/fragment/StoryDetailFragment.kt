@@ -19,8 +19,8 @@ import com.tokopedia.stories.databinding.FragmentStoryDetailBinding
 import com.tokopedia.stories.utils.withCache
 import com.tokopedia.stories.view.adapter.StoryGroupAdapter
 import com.tokopedia.stories.view.components.indicator.StoryDetailTimer
-import com.tokopedia.stories.view.model.StoryUiModel.StoryDetailUiModel
-import com.tokopedia.stories.view.model.StoryUiModel.StoryGroupUiModel
+import com.tokopedia.stories.view.model.StoryDetailUiModel
+import com.tokopedia.stories.view.model.StoryGroupUiModel
 import com.tokopedia.stories.view.utils.TouchEventStory
 import com.tokopedia.stories.view.utils.onTouchEventStory
 import com.tokopedia.stories.view.viewmodel.StoryViewModel
@@ -87,21 +87,22 @@ class StoryDetailFragment @Inject constructor(
     }
 
     private fun renderStoryGroup(
-        prevState: List<StoryGroupUiModel>?,
-        state: List<StoryGroupUiModel>,
+        prevState: StoryGroupUiModel?,
+        state: StoryGroupUiModel,
     ) {
         if (prevState == state) return
-        mAdapter.setItems(state)
+        mAdapter.setItems(state.groupItems)
     }
 
     private fun renderStoryDetail(
         prevState: StoryDetailUiModel?,
         state: StoryDetailUiModel,
     ) {
-        if (prevState == state || state == StoryDetailUiModel.Empty) return
+        if (prevState == state || state == StoryDetailUiModel()) return
 
         storyDetailsTimer(state)
-        binding.ivStoryDetailContent.setImageUrl(state.imageContent)
+        val detailItem = state.detailItems[state.selectedDetail]
+        binding.ivStoryDetailContent.setImageUrl(detailItem.imageContent)
     }
 
     private fun storyDetailsTimer(state: StoryDetailUiModel) {
@@ -110,8 +111,9 @@ class StoryDetailFragment @Inject constructor(
                 setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
                 setContent {
                     StoryDetailTimer(
-                        itemCount = viewModel.mDetailMaxInGroup,
-                        data = state,
+                        currentPosition = state.selectedDetail,
+                        itemCount = state.detailItems.size,
+                        data = state.detailItems[state.selectedDetail],
                     ) { viewModelAction(NextDetail) }
                 }
             }

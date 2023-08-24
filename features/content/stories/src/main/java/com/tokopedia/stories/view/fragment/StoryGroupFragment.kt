@@ -14,7 +14,7 @@ import com.tokopedia.stories.databinding.FragmentStoryGroupBinding
 import com.tokopedia.stories.utils.withCache
 import com.tokopedia.stories.view.adapter.StoryGroupPagerAdapter
 import com.tokopedia.stories.view.animation.ZoomOutPageTransformer
-import com.tokopedia.stories.view.model.StoryUiModel.StoryGroupUiModel
+import com.tokopedia.stories.view.model.StoryGroupUiModel
 import com.tokopedia.stories.view.viewmodel.StoryViewModel
 import com.tokopedia.stories.view.viewmodel.action.StoryUiAction
 import com.tokopedia.stories.view.viewmodel.event.StoryUiEvent
@@ -87,12 +87,12 @@ class StoryGroupFragment @Inject constructor(
     }
 
     private fun renderStoryGroup(
-        prevState: List<StoryGroupUiModel>?,
-        state: List<StoryGroupUiModel>,
+        prevState: StoryGroupUiModel?,
+        state: StoryGroupUiModel,
     ) {
         if (prevState == null || prevState == state) return
 
-        pagerAdapter.setStoryGroup(state.size)
+        pagerAdapter.setStoryGroup(state.groupItems.size)
         with(binding.storyGroupViewPager) {
             if (adapter != null) return@with
             adapter = pagerAdapter

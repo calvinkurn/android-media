@@ -2,34 +2,38 @@ package com.tokopedia.stories.data.mapper
 
 import com.tokopedia.stories.domain.model.detail.StoryDetailsResponseModel
 import com.tokopedia.stories.domain.model.group.StoryGroupsResponseModel
-import com.tokopedia.stories.view.model.StoryUiModel
-import com.tokopedia.stories.view.model.StoryUiModel.StoryDetailUiModel.StoryDetailUiEvent
-import com.tokopedia.stories.view.model.StoryUiModel.StoryGroupUiModel
+import com.tokopedia.stories.view.model.StoryDetailItemUiModel
+import com.tokopedia.stories.view.model.StoryDetailItemUiModel.StoryDetailItemUiEvent
+import com.tokopedia.stories.view.model.StoryDetailUiModel
+import com.tokopedia.stories.view.model.StoryGroupItemUiModel
+import com.tokopedia.stories.view.model.StoryGroupUiModel
 import javax.inject.Inject
 
-class StoryMapperImpl @Inject constructor()  : StoryMapper {
+class StoryMapperImpl @Inject constructor() : StoryMapper {
 
     override fun mapStoryData(
         dataGroup: StoryGroupsResponseModel,
         dataDetail: StoryDetailsResponseModel
-    ): StoryUiModel {
-        return StoryUiModel(
+    ): StoryGroupUiModel {
+        return StoryGroupUiModel(
             selectedGroup = dataGroup.data.meta.selectedGroupIndex,
-            groups = dataGroup.data.groups.mapIndexed { index, group ->
-                StoryGroupUiModel(
+            groupItems = dataGroup.data.groups.mapIndexed { indexGroup, group ->
+                StoryGroupItemUiModel(
                     id = group.value,
                     image = group.image,
-                    selectedDetail = dataGroup.data.meta.selectedGroupIndex,
                     title = group.name,
-                    isSelected = dataGroup.data.meta.selectedGroupIndex == index,
-                    details = dataDetail.data.stories.mapIndexed { index, detail ->
-                        StoryUiModel.StoryDetailUiModel(
-                            id = detail.id,
-                            selected = dataDetail.data.meta.selectedStoryIndex,
-                            event = StoryDetailUiEvent.PAUSE,
-                            imageContent = detail.media.link,
-                        )
-                    }
+                    isSelected = dataGroup.data.meta.selectedGroupIndex == indexGroup,
+                    detail = StoryDetailUiModel(
+                        selectedDetail = dataDetail.data.meta.selectedStoryIndex,
+                        detailItems = dataDetail.data.stories.mapIndexed { indexDetail, story ->
+                            StoryDetailItemUiModel(
+                                id = story.id,
+                                event = StoryDetailItemUiEvent.PAUSE,
+                                imageContent = story.media.link,
+                                isSelected = dataDetail.data.meta.selectedStoryIndex == indexDetail,
+                            )
+                        }
+                    )
                 )
             }
         )

@@ -7,9 +7,9 @@ import com.tokopedia.stories.data.repository.StoryRepository
 import com.tokopedia.stories.domain.model.StoryAuthorType
 import com.tokopedia.stories.domain.model.StoryRequestModel
 import com.tokopedia.stories.domain.model.StorySource
-import com.tokopedia.stories.view.model.StoryUiModel
-import com.tokopedia.stories.view.model.StoryUiModel.StoryDetailUiModel.StoryDetailUiEvent
-import com.tokopedia.stories.view.model.StoryUiModel.StoryGroupUiModel
+import com.tokopedia.stories.view.model.StoryDetailItemUiModel.StoryDetailItemUiEvent
+import com.tokopedia.stories.view.model.StoryDetailUiModel
+import com.tokopedia.stories.view.model.StoryGroupUiModel
 import com.tokopedia.stories.view.model.StoryUiState
 import com.tokopedia.stories.view.viewmodel.action.StoryUiAction
 import com.tokopedia.stories.view.viewmodel.event.StoryUiEvent
@@ -32,8 +32,8 @@ class StoryViewModel @Inject constructor(
     var mDetailMaxInGroup = 0
     var mDetailPosition = 0
 
-    private var _storyGroup = MutableStateFlow(listOf<StoryGroupUiModel>())
-    private var _storyDetail = MutableStateFlow(StoryUiModel.StoryDetailUiModel.Empty)
+    private val _storyGroup = MutableStateFlow(StoryGroupUiModel())
+    private val _storyDetail = MutableStateFlow(StoryDetailUiModel())
 
     private val _uiEvent = MutableSharedFlow<StoryUiEvent>(extraBufferCapacity = 100)
     val uiEvent: Flow<StoryUiEvent>
@@ -70,7 +70,7 @@ class StoryViewModel @Inject constructor(
                 sourceID = "",
             )
             val response = repository.getInitialStoryData(request)
-            _storyGroup.value = response.groups
+            _storyGroup.value = response
         }) { exception ->
             Timber.d("fail $exception")
         }
@@ -104,11 +104,11 @@ class StoryViewModel @Inject constructor(
     }
 
     private fun handleOnPauseStory() {
-        updateStoryDetailData(event = StoryDetailUiEvent.PAUSE)
+        updateStoryDetailData(event = StoryDetailItemUiEvent.PAUSE)
     }
 
     private fun handleOnResumeStory() {
-        updateStoryDetailData(event = StoryDetailUiEvent.START)
+        updateStoryDetailData(event = StoryDetailItemUiEvent.START)
     }
 
     private fun selectGroup(position: Int) {
@@ -121,8 +121,8 @@ class StoryViewModel @Inject constructor(
         mGroupPosition = groupPosition
         updateStoryGroupSelectedIndicator(groupPosition)
 
-        val selectedDetail = _storyGroup.value[groupPosition].selectedDetail
-        mDetailMaxInGroup = _storyGroup.value[groupPosition].details.size
+        val selectedDetail = _storyGroup.value.groupItems[groupPosition].detail.selectedDetail
+        mDetailMaxInGroup = _storyGroup.value.groupItems[groupPosition].detail.detailItems.size
         updateStoryDetailData(
             groupPosition = groupPosition,
             detailPosition = selectedDetail,
@@ -135,23 +135,33 @@ class StoryViewModel @Inject constructor(
 
     private fun updateStoryGroupSelectedIndicator(position: Int) {
         _storyGroup.update { group ->
-            group.mapIndexed { index, storyGroupUiModel ->
-                storyGroupUiModel.copy(isSelected = index == position)
-            }
+            group.copy(
+                selectedGroup = position,
+                groupItems = group.groupItems.mapIndexed { index, storyGroupItemUiModel ->
+                    storyGroupItemUiModel.copy(
+                        isSelected = index == position,
+                    )
+                }
+            )
         }
     }
 
     private fun updateStoryDetailData(
         groupPosition: Int = mGroupPosition,
         detailPosition: Int = mDetailPosition,
-        event: StoryDetailUiEvent = StoryDetailUiEvent.START,
+        event: StoryDetailItemUiEvent = StoryDetailItemUiEvent.START,
     ) {
         mDetailPosition = detailPosition
         _storyDetail.update {
-            val currentDetail = _storyGroup.value[groupPosition]
-            currentDetail.details[mDetailPosition].copy(
-                selected = mDetailPosition,
-                event = event,
+            val currentDetail = _storyGroup.value.groupItems[groupPosition].detail
+            currentDetail.copy(
+                selectedDetail = detailPosition,
+                detailItems = currentDetail.detailItems.mapIndexed { index, storyDetailItemUiModel ->
+                    storyDetailItemUiModel.copy(
+                        event = event,
+                        isSelected = index == detailPosition,
+                    )
+                }
             )
         }
     }
