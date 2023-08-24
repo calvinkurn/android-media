@@ -37,13 +37,16 @@ class BmgmMiniCartViewModel @Inject constructor(
     val setCheckListState: LiveData<BmgmState<Boolean>>
         get() = _setCheckListState
 
-    fun getMiniCartData(param: BmgmParamModel) {
+    fun getMiniCartData(param: BmgmParamModel, showLoadingState: Boolean = false) {
         launchCatchError(block = {
-            _cartData.value = BmgmState.Loading
+            if (showLoadingState) {
+                _cartData.value = BmgmState.Loading
+            }
             val data = withContext(dispatchers.io) {
                 getMiniCartDataUseCase.get().invoke(userSession.get().shopId, param)
             }
             _cartData.value = BmgmState.Success(data)
+            storeCartDataToLocalCache()
         }, onError = {
             _cartData.value = BmgmState.Error(it)
         })
@@ -56,7 +59,6 @@ class BmgmMiniCartViewModel @Inject constructor(
     fun setCartListCheckboxState(cartIds: List<String>) {
         launchCatchError(block = {
             _setCheckListState.value = BmgmState.Loading
-            storeCartDataToLocalCache()
             val result = withContext(dispatchers.io) {
                 setCartListCheckboxStateUseCase.get().invoke(cartIds)
             }
@@ -66,7 +68,7 @@ class BmgmMiniCartViewModel @Inject constructor(
         })
     }
 
-    private fun storeCartDataToLocalCache() = launch {
+    fun storeCartDataToLocalCache() = launch {
         val result = _cartData.value
         if (result is BmgmState.Success) {
             localCacheUseCase.get().saveToLocalCache(result.data)
