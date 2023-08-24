@@ -1,6 +1,7 @@
 package com.tokopedia.play.analytic
 
-import com.tokopedia.play.data.storage.PlayPageSourceStorage
+import com.tokopedia.applink.internal.ApplinkConstInternalContent
+import com.tokopedia.play.view.storage.PlayQueryParamStorage
 import com.tokopedia.play.di.PlayScope
 import javax.inject.Inject
 
@@ -9,14 +10,17 @@ import javax.inject.Inject
  */
 @PlayScope
 class PlayDimensionTrackingHelper @Inject constructor(
-    private val pageSourceStorage: PlayPageSourceStorage,
+    private val queryParamStorage: PlayQueryParamStorage,
 ){
 
-    fun getDimension90(
-        categoryId: String = NO_VALUE,
-    ): String {
+    fun getDimension90(): String {
+        val categoryId = if (queryParamStorage.sourceType == ApplinkConstInternalContent.SOURCE_TYPE_HOME)
+            queryParamStorage.widgetId
+        else
+            NO_VALUE
+
         /** {page_source_name}.{banner_component_name}.{banner_name}.{category_id} */
-        return "${pageSourceStorage.pageSource}.$NO_VALUE.$NO_VALUE.$categoryId"
+        return "${queryParamStorage.sourceType}.$NO_VALUE.$NO_VALUE.$categoryId"
     }
 
     companion object {
