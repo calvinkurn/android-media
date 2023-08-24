@@ -155,7 +155,6 @@ import com.tokopedia.shop.home.di.component.DaggerShopPageHomeComponent
 import com.tokopedia.shop.home.di.module.ShopPageHomeModule
 import com.tokopedia.shop.home.util.CheckCampaignNplException
 import com.tokopedia.shop.home.util.ShopHomeShowcaseNavigationDependencyProvider
-import com.tokopedia.shop.home.util.ShopHomeProductCarouselTabDataProvider
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapter
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
@@ -203,6 +202,7 @@ import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageHeaderActivity
 import com.tokopedia.shop.common.view.interfaces.InterfaceShopPageHeader
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
+import com.tokopedia.shop.home.util.ShopBannerProductGroupWidgetTabDependencyProvider
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragment
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragmentV2
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPageHeaderPerformanceMonitoringListener
@@ -260,7 +260,7 @@ open class ShopPageHomeFragment :
     ShopHomeShowcaseNavigationListener,
     ShopHomeShowcaseNavigationDependencyProvider,
     ShopHomeV4TerlarisViewHolder.ShopHomeV4TerlarisViewHolderListener,
-    ShopHomeProductCarouselTabDataProvider,
+    ShopBannerProductGroupWidgetTabDependencyProvider,
     ShopHomeProductCarouselListener {
 
     companion object {
@@ -422,7 +422,7 @@ open class ShopPageHomeFragment :
             shopHomeShowcaseNavigationDependencyProvider = this,
             shopHomeV4TerlarisViewHolderListener = this,
             shopHomeProductCarouselListener = this,
-            shopHomeProductCarouselTabDataProvider = this
+            shopBannerProductGroupWidgetTabDependencyProvider = this
         )
     }
 

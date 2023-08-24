@@ -45,7 +45,7 @@ import com.tokopedia.shop.home.WidgetName.TRENDING
 import com.tokopedia.shop.home.WidgetName.VIDEO
 import com.tokopedia.shop.home.WidgetName.VOUCHER_STATIC
 import com.tokopedia.shop.home.util.ShopHomeShowcaseNavigationDependencyProvider
-import com.tokopedia.shop.home.util.ShopHomeProductCarouselTabDataProvider
+import com.tokopedia.shop.home.util.ShopBannerProductGroupWidgetTabDependencyProvider
 import com.tokopedia.shop.home.view.adapter.viewholder.CarouselPlayWidgetViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ProductGridListPlaceholderViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopCarouselProductWidgetPlaceholderViewHolder
@@ -136,7 +136,7 @@ open class ShopHomeAdapterTypeFactory(
     private val shopHomeDisplayBannerProductHotspotListener: ShopHomeDisplayBannerProductHotspotViewHolder.Listener,
     private val shopHomeV4TerlarisViewHolderListener: ShopHomeV4TerlarisViewHolder.ShopHomeV4TerlarisViewHolderListener,
     private val shopHomeProductCarouselListener: ShopHomeProductCarouselListener,
-    private val shopHomeProductCarouselTabDataProvider: ShopHomeProductCarouselTabDataProvider
+    private val shopBannerProductGroupWidgetTabDependencyProvider: ShopBannerProductGroupWidgetTabDependencyProvider
 ) : BaseAdapterTypeFactory(), TypeFactoryShopHome, ThematicWidgetTypeFactory, ShopWidgetTypeFactory {
     var productCardType: ShopProductViewGridType = ShopProductViewGridType.SMALL_GRID
     private var showcaseWidgetLayoutType = ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT_TYPE_LINEAR_HORIZONTAL
@@ -441,7 +441,7 @@ open class ShopHomeAdapterTypeFactory(
                 ShopHomeShowCaseNavigationCarouselViewHolder(parent, shopHomeShowcaseNavigationListener)
             }
             ShopHomeProductCarouselViewPagerViewHolder.LAYOUT -> {
-                ShopHomeProductCarouselViewPagerViewHolder(parent, shopHomeProductCarouselListener, shopHomeProductCarouselTabDataProvider)
+                ShopHomeProductCarouselViewPagerViewHolder(parent, shopHomeProductCarouselListener, shopBannerProductGroupWidgetTabDependencyProvider)
             }
             ShopLayoutLoadingShimmerViewHolder.LAYOUT -> {
                 ShopLayoutLoadingShimmerViewHolder(parent)

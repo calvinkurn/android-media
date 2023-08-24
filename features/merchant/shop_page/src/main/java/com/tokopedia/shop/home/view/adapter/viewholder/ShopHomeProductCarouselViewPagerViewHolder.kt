@@ -13,7 +13,7 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.shop.R
 import com.tokopedia.shop.databinding.ItemShopHomeProductCarouselViewpagerBinding
-import com.tokopedia.shop.home.util.ShopHomeProductCarouselTabDataProvider
+import com.tokopedia.shop.home.util.ShopBannerProductGroupWidgetTabDependencyProvider
 import com.tokopedia.shop.home.view.fragment.ShopBannerProductGroupWidgetTabFragment
 import com.tokopedia.shop.home.view.listener.ShopHomeProductCarouselListener
 import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselUiModel
@@ -25,7 +25,7 @@ import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselUiModel.Tab.Com
 class ShopHomeProductCarouselViewPagerViewHolder(
     itemView: View,
     private val listener: ShopHomeProductCarouselListener,
-    private val provider: ShopHomeProductCarouselTabDataProvider
+    private val provider: ShopBannerProductGroupWidgetTabDependencyProvider
 ) : AbstractViewHolder<ShopHomeProductCarouselUiModel>(itemView) {
 
     companion object {
