@@ -266,6 +266,7 @@ class ShopHomeDisplayBannerTimerViewHolder(
                 )
             )
         }
+        setShopReimaginedContainerMargin()
     }
 
     private fun configDefaultColor() {
@@ -300,7 +301,6 @@ class ShopHomeDisplayBannerTimerViewHolder(
                 )
             )
         }
-        setShopReimaginedContainerMargin()
     }
 
     private fun setShopReimaginedContainerMargin() {
