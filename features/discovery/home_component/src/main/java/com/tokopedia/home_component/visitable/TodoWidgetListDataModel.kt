@@ -2,6 +2,7 @@ package com.tokopedia.home_component.visitable
 
 import android.os.Bundle
 import com.tokopedia.home_component.HomeComponentTypeFactory
+import com.tokopedia.home_component.model.ChannelConfig
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component_header.model.ChannelHeader
 import com.tokopedia.kotlin.model.ImpressHolder
@@ -13,9 +14,11 @@ data class TodoWidgetListDataModel(
     val id: String = "",
     val todoWidgetList: List<TodoWidgetDataModel> = listOf(),
     val header: ChannelHeader = ChannelHeader(),
+    val config: ChannelConfig = ChannelConfig(),
     val widgetParam: String = "",
     val verticalPosition: Int = 0,
     val status: Int = STATUS_LOADING,
+    val showShimmering: Boolean = false,
 ) : HomeComponentVisitable, ImpressHolder() {
 
     companion object {
@@ -26,9 +29,11 @@ data class TodoWidgetListDataModel(
     }
 
     fun isShowTodoWidget() : Boolean {
-        return if (status == STATUS_SUCCESS)
-            todoWidgetList.isNotEmpty()
-        else status != STATUS_LOADING
+        return when(status) {
+            STATUS_SUCCESS -> todoWidgetList.isNotEmpty()
+            STATUS_LOADING -> showShimmering
+            else -> true
+        }
     }
 
     override fun visitableId(): String {

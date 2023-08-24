@@ -10,18 +10,36 @@ import com.tokopedia.remoteconfig.RollenceKey
  */
 object HomeRollenceController {
     var rollenceAtfValue: String = ""
-    private const val CONTROL_REVAMP_ATF = ""
+    private const val EMPTY_VALUE = ""
 
-    fun fetchAtfRollenceValue(context: Context) {
+    var rollenceLoadTime: String = ""
+
+    fun fetchHomeRollenceValue(context: Context) {
+        fetchAtfRollenceValue(context)
+        fetchLoadTimeRollenceValue()
+    }
+
+    private fun fetchAtfRollenceValue(context: Context) {
         rollenceAtfValue = try {
             val rollenceAtf = RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.HOME_COMPONENT_ATF)
             if (DeviceScreenInfo.isTablet(context) || rollenceAtf != RollenceKey.HOME_COMPONENT_ATF_2) {
-                CONTROL_REVAMP_ATF
+                EMPTY_VALUE
             } else {
                 rollenceAtf
             }
         } catch (_: Exception) {
-            CONTROL_REVAMP_ATF
+            EMPTY_VALUE
+        }
+    }
+
+    private fun fetchLoadTimeRollenceValue() {
+        rollenceLoadTime = try {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                RollenceKey.HOME_LOAD_TIME_KEY,
+                RollenceKey.HOME_LOAD_TIME_CONTROL
+            )
+        } catch (_: Exception) {
+            RollenceKey.HOME_LOAD_TIME_CONTROL
         }
     }
 

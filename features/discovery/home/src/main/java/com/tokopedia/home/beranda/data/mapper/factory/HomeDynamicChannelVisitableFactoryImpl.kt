@@ -716,7 +716,8 @@ class HomeDynamicChannelVisitableFactoryImpl(
             id = channel.id,
             widgetParam = channel.widgetParam,
             verticalPosition = verticalPosition,
-            status = TodoWidgetListDataModel.STATUS_LOADING
+            status = TodoWidgetListDataModel.STATUS_LOADING,
+            showShimmering = channel.isShimmer,
         )
     }
 
@@ -774,7 +775,8 @@ class HomeDynamicChannelVisitableFactoryImpl(
                     id = channel.id,
                     name = channel.name,
                     verticalPosition = verticalPosition,
-                    status = MissionWidgetListDataModel.STATUS_LOADING
+                    status = MissionWidgetListDataModel.STATUS_LOADING,
+                    showShimmering = channel.isShimmer,
                 )
             )
         }

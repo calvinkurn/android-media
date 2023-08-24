@@ -5,6 +5,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.home.beranda.data.datasource.local.HomeRoomDataSource
+import com.tokopedia.home.beranda.data.model.AtfData
 import com.tokopedia.home.beranda.data.model.HomeAtfData
 import com.tokopedia.home.beranda.domain.interactor.HomeRepository
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
@@ -26,8 +27,10 @@ class HomeAtfRepository @Inject constructor(
 
     override suspend fun executeOnBackground(): HomeAtfData {
         graphqlUseCase.clearCache()
-        params.putString(EXPERIMENT, RollenceKey.HOME_COMPONENT_ATF)
-        params.putString(VARIANT, HomeRollenceController.rollenceAtfValue)
+        val listOfExpKey = listOf(RollenceKey.HOME_COMPONENT_ATF, RollenceKey.HOME_LOAD_TIME_KEY).joinToString(",")
+        val listOfExpValue = listOf(HomeRollenceController.rollenceAtfValue, HomeRollenceController.rollenceLoadTime).joinToString(",")
+        params.putString(EXPERIMENT, listOfExpKey)
+        params.putString(VARIANT, listOfExpValue)
         graphqlUseCase.setRequestParams(params.parameters)
         return graphqlUseCase.executeOnBackground()
     }

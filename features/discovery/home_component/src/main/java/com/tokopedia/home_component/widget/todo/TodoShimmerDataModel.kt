@@ -1,19 +1,18 @@
 package com.tokopedia.home_component.widget.todo
 
-import com.tokopedia.home_component.listener.TodoWidgetComponentListener
 import com.tokopedia.kotlin.model.ImpressHolder
 
 /**
  * Created by frenzel
  */
-class TodoErrorDataModel: TodoWidgetVisitable, ImpressHolder() {
+class TodoShimmerDataModel: TodoWidgetVisitable, ImpressHolder() {
     companion object {
-        const val ID = "TODO_ERROR"
+        const val ID = "TODO_SHIMMER"
     }
 
     override fun getId(): String = ID
     override fun equalsWith(visitable: TodoWidgetVisitable): Boolean {
-        return visitable is TodoErrorDataModel
+        return visitable is TodoShimmerDataModel
     }
 
     override fun type(typeFactory: TodoWidgetTypeFactory): Int {

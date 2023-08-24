@@ -19,8 +19,6 @@ data class CarouselTodoWidgetDataModel(
     val isCarousel: Boolean,
     val verticalPosition: Int,
     val cardPosition: Int,
-    val todoWidgetComponentListener: TodoWidgetComponentListener,
-    val todoWidgetDismissListener: TodoWidgetDismissListener,
 ) : TodoWidgetVisitable, ImpressHolder() {
 
     companion object {

@@ -31,7 +31,10 @@ data class AtfData(
         var status: Int = AtfKey.STATUS_LOADING,
         @SerializedName("error")
         @Expose
-        var errorString: String = ""
+        var errorString: String = "",
+        @SerializedName("isShimmer")
+        @Expose
+        var isShimmer: Boolean = false,
 ) {
         inline fun <reified T> getAtfContent(): T? {
                 val gson = Gson()

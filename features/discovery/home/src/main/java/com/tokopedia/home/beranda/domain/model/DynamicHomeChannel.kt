@@ -102,7 +102,10 @@ data class DynamicHomeChannel(
         var isCache: Boolean = true,
         @SerializedName("styleParam")
         @Expose
-        var styleParam: String = ""
+        var styleParam: String = "",
+        @SerializedName("isShimmer")
+        @Expose
+        var isShimmer: Boolean = false,
     ) : ImpressHolder() {
 
         private var position: Int = 0

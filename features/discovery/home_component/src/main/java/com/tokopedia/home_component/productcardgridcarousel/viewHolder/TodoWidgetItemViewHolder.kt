@@ -9,10 +9,12 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.databinding.HomeComponentTodoWidgetItemBinding
+import com.tokopedia.home_component.listener.TodoWidgetComponentListener
 import com.tokopedia.home_component.model.HomeComponentCta
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselTodoWidgetDataModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselTodoWidgetDataModel.Companion.PAYLOAD_ITEM_POSITION
 import com.tokopedia.home_component.util.TodoWidgetUtil
+import com.tokopedia.home_component.viewholders.TodoWidgetDismissListener
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
@@ -25,7 +27,9 @@ import com.tokopedia.utils.view.binding.viewBinding
  * Created by frenzel
  */
 class TodoWidgetItemViewHolder(
-    view: View
+    view: View,
+    private val todoWidgetComponentListener: TodoWidgetComponentListener,
+    private val todoWidgetDismissListener: TodoWidgetDismissListener,
 ) : AbstractViewHolder<CarouselTodoWidgetDataModel>(view) {
 
     private var binding: HomeComponentTodoWidgetItemBinding? by viewBinding()
@@ -57,15 +61,15 @@ class TodoWidgetItemViewHolder(
     private fun setListener(element: CarouselTodoWidgetDataModel) {
         binding?.run {
             cardContainerTodoWidget.addOnImpressionListener(element) {
-                element.todoWidgetComponentListener.onTodoImpressed(element)
+                todoWidgetComponentListener.onTodoImpressed(element)
             }
 
             cardContainerTodoWidget.setOnClickListener {
-                element.todoWidgetComponentListener.onTodoCardClicked(element)
+                todoWidgetComponentListener.onTodoCardClicked(element)
             }
 
             icCloseTodoWidget.setOnClickListener {
-                element.todoWidgetDismissListener.dismiss(element, element.cardPosition)
+                todoWidgetDismissListener.dismiss(element, element.cardPosition)
             }
         }
     }
@@ -130,7 +134,7 @@ class TodoWidgetItemViewHolder(
             text = element.data.ctaText
 
             setOnClickListener {
-                element.todoWidgetComponentListener.onTodoCTAClicked(element)
+                todoWidgetComponentListener.onTodoCTAClicked(element)
             }
         }
     }

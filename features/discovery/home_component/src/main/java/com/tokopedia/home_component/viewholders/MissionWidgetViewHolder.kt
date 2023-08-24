@@ -49,11 +49,11 @@ class MissionWidgetViewHolder(
     }
 
     private fun setChannelDivider(element: MissionWidgetListDataModel) {
-//        ChannelWidgetUtil.validateHomeComponentDivider(
-//            channelModel = element.channelModel,
-//            dividerTop = binding?.homeComponentDividerHeader,
-//            dividerBottom = binding?.homeComponentDividerFooter
-//        )
+        ChannelWidgetUtil.validateHomeComponentDivider(
+            channelConfig = element.config,
+            dividerTop = binding?.homeComponentDividerHeader,
+            dividerBottom = binding?.homeComponentDividerFooter
+        )
     }
 
     private fun valuateRecyclerViewDecoration() {

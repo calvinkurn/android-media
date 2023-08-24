@@ -36,6 +36,10 @@ internal object QueryTodoWidget {
         "           url\n" +
         "           feParam" +
         "       }\n" +
+        "       config {\n" +
+        "           styleParam\n" +
+        "           dividerType\n" +
+        "       }\n" +
         "   }\n" +
         "}\n"
 }

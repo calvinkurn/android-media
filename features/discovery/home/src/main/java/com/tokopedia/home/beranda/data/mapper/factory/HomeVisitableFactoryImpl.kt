@@ -16,8 +16,6 @@ import com.tokopedia.home.beranda.presentation.view.helper.HomePrefController
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeInitialShimmerDataModel
 import com.tokopedia.home.constant.AtfKey
-import com.tokopedia.home.constant.AtfKey.STATUS_LOADING
-import com.tokopedia.home.constant.AtfKey.STATUS_SUCCESS
 import com.tokopedia.home.constant.AtfKey.TYPE_BANNER
 import com.tokopedia.home.constant.AtfKey.TYPE_CHANNEL
 import com.tokopedia.home.constant.AtfKey.TYPE_ICON
@@ -35,6 +33,10 @@ import com.tokopedia.home_component.visitable.BannerRevampDataModel
 import com.tokopedia.home_component.visitable.DynamicIconComponentDataModel
 import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
 import com.tokopedia.home_component.visitable.TodoWidgetListDataModel
+import com.tokopedia.home_component.widget.mission.MissionWidgetMapper.getAsChannelConfig
+import com.tokopedia.home_component.widget.mission.MissionWidgetMapper.getAsHomeComponentHeader
+import com.tokopedia.home_component.widget.todo.TodoWidgetMapper.getAsChannelConfig
+import com.tokopedia.home_component.widget.todo.TodoWidgetMapper.getAsHomeComponentHeader
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_ANNOUNCEMENT
@@ -316,12 +318,21 @@ class HomeVisitableFactoryImpl(
 
                             TYPE_TODO -> {
                                 data.atfStatusCondition(
+                                    onLoading = {
+                                        visitableList.add(
+                                            TodoWidgetListDataModel(
+                                                status = TodoWidgetListDataModel.STATUS_LOADING,
+                                                showShimmering = data.isShimmer,
+                                            )
+                                        )
+                                    },
                                     onSuccess = {
                                         addTodoWidgetData(
                                             data.getAtfContent<HomeTodoWidgetData.GetHomeTodoWidget>(),
                                             data.id,
                                             data.param,
-                                            index
+                                            index,
+                                            data.isShimmer,
                                         )
                                     }
                                 )
@@ -329,12 +340,21 @@ class HomeVisitableFactoryImpl(
 
                             TYPE_MISSION -> {
                                 data.atfStatusCondition(
+                                    onLoading = {
+                                        visitableList.add(
+                                            MissionWidgetListDataModel(
+                                                status = MissionWidgetListDataModel.STATUS_LOADING,
+                                                showShimmering = data.isShimmer,
+                                            )
+                                        )
+                                    },
                                     onSuccess = {
                                         addMissionWidgetData(
                                             data.getAtfContent<HomeMissionWidgetData.GetHomeMissionWidget>(),
                                             data.id,
                                             data.name,
-                                            index
+                                            index,
+                                            data.isShimmer,
                                         )
                                     }
                                 )
@@ -450,26 +470,43 @@ class HomeVisitableFactoryImpl(
         }
     }
 
-    private fun addTodoWidgetData(data: HomeTodoWidgetData.GetHomeTodoWidget?, id: Int, param: String, index: Int) {
+    private fun addTodoWidgetData(
+        data: HomeTodoWidgetData.GetHomeTodoWidget?,
+        id: Int,
+        param: String,
+        index: Int,
+        isShimmer: Boolean,
+    ) {
         data?.let {
             val todo = if(!isCache) {
                 TodoWidgetListDataModel(
                     id = id.toString(),
                     todoWidgetList = LazyLoadDataMapper.mapTodoWidgetData(it.todos),
                     header = data.header.getAsHomeComponentHeader(),
+                    config = data.config.getAsChannelConfig(),
                     widgetParam = param,
                     verticalPosition = index,
-                    status = STATUS_SUCCESS
+                    status = TodoWidgetListDataModel.STATUS_SUCCESS,
+                    showShimmering = isShimmer,
                 )
             } else {
-                TodoWidgetListDataModel(status = STATUS_LOADING)
+                TodoWidgetListDataModel(
+                    status = TodoWidgetListDataModel.STATUS_LOADING,
+                    showShimmering = isShimmer,
+                )
             }
             visitableList.add(todo)
         }
 
     }
 
-    private fun addMissionWidgetData(data: HomeMissionWidgetData.GetHomeMissionWidget?, id: Int, name: String, index: Int) {
+    private fun addMissionWidgetData(
+        data: HomeMissionWidgetData.GetHomeMissionWidget?,
+        id: Int,
+        name: String,
+        index: Int,
+        isShimmer: Boolean,
+    ) {
         data?.let {
             val mission = if(!isCache) {
                 MissionWidgetListDataModel(
@@ -477,11 +514,16 @@ class HomeVisitableFactoryImpl(
                     name = name,
                     missionWidgetList = LazyLoadDataMapper.mapMissionWidgetData(it.missions),
                     header = data.header.getAsHomeComponentHeader(),
+                    config = data.config.getAsChannelConfig(),
                     verticalPosition = index,
-                    status = STATUS_SUCCESS
+                    status = MissionWidgetListDataModel.STATUS_SUCCESS,
+                    showShimmering = isShimmer,
                 )
             } else {
-                MissionWidgetListDataModel(status = STATUS_LOADING)
+                MissionWidgetListDataModel(
+                    status = MissionWidgetListDataModel.STATUS_LOADING,
+                    showShimmering = isShimmer,
+                )
             }
             visitableList.add(mission)
         }

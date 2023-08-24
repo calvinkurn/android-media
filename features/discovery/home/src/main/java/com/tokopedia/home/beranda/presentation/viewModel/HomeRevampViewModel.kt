@@ -585,6 +585,10 @@ open class HomeRevampViewModel @Inject constructor(
         findWidget<TodoWidgetListDataModel> { todoWidgetListDataModel, position ->
             launch {
                 updateWidget(
+                    todoWidgetListDataModel.copy(status = TodoWidgetListDataModel.STATUS_LOADING),
+                    position
+                )
+                updateWidget(
                     homeTodoWidgetUseCase.get()
                         .onTodoWidgetRefresh(todoWidgetListDataModel),
                     position

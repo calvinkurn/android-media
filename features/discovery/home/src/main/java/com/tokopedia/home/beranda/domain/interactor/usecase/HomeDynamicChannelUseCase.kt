@@ -38,6 +38,7 @@ import com.tokopedia.home_component.visitable.FeaturedShopDataModel
 import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.home_component.visitable.TodoWidgetListDataModel
+import com.tokopedia.home_component.widget.mission.MissionWidgetMapper.getAsHomeComponentHeader
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
@@ -1100,6 +1101,12 @@ class HomeDynamicChannelUseCase @Inject constructor(
                             jobList.add(job)
                         }
                         AtfKey.TYPE_TODO -> {
+                            jobList.add(async {
+                                atfData.apply {
+                                    status = AtfKey.STATUS_LOADING
+                                }
+                                atfData
+                            })
                             val job = async {
                                 try {
                                     homeTodoWidgetRepository.getRemoteData(
@@ -1134,6 +1141,12 @@ class HomeDynamicChannelUseCase @Inject constructor(
                             jobList.add(job)
                         }
                         AtfKey.TYPE_MISSION -> {
+                            jobList.add(async {
+                                atfData.apply {
+                                    status = AtfKey.STATUS_LOADING
+                                }
+                                atfData
+                            })
                             val job = async {
                                 try {
                                     homeMissionWidgetRepository.getRemoteData(

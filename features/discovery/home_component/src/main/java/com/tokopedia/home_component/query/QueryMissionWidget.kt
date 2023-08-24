@@ -31,6 +31,10 @@ internal object QueryMissionWidget {
         "      isCarousel\n" +
         "      shopID\n" +
         "    }\n" +
+        "    config {\n" +
+        "      styleParam\n" +
+        "      dividerType\n" +
+        "    }\n" +
         "  }\n" +
         "}\n"
 }

@@ -149,6 +149,7 @@ internal object QueryDynamicChannelV2 {
         "      categoryPersona\n" +
         "      galaxyAttribution\n" +
         "      isAutoRefreshAfterExpired\n" +
+        "      isShimmer\n" +
         "    }\n" +
         "  }\n" +
         "}"

@@ -10,9 +10,11 @@ import com.tokopedia.home_component.databinding.HomeComponentTodoWidgetBinding
 import com.tokopedia.home_component.decoration.TodoWidgetItemDecoration
 import com.tokopedia.home_component.listener.TodoWidgetComponentListener
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselTodoWidgetDataModel
+import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.home_component.visitable.TodoWidgetListDataModel
 import com.tokopedia.home_component.widget.common.CarouselListAdapter
 import com.tokopedia.home_component.widget.todo.TodoErrorDataModel
+import com.tokopedia.home_component.widget.todo.TodoShimmerDataModel
 import com.tokopedia.home_component.widget.todo.TodoWidgetDiffUtil
 import com.tokopedia.home_component.widget.todo.TodoWidgetTypeFactory
 import com.tokopedia.home_component.widget.todo.TodoWidgetTypeFactoryImpl
@@ -35,7 +37,7 @@ class TodoWidgetViewHolder(
 
     private var binding: HomeComponentTodoWidgetBinding? by viewBinding()
     private val todoAdapter: CarouselListAdapter<TodoWidgetVisitable, TodoWidgetTypeFactory> by lazy {
-        CarouselListAdapter(TodoWidgetTypeFactoryImpl(), TodoWidgetDiffUtil())
+        CarouselListAdapter(TodoWidgetTypeFactoryImpl(todoWidgetComponentListener, this), TodoWidgetDiffUtil())
     }
 
     init {
@@ -49,11 +51,11 @@ class TodoWidgetViewHolder(
     private fun setChannelDivider(element: TodoWidgetListDataModel) {
         binding?.homeComponentDividerHeader?.gone()
         binding?.homeComponentDividerFooter?.gone()
-//        ChannelWidgetUtil.validateHomeComponentDivider(
-//            channelModel = element.channelModel,
-//            dividerTop = binding?.homeComponentDividerHeader,
-//            dividerBottom = binding?.homeComponentDividerFooter
-//        )
+        ChannelWidgetUtil.validateHomeComponentDivider(
+            channelConfig = element.config,
+            dividerTop = binding?.homeComponentDividerHeader,
+            dividerBottom = binding?.homeComponentDividerFooter
+        )
     }
 
     private fun initAdapter() {
@@ -74,7 +76,11 @@ class TodoWidgetViewHolder(
     }
 
     private fun renderError() {
-        todoAdapter.submitList(listOf(TodoErrorDataModel(todoWidgetComponentListener)))
+        todoAdapter.submitList(listOf(TodoErrorDataModel()))
+    }
+
+    private fun renderShimmering() {
+        todoAdapter.submitList(listOf(TodoShimmerDataModel()))
     }
 
     private fun renderTodoWidget(element: TodoWidgetListDataModel) {
@@ -83,11 +89,9 @@ class TodoWidgetViewHolder(
                 data = item,
                 channelId = element.id,
                 headerName = element.header.name,
-                todoWidgetComponentListener = todoWidgetComponentListener,
                 verticalPosition = element.verticalPosition,
                 cardPosition = index,
                 isCarousel = element.todoWidgetList.size > 1,
-                todoWidgetDismissListener = this,
                 cardInteraction = true
             )
         }
@@ -106,6 +110,9 @@ class TodoWidgetViewHolder(
                 }
                 TodoWidgetListDataModel.STATUS_SUCCESS -> {
                     renderTodoWidget(element)
+                }
+                TodoWidgetListDataModel.STATUS_LOADING -> {
+                    renderShimmering()
                 }
             }
         } else {

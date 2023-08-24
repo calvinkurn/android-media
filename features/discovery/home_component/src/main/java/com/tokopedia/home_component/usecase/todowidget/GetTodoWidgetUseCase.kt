@@ -34,6 +34,16 @@ class GetTodoWidgetUseCase @Inject constructor(
         graphqlUseCase.clearCache()
         graphqlUseCase.setGraphqlQuery(TodoWidgetQuery())
         graphqlUseCase.setRequestParams(params.parameters)
+        return HomeTodoWidgetData.HomeTodoWidget(
+            HomeTodoWidgetData.GetHomeTodoWidget(
+                header = HomeTodoWidgetData.Header(title = "Title"),
+                todos = listOf(
+                    HomeTodoWidgetData.Todo(id = 123L, title = "title", contextInfo = "test", imageUrl = "https://images.tokopedia.net/img/cache/200-square/phZFtb/2023/8/7/fb191714-163a-4272-a4a5-eca03c42f0e1.jpg", cta = HomeTodoWidgetData.Cta(text = "click")),
+                    HomeTodoWidgetData.Todo(id = 1234L, title = "title2", contextInfo = "test2", imageUrl = "https://images.tokopedia.net/img/cache/200-square/phZFtb/2023/8/7/fb191714-163a-4272-a4a5-eca03c42f0e1.jpg", cta = HomeTodoWidgetData.Cta(text = "click")),
+                    HomeTodoWidgetData.Todo(id = 3234L, title = "title2", contextInfo = "test2", imageUrl = "https://images.tokopedia.net/img/cache/200-square/phZFtb/2023/8/7/fb191714-163a-4272-a4a5-eca03c42f0e1.jpg", cta = HomeTodoWidgetData.Cta(text = "click"))
+                )
+            )
+        )
         return graphqlUseCase.executeOnBackground()
     }
 

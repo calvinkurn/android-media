@@ -31,7 +31,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.base.view.listener.TouchListenerActivity
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry
 import com.tokopedia.analytics.performance.perf.*
@@ -565,7 +564,7 @@ open class HomeRevampFragment :
         homeRecyclerView?.setHasFixedSize(true)
         HomeComponentRollenceController.fetchHomeComponentRollenceValue()
         context?.let {
-            HomeRollenceController.fetchAtfRollenceValue(it)
+            HomeRollenceController.fetchHomeRollenceValue(it)
         }
 
         // show nav toolbar

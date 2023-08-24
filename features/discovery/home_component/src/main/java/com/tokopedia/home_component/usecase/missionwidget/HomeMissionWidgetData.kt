@@ -11,7 +11,7 @@ class HomeMissionWidgetData {
     data class HomeMissionWidget(
         @SerializedName("getHomeMissionWidget")
         @Expose
-        val getHomeMissionWidget: GetHomeMissionWidget = GetHomeMissionWidget()
+        val getHomeMissionWidget: GetHomeMissionWidget = GetHomeMissionWidget(),
     )
 
     data class GetHomeMissionWidget(
@@ -20,18 +20,26 @@ class HomeMissionWidgetData {
         val header: Header = Header(),
         @SerializedName("missions")
         @Expose
-        val missions: List<Mission> = listOf()
+        val missions: List<Mission> = listOf(),
+        @SerializedName("config")
+        @Expose
+        val config: Config = Config(),
     )
 
     data class Header(
         @SerializedName("title")
         @Expose
-        val title: String = ""
-    ) {
-        fun getAsHomeComponentHeader() = ChannelHeader(
-            name = title
-        )
-    }
+        val title: String = "",
+    )
+
+    data class Config(
+        @SerializedName("styleParam")
+        @Expose
+        val styleParam: String = "",
+        @SerializedName("dividerType")
+        @Expose
+        val dividerType: Int = 0,
+    )
 
     data class Mission(
         @SerializedName("id")
@@ -75,6 +83,6 @@ class HomeMissionWidgetData {
         val isCarousel: Boolean = false,
         @SerializedName("shopID")
         @Expose
-        val shopId: String = ""
+        val shopId: String = "",
     )
 }

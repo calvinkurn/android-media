@@ -88,9 +88,6 @@ open class CommonCarouselProductCardTypeFactoryImpl(
             CarouselBannerItemViewHolder.LAYOUT -> {
                 CarouselBannerItemViewHolder(view, cardInteraction)
             }
-            TodoWidgetItemViewHolder.LAYOUT -> {
-                TodoWidgetItemViewHolder(view)
-            }
             SpecialReleaseRevampItemViewHolder.LAYOUT -> {
                 SpecialReleaseRevampItemViewHolder(view)
             }
