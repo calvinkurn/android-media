@@ -52,7 +52,8 @@ data class Voucher(
     val isParent: Boolean = false,
     val labelVoucher: LabelVoucher = LabelVoucher(),
     val isEditable: Boolean = false,
-    val subsidyDetail: SubsidyDetail = SubsidyDetail()
+    val subsidyDetail: SubsidyDetail = SubsidyDetail(),
+    val galadrielVoucherId: Long = 0
 ) : Parcelable {
     fun isOngoingPromo() = status == VoucherStatus.ONGOING
     fun isUpComingPromo() = status == VoucherStatus.NOT_STARTED
