@@ -41,6 +41,30 @@ class GetShopPageHeaderLayoutUseCase @Inject constructor(
         const val QUERY = """
             query getShopPageGetHeaderLayout(${'$'}shopId: String!, ${'$'}districtID: Int, ${'$'}cityID: Int){
                 ShopPageGetHeaderLayout(shopID:${'$'}shopId, districtID:${'$'}districtID, cityID:${'$'}cityID){
+                  isOverrideTheme
+                  generalComponentConfigList {
+                     name
+                     type
+                     data {
+                      ... on TemplateComp { 
+                         patternColorType         
+                         bgColors
+                         bgObjects {
+                           objectType
+                           url
+                         }
+                         colorSchemaList {
+                           name
+                           colorSchemaType
+                           value          
+                         }
+                      }
+                      ... on ThemeComp {
+                         fontFace
+                         confettiURL
+                      }
+                     }
+                  }
                   widgets {
                       widgetID
                       name
