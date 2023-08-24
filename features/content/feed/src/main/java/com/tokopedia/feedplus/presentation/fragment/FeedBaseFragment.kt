@@ -218,7 +218,7 @@ class FeedBaseFragment :
 
     override fun onStart() {
         super.onStart()
-        binding.vMenuCenter.requestApplyInsetsWhenAttached()
+        binding.containerFeedTopNav.vMenuCenter.requestApplyInsetsWhenAttached()
     }
 
     override fun onDestroyView() {
@@ -356,12 +356,12 @@ class FeedBaseFragment :
     }
 
     private fun setupInsets() {
-        binding.vMenuCenter.doOnApplyWindowInsets { _, insets, _, margin ->
+        binding.containerFeedTopNav.vMenuCenter.doOnApplyWindowInsets { _, insets, _, margin ->
 
             val topInsetsMargin = insets.systemWindowInsetTop + tabExtraTopOffset
 
             getAllMotionScene().forEach {
-                it.setMargin(binding.vMenuCenter.id, ConstraintSet.TOP, topInsetsMargin.coerceAtLeast(margin.top))
+                it.setMargin(binding.containerFeedTopNav.vMenuCenter.id, ConstraintSet.TOP, topInsetsMargin.coerceAtLeast(margin.top))
             }
         }
     }
@@ -769,8 +769,8 @@ class FeedBaseFragment :
 
     private fun getAllMotionScene(): List<ConstraintSet> {
         return listOf(
-            binding.root.getConstraintSet(R.id.for_you_state),
-            binding.root.getConstraintSet(R.id.following_state),
+            binding.containerFeedTopNav.root.getConstraintSet(R.id.start),
+            binding.containerFeedTopNav.root.getConstraintSet(R.id.end),
         )
     }
 
