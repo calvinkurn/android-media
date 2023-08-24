@@ -54,8 +54,6 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutItem
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPageState
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
-import com.tokopedia.checkout.revamp.view.viewholder.CheckoutButtonPaymentItemView
-import com.tokopedia.checkout.revamp.view.viewholder.CheckoutButtonPaymentViewHolder
 import com.tokopedia.checkout.revamp.view.viewholder.CheckoutEpharmacyViewHolder
 import com.tokopedia.checkout.utils.CheckoutFingerprintUtil
 import com.tokopedia.checkout.view.ShipmentFragment
@@ -2485,39 +2483,39 @@ class CheckoutFragment :
     }
 
     private fun setupButtonPaymentView() {
-        if (view != null) {
-            if (binding.rvCheckout.isVisible) {
-                binding.rvCheckout.post {
-                    setupButtonPaymentViewRunnable()
-                }
-            } else {
-                binding.itemCheckoutButtonPayment.root.isVisible = false
-            }
-            viewModel.listData.value.buttonPayment()?.let {
-                CheckoutButtonPaymentItemView.renderButtonPayment(it, binding.itemCheckoutButtonPayment, this)
-            }
-        }
+//        if (view != null) {
+//            if (binding.rvCheckout.isVisible) {
+//                binding.rvCheckout.post {
+//                    setupButtonPaymentViewRunnable()
+//                }
+//            } else {
+//                binding.itemCheckoutButtonPayment.root.isVisible = false
+//            }
+//            viewModel.listData.value.buttonPayment()?.let {
+//                CheckoutButtonPaymentItemView.renderButtonPayment(it, binding.itemCheckoutButtonPayment, this)
+//            }
+//        }
     }
 
     private fun setupButtonPaymentViewRunnable() {
-        val layoutManager = binding.rvCheckout.layoutManager as? LinearLayoutManager
-        if (layoutManager != null) {
-            val firstCompletelyVisibleItemPosition = layoutManager.findFirstCompletelyVisibleItemPosition()
-            val size = viewModel.listData.value.size
-            if (firstCompletelyVisibleItemPosition == 0) {
-                val lastCompletelyVisibleItemPosition =
-                    layoutManager.findLastCompletelyVisibleItemPosition()
-                if (lastCompletelyVisibleItemPosition == (size - 1)) {
-                    binding.itemCheckoutButtonPayment.root.isVisible = true
-                    (binding.rvCheckout.findViewHolderForAdapterPosition(size - 1) as? CheckoutButtonPaymentViewHolder)?.hide()
-                } else {
-                    binding.itemCheckoutButtonPayment.root.isVisible = false
-                    (binding.rvCheckout.findViewHolderForAdapterPosition(size - 1) as? CheckoutButtonPaymentViewHolder)?.show()
-                }
-            } else {
-                binding.itemCheckoutButtonPayment.root.isVisible = false
-                (binding.rvCheckout.findViewHolderForAdapterPosition(size - 1) as? CheckoutButtonPaymentViewHolder)?.show()
-            }
-        }
+//        val layoutManager = binding.rvCheckout.layoutManager as? LinearLayoutManager
+//        if (layoutManager != null) {
+//            val firstCompletelyVisibleItemPosition = layoutManager.findFirstCompletelyVisibleItemPosition()
+//            val size = viewModel.listData.value.size
+//            if (firstCompletelyVisibleItemPosition == 0) {
+//                val lastCompletelyVisibleItemPosition =
+//                    layoutManager.findLastCompletelyVisibleItemPosition()
+//                if (lastCompletelyVisibleItemPosition == (size - 1)) {
+//                    binding.itemCheckoutButtonPayment.root.isVisible = true
+//                    (binding.rvCheckout.findViewHolderForAdapterPosition(size - 1) as? CheckoutButtonPaymentViewHolder)?.hide()
+//                } else {
+//                    binding.itemCheckoutButtonPayment.root.isVisible = false
+//                    (binding.rvCheckout.findViewHolderForAdapterPosition(size - 1) as? CheckoutButtonPaymentViewHolder)?.show()
+//                }
+//            } else {
+//                binding.itemCheckoutButtonPayment.root.isVisible = false
+//                (binding.rvCheckout.findViewHolderForAdapterPosition(size - 1) as? CheckoutButtonPaymentViewHolder)?.show()
+//            }
+//        }
     }
 }
