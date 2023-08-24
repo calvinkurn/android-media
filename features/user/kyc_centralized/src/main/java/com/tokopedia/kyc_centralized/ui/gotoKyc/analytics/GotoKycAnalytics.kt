@@ -562,12 +562,12 @@ object GotoKycAnalytics {
     }
 
     //2l
-    fun sendClickOnButtonBackSelfiePage(detectionType: String, projectId: String) {
+    fun sendClickOnButtonBackSelfiePage(kycFlowType: String, detectionType: String, projectId: String) {
         Tracker.Builder()
             .setEvent(EVENT_CLICK_ACCOUNT)
             .setEventAction(ACTION_CLICK_ON_BACK_SELFIE_PAGE)
             .setEventCategory(CATEGORY_SELFIE_PAGE)
-            .setEventLabel("$detectionType - $projectId")
+            .setEventLabel("$kycFlowType - $detectionType - $projectId")
             .setCustomProperty(KEY_TRACKER_ID, VALUE_TRACKER_ID_43635)
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)

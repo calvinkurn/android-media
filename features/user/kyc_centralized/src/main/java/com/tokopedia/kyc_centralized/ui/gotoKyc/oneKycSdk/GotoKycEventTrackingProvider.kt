@@ -146,12 +146,14 @@ class GotoKycEventTrackingProvider @Inject constructor(
                                         when (eventProperties[FLOW_TYPE]) {
                                             FLOW_TYPE_AURORA -> {
                                                 GotoKycAnalytics.sendClickOnButtonBackSelfiePage(
+                                                    kycFlowType = VALUE_KYC_TYPE_NON_PROGRESSIVE,
                                                     detectionType = VALUE_DETECTION_TYPE_AURORA,
                                                     projectId = projectId
                                                 )
                                             }
                                             else -> {
                                                 GotoKycAnalytics.sendClickOnButtonBackSelfiePage(
+                                                    kycFlowType = VALUE_KYC_TYPE_NON_PROGRESSIVE,
                                                     detectionType = VALUE_DETECTION_TYPE_AUTO,
                                                     projectId = projectId
                                                 )
