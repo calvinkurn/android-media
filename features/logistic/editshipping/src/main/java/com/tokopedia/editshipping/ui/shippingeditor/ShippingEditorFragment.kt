@@ -152,7 +152,7 @@ class ShippingEditorFragment :
             buttonDropOff.let {
                 it.setDrawable(getIconUnifyDrawable(root.context, IconUnify.LOCATION))
                 it.setOnClickListener {
-                    RouteManager.route(root.context, generateWebviewApplink("${TokopediaUrl.getInstance().WEB}dropoff-maps"))
+                    RouteManager.route(root.context, generateWebviewApplink("${TokopediaUrl.getInstance().WEB}dropoff-maps?source=shipping-editor"))
                 }
             }
         }
@@ -277,7 +277,7 @@ class ShippingEditorFragment :
                         updateHeaderTickerData(it.data.headerTicker)
                     }
                     else -> {
-                        //no-op
+                        // no-op
                     }
                 }
             }
