@@ -3,6 +3,7 @@ package com.tokopedia.autocompletecomponent.initialstate
 import androidx.appcompat.widget.AppCompatImageView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.unifyprinciples.Typography
 
@@ -19,9 +20,10 @@ internal class InitialStateLayoutStrategyReimagine : InitialStateLayoutStrategy 
         title.setWeight(Typography.REGULAR)
     }
 
-    override fun bindIconTitle(badgeImageView: AppCompatImageView, item: BaseItemInitialStateSearch) {
-        badgeImageView.shouldShowWithAction(item.iconTitle.isNotEmpty()) {
-            ImageHandler.loadImageWithoutPlaceholderAndError(badgeImageView, item.iconTitle)
+    override fun bindIconTitle(titleImageView: AppCompatImageView, autoCompleteIconTitleReimagine: AppCompatImageView, item: BaseItemInitialStateSearch) {
+        autoCompleteIconTitleReimagine.shouldShowWithAction(item.iconTitle.isNotEmpty()) {
+            ImageHandler.loadImageWithoutPlaceholderAndError(autoCompleteIconTitleReimagine, item.iconTitle)
         }
+        titleImageView.hide()
     }
 }

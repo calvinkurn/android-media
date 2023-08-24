@@ -15,14 +15,13 @@ import com.tokopedia.autocompletecomponent.initialstate.BaseItemInitialStateSear
 import com.tokopedia.autocompletecomponent.initialstate.InitialStateLayoutStrategyFactory
 import com.tokopedia.autocompletecomponent.initialstate.InitialStateLayoutStrategy
 import com.tokopedia.autocompletecomponent.util.loadImageRounded
-import com.tokopedia.discovery.common.reimagine.Search1InstAuto
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.utils.view.binding.viewBinding
 
 class PopularSearchViewHolder(
     itemView: View,
     private val listener: PopularSearchListener,
-    reimagineVariant: Boolean
+    isReimagine: Boolean
 ) : AbstractViewHolder<PopularSearchDataView>(itemView) {
 
     companion object {
@@ -32,7 +31,7 @@ class PopularSearchViewHolder(
 
     private var binding: LayoutPopularAutocompleteBinding? by viewBinding()
 
-    private val layoutStrategy: InitialStateLayoutStrategy = InitialStateLayoutStrategyFactory.create(reimagineVariant)
+    private val layoutStrategy: InitialStateLayoutStrategy = InitialStateLayoutStrategyFactory.create(isReimagine)
 
     override fun bind(element: PopularSearchDataView) {
         bindContent(element)
