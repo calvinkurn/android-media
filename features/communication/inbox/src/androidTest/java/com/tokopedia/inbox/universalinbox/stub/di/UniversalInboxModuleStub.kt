@@ -12,6 +12,8 @@ import com.tokopedia.inbox.universalinbox.util.UniversalInboxResourceProvider
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxResourceProviderImpl
 import com.tokopedia.inbox.universalinbox.util.toggle.UniversalInboxAbPlatform
 import com.tokopedia.inbox.universalinbox.view.UniversalInboxMenuMapper
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.tokochat.config.di.qualifier.TokoChatQualifier
 import com.tokopedia.tokochat.config.repository.TokoChatRepository
 import com.tokopedia.user.session.UserSessionInterface
@@ -57,9 +59,10 @@ object UniversalInboxModuleStub {
     fun provideTokoChatRepositoryStub(
         @TokoChatQualifier retrofit: Retrofit,
         @TokoChatQualifier context: Context,
-        @TokoChatQualifier babbleCourierClient: BabbleCourierClient
+        @TokoChatQualifier babbleCourierClient: BabbleCourierClient,
+        @TokoChatQualifier remoteConfig: RemoteConfig
     ): TokoChatRepositoryStub {
-        return TokoChatRepositoryStub(retrofit, context, babbleCourierClient)
+        return TokoChatRepositoryStub(retrofit, context, babbleCourierClient, remoteConfig)
     }
 
     @Provides
@@ -74,5 +77,13 @@ object UniversalInboxModuleStub {
     @TokoChatQualifier
     fun provideContext(@ApplicationContext context: Context): Context {
         return context
+    }
+
+    @Provides
+    @TokoChatQualifier
+    fun providesRemoteConfig(
+        @TokoChatQualifier context: Context
+    ): RemoteConfig {
+        return FirebaseRemoteConfigImpl(context)
     }
 }
