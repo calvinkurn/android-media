@@ -874,13 +874,12 @@ class CartRevampFragment :
         if (cartShopBottomHolderData != null) {
             cartShopBottomHolderData.shopData.isCollapsed = true
             viewModel.cartDataList.value.removeAll(cartShopBottomHolderData.shopData.productUiModelList.toSet())
-//            onNeedToUpdateViewItem(index)
-//            onNeedToRemoveMultipleViewItem(
-//                index - cartShopBottomHolderData.shopData.productUiModelList.size,
-//                cartShopBottomHolderData.shopData.productUiModelList.size
-//            )
-//            onNeedToUpdateViewItem(index - 1 - cartShopBottomHolderData.shopData.productUiModelList.size)
-            viewModel.cartDataList.notifyObserver()
+            onNeedToUpdateViewItem(index)
+            onNeedToRemoveMultipleViewItem(
+                index - cartShopBottomHolderData.shopData.productUiModelList.size,
+                cartShopBottomHolderData.shopData.productUiModelList.size
+            )
+            onNeedToUpdateViewItem(index - 1 - cartShopBottomHolderData.shopData.productUiModelList.size)
             val layoutManager: RecyclerView.LayoutManager? = binding?.rvCart?.layoutManager
             if (layoutManager != null) {
                 (layoutManager as LinearLayoutManager).scrollToPositionWithOffset(
@@ -902,13 +901,12 @@ class CartRevampFragment :
 //            }
             cartShopBottomHolderData.shopData.isCollapsed = false
             viewModel.addItems(index, cartShopBottomHolderData.shopData.productUiModelList)
-            viewModel.cartDataList.notifyObserver()
-//            onNeedToInsertMultipleViewItem(
-//                index,
-//                cartShopBottomHolderData.shopData.productUiModelList.size
-//            )
-//            onNeedToUpdateViewItem(index - 1)
-//            onNeedToUpdateViewItem(index + cartShopBottomHolderData.shopData.productUiModelList.size)
+            onNeedToInsertMultipleViewItem(
+                index,
+                cartShopBottomHolderData.shopData.productUiModelList.size
+            )
+            onNeedToUpdateViewItem(index - 1)
+            onNeedToUpdateViewItem(index + cartShopBottomHolderData.shopData.productUiModelList.size)
         }
     }
 
