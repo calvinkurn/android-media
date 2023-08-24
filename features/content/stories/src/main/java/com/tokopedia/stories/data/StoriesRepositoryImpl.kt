@@ -1,14 +1,15 @@
 package com.tokopedia.stories.data
 
+import com.tokopedia.stories.uimodel.StoryActionType
 import com.tokopedia.stories.uimodel.StoryAuthor
+import com.tokopedia.stories.usecase.UpdateStoryUseCase
 import com.tokopedia.stories.view.model.StoriesDetailUiModel
 import com.tokopedia.stories.view.model.StoriesDetailUiModel.StoriesDetailUiEvent
 import com.tokopedia.stories.view.model.StoriesGroupUiModel
 import com.tokopedia.stories.view.model.StoriesUiModel
 import javax.inject.Inject
 
-class StoriesRepositoryImpl @Inject constructor() : StoriesRepository {
-
+class StoriesRepositoryImpl @Inject constructor(private val updateStoryUseCase: UpdateStoryUseCase) : StoriesRepository {
     override fun getStoriesData(): StoriesUiModel {
         return StoriesUiModel(
             selectedGroup = 0,
@@ -359,4 +360,9 @@ class StoriesRepositoryImpl @Inject constructor() : StoriesRepository {
         )
     }
 
+    override suspend fun deleteStory(storyId: String) : Boolean {
+        val param = UpdateStoryUseCase.Param(storyId, StoryActionType.Delete)
+        val response = updateStoryUseCase(param)
+       return response.storyId.storyId == storyId
+    }
 }

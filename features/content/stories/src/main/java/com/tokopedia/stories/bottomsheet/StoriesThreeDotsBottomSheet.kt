@@ -55,7 +55,7 @@ class StoriesThreeDotsBottomSheet @Inject constructor(
                                         primaryCTAText = getString(commonR.string.card_dialog_title_delete),
                                         secondaryCTAText = getString(commonR.string.card_dialog_title_cancel),
                                         primaryAction = {
-                                            //TODO () hit gql
+                                            viewModel.submitAction(StoriesUiAction.DeleteStory)
                                         }
                                     )
                                 }

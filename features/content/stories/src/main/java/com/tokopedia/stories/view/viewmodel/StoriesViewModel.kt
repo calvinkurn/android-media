@@ -12,6 +12,7 @@ import com.tokopedia.stories.view.model.StoriesGroupUiModel
 import com.tokopedia.stories.view.model.StoriesUiState
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction
 import com.tokopedia.stories.view.viewmodel.event.StoriesUiEvent
+import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -75,6 +76,7 @@ class StoriesViewModel @Inject constructor(
             StoriesUiAction.OpenKebabMenu -> handleOpenKebab()
             is StoriesUiAction.DismissSheet -> handleDismissSheet(action.type)
             StoriesUiAction.ShowDeleteDialog -> handleShowDialogDelete()
+            StoriesUiAction.DeleteStory -> handleDeleteStory()
         }
     }
 
@@ -188,6 +190,13 @@ class StoriesViewModel @Inject constructor(
         viewModelScope.launch {
             _uiEvent.emit(StoriesUiEvent.ShowDeleteDialog)
         }
+    }
+
+    private fun handleDeleteStory() {
+        viewModelScope.launchCatchError(block = {
+           repository.deleteStory(storyId)
+            //TODO if true emit next story else show toast
+        }, onError = {})
     }
 
     companion object {

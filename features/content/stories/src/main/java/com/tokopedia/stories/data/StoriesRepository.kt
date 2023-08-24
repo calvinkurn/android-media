@@ -6,4 +6,6 @@ interface StoriesRepository {
 
     fun getStoriesData(): StoriesUiModel
 
+    suspend fun deleteStory(storyId: String) : Boolean
+
 }

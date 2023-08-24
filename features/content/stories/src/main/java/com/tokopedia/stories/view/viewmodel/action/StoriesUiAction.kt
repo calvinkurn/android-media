@@ -21,4 +21,6 @@ sealed interface StoriesUiAction {
     data class DismissSheet(val type: BottomSheetType) : StoriesUiAction
 
     object ShowDeleteDialog : StoriesUiAction
+
+    object DeleteStory : StoriesUiAction
 }
