@@ -7,8 +7,8 @@ import com.tokopedia.url.TokopediaUrl
 object ApplinkConstInternalContent {
 
     const val HOST_CONTENT = "content"
+    const val HOST_PLAY = "play"
     private const val HOST_AFFILIATE = "affiliate"
-    private const val HOST_PLAY = "play"
     private const val HOST_FEED = "feed"
     private const val HOST_PLAY_BROADCASTER = "play-broadcaster"
     private const val HOST_PLAY_SHORTS = "play-shorts"
@@ -52,6 +52,12 @@ object ApplinkConstInternalContent {
     const val TAB_POSITION_VIDEO = 3
     const val EXTRA_FEED_TAB_POSITION = "FEED_TAB_POSITION"
     const val ARGS_FEED_VIDEO_TAB_SELECT_CHIP = "tab"
+
+    /**
+     * Query
+     */
+    const val SOURCE_TYPE = "source_type"
+    const val SOURCE_TYPE_HOME = "HOME"
 
     /**
      * Unified Feed

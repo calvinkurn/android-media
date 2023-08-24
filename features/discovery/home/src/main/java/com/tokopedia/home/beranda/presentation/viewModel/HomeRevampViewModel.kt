@@ -672,6 +672,16 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
+    fun reconstructPlayWidgetAppLink(appLink: String): String {
+        var playWidgetId = ""
+
+        findWidget<CarouselPlayWidgetDataModel> { playWidget, _ ->
+            playWidgetId = playWidget.homeChannel.id
+        }
+
+        return homePlayUseCase.get().reconstructAppLink(appLink, playWidgetId)
+    }
+
     fun updateChooseAddressData(homeChooseAddressData: HomeChooseAddressData) {
         this.homeDataModel.setAndEvaluateHomeChooseAddressData(homeChooseAddressData)
         findWidget<HomeHeaderDataModel> { headerModel, index ->

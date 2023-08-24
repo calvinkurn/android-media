@@ -1,5 +1,9 @@
 package com.tokopedia.play.widget.util
 
+import android.net.Uri
+import com.tokopedia.applink.internal.ApplinkConstInternalContent
+import com.tokopedia.applink.internal.ApplinkConstInternalContent.SOURCE_TYPE
+import com.tokopedia.applink.internal.ApplinkConstInternalContent.SOURCE_TYPE_HOME
 import com.tokopedia.play.widget.data.PlayWidget
 import com.tokopedia.play.widget.data.PlayWidgetReminder
 import com.tokopedia.play.widget.domain.PlayWidgetReminderUseCase
@@ -112,6 +116,29 @@ class PlayWidgetTools @Inject constructor(
         return state.copy(
             model = updateWidgetActionReminder(state.model, channelId, reminderType)
         )
+    }
+
+    fun isAppLinkSourceFromHome(appLink: String): Boolean {
+        val uri = Uri.parse(appLink)
+
+        return uri.host == ApplinkConstInternalContent.HOST_PLAY &&
+            uri.getQueryParameter(SOURCE_TYPE) == SOURCE_TYPE_HOME
+    }
+
+    fun reconstructAppLink(appLink: String, queryMap: Map<String, String>): String {
+        val uri = Uri.parse(appLink)
+
+        val newUri = uri
+            .buildUpon()
+            .apply {
+                queryMap.forEach {
+                    val (key, value) = it
+                    this.appendQueryParameter(key, value)
+                }
+            }
+            .build()
+
+        return newUri.toString()
     }
 
     /**
