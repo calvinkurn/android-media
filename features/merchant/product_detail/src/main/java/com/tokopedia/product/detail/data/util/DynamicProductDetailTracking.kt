@@ -3,7 +3,6 @@ package com.tokopedia.product.detail.data.util
 import android.os.Bundle
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.iris.util.KEY_SESSION_IRIS
-import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.linker.LinkerConstants
 import com.tokopedia.linker.LinkerManager
@@ -2536,55 +2535,6 @@ object DynamicProductDetailTracking {
             mapEvent[ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT] = ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP
             mapEvent[ProductTrackingConstant.Tracking.KEY_CURRENT_SITE] = ProductTrackingConstant.Tracking.CURRENT_SITE
             TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, action)
-        }
-    }
-
-    object APlusContent {
-        fun eventClickToggleExpandCollapse(
-            expanding: Boolean,
-            componentTrackDataModel: ComponentTrackDataModel,
-            productInfo: DynamicProductInfoP1?,
-            userID: String
-        ) {
-            val action = StringBuilder(ProductTrackingConstant.Action.CLICK)
-                .append(" - ")
-                .append(
-                    if (expanding) {
-                        ProductTrackingConstant.Action.A_PLUS_MORE
-                    } else {
-                        ProductTrackingConstant.Action.A_PLUS_LESS
-                    }
-                )
-                .append(" ${ProductTrackingConstant.Action.IN_A_PLUS}")
-                .toString()
-            val temp = componentTrackDataModel.componentType
-            val comp = componentTrackDataModel.componentName
-            val cpos = componentTrackDataModel.adapterPosition
-            val productId = productInfo?.basic?.productID.orEmpty()
-            val layout = productInfo?.layoutName
-            val mapEvent = TrackAppUtils.gtmData(
-                ProductTrackingConstant.PDP.EVENT_CLICK_PG,
-                ProductTrackingConstant.Category.PDP,
-                action,
-                String.EMPTY
-            )
-            mapEvent[ProductTrackingConstant.Tracking.KEY_TRACKER_ID] = if (expanding) {
-                ProductTrackingConstant.TrackerId.TRACKER_ID_CLICK_A_PLUS_MORE
-            } else {
-                ProductTrackingConstant.TrackerId.TRACKER_ID_CLICK_A_PLUS_LESS
-            }
-            mapEvent[ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT] =
-                ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP
-            mapEvent[ProductTrackingConstant.Tracking.KEY_COMPONENT] =
-                "comp:$comp;temp:$temp;elem:$action;cpos:$cpos;"
-            mapEvent[ProductTrackingConstant.Tracking.KEY_CURRENT_SITE] =
-                ProductTrackingConstant.Tracking.CURRENT_SITE
-            mapEvent[ProductTrackingConstant.Tracking.KEY_LAYOUT] =
-                "layout:$layout;catName:${productInfo?.basic?.category?.name};catId:${productInfo?.basic?.category?.id};"
-            mapEvent[ProductTrackingConstant.Tracking.KEY_PRODUCT_ID] = productId
-            mapEvent[ProductTrackingConstant.Tracking.KEY_SHOP_ID_SELLER] =
-                productInfo?.basic?.shopID.orEmpty()
-            mapEvent[ProductTrackingConstant.Tracking.KEY_HIT_USER_ID] = userID
         }
     }
 }

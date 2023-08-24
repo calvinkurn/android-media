@@ -1232,14 +1232,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         expanded: Boolean
     ): MutableList<DynamicPdpDataModel> {
         if (!expanded) removeAll { it is APlusImageUiModel && !it.showOnCollapsed }
-        forEachIndexed { index, dataModel ->
-            if (dataModel is APlusImageUiModel) {
-                this[index] = dataModel.copy(
-                    expanded = expanded,
-                    haveBottomPadding = getOrNull(index.inc()) !is APlusImageUiModel
-                )
-            }
-        }
         return this
     }
 
@@ -1298,4 +1290,61 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             }
         }
     }
+
+    fun updateInitialAPlusContent(
+        productInfo: DynamicProductInfoP1,
+        userID: String,
+        aPlusContentExpanded: Boolean
+    ) {
+        val lastShowedAPlusMediaName = findLastShowedAPlusMediaName(aPlusContentExpanded)
+        val mediaCount = getAPlusMediaCount()
+        var mediaPosition = 0
+        mapOfData.forEach { (key, _) ->
+            updateData(key, true) {
+                (mapOfData[key] as? APlusImageUiModel)?.apply {
+                    mediaPosition++
+
+                    expanded = aPlusContentExpanded
+                    haveBottomPadding = name() == lastShowedAPlusMediaName
+                    trackerData = APlusImageUiModel.TrackerData(
+                        mediaCount = mediaCount,
+                        mediaPosition = mediaPosition,
+                        mediaUrl = url,
+                        expanded = aPlusContentExpanded,
+                        userID = userID,
+                        shopID = productInfo.basic.shopID,
+                        productID = productInfo.basic.productID,
+                        layoutName = productInfo.layoutName,
+                        categoryId = productInfo.basic.category.id,
+                        categoryName = productInfo.basic.category.name
+                    )
+                }
+            }
+        }
+    }
+
+    fun updateAPlusContentMediaOnExpandedStateChange(aPlusContentExpanded: Boolean) {
+        val lastShowedAPlusMediaName = findLastShowedAPlusMediaName(aPlusContentExpanded)
+        mapOfData.forEach { (key, _) ->
+            updateData(key, false) {
+                (mapOfData[key] as? APlusImageUiModel)?.apply {
+                    expanded = aPlusContentExpanded
+                    haveBottomPadding = name() == lastShowedAPlusMediaName
+                    trackerData.expanded = aPlusContentExpanded
+                }
+            }
+        }
+    }
+
+    private fun findLastShowedAPlusMediaName(
+        aPlusContentExpanded: Boolean
+    ) = mapOfData.values.findLast {
+        if (aPlusContentExpanded) {
+            it is APlusImageUiModel
+        } else {
+            it is APlusImageUiModel && it.showOnCollapsed
+        }
+    }?.name()
+
+    private fun getAPlusMediaCount() = mapOfData.values.count { it is APlusImageUiModel }
 }

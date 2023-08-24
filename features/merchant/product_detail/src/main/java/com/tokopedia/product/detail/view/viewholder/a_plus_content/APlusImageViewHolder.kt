@@ -99,13 +99,13 @@ class APlusImageViewHolder(
         binding.tvProductDetailAPlusImageToggle.setOnClickListener {
             listener.onToggleAPlus(
                 expanded = !element.expanded,
-                componentTrackerData = getComponentTrackData(element)
+                trackerData = element.trackerData.copy(componentTrackData = getComponentTrackData(element))
             )
         }
         binding.icProductDetailAPlusImageToggle.setOnClickListener {
             listener.onToggleAPlus(
                 expanded = !element.expanded,
-                componentTrackerData = getComponentTrackData(element)
+                trackerData = element.trackerData.copy(componentTrackData = getComponentTrackData(element))
             )
         }
     }
@@ -119,6 +119,7 @@ class APlusImageViewHolder(
     private fun setupImpressionListener(element: APlusImageUiModel) {
         binding.root.addOnImpressionListener(element.impressHolder) {
             listener.onImpressComponent(getComponentTrackData(element))
+            listener.onImpressAPlus(element.trackerData.copy(componentTrackData = getComponentTrackData(element)))
         }
     }
 
