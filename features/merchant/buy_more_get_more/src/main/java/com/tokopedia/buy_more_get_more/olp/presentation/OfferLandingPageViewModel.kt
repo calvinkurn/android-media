@@ -69,6 +69,7 @@ class OfferLandingPageViewModel @Inject constructor(
     private val userId: String
         get() = userSession.userId
 
+
     fun processEvent(event: OlpEvent) {
         when (event) {
             is OlpEvent.SetInitialUiState -> {
@@ -154,7 +155,8 @@ class OfferLandingPageViewModel @Inject constructor(
                         latitude = currentState.localCacheModel?.lat.orEmpty(),
                         longitude = currentState.localCacheModel?.long.orEmpty(),
                         cityId = currentState.localCacheModel?.city_id.toLongOrZero()
-                    )
+                    ),
+                    userId = userId.toLongOrZero(),
                 )
                 val result = getOfferInfoForBuyerUseCase.execute(param)
                 _offeringInfo.postValue(result)

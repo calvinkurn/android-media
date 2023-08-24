@@ -36,7 +36,7 @@ class OfferingProductListViewHolder(
             productCard.apply {
                 setProductModel(element.mapToProductCardModel())
                 setAddToCartOnClickListener { atcProductListener.onProductAtcVariantClicked(element) }
-                setOnClickListener { atcProductListener.onProductCardClicked(element.productId) }
+                setOnClickListener { atcProductListener.onProductCardClicked(element.productId, element.productUrl) }
             }
         }
     }

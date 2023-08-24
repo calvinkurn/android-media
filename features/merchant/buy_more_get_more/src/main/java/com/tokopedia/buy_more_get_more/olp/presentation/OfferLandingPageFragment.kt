@@ -1,22 +1,18 @@
 package com.tokopedia.buy_more_get_more.olp.presentation
 
-import android.R.color.transparent
 import android.app.Activity
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
-import androidx.core.view.WindowCompat
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
@@ -28,6 +24,7 @@ import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiMode
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel.OlpEvent
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferProductListUiModel
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferProductSortingUiModel
+import com.tokopedia.buy_more_get_more.olp.domain.entity.enum.Status
 import com.tokopedia.buy_more_get_more.olp.presentation.adapter.OlpAdapter
 import com.tokopedia.buy_more_get_more.olp.presentation.adapter.OlpAdapterTypeFactoryImpl
 import com.tokopedia.buy_more_get_more.olp.presentation.bottomsheet.TncBottomSheet
@@ -35,11 +32,14 @@ import com.tokopedia.buy_more_get_more.olp.presentation.listener.AtcProductListe
 import com.tokopedia.buy_more_get_more.olp.presentation.listener.OfferingInfoListener
 import com.tokopedia.buy_more_get_more.olp.utils.BundleConstant
 import com.tokopedia.buy_more_get_more.olp.utils.Constant
+import com.tokopedia.buy_more_get_more.olp.utils.setDefaultStatusBar
+import com.tokopedia.buy_more_get_more.olp.utils.setTransparentStatusBar
 import com.tokopedia.buy_more_get_more.sort.activity.ShopProductSortActivity
 import com.tokopedia.buy_more_get_more.sort.listener.ProductSortListener
 import com.tokopedia.campaign.delegates.HasPaginatedList
 import com.tokopedia.campaign.delegates.HasPaginatedListImpl
 import com.tokopedia.campaign.helper.BuyMoreGetMoreHelper
+import com.tokopedia.campaign.utils.extension.enable
 import com.tokopedia.campaign.utils.extension.showToaster
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.gone
@@ -53,7 +53,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import javax.inject.Inject
 
 class OfferLandingPageFragment :
@@ -61,6 +60,7 @@ class OfferLandingPageFragment :
     ProductSortListener,
     AtcProductListener,
     OfferingInfoListener,
+    SwipeRefreshLayout.OnRefreshListener,
     HasPaginatedList by HasPaginatedListImpl() {
 
     companion object {
@@ -103,6 +103,7 @@ class OfferLandingPageFragment :
     private var sortId = ""
     private var sortName = ""
     private var tncBottomSheet: TncBottomSheet? = null
+    private var swipeRefreshLayout: SwipeRefreshLayout? = null
 
     @Inject
     lateinit var viewModel: OfferLandingPageViewModel
@@ -135,6 +136,12 @@ class OfferLandingPageFragment :
 
     override fun onItemClicked(t: Visitable<*>?) {}
 
+    override fun onResume() {
+        super.onResume()
+        loadInitialData()
+
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -148,16 +155,30 @@ class OfferLandingPageFragment :
         super.onViewCreated(view, savedInstanceState)
         setupObservables()
         setupProductRv()
+        swipeRefreshLayout = binding?.swLayout
+        swipeRefreshLayout?.apply {
+            setOnRefreshListener(this@OfferLandingPageFragment)
+            isEnabled = true
+            setOnRefreshListener { loadInitialData() }
+        }
     }
 
     private fun setupObservables() {
         viewModel.offeringInfo.observe(viewLifecycleOwner) { offerInfoForBuyer ->
-            setupHeader(offerInfoForBuyer)
-            viewModel.processEvent(OlpEvent.SetWarehouseIds(offerInfoForBuyer.nearestWarehouseIds))
-            viewModel.processEvent(OlpEvent.SetShopData(offerInfoForBuyer.offerings.firstOrNull()?.shopData))
-            viewModel.processEvent(OlpEvent.SetOfferingJsonData(offerInfoForBuyer.offeringJsonData))
-            viewModel.processEvent(OlpEvent.SetTncData(offerInfoForBuyer.offerings.firstOrNull()?.tnc.orEmpty()))
-            setupTncBottomSheet()
+            when (offerInfoForBuyer.responseHeader.status) {
+                Status.SUCCESS -> {
+                    setupHeader(offerInfoForBuyer)
+                    viewModel.processEvent(OlpEvent.SetWarehouseIds(offerInfoForBuyer.nearestWarehouseIds))
+                    viewModel.processEvent(OlpEvent.SetShopData(offerInfoForBuyer.offerings.firstOrNull()?.shopData))
+                    viewModel.processEvent(OlpEvent.SetOfferingJsonData(offerInfoForBuyer.offeringJsonData))
+                    viewModel.processEvent(OlpEvent.SetTncData(offerInfoForBuyer.offerings.firstOrNull()?.tnc.orEmpty()))
+                    setupTncBottomSheet()
+                    fetchMiniCart()
+                }
+
+                Status.INVALID_OFFER_ID -> {}
+                Status.OFFER_ALREADY_FINISH -> {}
+            }
         }
 
         viewModel.productList.observe(viewLifecycleOwner) { productList ->
@@ -174,14 +195,10 @@ class OfferLandingPageFragment :
             when (atc) {
                 is Success -> {
                     binding?.apply {
-                        val currentUiState = viewModel.currentState
-                        miniCartPlaceholder.showToaster(atc.data.data.success.toString())
-                        miniCartPlaceholder.fetchData(
-                            offerIds = currentUiState.offerIds.map { it.toLong() },
-                            offerJsonData = currentUiState.offeringJsonData,
-                            warehouseIds = currentUiState.warehouseIds.map { it.toString() }
-                        )
+                        miniCartPlaceholder.showToaster(atc.data.data.message.firstOrNull().orEmpty())
+                        fetchMiniCart()
                     }
+                    viewModel.processEvent(OlpEvent.GetNotification)
                 }
 
                 is Fail -> {
@@ -191,12 +208,11 @@ class OfferLandingPageFragment :
         }
 
         viewModel.error.observe(viewLifecycleOwner) { throwable ->
-            setViewState(VIEW_ERROR, throwable.localizedMessage)
+            setViewState(VIEW_ERROR)
         }
     }
 
     private fun setupHeader(offerInfoForBuyer: OfferInfoForBuyerUiModel) {
-        setupStatusBar()
         setupToolbar(offerInfoForBuyer)
         binding?.headerBackground?.setBackgroundResource(R.drawable.olp_header)
         olpAdapter?.submitList(
@@ -223,28 +239,7 @@ class OfferLandingPageFragment :
             setNavigationOnClickListener { activity?.finish() }
             cartButton?.setOnClickListener { redirectToCartPage() }
             moreMenuButton?.setOnClickListener { redirectToMainMenu() }
-        }
-    }
-
-    private fun setupStatusBar() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (activity?.isDarkMode() == true) {
-                activity?.window?.decorView?.systemUiVisibility =
-                    View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-            }
-        }
-
-        activity?.let {
-            val transparent = MethodChecker.getColor(
-                context,
-                transparent
-            )
-            it.window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-            it.window.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
-            WindowCompat.getInsetsController(it.window, it.window.decorView).apply {
-                isAppearanceLightStatusBars = false
-            }
-            it.window.statusBarColor = transparent
+            showWhiteToolbar = false
         }
     }
 
@@ -332,12 +327,16 @@ class OfferLandingPageFragment :
         tncBottomSheet = TncBottomSheet.newInstance(viewModel.currentState.tnc)
     }
 
-    private fun setViewState(viewState: Int, errorMsg: String = "") {
+    private fun setViewState(viewState: Int, status: Status = Status.SUCCESS) {
+        swipeRefreshLayout?.isRefreshing = false
+        swipeRefreshLayout?.isEnabled = true
         when (viewState) {
             VIEW_LOADING -> {
                 binding?.apply {
                     loadingStateOlp.root.visible()
-                    groupHeader.gone()
+                    statusBar.gone()
+                    header.gone()
+                    headerBackground.gone()
                     stickyContent.gone()
                     errorPageLarge.gone()
                     miniCartPlaceholder.gone()
@@ -345,31 +344,91 @@ class OfferLandingPageFragment :
             }
 
             VIEW_ERROR -> {
-                binding?.apply {
-                    loadingStateOlp.root.gone()
-                    groupHeader.gone()
-                    stickyContent.gone()
-                    errorPageLarge.apply {
-                        visible()
-                        setTitle("Terjadi Kesalahan")
-                        setDescription(errorMsg)
-                        setPrimaryCTAText("Coba lagi")
-                        setPrimaryCTAClickListener {
-                            loadInitialData()
-                        }
+                when (status) {
+                    Status.INVALID_OFFER_ID -> {
+                        setErrorPage(
+                            title = getString(R.string.bmgm_title_error_not_found),
+                            description = getString(R.string.bmgm_description_error_not_found),
+                            imageUrl = "https://images.tokopedia.net/android/merchant_voucher/il_mvc_no_result.webp",
+                            primaryCtaText = getString(R.string.bmgm_cta_text_error_not_found),
+                            primaryCtaAction = { activity?.finish() }
+                        )
                     }
-                    miniCartPlaceholder.gone()
+
+                    Status.OFFER_ALREADY_FINISH -> {
+                        setErrorPage(
+                            title = getString(R.string.bmgm_title_error_ended_promo),
+                            description = getString(R.string.bmgm_description_error_ended_promo),
+                            imageUrl = "https://images.tokopedia.net/android/merchant_voucher/il_mvc_no_result.webp",
+                            primaryCtaText = getString(R.string.bmgm_cta_text_error_ended_promo),
+                            primaryCtaAction = { activity?.finish() }
+                        )
+                    }
+
+                    else -> {
+                        setErrorPage(
+                            title = getString(R.string.bmgm_title_error_server),
+                            description = getString(R.string.bmgm_description_error_server),
+                            imageUrl = "https://images.tokopedia.net/android/merchant_voucher/il_mvc_no_result.webp",
+                            primaryCtaText = getString(R.string.bmgm_cta_text_error_server),
+                            primaryCtaAction = { loadInitialData() }
+                        )
+                    }
                 }
             }
 
             else -> {
+                context?.let { activity?.setTransparentStatusBar(it) }
                 binding?.apply {
                     loadingStateOlp.root.gone()
-                    groupHeader.visible()
+                    statusBar.visible()
+                    header.visible()
+                    headerBackground.visible()
                     stickyContent.visible()
                     errorPageLarge.gone()
                     miniCartPlaceholder.visible()
                 }
+            }
+        }
+    }
+
+    private fun setErrorPage(
+        title: String,
+        description: String,
+        imageUrl: String,
+        primaryCtaText: String,
+        primaryCtaAction: () -> Unit
+    ) {
+        setupToolbarForErrorState()
+        binding?.apply {
+            loadingStateOlp.root.gone()
+            headerBackground.gone()
+            stickyContent.gone()
+            errorPageLarge.apply {
+                visible()
+                setTitle(title)
+                setDescription(description)
+                setImageUrl(imageUrl)
+                setPrimaryCTAText(primaryCtaText)
+                setPrimaryCTAClickListener {
+                    primaryCtaAction.invoke()
+                }
+            }
+            miniCartPlaceholder.gone()
+        }
+    }
+
+    private fun setupToolbarForErrorState() {
+        binding?.apply {
+            statusBar.gone()
+            headerBackground.gone()
+            header.apply {
+                visible()
+                title = getString(R.string.bmgm_title)
+                setNavigationOnClickListener { activity?.finish() }
+                cartButton?.setOnClickListener { redirectToCartPage() }
+                moreMenuButton?.setOnClickListener { redirectToMainMenu() }
+                showWhiteToolbar = true
             }
         }
     }
@@ -382,8 +441,8 @@ class OfferLandingPageFragment :
         }
     }
 
-    override fun onProductCardClicked(productId: Long) {
-        redirectToPDP(productId)
+    override fun onProductCardClicked(productId: Long, productUrl: String) {
+        redirectToPDP(productId, productUrl)
     }
 
     private fun addToCartProduct(product: OfferProductListUiModel.Product) {
@@ -408,6 +467,15 @@ class OfferLandingPageFragment :
                 startActivitResult = this::startActivityForResult
             )
         }
+    }
+
+    private fun fetchMiniCart() {
+        val currentUiState = viewModel.currentState
+        binding?.miniCartPlaceholder?.fetchData(
+            offerIds = currentUiState.offerIds.map { it.toLong() },
+            offerJsonData = currentUiState.offeringJsonData,
+            warehouseIds = currentUiState.warehouseIds.map { it.toString() }
+        )
     }
 
     private fun updateCartCounter(cartCount: Int) {
@@ -444,11 +512,16 @@ class OfferLandingPageFragment :
         RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_PAGE, shopId.toString())
     }
 
-    private fun redirectToPDP(productId: Long) {
-        RouteManager.route(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId.toString())
+    private fun redirectToPDP(productId: Long, productUrl: String) {
+        RouteManager.route(context, productUrl)
     }
 
     private fun redirectToMainMenu() {
         RouteManager.route(context, ApplinkConsInternalNavigation.MAIN_NAVIGATION)
+    }
+
+    override fun onRefresh() {
+        swipeRefreshLayout?.isRefreshing = true
+        swipeRefreshLayout?.isEnabled = false
     }
 }

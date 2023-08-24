@@ -21,9 +21,9 @@ data class OfferInfoForBuyerResponse(
     data class ResponseHeader(
         @SerializedName("success")
         val success: Boolean = true,
-        @SerializedName("error_code")
+        @SerializedName("errorCode")
         val errorCode: Long = 0,
-        @SerializedName("process_time")
+        @SerializedName("processTime")
         val processTime: String = ""
     )
 

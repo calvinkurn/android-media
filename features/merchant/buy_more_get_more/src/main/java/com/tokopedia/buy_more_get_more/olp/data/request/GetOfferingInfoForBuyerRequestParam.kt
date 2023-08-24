@@ -12,6 +12,8 @@ data class GetOfferingInfoForBuyerRequestParam(
     val shopIds: List<Long> = emptyList(),
     @SerializedName("product_anchor")
     val productAnchor: ProductAnchor? = null,
+    @SerializedName("user_id")
+    val userId: Long = 0,
     @SerializedName("user_location")
     val userLocation: UserLocation = UserLocation()
 
