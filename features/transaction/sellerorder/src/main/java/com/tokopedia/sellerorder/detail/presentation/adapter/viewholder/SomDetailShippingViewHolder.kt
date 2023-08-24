@@ -5,8 +5,8 @@ import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -20,6 +20,7 @@ import com.tokopedia.sellerorder.databinding.DetailShippingItemBinding
 import com.tokopedia.sellerorder.detail.data.model.SomDetailData
 import com.tokopedia.sellerorder.detail.data.model.SomDetailShipping
 import com.tokopedia.sellerorder.detail.presentation.adapter.factory.SomDetailAdapterFactoryImpl
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -255,12 +256,19 @@ class SomDetailShippingViewHolder(
                 )
 
                 // drop off maps
-                btnDropOff.run {
+                tickerDropOff.run {
                     if (item.dataObject.dropoffMapsUrl.isNotEmpty()) {
-                        setDrawable(getIconUnifyDrawable(context, IconUnify.LOCATION))
-                        setOnClickListener {
-                            actionListener?.onDropOffButtonClicked(item.dataObject.dropoffMapsUrl)
-                        }
+                        // todo set wording here
+                        setDescriptionClickEvent(object : TickerCallback {
+                            override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                                val intent = RouteManager.getIntent(itemView.context, "${ApplinkConst.WEBVIEW}?url=$linkUrl")
+                                itemView.context.startActivity(intent)
+                            }
+
+                            override fun onDismiss() {
+                                //no-op
+                            }
+                        })
                         visible()
                     } else {
                         gone()
