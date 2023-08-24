@@ -60,7 +60,7 @@ object SomGetOrderDetailResponseMapper {
                                         toStr = addOnNote?.to.orEmpty(),
                                         fromStr = addOnNote?.from.orEmpty(),
                                         message = addOnNote?.notes.orEmpty(),
-                                        hasShop = true
+                                        noteCopyable = true
                                     )
                                 }
                             )

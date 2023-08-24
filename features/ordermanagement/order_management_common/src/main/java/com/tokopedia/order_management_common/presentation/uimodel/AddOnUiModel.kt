@@ -8,7 +8,7 @@ data class AddOnSummaryUiModel(
     val totalPriceText: String,
     val addonsLogoUrl: String,
     val addonsTitle: String,
-    val addonItemList: List<AddonItemUiModel>,
+    val addonItemList: List<AddonItemUiModel>
 ) {
 
     data class AddonItemUiModel(
@@ -22,7 +22,7 @@ data class AddOnSummaryUiModel(
         val fromStr: String,
         val message: String,
         var descriptionExpanded: Boolean = false,
-        val hasShop: Boolean
+        val noteCopyable: Boolean
     ) : Visitable<AddOnAdapterFactory> {
 
         override fun type(typeFactory: AddOnAdapterFactory): Int {

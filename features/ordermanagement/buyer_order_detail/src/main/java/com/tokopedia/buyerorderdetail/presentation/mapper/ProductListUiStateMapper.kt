@@ -832,7 +832,7 @@ object ProductListUiStateMapper {
                             toStr = addOnNote?.to.orEmpty(),
                             fromStr = addOnNote?.from.orEmpty(),
                             message = addOnNote?.notes.orEmpty(),
-                            hasShop = false
+                            noteCopyable = false
                         )
                     }.orEmpty()
                 )

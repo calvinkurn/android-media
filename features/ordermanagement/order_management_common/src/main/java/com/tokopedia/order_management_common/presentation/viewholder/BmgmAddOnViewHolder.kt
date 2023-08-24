@@ -55,11 +55,11 @@ class BmgmAddOnViewHolder(
             setupAddOnName(
                 addOnUiModel.type,
                 addOnUiModel.addOnsName,
-                addOnUiModel.hasShop
+                addOnUiModel.noteCopyable
             )
             setupAddOnPrice(addOnUiModel.quantity, addOnUiModel.priceText)
             setupAddOnDescriptions(
-                addOnUiModel,
+                addOnUiModel
             )
         }
     }
@@ -81,13 +81,13 @@ class BmgmAddOnViewHolder(
     }
 
     private fun ItemBmgmDetailAddOnBinding.setupAddOnDescriptions(
-        addonItemUiModel: AddOnSummaryUiModel.AddonItemUiModel,
+        addonItemUiModel: AddOnSummaryUiModel.AddonItemUiModel
     ) {
         layoutAddOnDescription.run {
             if (addonItemUiModel.message.isEmpty()) {
                 hide()
             } else {
-                setIsCopyable(copyable = addonItemUiModel.hasShop)
+                setIsCopyable(copyable = addonItemUiModel.noteCopyable)
                 setReceiverName(addonItemUiModel.toStr)
                 setSenderName(addonItemUiModel.fromStr)
                 setDescription(
