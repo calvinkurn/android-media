@@ -15,6 +15,7 @@ object WidgetType {
     const val CARD = "card"
     const val BUNDLE = "bundle"
     const val VOUCHER_SLIDER = "voucher_slider"
+    const val DIRECT_PURCHASE = "direct_purchase"
 }
 
 object WidgetName {
@@ -48,6 +49,7 @@ object WidgetName {
     const val SHOWCASE_NAVIGATION_BANNER = "showcase_navigation_banner"
     const val TERLARIS = "terlaris"
     const val ADVANCED_SLIDER_BANNER = "advanced_slider_banner"
+    const val DIRECT_PURCHASED_BY_ETALASE = "direct_purchased_by_etalase"
 
     // showcase widget name list
     const val SHOWCASE_SLIDER_SMALL = "etalase_slider_kecil"
