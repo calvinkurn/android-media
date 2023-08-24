@@ -8,7 +8,7 @@ const val PLAY_KEY_CHANNEL_ID = "channelId"
 const val PLAY_KEY_SOURCE_TYPE = "source_type"
 const val PLAY_KEY_SOURCE_ID = "source_id"
 const val PLAY_KEY_CHANNEL_RECOMMENDATION = "channel_recom"
-const val PLAY_KEY_IS_CHANNEL_RECOM = "is_channel_recom"
+const val PLAY_KEY_LAST_PATH_SEGMENT = "last_path_segment"
 const val PLAY_KEY_WIDGET_ID = "widget_id"
 
 const val HOST_INTERNAL = "tokopedia-android-internal"

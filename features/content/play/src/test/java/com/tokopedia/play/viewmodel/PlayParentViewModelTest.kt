@@ -1,7 +1,6 @@
 package com.tokopedia.play.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.play.domain.repository.PlayViewerChannelRepository
 import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.helper.ClassBuilder
 import com.tokopedia.play.model.PlayResponseBuilder

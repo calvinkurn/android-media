@@ -15,7 +15,7 @@ import com.tokopedia.content.common.util.Router
 import com.tokopedia.floatingwindow.FloatingWindowAdapter
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.PLAY_KEY_CHANNEL_RECOMMENDATION
-import com.tokopedia.play.PLAY_KEY_IS_CHANNEL_RECOM
+import com.tokopedia.play.PLAY_KEY_LAST_PATH_SEGMENT
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play.cast.PlayCastNotificationAction
@@ -137,13 +137,12 @@ class PlayActivity :
      */
     private val startChannelId: String
         get() {
-            return if (isChannelRecom) "0" else intent?.data?.lastPathSegment.orEmpty()
+            return if (lastPathSegment == PLAY_KEY_CHANNEL_RECOMMENDATION) "0" else intent?.data?.lastPathSegment.orEmpty()
         }
 
-    private val isChannelRecom: Boolean
+    private val lastPathSegment: String
         get() {
-            val lastSegment = intent?.data?.lastPathSegment.orEmpty()
-            return lastSegment == PLAY_KEY_CHANNEL_RECOMMENDATION
+            return intent?.data?.lastPathSegment.orEmpty()
         }
 
     val activeFragment: PlayFragment?
@@ -418,7 +417,7 @@ class PlayActivity :
 
     private fun setupIntentExtra() {
         intent.putExtra(PLAY_KEY_CHANNEL_ID, startChannelId)
-        intent.putExtra(PLAY_KEY_IS_CHANNEL_RECOM, isChannelRecom)
+        intent.putExtra(PLAY_KEY_LAST_PATH_SEGMENT, lastPathSegment)
     }
 
     private fun removePip() {

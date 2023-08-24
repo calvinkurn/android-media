@@ -17,7 +17,7 @@ import com.tokopedia.play_common.model.result.PageResult
 import com.tokopedia.play_common.model.result.PageResultState
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play.PLAY_KEY_CHANNEL_RECOMMENDATION
-import com.tokopedia.play.PLAY_KEY_IS_CHANNEL_RECOM
+import com.tokopedia.play.PLAY_KEY_LAST_PATH_SEGMENT
 import com.tokopedia.play.PLAY_KEY_WIDGET_ID
 import com.tokopedia.play.view.storage.PlayQueryParamStorage
 import com.tokopedia.play.domain.repository.PlayViewerRepository
@@ -71,12 +71,7 @@ class PlayParentViewModel @AssistedInject constructor(
         get() = handle[PLAY_KEY_CHANNEL_ID]
 
     private val isChannelRecom: Boolean
-        get() {
-            val isChannelRecom: String = handle[PLAY_KEY_IS_CHANNEL_RECOM] ?: ""
-
-            return if (isChannelRecom.isEmpty()) false
-            else isChannelRecom.toBoolean()
-        }
+        get() = (handle[PLAY_KEY_LAST_PATH_SEGMENT] ?: "") == PLAY_KEY_CHANNEL_RECOMMENDATION
 
     private val widgetId: String
         get() = handle[PLAY_KEY_WIDGET_ID] ?: ""
@@ -107,13 +102,13 @@ class PlayParentViewModel @AssistedInject constructor(
 
         if (!isFromPiP && !channelId.isNullOrEmpty()) {
             val sourceType: String = bundle.getString(PLAY_KEY_SOURCE_TYPE, "")
-            val isChannelRecom = bundle.getBoolean(PLAY_KEY_CHANNEL_RECOMMENDATION, false)
+            val lastPathSegment = bundle.getString(PLAY_KEY_LAST_PATH_SEGMENT, "")
             val widgetId = bundle.getString(PLAY_KEY_WIDGET_ID, "")
 
             handle.set(PLAY_KEY_CHANNEL_ID, channelId)
             handle.set(PLAY_KEY_SOURCE_TYPE, sourceType)
             handle.set(PLAY_KEY_SOURCE_ID, bundle.get(PLAY_KEY_SOURCE_ID))
-            handle.set(PLAY_KEY_IS_CHANNEL_RECOM, isChannelRecom)
+            handle.set(PLAY_KEY_LAST_PATH_SEGMENT, lastPathSegment)
             handle.set(PLAY_KEY_WIDGET_ID, widgetId)
             handle.set(KEY_START_TIME, bundle.get(KEY_START_TIME))
             handle.set(KEY_SHOULD_TRACK, bundle.get(KEY_SHOULD_TRACK))
