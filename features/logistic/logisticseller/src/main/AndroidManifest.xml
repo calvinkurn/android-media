@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tokopedia.logisticseller">
+
     <application>
         <activity
             android:name="com.tokopedia.logisticseller.ui.reschedulepickup.ReschedulePickupActivity"
@@ -57,5 +58,51 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".ui.requestpickup.presentation.activity.RequestPickupActivity"
+            android:exported="true"
+            android:label="@string/title_som_confirm_req_pickup"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White">
+
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_logistic"
+                    android:path="@string/path_request_pickup"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+
+        </activity>
+
+        <activity
+            android:name=".ui.confirmshipping.presentation.activity.ConfirmShippingActivity"
+            android:exported="true"
+            android:label="@string/title_som_confirm_shipping"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_logistic"
+                    android:path="@string/path_confirm_shipping"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".ui.confirmshipping.presentation.activity.SomScanResiActivity"
+            android:label="@string/title_som_scan_barcode"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
     </application>
 </manifest>

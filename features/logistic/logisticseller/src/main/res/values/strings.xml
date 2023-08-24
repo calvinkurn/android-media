@@ -45,4 +45,44 @@
     <string name="btn_understand">Mengerti</string>
     <string name="label_number_invoice">No. Invoice</string>
     <string name="success_copy_invoice">Nomor Invoice berhasil disalin</string>
+
+    <!--    Confirm Shipping and Request Pickup -->
+    <string name="title_som_confirm_req_pickup">Konfirmasi Request Pick-Up</string>
+    <string name="title_som_confirm_shipping">Konfirmasi Pengiriman</string>
+    <string name="title_som_change_courier">Ganti Kurir</string>
+    <string name="title_courier">Kurir</string>
+    <string name="title_som_scan_barcode">Scan Resi</string>
+
+    <string name="default_confirm_shipping_success">Terima kasih telah melakukan pengiriman.</string>
+    <string name="nomor_resi">No. Resi</string>
+    <string name="tf_no_resi_placeholder">Isi Nomor Resi</string>
+    <string name="tf_no_resi_message">Min. 8 karakter dan Maks. 17 karakter</string>
+    <string name="global_error">Terjadi kesalahan. Mohon ulangi kembali</string>
+    <string name="btn_konfirmasi">Konfirmasi</string>
+    <string name="change_courier_label">Ganti Kurir Pengiriman</string>
+
+    <string name="courier_choosen_example">JNE</string>
+    <string name="courier_service_label">Paket Pengiriman</string>
+    <string name="courier_service_choosen_example">Reguler</string>
+    <string name="courier_option_schedule">Oleh kurir: %1$s</string>
+    <string name="req_pickup_ticket_desc_template">%1$s &lt;a href="%2$s"&gt;%3$s&lt;/a&gt;</string>
+    <string name="som_request_pickup_bottomsheet_title">Jadwal Pickup</string>
+    <string name="tolak_pesanan">Tolak Pesanan</string>
+    <string name="courier_notes_example">Tidak perlu memberikan ongkir ke kurir</string>
+
+
+    <string name="content_desc_tf_no_resi">input nomor resi</string>
+    <string name="content_desc_btn_confirm_shipping">button konirmasi</string>
+    <string name="content_desc_switch_change_courier">button ganti kurir</string>
+    <string name="error_message_no_internet_connection">Oops, koneksi internetmu terganggu. Silakan cek koneksi internet dan coba lagi, ya.</string>
+    <string name="error_message_server_fault">Oops, ada gangguan yang perlu kami bereskan. Silakan coba lagi, ya.</string>
+
+    <string name="scan_barcode_msg">Arahkan kamera ponsel Anda pada nomor resi barang.
+        Pastikan barcode berada di dalam frame. Nomor resi akan otomatis terpindai.</string>
+
+    <!--   invoice-->
+    <string name="invoice_label">invoice</string>
+    <string name="click_to_copy_icon_content_description">Tombol salin nomor invoice</string>
+    <string name="success_invoice_copied">Nomor invoice berhasil tersalin</string>
+
 </resources>

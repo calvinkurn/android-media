@@ -8,6 +8,8 @@
     <string name="path_edit_address_revamp" translatable="false">/editaddressrevamp/.*</string>
     <string name="path_edit_shop_address" translatable="false">/editaddress/</string>
     <string name="path_custom_product_logistic" translatable="false">/customproductlogistic</string>
+    <string name="path_confirm_shipping" translatable="false">/confirmshipping</string>
+    <string name="path_request_pickup" translatable="false">/requestpickup</string>
 
     <string name="dropoff_title">Pilih Lokasi Titik Ambil</string>
     <string name="path_dropoff_picker" translatable="false">/dropoff/</string>

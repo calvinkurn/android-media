@@ -10,12 +10,12 @@ object SomConsts {
     const val PARAM_SELLER = "seller"
     const val PARAM_LANG_ID = "id"
     const val PARAM_ORDER_ID = "order_id"
-    const val PARAM_CURR_IS_CHANGE_SHIPPING = "is_change_shipping"
     const val PARAM_BOOKING_CODE = "bookingCode"
     const val PARAM_BARCODE_TYPE = "barcodeType"
     const val PARAM_ORDER_CODE = "order_code"
     const val PARAM_INVOICE = "invoice"
     const val PARAM_PASS_INVOICE = "pass_invoice"
+    const val PARAM_CURR_IS_CHANGE_SHIPPING = "is_change_shipping"
 
     const val VAR_PARAM_ORDERID = "orderID"
     const val VAR_PARAM_LANG = "lang"
@@ -47,9 +47,9 @@ object SomConsts {
     const val RESULT_ACCEPT_ORDER = "result_accept_order"
     const val RESULT_REJECT_ORDER = "result_reject_order"
     const val RESULT_PROCESS_REQ_PICKUP = "result_process_req_pickup"
-    const val RESULT_CONFIRM_SHIPPING = "result_confirm_shipping"
     const val RESULT_SET_DELIVERED = "result_set_delivered"
     const val RESULT_REFRESH_ORDER = "result_refresh_order"
+    const val RESULT_CONFIRM_SHIPPING = "result_confirm_shipping"
 
     const val KEY_ACCEPT_ORDER = "accept_order"
     const val KEY_REJECT_ORDER = "reject_order"
@@ -82,8 +82,6 @@ object SomConsts {
     const val TITLE_COURIER_PROBLEM = "Kendala Kurir"
     const val TITLE_ATUR_TOKO_TUTUP = "Atur tanggal toko tutup"
     const val TITLE_UBAH_RESI = "Ubah Nomor Resi"
-    const val TITLE_KURIR_PENGIRIMAN = "Kurir Pengiriman"
-    const val TITLE_JENIS_LAYANAN = "Jenis Layanan"
 
     const val LABEL_EMPTY = "-"
     const val LABEL_COPY_BOOKING_CODE = "LABEL_COPY_BOOKING_CODE"

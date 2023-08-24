@@ -2,10 +2,7 @@
     <string name="title_som_list">Penjualan</string>
     <string name="title_som_list_sa">Daftar Pesanan</string>
     <string name="title_som_detail">Detail Pesanan</string>
-    <string name="title_som_confirm_req_pickup">Konfirmasi Request Pick-Up</string>
-    <string name="title_som_confirm_shipping">Konfirmasi Pengiriman</string>
-    <string name="title_som_change_courier">Ganti Kurir</string>
-    <string name="title_som_scan_barcode">Scan Resi</string>
+
     <string name="title_som_booking_code">Detail Kode Booking</string>
     <string name="title_som_invoice">Invoice</string>
     <string name="title_som_waiting_payment">Menunggu Pembayaran</string>
@@ -94,23 +91,13 @@
     <string name="tv_driver_license_example">B 1408 TMB</string>
     <string name="tv_driver_call_btn">Hubungi</string>
 
-    <string name="courier_notes_example">Tidak perlu memberikan ongkir ke kurir</string>
-    <string name="courier_option_schedule">Oleh kurir: %1$s</string>
-    <string name="req_pickup_ticket_desc_template">%1$s &lt;a href="%2$s"&gt;%3$s&lt;/a&gt;</string>
 
     <string name="cancel_order_batal">Batal</string>
     <string name="btn_konfirmasi">Konfirmasi</string>
-    <string name="change_courier_label">Ganti Kurir Pengiriman</string>
     <string name="cancel_order_notes_empty_warning">Harap isi Alasan Penolakan</string>
 
-    <string name="courier_service_label">Paket Pengiriman</string>
-    <string name="courier_choosen_example">JNE</string>
-    <string name="courier_service_choosen_example">Reguler</string>
     <string name="tf_no_resi_placeholder">Isi Nomor Resi</string>
     <string name="tf_no_resi_message">Min. 8 karakter dan Maks. 17 karakter</string>
-
-    <string name="scan_barcode_msg">Arahkan kamera ponsel Anda pada nomor resi barang.
-        Pastikan barcode berada di dalam frame. Nomor resi akan otomatis terpindai.</string>
 
     <string name="change_no_resi_hint">Nomor Resi</string>
     <string name="change_no_resi_notes">Min. 8 karakter dan Maks. 17 karakter</string>
@@ -147,7 +134,6 @@
     <string name="som_dropshipper_label">Dropshipper</string>
 
     <string name="et_empty_error">Tidak Boleh Kosong</string>
-    <string name="default_confirm_shipping_success">Terima kasih telah melakukan pengiriman.</string>
     <string name="label_receiver_name">Nama Penerima</string>
 
     <!--  instant cancel  -->
@@ -166,8 +152,6 @@
     <string name="som_header_detail_ticker_cancellation">Dibatalkan karena</string>
 
     <!--CONTENT DESC-->
-    <string name="content_desc_tf_no_resi">input nomor resi</string>
-    <string name="content_desc_switch_change_courier">button ganti kurir</string>
     <string name="content_desc_btn_confirm_shipping">button konirmasi</string>
     <string name="content_desc_tf_cancel_notes">input alasan pembatalan</string>
     <string name="content_desc_btn_cancel_order_canceled">button batal</string>
@@ -243,7 +227,6 @@
     <string name="som_error_dialog_subtitle_order_has_cancellation_request">Lanjut memproses pesanan tanpa konfirmasi pembeli dapat berujung dengan pengajuan komplain, lho.</string>
     <string name="som_error_validate_order">Gagal memeriksa status pesanan, silahkan coba lagi</string>
 
-    <string name="som_request_pickup_bottomsheet_title">Jadwal Pickup</string>
     <string name="label_welcome_to_som_page">Selamat datang di halaman penjualan</string>
 
     <!-- Bulk Request Pickup -->
@@ -348,10 +331,6 @@
     <string name="som_request_cancellation_desc_continue_send_order_dialog">Untuk menghindari komplain, pastikan pengiriman pesanan sudah dapat persetujuan dari pembeli.</string>
     <string name="som_request_cancellation_btn_primary_continue_send_order_dialog">Lanjut Kirim</string>
     <string name="som_request_cancellation_desc_confirm_cancellation_order_dialog">Pastikan pesanan belum diserahkan ke kurir sebelum membatalkan. Skor Performa Toko tidak dikurangi.</string>
-
-    <!--   invoice-->
-    <string name="click_to_copy_icon_content_description">Tombol salin nomor invoice</string>
-    <string name="success_invoice_copied">Nomor invoice berhasil tersalin</string>
 
     <!-- SOM Operational Guideline -->
     <string name="som_operational_guideline_confirm_shipping_tooltip_text">Halaman otomatis terbuka menampilkan pesanan yang perlu dikirim. Yuk, segera proses pesanan.</string>

@@ -126,7 +126,6 @@ import com.tokopedia.sellerorder.detail.presentation.model.LogisticInfoAllWrappe
 import com.tokopedia.sellerorder.detail.presentation.viewmodel.SomDetailViewModel
 import com.tokopedia.sellerorder.orderextension.presentation.model.OrderExtensionRequestInfoUiModel
 import com.tokopedia.sellerorder.orderextension.presentation.viewmodel.SomOrderExtensionViewModel
-import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.LENGTH_SHORT
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
@@ -1201,12 +1200,18 @@ open class SomDetailFragment :
     }
 
     protected open fun handleRequestPickUpResult(resultCode: Int, data: Intent?) {
+
         if (resultCode == Activity.RESULT_OK && data != null && data.hasExtra(RESULT_PROCESS_REQ_PICKUP)) {
-            val resultProcessReqPickup = data.getParcelableExtra<SomProcessReqPickup.Data.MpLogisticRequestPickup>(RESULT_PROCESS_REQ_PICKUP)
+            val message = data.getStringExtra(RESULT_PROCESS_REQ_PICKUP).orEmpty()
+            showCommonToaster(message)
+        }
+
+        if (resultCode == Activity.RESULT_OK && data != null && data.hasExtra(RESULT_PROCESS_REQ_PICKUP)) {
+            val message = data.getStringExtra(RESULT_PROCESS_REQ_PICKUP).orEmpty()
             activity?.setResult(
                 Activity.RESULT_OK,
                 Intent().apply {
-                    putExtra(RESULT_PROCESS_REQ_PICKUP, resultProcessReqPickup)
+                    putExtra(RESULT_PROCESS_REQ_PICKUP, message)
                 }
             )
             activity?.finish()

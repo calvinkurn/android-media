@@ -43,4 +43,8 @@ object ApplinkConstInternalLogistic {
     const val PINPOINT = "$INTERNAL_LOGISTIC/pinpoint"
 
     const val FIND_NEW_DRIVER = "$INTERNAL_LOGISTIC/findnewdriver"
+
+    const val CONFIRM_SHIPPING = "$INTERNAL_LOGISTIC/confirmshipping"
+
+    const val REQUEST_PICKUP = "$INTERNAL_LOGISTIC/requestpickup"
 }

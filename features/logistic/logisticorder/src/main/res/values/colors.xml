@@ -5,10 +5,4 @@
     <color name="dms_background_tipping_gojek_open">#FF0FA599</color>
     <color name="dms_proof_background_image_static_black">#31353B</color>
 
-
-    <color name="_dms_zxing_custom_possible_result_points">#903A89CF</color>
-    <color name="_dms_zxing_custom_result_view">#b0000000</color>
-    <color name="_dms_zxing_custom_viewfinder_mask">#60000000</color>
-    <color name="_dms_zxing_status_text">#ffffffff</color>
-
 </resources>

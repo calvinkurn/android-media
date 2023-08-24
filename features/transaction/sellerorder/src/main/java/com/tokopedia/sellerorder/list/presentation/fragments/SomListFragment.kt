@@ -140,7 +140,6 @@ import com.tokopedia.sellerorder.list.presentation.models.SomListOrderWrapperUiM
 import com.tokopedia.sellerorder.list.presentation.models.SomListTickerUiModel
 import com.tokopedia.sellerorder.list.presentation.util.SomListCoachMarkManager
 import com.tokopedia.sellerorder.list.presentation.viewmodels.SomListViewModel
-import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.activity.WaitingPaymentOrderActivity
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -1931,10 +1930,8 @@ open class SomListFragment :
                         }
                 }
                 data.hasExtra(SomConsts.RESULT_PROCESS_REQ_PICKUP) -> {
-                    data.getParcelableExtra<SomProcessReqPickup.Data.MpLogisticRequestPickup>(
-                        SomConsts.RESULT_PROCESS_REQ_PICKUP
-                    )?.let { resultProcessReqPickup ->
-                        handleRequestPickUpResult(resultProcessReqPickup.listMessage.firstOrNull())
+                    data.getStringExtra(SomConsts.RESULT_PROCESS_REQ_PICKUP)?.let { message ->
+                        handleRequestPickUpResult(message)
                     }
                 }
                 data.hasExtra(SomConsts.RESULT_REJECT_ORDER) -> {
@@ -1976,10 +1973,9 @@ open class SomListFragment :
 
     private fun handleSomRequestPickUpActivityResult(resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK && data != null) {
-            data.getParcelableExtra<SomProcessReqPickup.Data.MpLogisticRequestPickup>(SomConsts.RESULT_PROCESS_REQ_PICKUP)
-                ?.let { resultProcessReqPickup ->
-                    handleRequestPickUpResult(resultProcessReqPickup.listMessage.firstOrNull())
-                }
+            data.getStringExtra(SomConsts.RESULT_PROCESS_REQ_PICKUP)?.let { message ->
+                handleRequestPickUpResult(message)
+            }
         }
     }
 
