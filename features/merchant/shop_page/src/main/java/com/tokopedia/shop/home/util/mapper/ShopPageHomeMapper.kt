@@ -506,7 +506,6 @@ object ShopPageHomeMapper {
             COMPONENT.toLowerCase(Locale.getDefault()) -> {
                 ShopPageWidgetMapper.mapToHomeProductCarouselWidget(widgetResponse)
             }
-            DYNAMIC.toLowerCase(Locale.getDefault()) -> mapCarouselPlayWidget(widgetResponse, widgetLayout)
             PERSONALIZATION.toLowerCase(Locale.getDefault()) -> {
                 when (widgetResponse.name) {
                     BUY_AGAIN, RECENT_ACTIVITY, REMINDER, ADD_ONS, TRENDING -> {

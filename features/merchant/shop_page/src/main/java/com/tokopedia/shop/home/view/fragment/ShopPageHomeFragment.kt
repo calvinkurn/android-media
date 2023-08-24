@@ -5057,10 +5057,6 @@ open class ShopPageHomeFragment :
     override val currentFragment: Fragment
         get() = this
 
-    override fun onProductClick(productId: String) {
-        // TODO: Put tracker here
-        RouteManager.route(context, ApplinkConst.PRODUCT_INFO, productId)
-    }
 
     override fun isOverrideTheme(): Boolean {
         return (getRealParentFragment() as? InterfaceShopPageHeader)?.isOverrideTheme().orFalse()
