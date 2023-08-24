@@ -28,7 +28,7 @@ class RechargeCheckBalanceRepositoryImpl @Inject constructor(
                 setParams(clientNumbers, dgCategoryIds, dgOperatorIds, channelName)
             }.executeOnBackground()
 
-            return@withContext digitalPersoMapper.mapDigiPersoToCheckBalanceOTPModel(data.digitalPersoData)
+            return@withContext digitalPersoMapper.mapDigiPersoToCheckBalanceModel(data.digitalPersoData)
         }
 
     override suspend fun saveRechargeUserBalanceAccessToken(

@@ -14,7 +14,7 @@ import javax.inject.Inject
 
 class DigitalPersoMapper @Inject constructor() {
 
-    fun mapDigiPersoToCheckBalanceOTPModel(data: DigitalPersoData): DigitalCheckBalanceModel {
+    fun mapDigiPersoToCheckBalanceModel(data: DigitalPersoData): DigitalCheckBalanceModel {
         val persoItem = data.items.getOrNull(0)
         return DigitalCheckBalanceModel(
             title = persoItem?.title.toEmptyStringIfNull(),

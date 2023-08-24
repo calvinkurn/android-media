@@ -61,7 +61,7 @@ class DigitalPDPTokenListrikViewModelTest : DigitalPDPTokenListrikViewModelTestF
     @Test
     fun `when getting recommendation should run and give success result`() = runTest {
         val response = dataFactory.getRecommendationData()
-        val mappedResponse = mapperFactory.mapDigiPersoToRecommendation(response.recommendationData, true)
+        val mappedResponse = mapperFactory.mapDigiPersoToRecommendation(response.digitalPersoData, true)
         onGetRecommendation_thenReturn(mappedResponse)
 
         viewModel.getRecommendations(listOf(), listOf(), listOf())
@@ -473,7 +473,7 @@ class DigitalPDPTokenListrikViewModelTest : DigitalPDPTokenListrikViewModelTestF
     @Test
     fun `when cancelRecommendationJob called the job should be cancelled and live data should not emit`() {
         val response = dataFactory.getRecommendationData()
-        val mappedResponse = mapperFactory.mapDigiPersoToRecommendation(response.recommendationData, true)
+        val mappedResponse = mapperFactory.mapDigiPersoToRecommendation(response.digitalPersoData, true)
         onGetRecommendation_thenReturn(mappedResponse)
 
         viewModel.getRecommendations(listOf(), listOf(), listOf())

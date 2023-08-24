@@ -3,21 +3,21 @@ package com.tokopedia.digital_product_detail.presentation.data
 import com.google.gson.Gson
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
 import com.tokopedia.common.topupbills.favoritecommon.data.TopupBillsPersoFavNumberData
-import com.tokopedia.common_digital.atc.data.response.ResponseCartData
-import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
-import com.tokopedia.digital_product_detail.data.model.data.DigitalCatalogProductInputMultiTab
-import com.tokopedia.digital_product_detail.data.model.data.DigitalDigiPersoGetPersonalizedItem
-import com.tokopedia.digital_product_detail.data.model.data.TelcoFilterTagComponent
-import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
 import com.tokopedia.common.topupbills.favoritepdp.data.model.PersoFavNumberGroup
-import com.tokopedia.digital_product_detail.presentation.util.JsonToString
-import com.tokopedia.recharge_component.model.denom.DenomData
-import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import com.tokopedia.common.topupbills.favoritepdp.domain.model.MenuDetailModel
 import com.tokopedia.common_digital.atc.data.response.AtcErrorButton
 import com.tokopedia.common_digital.atc.data.response.AtcErrorPage
 import com.tokopedia.common_digital.atc.data.response.ErrorAtc
+import com.tokopedia.common_digital.atc.data.response.ResponseCartData
+import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.digital_product_detail.data.model.data.DigitalAtcResult
+import com.tokopedia.digital_product_detail.data.model.data.DigitalCatalogProductInputMultiTab
+import com.tokopedia.digital_product_detail.data.model.data.DigitalDigiPersoGetPersonalizedItem
+import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
+import com.tokopedia.digital_product_detail.data.model.data.TelcoFilterTagComponent
+import com.tokopedia.digital_product_detail.presentation.util.JsonToString
+import com.tokopedia.recharge_component.model.denom.DenomData
+import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
 
 class DataPlanDataFactory {
@@ -71,11 +71,18 @@ class DataPlanDataFactory {
         )
     }
 
+    fun getRechargeCheckBalanceData(): DigitalDigiPersoGetPersonalizedItem {
+        return gson.fromJson(
+            gson.JsonToString(GET_RECHARGE_CHECK_BALANCE),
+            DigitalDigiPersoGetPersonalizedItem::class.java
+        )
+    }
+
     fun getFilterTagListSelectedData(): List<TelcoFilterTagComponent> {
-         return getCatalogInputMultiTabData().multitabData.productInputs.first().filterTagComponents.apply {
-             this.first().filterTagDataCollections.first().isSelected = true
-             this[1].filterTagDataCollections[1].isSelected = true
-         }
+        return getCatalogInputMultiTabData().multitabData.productInputs.first().filterTagComponents.apply {
+            this.first().filterTagDataCollections.first().isSelected = true
+            this[1].filterTagDataCollections[1].isSelected = true
+        }
     }
 
     fun getFilterParamsEmpty(): ArrayList<HashMap<String, Any>> {
@@ -122,7 +129,7 @@ class DataPlanDataFactory {
         )
     }
 
-    fun getErrorAtcFromGql(): DigitalAtcResult{
+    fun getErrorAtcFromGql(): DigitalAtcResult {
         return DigitalAtcResult(
             errorAtc = getErrorAtc()
         )
@@ -242,6 +249,7 @@ class DataPlanDataFactory {
         const val GET_ADD_TO_CART_WITH_ERRORS = "common_telco/get_add_to_cart_not_empty_error_mock.json"
         const val GET_CATALOG_INPUT_MULTITAB = "dataplan/get_catalog_input_multitab_mock.json"
         const val GET_MENU_DETAIL = "dataplan/get_menu_detail_mock.json"
+        const val GET_RECHARGE_CHECK_BALANCE = "dataplan/get_recharge_check_balance_mock.json"
         const val ERROR_UNVERIFIED_PHONE_NUMBER = "common_telco/unverified_phone_number_error_mock.json"
 
         const val FILTER_PARAM_NAME = "param_name"

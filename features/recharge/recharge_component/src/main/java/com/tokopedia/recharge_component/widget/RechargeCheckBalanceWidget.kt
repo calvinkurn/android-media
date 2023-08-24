@@ -8,11 +8,9 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.iconunify.applyIconUnifyColor
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.recharge_component.R
 import com.tokopedia.recharge_component.databinding.WidgetRechargeCheckBalanceBinding
 import com.tokopedia.recharge_component.model.check_balance.RechargeCheckBalanceUnitModel
@@ -21,7 +19,6 @@ import com.tokopedia.recharge_component.presentation.adapter.viewholder.Recharge
 import com.tokopedia.recharge_component.presentation.util.CustomDividerItemDecorator
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.toDp
-import com.tokopedia.unifycomponents.toPx
 import org.jetbrains.annotations.NotNull
 
 class RechargeCheckBalanceWidget @JvmOverloads constructor(
@@ -199,17 +196,25 @@ class RechargeCheckBalanceWidget @JvmOverloads constructor(
     }
 
     fun setWarningContainerMargin(
-        marginStart: Int = 0,
-        marginTop: Int = 12,
-        marginEnd: Int = 0,
-        marginBottom: Int = 0
+        marginStart: Int = DEFAULT_WARNING_CONTAINER_MARGIN_0,
+        marginTop: Int = DEFAULT_WARNING_CONTAINER_MARGIN_12,
+        marginEnd: Int = DEFAULT_WARNING_CONTAINER_MARGIN_0,
+        marginBottom: Int = DEFAULT_WARNING_CONTAINER_MARGIN_0
     ) {
         binding.checkBalanceWarningContainer.setMargin(
-            marginStart.toDp(), marginTop.toDp(), marginEnd.toDp(), marginBottom.toDp()
+            marginStart.toDp(),
+            marginTop.toDp(),
+            marginEnd.toDp(),
+            marginBottom.toDp()
         )
     }
 
     interface RechargeCheckBalanceWidgetListener {
         fun onClickWidget()
+    }
+
+    companion object {
+        private const val DEFAULT_WARNING_CONTAINER_MARGIN_12 = 12
+        private const val DEFAULT_WARNING_CONTAINER_MARGIN_0 = 0
     }
 }

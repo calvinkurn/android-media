@@ -6,11 +6,11 @@ import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIden
 import com.tokopedia.common_digital.common.DigitalAtcErrorException
 import com.tokopedia.digital_product_detail.data.mapper.DigitalAtcMapper
 import com.tokopedia.digital_product_detail.data.mapper.DigitalDenomMapper
+import com.tokopedia.digital_product_detail.data.mapper.DigitalPersoMapper
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
 import com.tokopedia.digital_product_detail.presentation.data.DataPlanDataFactory
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
-import com.tokopedia.recharge_component.model.denom.DenomData
 import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import kotlinx.coroutines.CancellationException
@@ -18,6 +18,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
+import org.junit.Assert
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
@@ -27,6 +28,7 @@ class DigitalPDPDataPlanViewModelTest : DigitalPDPDataPlanViewModelTestFixture()
     private val mapperFactory = DigitalDenomMapper()
     private val persoMapperFactory = FavoritePersoMapper()
     private val mapAtcFactory = DigitalAtcMapper()
+    private val digitalPersoMapperFactory = DigitalPersoMapper()
 
     @Test
     fun `given menuDetail loading state then should get loading state`() {
@@ -68,7 +70,7 @@ class DigitalPDPDataPlanViewModelTest : DigitalPDPDataPlanViewModelTestFixture()
         runTest {
             val response = dataFactory.getRecommendationData()
             val mappedResponse =
-                mapperFactory.mapDigiPersoToRecommendation(response.recommendationData, true)
+                mapperFactory.mapDigiPersoToRecommendation(response.digitalPersoData, true)
             onGetRecommendation_thenReturn(mappedResponse)
 
             viewModel.getRecommendations(listOf(), listOf())
@@ -93,7 +95,7 @@ class DigitalPDPDataPlanViewModelTest : DigitalPDPDataPlanViewModelTestFixture()
         runTest {
             val response = dataFactory.getMCCMData()
             val mappedResponse =
-                mapperFactory.mapDigiPersoToMCCMProducts(response.recommendationData)
+                mapperFactory.mapDigiPersoToMCCMProducts(response.digitalPersoData)
             onGetMCCM_thenReturn(mappedResponse)
 
             viewModel.getMCCMProducts(listOf(), listOf())
@@ -142,7 +144,7 @@ class DigitalPDPDataPlanViewModelTest : DigitalPDPDataPlanViewModelTestFixture()
     }
 
     @Test
-    fun `when getting favoriteNumber without prefill (or any type) should run and give success result with empty default`() = runTest{
+    fun `when getting favoriteNumber without prefill (or any type) should run and give success result with empty default`() = runTest {
         val response = dataFactory.getFavoriteNumberData(false)
         val mappedResponse = persoMapperFactory.mapDigiPersoFavoriteToModel(response)
         val favoriteNumberTypes = listOf(FavoriteNumberType.CHIP, FavoriteNumberType.LIST)
@@ -153,6 +155,35 @@ class DigitalPDPDataPlanViewModelTest : DigitalPDPDataPlanViewModelTestFixture()
         verifyGetFavoriteNumberChipsSuccess(mappedResponse.favoriteChips)
         verifyGetFavoriteNumberListSuccess(mappedResponse.autoCompletes)
         verifyGetFavoriteNumberPrefillNull()
+    }
+
+    @Test
+    fun `when getting rechargeCheckBalance should run and give success result`() {
+        val response = dataFactory.getRechargeCheckBalanceData()
+        val mappedResponse = digitalPersoMapperFactory.mapDigiPersoToCheckBalanceModel(response.digitalPersoData)
+        onGetRechargeCheckBalance_thenReturn(mappedResponse)
+
+        viewModel.getRechargeCheckBalance(listOf(), listOf())
+        verifyGetRechargeCheckBalanceRepoGetCalled()
+        verifyGetRechargeCheckBalanceSuccess(mappedResponse)
+    }
+
+    @Test
+    fun `when getting rechargeCheckBalance should run and givefail result`() {
+        val exception = MessageErrorException("Tokopedia")
+        onGetRechargeCheckBalance_thenReturn(exception)
+
+        viewModel.getRechargeCheckBalance(listOf(), listOf())
+        verifyGetRechargeCheckBalanceRepoGetCalled()
+        verifyGetRechargeCheckBalanceFail()
+    }
+
+    @Test
+    fun `given rechargeCheckBalance loading state then should get loading state`() {
+        val loadingResponse = RechargeNetworkResult.Loading
+
+        viewModel.setRechargeCheckBalanceLoading()
+        verifyGetRechargeCheckBalanceLoading(loadingResponse)
     }
 
     @Test
@@ -584,7 +615,7 @@ class DigitalPDPDataPlanViewModelTest : DigitalPDPDataPlanViewModelTestFixture()
     fun `when cancelRecommendationJob called the job should be cancelled and live data should not emit`() {
         val response = dataFactory.getRecommendationData()
         val mappedResponse =
-            mapperFactory.mapDigiPersoToRecommendation(response.recommendationData, true)
+            mapperFactory.mapDigiPersoToRecommendation(response.digitalPersoData, true)
         onGetRecommendation_thenReturn(mappedResponse)
 
         viewModel.getRecommendations(listOf(), listOf())
@@ -610,7 +641,7 @@ class DigitalPDPDataPlanViewModelTest : DigitalPDPDataPlanViewModelTestFixture()
     fun `when cancelMCCMJob called the job should be cancelled and live data should not emit`() {
         val response = dataFactory.getMCCMData()
         val mappedResponse =
-            mapperFactory.mapDigiPersoToMCCMProducts(response.recommendationData)
+            mapperFactory.mapDigiPersoToMCCMProducts(response.digitalPersoData)
         onGetMCCM_thenReturn(mappedResponse)
 
         viewModel.getMCCMProducts(listOf(), listOf())
@@ -792,6 +823,22 @@ class DigitalPDPDataPlanViewModelTest : DigitalPDPDataPlanViewModelTestFixture()
 
         val result = viewModel.isFilterChanged(changedFilter)
         verifyFilterIsChanged(result)
+    }
+
+    @Test
+    fun `given checkBalanceFailCounter is zero, isCheckBalanceFailedMoreThanThreeTimes should return false`() {
+        viewModel.checkBalanceFailCounter = 0
+
+        val actualResult = viewModel.isCheckBalanceFailedMoreThanThreeTimes()
+        Assert.assertFalse(actualResult)
+    }
+
+    @Test
+    fun `given checkBalanceFailCounter is three, isCheckBalanceFailedMoreThanThreeTimes should return true`() {
+        viewModel.checkBalanceFailCounter = 3
+
+        val actualResult = viewModel.isCheckBalanceFailedMoreThanThreeTimes()
+        Assert.assertTrue(actualResult)
     }
 
     companion object {
