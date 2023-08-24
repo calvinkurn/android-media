@@ -10,7 +10,6 @@ import com.tokopedia.editor.databinding.FragmentImageMainEditorBinding
 import com.tokopedia.editor.ui.main.EditorParamFetcher
 import com.tokopedia.editor.ui.main.MainEditorViewModel
 import com.tokopedia.editor.ui.main.uimodel.InputTextUiModel
-import com.tokopedia.editor.ui.main.uimodel.IsEdited
 import com.tokopedia.editor.ui.main.uimodel.MainEditorEvent
 import com.tokopedia.editor.ui.model.InputTextModel
 import com.tokopedia.editor.ui.widget.DynamicTextCanvasView
@@ -45,7 +44,7 @@ class ImageMainEditorFragment @Inject constructor(
     }
 
     override fun onTextClick(text: Typography, model: InputTextModel) {
-        viewModel.onEvent(MainEditorEvent.ClickInputTextTool(model, IsEdited(true)))
+        viewModel.onEvent(MainEditorEvent.ClickInputTextTool(model, true))
     }
 
     private fun addOrEditTextOnCanvas(state: InputTextUiModel) {
@@ -62,6 +61,9 @@ class ImageMainEditorFragment @Inject constructor(
         } else {
             binding?.canvas?.addText(state.model)
         }
+
+        // reset active input text
+        viewModel.onEvent(MainEditorEvent.ResetActiveInputText)
     }
 
 }

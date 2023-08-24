@@ -153,7 +153,6 @@ open class MainEditorActivity : AppCompatActivity(), NavToolbarComponent.Listene
             }
             ToolType.PLACEMENT -> {}
             ToolType.AUDIO_MUTE -> {}
-            ToolType.TRIM -> {}
             else -> Unit
         }
     }

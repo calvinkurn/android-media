@@ -11,11 +11,10 @@ sealed class MainEditorEvent {
 
     data class ClickInputTextTool(
         val model: InputTextModel,
-        val isEdited: IsEdited = IsEdited()
+        val isEdited: Boolean = false
     ) : MainEditorEvent()
 
     data class InputTextResult(val model: InputTextModel) : MainEditorEvent()
-}
 
-@JvmInline
-value class IsEdited(val value: Boolean = false)
+    object ResetActiveInputText : MainEditorEvent()
+}

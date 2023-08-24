@@ -3,7 +3,6 @@ package com.tokopedia.editor.ui.main
 import androidx.lifecycle.ViewModel
 import com.tokopedia.editor.data.repository.NavigationToolRepository
 import com.tokopedia.editor.ui.main.uimodel.InputTextUiModel
-import com.tokopedia.editor.ui.main.uimodel.IsEdited
 import com.tokopedia.editor.ui.main.uimodel.MainEditorEffect
 import com.tokopedia.editor.ui.main.uimodel.MainEditorEvent
 import com.tokopedia.editor.ui.main.uimodel.MainEditorUiModel
@@ -26,9 +25,7 @@ class MainEditorViewModel @Inject constructor(
     private var _inputTextState = MutableStateFlow(InputTextUiModel())
 
     val mainEditorState = _mainEditorState.asStateFlow()
-
-    val inputTextState: Flow<InputTextUiModel>
-        get() = _inputTextState
+    val inputTextState = _inputTextState.asStateFlow()
 
     val uiEffect: Flow<MainEditorEffect>
         get() = _uiEffect
@@ -45,8 +42,8 @@ class MainEditorViewModel @Inject constructor(
             }
             is MainEditorEvent.InputTextResult -> {
                 updateActiveInputTextData(event.model)
-
-                // reset every single input text is added
+            }
+            is MainEditorEvent.ResetActiveInputText -> {
                 _inputTextState.value = InputTextUiModel.reset()
             }
         }
@@ -64,10 +61,10 @@ class MainEditorViewModel @Inject constructor(
         }
     }
 
-    private fun updateDataOnActiveText(model: InputTextModel, isEdited: IsEdited) {
+    private fun updateDataOnActiveText(model: InputTextModel, isEdited: Boolean) {
         _inputTextState.setValue {
             copy(
-                isEdited = isEdited.value,
+                isEdited = isEdited,
                 previousString = model.text
             )
         }
