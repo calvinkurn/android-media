@@ -3,7 +3,7 @@ package com.tokopedia.tokofood.stub.postpurchase.di.module
 import android.content.Context
 import androidx.lifecycle.SavedStateHandle
 import com.gojek.conversations.courier.BabbleCourierClient
-import com.tokopedia.tokochat.config.common.repository.TokoChatRepository
+import com.tokopedia.tokochat.config.repository.TokoChatRepository
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -135,9 +135,10 @@ class TokoFoodOrderTrackingModuleStub {
     fun provideTokoChatRepositoryStub(
         retrofit: Retrofit,
         @ApplicationContext context: Context,
-        babbleCourierClient: BabbleCourierClient
+        babbleCourierClient: BabbleCourierClient,
+        @TokoFoodOrderTrackingScope remoteConfig: RemoteConfig
     ): TokoChatRepository {
-        return TokoChatRepositoryStub(retrofit, context, babbleCourierClient)
+        return TokoChatRepositoryStub(retrofit, context, babbleCourierClient, remoteConfig)
     }
 
     @TokoFoodOrderTrackingScope

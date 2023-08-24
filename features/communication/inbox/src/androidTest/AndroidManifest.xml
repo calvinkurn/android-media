@@ -1,0 +1,12 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.tokopedia.inbox"
+    android:versionCode="1"
+    android:versionName="1.0.0">
+
+    <application
+        android:debuggable="true"
+        android:label="Inbox"
+        tools:ignore="HardcodedDebugMode"
+        tools:replace="android:debuggable,android:label"/>
+</manifest>
