@@ -11,32 +11,48 @@ import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 
 @GqlQuery(
-    GetPromoListRecommendationUseCase.QUERY_NAME,
-    GetPromoListRecommendationUseCase.QUERY
+    PromoUsageGetPromoListRecommendationUseCase.QUERY_NAME,
+    PromoUsageGetPromoListRecommendationUseCase.QUERY
 )
-class GetPromoListRecommendationUseCase @Inject constructor(
+class PromoUsageGetPromoListRecommendationUseCase @Inject constructor(
     @ApplicationContext private val repository: GraphqlRepository,
 ) : CoroutineUseCase<GetPromoListRecommendationParam, GetPromoListRecommendationResponse>(
     Dispatchers.IO
 ) {
 
     override suspend fun execute(params: GetPromoListRecommendationParam): GetPromoListRecommendationResponse {
-        return repository.request(QUERY.trimIndent(), params)
+        return repository.request(graphqlQuery(), params)
     }
 
     override fun graphqlQuery(): String = QUERY.trimIndent()
 
     companion object {
-        const val QUERY_NAME: String = "GetPromoListRecommendationQuery"
+        const val QUERY_NAME: String = "PromoUsageGetPromoListRecommendationQuery"
         const val QUERY: String = """
             mutation getPromoListRecommendation(${'$'}params: GetPromoListRecomendationRequest, ${'$'}chosen_address: PromoDisplayChosenAddressParam, ${'$'}is_promo_revamp: Boolean) {
               GetPromoListRecommendation(params: ${'$'}params, chosen_address: ${'$'}chosen_address, is_promo_revamp: ${'$'}is_promo_revamp) {
+                status
+                message
+                error_code
+                header {
+                  process_time
+                  messages
+                  reason
+                  error_code
+                }
                 data {
                   result_status {
                     success
                     message
                     code
                   }
+                  empty_state {
+                    title
+                    description
+                    image_url
+                  }
+                  title
+                  sub_title
                   promo_recommendation {
                     codes
                     message
@@ -47,10 +63,13 @@ class GetPromoListRecommendationUseCase @Inject constructor(
                   coupon_sections {
                     id
                     title
+                    sub_title
+                    icon_url
+                    is_enabled
                     is_collapsed
+                    tags
+                    
                     coupons {
-                      index
-                      coupon_type
                       code
                       title
                       message
@@ -58,8 +77,35 @@ class GetPromoListRecommendationUseCase @Inject constructor(
                       expiry_countdown
                       coupon_url
                       coupon_app_link
+                      secondary_coupons {
+                        code
+                        title
+                        message
+                        expiry_info
+                        expiry_countdown
+                        coupon_url
+                        coupon_app_link
+                        unique_id
+                        shop_id
+                        benefit_amount
+                        is_recommended
+                        is_selected
+                        is_attempted
+                        radio_check_state
+                        currency_details_str
+                        is_highlighted
+                        group_id
+                        is_group_header
+                        promo_id
+                        is_bebas_ongkir
+                        benefit_adjustment_message
+                        benefit_type_str
+                        benefit_amount_str
+                        index
+                      }
                       unique_id
                       shop_id
+                      tag_image_urls
                       benefit_amount
                       is_recommended
                       is_selected
@@ -72,12 +118,27 @@ class GetPromoListRecommendationUseCase @Inject constructor(
                       }
                       cta {
                         text
+                        url
                         app_link
                         type
+                        json_metadata
                       }
                       currency_details_str
+                      coach_mark {
+                        is_shown
+                        title
+                        content
+                        cta {
+                          text
+                          url
+                          app_link
+                          type
+                          json_metadata
+                        }
+                      }
                       is_highlighted
                       group_id
+                      is_group_header
                       promo_infos {
                         title
                         icon
@@ -109,6 +170,10 @@ class GetPromoListRecommendationUseCase @Inject constructor(
                         benefit_class
                         eta_txt
                         cart_string_group
+                        shipping_metadata {
+                          unique_id
+                          json_string
+                        }
                       }
                       coupon_card_details {
                         state
@@ -116,6 +181,8 @@ class GetPromoListRecommendationUseCase @Inject constructor(
                         icon_url
                         background_url
                       }
+                      index
+                      coupon_type
                     }
                   }
                   attempted_promo_code_error {
@@ -123,6 +190,17 @@ class GetPromoListRecommendationUseCase @Inject constructor(
                     message
                   }
                   additional_message
+                  section_tabs {
+                    id
+                    title
+                  }
+                  bottom_sheet {
+                    title
+                    content_title
+                    content_description
+                    image_url
+                    button_txt
+                  }
                   entry_point_info {
                     messages
                     state

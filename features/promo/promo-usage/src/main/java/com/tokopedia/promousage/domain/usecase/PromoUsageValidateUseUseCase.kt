@@ -11,21 +11,21 @@ import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 
 @GqlQuery(
-    ValidateUsePromoUsageUseCase.QUERY_NAME,
-    ValidateUsePromoUsageUseCase.QUERY
+    PromoUsageValidateUseUseCase.QUERY_NAME,
+    PromoUsageValidateUseUseCase.QUERY
 )
-class ValidateUsePromoUsageUseCase @Inject constructor(
+class PromoUsageValidateUseUseCase @Inject constructor(
     @ApplicationContext private val repository: GraphqlRepository
 ) : CoroutineUseCase<ValidateUsePromoUsageParam, ValidateUseResponse>(Dispatchers.IO) {
 
     override suspend fun execute(params: ValidateUsePromoUsageParam): ValidateUseResponse {
-        return repository.request(QUERY.trimIndent(), params)
+        return repository.request(graphqlQuery(), params)
     }
 
     override fun graphqlQuery(): String = QUERY.trimIndent()
 
     companion object {
-        const val QUERY_NAME = "ValidateUsePromoUsageUseCase"
+        const val QUERY_NAME = "PromoUsageValidateUseQuery"
         const val QUERY: String = """
             mutation validateUsePromoRevamp(${"$"}params: PromoStackRequest, ${"$"}chosen_address: ChosenAddressParam) {
               validate_use_promo_revamp(params: ${"$"}params, chosen_address: ${"$"}chosen_address) {

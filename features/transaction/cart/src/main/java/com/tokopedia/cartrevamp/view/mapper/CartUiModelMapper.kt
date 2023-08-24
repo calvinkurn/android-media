@@ -671,7 +671,7 @@ object CartUiModelMapper {
 //            userGroupPromoAbTest = lastApplyPromoData.userGroupMetadata
 //                .firstOrNull { it.key == UserGroupMetadata.KEY_PROMO_AB_TEST_USER_GROUP }?.value
 //                .ifNullOrBlank { "" }
-            userGroupPromoAbTest = UserGroupMetadata.PROMO_USER_GROUP_A
+            userGroupPromoAbTest = UserGroupMetadata.PROMO_USER_GROUP_C
         )
     }
 

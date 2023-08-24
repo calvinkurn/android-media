@@ -1,6 +1,5 @@
 package com.tokopedia.promousage.view.mapper
 
-import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.PromoValidateUseResponse
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.UserGroupMetadata
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.ValidateUseResponse
@@ -129,7 +128,12 @@ internal class PromoUsageValidateUseMapper @Inject constructor() {
                     productId = it.productId,
                     promoCodesTracking = it.promoCodesTracking,
                 )
-            }
+            },
+            // TODO: Use backend response when ready
+            userGroupPromoAbTest = UserGroupMetadata.PROMO_USER_GROUP_C
+//            userGroupPromoAbTest = promo.userGroupMetadata
+//                .firstOrNull { it.key == UserGroupMetadata.KEY_PROMO_AB_TEST_USER_GROUP }?.value
+//                .ifNull { "" }
         )
     }
 }

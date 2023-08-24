@@ -1,6 +1,6 @@
 package com.tokopedia.cartrevamp.view.processor
 
-import com.tokopedia.cartrevamp.data.model.response.promo.LastApplyPromo
+import com.tokopedia.cart.data.model.response.promo.LastApplyPromo
 import com.tokopedia.cartrevamp.view.helper.CartDataHelper
 import com.tokopedia.cartrevamp.view.mapper.PromoRequestMapper
 import com.tokopedia.cartrevamp.view.uimodel.CartModel
@@ -8,7 +8,7 @@ import com.tokopedia.cartrevamp.view.uimodel.EntryPointInfoEvent
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.promousage.data.request.GetPromoListRecommendationParam
 import com.tokopedia.promousage.domain.entity.PromoEntryPointInfo
-import com.tokopedia.promousage.domain.usecase.GetPromoListRecommendationEntryPointUseCase
+import com.tokopedia.promousage.domain.usecase.PromoUsageGetPromoListRecommendationEntryPointUseCase
 import com.tokopedia.promousage.view.mapper.PromoUsageGetPromoListRecommendationMapper
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.UserGroupMetadata
@@ -17,7 +17,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import javax.inject.Inject
 
 class CartPromoEntryPointProcessor @Inject constructor(
-    private val getPromoListRecommendationEntryPointUseCase: GetPromoListRecommendationEntryPointUseCase,
+    private val getPromoListRecommendationEntryPointUseCase: PromoUsageGetPromoListRecommendationEntryPointUseCase,
     private val getCouponListRecommendationMapper: PromoUsageGetPromoListRecommendationMapper,
     private val chosenAddressRequestHelper: ChosenAddressRequestHelper
 ) {
@@ -85,7 +85,7 @@ class CartPromoEntryPointProcessor @Inject constructor(
                     val response = getPromoListRecommendationEntryPointUseCase(param)
                     return if (response.promoListRecommendation.data.resultStatus.success) {
                         val entryPointInfo = getCouponListRecommendationMapper
-                            .mapCouponListRecommendationResponseToEntryPointInfo(response)
+                            .mapPromoListRecommendationEntryPointResponseToEntryPointInfo(response)
                         if (entryPointInfo.color == PromoEntryPointInfo.COLOR_GREEN) {
                             EntryPointInfoEvent.ActiveNew(
                                 lastApply = lastApply,

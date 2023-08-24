@@ -11,17 +11,17 @@ import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 
 @GqlQuery(
-    ClearCacheAutoApplyStackUseCase.QUERY_NAME,
-    ClearCacheAutoApplyStackUseCase.QUERY
+    PromoUsageClearCacheAutoApplyStackUseCase.QUERY_NAME,
+    PromoUsageClearCacheAutoApplyStackUseCase.QUERY
 )
-class ClearCacheAutoApplyStackUseCase @Inject constructor(
+class PromoUsageClearCacheAutoApplyStackUseCase @Inject constructor(
     @ApplicationContext private val repository: GraphqlRepository
 ) : CoroutineUseCase<ClearPromoRequest, ClearCacheAutoApplyStackResponse>(
     Dispatchers.IO
 ) {
 
     override suspend fun execute(params: ClearPromoRequest): ClearCacheAutoApplyStackResponse {
-        return repository.request(QUERY.trimIndent(), params)
+        return repository.request(graphqlQuery(), params)
     }
 
     override fun graphqlQuery(): String = QUERY.trimIndent()
@@ -29,7 +29,7 @@ class ClearCacheAutoApplyStackUseCase @Inject constructor(
     companion object {
         const val PARAM_VALUE_MARKETPLACE = "marketplace"
 
-        const val QUERY_NAME = "ClearCacheAutoApplyStackUseCase"
+        const val QUERY_NAME = "PromoUsageClearCacheAutoApplyStackQuery"
         const val QUERY = """
             mutation clearCacheAutoApplyStack(${"$"}serviceID: String!, ${"$"}promoCode: [String], ${"$"}isOCC: Boolean, ${"$"}orderData: OrderDataInput) {
                 clearCacheAutoApplyStack(serviceID: ${"$"}serviceID, promoCode: ${"$"}promoCode, isOCC: ${"$"}isOCC, orderData: ${"$"}orderData) {

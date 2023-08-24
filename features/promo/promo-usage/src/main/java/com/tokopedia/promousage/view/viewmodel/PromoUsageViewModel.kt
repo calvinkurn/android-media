@@ -13,7 +13,7 @@ import com.tokopedia.localizationchooseaddress.common.ChosenAddress
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.promousage.data.request.GetPromoListRecommendationParam
 import com.tokopedia.promousage.data.request.ValidateUsePromoUsageParam
-import com.tokopedia.promousage.data.response.CouponListRecommendation
+import com.tokopedia.promousage.data.response.PromoListRecommendation
 import com.tokopedia.promousage.data.response.GetPromoListRecommendationResponse
 import com.tokopedia.promousage.domain.entity.BoAdditionalData
 import com.tokopedia.promousage.domain.entity.PromoCta
@@ -25,16 +25,16 @@ import com.tokopedia.promousage.domain.entity.list.PromoAccordionViewAllItem
 import com.tokopedia.promousage.domain.entity.list.PromoItem
 import com.tokopedia.promousage.domain.entity.list.PromoRecommendationItem
 import com.tokopedia.promousage.domain.entity.list.PromoTncItem
-import com.tokopedia.promousage.domain.usecase.ClearCacheAutoApplyStackUseCase
-import com.tokopedia.promousage.domain.usecase.GetPromoListRecommendationUseCase
-import com.tokopedia.promousage.domain.usecase.ValidateUsePromoUsageUseCase
+import com.tokopedia.promousage.domain.usecase.PromoUsageClearCacheAutoApplyStackUseCase
+import com.tokopedia.promousage.domain.usecase.PromoUsageGetPromoListRecommendationUseCase
+import com.tokopedia.promousage.domain.usecase.PromoUsageValidateUseUseCase
 import com.tokopedia.promousage.util.analytics.PromoUsageAnalytics
 import com.tokopedia.promousage.util.composite.DelegateAdapterItem
 import com.tokopedia.promousage.util.logger.PromoErrorException
 import com.tokopedia.promousage.util.logger.PromoUsageLogger
 import com.tokopedia.promousage.util.test.PromoUsageIdlingResource
 import com.tokopedia.promousage.view.mapper.PromoUsageClearCacheAutoApplyStackMapper
-import com.tokopedia.promousage.view.mapper.PromoUsageGetCouponListRecommendationMapper
+import com.tokopedia.promousage.view.mapper.PromoUsageGetPromoListRecommendationMapper
 import com.tokopedia.promousage.view.mapper.PromoUsageValidateUseMapper
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
@@ -49,18 +49,19 @@ import javax.inject.Inject
 
 internal class PromoUsageViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
-    private val chosenAddressRequestHelper: ChosenAddressRequestHelper,
-    private val getPromoListRecommendationUseCase: GetPromoListRecommendationUseCase,
-    private val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase,
-    private val validateUsePromoUsageUseCase: ValidateUsePromoUsageUseCase,
-    private val getCouponListRecommendationMapper: PromoUsageGetCouponListRecommendationMapper,
+    private val getPromoListRecommendationUseCase: PromoUsageGetPromoListRecommendationUseCase,
+    private val validateUseUseCase: PromoUsageValidateUseUseCase,
+    private val clearCacheAutoApplyStackUseCase: PromoUsageClearCacheAutoApplyStackUseCase,
+    private val getPromoListRecommendationMapper: PromoUsageGetPromoListRecommendationMapper,
     private val validateUseMapper: PromoUsageValidateUseMapper,
     private val clearCacheAutoApplyStackMapper: PromoUsageClearCacheAutoApplyStackMapper,
+    private val chosenAddressRequestHelper: ChosenAddressRequestHelper,
     private val promoUsageAnalytics: PromoUsageAnalytics
 ) : BaseViewModel(dispatchers.main) {
 
     companion object {
         private const val PROMO_STATE_RED = "red"
+
         private const val VALIDATE_USE_STATUS_SUCCESS = "OK"
         private const val VALIDATE_USE_CODE_SUCCESS = "200"
     }
@@ -141,7 +142,7 @@ internal class PromoUsageViewModel @Inject constructor(
 //                handleLoadPromoListSuccess(GetPromoListRecommendationResponse())
                 PromoUsageIdlingResource.decrement()
                 val response = getPromoListRecommendationUseCase(param)
-                if (response.promoListRecommendation.data.resultStatus.message == CouponListRecommendation.STATUS_OK) {
+                if (response.promoListRecommendation.data.resultStatus.message == PromoListRecommendation.STATUS_OK) {
                     handleLoadPromoListSuccess(response)
                     onSuccess?.invoke()
                 } else {
@@ -168,18 +169,18 @@ internal class PromoUsageViewModel @Inject constructor(
     }
 
     private fun handleLoadPromoListSuccess(response: GetPromoListRecommendationResponse) {
-        val tickerInfo = getCouponListRecommendationMapper
-            .mapCouponListRecommendationResponseToPageTickerInfo(response)
-        val items = getCouponListRecommendationMapper
-            .mapCouponListRecommendationResponseToPromoSections(response)
+        val tickerInfo = getPromoListRecommendationMapper
+            .mapPromoListRecommendationResponseToPageTickerInfo(response)
+        val items = getPromoListRecommendationMapper
+            .mapPromoListRecommendationResponseToPromoSections(response)
         var savingInfo = calculatePromoSavingInfo(items)
         savingInfo = savingInfo.copy(
-            message = getCouponListRecommendationMapper
-                .mapCouponListRecommendationResponseToSavingInfo(response)
+            message = getPromoListRecommendationMapper
+                .mapPromoListRecommendationResponseToSavingInfo(response)
                 .message
         )
-        val attemptedPromoCodeError = getCouponListRecommendationMapper
-            .mapCouponListRecommendationResponseToAttemptedPromoCodeError(response)
+        val attemptedPromoCodeError = getPromoListRecommendationMapper
+            .mapPromoListRecommendationResponseToAttemptedPromoCodeError(response)
 
         val promoRecommendation = items.getRecommendationItem()
         if (promoRecommendation != null) {
@@ -430,7 +431,7 @@ internal class PromoUsageViewModel @Inject constructor(
 
             // Show loading for MVC section
             launchCatchError(
-                context = dispatchers.main,
+                context = dispatchers.immediate,
                 block = {
                     _promoPageUiState.ifSuccess { pageState ->
                         val currentItems = pageState.items
@@ -445,9 +446,17 @@ internal class PromoUsageViewModel @Inject constructor(
                         _promoPageUiState.postValue(pageState.copy(items = updatedItems))
                     }
                     delay(1_000)
+                },
+                onError = {
+                    // no-op
+                }
+            )
 
+            // Calculate clash
+            launchCatchError(
+                context = dispatchers.immediate,
+                block = {
                     calculateClash(clickedItem, false)
-
                     processAndSendEventClickPromo(clickedItem)
                 },
                 onError = {
@@ -461,11 +470,73 @@ internal class PromoUsageViewModel @Inject constructor(
         selectedItem: PromoItem,
         isUseRecommendedPromo: Boolean
     ) {
+        var isSelectedPromoCausingClash = false
         if (selectedItem.state is PromoItemState.Selected) {
-
+            _promoPageUiState.ifSuccess { pageState ->
+                val currentItems = pageState.items
+                val updatedItems = currentItems.map { item ->
+                    if (item is PromoItem && item.code != selectedItem.code) {
+                        val result = checkAndSetClashOnSelectionEvent(item, selectedItem,
+                            isUseRecommendedPromo)
+                        if (!isSelectedPromoCausingClash) {
+                            isSelectedPromoCausingClash = result.second
+                        }
+                        return@map result.first
+                    } else {
+                        return@map item
+                    }
+                }
+            }
         } else {
+            _promoPageUiState.ifSuccess { pageState ->
+                val currentItems = pageState.items
+                val updatedItems = currentItems.map { item ->
+                    if (item is PromoItem && item.code != selectedItem.code) {
+                        val result = checkAndSetClashOnDeselectionEvent(item, selectedItem,
+                            isUseRecommendedPromo)
+                        return@map result.first
+                    } else {
+                        return@map item
+                    }
+                }
+            }
+
 
         }
+
+        if (isSelectedPromoCausingClash) {
+
+        }
+    }
+
+    private fun checkAndSetClashOnSelectionEvent(
+        currentItem: PromoItem,
+        selectedItem: PromoItem,
+        isApplyRecommendedPromo: Boolean
+    ): Pair<PromoItem, Boolean> {
+        var resultItem = currentItem.copy()
+        var isCausingClash = false
+        val selectedPromoCode = if (selectedItem.useSecondaryPromo) {
+            selectedItem.secondaryPromo.code
+        } else {
+            selectedItem.code
+        }
+        val primaryClashingInfo = currentItem.clashingInfos
+            .firstOrNull { it.code == selectedPromoCode }
+        if (primaryClashingInfo != null && !currentItem.currentClashingPromoCodes.contains(selectedPromoCode)) {
+            resultItem = resultItem.copy(
+
+            )
+        }
+        return Pair(currentItem, false)
+    }
+
+    private fun checkAndSetClashOnDeselectionEvent(
+        currentItem: PromoItem,
+        selectedItem: PromoItem,
+        isApplyRecommendedPromo: Boolean
+    ): Pair<PromoItem, Boolean> {
+        return Pair(currentItem, false)
     }
 
     fun onClickAccordionHeader(clickedItem: PromoAccordionHeaderItem) {
@@ -518,14 +589,15 @@ internal class PromoUsageViewModel @Inject constructor(
         _promoPageUiState.ifSuccess { pageState ->
             val hasSelectedPromo = pageState.items.getSelectedPromoCodes().isNotEmpty()
             if (hasSelectedPromo) {
-                onApplyPromo(validateUsePromoRequest, boPromoCodes)
+                onApplyPromo(entryPoint, validateUsePromoRequest, boPromoCodes)
             } else {
-                onClearPromo(validateUsePromoRequest, boPromoCodes)
+                onClearPromo(entryPoint, validateUsePromoRequest, boPromoCodes)
             }
         }
     }
 
     fun onApplyPromo(
+        entryPoint: PromoPageEntryPoint,
         validateUsePromoRequest: ValidateUsePromoRequest,
         boPromoCodes: List<String>
     ) {
@@ -551,9 +623,10 @@ internal class PromoUsageViewModel @Inject constructor(
                 context = dispatchers.io,
                 block = {
                     PromoUsageIdlingResource.decrement()
-                    val response = validateUsePromoUsageUseCase(param)
+                    val response = validateUseUseCase(param)
                     val validateUse = validateUseMapper.mapToValidateUseResponse(response)
                     handleValidateUseSuccess(
+                        entryPoint = entryPoint,
                         validateUse = validateUse,
                         lastValidateUsePromoRequest = newValidateUseRequest,
                         selectedPromoCodes = selectedPromoCodes
@@ -568,6 +641,7 @@ internal class PromoUsageViewModel @Inject constructor(
     }
 
     private fun handleValidateUseSuccess(
+        entryPoint: PromoPageEntryPoint,
         validateUse: ValidateUsePromoRevampUiModel,
         lastValidateUsePromoRequest: ValidateUsePromoRequest,
         selectedPromoCodes: List<String>
@@ -582,6 +656,7 @@ internal class PromoUsageViewModel @Inject constructor(
             } else {
                 if (validateUse.promoUiModel.globalSuccess) {
                     handleApplyPromoSuccess(
+                        entryPoint,
                         selectedPromoCodes,
                         validateUse,
                         lastValidateUsePromoRequest
@@ -611,6 +686,7 @@ internal class PromoUsageViewModel @Inject constructor(
     }
 
     private fun handleApplyPromoSuccess(
+        entryPoint: PromoPageEntryPoint,
         selectedPromoCodes: List<String>,
         validateUse: ValidateUsePromoRevampUiModel,
         lastValidateUsePromoRequest: ValidateUsePromoRequest
@@ -618,9 +694,9 @@ internal class PromoUsageViewModel @Inject constructor(
         val isGlobalSuccess = validateUse.promoUiModel.messageUiModel.state != PROMO_STATE_RED
         if (isGlobalSuccess) {
             processAndSendEventCLickPakaiPromoSuccessAnalytics(selectedPromoCodes)
-            // If all promo merchant are success, then navigate to cart
             _applyPromoUiAction.postValue(
                 ApplyPromoUiAction.Success(
+                    entryPoint = entryPoint,
                     validateUse = validateUse,
                     lastValidateUsePromoRequest = lastValidateUsePromoRequest
                 )
@@ -886,6 +962,7 @@ internal class PromoUsageViewModel @Inject constructor(
     }
 
     fun onClearPromo(
+        entryPoint: PromoPageEntryPoint,
         validateUsePromoRequest: ValidateUsePromoRequest,
         boPromoCodes: List<String>,
         clearPromoRequest: ClearPromoRequest = ClearPromoRequest()
@@ -1035,7 +1112,7 @@ internal class PromoUsageViewModel @Inject constructor(
                 block = {
                     PromoUsageIdlingResource.decrement()
                     val param = clearPromoRequest.copy(
-                        serviceId = ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
+                        serviceId = PromoUsageClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
                         isOcc = validateUsePromoRequest.cartType == CheckoutConstant.PARAM_OCC_MULTI,
                         orderData = ClearPromoOrderData(
                             codes = tempGlobalPromoCodes,
@@ -1069,6 +1146,7 @@ internal class PromoUsageViewModel @Inject constructor(
 
                     _clearPromoUiAction.postValue(
                         ClearPromoUiAction.Success(
+                            entryPoint = entryPoint,
                             clearPromo = clearPromo,
                             lastValidateUseRequest = updatedLastValidateUseRequest
                         )
@@ -1134,9 +1212,11 @@ internal class PromoUsageViewModel @Inject constructor(
     }
 
     fun onBackToCheckout(
-        onSuccess: (() -> Unit)?
+        entryPoint: PromoPageEntryPoint,
+        validateUsePromoRequest: ValidateUsePromoRequest,
+        boPromoCodes: List<String>
     ) {
-        onSuccess?.invoke()
+        onApplyPromo(entryPoint, validateUsePromoRequest, boPromoCodes)
     }
 
     private fun calculatePromoSavingInfo(
@@ -1248,7 +1328,7 @@ internal class PromoUsageViewModel @Inject constructor(
     }
 
     private fun processAndSendEventClickPromo(clickedItem: PromoItem) {
-        _promoPageUiState.ifSuccess { pageState ->
+        _promoPageUiState.ifSuccess { _ ->
             val clickedPromoCode = if (clickedItem.useSecondaryPromo) {
                 clickedItem.secondaryPromo.code
             } else {

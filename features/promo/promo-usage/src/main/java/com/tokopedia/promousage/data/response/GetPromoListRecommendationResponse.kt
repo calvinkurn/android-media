@@ -7,12 +7,17 @@ data class GetPromoListRecommendationResponse(
     val promoListRecommendation: GetPromoListRecommendationResponseData = GetPromoListRecommendationResponseData()
 )
 
-data class GetPromoListRecommendationResponseData(
-    @SerializedName("data")
-    val data: CouponListRecommendation = CouponListRecommendation()
+data class GetPromoListRecommendationEntryPointResponse(
+    @SerializedName("GetPromoListRecommendation")
+    val promoListRecommendation: GetPromoListRecommendationResponseData = GetPromoListRecommendationResponseData()
 )
 
-data class CouponListRecommendation(
+data class GetPromoListRecommendationResponseData(
+    @SerializedName("data")
+    val data: PromoListRecommendation = PromoListRecommendation()
+)
+
+data class PromoListRecommendation(
     @SerializedName("result_status")
     val resultStatus: ResultStatus = ResultStatus(),
     @SerializedName("empty_state")

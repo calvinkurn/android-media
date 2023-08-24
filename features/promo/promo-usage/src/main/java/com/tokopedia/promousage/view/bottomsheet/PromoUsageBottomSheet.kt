@@ -335,9 +335,9 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                     context?.getString(R.string.promo_voucher_back_to_shipment)
                 binding.buttonBackToShipment.setOnClickListener {
                     viewModel.onBackToCheckout(
-                        onSuccess = {
-                            dismiss()
-                        }
+                        entryPoint = entryPoint,
+                        validateUsePromoRequest = validateUsePromoRequest,
+                        boPromoCodes = boPromoCodes
                     )
                 }
                 binding.buttonBackToShipment.visible()
@@ -745,9 +745,10 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                 is ClearPromoUiAction.Success -> {
                     renderLoadingDialog(false)
                     listener?.onClearPromoSuccess(
+                        entryPoint = uiAction.entryPoint,
                         clearPromo = uiAction.clearPromo,
                         lastValidateUsePromoRequest = uiAction.lastValidateUseRequest,
-                        isFlowMvcLockToCourrier = isFlowMvcLockToCourier
+                        isFlowMvcLockToCourier = isFlowMvcLockToCourier
                     )
                 }
 
@@ -765,7 +766,11 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
             when (uiAction) {
                 is ApplyPromoUiAction.Success -> {
                     renderLoadingDialog(false)
-                    listener?.onApplyPromoSuccess(uiAction.validateUse, uiAction.lastValidateUsePromoRequest)
+                    listener?.onApplyPromoSuccess(
+                        entryPoint = uiAction.entryPoint,
+                        validateUse = uiAction.validateUse,
+                        lastValidateUsePromoRequest = uiAction.lastValidateUsePromoRequest
+                    )
                 }
 
                 is ApplyPromoUiAction.Failed -> {
@@ -892,6 +897,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         fun onClosePromo()
 
         fun onApplyPromoSuccess(
+            entryPoint: PromoPageEntryPoint,
             validateUse: ValidateUsePromoRevampUiModel,
             lastValidateUsePromoRequest: ValidateUsePromoRequest
         )
@@ -899,9 +905,10 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         fun onApplyPromoFailed(throwable: Throwable)
 
         fun onClearPromoSuccess(
+            entryPoint: PromoPageEntryPoint,
             clearPromo: ClearPromoUiModel,
             lastValidateUsePromoRequest: ValidateUsePromoRequest,
-            isFlowMvcLockToCourrier: Boolean,
+            isFlowMvcLockToCourier: Boolean,
         )
 
         fun onClearPromoFailed(throwable: Throwable)

@@ -4,6 +4,7 @@ import com.tokopedia.promousage.data.response.BenefitDetail
 import com.tokopedia.promousage.data.response.Coupon
 import com.tokopedia.promousage.data.response.CouponCardDetail
 import com.tokopedia.promousage.data.response.CouponSection
+import com.tokopedia.promousage.data.response.GetPromoListRecommendationEntryPointResponse
 import com.tokopedia.promousage.data.response.GetPromoListRecommendationResponse
 import com.tokopedia.promousage.data.response.PromoRecommendation
 import com.tokopedia.promousage.data.response.SecondaryCoupon
@@ -28,10 +29,10 @@ import com.tokopedia.promousage.domain.entity.list.PromoRecommendationItem
 import com.tokopedia.promousage.util.composite.DelegateAdapterItem
 import javax.inject.Inject
 
-class PromoUsageGetCouponListRecommendationMapper @Inject constructor() {
+class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
 
-    fun mapCouponListRecommendationResponseToEntryPointInfo(
-        response: GetPromoListRecommendationResponse
+    fun mapPromoListRecommendationEntryPointResponseToEntryPointInfo(
+        response: GetPromoListRecommendationEntryPointResponse
     ) : PromoEntryPointInfo {
         return PromoEntryPointInfo(
             messages = response.promoListRecommendation.data.entryPointInfo.messages,
@@ -41,11 +42,9 @@ class PromoUsageGetCouponListRecommendationMapper @Inject constructor() {
         )
     }
 
-    fun mapCouponListRecommendationResponseToPageTickerInfo(
+    fun mapPromoListRecommendationResponseToPageTickerInfo(
         response: GetPromoListRecommendationResponse
     ): PromoPageTickerInfo {
-        // TODO: Remove dummy data
-//        return DummyData.promoPageTickerInfo
         return PromoPageTickerInfo(
             message = response.promoListRecommendation.data.tickerInfo.message,
             iconUrl = response.promoListRecommendation.data.tickerInfo.iconUrl,
@@ -53,7 +52,7 @@ class PromoUsageGetCouponListRecommendationMapper @Inject constructor() {
         )
     }
 
-    fun mapCouponListRecommendationResponseToSavingInfo(
+    fun mapPromoListRecommendationResponseToSavingInfo(
         response: GetPromoListRecommendationResponse
     ) : PromoSavingInfo {
         return PromoSavingInfo(
@@ -61,11 +60,9 @@ class PromoUsageGetCouponListRecommendationMapper @Inject constructor() {
         )
     }
 
-    fun mapCouponListRecommendationResponseToPromoSections(
+    fun mapPromoListRecommendationResponseToPromoSections(
         response: GetPromoListRecommendationResponse
     ): List<DelegateAdapterItem> {
-        // TODO: Remove dummy data
-//        return DummyData.dummySections()
         val recommendedPromoCodes = response.promoListRecommendation.data.promoRecommendation.codes
         val selectedPromoCodes = response.promoListRecommendation.data.couponSections
             .flatMap { it.coupons }.filter { it.isSelected }.map { it.code }
@@ -344,7 +341,7 @@ class PromoUsageGetCouponListRecommendationMapper @Inject constructor() {
         }
     }
 
-    fun mapCouponListRecommendationResponseToAttemptedPromoCodeError(
+    fun mapPromoListRecommendationResponseToAttemptedPromoCodeError(
         response: GetPromoListRecommendationResponse
     ) : PromoAttemptedError {
         return PromoAttemptedError(

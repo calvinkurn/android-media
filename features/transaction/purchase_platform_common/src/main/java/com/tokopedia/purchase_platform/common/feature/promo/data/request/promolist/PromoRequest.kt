@@ -26,7 +26,7 @@ data class PromoRequest(
     @SerializedName("is_trade_in_drop_off")
     var isTradeInDropOff: Int = 0,
     @SerializedName("is_cart_checkout_revamp")
-    var isCartCheckoutRevamp: Boolean = false
+    var isCartCheckoutRevamp: Boolean = true
 ) : Parcelable
 
 @Parcelize

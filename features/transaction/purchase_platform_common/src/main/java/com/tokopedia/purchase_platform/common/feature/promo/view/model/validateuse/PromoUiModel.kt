@@ -28,5 +28,5 @@ data class PromoUiModel(
     var tickerInfoUiModel: TickerInfoUiModel = TickerInfoUiModel(),
     var cashbackVoucherDescription: String = "",
     var tokopointsDetailUiModel: TokopointsDetailUiModel = TokopointsDetailUiModel(),
-    var promoUserGroupAbTest: String = ""
+    var userGroupPromoAbTest: String = ""
 ) : Parcelable

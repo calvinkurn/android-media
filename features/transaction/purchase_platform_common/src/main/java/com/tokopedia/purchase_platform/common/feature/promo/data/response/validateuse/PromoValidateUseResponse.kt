@@ -56,5 +56,8 @@ data class PromoValidateUseResponse(
     val cashbackVoucherDescription: String = "",
 
     @field:SerializedName("tokopoints_detail")
-    val tokopointsDetail: TokopointsDetail = TokopointsDetail()
+    val tokopointsDetail: TokopointsDetail = TokopointsDetail(),
+
+    @field:SerializedName("user_group_metadata")
+    val userGroupMetadata: List<UserGroupMetadata> = emptyList()
 )
