@@ -3530,12 +3530,13 @@ open class DynamicProductDetailFragment :
         }
     }
 
+    /**
+     * Update variant selected but not refresh the pdp UI
+     * and also get product id which clicked to passing to VBS
+     */
     private fun onVariantContinuationToVBS(variantOptions: VariantOptionWithAttribute) {
-        // do copy original instance for preventive miss data on change payload in View-Holder
-        val singleVariant = pdpUiUpdater?.productSingleVariant?.copy() ?: return
-        val selectedVariant = singleVariant.mapOfSelectedVariant.toMutableMap()
-        selectedVariant[variantOptions.variantCategoryKey] = variantOptions.variantId
-        singleVariant.mapOfSelectedVariant = selectedVariant
+        pdpUiUpdater?.updateVariantOneLevel(variantOptions = variantOptions)
+        val singleVariant = pdpUiUpdater?.productSingleVariant ?: return
         val child = viewModel.getChildOfVariantSelected(singleVariant)
         productId = child?.productId
     }
