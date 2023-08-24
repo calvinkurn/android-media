@@ -92,7 +92,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
 import com.tokopedia.youtube_common.domain.usecase.GetYoutubeVideoDetailUseCase
 import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.withContext
@@ -250,8 +249,8 @@ class ShopHomeViewModel @Inject constructor(
     val updatedBannerTimerUiModelData: LiveData<ShopWidgetDisplayBannerTimerUiModel?>
         get() = _updatedBannerTimerUiModelData
 
-    private val _productCarouselWidgetData = MutableLiveData<Result<ShopHomeProductCarouselUiModel>>()
-    val productCarouselWidgetData: LiveData<Result<ShopHomeProductCarouselUiModel>>
+    private val _productCarouselWidgetData = MutableLiveData<Result<ShopWidgetComponentBannerProductGroupUiModel>>()
+    val productCarouselWidgetData: LiveData<Result<ShopWidgetComponentBannerProductGroupUiModel>>
         get() = _productCarouselWidgetData
 
     fun getNewProductList(

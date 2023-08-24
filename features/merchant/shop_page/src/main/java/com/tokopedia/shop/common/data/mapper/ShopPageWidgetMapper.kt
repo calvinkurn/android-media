@@ -15,16 +15,16 @@ import com.tokopedia.shop.home.data.model.ShopPageWidgetRequestModel
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.CarouselAppearance
 import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.LeftMainBannerAppearance
-import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselUiModel
+import com.tokopedia.shop.home.view.model.ShopWidgetComponentBannerProductGroupUiModel
 import com.tokopedia.shop.home.view.model.showcase_navigation.ShopHomeShowcaseNavigationUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerProductHotspotUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerTimerUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetVoucherSliderUiModel
 import com.tokopedia.shop.home.view.model.ShowcaseNavigationBannerWidgetStyle
 import com.tokopedia.shop.home.view.model.StatusCampaign
-import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselUiModel.Tab.ComponentList.Data.BannerType
-import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselUiModel.Tab.ComponentList.ComponentType
-import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselUiModel.Tab.ComponentList.Data.LinkType
+import com.tokopedia.shop.home.view.model.ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.Data.BannerType
+import com.tokopedia.shop.home.view.model.ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.ComponentType
+import com.tokopedia.shop.home.view.model.ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.Data.LinkType
 import com.tokopedia.shop.home.view.model.showcase_navigation.Showcase
 import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseTab
 import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.TopMainBannerAppearance
@@ -223,7 +223,7 @@ object ShopPageWidgetMapper {
             type = response.type
         )
     }
-    fun mapToHomeProductCarouselWidget(response: ShopLayoutWidget.Widget): ShopHomeProductCarouselUiModel {
+    fun mapToHomeBannerProductGroupWidget(response: ShopLayoutWidget.Widget): ShopWidgetComponentBannerProductGroupUiModel {
         val tabs = response.data.map { tab ->
             val componentList = tab.componentList.map { component ->
 
@@ -241,7 +241,7 @@ object ShopPageWidgetMapper {
                         else -> LinkType.PRODUCT
                     }
 
-                    ShopHomeProductCarouselUiModel.Tab.ComponentList.Data(
+                    ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.Data(
                         data.imageUrl,
                         data.ctaLink,
                         data.linkID,
@@ -251,7 +251,7 @@ object ShopPageWidgetMapper {
                     )
                 }
 
-                ShopHomeProductCarouselUiModel.Tab.ComponentList(
+                ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList(
                     component.componentID,
                     component.componentName,
                     componentType,
@@ -259,10 +259,10 @@ object ShopPageWidgetMapper {
                 )
             }
 
-            ShopHomeProductCarouselUiModel.Tab(tab.tabLabel, tab.tabName, componentList)
+            ShopWidgetComponentBannerProductGroupUiModel.Tab(tab.tabLabel, tab.tabName, componentList)
         }
 
-        return ShopHomeProductCarouselUiModel(
+        return ShopWidgetComponentBannerProductGroupUiModel(
             widgetId = response.widgetID,
             layoutOrder = response.layoutOrder,
             title = response.header.title,

@@ -16,17 +16,17 @@ import com.tokopedia.shop.databinding.ItemShopHomeProductCarouselViewpagerBindin
 import com.tokopedia.shop.home.util.ShopBannerProductGroupWidgetTabDependencyProvider
 import com.tokopedia.shop.home.view.fragment.ShopBannerProductGroupWidgetTabFragment
 import com.tokopedia.shop.home.view.listener.ShopHomeProductCarouselListener
-import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselUiModel
+import com.tokopedia.shop.home.view.model.ShopWidgetComponentBannerProductGroupUiModel
 import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.unifycomponents.setCustomText
 import com.tokopedia.utils.view.binding.viewBinding
-import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselUiModel.Tab.ComponentList.Data.BannerType
+import com.tokopedia.shop.home.view.model.ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.Data.BannerType
 
 class ShopHomeProductCarouselViewPagerViewHolder(
     itemView: View,
     private val listener: ShopHomeProductCarouselListener,
     private val provider: ShopBannerProductGroupWidgetTabDependencyProvider
-) : AbstractViewHolder<ShopHomeProductCarouselUiModel>(itemView) {
+) : AbstractViewHolder<ShopWidgetComponentBannerProductGroupUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -41,13 +41,13 @@ class ShopHomeProductCarouselViewPagerViewHolder(
         disableTabSwipeBehavior()
     }
 
-    override fun bind(model: ShopHomeProductCarouselUiModel) {
+    override fun bind(model: ShopWidgetComponentBannerProductGroupUiModel) {
         setupTitle(model)
         setupViewAllChevron(model)
         setupTabs(model.tabs)
     }
 
-    private fun setupViewAllChevron(model: ShopHomeProductCarouselUiModel) {
+    private fun setupViewAllChevron(model: ShopWidgetComponentBannerProductGroupUiModel) {
         val hasVerticalBanner = hasVerticalBanner(model)
 
         viewBinding?.iconChevron?.isVisible = hasVerticalBanner
@@ -56,7 +56,7 @@ class ShopHomeProductCarouselViewPagerViewHolder(
         }
     }
 
-    private fun hasVerticalBanner(model: ShopHomeProductCarouselUiModel): Boolean {
+    private fun hasVerticalBanner(model: ShopWidgetComponentBannerProductGroupUiModel): Boolean {
         model.tabs.forEach { tab ->
             tab.componentList.forEach { component ->
                 component.data.forEach { data ->
@@ -71,12 +71,12 @@ class ShopHomeProductCarouselViewPagerViewHolder(
         return false
     }
 
-    private fun setupTitle(model: ShopHomeProductCarouselUiModel) {
+    private fun setupTitle(model: ShopWidgetComponentBannerProductGroupUiModel) {
         viewBinding?.tpgTitle?.text = model.title
         viewBinding?.tpgTitle?.isVisible = model.title.isNotEmpty() && model.tabs.isNotEmpty()
     }
 
-    private fun setupTabs(tabs: List<ShopHomeProductCarouselUiModel.Tab>) {
+    private fun setupTabs(tabs: List<ShopWidgetComponentBannerProductGroupUiModel.Tab>) {
         val fragments = createFragments(tabs)
         val pagerAdapter = TabPagerAdapter(provider.fragment, fragments)
 
@@ -124,7 +124,7 @@ class ShopHomeProductCarouselViewPagerViewHolder(
     }
 
     private fun createFragments(
-        tabs: List<ShopHomeProductCarouselUiModel.Tab>
+        tabs: List<ShopWidgetComponentBannerProductGroupUiModel.Tab>
     ): List<Pair<String, Fragment>> {
         val pages = mutableListOf<Pair<String, Fragment>>()
 

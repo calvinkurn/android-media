@@ -1,6 +1,6 @@
 package com.tokopedia.shop.home.view.model
 
-import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselUiModel.Tab.ComponentList.Data.BannerType
+import com.tokopedia.shop.home.view.model.ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.Data.BannerType
 
 data class ShopHomeProductCarouselVerticalBannerVerticalBanner(
     val imageUrl: String,

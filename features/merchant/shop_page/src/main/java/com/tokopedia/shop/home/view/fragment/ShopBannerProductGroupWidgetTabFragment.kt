@@ -19,14 +19,14 @@ import com.tokopedia.shop.home.di.module.ShopPageHomeModule
 import com.tokopedia.shop.home.view.adapter.ShopHomeBannerProductGroupTabAdapter
 import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselProductCard
 import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselShimmer
-import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselUiModel
+import com.tokopedia.shop.home.view.model.ShopWidgetComponentBannerProductGroupUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselVerticalBannerItemType
 import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselVerticalBannerVerticalBanner
 import com.tokopedia.shop.home.view.viewmodel.ShopBannerProductGroupWidgetTabViewModel
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 import kotlin.collections.ArrayList
-import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselUiModel.Tab.ComponentList.ComponentType
+import com.tokopedia.shop.home.view.model.ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.ComponentType
 
 class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
 
@@ -37,7 +37,7 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
         @JvmStatic
         fun newInstance(
             shopId: String,
-            widgets: List<ShopHomeProductCarouselUiModel.Tab.ComponentList>
+            widgets: List<ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList>
         ): ShopBannerProductGroupWidgetTabFragment {
             return ShopBannerProductGroupWidgetTabFragment().apply {
                 arguments = Bundle().apply {
@@ -52,7 +52,7 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
 
     private val shopId by lazy { arguments?.getString(BUNDLE_KEY_SHOP_ID).orEmpty() }
     private val widgets by lazy {
-        arguments?.getParcelableArrayList<ShopHomeProductCarouselUiModel.Tab.ComponentList>(
+        arguments?.getParcelableArrayList<ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList>(
             BUNDLE_KEY_WIDGETS
         )?.toList().orEmpty()
     }
@@ -62,7 +62,7 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider[ShopBannerProductGroupWidgetTabViewModel::class.java] }
 
-    private var onMainBannerClick : (ShopHomeProductCarouselUiModel.Tab.ComponentList.Data) -> Unit = {}
+    private var onMainBannerClick : (ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.Data) -> Unit = {}
     private var onProductClick : (ShopHomeProductCarouselProductCard) -> Unit = {}
     private var onVerticalBannerClick : (ShopHomeProductCarouselVerticalBannerVerticalBanner) -> Unit = {}
 
@@ -162,7 +162,7 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
         bannerProductGroupAdapter.submit(widgets)
     }
 
-    fun setOnMainBannerClick(onMainBannerClick: (ShopHomeProductCarouselUiModel.Tab.ComponentList.Data) -> Unit) {
+    fun setOnMainBannerClick(onMainBannerClick: (ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.Data) -> Unit) {
         this.onMainBannerClick = onMainBannerClick
     }
 

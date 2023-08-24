@@ -9,19 +9,19 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselProductCard
-import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselUiModel
+import com.tokopedia.shop.home.view.model.ShopWidgetComponentBannerProductGroupUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselVerticalBannerItemType
 import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselVerticalBannerVerticalBanner
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import javax.inject.Inject
-import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselUiModel.Tab.ComponentList.ComponentType
+import com.tokopedia.shop.home.view.model.ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.ComponentType
 import com.tokopedia.shop.product.data.model.ShopFeaturedProductParams
 import com.tokopedia.shop.product.domain.interactor.GetShopFeaturedProductUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.shop.common.data.source.cloud.model.LabelGroup
-import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselUiModel.Tab.ComponentList.Data.LinkType
-import com.tokopedia.shop.home.view.model.ShopHomeProductCarouselUiModel.Tab.ComponentList.Data.BannerType
+import com.tokopedia.shop.home.view.model.ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.Data.LinkType
+import com.tokopedia.shop.home.view.model.ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.Data.BannerType
 
 class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
     private val dispatcherProvider: CoroutineDispatchers,
@@ -48,7 +48,7 @@ class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
     }
 
     fun getCarouselWidgets(
-        widgets: List<ShopHomeProductCarouselUiModel.Tab.ComponentList>,
+        widgets: List<ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList>,
         shopId: String,
         userAddress: LocalCacheModel
     ) {
@@ -78,8 +78,8 @@ class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
     }
 
     private fun getProductWidgets(
-        widgets: List<ShopHomeProductCarouselUiModel.Tab.ComponentList>
-    ): ShopHomeProductCarouselUiModel.Tab.ComponentList.Data? {
+        widgets: List<ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList>
+    ): ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.Data? {
         val productWidgets =
             widgets.filter { widget -> widget.componentType == ComponentType.PRODUCT }
 
@@ -91,7 +91,7 @@ class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
     private suspend fun getProducts(
         shopId: String,
         userAddress: LocalCacheModel,
-        productWidget: ShopHomeProductCarouselUiModel.Tab.ComponentList.Data,
+        productWidget: ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.Data,
     ): List<ShopHomeProductCarouselProductCard> {
         val showProductInfo = productWidget.isShowProductInfo
 
@@ -204,7 +204,7 @@ class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
     }
 
     private fun getVerticalBanner(
-        widget: ShopHomeProductCarouselUiModel.Tab.ComponentList.Data
+        widget: ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.Data
     ): List<ShopHomeProductCarouselVerticalBannerVerticalBanner> {
         return listOf(
             ShopHomeProductCarouselVerticalBannerVerticalBanner(

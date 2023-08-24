@@ -504,7 +504,7 @@ object ShopPageHomeMapper {
             }
             DYNAMIC.toLowerCase(Locale.getDefault()) -> mapCarouselPlayWidget(widgetResponse, widgetLayout, isOverrideTheme, colorSchema)
             COMPONENT.toLowerCase(Locale.getDefault()) -> {
-                ShopPageWidgetMapper.mapToHomeProductCarouselWidget(widgetResponse)
+                ShopPageWidgetMapper.mapToHomeBannerProductGroupWidget(widgetResponse)
             }
             PERSONALIZATION.toLowerCase(Locale.getDefault()) -> {
                 when (widgetResponse.name) {
