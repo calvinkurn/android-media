@@ -287,6 +287,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         if (isEnablePartnerKycJsInterface) {
             webView.addJavascriptInterface(new PartnerWebAppInterface(this::routeToPartnerKyc), "CameraPicker");
         }
+        addJavascriptInterface(webView, getActivity());
         WebSettings webSettings = webView.getSettings();
         webSettings.setUserAgentString(webSettings.getUserAgentString() + " Mobile webview ");
         webSettings.setJavaScriptEnabled(true);
@@ -302,6 +303,10 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             webView.setWebContentsDebuggingEnabled(true);
         }
         return view;
+    }
+
+    public void addJavascriptInterface(WebView webView, Activity activity){
+        // please use this function to add javascript to webview
     }
 
     protected int getLayout() {
