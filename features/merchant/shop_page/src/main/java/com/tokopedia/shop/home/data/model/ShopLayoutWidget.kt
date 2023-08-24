@@ -186,7 +186,42 @@ data class ShopLayoutWidget(
                 val banner: String = "",
                 @SerializedName("etalaseList")
                 val listEtalase: List<Etalase> = listOf(),
+                @SerializedName("tabLabel")
+                val tabLabel: String = "",
+                @SerializedName("tabName")
+                val tabName: String = "",
+                @SerializedName("componentList")
+                val componentList: List<Component> = emptyList()
+
         ) {
+            data class Component(
+                @SerializedName("componentID")
+                val componentID: Long = 0,
+                @SerializedName("componentName")
+                val componentName: String = "",
+                @SerializedName("componentType")
+                val componentType: String = "",
+                @SerializedName("data")
+                val data : List<Data> = emptyList()
+            ) {
+                data class Data(
+                    @SerializedName("imageURL")
+                    val imageUrl: String = "",
+                    @SerializedName("ctaText")
+                    val ctaText: String = "",
+                    @SerializedName("ctaLink")
+                    val ctaLink: String = "",
+                    @SerializedName("linkID")
+                    val linkID: Long = 0,
+                    @SerializedName("linkType")
+                    val linkType: String = "",
+                    @SerializedName("isShowProductInfo")
+                    val isShowProductInfo: Boolean = false,
+                    @SerializedName("ratio")
+                    val ratio: String = ""
+                )
+            }
+
             data class ShowcaseList(
                 @SerializedName("showcaseID")
                 val showcaseID: String = "",

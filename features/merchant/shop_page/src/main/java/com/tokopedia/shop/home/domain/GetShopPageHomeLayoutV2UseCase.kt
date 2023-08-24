@@ -193,6 +193,26 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
                         identifier
                       }
                     }
+                    ... on DynamicComponentWidget {
+                      tabLabel
+                      tabName
+                      componentList {
+                        componentID
+                        componentName
+                        componentType
+                        data {
+                          linkType
+                          linkID
+                          ctaText
+                          ctaLink
+                          ratio
+                          imageID
+                          imageURL
+                          desktopImageURL
+                          isShowProductInfo
+                        }
+                      }
+                    }
                     ... on CampaignWidget {
                       campaignID
                       name

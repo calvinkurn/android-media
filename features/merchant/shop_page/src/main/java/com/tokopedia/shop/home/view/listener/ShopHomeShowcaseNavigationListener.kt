@@ -1,8 +1,8 @@
 package com.tokopedia.shop.home.view.listener
 
-import com.tokopedia.shop.home.view.model.ShopHomeShowcaseNavigationUiModel
+import com.tokopedia.shop.home.view.model.showcase_navigation.Showcase
 
 interface ShopHomeShowcaseNavigationListener {
-    fun onViewAllShowcaseClick(selectedShowcaseHeader: ShopHomeShowcaseNavigationUiModel.ShowcaseHeader)
-    fun onShowcaseClick(selectedShowcase: ShopHomeShowcaseNavigationUiModel.Tab.Showcase)
+    fun onNavigationBannerViewAllShowcaseClick(viewAllCtaAppLink: String)
+    fun onNavigationBannerShowcaseClick(selectedShowcase: Showcase)
 }

@@ -8,7 +8,10 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.shop.R
 import com.tokopedia.shop.databinding.ItemShopHomeShowcaseNavigationCarouselBannerBinding
 import com.tokopedia.shop.home.view.listener.ShopHomeShowcaseNavigationListener
-import com.tokopedia.shop.home.view.model.ShopHomeShowcaseNavigationUiModel
+import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.CarouselAppearance
+import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.ShopHomeShowcaseNavigationBannerWidgetAppearance
+import com.tokopedia.shop.home.view.model.showcase_navigation.ShopHomeShowcaseNavigationUiModel
+import com.tokopedia.shop.home.view.model.showcase_navigation.Showcase
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopHomeShowCaseNavigationCarouselViewHolder(
@@ -27,20 +30,22 @@ class ShopHomeShowCaseNavigationCarouselViewHolder(
 
 
     override fun bind(model: ShopHomeShowcaseNavigationUiModel) {
-        viewBinding?.tpgTitle?.text = model.showcaseHeader.title
-        viewBinding?.tpgTitle?.isVisible = model.showcaseHeader.title.isNotEmpty() && model.tabs.isNotEmpty()
-        viewBinding?.iconChevron?.setOnClickListener { listener.onViewAllShowcaseClick(model.showcaseHeader) }
+        if (model.appearance is CarouselAppearance) {
+            val showcases = model.appearance.showcases
+            viewBinding?.tpgTitle?.text = model.appearance.title
+            viewBinding?.tpgTitle?.isVisible = model.appearance.title.isNotEmpty() && showcases.isNotEmpty()
+            viewBinding?.iconChevron?.setOnClickListener { listener.onNavigationBannerViewAllShowcaseClick(model.appearance.viewAllCtaAppLink) }
+            viewBinding?.iconChevron?.isVisible = showcases.size > SHOW_VIEW_ALL_SHOWCASE_THRESHOLD
 
-        val showcases = model.tabs.getOrNull(0)?.showcases ?: emptyList()
-        viewBinding?.iconChevron?.isVisible = showcases.size > SHOW_VIEW_ALL_SHOWCASE_THRESHOLD
-
-        setupShowCaseRecyclerView(showcases)
+            setupShowCaseRecyclerView(model.appearance, showcases)
+        }
     }
 
     private fun setupShowCaseRecyclerView(
-        showcases: List<ShopHomeShowcaseNavigationUiModel.Tab.Showcase>
+        appearance: ShopHomeShowcaseNavigationBannerWidgetAppearance,
+        showcases: List<Showcase>
     ) {
-        val showCaseAdapter = ShopHomeShowCaseNavigationAdapter(ShopHomeShowcaseNavigationUiModel.WidgetStyle.CIRCLE, listener)
+        val showCaseAdapter = ShopHomeShowCaseNavigationAdapter(appearance, listener)
 
         val recyclerView = viewBinding?.recyclerView
         recyclerView?.apply {
