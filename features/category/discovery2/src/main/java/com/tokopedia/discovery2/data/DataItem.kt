@@ -115,6 +115,9 @@ data class DataItem(
     @SerializedName("action")
     val action: String? = "",
 
+    @SerializedName("move_action")
+    val moveAction: MoveAction? = null,
+
     @SerializedName("notification_title")
     val notificationTitle: String? = "",
 
@@ -574,6 +577,9 @@ data class DataItem(
     var itemWeight: Float? = 1.0f,
 
     var typeProductHighlightComponentCard: String? = "",
+
+    @SerializedName("warehouse_id")
+    var warehouseId: Long? = null
 ) {
     val leftMargin: Int
         get() {

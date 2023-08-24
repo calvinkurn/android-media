@@ -156,7 +156,8 @@ object HomeLayoutMapper {
         val productRecomUiModel = TokoNowProductRecommendationOocUiModel(
             pageName = OOC_TOKONOW,
             isFirstLoad = true,
-            isBindWithPageName = true
+            isBindWithPageName = true,
+            isTokoNow = false
         )
         add(HomeLayoutItemUiModel(productRecomUiModel, HomeLayoutItemState.LOADED))
     }

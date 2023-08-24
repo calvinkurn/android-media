@@ -6,6 +6,7 @@ import com.tokopedia.home_component.model.*
 import com.tokopedia.home_component.util.ChannelStyleUtil.parseBorderStyle
 import com.tokopedia.home_component.util.ChannelStyleUtil.parseDividerSize
 import com.tokopedia.home_component.util.ChannelStyleUtil.parseImageStyle
+import com.tokopedia.home_component_header.util.HomeChannelHeaderRollenceController
 
 object DynamicChannelComponentMapper {
     fun mapHomeChannelToComponent(channel: DynamicHomeChannel.Channels, verticalPosition: Int): ChannelModel {
@@ -37,7 +38,8 @@ object DynamicChannelComponentMapper {
                 channel.header.url,
                 channel.header.backColor,
                 channel.header.backImage,
-                channel.header.textColor
+                channel.header.textColor,
+                getHeaderType(),
             ),
             channelBanner = ChannelBanner(
                 id = channel.banner.id,
@@ -79,7 +81,12 @@ object DynamicChannelComponentMapper {
                 campaignCode = channel.campaignCode,
                 homeAttribution = channel.homeAttribution,
                 promoName = channel.promoName,
-                campaignType = channel.campaignType
+                campaignType = channel.campaignType,
+                bannerId = channel.banner.id,
+                headerName = channel.header.name,
+                channelId = channel.id,
+                parentPosition = (verticalPosition + 1).toString(),
+                pageName = channel.pageName,
             ),
             channelGrids = channel.grids.mapIndexed { index, it ->
                 ChannelGrid(
@@ -110,7 +117,7 @@ object DynamicChannelComponentMapper {
                         shopName = it.shop.name,
                         shopProfileUrl = it.shop.imageUrl,
                         shopUrl = it.shop.url,
-                        shopApplink = it.shop.applink
+                        shopApplink = it.shop.applink,
                     ),
                     labelGroup = it.labelGroup.map { label ->
                         LabelGroup(
@@ -178,7 +185,8 @@ object DynamicChannelComponentMapper {
                 channel.header.url.ifBlank { channel.banner.url },
                 channel.header.backColor,
                 channel.header.backImage,
-                channel.header.textColor
+                channel.header.textColor,
+                getHeaderType(),
             ),
             channelBanner = ChannelBanner(
                 id = channel.banner.id,
@@ -281,5 +289,11 @@ object DynamicChannelComponentMapper {
                 )
             }
         )
+    }
+
+    fun getHeaderType(): ChannelHeader.HeaderType {
+        return if(HomeChannelHeaderRollenceController.isHeaderUsingRollenceVariant()) {
+            ChannelHeader.HeaderType.REVAMP
+        } else ChannelHeader.HeaderType.CONTROL
     }
 }

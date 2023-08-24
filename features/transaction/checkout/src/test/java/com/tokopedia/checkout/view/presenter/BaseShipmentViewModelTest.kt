@@ -23,6 +23,7 @@ import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesR
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
+import com.tokopedia.purchase_platform.common.feature.addons.domain.SaveAddOnStateUseCase
 import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.domain.UpdateDynamicDataPassingUseCase
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.usecase.GetPrescriptionIdsUseCaseCoroutine
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ClearCacheAutoApplyStackUseCase
@@ -64,6 +65,9 @@ open class BaseShipmentViewModelTest {
 
     @MockK
     lateinit var getRatesWithScheduleUseCase: GetRatesWithScheduleUseCase
+
+    @MockK
+    lateinit var saveAddOnStateUseCase: SaveAddOnStateUseCase
 
     @MockK(relaxUnitFun = true)
     lateinit var clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase
@@ -136,6 +140,7 @@ open class BaseShipmentViewModelTest {
             updateDynamicDataPassingUseCase,
             dynamicPaymentFeeCheckoutUseCase,
             checkoutUseCase,
+            saveAddOnStateUseCase,
             shipmentDataConverter,
             shippingCourierConverter,
             ratesStatesConverter,

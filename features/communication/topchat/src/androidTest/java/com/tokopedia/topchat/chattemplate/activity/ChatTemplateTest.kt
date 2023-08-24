@@ -68,7 +68,7 @@ class ChatTemplateTest: BaseChatTemplateTest() {
 
         //Then
         onView(withRecyclerView(R.id.recycler_view_template).atPositionOnView(5, R.id.caption))
-            .check(matches(withText(context.getString(R.string.add_template_chat))))
+            .check(matches(withText(context.getString(com.tokopedia.chat_common.R.string.add_template_chat))))
         DrawableMatcher.compareDrawableOnRecyclerView(
             R.id.recycler_view_template,
             5,
@@ -88,7 +88,7 @@ class ChatTemplateTest: BaseChatTemplateTest() {
 
         //Then
         onView(withRecyclerView(R.id.recycler_view_template).atPositionOnView(0, R.id.caption))
-            .check(matches(withText(context.getString(R.string.add_template_chat))))
+            .check(matches(withText(context.getString(com.tokopedia.chat_common.R.string.add_template_chat))))
         DrawableMatcher.compareDrawableOnRecyclerView(
             R.id.recycler_view_template,
             0,
@@ -136,7 +136,7 @@ class ChatTemplateTest: BaseChatTemplateTest() {
         onView(withId(R.id.template_list_info)).perform(click())
 
         //Then
-        onView(withId(R.id.bottom_sheet_title))
+        onView(withId(com.tokopedia.unifycomponents.R.id.bottom_sheet_title))
             .check(matches(withText(context.getString(R.string.title_info_list_template))))
         onView(withId(R.id.bs_chat_desc))
             .check(matches(withText(context.getString(R.string.body_info_list_template))))

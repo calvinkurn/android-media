@@ -21,7 +21,10 @@ import com.tokopedia.logisticcart.shipping.model.CartItemModel
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.logisticcart.shipping.model.SelectedShipperModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ONS_PRODUCT_SERVICE
+import com.tokopedia.purchase_platform.common.feature.addons.data.model.AddOnProductDataModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingDataModel
 import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 import javax.inject.Inject
 
@@ -96,7 +99,7 @@ class ShipmentDataRequestConverter @Inject constructor(private val _gson: Gson) 
                                 isOrderPriority = if (shipmentDetailData.isOrderPriority == true) 1 else 0
                             ),
                             promos = promoRequests,
-                            shopId = shipmentCartItemModel.shopId,
+                            shopId = it.value.first().shopId.toLongOrZero(),
                             warehouseId = shipmentCartItemModel.fulfillmentId,
                             isTokoNow = shipmentCartItemModel.isTokoNow
                         )
@@ -110,7 +113,7 @@ class ShipmentDataRequestConverter @Inject constructor(private val _gson: Gson) 
                             name = shipmentDetailData.dropshipperName ?: "",
                             telpNo = shipmentDetailData.dropshipperPhone ?: ""
                         ),
-                        checkoutGiftingOrderLevel = mapGiftingAddOn(shipmentCartItemModel.addOnsOrderLevelModel),
+                        checkoutGiftingOrderLevel = mapAddOnsProduct(shipmentCartItemModel.addOnsOrderLevelModel, AddOnProductDataModel()),
                         orderMetadata = mapOrderMetadata(shipmentCartItemModel, selectedShipper, promoRequests),
                         shopOrders = shopOrders
                     )
@@ -157,8 +160,8 @@ class ShipmentDataRequestConverter @Inject constructor(private val _gson: Gson) 
     private fun mapProduct(it: CartItemModel): Product {
         val product = Product().apply {
             productId = it.productId.toString()
-            isPpp = it.isProtectionOptIn
-            checkoutGiftingProductLevel = mapGiftingAddOn(it.addOnProductLevelModel)
+            isPpp = getRealIsPpp(it)
+            checkoutGiftingProductLevel = mapAddOnsProduct(it.addOnGiftingProductLevelModel, it.addOnProduct)
             cartId = it.cartId.toString()
             productCategoryId = it.analyticsProductCheckoutData.productCategoryId
             protectionPricePerProduct = it.protectionPricePerProduct
@@ -168,15 +171,36 @@ class ShipmentDataRequestConverter @Inject constructor(private val _gson: Gson) 
         return product
     }
 
-    private fun mapGiftingAddOn(addOnsData: AddOnsDataModel): List<CheckoutGiftingAddOn> {
+    private fun getRealIsPpp(it: CartItemModel): Boolean {
+        return if (it.addOnProduct.listAddOnProductData.firstOrNull { addon -> addon.type == AddOnConstant.PRODUCT_PROTECTION_INSURANCE_TYPE } == null) {
+            it.isProtectionOptIn
+        } else {
+            false
+        }
+    }
+
+    private fun mapAddOnsProduct(addOnsData: AddOnGiftingDataModel, addOnProduct: AddOnProductDataModel): List<CheckoutGiftingAddOn> {
         val listCheckoutGiftingAddOn = arrayListOf<CheckoutGiftingAddOn>()
         if (addOnsData.status == 1) {
             for (addOnItem in addOnsData.addOnsDataItemModelList) {
                 val addOnGiftingRequest = CheckoutGiftingAddOn()
                 addOnGiftingRequest.itemId = addOnItem.addOnId
+                addOnGiftingRequest.itemUniqueId = addOnItem.addOnUniqueId
                 addOnGiftingRequest.itemType = "add_ons"
                 addOnGiftingRequest.itemQty = addOnItem.addOnQty.toInt()
                 addOnGiftingRequest.itemMetadata = _gson.toJson(addOnItem.addOnMetadata)
+                addOnGiftingRequest.itemUniqueId = addOnItem.addOnUniqueId
+                listCheckoutGiftingAddOn.add(addOnGiftingRequest)
+            }
+        }
+        addOnProduct.listAddOnProductData.forEach { addOnProductItem ->
+            if (addOnProductItem.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK || addOnProductItem.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_MANDATORY) {
+                val addOnGiftingRequest = CheckoutGiftingAddOn()
+                addOnGiftingRequest.itemId = addOnProductItem.id.toString()
+                addOnGiftingRequest.itemUniqueId = addOnProductItem.uniqueId
+                addOnGiftingRequest.itemType = ADD_ONS_PRODUCT_SERVICE
+                addOnGiftingRequest.itemQty = addOnProductItem.qty
+                addOnGiftingRequest.itemMetadata = ""
                 listCheckoutGiftingAddOn.add(addOnGiftingRequest)
             }
         }

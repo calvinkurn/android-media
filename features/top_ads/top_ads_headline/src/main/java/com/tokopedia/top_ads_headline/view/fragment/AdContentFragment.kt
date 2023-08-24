@@ -162,7 +162,7 @@ class AdContentFragment : BaseHeadlineStepperFragment<HeadlineAdStepperModel>(),
                 productPickerErrorText?.show()
                 view?.let { it1 ->
                     Toaster.toasterCustomBottomHeight =
-                        resources.getDimensionPixelSize(com.tokopedia.topads.common.R.dimen.dp_60)
+                        resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_60)
                     Toaster.build(it1,
                         getString(R.string.topads_headline_submit_ad_detail_error),
                         Toaster.LENGTH_LONG,
@@ -173,7 +173,7 @@ class AdContentFragment : BaseHeadlineStepperFragment<HeadlineAdStepperModel>(),
             stepperModel?.selectedTopAdsProducts?.size ?: 0 > MAX_PRODUCT_SELECTION -> {
                 view?.let {
                     Toaster.toasterCustomBottomHeight =
-                        resources.getDimensionPixelSize(com.tokopedia.topads.common.R.dimen.dp_60)
+                        resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_60)
                     Toaster.build(it,
                         getString(R.string.topads_headline_over_product_selection),
                         Toaster.LENGTH_LONG,

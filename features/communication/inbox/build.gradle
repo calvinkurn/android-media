@@ -48,11 +48,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.features.inboxCommon)
     implementation projectOrAar(rootProject.ext.features.recommendationWidgetCommon)
-    implementation projectOrAar(rootProject.ext.features.searchbar)
-    implementation projectOrAar(rootProject.ext.features.topchat)
-    implementation projectOrAar(rootProject.ext.features.notifCenter)
     implementation projectOrAar(rootProject.ext.features.talk)
-    implementation projectOrAar(rootProject.ext.features.reviewInbox)
     implementation projectOrAar(rootProject.ext.features.medialoader)
     implementation projectOrAar(rootProject.ext.features.topAdsSdk)
     implementation projectOrAar(rootProject.ext.features.productCard)
@@ -60,11 +56,9 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.wishlistCommonV2)
 
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
-    implementation projectOrAar(rootProject.ext.libraries.baseList)
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.graphql)
-    implementation projectOrAar(rootProject.ext.libraries.commonNetwork)
     implementation projectOrAar(rootProject.ext.libraries.network)
     implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
@@ -104,6 +98,7 @@ dependencies {
 
     androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cassavaTest
     androidTestImplementation projectOrAar(rootProject.ext.libraries.network)
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.commonNetwork)
 
     androidTestImplementation rootProject.ext.testDependencies.androidxTest
     androidTestImplementation rootProject.ext.miscDependencies.coroutineTest

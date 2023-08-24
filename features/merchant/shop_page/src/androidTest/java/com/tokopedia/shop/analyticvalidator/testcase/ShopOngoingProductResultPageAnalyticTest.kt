@@ -107,7 +107,7 @@ class ShopOngoingProductResultPageAnalyticTest {
             RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(clickedItemPosition, click())
         )
         Espresso.onView(firstView(withId(R.id.recycler_view))).perform(
-            RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(clickedItemPosition, CommonActions.clickChildViewWithId(R.id.imageThreeDots))
+            RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(clickedItemPosition, CommonActions.clickChildViewWithId(com.tokopedia.productcard.R.id.imageThreeDots))
         )
     }
 }
