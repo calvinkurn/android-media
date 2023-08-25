@@ -194,7 +194,7 @@ class SeePerformanceTopAdsViewModel @Inject constructor(
         launchCatchError(block = {
             val response = topAdsGetTotalAdsAndKeywordsUseCase(listOf(_topAdsPromoInfo.value?.topAdsGetPromo?.data?.firstOrNull()?.groupID ?: ""))
             if (response.topAdsGetTotalAdsAndKeywords.errors.isEmpty())
-                _totalAdsAndKeywordsCount.value = response.topAdsGetTotalAdsAndKeywords.data
+                _totalAdsAndKeywordsCount.postValue(response.topAdsGetTotalAdsAndKeywords.data)
         }) {}
     }
 
