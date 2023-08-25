@@ -6,8 +6,8 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isZero
-import com.tokopedia.top_ads_headline_usecase.CreateHeadlineAdsUseCase
-import com.tokopedia.top_ads_headline_usecase.model.TopadsManageHeadlineAdResponse
+import com.tokopedia.topads.common.domain.usecase.CreateHeadlineAdsUseCase
+import com.tokopedia.topads.common.domain.model.createheadline.TopadsManageHeadlineAdResponse
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.CONST_1
 import com.tokopedia.topads.common.data.response.FinalAdResponse
 import com.tokopedia.topads.common.data.response.TopadsManagePromoGroupProductInput

@@ -1,4 +1,4 @@
-package com.tokopedia.top_ads_headline_usecase.model
+package com.tokopedia.topads.common.domain.model.createheadline
 
 
 import com.google.gson.annotations.SerializedName

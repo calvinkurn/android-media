@@ -1,13 +1,14 @@
-package com.tokopedia.top_ads_headline_usecase
+package com.tokopedia.topads.common.domain.usecase
 
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.top_ads_headline_usecase.model.TopAdsManageHeadlineInput
-import com.tokopedia.top_ads_headline_usecase.model.TopAdsManageHeadlineInput2
-import com.tokopedia.top_ads_headline_usecase.model.TopadsManageHeadlineAdResponse
+import com.tokopedia.topads.common.domain.model.createheadline.TopAdsManageHeadlineInput
+import com.tokopedia.topads.common.domain.model.createheadline.TopAdsManageHeadlineInput2
+import com.tokopedia.topads.common.domain.model.createheadline.TopadsManageHeadlineAdResponse
+
 import javax.inject.Inject
 
 const val INPUT = "input"
@@ -33,7 +34,7 @@ class CreateHeadlineAdsUseCase @Inject constructor(graphqlRepository: GraphqlRep
     init {
         setTypeClass(TopadsManageHeadlineAdResponse.Data::class.java)
         setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE).build())
-        setGraphqlQuery(TopAdsCreateHeadlineAdsQuery.GQL_QUERY)
+        setGraphqlQuery(TopAdsCreateHeadlineAdsQuery())
     }
 
     fun setParams(input: TopAdsManageHeadlineInput) {
