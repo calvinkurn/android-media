@@ -194,6 +194,7 @@ class TokoNowBuyerCommunicationBottomSheet : BottomSheetUnify() {
             context,
             "${ApplinkConst.WEBVIEW}?url=${ConstantUrl.TERMS_AND_CONDITION}"
         )
+        dismiss()
     }
 
     private fun setCloseButtonClickListener() {

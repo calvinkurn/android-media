@@ -12,6 +12,6 @@
         android:layout_height="wrap_content"
         custom:tickerType="announcement"
         custom:tickerShapeType="loose"
-        custom:closeButtonVisibility="gone"
+        custom:closeButtonVisibility="visible"
         xmlns:custom="http://schemas.android.com/apk/res-auto" />
 </RelativeLayout>
