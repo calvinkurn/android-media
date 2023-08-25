@@ -9,7 +9,6 @@ import com.tokopedia.autocompletecomponent.initialstate.dynamic.DynamicInitialSt
 import com.tokopedia.autocompletecomponent.initialstate.popularsearch.PopularSearchDataView
 import com.tokopedia.autocompletecomponent.initialstate.recentsearch.RecentSearchDataView
 import com.tokopedia.autocompletecomponent.initialstate.recentview.RecentViewDataView
-import com.tokopedia.discovery.common.reimagine.Search1InstAuto
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 
 interface InitialStateContract {
