@@ -28,8 +28,8 @@
                 android:id="@+id/iv_background"
                 android:layout_width="74dp"
                 android:layout_height="0dp"
-                android:scaleType="fitXY"
                 android:layout_margin="@dimen/dp_4"
+                android:scaleType="fitXY"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -40,33 +40,43 @@
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:scaleType="fitCenter"
-                app:layout_constraintVertical_bias="0.4"
                 app:layout_constraintBottom_toBottomOf="@id/iv_background"
                 app:layout_constraintEnd_toEndOf="@id/iv_background"
                 app:layout_constraintStart_toStartOf="@id/iv_background"
                 app:layout_constraintTop_toTopOf="@id/iv_background"
+                app:layout_constraintVertical_bias="0.4"
                 app:unify_image_placeholder="@drawable/fallback_badge" />
 
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/iv_badge_base"
                 android:layout_width="0dp"
-                app:layout_constraintDimensionRatio="W, 60:12"
                 android:layout_height="@dimen/dp_12"
                 android:layout_marginTop="@dimen/dp_4"
                 android:scaleType="fitCenter"
+                app:layout_constraintDimensionRatio="W, 60:12"
                 app:layout_constraintEnd_toEndOf="@id/iv_background"
                 app:layout_constraintStart_toStartOf="@id/iv_background"
                 app:layout_constraintTop_toBottomOf="@id/iv_medal_icon" />
 
-            <com.tokopedia.unifycomponents.ImageUnify
-                android:id="@+id/iv_ribbon"
-                android:layout_width="@dimen/dp_16"
-                android:layout_height="@dimen/dp_16"
-                android:layout_margin="@dimen/dp_6"
-                android:scaleType="centerInside"
+            <View
+                android:id="@+id/iv_status_background"
+                android:layout_width="@dimen/dp_28"
+                android:layout_height="@dimen/dp_28"
+                android:layout_margin="@dimen/dp_2"
+                android:background="@drawable/rounded_edge_rectangle"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/tv_title"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/iv_status"
+                android:layout_width="@dimen/dp_16"
+                android:layout_height="@dimen/dp_16"
+                android:scaleType="centerInside"
+                app:layout_constraintBottom_toBottomOf="@id/iv_status_background"
+                app:layout_constraintEnd_toEndOf="@id/iv_status_background"
+                app:layout_constraintStart_toStartOf="@id/iv_status_background"
+                app:layout_constraintTop_toTopOf="@id/iv_status_background"
                 app:unify_image_corner_radius="0" />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -78,7 +88,7 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textColor="@color/Unify_NN950"
-                app:layout_constraintEnd_toStartOf="@id/iv_ribbon"
+                app:layout_constraintEnd_toStartOf="@id/iv_status_background"
                 app:layout_constraintHorizontal_bias="0"
                 app:layout_constraintStart_toEndOf="@id/iv_background"
                 app:layout_constraintTop_toTopOf="parent"
@@ -123,24 +133,24 @@
                 android:maxLength="30"
                 android:maxLines="1"
                 android:textColor="@color/Unify_NN600"
-                app:layout_constraintTop_toBottomOf="@id/divider"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/btn_apply"
                 app:layout_constraintHorizontal_bias="0"
                 app:layout_constraintStart_toStartOf="@id/tv_title"
+                app:layout_constraintTop_toBottomOf="@id/divider"
                 app:typographyType="small"
                 tools:text="Valid until 12 Sep 2023" />
 
             <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/btn_apply"
                 android:layout_width="wrap_content"
-                android:minWidth="@dimen/dp_64"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/dp_12"
+                android:minWidth="@dimen/dp_64"
                 android:paddingVertical="@dimen/dp_4"
-                app:layout_constraintTop_toBottomOf="@id/divider"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/divider"
                 app:unifyButtonSize="micro"
                 app:unifyButtonType="main"
                 app:unifyButtonVariant="filled"
@@ -150,12 +160,11 @@
                 android:id="@+id/ribbon_status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="-16dp"
                 android:theme="@style/Theme.MaterialComponents.Light"
-                app:layout_constraintBottom_toBottomOf="@id/tv_expiry_label"
-                app:layout_constraintEnd_toEndOf="parent"
                 android:visibility="gone"
-                app:layout_constraintTop_toTopOf="@id/tv_expiry_label" />
+                app:layout_constraintStart_toStartOf="@id/iv_background"
+                app:layout_constraintTop_toTopOf="@id/iv_background"
+                tools:visibility="visible" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 

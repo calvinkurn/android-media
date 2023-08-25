@@ -7,53 +7,23 @@
     tools:parentTag="com.google.android.material.card.MaterialCardView"
     tools:theme="@style/Theme.MaterialComponents.Light">
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/card_view"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:theme="@style/Theme.MaterialComponents.Light"
-        app:cardElevation="0dp"
-        tools:cardBackgroundColor="@color/bg_button_border_outline"
-        tools:contentPadding="@dimen/dp_8"
-        tools:parentTag="com.google.android.material.card.MaterialCardView">
+        android:padding="@dimen/dp_4">
 
-
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/Unify_NN0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <com.tokopedia.iconunify.IconUnify
-                android:id="@+id/ic_status"
-                android:layout_width="@dimen/dp_12"
-                android:layout_height="@dimen/dp_12"
-                android:layout_gravity="center_vertical"
-                android:visibility="gone"
-                app:icon_color_light_enable="@color/Unify_NN0"
-                app:icon_name="LOCK"
-                app:layout_constraintBottom_toBottomOf="@id/tv_status"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/tv_status"
-                tools:visibility="visible" />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tv_status"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_2"
-                android:ellipsize="end"
-                android:gravity="center"
-                android:maxLines="1"
-                android:textColor="@color/Unify_NN0"
-                app:layout_constraintStart_toEndOf="@id/ic_status"
-                app:layout_constraintTop_toTopOf="parent"
-                app:typographyType="small"
-                app:typographyWeight="bold"
-                tools:text="Active" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </com.google.android.material.card.MaterialCardView>
-
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="small"
+            app:typographyWeight="bold"
+            tools:text="Active" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </merge>
