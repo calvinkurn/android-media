@@ -16,6 +16,7 @@ import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiModel
 import com.tokopedia.shopadmin.common.util.AdminFeature
 import com.tokopedia.shopadmin.common.util.AdminPermissionMapper
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.seller.menu.R as sellermenuR
 import com.tokopedia.seller.menu.common.R as sellermenucommonR
 
 object SellerSettingsList {
@@ -114,7 +115,7 @@ object SellerSettingsList {
             ),
             DividerUiModel(DividerType.THICK),
             SellerMenuItemUiModel(
-                context.getString(com.tokopedia.seller.menu.R.string.seller_menu_notification_setting),
+                context.getString(sellermenuR.string.seller_menu_notification_setting),
                 eventActionSuffix = SettingTrackingConstant.SETTINGS,
                 type = MenuItemType.NOTIFICATION,
                 iconUnify = IconUnify.PHONE_SETTING
