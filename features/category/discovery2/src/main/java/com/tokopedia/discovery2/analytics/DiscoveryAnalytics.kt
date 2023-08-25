@@ -1,5 +1,6 @@
 package com.tokopedia.discovery2.analytics
 
+import android.util.Log
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Constant
@@ -2838,7 +2839,8 @@ open class DiscoveryAnalytics(
                 "${if (it.campaignSoldCount.toIntOrZero() > 0) it.campaignSoldCount else 0} $SOLD - ${if (it.customStock.toIntOrZero() > 0) it.customStock else 0} $LEFT - - ${if (it.tabName.isNullOrEmpty()) "" else it.tabName} - ${getLabelCampaign(it)} - $NOTIFY_ME"
             productMap[DIMENSION38] = ""
             productMap[DIMENSION84] = ""
-            productMap[DIMENSION40] = it.gtmItemName?.replace("#POSITION", (components?.let { it1 -> getParentPosition(it1) }?.plus(1)).toString())?.replace("#MEGA_TAB_VALUE", it.tabName ?: "").toString()
+            val gtmItemName = it.gtmItemName?.replace("#POSITION", (components?.let { it1 -> getParentPosition(it1) }?.plus(1)).toString())?.replace("#MEGA_TAB_VALUE", it.tabName ?: "").toString()
+            productMap[DIMENSION40] = processGtmItemName(gtmItemName, it)
         }
         list.add(productMap)
 
@@ -2886,7 +2888,8 @@ open class DiscoveryAnalytics(
                     "${if (it.campaignSoldCount.toIntOrZero() > 0) it.campaignSoldCount else 0} $SOLD - ${if (it.customStock.toIntOrZero() > 0) it.customStock else 0} $LEFT - - ${if (it.tabName.isNullOrEmpty()) "" else it.tabName} - ${getLabelCampaign(it)} - $NOTIFY_ME ${components?.let { it1 -> getNotificationStatus(it1) }}"
                 listMap[DIMENSION38] = ""
                 listMap[DIMENSION84] = ""
-                listMap[DIMENSION40] = it.gtmItemName?.replace("#POSITION", (components?.let { it1 -> getParentPosition(it1) }?.plus(1)).toString())?.replace("#MEGA_TAB_VALUE", it.tabName ?: "").toString()
+                val gtmItemName = it.gtmItemName?.replace("#POSITION", (components?.let { it1 -> getParentPosition(it1) }?.plus(1)).toString())?.replace("#MEGA_TAB_VALUE", it.tabName ?: "").toString()
+                listMap[DIMENSION40] = processGtmItemName(gtmItemName, it)
             }
             list.add(listMap)
 
@@ -2915,5 +2918,24 @@ open class DiscoveryAnalytics(
             getTracker().sendEnhanceEcommerceEvent(map)
             productCardImpressionLabel = EMPTY_STRING
         }
+    }
+
+    private fun processGtmItemName(gtmItemName: String, dataItem: DataItem): String {
+        val dataToAppend = mutableListOf(
+            dataItem.title ?: "",
+            if (dataItem.isTopads == true) TOPADS else NON_TOPADS,
+            dataItem.creativeName ?: "",
+            dataItem.tabName ?: ""
+        )
+        var j = 0
+        val gtmNameParts = gtmItemName.split(" - ").toMutableList()
+        for (i in gtmNameParts.indices) {
+            if (gtmNameParts[i].trim().isEmpty() || gtmNameParts[i].trim() == "-") {
+                gtmNameParts[i] =  dataToAppend[j++]
+            }
+        }
+        if (j<dataToAppend.size)
+            gtmNameParts.add(dataToAppend[j])
+        return gtmNameParts.joinToString("-") { " $it " }
     }
 }
