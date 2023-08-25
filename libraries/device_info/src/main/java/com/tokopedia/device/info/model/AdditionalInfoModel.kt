@@ -18,9 +18,7 @@ data class AdditionalInfoModel(
     val device: String,
     val versionName: String,
     val advertisingId: String,
-    val wideVineId: String,
-    val deviceIdInUuid: String,
-    val deviceOsType: String
+    val wideVineId: String
 ) {
 
     companion object {
@@ -42,9 +40,7 @@ data class AdditionalInfoModel(
                 device = Build.DEVICE,
                 versionName = GlobalConfig.VERSION_NAME,
                 advertisingId = DeviceInfo.getAdsId(context),
-                wideVineId = wideVineIdBase64,
-                deviceIdInUuid = DeviceInfo.getUUID(context),
-                deviceOsType = ANDROID
+                wideVineId = wideVineIdBase64
             )
         }
 
