@@ -11,8 +11,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.topads.dashboard.databinding.FragmentTopadsGroupSettingsBinding
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
-import com.tokopedia.topads.dashboard.recommendation.data.model.local.ProductItemUiModel
-import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopadsProductListState
 import com.tokopedia.topads.dashboard.recommendation.viewmodel.ProductRecommendationViewModel
 import javax.inject.Inject
 import com.tokopedia.topads.dashboard.R
@@ -20,9 +18,7 @@ import com.tokopedia.topads.dashboard.recommendation.common.TopAdsProductRecomme
 import com.tokopedia.topads.dashboard.recommendation.common.TopAdsProductRecommendationConstants.GROUP_SETTINGS_STATE_CREATE
 import com.tokopedia.topads.dashboard.recommendation.common.decoration.ChipsInsightItemDecoration
 import com.tokopedia.topads.dashboard.recommendation.data.mapper.ProductRecommendationMapper
-import com.tokopedia.topads.dashboard.recommendation.views.activities.ProductRecommendationActivity
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.recommendation.ProductListAdapter
-import kotlinx.android.synthetic.main.fragment_topads_group_settings.*
 
 class GroupSettingsFragment : BaseDaggerFragment() {
 
