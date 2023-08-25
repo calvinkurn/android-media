@@ -3,11 +3,9 @@ package com.tokopedia.autocompletecomponent.suggestion
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.tokopedia.autocompletecomponent.createFakeBaseAppComponent
-import com.tokopedia.autocompletecomponent.di.DaggerAutoCompleteComponent
 import com.tokopedia.autocompletecomponent.searchbar.SearchBarKeyword
 import com.tokopedia.autocompletecomponent.suggestion.SuggestionFragment.Companion.SUGGESTION_FRAGMENT_TAG
 import com.tokopedia.autocompletecomponent.suggestion.SuggestionFragment.SuggestionViewUpdateListener
-import com.tokopedia.autocompletecomponent.suggestion.di.SuggestionContextModule
 import com.tokopedia.autocompletecomponent.suggestion.di.SuggestionViewListenerModule
 import com.tokopedia.autocompletecomponent.test.R
 import com.tokopedia.discovery.common.constants.SearchApiConst
@@ -24,7 +22,6 @@ class SuggestionActivityTest:
 
         val component = DaggerSuggestionTestComponent
             .builder()
-            .suggestionContextModule(SuggestionContextModule(this))
             .baseAppComponent(getBaseAppComponent())
             .suggestionViewListenerModule(SuggestionViewListenerModule(this))
             .build()

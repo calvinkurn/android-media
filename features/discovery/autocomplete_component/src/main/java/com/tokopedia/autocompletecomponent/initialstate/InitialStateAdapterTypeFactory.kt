@@ -146,7 +146,7 @@ class InitialStateAdapterTypeFactory(
             InitialStateChipWidgetTitleViewHolder.LAYOUT ->
                 InitialStateChipWidgetTitleViewHolder(parent)
             SearchBarEducationViewHolder.LAYOUT ->
-                SearchBarEducationViewHolder(parent, searchBarEducationListener)
+                SearchBarEducationViewHolder(parent, searchBarEducationListener, isReimagine)
             MpsViewHolder.LAYOUT -> MpsViewHolder(parent, mpsChipListener)
             else -> super.createViewHolder(parent, type)
         }

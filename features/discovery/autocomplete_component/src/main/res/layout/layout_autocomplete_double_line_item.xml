@@ -67,14 +67,15 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/autoCompleteIconTitleReimagine"
-        android:layout_width="16dp"
-        android:layout_height="16dp"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
         android:contentDescription="@string/content_desc_dl_iconTitle"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/iconImage"
         app:layout_constraintEnd_toEndOf="@+id/iconImage"
         app:layout_constraintTop_toTopOf="@+id/iconImage"
         app:layout_constraintVertical_bias="1.0"
+        android:background="@drawable/autocomplete_title_image_border"
         tools:src="@drawable/ic_official_store"
         tools:visibility="visible" />
 
