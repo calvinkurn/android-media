@@ -18,12 +18,15 @@ data class AdditionalInfoModel(
     val device: String,
     val versionName: String,
     val advertisingId: String,
-    val wideVineId: String
+    val wideVineId: String,
+    val deviceIdInUuid: String,
+    val deviceOsType: String
 ) {
 
     companion object {
         private const val MOST_SIG_BITS = -0x121074568629b532L
         private const val LEAST_SIG_BITS = -0x5c37d8232ae2de13L
+        private const val ANDROID = "android"
 
         fun generate(context: Context): AdditionalInfoModel {
             val widevineMediaDrm = MediaDrm(UUID(MOST_SIG_BITS, LEAST_SIG_BITS))
@@ -40,6 +43,8 @@ data class AdditionalInfoModel(
                 versionName = GlobalConfig.VERSION_NAME,
                 advertisingId = DeviceInfo.getAdsId(context),
                 wideVineId = wideVineIdBase64,
+                deviceIdInUuid = DeviceInfo.getUUID(context),
+                deviceOsType = ANDROID
             )
         }
 
