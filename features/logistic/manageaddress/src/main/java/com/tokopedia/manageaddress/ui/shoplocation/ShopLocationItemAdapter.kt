@@ -86,7 +86,7 @@ class ShopLocationItemAdapter(private val listener: ShopLocationItemAdapterListe
                 binding.tvShopLabel.setTextColor(
                     ContextCompat.getColor(
                         itemView.context,
-                        unifyprinciplesR.color.Unify_N700_68
+                        unifyprinciplesR.color.Unify_NN950_68
                     )
                 )
                 binding.imgMarkIcon.setImageDrawable(itemView.context.getResDrawable(R.drawable.ic_mark_ico_inactive))
