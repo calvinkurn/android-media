@@ -84,6 +84,7 @@ import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
 import com.tokopedia.shakedetect.ShakeDetectManager;
 import com.tokopedia.shakedetect.ShakeSubscriber;
 import com.tokopedia.telemetry.TelemetryActLifecycleCallback;
+import com.tokopedia.trackingoptimizer.activitylifecyclecallback.TrackingQueueActivityLifecycleCallback;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
@@ -261,6 +262,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
             }
         }));
 
+        registerActivityLifecycleCallbacks(new TrackingQueueActivityLifecycleCallback(this));
         registerActivityLifecycleCallbacks(new BetaSignActivityLifecycleCallbacks());
         registerActivityLifecycleCallbacks(new NFCSubscriber());
         registerActivityLifecycleCallbacks(new SessionActivityLifecycleCallbacks());
