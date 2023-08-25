@@ -16,6 +16,7 @@ import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiModel
 import com.tokopedia.shopadmin.common.util.AdminFeature
 import com.tokopedia.shopadmin.common.util.AdminPermissionMapper
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.seller.menu.common.R as sellermenucommonR
 
 object SellerSettingsList {
 
@@ -35,11 +36,11 @@ object SellerSettingsList {
 
         return listOf(
             SellerSettingsTitleUiModel(
-                context.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_shop_profile),
+                context.getString(sellermenucommonR.string.setting_menu_shop_profile),
                 IconUnify.SHOP_SETTING
             ),
             SellerMenuItemUiModel(
-                context.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_basic_info),
+                context.getString(sellermenucommonR.string.setting_menu_basic_info),
                 clickApplink = null,
                 settingTypeInfix = SettingTrackingConstant.SHOP_SETTING,
                 type = MenuItemType.BASIC_INFO,
@@ -53,7 +54,7 @@ object SellerSettingsList {
                 }
             ),
             SellerMenuItemUiModel(
-                context.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_shop_notes),
+                context.getString(sellermenucommonR.string.setting_menu_shop_notes),
                 clickApplink = null,
                 settingTypeInfix = SettingTrackingConstant.SHOP_SETTING,
                 type = MenuItemType.NOTES,
@@ -67,7 +68,7 @@ object SellerSettingsList {
                 }
             ),
             SellerMenuItemUiModel(
-                context.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_shop_working_hours),
+                context.getString(sellermenucommonR.string.setting_menu_shop_working_hours),
                 clickApplink = null,
                 settingTypeInfix = SettingTrackingConstant.SHOP_SETTING,
                 type = MenuItemType.SCHEDULE,
@@ -81,9 +82,9 @@ object SellerSettingsList {
                 }
             ),
             DividerUiModel(DividerType.THIN_INDENTED),
-            IndentedSettingTitleUiModel(context.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_location_and_shipment)),
+            IndentedSettingTitleUiModel(context.getString(sellermenucommonR.string.setting_menu_location_and_shipment)),
             SellerMenuItemUiModel(
-                context.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_add_and_shop_location),
+                context.getString(sellermenucommonR.string.setting_menu_add_and_shop_location),
                 clickApplink = null,
                 settingTypeInfix = SettingTrackingConstant.SHOP_SETTING,
                 type = MenuItemType.LOCATION,
@@ -97,10 +98,10 @@ object SellerSettingsList {
                 }
             ),
             SellerMenuItemUiModel(
-                context.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_set_shipment_method),
+                context.getString(sellermenucommonR.string.setting_menu_set_shipment_method),
                 clickApplink = null,
                 settingTypeInfix = SettingTrackingConstant.SHOP_SETTING,
-                trackingAlias = trackingAliasMap[context.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_set_shipment_method)],
+                trackingAlias = trackingAliasMap[context.getString(sellermenucommonR.string.setting_menu_set_shipment_method)],
                 type = MenuItemType.SHIPPING,
                 clickAction = {
                     checkAccessPermissionIfNotShopOwner(
@@ -130,7 +131,7 @@ object SellerSettingsList {
 
     private fun trackingAliasMap(context: Context): Map<String, String?> {
         return mapOf<String, String?>(
-            context.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_set_shipment_method) to SHIPPING_SERVICE_ALIAS,
+            context.getString(sellermenucommonR.string.setting_menu_set_shipment_method) to SHIPPING_SERVICE_ALIAS,
             LOGOUT_BUTTON_NAME to LOGOUT_ALIAS
         )
     }
