@@ -693,12 +693,6 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
         startActivityForResult(intent, TopAdsDashboardConstant.REQUEST_CODE_TOP_UP_CREDIT)
     }
 
-    private fun openOldAutoTopUpBottomSheet() {
-        val intent = Intent(this, TopAdsAddCreditActivity::class.java)
-        intent.putExtra(TopAdsAddCreditActivity.SHOW_FULL_SCREEN_BOTTOM_SHEET, true)
-        startActivityForResult(intent, TopAdsDashboardConstant.REQUEST_CODE_ADD_CREDIT)
-    }
-
     private fun hideMainBottomSheetContent() {
         SeePerformanceTopadsTracker.viewErrorFetching(currentSite)
         mainBottomSheetBinding.mainLoader.visibility = View.GONE
