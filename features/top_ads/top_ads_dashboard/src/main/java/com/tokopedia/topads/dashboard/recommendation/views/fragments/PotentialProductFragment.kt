@@ -35,9 +35,6 @@ class PotentialProductFragment : BaseDaggerFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
-    @Inject
-    lateinit var mapper: ProductRecommendationMapper
-
     private val viewModel: ProductRecommendationViewModel by lazy(LazyThreadSafetyMode.NONE) {
         ViewModelProvider(
             requireActivity(),
@@ -86,7 +83,7 @@ class PotentialProductFragment : BaseDaggerFragment() {
                 }
                 is TopadsProductListState.Fail -> {
                     showEmptyState()
-                    productListAdapter.submitList(mapper.getEmptyProductListDefaultUiModel())
+                    productListAdapter.submitList(viewModel.getMapperInstance().getEmptyProductListDefaultUiModel())
                 }
                 else -> {}
             }
@@ -140,7 +137,7 @@ class PotentialProductFragment : BaseDaggerFragment() {
                 }
                 is TopadsProductListState.Fail -> {
                     showEmptyState()
-                    productListAdapter.submitList(mapper.getEmptyProductListDefaultUiModel())
+                    productListAdapter.submitList(viewModel.getMapperInstance().getEmptyProductListDefaultUiModel())
                 }
                 is TopadsProductListState.Loading -> {}
             }

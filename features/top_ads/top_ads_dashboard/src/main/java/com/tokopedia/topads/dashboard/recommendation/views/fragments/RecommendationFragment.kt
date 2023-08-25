@@ -136,9 +136,13 @@ class RecommendationFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         setAppBarListener()
         viewModel?.loadRecommendationPage()
-        viewModel?.fetchRecommendationStatistics()
         setUpObserver()
         settingClickListener()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel?.fetchRecommendationStatistics()
     }
 
     private fun setAppBarListener() {
@@ -250,7 +254,7 @@ class RecommendationFragment : BaseDaggerFragment() {
                 context?.getString(R.string.topads_insight_no_active_ads_title)
             insightWidgetIcon?.loadImage(
                 ContextCompat.getDrawable(
-                    context!!,
+                    requireContext(),
                     R.drawable.performance_widget_default_icon
                 )
             )
@@ -283,7 +287,7 @@ class RecommendationFragment : BaseDaggerFragment() {
             insightWidgetTitle?.text = context?.getString(R.string.topads_insight_max_out_title)
             insightWidgetIcon?.loadImage(
                 ContextCompat.getDrawable(
-                    context!!,
+                    requireContext(),
                     R.drawable.perfomace_widget_optimized_icon
                 )
             )
@@ -296,7 +300,7 @@ class RecommendationFragment : BaseDaggerFragment() {
             )
             insightWidgetIcon?.loadImage(
                 ContextCompat.getDrawable(
-                    context!!,
+                    requireContext(),
                     R.drawable.performance_widget_default_icon
                 )
             )
@@ -307,7 +311,7 @@ class RecommendationFragment : BaseDaggerFragment() {
             )
             insightWidgetIcon?.loadImage(
                 ContextCompat.getDrawable(
-                    context!!,
+                    requireContext(),
                     R.drawable.performance_widget_default_icon
                 )
             )

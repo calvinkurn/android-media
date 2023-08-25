@@ -2,7 +2,7 @@ package com.tokopedia.topads.dashboard.recommendation.data.mapper
 
 import com.tokopedia.topads.common.data.model.DashGroupListResponse
 import com.tokopedia.topads.common.data.model.GroupListDataItem
-import com.tokopedia.topads.dashboard.data.model.CountDataItem
+import com.tokopedia.topads.common.data.model.CountDataItem
 import com.tokopedia.topads.dashboard.data.model.ProductRecommendation
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.*
 import javax.inject.Inject

@@ -14,10 +14,10 @@ import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.recommendation.viewmodel.ProductRecommendationViewModel
 import javax.inject.Inject
 import com.tokopedia.topads.dashboard.R
+import com.tokopedia.abstraction.R as abstractionR
 import com.tokopedia.topads.dashboard.recommendation.common.TopAdsProductRecommendationConstants.GROUP_SETTINGS_STATE_CHOOSE_FROM_EXISTING
 import com.tokopedia.topads.dashboard.recommendation.common.TopAdsProductRecommendationConstants.GROUP_SETTINGS_STATE_CREATE
 import com.tokopedia.topads.dashboard.recommendation.common.decoration.ChipsInsightItemDecoration
-import com.tokopedia.topads.dashboard.recommendation.data.mapper.ProductRecommendationMapper
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.recommendation.ProductListAdapter
 
 class GroupSettingsFragment : BaseDaggerFragment() {
@@ -27,9 +27,6 @@ class GroupSettingsFragment : BaseDaggerFragment() {
     private val productListAdapter by lazy {
         ProductListAdapter(null, null)
     }
-
-    @Inject
-    lateinit var mapper: ProductRecommendationMapper
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -71,7 +68,7 @@ class GroupSettingsFragment : BaseDaggerFragment() {
             viewModel.getSelectedProductItems()?.size
         )
         productListAdapter.submitList(
-            mapper.convertProductItemToFeaturedProductsUiModel(
+            viewModel.getMapperInstance().convertProductItemToFeaturedProductsUiModel(
                 viewModel.getSelectedProductItems()
             )
         )
@@ -117,10 +114,10 @@ class GroupSettingsFragment : BaseDaggerFragment() {
     private fun changeChildFragment(fragment: Fragment) {
         childFragmentManager.popBackStack()
         childFragmentManager.beginTransaction().setCustomAnimations(
-            com.tokopedia.abstraction.R.anim.slide_in_right,
-            com.tokopedia.abstraction.R.anim.slide_out_left,
-            com.tokopedia.abstraction.R.anim.slide_in_left,
-            com.tokopedia.abstraction.R.anim.slide_out_right
+            abstractionR.anim.slide_in_right,
+            abstractionR.anim.slide_out_left,
+            abstractionR.anim.slide_in_left,
+            abstractionR.anim.slide_out_right
         ).replace(
             R.id.groupSettingsFragmentContainer,
             fragment
