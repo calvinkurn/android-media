@@ -132,7 +132,7 @@ class ShippingEditorFragment :
         fetchData()
         initViews()
         initAdapter()
-        initViewModel()
+        initObserver()
     }
 
     override fun onPause() {
@@ -198,7 +198,7 @@ class ShippingEditorFragment :
         binding?.rvConventional?.layoutManager = LinearLayoutManager(context)
     }
 
-    private fun initViewModel() {
+    private fun initObserver() {
         viewModel.shipperList.observe(
             viewLifecycleOwner
         ) {
