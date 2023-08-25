@@ -30,8 +30,8 @@ class MedalDetailUseCase @Inject constructor() : GraphqlUseCase<MedalDetailRespo
 }
 
 private const val SCP_REWARDS_MEDAL_DETAIL_QUERY = """
-    query scpRewardsMedaliDetailPage(${'$'}pageName:String, ${'$'}medaliSlug:String, ${'$'}sourceName:String) {
-      scpRewardsMedaliDetailPage(input:{pageName:${'$'}pageName, medaliSlug:${'$'}medaliSlug, sourceName:${'$'}sourceName}) {
+    query scpRewardsMedaliDetailPage(${'$'}apiVersion: String!,${'$'}pageName:String, ${'$'}medaliSlug:String, ${'$'}sourceName:String) {
+      scpRewardsMedaliDetailPage(input:{apiVersion:${'$'}apiVersion,pageName:${'$'}pageName, medaliSlug:${'$'}medaliSlug, sourceName:${'$'}sourceName}) {
         resultStatus {
           code
           status

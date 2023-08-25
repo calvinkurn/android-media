@@ -14,7 +14,6 @@ class MedalBenefitModel(
     val statusBadgeText: String? = null,
     val statusBadgeColor: String? = null,
     val statusDescription: String? = null,
-    val expiryCounter: String? = null,
     val additionalInfoText: String? = null,
     val additionalInfoColor: String? = null,
     val typeImageURL: String? = null,

@@ -2,7 +2,6 @@ package com.tokopedia.scp_rewards_widgets.coupon_section
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Canvas
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.core.content.ContextCompat
@@ -29,10 +28,9 @@ class CouponViewCard @JvmOverloads constructor(
     companion object {
         private const val SCALLOP_RADIUS = 30
         private const val CORNER_RADIUS = 12
-        private const val CARD_ELEVATION = 0f
     }
 
-    private fun applyEdgeTreatment() {
+    private fun applyEdgeTreatment(infoColor: String?) {
         val edgeTreatment = CouponCardEdgeTreatment(
             context,
             horizontalOffset = (binding.divider.top - SCALLOP_RADIUS).toFloat())
@@ -46,6 +44,12 @@ class CouponViewCard @JvmOverloads constructor(
             .build()
 
         val shapeDrawable = MaterialShapeDrawable(shapeAppearanceModel)
+        shapeDrawable.setTint(
+            parseColor(infoColor) ?: ContextCompat.getColor(
+                context,
+                com.tokopedia.scp_rewards_widgets.R.color.coupon_card_background
+            )
+        )
 
         val innerShapeDrawable = MaterialShapeDrawable(shapeAppearanceModel)
             .apply {
@@ -56,20 +60,7 @@ class CouponViewCard @JvmOverloads constructor(
         binding.layoutDetails.background = innerShapeDrawable
     }
 
-    override fun onDraw(canvas: Canvas?) {
-        super.onDraw(canvas)
-        applyEdgeTreatment()
-        elevation = CARD_ELEVATION
-        clipToOutline = false
-        clipChildren = false
-        clipToPadding = false
-    }
-
     fun setData(data: MedalBenefitModel, onApplyClick: (String?) -> Unit) {
-
-        background.setTint(parseColor(data.additionalInfoColor)
-            ?: ContextCompat.getColor(context, com.tokopedia.scp_rewards_widgets.R.color.coupon_card_background))
-
         with(binding) {
             tvTitle.text = data.title
             if (data.tncList != null) {
@@ -84,7 +75,7 @@ class CouponViewCard @JvmOverloads constructor(
             ivMedalIcon.setImageUrl(data.medaliImageURL.orEmpty())
             ivBadgeBase.setImageUrl(data.podiumImageURL.orEmpty())
             ivRibbon.setImageUrl(data.typeImageURL.orEmpty())
-            tvAdditional.text = data.statusDescription
+            tvExpiryLabel.text = data.statusDescription
             tvInfo.text = data.additionalInfoText
 
             if (data.status.contentEquals("Active", true)) {
@@ -95,9 +86,12 @@ class CouponViewCard @JvmOverloads constructor(
                     onApplyClick(data.cta?.appLink)
                 }
             } else {
-                ribbonStatus.visible()
+//                ribbonStatus.visible()
                 btnApply.gone()
-                ribbonStatus.setData(data.statusBadgeText, data.statusBadgeColor)
+//                ribbonStatus.setData(data.statusBadgeText, data.statusBadgeColor)
+            }
+            root.post {
+                applyEdgeTreatment(data.additionalInfoColor)
             }
         }
     }

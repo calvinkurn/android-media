@@ -52,15 +52,6 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/view_medal_header" />
 
-
-                    <com.tokopedia.unifycomponents.DividerUnify
-                        android:id="@+id/divider"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/dp_1"
-                        android:layout_marginTop="@dimen/dp_12"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/view_medal_detail" />
-
                     <com.tokopedia.scp_rewards_widgets.task_progress.WidgetMedalTaskProgress
                         android:id="@+id/view_tasks_progress"
                         android:layout_width="0dp"
@@ -69,7 +60,7 @@
                         android:layout_marginTop="@dimen/dp_16"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/divider"
+                        app:layout_constraintTop_toBottomOf="@id/view_medal_detail"
                         tools:visibility="visible" />
 
                     <com.tokopedia.scp_rewards_widgets.coupon_section.WidgetCouponView

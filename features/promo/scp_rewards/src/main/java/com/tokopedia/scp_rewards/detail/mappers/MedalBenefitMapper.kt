@@ -23,7 +23,6 @@ object MedalBenefitMapper {
                 statusBadgeText = it.statusInfo?.text,
                 statusBadgeColor = it.statusInfo?.backgroundColor,
                 statusDescription = it.statusDescription,
-                expiryCounter = it.expiryCounter,
                 additionalInfoText = it.info?.text,
                 additionalInfoColor = it.info?.backgroundColor,
                 typeImageURL = it.benefitType?.iconImageURL,

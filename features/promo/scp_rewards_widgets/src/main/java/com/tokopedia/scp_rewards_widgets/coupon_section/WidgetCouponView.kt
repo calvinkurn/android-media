@@ -19,16 +19,20 @@ class WidgetCouponView @JvmOverloads constructor(
 
     fun renderCoupons(benefitSectionModel: MedalBenefitSectionModel, onErrorAction: () -> Unit) {
         binding.tvTitle.text = benefitSectionModel.title
-        setBackgroundColor(parseColor(benefitSectionModel.backgroundColor) ?: Color.BLACK)
+        setBackgroundColor(parseColor(benefitSectionModel.backgroundColor) ?: Color.WHITE)
 
-        if (benefitSectionModel.benefitList.isNullOrEmpty()) {
-            // TODO: handle empty case 
-        }
+        val benefitList = benefitSectionModel.benefitList
 
-        if (benefitSectionModel.benefitList?.size == 1) {
-            binding.cardCoupon.setData(benefitSectionModel.benefitList.first()) {}
-        } else {
-            // TODO: handle multiple coupons 
+        when {
+            benefitList.isNullOrEmpty() -> {
+                // TODO: handle empty case
+            }
+            benefitList.size == 1 -> {
+                binding.cardCoupon.setData(benefitSectionModel.benefitList!!.first()) {}
+            }
+            benefitList.size > 1 -> {
+                // TODO: handle multiple coupons
+            }
         }
     }
 }

@@ -2,6 +2,11 @@ package com.tokopedia.scp_rewards.detail.domain
 
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.scp_rewards.common.utils.PAGESIZE_PARAM
+import com.tokopedia.scp_rewards.common.utils.PAGE_NAME_PARAM
+import com.tokopedia.scp_rewards.common.utils.PAGE_PARAM
+import com.tokopedia.scp_rewards.common.utils.SOURCE_NAME_PARAM
+import com.tokopedia.scp_rewards.common.utils.TYPE_PARAM
 import com.tokopedia.scp_rewards.detail.domain.model.MedalBenefitResponseModel
 import javax.inject.Inject
 
@@ -15,21 +20,36 @@ class GetMedalBenefitUseCase @Inject constructor() : GraphqlUseCase<MedalBenefit
     }
 
     companion object {
-        private const val PAGE_NAME_KEY = "pageName"
         private const val MEDALI_SLUG_KEY = "medaliSlug"
-        private const val SOURCE_NAME_KEY = "sourceName"
     }
 
-    private fun getRequestParams(medaliSlug: String, sourceName: String, pageName: String) = mapOf(
-        PAGE_NAME_KEY to pageName,
+    private fun getRequestParams(medaliSlug: String, sourceName: String, pageName: String, type:String = "") = mapOf(
+        PAGE_NAME_PARAM to pageName,
         MEDALI_SLUG_KEY to medaliSlug,
-        SOURCE_NAME_KEY to sourceName,
+        SOURCE_NAME_PARAM to sourceName,
+        TYPE_PARAM to type,
+        PAGE_PARAM to 1,
+        PAGESIZE_PARAM to 1
     )
 }
 
 private const val SCP_REWARDS_MEDAL_BENEFIT_QUERY = """
-    query scpRewardsGetMedaliBenefitList(${'$'}pageName:String, ${'$'}medaliSlug:String, ${'$'}sourceName:String) {
-      scpRewardsGetMedaliBenefitList(input:{pageName:${'$'}pageName, medaliSlug:${'$'}medaliSlug, sourceName:${'$'}sourceName}) {
+    query scpRewardsGetMedaliBenefitList(
+        ${'$'}pageName:String, 
+        ${'$'}sourceName:String,
+        ${'$'}medaliSlug:String, 
+        ${'$'}type:String, 
+        ${'$'}page:Int, 
+        ${'$'}pageSize:Int
+    ) {
+      scpRewardsGetMedaliBenefitList(input:{
+        type:${'$'}type,
+        page:${'$'}page,
+        pageSize:${'$'}pageSize,
+        medaliSlug:${'$'}medaliSlug,
+        pageName:${'$'}pageName,
+        sourceName:${'$'}sourceName
+      }){
         resultStatus {
           code
           status
@@ -61,7 +81,6 @@ private const val SCP_REWARDS_MEDAL_BENEFIT_QUERY = """
               backgroundColor
             }
             statusDescription
-            expiryCounter
             info {
               text
               backgroundColor

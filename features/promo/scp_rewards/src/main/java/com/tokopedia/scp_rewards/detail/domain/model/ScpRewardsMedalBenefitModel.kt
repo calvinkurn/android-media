@@ -3,7 +3,7 @@ package com.tokopedia.scp_rewards.detail.domain.model
 import com.google.gson.annotations.SerializedName
 
 data class MedalBenefitResponseModel(
-    @SerializedName("scpRewardsMedaliBenefitList") val scpRewardsMedaliBenefitList: RewardsGetMedaliBenefit? = null
+    @SerializedName("scpRewardsGetMedaliBenefitList") val scpRewardsMedaliBenefitList: RewardsGetMedaliBenefit? = null
 )
 
 data class RewardsGetMedaliBenefit(
@@ -41,7 +41,6 @@ data class MedaliBenefit(
     @SerializedName("status") val status: String? = null,
     @SerializedName("title") val title: String? = null,
     @SerializedName("statusDescription") val statusDescription: String? = null,
-    @SerializedName("expiryCounter") val expiryCounter: String? = null,
     @SerializedName("appLink") val appLink: String? = null,
     @SerializedName("tnc") val tncList: List<Tnc>? = null,
     @SerializedName("type") val benefitType: BenefitType? = null,
