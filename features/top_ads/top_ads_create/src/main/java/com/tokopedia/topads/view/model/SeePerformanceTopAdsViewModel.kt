@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.topads.common.data.model.AdGroupsParams
+import com.tokopedia.topads.common.data.model.CountDataItem
 import com.tokopedia.topads.common.data.response.AutoAdsResponse
 import com.tokopedia.topads.common.data.response.Deposit
 import com.tokopedia.topads.common.data.response.SingleAdInFo
@@ -23,7 +24,7 @@ import com.tokopedia.topads.common.domain.usecase.TopAdsGetProductManageUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetPromoUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetShopInfoV1UseCase
 import com.tokopedia.topads.common.domain.usecase.GetWhiteListedUserUseCase
-import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
+import com.tokopedia.topads.common.domain.usecase.TopAdsGetTotalAdsAndKeywordsUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -33,6 +34,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class SeePerformanceTopAdsViewModel @Inject constructor(
+    private val topAdsGetTotalAdsAndKeywordsUseCase: TopAdsGetTotalAdsAndKeywordsUseCase,
     private val dispatchers: CoroutineDispatchers,
     private val userSession: UserSessionInterface
 ) : BaseViewModel(dispatchers.io) {
@@ -89,8 +91,9 @@ class SeePerformanceTopAdsViewModel @Inject constructor(
     private val _topAdsGetGroupInfo: MutableLiveData<TopAdsGroupsResponse> = MutableLiveData()
     val topAdsGetGroupInfo: LiveData<TopAdsGroupsResponse> = _topAdsGetGroupInfo
 
-    private val _isUserWhitelisted: MutableLiveData<Result<Boolean>> = MutableLiveData()
-    val isUserWhitelisted: LiveData<Result<Boolean>> = _isUserWhitelisted
+    private val _totalAdsAndKeywordsCount = MutableLiveData<List<CountDataItem>>()
+    val totalAdsAndKeywordsCount: LiveData<List<CountDataItem>>
+        get() = _totalAdsAndKeywordsCount
 
     fun getTopAdsDeposit() {
         topAdsGetDepositUseCase.execute({
@@ -187,6 +190,14 @@ class SeePerformanceTopAdsViewModel @Inject constructor(
         }) {}
     }
 
+    fun getTotalAdsAndKeywordsCount(){
+        launchCatchError(block = {
+            val response = topAdsGetTotalAdsAndKeywordsUseCase(listOf(_topAdsPromoInfo.value?.topAdsGetPromo?.data?.firstOrNull()?.groupID ?: ""))
+            if (response.topAdsGetTotalAdsAndKeywords.errors.isEmpty())
+                _totalAdsAndKeywordsCount.value = response.topAdsGetTotalAdsAndKeywords.data
+        }) {}
+    }
+
     fun checkIsSingleAds() {
         _isSingleAds.value = _adId.value != EMPTY_AD_ID && (_topAdsPromoInfo.value?.topAdsGetPromo?.data?.firstOrNull()?.groupID == null || _topAdsPromoInfo.value?.topAdsGetPromo?.data?.firstOrNull()?.groupID == EMPTY_GROUP_ID)
     }
@@ -198,25 +209,6 @@ class SeePerformanceTopAdsViewModel @Inject constructor(
             }
             _topAdsGetAutoAds.postValue(response)
         }) {}
-    }
-
-    fun getWhiteListedUser() {
-        whiteListedUserUseCase.setParams()
-        whiteListedUserUseCase.executeQuerySafeMode(
-            onSuccess = {
-                it.data.forEach { data ->
-                    if (data.featureName.equals(
-                            TopAdsDashboardConstant.TopAdsCreditTopUpConstant.IS_TOP_UP_CREDIT_NEW_UI,
-                            true
-                        )
-                    ) _isUserWhitelisted.value =
-                        Success(true)
-                }
-            },
-            onError = {
-                _isUserWhitelisted.value = Fail(it)
-            }
-        )
     }
 
     companion object {

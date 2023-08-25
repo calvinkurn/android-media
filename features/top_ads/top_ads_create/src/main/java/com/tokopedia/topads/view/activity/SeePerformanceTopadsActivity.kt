@@ -243,6 +243,7 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
                 }
             }
             seePerformanceTopAdsViewModel?.getGroupInfo()
+            seePerformanceTopAdsViewModel?.getTotalAdsAndKeywordsCount()
             mainBottomSheetBinding.includeStatusIklan.statusIklanLoader.visibility = View.INVISIBLE
             mainBottomSheetBinding.includeStatusIklan.statusIklanGroup.visibility = View.VISIBLE
         }
@@ -272,10 +273,6 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
             if (it != null && it.response?.errors.isNullOrEmpty()) {
                 mainBottomSheetBinding.includeAdGroupManual.groupName.text =
                     it.response?.data?.firstOrNull()?.groupName
-                mainBottomSheetBinding.includeAdGroupManual.productsCount.text =
-                    it.response?.data?.firstOrNull()?.totalItem.toString()
-                mainBottomSheetBinding.includeAdGroupManual.keywordsCount.text =
-                    it.response?.data?.firstOrNull()?.totalKeyword.toString()
                 mainBottomSheetBinding.includeAdGroupManual.adCostSearch.text =
                     String.format(
                         getString(R.string.topads_ads_price_format_1),
@@ -466,6 +463,13 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
                 ADS_PLACEMENT_FILTER_TYPE_IN_RECOMMENDATION -> getString(R.string.topads_ads_performance_in_recommendation_filter_title)
                 else -> ""
             }
+        }
+
+        seePerformanceTopAdsViewModel?.totalAdsAndKeywordsCount?.observe(this){
+            mainBottomSheetBinding.includeAdGroupManual.productsCount.text =
+                it.firstOrNull()?.totalProducts?.toString()
+            mainBottomSheetBinding.includeAdGroupManual.keywordsCount.text =
+                it.firstOrNull()?.totalKeywords?.toString()
         }
     }
 
