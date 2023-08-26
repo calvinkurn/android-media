@@ -4,6 +4,7 @@ import com.tokopedia.home_component.usecase.missionwidget.HomeMissionWidgetData
 import com.tokopedia.home_component.usecase.todowidget.HomeTodoWidgetData
 import com.tokopedia.home_component.visitable.MissionWidgetDataModel
 import com.tokopedia.home_component.visitable.TodoWidgetDataModel
+import com.tokopedia.unifycomponents.CardUnify2
 
 /**
  * Created by dhaba
@@ -25,7 +26,8 @@ object LazyLoadDataMapper {
                 buType = it.buType,
                 isTopads = it.isTopads,
                 isCarousel = it.isCarousel,
-                shopId = it.shopId
+                shopId = it.shopId,
+                animateOnPress = CardUnify2.ANIMATE_OVERLAY_BOUNCE,
             )
         }
     }

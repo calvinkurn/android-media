@@ -3,7 +3,6 @@ package com.tokopedia.home_component.viewholders
 import android.annotation.SuppressLint
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.databinding.GlobalComponentMissionWidgetBinding
@@ -11,9 +10,14 @@ import com.tokopedia.home_component.decoration.MissionWidgetItemDecoration
 import com.tokopedia.home_component.listener.MissionWidgetComponentListener
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselMissionWidgetDataModel
 import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCarouselProductCardTypeFactoryImpl
+import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.home_component.util.MissionWidgetUtil
-import com.tokopedia.home_component.viewholders.adapter.MissionWidgetAdapter
 import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
+import com.tokopedia.home_component.widget.common.CarouselListAdapter
+import com.tokopedia.home_component.widget.mission.MissionWidgetDiffUtil
+import com.tokopedia.home_component.widget.mission.MissionWidgetTypeFactory
+import com.tokopedia.home_component.widget.mission.MissionWidgetTypeFactoryImpl
+import com.tokopedia.home_component.widget.mission.MissionWidgetVisitable
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.utils.view.binding.viewBinding
@@ -33,7 +37,12 @@ class MissionWidgetViewHolder(
     }
 
     private var binding: GlobalComponentMissionWidgetBinding? by viewBinding()
-    private var adapter: MissionWidgetAdapter? = null
+    private val adapter: CarouselListAdapter<MissionWidgetVisitable, MissionWidgetTypeFactory> by lazy {
+        CarouselListAdapter(
+            MissionWidgetTypeFactoryImpl(missionWidgetComponentListener),
+            MissionWidgetDiffUtil()
+        )
+    }
 
     private fun setHeaderComponent(element: MissionWidgetListDataModel) {
         binding?.homeComponentHeaderView?.bind(element.header)
@@ -53,21 +62,22 @@ class MissionWidgetViewHolder(
                 MissionWidgetItemDecoration()
             )
         }
+        binding?.homeComponentMissionWidgetRcv?.itemAnimator = null
         binding?.homeComponentMissionWidgetRcv?.layoutManager = LinearLayoutManager(
             itemView.context,
             LinearLayoutManager.HORIZONTAL,
             false
         )
-    }
-
-    private fun mappingItem(visitables: List<Visitable<*>>) {
-        val typeFactoryImpl = CommonCarouselProductCardTypeFactoryImpl()
-        adapter = MissionWidgetAdapter(visitables, typeFactoryImpl)
         binding?.homeComponentMissionWidgetRcv?.adapter = adapter
-        binding?.homeComponentMissionWidgetRcv?.scrollToPosition(0)
     }
 
-    private fun convertDataToMissionWidgetData(element: MissionWidgetListDataModel): List<Visitable<*>> {
+    private fun mappingItem(visitables: List<MissionWidgetVisitable>) {
+        adapter.submitList(visitables) {
+            binding?.homeComponentMissionWidgetRcv?.scrollToPosition(0)
+        }
+    }
+
+    private fun convertDataToMissionWidgetData(element: MissionWidgetListDataModel): List<MissionWidgetVisitable> {
         val subtitleHeight = MissionWidgetUtil.findMaxHeightSubtitleText(
             element.missionWidgetList,
             itemView.context
@@ -79,9 +89,9 @@ class MissionWidgetViewHolder(
                 channelName = element.name,
                 headerName = element.header.name,
                 subtitleHeight = subtitleHeight,
-                missionWidgetComponentListener = missionWidgetComponentListener,
                 verticalPosition = element.verticalPosition,
-                cardPosition = index
+                cardPosition = index,
+                animateOnPress = item.animateOnPress
             )
         }
     }
@@ -139,7 +149,7 @@ class MissionWidgetViewHolder(
         setLayoutByStatus(element)
     }
 
-    override fun bind(element: MissionWidgetListDataModel, payloads: MutableList<Any>) {
-        bind(element)
-    }
+//    override fun bind(element: MissionWidgetListDataModel, payloads: MutableList<Any>) {
+//        bind(element)
+//    }
 }
