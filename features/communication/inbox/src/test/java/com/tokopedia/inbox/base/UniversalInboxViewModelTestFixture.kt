@@ -1,6 +1,8 @@
 package com.tokopedia.inbox.base
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LifecycleRegistry
 import com.tokopedia.inbox.universalinbox.domain.UniversalInboxGetAllCounterUseCase
 import com.tokopedia.inbox.universalinbox.domain.UniversalInboxGetAllDriverChannelsUseCase
 import com.tokopedia.inbox.universalinbox.domain.UniversalInboxGetWidgetMetaUseCase
@@ -19,6 +21,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
+import org.mockito.Mockito
 
 @OptIn(ExperimentalCoroutinesApi::class)
 abstract class UniversalInboxViewModelTestFixture {
@@ -52,12 +55,16 @@ abstract class UniversalInboxViewModelTestFixture {
     @RelaxedMockK
     protected lateinit var userSession: UserSessionInterface
 
+    private lateinit var mockLifecycleOwner: LifecycleOwner
+    protected lateinit var lifecycle: LifecycleRegistry
     protected lateinit var viewModel: UniversalInboxViewModel
     protected val dummyThrowable = Throwable("Oops!")
 
     @Before
     open fun setup() {
         MockKAnnotations.init(this)
+        mockLifecycleOwner = Mockito.mock(LifecycleOwner::class.java)
+        lifecycle = LifecycleRegistry(mockLifecycleOwner)
         viewModel = UniversalInboxViewModel(
             getAllCounterUseCase,
             getWidgetMetaUseCase,

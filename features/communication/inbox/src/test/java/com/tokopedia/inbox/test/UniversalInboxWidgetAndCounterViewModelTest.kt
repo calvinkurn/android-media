@@ -1,5 +1,6 @@
 package com.tokopedia.inbox.test
 
+import androidx.lifecycle.liveData
 import com.gojek.conversations.channel.ConversationsChannel
 import com.tokopedia.inbox.base.UniversalInboxViewModelTestFixture
 import com.tokopedia.inbox.universalinbox.data.entity.UniversalInboxAllCounterResponse
@@ -88,7 +89,7 @@ class UniversalInboxWidgetAndCounterViewModelTest : UniversalInboxViewModelTestF
             } returns dummyWidgetUi
 
             // When
-            viewModel.loadWidgetMetaAndCounter {}
+            viewModel.loadWidgetMetaAndCounter()
 
             // Then
             Assert.assertEquals(
@@ -119,7 +120,7 @@ class UniversalInboxWidgetAndCounterViewModelTest : UniversalInboxViewModelTestF
             } returns dummyWidgetUi
 
             // When
-            viewModel.loadWidgetMetaAndCounter {}
+            viewModel.loadWidgetMetaAndCounter()
 
             // Then
             Assert.assertEquals(
@@ -150,7 +151,7 @@ class UniversalInboxWidgetAndCounterViewModelTest : UniversalInboxViewModelTestF
             } returns dummyWidgetUi
 
             // When
-            viewModel.loadWidgetMetaAndCounter {}
+            viewModel.loadWidgetMetaAndCounter()
 
             // Then
             Assert.assertEquals(
@@ -181,7 +182,7 @@ class UniversalInboxWidgetAndCounterViewModelTest : UniversalInboxViewModelTestF
             } returns dummyWidgetUiError
 
             // When
-            viewModel.loadWidgetMetaAndCounter {}
+            viewModel.loadWidgetMetaAndCounter()
 
             // Then
             Assert.assertEquals(
@@ -212,7 +213,7 @@ class UniversalInboxWidgetAndCounterViewModelTest : UniversalInboxViewModelTestF
             } throws dummyThrowable
 
             // When
-            viewModel.loadWidgetMetaAndCounter {}
+            viewModel.loadWidgetMetaAndCounter()
 
             // Then
             Assert.assertEquals(
@@ -222,6 +223,102 @@ class UniversalInboxWidgetAndCounterViewModelTest : UniversalInboxViewModelTestF
             Assert.assertEquals(
                 dummyWidgetUiError.isError,
                 viewModel.widget.value?.first?.isError
+            )
+        }
+    }
+
+    @Test
+    fun should_give_driver_unread_pair_when_get_all_channels() {
+        // Given
+        val dummy = ConversationsChannel(
+            "", "", "", "", "",
+            1, null, null, listOf(), false,
+            0, System.currentTimeMillis() + 100000,
+            null, null, 0
+        )
+        every {
+            getDriverChatCounterUseCase.getAllChannels()
+        } returns liveData {
+            this.emit(listOf(dummy))
+        }
+
+        // When
+        viewModel.setAllDriverChannels()
+
+        // Then
+        viewModel.driverChatCounter.observe({ lifecycle }) {
+            // Then
+            Assert.assertEquals(
+                1,
+                (it as Success).data.first
+            )
+            Assert.assertEquals(
+                dummy.unreadCount,
+                it.data.second
+            )
+        }
+    }
+
+    @Test
+    fun should_give_empty_pair_when_get_all_channels_give_empty_list() {
+        // Given
+        every {
+            getDriverChatCounterUseCase.getAllChannels()
+        } returns liveData {
+            this.emit(listOf())
+        }
+
+        // When
+        viewModel.setAllDriverChannels()
+
+        // Then
+        viewModel.driverChatCounter.observe({ lifecycle }) {
+            // Then
+            Assert.assertEquals(
+                0,
+                (it as Success).data.first
+            )
+            Assert.assertEquals(
+                0,
+                it.data.second
+            )
+        }
+    }
+
+    @Test
+    fun should_give_error_when_fail_to_get_all_channels() {
+        // Given
+        val dummy = ConversationsChannel(
+            "", "", "", "", "",
+            Int.MAX_VALUE, null, null, listOf(), false,
+            0, System.currentTimeMillis() + 100000,
+            null, null, 0
+        )
+        val dummy2 = ConversationsChannel(
+            "", "", "", "", "",
+            1, null, null, listOf(), false,
+            0, System.currentTimeMillis() + 100000,
+            null, null, 0
+        )
+        every {
+            getDriverChatCounterUseCase.getAllChannels()
+        } returns liveData {
+            this.emit(listOf(dummy, dummy2))
+        }
+
+        // When
+        viewModel.setAllDriverChannels()
+
+        // Then
+        viewModel.driverChatCounter.observe({ lifecycle }) {
+            // Then
+            Assert.assertEquals(
+                IllegalArgumentException().message,
+                (it as Fail).throwable.message
+            )
+            Assert.assertEquals(
+                IllegalArgumentException().message,
+                viewModel.error.value?.first?.message
             )
         }
     }
@@ -242,7 +339,7 @@ class UniversalInboxWidgetAndCounterViewModelTest : UniversalInboxViewModelTestF
         }
         Assert.assertEquals(
             null,
-            viewModel.driverChatCounter?.value
+            viewModel.driverChatCounter.value
         )
     }
 
@@ -261,14 +358,16 @@ class UniversalInboxWidgetAndCounterViewModelTest : UniversalInboxViewModelTestF
             dummyThrowable.message,
             viewModel.error.value?.first?.message
         )
-        Assert.assertEquals(
-            dummyThrowable.message,
-            (viewModel.driverChatCounter?.value as Fail).throwable.message
-        )
+        viewModel.driverChatCounter.observe({ lifecycle }) {
+            Assert.assertEquals(
+                dummyThrowable.message,
+                (viewModel.driverChatCounter.value as Fail).throwable.message
+            )
+        }
     }
 
     @Test
-    fun a() {
+    fun should_give_driver_unread_count() {
         // When
         val result = viewModel.getDriverUnreadCount(
             listOf(
@@ -289,7 +388,7 @@ class UniversalInboxWidgetAndCounterViewModelTest : UniversalInboxViewModelTestF
     }
 
     @Test
-    fun b() {
+    fun should_give_error_when_fail_to_get_driver_unread_count() {
         // Given
         val dummy = ConversationsChannel(
             "", "", "", "", "",
@@ -305,13 +404,14 @@ class UniversalInboxWidgetAndCounterViewModelTest : UniversalInboxViewModelTestF
         )
 
         // When
-        val result = viewModel.getDriverUnreadCount(
-            listOf(
-                dummy,
-                dummy2
-            )
+        viewModel.getDriverUnreadCount(
+            listOf(dummy, dummy2)
         )
 
         // Then
+        Assert.assertEquals(
+            IllegalArgumentException().message,
+            viewModel.error.value?.first?.message
+        )
     }
 }
