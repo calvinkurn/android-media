@@ -3,7 +3,9 @@ package com.tokopedia.inbox.universalinbox.view
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.distinctUntilChanged
 import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
 import com.gojek.conversations.channel.ConversationsChannel
@@ -71,10 +73,10 @@ class UniversalInboxViewModel @Inject constructor(
     val morePageRecommendation: LiveData<Result<List<RecommendationItem>>>
         get() = _morePageRecommendation
 
-    @VisibleForTesting
-    var _allChannelsLiveData: LiveData<List<ConversationsChannel>>? = null
+    private val _driverChatCounter: MediatorLiveData<Result<Pair<Int, Int>>?> = MediatorLiveData()
+    val driverChatCounter: LiveData<Result<Pair<Int, Int>>?>
+        get() = _driverChatCounter.distinctUntilChanged()
 
-    var driverChatCounter: LiveData<Result<Pair<Int, Int>>>? = null
     var driverChatWidgetData: Pair<Int, UniversalInboxWidgetDataResponse>? = null
     var driverChatData: Result<Pair<Int, Int>>? = null
 
@@ -88,13 +90,11 @@ class UniversalInboxViewModel @Inject constructor(
         _inboxMenu.postValue(staticMenuList)
     }
 
-    fun loadWidgetMetaAndCounter(
-        additionalAction: () -> Unit
-    ) {
+    fun loadWidgetMetaAndCounter() {
         viewModelScope.launch {
             try {
                 val widgetMetaResponse = getWidgetMetaAsync().await()
-                resetDriver()
+                driverChatWidgetData = null // reset driver widget
                 // Get driver data only when response has driver widget
                 if (widgetMetaResponse?.metaData != null) {
                     widgetMetaResponse.metaData.forEachIndexed { index, response ->
@@ -105,9 +105,8 @@ class UniversalInboxViewModel @Inject constructor(
                 }
                 if (driverChatWidgetData != null) {
                     setAllDriverChannels()
-                    additionalAction.invoke()
                 }
-                driverChatData = driverChatCounter?.value // Set driver chat data
+                driverChatData = driverChatCounter.value // Set driver chat data
                 val allCounterResponse = getAllCounterAsync().await()
                 val result = inboxMenuMapper.mapWidgetMetaToUiModel(
                     widgetMetaResponse,
@@ -122,22 +121,20 @@ class UniversalInboxViewModel @Inject constructor(
         }
     }
 
-    private fun resetDriver() {
-        driverChatWidgetData = null
-        driverChatCounter = null
-    }
-
     fun setAllDriverChannels() {
         try {
-            _allChannelsLiveData = getDriverChatCounterUseCase.getAllChannels()
-            _allChannelsLiveData?.run {
-                driverChatCounter = switchMap {
+            val allChannelsLiveData = getDriverChatCounterUseCase.getAllChannels()
+            allChannelsLiveData?.run {
+                val liveData = switchMap {
                     getDriverUnreadCount(it)
+                }
+                _driverChatCounter.addSource(liveData) {
+                    _driverChatCounter.value = it
                 }
             }
         } catch (throwable: Throwable) {
             _error.value = Pair(throwable, ::setAllDriverChannels.name)
-            driverChatCounter = MutableLiveData(Fail(throwable))
+            _driverChatCounter.value = Fail(throwable)
         }
     }
 

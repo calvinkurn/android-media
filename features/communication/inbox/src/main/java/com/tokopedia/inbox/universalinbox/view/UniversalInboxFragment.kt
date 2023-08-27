@@ -222,6 +222,7 @@ class UniversalInboxFragment @Inject constructor(
                     trackInboxPageImpression(it)
                 }
             }
+            observeDriverCounter() // Observe only after widget loaded
         }
 
         viewModel.allCounter.observe(viewLifecycleOwner) {
@@ -282,13 +283,14 @@ class UniversalInboxFragment @Inject constructor(
     }
 
     private fun observeDriverCounter() {
-        viewModel.driverChatCounter?.let { liveData ->
-            viewLifecycleOwner.removeObservers(liveData)
+        viewLifecycleOwner.removeObservers(viewModel.driverChatCounter)
+        viewModel.driverChatCounter.let { liveData ->
             liveData.observe(viewLifecycleOwner) {
                 viewModel.driverChatData = it // Always save data
                 when (it) {
                     is Success -> onSuccessGetDriverChat(it.data.first, it.data.second)
                     is Fail -> onErrorGetDriverChat(it.throwable)
+                    else -> Unit // no op
                 }
             }
         }
@@ -507,9 +509,7 @@ class UniversalInboxFragment @Inject constructor(
     }
 
     override fun loadWidgetMetaAndCounter() {
-        viewModel.loadWidgetMetaAndCounter {
-            observeDriverCounter()
-        }
+        viewModel.loadWidgetMetaAndCounter()
     }
 
     private fun loadTopAdsAndRecommendation() {
