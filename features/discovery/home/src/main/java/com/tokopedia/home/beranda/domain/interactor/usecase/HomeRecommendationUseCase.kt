@@ -36,13 +36,16 @@ class HomeRecommendationUseCase @Inject constructor(
                             queryParam = if(filterChip.isActivated) filterChip.value else ""
                     )
             )
-            if (recomData.isNotEmpty() && recomData.first().recommendationItemList.isNotEmpty()) {
-                val recomWidget = recomData.first().copy(
-                        recommendationFilterChips = currentBestSellerDataModel.filterChip
-                )
+            val recomWidget = recomData.firstOrNull()?.copy(
+                recommendationFilterChips = currentBestSellerDataModel.filterChip
+            )
+            if (recomWidget != null && recomWidget.recommendationItemList.isNotEmpty()) {
                 val newBestSellerDataModel = bestSellerMapper.get().mappingRecommendationWidget(recomWidget, cardInteraction = true, currentBestSellerDataModel)
                 val newModel = currentBestSellerDataModel.copy(
                         seeMoreAppLink = newBestSellerDataModel.seeMoreAppLink,
+                        channelHeader = currentBestSellerDataModel.channelHeader.copy(
+                            applink = newBestSellerDataModel.seeMoreAppLink
+                        ),
                         recommendationItemList = newBestSellerDataModel.recommendationItemList,
                         productCardModelList = newBestSellerDataModel.productCardModelList,
                         height = newBestSellerDataModel.height,
@@ -55,13 +58,14 @@ class HomeRecommendationUseCase @Inject constructor(
                 )
                 return newModel
             } else {
-                val newModel = currentBestSellerDataModel.copy(
-                        filterChip = currentBestSellerDataModel.filterChip.map{
-                            it.copy(isActivated = filterChip.name == it.name
-                                    && !filterChip.isActivated)
-                        }
+                return currentBestSellerDataModel.copy(
+                    channelHeader = currentBestSellerDataModel.channelHeader.copy(
+                        applink = recomWidget?.seeMoreAppLink.orEmpty()
+                    ),
+                    recommendationItemList = listOf(),
+                    productCardModelList = listOf(),
+                    chipsPosition = (selectedChipPosition + 1)
                 )
-                return newModel
             }
         } catch (_: Exception) {
             val newModel = currentBestSellerDataModel.copy(

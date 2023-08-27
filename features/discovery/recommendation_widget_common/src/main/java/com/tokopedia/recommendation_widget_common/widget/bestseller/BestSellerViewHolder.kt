@@ -2,12 +2,14 @@ package com.tokopedia.recommendation_widget_common.widget.bestseller
 
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.widget.AppCompatImageView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component_header.view.HomeChannelHeaderListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.databinding.BestSellerViewHolderBinding
@@ -19,6 +21,7 @@ import com.tokopedia.recommendation_widget_common.widget.bestseller.annotationfi
 import com.tokopedia.recommendation_widget_common.widget.bestseller.decoration.CommonMarginStartDecoration
 import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.RecommendationWidgetListener
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
+import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel.Companion.BEST_SELLER_EMPTY_STATE
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel.Companion.BEST_SELLER_HIDE_LOADING_RECOMMENDATION
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel.Companion.BEST_SELLER_UPDATE_RECOMMENDATION
 import com.tokopedia.recommendation_widget_common.widget.bestseller.recommendations.adapter.RecommendationCarouselAdapter
@@ -71,10 +74,22 @@ class BestSellerViewHolder (private val view: View,
                 initFilterChip(element)
                 initRecommendation(element)
                 binding?.bestSellerLoadingRecommendation?.root?.hide()
+                binding?.bestSellerEmptyState?.root?.hide()
                 binding?.bestSellerRecommendationRecyclerView?.show()
             } else if(bundle.containsKey(BEST_SELLER_HIDE_LOADING_RECOMMENDATION)){
                 binding?.bestSellerLoadingRecommendation?.root?.hide()
+                binding?.bestSellerEmptyState?.root?.hide()
                 binding?.bestSellerRecommendationRecyclerView?.show()
+            } else if(bundle.containsKey(BEST_SELLER_EMPTY_STATE)) {
+                bestSellerDataModel = element
+                initHeader(element)
+                binding?.bestSellerEmptyState?.root?.run {
+                    findViewById<AppCompatImageView>(com.tokopedia.recommendation_widget_common.R.id.img_best_seller_empty)
+                        .loadImage(EMPTY_IMAGE_URL)
+                    show()
+                }
+                binding?.bestSellerLoadingRecommendation?.root?.hide()
+                binding?.bestSellerRecommendationRecyclerView?.hide()
             }
         }
     }
@@ -152,6 +167,7 @@ class BestSellerViewHolder (private val view: View,
             listener.onBestSellerFilterClick(annotationChip.copy(isActivated = !annotationChip.isActivated), it, adapterPosition, position)
             binding?.bestSellerLoadingRecommendation?.root?.show()
             binding?.bestSellerRecommendationRecyclerView?.hide()
+            binding?.bestSellerEmptyState?.root?.hide()
             bestSellerDataModel?.chipsPosition = (position+1)
         }
     }
@@ -185,6 +201,7 @@ class BestSellerViewHolder (private val view: View,
     companion object{
         val LAYOUT = R.layout.best_seller_view_holder
         private const val CLASS_NAME = "com.tokopedia.recommendation_widget_common.widget.bestseller.BestSellerViewHolder"
+        private const val EMPTY_IMAGE_URL = "https://images.tokopedia.net/img/frontend/illustration/home_state_product_list_empty.png"
     }
 
     private fun setChannelDivider(element: BestSellerDataModel) {
