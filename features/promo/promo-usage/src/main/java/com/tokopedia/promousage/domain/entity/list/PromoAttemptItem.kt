@@ -7,5 +7,7 @@ data class PromoAttemptItem(
     val label: String = "",
     val attemptedPromoCode: String = "",
     val errorMessage: String = "",
-    val promo: PromoItem? = null
+    val promo: PromoItem? = null,
+
+    val hasOtherSection: Boolean = false
 ) : DelegateAdapterItem

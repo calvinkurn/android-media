@@ -18,6 +18,7 @@ import com.tokopedia.promousage.databinding.PromoUsageItemPromoAttemptBinding
 import com.tokopedia.promousage.domain.entity.list.PromoAttemptItem
 import com.tokopedia.promousage.view.custom.TextDrawable
 import com.tokopedia.promousage.util.composite.DelegateAdapter
+import com.tokopedia.unifycomponents.toPx
 
 internal class PromoAttemptCodeDelegateAdapter(
     private val onAttemptPromoCode: (String) -> Unit
@@ -29,6 +30,8 @@ internal class PromoAttemptCodeDelegateAdapter(
         private const val SINGLE_LINE = 1
         private const val RIGHT_DRAWABLE_INDEX = 2
         private const val NO_ERROR_MESSAGE = ""
+
+        private const val PADDING_TOP_IN_DP = 16
     }
 
     override fun createViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
@@ -51,6 +54,11 @@ internal class PromoAttemptCodeDelegateAdapter(
 
         fun bind(item: PromoAttemptItem) {
             with(binding) {
+                if (item.hasOtherSection) {
+                    binding.root.setPadding(0, PADDING_TOP_IN_DP.toPx(), 0, 0)
+                } else {
+                    binding.root.setPadding(0, 0, 0, 0)
+                }
                 if (item.label.isNotBlank()) {
                     tauVoucherCode.setLabel(item.label)
                 }

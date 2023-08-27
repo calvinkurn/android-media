@@ -67,11 +67,13 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
         val selectedPromoCodes = response.promoListRecommendation.data.couponSections
             .flatMap { it.coupons }.filter { it.isSelected }.map { it.code }
 
+        var hasRecommendedOrOtherSection = false
         val items = mutableListOf<DelegateAdapterItem>()
         response.promoListRecommendation.data.couponSections.map { couponSection ->
             when (couponSection.id) {
                 PromoPageSection.SECTION_RECOMMENDATION -> {
                     if (couponSection.coupons.isNotEmpty()) {
+                        hasRecommendedOrOtherSection = true
                         items.add(
                             mapCouponSectionToPromoRecommendation(
                                 promoRecommendation = response.promoListRecommendation.data.promoRecommendation,
@@ -94,29 +96,9 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
                     }
                 }
 
-                PromoPageSection.SECTION_INPUT_PROMO_CODE -> {
-                    items.add(
-                        PromoAttemptItem(
-                            id = couponSection.id
-                        )
-                    )
-                    if (couponSection.coupons.isNotEmpty()) {
-                        couponSection.coupons.forEachIndexed { index, coupon ->
-                            items.add(
-                                mapCouponToPromo(
-                                    index = index,
-                                    couponSection = couponSection,
-                                    coupon = coupon,
-                                    recommendedPromoCodes = recommendedPromoCodes,
-                                    selectedPromoCodes = selectedPromoCodes
-                                )
-                            )
-                        }
-                    }
-                }
-
                 else -> {
                     if (couponSection.coupons.isNotEmpty()) {
+                        hasRecommendedOrOtherSection = true
                         items.add(
                             PromoAccordionHeaderItem(
                                 id = couponSection.id,
@@ -151,6 +133,25 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
                 }
             }
         }
+        items.add(
+            PromoAttemptItem(
+                id = PromoPageSection.SECTION_INPUT_PROMO_CODE,
+                hasOtherSection = hasRecommendedOrOtherSection
+            )
+        )
+        val attemptedPromoSection = response.promoListRecommendation.data.couponSections
+            .firstOrNull { it.id == PromoPageSection.SECTION_INPUT_PROMO_CODE }
+        attemptedPromoSection?.coupons?.forEachIndexed { index, coupon ->
+            items.add(
+                mapCouponToPromo(
+                    index = index,
+                    couponSection = attemptedPromoSection,
+                    coupon = coupon,
+                    recommendedPromoCodes = recommendedPromoCodes,
+                    selectedPromoCodes = selectedPromoCodes
+                )
+            )
+        }
         return items
     }
 
@@ -184,8 +185,9 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
         } else {
             SecondaryCoupon()
         }
-        val remainingPromoCount =
-            couponSection.couponGroups.firstOrNull { it.id == coupon.groupId }?.count ?: 1
+        // TODO: Get remaining promo count from BE after available
+        val remainingPromoCount = 1
+            //couponSection.couponGroups.firstOrNull { it.id == coupon.groupId }?.count ?: 1
 
         val isRecommended = recommendedPromoCodes.isNotEmpty() &&
             (recommendedPromoCodes.contains(coupon.code)
