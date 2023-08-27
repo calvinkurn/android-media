@@ -6,7 +6,6 @@ import android.graphics.Color
 import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.Gravity
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewStub
 import android.widget.FrameLayout
@@ -16,7 +15,6 @@ import androidx.constraintlayout.widget.ConstraintSet
 import com.tokopedia.home_component_header.R
 import com.tokopedia.home_component_header.model.ChannelHeader
 import com.tokopedia.home_component_header.util.DateHelper
-import com.tokopedia.home_component_header.util.HomeChannelHeaderRollenceController
 import com.tokopedia.home_component_header.util.ViewUtils.convertDpToPixel
 import com.tokopedia.home_component_header.util.getLink
 import com.tokopedia.kotlin.extensions.view.gone
