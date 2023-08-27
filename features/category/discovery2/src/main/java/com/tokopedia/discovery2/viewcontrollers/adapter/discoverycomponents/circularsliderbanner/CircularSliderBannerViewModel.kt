@@ -35,5 +35,9 @@ class CircularSliderBannerViewModel(application: Application, val components: Co
         return null
     }
 
+    fun getPropertyType(): String {
+        return components.properties?.type.orEmpty()
+    }
+
     fun getComponentPosition() = position
 }

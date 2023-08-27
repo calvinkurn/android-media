@@ -63,6 +63,10 @@ class BannerIndicator : LinearLayout {
         this.listener = listener
     }
 
+    fun setBannerTransitionDuration(duration: Long) {
+        bannerAnimator.duration = duration
+    }
+
     @SuppressLint("UnifyComponentUsage")
     private fun addProgressBar() {
         val progressBarTheme =
@@ -140,7 +144,7 @@ class BannerIndicator : LinearLayout {
 
     private fun animateIndicatorBanner(progressIndicator: ProgressBar, position: Int) {
         currentPosition = position
-        if(!isAnimationTurnedOff()) {
+        if(true) {
             bannerAnimator.addUpdateListener { animation ->
                 val value = animation.animatedValue as Int
                 progressIndicator.progress = value

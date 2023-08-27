@@ -21,6 +21,8 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.postDelayed
@@ -117,6 +119,7 @@ import com.tokopedia.discovery2.viewcontrollers.customview.CustomTopChatView
 import com.tokopedia.discovery2.viewcontrollers.customview.StickyHeadRecyclerView
 import com.tokopedia.discovery2.viewmodel.DiscoveryViewModel
 import com.tokopedia.discovery2.viewmodel.livestate.GoToAgeRestriction
+import com.tokopedia.discovery2.viewmodel.livestate.NavToolbarConfig
 import com.tokopedia.discovery2.viewmodel.livestate.RouteToApplink
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
@@ -234,6 +237,7 @@ open class DiscoveryFragment :
     private lateinit var coordinatorLayout: CoordinatorLayout
     private lateinit var parentLayout: FrameLayout
     private lateinit var appBarLayout: AppBarLayout
+    private var parentConstraintLayout: ConstraintLayout? = null
     private var pageInfoHolder: PageInfo? = null
     private var miniCartWidget: MiniCartWidget? = null
     private var miniCartData: MiniCartSimplifiedData? = null
@@ -431,6 +435,7 @@ open class DiscoveryFragment :
         parentLayout = view.findViewById(R.id.parent_frame)
         appBarLayout = view.findViewById(R.id.appbarLayout)
         miniCartWidget = view.findViewById(R.id.miniCartWidget)
+        parentConstraintLayout = view.findViewById(R.id.parent_constraint_container)
 
         mProgressBar.show()
         mSwipeRefreshLayout.setOnRefreshListener(this)
@@ -542,6 +547,8 @@ open class DiscoveryFragment :
                             }
                         }
                     }
+
+                    requestStatusBarLight()
                 }
 
                 override fun onSwitchToLightToolbar() {
@@ -552,9 +559,12 @@ open class DiscoveryFragment :
                             navToolbar.showShadow(true)
                         }
                     }
+
+                    requestStatusBarDark()
                 }
 
                 override fun onYposChanged(yOffset: Int) {
+
                 }
             }
         )
@@ -761,6 +771,7 @@ open class DiscoveryFragment :
                             discoveryAdapter.addDataList(ArrayList())
                             setPageErrorState(Fail(IllegalStateException()))
                         } else {
+//                            setUpRecyclerViewDimensions(it.data)
                             hideGlobalError()
                             scrollToPinnedComponent(listComponent)
                             removePaddingIfComponent()
@@ -799,7 +810,6 @@ open class DiscoveryFragment :
                 is Success -> {
                     pageInfoHolder = it.data
                     setToolBarPageInfoOnSuccess(it.data)
-                    setupBackgroundForHeader(it.data)
                     addMiniCartToPageFirstTime()
                     setupAffiliate()
                 }
@@ -951,10 +961,15 @@ open class DiscoveryFragment :
                 }
             }
         })
+
+        discoveryViewModel.getDiscoveryNavToolbarConfigLiveData().observe(viewLifecycleOwner) {
+            setUpRecyclerViewDimensions(it)
+            setupBackgroundForHeader(it)
+        }
     }
 
-    private fun setupBackgroundForHeader(data: PageInfo?) {
-        if (!data?.thematicHeader?.color.isNullOrEmpty()) {
+    private fun setupBackgroundForHeader(config: NavToolbarConfig) {
+        if (config.color.isNotEmpty()) {
             hasColouredHeader = true
             activity?.let { navToolbar.setupToolbarWithStatusBar(it) }
             context?.let {
@@ -967,10 +982,52 @@ open class DiscoveryFragment :
                 navToolbar.showShadow(true)
             }
             appBarLayout.elevation = 0f
-            setupHexBackgroundColor(data?.thematicHeader?.color ?: "")
+            setupHexBackgroundColor(config.color)
             setupNavScrollListener()
         } else {
             hasColouredHeader = false
+        }
+    }
+
+    private fun setUpRecyclerViewDimensions(config: NavToolbarConfig) {
+        if (config.needToExtendHeader) {
+            //make full transparent statusBar
+            activity?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                StatusBarUtil.setWindowFlag(activity, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false)
+                activity?.window?.statusBarColor = Color.TRANSPARENT
+            }
+
+            val constraintSet = ConstraintSet()
+            constraintSet.clone(parentConstraintLayout)
+            constraintSet.connect(
+                R.id.swiperefresh,
+                ConstraintSet.TOP,
+                R.id.navToolbar,
+                ConstraintSet.BOTTOM,
+                0
+            )
+            constraintSet.applyTo(parentConstraintLayout)
+
+            activity?.let { navToolbar.setupToolbarWithStatusBar(it) }
+            context?.let {
+                navToolbar.setIconCustomColor(getDarkIconColor(it), getLightIconColor(it))
+            }
+            if (isLightThemeStatusBar == true) {
+                navToolbar.hideShadow()
+            } else {
+                navToolbar.setShowShadowEnabled(true)
+                navToolbar.showShadow(true)
+            }
+            appBarLayout.elevation = 0f
+
+            chooseAddressWidget?.hide()
+            chooseAddressWidgetDivider?.hide()
+
+            appBarLayout.setBackgroundColor(Color.TRANSPARENT)
+            navToolbar.hideShadow(lineShadow = true)
+
+            setupNavScrollListener()
         }
     }
 

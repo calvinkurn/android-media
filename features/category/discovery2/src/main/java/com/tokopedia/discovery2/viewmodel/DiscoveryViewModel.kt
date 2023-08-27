@@ -66,6 +66,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.mast
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewmodel.livestate.DiscoveryLiveState
 import com.tokopedia.discovery2.viewmodel.livestate.GoToAgeRestriction
+import com.tokopedia.discovery2.viewmodel.livestate.NavToolbarConfig
 import com.tokopedia.discovery2.viewmodel.livestate.RouteToApplink
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isZero
@@ -107,6 +108,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     private val discoveryResponseList = MutableLiveData<Result<List<ComponentsItem>>>()
     private val discoveryLiveStateData = MutableLiveData<DiscoveryLiveState>()
     private val discoveryAnchorTabLiveData = MutableLiveData<Result<ComponentsItem>>()
+    private val discoveryNavToolbarConfig = MutableLiveData<NavToolbarConfig>()
 
     var miniCartSimplifiedData: MiniCartSimplifiedData? = null
 
@@ -141,6 +143,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     var isAffiliateInitialized = false
     private var randomUUIDAffiliate: String? = null
     private var bottomTabNavDataComponent : ComponentsItem?  = null
+    private var components: List<ComponentsItem> = listOf()
 
     @Inject
     lateinit var customTopChatUseCase: CustomTopChatUseCase
@@ -346,6 +349,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
                     pageLoadTimePerformanceInterface?.stopNetworkRequestPerformanceMonitoring()
                     pageLoadTimePerformanceInterface?.startRenderPerformanceMonitoring()
                     data.let {
+                        components = it.components
                         setDiscoveryLiveState(it.pageInfo)
                         setPageInfo(it)
                         withContext(Dispatchers.Default) {
@@ -372,10 +376,23 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
         discoPageData?.pageInfo?.let { pageInfoData ->
             pageType = if(pageInfoData.type.isNullOrEmpty()) DISCOVERY_DEFAULT_PAGE_TYPE else pageInfoData.type
             pagePath = pageInfoData.path ?: ""
-            chooseAddressVisibilityLiveData.value = pageInfoData.showChooseAddress
             pageInfoData.additionalInfo = discoPageData.additionalInfo
             campaignCode = pageInfoData.campaignCode ?: ""
             discoveryPageInfo.value = Success(pageInfoData)
+
+            val firstComponent = components.firstOrNull()
+            if (firstComponent != null) {
+                discoveryNavToolbarConfig.value = NavToolbarConfig(
+                    needToExtendHeader = firstComponent.name == ComponentNames.SliderBanner.componentName
+                        && firstComponent.properties?.type =="atf_banner"
+                )
+                chooseAddressVisibilityLiveData.value = false
+            } else {
+                discoveryNavToolbarConfig.value = NavToolbarConfig(
+                    color = pageInfoData.thematicHeader?.color.orEmpty()
+                )
+                chooseAddressVisibilityLiveData.value = pageInfoData.showChooseAddress
+            }
         }
     }
 
@@ -384,6 +401,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     fun getDiscoveryFabLiveData(): LiveData<Result<ComponentsItem>> = discoveryFabLiveData
     fun getDiscoveryLiveStateData(): LiveData<DiscoveryLiveState> = discoveryLiveStateData
     fun getDiscoveryAnchorTabLiveData(): LiveData<Result<ComponentsItem>> = discoveryAnchorTabLiveData
+    fun getDiscoveryNavToolbarConfigLiveData(): LiveData<NavToolbarConfig> = discoveryNavToolbarConfig
 
     private fun fetchTopChatMessageId(context: Context, appLinks: String, shopId: Int) {
         val queryMap: MutableMap<String, Any> = mutableMapOf("fabShopId" to shopId, "source" to "discovery")
