@@ -591,7 +591,6 @@ class UniversalInboxFragment @Inject constructor(
             }
             GOJEK_TYPE -> {
                 viewModel.setAllDriverChannels()
-                observeDriverCounter()
             }
         }
     }

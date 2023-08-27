@@ -129,9 +129,7 @@ class UniversalInboxViewModel @Inject constructor(
 
     fun setAllDriverChannels() {
         try {
-            if (_allChannelsLiveData == null) {
-                _allChannelsLiveData = getDriverChatCounterUseCase.getAllChannels()
-            }
+            _allChannelsLiveData = getDriverChatCounterUseCase.getAllChannels()
             _allChannelsLiveData?.run {
                 driverChatCounter = switchMap {
                     getDriverUnreadCount(it)

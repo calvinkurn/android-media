@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/ic_clock"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginStart="16dp"
+            app:icon_name="CLOCK"
+            app:layout_constraintBottom_toBottomOf="@id/text_operational_hour_label"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/text_operational_hour_label"
+            app:tint="@color/Unify_NN900" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/text_operational_hour_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:text="@string/tokopedianow_operational_hour_label"
+            android:textColor="@color/Unify_NN950"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/ic_clock"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="display_2" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/text_warehouse_status"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:layout_constraintStart_toStartOf="@id/text_operational_hour_label"
+            app:layout_constraintTop_toBottomOf="@id/text_operational_hour_label"
+            app:typographyType="display_2"
+            app:typographyWeight="bold"
+            tools:text="Buka"
+            tools:textColor="@color/Unify_GN500" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/text_dot"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:text="@string/tokopedianow_text_dot"
+            android:textColor="@color/Unify_NN500"
+            app:layout_constraintBottom_toBottomOf="@id/text_warehouse_status"
+            app:layout_constraintStart_toEndOf="@id/text_warehouse_status"
+            app:layout_constraintTop_toTopOf="@id/text_warehouse_status"
+            app:typographyType="display_2" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/text_operational_hour"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="8dp"
+            android:textColor="@color/Unify_NN950"
+            app:layout_constraintStart_toEndOf="@id/text_dot"
+            app:layout_constraintTop_toBottomOf="@id/text_operational_hour_label"
+            app:typographyType="display_2"
+            tools:text="Senin - Minggu | 05:00 - 23:59 WIB" />
+
+        <View
+            android:id="@+id/divider_top"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="16dp"
+            android:background="@color/Unify_NN50"
+            app:layout_constraintTop_toBottomOf="@id/text_operational_hour" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/ic_shipment"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginStart="16dp"
+            app:icon_name="COURIER"
+            app:layout_constraintBottom_toBottomOf="@id/text_shipment_label"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/text_shipment_label"
+            app:tint="@color/Unify_NN900" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/text_shipment_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/tokopedianow_shipping_option_label"
+            android:textColor="@color/Unify_NN950"
+            app:layout_constraintStart_toEndOf="@id/ic_shipment"
+            app:layout_constraintTop_toBottomOf="@id/divider_top"
+            app:typographyType="display_2" />
+
+        <LinearLayout
+            android:id="@+id/container_shipment_options_list"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/text_shipment_label"
+            app:layout_constraintTop_toBottomOf="@id/ic_shipment" />
+
+        <View
+            android:id="@+id/divider_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="8dp"
+            android:layout_marginTop="16dp"
+            android:background="@color/Unify_NN50"
+            app:layout_constraintTop_toBottomOf="@id/container_shipment_options_list" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/text_benefit_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/tokopedianow_benefit_section_title"
+            android:textColor="@color/Unify_NN950"
+            app:layout_constraintTop_toBottomOf="@id/divider_bottom"
+            app:typographyType="display_2"
+            app:typographyWeight="bold" />
+
+        <LinearLayout
+            android:id="@+id/container_benefit_list"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/text_benefit_label" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/text_tnc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:text="@string/tokopedianow_buyer_communication_tnc"
+            android:textColor="@color/Unify_NN600"
+            app:layout_constraintTop_toBottomOf="@id/container_benefit_list"
+            app:typographyType="paragraph_3" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/image_illustration"
+            android:layout_width="match_parent"
+            android:layout_height="110dp"
+            android:layout_marginTop="16dp"
+            android:scaleType="fitXY"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/text_tnc" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

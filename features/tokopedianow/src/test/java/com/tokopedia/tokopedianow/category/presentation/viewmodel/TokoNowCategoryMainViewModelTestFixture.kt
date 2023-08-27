@@ -37,7 +37,6 @@ import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
 import com.tokopedia.tokopedianow.searchcategory.jsonToObject
-import com.tokopedia.tokopedianow.util.TestUtils.mockPrivateField
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
@@ -55,8 +54,6 @@ open class TokoNowCategoryMainViewModelTestFixture {
      * private variable section
      */
     private lateinit var localAddress: TokoNowLocalAddress
-
-    private val privateFieldLocalAddress = "localAddressData"
 
     private val categoryProductResponse1 = "category/ace-search-product-1-aneka-sayuran.json".jsonToObject<AceSearchProductModel>()
     private val categoryProductResponse2 = "category/ace-search-product-2-bawang.json".jsonToObject<AceSearchProductModel>()
@@ -150,7 +147,7 @@ open class TokoNowCategoryMainViewModelTestFixture {
 
     @Before
     fun setUp() {
-        localAddress = TokoNowLocalAddress(mockk(relaxed = true))
+        localAddress = mockk(relaxed = true)
         setAddressData(
             warehouseId = warehouseId,
             shopId = shopId
@@ -186,19 +183,20 @@ open class TokoNowCategoryMainViewModelTestFixture {
         shopId: String,
         warehouses: List<LocalWarehouseModel> = emptyList()
     ) {
+        val warehousesData = warehouses.map {
+            WarehouseData(it.warehouse_id.toString(), it.service_type)
+        }
+
         addressData = LocalCacheModel(
             warehouses = warehouses,
             warehouse_id = warehouseId,
             shop_id = shopId
         )
-        localAddress.mockPrivateField(
-            name = privateFieldLocalAddress,
-            value = LocalCacheModel(
-                warehouse_id = warehouseId,
-                shop_id = shopId,
-                warehouses = warehouses
-            )
-        )
+
+        coEvery { localAddress.getWarehouseId() } returns warehouseId.toLong()
+        coEvery { localAddress.getShopId() } returns shopId.toLong()
+        coEvery { localAddress.getWarehousesData() } returns warehousesData
+        coEvery { localAddress.getAddressData() } returns addressData
     }
 
     protected fun getLocalWarehouseModelList(): List<LocalWarehouseModel> = warehouses.map {
