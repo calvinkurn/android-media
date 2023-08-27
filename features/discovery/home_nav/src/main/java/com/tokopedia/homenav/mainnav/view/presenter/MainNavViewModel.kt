@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.homenav.MePageRollenceController.isUsingMePageRollenceVariant
 import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
 import com.tokopedia.homenav.base.datamodel.HomeNavTitleDataModel
 import com.tokopedia.homenav.common.util.ClientMenuGenerator
@@ -248,7 +249,7 @@ class MainNavViewModel @Inject constructor(
     private fun addHomeBackButtonMenu() {
         val listOfHomeMenuSection = mutableListOf<Visitable<*>>()
         listOfHomeMenuSection.add(clientMenuGenerator.get().getMenu(menuId = ID_HOME, sectionId = MainNavConst.Section.HOME))
-        listOfHomeMenuSection.add(SeparatorDataModel(sectionId = MainNavConst.Section.HOME))
+        listOfHomeMenuSection.add(SeparatorDataModel(sectionId = MainNavConst.Section.HOME, isMePageVariant = true))
         addWidgetList(listOfHomeMenuSection, INDEX_HOME_BACK_SEPARATOR)
     }
 
@@ -449,7 +450,7 @@ class MainNavViewModel @Inject constructor(
                 it.getMenu(menuId = ID_COMPLAIN, sectionId = MainNavConst.Section.USER_MENU),
                 it.getMenu(menuId = ID_TOKOPEDIA_CARE, sectionId = MainNavConst.Section.USER_MENU)
             )
-            firstSectionList.add(SeparatorDataModel())
+            firstSectionList.add(SeparatorDataModel(isMePageVariant = true))
 
             val secondSectionList = listOf(
                 it.getMenu(menuId = ID_QR_CODE, sectionId = MainNavConst.Section.USER_MENU)

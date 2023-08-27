@@ -3,7 +3,6 @@ package com.tokopedia.homenav.mainnav.view.adapter.viewholder
 import android.annotation.SuppressLint
 import android.view.View
 import androidx.annotation.LayoutRes
-import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.databinding.HolderSeparatorBinding
@@ -25,7 +24,14 @@ class SeparatorViewHolder(itemView: View,
     @SuppressLint("ResourcePackage")
     override fun bind(element: SeparatorDataModel) {
         val context = itemView.context
-        binding?.dividerUnify?.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN200))
+        val dividerLayoutParams = binding?.dividerUnify?.layoutParams
+        val heightDimenId = if(element.isMePageVariant){
+            com.tokopedia.homenav.R.dimen.nav_control_divider_height
+        } else {
+            com.tokopedia.homenav.R.dimen.nav_mepage_divider_height
+        }
+        dividerLayoutParams?.height = context.resources.getDimensionPixelSize(heightDimenId)
+        binding?.dividerUnify?.layoutParams = dividerLayoutParams
     }
 }
 
