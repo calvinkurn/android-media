@@ -1,6 +1,5 @@
 package com.tokopedia.inbox.test
 
-import androidx.lifecycle.MutableLiveData
 import com.gojek.conversations.channel.ConversationsChannel
 import com.tokopedia.inbox.base.UniversalInboxViewModelTestFixture
 import com.tokopedia.inbox.universalinbox.data.entity.UniversalInboxAllCounterResponse
@@ -224,20 +223,6 @@ class UniversalInboxWidgetAndCounterViewModelTest : UniversalInboxViewModelTestF
                 dummyWidgetUiError.isError,
                 viewModel.widget.value?.first?.isError
             )
-        }
-    }
-
-    @Test
-    fun should_not_call_get_driver_counter_use_case_when_live_data_is_not_null() {
-        // Given
-        viewModel._allChannelsLiveData = MutableLiveData()
-
-        // When
-        viewModel.setAllDriverChannels()
-
-        // Then
-        verify(exactly = 0) {
-            getDriverChatCounterUseCase.getAllChannels()
         }
     }
 
