@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.homenav.MePageRollenceController
 import com.tokopedia.homenav.MePageRollenceController.isUsingMePageRollenceVariant
 import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
 import com.tokopedia.homenav.base.datamodel.HomeNavTitleDataModel
@@ -189,6 +190,7 @@ class MainNavViewModel @Inject constructor(
     // ============================================================================================
 
     fun setInitialState() {
+        MePageRollenceController.fetchMePageRollenceValue()
         val initialList = mutableListOf<Visitable<*>>()
         if (userSession.get().isLoggedIn) {
             initialList.add(AccountHeaderDataModel(state = NAV_PROFILE_STATE_LOADING))
@@ -196,7 +198,9 @@ class MainNavViewModel @Inject constructor(
             initialList.add(AccountHeaderDataModel(loginState = getLoginState(), state = NAV_PROFILE_STATE_SUCCESS))
         }
         initialList.addTransactionMenu()
-        initialList.addBUTitle()
+        if (!isUsingMePageRollenceVariant()) {
+            initialList.addBUTitle()
+        }
         initialList.addUserMenu()
         _mainNavListVisitable = initialList
         _mainNavLiveData.postValue(MainNavigationDataModel(_mainNavListVisitable))
@@ -214,9 +218,13 @@ class MainNavViewModel @Inject constructor(
         launch {
             if (useCacheData) {
                 onlyForLoggedInUser { getProfileDataCached() }
-                getBuListMenuCached()
+                if (!isUsingMePageRollenceVariant()) {
+                    getBuListMenuCached()
+                }
             } else {
-                getBuListMenu()
+                if (!isUsingMePageRollenceVariant()) {
+                    getBuListMenu()
+                }
             }
             // update cached data with cloud data
             onlyForLoggedInUser { getNotification() }
