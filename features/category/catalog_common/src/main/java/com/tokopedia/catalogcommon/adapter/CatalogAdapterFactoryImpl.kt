@@ -32,6 +32,7 @@ class CatalogAdapterFactoryImpl(
             TopFeatureViewHolder.LAYOUT -> TopFeatureViewHolder(view)
             HeroBannerViewHolder.LAYOUT -> HeroBannerViewHolder(view, heroBannerListener)
             DummyViewHolder.LAYOUT -> DummyViewHolder(view)
+            StickyTabNavigationViewHolder.LAYOUT -> StickyTabNavigationViewHolder(view)
             SliderImageTextViewHolder.LAYOUT -> SliderImageTextViewHolder(view)
             PanelImageViewHolder.LAYOUT -> PanelImageViewHolder(view)
             TrustmakerViewHolder.LAYOUT -> TrustmakerViewHolder(view)

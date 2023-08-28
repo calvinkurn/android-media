@@ -6,11 +6,18 @@
     android:layout_height="match_parent"
     android:layout_width="match_parent">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:background="@color/Blue_B300"
-        android:id="@+id/rvContent"
+    <com.tokopedia.catalogcommon.StickySingleHeaderView
+        android:id="@+id/stickySingleHeaderView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:background="@color/WhiteText"
+            android:id="@+id/rvContent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </com.tokopedia.catalogcommon.StickySingleHeaderView>
 
     <LinearLayout
         android:id="@+id/container_price_cta"

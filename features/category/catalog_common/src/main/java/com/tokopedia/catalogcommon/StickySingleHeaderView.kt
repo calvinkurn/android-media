@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlin.math.roundToInt
 
@@ -20,7 +21,7 @@ class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
     private var mRecyclerView: RecyclerView? = null
     private var mHeaderHeight = -1
     private var adapter: OnStickySingleHeaderAdapter? = null
-    private var gridLayoutManager: GridLayoutManager? = null
+    private var linearLayoutManager: LinearLayoutManager? = null
     private var stickyPosition = 4
     private var refreshSticky = false
     private var recyclerViewPaddingTop = 0
@@ -80,14 +81,14 @@ class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
         val onScrollListener: RecyclerView.OnScrollListener = object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-                if (mHeaderHeight == -1 || adapter == null || gridLayoutManager == null) {
+                if (mHeaderHeight == -1 || adapter == null || linearLayoutManager == null) {
                     mHeaderHeight = mHeaderContainer?.height ?: 0
                     val adapter = mRecyclerView?.adapter
                     if (adapter !is OnStickySingleHeaderAdapter) throw RuntimeException("Your RecyclerView.Adapter should be the type of StickyHeaderViewAdapter.")
                     this@StickySingleHeaderView.adapter = adapter
                     this@StickySingleHeaderView.adapter?.setListener(this@StickySingleHeaderView)
                     stickyPosition = this@StickySingleHeaderView.adapter?.stickyHeaderPosition ?: 0
-                    gridLayoutManager = mRecyclerView?.layoutManager as GridLayoutManager?
+                    linearLayoutManager = mRecyclerView?.layoutManager as LinearLayoutManager?
                 }
             }
 
@@ -106,9 +107,9 @@ class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
     }
 
     private fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
-        if (mHeaderHeight == -1 || adapter == null || gridLayoutManager == null) return
-        val firstCompletelyVisiblePosition = gridLayoutManager?.findFirstCompletelyVisibleItemPosition()
-        val firstVisiblePosition = gridLayoutManager?.findFirstVisibleItemPosition()
+        if (mHeaderHeight == -1 || adapter == null || linearLayoutManager == null) return
+        val firstCompletelyVisiblePosition = linearLayoutManager?.findFirstCompletelyVisibleItemPosition()
+        val firstVisiblePosition = linearLayoutManager?.findFirstVisibleItemPosition()
         if (firstCompletelyVisiblePosition != null) {
             if (firstCompletelyVisiblePosition > -1) {
                 val _stickyPosition = 4
