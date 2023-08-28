@@ -149,9 +149,9 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
     }
 
     /**
-     * "Instantly" snap and scroll to specified RecyclerView item position. This is function triggers
-     * a smooth scroll position with the speed of 0.1 ms per inch (the default smooth scroll speed is
-     * 25 ms per inch).
+     * "Instantly" scroll and snap to the specified RecyclerView item position. This function triggers
+     * a smooth scroll position with the speed of 0.1 ms per inch so that it looks like an instant scroll
+     * (the default smooth scroll speed is 25 ms per inch).
      *
      * @param position The position of the item we want to scroll into
      * @param snapMode The snap mode preference must be any of the option provided on [LinearSmoothScroller]
