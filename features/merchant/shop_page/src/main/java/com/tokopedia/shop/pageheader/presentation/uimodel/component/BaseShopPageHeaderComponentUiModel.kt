@@ -15,8 +15,7 @@ interface BaseShopPageHeaderComponentUiModel : Visitable<BaseAdapterTypeFactory>
     object ComponentName {
         const val SHOP_LOGO = "shop_logo"
         const val SHOP_NAME = "shop_name"
-        //TODO need to change this to match with data from BE
-        const val SHOP_DYNAMIC_USP = "shop_dynamic_usp"
+        const val SHOP_DYNAMIC_USP = "shop_attribute_list"
         const val SHOP_RATING = "shop_rating"
         const val SHOP_OPERATIONAL_HOUR = "shop_operational_hour"
         const val BUTTON_SHOP_NOTES = "shop_notes"
