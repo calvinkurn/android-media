@@ -1712,9 +1712,6 @@ class CheckoutViewModel @Inject constructor(
                                         checkoutItem.consultationDataString.isEmpty()
                                 if (prescriptionIdsEmpty && consultationEmpty) {
                                     isPrescriptionFrontEndValidationError = true
-                                    if (firstErrorIndex == -1) {
-                                        firstErrorIndex = index
-                                    }
                                     break
                                 }
                             }
@@ -1728,7 +1725,7 @@ class CheckoutViewModel @Inject constructor(
                     }
                 }
             }
-            if (firstErrorIndex > -1) {
+            if (firstErrorIndex > -1 || isPrescriptionFrontEndValidationError) {
                 pageState.value = CheckoutPageState.Normal
                 listData.value = items
                 pageState.value = CheckoutPageState.ScrollTo(firstErrorIndex)
