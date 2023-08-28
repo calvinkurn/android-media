@@ -158,22 +158,6 @@ object ShopFlashSaleTracking: BaseTrackerConst() {
     }
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4099
-    // Tracker ID: 45598
-    fun sendClickShopName(trackingAttributionModel: TrackingAttributionModel) {
-        Tracker.Builder()
-            .setEvent(Event.CLICK_HOMEPAGE)
-            .setEventAction(EVENT_ACTION_CLICK_SHOP_NAME)
-            .setEventCategory(Category.HOMEPAGE)
-            .setEventLabel(EVENT_LABEL_FORMAT.format(trackingAttributionModel.channelId, trackingAttributionModel.headerName))
-            .setCustomProperty(TrackerId.KEY, TRACKER_ID_CLICK_SHOP_NAME)
-            .setBusinessUnit(BusinessUnit.DEFAULT)
-            .setCustomProperty(ChannelId.KEY, trackingAttributionModel.channelId)
-            .setCurrentSite(CurrentSite.DEFAULT)
-            .build()
-            .send()
-    }
-
-    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4099
     // Tracker ID: 46117
     fun sendClickViewAllCard(trackingAttributionModel: TrackingAttributionModel) {
         Tracker.Builder()

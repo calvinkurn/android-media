@@ -15,9 +15,9 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 import dagger.Lazy
-import java.lang.Exception
 import java.lang.Integer.min
 import javax.inject.Inject
+import kotlin.Exception
 import com.tokopedia.home.beranda.data.mapper.BestSellerMapper as BestSellerRevampMapper
 import com.tokopedia.home_component.visitable.BestSellerDataModel as BestSellerRevampDataModel
 
@@ -198,7 +198,7 @@ class HomeRecommendationUseCase @Inject constructor(
         }
     }
 
-    suspend fun onHomeShopFlashSaleTabClick(
+    suspend fun getShopFlashSaleProducts(
         currentDataModel: ShopFlashSaleWidgetDataModel,
         shopId: String,
     ): ShopFlashSaleWidgetDataModel {
@@ -212,7 +212,7 @@ class HomeRecommendationUseCase @Inject constructor(
             )
             ShopFlashSaleMapper.mapShopFlashSaleItemList(currentDataModel, recomData)
         } catch (_: Exception) {
-            currentDataModel
+            ShopFlashSaleMapper.getErrorShopFlashSale(currentDataModel)
         }
     }
 }

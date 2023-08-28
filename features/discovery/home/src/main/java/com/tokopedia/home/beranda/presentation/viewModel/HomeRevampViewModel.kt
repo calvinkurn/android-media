@@ -12,6 +12,7 @@ import com.tokopedia.cmhomewidget.domain.usecase.GetCMHomeWidgetDataUseCase
 import com.tokopedia.gopayhomewidget.domain.usecase.ClosePayLaterWidgetUseCase
 import com.tokopedia.gopayhomewidget.domain.usecase.GetPayLaterWidgetUseCase
 import com.tokopedia.home.beranda.common.BaseCoRoutineScope
+import com.tokopedia.home.beranda.data.mapper.ShopFlashSaleMapper
 import com.tokopedia.home.beranda.data.model.HomeChooseAddressData
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBalanceWidgetUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBusinessUnitUseCase
@@ -55,7 +56,6 @@ import com.tokopedia.home_component.visitable.RecommendationListCarouselDataMode
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.home_component.visitable.TodoWidgetListDataModel
 import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleWidgetDataModel
-import com.tokopedia.home_component.widget.shop_flash_sale.item.ProductCardGridShimmerDataModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
@@ -810,11 +810,11 @@ open class HomeRevampViewModel @Inject constructor(
             actionOnFound = { _, index ->
                 launch {
                     updateWidget(
-                        visitable = currentDataModel.copy(itemList = ProductCardGridShimmerDataModel.getAsList()),
+                        visitable = ShopFlashSaleMapper.getLoadingShopFlashSale(currentDataModel),
                         visitableToChange = currentDataModel,
                         position = index
                     )
-                    val newDataModel = homeRecommendationUseCase.get().onHomeShopFlashSaleTabClick(currentDataModel, shopId)
+                    val newDataModel = homeRecommendationUseCase.get().getShopFlashSaleProducts(currentDataModel, shopId)
                     if(newDataModel != currentDataModel) {
                         updateWidget(
                             visitable = newDataModel,

@@ -10,6 +10,11 @@ interface ShopFlashSaleListener: CommonProductCardCarouselListener {
         trackingAttributionModel: TrackingAttributionModel,
         channelGrid: ChannelGrid
     ) { }
-    fun onShopNameClicked(trackingAttributionModel: TrackingAttributionModel, channelGrid: ChannelGrid) { }
+
     fun onSeeAllClick(trackingAttributionModel: TrackingAttributionModel, link: String) { }
+
+    fun onRefreshClick(
+        shopFlashSaleWidgetDataModel: ShopFlashSaleWidgetDataModel,
+        channelGrid: ChannelGrid,
+    ) { }
 }

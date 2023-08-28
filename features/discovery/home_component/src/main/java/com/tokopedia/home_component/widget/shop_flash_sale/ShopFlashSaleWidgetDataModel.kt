@@ -5,23 +5,31 @@ import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.home_component.widget.common.carousel.HomeComponentCarouselVisitable
-import com.tokopedia.home_component.widget.shop_flash_sale.item.ProductCardGridShimmerDataModel
+import com.tokopedia.home_component.widget.shop_flash_sale.item.ShopFlashSaleProductGridShimmerDataModel
 import com.tokopedia.home_component.widget.shop_flash_sale.tab.ShopFlashSaleTabDataModel
 import com.tokopedia.home_component_header.model.ChannelHeader
 
+/**
+ * Shop Flash Sale Widget model
+ * @author Frenzel
+ * @param[id] id of the widget
+ * @param[channelModel] channel model for divider, query param, tracking, etc.
+ * @param[channelHeader] header model
+ * @param[tabList] list of tab models
+ * @param[itemList] visitable list of carousel component (optional). Won't be rendered if null.
+ * @param[timer] timer model (optional). Won't be rendered if null.
+ */
 data class ShopFlashSaleWidgetDataModel(
     val id: String = "",
     val channelModel: ChannelModel,
     val channelHeader: ChannelHeader = ChannelHeader(),
     val tabList: List<ShopFlashSaleTabDataModel> = listOf(),
-    val itemList: List<HomeComponentCarouselVisitable> = listOf(),
-    val timer: ShopFlashSaleTimerDataModel = ShopFlashSaleTimerDataModel(),
-    val useShopHeader: Boolean = false,
-    val cardInteraction: Boolean = false,
+    val itemList: List<HomeComponentCarouselVisitable>? = null,
+    val timer: ShopFlashSaleTimerDataModel? = null,
 ): HomeComponentVisitable {
 
     companion object {
-        const val PAYLOAD_ITEM_LIST_CHANGED = "itemListChanged"
+        const val PAYLOAD_ITEM_LIST_CHANGED = "payloadItemListChanged"
     }
 
     override fun visitableId(): String = id
@@ -44,7 +52,7 @@ data class ShopFlashSaleWidgetDataModel(
         return typeFactory.type(this)
     }
 
-    fun isLoadingState(): Boolean {
-        return itemList.all { it is ProductCardGridShimmerDataModel }
+    fun getActivatedTab(): ShopFlashSaleTabDataModel? {
+        return tabList.find { it.isActivated }
     }
 }

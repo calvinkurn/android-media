@@ -23,14 +23,6 @@ class ShopFlashSaleCallback(
         homeRevampViewModel.getShopFlashSale(shopFlashSaleWidgetDataModel, channelGrid.id)
     }
 
-    override fun onShopNameClicked(
-        trackingAttributionModel: TrackingAttributionModel,
-        channelGrid: ChannelGrid
-    ) {
-        ShopFlashSaleTracking.sendClickShopName(trackingAttributionModel)
-        homeCategoryListener.onDynamicChannelClicked(channelGrid.applink)
-    }
-
     override fun onSeeAllClick(trackingAttributionModel: TrackingAttributionModel, link: String) {
         ShopFlashSaleTracking.sendClickViewAll(trackingAttributionModel)
         homeCategoryListener.onDynamicChannelClicked(link)
@@ -69,5 +61,12 @@ class ShopFlashSaleCallback(
     ) {
         ShopFlashSaleTracking.sendClickViewAllCard(trackingAttributionModel)
         homeCategoryListener.onDynamicChannelClicked(applink)
+    }
+
+    override fun onRefreshClick(
+        shopFlashSaleWidgetDataModel: ShopFlashSaleWidgetDataModel,
+        channelGrid: ChannelGrid
+    ) {
+        homeRevampViewModel.getShopFlashSale(shopFlashSaleWidgetDataModel, channelGrid.id)
     }
 }
