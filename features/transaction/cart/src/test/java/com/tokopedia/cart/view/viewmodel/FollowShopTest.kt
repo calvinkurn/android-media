@@ -28,10 +28,7 @@ class FollowShopTest : BaseCartViewModelTest() {
         cartViewModel.followShop("1")
 
         // THEN
-        assertEquals(
-            FollowShopEvent.Success(dataFollowShop),
-            cartViewModel.followShopEvent.value
-        )
+        assertEquals(FollowShopEvent.Success(dataFollowShop), cartViewModel.followShopEvent.value)
     }
 
     @Test
@@ -46,9 +43,6 @@ class FollowShopTest : BaseCartViewModelTest() {
         cartViewModel.followShop("1")
 
         // THEN
-        assertEquals(
-            FollowShopEvent.Failed(exception),
-            cartViewModel.followShopEvent.value
-        )
+        assertEquals(FollowShopEvent.Failed(exception), cartViewModel.followShopEvent.value)
     }
 }

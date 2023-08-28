@@ -11,7 +11,6 @@ import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.just
-import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import rx.Observable
@@ -130,7 +129,6 @@ class DeleteCartTest : BaseCartViewModelTest() {
         }
 
         every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(1)
-        every { view.checkHitValidateUseIsNeeded(any()) } returns true
 
         // WHEN
         cartViewModel.processDeleteCartItem(
@@ -205,9 +203,5 @@ class DeleteCartTest : BaseCartViewModelTest() {
             DeleteCartEvent.Failed(true, throwable),
             cartViewModel.deleteCartEvent.value
         )
-    }
-
-    @After
-    fun tearDown() {
     }
 }
