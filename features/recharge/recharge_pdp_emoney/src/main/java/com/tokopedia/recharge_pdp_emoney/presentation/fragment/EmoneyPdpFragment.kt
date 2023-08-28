@@ -620,6 +620,7 @@ open class EmoneyPdpFragment :
         showCoachMark(false)
         emoneyCardNumber = ""
         showRecentNumberAndPromo()
+        hideTickerNotSupported()
     }
 
     override fun onInputNumberChanged(inputNumber: String) {
@@ -671,7 +672,8 @@ open class EmoneyPdpFragment :
 
     private fun renderTickerBCAGenOne(detailPassData: DigitalCategoryDetailPassData) {
         if (detailPassData.isBCAGenOne) {
-            showHideNotSupported()
+            showTickerNotSupported()
+            showRecentNumberAndPromo()
         } else {
             hideTickerNotSupported()
         }
@@ -680,14 +682,18 @@ open class EmoneyPdpFragment :
     private fun renderTickerNFCNotSupported(selectedOperator: RechargePrefix) {
         if (selectedOperator.operator.attributes.name.equals("BCA Flazz")) {
             if (this::nfcAdapter.isInitialized && !nfcAdapter.isEnabled) {
-                showHideNotSupported()
-                binding.tickerNotSupported.setHtmlDescription(getString(com.tokopedia.recharge_pdp_emoney.R.string.recharge_pdp_emoney_nfc_is_not))
+                showTickerNotSupported()
+                showRecentNumberAndPromo()
+                binding.tickerNotSupported.setHtmlDescription(getString(com.tokopedia.recharge_pdp_emoney.R.string.recharge_pdp_emoney_nfc_is_not_active))
             } else if (this::nfcAdapter.isInitialized && nfcAdapter != null) {
                 hideTickerNotSupported()
             } else {
-                showHideNotSupported()
+                showTickerNotSupported()
+                showRecentNumberAndPromo()
                 binding.tickerNotSupported.setHtmlDescription(getString(com.tokopedia.recharge_pdp_emoney.R.string.recharge_pdp_emoney_nfc_not_supported))
             }
+        } else {
+            hideTickerNotSupported()
         }
     }
 
@@ -695,7 +701,7 @@ open class EmoneyPdpFragment :
         binding.tickerNotSupported.hide()
     }
 
-    private fun showHideNotSupported() {
+    private fun showTickerNotSupported() {
         binding.tickerNotSupported.show()
     }
 

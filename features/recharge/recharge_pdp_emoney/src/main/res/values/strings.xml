@@ -37,5 +37,5 @@
 
     <string name="recharge_pdp_emoney_bca_gen_one">Kartu Flazz kamu ngga support transaksi ini, pastikan sudah pakai kartu Gen 2, ya</string>
     <string name="recharge_pdp_emoney_nfc_not_supported">HP kamu ngga mendukung fitur NFC, kamu ngga bisa melanjutkan transaksi ini.</string>
-    <string name="recharge_pdp_emoney_nfc_is_not">HP kamu NFC mati, harap nyalakan untuk bisa melanjutkan transaksi ini.</string>
+    <string name="recharge_pdp_emoney_nfc_is_not_active">HP kamu NFC mati, harap nyalakan untuk bisa melanjutkan transaksi ini.</string>
 </resources>
