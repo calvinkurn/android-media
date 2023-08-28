@@ -56,7 +56,7 @@ class BroadMatchViewHolder(
     }
 
     private fun bindHeaderViewRevamp(broadMatchDataView: BroadMatchDataView) {
-        val headerView = binding?.componentHeaderView ?: return
+        val headerView = binding?.searchBroadMatchHeader ?: return
         headerView.bind(
             channelHeader = broadMatchDataView.convertToChannelHeader(headerView.context ?: return),
             listener = object : HomeChannelHeaderListener {
@@ -71,12 +71,12 @@ class BroadMatchViewHolder(
     }
 
     private fun showHeaderRevamp() {
-        val headerView = binding?.componentHeaderView ?: return
+        val headerView = binding?.searchBroadMatchHeader ?: return
         headerView.visible()
     }
 
     private fun hideHeaderRevamp() {
-        val headerView = binding?.componentHeaderView ?: return
+        val headerView = binding?.searchBroadMatchHeader ?: return
         headerView.hide()
     }
 

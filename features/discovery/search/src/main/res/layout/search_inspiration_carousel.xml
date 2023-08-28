@@ -19,7 +19,7 @@
         app:layout_constraintRight_toRightOf="parent" />
 
     <com.tokopedia.home_component_header.view.HomeChannelHeaderView
-        android:id="@+id/componentHeaderViewInspiration"
+        android:id="@+id/inspirationCarouselHeaderView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:visibility="gone"
@@ -60,13 +60,20 @@
         app:layout_constraintRight_toRightOf="parent"
         tools:visibility="visible"/>
 
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/inspirationCarouselBarrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="inspirationCarouselHeaderView,inspirationCarouselTitle" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/inspirationCarouselOptionList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_7"
         android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@id/inspirationCarouselTitle"
+        app:layout_constraintTop_toBottomOf="@id/inspirationCarouselBarrier"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         tools:visibility="visible" />

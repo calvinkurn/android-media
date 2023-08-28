@@ -149,8 +149,8 @@ class HeaderRevampLayoutStrategy : HeaderLayoutStrategy {
                 ctaBorder?.loadImage(ContextCompat.getDrawable(context, R.drawable.bg_channel_header_cta_inverted))
                 ctaButtonRevamp?.setImage(
                     newIconId = iconId,
-                    newLightEnable = ContextCompat.getColor(context, R.color.dms_header_cta_inverted_icon),
-                    newDarkEnable = ContextCompat.getColor(context, R.color.dms_header_cta_inverted_icon)
+                    newLightEnable = com.tokopedia.home_component_header.R.color.dms_header_cta_inverted_icon,
+                    newDarkEnable = ContextCompat.getColor(context, com.tokopedia.home_component_header.R.color.dms_header_cta_inverted_icon)
                 )
             }
         }

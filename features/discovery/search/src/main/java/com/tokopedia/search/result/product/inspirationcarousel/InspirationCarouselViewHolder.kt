@@ -5,7 +5,6 @@ import android.view.View
 import androidx.annotation.DimenRes
 import androidx.annotation.LayoutRes
 import androidx.cardview.widget.CardView
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -14,7 +13,6 @@ import com.tokopedia.carouselproductcard.CarouselProductCardListener
 import com.tokopedia.home_component_header.view.HomeChannelHeaderListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ProductCardGridView
@@ -87,8 +85,6 @@ class InspirationCarouselViewHolder(
         hideOldHeader()
         hideSeparator()
         bindHeaderRevamp(element)
-        setListInspirationCarouselToRevampHeader()
-        eraseContainerMargin()
     }
 
     private fun setOldHeader(element: InspirationCarouselDataView) {
@@ -96,8 +92,6 @@ class InspirationCarouselViewHolder(
         hideRevampHeader()
         showSeparator()
         bindTitle(element)
-        setListInspirationCarouselToOldHeader()
-        restoreContainerMargin()
     }
 
     private fun isChipsLayout(element: InspirationCarouselDataView): Boolean {
@@ -109,12 +103,11 @@ class InspirationCarouselViewHolder(
     }
 
     private fun showRevampHeader() {
-        binding?.componentHeaderViewInspiration?.visible()
+        binding?.inspirationCarouselHeaderView?.visible()
     }
 
     private fun hideRevampHeader() {
-        binding?.componentHeaderViewInspiration?.gone()
-
+        binding?.inspirationCarouselHeaderView?.gone()
     }
 
     private fun showSeparator(){
@@ -137,22 +130,8 @@ class InspirationCarouselViewHolder(
         binding?.inspirationCarouselSeeAllButton?.gone()
     }
 
-    private fun eraseContainerMargin() {
-        binding?.inspirationCarousel?.setMargin(0,0,0,0)
-    }
-
-    private fun restoreContainerMargin() {
-        val containerInspirationView = binding?.inspirationCarousel ?: return
-        val resource = containerInspirationView.context.resources
-        containerInspirationView.setMargin(0,
-            resource.getDimensionPixelOffset(R.dimen.search_margin_top_inspiration_layout),
-            0,
-            resource.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2)
-        )
-    }
-
     private fun bindHeaderRevamp(element: InspirationCarouselDataView) {
-        val headerView = binding?.componentHeaderViewInspiration ?: return
+        val headerView = binding?.inspirationCarouselHeaderView ?: return
         val option = element.options.getOrNull(0) ?: return
         headerView.bind(
             channelHeader = element.convertToChannelHeader(),
@@ -162,31 +141,6 @@ class InspirationCarouselViewHolder(
                 }
             }
         )
-    }
-
-    private fun setListInspirationCarouselToRevampHeader() {
-        val constraintContainerInspirationView = binding?.inspirationCarousel ?: return
-        val recyclerViewInspirationList = binding?.inspirationCarouselOptionList ?: return
-        val headerViewInspirationList = binding?.componentHeaderViewInspiration ?: return
-        val constraintSet = ConstraintSet()
-        constraintSet.clone(constraintContainerInspirationView)
-        constraintSet.connect(recyclerViewInspirationList.id, ConstraintSet.TOP, headerViewInspirationList.id, ConstraintSet.BOTTOM, 0)
-        constraintSet.connect(recyclerViewInspirationList.id, ConstraintSet.START, constraintContainerInspirationView.id, ConstraintSet.START, 0)
-        constraintSet.connect(recyclerViewInspirationList.id, ConstraintSet.END, constraintContainerInspirationView.id, ConstraintSet.END, 0)
-        constraintSet.applyTo(constraintContainerInspirationView)
-    }
-
-    private fun setListInspirationCarouselToOldHeader() {
-        val constraintContainerInspirationView = binding?.inspirationCarousel ?: return
-        val recyclerViewInspirationList = binding?.inspirationCarouselOptionList ?: return
-        val headerViewInspirationList = binding?.inspirationCarouselTitle ?: return
-        val resource = headerViewInspirationList.context.resources
-        val constraintSet = ConstraintSet()
-        constraintSet.clone(constraintContainerInspirationView)
-        constraintSet.connect(recyclerViewInspirationList.id, ConstraintSet.TOP, headerViewInspirationList.id, ConstraintSet.BOTTOM, resource.getDimensionPixelOffset(R.dimen.search_padding_top_list_inspiration_layout))
-        constraintSet.connect(recyclerViewInspirationList.id, ConstraintSet.START, constraintContainerInspirationView.id, ConstraintSet.START, 0)
-        constraintSet.connect(recyclerViewInspirationList.id, ConstraintSet.END, constraintContainerInspirationView.id, ConstraintSet.END, 0)
-        constraintSet.applyTo(constraintContainerInspirationView)
     }
 
     private fun bindChipsCarousel(element: InspirationCarouselDataView) {
