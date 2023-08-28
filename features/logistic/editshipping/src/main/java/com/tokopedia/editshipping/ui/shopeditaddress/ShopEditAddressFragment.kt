@@ -13,7 +13,10 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.ViewModelProvider
-import com.google.android.gms.maps.*
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.MapsInitializer
+import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -162,8 +165,7 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
         val zipCodeAdapter = context?.let {
             ArrayAdapter(
                 it,
-                com.tokopedia.design.R.layout.item_autocomplete_text_double_row,
-                com.tokopedia.design.R.id.item,
+                androidx.appcompat.R.layout.select_dialog_item_material,
                 zipCodes
             )
         }
