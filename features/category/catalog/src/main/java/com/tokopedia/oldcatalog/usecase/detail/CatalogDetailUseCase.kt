@@ -12,7 +12,10 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class CatalogDetailUseCase @Inject constructor(private val catalogDetailRepository: CatalogDetailRepository) {
+class CatalogDetailUseCase @Inject constructor(
+    private val catalogDetailRepository: CatalogDetailRepository,
+    private val catalogDetailUiMapper: CatalogDetailUiMapper
+) {
 
     suspend fun getCatalogDetail(catalogId : String ,comparedCatalogId : String, userId : String, device : String,
                                  catalogDetailDataModel: MutableLiveData<Result<CatalogDetailDataModel>>)  {
@@ -30,7 +33,7 @@ class CatalogDetailUseCase @Inject constructor(private val catalogDetailReposito
         val gqlResponse = catalogDetailRepository.getCatalogDetail(catalogId,comparedCatalogId, userId, device, true)
         val data = gqlResponse?.getData<CatalogResponseData>(CatalogResponseData::class.java)
         if(data?.catalogGetDetailModular != null)
-            catalogDetailDataModel.postValue(Success(CatalogDetailUiMapper.mapToCatalogDetailUiModel(data.catalogGetDetailModular)))
+            catalogDetailDataModel.postValue(Success(catalogDetailUiMapper.mapToCatalogDetailUiModel(data.catalogGetDetailModular)))
         else{
             catalogDetailDataModel.postValue(Fail(Throwable("No data found")))
         }

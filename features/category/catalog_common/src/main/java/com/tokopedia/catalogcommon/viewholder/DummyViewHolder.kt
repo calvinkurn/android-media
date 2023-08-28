@@ -21,5 +21,7 @@ class DummyViewHolder(itemView: View) : AbstractViewHolder<DummyUiModel>(itemVie
 
     override fun bind(element: DummyUiModel) {
         binding?.content?.text = element.content
+        binding?.content?.setTextColor(element.widgetTextColor ?: return)
+        binding?.content?.setBackgroundColor(element.widgetBackgroundColor ?: return)
     }
 }

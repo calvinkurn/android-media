@@ -1,22 +1,37 @@
 package com.tokopedia.catalog.ui.mapper
 
+import android.content.Context
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.catalog.ui.model.CatalogDetailUiModel
 import com.tokopedia.catalogcommon.uimodel.DummyUiModel
+import com.tokopedia.catalogcommon.util.stringHexColorParseToInt
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.oldcatalog.model.raw.CatalogResponseData
+import javax.inject.Inject
 
-object CatalogDetailUiMapper {
+class CatalogDetailUiMapper @Inject constructor(
+    @ApplicationContext private val context: Context
+) {
     fun mapToWidgetVisitables(
         remoteModel: CatalogResponseData.CatalogGetDetailModular
     ): List<Visitable<*>>{
+        val isDarkMode = remoteModel.globalStyle?.darkMode.orFalse()
+        val bgColor = remoteModel.globalStyle?.bgColor
+        val textColorRes = if (remoteModel.globalStyle?.darkMode == true) {
+            com.tokopedia.unifycomponents.R.color.Unify_Static_White
+        } else {
+            com.tokopedia.unifycomponents.R.color.Unify_Static_Black
+        }
         return remoteModel.layouts?.map {
             DummyUiModel(
-                idWidget = "",
+                idWidget = it.type + it.name,
                 widgetType = it.type,
                 widgetName = it.name,
-                widgetBackgroundColor = null,
-                widgetTextColor = null,
-                darkMode = false,
+                widgetBackgroundColor = "#$bgColor".stringHexColorParseToInt(),
+                widgetTextColor = MethodChecker.getColor(context, textColorRes),
+                darkMode = isDarkMode,
                 content = it.name
             )
         }.orEmpty()
