@@ -2,7 +2,6 @@ package com.tokopedia.minicart.bmgm.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.minicart.bmgm.domain.model.BmgmParamModel
@@ -22,27 +21,23 @@ import javax.inject.Inject
  */
 
 class BmgmMiniCartViewModel @Inject constructor(
+    setCartListCheckboxStateUseCase: Lazy<SetCartListCheckboxStateUseCase>,
     private val getMiniCartDataUseCase: Lazy<GetBmgmMiniCartDataUseCase>,
     private val localCacheUseCase: Lazy<LocalCacheUseCase>,
-    private val setCartListCheckboxStateUseCase: Lazy<SetCartListCheckboxStateUseCase>,
     private val userSession: Lazy<UserSessionInterface>,
-    private val dispatchers: CoroutineDispatchers
-) : BaseViewModel(dispatchers.main) {
+    private val dispatchers: Lazy<CoroutineDispatchers>
+) : BaseCartCheckboxViewModel(setCartListCheckboxStateUseCase.get(), dispatchers.get()) {
 
     private val _cartData = MutableLiveData<BmgmState<BmgmMiniCartDataUiModel>>()
     val cartData: LiveData<BmgmState<BmgmMiniCartDataUiModel>>
         get() = _cartData
-
-    private val _setCheckListState = MutableLiveData<BmgmState<Boolean>>()
-    val setCheckListState: LiveData<BmgmState<Boolean>>
-        get() = _setCheckListState
 
     fun getMiniCartData(param: BmgmParamModel, showLoadingState: Boolean = false) {
         launchCatchError(block = {
             if (showLoadingState) {
                 _cartData.value = BmgmState.Loading
             }
-            val data = withContext(dispatchers.io) {
+            val data = withContext(dispatchers.get().io) {
                 getMiniCartDataUseCase.get().invoke(userSession.get().shopId, param)
             }
             _cartData.value = BmgmState.Success(data)
@@ -54,18 +49,6 @@ class BmgmMiniCartViewModel @Inject constructor(
 
     fun clearCartDataLocalCache() = launch {
         localCacheUseCase.get().clearLocalCache()
-    }
-
-    fun setCartListCheckboxState(cartIds: List<String>) {
-        launchCatchError(block = {
-            _setCheckListState.value = BmgmState.Loading
-            val result = withContext(dispatchers.io) {
-                setCartListCheckboxStateUseCase.get().invoke(cartIds)
-            }
-            _setCheckListState.value = BmgmState.Success(result)
-        }, onError = {
-            _setCheckListState.value = BmgmState.Error(it)
-        })
     }
 
     fun storeCartDataToLocalCache() = launch {
