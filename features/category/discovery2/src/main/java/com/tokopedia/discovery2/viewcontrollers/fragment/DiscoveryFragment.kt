@@ -963,14 +963,11 @@ open class DiscoveryFragment :
         )
         data.let { data ->
             data.forEachIndexed { index, item ->
-                //       Log.d("FATAL", "setUpObserver: ${item.name}")
                 if (item.name == ComponentNames.Tabs.componentName) {
-           //         Log.d("FATAL", "After Tab it is : ${data.getOrNull(index + 1)?.name}")
                     val tabsViewModel = discoveryAdapter.getTabItem() as TabsViewModel?
                     if (componentsToExclude.contains(data.getOrNull(index+1)?.name ?: "")) {
                         tabsViewModel?.shouldAddSpace(false)
                     } else if (data.getOrNull(index+1)?.name == ComponentsList.Section.componentName) {
-                        Log.d("FATAL", "After Tab it is : ${data.getOrNull(index + 1)?.getComponentsItem()?.getOrNull(0)?.name}")
                         val latestComponent = data.getOrNull(index+1)?.getComponentsItem()?.getOrNull(0)
                         if (latestComponent?.name == ComponentsList.LihatSemua.componentName || componentsToExclude.contains(latestComponent?.name)) {
                             tabsViewModel?.shouldAddSpace(false)
