@@ -87,7 +87,6 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener, Default
         super.onAttachedToWindow()
         observeCartData()
         observeSetCarChecklistStatus()
-        refreshData()
     }
 
     override fun setOnItemClickedListener() {
