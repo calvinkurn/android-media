@@ -307,6 +307,10 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
         shopHeaderConfig: ShopPageHeaderLayoutUiModel.Config?,
         isOverrideTheme: Boolean
     ) {
+        //TODO Replace color from BE with unify color -> need to implement this after BE has contract for the expected value
+//        val lastOnlineColor = ShopUtil.getColorHexString(itemView.context, R.color.clr_dms_31353B)
+//        val lastOnlineUnifyColor = ShopUtil.getColorHexString(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
+//        val unifiedShopAdditionalInfo = shopAdditionalInfo.replace(lastOnlineColor, lastOnlineUnifyColor)
         val shopBasicData = getShopBasicInfoData(listWidgetShopData)
         val shopOnlineStatusIcon =
             getShopBasicDataShopNameComponent(shopBasicData)?.text?.getOrNull(1)?.icon.orEmpty()
@@ -346,10 +350,6 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
         val initialUspValue = listWidgetShopData.getDynamicUspComponent()?.text?.map { it.textHtml }.orEmpty()
         val isShowRating = ratingText.isNotEmpty()
         val isShowDynamicUsp = initialUspValue.isNotEmpty()
-        //TODO Replace color from BE with unify color -> need to implement this after BE has contract for the expected value
-//        val lastOnlineColor = ShopUtil.getColorHexString(itemView.context, R.color.clr_dms_31353B)
-//        val lastOnlineUnifyColor = ShopUtil.getColorHexString(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
-//        val unifiedShopAdditionalInfo = shopAdditionalInfo.replace(lastOnlineColor, lastOnlineUnifyColor)
         containerShopPerformance?.shouldShowWithAction(isShowRating || isShowDynamicUsp) {}
         performanceSectionDotSeparator?.shouldShowWithAction(isShowRating && isShowDynamicUsp) {}
         imageRatingIcon?.shouldShowWithAction(isShowRating) {
