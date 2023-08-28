@@ -2415,7 +2415,7 @@ class CartViewModel @Inject constructor(
         }
     }
 
-    private fun checkEnableBundleCrossSell(cartGroupHolderData: CartGroupHolderData): Boolean {
+    fun checkEnableBundleCrossSell(cartGroupHolderData: CartGroupHolderData): Boolean {
         val hasCheckedProductWithBundle = cartGroupHolderData.productUiModelList
             .any { it.isSelected && !it.isBundlingItem && it.bundleIds.isNotEmpty() }
         val hasCheckedBundleProduct = cartGroupHolderData.productUiModelList
