@@ -357,7 +357,17 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                 scrollY = max(scrollY, 0f)
 
                 if (scrollY > 0) {
-                    renderWhiteHeader()
+                    val layoutManager: LinearLayoutManager? = recyclerView.layoutManager as? LinearLayoutManager
+                    if (layoutManager != null) {
+                        if (layoutManager.findFirstCompletelyVisibleItemPosition() == 0) {
+                            scrollY = 0f
+                            renderTransparentHeader()
+                        } else {
+                            renderWhiteHeader()
+                        }
+                    } else {
+                        renderWhiteHeader()
+                    }
                 } else {
                     renderTransparentHeader()
                 }
