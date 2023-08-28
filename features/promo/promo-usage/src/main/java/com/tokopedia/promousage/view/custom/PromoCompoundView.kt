@@ -25,6 +25,7 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.promousage.R
 import com.tokopedia.promousage.databinding.PromoUsageItemPromoCompoundViewBinding
 import com.tokopedia.promousage.databinding.PromoUsageItemSubPromoInfoBinding
+import com.tokopedia.promousage.domain.entity.PromoCta
 import com.tokopedia.promousage.domain.entity.PromoItemBenefitDetail
 import com.tokopedia.promousage.domain.entity.PromoItemCardDetail
 import com.tokopedia.promousage.domain.entity.PromoItemInfo
@@ -281,11 +282,12 @@ class PromoCompoundView @JvmOverloads constructor(
                 }
 
                 is PromoItemState.Normal -> {
-                    val isGopayLaterCicil = promo.couponType.firstOrNull {
+                    val isPromoGopayLater = promo.couponType.firstOrNull {
                         it == PromoItem.COUPON_TYPE_GOPAY_LATER_CICIL
                     } != null
-                    val isCtaValid = promo.cta.text.isNotBlank() && promo.cta.appLink.isNotBlank()
-                    if (isGopayLaterCicil && isCtaValid) {
+                    val isCtaValid = promo.cta.type == PromoCta.TYPE_REGISTER_GOPAY_LATER_CICIL
+                        && promo.cta.text.isNotBlank() && promo.cta.appLink.isNotBlank()
+                    if (isPromoGopayLater && isCtaValid) {
                         tpgAdditionalInfoMessage.text =
                             HtmlLinkHelper(context, promo.cta.text).spannedString
                         tpgAdditionalInfoMessage
