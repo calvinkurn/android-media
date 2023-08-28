@@ -101,9 +101,15 @@ class StoryDetailFragment @Inject constructor(
         if (prevState == state || state == StoryDetailUiModel()) return
 
         storyDetailsTimer(state)
-        val detailItem = state.detailItems[state.selectedPosition]
+
+        val prevContent = prevState?.detailItems
+        val currContent = state.detailItems[state.selectedPosition]
+        if (!prevContent.isNullOrEmpty() &&
+            prevContent[prevState.selectedPosition].imageContent == currContent.imageContent
+        ) return
+
         binding.ivStoryDetailContent.apply {
-            setImageUrl(detailItem.imageContent)
+            setImageUrl(currContent.imageContent)
             onUrlLoaded = {
                 viewModelAction(ResumeStory)
             }

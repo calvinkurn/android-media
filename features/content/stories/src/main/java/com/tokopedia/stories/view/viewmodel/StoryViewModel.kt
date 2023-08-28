@@ -130,7 +130,6 @@ class StoryViewModel @Inject constructor(
                 newDetail
             }
 
-            Timber.d("data ${detailData.selectedPositionCached}")
             updateStoryDetailData(position = detailData.selectedPositionCached)
         }) { exception ->
             Timber.d("fail fetch new detail $exception")
