@@ -284,6 +284,8 @@
     <string name="goto_kyc_loader_wait_a_moment">Tunggu sebentar, ya…</string>
     <string name="goto_kyc_loader_data_uploading">Datamu sedang di-upload.</string>
     <string name="goto_kyc_error_from_be">Tunggu sebentar, biar Toped bereskan. Coba lagi atau kembali nanti.</string>
+    <string name="goto_kyc_error_know_code">Oops, lagi ada kendala yang perlu kami beresin. Coba lagi nanti, ya!</string>
+    <string name="goto_kyc_error_data_already_exist">Verifikasi dengan data ini udah terdaftar sebelumnya.</string>
     <string name="goto_kyc_error_no_connection">Yahh, internet kamu putus. Cek paket data atau WiFi-mu, ya.</string>
     <string name="goto_kyc_error_timeout">Yahh, waktunya udah habis nih. Coba lagi, yuk!</string>
     <string name="goto_kyc_permission_camera_denied">Akses kamera sudah ditolak, aktifkan lewat pengaturan HP ya.</string>
