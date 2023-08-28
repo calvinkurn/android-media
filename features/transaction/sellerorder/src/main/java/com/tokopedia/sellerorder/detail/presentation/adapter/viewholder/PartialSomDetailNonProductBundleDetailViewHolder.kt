@@ -19,7 +19,7 @@ class PartialSomDetailNonProductBundleDetailViewHolder(
     private var actionListener: SomDetailAdapterFactoryImpl.ActionListener?
 ) {
 
-    private fun setupProductDetail(element: SomDetailOrder.Data.GetSomDetail.Details.Product?) {
+    private fun setupProductDetail(element: SomDetailOrder.GetSomDetail.Details.Product?) {
         binding?.run {
             if (element == null) {
                 root.hide()
@@ -78,7 +78,7 @@ class PartialSomDetailNonProductBundleDetailViewHolder(
         }
     }
 
-    fun bind(product: SomDetailOrder.Data.GetSomDetail.Details.Product?) {
+    fun bind(product: SomDetailOrder.GetSomDetail.Details.Product?) {
         setupProductDetail(product)
     }
 

@@ -189,6 +189,7 @@ includeIfEnabled("features:operational:csat_rating")
 includeIfEnabled("features:ordermanagement:snapshot")
 includeIfEnabled("features:ordermanagement:orderhistory")
 includeIfEnabled("features:ordermanagement:buyer_order_detail")
+includeIfEnabled("features:ordermanagement:order_management_common")
 includeIfEnabled("features:ordermanagement:buyercancellationorder")
 
 includeIfEnabled("features:payment:common_payment")

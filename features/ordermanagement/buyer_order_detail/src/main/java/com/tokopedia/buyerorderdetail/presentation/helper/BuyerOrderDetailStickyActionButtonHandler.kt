@@ -7,10 +7,10 @@ import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailActionBut
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.presentation.adapter.listener.ActionButtonClickListener
 import com.tokopedia.buyerorderdetail.presentation.bottomsheet.BuyerOrderDetailBottomSheetManager
-import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
 import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailUiState
 import com.tokopedia.buyerorderdetail.presentation.viewmodel.BuyerOrderDetailViewModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.order_management_common.presentation.uimodel.ActionButtonsUiModel
 
 class BuyerOrderDetailStickyActionButtonHandler(
     private val bottomSheetManager: BuyerOrderDetailBottomSheetManager,

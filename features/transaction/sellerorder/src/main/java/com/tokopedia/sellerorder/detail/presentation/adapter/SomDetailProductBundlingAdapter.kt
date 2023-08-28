@@ -23,11 +23,11 @@ class SomDetailProductBundlingAdapter(
     private val actionListener: SomDetailAdapterFactoryImpl.ActionListener?
 ) : RecyclerView.Adapter<SomDetailProductBundlingAdapter.ViewHolder>() {
 
-    var products = emptyList<SomDetailOrder.Data.GetSomDetail.Details.Product>()
+    var products = emptyList<SomDetailOrder.GetSomDetail.Details.Product>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.item_som_product_bundling_product, parent, false)
+            .inflate(R.layout.item_som_product_bundling_product, parent, false)
         return ViewHolder(view)
     }
 
@@ -41,7 +41,7 @@ class SomDetailProductBundlingAdapter(
 
         private val binding by viewBinding<ItemSomProductBundlingProductBinding>()
 
-        fun bind(product: SomDetailOrder.Data.GetSomDetail.Details.Product) {
+        fun bind(product: SomDetailOrder.GetSomDetail.Details.Product) {
             binding?.run {
                 root.setOnClickListener {
                     actionListener?.onClickProduct(product.orderDetailId.toLongOrZero())
@@ -54,8 +54,11 @@ class SomDetailProductBundlingAdapter(
                 tvSomBundlePrice.text = StringBuilder("${product.quantity} x ${product.priceText}")
                 if (product.note.isNotEmpty()) {
                     tvSomBundleNotes.visible()
-                    tvSomBundleNotes.text = product.note.replace("\\n", System.getProperty("line.separator")
-                            ?: "")
+                    tvSomBundleNotes.text = product.note.replace(
+                        "\\n",
+                        System.getProperty("line.separator")
+                            ?: ""
+                    )
                 } else {
                     tvSomBundleNotes.gone()
                 }

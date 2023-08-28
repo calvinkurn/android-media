@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="11dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container_order_bmgm"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
+        android:background="?android:attr/selectableItemBackground">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/iv_order_bmgm_icon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginVertical="10dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/divider_bom_detail_bmgm_top"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_order_bmgm_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            app:layout_constraintStart_toEndOf="@id/iv_order_bmgm_icon"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/divider_bom_detail_bmgm_top"
+            app:typographyType="heading_6"
+            tools:text="Beli 3 diskon 25% - Summer Sale"/>
+
+        <com.tokopedia.unifycomponents.DividerUnify
+            android:id="@+id/divider_bom_detail_bmgm_top"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="40dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_order_bmgm"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@id/divider_bom_detail_bmgm_top"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:listitem="@layout/item_order_product_bmgm_list_item"
+            tools:itemCount="3"/>
+
+        <com.tokopedia.unifycomponents.DividerUnify
+            android:id="@+id/divider_order_bmgm_bottom"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginTop="12dp"
+            app:layout_constraintTop_toBottomOf="@id/rv_order_bmgm"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_order_bmgm_price_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:text="@string/order_bmgm_price_total"
+            android:textColor="@color/Unify_NN950"
+            app:typographyType="small"
+            app:typographyWeight="reguler"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/divider_order_bmgm_bottom"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_order_bmgm_price_value"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Unify_NN950"
+            app:layout_constraintStart_toStartOf="@id/tv_order_bmgm_price_title"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="8dp"
+            app:typographyType="display_3"
+            app:typographyWeight="bold"
+            app:layout_constraintTop_toBottomOf="@id/tv_order_bmgm_price_title"
+            tools:text="Rp150.000"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_order_bmgm_price_more_info_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:textColor="@color/Unify_NN600"
+            app:layout_constraintStart_toStartOf="@id/tv_order_bmgm_price_value"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:typographyType="small"
+            app:layout_constraintTop_toBottomOf="@id/tv_order_bmgm_price_value"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:text="Harga ini belum termasuk potongan Rp500.000"/>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.tokopedia.unifycomponents.CardUnify>
