@@ -15,18 +15,6 @@
         android:id="@+id/layout_declarative"
         layout="@layout/layout_loading_declarative" />
 
-    <include
-        android:id="@+id/v_stories_onboarding"
-        layout="@layout/view_stories_onboarding"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:visibility="visible"
-        />
-
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_stories_detail_content"
         android:layout_width="0dp"

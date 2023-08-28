@@ -23,4 +23,10 @@ class StoriesOnboardView : ConstraintLayout {
         LayoutInflater.from(context),
         this, true
     )
+
+    init {
+        binding.lottieSwipeProduct.setFailureListener {  }
+        binding.lottieTapNext.setFailureListener {  }
+        binding.lottieTapMoveCategory.setFailureListener {  }
+    }
 }
