@@ -82,6 +82,7 @@ dependencies {implementation rootProject.ext.supportLibDependencies.recyclerView
     implementation rootProject.ext.unifyDependencies.carousel
     implementation rootProject.ext.unifyDependencies.iconNotification
     implementation projectOrAar(rootProject.ext.features.localizationchooseaddress_common)
+    implementation projectOrAar(rootProject.ext.features.affiliateSDK)
 
     implementation rootProject.ext.miscDependencies.chips
     implementation rootProject.ext.miscDependencies.flexBoxLayout

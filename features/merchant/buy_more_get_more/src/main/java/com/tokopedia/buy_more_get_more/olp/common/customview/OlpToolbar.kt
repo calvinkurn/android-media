@@ -15,6 +15,9 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.NotificationUnify
+import com.tokopedia.unifyprinciples.R.*
+import com.tokopedia.unifyprinciples.R.color.Unify_NN0
+import com.tokopedia.unifyprinciples.R.color.Unify_NN950
 import com.tokopedia.unifyprinciples.R.color.Unify_Static_White
 import com.tokopedia.unifyprinciples.Typography
 import timber.log.Timber
@@ -51,6 +54,24 @@ class OlpToolbar : Toolbar {
             refreshViews()
         }
 
+    var showWhiteToolbar: Boolean = false
+        set(value) {
+            field = value
+            if (value) {
+                tpgTitle?.setTextColor(resources.getColor(Unify_NN950))
+                tpgSubTitle?.setTextColor(resources.getColor(Unify_NN950))
+                cartButton?.setBlackIconValue()
+                moreMenuButton?.setBlackIconValue()
+                navigationIcon = backIconBlack
+            } else {
+                tpgTitle?.setTextColor(resources.getColor(Unify_Static_White))
+                tpgSubTitle?.setTextColor(resources.getColor(Unify_Static_White))
+                cartButton?.setWhiteIconValue()
+                moreMenuButton?.setWhiteIconValue()
+                navigationIcon = backIconWhite
+            }
+        }
+
     private var tpgTitle: Typography? = null
     private var tpgSubTitle: Typography? = null
     private var iconNotifWraper: FrameLayout? = null
@@ -61,6 +82,11 @@ class OlpToolbar : Toolbar {
         context,
         IconUnify.ARROW_BACK,
         ContextCompat.getColor(context, Unify_Static_White)
+    )
+    private var backIconBlack = getIconUnifyDrawable(
+        context,
+        IconUnify.ARROW_BACK,
+        ContextCompat.getColor(context, Unify_NN950)
     )
 
     constructor(context: Context) : super(context)
@@ -111,5 +137,21 @@ class OlpToolbar : Toolbar {
     private fun refreshViews() {
         tpgTitle?.text = title
         tpgSubTitle?.text = subTitle
+    }
+
+    private fun IconUnify.setBlackIconValue() {
+        val colorLightEnable = ContextCompat.getColor(context, Unify_NN950)
+        val colorLightDisabled = ContextCompat.getColor(context, Unify_NN950)
+        val colorDarkEnable = ContextCompat.getColor(context, Unify_NN950)
+        val colorDarkDisable = ContextCompat.getColor(context, Unify_NN950)
+        this.setImage(null, colorLightEnable, colorLightDisabled, colorDarkEnable, colorDarkDisable)
+    }
+
+    private fun IconUnify.setWhiteIconValue() {
+        val colorLightEnable = ContextCompat.getColor(context, Unify_Static_White)
+        val colorLightDisabled = ContextCompat.getColor(context, Unify_Static_White)
+        val colorDarkEnable = ContextCompat.getColor(context, Unify_Static_White)
+        val colorDarkDisable = ContextCompat.getColor(context, Unify_Static_White)
+        this.setImage(null, colorLightEnable, colorLightDisabled, colorDarkEnable, colorDarkDisable)
     }
 }

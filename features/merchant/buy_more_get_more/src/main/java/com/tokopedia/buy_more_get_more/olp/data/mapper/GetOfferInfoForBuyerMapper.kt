@@ -5,6 +5,7 @@ import com.tokopedia.buy_more_get_more.olp.data.response.OfferInfoForBuyerRespon
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel.Offering.*
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel.Offering.Tier.Rule
+import com.tokopedia.buy_more_get_more.olp.domain.entity.enum.Status
 import javax.inject.Inject
 
 class GetOfferInfoForBuyerMapper @Inject constructor() {
@@ -13,7 +14,6 @@ class GetOfferInfoForBuyerMapper @Inject constructor() {
         return OfferInfoForBuyerUiModel(
             responseHeader = response.offeringInforBuyer.responseHeader.toResponseHeaderModel(),
             offeringJsonData = response.offeringInforBuyer.offeringJsonData,
-            tnc = response.offeringInforBuyer.tnc,
             nearestWarehouseIds = response.offeringInforBuyer.nearestWarehouseIds,
             offerings = response.offeringInforBuyer.offerings.toOfferingUiModel()
         )
@@ -22,7 +22,9 @@ class GetOfferInfoForBuyerMapper @Inject constructor() {
     private fun ResponseHeader.toResponseHeaderModel(): OfferInfoForBuyerUiModel.ResponseHeader {
         return OfferInfoForBuyerUiModel.ResponseHeader(
             success = success,
-            error_code = errorCode,
+            status = Status.values().firstOrNull { value ->
+                value.code == errorCode
+            } ?: Status.SUCCESS,
             processTime = processTime
         )
     }
@@ -37,7 +39,8 @@ class GetOfferInfoForBuyerMapper @Inject constructor() {
                 endDate = it.endDate,
                 maxAppliedTier = it.maxAppliedTier,
                 tierList = it.tierList.toTierListUiModel(),
-                shopData = it.shopData.toShopData()
+                shopData = it.shopData.toShopData(),
+                tnc = it.tnc,
             )
         }
     }

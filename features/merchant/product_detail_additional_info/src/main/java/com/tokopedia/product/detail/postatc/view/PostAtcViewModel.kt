@@ -85,12 +85,14 @@ class PostAtcViewModel @Inject constructor(
     fun fetchRecommendation(
         productId: String,
         pageName: String,
-        uniqueId: Int
+        uniqueId: Int,
+        queryParam: String
     ) {
         launchCatchError(block = {
             val requestParams = GetRecommendationRequestParam(
                 pageName = pageName,
-                productIds = listOf(productId)
+                productIds = listOf(productId),
+                queryParam = queryParam
             )
             val result = getRecommendationUseCase.getData(requestParams)
             if (result.isEmpty()) throw Throwable()

@@ -8,7 +8,9 @@ import com.tokopedia.buy_more_get_more.R
 import com.tokopedia.buy_more_get_more.databinding.ItemOlpProductListBinding
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferProductListUiModel
 import com.tokopedia.buy_more_get_more.olp.presentation.listener.AtcProductListener
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.unifyprinciples.R.color.Unify_NN0
 import com.tokopedia.utils.view.binding.viewBinding
 
 class OfferingProductListViewHolder(
@@ -27,13 +29,14 @@ class OfferingProductListViewHolder(
         itemView.setBackgroundColor(
             MethodChecker.getColor(
                 itemView.context,
-                com.tokopedia.unifyprinciples.R.color.Unify_NN0
+                Unify_NN0
             )
         )
         binding?.run {
             productCard.apply {
                 setProductModel(element.mapToProductCardModel())
                 setAddToCartOnClickListener { atcProductListener.onProductAtcVariantClicked(element) }
+                setOnClickListener { atcProductListener.onProductCardClicked(element.productId, element.productUrl) }
             }
         }
     }
@@ -42,7 +45,7 @@ class OfferingProductListViewHolder(
         return ProductCardModel(
             productImageUrl = imageUrl,
             productName = name,
-            discountPercentage = "${campaign.discountedPercentage}%",
+            discountPercentage = if (campaign.discountedPercentage != Int.ZERO) "${campaign.discountedPercentage}%" else "",
             slashedPrice = campaign.originalPrice,
             formattedPrice = campaign.discountedPrice.ifEmpty { price },
             countSoldRating = rating,

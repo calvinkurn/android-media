@@ -44,6 +44,7 @@ object WidgetName {
     const val SLIDER_BANNER_HIGHLIGHT = "slider_banner_highlight"
     const val PRODUCT_HIGHLIGHT = "product_highlight"
     const val VOUCHER = "voucher"
+    const val BMGM_BANNER = "bmgm_banner_group" // Buy More Get More Widget Banner
 
     // showcase widget name list
     const val SHOWCASE_SLIDER_SMALL = "etalase_slider_kecil"

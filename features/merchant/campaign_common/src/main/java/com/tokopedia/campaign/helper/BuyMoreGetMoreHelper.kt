@@ -19,17 +19,17 @@ object BuyMoreGetMoreHelper {
         context: Context,
         shopId: String,
         offerId: String,
-        warehouseIds: ArrayList<Int> = arrayListOf(),
-        productIds: ArrayList<Int> = arrayListOf()
+        warehouseIds: List<Int> = arrayListOf(),
+        productIds: List<Int> = arrayListOf()
     ) {
         val intent = RouteManager.getIntent(
             context,
             ApplinkConstInternalMechant.BUY_MORE_GET_MORE_OLP,
-            shopId,
-            offerId
+            offerId,
+            warehouseIds.joinToString(","),
+            productIds.joinToString(","),
+            shopId
         )
-        intent.putIntegerArrayListExtra(KEY_WAREHOUSE_IDS, warehouseIds)
-        intent.putIntegerArrayListExtra(KEY_PRODUCT_IDS, productIds)
         context.startActivity(intent)
     }
 }

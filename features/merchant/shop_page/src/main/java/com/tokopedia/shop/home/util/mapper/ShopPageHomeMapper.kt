@@ -18,6 +18,7 @@ import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleItemUi
 import com.tokopedia.shop.home.WidgetName.ADD_ONS
 import com.tokopedia.shop.home.WidgetName.BANNER_TIMER
 import com.tokopedia.shop.home.WidgetName.BIG_CAMPAIGN_THEMATIC
+import com.tokopedia.shop.home.WidgetName.BMGM_BANNER
 import com.tokopedia.shop.home.WidgetName.BUY_AGAIN
 import com.tokopedia.shop.home.WidgetName.DISPLAY_DOUBLE_COLUMN
 import com.tokopedia.shop.home.WidgetName.DISPLAY_SINGLE_COLUMN
@@ -31,9 +32,9 @@ import com.tokopedia.shop.home.WidgetName.PRODUCT
 import com.tokopedia.shop.home.WidgetName.RECENT_ACTIVITY
 import com.tokopedia.shop.home.WidgetName.REMINDER
 import com.tokopedia.shop.home.WidgetName.SHOWCASE_SLIDER_TWO_ROWS
-import com.tokopedia.shop.home.WidgetName.TRENDING
 import com.tokopedia.shop.home.WidgetName.SLIDER_BANNER
 import com.tokopedia.shop.home.WidgetName.SLIDER_SQUARE_BANNER
+import com.tokopedia.shop.home.WidgetName.TRENDING
 import com.tokopedia.shop.home.WidgetName.VIDEO
 import com.tokopedia.shop.home.WidgetName.VOUCHER_STATIC
 import com.tokopedia.shop.home.WidgetType.BUNDLE
@@ -57,6 +58,7 @@ import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeFlashSaleTncUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeFlashSaleUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeNewProductLaunchCampaignUiModel
+import com.tokopedia.shop.home.view.model.ShopHomePersoProductComparisonUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductBundleListUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeShowcaseListItemUiModel
@@ -64,7 +66,6 @@ import com.tokopedia.shop.home.view.model.ShopHomeShowcaseListSliderUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeVoucherUiModel
 import com.tokopedia.shop.home.view.model.ShopPageLayoutUiModel
 import com.tokopedia.shop.home.view.model.StatusCampaign
-import com.tokopedia.shop.home.view.model.ShopHomePersoProductComparisonUiModel
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.view.datamodel.LabelGroupUiModel
 import com.tokopedia.shop_widget.common.uimodel.DynamicHeaderUiModel
@@ -423,8 +424,8 @@ object ShopPageHomeMapper {
         }
         return when (widgetResponse.type.toLowerCase()) {
             DISPLAY.toLowerCase() -> {
-                when(widgetResponse.name){
-                    DISPLAY_SINGLE_COLUMN, DISPLAY_DOUBLE_COLUMN, DISPLAY_TRIPLE_COLUMN, SLIDER_BANNER, SLIDER_SQUARE_BANNER, VIDEO -> {
+                when (widgetResponse.name) {
+                    DISPLAY_SINGLE_COLUMN, DISPLAY_DOUBLE_COLUMN, DISPLAY_TRIPLE_COLUMN, SLIDER_BANNER, SLIDER_SQUARE_BANNER, VIDEO, BMGM_BANNER -> {
                         mapToDisplayImageWidget(widgetResponse, widgetLayout)
                     }
                     BANNER_TIMER -> {
@@ -432,7 +433,6 @@ object ShopPageHomeMapper {
                     }
                     else -> null
                 }
-
             }
             PRODUCT.toLowerCase() -> {
                 mapToProductWidgetUiModel(widgetResponse, isMyOwnProduct, isEnableDirectPurchase, widgetLayout)
@@ -554,7 +554,7 @@ object ShopPageHomeMapper {
             name = widgetResponse.name,
             type = widgetResponse.type,
             header = mapToHeaderModel(header, widgetLayout),
-            isFestivity = widgetLayout?.isFestivity.orFalse(),
+            isFestivity = widgetLayout?.isFestivity.orFalse()
         )
     }
 
