@@ -75,7 +75,7 @@ Buy More Save More - Add on (Non DT)
 
 - Bundling product card
 
-This product type shows multiple product items on each card that belong to that specific bundle. In this product type, there will be no attached add-on on the product or the bundling itself because currently there’s no feature that allows the buyer to purchase an add-on on a product bundling.
+This product type shows multiple product items on each card that belong to that specific bundle. In this product type, there will be no attached add-on on the product or the bundling itself because currently there&#39;s no feature that allows the buyer to purchase an add-on on a product bundling.
 
 ![](../../res/productlist/bundling_product.png)
 

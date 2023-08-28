@@ -101,7 +101,7 @@ To check PLT performance we can use this trace name: `buyer_order_detail_layout_
 
 ![](../res/buyerorderdetail/buyer_order_detail_ui_event_flow_drawio.png)
 
-- To prevent ViewHolder flicker when your UI model contents change, you should override the bind with payload function on your ViewHolder. You should also override the bind with payload function if there’s any chance that the UI model contents are changing when the user is refreshing the page. For example:
+- To prevent ViewHolder flicker when your UI model contents change, you should override the bind with payload function on your ViewHolder. You should also override the bind with payload function if there&#39;s any chance that the UI model contents are changing when the user is refreshing the page. For example:
 
 
 
