@@ -204,6 +204,7 @@ class DiscoveryHomeFactory {
             )
             initializeComponent(ComponentsList.Spacing, ::SpacingViewHolder, ::SpacingViewModel)
             initializeComponent(ComponentsList.Tabs, ::TabsViewHolder, ::TabsViewModel)
+            initializeComponent(ComponentsList.TabsIcon, ::TabsViewHolder, ::TabsViewModel)
             initializeComponent(ComponentsList.TabsItem, ::TabsItemViewHolder, ::TabsItemViewModel)
             initializeComponent(
                 ComponentsList.TimerSprintSale,
@@ -318,14 +319,14 @@ class DiscoveryHomeFactory {
                 ::MixLeftEmptyViewModel
             )
 
-            //Quick Filter
+            // Quick Filter
             initializeComponent(
                 ComponentsList.QuickFilter,
                 ::QuickFilterViewHolder,
                 ::QuickFilterViewModel
             )
 
-            //Product Card Single
+            // Product Card Single
             initializeComponent(
                 ComponentsList.ProductCardSingle,
                 ::ProductCardSingleViewHolder,
@@ -337,7 +338,7 @@ class DiscoveryHomeFactory {
                 ::MasterProductCardItemViewModel
             )
 
-            //Navigation Chips
+            // Navigation Chips
             initializeComponent(
                 ComponentsList.NavigationChips,
                 ::NavigationChipsViewHolder,
@@ -349,14 +350,14 @@ class DiscoveryHomeFactory {
                 ::DefaultComponentViewModel
             )
 
-            //Banned View
+            // Banned View
             initializeComponent(
                 ComponentsList.BannedView,
                 ::BannedViewViewHolder,
                 ::DefaultComponentViewModel
             )
 
-            //Play Widget
+            // Play Widget
             initializeComponent(
                 ComponentsList.DiscoPlayWidgetView,
                 ::DiscoveryPlayWidgetViewHolder,
@@ -410,7 +411,7 @@ class DiscoveryHomeFactory {
                 ::ErrorLoadViewModel
             )
 
-            //Category Best Seller
+            // Category Best Seller
             initializeComponent(
                 ComponentsList.CategoryBestSeller,
                 ::CategoryBestSellerViewHolder,
@@ -424,20 +425,20 @@ class DiscoveryHomeFactory {
                 ::CategoryBestSellerViewModel
             )
 
-            //Topads Headline View
+            // Topads Headline View
             initializeComponent(
                 ComponentsList.TopadsHeadlineView,
                 ::TopAdsHeadlineViewHolder,
                 ::TopAdsHeadlineViewModel
             )
 
-            //Rilisan Spesial View
+            // Rilisan Spesial View
             initializeComponent(
                 ComponentsList.ShopCardView,
                 ::ShopCardViewHolder,
                 ::ShopCardViewModel
             )
-            //Rilisan Spesial ItemView
+            // Rilisan Spesial ItemView
             initializeComponent(
                 ComponentsList.ShopCardItemView,
                 ::ShopCardItemViewHolder,
@@ -447,7 +448,8 @@ class DiscoveryHomeFactory {
             initializeComponent(
                 ComponentsList.Section,
                 ::SectionViewHolder,
-                ::SectionViewModel)
+                ::SectionViewModel
+            )
 
 //            initializeComponent(ComponentsList.AnchorTabs,::AnchorTabsViewHolder,::AnchorTabsViewModel)
 
@@ -456,7 +458,7 @@ class DiscoveryHomeFactory {
                 ::AnchorTabsItemViewHolder,
                 ::AnchorTabsItemViewModel
             )
-            //Calendar View
+            // Calendar View
             initializeComponent(
                 ComponentsList.CalendarWidgetCarousel,
                 ::CalendarWidgetCarouselViewHolder,
@@ -549,7 +551,6 @@ class DiscoveryHomeFactory {
         fun getComponentId(viewType: String?): Int? {
             return componentIdMap[viewType]
         }
-
 
         fun createViewHolder(
             itemView: View,

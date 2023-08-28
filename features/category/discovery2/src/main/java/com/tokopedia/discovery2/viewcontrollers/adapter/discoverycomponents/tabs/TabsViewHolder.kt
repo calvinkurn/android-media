@@ -117,6 +117,36 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
                     }
                 }
             )
+
+            tabsViewModel.getIconTabLiveData().observe(
+                fragment.viewLifecycleOwner
+            ) {
+                isParentUnifyTab = true
+                tabsHolder.tabLayout.apply {
+                    layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
+                    layoutParams.height =
+                        tabsHolder.context.resources.getDimensionPixelSize(R.dimen.dp_55)
+                    tabMode = TabLayout.MODE_SCROLLABLE
+                    removeAllTabs()
+                    setBackgroundResource(0)
+                }
+                tabsHolder.apply {
+                    whiteShadeLeft.setBackgroundResource(0)
+                    whiteShadeRight.setBackgroundResource(0)
+                    getUnifyTabLayout().setSelectedTabIndicator(null)
+                }
+                it.forEach {
+                    val tab = tabsHolder.tabLayout.newTab()
+                    ViewCompat.setPaddingRelative(tab.view, TAB_START_PADDING, 0, 0, 0)
+                    tab.customView = CustomViewCreator.getCustomViewObject(
+                        itemView.context,
+                        ComponentsList.TabsItem,
+                        it,
+                        fragment
+                    )
+                    tabsHolder.tabLayout.addTab(tab, it.data?.get(0)?.isSelected ?: false)
+                }
+            }
         }
     }
 

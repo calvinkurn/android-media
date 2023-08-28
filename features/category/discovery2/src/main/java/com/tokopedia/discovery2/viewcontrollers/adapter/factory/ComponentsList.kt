@@ -4,9 +4,8 @@ import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.R
 import com.tokopedia.play.widget.PlayWidgetViewHolder
 
-
 enum class ComponentsList(val id: Int, val componentName: String) {
-    Default(R.layout.coming_soon_view, ComponentNames.Default.componentName),   // ***** Don't move this line ******
+    Default(R.layout.coming_soon_view, ComponentNames.Default.componentName), // ***** Don't move this line ******
     SingleBanner(R.layout.multi_banner_layout, ComponentNames.SingleBanner.componentName),
     DoubleBanner(R.layout.multi_banner_layout, ComponentNames.DoubleBanner.componentName),
     TripleBanner(R.layout.multi_banner_layout, ComponentNames.TripleBanner.componentName),
@@ -23,6 +22,7 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     ClaimCouponItem(R.layout.component_claim_coupon_item, ComponentNames.ClaimCouponItem.componentName),
     Spacing(R.layout.spacing_layout, ComponentNames.Margin.componentName),
     Tabs(R.layout.tabs_layout, ComponentNames.Tabs.componentName),
+    TabsIcon(R.layout.tabs_layout, ComponentNames.TabsIcon.componentName),
     TabsItem(R.layout.tabs_item_layout, ComponentNames.TabsItem.componentName),
     TimerSprintSale(R.layout.discovery_timer_sprint_sale_layout, ComponentNames.TimerSprintSale.componentName),
     ShimmerProductCard(R.layout.discovery_shimmer_product_card_layout, ComponentNames.ShimmerProductCard.componentName),
@@ -55,23 +55,23 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     ContentCardEmptyState(R.layout.disco_content_card_empty_state, ComponentNames.ContentCardEmptyState.componentName),
     SaleEndState(R.layout.sale_end_state, ComponentNames.SaleEndState.componentName),
 
-    MixLeftEmptyItem(R.layout.disco_mix_left_empty_item,ComponentNames.MixLeftEmptyItem.componentName),
+    MixLeftEmptyItem(R.layout.disco_mix_left_empty_item, ComponentNames.MixLeftEmptyItem.componentName),
 
-    //Quick Filter
+    // Quick Filter
     QuickFilter(R.layout.discovery_quick_filter_layout, ComponentNames.QuickFilter.componentName),
 
-    //Product Card Single
+    // Product Card Single
     ProductCardSingle(R.layout.disco_product_card_single, ComponentNames.ProductCardSingle.componentName),
     ProductCardSingleItem(R.layout.master_product_card_item_list_layout, ComponentNames.ProductCardSingleItem.componentName),
 
-    //Navigation Chips
+    // Navigation Chips
     NavigationChips(R.layout.navigation_chips_view, ComponentNames.NavigationChips.componentName),
     NavigationCHipsItem(R.layout.navigation_chips_item, ComponentNames.NavigationChipsItem.componentName),
 
-    //Banned View
+    // Banned View
     BannedView(R.layout.banned_view, ComponentNames.BannedView.componentName),
 
-    //Discovery Play Widget
+    // Discovery Play Widget
     DiscoPlayWidgetView(PlayWidgetViewHolder.layout, ComponentNames.DiscoPlayWidgetView.componentName),
 
     DiscoTDNBanner(R.layout.discovery_tdn_banner_view, ComponentNames.DiscoTDNBanner.componentName),
@@ -85,41 +85,41 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     ProductListErrorLoad(R.layout.discovery_product_list_error_load, ComponentNames.ProductListErrorLoad.componentName),
     ProductListNetworkErrorLoad(R.layout.discovery_list_2_buttons_empty_state, ComponentNames.ProductListNetworkErrorLoad.componentName),
 
-    //Category Best Seller
+    // Category Best Seller
     CategoryBestSeller(R.layout.carousel_best_seller_recycler_view, ComponentNames.CategoryBestSeller.componentName),
 
     // CLP Featured Products
     CLPFeatureProducts(R.layout.carousel_best_seller_recycler_view, ComponentNames.CLPFeaturedProducts.componentName),
 
-    //Topads Headline View
+    // Topads Headline View
     TopadsHeadlineView(R.layout.topads_headline_layout, ComponentNames.TopadsHeadlineView.componentName),
 
     Section(R.layout.disco_section_component, ComponentNames.Section.componentName),
     AnchorTabs(R.layout.disco_anchor_tabs, ComponentNames.AnchorTabs.componentName),
     AnchorTabsItem(R.layout.disco_anchor_tabs_item, ComponentNames.AnchorTabsItem.componentName),
-    //Rilisan Spesial View
+
+    // Rilisan Spesial View
     ShopCardView(R.layout.horizontal_rv_shop_card_layout, ComponentNames.ShopCardView.componentName),
 
-    //Rilisan Spesial ItemView
+    // Rilisan Spesial ItemView
     ShopCardItemView(R.layout.shop_card_item_layout, ComponentNames.ShopCardItemView.componentName),
 
-    //Calendar Widget
+    // Calendar Widget
     CalendarWidgetCarousel(R.layout.discovery_calendar_widget_carousel_layout, ComponentNames.CalendarWidgetCarousel.componentName),
     CalendarWidgetGrid(R.layout.discovery_calendar_widget_grid_layout, ComponentNames.CalendarWidgetGrid.componentName),
     CalendarWidgetItem(R.layout.discovery_calendar_widget_item_layout, ComponentNames.CalendarWidgetItem.componentName),
     ShimmerCalendarWidget(R.layout.discovery_shimmer_calendar_layout, ComponentNames.ShimmerCalendarWidget.componentName),
     TopQuestWidget(R.layout.disco_top_quest, ComponentNames.TopQuestWidget.componentName),
 
-    MyCoupon(R.layout.component_my_coupon_layout,ComponentNames.MyCoupon.componentName),
-    MyCouponItem(R.layout.item_disco_my_coupon,ComponentNames.MyCouponItem.componentName),
-    BannerInfinite(R.layout.disco_merchant_voucher_list,ComponentNames.BannerInfinite.componentName),
-    BannerInfiniteItem(R.layout.disco_infinite_shop_banner_item,ComponentNames.BannerInfiniteItem.componentName),
-    ShopCardInfinite(R.layout.disco_merchant_voucher_list,ComponentNames.ShopCardInfinite.componentName),
-    ProductBundling(R.layout.disco_product_bundling_layout,ComponentNames.ProductBundling.componentName),
+    MyCoupon(R.layout.component_my_coupon_layout, ComponentNames.MyCoupon.componentName),
+    MyCouponItem(R.layout.item_disco_my_coupon, ComponentNames.MyCouponItem.componentName),
+    BannerInfinite(R.layout.disco_merchant_voucher_list, ComponentNames.BannerInfinite.componentName),
+    BannerInfiniteItem(R.layout.disco_infinite_shop_banner_item, ComponentNames.BannerInfiniteItem.componentName),
+    ShopCardInfinite(R.layout.disco_merchant_voucher_list, ComponentNames.ShopCardInfinite.componentName),
+    ProductBundling(R.layout.disco_product_bundling_layout, ComponentNames.ProductBundling.componentName),
     ContentCard(R.layout.disco_content_card, ComponentNames.ContentCard.componentName),
     ContentCardItem(R.layout.disco_content_card_item, ComponentNames.ContentCardItem.componentName),
     ProductHighlight(R.layout.multi_banner_layout, ComponentNames.ProductHighlight.componentName),
     ThematicHeader(R.layout.disco_thematic_header_layout, ComponentNames.ThematicHeader.componentName),
-    ExplicitWidget(R.layout.explicit_widget_layout,ComponentNames.ExplicitWidget.componentName)
-
+    ExplicitWidget(R.layout.explicit_widget_layout, ComponentNames.ExplicitWidget.componentName)
 }

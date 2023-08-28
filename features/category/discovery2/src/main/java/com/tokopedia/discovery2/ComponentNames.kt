@@ -1,6 +1,5 @@
 package com.tokopedia.discovery2
 
-
 enum class ComponentNames(val componentName: String) {
     Default("default"),
     SingleBanner("banner_image"),
@@ -20,6 +19,7 @@ enum class ComponentNames(val componentName: String) {
     Margin("margin"),
     Tabs("tabs"),
     TabsItem("tabs_item"),
+    TabsIcon("tabs_icon"),
     TimerSprintSale("timer_sprint_sale"),
     ShimmerProductCard("shimmer_product_card"),
     Shimmer("shimmer"),
@@ -57,17 +57,17 @@ enum class ComponentNames(val componentName: String) {
 //    Empty Item for MixLeft
     MixLeftEmptyItem("mix_left_empty_item"),
 
-    //Quick Filter
+    // Quick Filter
     QuickFilter("chips_filter_v2"),
 
-    //Navigation Chips
+    // Navigation Chips
     NavigationChips("navigation_chips"),
     NavigationChipsItem("navigation_chips_item"),
 
-    //Banned View
+    // Banned View
     BannedView("banned_view"),
 
-    //Play Widget View
+    // Play Widget View
     DiscoPlayWidgetView("play_widget"),
 
     DiscoTDNBanner("tdn_banner"),
@@ -78,18 +78,19 @@ enum class ComponentNames(val componentName: String) {
     ProductListErrorLoad("product_list_error_load"),
     ProductListNetworkErrorLoad("product_list_network_error_load"),
 
-    //Category Best Seller
+    // Category Best Seller
     CategoryBestSeller("product-card-horizontal-scroll"),
 
     // Promo Featured Products - CLP
     CLPFeaturedProducts("featured-product"),
 
-    //Topads Headline View
+    // Topads Headline View
     TopadsHeadlineView("topads"),
 
-    //Rilisan Spesial View
+    // Rilisan Spesial View
     ShopCardView("shop_card"),
-    //Rilisan Spesial ItemView
+
+    // Rilisan Spesial ItemView
     ShopCardItemView("shop_card_item"),
 
     MerchantVoucherCarousel("merchant_voucher_carousel"),
@@ -101,7 +102,7 @@ enum class ComponentNames(val componentName: String) {
     AnchorTabs("anchor_tabs"),
     AnchorTabsItem("anchor_tabs_item"),
 
-    //Calendar Widget
+    // Calendar Widget
     CalendarWidgetCarousel("calendar"),
     CalendarWidgetGrid("calendar_grid"),
     CalendarWidgetItem("calendar_item"),
@@ -109,7 +110,7 @@ enum class ComponentNames(val componentName: String) {
 
     TopQuestWidget("top_quest"),
 
-    //my coupon
+    // my coupon
     MyCoupon("my_coupon"),
     MyCouponItem("my_coupon_item"),
 
@@ -125,5 +126,5 @@ enum class ComponentNames(val componentName: String) {
 
     ContentCard("content_card"),
     ContentCardItem("content_card_item"),
-    ProductHighlight("product_highlight"),
+    ProductHighlight("product_highlight")
 }
