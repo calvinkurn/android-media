@@ -469,18 +469,21 @@ class CartViewModel @Inject constructor(
                         cartId = cartId,
                         getCartState = getCartState
                     )
-                    val updateAndReloadCartListData =
-                        updateAndReloadCartUseCase(updateCartWrapperRequest)
-                    _globalEvent.value = CartGlobalEvent.ProgressLoading(false)
-                    processInitialGetCartData(
-                        updateAndReloadCartListData.cartId,
-                        initialLoad = false,
-                        isLoadingTypeRefresh = true,
-                        updateAndReloadCartListData.getCartState
-                    )
+                    val updateAndReloadCartListData = updateAndReloadCartUseCase(updateCartWrapperRequest)
+                    withContext(dispatchers.main) {
+                        _globalEvent.value = CartGlobalEvent.ProgressLoading(false)
+                        processInitialGetCartData(
+                            updateAndReloadCartListData.cartId,
+                            initialLoad = false,
+                            isLoadingTypeRefresh = true,
+                            updateAndReloadCartListData.getCartState
+                        )
+                    }
                 },
                 onError = { throwable ->
-                    _globalEvent.value = CartGlobalEvent.UpdateAndReloadCartFailed(throwable)
+                    withContext(dispatchers.main) {
+                        _globalEvent.value = CartGlobalEvent.UpdateAndReloadCartFailed(throwable)
+                    }
                 }
             )
         } else {
@@ -1201,18 +1204,20 @@ class CartViewModel @Inject constructor(
             }
         }
 
-        viewModelScope.launch(dispatchers.main) {
+        viewModelScope.launch(dispatchers.io) {
             getWishlistV2UseCase.setParams(requestParams)
-            val result = withContext(dispatchers.io) { getWishlistV2UseCase.executeOnBackground() }
-            if (result is Success) {
-                _wishlistV2State.value = LoadWishlistV2State.Success(
-                    result.data.items,
-                    true
-                )
-            } else {
-                val error = (result as Fail).throwable
-                Timber.d(error)
-                _wishlistV2State.value = LoadWishlistV2State.Failed
+            val result = getWishlistV2UseCase.executeOnBackground()
+            withContext(dispatchers.main) {
+                if (result is Success) {
+                    _wishlistV2State.value = LoadWishlistV2State.Success(
+                        result.data.items,
+                        true
+                    )
+                } else {
+                    val error = (result as Fail).throwable
+                    Timber.d(error)
+                    _wishlistV2State.value = LoadWishlistV2State.Failed
+                }
             }
         }
     }
