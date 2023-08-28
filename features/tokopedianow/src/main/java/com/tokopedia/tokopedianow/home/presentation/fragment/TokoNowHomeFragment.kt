@@ -1649,9 +1649,10 @@ class TokoNowHomeFragment :
     }
 
     private fun isEnableNewRepurchase(): Boolean {
-        val rollence = RemoteConfigInstance.getInstance().abTestPlatform
-            .getString(RollenceKey.TOKOPEDIA_NOW_REPURCHASE, REPURCHASE_EXPERIMENT_DISABLED)
-        return rollence == REPURCHASE_EXPERIMENT_ENABLED
+//        val rollence = RemoteConfigInstance.getInstance().abTestPlatform
+//            .getString(RollenceKey.TOKOPEDIA_NOW_REPURCHASE, REPURCHASE_EXPERIMENT_DISABLED)
+//        return rollence == REPURCHASE_EXPERIMENT_ENABLED
+        return true
     }
 
     private fun getMiniCart() {
