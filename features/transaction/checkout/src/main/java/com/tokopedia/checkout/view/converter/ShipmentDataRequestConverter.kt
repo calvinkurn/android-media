@@ -99,7 +99,7 @@ class ShipmentDataRequestConverter @Inject constructor(private val _gson: Gson) 
                                 isOrderPriority = if (shipmentDetailData.isOrderPriority == true) 1 else 0
                             ),
                             promos = promoRequests,
-                            shopId = shipmentCartItemModel.shopId,
+                            shopId = it.value.first().shopId.toLongOrZero(),
                             warehouseId = shipmentCartItemModel.fulfillmentId,
                             isTokoNow = shipmentCartItemModel.isTokoNow
                         )
