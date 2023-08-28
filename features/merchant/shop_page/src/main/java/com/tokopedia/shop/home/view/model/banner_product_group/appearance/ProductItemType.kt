@@ -1,6 +1,6 @@
-package com.tokopedia.shop.home.view.model.banner_product_group
+package com.tokopedia.shop.home.view.model.banner_product_group.appearance
 
-data class ProductCardItemType(
+data class ProductItemType(
     val productId: String,
     val imageUrl: String,
     val name: String,

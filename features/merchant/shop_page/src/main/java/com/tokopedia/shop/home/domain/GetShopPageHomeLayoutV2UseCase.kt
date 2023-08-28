@@ -104,6 +104,7 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
                         }
                         descriptionHeader
                       }
+                      text
                       mainBannerPosition
                       showcaseList {
                         showcaseID

@@ -1,4 +1,4 @@
-package com.tokopedia.shop.home.view.adapter.viewholder
+package com.tokopedia.shop.home.view.adapter.viewholder.banner_product_group
 
 import android.graphics.Color
 import android.view.View
@@ -16,11 +16,10 @@ import com.tokopedia.shop.databinding.ItemShopHomeBannerProductGroupViewpagerBin
 import com.tokopedia.shop.home.util.ShopBannerProductGroupWidgetTabDependencyProvider
 import com.tokopedia.shop.home.view.fragment.ShopBannerProductGroupWidgetTabFragment
 import com.tokopedia.shop.home.view.listener.ShopBannerProductGroupListener
-import com.tokopedia.shop.home.view.model.ShopWidgetComponentBannerProductGroupUiModel
+import com.tokopedia.shop.home.view.model.banner_product_group.ShopWidgetComponentBannerProductGroupUiModel
 import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.unifycomponents.setCustomText
 import com.tokopedia.utils.view.binding.viewBinding
-import com.tokopedia.shop.home.view.model.ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.Data.BannerType
 
 class ShopHomeBannerProductGroupViewPagerViewHolder(
     itemView: View,
@@ -44,11 +43,11 @@ class ShopHomeBannerProductGroupViewPagerViewHolder(
     override fun bind(model: ShopWidgetComponentBannerProductGroupUiModel) {
         setupTitle(model)
         setupViewAllChevron(model)
-        setupTabs(model.tabs)
+        setupTabs(model.tabs, model.widgetStyle)
     }
 
     private fun setupViewAllChevron(model: ShopWidgetComponentBannerProductGroupUiModel) {
-        val hasVerticalBanner = hasVerticalBanner(model)
+        val hasVerticalBanner = model.widgetStyle == ShopWidgetComponentBannerProductGroupUiModel.WidgetStyle.VERTICAL.id
 
         viewBinding?.iconChevron?.isVisible = hasVerticalBanner
         viewBinding?.iconChevron?.setOnClickListener {
@@ -56,28 +55,16 @@ class ShopHomeBannerProductGroupViewPagerViewHolder(
         }
     }
 
-    private fun hasVerticalBanner(model: ShopWidgetComponentBannerProductGroupUiModel): Boolean {
-        model.tabs.forEach { tab ->
-            tab.componentList.forEach { component ->
-                component.data.forEach { data ->
-                    val hasVerticalBanner = data.bannerType == BannerType.VERTICAL
-                    if (hasVerticalBanner) {
-                        return true
-                    }
-                }
-            }
-        }
-
-        return false
-    }
-
     private fun setupTitle(model: ShopWidgetComponentBannerProductGroupUiModel) {
         viewBinding?.tpgTitle?.text = model.title
         viewBinding?.tpgTitle?.isVisible = model.title.isNotEmpty() && model.tabs.isNotEmpty()
     }
 
-    private fun setupTabs(tabs: List<ShopWidgetComponentBannerProductGroupUiModel.Tab>) {
-        val fragments = createFragments(tabs)
+    private fun setupTabs(
+        tabs: List<ShopWidgetComponentBannerProductGroupUiModel.Tab>,
+        widgetStyle: String
+    ) {
+        val fragments = createFragments(tabs, widgetStyle)
         val pagerAdapter = TabPagerAdapter(provider.fragment, fragments)
 
         viewBinding?.run {
@@ -124,12 +111,13 @@ class ShopHomeBannerProductGroupViewPagerViewHolder(
     }
 
     private fun createFragments(
-        tabs: List<ShopWidgetComponentBannerProductGroupUiModel.Tab>
+        tabs: List<ShopWidgetComponentBannerProductGroupUiModel.Tab>,
+        widgetStyle: String
     ): List<Pair<String, Fragment>> {
         val pages = mutableListOf<Pair<String, Fragment>>()
 
         tabs.forEachIndexed { _, currentTab ->
-            val fragment = ShopBannerProductGroupWidgetTabFragment.newInstance(provider.currentShopId, currentTab.componentList)
+            val fragment = ShopBannerProductGroupWidgetTabFragment.newInstance(provider.currentShopId, currentTab.componentList, widgetStyle)
             fragment.setOnMainBannerClick { mainBanner -> listener.onBannerProductGroupMainBannerClick(mainBanner) }
             fragment.setOnProductClick { selectedShowcase -> listener.onBannerProductGroupProductClick(selectedShowcase) }
             fragment.setOnVerticalBannerClick { verticalBanner -> listener.onBannerProductGroupVerticalBannerClick(verticalBanner) }

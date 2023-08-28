@@ -18,5 +18,7 @@ data class Header(
     @SerializedName("isShowEtalaseName")
     val isShowEtalaseName: Int = -1,
     @SerializedName("data")
-    val data: List<HeaderData> = listOf()
+    val data: List<HeaderData> = listOf(),
+    @SerializedName("widgetStyle")
+    val widgetStyle: String = ""
 )

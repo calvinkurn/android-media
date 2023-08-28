@@ -1,4 +1,4 @@
-package com.tokopedia.shop.home.view.adapter.viewholder
+package com.tokopedia.shop.home.view.adapter.viewholder.showcase_navigation
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

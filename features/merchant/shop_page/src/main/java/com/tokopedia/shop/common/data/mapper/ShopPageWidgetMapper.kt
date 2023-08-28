@@ -1,7 +1,6 @@
 package com.tokopedia.shop.common.data.mapper
 
 import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
@@ -15,17 +14,17 @@ import com.tokopedia.shop.home.data.model.ShopPageWidgetRequestModel
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.CarouselAppearance
 import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.LeftMainBannerAppearance
-import com.tokopedia.shop.home.view.model.ShopWidgetComponentBannerProductGroupUiModel
+import com.tokopedia.shop.home.view.model.banner_product_group.ShopWidgetComponentBannerProductGroupUiModel
 import com.tokopedia.shop.home.view.model.showcase_navigation.ShopHomeShowcaseNavigationUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerProductHotspotUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerTimerUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetVoucherSliderUiModel
 import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseNavigationBannerWidgetStyle
 import com.tokopedia.shop.home.view.model.StatusCampaign
-import com.tokopedia.shop.home.view.model.ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.Data.BannerType
-import com.tokopedia.shop.home.view.model.ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.ComponentType
-import com.tokopedia.shop.home.view.model.ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.Data.LinkType
+import com.tokopedia.shop.home.view.model.banner_product_group.ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.ComponentType
+import com.tokopedia.shop.home.view.model.banner_product_group.ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.Data.LinkType
 import com.tokopedia.shop.home.view.model.showcase_navigation.Showcase
+import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseCornerShape
 import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseTab
 import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.TopMainBannerAppearance
 
@@ -183,7 +182,7 @@ object ShopPageWidgetMapper {
         )
     }
 
-    fun mapToHomeShowcaseWidget(response: ShopLayoutWidget.Widget): ShopHomeShowcaseNavigationUiModel {
+    fun mapToHomeShowcaseNavigationWidget(response: ShopLayoutWidget.Widget): ShopHomeShowcaseNavigationUiModel {
         val tabs = response.data.map { tab ->
             val showcases = tab.showcaseList.map { showcase ->
                 Showcase(
@@ -201,17 +200,25 @@ object ShopPageWidgetMapper {
         val showcases = tabs.firstOrNull()?.showcases ?: emptyList()
 
         val appearance = when (response.header.widgetStyle) {
-            ShowcaseNavigationBannerWidgetStyle.CIRCLE.id -> {
-                CarouselAppearance(response.header.title, showcases, response.header.ctaLink)
+            ShowcaseNavigationBannerWidgetStyle.TOP_ROUNDED_CORNER.id -> {
+                TopMainBannerAppearance(response.header.title, showcases, response.header.ctaLink, ShowcaseCornerShape.ROUNDED_CORNER)
             }
-            ShowcaseNavigationBannerWidgetStyle.ROUNDED_CORNER.id -> {
-                if (tabs.size == Int.ONE) {
-                    TopMainBannerAppearance(response.header.title, showcases, response.header.ctaLink)
-                } else {
-                    LeftMainBannerAppearance(tabs, response.header.title, response.header.ctaLink)
-                }
+            ShowcaseNavigationBannerWidgetStyle.TOP_CIRCLE.id -> {
+                TopMainBannerAppearance(response.header.title, showcases, response.header.ctaLink, ShowcaseCornerShape.CIRCLE)
             }
-            else -> TopMainBannerAppearance(response.header.title, showcases, response.header.ctaLink)
+            ShowcaseNavigationBannerWidgetStyle.LEFT_ROUNDED_CORNER.id -> {
+                LeftMainBannerAppearance(tabs, response.header.title, response.header.ctaLink, ShowcaseCornerShape.ROUNDED_CORNER)
+            }
+            ShowcaseNavigationBannerWidgetStyle.LEFT_CIRCLE.id -> {
+                LeftMainBannerAppearance(tabs, response.header.title, response.header.ctaLink, ShowcaseCornerShape.CIRCLE)
+            }
+            ShowcaseNavigationBannerWidgetStyle.CAROUSEL_ROUNDED_CORNER.id -> {
+                CarouselAppearance(response.header.title, showcases, response.header.ctaLink, ShowcaseCornerShape.CIRCLE)
+            }
+            ShowcaseNavigationBannerWidgetStyle.CAROUSEL_CIRCLE.id -> {
+                CarouselAppearance(response.header.title, showcases, response.header.ctaLink, ShowcaseCornerShape.CIRCLE)
+            }
+            else -> TopMainBannerAppearance(response.header.title, showcases, response.header.ctaLink, ShowcaseCornerShape.ROUNDED_CORNER)
         }
 
 
@@ -246,8 +253,7 @@ object ShopPageWidgetMapper {
                         data.ctaLink,
                         data.linkID,
                         linkType,
-                        data.isShowProductInfo,
-                        BannerType.NONE
+                        data.isShowProductInfo
                     )
                 }
 
@@ -262,6 +268,8 @@ object ShopPageWidgetMapper {
             ShopWidgetComponentBannerProductGroupUiModel.Tab(tab.tabLabel, tab.tabName, componentList)
         }
 
+        val viewAllChevronAppLink = response.header.ctaLink
+
         return ShopWidgetComponentBannerProductGroupUiModel(
             widgetId = response.widgetID,
             layoutOrder = response.layoutOrder,
@@ -269,7 +277,8 @@ object ShopPageWidgetMapper {
             tabs = tabs,
             name = response.name,
             type = response.type,
-            viewAllChevronAppLink = response.header.ctaLink
+            viewAllChevronAppLink = viewAllChevronAppLink,
+            widgetStyle = response.header.widgetStyle
         )
     }
 

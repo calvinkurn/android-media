@@ -1,4 +1,4 @@
-package com.tokopedia.shop.home.view.adapter.viewholder
+package com.tokopedia.shop.home.view.adapter.viewholder.showcase_navigation.top
 
 import android.view.View
 import androidx.annotation.LayoutRes
@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.R
 import com.tokopedia.shop.databinding.ItemShopHomeShowcaseNavigationTopMainBannerBinding
+import com.tokopedia.shop.home.view.adapter.viewholder.showcase_navigation.ShopHomeShowCaseNavigationAdapter
 import com.tokopedia.shop.home.view.listener.ShopHomeShowcaseNavigationListener
 import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.ShopHomeShowcaseNavigationBannerWidgetAppearance
 import com.tokopedia.shop.home.view.model.showcase_navigation.ShopHomeShowcaseNavigationUiModel

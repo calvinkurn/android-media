@@ -1,4 +1,4 @@
-package com.tokopedia.shop.home.view.model
+package com.tokopedia.shop.home.view.model.banner_product_group
 
 import android.os.Parcelable
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -6,6 +6,7 @@ import com.tokopedia.shop.home.WidgetName
 import com.tokopedia.shop.home.WidgetType
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
 import com.tokopedia.shop.home.view.adapter.ShopWidgetTypeFactory
+import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
 import kotlinx.parcelize.Parcelize
 
 data class ShopWidgetComponentBannerProductGroupUiModel(
@@ -15,10 +16,16 @@ data class ShopWidgetComponentBannerProductGroupUiModel(
     override val type: String = WidgetType.COMPONENT,
     override val header: Header = Header(),
     override val isFestivity: Boolean = false,
-    val title: String,
-    val tabs: List<Tab>,
-    val viewAllChevronAppLink: String
+    val title: String = "",
+    val tabs: List<Tab> = emptyList(),
+    val viewAllChevronAppLink: String = "",
+    val widgetStyle: String = ""
 ) : BaseShopHomeWidgetUiModel() {
+
+    enum class WidgetStyle(val id: String) {
+        VERTICAL("vertical"),
+        HORIZONTAL("horizontal")
+    }
 
     @Parcelize
     data class Tab(
@@ -45,15 +52,8 @@ data class ShopWidgetComponentBannerProductGroupUiModel(
                 val ctaLink: String,
                 val linkId: Long,
                 val linkType: LinkType,
-                val isShowProductInfo: Boolean,
-                val bannerType: BannerType
+                val isShowProductInfo: Boolean
             ) : Parcelable {
-                @Parcelize
-                enum class BannerType(val id: String) : Parcelable {
-                    VERTICAL("vertical"),
-                    NONE("")
-                }
-
                 @Parcelize
                 enum class LinkType(var id: String) : Parcelable {
                     PRODUCT("product"),

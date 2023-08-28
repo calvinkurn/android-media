@@ -1,4 +1,4 @@
-package com.tokopedia.shop.home.view.adapter.viewholder
+package com.tokopedia.shop.home.view.adapter.viewholder.showcase_navigation.carousel
 
 import android.view.View
 import androidx.annotation.LayoutRes
@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.shop.R
 import com.tokopedia.shop.databinding.ItemShopHomeShowcaseNavigationCarouselBannerBinding
+import com.tokopedia.shop.home.view.adapter.viewholder.showcase_navigation.ShopHomeShowCaseNavigationAdapter
 import com.tokopedia.shop.home.view.listener.ShopHomeShowcaseNavigationListener
 import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.CarouselAppearance
 import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.ShopHomeShowcaseNavigationBannerWidgetAppearance

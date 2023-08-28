@@ -180,13 +180,13 @@ import com.tokopedia.shop.home.view.model.CarouselPlayWidgetUiModel
 import com.tokopedia.shop.home.view.model.CheckCampaignNotifyMeUiModel
 import com.tokopedia.shop.home.view.model.GetCampaignNotifyMeUiModel
 import com.tokopedia.shop.home.view.model.NotifyMeAction
-import com.tokopedia.shop.home.view.model.banner_product_group.ProductCardItemType
+import com.tokopedia.shop.home.view.model.banner_product_group.appearance.ProductItemType
 import com.tokopedia.shop.home.view.model.ShopHomeCardDonationUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeFlashSaleUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeNewProductLaunchCampaignUiModel
-import com.tokopedia.shop.home.view.model.ShopWidgetComponentBannerProductGroupUiModel
+import com.tokopedia.shop.home.view.model.banner_product_group.ShopWidgetComponentBannerProductGroupUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeShowcaseListItemUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeShowcaseListSliderUiModel
@@ -195,7 +195,7 @@ import com.tokopedia.shop.home.view.model.ShopPageLayoutUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerProductHotspotUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerTimerUiModel
 import com.tokopedia.shop.home.view.model.StatusCampaign
-import com.tokopedia.shop.home.view.model.banner_product_group.VerticalBannerItemType
+import com.tokopedia.shop.home.view.model.banner_product_group.appearance.VerticalBannerItemType
 import com.tokopedia.shop.home.view.model.showcase_navigation.Showcase
 import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageHeaderActivity
@@ -5006,7 +5006,7 @@ open class ShopPageHomeFragment :
         }
     }
 
-    override fun onBannerProductGroupProductClick(selectedProduct: ProductCardItemType) {
+    override fun onBannerProductGroupProductClick(selectedProduct: ProductItemType) {
         try {
             RouteManager.route(activity ?: return, selectedProduct.appLink)
         } catch (_: Exception) {
