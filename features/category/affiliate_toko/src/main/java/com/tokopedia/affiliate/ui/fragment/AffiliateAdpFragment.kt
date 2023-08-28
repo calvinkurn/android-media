@@ -75,7 +75,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.searchbar.navigation_component.NavSource
-import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
@@ -110,7 +109,7 @@ class AffiliateAdpFragment :
     @JvmField
     var remoteConfig: RemoteConfigInstance? = null
 
-    var binding by autoClearedNullable<AffiliateAdpFragmentLayoutBinding>()
+    private var binding by autoClearedNullable<AffiliateAdpFragmentLayoutBinding>()
 
     private var bottomNavBarClickListener: AffiliateBottomNavBarInterface? = null
     private var affiliateActivityInterface: AffiliateActivityInterface? = null
@@ -359,7 +358,9 @@ class AffiliateAdpFragment :
         }
 
         affiliateAdpViewModel?.getAffiliateAnnouncement()?.observe(this) { announcementData ->
-            if (announcementData.getAffiliateAnnouncementV2?.data?.subType == TICKER_BOTTOM_SHEET && !isAffiliatePromoteHomeEnabled()) {
+            if (announcementData.getAffiliateAnnouncementV2?.data?.subType == TICKER_BOTTOM_SHEET &&
+                !isAffiliatePromoteHomeEnabled()
+            ) {
                 context?.getSharedPreferences(TICKER_SHARED_PREF, Context.MODE_PRIVATE)?.let {
                     if (it.getString(
                             USER_ID,
@@ -438,17 +439,11 @@ class AffiliateAdpFragment :
     private fun onGetError(error: Throwable?) {
         binding?.homeGlobalError?.run {
             when (error) {
-                is UnknownHostException, is SocketTimeoutException -> {
-                    setType(GlobalError.NO_CONNECTION)
-                }
+                is UnknownHostException, is SocketTimeoutException -> setType(GlobalError.NO_CONNECTION)
 
-                is IllegalStateException -> {
-                    setType(GlobalError.PAGE_FULL)
-                }
+                is IllegalStateException -> setType(GlobalError.PAGE_FULL)
 
-                else -> {
-                    setType(GlobalError.SERVER_ERROR)
-                }
+                else -> setType(GlobalError.SERVER_ERROR)
             }
             binding?.swipeRefreshLayout?.hide()
             show()
@@ -573,13 +568,15 @@ class AffiliateAdpFragment :
     override fun onInfoClick(
         title: String?,
         desc: String?,
-        metrics: List<AffiliateUserPerformaListItemData
+        metrics: List<
+            AffiliateUserPerformaListItemData
             .GetAffiliatePerformance
             .Data
             .UserData
             .Metrics
             .Tooltip
-            .SubMetrics?>?,
+            .SubMetrics?
+            >?,
         type: String?,
         tickerInfo: String?
     ) {
