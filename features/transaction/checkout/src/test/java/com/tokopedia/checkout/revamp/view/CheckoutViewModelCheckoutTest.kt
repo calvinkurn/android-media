@@ -25,6 +25,7 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutUpsellModel
 import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.model.EthicalDrugDataModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.SuccessDataUiModel
@@ -428,6 +429,55 @@ class CheckoutViewModelCheckoutTest : BaseCheckoutViewModelTest() {
             true,
             (viewModel.listData.value[5] as CheckoutOrderModel).isTriggerShippingVibrationAnimation
         )
+    }
+
+    @Test
+    fun checkoutWithNoPrescription_ShouldShowErrorAndToaster() {
+        // Given
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(
+                recipientAddressModel = RecipientAddressModel().apply {
+                    id = "1"
+                    addressName = "address 1"
+                    street = "street 1"
+                    postalCode = "12345"
+                    destinationDistrictId = "1"
+                    cityId = "1"
+                    provinceId = "1"
+                    recipientName = "user 1"
+                    recipientPhoneNumber = "1234567890"
+                }
+            ),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel("123", ethicalDrugDataModel = EthicalDrugDataModel(needPrescription = true)),
+            CheckoutOrderModel(
+                "123",
+                shipment = CheckoutOrderShipment(
+                    courierItemData = CourierItemData(
+                        shipperId = 1,
+                        shipperProductId = 1
+                    )
+                ),
+                hasEthicalProducts = true
+            ),
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel(showImageUpload = true, frontEndValidation = true, consultationFlow = true)),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+
+        // When
+        var triggerEpharmacyTracker: Boolean? = null
+        viewModel.checkout("", {
+            triggerEpharmacyTracker = it
+        }, {})
+
+        // Then
+        assertEquals(true, triggerEpharmacyTracker)
+        assertEquals(true, (viewModel.listData.value[6] as CheckoutEpharmacyModel).epharmacy.isError)
     }
 
     @Test

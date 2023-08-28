@@ -56,6 +56,7 @@ import com.tokopedia.cart.data.model.response.promo.LastApplyPromo
 import com.tokopedia.cart.data.model.response.promo.LastApplyPromoData
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.Action
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
+import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartOnBoardingData
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.LocalizationChooseAddress
 import com.tokopedia.cart.databinding.FragmentCartRevampBinding
 import com.tokopedia.cart.view.CartActivity
@@ -86,6 +87,7 @@ import com.tokopedia.cartrevamp.view.uimodel.CartCheckoutButtonState
 import com.tokopedia.cartrevamp.view.uimodel.CartGlobalEvent
 import com.tokopedia.cartrevamp.view.uimodel.CartGroupHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
+import com.tokopedia.cartrevamp.view.uimodel.CartMainCoachMarkUiModel
 import com.tokopedia.cartrevamp.view.uimodel.CartNoteBottomSheetData
 import com.tokopedia.cartrevamp.view.uimodel.CartRecentViewHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartRecentViewItemHolderData
@@ -277,6 +279,7 @@ class CartRevampFragment :
     private var isFirstCheckEvent: Boolean = true
     private var hasShowBulkActionCoachMark: Boolean = false
     private var bulkActionCoachMarkLastActiveIndex: Int = 0
+    private var isMockMainFlowCoachMarkShown = false
 
     private lateinit var editBundleActivityResult: ActivityResultLauncher<Intent>
     private lateinit var shipmentActivityResult: ActivityResultLauncher<Intent>
@@ -295,6 +298,7 @@ class CartRevampFragment :
         private const val SPAN_SIZE_TWO = 2
 
         private const val CART_BULK_ACTION_COACH_MARK = "cart_bulk_action_coach_mark"
+        private const val CART_MAIN_COACH_MARK = "cart_main_coach_mark"
 
         const val CART_TRACE = "mp_cart"
         const val CART_ALL_TRACE = "mp_cart_all"
@@ -307,10 +311,17 @@ class CartRevampFragment :
         const val DELAY_SHOW_SELECTED_AMOUNT_AFTER_SCROLL = 750L
         const val PROMO_ANIMATION_DURATION = 500L
         const val SELECTED_AMOUNT_ANIMATION_DURATION = 500L
+        const val COACHMARK_VISIBLE_DELAY_DURATION = 500L
         const val DELAY_CHECK_BOX_GLOBAL = 500L
         const val KEY_OLD_BUNDLE_ID = "old_bundle_id"
         const val KEY_NEW_BUNLDE_ID = "new_bundle_id"
         const val KEY_IS_CHANGE_VARIANT = "is_variant_changed"
+
+        private const val MAIN_FLOW_ONBOARDING_NOTES_INDEX = 0
+        private const val MAIN_FLOW_ONBOARDING_WISHLIST_INDEX = 1
+        private const val MAIN_FLOW_ONBOARDING_SELECT_ALL_INDEX = 2
+        private const val BULK_ACTION_ONBOARDING_SELECTED_AMOUNT_DELETE_INDEX = 3
+        private const val BULK_ACTION_ONBOARDING_MIN_QUANTITY_INDEX = 4
 
         private const val TOKONOW_UPDATER_DEBOUNCE = 500L
 
@@ -386,24 +397,6 @@ class CartRevampFragment :
             cartAdapter.setCoachMark(it)
         }
 
-        mainFlowCoachMark = CoachMark2(requireContext())
-        val coachMarkItems = arrayListOf<CoachMark2Item>()
-        binding?.checkboxGlobal?.let {
-            coachMarkItems.add(
-                CoachMark2Item(
-                    it,
-                    "",
-                    "Kalau untuk pilih semua produk di Keranjang, bisa centang di sini. Biar nggak capek klik.",
-                    CoachMark2.POSITION_TOP
-                )
-            )
-        }
-        mainFlowCoachMark?.let {
-            cartAdapter.setMainCoachMark(it, coachMarkItems)
-        }
-
-        bulkActionCoachMark = CoachMark2(requireContext())
-
         // Check if currently not refreshing, not ATC external flow and not on error state
         if (refreshHandler?.isRefreshing == false && !isAtcExternalFlow() && binding?.layoutGlobalError?.visibility != View.VISIBLE) {
             if (!::cartAdapter.isInitialized || (::cartAdapter.isInitialized && cartAdapter.itemCount == 0)) {
@@ -419,9 +412,6 @@ class CartRevampFragment :
     override fun onPause() {
         plusCoachMark?.dismissCoachMark()
         plusCoachMark = null
-
-        mainFlowCoachMark?.dismissCoachMark()
-        mainFlowCoachMark = null
 
         super.onPause()
     }
@@ -478,6 +468,7 @@ class CartRevampFragment :
             }
         }
         initViewModel()
+        initCoachMark()
     }
 
     override fun getFragment(): Fragment {
@@ -537,9 +528,12 @@ class CartRevampFragment :
         setCheckboxGlobalState()
         setSelectedAmountVisibility()
 
-        if (viewModel.selectedAmountState.value > 0 && !hasShowBulkActionCoachMark && !CoachMarkPreference.hasShown(requireContext(), CART_BULK_ACTION_COACH_MARK)) {
+        if (viewModel.selectedAmountState.value > 0 && !hasShowBulkActionCoachMark && !CoachMarkPreference.hasShown(
+                requireContext(),
+                CART_BULK_ACTION_COACH_MARK
+            )
+        ) {
             showBulkActionCoachMark()
-            hasShowBulkActionCoachMark = true
         } else if (!CartDataHelper.hasSelectedCartItem(viewModel.cartDataList.value)) {
             hasShowBulkActionCoachMark = false
             bulkActionCoachMark?.dismissCoachMark()
@@ -1942,13 +1936,12 @@ class CartRevampFragment :
             setSelectedAmountVisibility()
             cartPageAnalytics.eventCheckUncheckGlobalCheckbox(isChecked)
 
-            if (isChecked && !isFirstCheckEvent && !CoachMarkPreference.hasShown(requireContext(), CART_BULK_ACTION_COACH_MARK)) {
+            if (isChecked && !isFirstCheckEvent && !CoachMarkPreference.hasShown(
+                    requireContext(),
+                    CART_BULK_ACTION_COACH_MARK
+                )
+            ) {
                 showBulkActionCoachMark()
-                hasShowBulkActionCoachMark = true
-            } else if (!isChecked) {
-                hasShowBulkActionCoachMark = false
-                bulkActionCoachMark?.dismissCoachMark()
-                bulkActionCoachMarkLastActiveIndex = 0
             }
 
             if (isFirstCheckEvent) {
@@ -1974,7 +1967,7 @@ class CartRevampFragment :
                     if (hasShowBulkActionCoachMark && viewModel.selectedAmountState.value > 0) {
                         Handler(Looper.getMainLooper()).postDelayed({
                             showBulkActionCoachMark()
-                        }, SELECTED_AMOUNT_ANIMATION_DURATION)
+                        }, COACHMARK_VISIBLE_DELAY_DURATION)
                     }
                 }
         }
@@ -2164,6 +2157,11 @@ class CartRevampFragment :
         }
     }
 
+    private fun initCoachMark() {
+        mainFlowCoachMark = CoachMark2(requireContext())
+        bulkActionCoachMark = CoachMark2(requireContext())
+    }
+
     private fun initViewModel() {
         viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
             viewModel.tokoNowProductUpdater.debounce(TOKONOW_UPDATER_DEBOUNCE).collectLatest {
@@ -2298,29 +2296,20 @@ class CartRevampFragment :
         viewModel.addToCartEvent.observe(viewLifecycleOwner) { addToCartEvent ->
             when (addToCartEvent) {
                 is AddToCartEvent.Success -> {
-                    if (addToCartEvent.addToCartDataModel.status.equals(
-                            AddToCartDataModel.STATUS_OK,
-                            true
-                        ) && addToCartEvent.addToCartDataModel.data.success == 1
-                    ) {
-                        triggerSendEnhancedEcommerceAddToCartSuccess(
-                            addToCartEvent.addToCartDataModel,
-                            addToCartEvent.productModel
-                        )
-                        resetRecentViewList()
-                        viewModel.processInitialGetCartData(
-                            cartId = "0",
-                            initialLoad = false,
-                            isLoadingTypeRefresh = false
-                        )
-                        if (addToCartEvent.addToCartDataModel.data.message.size > 0) {
-                            showToastMessageGreen(addToCartEvent.addToCartDataModel.data.message[0])
-                            notifyBottomCartParent()
-                        }
-                    } else {
-                        if (addToCartEvent.addToCartDataModel.errorMessage.size > 0) {
-                            showToastMessageRed(addToCartEvent.addToCartDataModel.errorMessage[0])
-                        }
+                    hideProgressLoading()
+                    triggerSendEnhancedEcommerceAddToCartSuccess(
+                        addToCartEvent.addToCartDataModel,
+                        addToCartEvent.productModel
+                    )
+                    resetRecentViewList()
+                    viewModel.processInitialGetCartData(
+                        cartId = "0",
+                        initialLoad = false,
+                        isLoadingTypeRefresh = false
+                    )
+                    if (addToCartEvent.addToCartDataModel.data.message.size > 0) {
+                        showToastMessageGreen(addToCartEvent.addToCartDataModel.data.message[0])
+                        notifyBottomCartParent()
                     }
                 }
 
@@ -3426,8 +3415,6 @@ class CartRevampFragment :
         renderCartAvailableItems(cartData)
         renderCartUnavailableItems(cartData)
 
-        viewModel.reCalculateSubTotal()
-
         cartPageAnalytics.eventViewCartListFinishRender()
         val cartItemDataList = CartDataHelper.getAllCartItemData(
             viewModel.cartDataList.value,
@@ -3571,6 +3558,8 @@ class CartRevampFragment :
             return
         }
 
+        setMainFlowCoachMark(cartData)
+
         sendAnalyticsScreenNameCartPage()
         updateStateAfterFinishGetCartList()
 
@@ -3587,6 +3576,8 @@ class CartRevampFragment :
         renderSelectedAmount()
         setInitialCheckboxGlobalState(cartData)
         setSelectedAmountVisibility()
+
+        viewModel.reCalculateSubTotal()
 
         if (!cartData.isGlobalCheckboxState) {
             isFirstCheckEvent = false
@@ -4239,56 +4230,189 @@ class CartRevampFragment :
         }
     }
 
+    private fun setMainFlowCoachMark(cartData: CartData) {
+        val mainFlowCoachMarkItems = arrayListOf<CoachMark2Item>()
+        generateSelectAllCoachMark(mainFlowCoachMarkItems)
+        mainFlowCoachMark?.let {
+            cartAdapter.setMainCoachMark(
+                CartMainCoachMarkUiModel(
+                    it,
+                    mainFlowCoachMarkItems,
+                    cartData.onboardingData.getOrNull(MAIN_FLOW_ONBOARDING_NOTES_INDEX)
+                        ?: CartOnBoardingData(),
+                    cartData.onboardingData.getOrNull(MAIN_FLOW_ONBOARDING_WISHLIST_INDEX)
+                        ?: CartOnBoardingData()
+                )
+            )
+        }
+    }
+
     private fun showBulkActionCoachMark() {
         bulkActionCoachMark?.dismissCoachMark()
+        plusCoachMark?.dismissCoachMark()
+        mainFlowCoachMark?.dismissCoachMark()
+        if ((
+            viewModel.cartModel.cartListData?.onboardingData?.size
+                ?: 0
+            ) < BULK_ACTION_ONBOARDING_MIN_QUANTITY_INDEX
+        ) {
+            return
+        }
+
         bulkActionCoachMark = CoachMark2(requireContext())
         bulkActionCoachMark?.setStepListener(object : CoachMark2.OnStepListener {
             override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
+                val selectedAmountCoachMarkIndex = 1
+                if (currentIndex == selectedAmountCoachMarkIndex && isMockMainFlowCoachMarkShown) {
+                    val topItemPosition = (binding?.rvCart?.layoutManager as GridLayoutManager).findFirstVisibleItemPosition()
+                    if (topItemPosition == RecyclerView.NO_POSITION) return
+
+                    val adapterData = viewModel.cartDataList.value
+                    if (topItemPosition >= adapterData.size) return
+
+                    val firstVisibleItemData = adapterData[topItemPosition]
+
+                    val needToScroll = CartDataHelper.hasReachAllShopItems(firstVisibleItemData)
+
+                    if (needToScroll) {
+                        binding?.rvCart?.smoothScrollToPosition(0)
+                    }
+
+                    isMockMainFlowCoachMarkShown = false
+                }
+
                 bulkActionCoachMarkLastActiveIndex = currentIndex
             }
         })
+        bulkActionCoachMark?.simpleCloseIcon?.setOnClickListener {
+            bulkActionCoachMark?.dismissCoachMark()
+            hasShowBulkActionCoachMark = false
+        }
+        bulkActionCoachMark?.stepCloseIcon?.setOnClickListener {
+            bulkActionCoachMark?.dismissCoachMark()
+            hasShowBulkActionCoachMark = false
+        }
+        bulkActionCoachMark?.onFinishListener = {
+            hasShowBulkActionCoachMark = false
+        }
+
         val layoutManager: GridLayoutManager = binding?.rvCart?.layoutManager as GridLayoutManager
         val position = layoutManager.findFirstCompletelyVisibleItemPosition()
-        val bulkActionCoachMarkItems = arrayListOf<CoachMark2Item>()
-        if (position > 0) {
-            binding?.topLayout?.textActionDelete?.let {
-                bulkActionCoachMarkItems.add(
-                    CoachMark2Item(
-                        it,
-                        "",
-                        "Kalau mau hapus produk yang kamu pilih, bisa langsung klik di sini, ya.",
-                        CoachMark2.POSITION_BOTTOM
-                    )
-                )
-            }
-        } else {
-            val selectedAmountViewHolder = binding?.rvCart?.findViewHolderForAdapterPosition(0) as CartSelectedAmountViewHolder
-            val textActionDeleteView = selectedAmountViewHolder.getTextActionDeleteView()
-            bulkActionCoachMarkItems.add(
-                CoachMark2Item(
-                    textActionDeleteView,
-                    "",
-                    "Kalau mau hapus produk yang kamu pilih, bisa langsung klik di sini, ya.",
-                    CoachMark2.POSITION_BOTTOM
-                )
-            )
+
+        generateBulkActionCoachMark(position)
+    }
+
+    private fun generateBulkActionCoachMark(position: Int) {
+        isMockMainFlowCoachMarkShown = false
+        val onBoardingData = viewModel.cartModel.cartListData?.onboardingData ?: return
+        if (onBoardingData.size < BULK_ACTION_ONBOARDING_MIN_QUANTITY_INDEX + 1) {
+            return
         }
+        val bulkActionCoachMarkItems: ArrayList<CoachMark2Item> = arrayListOf()
+        val selectedAmountData = onBoardingData[BULK_ACTION_ONBOARDING_SELECTED_AMOUNT_DELETE_INDEX]
+        val minQuantityOnboardingData = onBoardingData[BULK_ACTION_ONBOARDING_MIN_QUANTITY_INDEX]
+
         val data = viewModel.cartDataList.value
-        val nearestItemHolderDataPosition = CartDataHelper.getNearestCartItemHolderDataPosition(position, data)
-        if (nearestItemHolderDataPosition != -1) {
-            val nearestCartItemViewHolder = binding?.rvCart?.findViewHolderForAdapterPosition(nearestItemHolderDataPosition) as CartItemViewHolder
-            val quantityView = nearestCartItemViewHolder.getMinQuantityView()
-            bulkActionCoachMarkItems.add(
-                CoachMark2Item(
-                    quantityView,
-                    "",
-                    "Selain itu, kamu juga bisa hapus produk di sini. Cukup dengan klik tombol kurangi sampai habis.",
-                    CoachMark2.POSITION_BOTTOM
+
+        binding?.rvCart?.apply {
+            post {
+                if (position > 0) {
+                    binding?.topLayout?.textActionDelete?.let {
+                        bulkActionCoachMarkItems.add(
+                            CoachMark2Item(
+                                it,
+                                "",
+                                selectedAmountData.text,
+                                CoachMark2.POSITION_BOTTOM
+                            )
+                        )
+                    }
+                } else {
+                    val selectedAmountViewHolder = findViewHolderForAdapterPosition(0)
+                    if (selectedAmountViewHolder is CartSelectedAmountViewHolder) {
+                        val textActionDeleteView = selectedAmountViewHolder.getTextActionDeleteView()
+                        bulkActionCoachMarkItems.add(
+                            CoachMark2Item(
+                                textActionDeleteView,
+                                "",
+                                selectedAmountData.text,
+                                CoachMark2.POSITION_BOTTOM
+                            )
+                        )
+                    }
+                }
+
+                val nearestItemHolderDataPosition =
+                    CartDataHelper.getNearestCartItemHolderDataPosition(position, data)
+
+                if (nearestItemHolderDataPosition != RecyclerView.NO_POSITION) {
+                    val nearestCartItemViewHolder =
+                        findViewHolderForAdapterPosition(nearestItemHolderDataPosition)
+                    if (nearestCartItemViewHolder is CartItemViewHolder) {
+                        val quantityView =
+                            nearestCartItemViewHolder.getItemViewBinding().qtyEditorProduct.subtractButton
+                        bulkActionCoachMarkItems.add(
+                            CoachMark2Item(
+                                quantityView,
+                                "",
+                                minQuantityOnboardingData.text,
+                                CoachMark2.POSITION_BOTTOM
+                            )
+                        )
+                    } else if (nearestCartItemViewHolder == null && bulkActionCoachMarkItems.isNotEmpty()) {
+                        binding?.root?.let {
+                            bulkActionCoachMarkItems.add(
+                                CoachMark2Item(
+                                    it,
+                                    "",
+                                    minQuantityOnboardingData.text,
+                                    CoachMark2.POSITION_BOTTOM
+                                )
+                            )
+                            isMockMainFlowCoachMarkShown = true
+                        }
+                    }
+                } else if (bulkActionCoachMarkItems.isNotEmpty()) {
+                    binding?.root?.let {
+                        bulkActionCoachMarkItems.add(
+                            CoachMark2Item(
+                                it,
+                                "",
+                                minQuantityOnboardingData.text,
+                                CoachMark2.POSITION_BOTTOM
+                            )
+                        )
+                        isMockMainFlowCoachMarkShown = true
+                    }
+                }
+
+                bulkActionCoachMark?.showCoachMark(
+                    bulkActionCoachMarkItems,
+                    null,
+                    bulkActionCoachMarkLastActiveIndex
                 )
-            )
-            bulkActionCoachMark?.showCoachMark(bulkActionCoachMarkItems, null, bulkActionCoachMarkLastActiveIndex)
-            CoachMarkPreference.setShown(requireContext(), CART_BULK_ACTION_COACH_MARK, true)
+                hasShowBulkActionCoachMark = true
+                CoachMarkPreference.setShown(requireContext(), CART_BULK_ACTION_COACH_MARK, true)
+            }
         }
+    }
+
+    private fun generateSelectAllCoachMark(mainFlowCoachMarkItems: ArrayList<CoachMark2Item>) {
+        viewModel.cartModel.cartListData?.onboardingData?.getOrNull(
+            MAIN_FLOW_ONBOARDING_SELECT_ALL_INDEX
+        )
+            ?.let { onboardingData ->
+                binding?.checkboxGlobal?.let {
+                    mainFlowCoachMarkItems.add(
+                        CoachMark2Item(
+                            it,
+                            "",
+                            onboardingData.text,
+                            CoachMark2.POSITION_TOP
+                        )
+                    )
+                }
+            }
     }
 
     private fun showErrorContainer() {
@@ -4594,9 +4718,12 @@ class CartRevampFragment :
         setCheckboxGlobalState()
         setSelectedAmountVisibility()
 
-        if (isChecked && !hasShowBulkActionCoachMark && !CoachMarkPreference.hasShown(requireContext(), CART_BULK_ACTION_COACH_MARK)) {
+        if (isChecked && !hasShowBulkActionCoachMark && !CoachMarkPreference.hasShown(
+                requireContext(),
+                CART_BULK_ACTION_COACH_MARK
+            )
+        ) {
             showBulkActionCoachMark()
-            hasShowBulkActionCoachMark = true
         } else if (!CartDataHelper.hasSelectedCartItem(viewModel.cartDataList.value)) {
             hasShowBulkActionCoachMark = false
             bulkActionCoachMark?.dismissCoachMark()

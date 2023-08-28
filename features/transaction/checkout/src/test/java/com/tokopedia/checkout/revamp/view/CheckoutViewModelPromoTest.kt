@@ -1,5 +1,6 @@
 package com.tokopedia.checkout.revamp.view
 
+import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutAddressModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutButtonPaymentModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCostModel
@@ -40,6 +41,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
 import io.mockk.coEvery
+import io.mockk.coVerify
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -242,6 +244,12 @@ class CheckoutViewModelPromoTest : BaseCheckoutViewModelTest() {
             validateUsePromoRevampUseCase.setParam(any()).executeOnBackground()
         } returns validateUsePromoRevampUiModel
 
+        coEvery {
+            clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground()
+        } returns ClearPromoUiModel(
+            SuccessDataUiModel(true)
+        )
+
         viewModel.listData.value = listOf(
             CheckoutTickerErrorModel(errorMessage = ""),
             CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
@@ -263,7 +271,8 @@ class CheckoutViewModelPromoTest : BaseCheckoutViewModelTest() {
             CheckoutProductModel("234", cartStringOrder = "23"),
             CheckoutOrderModel(
                 "234",
-                shipment = CheckoutOrderShipment(courierItemData = CourierItemData())
+                boUniqueId = "23",
+                shipment = CheckoutOrderShipment(courierItemData = CourierItemData(logPromoCode = "boCode2"))
             ),
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(
@@ -339,7 +348,11 @@ class CheckoutViewModelPromoTest : BaseCheckoutViewModelTest() {
                 CheckoutProductModel("234", cartStringOrder = "23"),
                 CheckoutOrderModel(
                     "234",
-                    shipment = CheckoutOrderShipment(courierItemData = CourierItemData())
+                    boUniqueId = "23",
+                    shipment = CheckoutOrderShipment(),
+                    isTriggerShippingVibrationAnimation = true,
+                    isStateAllItemViewExpanded = false,
+                    isShippingBorderRed = true
                 ),
                 CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
                 CheckoutPromoModel(
@@ -355,12 +368,134 @@ class CheckoutViewModelPromoTest : BaseCheckoutViewModelTest() {
                         )
                     )
                 ),
-                CheckoutCostModel(totalPriceString = "Rp0", hasSelectAllShipping = true),
+                CheckoutCostModel(totalPriceString = "Rp0", hasSelectAllShipping = false),
                 CheckoutCrossSellGroupModel(),
                 CheckoutButtonPaymentModel(enable = true, totalPrice = "Rp0")
             ),
             viewModel.listData.value
         )
+
+        coVerify(exactly = 1) {
+            clearCacheAutoApplyStackUseCase.setParams(
+                match {
+                    it.orderData.orders[0].codes.contains(
+                        "boCode2"
+                    ) && it.orderData.orders[0].uniqueId == "23" && it.orderData.orders[0].cartStringGroup == "234"
+                }
+            )
+        }
+    }
+
+    @Test
+    fun validate_bo_failed_hit_rates() {
+        // given
+        coEvery {
+            ratesUseCase.invoke(any())
+        } throws AkamaiErrorException("error akamai")
+
+        val validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel(
+            status = "OK",
+            errorCode = "200",
+            promoUiModel = PromoUiModel(
+                voucherOrderUiModels = listOf(
+                    PromoCheckoutVoucherOrdersItemUiModel(
+                        code = "boCode",
+                        uniqueId = "12",
+                        cartStringGroup = "123",
+                        shippingId = 1,
+                        spId = 1,
+                        type = "logistic",
+                        messageUiModel = MessageUiModel(state = "green")
+                    )
+                )
+            )
+        )
+        coEvery {
+            validateUsePromoRevampUseCase.setParam(any()).executeOnBackground()
+        } returns ValidateUsePromoRevampUiModel(
+            status = "OK",
+            errorCode = "200"
+        )
+
+        coEvery {
+            clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground()
+        } returns ClearPromoUiModel(
+            SuccessDataUiModel(true)
+        )
+
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(
+                recipientAddressModel = RecipientAddressModel().apply {
+                    id = "1"
+                    destinationDistrictId = "1"
+                    addressName = "jakarta"
+                    postalCode = "123"
+                    latitude = "123"
+                    longitude = "321"
+                }
+            ),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel("123", cartStringOrder = "12"),
+            CheckoutOrderModel(
+                "123"
+            ),
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(
+                promo = LastApplyUiModel()
+            ),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+
+        // when
+        viewModel.validateBoPromo(
+            validateUsePromoRevampUiModel
+        )
+
+        // then
+        assertEquals(
+            listOf(
+                CheckoutTickerErrorModel(errorMessage = ""),
+                CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+                CheckoutAddressModel(
+                    recipientAddressModel = RecipientAddressModel().apply {
+                        id = "1"
+                        destinationDistrictId = "1"
+                        addressName = "jakarta"
+                        postalCode = "123"
+                        latitude = "123"
+                        longitude = "321"
+                    }
+                ),
+                CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+                CheckoutProductModel("123", cartStringOrder = "12"),
+                CheckoutOrderModel(
+                    "123",
+                    shipment = CheckoutOrderShipment()
+                ),
+                CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+                CheckoutPromoModel(
+                    promo = LastApplyUiModel()
+                ),
+                CheckoutCostModel(totalPriceString = "-", hasSelectAllShipping = false),
+                CheckoutCrossSellGroupModel(),
+                CheckoutButtonPaymentModel(enable = true, totalPrice = "-")
+            ),
+            viewModel.listData.value
+        )
+
+        coVerify(exactly = 1) {
+            clearCacheAutoApplyStackUseCase.setParams(
+                match {
+                    it.orderData.orders[0].codes.contains(
+                        "boCode"
+                    ) && it.orderData.orders[0].uniqueId == "12" && it.orderData.orders[0].cartStringGroup == "123"
+                }
+            )
+        }
     }
 
     @Test
