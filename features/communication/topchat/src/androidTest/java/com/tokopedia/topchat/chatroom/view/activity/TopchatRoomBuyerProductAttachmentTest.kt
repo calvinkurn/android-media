@@ -19,17 +19,22 @@ import com.tokopedia.applink.ApplinkConst.AttachProduct.TOKOPEDIA_ATTACH_PRODUCT
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.attachcommon.data.ResultProduct
-import com.tokopedia.common.network.util.CommonUtil
+import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentResponse
 import com.tokopedia.topchat.chatroom.view.activity.base.BaseBuyerTopchatRoomTest
+import com.tokopedia.topchat.chatroom.view.activity.robot.composearea.ComposeAreaRobot.setComposedText
 import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralResult.openPageWithApplink
 import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralResult.openPageWithIntent
 import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralRobot.doScrollChatToPosition
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardResult.hasFailedToasterWithMsg
+import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardResult.hasProductBuyButtonWithText
+import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardResult.hasProductCarouselBuyButtonWithText
+import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardResult.hasProductCarouselWithTotal
+import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardResult.hasProductPreviewAttachmentAtPosition
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardResult.hasProductWishlistButtonWithText
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardResult.hasToasterWithMsg
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardResult.hasVariantLabel
@@ -42,11 +47,13 @@ import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductResult.
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductResult.hasNoVisibleRemindMeBtnAt
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductResult.hasProductName
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductResult.hasProductPrice
+import com.tokopedia.topchat.chatroom.view.custom.SrwFrameLayout
 import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.SOURCE_TOPCHAT
 import com.tokopedia.topchat.matchers.withTotalItem
 import org.hamcrest.CoreMatchers.not
 import org.junit.Before
 import org.junit.Test
+import com.tokopedia.chat_common.R as chatCommonR
 
 @UiTest
 class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
@@ -55,6 +62,7 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
     override fun before() {
         super.before()
         addToCartUseCase.isError = false
+        CoachMarkPreference.setShown(context, SrwFrameLayout.TAG, true)
     }
 
     @Test
@@ -234,7 +242,7 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
-            .generatePreAttachPayload(exProductId)
+            .generatePreAttachPayload(EX_PRODUCT_ID)
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
@@ -454,7 +462,88 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         hasNoVisibleRemindMeBtnAt(1)
     }
 
-    // TODO: assert attach product, stock info seller, and tokocabang is not displayed on buyer side
+    @Test
+    fun user_can_sent_preview_single_product() {
+        // Given
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generatePreAttachPayload(EX_PRODUCT_ID)
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
+
+        // When
+        setComposedText("Hi barang ini ready?")
+        clickSendBtn()
+
+        // Then
+        hasProductPreviewAttachmentAtPosition(position = 2)
+        hasProductBuyButtonWithText(
+            context.getString(R.string.title_topchat_pre_order_camel),
+            2
+        )
+    }
+
+    @Test
+    fun user_can_sent_preview_double_product() {
+        // Given
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generate2PreAttachPayload()
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it, listOf("2495612915", "4533627959"))
+        }
+
+        // When
+        setComposedText("Hi barang ini ready?")
+        clickSendBtn()
+
+        // Then
+        hasProductCarouselWithTotal(position = 2, total = 2)
+        hasProductCarouselBuyButtonWithText(
+            context.getString(chatCommonR.string.action_buy),
+            0
+        )
+        hasProductCarouselBuyButtonWithText(
+            context.getString(chatCommonR.string.action_buy),
+            1
+        )
+    }
+
+    @Test
+    fun user_can_sent_preview_triple_product() {
+        // Given
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generate3PreAttachPayload()
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it, listOf("2495612915", "4533627959", "1988283205"))
+        }
+
+        // When
+        setComposedText("Hi barang ini ready?")
+        clickSendBtn()
+
+        // Then
+        hasProductCarouselWithTotal(position = 2, total = 3)
+        hasProductCarouselBuyButtonWithText(
+            context.getString(chatCommonR.string.action_buy),
+            0
+        )
+        hasProductCarouselBuyButtonWithText(
+            context.getString(chatCommonR.string.action_buy),
+            1
+        )
+        hasProductCarouselBuyButtonWithText(
+            context.getString(chatCommonR.string.action_buy),
+            2
+        )
+    }
+
+    // TODO: stock info seller, and tokocabang is not displayed on buyer side
 
     override fun getAttachProductData(totalProduct: Int): Intent {
         val products = ArrayList<ResultProduct>(totalProduct)
@@ -480,12 +569,6 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
     companion object {
         val testVariantSize = "S"
         val testVariantColor = "Putih"
-        val exProductId = "1111"
-        fun putProductAttachmentIntent(intent: Intent) {
-            val productIds = listOf(exProductId)
-            val stringProductPreviews = CommonUtil.toJson(productIds)
-            intent.putExtra(ApplinkConst.Chat.PRODUCT_PREVIEWS, stringProductPreviews)
-        }
     }
 
     private fun getZeroStockAttachment(): ChatAttachmentResponse {

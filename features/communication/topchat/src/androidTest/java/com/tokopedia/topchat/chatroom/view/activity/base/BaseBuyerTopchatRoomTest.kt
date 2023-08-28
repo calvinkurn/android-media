@@ -24,7 +24,8 @@ open class BaseBuyerTopchatRoomTest : TopchatRoomTest() {
     protected var wsTickerReminderResponse: WebSocketResponse = WebSocketResponse()
 
     private val templateChats = listOf(
-        "I am buyer", "Is this product ready?"
+        "I am buyer",
+        "Is this product ready?"
     )
 
     override fun before() {
@@ -63,7 +64,7 @@ open class BaseBuyerTopchatRoomTest : TopchatRoomTest() {
             WebSocketResponse::class.java
         )
         wsSellerProductResponse = AndroidFileUtil.parse(
-            "buyer/ws_seller_attach_product.json",
+            "ws/seller/ws_seller_attach_product.json",
             WebSocketResponse::class.java
         )
         wsInterlocutorResponseText = AndroidFileUtil.parse(
@@ -91,7 +92,8 @@ open class BaseBuyerTopchatRoomTest : TopchatRoomTest() {
     ) {
         onView(
             withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
-                position, R.id.chat_srw_bubble
+                position,
+                R.id.chat_srw_bubble
             )
         ).check(matches(isExpanded()))
     }
@@ -101,7 +103,8 @@ open class BaseBuyerTopchatRoomTest : TopchatRoomTest() {
     ) {
         onView(
             withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
-                position, R.id.chat_srw_bubble
+                position,
+                R.id.chat_srw_bubble
             )
         ).check(matches(not(isExpanded())))
     }

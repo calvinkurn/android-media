@@ -2,12 +2,8 @@ package com.tokopedia.topchat.chatroom.view.activity
 
 import android.app.Activity
 import android.app.Instrumentation
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
-import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -20,7 +16,7 @@ import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralResult.
 import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralRobot.doScrollChatToPosition
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardResult.hasFailedToasterWithMsg
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardResult.hasProductBuyButtonWithText
-import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardResult.hasProductCarouselBuyButtonWithText
+import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardResult.hasProductCarouselBroadcastBuyButtonWithText
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardRobot.clickBuyButtonAt
 import com.tokopedia.topchat.stub.chatroom.view.fragment.TopChatRoomFragmentStub
 import org.junit.After
@@ -49,13 +45,13 @@ class TopchatRoomOCCTest : BaseBuyerTopchatRoomTest() {
         chatAttachmentUseCase.response = chatAttachmentResponse
         launchChatRoomActivity()
 
-        //When
+        // When
         Intents.intending(IntentMatchers.anyIntent())
             .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
         doScrollChatToPosition(0)
         clickBuyButtonAt(4)
 
-        //Then
+        // Then
         val intent = RouteManager.getIntent(
             context,
             ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT,
@@ -73,13 +69,13 @@ class TopchatRoomOCCTest : BaseBuyerTopchatRoomTest() {
         addToCartOccMultiUseCase.errorMessage = listOf(expectedErrorMessage)
         launchChatRoomActivity()
 
-        //When
+        // When
         Intents.intending(IntentMatchers.anyIntent())
             .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
         doScrollChatToPosition(0)
         clickBuyButtonAt(position = 4)
 
-        //Then
+        // Then
         hasFailedToasterWithMsg(msg = expectedErrorMessage)
     }
 
@@ -91,13 +87,13 @@ class TopchatRoomOCCTest : BaseBuyerTopchatRoomTest() {
         addToCartOccMultiUseCase.isError = true
         launchChatRoomActivity()
 
-        //When
+        // When
         Intents.intending(IntentMatchers.anyIntent())
             .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
         doScrollChatToPosition(0)
         clickBuyButtonAt(4)
 
-        //Then
+        // Then
         hasFailedToasterWithMsg("Oops!")
     }
 
@@ -111,13 +107,13 @@ class TopchatRoomOCCTest : BaseBuyerTopchatRoomTest() {
         getShopFollowingUseCaseStub.response = getShopFollowingStatus.setFollowing(true)
         launchChatRoomActivity()
 
-        //When
+        // When
         Intents.intending(IntentMatchers.anyIntent()).respondWith(
             Instrumentation.ActivityResult(Activity.RESULT_OK, null)
         )
 
-        //Then
-        hasProductCarouselBuyButtonWithText(context.getString(com.tokopedia.chat_common.R.string.action_buy), 0)
+        // Then
+        hasProductCarouselBroadcastBuyButtonWithText(context.getString(com.tokopedia.chat_common.R.string.action_buy), 0)
     }
 
     @Test
@@ -130,13 +126,13 @@ class TopchatRoomOCCTest : BaseBuyerTopchatRoomTest() {
         getShopFollowingUseCaseStub.response = getShopFollowingStatus.setFollowing(true)
         launchChatRoomActivity()
 
-        //When
+        // When
         Intents.intending(IntentMatchers.anyIntent()).respondWith(
             Instrumentation.ActivityResult(Activity.RESULT_OK, null)
         )
 
-        //Then
-        hasProductCarouselBuyButtonWithText(context.getString(com.tokopedia.chat_common.R.string.action_buy), 0)
+        // Then
+        hasProductCarouselBroadcastBuyButtonWithText(context.getString(com.tokopedia.chat_common.R.string.action_buy), 0)
     }
 
     @Test
@@ -149,13 +145,13 @@ class TopchatRoomOCCTest : BaseBuyerTopchatRoomTest() {
         getShopFollowingUseCaseStub.response = getShopFollowingStatus.setFollowing(true)
         launchChatRoomActivity()
 
-        //When
+        // When
         Intents.intending(IntentMatchers.anyIntent()).respondWith(
             Instrumentation.ActivityResult(Activity.RESULT_OK, null)
         )
 
-        //Then
-        hasProductCarouselBuyButtonWithText(context.getString(com.tokopedia.chat_common.R.string.action_buy), 0)
+        // Then
+        hasProductCarouselBroadcastBuyButtonWithText(context.getString(com.tokopedia.chat_common.R.string.action_buy), 0)
     }
 
     @Test
@@ -168,13 +164,13 @@ class TopchatRoomOCCTest : BaseBuyerTopchatRoomTest() {
         getShopFollowingUseCaseStub.response = getShopFollowingStatus.setFollowing(true)
         launchChatRoomActivity()
 
-        //When
+        // When
         Intents.intending(IntentMatchers.anyIntent()).respondWith(
             Instrumentation.ActivityResult(Activity.RESULT_OK, null)
         )
 
-        //Then
-        hasProductCarouselBuyButtonWithText(context.getString(com.tokopedia.chat_common.R.string.action_buy), 0)
+        // Then
+        hasProductCarouselBroadcastBuyButtonWithText(context.getString(com.tokopedia.chat_common.R.string.action_buy), 0)
     }
 
     @Test
@@ -186,13 +182,13 @@ class TopchatRoomOCCTest : BaseBuyerTopchatRoomTest() {
             modifiedPreorder(true)
         launchChatRoomActivity()
 
-        //When
+        // When
         Intents.intending(IntentMatchers.anyIntent())
             .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
         doScrollChatToPosition(0)
         clickBuyButtonAt(1)
 
-        //Then
+        // Then
         hasProductBuyButtonWithText(context.getString(R.string.title_topchat_pre_order_camel), 1)
         Intents.intended(IntentMatchers.hasData(ApplinkConst.CART))
     }
@@ -202,36 +198,41 @@ class TopchatRoomOCCTest : BaseBuyerTopchatRoomTest() {
         hasDiscount: Boolean = false
     ): String {
         return "{\"product_id\":445955139,\"product_profile\":{\"name\":\"L\u0027Oreal Paris Mascara Waterproof Lash Paradise Black\",\"price\":\"Rp 93.000\",\"price_int\":93000,\"image_url\":\"https://images.tokopedia.net/img/cache/200-square/product-1/2020/5/12/29240564/29240564_d2a1bb6c-0a2a-44a3-8aee-67ee4b90c31f_1300_1300\",\"url\":\"https://www.tokopedia.com/lorealparis/l-oreal-paris-mascara-waterproof-lash-paradise-black\",\"playstore_product_data\":{\"playstore_status\":\"NORMAL\"},\"price_before\":\"${
-            getPriceBeforeModified(
-                hasDiscount
-            )
+        getPriceBeforeModified(
+            hasDiscount
+        )
         }\",\"drop_percentage\":\"${getDropPercentageModified(hasDiscount)}\",\"shop_id\":5665147,\"status\":1,\"min_order\":1,\"category_id\":61,\"remaining_stock\":0,\"category_breadcrumb\":\"\",\"list_image_url\":[\"https://images.tokopedia.net/img/cache/700/product-1/2020/5/12/29240564/29240564_d2a1bb6c-0a2a-44a3-8aee-67ee4b90c31f_1300_1300\",\"https://images.tokopedia.net/img/cache/700/attachment/2020/6/10/32520341/32520341_637c6bb1-0422-4c05-84cf-751c50073585.jpg\",\"https://images.tokopedia.net/img/cache/700/product-1/2020/8/16/29240564/29240564_b6e07130-f8d4-4220-9114-ae7bb75c3f33_1300_1300\",\"https://images.tokopedia.net/img/cache/700/product-1/2020/8/16/29240564/29240564_cabc9e63-f092-4e70-8a77-4352a0646660_1300_1300\",\"https://images.tokopedia.net/img/cache/700/product-1/2020/8/27/29240564/29240564_be0e7639-8800-492a-a808-62cbb6093c1f_1080_1080\"],\"variant\":${
-            getVariantModified(
-                isVariant
-            )
+        getVariantModified(
+            isVariant
+        )
         },\"wishlist\":false,\"free_ongkir\":{\"is_active\":true,\"image_url\":\"https://images.tokopedia.net/img/ic_bebas_ongkir.png\"},\"rating\":{\"rating\":5,\"rating_score\":4.9,\"count\":1944},\"campaign_id\":-10000}}"
     }
 
     private fun modifiedPreorder(isPreorder: Boolean): String {
-        return "{\"product_id\":1160424090,\"product_profile\":{\"name\":\"Produk Preorder\",\"price\":\"Rp20.000\",\"price_int\":0,\"image_url\":\"https://images.tokopedia.net/img/cache/700/VqbcmM/2020/9/9/5e4f9c00-410c-4bcb-96ca-54b6b431b365.jpg\",\"url\":\"https://www.tokopedia.com/vip-list/piyama-baju-tidur-2\",\"playstore_product_data\":{},\"price_before\":\"\",\"drop_percentage\":\"\",\"shop_id\":0,\"status\":1,\"min_order\":0,\"category_id\":0,\"remaining_stock\":100,\"category_breadcrumb\":\"\",\"variant\":[],\"wishlist\":false,\"free_ongkir\":{\"is_active\":false,\"image_url\":\"\"},\"rating\":{},\"is_preorder\":${isPreorder}}}"
+        return "{\"product_id\":1160424090,\"product_profile\":{\"name\":\"Produk Preorder\",\"price\":\"Rp20.000\",\"price_int\":0,\"image_url\":\"https://images.tokopedia.net/img/cache/700/VqbcmM/2020/9/9/5e4f9c00-410c-4bcb-96ca-54b6b431b365.jpg\",\"url\":\"https://www.tokopedia.com/vip-list/piyama-baju-tidur-2\",\"playstore_product_data\":{},\"price_before\":\"\",\"drop_percentage\":\"\",\"shop_id\":0,\"status\":1,\"min_order\":0,\"category_id\":0,\"remaining_stock\":100,\"category_breadcrumb\":\"\",\"variant\":[],\"wishlist\":false,\"free_ongkir\":{\"is_active\":false,\"image_url\":\"\"},\"rating\":{},\"is_preorder\":$isPreorder}}"
     }
 
     private fun getVariantModified(isVariant: Boolean): String {
         return if (isVariant) {
             "[{\"identifier\":\"\",\"name\":\"\",\"option\":{\"id\":127786096,\"hex\":\"#FFFFFF\",\"value\":\"Putih\"},\"position\":0,\"unit_name\":\"\"},{\"identifier\":\"\",\"name\":\"\",\"option\":{\"id\":127786098,\"hex\":\"\",\"value\":\"S\"},\"position\":0,\"unit_name\":\"\"}]"
-        } else "[]"
+        } else {
+            "[]"
+        }
     }
 
     private fun getPriceBeforeModified(hasDiscount: Boolean): String {
         return if (hasDiscount) {
             "Rp 155.000"
-        } else ""
+        } else {
+            ""
+        }
     }
 
     private fun getDropPercentageModified(hasDiscount: Boolean): String {
         return if (hasDiscount) {
             "40"
-        } else ""
+        } else {
+            ""
+        }
     }
-
 }
