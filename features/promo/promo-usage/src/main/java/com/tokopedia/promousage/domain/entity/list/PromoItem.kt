@@ -52,7 +52,7 @@ data class PromoItem(
 ) : DelegateAdapterItem {
 
     companion object {
-        const val COUPON_TYPE_GOPAY_LATER_CICIL = "gpl_cicil"
+        const val COUPON_TYPE_GOPAY_LATER_CICIL = "gopay_later"
     }
 
     val hasClashingPromo: Boolean

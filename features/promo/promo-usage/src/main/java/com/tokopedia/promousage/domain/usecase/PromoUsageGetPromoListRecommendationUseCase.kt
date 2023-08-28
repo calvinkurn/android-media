@@ -69,6 +69,7 @@ class PromoUsageGetPromoListRecommendationUseCase @Inject constructor(
                       is_bebas_ongkir
                       index
                       coupon_type
+                      expiry_info
                       secondary_coupons {
                         code
                         benefit_type_str
@@ -89,6 +90,7 @@ class PromoUsageGetPromoListRecommendationUseCase @Inject constructor(
                         is_bebas_ongkir
                         index
                         coupon_type
+                        expiry_info
                       }
                       clashing_infos {
                         code

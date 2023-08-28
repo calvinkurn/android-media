@@ -67,7 +67,7 @@ data class EmptyStateResponse(
 data class PromoRecommendation(
     @SerializedName("codes")
     val codes: List<String> = emptyList(),
-    @SerializedName("title")
+    @SerializedName("message")
     val message: String = "",
     @SerializedName("message_selected_state")
     val messageSelected: String = "",

@@ -281,7 +281,11 @@ class PromoCompoundView @JvmOverloads constructor(
                 }
 
                 is PromoItemState.Normal -> {
-                    if (promo.cta.text.isNotBlank()) {
+                    val isGopayLaterCicil = promo.couponType.firstOrNull {
+                        it == PromoItem.COUPON_TYPE_GOPAY_LATER_CICIL
+                    } != null
+                    val isCtaValid = promo.cta.text.isNotBlank() && promo.cta.appLink.isNotBlank()
+                    if (isGopayLaterCicil && isCtaValid) {
                         tpgAdditionalInfoMessage.text =
                             HtmlLinkHelper(context, promo.cta.text).spannedString
                         tpgAdditionalInfoMessage
@@ -293,6 +297,8 @@ class PromoCompoundView @JvmOverloads constructor(
                                 R.drawable.promo_usage_shape_promo_bottom_info_actionable
                             )
                         clAdditionalInfo.visible()
+                    } else {
+                        clAdditionalInfo.gone()
                     }
                 }
 

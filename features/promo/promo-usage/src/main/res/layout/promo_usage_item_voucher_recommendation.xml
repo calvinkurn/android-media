@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="10dp">
+    android:paddingBottom="10dp"
+    tools:background="@color/purple">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tpgRecommendationTitle"
@@ -34,7 +35,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tpgRecommendationTitle"
         app:unifyButtonSize="medium"
-        app:unifyButtonVariant="ghost" />
+        app:unifyButtonVariant="ghost"
+        tools:visibility="invisible" />
 
     <ImageView
         android:id="@+id/ivCheckmarkOutline"
@@ -51,14 +53,13 @@
 
     <ImageView
         android:id="@+id/ivCheckmark"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_marginEnd="16dp"
         android:background="@drawable/promo_usage_ic_voucher_recommendation_applied"
         android:contentDescription="@string/promo_voucher_cd_recommended_voucher_used"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@+id/btnRecommendationUseVoucher"
-        app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/btnRecommendationUseVoucher"
         tools:visibility="visible" />

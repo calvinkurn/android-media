@@ -166,11 +166,14 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
             id = PromoPageSection.SECTION_RECOMMENDATION,
             title = couponSection.title,
             message = promoRecommendation.message,
+            messageSelected = promoRecommendation.messageSelected,
             selectedCodes = selectedPromoCodes,
             codes = recommendedPromoCodes,
-            messageSelected = promoRecommendation.messageSelected,
-            backgroundUrl = promoRecommendation.backgroundUrl,
-            animationUrl = promoRecommendation.animationUrl,
+            backgroundUrl = "https://images.tokopedia.net/img/Promo%20Recom%20Section@3x.png",
+            animationUrl = "https://assets.tokopedia.net/asts/android/shop_page/shop_campaign_tab_confetti.json",
+            backgroundColor = "#763BD7"
+            //backgroundUrl = promoRecommendation.backgroundUrl,
+            //animationUrl = promoRecommendation.animationUrl,
         )
     }
 
@@ -275,6 +278,7 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
             isAttempted = coupon.isAttempted || secondaryCoupon.isAttempted,
             isBebasOngkir = coupon.isBebasOngkir || secondaryCoupon.isBebasOngkir,
             isHighlighted = coupon.isHighlighted || secondaryCoupon.isHighlighted,
+            isLastRecommended = isRecommended && index == couponSection.coupons.size - 1,
             isExpanded = index.isZero(),
             isVisible = index.isZero(),
         )
