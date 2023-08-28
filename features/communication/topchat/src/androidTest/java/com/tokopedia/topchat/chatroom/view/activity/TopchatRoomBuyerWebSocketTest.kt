@@ -18,7 +18,7 @@ import com.tokopedia.topchat.matchers.withRecyclerView
 import com.tokopedia.websocket.WebSocketResponse
 import org.hamcrest.CoreMatchers.not
 import org.junit.Test
-import com.tokopedia.chat_common.R as chatCommonR
+import com.tokopedia.chat_common.R as chat_commonR
 
 @UiTest
 class TopchatRoomBuyerWebSocketTest : BaseBuyerTopchatRoomTest() {
@@ -115,7 +115,7 @@ class TopchatRoomBuyerWebSocketTest : BaseBuyerTopchatRoomTest() {
         // Then
         hasProductAttachmentAtPosition(position = 0)
         hasProductBuyButtonWithText(
-            context.getString(chatCommonR.string.action_buy),
+            context.getString(chat_commonR.string.action_buy),
             0
         )
     }
@@ -142,11 +142,11 @@ class TopchatRoomBuyerWebSocketTest : BaseBuyerTopchatRoomTest() {
         // Then
         hasProductCarouselWithTotal(position = 0, total = 2)
         hasProductCarouselBuyButtonWithText(
-            context.getString(chatCommonR.string.action_buy),
+            context.getString(chat_commonR.string.action_buy),
             0
         )
         hasProductCarouselBuyButtonWithText(
-            context.getString(chatCommonR.string.action_buy),
+            context.getString(chat_commonR.string.action_buy),
             1
         )
     }
@@ -178,15 +178,15 @@ class TopchatRoomBuyerWebSocketTest : BaseBuyerTopchatRoomTest() {
         // Then
         hasProductCarouselWithTotal(position = 0, total = 3)
         hasProductCarouselBuyButtonWithText(
-            context.getString(chatCommonR.string.action_buy),
+            context.getString(chat_commonR.string.action_buy),
             0
         )
         hasProductCarouselBuyButtonWithText(
-            context.getString(chatCommonR.string.action_buy),
+            context.getString(chat_commonR.string.action_buy),
             1
         )
         hasProductCarouselBuyButtonWithText(
-            context.getString(chatCommonR.string.action_buy),
+            context.getString(chat_commonR.string.action_buy),
             2
         )
     }

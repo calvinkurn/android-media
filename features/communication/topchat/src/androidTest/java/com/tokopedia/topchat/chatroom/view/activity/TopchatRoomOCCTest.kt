@@ -22,6 +22,7 @@ import com.tokopedia.topchat.stub.chatroom.view.fragment.TopChatRoomFragmentStub
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
+import com.tokopedia.chat_common.R as chat_commonR
 
 @UiTest
 class TopchatRoomOCCTest : BaseBuyerTopchatRoomTest() {
@@ -113,7 +114,10 @@ class TopchatRoomOCCTest : BaseBuyerTopchatRoomTest() {
         )
 
         // Then
-        hasProductCarouselBroadcastBuyButtonWithText(context.getString(com.tokopedia.chat_common.R.string.action_buy), 0)
+        hasProductCarouselBroadcastBuyButtonWithText(
+            context.getString(chat_commonR.string.action_buy),
+            0
+        )
     }
 
     @Test
@@ -132,7 +136,7 @@ class TopchatRoomOCCTest : BaseBuyerTopchatRoomTest() {
         )
 
         // Then
-        hasProductCarouselBroadcastBuyButtonWithText(context.getString(com.tokopedia.chat_common.R.string.action_buy), 0)
+        hasProductCarouselBroadcastBuyButtonWithText(context.getString(chat_commonR.string.action_buy), 0)
     }
 
     @Test
@@ -151,7 +155,7 @@ class TopchatRoomOCCTest : BaseBuyerTopchatRoomTest() {
         )
 
         // Then
-        hasProductCarouselBroadcastBuyButtonWithText(context.getString(com.tokopedia.chat_common.R.string.action_buy), 0)
+        hasProductCarouselBroadcastBuyButtonWithText(context.getString(chat_commonR.string.action_buy), 0)
     }
 
     @Test
@@ -170,7 +174,7 @@ class TopchatRoomOCCTest : BaseBuyerTopchatRoomTest() {
         )
 
         // Then
-        hasProductCarouselBroadcastBuyButtonWithText(context.getString(com.tokopedia.chat_common.R.string.action_buy), 0)
+        hasProductCarouselBroadcastBuyButtonWithText(context.getString(chat_commonR.string.action_buy), 0)
     }
 
     @Test
