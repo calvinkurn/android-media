@@ -6,7 +6,7 @@ import com.tokopedia.stories.view.model.StoryGroupUiModel
 
 interface StoryRepository {
 
-    suspend fun getInitialStoryData(data: StoryRequestModel): StoryGroupUiModel
+    suspend fun getStoryInitialData(data: StoryRequestModel): StoryGroupUiModel
 
     suspend fun getStoryDetailData(data: StoryRequestModel): StoryDetailUiModel
 

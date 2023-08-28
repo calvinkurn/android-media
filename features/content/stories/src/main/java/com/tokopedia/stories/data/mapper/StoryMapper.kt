@@ -7,12 +7,12 @@ import com.tokopedia.stories.view.model.StoryGroupUiModel
 
 interface StoryMapper {
 
-    fun mapInitialStoryData(
+    fun mapStoryInitialData(
         dataGroup: StoryGroupsResponseModel,
         dataDetail: StoryDetailsResponseModel,
     ): StoryGroupUiModel
 
-    fun mapDetailStoryRequest(
+    fun mapStoryDetailRequest(
         dataDetail: StoryDetailsResponseModel,
     ): StoryDetailUiModel
 

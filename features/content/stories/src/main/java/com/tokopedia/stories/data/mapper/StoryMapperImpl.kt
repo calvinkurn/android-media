@@ -11,7 +11,7 @@ import javax.inject.Inject
 
 class StoryMapperImpl @Inject constructor() : StoryMapper {
 
-    override fun mapInitialStoryData(
+    override fun mapStoryInitialData(
         dataGroup: StoryGroupsResponseModel,
         dataDetail: StoryDetailsResponseModel
     ): StoryGroupUiModel {
@@ -41,7 +41,7 @@ class StoryMapperImpl @Inject constructor() : StoryMapper {
         )
     }
 
-    override fun mapDetailStoryRequest(dataDetail: StoryDetailsResponseModel): StoryDetailUiModel {
+    override fun mapStoryDetailRequest(dataDetail: StoryDetailsResponseModel): StoryDetailUiModel {
         return StoryDetailUiModel(
             selectedDetail = dataDetail.data.meta.selectedStoryIndex,
             detailItems = dataDetail.data.stories.mapIndexed { indexDetail, story ->
