@@ -38,10 +38,6 @@ class RecyclerViewItemDivider(
             layoutParams.bottomMargin = Int.ZERO
         }
 
-        if (horizontalMargin != null) {
-            layoutParams.marginEnd = horizontalMargin
-            layoutParams.marginStart = horizontalMargin
-        }
         view.layoutParams = layoutParams
     }
 
