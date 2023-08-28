@@ -1453,7 +1453,9 @@ class ShopPageProductListResultFragment :
             shopStickySortFilter.sortList.firstOrNull { it.value == sortId }?.name
                 ?: ""
 
-//        shouldShowEtalaseNotFoundBottomSheet()
+//        shouldShowEtalaseNotFoundBottomSheet() --> Disabled due to issue from Search Autocomplete,
+//        You may need to test with Search team if you want to enable this feature again.
+//        Make sure it won't break their flow/ journey
 
         shopProductSortFilterUiModel = ShopProductSortFilterUiModel(
             selectedEtalaseId = selectedEtalaseId.takeIf { it.isNotEmpty() } ?: "",
