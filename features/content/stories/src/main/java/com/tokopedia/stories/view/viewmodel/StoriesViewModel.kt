@@ -131,11 +131,10 @@ class StoriesViewModel @AssistedInject constructor(
     }
 
     private fun setupOnboard() {
-        if (!isOnboard) sharedPref.setVisit()
-        
         viewModelScope.launch {
-            _uiEvent.emit(StoriesUiEvent.OnboardShown(isOnboard))
+            _uiEvent.emit(StoriesUiEvent.OnboardShown(!isOnboard))
         }
+        if (!isOnboard) sharedPref.setVisit()
     }
 
     fun submitAction(action: StoriesUiAction) {

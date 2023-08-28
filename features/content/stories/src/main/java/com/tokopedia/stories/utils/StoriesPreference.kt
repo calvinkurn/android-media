@@ -21,10 +21,10 @@ class StoriesPreference @Inject constructor(
         sharedPref.edit().putBoolean(String.format(STORIES_ONBOARD_PREF, userId), true).apply()
     }
 
-    fun isVisited() : Boolean = sharedPref.contains(String.format(STORIES_ONBOARD_PREF, userId, true))
+    fun isVisited() : Boolean = sharedPref.getBoolean(String.format(STORIES_ONBOARD_PREF, userId), false)
 
     companion object {
         private const val STORIES_PREFERENCE_NAME = "stories_pref"
-        private const val STORIES_ONBOARD_PREF = "stories_onboard"
+        private const val STORIES_ONBOARD_PREF = "stories_onboard_%1s"
     }
 }
