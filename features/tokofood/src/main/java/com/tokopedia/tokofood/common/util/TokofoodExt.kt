@@ -24,7 +24,6 @@ import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.network.constant.ResponseStatus
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tokofood.common.domain.response.CartGeneralAddToCartData
-import com.tokopedia.tokofood.common.domain.response.CartTokoFoodData
 import com.tokopedia.tokofood.common.presentation.listener.TokofoodScrollChangedListener
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.unifycomponents.QuantityEditorUnify
@@ -90,17 +89,6 @@ object TokofoodExt {
             (pair.first as? UpdateParam)?.let { updateParams ->
                 (pair.second as? CartGeneralAddToCartData)?.let { cartListData ->
                     updateParams to cartListData
-                }
-            }
-        }
-    }
-
-    // TODO: Delete this after it is safe
-    fun Any.getSuccessUpdateResultPairOld(): Pair<UpdateParam, CartTokoFoodData>? {
-        return (this as? Pair<*, *>)?.let { pair ->
-            (pair.first as? UpdateParam)?.let { updateParams ->
-                (pair.second as? CartTokoFoodData)?.let { cartTokoFoodData ->
-                    updateParams to cartTokoFoodData
                 }
             }
         }

@@ -83,7 +83,7 @@ class HotelCancellationActivityTest {
         onView(withId(R.id.hotel_cancellation_button_next)).perform(click())
 
         Thread.sleep(3000)
-        onView(withId(R.id.dialog_btn_secondary)).perform(click())
+        onView(withId(com.tokopedia.dialog.R.id.dialog_btn_secondary)).perform(click())
     }
 
     private fun clickOnDoneButton() {

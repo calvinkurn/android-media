@@ -76,18 +76,24 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
         private const val NEW_DRIVER_COUNT_DOWN = 5L
         private const val INVALID_ORDER_STATUS = 501
         private const val ARGUMENTS_ORDER_ID = "ARGUMENTS_ORDER_ID"
+        private const val ARGUMENTS_ORDER_TX_ID = "ARGUMENTS_ORDER_TX_ID"
+        private const val ARGUMENTS_GROUP_TYPE = "ARGUMENTS_GROUP_TYPE"
         private const val ARGUMENTS_TRACKING_URL = "ARGUMENTS_TRACKING_URL"
         private const val ARGUMENTS_CALLER = "ARGUMENTS_CALLER"
         private const val ICON_OPEN_TIPPING_GOJEK = TokopediaImageUrl.ICON_OPEN_TIPPING_GOJEK
 
         fun createFragment(
             orderId: String?,
+            orderTxId: String?,
+            groupType: Int?,
             liveTrackingUrl: String?,
             caller: String?
         ): TrackingPageFragment {
             return TrackingPageFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARGUMENTS_ORDER_ID, orderId)
+                    putString(ARGUMENTS_ORDER_TX_ID, orderTxId)
+                    putInt(ARGUMENTS_GROUP_TYPE, groupType ?: 0)
                     putString(ARGUMENTS_TRACKING_URL, liveTrackingUrl)
                     putString(ARGUMENTS_CALLER, caller)
                 }
@@ -108,6 +114,8 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
     private var binding by autoClearedNullable<FragmentTrackingPageBinding>()
 
     private var mOrderId: String? = null
+    private var mOrderTxId: String? = null
+    private var mGroupType: Int? = null
     private var mTrackingUrl: String? = null
     private var mCaller: String? = null
     private var mCountDownTimer: CountDownTimer? = null
@@ -125,6 +133,8 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
         super.onCreate(savedInstanceState)
         if (arguments != null) {
             mOrderId = arguments?.getString(ARGUMENTS_ORDER_ID)
+            mOrderTxId = arguments?.getString(ARGUMENTS_ORDER_TX_ID)
+            mGroupType = arguments?.getInt(ARGUMENTS_GROUP_TYPE)
             mTrackingUrl = arguments?.getString(ARGUMENTS_TRACKING_URL)
             mCaller = arguments?.getString(ARGUMENTS_CALLER)
         }
@@ -202,13 +212,12 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
     }
 
     private fun fetchData() {
-        mOrderId?.let { viewModel.getTrackingData(it) }
-        if ((!mTrackingUrl.isNullOrEmpty()) && mCaller != null && mCaller.equals(
-                "seller",
-                ignoreCase = true
-            )
-        ) {
-            mOrderId?.let { viewModel.retryAvailability(it) }
+        mOrderId?.let { orderId ->
+            viewModel.getTrackingData(orderId, mOrderTxId, mGroupType)
+
+            if ((!mTrackingUrl.isNullOrEmpty()) && mCaller != null && mCaller.equals("seller", ignoreCase = true)) {
+                viewModel.retryAvailability(orderId)
+            }
         }
     }
 
@@ -236,8 +245,7 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
                     setImageDrawable(
                         getIconUnifyDrawable(
                             context,
-                            IconUnify.CALL_CENTER,
-                            assetColor = com.tokopedia.unifyprinciples.R.color.Unify_NN900
+                            IconUnify.CALL_CENTER
                         )
                     )
 

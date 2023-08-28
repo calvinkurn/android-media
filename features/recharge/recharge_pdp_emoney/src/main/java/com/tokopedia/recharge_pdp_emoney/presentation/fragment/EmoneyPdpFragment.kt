@@ -294,6 +294,7 @@ open class EmoneyPdpFragment :
             Observer {
                 when (it) {
                     is Success -> {
+                        showProducts()
                         renderProducts(
                             it.data.product.dataCollections.firstOrNull()?.products
                                 ?: listOf()

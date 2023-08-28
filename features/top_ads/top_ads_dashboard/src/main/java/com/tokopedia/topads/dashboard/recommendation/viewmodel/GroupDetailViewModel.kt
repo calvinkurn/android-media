@@ -6,8 +6,8 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isZero
-import com.tokopedia.top_ads_headline_usecase.CreateHeadlineAdsUseCase
-import com.tokopedia.top_ads_headline_usecase.model.TopadsManageHeadlineAdResponse
+import com.tokopedia.topads.common.domain.usecase.CreateHeadlineAdsUseCase
+import com.tokopedia.topads.common.domain.model.createheadline.TopadsManageHeadlineAdResponse
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.CONST_1
 import com.tokopedia.topads.common.data.response.FinalAdResponse
 import com.tokopedia.topads.common.data.response.TopadsManagePromoGroupProductInput
@@ -32,6 +32,7 @@ import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConsta
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_SHOP_VALUE
 import com.tokopedia.topads.dashboard.recommendation.common.Utils
 import com.tokopedia.topads.dashboard.recommendation.data.mapper.GroupDetailMapper
+import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsListAllInsightCountsResponse
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.AccordianDailyBudgetUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.AccordianGroupBidUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.AccordianKataKunciUiModel
@@ -115,6 +116,12 @@ class GroupDetailViewModel @Inject constructor(
             InsightTypeChipsUiModel(list, insightList.toMutableList())
     }
 
+    private fun getGroupName(adgroupID: String, data: TopAdsListAllInsightCountsResponse, groupName: String): String {
+        return if (adgroupID.isEmpty())
+            data.topAdsListAllInsightCounts.adGroups.firstOrNull()?.adGroupName ?: ""
+        else groupName
+    }
+
     fun loadDetailPageOnAction(adType: Int, adgroupID: String, insightType: Int, isSwitchAdType: Boolean = false, groupName: String = "") {
         launchCatchError(dispatcher.main, block = {
             if (isSwitchAdType) {
@@ -125,11 +132,11 @@ class GroupDetailViewModel @Inject constructor(
                 )
                 loadDetailPage(
                     adType,
-                    data.topAdsListAllInsightCounts.adGroups.firstOrNull()?.adGroupID ?: ""
+                    adgroupID.ifEmpty { data.topAdsListAllInsightCounts.adGroups.firstOrNull()?.adGroupID ?: "" }
                 )
                 val list = mutableListOf(
                     if (adType == TYPE_PRODUCT_VALUE) TAB_NAME_PRODUCT else TAB_NAME_SHOP,
-                    data.topAdsListAllInsightCounts.adGroups.firstOrNull()?.adGroupName ?: ""
+                    getGroupName(adgroupID, data, groupName)
                 )
                 groupDetailMapper.detailPageDataMap[TYPE_INSIGHT] =
                     InsightTypeChipsUiModel(

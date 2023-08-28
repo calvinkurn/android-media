@@ -516,6 +516,12 @@ object ConstantTransactionAnalytics {
         const val CLICK_BAYAR_OCC = "15570"
         const val CLICK_INSURANCE_INFO_TOOLTIP = "36048"
 
+        const val STEP_0_VIEW_CART_PAGE = "15458"
+        const val STEP_1_CART_PAGE_LOADED = "15454"
+        const val STEP_2_CHECKOUT_PAGE_LOADED = "15455"
+        const val STEP_3_CLICK_ALL_COURIER_SELECTED = "15456"
+        const val STEP_4_CLICK_PAYMENT_OPTION_BUTTON = "15457"
+
         // Cart Bundling Bottom Sheet
         const val IMPRESSION_CART_BUNDLING_BOTTOM_SHEET_BUNDLE = "41253"
         const val CLICK_CART_BUNDLING_BOTTOM_SHEET_BUNDLE_WIDGET_ACTION = "41254"

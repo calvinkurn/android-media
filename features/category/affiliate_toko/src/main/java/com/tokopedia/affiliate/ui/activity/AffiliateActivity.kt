@@ -115,33 +115,33 @@ class AffiliateActivity :
         super.onNewIntent(intent)
         Uri.parse(intent?.data?.path ?: "").pathSegments.firstOrNull()?.let {
             when {
-                it.contains(PAGE_SEGMENT_SSA_SHOP_LIST) -> {
+                it.equals(PAGE_SEGMENT_SSA_SHOP_LIST, true) -> {
                     startActivity(Intent(this, AffiliateSSAShopListActivity::class.java))
                 }
 
-                it.contains(PAGE_SEGMENT_DISCO_PAGE_LIST) -> {
+                it.equals(PAGE_SEGMENT_DISCO_PAGE_LIST, true) -> {
                     startActivity(Intent(this, AffiliateDiscoPromoListActivity::class.java))
                 }
 
-                it.contains(PAGE_SEGMENT_PROMO_PAGE) -> {
+                it.equals(PAGE_SEGMENT_PROMO_PAGE, true) -> {
                     selectItem(PROMO_MENU, R.id.menu_promo_affiliate, true)
                 }
 
-                it.contains(PAGE_SEGMENT_PERFORMA) -> {
+                it.equals(PAGE_SEGMENT_PERFORMA, true) -> {
                     selectItem(ADP_MENU, R.id.menu_performa_affiliate, true)
                 }
 
-                it.contains(PAGE_SEGMENT_EDU_PAGE) || it.contains(PAGE_SEGMENT_HELP) -> {
+                it.equals(PAGE_SEGMENT_EDU_PAGE, true) || it.equals(PAGE_SEGMENT_HELP, true) -> {
                     fromAppLink = it.contains(PAGE_SEGMENT_EDU_PAGE)
                     fromHelpAppLink = it.contains(PAGE_SEGMENT_HELP)
                     selectItem(EDUKASI_MENU, R.id.menu_edukasi_affiliate, true)
                 }
 
-                it.contains(PAGE_SEGMENT_TRANSACTION_HISTORY) -> {
+                it.equals(PAGE_SEGMENT_TRANSACTION_HISTORY, true) -> {
                     selectItem(INCOME_MENU, R.id.menu_withdrawal_affiliate, true)
                 }
 
-                it.contains(PAGE_SEGMENT_ONBOARDING) -> {
+                it.equals(PAGE_SEGMENT_ONBOARDING, true) -> {
                     if (intent?.data?.queryParameterNames.isNullOrEmpty()) {
                         showLoginPortal()
                     } else {
@@ -317,27 +317,27 @@ class AffiliateActivity :
         }
         Uri.parse(intent?.data?.path ?: "").pathSegments.firstOrNull()?.let {
             when {
-                it.contains(PAGE_SEGMENT_HELP) || it.contains(PAGE_SEGMENT_EDU_PAGE) -> {
+                it.equals(PAGE_SEGMENT_HELP, true) || it.equals(PAGE_SEGMENT_EDU_PAGE, true) -> {
                     selectedTab = EDUKASI_MENU
                 }
 
-                it.contains(PAGE_SEGMENT_TRANSACTION_HISTORY) -> {
+                it.equals(PAGE_SEGMENT_TRANSACTION_HISTORY, true) -> {
                     selectedTab = INCOME_MENU
                 }
 
-                it.contains(PAGE_SEGMENT_PROMO_PAGE) -> {
+                it.equals(PAGE_SEGMENT_PROMO_PAGE, true) -> {
                     selectedTab = PROMO_MENU
                 }
 
-                it.contains(PAGE_SEGMENT_PERFORMA) -> {
+                it.equals(PAGE_SEGMENT_PERFORMA, true) -> {
                     selectedTab = ADP_MENU
                 }
 
-                it.contains(PAGE_SEGMENT_SSA_SHOP_LIST) -> {
+                it.equals(PAGE_SEGMENT_SSA_SHOP_LIST, true) -> {
                     startActivity(Intent(this, AffiliateSSAShopListActivity::class.java))
                 }
 
-                it.contains(PAGE_SEGMENT_DISCO_PAGE_LIST) -> {
+                it.equals(PAGE_SEGMENT_DISCO_PAGE_LIST, true) -> {
                     startActivity(Intent(this, AffiliateDiscoPromoListActivity::class.java))
                 }
             }
@@ -362,6 +362,7 @@ class AffiliateActivity :
                 affiliateBottomNavigation?.showBottomNav()
                 openFragment(AffiliateAdpFragment.getFragmentInstance(this, this))
             }
+
             PROMO_MENU -> {
                 if (isAffiliatePromoWebViewEnabled()) {
                     openFragment(AffiliatePromoWebViewFragment.getFragmentInstance())
@@ -371,6 +372,7 @@ class AffiliateActivity :
                     affiliateBottomNavigation?.showBottomNav()
                 }
             }
+
             INCOME_MENU -> {
                 affiliateBottomNavigation?.showBottomNav()
                 openFragment(
@@ -531,6 +533,10 @@ class AffiliateActivity :
 
                 is AffiliatePromoWebViewFragment -> {
                     (currentFragment as? AffiliatePromoWebViewFragment)?.handleBack()
+                }
+
+                else -> {
+                    handleBackButton(false)
                 }
             }
         } else {

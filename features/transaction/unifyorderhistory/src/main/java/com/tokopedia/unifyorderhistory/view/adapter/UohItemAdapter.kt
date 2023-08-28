@@ -11,7 +11,15 @@ import com.tokopedia.unifyorderhistory.data.model.PmsNotification
 import com.tokopedia.unifyorderhistory.data.model.UohEmptyState
 import com.tokopedia.unifyorderhistory.data.model.UohListOrder
 import com.tokopedia.unifyorderhistory.data.model.UohTypeData
-import com.tokopedia.unifyorderhistory.databinding.*
+import com.tokopedia.unifyorderhistory.databinding.UohEmptyStateBinding
+import com.tokopedia.unifyorderhistory.databinding.UohListItemBinding
+import com.tokopedia.unifyorderhistory.databinding.UohLoaderItemBinding
+import com.tokopedia.unifyorderhistory.databinding.UohLoaderPmsButtonItemBinding
+import com.tokopedia.unifyorderhistory.databinding.UohPmsButtonItemBinding
+import com.tokopedia.unifyorderhistory.databinding.UohRecommendationItemBinding
+import com.tokopedia.unifyorderhistory.databinding.UohRecommendationTitleBinding
+import com.tokopedia.unifyorderhistory.databinding.UohTdnBannerLayoutBinding
+import com.tokopedia.unifyorderhistory.databinding.UohTickerItemBinding
 import com.tokopedia.unifyorderhistory.util.UohConsts.TDN_BANNER
 import com.tokopedia.unifyorderhistory.util.UohConsts.TYPE_EMPTY
 import com.tokopedia.unifyorderhistory.util.UohConsts.TYPE_LOADER
@@ -21,7 +29,15 @@ import com.tokopedia.unifyorderhistory.util.UohConsts.TYPE_PMS_BUTTON
 import com.tokopedia.unifyorderhistory.util.UohConsts.TYPE_RECOMMENDATION_ITEM
 import com.tokopedia.unifyorderhistory.util.UohConsts.TYPE_RECOMMENDATION_TITLE
 import com.tokopedia.unifyorderhistory.util.UohConsts.TYPE_TICKER
-import com.tokopedia.unifyorderhistory.view.adapter.viewholder.*
+import com.tokopedia.unifyorderhistory.view.adapter.viewholder.UohEmptyStateViewHolder
+import com.tokopedia.unifyorderhistory.view.adapter.viewholder.UohLoaderItemViewHolder
+import com.tokopedia.unifyorderhistory.view.adapter.viewholder.UohLoaderPmsButtonItemViewHolder
+import com.tokopedia.unifyorderhistory.view.adapter.viewholder.UohOrderListViewHolder
+import com.tokopedia.unifyorderhistory.view.adapter.viewholder.UohPmsButtonViewHolder
+import com.tokopedia.unifyorderhistory.view.adapter.viewholder.UohRecommendationItemViewHolder
+import com.tokopedia.unifyorderhistory.view.adapter.viewholder.UohRecommendationTitleViewHolder
+import com.tokopedia.unifyorderhistory.view.adapter.viewholder.UohTdnBannerViewHolder
+import com.tokopedia.unifyorderhistory.view.adapter.viewholder.UohTickerItemViewHolder
 import com.tokopedia.unifyorderhistory.view.fragment.UohListFragment
 
 /**
@@ -56,6 +72,7 @@ class UohItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         fun atcRecommendationItem(recommendationItem: RecommendationItem)
         fun onImpressionPmsButton()
         fun onPmsButtonClicked()
+        fun onReviewRatingClicked(index: Int, order: UohListOrder.UohOrders.Order, appLink: String)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -174,6 +191,17 @@ class UohItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         try {
             listTypeData[index] = UohTypeData(order, TYPE_ORDER_LIST)
             notifyItemChanged(index)
+        } catch (ex: Exception) {
+            ServerLogger.log(Priority.P2, "ORDER_HISTORY", mapOf("type" to "error_update", "err" to Log.getStackTraceString(ex)))
+        }
+    }
+
+    fun resetReviewRatingWidgetAtIndex(orderIdNeedUpdated: String) {
+        try {
+            val index = listTypeData.indexOfFirst {
+                it.dataObject is UohListOrder.UohOrders.Order && it.dataObject.orderUUID == orderIdNeedUpdated
+            }
+            if (index != RecyclerView.NO_POSITION) notifyItemChanged(index)
         } catch (ex: Exception) {
             ServerLogger.log(Priority.P2, "ORDER_HISTORY", mapOf("type" to "error_update", "err" to Log.getStackTraceString(ex)))
         }
