@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.purchase_platform.common.databinding.ItemGiftingViewBinding
@@ -33,6 +34,7 @@ class ButtonGiftingView @JvmOverloads constructor(
                 descAddon.text = desc
                 titleAddon.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN600))
             }
+            iconRight.setImage(IconUnify.CHEVRON_RIGHT)
         }
     }
 
@@ -49,6 +51,7 @@ class ButtonGiftingView @JvmOverloads constructor(
                 descInactiveAddon.visible()
                 descInactiveAddon.text = desc
             }
+            iconRight.setImage(IconUnify.CHEVRON_RIGHT)
         }
     }
 
@@ -67,6 +70,7 @@ class ButtonGiftingView @JvmOverloads constructor(
                 descAddon.text = desc
                 descAddon.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN400))
             }
+            iconRight.setImage(IconUnify.INFORMATION)
         }
     }
 }
