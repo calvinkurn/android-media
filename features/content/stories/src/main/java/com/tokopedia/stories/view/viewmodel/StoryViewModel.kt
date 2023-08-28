@@ -36,11 +36,18 @@ class StoryViewModel @Inject constructor(
     private val mGroupPosition = MutableStateFlow(-1)
     private val mDetailPosition = MutableStateFlow(-1)
 
+    private val mGroupSize: Int
+        get() = _storyGroup.value.groupItems.size
     private val mGroupItem: StoryGroupItemUiModel
         get() {
             val currPosition = mGroupPosition.value
             return if (currPosition < 0) StoryGroupItemUiModel()
             else _storyGroup.value.groupItems[currPosition]
+        }
+    private val mDetailSize: Int
+        get() {
+            val currPosition = mGroupPosition.value
+            return _storyGroup.value.groupItems[currPosition].detail.detailItems.size
         }
 
     private val _uiEvent = MutableSharedFlow<StoryUiEvent>(extraBufferCapacity = 100)
@@ -89,19 +96,21 @@ class StoryViewModel @Inject constructor(
         val newGroupPosition = mGroupPosition.value.plus(1)
         val newDetailPosition = mDetailPosition.value.plus(1)
 
-        if (newDetailPosition < mGroupItem.detail.detailItems.size) {
-            updateStoryDetailData(position = newDetailPosition)
-        } else {
-            handleSetGroup(newGroupPosition)
+        when {
+            newDetailPosition < mDetailSize -> updateStoryDetailData(position = newDetailPosition)
+            newGroupPosition < mGroupSize -> handleSetGroup(position = newGroupPosition)
+            else -> Timber.d("finished")
         }
     }
 
     private fun handlePrevious() {
-        if (mDetailPosition.value > 0) {
-            updateStoryDetailData(position = mDetailPosition.value.minus(1))
-        } else {
-            if (mGroupPosition.value > 0) handleSetGroup(mGroupPosition.value.minus(1))
-            else updateStoryDetailData(position = mDetailPosition.value)
+        val newGroupPosition = mGroupPosition.value.minus(1)
+        val newDetailPosition = mDetailPosition.value.minus(1)
+
+        when {
+            newDetailPosition > -1 -> updateStoryDetailData(position = newDetailPosition)
+            newGroupPosition > -1 -> handleSetGroup(position = newGroupPosition)
+            else -> Timber.d("reset")
         }
     }
 
