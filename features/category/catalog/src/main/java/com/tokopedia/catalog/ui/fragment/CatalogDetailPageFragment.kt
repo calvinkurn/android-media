@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.catalog.databinding.FragmentCatalogReimagineDetailPageBinding
 import com.tokopedia.catalog.di.DaggerCatalogComponent
+import com.tokopedia.catalog.ui.model.NavigationProperties
 import com.tokopedia.catalog.ui.viewmodel.CatalogDetailPageViewModel
 import com.tokopedia.catalogcommon.adapter.CatalogAdapterFactoryImpl
 import com.tokopedia.catalogcommon.adapter.WidgetCatalogAdapter
@@ -21,13 +22,11 @@ import com.tokopedia.catalogcommon.customview.CatalogToolbar
 import com.tokopedia.catalogcommon.listener.HeroBannerListener
 import com.tokopedia.catalogcommon.uimodel.AccordionInformationUiModel
 import com.tokopedia.catalogcommon.uimodel.DummyUiModel
-import com.tokopedia.catalogcommon.uimodel.HeroBannerUiModel
 import com.tokopedia.catalogcommon.uimodel.PanelImageUiModel
 import com.tokopedia.catalogcommon.uimodel.SliderImageTextUiModel
 import com.tokopedia.catalogcommon.uimodel.TopFeaturesUiModel
 import com.tokopedia.catalogcommon.uimodel.TrustMakerUiModel
 import com.tokopedia.catalogcommon.util.DrawableExtension
-import com.tokopedia.catalogcommon.util.stringHexColorParseToInt
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
@@ -95,28 +94,7 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener {
             "73177",
             "73177", "213079258", "android")
 
-        context?.let {
-            binding?.setupRvWidgets(false, true)
-            binding?.setupToolbar(false, true, "#ffffff")
-            widgets.add(
-                HeroBannerUiModel(
-                    "bannercoy",
-                    "",
-                    "",
-                    widgetBackgroundColor = null,
-                    widgetTextColor = null,
-                    brandTitle = "Samsung",
-                    brandDesc = "360 RTrfvds Dewsign",
-                    brandIconUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Samsung_wordmark.svg/440px-Samsung_wordmark.svg.png",
-                    //brandIconUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/9/92/UNIQLO_logo.svg/1200px-UNIQLO_logo.svg.png",
-                    brandImageUrls = listOf(
-                        "https://placekitten.com/200/300",
-                        "https://placekitten.com/201/301",
-                        "https://placekitten.com/205/302"
-                    ),
-                    isPremium = true
-                )
-            )
+        view.postDelayed( {
             widgets.add(
                 DummyUiModel(
                     "dummybann",
@@ -161,8 +139,8 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener {
             )
             widgets.add(SliderImageTextUiModel.dummySliderImageText())
             widgets.add(AccordionInformationUiModel.dummyAccordion())
-            widgetAdapter.addWidget(widgets)
-        }
+            widgetAdapter.addMoreData(widgets)
+        }, 6000)
     }
 
     override fun onNavBackClicked() {
@@ -181,17 +159,19 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener {
         viewModel.catalogDetailDataModel.observe(viewLifecycleOwner) {
             if (it is Success) {
                 widgetAdapter.addMoreData(it.data.widgets)
+                binding?.setupToolbar(it.data.navigationProperties)
+                binding?.setupRvWidgets(it.data.navigationProperties)
             }
         }
     }
 
     private fun FragmentCatalogReimagineDetailPageBinding.setupRvWidgets(
-        isDarkMode: Boolean,
-        isPremium: Boolean
+        navigationProperties: NavigationProperties
     ) {
         val layoutManager = LinearLayoutManager(context)
         rvContent.layoutManager = layoutManager
         rvContent.adapter = widgetAdapter
+        rvContent.setBackgroundColor(navigationProperties.bgColor)
         rvContent.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
@@ -203,38 +183,35 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener {
                 } else {
                     Int.ZERO.toFloat()
                 }
-                toolbar.updateToolbarAppearance(scrollProgress, isDarkMode, isPremium)
+                toolbar.updateToolbarAppearance(scrollProgress, navigationProperties)
             }
         })
     }
 
     private fun FragmentCatalogReimagineDetailPageBinding.setupToolbar(
-        isDarkMode: Boolean,
-        isPremium: Boolean,
-        colorString: String
+        navigationProperties: NavigationProperties
     ) {
         val colorBgGradient = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_Black_44)
         val colorFontDark = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
         val colorFontLight = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
-        val colorFont = if (isDarkMode) colorFontDark else colorFontLight
+        val colorFont = if (navigationProperties.isDarkMode) colorFontDark else colorFontLight
 
         toolbarShadow.background = DrawableExtension.createGradientDrawable(colorTop = colorBgGradient)
         toolbar.setColors(colorFont)
-        toolbarShadow.isVisible = !isPremium
-        toolbarBg.setBackgroundColor(colorString.stringHexColorParseToInt())
+        toolbarShadow.isVisible = !navigationProperties.isPremium
+        toolbarBg.setBackgroundColor(navigationProperties.bgColor)
     }
 
     private fun CatalogToolbar.updateToolbarAppearance(
         scrollProgress: Float,
-        isDarkMode: Boolean,
-        isPremium: Boolean
+        navigationProperties: NavigationProperties
     ) {
-        if (!isDarkMode) {
+        if (!navigationProperties.isDarkMode) {
             val colorProgress: Int = COLOR_VALUE_MAX - (COLOR_VALUE_MAX * scrollProgress).toInt()
             setColors(Color.rgb(colorProgress, colorProgress, colorProgress))
         }
 
-        if (isPremium){
+        if (navigationProperties.isPremium) {
             alpha = scrollProgress
         }
         binding?.toolbarBg?.alpha = scrollProgress
