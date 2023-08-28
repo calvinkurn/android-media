@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingStart="16dp">
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/edit_ad_item_ads_potential_title"
@@ -25,33 +26,100 @@
         app:layout_constraintTop_toBottomOf="@id/edit_ad_item_ads_potential_title" />
 
     <include
-        android:id="@+id/widget_1"
+        android:id="@+id/potential_widget_1"
         layout="@layout/topads_edit_item_ads_potential_widget_edit_ad_group"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/potential_widget_2"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintTop_toBottomOf="@id/space"/>
+
+    <include
+        android:id="@+id/potential_widget_2"
+        layout="@layout/topads_edit_item_ads_potential_widget_edit_ad_group"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintLeft_toRightOf="@id/potential_widget_1"
+        app:layout_constraintRight_toLeftOf="@id/potential_widget_3"
+        app:layout_constraintTop_toTopOf="@+id/potential_widget_1" />
+
+
+    <include
+        android:id="@+id/potential_widget_3"
+        layout="@layout/topads_edit_item_ads_potential_widget_edit_ad_group"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintLeft_toRightOf="@id/potential_widget_2"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/potential_widget_2" />
+
+    <include
+        android:id="@+id/shimmer1"
+        layout="@layout/topads_edit_shimmer_potential_widget_edit_ad_group"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/potential_widget_1"/>
+
+    <include
+        android:id="@+id/shimmer2"
+        layout="@layout/topads_edit_shimmer_potential_widget_edit_ad_group"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintEnd_toStartOf="@id/shimmer3"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toEndOf="@+id/shimmer1"
+        app:layout_constraintTop_toTopOf="@+id/shimmer1" />
+
+    <include
+        android:id="@+id/shimmer3"
+        layout="@layout/topads_edit_shimmer_potential_widget_edit_ad_group"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/widget_2"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintTop_toBottomOf="@+id/potential_widget_2" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/group_widget"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:constraint_referenced_ids="potential_widget_1, potential_widget_2, potential_widget_3"
+        android:visibility="gone" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/group_shimmer"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:constraint_referenced_ids="shimmer1, shimmer2, shimmer3"
+        android:visibility="visible" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_load_more_potential"
+        android:layout_width="0dp"
+        android:layout_height="32dp"
+        android:text="Muat Ulang"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/space" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/shimmer1"
+        app:unifyButtonType="alternate"
+        app:unifyButtonVariant="ghost"
+        android:visibility="gone"/>
 
-    <include
-        android:id="@+id/widget_2"
-        layout="@layout/topads_edit_item_ads_potential_widget_edit_ad_group"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        app:layout_constraintLeft_toRightOf="@id/widget_1"
-        app:layout_constraintRight_toLeftOf="@id/widget_3"
-        app:layout_constraintTop_toBottomOf="@id/space" />
-
-    <include
-        android:id="@+id/widget_3"
-        layout="@layout/topads_edit_item_ads_potential_widget_edit_ad_group"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        app:layout_constraintLeft_toRightOf="@id/widget_2"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/space" />
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/edit_ad_item_ads_potential_footer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btn_load_more_potential"
+        app:typographyType="small"
+        tools:text="Perkiraan seberapa sering iklanmu tampil berdasarkan produk yang dipilih, biaya grup iklan, dan anggaran harian." />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,8 +5,11 @@ import com.tokopedia.topads.edit.view.adapter.edit.EditAdGroupTypeFactory
 
 data class EditAdGroupItemAdsPotentialUiModel(
     var title: String = "",
-    var subtitle: String = "",
-    var applink: String = ""
+    var footer: String = "",
+    var applink: String = "",
+    var listWidget : MutableList<EditAdGroupItemAdsPotentialWidgetUiModel> = arrayListOf(),
+    var state: EditAdGroupItemState = EditAdGroupItemState.LOADING
+    
 ) : Visitable<EditAdGroupTypeFactory> {
 
     override fun type(typeFactory: EditAdGroupTypeFactory): Int {

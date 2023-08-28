@@ -73,5 +73,6 @@
 
     <string name="topads_edit_keyword_title">Biaya Iklan dan Kata Kunci</string>
     <string name="topads_edit_auto_bid_ticker_title"><![CDATA[Biaya iklan dan kata kunci pada grup iklan ini akan diatur oleh TopAds untuk memaksimalkan penjualanmu. <font color = "#03AC0E"><a href="">Pelajari Selengkapnya</a></font>]]></string>
+    <string name="footer_potential_widget_edit_ad_group_text">Perkiraan seberapa sering iklanmu tampil berdasarkan perubahan pada produk yang dipilih, biaya grup iklan, dan anggaran harian.</string>
 
 </resources>

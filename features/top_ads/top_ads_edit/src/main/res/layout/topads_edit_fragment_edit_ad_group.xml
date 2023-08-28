@@ -11,6 +11,7 @@
         android:visibility="visible"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
+        android:background="@color/Unify_Background"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
