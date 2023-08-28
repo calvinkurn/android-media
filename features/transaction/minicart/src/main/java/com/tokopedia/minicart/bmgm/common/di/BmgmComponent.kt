@@ -1,6 +1,7 @@
 package com.tokopedia.minicart.bmgm.common.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.minicart.bmgm.presentation.bottomsheet.BmgmMiniCartDetailBottomSheet
 import com.tokopedia.minicart.bmgm.presentation.customview.BmgmMiniCartView
 import dagger.Component
 
@@ -16,4 +17,5 @@ import dagger.Component
 interface BmgmComponent {
 
     fun inject(view: BmgmMiniCartView)
+    fun inject(bottomSheet: BmgmMiniCartDetailBottomSheet)
 }

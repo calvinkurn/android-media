@@ -232,7 +232,6 @@ ext {
             topAdsEdit                      : ":features:top_ads:top_ads_edit",
             topAdsManagementCommon          : ":features:top_ads:top_ads_management_common",
             topAdsHeadline                  : ":features:top_ads:top_ads_headline",
-            topAdsHeadlineUseCase           : ":features:top_ads:top_ads_headline_usecase",
             topAdsOnBoarding                : ":features:top_ads:top_ads_on_boarding",
 
             atc_common                      : ":features:transaction:atc_common",

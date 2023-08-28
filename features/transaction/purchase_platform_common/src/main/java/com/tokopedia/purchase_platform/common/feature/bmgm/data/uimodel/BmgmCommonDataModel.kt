@@ -32,7 +32,6 @@ class BmgmCommonDataModel(
         val priceAfterBenefit: Double = 0.0,
         val products: List<ProductModel> = emptyList()
     ) {
-
         /**
          * tier_id = 0 means the product is not in discount group
          * */
@@ -47,6 +46,7 @@ class BmgmCommonDataModel(
         val productName: String = "",
         val productImage: String = "",
         val productPrice: Double = 0.0,
+        val cartId: String = "",
         val quantity: Int = 0
     ) {
         fun getProductPriceFmt(): String {

@@ -6,20 +6,29 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.minicart.R
+import com.tokopedia.minicart.bmgm.common.di.DaggerBmgmComponent
 import com.tokopedia.minicart.bmgm.presentation.adapter.BmgmMiniCartDetailAdapter
+import com.tokopedia.minicart.bmgm.presentation.model.BmgmState
 import com.tokopedia.minicart.bmgm.presentation.model.MiniCartDetailUiModel
+import com.tokopedia.minicart.bmgm.presentation.viewmodel.BmgmMiniCartDetailViewModel
 import com.tokopedia.minicart.databinding.BottomSheetBmgmMiniCartDetailBinding
 import com.tokopedia.minicart.databinding.ViewBmgmMiniCartSubTotalBinding
 import com.tokopedia.purchase_platform.common.feature.bmgm.data.uimodel.BmgmCommonDataModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.currency.CurrencyFormatUtil
+import javax.inject.Inject
 
 /**
  * Created by @ilhamsuaib on 31/07/23.
@@ -44,13 +53,28 @@ class BmgmMiniCartDetailBottomSheet : BottomSheetUnify() {
         }
     }
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
     private var binding: BottomSheetBmgmMiniCartDetailBinding? = null
+    private var footerBinding: ViewBmgmMiniCartSubTotalBinding? = null
     private val listAdapter = BmgmMiniCartDetailAdapter()
+    private val viewModel by lazy {
+        ViewModelProvider(
+            this, viewModelFactory
+        )[BmgmMiniCartDetailViewModel::class.java]
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        initInjector()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         binding = BottomSheetBmgmMiniCartDetailBinding.inflate(inflater).apply {
+            footerBinding = ViewBmgmMiniCartSubTotalBinding.bind(root)
             setChild(root)
             setTitle(getString(R.string.mini_cart_bmgm_bottom_sheet_title))
         }
@@ -61,6 +85,29 @@ class BmgmMiniCartDetailBottomSheet : BottomSheetUnify() {
         super.onViewCreated(view, savedInstanceState)
 
         setupProductList()
+        observeCartListState()
+    }
+
+    private fun observeCartListState() {
+        viewModel.setCheckListState.observe(viewLifecycleOwner) {
+            when (it) {
+                is BmgmState.Loading -> showLoadingButton()
+                is BmgmState.Success, is BmgmState.Error -> openCartPage()
+            }
+        }
+    }
+
+    private fun openCartPage() {
+        dismissLoadingButton()
+        RouteManager.route(context, ApplinkConst.CART)
+    }
+
+    private fun showLoadingButton() {
+        footerBinding?.btnBmgmOpenCart?.isLoading = true
+    }
+
+    private fun dismissLoadingButton() {
+        footerBinding?.btnBmgmOpenCart?.isLoading = false
     }
 
     private fun setupProductList() {
@@ -90,22 +137,29 @@ class BmgmMiniCartDetailBottomSheet : BottomSheetUnify() {
     }
 
     private fun setupCartEntryPoint(model: BmgmCommonDataModel) {
-        binding?.let {
-            if (!model.showMiniCartFooter) {
-                it.containerSubTotal.gone()
-                return
-            }
-            it.containerSubTotal.visible()
-            val miniCartFooterView = ViewBmgmMiniCartSubTotalBinding.bind(it.root)
-            with(miniCartFooterView) {
-                tvBmgmFinalPrice.text =
-                    CurrencyFormatUtil.convertPriceValueToIdrFormat(model.finalPrice, false)
-                tvBmgmPriceBeforeDiscount.text =
-                    CurrencyFormatUtil.convertPriceValueToIdrFormat(model.priceBeforeBenefit, false)
-                tvBmgmPriceBeforeDiscount.paintFlags =
-                    tvBmgmPriceBeforeDiscount.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+        if (!model.showMiniCartFooter) {
+            binding?.containerSubTotal?.gone()
+            return
+        }
+        binding?.containerSubTotal?.visible()
+
+        footerBinding?.run {
+            tvBmgmFinalPrice.text =
+                CurrencyFormatUtil.convertPriceValueToIdrFormat(model.finalPrice, false)
+            tvBmgmPriceBeforeDiscount.text =
+                CurrencyFormatUtil.convertPriceValueToIdrFormat(model.priceBeforeBenefit, false)
+            tvBmgmPriceBeforeDiscount.paintFlags =
+                tvBmgmPriceBeforeDiscount.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+
+            btnBmgmOpenCart.isEnabled = true
+            btnBmgmOpenCart.setOnClickListener {
+                viewModel.setCartListCheckboxState(getCartIds(model.tiersApplied))
             }
         }
+    }
+
+    private fun getCartIds(tiersApplied: List<BmgmCommonDataModel.TierModel>): List<String> {
+        return tiersApplied.map { it.products }.flatten().map { it.cartId }
     }
 
     private fun getDiscountedProductList(products: List<BmgmCommonDataModel.TierModel>): List<MiniCartDetailUiModel> {
@@ -124,8 +178,7 @@ class BmgmMiniCartDetailBottomSheet : BottomSheetUnify() {
         val items = mutableListOf<MiniCartDetailUiModel>()
         items.add(
             MiniCartDetailUiModel.Section(
-                sectionText = tier.tierMessage,
-                isDiscountSection = false
+                sectionText = tier.tierMessage, isDiscountSection = false
             )
         )
         tier.products.forEach { product ->
@@ -155,5 +208,13 @@ class BmgmMiniCartDetailBottomSheet : BottomSheetUnify() {
                 R.string.bmgm_mini_cart_detail_discount_section, model.tierDiscountStr
             ), isDiscountSection = true
         )
+    }
+
+    private fun initInjector() {
+        context?.let {
+            DaggerBmgmComponent.builder()
+                .baseAppComponent((it.applicationContext as BaseMainApplication).baseAppComponent)
+                .build().inject(this)
+        }
     }
 }

@@ -1,40 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:background="@drawable/bg_bmgm_mini_cart_upselling_group"
-    android:padding="4dp">
+    android:layout_height="52dp">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvBmgmBundledProduct"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/bmgmBundledProduct"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0"
-        tools:itemCount="3"
-        tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/item_bmgm_mini_cart_item_product_bundle"
-        tools:orientation="horizontal" />
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_bmgm_mini_cart_upselling_group"
+        android:padding="4dp">
 
-    <TextView
-        android:id="@+id/tvBmgmBundledDiscount"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:background="@drawable/bg_bmgm_mini_cart_upselling_discount"
-        android:gravity="center"
-        android:textAllCaps="true"
-        android:textColor="@color/Unify_NN0"
-        android:textSize="8sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@+id/rvBmgmBundledProduct"
-        app:layout_constraintStart_toStartOf="@+id/rvBmgmBundledProduct"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="SmallSp"
-        tools:text="diskon 25%" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvBmgmBundledProduct"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0"
+            tools:itemCount="3"
+            tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/item_bmgm_mini_cart_item_product_bundle"
+            tools:orientation="horizontal" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvBmgmBundledDiscount"
+            android:layout_width="0dp"
+            android:layout_height="16dp"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/bg_bmgm_mini_cart_upselling_discount"
+            android:gravity="center"
+            android:textAllCaps="true"
+            android:textColor="@color/Unify_NN0"
+            android:textSize="8sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@+id/rvBmgmBundledProduct"
+            app:layout_constraintStart_toStartOf="@+id/rvBmgmBundledProduct"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="SmallSp"
+            tools:text="diskon 25%" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <View
+        android:id="@+id/viewBmgmShining"
+        android:layout_width="12dp"
+        android:layout_height="108dp"
+        android:layout_marginStart="-32dp"
+        android:layout_marginTop="-28dp"
+        android:layout_marginBottom="-28dp"
+        android:background="@drawable/bmgm_shining_effect"
+        android:rotation="135"
+        android:visibility="gone" />
+</RelativeLayout>

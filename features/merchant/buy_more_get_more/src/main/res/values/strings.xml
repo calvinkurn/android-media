@@ -9,4 +9,26 @@
     <!--    Sort-->
     <string name="shop_sort_title">Urutkan</string>
     <string name="sort_title_activity">Urutkan</string>
+    
+    <!-- Error State-->
+    <string name="bmgm_title_error_ended_promo">Oops, promosi ini sudah berakhir</string>
+    <string name="bmgm_description_error_ended_promo">Tapi tenang, kamu masih bisa beli barang di halaman ini tanpa promo.</string>
+    <string name="bmgm_cta_text_error_ended_promo">Balik</string>
+
+    <string name="bmgm_title_error_out_of_stock">Oops, barang di halaman ini sudah habis</string>
+    <string name="bmgm_description_error_out_of_stock">Kamu bisa cek promosi atau barang lain di halaman toko</string>
+    <string name="bmgm_cta_text_error_out_of_stock">Balik</string>
+
+    <string name="bmgm_title_error_no_internet_connection">Koneksi Internetmu terganggu</string>
+    <string name="bmgm_description_error_no_internet_connection">Yuk, pastikan internetmu lancar dengan cek ulang paket data, WiFI, atau jaringan di tempatmu.</string>
+    <string name="bmgm_cta_text_error_no_internet_connection">Coba lagi</string>
+
+    <string name="bmgm_title_error_server">Ada gangguan di rumah Toped!</string>
+    <string name="bmgm_description_error_server">Tunggu sebentar, biar Toped bereskan. Coba lagi atau kembali nanti</string>
+    <string name="bmgm_cta_text_error_server">Coba lagi</string>
+
+    <string name="bmgm_title_error_not_found">Oops. halaman ini gagal dimuat</string>
+    <string name="bmgm_description_error_not_found">Klik Tombol di bawah ini untuk refresh halaman ini, ya!</string>
+    <string name="bmgm_cta_text_error_not_found">Coba lagi</string>
+
 </resources>
