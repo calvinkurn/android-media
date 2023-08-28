@@ -28,7 +28,7 @@ Seller Order Management, usually called SOM, is a module with features that allo
 
 1. Order list page (`SomListFragment`): A page that shows the list of orders. Here seller can view the preview of each order and perform an action depending on the status of the order.
 2. Order detail page (`SomDetailFragment`): A page that shows the detail of the order. Here seller can view the detail of an order and perform some action depending on the status of the order.
-3. Waiting for payment page (`WaitingPaymentOrderFragment`): A page that shows the list of orders that haven’t been paid by the user. Here seller can only view the preview of the order.
+3. Waiting for payment page (`WaitingPaymentOrderFragment`): A page that shows the list of orders that haven&#39;t been paid by the user. Here seller can only view the preview of the order.
 4. Confirm shipping page (`SomConfirmShippingFragment`): A page that allows the seller to confirm that the order will be shipped while also creating a shipment request to the courier provider.
 5. Scan AWB page (`SomScanResiActivity`): A page that allows the seller to scan the AWB barcode.
 6. Booking code detail page (`SomDetailBookingCodeActivity`): A page that shows the detail of shipment booking detail. Here the seller can view the detail of the shipment.

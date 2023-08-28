@@ -33,7 +33,7 @@ labels:
 
 # Overview
 
-The order list page is a page that shows the list of orders. On this page, the seller can see the preview of each order, and perform an action on each order like &#34;Terima Pesanan&#34;, or &#34;Kirim Pesanan&#34;. On this page, there’s also a quick filter that can be used to quickly filter the order list based on the order status and order type like &#34;Sameday Delivery&#34;, or &#34;PLUS&#34;. This page also has an exclusive feature that is only available on the SellerApp which is:
+The order list page is a page that shows the list of orders. On this page, the seller can see the preview of each order, and perform an action on each order like &#34;Terima Pesanan&#34;, or &#34;Kirim Pesanan&#34;. On this page, there&#39;s also a quick filter that can be used to quickly filter the order list based on the order status and order type like &#34;Sameday Delivery&#34;, or &#34;PLUS&#34;. This page also has an exclusive feature that is only available on the SellerApp which is:
 
 - Bulk accept orders: A feature that allows the seller to accept multiple orders at once
 - Bulk request pick-up: A feature that allows the seller to send request pick-up for multiple orders at once
@@ -62,7 +62,7 @@ The order list page is a page that shows the list of orders. On this page, the s
 
 There are 2 flows used on the order list page:
 
-- The flow when the user enters the page with no order status filter (using `tokopedia://seller/history?search={searchParam}` app link). This flow is used in this case because when we enter the order list page with no order status filter, the app doesn’t need to send order filter ids when sending the `orderList` query therefore we don’t need to wait for the get the filter data request to be completed.
+- The flow when the user enters the page with no order status filter (using `tokopedia://seller/history?search={searchParam}` app link). This flow is used in this case because when we enter the order list page with no order status filter, the app doesn&#39;t need to send order filter ids when sending the `orderList` query therefore we don&#39;t need to wait for the get the filter data request to be completed.
 
 ![](../res/somlist/som_list_no_status_filter_drawio.png)
 
@@ -108,7 +108,7 @@ The complete flow of this action can be seen in the flowchart below.
 
 # GQL
 
-There’s 2 group of query in this page such as:
+There&#39;s 2 group of query in this page such as:
 
 1. Queries for UI renders
 
@@ -142,13 +142,13 @@ There’s 2 group of query in this page such as:
 | `query get_multi_accept_order_status` | This query is used after the `multi_accept_order` query to check for the bulk accept order progress. The app need to hit this query once every second until the query return a response indicating that the bulk accepts order is complete | [[Query] Get Multi Accept Order Status](/wiki/spaces/TTD/pages/569475108)  |
 | `mutation mpLogisticBulkRequestPickup` | This query is used to send the bulk request pickup order action which is only available in SellerApp | [[Internal/GQL][Shipping Action] Bulk Request Pickup Action](/wiki/spaces/LG/pages/1226156903)  |
 | `mutation mpLogisticMultiShippingStatus` | This query is used after the `mpLogisticBulkRequestPickup` query to check for the bulk request pickup order progress. The app need to hit this query once every second until the query return a response indicating that the bulk request pickup order is complete | [[Internal/GQL][Shipping Action] Get Multi Shipping Status](/wiki/spaces/LG/pages/590644049)  |
-| `mutation accept_order` | This query is used to send the accept order (“Terima Pesanan” button) action. Before sending this query, the app need to validate the order first by sending the `validate_accept_order` query | [[Mutation] Button Accept Order Query List](/wiki/spaces/TTD/pages/473172371)  |
+| `mutation accept_order` | This query is used to send the accept order (&#34;Terima Pesanan&#34; button) action. Before sending this query, the app need to validate the order first by sending the `validate_accept_order` query | [[Mutation] Button Accept Order Query List](/wiki/spaces/TTD/pages/473172371)  |
 | `mutation reject_order` | This query is used to send the reject/cancel order action when the seller is responding to buyer order cancellation request | [[Mutation] Button Reject Order Query List](/wiki/spaces/TTD/pages/473272057)  |
-| `mutation mpLogisticEditRefNum` | This query is used to send the change AWB/”Resi” action when the seller is clicking on “Ubah Resi” button | [[Internal/GQL][Shipping Action] Edit AWB](/wiki/spaces/LG/pages/558236750)  |
+| `mutation mpLogisticEditRefNum` | This query is used to send the change AWB/&#34;Resi&#34; action when the seller is clicking on &#34;Ubah Resi&#34; button | [[Internal/GQL][Shipping Action] Edit AWB](/wiki/spaces/LG/pages/558236750)  |
 | `mutation reject_cancel_request` | This query is used to send the reject the buyer cancellation request (the seller decided to process the order instead of cancel it) | [[Mutation] Reject Cancel Request](/wiki/spaces/TTD/pages/907806141)  |
-| `query validate_accept_order` | This query is used to check whether there’s a buyer cancellation request on that specific order before proceeding with the accept order action (“Terima Pesanan” button) | [[GQL] ValidateAcceptOrder](/wiki/spaces/TTD/pages/1418037994)  |
+| `query validate_accept_order` | This query is used to check whether there&#39;s a buyer cancellation request on that specific order before proceeding with the accept order action (&#34;Terima Pesanan&#34; button) | [[GQL] ValidateAcceptOrder](/wiki/spaces/TTD/pages/1418037994)  |
 
-# How To’s
+# How To&#39;s
 
 #### How to monitor page load time (PLT)
 

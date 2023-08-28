@@ -18,7 +18,7 @@ title: "Buyer Order Detail"
 - [Flowchart](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2151845406/Buyer+Order+Detail#Flowchart)
 - [Navigation](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2151845406/Buyer+Order+Detail#Navigation)
 - [GQL](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2151845406/Buyer+Order+Detail#GQL)
-- [How To’s](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2151845406/Buyer+Order+Detail#How-To%E2%80%99s)
+- [How To&#39;s](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2151845406/Buyer+Order+Detail#How-To%E2%80%99s)
 - [Notes](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2151845406/Buyer+Order+Detail#Notes)
 - [Useful Links](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2151845406/Buyer+Order+Detail#Useful-Links)
 
@@ -65,7 +65,7 @@ In this module, there are 2 groups of use cases that will be executed when the p
 | `query resolutionGetTicketStatus` | Secondary query for getting resolution detail info for that specific order. In order to send this query, we need to send the `mp_bom_detail` query first to know whether that specific order has a resolution ticket. Therefore this query is part of P1 use case. If this query is failing then the page **must not** show an error state and the resolution detail info.**Note: you must only send this query when** `has_reso_status` **from the** `mp_bom_detail` **query is true** | [Tech Plan - Integrate Resolution Status In Order Detail Page](/wiki/spaces/CS/pages/1983977492/Tech+Plan+-+Integrate+Resolution+Status+In+Order+Detail+Page)  |
 | `mutation finish_order_buyer` | Query for the action `Selesaikan Pesanan` which used to move the order status to `700` or `Selesai`. This query is not part of P0 or P1 use case, since this query is not sent during the page load. | <https://tokopedia.atlassian.net/wiki/spaces/TTD/pages/594280963?search_id=4476a8f1-65c0-460d-b669-4d69476e2a7e>  |
 
-# How To’s
+# How To&#39;s
 
 #### How to implement a new button
 
