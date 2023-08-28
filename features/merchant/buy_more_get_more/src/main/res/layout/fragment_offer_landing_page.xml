@@ -6,10 +6,11 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
 
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:tools="http://schemas.android.com/tools"
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:tools="http://schemas.
+        android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/Unify_NN0">
+        android:background="@color/Unify_NN0" >
 
         <View
             android:id="@+id/header_background"
@@ -19,53 +20,52 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/status_bar" />
 
-        <View
-            android:id="@+id/status_bar"
+    <View
+        android:id="@+id/status_bar"
+        android:layout_width="match_parent"
+        android:layout_height="32dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.buy_more_get_more.olp.common.customview.OlpToolbar
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/status_bar" />
+
+    <include
+        android:id="@+id/loading_state_olp"
+        layout="@layout/loading_state_olp"
+        android:visibility="gone" />
+
+    <com.tokopedia.buy_more_get_more.olp.view.widget.StickySingleHeaderView
+        android:id="@+id/sticky_content"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/miniCartView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/header">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_olp"
             android:layout_width="match_parent"
-            android:layout_height="32dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_height="match_parent"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false" />
 
-        <com.tokopedia.buy_more_get_more.olp.common.customview.OlpToolbar
-            android:id="@+id/header"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/status_bar" />
-
-        <include
-            android:id="@+id/loading_state_olp"
-            layout="@layout/loading_state_olp"
-            android:visibility="gone" />
-
-        <com.tokopedia.buy_more_get_more.olp.view.widget.StickySingleHeaderView
-            android:id="@+id/sticky_content"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toTopOf="@+id/miniCartPlaceholder"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/header">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_olp"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:clipChildren="false"
-                android:clipToPadding="false"
-                android:focusable="false"
-                android:focusableInTouchMode="false" />
-
-        </com.tokopedia.buy_more_get_more.olp.view.widget.StickySingleHeaderView>
+    </com.tokopedia.buy_more_get_more.olp.view.widget.StickySingleHeaderView>
 
         <com.tokopedia.minicart.bmgm.presentation.customview.BmgmMiniCartView
-            android:id="@+id/miniCartPlaceholder"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:background="@color/transparent"
+            android:id="@+id/miniCartView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

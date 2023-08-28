@@ -15,7 +15,8 @@ sealed interface BmgmMiniCartVisitable : Visitable<BmgmMiniCartAdapterFactory> {
         val tierDiscountStr: String = "",
         val priceBeforeBenefit: Double = 0.0,
         val priceAfterBenefit: Double = 0.0,
-        val products: List<ProductUiModel> = emptyList()
+        val products: List<ProductUiModel> = emptyList(),
+        var shouldShowShiningEffect: Boolean = true
     ) : BmgmMiniCartVisitable {
 
         override fun type(typeFactory: BmgmMiniCartAdapterFactory): Int {
@@ -32,6 +33,7 @@ sealed interface BmgmMiniCartVisitable : Visitable<BmgmMiniCartAdapterFactory> {
         val warehouseId: String = "",
         val productName: String = "",
         val productImage: String = "",
+        val cartId: String = "",
         val finalPrice: Double = 0.0,
         val quantity: Int = 0
     ) : BmgmMiniCartVisitable {

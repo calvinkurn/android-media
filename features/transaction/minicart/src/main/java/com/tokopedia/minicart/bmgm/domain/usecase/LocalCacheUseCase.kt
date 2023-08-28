@@ -64,6 +64,7 @@ class LocalCacheUseCase @Inject constructor(
                 productName = p.productName,
                 productImage = p.productImage,
                 productPrice = p.finalPrice,
+                cartId = p.cartId,
                 quantity = p.quantity,
             )
         }

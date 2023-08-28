@@ -1,6 +1,7 @@
 package com.tokopedia.minicart.bmgm.presentation.model
 
 import com.tokopedia.purchase_platform.common.feature.bmgm.data.uimodel.BmgmCommonDataModel
+import com.tokopedia.utils.currency.CurrencyFormatUtil
 
 /**
  * Created by @ilhamsuaib on 14/08/23.
@@ -16,4 +17,12 @@ data class BmgmMiniCartDataUiModel(
     val finalPrice: Double = 0.0,
     val showMiniCartFooter: Boolean = false,
     val tiersApplied: List<BmgmMiniCartVisitable.TierUiModel> = emptyList()
-)
+) {
+    fun getPriceBeforeDiscountStr(): String {
+        return CurrencyFormatUtil.convertPriceValueToIdrFormat(priceBeforeBenefit, false)
+    }
+
+    fun getPriceAfterDiscountStr(): String {
+        return CurrencyFormatUtil.convertPriceValueToIdrFormat(finalPrice, false)
+    }
+}
