@@ -1389,7 +1389,8 @@ object ShopPageHomeMapper {
                                 linkID = it.linkID,
                                 link = it.link
                             )
-                        }
+                        },
+                        widgetStyle = it.header.widgetStyle
                     )
                 )
             }

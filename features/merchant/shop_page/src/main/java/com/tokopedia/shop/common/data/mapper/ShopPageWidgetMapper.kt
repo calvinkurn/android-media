@@ -233,6 +233,8 @@ object ShopPageWidgetMapper {
         )
     }
     fun mapToHomeBannerProductGroupWidget(response: ShopLayoutWidget.Widget): ShopWidgetComponentBannerProductGroupUiModel {
+        val widgetStyle = response.header.widgetStyle
+
         val tabs = response.data.map { tab ->
             val componentList = tab.componentList.map { component ->
 
