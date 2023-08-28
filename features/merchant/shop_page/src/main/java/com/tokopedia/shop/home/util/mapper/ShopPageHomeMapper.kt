@@ -556,45 +556,17 @@ object ShopPageHomeMapper {
     ): Visitable<*>? {
         return when(widgetResponse.name){
             DIRECT_PURCHASED_BY_ETALASE -> {
-               mapToDirectPurchaseByEtalase(widgetResponse, widgetLayout, isOverrideTheme, colorSchema)
-            } else ->{
+                ShopPageWidgetMapper.mapToDirectPurchaseByEtalase(
+                    widgetResponse,
+                    widgetLayout,
+                    isOverrideTheme,
+                    colorSchema
+                )
+            }
+
+            else -> {
                 null
             }
-        }
-    }
-
-    private fun mapToDirectPurchaseByEtalase(
-        widgetResponse: ShopLayoutWidget.Widget,
-        widgetLayout: ShopPageWidgetUiModel?,
-        isOverrideTheme: Boolean,
-        colorSchema: ShopPageColorSchema
-    ) = ShopDirectPurchaseByEtalaseUiModel(
-        widgetId = widgetResponse.widgetID,
-        layoutOrder = widgetResponse.layoutOrder,
-        name = widgetResponse.name,
-        type = widgetResponse.type,
-        header = mapToHeaderModel(widgetResponse.header, widgetLayout, isOverrideTheme, colorSchema),
-        tabData = mapToDirectPurchaseByEtalaseTabData(widgetResponse.data)
-    )
-
-    private fun mapToDirectPurchaseByEtalaseTabData(
-        data: List<ShopLayoutWidget.Widget.Data>
-    ): List<ShopDirectPurchaseByEtalaseUiModel.TabData> {
-        return data.map {
-            ShopDirectPurchaseByEtalaseUiModel.TabData(
-                ratio = it.ratio,
-                title = it.title,
-                banner = it.banner,
-                listShowcase = it.listEtalase.map { etalase ->
-                    ShopDirectPurchaseByEtalaseUiModel.TabData.Showcase(
-                        imageUrl = etalase.imageUrl,
-                        desktopImageUrl = etalase.desktopImageUrl,
-                        linkType = etalase.linkType,
-                        linkId = etalase.linkId,
-                        name = etalase.name,
-                    )
-                }
-            )
         }
     }
 

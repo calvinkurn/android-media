@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:focusable="false"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical">
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/textViewShimmer2"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_gravity="center_horizontal"
+        app:loader_type="circle" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:layout_width="72dp"
+        android:layout_height="12dp"
+        android:layout_marginTop="8dp"
+        app:loader_type="rect" />
+
+</LinearLayout>

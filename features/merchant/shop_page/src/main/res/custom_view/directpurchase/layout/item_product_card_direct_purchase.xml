@@ -137,7 +137,7 @@
             tools:visibility="visible" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tvSales"
+            android:id="@+id/tvRating"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="2dp"
@@ -145,7 +145,29 @@
             android:maxLines="1"
             android:textColor="@color/Unify_NN950_68"
             app:typographyType="body_3"
-            tools:text="4.8 \u2022 Terjual 122" />
+            tools:text="4.8" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvDotSeparator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="2dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/Unify_NN950_68"
+            app:typographyType="body_3"
+            tools:text="\u2022" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvSoldCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="2dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/Unify_NN950_68"
+            app:typographyType="body_3"
+            tools:text="Terjual 122" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 

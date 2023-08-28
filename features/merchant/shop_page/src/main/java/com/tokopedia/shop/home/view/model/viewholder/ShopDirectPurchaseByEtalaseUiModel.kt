@@ -4,7 +4,9 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
 import com.tokopedia.shop.home.view.adapter.ShopWidgetTypeFactory
+import com.tokopedia.shop.home.view.customview.directpurchase.WidgetData
 import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
+import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 
 
 data class ShopDirectPurchaseByEtalaseUiModel(
@@ -14,24 +16,9 @@ data class ShopDirectPurchaseByEtalaseUiModel(
     override val type: String = "",
     override val header: Header = Header(),
     override val isFestivity: Boolean = false,
-    val tabData: List<TabData> = listOf()
+    val widgetData: WidgetData,
 ) : BaseShopHomeWidgetUiModel() {
     val impressHolder = ImpressHolder()
-
-    data class TabData(
-        val ratio: String = "",
-        val title: String = "",
-        val banner: String = "",
-        val listShowcase: List<Showcase> = listOf()
-    ) {
-        data class Showcase(
-            val imageUrl: String = "",
-            val desktopImageUrl: String = "",
-            val linkType: String = "",
-            val linkId: String = "",
-            val name: String = "",
-        )
-    }
 
     override fun type(typeFactory: ShopWidgetTypeFactory): Int {
         return if (typeFactory is ShopHomeAdapterTypeFactory) {

@@ -503,7 +503,7 @@ open class ShopHomeAdapterTypeFactory(
             // ========= Shop Home Revamp V4 - New widgets ========= //
             ShopHomeV4TerlarisPlaceholderViewHolder.LAYOUT -> ShopHomeV4TerlarisPlaceholderViewHolder(parent)
             ShopHomeV4TerlarisViewHolder.LAYOUT -> ShopHomeV4TerlarisViewHolder(parent, shopHomeV4TerlarisViewHolderListener)
-            ShopHomeDirectPurchasedByEtalaseViewHolder.LAYOUT -> ShopHomeDirectPurchasedByEtalaseViewHolder(parent)
+            ShopHomeDirectPurchasedByEtalaseViewHolder.LAYOUT -> ShopHomeDirectPurchasedByEtalaseViewHolder(parent, shopHomeListener)
             else -> return super.createViewHolder(parent, type)
         }
         return viewHolder
