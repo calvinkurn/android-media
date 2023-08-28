@@ -14,6 +14,7 @@ import com.tokopedia.stories.domain.model.StoriesAuthorType
 import com.tokopedia.stories.domain.model.StoriesRequestModel
 import com.tokopedia.stories.domain.model.StoriesSource
 import com.tokopedia.stories.utils.getRandomNumber
+import com.tokopedia.stories.utils.StoriesPreference
 import com.tokopedia.stories.view.model.BottomSheetStatusDefault
 import com.tokopedia.stories.view.model.BottomSheetType
 import com.tokopedia.stories.view.model.ProductBottomSheetUiState
@@ -43,6 +44,7 @@ class StoriesViewModel @AssistedInject constructor(
     @Assisted private val authorId: String,
     private val repository: StoriesRepository,
     private val userSession: UserSessionInterface,
+    private val sharedPref: StoriesPreference,
 ) : ViewModel() {
 
     @AssistedFactory
@@ -119,6 +121,21 @@ class StoriesViewModel @AssistedInject constructor(
             productSheet = product,
             combineState = combineState,
         )
+    }
+
+    private val isOnboard : Boolean
+        get() = sharedPref.isVisited()
+
+    init {
+        setupOnboard()
+    }
+
+    private fun setupOnboard() {
+        if (!isOnboard) sharedPref.setVisit()
+        
+        viewModelScope.launch {
+            _uiEvent.emit(StoriesUiEvent.OnboardShown(isOnboard))
+        }
     }
 
     fun submitAction(action: StoriesUiAction) {

@@ -2,12 +2,20 @@ package com.tokopedia.stories.view.activity
 
 import android.content.res.Resources
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.fragment.app.FragmentFactory
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.stories.R
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.stories.databinding.ActivityStoriesBinding
 import com.tokopedia.stories.di.StoriesInjector
 import com.tokopedia.stories.view.fragment.StoriesGroupFragment
+import com.tokopedia.stories.view.viewmodel.StoriesViewModel
+import com.tokopedia.stories.view.viewmodel.event.StoriesUiEvent
+import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
 class StoriesActivity : BaseActivity() {
@@ -21,11 +29,17 @@ class StoriesActivity : BaseActivity() {
 
     private var bundle: Bundle? = null
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private val viewModel by viewModels<StoriesViewModel> { viewModelFactory }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
         getData()
         super.onCreate(savedInstanceState)
         setupViews()
+        observeEvent()
     }
 
     override fun getTheme(): Resources.Theme {
@@ -56,6 +70,9 @@ class StoriesActivity : BaseActivity() {
         _binding = ActivityStoriesBinding.inflate(layoutInflater)
         setContentView(binding.root)
         openFragment()
+        binding.vStoriesOnboarding.ivOnboardClose.setOnClickListener {
+            binding.vStoriesOnboarding.root.gone()
+        }
     }
 
     private fun openFragment() {
@@ -79,6 +96,17 @@ class StoriesActivity : BaseActivity() {
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
+    }
+
+    private fun observeEvent() {
+        lifecycleScope.launchWhenResumed {
+            viewModel.uiEvent.collectLatest { event ->
+                when (event) {
+                    is StoriesUiEvent.OnboardShown -> binding.vStoriesOnboarding.root.showWithCondition(event.needToShow)
+                    else -> {}
+                }
+            }
+        }
     }
 
     companion object {
