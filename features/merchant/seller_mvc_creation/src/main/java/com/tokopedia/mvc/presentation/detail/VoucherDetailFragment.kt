@@ -1131,7 +1131,8 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             shopDomain,
             shareModel,
             title,
-            outgoingDescription
+            outgoingDescription,
+            isProductVoucher
         )
         LinkerManager.getInstance().executeShareRequest(
             LinkerUtils.createShareRequest(

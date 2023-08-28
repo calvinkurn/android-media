@@ -2861,16 +2861,26 @@ open class SomListFragment :
 
     private fun setTabActiveFromAppLink() {
         if (Utils.isEnableOperationalGuideline()) {
-            val tabActive = arguments?.getString(TAB_ACTIVE).orEmpty()
-            val tabActiveFilter =
-                if (tabActive == SomConsts.STATUS_HISTORY || tabActive == STATUS_ALL_ORDER) String.EMPTY else tabActive
-            viewModel.setTabActiveFromAppLink(tabActiveFilter)
-            viewModel.setFirstPageOpened(true)
+            setTabActiveFromAppLinkOg()
         } else {
-            val tabActive = arguments?.getString(TAB_ACTIVE)
-                ?: if (GlobalConfig.isSellerApp()) SomConsts.STATUS_NEW_ORDER else STATUS_ALL_ORDER
-            viewModel.setTabActiveFromAppLink(tabActive)
+            setTabActiveFromApplinkOld()
         }
+    }
+
+    private fun setTabActiveFromAppLinkOg() {
+        val tabActive = arguments?.getString(TAB_ACTIVE).orEmpty()
+        val tabActiveFilter =
+            if (tabActive == SomConsts.STATUS_HISTORY || tabActive == STATUS_ALL_ORDER) String.EMPTY else tabActive
+        viewModel.setTabActiveFromAppLink(tabActiveFilter)
+        if (tabActiveFilter.isBlank()) {
+            viewModel.setFirstPageOpened(true)
+        }
+    }
+
+    private fun setTabActiveFromApplinkOld() {
+        val tabActive = arguments?.getString(TAB_ACTIVE)
+            ?: if (GlobalConfig.isSellerApp()) SomConsts.STATUS_NEW_ORDER else STATUS_ALL_ORDER
+        viewModel.setTabActiveFromAppLink(tabActive)
     }
 
     protected fun dismissBottomSheets(): Boolean {
@@ -2921,11 +2931,7 @@ open class SomListFragment :
 
         val highLightStatusKey = somFilterUiModel.highLightedStatusKey
 
-        // this case to handle when there is a highlightedStatusKey (all_order, new_order, confirm_shipping) from backend
-        val shouldRefreshOrderAutoTabbing = viewModel.getIsFirstPageOpened() &&
-            highLightStatusKey.isNotBlank() && viewModel.getTabActiveFromAppLink().isBlank()
-
-        if (shouldRefreshOrderAutoTabbing) {
+        if (getShouldRefreshOrderAutoTabbing(highLightStatusKey)) {
             val statusIds = somFilterUiModel.statusList.find { it.key == highLightStatusKey }?.id.orEmpty()
             if (statusIds.isNotEmpty()) {
                 viewModel.setStatusOrderFilter(statusIds, highLightStatusKey)
@@ -2940,6 +2946,13 @@ open class SomListFragment :
         if (viewModel.getIsFirstPageOpened()) {
             viewModel.setFirstPageOpened(false)
         }
+    }
+
+    private fun getShouldRefreshOrderAutoTabbing(highLightStatusKey: String): Boolean {
+        // this case to handle when there is a highlightedStatusKey (all_order, new_order, confirm_shipping) from backend
+        return viewModel.getIsFirstPageOpened() &&
+            highLightStatusKey.isNotBlank() &&
+            viewModel.getTabActiveFromAppLink().isBlank()
     }
 
     private fun showCoachMarkAutoTabbing(highLightStatusKey: String) {

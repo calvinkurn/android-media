@@ -1,15 +1,13 @@
 package com.tokopedia.inbox.universalinbox.stub.common.util
 
-import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.ROLLENCE_KEY
-import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.ROLLENCE_TYPE_A
+import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.ROLLENCE_REFRESH_RECOMMENDATION
 import com.tokopedia.inbox.universalinbox.util.toggle.UniversalInboxAbPlatform
 
 class FakeAbTestPlatformImpl : UniversalInboxAbPlatform {
 
-    private val map = hashMapOf(Pair(ROLLENCE_KEY, ROLLENCE_TYPE_A))
-
-    init {
-    }
+    private val map = hashMapOf<String, String>(
+        Pair(ROLLENCE_REFRESH_RECOMMENDATION, ROLLENCE_REFRESH_RECOMMENDATION)
+    )
 
     override fun getString(key: String, defaultValue: String): String {
         return map[key] ?: defaultValue

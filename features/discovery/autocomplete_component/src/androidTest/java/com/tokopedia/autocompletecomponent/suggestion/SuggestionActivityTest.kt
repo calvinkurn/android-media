@@ -3,7 +3,6 @@ package com.tokopedia.autocompletecomponent.suggestion
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.tokopedia.autocompletecomponent.createFakeBaseAppComponent
-import com.tokopedia.autocompletecomponent.di.DaggerAutoCompleteComponent
 import com.tokopedia.autocompletecomponent.searchbar.SearchBarKeyword
 import com.tokopedia.autocompletecomponent.suggestion.SuggestionFragment.Companion.SUGGESTION_FRAGMENT_TAG
 import com.tokopedia.autocompletecomponent.suggestion.SuggestionFragment.SuggestionViewUpdateListener

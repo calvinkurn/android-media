@@ -2,9 +2,7 @@ package com.tokopedia.inbox.universalinbox.view.adapter
 
 import com.tokopedia.adapterdelegate.BaseCommonAdapter
 import com.tokopedia.inbox.universalinbox.data.entity.UniversalInboxAllCounterResponse
-import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil
 import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxMenuItemDelegate
-import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxMenuSectionDelegate
 import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxMenuSeparatorDelegate
 import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxRecommendationDelegate
 import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxRecommendationLoaderDelegate
@@ -19,8 +17,12 @@ import com.tokopedia.inbox.universalinbox.view.uimodel.MenuItemType
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuSeparatorUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationLoaderUiModel
+import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationTitleUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxTopAdsBannerUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxWidgetMetaUiModel
+import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxWidgetUiModel
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.topads.sdk.listener.TdnBannerResponseListener
@@ -39,7 +41,6 @@ class UniversalInboxAdapter(
 
     init {
         delegatesManager.addDelegate(UniversalInboxWidgetMetaDelegate(widgetListener))
-        delegatesManager.addDelegate(UniversalInboxMenuSectionDelegate())
         delegatesManager.addDelegate(UniversalInboxMenuItemDelegate(menuListener))
         delegatesManager.addDelegate(
             UniversalInboxTopAdsBannerDelegate(tdnBannerResponseListener, topAdsClickListener)
@@ -70,7 +71,7 @@ class UniversalInboxAdapter(
     }
 
     fun getProductRecommendationFirstPosition(): Int? {
-        if (recommendationFirstPosition != null) {
+        if (checkCachedRecommendationFirstPosition()) {
             return recommendationFirstPosition
         } else {
             itemList.forEachIndexed { index, item ->
@@ -81,6 +82,16 @@ class UniversalInboxAdapter(
             }
             return null
         }
+    }
+
+    private fun checkCachedRecommendationFirstPosition(): Boolean {
+        var result = false
+        recommendationFirstPosition?.let {
+            if (it < itemList.size) {
+                result = itemList[it] is RecommendationItem
+            }
+        }
+        return result
     }
 
     private fun isRecommendationLoader(position: Int): Boolean {
@@ -139,23 +150,77 @@ class UniversalInboxAdapter(
         return itemList.firstOrNull() is UniversalInboxWidgetMetaUiModel
     }
 
-    fun isHelpWidgetAdded(): Boolean {
-        return try {
+    fun getWidgetPosition(widgetType: Int): Int {
+        var position = -1
+        try {
             if (isWidgetMetaAdded()) {
                 val widgetMetaUiModel = itemList.firstOrNull() as? UniversalInboxWidgetMetaUiModel
-                var result = false
-                widgetMetaUiModel?.widgetList?.forEach {
-                    if (it.type == UniversalInboxValueUtil.CHATBOT_TYPE) {
-                        result = true
+                widgetMetaUiModel?.widgetList?.forEachIndexed { index, uiModel ->
+                    if (uiModel.type == widgetType) {
+                        position = index
                     }
                 }
-                result
-            } else {
-                false
             }
         } catch (throwable: Throwable) {
             Timber.d(throwable)
-            false
         }
+        return position
+    }
+
+    fun addWidget(
+        position: Int,
+        uiModel: UniversalInboxWidgetUiModel
+    ) {
+        var widgetMetaUiModel = itemList.firstOrNull() as? UniversalInboxWidgetMetaUiModel
+        if (widgetMetaUiModel == null) {
+            // Widget meta rv not added
+            widgetMetaUiModel = UniversalInboxWidgetMetaUiModel()
+            addItem(Int.ZERO, widgetMetaUiModel)
+        }
+        widgetMetaUiModel.widgetList.add(position, uiModel)
+        notifyItemRangeChanged(
+            Int.ZERO,
+            getProductRecommendationFirstPosition() ?: itemList.size
+        ) // notify item ranged changed in page rv
+        // item ranged needed for addition & update meta
+    }
+
+    fun updateWidgetCounter(
+        position: Int,
+        counter: Int,
+        additionalAction: (UniversalInboxWidgetUiModel) -> Unit = {}
+    ) {
+        (itemList.firstOrNull() as? UniversalInboxWidgetMetaUiModel)?.let {
+            it.widgetList.getOrNull(position)?.let { uiModel ->
+                uiModel.counter = counter
+                additionalAction(uiModel)
+            }
+            notifyItemChanged(Int.ZERO)
+        }
+    }
+
+    fun removeWidget(position: Int) {
+        (itemList.firstOrNull() as? UniversalInboxWidgetMetaUiModel)
+            ?.widgetList?.removeAt(position)
+        notifyItemChanged(Int.ZERO) // notify item changed in page rv, first item
+    }
+
+    fun removeAllProductRecommendation() {
+        getProductRecommendationFirstPosition()?.let {
+            var itemCountToDrop = itemList.size - it
+            if (it < itemList.size && // out of bound
+                it > Int.ZERO && // not -1
+                isRecommendationTitle(it - Int.ONE)
+            ) {
+                itemCountToDrop++
+            }
+            val result = itemList.dropLast(itemCountToDrop)
+            clearAllItems() // clear all
+            addItemsAndAnimateChanges(result) // add the widget & menu
+        }
+    }
+
+    private fun isRecommendationTitle(position: Int): Boolean {
+        return itemList[position]::class == UniversalInboxRecommendationTitleUiModel::class
     }
 }

@@ -526,7 +526,8 @@ class MvcListFragment :
             shopDomain,
             shareModel,
             title,
-            outgoingDescription
+            outgoingDescription,
+            isProductVoucher
         )
         LinkerManager.getInstance().executeShareRequest(
             LinkerUtils.createShareRequest(
