@@ -126,7 +126,7 @@ class ShopHomeViewModel @Inject constructor(
     private val gqlShopPageGetHomeType: GqlShopPageGetHomeType,
     private val getShopPageHomeLayoutV2UseCase: Provider<GetShopPageHomeLayoutV2UseCase>,
     private val getShopDynamicTabUseCase: Provider<GqlShopPageGetDynamicTabUseCase>,
-    private val getComparisonProductUseCase: Provider<GetRecommendationUseCase>,
+    private val getComparisonProductUseCase: Provider<GetRecommendationUseCase>
     ) : BaseViewModel(dispatcherProvider.main) {
 
     val productListData: LiveData<Result<GetShopHomeProductUiModel>>

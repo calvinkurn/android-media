@@ -12,15 +12,24 @@ import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.home.data.model.ShopLayoutWidget
 import com.tokopedia.shop.home.data.model.ShopPageWidgetRequestModel
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
+import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.CarouselAppearance
+import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.LeftMainBannerAppearance
+import com.tokopedia.shop.home.view.model.banner_product_group.ShopWidgetComponentBannerProductGroupUiModel
+import com.tokopedia.shop.home.view.model.showcase_navigation.ShopHomeShowcaseNavigationUiModel
 import com.tokopedia.shop.home.view.customview.directpurchase.Etalase
 import com.tokopedia.shop.home.view.customview.directpurchase.Title
 import com.tokopedia.shop.home.view.customview.directpurchase.WidgetData
-import com.tokopedia.shop.home.view.model.ShopHomeShowcaseNavigationUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerProductHotspotUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerTimerUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetVoucherSliderUiModel
-import com.tokopedia.shop.home.view.model.ShowcaseNavigationBannerWidgetStyle
+import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseNavigationBannerWidgetStyle
 import com.tokopedia.shop.home.view.model.StatusCampaign
+import com.tokopedia.shop.home.view.model.banner_product_group.ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.ComponentType
+import com.tokopedia.shop.home.view.model.banner_product_group.ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.Data.LinkType
+import com.tokopedia.shop.home.view.model.showcase_navigation.Showcase
+import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseCornerShape
+import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseTab
+import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.TopMainBannerAppearance
 import com.tokopedia.shop.home.view.model.viewholder.ShopDirectPurchaseByEtalaseUiModel
 
 //TODO need to migrate all other shop widget mapper on home mapper to this mapper
@@ -177,16 +186,10 @@ object ShopPageWidgetMapper {
         )
     }
 
-    fun mapToHomeShowcaseWidget(response: ShopLayoutWidget.Widget): ShopHomeShowcaseNavigationUiModel {
-        val widgetStyle = if (response.header.widgetStyle == ShowcaseNavigationBannerWidgetStyle.ROUNDED_CORNER.id) {
-            ShopHomeShowcaseNavigationUiModel.WidgetStyle.ROUNDED_CORNER
-        } else {
-            ShopHomeShowcaseNavigationUiModel.WidgetStyle.CIRCLE
-        }
-
+    fun mapToHomeShowcaseNavigationWidget(response: ShopLayoutWidget.Widget): ShopHomeShowcaseNavigationUiModel {
         val tabs = response.data.map { tab ->
             val showcases = tab.showcaseList.map { showcase ->
-                ShopHomeShowcaseNavigationUiModel.Tab.Showcase(
+                Showcase(
                     showcase.showcaseID,
                     showcase.name,
                     showcase.imageURL,
@@ -195,33 +198,94 @@ object ShopPageWidgetMapper {
                 )
             }
 
-            val mainBannerPosition = if (tab.mainBannerPosition == ShopHomeShowcaseNavigationUiModel.MainBannerPosition.TOP.id) {
-                ShopHomeShowcaseNavigationUiModel.MainBannerPosition.TOP
-            } else {
-                ShopHomeShowcaseNavigationUiModel.MainBannerPosition.LEFT
-            }
-
-            ShopHomeShowcaseNavigationUiModel.Tab(
-                text = tab.text,
-                imageUrl = tab.imageURL,
-                mainBannerPosition = mainBannerPosition,
-                showcases = showcases
-            )
+            ShowcaseTab(text = tab.text, imageUrl = tab.imageURL, showcases = showcases)
         }
 
+        val showcases = tabs.firstOrNull()?.showcases ?: emptyList()
+
+        val appearance = when (response.header.widgetStyle) {
+            ShowcaseNavigationBannerWidgetStyle.TOP_ROUNDED_CORNER.id -> {
+                TopMainBannerAppearance(response.header.title, showcases, response.header.ctaLink, ShowcaseCornerShape.ROUNDED_CORNER)
+            }
+            ShowcaseNavigationBannerWidgetStyle.TOP_CIRCLE.id -> {
+                TopMainBannerAppearance(response.header.title, showcases, response.header.ctaLink, ShowcaseCornerShape.CIRCLE)
+            }
+            ShowcaseNavigationBannerWidgetStyle.LEFT_ROUNDED_CORNER.id -> {
+                LeftMainBannerAppearance(tabs, response.header.title, response.header.ctaLink, ShowcaseCornerShape.ROUNDED_CORNER)
+            }
+            ShowcaseNavigationBannerWidgetStyle.LEFT_CIRCLE.id -> {
+                LeftMainBannerAppearance(tabs, response.header.title, response.header.ctaLink, ShowcaseCornerShape.CIRCLE)
+            }
+            ShowcaseNavigationBannerWidgetStyle.CAROUSEL_ROUNDED_CORNER.id -> {
+                CarouselAppearance(response.header.title, showcases, response.header.ctaLink, ShowcaseCornerShape.CIRCLE)
+            }
+            ShowcaseNavigationBannerWidgetStyle.CAROUSEL_CIRCLE.id -> {
+                CarouselAppearance(response.header.title, showcases, response.header.ctaLink, ShowcaseCornerShape.CIRCLE)
+            }
+            else -> TopMainBannerAppearance(response.header.title, showcases, response.header.ctaLink, ShowcaseCornerShape.ROUNDED_CORNER)
+        }
+
+
         return ShopHomeShowcaseNavigationUiModel(
-            showcaseHeader = ShopHomeShowcaseNavigationUiModel.ShowcaseHeader(
-                title = response.header.title,
-                ctaLink = response.header.ctaLink,
-                widgetStyle = widgetStyle
-            ),
-            tabs = tabs,
+            appearance = appearance,
             widgetId = response.widgetID,
             layoutOrder = response.layoutOrder,
             name = response.name,
             type = response.type
         )
     }
+    fun mapToHomeBannerProductGroupWidget(response: ShopLayoutWidget.Widget): ShopWidgetComponentBannerProductGroupUiModel {
+        val tabs = response.data.map { tab ->
+            val componentList = tab.componentList.map { component ->
+
+                val componentType = when (component.componentType) {
+                    ComponentType.PRODUCT.id -> ComponentType.PRODUCT
+                    ComponentType.DISPLAY_SINGLE_COLUMN.id -> ComponentType.DISPLAY_SINGLE_COLUMN
+                    else -> ComponentType.DISPLAY_SINGLE_COLUMN
+                }
+
+                val data = component.data.map { data ->
+                    val linkType = when (data.linkType) {
+                        LinkType.PRODUCT.id -> LinkType.PRODUCT
+                        LinkType.SHOWCASE.id -> LinkType.SHOWCASE
+                        LinkType.FEATURED_PRODUCT.id -> LinkType.FEATURED_PRODUCT
+                        else -> LinkType.PRODUCT
+                    }
+
+                    ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.Data(
+                        data.imageUrl,
+                        data.ctaLink,
+                        data.linkID,
+                        linkType,
+                        data.isShowProductInfo
+                    )
+                }
+
+                ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList(
+                    component.componentID,
+                    component.componentName,
+                    componentType,
+                    data
+                )
+            }
+
+            ShopWidgetComponentBannerProductGroupUiModel.Tab(tab.tabLabel, tab.tabName, componentList)
+        }
+
+        val viewAllChevronAppLink = response.header.ctaLink
+
+        return ShopWidgetComponentBannerProductGroupUiModel(
+            widgetId = response.widgetID,
+            layoutOrder = response.layoutOrder,
+            title = response.header.title,
+            tabs = tabs,
+            name = response.name,
+            type = response.type,
+            viewAllChevronAppLink = viewAllChevronAppLink,
+            widgetStyle = response.header.widgetStyle
+        )
+    }
+
     private fun Int?.mapToStatusCampaign(): StatusCampaign {
         return when (this) {
             0 -> StatusCampaign.UPCOMING

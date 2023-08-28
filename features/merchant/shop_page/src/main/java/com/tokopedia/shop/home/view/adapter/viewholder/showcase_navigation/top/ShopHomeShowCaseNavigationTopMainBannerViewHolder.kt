@@ -1,4 +1,4 @@
-package com.tokopedia.shop.home.view.adapter.viewholder
+package com.tokopedia.shop.home.view.adapter.viewholder.showcase_navigation.top
 
 import android.view.View
 import androidx.annotation.LayoutRes
@@ -9,8 +9,12 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.R
 import com.tokopedia.shop.databinding.ItemShopHomeShowcaseNavigationTopMainBannerBinding
+import com.tokopedia.shop.home.view.adapter.viewholder.showcase_navigation.ShopHomeShowCaseNavigationAdapter
 import com.tokopedia.shop.home.view.listener.ShopHomeShowcaseNavigationListener
-import com.tokopedia.shop.home.view.model.ShopHomeShowcaseNavigationUiModel
+import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.ShopHomeShowcaseNavigationBannerWidgetAppearance
+import com.tokopedia.shop.home.view.model.showcase_navigation.ShopHomeShowcaseNavigationUiModel
+import com.tokopedia.shop.home.view.model.showcase_navigation.Showcase
+import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.TopMainBannerAppearance
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopHomeShowCaseNavigationTopMainBannerViewHolder(
@@ -30,23 +34,27 @@ class ShopHomeShowCaseNavigationTopMainBannerViewHolder(
 
 
     override fun bind(model: ShopHomeShowcaseNavigationUiModel) {
-        viewBinding?.tpgTitle?.text = model.showcaseHeader.title
-        viewBinding?.tpgTitle?.isVisible =
-            model.showcaseHeader.title.isNotEmpty() && model.tabs.isNotEmpty()
-        viewBinding?.iconChevron?.setOnClickListener { listener.onViewAllShowcaseClick(model.showcaseHeader) }
+        if (model.appearance is TopMainBannerAppearance) {
+            viewBinding?.tpgTitle?.text = model.appearance.title
+            viewBinding?.tpgTitle?.isVisible = model.appearance.title.isNotEmpty()
+            viewBinding?.iconChevron?.setOnClickListener {
+                listener.onNavigationBannerViewAllShowcaseClick(model.appearance.viewAllCtaAppLink)
+            }
 
-        val showcases = model.tabs.getOrNull(0)?.showcases ?: emptyList()
+            val showcases = model.appearance.showcases
 
-        setupViewAllIcon(showcases)
-        setupMainBanner(showcases)
-        setupShowCaseRecyclerView(showcases)
+            setupViewAllIcon(showcases)
+            setupMainBanner(showcases)
+            setupShowCaseRecyclerView(model.appearance, showcases)
+        }
+
     }
 
-    private fun setupViewAllIcon(showcases: List<ShopHomeShowcaseNavigationUiModel.Tab.Showcase>) {
+    private fun setupViewAllIcon(showcases: List<Showcase>) {
         viewBinding?.iconChevron?.isVisible = showcases.size > SHOW_VIEW_ALL_SHOWCASE_THRESHOLD
     }
 
-    private fun setupMainBanner(showcases: List<ShopHomeShowcaseNavigationUiModel.Tab.Showcase>) {
+    private fun setupMainBanner(showcases: List<Showcase>) {
         val firstShowcase = showcases.getOrNull(0)
 
         firstShowcase?.let {
@@ -55,18 +63,19 @@ class ShopHomeShowCaseNavigationTopMainBannerViewHolder(
             viewBinding?.imgFirstBanner?.visible()
             viewBinding?.tpgFirstBannerTitle?.visible()
 
-            viewBinding?.imgFirstBanner?.setOnClickListener { listener.onShowcaseClick(firstShowcase) }
-            viewBinding?.tpgFirstBannerTitle?.setOnClickListener { listener.onShowcaseClick(firstShowcase)  }
+            viewBinding?.imgFirstBanner?.setOnClickListener { listener.onNavigationBannerShowcaseClick(firstShowcase) }
+            viewBinding?.tpgFirstBannerTitle?.setOnClickListener { listener.onNavigationBannerShowcaseClick(firstShowcase)  }
         }
     }
 
     private fun setupShowCaseRecyclerView(
-        showcases: List<ShopHomeShowcaseNavigationUiModel.Tab.Showcase>
+        appearance: ShopHomeShowcaseNavigationBannerWidgetAppearance,
+        showcases: List<Showcase>
     ) {
         val filteredShowcases =
             showcases.filterIndexed { index, _ -> index in SECOND_SHOWCASE_INDEX..TWELVE_SHOWCASE_INDEX }
 
-        val showCaseAdapter = ShopHomeShowCaseNavigationAdapter(ShopHomeShowcaseNavigationUiModel.WidgetStyle.ROUNDED_CORNER, listener)
+        val showCaseAdapter = ShopHomeShowCaseNavigationAdapter(appearance, listener)
 
         val recyclerView = viewBinding?.recyclerView
         recyclerView?.apply {

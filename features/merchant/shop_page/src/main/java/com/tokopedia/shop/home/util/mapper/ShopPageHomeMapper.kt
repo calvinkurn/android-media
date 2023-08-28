@@ -16,6 +16,7 @@ import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleDetailUiModel
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleItemUiModel
+import com.tokopedia.shop.home.WidgetName
 import com.tokopedia.shop.home.WidgetName.ADD_ONS
 import com.tokopedia.shop.home.WidgetName.ADVANCED_SLIDER_BANNER
 import com.tokopedia.shop.home.WidgetName.BANNER_PRODUCT_HOTSPOT
@@ -47,6 +48,7 @@ import com.tokopedia.shop.home.WidgetType.CARD
 import com.tokopedia.shop.home.WidgetType.DIRECT_PURCHASE
 import com.tokopedia.shop.home.WidgetType.DISPLAY
 import com.tokopedia.shop.home.WidgetType.DYNAMIC
+import com.tokopedia.shop.home.WidgetType.COMPONENT
 import com.tokopedia.shop.home.WidgetType.PERSONALIZATION
 import com.tokopedia.shop.home.WidgetType.SHOWCASE
 import com.tokopedia.shop.home.data.model.GetCampaignNotifyMeModel
@@ -440,7 +442,7 @@ object ShopPageHomeMapper {
                         ShopPageWidgetMapper.mapToBannerTimerWidget(widgetResponse, widgetLayout, isOverrideTheme, colorSchema)
                     }
                     SHOWCASE_NAVIGATION_BANNER -> {
-                        ShopPageWidgetMapper.mapToHomeShowcaseWidget(widgetResponse)
+                        ShopPageWidgetMapper.mapToHomeShowcaseNavigationWidget(widgetResponse)
                     }
 
                     BANNER_PRODUCT_HOTSPOT -> {
@@ -505,6 +507,12 @@ object ShopPageHomeMapper {
                 }
             }
             DYNAMIC.toLowerCase(Locale.getDefault()) -> mapCarouselPlayWidget(widgetResponse, widgetLayout, isOverrideTheme, colorSchema)
+            COMPONENT.toLowerCase(Locale.getDefault()) -> {
+                when (widgetResponse.name) {
+                    WidgetName.BANNER_PRODUCT_GROUP -> ShopPageWidgetMapper.mapToHomeBannerProductGroupWidget(widgetResponse)
+                    else -> null
+                }
+            }
             PERSONALIZATION.toLowerCase(Locale.getDefault()) -> {
                 when (widgetResponse.name) {
                     BUY_AGAIN, RECENT_ACTIVITY, REMINDER, ADD_ONS, TRENDING -> {
@@ -1353,7 +1361,8 @@ object ShopPageHomeMapper {
                                 linkID = it.linkID,
                                 link = it.link
                             )
-                        }
+                        },
+                        widgetStyle = it.header.widgetStyle
                     )
                 )
             }

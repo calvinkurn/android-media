@@ -180,24 +180,29 @@ import com.tokopedia.shop.home.view.model.CarouselPlayWidgetUiModel
 import com.tokopedia.shop.home.view.model.CheckCampaignNotifyMeUiModel
 import com.tokopedia.shop.home.view.model.GetCampaignNotifyMeUiModel
 import com.tokopedia.shop.home.view.model.NotifyMeAction
+import com.tokopedia.shop.home.view.model.banner_product_group.appearance.ProductItemType
 import com.tokopedia.shop.home.view.model.ShopHomeCardDonationUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeFlashSaleUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeNewProductLaunchCampaignUiModel
+import com.tokopedia.shop.home.view.model.banner_product_group.ShopWidgetComponentBannerProductGroupUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeShowcaseListItemUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeShowcaseListSliderUiModel
-import com.tokopedia.shop.home.view.model.ShopHomeShowcaseNavigationUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeVoucherUiModel
 import com.tokopedia.shop.home.view.model.ShopPageLayoutUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerProductHotspotUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerTimerUiModel
 import com.tokopedia.shop.home.view.model.StatusCampaign
+import com.tokopedia.shop.home.view.model.banner_product_group.appearance.VerticalBannerItemType
+import com.tokopedia.shop.home.view.model.showcase_navigation.Showcase
 import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageHeaderActivity
 import com.tokopedia.shop.common.view.interfaces.InterfaceShopPageHeader
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
+import com.tokopedia.shop.home.util.ShopBannerProductGroupWidgetTabDependencyProvider
+import com.tokopedia.shop.home.view.listener.ShopBannerProductGroupListener
 import com.tokopedia.shop.home.view.customview.directpurchase.DirectPurchaseWidgetView
 import com.tokopedia.shop.home.view.customview.directpurchase.ProductCardDirectPurchaseDataModel
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragment
@@ -257,8 +262,9 @@ open class ShopPageHomeFragment :
     ShopHomeShowcaseNavigationListener,
     ShopHomeShowcaseNavigationDependencyProvider,
     ShopHomeV4TerlarisViewHolder.ShopHomeV4TerlarisViewHolderListener,
-    DirectPurchaseWidgetView.DirectPurchaseWidgetViewListener
-{
+    ShopBannerProductGroupWidgetTabDependencyProvider,
+    ShopBannerProductGroupListener,
+    DirectPurchaseWidgetView.DirectPurchaseWidgetViewListener {
 
     companion object {
         const val KEY_SHOP_ID = "SHOP_ID"
@@ -417,7 +423,9 @@ open class ShopPageHomeFragment :
             shopHomeDisplayBannerProductHotspotListener = this,
             shopHomeShowcaseNavigationListener = this,
             shopHomeShowcaseNavigationDependencyProvider = this,
-            shopHomeV4TerlarisViewHolderListener = this
+            shopHomeV4TerlarisViewHolderListener = this,
+            shopBannerProductGroupListener = this,
+            shopBannerProductGroupWidgetTabDependencyProvider = this
         )
     }
 
@@ -5007,23 +5015,60 @@ open class ShopPageHomeFragment :
         RouteManager.route(context, uiModel.data.getOrNull(imageBannerPosition)?.listProductHotspot?.getOrNull(bubblePosition)?.productUrl.orEmpty())
     }
 
-    override fun onViewAllShowcaseClick(selectedShowcaseHeader: ShopHomeShowcaseNavigationUiModel.ShowcaseHeader) {
-        RouteManager.route(activity ?: return, selectedShowcaseHeader.ctaLink)
-    }
-
-    override fun onShowcaseClick(
-        selectedShowcase: ShopHomeShowcaseNavigationUiModel.Tab.Showcase
-    ) {
-        RouteManager.route(activity ?: return, selectedShowcase.ctaLink)
-    }
-
-    override val currentFragment: Fragment
-        get() = this
 
     override fun onProductClick(productId: String) {
         // TODO: Put tracker here
         RouteManager.route(context, ApplinkConst.PRODUCT_INFO, productId)
     }
+
+    override fun onBannerProductGroupMainBannerClick(mainBanner: ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.Data) {
+        try {
+            RouteManager.route(activity ?: return, mainBanner.ctaLink)
+        } catch (_: Exception) {
+        }
+    }
+
+    override fun onBannerProductGroupProductClick(selectedProduct: ProductItemType) {
+        try {
+            RouteManager.route(activity ?: return, selectedProduct.appLink)
+        } catch (_: Exception) {
+        }
+
+    }
+
+    override fun onBannerProductGroupVerticalBannerClick(shopHomeProductCarouselVerticalBannerItemType: VerticalBannerItemType) {
+        try {
+            RouteManager.route(activity ?: return, shopHomeProductCarouselVerticalBannerItemType.appLink)
+        } catch (_: Exception) {
+        }
+    }
+
+    override fun onBannerProductGroupViewAllClick(ctaLink: String) {
+        try {
+            RouteManager.route(activity ?: return, ctaLink)
+        } catch (_: Exception) {
+        }
+    }
+
+    override fun onNavigationBannerViewAllShowcaseClick(viewAllCtaAppLink: String) {
+        RouteManager.route(activity ?: return, viewAllCtaAppLink)
+    }
+
+    override fun onNavigationBannerShowcaseClick(
+        selectedShowcase: Showcase
+    ) {
+        RouteManager.route(activity ?: return, selectedShowcase.ctaLink)
+    }
+
+    override val fragment: Fragment
+        get() = this
+
+    override val currentShopId: String
+        get() = shopId
+
+    override val currentFragment: Fragment
+        get() = this
+
 
     override fun isOverrideTheme(): Boolean {
         return (getRealParentFragment() as? InterfaceShopPageHeader)?.isOverrideTheme().orFalse() && !isShopHomeTabHasFestivity()

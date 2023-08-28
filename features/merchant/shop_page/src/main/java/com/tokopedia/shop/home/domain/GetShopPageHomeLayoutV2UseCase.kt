@@ -104,6 +104,7 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
                         }
                         descriptionHeader
                       }
+                      text
                       mainBannerPosition
                       showcaseList {
                         showcaseID
@@ -191,6 +192,26 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
                       status {
                         status
                         identifier
+                      }
+                    }
+                    ... on DynamicComponentWidget {
+                      tabLabel
+                      tabName
+                      componentList {
+                        componentID
+                        componentName
+                        componentType
+                        data {
+                          linkType
+                          linkID
+                          ctaText
+                          ctaLink
+                          ratio
+                          imageID
+                          imageURL
+                          desktopImageURL
+                          isShowProductInfo
+                        }
                       }
                     }
                     ... on CampaignWidget {

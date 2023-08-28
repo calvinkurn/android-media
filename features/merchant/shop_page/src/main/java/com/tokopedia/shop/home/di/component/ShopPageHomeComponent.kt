@@ -10,6 +10,7 @@ import com.tokopedia.shop.home.view.bottomsheet.ShopHomeFlashSaleTncBottomSheet
 import com.tokopedia.shop.home.view.bottomsheet.ShopHomeNplCampaignTncBottomSheet
 import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
 import com.tokopedia.shop.home.view.fragment.ShopShowcaseNavigationTabWidgetFragment
+import com.tokopedia.shop.home.view.fragment.ShopBannerProductGroupWidgetTabFragment
 import dagger.Component
 
 /**
@@ -26,5 +27,6 @@ interface ShopPageHomeComponent {
     fun inject(fragment: ShopPageCampaignFragment?)
     fun inject(bottomSheet: ShopHomeNplCampaignTncBottomSheet?)
     fun inject(bottomSheet: ShopHomeFlashSaleTncBottomSheet?)
+    fun inject(fragment: ShopBannerProductGroupWidgetTabFragment?)
     fun inject(fragment: ShopShowcaseNavigationTabWidgetFragment?)
 }
