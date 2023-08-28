@@ -1,10 +1,14 @@
 package com.tokopedia.checkout.journey.analytics
 
+import android.app.Activity
+import android.app.Instrumentation.ActivityResult
+import androidx.test.espresso.intent.Intents.intending
+import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
-import com.tokopedia.checkout.ShipmentActivity
-import com.tokopedia.checkout.robot.checkoutPage
+import com.tokopedia.checkout.RevampShipmentActivity
+import com.tokopedia.checkout.robot.checkoutPageRevamp
 import com.tokopedia.checkout.test.R
 import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
@@ -17,10 +21,10 @@ import org.junit.Rule
 import org.junit.Test
 
 @CassavaTest
-class CheckoutAnalyticsTest {
+class CheckoutRevampAnalyticsTest {
 
     @get:Rule
-    var activityRule = object : IntentsTestRule<ShipmentActivity>(ShipmentActivity::class.java, false, false) {
+    var activityRule = object : IntentsTestRule<RevampShipmentActivity>(RevampShipmentActivity::class.java, false, false) {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
             InstrumentationAuthHelper.loginInstrumentationTestUser1()
@@ -48,7 +52,9 @@ class CheckoutAnalyticsTest {
     fun loadCartAndGoToShipment_PassedAnalyticsTest() {
         activityRule.launchActivity(null)
 
-        checkoutPage {
+        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
+
+        checkoutPageRevamp {
             waitForData()
             clickChooseDuration(activityRule)
             waitForData()
