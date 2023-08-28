@@ -551,25 +551,33 @@ internal class PromoUsageViewModel @Inject constructor(
     fun onClickAccordionHeader(clickedItem: PromoAccordionHeaderItem) {
         _promoPageUiState.ifSuccess { pageState ->
             val currentItems = pageState.items
+            val isHeaderExpanded = !clickedItem.isExpanded
+            val firstPromoItem = currentItems
+                .filterIsInstance<PromoItem>()
+                .firstOrNull { it.headerId == clickedItem.id }
+            val viewAllItem = currentItems
+                .filterIsInstance<PromoAccordionViewAllItem>()
+                .firstOrNull { it.headerId == clickedItem.id }
             val updatedItems = currentItems
                 .map { item ->
-                    val isExpanded = !clickedItem.isExpanded
                     if (item is PromoAccordionHeaderItem && item.id == clickedItem.id) {
-                        return@map item.copy(isExpanded = isExpanded)
+                        return@map item.copy(isExpanded = isHeaderExpanded)
                     } else if (item is PromoItem && item.headerId == clickedItem.id) {
-                        if (!item.isExpanded) {
-                            return@map item.copy(
-                                isExpanded = isExpanded,
-                                isVisible = isExpanded
+                        if (viewAllItem != null) {
+                            item.copy(
+                                isExpanded = firstPromoItem?.id == item.id,
+                                isVisible = isHeaderExpanded
                             )
                         } else {
-                            return@map item.copy(
-                                isVisible = isExpanded
+                            item.copy(
+                                isExpanded = isHeaderExpanded,
+                                isVisible = isHeaderExpanded
                             )
                         }
                     } else if (item is PromoAccordionViewAllItem && item.headerId == clickedItem.id) {
                         return@map item.copy(
-                            isVisible = isExpanded
+                            isExpanded = isHeaderExpanded,
+                            isVisible = isHeaderExpanded
                         )
                     } else {
                         return@map item
