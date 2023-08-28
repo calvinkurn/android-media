@@ -112,7 +112,7 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
         eTollUpdateBalanceResultView.setListener(object : ETollUpdateBalanceResultView.OnTopupETollClickListener {
             override fun onClick(operatorId: String, issuerId: Int, isBcaGenOne: Boolean) {
                 emoneyAnalytics.clickTopupEmoney(userSession.userId, irisSessionId, getOperatorName(issuerId))
-                onProcessTopupNow(getPassData(operatorId, issuerId))
+                onProcessTopupNow(getPassData(operatorId, issuerId, isBcaGenOne))
             }
 
             override fun onClickTickerTapcash() {
@@ -192,7 +192,7 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
 
     protected abstract fun detectNfc()
 
-    protected abstract fun getPassData(operatorId: String, issuerId: Int): DigitalCategoryDetailPassData
+    protected abstract fun getPassData(operatorId: String, issuerId: Int, isBCAGenOne: Boolean): DigitalCategoryDetailPassData
 
     protected fun showError(errorMessage: String, errorMessageLabel: String = "",
                             imageUrl: String = "",
