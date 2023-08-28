@@ -1,5 +1,6 @@
 package com.tokopedia.common.customview
 
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
@@ -9,10 +10,12 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.tokopedia.common.ColorPallete
 import com.tokopedia.common.setRetainTextColor
+import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.shop.R
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.ImageUnify.Companion.TYPE_CIRCLE
 import com.tokopedia.unifycomponents.TabsUnify
+import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.unifyprinciples.Typography
 
 class ImageTabs(val tabsUnify: TabsUnify) {
@@ -21,6 +24,7 @@ class ImageTabs(val tabsUnify: TabsUnify) {
     private var listener: ImageTabsListener? = null
     private var dataList: List<ImageTabData>? = null
     private var colorPallete: ColorPallete? = null
+    private var totalTabViewWidth = 0
 
     interface ImageTabsListener {
         fun onImageTabSelected(index: Int, data: ImageTabData?)
@@ -29,8 +33,7 @@ class ImageTabs(val tabsUnify: TabsUnify) {
     init {
         tabsUnify.tabLayout.isTabIndicatorFullWidth = false
         tabsUnify.tabLayout.setBackgroundColor(Color.TRANSPARENT)
-        tabsUnify.customTabMode = TabLayout.MODE_SCROLLABLE
-        tabsUnify.customTabGravity = TabLayout.GRAVITY_START
+        tabsUnify.tabLayout.tabRippleColor = ColorStateList.valueOf(Color.TRANSPARENT)
         val centeredTabIndicator =
             ContextCompat.getDrawable(
                 tabsUnify.context,
@@ -108,8 +111,21 @@ class ImageTabs(val tabsUnify: TabsUnify) {
             val tv = (tabView.findViewById<TextView>(R.id.text1))
             tv.text = dataListInput[i].name
             tv.setRetainTextColor(colorPallete, ColorPallete.ColorType.PRIMARY_TEXT)
+            tabView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+            totalTabViewWidth+= (tabView.measuredWidth + 16f.dpToPx() + 16f.dpToPx()).toInt()
         }
-        tabsUnify.tabLayout.getTabAt(selectedIndex)?.select()
+        tabsUnify.post {
+            tabsUnify.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+            val screenWidth = DeviceScreenInfo.getScreenWidth(tabsUnify.context) - 16f.dpToPx() - 16f.dpToPx()
+            if(totalTabViewWidth < screenWidth) {
+                tabsUnify.customTabMode = TabLayout.MODE_FIXED
+                tabsUnify.customTabGravity = TabLayout.GRAVITY_FILL
+            } else {
+                tabsUnify.customTabMode = TabLayout.MODE_SCROLLABLE
+                tabsUnify.customTabGravity = TabLayout.GRAVITY_FILL
+            }
+            tabsUnify.tabLayout.getTabAt(selectedIndex)?.select()
+        }
     }
 
     fun dataHasChanged(

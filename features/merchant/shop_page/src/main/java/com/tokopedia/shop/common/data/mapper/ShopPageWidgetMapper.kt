@@ -12,12 +12,16 @@ import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.home.data.model.ShopLayoutWidget
 import com.tokopedia.shop.home.data.model.ShopPageWidgetRequestModel
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
+import com.tokopedia.shop.home.view.customview.directpurchase.Etalase
+import com.tokopedia.shop.home.view.customview.directpurchase.Title
+import com.tokopedia.shop.home.view.customview.directpurchase.WidgetData
 import com.tokopedia.shop.home.view.model.ShopHomeShowcaseNavigationUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerProductHotspotUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerTimerUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetVoucherSliderUiModel
 import com.tokopedia.shop.home.view.model.ShowcaseNavigationBannerWidgetStyle
 import com.tokopedia.shop.home.view.model.StatusCampaign
+import com.tokopedia.shop.home.view.model.viewholder.ShopDirectPurchaseByEtalaseUiModel
 
 //TODO need to migrate all other shop widget mapper on home mapper to this mapper
 object ShopPageWidgetMapper {
@@ -267,4 +271,39 @@ object ShopPageWidgetMapper {
             )
         }
     }
+
+    fun mapToDirectPurchaseByEtalase(
+        widgetResponse: ShopLayoutWidget.Widget,
+        widgetLayout: ShopPageWidgetUiModel?,
+        isOverrideTheme: Boolean,
+        colorSchema: ShopPageColorSchema
+    ) = ShopDirectPurchaseByEtalaseUiModel(
+        widgetId = widgetResponse.widgetID,
+        layoutOrder = widgetResponse.layoutOrder,
+        name = widgetResponse.name,
+        type = widgetResponse.type,
+        header = ShopPageHomeMapper.mapToHeaderModel(
+            widgetResponse.header,
+            widgetLayout,
+            isOverrideTheme,
+            colorSchema
+        ),
+        widgetData = WidgetData(
+            widgetTitle = widgetResponse.header.title,
+            titleList = widgetResponse.data.map {
+                Title(
+                    title = it.title,
+                    imageUrl = it.banner,
+                    etalaseList = it.listEtalase.map {etalase ->
+                        Etalase(
+                            etalaseId = etalase.linkId,
+                            name = etalase.name,
+                            imageUrl = etalase.imageUrl,
+                            productList = listOf()
+                        )
+                    }
+                )
+            }
+        )
+    )
 }

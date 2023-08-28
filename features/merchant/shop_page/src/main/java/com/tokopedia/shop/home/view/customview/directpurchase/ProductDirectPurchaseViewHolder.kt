@@ -6,6 +6,7 @@ import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
@@ -19,6 +20,9 @@ import com.tokopedia.common.setRetainColorFilter
 import com.tokopedia.common.setRetainTextColor
 import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.imageassets.TokopediaImageUrl
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shop.R
 import com.tokopedia.unifycomponents.CardUnify2.Companion.TYPE_BORDER
 import com.tokopedia.unifycomponents.ImageUnify
@@ -77,9 +81,9 @@ class ProductDirectPurchaseViewHolder private constructor() {
         fun createEmptyStateView(ctx: Context, colorPallete: ColorPallete?): EmptyStateUnify {
             return EmptyStateUnify(ctx).apply {
                 layoutParams =
-                    ViewGroup.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT
+                    LayoutParams(
+                        LayoutParams.MATCH_PARENT,
+                        LayoutParams.WRAP_CONTENT
                     )
                 emptyStateCTAFullWidth = false
                 emptyStateOrientation = EmptyStateUnify.Orientation.VERTICAL
@@ -109,8 +113,10 @@ class ProductDirectPurchaseViewHolder private constructor() {
         val labelDiscount = itemView.findViewById<Label>(com.tokopedia.shop.R.id.labelDiscount)
         val tvSlashedPrice =
             itemView.findViewById<Typography>(com.tokopedia.shop.R.id.tvSlashedPrice)
-        val tvSales = itemView.findViewById<Typography>(com.tokopedia.shop.R.id.tvSales)
         val iconRating = itemView.findViewById<View>(com.tokopedia.shop.R.id.iconRating)
+        val tvRating = itemView.findViewById<Typography>(com.tokopedia.shop.R.id.tvRating)
+        val tvSoldCount = itemView.findViewById<Typography>(com.tokopedia.shop.R.id.tvSoldCount)
+        val tvDotSeparator = itemView.findViewById<Typography>(com.tokopedia.shop.R.id.tvDotSeparator)
 
         init {
             tvSlashedPrice.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG or Paint.ANTI_ALIAS_FLAG
@@ -124,7 +130,8 @@ class ProductDirectPurchaseViewHolder private constructor() {
             labelDiscount.setRetainTextColor(colorPallete, ColorPallete.ColorType.SLASHED_TEXT)
             labelDiscount.setRetainBackgroundColor(colorPallete, ColorPallete.ColorType.SLASHED_BG)
             tvSlashedPrice.setRetainTextColor(colorPallete, ColorPallete.ColorType.PRIMARY_TEXT)
-            tvSales.setRetainTextColor(colorPallete, ColorPallete.ColorType.PRIMARY_TEXT)
+            tvRating.setRetainTextColor(colorPallete, ColorPallete.ColorType.PRIMARY_TEXT)
+            tvSoldCount.setRetainTextColor(colorPallete, ColorPallete.ColorType.PRIMARY_TEXT)
         }
 
         companion object {
@@ -164,10 +171,10 @@ class ProductDirectPurchaseViewHolder private constructor() {
                 llColor.visibility = View.GONE
             }
             tvPrice.text = data.price
-            if (data.discount.isEmpty()) {
+            if (data.discount.isEmpty() || data.discount.toIntOrZero() == 0) {
                 labelDiscount.visibility = View.GONE
             } else {
-                labelDiscount.text = data.discount
+                labelDiscount.text = "${data.discount}%"
                 labelDiscount.visibility = View.VISIBLE
             }
             if (data.slashPrice.isEmpty()) {
@@ -176,15 +183,23 @@ class ProductDirectPurchaseViewHolder private constructor() {
                 tvSlashedPrice.text = data.slashPrice
                 tvSlashedPrice.visibility = View.VISIBLE
             }
-            if (data.ratingAverage.isEmpty() || data.ratingAverage == "") {
-                iconRating.visibility = View.GONE
-            } else {
-                iconRating.visibility = View.VISIBLE
-            }
             if (data.ratingAverage.isEmpty()) {
-                tvSales.text = data.label
+                iconRating.hide()
+                tvRating.hide()
+            }
+            else {
+                tvRating.text = data.ratingAverage
+            }
+            if (data.label.isEmpty()) {
+                tvSoldCount.hide()
+            }
+            else {
+                tvSoldCount.text = data.ratingAverage
+            }
+            if(data.label.isEmpty() || data.ratingAverage.isEmpty()){
+                tvDotSeparator.hide()
             } else {
-                tvSales.text = data.ratingAverage + " \u2022 " + data.label
+                tvDotSeparator.show()
             }
 
             addButtonView.setOnClickListener { listener.onAddButtonProductDirectPurchaseClick(data) }
@@ -282,11 +297,10 @@ class ProductDirectPurchaseViewHolder private constructor() {
             ): SeeMoreVH {
                 return SeeMoreVH(
                     ViewAllCard(parent.context).apply {
-                        layoutParams =
-                            ViewGroup.LayoutParams(
-                                SEE_MORE_WIDTH.toPx(),
-                                SEE_MORE_HEIGHT_RV.toPx()
-                            )
+                        layoutParams = LayoutParams(
+                            SEE_MORE_WIDTH.toPx(),
+                            LayoutParams.MATCH_PARENT
+                        )
                         if (cardType == null || cardType != MODE_INVERT) {
                             mode = MODE_NORMAL
                             cardView.cardType = TYPE_BORDER

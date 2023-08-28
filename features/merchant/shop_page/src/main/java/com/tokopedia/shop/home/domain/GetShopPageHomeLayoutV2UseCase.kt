@@ -258,6 +258,18 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
                         secondColor
                       }
                     }
+                    ... on DirectPurchaseWidget{
+                      ratio
+                      Title
+                      Banner
+                      EtalaseList{
+                        imageUrl
+                        desktopImageUrl
+                        linkType
+                        linkID
+                        Name
+                      }
+                    }
                   }
                 }
               }

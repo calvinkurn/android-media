@@ -180,11 +180,11 @@ data class ShopLayoutWidget(
                 val text: String = "",
                 @SerializedName("ratio")
                 val ratio: String = "",
-                @SerializedName("title")
+                @SerializedName("Title")
                 val title: String = "",
                 @SerializedName("Banner")
                 val banner: String = "",
-                @SerializedName("etalaseList")
+                @SerializedName("EtalaseList")
                 val listEtalase: List<Etalase> = listOf(),
         ) {
             data class ShowcaseList(

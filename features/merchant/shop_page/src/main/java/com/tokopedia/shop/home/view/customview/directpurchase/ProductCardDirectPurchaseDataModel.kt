@@ -2,7 +2,7 @@ package com.tokopedia.shop.home.view.customview.directpurchase
 
 data class WidgetData(
     val widgetTitle: String,
-    val titleList: List<Title>?
+    val titleList: List<Title>
 )
 
 data class ProductCardDirectPurchaseDataModel(
@@ -15,6 +15,9 @@ data class ProductCardDirectPurchaseDataModel(
     val discount: String = "", // eg 20%
     val slashPrice: String = "", // eg Rp100.000
     val ratingAverage: String = "", // 4.9
+    val isVariant: Boolean = false,
+    val minimumOrder: Int = 0,
+    val stock: Int = 0,
     val label: String = "", // Terjual 3,3 rb
 )
 
@@ -23,15 +26,15 @@ data class DirectPurchaseWidgetData(
 )
 
 data class Title(
-    var title: String?,
+    val title: String?,
     val imageUrl: String?,
-    var etalaseList: List<Etalase>
+    val etalaseList: List<Etalase>,
 )
 
 data class Etalase(
-    var etalaseId: String,
-    var name: String,
-    var imageUrl: String,
+    val etalaseId: String,
+    val name: String,
+    val imageUrl: String,
     var productList: List<ProductCardDirectPurchaseDataModel>,
     // time when the productList is retrieved from network.
     var lastTimeStampProductListCaptured: Long = 0L,

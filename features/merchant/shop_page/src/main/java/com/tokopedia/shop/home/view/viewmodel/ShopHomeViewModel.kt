@@ -26,6 +26,7 @@ import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -77,7 +78,9 @@ import com.tokopedia.shop.home.domain.GetShopPageHomeLayoutV2UseCase
 import com.tokopedia.shop.home.util.CheckCampaignNplException
 import com.tokopedia.shop.home.util.Event
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
+import com.tokopedia.shop.home.view.customview.directpurchase.ProductCardDirectPurchaseDataModel
 import com.tokopedia.shop.home.view.model.*
+import com.tokopedia.shop.home.view.model.viewholder.ShopDirectPurchaseByEtalaseUiModel
 import com.tokopedia.shop.pageheader.util.ShopPageHeaderTabName
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
@@ -99,6 +102,7 @@ import java.lang.reflect.Type
 import javax.inject.Inject
 import javax.inject.Provider
 
+//TODO need to cleanup atc flow on this viewmodel
 class ShopHomeViewModel @Inject constructor(
     private val userSession: UserSessionInterface,
     private val getShopProductUseCase: GqlGetShopProductUseCase,
@@ -249,6 +253,10 @@ class ShopHomeViewModel @Inject constructor(
     val updatedBannerTimerUiModelData: LiveData<ShopWidgetDisplayBannerTimerUiModel?>
         get() = _updatedBannerTimerUiModelData
 
+    val directPurchaseProductWidgetAtcResult: LiveData<Result<AddToCartDataModel>>
+        get() = _directPurchaseProductWidgetAtcResult
+    private val _directPurchaseProductWidgetAtcResult = MutableLiveData<Result<AddToCartDataModel>>()
+
     fun getNewProductList(
         shopId: String,
         page: Int,
@@ -314,7 +322,12 @@ class ShopHomeViewModel @Inject constructor(
             }
             if (addToCartSubmitData.data.success == ShopPageConstant.ATC_SUCCESS_VALUE) {
                 onSuccessAddToCart(addToCartSubmitData.data)
-                checkShouldCreateAffiliateCookieAtcProduct(ShopPageAtcTracker.AtcType.ADD, product)
+                checkShouldCreateAffiliateCookieAtcProduct(
+                    ShopPageAtcTracker.AtcType.ADD,
+                    product.id,
+                    product.isVariant,
+                    product.stock
+                )
             } else {
                 onErrorAddToCart(MessageErrorException(addToCartSubmitData.data.message.first()))
             }
@@ -335,7 +348,12 @@ class ShopHomeViewModel @Inject constructor(
             }
             if (addToCartOccSubmitData.data.success == ShopPageConstant.ATC_SUCCESS_VALUE) {
                 onSuccessAddToCartOcc(addToCartOccSubmitData.data)
-                checkShouldCreateAffiliateCookieAtcProduct(ShopPageAtcTracker.AtcType.ADD, product)
+                checkShouldCreateAffiliateCookieAtcProduct(
+                    ShopPageAtcTracker.AtcType.ADD,
+                    product.id,
+                    product.isVariant,
+                    product.stock
+                )
             } else {
                 onErrorAddToCartOcc(MessageErrorException(addToCartOccSubmitData.data.message.first()))
             }
@@ -408,12 +426,13 @@ class ShopHomeViewModel @Inject constructor(
         productPerPage: Int,
         shopProductFilterParameter: ShopProductFilterParameter,
         widgetUserAddressLocalData: LocalCacheModel,
-        isEnableDirectPurchase: Boolean
+        isEnableDirectPurchase: Boolean,
+        etalaseId: String = ALL_SHOWCASE_ID
     ): GetShopHomeProductUiModel {
         getShopProductUseCase.params = GqlGetShopProductUseCase.createParams(
             shopId,
             ShopProductFilterInput().apply {
-                etalaseMenu = ALL_SHOWCASE_ID
+                etalaseMenu = etalaseId
                 this.page = page
                 sort = shopProductFilterParameter.getSortId().toIntOrZero()
                 rating = shopProductFilterParameter.getRating()
@@ -1030,7 +1049,12 @@ class ShopHomeViewModel @Inject constructor(
                 atcType,
                 componentName
             )
-            checkShouldCreateAffiliateCookieAtcProduct(atcType, shopHomeProductUiModel)
+            checkShouldCreateAffiliateCookieAtcProduct(
+                atcType,
+                shopHomeProductUiModel.id,
+                shopHomeProductUiModel.isVariant,
+                shopHomeProductUiModel.stock
+            )
             _miniCartAdd.postValue(Success(it))
         }, {
             _miniCartAdd.postValue(Fail(it))
@@ -1071,7 +1095,12 @@ class ShopHomeViewModel @Inject constructor(
                 atcType,
                 componentName
             )
-            checkShouldCreateAffiliateCookieAtcProduct(atcType, shopHomeProductUiModel)
+            checkShouldCreateAffiliateCookieAtcProduct(
+                atcType,
+                shopHomeProductUiModel.id,
+                shopHomeProductUiModel.isVariant,
+                shopHomeProductUiModel.stock
+            )
             _miniCartUpdate.value = Success(it)
         }, {
             _miniCartUpdate.postValue(Fail(it))
@@ -1080,16 +1109,14 @@ class ShopHomeViewModel @Inject constructor(
 
     private fun checkShouldCreateAffiliateCookieAtcProduct(
         atcType: ShopPageAtcTracker.AtcType,
-        shopHomeProductUiModel: ShopHomeProductUiModel
+        id: String,
+        isVariant: Boolean,
+        stock: Int,
     ) {
         when (atcType) {
             ShopPageAtcTracker.AtcType.ADD, ShopPageAtcTracker.AtcType.UPDATE_ADD -> {
                 _createAffiliateCookieAtcProduct.postValue(
-                    AffiliateAtcProductModel(
-                        shopHomeProductUiModel.id,
-                        shopHomeProductUiModel.isVariant,
-                        shopHomeProductUiModel.stock
-                    )
+                    AffiliateAtcProductModel(id, isVariant, stock)
                 )
             }
             else -> {}
@@ -1407,5 +1434,108 @@ class ShopHomeViewModel @Inject constructor(
         }) { throwable ->
             _homeWidgetListVisitable.postValue(Fail(throwable))
         }
+    }
+
+    @SuppressLint("PII Data Exposure")
+    fun getDirectPurchaseWidgetProductData(
+        shopId: String,
+        etalaseId: String,
+        widgetUserAddressLocalData: LocalCacheModel,
+        selectedSwitcherIndex: Int,
+        selectedEtalaseIndex: Int,
+        visitable: MutableList<Visitable<*>>
+    ) {
+        launchCatchError(dispatcherProvider.io, block = {
+            val listProductData = getProductListData(
+                shopId,
+                Int.ONE,
+                ShopPageConstant.DEFAULT_PER_PAGE_NON_TABLET,
+                ShopProductFilterParameter(),
+                widgetUserAddressLocalData,
+                false,
+                etalaseId
+            ).listShopProductUiModel
+            updateDirectPurchaseWidgetProductData(
+                listProductData,
+                visitable,
+                selectedSwitcherIndex,
+                selectedEtalaseIndex
+            )
+            _homeWidgetListVisitable.postValue(Success(visitable))
+        }) { throwable ->
+            updateDirectPurchaseWidgetProductData(
+                listOf(),
+                visitable,
+                selectedSwitcherIndex,
+                selectedEtalaseIndex,
+                errorMessage = throwable.message.orEmpty()
+            )
+            _homeWidgetListVisitable.postValue(Success(visitable))
+        }
+    }
+
+    private fun updateDirectPurchaseWidgetProductData(
+        listProductData: List<ShopHomeProductUiModel>,
+        visitable: MutableList<Visitable<*>>,
+        selectedSwitcherIndex: Int,
+        selectedEtalaseIndex: Int,
+        errorMessage: String = ""
+    ) {
+        val position = visitable.indexOfFirst{ it is ShopDirectPurchaseByEtalaseUiModel }.orZero()
+        val curModel = visitable.getOrNull(position) as? ShopDirectPurchaseByEtalaseUiModel
+        curModel?.widgetData?.titleList?.forEachIndexed { index, title ->
+            if(index == selectedSwitcherIndex){
+                title.etalaseList.forEachIndexed { index2, etalase ->
+                    if(index2 == selectedEtalaseIndex){
+                        etalase.productList = listProductData.map {
+                            ProductCardDirectPurchaseDataModel(
+                                productId = it.id,
+                                imageUrl = it.imageUrl.orEmpty(),
+                                name = it.name,
+                                price = it.displayedPrice,
+                                discount = it.discountPercentage.orEmpty(),
+                                slashPrice = it.originalPrice.orEmpty(),
+                                ratingAverage = it.averageRating,
+                                isVariant = it.isVariant,
+                                minimumOrder = it.minimumOrder,
+                                stock = it.stock,
+                                //TODO need to confirm on whether we can use this hardcoded value or not
+                                label = it.labelGroupList.firstOrNull { it.position == "integrity" }?.title.orEmpty()
+                            )
+                        }
+                        etalase.lastTimeStampProductListCaptured = System.currentTimeMillis()
+                        etalase.errorMessageIfFailedFetch = errorMessage
+                    }
+                }
+                curModel.isNewData = true
+                visitable.setElement(position, curModel)
+            }
+        }
+    }
+
+    fun addToCartDirectPurchaseProductWidget(
+        productId: String,
+        shopId: String,
+        quantity: Int,
+        stock: Int
+    ) {
+        val addToCartRequestParams = com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase.getMinimumParams(
+            productId = productId,
+            shopId = shopId,
+            quantity = quantity,
+            atcExternalSource = AtcFromExternalSource.ATC_FROM_SHOP
+        )
+        addToCartUseCase.setParams(addToCartRequestParams)
+        addToCartUseCase.execute({
+            checkShouldCreateAffiliateCookieAtcProduct(
+                ShopPageAtcTracker.AtcType.ADD,
+                productId,
+                false,
+                stock
+            )
+            _directPurchaseProductWidgetAtcResult.postValue(Success(it))
+        }, {
+            _directPurchaseProductWidgetAtcResult.postValue(Fail(it))
+        })
     }
 }
