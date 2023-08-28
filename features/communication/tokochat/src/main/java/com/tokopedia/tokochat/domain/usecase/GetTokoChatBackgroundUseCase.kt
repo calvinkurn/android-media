@@ -6,7 +6,7 @@ import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.flow.FlowUseCase
 import com.tokopedia.tokochat.domain.response.background.TokoChatBackgroundResponse
-import com.tokopedia.tokochat_common.util.TokoChatCacheManager
+import com.tokopedia.tokochat.common.util.TokoChatCacheManager
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject

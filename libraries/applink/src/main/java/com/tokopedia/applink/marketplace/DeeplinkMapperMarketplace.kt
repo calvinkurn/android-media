@@ -27,7 +27,7 @@ object DeeplinkMapperMarketplace {
     private const val REVIEW_FULL_PAGE_SOURCE = "header"
     private const val ACTION_REVIEW = "review"
 
-    fun getRegisteredNavigationMarketplace(context: Context, deeplink: String): String {
+    fun getRegisteredNavigationMarketplace(deeplink: String): String {
         val uri = Uri.parse(deeplink)
         return when {
             deeplink.startsWith(ApplinkConst.CART) ->
@@ -42,20 +42,20 @@ object DeeplinkMapperMarketplace {
         }
     }
 
-    fun getTokopediaInternalProduct(uri:Uri, idList: List<String>?):String {
+    fun getTokopediaInternalProduct(uri: Uri, idList: List<String>?): String {
         return if (uri.pathSegments[0] == ADD_PATH) {
             ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW
-        } else if (uri.queryParameterNames.contains(AFFILIATE_UNIQUE_ID)){
+        } else if (uri.queryParameterNames.contains(AFFILIATE_UNIQUE_ID)) {
             UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL_WITH_AFFILIATE_UUID, idList?.getOrNull(0), uri.getQueryParameter("aff_unique_id"))
         } else {
             UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, idList?.getOrNull(0))
         }
     }
 
-    fun getShopPageInternalAppLink(ctx: Context, uri: Uri, deeplink: String, internalAppLink: String, shopId: String):String {
+    fun getShopPageInternalAppLink(ctx: Context, uri: Uri, deeplink: String, internalAppLink: String, shopId: String): String {
         return if (isSpecialShop(shopId) && uri.pathSegments.size == 1) {
             DeeplinkMapperSalam.getRegisteredNavigationSalamUmrahShop(deeplink)
-        } else if(isTokopediaNowShopId(shopId) && !GlobalConfig.isSellerApp()){
+        } else if (isTokopediaNowShopId(shopId) && !GlobalConfig.isSellerApp()) {
             ApplinkConstInternalTokopediaNow.HOME
         } else {
             if (isShopReviewAppLink(deeplink)) {
@@ -65,11 +65,11 @@ object DeeplinkMapperMarketplace {
             }
         }
     }
-    fun getShopOperationalHourInternalAppLink(shopId: String):String {
+    fun getShopOperationalHourInternalAppLink(shopId: String): String {
         return UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_OPERATIONAL_HOUR_BOTTOM_SHEET, shopId)
     }
 
-    fun getShopMvcLockedToProductShopIdInternalAppLink(shopId: String, voucherId: String):String {
+    fun getShopMvcLockedToProductShopIdInternalAppLink(shopId: String, voucherId: String): String {
         return UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_MVC_LOCKED_TO_PRODUCT, shopId, voucherId)
     }
 
@@ -95,7 +95,7 @@ object DeeplinkMapperMarketplace {
     }
 
     private fun isTokopediaNowShopId(shopId: String): Boolean {
-        return if(TokopediaUrl.getInstance().TYPE == Env.STAGING) {
+        return if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
             shopId == ApplinkConst.TokopediaNow.TOKOPEDIA_NOW_STAGING_SHOP_ID
         } else {
             shopId == ApplinkConst.TokopediaNow.TOKOPEDIA_NOW_PRODUCTION_SHOP_ID_1 || shopId == ApplinkConst.TokopediaNow.TOKOPEDIA_NOW_PRODUCTION_SHOP_ID_2

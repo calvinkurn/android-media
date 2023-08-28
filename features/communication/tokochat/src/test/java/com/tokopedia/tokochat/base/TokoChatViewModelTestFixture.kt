@@ -1,14 +1,14 @@
 package com.tokopedia.tokochat.base
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.tokochat.common.util.TokoChatCacheManager
 import com.tokopedia.tokochat.domain.usecase.*
 import com.tokopedia.tokochat.util.TokoChatViewUtil
 import com.tokopedia.tokochat.view.chatroom.TokoChatViewModel
 import com.tokopedia.tokochat.view.chatroom.uimodel.TokoChatImageAttachmentExtensionProvider
-import com.tokopedia.tokochat_common.util.TokoChatCacheManager
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
-import com.tokopedia.usercomponents.userconsent.domain.collection.GetNeedConsentUseCase
 import com.tokopedia.unit.test.rule.CoroutineTestRule
+import com.tokopedia.usercomponents.userconsent.domain.collection.GetNeedConsentUseCase
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.spyk
@@ -66,6 +66,9 @@ abstract class TokoChatViewModelTestFixture {
     protected lateinit var getNeedConsentUseCase: GetNeedConsentUseCase
 
     @RelaxedMockK
+    protected lateinit var getTokopediaOrderIdUseCase: TokoChatGetTokopediaOrderIdUseCase
+
+    @RelaxedMockK
     protected lateinit var imageAttachmentExtensionProvider: TokoChatImageAttachmentExtensionProvider
 
     @RelaxedMockK
@@ -94,6 +97,7 @@ abstract class TokoChatViewModelTestFixture {
                 getImageUrlUseCase,
                 uploadImageUseCase,
                 getNeedConsentUseCase,
+                getTokopediaOrderIdUseCase,
                 viewUtil,
                 imageAttachmentExtensionProvider,
                 cacheManager,

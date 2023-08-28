@@ -879,6 +879,7 @@ class FeedShopFragment :
     }
 
     override fun onImageClick(postId: String, positionInFeed: Int, contentPosition: Int, redirectLink: String) {
+        if (positionInFeed >= adapter.dataSize && positionInFeed <= 0) return
         if (adapter.data[positionInFeed] is DynamicPostModel) {
             val (_, _, _, _, _, _, _, _, trackingPostModel) = adapter.data[positionInFeed] as DynamicPostModel
             feedAnalytics.eventShopPageClickPost(
