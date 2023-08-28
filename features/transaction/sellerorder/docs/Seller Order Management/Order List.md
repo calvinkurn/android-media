@@ -33,7 +33,7 @@ labels:
 
 # Overview
 
-The order list page is a page that shows the list of orders. On this page, the seller can see the preview of each order, and perform an action on each order like "Terima Pesanan", or "Kirim Pesanan". On this page, there’s also a quick filter that can be used to quickly filter the order list based on the order status and order type like “Sameday Delivery”, or “PLUS”. This page also has an exclusive feature that is only available on the SellerApp which is:
+The order list page is a page that shows the list of orders. On this page, the seller can see the preview of each order, and perform an action on each order like &#34;Terima Pesanan&#34;, or &#34;Kirim Pesanan&#34;. On this page, there’s also a quick filter that can be used to quickly filter the order list based on the order status and order type like &#34;Sameday Delivery&#34;, or &#34;PLUS&#34;. This page also has an exclusive feature that is only available on the SellerApp which is:
 
 - Bulk accept orders: A feature that allows the seller to accept multiple orders at once
 - Bulk request pick-up: A feature that allows the seller to send request pick-up for multiple orders at once
@@ -74,7 +74,7 @@ There are 2 flows used on the order list page:
 
 On this page, the seller can do several actions such as:
 
-- Accept order: This action allows the seller to confirm/accept the buyer's order. In this flow, the app will need to check whether the order has a buyer cancellation request that is not closed yet. This validation flow is required to cover this case:
+- Accept order: This action allows the seller to confirm/accept the buyer&#39;s order. In this flow, the app will need to check whether the order has a buyer cancellation request that is not closed yet. This validation flow is required to cover this case:
 
 	- The seller load the order list
 	- The order list page shows order A that have no cancellation request from the buyer
@@ -85,7 +85,7 @@ The complete flow of this action can be seen in the flowchart below.
 
 ![](../res/somlist/som_list_accept_order_drawio.png)
 
-- Reject order: This action allows the seller to approve the buyer's order cancellation request. The flow can be seen in the flowchart below.
+- Reject order: This action allows the seller to approve the buyer&#39;s order cancellation request. The flow can be seen in the flowchart below.
 
 ![](../res/somlist/som_list_reject_order_drawio.png)
 
@@ -93,7 +93,7 @@ The complete flow of this action can be seen in the flowchart below.
 
 ![](../res/somlist/som_list_edit_awb_drawio.png)
 
-- Reject buyer's order cancellation request: This action allows the reject buyer's order cancellation request and continue to process the order. The flow can be seen in the flowchart below.
+- Reject buyer&#39;s order cancellation request: This action allows the reject buyer&#39;s order cancellation request and continue to process the order. The flow can be seen in the flowchart below.
 
 ![](../res/somlist/som_list_reject_order_cancellation_drawio.png)
 

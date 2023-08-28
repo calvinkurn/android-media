@@ -57,7 +57,7 @@ This product type only shows exactly 1 product item on each card plus the list o
 
 - Buy More Save More product
 
-This product type displays multiple product items on each card that belong to a specific "buy more, save more" offer. In this product type, there may be optional attached add-ons either for the product or for the "buy more, save more" offer itself. The "buy more, save more" product has the same requirements as the non-bundling product card.
+This product type displays multiple product items on each card that belong to a specific &#34;buy more, save more&#34; offer. In this product type, there may be optional attached add-ons either for the product or for the &#34;buy more, save more&#34; offer itself. The &#34;buy more, save more&#34; product has the same requirements as the non-bundling product card.
 
 The Buy More Save More product has 4 type card type which is single offer, multiple offer, add on (non DT) and add on (DT/TokoCabang)
 
