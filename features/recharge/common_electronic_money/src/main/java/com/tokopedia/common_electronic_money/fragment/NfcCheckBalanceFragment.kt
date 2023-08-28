@@ -110,7 +110,7 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
         nfcDisabledView = view.findViewById(R.id.view_nfc_disabled)
 
         eTollUpdateBalanceResultView.setListener(object : ETollUpdateBalanceResultView.OnTopupETollClickListener {
-            override fun onClick(operatorId: String, issuerId: Int) {
+            override fun onClick(operatorId: String, issuerId: Int, isBcaGenOne: Boolean) {
                 emoneyAnalytics.clickTopupEmoney(userSession.userId, irisSessionId, getOperatorName(issuerId))
                 onProcessTopupNow(getPassData(operatorId, issuerId))
             }
