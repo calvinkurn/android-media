@@ -9,16 +9,9 @@ import com.tokopedia.scp_rewards.common.utils.launchCatchError
 import com.tokopedia.scp_rewards.detail.domain.CouponAutoApplyUseCase
 import com.tokopedia.scp_rewards.detail.domain.GetMedalBenefitUseCase
 import com.tokopedia.scp_rewards.detail.domain.MedalDetailUseCase
-import com.tokopedia.scp_rewards.detail.domain.model.BenefitButton
-import com.tokopedia.scp_rewards.detail.domain.model.BenefitType
-import com.tokopedia.scp_rewards.detail.domain.model.Info
-import com.tokopedia.scp_rewards.detail.domain.model.MedalBenefitResponseModel
 import com.tokopedia.scp_rewards.detail.domain.model.MedalDetailResponseModel
-import com.tokopedia.scp_rewards.detail.domain.model.MedaliBenefit
 import com.tokopedia.scp_rewards.detail.domain.model.MedaliBenefitList
-import com.tokopedia.scp_rewards.detail.domain.model.RewardsGetMedaliBenefit
 import com.tokopedia.scp_rewards.detail.domain.model.ScpRewardsCouponAutoApply
-import com.tokopedia.scp_rewards.detail.domain.model.Tnc
 import com.tokopedia.scp_rewards_widgets.medal_footer.FooterData
 import javax.inject.Inject
 
@@ -52,12 +45,7 @@ class MedalDetailViewModel @Inject constructor(
                     pageName = pageName
                 )
 
-                val benefitResponse =
-                    if (mdpResponse.detail?.medaliDetailPage?.section?.any { it.type == MDP_SECTION_TYPE_BENEFIT } == true) {
-                        getMedalBenefits(medaliSlug, sourceName, pageName)
-                    } else {
-                        null
-                    }
+                val benefitResponse = getMedalBenefits(mdpResponse, medaliSlug, sourceName, pageName)
 
                 when (val responseCode = mdpResponse.detail?.resultStatus?.code) {
                     SUCCESS_CODE -> {
@@ -77,15 +65,26 @@ class MedalDetailViewModel @Inject constructor(
     }
 
     private suspend fun getMedalBenefits(
+        mdpResponse: MedalDetailResponseModel,
         medaliSlug: String = "",
         sourceName: String,
         pageName: String = ""
-    ): MedalBenefitResponseModel {
-        return getMedalBenefitUseCase.getMedalBenefits(
-             medaliSlug = medaliSlug,
-             sourceName = sourceName,
-             pageName = pageName
-         )
+    ): MedaliBenefitList? {
+        return if (mdpResponse.detail?.medaliDetailPage?.section?.any { it.type == MDP_SECTION_TYPE_BENEFIT } == true) {
+            try {
+                val response = getMedalBenefitUseCase.getMedalBenefits(
+                    medaliSlug = medaliSlug,
+                    sourceName = sourceName,
+                    pageName = pageName
+                )
+
+                response.scpRewardsMedaliBenefitList?.medaliBenefitList
+            } catch (exp: Exception) {
+                MedaliBenefitList(emptyList())
+            }
+        } else {
+            null
+        }
     }
 
     fun applyCoupon(footerData: FooterData, shopId: Int? = null, couponCode: String) {
@@ -121,7 +120,7 @@ class MedalDetailViewModel @Inject constructor(
     sealed class MdpState {
         class Success(
             val data: MedalDetailResponseModel,
-            val benefitData: MedalBenefitResponseModel?
+            val benefitData: MedaliBenefitList?
         ) : MdpState()
 
         class Error(val error: Throwable, val errorCode: String = "") : MdpState()

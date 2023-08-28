@@ -37,7 +37,7 @@ import com.tokopedia.scp_rewards.databinding.MedalDetailFragmentLayoutBinding
 import com.tokopedia.scp_rewards.detail.analytics.MedalDetailAnalyticsImpl
 import com.tokopedia.scp_rewards.detail.di.MedalDetailComponent
 import com.tokopedia.scp_rewards.detail.domain.model.BenefitButton
-import com.tokopedia.scp_rewards.detail.domain.model.MedalBenefitResponseModel
+import com.tokopedia.scp_rewards.detail.domain.model.MedaliBenefitList
 import com.tokopedia.scp_rewards.detail.domain.model.MedaliDetailPage
 import com.tokopedia.scp_rewards.detail.domain.model.Mission
 import com.tokopedia.scp_rewards.detail.mappers.MedalBenefitMapper
@@ -530,26 +530,28 @@ class MedalDetailFragment : BaseDaggerFragment() {
 
     private fun loadCouponWidget(
         medaliDetailPage: MedaliDetailPage?,
-        benefitResponseModel: MedalBenefitResponseModel?
+        list: MedaliBenefitList?,
     ) {
-        val benefitData = benefitResponseModel?.scpRewardsMedaliBenefitList?.medaliBenefitList
-        if (benefitData == null) {
+        if (list == null) {
             binding.couponView.gone()
         } else {
             val benefitSection = medaliDetailPage?.section?.find { it.type == MDP_SECTION_TYPE_BENEFIT }
             val benefitSectionModel = MedalBenefitSectionModel(
                 benefitSection?.medaliSectionTitle?.content,
                 benefitSection?.backgroundColor,
-                benefitData.benefitInfo,
-                MedalBenefitMapper.mapBenefitApiResponseToBenefitModelList(benefitData),
+                list.benefitInfo,
+                MedalBenefitMapper.mapBenefitApiResponseToBenefitModelList(list),
                 benefitSection?.jsonParameter,
             )
-            binding.couponView.renderCoupons(benefitSectionModel) {
-                MedalDetailAnalyticsImpl.sendImpressionCouponError(
-                    badgeId = medaliSlug,
-                    promoCode = medalDetailViewModel.couponCode
-                )
-            }
+            binding.couponView.renderCoupons(
+                benefitSectionModel = benefitSectionModel,
+                onCtaClick = { requireContext().launchLink(it) },
+                onErrorAction = {
+                    MedalDetailAnalyticsImpl.sendImpressionCouponError(
+                        badgeId = medaliSlug,
+                        promoCode = medalDetailViewModel.couponCode
+                    )
+                })
 
             MedalDetailAnalyticsImpl.sendImpressionBonusCoupon(
                 badgeId = medaliSlug,
