@@ -80,6 +80,7 @@ class HeroBannerViewHolder(
         iuBrandPremium.isVisible = isPremium
         iuBrandPremiumCard.isVisible = isPremium
         bgGradient.isVisible = isPremium
+        navigation.root.isVisible = isPremium
 
         // regular views
         tfTitleBanner.isVisible = !isPremium

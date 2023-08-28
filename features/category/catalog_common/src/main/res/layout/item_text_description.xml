@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/transparent"
+    android:paddingLeft="16dp"
+    android:paddingTop="16dp"
+    android:paddingBottom="16dp"
+    android:paddingRight="16dp"
+    android:orientation="vertical" >
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tgp_text_widget_highlight"
+        tools:text="Highlight has a max. 1 line. A plenty of space for you."
+        android:textColor="@color/Unify_NN600"
+        app:typographyWeight="reguler"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:maxLength="50"
+        android:textSize="12sp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tgp_text_widget_title"
+        tools:text="The title has a max. of 2 lines, make sure to make it as concise as possible please!"
+        android:textColor="@color/Unify_NN950"
+        app:typographyWeight="bold"
+        android:maxLines="2"
+        android:ellipsize="end"
+        android:maxLength="80"
+        android:textSize="14sp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tgp_text_widget_description"
+        tools:text="The description has a max. of 4 lines! so please give as much context as possible but make it concise! LLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magn"
+        android:textColor="@color/Unify_NN600"
+        app:typographyWeight="reguler"
+        android:maxLines="4"
+        android:ellipsize="end"
+        android:maxLength="215"
+        android:textSize="12sp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</androidx.appcompat.widget.LinearLayoutCompat>
