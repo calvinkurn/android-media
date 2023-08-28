@@ -52,7 +52,7 @@ class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
         widgets: List<ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList>,
         shopId: String,
         userAddress: LocalCacheModel,
-        verticalBanner: VerticalBannerItemType?
+        widgetStyle: String
     ) {
         _carouselWidgets.postValue(UiState.Loading)
 
@@ -61,11 +61,13 @@ class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
         launchCatchError(
             context = dispatcherProvider.io,
             block = {
+
                 val products = getProducts(shopId, userAddress, firstProductWidget)
 
-                val hasVerticalBanner = verticalBanner != null
+                val hasVerticalBanner = widgetStyle == ShopWidgetComponentBannerProductGroupUiModel.WidgetStyle.VERTICAL.id
                 val carouselWidgets = if (hasVerticalBanner) {
-                    listOf(verticalBanner) + products
+                    val verticalBanner = getVerticalBanner(widgets)
+                    verticalBanner + products
                 } else {
                     products
                 }
@@ -78,15 +80,21 @@ class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
         )
     }
 
+    private fun getVerticalBanner(widgets: List<ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList>): List<VerticalBannerItemType> {
+        val bannerComponents = widgets.filter { widget -> widget.componentType == ComponentType.DISPLAY_SINGLE_COLUMN }
+        val banner = bannerComponents.getOrNull(0)
+        val bannerWidget = banner?.data?.getOrNull(0)
+        return listOf(VerticalBannerItemType(bannerWidget?.imageUrl.orEmpty(), bannerWidget?.ctaLink.orEmpty()))
+    }
+
     private fun getProductWidgets(
         widgets: List<ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList>
     ): ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.Data? {
-        val productWidgets =
-            widgets.filter { widget -> widget.componentType == ComponentType.PRODUCT }
+        val productComponents = widgets.filter { widget -> widget.componentType == ComponentType.PRODUCT }
 
-        val firstComponent = productWidgets.getOrNull(0)
-        val firstWidget = firstComponent?.data?.getOrNull(0)
-        return firstWidget
+        val product = productComponents.getOrNull(0)
+        val productMetadata = product?.data?.getOrNull(0)
+        return productMetadata
     }
 
     private suspend fun getProducts(

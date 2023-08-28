@@ -34,19 +34,19 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
     companion object {
         private const val BUNDLE_KEY_SHOP_ID = "shop_id"
         private const val BUNDLE_KEY_WIDGETS = "widgets"
-        private const val BUNDLE_KEY_VERTICAL_BANNER = "vertical_banner"
+        private const val BUNDLE_KEY_WIDGET_STYLE = "widget_style"
 
         @JvmStatic
         fun newInstance(
             shopId: String,
             widgets: List<ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList>,
-            verticalBanner: VerticalBannerItemType?
+            widgetStyle: String
         ): ShopBannerProductGroupWidgetTabFragment {
             return ShopBannerProductGroupWidgetTabFragment().apply {
                 arguments = Bundle().apply {
                     putString(BUNDLE_KEY_SHOP_ID, shopId)
                     putParcelableArrayList(BUNDLE_KEY_WIDGETS, ArrayList(widgets))
-                    putParcelable(BUNDLE_KEY_VERTICAL_BANNER, verticalBanner)
+                    putString(BUNDLE_KEY_WIDGET_STYLE, widgetStyle)
                 }
             }
         }
@@ -60,9 +60,8 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
             BUNDLE_KEY_WIDGETS
         )?.toList().orEmpty()
     }
-    private val verticalBanner by lazy {
-        arguments?.getParcelable<VerticalBannerItemType>(BUNDLE_KEY_VERTICAL_BANNER)
-    }
+    private val widgetStyle by lazy { arguments?.getString(BUNDLE_KEY_WIDGET_STYLE).orEmpty() }
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
@@ -164,7 +163,7 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
     @SuppressLint("PII Data Exposure")
     private fun getCarouselWidgets() {
         val userAddress = ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel()
-        viewModel.getCarouselWidgets(widgets, shopId, userAddress, verticalBanner)
+        viewModel.getCarouselWidgets(widgets, shopId, userAddress, widgetStyle)
     }
 
     private fun showProductCarousel(widgets: List<ShopHomeBannerProductGroupItemType?>) {

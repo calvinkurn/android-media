@@ -17,7 +17,6 @@ import com.tokopedia.shop.home.util.ShopBannerProductGroupWidgetTabDependencyPro
 import com.tokopedia.shop.home.view.fragment.ShopBannerProductGroupWidgetTabFragment
 import com.tokopedia.shop.home.view.listener.ShopBannerProductGroupListener
 import com.tokopedia.shop.home.view.model.banner_product_group.ShopWidgetComponentBannerProductGroupUiModel
-import com.tokopedia.shop.home.view.model.banner_product_group.appearance.VerticalBannerItemType
 import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.unifycomponents.setCustomText
 import com.tokopedia.utils.view.binding.viewBinding
@@ -44,11 +43,11 @@ class ShopHomeBannerProductGroupViewPagerViewHolder(
     override fun bind(model: ShopWidgetComponentBannerProductGroupUiModel) {
         setupTitle(model)
         setupViewAllChevron(model)
-        setupTabs(model.tabs, model.verticalBanner)
+        setupTabs(model.tabs, model.widgetStyle)
     }
 
     private fun setupViewAllChevron(model: ShopWidgetComponentBannerProductGroupUiModel) {
-        val hasVerticalBanner = model.verticalBanner != null
+        val hasVerticalBanner = model.widgetStyle == ShopWidgetComponentBannerProductGroupUiModel.WidgetStyle.VERTICAL.id
 
         viewBinding?.iconChevron?.isVisible = hasVerticalBanner
         viewBinding?.iconChevron?.setOnClickListener {
@@ -63,9 +62,9 @@ class ShopHomeBannerProductGroupViewPagerViewHolder(
 
     private fun setupTabs(
         tabs: List<ShopWidgetComponentBannerProductGroupUiModel.Tab>,
-        verticalBanner: VerticalBannerItemType?
+        widgetStyle: String
     ) {
-        val fragments = createFragments(tabs, verticalBanner)
+        val fragments = createFragments(tabs, widgetStyle)
         val pagerAdapter = TabPagerAdapter(provider.fragment, fragments)
 
         viewBinding?.run {
@@ -113,12 +112,12 @@ class ShopHomeBannerProductGroupViewPagerViewHolder(
 
     private fun createFragments(
         tabs: List<ShopWidgetComponentBannerProductGroupUiModel.Tab>,
-        verticalBanner: VerticalBannerItemType?
+        widgetStyle: String
     ): List<Pair<String, Fragment>> {
         val pages = mutableListOf<Pair<String, Fragment>>()
 
         tabs.forEachIndexed { _, currentTab ->
-            val fragment = ShopBannerProductGroupWidgetTabFragment.newInstance(provider.currentShopId, currentTab.componentList, verticalBanner)
+            val fragment = ShopBannerProductGroupWidgetTabFragment.newInstance(provider.currentShopId, currentTab.componentList, widgetStyle)
             fragment.setOnMainBannerClick { mainBanner -> listener.onBannerProductGroupMainBannerClick(mainBanner) }
             fragment.setOnProductClick { selectedShowcase -> listener.onBannerProductGroupProductClick(selectedShowcase) }
             fragment.setOnVerticalBannerClick { verticalBanner -> listener.onBannerProductGroupVerticalBannerClick(verticalBanner) }

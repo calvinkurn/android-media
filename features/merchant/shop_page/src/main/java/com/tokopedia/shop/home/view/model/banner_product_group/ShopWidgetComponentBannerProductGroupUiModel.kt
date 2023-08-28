@@ -7,7 +7,6 @@ import com.tokopedia.shop.home.WidgetType
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
 import com.tokopedia.shop.home.view.adapter.ShopWidgetTypeFactory
 import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
-import com.tokopedia.shop.home.view.model.banner_product_group.appearance.VerticalBannerItemType
 import kotlinx.parcelize.Parcelize
 
 data class ShopWidgetComponentBannerProductGroupUiModel(
@@ -20,7 +19,7 @@ data class ShopWidgetComponentBannerProductGroupUiModel(
     val title: String = "",
     val tabs: List<Tab> = emptyList(),
     val viewAllChevronAppLink: String = "",
-    val verticalBanner: VerticalBannerItemType? = null
+    val widgetStyle: String = ""
 ) : BaseShopHomeWidgetUiModel() {
 
     enum class WidgetStyle(val id: String) {

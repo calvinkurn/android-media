@@ -23,7 +23,6 @@ import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseNavigation
 import com.tokopedia.shop.home.view.model.StatusCampaign
 import com.tokopedia.shop.home.view.model.banner_product_group.ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.ComponentType
 import com.tokopedia.shop.home.view.model.banner_product_group.ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.Data.LinkType
-import com.tokopedia.shop.home.view.model.banner_product_group.appearance.VerticalBannerItemType
 import com.tokopedia.shop.home.view.model.showcase_navigation.Showcase
 import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseCornerShape
 import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseTab
@@ -232,8 +231,6 @@ object ShopPageWidgetMapper {
         )
     }
     fun mapToHomeBannerProductGroupWidget(response: ShopLayoutWidget.Widget): ShopWidgetComponentBannerProductGroupUiModel {
-        val widgetStyle = response.header.widgetStyle
-
         val tabs = response.data.map { tab ->
             val componentList = tab.componentList.map { component ->
 
@@ -272,12 +269,6 @@ object ShopPageWidgetMapper {
         }
 
         val viewAllChevronAppLink = response.header.ctaLink
-        val verticalBanner =
-            if (widgetStyle == ShopWidgetComponentBannerProductGroupUiModel.WidgetStyle.VERTICAL.id) {
-                VerticalBannerItemType("", viewAllChevronAppLink)
-            } else {
-                null
-            }
 
         return ShopWidgetComponentBannerProductGroupUiModel(
             widgetId = response.widgetID,
@@ -287,7 +278,7 @@ object ShopPageWidgetMapper {
             name = response.name,
             type = response.type,
             viewAllChevronAppLink = viewAllChevronAppLink,
-            verticalBanner = verticalBanner
+            widgetStyle = response.header.widgetStyle
         )
     }
 

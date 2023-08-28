@@ -304,7 +304,7 @@ open class ShopHomeAdapterTypeFactory(
 
     private fun determineBannerProductGroupWidgetAppearance(model: BaseShopHomeWidgetUiModel): Int {
         val uiModel = (model as? ShopWidgetComponentBannerProductGroupUiModel)  ?: ShopWidgetComponentBannerProductGroupUiModel()
-        val isVerticalBanner = uiModel.verticalBanner != null
+        val isVerticalBanner = uiModel.widgetStyle == ShopWidgetComponentBannerProductGroupUiModel.WidgetStyle.VERTICAL.id
         val isLoading = uiModel.isWidgetShowPlaceholder().orFalse()
 
         return when {
