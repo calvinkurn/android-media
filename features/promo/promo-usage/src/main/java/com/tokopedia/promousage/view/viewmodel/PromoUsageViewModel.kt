@@ -431,40 +431,40 @@ internal class PromoUsageViewModel @Inject constructor(
             }
 
             // Show loading for MVC section
-            launchCatchError(
-                context = dispatchers.immediate,
-                block = {
-                    _promoPageUiState.ifSuccess { pageState ->
-                        val currentItems = pageState.items
-                        val updatedItems = currentItems.map { item ->
-                            if (item is PromoItem && item.code != clickedItem.code
-                                && item.shopId > 0 && item.state !is PromoItemState.Disabled
-                            ) {
-                                return@map item.copy(state = PromoItemState.Loading)
-                            } else {
-                                return@map item
-                            }
-                        }
-                        _promoPageUiState.postValue(pageState.copy(items = updatedItems))
-                    }
-                    delay(1_000)
-                },
-                onError = {
-                    // no-op
-                }
-            )
+//            launchCatchError(
+//                context = dispatchers.immediate,
+//                block = {
+//                    _promoPageUiState.ifSuccess { pageState ->
+//                        val currentItems = pageState.items
+//                        val updatedItems = currentItems.map { item ->
+//                            if (item is PromoItem && item.code != clickedItem.code
+//                                && item.shopId > 0 && item.state !is PromoItemState.Disabled
+//                            ) {
+//                                return@map item.copy(state = PromoItemState.Loading)
+//                            } else {
+//                                return@map item
+//                            }
+//                        }
+//                        _promoPageUiState.postValue(pageState.copy(items = updatedItems))
+//                    }
+//                    delay(1_000)
+//                },
+//                onError = {
+//                    // no-op
+//                }
+//            )
 
             // Calculate clash
-            launchCatchError(
-                context = dispatchers.immediate,
-                block = {
-                    calculateClash(clickedItem, false)
-                    processAndSendEventClickPromo(clickedItem)
-                },
-                onError = {
-                    // no-op
-                }
-            )
+//            launchCatchError(
+//                context = dispatchers.immediate,
+//                block = {
+//                    calculateClash(clickedItem, false)
+//                    processAndSendEventClickPromo(clickedItem)
+//                },
+//                onError = {
+//                    // no-op
+//                }
+//            )
         }
     }
 
