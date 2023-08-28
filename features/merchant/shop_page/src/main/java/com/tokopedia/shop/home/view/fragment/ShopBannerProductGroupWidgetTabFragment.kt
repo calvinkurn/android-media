@@ -18,16 +18,16 @@ import com.tokopedia.shop.databinding.FragmentShopBannerProductGroupWidgetTabBin
 import com.tokopedia.shop.home.di.component.DaggerShopPageHomeComponent
 import com.tokopedia.shop.home.di.module.ShopPageHomeModule
 import com.tokopedia.shop.home.view.adapter.ShopHomeBannerProductGroupTabAdapter
-import com.tokopedia.shop.home.view.model.banner_product_group.ProductItemType
-import com.tokopedia.shop.home.view.model.banner_product_group.ShimmerItemType
-import com.tokopedia.shop.home.view.model.ShopWidgetComponentBannerProductGroupUiModel
-import com.tokopedia.shop.home.view.model.banner_product_group.ShopHomeBannerProductGroupItemType
-import com.tokopedia.shop.home.view.model.banner_product_group.VerticalBannerItemType
+import com.tokopedia.shop.home.view.model.banner_product_group.appearance.ProductItemType
+import com.tokopedia.shop.home.view.model.banner_product_group.appearance.ShimmerItemType
+import com.tokopedia.shop.home.view.model.banner_product_group.ShopWidgetComponentBannerProductGroupUiModel
+import com.tokopedia.shop.home.view.model.banner_product_group.appearance.ShopHomeBannerProductGroupItemType
+import com.tokopedia.shop.home.view.model.banner_product_group.appearance.VerticalBannerItemType
 import com.tokopedia.shop.home.view.viewmodel.ShopBannerProductGroupWidgetTabViewModel
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 import kotlin.collections.ArrayList
-import com.tokopedia.shop.home.view.model.ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.ComponentType
+import com.tokopedia.shop.home.view.model.banner_product_group.ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.ComponentType
 
 class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
 

@@ -16,8 +16,8 @@ import com.tokopedia.shop.databinding.ItemShopHomeBannerProductGroupViewpagerBin
 import com.tokopedia.shop.home.util.ShopBannerProductGroupWidgetTabDependencyProvider
 import com.tokopedia.shop.home.view.fragment.ShopBannerProductGroupWidgetTabFragment
 import com.tokopedia.shop.home.view.listener.ShopBannerProductGroupListener
-import com.tokopedia.shop.home.view.model.ShopWidgetComponentBannerProductGroupUiModel
-import com.tokopedia.shop.home.view.model.banner_product_group.VerticalBannerItemType
+import com.tokopedia.shop.home.view.model.banner_product_group.ShopWidgetComponentBannerProductGroupUiModel
+import com.tokopedia.shop.home.view.model.banner_product_group.appearance.VerticalBannerItemType
 import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.unifycomponents.setCustomText
 import com.tokopedia.utils.view.binding.viewBinding

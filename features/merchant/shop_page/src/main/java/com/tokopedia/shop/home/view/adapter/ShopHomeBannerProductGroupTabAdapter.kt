@@ -15,10 +15,10 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.databinding.ItemShopHomeBannerProductGroupProductInfoCardBinding
 import com.tokopedia.shop.databinding.ItemShopHomeBannerProductGroupShimmerBinding
 import com.tokopedia.shop.databinding.ItemShopHomeBannerProductGroupVerticalBannerCardBinding
-import com.tokopedia.shop.home.view.model.banner_product_group.ProductItemType
-import com.tokopedia.shop.home.view.model.banner_product_group.ShimmerItemType
-import com.tokopedia.shop.home.view.model.banner_product_group.ShopHomeBannerProductGroupItemType
-import com.tokopedia.shop.home.view.model.banner_product_group.VerticalBannerItemType
+import com.tokopedia.shop.home.view.model.banner_product_group.appearance.ProductItemType
+import com.tokopedia.shop.home.view.model.banner_product_group.appearance.ShimmerItemType
+import com.tokopedia.shop.home.view.model.banner_product_group.appearance.ShopHomeBannerProductGroupItemType
+import com.tokopedia.shop.home.view.model.banner_product_group.appearance.VerticalBannerItemType
 
 class ShopHomeBannerProductGroupTabAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 

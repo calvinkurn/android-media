@@ -1,4 +1,4 @@
-package com.tokopedia.shop.home.view.model.banner_product_group
+package com.tokopedia.shop.home.view.model.banner_product_group.appearance
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
