@@ -19,10 +19,12 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_shop_badge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
         android:layout_marginStart="4dp"
         android:layout_marginTop="16dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/tpg_shop_name"
         app:layout_constraintStart_toEndOf="@+id/tpg_dari_label"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -51,7 +53,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tpg_shop_name">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -60,16 +62,35 @@
                 android:id="@+id/icon_bmgm"
                 android:layout_width="28dp"
                 android:layout_height="28dp"
-                android:layout_gravity="center"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
                 android:layout_margin="8dp"
                 android:src="@drawable/icon_bmgm" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_tier_list"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/tpg_tnc"
+                app:layout_constraintStart_toEndOf="@+id/icon_bmgm"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        </LinearLayout>
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tpg_tnc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:typographyType="paragraph_3"
+                app:typographyWeight="reguler"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_margin="8dp"
+                android:text="S&amp;K"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.tokopedia.unifycomponents.CardUnify2>
 

@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingMoreViewHolder
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferProductListUiModel
+import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferProductListUiModel.Product
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferProductSortingUiModel
 import com.tokopedia.buy_more_get_more.olp.presentation.adapter.viewholder.OfferingProductListViewHolder
 import com.tokopedia.buy_more_get_more.olp.presentation.adapter.viewholder.OfferingProductSortingViewHolder
@@ -27,7 +28,7 @@ open class OlpAdapter(
 
     private var onStickySingleHeaderViewListener: OnStickySingleHeaderListener? = null
     private var recyclerView: RecyclerView? = null
-    private var productListUiModel: MutableList<OfferProductListUiModel.Product> = mutableListOf()
+    private var productListUiModel: MutableList<Product> = mutableListOf()
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)
@@ -156,7 +157,20 @@ open class OlpAdapter(
         refreshSticky()
     }
 
-    fun setProductListData(productList: List<OfferProductListUiModel.Product>) {
+    fun removeProductList() {
+        val newList = getNewVisitableItems()
+        val firstProductViewModelIndex = newList.indexOfFirst {
+            it::class.java == Product::class.java
+        }
+        val totalProductViewModelData = newList.filterIsInstance<Product>().size
+        if (firstProductViewModelIndex >= 0 && totalProductViewModelData <= newList.size) {
+            newList.removeAll(newList.filterIsInstance<Product>())
+            productListUiModel.clear()
+            submitList(newList)
+        }
+    }
+
+    fun setProductListData(productList: List<Product>) {
         val newList = getNewVisitableItems()
         productListUiModel.addAll(productList)
         newList.addAll(productList)

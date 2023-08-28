@@ -12,9 +12,7 @@ data class OfferInfoForBuyerResponse(
         val responseHeader: ResponseHeader = ResponseHeader(),
         @SerializedName("offering_json_data")
         val offeringJsonData: String = "",
-        @SerializedName("term_and_condition")
-        val tnc: List<String> = emptyList(),
-        @SerializedName("nearest_warehouse_ids")
+        @SerializedName("nearest_warehouse_id")
         val nearestWarehouseIds: List<Int> = emptyList(),
         @SerializedName("offering")
         val offerings: List<Offering> = emptyList()
@@ -23,9 +21,9 @@ data class OfferInfoForBuyerResponse(
     data class ResponseHeader(
         @SerializedName("success")
         val success: Boolean = true,
-        @SerializedName("error_code")
+        @SerializedName("errorCode")
         val errorCode: Long = 0,
-        @SerializedName("process_time")
+        @SerializedName("processTime")
         val processTime: String = ""
     )
 
@@ -45,7 +43,9 @@ data class OfferInfoForBuyerResponse(
         @SerializedName("tier_list")
         val tierList: List<Tier> = emptyList(),
         @SerializedName("shop_data")
-        val shopData: ShopData = ShopData()
+        val shopData: ShopData = ShopData(),
+        @SerializedName("term_and_condition")
+    val tnc: List<String> = emptyList(),
     ) {
         data class ShopData(
             @SerializedName("shop_id")

@@ -11,11 +11,13 @@ import com.tokopedia.buy_more_get_more.olp.presentation.adapter.viewholder.Offer
 import com.tokopedia.buy_more_get_more.olp.presentation.adapter.viewholder.OfferingProductListViewHolder
 import com.tokopedia.buy_more_get_more.olp.presentation.adapter.viewholder.OfferingProductSortingViewHolder
 import com.tokopedia.buy_more_get_more.olp.presentation.listener.AtcProductListener
+import com.tokopedia.buy_more_get_more.olp.presentation.listener.OfferingInfoListener
 import com.tokopedia.buy_more_get_more.sort.listener.ProductSortListener
 
 class OlpAdapterTypeFactoryImpl(
     private val sortListener: ProductSortListener,
-    private val atcProductListener: AtcProductListener
+    private val atcProductListener: AtcProductListener,
+    private val offeringInfoListener: OfferingInfoListener
 ) : OlpAdapterTypeFactory, BaseAdapterTypeFactory() {
     override fun type(type: OfferInfoForBuyerUiModel) = OfferingInfoViewHolder.LAYOUT
     override fun type(type: OfferProductSortingUiModel) = OfferingProductSortingViewHolder.LAYOUT
@@ -23,7 +25,7 @@ class OlpAdapterTypeFactoryImpl(
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         val viewHolder = when (type) {
-            OfferingInfoViewHolder.LAYOUT -> OfferingInfoViewHolder(parent)
+            OfferingInfoViewHolder.LAYOUT -> OfferingInfoViewHolder(parent, offeringInfoListener)
             OfferingProductSortingViewHolder.LAYOUT -> OfferingProductSortingViewHolder(parent, sortListener)
             OfferingProductListViewHolder.LAYOUT -> OfferingProductListViewHolder(parent, atcProductListener)
             else -> super.createViewHolder(parent, type)

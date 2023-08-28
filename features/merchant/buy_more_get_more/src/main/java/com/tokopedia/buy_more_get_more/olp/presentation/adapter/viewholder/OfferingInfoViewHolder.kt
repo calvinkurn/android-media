@@ -9,9 +9,15 @@ import com.tokopedia.buy_more_get_more.R
 import com.tokopedia.buy_more_get_more.databinding.ItemOlpOfferingInfoBinding
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel
 import com.tokopedia.buy_more_get_more.olp.presentation.adapter.widget.TierListAdapter
+import com.tokopedia.buy_more_get_more.olp.presentation.listener.OfferingInfoListener
+import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.unifyprinciples.R.color.Unify_TN50
 import com.tokopedia.utils.view.binding.viewBinding
 
-class OfferingInfoViewHolder(itemView: View) :
+class OfferingInfoViewHolder(
+    itemView: View,
+    val listener: OfferingInfoListener
+) :
     AbstractViewHolder<OfferInfoForBuyerUiModel>(itemView) {
 
     private val binding: ItemOlpOfferingInfoBinding? by viewBinding()
@@ -24,8 +30,23 @@ class OfferingInfoViewHolder(itemView: View) :
 
     override fun bind(data: OfferInfoForBuyerUiModel) {
         binding?.apply {
-            tpgShopName.text = data.offerings.firstOrNull()?.offerName.orEmpty()
-            ivShopBadge.setImageUrl(data.offerings.firstOrNull()?.shopData?.badge.orEmpty())
+            tpgShopName.apply {
+                text = data.offerings.firstOrNull()?.shopData?.shopName.orEmpty()
+                setOnClickListener {
+                    data.offerings.firstOrNull()?.shopData?.shopId?.let { shopId ->
+                        listener.onShopNameClicked(
+                            shopId
+                        )
+                    }
+                }
+            }
+            if (data.offerings.firstOrNull()?.shopData?.badge?.isNotEmpty() == true) {
+                ivShopBadge.apply {
+                    visible()
+                    setImageUrl(data.offerings.firstOrNull()?.shopData?.badge.orEmpty())
+                }
+            }
+            tpgTnc.setOnClickListener { listener.onTncClicked() }
         }
         setupTierList(data)
     }
@@ -38,7 +59,7 @@ class OfferingInfoViewHolder(itemView: View) :
             cardTierInfo.setCardUnifyBackgroundColor(
                 MethodChecker.getColor(
                     itemView.context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_TN50
+                    Unify_TN50
                 )
             )
             rvTierList.apply {

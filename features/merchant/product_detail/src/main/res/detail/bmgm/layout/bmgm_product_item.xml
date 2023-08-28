@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/bmgm_product_item"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="4dp">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/bmgm_product_image"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:unify_image_corner_radius="12"
+        tools:src="@tools:sample/avatars" />
+
+    <ViewStub
+        android:id="@+id/bmgm_product_show_more_stub"
+        android:inflatedId="@+id/bmgm_product_show_more"
+        android:layout="@layout/bmgm_product_show_more_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@id/bmgm_product_image"
+        app:layout_constraintEnd_toEndOf="@id/bmgm_product_image"
+        app:layout_constraintStart_toStartOf="@id/bmgm_product_image"
+        app:layout_constraintTop_toTopOf="@id/bmgm_product_image" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

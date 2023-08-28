@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/transparent"
-    android:paddingLeft="@dimen/header_padding"
-    android:paddingRight="@dimen/header_padding">
+    android:paddingLeft="12dp"
+    android:paddingRight="12dp">
 
     <LinearLayout
         android:id="@+id/textWrapperID"
@@ -42,25 +42,15 @@
         android:layout_width="26dp"
         android:layout_height="26dp"
         android:layout_marginEnd="8dp"
-        app:icon_color_light_disabled="@color/Unify_NN0"
-        app:icon_color_light_enable="@color/Unify_NN0"
-        app:icon_color_night_disabled="@color/Unify_NN0"
-        app:icon_color_night_enable="@color/Unify_NN0"
+        app:icon_color_light_disabled="@color/Unify_Static_White"
+        app:icon_color_light_enable="@color/Unify_Static_White"
+        app:icon_color_night_disabled="@color/Unify_Static_White"
+        app:icon_color_night_enable="@color/Unify_Static_White"
         app:icon_enable_state="true"
         app:icon_name="MENU_HAMBURGER"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <!--        <com.tokopedia.iconnotification.IconNotification-->
-    <!--            android:id="@+id/cart"-->
-    <!--            android:layout_width="26dp"-->
-    <!--            android:layout_height="26dp"-->
-    <!--            android:layout_marginEnd="8dp"-->
-    <!--            app:iconNotificationGravity="top|right"-->
-    <!--            app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--            app:layout_constraintEnd_toStartOf="@+id/more_menu"-->
-    <!--            app:layout_constraintTop_toTopOf="parent" />-->
 
     <FrameLayout
         android:id="@+id/icon_notif_wrapper"
@@ -75,10 +65,10 @@
             android:id="@+id/cart"
             android:layout_width="26dp"
             android:layout_height="26dp"
-            app:icon_color_light_disabled="@color/Unify_NN0"
-            app:icon_color_light_enable="@color/Unify_NN0"
-            app:icon_color_night_disabled="@color/Unify_NN0"
-            app:icon_color_night_enable="@color/Unify_NN0"
+            app:icon_color_light_disabled="@color/Unify_Static_White"
+            app:icon_color_light_enable="@color/Unify_Static_White"
+            app:icon_color_night_disabled="@color/Unify_Static_White"
+            app:icon_color_night_enable="@color/Unify_Static_White"
             app:icon_enable_state="true"
             app:icon_name="CART"/>
 

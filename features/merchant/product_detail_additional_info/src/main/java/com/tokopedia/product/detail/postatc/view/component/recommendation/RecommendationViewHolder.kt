@@ -25,7 +25,7 @@ class RecommendationViewHolder(
                     basicListener = this@RecommendationViewHolder,
                     tokonowListener = this@RecommendationViewHolder
                 )
-                callback.fetchRecommendation(element.name, element.id)
+                callback.fetchRecommendation(element.name, element.id, element.queryParam)
             } else {
                 postAtcRecommCarousel.bind(
                     carouselData = RecommendationCarouselData(
