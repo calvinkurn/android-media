@@ -1,6 +1,5 @@
 package com.tokopedia.discovery2.analytics
 
-import android.util.Log
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Constant
@@ -311,7 +310,8 @@ open class DiscoveryAnalytics(
     override fun trackPlayWidgetBannerClick(componentsItem: ComponentsItem, userID: String?, widgetPosition: Int) {
         val creativeName = componentsItem.data?.firstOrNull()?.creativeName ?: EMPTY_STRING
         val map = createGeneralEvent(
-            eventName = EVENT_CLICK_DISCOVERY, eventAction = CLICK_OTHER_CONTENT,
+            eventName = EVENT_CLICK_DISCOVERY,
+            eventAction = CLICK_OTHER_CONTENT,
             "${
             componentsItem.name
                 ?: EMPTY_STRING
@@ -343,7 +343,8 @@ open class DiscoveryAnalytics(
 
     override fun trackPlayWidgetLihatSemuaClick(componentsItem: ComponentsItem, userID: String?, widgetPosition: Int) {
         val map = createGeneralEvent(
-            eventName = EVENT_CLICK_DISCOVERY, eventAction = CLICK_VIEW_ALL,
+            eventName = EVENT_CLICK_DISCOVERY,
+            eventAction = CLICK_VIEW_ALL,
             "${
             componentsItem.name
                 ?: EMPTY_STRING
@@ -375,7 +376,8 @@ open class DiscoveryAnalytics(
             )
         )
         val map = createGeneralEvent(
-            eventName = EVENT_PROMO_CLICK, eventAction = CLICK_DYNAMIC_BANNER,
+            eventName = EVENT_PROMO_CLICK,
+            eventAction = CLICK_DYNAMIC_BANNER,
             "${
             componentsItem.name
                 ?: EMPTY_STRING
@@ -2930,12 +2932,16 @@ open class DiscoveryAnalytics(
         var j = 0
         val gtmNameParts = gtmItemName.split(" - ").toMutableList()
         for (i in gtmNameParts.indices) {
+            if (j >= dataToAppend.size) {
+                return gtmNameParts.joinToString("-") { " $it " }
+            }
             if (gtmNameParts[i].trim().isEmpty() || gtmNameParts[i].trim() == "-") {
-                gtmNameParts[i] =  dataToAppend[j++]
+                gtmNameParts[i] = dataToAppend[j++]
             }
         }
-        if (j<dataToAppend.size)
+        if (j < dataToAppend.size) {
             gtmNameParts.add(dataToAppend[j])
+        }
         return gtmNameParts.joinToString("-") { " $it " }
     }
 }
