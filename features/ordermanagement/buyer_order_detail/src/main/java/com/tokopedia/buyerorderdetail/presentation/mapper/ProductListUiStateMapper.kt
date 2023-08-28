@@ -336,9 +336,9 @@ object ProductListUiStateMapper {
     ): ProductListUiModel {
         /**
          * Map product bmgm response into UI model and limit the number of mapped items based on
-         * MAX_PRODUCT_WHEN_COLLAPSED. The numOfRemovedProductBundle is indicating the number of
-         * unmapped product bundle which will be used on the toggle view to show remaining hidden product
-         * when the product list view is collapsed. The productBundlingList contains the UI models
+         * MAX_PRODUCT_WHEN_COLLAPSED. The numOfRemovedProductBmgm is indicating the number of
+         * unmapped product bmgm which will be used on the toggle view to show remaining hidden product
+         * when the product list view is collapsed. The productBmgmList contains the UI models
          * which limited by the MAX_PRODUCT_WHEN_COLLAPSED.
          */
         val (numOfRemovedProductBmgm, productBmgmList) = mapProductBmgm(
