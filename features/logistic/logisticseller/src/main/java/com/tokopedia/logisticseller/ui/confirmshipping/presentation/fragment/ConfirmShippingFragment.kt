@@ -375,7 +375,7 @@ class ConfirmShippingFragment : BaseDaggerFragment(), BottomSheetCourierListAdap
     private fun showBottomSheetCourier(isCourierService: Boolean) {
         somBottomSheetCourierListAdapter = BottomSheetCourierListAdapter(this)
         if (bottomSheetUnify.isAdded) bottomSheetUnify.dismiss()
-        View.inflate(context, R.layout.bottomsheet_secondary, null).run {
+        View.inflate(context, R.layout.bottomsheet_secondary_confirm_shipping, null).run {
             findViewById<RecyclerView>(R.id.rv_bottomsheet_secondary)?.apply {
                 layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
                 adapter = somBottomSheetCourierListAdapter
