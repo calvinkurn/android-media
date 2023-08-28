@@ -150,7 +150,7 @@ class CheckoutPageRevampRobot {
                 .perform(
                     RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
                         position,
-                        clickOnViewChild(R.id.promo_checkout_btn_shipment)
+                        clickOnViewChild(com.tokopedia.promocheckout.common.R.id.active_promo_checkout_view)
                     )
                 )
         }
