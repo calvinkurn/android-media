@@ -26,7 +26,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/btnBmgmOpenCart"
         app:layout_constraintStart_toStartOf="@+id/bmgmLblTotalPrice"
         app:layout_constraintTop_toBottomOf="@+id/bmgmLblTotalPrice"
-        app:typographyType="display_2"
+        app:typographyType="display_1"
         app:typographyWeight="bold"
         tools:text="Rp3.435.000" />
 
