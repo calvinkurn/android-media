@@ -50,12 +50,17 @@ class ETollCardInfoView @JvmOverloads constructor(
     private val textCardNumberLoader: LoaderUnify
     private val imageIssuerLoader: LoaderUnify
     private val tickerExtraPendingBalance: Ticker
+    private lateinit var listener: OnClickCardInfoListener
 
     val cardNumber: String
         get() = attributesEmoneyInquiry.cardNumber
 
     val cardLastUpdatedDate: String
         get() = textDate.text.toString()
+
+    fun setListener(listener: OnClickCardInfoListener) {
+        this.listener = listener
+    }
 
     init {
         val view = LayoutInflater.from(context).inflate(R.layout.view_emoney_card_info, this, true)
@@ -111,8 +116,7 @@ class ETollCardInfoView @JvmOverloads constructor(
         tickerExtraPendingBalance.setHtmlDescription(resources.getString(R.string.emoney_nfc_bca_stacking_layout))
         tickerExtraPendingBalance.setDescriptionClickEvent(object : TickerCallback {
             override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                //TODO need to check expectation
-                RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=${linkUrl}")
+                listener.onClickExtraPendingBalance()
             }
 
             override fun onDismiss() {}
@@ -201,5 +205,9 @@ class ETollCardInfoView @JvmOverloads constructor(
             return CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(attributesEmoneyInquiry.lastBalance)
         }
         return ""
+    }
+
+    interface OnClickCardInfoListener {
+        fun onClickExtraPendingBalance()
     }
 }

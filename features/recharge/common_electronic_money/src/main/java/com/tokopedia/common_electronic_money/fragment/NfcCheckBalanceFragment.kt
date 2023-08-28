@@ -118,6 +118,14 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
             override fun onClickTickerTapcash() {
                 emoneyAnalytics.onShowErrorTapcashClickContactCS(irisSessionId)
             }
+
+            override fun onClickExtraPendingBalance() {
+                if (eTollUpdateBalanceResultView.visibility == View.VISIBLE) {
+                    eTollUpdateBalanceResultView.hide()
+                }
+                tapETollCardView.visibility = View.VISIBLE
+                showInitialState()
+            }
         })
 
         tapETollCardView.setListener(object : TapETollCardView.OnTapEtoll {

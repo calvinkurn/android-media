@@ -121,7 +121,8 @@ Java_com_tokopedia_emoney_integration_BCALibrary_C_1BCACheckBalance(JNIEnv *env,
 
     //create the object result class that will returned in jobject
     jclass resultClass = (*env)->FindClass(env, "com/tokopedia/emoney/integration/data/CheckBalanceResult");
-    jmethodID constructor = (*env)->GetMethodID(env, resultClass, "<init>", "(ILjava/lang/String;)V");
+    jmethodID constructor = (*env)->GetMethodID(env, resultClass, "<init>",
+                                                "(ILjava/lang/String;Z)V");
 
     //create return value balance
     long balance = -1;
@@ -135,11 +136,11 @@ Java_com_tokopedia_emoney_integration_BCALibrary_C_1BCACheckBalance(JNIEnv *env,
     unsigned char result = BCACheckBalance(&balance, cardNo, strLogRsp);
     if (result == FALSE){
         //set the return value result fail
-        jobject resultObject = (*env)->NewObject(env, resultClass, constructor, -1, (*env)->NewStringUTF(env, cardNo));
+        jobject resultObject = (*env)->NewObject(env, resultClass, constructor, -1, (*env)->NewStringUTF(env, cardNo), 0);
         return resultObject;
     }
 
     //set the return value result success
-    jobject resultObject = (*env)->NewObject(env, resultClass, constructor, balance, (*env)->NewStringUTF(env, cardNo));
+    jobject resultObject = (*env)->NewObject(env, resultClass, constructor, balance, (*env)->NewStringUTF(env, cardNo), 0);
     return resultObject;
 }

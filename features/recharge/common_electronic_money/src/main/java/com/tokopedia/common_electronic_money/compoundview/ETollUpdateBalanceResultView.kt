@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull
  */
 class ETollUpdateBalanceResultView @JvmOverloads constructor(@NotNull context: Context, attrs: AttributeSet? = null,
                                                              defStyleAttr: Int = 0)
-    : BaseCustomView(context, attrs, defStyleAttr) {
+    : BaseCustomView(context, attrs, defStyleAttr), ETollCardInfoView.OnClickCardInfoListener {
 
     private val eTollCardInfoView: ETollCardInfoView
     private val tickerTapcash: Ticker
@@ -42,6 +42,10 @@ class ETollUpdateBalanceResultView @JvmOverloads constructor(@NotNull context: C
         this.listener = listener
     }
 
+    override fun onClickExtraPendingBalance() {
+         listener.onClickExtraPendingBalance()
+    }
+
     init {
         val view = View.inflate(context, R.layout.view_emoney_update_balance_result, this)
 
@@ -53,6 +57,7 @@ class ETollUpdateBalanceResultView @JvmOverloads constructor(@NotNull context: C
     }
 
     fun showCardInfoFromApi(inquiryBalanceModel: EmoneyInquiry) {
+        eTollCardInfoView.setListener(this)
         textLabelProgressTitle.visibility = View.GONE
         textLabelProgressMessage.visibility = View.GONE
         tickerTapcash.visibility = if(inquiryBalanceModel.isCheckSaldoTapcash) View.VISIBLE else View.GONE
@@ -120,5 +125,7 @@ class ETollUpdateBalanceResultView @JvmOverloads constructor(@NotNull context: C
     interface OnTopupETollClickListener {
         fun onClick(operatorId: String, issuerId: Int, isBcaGenOne: Boolean)
         fun onClickTickerTapcash()
+
+        fun onClickExtraPendingBalance()
     }
 }
