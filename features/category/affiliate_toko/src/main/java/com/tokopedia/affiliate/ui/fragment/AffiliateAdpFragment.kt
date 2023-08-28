@@ -230,7 +230,8 @@ class AffiliateAdpFragment :
         binding?.productsRv?.adapter = adapter
         loadMoreTriggerListener?.let { binding?.productsRv?.addOnScrollListener(it) }
         binding?.homeNavToolbar?.run {
-            val iconBuilder = IconBuilder(builderFlags = IconBuilderFlag(pageSource = NavSource.AFFILIATE))
+            val iconBuilder =
+                IconBuilder(builderFlags = IconBuilderFlag(pageSource = NavSource.AFFILIATE))
             if (isAffiliateNCEnabled()) {
                 iconBuilder.addIcon(IconList.ID_NOTIFICATION, disableRouteManager = true) {
                     affiliateAdpViewModel?.resetNotificationCount()
@@ -366,9 +367,9 @@ class AffiliateAdpFragment :
                             USER_ID,
                             null
                         ) != userSessionInterface?.userId.orEmpty() || it.getLong(
-                                TICKER_ID,
-                                -1
-                            ) != announcementData.getAffiliateAnnouncementV2?.data?.id
+                            TICKER_ID,
+                            -1
+                        ) != announcementData.getAffiliateAnnouncementV2?.data?.id
                     ) {
                         it.edit().apply {
                             putLong(
@@ -513,14 +514,15 @@ class AffiliateAdpFragment :
         productIdentifier: String,
         status: Int?,
         type: String?,
-        ssaInfo: AffiliatePromotionBottomSheetParams.SSAInfo?
+        ssaInfo: AffiliatePromotionBottomSheetParams.SSAInfo?,
+        imageArray: List<String?>?
     ) {
         if (status == AffiliateSharedProductCardsItemVH.PRODUCT_ACTIVE) {
             AffiliatePromotionBottomSheet.newInstance(
                 AffiliatePromotionBottomSheetParams(
                     null, productId, productName, productImage, productUrl, productIdentifier,
                     AffiliatePromotionBottomSheet.ORIGIN_HOME, !isUserBlackListed, type = type,
-                    ssaInfo = ssaInfo
+                    ssaInfo = ssaInfo, imageArray = imageArray
                 ),
                 AffiliatePromotionBottomSheet.Companion.SheetType.LINK_GENERATION,
                 null

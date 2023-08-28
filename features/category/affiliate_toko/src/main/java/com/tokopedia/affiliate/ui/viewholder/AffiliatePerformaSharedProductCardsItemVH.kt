@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.affiliate.AffiliateAnalytics
 import com.tokopedia.affiliate.PAGE_TYPE_CAMPAIGN
+import com.tokopedia.affiliate.PAGE_TYPE_KOLEKSI
 import com.tokopedia.affiliate.PAGE_TYPE_PDP
 import com.tokopedia.affiliate.PAGE_TYPE_SHOP
 import com.tokopedia.affiliate.adapter.AffiliateAdapter
@@ -68,7 +69,6 @@ class AffiliatePerformaSharedProductCardsItemVH(
         @LayoutRes
         var LAYOUT = R.layout.affiliate_performa_vertical_product_card_item_layout
 
-        private const val TOTAL_IMG_1 = 1
         private const val TOTAL_IMG_2 = 2
         private const val TOTAL_IMG_3 = 3
         private const val TOTAL_IMG_4 = 4
@@ -151,6 +151,7 @@ class AffiliatePerformaSharedProductCardsItemVH(
                     PRODUCT_ITEM -> PAGE_TYPE_PDP
                     SHOP_ITEM -> PAGE_TYPE_SHOP
                     CAMPAIGN_ITEM -> PAGE_TYPE_CAMPAIGN
+                    KOLEKSI_ITEM -> PAGE_TYPE_KOLEKSI
                     else -> null
                 }
                 productClickInterface?.onProductClick(
@@ -170,7 +171,8 @@ class AffiliatePerformaSharedProductCardsItemVH(
                             labelType = product.ssaLabel?.labelType.orEmpty(),
                             labelText = product.ssaLabel?.labelText.orEmpty()
                         )
-                    )
+                    ),
+                    imageArray = product.imageArray?.map { it?.androidURL }
                 )
             }
         }
