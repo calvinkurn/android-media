@@ -12,6 +12,7 @@ import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Rule
@@ -136,6 +137,18 @@ class PlayParentViewModelTest {
             channelDataResult(oldData.id)
                     .isDataNotEqualTo(oldData)
                     .isDataEqualTo(newData)
+        }
+    }
+
+    @Test
+    fun `when app wants to refresh channel, it should hit get channel gql again`() {
+
+        givenParentViewModelRobot(
+            repo = repo,
+        ) andWhen {
+            viewModel.refreshChannel()
+
+            coVerify(exactly = 2) { repo.getChannels(any(), any()) }
         }
     }
 }
