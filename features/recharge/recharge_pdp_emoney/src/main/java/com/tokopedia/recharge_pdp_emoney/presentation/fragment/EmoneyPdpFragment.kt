@@ -680,7 +680,7 @@ open class EmoneyPdpFragment :
     }
 
     private fun renderTickerNFCNotSupported(selectedOperator: RechargePrefix) {
-        if (selectedOperator.operator.attributes.name.equals("BCA Flazz")) {
+        if (selectedOperator.operator.attributes.name.contains(BCA_OPERATOR_NAME)) {
             if (this::nfcAdapter.isInitialized && !nfcAdapter.isEnabled) {
                 showTickerNotSupported()
                 showRecentNumberAndPromo()
@@ -998,6 +998,8 @@ open class EmoneyPdpFragment :
         const val ISSUER_NAME_EMONEY = "emoney"
         const val ISSUER_NAME_BRIZZI = "brizzi"
         const val ISSUER_NAME_TAPCASH = "tapcash"
+
+        const val BCA_OPERATOR_NAME = "BCA"
 
         private const val TOOLBAR_ICON_SIZE = 64
 
