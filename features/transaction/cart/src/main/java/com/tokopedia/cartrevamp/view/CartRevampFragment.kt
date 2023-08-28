@@ -4149,7 +4149,7 @@ class CartRevampFragment :
     }
 
     private fun setMainFlowCoachMark(cartData: CartData) {
-        if (cartData.onboardingData.size > MAIN_FLOW_ONBOARDING_SELECT_ALL_INDEX) {
+        if (cartData.onboardingData.size >= MAIN_FLOW_ONBOARDING_SELECT_ALL_INDEX) {
             val mainFlowCoachMarkItems = arrayListOf<CoachMark2Item>()
             generateSelectAllCoachMark(mainFlowCoachMarkItems)
             mainFlowCoachMark?.let {
