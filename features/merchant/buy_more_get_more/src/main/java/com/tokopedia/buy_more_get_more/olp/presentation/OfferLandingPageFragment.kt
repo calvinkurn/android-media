@@ -40,6 +40,7 @@ import com.tokopedia.campaign.delegates.HasPaginatedList
 import com.tokopedia.campaign.delegates.HasPaginatedListImpl
 import com.tokopedia.campaign.helper.BuyMoreGetMoreHelper
 import com.tokopedia.campaign.utils.extension.showToaster
+import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.toLongSafely
@@ -373,7 +374,7 @@ class OfferLandingPageFragment :
                         setErrorPage(
                             title = getString(R.string.bmgm_title_error_not_found),
                             description = getString(R.string.bmgm_description_error_not_found),
-                            imageUrl = "https://images.tokopedia.net/img/frontend/illustration/global_state_page_not_found.png",
+                            imageUrl = TokopediaImageUrl.OLP_GLOBAL_ERROR_ILLUSTRATION,
                             primaryCtaText = getString(R.string.bmgm_cta_text_error_not_found),
                             primaryCtaAction = { loadInitialData() }
                         )
@@ -383,7 +384,7 @@ class OfferLandingPageFragment :
                         setErrorPage(
                             title = getString(R.string.bmgm_title_error_ended_promo),
                             description = getString(R.string.bmgm_description_error_ended_promo),
-                            imageUrl = "https://images.tokopedia.net/img/frontend/illustration/global_state_page_not_found.png",
+                            imageUrl = TokopediaImageUrl.OLP_GLOBAL_ERROR_ILLUSTRATION,
                             primaryCtaText = getString(R.string.bmgm_cta_text_error_ended_promo),
                             primaryCtaAction = { activity?.finish() }
                         )
@@ -393,7 +394,7 @@ class OfferLandingPageFragment :
                         setErrorPage(
                             title = getString(R.string.bmgm_title_error_out_of_stock),
                             description = getString(R.string.bmgm_description_error_out_of_stock),
-                            imageUrl = "https://images.tokopedia.net/img/frontend/illustration/global_state_page_not_found.png",
+                            imageUrl = TokopediaImageUrl.OLP_GLOBAL_ERROR_ILLUSTRATION,
                             primaryCtaText = getString(R.string.bmgm_cta_text_error_out_of_stock),
                             primaryCtaAction = { activity?.finish() }
                         )
@@ -403,7 +404,7 @@ class OfferLandingPageFragment :
                         setErrorPage(
                             title = getString(R.string.bmgm_title_error_server),
                             description = getString(R.string.bmgm_description_error_server),
-                            imageUrl = "https://images.tokopedia.net/img/frontend/illustration/global_state_server_error.png",
+                            imageUrl = TokopediaImageUrl.OLP_SERVER_ERROR_ILLUSTRATION,
                             primaryCtaText = getString(R.string.bmgm_cta_text_error_server),
                             primaryCtaAction = { loadInitialData() }
                         )
