@@ -4,4 +4,8 @@
     <string name="stories_product_bottomsheet_title">Produk pilihan</string>
     <string name="stories_product_notch">Lihat %1s produk</string>
     <string name="stories_product_atc_success">Produk berhasil ditambahkan!</string>
+    <string name="stories_onboard_move_category">Pindah Kategori</string>
+    <string name="stories_onboard_back">Balik</string>
+    <string name="stories_onboard_next">Lanjut</string>
+    <string name="stories_onboard_see_product">Lihat Produk</string>
 </resources>

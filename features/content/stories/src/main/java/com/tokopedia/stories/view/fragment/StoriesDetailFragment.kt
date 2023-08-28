@@ -312,13 +312,7 @@ class StoriesDetailFragment @Inject constructor(
          * Testing purpose
          */
 
-        vStoriesOnboarding.swipeLottie.setAnimationFromUrl(getString(R.string.stories_onboard_tap_anim))
-        vStoriesOnboarding.swipeLottie.repeatCount = LottieDrawable.INFINITE
-        vStoriesOnboarding.swipeLottie.playAnimation()
-
-        vStoriesOnboarding.swipeLottie.setFailureListener {
-            Log.d("hello", it.toString())
-        }
+        vStoriesOnboarding.lottieSwipeProduct.setFailureListener {}
 
         binding.icClose.hide()
         icClose.setOnClickListener {
