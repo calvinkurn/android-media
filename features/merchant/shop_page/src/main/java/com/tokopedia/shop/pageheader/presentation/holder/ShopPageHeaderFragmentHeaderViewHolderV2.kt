@@ -428,9 +428,7 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
         isOverrideTheme: Boolean
     ) {
         if(isOverrideTheme) {
-            val backgroundImage = shopHeaderConfig?.getBackgroundObject(
-                ShopPageHeaderLayoutUiModel.BgObjectType.IMAGE_JPG
-            )
+            val backgroundImage = getBackgroundImage(shopHeaderConfig)
             val backgroundVideo = shopHeaderConfig?.getBackgroundObject(
                 ShopPageHeaderLayoutUiModel.BgObjectType.VIDEO
             )
@@ -443,6 +441,16 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
                 setHeaderBackgroundColor(backgroundColor)
             }
         }
+    }
+
+    private fun getBackgroundImage(shopHeaderConfig: ShopPageHeaderLayoutUiModel.Config?): ShopPageHeaderLayoutUiModel.Config.BackgroundObject? {
+        val imageJpg = shopHeaderConfig?.getBackgroundObject(
+            ShopPageHeaderLayoutUiModel.BgObjectType.IMAGE_JPG
+        )
+        val imagePng = shopHeaderConfig?.getBackgroundObject(
+            ShopPageHeaderLayoutUiModel.BgObjectType.IMAGE_PNG
+        )
+        return imageJpg.takeIf { it != null } ?: imagePng
     }
 
     private fun setHeaderBackgroundColor(backgroundColor: String) {
