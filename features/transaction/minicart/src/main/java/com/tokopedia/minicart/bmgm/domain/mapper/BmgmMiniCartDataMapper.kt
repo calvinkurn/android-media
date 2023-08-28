@@ -38,7 +38,7 @@ class BmgmMiniCartDataMapper @Inject constructor() {
             return BmgmMiniCartDataUiModel(
                 offerId = it.offerId,
                 offerName = it.offerName,
-                offerMessage = it.offerMessage,
+                offerMessage = it.offerMessage.joinToString(" "),
                 hasReachMaxDiscount = hasReachMaxDiscount,
                 priceBeforeBenefit = shoppingSummary.totalOriginalValue,
                 finalPrice = shoppingSummary.totalValue,
@@ -58,7 +58,7 @@ class BmgmMiniCartDataMapper @Inject constructor() {
                                     productName = p.productName,
                                     productImage = p.productImage.imageSrc100Square,
                                     cartId = p.cartId,
-                                    finalPrice = tierProduct.finalPrice,
+                                    finalPrice = tierProduct.priceBeforeBenefit,
                                     quantity = tierProduct.qty
                                 )
                             }

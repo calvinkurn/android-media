@@ -85,7 +85,8 @@ class GetBmgmMiniCartDataUseCase @Inject constructor(
                             offer_message
                             total_discount
                             offer_json_data
-                            tiers_applied {
+                            offer_status
+                            tier_product {
                               tier_id
                               tier_message
                               tier_discount_text
@@ -95,8 +96,9 @@ class GetBmgmMiniCartDataUseCase @Inject constructor(
                               list_product {
                                 product_id
                                 warehouse_id
-                                qty
-                                final_price
+                                quantity
+                                price_before_benefit
+                                price_after_benefit
                                 cart_id
                               }
                             }
