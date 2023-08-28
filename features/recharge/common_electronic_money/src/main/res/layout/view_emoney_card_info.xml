@@ -101,7 +101,7 @@
         <LinearLayout
             android:id="@+id/view_remaining_balance"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="180dp"
             android:layout_marginTop="0.1dp"
             android:gravity="center"
             android:orientation="vertical"
@@ -170,6 +170,19 @@
                 android:visibility="gone"
                 app:loader_corner_radius="8dp"
                 app:loader_type="rect" />
+
+            <com.tokopedia.unifycomponents.ticker.Ticker
+                android:id="@+id/tickerExtraPendingBalance"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:tickerType="announcement"
+                app:tickerShapeType="loose"
+                android:layout_marginTop="12dp"
+                app:closeButtonVisibility="gone"
+                android:visibility="gone"
+                tools:visibility="visible"
+                android:gravity="center"
+                />
 
         </LinearLayout>
 

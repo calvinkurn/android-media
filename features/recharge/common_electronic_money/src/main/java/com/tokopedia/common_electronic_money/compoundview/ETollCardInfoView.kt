@@ -8,6 +8,8 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.common_electronic_money.R
 import com.tokopedia.common_electronic_money.data.AttributesEmoneyInquiry
 import com.tokopedia.kotlin.extensions.view.hide
@@ -15,6 +17,8 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import org.jetbrains.annotations.NotNull
@@ -45,6 +49,7 @@ class ETollCardInfoView @JvmOverloads constructor(
     private val textLabelCardNumberLoader: LoaderUnify
     private val textCardNumberLoader: LoaderUnify
     private val imageIssuerLoader: LoaderUnify
+    private val tickerExtraPendingBalance: Ticker
 
     val cardNumber: String
         get() = attributesEmoneyInquiry.cardNumber
@@ -68,6 +73,7 @@ class ETollCardInfoView @JvmOverloads constructor(
         imageIssuerLoader = view.findViewById(R.id.image_issuer_loader)
         textLabelCardNumberLoader = view.findViewById(R.id.text_label_card_number_loader)
         textCardNumberLoader = view.findViewById(R.id.text_card_number_loader)
+        tickerExtraPendingBalance = view.findViewById(R.id.tickerExtraPendingBalance)
     }
 
     fun showCardInfo(attributesEmoneyInquiry: AttributesEmoneyInquiry) {
@@ -93,6 +99,28 @@ class ETollCardInfoView @JvmOverloads constructor(
         val date = Date()
         val result = String.format("(%s)", simpleDateFormat.format(date))
         textDate.text = result
+        if (attributesEmoneyInquiry.extraPendingBalance) {
+            showTickerInfo()
+        } else {
+            hideTickerInfo()
+        }
+    }
+
+    private fun showTickerInfo() {
+        tickerExtraPendingBalance.show()
+        tickerExtraPendingBalance.setHtmlDescription(resources.getString(R.string.emoney_nfc_bca_stacking_layout))
+        tickerExtraPendingBalance.setDescriptionClickEvent(object : TickerCallback {
+            override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                //TODO need to check expectation
+                RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=${linkUrl}")
+            }
+
+            override fun onDismiss() {}
+        })
+    }
+
+    private fun hideTickerInfo() {
+        tickerExtraPendingBalance.hide()
     }
 
     fun showLoading() {

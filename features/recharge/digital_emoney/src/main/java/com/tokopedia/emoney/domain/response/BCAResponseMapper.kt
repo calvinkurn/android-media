@@ -19,7 +19,8 @@ object BCAResponseMapper {
                 status = 1,
                 formattedCardNumber = NFCUtils.formatCardUID(result.cardNo),
                 issuer_id = ISSUER_ID_BCA,
-                pendingBalance = Int.ZERO
+                pendingBalance = Int.ZERO,
+                extraPendingBalance = result.isExtraPendingBalance
             ),
             isBCAGenOne = isBCAGenOne
         )

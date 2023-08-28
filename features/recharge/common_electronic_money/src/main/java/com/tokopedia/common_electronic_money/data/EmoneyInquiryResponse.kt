@@ -48,8 +48,8 @@ data class AttributesEmoneyInquiry(
         var formattedCardNumber: String = "",
         var issuer_id: Int = 0,
         var operatorId: String = "",
-        var pendingBalance: Int = 0
-
+        var pendingBalance: Int = 0,
+        var extraPendingBalance: Boolean = false
 )
 
 data class EmoneyInquiryError(
