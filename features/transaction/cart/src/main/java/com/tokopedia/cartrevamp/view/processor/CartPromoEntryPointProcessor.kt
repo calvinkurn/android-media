@@ -7,6 +7,8 @@ import com.tokopedia.cartrevamp.view.uimodel.CartModel
 import com.tokopedia.cartrevamp.view.uimodel.EntryPointInfoEvent
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.promousage.data.request.GetPromoListRecommendationParam
+import com.tokopedia.promousage.data.response.PromoListRecommendation
+import com.tokopedia.promousage.data.response.ResultStatus
 import com.tokopedia.promousage.domain.entity.PromoEntryPointInfo
 import com.tokopedia.promousage.domain.usecase.PromoUsageGetPromoListRecommendationEntryPointUseCase
 import com.tokopedia.promousage.view.mapper.PromoUsageGetPromoListRecommendationMapper
@@ -98,7 +100,25 @@ class CartPromoEntryPointProcessor @Inject constructor(
                             )
                         }
                     } else {
-                        EntryPointInfoEvent.Error(lastApply)
+                        if (response.promoListRecommendation.data.resultStatus.code == ResultStatus.STATUS_COUPON_LIST_EMPTY
+                            || response.promoListRecommendation.data.resultStatus.code == ResultStatus.STATUS_USER_BLACKLISTED
+                            || response.promoListRecommendation.data.resultStatus.code == ResultStatus.STATUS_PHONE_NOT_VERIFIED) {
+                            val entryPointInfo = getCouponListRecommendationMapper
+                                .mapPromoListRecommendationEntryPointResponseToEntryPointInfo(response)
+                            if (entryPointInfo.color == PromoEntryPointInfo.COLOR_GREEN) {
+                                EntryPointInfoEvent.ActiveNew(
+                                    lastApply = lastApply,
+                                    entryPointInfo = entryPointInfo
+                                )
+                            } else {
+                                EntryPointInfoEvent.InactiveNew(
+                                    lastApply = lastApply,
+                                    entryPointInfo = entryPointInfo
+                                )
+                            }
+                        } else {
+                            EntryPointInfoEvent.Error(lastApply)
+                        }
                     }
                 } else {
                     return EntryPointInfoEvent.Error(lastApply)
