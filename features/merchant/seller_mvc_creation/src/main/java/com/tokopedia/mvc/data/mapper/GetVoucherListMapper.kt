@@ -65,7 +65,7 @@ class GetVoucherListMapper @Inject constructor() {
                 isParent = it.isParent,
                 labelVoucher = it.toLabelVoucher(),
                 isEditable = it.isEditable,
-                subsidyDetail = it.subsidyDetail.toProgramDetail()
+                subsidyDetail = it.subsidyDetail.toSubsidyDetail()
             )
         }
 
@@ -94,7 +94,7 @@ class GetVoucherListMapper @Inject constructor() {
         )
     }
 
-    private fun MerchantVoucherModel.SubsidyDetail.toProgramDetail(): SubsidyDetail {
+    private fun MerchantVoucherModel.SubsidyDetail.toSubsidyDetail(): SubsidyDetail {
         return SubsidyDetail(
             programDetail = SubsidyDetail.ProgramDetail(
                 programName = programDetail.programName,
@@ -107,6 +107,12 @@ class GetVoucherListMapper @Inject constructor() {
                     value.id == programDetail.promotionStatus
                 } ?: PromotionStatus.REGISTERED,
                 promotionLabel = programDetail.promotionLabel
+            ),
+            quotaSubsidized = SubsidyDetail.QuotaSubsidized(
+                voucherQuota = quotaSubsidized.voucherQuota,
+                remainingQuota = quotaSubsidized.remainingQuota,
+                confirmedGlobalQuota = quotaSubsidized.confirmedGlobalQuota,
+                bookedGlobalQuota = quotaSubsidized.bookedGlobalQuota
             )
         )
     }

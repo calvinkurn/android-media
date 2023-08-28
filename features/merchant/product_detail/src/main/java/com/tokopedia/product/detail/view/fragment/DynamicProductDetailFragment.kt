@@ -64,6 +64,7 @@ import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParam
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.common_tradein.utils.TradeInPDPHelper
@@ -104,6 +105,8 @@ import com.tokopedia.mvcwidget.views.activities.TransParentActivity
 import com.tokopedia.network.utils.URLGenerator.generateURLSessionLogin
 import com.tokopedia.pdp.fintech.domain.datamodel.FintechRedirectionWidgetDataClass
 import com.tokopedia.pdp.fintech.view.PdpFintechWidget.Companion.ACTIVATION_LINKINING_FLOW
+import com.tokopedia.pdp.fintech.view.PdpFintechWidget.Companion.PARAM_CATEGORY_ID
+import com.tokopedia.pdp.fintech.view.PdpFintechWidget.Companion.PARAM_PARENT_ID
 import com.tokopedia.pdp.fintech.view.bottomsheet.GopayLinkBenefitBottomSheet.Companion.ACTIVATION_BOTTOMSHEET_DETAIl
 import com.tokopedia.pdp.fintech.view.bottomsheet.GopayLinkBenefitBottomSheet.Companion.ACTIVATION_WEBVIEW_LINK
 import com.tokopedia.play.widget.ui.PlayWidgetMediumView
@@ -136,8 +139,8 @@ import com.tokopedia.product.detail.common.data.model.ar.ProductArInfo
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkir
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirImage
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
+import com.tokopedia.product.detail.common.data.model.carttype.PostAtcLayout
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
-import com.tokopedia.product.detail.common.data.model.pdplayout.BasicInfo
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailGallery
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
@@ -150,6 +153,7 @@ import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
+import com.tokopedia.product.detail.common.postatc.PostAtcParams
 import com.tokopedia.product.detail.common.showImmediately
 import com.tokopedia.product.detail.common.showToasterError
 import com.tokopedia.product.detail.common.showToasterSuccess
@@ -210,6 +214,7 @@ import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.tracking.CommonTracker
 import com.tokopedia.product.detail.tracking.ContentWidgetTracker
 import com.tokopedia.product.detail.tracking.ContentWidgetTracking
+import com.tokopedia.product.detail.tracking.DynamicOneLinerTracking
 import com.tokopedia.product.detail.tracking.GeneralInfoTracker
 import com.tokopedia.product.detail.tracking.GeneralInfoTracking
 import com.tokopedia.product.detail.tracking.OneLinersTracking
@@ -820,7 +825,6 @@ open class DynamicProductDetailFragment :
         super.onPause()
         trackVideoState()
         if (::trackingQueue.isInitialized) {
-            trackingQueue.sendAll()
             if (alreadyHitSwipeTracker != null) {
                 alreadyHitSwipeTracker = DynamicProductDetailAlreadyHit
             }
@@ -2002,7 +2006,7 @@ open class DynamicProductDetailFragment :
         trackOnTickerClicked(tickerTitle, tickerType, componentTrackDataModel, tickerDescription)
         goToRecommendation()
     }
-    
+
     private val mvcLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         if (it.resultCode == MvcView.RESULT_CODE_OK && doActivityResult) {
             onSwipeRefresh()
@@ -2046,6 +2050,8 @@ open class DynamicProductDetailFragment :
             startActivityForResult(bottomsheetIntent, RQUEST_CODE_ACTIVATE_GOPAY)
         } else {
             val intent = RouteManager.getIntent(context, redirectionUrl)
+            intent.putExtra(PARAM_PARENT_ID, fintechRedirectionWidgetDataClass.parentId)
+            intent.putExtra(PARAM_CATEGORY_ID, fintechRedirectionWidgetDataClass.categoryId)
             startActivityForResult(intent, RQUEST_CODE_UPDATE_FINTECH_WIDGET)
         }
     }
@@ -2443,7 +2449,7 @@ open class DynamicProductDetailFragment :
             }) { throwable ->
                 view?.showToasterError(
                     throwable.message ?: "",
-                    ctaText = getString(R.string.oke)
+                    ctaText = getString(com.tokopedia.design.R.string.oke)
                 )
                 logException(throwable)
             }
@@ -2457,7 +2463,7 @@ open class DynamicProductDetailFragment :
             }) { throwable ->
                 view?.showToasterError(
                     throwable.message ?: "",
-                    ctaText = getString(R.string.pdp_common_oke)
+                    ctaText = getString(com.tokopedia.product.detail.common.R.string.pdp_common_oke)
                 )
                 logException(throwable)
             }
@@ -3202,7 +3208,7 @@ open class DynamicProductDetailFragment :
             }
             ProductDetailCommonConstant.ATC_BUTTON -> {
                 sendTrackingATC(cartId)
-                showAddToCartDoneBottomSheet(result.data.cartId)
+                showAddToCartDoneBottomSheet(result.data)
             }
             ProductDetailCommonConstant.TRADEIN_AFTER_DIAGNOSE -> {
                 // Same with OCS but should send devideId
@@ -3647,27 +3653,50 @@ open class DynamicProductDetailFragment :
         return singleVariant.mapOfSelectedVariant
     }
 
-    private fun showAddToCartDoneBottomSheet(cartId: String) {
-        val productInfo = viewModel.getDynamicProductInfoP1 ?: return
-        val basicInfo = productInfo.basic
-        val postATCLayoutId = basicInfo.postAtcLayout.layoutId
+    private fun showAddToCartDoneBottomSheet(cartDataModel: DataModel) {
+        val cartRedirData = viewModel.p2Data.value?.cartRedirection?.get(cartDataModel.productId)
+        val postAtcLayout = cartRedirData?.postAtcLayout
 
         val remoteNewATC = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_POST_ATC_PDP, true)
-        if (postATCLayoutId.isNotBlank() && remoteNewATC) {
-            showGlobalPostATC(cartId, basicInfo)
+        if (postAtcLayout?.showPostAtc == true && remoteNewATC) {
+            showGlobalPostATC(cartDataModel, cartDataModel.productId, postAtcLayout)
         } else {
-            showOldPostATC(cartId)
+            showOldPostATC(cartDataModel.cartId)
         }
     }
 
-    private fun showGlobalPostATC(cartId: String, basicInfo: BasicInfo) {
+    private fun showGlobalPostATC(
+        cartDataModel: DataModel,
+        productId: String,
+        postAtcLayout: PostAtcLayout
+    ) {
         val context = context ?: return
+
+        val addonsIds = cartDataModel.addOns.groupBy(
+            keySelector = { it.status },
+            valueTransform = { it.id }
+        )
+
+        val addons = PostAtcParams.Addons(
+            deselectedAddonsIds = addonsIds[2] ?: emptyList(),
+            isFulfillment = cartDataModel.isFulfillment,
+            selectedAddonsIds = addonsIds[1] ?: emptyList(),
+            warehouseId = cartDataModel.warehouseId,
+            quantity = cartDataModel.quantity
+        )
+
+        val postAtcParams = PostAtcParams(
+            cartId = cartDataModel.cartId,
+            layoutId = postAtcLayout.layoutId,
+            pageSource = PostAtcParams.Source.PDP.name,
+            session = postAtcLayout.postAtcSession,
+            addons = addons
+        )
+
         PostAtcHelper.start(
             context,
-            basicInfo.productID,
-            cartId = cartId,
-            pageSource = PostAtcHelper.Source.PDP,
-            layoutId = basicInfo.postAtcLayout.layoutId
+            productId,
+            postAtcParams
         )
     }
 
@@ -4273,7 +4302,7 @@ open class DynamicProductDetailFragment :
     private fun onErrorRemoveWishList(errorMsg: String?) {
         view?.showToasterError(
             getErrorMessage(errorMsg),
-            ctaText = getString(R.string.pdp_common_oke)
+            ctaText = getString(com.tokopedia.product.detail.common.R.string.pdp_common_oke)
         )
     }
 
@@ -4289,7 +4318,7 @@ open class DynamicProductDetailFragment :
     private fun onErrorAddWishList(errorMessage: String?) {
         view?.showToasterError(
             getErrorMessage(errorMessage),
-            ctaText = getString(R.string.pdp_common_oke)
+            ctaText = getString(com.tokopedia.product.detail.common.R.string.pdp_common_oke)
         )
     }
 
@@ -5172,7 +5201,7 @@ open class DynamicProductDetailFragment :
         val dataModel = pdpUiUpdater?.notifyMeMap
         view?.showToasterError(
             getErrorMessage(t),
-            ctaText = getString(R.string.pdp_common_oke)
+            ctaText = getString(com.tokopedia.product.detail.common.R.string.pdp_common_oke)
         )
         if (dataModel != null) {
             pdpUiUpdater?.updateNotifyMeButton(dataModel.notifyMe)
@@ -6016,6 +6045,15 @@ open class DynamicProductDetailFragment :
             productInfo = productInfo,
             trackDataModel = trackData,
             eventLabel = eventLabel
+        )
+    }
+
+    override fun onClickDynamicOneLiner(title: String, component: ComponentTrackDataModel) {
+        val commonTracker = generateCommonTracker() ?: return
+        DynamicOneLinerTracking.onClickDynamicOneliner(
+            title,
+            commonTracker,
+            component
         )
     }
 }

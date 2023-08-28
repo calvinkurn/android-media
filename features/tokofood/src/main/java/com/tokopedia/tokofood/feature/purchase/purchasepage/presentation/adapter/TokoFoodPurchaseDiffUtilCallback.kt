@@ -7,15 +7,12 @@ import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseGeneralTickerTokoFoodPurchaseUiModel
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseProductListHeaderTokoFoodPurchaseUiModel
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseProductTokoFoodPurchaseUiModel
-import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseProductTokoFoodPurchaseUiModelOld
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseProductUnavailableReasonTokoFoodPurchaseUiModel
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchasePromoTokoFoodPurchaseUiModel
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseShippingTokoFoodPurchaseUiModel
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel
-import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModelOld
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseTickerErrorShopLevelTokoFoodPurchaseUiModel
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel
-import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModelOld
 
 class TokoFoodPurchaseDiffUtilCallback(private val oldList: List<Any>,
                                        private val newList: List<Any>) : DiffUtil.Callback() {
@@ -52,7 +49,6 @@ class TokoFoodPurchaseDiffUtilCallback(private val oldList: List<Any>,
             oldItem is TokoFoodPurchaseGeneralTickerTokoFoodPurchaseUiModel && newItem is TokoFoodPurchaseGeneralTickerTokoFoodPurchaseUiModel -> oldItem == newItem
             oldItem is TokoFoodPurchaseProductListHeaderTokoFoodPurchaseUiModel && newItem is TokoFoodPurchaseProductListHeaderTokoFoodPurchaseUiModel -> oldItem == newItem
             oldItem is TokoFoodPurchaseProductTokoFoodPurchaseUiModel && newItem is TokoFoodPurchaseProductTokoFoodPurchaseUiModel -> oldItem == newItem
-            oldItem is TokoFoodPurchaseProductTokoFoodPurchaseUiModelOld && newItem is TokoFoodPurchaseProductTokoFoodPurchaseUiModelOld -> oldItem == newItem
             oldItem is TokoFoodPurchaseProductUnavailableReasonTokoFoodPurchaseUiModel && newItem is TokoFoodPurchaseProductUnavailableReasonTokoFoodPurchaseUiModel -> oldItem == newItem
             oldItem is TokoFoodPurchasePromoTokoFoodPurchaseUiModel && newItem is TokoFoodPurchasePromoTokoFoodPurchaseUiModel -> {
                 oldItem == newItem && oldItem.isLoading == newItem.isLoading
@@ -63,14 +59,8 @@ class TokoFoodPurchaseDiffUtilCallback(private val oldList: List<Any>,
             oldItem is TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel && newItem is TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel -> {
                 oldItem == newItem && oldItem.isLoading == newItem.isLoading
             }
-            oldItem is TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModelOld && newItem is TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModelOld -> {
-                oldItem == newItem && oldItem.isLoading == newItem.isLoading
-            }
             oldItem is TokoFoodPurchaseTickerErrorShopLevelTokoFoodPurchaseUiModel && newItem is TokoFoodPurchaseTickerErrorShopLevelTokoFoodPurchaseUiModel -> oldItem == newItem
             oldItem is TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel && newItem is TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel -> {
-                oldItem == newItem && oldItem.isLoading == newItem.isLoading && oldItem.isButtonLoading == newItem.isButtonLoading
-            }
-            oldItem is TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModelOld && newItem is TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModelOld -> {
                 oldItem == newItem && oldItem.isLoading == newItem.isLoading && oldItem.isButtonLoading == newItem.isButtonLoading
             }
             else -> false

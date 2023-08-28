@@ -37,10 +37,10 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
     ksp project(rootProject.ext.libraries.gqlKspProcessor)
     implementation rootProject.ext.miscDependencies.viewModelKtx
+    implementation projectOrAar(rootProject.ext.libraries.tkpddesign)
     implementation projectOrAar(rootProject.ext.features.topAdsSdk)
     implementation rootProject.ext.unifyDependencies.datepicker
     implementation rootProject.ext.unifyDependencies.dialog
-    implementation projectOrAar(rootProject.ext.features.topAdsHeadlineUseCase)
     implementation projectOrAar(rootProject.ext.libraries.track)
 
     //test

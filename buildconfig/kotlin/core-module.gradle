@@ -48,7 +48,7 @@ android {
     lintOptions {
         abortOnError false
         xmlReport true
-        htmlReport false
+        htmlReport true
     }
     kotlin {
         sourceSets.main {

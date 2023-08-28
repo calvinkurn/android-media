@@ -431,10 +431,12 @@
 /build.gradle                                           @tokopedia/android-core-dev
 /settings.gradle                                           @tokopedia/android-core-dev
 /buildproj.gradle                                       @tokopedia/android-core-dev
+/hansel.xml                                             @tokopedia/android-core-dev
 /gradle/                                                @tokopedia/android-core-dev
 /gradle.properties                                      @tokopedia/android-core-dev
 /wearosapp/                                        @tokopedia/android-core-dev
 
+testing/joint/inactivephone_otp/                        @tokopedia/android-minionbob-dev
 /testing/joint/pdp_checkout/                            @tokopedia/android-minionbob-dev @tokopedia/android-minionstuart-dev
 /testing/joint/dg_transaction/                          @tokopedia/android-minionmark-dev
 

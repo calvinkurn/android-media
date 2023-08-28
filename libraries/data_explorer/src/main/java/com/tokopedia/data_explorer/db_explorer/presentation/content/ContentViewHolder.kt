@@ -19,7 +19,7 @@ internal class ContentViewHolder(itemView: View, val onClick: ((Cell) -> Unit)?)
                 MethodChecker.getColor(
                     context,
                     if (row % 2 == 0) com.tokopedia.unifyprinciples.R.color.Unify_NN50
-                    else com.tokopedia.unifycomponents.R.color.Unify_Background
+                    else com.tokopedia.unifyprinciples.R.color.Unify_Background
                 )
             )
         }

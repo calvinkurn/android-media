@@ -1,6 +1,5 @@
 package com.tokopedia.play_common.shortsuploader
 
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.work.ExistingWorkPolicy
 import androidx.work.WorkInfo
@@ -28,7 +27,6 @@ class PlayShortsUploaderImpl @Inject constructor(
     }
 
     override fun observe(
-        owner: LifecycleOwner,
         observer: (progress: Int, uploadData: PlayShortsUploadModel) -> Unit
     ): Observer<List<WorkInfo>> {
         val workObserver = Observer<List<WorkInfo>> {
@@ -44,7 +42,7 @@ class PlayShortsUploaderImpl @Inject constructor(
 
         workManager
             .getWorkInfosForUniqueWorkLiveData(PlayShortsUploadConst.PLAY_SHORTS_UPLOAD)
-            .observe(owner, workObserver)
+            .observeForever(workObserver)
 
         return workObserver
     }

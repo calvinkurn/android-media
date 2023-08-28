@@ -32,7 +32,7 @@ android {
     lintOptions {
         checkReleaseBuilds false
         checkDependencies false
-        htmlReport false
+        htmlReport true
         warningsAsErrors false
         abortOnError false
     }

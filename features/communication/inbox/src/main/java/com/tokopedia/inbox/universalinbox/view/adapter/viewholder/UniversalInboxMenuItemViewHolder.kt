@@ -8,8 +8,6 @@ import com.tokopedia.inbox.databinding.UniversalInboxMenuItemBinding
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxViewUtil
 import com.tokopedia.inbox.universalinbox.view.listener.UniversalInboxMenuListener
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuUiModel
-import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxShopInfoUiModel
-import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.media.loader.loadImage

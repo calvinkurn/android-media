@@ -13,10 +13,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.review.ReviewApplinkConst
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.inboxcommon.InboxFragment
-import com.tokopedia.inboxcommon.InboxFragmentContainer
-import com.tokopedia.inboxcommon.RoleType
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -25,7 +21,6 @@ import com.tokopedia.review.common.ReviewInboxConstants
 import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringContract
 import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringListener
 import com.tokopedia.review.common.util.OnBackPressedListener
-import com.tokopedia.review.feature.inbox.buyerreview.view.fragment.InboxReputationFragment
 import com.tokopedia.review.feature.inbox.container.analytics.ReviewInboxContainerTracking
 import com.tokopedia.review.feature.inbox.container.data.ReviewInboxTabs
 import com.tokopedia.review.feature.inbox.container.di.DaggerReviewInboxContainerComponent
@@ -39,7 +34,7 @@ import com.tokopedia.unifycomponents.setCounter
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewInboxContainerComponent>, OnBackPressedListener, ReviewPerformanceMonitoringContract, ReviewInboxListener, InboxFragment {
+class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewInboxContainerComponent>, OnBackPressedListener, ReviewPerformanceMonitoringContract, ReviewInboxListener {
 
     companion object {
         const val PENDING_TAB_INDEX = 0
@@ -47,7 +42,7 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
         const val SELLER_TAB_INDEX = 2
         const val HIDE_TAB_COUNTER = -1
 
-        fun createNewInstance(tab: String = "", source: String = "") : ReviewInboxContainerFragment{
+        fun createNewInstance(tab: String, source: String) : ReviewInboxContainerFragment{
             return ReviewInboxContainerFragment().apply {
                 arguments = Bundle().apply {
                     putString(ReviewApplinkConst.PARAM_TAB, tab)
@@ -66,9 +61,6 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
     private var source = ""
 
     private var counter = 0
-    private var buyerReviewFragment: InboxReputationFragment? = null
-    private var containerListener: InboxFragmentContainer? = null
-    private var shouldCommitBuyerReviewFragment: Boolean = false
 
     private var binding by autoClearedNullable<FragmentReviewInboxContainerBinding>()
 
@@ -132,7 +124,7 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
         stopPreparePerfomancePageMonitoring()
         startNetworkRequestPerformanceMonitoring()
         super.onViewCreated(view, savedInstanceState)
-        activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifycomponents.R.color.Unify_Background))
+        activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_Background))
         initToolbar()
         observeReviewTabs()
         getCounterData()
@@ -153,31 +145,6 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
 
     override fun reloadCounter() {
         getCounterData()
-    }
-
-    override fun onRoleChanged(role: Int) {
-        when (role) {
-            RoleType.BUYER -> {
-                updateInboxUnifiedBuyerView()
-                containerListener?.showReviewCounter()
-            }
-            RoleType.SELLER -> {
-                setBuyerReviewFragment()
-                attachBuyerReviewFragment()
-                updateInboxUnifiedSellerView()
-                containerListener?.hideReviewCounter()
-            }
-        }
-    }
-
-    override fun onPageClickedAgain() {
-        // No Op
-    }
-
-    override fun onAttachActivity(context: Context?) {
-        if (context is InboxFragmentContainer) {
-            containerListener = context
-        }
     }
 
     private fun getCounterData() {
@@ -294,40 +261,10 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
         }
     }
 
-    private fun updateInboxUnifiedSellerView() {
-        binding?.reviewInboxTabs?.hide()
-        binding?.reviewSellerInboxFragment?.show()
-        binding?.reviewInboxViewPager?.hide()
-    }
-
-    private fun updateInboxUnifiedBuyerView() {
-        binding?.reviewInboxTabs?.show()
-        binding?.reviewSellerInboxFragment?.hide()
-        binding?.reviewInboxViewPager?.show()
-    }
-
     private fun updateInboxUnifiedBuyerView(tabTitles: List<String>) {
         setupBuyerAdapter()
         setupViewPager(tabTitles)
         selectTab()
-    }
-
-    private fun setBuyerReviewFragment() {
-        if(buyerReviewFragment == null) {
-            buyerReviewFragment = InboxReputationFragment.createInstance(ReviewInboxConstants.TAB_BUYER_REVIEW) as? InboxReputationFragment?
-            shouldCommitBuyerReviewFragment = true
-        }
-    }
-
-    private fun attachBuyerReviewFragment() {
-        if(shouldCommitBuyerReviewFragment) {
-            buyerReviewFragment?.let {
-                childFragmentManager.beginTransaction()
-                        .replace(R.id.reviewSellerInboxFragment, it)
-                        .commitAllowingStateLoss()
-            }
-            shouldCommitBuyerReviewFragment = false
-        }
     }
 
     private fun getTabTitles(tabs: MutableList<ReviewInboxTabs>): MutableList<String> {

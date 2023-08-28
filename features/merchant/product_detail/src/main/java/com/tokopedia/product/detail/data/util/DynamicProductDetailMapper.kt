@@ -35,6 +35,7 @@ import com.tokopedia.product.detail.common.mapper.AtcVariantMapper
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.datamodel.ArButtonDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
+import com.tokopedia.product.detail.data.model.datamodel.DynamicOneLinerDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.GlobalBundling
@@ -208,6 +209,14 @@ object DynamicProductDetailMapper {
                     customInfoData?.let {
                         listOfComponent.add(it)
                     }
+                }
+                ProductDetailConstant.PRODUCT_DYNAMIC_ONELINER -> {
+                    val dataModel = DynamicOneLinerDataModel(
+                        name = component.componentName,
+                        type = component.type,
+                        data = generateDynamicInfoData(component.componentData)
+                    )
+                    listOfComponent.add(dataModel)
                 }
                 ProductDetailConstant.TOP_ADS -> {
                     listOfComponent.add(TopAdsImageDataModel(type = component.type, name = component.componentName))
@@ -434,7 +443,6 @@ object DynamicProductDetailMapper {
             variants = networkData.variants,
             children = networkData.children,
             maxFinalPrice = networkData.maxFinalPrice,
-            postAtcLayout = networkData.postAtcLayout,
             landingSubText = networkData.landingSubText
         )
     }
@@ -521,6 +529,18 @@ object DynamicProductDetailMapper {
             labelValue = label?.value ?: "",
             lightIcon = componentData.lightIcon,
             darkIcon = componentData.darkIcon
+        )
+    }
+
+    private fun generateDynamicInfoData(data: List<ComponentData>): DynamicOneLinerDataModel.Data {
+        val componentData = data.firstOrNull() ?: return DynamicOneLinerDataModel.Data()
+        return DynamicOneLinerDataModel.Data(
+            text = componentData.text,
+            applink = componentData.applink,
+            separator = componentData.separator,
+            icon = componentData.icon,
+            status = componentData.status,
+            chevronPos = componentData.chevronPos
         )
     }
 

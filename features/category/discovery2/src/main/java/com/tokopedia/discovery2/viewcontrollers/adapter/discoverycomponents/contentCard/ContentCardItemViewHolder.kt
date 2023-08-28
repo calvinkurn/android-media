@@ -3,7 +3,6 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.con
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.TIME_DISPLAY_FORMAT
 import com.tokopedia.discovery2.Utils
@@ -25,20 +24,7 @@ class ContentCardItemViewHolder(itemView: View, private val fragment: Fragment) 
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         contentCardItemViewModel = discoveryBaseViewModel as ContentCardItemViewModel
-        itemView.setOnClickListener {
-            contentCardItemViewModel?.getNavigationUrl()?.let {
-                if (it.isNotEmpty()) {
-                    RouteManager.route(fragment.activity, it)
-                }
-                contentCardItemViewModel?.components?.let { componentItem ->
-                    (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()
-                        ?.trackContentCardClick(
-                            componentItem,
-                            Utils.getUserId(fragment.context)
-                        )
-                }
-            }
-        }
+        onClick()
     }
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
@@ -121,6 +107,21 @@ class ContentCardItemViewHolder(itemView: View, private val fragment: Fragment) 
                     componentItem,
                     Utils.getUserId(fragment.context)
                 )
+        }
+    }
+
+    private fun onClick() {
+        itemView.setOnClickListener {
+            contentCardItemViewModel?.getNavigationAction()?.let { moveAction ->
+                Utils.routingBasedOnMoveAction(moveAction, fragment)
+            }
+            contentCardItemViewModel?.components?.let { componentItem ->
+                (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()
+                    ?.trackContentCardClick(
+                        componentItem,
+                        Utils.getUserId(fragment.context)
+                    )
+            }
         }
     }
 }

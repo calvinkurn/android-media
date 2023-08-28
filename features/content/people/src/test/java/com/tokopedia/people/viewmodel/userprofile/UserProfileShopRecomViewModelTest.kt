@@ -86,13 +86,15 @@ class UserProfileShopRecomViewModelTest {
 
     private val mockProfileSettings = reviewBuilder.buildReviewSetting(isEnabled = false)
 
-    private val robot = UserProfileViewModelRobot(
-        username = mockOwnUserId,
-        repo = mockRepo,
-        followRepo = mockFollowRepo,
-        dispatcher = testDispatcher,
-        userSession = mockUserSession,
-    )
+    private val robot by lazy {
+        UserProfileViewModelRobot(
+            username = mockOwnUserId,
+            repo = mockRepo,
+            followRepo = mockFollowRepo,
+            dispatcher = testDispatcher,
+            userSession = mockUserSession,
+        )
+    }
 
     private val shopActionFollow = ShopFollowAction.Follow
     private val shopActionUnfollow = ShopFollowAction.UnFollow
