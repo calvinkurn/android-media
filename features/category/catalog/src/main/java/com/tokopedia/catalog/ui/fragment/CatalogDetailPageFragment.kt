@@ -18,9 +18,8 @@ import com.tokopedia.catalog.ui.viewmodel.CatalogDetailPageViewModel
 import com.tokopedia.catalogcommon.adapter.CatalogAdapterFactoryImpl
 import com.tokopedia.catalogcommon.adapter.WidgetCatalogAdapter
 import com.tokopedia.catalogcommon.customview.CatalogToolbar
-import com.tokopedia.catalogcommon.uimodel.AccordionInformationUiModel
-import com.tokopedia.catalogcommon.uimodel.BaseCatalogUiModel
 import com.tokopedia.catalogcommon.listener.HeroBannerListener
+import com.tokopedia.catalogcommon.uimodel.AccordionInformationUiModel
 import com.tokopedia.catalogcommon.uimodel.DummyUiModel
 import com.tokopedia.catalogcommon.uimodel.HeroBannerUiModel
 import com.tokopedia.catalogcommon.uimodel.PanelImageUiModel
@@ -34,7 +33,6 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
@@ -91,14 +89,7 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        viewModel.catalogDetailDataModel.observe(viewLifecycleOwner) {
-            if (it is Success) {
-                widgetAdapter.addMoreData(it.data.widgets)
-            }
-            Toaster.build(view, (it as? Success)?.data.toString()).show()
-
-        }
+        setupObservers()
 
         viewModel.getProductCatalog(
             "73177",
@@ -172,7 +163,6 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener {
             widgets.add(AccordionInformationUiModel.dummyAccordion())
             widgetAdapter.addWidget(widgets)
         }
-
     }
 
     override fun onNavBackClicked() {
@@ -185,6 +175,14 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener {
 
     override fun onNavMoreMenuClicked() {
         // no-op
+    }
+
+    private fun setupObservers() {
+        viewModel.catalogDetailDataModel.observe(viewLifecycleOwner) {
+            if (it is Success) {
+                widgetAdapter.addMoreData(it.data.widgets)
+            }
+        }
     }
 
     private fun FragmentCatalogReimagineDetailPageBinding.setupRvWidgets(
