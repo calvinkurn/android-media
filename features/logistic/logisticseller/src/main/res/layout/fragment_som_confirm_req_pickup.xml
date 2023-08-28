@@ -404,7 +404,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="4dp"
-                    android:background="@drawable/sompickup_shadow_top" />
+                    android:background="@drawable/pickup_shadow_top" />
 
                 <com.tokopedia.unifycomponents.UnifyButton
                     android:id="@+id/btn_req_pickup"
