@@ -8,6 +8,7 @@ import com.tokopedia.promousage.R
 import com.tokopedia.promousage.databinding.PromoUsageTncBottomsheetBinding
 import com.tokopedia.promousage.domain.entity.PromoPageEntryPoint
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import com.tokopedia.webview.BaseSessionWebViewFragment
@@ -100,10 +101,7 @@ class PromoUsageTncBottomSheet : BottomSheetUnify() {
         source: String,
         userId: String
     ): String {
-        // TODO: Replace using real tokopedia URL
-//        return Uri.parse(TokopediaUrl.getInstance().WEB)
-//            .buildUpon()
-        val builder = Uri.parse("https://81-staging-feature.tokopedia.com/")
+        val builder = Uri.parse(TokopediaUrl.getInstance().WEB)
             .buildUpon()
             .path(PATH_PROMO_TNC)
             .appendQueryParameter(QUERY_KEY_CODES, promoCodes.joinToString(","))
