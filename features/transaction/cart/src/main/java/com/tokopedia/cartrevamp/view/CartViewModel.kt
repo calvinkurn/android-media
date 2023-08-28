@@ -94,6 +94,7 @@ import com.tokopedia.logisticcart.shipping.model.Product
 import com.tokopedia.logisticcart.shipping.model.RatesParam
 import com.tokopedia.logisticcart.shipping.model.ShippingParam
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.productbundlewidget.model.BundleDetailUiModel
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField
@@ -1773,8 +1774,17 @@ class CartViewModel @Inject constructor(
             try {
                 addToCartUseCase.setParams(addToCartRequestParams)
                 val addToCartDataModel = addToCartUseCase.executeOnBackground()
-                _globalEvent.value = CartGlobalEvent.ProgressLoading(false)
-                _addToCartEvent.value = AddToCartEvent.Success(addToCartDataModel, productModel)
+                if (addToCartDataModel.status.equals(
+                        AddToCartDataModel.STATUS_OK,
+                        true
+                    ) && addToCartDataModel.data.success == 1
+                ) {
+                    _addToCartEvent.value = AddToCartEvent.Success(addToCartDataModel, productModel)
+                } else {
+                    if (addToCartDataModel.errorMessage.size > 0) {
+                        throw ResponseErrorException(addToCartDataModel.errorMessage[0])
+                    }
+                }
             } catch (t: Throwable) {
                 _addToCartEvent.value = AddToCartEvent.Failed(t)
             }

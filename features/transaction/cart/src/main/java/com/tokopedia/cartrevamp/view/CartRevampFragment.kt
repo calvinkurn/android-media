@@ -2286,29 +2286,20 @@ class CartRevampFragment :
         viewModel.addToCartEvent.observe(viewLifecycleOwner) { addToCartEvent ->
             when (addToCartEvent) {
                 is AddToCartEvent.Success -> {
-                    if (addToCartEvent.addToCartDataModel.status.equals(
-                            AddToCartDataModel.STATUS_OK,
-                            true
-                        ) && addToCartEvent.addToCartDataModel.data.success == 1
-                    ) {
-                        triggerSendEnhancedEcommerceAddToCartSuccess(
-                            addToCartEvent.addToCartDataModel,
-                            addToCartEvent.productModel
-                        )
-                        resetRecentViewList()
-                        viewModel.processInitialGetCartData(
-                            cartId = "0",
-                            initialLoad = false,
-                            isLoadingTypeRefresh = false
-                        )
-                        if (addToCartEvent.addToCartDataModel.data.message.size > 0) {
-                            showToastMessageGreen(addToCartEvent.addToCartDataModel.data.message[0])
-                            notifyBottomCartParent()
-                        }
-                    } else {
-                        if (addToCartEvent.addToCartDataModel.errorMessage.size > 0) {
-                            showToastMessageRed(addToCartEvent.addToCartDataModel.errorMessage[0])
-                        }
+                    hideProgressLoading()
+                    triggerSendEnhancedEcommerceAddToCartSuccess(
+                        addToCartEvent.addToCartDataModel,
+                        addToCartEvent.productModel
+                    )
+                    resetRecentViewList()
+                    viewModel.processInitialGetCartData(
+                        cartId = "0",
+                        initialLoad = false,
+                        isLoadingTypeRefresh = false
+                    )
+                    if (addToCartEvent.addToCartDataModel.data.message.size > 0) {
+                        showToastMessageGreen(addToCartEvent.addToCartDataModel.data.message[0])
+                        notifyBottomCartParent()
                     }
                 }
 
