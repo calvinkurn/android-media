@@ -12,11 +12,11 @@ import com.tokopedia.scp_rewards_widgets.common.VerticalSpacing
 import com.tokopedia.scp_rewards_widgets.databinding.WidgetMedalTaskProgressBinding
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import java.util.*
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 class WidgetMedalTaskProgress(private val context: Context, attrs: AttributeSet?) : ConstraintLayout(context, attrs) {
 
     private val binding = WidgetMedalTaskProgressBinding.inflate(LayoutInflater.from(context), this)
-
 
     private val taskAdapter: BaseAdapter<TasksViewTypeFactory> by lazy {
         BaseAdapter(TasksViewTypeFactory())
@@ -27,7 +27,7 @@ class WidgetMedalTaskProgress(private val context: Context, attrs: AttributeSet?
     }
 
     init {
-        background = ContextCompat.getDrawable(context, com.tokopedia.unifycomponents.R.drawable.card_border)
+        background = ContextCompat.getDrawable(context, unifycomponentsR.drawable.card_border)
         binding.progressBar.progressBarHeight = ProgressBarUnify.SIZE_MEDIUM
 
         binding.rvTasks.apply {
@@ -36,7 +36,6 @@ class WidgetMedalTaskProgress(private val context: Context, attrs: AttributeSet?
             addItemDecoration(VerticalSpacing(ITEM_VERTICAL_SPACING))
         }
     }
-
 
     fun bindData(taskProgress: TaskProgress) {
         binding.tvProgress.text = taskProgress.title
@@ -52,5 +51,4 @@ class WidgetMedalTaskProgress(private val context: Context, attrs: AttributeSet?
             taskAdapter.setVisitables(it)
         }
     }
-
 }

@@ -40,6 +40,7 @@ import com.tokopedia.scp_rewards_widgets.medal.MedalItem
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class MedalCabinetFragment : BaseDaggerFragment() {
 
@@ -232,7 +233,7 @@ class MedalCabinetFragment : BaseDaggerFragment() {
         (activity as AppCompatActivity?)?.apply {
             window?.statusBarColor = ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_NN0)
             binding.toolbar.setBackgroundColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_NN0))
-            setToolbarBackButtonTint(com.tokopedia.unifyprinciples.R.color.Unify_NN900)
+            setToolbarBackButtonTint(unifyprinciplesR.color.Unify_NN900)
 
             windowInsetsController?.isAppearanceLightStatusBars = true
         }
@@ -284,7 +285,7 @@ class MedalCabinetFragment : BaseDaggerFragment() {
 
     private fun handleError(scpError: Error) {
         setWhiteStatusBar()
-        setToolbarBackButtonTint(com.tokopedia.unifyprinciples.R.color.Unify_NN900)
+        setToolbarBackButtonTint(unifyprinciplesR.color.Unify_NN900)
         binding.loadContainer.loaderFlipper.displayedChild = 1
 
         val error = scpError.error

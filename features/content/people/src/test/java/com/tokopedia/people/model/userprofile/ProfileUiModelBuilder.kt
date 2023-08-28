@@ -17,12 +17,12 @@ class ProfileUiModelBuilder {
         name: String = "Jonathan Darwin",
         username: String = "jonathandarwin",
         biography: String = "testing",
-        badges: List<String> = emptyList(),
         stats: ProfileStatsUiModel = ProfileStatsUiModel.Empty,
         shareLink: LinkUiModel = LinkUiModel.Empty,
         liveInfo: LivePlayChannelUiModel = LivePlayChannelUiModel.Empty,
         isBlocking: Boolean = false,
         isBlockedBy: Boolean = false,
+        badges: List<ProfileUiModel.Badge> = emptyList()
     ) = ProfileUiModel(
         userID = userID,
         encryptedUserID = encryptedUserID,
@@ -30,11 +30,11 @@ class ProfileUiModelBuilder {
         name = name,
         username = username,
         biography = biography,
-        badges = badges,
         stats = stats,
         shareLink = shareLink,
         liveInfo = liveInfo,
         isBlocking = isBlocking,
         isBlockedBy = isBlockedBy,
+        badges = badges
     )
 }

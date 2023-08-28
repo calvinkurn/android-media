@@ -17,6 +17,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.scp_rewards_touchpoints.R
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ScpCouponView @JvmOverloads constructor(
     context: Context,
@@ -26,7 +27,7 @@ class ScpCouponView @JvmOverloads constructor(
     companion object {
         private const val EDGE_RADIUS_MULTIPLIER = 10f
     }
-    var circularEdgeColor = ContextCompat.getColor(context,com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+    var circularEdgeColor = ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN0)
         set(value) {
             field = value
             refresh()
@@ -141,13 +142,13 @@ class ScpCouponView @JvmOverloads constructor(
 
     private fun applyLoopingAnimatedVectorDrawable() {
         shimmerPlaceholder?.registerAnimationCallback(object :
-            Animatable2Compat.AnimationCallback() {
-            override fun onAnimationEnd(drawable: Drawable?) {
-                post {
-                    shimmerPlaceholder?.start()
+                Animatable2Compat.AnimationCallback() {
+                override fun onAnimationEnd(drawable: Drawable?) {
+                    post {
+                        shimmerPlaceholder?.start()
+                    }
                 }
-            }
-        })
+            })
         shimmerPlaceholder?.start()
     }
 

@@ -2,16 +2,17 @@ package com.tokopedia.people.views.fragment
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.Activity.RESULT_OK
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewGroup.MarginLayoutParams
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
-import androidx.core.view.updateMarginsRelative
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
@@ -24,6 +25,7 @@ import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.content.common.navigation.people.UserProfileActivityResult
 import com.tokopedia.content.common.navigation.people.UserProfileParam
 import com.tokopedia.content.common.navigation.shorts.PlayShorts
 import com.tokopedia.content.common.navigation.shorts.PlayShortsParam
@@ -71,6 +73,7 @@ import com.tokopedia.people.views.activity.FollowerFollowingListingActivity
 import com.tokopedia.people.views.activity.ProfileSettingsActivity
 import com.tokopedia.people.views.activity.UserProfileActivity.Companion.EXTRA_USERNAME
 import com.tokopedia.people.views.adapter.UserProfilePagerAdapter
+import com.tokopedia.people.views.fragment.bottomsheet.UserProfileBadgeBottomSheet
 import com.tokopedia.people.views.fragment.bottomsheet.UserProfileOptionBottomSheet
 import com.tokopedia.people.views.fragment.bottomsheet.UserProfileReviewOnboardingBottomSheet
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
@@ -81,6 +84,7 @@ import com.tokopedia.people.views.uimodel.profile.ProfileTabUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileType
 import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
 import com.tokopedia.people.views.uimodel.state.UserProfileUiState
+import com.tokopedia.play_common.view.loadImage
 import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.UnifyButton
@@ -95,7 +99,6 @@ import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomshee
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import java.net.SocketTimeoutException
 import java.net.URLEncoder
@@ -175,6 +178,11 @@ class UserProfileFragment @Inject constructor(
         ) {
             refreshLandingPageData(isRefreshPost = true)
         }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setupAttachChildFragmentListener()
     }
 
     override fun onCreateView(
@@ -260,6 +268,38 @@ class UserProfileFragment @Inject constructor(
         _binding = null
     }
 
+    private fun setupAttachChildFragmentListener() {
+        childFragmentManager.addFragmentOnAttachListener { _, fragment ->
+            if (fragment is UserProfileBadgeBottomSheet) {
+                fragment.setDataSource(object : UserProfileBadgeBottomSheet.DataSource {
+                    override fun badges() = viewModel.badges
+                })
+            }
+        }
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        requireActivity().onBackPressedDispatcher.addCallback(
+            this,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    requireActivity().apply {
+                        setResult(
+                            RESULT_OK,
+                            UserProfileActivityResult.createResult(
+                                viewModel.profileUserID,
+                                viewModel.isFollowed
+                            )
+                        )
+                        finish()
+                    }
+                }
+            }
+        )
+    }
+
     override fun onAttachFragment(childFragment: Fragment) {
         super.onAttachFragment(childFragment)
         when (childFragment) {
@@ -322,7 +362,7 @@ class UserProfileFragment @Inject constructor(
     private fun initListener() {
         mainBinding.apply {
             layoutUserProfileStats.llFollower.setOnClickListener { goToFollowingFollowerPage(isFollowers = true) }
-            layoutUserProfileStats.llFollowing.setOnClickListener { goToFollowingFollowerPage(isFollowers =false) }
+            layoutUserProfileStats.llFollowing.setOnClickListener { goToFollowingFollowerPage(isFollowers = false) }
             shopRecommendation.setListener(this@UserProfileFragment, this@UserProfileFragment)
 
             textSeeMore.setOnClickListener {
@@ -471,7 +511,7 @@ class UserProfileFragment @Inject constructor(
                         userProfileSharedPref.setHasBeenShown(UserProfileSharedPref.Key.ReviewOnboarding)
                     }
                     else -> {
-                        //no-op
+                        // no-op
                     }
                 }
             }
@@ -496,12 +536,15 @@ class UserProfileFragment @Inject constructor(
 
         if (pagerAdapter.getTabs().isEmpty()) return
 
-        if (pagerAdapter.getFeedsTabs().isNotEmpty())
+        if (pagerAdapter.getFeedsTabs().isNotEmpty()) {
             viewModel.submitAction(UserProfileAction.LoadFeedPosts(isRefresh = true))
-        if (pagerAdapter.getVideoTabs().isNotEmpty())
+        }
+        if (pagerAdapter.getVideoTabs().isNotEmpty()) {
             viewModel.submitAction(UserProfileAction.LoadPlayVideo(isRefresh = true))
-        if (pagerAdapter.getReviewTabs().isNotEmpty())
+        }
+        if (pagerAdapter.getReviewTabs().isNotEmpty()) {
             viewModel.submitAction(UserProfileAction.LoadUserReview(isRefresh = true))
+        }
     }
 
     private fun addLiveClickListener(appLink: String) {
@@ -562,6 +605,7 @@ class UserProfileFragment @Inject constructor(
                 textUserName.text = getString(R.string.up_username_template, curr.username)
             }
             textDisplayName.text = curr.name
+            setProfileBadge(curr.badges)
             layoutUserProfileStats.textContentCount.text = curr.stats.totalPostFmt
             layoutUserProfileStats.textReviewCount.text = curr.stats.totalReviewFmt
             layoutUserProfileStats.textFollowerCount.text = curr.stats.totalFollowerFmt
@@ -621,7 +665,7 @@ class UserProfileFragment @Inject constructor(
 
         mainBinding.btnAction.showWithCondition(
             value.profileType != ProfileType.Unknown &&
-            !isShowProfileReminder(value)
+                !isShowProfileReminder(value)
         )
     }
 
@@ -644,7 +688,7 @@ class UserProfileFragment @Inject constructor(
 
         mainBinding.btnOption.showWithCondition(
             value.profileType != ProfileType.Unknown &&
-            !isShowProfileReminder(value)
+                !isShowProfileReminder(value)
         )
 
         mainBinding.btnOption.setOnClickListener {
@@ -708,8 +752,9 @@ class UserProfileFragment @Inject constructor(
 
         mainBinding.shopRecommendation.setData(shopRecom)
 
-        if (value.shopRecom.items.isEmpty()) mainBinding.shopRecommendation.hide()
-        else {
+        if (value.shopRecom.items.isEmpty()) {
+            mainBinding.shopRecommendation.hide()
+        } else {
             mainBinding.shopRecommendation.show()
             mainBinding.shopRecommendation.showContentShopRecom()
         }
@@ -872,6 +917,23 @@ class UserProfileFragment @Inject constructor(
                 imgProfileImage.setOnClickListener {
                     userProfileTracker.clickProfilePicture(userSession.userId, self = viewModel.isSelfProfile, profile.liveInfo.channelId)
                 }
+            }
+        }
+    }
+
+    private fun setProfileBadge(badges: List<ProfileUiModel.Badge>) {
+        if (badges.isEmpty()) return
+
+        val badge = badges.first()
+        mainBinding.iconBadge.loadImage(badge.url)
+        mainBinding.iconBadge.visible()
+
+        if (badge.clickable && badge.detail != null) {
+            mainBinding.iconBadge.setOnClickListener {
+                UserProfileBadgeBottomSheet.getOrCreate(
+                    childFragmentManager,
+                    requireContext().classLoader
+                ).show(childFragmentManager)
             }
         }
     }

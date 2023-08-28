@@ -18,7 +18,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.addongifting.R
-import com.tokopedia.addongifting.addonbottomsheet.data.saveaddonstate.SaveAddOnStateResponse
 import com.tokopedia.addongifting.addonbottomsheet.view.adapter.AddOnListAdapter
 import com.tokopedia.addongifting.addonbottomsheet.view.adapter.AddOnListAdapterTypeFactory
 import com.tokopedia.addongifting.addonbottomsheet.view.di.AddOnComponent
@@ -33,6 +32,7 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
+import com.tokopedia.purchase_platform.common.feature.addons.data.response.SaveAddOnStateResponse
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnProductData
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -41,7 +41,6 @@ import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import java.net.ConnectException
 import java.net.SocketTimeoutException
@@ -77,9 +76,9 @@ class AddOnBottomSheet : BottomSheetUnify(), AddOnActionListener, HasComponent<A
 
     override fun getComponent(): AddOnComponent {
         return DaggerAddOnComponent
-                .builder()
-                .baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
-                .build()
+            .builder()
+            .baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
+            .build()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -190,10 +189,13 @@ class AddOnBottomSheet : BottomSheetUnify(), AddOnActionListener, HasComponent<A
         if (errorMessage.isNullOrBlank()) {
             errorMessage = getString(R.string.add_on_toaster_message_failed_save_add_on)
         }
-        Toaster.build(viewBinding.bottomsheetContainer,
-                errorMessage,
-                Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
-                .show()
+        Toaster.build(
+            viewBinding.bottomsheetContainer,
+            errorMessage,
+            Toaster.LENGTH_LONG,
+            Toaster.TYPE_ERROR
+        )
+            .show()
     }
 
     private fun setResultOnSaveAddOn(uiEvent: UiEvent) {
@@ -262,8 +264,13 @@ class AddOnBottomSheet : BottomSheetUnify(), AddOnActionListener, HasComponent<A
     private fun adjustRecyclerViewPadding(viewBinding: LayoutAddOnBottomSheetBinding) {
         with(viewBinding) {
             if (rvAddOn.canScrollVertically(-1) || rvAddOn.canScrollVertically(1) || isBottomSheetFullPage(viewBinding)) {
-                rvAddOn.setPadding(0, 0, 0, rvAddOn.resources?.getDimensionPixelSize(R.dimen.dp_32)
-                        ?: 0)
+                rvAddOn.setPadding(
+                    0,
+                    0,
+                    0,
+                    rvAddOn.resources?.getDimensionPixelSize(R.dimen.dp_32)
+                        ?: 0
+                )
             } else {
                 rvAddOn.setPadding(0, 0, 0, 0)
             }
@@ -276,7 +283,7 @@ class AddOnBottomSheet : BottomSheetUnify(), AddOnActionListener, HasComponent<A
 
         val bottomSheetHeight = (bottomSheetWrapper.parent as? View)?.height ?: 0
         val recyclerViewPaddingBottom = viewBinding.rvAddOn.resources?.getDimensionPixelSize(R.dimen.dp_32)
-                ?: 0
+            ?: 0
         val displayHeight = displayMetrics?.heightPixels ?: 0
         return bottomSheetHeight != 0 && displayHeight != 0 && (bottomSheetHeight + (recyclerViewPaddingBottom / 2)) >= displayHeight
     }
@@ -367,5 +374,4 @@ class AddOnBottomSheet : BottomSheetUnify(), AddOnActionListener, HasComponent<A
     override fun onNeedToMakeEditTextFullyVisible(view: View) {
         viewBinding?.rvAddOn?.smoothScrollBy(SCROLL_X, SCROLL_Y)
     }
-
 }

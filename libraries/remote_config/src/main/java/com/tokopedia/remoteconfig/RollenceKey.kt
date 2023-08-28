@@ -91,4 +91,23 @@ object RollenceKey {
     // Wishlist
     const val WISHLIST_AFFILIATE_TICKER = "aff_ticker_col"
 
+    //New Universal Share BottomSheet in Shop
+    const val NEW_UNIVERSAL_SHARE_BOTTOM_SHEET = "shop_sharing"
+
+    // Search Reimagine
+    const val SEARCH_1_INST_AUTO = "search_1_inst_auto"
+    const val SEARCH_1_INST_AUTO_CONTROL = "control_variant"
+    const val SEARCH_1_INST_AUTO_VARIANT_1 = "variant_1"
+    const val SEARCH_1_INST_AUTO_VARIANT_2 = "variant_2"
+    const val SEARCH_1_INST_AUTO_VARIANT_3 = "variant_3"
+    const val SEARCH_1_INST_AUTO_VARIANT_4 = "variant_4"
+    const val SEARCH_2_COMPONENT = "search_2_component"
+    const val SEARCH_2_COMPONENT_CONTROL = "control_variant"
+    const val SEARCH_2_COMPONENT_CAROUSEL_VAR = "ads_crsl_var"
+    const val SEARCH_2_COMPONENT_QF_VAR = "ads_crsl_qf_var"
+    const val SEARCH_3_PRODUCT_CARD = "search_3_prdcard"
+    const val SEARCH_3_PRODUCT_CARD_CONTROL = "control"
+    const val SEARCH_3_PRODUCT_CARD_PC_VAR = "pc_var"
+    const val SEARCH_3_PRODUCT_CARD_PC_NEWLABEL_VAR = "pc_newlabel_var"
+
 }
