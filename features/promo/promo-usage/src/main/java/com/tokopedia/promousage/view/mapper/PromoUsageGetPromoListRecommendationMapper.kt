@@ -104,7 +104,7 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
                             PromoAccordionHeaderItem(
                                 id = couponSection.id,
                                 title = couponSection.title,
-                                isExpanded = false
+                                isExpanded = !couponSection.isCollapsed
                             )
                         )
                         couponSection.coupons.forEachIndexed { index, coupon ->
@@ -120,13 +120,14 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
                         }
                         val totalPromoInSectionCount = couponSection.coupons.size
                         if (totalPromoInSectionCount > 1) {
+                            val isExpanded = !couponSection.isCollapsed
                             val hiddenPromoCount = totalPromoInSectionCount - 1
                             items.add(
                                 PromoAccordionViewAllItem(
                                     headerId = couponSection.id,
                                     hiddenPromoCount = hiddenPromoCount,
-                                    isExpanded = true,
-                                    isVisible = true
+                                    isExpanded = isExpanded,
+                                    isVisible = isExpanded
                                 )
                             )
                         }
@@ -217,7 +218,7 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
         }
 
         val benefitDetail = coupon.benefitDetails.firstOrNull() ?: BenefitDetail()
-
+        val isExpanded = !couponSection.isCollapsed
         return PromoItem(
             id = coupon.id,
             headerId = couponSection.id,
@@ -278,8 +279,8 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
             isBebasOngkir = coupon.isBebasOngkir || secondaryCoupon.isBebasOngkir,
             isHighlighted = coupon.isHighlighted || secondaryCoupon.isHighlighted,
             isLastRecommended = isRecommended && index == couponSection.coupons.size - 1,
-            isExpanded = index.isZero(),
-            isVisible = index.isZero(),
+            isExpanded = isExpanded && index.isZero(),
+            isVisible = isExpanded && index.isZero(),
         )
     }
 

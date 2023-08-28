@@ -557,7 +557,10 @@ internal class PromoUsageViewModel @Inject constructor(
                     if (item is PromoAccordionHeaderItem && item.id == clickedItem.id) {
                         item.copy(isExpanded = isExpanded)
                     } else if (item is PromoItem && item.headerId == clickedItem.id) {
-                        item.copy(isExpanded = isExpanded)
+                        item.copy(
+                            isExpanded = isExpanded,
+                            isVisible = isExpanded
+                        )
                     } else if (item is PromoAccordionViewAllItem && item.headerId == clickedItem.id) {
                         item.copy(isExpanded = isExpanded)
                     } else {
