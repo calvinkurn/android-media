@@ -13,8 +13,8 @@ import com.tokopedia.localizationchooseaddress.common.ChosenAddress
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.promousage.data.request.GetPromoListRecommendationParam
 import com.tokopedia.promousage.data.request.ValidateUsePromoUsageParam
-import com.tokopedia.promousage.data.response.PromoListRecommendation
 import com.tokopedia.promousage.data.response.GetPromoListRecommendationResponse
+import com.tokopedia.promousage.data.response.PromoListRecommendation
 import com.tokopedia.promousage.domain.entity.BoAdditionalData
 import com.tokopedia.promousage.domain.entity.PromoCta
 import com.tokopedia.promousage.domain.entity.PromoItemState
@@ -397,7 +397,8 @@ internal class PromoUsageViewModel @Inject constructor(
                             return@map newClickedItem
                         } else if (item is PromoRecommendationItem) {
                             if (newClickedItem.state is PromoItemState.Normal
-                                && newClickedItem.isRecommended) {
+                                && newClickedItem.isRecommended
+                            ) {
                                 return@map item.copy(
                                     selectedCodes = item.selectedCodes
                                         .filterNot { it == newClickedItem.code }
@@ -437,7 +438,8 @@ internal class PromoUsageViewModel @Inject constructor(
                         val currentItems = pageState.items
                         val updatedItems = currentItems.map { item ->
                             if (item is PromoItem && item.code != clickedItem.code
-                                && item.shopId > 0 && item.state !is PromoItemState.Disabled) {
+                                && item.shopId > 0 && item.state !is PromoItemState.Disabled
+                            ) {
                                 return@map item.copy(state = PromoItemState.Loading)
                             } else {
                                 return@map item
@@ -476,8 +478,10 @@ internal class PromoUsageViewModel @Inject constructor(
                 val currentItems = pageState.items
                 val updatedItems = currentItems.map { item ->
                     if (item is PromoItem && item.code != selectedItem.code) {
-                        val result = checkAndSetClashOnSelectionEvent(item, selectedItem,
-                            isUseRecommendedPromo)
+                        val result = checkAndSetClashOnSelectionEvent(
+                            item, selectedItem,
+                            isUseRecommendedPromo
+                        )
                         if (!isSelectedPromoCausingClash) {
                             isSelectedPromoCausingClash = result.second
                         }
@@ -492,8 +496,10 @@ internal class PromoUsageViewModel @Inject constructor(
                 val currentItems = pageState.items
                 val updatedItems = currentItems.map { item ->
                     if (item is PromoItem && item.code != selectedItem.code) {
-                        val result = checkAndSetClashOnDeselectionEvent(item, selectedItem,
-                            isUseRecommendedPromo)
+                        val result = checkAndSetClashOnDeselectionEvent(
+                            item, selectedItem,
+                            isUseRecommendedPromo
+                        )
                         return@map result.first
                     } else {
                         return@map item
@@ -523,7 +529,10 @@ internal class PromoUsageViewModel @Inject constructor(
         }
         val primaryClashingInfo = currentItem.clashingInfos
             .firstOrNull { it.code == selectedPromoCode }
-        if (primaryClashingInfo != null && !currentItem.currentClashingPromoCodes.contains(selectedPromoCode)) {
+        if (primaryClashingInfo != null && !currentItem.currentClashingPromoCodes.contains(
+                selectedPromoCode
+            )
+        ) {
             resultItem = resultItem.copy(
 
             )
@@ -567,7 +576,10 @@ internal class PromoUsageViewModel @Inject constructor(
             val updatedItems = currentItems
                 .map { item ->
                     if (item is PromoItem && item.headerId == clickedItem.headerId) {
-                        item.copy(isVisible = true)
+                        item.copy(
+                            isExpanded = true,
+                            isVisible = true
+                        )
                     } else {
                         item
                     }
@@ -1253,7 +1265,8 @@ internal class PromoUsageViewModel @Inject constructor(
         val currentItems = _promoPageUiState.asSuccessOrNull()
             ?.items?.filterIsInstance<PromoItem>()
         if (currentItems != null) {
-            val initialPreSelectedPromoCodes = currentItems.filter { it.isPreSelected }.map { it.code }
+            val initialPreSelectedPromoCodes =
+                currentItems.filter { it.isPreSelected }.map { it.code }
             if (initialPreSelectedPromoCodes.isNotEmpty()) {
                 currentItems.forEach { item ->
                     val code = if (item.useSecondaryPromo) {
@@ -1263,12 +1276,14 @@ internal class PromoUsageViewModel @Inject constructor(
                     }
                     // Case 1
                     if (initialPreSelectedPromoCodes.contains(code)
-                        && item.state !is PromoItemState.Selected) {
+                        && item.state !is PromoItemState.Selected
+                    ) {
                         return true
                     }
                     // Case 2
                     if (!initialPreSelectedPromoCodes.contains(code)
-                        && item.state is PromoItemState.Selected) {
+                        && item.state is PromoItemState.Selected
+                    ) {
                         return true
                     }
                 }

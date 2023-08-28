@@ -229,6 +229,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         val frameDialogView = binding.rlBottomSheetWrapper.parent as FrameLayout
         frameDialogView.setBackgroundColor(Color.TRANSPARENT)
         frameDialogView.bringToFront()
+        frameDialogView.layoutParams.height = maxPeekHeight
         val bottomSheetBehavior = BottomSheetBehavior.from(frameDialogView)
         bottomSheetBehavior.peekHeight = maxPeekHeight
     }
@@ -617,14 +618,14 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
             if (currentPeekHeight == contentHeight) {
                 return@addOneTimeGlobalLayoutListener
             }
-            currentPeekHeight = if (currentPeekHeight < maxPeekHeight) {
+            currentPeekHeight = if (contentHeight < maxPeekHeight) {
                 contentHeight
             } else {
                 maxPeekHeight
             }
             val frameDialogView = binding.rlBottomSheetWrapper.parent as FrameLayout
+            frameDialogView.layoutParams.height = currentPeekHeight
             val bottomSheetBehavior = BottomSheetBehavior.from(frameDialogView)
-            currentPeekHeight = maxPeekHeight
             bottomSheetBehavior.peekHeight = currentPeekHeight
         }
     }

@@ -4,7 +4,6 @@ import android.animation.Animator
 import android.animation.TimeInterpolator
 import android.animation.ValueAnimator
 import android.content.Context
-import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
 import android.os.Handler
@@ -17,7 +16,6 @@ import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -48,6 +46,10 @@ class PromoCompoundView @JvmOverloads constructor(
         private const val ALPHA_20 = 50
         private const val ALPHA_10 = 25
         private const val ALPHA_0 = 0
+
+        private const val COLOR_STRING_BLUE = "blue"
+        private const val COLOR_STRING_GREEN = "green"
+        private const val COLOR_STRING_ORANGE = "orange"
     }
 
     private var scaleAnimator: ValueAnimator = ValueAnimator.ofFloat()
@@ -134,13 +136,23 @@ class PromoCompoundView @JvmOverloads constructor(
                     val cardDetail = promo.cardDetails
                         .firstOrNull { it.state == PromoItemCardDetail.TYPE_INITIAL }
                     if (cardDetail != null && cardDetail.color.isNotBlank()) {
-                        val textColor = Color.parseColor(cardDetail.color)
+                        val textColor =
+                            ContextCompat.getColor(context, getColorRes(cardDetail.color))
                         tpgPromoBenefitType.setTextColor(textColor)
                     }
                 }
             }
             tpgPromoBenefitType.text = promo.benefitTypeStr
             tpgPromoBenefitType.visible()
+        }
+    }
+
+    private fun getColorRes(colorString: String): Int {
+        return when (colorString) {
+            COLOR_STRING_BLUE -> com.tokopedia.unifyprinciples.R.color.Unify_BN500
+            COLOR_STRING_ORANGE -> com.tokopedia.unifyprinciples.R.color.Unify_YN500
+            COLOR_STRING_GREEN -> com.tokopedia.unifyprinciples.R.color.Unify_GN500
+            else -> com.tokopedia.unifyprinciples.R.color.Unify_NN950
         }
     }
 
@@ -166,8 +178,15 @@ class PromoCompoundView @JvmOverloads constructor(
                 val promoInfoChildView = PromoUsageItemSubPromoInfoBinding
                     .inflate(LayoutInflater.from(context))
                 if (IconHelper.shouldShowIcon(promoInfo.icon)) {
-                    promoInfoChildView.iuPromoInfo
-                        .setImage(IconHelper.getIcon(promoInfo.icon))
+                    if (IconHelper.isCustomIcon(promoInfo.icon)) {
+                        promoInfoChildView.iuPromoInfo
+                            .setImageDrawable(
+                                ContextCompat.getDrawable(context, IconHelper.getIcon(promoInfo.icon))
+                            )
+                    } else {
+                        promoInfoChildView.iuPromoInfo
+                            .setImage(IconHelper.getIcon(promoInfo.icon))
+                    }
                 } else {
                     promoInfoChildView.iuPromoInfo.gone()
                 }

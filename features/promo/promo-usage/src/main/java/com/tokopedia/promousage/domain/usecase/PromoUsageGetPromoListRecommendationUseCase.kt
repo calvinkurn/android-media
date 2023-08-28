@@ -47,46 +47,49 @@ class PromoUsageGetPromoListRecommendationUseCase @Inject constructor(
                   coupon_sections {
                     id
                     title
-                    sub_title
-                    icon_url
                     is_enabled
+                    is_collapsed
                     coupons {
                       code
-                      title
+                      benefit_type_str
+                      benefit_amount_str
                       message
                       expiry_info
                       expiry_countdown
-                      coupon_url
-                      coupon_app_link
-                      secondary_coupons {
-                        code
-                        title
-                        message
-                        expiry_info
-                        expiry_countdown
-                        coupon_url
-                        coupon_app_link
-                        unique_id
-                        shop_id
-                        benefit_amount
-                        is_recommended
-                        is_selected
-                        is_attempted
-                        radio_check_state
-                        is_highlighted
-                        group_id
-                        promo_id
-                        is_bebas_ongkir
-                        benefit_adjustment_message
-                        index
-                      }
                       unique_id
                       shop_id
                       benefit_amount
                       is_recommended
                       is_selected
                       is_attempted
+                      is_highlighted
                       radio_check_state
+                      group_id
+                      promo_id
+                      is_bebas_ongkir
+                      index
+                      coupon_type
+                      secondary_coupons {
+                        code
+                        benefit_type_str
+                        benefit_amount_str
+                        message
+                        expiry_info
+                        expiry_countdown
+                        unique_id
+                        shop_id
+                        benefit_amount
+                        is_recommended
+                        is_selected
+                        is_attempted
+                        is_highlighted
+                        radio_check_state
+                        group_id
+                        promo_id
+                        is_bebas_ongkir
+                        index
+                        coupon_type
+                      }
                       clashing_infos {
                         code
                         message
@@ -99,20 +102,6 @@ class PromoUsageGetPromoListRecommendationUseCase @Inject constructor(
                         type
                         json_metadata
                       }
-                      coach_mark {
-                        is_shown
-                        title
-                        content
-                        cta {
-                          text
-                          url
-                          app_link
-                          type
-                          json_metadata
-                        }
-                      }
-                      is_highlighted
-                      group_id
                       promo_infos {
                         title
                         icon
@@ -125,8 +114,6 @@ class PromoUsageGetPromoListRecommendationUseCase @Inject constructor(
                         benefit_type
                         data_type
                       }
-                      promo_id
-                      is_bebas_ongkir
                       bo_clashing_infos {
                         code
                         message
@@ -155,8 +142,6 @@ class PromoUsageGetPromoListRecommendationUseCase @Inject constructor(
                         icon_url
                         background_url
                       }
-                      index
-                      coupon_type
                     }
                   }
                   attempted_promo_code_error {

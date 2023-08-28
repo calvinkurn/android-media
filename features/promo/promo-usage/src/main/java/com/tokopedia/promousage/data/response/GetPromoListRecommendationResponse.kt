@@ -67,7 +67,7 @@ data class EmptyStateResponse(
 data class PromoRecommendation(
     @SerializedName("codes")
     val codes: List<String> = emptyList(),
-    @SerializedName("message")
+    @SerializedName("title")
     val message: String = "",
     @SerializedName("message_selected_state")
     val messageSelected: String = "",
@@ -82,8 +82,8 @@ data class CouponSection(
     val id: String = "",
     @SerializedName("title")
     val title: String = "",
-    @SerializedName("is_collapse")
-    val isCollapse: Boolean = false,
+    @SerializedName("is_collapsed")
+    val isCollapsed: Boolean = false,
     @SerializedName("coupons")
     val coupons: List<Coupon>,
     @SerializedName("coupon_groups")
@@ -97,6 +97,8 @@ data class Coupon(
     val index: Int = 0,
     @SerializedName("code")
     val code: String = "",
+    @SerializedName("title")
+    val title: String = "",
     @SerializedName("message")
     val message: String = "",
     @SerializedName("coupon_type")
@@ -212,10 +214,12 @@ data class AdditionalBoData(
 )
 
 data class PromoInfo(
-    @SerializedName("type")
+    @SerializedName("info_type")
     val type: String = "",
     @SerializedName("title")
-    val title: String = ""
+    val title: String = "",
+    @SerializedName("icon")
+    val icon: String = "",
 )
 
 data class Cta(
@@ -232,6 +236,8 @@ data class SecondaryCoupon(
     val id: String = "",
     @SerializedName("index")
     val index: Int = 0,
+    @SerializedName("message")
+    val message: String = "",
     @SerializedName("code")
     val code: String = "",
     @SerializedName("coupon_type")

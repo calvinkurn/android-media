@@ -1,5 +1,6 @@
 package com.tokopedia.promousage.view.mapper
 
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.promousage.data.response.BenefitDetail
 import com.tokopedia.promousage.data.response.Coupon
 import com.tokopedia.promousage.data.response.CouponCardDetail
@@ -8,11 +9,10 @@ import com.tokopedia.promousage.data.response.GetPromoListRecommendationEntryPoi
 import com.tokopedia.promousage.data.response.GetPromoListRecommendationResponse
 import com.tokopedia.promousage.data.response.PromoRecommendation
 import com.tokopedia.promousage.data.response.SecondaryCoupon
-import com.tokopedia.promousage.domain.entity.PromoAttemptedError
 import com.tokopedia.promousage.domain.entity.BoAdditionalData
+import com.tokopedia.promousage.domain.entity.PromoAttemptedError
 import com.tokopedia.promousage.domain.entity.PromoCta
 import com.tokopedia.promousage.domain.entity.PromoEntryPointInfo
-import com.tokopedia.promousage.domain.entity.list.PromoItem
 import com.tokopedia.promousage.domain.entity.PromoItemBenefitDetail
 import com.tokopedia.promousage.domain.entity.PromoItemCardDetail
 import com.tokopedia.promousage.domain.entity.PromoItemClashingInfo
@@ -25,6 +25,7 @@ import com.tokopedia.promousage.domain.entity.SecondaryPromoItem
 import com.tokopedia.promousage.domain.entity.list.PromoAccordionHeaderItem
 import com.tokopedia.promousage.domain.entity.list.PromoAccordionViewAllItem
 import com.tokopedia.promousage.domain.entity.list.PromoAttemptItem
+import com.tokopedia.promousage.domain.entity.list.PromoItem
 import com.tokopedia.promousage.domain.entity.list.PromoRecommendationItem
 import com.tokopedia.promousage.util.composite.DelegateAdapterItem
 import javax.inject.Inject
@@ -33,7 +34,7 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
 
     fun mapPromoListRecommendationEntryPointResponseToEntryPointInfo(
         response: GetPromoListRecommendationEntryPointResponse
-    ) : PromoEntryPointInfo {
+    ): PromoEntryPointInfo {
         return PromoEntryPointInfo(
             messages = response.promoListRecommendation.data.entryPointInfo.messages,
             iconUrl = response.promoListRecommendation.data.entryPointInfo.iconUrl,
@@ -54,7 +55,7 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
 
     fun mapPromoListRecommendationResponseToSavingInfo(
         response: GetPromoListRecommendationResponse
-    ) : PromoSavingInfo {
+    ): PromoSavingInfo {
         return PromoSavingInfo(
             message = response.promoListRecommendation.data.additionalMessage
         )
@@ -124,8 +125,8 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
                                 PromoAccordionViewAllItem(
                                     headerId = couponSection.id,
                                     hiddenPromoCount = hiddenPromoCount,
-                                    isExpanded = !couponSection.isCollapse,
-                                    isVisible = !couponSection.isCollapse
+                                    isExpanded = true,
+                                    isVisible = true
                                 )
                             )
                         }
@@ -187,7 +188,7 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
         }
         // TODO: Get remaining promo count from BE after available
         val remainingPromoCount = 1
-            //couponSection.couponGroups.firstOrNull { it.id == coupon.groupId }?.count ?: 1
+        //couponSection.couponGroups.firstOrNull { it.id == coupon.groupId }?.count ?: 1
 
         val isRecommended = recommendedPromoCodes.isNotEmpty() &&
             (recommendedPromoCodes.contains(coupon.code)
@@ -242,7 +243,8 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
             promoItemInfos = coupon.promoInfos.map {
                 PromoItemInfo(
                     type = it.type,
-                    title = it.title
+                    title = it.title,
+                    icon = it.icon
                 )
             },
             boAdditionalData = coupon.boAdditionalData.map {
@@ -253,7 +255,7 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
                     shippingId = it.shippingId,
                     spId = it.spId,
 
-                )
+                    )
             },
             expiryInfo = coupon.expiryInfo,
             expiryTimestamp = coupon.expiryCountdown,
@@ -273,8 +275,8 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
             isAttempted = coupon.isAttempted || secondaryCoupon.isAttempted,
             isBebasOngkir = coupon.isBebasOngkir || secondaryCoupon.isBebasOngkir,
             isHighlighted = coupon.isHighlighted || secondaryCoupon.isHighlighted,
-            isExpanded = !couponSection.isCollapse && index == 0,
-            isVisible = !couponSection.isCollapse && index == 0,
+            isExpanded = index.isZero(),
+            isVisible = index.isZero(),
         )
     }
 
@@ -308,7 +310,8 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
             promoItemInfos = secondaryCoupon.promoInfos.map {
                 PromoItemInfo(
                     type = it.type,
-                    title = it.title
+                    title = it.title,
+                    icon = it.icon
                 )
             },
             boAdditionalData = secondaryCoupon.boAdditionalData.map {
@@ -319,7 +322,7 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
                     shippingId = it.shippingId,
                     spId = it.spId,
 
-                )
+                    )
             },
             expiryInfo = secondaryCoupon.expiryInfo,
             expiryTimestamp = secondaryCoupon.expiryCountdown,
@@ -345,7 +348,7 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
 
     fun mapPromoListRecommendationResponseToAttemptedPromoCodeError(
         response: GetPromoListRecommendationResponse
-    ) : PromoAttemptedError {
+    ): PromoAttemptedError {
         return PromoAttemptedError(
             code = response.promoListRecommendation.data.attemptedPromoCodeError.code,
             message = response.promoListRecommendation.data.attemptedPromoCodeError.message
