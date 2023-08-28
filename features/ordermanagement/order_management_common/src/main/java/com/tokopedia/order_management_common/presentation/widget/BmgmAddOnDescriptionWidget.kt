@@ -21,7 +21,7 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.order_management_common.databinding.WidgetProductAddOnDescriptionBinding
+import com.tokopedia.order_management_common.databinding.WidgetBmgmProductAddOnDescriptionBinding
 import com.tokopedia.order_management_common.util.generateHapticFeedback
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.HtmlLinkHelper
@@ -39,7 +39,7 @@ class BmgmAddOnDescriptionWidget @JvmOverloads constructor(
         private const val LABEL_ADD_ON_DESCRIPTION = "addOnDescription"
     }
 
-    private val binding: WidgetProductAddOnDescriptionBinding = inflateContent()
+    private val binding: WidgetBmgmProductAddOnDescriptionBinding = inflateContent()
 
     /*
         this listener is used to synchronize description text, see less text and see more text
@@ -60,8 +60,8 @@ class BmgmAddOnDescriptionWidget @JvmOverloads constructor(
         setupViews()
     }
 
-    private fun inflateContent(): WidgetProductAddOnDescriptionBinding {
-        return WidgetProductAddOnDescriptionBinding.inflate(
+    private fun inflateContent(): WidgetBmgmProductAddOnDescriptionBinding {
+        return WidgetBmgmProductAddOnDescriptionBinding.inflate(
             LayoutInflater.from(context),
             this,
             true
