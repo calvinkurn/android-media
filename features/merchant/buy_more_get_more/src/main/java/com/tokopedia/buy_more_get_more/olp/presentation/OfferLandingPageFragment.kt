@@ -386,7 +386,7 @@ class OfferLandingPageFragment :
                     headerBackground.visible()
                     stickyContent.visible()
                     errorPageLarge.gone()
-                    miniCartPlaceholder.visible()
+                    miniCartView.visible()
                 }
             }
         }
@@ -471,7 +471,7 @@ class OfferLandingPageFragment :
 
     private fun fetchMiniCart() {
         val currentUiState = viewModel.currentState
-        binding?.miniCartPlaceholder?.fetchData(
+        binding?.miniCartView?.fetchData(
             offerIds = currentUiState.offerIds.map { it.toLong() },
             offerJsonData = currentUiState.offeringJsonData,
             warehouseIds = currentUiState.warehouseIds.map { it.toString() }
