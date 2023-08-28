@@ -148,7 +148,6 @@ class PromoUsageGetPromoListRecommendationUseCase @Inject constructor(
                     code
                     message
                   }
-                  additional_message
                   entry_point_info {
                     messages
                     state
@@ -160,6 +159,7 @@ class PromoUsageGetPromoListRecommendationUseCase @Inject constructor(
                     icon_url
                     background_url
                   }
+                  additional_message
                   user_group_metadata
                 }
               }
