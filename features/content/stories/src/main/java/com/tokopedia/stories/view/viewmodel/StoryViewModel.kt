@@ -82,7 +82,7 @@ class StoryViewModel @Inject constructor(
     private fun handleGroupMainData(selectedGroup: Int) {
         mGroupPosition.value = selectedGroup
         updateGroupSelectedIndicator()
-        setDetailData()
+        setInitialDetailData()
     }
 
     private fun handleNext() {
@@ -90,7 +90,7 @@ class StoryViewModel @Inject constructor(
         val newDetailPosition = mDetailPosition.value.plus(1)
 
         if (newDetailPosition < mGroupItem.detail.detailItems.size) {
-            updateStoryDetailData(detailPosition = newDetailPosition)
+            updateStoryDetailData(position = newDetailPosition)
         } else {
             handleSetGroup(newGroupPosition)
         }
@@ -98,10 +98,10 @@ class StoryViewModel @Inject constructor(
 
     private fun handlePrevious() {
         if (mDetailPosition.value > 0) {
-            updateStoryDetailData(detailPosition = mDetailPosition.value.minus(1))
+            updateStoryDetailData(position = mDetailPosition.value.minus(1))
         } else {
             if (mGroupPosition.value > 0) handleSetGroup(mGroupPosition.value.minus(1))
-            else updateStoryDetailData(detailPosition = mDetailPosition.value)
+            else updateStoryDetailData(position = mDetailPosition.value)
         }
     }
 
@@ -119,7 +119,7 @@ class StoryViewModel @Inject constructor(
         }
     }
 
-    private fun setDetailData() {
+    private fun setInitialDetailData() {
         viewModelScope.launchCatchError(block = {
             val isCached = mGroupItem.detail != StoryDetailUiModel()
 
@@ -130,7 +130,8 @@ class StoryViewModel @Inject constructor(
                 newDetail
             }
 
-            updateStoryDetailData(detailPosition = detailData.selectedDetail)
+            Timber.d("data ${detailData.selectedPositionCached}")
+            updateStoryDetailData(position = detailData.selectedPositionCached)
         }) { exception ->
             Timber.d("fail fetch new detail $exception")
         }
@@ -150,7 +151,7 @@ class StoryViewModel @Inject constructor(
     private fun updateGroupSelectedIndicator() {
         _storyGroup.update { group ->
             group.copy(
-                selectedGroup = mGroupPosition.value,
+                selectedPosition = mGroupPosition.value,
                 groupItems = group.groupItems.mapIndexed { index, item ->
                     item.copy(isSelected = index == mGroupPosition.value,)
                 }
@@ -159,16 +160,18 @@ class StoryViewModel @Inject constructor(
     }
 
     private fun updateStoryDetailData(
-        detailPosition: Int = mDetailPosition.value,
+        position: Int = mDetailPosition.value,
         event: StoryDetailItemUiEvent = StoryDetailItemUiEvent.PAUSE,
     ) {
-        mDetailPosition.value = detailPosition
+        mDetailPosition.value = position
+        val positionCached = mGroupItem.detail.selectedPositionCached
         val currentDetail = mGroupItem.detail.copy(
-            selectedDetail = detailPosition,
+            selectedPosition = position,
+            selectedPositionCached = if (positionCached <= position) position else positionCached,
             detailItems = mGroupItem.detail.detailItems.mapIndexed { index, item ->
                 item.copy(
                     event = event,
-                    isSelected = index == detailPosition,
+                    isSelected = index == position,
                 )
             }
         )

@@ -101,7 +101,7 @@ class StoryDetailFragment @Inject constructor(
         if (prevState == state || state == StoryDetailUiModel()) return
 
         storyDetailsTimer(state)
-        val detailItem = state.detailItems[state.selectedDetail]
+        val detailItem = state.detailItems[state.selectedPosition]
         binding.ivStoryDetailContent.apply {
             setImageUrl(detailItem.imageContent)
             onUrlLoaded = {
@@ -116,9 +116,9 @@ class StoryDetailFragment @Inject constructor(
                 setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
                 setContent {
                     StoryDetailTimer(
-                        currentPosition = state.selectedDetail,
+                        currentPosition = state.selectedPosition,
                         itemCount = state.detailItems.size,
-                        data = state.detailItems[state.selectedDetail],
+                        data = state.detailItems[state.selectedPosition],
                     ) { viewModelAction(NextDetail) }
                 }
             }

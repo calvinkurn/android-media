@@ -16,7 +16,7 @@ class StoryMapperImpl @Inject constructor() : StoryMapper {
         dataDetail: StoryDetailsResponseModel
     ): StoryGroupUiModel {
         return StoryGroupUiModel(
-            selectedGroup = dataGroup.data.meta.selectedGroupIndex,
+            selectedPosition = dataGroup.data.meta.selectedGroupIndex,
             groupItems = dataGroup.data.groups.mapIndexed { indexGroup, group ->
                 StoryGroupItemUiModel(
                     id = group.value,
@@ -25,7 +25,8 @@ class StoryMapperImpl @Inject constructor() : StoryMapper {
                     isSelected = dataGroup.data.meta.selectedGroupIndex == indexGroup,
                     detail = if (dataGroup.data.meta.selectedGroupIndex == indexGroup) {
                         StoryDetailUiModel(
-                            selectedDetail = dataDetail.data.meta.selectedStoryIndex,
+                            selectedPosition = dataDetail.data.meta.selectedStoryIndex,
+                            selectedPositionCached = dataDetail.data.meta.selectedStoryIndex,
                             detailItems = dataDetail.data.stories.mapIndexed { indexDetail, story ->
                                 StoryDetailItemUiModel(
                                     id = story.id,
@@ -43,7 +44,8 @@ class StoryMapperImpl @Inject constructor() : StoryMapper {
 
     override fun mapStoryDetailRequest(dataDetail: StoryDetailsResponseModel): StoryDetailUiModel {
         return StoryDetailUiModel(
-            selectedDetail = dataDetail.data.meta.selectedStoryIndex,
+            selectedPosition = dataDetail.data.meta.selectedStoryIndex,
+            selectedPositionCached = dataDetail.data.meta.selectedStoryIndex,
             detailItems = dataDetail.data.stories.mapIndexed { indexDetail, story ->
                 StoryDetailItemUiModel(
                     id = story.id,

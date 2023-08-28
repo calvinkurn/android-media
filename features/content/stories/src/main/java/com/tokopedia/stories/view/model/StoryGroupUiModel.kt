@@ -1,7 +1,7 @@
 package com.tokopedia.stories.view.model
 
 data class StoryGroupUiModel(
-    val selectedGroup: Int = -1,
+    val selectedPosition: Int = -1,
     val groupItems: List<StoryGroupItemUiModel> = emptyList(),
 )
 
@@ -14,7 +14,8 @@ data class StoryGroupItemUiModel(
 )
 
 data class StoryDetailUiModel(
-    val selectedDetail: Int = -1,
+    val selectedPosition: Int = -1,
+    val selectedPositionCached: Int = -1,
     val detailItems: List<StoryDetailItemUiModel> = emptyList(),
 )
 
