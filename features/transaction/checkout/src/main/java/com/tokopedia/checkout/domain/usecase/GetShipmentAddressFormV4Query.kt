@@ -399,6 +399,7 @@ const val SHIPMENT_ADDRESS_FORM_V4_QUERY =
                 Title
                 Nominal
                 Description
+                icon_url
               }
               cod {
                 is_cod
@@ -410,6 +411,7 @@ const val SHIPMENT_ADDRESS_FORM_V4_QUERY =
                 message_logo
               }
               egold_attributes {
+                icon_url
                 eligible
                 is_tiering
                 is_opt_in

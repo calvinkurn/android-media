@@ -102,6 +102,7 @@ object CheckoutCrossSellItemView {
         itemBinding: ItemCheckoutCrossSellItemBinding,
         listener: CheckoutAdapterListener
     ) {
+        itemBinding.ivCheckoutCrossSellItem.setImageUrl(donationModel.donation.iconUrl)
         itemBinding.tvCheckoutCrossSellItem.text = HtmlLinkHelper(
             itemBinding.root.context,
             "${donationModel.donation.title} (${
@@ -159,6 +160,7 @@ object CheckoutCrossSellItemView {
                 )
             }
         }
+        itemBinding.ivCheckoutCrossSellItem.setImageUrl(egoldModel.egoldAttributeModel.iconUrl)
         itemBinding.tvCheckoutCrossSellItem.text = HtmlLinkHelper(
             itemBinding.root.context,
             "${egoldModel.egoldAttributeModel.titleText ?: ""} (${
