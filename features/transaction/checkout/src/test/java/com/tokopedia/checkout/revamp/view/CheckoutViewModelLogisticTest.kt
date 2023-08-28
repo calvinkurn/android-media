@@ -1339,7 +1339,7 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
                 CheckoutPromoModel(promo = LastApplyUiModel()),
                 CheckoutCostModel(totalPrice = 100.0, totalPriceString = "Rp100", hasSelectAllShipping = true, shippingInsuranceFee = 100.0, totalOtherFee = 100.0),
                 CheckoutCrossSellGroupModel(),
-                CheckoutButtonPaymentModel(totalPrice = "Rp100", enable = true, useInsurance = true)
+                CheckoutButtonPaymentModel(totalPrice = "Rp100", totalPriceNum = 100.0, enable = true, useInsurance = true)
             ),
             viewModel.listData.value
         )

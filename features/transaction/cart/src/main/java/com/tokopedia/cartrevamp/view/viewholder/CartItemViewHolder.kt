@@ -22,10 +22,13 @@ import com.tokopedia.cartrevamp.view.adapter.cart.CartItemAdapter
 import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData.Companion.BUNDLING_ITEM_FOOTER
 import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData.Companion.BUNDLING_ITEM_HEADER
+import com.tokopedia.cartrevamp.view.uimodel.CartMainCoachMarkUiModel
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
@@ -50,7 +53,7 @@ import java.util.*
 class CartItemViewHolder constructor(
     private val binding: ItemCartProductRevampBinding,
     private var actionListener: CartItemAdapter.ActionListener?,
-    private var mainCoachMark: Pair<CoachMark2?, ArrayList<CoachMark2Item>>
+    private var mainCoachMark: CartMainCoachMarkUiModel
 ) : RecyclerView.ViewHolder(binding.root) {
 
     private var viewHolderListener: ViewHolderListener? = null
@@ -77,7 +80,7 @@ class CartItemViewHolder constructor(
         this.viewHolderListener = viewHolderListener
         this.dataSize = dataSize
 
-        initCoachmark()
+        initCoachMark()
         setNoteAnimationResource()
         renderAlpha(data)
         renderContainer(data)
@@ -89,28 +92,27 @@ class CartItemViewHolder constructor(
         renderProductAction(data)
     }
 
-    private fun initCoachmark() {
-        if (mainCoachMark.first != null && !CoachMarkPreference.hasShown(
+    private fun initCoachMark() {
+        if (mainCoachMark.coachMark != null && !CoachMarkPreference.hasShown(
                 itemView.context,
                 CART_MAIN_COACH_MARK
             )
         ) {
-            val coachMarkItems = mainCoachMark.second
+            val coachMarkItems = mainCoachMark.coachMarkItems
             val wishlistCoachMark = CoachMark2Item(
                 binding.buttonToggleWishlist,
-                "",
-                "Mau simpan produk di Wishlist juga bisa. Cukup dengan klik ikon hati ini aja!",
+                String.EMPTY,
+                mainCoachMark.wishlistOnBoardingData.text,
                 CoachMark2.POSITION_BOTTOM
             )
             val noteCoachMark = CoachMark2Item(
                 binding.buttonChangeNote,
-                "",
-                "Mau titip pesan ke penjual soal produk belanjaanmu? Klik ikon ini buat tulis catatanmu.",
+                String.EMPTY,
+                mainCoachMark.noteOnBoardingData.text,
                 CoachMark2.POSITION_BOTTOM
             )
-            coachMarkItems.add(0, wishlistCoachMark)
-            coachMarkItems.add(0, noteCoachMark)
-            mainCoachMark.first!!.showCoachMark(coachMarkItems)
+            coachMarkItems.addAll(Int.ZERO, listOf(noteCoachMark, wishlistCoachMark))
+            mainCoachMark.coachMark?.showCoachMark(coachMarkItems)
             CoachMarkPreference.setShown(itemView.context, CART_MAIN_COACH_MARK, true)
         }
     }
@@ -845,7 +847,7 @@ class CartItemViewHolder constructor(
     }
 
     private fun renderQuantityLeft(data: CartItemHolderData) {
-        if (data.productQtyLeft.isNotBlank()) {
+        if (data.productQtyLeft.isNotBlank() && !data.isError) {
             binding.textQtyLeft.text = data.productQtyLeft
             binding.textQtyLeft.show()
             actionListener?.onCartItemShowRemainingQty(data.productId)
@@ -1272,8 +1274,8 @@ class CartItemViewHolder constructor(
         }
     }
 
-    fun getMinQuantityView(): IconUnify {
-        return binding.qtyEditorProduct.subtractButton
+    fun getItemViewBinding(): ItemCartProductRevampBinding {
+        return binding
     }
 
     interface ViewHolderListener {
@@ -1298,8 +1300,6 @@ class CartItemViewHolder constructor(
         const val ALPHA_HALF = 0.5f
         const val ALPHA_FULL = 1.0f
 
-        private const val CART_MAIN_COACH_MARK = "cart_main_coach_mark"
-
         private const val DEFAULT_DIVIDER_HEIGHT = 2
         private const val IMAGE_PRODUCT_MARGIN_START_6 = 6
         private const val MARGIN_VERTICAL_SEPARATOR = 8
@@ -1308,5 +1308,7 @@ class CartItemViewHolder constructor(
         private const val PRODUCT_ACTION_MARGIN = 16
         private const val BUNDLING_SEPARATOR_MARGIN_START = 38
         private const val BOTTOM_DIVIDER_MARGIN_START = 114
+
+        private const val CART_MAIN_COACH_MARK = "cart_main_coach_mark"
     }
 }

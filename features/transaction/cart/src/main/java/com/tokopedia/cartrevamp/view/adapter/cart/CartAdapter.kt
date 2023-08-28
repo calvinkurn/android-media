@@ -28,6 +28,7 @@ import com.tokopedia.cartrevamp.view.uimodel.CartGroupHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartItemTickerErrorHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartLoadingHolderData
+import com.tokopedia.cartrevamp.view.uimodel.CartMainCoachMarkUiModel
 import com.tokopedia.cartrevamp.view.uimodel.CartRecentViewHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartRecommendationItemHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartSectionHeaderHolderData
@@ -56,7 +57,6 @@ import com.tokopedia.cartrevamp.view.viewholder.DisabledCollapsedViewHolder
 import com.tokopedia.cartrevamp.view.viewholder.DisabledItemHeaderViewHolder
 import com.tokopedia.cartrevamp.view.viewholder.DisabledReasonViewHolder
 import com.tokopedia.coachmark.CoachMark2
-import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.purchase_platform.common.feature.sellercashback.SellerCashbackListener
 import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackModel
 import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackViewHolder
@@ -79,8 +79,7 @@ class CartAdapter constructor(
     private var cartRecentViewAdapter: CartRecentViewAdapter? = null
 
     private var plusCoachMark: CoachMark2? = null
-    private var mainCoachMark: Pair<CoachMark2?, ArrayList<CoachMark2Item>> = Pair(null, arrayListOf())
-    private var bulkActionCoachMark: Pair<CoachMark2?, ArrayList<CoachMark2Item>> = Pair(null, arrayListOf())
+    private var mainCoachMark: CartMainCoachMarkUiModel = CartMainCoachMarkUiModel()
 
     companion object {
         const val SELLER_CASHBACK_ACTION_INSERT = 1
@@ -478,8 +477,8 @@ class CartAdapter constructor(
         plusCoachMark = coachMark
     }
 
-    fun setMainCoachMark(coachMark: CoachMark2, items: ArrayList<CoachMark2Item>) {
-        mainCoachMark = Pair(coachMark, items)
+    fun setMainCoachMark(coachMark: CartMainCoachMarkUiModel) {
+        mainCoachMark = coachMark
     }
 
     override fun onNeedToRefreshSingleProduct(childPosition: Int) {
