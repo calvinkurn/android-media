@@ -1218,9 +1218,13 @@ object DeeplinkMainApp {
             }
         ),
         "tokochat" to mutableListOf(
-            DLP.goTo { context: Context, deeplink: String ->
+            DLP.matchPattern("") { context: Context, deeplink: String ->
                 DeeplinkMapperCommunication.getRegisteredNavigationTokoChat(context, deeplink)
+            },
+            DLP.matchPattern("list") { context: Context, deeplink: String ->
+                DeeplinkMapperCommunication.getRegisteredNavigationTokoChatList(context, deeplink)
             }
+
         ),
         "tokopoints" to mutableListOf(
             DLP.goTo { deeplink: String ->
