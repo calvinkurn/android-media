@@ -25,6 +25,7 @@ import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.discovery2.*
 import com.tokopedia.discovery2.Constant.DISCOVERY_APPLINK
+import com.tokopedia.discovery2.Constant.PropertyType.ATF_BANNER
 import com.tokopedia.discovery2.Utils.Companion.RPC_FILTER_KEY
 import com.tokopedia.discovery2.Utils.Companion.toDecodedString
 import com.tokopedia.discovery2.Utils.Companion.preSelectedTab
@@ -376,24 +377,20 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
         discoPageData?.pageInfo?.let { pageInfoData ->
             pageType = if(pageInfoData.type.isNullOrEmpty()) DISCOVERY_DEFAULT_PAGE_TYPE else pageInfoData.type
             pagePath = pageInfoData.path ?: ""
+            chooseAddressVisibilityLiveData.value = pageInfoData.showChooseAddress
             pageInfoData.additionalInfo = discoPageData.additionalInfo
             campaignCode = pageInfoData.campaignCode ?: ""
             discoveryPageInfo.value = Success(pageInfoData)
-
-            val firstComponent = components.firstOrNull()
-            if (firstComponent != null) {
-                discoveryNavToolbarConfig.value = NavToolbarConfig(
-                    needToExtendHeader = firstComponent.name == ComponentNames.SliderBanner.componentName
-                        && firstComponent.properties?.type =="atf_banner"
-                )
-                chooseAddressVisibilityLiveData.value = false
-            } else {
-                discoveryNavToolbarConfig.value = NavToolbarConfig(
-                    color = pageInfoData.thematicHeader?.color.orEmpty()
-                )
-                chooseAddressVisibilityLiveData.value = pageInfoData.showChooseAddress
-            }
+            setNavToolbarConfigData(pageInfoData)
         }
+    }
+
+    private fun setNavToolbarConfigData(pageInfoData: PageInfo) {
+        val firstComponent = components.firstOrNull()
+        discoveryNavToolbarConfig.value = NavToolbarConfig(
+            isExtendedLayout = firstComponent != null && firstComponent.name == ComponentNames.SliderBanner.componentName && firstComponent.properties?.type == ATF_BANNER,
+            color = pageInfoData.thematicHeader?.color.orEmpty()
+        )
     }
 
     fun getDiscoveryPageInfo(): LiveData<Result<PageInfo>> = discoveryPageInfo

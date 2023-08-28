@@ -285,7 +285,7 @@ open class DiscoveryFragment :
 
     private var isManualScroll = true
     private var stickyHeaderShowing = false
-    private var hasColouredHeader: Boolean = false
+    private var hasColouredStatusBar: Boolean = false
     private var isLightThemeStatusBar: Boolean? = null
 
     companion object {
@@ -538,33 +538,28 @@ open class DiscoveryFragment :
                 }
 
                 override fun onSwitchToDarkToolbar() {
-                    if (hasColouredHeader) {
+                    if (hasColouredStatusBar) {
                         if (isLightThemeStatusBar != true) {
                             requestStatusBarLight()
-                            navToolbar.hideShadow()
-                            if (discoveryViewModel.getAddressVisibilityValue()) {
+                            if (discoveryViewModel.getAddressVisibilityValue() && thematicHeaderColor.isNotEmpty()) {
                                 setupHexBackgroundColor(thematicHeaderColor)
                             }
                         }
+                        hideNavToolbarShadow()
                     }
-
-                    requestStatusBarLight()
                 }
 
                 override fun onSwitchToLightToolbar() {
-                    if (hasColouredHeader) {
+                    if (hasColouredStatusBar) {
                         if (isLightThemeStatusBar != false) {
                             requestStatusBarDark()
                             navToolbar.setShowShadowEnabled(true)
                             navToolbar.showShadow(true)
                         }
                     }
-
-                    requestStatusBarDark()
                 }
 
                 override fun onYposChanged(yOffset: Int) {
-
                 }
             }
         )
@@ -771,7 +766,6 @@ open class DiscoveryFragment :
                             discoveryAdapter.addDataList(ArrayList())
                             setPageErrorState(Fail(IllegalStateException()))
                         } else {
-//                            setUpRecyclerViewDimensions(it.data)
                             hideGlobalError()
                             scrollToPinnedComponent(listComponent)
                             removePaddingIfComponent()
@@ -962,72 +956,56 @@ open class DiscoveryFragment :
             }
         })
 
-        discoveryViewModel.getDiscoveryNavToolbarConfigLiveData().observe(viewLifecycleOwner) {
-            setUpRecyclerViewDimensions(it)
-            setupBackgroundForHeader(it)
+        discoveryViewModel.getDiscoveryNavToolbarConfigLiveData().observe(viewLifecycleOwner) { config ->
+            if (config.color.isNotEmpty() || config.isExtendedLayout) {
+                hasColouredStatusBar = true
+                requestStatusBarLight()
+                setupNavToolbarWithStatusBar()
+                setupExtendedLayout(config)
+                setupBackgroundColorForHeader(config)
+                setupNavScrollListener()
+            }
         }
     }
 
-    private fun setupBackgroundForHeader(config: NavToolbarConfig) {
-        if (config.color.isNotEmpty()) {
-            hasColouredHeader = true
-            activity?.let { navToolbar.setupToolbarWithStatusBar(it) }
-            context?.let {
-                navToolbar.setIconCustomColor(getDarkIconColor(it), getLightIconColor(it))
-            }
-            if (isLightThemeStatusBar == true) {
-                navToolbar.hideShadow()
-            } else {
-                navToolbar.setShowShadowEnabled(true)
-                navToolbar.showShadow(true)
-            }
-            appBarLayout.elevation = 0f
-            setupHexBackgroundColor(config.color)
-            setupNavScrollListener()
+    private fun setupNavToolbarWithStatusBar() {
+        activity?.let {
+            navToolbar.setupToolbarWithStatusBar(it)
+        }
+        context?.let {
+            navToolbar.setIconCustomColor(getDarkIconColor(it), getLightIconColor(it))
+        }
+        setupNavToolbarShadow()
+    }
+
+    private fun setupNavToolbarShadow() {
+        if (isLightThemeStatusBar == true) {
+            hideNavToolbarShadow()
         } else {
-            hasColouredHeader = false
+            navToolbar.setShowShadowEnabled(true)
+            navToolbar.showShadow(true)
         }
     }
 
-    private fun setUpRecyclerViewDimensions(config: NavToolbarConfig) {
-        if (config.needToExtendHeader) {
-            //make full transparent statusBar
-            activity?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                StatusBarUtil.setWindowFlag(activity, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false)
-                activity?.window?.statusBarColor = Color.TRANSPARENT
-            }
+    private fun setupBackgroundColorForHeader(config: NavToolbarConfig) {
+        if (config.color.isNotEmpty()) {
+            setupHexBackgroundColor(config.color)
+        }
+    }
 
+    private fun setupExtendedLayout(config: NavToolbarConfig) {
+        if (config.isExtendedLayout) {
+            appBarLayout.setBackgroundColor(Color.TRANSPARENT)
             val constraintSet = ConstraintSet()
             constraintSet.clone(parentConstraintLayout)
             constraintSet.connect(
                 R.id.swiperefresh,
                 ConstraintSet.TOP,
-                R.id.navToolbar,
-                ConstraintSet.BOTTOM,
+                R.id.parent,
+                ConstraintSet.TOP,
                 0
             )
             constraintSet.applyTo(parentConstraintLayout)
-
-            activity?.let { navToolbar.setupToolbarWithStatusBar(it) }
-            context?.let {
-                navToolbar.setIconCustomColor(getDarkIconColor(it), getLightIconColor(it))
-            }
-            if (isLightThemeStatusBar == true) {
-                navToolbar.hideShadow()
-            } else {
-                navToolbar.setShowShadowEnabled(true)
-                navToolbar.showShadow(true)
-            }
-            appBarLayout.elevation = 0f
-
-            chooseAddressWidget?.hide()
-            chooseAddressWidgetDivider?.hide()
-
-            appBarLayout.setBackgroundColor(Color.TRANSPARENT)
-            navToolbar.hideShadow(lineShadow = true)
-
-            setupNavScrollListener()
         }
     }
 
@@ -1044,6 +1022,11 @@ open class DiscoveryFragment :
         } catch (e: Exception) {
             e
         }
+    }
+
+    private fun hideNavToolbarShadow() {
+        appBarLayout.elevation = 0f
+        navToolbar.hideShadow(true)
     }
 
     private fun setupNavScrollListener() {
@@ -2050,7 +2033,7 @@ open class DiscoveryFragment :
     }
 
     override fun onChangeTextColor(): Int {
-        return if (hasColouredHeader && isLightThemeStatusBar != false) {
+        return if (hasColouredStatusBar && isLightThemeStatusBar != false) {
             com.tokopedia.unifyprinciples.R.color.Unify_Static_White
         } else {
             com.tokopedia.unifyprinciples.R.color.Unify_NN950_96

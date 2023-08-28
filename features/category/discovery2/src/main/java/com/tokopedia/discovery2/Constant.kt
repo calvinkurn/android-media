@@ -129,4 +129,8 @@ object Constant {
 
     const val REDIRECTION = "redirection"
     const val NAVIGATION = "navigation"
+
+    internal object PropertyType {
+        const val ATF_BANNER = "atf_banner"
+    }
 }
