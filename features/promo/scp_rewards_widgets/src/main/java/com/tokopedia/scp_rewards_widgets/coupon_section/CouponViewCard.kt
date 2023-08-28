@@ -62,8 +62,9 @@ class CouponViewCard @JvmOverloads constructor(
     fun setData(data: MedalBenefitModel, onApplyClick: (String?) -> Unit) {
         with(binding) {
             tvTitle.text = data.title
-            if (data.tncList != null) {
-                if (data.tncList.size > 1) {
+            val tncList = data.tncList
+            if (!tncList.isNullOrEmpty()) {
+                if (tncList.size > 1) {
                     tvDescription.text = data.tncList.joinToString(separator = "\n\u2022 ", prefix = "\u2022 ")
                 } else {
                     tvDescription.text = data.tncList.first()
