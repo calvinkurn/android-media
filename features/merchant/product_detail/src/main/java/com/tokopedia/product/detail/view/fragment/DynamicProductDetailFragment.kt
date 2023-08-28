@@ -3583,7 +3583,7 @@ open class DynamicProductDetailFragment :
             val seeMorePosition = adapter.getSeeMoreAPlusTogglePosition()
             if (seeMorePosition != RecyclerView.NO_POSITION) {
                 binding?.pdpNavigation?.disableNavigationScrollUpListener()
-                scrollToPosition(seeMorePosition)
+                snapScrollToPosition(position = seeMorePosition)
             }
         }
         APlusContentTracking.trackClickExpandCollapseToggle(trackerData)
