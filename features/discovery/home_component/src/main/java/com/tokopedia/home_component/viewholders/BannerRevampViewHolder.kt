@@ -83,6 +83,10 @@ class BannerRevampViewHolder(
                         scrollTo(position)
                     }
 
+                    override fun onChangeCurrentPosition(position: Int) {
+                        // no-op
+                    }
+
                     override fun getCurrentPosition(position: Int) {
                         // no-op
                     }

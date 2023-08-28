@@ -1,5 +1,8 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.circularsliderbanner
 
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
@@ -40,6 +43,9 @@ class CircularSliderBannerViewHolder(itemView: View, val fragment: Fragment) : A
     private var isFromDrag = false
     private var isFromInitialize = false
     private var indicatorPosition = 0
+    private var previousIndicatorPosition = 0
+    private var debounceHandler = Handler(Looper.getMainLooper())
+    private val debounceDelayMillis = 600L // Adjust the delay as needed
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         sliderBannerViewModel = discoveryBaseViewModel as CircularSliderBannerViewModel
@@ -78,27 +84,51 @@ class CircularSliderBannerViewHolder(itemView: View, val fragment: Fragment) : A
     private fun setUpIndicator(item: ArrayList<CircularModel>) {
         if (item.size > 1) {
             if (sliderBannerViewModel?.getPropertyType() == "atf_banner") {
+                cvSliderBanner.pauseAutoScroll()
+                cvSliderBanner.isResumingAutoScrollDisabled = true
                 sliderIndicatorAnimation.show()
-                sliderIndicatorAnimation.setBannerTransitionDuration(5000)
                 sliderIndicatorAnimation.setBannerIndicators(item.size)
-            } else {
-                sliderIndicator.createIndicators(cvSliderBanner.indicatorCount, cvSliderBanner.indicatorPosition)
-                sliderIndicator.show()
-            }
-            cvSliderBanner.setIndicatorPageChangeListener(object : IndicatorPageChangeListener {
-                override fun onIndicatorPageChange(newIndicatorPosition: Int) {
-                    indicatorPosition = newIndicatorPosition
-                    if (sliderBannerViewModel?.getPropertyType() == "atf_banner") {
-                        sliderIndicatorAnimation.setBannerTransitionDuration(4400)
-                    } else {
-                        sliderIndicator.animatePageSelected(newIndicatorPosition)
+                sliderIndicatorAnimation.setBannerListener(object : BannerIndicatorListener {
+                        override fun onChangePosition(position: Int) { /* nothing to do */ }
+
+                        override fun getCurrentPosition(position: Int) { /* nothing to do */ }
+
+                        override fun onChangeCurrentPosition(position: Int) {
+                            cvSliderBanner.setCurrentPosition(position)
+                        }
                     }
-                }
-            })
+                )
+                cvSliderBanner.setIndicatorPageChangeListener(object : IndicatorPageChangeListener {
+                    override fun onIndicatorPageChange(newIndicatorPosition: Int) {
+                        if (isFromDrag && newIndicatorPosition != indicatorPosition) {
+                            indicatorPosition = newIndicatorPosition
+                            debounceHandler.removeCallbacksAndMessages(null)
+                            debounceHandler.postDelayed({
+                                sliderIndicatorAnimation.startIndicatorByPosition(indicatorPosition)
+                                isFromDrag = false
+                            }, debounceDelayMillis)
+                        } else if (newIndicatorPosition != indicatorPosition) {
+                            indicatorPosition = newIndicatorPosition
+                        }
+                    }
+                })
+            } else {
+                sliderIndicator.show()
+                setBannerIndicatorAnimation()
+            }
         } else {
             sliderIndicator.hide()
             sliderIndicatorAnimation.hide()
         }
+    }
+
+    private fun setBannerIndicatorAnimation() {
+        cvSliderBanner.setIndicatorPageChangeListener(object : IndicatorPageChangeListener {
+            override fun onIndicatorPageChange(newIndicatorPosition: Int) {
+                sliderIndicator.animatePageSelected(newIndicatorPosition)
+            }
+        })
+        sliderIndicator.createIndicators(cvSliderBanner.indicatorCount, cvSliderBanner.indicatorPosition)
     }
 
     private fun sendBannerImpression(item: ArrayList<CircularModel>) {
@@ -108,18 +138,12 @@ class CircularSliderBannerViewHolder(itemView: View, val fragment: Fragment) : A
             }
 
             override fun onPageScrollStateChanged(state: Int) {
-                when (state) {
-                    ViewPager2.SCROLL_STATE_IDLE -> {
-                        if (isFromDrag) {
-                            sliderIndicatorAnimation.clearAnimation()
-                            sliderIndicatorAnimation.setBannerTransitionDuration(5000)
-                            sliderIndicatorAnimation.setBannerIndicators(item.size, indicatorPosition)
-                            isFromDrag = false
+                if (sliderIndicatorAnimation.isInitialized) {
+                    when (state) {
+                        ViewPager2.SCROLL_STATE_DRAGGING -> {
+                            sliderIndicatorAnimation.pauseAnimation()
+                            isFromDrag = true
                         }
-                    }
-                    ViewPager2.SCROLL_STATE_DRAGGING -> {
-                        sliderIndicatorAnimation.pauseAnimation()
-                        isFromDrag = true
                     }
                 }
             }

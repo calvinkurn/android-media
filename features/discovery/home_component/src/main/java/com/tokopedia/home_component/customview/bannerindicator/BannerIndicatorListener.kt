@@ -5,5 +5,6 @@ package com.tokopedia.home_component.customview.bannerindicator
  */
 interface BannerIndicatorListener {
     fun onChangePosition(position: Int)
+    fun onChangeCurrentPosition(position: Int)
     fun getCurrentPosition(position: Int)
 }

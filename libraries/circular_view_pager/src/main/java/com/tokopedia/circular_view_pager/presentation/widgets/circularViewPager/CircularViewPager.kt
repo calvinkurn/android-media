@@ -26,6 +26,7 @@ open class CircularViewPager : FrameLayout, CoroutineScope{
     var aspectRatio = 0f
     var pageMargin = 0
     var offset = 0
+    var isResumingAutoScrollDisabled = false
     open var itemAspectRatio = 0f
     private var listener: CircularPageChangeListener? = null
     private var adapter: CircularViewPagerAdapter? = null
@@ -189,9 +190,14 @@ open class CircularViewPager : FrameLayout, CoroutineScope{
     }
 
     fun resumeAutoScroll() {
-        if(isAutoScrollResumed) return
+        if(isAutoScrollResumed || isResumingAutoScrollDisabled) return
         isAutoScrollResumed = true
         autoScrollLauncher()
+    }
+
+    fun setCurrentPosition(position: Int) {
+        currentPagePosition = position
+        viewPager.setCurrentItem(currentPagePosition, true)
     }
 
     fun pauseAutoScroll() {
