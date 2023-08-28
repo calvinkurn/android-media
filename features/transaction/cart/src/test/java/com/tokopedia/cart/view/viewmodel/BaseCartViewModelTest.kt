@@ -29,11 +29,17 @@ import io.mockk.Runs
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.setMain
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import rx.subscriptions.CompositeSubscription
 
-abstract class BaseCartViewModelTest {
+@OptIn(ExperimentalCoroutinesApi::class)
+open class BaseCartViewModelTest {
 
     var getCartRevampV4UseCase: GetCartRevampV4UseCase = mockk()
     var deleteCartUseCase: DeleteCartUseCase = mockk()
@@ -65,6 +71,7 @@ abstract class BaseCartViewModelTest {
 
     @Before
     fun setUp() {
+        Dispatchers.setMain(coroutineTestDispatchers.coroutineDispatcher)
         cartViewModel = CartViewModel(
             getCartRevampV4UseCase, deleteCartUseCase,
             undoDeleteCartUseCase, updateCartUseCase, compositeSubscription,
@@ -78,5 +85,10 @@ abstract class BaseCartViewModelTest {
         )
         every { addToWishListV2UseCase.cancelJobs() } just Runs
         every { deleteWishlistV2UseCase.cancelJobs() } just Runs
+    }
+
+    @After
+    fun tearDown() {
+        Dispatchers.resetMain()
     }
 }
