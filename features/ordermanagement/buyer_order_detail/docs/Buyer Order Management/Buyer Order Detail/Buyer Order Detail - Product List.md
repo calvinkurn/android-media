@@ -11,21 +11,23 @@ On the buyer order detail page, we have a section showing the list of the purcha
 
 In this state, the product list section will only show exactly 1 product card of any type depending on the product type contained in that specific order. The product card priority order is as follows:
 
-1. Bundling product (we show all the products that belong to the bundling if the bundling product is shown in the collapsed state)
-2. Non-bundling product card with/without add-on
-3. Add-on
+1. Buy More Save More product
+2. Bundling product (we show all the products that belong to the bundling if the bundling product is shown in the collapsed state)
+3. Non-bundling product card with/without add-on
+4. Add-on
 
-So let’s say order A contains 1 product of each type then the only product card being shown is the first bundling product card. If product B contains only non-bundling products with/without add-ons then the only product card being shown is the first non-bundling product card with/without add-ons.
+So let’s say order A contains 1 product of each type then the only product card being shown is the first buy more save more product card. If product B contains only non-bundling products with/without add-ons then the only product card being shown is the first non-bundling product card with/without add-ons.
 
 - Expanded state
 
 In this state, the product list section will all the product cards in that specific order. The product card priority order is as follows:
 
-1. Bundling product
-2. Non-bundling product card with/without add-on
-3. Add-on
+1. Buy More Save More product
+2. Bundling product
+3. Non-bundling product card with/without add-on
+4. Add-on
 
-There are 4 types of product cards in this section which are:
+There are 5 types of product cards in this section which are:
 
 - Non-bundling product card
 
@@ -53,8 +55,23 @@ This product type only shows exactly 1 product item on each card plus the list o
 
 
 
+- Buy More Save More product
 
+This product type displays multiple product items on each card that belong to a specific "buy more, save more" offer. In this product type, there may be optional attached add-ons either for the product or for the "buy more, save more" offer itself. The "buy more, save more" product has the same requirements as the non-bundling product card.
 
+The Buy More Save More product has 4 type card type which is single offer, multiple offer, add on (non DT) and add on (DT/TokoCabang)
+
+![img.png](../../res/productlist/buy_more_save_more_product_single_offer.png)
+Buy More Save More - Single Offer
+
+![img.png](../../res/productlist/buy_more_save_more_product_multiple_offer.png)
+Buy More Save More - Multiple Offer
+
+![img.png](../../res/productlist/buy_more_save_more_product_add_on_dt.png)
+Buy More Save More - Add on (DT)
+
+![img.png](../../res/productlist/buy_more_save_more_product_add_on_dt.png)
+Buy More Save More - Add on (Non DT)
 
 - Bundling product card
 
