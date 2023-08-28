@@ -860,7 +860,7 @@ class DigitalPDPDataPlanFragment :
                     hideCheckBalanceWidgetLocalLoad()
                     removeClientNumberBottomPadding()
                     showCheckBalanceWarning(
-                        checkBalanceData?.subtitle.orEmpty(),
+                        checkBalanceData?.campaignLabelText.orEmpty(),
                         checkBalanceData?.campaignLabelTextColor.orEmpty(),
                         isShowOnlyWarning = true
                     )
