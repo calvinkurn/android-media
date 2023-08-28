@@ -58,7 +58,7 @@ class ClaimCouponItemViewHolder(itemView: View, private val fragment: Fragment) 
             claimCouponImage.loadImage(claimCouponItem?.imageURLMobile ?: "")
         }
 
-        setBtn(claimCouponItem?.status, isDouble, claimCouponItem?.isDisabled)
+        setBtn(claimCouponItem?.status, isDouble)
         itemView.setOnClickListener {
             claimCouponItemViewModel?.setClick(itemView.context, claimCouponItem?.status)
             componentItem?.let {
@@ -87,7 +87,7 @@ class ClaimCouponItemViewHolder(itemView: View, private val fragment: Fragment) 
                                 }
                             )
                         } else {
-                            setBtn(DIKLAIM, isDisabled = false)
+                            setBtn(DIKLAIM)
                             Toaster.make(
                                 itemView.rootView,
                                 itemView.context.getString(R.string.claim_coupon_redeem_coupon_msg),
@@ -110,32 +110,30 @@ class ClaimCouponItemViewHolder(itemView: View, private val fragment: Fragment) 
         }
     }
 
-    private fun setBtn(status: String?, isDouble: Boolean? = null, isDisabled: Boolean?) {
-        if (isDisabled == true) {
-            claimBtn.hide()
+    private fun setBtn(status: String?, isDouble: Boolean? = null) {
+        isDouble?.let {
+            if (isDouble) {
+                claimBtn.buttonSize = UnifyButton.Size.MICRO
+            } else {
+                claimBtn.buttonSize = UnifyButton.Size.SMALL
+            }
+        }
+        claimBtn.text = if (status == HABIS || status == null) {
+            HABIS
         } else {
-            claimBtn.show()
-            isDouble?.let {
-                if (isDouble) {
-                    claimBtn.buttonSize = UnifyButton.Size.MICRO
-                } else {
-                    claimBtn.buttonSize = UnifyButton.Size.SMALL
-                }
-            }
-            claimBtn.text = if (status == HABIS || status == null) {
-                HABIS
-            } else {
-                status
-            }
-            claimBtn.isEnabled = status == KLAIM
-            if (claimBtn.isEnabled) {
-                claimBtn.isInverse = true
-                claimBtn.buttonVariant = UnifyButton.Variant.GHOST
-                claimBtn.setTextColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN0))
-            } else {
-                claimBtn.isInverse = false
-                claimBtn.buttonVariant = UnifyButton.Variant.FILLED
-            }
+            status
+        }
+        claimBtn.isEnabled = status == KLAIM
+        if (claimBtn.isEnabled) {
+            claimBtn.isInverse = true
+            claimBtn.buttonVariant = UnifyButton.Variant.GHOST
+            claimBtn.setTextColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN0))
+        } else {
+            claimBtn.isInverse = false
+            claimBtn.buttonVariant = UnifyButton.Variant.FILLED
+        }
+        if (claimBtn.text.isNullOrEmpty()) {
+            claimBtn.visibility = View.GONE
         }
     }
 }
