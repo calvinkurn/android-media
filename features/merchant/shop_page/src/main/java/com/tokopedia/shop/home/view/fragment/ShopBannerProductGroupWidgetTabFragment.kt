@@ -1,5 +1,6 @@
 package com.tokopedia.shop.home.view.fragment
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -17,7 +18,7 @@ import com.tokopedia.shop.databinding.FragmentShopBannerProductGroupWidgetTabBin
 import com.tokopedia.shop.home.di.component.DaggerShopPageHomeComponent
 import com.tokopedia.shop.home.di.module.ShopPageHomeModule
 import com.tokopedia.shop.home.view.adapter.ShopHomeBannerProductGroupTabAdapter
-import com.tokopedia.shop.home.view.model.banner_product_group.ProductCardItemType
+import com.tokopedia.shop.home.view.model.banner_product_group.ProductItemType
 import com.tokopedia.shop.home.view.model.banner_product_group.ShimmerItemType
 import com.tokopedia.shop.home.view.model.ShopWidgetComponentBannerProductGroupUiModel
 import com.tokopedia.shop.home.view.model.banner_product_group.ShopHomeBannerProductGroupItemType
@@ -33,16 +34,19 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
     companion object {
         private const val BUNDLE_KEY_SHOP_ID = "shop_id"
         private const val BUNDLE_KEY_WIDGETS = "widgets"
+        private const val BUNDLE_KEY_VERTICAL_BANNER = "vertical_banner"
 
         @JvmStatic
         fun newInstance(
             shopId: String,
-            widgets: List<ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList>
+            widgets: List<ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList>,
+            verticalBanner: VerticalBannerItemType?
         ): ShopBannerProductGroupWidgetTabFragment {
             return ShopBannerProductGroupWidgetTabFragment().apply {
                 arguments = Bundle().apply {
                     putString(BUNDLE_KEY_SHOP_ID, shopId)
                     putParcelableArrayList(BUNDLE_KEY_WIDGETS, ArrayList(widgets))
+                    putParcelable(BUNDLE_KEY_VERTICAL_BANNER, verticalBanner)
                 }
             }
         }
@@ -56,14 +60,16 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
             BUNDLE_KEY_WIDGETS
         )?.toList().orEmpty()
     }
-
+    private val verticalBanner by lazy {
+        arguments?.getParcelable<VerticalBannerItemType>(BUNDLE_KEY_VERTICAL_BANNER)
+    }
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider[ShopBannerProductGroupWidgetTabViewModel::class.java] }
 
     private var onMainBannerClick : (ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.Data) -> Unit = {}
-    private var onProductClick : (ProductCardItemType) -> Unit = {}
+    private var onProductClick : (ProductItemType) -> Unit = {}
     private var onVerticalBannerClick : (VerticalBannerItemType) -> Unit = {}
 
     private var binding by autoClearedNullable<FragmentShopBannerProductGroupWidgetTabBinding>()
@@ -155,13 +161,15 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
     }
 
 
+    @SuppressLint("PII Data Exposure")
     private fun getCarouselWidgets() {
         val userAddress = ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel()
-        viewModel.getCarouselWidgets(widgets, shopId, userAddress)
+        viewModel.getCarouselWidgets(widgets, shopId, userAddress, verticalBanner)
     }
 
-    private fun showProductCarousel(widgets: List<ShopHomeBannerProductGroupItemType>) {
-        bannerProductGroupAdapter.submit(widgets)
+    private fun showProductCarousel(widgets: List<ShopHomeBannerProductGroupItemType?>) {
+        val items = widgets.filterNotNull()
+        bannerProductGroupAdapter.submit(items)
     }
 
     fun setOnMainBannerClick(onMainBannerClick: (ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.Data) -> Unit) {
@@ -172,7 +180,7 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
         this.onVerticalBannerClick = onVerticalBannerClick
     }
 
-    fun setOnProductClick(onProductClick: (ProductCardItemType) -> Unit) {
+    fun setOnProductClick(onProductClick: (ProductItemType) -> Unit) {
         this.onProductClick = onProductClick
     }
 }

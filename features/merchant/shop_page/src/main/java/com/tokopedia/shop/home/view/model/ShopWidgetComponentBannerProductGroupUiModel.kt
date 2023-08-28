@@ -6,6 +6,7 @@ import com.tokopedia.shop.home.WidgetName
 import com.tokopedia.shop.home.WidgetType
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
 import com.tokopedia.shop.home.view.adapter.ShopWidgetTypeFactory
+import com.tokopedia.shop.home.view.model.banner_product_group.VerticalBannerItemType
 import kotlinx.parcelize.Parcelize
 
 data class ShopWidgetComponentBannerProductGroupUiModel(
@@ -17,8 +18,14 @@ data class ShopWidgetComponentBannerProductGroupUiModel(
     override val isFestivity: Boolean = false,
     val title: String,
     val tabs: List<Tab>,
-    val viewAllChevronAppLink: String
+    val viewAllChevronAppLink: String,
+    val verticalBanner: VerticalBannerItemType?
 ) : BaseShopHomeWidgetUiModel() {
+
+    enum class WidgetStyle(val id: String) {
+        VERTICAL("vertical"),
+        HORIZONTAL("horizontal")
+    }
 
     @Parcelize
     data class Tab(
@@ -45,15 +52,8 @@ data class ShopWidgetComponentBannerProductGroupUiModel(
                 val ctaLink: String,
                 val linkId: Long,
                 val linkType: LinkType,
-                val isShowProductInfo: Boolean,
-                val bannerType: BannerType
+                val isShowProductInfo: Boolean
             ) : Parcelable {
-                @Parcelize
-                enum class BannerType(val id: String) : Parcelable {
-                    VERTICAL("vertical"),
-                    NONE("")
-                }
-
                 @Parcelize
                 enum class LinkType(var id: String) : Parcelable {
                     PRODUCT("product"),

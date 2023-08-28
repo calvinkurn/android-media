@@ -15,7 +15,7 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.databinding.ItemShopHomeBannerProductGroupProductInfoCardBinding
 import com.tokopedia.shop.databinding.ItemShopHomeBannerProductGroupShimmerBinding
 import com.tokopedia.shop.databinding.ItemShopHomeBannerProductGroupVerticalBannerCardBinding
-import com.tokopedia.shop.home.view.model.banner_product_group.ProductCardItemType
+import com.tokopedia.shop.home.view.model.banner_product_group.ProductItemType
 import com.tokopedia.shop.home.view.model.banner_product_group.ShimmerItemType
 import com.tokopedia.shop.home.view.model.banner_product_group.ShopHomeBannerProductGroupItemType
 import com.tokopedia.shop.home.view.model.banner_product_group.VerticalBannerItemType
@@ -23,7 +23,7 @@ import com.tokopedia.shop.home.view.model.banner_product_group.VerticalBannerIte
 class ShopHomeBannerProductGroupTabAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var items = mutableListOf<ShopHomeBannerProductGroupItemType>()
-    private var onProductClick: (ProductCardItemType) -> Unit = {}
+    private var onProductClick: (ProductItemType) -> Unit = {}
     private var onVerticalBannerClick: (VerticalBannerItemType) -> Unit = {}
 
     companion object {
@@ -75,7 +75,7 @@ class ShopHomeBannerProductGroupTabAdapter : RecyclerView.Adapter<RecyclerView.V
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (val item = items[position]) {
             ShimmerItemType -> {}
-            is ProductCardItemType -> (holder as ProductViewHolder).bind(item)
+            is ProductItemType -> (holder as ProductViewHolder).bind(item)
             is VerticalBannerItemType -> (holder as VerticalBannerViewHolder).bind(item)
         }
     }
@@ -84,7 +84,7 @@ class ShopHomeBannerProductGroupTabAdapter : RecyclerView.Adapter<RecyclerView.V
         return when(items[position]) {
             ShimmerItemType -> VIEW_TYPE_SHIMMER
             is VerticalBannerItemType -> VIEW_TYPE_VERTICAL_BANNER
-            is ProductCardItemType -> VIEW_TYPE_PRODUCT
+            is ProductItemType -> VIEW_TYPE_PRODUCT
         }
     }
 
@@ -97,7 +97,7 @@ class ShopHomeBannerProductGroupTabAdapter : RecyclerView.Adapter<RecyclerView.V
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: ShopHomeBannerProductGroupItemType) {
-            val product = item as? ProductCardItemType
+            val product = item as? ProductItemType
             
             product?.let {
                 binding.imgProduct.loadImage(product.imageUrl)
@@ -114,13 +114,13 @@ class ShopHomeBannerProductGroupTabAdapter : RecyclerView.Adapter<RecyclerView.V
             }
         }
 
-        private fun renderProductSoldCount(product: ProductCardItemType) {
+        private fun renderProductSoldCount(product: ProductItemType) {
             val hasBeenPurchased = product.soldCount.isNotEmpty()
             binding.tpgProductSoldCount.text = product.soldCount
             binding.tpgProductSoldCount.isVisible = product.showProductInfo && hasBeenPurchased
         }
 
-        private fun renderProductRating(product: ProductCardItemType) {
+        private fun renderProductRating(product: ProductItemType) {
             val hasRating = product.rating.isNotEmpty()
 
             binding.imgStar.isVisible = product.showProductInfo && hasRating
@@ -130,12 +130,12 @@ class ShopHomeBannerProductGroupTabAdapter : RecyclerView.Adapter<RecyclerView.V
             binding.tpgRating.isVisible = product.showProductInfo && hasRating
         }
 
-        private fun renderProductPrice(product: ProductCardItemType) {
+        private fun renderProductPrice(product: ProductItemType) {
             binding.tpgProductPrice.text = product.price
             binding.tpgProductPrice.showIfOrInvisible(product.showProductInfo)
         }
 
-        private fun renderSlashedProductPrice(product: ProductCardItemType) {
+        private fun renderSlashedProductPrice(product: ProductItemType) {
             val isDiscounted = product.slashedPricePercent.isMoreThanZero()
             binding.tpgSlashedProductPrice.text = product.slashedPrice
             binding.tpgSlashedProductPrice.strikethrough()
@@ -194,7 +194,7 @@ class ShopHomeBannerProductGroupTabAdapter : RecyclerView.Adapter<RecyclerView.V
         diffResult.dispatchUpdatesTo(this)
     }
 
-    fun setOnProductClick(onProductClick: (ProductCardItemType) -> Unit) {
+    fun setOnProductClick(onProductClick: (ProductItemType) -> Unit) {
         this.onProductClick = onProductClick
     }
 

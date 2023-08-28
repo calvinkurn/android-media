@@ -1,10 +1,11 @@
 package com.tokopedia.shop.home.view.model.banner_product_group
 
-import com.tokopedia.shop.home.view.model.ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.Data.BannerType
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class VerticalBannerItemType(
     val imageUrl: String,
-    val bannerType: BannerType,
     val appLink: String,
     override val id : String = imageUrl
-) : ShopHomeBannerProductGroupItemType
+) : ShopHomeBannerProductGroupItemType, Parcelable

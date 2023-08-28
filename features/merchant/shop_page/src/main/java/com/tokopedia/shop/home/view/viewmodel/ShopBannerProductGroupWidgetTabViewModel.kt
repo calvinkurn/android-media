@@ -1,5 +1,6 @@
 package com.tokopedia.shop.home.view.viewmodel
 
+import android.annotation.SuppressLint
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -8,7 +9,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.shop.common.constant.ShopPageConstant
-import com.tokopedia.shop.home.view.model.banner_product_group.ProductCardItemType
+import com.tokopedia.shop.home.view.model.banner_product_group.ProductItemType
 import com.tokopedia.shop.home.view.model.ShopWidgetComponentBannerProductGroupUiModel
 import com.tokopedia.shop.home.view.model.banner_product_group.ShopHomeBannerProductGroupItemType
 import com.tokopedia.shop.home.view.model.banner_product_group.VerticalBannerItemType
@@ -21,8 +22,8 @@ import com.tokopedia.shop.product.domain.interactor.GetShopFeaturedProductUseCas
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.shop.common.data.source.cloud.model.LabelGroup
 import com.tokopedia.shop.home.view.model.ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.Data.LinkType
-import com.tokopedia.shop.home.view.model.ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.Data.BannerType
 
+@SuppressLint("PII Data Exposure")
 class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
     private val dispatcherProvider: CoroutineDispatchers,
     private val getShopProductUseCase: GqlGetShopProductUseCase,
@@ -43,14 +44,15 @@ class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
 
     sealed class UiState {
         object Loading: UiState()
-        data class Success(val data: List<ShopHomeBannerProductGroupItemType>): UiState()
+        data class Success(val data: List<ShopHomeBannerProductGroupItemType?>): UiState()
         data class Error(val error: Throwable): UiState()
     }
 
     fun getCarouselWidgets(
         widgets: List<ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList>,
         shopId: String,
-        userAddress: LocalCacheModel
+        userAddress: LocalCacheModel,
+        verticalBanner: VerticalBannerItemType?
     ) {
         _carouselWidgets.postValue(UiState.Loading)
 
@@ -59,12 +61,11 @@ class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
         launchCatchError(
             context = dispatcherProvider.io,
             block = {
-                val verticalBanner = getVerticalBanner(firstProductWidget)
                 val products = getProducts(shopId, userAddress, firstProductWidget)
 
-                val hasVerticalBanner = firstProductWidget.bannerType == BannerType.VERTICAL
+                val hasVerticalBanner = verticalBanner != null
                 val carouselWidgets = if (hasVerticalBanner) {
-                    verticalBanner + products
+                    listOf(verticalBanner) + products
                 } else {
                     products
                 }
@@ -92,7 +93,7 @@ class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
         shopId: String,
         userAddress: LocalCacheModel,
         productWidget: ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.Data,
-    ): List<ProductCardItemType> {
+    ): List<ProductItemType> {
         val showProductInfo = productWidget.isShowProductInfo
 
         return when(productWidget.linkType) {
@@ -121,7 +122,7 @@ class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
         userAddress: LocalCacheModel,
         sortId: Long,
         showProductInfo: Boolean
-    ): List<ProductCardItemType> {
+    ): List<ProductItemType> {
         getShopProductUseCase.params = GqlGetShopProductUseCase.createParams(
             shopId,
             ShopProductFilterInput().apply {
@@ -140,7 +141,7 @@ class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
         val products = response.data.map { product ->
             val soldLabel = product.labelGroupList.soldCount()
 
-            ProductCardItemType(
+            ProductItemType(
                 product.productId,
                 product.primaryImage.thumbnail,
                 product.name,
@@ -162,7 +163,7 @@ class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
         userId: String,
         userAddress: LocalCacheModel,
         showProductInfo: Boolean
-    ): List<ProductCardItemType> {
+    ): List<ProductItemType> {
         getShopFeaturedProductUseCase.params = GetShopFeaturedProductUseCase.createParams(
             ShopFeaturedProductParams(
                 shopId,
@@ -175,7 +176,7 @@ class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
         )
         val response = getShopFeaturedProductUseCase.executeOnBackground()
         val featuredProducts = response.map { product ->
-            ProductCardItemType(
+            ProductItemType(
                 product.productId,
                 product.imageUri,
                 product.name,
@@ -201,18 +202,5 @@ class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
         val soldLabel = soldLabels.getOrNull(FIRST_LABEL_INDEX)
         val soldLabelTitle = soldLabel?.title.orEmpty()
         return soldLabelTitle
-    }
-
-    private fun getVerticalBanner(
-        widget: ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.Data
-    ): List<VerticalBannerItemType> {
-        return listOf(
-            VerticalBannerItemType(
-                widget.imageUrl,
-                widget.bannerType,
-                widget.ctaLink,
-                widget.imageUrl
-            )
-        )
     }
 }

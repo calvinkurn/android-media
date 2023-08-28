@@ -1,7 +1,6 @@
 package com.tokopedia.shop.common.data.mapper
 
 import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
@@ -22,9 +21,9 @@ import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerTimerUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetVoucherSliderUiModel
 import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseNavigationBannerWidgetStyle
 import com.tokopedia.shop.home.view.model.StatusCampaign
-import com.tokopedia.shop.home.view.model.ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.Data.BannerType
 import com.tokopedia.shop.home.view.model.ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.ComponentType
 import com.tokopedia.shop.home.view.model.ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.Data.LinkType
+import com.tokopedia.shop.home.view.model.banner_product_group.VerticalBannerItemType
 import com.tokopedia.shop.home.view.model.showcase_navigation.Showcase
 import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseCornerShape
 import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseTab
@@ -257,8 +256,7 @@ object ShopPageWidgetMapper {
                         data.ctaLink,
                         data.linkID,
                         linkType,
-                        data.isShowProductInfo,
-                        BannerType.NONE
+                        data.isShowProductInfo
                     )
                 }
 
@@ -273,6 +271,14 @@ object ShopPageWidgetMapper {
             ShopWidgetComponentBannerProductGroupUiModel.Tab(tab.tabLabel, tab.tabName, componentList)
         }
 
+        val viewAllChevronAppLink = response.header.ctaLink
+        val verticalBanner =
+            if (widgetStyle == ShopWidgetComponentBannerProductGroupUiModel.WidgetStyle.VERTICAL.id) {
+                VerticalBannerItemType("", viewAllChevronAppLink)
+            } else {
+                null
+            }
+
         return ShopWidgetComponentBannerProductGroupUiModel(
             widgetId = response.widgetID,
             layoutOrder = response.layoutOrder,
@@ -280,7 +286,8 @@ object ShopPageWidgetMapper {
             tabs = tabs,
             name = response.name,
             type = response.type,
-            viewAllChevronAppLink = response.header.ctaLink
+            viewAllChevronAppLink = viewAllChevronAppLink,
+            verticalBanner = verticalBanner
         )
     }
 
