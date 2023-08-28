@@ -44,7 +44,7 @@ ext {
     runnerVersion = "1.4.0"
     rulesVersion = "1.4.0"
     apolloVersion = '0.3.0'
-    lottieVersion = '3.4.1'
+    lottieVersion = '3.5.0'
     cardioVersion = '5.5.1'
     roomVersion = '2.4.3'
     sqliteFrameworkVersion = '2.1.0'
