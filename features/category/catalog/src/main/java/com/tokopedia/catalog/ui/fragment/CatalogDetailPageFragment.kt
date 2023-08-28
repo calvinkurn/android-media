@@ -1,11 +1,14 @@
 package com.tokopedia.catalog.ui.fragment
 
+import android.app.ActionBar.LayoutParams
 import android.graphics.Color
 import android.graphics.Rect
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -18,8 +21,8 @@ import com.tokopedia.catalog.ui.viewmodel.CatalogDetailPageViewModel
 import com.tokopedia.catalogcommon.adapter.CatalogAdapterFactoryImpl
 import com.tokopedia.catalogcommon.adapter.WidgetCatalogAdapter
 import com.tokopedia.catalogcommon.customview.CatalogToolbar
-import com.tokopedia.catalogcommon.uimodel.AccordionInformationUiModel
 import com.tokopedia.catalogcommon.listener.HeroBannerListener
+import com.tokopedia.catalogcommon.uimodel.AccordionInformationUiModel
 import com.tokopedia.catalogcommon.uimodel.DummyUiModel
 import com.tokopedia.catalogcommon.uimodel.HeroBannerUiModel
 import com.tokopedia.catalogcommon.uimodel.PanelImageUiModel
@@ -52,7 +55,7 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener {
         )
     }
 
-    private val widgets by  lazy {
+    private val widgets by lazy {
         arrayListOf<Visitable<*>>()
     }
 
@@ -126,32 +129,53 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener {
             widgets.add(TopFeaturesUiModel.dummyTopFeatures())
             widgets.add(StickyNavigationUiModel.dummyNavigation())
             widgets.add(
-                PanelImageUiModel("1", "2", "2",
+                PanelImageUiModel(
+                    "1", "2", "2",
                     content = listOf(
-                        PanelImageUiModel.PanelImageItemData(imageUrl = "https://images.tokopedia.net/android/shop_page/image_product_empty_state_buyer.png", highlight = "",
-                            title = "asd", description = "ad"),
-                        PanelImageUiModel.PanelImageItemData(imageUrl = "https://placekitten.com/200/300", highlight = "",
-                            title = "asd22", description = "ad22"),
+                        PanelImageUiModel.PanelImageItemData(
+                            imageUrl = "https://images.tokopedia.net/android/shop_page/image_product_empty_state_buyer.png",
+                            highlight = "",
+                            title = "asd",
+                            description = "ad"
+                        ),
+                        PanelImageUiModel.PanelImageItemData(
+                            imageUrl = "https://placekitten.com/200/300", highlight = "",
+                            title = "asd22", description = "ad22"
+                        ),
                     )
                 )
             )
             widgets.add(
-                PanelImageUiModel("1", "2", "2",
+                PanelImageUiModel(
+                    "1", "2", "2",
                     content = listOf(
-                        PanelImageUiModel.PanelImageItemData(imageUrl = "https://images.tokopedia.net/android/shop_page/image_product_empty_state_buyer.png", highlight = "",
-                            title = "asd", description = "ad"),
-                        PanelImageUiModel.PanelImageItemData(imageUrl = "https://placekitten.com/200/300", highlight = "",
-                            title = "asd22", description = "ad22"),
+                        PanelImageUiModel.PanelImageItemData(
+                            imageUrl = "https://images.tokopedia.net/android/shop_page/image_product_empty_state_buyer.png",
+                            highlight = "",
+                            title = "asd",
+                            description = "ad"
+                        ),
+                        PanelImageUiModel.PanelImageItemData(
+                            imageUrl = "https://placekitten.com/200/300", highlight = "",
+                            title = "asd22", description = "ad22"
+                        ),
                     )
                 )
             )
             widgets.add(
-                PanelImageUiModel("1", "2", "2",
+                PanelImageUiModel(
+                    "1", "2", "2",
                     content = listOf(
-                        PanelImageUiModel.PanelImageItemData(imageUrl = "https://images.tokopedia.net/android/shop_page/image_product_empty_state_buyer.png", highlight = "",
-                            title = "asd", description = "ad"),
-                        PanelImageUiModel.PanelImageItemData(imageUrl = "https://placekitten.com/200/300", highlight = "",
-                            title = "asd22", description = "ad22"),
+                        PanelImageUiModel.PanelImageItemData(
+                            imageUrl = "https://images.tokopedia.net/android/shop_page/image_product_empty_state_buyer.png",
+                            highlight = "",
+                            title = "asd",
+                            description = "ad"
+                        ),
+                        PanelImageUiModel.PanelImageItemData(
+                            imageUrl = "https://placekitten.com/200/300", highlight = "",
+                            title = "asd22", description = "ad22"
+                        ),
                     )
                 )
             )
@@ -187,12 +211,15 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener {
                 val bannerHeight = layoutManager.findViewByPosition(Int.ZERO)?.height.orZero()
                 val bannerRect = Rect()
                 layoutManager.findViewByPosition(Int.ZERO)?.getGlobalVisibleRect(bannerRect)
-                val scrollProgress = Int.ONE - if (bannerRect.height().isMoreThanZero() && bannerHeight.isMoreThanZero()) {
+                val scrollProgress = Int.ONE - if (bannerRect.height()
+                        .isMoreThanZero() && bannerHeight.isMoreThanZero()
+                ) {
                     bannerRect.height() / bannerHeight.toFloat()
                 } else {
                     Int.ZERO.toFloat()
                 }
                 toolbar.updateToolbarAppearance(scrollProgress, isDarkMode, isPremium)
+                handleNavigationPosition(scrollProgress)
             }
         })
     }
@@ -202,12 +229,22 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener {
         isPremium: Boolean,
         colorString: String
     ) {
-        val colorBgGradient = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_Black_44)
-        val colorFontDark = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
-        val colorFontLight = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
+        val colorBgGradient = MethodChecker.getColor(
+            context,
+            com.tokopedia.unifyprinciples.R.color.Unify_Static_Black_44
+        )
+        val colorFontDark = MethodChecker.getColor(
+            context,
+            com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+        )
+        val colorFontLight = MethodChecker.getColor(
+            context,
+            com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+        )
         val colorFont = if (isDarkMode) colorFontDark else colorFontLight
 
-        toolbarShadow.background = DrawableExtension.createGradientDrawable(colorTop = colorBgGradient)
+        toolbarShadow.background =
+            DrawableExtension.createGradientDrawable(colorTop = colorBgGradient)
         toolbar.setColors(colorFont)
         toolbarShadow.isVisible = !isPremium
         toolbarBg.setBackgroundColor(colorString.stringHexColorParseToInt())
@@ -223,18 +260,36 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener {
             setColors(Color.rgb(colorProgress, colorProgress, colorProgress))
         }
 
-        if (isPremium){
+        if (isPremium) {
             alpha = scrollProgress
         }
         binding?.toolbarBg?.alpha = scrollProgress
     }
-    
+
     // Call this methods if you want to override the CTA & Price widget's theme
     private fun setPriceCtaWidgetTheme(fontColor: Int, bgColor: Int) {
         binding?.let {
             it.containerPriceCta.setBackgroundColor(bgColor)
             it.tgpCatalogName.setTextColor(fontColor)
             it.tgpPriceRanges.setTextColor(fontColor)
+        }
+    }
+
+    private fun handleNavigationPosition(scrollProgress: Float){
+        if (scrollProgress >= 0.8f) {
+            val layoutParams = ConstraintLayout.LayoutParams(
+                binding?.stickySingleHeaderView?.layoutParams?.width.orZero(),
+                binding?.stickySingleHeaderView?.layoutParams?.height.orZero()
+            )
+            layoutParams.setMargins(0, binding?.toolbar?.height.orZero(), 0, 0)
+            binding?.stickySingleHeaderView?.layoutParams = layoutParams
+        }else{
+            val layoutParams = ConstraintLayout.LayoutParams(
+                binding?.stickySingleHeaderView?.layoutParams?.width.orZero(),
+                binding?.stickySingleHeaderView?.layoutParams?.height.orZero()
+            )
+            layoutParams.setMargins(0,0, 0, 0)
+            binding?.stickySingleHeaderView?.layoutParams = layoutParams
         }
     }
 }
