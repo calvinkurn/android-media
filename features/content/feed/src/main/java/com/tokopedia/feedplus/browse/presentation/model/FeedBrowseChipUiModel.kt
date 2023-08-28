@@ -5,5 +5,6 @@ package com.tokopedia.feedplus.browse.presentation.model
  */
 data class FeedBrowseChipUiModel(
     val id: String,
-    val label: String,
+    val type: String,
+    val label: String
 )

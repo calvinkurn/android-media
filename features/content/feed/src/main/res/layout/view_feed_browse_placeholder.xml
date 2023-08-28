@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <ViewStub
+        android:id="@+id/view_title_placeholder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inflatedId="@+id/view_title_placeholder"
+        android:layout="@layout/view_feed_browse_title_placeholder"
+        tools:visibility="gone" />
+
+    <ViewStub
+        android:id="@+id/view_chips_placeholder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:inflatedId="@+id/view_chips_placeholder"
+        android:layout="@layout/view_feed_browse_chip_placeholder"
+        tools:visibility="gone" />
+
+    <ViewStub
+        android:id="@+id/view_cards_placeholder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="16dp"
+        android:inflatedId="@+id/view_cards_placeholder"
+        android:layout="@layout/view_feed_browse_card_placeholder"
+        tools:visibility="visible" />
+
+</FrameLayout>

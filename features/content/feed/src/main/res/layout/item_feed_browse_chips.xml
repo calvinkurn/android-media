@@ -16,13 +16,13 @@
         tools:text="Sesuai sama kesukaanmu" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/feed_browse_cards"
+        android:id="@+id/feed_browse_chips"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
-        android:layout_marginBottom="16dp"
+        android:clipToPadding="false"
         android:orientation="horizontal"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/view_play_widget_card_channel" />
+        tools:listitem="@layout/item_feed_browse_chip" />
 
 </LinearLayout>

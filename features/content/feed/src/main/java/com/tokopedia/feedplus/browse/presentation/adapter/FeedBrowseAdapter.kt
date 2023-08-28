@@ -11,6 +11,7 @@ class FeedBrowseAdapter: BaseDiffUtilAdapter<FeedBrowseUiModel>(isFlexibleType =
     init {
         delegatesManager
             .addDelegate(FeedBrowseAdapterDelegate.Placeholder())
+            .addDelegate(FeedBrowseAdapterDelegate.Chips())
             .addDelegate(FeedBrowseAdapterDelegate.Cards())
     }
 

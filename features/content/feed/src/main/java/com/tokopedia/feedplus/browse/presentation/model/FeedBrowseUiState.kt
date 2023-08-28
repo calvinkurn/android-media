@@ -6,4 +6,12 @@ package com.tokopedia.feedplus.browse.presentation.model
 data class FeedBrowseUiState(
     val title: String,
     val widgets: List<FeedBrowseUiModel>
-)
+) {
+
+    companion object {
+        val Empty = FeedBrowseUiState(
+            title = "",
+            widgets = emptyList()
+        )
+    }
+}
