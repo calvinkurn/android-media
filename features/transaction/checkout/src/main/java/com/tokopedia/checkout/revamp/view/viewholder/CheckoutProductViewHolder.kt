@@ -236,6 +236,12 @@ class CheckoutProductViewHolder(
             } else {
                 binding.ivCheckoutFreeShipping.isVisible = false
             }
+            if (product.groupInfoDescription.isNotEmpty()) {
+                binding.tvCheckoutOrderDescription.text = product.groupInfoDescription
+                binding.tvCheckoutOrderDescription.isVisible = true
+            } else {
+                binding.tvCheckoutOrderDescription.isVisible = false
+            }
         } else {
             binding.vDividerOrder.isVisible = false
             binding.tvCheckoutOrderNumber.isVisible = false
@@ -243,6 +249,7 @@ class CheckoutProductViewHolder(
             binding.ivCheckoutOrderBadge.isVisible = false
             binding.tvCheckoutOrderName.isVisible = false
             binding.ivCheckoutFreeShipping.isVisible = false
+            binding.tvCheckoutOrderDescription.isVisible = false
         }
     }
 
