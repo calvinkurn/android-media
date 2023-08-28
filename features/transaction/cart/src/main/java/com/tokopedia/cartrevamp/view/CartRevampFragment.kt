@@ -3261,8 +3261,6 @@ class CartRevampFragment :
         renderCartAvailableItems(cartData)
         renderCartUnavailableItems(cartData)
 
-        viewModel.reCalculateSubTotal()
-
         cartPageAnalytics.eventViewCartListFinishRender()
         val cartItemDataList = CartDataHelper.getAllCartItemData(
             viewModel.cartDataList.value,
@@ -3424,6 +3422,8 @@ class CartRevampFragment :
         renderSelectedAmount()
         setInitialCheckboxGlobalState(cartData)
         setSelectedAmountVisibility()
+
+        viewModel.reCalculateSubTotal()
 
         if (!cartData.isGlobalCheckboxState) {
             isFirstCheckEvent = false
