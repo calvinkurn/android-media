@@ -555,16 +555,24 @@ internal class PromoUsageViewModel @Inject constructor(
                 .map { item ->
                     val isExpanded = !clickedItem.isExpanded
                     if (item is PromoAccordionHeaderItem && item.id == clickedItem.id) {
-                        item.copy(isExpanded = isExpanded)
+                        return@map item.copy(isExpanded = isExpanded)
                     } else if (item is PromoItem && item.headerId == clickedItem.id) {
-                        item.copy(
-                            isExpanded = isExpanded,
+                        if (!item.isExpanded) {
+                            return@map item.copy(
+                                isExpanded = isExpanded,
+                                isVisible = isExpanded
+                            )
+                        } else {
+                            return@map item.copy(
+                                isVisible = isExpanded
+                            )
+                        }
+                    } else if (item is PromoAccordionViewAllItem && item.headerId == clickedItem.id) {
+                        return@map item.copy(
                             isVisible = isExpanded
                         )
-                    } else if (item is PromoAccordionViewAllItem && item.headerId == clickedItem.id) {
-                        item.copy(isExpanded = isExpanded)
                     } else {
-                        item
+                        return@map item
                     }
                 }
             _promoPageUiState.postValue(

@@ -1,18 +1,23 @@
 package com.tokopedia.promousage.view.adapter
 
+import android.animation.AnimatorSet
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.view.animation.Animation.AnimationListener
+import android.view.animation.AnimationSet
 import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.promousage.R
 import com.tokopedia.promousage.databinding.PromoUsageItemVoucherRecommendationBinding
 import com.tokopedia.promousage.domain.entity.list.PromoRecommendationItem
 import com.tokopedia.promousage.util.composite.DelegateAdapter
+import com.tokopedia.purchase_platform.common.utils.animateShow
 import com.tokopedia.unifyprinciples.UnifyMotion
 
 class PromoRecommendationDelegateAdapter(
@@ -39,12 +44,7 @@ class PromoRecommendationDelegateAdapter(
             val selectedRecommendedPromoCount = item.selectedCodes.size
             val recommendedPromoCount = item.codes.size
             binding.btnRecommendationUseVoucher.setOnClickListener {
-                hideMessage {
-                    if (item.messageSelected.isNotBlank()) {
-                        showMessage(item.messageSelected)
-                    }
-                }
-                startButtonAnimation()
+                startButtonAnimation(item)
             }
             if (item.selectedCodes.containsAll(item.codes)) {
                 binding.tpgRecommendationTitle.text = item.messageSelected
@@ -62,49 +62,7 @@ class PromoRecommendationDelegateAdapter(
             }
         }
 
-        private fun hideMessage(onCompleted: (() -> Unit)?) {
-            val fadeOutAnimation = AlphaAnimation(1f, 0f)
-            fadeOutAnimation.interpolator = UnifyMotion.EASE_IN_OUT
-            fadeOutAnimation.duration = UnifyMotion.T2
-            fadeOutAnimation.setAnimationListener(object : AnimationListener {
-                override fun onAnimationStart(animation: Animation?) {
-                    // no-op
-                }
-
-                override fun onAnimationEnd(animation: Animation?) {
-                    binding.tpgRecommendationTitle.invisible()
-                    onCompleted?.invoke()
-                }
-
-                override fun onAnimationRepeat(animation: Animation?) {
-                    // no-op
-                }
-            })
-            binding.tpgRecommendationTitle.startAnimation(fadeOutAnimation)
-        }
-
-        private fun showMessage(message: String) {
-            val fadeInAnimation = AlphaAnimation(0f, 1f)
-            fadeInAnimation.interpolator = UnifyMotion.EASE_IN_OUT
-            fadeInAnimation.duration = UnifyMotion.T2
-            fadeInAnimation.setAnimationListener(object : AnimationListener {
-                override fun onAnimationStart(animation: Animation?) {
-                    // no-op
-                }
-
-                override fun onAnimationEnd(animation: Animation?) {
-                    binding.tpgRecommendationTitle.text = message
-                    binding.tpgRecommendationTitle.visible()
-                }
-
-                override fun onAnimationRepeat(animation: Animation?) {
-                    // no-op
-                }
-            })
-            binding.tpgRecommendationTitle.startAnimation(fadeInAnimation)
-        }
-
-        private fun startButtonAnimation() {
+        private fun startButtonAnimation(item: PromoRecommendationItem) {
             val shrinkLeftAnimation =
                 AnimationUtils.loadAnimation(binding.root.context, R.anim.shrink_left)
             val zoomOutAnimation =
@@ -130,7 +88,7 @@ class PromoRecommendationDelegateAdapter(
 
                 override fun onAnimationEnd(animation: Animation?) {
                     binding.ivCheckmarkOutline.invisible()
-                    onClickUsePromoRecommendation()
+                    startMessageAnimation(item)
                 }
 
                 override fun onAnimationRepeat(animation: Animation?) {
@@ -139,6 +97,40 @@ class PromoRecommendationDelegateAdapter(
             })
             binding.btnRecommendationUseVoucher.startAnimation(shrinkLeftAnimation)
             binding.ivCheckmarkOutline.startAnimation(zoomOutAnimation)
+        }
+
+        private fun startMessageAnimation(item: PromoRecommendationItem) {
+            binding.tpgRecommendationTitle.animateGone {
+                binding.tpgRecommendationTitle.text = item.messageSelected
+                binding.tpgRecommendationTitle.animateShow {
+                    onClickUsePromoRecommendation()
+                }
+            }
+        }
+
+        private fun View.animateGone(
+            duration: Long = 200L,
+            onCompleted: (() -> Unit)? = null
+        ) {
+            animate()
+                .alpha(0f)
+                .setDuration(duration)
+                .withEndAction {
+                    onCompleted?.invoke()
+                }
+        }
+
+        private fun View.animateShow(
+            duration: Long = 200L,
+            onCompleted: (() -> Unit)? = null
+        ) {
+            alpha = 0f
+            visibility = View.VISIBLE
+            animate().alpha(1f)
+                .setDuration(duration)
+                .withEndAction {
+                    onCompleted?.invoke()
+                }
         }
     }
 }
