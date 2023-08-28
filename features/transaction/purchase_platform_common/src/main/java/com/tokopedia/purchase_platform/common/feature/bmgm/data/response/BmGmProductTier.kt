@@ -11,14 +11,14 @@ data class BmGmProductTier(
     @SerializedName("warehouse_id")
     val warehouseId: Long = 0L,
     @Expose
-    @SerializedName("qty")
+    @SerializedName("quantity")
     val qty: Int = 0,
     @Expose
-    @SerializedName("final_price")
-    val finalPrice: Double = 0.0,
+    @SerializedName("price_before_benefit")
+    val priceBeforeBenefit: Double = 0.0,
     @Expose
-    @SerializedName("price_after_bmgm")
-    val priceAfterBmgm: Double = 0.0,
+    @SerializedName("price_after_benefit")
+    val priceAfterBenefit: Double = 0.0,
     @Expose
     @SerializedName("cart_id")
     val cartId: String = ""

@@ -202,14 +202,14 @@ class OfferLandingPageFragment :
             when (atc) {
                 is Success -> {
                     binding?.apply {
-                        miniCartPlaceholder.showToaster(atc.data.data.message.firstOrNull().orEmpty())
+                        miniCartView.showToaster(atc.data.data.message.firstOrNull().orEmpty())
                         fetchMiniCart()
                     }
                     viewModel.processEvent(OlpEvent.GetNotification)
                 }
 
                 is Fail -> {
-                    binding?.miniCartPlaceholder.showToaster(message = atc.throwable.localizedMessage)
+                    binding?.miniCartView.showToaster(message = atc.throwable.localizedMessage)
                 }
             }
         }
@@ -362,7 +362,7 @@ class OfferLandingPageFragment :
                     headerBackground.gone()
                     stickyContent.gone()
                     errorPageLarge.gone()
-                    miniCartPlaceholder.gone()
+                    miniCartView.gone()
                 }
             }
 
@@ -421,7 +421,7 @@ class OfferLandingPageFragment :
                     headerBackground.visible()
                     stickyContent.visible()
                     errorPageLarge.gone()
-                    miniCartPlaceholder.visible()
+                    miniCartView.visible()
                 }
             }
         }
@@ -449,7 +449,7 @@ class OfferLandingPageFragment :
                     primaryCtaAction.invoke()
                 }
             }
-            miniCartPlaceholder.gone()
+            miniCartView.gone()
         }
     }
 
@@ -510,7 +510,7 @@ class OfferLandingPageFragment :
 
     private fun fetchMiniCart() {
         val currentUiState = viewModel.currentState
-        binding?.miniCartPlaceholder?.fetchData(
+        binding?.miniCartView?.fetchData(
             offerIds = currentUiState.offerIds,
             offerJsonData = currentUiState.offeringJsonData,
             warehouseIds = currentUiState.warehouseIds.map { it.toString() }
