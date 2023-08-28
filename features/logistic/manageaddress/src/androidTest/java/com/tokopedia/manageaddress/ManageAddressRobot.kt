@@ -36,7 +36,7 @@ class ManageAddressRobot {
     }
 
     fun typeEmailThenSubmit(s: String) {
-        onView(withId(R.id.text_field_input))
+        onView(withId(com.tokopedia.unifycomponents.R.id.text_field_input))
             .perform(typeText(s), closeSoftKeyboard())
 
         onView(withId(R.id.btn_share))
@@ -55,7 +55,7 @@ class ManageAddressRobot {
 
     fun onClickSearch(keyword: String) {
         onView(withId(R.id.search_input_view)).perform(click())
-        onView(withId(R.id.searchbar_textfield)).perform(click(), typeText(keyword), closeSoftKeyboard())
+        onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield)).perform(click(), typeText(keyword), closeSoftKeyboard())
         waitForData()
     }
 

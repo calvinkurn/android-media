@@ -63,6 +63,7 @@ import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
 import com.tokopedia.feedplus.presentation.adapter.FeedContentAdapter
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
 import com.tokopedia.feedplus.presentation.adapter.util.FeedPostLayoutManager
+import com.tokopedia.feedplus.presentation.model.ActiveTabSource
 import com.tokopedia.feedplus.presentation.model.FeedAuthorModel
 import com.tokopedia.feedplus.presentation.model.FeedCardCampaignModel
 import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
@@ -81,7 +82,6 @@ import com.tokopedia.feedplus.presentation.uiview.FeedProductTagView
 import com.tokopedia.feedplus.presentation.util.VideoPlayerManager
 import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
 import com.tokopedia.feedplus.presentation.viewmodel.FeedPostViewModel
-import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
@@ -168,13 +168,16 @@ class FeedFragment :
     @Inject
     lateinit var dispatchers: CoroutineDispatchers
 
+    @Inject
+    lateinit var viewModelAssistedFactory: FeedMainViewModel.Factory
     private val feedMainViewModel: FeedMainViewModel by viewModels(
         ownerProducer = {
             parentFragment ?: this
         },
         factoryProducer = {
-            viewModelFactory
+            FeedMainViewModel.provideFactory(viewModelAssistedFactory, ActiveTabSource.Empty)
         }
+
     )
     private val feedPostViewModel: FeedPostViewModel by viewModels { viewModelFactory }
 
@@ -199,7 +202,8 @@ class FeedFragment :
                 childFragmentManager.findFragmentByTag(TAG_FEED_MENU_BOTTOMSHEET) as? ContentThreeDotsMenuBottomSheet
             if (feedMenuSheet != null && userSession.isLoggedIn) {
                 val item = adapter.currentList[getCurrentPosition()]?.data
-                val isVideo = item is FeedCardVideoContentModel || item is FeedCardLivePreviewContentModel
+                val isVideo =
+                    item is FeedCardVideoContentModel || item is FeedCardLivePreviewContentModel
 
                 feedMenuSheet.showReportLayoutWhenLaporkanClicked(isVideo = isVideo, action = {
                     ContentReportBottomSheet.getOrCreate(
@@ -354,12 +358,12 @@ class FeedFragment :
     }
 
     override fun onDestroyView() {
-        _binding = null
         dismissFeedProductBottomSheet()
         dismissFeedMenuBottomSheet()
         dismissAtcVariantBottomSheet()
         dismissShareBottomSheet()
         super.onDestroyView()
+        _binding = null
 
         videoPlayerManager.releaseAll()
     }
@@ -405,7 +409,8 @@ class FeedFragment :
                     onGoToLogin()
                 } else {
                     val item = adapter.currentList[getCurrentPosition()]?.data
-                    val isVideo = item is FeedCardVideoContentModel || item is FeedCardLivePreviewContentModel
+                    val isVideo =
+                        item is FeedCardVideoContentModel || item is FeedCardLivePreviewContentModel
                     (childFragmentManager.findFragmentByTag(TAG_FEED_MENU_BOTTOMSHEET) as? ContentThreeDotsMenuBottomSheet)?.showReportLayoutWhenLaporkanClicked(
                         isVideo = isVideo,
                         action = {
@@ -581,7 +586,7 @@ class FeedFragment :
     }
 
     override fun changeTab() {
-        feedMainViewModel.changeCurrentTabByType(FeedBaseFragment.TAB_TYPE_FOR_YOU)
+        feedMainViewModel.setActiveTab(FeedBaseFragment.TAB_TYPE_FOR_YOU)
     }
 
     override fun reload() {
@@ -1056,6 +1061,7 @@ class FeedFragment :
                         }
                     } else {
                         adapter.setList(it.data.items) {
+                            if (_binding == null) return@setList
                             updateBottomActionView(getCurrentPosition())
                         }
                         context?.let { ctx ->

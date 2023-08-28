@@ -47,10 +47,10 @@ class DynamicChannelHeaderView : FrameLayout {
     }
 
     private fun initHeaderWithAttrs(attrs: AttributeSet?) {
-            val attributes: TypedArray = context.obtainStyledAttributes(attrs, R.styleable.HomeChannelHeaderView)
+            val attributes: TypedArray = context.obtainStyledAttributes(attrs, com.tokopedia.home_component_header.R.styleable.HomeChannelHeaderView)
         try {
-            headerColorMode = attributes.getInt(R.styleable.HomeChannelHeaderView_color_mode, COLOR_MODE_NORMAL)
-            headerCtaMode = attributes.getInt(R.styleable.HomeChannelHeaderView_cta_mode, CTA_MODE_SEE_ALL)
+            headerColorMode = attributes.getInt(com.tokopedia.home_component_header.R.styleable.HomeChannelHeaderView_color_mode, COLOR_MODE_NORMAL)
+            headerCtaMode = attributes.getInt(com.tokopedia.home_component_header.R.styleable.HomeChannelHeaderView_cta_mode, CTA_MODE_SEE_ALL)
         } finally {
             attributes.recycle()
         }
