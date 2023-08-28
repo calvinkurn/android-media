@@ -173,9 +173,29 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     @Test
     fun `check product-review create then should return tokopedia internal create review`() {
         val expectedDeepLink =
-            "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/product-review/create/abc/1234/?rating=5&source="
+            "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/product-review/create/abc/1234/?rating=5&utm_source="
         assertEqualsDeepLinkMapper(
             ApplinkConst.PRODUCT_CREATE_REVIEW + "/abc/1234",
+            expectedDeepLink
+        )
+    }
+
+    @Test
+    fun `check product-review create then should return tokopedia internal create review with utm_source when provided utm_source`() {
+        val expectedDeepLink =
+            "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/product-review/create/abc/1234/?rating=5&utm_source=uoh_orders"
+        assertEqualsDeepLinkMapper(
+            ApplinkConst.PRODUCT_CREATE_REVIEW + "/abc/1234?utm_source=uoh_orders",
+            expectedDeepLink
+        )
+    }
+
+    @Test
+    fun `check product-review create then should return tokopedia internal create review with utm_source when provided source`() {
+        val expectedDeepLink =
+            "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/product-review/create/abc/1234/?rating=5&utm_source=uoh_orders&source=uoh_orders"
+        assertEqualsDeepLinkMapper(
+            ApplinkConst.PRODUCT_CREATE_REVIEW + "/abc/1234?source=uoh_orders",
             expectedDeepLink
         )
     }
@@ -2441,13 +2461,11 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         every {
             DeeplinkMapperCommunication.isUserLoggedIn(any())
         } returns true
-
         every {
             RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                DeeplinkMapperCommunication.KEY_ROLLENCE_UNIVERSAL_INBOX
+                DeeplinkMapperCommunication.UNIVERSAL_INBOX_ROLLENCE
             )
         } returns ""
-
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://home/inbox"
         assertEqualsDeepLinkMapper(ApplinkConst.INBOX, expectedDeepLink)
     }
@@ -2457,20 +2475,10 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         every {
             DeeplinkMapperCommunication.isUserLoggedIn(any())
         } returns true
-
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://home/inbox"
         every {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                DeeplinkMapperCommunication.KEY_ROLLENCE_UNIVERSAL_INBOX
-            )
-        } returns DeeplinkMapperCommunication.ROLLENCE_TYPE_A
-        assertEqualsDeepLinkMapper(ApplinkConst.INBOX, expectedDeepLink)
-
-        every {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                DeeplinkMapperCommunication.KEY_ROLLENCE_UNIVERSAL_INBOX
-            )
-        } returns DeeplinkMapperCommunication.ROLLENCE_TYPE_B
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(any(), any())
+        } returns DeeplinkMapperCommunication.UNIVERSAL_INBOX_ROLLENCE
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://communication/universal-inbox"
         assertEqualsDeepLinkMapper(ApplinkConst.INBOX, expectedDeepLink)
     }
 

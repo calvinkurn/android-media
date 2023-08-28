@@ -250,7 +250,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.chatbot)
     implementation projectOrAar(rootProject.ext.features.chatcommon)
     implementation projectOrAar(rootProject.ext.features.attachproduct)
-    implementation projectOrAar(rootProject.ext.features.talk)
     implementation projectOrAar(rootProject.ext.features.productManageList)
     implementation projectOrAar(rootProject.ext.features.productManageCommon)
     implementation projectOrAar(rootProject.ext.features.kolCommon)
