@@ -40,7 +40,9 @@ class PromoRecommendationDelegateAdapter(
             val recommendedPromoCount = item.codes.size
             binding.btnRecommendationUseVoucher.setOnClickListener {
                 hideMessage {
-                    showMessage(item.messageSelected)
+                    if (item.messageSelected.isNotBlank()) {
+                        showMessage(item.messageSelected)
+                    }
                 }
                 startButtonAnimation()
             }

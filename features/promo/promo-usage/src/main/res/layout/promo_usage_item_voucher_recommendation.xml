@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="10dp"
     tools:background="@color/purple">
 
     <com.tokopedia.unifyprinciples.Typography
@@ -12,11 +11,12 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:ellipsize="end"
+        android:lines="2"
         android:maxLines="2"
         android:textColor="@color/Unify_Static_White"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/btnRecommendationUseVoucher"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -43,7 +43,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="invisible"
-        android:translationY="-2dp"
         app:layout_constraintBottom_toBottomOf="@+id/ivCheckmark"
         app:layout_constraintEnd_toEndOf="@+id/ivCheckmark"
         app:layout_constraintStart_toStartOf="@+id/ivCheckmark"
