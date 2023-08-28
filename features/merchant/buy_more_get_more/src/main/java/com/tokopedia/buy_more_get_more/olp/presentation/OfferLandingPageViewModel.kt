@@ -69,6 +69,8 @@ class OfferLandingPageViewModel @Inject constructor(
     private val userId: String
         get() = userSession.userId
 
+    val isLogin: Boolean
+        get() = userSession.isLoggedIn
 
     fun processEvent(event: OlpEvent) {
         when (event) {
@@ -78,7 +80,7 @@ class OfferLandingPageViewModel @Inject constructor(
                     shopId = event.shopIds,
                     productIds = event.productIds,
                     warehouseIds = event.warehouseIds,
-                    localCacheModel = event.localCacheModel,
+                    localCacheModel = event.localCacheModel
                 )
             }
 
@@ -156,7 +158,7 @@ class OfferLandingPageViewModel @Inject constructor(
                         longitude = currentState.localCacheModel?.long.orEmpty(),
                         cityId = currentState.localCacheModel?.city_id.toLongOrZero()
                     ),
-                    userId = userId.toLongOrZero(),
+                    userId = userId.toLongOrZero()
                 )
                 val result = getOfferInfoForBuyerUseCase.execute(param)
                 _offeringInfo.postValue(result)

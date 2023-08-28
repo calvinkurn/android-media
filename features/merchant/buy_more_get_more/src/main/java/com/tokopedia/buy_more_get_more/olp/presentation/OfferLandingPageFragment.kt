@@ -85,6 +85,7 @@ class OfferLandingPageFragment :
         private const val PAGE_SIZE = 10
         private const val PRODUCT_LIST_SPAN_COUNT = 2
         private const val FIRST_PAGE = 1
+        private const val REQUEST_CODE_USER_LOGIN = 101
     }
 
     private var binding by autoClearedNullable<FragmentOfferLandingPageBinding>()
@@ -97,6 +98,9 @@ class OfferLandingPageFragment :
             ChooseAddressUtils.getLocalizingAddressData(it)
         }
     }
+
+    val isLogin: Boolean
+        get() = viewModel.isLogin
 
     private val olpAdapterTypeFactory by lazy {
         OlpAdapterTypeFactoryImpl(this, this, this)
@@ -293,6 +297,17 @@ class OfferLandingPageFragment :
                     renderSortFilter(sortId, sortName)
                 }
             }
+            REQUEST_CODE_USER_LOGIN -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    loadInitialData()
+                }
+            }
+            REQUEST_CODE_USER_LOGIN_CART -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    loadInitialData()
+                    redirectToCartPage()
+                }
+            }
         }
         AtcVariantHelper.onActivityResultAtcVariant(requireContext(), requestCode, data) {
         }
@@ -453,10 +468,14 @@ class OfferLandingPageFragment :
     }
 
     override fun onProductAtcVariantClicked(product: OfferProductListUiModel.Product) {
-        if (product.isVbs) {
-            openAtcVariant(product)
+        if (isLogin) {
+            if (product.isVbs) {
+                openAtcVariant(product)
+            } else {
+                addToCartProduct(product)
+            }
         } else {
-            addToCartProduct(product)
+            redirectToLoginPage(REQUEST_CODE_USER_LOGIN)
         }
     }
 
@@ -537,6 +556,13 @@ class OfferLandingPageFragment :
 
     private fun redirectToMainMenu() {
         RouteManager.route(context, ApplinkConsInternalNavigation.MAIN_NAVIGATION)
+    }
+
+    private fun redirectToLoginPage(requestCode: Int = REQUEST_CODE_USER_LOGIN) {
+        context?.let {
+            val intent = RouteManager.getIntent(it, ApplinkConst.LOGIN)
+            startActivityForResult(intent, requestCode)
+        }
     }
 
     override fun onRefresh() {
