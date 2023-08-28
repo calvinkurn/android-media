@@ -17,10 +17,10 @@ data class ShopWidgetComponentBannerProductGroupUiModel(
     override val type: String = WidgetType.COMPONENT,
     override val header: Header = Header(),
     override val isFestivity: Boolean = false,
-    val title: String,
-    val tabs: List<Tab>,
-    val viewAllChevronAppLink: String,
-    val verticalBanner: VerticalBannerItemType?
+    val title: String = "",
+    val tabs: List<Tab> = emptyList(),
+    val viewAllChevronAppLink: String = "",
+    val verticalBanner: VerticalBannerItemType? = null
 ) : BaseShopHomeWidgetUiModel() {
 
     enum class WidgetStyle(val id: String) {

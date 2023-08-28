@@ -84,6 +84,8 @@ import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomePersoProductCompa
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeDisplayBannerTimerViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeDisplayBannerTimerPlaceholderViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.banner_product_group.ShopHomeBannerProductGroupViewPagerViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.banner_product_group.horizontal.ShopHomeBannerProductGroupViewPagerHorizontalPlaceholderViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.banner_product_group.vertical.ShopHomeBannerProductGroupViewPagerVerticalPlaceholderViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.showcase_navigation.carousel.ShopHomeShowCaseNavigationCarouselPlaceholderViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.showcase_navigation.carousel.ShopHomeShowCaseNavigationCarouselViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.showcase_navigation.left.ShopHomeShowCaseNavigationLeftMainBannerPlaceholderViewHolder
@@ -100,6 +102,7 @@ import com.tokopedia.shop.home.view.adapter.viewholder.showcase_navigation.left.
 import com.tokopedia.shop.home.view.adapter.viewholder.showcase_navigation.top.ShopHomeShowCaseNavigationTopMainBannerPlaceholderViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.showcase_navigation.top.ShopHomeShowCaseNavigationTopMainBannerViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.directpurchasebyetalase.ShopHomeDirectPurchasedByEtalaseViewHolder
+import com.tokopedia.shop.home.view.model.banner_product_group.ShopWidgetComponentBannerProductGroupUiModel
 import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.CarouselAppearance
 import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.LeftMainBannerAppearance
 import com.tokopedia.shop.home.view.model.showcase_navigation.ShopHomeShowcaseNavigationUiModel
@@ -153,8 +156,8 @@ open class ShopHomeAdapterTypeFactory(
             VIDEO -> ShopHomeVideoViewHolder.LAYOUT_RES
             PRODUCT -> getShopHomeCarousellProductViewHolder(baseShopHomeWidgetUiModel)
             VOUCHER_STATIC -> ShopHomeVoucherViewHolder.LAYOUT
-            SHOWCASE_NAVIGATION_BANNER -> determineShowcaseWidgetAppearance(baseShopHomeWidgetUiModel)
-            BANNER_PRODUCT_GROUP -> ShopHomeBannerProductGroupViewPagerViewHolder.LAYOUT
+            SHOWCASE_NAVIGATION_BANNER -> determineShowcaseNavigationBannerWidgetAppearance(baseShopHomeWidgetUiModel)
+            BANNER_PRODUCT_GROUP -> determineBannerProductGroupWidgetAppearance(baseShopHomeWidgetUiModel)
             RECENT_ACTIVITY, BUY_AGAIN, REMINDER, ADD_ONS, TRENDING -> getShopHomeCarouselProductPersonalizationViewHolder(baseShopHomeWidgetUiModel)
             NEW_PRODUCT_LAUNCH_CAMPAIGN -> getShopHomeNplCampaignViewHolder(baseShopHomeWidgetUiModel)
             FLASH_SALE_TOKO -> getShopFlashSaleViewHolder(baseShopHomeWidgetUiModel)
@@ -284,23 +287,8 @@ open class ShopHomeAdapterTypeFactory(
         return model.widgetState == WidgetState.PLACEHOLDER || model.widgetState == WidgetState.LOADING
     }
 
-    /**
-     * Showcase navigation banner widget has 3 appearance: left main banner, top main banner and carousel.
-     * It is controlled by Backend `widgetStyle` property
-     *
-     * widgetStyle == "rounded_corner"
-     *     - mainBannerPosition == "left" -> left main banner appearance
-     *          - showcaseList array size == 1 -> hide tab
-     *          - showcaseList array size == 2 -> show tab + fixed tab
-     *          - showcaseList array size >= 3 -> show tab + scrollable tab
-     *
-     *     - mainBannerPosition == "top" -> top main banner appearance
-     *
-     * widgetStyle == "circle" -> use carousel appearance
-     */
-    private fun determineShowcaseWidgetAppearance(model: BaseShopHomeWidgetUiModel): Int {
+    private fun determineShowcaseNavigationBannerWidgetAppearance(model: BaseShopHomeWidgetUiModel): Int {
         val uiModel = (model as? ShopHomeShowcaseNavigationUiModel)  ?: ShopHomeShowcaseNavigationUiModel()
-
         val isLoading = uiModel.isWidgetShowPlaceholder().orFalse()
 
         return when {
@@ -313,6 +301,19 @@ open class ShopHomeAdapterTypeFactory(
             else -> ShopHomeShowCaseNavigationTopMainBannerViewHolder.LAYOUT
         }
     }
+
+    private fun determineBannerProductGroupWidgetAppearance(model: BaseShopHomeWidgetUiModel): Int {
+        val uiModel = (model as? ShopWidgetComponentBannerProductGroupUiModel)  ?: ShopWidgetComponentBannerProductGroupUiModel()
+        val isVerticalBanner = uiModel.verticalBanner != null
+        val isLoading = uiModel.isWidgetShowPlaceholder().orFalse()
+
+        return when {
+            isLoading && isVerticalBanner -> ShopHomeBannerProductGroupViewPagerVerticalPlaceholderViewHolder.LAYOUT
+            isLoading && !isVerticalBanner -> ShopHomeBannerProductGroupViewPagerHorizontalPlaceholderViewHolder.LAYOUT
+            else -> ShopHomeBannerProductGroupViewPagerViewHolder.LAYOUT
+        }
+    }
+
 
     fun isShowThematicWidgetPlaceHolder(model: ThematicWidgetUiModel): Boolean {
         return model.widgetState == WidgetState.PLACEHOLDER || model.widgetState == WidgetState.LOADING
@@ -438,6 +439,12 @@ open class ShopHomeAdapterTypeFactory(
             }
             ShopHomeShowCaseNavigationCarouselViewHolder.LAYOUT -> {
                 ShopHomeShowCaseNavigationCarouselViewHolder(parent, shopHomeShowcaseNavigationListener)
+            }
+            ShopHomeBannerProductGroupViewPagerVerticalPlaceholderViewHolder.LAYOUT -> {
+                ShopHomeBannerProductGroupViewPagerVerticalPlaceholderViewHolder(parent)
+            }
+            ShopHomeBannerProductGroupViewPagerHorizontalPlaceholderViewHolder.LAYOUT -> {
+                ShopHomeBannerProductGroupViewPagerHorizontalPlaceholderViewHolder(parent)
             }
             ShopHomeBannerProductGroupViewPagerViewHolder.LAYOUT -> {
                 ShopHomeBannerProductGroupViewPagerViewHolder(parent, shopBannerProductGroupListener, shopBannerProductGroupWidgetTabDependencyProvider)
