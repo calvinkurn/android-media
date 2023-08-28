@@ -3,6 +3,7 @@ package com.tokopedia.buy_more_get_more.olp.presentation
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -43,6 +44,7 @@ import com.tokopedia.campaign.utils.extension.enable
 import com.tokopedia.campaign.utils.extension.showToaster
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kotlin.extensions.view.toLongSafely
 import com.tokopedia.kotlin.extensions.view.visible
@@ -84,6 +86,9 @@ class OfferLandingPageFragment :
         private const val VIEW_LOADING = 2
         private const val VIEW_ERROR = 3
         private const val REQUEST_CODE_USER_LOGIN_CART = 102
+        private const val PAGE_SIZE = 10
+        private const val PRODUCT_LIST_SPAN_COUNT = 2
+        private const val FIRST_PAGE = 1
     }
 
     private var binding by autoClearedNullable<FragmentOfferLandingPageBinding>()
@@ -138,8 +143,7 @@ class OfferLandingPageFragment :
 
     override fun onResume() {
         super.onResume()
-        loadInitialData()
-
+//        loadInitialData()
     }
 
     override fun onCreateView(
@@ -175,16 +179,18 @@ class OfferLandingPageFragment :
                     setupTncBottomSheet()
                     fetchMiniCart()
                 }
-
-                Status.INVALID_OFFER_ID -> {}
-                Status.OFFER_ALREADY_FINISH -> {}
+                else -> { setViewState(VIEW_ERROR, offerInfoForBuyer.responseHeader.status) }
             }
         }
 
         viewModel.productList.observe(viewLifecycleOwner) { productList ->
-            setupProductList(productList)
-            setViewState(VIEW_CONTENT)
-            notifyLoadResult(productList.productList.size >= 10)
+            if (productList.totalProduct.isMoreThanZero()) {
+                setupProductList(productList)
+                setViewState(VIEW_CONTENT)
+                notifyLoadResult(productList.productList.size >= PAGE_SIZE)
+            } else {
+                setViewState(VIEW_ERROR, Status.OOS)
+            }
         }
 
         viewModel.navNotificationLiveData.observe(viewLifecycleOwner) { notification ->
@@ -222,13 +228,15 @@ class OfferLandingPageFragment :
             )
         )
         viewModel.processEvent(OlpEvent.GetNotification)
-        getProductListData(Int.ONE)
+        getProductListData(FIRST_PAGE)
     }
 
     private fun setupProductList(offerProductList: OfferProductListUiModel) {
+        val currentState = viewModel.currentState
         olpAdapter?.apply {
             updateProductCount(offerProductList.totalProduct)
             setProductListData(offerProductList.productList)
+            changeSelectedSortFilter(currentState.sortId, currentState.sortName)
         }
     }
 
@@ -244,14 +252,17 @@ class OfferLandingPageFragment :
     }
 
     private fun renderSortFilter(sortId: String, sortName: String) {
-        olpAdapter?.changeSelectedSortFilter(sortId, sortName)
-        viewModel.processEvent(OlpEvent.SetSortId(sortId))
-        getProductListData(page = Int.ONE)
+        olpAdapter?.apply {
+            changeSelectedSortFilter(sortId, sortName)
+            removeProductList()
+        }
+        viewModel.processEvent(OlpEvent.SetSort(sortId, sortName))
+        getProductListData(page = FIRST_PAGE)
     }
 
     private fun getProductListData(page: Int) {
-        if (page == Int.ONE) olpAdapter?.removeProductList()
-        viewModel.processEvent(OlpEvent.GetOffreringProductList(page = page))
+        if (page == FIRST_PAGE) olpAdapter?.removeProductList()
+        viewModel.processEvent(OlpEvent.GetOffreringProductList(page = page, pageSize = PAGE_SIZE))
     }
 
     override fun loadInitialData() {
@@ -309,11 +320,11 @@ class OfferLandingPageFragment :
     private fun setupProductRv() {
         getRecyclerView(view)?.apply {
             this.layoutManager = StaggeredGridLayoutManager(
-                2,
+                PRODUCT_LIST_SPAN_COUNT,
                 StaggeredGridLayoutManager.VERTICAL
             )
             val config = HasPaginatedList.Config(
-                pageSize = 10,
+                pageSize = PAGE_SIZE,
                 onLoadNextPage = {},
                 onLoadNextPageFinished = {}
             )
@@ -344,14 +355,15 @@ class OfferLandingPageFragment :
             }
 
             VIEW_ERROR -> {
+                viewModel.processEvent(OlpEvent.GetNotification)
                 when (status) {
                     Status.INVALID_OFFER_ID -> {
                         setErrorPage(
                             title = getString(R.string.bmgm_title_error_not_found),
                             description = getString(R.string.bmgm_description_error_not_found),
-                            imageUrl = "https://images.tokopedia.net/android/merchant_voucher/il_mvc_no_result.webp",
+                            imageUrl = "https://images.tokopedia.net/imgs/frontend/illustration/global_state_page_not_found.png",
                             primaryCtaText = getString(R.string.bmgm_cta_text_error_not_found),
-                            primaryCtaAction = { activity?.finish() }
+                            primaryCtaAction = { loadInitialData() }
                         )
                     }
 
@@ -359,8 +371,18 @@ class OfferLandingPageFragment :
                         setErrorPage(
                             title = getString(R.string.bmgm_title_error_ended_promo),
                             description = getString(R.string.bmgm_description_error_ended_promo),
-                            imageUrl = "https://images.tokopedia.net/android/merchant_voucher/il_mvc_no_result.webp",
+                            imageUrl = "https://images.tokopedia.net/imgs/frontend/illustration/global_state_page_not_found.png",
                             primaryCtaText = getString(R.string.bmgm_cta_text_error_ended_promo),
+                            primaryCtaAction = { activity?.finish() }
+                        )
+                    }
+
+                    Status.OOS -> {
+                        setErrorPage(
+                            title = getString(R.string.bmgm_title_error_out_of_stock),
+                            description = getString(R.string.bmgm_description_error_out_of_stock),
+                            imageUrl = "https://images.tokopedia.net/imgs/frontend/illustration/global_state_page_not_found.png",
+                            primaryCtaText = getString(R.string.bmgm_cta_text_error_out_of_stock),
                             primaryCtaAction = { activity?.finish() }
                         )
                     }
@@ -369,7 +391,7 @@ class OfferLandingPageFragment :
                         setErrorPage(
                             title = getString(R.string.bmgm_title_error_server),
                             description = getString(R.string.bmgm_description_error_server),
-                            imageUrl = "https://images.tokopedia.net/android/merchant_voucher/il_mvc_no_result.webp",
+                            imageUrl = "https://images.tokopedia.net/imgs/frontend/illustration/global_state_server_error.png",
                             primaryCtaText = getString(R.string.bmgm_cta_text_error_server),
                             primaryCtaAction = { loadInitialData() }
                         )

@@ -68,7 +68,8 @@ data class OfferInfoForBuyerUiModel(
         val offeringJsonData: String = "",
         val startDate: String = "",
         val endDate: String = "",
-        val sortId: String = "0"
+        val sortId: String = "0",
+        val sortName: String = "Urutkan"
     )
 
     sealed class OlpEvent {
@@ -82,9 +83,9 @@ data class OfferInfoForBuyerUiModel(
 
         object GetOfferingInfo: OlpEvent()
 
-        data class GetOffreringProductList(val page: Int) : OlpEvent()
+        data class GetOffreringProductList(val page: Int, val pageSize: Int) : OlpEvent()
 
-        data class SetSortId(val sortId: String): OlpEvent()
+        data class SetSort(val sortId: String, val sortName: String): OlpEvent()
 
         data class SetWarehouseIds(val warehouseIds: List<Int>): OlpEvent()
 

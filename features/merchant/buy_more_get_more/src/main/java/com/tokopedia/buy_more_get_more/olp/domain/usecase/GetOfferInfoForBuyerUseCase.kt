@@ -34,6 +34,7 @@ class GetOfferInfoForBuyerUseCase @Inject constructor(
                      response_header{
                           status
                           errorMessage
+                          errorCode
                           success
                           processTime
                         }

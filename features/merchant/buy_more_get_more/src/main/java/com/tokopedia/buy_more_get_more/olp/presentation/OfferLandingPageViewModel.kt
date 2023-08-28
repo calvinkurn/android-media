@@ -87,11 +87,11 @@ class OfferLandingPageViewModel @Inject constructor(
             }
 
             is OlpEvent.GetOffreringProductList -> {
-                getOfferingProductList(page = event.page)
+                getOfferingProductList(page = event.page, pageSize = event.pageSize)
             }
 
-            is OlpEvent.SetSortId -> {
-                setSortId(event.sortId)
+            is OlpEvent.SetSort -> {
+                setSort(event.sortId, event.sortName)
             }
 
             is OlpEvent.GetNotification -> {
@@ -168,7 +168,8 @@ class OfferLandingPageViewModel @Inject constructor(
     }
 
     private fun getOfferingProductList(
-        page: Int
+        page: Int,
+        pageSize: Int
     ) {
         launchCatchError(
             dispatchers.io,
@@ -188,7 +189,7 @@ class OfferLandingPageViewModel @Inject constructor(
                     ),
                     userId = userId.toLongOrZero(),
                     page = page,
-                    pageSize = 10,
+                    pageSize = pageSize,
                     orderBy = currentState.sortId.toIntOrZero()
                 )
 
@@ -233,10 +234,11 @@ class OfferLandingPageViewModel @Inject constructor(
         )
     }
 
-    private fun setSortId(sortId: String) {
+    private fun setSort(sortId: String, sortName: String) {
         _uiState.update {
             it.copy(
-                sortId = sortId
+                sortId = sortId,
+                sortName = sortName
             )
         }
     }
