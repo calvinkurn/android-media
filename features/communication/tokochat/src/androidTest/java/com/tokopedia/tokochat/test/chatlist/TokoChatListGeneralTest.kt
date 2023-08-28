@@ -104,7 +104,6 @@ class TokoChatListGeneralTest : BaseTokoChatListTest() {
 
         // When
         launchChatListActivity()
-        Thread.sleep(300)
 
         // Then
         generalResult {
@@ -123,7 +122,6 @@ class TokoChatListGeneralTest : BaseTokoChatListTest() {
 
         // When
         launchChatListActivity()
-        Thread.sleep(300)
 
         // Then
         generalResult {
@@ -142,7 +140,6 @@ class TokoChatListGeneralTest : BaseTokoChatListTest() {
 
         // When
         launchChatListActivity()
-        Thread.sleep(300)
 
         // Then
         generalResult {
@@ -161,7 +158,6 @@ class TokoChatListGeneralTest : BaseTokoChatListTest() {
 
         // When
         launchChatListActivity()
-        Thread.sleep(300)
 
         // Then
         generalResult {

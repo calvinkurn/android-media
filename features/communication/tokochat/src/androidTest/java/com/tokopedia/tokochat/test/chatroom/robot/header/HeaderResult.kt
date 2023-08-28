@@ -2,8 +2,9 @@ package com.tokopedia.tokochat.test.chatroom.robot.header
 
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import org.hamcrest.Matchers.not
@@ -13,7 +14,7 @@ object HeaderResult {
     fun assertHeaderDisplayed(interlocutorName: String, licensePlate: String) {
         onView(
             withId(com.tokopedia.tokochat_common.R.id.tokochat_toolbar)
-        ).check(matches(isDisplayed()))
+        ).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)))
 
         onView(
             withId(com.tokopedia.tokochat_common.R.id.tokochat_text_user_title)
@@ -38,7 +39,7 @@ object HeaderResult {
     fun assertOrderHistory(merchantName: String, timeDelivery: String) {
         onView(
             withId(com.tokopedia.tokochat_common.R.id.tokochat_transaction_order)
-        ).check(matches(isDisplayed()))
+        ).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)))
 
         onView(
             withId(com.tokopedia.tokochat_common.R.id.tokochat_tp_order_name)
@@ -52,6 +53,6 @@ object HeaderResult {
     fun assertOrderHistoryLocalLoad() {
         onView(
             withId(com.tokopedia.tokochat_common.R.id.tokochat_localload_error_transaction_widget)
-        ).check(matches(isDisplayed()))
+        ).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)))
     }
 }

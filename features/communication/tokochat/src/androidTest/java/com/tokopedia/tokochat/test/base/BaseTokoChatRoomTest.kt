@@ -103,5 +103,6 @@ abstract class BaseTokoChatRoomTest : BaseTokoChatTest() {
         activityScenarioRule.scenario!!.onActivity {
             activity = it
         }
+        Thread.sleep(300)
     }
 }

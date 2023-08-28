@@ -31,12 +31,14 @@ abstract class BaseTokoChatListTest : BaseTokoChatTest() {
             GlobalConfig.APPLICATION_TYPE = GlobalConfig.SELLER_APPLICATION
         }
         val intent = RouteManager.getIntent(
-            context, ApplinkConst.TOKO_CHAT_LIST
+            context,
+            ApplinkConst.TOKO_CHAT_LIST
         )
         intentModifier(intent)
         activityScenarioRule.launchActivity(intent)
         activityScenarioRule.scenario!!.onActivity {
             activity = it
         }
+        Thread.sleep(300)
     }
 }
