@@ -37,7 +37,7 @@ Seller Order Management, usually called SOM, is a module with features that allo
 9. Order list filter advanced bottom sheet (`SomFilterBottomSheet`): A page that shows the available filters to filter the list of orders that is shown on the order list page. Here the seller has more filter options.
 10. Order extension bottom sheet (`SomBottomSheetOrderExtensionRequest`): A page that allows the seller to send a request to the buyer to extend the order processing deadline.
 11. Request pick-up page (`SomConfirmReqPickupFragment`): A page that allows the seller to send a requested pick-up to the courier after the seller accepts the order.
-12. Edit AWB number bottom sheet (`SomOrderEditAwbBottomSheet`): A bottom sheet that allows the seller to change the AWB number of the order. This bottom sheet can only be opened from an order that has a “Ganti Resi” button.
+12. Edit AWB number bottom sheet (`SomOrderEditAwbBottomSheet`): A bottom sheet that allows the seller to change the AWB number of the order. This bottom sheet can only be opened from an order that has a "Ganti Resi" button.
 13. Respond to order cancellation bottom sheet (`SomOrderRequestCancelBottomSheet`): A bottom sheet that allows the seller to respond to the order cancellation request sent by the buyer.
 
 ## Release Notes

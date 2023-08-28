@@ -28,7 +28,7 @@ labels:
 
 # Overview
 
-The order detail page is a page that shows the detail of an order for the seller side. On this page, the seller can see the detail of an order they received and perform an action on the order like “Terima Pesanan”, or “Kirim Pesanan”. The list of actions that can be performed is controlled by the backend team and it depends on the order status.
+The order detail page is a page that shows the detail of an order for the seller side. On this page, the seller can see the detail of an order they received and perform an action on the order like "Terima Pesanan", or "Kirim Pesanan". The list of actions that can be performed is controlled by the backend team and it depends on the order status.
 
 ![](../res/somdetail/som_detail_page.png)
 
@@ -42,7 +42,6 @@ On this page, the seller can do several actions such as:
 
 - Accept order: This action allows the seller to confirm/accept the buyer’s order. In this flow, the app will need to check whether the order has a buyer cancellation request that is not closed yet. This validation flow is required to cover this case:
 
-
 	- The seller loaded the order detail
 	- The order detail page shows the order detail that has no cancellation request from the buyer
 	- The buyer sends an order cancellation request while the seller is reviewing the order detail
@@ -52,7 +51,7 @@ The complete flow of this action can be seen in the flowchart below.
 
 ![](../res/somdetail/som_detail_accept_order_drawio.png)
 
-- Confirm order (“Kirim Pesanan”): This action allows the seller to confirm the buyer’s order or send the buyer’s order. In this flow, the app will need to check whether the order has a buyer cancellation request that is not closed yet. This validation flow is required to cover this case:
+- Confirm order ("Kirim Pesanan"): This action allows the seller to confirm the buyer’s order or send the buyer's order. In this flow, the app will need to check whether the order has a buyer cancellation request that is not closed yet. This validation flow is required to cover this case:
 
 	- The seller loaded the order detail
 	- The order detail page shows the order detail that has no cancellation request from the buyer
@@ -63,7 +62,7 @@ The complete flow of this action can be seen in the flowchart below.
 
 ![](../res/somdetail/som_detail_confirm_order_drawio.png)
 
-- Reject order: This action allows the seller to approve the buyer’s order cancellation request. The flow can be seen in the flowchart below.
+- Reject order: This action allows the seller to approve the buyer's order cancellation request. The flow can be seen in the flowchart below.
 
 ![](../res/somdetail/som_detail_reject_order_drawio.png)
 
@@ -71,7 +70,7 @@ The complete flow of this action can be seen in the flowchart below.
 
 ![](../res/somdetail/som_detail_edit_awb_drawio.png)
 
-- Reject buyer’s order cancellation request: This action allows the reject buyer’s order cancellation request and continue to process the order. The flow can be seen in the flowchart below.
+- Reject buyer's order cancellation request: This action allows the reject buyer's order cancellation request and continue to process the order. The flow can be seen in the flowchart below.
 
 ![](../res/somdetail/som_detail_reject_order_cancellation_drawio.png)
 
@@ -91,7 +90,7 @@ There are 2 groups of queries on this page such as:
 
 	1. Query `get_som_detail`
 	2. Query `resolutionGetTicketStatus`
-	3. Query `som_reject_reason` (to get the list of order reject reason when the seller perform the reject order using the “Tolak Pesanan” button)
+	3. Query `som_reject_reason` (to get the list of order reject reason when the seller perform the reject order using the "Tolak Pesanan" button)
 2. Queries for processing order
 
 	1. Queries shared with the order list page:
