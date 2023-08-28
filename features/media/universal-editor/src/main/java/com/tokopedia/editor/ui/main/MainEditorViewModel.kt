@@ -34,7 +34,7 @@ class MainEditorViewModel @Inject constructor(
         when (event) {
             is MainEditorEvent.SetupView -> {
                 setParam(event.param)
-                fetchNavigationTool()
+                renderNavigationTools()
             }
             is MainEditorEvent.ClickInputTextTool -> {
                 setAction(MainEditorEffect.OpenInputText(event.model))
@@ -76,7 +76,7 @@ class MainEditorViewModel @Inject constructor(
         }
     }
 
-    private fun fetchNavigationTool() {
+    private fun renderNavigationTools() {
         _mainEditorState.setValue {
             copy(tools = navigationToolRepository.tools())
         }
