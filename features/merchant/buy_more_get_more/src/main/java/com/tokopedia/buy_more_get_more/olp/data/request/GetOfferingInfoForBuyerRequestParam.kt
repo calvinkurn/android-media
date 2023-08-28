@@ -7,7 +7,7 @@ data class GetOfferingInfoForBuyerRequestParam(
     @SerializedName("request_header")
     val requestHeader: RequestHeader = RequestHeader(),
     @SerializedName("offer_ids")
-    val offerIds: List<Int> = emptyList(),
+    val offerIds: List<Long> = emptyList(),
     @SerializedName("shop_ids")
     val shopIds: List<Long> = emptyList(),
     @SerializedName("product_anchor")
@@ -31,9 +31,9 @@ data class GetOfferingInfoForBuyerRequestParam(
 
     data class ProductAnchor(
         @SerializedName("product_ids")
-        val productIds: List<Int> = emptyList(),
+        val productIds: List<Long> = emptyList(),
         @SerializedName("warehouse_ids")
-        val warehouseIds: List<Int> = emptyList()
+        val warehouseIds: List<Long> = emptyList()
     )
 
     data class UserLocation(

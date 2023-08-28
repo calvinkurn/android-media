@@ -40,18 +40,19 @@ open class OlpAdapter(
         this.recyclerView = null
     }
 
-    fun getNewVisitableItems() = visitables.toMutableList()
+    private fun getNewVisitableItems() = visitables.toMutableList()
 
     fun submitList(newList: List<Visitable<*>>) {
-        val currentRecyclerViewState: Parcelable? = recyclerView?.layoutManager?.onSaveInstanceState()
+        val currentRecyclerViewState: Parcelable? =
+            recyclerView?.layoutManager?.onSaveInstanceState()
         val diffCallback = OlpDiffUtilCallback(visitables, newList)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
         visitables.clear()
         visitables.addAll(newList)
         diffResult.dispatchUpdatesTo(this)
-        currentRecyclerViewState?.let {
-            recyclerView?.layoutManager?.onRestoreInstanceState(it)
-        }
+//        currentRecyclerViewState?.let {
+//            recyclerView?.layoutManager?.onRestoreInstanceState(it)
+//        }
     }
 
     override fun onBindViewHolder(
@@ -78,7 +79,7 @@ open class OlpAdapter(
         refreshSticky()
     }
 
-    fun refreshSticky() {
+    private fun refreshSticky() {
         if (onStickySingleHeaderViewListener != null) {
             recyclerView?.post { onStickySingleHeaderViewListener?.refreshSticky() }
         }
@@ -159,15 +160,9 @@ open class OlpAdapter(
 
     fun removeProductList() {
         val newList = getNewVisitableItems()
-        val firstProductViewModelIndex = newList.indexOfFirst {
-            it::class.java == Product::class.java
-        }
-        val totalProductViewModelData = newList.filterIsInstance<Product>().size
-        if (firstProductViewModelIndex >= 0 && totalProductViewModelData <= newList.size) {
-            newList.removeAll(newList.filterIsInstance<Product>())
-            productListUiModel.clear()
-            submitList(newList)
-        }
+        newList.removeAll(newList.filterIsInstance<Product>())
+        productListUiModel.clear()
+        submitList(newList)
     }
 
     fun setProductListData(productList: List<Product>) {

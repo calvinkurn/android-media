@@ -13,7 +13,7 @@ data class OfferInfoForBuyerResponse(
         @SerializedName("offering_json_data")
         val offeringJsonData: String = "",
         @SerializedName("nearest_warehouse_id")
-        val nearestWarehouseIds: List<Int> = emptyList(),
+        val nearestWarehouseIds: List<Long> = emptyList(),
         @SerializedName("offering")
         val offerings: List<Offering> = emptyList()
     )

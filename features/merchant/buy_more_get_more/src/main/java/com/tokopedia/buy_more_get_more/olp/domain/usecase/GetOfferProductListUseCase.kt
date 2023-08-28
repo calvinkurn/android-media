@@ -34,6 +34,7 @@ class GetOfferProductListUseCase @Inject constructor(
                      response_header {
                           status
                           errorMessage
+                          errorCode
                           success
                           processTime
                         }

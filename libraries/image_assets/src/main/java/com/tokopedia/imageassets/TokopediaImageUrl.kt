@@ -382,4 +382,6 @@ object TokopediaImageUrl {
     const val ILLUSTRATION_MVC_DETAIL_CARD_PERFORMANCE = "https://images.tokopedia.net/img/android/mvc/bg_image.png"
     const val IMG_OPEN_IN_MAIN_APP_WITHDRAW = "https://images.tokopedia.net/img/android/payment/update-app-to-withdraw.png"
     const val ILLUSTRATION_SHOP_ETALASE_NOT_FOUND = "https://images.tokopedia.net/img/frontend/illustration/global_state_page_not_found.png"
+    const val OLP_GLOBAL_ERROR_ILLUSTRATION = "https://images.tokopedia.net/img/frontend/illustration/global_state_page_not_found.png"
+    const val OLP_SERVER_ERROR_ILLUSTRATION = "https://images.tokopedia.net/img/frontend/illustration/global_state_server_error.png"
 }
