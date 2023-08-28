@@ -98,11 +98,5 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
-
-        <activity
-            android:name=".ui.confirmshipping.presentation.activity.SomScanResiActivity"
-            android:label="@string/title_som_scan_barcode"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
     </application>
 </manifest>
