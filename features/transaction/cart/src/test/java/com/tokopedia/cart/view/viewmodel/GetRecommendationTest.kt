@@ -1,16 +1,16 @@
 package com.tokopedia.cart.view.viewmodel
 
 import com.google.gson.Gson
-import com.tokopedia.cartrevamp.view.uimodel.LoadRecentReviewState
+import com.tokopedia.cartrevamp.view.uimodel.LoadRecommendationState
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import io.mockk.coEvery
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class GetRecentViewTest : BaseCartViewModelTest() {
+class GetRecommendationTest : BaseCartViewModelTest() {
 
     @Test
-    fun `WHEN get recent view success THEN should render recent view section`() {
+    fun `WHEN get recommendation success THEN should render recommendation section`() {
         // GIVEN
         val recommendationWidgetStringData = """
                 {
@@ -22,34 +22,35 @@ class GetRecentViewTest : BaseCartViewModelTest() {
                     ]
                 }
         """.trimIndent()
+
         val response = mutableListOf<RecommendationWidget>().apply {
             val recommendationWidget =
                 Gson().fromJson(recommendationWidgetStringData, RecommendationWidget::class.java)
             add(recommendationWidget)
         }
 
-        coEvery { getRecentViewUseCase.getData(any()) } returns response
+        coEvery { getRecommendationUseCase.getData(any()) } returns response
 
         // WHEN
-        cartViewModel.processGetRecentViewData()
+        cartViewModel.processGetRecommendationData()
 
         // THEN
         assertEquals(
-            LoadRecentReviewState.Success(response),
-            cartViewModel.recentViewState.value
+            LoadRecommendationState.Success(response),
+            cartViewModel.recommendationState.value
         )
     }
 
     @Test
-    fun `WHEN get recent view failed THEN should not render recent view section`() {
+    fun `WHEN get recommendation error THEN should not render recommendation section`() {
         // GIVEN
-        val exception = IllegalStateException()
-        coEvery { getRecentViewUseCase.getData(any()) } throws exception
+        coEvery { getRecommendationUseCase.getData(any()) } throws IllegalStateException()
 
         // WHEN
-        cartViewModel.processGetRecentViewData()
+        cartViewModel.processGetRecommendationData()
 
         // THEN
-        assertEquals(LoadRecentReviewState.Failed(exception), cartViewModel.recentViewState.value)
+        // THEN
+        assertEquals(LoadRecommendationState.Failed, cartViewModel.recommendationState.value)
     }
 }
