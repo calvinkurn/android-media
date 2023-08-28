@@ -76,7 +76,6 @@ On this page, the seller can do several actions such as:
 
 - Accept order: This action allows the seller to confirm/accept the buyer’s order. In this flow, the app will need to check whether the order has a buyer cancellation request that is not closed yet. This validation flow is required to cover this case:
 
-
 	- The seller load the order list
 	- The order list page shows order A that have no cancellation request from the buyer
 	- Buyer sends an order cancellation request
@@ -113,20 +112,17 @@ There’s 2 group of query in this page such as:
 
 1. Queries for UI renders
 
-
 	1. Query `orderList`
 	2. Query `orderFilterSom`
 	3. Query `orderTickers`
 	4. Query `topAdsGetShopInfo`
 2. Queries for processing order
 
-
 	1. Mutation `multi_accept_order`
 	2. Query `get_multi_accept_order_status`
 	3. Mutation `mpLogisticBulkRequestPickup`
 	4. Mutation `mpLogisticMultiShippingStatus`
 	5. Several queries that are shared with the order detail page such as:
-	
 	
 		1. Mutation `accept_order`
 		2. Mutation `reject_order`

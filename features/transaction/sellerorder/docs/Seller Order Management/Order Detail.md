@@ -54,7 +54,6 @@ The complete flow of this action can be seen in the flowchart below.
 
 - Confirm order (“Kirim Pesanan”): This action allows the seller to confirm the buyer’s order or send the buyer’s order. In this flow, the app will need to check whether the order has a buyer cancellation request that is not closed yet. This validation flow is required to cover this case:
 
-
 	- The seller loaded the order detail
 	- The order detail page shows the order detail that has no cancellation request from the buyer
 	- The buyer sends an order cancellation request while the seller is reviewing the order detail
@@ -90,15 +89,12 @@ There are 2 groups of queries on this page such as:
 
 1. Queries for UI renders
 
-
 	1. Query `get_som_detail`
 	2. Query `resolutionGetTicketStatus`
 	3. Query `som_reject_reason` (to get the list of order reject reason when the seller perform the reject order using the “Tolak Pesanan” button)
 2. Queries for processing order
 
-
 	1. Queries shared with the order list page:
-	
 	
 		1. Mutation `accept_order`
 		2. Mutation `reject_order`
@@ -107,7 +103,6 @@ There are 2 groups of queries on this page such as:
 		5. Query `validate_accept_order`
 	2. Queries used exclusively on the order detail page:
 	
-	
 		1. Mutation `set_delivered`
 
 
@@ -115,7 +110,7 @@ There are 2 groups of queries on this page such as:
 | **Query** | **Description** | **Documentation** |
 | --- | --- | --- |
 | `query get_som_detail`  | The query for getting the order detail data. The data will be used to render the order detail page minus the order resolution ticket status (if any). | [[Query] Seller Order Detail](/wiki/spaces/TTD/pages/487590828)  |
-| `query resolutionGetTicketStatus`  | This query is for getting the order resolution ticket status (if any) and render it on the order detail section.![](../res/Screen%20Shot%202023-05-12%20at%2010.32.40.png)<br/>**Note: We must only hit this query if** `has_reso_status` **from the** `get_som_detail` **query is** `true` | [Tech Plan - Integrate Resolution Status In Order Detail Page](/wiki/spaces/CS/pages/1983977492/Tech+Plan+-+Integrate+Resolution+Status+In+Order+Detail+Page)  |
+| `query resolutionGetTicketStatus`  | This query is for getting the order resolution ticket status (if any) and render it on the order detail section.![](res/Screen%20Shot%202023-05-12%20at%2010.32.40.png)<br/>**Note: We must only hit this query if** `has_reso_status` **from the** `get_som_detail` **query is** `true` | [Tech Plan - Integrate Resolution Status In Order Detail Page](/wiki/spaces/CS/pages/1983977492/Tech+Plan+-+Integrate+Resolution+Status+In+Order+Detail+Page)  |
 | `query som_reject_reason`  | This query is used to get the list of reject reason that seller can choose when the seller is trying to reject the buyer order by clicking on the “Tolak Pesanan” button. The list later will be rendered inside a bottomsheet (`SomRejectReasonBottomSheet`). | [[Query] Reject Reason Order](/wiki/spaces/TTD/pages/575406563)  |
 | `mutation accept_order` | This query is used to send the accept order (“Terima Pesanan” button) action. Before sending this query, the app need to validate the order first by sending the `validate_accept_order` query | [[Mutation] Button Accept Order Query List](/wiki/spaces/TTD/pages/473172371)  |
 | `mutation reject_order` | This query is used to send the reject/cancel order action when the seller is responding to buyer order cancellation request | [[Mutation] Button Reject Order Query List](/wiki/spaces/TTD/pages/473272057)  |

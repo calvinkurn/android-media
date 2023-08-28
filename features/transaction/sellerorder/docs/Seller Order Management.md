@@ -43,11 +43,13 @@ Seller Order Management, usually called SOM, is a module with features that allo
 ## Release Notes
 
 <!--start expand:27 January 2023 (MA-3.207 & SA-2.137)-->
-###### Order extension improvementPR: <https://github.com/tokopedia/android-tokopedia-core/pull/31309>
+###### Order extension improvement
+PR: <https://github.com/tokopedia/android-tokopedia-core/pull/31309>
 <!--end expand-->
 
 <!--start expand:5 August 2022 (MA-3.187 & SA-2.117)-->
-###### [OM] SkyFallPR: <https://github.com/tokopedia/android-tokopedia-core/pull/27981>
+###### [OM] SkyFall
+PR: <https://github.com/tokopedia/android-tokopedia-core/pull/27981>
 <!--end expand-->
 
 ## **Pages**
