@@ -9,7 +9,7 @@ class GetOfferingProductListRequestParam(
     @SerializedName("product_anchor")
     val productAnchor: ProductAnchor = ProductAnchor(),
     @SerializedName("offer_ids")
-    val offerIds: List<Int> = emptyList(),
+    val offerIds: List<Long> = emptyList(),
     @SerializedName("user_id")
     val userId: Long = 0,
     @SerializedName("user_location")
@@ -35,7 +35,7 @@ class GetOfferingProductListRequestParam(
 
     data class ProductAnchor(
         @SerializedName("warehouse_ids")
-        val warehouseIds: List<Int> = emptyList()
+        val warehouseIds: List<Long> = emptyList()
     )
 
     data class UserLocation(

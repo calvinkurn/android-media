@@ -112,10 +112,10 @@ class OfferLandingPageViewModel @Inject constructor(
     }
 
     private fun setInitialUiState(
-        offerIds: List<Int>,
+        offerIds: List<Long>,
         shopId: Long,
-        productIds: List<Int> = emptyList(),
-        warehouseIds: List<Int> = emptyList(),
+        productIds: List<Long> = emptyList(),
+        warehouseIds: List<Long> = emptyList(),
         localCacheModel: LocalCacheModel?
     ) {
         _uiState.update {
@@ -243,7 +243,7 @@ class OfferLandingPageViewModel @Inject constructor(
         }
     }
 
-    private fun setWarehouseIds(warehouseIds: List<Int>) {
+    private fun setWarehouseIds(warehouseIds: List<Long>) {
         _uiState.update {
             it.copy(
                 warehouseIds = warehouseIds

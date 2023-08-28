@@ -10,7 +10,7 @@ data class OfferInfoForBuyerUiModel(
     val responseHeader: ResponseHeader = ResponseHeader(),
     val offeringJsonData: String = "",
     val offerings: List<Offering> = emptyList(),
-    val nearestWarehouseIds: List<Int> = emptyList()
+    val nearestWarehouseIds: List<Long> = emptyList()
 ) : Visitable<OlpAdapterTypeFactory> {
     data class ResponseHeader(
         val success: Boolean = true,
@@ -59,10 +59,10 @@ data class OfferInfoForBuyerUiModel(
     }
 
     data class OlpUiState(
-        val offerIds: List<Int> = emptyList(),
+        val offerIds: List<Long> = emptyList(),
         val shopData: ShopData = ShopData(),
-        val productIds: List<Int> = emptyList(),
-        val warehouseIds: List<Int> = emptyList(),
+        val productIds: List<Long> = emptyList(),
+        val warehouseIds: List<Long> = emptyList(),
         val tnc: List<String> = emptyList(),
         val localCacheModel: LocalCacheModel? = null,
         val offeringJsonData: String = "",
@@ -74,10 +74,10 @@ data class OfferInfoForBuyerUiModel(
 
     sealed class OlpEvent {
         data class SetInitialUiState(
-            val offerIds: List<Int> = emptyList(),
+            val offerIds: List<Long> = emptyList(),
             val shopIds: Long,
-            val productIds: List<Int> = emptyList(),
-            val warehouseIds: List<Int> = emptyList(),
+            val productIds: List<Long> = emptyList(),
+            val warehouseIds: List<Long> = emptyList(),
             val localCacheModel: LocalCacheModel?
         ) : OlpEvent()
 
@@ -87,7 +87,7 @@ data class OfferInfoForBuyerUiModel(
 
         data class SetSort(val sortId: String, val sortName: String): OlpEvent()
 
-        data class SetWarehouseIds(val warehouseIds: List<Int>): OlpEvent()
+        data class SetWarehouseIds(val warehouseIds: List<Long>): OlpEvent()
 
         data class SetShopData(val shopData: ShopData?): OlpEvent()
 
