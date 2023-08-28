@@ -10,6 +10,9 @@ class EditAdGroupItemViewHolder(private val viewBinding: TopadsEditItemEditAdGro
     override fun bind(element: EditAdGroupItemUiModel) {
         viewBinding.editAdItemTitle.text = element.title
         viewBinding.editAdItemSubtitle.text = element.subtitle
+        viewBinding.root.setOnClickListener {
+            element.clickListener()
+        }
     }
 
     companion object {

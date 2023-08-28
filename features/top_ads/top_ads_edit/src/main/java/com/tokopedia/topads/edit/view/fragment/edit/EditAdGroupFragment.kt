@@ -18,6 +18,10 @@ import com.tokopedia.topads.edit.view.model.edit.EditAdGroupItemAdsPotentialUiMo
 import com.tokopedia.topads.edit.view.model.edit.EditAdGroupItemAdsPotentialWidgetUiModel
 import com.tokopedia.topads.edit.view.model.edit.EditAdGroupItemState
 import com.tokopedia.topads.edit.view.model.edit.EditAdGroupItemUiModel
+import com.tokopedia.topads.edit.view.sheet.EditAdGroupDailyBudgetBottomSheet
+import com.tokopedia.topads.edit.view.sheet.EditAdGroupNameBottomSheet
+import com.tokopedia.topads.edit.view.sheet.EditAdGroupRecommendationBidBottomSheet
+import com.tokopedia.topads.edit.view.sheet.EditAdGroupSettingModeBottomSheet
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -29,6 +33,23 @@ class EditAdGroupFragment: BaseDaggerFragment(){
     private var binding by autoClearedNullable<TopadsEditFragmentEditAdGroupBinding>()
     private val editAdGroupAdapter by lazy {
         EditAdGroupAdapter(EditAdGroupTypeFactory())
+    }
+
+    private fun getList(context: Context): MutableList<Visitable<*>> {
+        return mutableListOf(
+            EditAdGroupItemUiModel("Nama Grup", "Group", "") { openAdGroupNameBottomSheet() },
+            EditAdGroupItemUiModel("Produk", "6 Produk baru", "") {  },
+            EditAdGroupItemUiModel("Mode Pengaturan", "6 Produk baru", "") { openAdGroupSettingModeBottomSheet() },
+            EditAdGroupItemUiModel("Iklan di Pencarian", "6 Produk baru", "") {  },
+            EditAdGroupItemUiModel("Iklan di Rekomendasi", "6 Produk baru", "") { openAdGroupRecommendationBidBottomSheet() },
+            EditAdGroupItemUiModel("Anggaran Harian", "6 Produk baru", "") { openAdGroupDailyBudgetBottomSheet() },
+            EditAdGroupItemAdsPotentialUiModel(
+                "Potensi tampil",
+                context.getString(R.string.footer_potential_widget_edit_ad_group_text),
+                "",
+                potentialWidgetList, EditAdGroupItemState.LOADING
+            )
+        )
     }
 
     override fun getScreenName(): String = String.EMPTY
@@ -57,15 +78,29 @@ class EditAdGroupFragment: BaseDaggerFragment(){
         }
 
 
-        suspend fun delayWithCoroutines(delayMillis: Long) {
-            delay(delayMillis)
-        }
+//        suspend fun delayWithCoroutines(delayMillis: Long) {
+//            delay(delayMillis)
+//        }
+//
+//        GlobalScope.launch(Dispatchers.Main) {
+//            delayWithCoroutines(2000)
+//            editAdGroupAdapter.updatePotentialWidget(potentialWidgetList)
+//        }
+    }
+    private fun openAdGroupNameBottomSheet(){
+        EditAdGroupNameBottomSheet.newInstance().show(parentFragmentManager)
+    }
 
-        GlobalScope.launch(Dispatchers.Main) {
-            delayWithCoroutines(2000)
-            editAdGroupAdapter.updatePotentialWidget(potentialWidgetList)
-        }
 
+    private fun openAdGroupSettingModeBottomSheet(){
+        EditAdGroupSettingModeBottomSheet.newInstance().show(parentFragmentManager)
+    }
+    private fun openAdGroupRecommendationBidBottomSheet(){
+        EditAdGroupRecommendationBidBottomSheet.newInstance().show(parentFragmentManager)
+    }
+
+    private fun openAdGroupDailyBudgetBottomSheet(){
+        EditAdGroupDailyBudgetBottomSheet.newInstance().show(parentFragmentManager)
     }
 
     companion object {
@@ -78,22 +113,5 @@ class EditAdGroupFragment: BaseDaggerFragment(){
             EditAdGroupItemAdsPotentialWidgetUiModel("Di Rekomendasi", "400x/minggu", "+12% meningkat"),
             EditAdGroupItemAdsPotentialWidgetUiModel("Total Tampil", "800x/minggu", "+12% meningkat")
         )
-
-        fun getList(context: Context): MutableList<Visitable<*>> {
-            return mutableListOf(
-                EditAdGroupItemUiModel("Nama Grup", "Group", ""),
-                EditAdGroupItemUiModel("Produk", "6 Produk baru", ""),
-                EditAdGroupItemUiModel("Mode Pengaturan", "6 Produk baru", ""),
-                EditAdGroupItemUiModel("Iklan di Pencarian", "6 Produk baru", ""),
-                EditAdGroupItemUiModel("Iklan di Rekomendasi", "6 Produk baru", ""),
-                EditAdGroupItemUiModel("Anggaran Harian", "6 Produk baru", ""),
-                EditAdGroupItemAdsPotentialUiModel(
-                    "Potensi tampil",
-                    context.getString(R.string.footer_potential_widget_edit_ad_group_text),
-                    "",
-                    potentialWidgetList, EditAdGroupItemState.LOADING
-                )
-            )
-        }
     }
 }

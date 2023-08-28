@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/top_ads_edit_ad_group_recommendation_bid_bottom_sheet_desc"
+        app:typographyType="paragraph_3" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="24dp" />
+
+    <com.tokopedia.unifycomponents.TextFieldUnify2
+        android:id="@+id/text_field"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:unify_text_field_input_type="text"
+        app:unify_text_field_label="@string/top_ads_edit_ad_group_recommendation_bid_bottom_sheet_label"
+        app:unify_text_field_label_static="true" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="16dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/text_1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Potensi Tampil"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:typographyType="paragraph_3" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/amount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="400x"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/icon"
+                app:layout_constraintBottom_toBottomOf="@id/icon"
+                app:typographyType="paragraph_2"
+                app:typographyWeight="bold" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/text_2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="/minggu"
+                app:layout_constraintBottom_toBottomOf="@id/amount"
+                app:layout_constraintStart_toEndOf="@id/amount"
+                app:layout_constraintTop_toTopOf="@id/amount"
+                app:typographyType="small" />
+
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/icon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                app:icon_name="CHEVRON_UP"
+                app:layout_constraintStart_toEndOf="@id/text_2"
+                app:layout_constraintTop_toBottomOf="@id/text_1" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/percentage"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="13% meningkat"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/icon"
+                app:typographyType="small" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/edit_ad_group_name_cta"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/top_ads_edit_ad_group_apply_bottom_sheet_cta" />
+
+    </LinearLayout>
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="16dp" />
+
+</LinearLayout>

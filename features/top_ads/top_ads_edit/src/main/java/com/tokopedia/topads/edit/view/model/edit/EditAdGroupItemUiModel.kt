@@ -6,7 +6,8 @@ import com.tokopedia.topads.edit.view.adapter.edit.EditAdGroupTypeFactory
 data class EditAdGroupItemUiModel(
     var title: String = "",
     var subtitle: String = "",
-    var applink: String = ""
+    var applink: String = "",
+    val clickListener: () -> Unit
 ) : Visitable<EditAdGroupTypeFactory> {
 
     override fun type(typeFactory: EditAdGroupTypeFactory): Int {
