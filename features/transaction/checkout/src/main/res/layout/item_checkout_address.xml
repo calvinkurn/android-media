@@ -33,7 +33,7 @@
         app:layout_constraintTop_toBottomOf="@id/tv_checkout_address_header" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_checkout_address_title"
+        android:id="@+id/tv_checkout_address_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
@@ -41,7 +41,7 @@
         android:ellipsize="end"
         android:lines="1"
         android:textColor="@color/Unify_NN950"
-        app:layout_constraintEnd_toStartOf="@id/ic_checkout_address_chevron"
+        app:layout_constraintEnd_toStartOf="@id/btn_checkout_change_address"
         app:layout_constraintStart_toEndOf="@id/ic_checkout_address"
         app:layout_constraintTop_toTopOf="@id/ic_checkout_address"
         app:typographyType="display_3"
@@ -49,7 +49,7 @@
         tools:text="Address" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_checkout_address_desc"
+        android:id="@+id/tv_checkout_address_info"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
@@ -57,22 +57,22 @@
         android:ellipsize="end"
         android:lines="1"
         android:textColor="@color/Unify_NN600"
-        app:layout_constraintEnd_toStartOf="@id/ic_checkout_address_chevron"
+        app:layout_constraintEnd_toStartOf="@id/btn_checkout_change_address"
         app:layout_constraintStart_toStartOf="@id/ic_checkout_address"
-        app:layout_constraintTop_toBottomOf="@id/tv_checkout_address_title"
+        app:layout_constraintTop_toBottomOf="@id/tv_checkout_address_name"
         app:typographyType="display_3"
         app:typographyWeight="reguler"
         tools:text="Jl. K.H. Mas Mansyur No.11, RT.12/RW.11, Karet Jl. K.H. Mas Mansyur No.11, RT.12/RW.11, Karet" />
 
     <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/ic_checkout_address_chevron"
+        android:id="@+id/btn_checkout_change_address"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_marginEnd="28dp"
         app:icon_color_light_enable="@color/Unify_NN900"
         app:icon_color_night_enable="@color/Unify_NN900"
         app:icon_name="CHEVRON_RIGHT"
-        app:layout_constraintBottom_toBottomOf="@id/tv_checkout_address_desc"
+        app:layout_constraintBottom_toBottomOf="@id/tv_checkout_address_info"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/ic_checkout_address" />
 
@@ -84,6 +84,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_checkout_address_desc" />
+        app:layout_constraintTop_toBottomOf="@id/tv_checkout_address_info" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

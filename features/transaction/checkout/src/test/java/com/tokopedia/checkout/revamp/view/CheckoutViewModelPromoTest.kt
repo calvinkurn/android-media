@@ -40,6 +40,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
 import io.mockk.coEvery
+import io.mockk.coVerify
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -242,6 +243,12 @@ class CheckoutViewModelPromoTest : BaseCheckoutViewModelTest() {
             validateUsePromoRevampUseCase.setParam(any()).executeOnBackground()
         } returns validateUsePromoRevampUiModel
 
+        coEvery {
+            clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground()
+        } returns ClearPromoUiModel(
+            SuccessDataUiModel(true)
+        )
+
         viewModel.listData.value = listOf(
             CheckoutTickerErrorModel(errorMessage = ""),
             CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
@@ -263,7 +270,8 @@ class CheckoutViewModelPromoTest : BaseCheckoutViewModelTest() {
             CheckoutProductModel("234", cartStringOrder = "23"),
             CheckoutOrderModel(
                 "234",
-                shipment = CheckoutOrderShipment(courierItemData = CourierItemData())
+                boUniqueId = "23",
+                shipment = CheckoutOrderShipment(courierItemData = CourierItemData(logPromoCode = "boCode2"))
             ),
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(
@@ -339,7 +347,11 @@ class CheckoutViewModelPromoTest : BaseCheckoutViewModelTest() {
                 CheckoutProductModel("234", cartStringOrder = "23"),
                 CheckoutOrderModel(
                     "234",
-                    shipment = CheckoutOrderShipment(courierItemData = CourierItemData())
+                    boUniqueId = "23",
+                    shipment = CheckoutOrderShipment(),
+                    isTriggerShippingVibrationAnimation = true,
+                    isStateAllItemViewExpanded = false,
+                    isShippingBorderRed = true
                 ),
                 CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
                 CheckoutPromoModel(
@@ -355,12 +367,22 @@ class CheckoutViewModelPromoTest : BaseCheckoutViewModelTest() {
                         )
                     )
                 ),
-                CheckoutCostModel(totalPriceString = "Rp0", hasSelectAllShipping = true),
+                CheckoutCostModel(totalPriceString = "Rp0", hasSelectAllShipping = false),
                 CheckoutCrossSellGroupModel(),
                 CheckoutButtonPaymentModel(enable = true, totalPrice = "Rp0")
             ),
             viewModel.listData.value
         )
+
+        coVerify(exactly = 1) {
+            clearCacheAutoApplyStackUseCase.setParams(
+                match {
+                    it.orderData.orders[0].codes.contains(
+                        "boCode2"
+                    ) && it.orderData.orders[0].uniqueId == "23" && it.orderData.orders[0].cartStringGroup == "234"
+                }
+            )
+        }
     }
 
     @Test

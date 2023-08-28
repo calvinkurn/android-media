@@ -10,7 +10,6 @@ import com.tokopedia.cart.data.model.response.promo.PromoEmptyCartInfo
 import com.tokopedia.cart.data.model.response.promo.PromoErrorDetail
 import com.tokopedia.cart.data.model.response.promo.PromoMessageInfo
 import com.tokopedia.cart.data.model.response.promo.VoucherOrders
-import com.tokopedia.cart.data.model.response.shopgroupsimplified.Action
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.AddOn
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.AvailableGroup
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
@@ -309,34 +308,14 @@ object CartUiModelMapper {
         unavailableSectionList.add(disabledItemHeaderUiModel)
 
         var showAccordion = false
-        if (cartData.unavailableSections.size > 1) {
+
+        val totalUnavailableProduct = cartData.unavailableSections.sumOf { unavailableSection -> unavailableSection.productsCount }
+
+        if (totalUnavailableProduct > 3) {
             showAccordion = true
         }
 
         cartData.unavailableSections.forEachIndexed { sectionIndex, unavailableSection ->
-            val disabledReasonHolderData = mapDisabledReasonUiModel(unavailableSection)
-            unavailableSectionList.add(disabledReasonHolderData)
-            if (!showAccordion && unavailableSection.unavailableGroups.isNotEmpty()) {
-                if (unavailableSection.unavailableGroups.size > 1) {
-                    showAccordion = true
-                } else {
-                    loop@ for (unavailableGroup in unavailableSection.unavailableGroups) {
-                        if (unavailableGroup.cartDetails.size > 1) {
-                            showAccordion = true
-                            break@loop
-                        } else {
-                            innerLoop@ for (cartDetail in unavailableGroup.cartDetails) {
-                                if ((cartDetail.bundleDetail.bundleId.isBlank() || cartDetail.bundleDetail.bundleId == "0") &&
-                                    cartDetail.products.size > 1
-                                ) {
-                                    showAccordion = true
-                                    break@loop
-                                }
-                            }
-                        }
-                    }
-                }
-            }
             unavailableSection.unavailableGroups.forEachIndexed { groupIndex, unavailableGroup ->
                 val productUiModelList = mutableListOf<CartItemHolderData>()
                 val shopUiModel = mapGroupShop(unavailableGroup.shop, unavailableGroup.cartDetails)
@@ -403,7 +382,7 @@ object CartUiModelMapper {
         }
 
         if (showAccordion) {
-            val accordionUiModel = mapDisabledAccordionUiModel(context, cartData)
+            val accordionUiModel = mapDisabledAccordionUiModel(context)
             unavailableSectionList.add(accordionUiModel)
 
             return Pair(unavailableSectionList, accordionUiModel)
@@ -437,17 +416,12 @@ object CartUiModelMapper {
     }
 
     private fun mapDisabledAccordionUiModel(
-        context: Context?,
-        cartData: CartData
+        context: Context?
     ): DisabledAccordionHolderData {
         return DisabledAccordionHolderData(
             isCollapsed = true,
-            showLessWording = cartData.unavailableSectionAction.find {
-                return@find it.id == Action.ACTION_SHOWLESS
-            }?.message ?: context?.getString(R.string.cart_new_default_wording_show_less) ?: "",
-            showMoreWording = cartData.unavailableSectionAction.find {
-                return@find it.id == Action.ACTION_SHOWMORE
-            }?.message ?: context?.getString(R.string.cart_new_default_wording_show_more) ?: ""
+            showLessWording = context?.getString(R.string.cart_new_default_wording_show_less) ?: "",
+            showMoreWording = context?.getString(R.string.cart_new_default_wording_show_more) ?: ""
         )
     }
 

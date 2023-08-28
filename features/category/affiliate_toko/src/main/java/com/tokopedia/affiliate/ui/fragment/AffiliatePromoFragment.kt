@@ -261,7 +261,7 @@ class AffiliatePromoFragment :
 
         binding?.gamificationContainer?.isVisible = isAffiliateGamificationEnabled()
 
-        binding?.gamificationEntryCardBanner?.setOnClickListener {
+        binding?.buttonGamification?.setOnClickListener {
             val urlRedirectionAppLink = affiliateRedirection()
             if (urlRedirectionAppLink?.isNotEmpty() == true) {
                 RouteManager.route(context, urlRedirectionAppLink)
