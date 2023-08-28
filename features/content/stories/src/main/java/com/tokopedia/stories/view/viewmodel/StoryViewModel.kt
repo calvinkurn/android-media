@@ -161,7 +161,7 @@ class StoryViewModel @Inject constructor(
             group.copy(
                 selectedPosition = mGroupPosition.value,
                 groupItems = group.groupItems.mapIndexed { index, item ->
-                    item.copy(isSelected = index == mGroupPosition.value,)
+                    item.copy(isSelected = index == mGroupPosition.value)
                 }
             )
         }
