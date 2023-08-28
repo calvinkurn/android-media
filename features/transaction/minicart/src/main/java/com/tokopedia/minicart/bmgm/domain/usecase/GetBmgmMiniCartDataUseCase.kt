@@ -1,5 +1,6 @@
 package com.tokopedia.minicart.bmgm.domain.usecase
 
+import android.annotation.SuppressLint
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -40,6 +41,7 @@ class GetBmgmMiniCartDataUseCase @Inject constructor(
         }
     }
 
+    @SuppressLint("PII Data Exposure")
     private fun createRequestParam(shopId: String, bmgmParam: BmgmParamModel): RequestParams {
         return RequestParams.create().apply {
             putString(PARAM_KEY_LANG, PARAM_VALUE_ID)
@@ -65,8 +67,8 @@ class GetBmgmMiniCartDataUseCase @Inject constructor(
         private const val PARAM_VALUE_SOURCE = "bmgm_olp_mini_cart"
 
         const val QUERY = """
-            query mini_cart_v3(${'$'}lang: String, $${'$'}additional_params: CartRevampAdditionalParams) {
-              mini_cart_v3(lang: $${'$'}lang, additional_params: $${'$'}additional_params) {
+            query mini_cart_v3(${'$'}lang: String, ${'$'}additional_params: CartRevampAdditionalParams) {
+              mini_cart_v3(lang: ${'$'}lang, additional_params: ${'$'}additional_params) {
                 error_message
                 status
                 data {
