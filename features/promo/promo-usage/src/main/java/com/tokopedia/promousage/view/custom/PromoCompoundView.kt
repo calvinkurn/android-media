@@ -182,7 +182,10 @@ class PromoCompoundView @JvmOverloads constructor(
                     if (IconHelper.isCustomIcon(promoInfo.icon)) {
                         promoInfoChildView.iuPromoInfo
                             .setImageDrawable(
-                                ContextCompat.getDrawable(context, IconHelper.getIcon(promoInfo.icon))
+                                ContextCompat.getDrawable(
+                                    context,
+                                    IconHelper.getIcon(promoInfo.icon)
+                                )
                             )
                     } else {
                         promoInfoChildView.iuPromoInfo
@@ -285,9 +288,11 @@ class PromoCompoundView @JvmOverloads constructor(
                     val isPromoGopayLater = promo.couponType.firstOrNull {
                         it == PromoItem.COUPON_TYPE_GOPAY_LATER_CICIL
                     } != null
-                    val isCtaValid = promo.cta.type == PromoCta.TYPE_REGISTER_GOPAY_LATER_CICIL
-                        && promo.cta.text.isNotBlank() && promo.cta.appLink.isNotBlank()
-                    if (isPromoGopayLater && isCtaValid) {
+                    val isPromoCtaRegisterGopayLater =
+                        promo.cta.type == PromoCta.TYPE_REGISTER_GOPAY_LATER_CICIL
+                    val isPromoCtaValid =
+                        promo.cta.text.isNotBlank() && promo.cta.appLink.isNotBlank()
+                    if (isPromoGopayLater && isPromoCtaRegisterGopayLater && isPromoCtaValid) {
                         tpgAdditionalInfoMessage.text =
                             HtmlLinkHelper(context, promo.cta.text).spannedString
                         tpgAdditionalInfoMessage
