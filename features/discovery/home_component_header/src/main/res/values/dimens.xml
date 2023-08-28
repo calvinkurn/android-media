@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="home_channel_header_margin_default">16dp</dimen>
+    <dimen name="home_channel_header_margin_subtitle_to_icon">4dp</dimen>
 
     <dimen name="home_channel_header_cta_container">32dp</dimen>
     <dimen name="home_channel_header_cta_icon">24dp</dimen>

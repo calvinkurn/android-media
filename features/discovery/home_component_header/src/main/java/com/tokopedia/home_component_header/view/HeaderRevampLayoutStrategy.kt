@@ -3,6 +3,7 @@ package com.tokopedia.home_component_header.view
 import android.content.Context
 import android.content.res.Resources
 import android.graphics.Color
+import android.text.TextUtils
 import android.view.View
 import android.view.ViewStub
 import android.view.animation.Animation
@@ -102,6 +103,26 @@ class HeaderRevampLayoutStrategy : HeaderLayoutStrategy {
         }
     }
 
+    override fun renderIconSubtitle(
+        itemView: View,
+        channelHeader: ChannelHeader,
+        stubChannelIconSubtitle: View?,
+    ) {
+        val subtitleIcon : ImageView
+        if(hasIconSubtitle(channelHeader)){
+            if (stubChannelIconSubtitle is ViewStub &&
+                !isViewStubHasBeenInflated(stubChannelIconSubtitle)
+            ){
+                stubChannelIconSubtitle.inflate().apply {
+                    subtitleIcon = findViewById(R.id.channel_subtitle_icon)
+                }
+            } else {
+                subtitleIcon = itemView.findViewById(R.id.channel_subtitle_icon)
+            }
+            renderIcon(subtitleIcon, channelHeader)
+        }
+    }
+
     private fun setCtaIcon(
         context: Context,
         ctaBorder: ImageView?,
@@ -128,7 +149,7 @@ class HeaderRevampLayoutStrategy : HeaderLayoutStrategy {
                 ctaBorder?.loadImage(ContextCompat.getDrawable(context, R.drawable.bg_channel_header_cta_inverted))
                 ctaButtonRevamp?.setImage(
                     newIconId = iconId,
-                    newLightEnable = ContextCompat.getColor(context, com.tokopedia.home_component_header.R.color.dms_header_cta_inverted_icon),
+                    newLightEnable = com.tokopedia.home_component_header.R.color.dms_header_cta_inverted_icon,
                     newDarkEnable = ContextCompat.getColor(context, com.tokopedia.home_component_header.R.color.dms_header_cta_inverted_icon)
                 )
             }
@@ -218,5 +239,14 @@ class HeaderRevampLayoutStrategy : HeaderLayoutStrategy {
         resources: Resources
     ) {
         channelHeaderContainer.setPadding(channelHeaderContainer.paddingLeft, channelHeaderContainer.paddingTop, channelHeaderContainer.paddingRight, resources.getDimensionPixelSize(R.dimen.home_channel_header_bottom_padding))
+    }
+
+    private fun hasIconSubtitle(channelHeader: ChannelHeader): Boolean {
+        return !TextUtils.isEmpty(channelHeader.iconSubtitleUrl)
+    }
+
+    private fun renderIcon(channelIconSubtitle:  ImageView, channelHeader: ChannelHeader){
+        channelIconSubtitle.loadImage(channelHeader.iconSubtitleUrl)
+        channelIconSubtitle.visibility = View.VISIBLE
     }
 }

@@ -10,7 +10,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
+import com.tokopedia.home_component_header.view.HomeChannelHeaderListener
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ProductCardGridView
@@ -20,6 +22,7 @@ import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchInspirationCarouselBinding
 import com.tokopedia.search.result.presentation.model.BadgeItemDataView
 import com.tokopedia.search.utils.addItemDecorationIfNotExists
+import com.tokopedia.search.utils.convertToChannelHeader
 import com.tokopedia.search.utils.getHorizontalShadowOffset
 import com.tokopedia.search.utils.getVerticalShadowOffset
 import com.tokopedia.utils.view.binding.viewBinding
@@ -33,6 +36,7 @@ class InspirationCarouselViewHolder(
     itemView: View,
     private val inspirationCarouselListener: InspirationCarouselListener,
     private val recycledViewPool: RecyclerView.RecycledViewPool,
+    private val isReimagine: Boolean = false,
 ) : AbstractViewHolder<InspirationCarouselDataView>(itemView), CoroutineScope {
 
     companion object {
@@ -61,16 +65,82 @@ class InspirationCarouselViewHolder(
     }
 
     override fun bind(element: InspirationCarouselDataView) {
-        bindTitle(element)
-
-        if (element.layout == LAYOUT_INSPIRATION_CAROUSEL_CHIPS)
+        bindHeader(element)
+        if (isChipsLayout(element))
             bindChipsCarousel(element)
         else
             bindContent(element)
     }
 
+    private fun bindHeader(element: InspirationCarouselDataView) {
+        if (isReimagine) {
+            setHeaderRevamp(element)
+        } else {
+            setOldHeader(element)
+        }
+    }
+
+    private fun setHeaderRevamp(element: InspirationCarouselDataView) {
+        showRevampHeader()
+        hideOldHeader()
+        hideSeparator()
+        bindHeaderRevamp(element)
+    }
+
+    private fun setOldHeader(element: InspirationCarouselDataView) {
+        showOldHeader()
+        hideRevampHeader()
+        showSeparator()
+        bindTitle(element)
+    }
+
+    private fun isChipsLayout(element: InspirationCarouselDataView): Boolean {
+        return element.layout == LAYOUT_INSPIRATION_CAROUSEL_CHIPS
+    }
+
     private fun bindTitle(element: InspirationCarouselDataView) {
         binding?.inspirationCarouselTitle?.text = element.title
+    }
+
+    private fun showRevampHeader() {
+        binding?.inspirationCarouselHeaderView?.visible()
+    }
+
+    private fun hideRevampHeader() {
+        binding?.inspirationCarouselHeaderView?.gone()
+    }
+
+    private fun showSeparator(){
+        binding?.viewSeparatorTop?.visible()
+        binding?.viewSeparatorBottom?.visible()
+    }
+
+    private fun hideSeparator(){
+        binding?.viewSeparatorTop?.hide()
+        binding?.viewSeparatorBottom?.hide()
+    }
+
+    private fun showOldHeader() {
+        binding?.inspirationCarouselTitle?.visible()
+        binding?.inspirationCarouselSeeAllButton?.visible()
+    }
+
+    private fun hideOldHeader() {
+        binding?.inspirationCarouselTitle?.gone()
+        binding?.inspirationCarouselSeeAllButton?.gone()
+    }
+
+    private fun bindHeaderRevamp(element: InspirationCarouselDataView) {
+        val headerView = binding?.inspirationCarouselHeaderView ?: return
+        val option = element.options.getOrNull(0) ?: return
+        headerView.bind(
+            channelHeader = element.convertToChannelHeader(),
+            listener = object : HomeChannelHeaderListener {
+                override fun onSeeAllClick(link: String) {
+                    inspirationCarouselListener.onInspirationCarouselSeeAllClicked(option)
+                }
+            }
+        )
     }
 
     private fun bindChipsCarousel(element: InspirationCarouselDataView) {
@@ -122,7 +192,7 @@ class InspirationCarouselViewHolder(
     }
 
     private fun bindInspirationCarouselChipProducts(
-            activeOption: InspirationCarouselDataView.Option
+        activeOption: InspirationCarouselDataView.Option
     ) {
         binding?.let {
             it.inspirationCarouselChipsShimmeringView.root.gone()

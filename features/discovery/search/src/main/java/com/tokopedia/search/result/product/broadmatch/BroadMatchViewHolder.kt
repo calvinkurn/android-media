@@ -6,9 +6,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
 import com.tokopedia.carouselproductcard.CarouselViewAllCardData
+import com.tokopedia.home_component_header.view.HomeChannelHeaderListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.productcard.ProductCardModel
@@ -17,12 +21,14 @@ import com.tokopedia.search.databinding.SearchResultProductBroadMatchLayoutBindi
 import com.tokopedia.search.result.presentation.model.BadgeItemDataView
 import com.tokopedia.search.result.presentation.model.FreeOngkirDataView
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView
+import com.tokopedia.search.utils.convertToChannelHeader
 import com.tokopedia.utils.view.binding.viewBinding
 
 class BroadMatchViewHolder(
         itemView: View,
         private val broadMatchListener: BroadMatchListener,
         private val recycledViewPool: RecyclerView.RecycledViewPool,
+        private val isReimagine: Boolean = false,
 ) : AbstractViewHolder<BroadMatchDataView>(itemView) {
 
     companion object {
@@ -34,11 +40,58 @@ class BroadMatchViewHolder(
     private var binding: SearchResultProductBroadMatchLayoutBinding? by viewBinding()
 
     override fun bind(element: BroadMatchDataView) {
-        bindTitle(element)
-        bindSubtitle(element)
-        bindSubtitleImage(element)
-        bindSeeMore(element)
+        if (isReimagine) {
+            showHeaderRevamp()
+            hideOldHeader()
+            bindHeaderViewRevamp(element)
+        } else {
+            hideHeaderRevamp()
+            showOldHeader()
+            bindTitle(element)
+            bindSubtitle(element)
+            bindSubtitleImage(element)
+            bindSeeMore(element)
+        }
         setupRecyclerView(element)
+    }
+
+    private fun bindHeaderViewRevamp(broadMatchDataView: BroadMatchDataView) {
+        val headerView = binding?.searchBroadMatchHeader ?: return
+        headerView.bind(
+            channelHeader = broadMatchDataView.convertToChannelHeader(headerView.context ?: return),
+            listener = object : HomeChannelHeaderListener {
+                override fun onSeeAllClick(link: String) {
+                    broadMatchListener.onBroadMatchSeeMoreClicked(broadMatchDataView)
+                }
+            }
+        )
+        headerView.addOnImpressionListener(broadMatchDataView) {
+            broadMatchListener.onBroadMatchImpressed(broadMatchDataView)
+        }
+    }
+
+    private fun showHeaderRevamp() {
+        val headerView = binding?.searchBroadMatchHeader ?: return
+        headerView.visible()
+    }
+
+    private fun hideHeaderRevamp() {
+        val headerView = binding?.searchBroadMatchHeader ?: return
+        headerView.hide()
+    }
+
+    private fun hideOldHeader() {
+        binding?.searchBroadMatchTitle?.gone()
+        binding?.searchBroadMatchSubtitle?.gone()
+        binding?.searchBroadMatchSubtitleIcon?.gone()
+        binding?.searchBroadMatchSeeMore?.gone()
+    }
+
+    private fun showOldHeader() {
+        binding?.searchBroadMatchTitle?.visible()
+        binding?.searchBroadMatchSubtitle?.visible()
+        binding?.searchBroadMatchSubtitleIcon?.visible()
+        binding?.searchBroadMatchSeeMore?.visible()
     }
 
     private fun bindTitle(broadMatchDataView: BroadMatchDataView) {

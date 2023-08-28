@@ -4,8 +4,21 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/constraintContainerBroadMatchView"
     android:paddingTop="16dp"
     android:paddingBottom="4dp">
+
+    <com.tokopedia.home_component_header.view.HomeChannelHeaderView
+        android:id="@+id/searchBroadMatchHeader"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:cta_mode="seeAll"
+        app:color_mode="normal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/searchBroadMatchTitle"
@@ -70,12 +83,19 @@
         app:typographyType="body_3"
         app:typographyWeight="bold" />
 
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/searchBroadMatchBarrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="searchBroadMatchHeader,searchBroadMatchSubtitle" />
+
     <com.tokopedia.carouselproductcard.CarouselProductCardView
         android:id="@+id/searchBroadMatchList"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        app:layout_constraintTop_toBottomOf="@+id/searchBroadMatchSubtitle"
+        app:layout_constraintTop_toBottomOf="@+id/searchBroadMatchBarrier"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 

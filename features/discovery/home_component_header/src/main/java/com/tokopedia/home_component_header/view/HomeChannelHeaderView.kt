@@ -6,7 +6,6 @@ import android.graphics.Color
 import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.Gravity
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewStub
 import android.widget.FrameLayout
@@ -16,7 +15,6 @@ import androidx.constraintlayout.widget.ConstraintSet
 import com.tokopedia.home_component_header.R
 import com.tokopedia.home_component_header.model.ChannelHeader
 import com.tokopedia.home_component_header.util.DateHelper
-import com.tokopedia.home_component_header.util.HomeChannelHeaderRollenceController
 import com.tokopedia.home_component_header.util.ViewUtils.convertDpToPixel
 import com.tokopedia.home_component_header.util.getLink
 import com.tokopedia.kotlin.extensions.view.gone
@@ -26,7 +24,7 @@ import java.util.*
 
 class HomeChannelHeaderView : FrameLayout {
     private var channelHeaderContainer: ConstraintLayout? = null
-    
+
     private var channelTitle: Typography? = null
     private var channelSubtitle: Typography? = null
     private var countDownView: TimerUnifySingle? = null
@@ -55,7 +53,7 @@ class HomeChannelHeaderView : FrameLayout {
 
     fun bind(
         channelHeader: ChannelHeader,
-        listener: HomeChannelHeaderListener,
+        listener: HomeChannelHeaderListener? = null,
         colorMode: Int? = null,
         ctaMode: Int? = null
     ) {
@@ -82,10 +80,12 @@ class HomeChannelHeaderView : FrameLayout {
         val stubSeeAllButton: View? = findViewById(R.id.see_all_button)
         val stubSeeAllButtonUnify: View? = findViewById(R.id.see_all_button_unify)
         val stubChannelSubtitle: View? = findViewById(R.id.channel_subtitle)
+        val stubChannelIconSubtitle: View? = findViewById(R.id.channel_subtitle_icon)
         val stubCtaButton: View? = findViewById(R.id.cta_button)
         channelHeaderContainer?.let { channelHeaderContainer ->
             handleTitle(channelHeader.name, channelHeaderContainer, stubChannelTitle, channelHeader)
             handleSubtitle(channelHeader.subtitle, stubChannelSubtitle, channelHeader)
+            channelHeader.layoutStrategy.renderIconSubtitle(this, channelHeader, stubChannelIconSubtitle)
             channelHeader.layoutStrategy.renderCta(
                 this,
                 channelHeaderContainer,
@@ -241,6 +241,10 @@ class HomeChannelHeaderView : FrameLayout {
 
     private fun hasExpiredTime(channelHeader: ChannelHeader): Boolean {
         return !TextUtils.isEmpty(channelHeader.expiredTime)
+    }
+
+    private fun hasIconSubtitle(channelHeader: ChannelHeader): Boolean {
+        return !TextUtils.isEmpty(channelHeader.iconSubtitleUrl)
     }
 
     private fun isViewStubHasBeenInflated(viewStub: ViewStub?): Boolean {
