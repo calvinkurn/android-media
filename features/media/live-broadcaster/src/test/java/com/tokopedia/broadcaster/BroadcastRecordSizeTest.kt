@@ -54,7 +54,7 @@ class BroadcastRecordSizeTest {
 
 
     @Test
-    fun `given supported preview sizes with different ratio, then getVideoSize() should return first resolution`() {
+    fun `given supported preview sizes with different ratio, when there is no supported resolution, then it should return default resolution`() {
         val supportedPreviewSizes = listOf(
             Streamer.Size(640, 480),
             Streamer.Size(352, 288),
@@ -68,9 +68,7 @@ class BroadcastRecordSizeTest {
             defaultAspectRatio
         )
 
-        val expected = Streamer.Size(640, 480)
-
-        assertEquals(actual.width, expected.width)
-        assertEquals(actual.height, expected.height)
+        assertEquals(actual.width, defaultResolution.width)
+        assertEquals(actual.height, defaultResolution.height)
     }
 }
