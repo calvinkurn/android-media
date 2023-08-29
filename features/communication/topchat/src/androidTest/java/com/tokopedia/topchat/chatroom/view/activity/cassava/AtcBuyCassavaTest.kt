@@ -11,7 +11,7 @@ import org.junit.Rule
 import org.junit.Test
 
 @CassavaTest
-class AtcBuyCassavaTest: TopchatRoomTest() {
+class AtcBuyCassavaTest : TopchatRoomTest() {
 
     @get:Rule
     var cassavaTestRule = CassavaTestRule(true, true)
@@ -23,7 +23,7 @@ class AtcBuyCassavaTest: TopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentUseCase.chatAttachmentNoVariant
         launchChatRoomActivity()
-        preventOpenOtherActivity()
+        stubIntents()
 
         clickATCButtonAt(1)
         clickBuyButtonAt(1)

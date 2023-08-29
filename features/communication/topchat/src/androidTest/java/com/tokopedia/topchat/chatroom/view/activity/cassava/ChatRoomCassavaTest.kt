@@ -37,7 +37,7 @@ class ChatRoomCassavaTest : TopchatRoomTest() {
         val journeyId = "125"
         getChatUseCase.response = getChatUseCase.defaultChatWithBuyerResponse
         launchChatRoomActivity()
-        preventOpenOtherActivity()
+        stubIntents()
 
         // When
         HeaderRobot.clickThreeDotsMenu()
@@ -72,7 +72,7 @@ class ChatRoomCassavaTest : TopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         launchChatRoomActivity()
-        preventOpenOtherActivity()
+        stubIntents()
 
         // Then
         assertThat(cassavaTestRule.validate(journeyId), hasAllSuccess())

@@ -115,7 +115,7 @@ class TopchatRoomBuyerBroadcastTest : TopchatRoomTest() {
 
         // When
         broadcastRobot {
-            clickCtaBroadcast()
+            clickCtaBroadcast(0)
         }
 
         // Then
@@ -140,7 +140,7 @@ class TopchatRoomBuyerBroadcastTest : TopchatRoomTest() {
 
         // When
         broadcastRobot {
-            clickCtaBroadcast()
+            clickCtaBroadcast(0)
         }
 
         // Then
@@ -165,7 +165,7 @@ class TopchatRoomBuyerBroadcastTest : TopchatRoomTest() {
 
         // When
         broadcastRobot {
-            clickCtaBroadcast()
+            clickCtaBroadcast(0)
         }
 
         // Then

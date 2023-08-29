@@ -9,16 +9,20 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
-import androidx.test.espresso.action.ViewActions.*
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.pressBackUnconditionally
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.idling.CountingIdlingResource
-import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.intent.rule.IntentsTestRule
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withSubstring
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.attachcommon.data.ResultProduct
@@ -61,7 +65,28 @@ import com.tokopedia.topchat.matchers.withRecyclerView
 import com.tokopedia.topchat.matchers.withTotalItem
 import com.tokopedia.topchat.stub.chatroom.di.ChatComponentStub
 import com.tokopedia.topchat.stub.chatroom.di.DaggerChatComponentStub
-import com.tokopedia.topchat.stub.chatroom.usecase.*
+import com.tokopedia.topchat.stub.chatroom.usecase.AddToCartOccMultiUseCaseStub
+import com.tokopedia.topchat.stub.chatroom.usecase.AddToCartUseCaseStub
+import com.tokopedia.topchat.stub.chatroom.usecase.AddToWishlistV2UseCaseStub
+import com.tokopedia.topchat.stub.chatroom.usecase.ChatAttachmentUseCaseStub
+import com.tokopedia.topchat.stub.chatroom.usecase.ChatListGroupStickerUseCaseStub
+import com.tokopedia.topchat.stub.chatroom.usecase.ChatListStickerUseCaseStub
+import com.tokopedia.topchat.stub.chatroom.usecase.ChatToggleBlockChatUseCaseStub
+import com.tokopedia.topchat.stub.chatroom.usecase.CloseReminderTickerStub
+import com.tokopedia.topchat.stub.chatroom.usecase.GetChatBackgroundUseCaseStub
+import com.tokopedia.topchat.stub.chatroom.usecase.GetChatPreAttachPayloadUseCaseStub
+import com.tokopedia.topchat.stub.chatroom.usecase.GetChatRoomSettingUseCaseStub
+import com.tokopedia.topchat.stub.chatroom.usecase.GetChatUseCaseStub
+import com.tokopedia.topchat.stub.chatroom.usecase.GetExistingMessageIdUseCaseStub
+import com.tokopedia.topchat.stub.chatroom.usecase.GetKeygenUseCaseStub
+import com.tokopedia.topchat.stub.chatroom.usecase.GetReminderTickerUseCaseStub
+import com.tokopedia.topchat.stub.chatroom.usecase.GetShopFollowingUseCaseStub
+import com.tokopedia.topchat.stub.chatroom.usecase.GetSmartReplyQuestionUseCaseStub
+import com.tokopedia.topchat.stub.chatroom.usecase.OrderProgressUseCaseStub
+import com.tokopedia.topchat.stub.chatroom.usecase.ReplyChatGQLUseCaseStub
+import com.tokopedia.topchat.stub.chatroom.usecase.ToggleFavouriteShopUseCaseStub
+import com.tokopedia.topchat.stub.chatroom.usecase.TopchatUploadImageUseCaseStub
+import com.tokopedia.topchat.stub.chatroom.usecase.UnsendReplyUseCaseStub
 import com.tokopedia.topchat.stub.chatroom.view.activity.TopChatRoomActivityStub
 import com.tokopedia.topchat.stub.chattemplate.usecase.GetTemplateUseCaseStub
 import com.tokopedia.topchat.stub.common.DefaultWebsocketPayloadFakeGenerator
@@ -699,22 +724,8 @@ abstract class TopchatRoomTest {
         return ""
     }
 
-    protected fun waitForIt(timeMillis: Long) {
-        Thread.sleep(timeMillis)
-    }
-
-    protected fun clickBroadcastHandlerFollowShop() {
-        onView(withId(R.id.btn_follow_shop)).perform(click())
-    }
-
-    protected fun preventOpenOtherActivity() {
-        intending(anyIntent()).respondWith(
-            Instrumentation.ActivityResult(Activity.RESULT_OK, null)
-        )
-    }
-
     protected fun stubIntents() {
-        Intents.intending(IntentMatchers.anyIntent())
+        intending(anyIntent())
             .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
     }
 }

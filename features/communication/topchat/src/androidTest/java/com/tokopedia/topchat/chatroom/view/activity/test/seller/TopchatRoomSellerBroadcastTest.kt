@@ -1,14 +1,10 @@
-package com.tokopedia.topchat.chatroom.view.activity
+package com.tokopedia.topchat.chatroom.view.activity.test.seller
 
-import android.app.Activity
-import android.app.Instrumentation
-import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.matcher.IntentMatchers
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.activity.base.changeCtaBroadcast
 import com.tokopedia.topchat.chatroom.view.activity.base.setFollowing
-import com.tokopedia.topchat.chatroom.view.activity.robot.broadcast.BroadcastResult
-import com.tokopedia.topchat.chatroom.view.activity.robot.broadcast.BroadcastRobot
+import com.tokopedia.topchat.chatroom.view.activity.robot.broadcastResult
+import com.tokopedia.topchat.chatroom.view.activity.robot.broadcastRobot
 import org.junit.Test
 
 class TopchatRoomSellerBroadcastTest: TopchatRoomTest() {
@@ -22,16 +18,18 @@ class TopchatRoomSellerBroadcastTest: TopchatRoomTest() {
         chatAttachmentUseCase.response = chatAttachmentResponse
         getShopFollowingUseCaseStub.response = getShopFollowingStatus.setFollowing(true)
         launchChatRoomActivity(isSellerApp = true)
-        Intents.intending(IntentMatchers.anyIntent()).respondWith(
-            Instrumentation.ActivityResult(Activity.RESULT_OK, null)
-        )
+        stubIntents()
 
         // When
-        BroadcastRobot.clickCtaBroadcast()
+        broadcastRobot {
+            clickCtaBroadcast(0)
+        }
 
         // Then
-        BroadcastResult.assertBroadcastCtaText("Lihat Keranjang")
-        BroadcastResult.assertBroadcastCtaLabel(true)
+        broadcastResult {
+            assertBroadcastCtaText("Lihat Keranjang")
+            assertBroadcastCtaLabel(true)
+        }
     }
 
     @Test
@@ -42,16 +40,18 @@ class TopchatRoomSellerBroadcastTest: TopchatRoomTest() {
         chatAttachmentUseCase.response = chatAttachmentResponse
         getShopFollowingUseCaseStub.response = getShopFollowingStatus.setFollowing(true)
         launchChatRoomActivity(isSellerApp = true)
-        Intents.intending(IntentMatchers.anyIntent()).respondWith(
-            Instrumentation.ActivityResult(Activity.RESULT_OK, null)
-        )
+        stubIntents()
 
         // When
-        BroadcastRobot.clickCtaBroadcast()
+        broadcastRobot {
+            clickCtaBroadcast(0)
+        }
 
         // Then
-        BroadcastResult.assertBroadcastCtaText("Lihat Selengkapnya")
-        BroadcastResult.assertBroadcastCtaLabel(false)
+        broadcastResult {
+            assertBroadcastCtaText("Lihat Selengkapnya")
+            assertBroadcastCtaLabel(false)
+        }
     }
 
     @Test
@@ -62,15 +62,17 @@ class TopchatRoomSellerBroadcastTest: TopchatRoomTest() {
         chatAttachmentUseCase.response = chatAttachmentResponse
         getShopFollowingUseCaseStub.response = getShopFollowingStatus.setFollowing(true)
         launchChatRoomActivity(isSellerApp = true)
-        Intents.intending(IntentMatchers.anyIntent()).respondWith(
-            Instrumentation.ActivityResult(Activity.RESULT_OK, null)
-        )
+        stubIntents()
 
         // When
-        BroadcastRobot.clickCtaBroadcast()
+        broadcastRobot {
+            clickCtaBroadcast(0)
+        }
 
         // Then
-        BroadcastResult.assertBroadcastCtaText("Lihat Selengkapnya")
-        BroadcastResult.assertBroadcastCtaLabel(false)
+        broadcastResult {
+            assertBroadcastCtaText("Lihat Selengkapnya")
+            assertBroadcastCtaLabel(false)
+        }
     }
 }

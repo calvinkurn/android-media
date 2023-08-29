@@ -17,6 +17,10 @@ object HeaderRobot {
         clickMenuAt(R.string.follow_store)
     }
 
+    fun clickFollowingMenu() {
+        clickMenuAt(R.string.already_follow_store)
+    }
+
     fun clickReportUserMenu() {
         clickMenuAt(R.string.chat_report_user)
     }

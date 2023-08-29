@@ -135,7 +135,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
 
         // Then
         // Simulate template chat load last after SRW
-        waitForIt(templateDelay + 10)
+        Thread.sleep(templateDelay + 10)
 
         // Then
         assertSrwPreviewContentIsHidden()

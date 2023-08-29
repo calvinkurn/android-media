@@ -1,19 +1,12 @@
-package com.tokopedia.topchat.chatroom.view.activity
+package com.tokopedia.topchat.chatroom.view.activity.test.buyer
 
-import android.app.Activity
-import android.app.Instrumentation
-import androidx.test.espresso.Espresso
-import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.assertion.ViewAssertions
-import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.matcher.IntentMatchers
-import androidx.test.espresso.matcher.ViewMatchers
-import com.tokopedia.chat_common.R
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.activity.base.blockPromo
 import com.tokopedia.topchat.chatroom.view.activity.base.setFollowing
+import com.tokopedia.topchat.chatroom.view.activity.robot.broadcastRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.generalResult
+import com.tokopedia.topchat.chatroom.view.activity.robot.headerRobot
 import org.junit.Test
 
 @UiTest
@@ -28,8 +21,10 @@ class TopchatRoomFollowUnfollowTest : TopchatRoomTest() {
         launchChatRoomActivity()
 
         // When
-        Espresso.onView(ViewMatchers.withId(R.id.header_menu)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withText("Follow Toko")).perform(ViewActions.click())
+        headerRobot {
+            clickThreeDotsMenu()
+            clickFollowMenu()
+        }
 
         // Then
         generalResult {
@@ -46,8 +41,10 @@ class TopchatRoomFollowUnfollowTest : TopchatRoomTest() {
         launchChatRoomActivity()
 
         // When
-        Espresso.onView(ViewMatchers.withId(R.id.header_menu)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withText("Following")).perform(ViewActions.click())
+        headerRobot {
+            clickThreeDotsMenu()
+            clickFollowingMenu()
+        }
 
         // Then
         generalResult {
@@ -65,12 +62,15 @@ class TopchatRoomFollowUnfollowTest : TopchatRoomTest() {
         launchChatRoomActivity()
 
         // When
-        Espresso.onView(ViewMatchers.withId(R.id.header_menu)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withText("Follow Toko")).perform(ViewActions.click())
+        headerRobot {
+            clickThreeDotsMenu()
+            clickFollowMenu()
+        }
 
         // Then
-        Espresso.onView(ViewMatchers.withSubstring("Oops!"))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        generalResult {
+            assertToasterWithSubText("Oops!")
+        }
     }
 
     @Test
@@ -80,12 +80,12 @@ class TopchatRoomFollowUnfollowTest : TopchatRoomTest() {
         chatAttachmentUseCase.response = chatAttachmentResponse
         getShopFollowingUseCaseStub.response = getShopFollowingStatus.setFollowing(false)
         launchChatRoomActivity()
-        Intents.intending(IntentMatchers.anyIntent()).respondWith(
-            Instrumentation.ActivityResult(Activity.RESULT_OK, null)
-        )
+        stubIntents()
 
         // When
-        clickBroadcastHandlerFollowShop()
+        broadcastRobot {
+            clickFollowShop(0)
+        }
 
         // Then
         generalResult {
@@ -101,16 +101,16 @@ class TopchatRoomFollowUnfollowTest : TopchatRoomTest() {
         getShopFollowingUseCaseStub.response = getShopFollowingStatus.setFollowing(false)
         toggleFavouriteShopUseCaseStub.isError = true
         launchChatRoomActivity()
-        Intents.intending(IntentMatchers.anyIntent()).respondWith(
-            Instrumentation.ActivityResult(Activity.RESULT_OK, null)
-        )
+        stubIntents()
 
         // When
-        Espresso.onView(ViewMatchers.withId(com.tokopedia.topchat.R.id.btn_follow_shop))
-            .perform(ViewActions.click())
+        broadcastRobot {
+            clickFollowShop(0)
+        }
 
         // Then
-        Espresso.onView(ViewMatchers.withSubstring("Oops!"))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        generalResult {
+            assertToasterWithSubText("Oops!")
+        }
     }
 }
