@@ -18,7 +18,9 @@ import com.tokopedia.charts.databinding.ViewBarChartBinding
 import com.tokopedia.charts.model.AxisLabel
 import com.tokopedia.charts.model.BarChartConfigModel
 import com.tokopedia.charts.model.BarChartData
+import com.tokopedia.charts.model.StackedBarChartData
 import com.tokopedia.charts.renderer.EllipsizedXAxisRenderer
+import com.tokopedia.charts.renderer.StackedBarDottedRenderer
 import com.tokopedia.kotlin.extensions.view.orZero
 
 /**
@@ -29,9 +31,14 @@ class BarChartView(context: Context, attrs: AttributeSet?) : LinearLayout(contex
 
     private var binding: ViewBarChartBinding? = null
 
+    var config: BarChartConfigModel = BarChartConfig.getDefaultConfig()
+        private set
+
     init {
         binding = ViewBarChartBinding.inflate(
-            LayoutInflater.from(context), this, true
+            LayoutInflater.from(context),
+            this,
+            true
         ).apply {
             val xAxisRenderer = EllipsizedXAxisRenderer(
                 barChart.viewPortHandler,
@@ -42,18 +49,29 @@ class BarChartView(context: Context, attrs: AttributeSet?) : LinearLayout(contex
         }
     }
 
-    var config: BarChartConfigModel = BarChartConfig.getDefaultConfig()
-        private set
-
     fun init(mConfig: BarChartConfigModel? = null) {
         mConfig?.let {
             this.config = it
         }
 
         binding?.barChart?.run {
-            if (config.isRoundedBarEnabled) {
-                renderer =
-                    RoundedBarChartRenderer(this, animator, viewPortHandler, config.barBorderRadius)
+            when {
+                config.isStackedBar -> {
+                    renderer =
+                        StackedBarDottedRenderer(
+                            this,
+                            this.animator,
+                            this.viewPortHandler,
+                            config.barBorderRadius,
+                            0,
+                            ChartColor.DMS_DEFAULT_BAR_DASHED_LINE_COLOR
+                        )
+                    setDrawValueAboveBar(true)
+                }
+                config.isRoundedBarEnabled -> {
+                    renderer =
+                        RoundedBarChartRenderer(this, animator, viewPortHandler, config.barBorderRadius)
+                }
             }
 
             setupXAxis()
@@ -82,6 +100,31 @@ class BarChartView(context: Context, attrs: AttributeSet?) : LinearLayout(contex
             }
             val dataSet = BarDataSet(barEntries, metric.title)
             dataSet.color = getColor(metric.barHexColor)
+            dataSet.highLightAlpha = config.highLightAlpha
+            dataSet.setDrawValues(config.isShowValueEnabled)
+
+            barDataSets.add(dataSet)
+        }
+
+        val barData = BarData(barDataSets.toList())
+        binding?.barChart?.data = barData
+
+        if (data.metrics.size > 1) {
+            showMultiBar(data)
+        }
+    }
+
+    fun setData(data: StackedBarChartData) {
+        setXAxisLabelFormatter(data.xAxisLabels)
+        setYAxisLabelFormatter()
+        val barDataSets = mutableListOf<BarDataSet>()
+
+        data.metrics.forEach { metric ->
+            val barEntries: List<BarEntry> = metric.values.mapIndexed { i, value ->
+                BarEntry(i.toFloat(), value.values.map { it.value.toFloat() }.toFloatArray(), value)
+            }
+            val dataSet = BarDataSet(barEntries, metric.title)
+            dataSet.colors = getStackedBarColors(data)
             dataSet.highLightAlpha = config.highLightAlpha
             dataSet.setDrawValues(config.isShowValueEnabled)
 
@@ -163,7 +206,40 @@ class BarChartView(context: Context, attrs: AttributeSet?) : LinearLayout(contex
         return Color.parseColor(hexColor)
     }
 
+    private fun getStackedBarColors(data: StackedBarChartData): List<Int> {
+        val colors = mutableListOf<Int>()
+        data.metrics.forEach { metric ->
+            metric.values.forEach { metricValue ->
+                metricValue.values.forEach { value ->
+                    colors.add(
+                        Color.parseColor(value.barColor)
+                    )
+                }
+            }
+        }
+        return colors
+    }
+
     private fun showMultiBar(data: BarChartData) {
+        val startValue = data.xAxisLabels.firstOrNull()?.value.orZero()
+        val groupCount = data.metrics.size
+
+        val groupSpace = 0.08f
+        val barSpace = 0.03f // x4 DataSet
+        val barWidth = 0.2f // 0.2f -> x4 DataSet
+        // (0.2 + 0.03) * 4 + 0.08 = 1.00 -> interval per "group"
+
+        // specify the width each bar should have
+        binding?.run {
+            barChart.barData.barWidth = barWidth
+            barChart.xAxis.axisMinimum = startValue
+            barChart.xAxis.axisMaximum =
+                startValue + barChart.barData.getGroupWidth(groupSpace, barSpace) * groupCount
+            barChart.groupBars(startValue, groupSpace, barSpace)
+        }
+    }
+
+    private fun showMultiBar(data: StackedBarChartData) {
         val startValue = data.xAxisLabels.firstOrNull()?.value.orZero()
         val groupCount = data.metrics.size
 

@@ -1,6 +1,10 @@
 package com.tokopedia.charts.common.utils
 
-import android.graphics.*
+import android.graphics.Canvas
+import android.graphics.LinearGradient
+import android.graphics.Path
+import android.graphics.RectF
+import android.graphics.Shader
 import com.github.mikephil.charting.animation.ChartAnimator
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.interfaces.dataprovider.BarDataProvider
@@ -13,7 +17,7 @@ import com.github.mikephil.charting.utils.ViewPortHandler
  * Created By @ilhamsuaib on 10/07/20
  */
 
-internal class RoundedBarChartRenderer internal constructor(chart: BarDataProvider?, animator: ChartAnimator?, viewPortHandler: ViewPortHandler?, private val mRadius: Int) : BarChartRenderer(chart, animator, viewPortHandler) {
+open class RoundedBarChartRenderer internal constructor(chart: BarDataProvider?, animator: ChartAnimator?, viewPortHandler: ViewPortHandler?, private val mRadius: Int) : BarChartRenderer(chart, animator, viewPortHandler) {
 
     private val mBarShadowRectBuffer = RectF()
 
@@ -112,23 +116,25 @@ internal class RoundedBarChartRenderer internal constructor(chart: BarDataProvid
             if (dataSet.gradientColor != null) {
                 val gradientColor = dataSet.gradientColor
                 mRenderPaint.shader = LinearGradient(
-                        buffer.buffer[j],
-                        buffer.buffer[j + 3],
-                        buffer.buffer[j],
-                        buffer.buffer[j + 1],
-                        gradientColor.startColor,
-                        gradientColor.endColor,
-                        Shader.TileMode.MIRROR)
+                    buffer.buffer[j],
+                    buffer.buffer[j + 3],
+                    buffer.buffer[j],
+                    buffer.buffer[j + 1],
+                    gradientColor.startColor,
+                    gradientColor.endColor,
+                    Shader.TileMode.MIRROR
+                )
             }
             if (dataSet.gradientColors != null) {
                 mRenderPaint.shader = LinearGradient(
-                        buffer.buffer[j],
-                        buffer.buffer[j + 3],
-                        buffer.buffer[j],
-                        buffer.buffer[j + 1],
-                        dataSet.getGradientColor(j / 4).startColor,
-                        dataSet.getGradientColor(j / 4).endColor,
-                        Shader.TileMode.MIRROR)
+                    buffer.buffer[j],
+                    buffer.buffer[j + 3],
+                    buffer.buffer[j],
+                    buffer.buffer[j + 1],
+                    dataSet.getGradientColor(j / 4).startColor,
+                    dataSet.getGradientColor(j / 4).endColor,
+                    Shader.TileMode.MIRROR
+                )
             }
 
             if (drawBorder) {
@@ -161,35 +167,35 @@ internal class RoundedBarChartRenderer internal constructor(chart: BarDataProvid
         val widthMinusCorners = width - 2 * rx
         val heightMinusCorners = height - 2 * ry
         path.moveTo(right, top + ry)
-        if (tr) { //top-right corner
+        if (tr) { // top-right corner
             path.rQuadTo(0f, -ry, -rx, -ry)
         } else {
             path.rLineTo(0f, -ry)
             path.rLineTo(-rx, 0f)
         }
         path.rLineTo(-widthMinusCorners, 0f)
-        if (tl) { //top-left corner
+        if (tl) { // top-left corner
             path.rQuadTo(-rx, 0f, -rx, ry)
         } else {
             path.rLineTo(-rx, 0f)
             path.rLineTo(0f, ry)
         }
         path.rLineTo(0f, heightMinusCorners)
-        if (bl) { //bottom-left corner
+        if (bl) { // bottom-left corner
             path.rQuadTo(0f, ry, rx, ry)
         } else {
             path.rLineTo(0f, ry)
             path.rLineTo(rx, 0f)
         }
         path.rLineTo(widthMinusCorners, 0f)
-        if (br) { //bottom-right corner
+        if (br) { // bottom-right corner
             path.rQuadTo(rx, 0f, rx, -ry)
         } else {
             path.rLineTo(rx, 0f)
             path.rLineTo(0f, -ry)
         }
         path.rLineTo(0f, -heightMinusCorners)
-        path.close() //Given close, last lineto can be removed.
+        path.close() // Given close, last lineto can be removed.
         return path
     }
 }

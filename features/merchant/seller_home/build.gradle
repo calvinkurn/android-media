@@ -140,6 +140,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     implementation rootProject.ext.miscDependencies.liveData
     kapt rootProject.ext.miscDependencies.daggerCompiler
+    implementation projectOrAar(rootProject.ext.libraries.charts)
 
     implementation (rootProject.ext.firebase.crashlytics) {
         transitive = true
