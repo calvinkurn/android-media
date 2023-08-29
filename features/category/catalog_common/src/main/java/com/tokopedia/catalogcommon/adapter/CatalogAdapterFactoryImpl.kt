@@ -3,22 +3,24 @@ package com.tokopedia.catalogcommon.adapter
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.catalogcommon.uimodel.AccordionInformationUiModel
 import com.tokopedia.catalogcommon.listener.HeroBannerListener
+import com.tokopedia.catalogcommon.uimodel.AccordionInformationUiModel
 import com.tokopedia.catalogcommon.uimodel.DummyUiModel
 import com.tokopedia.catalogcommon.uimodel.ExpertReviewUiModel
 import com.tokopedia.catalogcommon.uimodel.HeroBannerUiModel
-import com.tokopedia.catalogcommon.uimodel.SliderImageTextUiModel
 import com.tokopedia.catalogcommon.uimodel.PanelImageUiModel
+import com.tokopedia.catalogcommon.uimodel.SliderImageTextUiModel
+import com.tokopedia.catalogcommon.uimodel.StickyNavigationUiModel
 import com.tokopedia.catalogcommon.uimodel.TextDescriptionUiModel
 import com.tokopedia.catalogcommon.uimodel.TopFeaturesUiModel
-import com.tokopedia.catalogcommon.viewholder.AccordionInformationViewHolder
 import com.tokopedia.catalogcommon.uimodel.TrustMakerUiModel
+import com.tokopedia.catalogcommon.viewholder.AccordionInformationViewHolder
 import com.tokopedia.catalogcommon.viewholder.DummyViewHolder
 import com.tokopedia.catalogcommon.viewholder.ExpertReviewViewHolder
 import com.tokopedia.catalogcommon.viewholder.HeroBannerViewHolder
-import com.tokopedia.catalogcommon.viewholder.SliderImageTextViewHolder
 import com.tokopedia.catalogcommon.viewholder.PanelImageViewHolder
+import com.tokopedia.catalogcommon.viewholder.SliderImageTextViewHolder
+import com.tokopedia.catalogcommon.viewholder.StickyTabNavigationViewHolder
 import com.tokopedia.catalogcommon.viewholder.TextDescriptionViewHolder
 import com.tokopedia.catalogcommon.viewholder.TopFeatureViewHolder
 import com.tokopedia.catalogcommon.viewholder.TrustmakerViewHolder
@@ -34,6 +36,7 @@ class CatalogAdapterFactoryImpl(
             TopFeatureViewHolder.LAYOUT -> TopFeatureViewHolder(view)
             HeroBannerViewHolder.LAYOUT -> HeroBannerViewHolder(view, heroBannerListener)
             DummyViewHolder.LAYOUT -> DummyViewHolder(view)
+            StickyTabNavigationViewHolder.LAYOUT -> StickyTabNavigationViewHolder(view)
             SliderImageTextViewHolder.LAYOUT -> SliderImageTextViewHolder(view)
             PanelImageViewHolder.LAYOUT -> PanelImageViewHolder(view)
             TrustmakerViewHolder.LAYOUT -> TrustmakerViewHolder(view)
@@ -63,6 +66,10 @@ class CatalogAdapterFactoryImpl(
 
     override fun type(uiModel: PanelImageUiModel): Int {
         return PanelImageViewHolder.LAYOUT
+    }
+
+    override fun type(uiModel: StickyNavigationUiModel): Int {
+        return StickyTabNavigationViewHolder.LAYOUT
     }
 
     override fun type(uiModel: AccordionInformationUiModel): Int {

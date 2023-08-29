@@ -31,16 +31,20 @@ class TopFeatureViewHolder(itemView: View) : AbstractViewHolder<TopFeaturesUiMod
 
     private val binding by viewBinding<WidgetItemTopFeatureBinding>()
     private val displayMetrics = itemView.resources.displayMetrics
-
+    private var onceCreateView = false
 
     override fun bind(element: TopFeaturesUiModel) {
 //        binding?.lnRootUi?.setBackgroundColor(element.widgetBackgroundColor.orDefaultColor(itemView.context))
-        element.items.forEachIndexed { index, item ->
-            createItem(item)
-            if (index < element.items.size - 1) {
-                binding?.lnRootUi?.addView(Divider())
+        if (!onceCreateView){
+            element.items.forEachIndexed { index, item ->
+                createItem(item)
+                if (index < element.items.size - 1) {
+                    binding?.lnRootUi?.addView(Divider())
+                }
             }
         }
+
+        onceCreateView = true
     }
 
     private fun createItem(item: TopFeaturesUiModel.ItemTopFeatureUiModel) {
