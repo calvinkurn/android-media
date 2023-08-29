@@ -7,4 +7,6 @@ sealed interface StoriesUiEvent {
     object OpenProduct : StoriesUiEvent
 
     data class Login(val onLoggedIn: () -> Unit) : StoriesUiEvent
+
+    data class NavigateEvent(val appLink: String) : StoriesUiEvent
 }

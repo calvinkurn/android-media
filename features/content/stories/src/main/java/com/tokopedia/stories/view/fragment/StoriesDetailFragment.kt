@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tkpd.atcvariant.view.bottomsheet.AtcVariantBottomSheet
 import com.tkpd.atcvariant.view.viewmodel.AtcVariantSharedViewModel
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.kotlin.extensions.orFalse
@@ -286,7 +287,10 @@ class StoriesDetailFragment @Inject constructor(
                         )
                             .show(childFragmentManager)
                     }
-
+                    is StoriesUiEvent.Login -> {
+                        goTo(ApplinkConst.LOGIN)
+                    }
+                    is StoriesUiEvent.NavigateEvent -> goTo(event.appLink)
                     else -> {}
                 }
             }

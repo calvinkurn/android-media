@@ -3,6 +3,7 @@ package com.tokopedia.stories.view.viewmodel
 import android.os.Bundle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.content.common.producttag.view.uimodel.NetworkResult
 import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
@@ -14,6 +15,7 @@ import com.tokopedia.stories.view.model.StoriesDetailUiModel
 import com.tokopedia.stories.view.model.StoriesDetailUiModel.StoriesDetailUiEvent
 import com.tokopedia.stories.view.model.StoriesGroupUiModel
 import com.tokopedia.stories.view.model.StoriesUiState
+import com.tokopedia.stories.view.viewmodel.action.StoriesProductAction
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction
 import com.tokopedia.stories.view.viewmodel.event.StoriesUiEvent
 import com.tokopedia.usecase.coroutines.Result
@@ -88,6 +90,7 @@ class StoriesViewModel @Inject constructor(
             is StoriesUiAction.DismissSheet -> handleDismissSheet(action.type)
             StoriesUiAction.ShowDeleteDialog -> handleShowDialogDelete()
             StoriesUiAction.OpenProduct -> handleOpenProduct()
+            is StoriesUiAction.ProductAction -> handleProductAction(action.action, action.product)
             else -> {}
         }
     }
@@ -247,6 +250,20 @@ class StoriesViewModel @Inject constructor(
                     productName = product.title
                 )
             }, onError = {})
+        }
+    }
+
+    private fun handleProductAction(action: StoriesProductAction, product: ContentTaggedProductUiModel) {
+        requiredLogin {
+            if (action == StoriesProductAction.Buy) {
+                viewModelScope.launch {
+                    _uiEvent.emit(StoriesUiEvent.NavigateEvent(appLink = ApplinkConst.CART))
+                }
+            } else {
+                viewModelScope.launchCatchError(block = {
+                    repository.addToCart(product.id, product.title, shopId , product.finalPrice)
+                }, onError = {})
+            }
         }
     }
 
