@@ -95,16 +95,6 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener {
             "73177", "213079258", "android")
 
         view.postDelayed( {
-            widgets.add(
-                DummyUiModel(
-                    "dummybann",
-                    "",
-                    "",
-                    widgetBackgroundColor = null,
-                    widgetTextColor = null,
-                    content = "konten"
-                )
-            )
             widgets.add(TrustMakerUiModel.dummyTrustMaker())
             widgets.add(TopFeaturesUiModel.dummyTopFeatures())
             widgets.add(
@@ -161,6 +151,7 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener {
                 widgetAdapter.addMoreData(it.data.widgets)
                 binding?.setupToolbar(it.data.navigationProperties)
                 binding?.setupRvWidgets(it.data.navigationProperties)
+                setPriceCtaWidgetTheme(it.data.priceCtaProperties.textColor, it.data.priceCtaProperties.bgColor)
             }
         }
     }

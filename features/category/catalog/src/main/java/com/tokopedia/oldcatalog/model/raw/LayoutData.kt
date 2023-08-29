@@ -42,7 +42,7 @@ data class LayoutData(
     @SerializedName("buyerReviewList")
     val buyerReviewList: List<BuyerReviewList> = listOf(),
     @SerializedName("basicInfo")
-    val priceCta: List<BasicInfo> = listOf(),
+    val priceCta: BasicInfo = BasicInfo(),
     @SerializedName("searchOverride")
     val searchOverride: List<SearchOverride> = listOf()
 ) {

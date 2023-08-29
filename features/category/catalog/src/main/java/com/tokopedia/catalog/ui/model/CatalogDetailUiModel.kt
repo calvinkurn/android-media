@@ -4,7 +4,16 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 
 data class CatalogDetailUiModel(
     val widgets: List<Visitable<*>> = emptyList(),
-    val navigationProperties: NavigationProperties
+    val navigationProperties: NavigationProperties,
+    val priceCtaProperties: PriceCtaProperties
+)
+
+data class PriceCtaProperties (
+    val price: String = "",
+    val productName: String = "",
+    val bgColor: Int = 0,
+    val ctaColor: Int = 0,
+    val textColor: Int = 0
 )
 
 data class NavigationProperties (

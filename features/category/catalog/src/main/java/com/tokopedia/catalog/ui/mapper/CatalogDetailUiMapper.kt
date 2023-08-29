@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.catalog.ui.model.CatalogDetailUiModel
 import com.tokopedia.catalog.ui.model.NavigationProperties
+import com.tokopedia.catalog.ui.model.PriceCtaProperties
 import com.tokopedia.catalogcommon.uimodel.DummyUiModel
 import com.tokopedia.catalogcommon.uimodel.HeroBannerUiModel
 import com.tokopedia.catalogcommon.util.stringHexColorParseToInt
@@ -59,8 +60,31 @@ class CatalogDetailUiMapper @Inject constructor(
         val widgets = mapToWidgetVisitables(remoteModel)
         return CatalogDetailUiModel (
             widgets = widgets,
-            navigationProperties = mapToNavigationProperties(remoteModel, widgets)
+            navigationProperties = mapToNavigationProperties(remoteModel, widgets),
+            priceCtaProperties = mapToPriceCtaProperties(remoteModel)
         )
+    }
+
+    private fun mapToPriceCtaProperties(remoteModel: CatalogResponseData.CatalogGetDetailModular): PriceCtaProperties {
+        val bgColor = remoteModel.globalStyle?.bgColor
+        val ctaColor = remoteModel.globalStyle?.secondaryColor
+        val textColorRes = if (remoteModel.globalStyle?.darkMode == true) {
+            com.tokopedia.unifycomponents.R.color.Unify_Static_White
+        } else {
+            com.tokopedia.unifycomponents.R.color.Unify_Static_Black
+        }
+        return remoteModel.layouts?.firstOrNull {
+            it.type == "catalog_cta_price"
+        }?.data?.run {
+            val marketPrice = priceCta.marketPrice.firstOrNull()
+            PriceCtaProperties(
+                price = listOf(marketPrice?.minFmt.orEmpty(), marketPrice?.maxFmt.orEmpty()).joinToString(" - ") ,
+                productName = priceCta.name.orEmpty(),
+                bgColor = "#$bgColor".stringHexColorParseToInt(),
+                ctaColor = "#$ctaColor".stringHexColorParseToInt(),
+                MethodChecker.getColor(context, textColorRes)
+            )
+        } ?: PriceCtaProperties()
     }
 
     private fun mapToNavigationProperties(
