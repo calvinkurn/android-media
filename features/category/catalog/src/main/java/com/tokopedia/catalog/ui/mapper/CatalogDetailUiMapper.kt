@@ -1,6 +1,7 @@
 package com.tokopedia.catalog.ui.mapper
 
 import android.content.Context
+import android.graphics.Color
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -11,6 +12,7 @@ import com.tokopedia.catalog.ui.model.WidgetTypes
 import com.tokopedia.catalogcommon.uimodel.BaseCatalogUiModel
 import com.tokopedia.catalogcommon.uimodel.DummyUiModel
 import com.tokopedia.catalogcommon.uimodel.HeroBannerUiModel
+import com.tokopedia.catalogcommon.uimodel.TopFeaturesUiModel
 import com.tokopedia.catalogcommon.util.stringHexColorParseToInt
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.oldcatalog.model.raw.CatalogResponseData
@@ -25,7 +27,7 @@ class CatalogDetailUiMapper @Inject constructor(
         return remoteModel.layouts?.map {
             when (it.type) {
                 WidgetTypes.CATALOG_HERO.type -> it.mapToHeroBanner()
-                WidgetTypes.CATALOG_FEATURE_TOP.type -> { DummyUiModel(content = it.name)}
+                WidgetTypes.CATALOG_FEATURE_TOP.type -> it.mapToTopFeature(remoteModel)
                 WidgetTypes.CATALOG_TRUSTMAKER.type -> { DummyUiModel(content = it.name)}
                 WidgetTypes.CATALOG_CHARACTERISTIC.type -> { DummyUiModel(content = it.name)}
                 WidgetTypes.CATALOG_BANNER_SINGLE.type -> { DummyUiModel(content = it.name)}
@@ -99,23 +101,18 @@ class CatalogDetailUiMapper @Inject constructor(
     ): BaseCatalogUiModel {
         val isDarkMode = remoteModel.globalStyle?.darkMode.orFalse()
         val bgColor = remoteModel.globalStyle?.bgColor
-        val textColorRes = if (remoteModel.globalStyle?.darkMode == true) {
-            com.tokopedia.unifycomponents.R.color.Unify_Static_White
-        } else {
-            com.tokopedia.unifycomponents.R.color.Unify_Static_Black
-        }
         return apply {
             idWidget = layout.type + layout.name
             widgetType = layout.type
             widgetName = layout.name
             widgetBackgroundColor = "#$bgColor".stringHexColorParseToInt()
-            widgetTextColor = MethodChecker.getColor(context, textColorRes)
+            widgetTextColor = getTextColor(isDarkMode)
             darkMode = isDarkMode
         }
     }
 
-    private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToHeroBanner(): BaseCatalogUiModel {
-        return HeroBannerUiModel(
+    private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToHeroBanner() =
+        HeroBannerUiModel(
             isPremium = data?.style?.isPremium.orFalse(),
             brandTitle = data?.hero?.name.orEmpty(),
             brandImageUrls = data?.hero?.heroSlide?.map { heroSlide ->
@@ -126,5 +123,32 @@ class CatalogDetailUiMapper @Inject constructor(
             }.orEmpty(),
             brandIconUrl = data?.hero?.brandLogoUrl.orEmpty()
         )
+
+    private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToTopFeature(
+        remoteModel: CatalogResponseData.CatalogGetDetailModular
+    ): TopFeaturesUiModel {
+        val isDarkMode = remoteModel.globalStyle?.darkMode.orFalse()
+        return TopFeaturesUiModel(
+            items = data?.topFeature?.map {
+                TopFeaturesUiModel.ItemTopFeatureUiModel(
+                    id = it.desc.orEmpty(),
+                    icon = it.iconUrl.orEmpty(),
+                    name = it.desc.orEmpty(),
+                    backgroundColor = Color.TRANSPARENT,
+                    textColor = getTextColor(isDarkMode),
+                )
+            }.orEmpty()
+        )
     }
+
+    private fun getTextColor(darkMode: Boolean): Int {
+        val textColorRes = if (darkMode) {
+            com.tokopedia.unifycomponents.R.color.Unify_Static_White
+        } else {
+            com.tokopedia.unifycomponents.R.color.Unify_Static_Black
+        }
+        return MethodChecker.getColor(context, textColorRes)
+    }
+
+
 }
