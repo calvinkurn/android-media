@@ -11,6 +11,9 @@ data class GetOneKYCChallenge(
     @SerializedName("errorMessages")
 	val errorMessages: List<String> = listOf(),
 
+    @SerializedName("errorCode")
+    val errorCode: String = "",
+
     @SerializedName("data")
 	val data: List<QuestionsData> = listOf(),
 
