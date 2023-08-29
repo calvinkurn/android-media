@@ -21,8 +21,6 @@ class FeedBrowseActivity : BaseActivity() {
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_feed_browse)
-
-        supportActionBar?.setHomeButtonEnabled(true)
     }
 
     private fun inject() {

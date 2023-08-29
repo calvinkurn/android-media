@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -17,7 +16,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseAdapter
-import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseItemDecoration
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiModel
 import com.tokopedia.feedplus.databinding.FragmentFeedBrowseBinding
 import kotlinx.coroutines.flow.collectLatest
@@ -88,8 +86,7 @@ class FeedBrowseFragment @Inject constructor(
     }
 
     private fun setupView() {
-        (requireActivity() as AppCompatActivity)
-            .setSupportActionBar(binding.feedBrowseHeader)
+        (activity as? AppCompatActivity)?.setSupportActionBar(binding.feedBrowseHeader)
         binding.feedBrowseHeader.setBackgroundColor(Color.TRANSPARENT)
         binding.feedBrowseHeader.setNavigationOnClickListener {
             activity?.finish()
