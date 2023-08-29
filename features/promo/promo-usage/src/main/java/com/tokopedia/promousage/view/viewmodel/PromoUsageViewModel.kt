@@ -1203,7 +1203,6 @@ internal class PromoUsageViewModel @Inject constructor(
         launchCatchError(
             context = dispatchers.io,
             block = {
-                delay(1_000L)
                 _promoPageUiState.ifSuccess { pageState ->
                     val currentItems = pageState.items
                     val recommendedPromoCodes = currentItems
