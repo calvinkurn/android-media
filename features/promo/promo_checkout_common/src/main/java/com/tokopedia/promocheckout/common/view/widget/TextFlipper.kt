@@ -6,6 +6,7 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.TextSwitcher
 import com.tokopedia.promocheckout.common.R
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 
 /**
  * Created by Hansen Putra on 07/08/23
@@ -42,12 +43,17 @@ class TextFlipper(context: Context?, attrs: AttributeSet?) : TextSwitcher(contex
         postDelayed(flipper, flippingDuration)
     }
 
+    fun stopFlipping() {
+        isFlipping = false
+        removeCallbacks(flipper)
+    }
+
     private fun flip() {
         if (isFlipping) {
             if (displayedChild == 0) {
                 inAnimation = animSlideUpIn
                 outAnimation = animSlideUpOut
-                setText(flippingWordings[1])
+                setText(HtmlLinkHelper(context, flippingWordings[1]).spannedString)
                 currentFlippingTimes += 1
                 if (currentFlippingTimes < maximumFlippingTimes) {
                     postDelayed(flipper, flippingDuration)
@@ -58,7 +64,7 @@ class TextFlipper(context: Context?, attrs: AttributeSet?) : TextSwitcher(contex
             } else if (displayedChild == 1) {
                 inAnimation = animSlideDownIn
                 outAnimation = animSlideDownOut
-                setText(flippingWordings[0])
+                setText(HtmlLinkHelper(context, flippingWordings[0]).spannedString)
                 currentFlippingTimes += 1
                 if (currentFlippingTimes < maximumFlippingTimes) {
                     postDelayed(flipper, flippingDuration)
@@ -77,5 +83,10 @@ class TextFlipper(context: Context?, attrs: AttributeSet?) : TextSwitcher(contex
         if (visibility != VISIBLE) {
             isFlipping = false
         }
+    }
+
+    override fun setCurrentText(text: CharSequence?) {
+        stopFlipping()
+        super.setCurrentText(text)
     }
 }

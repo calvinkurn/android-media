@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.presentation.adapter.listener.OwocProductListHeaderListener
+import com.tokopedia.buyerorderdetail.presentation.adapter.listener.OwocRecyclerviewPoolListener
 import com.tokopedia.buyerorderdetail.presentation.adapter.listener.OwocSectionGroupListener
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OwocErrorStateViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OwocSectionGroupViewHolder
@@ -20,7 +21,8 @@ import com.tokopedia.buyerorderdetail.presentation.model.OwocTickerUiModel
 class OwocSectionGroupTypeFactoryImpl(
     private val navigator: BuyerOrderDetailNavigator?,
     private val owocSectionGroupListener: OwocSectionGroupListener,
-    private val owocProductListHeaderListener: OwocProductListHeaderListener
+    private val owocProductListHeaderListener: OwocProductListHeaderListener,
+    private val recyclerviewPoolListener: OwocRecyclerviewPoolListener
 ): BaseAdapterTypeFactory(), OwocSectionGroupTypeFactory {
 
     override fun type(owocTickerUiModel: OwocTickerUiModel): Int {
@@ -41,7 +43,7 @@ class OwocSectionGroupTypeFactoryImpl(
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
-            OwocSectionGroupViewHolder.LAYOUT -> OwocSectionGroupViewHolder(parent, navigator, owocProductListHeaderListener)
+            OwocSectionGroupViewHolder.LAYOUT -> OwocSectionGroupViewHolder(parent, navigator, owocProductListHeaderListener, recyclerviewPoolListener)
             OwocErrorStateViewHolder.LAYOUT -> OwocErrorStateViewHolder(parent, owocSectionGroupListener)
             OwocShimmerViewHolder.LAYOUT -> OwocShimmerViewHolder(parent)
             OwocTickerViewHolder.LAYOUT -> OwocTickerViewHolder(parent, navigator)

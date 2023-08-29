@@ -724,13 +724,11 @@ class CheckoutPromoProcessor @Inject constructor(
         var hasBo = false
         for (shipmentCartItemModel in checkoutItems) {
             if (shipmentCartItemModel is CheckoutOrderModel && shipmentCartItemModel.shipment.courierItemData != null && !shipmentCartItemModel.shipment.courierItemData.selectedShipper.logPromoCode.isNullOrEmpty()) {
-                val boCodes = ArrayList<String>()
-                boCodes.add(shipmentCartItemModel.shipment.courierItemData.selectedShipper.logPromoCode!!)
                 clearOrders.add(
                     ClearPromoOrder(
                         shipmentCartItemModel.boUniqueId,
                         shipmentCartItemModel.boMetadata.boType,
-                        boCodes,
+                        arrayListOf(shipmentCartItemModel.shipment.courierItemData.selectedShipper.logPromoCode!!),
                         shipmentCartItemModel.shopId,
                         shipmentCartItemModel.isProductIsPreorder,
                         shipmentCartItemModel.preOrderDurationDay.toString(),
@@ -826,8 +824,10 @@ class CheckoutPromoProcessor @Inject constructor(
 
     private fun getBBOCount(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel): Int {
         var bboCount = 0
+        val cartStrings: MutableSet<String> = mutableSetOf()
         for (voucherOrder in validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels) {
-            if (voucherOrder.type.equals("logistic", ignoreCase = true)) {
+            if (voucherOrder.type.equals("logistic", ignoreCase = true) && !cartStrings.contains(voucherOrder.cartStringGroup)) {
+                cartStrings.add(voucherOrder.cartStringGroup)
                 bboCount++
             }
         }
@@ -1084,7 +1084,7 @@ class CheckoutPromoProcessor @Inject constructor(
         // this should be a rare case
         for ((index, shipmentCartItemModel) in checkoutItems.withIndex()) {
             if (shipmentCartItemModel is CheckoutOrderModel) {
-                val code = shipmentCartItemModel.voucherLogisticItemUiModel?.code
+                val code = shipmentCartItemModel.shipment.courierItemData?.selectedShipper?.logPromoCode
                 if (!code.isNullOrEmpty() && !updatedCartStringGroup.contains(shipmentCartItemModel.cartStringGroup)) {
                     newCheckoutItems[index] = shipmentCartItemModel.copy(
                         shipment = shipmentCartItemModel.shipment.copy(

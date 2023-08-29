@@ -14,8 +14,8 @@ class CheckoutAddressViewHolder(private val binding: ItemCheckoutAddressBinding,
 
     @SuppressLint("SetTextI18n")
     fun bind(address: CheckoutAddressModel) {
-        binding.tvCheckoutAddressTitle.text = "${address.recipientAddressModel.addressName} • ${address.recipientAddressModel.recipientName}".getHtmlFormat()
-        binding.tvCheckoutAddressDesc.text = getFullAddress(address.recipientAddressModel).getHtmlFormat()
+        binding.tvCheckoutAddressName.text = "${address.recipientAddressModel.addressName} • ${address.recipientAddressModel.recipientName}".getHtmlFormat()
+        binding.tvCheckoutAddressInfo.text = getFullAddress(address.recipientAddressModel).getHtmlFormat()
         binding.root.setOnClickDebounceListener {
             listener.onChangeAddress()
         }

@@ -291,6 +291,7 @@ class CheckoutCalculator @Inject constructor(
                 is CheckoutEgoldModel -> {
                     egold = crossSellModel
                     egoldIndex = index
+                    listCrossSellItem.add(index, crossSellModel)
                 }
             }
         }
@@ -311,12 +312,9 @@ class CheckoutCalculator @Inject constructor(
                 }
             }
             totalOtherFee += shipmentCost.emasPrice
-            listCrossSellItem.add(
-                egoldIndex,
-                egold.copy(
-                    egoldAttributeModel = egoldAttribute,
-                    buyEgoldValue = egoldAttribute.buyEgoldValue
-                )
+            listCrossSellItem[egoldIndex] = egold.copy(
+                egoldAttributeModel = egoldAttribute,
+                buyEgoldValue = egoldAttribute.buyEgoldValue
             )
         }
         shipmentCost = shipmentCost.copy(totalOtherFee = totalOtherFee)
@@ -397,12 +395,12 @@ class CheckoutCalculator @Inject constructor(
             }
         }
         val checkoutOrderModels = newList.filterIsInstance(CheckoutOrderModel::class.java)
+        val priceTotal: Double =
+            if (shipmentCost.totalPrice <= 0) 0.0 else shipmentCost.totalPrice
+        val platformFee: Double =
+            if (shipmentCost.dynamicPlatformFee.fee <= 0) 0.0 else shipmentCost.dynamicPlatformFee.fee
+        val finalPrice = priceTotal + platformFee
         if (cartItemCounter > 0 && cartItemCounter <= checkoutOrderModels.size) {
-            val priceTotal: Double =
-                if (shipmentCost.totalPrice <= 0) 0.0 else shipmentCost.totalPrice
-            val platformFee: Double =
-                if (shipmentCost.dynamicPlatformFee.fee <= 0) 0.0 else shipmentCost.dynamicPlatformFee.fee
-            val finalPrice = priceTotal + platformFee
             val priceTotalFormatted =
                 CurrencyFormatUtil.convertPriceValueToIdrFormat(
                     finalPrice,
@@ -435,6 +433,9 @@ class CheckoutCalculator @Inject constructor(
         }
 
 //        val buttonPaymentModel = updateCheckoutButtonData(listData, shipmentCost, isTradeInByDropOff)
+        buttonPaymentModel = buttonPaymentModel.copy(
+            totalPriceNum = finalPrice
+        )
 
         return newList.toMutableList().apply {
             set(size - 3, shipmentCost)

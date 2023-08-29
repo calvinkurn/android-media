@@ -98,7 +98,7 @@ class BuyerCancellationViewModelTest {
 
         // then
         assert(buyerCancellationViewModel.buyerCancellationOrderResult.value is Success)
-        assert((buyerCancellationViewModel.buyerCancellationOrderResult.value as Success<BuyerGetCancellationReasonData.Data>).data.getCancellationReason.reasons == listReason)
+        assert((buyerCancellationViewModel.buyerCancellationOrderResult.value as Success<BuyerCancellationOrderWrapperUiModel>).data.getCancellationReason.reasons == listReason)
     }
 
     @Test

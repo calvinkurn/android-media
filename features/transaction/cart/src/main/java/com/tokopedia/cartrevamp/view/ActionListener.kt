@@ -6,7 +6,6 @@ import com.tokopedia.cartrevamp.view.uimodel.CartGroupHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartRecentViewItemHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartRecommendationItemHolderData
-import com.tokopedia.cartrevamp.view.uimodel.CartShopBottomHolderData
 import com.tokopedia.cartrevamp.view.uimodel.DisabledAccordionHolderData
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 
@@ -24,7 +23,7 @@ interface ActionListener {
 
     fun onCartShopGroupTickerClicked(cartGroupHolderData: CartGroupHolderData)
 
-    fun onCartShopGroupTickerRefreshClicked(index: Int, cartShopBottomHolderData: CartShopBottomHolderData)
+    fun onCartShopGroupTickerRefreshClicked(index: Int, cartGroupHolderData: CartGroupHolderData)
 
     fun onViewCartShopGroupTicker(cartGroupHolderData: CartGroupHolderData)
 

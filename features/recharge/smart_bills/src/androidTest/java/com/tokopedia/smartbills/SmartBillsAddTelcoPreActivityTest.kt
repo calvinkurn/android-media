@@ -98,14 +98,14 @@ class SmartBillsAddTelcoPreActivityTest {
 
     private fun closeTicker(){
         Thread.sleep(2000)
-        onView(ViewMatchers.withId(R.id.ticker_close_icon)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        onView(ViewMatchers.withId(com.tokopedia.unifycomponents.R.id.ticker_close_icon)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
                 .perform(ViewActions.click())
         Thread.sleep(2000)
     }
 
     private fun clickInputField(){
         Thread.sleep(2000)
-        onView(CommonMatcher.getElementFromMatchAtPosition(ViewMatchers.withId(R.id.text_field_input), 1)).
+        onView(CommonMatcher.getElementFromMatchAtPosition(ViewMatchers.withId(com.tokopedia.unifycomponents.R.id.text_field_input), 1)).
              perform(ViewActions.typeText("085327499272"))
         Thread.sleep(4000)
     }

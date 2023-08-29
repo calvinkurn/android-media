@@ -62,7 +62,7 @@ class ShareAddressRobot {
 
     fun clickIconContactPhoneNumber() {
         stubIntent()
-        onView(ViewMatchers.withId(R.id.text_field_icon_2))
+        onView(ViewMatchers.withId(com.tokopedia.unifycomponents.R.id.text_field_icon_2))
             .check(matches(isDisplayed()))
             .perform(click())
     }

@@ -443,7 +443,6 @@ object DynamicProductDetailMapper {
             variants = networkData.variants,
             children = networkData.children,
             maxFinalPrice = networkData.maxFinalPrice,
-            postAtcLayout = networkData.postAtcLayout,
             landingSubText = networkData.landingSubText
         )
     }
@@ -533,7 +532,7 @@ object DynamicProductDetailMapper {
         )
     }
 
-    private fun generateDynamicInfoData(data: List<ComponentData>): DynamicOneLinerDataModel.Data{
+    private fun generateDynamicInfoData(data: List<ComponentData>): DynamicOneLinerDataModel.Data {
         val componentData = data.firstOrNull() ?: return DynamicOneLinerDataModel.Data()
         return DynamicOneLinerDataModel.Data(
             text = componentData.text,

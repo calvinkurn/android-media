@@ -2,9 +2,6 @@ package com.tokopedia.checkout.revamp.di
 
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics
-import com.tokopedia.checkout.revamp.view.CheckoutFragment
-import com.tokopedia.logisticcart.domain.executor.MainScheduler
-import com.tokopedia.logisticcart.domain.executor.SchedulerProvider
 import com.tokopedia.purchase_platform.common.analytics.EPharmacyAnalytics
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformBaseModule
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformNetworkModule
@@ -14,7 +11,6 @@ import com.tokopedia.purchase_platform.common.schedulers.ExecutorSchedulers
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
-import rx.subscriptions.CompositeSubscription
 
 @Module(
     includes = [
@@ -23,45 +19,11 @@ import rx.subscriptions.CompositeSubscription
         PurchasePlatformBaseModule::class
     ]
 )
-class CheckoutModule constructor(private val checkoutFragment: CheckoutFragment) {
-
-    @Provides
-    @ActivityScope
-    fun provideCompositeSubscription(): CompositeSubscription {
-        return CompositeSubscription()
-    }
-
-    @Provides
-    @ActivityScope
-    fun provideScheduler(): SchedulerProvider {
-        return MainScheduler()
-    }
+class CheckoutModule {
 
     @Provides
     @ActivityScope
     fun provideExecutorSchedulers(): ExecutorSchedulers = DefaultSchedulers
-
-//    @Provides
-//    @ActivityScope
-//    fun provideAnalyticsListener(): AnalyticsActionListener = shipmentFragment
-//
-//    @Provides
-//    @ActivityScope
-//    fun provideShipmentAdapterActionListener(): ShipmentAdapterActionListener {
-//        return shipmentFragment
-//    }
-//
-//    @Provides
-//    @ActivityScope
-//    fun provideSellerCashbackListener(): SellerCashbackListener {
-//        return shipmentFragment
-//    }
-//
-//    @Provides
-//    @ActivityScope
-//    fun provideUploadPrescriptionListener(): UploadPrescriptionListener {
-//        return shipmentFragment
-//    }
 
     @Provides
     @ActivityScope

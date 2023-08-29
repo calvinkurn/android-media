@@ -211,6 +211,7 @@ class DiscoveryViewModelTest {
         every { bundle.getString(DiscoveryActivity.QUERY_PARENT, "") } returns "o"
         every { bundle.getString(DiscoveryActivity.AFFILIATE_UNIQUE_ID, "") } returns "q"
         every { bundle.getString(DiscoveryActivity.CHANNEL, "") } returns "r"
+        every { bundle.getString(DiscoveryActivity.FORCED_NAVIGATION, "") } returns "s"
 
         val discoComponentQuery: MutableMap<String, String?> =
             mutableMapOf(DiscoveryActivity.CATEGORY_ID to "p")
@@ -233,7 +234,8 @@ class DiscoveryViewModelTest {
             DiscoveryActivity.SHOP_ID to "n",
             DiscoveryActivity.QUERY_PARENT to "o",
             DiscoveryActivity.AFFILIATE_UNIQUE_ID to "q",
-            DiscoveryActivity.CHANNEL to "r"
+            DiscoveryActivity.CHANNEL to "r",
+            DiscoveryActivity.FORCED_NAVIGATION to "s"
         )
 
         viewModel.getQueryParameterMapFromBundle(bundle)
@@ -266,7 +268,8 @@ class DiscoveryViewModelTest {
             DiscoveryActivity.SHOP_ID to null,
             DiscoveryActivity.QUERY_PARENT to null,
             DiscoveryActivity.AFFILIATE_UNIQUE_ID to null,
-            DiscoveryActivity.CHANNEL to null
+            DiscoveryActivity.CHANNEL to null,
+            DiscoveryActivity.FORCED_NAVIGATION to null
         )
 
         viewModel.getQueryParameterMapFromBundle(null)
@@ -295,6 +298,7 @@ class DiscoveryViewModelTest {
         every { bundle.getString(DiscoveryActivity.QUERY_PARENT, "") } returns "o"
         every { bundle.getString(DiscoveryActivity.AFFILIATE_UNIQUE_ID, "") } returns "p"
         every { bundle.getString(DiscoveryActivity.CHANNEL, "") } returns "q"
+        every { bundle.getString(DiscoveryActivity.FORCED_NAVIGATION, "") } returns "r"
 
         val map: MutableMap<String, String?> = mutableMapOf(
             DiscoveryActivity.SOURCE to "a",
@@ -313,7 +317,8 @@ class DiscoveryViewModelTest {
             DiscoveryActivity.SHOP_ID to "n",
             DiscoveryActivity.QUERY_PARENT to "o",
             DiscoveryActivity.AFFILIATE_UNIQUE_ID to "p",
-            DiscoveryActivity.CHANNEL to "q"
+            DiscoveryActivity.CHANNEL to "q",
+            DiscoveryActivity.FORCED_NAVIGATION to "r"
         )
 
         viewModel.getQueryParameterMapFromBundle(bundle)
@@ -342,6 +347,7 @@ class DiscoveryViewModelTest {
         every { bundle.getString(DiscoveryActivity.QUERY_PARENT, "") } returns "o"
         every { bundle.getString(DiscoveryActivity.AFFILIATE_UNIQUE_ID, "") } returns "p"
         every { bundle.getString(DiscoveryActivity.CHANNEL, "") } returns "q"
+        every { bundle.getString(DiscoveryActivity.FORCED_NAVIGATION, "") } returns "r"
         val map: MutableMap<String, String?> = mutableMapOf(
             DiscoveryActivity.SOURCE to "a",
             DiscoveryActivity.COMPONENT_ID to "b",
@@ -359,7 +365,8 @@ class DiscoveryViewModelTest {
             DiscoveryActivity.SHOP_ID to "n",
             DiscoveryActivity.QUERY_PARENT to "o",
             DiscoveryActivity.AFFILIATE_UNIQUE_ID to "p",
-            DiscoveryActivity.CHANNEL to "q"
+            DiscoveryActivity.CHANNEL to "q",
+            DiscoveryActivity.FORCED_NAVIGATION to "r"
         )
         val discoComponentQuery: MutableMap<String, String?> = mutableMapOf()
         com.tokopedia.discovery2.datamapper.discoComponentQuery = discoComponentQuery
@@ -391,7 +398,8 @@ class DiscoveryViewModelTest {
             DiscoveryActivity.SHOP_ID to null,
             DiscoveryActivity.QUERY_PARENT to null,
             DiscoveryActivity.AFFILIATE_UNIQUE_ID to null,
-            DiscoveryActivity.CHANNEL to null
+            DiscoveryActivity.CHANNEL to null,
+            DiscoveryActivity.FORCED_NAVIGATION to null
         )
 
         viewModel.getQueryParameterMapFromBundle(null)
@@ -400,7 +408,7 @@ class DiscoveryViewModelTest {
     }
 
     @Test
-    fun `test for getQueryParameterMapFromBundle when discoApplink is present in bundle`(){
+    fun `test for getQueryParameterMapFromBundle when discoApplink is present in bundle`() {
         val bundle: Bundle = mockk(relaxed = true)
         com.tokopedia.discovery2.datamapper.discoComponentQuery = null
         every { bundle.getString(DISCOVERY_APPLINK) } returns "tokopedia://discovery/deals"

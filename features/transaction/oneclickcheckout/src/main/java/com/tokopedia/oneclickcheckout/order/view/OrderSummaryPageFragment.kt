@@ -136,6 +136,7 @@ import com.tokopedia.purchase_platform.common.constant.AddOnConstant
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant.QUERY_PARAM_ADDON_PRODUCT
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant.QUERY_PARAM_CART_ID
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant.QUERY_PARAM_CATEGORY_ID
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.QUERY_PARAM_DESELECTED_ADDON_IDS
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant.QUERY_PARAM_DISCOUNTED_PRICE
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant.QUERY_PARAM_IS_TOKOCABANG
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant.QUERY_PARAM_PAGE_ATC_SOURCE
@@ -379,9 +380,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 val listProducts = adapter.products
                 for (index in listProducts.indices) {
                     if (listProducts[index].cartId == cartId) {
-                        listProducts[index].addOnsProductData.data.forEach { addOnExisting ->
-                            for (addOnUiModel in addOnProductDataResult.aggregatedData.selectedAddons) {
-                                // value 0 from selectedAddons means no changes
+                        for (addOnUiModel in addOnProductDataResult.aggregatedData.selectedAddons) {
+                            listProducts[index].addOnsProductData.data.forEach { addOnExisting ->
                                 if (addOnUiModel.addOnType == addOnExisting.type) {
                                     addOnExisting.apply {
                                         id = addOnUiModel.id
@@ -1585,10 +1585,12 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             val cartId = product.cartId
 
             val addOnIds = arrayListOf<String>()
+            val deselectAddOnIds = arrayListOf<String>()
+
             addOnsProductData.data.forEach { addOnItem ->
                 if (addOnItem.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK) {
                     addOnIds.add(addOnItem.id)
-                }
+                } else if (addOnItem.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_UNCHECK) deselectAddOnIds.add(addOnItem.id)
             }
 
             val price: Double
@@ -1607,14 +1609,15 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 mapOf(
                     QUERY_PARAM_CART_ID to cartId,
                     QUERY_PARAM_SELECTED_ADDON_IDS to addOnIds.toString().replace("[", "").replace("]", ""),
+                    QUERY_PARAM_DESELECTED_ADDON_IDS to deselectAddOnIds.toString().replace("[", "").replace("]", ""),
                     QUERY_PARAM_PAGE_ATC_SOURCE to SOURCE_ONE_CLICK_CHECKOUT,
                     QUERY_PARAM_WAREHOUSE_ID to product.warehouseId,
                     QUERY_PARAM_IS_TOKOCABANG to product.isFulfillment,
                     QUERY_PARAM_CATEGORY_ID to product.categoryId,
                     QUERY_PARAM_SHOP_ID to shop.shopId,
                     QUERY_PARAM_QUANTITY to product.orderQuantity,
-                    QUERY_PARAM_PRICE to price.toString().removeSingleDecimalSuffix(),
-                    QUERY_PARAM_DISCOUNTED_PRICE to discountedPrice.toString().removeSingleDecimalSuffix()
+                    QUERY_PARAM_PRICE to price.toBigDecimal().toPlainString().removeSingleDecimalSuffix(),
+                    QUERY_PARAM_DISCOUNTED_PRICE to discountedPrice.toBigDecimal().toPlainString().removeSingleDecimalSuffix()
                 )
             )
 

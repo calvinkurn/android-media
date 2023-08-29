@@ -7,15 +7,16 @@ import com.tokopedia.checkout.view.ShipmentFragment
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutActivity
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
+import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest
 import com.tokopedia.purchase_platform.common.revamp.CartCheckoutRevampRollenceManager
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.telemetry.ITelemetryActivity
 
-class ShipmentActivity :
+open class ShipmentActivity :
     BaseCheckoutActivity(),
     ITelemetryActivity {
-    private var shipmentFragment: ShipmentFragment? = null
-    private var checkoutFragment: CheckoutFragment? = null
+    internal var shipmentFragment: ShipmentFragment? = null
+    internal var checkoutFragment: CheckoutFragment? = null
 
     override fun setupBundlePass(extras: Bundle?) {
         // No-op
@@ -37,7 +38,8 @@ class ShipmentActivity :
         val pageSource = intent.getStringExtra(CheckoutConstant.EXTRA_CHECKOUT_PAGE_SOURCE)
             ?: CheckoutConstant.CHECKOUT_PAGE_SOURCE_PDP
         val bundle = intent.extras
-        if (isRevamp) {
+        val isTradeIn = bundle?.getString(ShipmentFormRequest.EXTRA_DEVICE_ID, "")?.isNotEmpty() ?: false
+        if (!isTradeIn && isRevamp) {
             checkoutFragment = CheckoutFragment.newInstance(
                 isOneClickShipment,
                 leasingId,

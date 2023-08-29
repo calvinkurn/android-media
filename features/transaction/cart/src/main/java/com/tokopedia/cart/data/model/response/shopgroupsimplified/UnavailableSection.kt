@@ -12,5 +12,7 @@ data class UnavailableSection(
     @SerializedName("unavailable_group")
     val unavailableGroups: List<UnavailableGroup> = emptyList(),
     @SerializedName("selected_unavailable_action_id")
-    val selectedUnavailableActionId: String = ""
+    val selectedUnavailableActionId: String = "",
+    @SerializedName("products_count")
+    val productsCount: Long = 0
 )

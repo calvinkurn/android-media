@@ -623,7 +623,7 @@ class ShipmentMapper @Inject constructor() {
         }
     }
 
-    private fun mapAddOnProductListData(addOnsDataList: List<AddOnsProduct.AddOnsData>, productQuantity: Int): MutableList<AddOnProductDataItemModel> {
+    private fun mapAddOnProductListData(addOnsDataList: List<AddOnsProduct.AddOnsData>, productQuantity: Int): ArrayList<AddOnProductDataItemModel> {
         val listAddOnDataItem = arrayListOf<AddOnProductDataItemModel>()
         addOnsDataList.forEach { item ->
             listAddOnDataItem.add(
@@ -641,7 +641,6 @@ class ShipmentMapper @Inject constructor() {
         }
         return listAddOnDataItem
     }
-
     private fun mapSubtotalAddOn(subtotalAddOns: List<SubtotalAddOn>): List<ShipmentSubtotalAddOnData> {
         val listSubtotal = arrayListOf<ShipmentSubtotalAddOnData>()
 
@@ -996,6 +995,7 @@ class ShipmentMapper @Inject constructor() {
             description = shipmentAddressFormDataResponse.donation.description
             nominal = shipmentAddressFormDataResponse.donation.nominal
             isChecked = shipmentAddressFormDataResponse.isDonationCheckboxStatus
+            iconUrl = shipmentAddressFormDataResponse.donation.iconUrl
         }
     }
 
@@ -1056,6 +1056,7 @@ class ShipmentMapper @Inject constructor() {
             hyperlinkText = shipmentAddressFormDataResponse.egoldAttributes.hyperlinkText.text
             hyperlinkUrl = shipmentAddressFormDataResponse.egoldAttributes.hyperlinkText.url
             isShowHyperlink = shipmentAddressFormDataResponse.egoldAttributes.hyperlinkText.isShow
+            iconUrl = shipmentAddressFormDataResponse.egoldAttributes.iconUrl
 
             val tmpEgoldTieringModelArrayList: ArrayList<EgoldTieringModel> = arrayListOf()
             shipmentAddressFormDataResponse.egoldAttributes.egoldTieringDataArrayList.forEach {

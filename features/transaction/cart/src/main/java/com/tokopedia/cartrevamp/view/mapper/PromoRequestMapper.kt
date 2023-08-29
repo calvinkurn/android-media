@@ -1,6 +1,6 @@
 package com.tokopedia.cartrevamp.view.mapper
 
-import com.tokopedia.cartrevamp.data.model.response.promo.LastApplyPromo
+import com.tokopedia.cart.data.model.response.promo.LastApplyPromo
 import com.tokopedia.cartrevamp.view.uimodel.CartGroupHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartPromoHolderData
 import com.tokopedia.kotlin.extensions.view.toIntOrZero

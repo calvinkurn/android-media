@@ -145,7 +145,6 @@ class HomeAccountUserViewModelTest {
             tokopointsBalanceAndPointUseCase,
             saldoBalanceUseCase,
             coBrandCCBalanceAndPointUseCase,
-            getLinkStatusUseCase,
             getPhoneUseCase,
             getSafeModeUseCase,
             checkFingerprintToggleUseCase,

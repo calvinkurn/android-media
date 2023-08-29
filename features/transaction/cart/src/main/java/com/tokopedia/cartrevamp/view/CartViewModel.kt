@@ -6,6 +6,7 @@ import androidx.core.os.bundleOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.addon.presentation.uimodel.AddOnUIModel
@@ -15,6 +16,17 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.cart.data.model.request.CartShopGroupTickerAggregatorParam
+import com.tokopedia.cart.data.model.request.UpdateCartWrapperRequest
+import com.tokopedia.cart.data.model.response.promo.LastApplyPromo
+import com.tokopedia.cart.data.model.response.promo.LastApplyPromoData
+import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
+import com.tokopedia.cart.domain.usecase.CartShopGroupTickerAggregatorUseCase
+import com.tokopedia.cart.domain.usecase.FollowShopUseCase
+import com.tokopedia.cart.domain.usecase.GetCartParam
+import com.tokopedia.cart.domain.usecase.GetCartRevampV4UseCase
+import com.tokopedia.cart.domain.usecase.UpdateAndReloadCartUseCase
+import com.tokopedia.cart.domain.usecase.UpdateCartAndGetLastApplyUseCase
 import com.tokopedia.cart.view.CartIdlingResource
 import com.tokopedia.cart.view.analytics.EnhancedECommerceActionFieldData
 import com.tokopedia.cart.view.analytics.EnhancedECommerceClickData
@@ -26,18 +38,7 @@ import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
-import com.tokopedia.cartrevamp.data.model.request.CartShopGroupTickerAggregatorParam
-import com.tokopedia.cartrevamp.data.model.request.UpdateCartWrapperRequest
-import com.tokopedia.cartrevamp.data.model.response.promo.LastApplyPromo
-import com.tokopedia.cartrevamp.data.model.response.promo.LastApplyPromoData
-import com.tokopedia.cartrevamp.data.model.response.shopgroupsimplified.CartData
-import com.tokopedia.cartrevamp.domain.usecase.CartShopGroupTickerAggregatorUseCase
-import com.tokopedia.cartrevamp.domain.usecase.FollowShopUseCase
-import com.tokopedia.cartrevamp.domain.usecase.GetCartParam
-import com.tokopedia.cartrevamp.domain.usecase.GetCartRevampV4UseCase
 import com.tokopedia.cartrevamp.domain.usecase.SetCartlistCheckboxStateUseCase
-import com.tokopedia.cartrevamp.domain.usecase.UpdateAndReloadCartUseCase
-import com.tokopedia.cartrevamp.domain.usecase.UpdateCartAndGetLastApplyUseCase
 import com.tokopedia.cartrevamp.view.helper.CartDataHelper
 import com.tokopedia.cartrevamp.view.mapper.CartUiModelMapper
 import com.tokopedia.cartrevamp.view.mapper.PromoRequestMapper
@@ -52,7 +53,6 @@ import com.tokopedia.cartrevamp.view.uimodel.CartEmptyHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartGlobalEvent
 import com.tokopedia.cartrevamp.view.uimodel.CartGroupHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
-import com.tokopedia.cartrevamp.view.uimodel.CartItemTickerErrorHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartLoadingHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartModel
 import com.tokopedia.cartrevamp.view.uimodel.CartMutableLiveData
@@ -94,6 +94,7 @@ import com.tokopedia.logisticcart.shipping.model.Product
 import com.tokopedia.logisticcart.shipping.model.RatesParam
 import com.tokopedia.logisticcart.shipping.model.ShippingParam
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.productbundlewidget.model.BundleDetailUiModel
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField
@@ -188,13 +189,15 @@ class CartViewModel @Inject constructor(
     private val _loadCartState: MutableLiveData<CartState<CartData>> = MutableLiveData()
     val loadCartState: LiveData<CartState<CartData>> = _loadCartState
 
-    private val _updateCartForCheckoutState: MutableLiveData<UpdateCartCheckoutState> = MutableLiveData()
+    private val _updateCartForCheckoutState: MutableLiveData<UpdateCartCheckoutState> =
+        MutableLiveData()
     val updateCartForCheckoutState: LiveData<UpdateCartCheckoutState> = _updateCartForCheckoutState
 
     private val _updateCartForPromoState: MutableLiveData<UpdateCartPromoState> = MutableLiveData()
     val updateCartForPromoState: LiveData<UpdateCartPromoState> = _updateCartForPromoState
 
-    private val _cartCheckoutButtonState: MutableLiveData<CartCheckoutButtonState> = MutableLiveData()
+    private val _cartCheckoutButtonState: MutableLiveData<CartCheckoutButtonState> =
+        MutableLiveData()
     val cartCheckoutButtonState: LiveData<CartCheckoutButtonState> = _cartCheckoutButtonState
 
     private val _recentViewState: MutableLiveData<LoadRecentReviewState> = MutableLiveData()
@@ -206,8 +209,10 @@ class CartViewModel @Inject constructor(
     private val _recommendationState: MutableLiveData<LoadRecommendationState> = MutableLiveData()
     val recommendationState: LiveData<LoadRecommendationState> = _recommendationState
 
-    private val _updateCartAndGetLastApplyEvent: MutableLiveData<UpdateCartAndGetLastApplyEvent> = MutableLiveData()
-    val updateCartAndGetLastApplyEvent: LiveData<UpdateCartAndGetLastApplyEvent> = _updateCartAndGetLastApplyEvent
+    private val _updateCartAndGetLastApplyEvent: MutableLiveData<UpdateCartAndGetLastApplyEvent> =
+        MutableLiveData()
+    val updateCartAndGetLastApplyEvent: LiveData<UpdateCartAndGetLastApplyEvent> =
+        _updateCartAndGetLastApplyEvent
 
     private val _selectedAmountState: CartMutableLiveData<Int> = CartMutableLiveData(0)
     val selectedAmountState: CartMutableLiveData<Int> = _selectedAmountState
@@ -218,7 +223,8 @@ class CartViewModel @Inject constructor(
     private val _addToCartEvent: MutableLiveData<AddToCartEvent> = MutableLiveData()
     val addToCartEvent: LiveData<AddToCartEvent> = _addToCartEvent
 
-    private val _addCartToWishlistV2Event: MutableLiveData<AddCartToWishlistV2Event> = MutableLiveData()
+    private val _addCartToWishlistV2Event: MutableLiveData<AddCartToWishlistV2Event> =
+        MutableLiveData()
     val addCartToWishlistV2Event: LiveData<AddCartToWishlistV2Event> = _addCartToWishlistV2Event
 
     private val _deleteCartEvent: MutableLiveData<DeleteCartEvent> = MutableLiveData()
@@ -227,7 +233,8 @@ class CartViewModel @Inject constructor(
     private val _undoDeleteEvent: MutableLiveData<UndoDeleteEvent> = MutableLiveData()
     val undoDeleteEvent: LiveData<UndoDeleteEvent> = _undoDeleteEvent
 
-    private val _removeFromWishlistEvent: MutableLiveData<RemoveFromWishlistEvent> = MutableLiveData()
+    private val _removeFromWishlistEvent: MutableLiveData<RemoveFromWishlistEvent> =
+        MutableLiveData()
     val removeFromWishlistEvent: LiveData<RemoveFromWishlistEvent> = _removeFromWishlistEvent
 
     private val _seamlessLoginEvent: MutableLiveData<SeamlessLoginEvent> = MutableLiveData()
@@ -306,6 +313,7 @@ class CartViewModel @Inject constructor(
                                 }
                             }
                         }
+                        data.cartShopGroupTicker.state = CartShopGroupTickerState.FIRST_LOAD
                         _globalEvent.value = CartGlobalEvent.AdapterItemChanged(index)
                     } else {
                         return@forEachIndexed
@@ -321,11 +329,6 @@ class CartViewModel @Inject constructor(
                     } else {
                         return@forEachIndexed
                     }
-                }
-
-                is CartShopBottomHolderData -> {
-                    data.shopData.cartShopGroupTicker.state = CartShopGroupTickerState.FIRST_LOAD
-                    _globalEvent.value = CartGlobalEvent.AdapterItemChanged(index)
                 }
 
                 is DisabledItemHeaderHolderData, is CartSectionHeaderHolderData -> {
@@ -444,41 +447,46 @@ class CartViewModel @Inject constructor(
         cartId: String,
         getCartState: Int = GET_CART_STATE_DEFAULT
     ) {
-        launch(dispatchers.io) {
-            val cartItemDataList = ArrayList<CartItemHolderData>()
-            val allAvailableCartItemData = CartDataHelper.getAllAvailableCartItemData(
-                cartDataList.value
-            )
-            for (data in allAvailableCartItemData) {
-                if (!data.isError) {
-                    cartItemDataList.add(data)
-                }
+        val cartItemDataList = ArrayList<CartItemHolderData>()
+        val allAvailableCartItemData = CartDataHelper.getAllAvailableCartItemData(
+            cartDataList.value
+        )
+        for (data in allAvailableCartItemData) {
+            if (!data.isError) {
+                cartItemDataList.add(data)
             }
+        }
 
-            val updateCartRequestList = getUpdateCartRequest(cartItemDataList)
-            if (updateCartRequestList.isNotEmpty()) {
-                try {
+        val updateCartRequestList = getUpdateCartRequest(cartItemDataList)
+        if (updateCartRequestList.isNotEmpty()) {
+            viewModelScope.launchCatchError(
+                context = dispatchers.io,
+                block = {
                     val updateCartWrapperRequest = UpdateCartWrapperRequest(
                         updateCartRequestList = updateCartRequestList,
                         source = UpdateCartAndGetLastApplyUseCase.PARAM_VALUE_SOURCE_UPDATE_QTY_NOTES,
                         cartId = cartId,
                         getCartState = getCartState
                     )
-                    val updateAndReloadCartListData =
-                        updateAndReloadCartUseCase(updateCartWrapperRequest)
-                    _globalEvent.value = CartGlobalEvent.ProgressLoading(false)
-                    processInitialGetCartData(
-                        updateAndReloadCartListData.cartId,
-                        initialLoad = false,
-                        isLoadingTypeRefresh = true,
-                        updateAndReloadCartListData.getCartState
-                    )
-                } catch (t: Throwable) {
-                    _globalEvent.value = CartGlobalEvent.UpdateAndReloadCartFailed(t)
+                    val updateAndReloadCartListData = updateAndReloadCartUseCase(updateCartWrapperRequest)
+                    withContext(dispatchers.main) {
+                        _globalEvent.value = CartGlobalEvent.ProgressLoading(false)
+                        processInitialGetCartData(
+                            updateAndReloadCartListData.cartId,
+                            initialLoad = false,
+                            isLoadingTypeRefresh = true,
+                            updateAndReloadCartListData.getCartState
+                        )
+                    }
+                },
+                onError = { throwable ->
+                    withContext(dispatchers.main) {
+                        _globalEvent.value = CartGlobalEvent.UpdateAndReloadCartFailed(throwable)
+                    }
                 }
-            } else {
-                _globalEvent.value = CartGlobalEvent.ProgressLoading(false)
-            }
+            )
+        } else {
+            _globalEvent.value = CartGlobalEvent.ProgressLoading(false)
         }
     }
 
@@ -523,9 +531,15 @@ class CartViewModel @Inject constructor(
             _globalEvent.value = CartGlobalEvent.ProgressLoading(true)
         }
 
-        launch {
+        viewModelScope.launch {
             try {
-                val cartData = getCartRevampV4UseCase(GetCartParam(cartId, getCartState))
+                val cartData = getCartRevampV4UseCase(
+                    GetCartParam(
+                        cartId = cartId,
+                        state = getCartState,
+                        isCartReimagine = true
+                    )
+                )
                 onSuccessGetCartList(cartData, initialLoad)
             } catch (t: Throwable) {
                 onErrorGetCartList(t, initialLoad)
@@ -541,6 +555,7 @@ class CartViewModel @Inject constructor(
             cartListData = cartData,
             summaryTransactionUiModel = CartUiModelMapper.mapSummaryTransactionUiModel(cartData),
             summariesAddOnUiModel = CartUiModelMapper.getShoppingSummaryAddOns(cartData.shoppingSummary.summaryAddOnList),
+            promoSummaryUiModel = CartUiModelMapper.mapPromoSummaryUiModel(cartData.promoSummary),
             showChoosePromoWidget = cartData.promo.showChoosePromoWidget,
             promoTicker = cartData.promo.ticker,
             recommendationPage = RECOMMENDATION_START_PAGE
@@ -856,28 +871,40 @@ class CartViewModel @Inject constructor(
 
     fun doClearRedPromosBeforeGoToCheckout(clearPromoRequest: ClearPromoRequest) {
         _globalEvent.value = CartGlobalEvent.ItemLoading(false)
-        launch {
-            try {
+        viewModelScope.launchCatchError(
+            context = dispatchers.io,
+            block = {
                 clearCacheAutoApplyStackUseCase.setParams(clearPromoRequest).executeOnBackground()
-                _globalEvent.value = CartGlobalEvent.SuccessClearRedPromosThenGoToCheckout
-            } catch (t: Throwable) {
-                Timber.d(t)
-                _globalEvent.value = CartGlobalEvent.SuccessClearRedPromosThenGoToCheckout
+                withContext(dispatchers.main) {
+                    _globalEvent.value = CartGlobalEvent.SuccessClearRedPromosThenGoToCheckout
+                }
+            },
+            onError = { throwable ->
+                Timber.d(throwable)
+                withContext(dispatchers.main) {
+                    _globalEvent.value = CartGlobalEvent.SuccessClearRedPromosThenGoToCheckout
+                }
             }
-        }
+        )
     }
 
     fun doClearRedPromosBeforeGoToPromo(clearPromoRequest: ClearPromoRequest) {
         _globalEvent.value = CartGlobalEvent.ItemLoading(true)
-        launch {
-            try {
+        viewModelScope.launchCatchError(
+            context = dispatchers.io,
+            block = {
                 clearCacheAutoApplyStackUseCase.setParams(clearPromoRequest).executeOnBackground()
-                _globalEvent.value = CartGlobalEvent.SuccessClearRedPromosThenGoToPromo
-            } catch (t: Throwable) {
-                Timber.d(t)
-                _globalEvent.value = CartGlobalEvent.SuccessClearRedPromosThenGoToPromo
+                withContext(dispatchers.main) {
+                    _globalEvent.value = CartGlobalEvent.SuccessClearRedPromosThenGoToPromo
+                }
+            },
+            onError = { throwable ->
+                Timber.d(throwable)
+                withContext(dispatchers.main) {
+                    _globalEvent.value = CartGlobalEvent.SuccessClearRedPromosThenGoToPromo
+                }
             }
-        }
+        )
     }
 
     fun processUpdateCartData(fireAndForget: Boolean, onlyTokoNowProducts: Boolean = false) {
@@ -1032,7 +1059,8 @@ class CartViewModel @Inject constructor(
     fun doUpdateCartForPromo() {
         _globalEvent.value = CartGlobalEvent.ProgressLoading(true)
 
-        val updateCartRequestList = getUpdateCartRequest(CartDataHelper.getSelectedCartItemData(cartDataList.value))
+        val updateCartRequestList =
+            getUpdateCartRequest(CartDataHelper.getSelectedCartItemData(cartDataList.value))
         if (updateCartRequestList.isNotEmpty()) {
             updateCartUseCase.setParams(
                 updateCartRequestList,
@@ -1107,8 +1135,9 @@ class CartViewModel @Inject constructor(
 
     fun processGetRecentViewData() {
         _globalEvent.value = CartGlobalEvent.ItemLoading(true)
-        launch {
-            try {
+        viewModelScope.launchCatchError(
+            context = dispatchers.io,
+            block = {
                 val recommendationWidgets = getRecentViewUseCase.getData(
                     GetRecommendationRequestParam(
                         pageNumber = 1,
@@ -1118,12 +1147,17 @@ class CartViewModel @Inject constructor(
                         queryParam = ""
                     )
                 )
-                _recentViewState.value = LoadRecentReviewState.Success(recommendationWidgets)
-            } catch (t: Throwable) {
-                Timber.d(t)
-                _recentViewState.value = LoadRecentReviewState.Failed(t)
+                withContext(dispatchers.main) {
+                    _recentViewState.value = LoadRecentReviewState.Success(recommendationWidgets)
+                }
+            },
+            onError = { throwable ->
+                Timber.d(throwable)
+                withContext(dispatchers.main) {
+                    _recentViewState.value = LoadRecentReviewState.Failed(throwable)
+                }
             }
-        }
+        )
     }
 
     fun addCartRecentViewData(
@@ -1169,18 +1203,20 @@ class CartViewModel @Inject constructor(
             }
         }
 
-        launch(dispatchers.main) {
+        viewModelScope.launch(dispatchers.io) {
             getWishlistV2UseCase.setParams(requestParams)
-            val result = withContext(dispatchers.io) { getWishlistV2UseCase.executeOnBackground() }
-            if (result is Success) {
-                _wishlistV2State.value = LoadWishlistV2State.Success(
-                    result.data.items,
-                    true
-                )
-            } else {
-                val error = (result as Fail).throwable
-                Timber.d(error)
-                _wishlistV2State.value = LoadWishlistV2State.Failed
+            val result = getWishlistV2UseCase.executeOnBackground()
+            withContext(dispatchers.main) {
+                if (result is Success) {
+                    _wishlistV2State.value = LoadWishlistV2State.Success(
+                        result.data.items,
+                        true
+                    )
+                } else {
+                    val error = (result as Fail).throwable
+                    Timber.d(error)
+                    _wishlistV2State.value = LoadWishlistV2State.Failed
+                }
             }
         }
     }
@@ -1193,15 +1229,16 @@ class CartViewModel @Inject constructor(
 
     fun saveCheckboxState() {
         val cartItemDataList = CartDataHelper.getAllAvailableCartItemHolderData(cartDataList.value)
-        launchCatchError(dispatchers.io, block = {
+        viewModelScope.launchCatchError(dispatchers.io, block = {
             setCartlistCheckboxStateUseCase(cartItemDataList)
         }, onError = {})
     }
 
     fun processGetRecommendationData() {
         _globalEvent.value = CartGlobalEvent.ItemLoading(true)
-        launch {
-            try {
+        viewModelScope.launchCatchError(
+            context = dispatchers.io,
+            block = {
                 val recommendationWidgets = getRecommendationUseCase.getData(
                     GetRecommendationRequestParam(
                         pageNumber = cartModel.recommendationPage,
@@ -1211,12 +1248,18 @@ class CartViewModel @Inject constructor(
                         queryParam = ""
                     )
                 )
-                _recommendationState.value = LoadRecommendationState.Success(recommendationWidgets)
-            } catch (t: Throwable) {
-                Timber.d(t)
-                _recommendationState.value = LoadRecommendationState.Failed
+                withContext(dispatchers.main) {
+                    _recommendationState.value =
+                        LoadRecommendationState.Success(recommendationWidgets)
+                }
+            },
+            onError = { throwable ->
+                Timber.d(throwable)
+                withContext(dispatchers.main) {
+                    _recommendationState.value = LoadRecommendationState.Failed
+                }
             }
-        }
+        )
     }
 
     fun addCartRecommendationData(
@@ -1561,8 +1604,9 @@ class CartViewModel @Inject constructor(
 
         val updateCartRequestList = getUpdateCartRequest(cartItemDataList)
         if (updateCartRequestList.isNotEmpty()) {
-            launch(dispatchers.io) {
-                try {
+            viewModelScope.launchCatchError(
+                context = dispatchers.io,
+                block = {
                     cartModel.lastValidateUseRequest = promoRequest
                     val updateCartWrapperRequest =
                         UpdateCartWrapperRequest(
@@ -1592,10 +1636,14 @@ class CartViewModel @Inject constructor(
                             }
                         }
                     }
-                } catch (t: Throwable) {
-                    _updateCartAndGetLastApplyEvent.value = UpdateCartAndGetLastApplyEvent.Failed(t)
+                },
+                onError = { throwable ->
+                    withContext(dispatchers.main) {
+                        _updateCartAndGetLastApplyEvent.value =
+                            UpdateCartAndGetLastApplyEvent.Failed(throwable)
+                    }
                 }
-            }
+            )
         } else {
             _globalEvent.value = CartGlobalEvent.ProgressLoading(false)
         }
@@ -1621,13 +1669,15 @@ class CartViewModel @Inject constructor(
                     }
                 )
             )
-            launch {
-                try {
+            viewModelScope.launchCatchError(
+                context = dispatchers.io,
+                block = {
                     clearCacheAutoApplyStackUseCase.setParams(param).executeOnBackground()
-                } catch (t: Throwable) {
-                    Timber.d(t)
+                },
+                onError = { throwable ->
+                    Timber.d(throwable)
                 }
-            }
+            )
             cartModel.isLastApplyResponseStillValid = false
             cartModel.lastValidateUseResponse = ValidateUsePromoRevampUiModel()
         }
@@ -1759,16 +1809,32 @@ class CartViewModel @Inject constructor(
             this.userId = userSessionInterface.userId
         }
 
-        launch {
-            try {
+        viewModelScope.launchCatchError(
+            context = dispatchers.io,
+            block = {
                 addToCartUseCase.setParams(addToCartRequestParams)
                 val addToCartDataModel = addToCartUseCase.executeOnBackground()
-                _globalEvent.value = CartGlobalEvent.ProgressLoading(false)
-                _addToCartEvent.value = AddToCartEvent.Success(addToCartDataModel, productModel)
-            } catch (t: Throwable) {
-                _addToCartEvent.value = AddToCartEvent.Failed(t)
+                if (addToCartDataModel.status.equals(
+                        AddToCartDataModel.STATUS_OK,
+                        true
+                    ) && addToCartDataModel.data.success == 1
+                ) {
+                    withContext(dispatchers.main) {
+                        _addToCartEvent.value =
+                            AddToCartEvent.Success(addToCartDataModel, productModel)
+                    }
+                } else {
+                    if (addToCartDataModel.errorMessage.size > 0) {
+                        throw ResponseErrorException(addToCartDataModel.errorMessage[0])
+                    }
+                }
+            },
+            onError = { throwable ->
+                withContext(dispatchers.main) {
+                    _addToCartEvent.value = AddToCartEvent.Failed(throwable)
+                }
             }
-        }
+        )
     }
 
     // ANALYTICS ATC
@@ -1892,7 +1958,8 @@ class CartViewModel @Inject constructor(
     }
 
     fun updateSelectedAmount() {
-        val allSelectedAvailableCartItems = CartDataHelper.getSelectedAvailableCartItemData(cartDataList.value)
+        val allSelectedAvailableCartItems =
+            CartDataHelper.getSelectedAvailableCartItemData(cartDataList.value)
         val totalSelected = allSelectedAvailableCartItems.count { it.isSelected }
         val selectedAmountHolderData = cartDataList.value.first()
         if (selectedAmountHolderData is CartSelectedAmountHolderData) {
@@ -2032,11 +2099,10 @@ class CartViewModel @Inject constructor(
         wishlistIcon: IconUnify,
         animatedWishlistImage: ImageView
     ) {
-        launch(dispatchers.io) {
-            launch(dispatchers.main) {
-                addToWishlistV2UseCase.setParams(productId, userId)
-                val result =
-                    withContext(dispatchers.io) { addToWishlistV2UseCase.executeOnBackground() }
+        viewModelScope.launch(dispatchers.io) {
+            addToWishlistV2UseCase.setParams(productId, userId)
+            val result = addToWishlistV2UseCase.executeOnBackground()
+            withContext(dispatchers.main) {
                 if (result is Success) {
                     _addCartToWishlistV2Event.value = AddCartToWishlistV2Event.Success(
                         result.data,
@@ -2061,33 +2127,36 @@ class CartViewModel @Inject constructor(
         wishlistIcon: IconUnify? = null,
         position: Int = 0
     ) {
-        launch(dispatchers.main) {
+        viewModelScope.launch(dispatchers.io) {
             deleteWishlistV2UseCase.setParams(productId, userId)
-            val result =
-                withContext(dispatchers.io) { deleteWishlistV2UseCase.executeOnBackground() }
-            if (result is Success) {
-                if (isFromCart) {
-                    _removeFromWishlistEvent.value = RemoveFromWishlistEvent.RemoveWishlistFromCartSuccess(
-                        wishlistIcon,
-                        position
-                    )
+            val result = deleteWishlistV2UseCase.executeOnBackground()
+            withContext(dispatchers.main) {
+                if (result is Success) {
+                    if (isFromCart) {
+                        _removeFromWishlistEvent.value =
+                            RemoveFromWishlistEvent.RemoveWishlistFromCartSuccess(
+                                wishlistIcon,
+                                position
+                            )
+                    } else {
+                        _removeFromWishlistEvent.value = RemoveFromWishlistEvent.Success(
+                            result.data,
+                            productId
+                        )
+                    }
                 } else {
-                    _removeFromWishlistEvent.value = RemoveFromWishlistEvent.Success(
-                        result.data,
-                        productId
-                    )
-                }
-            } else {
-                val error = (result as Fail).throwable
-                if (isFromCart) {
-                    _removeFromWishlistEvent.value = RemoveFromWishlistEvent.RemoveWishlistFromCartFailed(
-                        error
-                    )
-                } else {
-                    _removeFromWishlistEvent.value = RemoveFromWishlistEvent.Failed(
-                        error,
-                        productId
-                    )
+                    val error = (result as Fail).throwable
+                    if (isFromCart) {
+                        _removeFromWishlistEvent.value =
+                            RemoveFromWishlistEvent.RemoveWishlistFromCartFailed(
+                                error
+                            )
+                    } else {
+                        _removeFromWishlistEvent.value = RemoveFromWishlistEvent.Failed(
+                            error,
+                            productId
+                        )
+                    }
                 }
             }
         }
@@ -2105,17 +2174,12 @@ class CartViewModel @Inject constructor(
         val newCartDataList = ArrayList(cartDataList.value.toMutableList())
 
         var cartSelectedAmountHolderDataIndexPair: Pair<CartSelectedAmountHolderData, Int>? = null
-        var cartItemTickerErrorHolderDataIndexPair: Pair<CartItemTickerErrorHolderData, Int>? = null
         var disabledItemHeaderHolderDataIndexPair: Pair<DisabledItemHeaderHolderData, Int>? = null
         var disabledAccordionHolderDataIndexPair: Pair<DisabledAccordionHolderData, Int>? = null
         loop@ for ((index, data) in newCartDataList.withIndex()) {
             when {
                 data is CartSelectedAmountHolderData ->
                     cartSelectedAmountHolderDataIndexPair =
-                        Pair(data, index)
-
-                data is CartItemTickerErrorHolderData ->
-                    cartItemTickerErrorHolderDataIndexPair =
                         Pair(data, index)
 
                 data is DisabledItemHeaderHolderData ->
@@ -2194,11 +2258,6 @@ class CartViewModel @Inject constructor(
             cartModel
         )
         if (disabledCartItems.isEmpty()) {
-            cartItemTickerErrorHolderDataIndexPair?.let {
-                newCartDataList.remove(it.first)
-                toBeRemovedItems.add(it.second)
-                toBeRemovedIndices.add(it.second)
-            }
             disabledItemHeaderHolderDataIndexPair?.let {
                 newCartDataList.remove(it.first)
                 toBeRemovedItems.add(it.second)
@@ -2211,10 +2270,6 @@ class CartViewModel @Inject constructor(
             }
         } else {
             val errorItemCount = disabledCartItems.size
-            cartItemTickerErrorHolderDataIndexPair?.let {
-                it.first.errorProductCount = errorItemCount
-                toBeUpdatedIndices.add(it.second)
-            }
             disabledItemHeaderHolderDataIndexPair?.let {
                 it.first.disabledItemCount = errorItemCount
                 toBeUpdatedIndices.add(it.second)
@@ -2270,7 +2325,7 @@ class CartViewModel @Inject constructor(
             cartShopGroupTickerJob?.cancel()
         }
         cartModel.lastCartShopGroupTickerCartString = cartGroupHolderData.cartString
-        cartShopGroupTickerJob = launch(dispatchers.io) {
+        cartShopGroupTickerJob = viewModelScope.launch(dispatchers.io) {
             try {
                 delay(CART_SHOP_GROUP_TICKER_DELAY)
                 cartGroupHolderData.cartShopGroupTicker.enableBundleCrossSell =
@@ -2301,13 +2356,14 @@ class CartViewModel @Inject constructor(
                     }
                     return@launch
                 }
-                val calculatePriceMarketplaceProduct = cartCalculator.calculatePriceMarketplaceProduct(
-                    allCartItemDataList = shopProductList,
-                    cartModel = cartModel,
-                    updateCartModel = { newCartModel ->
-                        cartModel = newCartModel
-                    }
-                )
+                val calculatePriceMarketplaceProduct =
+                    cartCalculator.calculatePriceMarketplaceProduct(
+                        allCartItemDataList = shopProductList,
+                        cartModel = cartModel,
+                        updateCartModel = { newCartModel ->
+                            cartModel = newCartModel
+                        }
+                    )
                 val subtotalPrice = calculatePriceMarketplaceProduct.second.second.toLong()
                 val shipping = ShippingParam().apply {
                     destinationDistrictId = cartModel.lca?.district_id
@@ -2391,7 +2447,7 @@ class CartViewModel @Inject constructor(
         }
     }
 
-    private fun checkEnableBundleCrossSell(cartGroupHolderData: CartGroupHolderData): Boolean {
+    fun checkEnableBundleCrossSell(cartGroupHolderData: CartGroupHolderData): Boolean {
         val hasCheckedProductWithBundle = cartGroupHolderData.productUiModelList
             .any { it.isSelected && !it.isBundlingItem && it.bundleIds.isNotEmpty() }
         val hasCheckedBundleProduct = cartGroupHolderData.productUiModelList
@@ -2422,8 +2478,9 @@ class CartViewModel @Inject constructor(
     }
 
     private fun clearBo(group: CartGroupHolderData) {
-        launch {
-            try {
+        viewModelScope.launchCatchError(
+            context = dispatchers.io,
+            block = {
                 val cartStringGroupSet = mutableSetOf<String>()
                 val cartPromoHolderData =
                     PromoRequestMapper.mapSelectedCartGroupToPromoData(listOf(group))
@@ -2455,10 +2512,11 @@ class CartViewModel @Inject constructor(
                         )
                     )
                 ).executeOnBackground()
-            } catch (t: Throwable) {
-                Timber.d(t)
+            },
+            onError = {
+                Timber.d(it)
             }
-        }
+        )
 
         group.promoCodes = ArrayList(group.promoCodes).apply { remove(group.boCode) }
         group.boCode = ""
@@ -2648,7 +2706,11 @@ class CartViewModel @Inject constructor(
         }
     }
 
-    fun updateAddOnByCartId(cartId: String, newAddOnWording: String, selectedAddons: List<AddOnUIModel>) {
+    fun updateAddOnByCartId(
+        cartId: String,
+        newAddOnWording: String,
+        selectedAddons: List<AddOnUIModel>
+    ) {
         val position: Int
         loop@ for ((index, item) in cartDataList.value.withIndex()) {
             if (item is CartItemHolderData) {
@@ -2764,20 +2826,26 @@ class CartViewModel @Inject constructor(
 
     fun processAddToCartExternal(productId: Long) {
         _globalEvent.value = CartGlobalEvent.ProgressLoading(true)
-
-        launch(dispatchers.io) {
-            try {
-                val model = addToCartExternalUseCase(Pair(productId.toString(), userSessionInterface.userId))
+        viewModelScope.launchCatchError(
+            context = dispatchers.io,
+            block = {
+                val model = addToCartExternalUseCase(
+                    Pair(
+                        productId.toString(),
+                        userSessionInterface.userId
+                    )
+                )
                 withContext(dispatchers.main) {
                     _addToCartExternalEvent.value = AddToCartExternalEvent.Success(model)
                 }
-            } catch (t: Throwable) {
+            },
+            onError = { t ->
                 Timber.d(t)
                 withContext(dispatchers.main) {
                     _addToCartExternalEvent.value = AddToCartExternalEvent.Failed(t)
                 }
             }
-        }
+        )
     }
 
     fun getCartItemByBundleGroupId(
@@ -2811,18 +2879,20 @@ class CartViewModel @Inject constructor(
 
     fun followShop(shopId: String) {
         _globalEvent.value = CartGlobalEvent.ProgressLoading(true)
-        launch(dispatchers.io) {
-            try {
+        viewModelScope.launchCatchError(
+            context = dispatchers.io,
+            block = {
                 val data = followShopUseCase(shopId)
                 withContext(dispatchers.main) {
                     _followShopEvent.value = FollowShopEvent.Success(data)
                 }
-            } catch (t: Throwable) {
+            },
+            onError = { throwable ->
                 withContext(dispatchers.main) {
-                    _followShopEvent.value = FollowShopEvent.Failed(t)
+                    _followShopEvent.value = FollowShopEvent.Failed(throwable)
                 }
             }
-        }
+        )
     }
 
     override fun onCleared() {

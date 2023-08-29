@@ -1,12 +1,17 @@
 package com.tokopedia.checkout.revamp.view.viewholder
 
 import android.animation.Animator
+import android.graphics.drawable.Animatable
 import android.view.ViewGroup
 import android.view.animation.CycleInterpolator
 import androidx.recyclerview.widget.RecyclerView
+import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.databinding.ItemCheckoutEpharmacyBinding
 import com.tokopedia.checkout.revamp.view.adapter.CheckoutAdapterListener
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
@@ -15,9 +20,12 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
+import com.tokopedia.unifyprinciples.Typography
 
-class CheckoutEpharmacyViewHolder(private val binding: ItemCheckoutEpharmacyBinding,
-    private val listener: CheckoutAdapterListener): RecyclerView.ViewHolder(binding.root) {
+class CheckoutEpharmacyViewHolder(
+    private val binding: ItemCheckoutEpharmacyBinding,
+    private val listener: CheckoutAdapterListener
+) : RecyclerView.ViewHolder(binding.root) {
 
     companion object {
         val VIEW_TYPE = R.layout.item_checkout_epharmacy
@@ -41,27 +49,38 @@ class CheckoutEpharmacyViewHolder(private val binding: ItemCheckoutEpharmacyBind
                 ViewGroup.LayoutParams.WRAP_CONTENT
             )
         }
-        binding.uploadIcon.loadImage(uploadPrescriptionUiModel.leftIconUrl)
-        if (uploadPrescriptionUiModel.uploadedImageCount == 0) {
+        if (uploadPrescriptionUiModel.uploadedImageCount < 0) {
+            binding.uploadIcon.loadImage(getIconUnifyDrawable(binding.root.context, IconUnify.DOCTOR_RECEIPT, MethodChecker.getColor(binding.root.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)))
             if (uploadPrescriptionUiModel.hasInvalidPrescription) {
                 binding.uploadPrescriptionText.text =
                     itemView.resources.getString(com.tokopedia.purchase_platform.common.R.string.pp_epharmacy_upload_invalid_title_text)
+                binding.uploadPrescriptionText.setWeight(Typography.BOLD)
                 binding.uploadDescriptionText.text =
                     itemView.resources.getString(com.tokopedia.purchase_platform.common.R.string.pp_epharmacy_upload_invalid_description_text)
                 binding.uploadDescriptionText.setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_NN600)
                 binding.uploadDescriptionText.show()
             } else {
                 binding.uploadPrescriptionText.text = uploadPrescriptionUiModel.uploadImageText
+                binding.uploadPrescriptionText.setWeight(Typography.REGULAR)
                 binding.uploadDescriptionText.text = ""
                 binding.uploadDescriptionText.hide()
             }
         } else {
+            if (!uploadPrescriptionUiModel.hasShowAnimation) {
+                binding.uploadIcon.loadImage(AnimatedVectorDrawableCompat.create(binding.root.context, R.drawable.checkout_module_epharmacy_icon_avd))
+                (binding.uploadIcon.drawable as? Animatable)?.start()
+                uploadPrescriptionUiModel.hasShowAnimation = true
+            } else if ((binding.uploadIcon.drawable as? Animatable)?.isRunning == false) {
+                binding.uploadIcon.loadImage(R.drawable.checkout_module_epharmacy_icon_checked)
+            }
             binding.uploadPrescriptionText.text =
                 itemView.resources.getString(com.tokopedia.purchase_platform.common.R.string.pp_epharmacy_upload_prescription_attached_title_text)
+            binding.uploadPrescriptionText.setWeight(Typography.BOLD)
             binding.uploadDescriptionText.text = itemView.resources.getString(
                 com.tokopedia.purchase_platform.common.R.string.pp_epharmacy_upload_prescription_count_text,
                 uploadPrescriptionUiModel.uploadedImageCount
             )
+            binding.uploadDescriptionText.setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_NN600)
             binding.uploadDescriptionText.show()
         }
         binding.uploadPrescriptionLayout.setOnClickListener {

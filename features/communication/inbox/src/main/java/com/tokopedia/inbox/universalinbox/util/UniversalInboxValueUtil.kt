@@ -1,7 +1,6 @@
 package com.tokopedia.inbox.universalinbox.util
 
 import com.tokopedia.inbox.universalinbox.util.toggle.UniversalInboxAbPlatform
-import com.tokopedia.inbox.universalinbox.view.UniversalInboxMenuMapper
 import com.tokopedia.topads.sdk.utils.PARAM_DEVICE
 import com.tokopedia.topads.sdk.utils.PARAM_EP
 import com.tokopedia.topads.sdk.utils.PARAM_HEADLINE_PRODUCT_COUNT
@@ -17,39 +16,22 @@ import com.tokopedia.topads.sdk.utils.VALUE_HEADLINE_PRODUCT_COUNT
 import com.tokopedia.topads.sdk.utils.VALUE_ITEM
 import com.tokopedia.topads.sdk.utils.VALUE_TEMPLATE_ID
 import com.tokopedia.user.session.UserSessionInterface
-import timber.log.Timber
 
 object UniversalInboxValueUtil {
 
     const val PAGE_NAME = "inbox"
 
     /**
-     * Rollence
+     * Rollence (for analytics only)
      */
-    const val ROLLENCE_KEY = "inbox_universal"
-    const val ROLLENCE_TYPE_A = "inbox_varA"
-    const val ROLLENCE_TYPE_B = "inbox_varB"
-    private const val VAR_A = "var_a"
-    private const val VAR_B = "var_b"
-    fun getVariant(abTestPlatform: UniversalInboxAbPlatform): UniversalInboxMenuMapper.VariantType {
-        return try {
-            val variantAB = abTestPlatform.getString(ROLLENCE_KEY, ROLLENCE_TYPE_B)
-            if (variantAB == ROLLENCE_TYPE_A) {
-                UniversalInboxMenuMapper.VariantType.INBOX_VAR_A
-            } else {
-                UniversalInboxMenuMapper.VariantType.INBOX_VAR_B
-            }
-        } catch (throwable: Throwable) {
-            Timber.d(throwable)
-            UniversalInboxMenuMapper.VariantType.INBOX_VAR_B
-        }
-    }
-    fun getVariantTracker(abTestPlatform: UniversalInboxAbPlatform): String {
-        return when (getVariant(abTestPlatform).type) {
-            ROLLENCE_TYPE_A -> VAR_A
-            ROLLENCE_TYPE_B -> VAR_B
-            else -> ""
-        }
+    const val VAR_B = "var_b"
+
+    const val ROLLENCE_REFRESH_RECOMMENDATION = "refresh_inboxUpdate"
+    fun shouldRefreshProductRecommendation(abTestPlatform: UniversalInboxAbPlatform): Boolean {
+        return abTestPlatform.getString(
+            ROLLENCE_REFRESH_RECOMMENDATION,
+            ""
+        ) == ROLLENCE_REFRESH_RECOMMENDATION
     }
 
     /**
@@ -90,7 +72,6 @@ object UniversalInboxValueUtil {
      * Recommendation
      */
     // PDP
-    const val REQUEST_FROM_PDP = 138
     const val PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition"
 
     // TopAds

@@ -1,6 +1,7 @@
 package com.tokopedia.checkout.revamp.view.adapter
 
 import androidx.fragment.app.FragmentManager
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCrossSellModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
 import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
@@ -94,6 +95,8 @@ interface CheckoutAdapterListener {
 
     fun getParentWidth(): Int
 
+    fun onCrossSellItemChecked(checked: Boolean, crossSellModel: CheckoutCrossSellModel)
+
     fun onEgoldChecked(checked: Boolean)
 
     fun onDonationChecked(checked: Boolean)
@@ -103,4 +106,6 @@ interface CheckoutAdapterListener {
     fun onInsuranceTncClicked()
 
     fun onProcessToPayment()
+
+    fun onBindButtonPayment()
 }

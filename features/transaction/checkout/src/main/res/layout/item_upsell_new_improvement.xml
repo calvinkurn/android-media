@@ -72,7 +72,7 @@
                     app:layout_constraintTop_toTopOf="parent">
 
                     <com.tokopedia.unifyprinciples.Typography
-                        android:id="@+id/checkout_upsell_title"
+                        android:id="@+id/tv_checkout_upsell_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textColor="@color/Unify_NN950"
@@ -80,7 +80,7 @@
                         tools:text="Langganan PLUS bisa puas belanja pakai Bebas Ongkir lebih banyak!" />
 
                     <com.tokopedia.unifyprinciples.Typography
-                        android:id="@+id/checkout_upsell_description"
+                        android:id="@+id/tv_checkout_upsell_description"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
