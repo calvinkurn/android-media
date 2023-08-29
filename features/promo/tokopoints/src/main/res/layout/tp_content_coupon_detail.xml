@@ -271,6 +271,7 @@
                 >
 
                 <include
+                    android:id="@+id/tp_layout_swipe_coupon_code"
                     layout="@layout/tp_layout_swipe_coupon_code"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
