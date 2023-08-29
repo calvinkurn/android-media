@@ -140,7 +140,7 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener {
             widgets.add(SliderImageTextUiModel.dummySliderImageText())
             widgets.add(AccordionInformationUiModel.dummyAccordion())
             widgetAdapter.addMoreData(widgets)
-        }, 6000)
+        }, 1000)
     }
 
     override fun onNavBackClicked() {
