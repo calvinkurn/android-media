@@ -418,6 +418,16 @@ internal class PromoUsageViewModel @Inject constructor(
             .map { item ->
                 if (item is PromoItem && item.id == clickedItem.id) {
                     return@map updatedClickedItem
+                } else if (item is PromoRecommendationItem) {
+                    if (updatedClickedItem.isRecommended) {
+                        if (updatedClickedItem.state is PromoItemState.Normal) {
+                            return@map item.copy(
+                                selectedCodes = item.selectedCodes.toMutableList()
+                                    .minus(updatedClickedItem.code)
+                            )
+                        }
+                    }
+                    return@map item
                 } else {
                     return@map item
                 }
