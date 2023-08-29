@@ -80,6 +80,7 @@ class StoryGroupFragment @Inject constructor(
             viewModel.uiEvent.collect { event ->
                 when (event) {
                     is StoryUiEvent.SelectGroup -> selectGroupEvent(event.position)
+                    StoryUiEvent.FinishedAllStory -> activity?.finish()
                 }
             }
         }

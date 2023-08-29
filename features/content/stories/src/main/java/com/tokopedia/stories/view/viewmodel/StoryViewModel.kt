@@ -103,7 +103,7 @@ class StoryViewModel @Inject constructor(
         when {
             newDetailPosition < mDetailSize -> updateStoryDetailData(position = newDetailPosition)
             newGroupPosition < mGroupSize -> handleSetGroup(position = newGroupPosition)
-            else -> Timber.d("finished")
+            else -> viewModelScope.launch { _uiEvent.emit(StoryUiEvent.FinishedAllStory) }
         }
     }
 
@@ -182,10 +182,9 @@ class StoryViewModel @Inject constructor(
         val currentDetail = mGroupItem.detail.copy(
             selectedPosition = position,
             selectedPositionCached = if (positionCached <= position) position else positionCached,
-            detailItems = mGroupItem.detail.detailItems.mapIndexed { index, item ->
+            detailItems = mGroupItem.detail.detailItems.mapIndexed { _, item ->
                 item.copy(
                     event = event,
-                    isSelected = index == position,
                     resetValue = if (isReset) {
                         mResetValue.value = mResetValue.value.getRandomNumber()
                         mResetValue.value
@@ -194,8 +193,8 @@ class StoryViewModel @Inject constructor(
             }
         )
 
-        _storyDetail.update { currentDetail }
         updateGroupData(detail = currentDetail)
+        _storyDetail.update { currentDetail }
     }
 
     private suspend fun requestStoryInitialData(): StoryGroupUiModel {

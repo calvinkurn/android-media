@@ -23,7 +23,6 @@ data class StoryDetailItemUiModel(
     val id: String = "",
     val event: StoryDetailItemUiEvent = StoryDetailItemUiEvent.PAUSE,
     val imageContent: String = "",
-    val isSelected: Boolean = false,
     val resetValue: Int = -1,
 ) {
 

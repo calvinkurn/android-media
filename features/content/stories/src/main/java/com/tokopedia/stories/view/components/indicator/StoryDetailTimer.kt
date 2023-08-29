@@ -35,7 +35,6 @@ fun StoryDetailTimer(
 ) {
     val anim = remember(
         currentPosition,
-        data.isSelected,
         data.id,
         data.resetValue,
     ) { Animatable(INITIAL_ANIMATION) }

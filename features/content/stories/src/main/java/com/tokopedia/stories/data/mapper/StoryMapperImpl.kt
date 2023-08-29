@@ -27,12 +27,11 @@ class StoryMapperImpl @Inject constructor() : StoryMapper {
                         StoryDetailUiModel(
                             selectedPosition = dataDetail.data.meta.selectedStoryIndex,
                             selectedPositionCached = dataDetail.data.meta.selectedStoryIndex,
-                            detailItems = dataDetail.data.stories.mapIndexed { indexDetail, story ->
+                            detailItems = dataDetail.data.stories.map { story ->
                                 StoryDetailItemUiModel(
                                     id = story.id,
                                     event = StoryDetailItemUiEvent.PAUSE,
                                     imageContent = story.media.link,
-                                    isSelected = dataDetail.data.meta.selectedStoryIndex == indexDetail,
                                 )
                             }
                         )
@@ -46,12 +45,11 @@ class StoryMapperImpl @Inject constructor() : StoryMapper {
         return StoryDetailUiModel(
             selectedPosition = dataDetail.data.meta.selectedStoryIndex,
             selectedPositionCached = dataDetail.data.meta.selectedStoryIndex,
-            detailItems = dataDetail.data.stories.mapIndexed { indexDetail, story ->
+            detailItems = dataDetail.data.stories.map { story ->
                 StoryDetailItemUiModel(
                     id = story.id,
                     event = StoryDetailItemUiEvent.PAUSE,
                     imageContent = story.media.link,
-                    isSelected = dataDetail.data.meta.selectedStoryIndex == indexDetail,
                 )
             }
         )
