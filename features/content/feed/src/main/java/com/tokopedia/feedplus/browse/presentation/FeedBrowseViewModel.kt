@@ -8,12 +8,10 @@ import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiAction
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiEvent
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiState
-import com.tokopedia.feedplus.browse.presentation.view.FeedBrowsePlaceholderView
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -24,18 +22,9 @@ import javax.inject.Inject
 class FeedBrowseViewModel @Inject constructor(
     private val repository: FeedBrowseRepository,
     private val uiEventManager: UiEventManager<FeedBrowseUiEvent>
-): ViewModel() {
+) : ViewModel() {
 
-    private val _pageTitle = MutableStateFlow("")
-    private val _widgets = MutableStateFlow<List<FeedBrowseUiModel>>(
-        listOf(
-            FeedBrowseUiModel.Placeholder(FeedBrowsePlaceholderView.Type.Title),
-            FeedBrowseUiModel.Placeholder(FeedBrowsePlaceholderView.Type.Chips),
-            FeedBrowseUiModel.Placeholder(FeedBrowsePlaceholderView.Type.Cards),
-            FeedBrowseUiModel.Placeholder(FeedBrowsePlaceholderView.Type.Title),
-            FeedBrowseUiModel.Placeholder(FeedBrowsePlaceholderView.Type.Cards),
-        )
-    )
+    private val _widgets = MutableStateFlow<List<FeedBrowseUiModel>>(emptyList())
 
     /**
      * 1. getFeedXHome, returns slots -> showing Placeholder
@@ -46,45 +35,39 @@ class FeedBrowseViewModel @Inject constructor(
      * edge cases:
      * 1. error when getFeedXHome()
      * 2. error when getContentSlot()
-     *
      */
     val uiState: StateFlow<FeedBrowseUiState>
-        get() = kotlinx.coroutines.flow.combine(_pageTitle, _widgets) { title, widgets ->
-            FeedBrowseUiState(
-                title = title,
-                widgets = widgets
-            )
-        }.stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(5000L),
-            FeedBrowseUiState.Empty
-        )
+        get() = _uiState.asStateFlow()
+
+    private val _uiState = MutableStateFlow<FeedBrowseUiState>(FeedBrowseUiState.Placeholder)
 
     val uiEvent: Flow<FeedBrowseUiEvent?>
         get() = uiEventManager.event
 
     fun submitAction(action: FeedBrowseUiAction) {
         when (action) {
-            FeedBrowseUiAction.FetchTitle -> handleFetchTitle()
-            FeedBrowseUiAction.FetchSlots -> handleFetchSlots()
+            FeedBrowseUiAction.LoadInitialPage -> handleInitialPage()
+            is FeedBrowseUiAction.FetchCards -> TODO()
         }
     }
 
-    private fun handleFetchTitle() {
+    private fun handleInitialPage() {
         viewModelScope.launch {
             val title = repository.getTitle()
-            _pageTitle.value = title
-        }
-    }
+            val result = try {
+                val slots = repository.getSlots()
 
-    private fun handleFetchSlots() {
-        viewModelScope.launch {
-            val slots = repository.getSlots()
+                // this works, async, but the position might not be the same
+                slots.forEach { getWidget(it.type) }
 
-            // this works, async, but the position might not be the same
-            slots.forEach { slot ->
-                getWidget(slot.type)
+                FeedBrowseUiState.Success(
+                    title = title,
+                    widgets = emptyList()
+                )
+            } catch (err: Throwable) {
+                FeedBrowseUiState.Error(err)
             }
+            _uiState.value = result
         }
     }
 

@@ -3,15 +3,11 @@ package com.tokopedia.feedplus.browse.presentation.model
 /**
  * Created by meyta.taliti on 11/08/23.
  */
-data class FeedBrowseUiState(
-    val title: String,
-    val widgets: List<FeedBrowseUiModel>
-) {
-
-    companion object {
-        val Empty = FeedBrowseUiState(
-            title = "",
-            widgets = emptyList()
-        )
-    }
+sealed class FeedBrowseUiState {
+    object Placeholder : FeedBrowseUiState()
+    data class Error(val throwable: Throwable) : FeedBrowseUiState()
+    data class Success(
+        val title: String,
+        val widgets: List<FeedBrowseUiModel>
+    ) : FeedBrowseUiState()
 }

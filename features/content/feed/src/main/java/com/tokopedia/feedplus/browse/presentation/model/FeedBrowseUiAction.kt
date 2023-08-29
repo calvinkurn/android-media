@@ -3,10 +3,9 @@ package com.tokopedia.feedplus.browse.presentation.model
 /**
  * Created by meyta.taliti on 11/08/23.
  */
-sealed class FeedBrowseUiAction {
+sealed interface FeedBrowseUiAction {
 
-    object FetchTitle : FeedBrowseUiAction()
+    object LoadInitialPage : FeedBrowseUiAction
 
-    object FetchSlots : FeedBrowseUiAction()
-
+    data class FetchCards(val type: String) : FeedBrowseUiAction
 }

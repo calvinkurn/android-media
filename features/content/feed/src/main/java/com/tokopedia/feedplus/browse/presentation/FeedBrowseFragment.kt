@@ -15,9 +15,19 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseAdapter
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiAction
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiModel
+import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiState
+import com.tokopedia.feedplus.browse.presentation.view.FeedBrowsePlaceholderView
 import com.tokopedia.feedplus.databinding.FragmentFeedBrowseBinding
+import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.io.InterruptedIOException
+import java.net.SocketException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 /**
@@ -50,8 +60,7 @@ class FeedBrowseFragment @Inject constructor(
         observeUiState()
         observeUiEvent()
 
-        viewModel.submitAction(FeedBrowseUiAction.FetchTitle)
-        viewModel.submitAction(FeedBrowseUiAction.FetchSlots)
+        viewModel.submitAction(FeedBrowseUiAction.LoadInitialPage)
     }
 
     override fun getScreenName(): String {
@@ -68,9 +77,22 @@ class FeedBrowseFragment @Inject constructor(
             viewModel.uiState
                 .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
                 .collectLatest { state ->
-
-                    renderHeader(state.title)
-                    renderContent(state.widgets)
+                    when (state) {
+                        FeedBrowseUiState.Placeholder -> {
+                            hideError()
+                            showPlaceholder()
+                        }
+                        is FeedBrowseUiState.Success -> {
+                            hideError()
+                            showContent()
+                            renderHeader(state.title)
+                            renderContent(state.widgets)
+                        }
+                        is FeedBrowseUiState.Error -> {
+                            hideContent()
+                            showError(state.throwable)
+                        }
+                    }
                 }
         }
     }
@@ -95,11 +117,50 @@ class FeedBrowseFragment @Inject constructor(
         binding.feedBrowseList.adapter = adapter
     }
 
+    private fun showPlaceholder() {
+        renderContent(
+            listOf(
+                FeedBrowseUiModel.Placeholder(FeedBrowsePlaceholderView.Type.Title),
+                FeedBrowseUiModel.Placeholder(FeedBrowsePlaceholderView.Type.Chips),
+                FeedBrowseUiModel.Placeholder(FeedBrowsePlaceholderView.Type.Cards),
+                FeedBrowseUiModel.Placeholder(FeedBrowsePlaceholderView.Type.Title),
+                FeedBrowseUiModel.Placeholder(FeedBrowsePlaceholderView.Type.Cards)
+            )
+        )
+    }
+
+    private fun showError(throwable: Throwable) {
+        val errorType = when (throwable) {
+            is SocketTimeoutException -> GlobalError.PAGE_FULL
+            is UnknownHostException,
+            is SocketException,
+            is InterruptedIOException -> GlobalError.NO_CONNECTION
+            else -> {
+                GlobalError.MAINTENANCE
+            }
+        }
+        binding.feedBrowseError.setType(errorType)
+        binding.feedBrowseError.show()
+    }
+
+    private fun hideError() {
+        binding.feedBrowseError.gone()
+    }
+
+    private fun showContent() {
+        binding.feedBrowseList.show()
+    }
+
+    private fun hideContent() {
+        binding.feedBrowseList.hide()
+    }
+
     private fun renderHeader(title: String) {
         binding.feedBrowseHeader.title = title
     }
 
     private fun renderContent(widgets: List<FeedBrowseUiModel>) {
+        if (widgets.isEmpty()) return
         adapter.setItemsAndAnimateChanges(widgets)
     }
 }
