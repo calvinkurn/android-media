@@ -57,6 +57,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import timber.log.Timber
 import javax.inject.Inject
+import androidx.appcompat.R as appcompatR
 
 class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
 
@@ -165,7 +166,7 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
         val zipCodeAdapter = context?.let {
             ArrayAdapter(
                 it,
-                androidx.appcompat.R.layout.select_dialog_item_material,
+                appcompatR.layout.select_dialog_item_material,
                 zipCodes
             )
         }
