@@ -40,7 +40,7 @@ data class AccordionInformationUiModel(
 
     companion object {
 
-        private const val dummyDarkMode = true
+        private const val dummyDarkMode = false
 
         fun dummyAccordion() = AccordionInformationUiModel(
             "dummy", "", "", "#000000".stringHexColorParseToInt(),

@@ -22,6 +22,7 @@ import com.tokopedia.catalogcommon.uimodel.AccordionInformationUiModel
 import com.tokopedia.catalogcommon.uimodel.BaseCatalogUiModel
 import com.tokopedia.catalogcommon.listener.HeroBannerListener
 import com.tokopedia.catalogcommon.uimodel.DummyUiModel
+import com.tokopedia.catalogcommon.uimodel.ExpertReviewUiModel
 import com.tokopedia.catalogcommon.uimodel.HeroBannerUiModel
 import com.tokopedia.catalogcommon.uimodel.PanelImageUiModel
 import com.tokopedia.catalogcommon.uimodel.SliderImageTextUiModel
@@ -154,6 +155,7 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener {
                     )
                 )
             )
+            widgets.add(ExpertReviewUiModel.dummyExpertReview())
             widgets.add(SliderImageTextUiModel.dummySliderImageText())
             widgets.add(AccordionInformationUiModel.dummyAccordion())
             widgetAdapter.addWidget(widgets)

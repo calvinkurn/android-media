@@ -3,9 +3,8 @@ package com.tokopedia.catalogcommon.util
 import android.content.Context
 import android.graphics.Color
 import androidx.core.content.ContextCompat
-import com.tokopedia.catalogcommon.R
 
-fun Int?.orDefaultColor(context: Context,default: Int = R.color.Unify_N150_20): Int {
+fun Int?.orDefaultColor(context: Context,default: Int = com.tokopedia.unifyprinciples.R.color.Unify_N150_20): Int {
     return this ?: default.colorResToInt(context)
 }
 
