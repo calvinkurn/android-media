@@ -4,7 +4,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.cart.databinding.HolderItemCartTickerErrorBinding
 import com.tokopedia.cart.databinding.ItemCartDisabledAccordionRevampBinding
 import com.tokopedia.cart.databinding.ItemCartDisabledCollapsedBinding
 import com.tokopedia.cart.databinding.ItemCartDisabledHeaderRevampBinding
@@ -26,7 +25,6 @@ import com.tokopedia.cartrevamp.view.adapter.wishlist.CartWishlistAdapter
 import com.tokopedia.cartrevamp.view.uimodel.CartEmptyHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartGroupHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
-import com.tokopedia.cartrevamp.view.uimodel.CartItemTickerErrorHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartLoadingHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartMainCoachMarkUiModel
 import com.tokopedia.cartrevamp.view.uimodel.CartRecentViewHolderData
@@ -49,7 +47,6 @@ import com.tokopedia.cartrevamp.view.viewholder.CartRecommendationViewHolder
 import com.tokopedia.cartrevamp.view.viewholder.CartSectionHeaderViewHolder
 import com.tokopedia.cartrevamp.view.viewholder.CartSelectedAmountViewHolder
 import com.tokopedia.cartrevamp.view.viewholder.CartShopBottomViewHolder
-import com.tokopedia.cartrevamp.view.viewholder.CartTickerErrorViewHolder
 import com.tokopedia.cartrevamp.view.viewholder.CartTopAdsHeadlineViewHolder
 import com.tokopedia.cartrevamp.view.viewholder.CartWishlistViewHolder
 import com.tokopedia.cartrevamp.view.viewholder.DisabledAccordionViewHolder
@@ -108,7 +105,6 @@ class CartAdapter constructor(
             is CartGroupHolderData -> CartGroupViewHolder.LAYOUT
             is CartShopBottomHolderData -> CartShopBottomViewHolder.LAYOUT
             is CartItemHolderData -> CartItemViewHolder.TYPE_VIEW_ITEM_CART
-            is CartItemTickerErrorHolderData -> CartTickerErrorViewHolder.TYPE_VIEW_TICKER_CART_ERROR
             is ShipmentSellerCashbackModel -> ShipmentSellerCashbackViewHolder.ITEM_VIEW_SELLER_CASHBACK
             is CartEmptyHolderData -> CartEmptyViewHolder.LAYOUT
             is CartRecentViewHolderData -> CartRecentViewViewHolder.LAYOUT
@@ -162,15 +158,6 @@ class CartAdapter constructor(
                     false
                 )
                 return CartShopBottomViewHolder(binding, actionListener)
-            }
-
-            CartTickerErrorViewHolder.TYPE_VIEW_TICKER_CART_ERROR -> {
-                val binding = HolderItemCartTickerErrorBinding.inflate(
-                    LayoutInflater.from(parent.context),
-                    parent,
-                    false
-                )
-                return CartTickerErrorViewHolder(binding, actionListener)
             }
 
             ShipmentSellerCashbackViewHolder.ITEM_VIEW_SELLER_CASHBACK -> {
@@ -313,11 +300,6 @@ class CartAdapter constructor(
             CartShopBottomViewHolder.LAYOUT -> {
                 val data = cartDataList[position] as CartShopBottomHolderData
                 (holder as CartShopBottomViewHolder).bindData(data)
-            }
-
-            CartTickerErrorViewHolder.TYPE_VIEW_TICKER_CART_ERROR -> {
-                val data = cartDataList[position] as CartItemTickerErrorHolderData
-                (holder as CartTickerErrorViewHolder).bindData(data)
             }
 
             ShipmentSellerCashbackViewHolder.ITEM_VIEW_SELLER_CASHBACK -> {

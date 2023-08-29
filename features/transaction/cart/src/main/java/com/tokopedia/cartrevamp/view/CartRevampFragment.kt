@@ -3248,7 +3248,6 @@ class CartRevampFragment :
     private fun renderCartNotEmpty(cartData: CartData) {
         FLAG_IS_CART_EMPTY = false
 
-        renderTickerError(cartData)
         renderCartAvailableItems(cartData)
         renderCartUnavailableItems(cartData)
 
@@ -3642,13 +3641,6 @@ class CartRevampFragment :
         val ticker = cartData.tickers.firstOrNull()
         if (ticker != null && ticker.isValid(CART_PAGE)) {
             viewModel.addItem(CartUiModelMapper.mapTickerAnnouncementUiModel(ticker))
-        }
-    }
-
-    private fun renderTickerError(cartData: CartData) {
-        if (cartData.availableSection.availableGroupGroups.isNotEmpty() && cartData.unavailableSections.isNotEmpty()) {
-            val cartItemTickerErrorHolderData = CartUiModelMapper.mapTickerErrorUiModel(cartData)
-            viewModel.addItem(cartItemTickerErrorHolderData)
         }
     }
 
