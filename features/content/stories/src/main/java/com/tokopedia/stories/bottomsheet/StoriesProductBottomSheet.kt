@@ -13,6 +13,7 @@ import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.content.common.ui.adapter.ContentTaggedProductBottomSheetAdapter
 import com.tokopedia.content.common.ui.viewholder.ContentTaggedProductBottomSheetViewHolder
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.mvcwidget.MvcData
@@ -80,10 +81,9 @@ class StoriesProductBottomSheet @Inject constructor(
     private fun renderProducts(prevState: ProductBottomSheetUiState.ProductList?, state: ProductBottomSheetUiState.ProductList) {
         if (prevState == state) return
 
-        when (state.resultState) {
-            ResultState.Loading -> {}
-            ResultState.Success -> productAdapter.setItemsAndAnimateChanges(state.products)
-            else -> {}
+        binding.storiesProductSheetLoader.showWithCondition(state.resultState is ResultState.Loading)
+        binding.rvStoriesProduct.shouldShowWithAction(state.resultState is ResultState.Success) {
+            productAdapter.setItemsAndAnimateChanges(state.products)
         }
     }
 
