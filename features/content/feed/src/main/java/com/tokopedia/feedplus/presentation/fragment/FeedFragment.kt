@@ -616,7 +616,7 @@ class FeedFragment :
         model: FeedCardVideoContentModel,
         trackerModel: FeedTrackerDataModel
     ) {
-        feedAnalytics.eventWatchVideoPost()
+        feedAnalytics.eventWatchVideoPost(trackerModel)
         feedPostViewModel.trackVisitChannel(model)
         feedPostViewModel.trackChannelPerformance(model)
     }
@@ -1065,7 +1065,7 @@ class FeedFragment :
                             updateBottomActionView(getCurrentPosition())
                         }
                         context?.let { ctx ->
-                            if (feedPostViewModel.shouldShowNoMoreContent) {
+                            if (feedPostViewModel.shouldShowNoMoreContent && adapter.currentList.lastOrNull()?.data !is FeedNoContentModel) {
                                 adapter.addElement(FeedNoContentModel.getNoMoreContentInstance(ctx))
                             }
                         }
