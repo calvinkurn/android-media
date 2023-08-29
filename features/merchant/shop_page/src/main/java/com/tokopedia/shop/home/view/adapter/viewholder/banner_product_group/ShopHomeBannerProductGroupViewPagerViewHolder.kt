@@ -31,7 +31,6 @@ class ShopHomeBannerProductGroupViewPagerViewHolder(
         @LayoutRes
         val LAYOUT = R.layout.item_shop_home_banner_product_group_viewpager
         private const val ONE_TAB = 1
-        private const val TWO_TAB = 2
     }
 
     private val viewBinding: ItemShopHomeBannerProductGroupViewpagerBinding? by viewBinding()
@@ -78,11 +77,6 @@ class ShopHomeBannerProductGroupViewPagerViewHolder(
             when {
                 tabs.isEmpty() -> tabsUnify.gone()
                 tabs.size == ONE_TAB -> tabsUnify.gone()
-                tabs.size == TWO_TAB -> {
-                    tabsUnify.visible()
-                    tabsUnify.customTabMode = TabLayout.MODE_FIXED
-                    tabsUnify.customTabGravity = TabLayout.GRAVITY_FILL
-                }
                 else -> {
                     tabsUnify.visible()
                     tabsUnify.customTabMode = TabLayout.MODE_SCROLLABLE

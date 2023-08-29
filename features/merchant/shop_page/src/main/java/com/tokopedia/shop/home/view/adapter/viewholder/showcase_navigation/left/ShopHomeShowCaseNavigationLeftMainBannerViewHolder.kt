@@ -34,7 +34,6 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
         val LAYOUT = R.layout.item_shop_home_showcase_navigation_left_main_banner
         private const val SHOW_VIEW_ALL_SHOWCASE_THRESHOLD = 5
         private const val ONE_TAB = 1
-        private const val TWO_TAB = 2
     }
 
     private val viewBinding: ItemShopHomeShowcaseNavigationLeftMainBannerBinding? by viewBinding()
@@ -73,15 +72,10 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
             when {
                 tabs.isEmpty() -> tabsUnify.gone()
                 tabs.size == ONE_TAB -> tabsUnify.gone()
-                tabs.size == TWO_TAB -> {
+                else -> {
                     tabsUnify.visible()
                     tabsUnify.customTabMode = TabLayout.MODE_FIXED
                     tabsUnify.customTabGravity = TabLayout.GRAVITY_FILL
-                }
-                else -> {
-                    tabsUnify.visible()
-                    tabsUnify.customTabMode = TabLayout.MODE_SCROLLABLE
-                    tabsUnify.customTabGravity = TabLayout.GRAVITY_CENTER
                 }
             }
 
