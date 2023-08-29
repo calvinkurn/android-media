@@ -11,6 +11,7 @@ import com.tokopedia.mvcwidget.TokopointsCatalogMVCSummaryResponse
 import com.tokopedia.stories.data.StoriesRepository
 import com.tokopedia.stories.view.model.BottomSheetStatusDefault
 import com.tokopedia.stories.view.model.BottomSheetType
+import com.tokopedia.stories.view.model.ProductBottomSheetUiState
 import com.tokopedia.stories.view.model.StoriesDetailUiModel
 import com.tokopedia.stories.view.model.StoriesDetailUiModel.StoriesDetailUiEvent
 import com.tokopedia.stories.view.model.StoriesGroupUiModel
@@ -43,8 +44,12 @@ class StoriesViewModel @Inject constructor(
     private var _storiesGroup = MutableStateFlow(listOf<StoriesGroupUiModel>())
     private var _storiesDetail = MutableStateFlow(StoriesDetailUiModel.Empty)
     private val bottomSheetStatus = MutableStateFlow(BottomSheetStatusDefault)
-    private val products = MutableStateFlow(emptyList<ContentTaggedProductUiModel>())
+    private val products = MutableStateFlow(ProductBottomSheetUiState.ProductList.Empty)
     private val vouchers = MutableStateFlow(TokopointsCatalogMVCSummaryResponse())
+
+    private val productSheet = combine(products, vouchers) {
+        products, vouchers -> ProductBottomSheetUiState(products = products, vouchers = vouchers)
+    }
 
     private val _uiEvent = MutableSharedFlow<StoriesUiEvent>(extraBufferCapacity = 100)
     val uiEvent: Flow<StoriesUiEvent>
@@ -54,13 +59,13 @@ class StoriesViewModel @Inject constructor(
         _storiesGroup,
         _storiesDetail,
         bottomSheetStatus,
-        products
-    ) { storiesCategories, storiesItem, bottomSheet, products ->
+        productSheet,
+    ) { storiesCategories, storiesItem, bottomSheet, productSheet ->
         StoriesUiState(
             storiesGroup = storiesCategories,
             storiesDetail = storiesItem,
             bottomSheetStatus = bottomSheet,
-            products = products,
+            productSheet = productSheet,
         )
     }
 
@@ -228,14 +233,17 @@ class StoriesViewModel @Inject constructor(
          */
         getVouchers()
         viewModelScope.launchCatchError(block = {
-            val response = repository.getStoriesProducts("", "")
-            products.value = response
-        }, onError = {})
+            products.update { product -> product.copy(resultState = ResultState.Loading) }
+            val response = repository.getStoriesProducts(shopId, "")
+            products.update { productList -> productList.copy(products = response, resultState = ResultState.Success) }
+        }, onError = {
+            products.update { product -> product.copy(resultState = ResultState.Fail(it)) } //TODO() change result state?
+        })
     }
 
-    fun getVouchers() {
+    private fun getVouchers() {
         viewModelScope.launchCatchError(block = {
-            val response = repository.getMvcWidget("")
+            val response = repository.getMvcWidget(shopId)
             vouchers.value = response
         }, onError = {})
     }
@@ -260,9 +268,7 @@ class StoriesViewModel @Inject constructor(
                     _uiEvent.emit(StoriesUiEvent.NavigateEvent(appLink = ApplinkConst.CART))
                 }
             } else {
-                viewModelScope.launchCatchError(block = {
-                    repository.addToCart(product.id, product.title, shopId , product.finalPrice)
-                }, onError = {})
+                addToCart(product)
             }
         }
     }

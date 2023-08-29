@@ -9,10 +9,10 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.content.common.ui.adapter.ContentTaggedProductBottomSheetAdapter
 import com.tokopedia.content.common.ui.viewholder.ContentTaggedProductBottomSheetViewHolder
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
-import com.tokopedia.kotlin.extensions.view.showToast
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.stories.databinding.FragmentStoriesProductBinding
 import com.tokopedia.stories.utils.withCache
@@ -24,6 +24,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 import com.tokopedia.stories.R
+import com.tokopedia.stories.view.model.ProductBottomSheetUiState
 
 /**
  * @author by astidhiyaa on 25/07/23
@@ -66,14 +67,19 @@ class StoriesProductBottomSheet @Inject constructor(
     private fun observeUiState() {
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             viewModel.uiState.withCache().collectLatest { (prevState, state) ->
-                renderProducts(prevState?.products, state.products)
+                renderProducts(prevState?.productSheet?.products, state.productSheet.products)
             }
         }
     }
 
-    private fun renderProducts(prevState: List<ContentTaggedProductUiModel>?, state: List<ContentTaggedProductUiModel>) {
+    private fun renderProducts(prevState: ProductBottomSheetUiState.ProductList?, state: ProductBottomSheetUiState.ProductList) {
         if (prevState == state) return
-        productAdapter.setItemsAndAnimateChanges(state)
+
+        when (state.resultState) {
+            ResultState.Loading -> {}
+            ResultState.Success -> productAdapter.setItemsAndAnimateChanges(state.products)
+            else -> {}
+        }
     }
 
     override fun onResume() {
@@ -83,7 +89,7 @@ class StoriesProductBottomSheet @Inject constructor(
     }
 
     override fun onProductCardClicked(product: ContentTaggedProductUiModel, itemPosition: Int) {
-        showToast("Product Clicked")
+        viewModel.submitAction(StoriesUiAction.Navigate(product.appLink))
     }
 
     override fun onAddToCartProductButtonClicked(
