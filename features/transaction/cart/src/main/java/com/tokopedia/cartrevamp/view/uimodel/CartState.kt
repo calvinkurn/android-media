@@ -208,6 +208,6 @@ class CartMutableLiveData<T>(initialValue: T) : LiveData<T>(initialValue) {
 }
 
 sealed interface GetBmGmGroupProductTickerState {
-    data class Success(val bmGmTickerResponse: BmGmGetGroupProductTickerResponse) : GetBmGmGroupProductTickerState
-    data class Failed(val throwable: Throwable) : GetBmGmGroupProductTickerState
+    data class Success(val pairOfferIdBmGmTickerResponse: Pair<Long, BmGmGetGroupProductTickerResponse>) : GetBmGmGroupProductTickerState
+    data class Failed(val pairOfferIdThrowable: Pair<Long, Throwable>) : GetBmGmGroupProductTickerState
 }

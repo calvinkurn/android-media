@@ -37,6 +37,8 @@ import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
+import com.tokopedia.cartrevamp.domain.model.bmgm.request.BmGmGetGroupProductTickerParams
+import com.tokopedia.cartrevamp.domain.usecase.BmGmGetGroupProductTickerUseCase
 import com.tokopedia.cartrevamp.domain.usecase.SetCartlistCheckboxStateUseCase
 import com.tokopedia.cartrevamp.view.helper.CartDataHelper
 import com.tokopedia.cartrevamp.view.mapper.CartUiModelMapper
@@ -148,31 +150,31 @@ import kotlin.coroutines.CoroutineContext
 import kotlin.math.min
 
 class CartViewModel @Inject constructor(
-    private val getCartRevampV4UseCase: GetCartRevampV4UseCase,
-    private val deleteCartUseCase: DeleteCartUseCase,
-    private val undoDeleteCartUseCase: UndoDeleteCartUseCase,
-    private val updateCartUseCase: UpdateCartUseCase,
-    private val compositeSubscription: CompositeSubscription,
-    private val addToWishlistV2UseCase: AddToWishlistV2UseCase,
-    private val deleteWishlistV2UseCase: DeleteWishlistV2UseCase,
-    private val updateAndReloadCartUseCase: UpdateAndReloadCartUseCase,
-    private val userSessionInterface: UserSessionInterface,
-    private val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase,
-    private val getRecentViewUseCase: GetRecommendationUseCase,
-    private val getWishlistV2UseCase: GetWishlistV2UseCase,
-    private val getRecommendationUseCase: GetRecommendationUseCase,
-    private val addToCartUseCase: AddToCartUseCase,
-    private val addToCartExternalUseCase: AddToCartExternalUseCase,
-    private val seamlessLoginUsecase: SeamlessLoginUsecase,
-    private val updateCartCounterUseCase: UpdateCartCounterUseCase,
-    private val updateCartAndGetLastApplyUseCase: UpdateCartAndGetLastApplyUseCase,
-    private val setCartlistCheckboxStateUseCase: SetCartlistCheckboxStateUseCase,
-    private val followShopUseCase: FollowShopUseCase,
-    private val cartShopGroupTickerAggregatorUseCase: CartShopGroupTickerAggregatorUseCase,
-    private val getGroupProductTickerUseCase: BmGmGetGroupProductTickerUseCase,
-    private val schedulers: ExecutorSchedulers,
-    private val dispatchers: CoroutineDispatchers,
-    private val cartCalculator: CartCalculator
+        private val getCartRevampV4UseCase: GetCartRevampV4UseCase,
+        private val deleteCartUseCase: DeleteCartUseCase,
+        private val undoDeleteCartUseCase: UndoDeleteCartUseCase,
+        private val updateCartUseCase: UpdateCartUseCase,
+        private val compositeSubscription: CompositeSubscription,
+        private val addToWishlistV2UseCase: AddToWishlistV2UseCase,
+        private val deleteWishlistV2UseCase: DeleteWishlistV2UseCase,
+        private val updateAndReloadCartUseCase: UpdateAndReloadCartUseCase,
+        private val userSessionInterface: UserSessionInterface,
+        private val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase,
+        private val getRecentViewUseCase: GetRecommendationUseCase,
+        private val getWishlistV2UseCase: GetWishlistV2UseCase,
+        private val getRecommendationUseCase: GetRecommendationUseCase,
+        private val addToCartUseCase: AddToCartUseCase,
+        private val addToCartExternalUseCase: AddToCartExternalUseCase,
+        private val seamlessLoginUsecase: SeamlessLoginUsecase,
+        private val updateCartCounterUseCase: UpdateCartCounterUseCase,
+        private val updateCartAndGetLastApplyUseCase: UpdateCartAndGetLastApplyUseCase,
+        private val setCartlistCheckboxStateUseCase: SetCartlistCheckboxStateUseCase,
+        private val followShopUseCase: FollowShopUseCase,
+        private val cartShopGroupTickerAggregatorUseCase: CartShopGroupTickerAggregatorUseCase,
+        private val getGroupProductTickerUseCase: BmGmGetGroupProductTickerUseCase,
+        private val schedulers: ExecutorSchedulers,
+        private val dispatchers: CoroutineDispatchers,
+        private val cartCalculator: CartCalculator
 ) : ViewModel(), CoroutineScope {
 
     override val coroutineContext: CoroutineContext
@@ -761,7 +763,7 @@ class CartViewModel @Inject constructor(
 
         var subtotalBmGmDiscount = 0.0
         dataList.forEach {
-            if (it.hasBmGmOffer) subtotalBmGmDiscount += it.discountBmGmAmount
+            if (it.cartGroupBmGmHolderData.hasBmGmOffer) subtotalBmGmDiscount += it.cartGroupBmGmHolderData.discountBmGmAmount
         }
 
         // Calculate total total item, price and cashback for marketplace product
@@ -2863,11 +2865,11 @@ class CartViewModel @Inject constructor(
             try {
                 val result = getGroupProductTickerUseCase(params)
                 withContext(dispatchers.main) {
-                    _bmGmGroupProductTickerState.value = GetBmGmGroupProductTickerState.Success(result)
+                    _bmGmGroupProductTickerState.value = GetBmGmGroupProductTickerState.Success(Pair(params.carts[0].cartDetails[0].offer.offerId, result))
                 }
             } catch (t: Throwable) {
                 withContext(dispatchers.main) {
-                    _bmGmGroupProductTickerState.value = GetBmGmGroupProductTickerState.Failed(t)
+                    _bmGmGroupProductTickerState.value = GetBmGmGroupProductTickerState.Failed(Pair(params.carts[0].cartDetails[0].offer.offerId, t))
                 }
             }
         }

@@ -3,13 +3,18 @@ package com.tokopedia.cartrevamp.view.uimodel
 data class CartDetailInfo(
     var cartDetailType: String = "",
     var bmGmData: BmGmData = BmGmData(),
-    var bmGmTiersAppliedList: ArrayList<BmGmTiersAppliedData> = arrayListOf()
+    var bmGmTierProductList: ArrayList<BmGmTierProductData> = arrayListOf()
 ) {
     data class BmGmData(
         var offerId: Long = 0L,
+        var offerName: String = "",
+        var offerIcon: String = "",
+        var offerMessage: List<String> = emptyList(),
+        var offerLandingPageLink: String = "",
+        var totalDiscount: Double = 0.0,
         var offerJsonData: String = ""
     )
-    data class BmGmTiersAppliedData(
+    data class BmGmTierProductData(
         var tierId: Long = 0L,
         var listProduct: ArrayList<BmGmProductData> = arrayListOf()
     ) {

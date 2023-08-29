@@ -85,6 +85,7 @@ import com.tokopedia.cartrevamp.view.uimodel.AddToCartEvent
 import com.tokopedia.cartrevamp.view.uimodel.AddToCartExternalEvent
 import com.tokopedia.cartrevamp.view.uimodel.CartBundlingBottomSheetData
 import com.tokopedia.cartrevamp.view.uimodel.CartCheckoutButtonState
+import com.tokopedia.cartrevamp.view.uimodel.CartDetailInfo
 import com.tokopedia.cartrevamp.view.uimodel.CartGlobalEvent
 import com.tokopedia.cartrevamp.view.uimodel.CartGroupHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
@@ -152,6 +153,10 @@ import com.tokopedia.purchase_platform.common.constant.ARGS_PROMO_REQUEST
 import com.tokopedia.purchase_platform.common.constant.ARGS_VALIDATE_USE_DATA_RESULT
 import com.tokopedia.purchase_platform.common.constant.ARGS_VALIDATE_USE_REQUEST
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
+import com.tokopedia.purchase_platform.common.constant.BmGmConstant.CART_BMGM_STATE_TICKER_ACTIVE
+import com.tokopedia.purchase_platform.common.constant.BmGmConstant.CART_BMGM_STATE_TICKER_INACTIVE
+import com.tokopedia.purchase_platform.common.constant.BmGmConstant.CART_BMGM_STATE_TICKER_LOADING
+import com.tokopedia.purchase_platform.common.constant.BmGmConstant.CART_DETAIL_TYPE_BMGM
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.purchase_platform.common.constant.PAGE_CART
@@ -1116,6 +1121,18 @@ class CartRevampFragment :
         val selected = !cartItemHolderData.isSelected
         viewModel.setItemSelected(position, cartItemHolderData, selected)
         updateStateAfterCheckChanged(selected)
+
+        if (cartItemHolderData.bmGmCartInfoData.cartDetailType == CART_DETAIL_TYPE_BMGM) {
+            val (index, cartItem) = cartAdapter.getCartItemHolderDataAndIndexByOfferId(cartItemHolderData.bmGmCartInfoData.bmGmData.offerId)
+            cartItem.stateTickerBmGm = CART_BMGM_STATE_TICKER_LOADING
+            cartAdapter.notifyItemChanged(index)
+
+            val cartGroupHolderData = cartAdapter.getCartGroupHolderDataByCartItemHolderData(cartItemHolderData)
+            if (cartGroupHolderData != null) {
+                viewModel.getBmGmGroupProductTicker(
+                        BmGmTickerRequestMapper.generateGetGroupProductTickerRequestParams(cartGroupHolderData))
+            }
+        }
     }
 
     override fun onBundleItemCheckChanged(cartItemHolderData: CartItemHolderData) {
@@ -1264,7 +1281,11 @@ class CartRevampFragment :
             }
         }
 
-        if (cartItemHolderData.isBmGmProduct) {
+        if (cartItemHolderData.bmGmCartInfoData.cartDetailType == CART_DETAIL_TYPE_BMGM && cartItemHolderData.isSelected) {
+            val (index, cartItem) = cartAdapter.getCartItemHolderDataAndIndexByOfferId(cartItemHolderData.bmGmCartInfoData.bmGmData.offerId)
+            cartItem.stateTickerBmGm = CART_BMGM_STATE_TICKER_LOADING
+            cartAdapter.notifyItemChanged(index)
+
             val cartGroupHolderData = cartAdapter.getCartGroupHolderDataByCartItemHolderData(cartItemHolderData)
             if (cartGroupHolderData != null) {
                 viewModel.getBmGmGroupProductTicker(
@@ -1486,6 +1507,21 @@ class CartRevampFragment :
 
     override fun onClickAddOnsProductWidgetCart(addOnType: Int, productId: String) {
         cartPageAnalytics.eventClickAddOnsWidgetCart(addOnType, productId)
+    }
+
+    override fun onClickBmGmChevronRight(cartDetailInfo: CartDetailInfo, shopId: String) {
+        val listWarehouseId = arrayListOf<Long>()
+        val listProductId = arrayListOf<String>()
+        cartDetailInfo.bmGmTierProductList.forEach {
+            it.listProduct.forEach { bmGmProductData ->
+                listWarehouseId.add(bmGmProductData.warehouseId)
+                listProductId.add(bmGmProductData.productId)
+            }
+        }
+        val applink = "tokopedia://buymoresavemore/${cartDetailInfo.bmGmData.offerId}/?warehouse_ids=$listWarehouseId&product_ids=$listProductId&shop_ids=$shopId"
+        activity?.let {
+            RouteManager.route(it, applink)
+        }
     }
 
     private fun addEndlessRecyclerViewScrollListener(
@@ -2365,13 +2401,13 @@ class CartRevampFragment :
                 is CartState.Success -> {
                     renderLoadGetCartDataFinish()
                     renderInitialGetCartListDataSuccess(state.data)
-                    stopCartPerformanceTrace()
+                    // stopCartPerformanceTrace()
                 }
 
                 is CartState.Failed -> {
                     renderLoadGetCartDataFinish()
                     renderErrorInitialGetCartListData(state.throwable)
-                    stopCartPerformanceTrace()
+                    // stopCartPerformanceTrace()
                 }
             }
         }
@@ -2740,11 +2776,31 @@ class CartRevampFragment :
         viewModel.bmGmGroupProductTickerState.observe(viewLifecycleOwner) { data ->
             when (data) {
                 is GetBmGmGroupProductTickerState.Success -> {
-                    if (data.bmGmTickerResponse.data.action == BMGM_TICKER_RELOAD_ACTION) refreshCartWithSwipeToRefresh()
-                    else // update ticker
+                    if (data.pairOfferIdBmGmTickerResponse.second.data.action == BMGM_TICKER_RELOAD_ACTION) {
+                        val (index, cartItem) = cartAdapter.getCartItemHolderDataAndIndexByOfferId(data.pairOfferIdBmGmTickerResponse.first)
+                        cartItem.stateTickerBmGm = CART_BMGM_STATE_TICKER_INACTIVE
+                        cartAdapter.notifyItemChanged(index)
+
+                    } else if (data.pairOfferIdBmGmTickerResponse.second.data.action.isEmpty()) {
+                        val (index, cartItem) = cartAdapter.getCartItemHolderDataAndIndexByOfferId(data.pairOfferIdBmGmTickerResponse.first)
+                        cartItem.stateTickerBmGm = CART_BMGM_STATE_TICKER_ACTIVE
+                        var offerMessage = ""
+                        data.pairOfferIdBmGmTickerResponse.second.data.listMessage.forEachIndexed { i, s ->
+                            offerMessage += s
+                            if (i != (data.pairOfferIdBmGmTickerResponse.second.data.listMessage.size - 1)) {
+                                offerMessage += " • "
+                            }
+                        }
+                        cartItem.bmGmCartInfoData.bmGmData.offerName = offerMessage
+                        cartAdapter.notifyItemChanged(index)
+                    }
                 }
 
-                is GetBmGmGroupProductTickerState.Failed -> {}
+                is GetBmGmGroupProductTickerState.Failed -> {
+                    val (index, cartItem) = cartAdapter.getCartItemHolderDataAndIndexByOfferId(data.pairOfferIdThrowable.first)
+                    cartItem.stateTickerBmGm = CART_BMGM_STATE_TICKER_INACTIVE
+                    cartAdapter.notifyItemChanged(index)
+                }
             }
         }
     }

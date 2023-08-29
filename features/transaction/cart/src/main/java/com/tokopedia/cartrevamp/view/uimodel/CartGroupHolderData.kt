@@ -50,8 +50,7 @@ data class CartGroupHolderData(
     var boCode: String = "",
     var coachmarkPlus: CartShopCoachmarkPlusData = CartShopCoachmarkPlusData(),
     var enablerLabel: String = "",
-    var hasBmGmOffer: Boolean = false,
-    var discountBmGmAmount: Double = 0.0
+    var cartGroupBmGmHolderData: CartGroupBmGmHolderData = CartGroupBmGmHolderData()
 ) {
     val shouldValidateWeight: Boolean
         get() = maximumShippingWeight > 0.0 && maximumWeightWording.isNotEmpty()

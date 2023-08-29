@@ -52,6 +52,22 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <LinearLayout
+        android:id="@+id/ll_bmgm_ticker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:orientation="vertical"
+        android:visibility="visible">
+
+        <include
+            android:id="@+id/item_cart_bmgm"
+            layout="@layout/item_cart_bmgm_widget_view"
+            tools:visibility="visible" />
+
+    </LinearLayout>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/container_product_information"
         android:layout_width="match_parent"

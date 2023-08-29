@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.cart.R
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.Action
 import com.tokopedia.cart.databinding.ItemCartProductRevampBinding
+import com.tokopedia.cartrevamp.view.BmGmWidgetView
 import com.tokopedia.cartrevamp.view.adapter.cart.CartItemAdapter
 import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData.Companion.BUNDLING_ITEM_FOOTER
@@ -90,6 +91,7 @@ class CartItemViewHolder constructor(
         renderProductInfo(data)
         renderQuantity(data, viewHolderListener)
         renderProductAction(data)
+        renderBmGmOfferTicker(data)
     }
 
     private fun initCoachMark() {
@@ -1253,6 +1255,37 @@ class CartItemViewHolder constructor(
             binding.bottomDivider.visible()
         } else {
             binding.bottomDivider.gone()
+        }
+    }
+
+    private fun renderBmGmOfferTicker(data: CartItemHolderData) {
+        println("++ product name = ${data.productName}, isShowTickerBmGm = ${data.isShowTickerBmGm}")
+        if (data.isShowTickerBmGm) {
+            binding.llBmgmTicker.visible()
+            when (data.stateTickerBmGm) {
+                0 -> {
+                    binding.itemCartBmgm.bmgmWidgetView.state = BmGmWidgetView.State.LOADING
+                }
+                1 -> {
+                    var offerMessage = ""
+                    data.bmGmCartInfoData.bmGmData.offerMessage.forEachIndexed { index, s ->
+                        offerMessage += s
+                        if (index != (data.bmGmCartInfoData.bmGmData.offerMessage.size - 1)) {
+                            offerMessage += " • "
+                        }
+                    }
+                    binding.itemCartBmgm.bmgmWidgetView.apply {
+                        state = BmGmWidgetView.State.ACTIVE
+                        title = offerMessage
+                    }
+
+                }
+                2 -> {
+                    binding.itemCartBmgm.bmgmWidgetView.state = BmGmWidgetView.State.INACTIVE
+                }
+            }
+        } else {
+            binding.llBmgmTicker.gone()
         }
     }
 

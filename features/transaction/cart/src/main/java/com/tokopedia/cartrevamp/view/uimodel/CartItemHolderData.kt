@@ -103,7 +103,10 @@ data class CartItemHolderData(
 
     // BMGM
     var bmGmCartInfoData: CartDetailInfo = CartDetailInfo(),
-    var isBmGmProduct: Boolean = false,
+    var isShowTickerBmGm: Boolean = false,
+
+    // 0 = loading, 1 = active, 2 = inactive
+    var stateTickerBmGm: Int = -1,
     var isShowBmGmDivider: Boolean = false
 ) {
     companion object {

@@ -34,6 +34,10 @@ class BmGmGetGroupProductTickerUseCase @Inject constructor(
                         {
                             "text": "Potongan harga Rp 10Rb . Summer Sale Clearance!",
                             "url": ""
+                        },
+                        {
+                            "text": "Ending Soon!",
+                            "url": ""
                         }
                     ],
                     "discount_amount": 10000

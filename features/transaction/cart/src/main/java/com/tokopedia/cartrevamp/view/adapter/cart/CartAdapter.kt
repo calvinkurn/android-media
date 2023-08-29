@@ -467,6 +467,21 @@ class CartAdapter constructor(
         return RecyclerView.NO_POSITION
     }
 
+    fun getCartItemHolderDataAndIndexByOfferId(
+            offerId: Long
+    ): Pair<Int, CartItemHolderData> {
+        var indexReturned = RecyclerView.NO_POSITION
+        var itemReturned = CartItemHolderData()
+        for ((index, data) in cartDataList.withIndex()) {
+            if (data is CartItemHolderData && data.bmGmCartInfoData.bmGmData.offerId == offerId) {
+                indexReturned = index
+                itemReturned = data
+                break
+            }
+        }
+        return Pair(indexReturned, itemReturned)
+    }
+
     // TODO: remove
 
     fun getData(): ArrayList<Any> {

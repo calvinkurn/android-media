@@ -17,6 +17,25 @@ data class BmGmGetGroupProductTickerResponse(
         val type: String = "",
 
         @SerializedName("action")
-        val action: String = ""
-    )
+        val action: String = "",
+
+        @SerializedName("icon")
+        val icon: Icon = Icon(),
+
+        @SerializedName("message")
+        val listMessage: List<Message> = emptyList()
+    ) {
+        data class Icon(
+            @SerializedName("url")
+            val url: String = ""
+        )
+
+        data class Message(
+            @SerializedName("text")
+            val text: String = "",
+
+            @SerializedName("url")
+            val url: String = ""
+        )
+    }
 }

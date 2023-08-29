@@ -3,10 +3,13 @@ package com.tokopedia.purchase_platform.common.feature.bmgm.data.response
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-data class BmGmTiersApplied(
+data class BmGmTierProduct(
     @Expose
     @SerializedName("tier_id")
     val tierId: Long = 0L,
+    @Expose
+    @SerializedName("tier_name")
+    val tierName: String = "",
     @Expose
     @SerializedName("tier_message")
     val tierMessage: String = "",
@@ -24,5 +27,5 @@ data class BmGmTiersApplied(
     val priceAfterBenefit: Double = 0.0,
     @Expose
     @SerializedName("list_product")
-    val listProduct: List<BmGmProductTier> = emptyList()
+    val listProduct: List<BmGmProduct> = emptyList()
 )
