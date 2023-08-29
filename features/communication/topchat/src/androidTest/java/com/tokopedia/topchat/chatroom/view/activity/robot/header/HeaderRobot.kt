@@ -25,6 +25,14 @@ object HeaderRobot {
         clickMenuAt(R.string.title_chat_setting)
     }
 
+    fun clickDeleteChat() {
+        clickMenuAt(R.string.delete_conversation)
+    }
+
+    fun clickConfirmDeleteChat() {
+        clickMenuAt(R.string.topchat_chat_delete_confirm)
+    }
+
     private fun clickMenuAt(@StringRes title: Int) {
         onView(withText(title)).perform(click())
     }

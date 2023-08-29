@@ -1,20 +1,18 @@
-package com.tokopedia.topchat.chatroom.view.activity
+package com.tokopedia.topchat.chatroom.view.activity.test
 
 import android.app.Activity
 import android.app.Instrumentation
 import android.content.Intent
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.activity.base.BaseBuyerTopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.activity.robot.composeAreaRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.generalResult
+import com.tokopedia.topchat.chatroom.view.activity.robot.previewAttachmentResult
 import com.tokopedia.topchat.matchers.withTotalItem
 import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.not
@@ -53,8 +51,10 @@ class TopchatRoomInvoiceAttachmentTest : BaseBuyerTopchatRoomTest() {
         }
 
         // Then
-        onView(withId(R.id.rv_attachment_preview)).check(matches(isDisplayed()))
-        onView(withId(R.id.rv_attachment_preview)).check(matches(withTotalItem(1)))
+        previewAttachmentResult {
+            assertAttachmentPreview(isDisplayed())
+            assertAttachmentPreview(withTotalItem(1))
+        }
     }
 
     @Test
@@ -77,7 +77,9 @@ class TopchatRoomInvoiceAttachmentTest : BaseBuyerTopchatRoomTest() {
         }
 
         // Then
-        onView(withId(R.id.rv_attachment_preview)).check(matches(not(isDisplayed())))
+        previewAttachmentResult {
+            assertAttachmentPreview(not(isDisplayed()))
+        }
     }
 
     @Test
@@ -100,8 +102,10 @@ class TopchatRoomInvoiceAttachmentTest : BaseBuyerTopchatRoomTest() {
         }
 
         // Then
-        onView(withId(R.id.rv_attachment_preview)).check(matches(isDisplayed()))
-        onView(withId(R.id.rv_attachment_preview)).check(matches(withTotalItem(1)))
+        previewAttachmentResult {
+            assertAttachmentPreview(isDisplayed())
+            assertAttachmentPreview(withTotalItem(1))
+        }
     }
 
     @Test
@@ -124,7 +128,9 @@ class TopchatRoomInvoiceAttachmentTest : BaseBuyerTopchatRoomTest() {
         }
 
         // Then
-        onView(withId(R.id.rv_attachment_preview)).check(matches(not(isDisplayed())))
+        previewAttachmentResult {
+            assertAttachmentPreview(not(isDisplayed()))
+        }
     }
 
     @Test

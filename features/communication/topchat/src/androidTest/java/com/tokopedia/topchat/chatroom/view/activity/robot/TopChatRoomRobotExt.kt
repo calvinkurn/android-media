@@ -4,7 +4,9 @@ import com.tokopedia.topchat.chatroom.view.activity.robot.broadcast.BroadcastRob
 import com.tokopedia.topchat.chatroom.view.activity.robot.composearea.ComposeAreaRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.copytoclipboard.CopyToClipboardRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralRobot
+import com.tokopedia.topchat.chatroom.view.activity.robot.header.HeaderRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.msgbubble.MsgBubbleRobot
+import com.tokopedia.topchat.chatroom.view.activity.robot.previewattachment.PreviewAttachmentResult
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.BannedProductRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductPreviewRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.replybubble.ReplyBubbleRobot
@@ -17,3 +19,5 @@ fun productPreviewRobot(func: ProductPreviewRobot.() -> Unit) = ProductPreviewRo
 fun msgBubbleRobot(func: MsgBubbleRobot.() -> Unit) = MsgBubbleRobot.apply(func)
 fun bannedProductRobot(func: BannedProductRobot.() -> Unit) = BannedProductRobot.apply(func)
 fun broadcastRobot(func: BroadcastRobot.() -> Unit) = BroadcastRobot.apply(func)
+fun headerRobot(func: HeaderRobot.() -> Unit) = HeaderRobot.apply(func)
+fun previewAttachmentResult(func: PreviewAttachmentResult.() -> Unit) = PreviewAttachmentResult.apply(func)

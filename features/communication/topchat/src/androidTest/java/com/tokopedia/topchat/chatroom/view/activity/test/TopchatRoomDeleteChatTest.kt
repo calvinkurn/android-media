@@ -1,18 +1,10 @@
-package com.tokopedia.topchat.chatroom.view.activity
+package com.tokopedia.topchat.chatroom.view.activity.test
 
-import android.app.Activity
-import android.app.Instrumentation
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.assertion.ViewAssertions
-import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.matcher.IntentMatchers
-import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.topchat.AndroidFileUtil
-import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.domain.pojo.ChatDeleteStatus
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
-import com.tokopedia.topchat.chatroom.view.activity.robot.header.HeaderRobot.clickThreeDotsMenu
+import com.tokopedia.topchat.chatroom.view.activity.robot.generalResult
+import com.tokopedia.topchat.chatroom.view.activity.robot.headerRobot
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -25,13 +17,14 @@ class TopchatRoomDeleteChatTest: TopchatRoomTest() {
         chatAttachmentUseCase.response = chatAttachmentResponse
         moveChatToTrashUseCase.response = getChatDeleteResponse()
         launchChatRoomActivity()
+        stubIntents()
 
         //When
-        Intents.intending(IntentMatchers.anyIntent())
-            .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-        clickThreeDotsMenu()
-        onView(withText(context.getString(R.string.delete_conversation))).perform(click())
-        onView(withText(context.getString(R.string.topchat_chat_delete_confirm))).perform(click())
+        headerRobot {
+            clickThreeDotsMenu()
+            clickDeleteChat()
+            clickConfirmDeleteChat()
+        }
 
         //Then
         assertTrue(activity.isFinishing)
@@ -44,17 +37,19 @@ class TopchatRoomDeleteChatTest: TopchatRoomTest() {
         chatAttachmentUseCase.response = chatAttachmentResponse
         moveChatToTrashUseCase.response = getChatDeleteResponse(isSuccess = false)
         launchChatRoomActivity()
+        stubIntents()
 
         //When
-        Intents.intending(IntentMatchers.anyIntent())
-            .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-        clickThreeDotsMenu()
-        onView(withText(context.getString(R.string.delete_conversation))).perform(click())
-        onView(withText(context.getString(R.string.topchat_chat_delete_confirm))).perform(click())
+        headerRobot {
+            clickThreeDotsMenu()
+            clickDeleteChat()
+            clickConfirmDeleteChat()
+        }
 
         //Then
-        onView(withSubstring("Oops!"))
-            .check(ViewAssertions.matches(isDisplayed()))
+        generalResult {
+            assertToasterWithSubText("Oops!")
+        }
     }
 
     @Test
@@ -64,16 +59,19 @@ class TopchatRoomDeleteChatTest: TopchatRoomTest() {
         chatAttachmentUseCase.response = chatAttachmentResponse
         moveChatToTrashUseCase.errorMessage = "Oops!"
         launchChatRoomActivity()
+        stubIntents()
 
         //When
-        Intents.intending(IntentMatchers.anyIntent())
-            .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-        clickThreeDotsMenu()
-        onView(withText(context.getString(R.string.delete_conversation))).perform(click())
-        onView(withText(context.getString(R.string.topchat_chat_delete_confirm))).perform(click())
+        headerRobot {
+            clickThreeDotsMenu()
+            clickDeleteChat()
+            clickConfirmDeleteChat()
+        }
+
         //Then
-        onView(withSubstring("Oops!"))
-            .check(ViewAssertions.matches(isDisplayed()))
+        generalResult {
+            assertToasterWithSubText("Oops!")
+        }
     }
 
     private fun getChatDeleteResponse(isSuccess: Boolean = true): ChatDeleteStatus {
