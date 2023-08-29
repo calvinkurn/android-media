@@ -1609,16 +1609,15 @@ class DigitalPDPPulsaFragment :
         position: Int,
         bottomSheetTitle: String
     ) {
-        // TODO: [Misael] Update data
         digitalPDPAnalytics.impressionActivePackageCheckBalance(
             DigitalPDPCategoryUtil.getCategoryName(categoryId),
             operator.attributes.name,
             loyaltyStatus,
             bottomSheetTitle,
-            "",
-            "",
+            model.productId,
+            model.title,
             position,
-            "",
+            model.productPrice.toString(),
             userSession.userId
         )
     }
@@ -1628,16 +1627,15 @@ class DigitalPDPPulsaFragment :
         position: Int,
         bottomSheetTitle: String
     ) {
-        // TODO: [Misael] Update data
         digitalPDPAnalytics.clickBeliLagiActivePackage(
             DigitalPDPCategoryUtil.getCategoryName(categoryId),
             operator.attributes.name,
             loyaltyStatus,
             bottomSheetTitle,
-            "",
-            "",
+            model.productId,
+            model.title,
             position,
-            "",
+            model.productPrice.toString(),
             userSession.userId
         )
     }

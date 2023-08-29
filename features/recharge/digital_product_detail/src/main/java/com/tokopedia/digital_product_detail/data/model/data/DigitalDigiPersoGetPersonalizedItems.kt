@@ -97,7 +97,11 @@ data class DigitalPersoProduct(
     @SerializedName("applink")
     val applink: String,
     @SerializedName("buttonText")
-    val buttonText: String
+    val buttonText: String,
+    @SerializedName("productID")
+    val productId: String = "",
+    @SerializedName("price")
+    val price: Double = 0.0
 )
 
 data class TrackingData(

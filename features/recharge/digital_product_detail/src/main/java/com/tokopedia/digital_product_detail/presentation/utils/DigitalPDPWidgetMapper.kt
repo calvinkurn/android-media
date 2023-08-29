@@ -64,7 +64,9 @@ object DigitalPDPWidgetMapper {
                     subtitle = it.subtitle,
                     subtitleColor = it.subtitleColor,
                     buttonText = it.buttonText,
-                    applink = it.applink
+                    applink = it.applink,
+                    productId = it.productId,
+                    productPrice = it.productPrice
                 )
             }
         )

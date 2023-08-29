@@ -72,6 +72,8 @@ class GetRechargeCheckBalanceUseCase @Inject constructor(
                     subtitleColor
                     applink
                     buttonText
+                    productID
+                    price
                   }
                  }
               }

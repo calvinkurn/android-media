@@ -32,5 +32,7 @@ data class DigitalCheckBalanceProductModel(
     val subtitle: String = "",
     val subtitleColor: String = "",
     val applink: String = "",
-    val buttonText: String = ""
+    val buttonText: String = "",
+    val productId: String = "",
+    val productPrice: Double = 0.0
 )

@@ -66,7 +66,9 @@ class DigitalPersoMapper @Inject constructor() {
                 subtitle = it.subtitle,
                 subtitleColor = it.subtitleColor,
                 applink = it.applink,
-                buttonText = it.buttonText
+                buttonText = it.buttonText,
+                productId = it.productId,
+                productPrice = it.price
             )
         } ?: emptyList()
     }
