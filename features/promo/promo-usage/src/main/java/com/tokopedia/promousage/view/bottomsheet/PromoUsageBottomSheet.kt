@@ -717,8 +717,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                     .replace("{{benefit_amount}}", formattedTotalVoucherAmount)
                     .replace("{{promo_count}}", promoSavingInfo.selectedPromoCount.toString())
             tpgTotalSavings.text = HtmlLinkHelper(root.context, text).spannedString
-            clSavingInfo.isVisible = promoSavingInfo.selectedPromoCount > 0
-                && promoSavingInfo.totalSelectedPromoBenefitAmount > 0
+            clSavingInfo.isVisible = promoSavingInfo.isVisible
         }
     }
 

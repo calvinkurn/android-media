@@ -1312,12 +1312,18 @@ internal class PromoUsageViewModel @Inject constructor(
         items: List<DelegateAdapterItem>,
         previousSavingInfo: PromoSavingInfo? = null
     ): PromoSavingInfo {
-        val selectedPromoCount = items.getSelectedPromoCodes().size
+        val recommendedPromoCodes = items.getRecommendationItem()?.codes ?: listOf()
+        val selectedPromoCodes = items.getSelectedPromoCodes()
         val totalSelectedPromoBenefit = items.sumSelectedPromoBenefit()
+
+        val hasOtherNonRecommendedCodes = selectedPromoCodes
+            .subtract(recommendedPromoCodes.toSet())
+            .isNotEmpty()
         return PromoSavingInfo(
-            selectedPromoCount = selectedPromoCount,
+            selectedPromoCount = selectedPromoCodes.size,
             totalSelectedPromoBenefitAmount = totalSelectedPromoBenefit,
-            message = previousSavingInfo?.message ?: ""
+            message = previousSavingInfo?.message ?: "",
+            isVisible = totalSelectedPromoBenefit > 0 && hasOtherNonRecommendedCodes
         )
     }
 
