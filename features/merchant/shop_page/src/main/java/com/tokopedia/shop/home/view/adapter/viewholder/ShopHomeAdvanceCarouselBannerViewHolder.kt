@@ -107,7 +107,7 @@ class ShopHomeAdvanceCarouselBannerViewHolder(
             setHeaderSection()
             setBannerImageCarouselSection()
             setBannerIndicatorSection()
-            setBannerAutoScroll()
+            setAutoScrollOn()
             configColorTheme()
         }
     }
@@ -131,14 +131,6 @@ class ShopHomeAdvanceCarouselBannerViewHolder(
             com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
         )
         textViewTitle?.setTextColor(titleColor)
-    }
-
-    private fun setBannerAutoScroll() {
-        if (isWidgetNameWithAutoScroll()) {
-            setAutoScrollOn()
-        } else {
-            setAutoScrollOff()
-        }
     }
 
     private fun isWidgetNameWithAutoScroll(): Boolean {
