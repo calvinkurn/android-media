@@ -70,7 +70,7 @@ open class BaseCartViewModelTest {
     var instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
     @Before
-    fun setUp() {
+    open fun setUp() {
         Dispatchers.setMain(coroutineTestDispatchers.coroutineDispatcher)
         cartViewModel = CartViewModel(
             getCartRevampV4UseCase, deleteCartUseCase,
@@ -88,7 +88,7 @@ open class BaseCartViewModelTest {
     }
 
     @After
-    fun tearDown() {
+    open fun tearDown() {
         Dispatchers.resetMain()
     }
 }
