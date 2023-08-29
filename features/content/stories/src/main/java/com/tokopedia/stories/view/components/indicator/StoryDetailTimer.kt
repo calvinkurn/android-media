@@ -43,7 +43,7 @@ fun StoryDetailTimer(
     LaunchedEffect(data) {
         when (data.event) {
             StoryDetailItemUiEvent.PAUSE -> anim.stop()
-            StoryDetailItemUiEvent.START -> {
+            StoryDetailItemUiEvent.RESUME -> {
                 delay(100)
                 anim.animateTo(
                     targetValue = TARGET_ANIMATION,

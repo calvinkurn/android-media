@@ -42,8 +42,6 @@ data class StoryDetailsResponseModel(
             val totalProducts: Int,
             @SerializedName("totalProductsFmt")
             val totalProductsFmt: String,
-            @SerializedName("trackingID")
-            val trackingID: String,
             @SerializedName("webLink")
             val webLink: String,
         ) {
@@ -100,6 +98,10 @@ data class StoryDetailsResponseModel(
                 val shareImage: String,
                 @SerializedName("shareTitle")
                 val shareTitle: String,
+                @SerializedName("activityTracker")
+                val activityTracker: String,
+                @SerializedName("templateTracker")
+                val templateTracker: String,
             )
         }
     }

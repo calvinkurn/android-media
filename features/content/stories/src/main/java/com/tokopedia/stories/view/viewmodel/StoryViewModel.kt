@@ -10,7 +10,7 @@ import com.tokopedia.stories.domain.model.StorySource
 import com.tokopedia.stories.utils.getRandomNumber
 import com.tokopedia.stories.view.model.StoryDetailItemUiModel.StoryDetailItemUiEvent
 import com.tokopedia.stories.view.model.StoryDetailItemUiModel.StoryDetailItemUiEvent.PAUSE
-import com.tokopedia.stories.view.model.StoryDetailItemUiModel.StoryDetailItemUiEvent.START
+import com.tokopedia.stories.view.model.StoryDetailItemUiModel.StoryDetailItemUiEvent.RESUME
 import com.tokopedia.stories.view.model.StoryDetailUiModel
 import com.tokopedia.stories.view.model.StoryGroupItemUiModel
 import com.tokopedia.stories.view.model.StoryGroupUiModel
@@ -114,7 +114,7 @@ class StoryViewModel @Inject constructor(
         when {
             newDetailPosition > -1 -> updateStoryDetailData(position = newDetailPosition)
             newGroupPosition > -1 -> handleSetGroup(position = newGroupPosition)
-            else -> updateStoryDetailData(event = START, isReset = true)
+            else -> updateStoryDetailData(event = RESUME, isReset = true)
         }
     }
 
@@ -123,7 +123,7 @@ class StoryViewModel @Inject constructor(
     }
 
     private fun handleOnResumeStory() {
-        updateStoryDetailData(event = START)
+        updateStoryDetailData(event = RESUME)
     }
 
     private fun handleSetGroup(position: Int) {

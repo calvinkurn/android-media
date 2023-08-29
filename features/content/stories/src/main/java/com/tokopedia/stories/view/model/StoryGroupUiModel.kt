@@ -28,7 +28,7 @@ data class StoryDetailItemUiModel(
 ) {
 
     enum class StoryDetailItemUiEvent {
-        PAUSE, START,
+        PAUSE, RESUME,
     }
 
 }

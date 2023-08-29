@@ -33,7 +33,6 @@ class StoryDetailsUseCase @Inject constructor(
                stories{
                     id
                     slug
-                    trackingID
                     category
                     author {
                       id
@@ -63,6 +62,8 @@ class StoryDetailsUseCase @Inject constructor(
                       editable
                     }
                     meta {
+                      activityTracker
+                      templateTracker
                       shareTitle
                       shareDescription
                       shareImage
