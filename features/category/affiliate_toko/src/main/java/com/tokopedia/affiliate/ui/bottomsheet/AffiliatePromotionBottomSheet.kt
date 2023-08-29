@@ -48,6 +48,7 @@ import com.tokopedia.affiliate_toko.databinding.AffiliatePromotionBottomSheetBin
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -152,6 +153,10 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
 
         private val COLLECTION_MARGIN_1_5 = 1.5f.dp.value.toInt()
         private val COLLECTION_MARGIN_3 = 1.5f.dp.value.toInt()
+        private const val COLLECTION_PARAM_SIZE = 4
+        private const val INDEX_ONE = 1
+        private const val INDEX_TWO = 2
+        private const val INDEX_THREE = 3
         fun newInstance(
             params: AffiliatePromotionBottomSheetParams,
             bottomSheetType: SheetType,
@@ -330,21 +335,21 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
     }
 
     private fun getCollectionGridParams(size: Int): Array<GridLayout.LayoutParams?> {
-        val params = arrayOfNulls<GridLayout.LayoutParams>(4)
+        val params = arrayOfNulls<GridLayout.LayoutParams>(COLLECTION_PARAM_SIZE)
         when (size) {
             TOTAL_IMG_2 -> {
                 val param1: GridLayout.LayoutParams =
                     GridLayout.LayoutParams(binding?.imgCollection1?.layoutParams)
                 param1.rowSpec = GridLayout.spec(SPEC_0, SPEC_2, 1.0F)
                 param1.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1.0F)
-                param1.setMargins(0, 0, COLLECTION_MARGIN_3, 0)
+                param1.setMargins(Int.ZERO, Int.ZERO, COLLECTION_MARGIN_3, 0)
 
                 val param2: GridLayout.LayoutParams =
                     GridLayout.LayoutParams(binding?.imgCollection2?.layoutParams)
                 param2.rowSpec = GridLayout.spec(SPEC_0, SPEC_2, 1.0F)
                 param2.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1.0F)
-                params[0] = param1
-                params[1] = param2
+                params[Int.ZERO] = param1
+                params[INDEX_ONE] = param2
             }
 
             TOTAL_IMG_3 -> {
@@ -352,22 +357,22 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                     GridLayout.LayoutParams(binding?.imgCollection1?.layoutParams)
                 param1.rowSpec = GridLayout.spec(SPEC_0, SPEC_2, 1.0F)
                 param1.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1.0F)
-                param1.setMargins(0, 0, COLLECTION_MARGIN_3, COLLECTION_MARGIN_1_5)
+                param1.setMargins(Int.ZERO, Int.ZERO, COLLECTION_MARGIN_3, COLLECTION_MARGIN_1_5)
 
                 val param2: GridLayout.LayoutParams =
                     GridLayout.LayoutParams(binding?.imgCollection2?.layoutParams)
                 param2.rowSpec = GridLayout.spec(SPEC_0, 1, 1.0F)
                 param2.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1.0F)
-                param2.setMargins(0, 0, 0, COLLECTION_MARGIN_3)
+                param2.setMargins(Int.ZERO, Int.ZERO, Int.ZERO, COLLECTION_MARGIN_3)
 
                 val param3: GridLayout.LayoutParams =
                     GridLayout.LayoutParams(binding?.imgCollection2?.layoutParams)
                 param3.rowSpec = GridLayout.spec(SPEC_0, 1, 1.0F)
                 param3.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1.0F)
 
-                params[0] = param1
-                params[1] = param2
-                params[2] = param3
+                params[Int.ZERO] = param1
+                params[INDEX_ONE] = param2
+                params[INDEX_THREE] = param3
             }
 
             TOTAL_IMG_4 -> {
@@ -375,13 +380,13 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                     GridLayout.LayoutParams(binding?.imgCollection1?.layoutParams)
                 param1.rowSpec = GridLayout.spec(SPEC_0, 1, 1.0F)
                 param1.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1.0F)
-                param1.setMargins(0, 0, COLLECTION_MARGIN_1_5, COLLECTION_MARGIN_1_5)
+                param1.setMargins(Int.ZERO, Int.ZERO, COLLECTION_MARGIN_1_5, COLLECTION_MARGIN_1_5)
 
                 val param2: GridLayout.LayoutParams =
                     GridLayout.LayoutParams(binding?.imgCollection2?.layoutParams)
                 param2.rowSpec = GridLayout.spec(SPEC_0, 1, 1.0F)
                 param2.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1.0F)
-                param2.setMargins(COLLECTION_MARGIN_1_5, 0, 0, COLLECTION_MARGIN_1_5)
+                param2.setMargins(COLLECTION_MARGIN_1_5, Int.ZERO, Int.ZERO, COLLECTION_MARGIN_1_5)
 
                 val param3: GridLayout.LayoutParams =
                     GridLayout.LayoutParams(binding?.imgCollection3?.layoutParams)
@@ -391,7 +396,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                     COLLECTION_MARGIN_1_5,
                     COLLECTION_MARGIN_1_5,
                     COLLECTION_MARGIN_1_5,
-                    0
+                    Int.ZERO
                 )
 
                 val param4: GridLayout.LayoutParams =
@@ -402,12 +407,12 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                     COLLECTION_MARGIN_1_5,
                     COLLECTION_MARGIN_1_5,
                     COLLECTION_MARGIN_1_5,
-                    0
+                    Int.ZERO
                 )
-                params[0] = param1
-                params[1] = param2
-                params[2] = param3
-                params[3] = param4
+                params[Int.ZERO] = param1
+                params[INDEX_ONE] = param2
+                params[INDEX_TWO] = param3
+                params[INDEX_THREE] = param4
             }
         }
         return params

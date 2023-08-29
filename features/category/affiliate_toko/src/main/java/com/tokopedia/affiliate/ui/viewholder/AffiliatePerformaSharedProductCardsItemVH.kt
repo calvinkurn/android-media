@@ -25,6 +25,7 @@ import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePerformaSharedPr
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateProductCardMetricsModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -85,6 +86,10 @@ class AffiliatePerformaSharedProductCardsItemVH(
         private const val KOLEKSI_ITEM = 4
         private val COLLECTION_MARGIN_1_5 = 1.5f.dp.value.toInt()
         private val COLLECTION_MARGIN_3 = 1.5f.dp.value.toInt()
+        private const val COLLECTION_PARAM_SIZE = 4
+        private const val INDEX_ONE = 1
+        private const val INDEX_TWO = 2
+        private const val INDEX_THREE = 3
     }
 
     override fun bind(element: AffiliatePerformaSharedProductCardsModel?) {
@@ -207,7 +212,7 @@ class AffiliatePerformaSharedProductCardsItemVH(
     }
 
     private fun getCollectionGridParams(size: Int): Array<GridLayout.LayoutParams?> {
-        val params = arrayOfNulls<GridLayout.LayoutParams>(4)
+        val params = arrayOfNulls<GridLayout.LayoutParams>(COLLECTION_PARAM_SIZE)
         when (size) {
             TOTAL_IMG_2 -> {
                 val param1: GridLayout.LayoutParams =
@@ -220,8 +225,8 @@ class AffiliatePerformaSharedProductCardsItemVH(
                     GridLayout.LayoutParams(imgCollection2.layoutParams)
                 param2.rowSpec = GridLayout.spec(SPEC_0, SPEC_2, 1.0F)
                 param2.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1.0F)
-                params[0] = param1
-                params[1] = param2
+                params[Int.ZERO] = param1
+                params[INDEX_ONE] = param2
             }
 
             TOTAL_IMG_3 -> {
@@ -242,9 +247,9 @@ class AffiliatePerformaSharedProductCardsItemVH(
                 param3.rowSpec = GridLayout.spec(SPEC_0, 1, 1.0F)
                 param3.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1.0F)
 
-                params[0] = param1
-                params[1] = param2
-                params[2] = param3
+                params[Int.ZERO] = param1
+                params[INDEX_ONE] = param2
+                params[INDEX_TWO] = param3
             }
 
             TOTAL_IMG_4 -> {
@@ -252,13 +257,13 @@ class AffiliatePerformaSharedProductCardsItemVH(
                     GridLayout.LayoutParams(imgCollection1.layoutParams)
                 param1.rowSpec = GridLayout.spec(SPEC_0, 1, 1.0F)
                 param1.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1.0F)
-                param1.setMargins(0, 0, COLLECTION_MARGIN_1_5, COLLECTION_MARGIN_1_5)
+                param1.setMargins(Int.ZERO, Int.ZERO, COLLECTION_MARGIN_1_5, COLLECTION_MARGIN_1_5)
 
                 val param2: GridLayout.LayoutParams =
                     GridLayout.LayoutParams(imgCollection2.layoutParams)
                 param2.rowSpec = GridLayout.spec(SPEC_0, 1, 1.0F)
                 param2.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1.0F)
-                param2.setMargins(COLLECTION_MARGIN_1_5, 0, 0, COLLECTION_MARGIN_1_5)
+                param2.setMargins(COLLECTION_MARGIN_1_5, Int.ZERO, Int.ZERO, COLLECTION_MARGIN_1_5)
 
                 val param3: GridLayout.LayoutParams =
                     GridLayout.LayoutParams(imgCollection3.layoutParams)
@@ -268,7 +273,7 @@ class AffiliatePerformaSharedProductCardsItemVH(
                     COLLECTION_MARGIN_1_5,
                     COLLECTION_MARGIN_1_5,
                     COLLECTION_MARGIN_1_5,
-                    0
+                    Int.ZERO
                 )
 
                 val param4: GridLayout.LayoutParams =
@@ -279,12 +284,12 @@ class AffiliatePerformaSharedProductCardsItemVH(
                     COLLECTION_MARGIN_1_5,
                     COLLECTION_MARGIN_1_5,
                     COLLECTION_MARGIN_1_5,
-                    0
+                    Int.ZERO
                 )
-                params[0] = param1
-                params[1] = param2
-                params[2] = param3
-                params[3] = param4
+                params[Int.ZERO] = param1
+                params[INDEX_ONE] = param2
+                params[INDEX_TWO] = param3
+                params[INDEX_THREE] = param4
             }
         }
         return params
