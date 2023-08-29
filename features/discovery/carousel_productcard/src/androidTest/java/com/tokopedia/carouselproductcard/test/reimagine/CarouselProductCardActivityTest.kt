@@ -1,17 +1,20 @@
-package com.tokopedia.carouselproductcard.test
+package com.tokopedia.carouselproductcard.test.reimagine
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.carouselproductcard.CarouselProductCardView
-import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.carouselproductcard.reimagine.CarouselProductCardModel
+import com.tokopedia.carouselproductcard.reimagine.CarouselProductCardView
+import com.tokopedia.carouselproductcard.reimagine.grid.CarouselProductCardGridModel
+import com.tokopedia.carouselproductcard.test.R
+import com.tokopedia.productcard.reimagine.ProductCardModel
 
-
-internal class CarouselProductCardListActivityTest: AppCompatActivity() {
+class CarouselProductCardActivityTest: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,21 +48,38 @@ internal class CarouselProductCardListActivityTest: AppCompatActivity() {
         }
     }
 
-    internal class ViewHolder(itemView: View, private val recycledViewPool: RecyclerView.RecycledViewPool): RecyclerView.ViewHolder(itemView) {
+    internal class ViewHolder(
+        itemView: View,
+        private val recycledViewPool: RecyclerView.RecycledViewPool,
+    ): RecyclerView.ViewHolder(itemView) {
 
         companion object {
-            val LAYOUT = R.layout.carousel_product_card_item_test_layout
+            val LAYOUT = R.layout.carousel_product_card_reimagine_item_test_layout
         }
 
         private val item: CarouselProductCardView? by lazy {
             itemView as? CarouselProductCardView
         }
 
-        fun bind(productCardModelList: List<ProductCardModel>) {
-            item?.bindCarouselProductCardViewList(
-                    productCardModelList = productCardModelList,
-                    recyclerViewPool = recycledViewPool,
+        fun bind(testCase: CarouselProductCardTestCase) {
+            val carouselProductCardGridModels =
+                testCase.productCardModelList.map(::carouselProductCardGridModel) +
+                    listOfNotNull(testCase.viewAllCard)
+
+            item?.bind(CarouselProductCardModel(
+                itemList = carouselProductCardGridModels,
+                recycledViewPool = recycledViewPool,
+            ))
+        }
+
+        private fun carouselProductCardGridModel(productCardModel: ProductCardModel) =
+            CarouselProductCardGridModel(
+                productCardModel = productCardModel,
+                onClick = { onClick(productCardModel) },
             )
+
+        private fun onClick(productCardModel: ProductCardModel) {
+            Toast.makeText(itemView.context, productCardModel.name, Toast.LENGTH_SHORT).show()
         }
 
         fun recycle() {

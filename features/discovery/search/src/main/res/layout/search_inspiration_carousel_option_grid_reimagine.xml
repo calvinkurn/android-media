@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.productcard.reimagine.ProductCardGridCarouselView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/inspirationCarouselProductCard"
+    android:layout_width="@dimen/product_card_reimagine_carousel_width"
+    android:layout_height="match_parent" />

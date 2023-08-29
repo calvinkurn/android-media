@@ -16,6 +16,8 @@ import com.tokopedia.productcard.test.list.ProductCardListActivityTest
 import com.tokopedia.productcard.test.list.ProductCardListViewStubActivityTest
 import com.tokopedia.productcard.test.list.productCardListTestData
 import com.tokopedia.productcard.test.list.productCardListViewStubTestData
+import com.tokopedia.productcard.test.reimagine.ProductCardGridCarouselActivityTest
+import com.tokopedia.productcard.test.reimagine.productCardReimagineCarouselGridTestData
 import com.tokopedia.productcard.test.utils.productCardInPosition
 import com.tokopedia.test.application.annotations.UiTest
 import org.hamcrest.Matcher
@@ -25,14 +27,14 @@ import org.junit.Test
 internal class ProductCardTest {
 
     private lateinit var recyclerViewViewInteraction: ViewInteraction
-    private lateinit var productCardModelMatcherData: List<ProductCardModelMatcher>
+    private lateinit var productCardModelMatcherData: List<Map<Int, Matcher<View?>>>
 
     @Test
     fun testProductCardGrid() {
         startTestActivity(ProductCardGridActivityTest::class.java.name)
 
         recyclerViewViewInteraction = onView(withId(R.id.productCardGridTestRecyclerView))
-        productCardModelMatcherData = productCardGridTestData
+        productCardModelMatcherData = productCardGridTestData.map { it.productCardMatcher }
 
         startTest()
     }
@@ -42,7 +44,7 @@ internal class ProductCardTest {
         startTestActivity(ProductCardListActivityTest::class.java.name)
 
         recyclerViewViewInteraction = onView(withId(R.id.productCardListTestRecyclerView))
-        productCardModelMatcherData = productCardListTestData
+        productCardModelMatcherData = productCardListTestData.map { it.productCardMatcher }
 
         startTest()
     }
@@ -52,7 +54,7 @@ internal class ProductCardTest {
         startTestActivity(ProductCardGridViewStubActivityTest::class.java.name)
 
         recyclerViewViewInteraction = onView(withId(R.id.productCardGridTestRecyclerView))
-        productCardModelMatcherData = productCardGridViewStubTestData
+        productCardModelMatcherData = productCardGridViewStubTestData.map { it.productCardMatcher }
 
         startTest()
     }
@@ -62,7 +64,17 @@ internal class ProductCardTest {
         startTestActivity(ProductCardListViewStubActivityTest::class.java.name)
 
         recyclerViewViewInteraction = onView(withId(R.id.productCardListTestRecyclerView))
-        productCardModelMatcherData = productCardListViewStubTestData
+        productCardModelMatcherData = productCardListViewStubTestData.map { it.productCardMatcher }
+
+        startTest()
+    }
+
+    @Test
+    fun testProductCardReimagineGridCarousel() {
+        startTestActivity(ProductCardGridCarouselActivityTest::class.java.name)
+
+        recyclerViewViewInteraction = onView(withId(R.id.productCardReimagineGridCarouselTestRecyclerView))
+        productCardModelMatcherData = productCardReimagineCarouselGridTestData.map { it.second }
 
         startTest()
     }
@@ -78,7 +90,7 @@ internal class ProductCardTest {
 
     private fun startTest() {
         productCardModelMatcherData.forEachIndexed { index, productCardModelMatcher ->
-            recyclerViewViewInteraction.checkProductCardAtPosition(index, productCardModelMatcher.productCardMatcher)
+            recyclerViewViewInteraction.checkProductCardAtPosition(index, productCardModelMatcher)
         }
     }
 
