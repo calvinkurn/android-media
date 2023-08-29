@@ -612,6 +612,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
 
     private fun clearIcons() {
         binding?.reviewDetailHeader?.rightContentView?.removeAllViews()
+        binding?.reviewDetailHeader?.rightIcons?.clear()
     }
 
     private fun onSuccessEditForm() {
