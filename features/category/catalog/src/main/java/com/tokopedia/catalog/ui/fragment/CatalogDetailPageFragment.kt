@@ -52,10 +52,6 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener {
         )
     }
 
-    private val widgets by lazy {
-        arrayListOf<Visitable<*>>()
-    }
-
     companion object {
         private const val ARG_EXTRA_CATALOG_ID = "ARG_EXTRA_CATALOG_ID"
         private const val COLOR_VALUE_MAX = 255
@@ -95,66 +91,6 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener {
         viewModel.getProductCatalog(
             "73177",
             "73177", "213079258", "android")
-
-        view.postDelayed( {
-            widgets.add(TrustMakerUiModel.dummyTrustMaker())
-            widgets.add(
-                PanelImageUiModel(
-                    "1", "2", "2",
-                    content = listOf(
-                        PanelImageUiModel.PanelImageItemData(
-                            imageUrl = "https://images.tokopedia.net/android/shop_page/image_product_empty_state_buyer.png",
-                            highlight = "",
-                            title = "asd",
-                            description = "ad"
-                        ),
-                        PanelImageUiModel.PanelImageItemData(
-                            imageUrl = "https://placekitten.com/200/300", highlight = "",
-                            title = "asd22", description = "ad22"
-                        ),
-                    )
-                )
-            )
-            widgets.add(
-                PanelImageUiModel(
-                    "1", "2", "2",
-                    content = listOf(
-                        PanelImageUiModel.PanelImageItemData(
-                            imageUrl = "https://images.tokopedia.net/android/shop_page/image_product_empty_state_buyer.png",
-                            highlight = "",
-                            title = "asd",
-                            description = "ad"
-                        ),
-                        PanelImageUiModel.PanelImageItemData(
-                            imageUrl = "https://placekitten.com/200/300", highlight = "",
-                            title = "asd22", description = "ad22"
-                        ),
-                    )
-                )
-            )
-            widgets.add(
-                PanelImageUiModel(
-                    "1", "2", "2",
-                    content = listOf(
-                        PanelImageUiModel.PanelImageItemData(
-                            imageUrl = "https://images.tokopedia.net/android/shop_page/image_product_empty_state_buyer.png",
-                            highlight = "",
-                            title = "asd",
-                            description = "ad"
-                        ),
-                        PanelImageUiModel.PanelImageItemData(
-                            imageUrl = "https://placekitten.com/200/300", highlight = "",
-                            title = "asd22", description = "ad22"
-                        ),
-                    )
-                )
-            )
-            widgets.add(SliderImageTextUiModel.dummySliderImageText())
-            widgets.add(AccordionInformationUiModel.dummyAccordion())
-
-            widgetAdapter.addMoreData(widgets)
-        }, 5000)
-
     }
 
     override fun onNavBackClicked() {

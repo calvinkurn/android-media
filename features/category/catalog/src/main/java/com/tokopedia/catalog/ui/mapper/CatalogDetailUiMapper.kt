@@ -9,9 +9,11 @@ import com.tokopedia.catalog.ui.model.CatalogDetailUiModel
 import com.tokopedia.catalog.ui.model.NavigationProperties
 import com.tokopedia.catalog.ui.model.PriceCtaProperties
 import com.tokopedia.catalog.ui.model.WidgetTypes
+import com.tokopedia.catalogcommon.uimodel.AccordionInformationUiModel
 import com.tokopedia.catalogcommon.uimodel.BaseCatalogUiModel
 import com.tokopedia.catalogcommon.uimodel.DummyUiModel
 import com.tokopedia.catalogcommon.uimodel.HeroBannerUiModel
+import com.tokopedia.catalogcommon.uimodel.SliderImageTextUiModel
 import com.tokopedia.catalogcommon.uimodel.StickyNavigationUiModel
 import com.tokopedia.catalogcommon.uimodel.TopFeaturesUiModel
 import com.tokopedia.catalogcommon.uimodel.TrustMakerUiModel
@@ -27,28 +29,28 @@ class CatalogDetailUiMapper @Inject constructor(
     fun mapToWidgetVisitables(
         remoteModel: CatalogResponseData.CatalogGetDetailModular
     ): List<Visitable<*>>{
+        val isDarkMode = remoteModel.globalStyle?.darkMode.orFalse()
         return remoteModel.layouts?.filter {
             !it.data?.style?.isHidden.orTrue()
         }?.map {
             when (it.type) {
                 WidgetTypes.CATALOG_HERO.type -> it.mapToHeroBanner()
                 WidgetTypes.CATALOG_FEATURE_TOP.type -> it.mapToTopFeature(remoteModel)
-                WidgetTypes.CATALOG_TRUSTMAKER.type -> it.mapToTrustMaker()
+                WidgetTypes.CATALOG_TRUSTMAKER.type -> it.mapToTrustMaker(isDarkMode)
                 WidgetTypes.CATALOG_CHARACTERISTIC.type -> { DummyUiModel(content = it.name)}
                 WidgetTypes.CATALOG_BANNER_SINGLE.type -> { DummyUiModel(content = it.name)}
                 WidgetTypes.CATALOG_BANNER_DOUBLE.type -> { DummyUiModel(content = it.name)}
                 WidgetTypes.CATALOG_PANEL_IMAGE.type -> { DummyUiModel(content = it.name)}
                 WidgetTypes.CATALOG_NAVIGATION.type -> it.mapToStickyNavigation()
-                WidgetTypes.CATALOG_SLIDER_IMAGE.type -> { DummyUiModel(content = it.name)}
+                WidgetTypes.CATALOG_SLIDER_IMAGE.type -> it.mapToSliderImageText(isDarkMode)
                 WidgetTypes.CATALOG_TEXT.type -> { DummyUiModel(content = it.name)}
                 WidgetTypes.CATALOG_REVIEW_EXPERT.type -> { DummyUiModel(content = it.name)}
                 WidgetTypes.CATALOG_FEATURE_SUPPORT.type -> { DummyUiModel(content = it.name)}
-                WidgetTypes.CATALOG_ACCORDION.type -> { DummyUiModel(content = it.name)}
+                WidgetTypes.CATALOG_ACCORDION.type -> it.mapToAccordion(isDarkMode)
                 WidgetTypes.CATALOG_COLUMN_INFO.type -> { DummyUiModel(content = it.name)}
                 WidgetTypes.CATALOG_COMPARISON.type -> { DummyUiModel(content = it.name)}
                 WidgetTypes.CATALOG_SIMILAR_PRODUCT.type -> { DummyUiModel(content = it.name)}
                 WidgetTypes.CATALOG_REVIEW_BUYER.type -> { DummyUiModel(content = it.name)}
-                WidgetTypes.CATALOG_CTA_PRICE.type -> { DummyUiModel(content = it.name)}
                 else -> { DummyUiModel(content = it.name) }
             }.applyGlobalProperies(remoteModel, it)
         }.orEmpty()
@@ -74,7 +76,7 @@ class CatalogDetailUiMapper @Inject constructor(
             com.tokopedia.unifycomponents.R.color.Unify_Static_Black
         }
         return remoteModel.layouts?.firstOrNull {
-            it.type == "catalog_cta_price"
+            it.type == WidgetTypes.CATALOG_CTA_PRICE.type
         }?.data?.run {
             val marketPrice = priceCta.marketPrice.firstOrNull()
             PriceCtaProperties(
@@ -154,7 +156,10 @@ class CatalogDetailUiMapper @Inject constructor(
         )
     }
 
-    private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToTrustMaker(): TrustMakerUiModel {
+    private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToTrustMaker(
+        isDarkMode: Boolean
+    ): TrustMakerUiModel {
+        val textColor = getTextColor(isDarkMode)
         return TrustMakerUiModel(
             items = data?.trustmaker.orEmpty().map {
                 TrustMakerUiModel.ItemTrustMakerUiModel(
@@ -162,8 +167,45 @@ class CatalogDetailUiMapper @Inject constructor(
                     icon = it.imageUrl.orEmpty(),
                     title = it.title.orEmpty(),
                     subTitle = it.subtitle.orEmpty(),
-                    textColorTitle = Color.BLACK,
-                    textColorSubTitle = Color.BLACK
+                    textColorTitle = textColor,
+                    textColorSubTitle = textColor
+                )
+            }
+        )
+    }
+
+    private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToSliderImageText(
+        isDarkMode: Boolean
+    ): SliderImageTextUiModel {
+        val textColor = getTextColor(isDarkMode)
+        return SliderImageTextUiModel(
+            items = data?.imageSlider.orEmpty().map {
+                SliderImageTextUiModel.ItemSliderImageText(
+                    image = it.imageUrl.orEmpty(),
+                    textHighlight = it.subtitle.orEmpty(),
+                    textTitle = it.title.orEmpty(),
+                    textDescription = it.desc.orEmpty(),
+                    textHighlightColor = textColor,
+                    textTitleColor = textColor,
+                    textDescriptionColor = textColor
+                )
+            }
+        )
+    }
+
+    private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToAccordion(
+        isDarkMode: Boolean
+    ): AccordionInformationUiModel {
+        val textColor = getTextColor(isDarkMode)
+        return AccordionInformationUiModel(
+            titleWidget = data?.section?.title.orEmpty(),
+            contents = data?.accordion.orEmpty().map {
+                AccordionInformationUiModel.ItemAccordionInformationUiModel(
+                    title = it.title.orEmpty(),
+                    description = it.desc.orEmpty(),
+                    arrowColor = textColor,
+                    textTitleColor = textColor,
+                    textDescriptionColor = textColor
                 )
             }
         )
