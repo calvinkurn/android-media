@@ -3,7 +3,6 @@ package com.tokopedia.feedplus.browse.di
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.feedplus.browse.presentation.FeedBrowseActivity
-import com.tokopedia.feedplus.browse.presentation.FeedBrowseFragment
 import dagger.Component
 
 /**
@@ -14,13 +13,12 @@ import dagger.Component
     modules = [
         FeedBrowseModule::class,
         FeedBrowseViewModelModule::class,
-        FeedBrowseRepositoryModule::class
+        FeedBrowseRepositoryModule::class,
+        FeedBrowseFragmentModule::class
     ],
     dependencies = [BaseAppComponent::class]
 )
 interface FeedBrowseComponent {
 
     fun inject(activity: FeedBrowseActivity)
-
-    fun inject(fragment: FeedBrowseFragment)
 }
