@@ -71,10 +71,10 @@ import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.linker.model.LinkerData.PRODUCT_TYPE
-import com.tokopedia.linker.utils.AffiliateLinkType
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.linker.model.LinkerData.PRODUCT_TYPE
+import com.tokopedia.linker.utils.AffiliateLinkType
 import com.tokopedia.logisticCommon.ui.DelayedEtaBottomSheetFragment
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
@@ -120,8 +120,7 @@ open class BuyerOrderDetailFragment :
     OrderResolutionViewHolder.OrderResolutionListener,
     ProductListToggleViewHolder.Listener,
     PofRefundInfoViewHolder.Listener,
-    PartialProductItemViewHolder.ShareProductBottomSheetListener {
-    PofRefundInfoViewHolder.Listener,
+    PartialProductItemViewHolder.ShareProductBottomSheetListener,
     ScpRewardsMedalTouchPointWidgetViewHolder.ScpRewardsMedalTouchPointWidgetListener,
     OwocInfoViewHolder.Listener {
 
