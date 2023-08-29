@@ -3,7 +3,9 @@ package com.tokopedia.topchat.chatroom.view.activity.robot.replybubble
 import android.view.View
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.activity.robot.replybubble.ReplyBubbleMatcher.matchReplyBoxChildWithId
@@ -56,7 +58,8 @@ object ReplyBubbleResult {
     ) {
         onView(
             withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
-                position, viewId
+                position,
+                viewId
             )
         ).check(matches(matcher))
     }
@@ -91,4 +94,18 @@ object ReplyBubbleResult {
         ).check(matches(matcher))
     }
 
+    fun assertLongClickMenu() {
+        onView(ViewMatchers.withId(R.id.rv_menu)).check(
+            matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE))
+        )
+    }
+
+    fun assertMsgBubbleAt(position: Int, matcher: Matcher<in View>) {
+        onView(
+            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
+                position,
+                R.id.tvMessage
+            )
+        ).check(matches(matcher))
+    }
 }

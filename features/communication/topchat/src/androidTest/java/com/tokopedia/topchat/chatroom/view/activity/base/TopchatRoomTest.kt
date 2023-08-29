@@ -565,12 +565,6 @@ abstract class TopchatRoomTest {
         ).check(matches(visibilityMatcher))
     }
 
-    protected fun assertLongClickMenu(matcher: Matcher<in View>) {
-        onView(withId(R.id.rv_menu)).check(
-            matches(matcher)
-        )
-    }
-
     protected fun assertChatMenuVisibility(visibilityMatcher: Matcher<in View>) {
         onView(withId(R.id.fl_chat_menu)).check(
             matches(visibilityMatcher)
@@ -657,15 +651,6 @@ abstract class TopchatRoomTest {
                 R.id.tp_header_cta
             )
         ).perform(click())
-    }
-
-    protected fun assertMsgBubbleAt(position: Int, matcher: Matcher<in View>) {
-        onView(
-            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
-                position,
-                R.id.tvMessage
-            )
-        ).check(matches(matcher))
     }
 
     protected fun assertChatRecyclerview(matcher: Matcher<in View>) {

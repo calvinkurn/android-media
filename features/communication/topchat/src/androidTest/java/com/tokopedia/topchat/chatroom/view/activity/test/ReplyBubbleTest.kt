@@ -1,4 +1,4 @@
-package com.tokopedia.topchat.chatroom.view.activity
+package com.tokopedia.topchat.chatroom.view.activity.test
 
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -11,6 +11,8 @@ import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.activity.robot.composeAreaRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.generalResult
 import com.tokopedia.topchat.chatroom.view.activity.robot.generalRobot
+import com.tokopedia.topchat.chatroom.view.activity.robot.replyBubbleResult
+import com.tokopedia.topchat.chatroom.view.activity.robot.replyBubbleRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.replybubble.ReplyBubbleResult
 import com.tokopedia.topchat.chatroom.view.activity.robot.replybubble.ReplyBubbleRobot
 import com.tokopedia.topchat.chatroom.view.onboarding.ReplyBubbleOnBoarding.Companion.KEY_REPLY_BUBBLE_ONBOARDING
@@ -36,10 +38,14 @@ class ReplyBubbleTest : TopchatRoomTest() {
         launchChatRoomActivity()
 
         // When
-        ReplyBubbleRobot.longClickBubbleAt(1)
+        replyBubbleRobot {
+            longClickBubbleAt(1)
+        }
 
         // Then
-        assertLongClickMenu(isDisplayed())
+        replyBubbleResult {
+            assertLongClickMenu()
+        }
     }
 
     @Test
@@ -49,11 +55,15 @@ class ReplyBubbleTest : TopchatRoomTest() {
         launchChatRoomActivity()
 
         // When
-        ReplyBubbleRobot.longClickBubbleAt(1)
-        ReplyBubbleRobot.clickReplyItemMenu()
+        replyBubbleRobot {
+            longClickBubbleAt(1)
+            clickReplyItemMenu()
+        }
 
         // Then
-        ReplyBubbleResult.hasVisibleReplyCompose()
+        replyBubbleResult {
+            hasVisibleReplyCompose()
+        }
     }
 
     @Test
@@ -63,12 +73,16 @@ class ReplyBubbleTest : TopchatRoomTest() {
         launchChatRoomActivity()
 
         // When
-        ReplyBubbleRobot.longClickBubbleAt(1)
-        ReplyBubbleRobot.clickReplyItemMenu()
-        ReplyBubbleRobot.clickReplyComposeCloseIcon()
+        replyBubbleRobot {
+            longClickBubbleAt(1)
+            clickReplyItemMenu()
+            clickReplyComposeCloseIcon()
+        }
 
         // Then
-        ReplyBubbleResult.hasNoVisibleReplyCompose()
+        replyBubbleResult {
+            hasNoVisibleReplyCompose()
+        }
     }
 
     @Test
@@ -78,18 +92,22 @@ class ReplyBubbleTest : TopchatRoomTest() {
         launchChatRoomActivity()
 
         // When
-        ReplyBubbleRobot.longClickBubbleAt(1)
-        ReplyBubbleRobot.clickReplyItemMenu()
-        ReplyBubbleRobot.clickReplyComposeCloseIcon()
+        replyBubbleRobot {
+            longClickBubbleAt(1)
+            clickReplyItemMenu()
+            clickReplyComposeCloseIcon()
+        }
         composeAreaRobot {
             clickComposeArea()
             typeMessageComposeArea("reply this")
             clickSendBtn()
         }
-        waitForIt(5000)
+        Thread.sleep(5000)
 
         // Then
-        ReplyBubbleResult.hasNoVisibleReplyBubbleAt(0)
+        replyBubbleResult {
+            hasNoVisibleReplyBubbleAt(0)
+        }
     }
 
     @Test
@@ -107,18 +125,22 @@ class ReplyBubbleTest : TopchatRoomTest() {
         generalRobot {
             scrollChatToPosition(lastBubbleIndex)
         }
-
-        ReplyBubbleRobot.longClickBubbleAt(lastBubbleIndex)
-        ReplyBubbleRobot.clickReplyItemMenu()
+        replyBubbleRobot {
+            longClickBubbleAt(lastBubbleIndex)
+            clickReplyItemMenu()
+        }
         generalRobot {
             scrollChatToPosition(0)
         }
-
-        ReplyBubbleRobot.clickReplyCompose()
-        waitForIt(scrollWaitTime)
+        replyBubbleRobot {
+            clickReplyCompose()
+        }
+        Thread.sleep(scrollWaitTime)
 
         // Then
-        assertMsgBubbleAt(lastBubbleIndex, isDisplayed())
+        replyBubbleResult {
+            assertMsgBubbleAt(lastBubbleIndex, isDisplayed())
+        }
     }
 
     @Test
@@ -134,8 +156,10 @@ class ReplyBubbleTest : TopchatRoomTest() {
         generalRobot {
             scrollChatToPosition(lastBubbleIndex)
         }
-        ReplyBubbleRobot.longClickBubbleAt(lastBubbleIndex)
-        ReplyBubbleRobot.clickReplyItemMenu()
+        replyBubbleRobot {
+            longClickBubbleAt(lastBubbleIndex)
+            clickReplyItemMenu()
+        }
         generalRobot {
             scrollChatToPosition(0)
         }
@@ -145,10 +169,14 @@ class ReplyBubbleTest : TopchatRoomTest() {
             clickSendBtn()
         }
         websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
-        ReplyBubbleRobot.clickReplyBubbleAt(0)
+        replyBubbleRobot {
+            clickReplyBubbleAt(0)
+        }
 
         // Then
-        assertMsgBubbleAt(lastBubbleIndex + 1, isDisplayed())
+        replyBubbleResult {
+            assertMsgBubbleAt(lastBubbleIndex + 1, isDisplayed())
+        }
     }
 
     @Test
@@ -158,8 +186,10 @@ class ReplyBubbleTest : TopchatRoomTest() {
         launchChatRoomActivity()
 
         // When
-        ReplyBubbleRobot.longClickBubbleAt(1)
-        ReplyBubbleRobot.clickReplyItemMenu()
+        replyBubbleRobot {
+            longClickBubbleAt(1)
+            clickReplyItemMenu()
+        }
         composeAreaRobot {
             clickComposeArea()
             typeMessageComposeArea("reply this")
@@ -168,7 +198,9 @@ class ReplyBubbleTest : TopchatRoomTest() {
         websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
 
         // Then
-        ReplyBubbleResult.hasVisibleReplyBubbleAt(0)
+        replyBubbleResult {
+            hasVisibleReplyBubbleAt(0)
+        }
     }
 
     @Test
@@ -178,7 +210,9 @@ class ReplyBubbleTest : TopchatRoomTest() {
         launchChatRoomActivity()
 
         // Then
-        ReplyBubbleResult.hasVisibleReplyBubbleAt(0)
+        replyBubbleResult {
+            hasVisibleReplyBubbleAt(0)
+        }
     }
 
     @Test
@@ -188,16 +222,20 @@ class ReplyBubbleTest : TopchatRoomTest() {
         launchChatRoomActivity()
 
         // When
-        ReplyBubbleRobot.longClickBubbleAt(1)
-        ReplyBubbleRobot.clickReplyItemMenu()
+        replyBubbleRobot {
+            longClickBubbleAt(1)
+            clickReplyItemMenu()
+        }
         composeAreaRobot {
             clickStickerIconMenu()
+            clickStickerAtPosition(0)
         }
-        clickStickerAtPosition(0)
         websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
 
         // Then
-        ReplyBubbleResult.hasVisibleReplyBubbleStickerAt(0)
+        replyBubbleResult {
+            hasVisibleReplyBubbleStickerAt(0)
+        }
     }
 
     @Test
@@ -212,7 +250,9 @@ class ReplyBubbleTest : TopchatRoomTest() {
         }
 
         // Then
-        ReplyBubbleResult.hasVisibleReplyBubbleStickerAt(3)
+        replyBubbleResult {
+            hasVisibleReplyBubbleStickerAt(3)
+        }
     }
 
     @Test
@@ -223,8 +263,10 @@ class ReplyBubbleTest : TopchatRoomTest() {
         launchChatRoomActivity()
 
         // When
-        ReplyBubbleRobot.longClickBubbleAt(1)
-        ReplyBubbleRobot.clickReplyItemMenu()
+        replyBubbleRobot {
+            longClickBubbleAt(1)
+            clickReplyItemMenu()
+        }
         composeAreaRobot {
             clickComposeArea()
             typeMessageComposeArea("reply this")
@@ -233,8 +275,10 @@ class ReplyBubbleTest : TopchatRoomTest() {
         websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
 
         // Then
-        ReplyBubbleResult.hasVisibleReplyBubbleAt(0)
-        ReplyBubbleResult.hasReplyBubbleTitleAt(0, roomMetaData.sender.name)
+        replyBubbleResult {
+            hasVisibleReplyBubbleAt(0)
+            hasReplyBubbleTitleAt(0, roomMetaData.sender.name)
+        }
     }
 
     @Test
@@ -245,7 +289,9 @@ class ReplyBubbleTest : TopchatRoomTest() {
 
         // When
         getChatUseCase.response = getChatUseCase.inTheMiddleReplyBubbleResponse
-        ReplyBubbleRobot.clickReplyBubbleAt(0)
+        replyBubbleRobot {
+            clickReplyBubbleAt(0)
+        }
 
         // Then
         assertThat(getChatUseCase.isInTheMiddleOfThePage().value, `is`(true))
@@ -258,7 +304,9 @@ class ReplyBubbleTest : TopchatRoomTest() {
         launchChatRoomActivity()
 
         // When
-        ReplyBubbleRobot.clickReplyBubbleAt(0)
+        replyBubbleRobot {
+            clickReplyBubbleAt(0)
+        }
 
         // Then
         generalResult {
@@ -273,7 +321,9 @@ class ReplyBubbleTest : TopchatRoomTest() {
         launchChatRoomActivity()
 
         // Then
-        ReplyBubbleResult.hasVisibleReplyBubbleImageAt(2)
+        replyBubbleResult {
+            hasVisibleReplyBubbleImageAt(2)
+        }
     }
 
     @Test
@@ -288,7 +338,9 @@ class ReplyBubbleTest : TopchatRoomTest() {
         websocket.simulateResponse(incomingEventWs)
 
         // Then
-        ReplyBubbleResult.hasVisibleReplyBubbleImageAt(0)
+        replyBubbleResult {
+            hasVisibleReplyBubbleImageAt(0)
+        }
     }
 
     private fun getCurrentRoomMetaData(msgId: String, chat: GetExistingChatPojo): RoomMetaData {
