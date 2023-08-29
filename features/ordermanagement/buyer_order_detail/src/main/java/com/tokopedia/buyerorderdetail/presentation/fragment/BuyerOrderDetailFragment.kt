@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.lazy.layout.rememberLazyNearestItemsRangeState
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
@@ -69,6 +68,8 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.linker.model.LinkerData.PRODUCT_TYPE
+import com.tokopedia.linker.utils.AffiliateLinkType
 import com.tokopedia.logisticCommon.ui.DelayedEtaBottomSheetFragment
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
@@ -90,12 +91,9 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.text.currency.StringUtils
-import timber.log.Timber
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
-import kotlin.coroutines.Continuation
-import kotlin.coroutines.resume
 
 open class BuyerOrderDetailFragment :
     BaseDaggerFragment(),
@@ -853,25 +851,54 @@ open class BuyerOrderDetailFragment :
     }
 
     override fun onShareButtonClicked(element: ProductListUiModel.ProductUiModel) {
-        universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
-            init(object: ShareBottomsheetListener {
+        universalShareBottomSheet = UniversalShareBottomSheet.createInstance(view).apply {
+            init(object : ShareBottomsheetListener {
                 override fun onShareOptionClicked(shareModel: ShareModel) {
-                    TODO("Not yet implemented")
                 }
 
                 override fun onCloseOptionClicked() {
+                    dismiss()
                 }
             })
-            setMetaData(element.productName, element.productThumbnailUrl, imageList =  arrayListOf(element.productThumbnailUrl))
             enableDefaultShareIntent()
+
+            val shareString = this@BuyerOrderDetailFragment.getString(R.string.buyer_order_detail_share_text, element.priceText)
+            setShareText("$shareString%s")
+
             setLinkProperties(
                 LinkProperties(
-                    ogTitle = element.productName,
-                    ogDescription = element.addonsListUiModel?.addonsTitle ?: "",
+                    linkerType = PRODUCT_TYPE,
+                    ogTitle = "${element.productName} - ${element.priceText}",
+                    ogDescription = "${element.productName} - ${element.productNote}",
+                    ogImageUrl = element.productThumbnailUrl,
+                    desktopUrl = element.productUrl,
                     id = element.orderDetailId,
-                    desktopUrl = element.productUrl
-                )
+                    )
             )
+            setMetaData(
+                element.productName,
+                element.productThumbnailUrl,
+                imageList = arrayListOf(element.productThumbnailUrl)
+            )
+            val inputShare = AffiliateInput().apply {
+                pageDetail = PageDetail(
+                    pageId = element.shopId ?: "",
+                    pageType = PageType.PDP.value,
+                    siteId = "1",
+                    verticalId = "1"
+                )
+                pageType = PageType.PDP.value
+                product = Product(
+                    element.productId,
+                    element.categoryId,
+                    productPrice = element.price.toString(),
+                    productStatus = "active",
+                    maxProductPrice = "0"
+                )
+                shop = Shop(shopID = element.shopId, shopStatus = 1, isOS = false, isPM = false)
+                affiliateLinkType = AffiliateLinkType.PDP
+            }
+            enableAffiliateCommission(AffiliateInput())
         }
         universalShareBottomSheet?.show(
             requireActivity().supportFragmentManager,
