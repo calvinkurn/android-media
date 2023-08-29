@@ -35,7 +35,13 @@ import com.tokopedia.feedplus.presentation.activityresultcontract.RouteContract
 import com.tokopedia.feedplus.presentation.adapter.FeedPagerAdapter
 import com.tokopedia.feedplus.presentation.adapter.bottomsheet.FeedContentCreationTypeBottomSheet
 import com.tokopedia.feedplus.presentation.customview.UploadInfoView
-import com.tokopedia.feedplus.presentation.model.*
+import com.tokopedia.feedplus.presentation.model.ActiveTabSource
+import com.tokopedia.feedplus.presentation.model.ContentCreationTypeItem
+import com.tokopedia.feedplus.presentation.model.CreateContentType
+import com.tokopedia.feedplus.presentation.model.FeedDataModel
+import com.tokopedia.feedplus.presentation.model.FeedMainEvent
+import com.tokopedia.feedplus.presentation.model.FeedTabModel
+import com.tokopedia.feedplus.presentation.model.MetaModel
 import com.tokopedia.feedplus.presentation.onboarding.ImmersiveFeedOnboarding
 import com.tokopedia.feedplus.presentation.receiver.FeedMultipleSourceUploadReceiver
 import com.tokopedia.feedplus.presentation.receiver.UploadStatus
@@ -47,7 +53,6 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.navigation_common.listener.FragmentListener
 import com.tokopedia.play_common.shortsuploader.analytic.PlayShortsUploadAnalytic
@@ -59,7 +64,6 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.time.DurationUnit
-import kotlin.time.ExperimentalTime
 import kotlin.time.toDuration
 import com.tokopedia.content.common.R as contentCommonR
 
@@ -278,7 +282,6 @@ class FeedBaseFragment :
         }
     }
 
-    @OptIn(ExperimentalTime::class)
     fun showSwipeOnboarding() {
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             delay(COACHMARK_START_DELAY_IN_SEC.toDuration(DurationUnit.SECONDS))
@@ -524,14 +527,11 @@ class FeedBaseFragment :
 
         binding.containerFeedTopNav.btnFeedLive.setOnClickListener {
             feedNavigationAnalytics.eventClickLiveButton()
+            openAppLink.launch(meta.liveApplink)
+        }
 
         binding.containerFeedTopNav.btnFeedBrowse.setOnClickListener {
             openAppLink.launch(meta.browseApplink)
-        }
-
-        binding.btnFeedLive.setOnClickListener {
-            feedNavigationAnalytics.eventClickLiveButton(feedMainViewModel.getCurrentTabType())
-            openAppLink.launch(meta.liveApplink)
         }
 
         binding.containerFeedTopNav.feedUserProfileImage.setOnClickListener {
