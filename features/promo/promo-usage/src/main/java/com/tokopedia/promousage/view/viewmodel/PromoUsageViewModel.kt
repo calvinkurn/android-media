@@ -458,7 +458,8 @@ internal class PromoUsageViewModel @Inject constructor(
         var processedItems = updatedItems
         if (selectedItem.state is PromoItemState.Selected) {
             processedItems = updatedItems.map { item ->
-                if (item is PromoItem && item.code != selectedItem.code) {
+                if (item is PromoItem && item.code != selectedItem.code
+                    && item.state !is PromoItemState.Ineligible) {
                     val result = checkAndSetClashOnSelectionEvent(item, selectedItem)
                     if (!isSelectedPromoCausingClash) {
                         isSelectedPromoCausingClash = result.second
@@ -470,7 +471,8 @@ internal class PromoUsageViewModel @Inject constructor(
             }
         } else if (selectedItem.state is PromoItemState.Normal) {
             processedItems = updatedItems.map { item ->
-                if (item is PromoItem && item.code != selectedItem.code) {
+                if (item is PromoItem && item.code != selectedItem.code
+                    && item.state !is PromoItemState.Ineligible) {
                     val result = checkAndSetClashOnDeselectionEvent(item, selectedItem)
                     return@map result.first
                 } else {
@@ -501,7 +503,7 @@ internal class PromoUsageViewModel @Inject constructor(
                 .plus(selectedPromoCode)
             resultItem = resultItem.copy(
                 currentClashingPromoCodes = clashingCodes,
-                state = PromoItemState.Ineligible(primaryClashingInfo.message)
+                state = PromoItemState.Disabled(primaryClashingInfo.message)
             )
             isCausingClash = true
         }
@@ -514,7 +516,7 @@ internal class PromoUsageViewModel @Inject constructor(
                     .plus(selectedPromoCode)
                 resultItem = resultItem.copy(
                     currentClashingSecondaryPromoCodes = clashingCodes,
-                    state = PromoItemState.Ineligible(secondaryClashingInfo.message)
+                    state = PromoItemState.Disabled(secondaryClashingInfo.message)
                 )
                 isCausingClash = true
             }
@@ -547,7 +549,7 @@ internal class PromoUsageViewModel @Inject constructor(
                 if (otherClashingInfo != null) {
                     resultItem = resultItem.copy(
                         currentClashingPromoCodes = clashingPrimaryCodes,
-                        state = PromoItemState.Ineligible(otherClashingInfo.message)
+                        state = PromoItemState.Disabled(otherClashingInfo.message)
                     )
                     isCausingClash = true
                 } else {
@@ -580,7 +582,7 @@ internal class PromoUsageViewModel @Inject constructor(
                         if (otherClashingInfo != null) {
                             resultItem = resultItem.copy(
                                 currentClashingPromoCodes = clashingSecondaryCodes,
-                                state = PromoItemState.Ineligible(otherClashingInfo.message)
+                                state = PromoItemState.Disabled(otherClashingInfo.message)
                             )
                             isCausingClash = true
                         } else {

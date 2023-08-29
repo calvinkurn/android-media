@@ -333,10 +333,12 @@ class PromoCompoundView @JvmOverloads constructor(
                 )
                 updatePromoBenefitTypeMargin(16.toPx())
                 updateCardViewMargin(5.toPx(), 8.toPx())
+                updateAdditionalInfoMargin(5.toPx(), (-4).toPx())
             } else {
                 layoutRemainingQuotaRibbon.gone()
                 updatePromoBenefitTypeMargin(12.toPx())
                 updateCardViewMargin(0.toPx(), 0.toPx())
+                updateAdditionalInfoMargin(0.toPx(), (-4).toPx())
             }
         }
     }
@@ -362,18 +364,23 @@ class PromoCompoundView @JvmOverloads constructor(
         }
     }
 
+    private fun updateAdditionalInfoMargin(marginStart: Int, marginTop: Int) {
+        binding?.run {
+            val layoutParams = clAdditionalInfo.layoutParams as? RelativeLayout.LayoutParams
+            layoutParams?.setMargins(marginStart, marginTop, 0, 0)
+
+            clAdditionalInfo.layoutParams = layoutParams
+            clAdditionalInfo.requestLayout()
+        }
+    }
+
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
         setupOverlay(w, h)
     }
 
     private fun setupOverlay(width: Int, height: Int) {
-        overlayDrawable?.bounds = Rect(
-            0,
-            0,
-            width,
-            height
-        )
+        overlayDrawable?.bounds = Rect(0, 0, width, height)
 
         viewOverlay?.clear()
         overlayDrawable?.let {
