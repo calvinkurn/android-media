@@ -434,11 +434,11 @@ internal class PromoUsageViewModel @Inject constructor(
             }
             .toMutableList()
         // Calculate clash
-        val result = calculateClash(updatedClickedItem, updatedItems)
+        val (resultItems, isCausingClash) = calculateClash(updatedClickedItem, updatedItems)
         updatedClickedItem = updatedClickedItem.copy(
-            isCausingOtherPromoClash = result.second
+            isCausingOtherPromoClash = isCausingClash
         )
-        updatedItems = result.first
+        updatedItems = resultItems
             .map { item ->
                 if (item is PromoItem && item.id == updatedClickedItem.id) {
                     return@map updatedClickedItem
@@ -460,11 +460,11 @@ internal class PromoUsageViewModel @Inject constructor(
             processedItems = updatedItems.map { item ->
                 if (item is PromoItem && item.code != selectedItem.code
                     && item.state !is PromoItemState.Ineligible) {
-                    val result = checkAndSetClashOnSelectionEvent(item, selectedItem)
+                    val (resultItem, isCausingClash) = checkAndSetClashOnSelectionEvent(item, selectedItem)
                     if (!isSelectedPromoCausingClash) {
-                        isSelectedPromoCausingClash = result.second
+                        isSelectedPromoCausingClash = isCausingClash
                     }
-                    return@map result.first
+                    return@map resultItem
                 } else {
                     return@map item
                 }
@@ -473,8 +473,8 @@ internal class PromoUsageViewModel @Inject constructor(
             processedItems = updatedItems.map { item ->
                 if (item is PromoItem && item.code != selectedItem.code
                     && item.state !is PromoItemState.Ineligible) {
-                    val result = checkAndSetClashOnDeselectionEvent(item, selectedItem)
-                    return@map result.first
+                    val (resultItem, _) = checkAndSetClashOnDeselectionEvent(item, selectedItem)
+                    return@map resultItem
                 } else {
                     return@map item
                 }
@@ -487,35 +487,35 @@ internal class PromoUsageViewModel @Inject constructor(
         currentItem: PromoItem,
         selectedItem: PromoItem
     ): Pair<PromoItem, Boolean> {
-        var resultItem = currentItem.copy(state = PromoItemState.Normal)
+        var resultItem = currentItem.copy()
         var isCausingClash = false
         val selectedPromoCode = if (selectedItem.useSecondaryPromo) {
             selectedItem.secondaryPromo.code
         } else {
             selectedItem.code
         }
-        val primaryClashingInfo = currentItem.clashingInfos
+        val primaryClashingInfo = resultItem.clashingInfos
             .firstOrNull { it.code == selectedPromoCode }
         if (primaryClashingInfo != null
-            && !currentItem.currentClashingPromoCodes.contains(selectedPromoCode)
+            && !resultItem.currentClashingPromoCodes.contains(selectedPromoCode)
         ) {
-            val clashingCodes = resultItem.currentClashingPromoCodes
+            val clashingPrimaryCodes = resultItem.currentClashingPromoCodes
                 .plus(selectedPromoCode)
             resultItem = resultItem.copy(
-                currentClashingPromoCodes = clashingCodes,
+                currentClashingPromoCodes = clashingPrimaryCodes,
                 state = PromoItemState.Disabled(primaryClashingInfo.message)
             )
             isCausingClash = true
         }
-        if (currentItem.hasSecondaryPromo) {
-            val secondaryClashingInfo = currentItem.secondaryPromo.clashingInfos
+        if (resultItem.hasSecondaryPromo) {
+            val secondaryClashingInfo = resultItem.secondaryPromo.clashingInfos
                 .firstOrNull { it.code == selectedPromoCode }
             if (secondaryClashingInfo != null
-                && !currentItem.currentClashingSecondaryPromoCodes.contains(selectedPromoCode)) {
-                val clashingCodes = resultItem.currentClashingSecondaryPromoCodes
+                && !resultItem.currentClashingSecondaryPromoCodes.contains(selectedPromoCode)) {
+                val clashingSecondaryCodes = resultItem.currentClashingSecondaryPromoCodes
                     .plus(selectedPromoCode)
                 resultItem = resultItem.copy(
-                    currentClashingSecondaryPromoCodes = clashingCodes,
+                    currentClashingSecondaryPromoCodes = clashingSecondaryCodes,
                     state = PromoItemState.Disabled(secondaryClashingInfo.message)
                 )
                 isCausingClash = true
@@ -528,7 +528,7 @@ internal class PromoUsageViewModel @Inject constructor(
         currentItem: PromoItem,
         selectedItem: PromoItem
     ): Pair<PromoItem, Boolean> {
-        var resultItem = currentItem
+        var resultItem = currentItem.copy()
         var isCausingClash = false
         val selectedPromoCode = if (selectedItem.useSecondaryPromo) {
             selectedItem.secondaryPromo.code
@@ -536,15 +536,15 @@ internal class PromoUsageViewModel @Inject constructor(
             selectedItem.code
         }
         // Check for primary promo
-        val primaryClashingInfo = currentItem.clashingInfos
+        val primaryClashingInfo = resultItem.clashingInfos
             .firstOrNull { it.code == selectedPromoCode }
         if (primaryClashingInfo != null
-            && currentItem.currentClashingPromoCodes.contains(selectedPromoCode)) {
-            val clashingPrimaryCodes = resultItem.currentClashingSecondaryPromoCodes
+            && resultItem.currentClashingPromoCodes.contains(selectedPromoCode)) {
+            val clashingPrimaryCodes = resultItem.currentClashingPromoCodes
                 .minus(selectedPromoCode)
             if (clashingPrimaryCodes.isNotEmpty()) {
-                val otherClashingCode = currentItem.currentClashingPromoCodes.first()
-                val otherClashingInfo = currentItem.clashingInfos
+                val otherClashingCode = resultItem.currentClashingPromoCodes.first()
+                val otherClashingInfo = resultItem.clashingInfos
                     .firstOrNull { it.code == otherClashingCode }
                 if (otherClashingInfo != null) {
                     resultItem = resultItem.copy(
@@ -554,8 +554,7 @@ internal class PromoUsageViewModel @Inject constructor(
                     isCausingClash = true
                 } else {
                     resultItem = resultItem.copy(
-                        currentClashingPromoCodes = clashingPrimaryCodes,
-                        state = PromoItemState.Normal,
+                        currentClashingPromoCodes = clashingPrimaryCodes
                     )
                     isCausingClash = false
                 }
@@ -566,39 +565,38 @@ internal class PromoUsageViewModel @Inject constructor(
                 )
                 isCausingClash = false
             }
-            // Check for secondary promo
-            if (currentItem.hasSecondaryPromo) {
-                val secondaryClashingInfo = currentItem.secondaryPromo.clashingInfos
-                    .firstOrNull { it.code == selectedPromoCode }
-                if (secondaryClashingInfo != null
-                    && currentItem.currentClashingSecondaryPromoCodes.contains(selectedPromoCode)) {
-                    val clashingSecondaryCodes = currentItem.currentClashingSecondaryPromoCodes
-                        .minus(selectedPromoCode)
-                    if (clashingSecondaryCodes.isNotEmpty()) {
-                        val otherClashingCode = currentItem.currentClashingSecondaryPromoCodes
-                            .first()
-                        val otherClashingInfo = currentItem.secondaryPromo.clashingInfos
-                            .firstOrNull { it.code == otherClashingCode }
-                        if (otherClashingInfo != null) {
-                            resultItem = resultItem.copy(
-                                currentClashingPromoCodes = clashingSecondaryCodes,
-                                state = PromoItemState.Disabled(otherClashingInfo.message)
-                            )
-                            isCausingClash = true
-                        } else {
-                            resultItem = resultItem.copy(
-                                currentClashingPromoCodes = clashingSecondaryCodes,
-                                state = PromoItemState.Normal,
-                            )
-                            isCausingClash = false
-                        }
+        }
+        // Check for secondary promo
+        if (resultItem.hasSecondaryPromo) {
+            val secondaryClashingInfo = resultItem.secondaryPromo.clashingInfos
+                .firstOrNull { it.code == selectedPromoCode }
+            if (secondaryClashingInfo != null
+                && resultItem.currentClashingSecondaryPromoCodes.contains(selectedPromoCode)) {
+                val clashingSecondaryCodes = resultItem.currentClashingSecondaryPromoCodes
+                    .minus(selectedPromoCode)
+                if (clashingSecondaryCodes.isNotEmpty()) {
+                    val otherClashingCode = resultItem.currentClashingSecondaryPromoCodes
+                        .first()
+                    val otherClashingInfo = resultItem.secondaryPromo.clashingInfos
+                        .firstOrNull { it.code == otherClashingCode }
+                    if (otherClashingInfo != null) {
+                        resultItem = resultItem.copy(
+                            currentClashingPromoCodes = clashingSecondaryCodes,
+                            state = PromoItemState.Disabled(otherClashingInfo.message)
+                        )
+                        isCausingClash = true
                     } else {
                         resultItem = resultItem.copy(
                             currentClashingPromoCodes = clashingSecondaryCodes,
-                            state = PromoItemState.Normal,
                         )
                         isCausingClash = false
                     }
+                } else {
+                    resultItem = resultItem.copy(
+                        currentClashingPromoCodes = clashingSecondaryCodes,
+                        state = PromoItemState.Normal,
+                    )
+                    isCausingClash = false
                 }
             }
         }
