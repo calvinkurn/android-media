@@ -3,7 +3,6 @@ package com.tokopedia.buy_more_get_more.olp.presentation
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -42,7 +41,6 @@ import com.tokopedia.campaign.delegates.HasPaginatedListImpl
 import com.tokopedia.campaign.helper.BuyMoreGetMoreHelper
 import com.tokopedia.campaign.utils.extension.showToaster
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.toLongSafely
@@ -220,7 +218,7 @@ class OfferLandingPageFragment :
         }
 
         viewModel.error.observe(viewLifecycleOwner) { throwable ->
-            when(throwable) {
+            when (throwable) {
                 is ConnectException, is SocketException, is UnknownHostException -> {
                     setViewState(VIEW_ERROR, Status.NO_CONNECTION)
                 }
@@ -325,6 +323,7 @@ class OfferLandingPageFragment :
             }
         }
         AtcVariantHelper.onActivityResultAtcVariant(requireContext(), requestCode, data) {
+            fetchMiniCart()
         }
     }
 
