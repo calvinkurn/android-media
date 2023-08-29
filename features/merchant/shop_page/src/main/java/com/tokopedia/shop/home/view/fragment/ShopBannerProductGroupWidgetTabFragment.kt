@@ -8,12 +8,14 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.common.util.ShopUtil
+import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.FragmentShopBannerProductGroupWidgetTabBinding
 import com.tokopedia.shop.home.di.component.DaggerShopPageHomeComponent
 import com.tokopedia.shop.home.di.module.ShopPageHomeModule
@@ -35,18 +37,24 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
         private const val BUNDLE_KEY_SHOP_ID = "shop_id"
         private const val BUNDLE_KEY_WIDGETS = "widgets"
         private const val BUNDLE_KEY_WIDGET_STYLE = "widget_style"
+        private const val BUNDLE_KEY_OVERRIDE_THEME = "override_theme"
+        private const val BUNDLE_KEY_COLOR_SCHEME = "color_scheme"
 
         @JvmStatic
         fun newInstance(
             shopId: String,
             widgets: List<ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList>,
-            widgetStyle: String
+            widgetStyle: String,
+            overrideTheme: Boolean,
+            colorScheme: ShopPageColorSchema
         ): ShopBannerProductGroupWidgetTabFragment {
             return ShopBannerProductGroupWidgetTabFragment().apply {
                 arguments = Bundle().apply {
                     putString(BUNDLE_KEY_SHOP_ID, shopId)
                     putParcelableArrayList(BUNDLE_KEY_WIDGETS, ArrayList(widgets))
                     putString(BUNDLE_KEY_WIDGET_STYLE, widgetStyle)
+                    putBoolean(BUNDLE_KEY_OVERRIDE_THEME, overrideTheme)
+                    putParcelable(BUNDLE_KEY_COLOR_SCHEME, colorScheme)
                 }
             }
         }
@@ -61,6 +69,11 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
         )?.toList().orEmpty()
     }
     private val widgetStyle by lazy { arguments?.getString(BUNDLE_KEY_WIDGET_STYLE).orEmpty() }
+    private val overrideTheme by lazy { arguments?.getBoolean(BUNDLE_KEY_OVERRIDE_THEME).orFalse() }
+
+    private val colorScheme by lazy {
+        arguments?.getParcelable(BUNDLE_KEY_COLOR_SCHEME) ?: ShopPageColorSchema()
+    }
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -142,9 +155,7 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
         viewModel.carouselWidgets.observe(viewLifecycleOwner) { result ->
             when(result) {
                 ShopBannerProductGroupWidgetTabViewModel.UiState.Loading -> {
-                    bannerProductGroupAdapter.submit(listOf(
-                        ShimmerItemType
-                    ))
+                    bannerProductGroupAdapter.submit(listOf(ShimmerItemType()))
                 }
 
                 is ShopBannerProductGroupWidgetTabViewModel.UiState.Success -> {
@@ -163,7 +174,7 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
     @SuppressLint("PII Data Exposure")
     private fun getCarouselWidgets() {
         val userAddress = ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel()
-        viewModel.getCarouselWidgets(widgets, shopId, userAddress, widgetStyle)
+        viewModel.getCarouselWidgets(widgets, shopId, userAddress, widgetStyle, overrideTheme, colorScheme)
     }
 
     private fun showProductCarousel(widgets: List<ShopHomeBannerProductGroupItemType?>) {

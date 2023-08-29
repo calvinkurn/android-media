@@ -3,6 +3,7 @@ package com.tokopedia.shop.home.view.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.invisible
@@ -12,6 +13,7 @@ import com.tokopedia.kotlin.extensions.view.strikethrough
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.R
+import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.ItemShopHomeBannerProductGroupProductInfoCardBinding
 import com.tokopedia.shop.databinding.ItemShopHomeBannerProductGroupShimmerBinding
 import com.tokopedia.shop.databinding.ItemShopHomeBannerProductGroupVerticalBannerCardBinding
@@ -19,6 +21,7 @@ import com.tokopedia.shop.home.view.model.banner_product_group.appearance.Produc
 import com.tokopedia.shop.home.view.model.banner_product_group.appearance.ShimmerItemType
 import com.tokopedia.shop.home.view.model.banner_product_group.appearance.ShopHomeBannerProductGroupItemType
 import com.tokopedia.shop.home.view.model.banner_product_group.appearance.VerticalBannerItemType
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 class ShopHomeBannerProductGroupTabAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -74,7 +77,7 @@ class ShopHomeBannerProductGroupTabAdapter : RecyclerView.Adapter<RecyclerView.V
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (val item = items[position]) {
-            ShimmerItemType -> {}
+            is ShimmerItemType -> {}
             is ProductItemType -> (holder as ProductViewHolder).bind(item)
             is VerticalBannerItemType -> (holder as VerticalBannerViewHolder).bind(item)
         }
@@ -82,7 +85,7 @@ class ShopHomeBannerProductGroupTabAdapter : RecyclerView.Adapter<RecyclerView.V
 
     override fun getItemViewType(position: Int): Int {
         return when(items[position]) {
-            ShimmerItemType -> VIEW_TYPE_SHIMMER
+            is ShimmerItemType -> VIEW_TYPE_SHIMMER
             is VerticalBannerItemType -> VIEW_TYPE_VERTICAL_BANNER
             is ProductItemType -> VIEW_TYPE_PRODUCT
         }
@@ -109,6 +112,7 @@ class ShopHomeBannerProductGroupTabAdapter : RecyclerView.Adapter<RecyclerView.V
                 renderSlashedProductPrice(product)
                 renderProductRating(product)
                 renderProductSoldCount(product)
+                setupColors(item.overrideTheme, item.colorSchema)
 
                 binding.root.setOnClickListener { onProductClick(product) }
             }
@@ -144,6 +148,36 @@ class ShopHomeBannerProductGroupTabAdapter : RecyclerView.Adapter<RecyclerView.V
             val discountPercentage = binding.labelDiscount.context.getString(R.string.shop_page_placeholder_discount_percentage, product.slashedPricePercent)
             binding.labelDiscount.setLabel(discountPercentage)
             binding.labelDiscount.isVisible = product.showProductInfo && isDiscounted
+        }
+
+        private fun setupColors(overrideTheme: Boolean, colorSchema: ShopPageColorSchema) {
+            val highEmphasizeColor = if (overrideTheme) {
+                colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS)
+            } else {
+                ContextCompat.getColor(binding.tpgProductName.context ?: return, unifycomponentsR.color.Unify_NN950)
+            }
+
+            val lowEmphasizeColor = if (overrideTheme) {
+                colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_LOW_EMPHASIS)
+            } else {
+                ContextCompat.getColor(binding.tpgProductName.context ?: return, unifycomponentsR.color.Unify_NN600)
+            }
+
+            val disabledTextColor = if (overrideTheme) {
+                colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.DISABLED_TEXT_COLOR)
+            } else {
+                ContextCompat.getColor(binding.tpgProductName.context ?: return, unifycomponentsR.color.Unify_NN400)
+            }
+
+            binding.apply {
+                tpgProductName.setTextColor(highEmphasizeColor)
+                tpgProductPrice.setTextColor(highEmphasizeColor)
+
+                tpgSlashedProductPrice.setTextColor(disabledTextColor)
+
+                tpgRating.setTextColor(lowEmphasizeColor)
+                tpgProductSoldCount.setTextColor(lowEmphasizeColor)
+            }
         }
     }
     

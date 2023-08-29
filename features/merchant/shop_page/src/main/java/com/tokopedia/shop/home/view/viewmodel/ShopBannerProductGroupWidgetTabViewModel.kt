@@ -21,6 +21,7 @@ import com.tokopedia.shop.product.data.model.ShopFeaturedProductParams
 import com.tokopedia.shop.product.domain.interactor.GetShopFeaturedProductUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.shop.common.data.source.cloud.model.LabelGroup
+import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.home.view.model.banner_product_group.ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.Data.LinkType
 
 @SuppressLint("PII Data Exposure")
@@ -52,7 +53,9 @@ class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
         widgets: List<ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList>,
         shopId: String,
         userAddress: LocalCacheModel,
-        widgetStyle: String
+        widgetStyle: String,
+        overrideTheme: Boolean,
+        colorSchema: ShopPageColorSchema
     ) {
         _carouselWidgets.postValue(UiState.Loading)
 
@@ -62,7 +65,7 @@ class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
             context = dispatcherProvider.io,
             block = {
 
-                val products = getProducts(shopId, userAddress, firstProductWidget)
+                val products = getProducts(shopId, userAddress, firstProductWidget, overrideTheme, colorSchema)
 
                 val hasVerticalBanner = widgetStyle == ShopWidgetComponentBannerProductGroupUiModel.WidgetStyle.VERTICAL.id
                 val carouselWidgets = if (hasVerticalBanner) {
@@ -101,24 +104,26 @@ class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
         shopId: String,
         userAddress: LocalCacheModel,
         productWidget: ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.Data,
+        overrideTheme: Boolean,
+        colorSchema: ShopPageColorSchema
     ): List<ProductItemType> {
         val showProductInfo = productWidget.isShowProductInfo
 
         return when(productWidget.linkType) {
             LinkType.FEATURED_PRODUCT -> {
-                val featuredProducts = getFeaturedProducts(shopId, userSession.userId, userAddress, showProductInfo)
+                val featuredProducts = getFeaturedProducts(shopId, userSession.userId, userAddress, showProductInfo, overrideTheme, colorSchema)
                 featuredProducts
             }
             LinkType.PRODUCT -> {
                 val sortId = productWidget.linkId
                 val showcaseId = ShopPageConstant.ALL_SHOWCASE_ID
-                val sortedProducts = getSortedProducts(shopId, showcaseId, userAddress, sortId, showProductInfo)
+                val sortedProducts = getSortedProducts(shopId, showcaseId, userAddress, sortId, showProductInfo, overrideTheme, colorSchema)
                 sortedProducts
             }
             LinkType.SHOWCASE -> {
                 val sortId = productWidget.linkId
                 val showcaseId = productWidget.linkId.toString()
-                val showCaseProducts = getSortedProducts(shopId, showcaseId, userAddress, sortId, showProductInfo)
+                val showCaseProducts = getSortedProducts(shopId, showcaseId, userAddress, sortId, showProductInfo, overrideTheme, colorSchema)
                 showCaseProducts
             }
         }
@@ -129,7 +134,9 @@ class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
         showcaseId: String,
         userAddress: LocalCacheModel,
         sortId: Long,
-        showProductInfo: Boolean
+        showProductInfo: Boolean,
+        overrideTheme: Boolean,
+        colorSchema: ShopPageColorSchema
     ): List<ProductItemType> {
         getShopProductUseCase.params = GqlGetShopProductUseCase.createParams(
             shopId,
@@ -159,7 +166,10 @@ class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
                 product.stats.averageRating,
                 soldLabel,
                 product.appLink,
-                showProductInfo
+                showProductInfo,
+                product.productId,
+                overrideTheme,
+                colorSchema
             )
         }
 
@@ -170,7 +180,9 @@ class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
         shopId: String,
         userId: String,
         userAddress: LocalCacheModel,
-        showProductInfo: Boolean
+        showProductInfo: Boolean,
+        overrideTheme: Boolean,
+        colorSchema: ShopPageColorSchema
     ): List<ProductItemType> {
         getShopFeaturedProductUseCase.params = GetShopFeaturedProductUseCase.createParams(
             ShopFeaturedProductParams(
@@ -195,7 +207,9 @@ class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
                 product.labelGroupList.soldCount(),
                 "tokopedia://product/${product.productId}",
                 showProductInfo,
-                product.productId
+                product.productId,
+                overrideTheme,
+                colorSchema
             )
         }
 

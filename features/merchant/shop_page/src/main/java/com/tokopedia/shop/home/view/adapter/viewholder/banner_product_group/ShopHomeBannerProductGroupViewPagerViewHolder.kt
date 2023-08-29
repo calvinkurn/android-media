@@ -8,10 +8,12 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.shop.R
+import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.ItemShopHomeBannerProductGroupViewpagerBinding
 import com.tokopedia.shop.home.util.ShopBannerProductGroupWidgetTabDependencyProvider
 import com.tokopedia.shop.home.view.fragment.ShopBannerProductGroupWidgetTabFragment
@@ -20,6 +22,7 @@ import com.tokopedia.shop.home.view.model.banner_product_group.ShopWidgetCompone
 import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.unifycomponents.setCustomText
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 class ShopHomeBannerProductGroupViewPagerViewHolder(
     itemView: View,
@@ -42,7 +45,8 @@ class ShopHomeBannerProductGroupViewPagerViewHolder(
     override fun bind(model: ShopWidgetComponentBannerProductGroupUiModel) {
         setupTitle(model)
         setupViewAllChevron(model)
-        setupTabs(model.tabs, model.widgetStyle)
+        setupTabs(model.tabs, model.widgetStyle, model.header.isOverrideTheme, model.header.colorSchema)
+        setupColors(model.header.isOverrideTheme, model.header.colorSchema)
     }
 
     private fun setupViewAllChevron(model: ShopWidgetComponentBannerProductGroupUiModel) {
@@ -61,9 +65,11 @@ class ShopHomeBannerProductGroupViewPagerViewHolder(
 
     private fun setupTabs(
         tabs: List<ShopWidgetComponentBannerProductGroupUiModel.Tab>,
-        widgetStyle: String
+        widgetStyle: String,
+        overrideTheme: Boolean,
+        colorScheme: ShopPageColorSchema
     ) {
-        val fragments = createFragments(tabs, widgetStyle)
+        val fragments = createFragments(tabs, widgetStyle, overrideTheme, colorScheme)
         val pagerAdapter = TabPagerAdapter(provider.fragment, fragments)
 
         viewBinding?.run {
@@ -106,12 +112,20 @@ class ShopHomeBannerProductGroupViewPagerViewHolder(
 
     private fun createFragments(
         tabs: List<ShopWidgetComponentBannerProductGroupUiModel.Tab>,
-        widgetStyle: String
+        widgetStyle: String,
+        overrideTheme: Boolean,
+        colorScheme: ShopPageColorSchema
     ): List<Pair<String, Fragment>> {
         val pages = mutableListOf<Pair<String, Fragment>>()
 
         tabs.forEachIndexed { _, currentTab ->
-            val fragment = ShopBannerProductGroupWidgetTabFragment.newInstance(provider.currentShopId, currentTab.componentList, widgetStyle)
+            val fragment = ShopBannerProductGroupWidgetTabFragment.newInstance(
+                provider.currentShopId,
+                currentTab.componentList,
+                widgetStyle,
+                overrideTheme,
+                colorScheme
+            )
             fragment.setOnMainBannerClick { mainBanner -> listener.onBannerProductGroupMainBannerClick(mainBanner) }
             fragment.setOnProductClick { selectedShowcase -> listener.onBannerProductGroupProductClick(selectedShowcase) }
             fragment.setOnVerticalBannerClick { verticalBanner -> listener.onBannerProductGroupVerticalBannerClick(verticalBanner) }
@@ -125,5 +139,28 @@ class ShopHomeBannerProductGroupViewPagerViewHolder(
 
     private fun disableTabSwipeBehavior() {
         viewBinding?.viewPager?.isUserInputEnabled = false
+    }
+
+    private fun setupColors(overrideTheme: Boolean, colorSchema: ShopPageColorSchema) {
+        val chevronColor = if (overrideTheme) {
+            colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.ICON_CTA_LINK_COLOR)
+        } else {
+            ContextCompat.getColor(viewBinding?.iconChevron?.context ?: return, unifycomponentsR.color.Unify_NN950)
+        }
+
+        val highEmphasizeColor = if (overrideTheme) {
+            colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS)
+        } else {
+            ContextCompat.getColor(viewBinding?.tpgTitle?.context ?: return, unifycomponentsR.color.Unify_NN950)
+        }
+
+        viewBinding?.apply {
+            iconChevron.setImage(
+                newIconId = IconUnify.CHEVRON_RIGHT,
+                newLightEnable = chevronColor,
+                newDarkEnable = chevronColor
+            )
+            tpgTitle.setTextColor(highEmphasizeColor)
+        }
     }
 }
