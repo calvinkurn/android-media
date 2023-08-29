@@ -1,14 +1,11 @@
 package com.tokopedia.catalog.ui.fragment
 
-import android.app.ActionBar.LayoutParams
 import android.graphics.Color
 import android.graphics.Rect
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -96,6 +93,7 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener {
         context?.let {
             binding?.setupRvWidgets(false, true)
             binding?.setupToolbar(false, true, "#ffffff")
+            binding?.stickySingleHeaderView?.containerHeight = binding?.toolbar?.height.orZero()
             widgets.add(
                 HeroBannerUiModel(
                     "bannercoy",
@@ -219,7 +217,7 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener {
                     Int.ZERO.toFloat()
                 }
                 toolbar.updateToolbarAppearance(scrollProgress, isDarkMode, isPremium)
-                handleNavigationPosition(scrollProgress)
+
             }
         })
     }
@@ -272,24 +270,6 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener {
             it.containerPriceCta.setBackgroundColor(bgColor)
             it.tgpCatalogName.setTextColor(fontColor)
             it.tgpPriceRanges.setTextColor(fontColor)
-        }
-    }
-
-    private fun handleNavigationPosition(scrollProgress: Float){
-        if (scrollProgress >= 0.8f) {
-            val layoutParams = ConstraintLayout.LayoutParams(
-                binding?.stickySingleHeaderView?.layoutParams?.width.orZero(),
-                binding?.stickySingleHeaderView?.layoutParams?.height.orZero()
-            )
-            layoutParams.setMargins(0, binding?.toolbar?.height.orZero(), 0, 0)
-            binding?.stickySingleHeaderView?.layoutParams = layoutParams
-        }else{
-            val layoutParams = ConstraintLayout.LayoutParams(
-                binding?.stickySingleHeaderView?.layoutParams?.width.orZero(),
-                binding?.stickySingleHeaderView?.layoutParams?.height.orZero()
-            )
-            layoutParams.setMargins(0,0, 0, 0)
-            binding?.stickySingleHeaderView?.layoutParams = layoutParams
         }
     }
 }

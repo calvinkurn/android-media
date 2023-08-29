@@ -28,13 +28,16 @@ class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
     private var refreshSticky = false
     private var recyclerViewPaddingTop = 0
     private var currentScroll = 0
-    private val headerContainerHeight = 162
+    private var headerContainerHeight = 162
 
     constructor(context: Context) : super(context) {}
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {}
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {}
 
-    val containerHeight: Int
+    var containerHeight: Int
+        set(newValue) {
+            headerContainerHeight = newValue
+        }
         get() {
             mHeaderContainer!!.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED)
             return headerContainerHeight
@@ -70,7 +73,9 @@ class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
             it.setBackgroundColor(androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0))
             it.clipToPadding = false
             it.clipChildren = false
-            it.layoutParams = LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            val newLayoutParam = LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            newLayoutParam.setMargins(0,130,0,0)
+            it.layoutParams = newLayoutParam
             it.setPadding(
                 convertPixelsToDp(16, context),
                 0,
