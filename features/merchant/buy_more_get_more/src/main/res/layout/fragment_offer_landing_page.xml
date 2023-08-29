@@ -71,7 +71,7 @@
             app:layout_constraintStart_toStartOf="parent"
             tools:layout_height="60dp" />
 
-        <com.tokopedia.empty_state.EmptyStateUnify
+        <com.tokopedia.globalerror.GlobalError
             android:id="@+id/errorPageLarge"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -80,11 +80,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/header"
-            app:layout_constraintVertical_bias="0.3"
-            app:unifyEmptyStateDescription="test"
-            app:unifyEmptyStateImageUrl="https://images.tokopedia.net/android/merchant_voucher/il_mvc_no_result.webp"
-            app:unifyEmptyStatePrimaryCTAText="test"
-            app:unifyEmptyStateTitle="" />
+            app:layout_constraintVertical_bias="0.3" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
