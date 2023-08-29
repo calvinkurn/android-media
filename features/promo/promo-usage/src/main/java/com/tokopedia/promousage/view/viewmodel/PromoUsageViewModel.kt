@@ -44,7 +44,6 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.C
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
-import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 internal class PromoUsageViewModel @Inject constructor(
@@ -138,8 +137,6 @@ internal class PromoUsageViewModel @Inject constructor(
         launchCatchError(
             context = dispatchers.io,
             block = {
-//                delay(1_000)
-//                handleLoadPromoListSuccess(GetPromoListRecommendationResponse())
                 PromoUsageIdlingResource.decrement()
                 val response = getPromoListRecommendationUseCase(param)
                 if (response.promoListRecommendation.data.resultStatus.message == PromoListRecommendation.STATUS_OK) {
@@ -381,40 +378,7 @@ internal class PromoUsageViewModel @Inject constructor(
             _promoCtaUiAction.postValue(PromoCtaUiAction.RegisterGoPayLaterCicil(clickedItem.cta))
         } else {
             _promoPageUiState.ifSuccess { pageState ->
-                val currentItems = pageState.items
-                val newClickedItemState = if (clickedItem.state is PromoItemState.Normal) {
-                    PromoItemState.Selected
-                } else {
-                    PromoItemState.Normal
-                }
-                var newClickedItem = clickedItem.copy(
-                    state = newClickedItemState
-                )
-                var updatedItems = currentItems
-                    .map { item ->
-                        if (item is PromoItem && item.id == clickedItem.id) {
-                            return@map newClickedItem
-                        } else if (item is PromoRecommendationItem) {
-                            if (newClickedItem.state is PromoItemState.Normal
-                                && newClickedItem.isRecommended
-                            ) {
-                                return@map item.copy(
-                                    selectedCodes = item.selectedCodes
-                                        .filterNot { it == newClickedItem.code }
-                                )
-                            }
-                            return@map item
-                        } else {
-                            return@map item
-                        }
-                    }
-                    .toMutableList()
-                // Calculate clash
-                val result = calculateClash(newClickedItem, updatedItems, false)
-                updatedItems = result.first.toMutableList()
-                newClickedItem = newClickedItem.copy(
-                    isCausingOtherPromoClash = result.second
-                )
+                val (newClickedItem, updatedItems) = calculateClickPromo(clickedItem, pageState.items)
                 processAndSendEventClickPromo(newClickedItem)
                 // Update TnC section
                 val tncItem = updatedItems.getTncItem() ?: PromoTncItem()
@@ -435,37 +399,65 @@ internal class PromoUsageViewModel @Inject constructor(
                     )
                 )
             }
-
-
-            // Show loading for MVC section
-//            launchCatchError(
-//                context = dispatchers.immediate,
-//                block = {
-//                    _promoPageUiState.ifSuccess { pageState ->
-//                        val currentItems = pageState.items
-//                        val updatedItems = currentItems.map { item ->
-//                            if (item is PromoItem && item.code != clickedItem.code
-//                                && item.shopId > 0 && item.state !is PromoItemState.Disabled
-//                            ) {
-//                                return@map item.copy(state = PromoItemState.Loading)
-//                            } else {
-//                                return@map item
-//                            }
-//                        }
-//                        _promoPageUiState.postValue(pageState.copy(items = updatedItems))
-//                    }
-//                },
-//                onError = {
-//                    // no-op
-//                }
-//            )
         }
+    }
+
+    private fun calculateClickPromo(
+        clickedItem: PromoItem,
+        items: List<DelegateAdapterItem>
+    ) : Pair<PromoItem, MutableList<DelegateAdapterItem>> {
+        val newClickedItemState = if (clickedItem.state is PromoItemState.Normal) {
+            PromoItemState.Selected
+        } else {
+            PromoItemState.Normal
+        }
+        var updatedClickedItem = clickedItem.copy(
+            state = newClickedItemState
+        )
+        var updatedItems = items
+            .map { item ->
+                if (item is PromoItem && item.id == clickedItem.id) {
+                    return@map updatedClickedItem
+                } else if (item is PromoRecommendationItem) {
+                    if (updatedClickedItem.isRecommended) {
+                        if (updatedClickedItem.state is PromoItemState.Normal) {
+                            return@map item.copy(
+                                selectedCodes = item.selectedCodes.toMutableList()
+                                    .minus(updatedClickedItem.code)
+                            )
+                        } else if (updatedClickedItem.state is PromoItemState.Selected) {
+                            return@map item.copy(
+                                selectedCodes = item.selectedCodes.toMutableList()
+                                    .plus(updatedClickedItem.code)
+                            )
+                        }
+                    }
+                    return@map item
+                } else {
+                    return@map item
+                }
+            }
+            .toMutableList()
+        // Calculate clash
+        val result = calculateClash(updatedClickedItem, updatedItems)
+        updatedClickedItem = updatedClickedItem.copy(
+            isCausingOtherPromoClash = result.second
+        )
+        updatedItems = result.first
+            .map { item ->
+                if (item is PromoItem && item.id == updatedClickedItem.id) {
+                    return@map updatedClickedItem
+                } else {
+                    return@map item
+                }
+            }
+            .toMutableList()
+        return Pair(updatedClickedItem, updatedItems)
     }
 
     private fun calculateClash(
         selectedItem: PromoItem,
-        updatedItems: List<DelegateAdapterItem>,
-        isUseRecommendedPromo: Boolean
+        updatedItems: List<DelegateAdapterItem>
     ) : Pair<List<DelegateAdapterItem>, Boolean> {
         var isSelectedPromoCausingClash = false
         var processedItems = updatedItems
@@ -484,10 +476,7 @@ internal class PromoUsageViewModel @Inject constructor(
         } else if (selectedItem.state is PromoItemState.Normal) {
             processedItems = updatedItems.map { item ->
                 if (item is PromoItem && item.code != selectedItem.code) {
-                    val result = checkAndSetClashOnDeselectionEvent(
-                        item, selectedItem,
-                        isUseRecommendedPromo
-                    )
+                    val result = checkAndSetClashOnDeselectionEvent(item, selectedItem)
                     return@map result.first
                 } else {
                     return@map item
@@ -513,25 +502,25 @@ internal class PromoUsageViewModel @Inject constructor(
         if (primaryClashingInfo != null
             && !currentItem.currentClashingPromoCodes.contains(selectedPromoCode)
         ) {
-            val currentClashingCodes = resultItem.currentClashingPromoCodes
+            val clashingCodes = resultItem.currentClashingPromoCodes
                 .toMutableList()
-            currentClashingCodes.add(selectedPromoCode)
+            clashingCodes.add(selectedPromoCode)
             resultItem = resultItem.copy(
-                currentClashingPromoCodes = currentClashingCodes,
+                currentClashingPromoCodes = clashingCodes,
                 state = PromoItemState.Ineligible(primaryClashingInfo.message)
             )
             isCausingClash = true
         }
-        if (currentItem.secondaryPromo.code.isNotBlank()) {
+        if (currentItem.hasSecondaryPromo) {
             val secondaryClashingInfo = currentItem.secondaryPromo.clashingInfos
                 .firstOrNull { it.code == selectedPromoCode }
             if (secondaryClashingInfo != null
                 && !currentItem.currentClashingSecondaryPromoCodes.contains(selectedPromoCode)) {
-                val currentClashingCodes = resultItem.currentClashingSecondaryPromoCodes
+                val clashingCodes = resultItem.currentClashingSecondaryPromoCodes
                     .toMutableList()
-                currentClashingCodes.add(selectedPromoCode)
+                clashingCodes.add(selectedPromoCode)
                 resultItem = resultItem.copy(
-                    currentClashingSecondaryPromoCodes = currentClashingCodes,
+                    currentClashingSecondaryPromoCodes = clashingCodes,
                     state = PromoItemState.Ineligible(secondaryClashingInfo.message)
                 )
                 isCausingClash = true
@@ -542,17 +531,85 @@ internal class PromoUsageViewModel @Inject constructor(
 
     private fun checkAndSetClashOnDeselectionEvent(
         currentItem: PromoItem,
-        selectedItem: PromoItem,
-        isApplyRecommendedPromo: Boolean
+        selectedItem: PromoItem
     ): Pair<PromoItem, Boolean> {
+        var resultItem = currentItem
+        var isCausingClash = false
         val selectedPromoCode = if (selectedItem.useSecondaryPromo) {
             selectedItem.secondaryPromo.code
         } else {
             selectedItem.code
         }
+        // Check for primary promo
         val primaryClashingInfo = currentItem.clashingInfos
             .firstOrNull { it.code == selectedPromoCode }
-        return Pair(currentItem, false)
+        if (primaryClashingInfo != null
+            && currentItem.currentClashingPromoCodes.contains(selectedPromoCode)) {
+            val clashingPrimaryCodes = resultItem.currentClashingSecondaryPromoCodes
+                .toMutableList()
+            clashingPrimaryCodes.remove(selectedPromoCode)
+            if (clashingPrimaryCodes.isNotEmpty()) {
+                val otherClashingCode = currentItem.currentClashingPromoCodes.first()
+                val otherClashingInfo = currentItem.clashingInfos
+                    .firstOrNull { it.code == otherClashingCode }
+                if (otherClashingInfo != null) {
+                    resultItem = resultItem.copy(
+                        currentClashingPromoCodes = clashingPrimaryCodes,
+                        state = PromoItemState.Ineligible(otherClashingInfo.message)
+                    )
+                    isCausingClash = true
+                } else {
+                    resultItem = resultItem.copy(
+                        currentClashingPromoCodes = clashingPrimaryCodes,
+                        state = PromoItemState.Normal,
+                    )
+                    isCausingClash = false
+                }
+            } else {
+                resultItem = resultItem.copy(
+                    currentClashingPromoCodes = clashingPrimaryCodes,
+                    state = PromoItemState.Normal,
+                )
+                isCausingClash = false
+            }
+            // Check for secondary promo
+            if (currentItem.hasSecondaryPromo) {
+                val secondaryClashingInfo = currentItem.secondaryPromo.clashingInfos
+                    .firstOrNull { it.code == selectedPromoCode }
+                if (secondaryClashingInfo != null
+                    && currentItem.currentClashingSecondaryPromoCodes.contains(selectedPromoCode)) {
+                    val clashingSecondaryCodes = currentItem.currentClashingSecondaryPromoCodes
+                        .toMutableList()
+                    clashingSecondaryCodes.remove(selectedPromoCode)
+                    if (clashingSecondaryCodes.isNotEmpty()) {
+                        val otherClashingCode = currentItem.currentClashingSecondaryPromoCodes
+                            .first()
+                        val otherClashingInfo = currentItem.secondaryPromo.clashingInfos
+                            .firstOrNull { it.code == otherClashingCode }
+                        if (otherClashingInfo != null) {
+                            resultItem = resultItem.copy(
+                                currentClashingPromoCodes = clashingSecondaryCodes,
+                                state = PromoItemState.Ineligible(otherClashingInfo.message)
+                            )
+                            isCausingClash = true
+                        } else {
+                            resultItem = resultItem.copy(
+                                currentClashingPromoCodes = clashingSecondaryCodes,
+                                state = PromoItemState.Normal,
+                            )
+                            isCausingClash = false
+                        }
+                    } else {
+                        resultItem = resultItem.copy(
+                            currentClashingPromoCodes = clashingSecondaryCodes,
+                            state = PromoItemState.Normal,
+                        )
+                        isCausingClash = false
+                    }
+                }
+            }
+        }
+        return Pair(resultItem, isCausingClash)
     }
 
     fun onClickAccordionHeader(clickedItem: PromoAccordionHeaderItem) {
@@ -1211,17 +1268,19 @@ internal class PromoUsageViewModel @Inject constructor(
                         .map { it.code }
                     var updatedItems = currentItems.map { item ->
                         if (item is PromoItem) {
-                            if (item.isRecommended) {
-                                item.copy(state = PromoItemState.Selected)
-                            } else if (item.state == PromoItemState.Selected) {
-                                item.copy(state = PromoItemState.Normal)
-                            } else {
-                                item
-                            }
+                            item.copy(state = PromoItemState.Normal)
                         } else if (item is PromoRecommendationItem) {
                             item.copy(selectedCodes = recommendedPromoCodes)
                         } else {
                             item
+                        }
+                    }
+                    recommendedPromoCodes.forEach { code ->
+                        val recommendedPromo = updatedItems
+                            .firstOrNull { it is PromoItem && it.code == code } as? PromoItem
+                        if (recommendedPromo != null) {
+                            val result = calculateClickPromo(recommendedPromo, updatedItems)
+                            updatedItems = result.second
                         }
                     }
                     val updatedSavingInfo = calculatePromoSavingInfo(
