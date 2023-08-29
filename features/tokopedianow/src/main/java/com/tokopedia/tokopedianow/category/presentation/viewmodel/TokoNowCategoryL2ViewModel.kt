@@ -6,14 +6,11 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
-import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2Mapper
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2Mapper.addChooseAddress
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2Mapper.mapToCategoryUiModel
-import com.tokopedia.tokopedianow.category.domain.response.CategoryDetailResponse
-import com.tokopedia.tokopedianow.category.domain.response.GetCategoryLayoutResponse.CategoryGetDetailModular
 import com.tokopedia.tokopedianow.category.domain.usecase.GetCategoryDetailUseCase
 import com.tokopedia.tokopedianow.category.domain.usecase.GetCategoryLayoutUseCase
 import com.tokopedia.tokopedianow.category.domain.usecase.GetCategoryProductUseCase
@@ -25,7 +22,6 @@ import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.Deferred
 import javax.inject.Inject
 
 class TokoNowCategoryL2ViewModel @Inject constructor(
@@ -67,12 +63,12 @@ class TokoNowCategoryL2ViewModel @Inject constructor(
     val loadMore: LiveData<Unit> = _loadMore
 
     override suspend fun loadFirstPage(tickerList: List<TickerData>) {
-        val addressData = addressData.getAddressData()
-        val getCategoryLayoutResponse = getCategoryLayoutAsync().await()
-        val getCategoryDetailResponse = getCategoryDetailAsync().await()
+        val warehouses = addressData.getWarehousesData()
+        val getCategoryLayoutResponse = getCategoryLayout.execute(categoryIdL1)
+        val getCategoryDetailResponse = getCategoryDetailUseCase.execute(warehouses, categoryIdL1)
 
         visitableList.clear()
-        visitableList.addChooseAddress(addressData)
+        visitableList.addChooseAddress()
         visitableList.mapToCategoryUiModel(
             getCategoryLayoutResponse,
             getCategoryDetailResponse
