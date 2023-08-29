@@ -1,5 +1,6 @@
 package com.tokopedia.feedplus.browse.data
 
+import com.tokopedia.content.common.model.FeedXHeaderRequestFields
 import com.tokopedia.content.common.usecase.FeedXHeaderUseCase
 import com.tokopedia.content.common.usecase.GetPlayWidgetSlotUseCase
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseSlot
@@ -18,7 +19,15 @@ class FeedBrowseRepositoryImpl @Inject constructor(
 ) : FeedBrowseRepository {
 
     override suspend fun getTitle(): String {
-        return mapper.mapTitle()
+        feedXHeaderUseCase.setRequestParams(
+            FeedXHeaderUseCase.createParam(
+                listOf(
+                    FeedXHeaderRequestFields.BROWSE.value
+                )
+            )
+        )
+        val headerData = feedXHeaderUseCase.executeOnBackground()
+        return headerData.feedXHeaderData.data.browse.title
     }
 
     override suspend fun getSlots(): List<FeedBrowseSlot> {
