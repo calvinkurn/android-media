@@ -20,6 +20,7 @@ enum class ComponentNames(val componentName: String) {
     Tabs("tabs"),
     TabsItem("tabs_item"),
     TabsIcon("tabs_icon"),
+    TabsIconItem("tabs_icon_item"),
     TimerSprintSale("timer_sprint_sale"),
     ShimmerProductCard("shimmer_product_card"),
     Shimmer("shimmer"),

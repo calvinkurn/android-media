@@ -118,34 +118,90 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
                 }
             )
 
+
             tabsViewModel.getIconTabLiveData().observe(
                 fragment.viewLifecycleOwner
             ) {
-                isParentUnifyTab = true
-                tabsHolder.tabLayout.apply {
-                    layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
-                    layoutParams.height =
-                        tabsHolder.context.resources.getDimensionPixelSize(R.dimen.dp_55)
-                    tabMode = TabLayout.MODE_SCROLLABLE
-                    removeAllTabs()
-                    setBackgroundResource(0)
+                tabsHolder.tabLayout.removeAllTabs()
+                tabsHolder.getUnifyTabLayout()
+                    .setSelectedTabIndicator(tabsHolder.getUnifyTabLayout().tabSelectedIndicator)
+                var selectedPosition = 0
+                it.forEachIndexed { index, tabItem ->
+                    if (tabItem.data?.isNotEmpty() == true) {
+                        tabItem.data?.firstOrNull()?.name?.let { tabTitle ->
+                            if (tabItem.data?.firstOrNull()?.isSelected == true) {
+                                selectedPosition = index
+                            }
+//                            tabsHolder.addNewTab(
+//                                tabTitle,
+//                                tabItem.data?.firstOrNull()?.isSelected
+//                                    ?: false
+//                            )
+                            val tab = tabsHolder.tabLayout.newTab()
+                            ViewCompat.setPaddingRelative(tab.view, TAB_START_PADDING, 0, 0, 0)
+                            tab.customView = CustomViewCreator.getCustomViewObject(
+                                itemView.context,
+                                ComponentsList.TabsItem,
+                                tabItem,
+                                fragment
+                            )
+                            tabsHolder.tabLayout.addTab(tab, tabItem.data?.get(0)?.isSelected ?: false)
+                        }
+                    }
                 }
-                tabsHolder.apply {
-                    whiteShadeLeft.setBackgroundResource(0)
-                    whiteShadeRight.setBackgroundResource(0)
-                    getUnifyTabLayout().setSelectedTabIndicator(null)
-                }
-                it.forEach {
-                    val tab = tabsHolder.tabLayout.newTab()
-                    ViewCompat.setPaddingRelative(tab.view, TAB_START_PADDING, 0, 0, 0)
-                    tab.customView = CustomViewCreator.getCustomViewObject(
-                        itemView.context,
-                        ComponentsList.TabsItem,
-                        it,
-                        fragment
-                    )
-                    tabsHolder.tabLayout.addTab(tab, it.data?.get(0)?.isSelected ?: false)
-                }
+//                it.forEach {
+//                    val tab = tabsHolder.tabLayout.newTab()
+//                    ViewCompat.setPaddingRelative(tab.view, TAB_START_PADDING, 0, 0, 0)
+//                    tab.customView = CustomViewCreator.getCustomViewObject(
+//                        itemView.context,
+//                        ComponentsList.TabsItem,
+//                        it,
+//                        fragment
+//                    )
+//                    tabsHolder.tabLayout.addTab(tab, it.data?.get(0)?.isSelected ?: false)
+//                }
+                tabsHolder.viewTreeObserver
+                    .addOnGlobalLayoutListener {
+                        fragment.activity?.let { _ ->
+                            if (selectedPosition >= 0 && tabsViewModel.isFromCategory()) {
+                                tabsHolder.gone()
+                                tabsHolder.tabLayout.getTabAt(selectedPosition)?.select()
+                                Handler().postDelayed({
+                                    tabsHolder.show()
+                                }, DELAY_400)
+                                selectedPosition = -1
+                            }
+                        }
+                    }
+
+
+
+//                isParentUnifyTab = true
+//                tabsHolder.tabLayout.setSelectedTabIndicator(tabsHolder.tabLayout.tabSelectedIndicator)
+//                tabsHolder.tabLayout.apply {
+//                    layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
+//                    layoutParams.height =
+//                        tabsHolder.context.resources.getDimensionPixelSize(R.dimen.dp_55)
+//                    tabMode = TabLayout.MODE_SCROLLABLE
+//                    removeAllTabs()
+//                    setBackgroundResource(0)
+//                }
+//                tabsHolder.apply {
+//                    whiteShadeLeft.setBackgroundResource(0)
+//                    whiteShadeRight.setBackgroundResource(0)
+//                    getUnifyTabLayout().setSelectedTabIndicator(tabsHolder.tabLayout.tabSelectedIndicator)
+//                }
+//                it.forEach {
+//                    val tab = tabsHolder.tabLayout.newTab()
+//                    ViewCompat.setPaddingRelative(tab.view, TAB_START_PADDING, 0, 0, 0)
+//                    tab.customView = CustomViewCreator.getCustomViewObject(
+//                        itemView.context,
+//                        ComponentsList.TabsItem,
+//                        it,
+//                        fragment
+//                    )
+//                    tabsHolder.tabLayout.addTab(tab, it.data?.get(0)?.isSelected ?: false)
+//                }
             }
         }
     }
