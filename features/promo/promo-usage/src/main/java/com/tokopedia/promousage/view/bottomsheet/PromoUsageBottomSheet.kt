@@ -833,7 +833,6 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
     }
 
     private fun showPromoTncBottomSheet(item: PromoTncItem) {
-        // TODO: Replace using real codes
         val tncBottomSheet = PromoUsageTncBottomSheet.newInstance(
             promoCodes = item.selectedPromoCodes,
             source = entryPoint,
