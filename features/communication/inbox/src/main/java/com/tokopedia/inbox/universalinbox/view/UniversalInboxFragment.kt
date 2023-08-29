@@ -1,7 +1,6 @@
 package com.tokopedia.inbox.universalinbox.view
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,31 +12,30 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
-import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
 import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.inbox.databinding.UniversalInboxFragmentBinding
 import com.tokopedia.inbox.universalinbox.analytics.UniversalInboxAnalytics
 import com.tokopedia.inbox.universalinbox.analytics.UniversalInboxTopAdsAnalytic
 import com.tokopedia.inbox.universalinbox.data.entity.UniversalInboxAllCounterResponse
+import com.tokopedia.inbox.universalinbox.util.UniversalInboxErrorLogger
+import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.CHATBOT_TYPE
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.CLICK_TYPE_WISHLIST
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.COMPONENT_NAME_TOP_ADS
+import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.GOJEK_REPLACE_TEXT
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.GOJEK_TYPE
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.HEADLINE_ADS_BANNER_COUNT
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.HEADLINE_POS_NOT_TO_BE_ADDED
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.PDP_EXTRA_UPDATED_POSITION
-import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.REQUEST_FROM_PDP
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.SHIFTING_INDEX
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.TOP_ADS_BANNER_COUNT
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.TOP_ADS_BANNER_POS_NOT_TO_BE_ADDED
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.VALUE_X
-import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.WISHLIST_STATUS_IS_WISHLIST
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.getHeadlineAdsParam
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.getRoleUser
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.getShopIdTracker
-import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.getVariantTracker
+import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.shouldRefreshProductRecommendation
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxViewUtil
 import com.tokopedia.inbox.universalinbox.util.toggle.UniversalInboxAbPlatform
 import com.tokopedia.inbox.universalinbox.view.adapter.UniversalInboxAdapter
@@ -55,11 +53,13 @@ import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxTopadsHeadl
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxWidgetUiModel
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.recommendation_widget_common.widget.global.recommendationWidgetViewModel
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
@@ -121,6 +121,8 @@ class UniversalInboxFragment @Inject constructor(
 
     private var trackingQueue: TrackingQueue? = null
 
+    private val recommendationWidgetViewModel by recommendationWidgetViewModel()
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -134,13 +136,15 @@ class UniversalInboxFragment @Inject constructor(
         return binding?.root
     }
 
-    override fun initInjector() {}
+    override fun initInjector() {
+        // no-op
+    }
 
     override fun getScreenName(): String = TAG
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initViews(view, savedInstanceState)
+        initViews()
         setupTrackingQueue()
     }
 
@@ -157,7 +161,7 @@ class UniversalInboxFragment @Inject constructor(
         trackingQueue?.sendAll()
     }
 
-    private fun initViews(view: View, savedInstanceState: Bundle?) {
+    private fun initViews() {
         setupRecyclerView()
         setupRecyclerViewLoadMore()
         setupObservers()
@@ -218,6 +222,7 @@ class UniversalInboxFragment @Inject constructor(
                     trackInboxPageImpression(it)
                 }
             }
+            observeDriverCounter() // Observe only after widget loaded
         }
 
         viewModel.allCounter.observe(viewLifecycleOwner) {
@@ -240,7 +245,7 @@ class UniversalInboxFragment @Inject constructor(
                     }
                 }
                 is Fail -> {
-                    // Do nothing
+                    // No-op
                 }
             }
         }
@@ -249,7 +254,9 @@ class UniversalInboxFragment @Inject constructor(
             removeLoadMoreLoading()
             when (it) {
                 is Success -> onSuccessGetFirstRecommendationData(it.data)
-                is Fail -> {}
+                is Fail -> {
+                    // no-op
+                }
             }
         }
 
@@ -259,9 +266,145 @@ class UniversalInboxFragment @Inject constructor(
                 is Success -> {
                     addRecommendationItem(it.data)
                 }
-                is Fail -> {}
+                is Fail -> {
+                    // no-op
+                }
             }
         }
+
+        viewModel.error.observe(viewLifecycleOwner) {
+            Timber.d(it.first)
+            UniversalInboxErrorLogger.logExceptionToServerLogger(
+                it.first,
+                userSession.deviceId.orEmpty(),
+                it.second
+            )
+        }
+    }
+
+    private fun observeDriverCounter() {
+        viewLifecycleOwner.removeObservers(viewModel.driverChatCounter)
+        viewModel.driverChatCounter.let { liveData ->
+            liveData.observe(viewLifecycleOwner) {
+                viewModel.driverChatData = it // Always save data
+                when (it) {
+                    is Success -> onSuccessGetDriverChat(it.data.first, it.data.second)
+                    is Fail -> onErrorGetDriverChat(it.throwable)
+                    else -> Unit // no op
+                }
+            }
+        }
+    }
+
+    private fun onSuccessGetDriverChat(activeChannel: Int, unreadTotal: Int) {
+        /**
+         * Not added means not dynamic
+         * 1. Not rendered when load
+         * 2. Widget was removed and now it needs to be re-add
+         *
+         * Second time flow
+         * 1.A. Add if not added yet (for non-dynamic)
+         * 1.B. Update counter if already added
+         *
+         * Edge cases
+         * 1. No active channel after update
+         * 2. Remove widget
+         */
+        val driverChatWidgetPosition = adapter.getWidgetPosition(GOJEK_TYPE)
+        when {
+            (driverChatWidgetPosition < Int.ZERO) -> {
+                if (activeChannel > Int.ZERO) {
+                    addDriverWidget(activeChannel, unreadTotal)
+                }
+            }
+            (driverChatWidgetPosition >= Int.ZERO) -> {
+                if (activeChannel > Int.ZERO) {
+                    updateWidgetDriverCounter(driverChatWidgetPosition, activeChannel, unreadTotal)
+                } else {
+                    adapter.removeWidget(driverChatWidgetPosition)
+                }
+            }
+        }
+    }
+
+    private fun addDriverWidget(activeChannel: Int, unreadTotal: Int) {
+        viewModel.driverChatWidgetData?.let { (position, data) ->
+            adapter.addWidget(
+                position,
+                UniversalInboxWidgetUiModel(
+                    icon = data.icon.toIntOrZero(),
+                    title = data.title,
+                    subtext = data.subtext.replace(
+                        oldValue = GOJEK_REPLACE_TEXT,
+                        newValue = "$activeChannel",
+                        ignoreCase = true
+                    ),
+                    applink = data.applink,
+                    counter = unreadTotal,
+                    type = GOJEK_TYPE
+                )
+            )
+        }
+    }
+
+    private fun updateWidgetDriverCounter(
+        driverChatWidgetPosition: Int,
+        activeChannel: Int,
+        unreadTotal: Int
+    ) {
+        adapter.updateWidgetCounter(driverChatWidgetPosition, unreadTotal) {
+            // Replace default
+            if (it.subtext.contains(GOJEK_REPLACE_TEXT, true)) {
+                it.subtext = it.subtext.replace(
+                    oldValue = GOJEK_REPLACE_TEXT,
+                    newValue = "$activeChannel",
+                    ignoreCase = true
+                )
+            } else {
+                // Replace after update
+                it.subtext = activeChannel.toString() + it.subtext.filter { char ->
+                    char.isLetter() || char.isWhitespace()
+                }
+            }
+            it.isError = false
+        }
+    }
+
+    private fun onErrorGetDriverChat(throwable: Throwable) {
+        /**
+         * Ver A, widget not loaded
+         * 1. Save the error in ViewModel as Error<Throwable> & Load widget
+         * 2. Inside load widget, map to Error for driver chat
+         *
+         * Ver B, widget added
+         * Save to viewmodel & Update the widget to error state
+         */
+        val driverChatWidgetPosition = adapter.getWidgetPosition(GOJEK_TYPE)
+        if (driverChatWidgetPosition < Int.ZERO) {
+            viewModel.driverChatWidgetData?.let { (position, data) ->
+                adapter.addWidget(
+                    position,
+                    UniversalInboxWidgetUiModel(
+                        icon = data.icon.toIntOrZero(),
+                        title = data.title,
+                        subtext = data.subtext,
+                        applink = data.applink,
+                        counter = Int.ZERO,
+                        type = GOJEK_TYPE,
+                        isError = true
+                    )
+                )
+            }
+        } else {
+            adapter.updateWidgetCounter(driverChatWidgetPosition, Int.ZERO) {
+                it.isError = true
+            }
+        }
+        UniversalInboxErrorLogger.logExceptionToServerLogger(
+            throwable,
+            userSession.deviceId.orEmpty(),
+            ::onErrorGetDriverChat.name
+        )
     }
 
     private fun onSuccessGetFirstRecommendationData(
@@ -416,7 +559,7 @@ class UniversalInboxFragment @Inject constructor(
         when (item.type) {
             CHATBOT_TYPE -> {
                 analytics.clickOnHelp(
-                    abVariant = getVariantTracker(abTestPlatform),
+                    abVariant = UniversalInboxValueUtil.VAR_B,
                     userRole = getRoleUser(userSession),
                     shopId = getShopIdTracker(userSession),
                     helpCounter = item.counter.toString()
@@ -424,7 +567,7 @@ class UniversalInboxFragment @Inject constructor(
             }
             GOJEK_TYPE -> {
                 analytics.clickOnChatDriver(
-                    abVariant = getVariantTracker(abTestPlatform),
+                    abVariant = UniversalInboxValueUtil.VAR_B,
                     userRole = getRoleUser(userSession),
                     shopId = getShopIdTracker(userSession),
                     chatDriverCounter = item.counter.toString()
@@ -447,7 +590,7 @@ class UniversalInboxFragment @Inject constructor(
                 loadWidgetMetaAndCounter()
             }
             GOJEK_TYPE -> {
-                // Do nothing for phase 1, will be using SDK in phase 2
+                viewModel.setAllDriverChannels()
             }
         }
     }
@@ -459,13 +602,13 @@ class UniversalInboxFragment @Inject constructor(
         } else {
             VALUE_X
         }
-        val helpCounter = if (adapter.isHelpWidgetAdded()) {
+        val helpCounter = if (adapter.getWidgetPosition(CHATBOT_TYPE) >= Int.ZERO) {
             counter.othersUnread.helpUnread.toString()
         } else {
             VALUE_X
         }
         analytics.viewOnInboxPage(
-            abVariant = getVariantTracker(abTestPlatform),
+            abVariant = UniversalInboxValueUtil.VAR_B,
             userRole = getRoleUser(userSession),
             shopId = shopId,
             sellerChatCounter = sellerChatCounter,
@@ -483,7 +626,7 @@ class UniversalInboxFragment @Inject constructor(
         when (item.type) {
             MenuItemType.CHAT_BUYER -> {
                 analytics.clickOnBuyerChat(
-                    abVariant = getVariantTracker(abTestPlatform),
+                    abVariant = UniversalInboxValueUtil.VAR_B,
                     userRole = getRoleUser(userSession),
                     shopId = getShopIdTracker(userSession),
                     buyerChatCounter = item.counter.toString()
@@ -491,7 +634,7 @@ class UniversalInboxFragment @Inject constructor(
             }
             MenuItemType.CHAT_SELLER -> {
                 analytics.clickOnSellerChat(
-                    abVariant = getVariantTracker(abTestPlatform),
+                    abVariant = UniversalInboxValueUtil.VAR_B,
                     userRole = getRoleUser(userSession),
                     shopId = getShopIdTracker(userSession),
                     sellerChatCounter = item.counter.toString()
@@ -500,7 +643,7 @@ class UniversalInboxFragment @Inject constructor(
             MenuItemType.DISCUSSION -> {
                 analytics.sendNewPageInboxTalkTracking(userSession.userId, item.counter.toString())
                 analytics.clickOnDiscussion(
-                    abVariant = getVariantTracker(abTestPlatform),
+                    abVariant = UniversalInboxValueUtil.VAR_B,
                     userRole = getRoleUser(userSession),
                     shopId = getShopIdTracker(userSession),
                     discussionCounter = item.counter.toString()
@@ -508,7 +651,7 @@ class UniversalInboxFragment @Inject constructor(
             }
             MenuItemType.REVIEW -> {
                 analytics.clickOnReview(
-                    abVariant = getVariantTracker(abTestPlatform),
+                    abVariant = UniversalInboxValueUtil.VAR_B,
                     userRole = getRoleUser(userSession),
                     shopId = getShopIdTracker(userSession),
                     reviewCounter = item.counter.toString()
@@ -523,7 +666,7 @@ class UniversalInboxFragment @Inject constructor(
 
     override fun onNotificationIconClicked(counter: String) {
         analytics.clickOnNotifCenter(
-            abVariant = getVariantTracker(abTestPlatform),
+            abVariant = UniversalInboxValueUtil.VAR_B,
             userRole = getRoleUser(userSession),
             shopId = getShopIdTracker(userSession),
             notifCenterCounter = counter
@@ -621,8 +764,7 @@ class UniversalInboxFragment @Inject constructor(
         if (position.isNotEmpty()) {
             intent.putExtra(PDP_EXTRA_UPDATED_POSITION, position[Int.ZERO])
         }
-        // Need to use startActivityForResult to be able to use handleProductCardOptionsActivityResult
-        startActivityForResult(intent, REQUEST_FROM_PDP)
+        inboxMenuResultLauncher.launch(intent)
     }
 
     private fun onClickTopAds(item: RecommendationItem) {
@@ -759,63 +901,8 @@ class UniversalInboxFragment @Inject constructor(
     private val inboxMenuResultLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) {
-        loadWidgetMetaAndCounter()
-    }
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_FROM_PDP && data != null) {
-            val wishlistStatusFromPdp = data.getBooleanExtra(
-                WISHLIST_STATUS_IS_WISHLIST,
-                false
-            )
-            val position = data.getIntExtra(PDP_EXTRA_UPDATED_POSITION, -1)
-            if (position < Int.ZERO || adapter.getItems().size <= position) return
-            if (adapter.getItems()[position] is RecommendationItem) {
-                val recommendation = adapter.getItems()[position] as RecommendationItem
-                recommendation.isWishlist = wishlistStatusFromPdp
-                binding?.inboxRv?.post {
-                    adapter.notifyItemChanged(position)
-                }
-            }
-        }
-        handleProductCardOptionsActivityResult(
-            requestCode,
-            resultCode,
-            data,
-            object : ProductCardOptionsWishlistCallback {
-                override fun onReceiveWishlistResult(
-                    productCardOptionsModel: ProductCardOptionsModel
-                ) {
-                    handleWishListAction(productCardOptionsModel)
-                }
-            }
-        )
-    }
-
-    private fun handleWishListAction(
-        productCardOptionsModel: ProductCardOptionsModel
-    ) {
-        if (productCardOptionsModel.wishlistResult.isSuccess) {
-            handleWishListV2ActionSuccess(productCardOptionsModel)
-        } else {
-            showErrorAddRemoveWishlistV2(productCardOptionsModel.wishlistResult)
-        }
-    }
-
-    private fun handleWishListV2ActionSuccess(productCardOptionsModel: ProductCardOptionsModel) {
-        val isAddWishlist = productCardOptionsModel.wishlistResult.isAddWishlist
-        topAdsAnalytic.eventClickRecommendationWishlist(isAddWishlist)
-        val payloads = Bundle().also {
-            it.putBoolean(WISHLIST_STATUS_IS_WISHLIST, isAddWishlist)
-        }
-        binding?.inboxRv?.post {
-            adapter.notifyItemChanged(productCardOptionsModel.productPosition, payloads)
-        }
-        if (isAddWishlist) {
-            showSuccessAddWishlistV2(wishlistResult = productCardOptionsModel.wishlistResult)
-        } else {
-            showSuccessRemoveWishlistV2(wishlistResult = productCardOptionsModel.wishlistResult)
-        }
+        onRefreshWidgetMeta()
+        refreshRecommendations()
     }
 
     private fun showSuccessAddWishlistV2(
@@ -885,6 +972,18 @@ class UniversalInboxFragment @Inject constructor(
                 }
             }
             AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMessage, view)
+        }
+    }
+
+    private fun refreshRecommendations() {
+        // Refresh controlled by rollence
+        if (shouldRefreshProductRecommendation(abTestPlatform)) {
+            binding?.inboxRv?.post {
+                endlessRecyclerViewScrollListener?.resetState()
+                recommendationWidgetViewModel?.refresh()
+                adapter.removeAllProductRecommendation()
+                loadTopAdsAndRecommendation()
+            }
         }
     }
 

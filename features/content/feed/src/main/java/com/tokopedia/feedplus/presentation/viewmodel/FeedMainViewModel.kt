@@ -1,29 +1,28 @@
 package com.tokopedia.feedplus.presentation.viewmodel
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.tokopedia.content.common.producttag.view.uimodel.NetworkResult
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.content.common.model.FeedXHeaderRequestFields
 import com.tokopedia.content.common.usecase.FeedXHeaderUseCase
 import com.tokopedia.content.common.util.UiEventManager
 import com.tokopedia.createpost.common.domain.usecase.cache.DeleteMediaPostCacheUseCase
-import com.tokopedia.feedplus.domain.mapper.MapperFeedTabs
-import com.tokopedia.feedplus.presentation.model.ContentCreationItem
-import com.tokopedia.feedplus.presentation.model.ContentCreationTypeItem
+import com.tokopedia.feedplus.domain.FeedRepository
+import com.tokopedia.feedplus.presentation.model.ActiveTabSource
 import com.tokopedia.feedplus.presentation.model.CreateContentType
-import com.tokopedia.feedplus.presentation.model.CreatorType
-import com.tokopedia.feedplus.presentation.model.FeedDataModel
 import com.tokopedia.feedplus.presentation.model.FeedMainEvent
+import com.tokopedia.feedplus.presentation.model.FeedTabModel
 import com.tokopedia.feedplus.presentation.model.MetaModel
 import com.tokopedia.feedplus.presentation.model.SwipeOnboardingStateModel
-import com.tokopedia.feedplus.presentation.onboarding.OnboardingPreferences
+import com.tokopedia.feedplus.presentation.onboarding.OnBoardingPreferences
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -32,43 +31,48 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.util.concurrent.atomic.AtomicBoolean
-import javax.inject.Inject
 
 /**
  * Created By : Muhammad Furqan on 09/02/23
  */
-class FeedMainViewModel @Inject constructor(
-    private val feedXHeaderUseCase: FeedXHeaderUseCase,
+class FeedMainViewModel @AssistedInject constructor(
+    @Assisted val activeTabSource: ActiveTabSource,
+    private val repository: FeedRepository,
     private val deletePostCacheUseCase: DeleteMediaPostCacheUseCase,
-    private val dispatchers: CoroutineDispatchers,
-    private val onboardingPreferences: OnboardingPreferences,
+    private val onBoardingPreferences: OnBoardingPreferences,
     private val userSession: UserSessionInterface,
     private val uiEventManager: UiEventManager<FeedMainEvent>
-) : ViewModel(), OnboardingPreferences by onboardingPreferences {
+) : ViewModel(), OnBoardingPreferences by onBoardingPreferences {
 
-    private val _feedTabs = MutableStateFlow<Result<List<FeedDataModel>>?>(null)
+    @AssistedFactory
+    interface Factory {
+        fun create(activeTabSource: ActiveTabSource): FeedMainViewModel
+    }
+
+    companion object {
+        fun provideFactory(
+            assistedFactory: Factory,
+            activeTabSource: ActiveTabSource
+        ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                return assistedFactory.create(activeTabSource) as T
+            }
+        }
+    }
+
+    private val _feedTabs = MutableStateFlow<NetworkResult<FeedTabModel>?>(null)
     val feedTabs get() = _feedTabs.asStateFlow()
 
-    private val _metaData = MutableStateFlow<Result<MetaModel>?>(null)
+    private val _metaData = MutableStateFlow(MetaModel.Empty)
     val metaData get() = _metaData.asStateFlow()
 
     private val _isPageResumed = MutableLiveData<Boolean>(null)
     val isPageResumed get() = _isPageResumed
 
-    private val _feedCreateContentBottomSheetData =
-        MutableLiveData<Result<List<ContentCreationTypeItem>>>()
-    val feedCreateContentBottomSheetData: LiveData<Result<List<ContentCreationTypeItem>>>
-        get() = _feedCreateContentBottomSheetData
-
-    private val _currentTabIndex = MutableLiveData<Int>()
-    val currentTabIndex: LiveData<Int>
-        get() = _currentTabIndex
-
-    private val _swipeOnboardingState = MutableStateFlow(
+    private val _swipeOnBoardingState = MutableStateFlow(
         SwipeOnboardingStateModel.Empty.copy(
-            hasShown = onboardingPreferences.hasShownSwipeOnboarding() && userSession.isLoggedIn
+            hasShown = onBoardingPreferences.hasShownSwipeOnBoarding() && userSession.isLoggedIn
         )
     )
 
@@ -84,25 +88,23 @@ class FeedMainViewModel @Inject constructor(
 
     val isShortEntryPointShowed: Boolean
         get() {
-            val feedCreateContentData = _feedCreateContentBottomSheetData.value
-
-            return feedCreateContentData is Success &&
-                feedCreateContentData.data.find {
-                it.type == CreateContentType.CREATE_SHORT_VIDEO
+            val feedCreateContentData = _metaData.value
+            return feedCreateContentData.entryPoints.find {
+                it.type == CreateContentType.ShortVideo
             } != null
         }
 
     init {
         viewModelScope.launch {
-            _swipeOnboardingState
+            _swipeOnBoardingState
                 .map { it.isEligibleToShow }
                 .distinctUntilChanged()
                 .collectLatest { isEligible ->
                     if (!isEligible) return@collectLatest
                     uiEventManager.emitEvent(FeedMainEvent.ShowSwipeOnboarding)
 
-                    if (userSession.isLoggedIn) onboardingPreferences.setHasShownSwipeOnboarding()
-                    _swipeOnboardingState.update { it.copy(hasShown = true) }
+                    if (userSession.isLoggedIn) onBoardingPreferences.setHasShownSwipeOnBoarding()
+                    _swipeOnBoardingState.update { it.copy(hasShown = true) }
                 }
         }
     }
@@ -115,17 +117,26 @@ class FeedMainViewModel @Inject constructor(
         _isPageResumed.value = false
     }
 
-    fun changeCurrentTabByIndex(index: Int) {
-        _currentTabIndex.value = index
+    fun setActiveTab(position: Int) {
+        viewModelScope.launch {
+            val tabModel = (_feedTabs.value as? NetworkResult.Success<FeedTabModel>)?.data ?: return@launch
+            if (position < tabModel.data.size) {
+                val data = tabModel.data[position]
+                emitEvent(FeedMainEvent.SelectTab(data, position))
+            }
+        }
     }
 
-    fun changeCurrentTabByType(type: String) {
-        feedTabs.value?.let {
-            if (it is Success) {
-                it.data.forEachIndexed { index, tab ->
-                    if (tab.type == type && tab.isActive) {
-                        _currentTabIndex.value = index
-                    }
+    /**
+     * type == Backend tab type (pls don't ask me why)
+     */
+    fun setActiveTab(type: String) {
+        viewModelScope.launch {
+            val tabModel = (_feedTabs.value as? NetworkResult.Success<FeedTabModel>)?.data ?: return@launch
+            tabModel.data.forEachIndexed { index, tab ->
+                if (tab.type.equals(type, true)) {
+                    emitEvent(FeedMainEvent.SelectTab(tab, index))
+                    return@forEachIndexed
                 }
             }
         }
@@ -133,9 +144,9 @@ class FeedMainViewModel @Inject constructor(
 
     fun scrollCurrentTabToTop() {
         viewModelScope.launch {
-            val feedTabsValue = feedTabs.value
-            if (feedTabsValue !is Success) return@launch
-            feedTabsValue.data.forEachIndexed { _, tab ->
+            val tabValue = _feedTabs.value
+            if (tabValue !is NetworkResult.Success) return@launch
+            tabValue.data.data.forEachIndexed { _, tab ->
                 if (!tab.isActive) return@forEachIndexed
                 uiEventManager.emitEvent(
                     FeedMainEvent.ScrollToTop(tab.key)
@@ -143,17 +154,6 @@ class FeedMainViewModel @Inject constructor(
             }
         }
     }
-
-    fun getCurrentTabType() =
-        feedTabs.value?.let {
-            if (it is Success) {
-                currentTabIndex.value?.let { idx ->
-                    it.data.getOrNull(idx)?.type.orEmpty()
-                }.orEmpty()
-            } else {
-                ""
-            }
-        }.orEmpty()
 
     fun consumeEvent(event: FeedMainEvent) {
         viewModelScope.launch {
@@ -175,117 +175,36 @@ class FeedMainViewModel @Inject constructor(
     }
 
     fun onPostDataLoaded(isLoaded: Boolean) {
-        _swipeOnboardingState.update {
+        _swipeOnBoardingState.update {
             it.copy(onDataLoaded = isLoaded)
         }
     }
 
     fun setReadyToShowOnboarding() {
-        _swipeOnboardingState.update {
+        _swipeOnBoardingState.update {
             it.copy(isReadyToShow = true)
         }
     }
 
     fun fetchFeedTabs() {
+        _feedTabs.value = NetworkResult.Loading
         viewModelScope.launchCatchError(block = {
-            val response = withContext(dispatchers.io) {
-                feedXHeaderUseCase.setRequestParams(
-                    FeedXHeaderUseCase.createParam(
-                        listOf(
-                            FeedXHeaderRequestFields.TAB.value
-                        )
-                    )
-                )
-                feedXHeaderUseCase.executeOnBackground()
-            }
-            val mappedData = MapperFeedTabs.transform(response.feedXHeaderData)
-            _feedTabs.value = Success(mappedData.data)
+            val response = repository.getTabs(activeTabSource)
+            _feedTabs.value = NetworkResult.Success(response.tab)
         }) {
-            _feedTabs.value = Fail(it)
+            _feedTabs.value = NetworkResult.Error(it)
         }
     }
 
     fun fetchFeedMetaData() {
-        viewModelScope.launchCatchError(block = {
-            val response = withContext(dispatchers.io) {
-                feedXHeaderUseCase.setRequestParams(
-                    FeedXHeaderUseCase.createParam(
-                        listOf(
-                            FeedXHeaderRequestFields.LIVE.value,
-                            FeedXHeaderRequestFields.CREATION.value,
-                            FeedXHeaderRequestFields.USER.value,
-                            FeedXHeaderRequestFields.BROWSE.value
-                        )
-                    )
-                )
-                feedXHeaderUseCase.executeOnBackground()
+        viewModelScope.launch {
+            try {
+                val response = repository.getMeta(activeTabSource)
+                _metaData.value = response
+            } catch (_: Throwable) {
+                // ignored
             }
-            val mappedData = MapperFeedTabs.transform(response.feedXHeaderData)
-            _metaData.value = Success(mappedData.meta)
-
-            handleCreationData(
-                MapperFeedTabs.getCreationBottomSheetData(
-                    response.feedXHeaderData
-                )
-            )
-        }) {
-            _metaData.value = Fail(it)
-            _feedCreateContentBottomSheetData.value = Fail(it)
         }
-    }
-
-    fun getTabType(index: Int): String =
-        feedTabs.value?.let {
-            if (it is Success && it.data.size > index) {
-                it.data[index].type
-            } else {
-                ""
-            }
-        } ?: ""
-
-    /**
-     * Creation Button Position is Static :
-     * 1. Short
-     * 2. Post
-     * 3. Live
-     */
-    private fun handleCreationData(creationDataList: List<ContentCreationItem>) {
-        val authorUserdataList = creationDataList.find { it.type == CreatorType.USER }?.items
-        val authorShopDataList = creationDataList.find { it.type == CreatorType.SHOP }?.items
-
-        val creatorList = mutableListOf<ContentCreationTypeItem>()
-
-        authorShopDataList?.find {
-            it.type == CreateContentType.CREATE_SHORT_VIDEO && it.isActive
-        }?.let {
-            creatorList.add(it)
-        } ?: authorUserdataList?.find {
-            it.type == CreateContentType.CREATE_SHORT_VIDEO && it.isActive
-        }?.let {
-            creatorList.add(it)
-        }
-
-        authorUserdataList?.find {
-            it.type == CreateContentType.CREATE_POST && it.isActive
-        }?.let {
-            creatorList.add(it)
-        } ?: authorShopDataList?.find {
-            it.type == CreateContentType.CREATE_POST && it.isActive
-        }?.let {
-            creatorList.add(it)
-        }
-
-        authorShopDataList?.find {
-            it.type == CreateContentType.CREATE_LIVE && it.isActive
-        }?.let {
-            creatorList.add(it)
-        } ?: authorUserdataList?.find {
-            it.type == CreateContentType.CREATE_LIVE && it.isActive
-        }?.let {
-            creatorList.add(it)
-        }
-
-        _feedCreateContentBottomSheetData.value = Success(creatorList)
     }
 
     private fun emitEvent(event: FeedMainEvent) {

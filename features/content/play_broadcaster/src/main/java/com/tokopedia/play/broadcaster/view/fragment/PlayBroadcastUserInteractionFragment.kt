@@ -84,7 +84,6 @@ import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.play_common.viewcomponent.viewComponentOrNull
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -560,6 +559,10 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 secondaryCta = getString(R.string.play_broadcast_exit),
                 secondaryListener = { dialog ->
                     analytic.clickDialogExitOnLivePage(parentViewModel.channelId, parentViewModel.channelTitle)
+
+                    gameIconView.cancelCoachMark()
+                    interactiveGameResultViewComponent?.hideCoachMark()
+                    productTagView.hideCoachMark()
                     stopBroadcast()
                     navigateToSummary()
                 }
