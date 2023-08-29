@@ -1,6 +1,5 @@
 package com.tokopedia.editor.ui.placement
 
-import android.graphics.Matrix
 import android.net.Uri
 import android.os.Handler
 import androidx.core.graphics.values
@@ -38,13 +37,13 @@ class PlacementImageFragment @Inject constructor() : BaseEditorFragment(R.layout
                         TransformImageView.TransformImageListener {
                         override fun onLoadComplete() {
                             gestureCropImage.post {
-                                ucropRef.getOverlayView()?.setTargetAspectRatio(9/16f)
+                                ucropRef.getOverlayView()?.setTargetAspectRatio(IMAGE_RATIO)
 
                                 Handler().postDelayed({
                                     scale = gestureCropImage.currentScale
                                     gestureCropImage.imageMatrix.values().let {
-                                        translateX = it[2]
-                                        translateY = it[5]
+                                        translateX = it[INDEX_TRANSLATE_X]
+                                        translateY = it[INDEX_TRANSLATE_Y]
                                     }
 
                                     implementPreviousState(viewModel.placementModel.value)
@@ -88,8 +87,8 @@ class PlacementImageFragment @Inject constructor() : BaseEditorFragment(R.layout
                 cropImageView.postRotate(previousModel.angle)
 
                 val currentImageMatrix = cropImageView.imageMatrix.values()
-                val currentTranslateX = currentImageMatrix[INDEX_CORD_X]
-                val currentTranslateY = currentImageMatrix[INDEX_CORD_Y]
+                val currentTranslateX = currentImageMatrix[INDEX_TRANSLATE_X]
+                val currentTranslateY = currentImageMatrix[INDEX_TRANSLATE_Y]
 
                 Handler().postDelayed({
                     // waiting zoom & rotate process is done then move the image
@@ -98,7 +97,7 @@ class PlacementImageFragment @Inject constructor() : BaseEditorFragment(R.layout
                     cropImageView.postTranslate(previousModel.translateX, previousModel.translateY)
 
                     viewModel.initialImageMatrix = it.cropArea.getCropImageView()?.imageMatrix?.values()
-                },PREV_STATE_DELAY)
+                }, PREV_STATE_DELAY)
             } ?: run{
                 viewModel.initialImageMatrix = it.cropArea.getCropImageView()?.imageMatrix?.values()
             }
@@ -123,8 +122,8 @@ class PlacementImageFragment @Inject constructor() : BaseEditorFragment(R.layout
             gestureCropImage.zoomOutImage(scale)
 
             val currentImageMatrix = gestureCropImage.imageMatrix.values()
-            val currentTranslateX = currentImageMatrix[INDEX_CORD_X]
-            val currentTranslateY = currentImageMatrix[INDEX_CORD_Y]
+            val currentTranslateX = currentImageMatrix[INDEX_TRANSLATE_X]
+            val currentTranslateY = currentImageMatrix[INDEX_TRANSLATE_Y]
 
             gestureCropImage.postTranslate(-currentTranslateX, -currentTranslateY)
             gestureCropImage.postTranslate(translateX, translateY)
@@ -132,8 +131,10 @@ class PlacementImageFragment @Inject constructor() : BaseEditorFragment(R.layout
     }
 
     companion object {
-        private const val INDEX_CORD_X = 2
-        private const val INDEX_CORD_Y = 5
+        private const val INDEX_TRANSLATE_X = 2
+        private const val INDEX_TRANSLATE_Y = 5
+
+        private const val IMAGE_RATIO = 9/16f
 
         private const val PREV_STATE_DELAY = 500L
     }

@@ -73,17 +73,29 @@ open class CropImageViewStories : CropImageView {
 
     fun customCrop(onFinish: (placementModel: ImagePlacementModel) -> Unit) {
         val imageState = ImageState(
-            mCropRect, RectUtils.trapToRect(mCurrentImageCorners),
-            currentScale, currentAngle
+            mCropRect,
+            RectUtils.trapToRect(mCurrentImageCorners),
+            currentScale,
+            currentAngle
         )
 
         val mCurrentImageRect = imageState.currentImageRect
         val mCurrentScale = imageState.currentScale
 
-        val bitmapResult = Bitmap.createBitmap(mCropRect.width().toInt(), mCropRect.height().toInt(), Bitmap.Config.ARGB_8888)
+        val bitmapResult = Bitmap.createBitmap(
+            mCropRect.width().toInt(),
+            mCropRect.height().toInt(),
+            Bitmap.Config.ARGB_8888
+        )
         val canvas = Canvas(bitmapResult)
 
-        canvas.drawRect(0f, 0f, bitmapResult.width.toFloat(),bitmapResult.height.toFloat(), Paint())
+        canvas.drawRect(
+            0f,
+            0f,
+            bitmapResult.width.toFloat(),
+            bitmapResult.height.toFloat(),
+            Paint()
+        )
 
         viewBitmap?.let {
             val scaledWidth = (it.width * mCurrentScale).toInt()
@@ -93,9 +105,11 @@ open class CropImageViewStories : CropImageView {
             val matrix = Matrix()
             matrix.preRotate(currentAngle)
 
-            val rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledWidth, scaledHight, matrix, false)
+            val rotatedBitmap =
+                Bitmap.createBitmap(scaledBitmap, 0, 0, scaledWidth, scaledHight, matrix, false)
 
-            val finalBitmap = Bitmap.createBitmap(rotatedBitmap.width, rotatedBitmap.height, rotatedBitmap.config)
+            val finalBitmap =
+                Bitmap.createBitmap(rotatedBitmap.width, rotatedBitmap.height, rotatedBitmap.config)
             Canvas(finalBitmap).apply {
                 drawColor(Color.BLACK)
                 drawBitmap(rotatedBitmap, 0f, 0f, null)
@@ -120,8 +134,8 @@ open class CropImageViewStories : CropImageView {
 
                 with(Dispatchers.Main) {
                     val imageMatrix = imageMatrix.values()
-                    val translateX = imageMatrix[2]
-                    val translateY = imageMatrix[5]
+                    val translateX = imageMatrix[INDEX_TRANSLATE_X]
+                    val translateY = imageMatrix[INDEX_TRANSLATE_Y]
 
                     onFinish(
                         ImagePlacementModel(
@@ -158,6 +172,9 @@ open class CropImageViewStories : CropImageView {
     }
 
     companion object {
+        private const val INDEX_TRANSLATE_X = 2
+        private const val INDEX_TRANSLATE_Y = 5
+
         private const val IMAGE_QUALITY = 100
     }
 }

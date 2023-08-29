@@ -29,8 +29,6 @@ class PlacementImageActivity : BaseActivity(), NavToolbarComponent.Listener {
 
     private val viewModel: PlacementImageViewModel by viewModels { viewModelFactory }
 
-    private var placementFragment: PlacementImageFragment? = null
-
     private val toolbar by uiComponent {
         NavToolbarComponent(
             listener = this,
@@ -126,7 +124,7 @@ class PlacementImageActivity : BaseActivity(), NavToolbarComponent.Listener {
 
     private fun onPageExit() {
         if (viewModel.isShowExitConfirmation(getFragment().getCurrentMatrixValue())) {
-            DialogUnify(this, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply dialog@ {
+            DialogUnify(this, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply dialog@{
                 setTitle(getString(R.string.universal_editor_input_tool_confirmation_title))
                 setDescription(getString(R.string.universal_editor_input_tool_confirmation_desc))
 
@@ -138,7 +136,8 @@ class PlacementImageActivity : BaseActivity(), NavToolbarComponent.Listener {
                 }
 
                 dialogSecondaryLongCTA.apply {
-                    text = getString(R.string.universal_editor_input_tool_confirmation_secondary_cta)
+                    text =
+                        getString(R.string.universal_editor_input_tool_confirmation_secondary_cta)
                     setOnClickListener {
                         finish()
                     }
@@ -151,7 +150,7 @@ class PlacementImageActivity : BaseActivity(), NavToolbarComponent.Listener {
         }
     }
 
-    private fun getFragment(): PlacementImageFragment  {
+    private fun getFragment(): PlacementImageFragment {
         return supportFragmentManager.findFragmentById(R.id.fragment_view) as PlacementImageFragment
     }
 

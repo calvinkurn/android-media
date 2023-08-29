@@ -17,7 +17,8 @@ data class EditorModel(
 ) : Parcelable {
     fun clone(): EditorModel {
         return EditorModel(
-            image?.copy(), video?.copy()
+            image?.copy(),
+            video?.copy()
         )
     }
 }
