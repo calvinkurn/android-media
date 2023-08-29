@@ -31,4 +31,8 @@ class CategoryL2TabViewPagerAdapter(fragment: Fragment) : FragmentStateAdapter(f
     fun onResume() {
         fragments[selectedTabPosition].handleOnResume()
     }
+
+    fun clearFragments() {
+        fragments.clear()
+    }
 }

@@ -124,6 +124,7 @@ class TokoNowCategoryL2Fragment : BaseCategoryFragment() {
 
     private fun observeLiveData() {
         observe(viewModel.categoryTab) { data ->
+            clearAllCategoryTabs()
             addTabFragments(data)
             setupTabsUnifyMediator(data)
             setSelectedTabPosition(data)
@@ -189,6 +190,13 @@ class TokoNowCategoryL2Fragment : BaseCategoryFragment() {
         binding?.tabsUnify?.apply {
             val selectedTabPosition = data.selectedTabPosition
             tabLayout.getTabAt(selectedTabPosition)?.select()
+        }
+    }
+
+    private fun clearAllCategoryTabs() {
+        binding?.apply {
+            tabsUnify.tabLayout.removeAllTabs()
+            viewPagerAdapter.clearFragments()
         }
     }
 
