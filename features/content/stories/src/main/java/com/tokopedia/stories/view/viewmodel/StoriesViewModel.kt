@@ -96,6 +96,7 @@ class StoriesViewModel @Inject constructor(
             StoriesUiAction.OpenProduct -> handleOpenProduct()
             is StoriesUiAction.ProductAction -> handleProductAction(action.action, action.product)
             StoriesUiAction.FetchProduct -> getProducts()
+            is StoriesUiAction.ShowVariantSheet -> handleVariantSheet(action.product)
             else -> {}
         }
     }
@@ -260,6 +261,19 @@ class StoriesViewModel @Inject constructor(
                 }
             } else {
                 addToCart(product)
+            }
+        }
+    }
+
+    private fun handleVariantSheet(product: ContentTaggedProductUiModel) {
+        viewModelScope.launch {
+            _uiEvent.emit(StoriesUiEvent.ShowVariantSheet(product))
+            bottomSheetStatus.update { bottomSheet ->
+                bottomSheet.mapValues {
+                    if (it.key == BottomSheetType.GVBS)
+                        true
+                    else it.value
+                }
             }
         }
     }

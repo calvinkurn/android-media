@@ -32,7 +32,7 @@ sealed interface StoriesUiAction {
 
     data class Navigate(val appLink: String) : StoriesUiAction
 
-    data class ShowVariantSheet(val isShow: Boolean) : StoriesUiAction
+    data class ShowVariantSheet(val product: ContentTaggedProductUiModel) : StoriesUiAction
 
     object FetchProduct : StoriesUiAction
 }

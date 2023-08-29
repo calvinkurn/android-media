@@ -84,7 +84,6 @@ class StoriesProductBottomSheet @Inject constructor(
 
     override fun onResume() {
         super.onResume()
-
         viewModel.submitAction(StoriesUiAction.FetchProduct)
     }
 
@@ -96,14 +95,22 @@ class StoriesProductBottomSheet @Inject constructor(
         product: ContentTaggedProductUiModel,
         itemPosition: Int
     ) {
-        viewModel.submitAction(StoriesUiAction.ProductAction(StoriesProductAction.ATC, product))
+        handleProductAction(StoriesProductAction.ATC, product)
     }
 
     override fun onBuyProductButtonClicked(
         product: ContentTaggedProductUiModel,
         itemPosition: Int
     ) {
-        viewModel.submitAction(StoriesUiAction.ProductAction(StoriesProductAction.Buy, product))
+        handleProductAction(StoriesProductAction.Buy, product)
+    }
+
+    private fun handleProductAction(type: StoriesProductAction, product: ContentTaggedProductUiModel) {
+        if (product.showGlobalVariant) {
+            viewModel.submitAction(StoriesUiAction.ShowVariantSheet(product))
+        } else {
+            viewModel.submitAction(StoriesUiAction.ProductAction(type, product))
+        }
     }
 
     fun show(fg: FragmentManager) {

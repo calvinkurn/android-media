@@ -291,6 +291,7 @@ class StoriesDetailFragment @Inject constructor(
                         goTo(ApplinkConst.LOGIN)
                     }
                     is StoriesUiEvent.NavigateEvent -> goTo(event.appLink)
+                    is StoriesUiEvent.ShowVariantSheet -> openVariantBottomSheet(event.product)
                     else -> {}
                 }
             }
@@ -315,7 +316,9 @@ class StoriesDetailFragment @Inject constructor(
         showImmediately(childFragmentManager, VARIANT_BOTTOM_SHEET_TAG) {
             variantSheet = AtcVariantBottomSheet()
             variantSheet.setOnDismissListener {  }
-            variantSheet.bottomSheetClose.setOnClickListener {  }
+            variantSheet.bottomSheetClose.setOnClickListener {
+                viewModelAction(StoriesUiAction.DismissSheet(BottomSheetType.GVBS))
+            }
             variantSheet
         }
     }
