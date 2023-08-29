@@ -182,7 +182,12 @@ object ShopPageWidgetMapper {
         )
     }
 
-    fun mapToHomeShowcaseNavigationWidget(response: ShopLayoutWidget.Widget): ShopHomeShowcaseNavigationUiModel {
+    fun mapToHomeShowcaseNavigationWidget(
+        response: ShopLayoutWidget.Widget,
+        isOverrideTheme: Boolean,
+        widgetLayout: ShopPageWidgetUiModel?,
+        colorSchema: ShopPageColorSchema
+    ): ShopHomeShowcaseNavigationUiModel {
         val tabs = response.data.map { tab ->
             val showcases = tab.showcaseList.map { showcase ->
                 Showcase(
@@ -225,12 +230,18 @@ object ShopPageWidgetMapper {
         return ShopHomeShowcaseNavigationUiModel(
             appearance = appearance,
             widgetId = response.widgetID,
+            header = ShopPageHomeMapper.mapToHeaderModel(response.header, widgetLayout, isOverrideTheme, colorSchema),
             layoutOrder = response.layoutOrder,
             name = response.name,
             type = response.type
         )
     }
-    fun mapToHomeBannerProductGroupWidget(response: ShopLayoutWidget.Widget): ShopWidgetComponentBannerProductGroupUiModel {
+    fun mapToHomeBannerProductGroupWidget(
+        response: ShopLayoutWidget.Widget,
+        widgetLayout: ShopPageWidgetUiModel?,
+        isOverrideTheme: Boolean,
+        colorSchema: ShopPageColorSchema
+    ): ShopWidgetComponentBannerProductGroupUiModel {
         val tabs = response.data.map { tab ->
             val componentList = tab.componentList.map { component ->
 
@@ -274,6 +285,7 @@ object ShopPageWidgetMapper {
             widgetId = response.widgetID,
             layoutOrder = response.layoutOrder,
             title = response.header.title,
+            header = ShopPageHomeMapper.mapToHeaderModel(response.header, widgetLayout, isOverrideTheme, colorSchema),
             tabs = tabs,
             name = response.name,
             type = response.type,

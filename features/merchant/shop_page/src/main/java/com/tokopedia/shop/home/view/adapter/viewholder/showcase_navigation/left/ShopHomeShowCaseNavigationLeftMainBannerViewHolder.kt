@@ -12,6 +12,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.shop.R
+import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.ItemShopHomeShowcaseNavigationLeftMainBannerBinding
 import com.tokopedia.shop.home.util.ShopHomeShowcaseNavigationDependencyProvider
 import com.tokopedia.shop.home.view.fragment.ShopShowcaseNavigationTabWidgetFragment
@@ -42,7 +43,7 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
     override fun bind(model: ShopHomeShowcaseNavigationUiModel) {
         val tabs = if (model.appearance is LeftMainBannerAppearance) model.appearance.tabs else emptyList()
         setupShowcaseHeader(model.appearance.title, model.appearance.viewAllCtaAppLink, tabs)
-        setupTabs(tabs)
+        setupTabs(tabs, model.header.isOverrideTheme, model.header.colorSchema)
     }
 
     private fun setupShowcaseHeader(title: String, viewAllCtaAppLink: String, tabs: List<ShowcaseTab>) {
@@ -57,8 +58,12 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
         viewBinding?.iconChevron?.isVisible = showcases.size > SHOW_VIEW_ALL_SHOWCASE_THRESHOLD
     }
 
-    private fun setupTabs(tabs: List<ShowcaseTab>) {
-        val fragments = createFragments(tabs)
+    private fun setupTabs(
+        tabs: List<ShowcaseTab>,
+        overrideTheme: Boolean,
+        colorSchema: ShopPageColorSchema
+    ) {
+        val fragments = createFragments(tabs, overrideTheme, colorSchema)
         val pagerAdapter = TabPagerAdapter(provider.currentFragment, fragments)
 
         viewBinding?.run {
@@ -100,11 +105,19 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
         override fun createFragment(position: Int) = fragments[position].second
     }
 
-    private fun createFragments(tabs: List<ShowcaseTab>): List<Pair<String, Fragment>> {
+    private fun createFragments(
+        tabs: List<ShowcaseTab>,
+        overrideTheme: Boolean,
+        colorSchema: ShopPageColorSchema
+    ): List<Pair<String, Fragment>> {
         val pages = mutableListOf<Pair<String, Fragment>>()
 
         tabs.forEachIndexed { _, currentTab ->
-            val fragment = ShopShowcaseNavigationTabWidgetFragment.newInstance(currentTab.showcases)
+            val fragment = ShopShowcaseNavigationTabWidgetFragment.newInstance(
+                currentTab.showcases,
+                overrideTheme,
+                colorSchema
+            )
             fragment.setOnShowcaseClick { selectedShowcase ->
                 listener.onNavigationBannerShowcaseClick(selectedShowcase)
             }

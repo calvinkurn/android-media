@@ -2,9 +2,11 @@ package com.tokopedia.shop.home.view.adapter.viewholder.showcase_navigation
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.ItemShopHomeShowcaseNavigationBinding
 import com.tokopedia.shop.home.view.listener.ShopHomeShowcaseNavigationListener
 import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.CarouselAppearance
@@ -13,11 +15,14 @@ import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.ShopHom
 import com.tokopedia.shop.home.view.model.showcase_navigation.Showcase
 import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.TopMainBannerAppearance
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 import com.tokopedia.unifycomponents.toPx
 
 class ShopHomeShowCaseNavigationAdapter(
     private val appearance: ShopHomeShowcaseNavigationBannerWidgetAppearance,
-    private val listener: ShopHomeShowcaseNavigationListener
+    private val listener: ShopHomeShowcaseNavigationListener,
+    private val overrideTheme: Boolean,
+    private val colorSchema: ShopPageColorSchema
 ) : RecyclerView.Adapter<ShopHomeShowCaseNavigationAdapter.ShowCaseViewHolder>() {
 
     companion object {
@@ -65,6 +70,7 @@ class ShopHomeShowCaseNavigationAdapter(
             binding.tpgBannerTitle.text = showcase.name
             binding.imgBanner.loadShowcaseImage(showcase.imageUrl, appearance)
             binding.root.setOnClickListener { listener.onNavigationBannerShowcaseClick(showcase) }
+            setupColors(overrideTheme, colorSchema)
         }
 
         private fun ImageUnify.loadShowcaseImage(
@@ -78,6 +84,18 @@ class ShopHomeShowCaseNavigationAdapter(
             }
 
             loadImage(imageUrl)
+        }
+
+        private fun setupColors(overrideTheme: Boolean, colorSchema: ShopPageColorSchema) {
+            val lowEmphasizeColor = if (overrideTheme) {
+                colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_LOW_EMPHASIS)
+            } else {
+                ContextCompat.getColor(binding.tpgBannerTitle.context ?: return, unifycomponentsR.color.Unify_NN950)
+            }
+
+            binding.apply {
+                tpgBannerTitle.setTextColor(lowEmphasizeColor)
+            }
         }
     }
 
