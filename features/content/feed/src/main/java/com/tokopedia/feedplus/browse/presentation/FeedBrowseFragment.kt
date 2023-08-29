@@ -49,6 +49,19 @@ class FeedBrowseFragment : BaseDaggerFragment() {
         observeUiEvent()
     }
 
+    override fun getScreenName(): String {
+        return ""
+    }
+
+    override fun initInjector() {
+        getComponent(FeedBrowseComponent::class.java).inject(this)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     private fun observeUiState() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
@@ -81,23 +94,13 @@ class FeedBrowseFragment : BaseDaggerFragment() {
         binding.feedBrowseHeader.title = title
         (requireActivity() as AppCompatActivity)
             .setSupportActionBar(binding.feedBrowseHeader)
+        binding.feedBrowseHeader.setNavigationOnClickListener {
+            activity?.finish()
+        }
     }
 
     private fun renderContent(widgets: List<FeedBrowseUiModel>) {
         adapter.setItems(widgets)
         adapter.notifyDataSetChanged()
-    }
-
-    override fun getScreenName(): String {
-        return ""
-    }
-
-    override fun initInjector() {
-        getComponent(FeedBrowseComponent::class.java).inject(this)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 }

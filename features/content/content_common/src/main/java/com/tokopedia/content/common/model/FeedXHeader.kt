@@ -29,6 +29,8 @@ data class FeedXHeaderData(
 data class FeedXHeaderBrowse(
     @SerializedName("isActive")
     val isActive: Boolean = false,
+    @SerializedName("title")
+    val title: String = "",
     @SerializedName("applink")
     val applink: String = "",
     @SerializedName("__typename")

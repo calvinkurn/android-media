@@ -1,5 +1,6 @@
 package com.tokopedia.feedplus.browse.data
 
+import com.tokopedia.content.common.model.FeedXHeaderRequestFields
 import com.tokopedia.content.common.usecase.FeedXHeaderUseCase
 import com.tokopedia.content.common.usecase.GetPlayWidgetSlotUseCase
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseChipUiModel
@@ -33,10 +34,16 @@ class FeedBrowseRepositoryImpl @Inject constructor(
     private val mapper: FeedBrowseMapper
 ) : FeedBrowseRepository {
 
-    // todo: with real data
     override suspend fun getTitle(): String {
-        delay(500)
-        return "Cari Konten Seru, Yuk!"
+        feedXHeaderUseCase.setRequestParams(
+            FeedXHeaderUseCase.createParam(
+                listOf(
+                    FeedXHeaderRequestFields.BROWSE.value
+                )
+            )
+        )
+        val headerData = feedXHeaderUseCase.executeOnBackground()
+        return headerData.feedXHeaderData.data.browse.title
     }
 
     // todo: with real data
@@ -46,7 +53,7 @@ class FeedBrowseRepositoryImpl @Inject constructor(
             FeedBrowseUiModel.Placeholder(""),
             FeedBrowseUiModel.Placeholder(""),
             FeedBrowseUiModel.Placeholder(""),
-            FeedBrowseUiModel.Placeholder(""),
+            FeedBrowseUiModel.Placeholder("")
         )
     }
 
@@ -60,7 +67,7 @@ class FeedBrowseRepositoryImpl @Inject constructor(
                 FeedBrowseChipUiModel("", "Kuliner Seru"),
                 FeedBrowseChipUiModel("", "Inspirasi Fashion"),
                 FeedBrowseChipUiModel("", "Beauty"),
-                FeedBrowseChipUiModel("", "Home & Living"),
+                FeedBrowseChipUiModel("", "Home & Living")
             ),
             model = PlayWidgetUiModel(
                 title = "",
@@ -94,8 +101,8 @@ class FeedBrowseRepositoryImpl @Inject constructor(
                         channelType = PlayWidgetChannelType.Vod,
                         totalView = "8rb",
                         coverUrl = "https://images.tokopedia.net/img/jJtrdn/2023/8/11/3e65f0ee-ffbd-4123-87df-d4e75f2a6835.jpg?b=UXLEE8~VkBNF~pM%7BNHxuR4NGR%2At6nhs%3BWCRi"
-                    ),
-                ),
+                    )
+                )
             )
         )
     }
@@ -103,7 +110,7 @@ class FeedBrowseRepositoryImpl @Inject constructor(
     private fun dummyChannel(
         channelType: PlayWidgetChannelType,
         totalView: String,
-        coverUrl: String,
+        coverUrl: String
     ): PlayWidgetItemUiModel {
         return PlayWidgetChannelUiModel(
             channelId = "1",
@@ -136,7 +143,10 @@ class FeedBrowseRepositoryImpl @Inject constructor(
             hasAction = false,
             products = emptyList(),
             shouldShowPerformanceDashboard = false,
-            channelTypeTransition = PlayWidgetChannelTypeTransition(prevType = null, currentType = PlayWidgetChannelType.Unknown),
+            channelTypeTransition = PlayWidgetChannelTypeTransition(
+                prevType = null,
+                currentType = PlayWidgetChannelType.Unknown
+            ),
             gridType = PlayGridType.Unknown,
             extras = emptyMap()
         )
