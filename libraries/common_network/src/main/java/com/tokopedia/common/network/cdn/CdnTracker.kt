@@ -25,7 +25,8 @@ internal object CdnTracker : CoroutineScope {
         responseCode: String,
         responseSize: String,
         message: String,
-        popIp: String
+        popIp: String,
+        contentType: String
     ) {
         val pageName = context.pageName()
 
@@ -41,6 +42,7 @@ internal object CdnTracker : CoroutineScope {
                 "response_time" to responseTime,
                 "response_code" to responseCode,
                 "pop_ip" to popIp,
+                "content_type" to contentType,
                 "error_description" to message
             )
         )
@@ -53,6 +55,7 @@ internal object CdnTracker : CoroutineScope {
         responseTime: String,
         responseCode: String,
         popIp: String,
+        contentType: String,
         exception: Throwable
     ) {
         val pageName = context.pageName()
@@ -68,6 +71,7 @@ internal object CdnTracker : CoroutineScope {
                 "response_time" to responseTime,
                 "response_code" to responseCode,
                 "pop_ip" to popIp,
+                "content_type" to contentType,
                 "error_description" to exception.localizedMessage
             )
         )
