@@ -3,6 +3,20 @@
 
     <application>
         <activity
+            android:name=".presentation.activity.SellerMenuActivityOld"
+            android:exported="false"
+            android:label="@string/title_seller_menu"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".presentation.activity.SellerMenuActivity"
             android:exported="false"
             android:label="@string/title_seller_menu"

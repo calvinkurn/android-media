@@ -6,8 +6,9 @@ import com.tokopedia.seller.menu.di.module.SellerMenuUseCaseModule
 import com.tokopedia.seller.menu.di.module.ViewModelModule
 import com.tokopedia.seller.menu.di.scope.SellerMenuScope
 import com.tokopedia.seller.menu.presentation.activity.SellerMenuActivity
+import com.tokopedia.seller.menu.presentation.activity.SellerMenuActivityOld
 import com.tokopedia.seller.menu.presentation.activity.SellerSettingsActivity
-import com.tokopedia.seller.menu.presentation.fragment.SellerMenuFragmentOld
+import com.tokopedia.seller.menu.presentation.fragment.SellerMenuFragment
 import com.tokopedia.seller.menu.presentation.fragment.SellerSettingsFragment
 import dagger.Component
 
@@ -22,11 +23,13 @@ import dagger.Component
 )
 interface SellerMenuComponent {
 
-    fun inject(fragment: SellerMenuFragmentOld)
+    fun inject(fragment: SellerMenuFragment)
 
     fun inject(fragment: SellerSettingsFragment)
 
     fun inject(activity: SellerMenuActivity)
+
+    fun inject(activity: SellerMenuActivityOld)
 
     fun inject(activity: SellerSettingsActivity)
 }

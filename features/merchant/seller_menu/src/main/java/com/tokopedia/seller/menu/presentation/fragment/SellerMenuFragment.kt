@@ -40,7 +40,7 @@ import com.tokopedia.seller.menu.presentation.adapter.SellerMenuAdapterTypeFacto
 import com.tokopedia.seller.menu.presentation.adapter.viewholder.ShopInfoErrorViewHolder
 import com.tokopedia.seller.menu.presentation.adapter.viewholder.ShopInfoViewHolder
 import com.tokopedia.seller.menu.presentation.uimodel.SellerFeatureUiModel
-import com.tokopedia.seller.menu.presentation.util.SellerMenuList
+import com.tokopedia.seller.menu.presentation.util.SellerMenuListOld
 import com.tokopedia.seller.menu.presentation.viewmodel.SellerMenuViewModelOld
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants
 import com.tokopedia.shopadmin.common.util.AdminPermissionMapper
@@ -51,7 +51,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class SellerMenuFragmentOld : Fragment(), SettingTrackingListener, ShopInfoViewHolder.ShopInfoListener,
+class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHolder.ShopInfoListener,
         ShopInfoErrorViewHolder.ShopInfoErrorListener {
 
     companion object {
@@ -299,10 +299,10 @@ class SellerMenuFragmentOld : Fragment(), SettingTrackingListener, ShopInfoViewH
 
     private fun setupMenuList() {
         context?.let { context ->
-            val menuList = SellerMenuList.create(context, userSession, adminPermissionMapper)
+            val menuList = SellerMenuListOld.create(context, userSession, adminPermissionMapper)
 
             binding?.listMenu?.run {
-                adapter = this@SellerMenuFragmentOld.adapter
+                adapter = this@SellerMenuFragment.adapter
                 layoutManager = LinearLayoutManager(context)
             }
 
