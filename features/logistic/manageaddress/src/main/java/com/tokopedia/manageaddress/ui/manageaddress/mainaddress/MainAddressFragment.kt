@@ -1036,8 +1036,6 @@ class MainAddressFragment :
         return try {
             val userConsent = UserConsentWidget(requireContext())
             userConsent.load(
-                viewLifecycleOwner,
-                this,
                 ConsentCollectionParam(
                     collectionId = viewModel.deleteCollectionId
                 )
