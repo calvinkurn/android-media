@@ -128,6 +128,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.pxToDp
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
@@ -310,6 +311,8 @@ class CartRevampFragment :
         const val KEY_OLD_BUNDLE_ID = "old_bundle_id"
         const val KEY_NEW_BUNLDE_ID = "new_bundle_id"
         const val KEY_IS_CHANGE_VARIANT = "is_variant_changed"
+
+        private const val QUANTITY_MAX_LIMIT = 999
 
         private const val MAIN_FLOW_ONBOARDING_NOTES_INDEX = 0
         private const val MAIN_FLOW_ONBOARDING_WISHLIST_INDEX = 1
@@ -609,7 +612,7 @@ class CartRevampFragment :
             if (isClickable) {
                 binding?.vDisabledGoToCourierPageButton?.setOnClickListener {
                     if (CartDataHelper.getAllAvailableCartItemData(viewModel.cartDataList.value)
-                        .isNotEmpty()
+                            .isNotEmpty()
                     ) {
                         showToastMessageGreen(getString(R.string.message_no_cart_item_selected))
                     }
@@ -3470,7 +3473,7 @@ class CartRevampFragment :
 
             val onClickListener: (applied: Boolean) -> Unit = { applied ->
                 if (CartDataHelper.getSelectedCartItemData(viewModel.cartDataList.value)
-                    .isEmpty()
+                        .isEmpty()
                 ) {
                     showToastMessageGreen(getString(R.string.promo_choose_item_cart))
                     PromoRevampAnalytics.eventCartViewPromoMessage(getString(R.string.promo_choose_item_cart))
@@ -3499,7 +3502,7 @@ class CartRevampFragment :
             } else {
                 isApplied = false
                 if (CartDataHelper.getSelectedCartItemData(viewModel.cartDataList.value)
-                    .isEmpty()
+                        .isEmpty()
                 ) {
                     binding?.promoCheckoutBtnCart?.showInactive(
                         getString(R.string.promo_desc_no_selected_item),
@@ -3700,7 +3703,10 @@ class CartRevampFragment :
         binding?.goToCourierPageButton?.text = if (viewModel.selectedAmountState.value <= 0) {
             String.format(getString(R.string.cart_text_buy))
         } else {
-            String.format(getString(R.string.cart_item_button_checkout_count_format), qty)
+            val quantityNumber = qty.toIntOrZero()
+            val reachMaximumLimit = quantityNumber > QUANTITY_MAX_LIMIT
+            val stringResourceId = if (reachMaximumLimit) R.string.cart_item_button_checkout_count_format_reach_maximum_limit else R.string.cart_item_button_checkout_count_format
+            String.format(getString(stringResourceId), quantityNumber.coerceAtMost(QUANTITY_MAX_LIMIT))
         }
         if (totalPriceString == "-") {
             onCartDataDisableToCheckout()
@@ -4164,9 +4170,9 @@ class CartRevampFragment :
         plusCoachMark?.dismissCoachMark()
         mainFlowCoachMark?.dismissCoachMark()
         if ((
-            viewModel.cartModel.cartListData?.onboardingData?.size
-                ?: 0
-            ) < BULK_ACTION_ONBOARDING_MIN_QUANTITY_INDEX
+                viewModel.cartModel.cartListData?.onboardingData?.size
+                    ?: 0
+                ) < BULK_ACTION_ONBOARDING_MIN_QUANTITY_INDEX
         ) {
             return
         }
@@ -4176,7 +4182,8 @@ class CartRevampFragment :
             override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
                 val selectedAmountCoachMarkIndex = 1
                 if (currentIndex == selectedAmountCoachMarkIndex && isMockMainFlowCoachMarkShown) {
-                    val topItemPosition = (binding?.rvCart?.layoutManager as GridLayoutManager).findFirstVisibleItemPosition()
+                    val topItemPosition =
+                        (binding?.rvCart?.layoutManager as GridLayoutManager).findFirstVisibleItemPosition()
                     if (topItemPosition == RecyclerView.NO_POSITION) return
 
                     val adapterData = viewModel.cartDataList.value
@@ -4242,7 +4249,8 @@ class CartRevampFragment :
                 } else {
                     val selectedAmountViewHolder = findViewHolderForAdapterPosition(0)
                     if (selectedAmountViewHolder is CartSelectedAmountViewHolder) {
-                        val textActionDeleteView = selectedAmountViewHolder.getTextActionDeleteView()
+                        val textActionDeleteView =
+                            selectedAmountViewHolder.getTextActionDeleteView()
                         bulkActionCoachMarkItems.add(
                             CoachMark2Item(
                                 textActionDeleteView,

@@ -203,7 +203,10 @@
                                 android:id="@+id/tv_total_prices"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
+                                android:layout_marginStart="12dp"
                                 android:gravity="end"
+                                android:lines="1"
+                                android:ellipsize="end"
                                 android:textColor="@color/Unify_NN950"
                                 app:typographyType="display_2"
                                 app:typographyWeight="bold"
@@ -215,7 +218,7 @@
 
                             <FrameLayout
                                 android:id="@+id/fl_checkout_button"
-                                android:layout_width="90dp"
+                                android:layout_width="100dp"
                                 android:layout_height="40dp"
                                 android:layout_gravity="center_vertical"
                                 android:layout_marginStart="10dp"

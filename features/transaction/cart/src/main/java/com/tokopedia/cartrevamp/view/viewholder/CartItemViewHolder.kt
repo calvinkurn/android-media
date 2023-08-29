@@ -139,14 +139,14 @@ class CartItemViewHolder constructor(
                 val constraintSet = ConstraintSet()
                 constraintSet.clone(containerProductInformation)
                 constraintSet.connect(
-                    R.id.iu_image_product,
+                    R.id.fl_image_product,
                     ConstraintSet.START,
                     ConstraintSet.PARENT_ID,
                     ConstraintSet.START,
                     marginStart
                 )
                 constraintSet.connect(
-                    R.id.iu_image_product,
+                    R.id.fl_image_product,
                     ConstraintSet.TOP,
                     R.id.product_bundling_info,
                     ConstraintSet.BOTTOM
@@ -163,14 +163,14 @@ class CartItemViewHolder constructor(
                 val constraintSet = ConstraintSet()
                 constraintSet.clone(containerProductInformation)
                 constraintSet.connect(
-                    R.id.iu_image_product,
+                    R.id.fl_image_product,
                     ConstraintSet.START,
                     R.id.checkbox_product,
                     ConstraintSet.END,
                     marginStart
                 )
                 constraintSet.connect(
-                    R.id.iu_image_product,
+                    R.id.fl_image_product,
                     ConstraintSet.TOP,
                     R.id.container_product_information,
                     ConstraintSet.TOP
@@ -556,7 +556,7 @@ class CartItemViewHolder constructor(
                     connect(
                         R.id.v_bundling_product_separator,
                         ConstraintSet.BOTTOM,
-                        R.id.iu_image_product,
+                        R.id.fl_image_product,
                         ConstraintSet.BOTTOM,
                         0
                     )
@@ -573,7 +573,7 @@ class CartItemViewHolder constructor(
                 connect(
                     R.id.v_bundling_product_separator,
                     ConstraintSet.BOTTOM,
-                    R.id.iu_image_product,
+                    R.id.fl_image_product,
                     ConstraintSet.BOTTOM,
                     MARGIN_VERTICAL_SEPARATOR.dpToPx(itemView.resources.displayMetrics)
                 )
@@ -1189,18 +1189,18 @@ class CartItemViewHolder constructor(
     private fun renderContainer(cartItemHolderData: CartItemHolderData) {
         val layoutParams =
             binding.containerProductInformation.layoutParams as ViewGroup.MarginLayoutParams
-        val layoutParamsIuImageProduct =
-            binding.iuImageProduct.layoutParams as ViewGroup.MarginLayoutParams
+        val layoutParamsFlImageProduct =
+            binding.flImageProduct.layoutParams as ViewGroup.MarginLayoutParams
         if (cartItemHolderData.isError) {
-            layoutParamsIuImageProduct.topMargin = 0
+            layoutParamsFlImageProduct.topMargin = 0
             layoutParams.bottomMargin =
                 PRODUCT_ACTION_MARGIN.dpToPx(itemView.resources.displayMetrics)
         } else {
             if (cartItemHolderData.isBundlingItem && cartItemHolderData.isMultipleBundleProduct) {
                 if (cartItemHolderData.bundlingItemPosition != BUNDLING_ITEM_HEADER) {
-                    layoutParamsIuImageProduct.topMargin = IMAGE_PRODUCT_MARGIN_START.dpToPx(itemView.resources.displayMetrics)
+                    layoutParamsFlImageProduct.topMargin = IMAGE_PRODUCT_MARGIN_START.dpToPx(itemView.resources.displayMetrics)
                 } else {
-                    layoutParamsIuImageProduct.topMargin = 0
+                    layoutParamsFlImageProduct.topMargin = 0
                 }
 
                 if (cartItemHolderData.bundlingItemPosition == BUNDLING_ITEM_FOOTER) {
@@ -1209,7 +1209,7 @@ class CartItemViewHolder constructor(
                     layoutParams.bottomMargin = 0
                 }
             } else {
-                layoutParamsIuImageProduct.topMargin = 0
+                layoutParamsFlImageProduct.topMargin = 0
                 layoutParams.bottomMargin =
                     PRODUCT_ACTION_MARGIN.dpToPx(itemView.resources.displayMetrics)
             }
