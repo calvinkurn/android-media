@@ -189,6 +189,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     val productSectionList: List<ProductTagSectionUiModel>
         get() = _productSectionList.value
 
+    val bannerPreparation: List<PlayBroadcastPreparationBannerModel>
+        get() = _bannerPreparation.value
+
     private val _bannerPreparation = MutableStateFlow<List<PlayBroadcastPreparationBannerModel>>(emptyList())
 
     private val _observableConfigInfo = MutableLiveData<NetworkResult<ConfigurationUiModel>>()
