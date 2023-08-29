@@ -46,7 +46,7 @@
         tools:visibility="visible"/>
 
     <com.tokopedia.home_component.customview.bannerindicator.BannerIndicator
-        android:id="@+id/indicator_banner_animation"
+        android:id="@+id/expandable_indicator_banner"
         android:layout_width="wrap_content"
         android:layout_height="6dp"
         android:layout_marginBottom="8dp"

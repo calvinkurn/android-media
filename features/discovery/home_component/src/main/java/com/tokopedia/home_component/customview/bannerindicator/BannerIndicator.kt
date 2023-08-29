@@ -85,6 +85,8 @@ class BannerIndicator : LinearLayout {
         bannerAnimatorSet.resume()
     }
 
+    fun isCurrentPosition(position: Int): Boolean = currentPosition == position
+
     fun setBannerIndicators(totalBanner: Int, startFrom: Int = -1) {
         this.removeAllViews()
         this.totalBanner = totalBanner

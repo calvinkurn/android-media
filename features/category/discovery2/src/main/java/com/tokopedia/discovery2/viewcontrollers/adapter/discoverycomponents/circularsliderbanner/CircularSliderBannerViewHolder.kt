@@ -2,12 +2,10 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.cir
 
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularListener
@@ -16,6 +14,7 @@ import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.
 import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularViewPager
 import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularViewPager.IndicatorPageChangeListener
 import com.tokopedia.circular_view_pager.presentation.widgets.pageIndicator.CircularPageIndicator
+import com.tokopedia.discovery2.Constant.PropertyType.ATF_BANNER
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.Utils.Companion.routingBasedOnMoveAction
@@ -24,9 +23,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewH
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.home_component.customview.bannerindicator.BannerIndicator
 import com.tokopedia.home_component.customview.bannerindicator.BannerIndicatorListener
-import com.tokopedia.home_component.viewholders.BannerComponentViewHolder
-import com.tokopedia.home_component.viewholders.BannerRevampViewHolder
-import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.home_component.viewholders.BannerComponentViewHolder.Companion.FLING_DURATION
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.kotlin.extensions.view.show
@@ -39,18 +36,15 @@ class CircularSliderBannerViewHolder(itemView: View, val fragment: Fragment) : A
     private val bannerCircularAdapter: BannerCircularAdapter = BannerCircularAdapter(listOf(), this)
     private val cvSliderBanner: CircularViewPager = itemView.findViewById(R.id.circular_slider_banner)
     private val sliderIndicator: CircularPageIndicator = itemView.findViewById(R.id.indicator_banner)
-    private val sliderIndicatorAnimation: BannerIndicator = itemView.findViewById(R.id.indicator_banner_animation)
-    private var isFromDrag = false
-    private var isFromInitialize = false
-    private var indicatorPosition = 0
-    private var previousIndicatorPosition = 0
+    private val sliderExpandableIndicator: BannerIndicator = itemView.findViewById(R.id.expandable_indicator_banner)
+    private var isDraggingWithExpandableIndicator = false
+    private var expandableIndicatorPosition = 0
     private var debounceHandler = Handler(Looper.getMainLooper())
-    private val debounceDelayMillis = 600L // Adjust the delay as needed
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         sliderBannerViewModel = discoveryBaseViewModel as CircularSliderBannerViewModel
         sliderBannerViewModel?.getItemsList()?.let {
-            sendBannerImpression(it)
+            sendBannerImpression()
             cvSliderBanner.setAdapter(bannerCircularAdapter)
             cvSliderBanner.setItemList(it)
             setSlideProperties(it)
@@ -83,43 +77,71 @@ class CircularSliderBannerViewHolder(itemView: View, val fragment: Fragment) : A
 
     private fun setUpIndicator(item: ArrayList<CircularModel>) {
         if (item.size > 1) {
-            if (sliderBannerViewModel?.getPropertyType() == "atf_banner") {
-                cvSliderBanner.pauseAutoScroll()
-                cvSliderBanner.isResumingAutoScrollDisabled = true
-                sliderIndicatorAnimation.show()
-                sliderIndicatorAnimation.setBannerIndicators(item.size)
-                sliderIndicatorAnimation.setBannerListener(object : BannerIndicatorListener {
-                        override fun onChangePosition(position: Int) { /* nothing to do */ }
-
-                        override fun getCurrentPosition(position: Int) { /* nothing to do */ }
-
-                        override fun onChangeCurrentPosition(position: Int) {
-                            cvSliderBanner.setCurrentPosition(position)
-                        }
-                    }
-                )
-                cvSliderBanner.setIndicatorPageChangeListener(object : IndicatorPageChangeListener {
-                    override fun onIndicatorPageChange(newIndicatorPosition: Int) {
-                        if (isFromDrag && newIndicatorPosition != indicatorPosition) {
-                            indicatorPosition = newIndicatorPosition
-                            debounceHandler.removeCallbacksAndMessages(null)
-                            debounceHandler.postDelayed({
-                                sliderIndicatorAnimation.startIndicatorByPosition(indicatorPosition)
-                                isFromDrag = false
-                            }, debounceDelayMillis)
-                        } else if (newIndicatorPosition != indicatorPosition) {
-                            indicatorPosition = newIndicatorPosition
-                        }
-                    }
-                })
+            if (sliderBannerViewModel?.getPropertyType() == ATF_BANNER) {
+                setBannerExpandableIndicatorAnimation(item)
             } else {
-                sliderIndicator.show()
                 setBannerIndicatorAnimation()
             }
         } else {
             sliderIndicator.hide()
-            sliderIndicatorAnimation.hide()
+            sliderExpandableIndicator.hide()
         }
+    }
+
+    private fun setBannerExpandableIndicatorAnimation(item: ArrayList<CircularModel>) {
+        setupExpandableIndicator(item)
+        setupBannerWithExpandableIndicator()
+    }
+
+    private fun setupExpandableIndicator(item: ArrayList<CircularModel>) {
+        sliderExpandableIndicator.show()
+        sliderExpandableIndicator.setBannerIndicators(item.size)
+        sliderExpandableIndicator.setBannerListener(
+            object : BannerIndicatorListener {
+                override fun onChangePosition(position: Int) { /* nothing to do */ }
+
+                override fun getCurrentPosition(position: Int) { /* nothing to do */ }
+
+                override fun onChangeCurrentPosition(position: Int) {
+                    cvSliderBanner.setCurrentPosition(position)
+                }
+            }
+        )
+    }
+    private fun setupBannerWithExpandableIndicator() {
+        /**
+         * disable auto-scroll on banner and let the expandable indicator determines the position of the banner
+         */
+        disableBannerAutoScroll()
+        cvSliderBanner.setIndicatorPageChangeListener(
+            object : IndicatorPageChangeListener {
+                override fun onIndicatorPageChange(newIndicatorPosition: Int) {
+                    if (newIndicatorPosition != expandableIndicatorPosition) {
+                        expandableIndicatorPosition = newIndicatorPosition
+                        /**
+                         * If [isDraggingWithExpandableIndicator] is true then do debounce to start indicator animation,
+                         * this indicator needs debounce to avoid the animation starting simultaneously with other indicators,
+                         * because when swiping manually quickly, sometimes the indicator animation is not back to the initial state.
+                         */
+                        if (isDraggingWithExpandableIndicator) {
+                            debounceHandler.removeCallbacksAndMessages(null)
+                            debounceHandler.postDelayed(
+                                {
+                                    sliderExpandableIndicator.startIndicatorByPosition(expandableIndicatorPosition)
+                                    isDraggingWithExpandableIndicator = false
+                                },
+                                FLING_DURATION.toLong()
+                            )
+                        }
+                    }
+                }
+            }
+        )
+    }
+
+    private fun disableBannerAutoScroll() {
+        cvSliderBanner.pauseAutoScroll()
+        cvSliderBanner.isResumingAutoScrollDisabled = true
     }
 
     private fun setBannerIndicatorAnimation() {
@@ -128,21 +150,39 @@ class CircularSliderBannerViewHolder(itemView: View, val fragment: Fragment) : A
                 sliderIndicator.animatePageSelected(newIndicatorPosition)
             }
         })
+        sliderIndicator.show()
         sliderIndicator.createIndicators(cvSliderBanner.indicatorCount, cvSliderBanner.indicatorPosition)
     }
 
-    private fun sendBannerImpression(item: ArrayList<CircularModel>) {
+    private fun sendBannerImpression() {
         cvSliderBanner.setPageChangeListener(object : CircularPageChangeListener {
             override fun onPageScrolled(position: Int) {
                 trackBannerImpressionGTM(position)
             }
 
             override fun onPageScrollStateChanged(state: Int) {
-                if (sliderIndicatorAnimation.isInitialized) {
+                /**
+                 * Make sure slider expandable indicator already initialized (call [setBannerIndicators] to initialize).
+                 *
+                 * @see ViewPager2.SCROLL_STATE_IDLE
+                 * Start the animation of expandable indicator only when user drags the banner but not swiping the page of the banner,
+                 * that means user still on the same page. This is needed because [onIndicatorPageChange] is not triggered if still on the same page.
+                 *
+                 * @see ViewPager2.SCROLL_STATE_DRAGGING
+                 * Pause the animation of expandable indicator and set [isDraggingWithExpandableIndicator] variable to true,
+                 * the variable will be used as one of indicators to start the animation again when slider banner has been changed.
+                 **/
+                if (sliderExpandableIndicator.isInitialized) {
                     when (state) {
+                        ViewPager2.SCROLL_STATE_IDLE -> {
+                            if (isDraggingWithExpandableIndicator && sliderExpandableIndicator.isCurrentPosition(expandableIndicatorPosition)) {
+                                sliderExpandableIndicator.startIndicatorByPosition(expandableIndicatorPosition)
+                                isDraggingWithExpandableIndicator = false
+                            }
+                        }
                         ViewPager2.SCROLL_STATE_DRAGGING -> {
-                            sliderIndicatorAnimation.pauseAnimation()
-                            isFromDrag = true
+                            sliderExpandableIndicator.pauseAnimation()
+                            isDraggingWithExpandableIndicator = true
                         }
                     }
                 }
