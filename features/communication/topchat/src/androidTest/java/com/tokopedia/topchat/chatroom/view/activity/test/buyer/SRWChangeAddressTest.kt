@@ -1,16 +1,18 @@
-package com.tokopedia.topchat.chatroom.view.activity
+package com.tokopedia.topchat.chatroom.view.activity.test.buyer
 
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.test.application.matcher.hasTotalItemOf
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.activity.robot.generalResult
+import com.tokopedia.topchat.chatroom.view.activity.robot.msgBubbleResult
+import com.tokopedia.topchat.chatroom.view.activity.robot.msgBubbleRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.replyBubbleResult
 import com.tokopedia.topchat.matchers.isSender
 import com.tokopedia.topchat.stub.chatroom.view.fragment.TopChatRoomFragmentStub
-import com.tokopedia.topchat.test.R
 import org.hamcrest.CoreMatchers.not
 import org.junit.Test
+import com.tokopedia.localizationchooseaddress.R as localizationchooseaddressR
 
 @UiTest
 class SRWChangeAddressTest : TopchatRoomTest() {
@@ -22,8 +24,10 @@ class SRWChangeAddressTest : TopchatRoomTest() {
         launchChatRoomActivity()
 
         // Then
-        assertHeaderTitleMsgAtBubblePosition(0, isDisplayed())
-        assertHeaderTitleMsgAtBubblePosition(0, withText("Pengiriman ke Pembeli"))
+        msgBubbleResult {
+            assertHeaderTitleMsgAtBubblePosition(0, isDisplayed())
+            assertHeaderTitleMsgAtBubblePosition(0, withText("Pengiriman ke Pembeli"))
+        }
     }
 
     @Test
@@ -33,9 +37,11 @@ class SRWChangeAddressTest : TopchatRoomTest() {
         launchChatRoomActivity()
 
         // Then
-        assertCtaHeaderMsgAtBubblePosition(0, isDisplayed())
-        assertCtaHeaderMsgAtBubblePosition(0, withText("Ubah alamat"))
-        assertCtaHeaderMsgAtBubblePosition(0, isEnabled())
+        msgBubbleResult {
+            assertCtaHeaderMsgAtBubblePosition(0, isDisplayed())
+            assertCtaHeaderMsgAtBubblePosition(0, withText("Ubah alamat"))
+            assertCtaHeaderMsgAtBubblePosition(0, isEnabled())
+        }
     }
 
     @Test
@@ -45,9 +51,11 @@ class SRWChangeAddressTest : TopchatRoomTest() {
         launchChatRoomActivity()
 
         // Then
-        assertCtaHeaderMsgAtBubblePosition(0, isDisplayed())
-        assertCtaHeaderMsgAtBubblePosition(0, withText("Disabled"))
-        assertCtaHeaderMsgAtBubblePosition(0, not(isEnabled()))
+        msgBubbleResult {
+            assertCtaHeaderMsgAtBubblePosition(0, isDisplayed())
+            assertCtaHeaderMsgAtBubblePosition(0, withText("Disabled"))
+            assertCtaHeaderMsgAtBubblePosition(0, not(isEnabled()))
+        }
     }
 
     @Test
@@ -69,7 +77,9 @@ class SRWChangeAddressTest : TopchatRoomTest() {
         launchChatRoomActivity()
 
         // Then
-        assertCtaHeaderMsgAtBubblePosition(0, not(isDisplayed()))
+        msgBubbleResult {
+            assertCtaHeaderMsgAtBubblePosition(0, not(isDisplayed()))
+        }
     }
 
     @Test
@@ -81,11 +91,15 @@ class SRWChangeAddressTest : TopchatRoomTest() {
         val totalItemList = activity.getTotalItemInChat()
 
         // When
-        clickCtaHeaderMsgAtBubblePosition(0)
+        msgBubbleRobot {
+            clickCtaHeaderMsgAtBubblePosition(0)
+        }
 
         // Then
-        assertChatRecyclerview(hasTotalItemOf(totalItemList + 1))
-        assertChatRecyclerview(isSender(0))
+        generalResult {
+            assertChatRecyclerview(hasTotalItemOf(totalItemList + 1))
+            assertChatRecyclerview(isSender(0))
+        }
     }
 
     @Test
@@ -95,7 +109,9 @@ class SRWChangeAddressTest : TopchatRoomTest() {
         launchChatRoomActivity()
 
         // Then
-        assertMsgHeaderContainer(0, not(isDisplayed()))
+        msgBubbleResult {
+            assertMsgHeaderContainer(0, not(isDisplayed()))
+        }
     }
 
     @Test
@@ -105,7 +121,9 @@ class SRWChangeAddressTest : TopchatRoomTest() {
         launchChatRoomActivity()
 
         // Then
-        assertDividerHeaderContainer(0, isDisplayed())
+        msgBubbleResult {
+            assertDividerHeaderContainer(0, isDisplayed())
+        }
     }
 
     @Test
@@ -115,7 +133,9 @@ class SRWChangeAddressTest : TopchatRoomTest() {
         launchChatRoomActivity()
 
         // Then
-        assertDividerHeaderContainer(0, not(isDisplayed()))
+        msgBubbleResult {
+            assertDividerHeaderContainer(0, not(isDisplayed()))
+        }
     }
 
     @Test
@@ -124,10 +144,14 @@ class SRWChangeAddressTest : TopchatRoomTest() {
         getChatUseCase.response = getChatUseCase.defaultChangeAddressResponse
         TopChatRoomFragmentStub.SUCCESS_CHANGE_ADDRESS = true
         launchChatRoomActivity()
-        val expectedMsg = context.getString(R.string.toaster_success_chosen_address)
+        val expectedMsg = context.getString(
+            localizationchooseaddressR.string.toaster_success_chosen_address
+        )
 
         // When
-        clickCtaHeaderMsgAtBubblePosition(0)
+        msgBubbleRobot {
+            clickCtaHeaderMsgAtBubblePosition(0)
+        }
 
         // Then
         generalResult {

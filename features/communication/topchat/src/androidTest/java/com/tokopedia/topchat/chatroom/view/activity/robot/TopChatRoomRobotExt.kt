@@ -3,6 +3,7 @@ package com.tokopedia.topchat.chatroom.view.activity.robot
 import com.tokopedia.topchat.chatroom.view.activity.robot.composearea.ComposeAreaRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.copytoclipboard.CopyToClipboardRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralRobot
+import com.tokopedia.topchat.chatroom.view.activity.robot.msgbubble.MsgBubbleRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductPreviewRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.replybubble.ReplyBubbleRobot
 
@@ -11,3 +12,4 @@ fun composeAreaRobot(func: ComposeAreaRobot.() -> Unit) = ComposeAreaRobot.apply
 fun replyBubbleRobot(func: ReplyBubbleRobot.() -> Unit) = ReplyBubbleRobot.apply(func)
 fun copyToClipboardRobot(func: CopyToClipboardRobot.() -> Unit) = CopyToClipboardRobot.apply(func)
 fun productPreviewRobot(func: ProductPreviewRobot.() -> Unit) = ProductPreviewRobot.apply(func)
+fun msgBubbleRobot(func: MsgBubbleRobot.() -> Unit) = MsgBubbleRobot.apply(func)

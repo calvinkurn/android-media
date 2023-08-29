@@ -18,13 +18,41 @@ object MsgBubbleResult {
         position: Int,
         matcher: Matcher<View>
     ) {
-        assertViewInRecyclerViewAt(0, R.id.iu_msg_icon, matcher)
+        assertViewInRecyclerViewAt(position, R.id.iu_msg_icon, matcher)
     }
 
     private fun assertBubbleMsg(
         position: Int,
         matcher: Matcher<View>
     ) {
-        assertViewInRecyclerViewAt(0, R.id.tvMessage, matcher)
+        assertViewInRecyclerViewAt(position, R.id.tvMessage, matcher)
+    }
+
+    fun assertHeaderTitleMsgAtBubblePosition(
+        position: Int,
+        matcher: Matcher<View>
+    ) {
+        assertViewInRecyclerViewAt(position, R.id.tp_header_title, matcher)
+    }
+
+    fun assertCtaHeaderMsgAtBubblePosition(
+        position: Int,
+        matcher: Matcher<View>
+    ) {
+        assertViewInRecyclerViewAt(position, R.id.tp_header_cta, matcher)
+    }
+
+    fun assertDividerHeaderContainer(
+        position: Int,
+        matcher: Matcher<View>
+    ) {
+        assertViewInRecyclerViewAt(position, R.id.v_header_divider, matcher)
+    }
+
+    fun assertMsgHeaderContainer(
+        position: Int,
+        matcher: Matcher<View>
+    ) {
+        assertViewInRecyclerViewAt(position, R.id.ll_msg_header, matcher)
     }
 }

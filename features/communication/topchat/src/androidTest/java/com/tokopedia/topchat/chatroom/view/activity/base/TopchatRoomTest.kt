@@ -599,66 +599,6 @@ abstract class TopchatRoomTest {
         activityTestRule.finishActivity()
     }
 
-    protected fun assertMsgHeaderContainer(
-        position: Int,
-        matcher: Matcher<in View>
-    ) {
-        onView(
-            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
-                position,
-                R.id.ll_msg_header
-            )
-        ).check(matches(matcher))
-    }
-
-    protected fun assertDividerHeaderContainer(
-        position: Int,
-        matcher: Matcher<in View>
-    ) {
-        onView(
-            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
-                position,
-                R.id.v_header_divider
-            )
-        ).check(matches(matcher))
-    }
-
-    protected fun assertHeaderTitleMsgAtBubblePosition(
-        position: Int,
-        matcher: Matcher<in View>
-    ) {
-        onView(
-            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
-                position,
-                R.id.tp_header_title
-            )
-        ).check(matches(matcher))
-    }
-
-    protected fun assertCtaHeaderMsgAtBubblePosition(position: Int, matcher: Matcher<in View>) {
-        onView(
-            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
-                position,
-                R.id.tp_header_cta
-            )
-        ).check(matches(matcher))
-    }
-
-    protected fun clickCtaHeaderMsgAtBubblePosition(position: Int) {
-        onView(
-            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
-                position,
-                R.id.tp_header_cta
-            )
-        ).perform(click())
-    }
-
-    protected fun assertChatRecyclerview(matcher: Matcher<in View>) {
-        onView(
-            withId(R.id.recycler_view_chatroom)
-        ).check(matches(matcher))
-    }
-
     protected fun assertBroadcastCampaignLabelAt(
         position: Int,
         matcher: Matcher<in View>
