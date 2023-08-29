@@ -206,13 +206,23 @@
             app:layout_constraintTop_toBottomOf="@id/product_bundling_info"
             tools:visibility="gone" />
 
-        <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/iu_image_product"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+        <FrameLayout
+            android:id="@+id/fl_image_product"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginStart="6dp"
+            android:padding="1dp"
+            android:background="@drawable/bg_cart_product_image"
             app:layout_constraintStart_toEndOf="@+id/checkbox_product"
-            app:layout_constraintTop_toTopOf="@id/checkbox_product" />
+            app:layout_constraintTop_toTopOf="@id/checkbox_product">
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/iu_image_product"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                app:unify_image_corner_radius="8" />
+            
+        </FrameLayout>
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/iu_ribbon_content"
@@ -223,7 +233,7 @@
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="@id/label_slash_price_percentage"
             app:layout_constraintEnd_toEndOf="@id/label_slash_price_percentage"
-            app:layout_constraintStart_toStartOf="@id/iu_image_product"
+            app:layout_constraintStart_toStartOf="@id/fl_image_product"
             app:layout_constraintTop_toTopOf="@id/label_slash_price_percentage"
             app:srcCompat="@drawable/cart_card_ribbon_content_red"
             app:unify_image_corner_radius="0"
@@ -241,8 +251,8 @@
             android:text="90%"
             android:textColor="@color/Unify_Static_White"
             android:visibility="visible"
-            app:layout_constraintStart_toStartOf="@id/iu_image_product"
-            app:layout_constraintTop_toTopOf="@id/iu_image_product"
+            app:layout_constraintStart_toStartOf="@id/fl_image_product"
+            app:layout_constraintTop_toTopOf="@id/fl_image_product"
             app:typographyType="small"
             app:typographyWeight="bold"
             tools:visibility="visible" />
@@ -256,8 +266,8 @@
             android:elevation="4dp"
             android:scaleType="fitXY"
             android:src="@drawable/product_card_ribbon_arch_red"
-            app:layout_constraintEnd_toStartOf="@id/iu_image_product"
-            app:layout_constraintTop_toTopOf="@id/iu_image_product"
+            app:layout_constraintEnd_toStartOf="@id/fl_image_product"
+            app:layout_constraintTop_toTopOf="@id/fl_image_product"
             tools:visibility="visible" />
 
         <androidx.constraintlayout.widget.Group
@@ -279,8 +289,8 @@
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toEndOf="@+id/iu_image_product"
-            app:layout_constraintTop_toTopOf="@id/iu_image_product"
+            app:layout_constraintStart_toEndOf="@+id/fl_image_product"
+            app:layout_constraintTop_toTopOf="@id/fl_image_product"
             app:typographyType="small"
             app:typographyWeight="bold"
             tools:text="Sisa 3"
@@ -326,7 +336,7 @@
             android:maxLines="1"
             android:textColor="@color/Unify_NN600"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/iu_image_product"
+            app:layout_constraintStart_toEndOf="@+id/fl_image_product"
             app:layout_constraintTop_toBottomOf="@id/text_qty_left"
             app:typographyType="display_3"
             tools:text="Tas organizerdfnlgjdhdfhn sepeda double container" />
@@ -337,10 +347,10 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
             android:layout_marginTop="4dp"
-            android:layout_toEndOf="@+id/iu_image_product"
+            android:layout_toEndOf="@+id/fl_image_product"
             app:flexWrap="wrap"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/iu_image_product"
+            app:layout_constraintStart_toEndOf="@+id/fl_image_product"
             app:layout_constraintTop_toBottomOf="@+id/text_product_name"
             tools:visibility="visible">
 
@@ -377,7 +387,7 @@
             android:paddingTop="2dp"
             android:textColor="@color/Unify_NN600"
             android:visibility="gone"
-            app:layout_constraintStart_toEndOf="@+id/iu_image_product"
+            app:layout_constraintStart_toEndOf="@+id/fl_image_product"
             app:layout_constraintTop_toBottomOf="@+id/layout_product_price"
             app:typographyType="display_3"
             tools:text="Biru, XL"
@@ -391,7 +401,7 @@
             android:layout_marginTop="4dp"
             android:foregroundGravity="center_vertical"
             app:flexWrap="wrap"
-            app:layout_constraintStart_toEndOf="@+id/iu_image_product"
+            app:layout_constraintStart_toEndOf="@+id/fl_image_product"
             app:layout_constraintTop_toBottomOf="@+id/text_product_variant"
             tools:layout_height="20dp"
             tools:layout_width="20dp"
@@ -405,7 +415,7 @@
             android:layout_marginTop="12dp"
             android:textColor="@color/Unify_GN500"
             android:visibility="gone"
-            app:layout_constraintStart_toEndOf="@+id/iu_image_product"
+            app:layout_constraintStart_toEndOf="@+id/fl_image_product"
             app:layout_constraintTop_toBottomOf="@id/layout_product_info"
             app:typographyType="display_3"
             app:typographyWeight="bold"
@@ -434,7 +444,7 @@
             android:layout_marginTop="12dp"
             app:barrierDirection="bottom"
             app:constraint_referenced_ids="text_product_unavailable_action,button_delete_cart"
-            app:layout_constraintStart_toEndOf="@+id/iu_image_product"
+            app:layout_constraintStart_toEndOf="@+id/fl_image_product"
             app:layout_constraintTop_toBottomOf="@id/layout_product_info"
             tools:visibility="gone" />
 
@@ -444,7 +454,7 @@
             android:layout_height="14dp"
             android:layout_marginTop="4dp"
             android:layout_marginStart="12dp"
-            app:layout_constraintStart_toEndOf="@+id/iu_image_product"
+            app:layout_constraintStart_toEndOf="@+id/fl_image_product"
             app:layout_constraintTop_toBottomOf="@+id/barrier_unavailable_action" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -471,7 +481,7 @@
             android:background="@color/Unify_NN50"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/iu_image_product"
+            app:layout_constraintStart_toEndOf="@id/fl_image_product"
             app:layout_constraintTop_toBottomOf="@id/text_prescription"
             tools:visibility="visible" />
 
@@ -484,7 +494,7 @@
             android:layout_marginTop="2dp"
             android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/iu_image_product"
+            app:layout_constraintStart_toEndOf="@id/fl_image_product"
             app:layout_constraintTop_toBottomOf="@+id/cart_add_on_separator" />
 
         <ImageView
@@ -496,7 +506,7 @@
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
             app:srcCompat="@drawable/ic_cart_add_note"
-            app:layout_constraintStart_toEndOf="@id/iu_image_product"
+            app:layout_constraintStart_toEndOf="@id/fl_image_product"
             app:layout_constraintTop_toBottomOf="@+id/item_addon_cart"
             tools:visibility="visible" />
 
@@ -510,7 +520,7 @@
             android:layout_marginBottom="16dp"
             android:scaleType="fitCenter"
             android:visibility="gone"
-            app:layout_constraintStart_toEndOf="@id/iu_image_product"
+            app:layout_constraintStart_toEndOf="@id/fl_image_product"
             app:layout_constraintTop_toBottomOf="@+id/item_addon_cart"
             app:lottie_autoPlay="false"
             app:lottie_rawRes="@raw/anim_cart_note_dark" />
