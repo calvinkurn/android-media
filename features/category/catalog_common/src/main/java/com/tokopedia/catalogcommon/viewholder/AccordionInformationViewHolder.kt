@@ -34,6 +34,7 @@ class AccordionInformationViewHolder(itemView: View) :
 //                itemView.context
 //            )
 //        )
+        binding?.accordion?.removeAllViews()
         binding?.tvTitle?.text = element.titleWidget
         binding?.tvTitle?.setTextColor(element?.widgetTextColor.orDefaultColor(itemView.context))
         element.contents.forEachIndexed { index, item ->
@@ -63,7 +64,6 @@ class AccordionInformationViewHolder(itemView: View) :
             )
             binding?.accordion?.get(index)?.findViewById<Typography>(R.id.accordion_title)
                 ?.setTextColor(item.textTitleColor.orDefaultColor(itemView.context))
-
         }
 
         binding?.accordion?.onItemClick = { position, isExpand ->
