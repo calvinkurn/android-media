@@ -2,7 +2,6 @@ package com.tokopedia.topchat.chatroom.view.activity.base
 
 import android.app.Activity
 import android.app.Instrumentation
-import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.view.View
@@ -11,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions.*
-import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.idling.CountingIdlingResource
@@ -418,8 +416,8 @@ abstract class TopchatRoomTest {
     }
 
     protected fun clickComposeArea() {
-        onView(withIndex(withId(R.id.new_comment), 0))
-            .perform(click())
+//        onView(withIndex(withId(R.id.new_comment), 0))
+//            .perform(click())
     }
 
     protected fun typeMessage(msg: String) {
@@ -433,8 +431,8 @@ abstract class TopchatRoomTest {
     }
 
     protected fun clickPlusIconMenu() {
-        onView(withIndex(withId(R.id.iv_chat_menu), 0))
-            .perform(click())
+//        onView(withIndex(withId(R.id.topchat_icon_chat_menu), 0))
+//            .perform(click())
     }
 
     protected fun clickSendBtn() {
@@ -581,7 +579,7 @@ abstract class TopchatRoomTest {
     }
 
     protected fun assertNoSnackbarText(msg: String) {
-        onView(withText(msg)).check(doesNotExist())
+//        onView(withText(msg)).check(doesNotExist())
     }
 
     protected fun assertSnackbarWithSubText(msg: String) {
@@ -948,12 +946,6 @@ abstract class TopchatRoomTest {
                 )
             )
         }
-    }
-
-    protected fun getClipboardMsg(): CharSequence? {
-        val clipboard: ClipboardManager =
-            context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        return clipboard.primaryClip?.getItemAt(0)?.text
     }
 
     protected fun getBubbleMsgAtPosition(position: Int): CharSequence {

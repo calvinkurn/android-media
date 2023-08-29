@@ -3,12 +3,16 @@ package com.tokopedia.topchat.chatroom.view.activity.robot.general
 import android.content.Intent
 import android.view.View
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
+import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.matchers.withRecyclerView
 import org.hamcrest.Matcher
@@ -49,5 +53,14 @@ object GeneralResult {
 
     fun <T>assertViewObjectValue(realValue: T, expectedValue: T) {
         assertThat(realValue, `is`(expectedValue))
+    }
+
+    fun assertToasterText(msg: String) {
+        onView(withText(msg))
+            .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)))
+    }
+
+    fun assertNoToasterText(msg: String) {
+        onView(withText(msg)).check(doesNotExist())
     }
 }

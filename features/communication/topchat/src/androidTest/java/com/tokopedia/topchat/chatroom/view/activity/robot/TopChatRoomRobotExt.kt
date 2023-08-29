@@ -1,0 +1,11 @@
+package com.tokopedia.topchat.chatroom.view.activity.robot
+
+import com.tokopedia.topchat.chatroom.view.activity.robot.composearea.ComposeAreaRobot
+import com.tokopedia.topchat.chatroom.view.activity.robot.copytoclipboard.CopyToClipboardRobot
+import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralRobot
+import com.tokopedia.topchat.chatroom.view.activity.robot.replybubble.ReplyBubbleRobot
+
+fun generalRobot(func: GeneralRobot.() -> Unit) = GeneralRobot.apply(func)
+fun composeAreaRobot(func: ComposeAreaRobot.() -> Unit) = ComposeAreaRobot.apply(func)
+fun replyBubbleRobot(func: ReplyBubbleRobot.() -> Unit) = ReplyBubbleRobot.apply(func)
+fun copyToClipboardRobot(func: CopyToClipboardRobot.() -> Unit) = CopyToClipboardRobot.apply(func)

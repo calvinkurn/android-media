@@ -1,0 +1,11 @@
+package com.tokopedia.topchat.chatroom.view.activity.robot
+
+import com.tokopedia.topchat.chatroom.view.activity.robot.composearea.ComposeAreaResult
+import com.tokopedia.topchat.chatroom.view.activity.robot.copytoclipboard.CopyToClipboardResult
+import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralResult
+import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductResult
+
+fun generalResult(func: GeneralResult.() -> Unit) = GeneralResult.apply(func)
+fun composeAreaResult(func: ComposeAreaResult.() -> Unit) = ComposeAreaResult.apply(func)
+fun productResult(func: ProductResult.() -> Unit) = ProductResult.apply(func)
+fun copyToClipboardResult(func: CopyToClipboardResult.() -> Unit) = CopyToClipboardResult.apply(func)

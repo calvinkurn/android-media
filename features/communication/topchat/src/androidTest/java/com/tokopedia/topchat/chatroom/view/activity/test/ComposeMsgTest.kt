@@ -1,21 +1,17 @@
-package com.tokopedia.topchat.chatroom.view.activity
+package com.tokopedia.topchat.chatroom.view.activity.test
 
 import android.app.Activity
 import android.app.Instrumentation
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
-import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.activity.TopchatRoomInvoiceAttachmentTest.Companion.getInvoiceAttachmentIntent
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
-import com.tokopedia.topchat.chatroom.view.activity.robot.composearea.ComposeAreaResult.assertNoTooLongErrorMsg
-import com.tokopedia.topchat.chatroom.view.activity.robot.composearea.ComposeAreaResult.assertSendBtnDisabled
-import com.tokopedia.topchat.chatroom.view.activity.robot.composearea.ComposeAreaResult.assertSendBtnEnabled
-import com.tokopedia.topchat.chatroom.view.activity.robot.composearea.ComposeAreaResult.assertTooLongErrorMsg
-import com.tokopedia.topchat.chatroom.view.activity.robot.composearea.ComposeAreaRobot.setComposedText
+import com.tokopedia.topchat.chatroom.view.activity.robot.composeAreaResult
+import com.tokopedia.topchat.chatroom.view.activity.robot.composeAreaRobot
+import com.tokopedia.topchat.chatroom.view.activity.robot.generalResult
+import com.tokopedia.topchat.chatroom.view.activity.robot.generalRobot
 import com.tokopedia.topchat.chatroom.view.custom.ComposeTextWatcher.Companion.MAX_CHAR
 import org.junit.Test
 
@@ -35,12 +31,16 @@ class ComposeMsgTest : TopchatRoomTest() {
                 Activity.RESULT_OK, getInvoiceAttachmentIntent(true)
             )
         )
-        clickPlusIconMenu()
-        clickAttachInvoiceMenu()
-        clickSendBtn()
+        generalRobot {
+            clickPlusIconMenu()
+            clickAttachInvoiceMenu()
+            clickSendBtn()
+        }
 
         // Then
-        assertSnackbarText(context.getString(R.string.topchat_desc_empty_text_box))
+        generalResult {
+            assertToasterText(context.getString(R.string.topchat_desc_empty_text_box))
+        }
     }
 
     @Test
@@ -51,10 +51,14 @@ class ComposeMsgTest : TopchatRoomTest() {
         launchChatRoomActivity()
 
         //When
-        clickSendBtn()
+        generalRobot {
+            clickSendBtn()
+        }
 
         //Then
-        assertSnackbarText(context.getString(R.string.topchat_desc_empty_text_box))
+        generalResult {
+            assertToasterText(context.getString(R.string.topchat_desc_empty_text_box))
+        }
     }
 
     @Test
@@ -66,12 +70,16 @@ class ComposeMsgTest : TopchatRoomTest() {
         val offset = 10
 
         //When
-        clickComposeArea()
-        setComposedText("a".repeat(MAX_CHAR + offset))
+        composeAreaRobot {
+            clickComposeArea()
+            setComposedText("a".repeat(MAX_CHAR + offset))
+        }
 
         //Then
-        assertSendBtnDisabled()
-        assertTooLongErrorMsg(context.getString(R.string.desc_topchat_max_char_exceeded, offset))
+        composeAreaResult {
+            assertSendBtnDisabled()
+            assertTooLongErrorMsg(context.getString(R.string.desc_topchat_max_char_exceeded, offset))
+        }
     }
 
     @Test
@@ -83,14 +91,18 @@ class ComposeMsgTest : TopchatRoomTest() {
         val offset = 10_000
 
         //When
-        clickComposeArea()
-        setComposedText("a".repeat(MAX_CHAR + offset))
+        composeAreaRobot {
+            clickComposeArea()
+            setComposedText("a".repeat(MAX_CHAR + offset))
+        }
 
         //Then
-        assertSendBtnDisabled()
-        assertTooLongErrorMsg(
-            context.getString(R.string.desc_topchat_max_char_exceeded, "10.000")
-        )
+        composeAreaResult {
+            assertSendBtnDisabled()
+            assertTooLongErrorMsg(
+                context.getString(R.string.desc_topchat_max_char_exceeded, "10.000")
+            )
+        }
     }
 
     @Test
@@ -102,14 +114,18 @@ class ComposeMsgTest : TopchatRoomTest() {
         val offset = 10_001
 
         //When
-        clickComposeArea()
-        setComposedText("a".repeat(MAX_CHAR + offset))
+        composeAreaRobot {
+            clickComposeArea()
+            setComposedText("a".repeat(MAX_CHAR + offset))
+        }
 
         //Then
-        assertSendBtnDisabled()
-        assertTooLongErrorMsg(
-            context.getString(R.string.desc_topchat_max_char_exceeded, "10.000+")
-        )
+        composeAreaResult {
+            assertSendBtnDisabled()
+            assertTooLongErrorMsg(
+                context.getString(R.string.desc_topchat_max_char_exceeded, "10.000+")
+            )
+        }
     }
 
     @Test
@@ -121,13 +137,17 @@ class ComposeMsgTest : TopchatRoomTest() {
         val offset = 10
 
         //When
-        clickComposeArea()
-        setComposedText("a".repeat(MAX_CHAR + offset))
-        setComposedText("a".repeat(MAX_CHAR))
+        composeAreaRobot {
+            clickComposeArea()
+            setComposedText("a".repeat(MAX_CHAR + offset))
+            setComposedText("a".repeat(MAX_CHAR))
+        }
 
         //Then
-        assertSendBtnEnabled()
-        assertNoTooLongErrorMsg()
+        composeAreaResult {
+            assertSendBtnEnabled()
+            assertNoTooLongErrorMsg()
+        }
     }
 
     @Test
@@ -139,11 +159,17 @@ class ComposeMsgTest : TopchatRoomTest() {
         val offset = 10
 
         //When
-        clickComposeArea()
-        setComposedText("a".repeat(MAX_CHAR + offset))
-        clickSendBtn()
+        composeAreaRobot {
+            clickComposeArea()
+            setComposedText("a".repeat(MAX_CHAR + offset))
+        }
+        generalRobot {
+            clickSendBtn()
+        }
 
         //Then
-        assertNoSnackbarText(context.getString(R.string.topchat_desc_empty_text_box))
+        generalResult {
+            assertNoToasterText(context.getString(R.string.topchat_desc_empty_text_box))
+        }
     }
 }
