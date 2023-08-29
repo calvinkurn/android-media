@@ -24,6 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.tokopedia.stories.view.model.StoryDetailItemUiModel
 import com.tokopedia.stories.view.model.StoryDetailItemUiModel.StoryDetailItemUiEvent
+import kotlinx.coroutines.delay
 
 @Composable
 fun StoryDetailTimer(
@@ -38,6 +39,7 @@ fun StoryDetailTimer(
         when (data.event) {
             StoryDetailItemUiEvent.PAUSE -> anim.stop()
             StoryDetailItemUiEvent.START -> {
+                delay(100)
                 anim.animateTo(
                     targetValue = TARGET_ANIMATION,
                     animationSpec = tween(
@@ -101,12 +103,7 @@ internal fun StoryDetailTimerPreview() {
     StoryDetailTimer(
         currentPosition = 0,
         itemCount = 3,
-        data = StoryDetailItemUiModel(
-            id = "1",
-            isSelected = false,
-            event = StoryDetailItemUiEvent.START,
-            imageContent = "",
-        )
+        data = StoryDetailItemUiModel()
     ) { }
 }
 

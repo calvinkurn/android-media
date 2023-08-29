@@ -8,6 +8,8 @@ import com.tokopedia.stories.domain.model.StoryAuthorType
 import com.tokopedia.stories.domain.model.StoryRequestModel
 import com.tokopedia.stories.domain.model.StorySource
 import com.tokopedia.stories.view.model.StoryDetailItemUiModel.StoryDetailItemUiEvent
+import com.tokopedia.stories.view.model.StoryDetailItemUiModel.StoryDetailItemUiEvent.PAUSE
+import com.tokopedia.stories.view.model.StoryDetailItemUiModel.StoryDetailItemUiEvent.START
 import com.tokopedia.stories.view.model.StoryDetailUiModel
 import com.tokopedia.stories.view.model.StoryGroupItemUiModel
 import com.tokopedia.stories.view.model.StoryGroupUiModel
@@ -115,11 +117,11 @@ class StoryViewModel @Inject constructor(
     }
 
     private fun handleOnPauseStory() {
-        updateStoryDetailData(event = StoryDetailItemUiEvent.PAUSE)
+        updateStoryDetailData(event = PAUSE)
     }
 
     private fun handleOnResumeStory() {
-        updateStoryDetailData(event = StoryDetailItemUiEvent.START)
+        updateStoryDetailData(event = START)
     }
 
     private fun handleSetGroup(position: Int) {
@@ -169,7 +171,7 @@ class StoryViewModel @Inject constructor(
 
     private fun updateStoryDetailData(
         position: Int = mDetailPosition.value,
-        event: StoryDetailItemUiEvent = StoryDetailItemUiEvent.PAUSE,
+        event: StoryDetailItemUiEvent = PAUSE,
     ) {
         mDetailPosition.value = position
         val positionCached = mGroupItem.detail.selectedPositionCached
