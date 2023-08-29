@@ -1,7 +1,7 @@
 package com.tokopedia.tokochat.stub.di
 
-import com.tokochat.tokochat_config_common.di.qualifier.TokoChatQualifier
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
+import com.tokopedia.tokochat.config.di.qualifier.TokoChatQualifier
 import com.tokopedia.tokochat.domain.usecase.TokoChatChannelUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatSendMessageUseCase
 import com.tokopedia.tokochat.stub.domain.usecase.TokoChatChannelUseCaseStub

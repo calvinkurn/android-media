@@ -190,6 +190,7 @@ public interface ApplinkConst {
      * Tokochat (Chat with Gojek)
      */
     String TOKO_CHAT = "tokopedia://tokochat";
+    String TOKO_CHAT_LIST = "tokopedia://tokochat/list";
 
     String CHATBOT_HOST = "chatbot";
     String CHATBOT = "tokopedia://chatbot/{message_id}";
