@@ -41,6 +41,7 @@
         android:id="@+id/more_menu"
         android:layout_width="26dp"
         android:layout_height="26dp"
+        android:layout_marginTop="4dp"
         android:layout_marginEnd="8dp"
         app:icon_color_light_disabled="@color/Unify_Static_White"
         app:icon_color_light_enable="@color/Unify_Static_White"
@@ -54,8 +55,9 @@
 
     <FrameLayout
         android:id="@+id/icon_notif_wrapper"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="34dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="4dp"
         android:layout_marginEnd="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/more_menu"
@@ -65,12 +67,13 @@
             android:id="@+id/cart"
             android:layout_width="26dp"
             android:layout_height="26dp"
+            android:layout_gravity="center"
             app:icon_color_light_disabled="@color/Unify_Static_White"
             app:icon_color_light_enable="@color/Unify_Static_White"
             app:icon_color_night_disabled="@color/Unify_Static_White"
             app:icon_color_night_enable="@color/Unify_Static_White"
             app:icon_enable_state="true"
-            app:icon_name="CART"/>
+            app:icon_name="CART" />
 
         <com.tokopedia.unifycomponents.NotificationUnify
             android:id="@+id/notification_counter"

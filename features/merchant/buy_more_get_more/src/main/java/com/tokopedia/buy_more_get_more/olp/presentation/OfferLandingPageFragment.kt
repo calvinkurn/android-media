@@ -148,6 +148,7 @@ class OfferLandingPageFragment :
     override fun onResume() {
         super.onResume()
 //        loadInitialData()
+        viewModel.processEvent(OlpEvent.GetNotification)
     }
 
     override fun onCreateView(
@@ -521,6 +522,7 @@ class OfferLandingPageFragment :
                 productId = product.productId.toString(),
                 pageSource = VariantPageSource.BUY_MORE_GET_MORE,
                 shopId = shopId.toString(),
+                dismissAfterTransaction = true,
                 extParams = AtcVariantHelper.generateExtParams(
                     mapOf(
                         Constant.EXT_PARAM_OFFER_ID to stringOfferIds,
