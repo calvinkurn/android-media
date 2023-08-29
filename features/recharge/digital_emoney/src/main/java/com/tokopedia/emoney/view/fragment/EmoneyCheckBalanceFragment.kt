@@ -162,7 +162,7 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
             initializeBCALibs(tag)
             val bcaIsMyCard = bcaLibrary.C_BCAIsMyCard()
             if(bcaIsMyCard.startsWith(GEN_2_CARD)) {
-                bcaBalanceViewModel.processBCATagBalance(IsoDep.get(tag))
+                bcaBalanceViewModel.processBCATagBalance(IsoDep.get(tag), TEMP_M_ID, TEMP_T_ID)
             } else if(bcaIsMyCard.startsWith(GEN_1_CARD)){
                 val dataBalance = bcaLibrary.C_BCACheckBalance()
                 showCardLastBalance(BCAResponseMapper.bcaMapper(dataBalance, true))
@@ -508,6 +508,8 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
         private const val RC_KEY = "rc"
         private const val TAPCASH_ERROR_LOGGER = "TAPCASH_ERROR_LOGGER"
         private const val TAPCASH_NETWORK_ERROR_LOGGER = "TAPCASH_NETWORK_ERROR_LOGGER"
+        private const val TEMP_M_ID = "000885000015999"
+        private const val TEMP_T_ID = "ETES0067"
 
         fun newInstance(): Fragment {
             return EmoneyCheckBalanceFragment()

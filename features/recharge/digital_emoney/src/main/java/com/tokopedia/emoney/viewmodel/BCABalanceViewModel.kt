@@ -1,6 +1,7 @@
 package com.tokopedia.emoney.viewmodel
 
 import android.nfc.tech.IsoDep
+import android.util.Log
 import androidx.lifecycle.LiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common_electronic_money.data.EmoneyInquiry
@@ -26,12 +27,16 @@ class BCABalanceViewModel @Inject constructor(
     val errorCardMessage: LiveData<Throwable>
         get() = errorCardMessageMutable
 
-    fun processBCATagBalance(isoDep: IsoDep) {
+    fun processBCATagBalance(isoDep: IsoDep, merchantId: String, terminalId: String) {
+        val bcaMTId = BCAResponseMapper.bcaMTId(merchantId, terminalId)
+        val bcaSetConfig = bcaLibrary.C_BCASetConfig(bcaMTId)
         if (isoDep != null) {
             run {
                 try {
                     val bcaCheckBalanceResult = bcaLibrary.C_BCACheckBalance()
                     val mappedResult = BCAResponseMapper.bcaMapper(bcaCheckBalanceResult, false)
+                    val bcaGetConfig = bcaLibrary.C_BCAGetConfig()
+                    Log.d("SETCONFIGG", bcaSetConfig+" _hahaha_ "+bcaGetConfig)
                     //TODO Add Extra Balance from GQL
                     bcaInquiryMutable.postValue(mappedResult)
                 } catch (e: IOException) {

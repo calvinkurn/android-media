@@ -16,6 +16,10 @@ class BCALibrary {
 
     external fun C_BCACheckBalance(): CheckBalanceResult
 
+    external fun C_BCASetConfig(strConfig: String): String
+
+    external fun C_BCAGetConfig(): String
+
     val HEX_DIGITS = charArrayOf(
         '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'
     )

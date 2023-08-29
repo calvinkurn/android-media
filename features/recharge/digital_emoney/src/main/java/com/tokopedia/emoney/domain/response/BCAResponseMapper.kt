@@ -25,4 +25,8 @@ object BCAResponseMapper {
             isBCAGenOne = isBCAGenOne
         )
     }
+
+    fun bcaMTId(merchantId: String, terminalId: String): String {
+        return "$terminalId,$merchantId"
+    }
 }
