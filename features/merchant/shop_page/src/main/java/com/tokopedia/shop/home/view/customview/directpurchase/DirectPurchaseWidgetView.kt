@@ -228,6 +228,10 @@ class DirectPurchaseWidgetView : LinearLayout,
         productAdapter.setSeeAllCardModeType(type)
     }
 
+    fun setAdaptiveLabelDiscount(isAdaptive: Boolean) {
+        productAdapter.setAdaptiveLabelDiscount(isAdaptive)
+    }
+
     /**
      * set how much time load product will be triggered since the last time fetched.
      * Time is in milliseconds. 30000 = 5 minutes.

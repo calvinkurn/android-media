@@ -849,10 +849,7 @@ open class ShopPageHomeFragment :
     }
 
     private fun setFestivityRvDecoration() {
-        val anyFestivityWidget = shopHomeAdapter?.getShopHomeWidgetData().orEmpty().any {
-            it.isFestivity
-        }
-        if (anyFestivityWidget) {
+        if (shopHomeAdapter?.anyFestivityOnShopHomeWidget() == true) {
             getRecyclerView(view)?.let {
                 if (it.itemDecorationCount == Int.ZERO) {
                     context?.let { ctx ->

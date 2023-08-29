@@ -7,6 +7,7 @@ import com.tokopedia.common.ColorPallete
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.shop.R
+import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.LayoutShopHomeDirectPurchaseByEtalaseBinding
 import com.tokopedia.shop.home.view.customview.directpurchase.DirectPurchaseWidgetView
@@ -51,17 +52,37 @@ class ShopHomeDirectPurchasedByEtalaseViewHolder(
         containerPlaceholder?.hide()
         directPurchaseWidget?.apply {
             setListener(shopHomeListener.getShopPageHomeFragment())
-            setColor(ColorPallete(
-                primaryTextColor = element.header.colorSchema.getColorSchema(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS)?.value.orEmpty(),
-                secondaryTextColor = element.header.colorSchema.getColorSchema(ShopPageColorSchema.ColorSchemaName.TEXT_LOW_EMPHASIS)?.value.orEmpty(),
-                slashedTextColor = element.header.colorSchema.getColorSchema(ShopPageColorSchema.ColorSchemaName.TEXT_LOW_EMPHASIS)?.value.orEmpty(),
-                buttonAccent = element.header.colorSchema.getColorSchema(ShopPageColorSchema.ColorSchemaName.CTA_TEXT_LINK_COLOR)?.value.orEmpty()
-            ))
-            val isDarkPattern = shopHomeListener.getPatternColorType() == ShopPageHeaderLayoutUiModel.ColorType.DARK.value
-            if (isDarkPattern) {
-                setSeeAllCardModeType(ViewAllCard.MODE_INVERT)
+            if (element.header.isOverrideTheme) {
+                setColor(
+                    ColorPallete(
+                        primaryTextColor = element.header.colorSchema.getColorSchema(
+                            ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS
+                        )?.value.orEmpty(),
+                        secondaryTextColor = element.header.colorSchema.getColorSchema(
+                            ShopPageColorSchema.ColorSchemaName.TEXT_LOW_EMPHASIS
+                        )?.value.orEmpty(),
+                        slashedTextColor = element.header.colorSchema.getColorSchema(
+                            ShopPageColorSchema.ColorSchemaName.TEXT_LOW_EMPHASIS
+                        )?.value.orEmpty(),
+                        buttonAccent = element.header.colorSchema.getColorSchema(
+                            ShopPageColorSchema.ColorSchemaName.CTA_TEXT_LINK_COLOR
+                        )?.value.orEmpty(),
+                        white = ShopUtil.getColorHexString(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White),
+                        darkGrey = ShopUtil.getColorHexString(context, R.color.dms_static_Unify_NN600_light),
+                    )
+                )
+                val isDarkPattern =
+                    shopHomeListener.getPatternColorType() == ShopPageHeaderLayoutUiModel.ColorType.DARK.value
+                if (isDarkPattern) {
+                    setSeeAllCardModeType(ViewAllCard.MODE_INVERT)
+                } else {
+                    setSeeAllCardModeType(ViewAllCard.MODE_NORMAL)
+                }
+                setAdaptiveLabelDiscount(false)
             } else {
+                setColor(ColorPallete())
                 setSeeAllCardModeType(ViewAllCard.MODE_NORMAL)
+                setAdaptiveLabelDiscount(true)
             }
             setData(element.widgetData)
         }

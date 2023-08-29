@@ -24,6 +24,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shop.R
+import com.tokopedia.shop.common.util.ShopUtilExt.setAdaptiveLabelDiscountColor
 import com.tokopedia.unifycomponents.CardUnify2.Companion.TYPE_BORDER
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
@@ -101,6 +102,7 @@ class ProductDirectPurchaseViewHolder private constructor() {
     class ContentVH(
         val itemView: View,
         val colorPallete: ColorPallete?,
+        val isAdaptiveLabelDiscount: Boolean,
         private val listener: ProductDirectPurchaseContentVHListener
     ) : RecyclerView.ViewHolder(itemView) {
         val ivProduct: ImageUnify = itemView.findViewById(com.tokopedia.shop.R.id.iv_product)
@@ -110,7 +112,7 @@ class ProductDirectPurchaseViewHolder private constructor() {
             itemView.findViewById(com.tokopedia.shop.R.id.ll_variant_color)
         val tvProductName = itemView.findViewById<Typography>(com.tokopedia.shop.R.id.tvProductName)
         val tvPrice = itemView.findViewById<Typography>(com.tokopedia.shop.R.id.tvPrice)
-        val labelDiscount = itemView.findViewById<Label>(com.tokopedia.shop.R.id.labelDiscount)
+        val labelDiscount = itemView.findViewById<Typography>(com.tokopedia.shop.R.id.labelDiscount)
         val tvSlashedPrice =
             itemView.findViewById<Typography>(com.tokopedia.shop.R.id.tvSlashedPrice)
         val iconRating = itemView.findViewById<View>(com.tokopedia.shop.R.id.iconRating)
@@ -138,6 +140,7 @@ class ProductDirectPurchaseViewHolder private constructor() {
             fun create(
                 parent: ViewGroup,
                 colorPallete: ColorPallete?,
+                isAdaptiveLabelDiscount: Boolean,
                 listener: ProductDirectPurchaseContentVHListener
             ): ContentVH {
                 val inflater = LayoutInflater.from(parent.context)
@@ -148,6 +151,7 @@ class ProductDirectPurchaseViewHolder private constructor() {
                         false
                     ),
                     colorPallete,
+                    isAdaptiveLabelDiscount,
                     listener
                 )
             }
@@ -172,6 +176,7 @@ class ProductDirectPurchaseViewHolder private constructor() {
             if (data.discount.isEmpty() || data.discount.toIntOrZero() == 0) {
                 labelDiscount.visibility = View.GONE
             } else {
+                labelDiscount.setAdaptiveLabelDiscountColor(isAdaptiveLabelDiscount)
                 labelDiscount.text = "${data.discount}%"
                 labelDiscount.visibility = View.VISIBLE
             }
