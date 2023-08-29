@@ -1085,10 +1085,8 @@ internal class PromoUsageViewModel @Inject constructor(
                         newClearPromoOrder
                     }
                 order.codes.forEach { orderCode ->
-                    if (!boPromoCodes.contains(orderCode) && !newClearPromoOrder.codes.contains(
-                            orderCode
-                        )
-                    ) {
+                    if (!boPromoCodes.contains(orderCode)
+                        && !newClearPromoOrder.codes.contains(orderCode)) {
                         val updatedCodes = newClearPromoOrder.codes.also {
                             it.add(orderCode)
                         }
@@ -1259,7 +1257,11 @@ internal class PromoUsageViewModel @Inject constructor(
                         .map { it.code }
                     var updatedItems = currentItems.map { item ->
                         if (item is PromoItem) {
-                            item.copy(state = PromoItemState.Normal)
+                            item.copy(
+                                state = PromoItemState.Normal,
+                                currentClashingPromoCodes = emptyList(),
+                                currentClashingSecondaryPromoCodes = emptyList()
+                            )
                         } else if (item is PromoRecommendationItem) {
                             item.copy(selectedCodes = recommendedPromoCodes)
                         } else {

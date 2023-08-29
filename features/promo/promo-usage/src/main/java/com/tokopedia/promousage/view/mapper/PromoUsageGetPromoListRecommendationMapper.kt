@@ -83,17 +83,18 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
                                 selectedPromoCodes = selectedPromoCodes
                             )
                         )
-                        couponSection.coupons.forEachIndexed { index, coupon ->
-                            items.add(
-                                mapCouponToPromo(
-                                    index = index,
-                                    couponSection = couponSection,
-                                    coupon = coupon,
-                                    recommendedPromoCodes = recommendedPromoCodes,
-                                    selectedPromoCodes = selectedPromoCodes
+                        couponSection.coupons.filter { it.isGroupHeader }
+                            .forEachIndexed { index, coupon ->
+                                items.add(
+                                    mapCouponToPromo(
+                                        index = index,
+                                        couponSection = couponSection,
+                                        coupon = coupon,
+                                        recommendedPromoCodes = recommendedPromoCodes,
+                                        selectedPromoCodes = selectedPromoCodes
+                                    )
                                 )
-                            )
-                        }
+                            }
                     }
                 }
 
@@ -107,17 +108,18 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
                                 isExpanded = !couponSection.isCollapsed
                             )
                         )
-                        couponSection.coupons.forEachIndexed { index, coupon ->
-                            items.add(
-                                mapCouponToPromo(
-                                    index = index,
-                                    couponSection = couponSection,
-                                    coupon = coupon,
-                                    recommendedPromoCodes = recommendedPromoCodes,
-                                    selectedPromoCodes = selectedPromoCodes
+                        couponSection.coupons.filter { it.isGroupHeader }
+                            .forEachIndexed { index, coupon ->
+                                items.add(
+                                    mapCouponToPromo(
+                                        index = index,
+                                        couponSection = couponSection,
+                                        coupon = coupon,
+                                        recommendedPromoCodes = recommendedPromoCodes,
+                                        selectedPromoCodes = selectedPromoCodes
+                                    )
                                 )
-                            )
-                        }
+                            }
                         val totalPromoInSectionCount = couponSection.coupons.size
                         if (totalPromoInSectionCount > 1) {
                             val isExpanded = !couponSection.isCollapsed
@@ -187,9 +189,8 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
         } else {
             SecondaryCoupon()
         }
-        // TODO: Get remaining promo count from BE after available
-        val remainingPromoCount = 1
-        //couponSection.couponGroups.firstOrNull { it.id == coupon.groupId }?.count ?: 1
+        val remainingPromoCount = couponSection.couponGroups
+            .firstOrNull { it.id == coupon.groupId }?.count ?: 1
 
         val isRecommended = recommendedPromoCodes.isNotEmpty() &&
             (recommendedPromoCodes.contains(coupon.code)

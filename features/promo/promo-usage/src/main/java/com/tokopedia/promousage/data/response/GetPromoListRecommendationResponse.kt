@@ -111,6 +111,8 @@ data class Coupon(
     val uniqueId: String = "",
     @SerializedName("shop_id")
     val shopId: Long = 0,
+    @SerializedName("is_group_header")
+    val isGroupHeader: Boolean = false,
     @SerializedName("group_id")
     val groupId: Long = 0,
     @SerializedName("is_selected")

@@ -49,6 +49,10 @@ class PromoUsageGetPromoListRecommendationUseCase @Inject constructor(
                     title
                     is_enabled
                     is_collapsed
+                    coupon_groups {
+                      catalog_id
+                      count
+                    }
                     coupons {
                       code
                       benefit_type_str
@@ -64,6 +68,7 @@ class PromoUsageGetPromoListRecommendationUseCase @Inject constructor(
                       is_attempted
                       is_highlighted
                       radio_check_state
+                      is_group_header
                       group_id
                       promo_id
                       is_bebas_ongkir
