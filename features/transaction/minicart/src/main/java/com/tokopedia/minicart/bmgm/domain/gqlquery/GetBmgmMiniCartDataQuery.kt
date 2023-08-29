@@ -16,7 +16,7 @@ class GetBmgmMiniCartDataQuery : GqlQueryInterface {
 
     companion object {
         private const val OPERATION_NAME = "mini_cart_v3"
-        private const val QUERY = """
+        private val QUERY = """
             query $OPERATION_NAME(${'$'}lang: String, ${'$'}additional_params: CartRevampAdditionalParams) {
               $OPERATION_NAME(lang: ${'$'}lang, additional_params: ${'$'}additional_params) {
                 error_message
@@ -72,6 +72,6 @@ class GetBmgmMiniCartDataQuery : GqlQueryInterface {
                 }
               }
             }
-        """
+        """.trimIndent()
     }
 }

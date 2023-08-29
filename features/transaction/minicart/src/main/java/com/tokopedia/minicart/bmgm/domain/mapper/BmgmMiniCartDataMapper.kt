@@ -14,7 +14,7 @@ import javax.inject.Inject
 class BmgmMiniCartDataMapper @Inject constructor() {
 
     companion object {
-        private const val CART_DETAIL_TYPE = "group"
+        private const val CART_DETAIL_TYPE = "bmgm"
         private const val OFFER_STATUS_HAS_REACH_MAX_DISC = 2
     }
 

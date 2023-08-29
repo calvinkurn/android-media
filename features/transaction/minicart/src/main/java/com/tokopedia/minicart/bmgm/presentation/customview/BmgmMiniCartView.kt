@@ -52,6 +52,7 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener, Default
     lateinit var viewModelFactory: ViewModelFactory
 
     private var param = BmgmParamModel()
+    private var shopIds = listOf<Long>()
     private var binding: ViewBmgmMiniCartWidgetBinding? = null
     private var footerBinding: ViewBmgmMiniCartSubTotalBinding? = null
     private val miniCartAdapter by lazy { BmgmMiniCartAdapter(this) }
@@ -94,17 +95,23 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener, Default
         RouteManager.route(context, ApplinkConstInternalGlobal.BMGM_MINI_CART)
     }
 
-    fun fetchData(offerIds: List<Long>, offerJsonData: String, warehouseIds: List<String>) {
+    fun fetchData(
+        shopIds: List<Long>,
+        offerIds: List<Long>,
+        offerJsonData: String,
+        warehouseIds: List<String>
+    ) {
         this.param = BmgmParamModel(
             offerIds = offerIds,
             offerJsonData = offerJsonData,
             warehouseIds = warehouseIds
         )
-        viewModel.getMiniCartData(param)
+        this.shopIds = shopIds
+        viewModel.getMiniCartData(shopIds, param, false)
     }
 
     fun refreshData() {
-        viewModel.getMiniCartData(param = param, showLoadingState = true)
+        viewModel.getMiniCartData(shopIds = shopIds, param = param, showLoadingState = true)
     }
 
     private fun setAsLifecycleObserver() {
@@ -218,7 +225,9 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener, Default
             } else {
                 btnBmgmOpenCart.isEnabled = true
                 tvBmgmFinalPrice.text = data.getPriceAfterDiscountStr()
-                tvBmgmPriceBeforeDiscount.text = String.format(CROSSED_TEXT_FORMAT, data.getPriceBeforeDiscountStr()).parseAsHtml()
+                tvBmgmPriceBeforeDiscount.text =
+                    String.format(CROSSED_TEXT_FORMAT, data.getPriceBeforeDiscountStr())
+                        .parseAsHtml()
 
                 btnBmgmOpenCart.setOnClickListener {
                     viewModel.setCartListCheckboxState(getCartIds(data.tiersApplied))

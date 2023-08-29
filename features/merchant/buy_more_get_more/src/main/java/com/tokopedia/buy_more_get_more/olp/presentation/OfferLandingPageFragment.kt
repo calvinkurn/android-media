@@ -537,6 +537,7 @@ class OfferLandingPageFragment :
     private fun fetchMiniCart() {
         val currentUiState = viewModel.currentState
         binding?.miniCartView?.fetchData(
+            shopIds = listOf(currentUiState.shopData.shopId),
             offerIds = currentUiState.offerIds,
             offerJsonData = currentUiState.offeringJsonData,
             warehouseIds = currentUiState.warehouseIds.map { it.toString() }

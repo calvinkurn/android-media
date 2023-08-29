@@ -20,6 +20,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.minicart.R
 import com.tokopedia.minicart.bmgm.common.di.DaggerBmgmComponent
 import com.tokopedia.minicart.bmgm.presentation.adapter.BmgmMiniCartDetailAdapter
+import com.tokopedia.minicart.bmgm.presentation.adapter.itemdecoration.BmgmMiniCartDetailItemDecoration
 import com.tokopedia.minicart.bmgm.presentation.model.BmgmState
 import com.tokopedia.minicart.bmgm.presentation.model.MiniCartDetailUiModel
 import com.tokopedia.minicart.bmgm.presentation.viewmodel.BmgmMiniCartDetailViewModel
@@ -112,6 +113,9 @@ class BmgmMiniCartDetailBottomSheet : BottomSheetUnify() {
 
     private fun setupProductList() {
         binding?.rvBmgmMiniCartBottomSheet?.run {
+            if (itemDecorationCount == Int.ZERO) {
+                addItemDecoration(BmgmMiniCartDetailItemDecoration())
+            }
             layoutManager = LinearLayoutManager(context)
             adapter = listAdapter
         }
