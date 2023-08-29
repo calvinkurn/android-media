@@ -119,6 +119,7 @@ class FeedXHeaderUseCase @Inject constructor(
           isActive
           weblink
           applink
+          title
           __typename
         }
         """
