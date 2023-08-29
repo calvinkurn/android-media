@@ -21,6 +21,7 @@ class ProductCarouselDirectPurchaseAdapter(
     private var recyclerView: RecyclerView? = null
     private var colorPallete: ColorPallete? = null
     private var seeAllCardModeType: Int? = null
+    private var isAdaptiveLabelDiscount: Boolean = true
 
     fun setMaxProductShown(maxProductShownParam: Int) {
         if (maxProductShown != maxProductShownParam) {
@@ -40,11 +41,18 @@ class ProductCarouselDirectPurchaseAdapter(
         this.seeAllCardModeType = mode
     }
 
+    //set adaptive label discount
+    fun setAdaptiveLabelDiscount(isAdaptive: Boolean) {
+        this.isAdaptiveLabelDiscount = isAdaptive
+    }
+
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             TYPE_CONTENT -> ProductDirectPurchaseViewHolder.ContentVH.create(
                 parent,
                 colorPallete,
+                isAdaptiveLabelDiscount,
                 contentListener
             )
 

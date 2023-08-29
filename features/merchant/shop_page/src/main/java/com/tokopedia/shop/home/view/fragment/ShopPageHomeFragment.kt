@@ -215,6 +215,7 @@ import com.tokopedia.shop.product.view.activity.ShopProductListResultActivity
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.shop.product.view.datamodel.ShopProductSortFilterUiModel
 import com.tokopedia.shop.product.view.viewholder.ShopProductSortFilterViewHolder
+import com.tokopedia.shop.product.view.widget.StickySingleHeaderView
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity
 import com.tokopedia.shop_widget.thematicwidget.uimodel.ProductCardUiModel
 import com.tokopedia.shop_widget.thematicwidget.uimodel.ThematicWidgetUiModel
@@ -391,6 +392,7 @@ open class ShopPageHomeFragment :
     private var topView: View? = null
     private var centerView: View? = null
     private var bottomView: View? = null
+    private var stickyHeaderView: StickySingleHeaderView? = null
     private val imageBackgroundPattern: ImageUnify? by lazy {
         viewBinding?.imageBackgroundPattern
     }
@@ -549,6 +551,7 @@ open class ShopPageHomeFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
+        configStickyHeaderView()
         getRecyclerView(view)?.let {
             it.clearOnScrollListeners()
             it.layoutManager = staggeredGridLayoutManager
@@ -571,6 +574,18 @@ open class ShopPageHomeFragment :
         observeUpdatedBannerTimerUiModelData()
         observeDirectPurchaseProductWidgetAtcResult()
         isLoadInitialData = true
+    }
+
+    private fun configStickyHeaderView() {
+        if(isOverrideTheme()) {
+            stickyHeaderView?.setShapeBackgroundColorIntValue(
+                ShopUtil.parseColorFromHexString(getBodyBackgroundHexColor())
+            )
+        }
+    }
+
+    private fun getBodyBackgroundHexColor(): String {
+        return (getRealParentFragment() as? InterfaceShopPageHeader)?.getBodyBackgroundHexColor().orEmpty()
     }
 
     private fun observeDirectPurchaseProductWidgetAtcResult() {
@@ -763,6 +778,7 @@ open class ShopPageHomeFragment :
         topView = viewBinding?.topView
         centerView = viewBinding?.centerView
         bottomView = viewBinding?.bottomView
+        stickyHeaderView = viewBinding?.stickySingleHeaderView
     }
 
     protected open fun observeShopHomeWidgetContentData() {
@@ -833,10 +849,7 @@ open class ShopPageHomeFragment :
     }
 
     private fun setFestivityRvDecoration() {
-        val anyFestivityWidget = shopHomeAdapter?.getShopHomeWidgetData().orEmpty().any {
-            it.isFestivity
-        }
-        if (anyFestivityWidget) {
+        if (shopHomeAdapter?.anyFestivityOnShopHomeWidget() == true) {
             getRecyclerView(view)?.let {
                 if (it.itemDecorationCount == Int.ZERO) {
                     context?.let { ctx ->
@@ -1090,7 +1103,7 @@ open class ShopPageHomeFragment :
             isEnableDirectPurchase,
             shopId,
             isOverrideTheme(),
-            getColorSchema()
+            getShopPageColorSchema()
         )
         if (shopHomeWidgetContentData.isNotEmpty()) {
             shopHomeAdapter?.setHomeLayoutData(shopHomeWidgetContentData)
@@ -1743,7 +1756,7 @@ open class ShopPageHomeFragment :
             isEnableDirectPurchase,
             shopId,
             isOverrideTheme(),
-            getColorSchema()
+            getShopPageColorSchema()
         )
         if (shopHomeWidgetContentData.isNotEmpty()) {
             shopHomeAdapter?.setHomeLayoutData(shopHomeWidgetContentData)
@@ -2007,7 +2020,7 @@ open class ShopPageHomeFragment :
                 isThematicWidgetShown,
                 isEnableDirectPurchase,
                 isOverrideTheme(),
-                getColorSchema()
+                getShopPageColorSchema()
             )
         }
     }
@@ -4324,7 +4337,7 @@ open class ShopPageHomeFragment :
     }
 
     override fun getShopPageColorSchema(): ShopPageColorSchema {
-        return (getRealParentFragment() as? InterfaceShopPageHeader)?.getColorSchema()
+        return (getRealParentFragment() as? InterfaceShopPageHeader)?.getBodyColorSchema()
             ?: ShopPageColorSchema()
     }
 
@@ -5078,8 +5091,8 @@ open class ShopPageHomeFragment :
         return this
     }
 
-    private fun getColorSchema(): ShopPageColorSchema {
-        return (getRealParentFragment() as? InterfaceShopPageHeader)?.getColorSchema() ?: ShopPageColorSchema()
+    override fun getPatternColorType(): String {
+        return (getRealParentFragment() as? InterfaceShopPageHeader)?.getBodyPatternColorType().orEmpty()
     }
 
     override fun triggerLoadProductDirectPurchase(
