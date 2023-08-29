@@ -338,7 +338,10 @@ class BroadcastManager @Inject constructor(
 
                 effectManager.getHandler()?.post {
                     try {
-                        initializeSurfaceWithByteplusSDK(context, holder, audioConfig, videoConfig)
+                        val pusherVideoConfig = BroadcasterUtil.getVideoConfig(mVideoRate, mVideoFps)
+                        pusherVideoConfig.videoSize = textureSize
+
+                        initializeSurfaceWithByteplusSDK(context, holder, audioConfig, pusherVideoConfig)
                     } catch (e: Throwable) {
                         Firebase.crashlytics.recordException(e)
                     }

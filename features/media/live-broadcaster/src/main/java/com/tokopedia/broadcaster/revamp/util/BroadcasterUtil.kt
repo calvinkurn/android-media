@@ -55,7 +55,7 @@ object BroadcasterUtil {
         if (!recordSizes.isNullOrEmpty()) return findBestResolution(recordSizes)
 
         // Nothing found, use default
-        return supportedPreviewSizes?.firstOrNull() ?: defaultResolution
+        return defaultResolution
     }
 
     fun findFlipSize(supportedPreviewSizes: List<Streamer.Size>?, videoSize: Streamer.Size): Streamer.Size {
@@ -69,7 +69,7 @@ object BroadcasterUtil {
         if (flipSizeSimilarFrameSize != null) return flipSizeSimilarFrameSize
 
         // Nothing found, use default
-        return supportedPreviewSizes?.firstOrNull() ?: defaultResolution
+        return defaultResolution
     }
 
     @Suppress("MagicNumber")
