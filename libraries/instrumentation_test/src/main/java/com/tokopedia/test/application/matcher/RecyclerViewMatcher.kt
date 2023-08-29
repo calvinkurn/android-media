@@ -8,7 +8,6 @@ import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
 
-
 class RecyclerViewMatcher(private val recyclerViewId: Int) {
 
     fun atPosition(position: Int): Matcher<View> {
@@ -25,8 +24,10 @@ class RecyclerViewMatcher(private val recyclerViewId: Int) {
                     idDescription = try {
                         resources!!.getResourceName(recyclerViewId)
                     } catch (var4: Resources.NotFoundException) {
-                        String.format("%s (resource name not found)",
-                                Integer.valueOf(recyclerViewId))
+                        String.format(
+                            "%s (resource name not found)",
+                            Integer.valueOf(recyclerViewId)
+                        )
                     }
                 }
                 description.appendText("with id: $idDescription")
@@ -155,15 +156,18 @@ fun hasViewHolderOf(
  * )
  */
 fun hasViewHolderItemAtPosition(
-    position: Int, expectedClass: Class<out RecyclerView.ViewHolder>
+    position: Int,
+    expectedClass: Class<out RecyclerView.ViewHolder>
 ): BoundedMatcher<View, RecyclerView> {
     return object : BoundedMatcher<View, RecyclerView>(RecyclerView::class.java) {
+        var classAtPosition: String = ""
         override fun describeTo(description: Description?) {
-            description?.appendText("$expectedClass should be found at position $position")
+            description?.appendText("Position $position is $classAtPosition, not $expectedClass")
         }
 
         override fun matchesSafely(item: RecyclerView?): Boolean {
             val vh = item!!.findViewHolderForAdapterPosition(position)
+            classAtPosition = vh!!.javaClass.name
             return expectedClass.isInstance(vh)
         }
     }
