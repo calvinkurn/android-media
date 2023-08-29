@@ -7,8 +7,8 @@ import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.header.HeaderRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.msgbubble.MsgBubbleRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.previewattachment.PreviewAttachmentResult
+import com.tokopedia.topchat.chatroom.view.activity.robot.previewattachment.ProductPreviewRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.BannedProductRobot
-import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductPreviewRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.replybubble.ReplyBubbleRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.tickerreminder.TickerReminderRobot
 

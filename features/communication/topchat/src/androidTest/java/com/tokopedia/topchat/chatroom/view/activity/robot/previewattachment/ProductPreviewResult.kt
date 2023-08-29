@@ -1,4 +1,4 @@
-package com.tokopedia.topchat.chatroom.view.activity.robot.product
+package com.tokopedia.topchat.chatroom.view.activity.robot.previewattachment
 
 import android.view.View
 import androidx.annotation.IdRes
