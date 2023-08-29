@@ -12,6 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showToast
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
@@ -72,6 +73,11 @@ class StoryDetailFragment @Inject constructor(
         setupStoryView()
     }
 
+    override fun onPause() {
+        super.onPause()
+        pauseStory()
+    }
+
     override fun onResume() {
         super.onResume()
         setupObserver()
@@ -114,6 +120,7 @@ class StoryDetailFragment @Inject constructor(
                 viewModelAction(ResumeStory)
             }
         }
+        showStoryComponent(true)
     }
 
     private fun storyDetailsTimer(state: StoryDetailUiModel) {
@@ -129,7 +136,6 @@ class StoryDetailFragment @Inject constructor(
                 }
             }
         }
-        isShouldShowStoryComponent(true)
     }
 
     private fun setupStoryView() = with(binding) {
@@ -145,18 +151,38 @@ class StoryDetailFragment @Inject constructor(
 
         flStoryPrev.onTouchEventStory { event ->
             when (event) {
-                TouchEventStory.PAUSE -> pauseStory()
+                TouchEventStory.PAUSE -> {
+                    flStoryNext.hide()
+                    flStoryProduct.hide()
+                    showStoryComponent(false)
+                    pauseStory()
+                }
 
-                TouchEventStory.RESUME -> resumeStory()
+                TouchEventStory.RESUME -> {
+                    flStoryNext.show()
+                    flStoryProduct.show()
+                    showStoryComponent(true)
+                    resumeStory()
+                }
 
                 TouchEventStory.NEXT_PREV -> viewModelAction(PreviousDetail)
             }
         }
         flStoryNext.onTouchEventStory { event ->
             when (event) {
-                TouchEventStory.PAUSE -> pauseStory()
+                TouchEventStory.PAUSE -> {
+                    flStoryPrev.hide()
+                    flStoryProduct.hide()
+                    showStoryComponent(false)
+                    pauseStory()
+                }
 
-                TouchEventStory.RESUME -> resumeStory()
+                TouchEventStory.RESUME -> {
+                    flStoryPrev.show()
+                    flStoryProduct.show()
+                    showStoryComponent(true)
+                    resumeStory()
+                }
 
                 TouchEventStory.NEXT_PREV -> viewModelAction(NextDetail)
             }
@@ -171,19 +197,15 @@ class StoryDetailFragment @Inject constructor(
     }
 
     private fun pauseStory() {
-        isShouldShowStoryComponent(false)
         viewModelAction(PauseStory)
     }
 
     private fun resumeStory() {
-        isShouldShowStoryComponent(true)
         viewModelAction(ResumeStory)
     }
 
-    private fun isShouldShowStoryComponent(isShow: Boolean) {
-        binding.icClose.showWithCondition(isShow)
-        binding.rvStoryCategory.showWithCondition(isShow)
-        binding.cvStoryDetailTimer.showWithCondition(isShow)
+    private fun showStoryComponent(isShow: Boolean) {
+        binding.storyComponent.showWithCondition(isShow)
     }
 
     private fun viewModelAction(event: StoryUiAction) {

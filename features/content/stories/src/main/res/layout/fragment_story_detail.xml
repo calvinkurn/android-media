@@ -35,6 +35,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/guideline_bot_overlay" />
 
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/story_component"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="cv_story_detail_timer, ic_close, rv_story_category"/>
+
     <androidx.compose.ui.platform.ComposeView
         android:id="@+id/cv_story_detail_timer"
         android:layout_width="0dp"
