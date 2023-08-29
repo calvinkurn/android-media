@@ -1,5 +1,6 @@
 package com.tokopedia.stories.view.fragment
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -22,7 +23,7 @@ import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
 class StoryGroupFragment @Inject constructor(
-    private val viewModelFactory: ViewModelProvider.Factory,
+    private val viewModelFactory: ViewModelProvider.Factory
 ) : TkpdBaseV4Fragment() {
 
     private var _binding: FragmentStoryGroupBinding? = null
@@ -35,7 +36,7 @@ class StoryGroupFragment @Inject constructor(
         StoryGroupPagerAdapter(
             childFragmentManager,
             requireActivity(),
-            lifecycle,
+            lifecycle
         )
     }
 
@@ -55,11 +56,24 @@ class StoryGroupFragment @Inject constructor(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModelAction(StoryUiAction.SetArgumentsData(arguments))
+        setupViews()
         setupObserver()
     }
 
     private fun viewModelAction(event: StoryUiAction) {
         viewModel.submitAction(event)
+    }
+
+    private fun setupViews() = with(binding.storyGroupViewPager) {
+        if (adapter != null) return@with
+        adapter = pagerAdapter
+        setPageTransformer(ZoomOutPageTransformer())
+        registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                viewModelAction(StoryUiAction.SetGroupMainData(position))
+                super.onPageSelected(position)
+            }
+        })
     }
 
     private fun setupObserver() {
@@ -86,28 +100,19 @@ class StoryGroupFragment @Inject constructor(
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun renderStoryGroup(
         prevState: StoryGroupUiModel?,
-        state: StoryGroupUiModel,
+        state: StoryGroupUiModel
     ) {
         if (prevState == null || prevState == state) return
 
         pagerAdapter.setStoryGroup(state.groupItems.size)
-        with(binding.storyGroupViewPager) {
-            if (adapter != null) return@with
-            adapter = pagerAdapter
-            setPageTransformer(ZoomOutPageTransformer())
-            registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-                override fun onPageSelected(position: Int) {
-                    viewModelAction(StoryUiAction.SetGroupMainData(position))
-                    super.onPageSelected(position)
-                }
-            })
-        }
+        pagerAdapter.notifyDataSetChanged()
     }
 
     private fun selectGroupEvent(position: Int) = with(binding.storyGroupViewPager) {
-        currentItem = position
+        setCurrentItem(position, false)
     }
 
     override fun onDestroyView() {
@@ -121,7 +126,7 @@ class StoryGroupFragment @Inject constructor(
         fun getFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
-            bundle: Bundle,
+            bundle: Bundle
         ): StoryGroupFragment {
             val oldInstance = fragmentManager.findFragmentByTag(TAG) as? StoryGroupFragment
             return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
@@ -132,5 +137,4 @@ class StoryGroupFragment @Inject constructor(
             } as StoryGroupFragment
         }
     }
-
 }

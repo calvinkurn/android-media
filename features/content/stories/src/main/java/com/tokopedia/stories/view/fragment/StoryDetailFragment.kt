@@ -34,7 +34,7 @@ import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
 class StoryDetailFragment @Inject constructor(
-    private val viewModelFactory: ViewModelProvider.Factory,
+    private val viewModelFactory: ViewModelProvider.Factory
 ) : TkpdBaseV4Fragment() {
 
     private var _binding: FragmentStoryDetailBinding? = null
@@ -94,32 +94,32 @@ class StoryDetailFragment @Inject constructor(
 
     private fun renderStoryGroup(
         prevState: StoryGroupUiModel?,
-        state: StoryGroupUiModel,
+        state: StoryGroupUiModel
     ) {
         if (prevState == state) return
-        mAdapter.setItems(state.groupItems)
+//        mAdapter.setItems(state.groupItems)
     }
 
     private fun renderStoryDetail(
         prevState: StoryDetailUiModel?,
-        state: StoryDetailUiModel,
+        state: StoryDetailUiModel
     ) {
         if (prevState == state || state == StoryDetailUiModel()) return
-
-        storyDetailsTimer(state)
-
-        val prevContent = prevState?.detailItems
-        val currContent = state.detailItems[state.selectedPosition]
-        if (!prevContent.isNullOrEmpty() &&
-            prevContent[prevState.selectedPosition].imageContent == currContent.imageContent
-        ) return
-
-        binding.ivStoryDetailContent.apply {
-            setImageUrl(currContent.imageContent)
-            onUrlLoaded = {
-                viewModelAction(ResumeStory)
-            }
-        }
+//
+//        storyDetailsTimer(state)
+//
+//        val prevContent = prevState?.detailItems
+//        val currContent = state.detailItems[state.selectedPosition]
+//        if (!prevContent.isNullOrEmpty() &&
+//            prevContent[prevState.selectedPosition].imageContent == currContent.imageContent
+//        ) return
+//
+//        binding.ivStoryDetailContent.apply {
+//            setImageUrl(currContent.imageContent)
+//            onUrlLoaded = {
+//                viewModelAction(ResumeStory)
+//            }
+//        }
         showStoryComponent(true)
     }
 
@@ -131,7 +131,7 @@ class StoryDetailFragment @Inject constructor(
                     StoryDetailTimer(
                         currentPosition = state.selectedPosition,
                         itemCount = state.detailItems.size,
-                        data = state.detailItems[state.selectedPosition],
+                        data = state.detailItems[state.selectedPosition]
                     ) { viewModelAction(NextDetail) }
                 }
             }
@@ -222,7 +222,7 @@ class StoryDetailFragment @Inject constructor(
 
         fun getFragment(
             fragmentManager: FragmentManager,
-            classLoader: ClassLoader,
+            classLoader: ClassLoader
         ): StoryDetailFragment {
             val oldInstance = fragmentManager.findFragmentByTag(TAG) as? StoryDetailFragment
             return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
@@ -231,5 +231,4 @@ class StoryDetailFragment @Inject constructor(
             ) as StoryDetailFragment
         }
     }
-
 }
