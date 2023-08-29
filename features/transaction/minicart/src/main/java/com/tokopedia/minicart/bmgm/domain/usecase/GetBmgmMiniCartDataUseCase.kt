@@ -9,7 +9,7 @@ import com.tokopedia.minicart.bmgm.domain.gqlquery.GetBmgmMiniCartDataQuery
 import com.tokopedia.minicart.bmgm.domain.mapper.BmgmMiniCartDataMapper
 import com.tokopedia.minicart.bmgm.domain.model.BmgmParamModel
 import com.tokopedia.minicart.bmgm.presentation.model.BmgmMiniCartDataUiModel
-import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
+import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartGqlResponse
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
@@ -21,11 +21,11 @@ class GetBmgmMiniCartDataUseCase @Inject constructor(
     private val mapper: BmgmMiniCartDataMapper,
     private val chosenAddressRequestHelper: ChosenAddressRequestHelper,
     graphqlRepository: GraphqlRepository
-) : GraphqlUseCase<MiniCartData>(graphqlRepository) {
+) : GraphqlUseCase<MiniCartGqlResponse>(graphqlRepository) {
 
     init {
         setGraphqlQuery(GetBmgmMiniCartDataQuery())
-        setTypeClass(MiniCartData::class.java)
+        setTypeClass(MiniCartGqlResponse::class.java)
     }
 
     suspend operator fun invoke(
@@ -36,7 +36,7 @@ class GetBmgmMiniCartDataUseCase @Inject constructor(
             val requestParam = createRequestParam(shopIds, bmgmParam)
             setRequestParams(requestParam.parameters)
             val response = executeOnBackground()
-            return mapper.mapToUiModel(response)
+            return mapper.mapToUiModel(response.miniCart)
         } catch (e: Exception) {
             throw RuntimeException(e.message)
         }
