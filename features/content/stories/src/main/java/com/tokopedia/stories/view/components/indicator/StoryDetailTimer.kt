@@ -33,7 +33,12 @@ fun StoryDetailTimer(
     data: StoryDetailItemUiModel,
     timerFinished: () -> Unit,
 ) {
-    val anim = remember(currentPosition, data.isSelected, data.id) { Animatable(INITIAL_ANIMATION) }
+    val anim = remember(
+        currentPosition,
+        data.isSelected,
+        data.id,
+        data.resetValue,
+    ) { Animatable(INITIAL_ANIMATION) }
 
     LaunchedEffect(data) {
         when (data.event) {

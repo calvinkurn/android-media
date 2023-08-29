@@ -7,6 +7,7 @@ import com.tokopedia.stories.data.repository.StoryRepository
 import com.tokopedia.stories.domain.model.StoryAuthorType
 import com.tokopedia.stories.domain.model.StoryRequestModel
 import com.tokopedia.stories.domain.model.StorySource
+import com.tokopedia.stories.utils.getRandomNumber
 import com.tokopedia.stories.view.model.StoryDetailItemUiModel.StoryDetailItemUiEvent
 import com.tokopedia.stories.view.model.StoryDetailItemUiModel.StoryDetailItemUiEvent.PAUSE
 import com.tokopedia.stories.view.model.StoryDetailItemUiModel.StoryDetailItemUiEvent.START
@@ -37,6 +38,7 @@ class StoryViewModel @Inject constructor(
 
     private val mGroupPosition = MutableStateFlow(-1)
     private val mDetailPosition = MutableStateFlow(-1)
+    private val mResetValue = MutableStateFlow(-1)
 
     private val mGroupSize: Int
         get() = _storyGroup.value.groupItems.size
@@ -112,7 +114,7 @@ class StoryViewModel @Inject constructor(
         when {
             newDetailPosition > -1 -> updateStoryDetailData(position = newDetailPosition)
             newGroupPosition > -1 -> handleSetGroup(position = newGroupPosition)
-            else -> Timber.d("reset")
+            else -> updateStoryDetailData(event = START, isReset = true)
         }
     }
 
@@ -141,7 +143,8 @@ class StoryViewModel @Inject constructor(
                 newDetail
             }
 
-            updateStoryDetailData(position = detailData.selectedPositionCached)
+            val isReset = detailData.selectedPositionCached >= detailData.detailItems.size.minus(1)
+            updateStoryDetailData(position = detailData.selectedPositionCached, isReset = isReset)
         }) { exception ->
             Timber.d("fail fetch new detail $exception")
         }
@@ -172,6 +175,7 @@ class StoryViewModel @Inject constructor(
     private fun updateStoryDetailData(
         position: Int = mDetailPosition.value,
         event: StoryDetailItemUiEvent = PAUSE,
+        isReset: Boolean = false,
     ) {
         mDetailPosition.value = position
         val positionCached = mGroupItem.detail.selectedPositionCached
@@ -182,6 +186,10 @@ class StoryViewModel @Inject constructor(
                 item.copy(
                     event = event,
                     isSelected = index == position,
+                    resetValue = if (isReset) {
+                        mResetValue.value = mResetValue.value.getRandomNumber()
+                        mResetValue.value
+                    } else mResetValue.value,
                 )
             }
         )

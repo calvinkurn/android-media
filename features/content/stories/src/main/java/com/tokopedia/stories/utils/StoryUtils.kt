@@ -4,7 +4,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlin.reflect.KProperty1
 
-fun <T: Any> Flow<T>.withCache(): Flow<CachedState<T>> {
+internal fun <T: Any> Flow<T>.withCache(): Flow<CachedState<T>> {
     var cachedValue : T? = null
     return map {
         val prevValue = cachedValue
@@ -13,7 +13,7 @@ fun <T: Any> Flow<T>.withCache(): Flow<CachedState<T>> {
     }
 }
 
-data class CachedState<T>(val prevValue: T? = null, val value: T) {
+internal data class CachedState<T>(val prevValue: T? = null, val value: T) {
 
     fun <V> isValueChanged(prop: KProperty1<T, V>): Boolean {
         val prevState = this.prevValue
@@ -29,4 +29,10 @@ data class CachedState<T>(val prevValue: T? = null, val value: T) {
             }
         }
     }
+}
+
+internal fun Int.getRandomNumber(): Int {
+    val oldValue = this
+    val newValue = (1 until 5).random()
+    return if (oldValue == newValue) newValue.minus(1) else newValue
 }

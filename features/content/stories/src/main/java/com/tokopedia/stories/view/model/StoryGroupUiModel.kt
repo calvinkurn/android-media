@@ -24,6 +24,7 @@ data class StoryDetailItemUiModel(
     val event: StoryDetailItemUiEvent = StoryDetailItemUiEvent.PAUSE,
     val imageContent: String = "",
     val isSelected: Boolean = false,
+    val resetValue: Int = -1,
 ) {
 
     enum class StoryDetailItemUiEvent {
