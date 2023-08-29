@@ -13,6 +13,7 @@ import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.mockkObject
+import io.mockk.unmockkObject
 import io.mockk.verify
 import org.junit.Test
 
@@ -87,6 +88,7 @@ class UpdateAndReloadCartTest : BaseCartViewModelTest() {
 
     override fun tearDown() {
         super.tearDown()
+        unmockkObject()
         cartViewModel.globalEvent.removeObserver(observer)
     }
 }
