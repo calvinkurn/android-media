@@ -31,14 +31,14 @@ class BmgmMiniCartViewModel @Inject constructor(
     val cartData: LiveData<BmgmState<BmgmMiniCartDataUiModel>>
         get() = _cartData
 
-    fun getMiniCartData(param: BmgmParamModel, showLoadingState: Boolean) {
+    fun getMiniCartData(shopIds: List<Long>, param: BmgmParamModel, showLoadingState: Boolean) {
         launch {
             runCatching {
                 if (showLoadingState) {
                     _cartData.value = BmgmState.Loading
                 }
                 val data = withContext(dispatchers.get().io) {
-                    getMiniCartDataUseCase.get().invoke(userSession.get().shopId, param)
+                    getMiniCartDataUseCase.get().invoke(shopIds, param)
                 }
                 _cartData.value = BmgmState.Success(data)
                 storeCartDataToLocalCache()
