@@ -34,7 +34,7 @@ class StoriesViewModel @Inject constructor(
     private val userSession: UserSessionInterface,
 ) : ViewModel() {
 
-    private var shopId: String = ""
+    var shopId: String = ""
     private var storiesId: String = ""
     var mGroupPosition = 0
     var mDetailMaxInGroup = 0

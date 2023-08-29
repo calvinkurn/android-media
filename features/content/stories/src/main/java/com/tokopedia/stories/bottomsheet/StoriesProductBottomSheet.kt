@@ -13,7 +13,11 @@ import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.content.common.ui.adapter.ContentTaggedProductBottomSheetAdapter
 import com.tokopedia.content.common.ui.viewholder.ContentTaggedProductBottomSheetViewHolder
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
+import com.tokopedia.mvcwidget.MvcData
+import com.tokopedia.mvcwidget.TokopointsCatalogMVCSummaryResponse
+import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.stories.databinding.FragmentStoriesProductBinding
 import com.tokopedia.stories.utils.withCache
 import com.tokopedia.stories.view.model.BottomSheetType
@@ -68,6 +72,7 @@ class StoriesProductBottomSheet @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             viewModel.uiState.withCache().collectLatest { (prevState, state) ->
                 renderProducts(prevState?.productSheet?.products, state.productSheet.products)
+                renderMvc(prevState?.productSheet?.vouchers, state.productSheet.vouchers)
             }
         }
     }
@@ -80,6 +85,18 @@ class StoriesProductBottomSheet @Inject constructor(
             ResultState.Success -> productAdapter.setItemsAndAnimateChanges(state.products)
             else -> {}
         }
+    }
+
+    private fun renderMvc(prevState: TokopointsCatalogMVCSummaryResponse?, state: TokopointsCatalogMVCSummaryResponse) {
+        if (prevState == state) return
+
+        val mvcData = state.data?.animatedInfoList.orEmpty()
+        binding.mvcStoriesWidget.setData(
+            mvcData = MvcData(mvcData),
+            shopId = viewModel.shopId,
+            source = MvcSource.FEED_BOTTOM_SHEET,
+        )
+        binding.mvcStoriesWidget.showWithCondition(mvcData.isNotEmpty())
     }
 
     override fun onResume() {
