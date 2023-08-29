@@ -767,11 +767,11 @@ open class DiscoveryFragment :
                             removePaddingIfComponent()
                         }
                     }
-                    addMarginInRuntime(it.data)
                     mProgressBar.hide()
                     stopDiscoveryPagePerformanceMonitoring()
                     recyclerView.post {
                         scrollToLastSection()
+                        addMarginInRuntime(it.data)
                     }
                 }
                 is Fail -> {
