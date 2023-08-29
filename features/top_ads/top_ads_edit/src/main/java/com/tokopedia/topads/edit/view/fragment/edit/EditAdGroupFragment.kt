@@ -32,7 +32,7 @@ import com.tokopedia.topads.edit.view.viewholder.CustomDividerItemDecoration
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class EditAdGroupFragment: BaseDaggerFragment(){
+class EditAdGroupFragment : BaseDaggerFragment() {
 
     private var binding by autoClearedNullable<TopadsEditFragmentEditAdGroupBinding>()
     private val editAdGroupAdapter by lazy {
@@ -51,8 +51,6 @@ class EditAdGroupFragment: BaseDaggerFragment(){
 
     var response: GroupInfoResponse.TopAdsGetPromoGroup.Data? = null
 
-
-
     //    private var groupId: String = "0"
     private var groupId: String = "24270188"
 //    private var groupId: String = "24270187"
@@ -60,17 +58,18 @@ class EditAdGroupFragment: BaseDaggerFragment(){
     private fun getList(context: Context): MutableList<Visitable<*>> {
         return mutableListOf(
             EditAdGroupItemUiModel(EditAdGroupItemTag.NAME, requireActivity().getString(R.string.edit_ad_item_title_name), hasDivider = true) { openAdGroupNameBottomSheet() },
-            EditAdGroupItemUiModel(EditAdGroupItemTag.PRODUCT, requireActivity().getString(R.string.edit_ad_item_title_product), hasDivider = true) {  },
+            EditAdGroupItemUiModel(EditAdGroupItemTag.PRODUCT, requireActivity().getString(R.string.edit_ad_item_title_product), hasDivider = true) { },
             EditAdGroupItemUiModel(EditAdGroupItemTag.SETTING_MODE, requireActivity().getString(R.string.edit_ad_item_title_mode)) { openAdGroupSettingModeBottomSheet() },
-            EditAdGroupItemUiModel(EditAdGroupItemTag.ADS_SEARCH,requireActivity().getString(R.string.edit_ad_item_title_ads_search)) {  },
-            EditAdGroupItemUiModel(EditAdGroupItemTag.ADS_RECOMMENDATION,requireActivity().getString(R.string.edit_ad_item_title_ads_recommendation)) { openAdGroupRecommendationBidBottomSheet() },
-            EditAdGroupItemUiModel(EditAdGroupItemTag.DAILY_BUDGET,requireActivity().getString(R.string.edit_ad_item_title_daily_budget), hasDivider = true) { openAdGroupDailyBudgetBottomSheet() },
+            EditAdGroupItemUiModel(EditAdGroupItemTag.ADS_SEARCH, requireActivity().getString(R.string.edit_ad_item_title_ads_search)) { },
+            EditAdGroupItemUiModel(EditAdGroupItemTag.ADS_RECOMMENDATION, requireActivity().getString(R.string.edit_ad_item_title_ads_recommendation)) { openAdGroupRecommendationBidBottomSheet() },
+            EditAdGroupItemUiModel(EditAdGroupItemTag.DAILY_BUDGET, requireActivity().getString(R.string.edit_ad_item_title_daily_budget), hasDivider = true) { openAdGroupDailyBudgetBottomSheet() },
             EditAdGroupItemAdsPotentialUiModel(
                 EditAdGroupItemTag.POTENTIAL_PERFORMANCE,
                 requireActivity().getString(R.string.edit_ad_item_title_potential_performance),
                 context.getString(R.string.footer_potential_widget_edit_ad_group_text),
                 "",
-                potentialWidgetList, EditAdGroupItemState.LOADING
+                potentialWidgetList,
+                EditAdGroupItemState.LOADING
             )
         )
     }
@@ -93,31 +92,17 @@ class EditAdGroupFragment: BaseDaggerFragment(){
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
         binding?.recyclerView?.apply {
             layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
             adapter = editAdGroupAdapter
             activity?.let {
                 editAdGroupAdapter.updateList(getList(it))
             }
-            val dividerPositions = editAdGroupAdapter.list
-                .mapIndexedNotNull { index, item ->
-                    if (item is EditAdGroupItemUiModel && item.hasDivider) {
-                        index
-                    } else {
-                        null
-                    }
-                }
-
-            val itemDecoration = CustomDividerItemDecoration(dividerPositions)
-            addItemDecoration(itemDecoration)
         }
-
 
         arguments?.getString(Constants.GROUP_ID)?.let {
             groupId = it
         }
-
 
 //        suspend fun delayWithCoroutines(delayMillis: Long) {
 //            delay(delayMillis)
@@ -128,7 +113,7 @@ class EditAdGroupFragment: BaseDaggerFragment(){
 //            editAdGroupAdapter.updatePotentialWidget(potentialWidgetList)
 //        }
 
-        viewModel.getGroupInfo(groupId , this::onSuccessGroupInfo)
+        viewModel.getGroupInfo(groupId, this::onSuccessGroupInfo)
     }
 
     private fun onSuccessGroupInfo(data: GroupInfoResponse.TopAdsGetPromoGroup.Data) {
@@ -136,7 +121,7 @@ class EditAdGroupFragment: BaseDaggerFragment(){
         editAdGroupAdapter.updateValue(EditAdGroupItemTag.PRODUCT, getProductText(data.groupTotal))
         val isBidAutomatic = checkBidIsAutomatic(data.strategies)
         editAdGroupAdapter.updateValue(EditAdGroupItemTag.SETTING_MODE, getSettingModeText(isBidAutomatic))
-        if(isBidAutomatic){
+        if (isBidAutomatic) {
             editAdGroupAdapter.removeItem(EditAdGroupItemTag.ADS_SEARCH)
             editAdGroupAdapter.removeItem(EditAdGroupItemTag.ADS_RECOMMENDATION)
         } else {
@@ -145,7 +130,19 @@ class EditAdGroupFragment: BaseDaggerFragment(){
         }
         response = data
 
-        binding?.recyclerView?.invalidateItemDecorations()
+        val dividerPositions = editAdGroupAdapter.list
+            .mapIndexedNotNull { index, item ->
+                if (item is EditAdGroupItemUiModel && item.hasDivider) {
+                    index
+                } else {
+                    null
+                }
+            }
+
+        val itemDecoration = CustomDividerItemDecoration(dividerPositions)
+        binding?.recyclerView?.apply {
+            addItemDecoration(itemDecoration)
+        }
     }
 
     private fun checkBidIsAutomatic(strategies: List<String>): Boolean {
@@ -166,27 +163,27 @@ class EditAdGroupFragment: BaseDaggerFragment(){
 
     private fun getSettingModeText(bidAutomatic: Boolean): String {
         activity?.let {
-            if(bidAutomatic) return it.getString(R.string.top_ads_edit_ad_group_item_mode_automatic)
+            if (bidAutomatic) return it.getString(R.string.top_ads_edit_ad_group_item_mode_automatic)
             return it.getString(R.string.top_ads_edit_ad_group_item_mode_manual)
         }
         return ""
     }
 
-    private fun openAdGroupNameBottomSheet(){
+    private fun openAdGroupNameBottomSheet() {
         response?.let {
             EditAdGroupNameBottomSheet.newInstance(it.groupName).show(parentFragmentManager)
         }
     }
-    private fun openAdGroupSettingModeBottomSheet(){
+    private fun openAdGroupSettingModeBottomSheet() {
         response?.let {
             val isBidAutomatic = checkBidIsAutomatic(it.strategies)
             EditAdGroupSettingModeBottomSheet.newInstance(isBidAutomatic).show(parentFragmentManager)
         }
     }
-    private fun openAdGroupRecommendationBidBottomSheet(){
+    private fun openAdGroupRecommendationBidBottomSheet() {
         EditAdGroupRecommendationBidBottomSheet.newInstance().show(parentFragmentManager)
     }
-    private fun openAdGroupDailyBudgetBottomSheet(){
+    private fun openAdGroupDailyBudgetBottomSheet() {
         EditAdGroupDailyBudgetBottomSheet.newInstance().show(parentFragmentManager)
     }
 
