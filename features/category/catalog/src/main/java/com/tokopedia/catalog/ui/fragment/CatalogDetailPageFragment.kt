@@ -85,12 +85,11 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         setupObservers()
-
-        viewModel.getProductCatalog(
-            "73177",
-            "73177", "213079258", "android")
+        if (arguments != null) {
+            val catalogId = requireArguments().getString(ARG_EXTRA_CATALOG_ID, "")
+            viewModel.getProductCatalog(catalogId, "", "", "android")
+        }
     }
 
     override fun onNavBackClicked() {
