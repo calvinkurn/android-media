@@ -139,14 +139,14 @@ class CartItemViewHolder constructor(
                 val constraintSet = ConstraintSet()
                 constraintSet.clone(containerProductInformation)
                 constraintSet.connect(
-                    R.id.iu_image_product,
+                    R.id.fl_image_product,
                     ConstraintSet.START,
                     ConstraintSet.PARENT_ID,
                     ConstraintSet.START,
                     marginStart
                 )
                 constraintSet.connect(
-                    R.id.iu_image_product,
+                    R.id.fl_image_product,
                     ConstraintSet.TOP,
                     R.id.product_bundling_info,
                     ConstraintSet.BOTTOM
@@ -163,14 +163,14 @@ class CartItemViewHolder constructor(
                 val constraintSet = ConstraintSet()
                 constraintSet.clone(containerProductInformation)
                 constraintSet.connect(
-                    R.id.iu_image_product,
+                    R.id.fl_image_product,
                     ConstraintSet.START,
                     R.id.checkbox_product,
                     ConstraintSet.END,
                     marginStart
                 )
                 constraintSet.connect(
-                    R.id.iu_image_product,
+                    R.id.fl_image_product,
                     ConstraintSet.TOP,
                     R.id.container_product_information,
                     ConstraintSet.TOP
