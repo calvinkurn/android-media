@@ -16,6 +16,7 @@ class InputTextViewModel @Inject constructor(): ViewModel() {
     private val _selectedAlignment = MutableLiveData(FontAlignment.CENTER)
     val selectedAlignment: LiveData<FontAlignment> get() = _selectedAlignment
 
+    // 1st text, 2nd background
     private val _backgroundColorSet = MutableLiveData<Pair<Int, Int>?>(null)
     val backgroundColorSet: LiveData<Pair<Int, Int>?> get() = _backgroundColorSet
 
@@ -54,11 +55,17 @@ class InputTextViewModel @Inject constructor(): ViewModel() {
         val textColor = _selectedTextColor.value ?: -1
         val textAlignment = _selectedAlignment.value ?: FontAlignment.CENTER
 
-        return InputTextModel(
+        val result = InputTextModel(
             text = text,
-            textColor = textColor,
-            backgroundColor = _backgroundColorSet.value,
-            textAlign = textAlignment
+            textAlign = textAlignment,
+            textColor = textColor
         )
+
+        _backgroundColorSet.value?.let {
+            result.textColor = it.first
+            result.backgroundColor = it.second
+        }
+
+        return result
     }
 }

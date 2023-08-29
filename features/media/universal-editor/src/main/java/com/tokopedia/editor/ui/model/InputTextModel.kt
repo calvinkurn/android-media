@@ -13,7 +13,7 @@ import kotlinx.parcelize.Parcelize
 data class InputTextModel(
     var text: String = "",
     var textColor: Int = DEFAULT_TEXT_COLOR,
-    var backgroundColor: Pair<Int, Int>? = null,
+    var backgroundColor: Int? = null,
     var textAlign: FontAlignment = FontAlignment.CENTER,
     var config: AddTextModel? = null,
 ) : Parcelable {
