@@ -91,23 +91,6 @@ class TokoNowCategoryL2ViewModel @Inject constructor(
         _loadMore.postValue(Unit)
     }
 
-    private suspend fun getCategoryLayoutAsync(): Deferred<CategoryGetDetailModular?> {
-        return asyncCatchError(block = {
-            getCategoryLayout.execute(categoryIdL1)
-        }) {
-            null
-        }
-    }
-
-    private fun getCategoryDetailAsync(): Deferred<CategoryDetailResponse?> {
-        return asyncCatchError(block = {
-            val warehouses = addressData.getWarehousesData()
-            getCategoryDetailUseCase.execute(warehouses, categoryIdL1)
-        }) {
-            null
-        }
-    }
-
     private fun updateCategoryTab(categoryTab: CategoryL2TabUiModel) {
         _categoryTab.postValue(categoryTab)
     }
