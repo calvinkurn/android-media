@@ -9,7 +9,7 @@ import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralResult.openPageWithIntent
-import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralRobot.doScrollChatToPosition
+import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.product_bundling.ProductBundlingResult.assertCarouselBundlingShown
 import com.tokopedia.topchat.chatroom.view.activity.robot.product_bundling.ProductBundlingResult.assertCtaBundlingNotShown
 import com.tokopedia.topchat.chatroom.view.activity.robot.product_bundling.ProductBundlingResult.assertCtaBundlingShown
@@ -86,10 +86,10 @@ class TopchatRoomProductBundlingAttachmentTest : TopchatRoomTest() {
         chatAttachmentUseCase.response = chatAttachmentUseCase.productBundlingAttachment
         launchChatRoomActivity()
 
-        //When
+        // When
         Intents.intending(anyIntent())
             .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-        doScrollChatToPosition(0)
+        GeneralRobot.scrollChatToPosition(0)
         clickCtaProductBundling(0)
 
         // Then
@@ -110,13 +110,13 @@ class TopchatRoomProductBundlingAttachmentTest : TopchatRoomTest() {
         // When
         Intents.intending(anyIntent())
             .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-        doScrollChatToPosition(0)
+        GeneralRobot.scrollChatToPosition(0)
         clickCtaProductBundling(0)
 
-        //Then
+        // Then
         val intent = RouteManager.getIntent(
             context,
-            "tokopedia://product-bundle/2148348897?source=cart&bundleId=32175&selectedProductIds=2148348892",
+            "tokopedia://product-bundle/2148348897?source=cart&bundleId=32175&selectedProductIds=2148348892"
         )
         openPageWithIntent(intent)
     }
@@ -128,8 +128,8 @@ class TopchatRoomProductBundlingAttachmentTest : TopchatRoomTest() {
         chatAttachmentUseCase.response = chatAttachmentUseCase.productBundlingAttachment
         launchChatRoomActivity()
 
-        //When - Then
-        doScrollChatToPosition(0)
+        // When - Then
+        GeneralRobot.scrollChatToPosition(0)
         doScrollProductBundlingToPosition(2)
         assertCarouselBundlingShown(3)
     }
@@ -142,7 +142,7 @@ class TopchatRoomProductBundlingAttachmentTest : TopchatRoomTest() {
         launchChatRoomActivity()
 
         // Then
-        doScrollChatToPosition(0)
+        GeneralRobot.scrollChatToPosition(0)
         assertCtaOutOfStock()
     }
 

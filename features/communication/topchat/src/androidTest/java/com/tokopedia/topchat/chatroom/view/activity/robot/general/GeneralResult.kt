@@ -1,5 +1,6 @@
 package com.tokopedia.topchat.chatroom.view.activity.robot.general
 
+import android.app.Activity
 import android.content.Intent
 import android.view.View
 import androidx.test.espresso.Espresso.onView
@@ -12,9 +13,11 @@ import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withSubstring
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.matchers.withRecyclerView
+import org.hamcrest.CoreMatchers
 import org.hamcrest.Matcher
 import org.hamcrest.core.Is.`is`
 
@@ -60,7 +63,28 @@ object GeneralResult {
             .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)))
     }
 
+    fun assertToasterWithSubText(msg: String) {
+        onView(withSubstring(msg)).check(
+            matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE))
+        )
+    }
+
     fun assertNoToasterText(msg: String) {
         onView(withText(msg)).check(doesNotExist())
+    }
+
+    fun assertKeyboardIsVisible(activity: Activity) {
+        val isKeyboardOpened = isKeyboardOpened(activity)
+        assertThat(isKeyboardOpened, CoreMatchers.`is`(true))
+    }
+
+    fun assertKeyboardIsNotVisible(activity: Activity) {
+        val isKeyboardOpened = isKeyboardOpened(activity)
+        assertThat(isKeyboardOpened, CoreMatchers.`is`(false))
+    }
+
+    private fun isKeyboardOpened(activity: Activity): Boolean {
+        val rootView = activity.findViewById<View>(R.id.main)
+        return com.tokopedia.topchat.isKeyboardOpened(rootView)
     }
 }

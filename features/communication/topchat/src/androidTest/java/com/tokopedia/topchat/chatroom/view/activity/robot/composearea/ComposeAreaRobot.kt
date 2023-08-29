@@ -7,6 +7,8 @@ import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.tokopedia.chat_common.view.adapter.viewholder.chatmenu.AttachmentItemViewHolder
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.action.ClickChildViewWithIdAction
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.TopchatProductAttachmentViewHolder
 
 object ComposeAreaRobot {
 
@@ -72,5 +74,16 @@ object ComposeAreaRobot {
             )
         onView(withId(R.id.rv_topchat_attachment_menu))
             .perform(viewAction)
+    }
+
+    fun clickStickerAtPosition(position: Int) {
+        Thread.sleep(300) // delay for sticker load
+        val viewAction = RecyclerViewActions
+            .actionOnItemAtPosition<TopchatProductAttachmentViewHolder>(
+                position,
+                ClickChildViewWithIdAction()
+                    .clickChildViewWithId(R.id.iv_sticker)
+            )
+        onView(withId(R.id.rv_sticker)).perform(viewAction)
     }
 }

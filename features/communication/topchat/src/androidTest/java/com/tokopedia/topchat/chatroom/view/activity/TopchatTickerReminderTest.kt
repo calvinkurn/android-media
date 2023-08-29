@@ -11,6 +11,7 @@ import com.tokopedia.topchat.chatroom.view.activity.base.BaseBuyerTopchatRoomTes
 import com.tokopedia.topchat.chatroom.view.activity.robot.composeAreaRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralResult.assertViewInRecyclerViewAt
 import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralResult.openPageWithApplink
+import com.tokopedia.topchat.chatroom.view.activity.robot.generalRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.tickerreminder.TickerReminderResult.assertReminderTickerIsNotAtPosition
 import com.tokopedia.topchat.chatroom.view.activity.robot.tickerreminder.TickerReminderResult.assertReminderTickerNotVisible
 import com.tokopedia.topchat.chatroom.view.activity.robot.tickerreminder.TickerReminderResult.assertReminderTickerVisibleAtPosition
@@ -81,10 +82,12 @@ class TopchatTickerReminderTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = getChatUseCase.getTickerReminderWithReplyId(
             reminderTickerUseCase.defaultTickerReminder.getReminderTicker.replyId
         )
-        scrollChatToPosition(lastIndex)
-        val newlastIndex = lastIndex + getChatUseCase.getLastIndexOf(getChatUseCase.response)
-        scrollChatToPosition(newlastIndex)
-        smoothScrollChatToPosition(newlastIndex)
+        generalRobot {
+            scrollChatToPosition(lastIndex)
+            val newlastIndex = lastIndex + getChatUseCase.getLastIndexOf(getChatUseCase.response)
+            scrollChatToPosition(newlastIndex)
+            smoothScrollChatToPosition(newlastIndex)
+        }
 
         // Then
         val expectedTickerPosition = lastIndex + 2

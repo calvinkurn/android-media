@@ -9,6 +9,8 @@ import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.activity.robot.composeAreaRobot
+import com.tokopedia.topchat.chatroom.view.activity.robot.generalResult
+import com.tokopedia.topchat.chatroom.view.activity.robot.generalRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.replybubble.ReplyBubbleResult
 import com.tokopedia.topchat.chatroom.view.activity.robot.replybubble.ReplyBubbleRobot
 import com.tokopedia.topchat.chatroom.view.onboarding.ReplyBubbleOnBoarding.Companion.KEY_REPLY_BUBBLE_ONBOARDING
@@ -102,10 +104,16 @@ class ReplyBubbleTest : TopchatRoomTest() {
         launchChatRoomActivity()
 
         // When
-        scrollChatToPosition(lastBubbleIndex)
+        generalRobot {
+            scrollChatToPosition(lastBubbleIndex)
+        }
+
         ReplyBubbleRobot.longClickBubbleAt(lastBubbleIndex)
         ReplyBubbleRobot.clickReplyItemMenu()
-        scrollChatToPosition(0)
+        generalRobot {
+            scrollChatToPosition(0)
+        }
+
         ReplyBubbleRobot.clickReplyCompose()
         waitForIt(scrollWaitTime)
 
@@ -123,10 +131,14 @@ class ReplyBubbleTest : TopchatRoomTest() {
         launchChatRoomActivity()
 
         // When
-        scrollChatToPosition(lastBubbleIndex)
+        generalRobot {
+            scrollChatToPosition(lastBubbleIndex)
+        }
         ReplyBubbleRobot.longClickBubbleAt(lastBubbleIndex)
         ReplyBubbleRobot.clickReplyItemMenu()
-        scrollChatToPosition(0)
+        generalRobot {
+            scrollChatToPosition(0)
+        }
         composeAreaRobot {
             clickComposeArea()
             typeMessageComposeArea("reply this")
@@ -195,7 +207,9 @@ class ReplyBubbleTest : TopchatRoomTest() {
         launchChatRoomActivity()
 
         // When
-        scrollChatToPosition(3)
+        generalRobot {
+            scrollChatToPosition(3)
+        }
 
         // Then
         ReplyBubbleResult.hasVisibleReplyBubbleStickerAt(3)
@@ -247,7 +261,9 @@ class ReplyBubbleTest : TopchatRoomTest() {
         ReplyBubbleRobot.clickReplyBubbleAt(0)
 
         // Then
-        assertSnackbarText(context.getString(R.string.title_topchat_reply_bubble_expired))
+        generalResult {
+            assertToasterText(context.getString(R.string.title_topchat_reply_bubble_expired))
+        }
     }
 
     @Test

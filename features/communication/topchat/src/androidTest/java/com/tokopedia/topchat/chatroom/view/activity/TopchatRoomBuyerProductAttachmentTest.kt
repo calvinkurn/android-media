@@ -29,7 +29,7 @@ import com.tokopedia.topchat.chatroom.view.activity.base.BaseBuyerTopchatRoomTes
 import com.tokopedia.topchat.chatroom.view.activity.robot.composeAreaRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralResult.openPageWithApplink
 import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralResult.openPageWithIntent
-import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralRobot.doScrollChatToPosition
+import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardResult.hasFailedToasterWithMsg
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardResult.hasProductWishlistButtonWithText
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardResult.hasToasterWithMsg
@@ -258,7 +258,7 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         }
 
         // When
-        doScrollChatToPosition(0)
+        GeneralRobot.scrollChatToPosition(0)
 
         // Then
         verifyVariantLabel(R.id.tv_variant_color, isDisplayed(), 0)
@@ -273,7 +273,7 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         launchChatRoomActivity()
 
         // When
-        doScrollChatToPosition(0)
+        GeneralRobot.scrollChatToPosition(0)
 
         // Then
         hasVariantLabel(R.id.tv_variant_color, testVariantColor, 1)
@@ -289,7 +289,7 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
 
         // When
         intending(anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-        doScrollChatToPosition(4)
+        GeneralRobot.scrollChatToPosition(4)
         clickATCButtonAt(4)
 
         // Then
@@ -305,7 +305,7 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
 
         // When
         intending(anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-        doScrollChatToPosition(4)
+        GeneralRobot.scrollChatToPosition(4)
         clickBuyButtonAt(4)
 
         // Then
@@ -321,7 +321,7 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
 
         // When
         intending(anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-        doScrollChatToPosition(0)
+        GeneralRobot.scrollChatToPosition(0)
         clickBuyButtonAt(1)
 
         // Then
@@ -346,7 +346,7 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
 
         // When
         intending(anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-        doScrollChatToPosition(0)
+        GeneralRobot.scrollChatToPosition(0)
         clickATCButtonAt(1)
 
         // Then
@@ -372,7 +372,7 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
 
         // When
         intending(anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-        doScrollChatToPosition(0)
+        GeneralRobot.scrollChatToPosition(0)
         clickWishlistButtonAt(1) // click wishlist
         clickWishlistButtonAt(1) // click go to wishlist
 
@@ -393,7 +393,7 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
 
         // When
         intending(anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-        doScrollChatToPosition(0)
+        GeneralRobot.scrollChatToPosition(0)
         clickWishlistButtonAt(1) // click wishlist
         clickWishlistButtonAt(1) // click go to wishlist
 
@@ -413,7 +413,7 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
 
         // When
         intending(anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-        doScrollChatToPosition(4)
+        GeneralRobot.scrollChatToPosition(4)
         clickBuyButtonAt(4)
 
         // Then
@@ -431,7 +431,7 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
 
         // When
         intending(anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-        doScrollChatToPosition(4)
+        GeneralRobot.scrollChatToPosition(4)
         clickBuyButtonAt(4)
 
         // Then
@@ -447,7 +447,7 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
 
         // When
         intending(anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-        doScrollChatToPosition(1)
+        GeneralRobot.scrollChatToPosition(1)
         clickProductAttachmentAt(1)
 
         // Then
@@ -463,7 +463,7 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
 
         // When
         intending(anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-        doScrollChatToPosition(1)
+        GeneralRobot.scrollChatToPosition(1)
 
         // Then
         hasProductName(1, "")

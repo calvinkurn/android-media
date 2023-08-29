@@ -1,4 +1,4 @@
-package com.tokopedia.topchat.chatroom.view.activity
+package com.tokopedia.topchat.chatroom.view.activity.test
 
 import android.content.Intent
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -7,11 +7,11 @@ import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.topchat.chatroom.view.activity.TopchatRoomBuyerProductAttachmentTest.Companion.exProductId
 import com.tokopedia.topchat.chatroom.view.activity.TopchatRoomBuyerProductAttachmentTest.Companion.putProductAttachmentIntent
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
+import com.tokopedia.topchat.chatroom.view.activity.robot.composeAreaResult
 import com.tokopedia.topchat.chatroom.view.activity.robot.composeAreaRobot
-import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductPreviewResult
-import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductPreviewRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.productPreviewResult
 import com.tokopedia.topchat.chatroom.view.activity.robot.productPreviewRobot
+import com.tokopedia.topchat.chatroom.view.activity.robot.srwResult
 import org.hamcrest.CoreMatchers.not
 import org.junit.Test
 
@@ -86,13 +86,13 @@ class PreloadProductAttachmentTest : TopchatRoomTest() {
         getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
             .generatePreAttachPayload(exProductId)
         productPreviewRobot {
-            ProductPreviewRobot.clickRetryButtonAt(0)
+            clickRetryButtonAt(0)
         }
 
         // Then
         productPreviewResult {
-            ProductPreviewResult.isNotErrorAt(0)
-            ProductPreviewResult.isNotLoadingAt(0)
+            isNotErrorAt(0)
+            isNotLoadingAt(0)
         }
     }
 
@@ -114,7 +114,9 @@ class PreloadProductAttachmentTest : TopchatRoomTest() {
         }
 
         // Then
-        ProductPreviewResult.isLoadingAt(0)
+        productPreviewResult {
+            isLoadingAt(0)
+        }
     }
 
     @Test
@@ -130,11 +132,13 @@ class PreloadProductAttachmentTest : TopchatRoomTest() {
         // When
         composeAreaRobot {
             clickStickerIconMenu()
+            clickStickerAtPosition(0)
         }
-        clickStickerAtPosition(0)
 
         // Then
-        ProductPreviewResult.isLoadingAt(0)
+        productPreviewResult {
+            isLoadingAt(0)
+        }
     }
 
     @Test
@@ -155,7 +159,9 @@ class PreloadProductAttachmentTest : TopchatRoomTest() {
         }
 
         // Then
-        ProductPreviewResult.isErrorAt(0)
+        productPreviewResult {
+            isErrorAt(0)
+        }
     }
 
     @Test
@@ -171,11 +177,13 @@ class PreloadProductAttachmentTest : TopchatRoomTest() {
         // When
         composeAreaRobot {
             clickStickerIconMenu()
+            clickStickerAtPosition(0)
         }
-        clickStickerAtPosition(0)
 
         // Then
-        ProductPreviewResult.isErrorAt(0)
+        productPreviewResult {
+            isErrorAt(0)
+        }
     }
 
     @Test
@@ -191,7 +199,9 @@ class PreloadProductAttachmentTest : TopchatRoomTest() {
         }
 
         // Then
-        assertSrwPreviewContentIsVisible()
+        srwResult {
+            assertSrwPreviewContentIsVisible()
+        }
     }
 
     @Test
@@ -222,8 +232,12 @@ class PreloadProductAttachmentTest : TopchatRoomTest() {
         }
 
         // Then
-        assertTemplateChatVisibility(not(isDisplayed()))
-        assertSrwPreviewContentIsHidden()
+        composeAreaResult {
+            assertTemplateChatVisibility(not(isDisplayed()))
+        }
+        srwResult {
+            assertSrwPreviewContentContainerVisibility(not(isDisplayed()))
+        }
     }
 
     @Test
@@ -240,10 +254,14 @@ class PreloadProductAttachmentTest : TopchatRoomTest() {
         // When
         getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
             .generatePreAttachPayload(exProductId)
-        ProductPreviewRobot.clickRetryButtonAt(0)
+        productPreviewRobot {
+            clickRetryButtonAt(0)
+        }
 
         // Then
-        assertSrwPreviewContentIsVisible()
+        srwResult {
+            assertSrwPreviewContentIsVisible()
+        }
     }
 
     @Test
@@ -259,8 +277,10 @@ class PreloadProductAttachmentTest : TopchatRoomTest() {
         }
 
         // Then
-        ProductPreviewResult.isNotLoadingAt(0)
-        ProductPreviewResult.isNotErrorAt(0)
+        productPreviewResult {
+            isNotLoadingAt(0)
+            isNotErrorAt(0)
+        }
     }
 
     @Test
@@ -277,11 +297,15 @@ class PreloadProductAttachmentTest : TopchatRoomTest() {
         // When
         getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
             .generatePreAttachPayload(childProductId)
-        ProductPreviewRobot.clickRetryButtonAt(0)
+        productPreviewRobot {
+            clickRetryButtonAt(0)
+        }
 
         // Then
-        ProductPreviewResult.isNotErrorAt(0)
-        ProductPreviewResult.isNotLoadingAt(0)
+        productPreviewResult {
+            isNotLoadingAt(0)
+            isNotErrorAt(0)
+        }
     }
 
     @Test
@@ -298,7 +322,9 @@ class PreloadProductAttachmentTest : TopchatRoomTest() {
         }
 
         // Then
-        assertSrwPreviewContentIsVisible()
+        srwResult {
+            assertSrwPreviewContentIsVisible()
+        }
     }
 
     @Test
@@ -316,10 +342,14 @@ class PreloadProductAttachmentTest : TopchatRoomTest() {
         // When
         getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
             .generatePreAttachPayload(childProductId)
-        ProductPreviewRobot.clickRetryButtonAt(0)
+        productPreviewRobot {
+            clickRetryButtonAt(0)
+        }
 
         // Then
-        assertSrwPreviewContentIsVisible()
+        srwResult {
+            assertSrwPreviewContentIsVisible()
+        }
     }
 
     private fun putParentProductAttachmentIntent(intent: Intent) {

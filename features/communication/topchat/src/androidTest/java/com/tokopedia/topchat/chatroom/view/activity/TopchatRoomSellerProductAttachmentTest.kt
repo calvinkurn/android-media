@@ -15,7 +15,8 @@ import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.activity.base.BaseSellerTopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.activity.robot.composeAreaRobot
-import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralRobot.doScrollChatToPosition
+import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralRobot
+import com.tokopedia.topchat.chatroom.view.activity.robot.generalResult
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardRobot.clickProductAttachmentAt
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductResult.hasNoVisibleEmptyStockLabelAt
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductResult.hasNoVisibleRemindMeBtnAt
@@ -133,7 +134,9 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
         clickChangeStockBtn(R.id.recycler_view_chatroom, 1)
 
         // Then
-        assertSnackbarText("Stok produk \"$productName\" berhasil diubah.")
+        generalResult {
+            assertToasterText("Stok produk \"$productName\" berhasil diubah.")
+        }
     }
 
     @Test
@@ -155,7 +158,9 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
         clickChangeStockBtn(R.id.recycler_view_chatroom, 1)
 
         // Then
-        assertSnackbarText("Stok produk \"$subProductName...\" berhasil diubah.")
+        generalResult {
+            assertToasterText("Stok produk \"$subProductName...\" berhasil diubah.")
+        }
     }
 
     @Test
@@ -317,7 +322,9 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
         clickChangeStockBtn(R.id.recycler_view_chatroom, 1)
 
         // Then
-        assertSnackbarText(errorMsg)
+        generalResult {
+            assertToasterText(errorMsg)
+        }
     }
 
     @Test
@@ -458,9 +465,9 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
             1,
             variantStockResult
         )
-        assertSnackbarText(
-            "Stok produk \"$productName - $variantName\" berhasil diubah."
-        )
+        generalResult {
+            assertToasterText("Stok produk \"$productName - $variantName\" berhasil diubah.")
+        }
     }
 
     @Test
@@ -532,9 +539,9 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
         clickChangeStockBtn(R.id.recycler_view_chatroom, 1)
 
         // Then
-        assertSnackbarText(
-            "Produk \"$productName\" berhasil dinonaktifkan."
-        )
+        generalResult {
+            assertToasterText("Produk \"$productName\" berhasil dinonaktifkan.")
+        }
     }
 
     @Test
@@ -558,9 +565,9 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
         clickChangeStockBtn(R.id.recycler_view_chatroom, 1)
 
         // Then
-        assertSnackbarText(
-            "Produk \"$productName\" berhasil diaktifkan."
-        )
+        generalResult {
+            assertToasterText("Produk \"$productName\" berhasil diaktifkan.")
+        }
     }
 
     @Test
@@ -670,7 +677,7 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
         // When
         intending(anyIntent())
             .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-        doScrollChatToPosition(1)
+        GeneralRobot.scrollChatToPosition(1)
         clickProductAttachmentAt(1)
 
         // Then

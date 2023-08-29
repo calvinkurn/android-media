@@ -12,6 +12,7 @@ import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.activity.robot.composeAreaRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.composearea.ComposeAreaResult.assertAttachmentMenuCount
 import com.tokopedia.topchat.chatroom.view.activity.robot.composearea.ComposeAreaResult.assertSendBtnDisabled
+import com.tokopedia.topchat.chatroom.view.activity.robot.generalResult
 import com.tokopedia.topchat.matchers.withIndex
 import com.tokopedia.topchat.matchers.withRecyclerView
 import com.tokopedia.topchat.matchers.withTotalItem
@@ -72,7 +73,9 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
         }
 
         // Then
-        assertKeyboardIsVisible()
+        generalResult {
+            assertKeyboardIsVisible(activity)
+        }
         assertChatMenuVisibility(not(isDisplayed()))
         assertChatStickerMenuVisibility(not(isDisplayed()))
         assertChatAttachmentMenuVisibility(not(isDisplayed()))
@@ -94,7 +97,9 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
         }
 
         // Then
-        assertKeyboardIsVisible()
+        generalResult {
+            assertKeyboardIsVisible(activity)
+        }
         assertChatMenuVisibility(not(isDisplayed()))
         assertChatStickerMenuVisibility(not(isDisplayed()))
         assertChatAttachmentMenuVisibility(not(isDisplayed()))
@@ -136,7 +141,9 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
         }
 
         // Then
-        assertKeyboardIsVisible()
+        generalResult {
+            assertKeyboardIsVisible(activity)
+        }
         assertChatMenuVisibility(not(isDisplayed()))
         assertChatStickerMenuVisibility(not(isDisplayed()))
         assertChatAttachmentMenuVisibility(not(isDisplayed()))

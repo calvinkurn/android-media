@@ -3,6 +3,7 @@ package com.tokopedia.topchat.chatroom.view.activity
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
+import com.tokopedia.topchat.chatroom.view.activity.robot.generalResult
 import com.tokopedia.topchat.chatroom.view.activity.robot.imageattachment.ImageAttachmentResult
 import com.tokopedia.topchat.chatroom.view.activity.robot.imageattachment.ImageAttachmentRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.longclickbubblemenu.LongClickBubbleMenuResult
@@ -34,7 +35,9 @@ class UnsendImageTest : TopchatRoomTest() {
 
         // Then
         MsgBubbleResult.assertMsgIsDeletedAt(0)
-        assertSnackbarText(context.getString(R.string.topchat_success_delete_msg_bubble))
+        generalResult {
+            assertToasterText(context.getString(R.string.topchat_success_delete_msg_bubble))
+        }
     }
 
     @Test
@@ -101,7 +104,9 @@ class UnsendImageTest : TopchatRoomTest() {
 
         // Then
         ImageAttachmentResult.assertExistAt(0)
-        assertSnackbarText(context.getString(R.string.topchat_error_delete_msg_bubble))
+        generalResult {
+            assertToasterText(context.getString(R.string.topchat_error_delete_msg_bubble))
+        }
     }
 
     @Test
@@ -118,6 +123,8 @@ class UnsendImageTest : TopchatRoomTest() {
 
         // Then
         ImageAttachmentResult.assertExistAt(0)
-        assertSnackbarText(context.getString(R.string.topchat_error_delete_msg_bubble))
+        generalResult {
+            assertToasterText(context.getString(R.string.topchat_error_delete_msg_bubble))
+        }
     }
 }

@@ -13,7 +13,7 @@ import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralRobot
 import com.tokopedia.topchat.matchers.withRecyclerView
 import org.junit.Test
 
-class TopchatRoomBuyerAttachedVoucherTest: BaseBuyerTopchatRoomTest() {
+class TopchatRoomBuyerAttachedVoucherTest : BaseBuyerTopchatRoomTest() {
 
     @Test
     fun should_open_product_list_from_voucher_page_when_click_product_voucher_on_mainapp() {
@@ -21,10 +21,10 @@ class TopchatRoomBuyerAttachedVoucherTest: BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = getChatUseCase.voucherAttachmentChatWithBuyerResponse
         launchChatRoomActivity()
 
-        //When
+        // When
         Intents.intending(IntentMatchers.anyIntent())
             .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-        GeneralRobot.doScrollChatToPosition(0)
+        GeneralRobot.scrollChatToPosition(0)
         Espresso.onView(
             withRecyclerView(R.id.recycler_view_chatroom)
                 .atPosition(1)

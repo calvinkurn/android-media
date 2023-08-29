@@ -4,6 +4,7 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.test.application.matcher.hasTotalItemOf
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
+import com.tokopedia.topchat.chatroom.view.activity.robot.generalResult
 import com.tokopedia.topchat.matchers.isSender
 import com.tokopedia.topchat.stub.chatroom.view.fragment.TopChatRoomFragmentStub
 import com.tokopedia.topchat.test.R
@@ -126,6 +127,8 @@ class SRWChangeAddressTest : TopchatRoomTest() {
         clickCtaHeaderMsgAtBubblePosition(0)
 
         // Then
-        assertSnackbarText(expectedMsg)
+        generalResult {
+            assertToasterText(expectedMsg)
+        }
     }
 }

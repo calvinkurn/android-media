@@ -16,6 +16,7 @@ import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentResponse
 import com.tokopedia.topchat.chatroom.view.activity.base.BaseBuyerTopchatRoomTest
+import com.tokopedia.topchat.chatroom.view.activity.robot.generalRobot
 import com.tokopedia.topchat.matchers.withRecyclerView
 import com.tokopedia.topchat.stub.common.UserSessionStub
 import org.junit.After
@@ -23,7 +24,7 @@ import org.junit.Before
 import org.junit.Test
 
 @UiTest
-class TopchatRoomBannedProductTest: BaseBuyerTopchatRoomTest() {
+class TopchatRoomBannedProductTest : BaseBuyerTopchatRoomTest() {
 
     private val redirectUrlTest = "https://www.tokopedia.com"
     private var firstPageChatWithBannedProduct = GetExistingChatPojo()
@@ -46,16 +47,18 @@ class TopchatRoomBannedProductTest: BaseBuyerTopchatRoomTest() {
         chatAttachmentUseCase.response = ChatAttachmentResponse()
         launchChatRoomActivity()
 
-        //When
+        // When
         Intents.intending(IntentMatchers.anyIntent())
             .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-        scrollChatToPosition(0)
+        generalRobot {
+            scrollChatToPosition(0)
+        }
         onView(
             withRecyclerView(R.id.recycler_view_chatroom)
                 .atPositionOnView(4, R.id.btn_buy)
         ).perform(ViewActions.click())
 
-        //Then
+        // Then
         Intents.intended(IntentMatchers.hasAction(Intent.ACTION_VIEW))
     }
 
@@ -67,16 +70,18 @@ class TopchatRoomBannedProductTest: BaseBuyerTopchatRoomTest() {
         chatAttachmentUseCase.response = ChatAttachmentResponse()
         launchChatRoomActivity()
 
-        //When
+        // When
         Intents.intending(IntentMatchers.anyIntent())
             .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-        scrollChatToPosition(0)
+        generalRobot {
+            scrollChatToPosition(0)
+        }
         onView(
             withRecyclerView(R.id.recycler_view_chatroom)
                 .atPositionOnView(4, R.id.btn_buy)
         ).perform(ViewActions.click())
 
-        //Then
+        // Then
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(redirectUrlTest))
         Intents.intended(IntentMatchers.hasData(intent.data))
     }
@@ -89,16 +94,18 @@ class TopchatRoomBannedProductTest: BaseBuyerTopchatRoomTest() {
         chatAttachmentUseCase.response = ChatAttachmentResponse()
         launchChatRoomActivity()
 
-        //When
+        // When
         Intents.intending(IntentMatchers.anyIntent())
             .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-        scrollChatToPosition(0)
+        generalRobot {
+            scrollChatToPosition(0)
+        }
         onView(
             withRecyclerView(R.id.recycler_view_chatroom)
                 .atPositionOnView(4, R.id.btn_buy)
         ).perform(ViewActions.click())
 
-        //Then
+        // Then
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(redirectUrlTest))
         Intents.intended(IntentMatchers.hasData(intent.data))
     }

@@ -23,6 +23,8 @@ import com.tokopedia.topchat.chatroom.view.activity.base.hasQuestion
 import com.tokopedia.topchat.chatroom.view.activity.base.matchProductWith
 import com.tokopedia.topchat.chatroom.view.activity.robot.composeAreaRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralResult.assertViewInRecyclerViewAt
+import com.tokopedia.topchat.chatroom.view.activity.robot.generalResult
+import com.tokopedia.topchat.chatroom.view.activity.robot.generalRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.srw.SrwResult.assertSrwCoachMark
 import com.tokopedia.topchat.chatroom.view.activity.robot.srw.SrwResult.assertSrwLabel
 import com.tokopedia.topchat.chatroom.view.activity.robot.srw.SrwResult.assertSrwLabelVisibility
@@ -334,7 +336,9 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         // Then
         assertSrwPreviewContentIsVisible()
         assertSrwPreviewExpanded()
-        assertKeyboardIsNotVisible()
+        generalResult {
+            assertKeyboardIsNotVisible(activity)
+        }
     }
 
     @Test
@@ -1217,8 +1221,10 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         clickSrwPreviewItemAt(0)
         websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
         clickSrwBubbleExpandCollapse(0)
-        scrollChatToPosition(10)
-        scrollChatToPosition(0)
+        generalRobot {
+            scrollChatToPosition(10)
+            scrollChatToPosition(0)
+        }
 
         // Then
         assertSrwBubbleContentIsVisibleAt(0)
@@ -1396,7 +1402,9 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // When
-        scrollChatToPosition(10)
+        generalRobot {
+            scrollChatToPosition(10)
+        }
         composeAreaRobot {
             clickComposeArea()
             typeMessageComposeArea(typedMsg)

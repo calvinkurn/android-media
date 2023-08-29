@@ -18,6 +18,7 @@ import com.tokopedia.topchat.chatroom.view.activity.base.BaseSellerTopchatRoomTe
 import com.tokopedia.topchat.chatroom.view.activity.robot.composeAreaRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralResult
 import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralRobot
+import com.tokopedia.topchat.chatroom.view.activity.robot.generalResult
 import com.tokopedia.topchat.matchers.atPosition
 import com.tokopedia.topchat.matchers.withIndex
 import com.tokopedia.topchat.matchers.withRecyclerView
@@ -36,7 +37,7 @@ class TopchatRoomSellerAttachVoucherTest : BaseSellerTopchatRoomTest() {
         // When
         Intents.intending(IntentMatchers.anyIntent())
             .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-        GeneralRobot.doScrollChatToPosition(0)
+        GeneralRobot.scrollChatToPosition(0)
         onView(
             withRecyclerView(R.id.recycler_view_chatroom)
                 .atPosition(0)
@@ -56,7 +57,7 @@ class TopchatRoomSellerAttachVoucherTest : BaseSellerTopchatRoomTest() {
         // When
         Intents.intending(IntentMatchers.anyIntent())
             .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-        GeneralRobot.doScrollChatToPosition(0)
+        GeneralRobot.scrollChatToPosition(0)
         onView(
             withRecyclerView(R.id.recycler_view_chatroom)
                 .atPosition(1)
@@ -75,14 +76,16 @@ class TopchatRoomSellerAttachVoucherTest : BaseSellerTopchatRoomTest() {
         // When
         Intents.intending(IntentMatchers.anyIntent())
             .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-        GeneralRobot.doScrollChatToPosition(0)
+        GeneralRobot.scrollChatToPosition(0)
         onView(
             withRecyclerView(R.id.recycler_view_chatroom)
                 .atPosition(1)
         ).perform(click())
 
         // Then
-        assertSnackbarText(context.getString(R.string.topchat_mvc_not_available))
+        generalResult {
+            assertToasterText(context.getString(R.string.topchat_mvc_not_available))
+        }
     }
 
     @Test
@@ -92,7 +95,7 @@ class TopchatRoomSellerAttachVoucherTest : BaseSellerTopchatRoomTest() {
         launchChatRoomActivity(isSellerApp = true)
 
         // When
-        GeneralRobot.doScrollChatToPosition(0)
+        GeneralRobot.scrollChatToPosition(0)
 
         // Then
         onView(
@@ -109,7 +112,7 @@ class TopchatRoomSellerAttachVoucherTest : BaseSellerTopchatRoomTest() {
         launchChatRoomActivity(isSellerApp = true)
 
         // When
-        GeneralRobot.doScrollChatToPosition(0)
+        GeneralRobot.scrollChatToPosition(0)
 
         // Then
         onView(
@@ -132,7 +135,7 @@ class TopchatRoomSellerAttachVoucherTest : BaseSellerTopchatRoomTest() {
         // When
         Intents.intending(IntentMatchers.anyIntent())
             .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, resultIntent))
-        GeneralRobot.doScrollChatToPosition(0)
+        GeneralRobot.scrollChatToPosition(0)
         composeAreaRobot {
             clickPlusIconMenu()
             clickAttachVoucherMenu()

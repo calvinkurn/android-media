@@ -14,6 +14,7 @@ import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.activity.base.BaseBuyerTopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.activity.robot.composeAreaRobot
+import com.tokopedia.topchat.chatroom.view.activity.robot.generalResult
 import com.tokopedia.topchat.matchers.withTotalItem
 import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.not
@@ -147,7 +148,9 @@ class TopchatRoomInvoiceAttachmentTest : BaseBuyerTopchatRoomTest() {
         }
 
         // Then
-        assertSnackbarText(context.getString(R.string.topchat_desc_empty_text_box))
+        generalResult {
+            assertToasterText(context.getString(R.string.topchat_desc_empty_text_box))
+        }
     }
 
     companion object {

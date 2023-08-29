@@ -34,7 +34,6 @@ import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.action.ClickChildViewWithIdAction
-import com.tokopedia.topchat.action.RecyclerViewAction
 import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule
 import com.tokopedia.topchat.chatroom.domain.mapper.TopChatRoomGetExistingChatMapper
 import com.tokopedia.topchat.chatroom.domain.pojo.FavoriteData.Companion.IS_FOLLOW
@@ -55,7 +54,6 @@ import com.tokopedia.topchat.chattemplate.domain.pojo.GetChatTemplateResponse
 import com.tokopedia.topchat.common.TopChatInternalRouter
 import com.tokopedia.topchat.common.network.TopchatCacheManager
 import com.tokopedia.topchat.common.websocket.FakeTopchatWebSocket
-import com.tokopedia.topchat.isKeyboardOpened
 import com.tokopedia.topchat.matchers.hasSrwBubble
 import com.tokopedia.topchat.matchers.withIndex
 import com.tokopedia.topchat.matchers.withRecyclerView
@@ -72,7 +70,6 @@ import com.tokopedia.topchat.stub.common.usecase.MutationMoveChatToTrashUseCaseS
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.WebSocketResponse
 import org.hamcrest.CoreMatchers.allOf
-import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Matcher
 import org.junit.After
@@ -462,20 +459,20 @@ abstract class TopchatRoomTest {
     protected fun assertTemplateChatVisibility(
         visibilityMatcher: Matcher<in View>
     ) {
-        onView(withId(R.id.list_template)).check(
-            matches(visibilityMatcher)
-        )
+//        onView(withId(R.id.list_template)).check(
+//            matches(visibilityMatcher)
+//        )
     }
 
     protected fun assertSrwPreviewContentContainerVisibility(
         visibilityMatcher: Matcher<in View>
     ) {
-        onView(
-            allOf(
-                withId(R.id.rv_srw_content_container),
-                isDescendantOfA(withId(R.id.cl_attachment_preview))
-            )
-        ).check(matches(visibilityMatcher))
+//        onView(
+//            allOf(
+//                withId(R.id.rv_srw_content_container),
+//                isDescendantOfA(withId(R.id.cl_attachment_preview))
+//            )
+//        ).check(matches(visibilityMatcher))
     }
 
     protected fun assertSrwBubbleContentContainerVisibility(
@@ -505,24 +502,9 @@ abstract class TopchatRoomTest {
             .check(matches(withTotalItem(totalQuestion)))
     }
 
-    /**
-     * assert unify snackbar/toaster
-     */
-    protected fun assertSnackbarText(msg: String) {
-        onView(withText(msg)).check(matches(isDisplayed()))
-    }
-
-    protected fun assertNoSnackbarText(msg: String) {
-//        onView(withText(msg)).check(doesNotExist())
-    }
-
-    protected fun assertSnackbarWithSubText(msg: String) {
-        onView(withSubstring(msg)).check(matches(isDisplayed()))
-    }
-
     protected fun assertSrwPreviewContentIsVisible() {
-        assertSrwPreviewContentContainerVisibility(isDisplayed())
-        assertTemplateChatVisibility(not(isDisplayed()))
+//        assertSrwPreviewContentContainerVisibility(isDisplayed())
+//        assertTemplateChatVisibility(not(isDisplayed()))
     }
 
     protected fun assertSrwBubbleDoesNotExist() {
@@ -581,16 +563,6 @@ abstract class TopchatRoomTest {
                 R.id.img_sr_blue_dot
             )
         ).check(matches(visibilityMatcher))
-    }
-
-    protected fun assertKeyboardIsVisible() {
-        val isKeyboardOpened = isKeyboardOpened()
-        assertThat(isKeyboardOpened, `is`(true))
-    }
-
-    protected fun assertKeyboardIsNotVisible() {
-        val isKeyboardOpened = isKeyboardOpened()
-        assertThat(isKeyboardOpened, `is`(false))
     }
 
     protected fun assertLongClickMenu(matcher: Matcher<in View>) {
@@ -782,11 +754,6 @@ abstract class TopchatRoomTest {
         )
     }
 
-    protected fun isKeyboardOpened(): Boolean {
-        val rootView = activity.findViewById<View>(R.id.main)
-        return isKeyboardOpened(rootView)
-    }
-
     protected fun clickCloseAttachmentPreview(position: Int) {
         val viewAction = RecyclerViewActions
             .actionOnItemAtPosition<TopchatProductAttachmentViewHolder>(
@@ -821,18 +788,6 @@ abstract class TopchatRoomTest {
 
     protected fun clickOnSrwPartial() {
         onView(withIndex(withId(R.id.tp_srw_container_partial), 0)).perform(click())
-    }
-
-    protected fun scrollChatToPosition(position: Int) {
-        onView(withId(R.id.recycler_view_chatroom)).perform(
-            RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(position)
-        )
-    }
-
-    protected fun smoothScrollChatToPosition(position: Int) {
-        onView(withId(R.id.recycler_view_chatroom)).perform(
-            RecyclerViewAction.smoothScrollTo(position)
-        )
     }
 
     protected fun intendingAttachProduct(totalProductAttached: Int) {

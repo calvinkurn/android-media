@@ -1,5 +1,6 @@
 package com.tokopedia.topchat.chatroom.view.activity.robot.composearea
 
+import android.view.View
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
@@ -7,6 +8,7 @@ import com.tokopedia.topchat.R
 import com.tokopedia.topchat.assertion.DrawableMatcher
 import com.tokopedia.topchat.matchers.withTotalItem
 import org.hamcrest.CoreMatchers.not
+import org.hamcrest.Matcher
 
 object ComposeAreaResult {
 
@@ -47,6 +49,14 @@ object ComposeAreaResult {
     fun assertTypeMessageText(text: String) {
         onView(withId(R.id.new_comment)).check(
             matches(withText(text))
+        )
+    }
+
+    fun assertTemplateChatVisibility(
+        visibilityMatcher: Matcher<in View>
+    ) {
+        onView(withId(R.id.list_template)).check(
+            matches(visibilityMatcher)
         )
     }
 }
