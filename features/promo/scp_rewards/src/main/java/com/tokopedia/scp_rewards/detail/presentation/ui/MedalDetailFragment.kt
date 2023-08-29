@@ -542,6 +542,7 @@ class MedalDetailFragment : BaseDaggerFragment() {
                 list.benefitInfo,
                 MedalBenefitMapper.mapBenefitApiResponseToBenefitModelList(list),
                 benefitSection?.jsonParameter,
+                MedalBenefitMapper.mapBenefitApiResponseCtaToCta(list.cta)
             )
             binding.couponView.renderCoupons(
                 benefitSectionModel = benefitSectionModel,

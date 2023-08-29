@@ -1,5 +1,6 @@
 package com.tokopedia.scp_rewards.detail.mappers
 
+import com.tokopedia.scp_rewards.detail.domain.model.Cta
 import com.tokopedia.scp_rewards.detail.domain.model.MedaliBenefitList
 import com.tokopedia.scp_rewards_widgets.common.model.CtaButton
 import com.tokopedia.scp_rewards_widgets.model.MedalBenefitModel
@@ -34,4 +35,12 @@ object MedalBenefitMapper {
             )
         }
     }
+
+    fun mapBenefitApiResponseCtaToCta(cta: Cta?) = com.tokopedia.scp_rewards_widgets.medal.Cta(
+        text = cta?.text,
+        appLink = cta?.appLink,
+        deepLink = cta?.url,
+        isShown = true,
+        style = cta?.unifiedStyle
+    )
 }

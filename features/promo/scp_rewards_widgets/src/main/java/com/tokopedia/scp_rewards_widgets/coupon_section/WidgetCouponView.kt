@@ -11,7 +11,10 @@ import com.tokopedia.scp_rewards_common.loadImageOrFallback
 import com.tokopedia.scp_rewards_common.parseColor
 import com.tokopedia.scp_rewards_widgets.constants.CouponState
 import com.tokopedia.scp_rewards_widgets.databinding.WidgetCouponViewBinding
+import com.tokopedia.scp_rewards_widgets.model.MedalBenefitModel
 import com.tokopedia.scp_rewards_widgets.model.MedalBenefitSectionModel
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.scp_rewards_widgets.R as scp_rewards_widgetsR
 
 class WidgetCouponView @JvmOverloads constructor(
     context: Context,
@@ -21,6 +24,10 @@ class WidgetCouponView @JvmOverloads constructor(
 
     private val binding = WidgetCouponViewBinding.inflate(LayoutInflater.from(context), this)
 
+    private companion object {
+        private const val STYLE_GHOST = "ghost"
+    }
+
     fun renderCoupons(
         benefitSectionModel: MedalBenefitSectionModel,
         onCtaClick: (String?) -> Unit = {},
@@ -28,53 +35,70 @@ class WidgetCouponView @JvmOverloads constructor(
     ) {
         binding.tvTitle.text = benefitSectionModel.title
         setBackgroundColor(parseColor(benefitSectionModel.backgroundColor) ?: Color.WHITE)
-
         val benefitList = benefitSectionModel.benefitList
-        when {
-            benefitList.isNullOrEmpty() -> {
-                binding.cardCoupon.hide()
-                binding.cardEmptyCoupon.hide()
-                binding.ivErrorState.visible()
-            }
 
-            // TODO: this condition  should be benefitList.size == 1. Modified for testing currently
-            benefitList.size >= 1 -> {
-                val benefit = benefitList.first()
-                when (benefit.status) {
-                    CouponState.EMPTY -> {
-                        binding.cardCoupon.hide()
-                        binding.ivErrorState.hide()
-                        binding.cardEmptyCoupon.visible()
-                        binding.cardEmptyCoupon.setData(benefit) {
-                            onCtaClick(it)
-                        }
-                    }
-                    CouponState.ERROR -> {
-                        binding.cardCoupon.hide()
-                        binding.cardEmptyCoupon.hide()
-                        binding.ivErrorState.visible()
-                        binding.ivErrorState.loadImageOrFallback(
-                            benefit.medaliImageURL,
-                            com.tokopedia.scp_rewards_widgets.R.drawable.ic_coupon_error
-                        )
-                    }
-                    else -> {
-                        binding.ivErrorState.hide()
-                        binding.cardEmptyCoupon.hide()
-                        binding.cardCoupon.visible()
-                        binding.cardCoupon.setData(benefit) {
-                            onCtaClick(it)
-                        }
-                    }
+        if (benefitList.isNullOrEmpty()) {
+            binding.stackCoupon.hide()
+            binding.cardEmptyCoupon.hide()
+            binding.ivErrorState.visible()
+            return
+        }
+        handleCouponState(benefitList, benefitSectionModel, onCtaClick)
+    }
+
+    private fun handleCouponState(
+        benefitList: List<MedalBenefitModel>,
+        benefitSectionModel: MedalBenefitSectionModel,
+        onCtaClick: (String?) -> Unit,
+    ) {
+        val benefit = benefitList.first()
+        when (benefit.status) {
+            CouponState.EMPTY -> {
+                binding.ivErrorState.hide()
+                binding.cardEmptyCoupon.visible()
+                binding.cardEmptyCoupon.setData(benefit) {
+                    onCtaClick(it)
                 }
             }
 
-            benefitList.size > 1 -> {
+            CouponState.ERROR -> {
+                binding.cardEmptyCoupon.hide()
+                binding.ivErrorState.visible()
+                binding.ivErrorState.loadImageOrFallback(
+                    benefit.medaliImageURL,
+                    scp_rewards_widgetsR.drawable.ic_coupon_error
+                )
+            }
+
+            else -> {
                 binding.ivErrorState.hide()
                 binding.cardEmptyCoupon.hide()
-                binding.cardCoupon.visible()
-                // TODO: handle multiple coupons
-                binding.cardCoupon.setData(benefitList.first()) {}
+                binding.ivErrorState.hide()
+                binding.cardEmptyCoupon.hide()
+                binding.stackCoupon.visible()
+                binding.stackCoupon.setData(benefitList, benefitSectionModel.benefitInfo) { onCtaClick(it) }
+                binding.btnViewMore.apply {
+                    visibility = if (benefitList.size > 1) VISIBLE else GONE
+                    text = benefitSectionModel.cta?.text
+                    applyStyle(benefitSectionModel.cta?.style)
+                }
+            }
+        }
+    }
+
+
+    private fun UnifyButton.applyStyle(style: String?) {
+        when (style) {
+            STYLE_GHOST -> {
+                this.buttonType = UnifyButton.Type.MAIN
+                this.buttonSize = UnifyButton.Size.SMALL
+                this.buttonVariant = UnifyButton.Variant.GHOST
+            }
+
+            else -> {
+                this.buttonType = UnifyButton.Type.MAIN
+                this.buttonVariant = UnifyButton.Variant.FILLED
+                this.buttonVariant = UnifyButton.Variant.GHOST
             }
         }
     }

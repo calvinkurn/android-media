@@ -20,15 +20,14 @@
         app:typographyWeight="bold"
         tools:text="Powered by L'Oreal Paris" />
 
-    <com.tokopedia.scp_rewards_widgets.coupon_section.CouponViewCard
-        android:id="@+id/card_coupon"
+    <com.tokopedia.scp_rewards_widgets.coupon_section.StackCouponView
+        android:id="@+id/stack_coupon"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_20"
         android:layout_marginBottom="@dimen/dp_48"
         android:elevation="@dimen/dp_16"
-        android:theme="@style/Theme.MaterialComponents.Light"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_title" />
@@ -65,4 +64,16 @@
         app:layout_constraintTop_toBottomOf="@id/tv_title"
         tools:visibility="visible" />
 
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_view_more"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="@dimen/dp_16"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/stack_coupon"
+        app:layout_constraintStart_toStartOf="@id/stack_coupon"
+        app:layout_constraintTop_toBottomOf="@id/stack_coupon"
+        app:unifyButtonSize="small"
+        app:unifyButtonType="main"
+        app:unifyButtonVariant="ghost" />
 </merge>

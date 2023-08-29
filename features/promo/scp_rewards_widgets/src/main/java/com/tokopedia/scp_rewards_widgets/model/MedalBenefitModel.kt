@@ -13,6 +13,7 @@ class MedalBenefitModel(
     val backgroundImageURL: String? = null,
     val statusBadgeText: String? = null,
     val statusBadgeColor: String? = null,
+    var statusBadgeEnabled : Boolean = true,
     val statusDescription: String? = null,
     val additionalInfoText: String? = null,
     val additionalInfoColor: String? = null,

@@ -1,5 +1,6 @@
 package com.tokopedia.scp_rewards_widgets.coupon_section
 
+//noinspection WrongResourceImportAlias
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
@@ -16,6 +17,7 @@ import com.tokopedia.scp_rewards_common.grayScaleFilter
 import com.tokopedia.scp_rewards_common.parseColorOrFallback
 import com.tokopedia.scp_rewards_widgets.databinding.ItemCouponLayoutBinding
 import com.tokopedia.scp_rewards_widgets.model.MedalBenefitModel
+import com.tokopedia.scp_rewards_widgets.R as scp_rewards_widgetsR
 import com.tokopedia.unifyprinciples.R as unifyPrinciplesR
 
 @SuppressLint("RestrictedApi")
@@ -58,7 +60,7 @@ class CouponViewCard @JvmOverloads constructor(
         binding.layoutDetails.background = innerShapeDrawable
     }
 
-    fun setData(data: MedalBenefitModel, onApplyClick: (String?) -> Unit) {
+    fun setData(data: MedalBenefitModel, onApplyClick: (String?) -> Unit = {}) {
         with(binding) {
             tvTitle.text = data.title
             val tncList = data.tncList
@@ -93,13 +95,15 @@ class CouponViewCard @JvmOverloads constructor(
                 tvDescription.isEnabled = false
                 tvExpiryLabel.isEnabled = false
                 tvInfo.isEnabled = false
-                ribbonStatus.visible()
                 btnApply.gone()
-                ribbonStatus.setData(data.statusBadgeText, data.statusBadgeColor)
+                if (data.statusBadgeEnabled) {
+                    ribbonStatus.visible()
+                    ribbonStatus.setData(data.statusBadgeText, data.statusBadgeColor)
+                }
             }
             root.post {
                 val additionalInfoColor = if (data.isActive) {
-                    context.parseColorOrFallback(data.additionalInfoColor, com.tokopedia.scp_rewards_widgets.R.color.coupon_card_background)
+                    context.parseColorOrFallback(data.additionalInfoColor, scp_rewards_widgetsR.color.coupon_card_background)
                 } else {
                     ContextCompat.getColor(context, unifyPrinciplesR.color.Unify_NN50)
                 }
@@ -109,7 +113,7 @@ class CouponViewCard @JvmOverloads constructor(
     }
 
     private fun ItemCouponLayoutBinding.applyColorToDrawable(color: String?) {
-        val drawable = ContextCompat.getDrawable(context, com.tokopedia.scp_rewards_widgets.R.drawable.rounded_edge_rectangle)!!
+        val drawable = ContextCompat.getDrawable(context, scp_rewards_widgetsR.drawable.rounded_edge_rectangle)!!
         DrawableCompat.setTint(drawable, context.parseColorOrFallback(color = color))
         ivStatusBackground.background = drawable
     }
