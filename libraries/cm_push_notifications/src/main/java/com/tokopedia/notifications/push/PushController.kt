@@ -237,9 +237,10 @@ class PushController(val context: Context) : CoroutineScope {
                 val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
                 val notification = baseNotification.createNotification()
                 if (baseNotification is ReplyChatNotification) {
-                    handleReplyChatPushNotification(notificationManager, baseNotification, notification)
+                    handleReplyChatPushNotification(notificationManager, baseNotification, notification, baseNotificationModel)
                 } else {
                     notificationManager.notify(baseNotification.baseNotificationModel.notificationId, notification)
+                    sendPushEventToIris(IrisAnalyticsEvents.PUSH_RENDERED, baseNotificationModel)
                 }
                 val isNougatAndAbove = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
                 if (isNougatAndAbove) {
@@ -261,10 +262,12 @@ class PushController(val context: Context) : CoroutineScope {
     private fun handleReplyChatPushNotification(
         notificationManager: NotificationManager,
         replyChatNotification: ReplyChatNotification,
-        notification: Notification?
+        notification: Notification?,
+        baseNotificationModel: BaseNotificationModel
     ) {
         val notificationId = getNotificationIdReplyChat(replyChatNotification)
         notificationManager.notify(notificationId, notification)
+        sendPushEventToIris(IrisAnalyticsEvents.PUSH_RENDERED, baseNotificationModel)
     }
 
     private fun getNotificationIdReplyChat(replyChatNotification: ReplyChatNotification): Int {
@@ -319,10 +322,23 @@ class PushController(val context: Context) : CoroutineScope {
         }
     }
 
-    private fun checkNotificationChannelAndSendEvent(baseNotificationModel: BaseNotificationModel){
-        when (NotificationSettingsUtils(context).checkNotificationsModeForSpecificChannel(
-            baseNotificationModel.channelName
-        )) {
+    private fun sendPushEventToIris(
+        eventName: String,
+        baseNotificationModel: BaseNotificationModel
+    ) {
+        IrisAnalyticsEvents.sendPushEvent(
+            context,
+            eventName,
+            baseNotificationModel
+        )
+    }
+
+    private fun checkNotificationChannelAndSendEvent(baseNotificationModel: BaseNotificationModel) {
+        when (
+            NotificationSettingsUtils(context).checkNotificationsModeForSpecificChannel(
+                baseNotificationModel.channelName
+            )
+        ) {
             NotificationSettingsUtils.NotificationMode.ENABLED -> {
                 IrisAnalyticsEvents.sendPushEvent(
                     context,
