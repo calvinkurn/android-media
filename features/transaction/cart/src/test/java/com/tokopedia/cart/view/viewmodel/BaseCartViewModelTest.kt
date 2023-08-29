@@ -9,7 +9,6 @@ import com.tokopedia.cart.domain.usecase.FollowShopUseCase
 import com.tokopedia.cart.domain.usecase.GetCartRevampV4UseCase
 import com.tokopedia.cart.domain.usecase.UpdateAndReloadCartUseCase
 import com.tokopedia.cart.domain.usecase.UpdateCartAndGetLastApplyUseCase
-import com.tokopedia.cart.view.ICartListView
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
@@ -63,7 +62,6 @@ open class BaseCartViewModelTest {
     var followShopUseCase: FollowShopUseCase = mockk()
     val cartShopGroupTickerAggregatorUseCase: CartShopGroupTickerAggregatorUseCase = mockk()
     val coroutineTestDispatchers: CoroutineTestDispatchers = CoroutineTestDispatchers
-    var view: ICartListView = mockk(relaxed = true)
     lateinit var cartViewModel: CartViewModel
 
     @get: Rule
