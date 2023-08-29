@@ -4,6 +4,7 @@ import android.view.View
 import androidx.annotation.ColorRes
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.ViewAssertion
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.hasTextColor
@@ -15,6 +16,7 @@ import com.tokopedia.topchat.assertion.atPositionIsInstanceOf
 import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralResult.assertViewInRecyclerViewAt
 import com.tokopedia.topchat.chatroom.view.uimodel.BroadCastUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.BroadcastSpamHandlerUiModel
+import com.tokopedia.topchat.matchers.withRecyclerView
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Matcher
 
@@ -93,5 +95,66 @@ object BroadcastResult {
         matcher: Matcher<View>
     ) {
         assertViewInRecyclerViewAt(position, R.id.tp_broadcast_start_date, matcher)
+    }
+
+    fun assertBroadcastTitleHandle(
+        position: Int,
+        matcher: Matcher<View>
+    ) {
+        assertViewInRecyclerViewAt(position, R.id.title_bc_handle, matcher)
+    }
+
+    fun assertBroadcastBtnStopPromo(
+        position: Int,
+        matcher: Matcher<View>
+    ) {
+        assertViewInRecyclerViewAt(position, R.id.btn_stop_promo, matcher)
+    }
+
+    fun assertBroadcastBtnFollowShop(
+        position: Int,
+        matcher: Matcher<View>
+    ) {
+        assertViewInRecyclerViewAt(position, R.id.btn_follow_shop, matcher)
+    }
+
+    fun assertBroadcastTitleHandleNotExist(
+        position: Int
+    ) {
+        onView(
+            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
+                position,
+                R.id.title_bc_handle
+            )
+        ).check(doesNotExist())
+    }
+
+    fun assertBroadcastBtnStopPromoNotExist(
+        position: Int
+    ) {
+        onView(
+            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
+                position,
+                R.id.btn_stop_promo
+            )
+        ).check(doesNotExist())
+    }
+
+    fun assertBroadcastBtnFollowShopNotExist(
+        position: Int
+    ) {
+        onView(
+            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
+                position,
+                R.id.btn_follow_shop
+            )
+        ).check(doesNotExist())
+    }
+
+    fun assertBroadcastBanner(
+        position: Int,
+        matcher: Matcher<View>
+    ) {
+        assertViewInRecyclerViewAt(position, R.id.iv_banner, matcher)
     }
 }
