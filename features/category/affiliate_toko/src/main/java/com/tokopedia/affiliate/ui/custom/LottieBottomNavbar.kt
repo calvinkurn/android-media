@@ -17,6 +17,7 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.affiliate_toko.R
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class LottieBottomNavbar : LinearLayout {
     private val badgeTextViewList: MutableList<TextView> = mutableListOf()
@@ -30,13 +31,13 @@ class LottieBottomNavbar : LinearLayout {
     private var containerList: MutableList<LinearLayout> = ArrayList()
     private var itemCount: Int = 1
     private var buttonContainerBackgroundColor: Int =
-        ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+        ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN0)
     private var buttonsHeight: Float = DEFAULT_HEIGHT
     private var selectedItem: Int? = null
     private var containerWidth: Int = 0
     private var navbarContainer: LinearLayout? = null
     private var buttonColor: Int =
-        ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN500)
+        ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN500)
     private var activeButtonColor: Int = Color.TRANSPARENT
     private var isThreeItemBottomNav: Boolean = false
 
@@ -86,22 +87,22 @@ class LottieBottomNavbar : LinearLayout {
         )
         badgeLayoutParam?.gravity = Gravity.END
         badgeLayoutParam?.setMargins(
-            resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_0),
-            resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_2),
+            resources.getDimensionPixelOffset(unifyprinciplesR.dimen.unify_space_0),
+            resources.getDimensionPixelOffset(unifyprinciplesR.dimen.unify_space_2),
             badgeRightMargin,
-            resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_2)
+            resources.getDimensionPixelOffset(unifyprinciplesR.dimen.unify_space_2)
         )
 
         emptyBadgeLayoutParam = FrameLayout.LayoutParams(
-            resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_12),
-            resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_12)
+            resources.getDimensionPixelOffset(unifyprinciplesR.dimen.unify_space_12),
+            resources.getDimensionPixelOffset(unifyprinciplesR.dimen.unify_space_12)
         )
         emptyBadgeLayoutParam?.gravity = Gravity.END
         emptyBadgeLayoutParam?.setMargins(
-            resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_0),
-            resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_2),
+            resources.getDimensionPixelOffset(unifyprinciplesR.dimen.unify_space_0),
+            resources.getDimensionPixelOffset(unifyprinciplesR.dimen.unify_space_2),
             badgeRightMargin,
-            resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_2)
+            resources.getDimensionPixelOffset(unifyprinciplesR.dimen.unify_space_2)
         )
 
         badgeTextViewList.forEach {
@@ -135,14 +136,14 @@ class LottieBottomNavbar : LinearLayout {
 
         buttonContainerBackgroundColor = a.getColor(
             R.styleable.LottieBottomNavbar_buttonContainerBackgroundColor,
-            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+            ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN0)
         )
         buttonsHeight =
             a.getDimension(R.styleable.LottieBottomNavbar_buttonsHeight, defaultButtonHeight)
 
         buttonColor = a.getColor(
             R.styleable.LottieBottomNavbar_buttonColor,
-            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN500)
+            ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN500)
         )
         activeButtonColor = a.getColor(
             R.styleable.LottieBottomNavbar_activeButtonColor,
@@ -164,11 +165,11 @@ class LottieBottomNavbar : LinearLayout {
 
         val llLayoutParam = LayoutParams(
             itemWidth,
-            resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_24)
+            resources.getDimensionPixelOffset(unifyprinciplesR.dimen.unify_space_24)
         )
         val imgLayoutParam = LayoutParams(
             LayoutParams.MATCH_PARENT,
-            resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_24)
+            resources.getDimensionPixelOffset(unifyprinciplesR.dimen.unify_space_24)
         )
 
         badgeLayoutParam = FrameLayout.LayoutParams(
@@ -177,22 +178,22 @@ class LottieBottomNavbar : LinearLayout {
         )
         badgeLayoutParam?.gravity = Gravity.END
         badgeLayoutParam?.setMargins(
-            resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_0),
-            resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_2),
-            resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_24),
-            resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_2)
+            resources.getDimensionPixelOffset(unifyprinciplesR.dimen.unify_space_0),
+            resources.getDimensionPixelOffset(unifyprinciplesR.dimen.unify_space_2),
+            resources.getDimensionPixelOffset(unifyprinciplesR.dimen.unify_space_24),
+            resources.getDimensionPixelOffset(unifyprinciplesR.dimen.unify_space_2)
         )
 
         emptyBadgeLayoutParam = FrameLayout.LayoutParams(
-            resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_12),
-            resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_12)
+            resources.getDimensionPixelOffset(unifyprinciplesR.dimen.unify_space_12),
+            resources.getDimensionPixelOffset(unifyprinciplesR.dimen.unify_space_12)
         )
         emptyBadgeLayoutParam?.gravity = Gravity.END
         emptyBadgeLayoutParam?.setMargins(
-            resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_0),
-            resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_2),
-            resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_24),
-            resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
+            resources.getDimensionPixelOffset(unifyprinciplesR.dimen.unify_space_0),
+            resources.getDimensionPixelOffset(unifyprinciplesR.dimen.unify_space_2),
+            resources.getDimensionPixelOffset(unifyprinciplesR.dimen.unify_space_24),
+            resources.getDimensionPixelOffset(unifyprinciplesR.dimen.unify_space_0)
         )
 
         val txtLayoutParam = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)

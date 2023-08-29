@@ -16,6 +16,7 @@ import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.CardUnify2.Companion.TYPE_BORDER
 import com.tokopedia.unifycomponents.DividerUnify
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class AffiliateTrafficAttributionItemVH(itemView: View) :
     AbstractViewHolder<AffiliateTrafficAttributionModel>(itemView) {
@@ -90,23 +91,21 @@ class AffiliateTrafficAttributionItemVH(itemView: View) :
         val metricIntValue = element?.metrics?.metricDifferenceValue?.toDouble()
         if (metricIntValue != null) {
             when {
-                metricIntValue == ZERO_POINT_ZERO -> {
-                    hideTrend()
-                }
+                metricIntValue == ZERO_POINT_ZERO -> hideTrend()
 
                 metricIntValue > ZERO -> {
                     showTrend()
                     itemView.findViewById<Typography>(R.id.amount).setTextColor(
                         ContextCompat.getColor(
                             itemView.context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                            unifyprinciplesR.color.Unify_GN500
                         )
                     )
                     itemView.findViewById<IconUnify>(R.id.trend_icon).apply {
                         setImage(
                             newLightEnable = MethodChecker.getColor(
                                 itemView.context,
-                                com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                                unifyprinciplesR.color.Unify_GN500
                             )
                         )
                         rotation = ROTATION_90
@@ -118,14 +117,14 @@ class AffiliateTrafficAttributionItemVH(itemView: View) :
                     itemView.findViewById<Typography>(R.id.amount).setTextColor(
                         MethodChecker.getColor(
                             itemView.context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_RN500
+                            unifyprinciplesR.color.Unify_RN500
                         )
                     )
                     itemView.findViewById<IconUnify>(R.id.trend_icon).apply {
                         setImage(
                             newLightEnable = MethodChecker.getColor(
                                 itemView.context,
-                                com.tokopedia.unifyprinciples.R.color.Unify_RN500
+                                unifyprinciplesR.color.Unify_RN500
                             )
                         )
                         rotation = ROTATION_270
