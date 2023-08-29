@@ -5078,6 +5078,10 @@ open class ShopPageHomeFragment :
         return this
     }
 
+    override fun getPatternColorType(): String {
+        return (getRealParentFragment() as? InterfaceShopPageHeader)?.getPatternColorType().orEmpty()
+    }
+
     private fun getColorSchema(): ShopPageColorSchema {
         return (getRealParentFragment() as? InterfaceShopPageHeader)?.getColorSchema() ?: ShopPageColorSchema()
     }

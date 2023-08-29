@@ -1369,6 +1369,10 @@ class ShopPageHeaderFragmentV2 :
         return shopPageHeaderP1Data?.shopHeaderLayoutData?.isOverrideTheme.orFalse()
     }
 
+    override fun getPatternColorType(): String {
+        return getShopBodyConfig()?.patternColorType.orEmpty()
+    }
+
     private fun redirectToSearchAutoCompletePage() {
         val shopSrpAppLink = URLEncoder.encode(
             UriUtil.buildUri(

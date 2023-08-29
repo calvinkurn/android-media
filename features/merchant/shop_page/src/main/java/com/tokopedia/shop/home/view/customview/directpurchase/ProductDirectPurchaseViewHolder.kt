@@ -127,8 +127,6 @@ class ProductDirectPurchaseViewHolder private constructor() {
             )
             tvProductName.setRetainTextColor(colorPallete, ColorPallete.ColorType.PRIMARY_TEXT)
             tvPrice.setRetainTextColor(colorPallete, ColorPallete.ColorType.PRIMARY_TEXT)
-            labelDiscount.setRetainTextColor(colorPallete, ColorPallete.ColorType.SLASHED_TEXT)
-            labelDiscount.setRetainBackgroundColor(colorPallete, ColorPallete.ColorType.SLASHED_BG)
             tvSlashedPrice.setRetainTextColor(colorPallete, ColorPallete.ColorType.PRIMARY_TEXT)
             tvRating.setRetainTextColor(colorPallete, ColorPallete.ColorType.PRIMARY_TEXT)
             tvSoldCount.setRetainTextColor(colorPallete, ColorPallete.ColorType.PRIMARY_TEXT)

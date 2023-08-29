@@ -14,4 +14,5 @@ interface InterfaceShopPageHeader {
     fun getCartCounterData(): Int{ return 0}
     fun getColorSchema(): ShopPageColorSchema?{ return null}
     fun isOverrideTheme(): Boolean = false
+    fun getPatternColorType(): String = ""
 }
