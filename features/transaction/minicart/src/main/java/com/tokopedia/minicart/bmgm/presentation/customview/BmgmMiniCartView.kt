@@ -100,7 +100,7 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener, Default
             offerJsonData = offerJsonData,
             warehouseIds = warehouseIds
         )
-        viewModel.getMiniCartData(param)
+        viewModel.getMiniCartData(param, false)
     }
 
     fun refreshData() {

@@ -15,22 +15,21 @@ import org.mockito.ArgumentMatchers.anyList
  * Created by @ilhamsuaib on 28/08/23.
  */
 @OptIn(ExperimentalCoroutinesApi::class)
-open class BaseCartCheckboxViewModelTest : BaseViewModelTest() {
+abstract class BaseCartCheckboxViewModelTest<T: BaseCartCheckboxViewModel> : BaseViewModelTest() {
 
     @RelaxedMockK
-    protected lateinit var setCartListCheckboxStateUseCase: SetCartListCheckboxStateUseCase
+    lateinit var setCartListCheckboxStateUseCase: SetCartListCheckboxStateUseCase
 
-    private lateinit var viewModel: BaseCartCheckboxViewModel
+    lateinit var viewModel: T
 
     override fun initVariables() {
-        viewModel = BaseCartCheckboxViewModel(
-            setCartListCheckboxStateUseCase,
-            coroutineTestRule.dispatchers
-        )
+        viewModel = createViewModel()
     }
 
+    abstract fun createViewModel(): T
+
     @Test
-    fun `when set check box state then return success result`() {
+    fun `when set check box state then return success result with true value`() {
         runTest {
             val cartIds = anyList<String>()
             val results = mutableListOf<BmgmState<Boolean>>()
@@ -53,6 +52,35 @@ open class BaseCartCheckboxViewModelTest : BaseViewModelTest() {
 
             //then set to success state
             assertEquals(BmgmState.Success(true), results[1])
+            viewModel.setCheckListState.verifySuccessEquals(BmgmState.Success(true))
+        }
+    }
+
+    @Test
+    fun `when set check box state then return success result with false value`() {
+        runTest {
+            val cartIds = anyList<String>()
+            val results = mutableListOf<BmgmState<Boolean>>()
+            coEvery {
+                setCartListCheckboxStateUseCase.invoke(cartIds)
+            } returns false
+
+            viewModel.setCheckListState.observeForever {
+                results.add(it)
+            }
+
+            viewModel.setCartListCheckboxState(cartIds)
+
+            coVerify {
+                setCartListCheckboxStateUseCase.invoke(cartIds)
+            }
+
+            //expected loading state first
+            assertEquals(BmgmState.Loading, results[0])
+
+            //then set to success state
+            assertEquals(BmgmState.Success(false), results[1])
+            viewModel.setCheckListState.verifySuccessEquals(BmgmState.Success(false))
         }
     }
 

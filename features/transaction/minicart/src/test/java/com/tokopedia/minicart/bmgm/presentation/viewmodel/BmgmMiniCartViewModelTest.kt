@@ -22,7 +22,7 @@ import java.lang.reflect.Field
  * Created by @ilhamsuaib on 28/08/23.
  */
 @OptIn(ExperimentalCoroutinesApi::class)
-internal class BmgmMiniCartViewModelTest : BaseCartCheckboxViewModelTest() {
+class BmgmMiniCartViewModelTest : BaseCartCheckboxViewModelTest<BmgmMiniCartViewModel>() {
 
     @RelaxedMockK
     lateinit var getBmgmMiniCartDataUseCase: GetBmgmMiniCartDataUseCase
@@ -33,27 +33,25 @@ internal class BmgmMiniCartViewModelTest : BaseCartCheckboxViewModelTest() {
     @RelaxedMockK
     lateinit var userSession: UserSessionInterface
 
-    lateinit var viewModel: BmgmMiniCartViewModel
-
     private lateinit var param: BmgmParamModel
     private lateinit var privateMiniCartData: Field
 
     override fun initVariables() {
         super.initVariables()
-
         param = BmgmParamModel()
+        privateMiniCartData = viewModel::class.java.getDeclaredField("_cartData").apply {
+            isAccessible = true
+        }
+    }
 
-        viewModel = BmgmMiniCartViewModel(
+    override fun createViewModel(): BmgmMiniCartViewModel {
+        return BmgmMiniCartViewModel(
             { setCartListCheckboxStateUseCase },
             { getBmgmMiniCartDataUseCase },
             { localCacheUseCase },
             { userSession },
             { coroutineTestRule.dispatchers },
         )
-
-        privateMiniCartData = viewModel::class.java.getDeclaredField("_cartData").apply {
-            isAccessible = true
-        }
     }
 
     @Test

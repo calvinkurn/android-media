@@ -3,7 +3,6 @@ package com.tokopedia.minicart.bmgm.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.minicart.bmgm.domain.model.BmgmParamModel
 import com.tokopedia.minicart.bmgm.domain.usecase.GetBmgmMiniCartDataUseCase
 import com.tokopedia.minicart.bmgm.domain.usecase.LocalCacheUseCase
@@ -32,19 +31,21 @@ class BmgmMiniCartViewModel @Inject constructor(
     val cartData: LiveData<BmgmState<BmgmMiniCartDataUiModel>>
         get() = _cartData
 
-    fun getMiniCartData(param: BmgmParamModel, showLoadingState: Boolean = false) {
-        launchCatchError(block = {
-            if (showLoadingState) {
-                _cartData.value = BmgmState.Loading
+    fun getMiniCartData(param: BmgmParamModel, showLoadingState: Boolean) {
+        launch {
+            runCatching {
+                if (showLoadingState) {
+                    _cartData.value = BmgmState.Loading
+                }
+                val data = withContext(dispatchers.get().io) {
+                    getMiniCartDataUseCase.get().invoke(userSession.get().shopId, param)
+                }
+                _cartData.value = BmgmState.Success(data)
+                storeCartDataToLocalCache()
+            }.onFailure {
+                _cartData.value = BmgmState.Error(it)
             }
-            val data = withContext(dispatchers.get().io) {
-                getMiniCartDataUseCase.get().invoke(userSession.get().shopId, param)
-            }
-            _cartData.value = BmgmState.Success(data)
-            storeCartDataToLocalCache()
-        }, onError = {
-            _cartData.value = BmgmState.Error(it)
-        })
+        }
     }
 
     fun clearCartDataLocalCache() {
