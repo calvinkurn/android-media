@@ -14,8 +14,10 @@ import com.tokopedia.catalogcommon.uimodel.DummyUiModel
 import com.tokopedia.catalogcommon.uimodel.HeroBannerUiModel
 import com.tokopedia.catalogcommon.uimodel.StickyNavigationUiModel
 import com.tokopedia.catalogcommon.uimodel.TopFeaturesUiModel
+import com.tokopedia.catalogcommon.uimodel.TrustMakerUiModel
 import com.tokopedia.catalogcommon.util.stringHexColorParseToInt
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.oldcatalog.model.raw.CatalogResponseData
 import javax.inject.Inject
 
@@ -25,11 +27,13 @@ class CatalogDetailUiMapper @Inject constructor(
     fun mapToWidgetVisitables(
         remoteModel: CatalogResponseData.CatalogGetDetailModular
     ): List<Visitable<*>>{
-        return remoteModel.layouts?.map {
+        return remoteModel.layouts?.filter {
+            !it.data?.style?.isHidden.orTrue()
+        }?.map {
             when (it.type) {
                 WidgetTypes.CATALOG_HERO.type -> it.mapToHeroBanner()
                 WidgetTypes.CATALOG_FEATURE_TOP.type -> it.mapToTopFeature(remoteModel)
-                WidgetTypes.CATALOG_TRUSTMAKER.type -> { DummyUiModel(content = it.name)}
+                WidgetTypes.CATALOG_TRUSTMAKER.type -> it.mapToTrustMaker()
                 WidgetTypes.CATALOG_CHARACTERISTIC.type -> { DummyUiModel(content = it.name)}
                 WidgetTypes.CATALOG_BANNER_SINGLE.type -> { DummyUiModel(content = it.name)}
                 WidgetTypes.CATALOG_BANNER_DOUBLE.type -> { DummyUiModel(content = it.name)}
@@ -147,6 +151,21 @@ class CatalogDetailUiMapper @Inject constructor(
             content = data?.navigation?.map {
                 StickyNavigationUiModel.StickyNavigationItemData(it.title.orEmpty())
             }.orEmpty()
+        )
+    }
+
+    private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToTrustMaker(): TrustMakerUiModel {
+        return TrustMakerUiModel(
+            items = data?.trustmaker.orEmpty().map {
+                TrustMakerUiModel.ItemTrustMakerUiModel(
+                    id = "",
+                    icon = it.imageUrl.orEmpty(),
+                    title = it.title.orEmpty(),
+                    subTitle = it.subtitle.orEmpty(),
+                    textColorTitle = Color.BLACK,
+                    textColorSubTitle = Color.BLACK
+                )
+            }
         )
     }
 
