@@ -4,9 +4,10 @@ import android.os.Bundle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.content.common.producttag.view.uimodel.NetworkResult
 import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
+import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.mvcwidget.TokopointsCatalogMVCSummaryResponse
 import com.tokopedia.stories.data.StoriesRepository
 import com.tokopedia.stories.view.model.BottomSheetStatusDefault
@@ -19,8 +20,6 @@ import com.tokopedia.stories.view.model.StoriesUiState
 import com.tokopedia.stories.view.viewmodel.action.StoriesProductAction
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction
 import com.tokopedia.stories.view.viewmodel.event.StoriesUiEvent
-import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -229,24 +228,15 @@ class StoriesViewModel @Inject constructor(
     }
 
     private fun getProducts() {
-        /**
-         * TODO() temp move to chain
-         */
-        getVouchers()
         viewModelScope.launchCatchError(block = {
             products.update { product -> product.copy(resultState = ResultState.Loading) }
-            val response = repository.getStoriesProducts(shopId, "")
-            products.update { productList -> productList.copy(products = response, resultState = ResultState.Success) }
+            val productsDeferred = asyncCatchError(block = { repository.getStoriesProducts(shopId, "") }) { emptyList() }
+            val vouchersDeferred = asyncCatchError(block = { repository.getMvcWidget(shopId) }) { TokopointsCatalogMVCSummaryResponse() }
+            products.update { productList -> productList.copy(products = productsDeferred.await().orEmpty(), resultState = ResultState.Success) }
+            vouchers.update { vouchersDeferred.await() ?: TokopointsCatalogMVCSummaryResponse() }
         }, onError = {
             products.update { product -> product.copy(resultState = ResultState.Fail(it)) } //TODO() change result state?
         })
-    }
-
-    private fun getVouchers() {
-        viewModelScope.launchCatchError(block = {
-            val response = repository.getMvcWidget(shopId)
-            vouchers.value = response
-        }, onError = {})
     }
 
     private fun addToCart(product: ContentTaggedProductUiModel) {
