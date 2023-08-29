@@ -80,7 +80,6 @@ class FeedBrowseViewModel @Inject constructor(
     private fun handleFetchSlots() {
         viewModelScope.launch {
             val slots = repository.getSlots()
-            _widgets.value = emptyList()
 
             // this works, async, but the position might not be the same
             slots.forEach { slot ->
