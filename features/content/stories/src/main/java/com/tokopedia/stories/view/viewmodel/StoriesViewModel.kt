@@ -17,6 +17,7 @@ import com.tokopedia.stories.view.model.StoriesDetailUiModel
 import com.tokopedia.stories.view.model.StoriesDetailUiModel.StoriesDetailUiEvent
 import com.tokopedia.stories.view.model.StoriesGroupUiModel
 import com.tokopedia.stories.view.model.StoriesUiState
+import com.tokopedia.stories.view.model.isAnyShown
 import com.tokopedia.stories.view.viewmodel.action.StoriesProductAction
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction
 import com.tokopedia.stories.view.viewmodel.event.StoriesUiEvent
@@ -216,6 +217,8 @@ class StoriesViewModel @Inject constructor(
     }
 
     private fun handleOpenProduct() {
+        if (bottomSheetStatus.value.isAnyShown) return
+
         viewModelScope.launch {
             _uiEvent.emit(StoriesUiEvent.OpenProduct)
             bottomSheetStatus.update { bottomSheet ->
