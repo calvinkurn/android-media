@@ -1,23 +1,14 @@
 package com.tokopedia.topchat.chatroom.view.activity
 
-import android.app.Activity
-import android.app.Instrumentation
-import androidx.test.espresso.intent.Intents.intending
-import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.activity.base.BaseBuyerTopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.activity.robot.composeAreaRobot
-import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralResult.assertViewInRecyclerViewAt
-import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralResult.openPageWithApplink
+import com.tokopedia.topchat.chatroom.view.activity.robot.generalResult
 import com.tokopedia.topchat.chatroom.view.activity.robot.generalRobot
-import com.tokopedia.topchat.chatroom.view.activity.robot.tickerreminder.TickerReminderResult.assertReminderTickerIsNotAtPosition
-import com.tokopedia.topchat.chatroom.view.activity.robot.tickerreminder.TickerReminderResult.assertReminderTickerNotVisible
-import com.tokopedia.topchat.chatroom.view.activity.robot.tickerreminder.TickerReminderResult.assertReminderTickerVisibleAtPosition
-import com.tokopedia.topchat.chatroom.view.activity.robot.tickerreminder.TickerReminderResult.assertReminderTickerVisibleWithText
-import com.tokopedia.topchat.chatroom.view.activity.robot.tickerreminder.TickerReminderRobot.clickTickerCloseButtonAt
-import com.tokopedia.topchat.chatroom.view.activity.robot.tickerreminder.TickerReminderRobot.clickTickerLabel
+import com.tokopedia.topchat.chatroom.view.activity.robot.tickerReminderResult
+import com.tokopedia.topchat.chatroom.view.activity.robot.tickerReminderRobot
 import com.tokopedia.topchat.common.websocket.FakeTopchatWebSocket
 import org.junit.Test
 
@@ -35,7 +26,9 @@ class TopchatTickerReminderTest : BaseBuyerTopchatRoomTest() {
         launchChatRoomActivity()
 
         // Then
-        assertReminderTickerVisibleAtPosition(1)
+        tickerReminderResult {
+            assertReminderTickerVisibleAtPosition(1)
+        }
     }
 
     @Test
@@ -56,17 +49,21 @@ class TopchatTickerReminderTest : BaseBuyerTopchatRoomTest() {
         )
         chatAttachmentUseCase.response = chatAttachmentUseCase.defaultTickerReminderAttachment
         launchChatRoomActivity()
-        intending(anyIntent()).respondWith(
-            Instrumentation.ActivityResult(Activity.RESULT_OK, null)
-        )
+        stubIntents()
 
         // When
-        clickTickerLabel("Click disini")
+        tickerReminderRobot {
+            clickTickerLabel("Click disini")
+        }
 
         // Then
-        assertReminderTickerVisibleAtPosition(1)
-        assertReminderTickerVisibleWithText(1, subText)
-        openPageWithApplink(url)
+        tickerReminderResult {
+            assertReminderTickerVisibleAtPosition(1)
+            assertReminderTickerVisibleWithText(1, subText)
+        }
+        generalResult {
+            openPageWithApplink(url)
+        }
     }
 
     @Test
@@ -91,7 +88,9 @@ class TopchatTickerReminderTest : BaseBuyerTopchatRoomTest() {
 
         // Then
         val expectedTickerPosition = lastIndex + 2
-        assertReminderTickerVisibleAtPosition(expectedTickerPosition)
+        tickerReminderResult {
+            assertReminderTickerVisibleAtPosition(expectedTickerPosition)
+        }
     }
 
     @Test
@@ -105,10 +104,14 @@ class TopchatTickerReminderTest : BaseBuyerTopchatRoomTest() {
         launchChatRoomActivity()
 
         // When
-        clickTickerCloseButtonAt(1)
+        tickerReminderRobot {
+            clickTickerCloseButtonAt(1)
+        }
 
         // Then
-        assertReminderTickerNotVisible()
+        tickerReminderResult {
+            assertReminderTickerNotVisible()
+        }
     }
 
     @Test
@@ -122,7 +125,9 @@ class TopchatTickerReminderTest : BaseBuyerTopchatRoomTest() {
         launchChatRoomActivity()
 
         // Then
-        assertReminderTickerNotVisible()
+        tickerReminderResult {
+            assertReminderTickerNotVisible()
+        }
     }
 
     @Test
@@ -136,7 +141,9 @@ class TopchatTickerReminderTest : BaseBuyerTopchatRoomTest() {
         launchChatRoomActivity()
 
         // Then
-        assertReminderTickerNotVisible()
+        tickerReminderResult {
+            assertReminderTickerNotVisible()
+        }
     }
 
     @Test
@@ -152,8 +159,12 @@ class TopchatTickerReminderTest : BaseBuyerTopchatRoomTest() {
         sendWebSocketTickerMessageWithLocalId("7e5bc157-d61c-4050-b070-c9278d204bc5", testMsg)
 
         // Then
-        assertViewInRecyclerViewAt(1, R.id.tvMessage, withText(testMsg))
-        assertReminderTickerVisibleAtPosition(0)
+        generalResult {
+            assertViewInRecyclerViewAt(1, R.id.tvMessage, withText(testMsg))
+        }
+        tickerReminderResult {
+            assertReminderTickerVisibleAtPosition(0)
+        }
     }
 
     @Test
@@ -173,8 +184,10 @@ class TopchatTickerReminderTest : BaseBuyerTopchatRoomTest() {
         sendWebSocketTickerMessageWithLocalId("localId2", testMsg)
 
         // Then
-        assertReminderTickerVisibleAtPosition(1)
-        assertReminderTickerIsNotAtPosition(0)
+        tickerReminderResult {
+            assertReminderTickerVisibleAtPosition(1)
+            assertReminderTickerIsNotAtPosition(0)
+        }
     }
 
     @Test
@@ -192,8 +205,10 @@ class TopchatTickerReminderTest : BaseBuyerTopchatRoomTest() {
         sendWebSocketTickerMessageWithLocalId("localId1", testMsg)
 
         // Then
-        assertReminderTickerVisibleAtPosition(3)
-        assertReminderTickerIsNotAtPosition(0)
+        tickerReminderResult {
+            assertReminderTickerVisibleAtPosition(3)
+            assertReminderTickerIsNotAtPosition(0)
+        }
     }
 
     private fun sendWebSocketTickerMessageWithLocalId(localId: String, message: String) {

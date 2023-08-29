@@ -12,6 +12,7 @@ import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductResult
 import com.tokopedia.topchat.chatroom.view.activity.robot.replybubble.ReplyBubbleResult
 import com.tokopedia.topchat.chatroom.view.activity.robot.shippinglocation.ShippingLocationResult
 import com.tokopedia.topchat.chatroom.view.activity.robot.srw.SrwResult
+import com.tokopedia.topchat.chatroom.view.activity.robot.tickerreminder.TickerReminderResult
 
 fun generalResult(func: GeneralResult.() -> Unit) = GeneralResult.apply(func)
 fun composeAreaResult(func: ComposeAreaResult.() -> Unit) = ComposeAreaResult.apply(func)
@@ -25,3 +26,4 @@ fun msgBubbleResult(func: MsgBubbleResult.() -> Unit) = MsgBubbleResult.apply(fu
 fun broadcastResult(func: BroadcastResult.() -> Unit) = BroadcastResult.apply(func)
 fun headerResult(func: HeaderResult.() -> Unit) = HeaderResult.apply(func)
 fun orderProgressResult(func: OrderProgressResult.() -> Unit) = OrderProgressResult.apply(func)
+fun tickerReminderResult(func: TickerReminderResult.() -> Unit) = TickerReminderResult.apply(func)
