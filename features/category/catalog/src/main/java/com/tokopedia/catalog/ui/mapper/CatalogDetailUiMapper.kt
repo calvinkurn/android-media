@@ -12,6 +12,7 @@ import com.tokopedia.catalog.ui.model.WidgetTypes
 import com.tokopedia.catalogcommon.uimodel.BaseCatalogUiModel
 import com.tokopedia.catalogcommon.uimodel.DummyUiModel
 import com.tokopedia.catalogcommon.uimodel.HeroBannerUiModel
+import com.tokopedia.catalogcommon.uimodel.StickyNavigationUiModel
 import com.tokopedia.catalogcommon.uimodel.TopFeaturesUiModel
 import com.tokopedia.catalogcommon.util.stringHexColorParseToInt
 import com.tokopedia.kotlin.extensions.orFalse
@@ -33,7 +34,7 @@ class CatalogDetailUiMapper @Inject constructor(
                 WidgetTypes.CATALOG_BANNER_SINGLE.type -> { DummyUiModel(content = it.name)}
                 WidgetTypes.CATALOG_BANNER_DOUBLE.type -> { DummyUiModel(content = it.name)}
                 WidgetTypes.CATALOG_PANEL_IMAGE.type -> { DummyUiModel(content = it.name)}
-                WidgetTypes.CATALOG_NAVIGATION.type -> { DummyUiModel(content = it.name)}
+                WidgetTypes.CATALOG_NAVIGATION.type -> it.mapToStickyNavigation()
                 WidgetTypes.CATALOG_SLIDER_IMAGE.type -> { DummyUiModel(content = it.name)}
                 WidgetTypes.CATALOG_TEXT.type -> { DummyUiModel(content = it.name)}
                 WidgetTypes.CATALOG_REVIEW_EXPERT.type -> { DummyUiModel(content = it.name)}
@@ -137,6 +138,14 @@ class CatalogDetailUiMapper @Inject constructor(
                     backgroundColor = Color.TRANSPARENT,
                     textColor = getTextColor(isDarkMode),
                 )
+            }.orEmpty()
+        )
+    }
+
+    private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToStickyNavigation(): StickyNavigationUiModel {
+        return StickyNavigationUiModel(
+            content = data?.navigation?.map {
+                StickyNavigationUiModel.StickyNavigationItemData(it.title.orEmpty())
             }.orEmpty()
         )
     }

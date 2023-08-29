@@ -24,18 +24,21 @@ class StickyTabNavigationViewHolder(itemView: View) :
     override fun bind(element: StickyNavigationUiModel?) {
         binding?.let {
             it.catalogTabsUnify.tabLayout.removeAllTabs()
-            setupTabs(element?.content.orEmpty())
+            setupTabs(element?.content.orEmpty(), element?.widgetBackgroundColor ?: Color.TRANSPARENT)
         }
     }
 
-    private fun setupTabs(tabs: List<StickyNavigationUiModel.StickyNavigationItemData>) {
+    private fun setupTabs(
+        tabs: List<StickyNavigationUiModel.StickyNavigationItemData>,
+        widgetBackgroundColor: Int
+    ) {
         binding?.run {
             tabs.forEach {
                 catalogTabsUnify.addNewTab(it.title)
             }
             catalogTabsUnify.customTabMode = TabLayout.MODE_FIXED
             catalogTabsUnify.tabLayout.isTabIndicatorFullWidth = false
-            catalogTabsUnify.tabLayout.setBackgroundColor(Color.TRANSPARENT)
+            catalogTabsUnify.tabLayout.setBackgroundColor(widgetBackgroundColor)
             val centeredTabIndicator = ContextCompat.getDrawable(
                 catalogTabsUnify.tabLayout.context,
                 R.drawable.shape_showcase_tab_indicator_color

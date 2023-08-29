@@ -98,8 +98,6 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener {
 
         view.postDelayed( {
             widgets.add(TrustMakerUiModel.dummyTrustMaker())
-            widgets.add(TopFeaturesUiModel.dummyTopFeatures())
-            widgets.add(StickyNavigationUiModel.dummyNavigation())
             widgets.add(
                 PanelImageUiModel(
                     "1", "2", "2",
@@ -155,9 +153,7 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener {
             widgets.add(AccordionInformationUiModel.dummyAccordion())
 
             widgetAdapter.addMoreData(widgets)
-            widgetAdapter.addWidget(widgets)
-            widgetAdapter.refreshSticky()
-        }, 1000)
+        }, 5000)
 
     }
 
@@ -207,15 +203,12 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener {
                 toolbar.updateToolbarAppearance(scrollProgress, navigationProperties)
             }
         })
+        widgetAdapter.refreshSticky()
     }
 
     private fun FragmentCatalogReimagineDetailPageBinding.setupToolbar(
         navigationProperties: NavigationProperties
     ) {
-        val colorBgGradient = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_Black_44)
-        val colorFontDark = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
-        val colorFontLight = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
-        val colorFont = if (navigationProperties.isDarkMode) colorFontDark else colorFontLight
         val colorBgGradient = MethodChecker.getColor(
             context,
             com.tokopedia.unifyprinciples.R.color.Unify_Static_Black_44
@@ -228,7 +221,7 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener {
             context,
             com.tokopedia.unifyprinciples.R.color.Unify_Static_White
         )
-        val colorFont = if (isDarkMode) colorFontDark else colorFontLight
+        val colorFont = if (navigationProperties.isDarkMode) colorFontDark else colorFontLight
 
         toolbarShadow.background =
             DrawableExtension.createGradientDrawable(colorTop = colorBgGradient)
