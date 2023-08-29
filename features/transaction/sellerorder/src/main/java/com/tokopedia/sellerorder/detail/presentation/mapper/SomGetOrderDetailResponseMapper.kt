@@ -116,7 +116,7 @@ object SomGetOrderDetailResponseMapper {
         addonIcon: String,
         addonLabel: String
     ) {
-        val bmgmList = getBmgmList(bmgms, orderId, bmgmIcon, addonIcon, addonLabel)
+        val bmgmList = getBmgmList(bmgms, orderId, bmgmIcon, addonLabel, addonIcon)
         (bmgmList as? List<Visitable<SomDetailAdapterFactoryImpl>>)?.let { addAll(it) }
     }
 
