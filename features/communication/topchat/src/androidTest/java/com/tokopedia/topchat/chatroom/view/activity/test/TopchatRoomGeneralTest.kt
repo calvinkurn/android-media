@@ -1,7 +1,5 @@
-package com.tokopedia.topchat.chatroom.view.activity
+package com.tokopedia.topchat.chatroom.view.activity.test
 
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -9,12 +7,13 @@ import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.test.application.matcher.hasViewHolderItemAtPosition
 import com.tokopedia.topchat.AndroidFileUtil
-import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.OrderProgressResponse
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.activity.robot.composeAreaResult
+import com.tokopedia.topchat.chatroom.view.activity.robot.generalResult
+import com.tokopedia.topchat.chatroom.view.activity.robot.headerResult
+import com.tokopedia.topchat.chatroom.view.activity.robot.orderProgressResult
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.RoomSettingFraudAlertViewHolder
-import org.hamcrest.CoreMatchers.not
 import org.junit.Before
 import org.junit.Test
 
@@ -101,26 +100,28 @@ class TopchatRoomGeneralTest : TopchatRoomTest() {
         }
 
         // Then
-        assertToolbarTitle(shopName)
+        headerResult {
+            assertToolbarTitle(shopName)
+        }
     }
 
     @Test
     fun should_show_fraud_alert() {
+        // Given
         getChatUseCase.response = firstPageChatAsBuyer
         getChatUseCase.response.chatReplies.list = arrayListOf()
         chatAttachmentUseCase.response = chatAttachmentResponse
         getChatRoomSettingUseCase.response = chatRoomSettingResponse
         launchChatRoomActivity(isSellerApp = true)
 
-        onView(withId(R.id.recycler_view_chatroom)).check(
-            matches(
+        // Then
+        generalResult {
+            assertChatRecyclerview(
+                // position 0 is TopchatEmptyViewHolder
                 hasViewHolderItemAtPosition(1, RoomSettingFraudAlertViewHolder::class.java)
             )
-        )
-
-        onView(withId(R.id.txt_title)).check(
-            matches(withSubstring("Hati-hati penipuan!"))
-        )
+            assertSettingFraudAlert(withSubstring("Hati-hati penipuan!"))
+        }
     }
 
     @Test
@@ -131,9 +132,10 @@ class TopchatRoomGeneralTest : TopchatRoomTest() {
         orderProgressUseCase.response = orderProgressResponseNotEmpty
         launchChatRoomActivity()
 
-        onView(withId(R.id.tp_order_name)).check(
-            matches(withText(orderProgressResponseNotEmpty.chatOrderProgress.name))
-        )
+        // Then
+        orderProgressResult {
+            assertOrderProgressTitle(orderProgressResponseNotEmpty.chatOrderProgress.name)
+        }
     }
 
     @Test
@@ -144,8 +146,9 @@ class TopchatRoomGeneralTest : TopchatRoomTest() {
         orderProgressUseCase.response = orderProgressResponse
         launchChatRoomActivity()
 
-        onView(withId(R.id.tp_order_name)).check(
-            matches(not(isDisplayed()))
-        )
+        // Then
+        orderProgressResult {
+            assertOrderProgressGone()
+        }
     }
 }

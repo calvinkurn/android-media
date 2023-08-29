@@ -1,4 +1,4 @@
-package com.tokopedia.topchat.chatroom.view.activity
+package com.tokopedia.topchat.chatroom.view.activity.test
 
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.applink.ApplinkConst

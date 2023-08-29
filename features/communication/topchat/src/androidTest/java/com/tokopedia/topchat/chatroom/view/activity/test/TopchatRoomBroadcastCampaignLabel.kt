@@ -1,10 +1,11 @@
-package com.tokopedia.topchat.chatroom.view.activity
+package com.tokopedia.topchat.chatroom.view.activity.test
 
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.filters.FlakyTest
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
+import com.tokopedia.topchat.chatroom.view.activity.robot.broadcastResult
 import org.hamcrest.CoreMatchers.not
 import org.junit.Test
 import java.util.concurrent.TimeUnit
@@ -30,14 +31,16 @@ class TopchatRoomBroadcastCampaignLabel : TopchatRoomTest() {
         launchChatRoomActivity()
 
         // Then
-        assertBroadcastCampaignLabelAt(1, isDisplayed())
-        assertBroadcastCampaignLabelDescAt(1, isDisplayed())
-        assertBroadcastCampaignLabelDescAt(
-            1, withText(labelDesc)
-        )
-        assertBroadcastCampaignLabelCountdownAt(1, not(isDisplayed()))
-        assertBroadcastCampaignLabelStartDateIconAt(1, isDisplayed())
-        assertBroadcastCampaignLabelStartDateTextAt(1, isDisplayed())
+        broadcastResult {
+            assertBroadcastCampaignLabelAt(1, isDisplayed())
+            assertBroadcastCampaignLabelDescAt(1, isDisplayed())
+            assertBroadcastCampaignLabelDescAt(
+                1, withText(labelDesc)
+            )
+            assertBroadcastCampaignLabelCountdownAt(1, not(isDisplayed()))
+            assertBroadcastCampaignLabelStartDateIconAt(1, isDisplayed())
+            assertBroadcastCampaignLabelStartDateTextAt(1, isDisplayed())
+        }
     }
 
     @Test
@@ -56,12 +59,14 @@ class TopchatRoomBroadcastCampaignLabel : TopchatRoomTest() {
         launchChatRoomActivity()
 
         // Then
-        assertBroadcastCampaignLabelAt(1, isDisplayed())
-        assertBroadcastCampaignLabelDescAt(1, isDisplayed())
-        assertBroadcastCampaignLabelDescAt(1, withText(labelDesc))
-        assertBroadcastCampaignLabelCountdownAt(1, isDisplayed())
-        assertBroadcastCampaignLabelStartDateIconAt(1, not(isDisplayed()))
-        assertBroadcastCampaignLabelStartDateTextAt(1, not(isDisplayed()))
+        broadcastResult {
+            assertBroadcastCampaignLabelAt(1, isDisplayed())
+            assertBroadcastCampaignLabelDescAt(1, isDisplayed())
+            assertBroadcastCampaignLabelDescAt(1, withText(labelDesc))
+            assertBroadcastCampaignLabelCountdownAt(1, isDisplayed())
+            assertBroadcastCampaignLabelStartDateIconAt(1, not(isDisplayed()))
+            assertBroadcastCampaignLabelStartDateTextAt(1, not(isDisplayed()))
+        }
     }
 
     @Test
@@ -83,15 +88,17 @@ class TopchatRoomBroadcastCampaignLabel : TopchatRoomTest() {
         // When
         // Wait for countdown to finish
         val waitTime = TimeUnit.SECONDS.toMillis(4)
-        waitForIt(waitTime)
+        Thread.sleep(waitTime)
 
         // Then
-        assertBroadcastCampaignLabelAt(1, isDisplayed())
-        assertBroadcastCampaignLabelDescAt(1, isDisplayed())
-        assertBroadcastCampaignLabelDescAt(1, withText(endWording))
-        assertBroadcastCampaignLabelCountdownAt(1, not(isDisplayed()))
-        assertBroadcastCampaignLabelStartDateIconAt(1, not(isDisplayed()))
-        assertBroadcastCampaignLabelStartDateTextAt(1, not(isDisplayed()))
+        broadcastResult {
+            assertBroadcastCampaignLabelAt(1, isDisplayed())
+            assertBroadcastCampaignLabelDescAt(1, isDisplayed())
+            assertBroadcastCampaignLabelDescAt(1, withText(endWording))
+            assertBroadcastCampaignLabelCountdownAt(1, not(isDisplayed()))
+            assertBroadcastCampaignLabelStartDateIconAt(1, not(isDisplayed()))
+            assertBroadcastCampaignLabelStartDateTextAt(1, not(isDisplayed()))
+        }
     }
 
     @Test
@@ -110,12 +117,14 @@ class TopchatRoomBroadcastCampaignLabel : TopchatRoomTest() {
         launchChatRoomActivity()
 
         // Then
-        assertBroadcastCampaignLabelAt(1, isDisplayed())
-        assertBroadcastCampaignLabelDescAt(1, isDisplayed())
-        assertBroadcastCampaignLabelDescAt(1, withText(endWording))
-        assertBroadcastCampaignLabelCountdownAt(1, not(isDisplayed()))
-        assertBroadcastCampaignLabelStartDateIconAt(1, not(isDisplayed()))
-        assertBroadcastCampaignLabelStartDateTextAt(1, not(isDisplayed()))
+        broadcastResult {
+            assertBroadcastCampaignLabelAt(1, isDisplayed())
+            assertBroadcastCampaignLabelDescAt(1, isDisplayed())
+            assertBroadcastCampaignLabelDescAt(1, withText(endWording))
+            assertBroadcastCampaignLabelCountdownAt(1, not(isDisplayed()))
+            assertBroadcastCampaignLabelStartDateIconAt(1, not(isDisplayed()))
+            assertBroadcastCampaignLabelStartDateTextAt(1, not(isDisplayed()))
+        }
     }
 
     @Test
@@ -131,6 +140,8 @@ class TopchatRoomBroadcastCampaignLabel : TopchatRoomTest() {
         launchChatRoomActivity()
 
         // Then
-        assertBroadcastCampaignLabelAt(1, not(isDisplayed()))
+        broadcastResult {
+            assertBroadcastCampaignLabelAt(1, not(isDisplayed()))
+        }
     }
 }

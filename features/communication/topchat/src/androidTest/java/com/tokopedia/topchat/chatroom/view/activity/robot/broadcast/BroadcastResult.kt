@@ -1,5 +1,6 @@
 package com.tokopedia.topchat.chatroom.view.activity.robot.broadcast
 
+import android.view.View
 import androidx.annotation.ColorRes
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.ViewAssertion
@@ -11,9 +12,11 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.assertion.atPositionIsInstanceOf
+import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralResult.assertViewInRecyclerViewAt
 import com.tokopedia.topchat.chatroom.view.uimodel.BroadCastUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.BroadcastSpamHandlerUiModel
 import org.hamcrest.CoreMatchers.not
+import org.hamcrest.Matcher
 
 object BroadcastResult {
 
@@ -42,6 +45,7 @@ object BroadcastResult {
 
     fun assertBroadcastCtaLabel(isVisible: Boolean) {
         val matcher: ViewAssertion
+
         @ColorRes val color: Int
         if (isVisible) {
             matcher = matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE))
@@ -54,5 +58,40 @@ object BroadcastResult {
         onView(withId(R.id.topchat_cta_broadcast_tv)).check(
             matches(hasTextColor(color))
         )
+    }
+
+    fun assertBroadcastCampaignLabelAt(
+        position: Int,
+        matcher: Matcher<View>
+    ) {
+        assertViewInRecyclerViewAt(position, R.id.broadcast_campaign_label, matcher)
+    }
+
+    fun assertBroadcastCampaignLabelDescAt(
+        position: Int,
+        matcher: Matcher<View>
+    ) {
+        assertViewInRecyclerViewAt(position, R.id.tp_broadcast_campaign_status, matcher)
+    }
+
+    fun assertBroadcastCampaignLabelCountdownAt(
+        position: Int,
+        matcher: Matcher<View>
+    ) {
+        assertViewInRecyclerViewAt(position, R.id.tu_bc_countdown, matcher)
+    }
+
+    fun assertBroadcastCampaignLabelStartDateIconAt(
+        position: Int,
+        matcher: Matcher<View>
+    ) {
+        assertViewInRecyclerViewAt(position, R.id.iu_broadcast_start_date, matcher)
+    }
+
+    fun assertBroadcastCampaignLabelStartDateTextAt(
+        position: Int,
+        matcher: Matcher<View>
+    ) {
+        assertViewInRecyclerViewAt(position, R.id.tp_broadcast_start_date, matcher)
     }
 }

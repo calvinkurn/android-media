@@ -87,4 +87,10 @@ object GeneralResult {
         val rootView = activity.findViewById<View>(R.id.main)
         return com.tokopedia.topchat.isKeyboardOpened(rootView)
     }
+
+    fun assertSettingFraudAlert(
+        matcher: Matcher<View>
+    ) {
+        assertViewInRecyclerViewAt(1, R.id.txt_title, matcher)
+    }
 }
