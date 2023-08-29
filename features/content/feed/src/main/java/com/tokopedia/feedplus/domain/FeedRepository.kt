@@ -16,7 +16,7 @@ import javax.inject.Inject
 class FeedRepository @Inject constructor(
     private val feedXHeaderUseCase: FeedXHeaderUseCase,
     private val mapperFeedTabs: MapperFeedTabs,
-    private val dispatchers: CoroutineDispatchers,
+    private val dispatchers: CoroutineDispatchers
 ) {
 
     suspend fun getTabs(activeTabSource: ActiveTabSource): FeedTabsModel = withContext(dispatchers.io) {
@@ -39,7 +39,8 @@ class FeedRepository @Inject constructor(
                     listOf(
                         FeedXHeaderRequestFields.LIVE.value,
                         FeedXHeaderRequestFields.CREATION.value,
-                        FeedXHeaderRequestFields.USER.value
+                        FeedXHeaderRequestFields.USER.value,
+                        FeedXHeaderRequestFields.BROWSE.value
                     )
                 )
             )

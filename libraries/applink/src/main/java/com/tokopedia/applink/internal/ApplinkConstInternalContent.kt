@@ -27,6 +27,8 @@ object ApplinkConstInternalContent {
     const val INTERNAL_FEED_CREATION_PRODUCT_SEARCH = "$INTERNAL_CONTENT/creation_product_search"
     const val INTERNAL_FEED_CREATION_SHOP_SEARCH = "$INTERNAL_CONTENT/creation_shop_search"
 
+    const val INTERNAL_FEED_BROWSE = "$INTERNAL_CONTENT/browse"
+
     const val HASHTAG_PAGE = "$INTERNAL_CONTENT/explore-hashtag/{hashtag}/"
 
     const val CONTENT_REPORT = "$INTERNAL_CONTENT/content-report/{content_id}"

@@ -49,6 +49,15 @@ class FeedBrowseFragment @Inject constructor(
         observeUiEvent()
     }
 
+    override fun getScreenName(): String {
+        return ""
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     private fun observeUiState() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.uiState
@@ -80,19 +89,13 @@ class FeedBrowseFragment @Inject constructor(
         binding.feedBrowseHeader.title = title
         (requireActivity() as AppCompatActivity)
             .setSupportActionBar(binding.feedBrowseHeader)
+        binding.feedBrowseHeader.setNavigationOnClickListener {
+            activity?.finish()
+        }
     }
 
     private fun renderContent(widgets: List<FeedBrowseUiModel>) {
         adapter.setItems(widgets)
         adapter.notifyDataSetChanged()
-    }
-
-    override fun getScreenName(): String {
-        return ""
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 }

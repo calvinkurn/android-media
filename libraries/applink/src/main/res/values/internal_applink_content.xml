@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="host_content" translatable="false">content</string>
+    <string name="host_feed" translatable="false">feed</string>
     <string name="path_hashtag_page_landing" translatable="false">/explore-hashtag/.*\\/</string>
     <string name="applink_cp_path_create_post_v2" translatable="false">/create_post_v2/</string>
     <string name="applink_cp_productpickerfromshop" translatable="false">/productpickerfromshop/.*\</string>
