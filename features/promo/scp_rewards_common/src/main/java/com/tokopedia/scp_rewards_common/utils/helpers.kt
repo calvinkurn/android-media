@@ -1,4 +1,4 @@
-package com.tokopedia.scp_rewards_common
+package com.tokopedia.scp_rewards_common.utils
 
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
@@ -8,6 +8,10 @@ import android.util.DisplayMetrics
 import android.util.Property
 import android.view.View
 import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.tokopedia.scp_rewards_common.constants.EASE_IN_OUT
+import com.tokopedia.scp_rewards_common.constants.EASE_OUT
+import com.tokopedia.scp_rewards_common.constants.LINEAR
+import com.tokopedia.scp_rewards_common.constants.OVER_SHOOT
 import com.tokopedia.unifyprinciples.UnifyMotion
 import org.json.JSONObject
 

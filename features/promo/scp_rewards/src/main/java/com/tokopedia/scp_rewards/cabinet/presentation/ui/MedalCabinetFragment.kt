@@ -30,8 +30,8 @@ import com.tokopedia.scp_rewards.common.constants.NON_WHITELISTED_USER_ERROR_COD
 import com.tokopedia.scp_rewards.common.data.Error
 import com.tokopedia.scp_rewards.common.data.Loading
 import com.tokopedia.scp_rewards.common.data.Success
-import com.tokopedia.scp_rewards.common.utils.launchLink
 import com.tokopedia.scp_rewards.databinding.FragmentMedalCabinetLayoutBinding
+import com.tokopedia.scp_rewards_common.utils.launchLink
 import com.tokopedia.scp_rewards_widgets.cabinetHeader.CabinetHeader
 import com.tokopedia.scp_rewards_widgets.medal.BannerData
 import com.tokopedia.scp_rewards_widgets.medal.MedalCallbackListener

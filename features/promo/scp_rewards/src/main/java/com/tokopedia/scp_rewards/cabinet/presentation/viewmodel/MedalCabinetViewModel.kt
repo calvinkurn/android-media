@@ -21,10 +21,10 @@ import com.tokopedia.scp_rewards.common.utils.PAGE_PARAM
 import com.tokopedia.scp_rewards.common.utils.SOURCE_NAME_PARAM
 import com.tokopedia.scp_rewards.common.utils.TYPE_PARAM
 import com.tokopedia.scp_rewards.common.utils.launchCatchError
-import com.tokopedia.scp_rewards_common.EARNED_BADGE
-import com.tokopedia.scp_rewards_common.PROGRESS_BADGE
-import com.tokopedia.scp_rewards_common.SUCCESS_CODE
-import com.tokopedia.scp_rewards_common.parseJsonKey
+import com.tokopedia.scp_rewards_common.constants.EARNED_BADGE
+import com.tokopedia.scp_rewards_common.constants.PROGRESS_BADGE
+import com.tokopedia.scp_rewards_common.constants.SUCCESS_CODE
+import com.tokopedia.scp_rewards_common.utils.parseJsonKey
 import com.tokopedia.usecase.RequestParams
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext

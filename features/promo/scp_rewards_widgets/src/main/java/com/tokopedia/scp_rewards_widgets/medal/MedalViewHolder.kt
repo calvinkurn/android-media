@@ -5,13 +5,13 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.scp_rewards_common.LINEAR
-import com.tokopedia.scp_rewards_common.OVER_SHOOT
-import com.tokopedia.scp_rewards_common.animateView
-import com.tokopedia.scp_rewards_common.grayscale
-import com.tokopedia.scp_rewards_common.loadImageOrFallback
-import com.tokopedia.scp_rewards_common.loadLottieFromUrl
-import com.tokopedia.scp_rewards_common.propertyValueHolder
+import com.tokopedia.scp_rewards_common.constants.LINEAR
+import com.tokopedia.scp_rewards_common.constants.OVER_SHOOT
+import com.tokopedia.scp_rewards_common.utils.animateView
+import com.tokopedia.scp_rewards_common.utils.grayscale
+import com.tokopedia.scp_rewards_common.utils.loadImageOrFallback
+import com.tokopedia.scp_rewards_common.utils.loadLottieFromUrl
+import com.tokopedia.scp_rewards_common.utils.propertyValueHolder
 import com.tokopedia.scp_rewards_widgets.R
 import com.tokopedia.scp_rewards_widgets.databinding.ItemMedalLayoutBinding
 import com.tokopedia.scp_rewards_common.R as scp_rewards_commonR

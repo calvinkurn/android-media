@@ -18,8 +18,8 @@ import com.tokopedia.scp_rewards.common.utils.PAGE_NAME_PARAM
 import com.tokopedia.scp_rewards.common.utils.PAGE_PARAM
 import com.tokopedia.scp_rewards.common.utils.TYPE_PARAM
 import com.tokopedia.scp_rewards.common.utils.launchCatchError
-import com.tokopedia.scp_rewards_common.EARNED_BADGE
-import com.tokopedia.scp_rewards_common.SUCCESS_CODE
+import com.tokopedia.scp_rewards_common.constants.EARNED_BADGE
+import com.tokopedia.scp_rewards_common.constants.SUCCESS_CODE
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 

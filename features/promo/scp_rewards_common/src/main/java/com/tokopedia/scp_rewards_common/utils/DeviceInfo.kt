@@ -1,12 +1,9 @@
-package com.tokopedia.scp_rewards.common.utils
+package com.tokopedia.scp_rewards_common.utils
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.os.Build
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.WindowManager
-import androidx.fragment.app.FragmentActivity
 import kotlin.math.pow
 import kotlin.math.sqrt
 

@@ -3,7 +3,7 @@ package com.tokopedia.scp_rewards_widgets.medal
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.scp_rewards_common.loadImageOrFallback
+import com.tokopedia.scp_rewards_common.utils.loadImageOrFallback
 import com.tokopedia.scp_rewards_widgets.R
 import com.tokopedia.scp_rewards_widgets.databinding.MedalViewEmptyLayoutBinding
 import com.tokopedia.scp_rewards_common.R as scp_rewards_commonR

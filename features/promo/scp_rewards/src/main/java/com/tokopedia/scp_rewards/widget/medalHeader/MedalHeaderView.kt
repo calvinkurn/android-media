@@ -9,9 +9,9 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.scp_rewards.common.utils.hide
 import com.tokopedia.scp_rewards.databinding.WidgetMedalHeaderBinding
 import com.tokopedia.scp_rewards_common.R
-import com.tokopedia.scp_rewards_common.grayscale
-import com.tokopedia.scp_rewards_common.loadImageOrFallback
-import com.tokopedia.scp_rewards_common.parseColor
+import com.tokopedia.scp_rewards_common.utils.grayscale
+import com.tokopedia.scp_rewards_common.utils.loadImageOrFallback
+import com.tokopedia.scp_rewards_common.utils.parseColor
 
 class MedalHeaderView(private val context: Context, attrs: AttributeSet?) :
     ConstraintLayout(context, attrs) {

@@ -1,4 +1,4 @@
-package com.tokopedia.scp_rewards.common.utils
+package com.tokopedia.scp_rewards_common.utils
 
 import android.media.MediaPlayer
 import android.util.Log
@@ -24,8 +24,6 @@ class AudioFactory private constructor(){
                     try {
                         setDataSource(url)
                         setOnPreparedListener {
-                            val elapsed = System.currentTimeMillis() - current
-                            Log.i("from audio factory", "elapsed time -> ${elapsed / 1000L}")
                             if (isAudioLoading) {
                                 isAudioLoading = false
                                 onPrepare?.invoke()
@@ -47,7 +45,7 @@ class AudioFactory private constructor(){
         }
     }
 
-    fun withTimeout(timeout:Long = BASE_TIMEOUT) : AudioFactory{
+    fun withTimeout(timeout:Long = BASE_TIMEOUT) : AudioFactory {
         CoroutineScope(Dispatchers.Main).launch {
             delay(timeout)
             if (isAudioLoading) {
