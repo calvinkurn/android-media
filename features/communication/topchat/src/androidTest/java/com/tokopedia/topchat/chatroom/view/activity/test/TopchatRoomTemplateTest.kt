@@ -1,15 +1,15 @@
-package com.tokopedia.topchat.chatroom.view.activity
+package com.tokopedia.topchat.chatroom.view.activity.test
 
 import androidx.recyclerview.widget.RecyclerView
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withSubstring
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.assertion.DrawableMatcher
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
+import com.tokopedia.topchat.chatroom.view.activity.robot.composeAreaResult
 import com.tokopedia.topchat.chatroom.view.activity.robot.composeAreaRobot
-import com.tokopedia.topchat.matchers.withRecyclerView
+import com.tokopedia.topchat.chatroom.view.activity.robot.generalResult
+import com.tokopedia.topchat.chatroom.view.activity.robot.msgBubbleResult
 import com.tokopedia.topchat.matchers.withTotalItem
 import com.tokopedia.topchat.stub.common.RemoteConfigStub
 import org.hamcrest.CoreMatchers.not
@@ -28,11 +28,15 @@ class TopchatRoomTemplateTest : TopchatRoomTest() {
         setupRemoteConfigValue(false)
 
         // When
-        clickTemplateChatAt(0)
+        composeAreaRobot {
+            clickTemplateChatAt(0)
+        }
 
         // Then
-        assertTemplateChatVisibility(isDisplayed())
-        assertComposedTextValue("Hi Barang ini ready ga?")
+        composeAreaResult {
+            assertTemplateChatVisibility(isDisplayed())
+            assertTypeMessageText(" Hi Barang ini ready ga? ")
+        }
     }
 
     @Test
@@ -46,7 +50,9 @@ class TopchatRoomTemplateTest : TopchatRoomTest() {
         setupRemoteConfigValue(false)
 
         // Then
-        assertTemplateChatVisibility(not(isDisplayed()))
+        composeAreaResult {
+            assertTemplateChatVisibility(not(isDisplayed()))
+        }
     }
 
     @Test
@@ -59,11 +65,15 @@ class TopchatRoomTemplateTest : TopchatRoomTest() {
         setupRemoteConfigValue(false)
 
         // When
-        clickTemplateChatAt(0)
+        composeAreaRobot {
+            clickTemplateChatAt(0)
+        }
 
         // Then
-        assertComposedTextValue("Hi Barang ini ready ga?")
-        DrawableMatcher.compareDrawableWithIndex(R.id.send_but, R.drawable.bg_topchat_send_btn, 0)
+        composeAreaResult {
+            assertTypeMessageText(" Hi Barang ini ready ga? ")
+            assertSendBtnEnabled()
+        }
     }
 
     @Test
@@ -79,21 +89,21 @@ class TopchatRoomTemplateTest : TopchatRoomTest() {
         val count = activityTestRule.activity
             .findViewById<RecyclerView>(R.id.recycler_view_chatroom)
             .adapter?.itemCount ?: 0
-        clickTemplateChatAt(0)
         composeAreaRobot {
+            clickTemplateChatAt(0)
             clickSendBtn()
         }
 
         // Then
-        onView(
-            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
-                0,
-                R.id.tvMessage
-            )
-        )
-            .check(matches(withSubstring("Hi Barang ini ready ga?")))
-        onView(withId(R.id.recycler_view_chatroom)).check(matches(withTotalItem(count + 1)))
-        assertComposedTextValue("")
+        generalResult {
+            assertChatRecyclerview(withTotalItem(count + 1))
+        }
+        msgBubbleResult {
+            assertBubbleMsg(0, withSubstring("Hi Barang ini ready ga?"))
+        }
+        composeAreaResult {
+            assertTypeMessageText("")
+        }
     }
 
     // Setup remoteconfig for toggle flexmode/not

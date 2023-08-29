@@ -16,18 +16,16 @@ object ComposeAreaResult {
     private val sendButtonId = R.id.send_but
 
     fun assertSendBtnEnabled() {
-        DrawableMatcher.compareDrawableWithIndex(
+        DrawableMatcher.compareDrawable(
             sendButtonId,
-            R.drawable.bg_topchat_send_btn,
-            0
+            R.drawable.bg_topchat_send_btn
         )
     }
 
     fun assertSendBtnDisabled() {
-        DrawableMatcher.compareDrawableWithIndex(
+        DrawableMatcher.compareDrawable(
             sendButtonId,
-            R.drawable.bg_topchat_send_btn_disabled,
-            0
+            R.drawable.bg_topchat_send_btn_disabled
         )
     }
 

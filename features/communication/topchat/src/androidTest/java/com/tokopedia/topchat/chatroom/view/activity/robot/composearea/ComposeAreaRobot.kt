@@ -1,5 +1,6 @@
 package com.tokopedia.topchat.chatroom.view.activity.robot.composearea
 
+import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.replaceText
@@ -85,5 +86,13 @@ object ComposeAreaRobot {
                     .clickChildViewWithId(R.id.iv_sticker)
             )
         onView(withId(R.id.rv_sticker)).perform(viewAction)
+    }
+
+    fun clickTemplateChatAt(position: Int) {
+        val viewAction = RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+            position,
+            ViewActions.click()
+        )
+        onView(withId(R.id.list_template)).perform(viewAction)
     }
 }

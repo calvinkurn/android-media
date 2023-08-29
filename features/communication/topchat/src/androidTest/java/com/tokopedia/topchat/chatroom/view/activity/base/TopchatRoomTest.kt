@@ -397,14 +397,6 @@ abstract class TopchatRoomTest {
         webSocketModifier(response)
     }
 
-    protected fun clickTemplateChatAt(position: Int) {
-        val viewAction = RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
-            position,
-            click()
-        )
-        onView(withId(R.id.list_template)).perform(viewAction)
-    }
-
     protected fun clickSrwPreviewExpandCollapse() {
         onView(
             allOf(
