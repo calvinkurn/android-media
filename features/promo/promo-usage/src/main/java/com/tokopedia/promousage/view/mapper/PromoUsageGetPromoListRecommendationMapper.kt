@@ -170,10 +170,8 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
             messageSelected = promoRecommendation.messageSelected,
             selectedCodes = selectedPromoCodes,
             codes = recommendedPromoCodes,
-            backgroundUrl = "https://images.tokopedia.net/img/Promo%20Recom%20Section@3x.png",
-            animationUrl = "https://assets.tokopedia.net/asts/android/shop_page/shop_campaign_tab_confetti.json",
-            //backgroundUrl = promoRecommendation.backgroundUrl,
-            //animationUrl = promoRecommendation.animationUrl,
+            backgroundUrl = promoRecommendation.backgroundUrl,
+            animationUrl = promoRecommendation.animationUrl
         )
     }
 
