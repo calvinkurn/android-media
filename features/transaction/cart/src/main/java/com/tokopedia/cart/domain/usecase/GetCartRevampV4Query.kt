@@ -697,7 +697,9 @@ const val CART_REVAMP_V4_QUERY =
               total_product_error
               global_checkbox_state
               show_bundle_price
-              onboarding_data
+              onboarding_data {
+                text
+              }
               tickers {
                 id
                 title
