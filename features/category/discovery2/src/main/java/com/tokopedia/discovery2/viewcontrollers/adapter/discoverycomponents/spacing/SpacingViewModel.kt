@@ -1,13 +1,14 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.spacing
 
 import android.app.Application
-import android.graphics.Color
-import androidx.core.content.ContextCompat
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.unifyprinciples.UnifyColorRef
+import com.tokopedia.unifyprinciples.stringToUnifyColor
 
 class SpacingViewModel(val application: Application, private val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel() {
     private val spacingComponentData: MutableLiveData<ComponentsItem> = MutableLiveData()
@@ -18,24 +19,26 @@ class SpacingViewModel(val application: Application, private val components: Com
         spacingComponentData.value = components
     }
 
-
     fun getComponentData(): LiveData<ComponentsItem> = spacingComponentData
     fun getViewHeight(): LiveData<Int> = viewHeight
     fun getViewBackgroundColor(): LiveData<Int> = viewBackgroundColor
 
-    fun setupSpacingView() {
+    fun setupSpacingView(context: Context?) {
         val spacingSize = components.data?.get(0)?.sizeMobile
-
+        var convertedColor: UnifyColorRef? = null
         if (!spacingSize.isNullOrEmpty()) {
             viewHeight.value = spacingSize.toIntOrZero()
             val spacingBackgroundColor = components.data?.getOrNull(0)?.background
+            if (context != null && spacingBackgroundColor != null) {
+                convertedColor = stringToUnifyColor(context, spacingBackgroundColor)
+            }
             if (spacingBackgroundColor.isNullOrEmpty()) {
-                viewBackgroundColor.value = ContextCompat.getColor(application.applicationContext, com.tokopedia.unifyprinciples.R.color.Unify_Background)
+                viewBackgroundColor.value = com.tokopedia.unifyprinciples.R.color.Unify_NN0
             } else {
                 try {
-                    viewBackgroundColor.value = Color.parseColor(spacingBackgroundColor)
+                    viewBackgroundColor.value = convertedColor?.unifyColor ?: com.tokopedia.unifyprinciples.R.color.Unify_NN0
                 } catch (exception: IllegalArgumentException) {
-                    viewBackgroundColor.value = ContextCompat.getColor(application.applicationContext, com.tokopedia.unifyprinciples.R.color.Unify_Background)
+                    viewBackgroundColor.value = com.tokopedia.unifyprinciples.R.color.Unify_NN0
                 }
             }
         }
