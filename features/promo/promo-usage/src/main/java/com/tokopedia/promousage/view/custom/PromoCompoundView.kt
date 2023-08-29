@@ -17,6 +17,7 @@ import android.widget.RelativeLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.setTextColorCompat
@@ -166,14 +167,17 @@ class PromoCompoundView @JvmOverloads constructor(
             }
             tpgPromoBenefitAmount.setTextColorCompat(defaultTextColorResId)
             tpgPromoBenefitAmount.text = promo.benefitAmountStr
-            tpgPromoBenefitAmount.isVisible = promo.state !is PromoItemState.Loading
+            if (promo.state !is PromoItemState.Loading) {
+                tpgPromoBenefitAmount.visible()
+            } else {
+                tpgPromoBenefitAmount.invisible()
+            }
         }
     }
 
     private fun renderPromoInfo(promo: PromoItem) {
         binding?.run {
             val promoItemInfos = when (promo.state) {
-
                 is PromoItemState.Ineligible -> {
                     listOf(
                         PromoItemInfo(
@@ -212,8 +216,12 @@ class PromoCompoundView @JvmOverloads constructor(
                     HtmlLinkHelper(context, promoInfo.title).spannedString
                 llPromoInfo.addView(promoInfoChildView.root)
             }
-            llPromoInfo.isVisible = promo.state !is PromoItemState.Loading
-                && llPromoInfo.childCount.isMoreThanZero()
+            if (promo.state !is PromoItemState.Loading
+                && llPromoInfo.childCount.isMoreThanZero()) {
+                llPromoInfo.visible()
+            } else {
+                llPromoInfo.invisible()
+            }
         }
     }
 

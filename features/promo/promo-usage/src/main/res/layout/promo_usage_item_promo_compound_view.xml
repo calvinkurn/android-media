@@ -93,13 +93,13 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tpgPromoBenefitType"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="12dp"
                 android:layout_marginEnd="16dp"
+                app:layout_constraintWidth_percent="0.5"
                 android:textColor="@color/Unify_GN500"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="display_3"
@@ -108,14 +108,14 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tpgPromoBenefitAmount"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="4dp"
                 android:layout_marginEnd="16dp"
                 android:textColor="@color/Unify_NN950"
                 app:layout_constraintBottom_toTopOf="@id/llPromoInfo"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/imgPromoIcon"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tpgPromoBenefitType"
                 app:typographyType="display_2"
@@ -167,23 +167,16 @@
 
             <LinearLayout
                 android:id="@+id/llPromoInfo"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
+                android:minHeight="16dp"
                 android:orientation="vertical"
-                android:paddingTop="4dp"
-                android:paddingBottom="12dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="12dp"
                 app:layout_constraintBottom_toTopOf="@id/tpgPromoExpiryInfo"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent">
-
-                <include layout="@layout/promo_usage_item_sub_promo_info" />
-
-                <include layout="@layout/promo_usage_item_sub_promo_info" />
-
-                <include layout="@layout/promo_usage_item_sub_promo_info" />
-            </LinearLayout>
+                app:layout_constraintEnd_toEndOf="@+id/tpgPromoBenefitAmount"
+                app:layout_constraintStart_toStartOf="parent"/>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tpgPromoExpiryInfo"
