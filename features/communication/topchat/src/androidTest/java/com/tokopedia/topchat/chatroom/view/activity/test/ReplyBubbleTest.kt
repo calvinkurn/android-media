@@ -13,8 +13,6 @@ import com.tokopedia.topchat.chatroom.view.activity.robot.generalResult
 import com.tokopedia.topchat.chatroom.view.activity.robot.generalRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.replyBubbleResult
 import com.tokopedia.topchat.chatroom.view.activity.robot.replyBubbleRobot
-import com.tokopedia.topchat.chatroom.view.activity.robot.replybubble.ReplyBubbleResult
-import com.tokopedia.topchat.chatroom.view.activity.robot.replybubble.ReplyBubbleRobot
 import com.tokopedia.topchat.chatroom.view.onboarding.ReplyBubbleOnBoarding.Companion.KEY_REPLY_BUBBLE_ONBOARDING
 import org.hamcrest.CoreMatchers.`is`
 import org.junit.Test

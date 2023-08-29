@@ -1,10 +1,8 @@
-package com.tokopedia.topchat.chatroom.view.activity
+package com.tokopedia.topchat.chatroom.view.activity.test.seller
 
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
-import com.tokopedia.topchat.chatroom.view.activity.robot.shippinglocation.ShippingLocationResult.hasNoVisibleShippingLocationOn
-import com.tokopedia.topchat.chatroom.view.activity.robot.shippinglocation.ShippingLocationResult.hasShippingLocationOnWithText
-import com.tokopedia.topchat.chatroom.view.activity.robot.shippinglocation.ShippingLocationResult.hasVisibleShippingLocationOn
+import com.tokopedia.topchat.chatroom.view.activity.robot.shippingLocationResult
 import org.junit.Test
 
 @UiTest
@@ -21,8 +19,10 @@ class SellerProductCardShippingLocationInfoTest : TopchatRoomTest() {
         launchChatRoomActivity()
 
         // Then
-        hasVisibleShippingLocationOn(position = 1)
-        hasShippingLocationOnWithText(position = 1, shippingText)
+        shippingLocationResult {
+            hasVisibleShippingLocationOn(position = 1)
+            hasShippingLocationOnWithText(position = 1, shippingText)
+        }
     }
 
     @Test
@@ -33,7 +33,9 @@ class SellerProductCardShippingLocationInfoTest : TopchatRoomTest() {
         launchChatRoomActivity()
 
         // Then
-        hasNoVisibleShippingLocationOn(position = 1)
+        shippingLocationResult {
+            hasNoVisibleShippingLocationOn(position = 1)
+        }
     }
 
     @Test
@@ -44,7 +46,9 @@ class SellerProductCardShippingLocationInfoTest : TopchatRoomTest() {
         launchChatRoomActivity()
 
         // Then
-        hasNoVisibleShippingLocationOn(position = 1)
+        shippingLocationResult {
+            hasNoVisibleShippingLocationOn(position = 1)
+        }
     }
 
     @Test
@@ -55,6 +59,8 @@ class SellerProductCardShippingLocationInfoTest : TopchatRoomTest() {
         launchChatRoomActivity()
 
         // Then
-        hasNoVisibleShippingLocationOn(position = 1)
+        shippingLocationResult {
+            hasNoVisibleShippingLocationOn(position = 1)
+        }
     }
 }
