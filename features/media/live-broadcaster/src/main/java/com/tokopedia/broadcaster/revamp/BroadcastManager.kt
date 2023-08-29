@@ -305,7 +305,7 @@ class BroadcastManager @Inject constructor(
                 builder.addCamera(
                     CameraConfig().apply {
                         this.cameraId = it.cameraId
-                        this.videoSize = BroadcasterUtil.findFlipSize(it.recordSizes, videoSize)
+                        this.videoSize = BroadcasterUtil.getVideoSize(it.recordSizes, TARGET_ASPECT_RATIO)
                     }
                 )
             }
