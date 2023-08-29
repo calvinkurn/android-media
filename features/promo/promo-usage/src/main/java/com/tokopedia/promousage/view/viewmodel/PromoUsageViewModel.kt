@@ -418,21 +418,6 @@ internal class PromoUsageViewModel @Inject constructor(
             .map { item ->
                 if (item is PromoItem && item.id == clickedItem.id) {
                     return@map updatedClickedItem
-                } else if (item is PromoRecommendationItem) {
-                    if (updatedClickedItem.isRecommended) {
-                        if (updatedClickedItem.state is PromoItemState.Normal) {
-                            return@map item.copy(
-                                selectedCodes = item.selectedCodes.toMutableList()
-                                    .minus(updatedClickedItem.code)
-                            )
-                        } else if (updatedClickedItem.state is PromoItemState.Selected) {
-                            return@map item.copy(
-                                selectedCodes = item.selectedCodes.toMutableList()
-                                    .plus(updatedClickedItem.code)
-                            )
-                        }
-                    }
-                    return@map item
                 } else {
                     return@map item
                 }
@@ -503,8 +488,7 @@ internal class PromoUsageViewModel @Inject constructor(
             && !currentItem.currentClashingPromoCodes.contains(selectedPromoCode)
         ) {
             val clashingCodes = resultItem.currentClashingPromoCodes
-                .toMutableList()
-            clashingCodes.add(selectedPromoCode)
+                .plus(selectedPromoCode)
             resultItem = resultItem.copy(
                 currentClashingPromoCodes = clashingCodes,
                 state = PromoItemState.Ineligible(primaryClashingInfo.message)
@@ -517,8 +501,7 @@ internal class PromoUsageViewModel @Inject constructor(
             if (secondaryClashingInfo != null
                 && !currentItem.currentClashingSecondaryPromoCodes.contains(selectedPromoCode)) {
                 val clashingCodes = resultItem.currentClashingSecondaryPromoCodes
-                    .toMutableList()
-                clashingCodes.add(selectedPromoCode)
+                    .plus(selectedPromoCode)
                 resultItem = resultItem.copy(
                     currentClashingSecondaryPromoCodes = clashingCodes,
                     state = PromoItemState.Ineligible(secondaryClashingInfo.message)
@@ -546,8 +529,7 @@ internal class PromoUsageViewModel @Inject constructor(
         if (primaryClashingInfo != null
             && currentItem.currentClashingPromoCodes.contains(selectedPromoCode)) {
             val clashingPrimaryCodes = resultItem.currentClashingSecondaryPromoCodes
-                .toMutableList()
-            clashingPrimaryCodes.remove(selectedPromoCode)
+                .minus(selectedPromoCode)
             if (clashingPrimaryCodes.isNotEmpty()) {
                 val otherClashingCode = currentItem.currentClashingPromoCodes.first()
                 val otherClashingInfo = currentItem.clashingInfos
@@ -579,8 +561,7 @@ internal class PromoUsageViewModel @Inject constructor(
                 if (secondaryClashingInfo != null
                     && currentItem.currentClashingSecondaryPromoCodes.contains(selectedPromoCode)) {
                     val clashingSecondaryCodes = currentItem.currentClashingSecondaryPromoCodes
-                        .toMutableList()
-                    clashingSecondaryCodes.remove(selectedPromoCode)
+                        .minus(selectedPromoCode)
                     if (clashingSecondaryCodes.isNotEmpty()) {
                         val otherClashingCode = currentItem.currentClashingSecondaryPromoCodes
                             .first()
@@ -1279,8 +1260,8 @@ internal class PromoUsageViewModel @Inject constructor(
                         val recommendedPromo = updatedItems
                             .firstOrNull { it is PromoItem && it.code == code } as? PromoItem
                         if (recommendedPromo != null) {
-                            val result = calculateClickPromo(recommendedPromo, updatedItems)
-                            updatedItems = result.second
+                            val (_, newUpdatedItems) = calculateClickPromo(recommendedPromo, updatedItems)
+                            updatedItems = newUpdatedItems
                         }
                     }
                     val updatedSavingInfo = calculatePromoSavingInfo(
