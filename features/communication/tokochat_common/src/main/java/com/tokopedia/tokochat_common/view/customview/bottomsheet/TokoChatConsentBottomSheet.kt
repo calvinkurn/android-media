@@ -65,8 +65,6 @@ class TokoChatConsentBottomSheet : BottomSheetUnify() {
 
     private fun loadConsentWidget() {
         binding?.tokochatWidgetConsent?.load(
-            viewLifecycleOwner,
-            this,
             TokoChatValueUtil.consentParam
         )
     }
