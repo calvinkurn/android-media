@@ -2551,7 +2551,7 @@ class ShopPageHeaderFragmentV2 :
             if(getShopHeaderConfig()?.patternColorType == ShopPageHeaderLayoutUiModel.ColorType.DARK.value) {
                 R.color.dms_static_Unify_NN950_light
             } else {
-                R.color.Unify_Static_White
+                com.tokopedia.unifyprinciples.R.color.Unify_Static_White
             }
         } else {
             super.onChangeTextColor()

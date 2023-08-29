@@ -125,6 +125,7 @@ class ImageTabs(val tabsUnify: TabsUnify) {
                 tabsUnify.customTabGravity = TabLayout.GRAVITY_FILL
             }
             tabsUnify.tabLayout.getTabAt(selectedIndex)?.select()
+            totalTabViewWidth = 0
         }
     }
 
