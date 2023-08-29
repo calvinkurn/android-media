@@ -62,8 +62,6 @@ class StoryDetailsUseCase @Inject constructor(
                       editable
                     }
                     meta {
-                      activityTracker
-                      templateTracker
                       shareTitle
                       shareDescription
                       shareImage

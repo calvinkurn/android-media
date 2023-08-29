@@ -98,10 +98,6 @@ data class StoryDetailsResponseModel(
                 val shareImage: String,
                 @SerializedName("shareTitle")
                 val shareTitle: String,
-                @SerializedName("activityTracker")
-                val activityTracker: String,
-                @SerializedName("templateTracker")
-                val templateTracker: String,
             )
         }
     }
