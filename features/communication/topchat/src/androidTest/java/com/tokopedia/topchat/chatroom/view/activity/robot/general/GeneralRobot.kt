@@ -24,6 +24,13 @@ object GeneralRobot {
         ).perform(action)
     }
 
+    fun doActionOnListItemAt(position: Int, action: ViewAction) {
+        onView(
+            withRecyclerView(R.id.recycler_view_chatroom)
+                .atPosition(position)
+        ).perform(action)
+    }
+
     fun scrollChatToPosition(position: Int) {
         onView(withId(R.id.recycler_view_chatroom)).perform(
             RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(position)

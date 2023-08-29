@@ -12,6 +12,7 @@ import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentResponse
 import com.tokopedia.topchat.chatroom.view.activity.base.BaseBuyerTopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.activity.robot.bannedProductRobot
+import com.tokopedia.topchat.chatroom.view.activity.robot.generalResult
 import com.tokopedia.topchat.chatroom.view.activity.robot.generalRobot
 import com.tokopedia.topchat.stub.common.UserSessionStub
 import org.junit.After
@@ -74,7 +75,9 @@ class TopchatRoomBannedProductTest : BaseBuyerTopchatRoomTest() {
 
         // Then
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(redirectUrlTest))
-        Intents.intended(IntentMatchers.hasData(intent.data))
+        generalResult {
+            openPageWithIntent(intent)
+        }
     }
 
     @Test

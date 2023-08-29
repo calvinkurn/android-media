@@ -216,8 +216,12 @@ class PreloadProductAttachmentTest : TopchatRoomTest() {
         }
 
         // Then
-        assertTemplateChatVisibility(not(isDisplayed()))
-        assertSrwPreviewContentIsHidden()
+        srwResult {
+            assertSrwPreviewContentContainerVisibility(not(isDisplayed()))
+        }
+        composeAreaResult {
+            assertTemplateChatVisibility(not(isDisplayed()))
+        }
     }
 
     @Test
