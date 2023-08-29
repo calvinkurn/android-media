@@ -42,7 +42,7 @@ class CategoryProductRecommendationTest : TokoNowCategoryViewModelTestFixture() 
 
         // map choose address
         val chooseAddressUiModel = categoryDetailResponse
-            .mapToChooseAddress(addressData)
+            .mapToChooseAddress()
 
         // map ticker
         val tickerDataList = TickerMapper.mapTickerData(

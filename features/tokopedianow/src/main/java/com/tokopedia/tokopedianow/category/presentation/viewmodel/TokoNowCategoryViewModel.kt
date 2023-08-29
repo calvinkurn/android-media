@@ -137,8 +137,7 @@ class TokoNowCategoryViewModel @Inject constructor(
             detailResponse = detailResponse
         )
         visitableList.addChooseAddress(
-            detailResponse = detailResponse,
-            addressData = addressData.getAddressData()
+            detailResponse = detailResponse
         )
         visitableList.addTicker(
             detailResponse = detailResponse,
@@ -358,7 +357,6 @@ class TokoNowCategoryViewModel @Inject constructor(
         quantity: Int,
         layoutType: String
     ) {
-
         when (layoutType) {
             CATEGORY_SHOWCASE.name -> trackCategoryShowCase(product, quantity)
             PRODUCT_ADS_CAROUSEL -> trackProductAdsAddToCart(product, quantity)

@@ -45,7 +45,7 @@ class CategoryFirstPageTest : TokoNowCategoryViewModelTestFixture() {
 
         // map choose address
         val chooseAddressUiModel = categoryDetailResponse
-            .mapToChooseAddress(addressData)
+            .mapToChooseAddress()
 
         // map ticker
         val tickerDataList = TickerMapper.mapTickerData(
@@ -140,7 +140,7 @@ class CategoryFirstPageTest : TokoNowCategoryViewModelTestFixture() {
 
         // map choose address
         val chooseAddressUiModel = categoryDetailResponse
-            .mapToChooseAddress(addressData)
+            .mapToChooseAddress()
 
         // map ticker
         val tickerDataList = TickerMapper.mapTickerData(

@@ -139,7 +139,8 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
         val expectedResponse = HomeLayoutListUiModel(
             items = listOf(
                 TokoNowChooseAddressWidgetUiModel(
-                    id = CHOOSE_ADDRESS_WIDGET_ID),
+                    id = CHOOSE_ADDRESS_WIDGET_ID
+                ),
                 createDynamicLegoBannerDataModel(
                     "34923",
                     "",

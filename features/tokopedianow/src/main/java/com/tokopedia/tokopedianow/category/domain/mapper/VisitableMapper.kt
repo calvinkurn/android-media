@@ -4,7 +4,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemParentProduct
@@ -63,10 +62,9 @@ internal object VisitableMapper {
      */
 
     fun MutableList<Visitable<*>>.addChooseAddress(
-        detailResponse: CategoryDetailResponse,
-        addressData: LocalCacheModel
+        detailResponse: CategoryDetailResponse
     )  {
-        add(detailResponse.mapToChooseAddress(addressData))
+        add(detailResponse.mapToChooseAddress())
     }
 
     /**
