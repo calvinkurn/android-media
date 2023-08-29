@@ -1,5 +1,7 @@
 package com.tokopedia.sellerorder.detail.presentation.mapper
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSectionUiModel
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.Utils
 import com.tokopedia.sellerorder.detail.data.model.SomDetailData
@@ -7,6 +9,7 @@ import com.tokopedia.sellerorder.detail.data.model.SomDetailHeader
 import com.tokopedia.sellerorder.detail.data.model.SomDetailOrder
 import com.tokopedia.sellerorder.detail.data.model.SomDetailProducts
 import com.tokopedia.sellerorder.detail.data.model.SomDetailShipping
+import com.tokopedia.sellerorder.detail.presentation.adapter.factory.SomDetailAdapterFactoryImpl
 import com.tokopedia.sellerorder.detail.presentation.model.AddOnSummaryUiModel
 import com.tokopedia.sellerorder.detail.presentation.model.AddOnUiModel
 import com.tokopedia.sellerorder.detail.presentation.model.BaseProductUiModel
@@ -15,8 +18,61 @@ import com.tokopedia.sellerorder.detail.presentation.model.ProductBundleUiModel
 
 object SomGetOrderDetailResponseMapper {
 
+    private fun getBmgmList(
+        bmgms: List<SomDetailOrder.GetSomDetail.Bmgm>?,
+        orderId: String,
+        bmgmIconUrl: String,
+        addOnLabel: String,
+        addOnIcon: String
+    ): List<ProductBmgmSectionUiModel> {
+        return bmgms?.map { bmgm ->
+            ProductBmgmSectionUiModel(
+                bmgmId = bmgm.id,
+                bmgmName = bmgm.bmgmTierName,
+                bmgmIconUrl = bmgmIconUrl,
+                totalPrice = bmgm.priceBeforeBenefit,
+                totalPriceText = bmgm.priceBeforeBenefitFormatted,
+                totalPriceReductionInfoText = bmgm.totalPriceNote,
+                bmgmItemList = bmgm.orderDetail.map {
+                    ProductBmgmSectionUiModel.ProductUiModel(
+                        orderId = orderId,
+                        orderDetailId = it.orderDtlId,
+                        productName = it.productName,
+                        price = it.price,
+                        productPriceText = it.priceText,
+                        quantity = it.quantity,
+                        productNote = it.note,
+                        thumbnailUrl = it.thumbnail,
+                        addOnSummaryUiModel = it.addonSummary?.let { addOnSummary ->
+                            com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel(
+                                totalPriceText = addOnSummary.totalPriceStr,
+                                addonsLogoUrl = addOnIcon,
+                                addonsTitle = addOnLabel,
+                                addonItemList = addOnSummary.addons.map { addon ->
+                                    val addOnNote = addon.metadata?.addOnNote
+                                    com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel.AddonItemUiModel(
+                                        priceText = addon.priceStr,
+                                        quantity = addon.quantity,
+                                        addonsId = addon.id,
+                                        addOnsName = addon.name,
+                                        type = addon.type,
+                                        addOnsThumbnailUrl = addon.imageUrl,
+                                        toStr = addOnNote?.to.orEmpty(),
+                                        fromStr = addOnNote?.from.orEmpty(),
+                                        message = addOnNote?.notes.orEmpty(),
+                                        noteCopyable = true
+                                    )
+                                }
+                            )
+                        }
+                    )
+                }
+            )
+        }.orEmpty()
+    }
+
     private fun getProductBundleList(
-        bundleList: List<SomDetailOrder.Data.GetSomDetail.Details.Bundle>?,
+        bundleList: List<SomDetailOrder.GetSomDetail.Details.Bundle>?,
         bundleIcon: String
     ): List<ProductBundleUiModel> {
         return bundleList?.map { bundle ->
@@ -27,7 +83,7 @@ object SomGetOrderDetailResponseMapper {
                 bundlePrice = Utils.parseRupiah(bundle.bundlePrice),
                 bundleSubTotal = Utils.parseRupiah(bundle.bundleSubtotalPrice),
                 orderDetail = bundle.orderDetail.map {
-                    SomDetailOrder.Data.GetSomDetail.Details.Product(
+                    SomDetailOrder.GetSomDetail.Details.Product(
                         id = it.id,
                         orderDetailId = it.orderDetailId,
                         name = it.name,
@@ -42,8 +98,8 @@ object SomGetOrderDetailResponseMapper {
     }
 
     private fun getProductNonBundleList(
-        products: List<SomDetailOrder.Data.GetSomDetail.Details.Product>?,
-        addOnInfo: SomDetailOrder.Data.GetSomDetail.AddOnInfo?,
+        products: List<SomDetailOrder.GetSomDetail.Details.Product>?,
+        addOnInfo: SomDetailOrder.GetSomDetail.AddOnInfo?,
         addOnIcon: String,
         addOnLabel: String
     ): List<BaseProductUiModel> {
@@ -53,16 +109,27 @@ object SomGetOrderDetailResponseMapper {
         }
     }
 
-    private fun MutableList<BaseProductUiModel>.includeProductBundles(
-        bundle: List<SomDetailOrder.Data.GetSomDetail.Details.Bundle>?,
+    private fun MutableList<Visitable<SomDetailAdapterFactoryImpl>>.includeProductBmgms(
+        bmgms: List<SomDetailOrder.GetSomDetail.Bmgm>?,
+        orderId: String,
+        bmgmIcon: String,
+        addonIcon: String,
+        addonLabel: String
+    ) {
+        val bmgmList = getBmgmList(bmgms, orderId, bmgmIcon, addonIcon, addonLabel)
+        (bmgmList as? List<Visitable<SomDetailAdapterFactoryImpl>>)?.let { addAll(it) }
+    }
+
+    private fun MutableList<Visitable<SomDetailAdapterFactoryImpl>>.includeProductBundles(
+        bundle: List<SomDetailOrder.GetSomDetail.Details.Bundle>?,
         bundleIcon: String
     ) {
         addAll(getProductBundleList(bundle, bundleIcon))
     }
 
-    private fun MutableList<BaseProductUiModel>.includeProductNonBundles(
-        nonBundle: List<SomDetailOrder.Data.GetSomDetail.Details.Product>?,
-        addOnInfo: SomDetailOrder.Data.GetSomDetail.AddOnInfo?,
+    private fun MutableList<Visitable<SomDetailAdapterFactoryImpl>>.includeProductNonBundles(
+        nonBundle: List<SomDetailOrder.GetSomDetail.Details.Product>?,
+        addOnInfo: SomDetailOrder.GetSomDetail.AddOnInfo?,
         addOnIcon: String,
         addOnLabel: String
     ) {
@@ -70,7 +137,7 @@ object SomGetOrderDetailResponseMapper {
     }
 
     private fun ArrayList<BaseProductUiModel>.includeProducts(
-        products: List<SomDetailOrder.Data.GetSomDetail.Details.Product>?,
+        products: List<SomDetailOrder.GetSomDetail.Details.Product>?,
         addOnIcon: String,
         addOnLabel: String
     ) {
@@ -97,7 +164,7 @@ object SomGetOrderDetailResponseMapper {
     }
 
     private fun ArrayList<BaseProductUiModel>.includeOrderAddOn(
-        addOnInfo: SomDetailOrder.Data.GetSomDetail.AddOnInfo?
+        addOnInfo: SomDetailOrder.GetSomDetail.AddOnInfo?
     ) {
         addOnInfo?.orderLevelAddOnSummary?.let { addOnSummary ->
             add(
@@ -118,7 +185,7 @@ object SomGetOrderDetailResponseMapper {
         }
     }
 
-    private fun SomDetailOrder.Data.GetSomDetail.mapToHeaderUiModel(): SomDetailHeader {
+    private fun SomDetailOrder.GetSomDetail.mapToHeaderUiModel(): SomDetailHeader {
         return SomDetailHeader(
             statusCode,
             statusText,
@@ -144,18 +211,19 @@ object SomGetOrderDetailResponseMapper {
         )
     }
 
-    private fun SomDetailOrder.Data.GetSomDetail.mapToProductsHeaderUiModel(): SomDetailProducts {
+    private fun SomDetailOrder.GetSomDetail.mapToProductsHeaderUiModel(): SomDetailProducts {
         return SomDetailProducts(flagOrderMeta.isTopAds, flagOrderMeta.isBroadcastChat)
     }
 
-    private fun SomDetailOrder.Data.GetSomDetail.mapToProductsUiModel(): List<BaseProductUiModel> {
-        return mutableListOf<BaseProductUiModel>().apply {
+    private fun SomDetailOrder.GetSomDetail.mapToProductsUiModel(): List<Visitable<SomDetailAdapterFactoryImpl>> {
+        return mutableListOf<Visitable<SomDetailAdapterFactoryImpl>>().apply {
+            includeProductBmgms(details.bmgms, orderId, details.bmgmIcon, details.addOnIcon, details.addOnLabel)
             includeProductBundles(details.bundle, details.bundleIcon)
             includeProductNonBundles(details.nonBundle, addOnInfo, details.addOnIcon, details.addOnLabel)
         }
     }
 
-    private fun SomDetailOrder.Data.GetSomDetail.mapToShipmentUiModel(): SomDetailShipping {
+    private fun SomDetailOrder.GetSomDetail.mapToShipmentUiModel(): SomDetailShipping {
         return SomDetailShipping(
             shippingName = shipment.name + " - " + shipment.productName,
             receiverName = receiver.name,
@@ -186,7 +254,7 @@ object SomGetOrderDetailResponseMapper {
     }
 
     fun mapResponseToHeaderUiModel(
-        response: SomDetailOrder.Data.GetSomDetail?
+        response: SomDetailOrder.GetSomDetail?
     ): SomDetailData? {
         return response?.mapToHeaderUiModel()?.let {
             SomDetailData(it, SomConsts.DETAIL_HEADER_TYPE)
@@ -194,7 +262,7 @@ object SomGetOrderDetailResponseMapper {
     }
 
     fun mapResponseToProductsHeaderUiModel(
-        response: SomDetailOrder.Data.GetSomDetail?
+        response: SomDetailOrder.GetSomDetail?
     ): SomDetailData? {
         return response?.mapToProductsHeaderUiModel()?.let {
             SomDetailData(it, SomConsts.DETAIL_PRODUCTS_TYPE)
@@ -202,13 +270,13 @@ object SomGetOrderDetailResponseMapper {
     }
 
     fun mapResponseToProductsUiModels(
-        response: SomDetailOrder.Data.GetSomDetail?
-    ): List<BaseProductUiModel> {
+        response: SomDetailOrder.GetSomDetail?
+    ): List<Visitable<SomDetailAdapterFactoryImpl>> {
         return response?.mapToProductsUiModel().orEmpty()
     }
 
     fun mapResponseToShipmentUiModel(
-        response: SomDetailOrder.Data.GetSomDetail?
+        response: SomDetailOrder.GetSomDetail?
     ): SomDetailData? {
         return response?.mapToShipmentUiModel()?.let {
             SomDetailData(it, SomConsts.DETAIL_SHIPPING_TYPE)

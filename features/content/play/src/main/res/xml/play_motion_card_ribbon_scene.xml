@@ -28,7 +28,7 @@
     <Transition
         app:constraintSetEnd="@id/end"
         app:constraintSetStart="@+id/start"
-        app:duration="3000"
+        app:duration="2500"
         app:motionInterpolator="easeInOut">
         <KeyFrameSet>
             <KeyAttribute
@@ -39,6 +39,14 @@
                 android:alpha="1.0"
                 app:framePosition="100"
                 app:motionTarget="@+id/play_tv_ribbon" />
+            <KeyAttribute
+                android:alpha="0.0"
+                app:framePosition="0"
+                app:motionTarget="@+id/glare" />
+            <KeyAttribute
+                android:alpha="1.0"
+                app:framePosition="100"
+                app:motionTarget="@+id/glare" />
             <KeyAttribute
                 android:translationX="-50dp"
                 app:framePosition="75"

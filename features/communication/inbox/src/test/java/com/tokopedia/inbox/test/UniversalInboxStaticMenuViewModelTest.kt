@@ -1,7 +1,7 @@
 package com.tokopedia.inbox.test
 
 import com.tokopedia.inbox.base.UniversalInboxViewModelTestFixture
-import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuSectionUiModel
+import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuSeparatorUiModel
 import io.mockk.every
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
@@ -12,7 +12,7 @@ class UniversalInboxStaticMenuViewModelTest : UniversalInboxViewModelTestFixture
     fun `should always give static menu after generate`() {
         runBlocking {
             // Given
-            val dummyStaticMenu = listOf(UniversalInboxMenuSectionUiModel("dummy"))
+            val dummyStaticMenu = listOf(UniversalInboxMenuSeparatorUiModel())
             every {
                 inboxMenuMapper.getStaticMenu(any())
             } returns dummyStaticMenu

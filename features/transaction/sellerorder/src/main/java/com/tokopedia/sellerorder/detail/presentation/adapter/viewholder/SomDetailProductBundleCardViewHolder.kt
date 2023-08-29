@@ -45,7 +45,7 @@ class SomDetailProductBundleCardViewHolder(
         }
     }
 
-    private fun setupProductList(products: List<SomDetailOrder.Data.GetSomDetail.Details.Product>) {
+    private fun setupProductList(products: List<SomDetailOrder.GetSomDetail.Details.Product>) {
         binding?.rvSomProductBundling?.run {
             layoutManager = object : LinearLayoutManager(context) {
                 override fun canScrollVertically(): Boolean = false
@@ -55,12 +55,14 @@ class SomDetailProductBundleCardViewHolder(
             adapter = productAdapter
             if (itemDecorationCount == 0) {
                 val margins = context.resources.getDimension(com.tokopedia.unifycomponents.R.dimen.spacing_lvl4).toInt()
-                addItemDecoration(RecyclerViewItemDivider(
-                    divider = MethodChecker.getDrawable(context, R.drawable.som_detail_product_bundling_product_divider),
-                    topMargin = margins,
-                    bottomMargin = margins,
-                    applyMarginAfterLastItem = true
-                ))
+                addItemDecoration(
+                    RecyclerViewItemDivider(
+                        divider = MethodChecker.getDrawable(context, R.drawable.som_detail_product_bundling_product_divider),
+                        topMargin = margins,
+                        bottomMargin = margins,
+                        applyMarginAfterLastItem = true
+                    )
+                )
             }
 
             productAdapter.products = products

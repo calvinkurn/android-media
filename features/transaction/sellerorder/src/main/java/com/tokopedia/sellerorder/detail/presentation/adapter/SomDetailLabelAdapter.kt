@@ -11,7 +11,7 @@ import com.tokopedia.sellerorder.databinding.ItemLabelBinding
 import com.tokopedia.sellerorder.detail.data.model.SomDetailOrder
 import com.tokopedia.utils.view.binding.viewBinding
 
-class SomDetailLabelAdapter(private var labels: List<SomDetailOrder.Data.GetSomDetail.LabelInfo>) :
+class SomDetailLabelAdapter(private var labels: List<SomDetailOrder.GetSomDetail.LabelInfo>) :
     RecyclerView.Adapter<SomDetailLabelAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_label, parent, false)
@@ -24,7 +24,7 @@ class SomDetailLabelAdapter(private var labels: List<SomDetailOrder.Data.GetSomD
         holder.bind(labels.getOrNull(position))
     }
 
-    fun setLabels(labels: List<SomDetailOrder.Data.GetSomDetail.LabelInfo>) {
+    fun setLabels(labels: List<SomDetailOrder.GetSomDetail.LabelInfo>) {
         this.labels = labels
         notifyDataSetChanged()
     }
@@ -33,13 +33,15 @@ class SomDetailLabelAdapter(private var labels: List<SomDetailOrder.Data.GetSomD
 
         private val binding by viewBinding<ItemLabelBinding>()
 
-        fun bind(label: SomDetailOrder.Data.GetSomDetail.LabelInfo?) {
+        fun bind(label: SomDetailOrder.GetSomDetail.LabelInfo?) {
             binding?.root?.run {
                 if (label != null) {
                     setLabel(label.flagName)
                     setLabelType(label.flagBg)
                     show()
-                } else gone()
+                } else {
+                    gone()
+                }
             }
         }
     }
