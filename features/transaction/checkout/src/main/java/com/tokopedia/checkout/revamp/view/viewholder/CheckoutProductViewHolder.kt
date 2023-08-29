@@ -319,7 +319,7 @@ class CheckoutProductViewHolder(
                     val addOnView =
                         ItemAddOnProductBinding.inflate(layoutInflater, productBinding.llAddonProductItems, false)
                     addOnView.apply {
-//                        icProductAddon.setImageUrl(addon)
+                        icCheckoutAddOnsItem.setImageUrl(addon.iconUrl)
                         tvCheckoutAddOnsItemName.text = SpannableString(addon.name).apply {
                             setSpan(UnderlineSpan(), 0, addon.name.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
                         }
@@ -399,6 +399,7 @@ class CheckoutProductViewHolder(
                     val addOnView =
                         ItemAddOnProductBinding.inflate(layoutInflater, bundleBinding.llAddonProductItemsBundle, false)
                     addOnView.apply {
+                        icCheckoutAddOnsItem.setImageUrl(addon.iconUrl)
                         tvCheckoutAddOnsItemName.text = addon.name
                         tvCheckoutAddOnsItemPrice.text = " (${CurrencyFormatUtil
                             .convertPriceValueToIdrFormat(addon.price, false)
