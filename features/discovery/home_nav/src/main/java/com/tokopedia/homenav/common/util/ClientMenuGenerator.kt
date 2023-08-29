@@ -41,7 +41,12 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
         const val IDENTIFIER_TITLE_ACTIVITY_REVAMP = 107
     }
 
-    fun getMenu(menuId: Int, notifCount: String = "", sectionId: Int = 0): HomeNavMenuDataModel {
+    fun getMenu(
+        menuId: Int,
+        notifCount: String = "",
+        sectionId: Int = 0,
+        showCta: Boolean = false,
+    ): HomeNavMenuDataModel {
         when (menuId) {
             ID_WISHLIST_MENU -> return getWishlistUserMenu(notifCount, sectionId)
             ID_FAVORITE_SHOP -> return getFavoriteShopMenu(notifCount, sectionId)
@@ -51,7 +56,7 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
             ID_QR_CODE -> return getQRCodeMenu(notifCount, sectionId)
             ID_ALL_TRANSACTION -> return getAllTransactionMenu(notifCount, sectionId)
             ID_TICKET -> return getTicketMenu(notifCount, sectionId)
-            ID_REVIEW -> return getReviewMenu(notifCount, sectionId)
+            ID_REVIEW -> return getReviewMenu(notifCount, sectionId, showCta)
             ID_HOME -> return getHomeMenu(notifCount, sectionId)
         }
         return HomeNavMenuDataModel()
@@ -186,14 +191,15 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
         )
     }
 
-    private fun getReviewMenu(notifCount: String, sectionId: Int): HomeNavMenuDataModel {
+    private fun getReviewMenu(notifCount: String, sectionId: Int, showCta: Boolean): HomeNavMenuDataModel {
         return HomeNavMenuDataModel(
             id = ID_REVIEW,
             srcIconId = IconUnify.STAR,
             itemTitle = context.getString(R.string.menu_transaction_menu_review),
             applink = getReputationApplink().needLoginValidation(),
             notifCount = notifCount,
-            sectionId = sectionId
+            sectionId = sectionId,
+            showCta = showCta
         )
     }
 

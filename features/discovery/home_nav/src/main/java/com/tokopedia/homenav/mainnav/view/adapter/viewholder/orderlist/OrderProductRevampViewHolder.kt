@@ -26,20 +26,8 @@ class OrderProductRevampViewHolder(itemView: View, val mainNavListener: MainNavL
         bind(element)
     }
 
-    private fun setLayoutFullWidth(element: OrderProductRevampModel) {
-        val layoutParams = binding?.orderProductCard?.layoutParams
-        if (element.navProductModel.fullWidth) {
-            layoutParams?.width = ViewGroup.LayoutParams.MATCH_PARENT
-        } else {
-            layoutParams?.width =
-                itemView.resources.getDimension(com.tokopedia.homenav.R.dimen.nav_card_me_page_size).toInt()
-        }
-        binding?.orderProductCard?.layoutParams = layoutParams
-    }
-
     override fun bind(productRevampModel: OrderProductRevampModel) {
         val context = itemView.context
-        setLayoutFullWidth(productRevampModel)
         itemView.addOnImpressionListener(productRevampModel)  {
             mainNavListener.onOrderCardImpressed(
                 productRevampModel.navProductModel.statusText,
@@ -69,7 +57,9 @@ class OrderProductRevampViewHolder(itemView: View, val mainNavListener: MainNavL
         binding?.orderProductStatus?.text = productRevampModel.navProductModel.statusText
         var productStatusColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_YN500)
         if (productRevampModel.navProductModel.statusTextColor.isNotEmpty()) {
-            productStatusColor = Color.parseColor(productRevampModel.navProductModel.statusTextColor)
+            try {
+                productStatusColor = Color.parseColor(productRevampModel.navProductModel.statusTextColor)
+            } catch (_: Exception) { }
         }
         binding?.orderProductStatus?.setTextColor(productStatusColor)
 

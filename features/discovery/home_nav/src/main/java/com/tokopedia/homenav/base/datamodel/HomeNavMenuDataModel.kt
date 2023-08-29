@@ -13,7 +13,8 @@ data class HomeNavMenuDataModel(
         val itemTitle: String = "",
         val applink: String = "",
         var notifCount: String = "",
-        val submenus: List<HomeNavMenuDataModel> = listOf()
+        val submenus: List<HomeNavMenuDataModel> = listOf(),
+        val showCta: Boolean = false,
 ): HomeNavVisitable, ImpressHolder() {
     override fun id(): Any = id
 

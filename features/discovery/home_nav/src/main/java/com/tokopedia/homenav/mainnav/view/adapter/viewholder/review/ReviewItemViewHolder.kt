@@ -2,7 +2,6 @@ package com.tokopedia.homenav.mainnav.view.adapter.viewholder.review
 
 import android.net.Uri
 import android.view.View
-import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.UriUtil
@@ -35,17 +34,6 @@ class ReviewItemViewHolder(itemView: View, val mainNavListener: MainNavListener)
         private const val RATE_STARS_3 = "3"
         private const val RATE_STARS_4 = "4"
         private const val RATE_STARS_5 = "5"
-    }
-
-    private fun setLayoutFullWidth(element: ReviewModel) {
-        val layoutParams = binding?.orderReviewCard?.layoutParams
-        if (element.navReviewModel.fullWidth) {
-            layoutParams?.width = ViewGroup.LayoutParams.MATCH_PARENT
-        } else {
-            layoutParams?.width =
-                itemView.resources.getDimension(com.tokopedia.homenav.R.dimen.nav_card_me_page_size).toInt()
-        }
-        binding?.orderReviewCard?.layoutParams = layoutParams
     }
 
     override fun bind(element: ReviewModel, payloads: MutableList<Any>) {
@@ -81,7 +69,6 @@ class ReviewItemViewHolder(itemView: View, val mainNavListener: MainNavListener)
     }
 
     override fun bind(element: ReviewModel) {
-        setLayoutFullWidth(element)
         binding?.orderReviewProductName?.text = element.navReviewModel.productName
 
         if (element.navReviewModel.imageUrl.isNotEmpty()) {
