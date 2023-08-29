@@ -123,6 +123,7 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
                 fragment.viewLifecycleOwner
             ) {
                 tabsHolder.tabLayout.removeAllTabs()
+                tabsHolder.customTabMode = TabLayout.MODE_FIXED
                 tabsHolder.getUnifyTabLayout()
                     .setSelectedTabIndicator(tabsHolder.getUnifyTabLayout().tabSelectedIndicator)
                 var selectedPosition = 0
@@ -141,7 +142,7 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
                             ViewCompat.setPaddingRelative(tab.view, TAB_START_PADDING, 0, 0, 0)
                             tab.customView = CustomViewCreator.getCustomViewObject(
                                 itemView.context,
-                                ComponentsList.TabsItem,
+                                ComponentsList.TabsIconItem,
                                 tabItem,
                                 fragment
                             )
@@ -268,15 +269,33 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
                 trackTabsGTMStatus(tab)
             }
             if (tab.customView != null && tab.customView is CustomViewCreator) {
-                ((tab.customView as CustomViewCreator).viewModel as TabsItemViewModel).setSelectionTabItem(true)
+                setSelectedTabItem(tabsViewModel, tab, true)
+//                if(tabsViewModel.components.name == ComponentsList.TabsItem.name){
+//                    ((tab.customView as CustomViewCreator).viewModel as TabsItemViewModel).setSelectionTabItem(true)
+//                }else if(tabsViewModel.components.name == ComponentsList.TabsIconItem.name){
+//                    ((tab.customView as CustomViewCreator).viewModel as TabsItemIconViewModel).setSelectionTabItem(true)
+//                }
+
             }
         }
     }
 
     override fun onTabUnselected(tab: TabLayout.Tab) {
-        tabsViewModel?.setSelectedState(tab.position, false)
-        if (tab.customView == null || !(tab.customView is CustomViewCreator)) return
-        ((tab.customView as CustomViewCreator).viewModel as TabsItemViewModel).setSelectionTabItem(false)
+        tabsViewModel?.let { tabsViewModel ->
+            tabsViewModel.setSelectedState(tab.position, false)
+            if (tab.customView == null || !(tab.customView is CustomViewCreator)) return
+            setSelectedTabItem(tabsViewModel, tab, false)
+//        ((tab.customView as CustomViewCreator).viewModel as TabsItemIconViewModel).setSelectionTabItem(false)
+        }
+
+    }
+
+    private fun setSelectedTabItem(tabsViewModel: TabsViewModel, tab: TabLayout.Tab, isCurrentTabSelected: Boolean) {
+        if(tabsViewModel.components.name == ComponentsList.Tabs.componentName){
+            ((tab.customView as CustomViewCreator).viewModel as TabsItemViewModel).setSelectionTabItem(isCurrentTabSelected)
+        }else if(tabsViewModel.components.name == ComponentsList.TabsIcon.componentName){
+            ((tab.customView as CustomViewCreator).viewModel as TabsItemIconViewModel).setSelectionTabItem(isCurrentTabSelected)
+        }
     }
 
     override fun onTabReselected(tab: TabLayout.Tab) {

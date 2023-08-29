@@ -9,6 +9,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.discovery2.Constant.TAB_BACKGROUND
 import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
@@ -18,39 +20,51 @@ import com.tokopedia.unifyprinciples.R as RUnify
 
 class TabsItemIconViewHolder(itemView: View, fragment: Fragment) :
     AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
-    private val tabImageView: ImageView = itemView.findViewById(R.id.tab_image)
-    private val selectedView: View = itemView.findViewById(R.id.selected_view)
+    private val tabIconImageView: ImageView = itemView.findViewById(R.id.tab_icon_image)
     private val tabTextView: TextView = itemView.findViewById(R.id.tab_text)
-    private var tabsItemViewModel: TabsItemViewModel? = null
+    private var tabsItemIconViewModel: TabsItemIconViewModel? = null
     private var positionForParentAdapter: Int = -1
+    private var itemData : DataItem? =  null
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
-        tabsItemViewModel = discoveryBaseViewModel as TabsItemViewModel
+        tabsItemIconViewModel = discoveryBaseViewModel as TabsItemIconViewModel
     }
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         lifecycleOwner?.let {
-            tabsItemViewModel?.getComponentLiveData()?.observe(
+            tabsItemIconViewModel?.getComponentLiveData()?.observe(
                 lifecycleOwner
             ) { componentsItem ->
-                val itemData = componentsItem.data?.get(0)
+                itemData = componentsItem.data?.firstOrNull()
                 positionForParentAdapter = itemData?.positionForParentItem ?: -1
                 itemData?.let { item ->
-                    tabImageView.loadImage(
-                        item.backgroundImage.takeIf { !it.isNullOrEmpty() }
-                            ?: TAB_BACKGROUND
-                    )
+                    if(item.isSelected){
+                        tabIconImageView.loadImage(
+                            item.iconImageUrl
+                        )
+                    }else{
+                        tabIconImageView.loadImage(
+                            item.inactiveIconImageUrl
+                        )
+                    }
                     item.name?.let { name ->
                         setTabText(name)
                     }
                     setFontColor(item.fontColor)
-                    showSelectedView(item.isSelected)
                 }
             }
-            tabsItemViewModel?.getSelectionChangeLiveData()?.observe(
+            tabsItemIconViewModel?.getSelectionChangeLiveData()?.observe(
                 lifecycleOwner
             ) {
-                showSelectedView(it)
+                if(it){
+                    tabIconImageView.loadImage(
+                        itemData?.iconImageUrl
+                    )
+                }else{
+                    tabIconImageView.loadImage(
+                        itemData?.inactiveIconImageUrl
+                    )
+                }
             }
         }
     }
@@ -58,7 +72,7 @@ class TabsItemIconViewHolder(itemView: View, fragment: Fragment) :
     override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
         super.removeObservers(lifecycleOwner)
         lifecycleOwner?.let {
-            tabsItemViewModel?.getComponentLiveData()?.removeObservers(lifecycleOwner)
+            tabsItemIconViewModel?.getComponentLiveData()?.removeObservers(lifecycleOwner)
         }
     }
 
@@ -75,26 +89,11 @@ class TabsItemIconViewHolder(itemView: View, fragment: Fragment) :
                         RUnify.color.Unify_G500
                     )
                 )
-                selectedView.setBackgroundColor(
-                    ContextCompat.getColor(
-                        itemView.context,
-                        RUnify.color.Unify_G500
-                    )
-                )
             } else {
                 tabTextView.setTextColor(Color.parseColor(fontColor))
-                selectedView.setBackgroundColor(Color.parseColor(fontColor))
             }
         } catch (e: Exception) {
             e.printStackTrace()
-        }
-    }
-
-    private fun showSelectedView(isSelected: Boolean) {
-        if (isSelected) {
-            selectedView.show()
-        } else {
-            selectedView.hide()
         }
     }
 }

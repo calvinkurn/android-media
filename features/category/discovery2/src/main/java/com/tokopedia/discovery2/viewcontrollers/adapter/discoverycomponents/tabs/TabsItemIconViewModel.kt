@@ -11,8 +11,6 @@ class TabsItemIconViewModel(
     var components: ComponentsItem,
     val position: Int
 ) : DiscoveryBaseViewModel() {
-
-
     private val componentData: MutableLiveData<ComponentsItem> = MutableLiveData()
     private val onSelectedChangeLiveData: MutableLiveData<Boolean> = MutableLiveData()
 
@@ -35,5 +33,4 @@ class TabsItemIconViewModel(
         super.onAttachToViewHolder()
         componentData.value = components
     }
-
 }
