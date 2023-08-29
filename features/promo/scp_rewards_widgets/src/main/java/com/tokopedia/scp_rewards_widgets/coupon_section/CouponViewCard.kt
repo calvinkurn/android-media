@@ -16,6 +16,7 @@ import com.tokopedia.scp_rewards_common.grayScaleFilter
 import com.tokopedia.scp_rewards_common.parseColorOrFallback
 import com.tokopedia.scp_rewards_widgets.databinding.ItemCouponLayoutBinding
 import com.tokopedia.scp_rewards_widgets.model.MedalBenefitModel
+import com.tokopedia.unifyprinciples.R as unifyPrinciplesR
 
 @SuppressLint("RestrictedApi")
 class CouponViewCard @JvmOverloads constructor(
@@ -52,7 +53,7 @@ class CouponViewCard @JvmOverloads constructor(
 
         val innerShapeDrawable = MaterialShapeDrawable(shapeAppearanceModel)
             .apply {
-                setTint(ContextCompat.getColor(context, com.tokopedia.scp_rewards_widgets.R.color.Unify_NN0))
+                setTint(ContextCompat.getColor(context, unifyPrinciplesR.color.Unify_NN0))
             }
 
         background = shapeDrawable
