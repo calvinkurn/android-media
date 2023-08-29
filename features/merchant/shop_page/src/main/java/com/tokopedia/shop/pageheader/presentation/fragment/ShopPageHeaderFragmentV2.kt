@@ -1361,7 +1361,7 @@ class ShopPageHeaderFragmentV2 :
         return cartLocalCacheHandler?.getInt(TOTAL_CART_CACHE_KEY, 0).orZero()
     }
 
-    override fun getColorSchema(): ShopPageColorSchema? {
+    override fun getBodyColorSchema(): ShopPageColorSchema? {
         return getShopBodyConfig()?.colorSchema
     }
 
@@ -1369,8 +1369,12 @@ class ShopPageHeaderFragmentV2 :
         return shopPageHeaderP1Data?.shopHeaderLayoutData?.isOverrideTheme.orFalse()
     }
 
-    override fun getPatternColorType(): String {
+    override fun getBodyPatternColorType(): String {
         return getShopBodyConfig()?.patternColorType.orEmpty()
+    }
+
+    override fun getBodyBackgroundHexColor(): String {
+        return getShopNavBarConfig()?.listBackgroundColor?.firstOrNull().orEmpty()
     }
 
     private fun redirectToSearchAutoCompletePage() {
