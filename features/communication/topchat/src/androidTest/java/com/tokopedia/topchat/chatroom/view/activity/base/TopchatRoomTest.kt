@@ -13,6 +13,7 @@ import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.idling.CountingIdlingResource
+import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
@@ -784,6 +785,11 @@ abstract class TopchatRoomTest {
         intending(anyIntent()).respondWith(
             Instrumentation.ActivityResult(Activity.RESULT_OK, null)
         )
+    }
+
+    protected fun stubIntents() {
+        Intents.intending(IntentMatchers.anyIntent())
+            .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
     }
 }
 

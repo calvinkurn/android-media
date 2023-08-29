@@ -4,6 +4,7 @@ import com.tokopedia.topchat.chatroom.view.activity.robot.composearea.ComposeAre
 import com.tokopedia.topchat.chatroom.view.activity.robot.copytoclipboard.CopyToClipboardRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.msgbubble.MsgBubbleRobot
+import com.tokopedia.topchat.chatroom.view.activity.robot.product.BannedProductRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductPreviewRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.replybubble.ReplyBubbleRobot
 
@@ -13,3 +14,4 @@ fun replyBubbleRobot(func: ReplyBubbleRobot.() -> Unit) = ReplyBubbleRobot.apply
 fun copyToClipboardRobot(func: CopyToClipboardRobot.() -> Unit) = CopyToClipboardRobot.apply(func)
 fun productPreviewRobot(func: ProductPreviewRobot.() -> Unit) = ProductPreviewRobot.apply(func)
 fun msgBubbleRobot(func: MsgBubbleRobot.() -> Unit) = MsgBubbleRobot.apply(func)
+fun bannedProductRobot(func: BannedProductRobot.() -> Unit) = BannedProductRobot.apply(func)
