@@ -6,7 +6,7 @@
     android:layout_height="wrap_content">
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_checkout_bundle"
+        android:id="@+id/tv_product_identifier_bundle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -26,8 +26,8 @@
         android:layout_marginStart="4dp"
         android:text="•"
         android:textColor="@color/Unify_NN300"
-        app:layout_constraintStart_toEndOf="@id/tv_checkout_bundle"
-        app:layout_constraintTop_toTopOf="@id/tv_checkout_bundle"
+        app:layout_constraintStart_toEndOf="@id/tv_product_identifier_bundle"
+        app:layout_constraintTop_toTopOf="@id/tv_product_identifier_bundle"
         app:typographyType="display_3"
         app:typographyWeight="bold"
         tools:visibility="gone" />
@@ -43,7 +43,7 @@
         android:textColor="@color/Unify_NN950"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/tv_checkout_bundle_separator"
-        app:layout_constraintTop_toTopOf="@id/tv_checkout_bundle"
+        app:layout_constraintTop_toTopOf="@id/tv_product_identifier_bundle"
         app:typographyType="display_3"
         app:typographyWeight="reguler"
         tools:text="Paket Murah Banget"
@@ -59,7 +59,7 @@
         android:textColor="@color/Unify_NN950"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_checkout_bundle"
+        app:layout_constraintTop_toBottomOf="@id/tv_product_identifier_bundle"
         app:typographyType="display_3"
         app:typographyWeight="bold"
         tools:text="1 x Rp8.709.000"
@@ -80,7 +80,7 @@
         tools:visibility="visible" />
 
     <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/iv_product_bundle_image"
+        android:id="@+id/iv_product_image_bundle"
         android:layout_width="56dp"
         android:layout_height="56dp"
         android:layout_marginStart="8dp"
@@ -91,7 +91,7 @@
         tools:src="@color/Unify_G400" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_product_bundle_name"
+        android:id="@+id/tv_product_name_bundle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
@@ -100,77 +100,84 @@
         android:maxLines="2"
         android:textColor="@color/Unify_NN600"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/iv_product_bundle_image"
-        app:layout_constraintTop_toTopOf="@id/iv_product_bundle_image"
+        app:layout_constraintStart_toEndOf="@+id/iv_product_image_bundle"
+        app:layout_constraintTop_toTopOf="@id/iv_product_image_bundle"
         app:typographyType="display_3"
         app:typographyWeight="reguler"
         tools:text="Kaos Adidas Camo Tongue Tee White  gsf fsu gfsah hjsfj gsfugshj sjbfj hsjfh hsfjh vhsfh bjsf bjsfbjRed, XSbjsf bjsfbjRed, XS" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/text_variant_bundle"
+        android:id="@+id/tv_product_variant_bundle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:textColor="@color/Unify_NN600"
-        app:layout_constraintEnd_toEndOf="@+id/tv_product_bundle_name"
-        app:layout_constraintStart_toStartOf="@+id/tv_product_bundle_name"
-        app:layout_constraintTop_toBottomOf="@+id/tv_product_bundle_name"
+        app:layout_constraintEnd_toEndOf="@+id/tv_product_name_bundle"
+        app:layout_constraintStart_toStartOf="@+id/tv_product_name_bundle"
+        app:layout_constraintTop_toBottomOf="@+id/tv_product_name_bundle"
         app:typographyType="display_3"
         app:typographyWeight="reguler"
         tools:text="Biru, XXL" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_product_bundle_note"
+        android:id="@+id/tv_product_notes_bundle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:textColor="@color/Unify_NN950"
-        app:layout_constraintEnd_toEndOf="@id/text_variant_bundle"
-        app:layout_constraintStart_toStartOf="@+id/tv_product_bundle_name"
-        app:layout_constraintTop_toBottomOf="@id/text_variant_bundle"
+        app:layout_constraintEnd_toEndOf="@id/tv_product_variant_bundle"
+        app:layout_constraintStart_toStartOf="@+id/tv_product_name_bundle"
+        app:layout_constraintTop_toBottomOf="@id/tv_product_variant_bundle"
         app:typographyType="paragraph_3"
         app:typographyWeight="reguler"
         tools:text="Saya pesan warna merah yah min.. jangan sampai salah kirim barangnya gan! afadf asfsaf safas safasfsaf asfasf safasf"
         tools:visibility="visible" />
 
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier_checkout_product_bundle_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="iv_product_image_bundle,tv_product_name_bundle,tv_product_variant_bundle,tv_product_notes_bundle" />
+
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_checkout_bundle_addons"
+        android:id="@+id/tv_product_add_ons_section_title_bundle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
-        android:text="Tambahan"
+        tools:text="Tambahan"
         android:textColor="@color/Unify_NN950"
         app:layout_constraintStart_toEndOf="@id/v_bundling_product_separator"
-        app:layout_constraintTop_toBottomOf="@id/tv_product_bundle_note"
+        app:layout_constraintTop_toBottomOf="@id/barrier_checkout_product_bundle_info"
         app:typographyType="display_3"
         app:typographyWeight="reguler" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_checkout_bundle_addons_see_all"
+        android:id="@+id/tv_product_add_ons_see_all_bundle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="16dp"
-        android:text="Lihat Semua"
+        tools:text="Lihat Semua"
         android:textColor="@color/Unify_GN500"
         app:layout_constrainedWidth="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1"
-        app:layout_constraintStart_toEndOf="@id/tv_checkout_bundle_addons"
-        app:layout_constraintTop_toTopOf="@id/tv_checkout_bundle_addons"
+        app:layout_constraintStart_toEndOf="@id/tv_product_add_ons_section_title_bundle"
+        app:layout_constraintTop_toTopOf="@id/tv_product_add_ons_section_title_bundle"
         app:typographyType="display_3"
         app:typographyWeight="bold" />
 
     <LinearLayout
-        android:id="@+id/ll_addon_product_bundle_items"
+        android:id="@+id/ll_addon_product_items_bundle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="8dp"
         android:layout_marginEnd="16dp"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_checkout_bundle_addons" />
+        app:layout_constraintStart_toEndOf="@id/v_bundling_product_separator"
+        app:layout_constraintTop_toBottomOf="@id/tv_product_add_ons_section_title_bundle" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

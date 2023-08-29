@@ -266,6 +266,59 @@ class CheckoutViewModelAddOnsTest : BaseCheckoutViewModelTest() {
     }
 
     @Test
+    fun set_addon_unchecked() {
+        // given
+        coEvery {
+            saveAddOnProductUseCase.executeOnBackground()
+        } returns SaveAddOnStateResponse()
+
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(
+                recipientAddressModel = RecipientAddressModel().apply {
+                    id = "1"
+                    destinationDistrictId = "1"
+                    addressName = "jakarta"
+                    postalCode = "123"
+                    latitude = "123"
+                    longitude = "321"
+                }
+            ),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel(
+                "123",
+                addOnProduct = AddOnProductDataModel(
+                    listAddOnProductData = arrayListOf(
+                        AddOnProductDataItemModel(uniqueId = "a1", status = 0),
+                        AddOnProductDataItemModel(uniqueId = "a2", status = 1)
+                    )
+                )
+            ),
+            CheckoutOrderModel("123"),
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+
+        // when
+        viewModel.setAddon(false, AddOnProductDataItemModel(uniqueId = "a2"), 4)
+
+        // then
+        assertEquals(
+            AddOnProductDataModel(
+                listAddOnProductData = arrayListOf(
+                    AddOnProductDataItemModel(uniqueId = "a1", status = 0),
+                    AddOnProductDataItemModel(uniqueId = "a2", status = 2)
+                )
+            ),
+            (viewModel.listData.value[4] as CheckoutProductModel).addOnProduct
+        )
+    }
+
+    @Test
     fun set_addon_result() {
         // given
         coEvery {

@@ -74,11 +74,11 @@ class CheckoutUpsellViewHolder(
             checkoutUpsellBackgroundImage.visible()
             checkoutUpsellLogoContainer.radius = CARD_VIEW_MAX_RADIUS.toPx().toFloat()
             checkoutUpsellLogo.setImageUrl(data.image)
-            checkoutUpsellTitle.text =
+            tvCheckoutUpsellTitle.text =
                 HtmlLinkHelper(itemView.context, data.description).spannedString
             if (data.isSelected) {
                 checkoutUpsellBackgroundImage.loadImage(R.drawable.checkout_module_upsell_new_short_background)
-                checkoutUpsellDescription.gone()
+                tvCheckoutUpsellDescription.gone()
                 checkoutUpsellIcon.loadImage(R.drawable.checkout_module_upsell_opt_out)
                 checkoutUpsellCardOverlay.setOnClickListener {
                     actionListener.onClickCancelNewUpsellCard(data)
@@ -86,13 +86,13 @@ class CheckoutUpsellViewHolder(
                 checkoutUpsellContentGroup.visible()
             } else {
                 checkoutUpsellBackgroundImage.loadImage(R.drawable.checkout_module_upsell_new_background)
-                checkoutUpsellDescription.text =
+                tvCheckoutUpsellDescription.text =
                     itemView.context.getString(
                         R.string.checkout_label_upsell_description,
                         data.priceWording,
                         data.duration
                     )
-                checkoutUpsellDescription.visible()
+                tvCheckoutUpsellDescription.visible()
                 checkoutUpsellIcon.loadImage(
                     getIconUnifyDrawable(
                         itemView.context,

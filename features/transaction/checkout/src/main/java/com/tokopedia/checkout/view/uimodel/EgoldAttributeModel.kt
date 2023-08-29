@@ -19,5 +19,6 @@ data class EgoldAttributeModel(
     var isEnabled: Boolean = true,
     var hyperlinkText: String? = null,
     var hyperlinkUrl: String? = null,
-    var isShowHyperlink: Boolean = false
+    var isShowHyperlink: Boolean = false,
+    var iconUrl: String = ""
 ) : Parcelable

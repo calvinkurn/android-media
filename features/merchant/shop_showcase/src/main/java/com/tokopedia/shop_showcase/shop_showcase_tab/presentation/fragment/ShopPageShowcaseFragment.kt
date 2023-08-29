@@ -150,11 +150,6 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(),
         loadShowcaseInitialData()
     }
 
-    override fun onPause() {
-        super.onPause()
-        shopShowcaseTabTracking.sendAllTrackingQueue()
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             SHOWCASE_REQUEST_CODE -> {

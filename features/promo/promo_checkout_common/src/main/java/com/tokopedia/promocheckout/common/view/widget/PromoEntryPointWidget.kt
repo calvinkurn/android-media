@@ -197,6 +197,7 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         loadingView?.visibility = View.VISIBLE
         switcherView?.visibility = View.GONE
         errorView?.visibility = View.GONE
+        activeViewWording?.stopFlipping()
     }
 
     fun showError(onReloadClickListener: () -> Unit) {
@@ -206,6 +207,7 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         errorView?.setOnClickListener {
             onReloadClickListener.invoke()
         }
+        activeViewWording?.stopFlipping()
     }
 
     /**
@@ -226,6 +228,7 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         inActiveView?.setOnClickListener {
             onClickListener.invoke()
         }
+        activeViewWording?.stopFlipping()
     }
 
     /**
@@ -261,6 +264,7 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         inActiveView?.setOnClickListener {
             onClickListener.invoke()
         }
+        activeViewWording?.stopFlipping()
     }
 
     /**
@@ -310,6 +314,7 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         activeView?.setOnClickListener {
             onClickListener.invoke()
         }
+        activeViewWording?.stopFlipping()
     }
 
     /**
@@ -396,7 +401,7 @@ class PromoEntryPointWidget @JvmOverloads constructor(
                     val summaryView = LayoutInflater.from(this.context)
                         .inflate(R.layout.layout_promo_checkout_summary_grouping, this, false)
                     summaryView.findViewById<Typography>(R.id.tv_promo_checkout_summary_button).visibility = View.GONE
-                        summaryView.findViewById<IconUnify>(R.id.ic_promo_checkout_summary_button).visibility = View.GONE
+                    summaryView.findViewById<IconUnify>(R.id.ic_promo_checkout_summary_button).visibility = View.GONE
                     val groupContainer =
                         summaryView.findViewById<View>(R.id.group_promo_checkout_summary)
                     val groupLayout =
@@ -461,6 +466,7 @@ class PromoEntryPointWidget @JvmOverloads constructor(
                 /* no-op */
             }
         }
+        activeViewWording?.stopFlipping()
     }
 
     // cart makin hemat pakai promo
@@ -494,6 +500,7 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         activeView?.setOnClickListener {
             onClickListener.invoke()
         }
+        activeViewWording?.stopFlipping()
     }
 
     private fun setFlippingDuration(durationInMs: Long) {
@@ -527,6 +534,7 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         activeViewTitleWording?.visibility = View.GONE
         activeViewDescWording?.visibility = View.GONE
         switcherView?.reset()
+        activeViewWording?.stopFlipping()
         activeViewLeftImage?.setImageUrl(leftImageUrl)
         activeViewWording?.setCurrentText(HtmlLinkHelper(context, wordings.first()).spannedString)
         setFlippingDuration(flippingDurationInMs)
@@ -607,6 +615,7 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         activeView?.setOnClickListener {
             onClickListener.invoke()
         }
+        activeViewWording?.stopFlipping()
     }
 
     companion object {
