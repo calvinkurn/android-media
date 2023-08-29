@@ -5,6 +5,7 @@ import com.tokopedia.editor.data.repository.NavigationToolRepository
 import com.tokopedia.editor.ui.main.uimodel.MainEditorEffect
 import com.tokopedia.editor.ui.main.uimodel.MainEditorEvent
 import com.tokopedia.editor.ui.model.InputTextModel
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.picker.common.UniversalEditorParam
 import com.tokopedia.picker.common.types.ToolType
 import io.mockk.Runs
@@ -14,6 +15,7 @@ import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
+import org.junit.After
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -39,15 +41,11 @@ class MainEditorViewModelTest {
         // Given
         val param = UniversalEditorParam()
 
-        every { paramFetcher.set(any()) } just Runs
-        every { navigationToolRepository.tools() } returns listOf(
-            NavigationTool(ToolType.TEXT, ToolType.TEXT.toString(), 0),
-            NavigationTool(ToolType.PLACEMENT, ToolType.PLACEMENT.toString(), 0),
-            NavigationTool(ToolType.AUDIO_MUTE, ToolType.AUDIO_MUTE.toString(), 0),
-        )
+        mockParamFetcher()
+        mockNavigationTool()
 
         // When
-        viewModel.onEvent(MainEditorEvent.SetupView(param))
+        sendEvent(MainEditorEvent.SetupView(param))
 
         // Then
         assertTrue(viewModel.mainEditorState.value.param == param)
@@ -57,30 +55,32 @@ class MainEditorViewModelTest {
     @Test
     fun `it should be able to add a new text`() = runTest {
         // Given
-        val model = InputTextModel()
+        val model = InputTextModel(text = "add a new text")
 
-        // When
-        viewModel.onEvent(MainEditorEvent.ClickInputTextTool(model))
-
-        // Then
+        // Verify
+        sendEvent(MainEditorEvent.AddInputTextPage)
         assertTrue(viewModel.uiEffect.first() is MainEditorEffect.OpenInputText)
-        assertTrue(viewModel.inputTextState.value.isEdited.not())
+
+        // Verify
+        sendEvent(MainEditorEvent.InputTextResult(model))
+        assertTrue(viewModel.inputTextState.value.model?.text == model.text)
     }
 
     @Test
     fun `it should be able to modify the text`() = runTest {
         // Given
-        val model = InputTextModel(
-            text = "new text"
-        )
+        val typographyId = 123
+        val model = InputTextModel()
 
-        // When
-        viewModel.onEvent(MainEditorEvent.ClickInputTextTool(model, true))
-
-        // Then
+        // Verify
+        sendEvent(MainEditorEvent.EditInputTextPage(typographyId, model))
+        assertTrue(viewModel.inputTextState.value.typographyId.isMoreThanZero())
         assertTrue(viewModel.uiEffect.first() is MainEditorEffect.OpenInputText)
-        assertTrue(viewModel.inputTextState.value.previousString.isNotEmpty())
-        assertTrue(viewModel.inputTextState.value.isEdited)
+
+        // Verify
+        val newModel = InputTextModel(text = "a new text")
+        sendEvent(MainEditorEvent.InputTextResult(newModel))
+        assertTrue(viewModel.inputTextState.value.model?.text == newModel.text)
     }
 
     @Test
@@ -89,7 +89,7 @@ class MainEditorViewModelTest {
         val model = InputTextModel()
 
         // When
-        viewModel.onEvent(MainEditorEvent.InputTextResult(model))
+        sendEvent(MainEditorEvent.InputTextResult(model))
 
         // Then
         assertTrue(viewModel.inputTextState.value.model != null)
@@ -98,10 +98,25 @@ class MainEditorViewModelTest {
     @Test
     fun `it should be able get reset active input text model`() = runTest {
         // When
-        viewModel.onEvent(MainEditorEvent.ResetActiveInputText)
+        sendEvent(MainEditorEvent.ResetActiveInputText)
 
         // Then
         assertTrue(viewModel.inputTextState.value.model == null)
     }
 
+    private fun mockParamFetcher() {
+        every { paramFetcher.set(any()) } just Runs
+    }
+
+    private fun mockNavigationTool() {
+        every { navigationToolRepository.tools() } returns listOf(
+            NavigationTool(ToolType.TEXT, ToolType.TEXT.toString(), 0),
+            NavigationTool(ToolType.PLACEMENT, ToolType.PLACEMENT.toString(), 0),
+            NavigationTool(ToolType.AUDIO_MUTE, ToolType.AUDIO_MUTE.toString(), 0),
+        )
+    }
+
+    private fun sendEvent(event: MainEditorEvent) {
+        viewModel.onEvent(event)
+    }
 }
