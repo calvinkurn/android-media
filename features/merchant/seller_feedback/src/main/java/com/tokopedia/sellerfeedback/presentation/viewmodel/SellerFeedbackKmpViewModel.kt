@@ -14,7 +14,6 @@ import com.tokopedia.sellerfeedback.error.UploadThrowable
 import com.tokopedia.sellerfeedback.presentation.SellerFeedback
 import com.tokopedia.sellerfeedback.presentation.uimodel.ImageFeedbackUiModel
 import com.tokopedia.shared.di.FeatureModule
-import com.tokopedia.shared.domain.GetProductUseCase
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
 import java.io.File
@@ -39,7 +38,7 @@ class SellerFeedbackKmpViewModel @Inject constructor(
     private val submitResult = MutableLiveData<SubmitResult>()
     fun getSubmitResult(): LiveData<SubmitResult> = submitResult
 
-    private val getProductUseCase: GetProductUseCase = FeatureModule.getUseCase()
+    private val getProductUseCase = FeatureModule.getUseCase().getProductList()
 
     fun setImages(images: List<ImageFeedbackUiModel>) {
         feedbackImageList.clear()
