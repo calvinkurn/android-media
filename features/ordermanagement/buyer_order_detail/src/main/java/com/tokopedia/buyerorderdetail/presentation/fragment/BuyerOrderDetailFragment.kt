@@ -37,6 +37,7 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrde
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.CourierInfoViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.DigitalRecommendationViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OrderResolutionViewHolder
+import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OwocInfoViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PartialProductItemViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PgRecommendationViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PofRefundInfoViewHolder
@@ -45,6 +46,7 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductLis
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.TickerViewHolder
 import com.tokopedia.buyerorderdetail.presentation.animator.BuyerOrderDetailToolbarMenuAnimator
 import com.tokopedia.buyerorderdetail.presentation.bottomsheet.BuyerOrderDetailBottomSheetManager
+import com.tokopedia.buyerorderdetail.presentation.bottomsheet.OwocBottomSheet
 import com.tokopedia.buyerorderdetail.presentation.bottomsheet.PofDetailRefundedBottomSheet
 import com.tokopedia.buyerorderdetail.presentation.bottomsheet.PofEstimateRefundInfoBottomSheet
 import com.tokopedia.buyerorderdetail.presentation.coachmark.CoachMarkManager
@@ -67,13 +69,27 @@ import com.tokopedia.digital.digital_recommendation.utils.DigitalRecommendationD
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.linker.model.LinkerData.PRODUCT_TYPE
 import com.tokopedia.linker.utils.AffiliateLinkType
+import com.tokopedia.kotlin.extensions.view.toIntSafely
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.logisticCommon.ui.DelayedEtaBottomSheetFragment
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey.SCP_REWARDS_MEDALI_TOUCH_POINT
+import com.tokopedia.scp_rewards_touchpoints.common.BUYER_ORDER_DETAIL_PAGE
+import com.tokopedia.scp_rewards_touchpoints.common.Error
+import com.tokopedia.scp_rewards_touchpoints.touchpoints.ScpToasterHelper
+import com.tokopedia.scp_rewards_touchpoints.touchpoints.adapter.viewholder.ScpRewardsMedalTouchPointWidgetViewHolder
+import com.tokopedia.scp_rewards_touchpoints.touchpoints.analytics.ScpRewardsCelebrationWidgetAnalytics
+import com.tokopedia.scp_rewards_touchpoints.touchpoints.data.model.AnalyticsData
+import com.tokopedia.scp_rewards_touchpoints.touchpoints.data.model.ScpToasterModel
+import com.tokopedia.scp_rewards_touchpoints.touchpoints.data.response.ScpRewardsMedalTouchPointResponse
+import com.tokopedia.scp_rewards_touchpoints.touchpoints.viewmodel.ScpRewardsMedalTouchPointViewModel
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -105,6 +121,9 @@ open class BuyerOrderDetailFragment :
     ProductListToggleViewHolder.Listener,
     PofRefundInfoViewHolder.Listener,
     PartialProductItemViewHolder.ShareProductBottomSheetListener {
+    PofRefundInfoViewHolder.Listener,
+    ScpRewardsMedalTouchPointWidgetViewHolder.ScpRewardsMedalTouchPointWidgetListener,
+    OwocInfoViewHolder.Listener {
 
     companion object {
         @JvmStatic
@@ -113,6 +132,8 @@ open class BuyerOrderDetailFragment :
                 arguments = extras
             }
         }
+
+        private const val SOURCE_NAME_FOR_MEDAL_TOUCH_POINT = "order_detail_page"
 
         const val RESULT_CODE_INSTANT_CANCEL_BUYER_REQUEST = 100
         const val RESULT_CODE_CANCEL_ORDER_DISABLE = 102
@@ -135,7 +156,11 @@ open class BuyerOrderDetailFragment :
     private var binding by autoClearedNullable<FragmentBuyerOrderDetailBinding>()
 
     private val viewModel: BuyerOrderDetailViewModel by lazy {
-        ViewModelProvider(this, viewModelFactory).get(BuyerOrderDetailViewModel::class.java)
+        ViewModelProvider(this, viewModelFactory)[BuyerOrderDetailViewModel::class.java]
+    }
+
+    private val scpMedalTouchPointViewModel by lazy {
+        ViewModelProvider(this, viewModelFactory)[ScpRewardsMedalTouchPointViewModel::class.java]
     }
 
     private val toolbarMenuAnimator by lazy {
@@ -157,6 +182,8 @@ open class BuyerOrderDetailFragment :
             this,
             this,
             this,
+            this,
+            this,
             navigator,
             this,
             this
@@ -171,6 +198,10 @@ open class BuyerOrderDetailFragment :
     protected val navigator: BuyerOrderDetailNavigator by lazy {
         BuyerOrderDetailNavigator(requireActivity(), this)
     }
+    private val remoteConfig: FirebaseRemoteConfigImpl by lazy {
+        FirebaseRemoteConfigImpl(context)
+    }
+
     protected val digitalRecommendationData: DigitalRecommendationData
         get() = DigitalRecommendationData(
             viewModelFactory,
@@ -256,6 +287,7 @@ open class BuyerOrderDetailFragment :
         observeReceiveConfirmation()
         observeAddSingleToCart()
         observeAddMultipleToCart()
+        observeMedalTouchPoint()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -390,6 +422,10 @@ open class BuyerOrderDetailFragment :
         val cart =
             arguments?.getString(BuyerOrderDetailIntentParamKey.PARAM_CART_STRING, "").orEmpty()
         viewModel.getBuyerOrderDetailData(orderId, paymentId, cart, shouldCheckCache)
+        getMedalTouchPoint(
+            orderId = orderId.toLongOrZero(),
+            initialLoad = true
+        )
     }
 
     private fun observeBuyerOrderDetail() {
@@ -440,6 +476,63 @@ open class BuyerOrderDetailFragment :
             stickyActionButton?.finishPrimaryActionButtonLoading()
         }
     }
+
+    private fun observeMedalTouchPoint() {
+        scpMedalTouchPointViewModel.medalTouchPointData.observe(viewLifecycleOwner) {
+            when (it.result) {
+                is com.tokopedia.scp_rewards_touchpoints.common.Success<*> -> {
+                    val data = ((it.result as com.tokopedia.scp_rewards_touchpoints.common.Success<*>).data as ScpRewardsMedalTouchPointResponse)
+                    if (data.scpRewardsMedaliTouchpointOrder.isShown) {
+                        view?.let { view ->
+                            if (!it.initialLoad) {
+                                ScpToasterHelper.showToaster(
+                                    view = view,
+                                    data = ScpToasterModel(
+                                        AnalyticsData(
+                                            orderId = viewModel.getOrderId(),
+                                            pagePath = BUYER_ORDER_DETAIL_PAGE,
+                                            pageType = BUYER_ORDER_DETAIL_PAGE
+                                        ),
+                                        responseData = data
+                                    ),
+                                    customBottomHeight = getStickyActionButtonHeight(),
+                                    ctaClickListener = {
+                                        viewModel.hideScpRewardsMedalTouchPointWidget()
+                                    }
+                                )
+                            }
+                            ScpRewardsCelebrationWidgetAnalytics.impressionCelebrationWidget(
+                                badgeId = data.scpRewardsMedaliTouchpointOrder.medaliTouchpointOrder.medaliID.toString(),
+                                orderId = viewModel.getOrderId(),
+                                pagePath = BUYER_ORDER_DETAIL_PAGE,
+                                pageType = BUYER_ORDER_DETAIL_PAGE
+                            )
+                            viewModel.updateScpRewardsMedalTouchPointWidgetState(
+                                data = data.scpRewardsMedaliTouchpointOrder.medaliTouchpointOrder,
+                                marginLeft = resources.getDimension(R.dimen.buyer_order_detail_scp_rewards_medal_touch_point_margin_left).toIntSafely(),
+                                marginTop = resources.getDimension(R.dimen.buyer_order_detail_scp_rewards_medal_touch_point_margin_top).toIntSafely(),
+                                marginRight = resources.getDimension(R.dimen.buyer_order_detail_scp_rewards_medal_touch_point_margin_right).toIntSafely()
+                            )
+                        }
+                    } else {
+                        if (!it.initialLoad) {
+                            val message = (viewModel.finishOrderResult.value as? Success<FinishOrderResponse.Data.FinishOrderBuyer>)?.data?.message?.firstOrNull().orEmpty()
+                            showCommonToaster(message)
+                        }
+                    }
+                }
+                is Error -> {
+                    if (!it.initialLoad) {
+                        val message = (viewModel.finishOrderResult.value as? Success<FinishOrderResponse.Data.FinishOrderBuyer>)?.data?.message?.firstOrNull().orEmpty()
+                        showCommonToaster(message)
+                    }
+                }
+                else -> {}
+            }
+        }
+    }
+
+    private fun getStickyActionButtonHeight(): Int = stickyActionButton?.height.orZero()
 
     private fun onSuccessGetBuyerOrderDetail(
         uiState: BuyerOrderDetailUiState.HasData.Showing
@@ -509,8 +602,22 @@ open class BuyerOrderDetailFragment :
     private fun onSuccessReceiveConfirmation(data: FinishOrderResponse.Data.FinishOrderBuyer) {
         bottomSheetManager.finishReceiveConfirmationBottomSheetLoading()
         bottomSheetManager.dismissBottomSheets()
-        showCommonToaster(data.message.firstOrNull().orEmpty())
         loadBuyerOrderDetail(false)
+        getMedalTouchPoint(viewModel.getOrderId().toLongOrZero()) {
+            showCommonToaster(data.message.firstOrNull().orEmpty())
+        }
+    }
+
+    private fun getMedalTouchPoint(orderId: Long, initialLoad: Boolean = false, backupAction: (() -> Unit)? = null) {
+        if (isScpRewardTouchPointEnabled()) {
+            scpMedalTouchPointViewModel.getMedalTouchPoint(
+                orderId = orderId,
+                sourceName = SOURCE_NAME_FOR_MEDAL_TOUCH_POINT,
+                initialLoad = initialLoad
+            )
+        } else {
+            backupAction?.invoke()
+        }
     }
 
     private fun onFailedReceiveConfirmation(throwable: Throwable) {
@@ -846,6 +953,28 @@ open class BuyerOrderDetailFragment :
         val bottomSheet =
             PofDetailRefundedBottomSheet.newInstance(cacheManager?.id.orEmpty())
         bottomSheet.show(childFragmentManager)
+    }
+
+    override fun onClickWidgetListener(appLink: String) {
+        val data = ((scpMedalTouchPointViewModel.medalTouchPointData.value?.result as? com.tokopedia.scp_rewards_touchpoints.common.Success<*>)?.data as ScpRewardsMedalTouchPointResponse)
+        ScpRewardsCelebrationWidgetAnalytics.clickCelebrationWidget(
+            badgeId = data.scpRewardsMedaliTouchpointOrder.medaliTouchpointOrder.medaliID.toString(),
+            orderId = viewModel.getOrderId(),
+            pagePath = BUYER_ORDER_DETAIL_PAGE,
+            pageType = BUYER_ORDER_DETAIL_PAGE
+        )
+        viewModel.hideScpRewardsMedalTouchPointWidget()
+        context?.let {
+            RouteManager.route(it, appLink)
+        }
+    }
+
+    private fun isScpRewardTouchPointEnabled(): Boolean = remoteConfig.getBoolean(SCP_REWARDS_MEDALI_TOUCH_POINT, true)
+
+    override fun onOwocInfoClicked(txId: String) {
+        BuyerOrderDetailTracker.sendClickOnOrderGroupWidget(viewModel.getOrderId())
+        val owocBottomSheet = OwocBottomSheet.newInstance(viewModel.getOrderId(), txId)
+        owocBottomSheet.show(childFragmentManager)
     }
 
     override fun onShareButtonClicked(element: ProductListUiModel.ProductUiModel) {

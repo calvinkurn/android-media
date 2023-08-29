@@ -105,4 +105,7 @@
     <string name="buyer_order_detail_pof_success_message">Pesananmu akan dikirim sebagian dan akan ada dana yang dikembalikan setelah pesanan selesai.</string>
     <string name="buyer_order_detail_share_text">Coba cek ini di Tokopedia, deh. Harganya %1$s. \n</string>
 
+    <!-- One Warehouse One Checkout (OWOC) -->
+    <string name="buyer_order_detail_owoc_product_list_expand">Lihat Semua Produk</string>
+
 </resources>

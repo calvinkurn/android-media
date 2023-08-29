@@ -21,4 +21,5 @@ object CartConstant {
     const val PARAM_DEFAULT = "default"
     const val PARAM_CART = "cart"
     const val IS_TESTING_FLOW = "isTesting"
+    const val QTY_ADDON_REPLACE = "{{qty}}"
 }

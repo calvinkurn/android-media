@@ -1,6 +1,8 @@
 package com.tokopedia.mvc.presentation.share
 
 import android.text.TextUtils
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerShareData
 import com.tokopedia.mvc.util.constant.ShareComponentConstant
@@ -15,17 +17,38 @@ class LinkerDataGenerator @Inject constructor() {
         shopDomain : String,
         shareModel: ShareModel,
         title : String,
-        outgoingDescription : String
+        outgoingDescription : String,
+        isProductVoucher: Boolean
     ): LinkerShareData {
+
+        val destinationId = if (isProductVoucher) {
+            "${shopId}/voucher/${galadrielVoucherId}?page_source=${ShareComponentConstant.FEATURE_NAME}"
+        } else {
+            "${shopId}?page_source=${ShareComponentConstant.FEATURE_NAME}"
+        }
+
+        val desktopUrl = if (isProductVoucher) {
+            "https://www.tokopedia.com/${shopDomain}/voucher/${galadrielVoucherId}?page_source=${ShareComponentConstant.FEATURE_NAME}"
+        } else {
+            "https://www.tokopedia.com/${shopDomain}?page_source=${ShareComponentConstant.FEATURE_NAME}"
+        }
+
+        val appLink = if (isProductVoucher) {
+            UriUtil.buildUri(ApplinkConst.SHOP_MVC_LOCKED_TO_PRODUCT, shopId, galadrielVoucherId.toString())
+        } else {
+            UriUtil.buildUri(ApplinkConst.SHOP, shopId)
+        }
+
         val linkerData = LinkerData()
         linkerData.apply {
             feature = shareModel.feature
             channel = shareModel.channel
             campaign = shareModel.campaign
-            id = "${shopId}/voucher/${galadrielVoucherId}?page_source=${ShareComponentConstant.FEATURE_NAME}"
+            deepLink = appLink
+            id = destinationId
             linkerData.type = LinkerData.SHOP_TYPE
             name = title
-            uri = "https://www.tokopedia.com/${shopDomain}/voucher/${galadrielVoucherId}?page_source=${ShareComponentConstant.FEATURE_NAME}"
+            uri = desktopUrl
             ogTitle = title
             ogDescription = outgoingDescription
             if (!TextUtils.isEmpty(shareModel.ogImgUrl)) {
@@ -33,10 +56,10 @@ class LinkerDataGenerator @Inject constructor() {
             }
             isThrowOnError = true
         }
+
         val linkerShareData = LinkerShareData()
         linkerShareData.linkerData = linkerData
         return linkerShareData
     }
-
 
 }

@@ -204,6 +204,7 @@ open class SomListFragment :
                     putString(TAB_STATUS, bundle.getString(TAB_STATUS))
                     putString(QUERY_PARAM_SEARCH, bundle.getString(QUERY_PARAM_SEARCH))
                     putString(FILTER_ORDER_TYPE, bundle.getString(FILTER_ORDER_TYPE))
+                    putString(SomConsts.COACHMARK_KEY, bundle.getString(SomConsts.COACHMARK_KEY))
                 }
             }
         }
@@ -270,6 +271,11 @@ open class SomListFragment :
         somListBinding?.root?.context?.let {
             CoachMark2(it)
         }
+    }
+
+    // The isEnabledCoachmark allows the EP team to automate tests with coachmark hiding on the SOM Page
+    private val isEnabledCoachmark: Boolean by lazy {
+        arguments?.getString(SomConsts.COACHMARK_KEY).orEmpty() != SomConsts.COACHMARK_DISABLED
     }
 
     protected var somListBinding by autoClearedNullable<FragmentSomListBinding> {
@@ -951,7 +957,7 @@ open class SomListFragment :
         setupSearchBar()
         setupListeners()
         setupMasks()
-        coachMarkManager = SomListCoachMarkManager(somListBinding, userSession.userId)
+        coachMarkManager = SomListCoachMarkManager(somListBinding, userSession.userId, isEnabledCoachmark)
     }
 
     private fun setupMasks() {
@@ -2855,16 +2861,26 @@ open class SomListFragment :
 
     private fun setTabActiveFromAppLink() {
         if (Utils.isEnableOperationalGuideline()) {
-            val tabActive = arguments?.getString(TAB_ACTIVE).orEmpty()
-            val tabActiveFilter =
-                if (tabActive == SomConsts.STATUS_HISTORY || tabActive == STATUS_ALL_ORDER) String.EMPTY else tabActive
-            viewModel.setTabActiveFromAppLink(tabActiveFilter)
-            viewModel.setFirstPageOpened(true)
+            setTabActiveFromAppLinkOg()
         } else {
-            val tabActive = arguments?.getString(TAB_ACTIVE)
-                ?: if (GlobalConfig.isSellerApp()) SomConsts.STATUS_NEW_ORDER else STATUS_ALL_ORDER
-            viewModel.setTabActiveFromAppLink(tabActive)
+            setTabActiveFromApplinkOld()
         }
+    }
+
+    private fun setTabActiveFromAppLinkOg() {
+        val tabActive = arguments?.getString(TAB_ACTIVE).orEmpty()
+        val tabActiveFilter =
+            if (tabActive == SomConsts.STATUS_HISTORY || tabActive == STATUS_ALL_ORDER) String.EMPTY else tabActive
+        viewModel.setTabActiveFromAppLink(tabActiveFilter)
+        if (tabActiveFilter.isBlank()) {
+            viewModel.setFirstPageOpened(true)
+        }
+    }
+
+    private fun setTabActiveFromApplinkOld() {
+        val tabActive = arguments?.getString(TAB_ACTIVE)
+            ?: if (GlobalConfig.isSellerApp()) SomConsts.STATUS_NEW_ORDER else STATUS_ALL_ORDER
+        viewModel.setTabActiveFromAppLink(tabActive)
     }
 
     protected fun dismissBottomSheets(): Boolean {
@@ -2915,11 +2931,7 @@ open class SomListFragment :
 
         val highLightStatusKey = somFilterUiModel.highLightedStatusKey
 
-        // this case to handle when there is a highlightedStatusKey (all_order, new_order, confirm_shipping) from backend
-        val shouldRefreshOrderAutoTabbing = viewModel.getIsFirstPageOpened() &&
-            highLightStatusKey.isNotBlank() && viewModel.getTabActiveFromAppLink().isBlank()
-
-        if (shouldRefreshOrderAutoTabbing) {
+        if (getShouldRefreshOrderAutoTabbing(highLightStatusKey)) {
             val statusIds = somFilterUiModel.statusList.find { it.key == highLightStatusKey }?.id.orEmpty()
             if (statusIds.isNotEmpty()) {
                 viewModel.setStatusOrderFilter(statusIds, highLightStatusKey)
@@ -2936,8 +2948,15 @@ open class SomListFragment :
         }
     }
 
+    private fun getShouldRefreshOrderAutoTabbing(highLightStatusKey: String): Boolean {
+        // this case to handle when there is a highlightedStatusKey (all_order, new_order, confirm_shipping) from backend
+        return viewModel.getIsFirstPageOpened() &&
+            highLightStatusKey.isNotBlank() &&
+            viewModel.getTabActiveFromAppLink().isBlank()
+    }
+
     private fun showCoachMarkAutoTabbing(highLightStatusKey: String) {
-        if (highLightStatusKey in listOf(STATUS_NEW_ORDER, KEY_CONFIRM_SHIPPING)) {
+        if (isEnabledCoachmark && highLightStatusKey in listOf(STATUS_NEW_ORDER, KEY_CONFIRM_SHIPPING)) {
             context?.let {
                 if (!CoachMarkPreference.hasShown(it, SHARED_PREF_SOM_LIST_TAB_COACH_MARK)) {
                     val coachMarkMessage = getCoachMarkMessageAutoTabbing(it, highLightStatusKey)

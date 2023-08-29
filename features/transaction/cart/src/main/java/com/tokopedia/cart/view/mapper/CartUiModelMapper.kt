@@ -11,6 +11,7 @@ import com.tokopedia.cart.data.model.response.promo.PromoErrorDetail
 import com.tokopedia.cart.data.model.response.promo.PromoMessageInfo
 import com.tokopedia.cart.data.model.response.promo.VoucherOrders
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.Action
+import com.tokopedia.cart.data.model.response.shopgroupsimplified.AddOn
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.AvailableGroup
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartDetail
@@ -20,9 +21,13 @@ import com.tokopedia.cart.data.model.response.shopgroupsimplified.Product
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.PromoSummary
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.Shop
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.ShopShipment
+import com.tokopedia.cart.data.model.response.shopgroupsimplified.ShoppingSummary
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.UnavailableGroup
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.UnavailableSection
 import com.tokopedia.cart.domain.model.cartlist.SummaryTransactionUiModel
+import com.tokopedia.cart.view.uimodel.CartAddOnData
+import com.tokopedia.cart.view.uimodel.CartAddOnProductData
+import com.tokopedia.cart.view.uimodel.CartAddOnWidgetData
 import com.tokopedia.cart.view.uimodel.CartChooseAddressHolderData
 import com.tokopedia.cart.view.uimodel.CartEmptyHolderData
 import com.tokopedia.cart.view.uimodel.CartGroupHolderData
@@ -38,7 +43,10 @@ import com.tokopedia.cart.view.uimodel.DisabledReasonHolderData
 import com.tokopedia.cart.view.uimodel.PromoSummaryData
 import com.tokopedia.cart.view.uimodel.PromoSummaryDetailData
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ON_PRODUCT_STATUS_MANDATORY
 import com.tokopedia.purchase_platform.common.constant.CartConstant
+import com.tokopedia.purchase_platform.common.constant.CartConstant.QTY_ADDON_REPLACE
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.EpharmacyConsultationInfoResponse
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.BenefitSummaryInfo
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.SummariesItem
@@ -56,6 +64,8 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
 import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
+import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
+import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlin.math.min
 
 object CartUiModelMapper {
@@ -592,6 +602,36 @@ object CartUiModelMapper {
             campaignId = product.campaignId
             warehouseId = product.warehouseId
             bundleIds = product.bundleIds
+            addOnsProduct = mapCartAddOnData(product.addOn)
+        }
+    }
+
+    private fun mapCartAddOnData(addOn: AddOn): CartAddOnData {
+        val arrayListAddOnProduct = ArrayList<CartAddOnProductData>()
+        val deselectedArrayListAddOnProduct = ArrayList<CartAddOnProductData>()
+        addOn.addOnData.forEach {
+            val cartAddOnProductData = CartAddOnProductData(
+                id = it.addonId,
+                uniqueId = it.uniqueId,
+                status = it.status,
+                type = it.type,
+                price = it.price
+            )
+
+            if (it.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK || it.status == ADD_ON_PRODUCT_STATUS_MANDATORY) {
+                arrayListAddOnProduct.add(cartAddOnProductData)
+            } else if (it.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_UNCHECK) {
+                deselectedArrayListAddOnProduct.add(cartAddOnProductData)
+            }
+        }
+        return CartAddOnData().apply {
+            listData = arrayListAddOnProduct
+            widget = CartAddOnWidgetData(
+                wording = addOn.addOnWidget.wording,
+                leftIconUrl = addOn.addOnWidget.leftIconUrl,
+                rightIconUrl = addOn.addOnWidget.rightIconUrl
+            )
+            deselectListData = deselectedArrayListAddOnProduct
         }
     }
 
@@ -745,7 +785,62 @@ object CartUiModelMapper {
             paymentTotalWording = cartData.shoppingSummary.paymentTotalWording
             promoWording = cartData.shoppingSummary.promoWording
             sellerCashbackWording = cartData.shoppingSummary.sellerCashbackWording
+            listSummaryAddOns = mapSummariesAddOns(cartData.shoppingSummary.summaryAddOnList, cartData.availableSection.availableGroupGroups)
         }
+    }
+
+    fun getShoppingSummaryAddOns(summariesItemList: List<ShoppingSummary.SummaryAddOn>): HashMap<Int, String> {
+        val mapSummary = hashMapOf<Int, String>()
+        for (summaryItem in summariesItemList) {
+            mapSummary[summaryItem.type] = summaryItem.wording
+        }
+        return mapSummary
+    }
+
+    private fun mapSummariesAddOns(summariesItemList: List<ShoppingSummary.SummaryAddOn>, availableGroupGroups: List<AvailableGroup>): List<SummaryTransactionUiModel.SummaryAddOns> {
+        val countMapSummaries = hashMapOf<Int, Pair<Double, Int>>()
+        val summaryAddOnList = ArrayList<SummaryTransactionUiModel.SummaryAddOns>()
+        var qtyAddOn: Int
+        var totalPriceAddOn: Double
+        shopLoop@ for (groupShop in availableGroupGroups) {
+            groupShopCart@ for (groupShopCart in groupShop.groupShopCartData) {
+                cartDetailLoop@ for (cartDetail in groupShopCart.cartDetails) {
+                    productLoop@ for (product in cartDetail.products) {
+                        addOnLoop@ for (addon in product.addOn.addOnData) {
+                            if (addon.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK) {
+                                qtyAddOn = if (countMapSummaries.containsKey(addon.type)) {
+                                    countMapSummaries[addon.type]?.second?.plus(product.productQuantity) ?: product.productQuantity
+                                } else {
+                                    product.productQuantity
+                                }
+                                val addOnPrice = product.productQuantity * addon.price
+                                totalPriceAddOn = if (countMapSummaries.containsKey(addon.type)) {
+                                    countMapSummaries[addon.type]?.first?.plus(addOnPrice) ?: addOnPrice
+                                } else {
+                                    addOnPrice
+                                }
+                                countMapSummaries[addon.type] = totalPriceAddOn to qtyAddOn
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        val mapSummary = getShoppingSummaryAddOns(summariesItemList)
+        for (entry in countMapSummaries) {
+            val addOnWording = mapSummary[entry.key]?.replace(QTY_ADDON_REPLACE, entry.value.second.toString())
+            val addOnPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(entry.value.first, false).removeDecimalSuffix()
+            val summaryAddOn = SummaryTransactionUiModel.SummaryAddOns(
+                wording = addOnWording ?: "",
+                type = entry.key,
+                qty = entry.value.second,
+                priceLabel = addOnPrice,
+                priceValue = entry.value.first
+            )
+            summaryAddOnList.add(summaryAddOn)
+        }
+        return summaryAddOnList
     }
 
     fun mapPromoSummaryUiModel(promoSummary: PromoSummary): PromoSummaryData {
@@ -781,5 +876,45 @@ object CartUiModelMapper {
                 ?: "0"
             enablerLabel = if (shop.enabler.showLabel) shop.enabler.labelName else ""
         }
+    }
+
+    fun mapSummariesAddOnsFromSelectedItems(summariesItemList: List<ShoppingSummary.SummaryAddOn>, selectedCartItemData: List<CartItemHolderData>): List<SummaryTransactionUiModel.SummaryAddOns> {
+        val countMapSummaries = hashMapOf<Int, Pair<Double, Int>>()
+        val summaryAddOnList = ArrayList<SummaryTransactionUiModel.SummaryAddOns>()
+        var qtyAddOn: Int
+        var totalPriceAddOn: Double
+        for (cartItemData in selectedCartItemData) {
+            for (addOn in cartItemData.addOnsProduct.listData) {
+                if (addOn.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK) {
+                    qtyAddOn = if (countMapSummaries.containsKey(addOn.type)) {
+                        countMapSummaries[addOn.type]?.second?.plus(cartItemData.quantity) ?: cartItemData.quantity
+                    } else {
+                        cartItemData.quantity
+                    }
+                    val addOnPrice = cartItemData.quantity * addOn.price
+                    totalPriceAddOn = if (countMapSummaries.containsKey(addOn.type)) {
+                        countMapSummaries[addOn.type]?.first?.plus(addOnPrice) ?: addOnPrice
+                    } else {
+                        addOnPrice
+                    }
+                    countMapSummaries[addOn.type] = totalPriceAddOn to qtyAddOn
+                }
+            }
+        }
+
+        val mapSummary = getShoppingSummaryAddOns(summariesItemList)
+        for (entry in countMapSummaries) {
+            val addOnWording = mapSummary[entry.key]?.replace(QTY_ADDON_REPLACE, entry.value.second.toString())
+            val addOnPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(entry.value.first, false).removeDecimalSuffix()
+            val summaryAddOn = SummaryTransactionUiModel.SummaryAddOns(
+                wording = addOnWording ?: "",
+                type = entry.key,
+                qty = entry.value.second,
+                priceLabel = addOnPrice,
+                priceValue = entry.value.first
+            )
+            summaryAddOnList.add(summaryAddOn)
+        }
+        return summaryAddOnList
     }
 }

@@ -5,21 +5,20 @@ import android.content.res.Configuration
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.compose.setContent
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.nest.principles.ui.NestTheme
-import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity() {
 
     val REQUEST_CODE_LOGIN = 123
     val REQUEST_CODE_LOGOUT = 456
@@ -27,7 +26,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var userSession: UserSessionInterface
 
     private val model = mutableStateOf(
-        Model(getDefaultAppLink(), getLiveStatus(), false, "Login")
+        Model(getDefaultAppLink(), false, "Login")
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,14 +72,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun getDarkModeStatus(): Boolean =
         resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
-
-    private fun getLiveStatus(): String {
-        return if (TokopediaUrl.getInstance().GQL.contains("staging")) {
-            "STAGING URL"
-        } else {
-            "LIVE URL"
-        }
-    }
 
     private fun handleNavigationLogin() {
         if (!userSession.isLoggedIn) {
@@ -167,7 +158,6 @@ class MainActivity : AppCompatActivity() {
 
     data class Model(
         val applink: String = "",
-        val urlState: String = "LIVE",
         val isDarkModeChecked: Boolean = false,
         val loginText: String = "Login",
         val isLoggedIn: Boolean = false

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/tokochat_list_iv_empty_chat"
+        android:layout_width="240dp"
+        android:layout_height="181dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="48dp"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tokochat_list_tv_empty_chat_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tokochat_list_iv_empty_chat"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="16dp"
+        app:typographyWeight="bold"
+        app:typographyType="heading_2"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:gravity="center_horizontal"
+        android:text="@string/tokochat_list_empty_chat_title" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tokochat_list_tv_empty_chat_subtitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tokochat_list_tv_empty_chat_title"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:typographyWeight="reguler"
+        app:typographyType="paragraph_2"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:gravity="center_horizontal"
+        android:text="@string/tokochat_list_empty_chat_subtitle" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

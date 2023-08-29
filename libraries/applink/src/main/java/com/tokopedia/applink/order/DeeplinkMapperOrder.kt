@@ -5,7 +5,6 @@ import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
-import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.startsWithPattern
@@ -42,10 +41,14 @@ object DeeplinkMapperOrder {
     const val PATH_ORDER_DETAIL_ID = "order_detail_id"
     const val QUERY_PARAM_ORDER_ID = "order_id"
     const val QUERY_PARAM_DTL_ID = "dtl_id"
+    const val QUERY_COACHMARK = "coachmark"
 
     fun getRegisteredNavigationOrder(context: Context, uri: Uri, deeplink: String): String {
-        return if (deeplink.startsWithPattern(ApplinkConst.SELLER_ORDER_DETAIL)) getRegisteredNavigationOrderInternal(context, uri)
-        else deeplink
+        return if (deeplink.startsWithPattern(ApplinkConst.SELLER_ORDER_DETAIL)) {
+            getRegisteredNavigationOrderInternal(context, uri)
+        } else {
+            deeplink
+        }
     }
 
     /**
@@ -80,14 +83,24 @@ object DeeplinkMapperOrder {
         }
     }
 
-    fun getRegisteredNavigationMainAppSellerNewOrder(): String {
-        val param = mapOf(QUERY_TAB_ACTIVE to NEW_ORDER)
-        return UriUtil.buildUriAppendParam(ApplinkConstInternalOrder.NEW_ORDER, param)
+    fun getRegisteredNavigationMainAppSellerNewOrder(uri: Uri): String {
+        val coachMark = uri.getQueryParameter(QUERY_COACHMARK).orEmpty()
+        val queryParam = mutableMapOf(QUERY_TAB_ACTIVE to NEW_ORDER).apply {
+            if (coachMark.isNotBlank()) {
+                put(QUERY_COACHMARK, coachMark)
+            }
+        }.toMap()
+        return UriUtil.buildUriAppendParam(ApplinkConstInternalOrder.NEW_ORDER, queryParam)
     }
 
-    fun getRegisteredNavigationMainAppSellerReadyToShip(): String {
-        val param = mapOf(QUERY_TAB_ACTIVE to CONFIRM_SHIPPING)
-        return UriUtil.buildUriAppendParam(ApplinkConstInternalOrder.READY_TO_SHIP, param)
+    fun getRegisteredNavigationMainAppSellerReadyToShip(uri: Uri): String {
+        val coachMark = uri.getQueryParameter(QUERY_COACHMARK).orEmpty()
+        val queryParam = mutableMapOf(QUERY_TAB_ACTIVE to CONFIRM_SHIPPING).apply {
+            if (coachMark.isNotBlank()) {
+                put(QUERY_COACHMARK, coachMark)
+            }
+        }.toMap()
+        return UriUtil.buildUriAppendParam(ApplinkConstInternalOrder.READY_TO_SHIP, queryParam)
     }
 
     fun getRegisteredNavigationMainAppSellerInShipping(): String {
@@ -112,16 +125,17 @@ object DeeplinkMapperOrder {
 
     fun getRegisteredNavigationMainAppSellerCancellationRequest(): String {
         val param = mapOf(
-                QUERY_TAB_ACTIVE to ALL_ORDER,
-                FILTER_ORDER_TYPE to FILTER_CANCELLATION_REQUEST
+            QUERY_TAB_ACTIVE to ALL_ORDER,
+            FILTER_ORDER_TYPE to FILTER_CANCELLATION_REQUEST
         )
         return UriUtil.buildUriAppendParams(ApplinkConstInternalOrder.CANCELLATION_REQUEST, param)
     }
 
-    fun getRegisteredNavigationMainAppSellerHistory(orderId: String): String {
+    fun getRegisteredNavigationMainAppSellerHistory(orderId: String, coachMark: String): String {
         val param = mutableMapOf<String, Any>().apply {
             if (orderId.isNotEmpty()) put(QUERY_PARAM_ORDER_ID, orderId)
             put(QUERY_TAB_ACTIVE, ALL_ORDER)
+            if (coachMark.isNotBlank()) put(QUERY_COACHMARK, coachMark)
         }
         return UriUtil.buildUriAppendParams(ApplinkConstInternalOrder.HISTORY, param)
     }
@@ -180,11 +194,11 @@ object DeeplinkMapperOrder {
                 val internalApplink = ApplinkConstInternalOrder.INTERNAL_ORDER_SNAPSHOT
 
                 Uri.parse(internalApplink)
-                        .buildUpon()
-                        .appendQueryParameter(PATH_ORDER_ID, orderId)
-                        .appendQueryParameter(PATH_ORDER_DETAIL_ID, orderDetailId)
-                        .build()
-                        .toString()
+                    .buildUpon()
+                    .appendQueryParameter(PATH_ORDER_ID, orderId)
+                    .appendQueryParameter(PATH_ORDER_DETAIL_ID, orderDetailId)
+                    .build()
+                    .toString()
             }
             else -> ""
         }
