@@ -92,7 +92,7 @@ internal class ItemDecoration(
             return GradientDrawable().apply {
                 shape = GradientDrawable.RECTANGLE
 
-                val colorRes = com.tokopedia.unifycomponents.R.color.Unify_NN50
+                val colorRes = com.tokopedia.unifyprinciples.R.color.Unify_NN50
                 setColor(ContextCompat.getColor(context, colorRes))
                 setSize(1.toPx(), 1.toPx())
             }
