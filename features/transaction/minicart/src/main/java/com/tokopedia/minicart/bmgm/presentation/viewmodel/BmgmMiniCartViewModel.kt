@@ -47,14 +47,18 @@ class BmgmMiniCartViewModel @Inject constructor(
         })
     }
 
-    fun clearCartDataLocalCache() = launch {
-        localCacheUseCase.get().clearLocalCache()
+    fun clearCartDataLocalCache() {
+        launch {
+            localCacheUseCase.get().clearLocalCache()
+        }
     }
 
-    fun storeCartDataToLocalCache() = launch {
-        val result = _cartData.value
-        if (result is BmgmState.Success) {
-            localCacheUseCase.get().saveToLocalCache(result.data)
+    fun storeCartDataToLocalCache() {
+        launch {
+            val result = _cartData.value
+            if (result is BmgmState.Success) {
+                localCacheUseCase.get().saveToLocalCache(result.data)
+            }
         }
     }
 }
