@@ -1,24 +1,18 @@
 package com.tokopedia.promousage.view.adapter
 
-import android.animation.AnimatorSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.view.animation.Animation.AnimationListener
-import android.view.animation.AnimationSet
 import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.promousage.R
 import com.tokopedia.promousage.databinding.PromoUsageItemVoucherRecommendationBinding
 import com.tokopedia.promousage.domain.entity.list.PromoRecommendationItem
 import com.tokopedia.promousage.util.composite.DelegateAdapter
-import com.tokopedia.purchase_platform.common.utils.animateShow
-import com.tokopedia.unifyprinciples.UnifyMotion
 
 class PromoRecommendationDelegateAdapter(
     private val onClickUsePromoRecommendation: () -> Unit
