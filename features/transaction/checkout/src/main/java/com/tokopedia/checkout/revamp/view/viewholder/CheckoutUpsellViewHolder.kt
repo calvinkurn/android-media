@@ -96,7 +96,8 @@ class CheckoutUpsellViewHolder(
                 checkoutUpsellIcon.loadImage(
                     getIconUnifyDrawable(
                         itemView.context,
-                        IconUnify.CHEVRON_RIGHT
+                        IconUnify.CHEVRON_RIGHT,
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN500
                     )
                 )
                 checkoutUpsellCardOverlay.setOnClickListener {
