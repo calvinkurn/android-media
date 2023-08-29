@@ -7,12 +7,15 @@ import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.topchat.chatroom.view.activity.TopchatRoomBuyerProductAttachmentTest.Companion.exProductId
 import com.tokopedia.topchat.chatroom.view.activity.TopchatRoomBuyerProductAttachmentTest.Companion.putProductAttachmentIntent
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
+import com.tokopedia.topchat.chatroom.view.activity.robot.composeAreaRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductPreviewResult
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductPreviewRobot
+import com.tokopedia.topchat.chatroom.view.activity.robot.productPreviewResult
+import com.tokopedia.topchat.chatroom.view.activity.robot.productPreviewRobot
 import org.hamcrest.CoreMatchers.not
 import org.junit.Test
 
-class PreloadProductAttachmentTest: TopchatRoomTest() {
+class PreloadProductAttachmentTest : TopchatRoomTest() {
 
     @Test
     fun should_show_loading_product_preview() {
@@ -27,8 +30,10 @@ class PreloadProductAttachmentTest: TopchatRoomTest() {
 
         // Then
         // should hide close button on loading state
-        ProductPreviewResult.isNotCloseableAt(0)
-        ProductPreviewResult.isLoadingAt(0)
+        productPreviewResult {
+            isNotCloseableAt(0)
+            isLoadingAt(0)
+        }
     }
 
     @Test
@@ -37,14 +42,16 @@ class PreloadProductAttachmentTest: TopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
-                .generatePreAttachPayload(exProductId)
+            .generatePreAttachPayload(exProductId)
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
 
         // Then
-        ProductPreviewResult.isNotLoadingAt(0)
-        ProductPreviewResult.isNotErrorAt(0)
+        productPreviewResult {
+            isNotLoadingAt(0)
+            isNotErrorAt(0)
+        }
     }
 
     @Test
@@ -59,8 +66,10 @@ class PreloadProductAttachmentTest: TopchatRoomTest() {
 
         // Then
         // should show close button on error state
-        ProductPreviewResult.isCloseableAt(0)
-        ProductPreviewResult.isErrorAt(0)
+        productPreviewResult {
+            isCloseableAt(0)
+            isErrorAt(0)
+        }
     }
 
     @Test
@@ -75,12 +84,16 @@ class PreloadProductAttachmentTest: TopchatRoomTest() {
 
         // When
         getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
-                .generatePreAttachPayload(exProductId)
-        ProductPreviewRobot.clickRetryButtonAt(0)
+            .generatePreAttachPayload(exProductId)
+        productPreviewRobot {
+            ProductPreviewRobot.clickRetryButtonAt(0)
+        }
 
         // Then
-        ProductPreviewResult.isNotErrorAt(0)
-        ProductPreviewResult.isNotLoadingAt(0)
+        productPreviewResult {
+            ProductPreviewResult.isNotErrorAt(0)
+            ProductPreviewResult.isNotLoadingAt(0)
+        }
     }
 
     @Test
@@ -94,9 +107,11 @@ class PreloadProductAttachmentTest: TopchatRoomTest() {
         }
 
         // When
-        clickComposeArea()
-        typeMessage("test")
-        clickSendBtn()
+        composeAreaRobot {
+            clickComposeArea()
+            typeMessageComposeArea("test")
+            clickSendBtn()
+        }
 
         // Then
         ProductPreviewResult.isLoadingAt(0)
@@ -113,7 +128,9 @@ class PreloadProductAttachmentTest: TopchatRoomTest() {
         }
 
         // When
-        clickStickerIconMenu()
+        composeAreaRobot {
+            clickStickerIconMenu()
+        }
         clickStickerAtPosition(0)
 
         // Then
@@ -131,9 +148,11 @@ class PreloadProductAttachmentTest: TopchatRoomTest() {
         }
 
         // When
-        clickComposeArea()
-        typeMessage("test")
-        clickSendBtn()
+        composeAreaRobot {
+            clickComposeArea()
+            typeMessageComposeArea("test")
+            clickSendBtn()
+        }
 
         // Then
         ProductPreviewResult.isErrorAt(0)
@@ -150,7 +169,9 @@ class PreloadProductAttachmentTest: TopchatRoomTest() {
         }
 
         // When
-        clickStickerIconMenu()
+        composeAreaRobot {
+            clickStickerIconMenu()
+        }
         clickStickerAtPosition(0)
 
         // Then
@@ -164,7 +185,7 @@ class PreloadProductAttachmentTest: TopchatRoomTest() {
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwUseCase.defaultResponse
         getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
-                .generatePreAttachPayload(exProductId)
+            .generatePreAttachPayload(exProductId)
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
@@ -218,7 +239,7 @@ class PreloadProductAttachmentTest: TopchatRoomTest() {
 
         // When
         getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
-                .generatePreAttachPayload(exProductId)
+            .generatePreAttachPayload(exProductId)
         ProductPreviewRobot.clickRetryButtonAt(0)
 
         // Then

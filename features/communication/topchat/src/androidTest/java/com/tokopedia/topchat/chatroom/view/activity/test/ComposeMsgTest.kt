@@ -11,7 +11,6 @@ import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.activity.robot.composeAreaResult
 import com.tokopedia.topchat.chatroom.view.activity.robot.composeAreaRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.generalResult
-import com.tokopedia.topchat.chatroom.view.activity.robot.generalRobot
 import com.tokopedia.topchat.chatroom.view.custom.ComposeTextWatcher.Companion.MAX_CHAR
 import org.junit.Test
 
@@ -28,10 +27,11 @@ class ComposeMsgTest : TopchatRoomTest() {
         // When
         Intents.intending(anyIntent()).respondWith(
             Instrumentation.ActivityResult(
-                Activity.RESULT_OK, getInvoiceAttachmentIntent(true)
+                Activity.RESULT_OK,
+                getInvoiceAttachmentIntent(true)
             )
         )
-        generalRobot {
+        composeAreaRobot {
             clickPlusIconMenu()
             clickAttachInvoiceMenu()
             clickSendBtn()
@@ -45,17 +45,17 @@ class ComposeMsgTest : TopchatRoomTest() {
 
     @Test
     fun test_msg_sent_error_empty_text_click() {
-        //Given
+        // Given
         getChatUseCase.response = firstPageChatAsSeller
         chatAttachmentUseCase.response = chatAttachmentResponse
         launchChatRoomActivity()
 
-        //When
-        generalRobot {
+        // When
+        composeAreaRobot {
             clickSendBtn()
         }
 
-        //Then
+        // Then
         generalResult {
             assertToasterText(context.getString(R.string.topchat_desc_empty_text_box))
         }
@@ -63,19 +63,19 @@ class ComposeMsgTest : TopchatRoomTest() {
 
     @Test
     fun should_show_error_msg_with_the_right_offset_when_composed_msg_exceed_limit() {
-        //Given
+        // Given
         getChatUseCase.response = firstPageChatAsSeller
         chatAttachmentUseCase.response = chatAttachmentResponse
         launchChatRoomActivity()
         val offset = 10
 
-        //When
+        // When
         composeAreaRobot {
             clickComposeArea()
-            setComposedText("a".repeat(MAX_CHAR + offset))
+            typeMessageComposeArea("a".repeat(MAX_CHAR + offset))
         }
 
-        //Then
+        // Then
         composeAreaResult {
             assertSendBtnDisabled()
             assertTooLongErrorMsg(context.getString(R.string.desc_topchat_max_char_exceeded, offset))
@@ -84,19 +84,19 @@ class ComposeMsgTest : TopchatRoomTest() {
 
     @Test
     fun should_show_error_msg_with_the_right_offset_format_when_composed_msg_exceed_limit() {
-        //Given
+        // Given
         getChatUseCase.response = firstPageChatAsSeller
         chatAttachmentUseCase.response = chatAttachmentResponse
         launchChatRoomActivity()
         val offset = 10_000
 
-        //When
+        // When
         composeAreaRobot {
             clickComposeArea()
-            setComposedText("a".repeat(MAX_CHAR + offset))
+            typeMessageComposeArea("a".repeat(MAX_CHAR + offset))
         }
 
-        //Then
+        // Then
         composeAreaResult {
             assertSendBtnDisabled()
             assertTooLongErrorMsg(
@@ -107,19 +107,19 @@ class ComposeMsgTest : TopchatRoomTest() {
 
     @Test
     fun should_show_error_msg_with_the_right_offset_format_when_offset_exceed_limit() {
-        //Given
+        // Given
         getChatUseCase.response = firstPageChatAsSeller
         chatAttachmentUseCase.response = chatAttachmentResponse
         launchChatRoomActivity()
         val offset = 10_001
 
-        //When
+        // When
         composeAreaRobot {
             clickComposeArea()
-            setComposedText("a".repeat(MAX_CHAR + offset))
+            typeMessageComposeArea("a".repeat(MAX_CHAR + offset))
         }
 
-        //Then
+        // Then
         composeAreaResult {
             assertSendBtnDisabled()
             assertTooLongErrorMsg(
@@ -130,20 +130,20 @@ class ComposeMsgTest : TopchatRoomTest() {
 
     @Test
     fun should_hide_error_msg_if_composed_msg_is_not_empty_and_equal_or_less_than_limit() {
-        //Given
+        // Given
         getChatUseCase.response = firstPageChatAsSeller
         chatAttachmentUseCase.response = chatAttachmentResponse
         launchChatRoomActivity()
         val offset = 10
 
-        //When
+        // When
         composeAreaRobot {
             clickComposeArea()
-            setComposedText("a".repeat(MAX_CHAR + offset))
-            setComposedText("a".repeat(MAX_CHAR))
+            typeMessageComposeArea("a".repeat(MAX_CHAR + offset))
+            typeMessageComposeArea("a".repeat(MAX_CHAR))
         }
 
-        //Then
+        // Then
         composeAreaResult {
             assertSendBtnEnabled()
             assertNoTooLongErrorMsg()
@@ -152,22 +152,20 @@ class ComposeMsgTest : TopchatRoomTest() {
 
     @Test
     fun should_not_show_error_toaster_when_send_btn_clicked_if_msg_exceed_limit() {
-        //Given
+        // Given
         getChatUseCase.response = firstPageChatAsSeller
         chatAttachmentUseCase.response = chatAttachmentResponse
         launchChatRoomActivity()
         val offset = 10
 
-        //When
+        // When
         composeAreaRobot {
             clickComposeArea()
-            setComposedText("a".repeat(MAX_CHAR + offset))
-        }
-        generalRobot {
+            typeMessageComposeArea("a".repeat(MAX_CHAR + offset))
             clickSendBtn()
         }
 
-        //Then
+        // Then
         generalResult {
             assertNoToasterText(context.getString(R.string.topchat_desc_empty_text_box))
         }

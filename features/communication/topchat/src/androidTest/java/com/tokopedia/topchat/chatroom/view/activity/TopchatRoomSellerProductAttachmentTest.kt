@@ -14,6 +14,7 @@ import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStat
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.activity.base.BaseSellerTopchatRoomTest
+import com.tokopedia.topchat.chatroom.view.activity.robot.composeAreaRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralRobot.doScrollChatToPosition
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardRobot.clickProductAttachmentAt
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductResult.hasNoVisibleEmptyStockLabelAt
@@ -274,9 +275,11 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
         intendingAttachProduct(1)
 
         // When
-        Thread.sleep(10000)
-        clickPlusIconMenu()
-        clickAttachProductMenu()
+        Thread.sleep(1000)
+        composeAreaRobot {
+            clickPlusIconMenu()
+            clickAttachProductMenu()
+        }
 
         // Then
         assertSrwPreviewContentIsHidden()

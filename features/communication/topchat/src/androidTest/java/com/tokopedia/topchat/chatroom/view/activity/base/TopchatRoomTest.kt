@@ -25,7 +25,6 @@ import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_ANNOUN
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.chat_common.domain.pojo.Reply
 import com.tokopedia.chat_common.domain.pojo.imageannouncement.ImageAnnouncementPojo
-import com.tokopedia.chat_common.view.adapter.viewholder.chatmenu.AttachmentItemViewHolder
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.picker.common.EXTRA_RESULT_PICKER
@@ -373,71 +372,6 @@ abstract class TopchatRoomTest {
         webSocketModifier: (WebSocketResponse) -> Unit
     ) {
         webSocketModifier(response)
-    }
-
-    protected fun clickAttachProductMenu() {
-        val viewAction = RecyclerViewActions
-            .actionOnItemAtPosition<AttachmentItemViewHolder>(
-                0,
-                click()
-            )
-        onView(withIndex(withId(R.id.rv_topchat_attachment_menu), 0))
-            .perform(viewAction)
-    }
-
-    protected fun clickAttachImageMenu() {
-        val viewAction = RecyclerViewActions
-            .actionOnItemAtPosition<AttachmentItemViewHolder>(
-                1,
-                click()
-            )
-        onView(withIndex(withId(R.id.rv_topchat_attachment_menu), 0))
-            .perform(viewAction)
-    }
-
-    protected fun clickAttachInvoiceMenu() {
-        val viewAction = RecyclerViewActions
-            .actionOnItemAtPosition<AttachmentItemViewHolder>(
-                2,
-                click()
-            )
-        onView(withIndex(withId(R.id.rv_topchat_attachment_menu), 0))
-            .perform(viewAction)
-    }
-
-    protected fun clickAttachVoucherMenu() {
-        val viewAction = RecyclerViewActions
-            .actionOnItemAtPosition<AttachmentItemViewHolder>(
-                3,
-                click()
-            )
-        onView(withIndex(withId(R.id.rv_topchat_attachment_menu), 0))
-            .perform(viewAction)
-    }
-
-    protected fun clickComposeArea() {
-//        onView(withIndex(withId(R.id.new_comment), 0))
-//            .perform(click())
-    }
-
-    protected fun typeMessage(msg: String) {
-        onView(withIndex(withId(R.id.new_comment), 0))
-            .perform(typeText(msg))
-    }
-
-    protected fun clickStickerIconMenu() {
-        onView(withIndex(withId(R.id.iv_chat_sticker), 0))
-            .perform(click())
-    }
-
-    protected fun clickPlusIconMenu() {
-//        onView(withIndex(withId(R.id.topchat_icon_chat_menu), 0))
-//            .perform(click())
-    }
-
-    protected fun clickSendBtn() {
-        onView(withIndex(withId(R.id.send_but), 0))
-            .perform(click())
     }
 
     protected fun clickTemplateChatAt(position: Int) {

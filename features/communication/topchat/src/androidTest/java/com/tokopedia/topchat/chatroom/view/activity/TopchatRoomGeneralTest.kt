@@ -12,6 +12,7 @@ import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.OrderProgressResponse
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
+import com.tokopedia.topchat.chatroom.view.activity.robot.composeAreaResult
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.RoomSettingFraudAlertViewHolder
 import org.hamcrest.CoreMatchers.not
 import org.junit.Before
@@ -26,7 +27,7 @@ class TopchatRoomGeneralTest : TopchatRoomTest() {
 
     @Before
     fun additionalSetup() {
-        orderProgressResponseNotEmpty = AndroidFileUtil.parse<OrderProgressResponse>(
+        orderProgressResponseNotEmpty = AndroidFileUtil.parse(
             "success_get_order_progress.json",
             OrderProgressResponse::class.java
         )
@@ -40,13 +41,18 @@ class TopchatRoomGeneralTest : TopchatRoomTest() {
         chatAttachmentUseCase.response = chatAttachmentResponse
         launchChatRoomActivity {
             val intent = RouteManager.getIntent(
-                context, ApplinkConst.TOPCHAT_ROOM_ASKSELLER_WITH_MSG, exShopId, intentMsg
+                context,
+                ApplinkConst.TOPCHAT_ROOM_ASKSELLER_WITH_MSG,
+                exShopId,
+                intentMsg
             )
             it.putExtras(intent)
         }
 
         // Then
-        typeMessage(intentMsg)
+        composeAreaResult {
+            assertTypeMessageText(intentMsg)
+        }
     }
 
     @Test
@@ -57,13 +63,18 @@ class TopchatRoomGeneralTest : TopchatRoomTest() {
         chatAttachmentUseCase.response = chatAttachmentResponse
         launchChatRoomActivity {
             val intent = RouteManager.getIntent(
-                context, ApplinkConst.TOPCHAT_ROOM_ASKBUYER_WITH_MSG, exUserId, intentMsg
+                context,
+                ApplinkConst.TOPCHAT_ROOM_ASKBUYER_WITH_MSG,
+                exUserId,
+                intentMsg
             )
             it.putExtras(intent)
         }
 
         // Then
-        typeMessage(intentMsg)
+        composeAreaResult {
+            assertTypeMessageText(intentMsg)
+        }
     }
 
     @Test
@@ -77,8 +88,13 @@ class TopchatRoomGeneralTest : TopchatRoomTest() {
         // When
         launchChatRoomActivity {
             val intent = RouteManager.getIntent(
-                context, ApplinkConst.TOPCHAT_ASKSELLER,
-                exShopId, "", source, shopName, ""
+                context,
+                ApplinkConst.TOPCHAT_ASKSELLER,
+                exShopId,
+                "",
+                source,
+                shopName,
+                ""
             )
             it.data = intent.data
             it.putExtras(intent)
@@ -132,5 +148,4 @@ class TopchatRoomGeneralTest : TopchatRoomTest() {
             matches(not(isDisplayed()))
         )
     }
-
 }

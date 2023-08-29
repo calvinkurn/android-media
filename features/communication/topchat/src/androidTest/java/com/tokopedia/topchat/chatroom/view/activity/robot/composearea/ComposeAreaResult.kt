@@ -5,7 +5,6 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.assertion.DrawableMatcher
-import com.tokopedia.topchat.matchers.withIndex
 import com.tokopedia.topchat.matchers.withTotalItem
 import org.hamcrest.CoreMatchers.not
 
@@ -16,12 +15,18 @@ object ComposeAreaResult {
 
     fun assertSendBtnEnabled() {
         DrawableMatcher.compareDrawableWithIndex(
-            sendButtonId, R.drawable.bg_topchat_send_btn, 0)
+            sendButtonId,
+            R.drawable.bg_topchat_send_btn,
+            0
+        )
     }
 
     fun assertSendBtnDisabled() {
         DrawableMatcher.compareDrawableWithIndex(
-            sendButtonId, R.drawable.bg_topchat_send_btn_disabled, 0)
+            sendButtonId,
+            R.drawable.bg_topchat_send_btn_disabled,
+            0
+        )
     }
 
     fun assertTooLongErrorMsg(msg: String) {
@@ -29,14 +34,19 @@ object ComposeAreaResult {
     }
 
     fun assertNoTooLongErrorMsg() {
-        onView(withIndex(withId(errorComposeViewId), 0))
+        onView(withId(errorComposeViewId))
             .check(matches(not(isDisplayed())))
     }
 
     fun assertAttachmentMenuCount(count: Int) {
-        onView(withIndex(withId(R.id.rv_topchat_attachment_menu), 0)).check(
+        onView(withId(R.id.rv_topchat_attachment_menu)).check(
             matches(withTotalItem(count))
         )
     }
 
+    fun assertTypeMessageText(text: String) {
+        onView(withId(R.id.new_comment)).check(
+            matches(withText(text))
+        )
+    }
 }

@@ -3,7 +3,6 @@ package com.tokopedia.topchat.chatroom.view.activity
 import android.app.Activity
 import android.app.Instrumentation
 import android.content.Intent
-import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -12,11 +11,11 @@ import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withSubstring
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.activity.base.BaseSellerTopchatRoomTest
+import com.tokopedia.topchat.chatroom.view.activity.robot.composeAreaRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralResult
 import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralRobot
 import com.tokopedia.topchat.matchers.atPosition
@@ -26,7 +25,7 @@ import org.hamcrest.CoreMatchers.not
 import org.junit.Test
 
 @UiTest
-class TopchatRoomSellerAttachVoucherTest: BaseSellerTopchatRoomTest() {
+class TopchatRoomSellerAttachVoucherTest : BaseSellerTopchatRoomTest() {
 
     @Test
     fun should_open_voucher_detail_when_click_voucher() {
@@ -34,12 +33,14 @@ class TopchatRoomSellerAttachVoucherTest: BaseSellerTopchatRoomTest() {
         getChatUseCase.response = getChatUseCase.voucherAttachmentChatWithSellerResponse
         launchChatRoomActivity(isSellerApp = true)
 
-        //When
+        // When
         Intents.intending(IntentMatchers.anyIntent())
             .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
         GeneralRobot.doScrollChatToPosition(0)
-        onView(withRecyclerView(R.id.recycler_view_chatroom)
-            .atPosition(0)).perform(click())
+        onView(
+            withRecyclerView(R.id.recycler_view_chatroom)
+                .atPosition(0)
+        ).perform(click())
 
         // Then
         val intent = Intent(context, MerchantVoucherDetailActivity::class.java)
@@ -52,12 +53,14 @@ class TopchatRoomSellerAttachVoucherTest: BaseSellerTopchatRoomTest() {
         getChatUseCase.response = getChatUseCase.voucherAttachmentChatWithSellerResponse
         launchChatRoomActivity(isSellerApp = true)
 
-        //When
+        // When
         Intents.intending(IntentMatchers.anyIntent())
             .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
         GeneralRobot.doScrollChatToPosition(0)
-        onView(withRecyclerView(R.id.recycler_view_chatroom)
-            .atPosition(1)).perform(click())
+        onView(
+            withRecyclerView(R.id.recycler_view_chatroom)
+                .atPosition(1)
+        ).perform(click())
 
         // Then
         GeneralResult.openPageWithApplink("sellerapp://voucher-product-detail/7050189")
@@ -69,12 +72,14 @@ class TopchatRoomSellerAttachVoucherTest: BaseSellerTopchatRoomTest() {
         getChatUseCase.response = getChatUseCase.voucherAttachmentChatWithSellerResponse
         launchChatRoomActivity(isSellerApp = false)
 
-        //When
+        // When
         Intents.intending(IntentMatchers.anyIntent())
             .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
         GeneralRobot.doScrollChatToPosition(0)
-        onView(withRecyclerView(R.id.recycler_view_chatroom)
-            .atPosition(1)).perform(click())
+        onView(
+            withRecyclerView(R.id.recycler_view_chatroom)
+                .atPosition(1)
+        ).perform(click())
 
         // Then
         assertSnackbarText(context.getString(R.string.topchat_mvc_not_available))
@@ -86,12 +91,14 @@ class TopchatRoomSellerAttachVoucherTest: BaseSellerTopchatRoomTest() {
         getChatUseCase.response = getChatUseCase.voucherAttachmentChatWithSellerResponse
         launchChatRoomActivity(isSellerApp = true)
 
-        //When
+        // When
         GeneralRobot.doScrollChatToPosition(0)
 
         // Then
-        onView(withRecyclerView(R.id.recycler_view_chatroom)
-            .atPositionOnView(1, com.tokopedia.merchantvoucher.R.id.tvVoucherDesc))
+        onView(
+            withRecyclerView(R.id.recycler_view_chatroom)
+                .atPositionOnView(1, com.tokopedia.merchantvoucher.R.id.tvVoucherDesc)
+        )
             .check(matches(withSubstring("untuk produk tertentu")))
     }
 
@@ -101,12 +108,14 @@ class TopchatRoomSellerAttachVoucherTest: BaseSellerTopchatRoomTest() {
         getChatUseCase.response = getChatUseCase.voucherAttachmentChatWithSellerResponse
         launchChatRoomActivity(isSellerApp = true)
 
-        //When
+        // When
         GeneralRobot.doScrollChatToPosition(0)
 
         // Then
-        onView(withRecyclerView(R.id.recycler_view_chatroom)
-            .atPositionOnView(0, com.tokopedia.merchantvoucher.R.id.tvVoucherDesc))
+        onView(
+            withRecyclerView(R.id.recycler_view_chatroom)
+                .atPositionOnView(0, com.tokopedia.merchantvoucher.R.id.tvVoucherDesc)
+        )
             .check(matches(not(withSubstring("untuk produk tertentu"))))
     }
 
@@ -120,16 +129,25 @@ class TopchatRoomSellerAttachVoucherTest: BaseSellerTopchatRoomTest() {
         }
         launchChatRoomActivity(isSellerApp = true)
 
-        //When
+        // When
         Intents.intending(IntentMatchers.anyIntent())
             .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, resultIntent))
         GeneralRobot.doScrollChatToPosition(0)
-        clickPlusIconMenu()
-        clickAttachVoucherMenu()
+        composeAreaRobot {
+            clickPlusIconMenu()
+            clickAttachVoucherMenu()
+        }
 
         // Then
         onView(withIndex(withId(R.id.rv_attachment_preview), 0))
-            .check(matches(atPosition(0, com.tokopedia.merchantvoucher.R.id.tvVoucherDesc,
-                withSubstring("untuk produk tertentu"))))
+            .check(
+                matches(
+                    atPosition(
+                        0,
+                        com.tokopedia.merchantvoucher.R.id.tvVoucherDesc,
+                        withSubstring("untuk produk tertentu")
+                    )
+                )
+            )
     }
 }

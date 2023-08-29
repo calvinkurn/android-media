@@ -8,6 +8,7 @@ import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
+import com.tokopedia.topchat.chatroom.view.activity.robot.composeAreaRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.replybubble.ReplyBubbleResult
 import com.tokopedia.topchat.chatroom.view.activity.robot.replybubble.ReplyBubbleRobot
 import com.tokopedia.topchat.chatroom.view.onboarding.ReplyBubbleOnBoarding.Companion.KEY_REPLY_BUBBLE_ONBOARDING
@@ -78,9 +79,11 @@ class ReplyBubbleTest : TopchatRoomTest() {
         ReplyBubbleRobot.longClickBubbleAt(1)
         ReplyBubbleRobot.clickReplyItemMenu()
         ReplyBubbleRobot.clickReplyComposeCloseIcon()
-        clickComposeArea()
-        typeMessage("reply this")
-        clickSendBtn()
+        composeAreaRobot {
+            clickComposeArea()
+            typeMessageComposeArea("reply this")
+            clickSendBtn()
+        }
         waitForIt(5000)
 
         // Then
@@ -124,9 +127,11 @@ class ReplyBubbleTest : TopchatRoomTest() {
         ReplyBubbleRobot.longClickBubbleAt(lastBubbleIndex)
         ReplyBubbleRobot.clickReplyItemMenu()
         scrollChatToPosition(0)
-        clickComposeArea()
-        typeMessage("reply this")
-        clickSendBtn()
+        composeAreaRobot {
+            clickComposeArea()
+            typeMessageComposeArea("reply this")
+            clickSendBtn()
+        }
         websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
         ReplyBubbleRobot.clickReplyBubbleAt(0)
 
@@ -143,9 +148,11 @@ class ReplyBubbleTest : TopchatRoomTest() {
         // When
         ReplyBubbleRobot.longClickBubbleAt(1)
         ReplyBubbleRobot.clickReplyItemMenu()
-        clickComposeArea()
-        typeMessage("reply this")
-        clickSendBtn()
+        composeAreaRobot {
+            clickComposeArea()
+            typeMessageComposeArea("reply this")
+            clickSendBtn()
+        }
         websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
 
         // Then
@@ -171,7 +178,9 @@ class ReplyBubbleTest : TopchatRoomTest() {
         // When
         ReplyBubbleRobot.longClickBubbleAt(1)
         ReplyBubbleRobot.clickReplyItemMenu()
-        clickStickerIconMenu()
+        composeAreaRobot {
+            clickStickerIconMenu()
+        }
         clickStickerAtPosition(0)
         websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
 
@@ -202,9 +211,11 @@ class ReplyBubbleTest : TopchatRoomTest() {
         // When
         ReplyBubbleRobot.longClickBubbleAt(1)
         ReplyBubbleRobot.clickReplyItemMenu()
-        clickComposeArea()
-        typeMessage("reply this")
-        clickSendBtn()
+        composeAreaRobot {
+            clickComposeArea()
+            typeMessageComposeArea("reply this")
+            clickSendBtn()
+        }
         websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
 
         // Then

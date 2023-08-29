@@ -8,6 +8,7 @@ import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.assertion.DrawableMatcher
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
+import com.tokopedia.topchat.chatroom.view.activity.robot.composeAreaRobot
 import com.tokopedia.topchat.matchers.withRecyclerView
 import com.tokopedia.topchat.matchers.withTotalItem
 import com.tokopedia.topchat.stub.common.RemoteConfigStub
@@ -76,22 +77,26 @@ class TopchatRoomTemplateTest : TopchatRoomTest() {
 
         // When
         val count = activityTestRule.activity
-                .findViewById<RecyclerView>(R.id.recycler_view_chatroom)
-                .adapter?.itemCount?: 0
+            .findViewById<RecyclerView>(R.id.recycler_view_chatroom)
+            .adapter?.itemCount ?: 0
         clickTemplateChatAt(0)
-        clickSendBtn()
+        composeAreaRobot {
+            clickSendBtn()
+        }
 
         // Then
         onView(
-                withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
-                        0, R.id.tvMessage
-                ))
-                .check(matches(withSubstring("Hi Barang ini ready ga?")))
-        onView(withId(R.id.recycler_view_chatroom)).check(matches(withTotalItem(count+1)))
+            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
+                0,
+                R.id.tvMessage
+            )
+        )
+            .check(matches(withSubstring("Hi Barang ini ready ga?")))
+        onView(withId(R.id.recycler_view_chatroom)).check(matches(withTotalItem(count + 1)))
         assertComposedTextValue("")
     }
 
-    //Setup remoteconfig for toggle flexmode/not
+    // Setup remoteconfig for toggle flexmode/not
     private fun setupRemoteConfigValue(isFlexMode: Boolean) {
         val remoteConfigStub = RemoteConfigStub()
         remoteConfigStub.setBooleanResult(isFlexMode)

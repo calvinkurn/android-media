@@ -26,10 +26,10 @@ import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentResponse
 import com.tokopedia.topchat.chatroom.view.activity.base.BaseBuyerTopchatRoomTest
+import com.tokopedia.topchat.chatroom.view.activity.robot.composeAreaRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralResult.openPageWithApplink
 import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralResult.openPageWithIntent
 import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralRobot.doScrollChatToPosition
-import com.tokopedia.topchat.chatroom.view.activity.robot.generalRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardResult.hasFailedToasterWithMsg
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardResult.hasProductWishlistButtonWithText
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardResult.hasToasterWithMsg
@@ -83,7 +83,9 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         }
 
         // When
-        clickSendBtn()
+        composeAreaRobot {
+            clickSendBtn()
+        }
 
         // Then
         onView(withId(R.id.rv_attachment_preview)).check(matches(isDisplayed()))
@@ -106,10 +108,10 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
             )
 
         // When
-        generalRobot {
+        composeAreaRobot {
             clickPlusIconMenu()
+            clickAttachProductMenu()
         }
-        clickAttachProductMenu()
 
         // Then
         onView(withId(R.id.rv_attachment_preview)).check(matches(isDisplayed()))
@@ -132,8 +134,11 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
                     getAttachProductData(1)
                 )
             )
-        clickPlusIconMenu()
-        clickAttachProductMenu()
+        composeAreaRobot {
+            clickPlusIconMenu()
+            clickAttachProductMenu()
+        }
+
         intending(hasExtra(TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY, SOURCE_TOPCHAT))
             .respondWith(
                 Instrumentation.ActivityResult(
@@ -141,8 +146,11 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
                     getAttachProductData(2)
                 )
             )
-        clickPlusIconMenu()
-        clickAttachProductMenu()
+        composeAreaRobot {
+            clickPlusIconMenu()
+            clickAttachProductMenu()
+        }
+
         intending(hasExtra(TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY, SOURCE_TOPCHAT))
             .respondWith(
                 Instrumentation.ActivityResult(
@@ -150,8 +158,11 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
                     getAttachProductData(3)
                 )
             )
-        clickPlusIconMenu()
-        clickAttachProductMenu()
+        composeAreaRobot {
+            clickPlusIconMenu()
+            clickAttachProductMenu()
+        }
+
         onView(withId(R.id.rv_attachment_preview)).perform(
             scrollToPosition<RecyclerView.ViewHolder>(2)
         )
@@ -177,8 +188,10 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
             )
 
         // When
-        clickPlusIconMenu()
-        clickAttachProductMenu()
+        composeAreaRobot {
+            clickPlusIconMenu()
+            clickAttachProductMenu()
+        }
         clickCloseAttachmentPreview(0)
 
         // Then
@@ -202,8 +215,10 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
             )
 
         // When
-        clickPlusIconMenu()
-        clickAttachProductMenu()
+        composeAreaRobot {
+            clickPlusIconMenu()
+            clickAttachProductMenu()
+        }
         clickCloseAttachmentPreview(0)
         clickCloseAttachmentPreview(1)
 

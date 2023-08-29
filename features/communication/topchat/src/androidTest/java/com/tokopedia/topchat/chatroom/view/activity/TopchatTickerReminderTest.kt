@@ -8,6 +8,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.activity.base.BaseBuyerTopchatRoomTest
+import com.tokopedia.topchat.chatroom.view.activity.robot.composeAreaRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralResult.assertViewInRecyclerViewAt
 import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralResult.openPageWithApplink
 import com.tokopedia.topchat.chatroom.view.activity.robot.tickerreminder.TickerReminderResult.assertReminderTickerIsNotAtPosition
@@ -108,7 +109,7 @@ class TopchatTickerReminderTest : BaseBuyerTopchatRoomTest() {
     }
 
     @Test
-    fun should_not_show_ticker_if_no_ticker_available_to_exist(){
+    fun should_not_show_ticker_if_no_ticker_available_to_exist() {
         // Given
         reminderTickerUseCase.response = reminderTickerUseCase.falseSrwPrompt
         getChatUseCase.response = getChatUseCase.getTickerReminderWithReplyId(
@@ -122,7 +123,7 @@ class TopchatTickerReminderTest : BaseBuyerTopchatRoomTest() {
     }
 
     @Test
-    fun should_not_show_ticker_if_no_eligible_position_exist(){
+    fun should_not_show_ticker_if_no_eligible_position_exist() {
         // Given
         reminderTickerUseCase.response = reminderTickerUseCase.noRegexMatchSrwPrompt
         getChatUseCase.response = getChatUseCase.getTickerReminderWithReplyId(
@@ -194,8 +195,8 @@ class TopchatTickerReminderTest : BaseBuyerTopchatRoomTest() {
 
     private fun sendWebSocketTickerMessageWithLocalId(localId: String, message: String) {
         webSocketPayloadGenerator.fakeLocalId = localId
-        changeResponseWebSocket (
-            wsTickerReminderResponse,
+        changeResponseWebSocket(
+            wsTickerReminderResponse
         ) {
             it.jsonObject?.addProperty(
                 "local_id",
@@ -207,10 +208,13 @@ class TopchatTickerReminderTest : BaseBuyerTopchatRoomTest() {
             )
         }
         changeResponseStartTime(
-            wsTickerReminderResponse, FakeTopchatWebSocket.exStartTime
+            wsTickerReminderResponse,
+            FakeTopchatWebSocket.exStartTime
         )
-        typeMessage(message)
-        clickSendBtn()
+        composeAreaRobot {
+            typeMessageComposeArea(message)
+            clickSendBtn()
+        }
         websocket.simulateResponse(wsTickerReminderResponse)
     }
 }

@@ -4,6 +4,7 @@ import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
+import com.tokopedia.topchat.chatroom.view.activity.robot.composeAreaRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.header.HeaderRobot
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Rule
@@ -54,9 +55,11 @@ class ChatRoomCassavaTest : TopchatRoomTest() {
         launchChatRoomActivity()
 
         // When
-        clickComposeArea()
-        typeMessage("Hello")
-        clickSendBtn()
+        composeAreaRobot {
+            clickComposeArea()
+            typeMessageComposeArea("Hello")
+            clickSendBtn()
+        }
 
         // Then
         assertThat(cassavaTestRule.validate(journeyId), hasAllSuccess())

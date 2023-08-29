@@ -24,6 +24,7 @@ import com.tokopedia.topchat.R
 import com.tokopedia.topchat.assertion.atPositionIsInstanceOf
 import com.tokopedia.topchat.chatroom.service.UploadImageChatService
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
+import com.tokopedia.topchat.chatroom.view.activity.robot.composeAreaRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralResult.assertViewObjectValue
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.TopchatImageUploadViewHolder
 import com.tokopedia.topchat.matchers.withRecyclerView
@@ -223,8 +224,10 @@ class TopchatRoomUploadImageTest : TopchatRoomTest() {
     }
 
     private fun openMediaPicker() {
-        clickPlusIconMenu()
-        clickAttachImageMenu()
+        composeAreaRobot {
+            clickPlusIconMenu()
+            clickAttachImageMenu()
+        }
     }
 
     private fun openChatRoom(

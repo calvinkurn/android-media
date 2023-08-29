@@ -21,6 +21,7 @@ import com.tokopedia.topchat.chatroom.view.activity.base.BaseBuyerTopchatRoomTes
 import com.tokopedia.topchat.chatroom.view.activity.base.changeTimeStampTo
 import com.tokopedia.topchat.chatroom.view.activity.base.hasQuestion
 import com.tokopedia.topchat.chatroom.view.activity.base.matchProductWith
+import com.tokopedia.topchat.chatroom.view.activity.robot.composeAreaRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralResult.assertViewInRecyclerViewAt
 import com.tokopedia.topchat.chatroom.view.activity.robot.srw.SrwResult.assertSrwCoachMark
 import com.tokopedia.topchat.chatroom.view.activity.robot.srw.SrwResult.assertSrwLabel
@@ -88,8 +89,10 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         intendingAttachProduct(1)
 
         // When
-        clickPlusIconMenu()
-        clickAttachProductMenu()
+        composeAreaRobot {
+            clickPlusIconMenu()
+            clickAttachProductMenu()
+        }
 
         // Then
         assertSrwPreviewContentIsVisible()
@@ -150,7 +153,9 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // Then
-        clickSendBtn()
+        composeAreaRobot {
+            clickSendBtn()
+        }
 
         // Then
         assertSrwPreviewContentIsVisible()
@@ -168,8 +173,10 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         intendingAttachProduct(1)
 
         // When
-        clickPlusIconMenu()
-        clickAttachProductMenu()
+        composeAreaRobot {
+            clickPlusIconMenu()
+            clickAttachProductMenu()
+        }
 
         // Then
         assertSrwPreviewContentIsHidden()
@@ -274,7 +281,9 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // When
-        clickComposeArea()
+        composeAreaRobot {
+            clickComposeArea()
+        }
 
         // Then
         assertSrwPreviewContentIsVisible()
@@ -294,7 +303,9 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // When
-        clickComposeArea()
+        composeAreaRobot {
+            clickComposeArea()
+        }
         pressBack()
 
         // Then
@@ -315,7 +326,9 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // When
-        clickComposeArea()
+        composeAreaRobot {
+            clickComposeArea()
+        }
         clickOnSrwPartial()
 
         // Then
@@ -337,7 +350,9 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // When
-        clickComposeArea()
+        composeAreaRobot {
+            clickComposeArea()
+        }
         clickOnSrwPartial()
         clickOnSrwPartial()
 
@@ -370,11 +385,15 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
             )
 
         // When
-        clickComposeArea()
+        composeAreaRobot {
+            clickComposeArea()
+        }
         clickCloseAttachmentPreview(0)
         pressBack()
-        clickPlusIconMenu()
-        clickAttachProductMenu()
+        composeAreaRobot {
+            clickPlusIconMenu()
+            clickAttachProductMenu()
+        }
 
         // Then
         assertSrwPreviewContentIsVisible()
@@ -465,11 +484,13 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         // When
         clickSrwPreviewItemAt(0)
         websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
-        clickPlusIconMenu()
-        clickAttachInvoiceMenu()
-        clickComposeArea()
-        typeMessage("Sending Invoice")
-        clickSendBtn()
+        composeAreaRobot {
+            clickPlusIconMenu()
+            clickAttachInvoiceMenu()
+            clickComposeArea()
+            typeMessageComposeArea("Sending Invoice")
+            clickSendBtn()
+        }
 
         // Then
         assertSrwBubbleDoesNotExist()
@@ -513,8 +534,10 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         intending(anyIntent()).respondWith(getAttachInvoiceResult())
 
         // When
-        clickPlusIconMenu()
-        clickAttachInvoiceMenu()
+        composeAreaRobot {
+            clickPlusIconMenu()
+            clickAttachInvoiceMenu()
+        }
 
         // Then
         assertSrwPreviewContentIsHidden()
@@ -562,8 +585,10 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         )
 
         // When
-        clickPlusIconMenu()
-        clickAttachImageMenu()
+        composeAreaRobot {
+            clickPlusIconMenu()
+            clickAttachImageMenu()
+        }
 
         // Then
         assertSrwBubbleDoesNotExist()
@@ -588,8 +613,10 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         // When
         clickSrwPreviewItemAt(0)
         websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
-        clickPlusIconMenu()
-        clickAttachProductMenu()
+        composeAreaRobot {
+            clickPlusIconMenu()
+            clickAttachProductMenu()
+        }
 
         // Then
         assertSrwBubbleDoesNotExist()
@@ -632,7 +659,9 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // When
-        clickStickerIconMenu()
+        composeAreaRobot {
+            clickStickerIconMenu()
+        }
 
         // Then
         assertSrwPreviewContentIsVisible()
@@ -652,7 +681,9 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // When
-        clickStickerIconMenu()
+        composeAreaRobot {
+            clickStickerIconMenu()
+        }
         pressBack()
 
         // Then
@@ -673,7 +704,9 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // When
-        clickPlusIconMenu()
+        composeAreaRobot {
+            clickPlusIconMenu()
+        }
 
         // Then
         assertSrwPreviewContentIsVisible()
@@ -693,8 +726,12 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // When
-        clickPlusIconMenu()
-        clickPlusIconMenu()
+        composeAreaRobot {
+            clickPlusIconMenu()
+        }
+        composeAreaRobot {
+            clickPlusIconMenu()
+        }
 
         // Then
         assertSrwPreviewContentIsVisible()
@@ -714,8 +751,10 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // When
-        clickStickerIconMenu()
-        clickStickerIconMenu()
+        composeAreaRobot {
+            clickStickerIconMenu()
+            clickStickerIconMenu()
+        }
 
         // Then
         assertSrwPreviewContentIsVisible()
@@ -735,8 +774,10 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // When
-        clickComposeArea()
-        clickStickerIconMenu()
+        composeAreaRobot {
+            clickComposeArea()
+            clickStickerIconMenu()
+        }
 
         // Then
         assertSrwPreviewContentIsVisible()
@@ -756,7 +797,9 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // When
-        clickPlusIconMenu()
+        composeAreaRobot {
+            clickPlusIconMenu()
+        }
         clickSrwPreviewExpandCollapse()
 
         // Then
@@ -778,7 +821,9 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // When
-        clickStickerIconMenu()
+        composeAreaRobot {
+            clickStickerIconMenu()
+        }
         clickSrwPreviewExpandCollapse()
 
         // Then
@@ -803,7 +848,9 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         // When
         clickSrwPreviewItemAt(0)
         websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
-        clickStickerIconMenu()
+        composeAreaRobot {
+            clickStickerIconMenu()
+        }
 
         // Then
         assertSrwBubbleContentIsVisibleAt(0)
@@ -827,7 +874,9 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         // When
         clickSrwPreviewItemAt(0)
         websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
-        clickStickerIconMenu()
+        composeAreaRobot {
+            clickStickerIconMenu()
+        }
         pressBack()
 
         // Then
@@ -852,7 +901,9 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         // When
         clickSrwPreviewItemAt(0)
         websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
-        clickPlusIconMenu()
+        composeAreaRobot {
+            clickPlusIconMenu()
+        }
 
         // Then
         assertSrwBubbleContentIsVisibleAt(0)
@@ -876,8 +927,12 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         // When
         clickSrwPreviewItemAt(0)
         websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
-        clickPlusIconMenu()
-        clickPlusIconMenu()
+        composeAreaRobot {
+            clickPlusIconMenu()
+        }
+        composeAreaRobot {
+            clickPlusIconMenu()
+        }
 
         // Then
         assertSrwBubbleContentIsVisibleAt(0)
@@ -900,7 +955,9 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         // When
         clickSrwPreviewItemAt(0)
         websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
-        clickPlusIconMenu()
+        composeAreaRobot {
+            clickPlusIconMenu()
+        }
         clickSrwBubbleExpandCollapse(0) // Collapse
         clickSrwBubbleExpandCollapse(0) // Expand
 
@@ -925,7 +982,9 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         // When
         clickSrwPreviewItemAt(0)
         websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
-        clickStickerIconMenu()
+        composeAreaRobot {
+            clickStickerIconMenu()
+        }
         clickSrwBubbleExpandCollapse(0) // Collapse
         clickSrwBubbleExpandCollapse(0) // Expand
 
@@ -950,7 +1009,9 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         // When
         clickSrwPreviewItemAt(0)
         websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
-        clickComposeArea()
+        composeAreaRobot {
+            clickComposeArea()
+        }
 
         // Then
         assertSrwBubbleContentIsVisibleAt(0)
@@ -972,7 +1033,9 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         // When
         clickSrwPreviewItemAt(0)
         websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
-        clickComposeArea()
+        composeAreaRobot {
+            clickComposeArea()
+        }
         pressBack()
 
         // Then
@@ -995,8 +1058,10 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         // When
         clickSrwPreviewItemAt(0)
         websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
-        clickStickerIconMenu()
-        clickStickerIconMenu()
+        composeAreaRobot {
+            clickStickerIconMenu()
+            clickStickerIconMenu()
+        }
 
         // Then
         assertSrwBubbleContentIsVisibleAt(0)
@@ -1018,8 +1083,10 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         // When
         clickSrwPreviewItemAt(0)
         websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
-        clickComposeArea()
-        clickStickerIconMenu()
+        composeAreaRobot {
+            clickComposeArea()
+            clickStickerIconMenu()
+        }
 
         // Then
         assertSrwBubbleContentIsVisibleAt(0)
@@ -1042,8 +1109,10 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         // When
         clickSrwPreviewItemAt(0)
         websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
-        clickPlusIconMenu()
-        clickAttachInvoiceMenu()
+        composeAreaRobot {
+            clickPlusIconMenu()
+            clickAttachInvoiceMenu()
+        }
 
         // Then
         assertSrwBubbleContentIsVisibleAt(0)
@@ -1066,8 +1135,10 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         // When
         clickSrwPreviewItemAt(0)
         websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
-        clickPlusIconMenu()
-        clickAttachInvoiceMenu()
+        composeAreaRobot {
+            clickPlusIconMenu()
+            clickAttachInvoiceMenu()
+        }
         clickCloseAttachmentPreview(0)
 
         // Then
@@ -1091,9 +1162,11 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         // When
         clickSrwPreviewItemAt(0)
         websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
-        clickPlusIconMenu()
-        clickAttachInvoiceMenu()
-        clickPlusIconMenu()
+        composeAreaRobot {
+            clickPlusIconMenu()
+            clickAttachInvoiceMenu()
+            clickPlusIconMenu()
+        }
 
         // Then
         assertSrwBubbleContentIsVisibleAt(0)
@@ -1116,10 +1189,12 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         // When
         clickSrwPreviewItemAt(0)
         websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
-        clickPlusIconMenu()
-        clickAttachInvoiceMenu()
-        clickPlusIconMenu()
-        clickPlusIconMenu()
+        composeAreaRobot {
+            clickPlusIconMenu()
+            clickAttachInvoiceMenu()
+            clickPlusIconMenu()
+            clickPlusIconMenu()
+        }
 
         // Then
         assertSrwBubbleContentIsVisibleAt(0)
@@ -1163,7 +1238,9 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // When
-        clickStickerIconMenu()
+        composeAreaRobot {
+            clickStickerIconMenu()
+        }
         clickStickerAtPosition(0)
 
         // Then
@@ -1184,9 +1261,11 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // When
-        clickComposeArea()
-        typeMessage("Test Send Message")
-        clickSendBtn()
+        composeAreaRobot {
+            clickComposeArea()
+            typeMessageComposeArea("Test Send Message")
+            clickSendBtn()
+        }
 
         // Then
         assertSrwBubbleContentIsVisibleAt(0)
@@ -1204,9 +1283,11 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // When
-        clickComposeArea()
-        typeMessage("Test Send Message")
-        clickSendBtn()
+        composeAreaRobot {
+            clickComposeArea()
+            typeMessageComposeArea("Test Send Message")
+            clickSendBtn()
+        }
 
         // Then
         assertSrwBubbleDoesNotExist()
@@ -1291,8 +1372,10 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         // When
         clickSrwPreviewItemAt(0)
         websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
-        clickPlusIconMenu()
-        clickAttachImageMenu()
+        composeAreaRobot {
+            clickPlusIconMenu()
+            clickAttachImageMenu()
+        }
 
         // Then
         assertSrwBubbleDoesNotExist()
@@ -1314,8 +1397,10 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
 
         // When
         scrollChatToPosition(10)
-        clickComposeArea()
-        typeMessage(typedMsg)
+        composeAreaRobot {
+            clickComposeArea()
+            typeMessageComposeArea(typedMsg)
+        }
         clickSrwPreviewExpandCollapse()
         clickSrwPreviewItemAt(0)
         websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
@@ -1337,14 +1422,19 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
 
         // When
         intendingAttachProduct(1)
-        clickPlusIconMenu()
-        clickAttachProductMenu()
+        composeAreaRobot {
+            clickPlusIconMenu()
+            clickAttachProductMenu()
+        }
+
         chatSrwUseCase.response = chatSrwUseCase.multipleQuestions
         getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
             .generate3PreAttachPayload()
         intendingAttachProduct(3)
-        clickPlusIconMenu()
-        clickAttachProductMenu()
+        composeAreaRobot {
+            clickPlusIconMenu()
+            clickAttachProductMenu()
+        }
 
         // Then
         assertSrwPreviewContentIsVisible()
@@ -1365,8 +1455,10 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         intendingAttachProduct(3)
         getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
             .generate3PreAttachPayload()
-        clickPlusIconMenu()
-        clickAttachProductMenu()
+        composeAreaRobot {
+            clickPlusIconMenu()
+            clickAttachProductMenu()
+        }
         chatSrwUseCase.response = chatSrwUseCase.multipleQuestions
         clickCloseAttachmentPreview(0)
 
@@ -1408,11 +1500,15 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
 
         // When
         intendingAttachProduct(1)
-        clickPlusIconMenu()
-        clickAttachProductMenu()
-        chatSrwUseCase.isError = true
-        clickPlusIconMenu()
-        clickAttachProductMenu()
+        composeAreaRobot {
+            clickPlusIconMenu()
+            clickAttachProductMenu()
+
+            chatSrwUseCase.isError = true
+
+            clickPlusIconMenu()
+            clickAttachProductMenu()
+        }
 
         // Then
         assertSrwPreviewContentIsHidden()

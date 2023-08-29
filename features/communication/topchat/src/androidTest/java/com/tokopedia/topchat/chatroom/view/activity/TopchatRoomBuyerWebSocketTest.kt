@@ -7,6 +7,7 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.activity.base.BaseBuyerTopchatRoomTest
+import com.tokopedia.topchat.chatroom.view.activity.robot.composeAreaRobot
 import com.tokopedia.topchat.common.websocket.FakeTopchatWebSocket
 import com.tokopedia.topchat.matchers.withIndex
 import com.tokopedia.topchat.matchers.withRecyclerView
@@ -23,20 +24,26 @@ class TopchatRoomBuyerWebSocketTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         changeResponseStartTime(
-                wsMineResponseText, FakeTopchatWebSocket.exStartTime
+            wsMineResponseText,
+            FakeTopchatWebSocket.exStartTime
         )
         launchChatRoomActivity()
 
         // When
-        typeMessage(myMsg)
+        composeAreaRobot {
+            typeMessageComposeArea(myMsg)
+        }
         onView(withIndex(withId(R.id.send_but), 0))
-                .perform(click())
+            .perform(click())
         websocket.simulateResponse(wsMineResponseText)
 
         // Then
-        onView(withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
-                0, R.id.tvMessage
-        )).check(matches(withText(myMsg)))
+        onView(
+            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
+                0,
+                R.id.tvMessage
+            )
+        ).check(matches(withText(myMsg)))
     }
 
     @Test
@@ -45,7 +52,8 @@ class TopchatRoomBuyerWebSocketTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         changeResponseStartTime(
-                wsMineResponseText, FakeTopchatWebSocket.exStartTime
+            wsMineResponseText,
+            FakeTopchatWebSocket.exStartTime
         )
         launchChatRoomActivity()
 
@@ -54,10 +62,13 @@ class TopchatRoomBuyerWebSocketTest : BaseBuyerTopchatRoomTest() {
 
         // Then
         val label = wsSellerResponseText.jsonObject
-                ?.get("label")?.asString
-        onView(withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
-                0, R.id.txt_info
-        )).check(matches(withText(label)))
+            ?.get("label")?.asString
+        onView(
+            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
+                0,
+                R.id.txt_info
+            )
+        ).check(matches(withText(label)))
     }
 
     @Test
@@ -66,7 +77,8 @@ class TopchatRoomBuyerWebSocketTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         changeResponseStartTime(
-                wsMineResponseText, FakeTopchatWebSocket.exStartTime
+            wsMineResponseText,
+            FakeTopchatWebSocket.exStartTime
         )
         launchChatRoomActivity()
 
@@ -74,9 +86,11 @@ class TopchatRoomBuyerWebSocketTest : BaseBuyerTopchatRoomTest() {
         websocket.simulateResponse(wsSellerResponseText.setLabel(""))
 
         // Then
-        onView(withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
-                0, R.id.txt_info
-        )).check(matches(not(isDisplayed())))
+        onView(
+            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
+                0,
+                R.id.txt_info
+            )
+        ).check(matches(not(isDisplayed())))
     }
-
 }
