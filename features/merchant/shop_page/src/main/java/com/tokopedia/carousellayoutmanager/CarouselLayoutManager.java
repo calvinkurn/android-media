@@ -555,23 +555,40 @@ public class CarouselLayoutManager extends RecyclerView.LayoutManager implements
         final int centerItem = Math.round(absCurrentScrollPosition);
 
         if (mCircleLayout && 1 < mItemsCount) {
-            final int layoutCount = Math.min(mLayoutHelper.mMaxVisibleItems * 2 + 1, mItemsCount);
+            if (mItemsCount == 2) {
+                final int firstVisible = Math.max(centerItem - mLayoutHelper.mMaxVisibleItems, 0);
+                final int lastVisible = Math.min(centerItem + mLayoutHelper.mMaxVisibleItems, mItemsCount - 1);
+                final int layoutCount = lastVisible - firstVisible + 1;
 
-            mLayoutHelper.initLayoutOrder(layoutCount);
+                mLayoutHelper.initLayoutOrder(layoutCount);
 
-            final int countLayoutHalf = layoutCount / 2;
-            // before center item
-            for (int i = 1; i <= countLayoutHalf; ++i) {
-                final int position = Math.round(absCurrentScrollPosition - i + mItemsCount) % mItemsCount;
-                mLayoutHelper.setLayoutOrder(countLayoutHalf - i, position, centerItem - absCurrentScrollPosition - i);
+                for (int i = firstVisible; i <= lastVisible; ++i) {
+                    if (i == centerItem) {
+                        mLayoutHelper.setLayoutOrder(layoutCount - 1, i, i - absCurrentScrollPosition);
+                    } else if (i < centerItem) {
+                        mLayoutHelper.setLayoutOrder(i - firstVisible, i, i - absCurrentScrollPosition);
+                    } else {
+                        mLayoutHelper.setLayoutOrder(layoutCount - (i - centerItem) - 1, i, i - absCurrentScrollPosition);
+                    }
+                }
+            } else {
+                final int layoutCount = Math.min(mLayoutHelper.mMaxVisibleItems * 2 + 1, mItemsCount);
+
+                mLayoutHelper.initLayoutOrder(layoutCount);
+
+                final int countLayoutHalf = layoutCount / 2;
+                // before center item
+                for (int i = 1; i <= countLayoutHalf; ++i) {
+                    final int position = Math.round(absCurrentScrollPosition - i + mItemsCount) % mItemsCount;
+                    mLayoutHelper.setLayoutOrder(countLayoutHalf - i, position, centerItem - absCurrentScrollPosition - i);
+                }
+                // after center item
+                for (int i = layoutCount - 1; i >= countLayoutHalf + 1; --i) {
+                    final int position = Math.round(absCurrentScrollPosition - i + layoutCount) % mItemsCount;
+                    mLayoutHelper.setLayoutOrder(i - 1, position, centerItem - absCurrentScrollPosition + layoutCount - i);
+                }
+                mLayoutHelper.setLayoutOrder(layoutCount - 1, centerItem, centerItem - absCurrentScrollPosition);
             }
-            // after center item
-            for (int i = layoutCount - 1; i >= countLayoutHalf + 1; --i) {
-                final int position = Math.round(absCurrentScrollPosition - i + layoutCount) % mItemsCount;
-                mLayoutHelper.setLayoutOrder(i - 1, position, centerItem - absCurrentScrollPosition + layoutCount - i);
-            }
-            mLayoutHelper.setLayoutOrder(layoutCount - 1, centerItem, centerItem - absCurrentScrollPosition);
-
         } else {
             final int firstVisible = Math.max(centerItem - mLayoutHelper.mMaxVisibleItems, 0);
             final int lastVisible = Math.min(centerItem + mLayoutHelper.mMaxVisibleItems, mItemsCount - 1);
