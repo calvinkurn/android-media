@@ -12,11 +12,11 @@ import com.tokopedia.purchase_platform.common.revamp.CartCheckoutRevampRollenceM
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.telemetry.ITelemetryActivity
 
-class ShipmentActivity :
+open class ShipmentActivity :
     BaseCheckoutActivity(),
     ITelemetryActivity {
-    private var shipmentFragment: ShipmentFragment? = null
-    private var checkoutFragment: CheckoutFragment? = null
+    internal var shipmentFragment: ShipmentFragment? = null
+    internal var checkoutFragment: CheckoutFragment? = null
 
     override fun setupBundlePass(extras: Bundle?) {
         // No-op

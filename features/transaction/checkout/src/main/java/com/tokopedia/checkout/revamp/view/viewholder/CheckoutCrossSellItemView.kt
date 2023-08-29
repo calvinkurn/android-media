@@ -24,7 +24,11 @@ object CheckoutCrossSellItemView {
 
     private const val CROSS_SELL_UNDERLINE_TEXT = "isi pulsa"
 
-    fun renderCrossSellItem(crossSellItem: CheckoutCrossSellItem, binding: ItemCheckoutCrossSellItemBinding, listener: CheckoutAdapterListener) {
+    fun renderCrossSellItem(
+        crossSellItem: CheckoutCrossSellItem,
+        binding: ItemCheckoutCrossSellItemBinding,
+        listener: CheckoutAdapterListener
+    ) {
         when (crossSellItem) {
             is CheckoutCrossSellModel -> renderCrossSell(
                 crossSellItem,
@@ -54,9 +58,13 @@ object CheckoutCrossSellItemView {
         val startUnderline = title.indexOf(CROSS_SELL_UNDERLINE_TEXT, ignoreCase = true)
         val underlineText = title.substring(startUnderline, CROSS_SELL_UNDERLINE_TEXT.length)
         if (startUnderline >= 0) {
-            title = title.replaceRange(startUnderline, CROSS_SELL_UNDERLINE_TEXT.length, "<u>$underlineText</u>")
+            title = title.replaceRange(
+                startUnderline,
+                CROSS_SELL_UNDERLINE_TEXT.length,
+                "<u>$underlineText</u>"
+            )
         }
-        val text = MethodChecker.fromHtml(title)
+        val text = HtmlLinkHelper(itemBinding.root.context, title).spannedString
         itemBinding.ivCheckoutCrossSellItem.setImageUrl(crossSellModel.crossSellModel.info.iconUrl)
         itemBinding.tvCheckoutCrossSellItem.text = text
         itemBinding.tvCheckoutCrossSellItem.setOnClickListener {
@@ -94,12 +102,16 @@ object CheckoutCrossSellItemView {
         itemBinding: ItemCheckoutCrossSellItemBinding,
         listener: CheckoutAdapterListener
     ) {
-        itemBinding.tvCheckoutCrossSellItem.text = "${donationModel.donation.title} (${
-        CurrencyFormatUtil.convertPriceValueToIdrFormat(
-            donationModel.donation.nominal,
-            false
-        ).removeDecimalSuffix()
-        })"
+        itemBinding.ivCheckoutCrossSellItem.setImageUrl(donationModel.donation.iconUrl)
+        itemBinding.tvCheckoutCrossSellItem.text = HtmlLinkHelper(
+            itemBinding.root.context,
+            "${donationModel.donation.title} (${
+            CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                donationModel.donation.nominal,
+                false
+            ).removeDecimalSuffix()
+            })"
+        ).spannedString
         itemBinding.cbCheckoutCrossSellItem.setOnCheckedChangeListener { _, _ -> }
         itemBinding.cbCheckoutCrossSellItem.isChecked = donationModel.donation.isChecked
         itemBinding.cbCheckoutCrossSellItem.skipAnimation()
@@ -111,7 +123,11 @@ object CheckoutCrossSellItemView {
         }
     }
 
-    private fun showDonationBottomSheet(itemBinding: ItemCheckoutCrossSellItemBinding, shipmentDonationModel: CheckoutDonationModel, listener: CheckoutAdapterListener) {
+    private fun showDonationBottomSheet(
+        itemBinding: ItemCheckoutCrossSellItemBinding,
+        shipmentDonationModel: CheckoutDonationModel,
+        listener: CheckoutAdapterListener
+    ) {
         GeneralBottomSheet().apply {
             setTitle(shipmentDonationModel.donation.title)
             setDesc(shipmentDonationModel.donation.description)
@@ -144,6 +160,7 @@ object CheckoutCrossSellItemView {
                 )
             }
         }
+        itemBinding.ivCheckoutCrossSellItem.setImageUrl(egoldModel.egoldAttributeModel.iconUrl)
         itemBinding.tvCheckoutCrossSellItem.text = HtmlLinkHelper(
             itemBinding.root.context,
             "${egoldModel.egoldAttributeModel.titleText ?: ""} (${

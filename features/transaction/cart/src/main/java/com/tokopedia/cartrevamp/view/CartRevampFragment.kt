@@ -2286,29 +2286,20 @@ class CartRevampFragment :
         viewModel.addToCartEvent.observe(viewLifecycleOwner) { addToCartEvent ->
             when (addToCartEvent) {
                 is AddToCartEvent.Success -> {
-                    if (addToCartEvent.addToCartDataModel.status.equals(
-                            AddToCartDataModel.STATUS_OK,
-                            true
-                        ) && addToCartEvent.addToCartDataModel.data.success == 1
-                    ) {
-                        triggerSendEnhancedEcommerceAddToCartSuccess(
-                            addToCartEvent.addToCartDataModel,
-                            addToCartEvent.productModel
-                        )
-                        resetRecentViewList()
-                        viewModel.processInitialGetCartData(
-                            cartId = "0",
-                            initialLoad = false,
-                            isLoadingTypeRefresh = false
-                        )
-                        if (addToCartEvent.addToCartDataModel.data.message.size > 0) {
-                            showToastMessageGreen(addToCartEvent.addToCartDataModel.data.message[0])
-                            notifyBottomCartParent()
-                        }
-                    } else {
-                        if (addToCartEvent.addToCartDataModel.errorMessage.size > 0) {
-                            showToastMessageRed(addToCartEvent.addToCartDataModel.errorMessage[0])
-                        }
+                    hideProgressLoading()
+                    triggerSendEnhancedEcommerceAddToCartSuccess(
+                        addToCartEvent.addToCartDataModel,
+                        addToCartEvent.productModel
+                    )
+                    resetRecentViewList()
+                    viewModel.processInitialGetCartData(
+                        cartId = "0",
+                        initialLoad = false,
+                        isLoadingTypeRefresh = false
+                    )
+                    if (addToCartEvent.addToCartDataModel.data.message.size > 0) {
+                        showToastMessageGreen(addToCartEvent.addToCartDataModel.data.message[0])
+                        notifyBottomCartParent()
                     }
                 }
 
@@ -3257,11 +3248,8 @@ class CartRevampFragment :
     private fun renderCartNotEmpty(cartData: CartData) {
         FLAG_IS_CART_EMPTY = false
 
-        renderTickerError(cartData)
         renderCartAvailableItems(cartData)
         renderCartUnavailableItems(cartData)
-
-        viewModel.reCalculateSubTotal()
 
         cartPageAnalytics.eventViewCartListFinishRender()
         val cartItemDataList = CartDataHelper.getAllCartItemData(
@@ -3424,6 +3412,8 @@ class CartRevampFragment :
         renderSelectedAmount()
         setInitialCheckboxGlobalState(cartData)
         setSelectedAmountVisibility()
+
+        viewModel.reCalculateSubTotal()
 
         if (!cartData.isGlobalCheckboxState) {
             isFirstCheckEvent = false
@@ -3651,13 +3641,6 @@ class CartRevampFragment :
         val ticker = cartData.tickers.firstOrNull()
         if (ticker != null && ticker.isValid(CART_PAGE)) {
             viewModel.addItem(CartUiModelMapper.mapTickerAnnouncementUiModel(ticker))
-        }
-    }
-
-    private fun renderTickerError(cartData: CartData) {
-        if (cartData.availableSection.availableGroupGroups.isNotEmpty() && cartData.unavailableSections.isNotEmpty()) {
-            val cartItemTickerErrorHolderData = CartUiModelMapper.mapTickerErrorUiModel(cartData)
-            viewModel.addItem(cartItemTickerErrorHolderData)
         }
     }
 
@@ -4158,19 +4141,21 @@ class CartRevampFragment :
     }
 
     private fun setMainFlowCoachMark(cartData: CartData) {
-        val mainFlowCoachMarkItems = arrayListOf<CoachMark2Item>()
-        generateSelectAllCoachMark(mainFlowCoachMarkItems)
-        mainFlowCoachMark?.let {
-            cartAdapter.setMainCoachMark(
-                CartMainCoachMarkUiModel(
-                    it,
-                    mainFlowCoachMarkItems,
-                    cartData.onboardingData.getOrNull(MAIN_FLOW_ONBOARDING_NOTES_INDEX)
-                        ?: CartOnBoardingData(),
-                    cartData.onboardingData.getOrNull(MAIN_FLOW_ONBOARDING_WISHLIST_INDEX)
-                        ?: CartOnBoardingData()
+        if (cartData.onboardingData.size > MAIN_FLOW_ONBOARDING_SELECT_ALL_INDEX) {
+            val mainFlowCoachMarkItems = arrayListOf<CoachMark2Item>()
+            generateSelectAllCoachMark(mainFlowCoachMarkItems)
+            mainFlowCoachMark?.let {
+                cartAdapter.setMainCoachMark(
+                    CartMainCoachMarkUiModel(
+                        it,
+                        mainFlowCoachMarkItems,
+                        cartData.onboardingData.getOrNull(MAIN_FLOW_ONBOARDING_NOTES_INDEX)
+                            ?: CartOnBoardingData(),
+                        cartData.onboardingData.getOrNull(MAIN_FLOW_ONBOARDING_WISHLIST_INDEX)
+                            ?: CartOnBoardingData()
+                    )
                 )
-            )
+            }
         }
     }
 

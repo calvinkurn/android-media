@@ -788,14 +788,11 @@ class CartItemViewHolder constructor(
     }
 
     private fun renderSlashPrice(data: CartItemHolderData) {
-        if (data.isBundlingItem) {
-            return
-        }
         val hasPriceOriginal = data.productOriginalPrice > 0
         val hasWholesalePrice = data.wholesalePrice > 0
         val hasPriceDrop = data.productInitialPriceBeforeDrop > 0 &&
             data.productInitialPriceBeforeDrop > data.productPrice
-        if (hasPriceOriginal || hasWholesalePrice || hasPriceDrop) {
+        if ((hasPriceOriginal || hasWholesalePrice || hasPriceDrop) && !data.isBundlingItem) {
             if (data.productSlashPriceLabel.isNotBlank()) {
                 // Slash price
                 renderSlashPriceFromCampaign(data)

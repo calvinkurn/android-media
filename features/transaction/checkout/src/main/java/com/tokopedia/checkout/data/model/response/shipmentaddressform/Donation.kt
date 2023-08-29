@@ -8,5 +8,7 @@ data class Donation(
     @SerializedName("Nominal")
     val nominal: Int = 0,
     @SerializedName("Description")
-    val description: String = ""
+    val description: String = "",
+    @SerializedName("icon_url")
+    val iconUrl: String = ""
 )

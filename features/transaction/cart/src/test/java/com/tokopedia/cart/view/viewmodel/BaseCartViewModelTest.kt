@@ -6,13 +6,13 @@ import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.cart.domain.usecase.CartShopGroupTickerAggregatorUseCase
 import com.tokopedia.cart.domain.usecase.FollowShopUseCase
+import com.tokopedia.cart.domain.usecase.GetCartRevampV4UseCase
 import com.tokopedia.cart.domain.usecase.UpdateAndReloadCartUseCase
 import com.tokopedia.cart.domain.usecase.UpdateCartAndGetLastApplyUseCase
 import com.tokopedia.cart.view.ICartListView
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
-import com.tokopedia.cartrevamp.domain.usecase.GetCartRevampV4UseCase
 import com.tokopedia.cartrevamp.domain.usecase.SetCartlistCheckboxStateUseCase
 import com.tokopedia.cartrevamp.view.CartViewModel
 import com.tokopedia.cartrevamp.view.processor.CartCalculator
@@ -29,11 +29,17 @@ import io.mockk.Runs
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.setMain
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import rx.subscriptions.CompositeSubscription
 
-abstract class BaseCartViewModelTest {
+@OptIn(ExperimentalCoroutinesApi::class)
+open class BaseCartViewModelTest {
 
     var getCartRevampV4UseCase: GetCartRevampV4UseCase = mockk()
     var deleteCartUseCase: DeleteCartUseCase = mockk()
@@ -65,6 +71,7 @@ abstract class BaseCartViewModelTest {
 
     @Before
     fun setUp() {
+        Dispatchers.setMain(coroutineTestDispatchers.coroutineDispatcher)
         cartViewModel = CartViewModel(
             getCartRevampV4UseCase, deleteCartUseCase,
             undoDeleteCartUseCase, updateCartUseCase, compositeSubscription,
@@ -78,5 +85,10 @@ abstract class BaseCartViewModelTest {
         )
         every { addToWishListV2UseCase.cancelJobs() } just Runs
         every { deleteWishlistV2UseCase.cancelJobs() } just Runs
+    }
+
+    @After
+    fun tearDown() {
+        Dispatchers.resetMain()
     }
 }
