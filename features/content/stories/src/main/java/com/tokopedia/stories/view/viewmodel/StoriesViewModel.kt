@@ -96,6 +96,7 @@ class StoriesViewModel @Inject constructor(
             StoriesUiAction.ShowDeleteDialog -> handleShowDialogDelete()
             StoriesUiAction.OpenProduct -> handleOpenProduct()
             is StoriesUiAction.ProductAction -> handleProductAction(action.action, action.product)
+            StoriesUiAction.FetchProduct -> getProducts()
             else -> {}
         }
     }
@@ -227,7 +228,7 @@ class StoriesViewModel @Inject constructor(
         }
     }
 
-    fun getProducts() {
+    private fun getProducts() {
         /**
          * TODO() temp move to chain
          */

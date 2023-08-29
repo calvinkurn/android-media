@@ -33,6 +33,8 @@ sealed interface StoriesUiAction {
     data class Navigate(val appLink: String) : StoriesUiAction
 
     data class ShowVariantSheet(val isShow: Boolean) : StoriesUiAction
+
+    object FetchProduct : StoriesUiAction
 }
 
 enum class StoriesProductAction {

@@ -85,7 +85,7 @@ class StoriesProductBottomSheet @Inject constructor(
     override fun onResume() {
         super.onResume()
 
-        viewModel.getProducts()
+        viewModel.submitAction(StoriesUiAction.FetchProduct)
     }
 
     override fun onProductCardClicked(product: ContentTaggedProductUiModel, itemPosition: Int) {
