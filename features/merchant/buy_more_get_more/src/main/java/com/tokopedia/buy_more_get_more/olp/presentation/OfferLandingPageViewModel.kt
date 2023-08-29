@@ -69,6 +69,8 @@ class OfferLandingPageViewModel @Inject constructor(
     private val userId: String
         get() = userSession.userId
 
+    val isLogin: Boolean
+        get() = userSession.isLoggedIn
 
     fun processEvent(event: OlpEvent) {
         when (event) {
@@ -78,7 +80,7 @@ class OfferLandingPageViewModel @Inject constructor(
                     shopId = event.shopIds,
                     productIds = event.productIds,
                     warehouseIds = event.warehouseIds,
-                    localCacheModel = event.localCacheModel,
+                    localCacheModel = event.localCacheModel
                 )
             }
 
@@ -87,11 +89,11 @@ class OfferLandingPageViewModel @Inject constructor(
             }
 
             is OlpEvent.GetOffreringProductList -> {
-                getOfferingProductList(page = event.page)
+                getOfferingProductList(page = event.page, pageSize = event.pageSize)
             }
 
-            is OlpEvent.SetSortId -> {
-                setSortId(event.sortId)
+            is OlpEvent.SetSort -> {
+                setSort(event.sortId, event.sortName)
             }
 
             is OlpEvent.GetNotification -> {
@@ -112,10 +114,10 @@ class OfferLandingPageViewModel @Inject constructor(
     }
 
     private fun setInitialUiState(
-        offerIds: List<Int>,
+        offerIds: List<Long>,
         shopId: Long,
-        productIds: List<Int> = emptyList(),
-        warehouseIds: List<Int> = emptyList(),
+        productIds: List<Long> = emptyList(),
+        warehouseIds: List<Long> = emptyList(),
         localCacheModel: LocalCacheModel?
     ) {
         _uiState.update {
@@ -156,7 +158,7 @@ class OfferLandingPageViewModel @Inject constructor(
                         longitude = currentState.localCacheModel?.long.orEmpty(),
                         cityId = currentState.localCacheModel?.city_id.toLongOrZero()
                     ),
-                    userId = userId.toLongOrZero(),
+                    userId = userId.toLongOrZero()
                 )
                 val result = getOfferInfoForBuyerUseCase.execute(param)
                 _offeringInfo.postValue(result)
@@ -168,7 +170,8 @@ class OfferLandingPageViewModel @Inject constructor(
     }
 
     private fun getOfferingProductList(
-        page: Int
+        page: Int,
+        pageSize: Int
     ) {
         launchCatchError(
             dispatchers.io,
@@ -188,7 +191,7 @@ class OfferLandingPageViewModel @Inject constructor(
                     ),
                     userId = userId.toLongOrZero(),
                     page = page,
-                    pageSize = 10,
+                    pageSize = pageSize,
                     orderBy = currentState.sortId.toIntOrZero()
                 )
 
@@ -233,15 +236,16 @@ class OfferLandingPageViewModel @Inject constructor(
         )
     }
 
-    private fun setSortId(sortId: String) {
+    private fun setSort(sortId: String, sortName: String) {
         _uiState.update {
             it.copy(
-                sortId = sortId
+                sortId = sortId,
+                sortName = sortName
             )
         }
     }
 
-    private fun setWarehouseIds(warehouseIds: List<Int>) {
+    private fun setWarehouseIds(warehouseIds: List<Long>) {
         _uiState.update {
             it.copy(
                 warehouseIds = warehouseIds

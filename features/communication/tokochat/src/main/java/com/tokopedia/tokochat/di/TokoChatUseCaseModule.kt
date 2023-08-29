@@ -1,7 +1,7 @@
 package com.tokopedia.tokochat.di
 
-import com.tokochat.tokochat_config_common.di.qualifier.TokoChatQualifier
-import com.tokochat.tokochat_config_common.repository.TokoChatRepository
+import com.tokopedia.tokochat.config.di.qualifier.TokoChatQualifier
+import com.tokopedia.tokochat.config.repository.TokoChatRepository
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.tokochat.domain.usecase.TokoChatChannelUseCase
 import dagger.Module

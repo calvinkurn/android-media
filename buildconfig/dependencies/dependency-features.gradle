@@ -232,7 +232,6 @@ ext {
             topAdsEdit                      : ":features:top_ads:top_ads_edit",
             topAdsManagementCommon          : ":features:top_ads:top_ads_management_common",
             topAdsHeadline                  : ":features:top_ads:top_ads_headline",
-            topAdsHeadlineUseCase           : ":features:top_ads:top_ads_headline_usecase",
             topAdsOnBoarding                : ":features:top_ads:top_ads_on_boarding",
 
             atc_common                      : ":features:transaction:atc_common",
@@ -257,8 +256,9 @@ ext {
             ordermanagementhistory          : ":features:ordermanagement:orderhistory",
             buyerorderdetail                : ":features:ordermanagement:buyer_order_detail",
             buyercancellationorder          : ":features:ordermanagement:buyercancellationorder",
+			orderManagementCommon           : ":features:ordermanagement:order_management_common",
 
-            pushNotificationCommon          : ":features:communication:push-notification-common",
+			pushNotificationCommon          : ":features:communication:push-notification-common",
             attachproduct                   : ":features:communication:attachproduct",
             attachinvoice                   : ":features:communication:attachinvoice",
             attachcommon                    : ":features:communication:attachcommon",

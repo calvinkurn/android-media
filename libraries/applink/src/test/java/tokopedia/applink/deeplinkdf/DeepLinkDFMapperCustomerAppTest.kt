@@ -1116,4 +1116,9 @@ class DeepLinkDFMapperCustomerAppTest : DeepLinkDFMapperTestFixture() {
             "${ApplinkConstInternalCommunication.TOKO_CHAT}?source=$source&orderId=$orderId"
         assertEqualDeepLinkCustomerApp(internalApplink, DeeplinkDFMapper.DF_TOKOCHAT)
     }
+    @Test
+    fun `check affiliate appLink then should return DF_CATEGORY_AFFILIATE in customerapp`() {
+        val internalApplink = "${DeeplinkConstant.SCHEME_INTERNAL}://affiliate"
+        assertEqualDeepLinkCustomerApp(internalApplink, DeeplinkDFMapper.DF_CATEGORY_AFFILIATE)
+    }
 }

@@ -20,7 +20,9 @@ data class OfferProductListResponse(
         @SerializedName("success")
         val success: Boolean = true,
         @SerializedName("errorMessage")
-        val errorMessage: List<String> = emptyList()
+        val errorMessage: List<String> = emptyList(),
+        @SerializedName("errorCode")
+        val errorCode: Long = 0
     )
 
     data class Product(

@@ -6,6 +6,10 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class AddOnSummary(
+    @SerializedName("icon_url")
+    val iconUrl: String = "",
+    @SerializedName("label")
+    val label: String = "",
     @SerializedName("addons")
     @Expose
     val addons: List<Addon> = listOf(),
