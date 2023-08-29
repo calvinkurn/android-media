@@ -6,10 +6,13 @@ import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class BmGmTiersApplied(
+data class BmGmTierProductGroup(
     @Expose
     @SerializedName("tier_id")
     val tierId: Long = 0L,
+    @Expose
+    @SerializedName("tier_name")
+    val tierName: String = "",
     @Expose
     @SerializedName("tier_message")
     val tierMessage: String = "",

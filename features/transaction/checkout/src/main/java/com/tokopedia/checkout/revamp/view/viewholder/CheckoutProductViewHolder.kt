@@ -27,6 +27,8 @@ import com.tokopedia.checkout.revamp.utils.CheckoutBmgmMapper
 import com.tokopedia.checkout.revamp.view.adapter.CheckoutAdapterListener
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
@@ -326,10 +328,17 @@ class CheckoutProductViewHolder(
     private fun renderBMGMGroupInfo(product: CheckoutProductModel) {
         with(binding) {
             if (product.shouldShowBmgmInfo) {
-                val color = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
                 val spannedTitle = SpannableStringBuilder()
-                    .color(color) { bold { append("${product.bmgmOfferName} • ") } }
-                    .color(color) { append(product.bmgmOfferMessage) }
+                val color = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+                product.bmgmOfferMessage.forEachIndexed { idx, message ->
+                    if (idx == Int.ZERO) {
+                        spannedTitle.color(color) { bold { append("$message • ") } }
+                    } else if (idx < product.bmgmOfferMessage.size - Int.ONE) {
+                        spannedTitle.color(color) { append("$message • ") }
+                    } else {
+                        spannedTitle.color(color) { append(message) }
+                    }
+                }
 
                 ivCheckoutBmgmBadge.setImageUrl(product.bmgmIconUrl)
                 tvCheckoutBmgmTitle.text = spannedTitle

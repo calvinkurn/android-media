@@ -11,9 +11,9 @@ object CheckoutBmgmMapper {
         return BmgmCommonDataModel(
             offerId = product.bmgmOfferId,
             offerName = product.bmgmOfferName,
-            offerMessage = product.bmgmOfferMessage,
+            offerMessage = product.bmgmOfferMessage[0], // TODO: [Misael] ini update mapping array
             hasReachMaxDiscount = false, // TODO: [Misael] BE ETA 4 Sept, dummy false
-            tiersApplied = product.bmgmTiersApplied.map { bmgmTier ->
+            tiersApplied = product.bmgmTierProductGroup.map { bmgmTier ->
                 BmgmCommonDataModel.TierModel(
                     tierId = bmgmTier.tierId,
                     tierMessage = bmgmTier.tierMessage,
@@ -26,8 +26,8 @@ object CheckoutBmgmMapper {
                             warehouseId = bmgmProduct.warehouseId.toString(),
                             productName = product.name,
                             productImage = product.imageUrl,
-                            productPrice = bmgmProduct.finalPrice,
-                            quantity = bmgmProduct.qty
+                            productPrice = bmgmProduct.priceBeforeBenefit,
+                            quantity = bmgmProduct.quantity
                         )
                     }
                 )

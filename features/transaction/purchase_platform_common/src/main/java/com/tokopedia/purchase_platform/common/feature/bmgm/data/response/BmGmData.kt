@@ -18,7 +18,7 @@ data class BmGmData(
     val offerIcon: String = "",
     @Expose
     @SerializedName("offer_message")
-    val offerMessage: String = "",
+    val offerMessage: List<String> = emptyList(),
     @Expose
     @SerializedName("offer_landing_page_link")
     val offerLandingPageLink: String = "",
@@ -29,6 +29,6 @@ data class BmGmData(
     @SerializedName("offer_json_data")
     val offerJsonData: String = "",
     @Expose
-    @SerializedName("tiers_applied")
-    val tiersApplied: List<BmGmTiersApplied> = emptyList()
+    @SerializedName("tier_product")
+    val tierProduct: List<BmGmTierProductGroup> = emptyList()
 ) : Parcelable

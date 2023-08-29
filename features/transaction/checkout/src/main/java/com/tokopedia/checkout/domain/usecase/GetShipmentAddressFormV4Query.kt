@@ -228,6 +228,35 @@ const val SHIPMENT_ADDRESS_FORM_V4_QUERY =
                         slash_price_label
                         bundle_icon_url
                       }
+                      cart_detail_info {
+                        cart_detail_type
+                        bmgm {
+                          offer_id
+                          offer_name
+                          offer_icon
+                          offer_message
+                          offer_landing_page_link
+                          total_discount
+                          offer_json_data
+                          tier_product {
+                            tier_id
+                            tier_name
+                            tier_message
+                            tier_discount_text
+                            tier_discount_amount
+                            price_before_benefit
+                            price_after_benefit
+                            list_product {
+                              product_id
+                              warehouse_id
+                              quantity
+                              price_before_benefit
+                              price_after_benefit
+                              cart_id
+                            }
+                          }
+                        }
+                      }
                       products {
                         origin_warehouse_ids
                         add_ons_product {
