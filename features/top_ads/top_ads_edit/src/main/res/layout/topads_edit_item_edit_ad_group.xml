@@ -33,7 +33,22 @@
         app:layout_constraintBottom_toTopOf="@id/divider"
         app:typographyType="paragraph_3"
         android:layout_marginBottom="12dp"
+        android:visibility="visible"
         tools:text="Put description here, use maximum of two lines please :)" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/edit_ad_item_shimmer"
+        android:layout_width="0dp"
+        android:layout_height="12dp"
+        app:loader_type="rect"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edit_ad_item_title"
+        app:layout_constraintBottom_toTopOf="@id/divider"
+        app:typographyType="paragraph_3"
+        android:layout_marginBottom="12dp"
+        android:visibility="visible"
+        app:layout_constraintWidth_percent="0.5" />
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/iconUnify"

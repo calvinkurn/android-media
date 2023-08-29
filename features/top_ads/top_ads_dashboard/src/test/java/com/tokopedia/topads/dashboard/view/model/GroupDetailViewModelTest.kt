@@ -135,9 +135,9 @@ class GroupDetailViewModelTest {
     fun `get group info success`() {
         val expected = 10.0F
         var actual = 0.0F
-        val data = GroupInfoResponse.TopAdsGetPromoGroup.Data(daiyBudget = expected)
+        val data = GroupInfoResponse.TopAdsGetPromoGroup.Data(dailyBudget = expected)
         val onSuccess: (data: GroupInfoResponse.TopAdsGetPromoGroup.Data) -> Unit = {
-            actual = it.daiyBudget
+            actual = it.dailyBudget
         }
         every { groupInfoUseCase.executeQuerySafeMode(captureLambda(), any()) } answers {
             onSuccess.invoke(data)

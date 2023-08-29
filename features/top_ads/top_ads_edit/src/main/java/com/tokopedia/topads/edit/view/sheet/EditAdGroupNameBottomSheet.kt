@@ -5,34 +5,34 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
-import com.tokopedia.topads.edit.R
+import com.tokopedia.topads.edit.databinding.TopadsEditSheetEditAdGroupNameBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
 class EditAdGroupNameBottomSheet: BottomSheetUnify()  {
 
+    private var binding: TopadsEditSheetEditAdGroupNameBinding? = null
+    private var groupName: String = ""
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
     ): View? {
-        initChildLayout()
-        return super.onCreateView(inflater, container, savedInstanceState)
-    }
-
-    private fun initChildLayout() {
-        val contentView = View.inflate(context, R.layout.topads_edit_sheet_edit_ad_group_name, null)
+        val viewBinding = TopadsEditSheetEditAdGroupNameBinding.inflate(inflater, container, false)
+        binding = viewBinding
         isHideable = true
         showCloseIcon = true
-        setChild(contentView)
+        setChild(viewBinding.root)
         setTitle(getString(com.tokopedia.topads.edit.R.string.top_ads_edit_ad_group_name_bottom_sheet_title))
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initView()
+        initView(binding)
     }
 
-    private fun initView() {
+    private fun initView(view: TopadsEditSheetEditAdGroupNameBinding?) {
         context?.let {
-
+            binding?.textField?.editText?.setText(groupName)
         }
     }
 
@@ -44,6 +44,9 @@ class EditAdGroupNameBottomSheet: BottomSheetUnify()  {
 
     companion object {
         private const val TOPADS_BOTTOM_SHEET_ACTION_TAG = "EDIT_AD_GROUP_NAME_BOTTOM_SHEET_TAG"
-        fun newInstance(): EditAdGroupNameBottomSheet = EditAdGroupNameBottomSheet()
+        fun newInstance(groupName: String): EditAdGroupNameBottomSheet =
+            EditAdGroupNameBottomSheet().apply {
+                this.groupName = groupName
+            }
     }
 }

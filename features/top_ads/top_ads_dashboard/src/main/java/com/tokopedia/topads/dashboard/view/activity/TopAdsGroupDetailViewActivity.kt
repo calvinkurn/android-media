@@ -65,7 +65,6 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.MIN_
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.NAME_EDIT
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.NEG_KATA_KUNCI
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.PRODUK
-import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.SOURCE_ANDROID_HEADLINE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.SOURCE_PRODUCT_GROUP_DETAIL_PAGE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.SUGGESTION_BID
 import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
@@ -555,7 +554,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
         groupStatus = data.status
         groupName = data.groupName
         groupTotal = data.groupTotal.toIntOrZero()
-        priceDaily = data.daiyBudget
+        priceDaily = data.dailyBudget
 
         editRekomendasiBudget?.visibility = View.VISIBLE
         perClickRekomendasi?.visibility = View.VISIBLE
