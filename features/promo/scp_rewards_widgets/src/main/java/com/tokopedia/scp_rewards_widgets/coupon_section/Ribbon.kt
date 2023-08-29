@@ -18,7 +18,7 @@ class Ribbon @JvmOverloads constructor(
 ) : MaterialCardView(context, attrs, defStyleAttr) {
 
     companion object {
-        private const val CORNER_RADIUS = 8
+        private const val CORNER_RADIUS = 6
     }
 
     private var binding = LayoutRibbonBinding.inflate(LayoutInflater.from(context), this)

@@ -29,7 +29,6 @@
         android:layout_marginBottom="@dimen/dp_48"
         android:elevation="@dimen/dp_16"
         android:theme="@style/Theme.MaterialComponents.Light"
-        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_title" />

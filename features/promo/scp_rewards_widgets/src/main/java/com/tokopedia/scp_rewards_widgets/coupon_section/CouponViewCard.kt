@@ -32,7 +32,7 @@ class CouponViewCard @JvmOverloads constructor(
         private const val CORNER_RADIUS = 12
     }
 
-    private fun applyEdgeTreatment(infoColor: String?) {
+    private fun applyEdgeTreatment(infoColor: Int) {
         val edgeTreatment = CouponCardEdgeTreatment(
             context,
             horizontalOffset = (binding.divider.top - SCALLOP_RADIUS).toFloat()
@@ -47,9 +47,7 @@ class CouponViewCard @JvmOverloads constructor(
             .build()
 
         val shapeDrawable = MaterialShapeDrawable(shapeAppearanceModel)
-        shapeDrawable.setTint(
-            context.parseColorOrFallback(infoColor, com.tokopedia.scp_rewards_widgets.R.color.coupon_card_background)
-        )
+        shapeDrawable.setTint(infoColor)
 
         val innerShapeDrawable = MaterialShapeDrawable(shapeAppearanceModel)
             .apply {
@@ -94,12 +92,18 @@ class CouponViewCard @JvmOverloads constructor(
                 tvTitle.isEnabled = false
                 tvDescription.isEnabled = false
                 tvExpiryLabel.isEnabled = false
+                tvInfo.isEnabled = false
                 ribbonStatus.visible()
                 btnApply.gone()
                 ribbonStatus.setData(data.statusBadgeText, data.statusBadgeColor)
             }
             root.post {
-                applyEdgeTreatment(data.additionalInfoColor)
+                val additionalInfoColor = if (data.isActive) {
+                    context.parseColorOrFallback(data.additionalInfoColor, com.tokopedia.scp_rewards_widgets.R.color.coupon_card_background)
+                } else {
+                    ContextCompat.getColor(context, unifyPrinciplesR.color.Unify_NN50)
+                }
+                applyEdgeTreatment(additionalInfoColor)
             }
         }
     }
