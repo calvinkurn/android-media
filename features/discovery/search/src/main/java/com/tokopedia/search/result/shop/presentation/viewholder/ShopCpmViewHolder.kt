@@ -13,8 +13,9 @@ import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener
 import com.tokopedia.utils.view.binding.viewBinding
 
 internal class ShopCpmViewHolder(
-        itemView: View,
-        val bannerAdsListener: BannerAdsListener?
+    itemView: View,
+    val bannerAdsListener: BannerAdsListener?,
+    private val isReimagine: Boolean = false
 ): AbstractViewHolder<ShopCpmDataView>(itemView) {
 
     companion object {
@@ -48,6 +49,8 @@ internal class ShopCpmViewHolder(
     }
 
     private fun initCpmModel(shopCpmDataView: ShopCpmDataView) {
-        binding?.adsBannerViewSearchShop?.displayHeadlineAds(shopCpmDataView.cpmModel)
+        binding?.adsBannerViewSearchShop?.displayHeadlineAds(shopCpmDataView.cpmModel.apply {
+            isReimagine = this@ShopCpmViewHolder.isReimagine
+        })
     }
 }
