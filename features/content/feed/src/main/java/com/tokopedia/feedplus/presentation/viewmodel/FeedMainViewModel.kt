@@ -5,9 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.content.common.producttag.view.uimodel.NetworkResult
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.content.common.model.FeedXHeaderRequestFields
-import com.tokopedia.content.common.usecase.FeedXHeaderUseCase
 import com.tokopedia.content.common.util.UiEventManager
 import com.tokopedia.createpost.common.domain.usecase.cache.DeleteMediaPostCacheUseCase
 import com.tokopedia.feedplus.domain.FeedRepository
