@@ -10,5 +10,6 @@ data class CatalogDetailUiModel(
 data class NavigationProperties (
     val isDarkMode: Boolean = false,
     val isPremium: Boolean = false,
-    val bgColor: Int = 0
+    val bgColor: Int = 0,
+    val title: String = ""
 )

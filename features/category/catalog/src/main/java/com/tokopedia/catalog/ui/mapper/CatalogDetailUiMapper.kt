@@ -71,7 +71,8 @@ class CatalogDetailUiMapper @Inject constructor(
         return NavigationProperties(
             isDarkMode = remoteModel.globalStyle?.darkMode.orFalse(),
             isPremium = heroImage?.isPremium.orFalse(),
-            bgColor = "#${remoteModel.globalStyle?.bgColor}".stringHexColorParseToInt()
+            bgColor = "#${remoteModel.globalStyle?.bgColor}".stringHexColorParseToInt(),
+            title = remoteModel.basicInfo.name.orEmpty()
         )
     }
 }

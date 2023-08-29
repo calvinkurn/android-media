@@ -21,7 +21,6 @@
             android:id="@+id/tpg_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="tiitle"
             android:textColor="@color/Unify_Static_Black"
             app:typographyType="display_1"
             app:typographyWeight="bold" />
@@ -31,6 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/Unify_NN600"
+            android:visibility="gone"
             app:typographyType="display_3"
             app:typographyWeight="reguler"
             tools:text="subtitel" />

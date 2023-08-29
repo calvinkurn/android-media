@@ -200,6 +200,10 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener {
         toolbar.setColors(colorFont)
         toolbarShadow.isVisible = !navigationProperties.isPremium
         toolbarBg.setBackgroundColor(navigationProperties.bgColor)
+        toolbar.title = navigationProperties.title
+        toolbar.setNavigationOnClickListener {
+            onNavBackClicked()
+        }
     }
 
     private fun CatalogToolbar.updateToolbarAppearance(

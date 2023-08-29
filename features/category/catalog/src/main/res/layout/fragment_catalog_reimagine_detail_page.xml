@@ -32,9 +32,7 @@
         android:layout_height="wrap_content"
         app:cart_count="99"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:sub_title="Kasdasdassad"
-        app:title="Smasung" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
         android:id="@+id/container_price_cta"
