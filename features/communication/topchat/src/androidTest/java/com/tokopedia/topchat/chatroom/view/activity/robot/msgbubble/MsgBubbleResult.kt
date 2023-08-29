@@ -21,7 +21,7 @@ object MsgBubbleResult {
         assertViewInRecyclerViewAt(position, R.id.iu_msg_icon, matcher)
     }
 
-    private fun assertBubbleMsg(
+    fun assertBubbleMsg(
         position: Int,
         matcher: Matcher<View>
     ) {
@@ -54,5 +54,12 @@ object MsgBubbleResult {
         matcher: Matcher<View>
     ) {
         assertViewInRecyclerViewAt(position, R.id.ll_msg_header, matcher)
+    }
+
+    fun assertMsgInfo(
+        position: Int,
+        matcher: Matcher<View>
+    ) {
+        assertViewInRecyclerViewAt(position, R.id.txt_info, matcher)
     }
 }
