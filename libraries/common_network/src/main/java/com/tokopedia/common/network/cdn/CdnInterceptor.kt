@@ -10,27 +10,29 @@ class CdnInterceptor(val context: Context) : Interceptor {
         val startTime = System.currentTimeMillis()
         val response = chain.proceed(chain.request())
         val responseTime = response.receivedResponseAtMillis - response.sentRequestAtMillis
-        val contentLength = response.headers.get("Content-Length")
-        val popIp = response.headers.get("X-Cache")
-        val serverName = response.headers.get("Server")
-        val contentType = response.headers.get("Content-Type")
+        val contentLength = response.headers.get("Content-Length").toString()
+        val popIp = response.headers.get("X-Cache").toString()
+        val cdnName = response.headers.get("x-tkpd-cdn-name").toString()
+        val contentType = response.headers.get("Content-Type").toString()
         try {
             CdnTracker.succeed(
                 context = context,
                 url = response.request.url.toUrl().toString(),
+                cdnName = cdnName,
                 responseTime = responseTime.toString(),
                 responseCode = response.code.toString(),
-                responseSize = contentLength.toString(),
-                popIp = popIp.toString(),
+                responseSize = contentLength,
+                popIp = popIp,
                 message = response.message
             )
         } catch (e: Exception){
             CdnTracker.failed(
                 context = context,
                 url = response.request.url.toUrl().toString(),
+                cdnName = cdnName,
                 responseTime = responseTime.toString(),
                 responseCode = response.code.toString(),
-                popIp = popIp.toString(),
+                popIp = popIp,
                 exception = e
             )
         }

@@ -20,6 +20,7 @@ internal object CdnTracker : CoroutineScope {
     fun succeed(
         context: Context,
         url: String,
+        cdnName: String,
         responseTime: String,
         responseCode: String,
         responseSize: String,
@@ -35,6 +36,7 @@ internal object CdnTracker : CoroutineScope {
             message = mapOf(
                 "page" to pageName,
                 "url" to url,
+                "cdn_name" to cdnName,
                 "size" to responseSize,
                 "response_time" to responseTime,
                 "response_code" to responseCode,
@@ -47,6 +49,7 @@ internal object CdnTracker : CoroutineScope {
     fun failed(
         context: Context,
         url: String,
+        cdnName: String,
         responseTime: String,
         responseCode: String,
         popIp: String,
@@ -60,6 +63,7 @@ internal object CdnTracker : CoroutineScope {
             message = mapOf(
                 "page" to pageName,
                 "url" to url,
+                "cdn_name" to cdnName,
                 "size" to "n/a",
                 "response_time" to responseTime,
                 "response_code" to responseCode,
