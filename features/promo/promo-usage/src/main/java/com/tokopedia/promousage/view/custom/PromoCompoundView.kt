@@ -172,8 +172,22 @@ class PromoCompoundView @JvmOverloads constructor(
 
     private fun renderPromoInfo(promo: PromoItem) {
         binding?.run {
-            val promoItemInfos =
-                promo.promoItemInfos.filter { it.type == PromoItemInfo.TYPE_PROMO_INFO }
+            val promoItemInfos = when (promo.state) {
+
+                is PromoItemState.Ineligible -> {
+                    listOf(
+                        PromoItemInfo(
+                            type = PromoItemInfo.TYPE_PROMO_INFO,
+                            icon = PromoItemInfo.ICON_NONE,
+                            title = promo.message
+                        )
+                    )
+                }
+
+                else -> {
+                    promo.promoItemInfos.filter { it.type == PromoItemInfo.TYPE_PROMO_INFO }
+                }
+            }
             llPromoInfo.removeAllViews()
             promoItemInfos.forEach { promoInfo ->
                 val promoInfoChildView = PromoUsageItemSubPromoInfoBinding
@@ -253,23 +267,9 @@ class PromoCompoundView @JvmOverloads constructor(
     private fun renderAdditionalInfo(promo: PromoItem) {
         binding?.run {
             when (promo.state) {
-                is PromoItemState.Ineligible -> {
-                    val clashingInfo = promo.clashingInfos.firstOrNull {
-                        promo.currentClashingPromoCodes.contains(it.code)
-                    }
-                    if (clashingInfo != null && clashingInfo.message.isNotBlank()) {
-                        tpgAdditionalInfoMessage.text = clashingInfo.message
-                        tpgAdditionalInfoMessage
-                            .setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_YN600)
-                        iuAdditionalInfoIcon.gone()
-                        clAdditionalInfo.background = ContextCompat
-                            .getDrawable(
-                                context,
-                                R.drawable.promo_usage_shape_promo_bottom_info_clashing
-                            )
-                        clAdditionalInfo.visible()
-                    } else if (promo.message.isNotBlank()) {
-                        tpgAdditionalInfoMessage.text = promo.message
+                is PromoItemState.Disabled -> {
+                    if (promo.state.message.isNotBlank()) {
+                        tpgAdditionalInfoMessage.text = HtmlLinkHelper(context, promo.state.message).spannedString
                         tpgAdditionalInfoMessage
                             .setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_YN600)
                         iuAdditionalInfoIcon.gone()
