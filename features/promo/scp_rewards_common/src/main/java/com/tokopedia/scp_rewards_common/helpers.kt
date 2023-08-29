@@ -53,6 +53,6 @@ fun View.animateView(animations: Array<PropertyValuesHolder>, duration: Long, in
 
 fun propertyValueHolder(property: Property<View, Float>, from: Float, to: Float): PropertyValuesHolder = PropertyValuesHolder.ofFloat(property, from, to)
 
-fun Context.parseColorOrFallback(color: String?, fallback: Int = R.color.Unify_NN200): Int {
+fun Context.parseColorOrFallback(color: String?, fallback: Int = com.tokopedia.unifyprinciples.R.color.Unify_NN200): Int {
     return parseColor(color) ?: ContextCompat.getColor(this, fallback)
 }
