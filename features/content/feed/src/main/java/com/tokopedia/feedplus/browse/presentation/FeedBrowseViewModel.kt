@@ -6,6 +6,8 @@ import com.tokopedia.content.common.util.UiEventManager
 import com.tokopedia.feedplus.browse.data.FeedBrowseRepository
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiEvent
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiState
+import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetItemUiModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -38,8 +40,14 @@ class FeedBrowseViewModel @Inject constructor(
             val widget = repository.getCards("type:promotion")
             val prevValue = _uiState.value
             _uiState.value = prevValue?.copy(
-                widgets = List(prevValue.widgets.size) {
-                    widget
+                widgets = List(prevValue.widgets.size) { index ->
+                    if (index.mod(2) == 1) {
+                        widget.copy(
+                            chips = emptyList()
+                        )
+                    } else {
+                        widget
+                    }
                 }
             )
         }

@@ -2,9 +2,11 @@
 <com.tokopedia.play_common.view.RoundedConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="@dimen/play_widget_card_medium_width"
-    android:layout_height="@dimen/play_widget_card_medium_height"
-    app:rcl_cornerRadius="8dp">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:rcl_cornerRadius="8dp"
+    tools:layout_height="213dp"
+    tools:layout_width="120dp">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/view_play_widget_thumbnail"
@@ -29,14 +31,27 @@
         android:background="@drawable/bg_play_widget_top_gradient"
         />
 
+    <ViewStub
+        android:id="@+id/view_play_widget_live"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/play_widget_badge_height"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:inflatedId="@+id/view_play_widget_live"
+        android:layout="@layout/layout_live_badge"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="gone" />
+
     <include
         android:id="@+id/view_play_widget_total_views"
         layout="@layout/view_play_widget_total_views"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="4dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toEndOf="@id/view_play_widget_live"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_goneMarginStart="8dp" />
 
 </com.tokopedia.play_common.view.RoundedConstraintLayout>
