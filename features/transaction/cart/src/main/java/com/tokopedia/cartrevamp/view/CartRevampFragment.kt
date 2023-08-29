@@ -4231,19 +4231,21 @@ class CartRevampFragment :
     }
 
     private fun setMainFlowCoachMark(cartData: CartData) {
-        val mainFlowCoachMarkItems = arrayListOf<CoachMark2Item>()
-        generateSelectAllCoachMark(mainFlowCoachMarkItems)
-        mainFlowCoachMark?.let {
-            cartAdapter.setMainCoachMark(
-                CartMainCoachMarkUiModel(
-                    it,
-                    mainFlowCoachMarkItems,
-                    cartData.onboardingData.getOrNull(MAIN_FLOW_ONBOARDING_NOTES_INDEX)
-                        ?: CartOnBoardingData(),
-                    cartData.onboardingData.getOrNull(MAIN_FLOW_ONBOARDING_WISHLIST_INDEX)
-                        ?: CartOnBoardingData()
+        if (cartData.onboardingData.size > MAIN_FLOW_ONBOARDING_SELECT_ALL_INDEX) {
+            val mainFlowCoachMarkItems = arrayListOf<CoachMark2Item>()
+            generateSelectAllCoachMark(mainFlowCoachMarkItems)
+            mainFlowCoachMark?.let {
+                cartAdapter.setMainCoachMark(
+                    CartMainCoachMarkUiModel(
+                        it,
+                        mainFlowCoachMarkItems,
+                        cartData.onboardingData.getOrNull(MAIN_FLOW_ONBOARDING_NOTES_INDEX)
+                            ?: CartOnBoardingData(),
+                        cartData.onboardingData.getOrNull(MAIN_FLOW_ONBOARDING_WISHLIST_INDEX)
+                            ?: CartOnBoardingData()
+                    )
                 )
-            )
+            }
         }
     }
 
