@@ -1,12 +1,8 @@
 package com.tokopedia.topchat.chatroom.view.activity
 
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withText
-import com.tokopedia.chat_common.R
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.activity.robot.generalResult
+import com.tokopedia.topchat.chatroom.view.activity.robot.headerRobot
 import org.junit.Test
 
 class TopchatRoomToggleBlockTest : TopchatRoomTest() {
@@ -23,9 +19,11 @@ class TopchatRoomToggleBlockTest : TopchatRoomTest() {
         launchChatRoomActivity()
 
         // When
-        onView(withId(R.id.header_menu)).perform(click())
-        onView(withText("Blokir Pengguna")).perform(click()) // Header menu option
-        onView(withText("Blokir Pengguna")).perform(click()) // Pop-up button
+        headerRobot {
+            clickThreeDotsMenu()
+            clickBlockUser() // Header menu option
+            clickBlockUser() // Pop-up button
+        }
 
         // Then
         generalResult {
@@ -45,8 +43,10 @@ class TopchatRoomToggleBlockTest : TopchatRoomTest() {
         launchChatRoomActivity()
 
         // When
-        onView(withId(R.id.header_menu)).perform(click())
-        onView(withText("Batalkan blokir pengguna")).perform(click())
+        headerRobot {
+            clickThreeDotsMenu()
+            clickUnBlockUser()
+        }
 
         // Then
         generalResult {
@@ -63,9 +63,11 @@ class TopchatRoomToggleBlockTest : TopchatRoomTest() {
         launchChatRoomActivity()
 
         // When
-        onView(withId(R.id.header_menu)).perform(click())
-        onView(withText("Blokir Pengguna")).perform(click()) // Header menu option
-        onView(withText("Blokir Pengguna")).perform(click()) // Pop-up button
+        headerRobot {
+            clickThreeDotsMenu()
+            clickBlockUser() // Header menu option
+            clickBlockUser() // Pop-up button
+        }
 
         // Then
         generalResult {

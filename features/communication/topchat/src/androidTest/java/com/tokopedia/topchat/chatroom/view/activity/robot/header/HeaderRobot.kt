@@ -25,6 +25,14 @@ object HeaderRobot {
         clickMenuAt(R.string.chat_report_user)
     }
 
+    fun clickBlockUser() {
+        clickMenuAt(R.string.title_block_user_chat)
+    }
+
+    fun clickUnBlockUser() {
+        clickMenuAt(R.string.title_unblock_user_chat)
+    }
+
     fun clickChatSettingMenu() {
         clickMenuAt(R.string.title_chat_setting)
     }
