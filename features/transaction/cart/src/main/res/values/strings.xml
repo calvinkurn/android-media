@@ -59,7 +59,7 @@
     <string name="label_collapsed_product_quantity">%d barang</string>
     <string name="label_collapsed_product_bundle_quantity">%d paket</string>
     <string name="cart_label_all">Semua</string>
-    <string name="cart_label_selected_amount">%d product dipilih</string>
+    <string name="cart_label_selected_amount">%d produk terpilih</string>
     <string name="cart_label_change">Ganti</string>
     <string name="cart_label_packet">Paket</string>
     <string name="cart_label_product_name_with_quantity">%s x %s</string>
