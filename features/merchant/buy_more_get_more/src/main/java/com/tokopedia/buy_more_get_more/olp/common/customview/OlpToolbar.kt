@@ -15,6 +15,7 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.NotificationUnify
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.R.*
 import com.tokopedia.unifyprinciples.R.color.Unify_NN0
 import com.tokopedia.unifyprinciples.R.color.Unify_NN950
@@ -153,5 +154,12 @@ class OlpToolbar : Toolbar {
         val colorDarkEnable = ContextCompat.getColor(context, Unify_Static_White)
         val colorDarkDisable = ContextCompat.getColor(context, Unify_Static_White)
         this.setImage(null, colorLightEnable, colorLightDisabled, colorDarkEnable, colorDarkDisable)
+    }
+
+    fun setNotifXY(startPosX: Int, startPosY: Int) {
+        notification?.post {
+            notification?.x = startPosX.toPx().toFloat()
+            notification?.y = startPosY.toPx().toFloat()
+        }
     }
 }
