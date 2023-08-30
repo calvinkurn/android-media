@@ -28,7 +28,7 @@ data class TrustMakerUiModel(
 
     companion object {
 
-        private const val dummyDarkMode = false
+        private const val dummyDarkMode = true
         fun dummyTrustMaker() = TrustMakerUiModel(
             "dummy", "", "", "#000000".stringHexColorParseToInt(),
             items = listOf(

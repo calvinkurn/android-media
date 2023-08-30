@@ -95,6 +95,7 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener {
             binding?.setupRvWidgets(false, true)
             binding?.setupToolbar(false, true, "#ffffff")
             binding?.stickySingleHeaderView?.containerHeight = binding?.toolbar?.height.orZero()
+
             widgets.add(
                 HeroBannerUiModel(
                     "bannercoy",

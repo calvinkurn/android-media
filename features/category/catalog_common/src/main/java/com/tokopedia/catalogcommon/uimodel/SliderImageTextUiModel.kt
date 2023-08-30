@@ -37,7 +37,7 @@ data class SliderImageTextUiModel(
 
     companion object {
 
-        private const val dummyDarkMode = false
+        private const val dummyDarkMode = true
         fun dummySliderImageText() = SliderImageTextUiModel(
             "dummy", "", "", "#000000".stringHexColorParseToInt(),
             items = listOf(

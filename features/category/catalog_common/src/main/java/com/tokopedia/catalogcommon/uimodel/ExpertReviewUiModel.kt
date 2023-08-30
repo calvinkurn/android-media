@@ -33,7 +33,7 @@ data class ExpertReviewUiModel(
     )
 
     companion object {
-        private const val dummyDarkMode = true
+        private const val dummyDarkMode = false
         fun dummyExpertReview() = ExpertReviewUiModel(
             "dummy", "", "", "#FFFFFF".stringHexColorParseToInt(),darkMode = dummyDarkMode,
             content = listOf(
@@ -42,7 +42,7 @@ data class ExpertReviewUiModel(
                     "Boosts your product's credibility using endorsements from trusted industry experts and influencers. By spotlighting these reviews, the widget nurtures trust in potential buyers, aiding informed choices.",
                     "David Gadgetin",
                     "1 line credibility",
-                    "",
+                    "https://youtu.be/a3KriqTgaQE?t=316",
                     textReviewColor = textColorMapping(dummyDarkMode, "#F5F6FF", "#212121"),
                     textTitleColor = textColorMapping(dummyDarkMode, "#F5F6FF", "#212121"),
                     textSubTitleColor = textColorMapping(dummyDarkMode, "#AEB2BF", "#6D7588")
@@ -52,7 +52,7 @@ data class ExpertReviewUiModel(
                     "Boosts your product's credibility using endorsements from trusted industry experts and influencers. By spotlighting these reviews, the widget nurtures trust in potential buyers, aiding informed choices.",
                     "David Gadgetin",
                     "1 line credibility",
-                    "",
+                    "https://youtu.be/a3KriqTgaQE?t=316",
                     textReviewColor = textColorMapping(dummyDarkMode, "#F5F6FF", "#212121"),
                     textTitleColor = textColorMapping(dummyDarkMode, "#F5F6FF", "#212121"),
                     textSubTitleColor = textColorMapping(dummyDarkMode, "#AEB2BF", "#6D7588")
@@ -62,7 +62,7 @@ data class ExpertReviewUiModel(
                     "Boosts your product's credibility using endorsements from trusted industry experts and influencers. By spotlighting these reviews, the widget nurtures trust in potential buyers, aiding informed choices.",
                     "David Gadgetin",
                     "1 line credibility",
-                    "",
+                    "https://youtu.be/a3KriqTgaQE?t=316",
                     textReviewColor = textColorMapping(dummyDarkMode, "#F5F6FF", "#212121"),
                     textTitleColor = textColorMapping(dummyDarkMode, "#F5F6FF", "#212121"),
                     textSubTitleColor = textColorMapping(dummyDarkMode, "#AEB2BF", "#6D7588")

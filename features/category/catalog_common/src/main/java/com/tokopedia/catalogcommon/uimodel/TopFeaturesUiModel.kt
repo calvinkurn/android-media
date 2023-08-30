@@ -34,7 +34,7 @@ data class TopFeaturesUiModel(
     )
 
     companion object {
-        private const val dummyDarkMode = false
+        private const val dummyDarkMode = true
         fun dummyTopFeatures() = TopFeaturesUiModel(
             "dummy", "", "", "#FFFFFF".stringHexColorParseToInt(),
             items = listOf(

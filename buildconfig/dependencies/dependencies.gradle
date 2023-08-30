@@ -147,7 +147,7 @@ ext {
     unifyHeaderVersion = '1.2.0'
     unifySortFilterVersion = '1.3.0'
     unifyIconNotificationVersion = '1.0.2.2'
-    unifyCarouselVersion = '1.0.10.2'
+    unifyCarouselVersion = '1.0.15'
     unifyListVersion = '1.0.12'
     unifyAccordionVersion = '1.1.8'
     unifyTotalAmountVersion = '1.0.7.2'
