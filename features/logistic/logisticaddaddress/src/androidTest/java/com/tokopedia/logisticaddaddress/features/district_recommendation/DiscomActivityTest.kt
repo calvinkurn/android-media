@@ -21,7 +21,6 @@ import com.tokopedia.analyticsdebugger.cassava.cassavatest.containsMapOf
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomActivity.Companion.INTENT_DISTRICT_RECOMMENDATION_ADDRESS
 import com.tokopedia.logisticaddaddress.interceptor.AddAddressInterceptor
-import com.tokopedia.logisticaddaddress.test.R
 import com.tokopedia.logisticaddaddress.utils.SimpleIdlingResource
 import com.tokopedia.test.application.util.InstrumentationMockHelper.getRawString
 import org.hamcrest.MatcherAssert.assertThat
@@ -30,6 +29,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import com.tokopedia.logisticaddaddress.test.R as logisticaddaddressR
 
 @RunWith(AndroidJUnit4::class)
 @MediumTest
@@ -50,7 +50,7 @@ class DiscomActivityTest {
     fun setup() {
         AddAddressInterceptor.resetAllCustomResponse()
         AddAddressInterceptor.setupGraphqlMockResponse(context)
-        logisticInterceptor.getDistrictRecommendationResponsePath = getRawString(context, R.raw.district_recommendation_jakarta)
+        logisticInterceptor.getDistrictRecommendationResponsePath = getRawString(context, logisticaddaddressR.raw.district_recommendation_jakarta)
         activityRule.launchActivity(createIntent())
         IdlingRegistry.getInstance().register(SimpleIdlingResource.countingIdlingResource)
     }
@@ -58,12 +58,12 @@ class DiscomActivityTest {
     @Test
     fun givenValidQueryReturnsRequiredResults() {
         val testQuery = "jak"
-        onView(withId(com.tokopedia.logisticaddaddress.R.id.search_page_input)).perform(click())
-        onView(withId(com.tokopedia.logisticaddaddress.R.id.searchbar_textfield))
+        onView(withId(logisticaddaddressR.id.search_page_input)).perform(click())
+        onView(withId(logisticaddaddressR.id.searchbar_textfield))
             .perform(click(), replaceText(testQuery), closeSoftKeyboard())
         Thread.sleep(1000L)
 
-        onView(withId(R.id.rv_list_district))
+        onView(withId(logisticaddaddressR.id.rv_list_district))
             .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(0, click()))
 
         assertThat(activityRule.activityResult, hasResultCode(Activity.RESULT_OK))

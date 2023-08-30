@@ -44,7 +44,6 @@ import com.tokopedia.localizationchooseaddress.analytics.ChooseAddressTracking
 import com.tokopedia.logisticCommon.data.entity.response.Data
 import com.tokopedia.logisticCommon.uimodel.AddressUiState
 import com.tokopedia.logisticCommon.uimodel.isEdit
-import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.ChipsItemDecoration
 import com.tokopedia.logisticaddaddress.databinding.BottomsheetDistcrictReccomendationRevampBinding
 import com.tokopedia.logisticaddaddress.di.districtrecommendation.DaggerDistrictRecommendationComponent
@@ -67,6 +66,8 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import javax.inject.Inject
+import com.tokopedia.logisticaddaddress.R as logisticaddaddressR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class DiscomBottomSheetRevamp :
     BottomSheetUnify(),
@@ -257,7 +258,7 @@ class DiscomBottomSheetRevamp :
     private fun onBackListener() {
         if (isKodePosShown) {
             setupAnalyticOnBackPressedKodePos()
-            setTitle(getString(R.string.kota_kecamatan))
+            setTitle(getString(logisticaddaddressR.string.kota_kecamatan))
             hideZipCode()
             setViewListener()
         } else {
@@ -315,7 +316,7 @@ class DiscomBottomSheetRevamp :
         )
         setupDiscomBottomsheet(viewBinding)
         setChild(viewBinding?.root)
-        setTitle(getString(R.string.kota_kecamatan))
+        setTitle(getString(logisticaddaddressR.string.kota_kecamatan))
         setCloseClickListener {
             onBackListener()
         }
@@ -326,7 +327,7 @@ class DiscomBottomSheetRevamp :
 
     private fun setupDiscomBottomsheet(viewBinding: BottomsheetDistcrictReccomendationRevampBinding?) {
         context?.let {
-            val cityList = it.resources.getStringArray(R.array.cityList)
+            val cityList = it.resources.getStringArray(logisticaddaddressR.array.cityList)
             val chipsLayoutManager = ChipsLayoutManager.newBuilder(viewBinding?.root?.context)
                 .setOrientation(ChipsLayoutManager.HORIZONTAL)
                 .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
@@ -353,7 +354,7 @@ class DiscomBottomSheetRevamp :
 
                 rvChips.apply {
                     val dist =
-                        context.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_8)
+                        context.resources.getDimensionPixelOffset(unifyprinciplesR.dimen.unify_space_8)
                     layoutManager = chipsLayoutManager
                     adapter = popularCityAdapter
                     addItemDecoration(ChipsItemDecoration(dist))
@@ -456,7 +457,7 @@ class DiscomBottomSheetRevamp :
         }
 
         viewBinding?.searchPageInput?.searchBarPlaceholder =
-            getString(R.string.hint_district_recommendation_search)
+            getString(logisticaddaddressR.string.hint_district_recommendation_search)
 
         viewBinding?.rvListDistrict?.addOnScrollListener(mEndlessListener)
 
@@ -465,7 +466,7 @@ class DiscomBottomSheetRevamp :
                 setupAnalyticOnErrorPilihKodePos()
                 Toaster.build(
                     it,
-                    getString(R.string.postal_code_field_error),
+                    getString(logisticaddaddressR.string.postal_code_field_error),
                     Toaster.LENGTH_SHORT,
                     Toaster.TYPE_ERROR
                 ).show()
@@ -498,7 +499,7 @@ class DiscomBottomSheetRevamp :
             emptyStateDistrict.visibility = View.GONE
             layoutUseCurrentLoc.visibility = View.GONE
             dividerUseCurrentLocation.visibility = View.GONE
-            tvDescInputDistrict.setText(R.string.hint_advice_search_address)
+            tvDescInputDistrict.setText(logisticaddaddressR.string.hint_advice_search_address)
 
             if (mIsInitialLoading) {
                 listDistrictAdapter.setData(
@@ -565,7 +566,7 @@ class DiscomBottomSheetRevamp :
     private fun onDistrictChosen(districtModel: Address) {
         context?.let {
             if (source is DiscomSource.UserAddress) {
-                setTitle(getString(R.string.title_post_code))
+                setTitle(getString(logisticaddaddressR.string.title_post_code))
                 isKodePosShown = true
                 setupRvZipCodeChips()
                 getDistrict(districtModel)
@@ -627,7 +628,7 @@ class DiscomBottomSheetRevamp :
             layoutManager = chipsLayoutManagerZipCode
             adapter = zipCodeChipsAdapter
             val dist =
-                context.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_8)
+                context.resources.getDimensionPixelOffset(unifyprinciplesR.dimen.unify_space_8)
             addItemDecoration(ChipsItemDecoration(dist))
         }
     }
@@ -701,7 +702,7 @@ class DiscomBottomSheetRevamp :
                     }
                 }
             },
-            getString(R.string.rationale_need_location)
+            getString(logisticaddaddressR.string.rationale_need_location)
         )
     }
 
@@ -745,15 +746,15 @@ class DiscomBottomSheetRevamp :
         context?.let {
             val dialog =
                 DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
-                    setTitle(getString(R.string.txt_location_not_detected))
-                    setDescription(getString(R.string.discom_on_deny_location_subtitle))
-                    setPrimaryCTAText(getString(R.string.btn_ok))
+                    setTitle(getString(logisticaddaddressR.string.txt_location_not_detected))
+                    setDescription(getString(logisticaddaddressR.string.discom_on_deny_location_subtitle))
+                    setPrimaryCTAText(getString(logisticaddaddressR.string.btn_ok))
                     setCancelable(true)
                     setPrimaryCTAClickListener {
                         dismiss()
                         turnGPSOn(it)
                     }
-                    setSecondaryCTAText(getString(R.string.tv_discom_dialog_secondary))
+                    setSecondaryCTAText(getString(logisticaddaddressR.string.tv_discom_dialog_secondary))
                     setSecondaryCTAClickListener {
                         dismiss()
                     }

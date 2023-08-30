@@ -177,6 +177,7 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
+import com.tokopedia.abstraction.R as abstractionR
 
 class ShipmentViewModel @Inject constructor(
     private val getShipmentAddressFormV4UseCase: GetShipmentAddressFormV4UseCase,
@@ -1159,7 +1160,7 @@ class ShipmentViewModel @Inject constructor(
                                 )
                             } else {
                                 val defaultErrorMessage =
-                                    v.getStringResource(com.tokopedia.abstraction.R.string.default_request_error_unknown)
+                                    v.getStringResource(abstractionR.string.default_request_error_unknown)
                                 v.renderCheckoutCartError(defaultErrorMessage)
                                 v.logOnErrorCheckout(
                                     MessageErrorException(defaultErrorMessage),
@@ -4374,7 +4375,7 @@ class ShipmentViewModel @Inject constructor(
                         it.renderEditAddressSuccess(latitude, longitude)
                     } else {
                         val messageError =
-                            it.getStringResource(com.tokopedia.abstraction.R.string.default_request_error_unknown)
+                            it.getStringResource(abstractionR.string.default_request_error_unknown)
 
                         it.navigateToSetPinpoint(messageError, locationPass)
                     }

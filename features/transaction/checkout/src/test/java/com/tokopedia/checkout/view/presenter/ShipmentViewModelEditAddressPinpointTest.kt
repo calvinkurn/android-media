@@ -7,6 +7,7 @@ import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.verifyOrder
 import org.junit.Test
+import com.tokopedia.abstraction.R as abstractionR
 
 class ShipmentViewModelEditAddressPinpointTest : BaseShipmentViewModelTest() {
 
@@ -70,7 +71,7 @@ class ShipmentViewModelEditAddressPinpointTest : BaseShipmentViewModelTest() {
 
         coEvery { editAddressUseCase(any()) } returns KeroEditAddressResponse.Data(keroEditAddress = KeroEditAddressResponse.Data.KeroEditAddress(KeroEditAddressResponse.Data.KeroEditAddress.KeroEditAddressSuccessResponse(isSuccess = 0)))
         every {
-            view.getStringResource(com.tokopedia.abstraction.R.string.default_request_error_unknown)
+            view.getStringResource(abstractionR.string.default_request_error_unknown)
         } returns errorMessage
 
         // When
@@ -110,7 +111,7 @@ class ShipmentViewModelEditAddressPinpointTest : BaseShipmentViewModelTest() {
         coEvery { editAddressUseCase(any()) } returns KeroEditAddressResponse.Data(keroEditAddress = KeroEditAddressResponse.Data.KeroEditAddress(KeroEditAddressResponse.Data.KeroEditAddress.KeroEditAddressSuccessResponse(isSuccess = 0)))
 
         every {
-            view.getStringResource(com.tokopedia.abstraction.R.string.default_request_error_unknown)
+            view.getStringResource(abstractionR.string.default_request_error_unknown)
         } returns errorMessage
 
         // When
