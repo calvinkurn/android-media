@@ -1018,7 +1018,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
 
         val shareComponentParam = ShareComponentInstanceBuilder.Param(
             isVoucherProduct = voucherDetail.isVoucherProduct,
-            voucherId = voucherDetail.voucherId,
+            galadrielVoucherId = voucherDetail.galadrielVoucherId,
             isPublic = voucherDetail.isPublic == TRUE,
             voucherCode = voucherDetail.voucherCode,
             voucherStartDate = voucherStartDate,
@@ -1071,7 +1071,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             onShareOptionsClicked = { shareModel ->
                 handleShareOptionSelection(
                     voucherDetail.isVoucherProduct,
-                    shareComponentParam.voucherId,
+                    shareComponentParam.galadrielVoucherId,
                     shareModel,
                     title,
                     description,
@@ -1131,7 +1131,8 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             shopDomain,
             shareModel,
             title,
-            outgoingDescription
+            outgoingDescription,
+            isProductVoucher
         )
         LinkerManager.getInstance().executeShareRequest(
             LinkerUtils.createShareRequest(

@@ -1,6 +1,6 @@
 package com.tokopedia.tokofood.stub.postpurchase.di.component
 
-import com.tokochat.tokochat_config_common.di.component.TokoChatConfigComponent
+import com.tokopedia.tokochat.config.di.component.TokoChatConfigComponent
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.remoteconfig.RemoteConfig
