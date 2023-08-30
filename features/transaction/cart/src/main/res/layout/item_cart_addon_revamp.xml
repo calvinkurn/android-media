@@ -53,6 +53,6 @@
         app:layout_constraintBottom_toBottomOf="@id/desc_addon"
         app:layout_constraintTop_toTopOf="@id/desc_addon"
         app:layout_constraintEnd_toEndOf="parent"
-        app:icon_name="CHEVRON_RIGHT" />
+        app:icon_name="CHEVRON_DOWN" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
