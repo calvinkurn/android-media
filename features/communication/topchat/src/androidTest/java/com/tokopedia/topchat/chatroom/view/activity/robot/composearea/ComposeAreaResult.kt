@@ -15,6 +15,12 @@ object ComposeAreaResult {
     private val errorComposeViewId = R.id.tp_error_compose
     private val sendButtonId = R.id.send_but
 
+    fun assertTypeMessageText(text: String) {
+        onView(withId(R.id.new_comment)).check(
+            matches(withText(text))
+        )
+    }
+
     fun assertSendBtnEnabled() {
         DrawableMatcher.compareDrawable(
             sendButtonId,
@@ -38,22 +44,36 @@ object ComposeAreaResult {
             .check(matches(not(isDisplayed())))
     }
 
+    fun assertChatAttachmentMenuVisibility(visibilityMatcher: Matcher<View>) {
+        onView(withId(R.id.rv_topchat_attachment_menu)).check(
+            matches(visibilityMatcher)
+        )
+    }
+
     fun assertAttachmentMenuCount(count: Int) {
         onView(withId(R.id.rv_topchat_attachment_menu)).check(
             matches(withTotalItem(count))
         )
     }
 
-    fun assertTypeMessageText(text: String) {
-        onView(withId(R.id.new_comment)).check(
-            matches(withText(text))
+    fun assertChatMenuVisibility(visibilityMatcher: Matcher<View>) {
+        onView(withId(R.id.fl_chat_menu)).check(
+            matches(visibilityMatcher)
         )
     }
 
     fun assertTemplateChatVisibility(
-        visibilityMatcher: Matcher<in View>
+        visibilityMatcher: Matcher<View>
     ) {
         onView(withId(R.id.list_template)).check(
+            matches(visibilityMatcher)
+        )
+    }
+
+    fun assertChatStickerMenuVisibility(
+        visibilityMatcher: Matcher<View>
+    ) {
+        onView(withId(R.id.ll_sticker_container)).check(
             matches(visibilityMatcher)
         )
     }

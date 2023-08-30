@@ -1,23 +1,15 @@
-package com.tokopedia.topchat.chatroom.view.activity
+package com.tokopedia.topchat.chatroom.view.activity.test
 
-import android.app.Activity
-import android.app.Instrumentation
-import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.matcher.IntentMatchers
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.activity.base.blockPromo
 import com.tokopedia.topchat.chatroom.view.activity.base.hideBanner
 import com.tokopedia.topchat.chatroom.view.activity.base.setFollowing
-import com.tokopedia.topchat.chatroom.view.activity.robot.broadcast.BroadcastResult.assertBroadcastShown
-import com.tokopedia.topchat.chatroom.view.activity.robot.product_bundling.ProductBundlingResult.assertCarouselBundlingBroadcastShown
-import com.tokopedia.topchat.chatroom.view.activity.robot.product_bundling.ProductBundlingResult.assertCtaOutOfStock
-import com.tokopedia.topchat.chatroom.view.activity.robot.product_bundling.ProductBundlingResult.assertMultiBundlingBroadcastShown
-import com.tokopedia.topchat.chatroom.view.activity.robot.product_bundling.ProductBundlingResult.assertSingleBundlingBroadcastShown
-import com.tokopedia.topchat.chatroom.view.activity.robot.product_bundling.ProductBundlingRobot.clickOnImageMultipleItemBundling
-import com.tokopedia.topchat.chatroom.view.activity.robot.product_bundling.ProductBundlingRobot.clickOnImageSingleItemBundling
-import com.tokopedia.topchat.chatroom.view.activity.robot.product_bundling.ProductBundlingRobot.doScrollProductBundlingToPositionInBroadcast
+import com.tokopedia.topchat.chatroom.view.activity.robot.broadcastResult
+import com.tokopedia.topchat.chatroom.view.activity.robot.generalResult
+import com.tokopedia.topchat.chatroom.view.activity.robot.productBundlingResult
+import com.tokopedia.topchat.chatroom.view.activity.robot.productBundlingRobot
 import org.junit.Test
 
 @UiTest
@@ -32,13 +24,15 @@ class TopchatRoomProductBundlingBroadcastTest: TopchatRoomTest()  {
         chatAttachmentUseCase.response = chatAttachmentUseCase.productBundlingAttachment
         getShopFollowingUseCaseStub.response = getShopFollowingStatus.setFollowing(true)
         launchChatRoomActivity()
-        Intents.intending(IntentMatchers.anyIntent()).respondWith(
-            Instrumentation.ActivityResult(Activity.RESULT_OK, null)
-        )
+        stubIntents()
 
         // Then
-        assertBroadcastShown()
-        assertMultiBundlingBroadcastShown()
+        broadcastResult {
+            assertBroadcastShown()
+        }
+        productBundlingResult {
+            assertMultiBundlingBroadcastShown()
+        }
     }
 
     @Test
@@ -51,13 +45,15 @@ class TopchatRoomProductBundlingBroadcastTest: TopchatRoomTest()  {
         chatAttachmentUseCase.response = chatAttachmentUseCase.productBundlingAttachment
         getShopFollowingUseCaseStub.response = getShopFollowingStatus.setFollowing(true)
         launchChatRoomActivity()
-        Intents.intending(IntentMatchers.anyIntent()).respondWith(
-            Instrumentation.ActivityResult(Activity.RESULT_OK, null)
-        )
+        stubIntents()
 
         // Then
-        assertBroadcastShown()
-        assertCarouselBundlingBroadcastShown(2)
+        broadcastResult {
+            assertBroadcastShown()
+        }
+        productBundlingResult {
+            assertCarouselBundlingBroadcastShown(2)
+        }
     }
 
     @Test
@@ -70,13 +66,15 @@ class TopchatRoomProductBundlingBroadcastTest: TopchatRoomTest()  {
         chatAttachmentUseCase.response = chatAttachmentUseCase.productBundlingAttachment
         getShopFollowingUseCaseStub.response = getShopFollowingStatus.setFollowing(true)
         launchChatRoomActivity()
-        Intents.intending(IntentMatchers.anyIntent()).respondWith(
-            Instrumentation.ActivityResult(Activity.RESULT_OK, null)
-        )
+        stubIntents()
 
         // Then
-        assertBroadcastShown()
-        assertSingleBundlingBroadcastShown()
+        broadcastResult {
+            assertBroadcastShown()
+        }
+        productBundlingResult {
+            assertSingleBundlingBroadcastShown()
+        }
     }
 
     @Test
@@ -89,14 +87,16 @@ class TopchatRoomProductBundlingBroadcastTest: TopchatRoomTest()  {
         chatAttachmentUseCase.response = chatAttachmentUseCase.productBundlingAttachment
         getShopFollowingUseCaseStub.response = getShopFollowingStatus.setFollowing(true)
         launchChatRoomActivity()
-        Intents.intending(IntentMatchers.anyIntent()).respondWith(
-            Instrumentation.ActivityResult(Activity.RESULT_OK, null)
-        )
+        stubIntents()
 
         // Then
-        assertBroadcastShown()
-        assertSingleBundlingBroadcastShown()
-        assertCtaOutOfStock(false)
+        broadcastResult {
+            assertBroadcastShown()
+        }
+        productBundlingResult {
+            assertSingleBundlingBroadcastShown()
+            assertCtaOutOfStock(false)
+        }
     }
 
     @Test
@@ -109,17 +109,23 @@ class TopchatRoomProductBundlingBroadcastTest: TopchatRoomTest()  {
         chatAttachmentUseCase.response = chatAttachmentUseCase.productBundlingAttachment
         getShopFollowingUseCaseStub.response = getShopFollowingStatus.setFollowing(true)
         launchChatRoomActivity()
-        Intents.intending(IntentMatchers.anyIntent()).respondWith(
-            Instrumentation.ActivityResult(Activity.RESULT_OK, null)
-        )
-        doScrollProductBundlingToPositionInBroadcast(1)
-        clickOnImageMultipleItemBundling()
+        stubIntents()
+
+        // When
+        productBundlingRobot {
+            doScrollProductBundlingToPositionInBroadcast(1)
+            clickOnImageMultipleItemBundling()
+        }
 
         // Then
-        assertBroadcastShown()
+        broadcastResult {
+            assertBroadcastShown()
+        }
         val intent = RouteManager.getIntent(context,
             "tokopedia://product/2149129024?extParam=whid%3D341730%26src%3Dchat") //Applink from JSON
-        Intents.intended(IntentMatchers.hasData(intent.data))
+        generalResult {
+            openPageWithIntent(intent)
+        }
     }
 
     @Test
@@ -132,15 +138,21 @@ class TopchatRoomProductBundlingBroadcastTest: TopchatRoomTest()  {
         chatAttachmentUseCase.response = chatAttachmentUseCase.productBundlingAttachment
         getShopFollowingUseCaseStub.response = getShopFollowingStatus.setFollowing(true)
         launchChatRoomActivity()
-        Intents.intending(IntentMatchers.anyIntent()).respondWith(
-            Instrumentation.ActivityResult(Activity.RESULT_OK, null)
-        )
-        clickOnImageSingleItemBundling()
+        stubIntents()
+
+        // When
+        productBundlingRobot {
+            clickOnImageSingleItemBundling()
+        }
 
         // Then
-        assertBroadcastShown()
+        broadcastResult {
+            assertBroadcastShown()
+        }
         val intent = RouteManager.getIntent(context,
             "tokopedia://product/2149129024?extParam=whid%3D341730%26src%3Dchat") //Applink from JSON
-        Intents.intended(IntentMatchers.hasData(intent.data))
+        generalResult {
+            openPageWithIntent(intent)
+        }
     }
 }

@@ -1,4 +1,4 @@
-package com.tokopedia.topchat.chatroom.view.activity
+package com.tokopedia.topchat.chatroom.view.activity.test.buyer
 
 import android.app.Activity
 import android.app.Instrumentation
@@ -18,6 +18,7 @@ import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentResponse
 import com.tokopedia.topchat.chatroom.view.activity.base.BaseBuyerTopchatRoomTest
+import com.tokopedia.topchat.chatroom.view.activity.robot.composeAreaResult
 import com.tokopedia.topchat.chatroom.view.activity.robot.composeAreaRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.generalResult
 import com.tokopedia.topchat.chatroom.view.activity.robot.generalRobot
@@ -27,6 +28,7 @@ import com.tokopedia.topchat.chatroom.view.activity.robot.productCardRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.productPreviewResult
 import com.tokopedia.topchat.chatroom.view.activity.robot.productPreviewRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.productResult
+import com.tokopedia.topchat.chatroom.view.activity.robot.srwResult
 import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.SOURCE_TOPCHAT
 import com.tokopedia.topchat.matchers.withTotalItem
 import org.hamcrest.CoreMatchers.not
@@ -241,8 +243,12 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         }
 
         // Then
-        assertSrwPreviewContentIsHidden()
-        assertTemplateChatVisibility(isDisplayed())
+        srwResult {
+            assertSrwPreviewContentContainerVisibility(not(isDisplayed()))
+        }
+        composeAreaResult {
+            assertTemplateChatVisibility(isDisplayed())
+        }
     }
 
     @Test

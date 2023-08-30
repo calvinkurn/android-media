@@ -12,9 +12,13 @@ import androidx.test.espresso.matcher.ViewMatchers.withSubstring
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.activity.robot.composeAreaResult
+import com.tokopedia.topchat.chatroom.view.activity.robot.generalResult
 import com.tokopedia.topchat.matchers.atPosition
+import com.tokopedia.topchat.matchers.hasSrwBubble
+import com.tokopedia.topchat.matchers.isExpanded
 import com.tokopedia.topchat.matchers.withIndex
 import com.tokopedia.topchat.matchers.withRecyclerView
+import com.tokopedia.topchat.matchers.withTotalItem
 import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Matcher
@@ -64,5 +68,61 @@ object SrwResult {
                 ViewMatchers.isDescendantOfA(withId(R.id.cl_attachment_preview))
             )
         ).check(matches(visibilityMatcher))
+    }
+
+    fun assertSrwTitle(
+        title: String
+    ) {
+        onView(withId(R.id.tp_srw_partial)).check(
+            matches(withText(title))
+        )
+    }
+
+    fun assertSrwTotalQuestion(
+        totalQuestion: Int
+    ) {
+        onView(withId(R.id.rv_srw_partial))
+            .check(matches(withTotalItem(totalQuestion)))
+    }
+
+    fun assertSrwPreviewCollapsed() {
+        onView(withId(R.id.rv_srw))
+            .check(matches(not(isExpanded())))
+    }
+
+    fun assertSrwPreviewExpanded() {
+        onView(withId(R.id.rv_srw))
+            .check(matches(isExpanded()))
+    }
+
+    fun assertSrwBubbleDoesNotExist() {
+        generalResult {
+            assertChatRecyclerview(not(hasSrwBubble()))
+        }
+    }
+
+    fun assertSrwBubbleExpanded(
+        position: Int
+    ) {
+        generalResult {
+            assertViewInRecyclerViewAt(position, R.id.chat_srw_bubble, isExpanded())
+        }
+    }
+
+    fun assertSrwBubbleCollapsed(
+        position: Int
+    ) {
+        generalResult {
+            assertViewInRecyclerViewAt(position, R.id.chat_srw_bubble, not(isExpanded()))
+        }
+    }
+
+    fun assertSrwBubbleContentContainerVisibility(
+        position: Int,
+        visibilityMatcher: Matcher<View>
+    ) {
+        generalResult {
+            assertViewInRecyclerViewAt(position, R.id.rv_srw_content_container, visibilityMatcher)
+        }
     }
 }

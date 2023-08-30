@@ -5,9 +5,10 @@ import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.test.application.annotations.CassavaTest
-import com.tokopedia.topchat.chatroom.view.activity.TopchatRoomBuyerProductAttachmentTest.Companion.putProductAttachmentIntent
 import com.tokopedia.topchat.chatroom.view.activity.base.BaseBuyerTopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.activity.robot.srw.SrwRobot.dismissSrwOnboarding
+import com.tokopedia.topchat.chatroom.view.activity.robot.srwRobot
+import com.tokopedia.topchat.chatroom.view.activity.test.buyer.TopchatRoomBuyerProductAttachmentTest.Companion.putProductAttachmentIntent
 import com.tokopedia.topchat.chatroom.view.custom.SrwFrameLayout
 import org.junit.Rule
 import org.junit.Test
@@ -38,14 +39,16 @@ class SRWCassavaTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwUseCase.defaultResponse
-        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase.
-        generatePreAttachPayload(EX_PRODUCT_ID)
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generatePreAttachPayload(EX_PRODUCT_ID)
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
 
         // When
-        clickSrwPreviewItemAt(0)
+        srwRobot {
+            clickSrwPreviewItemAt(0)
+        }
 
         // Close
         finishChatRoomActivity()
@@ -79,7 +82,7 @@ class SRWCassavaTest : BaseBuyerTopchatRoomTest() {
             putProductAttachmentIntent(it)
         }
 
-        //When
+        // When
         dismissSrwOnboarding()
 
         // Close

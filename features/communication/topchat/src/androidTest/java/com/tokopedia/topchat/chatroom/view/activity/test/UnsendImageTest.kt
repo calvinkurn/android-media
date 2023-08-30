@@ -1,15 +1,15 @@
-package com.tokopedia.topchat.chatroom.view.activity
+package com.tokopedia.topchat.chatroom.view.activity.test
 
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.activity.robot.generalResult
-import com.tokopedia.topchat.chatroom.view.activity.robot.imageattachment.ImageAttachmentResult
-import com.tokopedia.topchat.chatroom.view.activity.robot.imageattachment.ImageAttachmentRobot
-import com.tokopedia.topchat.chatroom.view.activity.robot.longclickbubblemenu.LongClickBubbleMenuResult
-import com.tokopedia.topchat.chatroom.view.activity.robot.longclickbubblemenu.LongClickBubbleMenuRobot
-import com.tokopedia.topchat.chatroom.view.activity.robot.msgbubble.MsgBubbleResult
-import com.tokopedia.topchat.chatroom.view.activity.robot.replybubble.ReplyBubbleRobot
+import com.tokopedia.topchat.chatroom.view.activity.robot.imageAttachmentResult
+import com.tokopedia.topchat.chatroom.view.activity.robot.imageAttachmentRobot
+import com.tokopedia.topchat.chatroom.view.activity.robot.longClickBubbleMenuResult
+import com.tokopedia.topchat.chatroom.view.activity.robot.longClickBubbleMenuRobot
+import com.tokopedia.topchat.chatroom.view.activity.robot.msgBubbleResult
+import com.tokopedia.topchat.chatroom.view.activity.robot.replyBubbleRobot
 import org.junit.Test
 
 @UiTest
@@ -29,12 +29,18 @@ class UnsendImageTest : TopchatRoomTest() {
         launchChatRoomActivity()
 
         // When
-        ImageAttachmentRobot.longClickImageAt(0)
-        LongClickBubbleMenuRobot.clickDeleteMsgMenu()
-        LongClickBubbleMenuRobot.clickConfirmDeleteMsgDialog()
+        imageAttachmentRobot {
+            longClickImageAt(0)
+        }
+        longClickBubbleMenuRobot {
+            clickDeleteMsgMenu()
+            clickConfirmDeleteMsgDialog()
+        }
 
         // Then
-        MsgBubbleResult.assertMsgIsDeletedAt(0)
+        msgBubbleResult {
+            assertMsgIsDeletedAt(0)
+        }
         generalResult {
             assertToasterText(context.getString(R.string.topchat_success_delete_msg_bubble))
         }
@@ -48,10 +54,14 @@ class UnsendImageTest : TopchatRoomTest() {
         launchChatRoomActivity()
 
         // When
-        ImageAttachmentRobot.longClickImageAt(1)
+        imageAttachmentRobot {
+            longClickImageAt(1)
+        }
 
         // Then
-        LongClickBubbleMenuResult.assertNoBottomSheet()
+        longClickBubbleMenuResult {
+            assertNoBottomSheet()
+        }
     }
 
     @Test
@@ -61,7 +71,9 @@ class UnsendImageTest : TopchatRoomTest() {
         launchChatRoomActivity()
 
         // Then
-        MsgBubbleResult.assertMsgIsDeletedAt(0)
+        msgBubbleResult {
+            assertMsgIsDeletedAt(0)
+        }
     }
 
     @Test
@@ -74,7 +86,9 @@ class UnsendImageTest : TopchatRoomTest() {
         websocket.simulateResponse(websocket.deleteImageResponse)
 
         // Then
-        MsgBubbleResult.assertMsgIsDeletedAt(0)
+        msgBubbleResult {
+            assertMsgIsDeletedAt(0)
+        }
     }
 
     @Test
@@ -84,10 +98,14 @@ class UnsendImageTest : TopchatRoomTest() {
         launchChatRoomActivity()
 
         // When
-        ReplyBubbleRobot.longClickBubbleAt(0)
+        replyBubbleRobot {
+            longClickBubbleAt(0)
+        }
 
         // Then
-        LongClickBubbleMenuResult.assertNoBottomSheet()
+        longClickBubbleMenuResult {
+            assertNoBottomSheet()
+        }
     }
 
     @Test
@@ -98,12 +116,18 @@ class UnsendImageTest : TopchatRoomTest() {
         launchChatRoomActivity()
 
         // When
-        ImageAttachmentRobot.longClickImageAt(0)
-        LongClickBubbleMenuRobot.clickDeleteMsgMenu()
-        LongClickBubbleMenuRobot.clickConfirmDeleteMsgDialog()
+        imageAttachmentRobot {
+            longClickImageAt(0)
+        }
+        longClickBubbleMenuRobot {
+            clickDeleteMsgMenu()
+            clickConfirmDeleteMsgDialog()
+        }
 
         // Then
-        ImageAttachmentResult.assertExistAt(0)
+        imageAttachmentResult {
+            assertExistAt(0)
+        }
         generalResult {
             assertToasterText(context.getString(R.string.topchat_error_delete_msg_bubble))
         }
@@ -117,12 +141,18 @@ class UnsendImageTest : TopchatRoomTest() {
         launchChatRoomActivity()
 
         // When
-        ImageAttachmentRobot.longClickImageAt(0)
-        LongClickBubbleMenuRobot.clickDeleteMsgMenu()
-        LongClickBubbleMenuRobot.clickConfirmDeleteMsgDialog()
+        imageAttachmentRobot {
+            longClickImageAt(0)
+        }
+        longClickBubbleMenuRobot {
+            clickDeleteMsgMenu()
+            clickConfirmDeleteMsgDialog()
+        }
 
         // Then
-        ImageAttachmentResult.assertExistAt(0)
+        imageAttachmentResult {
+            assertExistAt(0)
+        }
         generalResult {
             assertToasterText(context.getString(R.string.topchat_error_delete_msg_bubble))
         }

@@ -1,13 +1,7 @@
 package com.tokopedia.topchat.chatroom.view.activity.base
 
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.tokopedia.topchat.AndroidFileUtil
-import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.ChatSmartReplyQuestionResponse
-import com.tokopedia.topchat.matchers.isExpanded
-import com.tokopedia.topchat.matchers.withRecyclerView
 import com.tokopedia.websocket.WebSocketResponse
 import org.hamcrest.CoreMatchers.not
 
@@ -24,7 +18,8 @@ open class BaseBuyerTopchatRoomTest : TopchatRoomTest() {
     protected var wsTickerReminderResponse: WebSocketResponse = WebSocketResponse()
 
     private val templateChats = listOf(
-        "I am buyer", "Is this product ready?"
+        "I am buyer",
+        "Is this product ready?"
     )
 
     override fun before() {
@@ -79,36 +74,6 @@ open class BaseBuyerTopchatRoomTest : TopchatRoomTest() {
     private fun setupDefaultResponse() {
         chatSrwUseCase.response = chatSrwResponse
         getTemplateChatRoomUseCase.response = successGetTemplateResponse
-    }
-
-    protected fun assertSrwPreviewExpanded() {
-        onView(withId(R.id.rv_srw))
-            .check(matches(isExpanded()))
-    }
-
-    protected fun assertSrwBubbleExpanded(
-        position: Int
-    ) {
-        onView(
-            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
-                position, R.id.chat_srw_bubble
-            )
-        ).check(matches(isExpanded()))
-    }
-
-    protected fun assertSrwBubbleCollapsed(
-        position: Int
-    ) {
-        onView(
-            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
-                position, R.id.chat_srw_bubble
-            )
-        ).check(matches(not(isExpanded())))
-    }
-
-    protected fun assertSrwPreviewCollapsed() {
-        onView(withId(R.id.rv_srw))
-            .check(matches(not(isExpanded())))
     }
 
     protected fun WebSocketResponse.setLabel(label: String): WebSocketResponse {

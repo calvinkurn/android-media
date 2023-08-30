@@ -1,24 +1,14 @@
-package com.tokopedia.topchat.chatroom.view.activity
+package com.tokopedia.topchat.chatroom.view.activity.test
 
-import android.app.Activity
-import android.app.Instrumentation
-import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
-import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralResult.openPageWithIntent
-import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralRobot
-import com.tokopedia.topchat.chatroom.view.activity.robot.product_bundling.ProductBundlingResult.assertCarouselBundlingShown
-import com.tokopedia.topchat.chatroom.view.activity.robot.product_bundling.ProductBundlingResult.assertCtaBundlingNotShown
-import com.tokopedia.topchat.chatroom.view.activity.robot.product_bundling.ProductBundlingResult.assertCtaBundlingShown
+import com.tokopedia.topchat.chatroom.view.activity.robot.generalResult
+import com.tokopedia.topchat.chatroom.view.activity.robot.generalRobot
+import com.tokopedia.topchat.chatroom.view.activity.robot.productBundlingResult
+import com.tokopedia.topchat.chatroom.view.activity.robot.productBundlingRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.product_bundling.ProductBundlingResult.assertCtaOutOfStock
-import com.tokopedia.topchat.chatroom.view.activity.robot.product_bundling.ProductBundlingResult.assertMultiBundlingShown
-import com.tokopedia.topchat.chatroom.view.activity.robot.product_bundling.ProductBundlingResult.assertSingleBundlingShown
-import com.tokopedia.topchat.chatroom.view.activity.robot.product_bundling.ProductBundlingResult.labelSingleBundlingShown
-import com.tokopedia.topchat.chatroom.view.activity.robot.product_bundling.ProductBundlingRobot.clickCtaProductBundling
-import com.tokopedia.topchat.chatroom.view.activity.robot.product_bundling.ProductBundlingRobot.doScrollProductBundlingToPosition
 import org.junit.Test
 
 @UiTest
@@ -32,7 +22,9 @@ class TopchatRoomProductBundlingAttachmentTest : TopchatRoomTest() {
         launchChatRoomActivity()
 
         // Then
-        assertMultiBundlingShown()
+        productBundlingResult {
+            assertMultiBundlingShown()
+        }
     }
 
     @Test
@@ -43,7 +35,9 @@ class TopchatRoomProductBundlingAttachmentTest : TopchatRoomTest() {
         launchChatRoomActivity()
 
         // Then
-        assertSingleBundlingShown()
+        productBundlingResult {
+            assertSingleBundlingShown()
+        }
     }
 
     @Test
@@ -54,7 +48,9 @@ class TopchatRoomProductBundlingAttachmentTest : TopchatRoomTest() {
         launchChatRoomActivity()
 
         // Then
-        labelSingleBundlingShown("Paket isi 1")
+        productBundlingResult {
+            labelSingleBundlingShown("Paket isi 1")
+        }
     }
 
     @Test
@@ -65,7 +61,9 @@ class TopchatRoomProductBundlingAttachmentTest : TopchatRoomTest() {
         launchChatRoomActivity(isSellerApp = false)
 
         // Then
-        assertCtaBundlingShown()
+        productBundlingResult {
+            assertCtaBundlingShown()
+        }
     }
 
     @Test
@@ -76,7 +74,9 @@ class TopchatRoomProductBundlingAttachmentTest : TopchatRoomTest() {
         launchChatRoomActivity(isSellerApp = true)
 
         // Then
-        assertCtaBundlingNotShown()
+        productBundlingResult {
+            assertCtaBundlingNotShown()
+        }
     }
 
     @Test
@@ -85,19 +85,24 @@ class TopchatRoomProductBundlingAttachmentTest : TopchatRoomTest() {
         getChatUseCase.response = getChatUseCase.productBundlingAttachmentMultipleChat
         chatAttachmentUseCase.response = chatAttachmentUseCase.productBundlingAttachment
         launchChatRoomActivity()
+        stubIntents()
 
         // When
-        Intents.intending(anyIntent())
-            .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-        GeneralRobot.scrollChatToPosition(0)
-        clickCtaProductBundling(0)
+        generalRobot {
+            scrollChatToPosition(0)
+        }
+        productBundlingRobot {
+            clickCtaProductBundling(0)
+        }
 
         // Then
         val intent = RouteManager.getIntent(
             context,
             "tokopedia://product-bundle/2148348897?source=cart&bundleId=32175&selectedProductIds=2148348892,2148348896,2148348901"
         )
-        openPageWithIntent(intent)
+        generalResult {
+            openPageWithIntent(intent)
+        }
     }
 
     @Test
@@ -106,19 +111,24 @@ class TopchatRoomProductBundlingAttachmentTest : TopchatRoomTest() {
         getChatUseCase.response = getChatUseCase.productBundlingAttachmentSingleChat
         chatAttachmentUseCase.response = chatAttachmentUseCase.productBundlingAttachment
         launchChatRoomActivity()
+        stubIntents()
 
         // When
-        Intents.intending(anyIntent())
-            .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-        GeneralRobot.scrollChatToPosition(0)
-        clickCtaProductBundling(0)
+        generalRobot {
+            scrollChatToPosition(0)
+        }
+        productBundlingRobot {
+            clickCtaProductBundling(0)
+        }
 
         // Then
         val intent = RouteManager.getIntent(
             context,
             "tokopedia://product-bundle/2148348897?source=cart&bundleId=32175&selectedProductIds=2148348892"
         )
-        openPageWithIntent(intent)
+        generalResult {
+            openPageWithIntent(intent)
+        }
     }
 
     @Test
@@ -128,10 +138,18 @@ class TopchatRoomProductBundlingAttachmentTest : TopchatRoomTest() {
         chatAttachmentUseCase.response = chatAttachmentUseCase.productBundlingAttachment
         launchChatRoomActivity()
 
-        // When - Then
-        GeneralRobot.scrollChatToPosition(0)
-        doScrollProductBundlingToPosition(2)
-        assertCarouselBundlingShown(3)
+        // When
+        generalRobot {
+            scrollChatToPosition(0)
+        }
+        productBundlingRobot {
+            doScrollProductBundlingToPosition(2)
+        }
+
+        // Then
+        productBundlingResult {
+            assertCarouselBundlingShown(3)
+        }
     }
 
     @Test
@@ -141,9 +159,15 @@ class TopchatRoomProductBundlingAttachmentTest : TopchatRoomTest() {
         chatAttachmentUseCase.response = chatAttachmentUseCase.productBundlingAttachment
         launchChatRoomActivity()
 
+        // When
+        generalRobot {
+            scrollChatToPosition(0)
+        }
+
         // Then
-        GeneralRobot.scrollChatToPosition(0)
-        assertCtaOutOfStock()
+        productBundlingRobot {
+            assertCtaOutOfStock()
+        }
     }
 
     private fun getSwappedRolesChat(): GetExistingChatPojo {

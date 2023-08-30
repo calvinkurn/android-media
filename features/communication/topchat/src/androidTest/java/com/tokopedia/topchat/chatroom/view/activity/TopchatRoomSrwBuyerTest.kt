@@ -3,7 +3,6 @@ package com.tokopedia.topchat.chatroom.view.activity
 import android.app.Activity
 import android.app.Instrumentation
 import android.content.Intent
-import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
@@ -21,15 +20,14 @@ import com.tokopedia.topchat.chatroom.view.activity.base.BaseBuyerTopchatRoomTes
 import com.tokopedia.topchat.chatroom.view.activity.base.changeTimeStampTo
 import com.tokopedia.topchat.chatroom.view.activity.base.hasQuestion
 import com.tokopedia.topchat.chatroom.view.activity.base.matchProductWith
+import com.tokopedia.topchat.chatroom.view.activity.robot.composeAreaResult
 import com.tokopedia.topchat.chatroom.view.activity.robot.composeAreaRobot
-import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralResult.assertViewInRecyclerViewAt
 import com.tokopedia.topchat.chatroom.view.activity.robot.generalResult
 import com.tokopedia.topchat.chatroom.view.activity.robot.generalRobot
+import com.tokopedia.topchat.chatroom.view.activity.robot.msgBubbleResult
 import com.tokopedia.topchat.chatroom.view.activity.robot.productPreviewRobot
-import com.tokopedia.topchat.chatroom.view.activity.robot.srw.SrwResult.assertSrwCoachMark
-import com.tokopedia.topchat.chatroom.view.activity.robot.srw.SrwResult.assertSrwLabel
-import com.tokopedia.topchat.chatroom.view.activity.robot.srw.SrwResult.assertSrwLabelVisibility
-import com.tokopedia.topchat.chatroom.view.activity.robot.srw.SrwRobot.clickSrwQuestion
+import com.tokopedia.topchat.chatroom.view.activity.robot.srwResult
+import com.tokopedia.topchat.chatroom.view.activity.robot.srwRobot
 import com.tokopedia.topchat.chatroom.view.custom.SrwFrameLayout
 import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.SOURCE_TOPCHAT
 import com.tokopedia.topchat.common.websocket.FakeTopchatWebSocket
@@ -57,9 +55,11 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // Then
-        assertSrwPreviewContentIsVisible()
-        assertSrwTitle(chatSrwResponse.chatSmartReplyQuestion.title)
-        assertSrwTotalQuestion(1)
+        srwResult {
+            assertSrwPreviewContentIsVisible()
+            assertSrwTitle(chatSrwResponse.chatSmartReplyQuestion.title)
+            assertSrwTotalQuestion(1)
+        }
     }
 
     @Test
@@ -75,9 +75,11 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // Then
-        assertSrwPreviewContentIsVisible()
-        assertSrwTitle(chatSrwResponse.chatSmartReplyQuestion.title)
-        assertSrwTotalQuestion(3)
+        srwResult {
+            assertSrwPreviewContentIsVisible()
+            assertSrwTitle(chatSrwResponse.chatSmartReplyQuestion.title)
+            assertSrwTotalQuestion(3)
+        }
     }
 
     @Test
@@ -98,9 +100,11 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // Then
-        assertSrwPreviewContentIsVisible()
-        assertSrwTitle(chatSrwResponse.chatSmartReplyQuestion.title)
-        assertSrwTotalQuestion(1)
+        srwResult {
+            assertSrwPreviewContentIsVisible()
+            assertSrwTitle(chatSrwResponse.chatSmartReplyQuestion.title)
+            assertSrwTotalQuestion(1)
+        }
     }
 
     @Test
@@ -116,8 +120,12 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // Then
-        assertSrwPreviewContentIsHidden()
-        assertTemplateChatVisibility(isDisplayed())
+        srwResult {
+            assertSrwPreviewContentContainerVisibility(not(isDisplayed()))
+        }
+        composeAreaResult {
+            assertTemplateChatVisibility(isDisplayed())
+        }
     }
 
     @Test
@@ -139,8 +147,12 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         Thread.sleep(templateDelay + 10)
 
         // Then
-        assertSrwPreviewContentIsHidden()
-        assertTemplateChatVisibility(isDisplayed())
+        srwResult {
+            assertSrwPreviewContentContainerVisibility(not(isDisplayed()))
+        }
+        composeAreaResult {
+            assertTemplateChatVisibility(isDisplayed())
+        }
     }
 
     @Test
@@ -161,7 +173,9 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // Then
-        assertSrwPreviewContentIsVisible()
+        srwResult {
+            assertSrwPreviewContentIsVisible()
+        }
     }
 
     @Test
@@ -182,8 +196,12 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // Then
-        assertSrwPreviewContentIsHidden()
-        assertTemplateChatVisibility(isDisplayed())
+        srwResult {
+            assertSrwPreviewContentContainerVisibility(not(isDisplayed()))
+        }
+        composeAreaResult {
+            assertTemplateChatVisibility(isDisplayed())
+        }
     }
 
     @Test
@@ -200,8 +218,15 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // Then
-        assertTemplateChatVisibility(not(isDisplayed()))
-        assertSrwPreviewContentIsLoading()
+        composeAreaResult {
+            assertTemplateChatVisibility(not(isDisplayed()))
+        }
+        srwResult {
+            assertSrwPreviewContentContainerVisibility(not(isDisplayed()))
+        }
+        composeAreaResult {
+            assertTemplateChatVisibility(not(isDisplayed()))
+        }
     }
 
     @Test
@@ -217,7 +242,12 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // Then
-        assertSrwPreviewContentIsError()
+        srwResult {
+            assertSrwPreviewContentContainerVisibility(not(isDisplayed()))
+        }
+        composeAreaResult {
+            assertTemplateChatVisibility(isDisplayed())
+        }
     }
 
     @Test
@@ -233,22 +263,32 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // Then
-        assertSrwPreviewContentIsVisible()
-        assertSrwPreviewExpanded()
+        srwResult {
+            assertSrwPreviewContentIsVisible()
+            assertSrwPreviewExpanded()
+        }
 
         // When
-        clickOnSrwPartial()
+        srwRobot {
+            clickOnSrwPartial()
+        }
 
         // Then
-        assertSrwPreviewContentIsVisible()
-        assertSrwPreviewCollapsed()
+        srwResult {
+            assertSrwPreviewContentIsVisible()
+            assertSrwPreviewCollapsed()
+        }
 
         // When
-        clickOnSrwPartial()
+        srwRobot {
+            clickOnSrwPartial()
+        }
 
         // Then
-        assertSrwPreviewContentIsVisible()
-        assertSrwPreviewExpanded()
+        srwResult {
+            assertSrwPreviewContentIsVisible()
+            assertSrwPreviewExpanded()
+        }
     }
 
     @Test
@@ -264,11 +304,17 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // When
-        clickSrwPreviewItemAt(0)
+        srwRobot {
+            clickSrwPreviewItemAt(0)
+        }
 
         // Then
-        assertSrwPreviewContentIsHidden()
-        assertTemplateChatVisibility(not(isDisplayed()))
+        srwResult {
+            assertSrwPreviewContentContainerVisibility(not(isDisplayed()))
+        }
+        composeAreaResult {
+            assertTemplateChatVisibility(not(isDisplayed()))
+        }
     }
 
     @Test
@@ -289,8 +335,10 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // Then
-        assertSrwPreviewContentIsVisible()
-        assertSrwPreviewCollapsed()
+        srwResult {
+            assertSrwPreviewContentIsVisible()
+            assertSrwPreviewCollapsed()
+        }
     }
 
     @Test
@@ -309,11 +357,15 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         composeAreaRobot {
             clickComposeArea()
         }
-        pressBack()
+        generalRobot {
+            pressBack()
+        }
 
         // Then
-        assertSrwPreviewContentIsVisible()
-        assertSrwPreviewExpanded()
+        srwResult {
+            assertSrwPreviewContentIsVisible()
+            assertSrwPreviewExpanded()
+        }
     }
 
     @Test
@@ -332,11 +384,15 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         composeAreaRobot {
             clickComposeArea()
         }
-        clickOnSrwPartial()
+        srwRobot {
+            clickOnSrwPartial()
+        }
 
         // Then
-        assertSrwPreviewContentIsVisible()
-        assertSrwPreviewExpanded()
+        srwResult {
+            assertSrwPreviewContentIsVisible()
+            assertSrwPreviewExpanded()
+        }
         generalResult {
             assertKeyboardIsNotVisible(activity)
         }
@@ -358,12 +414,16 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         composeAreaRobot {
             clickComposeArea()
         }
-        clickOnSrwPartial()
-        clickOnSrwPartial()
+        srwRobot {
+            clickOnSrwPartial()
+            clickOnSrwPartial()
+        }
 
         // Then
-        assertSrwPreviewContentIsVisible()
-        assertSrwPreviewCollapsed()
+        srwResult {
+            assertSrwPreviewContentIsVisible()
+            assertSrwPreviewCollapsed()
+        }
     }
 
     /**
@@ -396,15 +456,19 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         productPreviewRobot {
             clickCloseAttachmentPreview(0)
         }
-        pressBack()
+        generalRobot {
+            pressBack()
+        }
         composeAreaRobot {
             clickPlusIconMenu()
             clickAttachProductMenu()
         }
 
         // Then
-        assertSrwPreviewContentIsVisible()
-        assertSrwPreviewExpanded()
+        srwResult {
+            assertSrwPreviewContentIsVisible()
+            assertSrwPreviewExpanded()
+        }
     }
 
     @Test
@@ -420,11 +484,18 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // When
-        clickSrwPreviewItemAt(0)
+        srwRobot {
+            clickSrwPreviewItemAt(0)
+        }
 
         // Then
-        assertSrwBubbleContentIsVisibleAt(0)
-        assertSrwBubbleExpanded(0)
+        srwResult {
+            assertSrwBubbleContentContainerVisibility(0, isDisplayed())
+            assertSrwBubbleExpanded(0)
+        }
+        composeAreaResult {
+            assertTemplateChatVisibility(not(isDisplayed()))
+        }
     }
 
     @Test
@@ -440,15 +511,22 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // When
-        clickSrwPreviewItemAt(0)
+        srwRobot {
+            clickSrwPreviewItemAt(0)
+        }
         websocket.simulateResponse(wsMineResponseText)
         websocket.simulateResponse(wsMineResponseText)
         websocket.simulateResponse(wsInterlocutorResponseText)
         websocket.simulateResponse(wsInterlocutorResponseText)
 
         // Then
-        assertSrwBubbleContentIsVisibleAt(0)
-        assertSrwBubbleExpanded(0)
+        srwResult {
+            assertSrwBubbleContentContainerVisibility(0, isDisplayed())
+            assertSrwBubbleExpanded(0)
+        }
+        composeAreaResult {
+            assertTemplateChatVisibility(not(isDisplayed()))
+        }
     }
 
     @Test
@@ -464,15 +542,22 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // When
-        clickSrwPreviewItemAt(0)
+        srwRobot {
+            clickSrwPreviewItemAt(0)
+        }
         websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
         websocket.simulateResponse(
             wsMineResponseText.changeTimeStampTo(today())
         )
 
         // Then
-        assertSrwBubbleContentIsVisibleAt(0)
-        assertSrwBubbleExpanded(0)
+        srwResult {
+            assertSrwBubbleContentContainerVisibility(0, isDisplayed())
+            assertSrwBubbleExpanded(0)
+        }
+        composeAreaResult {
+            assertTemplateChatVisibility(not(isDisplayed()))
+        }
     }
 
     @Test
@@ -489,7 +574,9 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         intending(anyIntent()).respondWith(getAttachInvoiceResult())
 
         // When
-        clickSrwPreviewItemAt(0)
+        srwRobot {
+            clickSrwPreviewItemAt(0)
+        }
         websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
         composeAreaRobot {
             clickPlusIconMenu()
@@ -500,8 +587,12 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // Then
-        assertSrwBubbleDoesNotExist()
-        assertTemplateChatVisibility(isDisplayed())
+        srwResult {
+            assertSrwBubbleDoesNotExist()
+        }
+        composeAreaResult {
+            assertTemplateChatVisibility(isDisplayed())
+        }
     }
 
     @Test
@@ -517,14 +608,20 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // When
-        clickSrwPreviewItemAt(0)
+        srwRobot {
+            clickSrwPreviewItemAt(0)
+        }
         websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
         websocket.simulateResponse(wsSellerInvoiceResponse.changeTimeStampTo(today()))
         websocket.simulateResponse(wsSellerResponseText.changeTimeStampTo(today()))
 
         // Then
-        assertSrwBubbleDoesNotExist()
-        assertTemplateChatVisibility(isDisplayed())
+        srwResult {
+            assertSrwBubbleDoesNotExist()
+        }
+        composeAreaResult {
+            assertTemplateChatVisibility(isDisplayed())
+        }
     }
 
     @Test
@@ -547,8 +644,12 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // Then
-        assertSrwPreviewContentIsHidden()
-        assertTemplateChatVisibility(isDisplayed())
+        srwResult {
+            assertSrwPreviewContentContainerVisibility(not(isDisplayed()))
+        }
+        composeAreaResult {
+            assertTemplateChatVisibility(isDisplayed())
+        }
     }
 
     @Test
@@ -567,13 +668,19 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         )
 
         // When
-        clickSrwPreviewItemAt(0)
+        srwRobot {
+            clickSrwPreviewItemAt(0)
+        }
         websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
         websocket.simulateResponse(wsSellerImageResponse.changeTimeStampTo(today()))
 
         // Then
-        assertSrwBubbleDoesNotExist()
-        assertTemplateChatVisibility(isDisplayed())
+        srwResult {
+            assertSrwBubbleDoesNotExist()
+        }
+        composeAreaResult {
+            assertTemplateChatVisibility(isDisplayed())
+        }
     }
 
     @Test
@@ -598,10 +705,14 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // Then
-        assertSrwBubbleDoesNotExist()
-        assertSrwPreviewContentIsVisible()
-        assertSrwPreviewExpanded()
-        assertTemplateChatVisibility(not(isDisplayed()))
+        srwResult {
+            assertSrwBubbleDoesNotExist()
+            assertSrwPreviewContentIsVisible()
+            assertSrwPreviewExpanded()
+        }
+        composeAreaResult {
+            assertTemplateChatVisibility(not(isDisplayed()))
+        }
     }
 
     @Test
@@ -618,7 +729,9 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         intending(anyIntent()).respondWith(getAttachProductResult(1))
 
         // When
-        clickSrwPreviewItemAt(0)
+        srwRobot {
+            clickSrwPreviewItemAt(0)
+        }
         websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
         composeAreaRobot {
             clickPlusIconMenu()
@@ -626,10 +739,14 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // Then
-        assertSrwBubbleDoesNotExist()
-        assertSrwPreviewContentIsVisible()
-        assertSrwPreviewExpanded()
-        assertTemplateChatVisibility(not(isDisplayed()))
+        srwResult {
+            assertSrwBubbleDoesNotExist()
+            assertSrwPreviewContentIsVisible()
+            assertSrwPreviewExpanded()
+        }
+        composeAreaResult {
+            assertTemplateChatVisibility(not(isDisplayed()))
+        }
     }
 
     @Test
@@ -645,12 +762,18 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // When
-        clickSrwPreviewItemAt(0)
+        srwRobot {
+            clickSrwPreviewItemAt(0)
+        }
         websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
 
         // Then
-        assertSrwBubbleContentIsVisibleAt(0)
-        assertTemplateChatVisibility(not(isDisplayed()))
+        srwResult {
+            assertSrwBubbleContentContainerVisibility(0, isDisplayed())
+        }
+        composeAreaResult {
+            assertTemplateChatVisibility(not(isDisplayed()))
+        }
     }
 
     @Test
@@ -671,8 +794,10 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // Then
-        assertSrwPreviewContentIsVisible()
-        assertSrwPreviewCollapsed()
+        srwResult {
+            assertSrwPreviewContentIsVisible()
+            assertSrwPreviewCollapsed()
+        }
     }
 
     @Test
@@ -691,11 +816,15 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         composeAreaRobot {
             clickStickerIconMenu()
         }
-        pressBack()
+        generalRobot {
+            pressBack()
+        }
 
         // Then
-        assertSrwPreviewContentIsVisible()
-        assertSrwPreviewExpanded()
+        srwResult {
+            assertSrwPreviewContentIsVisible()
+            assertSrwPreviewExpanded()
+        }
     }
 
     @Test
@@ -716,8 +845,10 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // Then
-        assertSrwPreviewContentIsVisible()
-        assertSrwPreviewCollapsed()
+        srwResult {
+            assertSrwPreviewContentIsVisible()
+            assertSrwPreviewCollapsed()
+        }
     }
 
     @Test
@@ -741,8 +872,10 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // Then
-        assertSrwPreviewContentIsVisible()
-        assertSrwPreviewExpanded()
+        srwResult {
+            assertSrwPreviewContentIsVisible()
+            assertSrwPreviewExpanded()
+        }
     }
 
     @Test
@@ -764,8 +897,10 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // Then
-        assertSrwPreviewContentIsVisible()
-        assertSrwPreviewCollapsed()
+        srwResult {
+            assertSrwPreviewContentIsVisible()
+            assertSrwPreviewCollapsed()
+        }
     }
 
     @Test
@@ -787,8 +922,10 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // Then
-        assertSrwPreviewContentIsVisible()
-        assertSrwPreviewCollapsed()
+        srwResult {
+            assertSrwPreviewContentIsVisible()
+            assertSrwPreviewCollapsed()
+        }
     }
 
     @Test
@@ -807,12 +944,18 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         composeAreaRobot {
             clickPlusIconMenu()
         }
-        clickSrwPreviewExpandCollapse()
+        srwRobot {
+            clickSrwPreviewExpandCollapse()
+        }
 
         // Then
-        assertSrwPreviewContentIsVisible()
-        assertSrwPreviewExpanded()
-        assertChatMenuVisibility(not(isDisplayed()))
+        srwResult {
+            assertSrwPreviewContentIsVisible()
+            assertSrwPreviewExpanded()
+        }
+        composeAreaResult {
+            assertChatMenuVisibility(not(isDisplayed()))
+        }
     }
 
     @Test
@@ -831,13 +974,19 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         composeAreaRobot {
             clickStickerIconMenu()
         }
-        clickSrwPreviewExpandCollapse()
+        srwRobot {
+            clickSrwPreviewExpandCollapse()
+        }
 
         // Then
-        assertSrwPreviewContentIsVisible()
-        assertSrwPreviewExpanded()
-        assertChatMenuVisibility(not(isDisplayed()))
-        assertChatStickerMenuVisibility(not(isDisplayed()))
+        srwResult {
+            assertSrwPreviewContentIsVisible()
+            assertSrwPreviewExpanded()
+        }
+        composeAreaResult {
+            assertChatMenuVisibility(not(isDisplayed()))
+            assertChatStickerMenuVisibility(not(isDisplayed()))
+        }
     }
 
     @Test
@@ -853,17 +1002,24 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // When
-        clickSrwPreviewItemAt(0)
+        srwRobot {
+            clickSrwPreviewItemAt(0)
+        }
         websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
         composeAreaRobot {
             clickStickerIconMenu()
         }
 
         // Then
-        assertSrwBubbleContentIsVisibleAt(0)
-        assertSrwBubbleExpanded(0)
-        assertChatMenuVisibility((isDisplayed()))
-        assertChatStickerMenuVisibility((isDisplayed()))
+        srwResult {
+            assertSrwBubbleContentContainerVisibility(0, isDisplayed())
+            assertSrwBubbleExpanded(0)
+        }
+        composeAreaResult {
+            assertChatMenuVisibility((isDisplayed()))
+            assertChatStickerMenuVisibility((isDisplayed()))
+            assertTemplateChatVisibility(not(isDisplayed()))
+        }
     }
 
     @Test
@@ -879,18 +1035,27 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // When
-        clickSrwPreviewItemAt(0)
+        srwRobot {
+            clickSrwPreviewItemAt(0)
+        }
         websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
         composeAreaRobot {
             clickStickerIconMenu()
         }
-        pressBack()
+        generalRobot {
+            pressBack()
+        }
 
         // Then
-        assertSrwBubbleContentIsVisibleAt(0)
-        assertSrwBubbleExpanded(0)
-        assertChatMenuVisibility(not((isDisplayed())))
-        assertChatStickerMenuVisibility(not((isDisplayed())))
+        srwResult {
+            assertSrwBubbleContentContainerVisibility(0, isDisplayed())
+            assertSrwBubbleExpanded(0)
+        }
+        composeAreaResult {
+            assertChatMenuVisibility(not((isDisplayed())))
+            assertChatStickerMenuVisibility(not((isDisplayed())))
+            assertTemplateChatVisibility(not(isDisplayed()))
+        }
     }
 
     @Test
@@ -906,17 +1071,24 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // When
-        clickSrwPreviewItemAt(0)
+        srwRobot {
+            clickSrwPreviewItemAt(0)
+        }
         websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
         composeAreaRobot {
             clickPlusIconMenu()
         }
 
         // Then
-        assertSrwBubbleContentIsVisibleAt(0)
-        assertSrwBubbleExpanded(0)
-        assertChatMenuVisibility(((isDisplayed())))
-        assertChatAttachmentMenuVisibility(isDisplayed())
+        srwResult {
+            assertSrwBubbleContentContainerVisibility(0, isDisplayed())
+            assertSrwBubbleExpanded(0)
+        }
+        composeAreaResult {
+            assertChatMenuVisibility(((isDisplayed())))
+            assertChatAttachmentMenuVisibility(isDisplayed())
+            assertTemplateChatVisibility(not(isDisplayed()))
+        }
     }
 
     @Test
@@ -932,7 +1104,9 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // When
-        clickSrwPreviewItemAt(0)
+        srwRobot {
+            clickSrwPreviewItemAt(0)
+        }
         websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
         composeAreaRobot {
             clickPlusIconMenu()
@@ -942,9 +1116,14 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // Then
-        assertSrwBubbleContentIsVisibleAt(0)
-        assertSrwBubbleExpanded(0)
-        assertChatMenuVisibility(not((isDisplayed())))
+        srwResult {
+            assertSrwBubbleContentContainerVisibility(0, isDisplayed())
+            assertSrwBubbleExpanded(0)
+        }
+        composeAreaResult {
+            assertChatMenuVisibility(not((isDisplayed())))
+            assertTemplateChatVisibility(not(isDisplayed()))
+        }
     }
 
     @Test
@@ -960,18 +1139,27 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // When
-        clickSrwPreviewItemAt(0)
+        srwRobot {
+            clickSrwPreviewItemAt(0)
+        }
         websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
         composeAreaRobot {
             clickPlusIconMenu()
         }
-        clickSrwBubbleExpandCollapse(0) // Collapse
-        clickSrwBubbleExpandCollapse(0) // Expand
+        srwRobot {
+            clickSrwBubbleExpandCollapse(0) // Collapse
+            clickSrwBubbleExpandCollapse(0) // Expand
+        }
 
         // Then
-        assertSrwBubbleContentIsVisibleAt(0)
-        assertSrwBubbleExpanded(0)
-        assertChatMenuVisibility(not((isDisplayed())))
+        srwResult {
+            assertSrwBubbleContentContainerVisibility(0, isDisplayed())
+            assertSrwBubbleExpanded(0)
+        }
+        composeAreaResult {
+            assertChatMenuVisibility(not((isDisplayed())))
+            assertTemplateChatVisibility(not(isDisplayed()))
+        }
     }
 
     @Test
@@ -987,18 +1175,27 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // When
-        clickSrwPreviewItemAt(0)
+        srwRobot {
+            clickSrwPreviewItemAt(0)
+        }
         websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
         composeAreaRobot {
             clickStickerIconMenu()
         }
-        clickSrwBubbleExpandCollapse(0) // Collapse
-        clickSrwBubbleExpandCollapse(0) // Expand
+        srwRobot {
+            clickSrwBubbleExpandCollapse(0) // Collapse
+            clickSrwBubbleExpandCollapse(0) // Expand
+        }
 
         // Then
-        assertSrwBubbleContentIsVisibleAt(0)
-        assertSrwBubbleExpanded(0)
-        assertChatMenuVisibility(not((isDisplayed())))
+        srwResult {
+            assertSrwBubbleContentContainerVisibility(0, isDisplayed())
+            assertSrwBubbleExpanded(0)
+        }
+        composeAreaResult {
+            assertChatMenuVisibility(not((isDisplayed())))
+            assertTemplateChatVisibility(not(isDisplayed()))
+        }
     }
 
     @Test
@@ -1014,15 +1211,22 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // When
-        clickSrwPreviewItemAt(0)
+        srwRobot {
+            clickSrwPreviewItemAt(0)
+        }
         websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
         composeAreaRobot {
             clickComposeArea()
         }
 
         // Then
-        assertSrwBubbleContentIsVisibleAt(0)
-        assertSrwBubbleExpanded(0)
+        srwResult {
+            assertSrwBubbleContentContainerVisibility(0, isDisplayed())
+            assertSrwBubbleExpanded(0)
+        }
+        composeAreaResult {
+            assertTemplateChatVisibility(not(isDisplayed()))
+        }
     }
 
     @Test
@@ -1038,16 +1242,25 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // When
-        clickSrwPreviewItemAt(0)
+        srwRobot {
+            clickSrwPreviewItemAt(0)
+        }
         websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
         composeAreaRobot {
             clickComposeArea()
         }
-        pressBack()
+        generalRobot {
+            pressBack()
+        }
 
         // Then
-        assertSrwBubbleContentIsVisibleAt(0)
-        assertSrwBubbleExpanded(0)
+        srwResult {
+            assertSrwBubbleContentContainerVisibility(0, isDisplayed())
+            assertSrwBubbleExpanded(0)
+        }
+        composeAreaResult {
+            assertTemplateChatVisibility(not(isDisplayed()))
+        }
     }
 
     @Test
@@ -1063,7 +1276,9 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // When
-        clickSrwPreviewItemAt(0)
+        srwRobot {
+            clickSrwPreviewItemAt(0)
+        }
         websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
         composeAreaRobot {
             clickStickerIconMenu()
@@ -1071,8 +1286,13 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // Then
-        assertSrwBubbleContentIsVisibleAt(0)
-        assertSrwBubbleExpanded(0)
+        srwResult {
+            assertSrwBubbleContentContainerVisibility(0, isDisplayed())
+            assertSrwBubbleExpanded(0)
+        }
+        composeAreaResult {
+            assertTemplateChatVisibility(not(isDisplayed()))
+        }
     }
 
     @Test
@@ -1088,7 +1308,9 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // When
-        clickSrwPreviewItemAt(0)
+        srwRobot {
+            clickSrwPreviewItemAt(0)
+        }
         websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
         composeAreaRobot {
             clickComposeArea()
@@ -1096,8 +1318,13 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // Then
-        assertSrwBubbleContentIsVisibleAt(0)
-        assertSrwBubbleExpanded(0)
+        srwResult {
+            assertSrwBubbleContentContainerVisibility(0, isDisplayed())
+            assertSrwBubbleExpanded(0)
+        }
+        composeAreaResult {
+            assertTemplateChatVisibility(not(isDisplayed()))
+        }
     }
 
     @Test
@@ -1114,7 +1341,9 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         intending(anyIntent()).respondWith(getAttachInvoiceResult())
 
         // When
-        clickSrwPreviewItemAt(0)
+        srwRobot {
+            clickSrwPreviewItemAt(0)
+        }
         websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
         composeAreaRobot {
             clickPlusIconMenu()
@@ -1122,8 +1351,13 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // Then
-        assertSrwBubbleContentIsVisibleAt(0)
-        assertSrwBubbleCollapsed(0)
+        srwResult {
+            assertSrwBubbleContentContainerVisibility(0, isDisplayed())
+            assertSrwBubbleCollapsed(0)
+        }
+        composeAreaResult {
+            assertTemplateChatVisibility(not(isDisplayed()))
+        }
     }
 
     @Test
@@ -1140,7 +1374,9 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         intending(anyIntent()).respondWith(getAttachInvoiceResult())
 
         // When
-        clickSrwPreviewItemAt(0)
+        srwRobot {
+            clickSrwPreviewItemAt(0)
+        }
         websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
         composeAreaRobot {
             clickPlusIconMenu()
@@ -1151,8 +1387,13 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // Then
-        assertSrwBubbleContentIsVisibleAt(0)
-        assertSrwBubbleExpanded(0)
+        srwResult {
+            assertSrwBubbleContentContainerVisibility(0, isDisplayed())
+            assertSrwBubbleExpanded(0)
+        }
+        composeAreaResult {
+            assertTemplateChatVisibility(not(isDisplayed()))
+        }
     }
 
     @Test
@@ -1169,7 +1410,9 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         intending(anyIntent()).respondWith(getAttachInvoiceResult())
 
         // When
-        clickSrwPreviewItemAt(0)
+        srwRobot {
+            clickSrwPreviewItemAt(0)
+        }
         websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
         composeAreaRobot {
             clickPlusIconMenu()
@@ -1178,8 +1421,13 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // Then
-        assertSrwBubbleContentIsVisibleAt(0)
-        assertSrwBubbleCollapsed(0)
+        srwResult {
+            assertSrwBubbleContentContainerVisibility(0, isDisplayed())
+            assertSrwBubbleCollapsed(0)
+        }
+        composeAreaResult {
+            assertTemplateChatVisibility(not(isDisplayed()))
+        }
     }
 
     @Test
@@ -1196,7 +1444,9 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         intending(anyIntent()).respondWith(getAttachInvoiceResult())
 
         // When
-        clickSrwPreviewItemAt(0)
+        srwRobot {
+            clickSrwPreviewItemAt(0)
+        }
         websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
         composeAreaRobot {
             clickPlusIconMenu()
@@ -1206,8 +1456,13 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // Then
-        assertSrwBubbleContentIsVisibleAt(0)
-        assertSrwBubbleCollapsed(0)
+        srwResult {
+            assertSrwBubbleContentContainerVisibility(0, isDisplayed())
+            assertSrwBubbleCollapsed(0)
+        }
+        composeAreaResult {
+            assertTemplateChatVisibility(not(isDisplayed()))
+        }
     }
 
     @Test
@@ -1223,17 +1478,26 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // When
-        clickSrwPreviewItemAt(0)
+        srwRobot {
+            clickSrwPreviewItemAt(0)
+        }
         websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
-        clickSrwBubbleExpandCollapse(0)
+        srwRobot {
+            clickSrwBubbleExpandCollapse(0)
+        }
         generalRobot {
             scrollChatToPosition(10)
             scrollChatToPosition(0)
         }
 
         // Then
-        assertSrwBubbleContentIsVisibleAt(0)
-        assertSrwBubbleCollapsed(0)
+        srwResult {
+            assertSrwBubbleContentContainerVisibility(0, isDisplayed())
+            assertSrwBubbleCollapsed(0)
+        }
+        composeAreaResult {
+            assertTemplateChatVisibility(not(isDisplayed()))
+        }
     }
 
     @Test
@@ -1255,8 +1519,13 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         clickStickerAtPosition(0)
 
         // Then
-        assertSrwBubbleContentIsVisibleAt(0)
-        assertSrwBubbleExpanded(0)
+        srwResult {
+            assertSrwBubbleContentContainerVisibility(0, isDisplayed())
+            assertSrwBubbleExpanded(0)
+        }
+        composeAreaResult {
+            assertTemplateChatVisibility(not(isDisplayed()))
+        }
     }
 
     @Test
@@ -1279,8 +1548,13 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // Then
-        assertSrwBubbleContentIsVisibleAt(0)
-        assertSrwBubbleExpanded(0)
+        srwResult {
+            assertSrwBubbleContentContainerVisibility(0, isDisplayed())
+            assertSrwBubbleExpanded(0)
+        }
+        composeAreaResult {
+            assertTemplateChatVisibility(not(isDisplayed()))
+        }
     }
 
     @Test
@@ -1301,8 +1575,12 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // Then
-        assertSrwBubbleDoesNotExist()
-        assertTemplateChatVisibility(isDisplayed())
+        srwResult {
+            assertSrwBubbleDoesNotExist()
+        }
+        composeAreaResult {
+            assertTemplateChatVisibility(isDisplayed())
+        }
     }
 
     /**
@@ -1321,14 +1599,20 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // When
-        clickSrwPreviewItemAt(0)
+        srwRobot {
+            clickSrwPreviewItemAt(0)
+        }
         websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
         websocket.simulateResponse(wsSellerProductResponse.changeTimeStampTo(today()))
         websocket.simulateResponse(wsSellerResponseText.changeTimeStampTo(today()))
 
         // Then
-        assertSrwBubbleDoesNotExist()
-        assertTemplateChatVisibility(isDisplayed())
+        srwResult {
+            assertSrwBubbleDoesNotExist()
+        }
+        composeAreaResult {
+            assertTemplateChatVisibility(isDisplayed())
+        }
     }
 
     /**
@@ -1347,7 +1631,9 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // When
-        clickSrwPreviewItemAt(0)
+        srwRobot {
+            clickSrwPreviewItemAt(0)
+        }
         websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
         websocket.simulateResponse(
             wsSellerProductResponse
@@ -1362,7 +1648,12 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         websocket.simulateResponse(wsSellerResponseText.changeTimeStampTo(today()))
 
         // Then
-        assertSrwBubbleContentIsVisibleAt(0)
+        srwResult {
+            assertSrwBubbleContentContainerVisibility(0, isDisplayed())
+        }
+        composeAreaResult {
+            assertTemplateChatVisibility(not(isDisplayed()))
+        }
     }
 
     @Test
@@ -1381,7 +1672,9 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         )
 
         // When
-        clickSrwPreviewItemAt(0)
+        srwRobot {
+            clickSrwPreviewItemAt(0)
+        }
         websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
         composeAreaRobot {
             clickPlusIconMenu()
@@ -1389,8 +1682,12 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // Then
-        assertSrwBubbleDoesNotExist()
-        assertTemplateChatVisibility(isDisplayed())
+        srwResult {
+            assertSrwBubbleDoesNotExist()
+        }
+        composeAreaResult {
+            assertTemplateChatVisibility(isDisplayed())
+        }
     }
 
     @Test
@@ -1414,13 +1711,22 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
             clickComposeArea()
             typeMessageComposeArea(typedMsg)
         }
-        clickSrwPreviewExpandCollapse()
-        clickSrwPreviewItemAt(0)
+        srwRobot {
+            clickSrwBubbleExpandCollapse(0)
+        }
+        srwRobot {
+            clickSrwPreviewItemAt(0)
+        }
         websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
 
         // Then
-        assertSrwBubbleContentIsVisibleAt(0)
-        assertComposedTextValue(typedMsg)
+        srwResult {
+            assertSrwBubbleContentContainerVisibility(0, isDisplayed())
+        }
+        composeAreaResult {
+            assertTypeMessageText(typedMsg)
+            assertTemplateChatVisibility(not(isDisplayed()))
+        }
     }
 
     @Test
@@ -1450,8 +1756,10 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // Then
-        assertSrwPreviewContentIsVisible()
-        assertSrwTotalQuestion(3)
+        srwResult {
+            assertSrwPreviewContentIsVisible()
+            assertSrwTotalQuestion(3)
+        }
     }
 
     @Test
@@ -1478,8 +1786,10 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // Then
-        assertSrwPreviewContentIsVisible()
-        assertSrwTotalQuestion(3)
+        srwResult {
+            assertSrwPreviewContentIsVisible()
+            assertSrwTotalQuestion(3)
+        }
     }
 
     /**
@@ -1499,8 +1809,10 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // Then
-        assertSrwPreviewContentIsVisible()
-        assertSrwTotalQuestion(1)
+        srwResult {
+            assertSrwPreviewContentIsVisible()
+            assertSrwTotalQuestion(1)
+        }
     }
 
     @Test
@@ -1526,8 +1838,12 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // Then
-        assertSrwPreviewContentIsHidden()
-        assertTemplateChatVisibility(isDisplayed())
+        srwResult {
+            assertSrwPreviewContentContainerVisibility(not(isDisplayed()))
+        }
+        composeAreaResult {
+            assertTemplateChatVisibility(isDisplayed())
+        }
     }
 
     @Test
@@ -1543,10 +1859,12 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // Then
-        assertSrwPreviewContentIsVisible()
-        assertSrwTitle(chatSrwResponse.chatSmartReplyQuestion.title)
-        assertSrwTotalQuestion(1)
-        assertSrwLabelVisibility(false, 0)
+        srwResult {
+            assertSrwPreviewContentIsVisible()
+            assertSrwTitle(chatSrwResponse.chatSmartReplyQuestion.title)
+            assertSrwTotalQuestion(1)
+            assertSrwLabelVisibility(false, 0)
+        }
     }
 
     @Test
@@ -1562,11 +1880,13 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // Then
-        assertSrwPreviewContentIsVisible()
-        assertSrwTitle(chatSrwProductBundlingResponse.chatSmartReplyQuestion.title)
-        assertSrwTotalQuestion(1)
-        assertSrwLabelVisibility(true, 0)
-        assertSrwLabel(chatSrwProductBundlingResponse.chatSmartReplyQuestion.questions.first().label, 0)
+        srwResult {
+            assertSrwPreviewContentIsVisible()
+            assertSrwTitle(chatSrwProductBundlingResponse.chatSmartReplyQuestion.title)
+            assertSrwTotalQuestion(1)
+            assertSrwLabelVisibility(true, 0)
+            assertSrwLabel(chatSrwProductBundlingResponse.chatSmartReplyQuestion.questions.first().label, 0)
+        }
     }
 
     @Test
@@ -1583,7 +1903,9 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // Then
-        assertSrwCoachMark(true, context.getString(R.string.coach_product_bundling_title))
+        srwResult {
+            assertSrwCoachMark(true, context.getString(R.string.coach_product_bundling_title))
+        }
     }
 
     @Test
@@ -1600,7 +1922,9 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // Then
-        assertSrwCoachMark(false, context.getString(R.string.coach_product_bundling_title))
+        srwResult {
+            assertSrwCoachMark(false, context.getString(R.string.coach_product_bundling_title))
+        }
     }
 
     @Test
@@ -1617,10 +1941,14 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
 
         // When
-        clickSrwQuestion(0)
+        srwRobot {
+            clickSrwQuestion(0)
+        }
 
         // Then
-        assertViewInRecyclerViewAt(1, R.id.tvMessage, withText("Min, ada Paket Bundling?"))
+        msgBubbleResult {
+            assertBubbleMsg(1, withText("Min, ada Paket Bundling?"))
+        }
     }
 
     // TODO: SRW should hide broadcast handler if visible

@@ -4,14 +4,14 @@ import android.content.Intent
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.common.network.util.CommonUtil
-import com.tokopedia.topchat.chatroom.view.activity.TopchatRoomBuyerProductAttachmentTest.Companion.exProductId
-import com.tokopedia.topchat.chatroom.view.activity.TopchatRoomBuyerProductAttachmentTest.Companion.putProductAttachmentIntent
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.activity.robot.composeAreaResult
 import com.tokopedia.topchat.chatroom.view.activity.robot.composeAreaRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.productPreviewResult
 import com.tokopedia.topchat.chatroom.view.activity.robot.productPreviewRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.srwResult
+import com.tokopedia.topchat.chatroom.view.activity.test.buyer.TopchatRoomBuyerProductAttachmentTest.Companion.exProductId
+import com.tokopedia.topchat.chatroom.view.activity.test.buyer.TopchatRoomBuyerProductAttachmentTest.Companion.putProductAttachmentIntent
 import org.hamcrest.CoreMatchers.not
 import org.junit.Test
 

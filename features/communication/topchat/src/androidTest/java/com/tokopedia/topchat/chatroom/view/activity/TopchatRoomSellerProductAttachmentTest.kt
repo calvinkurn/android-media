@@ -14,6 +14,7 @@ import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStat
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.activity.base.BaseSellerTopchatRoomTest
+import com.tokopedia.topchat.chatroom.view.activity.robot.composeAreaResult
 import com.tokopedia.topchat.chatroom.view.activity.robot.composeAreaRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.generalResult
@@ -22,6 +23,7 @@ import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductResult.
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductResult.hasNoVisibleRemindMeBtnAt
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductResult.hasProductName
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductResult.hasProductPrice
+import com.tokopedia.topchat.chatroom.view.activity.robot.srwResult
 import com.tokopedia.topchat.matchers.withLinearLayoutGravity
 import com.tokopedia.topchat.matchers.withRecyclerView
 import org.hamcrest.CoreMatchers.not
@@ -287,8 +289,15 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
         }
 
         // Then
-        assertSrwPreviewContentIsHidden()
-        assertTemplateChatVisibility(isDisplayed())
+        srwResult {
+            assertSrwPreviewContentContainerVisibility(not(isDisplayed()))
+        }
+        srwResult {
+            assertSrwPreviewContentContainerVisibility(not(isDisplayed()))
+        }
+        composeAreaResult {
+            assertTemplateChatVisibility(isDisplayed())
+        }
     }
 
     @Test

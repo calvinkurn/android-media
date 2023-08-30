@@ -1,6 +1,7 @@
 package com.tokopedia.topchat.chatroom.view.activity.robot.general
 
 import androidx.recyclerview.widget.RecyclerView
+import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.contrib.RecyclerViewActions
@@ -41,5 +42,9 @@ object GeneralRobot {
         onView(withId(R.id.recycler_view_chatroom)).perform(
             RecyclerViewAction.smoothScrollTo(position)
         )
+    }
+
+    fun pressBack() {
+        Espresso.pressBack()
     }
 }

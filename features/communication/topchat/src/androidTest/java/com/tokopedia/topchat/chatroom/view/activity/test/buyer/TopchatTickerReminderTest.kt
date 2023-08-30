@@ -1,4 +1,4 @@
-package com.tokopedia.topchat.chatroom.view.activity.test
+package com.tokopedia.topchat.chatroom.view.activity.test.buyer
 
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.tokopedia.test.application.annotations.UiTest

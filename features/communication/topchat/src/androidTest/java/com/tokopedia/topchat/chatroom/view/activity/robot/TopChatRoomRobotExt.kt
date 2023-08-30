@@ -5,13 +5,17 @@ import com.tokopedia.topchat.chatroom.view.activity.robot.composearea.ComposeAre
 import com.tokopedia.topchat.chatroom.view.activity.robot.copytoclipboard.CopyToClipboardRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.header.HeaderRobot
+import com.tokopedia.topchat.chatroom.view.activity.robot.imageattachment.ImageAttachmentRobot
+import com.tokopedia.topchat.chatroom.view.activity.robot.longclickbubblemenu.LongClickBubbleMenuRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.msgbubble.MsgBubbleRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.previewattachment.PreviewAttachmentResult
 import com.tokopedia.topchat.chatroom.view.activity.robot.previewattachment.PreviewAttachmentRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.previewattachment.ProductPreviewRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.BannedProductRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardRobot
+import com.tokopedia.topchat.chatroom.view.activity.robot.product_bundling.ProductBundlingRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.replybubble.ReplyBubbleRobot
+import com.tokopedia.topchat.chatroom.view.activity.robot.srw.SrwRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.tickerreminder.TickerReminderRobot
 
 fun generalRobot(func: GeneralRobot.() -> Unit) = GeneralRobot.apply(func)
@@ -27,3 +31,7 @@ fun tickerReminderRobot(func: TickerReminderRobot.() -> Unit) = TickerReminderRo
 fun previewAttachmentResult(func: PreviewAttachmentResult.() -> Unit) = PreviewAttachmentResult.apply(func)
 fun productCardRobot(func: ProductCardRobot.() -> Unit) = ProductCardRobot.apply(func)
 fun previewAttachmentRobot(func: PreviewAttachmentRobot.() -> Unit) = PreviewAttachmentRobot.apply(func)
+fun srwRobot(func: SrwRobot.() -> Unit) = SrwRobot.apply(func)
+fun productBundlingRobot(func: ProductBundlingRobot.() -> Unit) = ProductBundlingRobot.apply(func)
+fun imageAttachmentRobot(func: ImageAttachmentRobot.() -> Unit) = ImageAttachmentRobot.apply(func)
+fun longClickBubbleMenuRobot(func: LongClickBubbleMenuRobot.() -> Unit) = LongClickBubbleMenuRobot.apply(func)

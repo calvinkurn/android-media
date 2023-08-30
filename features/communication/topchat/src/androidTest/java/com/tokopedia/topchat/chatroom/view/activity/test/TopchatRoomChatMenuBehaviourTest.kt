@@ -1,20 +1,17 @@
-package com.tokopedia.topchat.chatroom.view.activity
+package com.tokopedia.topchat.chatroom.view.activity.test
 
 import androidx.recyclerview.widget.RecyclerView
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.Espresso.pressBack
-import androidx.test.espresso.action.ViewActions.clearText
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
+import com.tokopedia.topchat.chatroom.view.activity.robot.composeAreaResult
 import com.tokopedia.topchat.chatroom.view.activity.robot.composeAreaRobot
-import com.tokopedia.topchat.chatroom.view.activity.robot.composearea.ComposeAreaResult.assertAttachmentMenuCount
 import com.tokopedia.topchat.chatroom.view.activity.robot.composearea.ComposeAreaResult.assertSendBtnDisabled
 import com.tokopedia.topchat.chatroom.view.activity.robot.generalResult
-import com.tokopedia.topchat.matchers.withIndex
-import com.tokopedia.topchat.matchers.withRecyclerView
+import com.tokopedia.topchat.chatroom.view.activity.robot.generalRobot
+import com.tokopedia.topchat.chatroom.view.activity.robot.msgBubbleResult
 import com.tokopedia.topchat.matchers.withTotalItem
 import org.hamcrest.CoreMatchers.not
 import org.junit.Test
@@ -35,9 +32,11 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
         }
 
         // Then
-        assertChatMenuVisibility(isDisplayed())
-        assertChatStickerMenuVisibility(not(isDisplayed()))
-        assertChatAttachmentMenuVisibility(isDisplayed())
+        composeAreaResult {
+            assertChatMenuVisibility(isDisplayed())
+            assertChatStickerMenuVisibility(not(isDisplayed()))
+            assertChatAttachmentMenuVisibility(isDisplayed())
+        }
     }
 
     @Test
@@ -54,9 +53,11 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
         }
 
         // Then
-        assertChatMenuVisibility(not(isDisplayed()))
-        assertChatStickerMenuVisibility(not(isDisplayed()))
-        assertChatAttachmentMenuVisibility(not(isDisplayed()))
+        composeAreaResult {
+            assertChatMenuVisibility(not(isDisplayed()))
+            assertChatStickerMenuVisibility(not(isDisplayed()))
+            assertChatAttachmentMenuVisibility(not(isDisplayed()))
+        }
     }
 
     @Test
@@ -76,9 +77,11 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
         generalResult {
             assertKeyboardIsVisible(activity)
         }
-        assertChatMenuVisibility(not(isDisplayed()))
-        assertChatStickerMenuVisibility(not(isDisplayed()))
-        assertChatAttachmentMenuVisibility(not(isDisplayed()))
+        composeAreaResult {
+            assertChatMenuVisibility(not(isDisplayed()))
+            assertChatStickerMenuVisibility(not(isDisplayed()))
+            assertChatAttachmentMenuVisibility(not(isDisplayed()))
+        }
     }
 
     @Test
@@ -91,8 +94,6 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
         // When
         composeAreaRobot {
             clickStickerIconMenu()
-        }
-        composeAreaRobot {
             clickComposeArea()
         }
 
@@ -100,9 +101,11 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
         generalResult {
             assertKeyboardIsVisible(activity)
         }
-        assertChatMenuVisibility(not(isDisplayed()))
-        assertChatStickerMenuVisibility(not(isDisplayed()))
-        assertChatAttachmentMenuVisibility(not(isDisplayed()))
+        composeAreaResult {
+            assertChatMenuVisibility(not(isDisplayed()))
+            assertChatStickerMenuVisibility(not(isDisplayed()))
+            assertChatAttachmentMenuVisibility(not(isDisplayed()))
+        }
     }
 
     @Test
@@ -120,9 +123,11 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
         }
 
         // Then
-        assertChatMenuVisibility(isDisplayed())
-        assertStickerContainer()
-        assertChatAttachmentMenuVisibility(not(isDisplayed()))
+        composeAreaResult {
+            assertChatMenuVisibility(isDisplayed())
+            assertChatStickerMenuVisibility(isDisplayed())
+            assertChatAttachmentMenuVisibility(not(isDisplayed()))
+        }
     }
 
     @Test
@@ -136,17 +141,19 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
 
         // When
         composeAreaRobot {
-            clickStickerIconMenu()
-            clickStickerIconMenu()
+            clickStickerIconMenu() // Open
+            clickStickerIconMenu() // Close
         }
 
         // Then
         generalResult {
             assertKeyboardIsVisible(activity)
         }
-        assertChatMenuVisibility(not(isDisplayed()))
-        assertChatStickerMenuVisibility(not(isDisplayed()))
-        assertChatAttachmentMenuVisibility(not(isDisplayed()))
+        composeAreaResult {
+            assertChatMenuVisibility(not(isDisplayed()))
+            assertChatStickerMenuVisibility(not(isDisplayed()))
+            assertChatAttachmentMenuVisibility(not(isDisplayed()))
+        }
     }
 
     /**
@@ -168,8 +175,10 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
         }
 
         // Then
-        assertChatAttachmentMenuVisibility(not(isDisplayed()))
-        assertStickerContainer()
+        composeAreaResult {
+            assertChatAttachmentMenuVisibility(not(isDisplayed()))
+            assertChatStickerMenuVisibility(isDisplayed())
+        }
     }
 
     @Test
@@ -183,11 +192,15 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
         composeAreaRobot {
             clickPlusIconMenu()
         }
-        pressBack()
+        generalRobot {
+            pressBack()
+        }
 
         // Then
-        assertChatMenuVisibility(not(isDisplayed()))
-        assertChatAttachmentMenuVisibility(not(isDisplayed()))
+        composeAreaResult {
+            assertChatMenuVisibility(not(isDisplayed()))
+            assertChatAttachmentMenuVisibility(not(isDisplayed()))
+        }
     }
 
     @Test
@@ -203,8 +216,10 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
         }
 
         // Then
-        assertChatAttachmentMenuVisibility(isDisplayed())
-        assertAttachmentMenuCount(3)
+        composeAreaResult {
+            assertChatAttachmentMenuVisibility(isDisplayed())
+            assertAttachmentMenuCount(3)
+        }
     }
 
     @Test
@@ -220,8 +235,10 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
         }
 
         // Then
-        assertChatAttachmentMenuVisibility(isDisplayed())
-        assertAttachmentMenuCount(4)
+        composeAreaResult {
+            assertChatAttachmentMenuVisibility(isDisplayed())
+            assertAttachmentMenuCount(4)
+        }
     }
 
     @Test
@@ -242,14 +259,12 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
         }
 
         // Then
-        onView(
-            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
-                0,
-                R.id.tvMessage
-            )
-        )
-            .check(matches(withText("Test")))
-        onView(withId(R.id.recycler_view_chatroom)).check(matches(withTotalItem(count + 1)))
+        msgBubbleResult {
+            assertBubbleMsg(0, withText("Test"))
+        }
+        generalResult {
+            assertChatRecyclerview(withTotalItem(count + 1))
+        }
         composeAreaRobot {
             typeMessageComposeArea("")
         }
@@ -265,8 +280,8 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
         // When
         composeAreaRobot {
             typeMessageComposeArea("Test")
+            typeMessageComposeArea("")
         }
-        onView(withIndex(withId(R.id.new_comment), 0)).perform(clearText())
 
         // Then
         assertSendBtnDisabled()

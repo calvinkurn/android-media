@@ -10,7 +10,7 @@ import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.activity.robot.composeAreaResult
 import com.tokopedia.topchat.chatroom.view.activity.robot.composeAreaRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.generalResult
-import com.tokopedia.topchat.chatroom.view.activity.test.TopchatRoomInvoiceAttachmentTest.Companion.getInvoiceAttachmentIntent
+import com.tokopedia.topchat.chatroom.view.activity.test.buyer.TopchatRoomInvoiceAttachmentTest.Companion.getInvoiceAttachmentIntent
 import com.tokopedia.topchat.chatroom.view.custom.ComposeTextWatcher.Companion.MAX_CHAR
 import org.junit.Test
 
