@@ -78,36 +78,23 @@ class APlusImageViewHolder(
     }
 
     private fun setupToggle(element: APlusImageUiModel) {
-        binding.tvProductDetailAPlusImageToggle.apply {
-            text = element.ctaText
+        binding.layoutProductDetailAPlusImageToggle.apply {
+            setOnClickListener {
+                listener.onToggleAPlus(
+                    expanded = !element.expanded,
+                    trackerData = element
+                        .trackerData
+                        .copy(componentTrackData = getComponentTrackData(element))
+                )
+            }
             showWithCondition(
                 shouldShow = element.showOnCollapsed != element.expanded && element.ctaText.isNotBlank()
             )
         }
-        binding.icProductDetailAPlusImageToggle.apply {
-            setImage(
-                newIconId = if (element.expanded) {
-                    IconUnify.CHEVRON_UP
-                } else {
-                    IconUnify.CHEVRON_DOWN
-                }
-            )
-            showWithCondition(
-                shouldShow = element.showOnCollapsed != element.expanded && element.ctaText.isNotBlank()
-            )
-        }
-        binding.tvProductDetailAPlusImageToggle.setOnClickListener {
-            listener.onToggleAPlus(
-                expanded = !element.expanded,
-                trackerData = element.trackerData.copy(componentTrackData = getComponentTrackData(element))
-            )
-        }
-        binding.icProductDetailAPlusImageToggle.setOnClickListener {
-            listener.onToggleAPlus(
-                expanded = !element.expanded,
-                trackerData = element.trackerData.copy(componentTrackData = getComponentTrackData(element))
-            )
-        }
+        binding.tvProductDetailAPlusImageToggle.text = element.ctaText
+        binding.icProductDetailAPlusImageToggle.setImage(
+            newIconId = if (element.expanded) IconUnify.CHEVRON_UP else IconUnify.CHEVRON_DOWN
+        )
     }
 
     private fun setupBottomPadding(haveBottomPadding: Boolean) {
