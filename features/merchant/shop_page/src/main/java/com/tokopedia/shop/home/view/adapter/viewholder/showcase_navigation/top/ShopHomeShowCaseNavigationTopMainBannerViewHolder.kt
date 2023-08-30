@@ -15,7 +15,7 @@ import com.tokopedia.shop.databinding.ItemShopHomeShowcaseNavigationTopMainBanne
 import com.tokopedia.shop.home.view.adapter.viewholder.showcase_navigation.ShopHomeShowCaseNavigationAdapter
 import com.tokopedia.shop.home.view.listener.ShopHomeShowcaseNavigationListener
 import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.ShopHomeShowcaseNavigationBannerWidgetAppearance
-import com.tokopedia.shop.home.view.model.showcase_navigation.ShopHomeShowcaseNavigationUiModel
+import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseNavigationUiModel
 import com.tokopedia.shop.home.view.model.showcase_navigation.Showcase
 import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.TopMainBannerAppearance
 import com.tokopedia.utils.view.binding.viewBinding
@@ -24,7 +24,7 @@ import com.tokopedia.unifycomponents.R as unifycomponentsR
 class ShopHomeShowCaseNavigationTopMainBannerViewHolder(
     itemView: View,
     private val listener: ShopHomeShowcaseNavigationListener
-) : AbstractViewHolder<ShopHomeShowcaseNavigationUiModel>(itemView) {
+) : AbstractViewHolder<ShowcaseNavigationUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -37,7 +37,7 @@ class ShopHomeShowCaseNavigationTopMainBannerViewHolder(
     private val viewBinding: ItemShopHomeShowcaseNavigationTopMainBannerBinding? by viewBinding()
 
 
-    override fun bind(model: ShopHomeShowcaseNavigationUiModel) {
+    override fun bind(model: ShowcaseNavigationUiModel) {
         if (model.appearance is TopMainBannerAppearance) {
             viewBinding?.tpgTitle?.text = model.appearance.title
             viewBinding?.tpgTitle?.isVisible = model.appearance.title.isNotEmpty()

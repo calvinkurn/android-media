@@ -15,7 +15,7 @@ import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.CarouselAppearance
 import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.LeftMainBannerAppearance
 import com.tokopedia.shop.home.view.model.banner_product_group.ShopWidgetComponentBannerProductGroupUiModel
-import com.tokopedia.shop.home.view.model.showcase_navigation.ShopHomeShowcaseNavigationUiModel
+import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseNavigationUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerProductHotspotUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerTimerUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetVoucherSliderUiModel
@@ -187,7 +187,7 @@ object ShopPageWidgetMapper {
         isOverrideTheme: Boolean,
         widgetLayout: ShopPageWidgetUiModel?,
         colorSchema: ShopPageColorSchema
-    ): ShopHomeShowcaseNavigationUiModel {
+    ): ShowcaseNavigationUiModel {
         val tabs = response.data.map { tab ->
             val showcases = tab.showcaseList.map { showcase ->
                 Showcase(
@@ -227,7 +227,7 @@ object ShopPageWidgetMapper {
         }
 
 
-        return ShopHomeShowcaseNavigationUiModel(
+        return ShowcaseNavigationUiModel(
             appearance = appearance,
             widgetId = response.widgetID,
             header = ShopPageHomeMapper.mapToHeaderModel(response.header, widgetLayout, isOverrideTheme, colorSchema),

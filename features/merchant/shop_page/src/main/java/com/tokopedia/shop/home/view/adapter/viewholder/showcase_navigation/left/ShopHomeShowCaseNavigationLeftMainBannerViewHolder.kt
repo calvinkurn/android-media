@@ -18,7 +18,7 @@ import com.tokopedia.shop.home.util.ShopHomeShowcaseNavigationDependencyProvider
 import com.tokopedia.shop.home.view.fragment.ShopShowcaseNavigationTabWidgetFragment
 import com.tokopedia.shop.home.view.listener.ShopHomeShowcaseNavigationListener
 import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.LeftMainBannerAppearance
-import com.tokopedia.shop.home.view.model.showcase_navigation.ShopHomeShowcaseNavigationUiModel
+import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseNavigationUiModel
 import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseTab
 import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.unifycomponents.setCustomText
@@ -28,7 +28,7 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
     itemView: View,
     private val listener: ShopHomeShowcaseNavigationListener,
     private val provider: ShopHomeShowcaseNavigationDependencyProvider
-) : AbstractViewHolder<ShopHomeShowcaseNavigationUiModel>(itemView) {
+) : AbstractViewHolder<ShowcaseNavigationUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -40,7 +40,7 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
     private val viewBinding: ItemShopHomeShowcaseNavigationLeftMainBannerBinding? by viewBinding()
 
 
-    override fun bind(model: ShopHomeShowcaseNavigationUiModel) {
+    override fun bind(model: ShowcaseNavigationUiModel) {
         val tabs = if (model.appearance is LeftMainBannerAppearance) model.appearance.tabs else emptyList()
         setupShowcaseHeader(model.appearance.title, model.appearance.viewAllCtaAppLink, tabs)
         setupTabs(tabs, model.header.isOverrideTheme, model.header.colorSchema)
