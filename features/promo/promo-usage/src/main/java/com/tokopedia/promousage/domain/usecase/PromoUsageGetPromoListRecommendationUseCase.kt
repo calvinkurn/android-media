@@ -104,10 +104,8 @@ class PromoUsageGetPromoListRecommendationUseCase @Inject constructor(
                       }
                       cta {
                         text
-                        url
                         app_link
                         type
-                        json_metadata
                       }
                       promo_infos {
                         title

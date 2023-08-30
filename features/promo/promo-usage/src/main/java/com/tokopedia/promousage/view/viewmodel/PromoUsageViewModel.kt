@@ -8,7 +8,6 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.ifNull
 import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
 import com.tokopedia.kotlin.extensions.view.isZero
-import com.tokopedia.kotlin.extensions.view.removeFirst
 import com.tokopedia.localizationchooseaddress.common.ChosenAddress
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.promousage.data.request.GetPromoListRecommendationParam
@@ -378,14 +377,30 @@ internal class PromoUsageViewModel @Inject constructor(
             _promoCtaUiAction.postValue(PromoCtaUiAction.RegisterGoPayLaterCicil(clickedItem.cta))
         } else {
             _promoPageUiState.ifSuccess { pageState ->
-                val (newClickedItem, updatedItems) = calculateClickPromo(clickedItem, pageState.items)
+                val currentItems = pageState.items
+                var (newClickedItem, updatedItems) = calculateClickPromo(clickedItem, currentItems)
                 processAndSendEventClickPromo(newClickedItem)
+                // Update Promo Recommendation when there's only one recommended promo
+                val recommendationItem = updatedItems.getRecommendationItem()
+                if (recommendationItem != null && recommendationItem.codes.size == 1) {
+                    val (updatedPromoRecommendation, newUpdatedItems) =
+                        calculateRecommendedPromo(newClickedItem, recommendationItem, updatedItems)
+                    updatedItems = newUpdatedItems
+                    if (updatedPromoRecommendation.selectedCodes.containsAll(updatedPromoRecommendation.codes)) {
+                        _usePromoRecommendationUiAction.postValue(
+                            UsePromoRecommendationUiAction.Success(updatedPromoRecommendation)
+                        )
+                    }
+                }
                 // Update TnC section
-                val tncItem = updatedItems.getTncItem() ?: PromoTncItem()
                 val selectedPromoCodes = updatedItems.getSelectedPromoCodes()
-                updatedItems.removeFirst { it is PromoTncItem }
                 if (selectedPromoCodes.isNotEmpty()) {
-                    updatedItems.add(tncItem.copy(selectedPromoCodes = selectedPromoCodes))
+                    val tncItem = updatedItems.getTncItem() ?: PromoTncItem()
+                    updatedItems = updatedItems
+                        .plus(tncItem.copy(selectedPromoCodes = selectedPromoCodes))
+                } else {
+                    updatedItems = updatedItems
+                        .filterNot { it is PromoTncItem }
                 }
                 // Update SavingInfo section
                 val updatedSavingInfo = calculatePromoSavingInfo(
@@ -402,10 +417,33 @@ internal class PromoUsageViewModel @Inject constructor(
         }
     }
 
+    private fun calculateRecommendedPromo(
+        clickedItem: PromoItem,
+        recommendationItem: PromoRecommendationItem,
+        items: List<DelegateAdapterItem>
+    ) : Pair<PromoRecommendationItem, List<DelegateAdapterItem>> {
+        val selectedRecommendationCodes = if (clickedItem.state is PromoItemState.Selected) {
+            recommendationItem.selectedCodes.plus(clickedItem.code)
+        } else {
+            recommendationItem.selectedCodes.minus(clickedItem.code)
+        }
+        val updatedRecommendationItem = recommendationItem.copy(
+            selectedCodes = selectedRecommendationCodes
+        )
+        val updatedItems = items.map { item ->
+            if (item is PromoRecommendationItem) {
+                return@map updatedRecommendationItem
+            } else {
+                return@map item
+            }
+        }
+        return Pair(updatedRecommendationItem, updatedItems)
+    }
+
     private fun calculateClickPromo(
         clickedItem: PromoItem,
         items: List<DelegateAdapterItem>
-    ) : Pair<PromoItem, MutableList<DelegateAdapterItem>> {
+    ) : Pair<PromoItem, List<DelegateAdapterItem>> {
         val newClickedItemState = if (clickedItem.state is PromoItemState.Normal) {
             PromoItemState.Selected
         } else {
@@ -432,7 +470,6 @@ internal class PromoUsageViewModel @Inject constructor(
                     return@map item
                 }
             }
-            .toMutableList()
         // Calculate clash
         val (resultItems, isCausingClash) = calculateClash(updatedClickedItem, updatedItems)
         updatedClickedItem = updatedClickedItem.copy(
@@ -446,7 +483,6 @@ internal class PromoUsageViewModel @Inject constructor(
                     return@map item
                 }
             }
-            .toMutableList()
         return Pair(updatedClickedItem, updatedItems)
     }
 
@@ -1247,7 +1283,7 @@ internal class PromoUsageViewModel @Inject constructor(
 
     fun onUsePromoRecommendation() {
         launchCatchError(
-            context = dispatchers.io,
+            context = dispatchers.immediate,
             block = {
                 _promoPageUiState.ifSuccess { pageState ->
                     val currentItems = pageState.items
@@ -1256,16 +1292,22 @@ internal class PromoUsageViewModel @Inject constructor(
                         .filter { it.isRecommended }
                         .map { it.code }
                     var updatedItems = currentItems.map { item ->
-                        if (item is PromoItem) {
-                            item.copy(
-                                state = PromoItemState.Normal,
-                                currentClashingPromoCodes = emptyList(),
-                                currentClashingSecondaryPromoCodes = emptyList()
-                            )
-                        } else if (item is PromoRecommendationItem) {
-                            item.copy(selectedCodes = recommendedPromoCodes)
-                        } else {
-                            item
+                        when (item) {
+                            is PromoItem -> {
+                                item.copy(
+                                    state = PromoItemState.Normal,
+                                    currentClashingPromoCodes = emptyList(),
+                                    currentClashingSecondaryPromoCodes = emptyList()
+                                )
+                            }
+
+                            is PromoRecommendationItem -> {
+                                item.copy(selectedCodes = recommendedPromoCodes)
+                            }
+
+                            else -> {
+                                item
+                            }
                         }
                     }
                     recommendedPromoCodes.forEach { code ->

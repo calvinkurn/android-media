@@ -34,32 +34,47 @@ class PromoRecommendationDelegateAdapter(
     inner class ViewHolder(
         private val binding: PromoUsageItemVoucherRecommendationBinding
     ) : RecyclerView.ViewHolder(binding.root) {
-
         fun bind(item: PromoRecommendationItem) {
             val selectedRecommendedPromoCount = item.selectedCodes.size
             val recommendedPromoCount = item.codes.size
             binding.btnRecommendationUseVoucher.setOnClickListener {
-                startButtonAnimation(item)
+                startButtonAnimation {
+                    startMessageAnimation(item.messageSelected) {
+                        onClickUsePromoRecommendation()
+                    }
+                }
             }
             if (item.selectedCodes.containsAll(item.codes)) {
                 binding.tpgRecommendationTitle.text =
                     HtmlLinkHelper(binding.tpgRecommendationTitle.context, item.messageSelected).spannedString
-                binding.ivCheckmark.visible()
-                binding.ivCheckmarkOutline.invisible()
             } else {
                 binding.tpgRecommendationTitle.text =
                     HtmlLinkHelper(binding.tpgRecommendationTitle.context, item.message).spannedString
+            }
+            if (item.codes.size > 1) {
+                if (item.selectedCodes.containsAll(item.codes)) {
+                    binding.ivCheckmark.visible()
+                    binding.ivCheckmarkOutline.invisible()
+                } else {
+                    binding.ivCheckmark.invisible()
+                    binding.ivCheckmarkOutline.invisible()
+                }
+                if (selectedRecommendedPromoCount < recommendedPromoCount) {
+                    binding.btnRecommendationUseVoucher.visible()
+                } else {
+                    binding.btnRecommendationUseVoucher.invisible()
+                }
+            } else {
                 binding.ivCheckmark.invisible()
                 binding.ivCheckmarkOutline.invisible()
-            }
-            if (selectedRecommendedPromoCount < recommendedPromoCount) {
-                binding.btnRecommendationUseVoucher.visible()
-            } else {
                 binding.btnRecommendationUseVoucher.invisible()
+                if (item.selectedCodes.containsAll(item.codes)) {
+                    startMessageAnimation(item.messageSelected)
+                }
             }
         }
 
-        private fun startButtonAnimation(item: PromoRecommendationItem) {
+        private fun startButtonAnimation(onCompleted: (() -> Unit)? = null) {
             val shrinkLeftAnimation =
                 AnimationUtils.loadAnimation(binding.root.context, R.anim.shrink_left)
             val zoomOutAnimation =
@@ -85,7 +100,7 @@ class PromoRecommendationDelegateAdapter(
 
                 override fun onAnimationEnd(animation: Animation?) {
                     binding.ivCheckmarkOutline.invisible()
-                    startMessageAnimation(item)
+                    onCompleted?.invoke()
                 }
 
                 override fun onAnimationRepeat(animation: Animation?) {
@@ -96,12 +111,15 @@ class PromoRecommendationDelegateAdapter(
             binding.ivCheckmarkOutline.startAnimation(zoomOutAnimation)
         }
 
-        private fun startMessageAnimation(item: PromoRecommendationItem) {
+        private fun startMessageAnimation(
+            newMessage: String,
+            onCompleted: (() -> Unit)? = null
+        ) {
             binding.tpgRecommendationTitle.animateGone {
                 binding.tpgRecommendationTitle.text =
-                    HtmlLinkHelper(binding.tpgRecommendationTitle.context, item.messageSelected).spannedString
+                    HtmlLinkHelper(binding.tpgRecommendationTitle.context, newMessage).spannedString
                 binding.tpgRecommendationTitle.animateShow {
-                    onClickUsePromoRecommendation()
+                    onCompleted?.invoke()
                 }
             }
         }
