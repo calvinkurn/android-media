@@ -95,35 +95,34 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
             }
 
             tabsViewModel.getColorTabComponentLiveData().observe(
-                fragment.viewLifecycleOwner,
-                Observer {
-                    isParentUnifyTab = true
-                    tabsHolder.tabLayout.apply {
-                        layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
-                        layoutParams.height =
-                            tabsHolder.context.resources.getDimensionPixelSize(R.dimen.dp_55)
-                        tabMode = TabLayout.MODE_SCROLLABLE
-                        removeAllTabs()
-                        setBackgroundResource(0)
-                    }
-                    tabsHolder.apply {
-                        whiteShadeLeft.setBackgroundResource(0)
-                        whiteShadeRight.setBackgroundResource(0)
-                        getUnifyTabLayout().setSelectedTabIndicator(null)
-                    }
-                    it.forEach {
-                        val tab = tabsHolder.tabLayout.newTab()
-                        ViewCompat.setPaddingRelative(tab.view, TAB_START_PADDING, 0, 0, 0)
-                        tab.customView = CustomViewCreator.getCustomViewObject(
-                            itemView.context,
-                            ComponentsList.TabsItem,
-                            it,
-                            fragment
-                        )
-                        tabsHolder.tabLayout.addTab(tab, it.data?.get(0)?.isSelected ?: false)
-                    }
+                fragment.viewLifecycleOwner
+            ) {
+                isParentUnifyTab = true
+                tabsHolder.tabLayout.apply {
+                    layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
+                    layoutParams.height =
+                        tabsHolder.context.resources.getDimensionPixelSize(R.dimen.dp_55)
+                    tabMode = TabLayout.MODE_SCROLLABLE
+                    removeAllTabs()
+                    setBackgroundResource(0)
                 }
-            )
+                tabsHolder.apply {
+                    whiteShadeLeft.setBackgroundResource(0)
+                    whiteShadeRight.setBackgroundResource(0)
+                    getUnifyTabLayout().setSelectedTabIndicator(null)
+                }
+                it.forEach {
+                    val tab = tabsHolder.tabLayout.newTab()
+                    ViewCompat.setPaddingRelative(tab.view, TAB_START_PADDING, 0, 0, 0)
+                    tab.customView = CustomViewCreator.getCustomViewObject(
+                        itemView.context,
+                        ComponentsList.TabsItem,
+                        it,
+                        fragment
+                    )
+                    tabsHolder.tabLayout.addTab(tab, it.data?.get(0)?.isSelected ?: false)
+                }
+            }
 
             tabsViewModel.getIconTabLiveData().observe(
                 fragment.viewLifecycleOwner
@@ -137,7 +136,6 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
                         tabsHolder.context.resources.getDimensionPixelSize(R.dimen.dp_60)
                     tabMode = TabLayout.MODE_SCROLLABLE
                     removeAllTabs()
-                    setBackgroundResource(0)
                 }
                 var selectedPosition = 0
                 it.forEachIndexed { index, tabItem ->
