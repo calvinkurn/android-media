@@ -17,10 +17,15 @@ enum class ComponentNames(val componentName: String) {
     ClaimCoupon("claim_coupon"),
     ClaimCouponItem("claim_coupon_item"),
     Margin("margin"),
+
+    // Tabs
     Tabs("tabs"),
     TabsItem("tabs_item"),
+
+    // Tabs With Icon
     TabsIcon("tabs_icon"),
     TabsIconItem("tabs_icon_item"),
+
     TimerSprintSale("timer_sprint_sale"),
     ShimmerProductCard("shimmer_product_card"),
     Shimmer("shimmer"),
