@@ -215,7 +215,7 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
         } else if (secondaryClashingInfos.isNotEmpty()) {
             state = PromoItemState.Disabled(secondaryClashingInfos.first().message)
         }
-        if (coupon.radioCheckState == "disabled" && coupon.message.isNotBlank()) {
+        if (coupon.radioCheckState == "disabled") {
             state = PromoItemState.Ineligible(coupon.message)
         }
 
