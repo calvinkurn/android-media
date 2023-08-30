@@ -14,13 +14,17 @@ class PlayDimensionTrackingHelper @Inject constructor(
 ){
 
     fun getDimension90(): String {
+        val pageSourceName = queryParamStorage.pageSourceName.ifEmpty { NO_VALUE }
+
         val categoryId = if (queryParamStorage.pageSourceName == ApplinkConstInternalContent.SOURCE_TYPE_HOME)
             queryParamStorage.widgetId
         else
             NO_VALUE
 
+        println("JOE LOG $pageSourceName - $categoryId")
+
         /** {page_source_name}.{banner_component_name}.{banner_name}.{category_id} */
-        return "${queryParamStorage.pageSourceName}.$NO_VALUE.$NO_VALUE.$categoryId"
+        return "$pageSourceName.$NO_VALUE.$NO_VALUE.$categoryId"
     }
 
     companion object {
