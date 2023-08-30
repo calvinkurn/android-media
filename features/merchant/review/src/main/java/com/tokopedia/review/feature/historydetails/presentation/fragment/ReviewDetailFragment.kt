@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
@@ -46,6 +47,7 @@ import com.tokopedia.review.feature.historydetails.di.DaggerReviewDetailComponen
 import com.tokopedia.review.feature.historydetails.di.ReviewDetailComponent
 import com.tokopedia.review.feature.historydetails.presentation.mapper.ReviewDetailDataMapper
 import com.tokopedia.review.feature.historydetails.presentation.viewmodel.ReviewDetailViewModel
+import com.tokopedia.reviewcommon.constant.ReviewCommonConstants
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.util.ReviewMediaGalleryRouter
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.adapter.typefactory.ReviewMediaThumbnailTypeFactory
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailUiModel
@@ -80,7 +82,11 @@ class ReviewDetailFragment : BaseDaggerFragment(),
     }
 
     @Inject
-    lateinit var viewModel: ReviewDetailViewModel
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private val viewModel by lazy {
+        ViewModelProvider(requireActivity(), viewModelFactory)[ReviewDetailViewModel::class.java]
+    }
 
     private var reviewPerformanceMonitoringListener: ReviewPerformanceMonitoringListener? = null
     private var reviewConnectionErrorRetryButton: UnifyButton? = null
@@ -199,15 +205,17 @@ class ReviewDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onBackPressed() {
-        if (::viewModel.isInitialized) {
-            (viewModel.reviewDetails.value as? Success)?.let {
-                ReviewDetailTracking.eventClickBack(
-                    it.data.product.productId,
-                    it.data.review.feedbackId,
-                    viewModel.getUserId()
-                )
-            }
+        (viewModel.reviewDetails.value as? Success)?.let {
+            ReviewDetailTracking.eventClickBack(
+                it.data.product.productId,
+                it.data.review.feedbackId,
+                viewModel.getUserId()
+            )
         }
+        val intentResult = Intent()
+        intentResult.putExtra(ReviewCommonConstants.REVIEW_EDITED, viewModel.isReviewEdited())
+        activity?.setResult(Activity.RESULT_OK, intentResult)
+        activity?.finish()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -616,6 +624,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
     }
 
     private fun onSuccessEditForm() {
+        viewModel.onReviewEdited()
         retry()
         view?.let {
             Toaster.build(
