@@ -5,24 +5,22 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
+    android:layout_marginTop="10dp"
     tools:layout_height="400dp">
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_confirm_info"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/image_background"
-        app:layout_constraintStart_toStartOf="parent"
-        app:typographyType="body_2"
-        tools:text="Konfirmasi otomatis dalam maks 3 jam. Konfirmasi otomatis bermasalah? input resi secara manual" />
+        app:layout_constraintBottom_toTopOf="@id/image_background" />
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/image_background"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:unify_image_corner_radius="0"
         tools:layout_height="200dp"
-        tools:src="@color/colorPink" />
+        tools:src="@color/colorRed" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

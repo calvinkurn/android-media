@@ -795,7 +795,18 @@ open class SomDetailFragment :
                     val btSheet = SomConfirmShippingBottomSheet(context)
                     childFragmentManager.let {
                         btSheet.init(view)
-                        btSheet.setInfoText(detailResponse?.onlineBooking?.infoText.orEmpty())
+
+
+                        /**
+                         * temporary for slicing ui. remove latet after be contract
+                         */
+                        val listInfo = listOf<String>(
+                            "Capai min. jumlah pesanan pickup dalam sebulan untuk bisa pakai layanan pickup di bulan berikutnya (khusus kurir tertentu). Pelajari",
+                            "Cukup anterin paket ke gerai, resi akan diterbitkan oleh gerai & konfirmasi pengiriman otomatis maks. 3 jam setelah paket diserahkan ke kurir.",
+                            "Cek lokasi gerai drop off paket terdekat dari tokomu. Cek Gerai Terdekat"
+                        )
+//                        btSheet.setInfoText(detailResponse?.onlineBooking?.infoText.orEmpty())
+                        btSheet.setInfoText(listInfo)
                         btSheet.setOnDismiss {
                             binding?.btnPrimary?.isLoading = false
                         }
