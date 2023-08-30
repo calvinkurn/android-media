@@ -15,6 +15,7 @@ import com.tokopedia.catalogcommon.uimodel.DummyUiModel
 import com.tokopedia.catalogcommon.uimodel.HeroBannerUiModel
 import com.tokopedia.catalogcommon.uimodel.SliderImageTextUiModel
 import com.tokopedia.catalogcommon.uimodel.StickyNavigationUiModel
+import com.tokopedia.catalogcommon.uimodel.TextDescriptionUiModel
 import com.tokopedia.catalogcommon.uimodel.TopFeaturesUiModel
 import com.tokopedia.catalogcommon.uimodel.TrustMakerUiModel
 import com.tokopedia.catalogcommon.util.stringHexColorParseToInt
@@ -43,7 +44,7 @@ class CatalogDetailUiMapper @Inject constructor(
                 WidgetTypes.CATALOG_PANEL_IMAGE.type -> { DummyUiModel(content = it.name)}
                 WidgetTypes.CATALOG_NAVIGATION.type -> it.mapToStickyNavigation()
                 WidgetTypes.CATALOG_SLIDER_IMAGE.type -> it.mapToSliderImageText(isDarkMode)
-                WidgetTypes.CATALOG_TEXT.type -> { DummyUiModel(content = it.name)}
+                WidgetTypes.CATALOG_TEXT.type -> it.mapToTextDescription(isDarkMode)
                 WidgetTypes.CATALOG_REVIEW_EXPERT.type -> { DummyUiModel(content = it.name)}
                 WidgetTypes.CATALOG_FEATURE_SUPPORT.type -> { DummyUiModel(content = it.name)}
                 WidgetTypes.CATALOG_ACCORDION.type -> it.mapToAccordion(isDarkMode)
@@ -80,7 +81,7 @@ class CatalogDetailUiMapper @Inject constructor(
             val marketPrice = priceCta.marketPrice.firstOrNull()
             PriceCtaProperties(
                 price = listOf(marketPrice?.minFmt.orEmpty(), marketPrice?.maxFmt.orEmpty()).joinToString(" - ") ,
-                productName = priceCta.name.orEmpty(),
+                productName = priceCta.name,
                 bgColor = "#$bgColor".stringHexColorParseToInt(),
                 MethodChecker.getColor(context, textColorRes)
             )
@@ -206,6 +207,19 @@ class CatalogDetailUiMapper @Inject constructor(
                     textDescriptionColor = textColor
                 )
             }
+        )
+    }
+
+    private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToTextDescription(
+        isDarkMode: Boolean
+    ): TextDescriptionUiModel {
+        return TextDescriptionUiModel(
+            item = TextDescriptionUiModel.ItemTextDescriptionUiModel(
+                highlight = data?.text?.subtitle.orEmpty(),
+                title = data?.text?.title.orEmpty(),
+                description = data?.text?.desc.orEmpty()
+            ),
+            isDarkMode = isDarkMode
         )
     }
 

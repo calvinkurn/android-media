@@ -3,9 +3,9 @@ package com.tokopedia.catalogcommon.uimodel
 import com.tokopedia.catalogcommon.adapter.CatalogAdapterFactory
 
 data class TextDescriptionUiModel(
-    override var idWidget: String,
-    override var widgetType: String,
-    override var widgetName: String,
+    override var idWidget: String = "",
+    override var widgetType: String = "",
+    override var widgetName: String = "",
     override var widgetBackgroundColor: Int? = null,
     override var widgetTextColor: Int? = null,
     val item: ItemTextDescriptionUiModel,
