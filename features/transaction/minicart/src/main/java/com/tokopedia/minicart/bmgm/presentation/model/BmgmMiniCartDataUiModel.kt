@@ -10,7 +10,7 @@ import com.tokopedia.utils.currency.CurrencyFormatUtil
 data class BmgmMiniCartDataUiModel(
     val offerId: Long = BmgmCommonDataModel.NON_DISCOUNT_TIER_ID,
     val offerName: String = "",
-    val offerMessage: String = "",
+    val offerMessage: List<String> = listOf(),
     val hasReachMaxDiscount: Boolean = false,
     val totalDiscount: Double = 0.0,
     val priceBeforeBenefit: Double = 0.0,

@@ -15,10 +15,14 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.minicart.R
 import com.tokopedia.minicart.bmgm.common.di.DaggerBmgmComponent
 import com.tokopedia.minicart.bmgm.domain.model.BmgmParamModel
@@ -30,7 +34,10 @@ import com.tokopedia.minicart.bmgm.presentation.model.BmgmState
 import com.tokopedia.minicart.bmgm.presentation.viewmodel.BmgmMiniCartViewModel
 import com.tokopedia.minicart.databinding.ViewBmgmMiniCartSubTotalBinding
 import com.tokopedia.minicart.databinding.ViewBmgmMiniCartWidgetBinding
+import com.tokopedia.unifyprinciples.Typography
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created by @ilhamsuaib on 31/07/23.
@@ -46,6 +53,7 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener, Default
 
     companion object {
         private const val CROSSED_TEXT_FORMAT = "<del>%s</del>"
+        private const val MESSAGE_SWITCH_INITIAL_DELAY = 2L
     }
 
     @Inject
@@ -62,6 +70,7 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener, Default
             owner, viewModelFactory
         )[BmgmMiniCartViewModel::class.java]
     }
+    private val impressHolder = ImpressHolder()
 
     init {
         binding = ViewBmgmMiniCartWidgetBinding.inflate(
@@ -199,11 +208,9 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener, Default
     private fun setupTiersApplied(data: BmgmMiniCartDataUiModel) {
         binding?.run {
             rvBmgmMiniCart.visible()
-            tvBmgmCartDiscount.visible()
 
             if (data.tiersApplied.isNotEmpty()) {
-                tvBmgmCartDiscount.text = data.offerMessage.parseAsHtml()
-                tvBmgmCartDiscount.visible()
+                setupMessageWithAnimation(data.offerMessage)
                 rvBmgmMiniCart.visible()
             } else {
                 tvBmgmCartDiscount.gone()
@@ -212,6 +219,40 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener, Default
 
             miniCartAdapter.clearAllElements()
             miniCartAdapter.addElement(getProductList(data))
+        }
+    }
+
+    private fun setupMessageWithAnimation(messages: List<String>) {
+        if (messages.isEmpty()) return
+        binding?.run {
+            var i = Int.ZERO
+            fun runAnimation() {
+                if (i == messages.size.minus(Int.ONE)) {
+                    i = Int.ZERO
+                    tvBmgmCartDiscount.setText(messages[i].parseAsHtml())
+                } else {
+                    tvBmgmCartDiscount.setText(messages[++i].parseAsHtml())
+                }
+            }
+
+            tvBmgmCartDiscount.visible()
+            tvBmgmCartDiscount.setFactory {
+                return@setFactory Typography(root.context).apply {
+                    setType(Typography.DISPLAY_3)
+                    setTextColor(context.getResColor(unifyprinciplesR.color.Unify_NN950))
+                }
+            }
+            tvBmgmCartDiscount.setCurrentText(
+                messages.firstOrNull().orEmpty().parseAsHtml()
+            )
+            tvBmgmCartDiscount.addOnImpressionListener(impressHolder) {
+                tvBmgmCartDiscount.postDelayed({
+                    runAnimation()
+                }, TimeUnit.SECONDS.toMillis(MESSAGE_SWITCH_INITIAL_DELAY))
+            }
+            tvBmgmCartDiscount.setOnClickListener {
+                runAnimation()
+            }
         }
     }
 

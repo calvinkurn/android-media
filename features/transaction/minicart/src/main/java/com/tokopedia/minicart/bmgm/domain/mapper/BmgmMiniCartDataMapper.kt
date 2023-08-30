@@ -38,7 +38,7 @@ class BmgmMiniCartDataMapper @Inject constructor() {
             return BmgmMiniCartDataUiModel(
                 offerId = it.offerId,
                 offerName = it.offerName,
-                offerMessage = it.offerMessage.joinToString(" "),
+                offerMessage = it.offerMessage,
                 hasReachMaxDiscount = hasReachMaxDiscount,
                 priceBeforeBenefit = shoppingSummary.totalOriginalValue,
                 finalPrice = shoppingSummary.totalValue,
