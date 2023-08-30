@@ -18,7 +18,6 @@ import com.tokopedia.topads.edit.di.TopAdsEditComponent
 import com.tokopedia.topads.edit.utils.Constants
 import com.tokopedia.topads.edit.view.adapter.edit.EditAdGroupAdapter
 import com.tokopedia.topads.edit.view.adapter.edit.EditAdGroupTypeFactory
-import com.tokopedia.topads.edit.view.model.EditFormDefaultViewModel
 import com.tokopedia.topads.edit.view.model.edit.EditAdGroupItemAdsPotentialUiModel
 import com.tokopedia.topads.edit.view.model.edit.EditAdGroupItemAdsPotentialWidgetUiModel
 import com.tokopedia.topads.edit.view.model.edit.EditAdGroupItemState
@@ -29,6 +28,7 @@ import com.tokopedia.topads.edit.view.sheet.EditAdGroupNameBottomSheet
 import com.tokopedia.topads.edit.view.sheet.EditAdGroupRecommendationBidBottomSheet
 import com.tokopedia.topads.edit.view.sheet.EditAdGroupSettingModeBottomSheet
 import com.tokopedia.topads.edit.view.viewholder.CustomDividerItemDecoration
+import com.tokopedia.topads.edit.viewmodel.EditAdGroupViewModel
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
@@ -46,7 +46,7 @@ class EditAdGroupFragment : BaseDaggerFragment() {
         ViewModelProvider(this, viewModelFactory)
     }
     private val viewModel by lazy {
-        viewModelProvider[EditFormDefaultViewModel::class.java]
+        viewModelProvider[EditAdGroupViewModel::class.java]
     }
 
     var response: GroupInfoResponse.TopAdsGetPromoGroup.Data? = null
@@ -104,32 +104,31 @@ class EditAdGroupFragment : BaseDaggerFragment() {
             groupId = it
         }
 
-//        suspend fun delayWithCoroutines(delayMillis: Long) {
-//            delay(delayMillis)
-//        }
-//
-//        GlobalScope.launch(Dispatchers.Main) {
-//            delayWithCoroutines(2000)
-//            editAdGroupAdapter.updatePotentialWidget(potentialWidgetList)
-//        }
-
         viewModel.getGroupInfo(groupId, this::onSuccessGroupInfo)
     }
 
     private fun onSuccessGroupInfo(data: GroupInfoResponse.TopAdsGetPromoGroup.Data) {
-        editAdGroupAdapter.updateValue(EditAdGroupItemTag.NAME, data.groupName)
-        editAdGroupAdapter.updateValue(EditAdGroupItemTag.PRODUCT, getProductText(data.groupTotal))
         val isBidAutomatic = checkBidIsAutomatic(data.strategies)
-        editAdGroupAdapter.updateValue(EditAdGroupItemTag.SETTING_MODE, getSettingModeText(isBidAutomatic))
-        if (isBidAutomatic) {
-            editAdGroupAdapter.removeItem(EditAdGroupItemTag.ADS_SEARCH)
-            editAdGroupAdapter.removeItem(EditAdGroupItemTag.ADS_RECOMMENDATION)
-        } else {
-            editAdGroupAdapter.updateValue(EditAdGroupItemTag.ADS_SEARCH, getPriceBid(data.bidSettings, BID_SETTINGS_TYPE_SEARCH))
-            editAdGroupAdapter.updateValue(EditAdGroupItemTag.ADS_RECOMMENDATION, getPriceBid(data.bidSettings, BID_SETTINGS_TYPE_BROWSE))
-        }
-        response = data
 
+        editAdGroupAdapter.apply {
+            updateValue(EditAdGroupItemTag.NAME, data.groupName)
+            updateValue(EditAdGroupItemTag.PRODUCT, getProductText(data.groupTotal))
+            updateValue(EditAdGroupItemTag.SETTING_MODE, getSettingModeText(isBidAutomatic))
+            if (isBidAutomatic) {
+                removeItem(EditAdGroupItemTag.ADS_SEARCH)
+                removeItem(EditAdGroupItemTag.ADS_RECOMMENDATION)
+            } else {
+                updateValue(EditAdGroupItemTag.ADS_SEARCH, getPriceBid(data.bidSettings, BID_SETTINGS_TYPE_SEARCH))
+                updateValue(EditAdGroupItemTag.ADS_RECOMMENDATION, getPriceBid(data.bidSettings, BID_SETTINGS_TYPE_BROWSE))
+            }
+            updateValue(EditAdGroupItemTag.DAILY_BUDGET, data.dailyBudget.toString())
+        }
+
+        response = data
+        setDividerOnRecyclerView()
+    }
+
+    private fun setDividerOnRecyclerView() {
         val dividerPositions = editAdGroupAdapter.list
             .mapIndexedNotNull { index, item ->
                 if (item is EditAdGroupItemUiModel && item.hasDivider) {
