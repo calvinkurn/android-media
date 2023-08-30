@@ -110,7 +110,7 @@ class StoryViewModel @Inject constructor(
         val newDetailPosition = mDetailPosition.value.plus(1)
 
         when {
-            newDetailPosition < mDetailSize -> updateStoryDetailData(position = newDetailPosition)
+            newDetailPosition < mDetailSize -> updateDetailData(position = newDetailPosition)
             newGroupPosition < mGroupSize -> handleSetGroup(position = newGroupPosition)
             else -> viewModelScope.launch { _uiEvent.emit(StoryUiEvent.FinishedAllStory) }
         }
@@ -121,18 +121,18 @@ class StoryViewModel @Inject constructor(
         val newDetailPosition = mDetailPosition.value.minus(1)
 
         when {
-            newDetailPosition > -1 -> updateStoryDetailData(position = newDetailPosition)
+            newDetailPosition > -1 -> updateDetailData(position = newDetailPosition)
             newGroupPosition > -1 -> handleSetGroup(position = newGroupPosition)
-            else -> updateStoryDetailData(event = RESUME, isReset = true)
+            else -> updateDetailData(event = RESUME, isReset = true)
         }
     }
 
     private fun handleOnPauseStory() {
-        updateStoryDetailData(event = PAUSE)
+        updateDetailData(event = PAUSE)
     }
 
     private fun handleOnResumeStory() {
-        updateStoryDetailData(event = RESUME)
+        updateDetailData(event = RESUME)
     }
 
     private fun handleSetGroup(position: Int) {
@@ -151,7 +151,7 @@ class StoryViewModel @Inject constructor(
             updateGroupData(detail = detailData)
 
             val isReset = detailData.selectedDetailPositionCached == detailData.detailItems.size.minus(1)
-            updateStoryDetailData(
+            updateDetailData(
                 position = detailData.selectedDetailPositionCached,
                 isReset = isReset,
             )
@@ -176,7 +176,7 @@ class StoryViewModel @Inject constructor(
         }
     }
 
-    private fun updateStoryDetailData(
+    private fun updateDetailData(
         position: Int = mDetailPosition.value,
         event: StoryDetailItemUiEvent = PAUSE,
         isReset: Boolean = false,
