@@ -1882,7 +1882,8 @@ class ShopPageHeaderFragmentV2 :
                     iconUrl = it.icon,
                     iconActiveUrl = it.iconFocus,
                     isFocus = it.isFocus == Int.ONE,
-                    isDefault = it.isDefault
+                    isDefault = it.isDefault,
+                    tabText = it.text
                 )
             )
         }

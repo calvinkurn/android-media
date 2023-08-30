@@ -5083,6 +5083,7 @@ open class ShopPageHomeFragment :
         get() = this
 
 
+    //For home tab, we also need to check whether there is any festivity widget if we want to override the theme
     override fun isOverrideTheme(): Boolean {
         return (getRealParentFragment() as? InterfaceShopPageHeader)?.isOverrideTheme().orFalse() && !isShopHomeTabHasFestivity()
     }

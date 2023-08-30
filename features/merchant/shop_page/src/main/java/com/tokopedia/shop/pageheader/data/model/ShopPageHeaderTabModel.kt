@@ -13,5 +13,6 @@ data class ShopPageHeaderTabModel(
     val isDefault: Boolean = false,
     val chipsWording: String = "",
     val shareWording: String = "",
-    val tabPathUrl: String = ""
+    val tabPathUrl: String = "",
+    val tabText: String = ""
 )
