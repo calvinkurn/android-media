@@ -48,8 +48,10 @@ class MainEditorViewModel @Inject constructor(
 
     fun setTextState(textModel: InputTextModel) {
         val newState = _state.value.copy()
-        val x = newState.model?.image?.texts?.toList()?.firstOrNull()?.first ?: textModel.text
-        newState.model?.image?.texts?.set(x, textModel)
+
+        // TODO: Need to adjust later to get editted text target and update the target instead of 1st item
+        val textUpdateTarget = newState.model?.image?.texts?.toList()?.firstOrNull()?.first ?: textModel.text
+        newState.model?.image?.texts?.set(textUpdateTarget, textModel)
 
         _state.update {
             newState

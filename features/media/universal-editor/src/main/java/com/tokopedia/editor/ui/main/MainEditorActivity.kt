@@ -141,13 +141,12 @@ open class MainEditorActivity : AppCompatActivity(), NavToolbarComponent.Listene
                 val intent = InputTextActivity.create(this)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+
+                // TODO: only for development purpose for testing implement previous text state. this will be used on text edit state later
                 intent.putExtra(InputTextActivity.INPUT_TEXT_STATE, viewModel.state.value.model?.image?.texts?.toList()?.firstOrNull()?.second)
+
                 inputTextIntent.launch(intent)
                 this.overridePendingTransition(0,0)
-//                val content = getRandomString(10)
-//                val canvas = findViewById<DynamicTextCanvasView>(R.id.canvas)
-//                canvas.addButtonView(findViewById(R.id.btn_delete))
-//                canvas.addText(content)
             }
             ToolType.PLACEMENT -> {}
             ToolType.AUDIO_MUTE -> {}
