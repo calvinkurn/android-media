@@ -424,14 +424,14 @@
             android:id="@+id/button_delete_cart"
             android:layout_width="wrap_content"
             android:layout_height="24dp"
+            android:layout_marginTop="12dp"
             android:visibility="gone"
             app:icon_color_light_enable="@color/Unify_NN500"
             app:icon_name="DELETE"
-            app:layout_constraintBottom_toBottomOf="@id/text_product_unavailable_action"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1"
             app:layout_constraintStart_toEndOf="@id/text_product_unavailable_action"
-            app:layout_constraintTop_toTopOf="@id/text_product_unavailable_action"
+            app:layout_constraintTop_toBottomOf="@id/layout_product_info"
             tools:visibility="gone" />
 
         <androidx.constraintlayout.widget.Barrier
