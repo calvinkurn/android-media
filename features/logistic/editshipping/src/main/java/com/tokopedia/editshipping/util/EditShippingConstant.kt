@@ -25,6 +25,6 @@ object EditShippingConstant {
 
     const val BOTTOMSHEET_SHIPPER_DETAIL_TITLE = "Detail Kurir Pengiriman"
 
-    val WHITELABEL_SHIPPER_ID = listOf<Long>(1000, 999, 1003, 1001, 1005, 1002, 1004)
+    val WHITELABEL_SHIPPER_ID = listOf<Long>(1000)
     const val KURIR_REKOMENDASI_SHIPPER_ID = "26"
 }

@@ -64,7 +64,7 @@ class AffiliateIncomeViewModel : BaseViewModel() {
     fun getAffiliateBalance() {
         launchCatchError(
             block = {
-                affiliateBalanceDataUseCase.getAffiliateBalance().affiliateBalance?.data?.let {
+                affiliateBalanceDataUseCase.getAffiliateBalance().affiliateBalance?.balanceData?.let {
                     affiliateBalanceData.value = it
                 }
             },
@@ -127,10 +127,10 @@ class AffiliateIncomeViewModel : BaseViewModel() {
                 affiliateTransactionHistoryUseCase.getAffiliateTransactionHistory(
                     selectedDateValue.toInt(),
                     page
-                ).getAffiliateTransactionHistory?.data?.let {
+                ).getAffiliateTransactionHistory?.transactionData?.let {
                     hasNext = it.hasNext
-                    convertDataToVisitables(it)?.let { visitables ->
-                        affiliateDataList.value = visitables
+                    convertDataToVisitables(it)?.let { visitable ->
+                        affiliateDataList.value = visitable
                     }
                 }
             },

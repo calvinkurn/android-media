@@ -182,7 +182,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                 affiliatePromotionBottomSheetInterface = bottomSheetInterface
                 selectedIds = params.idArray ?: arrayListOf()
                 arguments = Bundle().apply {
-                    putSerializable(KEY_PARAMS, params)
+                    putParcelable(KEY_PARAMS, params)
                 }
             }
         }
@@ -229,12 +229,12 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
             arguments?.let { bundle ->
                 val params: AffiliatePromotionBottomSheetParams? =
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                        bundle.getSerializable(
+                        bundle.getParcelable(
                             KEY_PARAMS,
                             AffiliatePromotionBottomSheetParams::class.java
                         )
                     } else {
-                        bundle.getSerializable(KEY_PARAMS) as? AffiliatePromotionBottomSheetParams
+                        bundle.getParcelable(KEY_PARAMS) as? AffiliatePromotionBottomSheetParams
                     }
                 findViewById<Typography>(R.id.product_name).text =
                     params?.itemName ?: bundle.getString(KEY_PRODUCT_NAME)
@@ -532,12 +532,12 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
     private fun sendClickEventProduct(linkID: String?, state: String) {
         val params: AffiliatePromotionBottomSheetParams? =
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                arguments?.getSerializable(
+                arguments?.getParcelable(
                     KEY_PARAMS,
                     AffiliatePromotionBottomSheetParams::class.java
                 )
             } else {
-                arguments?.getSerializable(KEY_PARAMS) as? AffiliatePromotionBottomSheetParams
+                arguments?.getParcelable(KEY_PARAMS) as? AffiliatePromotionBottomSheetParams
             }
         var eventAction = ""
         var eventCategory = ""
@@ -600,12 +600,12 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
     private fun sendClickPGeventShop(linkID: String?, status: String, entryFlag: String) {
         val params: AffiliatePromotionBottomSheetParams? =
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                arguments?.getSerializable(
+                arguments?.getParcelable(
                     KEY_PARAMS,
                     AffiliatePromotionBottomSheetParams::class.java
                 )
             } else {
-                arguments?.getSerializable(KEY_PARAMS) as? AffiliatePromotionBottomSheetParams
+                arguments?.getParcelable(KEY_PARAMS) as? AffiliatePromotionBottomSheetParams
             }
         var eventAction = ""
         var eventCategory = ""
@@ -650,12 +650,12 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
     private fun sendClickEventCampaign(linkID: String?, status: String) {
         val params: AffiliatePromotionBottomSheetParams? =
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                arguments?.getSerializable(
+                arguments?.getParcelable(
                     KEY_PARAMS,
                     AffiliatePromotionBottomSheetParams::class.java
                 )
             } else {
-                arguments?.getSerializable(KEY_PARAMS) as? AffiliatePromotionBottomSheetParams
+                arguments?.getParcelable(KEY_PARAMS) as? AffiliatePromotionBottomSheetParams
             }
         var eventAction = ""
         var eventCategory = ""
