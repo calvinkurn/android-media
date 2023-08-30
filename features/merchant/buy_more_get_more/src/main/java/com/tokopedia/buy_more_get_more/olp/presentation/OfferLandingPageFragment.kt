@@ -149,6 +149,7 @@ class OfferLandingPageFragment :
         super.onResume()
 //        loadInitialData()
         viewModel.processEvent(OlpEvent.GetNotification)
+        fetchMiniCart()
     }
 
     override fun onCreateView(
