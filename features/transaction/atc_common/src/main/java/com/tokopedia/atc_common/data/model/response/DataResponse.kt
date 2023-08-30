@@ -58,5 +58,27 @@ data class DataResponse(
 
     @SerializedName("message")
     @Expose
-    val message: ArrayList<String> = arrayListOf()
-)
+    val message: ArrayList<String> = arrayListOf(),
+
+    @SerializedName("add_ons")
+    @Expose
+    val addOnsProduct: List<AddOnsProduct> = emptyList(),
+
+    @SerializedName("is_fulfillment")
+    @Expose
+    val isFulfillment: Boolean = false
+) {
+    data class AddOnsProduct(
+        @SerializedName("id")
+        @Expose
+        val addOnId: String = "",
+
+        @SerializedName("unique_id")
+        @Expose
+        val uniqueId: String = "",
+
+        @SerializedName("status")
+        @Expose
+        val status: Int = -1
+    )
+}

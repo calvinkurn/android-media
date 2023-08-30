@@ -1,9 +1,9 @@
 package com.tokopedia.top_ads_headline.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.top_ads_headline_usecase.CreateHeadlineAdsUseCase
-import com.tokopedia.top_ads_headline_usecase.model.TopAdsManageHeadlineInput
-import com.tokopedia.top_ads_headline_usecase.model.TopadsManageHeadlineAdResponse
+import com.tokopedia.topads.common.domain.usecase.CreateHeadlineAdsUseCase
+import com.tokopedia.topads.common.domain.model.createheadline.TopAdsManageHeadlineInput
+import com.tokopedia.topads.common.domain.model.createheadline.TopadsManageHeadlineAdResponse
 import com.tokopedia.topads.common.data.response.Error
 import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import io.mockk.*

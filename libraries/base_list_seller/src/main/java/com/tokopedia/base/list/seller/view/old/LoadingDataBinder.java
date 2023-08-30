@@ -32,7 +32,7 @@ public class LoadingDataBinder extends DataBinder<LoadingDataBinder.ViewHolder> 
     @Override
     public LoadingDataBinder.ViewHolder newViewHolder(ViewGroup parent) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.loading_layout, null);
+                .inflate(com.tokopedia.baselist.R.layout.loading_layout, null);
         return new ViewHolder(view);
     }
 

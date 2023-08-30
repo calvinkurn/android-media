@@ -67,7 +67,7 @@ internal class TopNavChipsTest {
         val productListAdapter = recyclerView.getProductListAdapter()
         val globalNavViewModelPosition = productListAdapter.itemList.getGlobalNavViewModelPosition()
 
-        onView(withId(recyclerViewId)).perform(actionOnItemAtPosition<GlobalNavViewHolder>(globalNavViewModelPosition, clickChildViewWithId(R.id.globalNavPillItemContainer)))
+        onView(withId(recyclerViewId)).perform(actionOnItemAtPosition<GlobalNavViewHolder>(globalNavViewModelPosition, clickChildViewWithId(com.tokopedia.globalnavwidget.R.id.globalNavPillItemContainer)))
     }
 
     @After

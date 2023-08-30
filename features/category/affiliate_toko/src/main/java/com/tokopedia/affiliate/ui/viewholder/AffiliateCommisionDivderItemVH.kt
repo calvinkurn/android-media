@@ -6,8 +6,8 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateCommisionDividerItemModel
 import com.tokopedia.affiliate_toko.R
 
-class AffiliateCommisionDivderItemVH(itemView: View)
-    : AbstractViewHolder<AffiliateCommisionDividerItemModel>(itemView) {
+class AffiliateCommisionDivderItemVH(itemView: View) :
+    AbstractViewHolder<AffiliateCommisionDividerItemModel>(itemView) {
 
     companion object {
         @JvmField
@@ -15,7 +15,5 @@ class AffiliateCommisionDivderItemVH(itemView: View)
         var LAYOUT = R.layout.affiliate_commission_divider_item
     }
 
-    override fun bind(element: AffiliateCommisionDividerItemModel?) {
-
-    }
+    override fun bind(element: AffiliateCommisionDividerItemModel?) = Unit
 }

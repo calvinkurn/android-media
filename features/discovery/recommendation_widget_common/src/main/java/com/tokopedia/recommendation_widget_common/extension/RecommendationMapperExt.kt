@@ -171,7 +171,6 @@ fun RecommendationItem.toProductCardModel(
         variant = if (isProductHasParentID()) variant else null,
         nonVariant = if (isProductHasParentID()) null else nonVariant,
         animateOnPress = productCardAnimate,
-        cardType = cardType,
         productListType = productCardListType,
     )
 }

@@ -38,8 +38,10 @@ import com.tokopedia.pdpsimulation.activateCheckout.presentation.bottomsheet.Dow
 import com.tokopedia.pdpsimulation.activateCheckout.viewmodel.PayLaterActivationViewModel
 import com.tokopedia.pdpsimulation.activateCheckout.viewmodel.ShowToasterException
 import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationEvent
+import com.tokopedia.pdpsimulation.common.constants.PARAM_CATEGORY_ID
 import com.tokopedia.pdpsimulation.common.constants.PARAM_GATEWAY_CODE
 import com.tokopedia.pdpsimulation.common.constants.PARAM_GATEWAY_ID
+import com.tokopedia.pdpsimulation.common.constants.PARAM_PARENT_ID
 import com.tokopedia.pdpsimulation.common.constants.PARAM_PRODUCT_ID
 import com.tokopedia.pdpsimulation.common.constants.PARAM_PRODUCT_TENURE
 import com.tokopedia.pdpsimulation.common.di.component.PdpSimulationComponent
@@ -117,10 +119,14 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         val gateWayId = arguments?.getString(PARAM_GATEWAY_ID) ?: "0"
         val tenureSelected = arguments?.getString(PARAM_PRODUCT_TENURE) ?: "0"
         val gatewayCode = arguments?.getString(PARAM_GATEWAY_CODE) ?: ""
+        val parentId = arguments?.getString(PARAM_PARENT_ID)
+        val categoryId = arguments?.getString(PARAM_CATEGORY_ID)
         payLaterActivationViewModel.selectedProductId = productId
         payLaterActivationViewModel.selectedGatewayId = gateWayId
         payLaterActivationViewModel.selectedTenureSelected = tenureSelected
         payLaterActivationViewModel.selectedGatewayCode = gatewayCode
+        payLaterActivationViewModel.parentId = parentId.orEmpty()
+        payLaterActivationViewModel.categoryId = categoryId.orEmpty()
     }
 
     private fun observeCartDetail() {

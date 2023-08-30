@@ -748,7 +748,7 @@ class MiniCartProductViewHolder(
                 constraintSet.connect(
                     R.id.text_notes,
                     ConstraintSet.BOTTOM,
-                    R.id.delete_button,
+                    com.tokopedia.design.R.id.delete_button,
                     ConstraintSet.TOP
                 )
                 constraintSet.applyTo(containerProduct)
@@ -795,7 +795,7 @@ class MiniCartProductViewHolder(
     private fun adjustProductPriceConstraint() {
         with(viewBinding) {
             val margin4dp = itemView.context.resources
-                .getDimension(com.tokopedia.abstraction.R.dimen.dp_4).toInt()
+                .getDimension(R.dimen.dp_4).toInt()
             val constraintSet = ConstraintSet()
             constraintSet.clone(containerProduct)
             constraintSet.connect(

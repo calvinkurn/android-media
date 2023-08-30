@@ -11,6 +11,7 @@ import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCarouselProductCardTypeFactory
 import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCarouselProductCardTypeFactoryImpl
 import com.tokopedia.home_component.util.ChannelWidgetUtil
+import com.tokopedia.home_component.util.NpaLinearLayoutManager
 import com.tokopedia.home_component.widget.common.CarouselListAdapter
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.unifycomponents.CardUnify2
@@ -48,8 +49,8 @@ class SpecialReleaseRevampViewHolder(
         bind(element)
     }
 
-    private fun initAdapter() {
-        val layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
+    fun initAdapter() {
+        val layoutManager = NpaLinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL)
         binding?.homeComponentSpecialReleaseRv?.apply {
             setLayoutManager(layoutManager)
             if(itemDecorationCount == 0) {

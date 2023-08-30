@@ -35,7 +35,9 @@ class PrivacyAccountViewModel @Inject constructor(
     dispatcher: CoroutineDispatchers
 ): BaseViewModel(dispatcher.main), LifecycleObserver {
 
+    @Deprecated("Remove this class after integrating SCP Login to Tokopedia")
     private val _linkStatus = MutableLiveData<Result<LinkStatusResponse>>()
+    @Deprecated("Remove this class after integrating SCP Login to Tokopedia")
     val linkStatus: LiveData<Result<LinkStatusResponse>> get() = _linkStatus
 
     private val _getConsentSocialNetwork = MutableLiveData<Result<Boolean>>()
@@ -50,7 +52,6 @@ class PrivacyAccountViewModel @Inject constructor(
 
     init {
         getConsentSocialNetwork()
-        getLinkStatus()
     }
 
     fun getConsentSocialNetwork() {
@@ -71,6 +72,7 @@ class PrivacyAccountViewModel @Inject constructor(
         }
     }
 
+    @Deprecated("Remove this class after integrating SCP Login to Tokopedia")
     fun getLinkStatus(isGetProfile: Boolean = false) {
         launchCatchError(block = {
             val result = getLinkStatusUseCase(GetLinkStatusUseCase.ACCOUNT_LINKING_TYPE)

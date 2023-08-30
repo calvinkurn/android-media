@@ -15,7 +15,6 @@ import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.StringRes
 import com.tokopedia.buyerorderdetail.presentation.model.TickerUiModel
 import com.tokopedia.buyerorderdetail.presentation.uistate.ProductListUiState
-import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
@@ -207,7 +206,6 @@ object ProductListUiStateMapper {
                 buyerOrderDetailData.addonInfo,
                 buyerOrderDetailData.orderId,
                 buyerOrderDetailData.orderStatus.id,
-                buyerOrderDetailData.isPof.orFalse(),
                 insuranceDetailData,
                 singleAtcRequestStates,
                 collapseProductList
@@ -236,7 +234,6 @@ object ProductListUiStateMapper {
                 buyerOrderDetailData.addonInfo,
                 buyerOrderDetailData.orderId,
                 buyerOrderDetailData.orderStatus.id,
-                buyerOrderDetailData.isPof.orFalse(),
                 insuranceDetailData,
                 singleAtcRequestStates,
                 collapseProductList
@@ -331,7 +328,6 @@ object ProductListUiStateMapper {
         addonInfo: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.AddonInfo?,
         orderId: String,
         orderStatusId: String,
-        isPof: Boolean,
         insuranceDetailData: GetInsuranceDetailResponse.Data.PpGetInsuranceDetail.Data.ProtectionProduct?,
         singleAtcResultFlow: Map<String, AddToCartSingleRequestState>,
         collapseProductList: Boolean
@@ -413,7 +409,7 @@ object ProductListUiStateMapper {
                 collapseProductList = collapseProductList,
                 numOfRemovedProductBundle = numOfRemovedProductBundle,
                 numOfRemovedNonProductBundle = numOfRemovedNonProductBundle,
-                numOfRemovedAddOnsList = numOfRemovedAddOn,
+                numOfRemovedAddOn = numOfRemovedAddOn,
                 numOfRemovedUnFulfilledProduct = numOfRemovedUnfulfilled
             ),
             tickerInfo = tickerDetails
@@ -424,12 +420,12 @@ object ProductListUiStateMapper {
         collapseProductList: Boolean,
         numOfRemovedProductBundle: Int,
         numOfRemovedNonProductBundle: Int,
-        numOfRemovedAddOnsList: Int,
+        numOfRemovedAddOn: Int,
         numOfRemovedUnFulfilledProduct: Int
     ): ProductListUiModel.ProductListToggleUiModel? {
         return if (collapseProductList) {
             val numOfRemovedItems =
-                numOfRemovedProductBundle + numOfRemovedNonProductBundle + numOfRemovedAddOnsList + numOfRemovedUnFulfilledProduct
+                numOfRemovedProductBundle + numOfRemovedNonProductBundle + numOfRemovedAddOn + numOfRemovedUnFulfilledProduct
             if (numOfRemovedItems.isMoreThanZero()) {
                 ProductListUiModel.ProductListToggleUiModel(
                     collapsed = true,
@@ -612,6 +608,7 @@ object ProductListUiStateMapper {
                 }.orEmpty()
             )
         }
+
         return if (mappedAddOn?.addonsItemList.isNullOrEmpty()) {
             Int.ZERO to null
         } else {

@@ -35,6 +35,7 @@ import com.tokopedia.product.detail.common.mapper.AtcVariantMapper
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.datamodel.ArButtonDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
+import com.tokopedia.product.detail.data.model.datamodel.DynamicOneLinerDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.GlobalBundling
@@ -43,6 +44,7 @@ import com.tokopedia.product.detail.data.model.datamodel.LoadingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel
 import com.tokopedia.product.detail.data.model.datamodel.OngoingCampaignDataModel
+import com.tokopedia.product.detail.data.model.datamodel.PdpRecommendationWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductBundlingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductCategoryCarouselDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentDataModel
@@ -88,7 +90,11 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant.SHOPADS_CARO
 import com.tokopedia.product.detail.view.util.checkIfNumber
 import com.tokopedia.product.detail.view.widget.CampaignRibbon
 import com.tokopedia.product.share.ProductData
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselTrackingConst
+import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetMetadata
+import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetModel
+import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetSource
+import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetTrackingModel
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.Detail
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaImageThumbnailUiModel
@@ -151,11 +157,13 @@ object DynamicProductDetailMapper {
                         SHOPADS_CAROUSEL -> {
                             listOfComponent.add(TopadsHeadlineUiModel(type = component.type, name = component.componentName))
                         }
-                        RECOM_VERTICAL -> {
-                            listOfComponent.add(ProductRecommendationDataModel(type = component.type, name = component.componentName, recomWidgetData = RecommendationWidget()))
+                        else -> {
+                            if (component.componentName.startsWith(RECOM_VERTICAL)) {
+                                listOfComponent.add(PdpRecommendationWidgetDataModel(mapPdpRecommendationWidgetModel(component)))
+                            } else {
+                                listOfComponent.add(ProductRecommendationDataModel(type = component.type, name = component.componentName, position = index))
+                            }
                         }
-                        else ->
-                            listOfComponent.add(ProductRecommendationDataModel(type = component.type, name = component.componentName, position = index))
                     }
                 }
                 ProductDetailConstant.VIEW_TO_VIEW -> {
@@ -208,6 +216,14 @@ object DynamicProductDetailMapper {
                     customInfoData?.let {
                         listOfComponent.add(it)
                     }
+                }
+                ProductDetailConstant.PRODUCT_DYNAMIC_ONELINER -> {
+                    val dataModel = DynamicOneLinerDataModel(
+                        name = component.componentName,
+                        type = component.type,
+                        data = generateDynamicInfoData(component.componentData)
+                    )
+                    listOfComponent.add(dataModel)
                 }
                 ProductDetailConstant.TOP_ADS -> {
                     listOfComponent.add(TopAdsImageDataModel(type = component.type, name = component.componentName))
@@ -434,7 +450,6 @@ object DynamicProductDetailMapper {
             variants = networkData.variants,
             children = networkData.children,
             maxFinalPrice = networkData.maxFinalPrice,
-            postAtcLayout = networkData.postAtcLayout,
             landingSubText = networkData.landingSubText
         )
     }
@@ -521,6 +536,18 @@ object DynamicProductDetailMapper {
             labelValue = label?.value ?: "",
             lightIcon = componentData.lightIcon,
             darkIcon = componentData.darkIcon
+        )
+    }
+
+    private fun generateDynamicInfoData(data: List<ComponentData>): DynamicOneLinerDataModel.Data {
+        val componentData = data.firstOrNull() ?: return DynamicOneLinerDataModel.Data()
+        return DynamicOneLinerDataModel.Data(
+            text = componentData.text,
+            applink = componentData.applink,
+            separator = componentData.separator,
+            icon = componentData.icon,
+            status = componentData.status,
+            chevronPos = componentData.chevronPos
         )
     }
 
@@ -891,5 +918,20 @@ object DynamicProductDetailMapper {
             name = name,
             data = mainData
         )
+    }
+
+    private fun mapPdpRecommendationWidgetModel(component: Component): RecommendationWidgetModel {
+        val metadata = RecommendationWidgetMetadata(
+            pageSource = RecommendationWidgetSource.PDP.xSourceValue,
+            pageName = component.componentName,
+            pageType = component.type
+        )
+        val trackingModel = RecommendationWidgetTrackingModel(
+            androidPageName = RecommendationCarouselTrackingConst.Category.PDP,
+            eventActionImpression = RecommendationCarouselTrackingConst.Action.IMPRESSION_ON_PRODUCT_RECOMMENDATION_PDP,
+            eventActionClick = RecommendationCarouselTrackingConst.Action.CLICK_ON_PRODUCT_RECOMMENDATION_PDP,
+            listPageName = RecommendationCarouselTrackingConst.List.PDP
+        )
+        return RecommendationWidgetModel(metadata = metadata, trackingModel = trackingModel)
     }
 }

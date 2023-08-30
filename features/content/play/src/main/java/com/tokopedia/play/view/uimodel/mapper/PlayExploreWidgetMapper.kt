@@ -49,8 +49,8 @@ class PlayExploreWidgetMapper @Inject constructor() {
 
     private val generatedId = AtomicLong(0)
 
-    private fun mapWidgets(content: Content): WidgetItemUiModel {
-        return WidgetItemUiModel(
+    private fun mapWidgets(content: Content): ExploreWidgetItemUiModel {
+        return ExploreWidgetItemUiModel(
             id = generatedId.getAndIncrement(),
             item =
             PlayWidgetUiModel(

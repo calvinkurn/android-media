@@ -15,7 +15,7 @@
         app:layout_constraintRight_toRightOf="parent"
         android:background="@drawable/tokochat_bg_shadow_attachment_menu" />
 
-    <com.tokopedia.tokochat_common.view.customview.attachment.TokoChatMenuAttachmentRecyclerView
+    <com.tokopedia.tokochat.common.view.chatroom.customview.attachment.TokoChatMenuAttachmentRecyclerView
         android:id="@+id/tokochat_rv_attachment_menu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

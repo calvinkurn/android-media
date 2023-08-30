@@ -149,10 +149,10 @@
                     android:scaleType="centerCrop"
                     app:layout_constraintHorizontal_weight="1"
                     app:layout_constraintStart_toEndOf="@id/headerAction"
-                    app:icon_color_light_enable="@color/Unify_N150"
-                    app:icon_color_light_disabled="@color/Unify_N150"
-                    app:icon_color_night_enable="@color/Unify_N150"
-                    app:icon_color_night_disabled="@color/Unify_N150"
+                    app:icon_color_light_enable="@color/Unify_NN400"
+                    app:icon_color_light_disabled="@color/Unify_NN400"
+                    app:icon_color_night_enable="@color/Unify_NN400"
+                    app:icon_color_night_disabled="@color/Unify_NN400"
                     tools:visibility="visible" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -328,7 +328,7 @@
                         android:layout_marginLeft="16dp"
                         android:contentDescription="@string/kol_action_share"
                         android:scaleType="fitCenter"
-                        app:tint="@color/Unify_N200"
+                        app:tint="@color/Unify_NN500"
                         app:layout_constraintBottom_toBottomOf="@id/commentText"
                         app:layout_constraintStart_toEndOf="@id/commentText"
                         app:layout_constraintTop_toTopOf="@id/commentText"
