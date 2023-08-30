@@ -3,5 +3,6 @@
     <translate
         android:duration="750"
         android:fromXDelta="0"
+        android:repeatCount="2"
         android:toXDelta="150%p" />
 </set>

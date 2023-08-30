@@ -1,6 +1,7 @@
 package com.tokopedia.minicart.bmgm.presentation.model
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.minicart.bmgm.presentation.adapter.factory.BmgmMiniCartAdapterFactory
 import com.tokopedia.purchase_platform.common.feature.bmgm.data.uimodel.BmgmCommonDataModel
 
@@ -16,7 +17,7 @@ sealed interface BmgmMiniCartVisitable : Visitable<BmgmMiniCartAdapterFactory> {
         val priceBeforeBenefit: Double = 0.0,
         val priceAfterBenefit: Double = 0.0,
         val products: List<ProductUiModel> = emptyList(),
-        var shouldShowShiningEffect: Boolean = true
+        var impressHolder: ImpressHolder = ImpressHolder()
     ) : BmgmMiniCartVisitable {
 
         override fun type(typeFactory: BmgmMiniCartAdapterFactory): Int {
