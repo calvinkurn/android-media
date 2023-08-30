@@ -120,7 +120,10 @@ class CartPromoEntryPointProcessor @Inject constructor(
                         }
                     }
                 } else {
-                    return EntryPointInfoEvent.Error(lastApply)
+                    return EntryPointInfoEvent.Applied(
+                        lastApply = lastApply,
+                        message = lastApply.additionalInfo.messageInfo.detail
+                    )
                 }
             }
 

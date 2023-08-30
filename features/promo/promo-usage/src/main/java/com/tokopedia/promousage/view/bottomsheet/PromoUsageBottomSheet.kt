@@ -812,6 +812,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
             when (uiAction) {
                 is ApplyPromoUiAction.Success -> {
                     renderLoadingDialog(false)
+                    dismiss()
                     listener?.onApplyPromoSuccess(
                         entryPoint = uiAction.entryPoint,
                         validateUse = uiAction.validateUse,

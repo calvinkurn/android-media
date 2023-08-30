@@ -738,7 +738,10 @@ internal class PromoUsageViewModel @Inject constructor(
             )
             newValidateUseRequest = newValidateUseRequest.copy(skipApply = 0)
 
-            val param = ValidateUsePromoUsageParam.create(newValidateUseRequest)
+            val param = ValidateUsePromoUsageParam.create(
+                newValidateUseRequest,
+                chosenAddressRequestHelper.getChosenAddress()
+            )
 
             PromoUsageIdlingResource.increment()
             launchCatchError(
@@ -1070,13 +1073,13 @@ internal class PromoUsageViewModel @Inject constructor(
 
         return validateUsePromoRequest.copy(
             codes = validateUsePromoRequest.codes
-                .filter { invalidPromoCodes.contains(it) }
+                .filter { !invalidPromoCodes.contains(it) }
                 .toMutableList(),
             orders = validateUsePromoRequest.orders
                 .map { order ->
                     order.copy(
                         codes = order.codes
-                            .filter { invalidPromoCodes.contains(it) }
+                            .filter { !invalidPromoCodes.contains(it) }
                             .toMutableList()
                     )
                 }
