@@ -488,10 +488,6 @@ abstract class TopchatRoomTest {
         ).check(matches(visibilityMatcher))
     }
 
-    protected fun assertChatRoomList(matcher: Matcher<in View>) {
-        onView(withId(R.id.recycler_view_chatroom)).check(matches(matcher))
-    }
-
     protected fun finishActivity() {
         activityTestRule.finishActivity()
     }

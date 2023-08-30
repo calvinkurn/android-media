@@ -5,7 +5,9 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralResult.assertViewInRecyclerViewAt
+import com.tokopedia.topchat.chatroom.view.activity.robot.generalResult
 import org.hamcrest.Matcher
+import com.tokopedia.chat_common.R as chat_commonR
 
 object MsgBubbleResult {
 
@@ -61,5 +63,11 @@ object MsgBubbleResult {
         matcher: Matcher<View>
     ) {
         assertViewInRecyclerViewAt(position, R.id.txt_info, matcher)
+    }
+
+    fun assertChatStatus(position: Int, matcher: Matcher<View>) {
+        generalResult {
+            assertViewInRecyclerViewAt(position, chat_commonR.id.chat_status, matcher)
+        }
     }
 }

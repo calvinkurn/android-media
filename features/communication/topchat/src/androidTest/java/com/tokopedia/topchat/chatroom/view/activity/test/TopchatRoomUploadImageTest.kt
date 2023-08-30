@@ -1,34 +1,29 @@
-package com.tokopedia.topchat.chatroom.view.activity
+package com.tokopedia.topchat.chatroom.view.activity.test
 
 import android.app.Activity
 import android.app.Instrumentation
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.ViewAssertion
-import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.assertion.ViewAssertions.matches
+import android.view.View
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.tokopedia.applink.internal.ApplinkConstInternalMedia.INTERNAL_MEDIA_PICKER
 import com.tokopedia.chat_common.data.AttachmentType
-import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.domain.pojo.ChatReplyPojo
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.test.application.matcher.hasTotalItemOf
-import com.tokopedia.topchat.R
-import com.tokopedia.topchat.assertion.atPositionIsInstanceOf
 import com.tokopedia.topchat.chatroom.service.UploadImageChatService
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.activity.robot.composeAreaRobot
-import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralResult.assertViewObjectValue
+import com.tokopedia.topchat.chatroom.view.activity.robot.generalResult
+import com.tokopedia.topchat.chatroom.view.activity.robot.imageAttachmentResult
+import com.tokopedia.topchat.chatroom.view.activity.robot.imageAttachmentRobot
+import com.tokopedia.topchat.chatroom.view.activity.robot.msgBubbleResult
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.TopchatImageUploadViewHolder
-import com.tokopedia.topchat.matchers.withRecyclerView
 import org.hamcrest.CoreMatchers.not
+import org.hamcrest.Matcher
 import org.junit.After
 import org.junit.Test
 
@@ -48,7 +43,7 @@ class TopchatRoomUploadImageTest : TopchatRoomTest() {
 
         // Then
         assertAttachmentType(isSecure = false)
-        assertImageContainerAtPosition(0, matches(isDisplayed()))
+        assertImageContainerAtPosition(0, isDisplayed())
     }
 
     @Test
@@ -64,7 +59,7 @@ class TopchatRoomUploadImageTest : TopchatRoomTest() {
 
         // Then
         assertAttachmentType(isSecure = false)
-        assertImageContainerAtPosition(0, matches(isDisplayed()))
+        assertImageContainerAtPosition(0, isDisplayed())
     }
 
     @Test
@@ -80,7 +75,7 @@ class TopchatRoomUploadImageTest : TopchatRoomTest() {
 
         // Then
         assertAttachmentType()
-        assertImageContainerAtPosition(0, matches(isDisplayed()))
+        assertImageContainerAtPosition(0, isDisplayed())
     }
 
     @Test
@@ -95,7 +90,7 @@ class TopchatRoomUploadImageTest : TopchatRoomTest() {
 
         // Then
         assertAttachmentType()
-        assertImageContainerAtPosition(0, matches(isDisplayed()))
+        assertImageContainerAtPosition(0, isDisplayed())
     }
 
     @Test
@@ -111,8 +106,8 @@ class TopchatRoomUploadImageTest : TopchatRoomTest() {
         openMediaPicker()
         simulateWebSocketImageUploadResponse()
         // Then
-        assertImageContainerAtPosition(0, matches(isDisplayed()))
-        assertImageContainerAtPosition(1, matches(isDisplayed()))
+        assertImageContainerAtPosition(0, isDisplayed())
+        assertImageContainerAtPosition(1, isDisplayed())
     }
 
     @Test
@@ -128,7 +123,7 @@ class TopchatRoomUploadImageTest : TopchatRoomTest() {
         openChatRoom()
 
         // Then
-        assertImageContainerAtPosition(0, matches(isDisplayed()))
+        assertImageContainerAtPosition(0, isDisplayed())
     }
 
     @Test
@@ -144,9 +139,9 @@ class TopchatRoomUploadImageTest : TopchatRoomTest() {
         openChatRoom()
 
         // Then
-        assertChatRoomList(
-            hasTotalItemOf(1, TopchatImageUploadViewHolder::class.java)
-        )
+        generalResult {
+            assertChatRecyclerview(hasTotalItemOf(1, TopchatImageUploadViewHolder::class.java))
+        }
     }
 
     @Test
@@ -160,15 +155,17 @@ class TopchatRoomUploadImageTest : TopchatRoomTest() {
         openMediaPicker()
         finishActivity()
         openChatRoom()
-        clickImageUploadErrorHandler()
-        clickRetrySendImage()
+        imageAttachmentRobot {
+            clickImageUploadErrorHandler(0)
+            clickRetrySendImage()
+        }
         finishActivity()
         openChatRoom()
 
         // Then
-        assertChatRoomList(
-            hasTotalItemOf(1, TopchatImageUploadViewHolder::class.java)
-        )
+        generalResult {
+            assertChatRecyclerview(hasTotalItemOf(1, TopchatImageUploadViewHolder::class.java))
+        }
     }
 
     @Test
@@ -181,18 +178,14 @@ class TopchatRoomUploadImageTest : TopchatRoomTest() {
         openMediaPicker()
 
         // Then
-        assertImageReadStatusAtPosition(0, matches(not(isDisplayed())))
+        assertImageReadStatusAtPosition(0, not(isDisplayed()))
     }
 
-    private fun assertImageContainerAtPosition(position: Int, assertions: ViewAssertion) {
-        onView(withId(R.id.recycler_view_chatroom)).check(
-            atPositionIsInstanceOf(position, ImageUploadUiModel::class.java)
-        )
-        onView(
-            withRecyclerView(R.id.recycler_view_chatroom)
-                .atPositionOnView(position, R.id.fl_image_container)
-        )
-            .check(assertions)
+    private fun assertImageContainerAtPosition(position: Int, matcher: Matcher<View>) {
+        imageAttachmentResult {
+            assertImageUploadAt(position)
+            assertImageContainer(position, matcher)
+        }
     }
 
     private fun assertAttachmentType(isSecure: Boolean = true) {
@@ -201,26 +194,18 @@ class TopchatRoomUploadImageTest : TopchatRoomTest() {
         } else {
             AttachmentType.Companion.TYPE_IMAGE_UPLOAD.toIntOrZero()
         }
-        assertViewObjectValue(replyChatGQLUseCase.response.data.attachment.type, expectedValue)
+        generalResult {
+            assertViewObjectValue(replyChatGQLUseCase.response.data.attachment.type, expectedValue)
+        }
     }
 
-    private fun assertImageReadStatusAtPosition(position: Int, assertions: ViewAssertion) {
-        onView(withId(R.id.recycler_view_chatroom)).check(
-            atPositionIsInstanceOf(position, ImageUploadUiModel::class.java)
-        )
-        onView(
-            withRecyclerView(R.id.recycler_view_chatroom)
-                .atPositionOnView(position, com.tokopedia.chat_common.R.id.chat_status)
-        )
-            .check(assertions)
-    }
-
-    private fun clickImageUploadErrorHandler() {
-        onView(withId(R.id.left_action)).perform(click())
-    }
-
-    private fun clickRetrySendImage() {
-        onView(withText("Kirim ulang")).perform(click())
+    private fun assertImageReadStatusAtPosition(position: Int, matcher: Matcher<View>) {
+        imageAttachmentResult {
+            assertImageUploadAt(position)
+        }
+        msgBubbleResult {
+            assertChatStatus(position, matcher)
+        }
     }
 
     private fun openMediaPicker() {
