@@ -1065,7 +1065,7 @@ class FeedFragment :
                             updateBottomActionView(getCurrentPosition())
                         }
                         context?.let { ctx ->
-                            if (feedPostViewModel.shouldShowNoMoreContent && adapter.currentList.lastOrNull()?.data !is FeedNoContentModel) {
+                            if (feedPostViewModel.shouldShowNoMoreContent) {
                                 adapter.addElement(FeedNoContentModel.getNoMoreContentInstance(ctx))
                             }
                         }
