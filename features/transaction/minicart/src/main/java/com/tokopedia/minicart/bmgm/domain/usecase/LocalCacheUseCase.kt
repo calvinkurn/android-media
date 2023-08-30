@@ -5,8 +5,10 @@ import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.minicart.bmgm.presentation.model.BmgmMiniCartDataUiModel
 import com.tokopedia.minicart.bmgm.presentation.model.BmgmMiniCartVisitable
 import com.tokopedia.purchase_platform.common.feature.bmgm.data.uimodel.BmgmCommonDataModel
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
 /**
  * Created by @ilhamsuaib on 14/08/23.
@@ -14,22 +16,25 @@ import javax.inject.Inject
 
 class LocalCacheUseCase @Inject constructor(
     private val dispatchers: CoroutineDispatchers
-) {
+) : CoroutineScope {
 
-    suspend fun saveToLocalCache(model: BmgmMiniCartDataUiModel) {
-        withContext(dispatchers.io) {
+    override val coroutineContext: CoroutineContext
+        get() = dispatchers.io
+
+    fun saveToLocalCache(model: BmgmMiniCartDataUiModel) {
+        launch {
             val data = mapToCommonData(model)
             PersistentCacheManager.instance.put(BmgmCommonDataModel.PARAM_KEY_BMGM_DATA, data)
         }
     }
 
-    suspend fun clearLocalCache() {
-        withContext(dispatchers.io) {
+    fun clearLocalCache() {
+        launch {
             PersistentCacheManager.instance.delete(BmgmCommonDataModel.PARAM_KEY_BMGM_DATA)
         }
     }
 
-    private fun mapToCommonData(model: BmgmMiniCartDataUiModel): BmgmCommonDataModel {
+    private fun mapToCommonData(model: BmgmMiniCartDataUiModel, showMiniCartFooter: Boolean = true): BmgmCommonDataModel {
         return BmgmCommonDataModel(
             offerId = model.offerId,
             offerName = model.offerName,
@@ -38,7 +43,7 @@ class LocalCacheUseCase @Inject constructor(
             finalPrice = model.finalPrice,
             priceBeforeBenefit = model.priceBeforeBenefit,
             hasReachMaxDiscount = model.hasReachMaxDiscount,
-            showMiniCartFooter = model.showMiniCartFooter,
+            showMiniCartFooter = showMiniCartFooter,
             tiersApplied = getTiersApplied(model.tiersApplied)
         )
     }
@@ -57,7 +62,7 @@ class LocalCacheUseCase @Inject constructor(
     }
 
     private fun mapProductList(products: List<BmgmMiniCartVisitable.ProductUiModel>): List<BmgmCommonDataModel.ProductModel> {
-        return products.map { p ->
+        return products.distinctBy { it.productId }.map { p ->
             BmgmCommonDataModel.ProductModel(
                 productId = p.productId,
                 warehouseId = p.warehouseId,

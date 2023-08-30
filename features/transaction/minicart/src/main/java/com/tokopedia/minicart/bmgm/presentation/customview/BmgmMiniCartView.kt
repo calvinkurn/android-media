@@ -221,10 +221,12 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener, Default
             if (data.tiersApplied.isEmpty()) {
                 tvBmgmFinalPrice.text =
                     context.getString(R.string.mini_cart_widget_label_total_price_unavailable_default)
+                tvBmgmPriceBeforeDiscount.gone()
                 btnBmgmOpenCart.isEnabled = false
             } else {
                 btnBmgmOpenCart.isEnabled = true
                 tvBmgmFinalPrice.text = data.getPriceAfterDiscountStr()
+                tvBmgmPriceBeforeDiscount.visible()
                 tvBmgmPriceBeforeDiscount.text =
                     String.format(CROSSED_TEXT_FORMAT, data.getPriceBeforeDiscountStr())
                         .parseAsHtml()

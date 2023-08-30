@@ -7,6 +7,7 @@ import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.minicart.R
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 import com.tokopedia.minicart.bmgm.presentation.model.MiniCartDetailUiModel
 import com.tokopedia.minicart.databinding.ItemBmgmMiniCartDetailSectionBinding
 
@@ -26,9 +27,9 @@ class BmgmMiniCartDetailSectionViewHolder(
 
     override fun bind(element: MiniCartDetailUiModel.Section) {
         val textColorResId = if (element.isDiscountSection) {
-            com.tokopedia.unifyprinciples.R.color.Unify_NN950
+            unifyprinciplesR.color.Unify_NN950
         } else {
-            com.tokopedia.unifyprinciples.R.color.Unify_NN600
+            unifyprinciplesR.color.Unify_NN600
         }
 
         with(binding) {
