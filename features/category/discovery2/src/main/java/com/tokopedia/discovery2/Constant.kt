@@ -132,5 +132,6 @@ object Constant {
 
     internal object PropertyType {
         const val ATF_BANNER = "atf_banner"
+        const val TARGETING_BANNER = "targeting_banner"
     }
 }

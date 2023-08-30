@@ -4,10 +4,13 @@ import android.app.Application
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularModel
 import com.tokopedia.discovery.common.utils.URLParser
+import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
+import com.tokopedia.discovery2.data.Properties
 import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.resetMain
@@ -71,6 +74,18 @@ class CircularSliderBannerViewModelTest {
         dataList.add(dataItem)
         every { componentsItem.name } returns TEST_STRING
         assert(viewModel.getBannerItem(0)?.parentComponentName == TEST_STRING)
+    }
+
+    @Test
+    fun `test property type`() {
+        // properties has value
+        val properties = Properties(type = Constant.PropertyType.ATF_BANNER)
+        every { componentsItem.properties } returns properties
+        assert(viewModel.getPropertyType() == properties.type)
+
+        // properties is null
+        every { componentsItem.properties } returns null
+        assert(viewModel.getPropertyType() == String.EMPTY)
     }
 
     @After
