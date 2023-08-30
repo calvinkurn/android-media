@@ -166,7 +166,7 @@ class PromoCompoundView @JvmOverloads constructor(
                 else -> com.tokopedia.unifyprinciples.R.color.Unify_NN950
             }
             tpgPromoBenefitAmount.setTextColorCompat(defaultTextColorResId)
-            tpgPromoBenefitAmount.text = promo.benefitAmountStr
+            tpgPromoBenefitAmount.text = HtmlLinkHelper(context, promo.benefitAmountStr).spannedString
             if (promo.state !is PromoItemState.Loading) {
                 tpgPromoBenefitAmount.visible()
             } else {
@@ -184,6 +184,7 @@ class PromoCompoundView @JvmOverloads constructor(
                             type = PromoItemInfo.TYPE_PROMO_INFO,
                             icon = PromoItemInfo.ICON_NONE,
                             title = promo.message
+                                .replace("<a>", "<a href=\"\">")
                         )
                     )
                 }
