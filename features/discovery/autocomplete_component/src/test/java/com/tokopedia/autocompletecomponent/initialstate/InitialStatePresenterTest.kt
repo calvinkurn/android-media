@@ -162,6 +162,7 @@ internal class InitialStatePresenterTest: InitialStatePresenterTestFixtures() {
     @Test
     fun `Test get initial state data with see more button`() {
         val initialStateData = initialStateWithSeeMoreRecentSearch.jsonToObject<InitialStateUniverse>()
+        `Given rollance is off`()
         `Test Initial State Data`(initialStateData)
 
         `Then verify initial state view will call showInitialStateResult behavior`()

@@ -416,7 +416,7 @@ class MvcListFragment :
         return voucher.let {
             ShareComponentInstanceBuilder.Param(
                 isVoucherProduct = it.isLockToProduct,
-                voucherId = it.id,
+                galadrielVoucherId = it.galadrielVoucherId,
                 isPublic = it.isPublic,
                 voucherCode = it.code,
                 voucherStartDate = voucherStartTime,
@@ -470,7 +470,7 @@ class MvcListFragment :
             onShareOptionsClicked = { shareModel ->
                 handleShareOptionSelection(
                     voucher.isLockToProduct,
-                    shareComponentParam.voucherId,
+                    shareComponentParam.galadrielVoucherId,
                     shareModel,
                     title,
                     description,
@@ -491,7 +491,7 @@ class MvcListFragment :
 
     private fun handleShareOptionSelection(
         isProductVoucher: Boolean,
-        voucherId: Long,
+        galadrielVoucherId: Long,
         shareModel: ShareModel,
         title: String,
         description: String,
@@ -521,7 +521,7 @@ class MvcListFragment :
 
         val linkerDataGenerator = LinkerDataGenerator()
         val linkerShareData = linkerDataGenerator.generate(
-            voucherId,
+            galadrielVoucherId,
             userSession.shopId,
             shopDomain,
             shareModel,

@@ -354,7 +354,6 @@ class CheckoutFragment :
             onBackPressed()
         }
         header = HeaderCheckoutBinding.inflate(LayoutInflater.from(context))
-        header.tvCheckoutHeaderAddressHeader.isVisible = false
         header.icCheckoutHeaderAddress.isVisible = false
         header.tvCheckoutHeaderAddressName.isVisible = false
         binding.headerCheckout.customView(header.root)
@@ -372,12 +371,10 @@ class CheckoutFragment :
                     (linearLayoutManager?.findFirstVisibleItemPosition() ?: -1) > 2
                 ) {
                     header.tvCheckoutHeaderText.animateGone()
-                    header.tvCheckoutHeaderAddressHeader.animateShow()
                     header.icCheckoutHeaderAddress.animateShow()
                     header.tvCheckoutHeaderAddressName.animateShow()
                 } else if (!header.tvCheckoutHeaderText.isVisible) {
                     header.tvCheckoutHeaderText.animateShow()
-                    header.tvCheckoutHeaderAddressHeader.animateGone()
                     header.icCheckoutHeaderAddress.animateGone()
                     header.tvCheckoutHeaderAddressName.animateGone()
                 }

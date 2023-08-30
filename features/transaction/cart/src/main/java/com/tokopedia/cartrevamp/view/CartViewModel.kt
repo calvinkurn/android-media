@@ -54,7 +54,6 @@ import com.tokopedia.cartrevamp.view.uimodel.CartEmptyHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartGlobalEvent
 import com.tokopedia.cartrevamp.view.uimodel.CartGroupHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
-import com.tokopedia.cartrevamp.view.uimodel.CartItemTickerErrorHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartLoadingHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartModel
 import com.tokopedia.cartrevamp.view.uimodel.CartMutableLiveData
@@ -2183,17 +2182,12 @@ class CartViewModel @Inject constructor(
         val newCartDataList = ArrayList(cartDataList.value.toMutableList())
 
         var cartSelectedAmountHolderDataIndexPair: Pair<CartSelectedAmountHolderData, Int>? = null
-        var cartItemTickerErrorHolderDataIndexPair: Pair<CartItemTickerErrorHolderData, Int>? = null
         var disabledItemHeaderHolderDataIndexPair: Pair<DisabledItemHeaderHolderData, Int>? = null
         var disabledAccordionHolderDataIndexPair: Pair<DisabledAccordionHolderData, Int>? = null
         loop@ for ((index, data) in newCartDataList.withIndex()) {
             when {
                 data is CartSelectedAmountHolderData ->
                     cartSelectedAmountHolderDataIndexPair =
-                        Pair(data, index)
-
-                data is CartItemTickerErrorHolderData ->
-                    cartItemTickerErrorHolderDataIndexPair =
                         Pair(data, index)
 
                 data is DisabledItemHeaderHolderData ->
@@ -2272,11 +2266,6 @@ class CartViewModel @Inject constructor(
             cartModel
         )
         if (disabledCartItems.isEmpty()) {
-            cartItemTickerErrorHolderDataIndexPair?.let {
-                newCartDataList.remove(it.first)
-                toBeRemovedItems.add(it.second)
-                toBeRemovedIndices.add(it.second)
-            }
             disabledItemHeaderHolderDataIndexPair?.let {
                 newCartDataList.remove(it.first)
                 toBeRemovedItems.add(it.second)
@@ -2289,10 +2278,6 @@ class CartViewModel @Inject constructor(
             }
         } else {
             val errorItemCount = disabledCartItems.size
-            cartItemTickerErrorHolderDataIndexPair?.let {
-                it.first.errorProductCount = errorItemCount
-                toBeUpdatedIndices.add(it.second)
-            }
             disabledItemHeaderHolderDataIndexPair?.let {
                 it.first.disabledItemCount = errorItemCount
                 toBeUpdatedIndices.add(it.second)
