@@ -51,6 +51,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.play.util.logger.PlayLog
 import com.tokopedia.play.util.withCache
+import com.tokopedia.play.view.storage.PlayQueryParamStorage
 import com.tokopedia.play.view.type.ScreenOrientation2
 import com.tokopedia.play.view.uimodel.PlayCastState
 import com.tokopedia.play.view.uimodel.recom.PlayStatusUiModel
@@ -78,6 +79,7 @@ class PlayVideoFragment @Inject constructor(
     private val pipSessionStorage: PiPSessionStorage,
     private val playLog: PlayLog,
     private val router: Router,
+    private val queryParamStorage: PlayQueryParamStorage,
 ) : TkpdBaseV4Fragment(), PlayFragmentContract, VideoViewComponent.DataSource {
 
     private val job = SupervisorJob()
@@ -293,6 +295,7 @@ class PlayVideoFragment @Inject constructor(
                 pipInfoUiModel = PiPInfoUiModel(
                         channelId = channelId,
                         source = playParentViewModel.source,
+                        pageSourceName = queryParamStorage.pageSourceName,
                         partnerId = playViewModel.partnerId,
                         channelType = playViewModel.channelType,
                         videoPlayer = videoMeta.videoPlayer,

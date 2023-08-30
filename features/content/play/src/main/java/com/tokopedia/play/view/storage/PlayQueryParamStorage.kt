@@ -13,15 +13,15 @@ class PlayQueryParamStorage @Inject constructor() {
 
     var widgetId: String = ""
 
-    var sourceType: String = ""
+    var pageSourceName: String = ""
         private set
         get() {
             return if (pageSelected > 0) SWIPE
             else field
         }
 
-    fun setSourceType(sourceType: String, isChannelRecom: Boolean) {
-        this.sourceType = if (isChannelRecom) HOME_DYNAMIC_ICON else sourceType
+    fun setPageSourceName(pageSourceName: String, isChannelRecom: Boolean) {
+        this.pageSourceName = if (isChannelRecom) HOME_DYNAMIC_ICON else pageSourceName
     }
 
     companion object {

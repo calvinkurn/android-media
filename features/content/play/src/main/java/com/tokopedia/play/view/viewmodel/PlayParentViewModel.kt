@@ -18,6 +18,7 @@ import com.tokopedia.play_common.model.result.PageResultState
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play.PLAY_KEY_CHANNEL_RECOMMENDATION
 import com.tokopedia.play.PLAY_KEY_LAST_PATH_SEGMENT
+import com.tokopedia.play.PLAY_KEY_PAGE_SOURCE_NAME
 import com.tokopedia.play.PLAY_KEY_WIDGET_ID
 import com.tokopedia.play.view.storage.PlayQueryParamStorage
 import com.tokopedia.play.domain.repository.PlayViewerRepository
@@ -73,6 +74,9 @@ class PlayParentViewModel @AssistedInject constructor(
     private val isChannelRecom: Boolean
         get() = (handle[PLAY_KEY_LAST_PATH_SEGMENT] ?: "") == PLAY_KEY_CHANNEL_RECOMMENDATION
 
+    private val pageSourceName: String
+        get() = handle[PLAY_KEY_PAGE_SOURCE_NAME] ?: ""
+
     private val widgetId: String
         get() = handle[PLAY_KEY_WIDGET_ID] ?: ""
 
@@ -88,7 +92,10 @@ class PlayParentViewModel @AssistedInject constructor(
     )
 
     init {
-        queryParamStorage.setSourceType(source.type, isChannelRecom)
+        queryParamStorage.setPageSourceName(
+            pageSourceName.ifEmpty { source.type },
+            isChannelRecom
+        )
         queryParamStorage.widgetId = widgetId
 
         pageMonitoring.startNetworkRequestPerformanceMonitoring()
@@ -104,16 +111,21 @@ class PlayParentViewModel @AssistedInject constructor(
             val sourceType: String = bundle.getString(PLAY_KEY_SOURCE_TYPE, "")
             val lastPathSegment = bundle.getString(PLAY_KEY_LAST_PATH_SEGMENT, "")
             val widgetId = bundle.getString(PLAY_KEY_WIDGET_ID, "")
+            val pageSourceName = bundle.getString(PLAY_KEY_PAGE_SOURCE_NAME, "")
 
             handle.set(PLAY_KEY_CHANNEL_ID, channelId)
             handle.set(PLAY_KEY_SOURCE_TYPE, sourceType)
             handle.set(PLAY_KEY_SOURCE_ID, bundle.get(PLAY_KEY_SOURCE_ID))
             handle.set(PLAY_KEY_LAST_PATH_SEGMENT, lastPathSegment)
+            handle.set(PLAY_KEY_PAGE_SOURCE_NAME, pageSourceName)
             handle.set(PLAY_KEY_WIDGET_ID, widgetId)
             handle.set(KEY_START_TIME, bundle.get(KEY_START_TIME))
             handle.set(KEY_SHOULD_TRACK, bundle.get(KEY_SHOULD_TRACK))
 
-            queryParamStorage.setSourceType(sourceType, isChannelRecom)
+            queryParamStorage.setPageSourceName(
+                pageSourceName.ifEmpty { sourceType },
+                isChannelRecom
+            )
             queryParamStorage.widgetId = widgetId
 
             mNextKey = getNextChannelIdKey(channelId, source)
