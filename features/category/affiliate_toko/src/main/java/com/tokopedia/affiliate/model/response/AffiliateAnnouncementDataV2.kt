@@ -1,8 +1,8 @@
 package com.tokopedia.affiliate.model.response
 
-
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
-import java.io.Serializable
+import kotlinx.parcelize.Parcelize
 
 class AffiliateAnnouncementDataV2(
     @SerializedName("getAffiliateAnnouncementV2")
@@ -10,7 +10,7 @@ class AffiliateAnnouncementDataV2(
 ) {
     data class GetAffiliateAnnouncementV2(
         @SerializedName("Data")
-        var `data`: Data?
+        var announcementData: Data?
     ) {
         data class Data(
             @SerializedName("Error")
@@ -46,6 +46,7 @@ class AffiliateAnnouncementDataV2(
                 )
             }
 
+            @Parcelize
             data class TickerData(
                 @SerializedName("AnnouncementDescription")
                 var announcementDescription: String?,
@@ -60,8 +61,9 @@ class AffiliateAnnouncementDataV2(
                 @SerializedName("CtaTextSecondary")
                 var ctaTextSecondary: String?,
                 @SerializedName("IllustrationURL")
-                var illustrationURL: String?,
-            ) : Serializable {
+                var illustrationURL: String?
+            ) : Parcelable {
+                @Parcelize
                 data class CtaLink(
                     @SerializedName("AndroidURL")
                     var androidURL: String?,
@@ -71,7 +73,7 @@ class AffiliateAnnouncementDataV2(
                     var iosURL: String?,
                     @SerializedName("MobileURL")
                     var mobileURL: String?
-                ) : Serializable
+                ) : Parcelable
             }
         }
     }

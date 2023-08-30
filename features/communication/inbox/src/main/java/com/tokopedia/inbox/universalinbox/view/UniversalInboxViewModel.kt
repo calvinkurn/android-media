@@ -1,18 +1,27 @@
 package com.tokopedia.inbox.universalinbox.view
 
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.distinctUntilChanged
+import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
+import com.gojek.conversations.channel.ConversationsChannel
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.inbox.universalinbox.data.entity.UniversalInboxAllCounterResponse
+import com.tokopedia.inbox.universalinbox.data.entity.UniversalInboxWidgetDataResponse
 import com.tokopedia.inbox.universalinbox.data.entity.UniversalInboxWidgetMetaResponse
 import com.tokopedia.inbox.universalinbox.domain.UniversalInboxGetAllCounterUseCase
+import com.tokopedia.inbox.universalinbox.domain.UniversalInboxGetAllDriverChannelsUseCase
 import com.tokopedia.inbox.universalinbox.domain.UniversalInboxGetWidgetMetaUseCase
+import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.GOJEK_TYPE
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.PAGE_NAME
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxWidgetMetaUiModel
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.recommendation_widget_common.DEFAULT_VALUE_X_DEVICE
 import com.tokopedia.recommendation_widget_common.DEFAULT_VALUE_X_SOURCE
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
@@ -30,7 +39,6 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 import javax.inject.Inject
 
 class UniversalInboxViewModel @Inject constructor(
@@ -39,6 +47,7 @@ class UniversalInboxViewModel @Inject constructor(
     private val getRecommendationUseCase: GetRecommendationUseCase,
     private val addWishListV2UseCase: AddToWishlistV2UseCase,
     private val deleteWishlistV2UseCase: DeleteWishlistV2UseCase,
+    private val getDriverChatCounterUseCase: UniversalInboxGetAllDriverChannelsUseCase,
     private val inboxMenuMapper: UniversalInboxMenuMapper,
     private val userSession: UserSessionInterface,
     private val dispatcher: CoroutineDispatchers
@@ -64,6 +73,18 @@ class UniversalInboxViewModel @Inject constructor(
     val morePageRecommendation: LiveData<Result<List<RecommendationItem>>>
         get() = _morePageRecommendation
 
+    private val _driverChatCounter: MediatorLiveData<Result<Pair<Int, Int>>?> = MediatorLiveData()
+    val driverChatCounter: LiveData<Result<Pair<Int, Int>>?>
+        get() = _driverChatCounter.distinctUntilChanged()
+
+    var driverChatWidgetData: Pair<Int, UniversalInboxWidgetDataResponse>? = null
+    var driverChatData: Result<Pair<Int, Int>>? = null
+
+    // Error live data for all purpose
+    private val _error = MutableLiveData<Pair<Throwable, String>>()
+    val error: LiveData<Pair<Throwable, String>>
+        get() = _error
+
     fun generateStaticMenu() {
         val staticMenuList = inboxMenuMapper.getStaticMenu(userSession)
         _inboxMenu.postValue(staticMenuList)
@@ -73,17 +94,78 @@ class UniversalInboxViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val widgetMetaResponse = getWidgetMetaAsync().await()
+                driverChatWidgetData = null // reset driver widget
+                // Get driver data only when response has driver widget
+                if (widgetMetaResponse?.metaData != null) {
+                    widgetMetaResponse.metaData.forEachIndexed { index, response ->
+                        if (response.type == GOJEK_TYPE) {
+                            driverChatWidgetData = Pair(index, response)
+                        }
+                    }
+                }
+                if (driverChatWidgetData != null) {
+                    setAllDriverChannels()
+                }
+                driverChatData = driverChatCounter.value // Set driver chat data
                 val allCounterResponse = getAllCounterAsync().await()
                 val result = inboxMenuMapper.mapWidgetMetaToUiModel(
                     widgetMetaResponse,
-                    allCounterResponse
+                    allCounterResponse,
+                    driverChatData
                 )
                 _widget.value = Pair(result, allCounterResponse)
             } catch (throwable: Throwable) {
-                Timber.d(throwable)
+                _error.value = Pair(throwable, ::loadWidgetMetaAndCounter.name)
                 _widget.value = Pair(UniversalInboxWidgetMetaUiModel(isError = true), null)
             }
         }
+    }
+
+    fun setAllDriverChannels() {
+        try {
+            val allChannelsLiveData = getDriverChatCounterUseCase.getAllChannels()
+            allChannelsLiveData?.run {
+                val liveData = switchMap {
+                    getDriverUnreadCount(it)
+                }
+                _driverChatCounter.addSource(liveData) {
+                    _driverChatCounter.value = it
+                }
+            }
+        } catch (throwable: Throwable) {
+            _error.value = Pair(throwable, ::setAllDriverChannels.name)
+            _driverChatCounter.value = Fail(throwable)
+        }
+    }
+
+    @VisibleForTesting
+    fun getDriverUnreadCount(
+        channelList: List<ConversationsChannel>
+    ): LiveData<Result<Pair<Int, Int>>> {
+        val unreadDriverChatCount = MutableLiveData<Result<Pair<Int, Int>>>()
+        viewModelScope.launch {
+            try {
+                var activeChannel = Int.ZERO
+                var unreadTotal = Int.ZERO
+                channelList.forEach { channel ->
+                    if (channel.expiresAt > System.currentTimeMillis()) {
+                        activeChannel++
+                        unreadTotal += channel.unreadCount
+                    }
+                }
+                if (unreadTotal >= Int.ZERO) {
+                    unreadDriverChatCount.value = Success(
+                        Pair(activeChannel, unreadTotal)
+                    )
+                } else {
+                    throw IllegalArgumentException()
+                }
+            } catch (throwable: Throwable) {
+                _error.value = Pair(throwable, ::getDriverUnreadCount.name)
+                unreadDriverChatCount.value = Fail(throwable)
+            }
+        }
+        return unreadDriverChatCount
     }
 
     private suspend fun getWidgetMetaAsync(): Deferred<UniversalInboxWidgetMetaResponse?> {
@@ -91,7 +173,7 @@ class UniversalInboxViewModel @Inject constructor(
             try {
                 getWidgetMetaUseCase(Unit).chatInboxWidgetMeta
             } catch (throwable: Throwable) {
-                Timber.d(throwable)
+                _error.value = Pair(throwable, ::getWidgetMetaAsync.name)
                 null
             }
         }
@@ -104,7 +186,7 @@ class UniversalInboxViewModel @Inject constructor(
                 _allCounter.value = Success(result)
                 result
             } catch (throwable: Throwable) {
-                Timber.d(throwable)
+                _error.value = Pair(throwable, ::getAllCounterAsync.name)
                 _allCounter.value = Fail(throwable)
                 null
             }
@@ -119,6 +201,7 @@ class UniversalInboxViewModel @Inject constructor(
                     _firstPageRecommendation.postValue(Success(recommendationWidget))
                 } catch (throwable: Throwable) {
                     _firstPageRecommendation.postValue(Fail(throwable))
+                    _error.value = Pair(throwable, ::loadFirstPageRecommendation.name)
                 }
             }
         }
@@ -132,6 +215,7 @@ class UniversalInboxViewModel @Inject constructor(
                     _morePageRecommendation.postValue(Success(recommendationWidget.recommendationItemList))
                 } catch (throwable: Throwable) {
                     _morePageRecommendation.postValue(Fail(throwable))
+                    _error.value = Pair(throwable, ::loadMoreRecommendation.name)
                 }
             }
         }
@@ -170,6 +254,7 @@ class UniversalInboxViewModel @Inject constructor(
                     }
                 } catch (throwable: Throwable) {
                     actionListener.onErrorAddWishList(throwable, model.productId.toString())
+                    _error.value = Pair(throwable, ::addWishlistV2.name)
                 }
             }
         }
@@ -202,6 +287,7 @@ class UniversalInboxViewModel @Inject constructor(
                     }
                 } catch (throwable: Throwable) {
                     actionListener.onErrorRemoveWishlist(throwable, model.productId.toString())
+                    _error.value = Pair(throwable, ::removeWishlistV2.name)
                 }
             }
         }

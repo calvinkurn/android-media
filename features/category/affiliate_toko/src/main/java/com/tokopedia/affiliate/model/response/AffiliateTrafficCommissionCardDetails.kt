@@ -8,7 +8,7 @@ data class AffiliateTrafficCommissionCardDetails(
 ) {
     data class GetAffiliateTrafficCommissionDetailCards(
         @SerializedName("Data")
-        var `data`: Data?
+        var trafficCommissionData: Data?
     ) {
         data class Data(
             @SerializedName("Error")

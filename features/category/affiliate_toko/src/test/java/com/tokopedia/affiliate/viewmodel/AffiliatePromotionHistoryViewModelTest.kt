@@ -2,9 +2,7 @@ package com.tokopedia.affiliate.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.affiliate.model.response.AffiliatePerformanceData
-import com.tokopedia.affiliate.model.response.AffiliateValidateUserData
 import com.tokopedia.affiliate.usecase.*
-import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -18,7 +16,7 @@ import org.junit.Rule
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
-class AffiliatePromotionHistoryViewModelTest{
+class AffiliatePromotionHistoryViewModelTest {
     private val affiliatePerformanceUseCase: AffiliatePerformanceUseCase = mockk()
     private var affiliatePromotionHistoryViewModel = spyk(AffiliatePromotionHistoryViewModel(affiliatePerformanceUseCase))
 
@@ -28,7 +26,6 @@ class AffiliatePromotionHistoryViewModelTest{
     @Before
     @Throws(Exception::class)
     fun setUp() {
-
         MockKAnnotations.init(this)
         Dispatchers.setMain(TestCoroutineDispatcher())
     }
@@ -43,24 +40,30 @@ class AffiliatePromotionHistoryViewModelTest{
     @Test
     fun getAffiliatePerformance() {
         val affiliatePerformanceData: AffiliatePerformanceData = mockk(relaxed = true)
-        val item : AffiliatePerformanceData.GetAffiliateItemsPerformanceList.Data.SectionData.Item = mockk(relaxed = true)
+        val item: AffiliatePerformanceData.GetAffiliateItemsPerformanceList.Data.SectionData.Item = mockk(relaxed = true)
         val sectionData = AffiliatePerformanceData.GetAffiliateItemsPerformanceList.Data.SectionData(
-                null,null,null,0,null,
-                arrayListOf(item),null,null)
-        affiliatePerformanceData.getAffiliateItemsPerformanceList?.data?.sectionData = sectionData
-        coEvery { affiliatePerformanceUseCase.affiliatePerformance(any(),any()) } returns affiliatePerformanceData
+            null,
+            null,
+            null,
+            0,
+            null,
+            arrayListOf(item),
+            null,
+            null
+        )
+        affiliatePerformanceData.getAffiliateItemsPerformanceList?.itemPerformanceListData?.sectionData = sectionData
+        coEvery { affiliatePerformanceUseCase.affiliatePerformance(any(), any()) } returns affiliatePerformanceData
 
-        val response = affiliatePromotionHistoryViewModel.convertDataToVisitables(affiliatePerformanceData.getAffiliateItemsPerformanceList?.data?.sectionData!!)
+        val response = affiliatePromotionHistoryViewModel.convertDataToVisitable(affiliatePerformanceData.getAffiliateItemsPerformanceList?.itemPerformanceListData?.sectionData!!)
         affiliatePromotionHistoryViewModel.getAffiliatePerformance(0)
-        assertEquals(affiliatePromotionHistoryViewModel.getAffiliateDataItems().value,response)
-        assertEquals(affiliatePromotionHistoryViewModel.getAffiliateItemCount().value,sectionData.itemTotalCount)
-
+        assertEquals(affiliatePromotionHistoryViewModel.getAffiliateDataItems().value, response)
+        assertEquals(affiliatePromotionHistoryViewModel.getAffiliateItemCount().value, sectionData.itemTotalCount)
     }
 
     @Test
     fun getAffiliatePerformanceException() {
         val throwable = Throwable("Performance Data Exception")
-        coEvery { affiliatePerformanceUseCase.affiliatePerformance(any(),any()) } throws throwable
+        coEvery { affiliatePerformanceUseCase.affiliatePerformance(any(), any()) } throws throwable
 
         affiliatePromotionHistoryViewModel.getAffiliatePerformance(0)
 

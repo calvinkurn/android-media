@@ -1,7 +1,7 @@
 package com.tokopedia.recommendation_widget_common.widget.global
 
-import com.tokopedia.recommendation_widget_common.RecommendationTypeConst.PAGENAME_VERTICAL
 import com.tokopedia.recommendation_widget_common.RecommendationTypeConst.TYPE_COMPARISON_BPC_WIDGET
+import com.tokopedia.recommendation_widget_common.RecommendationTypeConst.TYPE_LIMIT_VERTICAL
 import com.tokopedia.recommendation_widget_common.mvvm.UiState
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselModel
@@ -32,7 +32,7 @@ data class RecommendationWidgetState(
                 trackingModel = model.trackingModel,
                 recommendationWidget = widget,
             )
-        } else if (widget.pageName == PAGENAME_VERTICAL) {
+        } else if (widget.layoutType == TYPE_LIMIT_VERTICAL) {
             RecommendationVerticalModel.from(
                 metadata = model.metadata,
                 trackingModel = model.trackingModel,
