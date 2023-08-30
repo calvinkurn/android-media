@@ -14,7 +14,7 @@ public class NewRelicInteractionActCall implements Application.ActivityLifecycle
         this.userSession = userSession;
     }
 
-    private static final String ATTRIBUTE_ACTIVITY = "activity";
+    private static final String ATTRIBUTE_ACTIVITY = "activityName";
 
     private final UserSessionInterface userSession;
 

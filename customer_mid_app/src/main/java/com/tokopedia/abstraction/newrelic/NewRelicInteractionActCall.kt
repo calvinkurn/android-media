@@ -11,7 +11,7 @@ class NewRelicInteractionActCall(
 ) : Application.ActivityLifecycleCallbacks {
 
     companion object {
-        private const val ATTRIBUTE_ACTIVITY = "activity"
+        private const val ATTRIBUTE_ACTIVITY = "activityName"
     }
 
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
