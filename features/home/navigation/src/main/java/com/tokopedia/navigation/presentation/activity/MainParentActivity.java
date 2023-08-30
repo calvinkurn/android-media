@@ -288,20 +288,7 @@ public class MainParentActivity extends BaseActivity implements
                     PERFORMANCE_TRACE_HOME,
                     LifecycleOwnerKt.getLifecycleScope(this),
                     this,
-                    new Function2<BlocksSummaryModel, Set<String>, Unit>() {
-                        @Override
-                        public Unit invoke(BlocksSummaryModel blocksSummaryModel, Set<String> strings) {
-                            if (blocksSummaryModel.getTimeToInitialLayout().getInflateTime() != 0) {
-                                Toaster.build(
-                                        findViewById(android.R.id.content).getRootView(),
-                                        "TTIL :"+blocksSummaryModel.getTimeToInitialLayout(),
-                                        Toaster.LENGTH_INDEFINITE,
-                                        Toaster.TYPE_NORMAL
-                                ).show();
-                            }
-                            return null;
-                        }
-                    }
+                    null
             );
         } catch (Exception e) {
             e.printStackTrace();
