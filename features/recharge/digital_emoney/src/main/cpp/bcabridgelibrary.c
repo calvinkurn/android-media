@@ -144,3 +144,39 @@ Java_com_tokopedia_emoney_integration_BCALibrary_C_1BCACheckBalance(JNIEnv *env,
     jobject resultObject = (*env)->NewObject(env, resultClass, constructor, balance, (*env)->NewStringUTF(env, cardNo), 0);
     return resultObject;
 }
+
+JNIEXPORT jstring JNICALL
+Java_com_tokopedia_emoney_integration_BCALibrary_C_1BCASetConfig(JNIEnv *env, jobject thiz,
+                                                                 jstring str_config) {
+    g_env = env;
+    g_obj = thiz;
+
+    //create return value strLogRsp with length LENGTH_RESPONSE with initial is 0 with size of LENGTH_RESPONSE
+    unsigned char strLogRsp[LENGTH_RESPONSE];
+    memset(strLogRsp, 0x00, sizeof(strLogRsp));
+
+    const char *strCConfig;
+    strCConfig = (*env)->GetStringUTFChars(env, str_config, NULL);
+
+    unsigned char strConfig[LENGTH_STR_CONFIG];
+    memset(strConfig, 0x00, LENGTH_STR_CONFIG);
+    memcpy(strConfig, strCConfig, LENGTH_STR_CONFIG);
+
+    unsigned result = BCASetConfig(strConfig, strLogRsp);
+    return (*env)->NewStringUTF(env, strLogRsp);
+}
+
+JNIEXPORT jstring JNICALL
+Java_com_tokopedia_emoney_integration_BCALibrary_C_1BCAGetConfig(JNIEnv *env, jobject thiz) {
+    g_env = env;
+    g_obj = thiz;
+
+    unsigned char strConfig[LENGTH_STR_CONFIG];
+    memset(strConfig, 0x00, sizeof(strConfig));
+
+    unsigned char strLogResp[LENGTH_RESPONSE];
+    memset(strLogResp, 0x00, sizeof(strLogResp));
+
+    unsigned result = BCAGetconfig(strConfig, strLogResp);
+    return (*env)->NewStringUTF(env, strConfig);
+}
