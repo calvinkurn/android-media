@@ -13,6 +13,7 @@ import com.tokopedia.promousage.R
 import com.tokopedia.promousage.databinding.PromoUsageItemVoucherRecommendationBinding
 import com.tokopedia.promousage.domain.entity.list.PromoRecommendationItem
 import com.tokopedia.promousage.util.composite.DelegateAdapter
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 
 class PromoRecommendationDelegateAdapter(
     private val onClickUsePromoRecommendation: () -> Unit
@@ -41,11 +42,13 @@ class PromoRecommendationDelegateAdapter(
                 startButtonAnimation(item)
             }
             if (item.selectedCodes.containsAll(item.codes)) {
-                binding.tpgRecommendationTitle.text = item.messageSelected
+                binding.tpgRecommendationTitle.text =
+                    HtmlLinkHelper(binding.tpgRecommendationTitle.context, item.messageSelected).spannedString
                 binding.ivCheckmark.visible()
                 binding.ivCheckmarkOutline.invisible()
             } else {
-                binding.tpgRecommendationTitle.text = item.message
+                binding.tpgRecommendationTitle.text =
+                    HtmlLinkHelper(binding.tpgRecommendationTitle.context, item.message).spannedString
                 binding.ivCheckmark.invisible()
                 binding.ivCheckmarkOutline.invisible()
             }
