@@ -50,7 +50,7 @@ class BmgmCommonDataModel(
         val quantity: Int = 0
     ) {
         fun getProductPriceFmt(): String {
-            return CurrencyFormatUtil.convertPriceValueToIdrFormat(productPrice, false)
+            return CurrencyFormatUtil.convertPriceValueToIdrFormat(productPrice.times(quantity), false)
         }
     }
 }

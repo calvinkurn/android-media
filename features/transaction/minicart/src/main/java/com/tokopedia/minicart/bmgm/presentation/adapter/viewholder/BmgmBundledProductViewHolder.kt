@@ -27,7 +27,6 @@ class BmgmBundledProductViewHolder(
 
     companion object {
         val RES_LAYOUT = R.layout.item_bmgm_mini_cart_bundled_product
-        private const val SHINING_REPEAT_COUNT = 3
     }
 
     private val binding = ItemBmgmMiniCartBundledProductBinding.bind(itemView)

@@ -226,14 +226,23 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener, Default
             } else {
                 btnBmgmOpenCart.isEnabled = true
                 tvBmgmFinalPrice.text = data.getPriceAfterDiscountStr()
-                tvBmgmPriceBeforeDiscount.visible()
-                tvBmgmPriceBeforeDiscount.text =
-                    String.format(CROSSED_TEXT_FORMAT, data.getPriceBeforeDiscountStr())
-                        .parseAsHtml()
-
+                setupCrossedPrice(data)
                 btnBmgmOpenCart.setOnClickListener {
                     viewModel.setCartListCheckboxState(getCartIds(data.tiersApplied))
                 }
+            }
+        }
+    }
+
+    private fun setupCrossedPrice(data: BmgmMiniCartDataUiModel) {
+        footerBinding?.run {
+            val showCrossedPrice = data.finalPrice != data.priceBeforeBenefit
+            if (showCrossedPrice) {
+                tvBmgmPriceBeforeDiscount.visible()
+                val priceStr = String.format(CROSSED_TEXT_FORMAT, data.getPriceBeforeDiscountStr())
+                tvBmgmPriceBeforeDiscount.text = priceStr.parseAsHtml()
+            } else {
+                tvBmgmPriceBeforeDiscount.gone()
             }
         }
     }
