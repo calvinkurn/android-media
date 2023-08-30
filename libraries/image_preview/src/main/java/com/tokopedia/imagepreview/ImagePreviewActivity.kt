@@ -161,7 +161,7 @@ open class ImagePreviewActivity : BaseSimpleActivity() {
                 .setContentText(getString(R.string.download_in_process))
                 .setSmallIcon(com.tokopedia.design.R.drawable.ic_stat_notify_white)
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(),
-                    com.tokopedia.design.R.drawable.ic_big_notif_customerapp))
+                    com.tokopedia.resources.common.R.drawable.ic_big_notif_customerapp))
                 .setAutoCancel(true)
         notificationBuilder.setProgress(0, 0, true);
         notificationManager.notify(notificationId, notificationBuilder.build())

@@ -175,13 +175,13 @@ open class TalkInboxFragment :
     override fun startRenderPerformanceMonitoring() {
         talkPerformanceMonitoringListener?.startRenderPerformanceMonitoring()
         binding?.talkInboxRecyclerView?.viewTreeObserver?.addOnGlobalLayoutListener(object :
-                ViewTreeObserver.OnGlobalLayoutListener {
-                override fun onGlobalLayout() {
-                    talkPerformanceMonitoringListener?.stopRenderPerformanceMonitoring()
-                    talkPerformanceMonitoringListener?.stopPerformanceMonitoring()
-                    binding?.talkInboxRecyclerView?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
-                }
-            })
+            ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                talkPerformanceMonitoringListener?.stopRenderPerformanceMonitoring()
+                talkPerformanceMonitoringListener?.stopPerformanceMonitoring()
+                binding?.talkInboxRecyclerView?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+            }
+        })
     }
 
     override fun castContextToTalkPerformanceMonitoringListener(context: Context): TalkPerformanceMonitoringListener? {

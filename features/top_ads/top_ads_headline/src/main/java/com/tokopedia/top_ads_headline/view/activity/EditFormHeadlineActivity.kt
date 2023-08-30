@@ -15,7 +15,6 @@ import com.tokopedia.abstraction.base.view.widget.TouchViewPager
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.top_ads_headline.Constants.ACTION_EDIT
 import com.tokopedia.top_ads_headline.Constants.AD_AND_KEYWORD_COST
 import com.tokopedia.top_ads_headline.Constants.AD_CONTENT
@@ -31,7 +30,7 @@ import com.tokopedia.top_ads_headline.view.fragment.EditAdCostFragment
 import com.tokopedia.top_ads_headline.view.fragment.EditAdOthersFragment
 import com.tokopedia.top_ads_headline.view.viewmodel.EditFormHeadlineViewModel
 import com.tokopedia.top_ads_headline.view.viewmodel.SharedEditHeadlineViewModel
-import com.tokopedia.top_ads_headline_usecase.model.TopAdsManageHeadlineInput
+import com.tokopedia.topads.common.domain.model.createheadline.TopAdsManageHeadlineInput
 import com.tokopedia.topads.common.data.internal.ParamObject.GROUP_ID
 import com.tokopedia.topads.common.view.adapter.viewpager.TopAdsEditPagerAdapter
 import com.tokopedia.unifycomponents.LoaderUnify

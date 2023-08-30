@@ -673,7 +673,6 @@ open class DynamicProductDetailFragment :
         recommendationCarouselPositionSavedState.clear()
         shouldRefreshProductInfoBottomSheet = true
         shouldRefreshShippingBottomSheet = true
-        recommendationWidgetViewModel?.refresh()
         super.onSwipeRefresh()
     }
 
@@ -827,7 +826,6 @@ open class DynamicProductDetailFragment :
         super.onPause()
         trackVideoState()
         if (::trackingQueue.isInitialized) {
-            trackingQueue.sendAll()
             if (alreadyHitSwipeTracker != null) {
                 alreadyHitSwipeTracker = DynamicProductDetailAlreadyHit
             }
@@ -2452,7 +2450,7 @@ open class DynamicProductDetailFragment :
             }) { throwable ->
                 view?.showToasterError(
                     throwable.message ?: "",
-                    ctaText = getString(R.string.oke)
+                    ctaText = getString(com.tokopedia.design.R.string.oke)
                 )
                 logException(throwable)
             }
@@ -2466,7 +2464,7 @@ open class DynamicProductDetailFragment :
             }) { throwable ->
                 view?.showToasterError(
                     throwable.message ?: "",
-                    ctaText = getString(R.string.pdp_common_oke)
+                    ctaText = getString(com.tokopedia.product.detail.common.R.string.pdp_common_oke)
                 )
                 logException(throwable)
             }
@@ -3348,6 +3346,7 @@ open class DynamicProductDetailFragment :
         }
 
         setupProductVideoCoordinator()
+        recommendationWidgetViewModel?.refresh()
         submitInitialList(pdpUiUpdater?.getInitialItems(viewModel.isAPlusContentExpanded()).orEmpty())
     }
 
@@ -4328,7 +4327,7 @@ open class DynamicProductDetailFragment :
     private fun onErrorRemoveWishList(errorMsg: String?) {
         view?.showToasterError(
             getErrorMessage(errorMsg),
-            ctaText = getString(R.string.pdp_common_oke)
+            ctaText = getString(com.tokopedia.product.detail.common.R.string.pdp_common_oke)
         )
     }
 
@@ -4344,7 +4343,7 @@ open class DynamicProductDetailFragment :
     private fun onErrorAddWishList(errorMessage: String?) {
         view?.showToasterError(
             getErrorMessage(errorMessage),
-            ctaText = getString(R.string.pdp_common_oke)
+            ctaText = getString(com.tokopedia.product.detail.common.R.string.pdp_common_oke)
         )
     }
 
@@ -5227,7 +5226,7 @@ open class DynamicProductDetailFragment :
         val dataModel = pdpUiUpdater?.notifyMeMap
         view?.showToasterError(
             getErrorMessage(t),
-            ctaText = getString(R.string.pdp_common_oke)
+            ctaText = getString(com.tokopedia.product.detail.common.R.string.pdp_common_oke)
         )
         if (dataModel != null) {
             pdpUiUpdater?.updateNotifyMeButton(dataModel.notifyMe)

@@ -76,7 +76,7 @@ class UohRobot {
     }
 
     fun doSearch(str: String) {
-        onView(withId(R.id.et_search))
+        onView(withId(com.tokopedia.searchbar.R.id.et_search))
             .perform(ViewActions.typeText(str)).perform(ViewActions.pressImeActionButton())
         waitForData()
     }
@@ -134,7 +134,7 @@ class UohRobot {
             .perform(
                 RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
                     5,
-                    clickOnViewChild(R.id.buttonAddToCart)
+                    clickOnViewChild(com.tokopedia.productcard.R.id.buttonAddToCart)
                 )
             )
         waitForData()

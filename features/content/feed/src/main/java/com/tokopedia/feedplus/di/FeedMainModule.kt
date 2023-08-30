@@ -2,8 +2,8 @@ package com.tokopedia.feedplus.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.feedplus.presentation.onboarding.OnboardingPreferences
-import com.tokopedia.feedplus.presentation.onboarding.OnboardingPreferencesImpl
+import com.tokopedia.feedplus.presentation.onboarding.OnBoardingPreferences
+import com.tokopedia.feedplus.presentation.onboarding.OnBoardingPreferencesImpl
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -35,8 +35,8 @@ class FeedMainModule(private val activityContext: Context) {
 
     @FeedMainScope
     @Provides
-    fun provideOnboardingPreferences(@ApplicationContext context: Context): OnboardingPreferences {
-        return OnboardingPreferencesImpl(context)
+    fun provideOnBoardingPreferences(@ApplicationContext context: Context): OnBoardingPreferences {
+        return OnBoardingPreferencesImpl(context)
     }
 
     @FeedMainScope
