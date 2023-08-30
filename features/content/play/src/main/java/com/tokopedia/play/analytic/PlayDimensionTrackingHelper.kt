@@ -21,8 +21,6 @@ class PlayDimensionTrackingHelper @Inject constructor(
         else
             NO_VALUE
 
-        println("JOE LOG $pageSourceName - $categoryId")
-
         /** {page_source_name}.{banner_component_name}.{banner_name}.{category_id} */
         return "$pageSourceName.$NO_VALUE.$NO_VALUE.$categoryId"
     }
