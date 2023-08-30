@@ -1,26 +1,20 @@
 package com.tokopedia.common.network.cdn
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Application.ActivityLifecycleCallbacks
 import android.content.Context
 import android.os.Bundle
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.tokopedia.common.network.cdn.CdnTracker.pageName
 import com.tokopedia.common.network.coroutines.RestRequestInteractor
 import com.tokopedia.common.network.coroutines.repository.RestRepository
-import com.tokopedia.common.network.data.model.RequestType
-import com.tokopedia.common.network.data.model.RestCacheStrategy
 import com.tokopedia.common.network.data.model.RestRequest
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import java.util.Objects
 
 class MonitoringActivityLifecycle(val context: Context) : ActivityLifecycleCallbacks {
 
@@ -44,7 +38,6 @@ class MonitoringActivityLifecycle(val context: Context) : ActivityLifecycleCallb
         }
     }
 
-    @SuppressLint("CheckResult")
     private fun process(context: Context, config: DataConfig) {
         val restRepository: RestRepository by lazy {
             RestRequestInteractor.getInstance().restRepository.apply {
@@ -53,7 +46,7 @@ class MonitoringActivityLifecycle(val context: Context) : ActivityLifecycleCallb
         }
         config.imageUrlList?.let {
             it.forEach { url ->
-                GlobalScope.launch(Dispatchers.IO) {
+                CoroutineScope(Dispatchers.IO).launch {
                     if (config.sendSuccess) {
                         val token = object : TypeToken<DataResponse<String>>() {}.type
                         val restRequest = RestRequest.Builder(url, token)
@@ -75,13 +68,23 @@ class MonitoringActivityLifecycle(val context: Context) : ActivityLifecycleCallb
         }
     }
 
-    override fun onActivityResumed(activity: Activity) {}
+    override fun onActivityResumed(activity: Activity) {
+        // no-op
+    }
 
-    override fun onActivityPaused(activity: Activity) {}
+    override fun onActivityPaused(activity: Activity) {
+        // no-op
+    }
 
-    override fun onActivityStopped(activity: Activity) {}
+    override fun onActivityStopped(activity: Activity) {
+        // no-op
+    }
 
-    override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {}
+    override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
+        // no-op
+    }
 
-    override fun onActivityDestroyed(activity: Activity) {}
+    override fun onActivityDestroyed(activity: Activity) {
+        // no-op
+    }
 }

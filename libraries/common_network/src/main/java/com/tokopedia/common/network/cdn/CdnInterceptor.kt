@@ -9,8 +9,8 @@ class CdnInterceptor(val context: Context) : Interceptor {
         val response = chain.proceed(chain.request())
         try {
             CdnTracker.succeed(context, response)
-        } catch (e: Exception) {
-            CdnTracker.failed(context, response, e)
+        } catch (expected: Exception) {
+            CdnTracker.failed(context, response, expected)
         }
         return response
     }

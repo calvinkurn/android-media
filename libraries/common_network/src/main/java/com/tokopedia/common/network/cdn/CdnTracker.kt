@@ -13,20 +13,20 @@ internal object CdnTracker : CoroutineScope {
 
     private const val TAG_ANALYTIC = "DEV_CDN_MONITORING_STATIC"
     private const val PAGE_NAME_NOT_FOUND = "None"
-    private val CONTENT_LENGTH = "Content-Length"
-    private val CONTENT_TYPE = "Content-Type"
-    private val X_CACHE = "X-Cache"
-    private val X_TKPD_CDN_NAME = "x-tkpd-cdn-name"
+    private const val CONTENT_LENGTH = "Content-Length"
+    private const val CONTENT_TYPE = "Content-Type"
+    private const val X_CACHE = "X-Cache"
+    private const val X_TKPD_CDN_NAME = "x-tkpd-cdn-name"
 
     override val coroutineContext: CoroutineContext
         get() = SupervisorJob() + Dispatchers.IO
 
     fun Response.mapping(context: Context): MutableMap<String, String> {
         val responseTime = receivedResponseAtMillis - sentRequestAtMillis
-        val contentLength = headers.get(CONTENT_LENGTH).toString()
-        val popIp = headers.get(X_CACHE).toString()
-        val cdnName = headers.get(X_TKPD_CDN_NAME).toString()
-        val contentType = headers.get(CONTENT_TYPE).toString()
+        val contentLength = headers[CONTENT_LENGTH].toString()
+        val popIp = headers[X_CACHE].toString()
+        val cdnName = headers[X_TKPD_CDN_NAME].toString()
+        val contentType = headers[CONTENT_TYPE].toString()
         return mutableMapOf(
             "page" to context.pageName(),
             "url" to request.url.toUrl().toString(),
@@ -40,7 +40,8 @@ internal object CdnTracker : CoroutineScope {
     }
 
     fun succeed(
-        context: Context, response: Response
+        context: Context,
+        response: Response
     ) {
         ServerLogger.log(
             priority = Priority.P1,
@@ -60,7 +61,7 @@ internal object CdnTracker : CoroutineScope {
             priority = Priority.P1,
             tag = TAG_ANALYTIC,
             message = response.mapping(context).apply {
-                put("error_description", e.localizedMessage)
+                e.localizedMessage?.let { put("error_description", it) }
             }
         )
     }
