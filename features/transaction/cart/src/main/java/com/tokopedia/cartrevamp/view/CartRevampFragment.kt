@@ -293,7 +293,6 @@ class CartRevampFragment :
         private const val SPAN_SIZE_TWO = 2
 
         private const val CART_BULK_ACTION_COACH_MARK = "cart_bulk_action_coach_mark"
-        private const val CART_MAIN_COACH_MARK = "cart_main_coach_mark"
 
         const val CART_TRACE = "mp_cart"
         const val CART_ALL_TRACE = "mp_cart_all"
@@ -309,7 +308,7 @@ class CartRevampFragment :
         const val COACHMARK_VISIBLE_DELAY_DURATION = 500L
         const val DELAY_CHECK_BOX_GLOBAL = 500L
         const val KEY_OLD_BUNDLE_ID = "old_bundle_id"
-        const val KEY_NEW_BUNLDE_ID = "new_bundle_id"
+        const val KEY_NEW_BUNDLE_ID = "new_bundle_id"
         const val KEY_IS_CHANGE_VARIANT = "is_variant_changed"
 
         private const val QUANTITY_MAX_LIMIT = 999
@@ -612,7 +611,7 @@ class CartRevampFragment :
             if (isClickable) {
                 binding?.vDisabledGoToCourierPageButton?.setOnClickListener {
                     if (CartDataHelper.getAllAvailableCartItemData(viewModel.cartDataList.value)
-                            .isNotEmpty()
+                        .isNotEmpty()
                     ) {
                         showToastMessageGreen(getString(R.string.message_no_cart_item_selected))
                     }
@@ -2241,10 +2240,6 @@ class CartRevampFragment :
         return isPromoApplied
     }
 
-    private fun isTestingFlow(): Boolean {
-        return arguments?.getBoolean(CartConstant.IS_TESTING_FLOW, false) ?: false
-    }
-
     private fun loadRecommendation() {
         viewModel.processGetRecommendationData()
     }
@@ -2961,7 +2956,7 @@ class CartRevampFragment :
     private fun onResultFromEditBundle(resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
             val oldBundleId = data?.getStringExtra(KEY_OLD_BUNDLE_ID) ?: ""
-            val newBundleId = data?.getStringExtra(KEY_NEW_BUNLDE_ID) ?: ""
+            val newBundleId = data?.getStringExtra(KEY_NEW_BUNDLE_ID) ?: ""
             val isChangeVariant =
                 data?.getBooleanExtra(KEY_IS_CHANGE_VARIANT, false) ?: false
             val toBeDeletedBundleGroupId = viewModel.cartModel.toBeDeletedBundleGroupId
@@ -2985,9 +2980,7 @@ class CartRevampFragment :
     }
 
     private fun onResultFromPdp() {
-        if (!isTestingFlow()) {
-            refreshCartWithSwipeToRefresh()
-        }
+        refreshCartWithSwipeToRefresh()
     }
 
     private fun onResultFromPromoPage(resultCode: Int, data: Intent?) {
@@ -3473,7 +3466,7 @@ class CartRevampFragment :
 
             val onClickListener: (applied: Boolean) -> Unit = { applied ->
                 if (CartDataHelper.getSelectedCartItemData(viewModel.cartDataList.value)
-                        .isEmpty()
+                    .isEmpty()
                 ) {
                     showToastMessageGreen(getString(R.string.promo_choose_item_cart))
                     PromoRevampAnalytics.eventCartViewPromoMessage(getString(R.string.promo_choose_item_cart))
@@ -3502,7 +3495,7 @@ class CartRevampFragment :
             } else {
                 isApplied = false
                 if (CartDataHelper.getSelectedCartItemData(viewModel.cartDataList.value)
-                        .isEmpty()
+                    .isEmpty()
                 ) {
                     binding?.promoCheckoutBtnCart?.showInactive(
                         getString(R.string.promo_desc_no_selected_item),
@@ -4170,9 +4163,9 @@ class CartRevampFragment :
         plusCoachMark?.dismissCoachMark()
         mainFlowCoachMark?.dismissCoachMark()
         if ((
-                viewModel.cartModel.cartListData?.onboardingData?.size
-                    ?: 0
-                ) < BULK_ACTION_ONBOARDING_MIN_QUANTITY_INDEX
+            viewModel.cartModel.cartListData?.onboardingData?.size
+                ?: 0
+            ) < BULK_ACTION_ONBOARDING_MIN_QUANTITY_INDEX
         ) {
             return
         }
