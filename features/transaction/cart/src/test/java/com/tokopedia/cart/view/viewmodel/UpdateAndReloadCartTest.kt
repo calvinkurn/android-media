@@ -12,8 +12,6 @@ import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
-import io.mockk.mockkObject
-import io.mockk.unmockkObject
 import io.mockk.verify
 import org.junit.Test
 
@@ -26,7 +24,6 @@ class UpdateAndReloadCartTest : BaseCartViewModelTest() {
         val cartItemData = CartItemHolderData().apply {
             notes = ""
         }
-        mockkObject(CartDataHelper)
         every { CartDataHelper.getAllAvailableCartItemData(any()) } returns arrayListOf(cartItemData)
 
         observer = mockk { every { onChanged(any()) } just Runs }
@@ -88,7 +85,6 @@ class UpdateAndReloadCartTest : BaseCartViewModelTest() {
 
     override fun tearDown() {
         super.tearDown()
-        unmockkObject()
         cartViewModel.globalEvent.removeObserver(observer)
     }
 }

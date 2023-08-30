@@ -10,18 +10,11 @@ import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.just
-import io.mockk.mockkObject
-import io.mockk.unmockkObject
 import io.mockk.verify
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class UpdateCartForPromoTest : BaseCartViewModelTest() {
-
-    override fun setUp() {
-        super.setUp()
-        mockkObject(CartDataHelper)
-    }
 
     @Test
     fun `WHEN update cart for promo success THEN should navigate to promo page`() {
@@ -96,10 +89,5 @@ class UpdateCartForPromoTest : BaseCartViewModelTest() {
         verify(inverse = true) {
             updateCartUseCase.execute(any(), any())
         }
-    }
-
-    override fun tearDown() {
-        super.tearDown()
-        unmockkObject(CartDataHelper)
     }
 }

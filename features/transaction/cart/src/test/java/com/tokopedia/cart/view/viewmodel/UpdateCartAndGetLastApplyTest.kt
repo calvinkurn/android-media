@@ -16,17 +16,10 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
-import io.mockk.mockkObject
-import io.mockk.unmockkObject
 import junit.framework.TestCase.assertEquals
 import org.junit.Test
 
 class UpdateCartAndGetLastApplyTest : BaseCartViewModelTest() {
-
-    override fun setUp() {
-        super.setUp()
-        mockkObject(CartDataHelper)
-    }
 
     @Test
     fun `WHEN update and get last apply success THEN should render promo button`() {
@@ -139,10 +132,5 @@ class UpdateCartAndGetLastApplyTest : BaseCartViewModelTest() {
         coVerify(inverse = true) {
             updateCartAndGetLastApplyUseCase.invoke(any())
         }
-    }
-
-    override fun tearDown() {
-        super.tearDown()
-        unmockkObject(CartDataHelper)
     }
 }
