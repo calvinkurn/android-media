@@ -137,14 +137,17 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
                 }
             }
         }
+        val attemptedPromoSection = response.promoListRecommendation.data.couponSections
+            .firstOrNull { it.id == PromoPageSection.SECTION_INPUT_PROMO_CODE }
+        val attemptedPromoError = response.promoListRecommendation.data.attemptedPromoCodeError
         items.add(
             PromoAttemptItem(
                 id = PromoPageSection.SECTION_INPUT_PROMO_CODE,
+                label = attemptedPromoSection?.title ?: "",
+                errorMessage = attemptedPromoError.message,
                 hasOtherSection = hasRecommendedOrOtherSection
             )
         )
-        val attemptedPromoSection = response.promoListRecommendation.data.couponSections
-            .firstOrNull { it.id == PromoPageSection.SECTION_INPUT_PROMO_CODE }
         attemptedPromoSection?.coupons?.forEachIndexed { index, coupon ->
             items.add(
                 mapCouponToPromo(
@@ -217,7 +220,11 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
         }
 
         val benefitDetail = coupon.benefitDetails.firstOrNull() ?: BenefitDetail()
-        val isExpanded = !couponSection.isCollapsed
+        val isExpandedOrVisible = if (couponSection.id == PromoPageSection.SECTION_RECOMMENDATION) {
+            true
+        } else {
+            !couponSection.isCollapsed && index.isZero()
+        }
         return PromoItem(
             id = coupon.id,
             headerId = couponSection.id,
@@ -278,8 +285,8 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
             isBebasOngkir = coupon.isBebasOngkir || secondaryCoupon.isBebasOngkir,
             isHighlighted = coupon.isHighlighted || secondaryCoupon.isHighlighted,
             isLastRecommended = isRecommended && index == couponSection.coupons.size - 1,
-            isExpanded = isExpanded && index.isZero(),
-            isVisible = isExpanded && index.isZero(),
+            isExpanded = isExpandedOrVisible,
+            isVisible = isExpandedOrVisible,
         )
     }
 

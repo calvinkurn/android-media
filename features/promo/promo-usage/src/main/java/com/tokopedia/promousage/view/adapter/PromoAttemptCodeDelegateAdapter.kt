@@ -18,6 +18,7 @@ import com.tokopedia.promousage.databinding.PromoUsageItemPromoAttemptBinding
 import com.tokopedia.promousage.domain.entity.list.PromoAttemptItem
 import com.tokopedia.promousage.view.custom.TextDrawable
 import com.tokopedia.promousage.util.composite.DelegateAdapter
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.toPx
 
 internal class PromoAttemptCodeDelegateAdapter(
@@ -60,12 +61,13 @@ internal class PromoAttemptCodeDelegateAdapter(
                     binding.root.setPadding(0, 0, 0, 0)
                 }
                 if (item.label.isNotBlank()) {
-                    tauVoucherCode.setLabel(item.label)
+                    tauVoucherCode.labelText.text =
+                        HtmlLinkHelper(tauVoucherCode.context, item.label).spannedString
                 }
                 if (item.attemptedPromoCode.isNotBlank()) {
                     tauVoucherCode.editText.setText(item.attemptedPromoCode)
                 }
-                bottomDivider.isVisible = item.promo == null
+                bottomDivider.isVisible = item.promos.isEmpty()
                 if (item.errorMessage.isNotBlank()) {
                     tauVoucherCode.isInputError = true
                     tauVoucherCode.setMessage(item.errorMessage)

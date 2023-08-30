@@ -37,7 +37,7 @@ object DummyData {
         get() = PromoAttemptItem(
             label = "Punya kode promo? Masukin di sini ✨",
             attemptedPromoCode = attemptedPromo.code,
-            promo = attemptedPromo
+            promos = attemptedPromo
         )
 
     val attemptedPromo: PromoItem
@@ -1004,7 +1004,7 @@ object DummyData {
 //        items.add(PromoAttemptItem(label = "Punya kode promo? Masukin di sini ✨"))
         // success attempt UI
         items.add(promoAttemptItemSuccess)
-        promoAttemptItemSuccess.promo?.let { items.add(it) }
+        promoAttemptItemSuccess.promos?.let { items.add(it) }
         // failed attempt UI
 //        items.add(promoAttemptItemError)
 
