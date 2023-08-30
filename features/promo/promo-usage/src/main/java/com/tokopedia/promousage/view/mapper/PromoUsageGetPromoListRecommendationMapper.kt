@@ -108,8 +108,8 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
                                 isExpanded = !couponSection.isCollapsed
                             )
                         )
-                        couponSection.coupons.filter { it.isGroupHeader }
-                            .forEachIndexed { index, coupon ->
+                        val coupons = couponSection.coupons.filter { it.isGroupHeader }
+                        coupons.forEachIndexed { index, coupon ->
                                 items.add(
                                     mapCouponToPromo(
                                         index = index,
@@ -120,7 +120,7 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
                                     )
                                 )
                             }
-                        val totalPromoInSectionCount = couponSection.coupons.size
+                        val totalPromoInSectionCount = coupons.size
                         if (totalPromoInSectionCount > 1) {
                             val isExpanded = !couponSection.isCollapsed
                             val hiddenPromoCount = totalPromoInSectionCount - 1
