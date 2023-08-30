@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.RouteManager
@@ -36,6 +37,7 @@ import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopadsProd
 import com.tokopedia.topads.dashboard.recommendation.viewmodel.ProductRecommendationViewModel
 import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsAddCreditActivity
 import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsCreditTopUpActivity
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.utils.text.currency.NumberTextWatcher
@@ -107,13 +109,8 @@ class CreateNewGroupFragment : BaseDaggerFragment() {
         checkAllFieldsValidations()
     }
 
-    private fun testing(){
-        isAutoFillGroupNameComplete = isAutoFillGroupNameComplete
-    }
-
     private fun observeViewModel() {
         viewModel.validateNameLiveData.observe(viewLifecycleOwner) {
-            testing()
             if (!isAutoFillGroupNameComplete) {
                 if (it.errors.isEmpty()) {
                     autoFillGroupName(it.data.groupName)
@@ -155,7 +152,19 @@ class CreateNewGroupFragment : BaseDaggerFragment() {
                         openInsufficientCreditsDialog()
                     }
                 }
-                else -> {}
+                else -> {
+                    view?.let {
+                        Toaster.build(it, getString(topadscommonR.string.topads_common_failed_to_create_ads_toast_msg),
+                            Snackbar.LENGTH_LONG,
+                            Toaster.TYPE_ERROR, getString(topadscommonR.string.topads_common_try_again)).show()
+                    }
+
+                    binding?.btnSubmit?.let {
+                        if(it.isLoading){
+                            it.isLoading = false
+                        }
+                    }
+                }
             }
         }
 

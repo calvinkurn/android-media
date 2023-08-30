@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.RouteManager
@@ -28,6 +29,7 @@ import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopadsProd
 import com.tokopedia.topads.dashboard.recommendation.viewmodel.ProductRecommendationViewModel
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.recommendation.GroupListAdapter
 import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsCreditTopUpActivity
+import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
 
 class ChooseGroupFragment : BaseDaggerFragment() {
@@ -36,7 +38,12 @@ class ChooseGroupFragment : BaseDaggerFragment() {
     private var searchGroup: String = DEFAULT_EMPTY_STRING
     private var topadsDeposits: Int = DEFAULT_TOPADS_DEPOSITS
 
-    private val groupListAdapter by lazy { GroupListAdapter(::onItemCheckedChangeListener, ::reloadPage) }
+    private val groupListAdapter by lazy {
+        GroupListAdapter(
+            ::onItemCheckedChangeListener,
+            ::reloadPage
+        )
+    }
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -102,10 +109,14 @@ class ChooseGroupFragment : BaseDaggerFragment() {
                     groupListAdapter.submitList(groups.data)
                 }
                 is TopadsProductListState.Fail -> {
-                    groupListAdapter.submitList(viewModel.getMapperInstance().getFailedGroupStateDefaultUiModel())
+                    groupListAdapter.submitList(
+                        viewModel.getMapperInstance().getFailedGroupStateDefaultUiModel()
+                    )
                 }
                 is TopadsProductListState.Loading -> {
-                    groupListAdapter.submitList(viewModel.getMapperInstance().getGroupShimmerUiModel())
+                    groupListAdapter.submitList(
+                        viewModel.getMapperInstance().getGroupShimmerUiModel()
+                    )
                 }
             }
         }
@@ -119,23 +130,42 @@ class ChooseGroupFragment : BaseDaggerFragment() {
                         openInsufficientCreditsDialog()
                     }
                 }
-                else -> {}
+                else -> {
+                    view?.let {
+                        Toaster.build(it, getString(topadscommonR.string.topads_common_failed_to_create_ads_toast_msg),
+                            Snackbar.LENGTH_LONG,
+                            Toaster.TYPE_ERROR, getString(topadscommonR.string.topads_common_try_again)).show()
+                    }
+
+                    binding?.btnSubmit?.let {
+                        if(it.isLoading){
+                            it.isLoading = false
+                        }
+                    }
+                }
             }
         }
 
-        viewModel.topadsDeposits.observe(viewLifecycleOwner){
+        viewModel.topadsDeposits.observe(viewLifecycleOwner) {
             topadsDeposits = it.topadsDashboardDeposits.data.amount
         }
     }
 
     private fun attachClickListener() {
         binding?.btnSubmit?.setOnClickListener { btn ->
-            val productIds = mutableListOf<String>()
-            val list = viewModel.getSelectedProductItems()
-            list?.forEach { productIds.add(it.id()) }
-            viewModel.getGroupList()?.filter { (it as? GroupItemUiModel)?.isSelected ?: false }
-                ?.firstOrNull()
-                ?.let { viewModel.topAdsMoveGroup((it as GroupItemUiModel).groupId, productIds) }
+            if (binding?.btnSubmit?.isLoading != null && !(binding?.btnSubmit?.isLoading!!)) {
+                val productIds = mutableListOf<String>()
+                val list = viewModel.getSelectedProductItems()
+                list?.forEach { productIds.add(it.id()) }
+                viewModel.getGroupList()?.filter { (it as? GroupItemUiModel)?.isSelected ?: false }
+                    ?.firstOrNull()
+                    ?.let {
+                        viewModel.topAdsMoveGroup(
+                            (it as GroupItemUiModel).groupId,
+                            productIds
+                        )
+                    }
+            }
         }
     }
 
@@ -221,7 +251,7 @@ class ChooseGroupFragment : BaseDaggerFragment() {
                 .isNullOrEmpty()
     }
 
-    private fun reloadPage(){
+    private fun reloadPage() {
         viewModel.getTopadsGroupList(searchGroup, DEFAULT_GROUP_TYPE)
     }
 

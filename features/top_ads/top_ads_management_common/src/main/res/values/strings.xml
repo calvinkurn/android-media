@@ -295,4 +295,6 @@
     <string name="topads_common_ads_created_successfully_but_cant_appear_yet">Iklan berhasil dibuat, tapi belum bisa tampil nih</string>
     <string name="topads_common_add_credit">Tambah Kredit</string>
     <string name="topads_common_later_keyword">Nanti Saja</string>
+    <string name="topads_common_failed_to_create_ads_toast_msg">Oops, iklan gagal dibuat. Coba beberapa saat lagi, ya.</string>
+    <string name="topads_common_try_again">Coba Lagi</string>
 </resources>
