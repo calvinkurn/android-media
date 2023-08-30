@@ -16,6 +16,7 @@ import com.tokopedia.kotlin.extensions.view.formatTo
 import com.tokopedia.topads.common.data.model.DataSuggestions
 import com.tokopedia.topads.common.view.sheet.CreateGroupBudgetHelpSheet
 import com.tokopedia.topads.dashboard.R
+import com.tokopedia.topads.common.R as topadscommonR
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.databinding.FragmentTopadsCreateNewGroupBinding
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
@@ -81,10 +82,10 @@ class CreateNewGroupFragment : BaseDaggerFragment() {
     private fun checkForAutoFillGroupName() {
         binding?.groupName?.isLoading = true
         val groupName: String =
-            getString(com.tokopedia.topads.common.R.string.topads_common_group) + " " + DateUtil.getCurrentDate()
+            getString(topadscommonR.string.topads_common_group) + " " + DateUtil.getCurrentDate()
                 .formatTo(BASIC_DATE_FORMAT) + (if (counter == 0) "" else " ($counter)")
         counter++
-        viewModel.validateGroup(groupName)
+        viewModel.validateGroupName(groupName)
     }
 
     private fun autoFillGroupName(groupName: String) {
@@ -96,8 +97,13 @@ class CreateNewGroupFragment : BaseDaggerFragment() {
         checkAllFieldsValidations()
     }
 
+    private fun testing(){
+        isAutoFillGroupNameComplete = isAutoFillGroupNameComplete
+    }
+
     private fun observeViewModel() {
         viewModel.validateNameLiveData.observe(viewLifecycleOwner) {
+            testing()
             if (!isAutoFillGroupNameComplete) {
                 if (it.errors.isEmpty()) {
                     autoFillGroupName(it.data.groupName)
@@ -147,10 +153,10 @@ class CreateNewGroupFragment : BaseDaggerFragment() {
             DialogUnify.WITH_ILLUSTRATION
         )
         dialog.setImageUrl(CREATE_GROUP_SUCCESS_DIALOG_IMG_URL)
-        dialog.setDescription(getString(com.tokopedia.topads.common.R.string.topads_common_create_group_success_dailog_desc))
-        dialog.setTitle(getString(com.tokopedia.topads.common.R.string.topads_common_product_successfully_advertised))
-        dialog.setPrimaryCTAText(getString(com.tokopedia.topads.common.R.string.topads_common_manage_ads_group))
-        dialog.setSecondaryCTAText(getString(com.tokopedia.topads.common.R.string.topads_common_stay_here))
+        dialog.setDescription(getString(topadscommonR.string.topads_common_create_group_success_dailog_desc))
+        dialog.setTitle(getString(topadscommonR.string.topads_common_product_successfully_advertised))
+        dialog.setPrimaryCTAText(getString(topadscommonR.string.topads_common_manage_ads_group))
+        dialog.setSecondaryCTAText(getString(topadscommonR.string.topads_common_stay_here))
         dialog.setPrimaryCTAClickListener {
             val intent =
                 RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_EDIT_ADS).apply {
@@ -247,7 +253,7 @@ class CreateNewGroupFragment : BaseDaggerFragment() {
                     checkAllFieldsValidations()
                 } else {
                     binding?.groupName?.isInputError = false
-                    viewModel.validateGroup(
+                    viewModel.validateGroupName(
                         p0.toString()
                     )
                 }

@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -23,6 +22,8 @@ import com.tokopedia.topads.dashboard.recommendation.views.adapter.recommendatio
 class GroupSettingsFragment : BaseDaggerFragment() {
 
     private var binding: FragmentTopadsGroupSettingsBinding? = null
+    private val createNewGroupFragment: CreateNewGroupFragment by lazy { CreateNewGroupFragment.createInstance() }
+    private val chooseGroupFragment: ChooseGroupFragment by lazy { ChooseGroupFragment.createInstance() }
 
     private val productListAdapter by lazy {
         ProductListAdapter(null, null)
@@ -55,6 +56,7 @@ class GroupSettingsFragment : BaseDaggerFragment() {
     }
 
     private fun initializeViews() {
+        attachChildFragments()
         binding?.productsRv?.layoutManager = LinearLayoutManager(
             context,
             LinearLayoutManager.HORIZONTAL,
@@ -72,9 +74,17 @@ class GroupSettingsFragment : BaseDaggerFragment() {
                 viewModel.getSelectedProductItems()
             )
         )
+        showCreateGroupPage()
+    }
 
-        setUpCreateGroupPage()
-
+    private fun attachChildFragments() {
+        childFragmentManager.beginTransaction().add(
+            R.id.groupSettingsFragmentContainer,
+            createNewGroupFragment
+        ).add(
+            R.id.groupSettingsFragmentContainer,
+            chooseGroupFragment
+        ).commit()
     }
 
     private fun attachClickListener() {
@@ -84,7 +94,7 @@ class GroupSettingsFragment : BaseDaggerFragment() {
 
         binding?.createNewGroupCta?.setOnClickListener {
             if (currentGroupSettingsState != GROUP_SETTINGS_STATE_CREATE) {
-                setUpCreateGroupPage()
+                showCreateGroupPage()
                 currentGroupSettingsState = GROUP_SETTINGS_STATE_CREATE
                 binding?.choseGroupCta?.isChecked = false
             }
@@ -92,7 +102,7 @@ class GroupSettingsFragment : BaseDaggerFragment() {
 
         binding?.choseGroupCta?.setOnClickListener {
             if (currentGroupSettingsState != GROUP_SETTINGS_STATE_CHOOSE_FROM_EXISTING) {
-                setUpChooseGroupPage()
+                showChooseGroupPage()
                 currentGroupSettingsState = GROUP_SETTINGS_STATE_CHOOSE_FROM_EXISTING
                 binding?.createNewGroupCta?.isChecked = false
             }
@@ -103,25 +113,24 @@ class GroupSettingsFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun setUpCreateGroupPage() {
-        changeChildFragment(CreateNewGroupFragment.createInstance())
-    }
-
-    private fun setUpChooseGroupPage() {
-        changeChildFragment(ChooseGroupFragment.createInstance())
-    }
-
-    private fun changeChildFragment(fragment: Fragment) {
-        childFragmentManager.popBackStack()
+    private fun showCreateGroupPage() {
+        childFragmentManager.beginTransaction().hide(chooseGroupFragment).commit()
         childFragmentManager.beginTransaction().setCustomAnimations(
             abstractionR.anim.slide_in_right,
             abstractionR.anim.slide_out_left,
             abstractionR.anim.slide_in_left,
             abstractionR.anim.slide_out_right
-        ).replace(
-            R.id.groupSettingsFragmentContainer,
-            fragment
-        ).commit()
+        ).show(createNewGroupFragment).commit()
+    }
+
+    private fun showChooseGroupPage() {
+        childFragmentManager.beginTransaction().hide(createNewGroupFragment).commit()
+        childFragmentManager.beginTransaction().setCustomAnimations(
+            abstractionR.anim.slide_in_right,
+            abstractionR.anim.slide_out_left,
+            abstractionR.anim.slide_in_left,
+            abstractionR.anim.slide_out_right
+        ).show(chooseGroupFragment).commit()
     }
 
     companion object {

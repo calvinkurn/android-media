@@ -22,7 +22,8 @@
         android:layout_marginTop="16dp"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/headerPotentialProduct" />
+        app:layout_constraintTop_toBottomOf="@id/headerPotentialProduct"
+        android:checked="true"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/itemsCount"
@@ -66,7 +67,7 @@
         app:layout_constraintEnd_toEndOf="@id/productsListRv"
         app:layout_constraintStart_toStartOf="@id/selectAllCheckbox"
         app:unifyButtonSize="large"
-        android:enabled="false"/>
+        android:enabled="true"/>
 
     <include
         android:id="@+id/shimmerLoader"

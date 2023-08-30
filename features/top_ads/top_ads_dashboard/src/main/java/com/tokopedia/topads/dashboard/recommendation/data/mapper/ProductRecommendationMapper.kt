@@ -20,7 +20,8 @@ class ProductRecommendationMapper @Inject constructor() {
                     productId = it.productId,
                     productName = it.productName,
                     imgUrl = it.imgUrl,
-                    searchCount = it.searchCount
+                    searchCount = it.searchCount,
+                    isSelected = true
                 )
             )
         }

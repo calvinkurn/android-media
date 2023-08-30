@@ -75,7 +75,7 @@ class ProductRecommendationViewModel @Inject constructor(
         })
     }
 
-    fun validateGroup(
+    fun validateGroupName(
         groupName: String,
     ) {
         topAdsGroupValidateNameUseCase.setParams(groupName, INSIGHT_CENTRE_BID_INFO_SOURCE)
