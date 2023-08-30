@@ -88,7 +88,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.usercomponents.userconsent.domain.collection.ConsentCollectionParam
 import com.tokopedia.usercomponents.userconsent.domain.submission.DataElements
-import com.tokopedia.usercomponents.userconsent.ui.UserConsentWidget
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -744,10 +743,7 @@ class DigitalCartFragment :
 
             val metadataKey = map[KEY_METADATA]
             if (metadataKey != null && metadataKey.toString().length > Int.ZERO) {
-                val metadata = gson.fromJson(metadataKey.toString(), CollectionPointMetadata::class.java)
-                if (metadata.collectionPointId.isNotEmpty() && metadata.collectionPointVersion.isNotEmpty()) {
-                    return metadata
-                }
+                return gson.fromJson(metadataKey.toString(), CollectionPointMetadata::class.java)
             }
         } catch (e: Exception) {
             DigitalCheckoutUtil.logExceptionToCrashlytics(e)
