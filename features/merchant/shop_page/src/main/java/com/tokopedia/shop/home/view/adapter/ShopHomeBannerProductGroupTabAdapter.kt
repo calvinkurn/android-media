@@ -1,18 +1,15 @@
 package com.tokopedia.shop.home.view.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
-import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.strikethrough
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.R
+import com.tokopedia.shop.common.util.ShopUtilExt.setAdaptiveLabelDiscountColor
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.ItemShopHomeBannerProductGroupProductInfoCardBinding
 import com.tokopedia.shop.databinding.ItemShopHomeBannerProductGroupShimmerBinding
@@ -105,8 +102,7 @@ class ShopHomeBannerProductGroupTabAdapter : RecyclerView.Adapter<RecyclerView.V
             product?.let {
                 binding.imgProduct.loadImage(product.imageUrl)
 
-                binding.tpgProductName.text = product.name
-                binding.tpgProductName.showIfOrInvisible(product.showProductInfo)
+                if (item.showProductInfo) binding.tpgProductName.text = product.name
 
                 renderProductPrice(product)
                 renderSlashedProductPrice(product)
@@ -120,34 +116,37 @@ class ShopHomeBannerProductGroupTabAdapter : RecyclerView.Adapter<RecyclerView.V
 
         private fun renderProductSoldCount(product: ProductItemType) {
             val hasBeenPurchased = product.soldCount.isNotEmpty()
-            binding.tpgProductSoldCount.text = product.soldCount
-            binding.tpgProductSoldCount.isVisible = product.showProductInfo && hasBeenPurchased
+            if (product.showProductInfo && hasBeenPurchased) {
+                binding.tpgProductSoldCount.text = product.soldCount
+                binding.tpgBullet.text = binding.tpgBullet.context?.getString(R.string.shop_page_dot_character)
+            }
         }
 
         private fun renderProductRating(product: ProductItemType) {
             val hasRating = product.rating.isNotEmpty()
-
-            binding.imgStar.isVisible = product.showProductInfo && hasRating
-            binding.tpgBullet.isVisible = product.showProductInfo && hasRating
-
-            binding.tpgRating.text = product.rating
-            binding.tpgRating.isVisible = product.showProductInfo && hasRating
+            if (product.showProductInfo && hasRating) {
+                binding.tpgRating.text = product.rating
+                binding.imgStar.setBackgroundResource(R.drawable.ic_shop_home_star_filled)
+            }
         }
 
         private fun renderProductPrice(product: ProductItemType) {
-            binding.tpgProductPrice.text = product.price
-            binding.tpgProductPrice.showIfOrInvisible(product.showProductInfo)
+            if (product.showProductInfo) {
+                binding.tpgProductPrice.text = product.price
+            }
         }
 
         private fun renderSlashedProductPrice(product: ProductItemType) {
             val isDiscounted = product.slashedPricePercent.isMoreThanZero()
-            binding.tpgSlashedProductPrice.text = product.slashedPrice
-            binding.tpgSlashedProductPrice.strikethrough()
-            binding.tpgSlashedProductPrice.isVisible = product.showProductInfo && isDiscounted
-
             val discountPercentage = binding.labelDiscount.context.getString(R.string.shop_page_placeholder_discount_percentage, product.slashedPricePercent)
-            binding.labelDiscount.setLabel(discountPercentage)
-            binding.labelDiscount.isVisible = product.showProductInfo && isDiscounted
+
+            if (product.showProductInfo && isDiscounted) {
+                binding.tpgSlashedProductPrice.text = product.slashedPrice
+                binding.tpgSlashedProductPrice.strikethrough()
+
+                binding.labelDiscount.text = discountPercentage
+                binding.labelDiscount.setAdaptiveLabelDiscountColor(!product.overrideTheme)
+            }
         }
 
         private fun setupColors(overrideTheme: Boolean, colorSchema: ShopPageColorSchema) {
@@ -180,12 +179,7 @@ class ShopHomeBannerProductGroupTabAdapter : RecyclerView.Adapter<RecyclerView.V
             }
         }
     }
-    
-    
-    private fun View.showIfOrInvisible(show: Boolean) {
-        if (show) visible() else invisible()
-    }
-    
+
     inner class VerticalBannerViewHolder(
         private val binding: ItemShopHomeBannerProductGroupVerticalBannerCardBinding
     ) : RecyclerView.ViewHolder(binding.root) {

@@ -41,12 +41,13 @@
         app:typographyWeight="bold"
         tools:text="Rp18.849.000" />
 
-    <com.tokopedia.unifycomponents.Label
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/labelDiscount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        app:labelType="general_light_red"
+        android:textSize="11sp"
+        android:padding="4dp"
         app:layout_constraintStart_toStartOf="@+id/imgProduct"
         app:layout_constraintTop_toBottomOf="@id/tpgProductPrice"
         tools:text="20%" />
@@ -71,7 +72,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/labelDiscount"
-        app:srcCompat="@drawable/ic_shop_home_star_filled" />
+        tools:srcCompat="@drawable/ic_shop_home_star_filled" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tpgRating"
@@ -95,7 +96,6 @@
         android:paddingStart="4dp"
         android:paddingEnd="4dp"
         android:paddingBottom="4dp"
-        android:text="@string/shop_page_dot_character"
         android:textColor="@color/Unify_NN600"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/tpgRating"

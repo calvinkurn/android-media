@@ -59,38 +59,47 @@ class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
     ) {
         _carouselWidgets.postValue(UiState.Loading)
 
-        val firstProductWidget = getProductWidgets(widgets) ?: return
+        val productMetadata = getProductMetadata(widgets)
 
-        launchCatchError(
-            context = dispatcherProvider.io,
-            block = {
+        if (productMetadata != null) {
+            launchCatchError(
+                context = dispatcherProvider.io,
+                block = {
 
-                val products = getProducts(shopId, userAddress, firstProductWidget, overrideTheme, colorSchema)
+                    val products = getProducts(shopId, userAddress, productMetadata, overrideTheme, colorSchema)
 
-                val hasVerticalBanner = widgetStyle == ShopWidgetComponentBannerProductGroupUiModel.WidgetStyle.VERTICAL.id
-                val carouselWidgets = if (hasVerticalBanner) {
-                    val verticalBanner = getVerticalBanner(widgets)
-                    verticalBanner + products
-                } else {
-                    products
+                    val hasVerticalBanner = widgetStyle == ShopWidgetComponentBannerProductGroupUiModel.WidgetStyle.VERTICAL.id
+                    val carouselWidgets = if (hasVerticalBanner) {
+                        val verticalBanner = getVerticalBanner(widgets)
+                        verticalBanner + products
+                    } else {
+                        products
+                    }
+
+                    _carouselWidgets.postValue(UiState.Success(carouselWidgets))
+                } ,
+                onError = { throwable ->
+                    _carouselWidgets.postValue(UiState.Error(throwable))
                 }
-
-                _carouselWidgets.postValue(UiState.Success(carouselWidgets))
-            } ,
-            onError = { throwable ->
-                _carouselWidgets.postValue(UiState.Error(throwable))
-            }
-        )
+            )
+        }
     }
 
     private fun getVerticalBanner(widgets: List<ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList>): List<VerticalBannerItemType> {
         val bannerComponents = widgets.filter { widget -> widget.componentType == ComponentType.DISPLAY_SINGLE_COLUMN }
         val banner = bannerComponents.getOrNull(0)
-        val bannerWidget = banner?.data?.getOrNull(0)
-        return listOf(VerticalBannerItemType(bannerWidget?.imageUrl.orEmpty(), bannerWidget?.ctaLink.orEmpty()))
+        val bannerWidgets = banner?.data ?: emptyList()
+
+        return if (bannerWidgets.isEmpty()) {
+            emptyList()
+        } else {
+            val bannerImageUrl = bannerWidgets[0].imageUrl
+            val ctaLink = bannerWidgets[0].ctaLink
+            listOf(VerticalBannerItemType(bannerImageUrl, ctaLink))
+        }
     }
 
-    private fun getProductWidgets(
+    private fun getProductMetadata(
         widgets: List<ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList>
     ): ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.Data? {
         val productComponents = widgets.filter { widget -> widget.componentType == ComponentType.PRODUCT }

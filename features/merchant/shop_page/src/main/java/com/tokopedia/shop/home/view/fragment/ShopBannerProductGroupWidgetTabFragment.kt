@@ -159,8 +159,12 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
                 }
 
                 is ShopBannerProductGroupWidgetTabViewModel.UiState.Success -> {
-                    showProductCarousel(result.data)
-                    showMainBanner()
+                    if (result.data.isEmpty()) {
+                        bannerProductGroupAdapter.submit(emptyList())
+                    } else {
+                        showProductCarousel(result.data)
+                        showMainBanner()
+                    }
                 }
 
                 is ShopBannerProductGroupWidgetTabViewModel.UiState.Error -> {
