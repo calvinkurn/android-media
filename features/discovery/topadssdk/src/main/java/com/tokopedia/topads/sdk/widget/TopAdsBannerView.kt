@@ -125,11 +125,12 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
         if (activityIsFinishing(context))
             return
         val cpmData = cpmModel?.data?.firstOrNull()
+        val isReimagine = cpmModel?.isReimagine.orFalse()
         if (template == NO_TEMPLATE && isEligible(cpmData)) {
             View.inflate(getContext(), R.layout.layout_ads_banner_shop_a_pager, this)
             BannerShopProductViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_a_product
             BannerShopViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_a
-            BannerShowMoreViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_a_more
+            renderSeeMoreCard(isReimagine)
 
             findViewById<TextView>(R.id.shop_name)?.text = escapeHTML(cpmData?.cpm?.name ?: "")
             bannerAdsAdapter = BannerAdsAdapter(BannerAdsAdapterTypeFactory(topAdsBannerClickListener, impressionListener, topAdsAddToCartClickListener))
@@ -316,6 +317,13 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
         if (!isReimagine) {
             items.add(BannerShopUiModel(cpmData, appLink, adsClickUrl, isShowCta))
         }
+    }
+
+    private fun renderSeeMoreCard(isReimagine: Boolean) {
+        if (isReimagine)
+            BannerShowMoreViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_a_more_revamp
+        else
+            BannerShowMoreViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_a_more
     }
 
     private fun renderHeaderSeeMore(cpmData: CpmData, appLink: String, adsClickUrl: String, isReimagine: Boolean) {
