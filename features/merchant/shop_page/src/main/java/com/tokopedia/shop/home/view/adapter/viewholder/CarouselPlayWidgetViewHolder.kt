@@ -57,6 +57,8 @@ class CarouselPlayWidgetViewHolder(
             )
             headerTitle = customHeaderBinding.tvPlayWidgetTitle
             headerCta = customHeaderBinding.tvPlayWidgetAction
+            customHeaderBinding.tvPlayWidgetTitle.id = com.tokopedia.play.widget.R.id.tv_play_widget_title
+            customHeaderBinding.tvPlayWidgetAction.id = com.tokopedia.play.widget.R.id.tv_play_widget_action
             it.setCustomHeader(customHeaderBinding.root)
             playWidgetViewHolder.coordinator.controlWidget(it)
         }

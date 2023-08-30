@@ -1,6 +1,10 @@
 package com.tokopedia.shop.product.view.widget
 
 import android.content.Context
+import android.content.res.ColorStateList
+import android.graphics.Color
+import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.LayerDrawable
 import android.os.Handler
 import android.util.AttributeSet
 import android.view.ViewGroup
@@ -27,7 +31,7 @@ class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
     private var recyclerViewPaddingTop = 0
     private var currentScroll = 0
     private var viewHolder: RecyclerView.ViewHolder? = null
-
+    private var backgroundColorIntValue = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Background)
     constructor(context: Context) : super(context) {}
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {}
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {}
@@ -52,35 +56,46 @@ class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
         mRecyclerView = view
         recyclerViewPaddingTop = mRecyclerView?.paddingTop.orZero()
         mHeaderContainer = FrameLayout(context)
-        val backgroundDrawable = MethodChecker.getDrawable(context, R.drawable.shop_page_view_shadow_bottom)
-        mHeaderContainer?.background = backgroundDrawable
+        val shapeDrawable = MethodChecker.getDrawable(
+            context,
+            R.drawable.shop_page_view_shadow_bottom
+        ) as? LayerDrawable
+
+        val shapeColor = shapeDrawable?.findDrawableByLayerId(
+            R.id.sticky_background_color
+        ) as? GradientDrawable
+        shapeColor?.setColor(backgroundColorIntValue)
+        mHeaderContainer?.background = shapeDrawable
         mHeaderContainer?.clipToPadding = false
         mHeaderContainer?.clipChildren = false
         mHeaderContainer?.isClickable = true
-        mHeaderContainer?.layoutParams = LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        mHeaderContainer?.layoutParams =
+            LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         mHeaderContainer?.visibility = GONE
-        mHeaderContainer?.background = backgroundDrawable
+        mHeaderContainer?.background = shapeDrawable
         addView(mHeaderContainer)
-        val onScrollListener: RecyclerView.OnScrollListener = object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-                if (mHeaderHeight == -1 || adapter == null || staggeredGridLayoutManager == null) {
-                    mHeaderHeight = mHeaderContainer?.height.orZero()
-                    val adapter = mRecyclerView?.adapter
-                    if (adapter !is OnStickySingleHeaderAdapter) throw RuntimeException("Your RecyclerView.Adapter should be the type of StickyHeaderViewAdapter.")
-                    this@StickySingleHeaderView.adapter = adapter
-                    this@StickySingleHeaderView.adapter?.setListener(this@StickySingleHeaderView)
-                    staggeredGridLayoutManager = mRecyclerView?.layoutManager as StaggeredGridLayoutManager?
+        val onScrollListener: RecyclerView.OnScrollListener =
+            object : RecyclerView.OnScrollListener() {
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    super.onScrollStateChanged(recyclerView, newState)
+                    if (mHeaderHeight == -1 || adapter == null || staggeredGridLayoutManager == null) {
+                        mHeaderHeight = mHeaderContainer?.height.orZero()
+                        val adapter = mRecyclerView?.adapter
+                        if (adapter !is OnStickySingleHeaderAdapter) throw RuntimeException("Your RecyclerView.Adapter should be the type of StickyHeaderViewAdapter.")
+                        this@StickySingleHeaderView.adapter = adapter
+                        this@StickySingleHeaderView.adapter?.setListener(this@StickySingleHeaderView)
+                        staggeredGridLayoutManager =
+                            mRecyclerView?.layoutManager as StaggeredGridLayoutManager?
+                    }
+                    stickyPosition = adapter?.stickyHeaderPosition.orZero()
                 }
-                stickyPosition = adapter?.stickyHeaderPosition.orZero()
-            }
 
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                currentScroll = recyclerView.computeVerticalScrollOffset()
-                this@StickySingleHeaderView.onScrolled(recyclerView, dx, dy)
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    currentScroll = recyclerView.computeVerticalScrollOffset()
+                    this@StickySingleHeaderView.onScrolled(recyclerView, dx, dy)
+                }
             }
-        }
         mRecyclerView?.addOnScrollListener(onScrollListener)
     }
 
@@ -137,5 +152,9 @@ class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         initView()
         super.onLayout(changed, left, top, right, bottom)
+    }
+
+    fun setShapeBackgroundColorIntValue(intColorValue: Int) {
+        backgroundColorIntValue = intColorValue
     }
 }

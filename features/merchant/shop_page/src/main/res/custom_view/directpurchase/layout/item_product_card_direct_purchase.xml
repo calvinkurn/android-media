@@ -88,12 +88,16 @@
         tools:text="Rp7.999.000"
         tools:visibility="visible" />
 
-    <com.tokopedia.unifycomponents.Label
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/labelDiscount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
-        app:labelType="general_light_red"
+        android:background="@drawable/bg_shop_product_price_discount_adaptive"
+        android:padding="4dp"
+        app:typographyType="small"
+        android:textColor="@color/Unify_RN500"
+        app:typographyWeight="bold"
         app:layout_constraintBottom_toBottomOf="@id/tvPrice"
         app:layout_constraintLeft_toRightOf="@id/tvPrice"
         app:layout_constraintTop_toTopOf="@id/tvPrice"
@@ -137,7 +141,7 @@
             tools:visibility="visible" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tvSales"
+            android:id="@+id/tvRating"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="2dp"
@@ -145,7 +149,29 @@
             android:maxLines="1"
             android:textColor="@color/Unify_NN950_68"
             app:typographyType="body_3"
-            tools:text="4.8 \u2022 Terjual 122" />
+            tools:text="4.8" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvDotSeparator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="2dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/Unify_NN950_68"
+            app:typographyType="body_3"
+            tools:text="\u2022" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvSoldCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="2dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/Unify_NN950_68"
+            app:typographyType="body_3"
+            tools:text="Terjual 122" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 

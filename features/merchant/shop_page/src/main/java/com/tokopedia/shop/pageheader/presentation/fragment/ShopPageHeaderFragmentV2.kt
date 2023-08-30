@@ -1361,12 +1361,20 @@ class ShopPageHeaderFragmentV2 :
         return cartLocalCacheHandler?.getInt(TOTAL_CART_CACHE_KEY, 0).orZero()
     }
 
-    override fun getColorSchema(): ShopPageColorSchema? {
+    override fun getBodyColorSchema(): ShopPageColorSchema? {
         return getShopBodyConfig()?.colorSchema
     }
 
     override fun isOverrideTheme(): Boolean {
         return shopPageHeaderP1Data?.shopHeaderLayoutData?.isOverrideTheme.orFalse()
+    }
+
+    override fun getBodyPatternColorType(): String {
+        return getShopBodyConfig()?.patternColorType.orEmpty()
+    }
+
+    override fun getBodyBackgroundHexColor(): String {
+        return getShopNavBarConfig()?.listBackgroundColor?.firstOrNull().orEmpty()
     }
 
     private fun redirectToSearchAutoCompletePage() {
@@ -2551,7 +2559,7 @@ class ShopPageHeaderFragmentV2 :
             if(getShopHeaderConfig()?.patternColorType == ShopPageHeaderLayoutUiModel.ColorType.DARK.value) {
                 R.color.dms_static_Unify_NN950_light
             } else {
-                R.color.Unify_Static_White
+                com.tokopedia.unifyprinciples.R.color.Unify_Static_White
             }
         } else {
             super.onChangeTextColor()

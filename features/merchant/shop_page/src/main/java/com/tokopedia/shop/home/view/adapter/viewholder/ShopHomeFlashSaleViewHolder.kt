@@ -146,7 +146,6 @@ class ShopHomeFlashSaleViewHolder(
             endBackGroundColor = flashSaleItem?.secondBackgroundColor
         )
         configMarginNonFestivity()
-        setShopReimaginedContainerMargin()
     }
 
     private fun setShopReimaginedContainerMargin() {

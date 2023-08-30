@@ -37,22 +37,12 @@ class FrameRatio: FrameLayout {
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val originalWidth = MeasureSpec.getSize(widthMeasureSpec)
 
-        val originalHeight = MeasureSpec.getSize(heightMeasureSpec)
-
         val heightWidthRatio = heightRatio.toFloat() / widthRatio
 
         val calculatedHeight = originalWidth * heightWidthRatio
 
-        val finalWidth: Int
-        val finalHeight: Int
-
-        if (calculatedHeight > originalHeight) {
-            finalWidth = (originalHeight / heightWidthRatio).toInt()
-            finalHeight = originalHeight
-        } else {
-            finalWidth = originalWidth
-            finalHeight = calculatedHeight.toInt()
-        }
+        val finalWidth: Int = originalWidth
+        val finalHeight: Int = calculatedHeight.toInt()
 
         super.onMeasure(
             MeasureSpec.makeMeasureSpec(finalWidth, MeasureSpec.EXACTLY),

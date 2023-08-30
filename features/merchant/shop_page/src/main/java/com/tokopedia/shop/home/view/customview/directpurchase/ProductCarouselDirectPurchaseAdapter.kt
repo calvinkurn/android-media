@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.common.ColorPallete
+import com.tokopedia.kotlin.extensions.view.ZERO
 
 class ProductCarouselDirectPurchaseAdapter(
     private val contentListener: ProductDirectPurchaseViewHolder.ProductDirectPurchaseContentVHListener,
@@ -17,8 +18,10 @@ class ProductCarouselDirectPurchaseAdapter(
     ) {
 
     var fullData: List<Model> = emptyList()
+    private var recyclerView: RecyclerView? = null
     private var colorPallete: ColorPallete? = null
     private var seeAllCardModeType: Int? = null
+    private var isAdaptiveLabelDiscount: Boolean = true
 
     fun setMaxProductShown(maxProductShownParam: Int) {
         if (maxProductShown != maxProductShownParam) {
@@ -38,11 +41,18 @@ class ProductCarouselDirectPurchaseAdapter(
         this.seeAllCardModeType = mode
     }
 
+    //set adaptive label discount
+    fun setAdaptiveLabelDiscount(isAdaptive: Boolean) {
+        this.isAdaptiveLabelDiscount = isAdaptive
+    }
+
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             TYPE_CONTENT -> ProductDirectPurchaseViewHolder.ContentVH.create(
                 parent,
                 colorPallete,
+                isAdaptiveLabelDiscount,
                 contentListener
             )
 
@@ -79,6 +89,16 @@ class ProductCarouselDirectPurchaseAdapter(
         }
     }
 
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        super.onAttachedToRecyclerView(recyclerView)
+        this.recyclerView = recyclerView
+    }
+
+    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView)
+        this.recyclerView = null
+    }
+
     fun setLoading() {
         if (this.itemCount == 1 && getItem(0) is Model.Loading) {
             return
@@ -108,10 +128,18 @@ class ProductCarouselDirectPurchaseAdapter(
         if (diff > 0) {
             submitList(contentData.take(maxProductShown).toMutableList().apply {
                 add(Model.SeeMore(diff))
-            })
+            }){
+                resetScrollPosition()
+            }
         } else {
-            submitList(contentData)
+            submitList(contentData){
+                resetScrollPosition()
+            }
         }
+    }
+
+    private fun resetScrollPosition() {
+        recyclerView?.scrollToPosition(Int.ZERO)
     }
 
     sealed interface Model {

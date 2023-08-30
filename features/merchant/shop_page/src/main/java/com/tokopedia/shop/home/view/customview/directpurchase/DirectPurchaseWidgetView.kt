@@ -12,7 +12,11 @@ import com.tokopedia.common.customview.ImageTabData
 import com.tokopedia.common.customview.ImageTabs
 import com.tokopedia.common.customview.MultipleContentSwitcher
 import com.tokopedia.common.setRetainTextColor
+import com.tokopedia.kotlin.extensions.orTrue
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.shop.databinding.LayoutDirectPurchaseWidgetBinding
+import com.tokopedia.unifycomponents.ImageUnify
 
 /***
  * A Vertical LinearLayout that shows below:
@@ -81,7 +85,7 @@ class DirectPurchaseWidgetView : LinearLayout,
     ) : super(context, attrs, defStyleAttr, defStyleRes)
 
     interface DirectPurchaseWidgetViewListener {
-        fun triggerLoadProductDirectPurchase(etalaseId: String, timestampLastCaptured: Long)
+        fun triggerLoadProductDirectPurchase(etalaseId: String, timestampLastCaptured: Long, selectedSwitcherIndex: Int, selectedEtalaseIndex: Int)
 
         fun onAddButtonProductDirectPurchaseClick(data: ProductCardDirectPurchaseDataModel)
 
@@ -92,12 +96,13 @@ class DirectPurchaseWidgetView : LinearLayout,
     }
 
     companion object {
-        const val MAX_PRODUCT_SHOWN = 5
+        const val MAX_PRODUCT_SHOWN = 8
         const val DEFAULT_THRESHOLD_RECAPTURE_DATA = 30000 // in ms
     }
 
     private var listener: DirectPurchaseWidgetViewListener? = null
     private var diffTriggerLoadProduct = DEFAULT_THRESHOLD_RECAPTURE_DATA
+    private var enableReFetchProductListData = false
 
     fun setListener(listener: DirectPurchaseWidgetViewListener?) {
         this@DirectPurchaseWidgetView.listener = listener
@@ -130,7 +135,12 @@ class DirectPurchaseWidgetView : LinearLayout,
             ProductDirectPurchaseViewHolder.ProductDirectPurchaseErrorVHListener {
             override fun onRetryClick() {
                 val currentEtalase = getSelectedEtalase() ?: return
-                listener?.triggerLoadProductDirectPurchase(etalaseId = currentEtalase.etalaseId, 0)
+                listener?.triggerLoadProductDirectPurchase(
+                    etalaseId = currentEtalase.etalaseId,
+                    0,
+                    getSelectedSwitcherIndex(),
+                    getSelectedEtalaseIndex()
+                )
             }
         }, object : ProductDirectPurchaseViewHolder.ProductDirectPurchaseSeeMoreVHListener {
             override fun onSeeMoreClick() {
@@ -172,11 +182,30 @@ class DirectPurchaseWidgetView : LinearLayout,
     fun setData(widgetDataInput: WidgetData) {
         this@DirectPurchaseWidgetView.widgetData = widgetDataInput
         setUpTitleText(widgetDataInput.widgetTitle)
+        configEtalaseTabType(widgetDataInput.titleList.size)
         frameBannerWrapperView.setData(widgetDataInput.titleList)
         val etalaseList = getCurrentTitle()?.etalaseList
         setUpEtalaseList(etalaseList)
-        submitProductList(etalaseList?.get(imageTabsWrapper.selectedIndex))
+        if(!isInitialData()){
+            submitProductList(etalaseList?.get(imageTabsWrapper.selectedIndex))
+        }
         this.visibility = View.VISIBLE
+    }
+
+    private fun configEtalaseTabType(size: Int) {
+        if (size > Int.ONE) {
+            imageTabsWrapper.setTypeTab(ImageUnify.TYPE_CIRCLE)
+        } else {
+            imageTabsWrapper.setTypeTab(ImageUnify.TYPE_RECT)
+        }
+    }
+
+    private fun isInitialData(): Boolean {
+        return widgetData?.titleList?.all {
+            it.etalaseList.all { etalase ->
+                etalase.lastTimeStampProductListCaptured == 0L
+            }
+        }.orTrue()
     }
 
     fun clearData() {
@@ -199,6 +228,10 @@ class DirectPurchaseWidgetView : LinearLayout,
         productAdapter.setSeeAllCardModeType(type)
     }
 
+    fun setAdaptiveLabelDiscount(isAdaptive: Boolean) {
+        productAdapter.setAdaptiveLabelDiscount(isAdaptive)
+    }
+
     /**
      * set how much time load product will be triggered since the last time fetched.
      * Time is in milliseconds. 30000 = 5 minutes.
@@ -208,6 +241,7 @@ class DirectPurchaseWidgetView : LinearLayout,
      */
     fun setDiffTriggerloadProduct(diffTriggerLoadProductParam: Int) {
         diffTriggerLoadProduct = diffTriggerLoadProductParam
+        enableReFetchProductListData = true
     }
 
     private fun setUpProductRecyclerView() {
@@ -281,13 +315,20 @@ class DirectPurchaseWidgetView : LinearLayout,
                     )
                 })
             }
-            if (System.currentTimeMillis() - lastTimeStampProductListCaptured > diffTriggerLoadProduct) {
+            if (lastTimeStampProductListCaptured == Int.ZERO.toLong() || isReFetchProductListData(lastTimeStampProductListCaptured)) {
                 listener?.triggerLoadProductDirectPurchase(
                     etalaseId,
-                    lastTimeStampProductListCaptured
+                    lastTimeStampProductListCaptured,
+                    getSelectedSwitcherIndex(),
+                    getSelectedEtalaseIndex()
                 )
             }
         }
+    }
+
+    private fun isReFetchProductListData(lastTimeStampProductListCaptured: Long): Boolean {
+        val isTimeToReFetch = System.currentTimeMillis() - lastTimeStampProductListCaptured > diffTriggerLoadProduct
+        return isTimeToReFetch && enableReFetchProductListData
     }
 
     private fun getSelectedEtalase() =
@@ -295,6 +336,8 @@ class DirectPurchaseWidgetView : LinearLayout,
 
     private fun getCurrentTitle() =
         this@DirectPurchaseWidgetView.widgetData?.titleList?.get(binding.switcher.getSelectedIndex())
+    private fun getSelectedSwitcherIndex(): Int = binding.switcher.getSelectedIndex()
+    private fun getSelectedEtalaseIndex(): Int = imageTabsWrapper.selectedIndex
 
 }
 

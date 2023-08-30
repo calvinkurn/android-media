@@ -35,7 +35,7 @@ data class ShopPageHeaderLayoutResponse(
                 data class BackgroundObject(
                     @SerializedName("url")
                     val url: String = "",
-                    @SerializedName("type")
+                    @SerializedName("objectType")
                     val type: String = ""
                 )
 

@@ -12,6 +12,7 @@
         android:id="@+id/icon"
         android:layout_width="56dp"
         android:layout_height="56dp"
+        android:layout_gravity="center_horizontal"
         android:scaleType="centerCrop"/>
 
     <com.tokopedia.unifyprinciples.Typography

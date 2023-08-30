@@ -15,6 +15,9 @@ import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.CarouselAppearance
 import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.LeftMainBannerAppearance
 import com.tokopedia.shop.home.view.model.banner_product_group.ShopWidgetComponentBannerProductGroupUiModel
+import com.tokopedia.shop.home.view.customview.directpurchase.Etalase
+import com.tokopedia.shop.home.view.customview.directpurchase.Title
+import com.tokopedia.shop.home.view.customview.directpurchase.WidgetData
 import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseNavigationUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerProductHotspotUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerTimerUiModel
@@ -27,6 +30,7 @@ import com.tokopedia.shop.home.view.model.showcase_navigation.Showcase
 import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseCornerShape
 import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseTab
 import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.TopMainBannerAppearance
+import com.tokopedia.shop.home.view.model.viewholder.ShopDirectPurchaseByEtalaseUiModel
 
 //TODO need to migrate all other shop widget mapper on home mapper to this mapper
 object ShopPageWidgetMapper {
@@ -343,4 +347,39 @@ object ShopPageWidgetMapper {
             )
         }
     }
+
+    fun mapToDirectPurchaseByEtalase(
+        widgetResponse: ShopLayoutWidget.Widget,
+        widgetLayout: ShopPageWidgetUiModel?,
+        isOverrideTheme: Boolean,
+        colorSchema: ShopPageColorSchema
+    ) = ShopDirectPurchaseByEtalaseUiModel(
+        widgetId = widgetResponse.widgetID,
+        layoutOrder = widgetResponse.layoutOrder,
+        name = widgetResponse.name,
+        type = widgetResponse.type,
+        header = ShopPageHomeMapper.mapToHeaderModel(
+            widgetResponse.header,
+            widgetLayout,
+            isOverrideTheme,
+            colorSchema
+        ),
+        widgetData = WidgetData(
+            widgetTitle = widgetResponse.header.title,
+            titleList = widgetResponse.data.map {
+                Title(
+                    title = it.title,
+                    imageUrl = it.banner,
+                    etalaseList = it.listEtalase.map {etalase ->
+                        Etalase(
+                            etalaseId = etalase.linkId,
+                            name = etalase.name,
+                            imageUrl = etalase.imageUrl,
+                            productList = listOf()
+                        )
+                    }
+                )
+            }
+        )
+    )
 }

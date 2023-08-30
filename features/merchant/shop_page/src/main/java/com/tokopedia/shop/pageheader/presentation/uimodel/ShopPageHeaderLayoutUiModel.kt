@@ -17,6 +17,7 @@ data class ShopPageHeaderLayoutUiModel(
 
     enum class BgObjectType(val value: String) {
         IMAGE_JPG("image/jpeg"),
+        IMAGE_PNG("image/png"),
         VIDEO("video/m3u8"),
     }
 

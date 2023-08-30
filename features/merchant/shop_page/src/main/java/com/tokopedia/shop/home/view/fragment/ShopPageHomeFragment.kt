@@ -203,6 +203,8 @@ import com.tokopedia.shop.common.view.interfaces.InterfaceShopPageHeader
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.home.util.ShopBannerProductGroupWidgetTabDependencyProvider
 import com.tokopedia.shop.home.view.listener.ShopBannerProductGroupListener
+import com.tokopedia.shop.home.view.customview.directpurchase.DirectPurchaseWidgetView
+import com.tokopedia.shop.home.view.customview.directpurchase.ProductCardDirectPurchaseDataModel
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragment
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragmentV2
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPageHeaderPerformanceMonitoringListener
@@ -213,6 +215,7 @@ import com.tokopedia.shop.product.view.activity.ShopProductListResultActivity
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.shop.product.view.datamodel.ShopProductSortFilterUiModel
 import com.tokopedia.shop.product.view.viewholder.ShopProductSortFilterViewHolder
+import com.tokopedia.shop.product.view.widget.StickySingleHeaderView
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity
 import com.tokopedia.shop_widget.thematicwidget.uimodel.ProductCardUiModel
 import com.tokopedia.shop_widget.thematicwidget.uimodel.ThematicWidgetUiModel
@@ -261,7 +264,8 @@ open class ShopPageHomeFragment :
     ShopHomeShowcaseNavigationDependencyProvider,
     ShopHomeV4TerlarisViewHolder.ShopHomeV4TerlarisViewHolderListener,
     ShopBannerProductGroupWidgetTabDependencyProvider,
-    ShopBannerProductGroupListener {
+    ShopBannerProductGroupListener,
+    DirectPurchaseWidgetView.DirectPurchaseWidgetViewListener {
 
     companion object {
         const val KEY_SHOP_ID = "SHOP_ID"
@@ -388,6 +392,7 @@ open class ShopPageHomeFragment :
     private var topView: View? = null
     private var centerView: View? = null
     private var bottomView: View? = null
+    private var stickyHeaderView: StickySingleHeaderView? = null
     private val imageBackgroundPattern: ImageUnify? by lazy {
         viewBinding?.imageBackgroundPattern
     }
@@ -546,6 +551,7 @@ open class ShopPageHomeFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
+        configStickyHeaderView()
         getRecyclerView(view)?.let {
             it.clearOnScrollListeners()
             it.layoutManager = staggeredGridLayoutManager
@@ -566,7 +572,36 @@ open class ShopPageHomeFragment :
         observeCheckBannerTimerRemindMeStatusData()
         observeHomeWidgetListVisitable()
         observeUpdatedBannerTimerUiModelData()
+        observeDirectPurchaseProductWidgetAtcResult()
         isLoadInitialData = true
+    }
+
+    private fun configStickyHeaderView() {
+        if(isOverrideTheme()) {
+            stickyHeaderView?.setShapeBackgroundColorIntValue(
+                ShopUtil.parseColorFromHexString(getBodyBackgroundHexColor())
+            )
+        }
+    }
+
+    private fun getBodyBackgroundHexColor(): String {
+        return (getRealParentFragment() as? InterfaceShopPageHeader)?.getBodyBackgroundHexColor().orEmpty()
+    }
+
+    private fun observeDirectPurchaseProductWidgetAtcResult() {
+        viewModel?.directPurchaseProductWidgetAtcResult?.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    showToastSuccess(
+                        it.data.data.message.joinToString(separator = ", "),
+                        getString(R.string.shop_page_atc_label_cta)
+                    )
+                }
+                is Fail -> {
+                    showErrorToast(it.throwable.message.orEmpty())
+                }
+            }
+        }
     }
 
     private fun observeUpdatedBannerTimerUiModelData() {
@@ -743,6 +778,7 @@ open class ShopPageHomeFragment :
         topView = viewBinding?.topView
         centerView = viewBinding?.centerView
         bottomView = viewBinding?.bottomView
+        stickyHeaderView = viewBinding?.stickySingleHeaderView
     }
 
     protected open fun observeShopHomeWidgetContentData() {
@@ -813,10 +849,7 @@ open class ShopPageHomeFragment :
     }
 
     private fun setFestivityRvDecoration() {
-        val anyFestivityWidget = shopHomeAdapter?.getShopHomeWidgetData().orEmpty().any {
-            it.isFestivity
-        }
-        if (anyFestivityWidget) {
+        if (shopHomeAdapter?.anyFestivityOnShopHomeWidget() == true) {
             getRecyclerView(view)?.let {
                 if (it.itemDecorationCount == Int.ZERO) {
                     context?.let { ctx ->
@@ -1070,7 +1103,7 @@ open class ShopPageHomeFragment :
             isEnableDirectPurchase,
             shopId,
             isOverrideTheme(),
-            getColorSchema()
+            getShopPageColorSchema()
         )
         if (shopHomeWidgetContentData.isNotEmpty()) {
             shopHomeAdapter?.setHomeLayoutData(shopHomeWidgetContentData)
@@ -1323,19 +1356,21 @@ open class ShopPageHomeFragment :
     }
 
     private fun observeShopAtcTrackerLiveData() {
-        viewModel?.shopPageAtcTracker?.observe(viewLifecycleOwner, {
+        viewModel?.shopPageAtcTracker?.observe(viewLifecycleOwner) {
             when (it.atcType) {
                 ShopPageAtcTracker.AtcType.ADD -> {
                     sendClickAddToCartTracker(it)
                 }
+
                 ShopPageAtcTracker.AtcType.UPDATE_ADD, ShopPageAtcTracker.AtcType.UPDATE_REMOVE -> {
                     sendUpdateCartProductQuantityTracker(it)
                 }
+
                 else -> {
                     sendRemoveCartProductTracker(it)
                 }
             }
-        })
+        }
     }
 
     private fun sendClickAddToCartTracker(atcTrackerModel: ShopPageAtcTracker) {
@@ -1721,7 +1756,7 @@ open class ShopPageHomeFragment :
             isEnableDirectPurchase,
             shopId,
             isOverrideTheme(),
-            getColorSchema()
+            getShopPageColorSchema()
         )
         if (shopHomeWidgetContentData.isNotEmpty()) {
             shopHomeAdapter?.setHomeLayoutData(shopHomeWidgetContentData)
@@ -1985,7 +2020,7 @@ open class ShopPageHomeFragment :
                 isThematicWidgetShown,
                 isEnableDirectPurchase,
                 isOverrideTheme(),
-                getColorSchema()
+                getShopPageColorSchema()
             )
         }
     }
@@ -4302,7 +4337,7 @@ open class ShopPageHomeFragment :
     }
 
     override fun getShopPageColorSchema(): ShopPageColorSchema {
-        return (getRealParentFragment() as? InterfaceShopPageHeader)?.getColorSchema()
+        return (getRealParentFragment() as? InterfaceShopPageHeader)?.getBodyColorSchema()
             ?: ShopPageColorSchema()
     }
 
@@ -5052,7 +5087,77 @@ open class ShopPageHomeFragment :
         return (getRealParentFragment() as? InterfaceShopPageHeader)?.isOverrideTheme().orFalse() && !isShopHomeTabHasFestivity()
     }
 
-    private fun getColorSchema(): ShopPageColorSchema {
-        return (getRealParentFragment() as? InterfaceShopPageHeader)?.getColorSchema() ?: ShopPageColorSchema()
+    override fun getShopPageHomeFragment(): ShopPageHomeFragment {
+        return this
+    }
+
+    override fun getPatternColorType(): String {
+        return (getRealParentFragment() as? InterfaceShopPageHeader)?.getBodyPatternColorType().orEmpty()
+    }
+
+    override fun triggerLoadProductDirectPurchase(
+        etalaseId: String,
+        timestampLastCaptured: Long,
+        selectedSwitcherIndex: Int,
+        selectedEtalaseIndex: Int
+    ) {
+        viewModel?.getDirectPurchaseWidgetProductData(
+            shopId,
+            etalaseId,
+            ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel(),
+            selectedSwitcherIndex,
+            selectedEtalaseIndex,
+            shopHomeAdapter?.getNewVisitableItems().orEmpty().toMutableList()
+        )
+    }
+
+    override fun onAddButtonProductDirectPurchaseClick(data: ProductCardDirectPurchaseDataModel) {
+        if (isLogin) {
+            if (isOwner) {
+                val sellerViewAtcErrorMessage = getString(R.string.shop_page_seller_atc_error_message)
+                showErrorToast(sellerViewAtcErrorMessage)
+            } else {
+                if(data.isVariant){
+                    AtcVariantHelper.goToAtcVariant(
+                        context = requireContext(),
+                        productId = data.productId,
+                        pageSource = VariantPageSource.SHOP_PAGE_PAGESOURCE,
+                        shopId = shopId,
+                        startActivitResult = this::startActivityForResult,
+                        showQuantityEditor = false
+                    )
+                } else {
+                    addToCartDirectPurchaseProductWidget(data)
+                }
+            }
+        } else {
+            redirectToLoginPage()
+        }
+    }
+
+    private fun addToCartDirectPurchaseProductWidget(data: ProductCardDirectPurchaseDataModel) {
+        viewModel?.addToCartDirectPurchaseProductWidget(
+            data.productId,
+            shopId,
+            data.minimumOrder,
+            data.stock
+        )
+    }
+
+    override fun onProductDirectPurchaseClick(data: ProductCardDirectPurchaseDataModel) {
+        goToPDP(
+            UriUtil.buildUri(
+                ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+                data.productId
+            )
+        )
+    }
+
+    override fun onSeeMoreClick(etalaseId: String) {
+        redirectToEtalasePage(etalaseId)
+    }
+
+    private fun redirectToEtalasePage(etalaseId: String) {
+        RouteManager.route(context, ApplinkConst.SHOP_ETALASE, shopId, etalaseId)
     }
 }
