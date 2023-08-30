@@ -219,7 +219,7 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
         activity?.run {
             snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(this) { loadData() }
             snackbarRetry?.setColorActionRetry(ContextCompat.getColor(this,
-                com.tokopedia.abstraction.R.color.Unify_GN500))
+                com.tokopedia.unifyprinciples.R.color.Unify_GN500))
         }
 
         appBarLayout2?.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, offset ->

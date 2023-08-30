@@ -210,7 +210,7 @@ class SwitchAccountRobot(
 
     private val scenario = launchFragmentInContainer<PlayBroadcastPreparationFragment>(
         factory = fragmentFactory,
-        themeResId = R.style.AppTheme,
+        themeResId = com.tokopedia.empty_state.R.style.AppTheme,
     )
 
     init {

@@ -12,6 +12,7 @@ import javax.inject.Inject
  * Created by Yoris on 05/08/21.
  */
 
+@Deprecated("Remove this class after integrating SCP Login to Tokopedia")
 class GetLinkStatusUseCase @Inject constructor (@ApplicationContext private val repository: GraphqlRepository,
                                                 dispatcher: CoroutineDispatcher)
     : CoroutineUseCase<String, LinkStatusResponse>(dispatcher) {

@@ -1,6 +1,6 @@
 package com.tokopedia.tokofood.cassavatest.base
 
-import com.tokochat.tokochat_config_common.util.TokoChatConnection
+import com.tokopedia.tokochat.config.util.TokoChatConnection
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.tokofood.R

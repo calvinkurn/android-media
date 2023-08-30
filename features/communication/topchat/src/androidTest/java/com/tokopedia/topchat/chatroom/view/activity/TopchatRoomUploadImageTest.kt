@@ -209,7 +209,7 @@ class TopchatRoomUploadImageTest : TopchatRoomTest() {
         )
         onView(
             withRecyclerView(R.id.recycler_view_chatroom)
-                .atPositionOnView(position, R.id.chat_status)
+                .atPositionOnView(position, com.tokopedia.chat_common.R.id.chat_status)
         )
             .check(assertions)
     }

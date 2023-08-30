@@ -427,7 +427,6 @@ class PlayUserInteractionFragment @Inject constructor(
     override fun onPause() {
         super.onPause()
         isOpened = false
-        analytic.getTrackingQueue().sendAll()
     }
 
     override fun onWatchModeClicked(bottomSheet: PlayMoreActionBottomSheet) {
@@ -715,7 +714,8 @@ class PlayUserInteractionFragment @Inject constructor(
                 ProductCarouselUiComponent(
                     binding = productFeaturedBinding,
                     bus = eventBus,
-                    scope = viewLifecycleOwner.lifecycleScope
+                    scope = viewLifecycleOwner.lifecycleScope,
+                    dispatchers = dispatchers,
                 )
             )
         }

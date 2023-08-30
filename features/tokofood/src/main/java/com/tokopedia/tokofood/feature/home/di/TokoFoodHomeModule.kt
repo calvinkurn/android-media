@@ -5,9 +5,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.tokofood.feature.home.analytics.TokoFoodCategoryAnalytics
-import com.tokopedia.tokofood.feature.home.analytics.TokoFoodCategoryAnalyticsOld
 import com.tokopedia.tokofood.feature.home.analytics.TokoFoodHomeAnalytics
-import com.tokopedia.tokofood.feature.home.analytics.TokoFoodHomeAnalyticsOld
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -31,11 +29,6 @@ class TokoFoodHomeModule {
     }
 
     @Provides
-    fun homeAnalyticOld(): TokoFoodHomeAnalyticsOld {
-        return TokoFoodHomeAnalyticsOld()
-    }
-
-    @Provides
     fun trackingQueue(@ApplicationContext context: Context): TrackingQueue {
         return TrackingQueue(context)
     }
@@ -43,11 +36,6 @@ class TokoFoodHomeModule {
     @Provides
     fun categoryAnalytic(): TokoFoodCategoryAnalytics {
         return TokoFoodCategoryAnalytics()
-    }
-
-    @Provides
-    fun categoryAnalyticOld(): TokoFoodCategoryAnalyticsOld {
-        return TokoFoodCategoryAnalyticsOld()
     }
 
 }

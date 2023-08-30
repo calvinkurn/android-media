@@ -6,6 +6,7 @@ import com.tokopedia.home_component.model.*
 import com.tokopedia.home_component.util.ChannelStyleUtil.parseBorderStyle
 import com.tokopedia.home_component.util.ChannelStyleUtil.parseDividerSize
 import com.tokopedia.home_component.util.ChannelStyleUtil.parseImageStyle
+import com.tokopedia.home_component_header.util.HomeChannelHeaderRollenceController
 
 object DynamicChannelComponentMapper {
     fun mapHomeChannelToComponent(channel: DynamicHomeChannel.Channels, verticalPosition: Int): ChannelModel {
@@ -37,7 +38,8 @@ object DynamicChannelComponentMapper {
                 channel.header.url,
                 channel.header.backColor,
                 channel.header.backImage,
-                channel.header.textColor
+                channel.header.textColor,
+                getHeaderType(),
             ),
             channelBanner = ChannelBanner(
                 id = channel.banner.id,
@@ -183,7 +185,8 @@ object DynamicChannelComponentMapper {
                 channel.header.url.ifBlank { channel.banner.url },
                 channel.header.backColor,
                 channel.header.backImage,
-                channel.header.textColor
+                channel.header.textColor,
+                getHeaderType(),
             ),
             channelBanner = ChannelBanner(
                 id = channel.banner.id,
@@ -286,5 +289,11 @@ object DynamicChannelComponentMapper {
                 )
             }
         )
+    }
+
+    fun getHeaderType(): ChannelHeader.HeaderType {
+        return if(HomeChannelHeaderRollenceController.isHeaderUsingRollenceVariant()) {
+            ChannelHeader.HeaderType.REVAMP
+        } else ChannelHeader.HeaderType.CONTROL
     }
 }
