@@ -9,6 +9,7 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.unifyprinciples.UnifyColorRef
 import com.tokopedia.unifyprinciples.stringToUnifyColor
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class SpacingViewModel(val application: Application, private val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel() {
     private val spacingComponentData: MutableLiveData<ComponentsItem> = MutableLiveData()
@@ -33,12 +34,12 @@ class SpacingViewModel(val application: Application, private val components: Com
                 convertedColor = stringToUnifyColor(context, spacingBackgroundColor)
             }
             if (spacingBackgroundColor.isNullOrEmpty()) {
-                viewBackgroundColor.value = com.tokopedia.unifyprinciples.R.color.Unify_NN0
+                viewBackgroundColor.value = unifyprinciplesR.color.Unify_NN0
             } else {
                 try {
-                    viewBackgroundColor.value = convertedColor?.unifyColor ?: com.tokopedia.unifyprinciples.R.color.Unify_NN0
+                    viewBackgroundColor.value = convertedColor?.unifyColor ?: unifyprinciplesR.color.Unify_NN0
                 } catch (exception: IllegalArgumentException) {
-                    viewBackgroundColor.value = com.tokopedia.unifyprinciples.R.color.Unify_NN0
+                    viewBackgroundColor.value = unifyprinciplesR.color.Unify_NN0
                 }
             }
         }
