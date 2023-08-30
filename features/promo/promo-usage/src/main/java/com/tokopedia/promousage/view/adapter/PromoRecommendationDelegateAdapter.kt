@@ -98,7 +98,8 @@ class PromoRecommendationDelegateAdapter(
 
         private fun startMessageAnimation(item: PromoRecommendationItem) {
             binding.tpgRecommendationTitle.animateGone {
-                binding.tpgRecommendationTitle.text = item.messageSelected
+                binding.tpgRecommendationTitle.text =
+                    HtmlLinkHelper(binding.tpgRecommendationTitle.context, item.messageSelected).spannedString
                 binding.tpgRecommendationTitle.animateShow {
                     onClickUsePromoRecommendation()
                 }
