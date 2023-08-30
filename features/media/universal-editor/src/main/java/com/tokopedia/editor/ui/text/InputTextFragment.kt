@@ -20,7 +20,6 @@ import javax.inject.Inject
 import com.tokopedia.editor.R as resourceR
 import com.tokopedia.unifyprinciples.getTypeface as unifyTypeFaceGetter
 
-
 class InputTextFragment @Inject constructor(
     private val colorProvider: ColorProvider
 ) : BaseEditorFragment(resourceR.layout.fragment_input_text) {
@@ -121,6 +120,7 @@ class InputTextFragment @Inject constructor(
             }
 
             it.addTextInput.addTextChangedListener { newText ->
+                updateHint(newText?.toString()?.isNotEmpty() == true)
                 viewModel.updateText(newText.toString())
             }
         }
@@ -243,6 +243,16 @@ class InputTextFragment @Inject constructor(
     private fun updateEditTextDrawable(colorInt: Int) {
         viewBinding?.addTextInput?.background?.let {
             it.setColorFilter(colorInt, PorterDuff.Mode.DST_ATOP)
+        }
+    }
+
+    private fun updateHint(isClear: Boolean) {
+        viewBinding?.addTextInput?.let {
+            if (isClear) {
+                it.hint = ""
+            } else {
+                it.hint = getString(resourceR.string.universal_editor_input_text_hint)
+            }
         }
     }
 
