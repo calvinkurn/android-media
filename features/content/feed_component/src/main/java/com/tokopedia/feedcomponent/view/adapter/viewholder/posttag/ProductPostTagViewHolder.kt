@@ -26,15 +26,15 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifyprinciples.Typography
 import kotlin.math.roundToInt
-import com.tokopedia.unifyprinciples.R as unifyR
 
 private const val RAD_20f = 20f
 private const val RAD_30f = 30f
 
-class ProductPostTagViewHolder(val mainView: View,
-                               val listener: DynamicPostViewHolder.DynamicPostListener,
-                               private val screenWidth: Int)
-    : AbstractViewHolder<ProductPostTagModel>(mainView) {
+class ProductPostTagViewHolder(
+    val mainView: View,
+    val listener: DynamicPostViewHolder.DynamicPostListener,
+    private val screenWidth: Int
+) : AbstractViewHolder<ProductPostTagModel>(mainView) {
 
     private lateinit var productLayout: FrameLayout
     private lateinit var productImage: ImageView
@@ -61,32 +61,60 @@ class ProductPostTagViewHolder(val mainView: View,
         productPrice.text = item.price
 
         val btnCtaPojo = item.postTagItemPojo.buttonCTA.firstOrNull()
-        if (btnCtaPojo != null) {
+        if (btnCtaPojo != null && !item.shouldHideActionButton) {
             btnBuy.visible()
 
             val isCTADisabled = btnCtaPojo.isDisabled
             btnBuy.apply {
                 isEnabled = !isCTADisabled
-                setOnClickListener { onBuyButtonClicked(listener, item.positionInFeed, item.postTagItemPojo, item.authorType) }
+                setOnClickListener {
+                    onBuyButtonClicked(
+                        listener,
+                        item.positionInFeed,
+                        item.postTagItemPojo,
+                        item.authorType
+                    )
+                }
             }
             textBtnBuy.apply {
                 text =
-                        if (!isCTADisabled) btnCtaPojo.text
-                        else btnCtaPojo.textDisabled
-                if (text.isEmpty()) text = getString(com.tokopedia.content.common.R.string.empty_product)
-                setTextColor(ContextCompat.getColor(
+                    if (!isCTADisabled) {
+                        btnCtaPojo.text
+                    } else {
+                        btnCtaPojo.textDisabled
+                    }
+                if (text.isEmpty()) {
+                    text =
+                        getString(com.tokopedia.content.common.R.string.empty_product)
+                }
+                setTextColor(
+                    ContextCompat.getColor(
                         context,
                         if (isCTADisabled) com.tokopedia.unifyprinciples.R.color.Unify_NN500 else com.tokopedia.unifyprinciples.R.color.Unify_NN0
-                ))
+                    )
+                )
             }
-        } else btnBuy.gone()
+        } else {
+            btnBuy.gone()
+        }
 
         productLayout.setOnClickListener(
-                getItemClickNavigationListener(listener, item.positionInFeed, item.postTagItemPojo, adapterPosition)
+            getItemClickNavigationListener(
+                listener,
+                item.positionInFeed,
+                item.postTagItemPojo,
+                adapterPosition
+            )
         )
         productName.text = item.text
         productNameSection.setOnClickListener(
-                getItemClickNavigationListener(listener, item.positionInFeed, item.postTagItemPojo, adapterPosition))
+            getItemClickNavigationListener(
+                listener,
+                item.positionInFeed,
+                item.postTagItemPojo,
+                adapterPosition
+            )
+        )
         if (item.rating <= 0) {
             widgetRating.gone()
         } else {
@@ -114,7 +142,8 @@ class ProductPostTagViewHolder(val mainView: View,
         if (tag.textColor.hex.isEmpty() || tag.textColor.opacity.isEmpty()) {
             tag.textColor = getDefaultTextColor()
         }
-        val textColor = if(tag.textColor.hex.isEmpty()) getString(com.tokopedia.content.common.R.string.feed_color_pojo_dms_hex_black_value) else tag.textColor.hex
+        val textColor =
+            if (tag.textColor.hex.isEmpty()) getString(com.tokopedia.content.common.R.string.feed_color_pojo_dms_hex_black_value) else tag.textColor.hex
         textView.setTextColor(Color.parseColor(textColor))
         textView.background = renderDrawable(tag.bgColor.hex, OPACITY_70)
     }
@@ -122,7 +151,8 @@ class ProductPostTagViewHolder(val mainView: View,
     private fun renderDrawable(hex: String, opacity: String): Drawable {
         val drawable = GradientDrawable()
         drawable.shape = GradientDrawable.RECTANGLE
-        drawable.cornerRadii = floatArrayOf(RAD_30f, RAD_30f, RAD_30f, RAD_30f, RAD_30f, RAD_30f, RAD_30f, RAD_30f)
+        drawable.cornerRadii =
+            floatArrayOf(RAD_30f, RAD_30f, RAD_30f, RAD_30f, RAD_30f, RAD_30f, RAD_30f, RAD_30f)
         drawable.setColor(Color.parseColor(hex))
         drawable.alpha = calculateBackgroundAlpha(opacity)
         return drawable
@@ -134,17 +164,25 @@ class ProductPostTagViewHolder(val mainView: View,
     }
 
     private fun getDefaultBackgroundColor(): ColorPojo {
-        return ColorPojo(getString(com.tokopedia.content.common.R.string.feed_color_pojo_dms_hex_black_value), OPACITY_70)
+        return ColorPojo(
+            getString(com.tokopedia.content.common.R.string.feed_color_pojo_dms_hex_black_value),
+            OPACITY_70
+        )
     }
 
     private fun getDefaultTextColor(): ColorPojo {
-        return ColorPojo(getString(com.tokopedia.content.common.R.string.feed_color_pojo_dms_hex_white_value), OPACITY_100)
+        return ColorPojo(
+            getString(com.tokopedia.content.common.R.string.feed_color_pojo_dms_hex_white_value),
+            OPACITY_100
+        )
     }
 
-    private fun getItemClickNavigationListener(listener: DynamicPostViewHolder.DynamicPostListener,
-                                               positionInFeed: Int,
-                                               item: PostTagItem, itemPosition: Int)
-            : View.OnClickListener {
+    private fun getItemClickNavigationListener(
+        listener: DynamicPostViewHolder.DynamicPostListener,
+        positionInFeed: Int,
+        item: PostTagItem,
+        itemPosition: Int
+    ): View.OnClickListener {
         return View.OnClickListener {
             listener.onPostTagItemClick(positionInFeed, item.applink, item, itemPosition)
             listener.onAffiliateTrackClicked(mappingTracking(item.tracking), true)
@@ -154,17 +192,24 @@ class ProductPostTagViewHolder(val mainView: View,
     private fun mappingTracking(trackListPojo: List<Tracking>): MutableList<TrackingModel> {
         val trackList = ArrayList<TrackingModel>()
         for (trackPojo: Tracking in trackListPojo) {
-            trackList.add(TrackingModel(
+            trackList.add(
+                TrackingModel(
                     trackPojo.clickURL,
                     trackPojo.viewURL,
                     trackPojo.type,
                     trackPojo.source
-            ))
+                )
+            )
         }
         return trackList
     }
 
-    private fun onBuyButtonClicked(listener: DynamicPostViewHolder.DynamicPostListener, positionInFeed: Int, itemPojo: PostTagItem, authorType: String) {
+    private fun onBuyButtonClicked(
+        listener: DynamicPostViewHolder.DynamicPostListener,
+        positionInFeed: Int,
+        itemPojo: PostTagItem,
+        authorType: String
+    ) {
         listener.onPostTagItemBuyClicked(positionInFeed, itemPojo, authorType)
         listener.onAffiliateTrackClicked(mappingTracking(itemPojo.tracking), true)
     }
