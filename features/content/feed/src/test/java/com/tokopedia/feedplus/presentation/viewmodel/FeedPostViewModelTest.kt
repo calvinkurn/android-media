@@ -648,8 +648,9 @@ class FeedPostViewModelTest {
     @Test
     fun onFetchFeedPosts_whenSuccessWithoutRelevantPostInCDP() {
         // given
+        val dummyData = getDummyFeedModel()
         coEvery { feedXHomeUseCase.createParams(any(), any(), any(), any()) } returns emptyMap()
-        coEvery { feedXHomeUseCase(any()) } returns getDummyFeedModel()
+        coEvery { feedXHomeUseCase(any()) } returns dummyData
 
         // when
         viewModel.fetchFeedPosts("", true, postSource = PostSourceModel("1", null, true))
@@ -658,14 +659,15 @@ class FeedPostViewModelTest {
         assert(!viewModel.shouldShowNoMoreContent)
         assert(viewModel.feedHome.value is Success)
         val data = (viewModel.feedHome.value as Success).data
-        assert(data.items.size == 7)
+        assert(data.items.size == dummyData.items.size)
         assert(data.items[0] is FeedCardImageContentModel)
         assert(data.items[1] is FeedCardVideoContentModel)
         assert(data.items[2] is FeedCardLivePreviewContentModel)
         assert(data.items[3] is FeedCardImageContentModel)
         assert(data.items[4] is FeedCardVideoContentModel)
         assert(data.items[5] is FeedCardLivePreviewContentModel)
-        assert(data.items[6] is FeedNoContentModel)
+        assert(data.items[6] is FeedFollowRecommendationModel)
+        assert(data.items[7] is FeedNoContentModel)
     }
 
     @Test
