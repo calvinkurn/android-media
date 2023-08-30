@@ -968,8 +968,9 @@ open class DiscoveryFragment :
                     if (componentsToExclude.contains(data.getOrNull(index+1)?.name ?: "")) {
                         tabsViewModel?.shouldAddSpace(false)
                     } else if (data.getOrNull(index+1)?.name == ComponentsList.Section.componentName) {
-                        val latestComponent = data.getOrNull(index+1)?.getComponentsItem()?.getOrNull(0)
-                        if (latestComponent?.name == ComponentsList.LihatSemua.componentName || componentsToExclude.contains(latestComponent?.name)) {
+                        val latestComponent = data.getOrNull(index+1)?.getComponentsItem()?.getOrNull(0)?.name
+                            ?: return@let
+                        if (latestComponent == ComponentsList.LihatSemua.componentName || componentsToExclude.contains(latestComponent)) {
                             tabsViewModel?.shouldAddSpace(false)
                         } else {
                             tabsViewModel?.shouldAddSpace(true)
