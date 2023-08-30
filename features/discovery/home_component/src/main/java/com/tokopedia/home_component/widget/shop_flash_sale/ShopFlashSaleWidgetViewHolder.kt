@@ -18,6 +18,7 @@ import com.tokopedia.home_component.widget.shop_flash_sale.item.ShopFlashSaleIte
 import com.tokopedia.home_component.widget.shop_flash_sale.tab.ShopFlashSaleTabAdapter
 import com.tokopedia.home_component.widget.shop_flash_sale.tab.ShopFlashSaleTabDataModel
 import com.tokopedia.home_component.widget.shop_flash_sale.tab.ShopFlashSaleTabDiffUtil
+import com.tokopedia.home_component.widget.shop_flash_sale.tab.ShopFlashSaleShopListener
 import com.tokopedia.home_component_header.model.ChannelHeader
 import com.tokopedia.home_component_header.view.HomeChannelHeaderListener
 import com.tokopedia.kotlin.extensions.view.hide
@@ -27,8 +28,8 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopFlashSaleWidgetViewHolder(
     itemView: View,
-    val listener: ShopFlashSaleListener
-): AbstractViewHolder<ShopFlashSaleWidgetDataModel>(itemView), ShopFlashSaleInternalListener {
+    val listener: ShopFlashSaleWidgetListener
+): AbstractViewHolder<ShopFlashSaleWidgetDataModel>(itemView), ShopFlashSaleShopListener {
 
     companion object {
         @LayoutRes

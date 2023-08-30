@@ -425,21 +425,6 @@ class HomeDynamicChannelUseCase @Inject constructor(
                     }
 
                     dynamicChannelPlainResponse.getWidgetDataIfExist<
-                        ReminderWidgetModel,
-                        RechargeRecommendation>(
-                        widgetRepository = homeRechargeRecommendationRepository,
-                        predicate = {
-                            it?.source == ReminderEnum.RECHARGE
-                        }
-                    ) { visitableFound, data, position ->
-                        val newFindRechargeRecommendationViewModel = visitableFound.copy(
-                            data = ReminderWidgetMapper.mapperRechargetoReminder(data),
-                            source = ReminderEnum.RECHARGE
-                        )
-                        newFindRechargeRecommendationViewModel
-                    }
-
-                    dynamicChannelPlainResponse.getWidgetDataIfExist<
                         ShopFlashSaleWidgetDataModel,
                         List<RecommendationWidget>>(
                         widgetRepository = homeRecommendationRepository,

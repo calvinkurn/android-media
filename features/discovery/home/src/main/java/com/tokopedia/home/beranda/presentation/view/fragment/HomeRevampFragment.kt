@@ -31,7 +31,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.base.view.listener.TouchListenerActivity
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry
 import com.tokopedia.analytics.performance.perf.*
@@ -129,7 +128,7 @@ import com.tokopedia.home.beranda.presentation.view.listener.RechargeBUWidgetCal
 import com.tokopedia.home.beranda.presentation.view.listener.RechargeRecommendationCallback
 import com.tokopedia.home.beranda.presentation.view.listener.RecommendationListCarouselComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.SalamWidgetCallback
-import com.tokopedia.home.beranda.presentation.view.listener.ShopFlashSaleCallback
+import com.tokopedia.home.beranda.presentation.view.listener.ShopFlashSaleWidgetCallback
 import com.tokopedia.home.beranda.presentation.view.listener.SpecialReleaseComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.SpecialReleaseRevampCallback
 import com.tokopedia.home.beranda.presentation.view.listener.TodoWidgetComponentCallback
@@ -149,7 +148,6 @@ import com.tokopedia.home_component.customview.pullrefresh.ParentIconSwipeRefres
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.util.toDpInt
-import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleListener
 import com.tokopedia.iris.Iris
 import com.tokopedia.iris.IrisAnalytics.Companion.getInstance
 import com.tokopedia.iris.util.IrisSession
@@ -1474,7 +1472,7 @@ open class HomeRevampFragment :
             CarouselPlayWidgetCallback(getTrackingQueueObj(), userSession, this),
             BestSellerWidgetCallback(context, this, getHomeViewModel()),
             SpecialReleaseRevampCallback(this),
-            ShopFlashSaleCallback(this, getHomeViewModel())
+            ShopFlashSaleWidgetCallback(this, getHomeViewModel())
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
             .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())

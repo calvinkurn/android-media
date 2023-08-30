@@ -5,16 +5,15 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import com.tokopedia.home_component.util.recordCrashlytics
-import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleInternalListener
 import java.lang.Exception
 
 internal class ShopFlashSaleTabAdapter(
     diffUtil: ShopFlashSaleTabDiffUtil,
-    private val shopFlashSaleInternalListener: ShopFlashSaleInternalListener,
+    private val shopFlashSaleShopListener: ShopFlashSaleShopListener,
 ): ListAdapter<ShopFlashSaleTabDataModel, ShopFlashSaleTabViewHolder>(diffUtil) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShopFlashSaleTabViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(ShopFlashSaleTabViewHolder.LAYOUT, parent, false)
-        return ShopFlashSaleTabViewHolder(view, shopFlashSaleInternalListener)
+        return ShopFlashSaleTabViewHolder(view, shopFlashSaleShopListener)
     }
 
     override fun onBindViewHolder(holder: ShopFlashSaleTabViewHolder, position: Int) {

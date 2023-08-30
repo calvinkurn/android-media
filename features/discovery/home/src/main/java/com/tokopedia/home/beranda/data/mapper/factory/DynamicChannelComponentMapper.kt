@@ -9,6 +9,7 @@ import com.tokopedia.home_component.util.ChannelStyleUtil.parseImageStyle
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.home_component_header.model.ChannelHeader as HomeComponentHeader
 import com.tokopedia.home_component_header.util.HomeChannelHeaderRollenceController
+import com.tokopedia.home_component_header.util.getHomeComponentHeaderType
 
 object DynamicChannelComponentMapper {
     fun mapHomeChannelToComponent(
@@ -194,13 +195,13 @@ object DynamicChannelComponentMapper {
         url,
         backColor,
         backImage,
-        textColor
+        textColor,
+        headerType = getHomeComponentHeaderType(),
     )
 
     fun Array<DynamicHomeChannel.Grid>.mapToChannelGrids() = mapIndexed { index, grid ->
         grid.mapToChannelGrid(index)
     }
-
 
     fun DynamicHomeChannel.Grid.mapToChannelGrid(index: Int) = ChannelGrid(
         id = id,

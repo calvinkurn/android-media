@@ -1,7 +1,6 @@
 package com.tokopedia.home_component.util
 
 import android.annotation.SuppressLint
-import android.util.Log
 import com.tokopedia.kotlin.extensions.view.orZero
 import java.text.DateFormat
 import java.text.SimpleDateFormat

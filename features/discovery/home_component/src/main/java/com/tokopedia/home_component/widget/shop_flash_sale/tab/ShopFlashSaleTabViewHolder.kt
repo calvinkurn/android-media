@@ -8,7 +8,6 @@ import com.tokopedia.home_component.databinding.HomeComponentShopFlashSaleTabBin
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.util.getHexColorFromIdColor
 import com.tokopedia.home_component.util.setGradientBackground
-import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleInternalListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -16,9 +15,9 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.utils.view.binding.viewBinding
 
-internal class ShopFlashSaleTabViewHolder(
+class ShopFlashSaleTabViewHolder(
     itemView: View,
-    private val shopFlashSaleInternalListener: ShopFlashSaleInternalListener,
+    private val shopFlashSaleShopListener: ShopFlashSaleShopListener,
 ): RecyclerView.ViewHolder(itemView) {
     companion object {
         @LayoutRes
@@ -45,7 +44,7 @@ internal class ShopFlashSaleTabViewHolder(
 
     private fun setTabListener(tab: ShopFlashSaleTabDataModel) {
         binding?.containerShopFlashSaleTab?.setOnClickListener {
-            shopFlashSaleInternalListener.onShopTabClick(tab)
+            shopFlashSaleShopListener.onShopTabClick(tab)
         }
     }
 
