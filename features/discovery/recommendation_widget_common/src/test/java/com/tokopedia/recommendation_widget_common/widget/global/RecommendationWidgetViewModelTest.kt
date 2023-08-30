@@ -1,7 +1,6 @@
 package com.tokopedia.recommendation_widget_common.widget.global
 
 import com.tokopedia.recommendation_widget_common.MainDispatcherRule
-import com.tokopedia.recommendation_widget_common.RecommendationTypeConst.PAGENAME_VERTICAL
 import com.tokopedia.recommendation_widget_common.RecommendationTypeConst.TYPE_COMPARISON_BPC_WIDGET
 import com.tokopedia.recommendation_widget_common.data.RecommendationEntity
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
@@ -161,7 +160,7 @@ class RecommendationWidgetViewModelTest {
         val recommendationWidgetList = "recom_vertical.json".jsonToRecommendationWidgetList()
         coEvery { getRecommendationWidgetUseCase.getData(any()) } returns recommendationWidgetList
 
-        val metadata = RecommendationWidgetMetadata(pageName = PAGENAME_VERTICAL)
+        val metadata = RecommendationWidgetMetadata(pageName = "pageName")
         val trackingModel = RecommendationWidgetTrackingModel(androidPageName = "pageName")
         val model = RecommendationWidgetModel(metadata = metadata, trackingModel = trackingModel)
 

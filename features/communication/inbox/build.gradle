@@ -54,6 +54,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.productCard)
     implementation projectOrAar(rootProject.ext.features.discoveryCommon)
     implementation projectOrAar(rootProject.ext.features.wishlistCommonV2)
+    implementation projectOrAar(rootProject.ext.features.tokochat_config_common)
 
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.applink)
@@ -65,6 +66,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation projectOrAar(rootProject.ext.libraries.adapterDelegate)
     implementation projectOrAar(rootProject.ext.libraries.trackingOptimizer)
+    implementation projectOrAar(rootProject.ext.libraries.logger)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
@@ -74,6 +76,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.coroutineAndroid
     implementation rootProject.ext.miscDependencies.rxJava
     implementation rootProject.ext.miscDependencies.viewModelKtx
+    implementation rootProject.ext.miscDependencies.liveDataKtx
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
 
@@ -110,6 +113,8 @@ dependencies {
     androidTestImplementation rootProject.ext.miscDependencies.dagger
     androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
+    androidTestImplementation rootProject.ext.testDependencies.retrofitMockWebserver
+    androidTestImplementation rootProject.ext.testDependencies.okhttpIdlingResource
 
     androidTestImplementation projectOrAar(rootProject.ext.features.topAdsSdk)
     androidTestImplementation projectOrAar(rootProject.ext.features.atc_common)
