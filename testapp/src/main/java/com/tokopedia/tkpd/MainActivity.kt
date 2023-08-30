@@ -13,8 +13,12 @@ import androidx.compose.runtime.setValue
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
+import com.tokopedia.logisticseller.ui.requestpickup.presentation.activity.RequestPickupActivity
 import com.tokopedia.nest.principles.ui.NestTheme
+import com.tokopedia.sellerorder.common.navigator.SomNavigator
+import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 
@@ -83,6 +87,8 @@ class MainActivity : BaseActivity() {
             Toast.makeText(this, "Already logged in", Toast.LENGTH_SHORT).show()
             goTo()
         }
+
+
     }
 
     private fun handleNavigationLogout() {
@@ -147,13 +153,19 @@ class MainActivity : BaseActivity() {
         } else {
             Toast.makeText(this, "Please input appLink / webLink", Toast.LENGTH_SHORT).show()
         }
+//
+//        RouteManager.getIntent(this, ApplinkConstInternalLogistic.REQUEST_PICKUP).apply {
+//            putExtra(SomConsts.PARAM_ORDER_ID, 167667014)
+//            startActivityForResult(this, SomNavigator.REQUEST_CONFIRM_REQUEST_PICKUP)
+//        }
     }
 
     private fun getDefaultAppLink(): String {
         /*
          * Put your default applink here
          */
-        return ""
+        return "tokopedia://seller/ready-to-ship"
+//        return ""
     }
 
     data class Model(

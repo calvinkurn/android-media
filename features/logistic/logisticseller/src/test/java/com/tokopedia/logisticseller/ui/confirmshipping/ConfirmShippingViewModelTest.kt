@@ -7,7 +7,7 @@ import com.tokopedia.logisticseller.ui.confirmshipping.data.model.SomCourierList
 import com.tokopedia.logisticseller.ui.confirmshipping.domain.usecase.ChangeCourierUseCase
 import com.tokopedia.logisticseller.ui.confirmshipping.domain.usecase.GetConfirmShippingResultUseCase
 import com.tokopedia.logisticseller.ui.confirmshipping.domain.usecase.GetCourierListUseCase
-import com.tokopedia.logisticseller.ui.confirmshipping.presentation.viewmodel.ConfirmShippingViewModel
+import com.tokopedia.logisticseller.ui.confirmshipping.ui.ConfirmShippingViewModel
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success

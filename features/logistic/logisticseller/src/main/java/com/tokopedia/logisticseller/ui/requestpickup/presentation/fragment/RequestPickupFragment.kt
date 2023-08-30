@@ -7,6 +7,8 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.Spanned
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,13 +22,14 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.logisticseller.R
 import com.tokopedia.logisticseller.common.LogisticSellerConst.PARAM_ORDER_ID
 import com.tokopedia.logisticseller.common.LogisticSellerConst.RESULT_PROCESS_REQ_PICKUP
 import com.tokopedia.logisticseller.common.Utils
 import com.tokopedia.logisticseller.common.Utils.updateShopActive
 import com.tokopedia.logisticseller.common.errorhandler.LogisticSellerErrorHandler
-import com.tokopedia.logisticseller.databinding.FragmentSomConfirmReqPickupBinding
+import com.tokopedia.logisticseller.databinding.FragmentRequestPickupBinding
 import com.tokopedia.logisticseller.ui.requestpickup.data.mapper.SchedulePickupMapper
 import com.tokopedia.logisticseller.ui.requestpickup.data.model.ScheduleTime
 import com.tokopedia.logisticseller.ui.requestpickup.data.model.SomConfirmReqPickup
@@ -35,10 +38,10 @@ import com.tokopedia.logisticseller.ui.requestpickup.data.model.SomProcessReqPic
 import com.tokopedia.logisticseller.ui.requestpickup.data.model.SomProcessReqPickupParam
 import com.tokopedia.logisticseller.ui.requestpickup.di.DaggerSomConfirmReqPickupComponent
 import com.tokopedia.logisticseller.ui.requestpickup.di.SomConfirmReqPickupComponent
-import com.tokopedia.logisticseller.ui.requestpickup.presentation.adapter.RequestPickupCourierNotesAdapter
 import com.tokopedia.logisticseller.ui.requestpickup.presentation.adapter.SchedulePickupAdapter
 import com.tokopedia.logisticseller.ui.requestpickup.presentation.viewmodel.RequstPickupViewModel
 import com.tokopedia.logisticseller.ui.requestpickup.util.DateMapper
+import com.tokopedia.logisticseller.ui.requestpickup.util.NumberIndentSpan
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -50,6 +53,7 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.htmltags.HtmlUtil
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
 import javax.inject.Inject
 
@@ -70,7 +74,6 @@ class RequestPickupFragment :
     private var currSchedulePickupTime = ""
     private var confirmReqPickupResponse = SomConfirmReqPickup.Data.MpLogisticPreShipInfo()
     private var processReqPickupResponse = SomProcessReqPickup.Data.MpLogisticRequestPickup()
-    private lateinit var confirmReqPickupCourierNotesAdapter: RequestPickupCourierNotesAdapter
 
     private var bottomSheetSchedulePickup: BottomSheetUnify? = null
     private var bottomSheetSchedulePickupTodayAdapter = SchedulePickupAdapter(this)
@@ -88,7 +91,7 @@ class RequestPickupFragment :
         ViewModelProviders.of(this, viewModelFactory)[RequstPickupViewModel::class.java]
     }
 
-    private val binding by viewBinding(FragmentSomConfirmReqPickupBinding::bind)
+    private val binding by viewBinding(FragmentRequestPickupBinding::bind)
 
     companion object {
         private const val ERROR_GET_CONFIRM_REQUEST_PICKUP_DATA = "Error when get confirm request pickup layout data."
@@ -113,7 +116,7 @@ class RequestPickupFragment :
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_som_confirm_req_pickup, container, false)
+        return inflater.inflate(R.layout.fragment_request_pickup, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -221,14 +224,13 @@ class RequestPickupFragment :
         binding?.run {
             shopAddress.text = confirmReqPickupResponse.dataSuccess.pickupLocation.address
             shopPhone.text = confirmReqPickupResponse.dataSuccess.pickupLocation.phone
-            setInvoiceNumber(confirmReqPickupResponse.dataSuccess.detail.invoice)
 
             if (confirmReqPickupResponse.dataSuccess.detail.listShippers.isNotEmpty()) {
                 val shipper = confirmReqPickupResponse.dataSuccess.detail.listShippers[0]
                 ivCourier.loadImageWithoutPlaceholder(shipper.courierImg)
 
                 context?.let {
-                    val htmlCourierNameService = HtmlLinkHelper(it, "<b>${shipper.name}</b> ${shipper.service}")
+                    val htmlCourierNameService = HtmlLinkHelper(it, "<b>${shipper.name} -  ${shipper.service}</b>")
                     tvCourierNameService.text = htmlCourierNameService.spannedString
 
                     val htmlCourierCountService = HtmlLinkHelper(it, "${shipper.countText} <b>${shipper.count}</b>")
@@ -244,20 +246,22 @@ class RequestPickupFragment :
             }
 
             if (confirmReqPickupResponse.dataSuccess.notes.listNotes.isNotEmpty()) {
-                confirmReqPickupCourierNotesAdapter = RequestPickupCourierNotesAdapter()
-                labelPastikan.visibility = View.VISIBLE
-                rvCourierNotes.visibility = View.VISIBLE
-                rvCourierNotes.run {
-                    layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
-                    adapter = confirmReqPickupCourierNotesAdapter
+                requestPickupTips.visibility = View.VISIBLE
+                val listNotes = confirmReqPickupResponse.dataSuccess.notes.listNotes
+                requestPickupTips.title = HtmlUtil.fromHtml("<b>Pastikan</b></br>")
+                val description = listNotes.joinToString("\n")
+                val result = SpannableString(description + "\n")
+                var last = 0
+                listNotes.forEachIndexed { index, desc ->
+                    val start = description.indexOf(desc, last)
+                    last = start + desc.length
+                    result.setSpan(NumberIndentSpan(index + 1), start, last, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
                 }
 
-                confirmReqPickupCourierNotesAdapter.listCourierNotes =
-                    confirmReqPickupResponse.dataSuccess.notes.listNotes.toMutableList()
-                confirmReqPickupCourierNotesAdapter.notifyDataSetChanged()
+                requestPickupTips.description = result
+
             } else {
-                labelPastikan.visibility = View.GONE
-                rvCourierNotes.visibility = View.GONE
+                requestPickupTips.visibility = View.GONE
             }
 
             if (confirmReqPickupResponse.dataSuccess.schedule_time.today.isNotEmpty() || confirmReqPickupResponse.dataSuccess.schedule_time.tomorrow.isNotEmpty()) {
@@ -416,20 +420,7 @@ class RequestPickupFragment :
         currSchedulePickupTime = "${scheduleTime.day}, $formattedTime"
     }
 
-    private fun setInvoiceNumber(invoiceNumber: String) {
-        if (invoiceNumber.isNotEmpty()) {
-            binding?.tvInvoiceNumber?.text = invoiceNumber
-            binding?.maskTriggerInvoiceNumber?.setOnClickListener {
-                onTextCopied(getString(R.string.invoice_label), invoiceNumber)
-            }
-        } else {
-            binding?.btnCopyInvoiceNumber?.visibility = View.GONE
-        }
-    }
-
-    private fun onTextCopied(label: String, str: String) {
-        val clipboardManager = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        clipboardManager.setPrimaryClip(ClipData.newPlainText(label, str))
-        Toaster.build(requireView(), getString(R.string.success_invoice_copied), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
-    }
 }
+
+
+

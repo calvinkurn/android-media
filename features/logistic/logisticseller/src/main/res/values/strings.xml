@@ -47,11 +47,12 @@
     <string name="success_copy_invoice">Nomor Invoice berhasil disalin</string>
 
     <!--    Confirm Shipping and Request Pickup -->
-    <string name="title_som_confirm_req_pickup">Konfirmasi Request Pick-Up</string>
+    <string name="title_som_confirm_req_pickup">Konfirmasi Request Pickup</string>
     <string name="title_som_confirm_shipping">Konfirmasi Pengiriman</string>
     <string name="title_som_change_courier">Ganti Kurir</string>
     <string name="title_courier">Kurir</string>
     <string name="title_som_scan_barcode">Scan Resi</string>
+    <string name="label_pickup_courier">Kurir akan pick-up di:</string>
 
     <string name="default_confirm_shipping_success">Terima kasih telah melakukan pengiriman.</string>
     <string name="nomor_resi">No. Resi</string>

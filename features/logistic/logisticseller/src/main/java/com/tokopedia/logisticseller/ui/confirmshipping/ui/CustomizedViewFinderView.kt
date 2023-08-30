@@ -1,4 +1,4 @@
-package com.tokopedia.logisticseller.ui.confirmshipping.presentation.customview
+package com.tokopedia.logisticseller.ui.confirmshipping.ui
 
 import android.annotation.SuppressLint
 import android.content.Context

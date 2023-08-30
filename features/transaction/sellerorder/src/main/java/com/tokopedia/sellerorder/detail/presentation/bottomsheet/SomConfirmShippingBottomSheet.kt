@@ -19,7 +19,7 @@ class SomConfirmShippingBottomSheet(
     }
 
     override fun setupChildView() {
-        binding?.buttonUnderstand?.setOnClickListener { dismiss() }
+        binding?.imageBackground?.urlSrc = "https://images.tokopedia.net/img/img_bottomsheet_dropoff.png"
     }
 
     fun setInfoText(infoText: String) {

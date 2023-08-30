@@ -1,24 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:layout_height="400dp">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_confirm_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/image_background"
+        app:layout_constraintStart_toStartOf="parent"
         app:typographyType="body_2"
         tools:text="Konfirmasi otomatis dalam maks 3 jam. Konfirmasi otomatis bermasalah? input resi secara manual" />
 
-    <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/button_understand"
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/image_background"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:text="@string/understand" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:layout_height="200dp"
+        tools:src="@color/colorPink" />
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

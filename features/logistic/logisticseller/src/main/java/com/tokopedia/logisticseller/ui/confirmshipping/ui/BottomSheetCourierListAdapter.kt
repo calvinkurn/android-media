@@ -1,4 +1,4 @@
-package com.tokopedia.logisticseller.ui.confirmshipping.presentation.adapter
+package com.tokopedia.logisticseller.ui.confirmshipping.ui
 
 import android.view.LayoutInflater
 import android.view.View

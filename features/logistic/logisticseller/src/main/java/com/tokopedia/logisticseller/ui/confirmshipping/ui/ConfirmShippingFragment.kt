@@ -1,4 +1,4 @@
-package com.tokopedia.logisticseller.ui.confirmshipping.presentation.fragment
+package com.tokopedia.logisticseller.ui.confirmshipping.ui
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -32,9 +32,6 @@ import com.tokopedia.logisticseller.databinding.FragmentSomConfirmShippingBindin
 import com.tokopedia.logisticseller.ui.confirmshipping.data.model.SomCourierList
 import com.tokopedia.logisticseller.ui.confirmshipping.di.ConfirmShippingComponent
 import com.tokopedia.logisticseller.ui.confirmshipping.di.DaggerConfirmShippingComponent
-import com.tokopedia.logisticseller.ui.confirmshipping.presentation.activity.ConfirmShippingActivity
-import com.tokopedia.logisticseller.ui.confirmshipping.presentation.adapter.BottomSheetCourierListAdapter
-import com.tokopedia.logisticseller.ui.confirmshipping.presentation.viewmodel.ConfirmShippingViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success

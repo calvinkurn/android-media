@@ -1,4 +1,4 @@
-package com.tokopedia.logisticseller.ui.confirmshipping.presentation.activity
+package com.tokopedia.logisticseller.ui.confirmshipping.ui
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.logisticseller.common.LogisticSellerConst.PARAM_CURR_IS_CHANGE_SHIPPING
 import com.tokopedia.logisticseller.common.LogisticSellerConst.PARAM_ORDER_ID
-import com.tokopedia.logisticseller.ui.confirmshipping.presentation.fragment.ConfirmShippingFragment
 
 /**
  * Created by fwidjaja on 2019-11-15.

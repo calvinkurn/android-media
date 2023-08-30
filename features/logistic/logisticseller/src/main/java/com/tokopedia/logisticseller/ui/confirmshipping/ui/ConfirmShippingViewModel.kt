@@ -1,4 +1,4 @@
-package com.tokopedia.logisticseller.ui.confirmshipping.presentation.viewmodel
+package com.tokopedia.logisticseller.ui.confirmshipping.ui
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

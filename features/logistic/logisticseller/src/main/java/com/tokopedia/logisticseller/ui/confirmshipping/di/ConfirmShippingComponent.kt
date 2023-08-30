@@ -2,8 +2,8 @@ package com.tokopedia.logisticseller.ui.confirmshipping.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
-import com.tokopedia.logisticseller.ui.confirmshipping.presentation.activity.ConfirmShippingActivity
-import com.tokopedia.logisticseller.ui.confirmshipping.presentation.fragment.ConfirmShippingFragment
+import com.tokopedia.logisticseller.ui.confirmshipping.ui.ConfirmShippingActivity
+import com.tokopedia.logisticseller.ui.confirmshipping.ui.ConfirmShippingFragment
 import dagger.Component
 
 /**

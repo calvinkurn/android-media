@@ -81,7 +81,7 @@
         </activity>
 
         <activity
-            android:name=".ui.confirmshipping.presentation.activity.ConfirmShippingActivity"
+            android:name=".ui.confirmshipping.ui.ConfirmShippingActivity"
             android:exported="true"
             android:label="@string/title_som_confirm_shipping"
             android:screenOrientation="portrait"

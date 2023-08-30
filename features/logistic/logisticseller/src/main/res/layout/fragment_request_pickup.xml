@@ -1,0 +1,415 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.tokopedia.header.HeaderUnify
+        android:id="@+id/headerSomConfirmRequestPickup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:unify_header_is_show_back_button="true"
+        app:unify_header_is_show_shadow="true"
+        app:unify_header_title="@string/title_som_confirm_req_pickup" />
+
+    <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+        android:id="@+id/swipe_refresh"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:enabled="false"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/headerSomConfirmRequestPickup">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/sv_shipping_editor"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:clipToPadding="false"
+                android:isScrollContainer="false"
+                android:paddingBottom="@dimen/unify_space_16"
+                app:layout_constraintBottom_toTopOf="@id/ll_btn"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/shipping_editor_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:visibility="visible">
+
+                        <com.tokopedia.unifyprinciples.Typography
+                            android:id="@+id/label_location"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="16dp"
+                            android:layout_marginTop="16dp"
+                            android:text="@string/label_pickup_courier"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/card_courier"
+                            app:typographyType="heading_3"
+                            app:typographyWeight="bold" />
+
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/card_address"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="16dp"
+                            android:layout_marginStart="20dp"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginEnd="16dp"
+                            android:layout_marginBottom="@dimen/dp_18"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/label_location">
+
+                            <com.tokopedia.iconunify.IconUnify
+                                android:id="@+id/ic_location"
+                                android:layout_width="@dimen/dp_18"
+                                android:layout_height="@dimen/dp_18"
+                                app:icon_name="LOCATION"
+                                app:layout_constraintBottom_toBottomOf="@id/shop_address"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="@id/shop_address" />
+
+                            <com.tokopedia.unifyprinciples.Typography
+                                android:id="@+id/shop_address"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="10dp"
+                                android:layout_marginLeft="10dp"
+                                android:layout_toEndOf="@id/ic_location"
+                                android:layout_toRightOf="@id/ic_location"
+                                android:text="Jalan jalan jalan halan"
+                                app:layout_constrainedWidth="true"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toEndOf="@id/ic_location"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:typographyType="body_3"
+                                app:typographyWeight="reguler" />
+
+                            <com.tokopedia.iconunify.IconUnify
+                                android:id="@+id/ic_phone"
+                                android:layout_width="@dimen/dp_18"
+                                android:layout_height="@dimen/dp_18"
+                                android:layout_marginTop="16dp"
+                                app:icon_name="CALL"
+                                app:layout_constraintStart_toStartOf="@id/ic_location"
+                                app:layout_constraintTop_toBottomOf="@id/shop_address" />
+
+                            <com.tokopedia.unifyprinciples.Typography
+                                android:id="@+id/shop_phone"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="16dp"
+                                android:text="08xxxxxx"
+                                app:layout_constraintStart_toStartOf="@id/shop_address"
+                                app:layout_constraintTop_toBottomOf="@id/shop_address"
+                                app:typographyType="body_3"
+                                app:typographyWeight="reguler" />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <com.tokopedia.unifyprinciples.Typography
+                            android:id="@+id/label_courier"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/unify_space_16"
+                            android:layout_marginTop="@dimen/unify_space_24"
+                            android:text="Akan dipick-up oleh:"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:typographyType="heading_3"
+                            app:typographyWeight="bold" />
+
+                        <com.tokopedia.unifycomponents.ticker.Ticker
+                            android:id="@+id/ticker_info_courier"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="16dp"
+                            app:layout_constraintBottom_toTopOf="@id/card_courier"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/label_courier" />
+
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/card_courier"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="10dp"
+                            android:layout_marginTop="16dp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/ticker_info_courier">
+
+                            <ImageView
+                                android:id="@+id/iv_courier"
+                                android:layout_width="72dp"
+                                android:layout_height="72dp"
+                                android:layout_marginStart="16dp"
+                                android:layout_marginEnd="8dp"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="@id/tv_courier_name_service"
+                                tools:ignore="ContentDescription" />
+
+                            <com.tokopedia.unifyprinciples.Typography
+                                android:id="@+id/tv_courier_name_service"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="8dp"
+                                android:layout_marginLeft="8dp"
+                                android:layout_marginTop="16dp"
+                                android:layout_marginEnd="8dp"
+                                android:layout_marginRight="8dp"
+                                app:layout_constraintStart_toEndOf="@id/iv_courier"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:typographyType="body_2"
+                                tools:text="aa" />
+
+                            <com.tokopedia.iconunify.IconUnify
+                                android:id="@+id/ic_product_info"
+                                android:layout_width="@dimen/dp_18"
+                                android:layout_height="@dimen/dp_18"
+                                android:layout_marginTop="8dp"
+                                app:icon_name="PRODUCT_INFO"
+                                app:layout_constraintStart_toStartOf="@id/tv_courier_name_service"
+                                app:layout_constraintTop_toBottomOf="@id/tv_courier_name_service" />
+
+                            <com.tokopedia.unifyprinciples.Typography
+                                android:id="@+id/tv_courier_count"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginHorizontal="5dp"
+                                app:layout_constraintStart_toEndOf="@id/ic_product_info"
+                                app:layout_constraintTop_toTopOf="@id/ic_product_info"
+                                app:typographyType="body_3"
+                                tools:text="Jumlah: 1 Pesanaan" />
+
+                            <com.tokopedia.iconunify.IconUnify
+                                android:id="@+id/ic_hourgrass"
+                                android:layout_width="@dimen/dp_18"
+                                android:layout_height="@dimen/dp_18"
+                                android:layout_marginTop="8dp"
+                                app:icon_name="HOURGLASS"
+                                app:layout_constraintStart_toStartOf="@id/ic_product_info"
+                                app:layout_constraintTop_toBottomOf="@id/ic_product_info" />
+
+                            <com.tokopedia.unifyprinciples.Typography
+                                android:id="@+id/tv_courier_notes"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginHorizontal="5dp"
+                                android:lineSpacingMultiplier="1"
+                                android:singleLine="false"
+                                app:layout_constrainedWidth="true"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toEndOf="@id/ic_hourgrass"
+                                app:layout_constraintTop_toTopOf="@id/ic_hourgrass"
+                                app:typographyType="body_3"
+                                app:typographyWeight="reguler"
+                                tools:text="Oleh kurir: Anteraja" />
+
+                            <RelativeLayout
+                                android:id="@+id/rl_schedule_pickup"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:padding="16dp"
+                                android:visibility="visible"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@id/ic_hourgrass">
+
+                                <com.tokopedia.unifyprinciples.Typography
+                                    android:id="@+id/tv_pickup_choice"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Butuh pick-up untuk kapan?"
+                                    app:typographyType="body_2"
+                                    app:typographyWeight="bold" />
+
+                                <LinearLayout
+                                    android:id="@+id/ll_pickup"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@id/tv_pickup_choice"
+                                    android:layout_marginTop="@dimen/unify_space_12"
+                                    android:gravity="center"
+                                    android:orientation="horizontal">
+
+                                    <com.tokopedia.unifycomponents.ChipsUnify
+                                        android:id="@+id/pickup_now"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:gravity="center"
+                                        android:textAlignment="center"
+                                        app:chipSize="medium"
+                                        app:chipText="Pick-up Sekarang"
+                                        app:chipType="normal" />
+
+                                    <com.tokopedia.unifycomponents.ChipsUnify
+                                        android:id="@+id/pickup_schedule"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginStart="@dimen/spacing_lvl4"
+                                        android:layout_weight="1"
+                                        app:chipSize="medium"
+                                        app:chipText="Jadwalkan Pick-up"
+                                        app:chipType="normal" />
+                                </LinearLayout>
+
+                                <com.tokopedia.unifyprinciples.Typography
+                                    android:id="@+id/tv_pickup_time"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@id/ll_pickup"
+                                    android:layout_marginTop="@dimen/unify_space_24"
+                                    android:text="Waktu Penjemputan"
+                                    app:typographyType="body_3" />
+
+                                <com.tokopedia.unifyprinciples.Typography
+                                    android:id="@+id/tv_schedule"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@id/tv_pickup_time"
+                                    app:typographyType="body_1"
+                                    tools:text="Hari ini, maks 12:00" />
+
+                                <com.tokopedia.iconunify.IconUnify
+                                    android:id="@+id/btn_arrow"
+                                    android:layout_width="16dp"
+                                    android:layout_height="16dp"
+                                    android:layout_below="@id/tv_pickup_time"
+                                    android:layout_alignEnd="@id/divider_schedule"
+                                    app:icon_name="CHEVRON_DOWN"
+                                    tools:ignore="ContentDescription" />
+
+                                <View
+                                    android:id="@+id/divider_schedule"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="@dimen/dp_1"
+                                    android:layout_below="@id/tv_schedule"
+                                    android:layout_marginTop="3dp"
+                                    android:background="@color/Unify_NN50"
+                                    android:visibility="visible" />
+
+                            </RelativeLayout>
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <com.tokopedia.unifycomponents.TipsUnify
+                            android:id="@+id/request_pickup_tips"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="10dp"
+                            android:layout_marginTop="16dp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/card_address"
+                            tools:layout_height="300dp"
+                            tools:unify_tips_title="Pastikan" />
+
+                        <com.tokopedia.unifycomponents.CardUnify2
+                            android:id="@+id/card_date"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            app:cardCornerRadius="12dp"
+                            app:card_type="border"
+                            app:layout_constraintEnd_toEndOf="@id/request_pickup_tips"
+                            app:layout_constraintStart_toStartOf="@id/request_pickup_tips"
+                            app:layout_constraintTop_toBottomOf="@id/request_pickup_tips">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:padding="10dp">
+
+
+                                <com.tokopedia.unifyprinciples.Typography
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Bisa drop off pesanan ke gerai, lho!"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toBottomOf="@id/card_courier"
+                                    app:typographyType="heading_3"
+                                    app:typographyWeight="bold" />
+
+                                <com.tokopedia.unifyprinciples.Typography
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="Jika kurir belum pickup pesananmu, kamu juga bisa drop off langsung ke gerai terdekat dari tokomu.
+Cek Gerai"
+                                    app:typographyType="body_3"
+                                    app:typographyWeight="reguler" />
+
+                                <com.tokopedia.unifyprinciples.Typography
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="Cek Gerai Terdekat"
+                                    app:typographyType="body_3"
+                                    app:typographyWeight="reguler" />
+                            </LinearLayout>
+
+                        </com.tokopedia.unifycomponents.CardUnify2>
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </FrameLayout>
+
+            </androidx.core.widget.NestedScrollView>
+
+            <LinearLayout
+                android:id="@+id/ll_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@drawable/pickup_shadow_top" />
+
+                <com.tokopedia.unifycomponents.UnifyButton
+                    android:id="@+id/btn_req_pickup"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="8dp"
+                    android:text="Kirim Request Pick-up"
+                    android:textAlignment="center"
+                    app:unifyButtonType="main"
+                    app:unifyButtonVariant="filled" />
+
+            </LinearLayout>
+
+            <com.tokopedia.globalerror.GlobalError
+                android:id="@+id/global_error"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:visibility="gone" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
