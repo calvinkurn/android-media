@@ -142,7 +142,7 @@ class StoryDetailFragment @Inject constructor(
                          * it also causing broken timer experience when (ui action swipe)
                          * invalid -> groupId != viewModel.mGroupId
                          **/
-                        if (groupId != viewModel.mCurrGroupId) return@StoryDetailTimer
+                        if (groupId != viewModel.mGroupId) return@StoryDetailTimer
                         viewModelAction(NextDetail)
                     }
                 }
