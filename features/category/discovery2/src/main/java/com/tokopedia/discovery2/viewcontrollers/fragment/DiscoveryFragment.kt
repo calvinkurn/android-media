@@ -994,7 +994,6 @@ open class DiscoveryFragment :
 
     private fun setupExtendedLayout(config: NavToolbarConfig) {
         if (config.isExtendedLayout) {
-            appBarLayout.setBackgroundColor(Color.TRANSPARENT)
             val constraintSet = ConstraintSet()
             constraintSet.clone(parentConstraintLayout)
             constraintSet.connect(
@@ -1005,6 +1004,13 @@ open class DiscoveryFragment :
                 0
             )
             constraintSet.applyTo(parentConstraintLayout)
+
+            appBarLayout.setBackgroundColor(Color.TRANSPARENT)
+
+            if (discoveryViewModel.getAddressVisibilityValue() && isLightThemeStatusBar != false) {
+                chooseAddressWidget?.updateWidget()
+                chooseAddressWidgetDivider?.hide()
+            }
         }
     }
 
