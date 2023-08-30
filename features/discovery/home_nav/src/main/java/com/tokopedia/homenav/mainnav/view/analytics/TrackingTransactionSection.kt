@@ -1,6 +1,8 @@
 package com.tokopedia.homenav.mainnav.view.analytics
 
 import android.os.Bundle
+import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_ALL_TRANSACTION
+import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_REVIEW
 import com.tokopedia.homenav.mainnav.domain.model.NavReviewModel
 import com.tokopedia.homenav.mainnav.domain.model.NavWishlistModel
 import com.tokopedia.homenav.mainnav.view.analytics.MainNavTrackingConst.KEY_PAGE_SOURCE
@@ -11,6 +13,7 @@ import com.tokopedia.track.builder.util.BaseTrackerConst
 
 object TrackingTransactionSection : BaseTrackerConst() {
     private const val PROMOTION_NAME_REVIEW = "/global_menu - review_card"
+    private const val PROMOTION_NAME_ORDER_STATUS = "/global_menu - order_status_card"
     private const val PROMOTION_ID_FORMAT = "%s_%s_%s"
     private const val STAR_RATING = "star rating"
     private const val PRODUCT_CARD = "product card"
@@ -22,22 +25,35 @@ object TrackingTransactionSection : BaseTrackerConst() {
      * Thanos: https://mynakama.tokopedia.com/datatracker/requestdetail/view/1890
      */
     fun clickOnOrderStatus(
+        orderId: String,
         orderLabel: String,
         pageSource: NavSource,
-        pageSourcePath: String = ""
+        pageSourcePath: String = "",
+        position: Int,
+        userId: String,
     ) {
-        val trackingBuilder = BaseTrackerBuilder()
-        trackingBuilder.constructBasicGeneralClick(
-            event = Event.CLICK_HOMEPAGE,
-            eventCategory = MainNavTrackingConst.GLOBAL_MENU,
-            eventAction = "click on order status",
-            eventLabel = orderLabel
-        )
-        trackingBuilder.appendCurrentSite(CurrentSite.DEFAULT)
-        trackingBuilder.appendBusinessUnit(BusinessUnit.DEFAULT)
-        trackingBuilder.appendCustomKeyValue(TrackerId.KEY, "18484")
-        trackingBuilder.appendCustomKeyValue(KEY_PAGE_SOURCE, pageSource.asTrackingPageSource(pageSourcePath))
-        getTracker().sendGeneralEvent(trackingBuilder.build())
+        val bundle = Bundle().apply {
+            putString(Event.KEY, Event.SELECT_CONTENT)
+            putString(Action.KEY, "click on order status")
+            putString(Category.KEY, MainNavTrackingConst.GLOBAL_MENU)
+            putString(Label.KEY, orderLabel)
+            putString(BusinessUnit.KEY, BusinessUnit.DEFAULT)
+            putString(CurrentSite.KEY, CurrentSite.DEFAULT)
+            putString(KEY_PAGE_SOURCE, pageSource.asTrackingPageSource(pageSourcePath))
+            putString(UserId.KEY, userId)
+            putString(TrackerId.KEY, "18484")
+            putParcelableArrayList(
+                Promotion.KEY, arrayListOf(
+                    Bundle().apply {
+                        putString(Promotion.CREATIVE_NAME, orderLabel)
+                        putString(Promotion.CREATIVE_SLOT, (position + 1).toString())
+                        putString(Promotion.ITEM_NAME, PROMOTION_NAME_ORDER_STATUS)
+                        putString(Promotion.ITEM_ID, PROMOTION_ID_FORMAT.format("0", orderId))
+                    }
+                )
+            )
+        }
+        getTracker().sendEnhanceEcommerceEvent(Event.SELECT_CONTENT, bundle)
     }
 
     /**
@@ -328,22 +344,28 @@ object TrackingTransactionSection : BaseTrackerConst() {
     }
 
     /**
-     * Tracker ID: 40850
+     * Tracker ID: 30860
      * Thanos: https://mynakama.tokopedia.com/datatracker/requestdetail/view/1890
      */
-    fun clickOnReviewViewAll(
+    fun clickOnViewAllCard(
+        sectionId: Int,
         pageSource: NavSource,
         pageSourcePath: String = ""
     ) {
+        val userMenu = when(sectionId) {
+            ID_REVIEW -> "review"
+            ID_ALL_TRANSACTION -> "order status"
+            else -> ""
+        }
         val bundle = Bundle()
         bundle.putString(Event.KEY, Event.CLICK_HOMEPAGE)
         bundle.putString(Category.KEY, MainNavTrackingConst.GLOBAL_MENU)
-        bundle.putString(Action.KEY, "click view all review")
-        bundle.putString(Label.KEY, Label.NONE)
+        bundle.putString(Action.KEY, "click view all card")
+        bundle.putString(Label.KEY, userMenu)
         bundle.putString(CurrentSite.KEY, CurrentSite.DEFAULT)
         bundle.putString(BusinessUnit.KEY, BusinessUnit.DEFAULT)
         bundle.putString(KEY_PAGE_SOURCE, pageSource.asTrackingPageSource(pageSourcePath))
-        bundle.putString(TrackerId.KEY, "40850")
+        bundle.putString(TrackerId.KEY, "30860")
         getTracker().sendEnhanceEcommerceEvent(Event.CLICK_HOMEPAGE, bundle)
     }
 }

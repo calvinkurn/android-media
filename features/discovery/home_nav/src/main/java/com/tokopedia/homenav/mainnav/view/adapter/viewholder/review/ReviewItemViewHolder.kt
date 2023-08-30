@@ -12,6 +12,7 @@ import com.tokopedia.homenav.databinding.HolderReviewBinding
 import com.tokopedia.homenav.mainnav.view.datamodel.review.ReviewModel
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.utils.view.binding.viewBinding
 
 /**
@@ -69,6 +70,8 @@ class ReviewItemViewHolder(itemView: View, val mainNavListener: MainNavListener)
     }
 
     override fun bind(element: ReviewModel) {
+        binding?.orderReviewCard?.animateOnPress = CardUnify2.ANIMATE_OVERLAY
+
         binding?.orderReviewProductName?.text = element.navReviewModel.productName
 
         if (element.navReviewModel.imageUrl.isNotEmpty()) {

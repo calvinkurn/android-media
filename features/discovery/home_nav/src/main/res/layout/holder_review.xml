@@ -11,8 +11,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/order_review_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:foreground="?selectableItemBackground">
+        android:layout_height="wrap_content">
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/order_review_image"

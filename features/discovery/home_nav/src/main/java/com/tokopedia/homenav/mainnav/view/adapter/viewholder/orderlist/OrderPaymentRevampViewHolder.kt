@@ -13,6 +13,7 @@ import com.tokopedia.homenav.databinding.HolderTransactionPaymentRevampBinding
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderPaymentRevampModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -38,6 +39,9 @@ class OrderPaymentRevampViewHolder(itemView: View, val mainNavListener: MainNavL
                 paymentRevampModel.position
             )
         }
+
+        binding?.orderPaymentCard?.animateOnPress = CardUnify2.ANIMATE_OVERLAY
+
         //title
         binding?.orderPaymentName?.text = String.format(
                 context.getString(R.string.transaction_rupiah_value),
@@ -71,7 +75,12 @@ class OrderPaymentRevampViewHolder(itemView: View, val mainNavListener: MainNavL
             val applink = if(binding?.orderPaymentStatus?.text == context.getString(R.string.transaction_item_default_status))
                 ApplinkConst.PMS
             else paymentRevampModel.navPaymentModel.applink
-            mainNavListener.onOrderCardClicked(applink, binding?.orderPaymentStatus?.text.toString())
+            mainNavListener.onOrderCardClicked(
+                applink,
+                binding?.orderPaymentStatus?.text.toString(),
+                paymentRevampModel.navPaymentModel.id,
+                paymentRevampModel.position
+            )
         }
     }
 }

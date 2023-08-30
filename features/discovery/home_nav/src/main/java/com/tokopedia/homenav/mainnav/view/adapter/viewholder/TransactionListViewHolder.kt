@@ -34,39 +34,31 @@ class TransactionListViewHolder(itemView: View,
         private const val SPACING_BETWEEN = 8f
         private const val MEPAGE_CARD_INNER_PADDING = 4f
         private const val TRANSACTION_CARD_HEIGHT = 80f
+        private const val MAX_CARDS_SHOWN = 5
     }
+
+    private val adapter = OrderListAdapter(OrderListTypeFactoryImpl(mainNavListener))
 
     override fun bind(element: TransactionListItemDataModel) {
         val context = itemView.context
-        val adapter = OrderListAdapter(OrderListTypeFactoryImpl(mainNavListener))
 
         binding?.transactionRv?.adapter = adapter
         binding?.transactionRv?.layoutManager = LinearLayoutManager(
             context, LinearLayoutManager.HORIZONTAL, false
         )
-        var startIndex = 0
+        addItemDecoration(element)
+
+        if (element.isMePageUsingRollenceVariant) submitListMePage(element)
+        else submitListControl(element)
+
+    }
+
+    private fun addItemDecoration(element: TransactionListItemDataModel) {
         var spacingBetween = SPACING_BETWEEN
         var edgeMargin = EDGE_MARGIN
-        val visitableList = mutableListOf<Visitable<*>>()
-        if (element.isMePageUsingRollenceVariant) {
-            visitableList.addAll(element.orderListModel.paymentList.mapIndexed { index, it ->
-                OrderPaymentRevampModel(it, index)
-            }).also { startIndex += visitableList.size }
-            visitableList.addAll(element.orderListModel.orderList.mapIndexed { index, it ->
-                OrderProductRevampModel(it, startIndex + index)
-            })
-            visitableList.add(OtherTransactionRevampModel())
+        if(element.isMePageUsingRollenceVariant) {
             spacingBetween -= 2 * MEPAGE_CARD_INNER_PADDING
             edgeMargin -= MEPAGE_CARD_INNER_PADDING
-            binding?.transactionRv?.setHeightBasedOnTransactionCardMaxHeight(element)
-        }
-        else {
-            visitableList.addAll(element.orderListModel.paymentList.mapIndexed { index, it ->
-                OrderPaymentModel(it, visitableList.count() + index) })
-            visitableList.addAll(element.orderListModel.orderList.mapIndexed { index, it ->
-                OrderProductModel(it, visitableList.count() + index) })
-            if (element.othersTransactionCount.isMoreThanZero())
-                visitableList.add(OtherTransactionModel(element.othersTransactionCount))
         }
         binding?.transactionRv?.addItemDecoration(
             NavOrderSpacingDecoration(
@@ -74,6 +66,35 @@ class TransactionListViewHolder(itemView: View,
                 edgeMargin.toDpInt()
             )
         )
+    }
+
+    private fun submitListMePage(element: TransactionListItemDataModel) {
+        val visitableList = mutableListOf<Visitable<*>>()
+        visitableList.addAll(
+            element.orderListModel.paymentList.mapIndexed { index, it ->
+                OrderPaymentRevampModel(it, visitableList.count() + index)
+            }
+        )
+        visitableList.addAll(
+            element.orderListModel.orderList.mapIndexed { index, it ->
+                OrderProductRevampModel(it, visitableList.count() + index)
+            }
+        )
+        adapter.setVisitables(
+            visitableList.take(MAX_CARDS_SHOWN)
+                .plus(OtherTransactionRevampModel())
+        )
+        binding?.transactionRv?.setHeightBasedOnTransactionCardMaxHeight(element)
+    }
+
+    private fun submitListControl(element: TransactionListItemDataModel) {
+        val visitableList = mutableListOf<Visitable<*>>()
+        visitableList.addAll(element.orderListModel.paymentList.mapIndexed { index, it ->
+            OrderPaymentModel(it, visitableList.count() + index) })
+        visitableList.addAll(element.orderListModel.orderList.mapIndexed { index, it ->
+            OrderProductModel(it, visitableList.count() + index) })
+        if (element.othersTransactionCount.isMoreThanZero())
+            visitableList.add(OtherTransactionModel(element.othersTransactionCount))
         adapter.setVisitables(visitableList)
     }
 

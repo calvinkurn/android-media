@@ -12,6 +12,7 @@ import com.tokopedia.homenav.databinding.HolderTransactionProductRevampBinding
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderProductRevampModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.utils.view.binding.viewBinding
 
 @MePage(MePage.Widget.TRANSACTION)
@@ -35,6 +36,9 @@ class OrderProductRevampViewHolder(itemView: View, val mainNavListener: MainNavL
                 productRevampModel.position
             )
         }
+
+        binding?.orderProductCard?.animateOnPress = CardUnify2.ANIMATE_OVERLAY
+
         //title
         binding?.orderProductName?.text = productRevampModel.navProductModel.productNameText
 
@@ -79,7 +83,9 @@ class OrderProductRevampViewHolder(itemView: View, val mainNavListener: MainNavL
         binding?.orderProductContainer?.setOnClickListener {
             mainNavListener.onOrderCardClicked(
                 productRevampModel.navProductModel.applink,
-                productRevampModel.navProductModel.statusText
+                productRevampModel.navProductModel.statusText,
+                productRevampModel.navProductModel.id,
+                productRevampModel.position
             )
         }
     }
