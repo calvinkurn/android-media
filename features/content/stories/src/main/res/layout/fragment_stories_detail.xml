@@ -162,8 +162,8 @@
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/v_stories_kebab_icon"
-        android:layout_width="@dimen/layout_lvl5"
-        android:layout_height="@dimen/layout_lvl5"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
         android:padding="@dimen/unify_space_4"
         android:layout_marginBottom="@dimen/unify_space_8"
         app:icon_color_light_enable="@color/Unify_Static_White"
