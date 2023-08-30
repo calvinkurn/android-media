@@ -24,6 +24,10 @@ class BCALibrary {
 
     external fun C_BCAdataSession_2(responseData: String): JNIResult
 
+    external fun BCATopUp_1(strTransactionId: String, ATD: String, strAccessCardNumber: String, strAccessCode: String, strCurrDateTime: String, lngAmount: Long): JNIResult
+
+    external fun BCATopUp_2(responseData: String): JNIResult
+
     val HEX_DIGITS = charArrayOf(
         '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'
     )
