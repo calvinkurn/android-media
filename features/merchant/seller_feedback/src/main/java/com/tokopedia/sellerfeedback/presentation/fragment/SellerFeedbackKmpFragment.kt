@@ -7,6 +7,7 @@ import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -27,6 +28,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.gql.Result
 import com.tokopedia.imagepicker.common.GalleryType
 import com.tokopedia.imagepicker.common.ImagePickerBuilder
 import com.tokopedia.imagepicker.common.ImagePickerMultipleSelectionBuilder
@@ -50,12 +52,14 @@ import com.tokopedia.sellerfeedback.presentation.bottomsheet.SellerFeedbackPageC
 import com.tokopedia.sellerfeedback.presentation.bottomsheet.SettingsBottomSheet
 import com.tokopedia.sellerfeedback.presentation.uimodel.BaseImageFeedbackUiModel
 import com.tokopedia.sellerfeedback.presentation.uimodel.ImageFeedbackUiModel
+import com.tokopedia.sellerfeedback.presentation.uimodel.ProductUiModelTemp
 import com.tokopedia.sellerfeedback.presentation.uimodel.Score
 import com.tokopedia.sellerfeedback.presentation.util.ScreenShootPageHelper
 import com.tokopedia.sellerfeedback.presentation.util.ScreenshotManager
 import com.tokopedia.sellerfeedback.presentation.view.SellerFeedbackToolbar
 import com.tokopedia.sellerfeedback.presentation.viewholder.BaseImageFeedbackViewHolder
 import com.tokopedia.sellerfeedback.presentation.viewmodel.SellerFeedbackKmpViewModel
+import com.tokopedia.shared.domain.model.ProductModel
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.TextAreaUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -172,6 +176,7 @@ class SellerFeedbackKmpFragment : BaseDaggerFragment(),
         showSettings()
         setDefaultFeedbackResultValue()
         attachScreenshot()
+        viewModel?.fetchProductList()
     }
 
     override fun onRequestPermissionsResult(
@@ -419,6 +424,26 @@ class SellerFeedbackKmpFragment : BaseDaggerFragment(),
         viewModel?.run {
             getFeedbackImages().observe(viewLifecycleOwner, observerFeedbackImages)
             getSubmitResult().observe(viewLifecycleOwner, observerSubmitResult)
+            getProductList.observe(viewLifecycleOwner, observerProductList)
+        }
+    }
+
+    private val observerProductList = Observer<Result<List<ProductModel>>> {
+        when (it) {
+            is Result.Success -> {
+                val productListUiModel = it.data.map { product ->
+                    ProductUiModelTemp(
+                        product.name,
+                        product.banner,
+                        product.link,
+                        product.price
+                    )
+                }
+                Log.d("productListUiModel", productListUiModel.toString())
+            }
+            is Result.Failure -> {
+
+            }
         }
     }
 

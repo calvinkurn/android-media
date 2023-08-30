@@ -6,6 +6,7 @@ import com.tokopedia.sellerfeedback.di.module.SellerFeedbackModule
 import com.tokopedia.sellerfeedback.di.module.SellerFeedbackViewModelModule
 import com.tokopedia.sellerfeedback.di.scope.SellerFeedbackScope
 import com.tokopedia.sellerfeedback.presentation.fragment.SellerFeedbackFragment
+import com.tokopedia.sellerfeedback.presentation.fragment.SellerFeedbackKmpFragment
 import dagger.Component
 
 @SellerFeedbackScope
@@ -16,4 +17,5 @@ import dagger.Component
 ], dependencies = [BaseAppComponent::class])
 interface SellerFeedbackComponent {
     fun inject(sellerFeedbackFragment: SellerFeedbackFragment)
+    fun inject(sellerFeedbackKmpFragment: SellerFeedbackKmpFragment)
 }
