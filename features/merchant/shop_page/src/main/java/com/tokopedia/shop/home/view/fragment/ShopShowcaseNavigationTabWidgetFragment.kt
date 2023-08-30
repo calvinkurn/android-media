@@ -18,6 +18,7 @@ import com.tokopedia.shop.home.view.model.showcase_navigation.Showcase
 import com.tokopedia.unifycomponents.R as unifycomponentsR
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlin.collections.ArrayList
+import com.tokopedia.shop.R
 
 class ShopShowcaseNavigationTabWidgetFragment : BaseDaggerFragment() {
 
@@ -161,6 +162,7 @@ class ShopShowcaseNavigationTabWidgetFragment : BaseDaggerFragment() {
     }
 
     private fun setupColors(overrideTheme: Boolean, colorSchema: ShopPageColorSchema) {
+        val mainShowcaseTextColor = ContextCompat.getColor(context ?: return, R.color.clr_dms_icon_white)
         val lowEmphasizeColor = if (overrideTheme) {
             colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_LOW_EMPHASIS)
         } else {
@@ -168,7 +170,7 @@ class ShopShowcaseNavigationTabWidgetFragment : BaseDaggerFragment() {
         }
 
         binding?.apply {
-            tpgMainShowcaseTitle.setTextColor(lowEmphasizeColor)
+            tpgMainShowcaseTitle.setTextColor(mainShowcaseTextColor)
             tpgFirstShowcaseTitle.setTextColor(lowEmphasizeColor)
             tpgSecondShowcaseTitle.setTextColor(lowEmphasizeColor)
             tpgThirdShowcaseTitle.setTextColor(lowEmphasizeColor)
