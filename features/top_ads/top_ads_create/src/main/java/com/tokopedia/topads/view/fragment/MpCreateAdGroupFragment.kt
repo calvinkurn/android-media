@@ -305,17 +305,17 @@ class MpCreateAdGroupFragment : BaseDaggerFragment() {
     }
 
     private fun openInsufficientCreditsDialog(data: DepositAmount) {
-        var dialog =
+        val dialog =
             DialogUnify(requireContext(), DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
         dialog.setDescription(
-            getString(R.string.success_group_creation_insufficient_credits_text).replace(
+            getString(topadscommonR.string.topads_common_insufficient_credits_error_desc).replace(
                 IDR_CONST,
                 "Rp${data.amount}"
             )
         )
-        dialog.setTitle(getString(R.string.ads_created_successfully_but_cant_appear_yet))
-        dialog.setPrimaryCTAText(getString(R.string.add_credit))
-        dialog.setSecondaryCTAText(getString(R.string.later))
+        dialog.setTitle(getString(topadscommonR.string.topads_common_ads_created_successfully_but_cant_appear_yet))
+        dialog.setPrimaryCTAText(getString(topadscommonR.string.topads_common_add_credit))
+        dialog.setSecondaryCTAText(getString(topadscommonR.string.topads_common_later_keyword))
         dialog.setPrimaryCTAClickListener {
             MpTracker.clickAddCreditCta()
             val intent = Intent(activity, TopAdsAddCreditActivity::class.java)

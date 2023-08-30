@@ -291,4 +291,8 @@
     <string name="topads_common_stay_here">Tetap di Sini</string>
     <string name="topads_commong_ad_group_search_error_title">Oops, grup tidak ditemukan</string>
     <string name="topads_common_ad_group_search_error_desc">Coba cek lagi nama grup yang kamu cari atau coba buat grup iklan baru.</string>
+    <string name="topads_common_insufficient_credits_error_desc">Saat ini, Kredit TopAds-mu Rpx.xxx dan belum cukup untuk beriklan. Tambah Kredit TopAds dulu, yuk.</string>
+    <string name="topads_common_ads_created_successfully_but_cant_appear_yet">Iklan berhasil dibuat, tapi belum bisa tampil nih</string>
+    <string name="topads_common_add_credit">Tambah Kredit</string>
+    <string name="topads_common_later_keyword">Nanti Saja</string>
 </resources>

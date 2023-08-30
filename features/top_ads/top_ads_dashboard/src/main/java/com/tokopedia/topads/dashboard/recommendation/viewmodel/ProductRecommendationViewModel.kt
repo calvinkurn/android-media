@@ -9,10 +9,12 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.model.DataSuggestions
+import com.tokopedia.topads.common.data.response.Deposit
 import com.tokopedia.topads.common.data.response.ResponseGroupValidateName.TopAdsGroupValidateNameV2
 import com.tokopedia.topads.common.data.response.TopadsBidInfo
 import com.tokopedia.topads.common.domain.interactor.BidInfoUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsCreateUseCase
+import com.tokopedia.topads.common.domain.usecase.TopAdsGetDepositUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGroupValidateNameUseCase
 import com.tokopedia.topads.dashboard.recommendation.common.TopAdsProductRecommendationConstants.ADD_KEY
 import com.tokopedia.topads.dashboard.recommendation.common.TopAdsProductRecommendationConstants.DEFAULT_PRICE_BID
@@ -39,6 +41,7 @@ class ProductRecommendationViewModel @Inject constructor(
     private val topAdsGroupValidateNameUseCase: TopAdsGroupValidateNameUseCase,
     private val topAdsCreateUseCase: TopAdsCreateUseCase,
     private val topAdsGetGroupDetailListUseCase: TopAdsGetGroupDetailListUseCase,
+    private val topAdsGetDepositUseCase: TopAdsGetDepositUseCase,
 ) : BaseViewModel(dispatcher.main), CoroutineScope {
 
     private val _productItemsLiveData =
@@ -58,9 +61,14 @@ class ProductRecommendationViewModel @Inject constructor(
     val createGroupLiveData: LiveData<TopadsProductListState<String>>
         get() = _createGroupLiveData
 
-    private val _groupListLiveData = MutableLiveData<TopadsProductListState<List<GroupListUiModel>>>()
-    val groupListLiveData : LiveData<TopadsProductListState<List<GroupListUiModel>>>
-    get() = _groupListLiveData
+    private val _groupListLiveData =
+        MutableLiveData<TopadsProductListState<List<GroupListUiModel>>>()
+    val groupListLiveData: LiveData<TopadsProductListState<List<GroupListUiModel>>>
+        get() = _groupListLiveData
+
+    private val _topadsDeposits = MutableLiveData<Deposit>()
+    val topadsDeposits: LiveData<Deposit>
+        get() = _topadsDeposits
 
     fun loadProductList() {
         launchCatchError(dispatcher.main, {
@@ -105,10 +113,11 @@ class ProductRecommendationViewModel @Inject constructor(
         )
     }
 
-    fun getTopadsGroupList(search: String,groupType: Int) {
+    fun getTopadsGroupList(search: String, groupType: Int) {
         _groupListLiveData.value = TopadsProductListState.Loading(LOADER_SHIMMER)
         launchCatchError(block = {
-            _groupListLiveData.value = topAdsGetGroupDetailListUseCase.executeOnBackground(search,groupType,mapper)
+            _groupListLiveData.value =
+                topAdsGetGroupDetailListUseCase.executeOnBackground(search, groupType, mapper)
         }, onError = {
             _groupListLiveData.value = TopadsProductListState.Fail(it)
         })
@@ -146,8 +155,13 @@ class ProductRecommendationViewModel @Inject constructor(
     fun topAdsMoveGroup(
         groupId: String,
         productIds: List<String>
-    ){
-        val param = topAdsCreateUseCase.createRequestParamMoveGroup(groupId,TOPADS_MOVE_GROUP_SOURCE, productIds, ADD_KEY)
+    ) {
+        val param = topAdsCreateUseCase.createRequestParamMoveGroup(
+            groupId,
+            TOPADS_MOVE_GROUP_SOURCE,
+            productIds,
+            ADD_KEY
+        )
         launchCatchError(block = {
             val response = topAdsCreateUseCase.execute(param)
             val dataGroup = response.topadsManageGroupAds.groupResponse
@@ -160,6 +174,12 @@ class ProductRecommendationViewModel @Inject constructor(
         }, onError = {
             _createGroupLiveData.value = TopadsProductListState.Fail(it)
         })
+    }
+
+    fun getTopAdsDeposit() {
+        launchCatchError(block = {
+            _topadsDeposits.value = topAdsGetDepositUseCase.executeOnBackground()
+        }, onError = {})
     }
 
     fun getSelectedProductItems(): List<ProductListUiModel>? {
@@ -175,7 +195,7 @@ class ProductRecommendationViewModel @Inject constructor(
         }
     }
 
-    fun getGroupList(): List<GroupListUiModel>?{
+    fun getGroupList(): List<GroupListUiModel>? {
         return when (val groups = _groupListLiveData.value) {
             is TopadsProductListState.Success -> {
                 groups.data

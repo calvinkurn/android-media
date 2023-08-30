@@ -24,6 +24,9 @@ object TopAdsProductRecommendationConstants {
     const val GROUP_TYPE_KEY = "group_type"
     const val DEFAULT_GROUP_TYPE = 1
     const val INVALID_GROUP_TYPE = "Invalid item type"
+    const val DEFAULT_TOPADS_DEPOSITS = 0
+    const val COUNT_ZERO = 0
+    const val IDR_CONST = "Rpx.xxx"
     const val LOADER_SHIMMER = 1
     const val LOADER_PROGRESS_BAR = 2
 }

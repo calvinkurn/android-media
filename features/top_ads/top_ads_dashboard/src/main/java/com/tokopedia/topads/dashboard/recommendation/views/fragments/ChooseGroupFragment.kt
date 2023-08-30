@@ -1,5 +1,6 @@
 package com.tokopedia.topads.dashboard.recommendation.views.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -20,16 +21,20 @@ import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.recommendation.common.TopAdsProductRecommendationConstants
 import com.tokopedia.topads.dashboard.recommendation.common.TopAdsProductRecommendationConstants.DEFAULT_EMPTY_STRING
 import com.tokopedia.topads.dashboard.recommendation.common.TopAdsProductRecommendationConstants.DEFAULT_GROUP_TYPE
+import com.tokopedia.topads.dashboard.recommendation.common.TopAdsProductRecommendationConstants.DEFAULT_TOPADS_DEPOSITS
+import com.tokopedia.topads.dashboard.recommendation.common.TopAdsProductRecommendationConstants.IDR_CONST
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupItemUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopadsProductListState
 import com.tokopedia.topads.dashboard.recommendation.viewmodel.ProductRecommendationViewModel
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.recommendation.GroupListAdapter
+import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsCreditTopUpActivity
 import javax.inject.Inject
 
 class ChooseGroupFragment : BaseDaggerFragment() {
 
     private var binding: FragmentTopadsChooseGroupBinding? = null
     private var searchGroup: String = DEFAULT_EMPTY_STRING
+    private var topadsDeposits: Int = DEFAULT_TOPADS_DEPOSITS
 
     private val groupListAdapter by lazy { GroupListAdapter(::onItemCheckedChangeListener, ::reloadPage) }
 
@@ -71,6 +76,7 @@ class ChooseGroupFragment : BaseDaggerFragment() {
         )
         binding?.groupsRv?.adapter = groupListAdapter
 
+        viewModel.getTopAdsDeposit()
         viewModel.getTopadsGroupList(DEFAULT_EMPTY_STRING, DEFAULT_GROUP_TYPE)
 
         binding?.btnSubmit?.setOnClickListener { }
@@ -107,10 +113,18 @@ class ChooseGroupFragment : BaseDaggerFragment() {
         viewModel.createGroupLiveData.observe(viewLifecycleOwner) {
             when (val data = it) {
                 is TopadsProductListState.Success -> {
-                    openSuccessDialog(data.data)
+                    if (topadsDeposits > DEFAULT_TOPADS_DEPOSITS) {
+                        openSuccessDialog(data.data)
+                    } else {
+                        openInsufficientCreditsDialog()
+                    }
                 }
                 else -> {}
             }
+        }
+
+        viewModel.topadsDeposits.observe(viewLifecycleOwner){
+            topadsDeposits = it.topadsDashboardDeposits.data.amount
         }
     }
 
@@ -155,6 +169,41 @@ class ChooseGroupFragment : BaseDaggerFragment() {
         }
         dialog.setSecondaryCTAClickListener { activity?.finish() }
         dialog.show()
+    }
+
+    private fun openInsufficientCreditsDialog() {
+        val dialog =
+            DialogUnify(requireContext(), DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
+        dialog.setDescription(
+            getString(topadscommonR.string.topads_common_insufficient_credits_error_desc).replace(
+                IDR_CONST,
+                "Rp${topadsDeposits}"
+            )
+        )
+        dialog.setTitle(getString(topadscommonR.string.topads_common_ads_created_successfully_but_cant_appear_yet))
+        dialog.setPrimaryCTAText(getString(topadscommonR.string.topads_common_add_credit))
+        dialog.setSecondaryCTAText(getString(topadscommonR.string.topads_common_later_keyword))
+        dialog.setPrimaryCTAClickListener {
+            openNewAutoTopUpBottomSheet()
+        }
+        dialog.setSecondaryCTAClickListener { activity?.finish() }
+        dialog.show()
+    }
+
+    private fun openNewAutoTopUpBottomSheet() {
+        val intent = Intent(activity, TopAdsCreditTopUpActivity::class.java)
+        intent.putExtra(TopAdsCreditTopUpActivity.IS_AUTO_TOP_UP_ACTIVE, false)
+        intent.putExtra(TopAdsCreditTopUpActivity.IS_AUTO_TOP_UP_SELECTED, false)
+        intent.putExtra(TopAdsCreditTopUpActivity.CREDIT_PERFORMANCE, "")
+        intent.putExtra(
+            TopAdsCreditTopUpActivity.TOP_UP_COUNT,
+            TopAdsProductRecommendationConstants.COUNT_ZERO
+        )
+        intent.putExtra(
+            TopAdsCreditTopUpActivity.AUTO_TOP_UP_BONUS,
+            TopAdsProductRecommendationConstants.COUNT_ZERO
+        )
+        startActivityForResult(intent, TopAdsDashboardConstant.REQUEST_CODE_TOP_UP_CREDIT)
     }
 
     private fun onItemCheckedChangeListener(groupId: String) {

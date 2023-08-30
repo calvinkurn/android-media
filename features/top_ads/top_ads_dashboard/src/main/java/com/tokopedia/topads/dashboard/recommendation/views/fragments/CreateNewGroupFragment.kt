@@ -1,5 +1,6 @@
 package com.tokopedia.topads.dashboard.recommendation.views.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -14,20 +15,27 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.formatTo
 import com.tokopedia.topads.common.data.model.DataSuggestions
+import com.tokopedia.topads.common.data.response.DepositAmount
 import com.tokopedia.topads.common.view.sheet.CreateGroupBudgetHelpSheet
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.common.R as topadscommonR
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.databinding.FragmentTopadsCreateNewGroupBinding
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
+import com.tokopedia.topads.dashboard.recommendation.common.TopAdsProductRecommendationConstants
 import com.tokopedia.topads.dashboard.recommendation.common.TopAdsProductRecommendationConstants.AUTO_BID_CONST
 import com.tokopedia.topads.dashboard.recommendation.common.TopAdsProductRecommendationConstants.BASIC_DATE_FORMAT
 import com.tokopedia.topads.dashboard.recommendation.common.TopAdsProductRecommendationConstants.CONST_2
+import com.tokopedia.topads.dashboard.recommendation.common.TopAdsProductRecommendationConstants.COUNT_ZERO
 import com.tokopedia.topads.dashboard.recommendation.common.TopAdsProductRecommendationConstants.CREATE_GROUP_SUCCESS_DIALOG_IMG_URL
+import com.tokopedia.topads.dashboard.recommendation.common.TopAdsProductRecommendationConstants.DEFAULT_TOPADS_DEPOSITS
+import com.tokopedia.topads.dashboard.recommendation.common.TopAdsProductRecommendationConstants.IDR_CONST
 import com.tokopedia.topads.dashboard.recommendation.common.TopAdsProductRecommendationConstants.MAXIMUM_DAILY_BUDGET_DEFAULT_VALUE
 import com.tokopedia.topads.dashboard.recommendation.common.TopAdsProductRecommendationConstants.MINIMUM_DAILY_BUDGET_DEFAULT_VALUE
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopadsProductListState
 import com.tokopedia.topads.dashboard.recommendation.viewmodel.ProductRecommendationViewModel
+import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsAddCreditActivity
+import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsCreditTopUpActivity
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.utils.text.currency.NumberTextWatcher
@@ -42,6 +50,7 @@ class CreateNewGroupFragment : BaseDaggerFragment() {
     private var counter: Int = 0
     private var minDailyBudget: Int = MINIMUM_DAILY_BUDGET_DEFAULT_VALUE
     private var maxDailyBudget: Int = MAXIMUM_DAILY_BUDGET_DEFAULT_VALUE
+    private var topadsDeposits: Int = TopAdsProductRecommendationConstants.DEFAULT_TOPADS_DEPOSITS
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -72,6 +81,7 @@ class CreateNewGroupFragment : BaseDaggerFragment() {
     private fun init() {
         val suggestions = arrayListOf(DataSuggestions("", listOf()))
         viewModel.getBidInfo(suggestions)
+        viewModel.getTopAdsDeposit()
 
         binding?.btnSubmit?.text = String.format(
             getString(R.string.topads_insight_centre_advertise_product_with_count),
@@ -139,10 +149,18 @@ class CreateNewGroupFragment : BaseDaggerFragment() {
         viewModel.createGroupLiveData.observe(viewLifecycleOwner) {
             when (val data = it) {
                 is TopadsProductListState.Success -> {
-                    openSuccessDialog(data.data)
+                    if (topadsDeposits > DEFAULT_TOPADS_DEPOSITS) {
+                        openSuccessDialog(data.data)
+                    } else {
+                        openInsufficientCreditsDialog()
+                    }
                 }
                 else -> {}
             }
+        }
+
+        viewModel.topadsDeposits.observe(viewLifecycleOwner){
+            topadsDeposits = it.topadsDashboardDeposits.data.amount
         }
     }
 
@@ -170,6 +188,35 @@ class CreateNewGroupFragment : BaseDaggerFragment() {
         }
         dialog.setSecondaryCTAClickListener { activity?.finish() }
         dialog.show()
+    }
+
+    private fun openInsufficientCreditsDialog() {
+        val dialog =
+            DialogUnify(requireContext(), DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
+        dialog.setDescription(
+            getString(topadscommonR.string.topads_common_insufficient_credits_error_desc).replace(
+                IDR_CONST,
+                "Rp${topadsDeposits}"
+            )
+        )
+        dialog.setTitle(getString(topadscommonR.string.topads_common_ads_created_successfully_but_cant_appear_yet))
+        dialog.setPrimaryCTAText(getString(topadscommonR.string.topads_common_add_credit))
+        dialog.setSecondaryCTAText(getString(topadscommonR.string.topads_common_later_keyword))
+        dialog.setPrimaryCTAClickListener {
+            openNewAutoTopUpBottomSheet()
+        }
+        dialog.setSecondaryCTAClickListener { activity?.finish() }
+        dialog.show()
+    }
+
+    private fun openNewAutoTopUpBottomSheet() {
+        val intent = Intent(activity, TopAdsCreditTopUpActivity::class.java)
+        intent.putExtra(TopAdsCreditTopUpActivity.IS_AUTO_TOP_UP_ACTIVE, false)
+        intent.putExtra(TopAdsCreditTopUpActivity.IS_AUTO_TOP_UP_SELECTED, false)
+        intent.putExtra(TopAdsCreditTopUpActivity.CREDIT_PERFORMANCE, "")
+        intent.putExtra(TopAdsCreditTopUpActivity.TOP_UP_COUNT, COUNT_ZERO)
+        intent.putExtra(TopAdsCreditTopUpActivity.AUTO_TOP_UP_BONUS, COUNT_ZERO)
+        startActivityForResult(intent, TopAdsDashboardConstant.REQUEST_CODE_TOP_UP_CREDIT)
     }
 
     private fun checkAllFieldsValidations() {
