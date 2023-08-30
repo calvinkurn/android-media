@@ -34,9 +34,9 @@ class BCABalanceViewModel @Inject constructor(
             run {
                 try {
                     val bcaCheckBalanceResult = bcaLibrary.C_BCACheckBalance()
-                    val mappedResult = BCAResponseMapper.bcaMapper(bcaCheckBalanceResult, false)
+                    val mappedResult = BCAResponseMapper.bcaMapper(bcaCheckBalanceResult, false, false)
                     val bcaGetConfig = bcaLibrary.C_BCAGetConfig()
-                    Log.d("SETCONFIGG", bcaSetConfig+" _hahaha_ "+bcaGetConfig)
+                    Log.d("SETCONFIGG", bcaSetConfig.strLogRsp+" _hahaha_ "+bcaGetConfig.strConfig)
                     //TODO Add Extra Balance from GQL
                     bcaInquiryMutable.postValue(mappedResult)
                 } catch (e: IOException) {

@@ -3,12 +3,12 @@ package com.tokopedia.emoney.domain.response
 import com.tokopedia.common_electronic_money.data.AttributesEmoneyInquiry
 import com.tokopedia.common_electronic_money.data.EmoneyInquiry
 import com.tokopedia.common_electronic_money.util.NFCUtils
-import com.tokopedia.emoney.integration.data.CheckBalanceResult
+import com.tokopedia.emoney.integration.data.JNIResult
 import com.tokopedia.kotlin.extensions.view.ZERO
 
 object BCAResponseMapper {
     private const val ISSUER_ID_BCA = 5
-    fun bcaMapper(result: CheckBalanceResult, isBCAGenOne: Boolean): EmoneyInquiry {
+    fun bcaMapper(result: JNIResult, isBCAGenOne: Boolean, isExtraPendingBalance: Boolean = false): EmoneyInquiry {
         return EmoneyInquiry(
             attributesEmoneyInquiry = AttributesEmoneyInquiry(
                 buttonText = "Top Up Sekarang",
@@ -20,7 +20,7 @@ object BCAResponseMapper {
                 formattedCardNumber = NFCUtils.formatCardUID(result.cardNo),
                 issuer_id = ISSUER_ID_BCA,
                 pendingBalance = Int.ZERO,
-                extraPendingBalance = result.isExtraPendingBalance
+                extraPendingBalance = isExtraPendingBalance
             ),
             isBCAGenOne = isBCAGenOne
         )

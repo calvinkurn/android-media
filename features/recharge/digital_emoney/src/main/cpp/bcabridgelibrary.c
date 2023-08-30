@@ -90,28 +90,48 @@ unsigned char BCAsendAPDU(unsigned char* cmdByte, unsigned short lenC,
     return TRUE;
 }
 
-JNIEXPORT jstring JNICALL
+JNIEXPORT jobject JNICALL
 Java_com_tokopedia_emoney_integration_BCALibrary_C_1BCAVersionDll(JNIEnv *env, jobject thiz) {
+    //create the object result class that will returned in jobject
+    jclass resultClass = (*env)->FindClass(env, "com/tokopedia/emoney/integration/data/JNIResult");
+    jmethodID constructor = (*env)->GetMethodID(env, resultClass, "<init>",
+                                                "(ILjava/lang/String;IILjava/lang/String;Ljava/lang/String;)V");
+
     //create return value strLogRsp with length LENGTH_BCALIBVER with initial is 0 with size of LENGTH_BCALIBVER
     unsigned char strLogRsp[LENGTH_BCALIBVER];
     memset(strLogRsp, 0x00, sizeof(strLogRsp));
 
     //call library function BCAVersionDll
     unsigned char result = BCAVersionDll(strLogRsp);
-    return (*env)->NewStringUTF(env, strLogRsp);
+    //set the return value result success
+    jobject resultObject = (*env)->NewObject(env, resultClass, constructor,
+                                             result,(*env)->NewStringUTF(env, strLogRsp),
+                                             FALSE, 0, (*env)->NewStringUTF(env, ""),
+                                             (*env)->NewStringUTF(env, ""));
+    return resultObject;
 }
 
-JNIEXPORT jstring JNICALL
+JNIEXPORT jobject JNICALL
 Java_com_tokopedia_emoney_integration_BCALibrary_C_1BCAIsMyCard(JNIEnv *env, jobject thiz) {
     g_env = env;
     g_obj = thiz;
+
+    jclass resultClass = (*env)->FindClass(env, "com/tokopedia/emoney/integration/data/JNIResult");
+    jmethodID constructor = (*env)->GetMethodID(env, resultClass, "<init>",
+                                                "(ILjava/lang/String;IILjava/lang/String;Ljava/lang/String;)V");
+
     //create return value strLogRsp with length LENGTH_BCAISMYCARD_RESULT with initial is 0 with size of LENGTH_BCAISMYCARD_RESULT
     unsigned char strLogRsp[LENGTH_BCAISMYCARD_RESULT];
     memset(strLogRsp, 0x00, sizeof(strLogRsp));
 
     //call library function BCAIsMyCard
     unsigned char result = BCAIsMyCard(strLogRsp);
-    return (*env)->NewStringUTF(env, strLogRsp);
+    //set the return value result success
+    jobject resultObject = (*env)->NewObject(env, resultClass, constructor,
+                                             result,(*env)->NewStringUTF(env, strLogRsp),
+                                             FALSE, 0, (*env)->NewStringUTF(env, ""),
+                                             (*env)->NewStringUTF(env, ""));
+    return resultObject;
 }
 
 JNIEXPORT jobject JNICALL
@@ -120,9 +140,9 @@ Java_com_tokopedia_emoney_integration_BCALibrary_C_1BCACheckBalance(JNIEnv *env,
     g_obj = thiz;
 
     //create the object result class that will returned in jobject
-    jclass resultClass = (*env)->FindClass(env, "com/tokopedia/emoney/integration/data/CheckBalanceResult");
+    jclass resultClass = (*env)->FindClass(env, "com/tokopedia/emoney/integration/data/JNIResult");
     jmethodID constructor = (*env)->GetMethodID(env, resultClass, "<init>",
-                                                "(ILjava/lang/String;Z)V");
+                                                "(ILjava/lang/String;IILjava/lang/String;Ljava/lang/String;)V");
 
     //create return value balance
     long balance = -1;
@@ -134,22 +154,24 @@ Java_com_tokopedia_emoney_integration_BCALibrary_C_1BCACheckBalance(JNIEnv *env,
     memset(strLogRsp, 0x00, sizeof(strLogRsp));
 
     unsigned char result = BCACheckBalance(&balance, cardNo, strLogRsp);
-    if (result == FALSE){
-        //set the return value result fail
-        jobject resultObject = (*env)->NewObject(env, resultClass, constructor, -1, (*env)->NewStringUTF(env, cardNo), 0);
-        return resultObject;
-    }
 
     //set the return value result success
-    jobject resultObject = (*env)->NewObject(env, resultClass, constructor, balance, (*env)->NewStringUTF(env, cardNo), 0);
+    jobject resultObject = (*env)->NewObject(env, resultClass, constructor,
+                                             result,(*env)->NewStringUTF(env, strLogRsp),
+                                             TRUE, balance, (*env)->NewStringUTF(env, cardNo),
+                                             (*env)->NewStringUTF(env, ""));
     return resultObject;
 }
 
-JNIEXPORT jstring JNICALL
+JNIEXPORT jobject JNICALL
 Java_com_tokopedia_emoney_integration_BCALibrary_C_1BCASetConfig(JNIEnv *env, jobject thiz,
                                                                  jstring str_config) {
     g_env = env;
     g_obj = thiz;
+
+    jclass resultClass = (*env)->FindClass(env, "com/tokopedia/emoney/integration/data/JNIResult");
+    jmethodID constructor = (*env)->GetMethodID(env, resultClass, "<init>",
+                                                "(ILjava/lang/String;IILjava/lang/String;Ljava/lang/String;)V");
 
     //create return value strLogRsp with length LENGTH_RESPONSE with initial is 0 with size of LENGTH_RESPONSE
     unsigned char strLogRsp[LENGTH_RESPONSE];
@@ -162,21 +184,35 @@ Java_com_tokopedia_emoney_integration_BCALibrary_C_1BCASetConfig(JNIEnv *env, jo
     memset(strConfig, 0x00, LENGTH_STR_CONFIG);
     memcpy(strConfig, strCConfig, LENGTH_STR_CONFIG);
 
-    unsigned result = BCASetConfig(strConfig, strLogRsp);
-    return (*env)->NewStringUTF(env, strLogRsp);
+    unsigned char result = BCASetConfig(strConfig, strLogRsp);
+    //set the return value result success
+    jobject resultObject = (*env)->NewObject(env, resultClass, constructor,
+                                             result,(*env)->NewStringUTF(env, strLogRsp),
+                                             FALSE, 0, (*env)->NewStringUTF(env, ""),
+                                             (*env)->NewStringUTF(env, ""));
+    return resultObject;
 }
 
-JNIEXPORT jstring JNICALL
+JNIEXPORT jobject JNICALL
 Java_com_tokopedia_emoney_integration_BCALibrary_C_1BCAGetConfig(JNIEnv *env, jobject thiz) {
     g_env = env;
     g_obj = thiz;
 
+    jclass resultClass = (*env)->FindClass(env, "com/tokopedia/emoney/integration/data/JNIResult");
+    jmethodID constructor = (*env)->GetMethodID(env, resultClass, "<init>",
+                                                "(ILjava/lang/String;IILjava/lang/String;Ljava/lang/String;)V");
+
     unsigned char strConfig[LENGTH_STR_CONFIG];
     memset(strConfig, 0x00, sizeof(strConfig));
 
-    unsigned char strLogResp[LENGTH_RESPONSE];
-    memset(strLogResp, 0x00, sizeof(strLogResp));
+    unsigned char strLogRsp[LENGTH_RESPONSE];
+    memset(strLogRsp, 0x00, sizeof(strLogRsp));
 
-    unsigned result = BCAGetconfig(strConfig, strLogResp);
-    return (*env)->NewStringUTF(env, strConfig);
+    unsigned char result = BCAGetconfig(strConfig, strLogRsp);
+    //set the return value result success
+    jobject resultObject = (*env)->NewObject(env, resultClass, constructor,
+                                             result,(*env)->NewStringUTF(env, strLogRsp),
+                                             FALSE, 0, (*env)->NewStringUTF(env, ""),
+                                             (*env)->NewStringUTF(env, strConfig));
+    return resultObject;
 }
