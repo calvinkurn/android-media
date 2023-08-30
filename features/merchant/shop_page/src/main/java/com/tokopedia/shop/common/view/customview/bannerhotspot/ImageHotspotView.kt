@@ -146,7 +146,8 @@ class ImageHotspotView @JvmOverloads constructor(
 
     private fun hideAllBubbleView() {
         listHotspot.forEach {
-            it.bubbleView?.hideWithAlpha()
+//            it.bubbleView?.hideWithAlpha()
+            it.bubbleView?.hideWithAnimation()
         }
     }
 
