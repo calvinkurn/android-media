@@ -219,13 +219,13 @@ class CheckoutProductViewHolder(
         renderShopInfo(product)
 
         with(bmgmBinding) {
-            ivBmgmProductImage.setImageUrl(product.imageUrl)
-            tvBmgmProductName.text = product.name
+            ivProductImageBmgm.setImageUrl(product.imageUrl)
+            tvProductNameBmgm.text = product.name
 
             if (product.ethicalDrugDataModel.needPrescription && product.ethicalDrugDataModel.iconUrl.isNotEmpty()) {
                 product.ethicalDrugDataModel.iconUrl.getBitmapImageUrl(bmgmBinding.root.context) {
                     try {
-                        tvBmgmProductName.text = SpannableStringBuilder("  ${product.name}").apply {
+                        tvProductNameBmgm.text = SpannableStringBuilder("  ${product.name}").apply {
                             setSpan(ImageSpan(bmgmBinding.root.context, it, DynamicDrawableSpan.ALIGN_CENTER), 0, 1, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
                         }
                     } catch (t: Throwable) {
@@ -238,20 +238,20 @@ class CheckoutProductViewHolder(
                 CurrencyFormatUtil.convertPriceValueToIdrFormat(product.price, false)
                     .removeDecimalSuffix()
             val qty = product.quantity
-            tvBmgmProductPrice.text = "$qty x $priceInRp"
+            tvProductPriceBmgm.text = "$qty x $priceInRp"
 
-            tvBmgmVariant.shouldShowWithAction(product.variant.isNotBlank()) {
-                tvBmgmVariant.text = product.variant
+            tvProductVariantBmgm.shouldShowWithAction(product.variant.isNotBlank()) {
+                tvProductVariantBmgm.text = product.variant
             }
-            tvBmgmOptionalNoteToSeller.shouldShowWithAction(product.noteToSeller.isNotEmpty()) {
-                tvBmgmOptionalNoteToSeller.text = "\"${product.noteToSeller}\""
+            tvProductNotesBmgm.shouldShowWithAction(product.noteToSeller.isNotEmpty()) {
+                tvProductNotesBmgm.text = "\"${product.noteToSeller}\""
             }
 
             if (product.shouldShowBmgmInfo) {
-                (vBmgmProductSeparator.layoutParams as? MarginLayoutParams)?.topMargin = 8.dpToPx(itemView.resources.displayMetrics)
-                (vBmgmProductSeparator.layoutParams as? MarginLayoutParams)?.topMargin = 8.dpToPx(itemView.resources.displayMetrics)
+                (vProductSeparatorBmgm.layoutParams as? MarginLayoutParams)?.topMargin = 8.dpToPx(itemView.resources.displayMetrics)
+                (vProductSeparatorBmgm.layoutParams as? MarginLayoutParams)?.topMargin = 8.dpToPx(itemView.resources.displayMetrics)
             } else {
-                (vBmgmProductSeparator.layoutParams as? MarginLayoutParams)?.topMargin = 0
+                (vProductSeparatorBmgm.layoutParams as? MarginLayoutParams)?.topMargin = 0
             }
 
             renderAddOnBMGM(product)
@@ -261,13 +261,13 @@ class CheckoutProductViewHolder(
 
     private fun hideBMGMViews() {
         with(bmgmBinding) {
-            ivBmgmProductImage.hide()
-            tvBmgmProductName.hide()
-            tvBmgmVariant.hide()
-            tvBmgmProductPrice.hide()
-            tvBmgmOptionalNoteToSeller.hide()
-            tvCheckoutBmgmAddons.hide()
-            tvCheckoutBmgmAddonsSeeAll.hide()
+            ivProductImageBmgm.hide()
+            tvProductNameBmgm.hide()
+            tvProductVariantBmgm.hide()
+            tvProductPriceBmgm.hide()
+            tvProductNotesBmgm.hide()
+            tvProductAddOnsSectionTitleBmgm.hide()
+            tvProductAddOnsSeeAllBmgm.hide()
             llAddonBmgmProductItems.hide()
         }
     }
@@ -552,22 +552,22 @@ class CheckoutProductViewHolder(
         with(bmgmBinding) {
             val addOnProduct = product.addOnProduct
             if (addOnProduct.listAddOnProductData.isEmpty()) {
-                tvCheckoutBmgmAddons.gone()
-                tvCheckoutBmgmAddonsSeeAll.gone()
+                tvProductAddOnsSectionTitleBmgm.gone()
+                tvProductAddOnsSeeAllBmgm.gone()
                 llAddonBmgmProductItems.gone()
             } else {
                 llAddonBmgmProductItems.removeAllViews()
                 if (addOnProduct.bottomsheet.isShown) {
-                    tvCheckoutBmgmAddons.text = addOnProduct.title
-                    tvCheckoutBmgmAddonsSeeAll.apply {
+                    tvProductAddOnsSectionTitleBmgm.text = addOnProduct.title
+                    tvProductAddOnsSeeAllBmgm.apply {
                         visible()
                         setOnClickListener {
                             listener.onClickSeeAllAddOnProductService(product)
                         }
                     }
                 } else {
-                    tvCheckoutBmgmAddons.gone()
-                    tvCheckoutBmgmAddonsSeeAll.gone()
+                    tvProductAddOnsSectionTitleBmgm.gone()
+                    tvProductAddOnsSeeAllBmgm.gone()
                 }
                 val layoutInflater = LayoutInflater.from(itemView.context)
                 addOnProduct.listAddOnProductData.forEach { addon ->
@@ -575,31 +575,30 @@ class CheckoutProductViewHolder(
                         val addOnView =
                             ItemAddOnProductBinding.inflate(layoutInflater, llAddonBmgmProductItems, false)
                         addOnView.apply {
-                            // TODO: [Misael ini sebelumnya di comment (ngga ada addon.iconUrl jg), tanya Hansen nnti
-                            icProductAddon.setImageUrl(addon.iconUrl)
-                            tvProductAddonName.text = SpannableString(addon.name).apply {
+                            icCheckoutAddOnsItem.setImageUrl(addon.iconUrl)
+                            tvCheckoutAddOnsItemName.text = SpannableString(addon.name).apply {
                                 setSpan(UnderlineSpan(), 0, addon.name.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
                             }
-                            tvProductAddonPrice.text = " (${CurrencyFormatUtil
+                            tvCheckoutAddOnsItemPrice.text = " (${CurrencyFormatUtil
                                 .convertPriceValueToIdrFormat(addon.price, false)
                                 .removeDecimalSuffix()})"
-                            cbProductAddon.setOnCheckedChangeListener { _, _ -> }
+                            cbCheckoutAddOns.setOnCheckedChangeListener { _, _ -> }
                             when (addon.status) {
                                 AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK -> {
-                                    cbProductAddon.isChecked = true
-                                    cbProductAddon.isEnabled = true
+                                    cbCheckoutAddOns.isChecked = true
+                                    cbCheckoutAddOns.isEnabled = true
                                 }
                                 AddOnConstant.ADD_ON_PRODUCT_STATUS_MANDATORY -> {
-                                    cbProductAddon.isChecked = true
-                                    cbProductAddon.isEnabled = false
+                                    cbCheckoutAddOns.isChecked = true
+                                    cbCheckoutAddOns.isEnabled = false
                                 }
                                 else -> {
-                                    cbProductAddon.isChecked = false
-                                    cbProductAddon.isEnabled = true
+                                    cbCheckoutAddOns.isChecked = false
+                                    cbCheckoutAddOns.isEnabled = true
                                 }
                             }
-                            cbProductAddon.skipAnimation()
-                            cbProductAddon.setOnCheckedChangeListener { _, isChecked ->
+                            cbCheckoutAddOns.skipAnimation()
+                            cbCheckoutAddOns.setOnCheckedChangeListener { _, isChecked ->
                                 delayChangeCheckboxAddOnState?.cancel()
                                 delayChangeCheckboxAddOnState = GlobalScope.launch(Dispatchers.Main) {
                                     delay(DEBOUNCE_TIME_ADDON)
@@ -613,7 +612,7 @@ class CheckoutProductViewHolder(
                                     }
                                 }
                             }
-                            tvProductAddonName.setOnClickListener {
+                            tvCheckoutAddOnsItemName.setOnClickListener {
                                 listener.onClickAddonProductInfoIcon(addon.infoLink)
                             }
                         }
