@@ -12,7 +12,6 @@ data class PriceCtaProperties (
     val price: String = "",
     val productName: String = "",
     val bgColor: Int = 0,
-    val ctaColor: Int = 0,
     val textColor: Int = 0
 )
 

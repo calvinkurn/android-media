@@ -68,8 +68,7 @@ class CatalogDetailUiMapper @Inject constructor(
     }
 
     private fun mapToPriceCtaProperties(remoteModel: CatalogResponseData.CatalogGetDetailModular): PriceCtaProperties {
-        val bgColor = remoteModel.globalStyle?.bgColor
-        val ctaColor = remoteModel.globalStyle?.secondaryColor
+        val bgColor = remoteModel.globalStyle?.secondaryColor
         val textColorRes = if (remoteModel.globalStyle?.darkMode == true) {
             com.tokopedia.unifycomponents.R.color.Unify_Static_White
         } else {
@@ -83,7 +82,6 @@ class CatalogDetailUiMapper @Inject constructor(
                 price = listOf(marketPrice?.minFmt.orEmpty(), marketPrice?.maxFmt.orEmpty()).joinToString(" - ") ,
                 productName = priceCta.name.orEmpty(),
                 bgColor = "#$bgColor".stringHexColorParseToInt(),
-                ctaColor = "#$ctaColor".stringHexColorParseToInt(),
                 MethodChecker.getColor(context, textColorRes)
             )
         } ?: PriceCtaProperties()
@@ -219,5 +217,5 @@ class CatalogDetailUiMapper @Inject constructor(
         }
         return MethodChecker.getColor(context, textColorRes)
     }
-    
+
 }
