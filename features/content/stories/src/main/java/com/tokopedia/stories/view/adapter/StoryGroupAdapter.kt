@@ -8,26 +8,26 @@ import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.stories.R
 import com.tokopedia.stories.databinding.ItemStoryGroupBinding
-import com.tokopedia.stories.view.model.StoryGroupItemUiModel
+import com.tokopedia.stories.view.model.StoryGroupHeader
 
 class StoryGroupAdapter(
     listener: Listener
-) : BaseDiffUtilAdapter<StoryGroupItemUiModel>() {
+) : BaseDiffUtilAdapter<StoryGroupHeader>() {
 
     init {
         delegatesManager.addDelegate(StoryGroupAdapterDelegate.StoryGroup(listener))
     }
 
     override fun areItemsTheSame(
-        oldItem: StoryGroupItemUiModel,
-        newItem: StoryGroupItemUiModel
+        oldItem: StoryGroupHeader,
+        newItem: StoryGroupHeader
     ): Boolean {
         return oldItem.id == newItem.id
     }
 
     override fun areContentsTheSame(
-        oldItem: StoryGroupItemUiModel,
-        newItem: StoryGroupItemUiModel
+        oldItem: StoryGroupHeader,
+        newItem: StoryGroupHeader
     ): Boolean {
         return oldItem == newItem
     }
@@ -42,11 +42,11 @@ internal class StoryGroupAdapterDelegate {
 
     internal class StoryGroup(
         private val listener: StoryGroupAdapter.Listener
-    ) : TypedAdapterDelegate<StoryGroupItemUiModel, StoryGroupItemUiModel,
+    ) : TypedAdapterDelegate<StoryGroupHeader, StoryGroupHeader,
         StoryGroupViewHolder>(R.layout.layout_empty) {
 
         override fun onBindViewHolder(
-            item: StoryGroupItemUiModel,
+            item: StoryGroupHeader,
             holder: StoryGroupViewHolder
         ) {
             holder.bind(item)
@@ -66,7 +66,7 @@ class StoryGroupViewHolder(
     private val binding: ItemStoryGroupBinding,
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(data: StoryGroupItemUiModel) {
+    fun bind(data: StoryGroupHeader) {
         binding.imgGroupImage.setImageUrl(data.image)
         binding.txtGroupTitle.text = data.title
 

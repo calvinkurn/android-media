@@ -1,6 +1,5 @@
 package com.tokopedia.stories.view.fragment
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -100,15 +99,14 @@ class StoryGroupFragment @Inject constructor(
         }
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     private fun renderStoryGroup(
         prevState: StoryGroupUiModel?,
         state: StoryGroupUiModel
     ) {
-        if (prevState == null || prevState == state) return
+        if (prevState == null || prevState.groupItems.size == state.groupItems.size) return
 
-        pagerAdapter.setStoryGroup(state.groupItems.size)
-        pagerAdapter.notifyDataSetChanged()
+        pagerAdapter.setStoryGroup(state)
+        pagerAdapter.notifyItemRangeInserted(pagerAdapter.itemCount, state.groupItems.size)
     }
 
     private fun selectGroupEvent(position: Int) = with(binding.storyGroupViewPager) {

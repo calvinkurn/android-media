@@ -21,7 +21,7 @@ import com.tokopedia.stories.utils.withCache
 import com.tokopedia.stories.view.adapter.StoryGroupAdapter
 import com.tokopedia.stories.view.components.indicator.StoryDetailTimer
 import com.tokopedia.stories.view.model.StoryDetailUiModel
-import com.tokopedia.stories.view.model.StoryGroupUiModel
+import com.tokopedia.stories.view.model.StoryGroupHeader
 import com.tokopedia.stories.view.utils.TouchEventStory
 import com.tokopedia.stories.view.utils.onTouchEventStory
 import com.tokopedia.stories.view.viewmodel.StoryViewModel
@@ -55,6 +55,9 @@ class StoryDetailFragment @Inject constructor(
         LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
     }
 
+    private val groupId: String
+        get() = arguments?.getString(STORY_GROUP_ID).orEmpty()
+
     override fun getScreenName(): String {
         return TAG
     }
@@ -84,20 +87,23 @@ class StoryDetailFragment @Inject constructor(
     }
 
     private fun setupObserver() {
-        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
             viewModel.uiState.withCache().collectLatest { (prevState, state) ->
-                renderStoryGroup(prevState?.storyGroup, state.storyGroup)
+                if (groupId != viewModel.mGroupId) return@collectLatest
+                renderStoryGroupHeader(prevState?.storyGroup?.groupHeader, state.storyGroup.groupHeader)
                 renderStoryDetail(prevState?.storyDetail, state.storyDetail)
             }
         }
     }
 
-    private fun renderStoryGroup(
-        prevState: StoryGroupUiModel?,
-        state: StoryGroupUiModel
+    private fun renderStoryGroupHeader(
+        prevState: List<StoryGroupHeader>?,
+        state: List<StoryGroupHeader>,
     ) {
         if (prevState == state) return
-//        mAdapter.setItems(state.groupItems)
+
+        mAdapter.setItems(state)
+        mAdapter.notifyItemRangeInserted(mAdapter.itemCount, state.size)
     }
 
     private fun renderStoryDetail(
@@ -219,6 +225,7 @@ class StoryDetailFragment @Inject constructor(
 
     companion object {
         private const val TAG = "StoryDetailFragment"
+        const val STORY_GROUP_ID = "StoryGroupId"
 
         fun getFragment(
             fragmentManager: FragmentManager,

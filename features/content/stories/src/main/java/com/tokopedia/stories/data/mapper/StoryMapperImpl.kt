@@ -5,6 +5,7 @@ import com.tokopedia.stories.domain.model.group.StoryGroupsResponseModel
 import com.tokopedia.stories.view.model.StoryDetailItemUiModel
 import com.tokopedia.stories.view.model.StoryDetailItemUiModel.StoryDetailItemUiEvent
 import com.tokopedia.stories.view.model.StoryDetailUiModel
+import com.tokopedia.stories.view.model.StoryGroupHeader
 import com.tokopedia.stories.view.model.StoryGroupItemUiModel
 import com.tokopedia.stories.view.model.StoryGroupUiModel
 import javax.inject.Inject
@@ -17,13 +18,18 @@ class StoryMapperImpl @Inject constructor() : StoryMapper {
     ): StoryGroupUiModel {
         return StoryGroupUiModel(
             selectedPosition = dataGroup.data.meta.selectedGroupIndex,
-            groupItems = dataGroup.data.groups.mapIndexed { indexGroup, group ->
-                StoryGroupItemUiModel(
+            groupHeader = dataGroup.data.groups.mapIndexed { indexGroupHeader, group ->
+                StoryGroupHeader(
                     id = group.value,
                     image = group.image,
                     title = group.name,
-                    isSelected = dataGroup.data.meta.selectedGroupIndex == indexGroup,
-                    detail = if (dataGroup.data.meta.selectedGroupIndex == indexGroup) {
+                    isSelected = dataGroup.data.meta.selectedGroupIndex == indexGroupHeader,
+                )
+            },
+            groupItems = dataGroup.data.groups.mapIndexed { indexGroupItem, group ->
+                StoryGroupItemUiModel(
+                    id = group.value,
+                    detail = if (dataGroup.data.meta.selectedGroupIndex == indexGroupItem) {
                         StoryDetailUiModel(
                             selectedPosition = dataDetail.data.meta.selectedStoryIndex,
                             selectedPositionCached = dataDetail.data.meta.selectedStoryIndex,
