@@ -300,6 +300,8 @@ object CartUiModelMapper {
         }
 
         cartData.unavailableSections.forEachIndexed { sectionIndex, unavailableSection ->
+            val disabledReasonHolderData = mapDisabledReasonUiModel(unavailableSection)
+            unavailableSectionList.add(disabledReasonHolderData)
             unavailableSection.unavailableGroups.forEachIndexed { groupIndex, unavailableGroup ->
                 val productUiModelList = mutableListOf<CartItemHolderData>()
                 val shopUiModel = mapGroupShop(unavailableGroup.shop, unavailableGroup.cartDetails)
