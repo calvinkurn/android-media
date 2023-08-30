@@ -57,201 +57,202 @@ data class LayoutData(
     )
 
     data class Hero (
-        @SerializedName("name"         ) var name         : String?              = null,
-        @SerializedName("brandLogoUrl" ) var brandLogoUrl : String?              = null,
-        @SerializedName("heroSlide"    ) var heroSlide    : ArrayList<HeroSlide> = arrayListOf()
+        @SerializedName("name"         ) var name         : String               = "",
+        @SerializedName("brandLogoUrl" ) var brandLogoUrl : String               = "",
+        @SerializedName("heroSlide"    ) var heroSlide    : List<HeroSlide>      = listOf()
     ) {
         data class HeroSlide(
-            @SerializedName("videoUrl" ) var videoUrl : String? = null,
-            @SerializedName("imageUrl" ) var imageUrl : String? = null,
-            @SerializedName("subtitle" ) var subtitle : String? = null
+            @SerializedName("videoUrl" ) var videoUrl : String = "",
+            @SerializedName("imageUrl" ) var imageUrl : String = "",
+            @SerializedName("subtitle" ) var subtitle : String = ""
         )
     }
 
     data class TopFeature (
-        @SerializedName("iconUrl" ) var iconUrl : String? = null,
-        @SerializedName("desc"    ) var desc    : String? = null
+        @SerializedName("iconUrl" ) var iconUrl : String = "",
+        @SerializedName("desc"    ) var desc    : String = ""
     )
 
     data class Trustmaker (
-        @SerializedName("imageUrl" ) var imageUrl : String? = null,
-        @SerializedName("title"    ) var title    : String? = null,
-        @SerializedName("subtitle" ) var subtitle : String? = null
+        @SerializedName("imageUrl" ) var imageUrl : String = "",
+        @SerializedName("title"    ) var title    : String = "",
+        @SerializedName("subtitle" ) var subtitle : String = ""
     )
 
     data class Characteristic (
-        @SerializedName("iconUrl" ) var iconUrl : String? = null,
-        @SerializedName("desc"    ) var desc    : String? = null
+        @SerializedName("iconUrl" ) var iconUrl : String = "",
+        @SerializedName("desc"    ) var desc    : String = ""
     )
 
     data class Banner (
-        @SerializedName("imageUrl" ) var imageUrl : String? = null
+        @SerializedName("imageUrl" ) var imageUrl : String = ""
     )
 
     data class ImagePanel (
-        @SerializedName("imageUrl" ) var imageUrl : String? = null,
-        @SerializedName("title"    ) var title    : String? = null,
-        @SerializedName("subtitle" ) var subtitle : String? = null,
-        @SerializedName("desc"     ) var desc     : String? = null
+        @SerializedName("imageUrl" ) var imageUrl : String = "",
+        @SerializedName("title"    ) var title    : String = "",
+        @SerializedName("subtitle" ) var subtitle : String = "",
+        @SerializedName("desc"     ) var desc     : String = ""
     )
 
     data class Navigation (
-        @SerializedName("title"         ) var title         : String?           = null,
+        @SerializedName("title"         ) var title         : String            = "",
         @SerializedName("eligibleNames" ) var eligibleNames : List<String>      = listOf()
     )
 
     data class ImageSlider (
-        @SerializedName("imageUrl" ) var imageUrl : String? = null,
-        @SerializedName("title"    ) var title    : String? = null,
-        @SerializedName("subtitle" ) var subtitle : String? = null,
-        @SerializedName("desc"     ) var desc     : String? = null
+        @SerializedName("imageUrl" ) var imageUrl : String = "",
+        @SerializedName("title"    ) var title    : String = "",
+        @SerializedName("subtitle" ) var subtitle : String = "",
+        @SerializedName("desc"     ) var desc     : String = ""
     )
 
     data class Text (
-        @SerializedName("title"    ) var title    : String? = null,
-        @SerializedName("subtitle" ) var subtitle : String? = null,
-        @SerializedName("desc"     ) var desc     : String? = null
+        @SerializedName("title"    ) var title    : String = "",
+        @SerializedName("subtitle" ) var subtitle : String = "",
+        @SerializedName("desc"     ) var desc     : String = ""
     )
 
     data class ExpertReview (
-        @SerializedName("name"     ) var name     : String? = null,
-        @SerializedName("title"    ) var title    : String? = null,
-        @SerializedName("imageUrl" ) var imageUrl : String? = null,
-        @SerializedName("review"   ) var review   : String? = null,
-        @SerializedName("videoUrl" ) var videoUrl : String? = null
+        @SerializedName("name"     ) var name     : String = "",
+        @SerializedName("title"    ) var title    : String = "",
+        @SerializedName("imageUrl" ) var imageUrl : String = "",
+        @SerializedName("review"   ) var review   : String = "",
+        @SerializedName("videoUrl" ) var videoUrl : String = ""
     )
 
     data class Section (
-        @SerializedName("title"         ) var title         : String?           = null
+        @SerializedName("title") var title : String = ""
     )
 
     data class InfoColumn (
-        @SerializedName("name" ) var name : String?        = null,
-        @SerializedName("row"  ) var row  : ArrayList<Row> = arrayListOf()
+        @SerializedName("name" ) var name : String    = "",
+        @SerializedName("row"  ) var row  : List<Row> = listOf()
     ) {
         data class Row (
-            @SerializedName("key"   ) var key   : String? = null,
-            @SerializedName("value" ) var value : String? = null
+            @SerializedName("key"   ) var key   : String = "",
+            @SerializedName("value" ) var value : String = ""
         )
     }
 
     data class Comparison (
-        @SerializedName("id"           ) var id           : String?                 = null,
-        @SerializedName("name"         ) var name         : String?                 = null,
-        @SerializedName("url"          ) var url          : String?                 = null,
-        @SerializedName("mobileUrl"    ) var mobileUrl    : String?                 = null,
-        @SerializedName("applink"      ) var applink      : String?                 = null,
-        @SerializedName("catalogImage" ) var catalogImage : ArrayList<CatalogImage> = arrayListOf(),
-        @SerializedName("marketPrice"  ) var marketPrice  : ArrayList<MarketPrice>  = arrayListOf(),
-        @SerializedName("fullSpec"     ) var fullSpec     : ArrayList<FullSpec>     = arrayListOf(),
-        @SerializedName("topSpec"      ) var topSpec      : ArrayList<TopSpec>      = arrayListOf()
+        @SerializedName("id"           ) var id           : String             = "",
+        @SerializedName("name"         ) var name         : String             = "",
+        @SerializedName("url"          ) var url          : String             = "",
+        @SerializedName("mobileUrl"    ) var mobileUrl    : String             = "",
+        @SerializedName("applink"      ) var applink      : String             = "",
+        @SerializedName("catalogImage" ) var catalogImage : List<CatalogImage> = listOf(),
+        @SerializedName("marketPrice"  ) var marketPrice  : List<MarketPrice>  = listOf(),
+        @SerializedName("fullSpec"     ) var fullSpec     : List<FullSpec>     = listOf(),
+        @SerializedName("topSpec"      ) var topSpec      : List<TopSpec>      = listOf()
     ){
         data class CatalogImage (
-            @SerializedName("imageUrl"  ) var imageUrl  : String?  = null,
-            @SerializedName("isPrimary" ) var isPrimary : Boolean? = null
+            @SerializedName("imageUrl"  ) var imageUrl  : String  = "",
+            @SerializedName("isPrimary" ) var isPrimary : Boolean = false
         )
 
         data class MarketPrice (
-            @SerializedName("min"    ) var min    : Int?    = null,
-            @SerializedName("max"    ) var max    : Int?    = null,
-            @SerializedName("minFmt" ) var minFmt : String? = null,
-            @SerializedName("maxFmt" ) var maxFmt : String? = null,
-            @SerializedName("date"   ) var date   : String? = null,
-            @SerializedName("name"   ) var name   : String? = null
+            @SerializedName("min"    ) var min    : Int    = 0,
+            @SerializedName("max"    ) var max    : Int    = 0,
+            @SerializedName("minFmt" ) var minFmt : String = "",
+            @SerializedName("maxFmt" ) var maxFmt : String = "",
+            @SerializedName("date"   ) var date   : String = "",
+            @SerializedName("name"   ) var name   : String = ""
         )
 
         data class Row (
-            @SerializedName("key"   ) var key   : String?           = null,
-            @SerializedName("value" ) var value : String?           = null,
+            @SerializedName("key"   ) var key   : String            = "",
+            @SerializedName("value" ) var value : String            = "",
             @SerializedName("flags" ) var flags : ArrayList<String> = arrayListOf()
         )
 
         data class FullSpec (
-            @SerializedName("name" ) var name : String?        = null,
-            @SerializedName("icon" ) var icon : String?        = null,
-            @SerializedName("row"  ) var row  : ArrayList<Row> = arrayListOf()
+            @SerializedName("name" ) var name : String    = "",
+            @SerializedName("icon" ) var icon : String    = "",
+            @SerializedName("row"  ) var row  : List<Row> = listOf()
         )
 
         data class TopSpec (
-            @SerializedName("key"   ) var key   : String? = null,
-            @SerializedName("value" ) var value : String? = null,
-            @SerializedName("icon"  ) var icon  : String? = null
+            @SerializedName("key"   ) var key   : String = "",
+            @SerializedName("value" ) var value : String = "",
+            @SerializedName("icon"  ) var icon  : String = ""
         )
     }
 
     data class Similar (
-        @SerializedName("id"           ) var id           : String?                 = null,
-        @SerializedName("name"         ) var name         : String?                 = null,
-        @SerializedName("url"          ) var url          : String?                 = null,
-        @SerializedName("mobileUrl"    ) var mobileUrl    : String?                 = null,
-        @SerializedName("applink"      ) var applink      : String?                 = null,
-        @SerializedName("catalogImage" ) var catalogImage : ArrayList<CatalogImage> = arrayListOf(),
-        @SerializedName("marketPrice"  ) var marketPrice  : ArrayList<MarketPrice>  = arrayListOf()
+        @SerializedName("id"           ) var id           : String             = "",
+        @SerializedName("name"         ) var name         : String             = "",
+        @SerializedName("url"          ) var url          : String             = "",
+        @SerializedName("mobileUrl"    ) var mobileUrl    : String             = "",
+        @SerializedName("applink"      ) var applink      : String             = "",
+        @SerializedName("catalogImage" ) var catalogImage : List<CatalogImage> = listOf(),
+        @SerializedName("marketPrice"  ) var marketPrice  : List<MarketPrice>  = listOf()
     ) {
         data class CatalogImage (
-            @SerializedName("imageUrl"  ) var imageUrl  : String?  = null,
-            @SerializedName("isPrimary" ) var isPrimary : Boolean? = null
+            @SerializedName("imageUrl"  ) var imageUrl  : String  = "",
+            @SerializedName("isPrimary" ) var isPrimary : Boolean = false
         )
 
         data class MarketPrice (
-            @SerializedName("min"    ) var min    : Int?    = null,
-            @SerializedName("max"    ) var max    : Int?    = null,
-            @SerializedName("minFmt" ) var minFmt : String? = null,
-            @SerializedName("maxFmt" ) var maxFmt : String? = null,
-            @SerializedName("date"   ) var date   : String? = null,
-            @SerializedName("name"   ) var name   : String? = null
+            @SerializedName("min"    ) var min    : Int    = 0,
+            @SerializedName("max"    ) var max    : Int    = 0,
+            @SerializedName("minFmt" ) var minFmt : String = "",
+            @SerializedName("maxFmt" ) var maxFmt : String = "",
+            @SerializedName("date"   ) var date   : String = "",
+            @SerializedName("name"   ) var name   : String = ""
         )
     }
 
     data class SupportFeature (
-        @SerializedName("iconUrl" ) var iconUrl : String? = null,
-        @SerializedName("title"   ) var title   : String? = null,
-        @SerializedName("desc"    ) var desc    : String? = null
+        @SerializedName("iconUrl" ) var iconUrl : String = "",
+        @SerializedName("title"   ) var title   : String = "",
+        @SerializedName("desc"    ) var desc    : String = ""
     )
 
     data class Accordion (
-        @SerializedName("title"   ) var title   : String? = null,
-        @SerializedName("desc"    ) var desc    : String? = null
+        @SerializedName("title"   ) var title   : String = "",
+        @SerializedName("desc"    ) var desc    : String = ""
     )
 
     data class BuyerReviewList (
-        @SerializedName("rating"                 ) var rating                 : Int?              = null,
-        @SerializedName("informativeScore"       ) var informativeScore       : Int?              = null,
-        @SerializedName("reviewerName"           ) var reviewerName           : String?           = null,
-        @SerializedName("reviewDate"             ) var reviewDate             : String?           = null,
-        @SerializedName("reviewText"             ) var reviewText             : String?           = null,
-        @SerializedName("reviewImageUrl"         ) var reviewImageUrl         : ArrayList<String> = arrayListOf(),
-        @SerializedName("reviewId"               ) var reviewId               : Long?              = null,
-        @SerializedName("productId"              ) var productId              : Long?              = null,
-        @SerializedName("productIdString"        ) var productIdString        : String?           = null,
-        @SerializedName("productUrl"             ) var productUrl             : String?           = null,
-        @SerializedName("reviewerStamp"          ) var reviewerStamp          : String?           = null,
-        @SerializedName("reviewerProfilePicture" ) var reviewerProfilePicture : String?           = null,
-        @SerializedName("productVariantName"     ) var productVariantName     : String?           = null,
-        @SerializedName("shopID"                 ) var shopID                 : String?           = null,
-        @SerializedName("shopName"               ) var shopName               : String?           = null,
-        @SerializedName("shopURL"                ) var shopURL                : String?           = null,
-        @SerializedName("shopBadge"              ) var shopBadge              : String?           = null,
-        @SerializedName("shopBadgeSVG"           ) var shopBadgeSVG           : String?           = null
+        @SerializedName("rating"                 ) var rating                 : Int               = 0,
+        @SerializedName("informativeScore"       ) var informativeScore       : Int               = 0,
+        @SerializedName("reviewerName"           ) var reviewerName           : String            = "",
+        @SerializedName("reviewDate"             ) var reviewDate             : String            = "",
+        @SerializedName("reviewText"             ) var reviewText             : String            = "",
+        @SerializedName("reviewImageUrl"         ) var reviewImageUrl         : List<String>      = listOf(),
+        @SerializedName("reviewId"               ) var reviewId               : Long              = 0,
+        @SerializedName("productId"              ) var productId              : Long              = 0,
+        @SerializedName("productIdString"        ) var productIdString        : String            = "",
+        @SerializedName("productUrl"             ) var productUrl             : String            = "",
+        @SerializedName("reviewerStamp"          ) var reviewerStamp          : String            = "",
+        @SerializedName("reviewerProfilePicture" ) var reviewerProfilePicture : String            = "",
+        @SerializedName("productVariantName"     ) var productVariantName     : String            = "",
+        @SerializedName("shopID"                 ) var shopID                 : String            = "",
+        @SerializedName("shopName"               ) var shopName               : String            = "",
+        @SerializedName("shopURL"                ) var shopURL                : String            = "",
+        @SerializedName("shopBadge"              ) var shopBadge              : String            = "",
+        @SerializedName("shopBadgeSVG"           ) var shopBadgeSVG           : String            = ""
     )
 
     data class BasicInfo (
-        @SerializedName("name"                 ) var name                 : String?                = null,
-        @SerializedName("productSortingStatus" ) var productSortingStatus : Int?                   = null,
-        @SerializedName("marketPrice"          ) var marketPrice          : ArrayList<MarketPrice> = arrayListOf()
+        @SerializedName("name"                 ) var name                 : String            = "",
+        @SerializedName("productSortingStatus" ) var productSortingStatus : Int               = 0,
+        @SerializedName("marketPrice"          ) var marketPrice          : List<MarketPrice> = listOf()
     ) {
         data class MarketPrice (
-            @SerializedName("min"    ) var min    : Int?    = null,
-            @SerializedName("max"    ) var max    : Int?    = null,
-            @SerializedName("minFmt" ) var minFmt : String? = null,
-            @SerializedName("maxFmt" ) var maxFmt : String? = null,
-            @SerializedName("date"   ) var date   : String? = null,
-            @SerializedName("name"   ) var name   : String? = null
+            @SerializedName("min"    ) var min    : Int    = 0,
+            @SerializedName("max"    ) var max    : Int    = 0,
+            @SerializedName("minFmt" ) var minFmt : String = "",
+            @SerializedName("maxFmt" ) var maxFmt : String = "",
+            @SerializedName("date"   ) var date   : String = "",
+            @SerializedName("name"   ) var name   : String = ""
         )
     }
 
     data class SearchOverride (
-        @SerializedName("key"   ) var key   : String? = null,
-        @SerializedName("value" ) var value : String? = null
+        @SerializedName("key"   ) var key   : String = "",
+        @SerializedName("value" ) var value : String = ""
     )
 }
+

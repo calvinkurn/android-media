@@ -123,10 +123,10 @@ class CatalogDetailUiMapper @Inject constructor(
             isPremium = data?.style?.isPremium.orFalse(),
             brandTitle = data?.hero?.name.orEmpty(),
             brandImageUrls = data?.hero?.heroSlide?.map { heroSlide ->
-                heroSlide.imageUrl.orEmpty()
+                heroSlide.imageUrl
             }.orEmpty(),
             brandDescriptions = data?.hero?.heroSlide?.map { heroSlide ->
-                heroSlide.subtitle.orEmpty()
+                heroSlide.subtitle
             }.orEmpty(),
             brandIconUrl = data?.hero?.brandLogoUrl.orEmpty()
         )
@@ -138,9 +138,9 @@ class CatalogDetailUiMapper @Inject constructor(
         return TopFeaturesUiModel(
             items = data?.topFeature?.map {
                 TopFeaturesUiModel.ItemTopFeatureUiModel(
-                    id = it.desc.orEmpty(),
-                    icon = it.iconUrl.orEmpty(),
-                    name = it.desc.orEmpty(),
+                    id = it.desc,
+                    icon = it.iconUrl,
+                    name = it.desc,
                     backgroundColor = Color.TRANSPARENT,
                     textColor = getTextColor(isDarkMode),
                 )
@@ -151,7 +151,7 @@ class CatalogDetailUiMapper @Inject constructor(
     private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToStickyNavigation(): StickyNavigationUiModel {
         return StickyNavigationUiModel(
             content = data?.navigation?.map {
-                StickyNavigationUiModel.StickyNavigationItemData(it.title.orEmpty())
+                StickyNavigationUiModel.StickyNavigationItemData(it.title)
             }.orEmpty()
         )
     }
@@ -164,9 +164,9 @@ class CatalogDetailUiMapper @Inject constructor(
             items = data?.trustmaker.orEmpty().map {
                 TrustMakerUiModel.ItemTrustMakerUiModel(
                     id = "",
-                    icon = it.imageUrl.orEmpty(),
-                    title = it.title.orEmpty(),
-                    subTitle = it.subtitle.orEmpty(),
+                    icon = it.imageUrl,
+                    title = it.title,
+                    subTitle = it.subtitle,
                     textColorTitle = textColor,
                     textColorSubTitle = textColor
                 )
@@ -181,10 +181,10 @@ class CatalogDetailUiMapper @Inject constructor(
         return SliderImageTextUiModel(
             items = data?.imageSlider.orEmpty().map {
                 SliderImageTextUiModel.ItemSliderImageText(
-                    image = it.imageUrl.orEmpty(),
-                    textHighlight = it.subtitle.orEmpty(),
-                    textTitle = it.title.orEmpty(),
-                    textDescription = it.desc.orEmpty(),
+                    image = it.imageUrl,
+                    textHighlight = it.subtitle,
+                    textTitle = it.title,
+                    textDescription = it.desc,
                     textHighlightColor = textColor,
                     textTitleColor = textColor,
                     textDescriptionColor = textColor
@@ -201,8 +201,8 @@ class CatalogDetailUiMapper @Inject constructor(
             titleWidget = data?.section?.title.orEmpty(),
             contents = data?.accordion.orEmpty().map {
                 AccordionInformationUiModel.ItemAccordionInformationUiModel(
-                    title = it.title.orEmpty(),
-                    description = it.desc.orEmpty(),
+                    title = it.title,
+                    description = it.desc,
                     arrowColor = textColor,
                     textTitleColor = textColor,
                     textDescriptionColor = textColor
@@ -219,6 +219,5 @@ class CatalogDetailUiMapper @Inject constructor(
         }
         return MethodChecker.getColor(context, textColorRes)
     }
-
-
+    
 }
