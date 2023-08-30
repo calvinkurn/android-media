@@ -1259,9 +1259,8 @@ class CartItemViewHolder constructor(
     }
 
     private fun renderBmGmOfferTicker(data: CartItemHolderData) {
-        println("++ product name = ${data.productName}, isShowTickerBmGm = ${data.isShowTickerBmGm}")
         if (data.isShowTickerBmGm) {
-            binding.llBmgmTicker.visible()
+            binding.itemCartBmgm.root.visible()
             when (data.stateTickerBmGm) {
                 0 -> {
                     binding.itemCartBmgm.bmgmWidgetView.state = BmGmWidgetView.State.LOADING
@@ -1274,18 +1273,15 @@ class CartItemViewHolder constructor(
                             offerMessage += " • "
                         }
                     }
-                    binding.itemCartBmgm.bmgmWidgetView.apply {
-                        state = BmGmWidgetView.State.ACTIVE
-                        title = offerMessage
-                    }
-
+                    binding.itemCartBmgm.bmgmWidgetView.state = BmGmWidgetView.State.ACTIVE
+                    binding.itemCartBmgm.bmgmWidgetView.title = offerMessage
                 }
                 2 -> {
                     binding.itemCartBmgm.bmgmWidgetView.state = BmGmWidgetView.State.INACTIVE
                 }
             }
         } else {
-            binding.llBmgmTicker.gone()
+            binding.itemCartBmgm.root.gone()
         }
     }
 

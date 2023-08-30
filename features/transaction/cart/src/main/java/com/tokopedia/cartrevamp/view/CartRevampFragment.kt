@@ -1281,7 +1281,7 @@ class CartRevampFragment :
             }
         }
 
-        if (cartItemHolderData.bmGmCartInfoData.cartDetailType == CART_DETAIL_TYPE_BMGM && cartItemHolderData.isSelected) {
+        if (cartItemHolderData.bmGmCartInfoData.cartDetailType == CART_DETAIL_TYPE_BMGM) {
             val (index, cartItem) = cartAdapter.getCartItemHolderDataAndIndexByOfferId(cartItemHolderData.bmGmCartInfoData.bmGmData.offerId)
             cartItem.stateTickerBmGm = CART_BMGM_STATE_TICKER_LOADING
             cartAdapter.notifyItemChanged(index)
@@ -2784,14 +2784,11 @@ class CartRevampFragment :
                     } else if (data.pairOfferIdBmGmTickerResponse.second.data.action.isEmpty()) {
                         val (index, cartItem) = cartAdapter.getCartItemHolderDataAndIndexByOfferId(data.pairOfferIdBmGmTickerResponse.first)
                         cartItem.stateTickerBmGm = CART_BMGM_STATE_TICKER_ACTIVE
-                        var offerMessage = ""
+                        val listOfferMessage = arrayListOf<String>()
                         data.pairOfferIdBmGmTickerResponse.second.data.listMessage.forEachIndexed { i, s ->
-                            offerMessage += s
-                            if (i != (data.pairOfferIdBmGmTickerResponse.second.data.listMessage.size - 1)) {
-                                offerMessage += " • "
-                            }
+                            listOfferMessage.add(s.text)
                         }
-                        cartItem.bmGmCartInfoData.bmGmData.offerName = offerMessage
+                        cartItem.bmGmCartInfoData.bmGmData.offerMessage = listOfferMessage
                         cartAdapter.notifyItemChanged(index)
                     }
                 }

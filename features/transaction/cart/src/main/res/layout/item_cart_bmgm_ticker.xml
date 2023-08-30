@@ -99,6 +99,4 @@
         app:layout_constraintBottom_toBottomOf="parent"
         tools:visibility="visible" />
 
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>
