@@ -24,29 +24,28 @@ class FintechWidgetViewHolder(val view: View, val listener: DynamicProductDetail
     private var previousProductId: String = ""
     private var previousLoginStatus: Boolean = false
 
-    override fun bind(element: FintechWidgetDataModel?) {
-        if (isDiffSession(element = element)) {
-            fintechWidget.updateBaseFragmentContext(
-                listener.getParentViewModelStoreOwner(),
-                listener.getParentLifeCyclerOwner()
-            )
+    override fun bind(element: FintechWidgetDataModel) {
+        if (isSameSession(element = element)) return
 
-            element?.idToPriceUrlMap?.let {
-                fintechWidget.updateIdToPriceMap(it, element.categoryId)
-            }
+        fintechWidget.updateBaseFragmentContext(
+            parentViewModelStore = listener.getParentViewModelStoreOwner(),
+            parentLifeCycleOwner = listener.getParentLifeCyclerOwner()
+        )
 
-            element?.productId?.let {
-                fintechWidget.updateProductId(
-                    it,
-                    this,
-                    element.isLoggedIn,
-                    element.shopId,
-                    element.parentId
-                )
-            }
+        fintechWidget.updateIdToPriceMap(
+            productIdToPrice = element.idToPriceUrlMap,
+            productCategoryId = element.categoryId
+        )
 
-            updateSession(element = element)
-        }
+        fintechWidget.updateProductId(
+            productID = element.productId,
+            fintechWidgetViewHolder = this,
+            loggedIn = element.isLoggedIn,
+            shopID = element.shopId,
+            parentId = element.parentId
+        )
+
+        updateSession(element = element)
     }
 
     private fun updateSession(element: FintechWidgetDataModel?) {
@@ -54,8 +53,8 @@ class FintechWidgetViewHolder(val view: View, val listener: DynamicProductDetail
         previousLoginStatus = element?.isLoggedIn.orFalse()
     }
 
-    private fun isDiffSession(element: FintechWidgetDataModel?) =
-        element?.productId != previousProductId || element.isLoggedIn != previousLoginStatus
+    private fun isSameSession(element: FintechWidgetDataModel?) =
+        element?.productId == previousProductId && element.isLoggedIn == previousLoginStatus
 
     override fun removeWidget() {
         // remove this widget if product non-variant
