@@ -6,9 +6,6 @@ import com.tokopedia.cartrevamp.view.uimodel.CartGlobalEvent
 import com.tokopedia.cartrevamp.view.uimodel.CartGroupHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
 import io.mockk.every
-import io.mockk.mockkObject
-import io.mockk.unmockkObject
-import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -102,7 +99,6 @@ class SubTotalCalculationTest : BaseCartViewModelTest() {
     @Before
     override fun setUp() {
         super.setUp()
-        mockkObject(CartDataHelper)
         every { CartDataHelper.getAllAvailableShopGroupDataList(any()) } answers { cartShops }
     }
 
@@ -356,11 +352,5 @@ class SubTotalCalculationTest : BaseCartViewModelTest() {
             CartGlobalEvent.SubTotalUpdated(100.0, "5", 1004.0, false),
             cartViewModel.globalEvent.value
         )
-    }
-
-    @After
-    override fun tearDown() {
-        super.tearDown()
-        unmockkObject(CartDataHelper)
     }
 }
