@@ -28,6 +28,13 @@ class BCALibrary {
 
     external fun BCATopUp_2(responseData: String): JNIResult
 
+    external fun BCAdataReversal(strTransactionId: String, ATD: String): JNIResult
+
+    external fun BCAlastBCATopUp(): JNIResult
+
+    external fun BCAdataCardInfo(strTransactionId: String, ATD: String): JNIResult
+
+
     val HEX_DIGITS = charArrayOf(
         '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'
     )

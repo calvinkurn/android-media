@@ -374,3 +374,96 @@ Java_com_tokopedia_emoney_integration_BCALibrary_BCATopUp_12(JNIEnv *env, jobjec
                                              (*env)->NewStringUTF(env, ""));
     return resultObject;
 }
+
+JNIEXPORT jobject JNICALL
+Java_com_tokopedia_emoney_integration_BCALibrary_BCAdataReversal(JNIEnv *env, jobject thiz,
+                                                                 jstring str_transaction_id,
+                                                                 jstring atd) {
+
+    g_env = env;
+    g_obj = thiz;
+
+    jclass resultClass = (*env)->FindClass(env, "com/tokopedia/emoney/integration/data/JNIResult");
+    jmethodID constructor = (*env)->GetMethodID(env, resultClass, "<init>",
+                                                "(ILjava/lang/String;IILjava/lang/String;Ljava/lang/String;)V");
+
+    unsigned char strLogRsp[LENGTH_BCAREV_RESULT];
+    memset(strLogRsp, 0x00, sizeof(strLogRsp));
+
+    const char *strCTransactionId;
+    strCTransactionId = (*env)->GetStringUTFChars(env, str_transaction_id, NULL);
+    unsigned char strTransactionId[LENGTH_STR_TRANSACTION_ID];
+    memset(strTransactionId, 0x00, LENGTH_STR_TRANSACTION_ID);
+    memcpy(strTransactionId, strCTransactionId, LENGTH_STR_TRANSACTION_ID);
+
+    const char *strCAtd;
+    strCAtd = (*env)->GetStringUTFChars(env, atd, NULL);
+    unsigned char strAtd[LENGTH_ACCESS_TOKEN];
+    memset(strAtd, 0x00, LENGTH_ACCESS_TOKEN);
+    memcpy(strAtd, strCAtd, LENGTH_ACCESS_TOKEN);
+
+    unsigned char result = BCAdataReversal(strTransactionId, strAtd, strLogRsp);
+    //set the return value result success
+    jobject resultObject = (*env)->NewObject(env, resultClass, constructor,
+                                             result,(*env)->NewStringUTF(env, strLogRsp),
+                                             FALSE, 0, (*env)->NewStringUTF(env, ""),
+                                             (*env)->NewStringUTF(env, ""));
+    return resultObject;
+}
+
+JNIEXPORT jobject JNICALL
+Java_com_tokopedia_emoney_integration_BCALibrary_BCAlastBCATopUp(JNIEnv *env, jobject thiz) {
+
+    g_env = env;
+    g_obj = thiz;
+
+    jclass resultClass = (*env)->FindClass(env, "com/tokopedia/emoney/integration/data/JNIResult");
+    jmethodID constructor = (*env)->GetMethodID(env, resultClass, "<init>",
+                                                "(ILjava/lang/String;IILjava/lang/String;Ljava/lang/String;)V");
+
+    unsigned char strLogRsp[LENGTH_BCATUP_2];
+    memset(strLogRsp, 0x00, sizeof(strLogRsp));
+
+    unsigned char result = BCAlastBCATopUp(strLogRsp);
+    //set the return value result success
+    jobject resultObject = (*env)->NewObject(env, resultClass, constructor,
+                                             result,(*env)->NewStringUTF(env, strLogRsp),
+                                             FALSE, 0, (*env)->NewStringUTF(env, ""),
+                                             (*env)->NewStringUTF(env, ""));
+    return resultObject;
+}
+
+JNIEXPORT jobject JNICALL
+Java_com_tokopedia_emoney_integration_BCALibrary_BCAdataCardInfo(JNIEnv *env, jobject thiz,
+                                                                 jstring str_transaction_id,
+                                                                 jstring atd) {
+    g_env = env;
+    g_obj = thiz;
+
+    jclass resultClass = (*env)->FindClass(env, "com/tokopedia/emoney/integration/data/JNIResult");
+    jmethodID constructor = (*env)->GetMethodID(env, resultClass, "<init>",
+                                                "(ILjava/lang/String;IILjava/lang/String;Ljava/lang/String;)V");
+
+    unsigned char strLogRsp[LENGTH_BCACRDINFO_RESULT];
+    memset(strLogRsp, 0x00, sizeof(strLogRsp));
+
+    const char *strCTransactionId;
+    strCTransactionId = (*env)->GetStringUTFChars(env, str_transaction_id, NULL);
+    unsigned char strTransactionId[LENGTH_STR_TRANSACTION_ID];
+    memset(strTransactionId, 0x00, LENGTH_STR_TRANSACTION_ID);
+    memcpy(strTransactionId, strCTransactionId, LENGTH_STR_TRANSACTION_ID);
+
+    const char *strCAtd;
+    strCAtd = (*env)->GetStringUTFChars(env, atd, NULL);
+    unsigned char strAtd[LENGTH_ACCESS_TOKEN];
+    memset(strAtd, 0x00, LENGTH_ACCESS_TOKEN);
+    memcpy(strAtd, strCAtd, LENGTH_ACCESS_TOKEN);
+
+    unsigned char result = BCAdataCardInfo(strTransactionId, strAtd, strLogRsp);
+    //set the return value result success
+    jobject resultObject = (*env)->NewObject(env, resultClass, constructor,
+                                             result,(*env)->NewStringUTF(env, strLogRsp),
+                                             FALSE, 0, (*env)->NewStringUTF(env, ""),
+                                             (*env)->NewStringUTF(env, ""));
+    return resultObject;
+}
