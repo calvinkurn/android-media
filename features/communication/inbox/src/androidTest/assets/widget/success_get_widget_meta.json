@@ -5,7 +5,7 @@
         "icon": "330",
         "title": "Chat Driver",
         "subtext": "{order_counter} pesanan",
-        "androidApplink": "tokopedia://tokochat/chatlist",
+        "androidApplink": "tokopedia://tokochat/list",
         "type": 101,
         "isDynamic": true
       },
