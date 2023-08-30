@@ -1,9 +1,14 @@
 package com.tokopedia.catalogcommon.viewholder
 
+import android.content.Intent
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import androidx.annotation.LayoutRes
+import com.google.android.youtube.player.YouTubeApiServiceUtil
+import com.google.android.youtube.player.YouTubeInitializationResult
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.catalogcommon.R
 import com.tokopedia.catalogcommon.databinding.ItemExpertReviewBinding
@@ -11,6 +16,7 @@ import com.tokopedia.catalogcommon.databinding.WidgetExpertsReviewBinding
 import com.tokopedia.catalogcommon.uimodel.ExpertReviewUiModel
 import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.youtube_common.domain.usecase.GetYoutubeVideoDetailUseCase.Companion.KEY_YOUTUBE_VIDEO_ID
 
 class ExpertReviewViewHolder(itemView: View) : AbstractViewHolder<ExpertReviewUiModel>(itemView) {
 
@@ -52,7 +58,7 @@ class ExpertReviewViewHolder(itemView: View) : AbstractViewHolder<ExpertReviewUi
                     view.tvSubTitle.setTextColor(itemExpert.textSubTitleColor)
                     view.ivProfile.loadImageRounded(itemExpert.imageReviewer, 4f)
                     view.ivPlay.setOnClickListener {
-                        RouteManager.route(itemView.context, itemExpert.videoLink)
+                        playVideoYoutube(itemExpert.videoLink)
                     }
                     addItem(view.clLayout)
                 }
@@ -60,6 +66,24 @@ class ExpertReviewViewHolder(itemView: View) : AbstractViewHolder<ExpertReviewUi
 
 
             onceCreateCarousel = true
+        }
+    }
+
+    fun playVideoYoutube(videoLink: String) {
+        val uri = Uri.parse(videoLink)
+
+        val youTubeVideoId = uri.getQueryParameter(KEY_YOUTUBE_VIDEO_ID) ?: ""
+        if (YouTubeApiServiceUtil.isYouTubeApiServiceAvailable(itemView.context)
+            == YouTubeInitializationResult.SUCCESS
+        ) {
+            RouteManager.route(itemView.context, ApplinkConst.YOUTUBE_PLAYER, youTubeVideoId)
+        } else {
+            itemView.context.startActivity(
+                Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse(videoLink)
+                )
+            )
         }
     }
 }
