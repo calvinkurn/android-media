@@ -115,12 +115,12 @@ abstract class TopchatRoomTest {
     )
 
     protected val context: Context = InstrumentationRegistry.getInstrumentation().targetContext
-    protected val applicationContext: Context
+    private val applicationContext: Context
         get() = InstrumentationRegistry
             .getInstrumentation().context.applicationContext
 
-    protected val rvChatRoomId = R.id.recycler_view_chatroom
-    protected val flexBoxBubbleId = R.id.fxChat
+    private val rvChatRoomId = R.id.recycler_view_chatroom
+    private val flexBoxBubbleId = R.id.fxChat
 
     @Inject
     protected lateinit var getChatUseCase: GetChatUseCaseStub
@@ -226,7 +226,7 @@ abstract class TopchatRoomTest {
     protected var getShopFollowingStatus = ShopFollowingPojo()
     protected var chatSrwResponse = ChatSmartReplyQuestionResponse()
     protected var orderProgressResponse = OrderProgressResponse()
-    protected var chatBackgroundResponse = ChatBackgroundResponse()
+    private var chatBackgroundResponse = ChatBackgroundResponse()
     protected var chatRoomSettingResponse = RoomSettingResponse()
     protected var successGetTemplateResponse = GetChatTemplateResponse()
 
@@ -333,7 +333,7 @@ abstract class TopchatRoomTest {
         chatComponentStub!!.inject(this)
     }
 
-    protected fun setupDefaultResponseWhenFirstOpenChatRoom() {
+    private fun setupDefaultResponseWhenFirstOpenChatRoom() {
         getChatRoomSettingUseCase.response = chatRoomSettingResponse
         chatBackgroundUseCase.response = chatBackgroundResponse
         getChatUseCase.response = firstPageChatAsBuyer
@@ -621,16 +621,6 @@ abstract class TopchatRoomTest {
         onView(withIndex(withId(R.id.ll_sticker_container), 0)).check(
             matches(isDisplayed())
         )
-    }
-
-    protected fun clickCloseAttachmentPreview(position: Int) {
-        val viewAction = RecyclerViewActions
-            .actionOnItemAtPosition<TopchatProductAttachmentViewHolder>(
-                position,
-                ClickChildViewWithIdAction()
-                    .clickChildViewWithId(R.id.iv_close)
-            )
-        onView(withId(R.id.rv_attachment_preview)).perform(viewAction)
     }
 
     protected fun clickStickerAtPosition(position: Int) {

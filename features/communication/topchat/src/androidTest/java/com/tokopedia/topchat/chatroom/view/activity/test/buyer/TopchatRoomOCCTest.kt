@@ -1,9 +1,5 @@
-package com.tokopedia.topchat.chatroom.view.activity
+package com.tokopedia.topchat.chatroom.view.activity.test.buyer
 
-import android.app.Activity
-import android.app.Instrumentation
-import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.matcher.IntentMatchers
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -12,12 +8,10 @@ import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.activity.base.BaseBuyerTopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.activity.base.blockPromo
 import com.tokopedia.topchat.chatroom.view.activity.base.setFollowing
-import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralResult.openPageWithIntent
-import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralRobot
-import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardResult.hasFailedToasterWithMsg
-import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardResult.hasProductBuyButtonWithText
-import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardResult.hasProductCarouselBuyButtonWithText
-import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardRobot.clickBuyButtonAt
+import com.tokopedia.topchat.chatroom.view.activity.robot.generalResult
+import com.tokopedia.topchat.chatroom.view.activity.robot.generalRobot
+import com.tokopedia.topchat.chatroom.view.activity.robot.productCardResult
+import com.tokopedia.topchat.chatroom.view.activity.robot.productCardRobot
 import com.tokopedia.topchat.stub.chatroom.view.fragment.TopChatRoomFragmentStub
 import org.junit.After
 import org.junit.Before
@@ -44,12 +38,15 @@ class TopchatRoomOCCTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         launchChatRoomActivity()
+        stubIntents()
 
         // When
-        Intents.intending(IntentMatchers.anyIntent())
-            .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-        GeneralRobot.scrollChatToPosition(0)
-        clickBuyButtonAt(4)
+        generalRobot {
+            scrollChatToPosition(0)
+        }
+        productCardRobot {
+            clickBuyButtonAt(4)
+        }
 
         // Then
         val intent = RouteManager.getIntent(
@@ -57,7 +54,9 @@ class TopchatRoomOCCTest : BaseBuyerTopchatRoomTest() {
             ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT,
             "1160424090"
         )
-        openPageWithIntent(intent)
+        generalResult {
+            openPageWithIntent(intent)
+        }
     }
 
     @Test
@@ -68,15 +67,20 @@ class TopchatRoomOCCTest : BaseBuyerTopchatRoomTest() {
         chatAttachmentUseCase.response = chatAttachmentResponse
         addToCartOccMultiUseCase.errorMessage = listOf(expectedErrorMessage)
         launchChatRoomActivity()
+        stubIntents()
 
         // When
-        Intents.intending(IntentMatchers.anyIntent())
-            .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-        GeneralRobot.scrollChatToPosition(0)
-        clickBuyButtonAt(position = 4)
+        generalRobot {
+            scrollChatToPosition(0)
+        }
+        productCardRobot {
+            clickBuyButtonAt(position = 4)
+        }
 
         // Then
-        hasFailedToasterWithMsg(msg = expectedErrorMessage)
+        generalResult {
+            assertToasterWithSubText(expectedErrorMessage)
+        }
     }
 
     @Test
@@ -86,15 +90,20 @@ class TopchatRoomOCCTest : BaseBuyerTopchatRoomTest() {
         chatAttachmentUseCase.response = chatAttachmentResponse
         addToCartOccMultiUseCase.isError = true
         launchChatRoomActivity()
+        stubIntents()
 
         // When
-        Intents.intending(IntentMatchers.anyIntent())
-            .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-        GeneralRobot.scrollChatToPosition(0)
-        clickBuyButtonAt(4)
+        generalRobot {
+            scrollChatToPosition(0)
+        }
+        productCardRobot {
+            clickBuyButtonAt(position = 4)
+        }
 
         // Then
-        hasFailedToasterWithMsg("Oops!")
+        generalResult {
+            assertToasterWithSubText("Oops!")
+        }
     }
 
     @Test
@@ -106,14 +115,15 @@ class TopchatRoomOCCTest : BaseBuyerTopchatRoomTest() {
             getModifiedChatAttributes(isVariant = true, hasDiscount = true)
         getShopFollowingUseCaseStub.response = getShopFollowingStatus.setFollowing(true)
         launchChatRoomActivity()
-
-        // When
-        Intents.intending(IntentMatchers.anyIntent()).respondWith(
-            Instrumentation.ActivityResult(Activity.RESULT_OK, null)
-        )
+        stubIntents()
 
         // Then
-        hasProductCarouselBuyButtonWithText(context.getString(com.tokopedia.chat_common.R.string.action_buy), 0)
+        productCardResult {
+            hasProductCarouselBuyButtonWithText(
+                context.getString(com.tokopedia.chat_common.R.string.action_buy),
+                0
+            )
+        }
     }
 
     @Test
@@ -125,14 +135,15 @@ class TopchatRoomOCCTest : BaseBuyerTopchatRoomTest() {
             getModifiedChatAttributes(isVariant = false, hasDiscount = true)
         getShopFollowingUseCaseStub.response = getShopFollowingStatus.setFollowing(true)
         launchChatRoomActivity()
-
-        // When
-        Intents.intending(IntentMatchers.anyIntent()).respondWith(
-            Instrumentation.ActivityResult(Activity.RESULT_OK, null)
-        )
+        stubIntents()
 
         // Then
-        hasProductCarouselBuyButtonWithText(context.getString(com.tokopedia.chat_common.R.string.action_buy), 0)
+        productCardResult {
+            hasProductCarouselBuyButtonWithText(
+                context.getString(com.tokopedia.chat_common.R.string.action_buy),
+                0
+            )
+        }
     }
 
     @Test
@@ -144,14 +155,15 @@ class TopchatRoomOCCTest : BaseBuyerTopchatRoomTest() {
             getModifiedChatAttributes(isVariant = true, hasDiscount = false)
         getShopFollowingUseCaseStub.response = getShopFollowingStatus.setFollowing(true)
         launchChatRoomActivity()
-
-        // When
-        Intents.intending(IntentMatchers.anyIntent()).respondWith(
-            Instrumentation.ActivityResult(Activity.RESULT_OK, null)
-        )
+        stubIntents()
 
         // Then
-        hasProductCarouselBuyButtonWithText(context.getString(com.tokopedia.chat_common.R.string.action_buy), 0)
+        productCardResult {
+            hasProductCarouselBuyButtonWithText(
+                context.getString(com.tokopedia.chat_common.R.string.action_buy),
+                0
+            )
+        }
     }
 
     @Test
@@ -163,14 +175,15 @@ class TopchatRoomOCCTest : BaseBuyerTopchatRoomTest() {
             getModifiedChatAttributes(isVariant = false, hasDiscount = false)
         getShopFollowingUseCaseStub.response = getShopFollowingStatus.setFollowing(true)
         launchChatRoomActivity()
-
-        // When
-        Intents.intending(IntentMatchers.anyIntent()).respondWith(
-            Instrumentation.ActivityResult(Activity.RESULT_OK, null)
-        )
+        stubIntents()
 
         // Then
-        hasProductCarouselBuyButtonWithText(context.getString(com.tokopedia.chat_common.R.string.action_buy), 0)
+        productCardResult {
+            hasProductCarouselBuyButtonWithText(
+                context.getString(com.tokopedia.chat_common.R.string.action_buy),
+                0
+            )
+        }
     }
 
     @Test
@@ -181,16 +194,26 @@ class TopchatRoomOCCTest : BaseBuyerTopchatRoomTest() {
         chatAttachmentUseCase.response.chatAttachments.list[2].attributes =
             modifiedPreorder(true)
         launchChatRoomActivity()
+        stubIntents()
 
         // When
-        Intents.intending(IntentMatchers.anyIntent())
-            .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-        GeneralRobot.scrollChatToPosition(0)
-        clickBuyButtonAt(1)
+        generalRobot {
+            scrollChatToPosition(0)
+        }
+        productCardRobot {
+            clickBuyButtonAt(1)
+        }
 
         // Then
-        hasProductBuyButtonWithText(context.getString(R.string.title_topchat_pre_order_camel), 1)
-        Intents.intended(IntentMatchers.hasData(ApplinkConst.CART))
+        productCardResult {
+            hasProductBuyButtonWithText(
+                context.getString(R.string.title_topchat_pre_order_camel),
+                1
+            )
+        }
+        generalResult {
+            openPageWithApplink(ApplinkConst.CART)
+        }
     }
 
     private fun getModifiedChatAttributes(

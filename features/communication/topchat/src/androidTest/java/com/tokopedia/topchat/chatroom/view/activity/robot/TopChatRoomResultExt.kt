@@ -8,6 +8,7 @@ import com.tokopedia.topchat.chatroom.view.activity.robot.header.HeaderResult
 import com.tokopedia.topchat.chatroom.view.activity.robot.msgbubble.MsgBubbleResult
 import com.tokopedia.topchat.chatroom.view.activity.robot.orderprogress.OrderProgressResult
 import com.tokopedia.topchat.chatroom.view.activity.robot.previewattachment.ProductPreviewResult
+import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardResult
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductResult
 import com.tokopedia.topchat.chatroom.view.activity.robot.replybubble.ReplyBubbleResult
 import com.tokopedia.topchat.chatroom.view.activity.robot.shippinglocation.ShippingLocationResult
@@ -29,3 +30,4 @@ fun headerResult(func: HeaderResult.() -> Unit) = HeaderResult.apply(func)
 fun orderProgressResult(func: OrderProgressResult.() -> Unit) = OrderProgressResult.apply(func)
 fun tickerReminderResult(func: TickerReminderResult.() -> Unit) = TickerReminderResult.apply(func)
 fun voucherResult(func: VoucherResult.() -> Unit) = VoucherResult.apply(func)
+fun productCardResult(func: ProductCardResult.() -> Unit) = ProductCardResult.apply(func)

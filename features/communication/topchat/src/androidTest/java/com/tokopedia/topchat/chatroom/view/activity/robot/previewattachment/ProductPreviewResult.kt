@@ -5,12 +5,17 @@ import androidx.annotation.IdRes
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.matchers.withRecyclerView
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Matcher
 
 object ProductPreviewResult {
+
+    fun assertAttachmentPreview(matcher: Matcher<View>) {
+        onView(withId(R.id.rv_attachment_preview)).check(matches(matcher))
+    }
 
     fun verifyVariantLabel(@IdRes variantResourceId: Int, matcher: Matcher<View>, position: Int) {
         onView(
@@ -29,8 +34,8 @@ object ProductPreviewResult {
 
     private fun closeButtonIs(position: Int, matcher: Matcher<View>) {
         onView(
-                withRecyclerView(R.id.rv_attachment_preview)
-                        .atPositionOnView(position, R.id.iv_close)
+            withRecyclerView(R.id.rv_attachment_preview)
+                .atPositionOnView(position, R.id.iv_close)
         ).check(matches(matcher))
     }
 
@@ -44,8 +49,8 @@ object ProductPreviewResult {
 
     private fun loadingIs(position: Int, matcher: Matcher<View>) {
         onView(
-                withRecyclerView(R.id.rv_attachment_preview)
-                        .atPositionOnView(position, R.id.lu_product_preview)
+            withRecyclerView(R.id.rv_attachment_preview)
+                .atPositionOnView(position, R.id.lu_product_preview)
         ).check(matches(matcher))
     }
 
@@ -59,9 +64,8 @@ object ProductPreviewResult {
 
     private fun errorIs(position: Int, matcher: Matcher<View>) {
         onView(
-                withRecyclerView(R.id.rv_attachment_preview)
-                        .atPositionOnView(position, R.id.ll_retry_product_preview)
+            withRecyclerView(R.id.rv_attachment_preview)
+                .atPositionOnView(position, R.id.ll_retry_product_preview)
         ).check(matches(matcher))
     }
-
 }

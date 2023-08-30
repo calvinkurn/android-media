@@ -9,16 +9,6 @@ import com.tokopedia.topchat.matchers.withRecyclerView
 
 object ProductCardResult {
 
-    fun hasFailedToasterWithMsg(msg: String) {
-        onView(withSubstring(msg))
-            .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
-    }
-
-    fun hasToasterWithMsg(msg: String) {
-        onView(withText(msg))
-            .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
-    }
-
     fun hasVariantLabel(@IdRes variantResourceId: Int, variantText: String, position: Int) {
         onView(
             withRecyclerView(R.id.recycler_view_chatroom)

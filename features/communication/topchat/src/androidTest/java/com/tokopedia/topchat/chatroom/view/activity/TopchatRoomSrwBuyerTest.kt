@@ -25,6 +25,7 @@ import com.tokopedia.topchat.chatroom.view.activity.robot.composeAreaRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralResult.assertViewInRecyclerViewAt
 import com.tokopedia.topchat.chatroom.view.activity.robot.generalResult
 import com.tokopedia.topchat.chatroom.view.activity.robot.generalRobot
+import com.tokopedia.topchat.chatroom.view.activity.robot.productPreviewRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.srw.SrwResult.assertSrwCoachMark
 import com.tokopedia.topchat.chatroom.view.activity.robot.srw.SrwResult.assertSrwLabel
 import com.tokopedia.topchat.chatroom.view.activity.robot.srw.SrwResult.assertSrwLabelVisibility
@@ -392,7 +393,9 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         composeAreaRobot {
             clickComposeArea()
         }
-        clickCloseAttachmentPreview(0)
+        productPreviewRobot {
+            clickCloseAttachmentPreview(0)
+        }
         pressBack()
         composeAreaRobot {
             clickPlusIconMenu()
@@ -1143,7 +1146,9 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
             clickPlusIconMenu()
             clickAttachInvoiceMenu()
         }
-        clickCloseAttachmentPreview(0)
+        productPreviewRobot {
+            clickCloseAttachmentPreview(0)
+        }
 
         // Then
         assertSrwBubbleContentIsVisibleAt(0)
@@ -1468,7 +1473,9 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
             clickAttachProductMenu()
         }
         chatSrwUseCase.response = chatSrwUseCase.multipleQuestions
-        clickCloseAttachmentPreview(0)
+        productPreviewRobot {
+            clickCloseAttachmentPreview(0)
+        }
 
         // Then
         assertSrwPreviewContentIsVisible()

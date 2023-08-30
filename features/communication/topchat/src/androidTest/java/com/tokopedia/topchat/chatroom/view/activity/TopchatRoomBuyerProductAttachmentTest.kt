@@ -3,17 +3,9 @@ package com.tokopedia.topchat.chatroom.view.activity
 import android.app.Activity
 import android.app.Instrumentation
 import android.content.Intent
-import androidx.recyclerview.widget.RecyclerView
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
-import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.Intents.intending
-import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkConst.AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY
 import com.tokopedia.applink.RouteManager
@@ -27,22 +19,14 @@ import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentResponse
 import com.tokopedia.topchat.chatroom.view.activity.base.BaseBuyerTopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.activity.robot.composeAreaRobot
-import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralResult.openPageWithApplink
-import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralResult.openPageWithIntent
-import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralRobot
-import com.tokopedia.topchat.chatroom.view.activity.robot.previewattachment.ProductPreviewResult.verifyVariantLabel
-import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardResult.hasFailedToasterWithMsg
-import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardResult.hasProductWishlistButtonWithText
-import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardResult.hasToasterWithMsg
-import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardResult.hasVariantLabel
-import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardRobot.clickATCButtonAt
-import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardRobot.clickBuyButtonAt
-import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardRobot.clickProductAttachmentAt
-import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardRobot.clickWishlistButtonAt
-import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductResult.hasNoVisibleEmptyStockLabelAt
-import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductResult.hasNoVisibleRemindMeBtnAt
-import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductResult.hasProductName
-import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductResult.hasProductPrice
+import com.tokopedia.topchat.chatroom.view.activity.robot.generalResult
+import com.tokopedia.topchat.chatroom.view.activity.robot.generalRobot
+import com.tokopedia.topchat.chatroom.view.activity.robot.previewAttachmentRobot
+import com.tokopedia.topchat.chatroom.view.activity.robot.productCardResult
+import com.tokopedia.topchat.chatroom.view.activity.robot.productCardRobot
+import com.tokopedia.topchat.chatroom.view.activity.robot.productPreviewResult
+import com.tokopedia.topchat.chatroom.view.activity.robot.productPreviewRobot
+import com.tokopedia.topchat.chatroom.view.activity.robot.productResult
 import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.SOURCE_TOPCHAT
 import com.tokopedia.topchat.matchers.withTotalItem
 import org.hamcrest.CoreMatchers.not
@@ -68,9 +52,10 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         }
 
         // Then
-        onView(withId(R.id.rv_attachment_preview)).check(matches(isDisplayed()))
-        onView(withId(R.id.rv_attachment_preview))
-            .check(matches(withTotalItem(1)))
+        productPreviewResult {
+            assertAttachmentPreview(isDisplayed())
+            assertAttachmentPreview(withTotalItem(1))
+        }
     }
 
     @Test
@@ -88,9 +73,13 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         }
 
         // Then
-        onView(withId(R.id.rv_attachment_preview)).check(matches(isDisplayed()))
-        onView(withId(R.id.rv_attachment_preview))
-            .check(matches(withTotalItem(1)))
+        productPreviewResult {
+            assertAttachmentPreview(isDisplayed())
+            assertAttachmentPreview(withTotalItem(1))
+        }
+        generalResult {
+            assertToasterText(context.getString(R.string.topchat_desc_empty_text_box))
+        }
     }
 
     @Test
@@ -114,9 +103,10 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         }
 
         // Then
-        onView(withId(R.id.rv_attachment_preview)).check(matches(isDisplayed()))
-        onView(withId(R.id.rv_attachment_preview))
-            .check(matches(withTotalItem(1)))
+        productPreviewResult {
+            assertAttachmentPreview(isDisplayed())
+            assertAttachmentPreview(withTotalItem(1))
+        }
     }
 
     @Test
@@ -162,15 +152,15 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
             clickPlusIconMenu()
             clickAttachProductMenu()
         }
-
-        onView(withId(R.id.rv_attachment_preview)).perform(
-            scrollToPosition<RecyclerView.ViewHolder>(2)
-        )
+        previewAttachmentRobot {
+            scrollToPosition(2)
+        }
 
         // Then
-        onView(withId(R.id.rv_attachment_preview)).check(matches(isDisplayed()))
-        onView(withId(R.id.rv_attachment_preview))
-            .check(matches(withTotalItem(3)))
+        productPreviewResult {
+            assertAttachmentPreview(isDisplayed())
+            assertAttachmentPreview(withTotalItem(3))
+        }
     }
 
     @Test
@@ -192,10 +182,14 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
             clickPlusIconMenu()
             clickAttachProductMenu()
         }
-        clickCloseAttachmentPreview(0)
+        productPreviewRobot {
+            clickCloseAttachmentPreview(0)
+        }
 
         // Then
-        onView(withId(R.id.rv_attachment_preview)).check(matches(not(isDisplayed())))
+        productPreviewResult {
+            assertAttachmentPreview(not(isDisplayed()))
+        }
     }
 
     @Test
@@ -219,13 +213,16 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
             clickPlusIconMenu()
             clickAttachProductMenu()
         }
-        clickCloseAttachmentPreview(0)
-        clickCloseAttachmentPreview(1)
+        productPreviewRobot {
+            clickCloseAttachmentPreview(0)
+            clickCloseAttachmentPreview(1)
+        }
 
         // Then
-        onView(withId(R.id.rv_attachment_preview)).check(matches(isDisplayed()))
-        onView(withId(R.id.rv_attachment_preview))
-            .check(matches(withTotalItem(1)))
+        productPreviewResult {
+            assertAttachmentPreview(isDisplayed())
+            assertAttachmentPreview(withTotalItem(1))
+        }
     }
 
     @Test
@@ -239,7 +236,9 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         }
 
         // Then
-        clickCloseAttachmentPreview(0)
+        productPreviewRobot {
+            clickCloseAttachmentPreview(0)
+        }
 
         // Then
         assertSrwPreviewContentIsHidden()
@@ -258,11 +257,15 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         }
 
         // When
-        GeneralRobot.scrollChatToPosition(0)
+        generalRobot {
+            scrollChatToPosition(0)
+        }
 
         // Then
-        verifyVariantLabel(R.id.tv_variant_color, isDisplayed(), 0)
-        verifyVariantLabel(R.id.tv_variant_size, isDisplayed(), 0)
+        productPreviewResult {
+            verifyVariantLabel(R.id.tv_variant_color, isDisplayed(), 0)
+            verifyVariantLabel(R.id.tv_variant_size, isDisplayed(), 0)
+        }
     }
 
     @Test
@@ -273,11 +276,15 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         launchChatRoomActivity()
 
         // When
-        GeneralRobot.scrollChatToPosition(0)
+        generalRobot {
+            scrollChatToPosition(0)
+        }
 
         // Then
-        hasVariantLabel(R.id.tv_variant_color, testVariantColor, 1)
-        hasVariantLabel(R.id.tv_variant_size, testVariantSize, 1)
+        productCardResult {
+            hasVariantLabel(R.id.tv_variant_color, testVariantColor, 1)
+            hasVariantLabel(R.id.tv_variant_size, testVariantSize, 1)
+        }
     }
 
     @Test
@@ -286,14 +293,20 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         launchChatRoomActivity()
+        stubIntents()
 
         // When
-        intending(anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-        GeneralRobot.scrollChatToPosition(4)
-        clickATCButtonAt(4)
+        generalRobot {
+            scrollChatToPosition(4)
+        }
+        productCardRobot {
+            clickATCButtonAt(4)
+        }
 
         // Then
-        hasToasterWithMsg(context.getString(R.string.title_topchat_see_cart))
+        generalResult {
+            assertToasterText(context.getString(R.string.title_topchat_see_cart))
+        }
     }
 
     @Test
@@ -302,14 +315,20 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         launchChatRoomActivity()
+        stubIntents()
 
         // When
-        intending(anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-        GeneralRobot.scrollChatToPosition(4)
-        clickBuyButtonAt(4)
+        generalRobot {
+            scrollChatToPosition(4)
+        }
+        productCardRobot {
+            clickBuyButtonAt(4)
+        }
 
         // Then
-        openPageWithApplink(ApplinkConst.CART)
+        generalResult {
+            openPageWithApplink(ApplinkConst.CART)
+        }
     }
 
     @Test
@@ -318,11 +337,15 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         launchChatRoomActivity()
+        stubIntents()
 
         // When
-        intending(anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-        GeneralRobot.scrollChatToPosition(0)
-        clickBuyButtonAt(1)
+        generalRobot {
+            scrollChatToPosition(0)
+        }
+        productCardRobot {
+            clickBuyButtonAt(1)
+        }
 
         // Then
         val intent = RouteManager.getIntent(
@@ -334,7 +357,9 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
             "false",
             ""
         ) // Product from firstPageChatAsBuyer
-        openPageWithIntent(intent)
+        generalResult {
+            openPageWithIntent(intent)
+        }
     }
 
     @Test
@@ -343,11 +368,15 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         launchChatRoomActivity()
+        stubIntents()
 
         // When
-        intending(anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-        GeneralRobot.scrollChatToPosition(0)
-        clickATCButtonAt(1)
+        generalRobot {
+            scrollChatToPosition(0)
+        }
+        productCardRobot {
+            clickBuyButtonAt(1)
+        }
 
         // Then
         val intent = RouteManager.getIntent(
@@ -359,7 +388,9 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
             "false",
             ""
         ) // Product from firstPageChatAsBuyer
-        openPageWithIntent(intent)
+        generalResult {
+            openPageWithIntent(intent)
+        }
     }
 
     @Test
@@ -369,18 +400,24 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         chatAttachmentUseCase.response = getZeroStockAttachment()
         addToWishlistV2UseCase.isFail = false
         launchChatRoomActivity()
+        stubIntents()
 
         // When
-        intending(anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-        GeneralRobot.scrollChatToPosition(0)
-        clickWishlistButtonAt(1) // click wishlist
-        clickWishlistButtonAt(1) // click go to wishlist
+        generalRobot {
+            scrollChatToPosition(0)
+        }
+        productCardRobot {
+            clickWishlistButtonAt(1) // click wishlist
+            clickWishlistButtonAt(1) // click go to wishlist
+        }
 
         // Then
-        hasProductWishlistButtonWithText("Cek Wishlist Kamu", 1)
-        hasToasterWithMsg(
-            context.getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
-        )
+        productCardResult {
+            hasProductWishlistButtonWithText("Cek Wishlist Kamu", 1)
+        }
+        generalResult {
+            assertToasterText(context.getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg))
+        }
     }
 
     @Test
@@ -390,17 +427,21 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         chatAttachmentUseCase.response = getZeroStockAttachment()
         addToWishlistV2UseCase.isFail = true
         launchChatRoomActivity()
+        stubIntents()
 
         // When
-        intending(anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-        GeneralRobot.scrollChatToPosition(0)
-        clickWishlistButtonAt(1) // click wishlist
-        clickWishlistButtonAt(1) // click go to wishlist
+        generalRobot {
+            scrollChatToPosition(0)
+        }
+        productCardRobot {
+            clickWishlistButtonAt(1) // click wishlist
+            clickWishlistButtonAt(1) // click go to wishlist
+        }
 
         // Then
-        hasFailedToasterWithMsg(
+        generalResult {
             context.getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg)
-        )
+        }
     }
 
     @Test
@@ -410,14 +451,20 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         chatAttachmentUseCase.response = chatAttachmentResponse
         addToCartUseCase.isError = true
         launchChatRoomActivity()
+        stubIntents()
 
         // When
-        intending(anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-        GeneralRobot.scrollChatToPosition(4)
-        clickBuyButtonAt(4)
+        generalRobot {
+            scrollChatToPosition(4)
+        }
+        productCardRobot {
+            clickBuyButtonAt(4)
+        }
 
         // Then
-        hasFailedToasterWithMsg("Oops!")
+        generalResult {
+            assertToasterWithSubText("Oops!")
+        }
     }
 
     @Test
@@ -428,14 +475,20 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         chatAttachmentUseCase.response = chatAttachmentResponse
         addToCartUseCase.errorMessage = arrayListOf(errorMsg)
         launchChatRoomActivity()
+        stubIntents()
 
         // When
-        intending(anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-        GeneralRobot.scrollChatToPosition(4)
-        clickBuyButtonAt(4)
+        generalRobot {
+            scrollChatToPosition(4)
+        }
+        productCardRobot {
+            clickBuyButtonAt(4)
+        }
 
         // Then
-        hasFailedToasterWithMsg(errorMsg)
+        generalResult {
+            assertToasterWithSubText(errorMsg)
+        }
     }
 
     @Test
@@ -444,14 +497,20 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         launchChatRoomActivity()
+        stubIntents()
 
         // When
-        intending(anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-        GeneralRobot.scrollChatToPosition(1)
-        clickProductAttachmentAt(1)
+        generalRobot {
+            scrollChatToPosition(1)
+        }
+        productCardRobot {
+            clickProductAttachmentAt(1)
+        }
 
         // Then
-        intended(hasData("tokopedia://product/2148833237?extParam=whid=341734&src=chat"))
+        generalResult {
+            openPageWithApplink("tokopedia://product/2148833237?extParam=whid=341734&src=chat")
+        }
     }
 
     @Test
@@ -460,16 +519,20 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentUseCase.productArchivedAttachment
         launchChatRoomActivity()
+        stubIntents()
 
         // When
-        intending(anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-        GeneralRobot.scrollChatToPosition(1)
+        generalRobot {
+            scrollChatToPosition(1)
+        }
 
         // Then
-        hasProductName(1, "")
-        hasProductPrice(1, "")
-        hasNoVisibleEmptyStockLabelAt(1)
-        hasNoVisibleRemindMeBtnAt(1)
+        productResult {
+            hasProductName(1, "")
+            hasProductPrice(1, "")
+            hasNoVisibleEmptyStockLabelAt(1)
+            hasNoVisibleRemindMeBtnAt(1)
+        }
     }
 
     // TODO: assert attach product, stock info seller, and tokocabang is not displayed on buyer side
