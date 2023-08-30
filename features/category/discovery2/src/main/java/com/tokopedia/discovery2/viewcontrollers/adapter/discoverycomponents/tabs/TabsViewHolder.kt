@@ -122,10 +122,18 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
             tabsViewModel.getIconTabLiveData().observe(
                 fragment.viewLifecycleOwner
             ) {
-                tabsHolder.tabLayout.removeAllTabs()
-                tabsHolder.customTabMode = TabLayout.MODE_FIXED
+//                tabsHolder.tabLayout.removeAllTabs()
+//                tabsHolder.customTabMode = TabLayout.MODE_FIXED
                 tabsHolder.getUnifyTabLayout()
                     .setSelectedTabIndicator(tabsHolder.getUnifyTabLayout().tabSelectedIndicator)
+
+                tabsHolder.getUnifyTabLayout().apply {
+                    layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
+                    layoutParams.height = tabsHolder.context.resources.getDimensionPixelSize(R.dimen.dp_60)
+                    tabMode = TabLayout.MODE_SCROLLABLE
+                    removeAllTabs()
+                    setBackgroundResource(0)
+                }
                 var selectedPosition = 0
                 it.forEachIndexed { index, tabItem ->
                     if (tabItem.data?.isNotEmpty() == true) {
