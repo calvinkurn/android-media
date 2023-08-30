@@ -17,11 +17,14 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.stories.widget.di.DaggerStoriesWidgetComponent
 import com.tokopedia.stories.widget.di.StoriesWidgetComponent
 import com.tokopedia.stories.widget.domain.StoriesEntryPoint
 import com.tokopedia.stories.widget.tracking.DefaultTrackingManager
 import com.tokopedia.stories.widget.tracking.TrackingManager
+import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.user.session.UserSession
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
@@ -298,7 +301,10 @@ class StoriesWidgetManager private constructor(
 
         private var mScrollingParent: View? = null
         private var mAnimationStrategy: AnimationStrategy = NoAnimateAnimationStrategy()
-        private var mTrackingManager: TrackingManager = DefaultTrackingManager(entryPoint)
+        private val trackingQueue by lazyThreadSafetyNone { TrackingQueue(context) }
+        private val userSession by lazyThreadSafetyNone { UserSession(context.applicationContext) }
+        private val defaultTrackingManager by lazyThreadSafetyNone { DefaultTrackingManager(entryPoint, trackingQueue, userSession) }
+        private var mTrackingManager: TrackingManager = defaultTrackingManager
 
         fun setScrollingParent(view: View?) = builder {
             this.mScrollingParent = view

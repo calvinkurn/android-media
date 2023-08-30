@@ -50,6 +50,9 @@ dependencies {
     //to use viewlifecyclebound, will move it to content common in the next improvement
     implementation projectOrAar(rootProject.ext.features.playCommon)
     implementation projectOrAar(rootProject.ext.features.storiesInternal)
+    implementation projectOrAar(rootProject.ext.features.contentAnalytic)
+    implementation projectOrAar(rootProject.ext.libraries.track)
+    implementation projectOrAar(rootProject.ext.libraries.usersession)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
