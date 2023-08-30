@@ -39,14 +39,15 @@ class TabsItemIconViewHolder(itemView: View, fragment: Fragment) :
                     item.name?.let { name ->
                         setTabText(name)
                     }
-//                    setFontColor(item.fontColor)
+                    setFontColor(item)
                 }
             }
             tabsItemIconViewModel?.getSelectionChangeLiveData()?.observe(
                 lifecycleOwner
             ) {
-                itemData?.let{
-                    setTabIcon(it)
+                itemData?.let { dataItem ->
+                    setTabIcon(dataItem)
+                    setFontColor(dataItem)
                 }
             }
         }
@@ -75,17 +76,22 @@ class TabsItemIconViewHolder(itemView: View, fragment: Fragment) :
         tabTextView.setTextAndCheckShow(name)
     }
 
-    private fun setFontColor(fontColor: String?) {
+    private fun setFontColor(item: DataItem) {
         try {
-            if (fontColor.isNullOrEmpty()) {
+            if (item.isSelected) {
                 tabTextView.setTextColor(
                     ContextCompat.getColor(
                         itemView.context,
-                        RUnify.color.Unify_G500
+                        RUnify.color.Unify_GN500
                     )
                 )
             } else {
-                tabTextView.setTextColor(Color.parseColor(fontColor))
+                tabTextView.setTextColor(
+                    ContextCompat.getColor(
+                        itemView.context,
+                        RUnify.color.Unify_NN400
+                    )
+                )
             }
         } catch (e: Exception) {
             e.printStackTrace()
