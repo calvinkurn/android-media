@@ -216,3 +216,73 @@ Java_com_tokopedia_emoney_integration_BCALibrary_C_1BCAGetConfig(JNIEnv *env, jo
                                              (*env)->NewStringUTF(env, strConfig));
     return resultObject;
 }
+
+JNIEXPORT jobject JNICALL
+Java_com_tokopedia_emoney_integration_BCALibrary_C_1BCAdataSession_11(JNIEnv *env, jobject thiz,
+                                                                      jstring str_transaction_id,
+                                                                      jstring atd,
+                                                                      jstring str_curr_date_time) {
+    g_env = env;
+    g_obj = thiz;
+
+    jclass resultClass = (*env)->FindClass(env, "com/tokopedia/emoney/integration/data/JNIResult");
+    jmethodID constructor = (*env)->GetMethodID(env, resultClass, "<init>",
+                                                "(ILjava/lang/String;IILjava/lang/String;Ljava/lang/String;)V");
+
+    unsigned char strLogRsp[LENGTH_BCASES_RESULT];
+    memset(strLogRsp, 0x00, sizeof(strLogRsp));
+
+    const char *strCTransactionId;
+    strCTransactionId = (*env)->GetStringUTFChars(env, str_transaction_id, NULL);
+    unsigned char strTransactionId[LENGTH_STR_TRANSACTION_ID];
+    memset(strTransactionId, 0x00, LENGTH_STR_TRANSACTION_ID);
+    memcpy(strTransactionId, strCTransactionId, LENGTH_STR_TRANSACTION_ID);
+
+    const char *strCAtd;
+    strCAtd = (*env)->GetStringUTFChars(env, atd, NULL);
+    unsigned char strAtd[LENGTH_ACCESS_TOKEN];
+    memset(strAtd, 0x00, LENGTH_ACCESS_TOKEN);
+    memcpy(strAtd, strCAtd, LENGTH_ACCESS_TOKEN);
+
+    const char *strCCurrentDateTime;
+    strCCurrentDateTime = (*env)->GetStringUTFChars(env, str_curr_date_time, NULL);
+    unsigned char strCurrentDateTime[LENGTH_STR_DATETIME];
+    memset(strCurrentDateTime, 0x00, LENGTH_STR_DATETIME);
+    memcpy(strCurrentDateTime, strCCurrentDateTime, LENGTH_STR_DATETIME);
+
+    unsigned char result = BCAdataSession_1(strTransactionId, strAtd, strCurrentDateTime, strLogRsp);
+    //set the return value result success
+    jobject resultObject = (*env)->NewObject(env, resultClass, constructor,
+                                             result,(*env)->NewStringUTF(env, strLogRsp),
+                                             FALSE, 0, (*env)->NewStringUTF(env, ""),
+                                             (*env)->NewStringUTF(env, ""));
+    return resultObject;
+}
+
+JNIEXPORT jobject JNICALL
+Java_com_tokopedia_emoney_integration_BCALibrary_C_1BCAdataSession_12(JNIEnv *env, jobject thiz,
+                                                                      jstring response_data) {
+    g_env = env;
+    g_obj = thiz;
+
+    jclass resultClass = (*env)->FindClass(env, "com/tokopedia/emoney/integration/data/JNIResult");
+    jmethodID constructor = (*env)->GetMethodID(env, resultClass, "<init>",
+                                                "(ILjava/lang/String;IILjava/lang/String;Ljava/lang/String;)V");
+
+    unsigned char strLogRsp[LENGTH_RESPONSE];
+    memset(strLogRsp, 0x00, sizeof(strLogRsp));
+
+    const char *strCResponseData;
+    strCResponseData = (*env)->GetStringUTFChars(env, response_data, NULL);
+    unsigned char strResponseData[LENGTH_SES_DATA];
+    memset(strResponseData, 0x00, LENGTH_SES_DATA);
+    memcpy(strResponseData, strCResponseData, LENGTH_SES_DATA);
+
+    unsigned char result = BCAdataSession_2(strResponseData, strLogRsp);
+    //set the return value result success
+    jobject resultObject = (*env)->NewObject(env, resultClass, constructor,
+                                             result,(*env)->NewStringUTF(env, strLogRsp),
+                                             FALSE, 0, (*env)->NewStringUTF(env, ""),
+                                             (*env)->NewStringUTF(env, ""));
+    return resultObject;
+}
