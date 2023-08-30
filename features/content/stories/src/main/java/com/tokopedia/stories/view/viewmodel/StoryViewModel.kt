@@ -31,12 +31,6 @@ class StoryViewModel @Inject constructor(
     private val repository: StoryRepository,
 ) : ViewModel() {
 
-    val mGroupId: String
-        get() {
-            val currPosition = mGroupPosition.value
-            return if (currPosition < 0) ""
-            else _storyGroup.value.groupItems[currPosition].id
-        }
     private var shopId: String = ""
 
     private val _storyGroup = MutableStateFlow(StoryGroupUiModel())
@@ -46,14 +40,23 @@ class StoryViewModel @Inject constructor(
     private val mDetailPosition = MutableStateFlow(-1)
     private val mResetValue = MutableStateFlow(-1)
 
+    val mGroupId: String
+        get() {
+            val currPosition = mGroupPosition.value
+            return if (currPosition < 0) ""
+            else _storyGroup.value.groupItems[currPosition].groupId
+        }
+
     private val mGroupSize: Int
         get() = _storyGroup.value.groupItems.size
+
     private val mGroupItem: StoryGroupItemUiModel
         get() {
             val currPosition = mGroupPosition.value
             return if (currPosition < 0) StoryGroupItemUiModel()
             else _storyGroup.value.groupItems[currPosition]
         }
+
     private val mDetailSize: Int
         get() {
             val currPosition = mGroupPosition.value
@@ -91,7 +94,7 @@ class StoryViewModel @Inject constructor(
 
         viewModelScope.launchCatchError(block = {
             _storyGroup.value = requestStoryInitialData()
-            mGroupPosition.value = _storyGroup.value.selectedPosition
+            mGroupPosition.value = _storyGroup.value.selectedGroupPosition
         }) { exception ->
             Timber.d("fail fetch main data $exception")
         }
@@ -147,25 +150,30 @@ class StoryViewModel @Inject constructor(
 
             updateGroupData(detail = detailData)
 
-            val isReset = detailData.selectedPositionCached == detailData.detailItems.size.minus(1)
-            updateStoryDetailData(position = detailData.selectedPositionCached, isReset = isReset)
+            val isReset = detailData.selectedDetailPositionCached == detailData.detailItems.size.minus(1)
+            updateStoryDetailData(
+                position = detailData.selectedDetailPositionCached,
+                isReset = isReset,
+            )
         }) { exception ->
             Timber.d("fail fetch new detail $exception")
         }
     }
 
     private fun updateGroupData(detail: StoryDetailUiModel) {
-        val newData = _storyGroup.value.copy(
-            selectedPosition = mGroupPosition.value,
-            groupHeader = _storyGroup.value.groupHeader.mapIndexed { index, storyGroupHeader ->
-                storyGroupHeader.copy(isSelected = index == mGroupPosition.value)
-            },
-            groupItems = _storyGroup.value.groupItems.mapIndexed { index, storyGroupItemUiModel ->
-                if (index == mGroupPosition.value) storyGroupItemUiModel.copy(detail = detail)
-                else storyGroupItemUiModel
-            }
-        )
-        _storyGroup.value = newData
+        _storyGroup.update { group ->
+            group.copy(
+                selectedGroupId = mGroupId,
+                selectedGroupPosition = mGroupPosition.value,
+                groupHeader = group.groupHeader.mapIndexed { index, storyGroupHeader ->
+                    storyGroupHeader.copy(isSelected = index == mGroupPosition.value)
+                },
+                groupItems = group.groupItems.mapIndexed { index, storyGroupItemUiModel ->
+                    if (index == mGroupPosition.value) storyGroupItemUiModel.copy(detail = detail)
+                    else storyGroupItemUiModel
+                }
+            )
+        }
     }
 
     private fun updateStoryDetailData(
@@ -174,10 +182,11 @@ class StoryViewModel @Inject constructor(
         isReset: Boolean = false,
     ) {
         mDetailPosition.value = position
-        val positionCached = mGroupItem.detail.selectedPositionCached
+        val positionCached = mGroupItem.detail.selectedDetailPositionCached
         val currentDetail = mGroupItem.detail.copy(
-            selectedPosition = position,
-            selectedPositionCached = if (positionCached <= position) position else positionCached,
+            selectedGroupId = mGroupId,
+            selectedDetailPosition = position,
+            selectedDetailPositionCached = if (positionCached <= position) position else positionCached,
             detailItems = mGroupItem.detail.detailItems.mapIndexed { _, item ->
                 item.copy(
                     event = event,
@@ -207,7 +216,7 @@ class StoryViewModel @Inject constructor(
             authorID = shopId,
             authorType = StoryAuthorType.SHOP.value,
             source = "",
-            sourceID = mGroupItem.id,
+            sourceID = mGroupItem.groupId,
         )
         return repository.getStoryDetailData(request)
     }

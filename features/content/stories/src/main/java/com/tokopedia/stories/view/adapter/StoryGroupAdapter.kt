@@ -22,7 +22,7 @@ class StoryGroupAdapter(
         oldItem: StoryGroupHeader,
         newItem: StoryGroupHeader
     ): Boolean {
-        return oldItem.id == newItem.id
+        return oldItem.groupId == newItem.groupId
     }
 
     override fun areContentsTheSame(

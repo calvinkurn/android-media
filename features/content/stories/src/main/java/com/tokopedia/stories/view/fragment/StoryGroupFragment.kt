@@ -110,7 +110,7 @@ class StoryGroupFragment @Inject constructor(
     }
 
     private fun selectGroupEvent(position: Int) = with(binding.storyGroupViewPager) {
-        setCurrentItem(position, false)
+        currentItem = position
     }
 
     override fun onDestroyView() {

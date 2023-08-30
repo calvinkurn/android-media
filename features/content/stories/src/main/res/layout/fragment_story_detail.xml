@@ -39,7 +39,7 @@
         android:id="@+id/story_component"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="cv_story_detail_timer, ic_close, rv_story_category"/>
+        app:constraint_referenced_ids="cv_story_detail_timer, ic_close, rv_story_category" />
 
     <androidx.compose.ui.platform.ComposeView
         android:id="@+id/cv_story_detail_timer"
@@ -56,6 +56,7 @@
         android:layout_height="28dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="10dp"
+        android:visibility="invisible"
         app:icon_color_light_enable="@color/Unify_Static_White"
         app:icon_color_night_enable="@color/Unify_Static_White"
         app:icon_name="CLOSE"
@@ -69,6 +70,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="12dp"
         android:nestedScrollingEnabled="true"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/ic_close"
         app:layout_constraintTop_toBottomOf="@id/cv_story_detail_timer"

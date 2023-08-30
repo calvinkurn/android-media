@@ -21,7 +21,7 @@ import com.tokopedia.stories.utils.withCache
 import com.tokopedia.stories.view.adapter.StoryGroupAdapter
 import com.tokopedia.stories.view.components.indicator.StoryDetailTimer
 import com.tokopedia.stories.view.model.StoryDetailUiModel
-import com.tokopedia.stories.view.model.StoryGroupHeader
+import com.tokopedia.stories.view.model.StoryGroupUiModel
 import com.tokopedia.stories.view.utils.TouchEventStory
 import com.tokopedia.stories.view.utils.onTouchEventStory
 import com.tokopedia.stories.view.viewmodel.StoryViewModel
@@ -74,59 +74,55 @@ class StoryDetailFragment @Inject constructor(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupStoryView()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        pauseStory()
-    }
-
-    override fun onResume() {
-        super.onResume()
         setupObserver()
     }
 
     private fun setupObserver() {
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
             viewModel.uiState.withCache().collectLatest { (prevState, state) ->
-                if (groupId != viewModel.mGroupId) return@collectLatest
-                renderStoryGroupHeader(prevState?.storyGroup?.groupHeader, state.storyGroup.groupHeader)
+                renderStoryGroupHeader(prevState?.storyGroup, state.storyGroup)
                 renderStoryDetail(prevState?.storyDetail, state.storyDetail)
             }
         }
     }
 
     private fun renderStoryGroupHeader(
-        prevState: List<StoryGroupHeader>?,
-        state: List<StoryGroupHeader>,
+        prevState: StoryGroupUiModel?,
+        state: StoryGroupUiModel,
     ) {
-        if (prevState == state) return
+        if (prevState?.groupHeader == state.groupHeader ||
+            groupId != state.selectedGroupId
+        ) return
 
-        mAdapter.setItems(state)
-        mAdapter.notifyItemRangeInserted(mAdapter.itemCount, state.size)
+        mAdapter.setItems(state.groupHeader)
+        mAdapter.notifyItemRangeInserted(mAdapter.itemCount, state.groupHeader.size)
     }
 
     private fun renderStoryDetail(
         prevState: StoryDetailUiModel?,
         state: StoryDetailUiModel
     ) {
-        if (prevState == state || state == StoryDetailUiModel()) return
-//
-//        storyDetailsTimer(state)
-//
-//        val prevContent = prevState?.detailItems
-//        val currContent = state.detailItems[state.selectedPosition]
-//        if (!prevContent.isNullOrEmpty() &&
-//            prevContent[prevState.selectedPosition].imageContent == currContent.imageContent
-//        ) return
-//
-//        binding.ivStoryDetailContent.apply {
-//            setImageUrl(currContent.imageContent)
-//            onUrlLoaded = {
-//                viewModelAction(ResumeStory)
-//            }
-//        }
-        showStoryComponent(true)
+        if (prevState == state ||
+            state == StoryDetailUiModel() ||
+            state.detailItems.isEmpty() ||
+            state.selectedGroupId != groupId
+        ) return
+
+        storyDetailsTimer(state)
+
+        val prevContent = prevState?.detailItems
+        val currContent = state.detailItems[state.selectedDetailPosition]
+        if (!prevContent.isNullOrEmpty() &&
+            prevContent[prevState.selectedDetailPosition].imageContent == currContent.imageContent
+        ) return
+
+        binding.ivStoryDetailContent.apply {
+            setImageUrl(currContent.imageContent)
+            onUrlLoaded = {
+                showStoryComponent(true)
+                resumeStory()
+            }
+        }
     }
 
     private fun storyDetailsTimer(state: StoryDetailUiModel) {
@@ -135,17 +131,26 @@ class StoryDetailFragment @Inject constructor(
                 setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
                 setContent {
                     StoryDetailTimer(
-                        currentPosition = state.selectedPosition,
+                        currentPosition = state.selectedDetailPosition,
                         itemCount = state.detailItems.size,
-                        data = state.detailItems[state.selectedPosition]
-                    ) { viewModelAction(NextDetail) }
+                        data = state.detailItems[state.selectedDetailPosition],
+                    ) {
+                        /** TODO
+                         * all state already updated using the new groupId
+                         * but the oldest data that we left (ui action swipe) still there
+                         * need other way to stop the oldest data if the position is invalid
+                         * it also causing broken timer experience when (ui action swipe)
+                         * invalid -> groupId != viewModel.mGroupId
+                         **/
+                        if (groupId != viewModel.mGroupId) return@StoryDetailTimer
+                        viewModelAction(NextDetail)
+                    }
                 }
             }
         }
     }
 
     private fun setupStoryView() = with(binding) {
-        binding.icClose.hide()
         icClose.setOnClickListener {
             activity?.finish()
         }
