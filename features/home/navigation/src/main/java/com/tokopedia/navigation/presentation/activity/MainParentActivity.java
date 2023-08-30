@@ -267,7 +267,17 @@ public class MainParentActivity extends BaseActivity implements
         //changes for triggering unittest checker
         startSelectedPagePerformanceMonitoring();
         startMainParentPerformanceMonitoring();
-
+        try {
+            performanceTrace = new BlocksPerformanceTrace(
+                    this.getContext().getApplicationContext(),
+                    PERFORMANCE_TRACE_HOME,
+                    LifecycleOwnerKt.getLifecycleScope(this),
+                    this,
+                    null
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         if (pageLoadTimePerformanceCallback != null) {
             pageLoadTimePerformanceCallback.startCustomMetric(MAIN_PARENT_ON_CREATE_METRICS);
@@ -282,17 +292,6 @@ public class MainParentActivity extends BaseActivity implements
         cacheManager = PreferenceManager.getDefaultSharedPreferences(this);
         appUpdate = new FirebaseRemoteAppUpdate(this);
         createView(savedInstanceState);
-        try {
-            performanceTrace = new BlocksPerformanceTrace(
-                    this.getContext().getApplicationContext(),
-                    PERFORMANCE_TRACE_HOME,
-                    LifecycleOwnerKt.getLifecycleScope(this),
-                    this,
-                    null
-            );
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         WeaveInterface executeEventsWeave = new WeaveInterface() {
             @NotNull
             @Override
