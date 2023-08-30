@@ -1,0 +1,77 @@
+{
+  "readme": "Feed Follow Recommendation - Analytics",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "view_item",
+      "eventAction": "view - follow recommendations",
+      "eventCategory": "unified feed",
+      "eventLabel": ".* - .* - (user|shop) - .*",
+      "trackerId": "45539",
+      "businessUnit": "content",
+      "currentSite": "tokopediamarketplace",
+      "promotions": [
+        {
+          "creative_name": "follow recomm in unified feed",
+          "creative_slot": "",
+          "item_id": ".*",
+          "item_name": "follow-recomm-unified-feed"
+        }
+      ],
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "select_content",
+      "eventAction": "click - follow recommendations",
+      "eventCategory": "unified feed",
+      "eventLabel": ".* - .* - (user|shop) - .*",
+      "trackerId": "45540",
+      "businessUnit": "content",
+      "currentSite": "tokopediamarketplace",
+      "promotions": [
+        {
+          "creative_name": "follow recomm in unified feed",
+          "creative_slot": "",
+          "item_id": ".*",
+          "item_name": "follow-recomm-unified-feed"
+        }
+      ],
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - follow profile recommendations",
+      "eventCategory": "unified feed",
+      "eventLabel": ".* - .* - (user|shop) - .* - (follow|unfollow)",
+      "trackerId": "45541",
+      "businessUnit": "content",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - x - profile recommendation",
+      "eventCategory": "unified feed",
+      "eventLabel": ".* - .* - (user|shop) - .*",
+      "trackerId": "45542",
+      "businessUnit": "content",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "scroll - right left follow recommendation cards",
+      "eventCategory": "unified feed",
+      "eventLabel": ".* - .*",
+      "trackerId": "45602",
+      "businessUnit": "content",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*"
+    }
+  ]
+}
