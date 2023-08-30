@@ -159,12 +159,7 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
                 }
 
                 is ShopBannerProductGroupWidgetTabViewModel.UiState.Success -> {
-                    if (result.data.isEmpty()) {
-                        bannerProductGroupAdapter.submit(emptyList())
-                    } else {
-                        showProductCarousel(result.data)
-                        showMainBanner()
-                    }
+                   showResult(result.data)
                 }
 
                 is ShopBannerProductGroupWidgetTabViewModel.UiState.Error -> {
@@ -174,6 +169,14 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun showResult(carouselItems: List<ShopHomeBannerProductGroupItemType>) {
+        if (carouselItems.isEmpty()) {
+            bannerProductGroupAdapter.submit(emptyList())
+        } else {
+            showProductCarousel(carouselItems)
+            showMainBanner()
+        }
+    }
 
     @SuppressLint("PII Data Exposure")
     private fun getCarouselWidgets() {
@@ -181,9 +184,8 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
         viewModel.getCarouselWidgets(widgets, shopId, userAddress, widgetStyle, overrideTheme, colorScheme)
     }
 
-    private fun showProductCarousel(widgets: List<ShopHomeBannerProductGroupItemType?>) {
-        val items = widgets.filterNotNull()
-        bannerProductGroupAdapter.submit(items)
+    private fun showProductCarousel(carouselItems: List<ShopHomeBannerProductGroupItemType>) {
+        bannerProductGroupAdapter.submit(carouselItems)
     }
 
     fun setOnMainBannerClick(onMainBannerClick: (ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.Data) -> Unit) {

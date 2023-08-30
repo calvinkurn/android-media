@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_height="246dp"
     android:layout_marginEnd="4dp">
 
     <com.tokopedia.unifycomponents.ImageUnify
@@ -65,13 +65,20 @@
         app:typographyType="display_3"
         tools:text="Rp20.849.000" />
 
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="tpgSlashedProductPrice, labelDiscount, tpgProductPrice"/>
+
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/imgStar"
         android:layout_width="16dp"
         android:layout_height="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/labelDiscount"
+        app:layout_constraintTop_toBottomOf="@+id/barrier"
         tools:srcCompat="@drawable/ic_shop_home_star_filled" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -84,7 +91,7 @@
         android:textColor="@color/Unify_NN600"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/imgStar"
-        app:layout_constraintTop_toBottomOf="@+id/labelDiscount"
+        app:layout_constraintTop_toBottomOf="@+id/barrier"
         app:typographyType="display_3"
         tools:text="4.8" />
 
@@ -99,8 +106,9 @@
         android:textColor="@color/Unify_NN600"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/tpgRating"
-        app:layout_constraintTop_toBottomOf="@+id/labelDiscount"
+        app:layout_constraintTop_toBottomOf="@+id/barrier"
         app:typographyType="display_3" />
+
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tpgProductSoldCount"
@@ -109,11 +117,10 @@
         android:paddingTop="4dp"
         android:paddingBottom="4dp"
         android:textColor="@color/Unify_NN600"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/tpgBullet"
-        app:layout_constraintTop_toBottomOf="@+id/labelDiscount"
+        app:layout_constraintTop_toBottomOf="@+id/barrier"
         app:typographyType="display_3"
         tools:text="Terjual 500" />
 

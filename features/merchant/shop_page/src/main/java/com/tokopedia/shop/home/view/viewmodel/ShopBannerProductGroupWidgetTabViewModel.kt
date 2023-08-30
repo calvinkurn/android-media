@@ -45,7 +45,7 @@ class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
 
     sealed class UiState {
         object Loading: UiState()
-        data class Success(val data: List<ShopHomeBannerProductGroupItemType?>): UiState()
+        data class Success(val data: List<ShopHomeBannerProductGroupItemType>): UiState()
         data class Error(val error: Throwable): UiState()
     }
 
