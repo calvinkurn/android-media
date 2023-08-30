@@ -5,10 +5,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.buy_more_get_more.databinding.ItemTncBinding
+import com.tokopedia.buy_more_get_more.olp.presentation.bottomsheet.listener.TncListener
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.setClickableUrlHtml
 
-class TncAdapter : RecyclerView.Adapter<TncAdapter.ViewHolder>() {
+class TncAdapter(val listener: TncListener) : RecyclerView.Adapter<TncAdapter.ViewHolder>() {
     private var data: List<String> = emptyList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -38,8 +40,11 @@ class TncAdapter : RecyclerView.Adapter<TncAdapter.ViewHolder>() {
 
         fun bind(item: String, position: Int) {
             with(binding) {
-                tpgNumber.text = MethodChecker.fromHtml((position+Int.ONE).toString())
-                tpgTnc.text = item
+                tpgNumber.text = MethodChecker.fromHtml((position + Int.ONE).toString())
+                tpgTnc.setClickableUrlHtml(
+                    htmlText = item,
+                    onUrlClicked = { url, text -> listener.onClickedTncUrl(url)}
+                )
             }
         }
     }

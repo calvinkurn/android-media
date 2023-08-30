@@ -1,7 +1,6 @@
 package com.tokopedia.buy_more_get_more.olp.utils
 
 import android.R.color.transparent
-import android.R.color.white
 import android.app.Activity
 import android.content.Context
 import android.os.Build
@@ -32,12 +31,7 @@ fun Activity.setTransparentStatusBar(context: Context) {
     }
 }
 
-fun Activity.setDefaultStatusBar(context: Context) {
-    val white = MethodChecker.getColor(
-        context,
-        white
-    )
-
+fun Activity.setDefaultStatusBar() {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
         if (this.isDarkMode()) {
             this.window?.decorView?.systemUiVisibility =
@@ -47,6 +41,7 @@ fun Activity.setDefaultStatusBar(context: Context) {
     WindowCompat.getInsetsController(this.window, this.window.decorView).apply {
         isAppearanceLightStatusBars = true
     }
+    window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE)
     this.window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
 }
 

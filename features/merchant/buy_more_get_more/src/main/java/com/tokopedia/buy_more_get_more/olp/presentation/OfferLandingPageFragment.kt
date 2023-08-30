@@ -52,6 +52,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import com.tokopedia.utils.resources.isDarkMode
 import java.net.ConnectException
 import java.net.SocketException
 import java.net.UnknownHostException
@@ -215,25 +216,24 @@ class OfferLandingPageFragment :
 
                 is Fail -> {
                     binding?.miniCartView.showToaster(message = atc.throwable.localizedMessage)
+                    setDefaultErrorSelection(atc.throwable)
                 }
             }
         }
 
         viewModel.error.observe(viewLifecycleOwner) { throwable ->
-            when (throwable) {
-                is ConnectException, is SocketException, is UnknownHostException -> {
-                    setViewState(VIEW_ERROR, Status.NO_CONNECTION)
-                }
-                else -> {
-                    setViewState(VIEW_ERROR)
-                }
-            }
+            setDefaultErrorSelection(throwable)
         }
     }
 
     private fun setupHeader(offerInfoForBuyer: OfferInfoForBuyerUiModel) {
         setupToolbar(offerInfoForBuyer)
         binding?.headerBackground?.setBackgroundResource(R.drawable.olp_header)
+        if (activity?.isDarkMode() == true) {
+            binding?.headerOverlay?.visible()
+        } else {
+            binding?.headerOverlay?.gone()
+        }
         olpAdapter?.submitList(
             newList = listOf(
                 offerInfoForBuyer,
@@ -375,6 +375,7 @@ class OfferLandingPageFragment :
                     statusBar.gone()
                     header.gone()
                     headerBackground.gone()
+                    headerOverlay.gone()
                     stickyContent.gone()
                     errorPageLarge.gone()
                     miniCartView.gone()
@@ -382,7 +383,7 @@ class OfferLandingPageFragment :
             }
 
             VIEW_ERROR -> {
-                context?.let { activity?.setDefaultStatusBar(it) }
+                activity?.setDefaultStatusBar()
                 viewModel.processEvent(OlpEvent.GetNotification)
                 when (status) {
                     Status.INVALID_OFFER_ID -> {
@@ -591,6 +592,17 @@ class OfferLandingPageFragment :
         context?.let {
             val intent = RouteManager.getIntent(it, ApplinkConst.LOGIN)
             startActivityForResult(intent, requestCode)
+        }
+    }
+
+    private fun setDefaultErrorSelection(throwable: Throwable) {
+        when (throwable) {
+            is ConnectException, is SocketException, is UnknownHostException -> {
+                setViewState(VIEW_ERROR, Status.NO_CONNECTION)
+            }
+            else -> {
+                setViewState(VIEW_ERROR)
+            }
         }
     }
 
