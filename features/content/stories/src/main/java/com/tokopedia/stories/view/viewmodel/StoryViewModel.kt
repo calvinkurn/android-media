@@ -40,7 +40,7 @@ class StoryViewModel @Inject constructor(
     private val mDetailPosition = MutableStateFlow(-1)
     private val mResetValue = MutableStateFlow(-1)
 
-    val mGroupId: String
+    val mCurrGroupId: String
         get() {
             val currPosition = mGroupPosition.value
             return if (currPosition < 0) ""
@@ -163,7 +163,7 @@ class StoryViewModel @Inject constructor(
     private fun updateGroupData(detail: StoryDetailUiModel) {
         _storyGroup.update { group ->
             group.copy(
-                selectedGroupId = mGroupId,
+                selectedGroupId = mCurrGroupId,
                 selectedGroupPosition = mGroupPosition.value,
                 groupHeader = group.groupHeader.mapIndexed { index, storyGroupHeader ->
                     storyGroupHeader.copy(isSelected = index == mGroupPosition.value)
@@ -184,10 +184,10 @@ class StoryViewModel @Inject constructor(
         mDetailPosition.value = position
         val positionCached = mGroupItem.detail.selectedDetailPositionCached
         val currentDetail = mGroupItem.detail.copy(
-            selectedGroupId = mGroupId,
+            selectedGroupId = mCurrGroupId,
             selectedDetailPosition = position,
             selectedDetailPositionCached = if (positionCached <= position) position else positionCached,
-            detailItems = mGroupItem.detail.detailItems.mapIndexed { _, item ->
+            detailItems = mGroupItem.detail.detailItems.map { item ->
                 item.copy(
                     event = event,
                     resetValue = if (isReset) {
