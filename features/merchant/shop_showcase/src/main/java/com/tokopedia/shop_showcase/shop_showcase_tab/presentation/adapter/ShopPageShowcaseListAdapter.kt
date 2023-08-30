@@ -7,12 +7,14 @@ import com.tokopedia.shop.common.databinding.ItemShopShowcaseListImageBinding
 import com.tokopedia.shop.common.view.model.ShopEtalaseUiModel
 import com.tokopedia.shop_showcase.shop_showcase_tab.presentation.adapter.viewholder.ShopShowcaseListImageListener
 import com.tokopedia.shop_showcase.shop_showcase_tab.presentation.adapter.viewholder.ShopShowcaseListImageViewHolder
+import com.tokopedia.shop_showcase.shop_showcase_tab.presentation.fragment.ShopShowcaseTabInterface
 
 /**
  * Created by Rafli Syam on 12/03/2021
  */
 class ShopPageShowcaseListAdapter(
-        private val shopShowcaseListImageListener: ShopShowcaseListImageListener
+        private val shopShowcaseListImageListener: ShopShowcaseListImageListener,
+        private val shopShowcaseTabInterface: ShopShowcaseTabInterface
 ) : RecyclerView.Adapter<ShopShowcaseListImageViewHolder>() {
 
     private var showcaseList: List<ShopEtalaseUiModel> = listOf()
@@ -25,7 +27,8 @@ class ShopPageShowcaseListAdapter(
         )
         return ShopShowcaseListImageViewHolder(
                 itemViewBinding = binding,
-                listener = shopShowcaseListImageListener
+                listener = shopShowcaseListImageListener,
+                shopShowcaseTabInterface = shopShowcaseTabInterface
         )
     }
 

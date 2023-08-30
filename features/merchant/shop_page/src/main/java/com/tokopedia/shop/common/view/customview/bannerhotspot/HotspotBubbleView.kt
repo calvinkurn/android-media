@@ -1,5 +1,6 @@
 package com.tokopedia.shop.common.view.customview.bannerhotspot
 
+import android.animation.Animator
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -7,6 +8,7 @@ import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.LifecycleObserver
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
@@ -58,6 +60,7 @@ class HotspotBubbleView @JvmOverloads constructor(
         alpha = ALPHA_HIDE
         scaleX = SCALE_X_HIDE
         scaleY = SCALE_Y_HIDE
+        gone()
     }
 
     fun bindData(
@@ -129,18 +132,42 @@ class HotspotBubbleView @JvmOverloads constructor(
         animate().scaleX(SCALE_X_SHOW).scaleY(SCALE_Y_SHOW)
             .alpha(ALPHA_SHOW)
             .setInterpolator(UnifyMotion.EASE_OUT)
-            .duration = UnifyMotion.T3
+            .setDuration(UnifyMotion.T3)
+            .setListener(object : Animator.AnimatorListener {
+                override fun onAnimationStart(p0: Animator) {
+                    show()
+                }
+
+                override fun onAnimationEnd(p0: Animator) {
+                }
+
+                override fun onAnimationCancel(p0: Animator) {
+                }
+
+                override fun onAnimationRepeat(p0: Animator) {
+                }
+            })
     }
 
     fun hideWithAnimation() {
         animate().scaleX(SCALE_X_HIDE).scaleY(SCALE_Y_HIDE)
             .alpha(ALPHA_HIDE)
             .setInterpolator(UnifyMotion.EASE_IN_OUT)
-            .duration = UnifyMotion.T3
-    }
+            .setDuration(UnifyMotion.T3)
+            .setListener(object : Animator.AnimatorListener {
+                override fun onAnimationStart(p0: Animator) {
+                }
 
-    fun hideWithAlpha() {
-        alpha = Int.ZERO.toFloat()
+                override fun onAnimationEnd(p0: Animator) {
+                    gone()
+                }
+
+                override fun onAnimationCancel(p0: Animator) {
+                }
+
+                override fun onAnimationRepeat(p0: Animator) {
+                }
+            })
     }
 
     fun isVisibleWithAlpha(): Boolean {
