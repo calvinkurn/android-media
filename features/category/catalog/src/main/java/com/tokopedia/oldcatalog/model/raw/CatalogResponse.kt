@@ -128,10 +128,10 @@ data class CatalogResponseData(
             data class Layout(
                 @Expose
                 @SerializedName("name")
-                val name: String,
+                val name: String = "",
                 @Expose
                 @SerializedName("type")
-                val type: String,
+                val type: String = "",
                 @Expose
                 @SerializedName("data")
                 val data: LayoutData?
@@ -140,15 +140,15 @@ data class CatalogResponseData(
 
         data class GlobalStyle (
             @SerializedName("darkMode")
-            val darkMode: Boolean?,
+            val darkMode: Boolean = false,
             @SerializedName("presetKey")
-            val presetKey: String?,
+            val presetKey: String = "",
             @SerializedName("bgColor")
-            val bgColor: String?,
+            val bgColor: String = "",
             @SerializedName("primaryColor")
-            val primaryColor: String?,
+            val primaryColor: String = "",
             @SerializedName("secondaryColor")
-            val secondaryColor: String?
+            val secondaryColor: String = ""
         )
     }
 }
