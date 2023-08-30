@@ -6,74 +6,62 @@ import com.tokopedia.logger.utils.Priority
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import okhttp3.Response
 import kotlin.coroutines.CoroutineContext
 
 internal object CdnTracker : CoroutineScope {
 
     private const val TAG_ANALYTIC = "DEV_CDN_MONITORING_STATIC"
-
     private const val PAGE_NAME_NOT_FOUND = "None"
+    private val CONTENT_LENGTH = "Content-Length"
+    private val CONTENT_TYPE = "Content-Type"
+    private val X_CACHE = "X-Cache"
+    private val X_TKPD_CDN_NAME = "x-tkpd-cdn-name"
 
     override val coroutineContext: CoroutineContext
         get() = SupervisorJob() + Dispatchers.IO
 
-    fun succeed(
-        context: Context,
-        url: String,
-        cdnName: String,
-        responseTime: String,
-        responseCode: String,
-        responseSize: String,
-        message: String,
-        popIp: String,
-        contentType: String
-    ) {
-        val pageName = context.pageName()
+    fun Response.mapping(context: Context): MutableMap<String, String> {
+        val responseTime = receivedResponseAtMillis - sentRequestAtMillis
+        val contentLength = headers.get(CONTENT_LENGTH).toString()
+        val popIp = headers.get(X_CACHE).toString()
+        val cdnName = headers.get(X_TKPD_CDN_NAME).toString()
+        val contentType = headers.get(CONTENT_TYPE).toString()
+        return mutableMapOf(
+            "page" to context.pageName(),
+            "url" to request.url.toUrl().toString(),
+            "cdn_name" to cdnName,
+            "size" to contentLength,
+            "response_time" to responseTime.toString(),
+            "response_code" to code.toString(),
+            "pop_ip" to popIp,
+            "content_type" to contentType
+        )
+    }
 
-        // tracker
+    fun succeed(
+        context: Context, response: Response
+    ) {
         ServerLogger.log(
             priority = Priority.P1,
             tag = TAG_ANALYTIC,
-            message = mapOf(
-                "page" to pageName,
-                "url" to url,
-                "cdn_name" to cdnName,
-                "size" to responseSize,
-                "response_time" to responseTime,
-                "response_code" to responseCode,
-                "pop_ip" to popIp,
-                "content_type" to contentType,
-                "error_description" to message
-            )
+            message = response.mapping(context).apply {
+                put("error_description", response.message)
+            }
         )
     }
 
     fun failed(
         context: Context,
-        url: String,
-        cdnName: String,
-        responseTime: String,
-        responseCode: String,
-        popIp: String,
-        contentType: String,
-        exception: Throwable
+        response: Response,
+        e: Exception
     ) {
-        val pageName = context.pageName()
-
         ServerLogger.log(
             priority = Priority.P1,
             tag = TAG_ANALYTIC,
-            message = mapOf(
-                "page" to pageName,
-                "url" to url,
-                "cdn_name" to cdnName,
-                "size" to "n/a",
-                "response_time" to responseTime,
-                "response_code" to responseCode,
-                "pop_ip" to popIp,
-                "content_type" to contentType,
-                "error_description" to exception.localizedMessage
-            )
+            message = response.mapping(context).apply {
+                put("error_description", e.localizedMessage)
+            }
         )
     }
 
@@ -82,15 +70,6 @@ internal object CdnTracker : CoroutineScope {
             javaClass.name.split(".").last()
         } catch (ignored: Throwable) {
             PAGE_NAME_NOT_FOUND
-        }
-    }
-
-    private fun getQualitySetting(index: Int): String {
-        return when (index) {
-            0 -> "Automatic"
-            1 -> "Low"
-            2 -> "High"
-            else -> "Unknown"
         }
     }
 }

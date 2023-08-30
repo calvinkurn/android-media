@@ -53,7 +53,6 @@ class MonitoringActivityLifecycle(val context: Context) : ActivityLifecycleCallb
         }
         config.imageUrlList?.let {
             it.forEach { url ->
-                val startTime = System.currentTimeMillis()
                 GlobalScope.launch(Dispatchers.IO) {
                     if (config.sendSuccess) {
                         val token = object : TypeToken<DataResponse<String>>() {}.type
