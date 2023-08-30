@@ -83,13 +83,6 @@
 
                 </RelativeLayout>
 
-                <View
-                    android:id="@+id/bottom_layout_shadow"
-                    android:layout_width="match_parent"
-                    android:layout_height="4dp"
-                    android:layout_above="@+id/bottom_layout"
-                    android:background="@drawable/shadow_top" />
-
                 <LinearLayout
                     android:id="@+id/ll_promo_checkout"
                     android:layout_width="match_parent"
@@ -142,6 +135,13 @@
                         app:rounded="true" />
 
                 </LinearLayout>
+
+                <View
+                    android:id="@+id/bottom_layout_shadow"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_above="@+id/bottom_layout"
+                    android:background="@color/Unify_NN50" />
 
                 <LinearLayout
                     android:id="@+id/bottom_layout"
