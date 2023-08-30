@@ -2735,8 +2735,6 @@ open class DynamicProductDetailFragment :
         if (selectedChild != null) {
             updateProductInfoOnVariantChanged(selectedChild)
         }
-        // store the product id to this variable to open vbs later
-        productId = selectedChild?.productId.ifNull { productId.orEmpty() }
 
         scrollThumbnailVariant()
 
