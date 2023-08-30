@@ -84,6 +84,7 @@ import com.tokopedia.shop.common.view.viewmodel.ShopProductFilterParameterShared
 import com.tokopedia.shop.common.widget.MembershipBottomSheetSuccess
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageHeaderActivity
 import com.tokopedia.shop.common.view.interfaces.InterfaceShopPageHeader
+import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragment
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragmentV2
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPageHeaderPerformanceMonitoringListener
@@ -102,6 +103,7 @@ import com.tokopedia.shop.product.view.viewholder.ShopProductAddViewHolder
 import com.tokopedia.shop.product.view.viewholder.ShopProductSortFilterViewHolder
 import com.tokopedia.shop.product.view.viewholder.ShopProductsEmptyViewHolder
 import com.tokopedia.shop.product.view.viewmodel.ShopPageProductListViewModel
+import com.tokopedia.shop.product.view.widget.StickySingleHeaderView
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
@@ -124,7 +126,8 @@ class ShopPageProductListFragment :
     ShopProductImpressionListener,
     ShopProductChangeGridSectionListener,
     SortFilterBottomSheet.Callback,
-    InterfaceShopPageClickScrollToTop {
+    InterfaceShopPageClickScrollToTop,
+    ShopProductTabInterface {
 
     companion object {
         private const val REQUEST_CODE_USER_LOGIN = 100
@@ -237,6 +240,7 @@ class ShopPageProductListFragment :
         }
     private var shopProductFilterParameter: ShopProductFilterParameter? = ShopProductFilterParameter()
     private var gridType: ShopProductViewGridType = ShopProductViewGridType.SMALL_GRID
+    private var stickyHeaderView: StickySingleHeaderView? = null
     override fun chooseProductClicked() {
         context?.let {
             RouteManager.route(it, ApplinkConst.PRODUCT_ADD)
@@ -891,7 +895,8 @@ class ShopPageProductListFragment :
             isGridSquareLayout = true,
             deviceWidth = deviceWidth,
             shopTrackType = ShopTrackProductTypeDef.PRODUCT,
-            isShowTripleDot = !_isMyShop
+            isShowTripleDot = !_isMyShop,
+            shopProductTabInterface = this
         )
     }
 
@@ -1162,8 +1167,10 @@ class ShopPageProductListFragment :
             shopProductFilterParameter = it.getParcelable(SAVED_SHOP_PRODUCT_FILTER_PARAMETER)
         }
         super.onViewCreated(view, savedInstanceState)
+        stickyHeaderView = view.findViewById(R.id.stickySingleHeaderView)
         initRecyclerView(view)
         isOnViewCreated = true
+        configStickyHeaderView()
         observeShopProductFilterParameterSharedViewModel()
         observeShopChangeProductGridSharedViewModel()
         observeViewModelLiveData()
@@ -1174,6 +1181,18 @@ class ShopPageProductListFragment :
         observeUpdatedShopProductListQuantityData()
         observeShopAtcTrackerLiveData()
         observeIsCreateAffiliateCookieAtcProduct()
+    }
+
+    private fun configStickyHeaderView() {
+        if(isOverrideTheme()) {
+            stickyHeaderView?.setShapeBackgroundColorIntValue(
+                ShopUtil.parseColorFromHexString(getBodyBackgroundHexColor())
+            )
+        }
+    }
+
+    private fun getBodyBackgroundHexColor(): String {
+        return (getRealParentFragment() as? InterfaceShopPageHeader)?.getBodyBackgroundHexColor().orEmpty()
     }
 
     private fun observeIsCreateAffiliateCookieAtcProduct() {
@@ -1959,5 +1978,17 @@ class ShopPageProductListFragment :
         } else {
             parentFragment
         }
+    }
+
+    override fun isOverrideTheme(): Boolean {
+        return (getRealParentFragment() as? InterfaceShopPageHeader)?.isOverrideTheme().orFalse()
+    }
+
+    override fun getShopPageColorSchema(): ShopPageColorSchema {
+        return (getRealParentFragment() as? InterfaceShopPageHeader)?.getBodyColorSchema() ?: ShopPageColorSchema()
+    }
+
+    override fun getPatternColorType(): String {
+        return (getRealParentFragment() as? InterfaceShopPageHeader)?.getBodyPatternColorType().orEmpty()
     }
 }
