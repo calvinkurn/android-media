@@ -79,38 +79,7 @@ import com.tokopedia.cartrevamp.view.mapper.CartUiModelMapper
 import com.tokopedia.cartrevamp.view.mapper.PromoRequestMapper
 import com.tokopedia.cartrevamp.view.mapper.RecentViewMapper
 import com.tokopedia.cartrevamp.view.mapper.WishlistMapper
-import com.tokopedia.cartrevamp.view.uimodel.AddCartToWishlistV2Event
-import com.tokopedia.cartrevamp.view.uimodel.AddToCartEvent
-import com.tokopedia.cartrevamp.view.uimodel.AddToCartExternalEvent
-import com.tokopedia.cartrevamp.view.uimodel.CartBundlingBottomSheetData
-import com.tokopedia.cartrevamp.view.uimodel.CartCheckoutButtonState
-import com.tokopedia.cartrevamp.view.uimodel.CartGlobalEvent
-import com.tokopedia.cartrevamp.view.uimodel.CartGroupHolderData
-import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
-import com.tokopedia.cartrevamp.view.uimodel.CartMainCoachMarkUiModel
-import com.tokopedia.cartrevamp.view.uimodel.CartNoteBottomSheetData
-import com.tokopedia.cartrevamp.view.uimodel.CartRecentViewHolderData
-import com.tokopedia.cartrevamp.view.uimodel.CartRecentViewItemHolderData
-import com.tokopedia.cartrevamp.view.uimodel.CartRecommendationItemHolderData
-import com.tokopedia.cartrevamp.view.uimodel.CartSectionHeaderHolderData
-import com.tokopedia.cartrevamp.view.uimodel.CartSelectedAmountHolderData
-import com.tokopedia.cartrevamp.view.uimodel.CartShopGroupTickerState
-import com.tokopedia.cartrevamp.view.uimodel.CartState
-import com.tokopedia.cartrevamp.view.uimodel.CartTrackerEvent
-import com.tokopedia.cartrevamp.view.uimodel.CartWishlistItemHolderData
-import com.tokopedia.cartrevamp.view.uimodel.DeleteCartEvent
-import com.tokopedia.cartrevamp.view.uimodel.DisabledAccordionHolderData
-import com.tokopedia.cartrevamp.view.uimodel.DisabledItemHeaderHolderData
-import com.tokopedia.cartrevamp.view.uimodel.FollowShopEvent
-import com.tokopedia.cartrevamp.view.uimodel.LoadRecentReviewState
-import com.tokopedia.cartrevamp.view.uimodel.LoadRecommendationState
-import com.tokopedia.cartrevamp.view.uimodel.LoadWishlistV2State
-import com.tokopedia.cartrevamp.view.uimodel.RemoveFromWishlistEvent
-import com.tokopedia.cartrevamp.view.uimodel.SeamlessLoginEvent
-import com.tokopedia.cartrevamp.view.uimodel.UndoDeleteEvent
-import com.tokopedia.cartrevamp.view.uimodel.UpdateCartAndGetLastApplyEvent
-import com.tokopedia.cartrevamp.view.uimodel.UpdateCartCheckoutState
-import com.tokopedia.cartrevamp.view.uimodel.UpdateCartPromoState
+import com.tokopedia.cartrevamp.view.uimodel.*
 import com.tokopedia.cartrevamp.view.viewholder.CartItemViewHolder
 import com.tokopedia.cartrevamp.view.viewholder.CartRecommendationViewHolder
 import com.tokopedia.cartrevamp.view.viewholder.CartSelectedAmountViewHolder
@@ -1332,12 +1301,17 @@ class CartRevampFragment :
     }
 
     override fun onProductAddOnClicked(cartItemData: CartItemHolderData) {
-        // tokopedia://addon/2148784281/?cartId=123123&selectedAddonIds=111,222,333&source=cart&warehouseId=789789&isTokocabang=false
         val productId = cartItemData.productId
         val cartId = cartItemData.cartId
         val addOnIds = arrayListOf<String>()
+        val deselectAddOnIds = arrayListOf<String>()
         cartItemData.addOnsProduct.listData.forEach {
-            addOnIds.add(it.id)
+            if (it.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK) {
+                addOnIds.add(it.id)
+            }
+            if (it.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_UNCHECK) {
+                deselectAddOnIds.add(it.id)
+            }
         }
 
         val price: Double
@@ -1358,6 +1332,7 @@ class CartRevampFragment :
                 AddOnConstant.QUERY_PARAM_CART_ID to cartId,
                 AddOnConstant.QUERY_PARAM_SELECTED_ADDON_IDS to addOnIds.toString().replace("[", "")
                     .replace("]", ""),
+                AddOnConstant.QUERY_PARAM_DESELECTED_ADDON_IDS to deselectAddOnIds.toString().replace("[", "").replace("]", ""),
                 AddOnConstant.QUERY_PARAM_PAGE_ATC_SOURCE to AddOnConstant.SOURCE_NORMAL_CHECKOUT,
                 AddOnConstant.QUERY_PARAM_WAREHOUSE_ID to cartItemData.warehouseId,
                 AddOnConstant.QUERY_PARAM_IS_TOKOCABANG to cartItemData.isFulfillment,
@@ -1369,8 +1344,6 @@ class CartRevampFragment :
                     .removeSingleDecimalSuffix()
             )
         )
-
-        println("++ applink = $applink")
 
         activity?.let {
             val intent = RouteManager.getIntent(it, applink)
@@ -2939,7 +2912,7 @@ class CartRevampFragment :
                 var newAddOnWording = ""
                 if (addOnProductDataResult.aggregatedData.title.isNotEmpty()) {
                     newAddOnWording =
-                        "${addOnProductDataResult.aggregatedData.title} <b>(${addOnProductDataResult.aggregatedData.price})</b>"
+                        "${addOnProductDataResult.aggregatedData.title} <b>(${CurrencyFormatUtil.convertPriceValueToIdrFormat(addOnProductDataResult.aggregatedData.price, false).removeDecimalSuffix()})</b>"
                 }
 
                 viewModel.updateAddOnByCartId(
