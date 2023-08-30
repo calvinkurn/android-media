@@ -32,6 +32,6 @@ class NewRelicInteractionActCall(
     override fun onActivityDestroyed(activity: Activity) {}
 
     private fun setNewRelicAttribute(activity: Activity) {
-        NewRelic.setAttribute(ATTRIBUTE_ACTIVITY, activity.localClassName)
+        NewRelic.setAttribute(ATTRIBUTE_ACTIVITY, activity.javaClass.simpleName)
     }
 }
