@@ -3,8 +3,9 @@
 
     <!-- Toolbar -->
     <string name="universal_editor_toolbar_title">Edit Media</string>
-    <string name="universal_editor_toolbar_action_button">Simpan</string>
+    <string name="universal_editor_toolbar_action_button">Lanjut</string>
     <string name="universal_editor_nav_bar_add_text">Tambah Teks</string>
+    <string name="universal_editor_tools_action_button">Simpan</string>
 
     <!-- Navigation Editor Tool -->
     <string name="universal_editor_nav_tool_text">Teks</string>

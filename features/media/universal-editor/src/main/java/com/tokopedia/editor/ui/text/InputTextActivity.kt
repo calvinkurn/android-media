@@ -3,20 +3,15 @@ package com.tokopedia.editor.ui.text
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.widget.FrameLayout
 import androidx.activity.viewModels
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
-import com.tokopedia.editor.R
+import com.tokopedia.editor.R as editorR
 import com.tokopedia.editor.di.ModuleInjector
 import com.tokopedia.editor.ui.EditorFragmentProvider
 import com.tokopedia.editor.ui.EditorFragmentProviderImpl
-import com.tokopedia.editor.ui.main.MainEditorViewModel
 import com.tokopedia.editor.ui.model.InputTextModel
-import com.tokopedia.editor.util.FontAlignment
-import com.tokopedia.picker.common.EXTRA_UNIVERSAL_EDITOR_PARAM
-import com.tokopedia.picker.common.UniversalEditorParam
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.component.NavToolbarComponent
 import com.tokopedia.picker.common.component.ToolbarTheme
@@ -45,7 +40,7 @@ class InputTextActivity : BaseActivity(), NavToolbarComponent.Listener {
         supportFragmentManager.fragmentFactory = fragmentFactory
 
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_input_text)
+        setContentView(editorR.layout.activity_input_text)
 
         initState()
         initFragment()
@@ -97,13 +92,14 @@ class InputTextActivity : BaseActivity(), NavToolbarComponent.Listener {
         toolbar.setTitleVisibility(false)
 
         toolbar.showContinueButtonAs(true)
+        toolbar.setContinueTitle(getString(editorR.string.universal_editor_tools_action_button))
     }
 
     private fun initFragment() {
         val fragment = fragmentProvider().inputTextFragment()
 
         supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment_view, fragment, "Tag")
+            .replace(editorR.id.fragment_view, fragment, "Tag")
             .commit()
     }
 
