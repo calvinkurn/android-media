@@ -15,7 +15,6 @@ data class BmgmMiniCartDataUiModel(
     val totalDiscount: Double = 0.0,
     val priceBeforeBenefit: Double = 0.0,
     val finalPrice: Double = 0.0,
-    val showMiniCartFooter: Boolean = false,
     val tiersApplied: List<BmgmMiniCartVisitable.TierUiModel> = emptyList()
 ) {
     fun getPriceBeforeDiscountStr(): String {

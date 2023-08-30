@@ -32,7 +32,5 @@
     <string name="mini_cart_product_bundle_recommendation_success_toaster_description">Paket Bundling berhasil ditambahkan ke keranjang belanja.</string>
     <string name="mini_cart_check_cart">Cek Keranjang</string>
     <string name="mini_cart_bmgm_bottom_sheet_title">Barang yang Dipilih</string>
-    <string name="bmgm_mini_cart_detail_discount_section"><![CDATA[Potongan <b>%1$s</b> rb untuk barang di bawah ini:]]></string>
-    <string name="bmgm_mini_cart_detail_normal_section">Barang di bawah tidak mendapat diskon, karena sudah melewati batas maksimum penggunaan promo.</string>
     <string name="bmgm_error_state_message">Konten gagal ditampilkan, yuk, klik tombol di samping buat coba lagi.</string>
 </resources>

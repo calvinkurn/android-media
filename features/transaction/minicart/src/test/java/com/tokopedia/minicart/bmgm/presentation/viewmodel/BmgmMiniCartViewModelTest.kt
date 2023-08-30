@@ -6,7 +6,6 @@ import com.tokopedia.minicart.bmgm.domain.usecase.GetBmgmMiniCartDataUseCase
 import com.tokopedia.minicart.bmgm.domain.usecase.LocalCacheUseCase
 import com.tokopedia.minicart.bmgm.presentation.model.BmgmMiniCartDataUiModel
 import com.tokopedia.minicart.bmgm.presentation.model.BmgmState
-import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
@@ -15,7 +14,7 @@ import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import org.mockito.ArgumentMatchers.anyString
+import org.mockito.ArgumentMatchers.anyList
 import java.lang.reflect.Field
 
 /**
@@ -29,9 +28,6 @@ class BmgmMiniCartViewModelTest : BaseCartCheckboxViewModelTest<BmgmMiniCartView
 
     @RelaxedMockK
     lateinit var localCacheUseCase: LocalCacheUseCase
-
-    @RelaxedMockK
-    lateinit var userSession: UserSessionInterface
 
     private lateinit var param: BmgmParamModel
     private lateinit var privateMiniCartData: Field
@@ -49,7 +45,6 @@ class BmgmMiniCartViewModelTest : BaseCartCheckboxViewModelTest<BmgmMiniCartView
             { setCartListCheckboxStateUseCase },
             { getBmgmMiniCartDataUseCase },
             { localCacheUseCase },
-            { userSession },
             { coroutineTestRule.dispatchers },
         )
     }
@@ -165,22 +160,22 @@ class BmgmMiniCartViewModelTest : BaseCartCheckboxViewModelTest<BmgmMiniCartView
             sates: MutableList<BmgmState<BmgmMiniCartDataUiModel>>, data: BmgmMiniCartDataUiModel
         ) -> Unit
     ) {
-        val shopId = anyString()
+        val shopIds = anyList<Long>()
         val dummy = getMiniCartDummyData()
         val state = mutableListOf<BmgmState<BmgmMiniCartDataUiModel>>()
 
         coEvery {
-            getBmgmMiniCartDataUseCase.invoke(shopId, param)
+            getBmgmMiniCartDataUseCase.invoke(shopIds, param)
         } returns dummy
 
         viewModel.cartData.observeForever {
             state.add(it)
         }
 
-        viewModel.getMiniCartData(param, showLoadingState)
+        viewModel.getMiniCartData(shopIds, param, showLoadingState)
 
         coVerify {
-            getBmgmMiniCartDataUseCase.invoke(shopId, param)
+            getBmgmMiniCartDataUseCase.invoke(shopIds, param)
         }
 
         assert(state, dummy)
@@ -191,22 +186,22 @@ class BmgmMiniCartViewModelTest : BaseCartCheckboxViewModelTest<BmgmMiniCartView
             sates: MutableList<BmgmState<BmgmMiniCartDataUiModel>>, throwable: Throwable
         ) -> Unit
     ) {
-        val shopId = anyString()
+        val shopIds = anyList<Long>()
         val throwable = Throwable()
         val state = mutableListOf<BmgmState<BmgmMiniCartDataUiModel>>()
 
         coEvery {
-            getBmgmMiniCartDataUseCase.invoke(shopId, param)
+            getBmgmMiniCartDataUseCase.invoke(shopIds, param)
         } throws throwable
 
         viewModel.cartData.observeForever {
             state.add(it)
         }
 
-        viewModel.getMiniCartData(param, showLoadingState)
+        viewModel.getMiniCartData(shopIds, param, showLoadingState)
 
         coVerify {
-            getBmgmMiniCartDataUseCase.invoke(shopId, param)
+            getBmgmMiniCartDataUseCase.invoke(shopIds, param)
         }
 
         assert(state, throwable)

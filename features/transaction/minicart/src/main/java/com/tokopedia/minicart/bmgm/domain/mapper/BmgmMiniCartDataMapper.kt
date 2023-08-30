@@ -5,6 +5,7 @@ import com.tokopedia.minicart.bmgm.presentation.model.BmgmMiniCartVisitable
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
 import com.tokopedia.minicart.common.data.response.minicartlist.Product
 import com.tokopedia.purchase_platform.common.feature.bmgm.data.response.BmGmData
+import com.tokopedia.purchase_platform.common.feature.bmgm.data.response.BmGmProductTier
 import javax.inject.Inject
 
 /**
@@ -49,24 +50,35 @@ class BmgmMiniCartDataMapper @Inject constructor() {
                         tierDiscountStr = tier.tierDiscountText,
                         priceBeforeBenefit = tier.priceBeforeBenefit,
                         priceAfterBenefit = tier.priceAfterBenefit,
-                        products = tier.listProduct.mapNotNull { tierProduct ->
-                            productMap[tierProduct.productId]?.let { p ->
-                                return@mapNotNull BmgmMiniCartVisitable.ProductUiModel(
-                                    productId = p.productId,
-                                    warehouseId = tierProduct.warehouseId.toString(),
-                                    productName = p.productName,
-                                    productImage = p.productImage.imageSrc100Square,
-                                    cartId = p.cartId,
-                                    finalPrice = tierProduct.priceBeforeBenefit,
-                                    quantity = tierProduct.qty
-                                )
-                            }
-                            return@mapNotNull null
-                        }
+                        products = getProductList(tier.listProduct, productMap)
                     )
                 }
             )
         }
         return BmgmMiniCartDataUiModel()
+    }
+
+    private fun getProductList(
+        tierProductList: List<BmGmProductTier>,
+        productMap: MutableMap<String, Product>
+    ): List<BmgmMiniCartVisitable.ProductUiModel> {
+        val products = mutableListOf<BmgmMiniCartVisitable.ProductUiModel>()
+        tierProductList.forEach { tierProduct ->
+            productMap[tierProduct.productId]?.let { p ->
+                val product = BmgmMiniCartVisitable.ProductUiModel(
+                    productId = p.productId,
+                    warehouseId = tierProduct.warehouseId.toString(),
+                    productName = p.productName,
+                    productImage = p.productImage.imageSrc100Square,
+                    cartId = p.cartId,
+                    finalPrice = tierProduct.priceBeforeBenefit,
+                    quantity = tierProduct.qty
+                )
+                repeat(tierProduct.qty) {
+                    products.add(product)
+                }
+            }
+        }
+        return products
     }
 }
