@@ -13,6 +13,10 @@ import com.tokopedia.editor.di.ModuleInjector
 import com.tokopedia.editor.ui.EditorFragmentProvider
 import com.tokopedia.editor.ui.EditorFragmentProviderImpl
 import com.tokopedia.editor.ui.main.MainEditorViewModel
+import com.tokopedia.editor.ui.model.InputTextModel
+import com.tokopedia.editor.util.FontAlignment
+import com.tokopedia.picker.common.EXTRA_UNIVERSAL_EDITOR_PARAM
+import com.tokopedia.picker.common.UniversalEditorParam
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.component.NavToolbarComponent
 import com.tokopedia.picker.common.component.ToolbarTheme
@@ -43,6 +47,7 @@ class InputTextActivity : BaseActivity(), NavToolbarComponent.Listener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_input_text)
 
+        initState()
         initFragment()
         initView()
         initObserver()
@@ -64,6 +69,20 @@ class InputTextActivity : BaseActivity(), NavToolbarComponent.Listener {
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         finishActivity()
+    }
+
+    private fun initState() {
+        intent?.getParcelableExtra<InputTextModel>(
+            INPUT_TEXT_STATE
+        )?.let {
+            viewModel.updateText(it.text)
+            viewModel.updateSelectedColor(it.textColor)
+            viewModel.updateFontStyle(it.fontDetail)
+            it.backgroundColor?.let { backgroundColor ->
+                viewModel.updateBackgroundState(Pair(it.textColor, backgroundColor))
+            }
+            viewModel.updateAlignment(it.textAlign)
+        }
     }
 
     private fun initView() {
@@ -113,6 +132,7 @@ class InputTextActivity : BaseActivity(), NavToolbarComponent.Listener {
 
     companion object {
         const val INPUT_TEXT_RESULT = "input_text_result"
+        const val INPUT_TEXT_STATE = "input_text_state"
 
         fun create(context: Context): Intent {
             return Intent(context, InputTextActivity::class.java)

@@ -38,6 +38,13 @@ class InputTextViewModel @Inject constructor(): ViewModel() {
         _selectedAlignment.value = _selectedAlignment.value?.next()
     }
 
+    fun updateAlignment(alignmentTarget: FontAlignment) {
+        val diff = alignmentTarget.value - FontAlignment.CENTER.value
+        for(i in 0 until diff) {
+            increaseAlignment()
+        }
+    }
+
     fun updateBackgroundState(backgroundColorSet: Pair<Int, Int>?) {
         _backgroundColorSet.value = backgroundColorSet
     }
@@ -54,11 +61,13 @@ class InputTextViewModel @Inject constructor(): ViewModel() {
         val text = _textValue.value ?: ""
         val textColor = _selectedTextColor.value ?: -1
         val textAlignment = _selectedAlignment.value ?: FontAlignment.CENTER
+        val fontDetail = _selectedFontStyle.value ?: FontDetail.OPEN_SAUCE_ONE_REGULAR
 
         val result = InputTextModel(
             text = text,
             textAlign = textAlignment,
-            textColor = textColor
+            textColor = textColor,
+            fontDetail = fontDetail
         )
 
         _backgroundColorSet.value?.let {

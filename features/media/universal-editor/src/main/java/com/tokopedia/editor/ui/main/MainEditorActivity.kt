@@ -82,8 +82,7 @@ open class MainEditorActivity : AppCompatActivity(), NavToolbarComponent.Listene
 
         if (result?.text?.isNotEmpty() != true) return@registerForActivityResult
 
-        // TODO, bind input text result to ImageModel & VideoModel (re-implement previous pos detail / create new if no detail yet)
-        Toast.makeText(this, result?.text + "", Toast.LENGTH_LONG).show()
+        viewModel.setTextState(result)
     }
 
     private val viewModel: MainEditorViewModel by viewModels { viewModelFactory }
@@ -142,6 +141,7 @@ open class MainEditorActivity : AppCompatActivity(), NavToolbarComponent.Listene
                 val intent = InputTextActivity.create(this)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                intent.putExtra(InputTextActivity.INPUT_TEXT_STATE, viewModel.state.value.model?.image?.texts?.toList()?.firstOrNull()?.second)
                 inputTextIntent.launch(intent)
                 this.overridePendingTransition(0,0)
 //                val content = getRandomString(10)
