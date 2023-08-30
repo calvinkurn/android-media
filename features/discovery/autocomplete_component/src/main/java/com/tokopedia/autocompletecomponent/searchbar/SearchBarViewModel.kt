@@ -70,9 +70,6 @@ class SearchBarViewModel @Inject constructor(
     var isCoachMarkKeywordAddedAlreadyDisplayed: Boolean = false
         private set
 
-    val isMpsEnabled: Boolean
-        get() = _searchBarStateLiveData.value?.isMpsEnabled == true
-
     private val _searchBarKeywordErrorEvent : SingleLiveEvent<SearchBarKeywordError> = SingleLiveEvent()
     val searchBarKeywordErrorEvent: LiveData<SearchBarKeywordError>
         get() = _searchBarKeywordErrorEvent
@@ -185,7 +182,6 @@ class SearchBarViewModel @Inject constructor(
     }
 
     fun onKeywordAdded(query: String?) {
-        if (!isMpsEnabled) return
         if (!query.isNullOrBlank()) {
             val currentKeywords = _searchBarKeywords.value ?: emptyList()
             val cleanedQuery = activeKeyword.keyword.trim()
@@ -308,7 +304,6 @@ class SearchBarViewModel @Inject constructor(
 
     private fun updateSearchBarState() {
         val currentState = currentSearchBarState
-        if (!currentState.isMpsEnabled) return
         val searchBarKeywordSize = _searchBarKeywords.value?.size.orZero()
         val isActiveKeywordNotInKeywordList = _searchBarKeywords.value.orEmpty()
             .none { it.position == activeKeyword.position }
@@ -327,31 +322,19 @@ class SearchBarViewModel @Inject constructor(
         _searchBarStateLiveData.value = mpsState
     }
 
-    fun enableMps() {
+    fun showMps() {
         val shouldShowMpsCoachMark = coachMarkLocalCache.shouldShowPlusIconCoachMark()
         val searchBarKeywordSize = _searchBarKeywords.value?.size.orZero()
         val shouldEnableAddButton = searchBarKeywordSize < 3
         val isMpsAnimationEnabled = mpsLocalCache.shouldAnimatePlusIcon() && shouldEnableAddButton
         val allowKeyboardDismiss = searchBarKeywordSize == 0
         val newState = currentSearchBarState.copy(
-            isMpsEnabled = true,
             isMpsAnimationEnabled = isMpsAnimationEnabled,
             shouldShowCoachMark = shouldShowMpsCoachMark,
             isAddButtonEnabled = shouldEnableAddButton,
             isKeyboardDismissEnabled = allowKeyboardDismiss,
         )
         _searchBarStateLiveData.value = newState
-    }
-
-    fun disableMps() {
-        _searchBarStateLiveData.value = currentSearchBarState.copy(
-            isMpsEnabled = false,
-            isMpsAnimationEnabled = false,
-            shouldShowCoachMark = false,
-            isAddButtonEnabled = false,
-            isKeyboardDismissEnabled = true,
-            shouldDisplayMpsPlaceHolder = false,
-        )
     }
 
     fun onInitialStateItemSelected(item: BaseItemInitialStateSearch) {

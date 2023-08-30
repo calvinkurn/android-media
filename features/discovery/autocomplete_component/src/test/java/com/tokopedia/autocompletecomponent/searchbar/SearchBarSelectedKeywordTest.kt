@@ -24,7 +24,6 @@ internal class SearchBarSelectedKeywordTest : SearchBarViewModelTestFixtures() {
         `Then verify SearchBarKeyword list`(listOf(expectedKeyword))
         `Then verify mps state`(
             SearchBarState(
-                isMpsEnabled = true,
                 isAddButtonEnabled = false,
                 isKeyboardDismissEnabled = false,
                 shouldDisplayMpsPlaceHolder = true,
@@ -52,7 +51,6 @@ internal class SearchBarSelectedKeywordTest : SearchBarViewModelTestFixtures() {
         `Then verify SearchBarKeyword list`(listOf(expectedKeyword))
         `Then verify mps state`(
             SearchBarState(
-                isMpsEnabled = true,
                 isAddButtonEnabled = true,
                 isKeyboardDismissEnabled = false,
                 shouldDisplayMpsPlaceHolder = true,
@@ -92,7 +90,6 @@ internal class SearchBarSelectedKeywordTest : SearchBarViewModelTestFixtures() {
         `Then verify searchBarKeywordError`(SearchBarKeywordError.Duplicate)
         `Then verify mps state`(
             SearchBarState(
-                isMpsEnabled = true,
                 isAddButtonEnabled = false,
                 isKeyboardDismissEnabled = false,
                 shouldDisplayMpsPlaceHolder = true,
@@ -140,7 +137,6 @@ internal class SearchBarSelectedKeywordTest : SearchBarViewModelTestFixtures() {
         `Then verify SearchBarKeyword list`(expectedKeywords)
         `Then verify mps state`(
             SearchBarState(
-                isMpsEnabled = true,
                 isMpsAnimationEnabled = true,
                 isAddButtonEnabled = true,
                 isKeyboardDismissEnabled = false,
@@ -179,7 +175,6 @@ internal class SearchBarSelectedKeywordTest : SearchBarViewModelTestFixtures() {
         `Then verify searchBarKeywordError`(SearchBarKeywordError.Duplicate)
         `Then verify mps state`(
             SearchBarState(
-                isMpsEnabled = true,
                 isAddButtonEnabled = false,
                 isKeyboardDismissEnabled = false,
                 shouldDisplayMpsPlaceHolder = true,

@@ -167,8 +167,6 @@ open class BaseAutoCompleteActivity: BaseActivity(),
             false
         )
         if (isKeywordAddedCoachMarkAlreadyDisplayed) viewModel?.markCoachMarkKeywordAddedAlreadyDisplayed()
-        val isMpsEnabled = savedInstanceState.getBoolean(KEY_IS_MPS_ENABLED, false)
-        if (isMpsEnabled) viewModel?.enableMps()
     }
 
     private fun getSearchParameterFromIntent(savedInstanceState: Bundle?): SearchParameter {
@@ -577,7 +575,7 @@ open class BaseAutoCompleteActivity: BaseActivity(),
     }
 
     private fun renderSearchBarState(state: SearchBarState) {
-        if (state.isMpsEnabled) showMps() else hideMps()
+        showMps()
         if (state.isMpsAnimationEnabled) enableMpsIconAnimation() else disableMpsIconAnimation()
         if (state.shouldShowCoachMark) {
             showPlusIconCoachMark()
@@ -605,11 +603,6 @@ open class BaseAutoCompleteActivity: BaseActivity(),
     private fun showMps() {
         searchBarView.setMPSEnabled(true)
         searchBarView.showAddButton()
-    }
-
-    private fun hideMps() {
-        searchBarView.setMPSEnabled(false)
-        searchBarView.hideAddButton()
     }
 
     private fun enableMpsIconAnimation() {
@@ -687,7 +680,6 @@ open class BaseAutoCompleteActivity: BaseActivity(),
         outState.putInt(KEY_ACTIVE_KEYWORD_POSITION, activeKeyword?.position ?: 0)
         outState.putBoolean(KEY_KEYWORD_ADDED_COACH_MARK_DISPLAYED, viewModel?.isCoachMarkKeywordAddedAlreadyDisplayed ?: false)
         outState.putBoolean(KEY_ICON_PLUS_COACH_MARK_DISPLAYED, viewModel?.isCoachMarkIconPlusAlreadyDisplayed ?: false)
-        outState.putBoolean(KEY_IS_MPS_ENABLED, viewModel?.isMpsEnabled ?: false)
         super.onSaveInstanceState(outState)
     }
 
@@ -737,6 +729,5 @@ open class BaseAutoCompleteActivity: BaseActivity(),
         private const val KEY_ACTIVE_KEYWORD_POSITION = "KEY_ACTIVE_KEYWORD_POSITION"
         private const val KEY_KEYWORD_ADDED_COACH_MARK_DISPLAYED = "KEY_KEYWORD_ADDED_COACH_MARK_DISPLAYED"
         private const val KEY_ICON_PLUS_COACH_MARK_DISPLAYED = "KEY_ICON_PLUS_COACH_MARK_DISPLAYED"
-        private const val KEY_IS_MPS_ENABLED = "KEY_IS_MPS_ENABLED"
     }
 }

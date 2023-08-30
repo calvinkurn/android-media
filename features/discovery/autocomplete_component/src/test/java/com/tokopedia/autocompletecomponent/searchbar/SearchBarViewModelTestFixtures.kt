@@ -45,7 +45,7 @@ internal open class SearchBarViewModelTestFixtures {
     }
 
     protected fun `Given mps is enabled`() {
-        viewModel.enableMps()
+        viewModel.showMps()
     }
 
     protected fun `Given mps enabled and no coach mark should be displayed`() {
