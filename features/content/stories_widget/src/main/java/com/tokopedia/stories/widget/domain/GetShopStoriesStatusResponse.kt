@@ -11,7 +11,7 @@ internal data class GetShopStoriesStatusResponse(
 ) {
 
     data class Response(
-        @SerializedName("data")
+        @SerializedName("authors")
         val data: List<Data> = emptyList(),
 
         @SerializedName("meta")
