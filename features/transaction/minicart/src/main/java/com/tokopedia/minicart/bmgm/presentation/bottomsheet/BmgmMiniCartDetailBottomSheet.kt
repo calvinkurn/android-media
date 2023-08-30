@@ -44,8 +44,8 @@ class BmgmMiniCartDetailBottomSheet : BottomSheetUnify() {
         fun getInstance(fm: FragmentManager): BmgmMiniCartDetailBottomSheet {
             return (fm.findFragmentByTag(TAG) as? BmgmMiniCartDetailBottomSheet)
                 ?: BmgmMiniCartDetailBottomSheet().apply {
-                    showCloseIcon = false
-                    showKnob = true
+                    showCloseIcon = true
+                    showKnob = false
                     isDragable = true
                     clearContentPadding = true
                     isHideable = true

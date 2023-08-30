@@ -1,14 +1,10 @@
 package com.tokopedia.minicart.bmgm.presentation.adapter.viewholder
 
 import android.view.View
-import androidx.core.view.marginEnd
-import androidx.core.view.marginStart
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
-import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.minicart.R
 import com.tokopedia.minicart.bmgm.presentation.model.MiniCartDetailUiModel
@@ -55,20 +51,6 @@ class BmgmMiniCartDetailProductViewHolder(
         with(binding.imgBmgmDetailProduct) {
             val product = element.product
             loadImage(product.productImage)
-
-            if (element.isDiscountedProduct) {
-                val topMargin = if (element.showTopSpace) {
-                    context.dpToPx(8)
-                } else {
-                    context.dpToPx(0)
-                }
-                val bottomMargin = if (element.showBottomSpace) {
-                    context.dpToPx(8)
-                } else {
-                    context.dpToPx(0)
-                }
-                setMargin(marginStart, topMargin.toInt(), marginEnd, bottomMargin.toInt())
-            }
         }
     }
 }
