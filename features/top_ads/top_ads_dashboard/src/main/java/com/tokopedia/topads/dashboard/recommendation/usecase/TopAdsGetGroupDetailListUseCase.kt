@@ -4,7 +4,7 @@ import com.tokopedia.topads.common.data.model.DashGroupListResponse
 import com.tokopedia.topads.common.data.model.TotalProductKeyResponse
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetTotalAdsAndKeywordsUseCase
 import com.tokopedia.topads.dashboard.recommendation.data.mapper.ProductRecommendationMapper
-import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupItemUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupListUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopadsProductListState
 import kotlinx.coroutines.coroutineScope
 import javax.inject.Inject
@@ -14,26 +14,44 @@ class TopAdsGetGroupDetailListUseCase @Inject constructor(
     private val topAdsGetTotalAdsAndKeywordsUseCase: TopAdsGetTotalAdsAndKeywordsUseCase,
 ) {
 
-    suspend fun executeOnBackground(search: String,groupType: Int, mapper: ProductRecommendationMapper): List<GroupItemUiModel> {
+    suspend fun executeOnBackground(
+        search: String,
+        groupType: Int,
+        mapper: ProductRecommendationMapper
+    ): TopadsProductListState<List<GroupListUiModel>> {
         return coroutineScope {
-            val groupList = getTopadsGroups(search,groupType)
-            var groupIds = listOf<String>()
+            val groupList = getTopadsGroups(search, groupType)
+            val groupIds: List<String>
             when (val data = groupList) {
                 is TopadsProductListState.Success -> {
                     mapper.groupList = data.data.getTopadsDashboardGroups.data
                     groupIds = mapper.getListOfGroupIds(data.data)
                 }
-                else -> {}
+                is TopadsProductListState.Empty -> {
+                    return@coroutineScope TopadsProductListState.Empty(mapper.getEmptyGroupListDefaultUiModel())
+                }
+                else -> {
+                    return@coroutineScope TopadsProductListState.Fail(Throwable())
+                }
             }
+
             val groupAdsKeyword = getTopadsTotalAdsAndKeywords(groupIds)
 
-            when(val data = groupAdsKeyword){
+            when (val data = groupAdsKeyword) {
                 is TopadsProductListState.Success -> {
                     mapper.totalAdsKeywords = data.data.topAdsGetTotalAdsAndKeywords.data
-                } else -> {}
+                }
+                else -> {
+                    return@coroutineScope TopadsProductListState.Fail(Throwable())
+                }
             }
 
-            return@coroutineScope mapper.convertToGroupItemUiModel(mapper.groupList, mapper.totalAdsKeywords)
+            return@coroutineScope TopadsProductListState.Success(
+                mapper.convertToGroupItemUiModel(
+                    mapper.groupList,
+                    mapper.totalAdsKeywords
+                )
+            )
         }
     }
 
@@ -42,7 +60,14 @@ class TopAdsGetGroupDetailListUseCase @Inject constructor(
         groupType: Int
     ): TopadsProductListState<DashGroupListResponse> {
         return try {
-            topAdsGetDashboardGroupsV3UseCase(search,groupType)
+            val data = topAdsGetDashboardGroupsV3UseCase(search, groupType)
+            when {
+                data.getTopadsDashboardGroups.errors.isNotEmpty() -> TopadsProductListState.Fail(
+                    Exception()
+                )
+                data.getTopadsDashboardGroups.data.isEmpty() -> TopadsProductListState.Empty(data)
+                else -> TopadsProductListState.Success(data)
+            }
         } catch (e: Exception) {
             TopadsProductListState.Fail(e)
         }
@@ -53,9 +78,14 @@ class TopAdsGetGroupDetailListUseCase @Inject constructor(
     ): TopadsProductListState<TotalProductKeyResponse> {
         return try {
             val data = topAdsGetTotalAdsAndKeywordsUseCase(groupIds)
-            when{
-                data.topAdsGetTotalAdsAndKeywords.errors.isEmpty() -> TopadsProductListState.Success(data)
-                else -> TopadsProductListState.Fail(Throwable(data.topAdsGetTotalAdsAndKeywords.errors.firstOrNull()?.title))
+            when {
+                data.topAdsGetTotalAdsAndKeywords.errors.isNotEmpty() -> TopadsProductListState.Fail(
+                    Throwable(data.topAdsGetTotalAdsAndKeywords.errors.firstOrNull()?.title)
+                )
+                data.topAdsGetTotalAdsAndKeywords.data.isEmpty() -> TopadsProductListState.Fail(
+                    Exception()
+                )
+                else -> TopadsProductListState.Success(data)
             }
         } catch (e: Exception) {
             TopadsProductListState.Fail(e)

@@ -13,12 +13,14 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.topads.common.data.util.Utils
 import com.tokopedia.topads.dashboard.R
+import com.tokopedia.topads.common.R as topadscommonR
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.databinding.FragmentTopadsChooseGroupBinding
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.recommendation.common.TopAdsProductRecommendationConstants
 import com.tokopedia.topads.dashboard.recommendation.common.TopAdsProductRecommendationConstants.DEFAULT_EMPTY_STRING
 import com.tokopedia.topads.dashboard.recommendation.common.TopAdsProductRecommendationConstants.DEFAULT_GROUP_TYPE
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupItemUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopadsProductListState
 import com.tokopedia.topads.dashboard.recommendation.viewmodel.ProductRecommendationViewModel
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.recommendation.GroupListAdapter
@@ -27,8 +29,9 @@ import javax.inject.Inject
 class ChooseGroupFragment : BaseDaggerFragment() {
 
     private var binding: FragmentTopadsChooseGroupBinding? = null
+    private var searchGroup: String = DEFAULT_EMPTY_STRING
 
-    private val groupListAdapter by lazy { GroupListAdapter(::onItemCheckedChangeListener) }
+    private val groupListAdapter by lazy { GroupListAdapter(::onItemCheckedChangeListener, ::reloadPage) }
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -78,14 +81,27 @@ class ChooseGroupFragment : BaseDaggerFragment() {
 
     private fun searchGroups() {
         val searchEditable = binding?.searchGroup?.searchBarTextField?.text
-        val search =
+        searchGroup =
             if (searchEditable.isNullOrEmpty()) DEFAULT_EMPTY_STRING else searchEditable.toString()
-        viewModel.getTopadsGroupList(search,DEFAULT_GROUP_TYPE)
+        viewModel.getTopadsGroupList(searchGroup, DEFAULT_GROUP_TYPE)
     }
 
     private fun observeViewModel() {
         viewModel.groupListLiveData.observe(viewLifecycleOwner) {
-            groupListAdapter.submitList(it)
+            when (val groups = it) {
+                is TopadsProductListState.Success -> {
+                    groupListAdapter.submitList(groups.data)
+                }
+                is TopadsProductListState.Empty -> {
+                    groupListAdapter.submitList(groups.data)
+                }
+                is TopadsProductListState.Fail -> {
+                    groupListAdapter.submitList(viewModel.getMapperInstance().getFailedGroupStateDefaultUiModel())
+                }
+                is TopadsProductListState.Loading -> {
+                    groupListAdapter.submitList(viewModel.getMapperInstance().getGroupShimmerUiModel())
+                }
+            }
         }
 
         viewModel.createGroupLiveData.observe(viewLifecycleOwner) {
@@ -103,8 +119,9 @@ class ChooseGroupFragment : BaseDaggerFragment() {
             val productIds = mutableListOf<String>()
             val list = viewModel.getSelectedProductItems()
             list?.forEach { productIds.add(it.id()) }
-            viewModel.groupListLiveData.value?.filter { it.isSelected }?.firstOrNull()
-                ?.let { viewModel.topAdsMoveGroup(it.groupId, productIds) }
+            viewModel.getGroupList()?.filter { (it as? GroupItemUiModel)?.isSelected ?: false }
+                ?.firstOrNull()
+                ?.let { viewModel.topAdsMoveGroup((it as GroupItemUiModel).groupId, productIds) }
         }
     }
 
@@ -115,10 +132,10 @@ class ChooseGroupFragment : BaseDaggerFragment() {
             DialogUnify.WITH_ILLUSTRATION
         )
         dialog.setImageUrl(TopAdsProductRecommendationConstants.CREATE_GROUP_SUCCESS_DIALOG_IMG_URL)
-        dialog.setDescription(getString(com.tokopedia.topads.common.R.string.topads_common_create_group_success_dailog_desc))
-        dialog.setTitle(getString(com.tokopedia.topads.common.R.string.topads_common_product_successfully_advertised))
-        dialog.setPrimaryCTAText(getString(com.tokopedia.topads.common.R.string.topads_common_manage_ads_group))
-        dialog.setSecondaryCTAText(getString(com.tokopedia.topads.common.R.string.topads_common_stay_here))
+        dialog.setDescription(getString(topadscommonR.string.topads_common_create_group_success_dailog_desc))
+        dialog.setTitle(getString(topadscommonR.string.topads_common_product_successfully_advertised))
+        dialog.setPrimaryCTAText(getString(topadscommonR.string.topads_common_manage_ads_group))
+        dialog.setSecondaryCTAText(getString(topadscommonR.string.topads_common_stay_here))
         dialog.setPrimaryCTAClickListener {
             val intent =
                 RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_EDIT_ADS).apply {
@@ -141,8 +158,9 @@ class ChooseGroupFragment : BaseDaggerFragment() {
     }
 
     private fun onItemCheckedChangeListener(groupId: String) {
-        viewModel.groupListLiveData.value?.forEach {
-            it.isSelected = it.groupId == groupId
+        viewModel.getGroupList()?.forEach {
+            val groupItem = it as? GroupItemUiModel
+            groupItem?.isSelected = groupItem?.groupId == groupId
         }
         groupListAdapter.notifyDataSetChanged()
         updateSubmitBtnState()
@@ -150,7 +168,12 @@ class ChooseGroupFragment : BaseDaggerFragment() {
 
     private fun updateSubmitBtnState() {
         binding?.btnSubmit?.isEnabled =
-            !viewModel.groupListLiveData.value?.filter { it.isSelected }.isNullOrEmpty()
+            !viewModel.getGroupList()?.filter { (it as? GroupItemUiModel)?.isSelected ?: false }
+                .isNullOrEmpty()
+    }
+
+    private fun reloadPage(){
+        viewModel.getTopadsGroupList(searchGroup, DEFAULT_GROUP_TYPE)
     }
 
     companion object {

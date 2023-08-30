@@ -2,11 +2,10 @@ package com.tokopedia.topads.dashboard.recommendation.common
 
 object TopAdsProductRecommendationConstants {
     const val SHOP_Id_KEY = "shop_id"
-    const val SHOP_ID_KEY_2 = "shopID"
-    const val GROUP_IDS_KEY = "groupIDs"
     const val DEFAULT_SELECTED_ITEMS_COUNT = 0
-    const val EMPTY_PRODUCT_LIST_IMG_URL = "https://images.tokopedia.net/img/android/topads/insight_centre_page/global-illustration.png"
+    const val FAILED_LIST_STATE_IMG_URL = "https://images.tokopedia.net/img/android/topads/insight_centre_page/global-illustration.png"
     const val CREATE_GROUP_SUCCESS_DIALOG_IMG_URL = "https://images.tokopedia.net/img/android/topads/createads_success/mp_group_creation_success_dialog.png"
+    const val EMPTY_GROUP_LIST_IMG_URL = "https://images.tokopedia.net/img/android/topads/insight_centre_page/empty_groups_list/Group.png"
     const val GROUP_SETTINGS_STATE_CREATE = 0
     const val GROUP_SETTINGS_STATE_CHOOSE_FROM_EXISTING = 1
     const val BASIC_DATE_FORMAT = "dd/MM/yy"
@@ -24,4 +23,7 @@ object TopAdsProductRecommendationConstants {
     const val ADD_KEY = "add"
     const val GROUP_TYPE_KEY = "group_type"
     const val DEFAULT_GROUP_TYPE = 1
+    const val INVALID_GROUP_TYPE = "Invalid item type"
+    const val LOADER_SHIMMER = 1
+    const val LOADER_PROGRESS_BAR = 2
 }

@@ -6,7 +6,6 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.model.DashGroupListResponse
 import com.tokopedia.topads.dashboard.recommendation.common.TopAdsProductRecommendationConstants
-import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopadsProductListState
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -21,13 +20,9 @@ class TopAdsGetDashboardGroupsV3UseCase @Inject constructor(
         setTypeClass(DashGroupListResponse::class.java)
     }
 
-    suspend operator fun invoke(search: String, groupType: Int): TopadsProductListState<DashGroupListResponse> {
+    suspend operator fun invoke(search: String, groupType: Int): DashGroupListResponse {
         setRequestParams(createRequestParam(search, groupType).parameters)
-        val data = executeOnBackground()
-        return when {
-            data.getTopadsDashboardGroups.data.isEmpty() -> TopadsProductListState.Fail(Exception())
-            else -> TopadsProductListState.Success(data)
-        }
+        return executeOnBackground()
     }
 
     private fun createRequestParam(search: String, groupType: Int): RequestParams {

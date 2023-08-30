@@ -1,77 +1,21 @@
 package com.tokopedia.topads.dashboard.recommendation.views.adapter.recommendation
 
-import android.content.res.ColorStateList
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
-import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.topads.dashboard.R
-import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupItemUiModel
-import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupListUiModel
+import com.tokopedia.topads.dashboard.recommendation.common.TopAdsProductRecommendationConstants.EMPTY_GROUP_LIST_IMG_URL
+import com.tokopedia.topads.dashboard.recommendation.common.TopAdsProductRecommendationConstants.FAILED_LIST_STATE_IMG_URL
+import com.tokopedia.topads.dashboard.recommendation.common.TopAdsProductRecommendationConstants.INVALID_GROUP_TYPE
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.*
+import com.tokopedia.topads.dashboard.recommendation.views.adapter.viewholders.EmptyStateViewHolder
+import com.tokopedia.topads.dashboard.recommendation.views.adapter.viewholders.FailedStateViewHolder
+import com.tokopedia.topads.dashboard.recommendation.views.adapter.viewholders.GroupListItemViewHolder
 
-class GroupListAdapter(private val onItemCheckedChangeListener: (String) -> Unit) :
+class GroupListAdapter(private val onItemCheckedChangeListener: (String) -> Unit, private val reloadPage: (() -> Unit)?) :
     ListAdapter<GroupListUiModel, RecyclerView.ViewHolder>(GroupListDiffUtilCallBack()) {
-
-    inner class GroupListItemViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
-        private val itemCard: com.tokopedia.unifycomponents.CardUnify =
-            view.findViewById(R.id.groupListItemCard)
-        private val title: com.tokopedia.unifyprinciples.Typography =
-            view.findViewById(R.id.groupName)
-        private val productCount: com.tokopedia.unifyprinciples.Typography =
-            view.findViewById(R.id.productCount)
-        private val keywordCount: com.tokopedia.unifyprinciples.Typography =
-            view.findViewById(R.id.keywordCount)
-        private val selectGroupCta: com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify =
-            view.findViewById(R.id.selectGroupCta)
-
-        fun bind(item: GroupItemUiModel, onItemCheckedChangeListener: (String) -> Unit) {
-            selectGroupCta.setOnCheckedChangeListener(null)
-            bindValues(item)
-            setSelected(item)
-            setOnCheckedChangeListener(item, onItemCheckedChangeListener)
-        }
-
-        private fun bindValues(item: GroupItemUiModel) {
-            title.text = item.groupName
-            productCount.text = HtmlCompat.fromHtml(
-                String.format(
-                    view.context.getString(com.tokopedia.topads.common.R.string.topads_common_product_count_with_bold_value),
-                    item.productCount
-                ),
-                HtmlCompat.FROM_HTML_MODE_LEGACY
-            )
-            keywordCount.text = HtmlCompat.fromHtml(
-                String.format(
-                    view.context.getString(com.tokopedia.topads.common.R.string.topads_common_keyword_count_with_bold_value),
-                    item.keywordCount
-                ),
-                HtmlCompat.FROM_HTML_MODE_LEGACY
-            )
-        }
-
-        private fun setSelected(item: GroupItemUiModel) {
-            if (item.isSelected) {
-                itemCard.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
-            } else
-                itemCard.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Unify_NN300))
-
-            selectGroupCta.isChecked = item.isSelected
-        }
-
-        private fun setOnCheckedChangeListener(
-            item: GroupItemUiModel,
-            onItemCheckedChangeListener: (String) -> Unit
-        ) {
-            selectGroupCta.setOnCheckedChangeListener { _, isChecked ->
-                if (isChecked)
-                    onItemCheckedChangeListener.invoke(item.groupId)
-            }
-        }
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
@@ -80,10 +24,20 @@ class GroupListAdapter(private val onItemCheckedChangeListener: (String) -> Unit
                     .inflate(R.layout.topads_insight_centre_group_list_item_layout, parent, false)
                 GroupListItemViewHolder(view)
             }
+            R.layout.topads_empty_state_layout -> {
+                val view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.topads_empty_state_layout, parent, false)
+                EmptyStateViewHolder(view)
+            }
+            R.layout.topads_insight_centre_group_item_loading_layout -> {
+                val view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.topads_insight_centre_group_item_loading_layout, parent, false)
+                object : RecyclerView.ViewHolder(view) {}
+            }
             else -> {
                 val view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.topads_insight_centre_group_list_item_layout, parent, false)
-                GroupListItemViewHolder(view)
+                    .inflate(R.layout.topads_failed_state_layout, parent, false)
+                FailedStateViewHolder(view)
             }
         }
     }
@@ -93,13 +47,23 @@ class GroupListAdapter(private val onItemCheckedChangeListener: (String) -> Unit
             is GroupItemUiModel -> {
                 (holder as? GroupListItemViewHolder)?.bind(item, onItemCheckedChangeListener)
             }
+            is EmptyGroupListUiModel -> {
+                (holder as? EmptyStateViewHolder)?.bind(EMPTY_GROUP_LIST_IMG_URL)
+            }
+            is FailedGroupListUiModel -> {
+                (holder as? FailedStateViewHolder)?.bind(FAILED_LIST_STATE_IMG_URL,reloadPage)
+            }
+            is LoadingGroupsUiModel -> { /*empty shimmer view holder, thus no need for callback to bind() */}
         }
     }
 
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
             is GroupItemUiModel -> R.layout.topads_insight_centre_group_list_item_layout
-            else -> throw IllegalArgumentException("Invalid item type")
+            is EmptyGroupListUiModel -> R.layout.topads_empty_state_layout
+            is FailedGroupListUiModel -> R.layout.topads_failed_state_layout
+            is LoadingGroupsUiModel -> R.layout.topads_insight_centre_group_item_loading_layout
+            else -> throw IllegalArgumentException(INVALID_GROUP_TYPE)
         }
     }
 }

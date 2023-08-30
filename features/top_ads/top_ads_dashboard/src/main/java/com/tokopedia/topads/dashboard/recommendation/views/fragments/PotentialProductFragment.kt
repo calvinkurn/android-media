@@ -15,7 +15,6 @@ import com.tokopedia.topads.dashboard.recommendation.viewmodel.ProductRecommenda
 import javax.inject.Inject
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.recommendation.common.TopAdsProductRecommendationConstants.DEFAULT_SELECTED_ITEMS_COUNT
-import com.tokopedia.topads.dashboard.recommendation.data.mapper.ProductRecommendationMapper
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.ProductItemUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopadsProductListState
 import com.tokopedia.topads.dashboard.recommendation.views.activities.RoutingCallback
@@ -68,8 +67,8 @@ class PotentialProductFragment : BaseDaggerFragment() {
         binding?.productsListRv?.adapter = productListAdapter
     }
 
-    private fun setUpProductsList(){
-        if(viewModel.productItemsLiveData.value == null){
+    private fun setUpProductsList() {
+        if (viewModel.productItemsLiveData.value == null) {
             loadProducts()
             updateSelectedItemsCount(DEFAULT_SELECTED_ITEMS_COUNT)
         } else {
@@ -77,13 +76,16 @@ class PotentialProductFragment : BaseDaggerFragment() {
                 is TopadsProductListState.Success -> {
                     showProductsList()
                     productListAdapter.submitList(products.data)
-                    val list = products.data.filter { (it as? ProductItemUiModel)?.isSelected ?: false }
+                    val list =
+                        products.data.filter { (it as? ProductItemUiModel)?.isSelected ?: false }
                     updateSelectAllCtaState()
                     updateSelectedItemsCount(list.size)
                 }
                 is TopadsProductListState.Fail -> {
                     showEmptyState()
-                    productListAdapter.submitList(viewModel.getMapperInstance().getEmptyProductListDefaultUiModel())
+                    productListAdapter.submitList(
+                        viewModel.getMapperInstance().getEmptyProductListDefaultUiModel()
+                    )
                 }
                 else -> {}
             }
@@ -137,9 +139,11 @@ class PotentialProductFragment : BaseDaggerFragment() {
                 }
                 is TopadsProductListState.Fail -> {
                     showEmptyState()
-                    productListAdapter.submitList(viewModel.getMapperInstance().getEmptyProductListDefaultUiModel())
+                    productListAdapter.submitList(
+                        viewModel.getMapperInstance().getEmptyProductListDefaultUiModel()
+                    )
                 }
-                is TopadsProductListState.Loading -> {}
+                else -> {}
             }
         }
     }

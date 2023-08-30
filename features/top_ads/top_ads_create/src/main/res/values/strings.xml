@@ -185,8 +185,6 @@
     <string name="ad_group_connection_error_title">Grup iklan gagal ditampilkan</string>
     <string name="ad_group_connection_error_desc">Oops, ada gangguan pada sistem. Coba klik Muat Ulang, ya.</string>
     <string name="ad_group_connection_error_cta">Muat Ulang</string>
-    <string name="ad_group_search_error_title">Oops, grup tidak ditemukan</string>
-    <string name="ad_group_search_error_desc">Coba cek lagi nama grup yang kamu cari atau coba buat grup iklan baru.</string>
 
     <string name="buat_grup">Buat Grup</string>
     <string name="nama_grup">Nama Grup</string>

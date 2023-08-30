@@ -32,6 +32,22 @@ class ProductRecommendationMapper @Inject constructor() {
         return listOf(EmptyProductListUiModel())
     }
 
+    fun getEmptyGroupListDefaultUiModel(): List<EmptyGroupListUiModel>{
+        return listOf(EmptyGroupListUiModel())
+    }
+
+    fun getFailedGroupStateDefaultUiModel(): List<FailedGroupListUiModel>{
+        return listOf(FailedGroupListUiModel())
+    }
+
+    fun getGroupShimmerUiModel(): List<LoadingGroupsUiModel>{
+        val list = mutableListOf<LoadingGroupsUiModel>()
+        // adding empty data for shimmer loader into UiModel
+        for(n in 1..6)
+            list.add(LoadingGroupsUiModel(n.toString()))
+        return list
+    }
+
     fun convertProductItemToFeaturedProductsUiModel(products: List<ProductListUiModel>?) : List<FeaturedProductsUiModel>{
         val featuredProductsList = mutableListOf<FeaturedProductsUiModel>()
         products?.forEach {

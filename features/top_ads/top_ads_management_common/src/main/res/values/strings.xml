@@ -289,4 +289,6 @@
     <string name="topads_common_product_successfully_advertised">Produk berhasil diiklankan!</string>
     <string name="topads_common_manage_ads_group">Atur Grup Iklan</string>
     <string name="topads_common_stay_here">Tetap di Sini</string>
+    <string name="topads_commong_ad_group_search_error_title">Oops, grup tidak ditemukan</string>
+    <string name="topads_common_ad_group_search_error_desc">Coba cek lagi nama grup yang kamu cari atau coba buat grup iklan baru.</string>
 </resources>
