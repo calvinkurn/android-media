@@ -94,6 +94,7 @@ class CircularSliderBannerViewHolder(itemView: View, val fragment: Fragment) : A
     }
 
     private fun setupExpandableIndicator(item: ArrayList<CircularModel>) {
+        sliderIndicator.hide()
         sliderExpandableIndicator.show()
         sliderExpandableIndicator.setBannerIndicators(item.size)
         sliderExpandableIndicator.setBannerListener(
@@ -150,6 +151,7 @@ class CircularSliderBannerViewHolder(itemView: View, val fragment: Fragment) : A
                 sliderIndicator.animatePageSelected(newIndicatorPosition)
             }
         })
+        sliderExpandableIndicator.hide()
         sliderIndicator.show()
         sliderIndicator.createIndicators(cvSliderBanner.indicatorCount, cvSliderBanner.indicatorPosition)
     }

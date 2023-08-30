@@ -121,6 +121,7 @@ import com.tokopedia.discovery2.viewmodel.DiscoveryViewModel
 import com.tokopedia.discovery2.viewmodel.livestate.GoToAgeRestriction
 import com.tokopedia.discovery2.viewmodel.livestate.RouteToApplink
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
@@ -288,6 +289,9 @@ open class DiscoveryFragment :
     private var isLightThemeStatusBar: Boolean? = null
 
     companion object {
+        private const val START_SWIPE_PROGRESS_POSITION = 120
+        private const val END_SWIPE_PROGRESS_POSITION = 200
+
         fun getInstance(endPoint: String?, queryParameterMap: Map<String, String?>?): DiscoveryFragment {
             val bundle = Bundle()
             val fragment = DiscoveryFragment()
@@ -994,6 +998,7 @@ open class DiscoveryFragment :
 
     private fun setupExtendedLayout(config: NavToolbarConfig) {
         if (config.isExtendedLayout) {
+            // adjust swipe refresh layout, put the placement below the appbar
             val constraintSet = ConstraintSet()
             constraintSet.clone(parentConstraintLayout)
             constraintSet.connect(
@@ -1001,15 +1006,26 @@ open class DiscoveryFragment :
                 ConstraintSet.TOP,
                 R.id.parent,
                 ConstraintSet.TOP,
-                0
+                Int.ZERO
             )
             constraintSet.applyTo(parentConstraintLayout)
 
+            // set appbar background to transparent
             appBarLayout.setBackgroundColor(Color.TRANSPARENT)
 
+            // update color widget and hide divider
             if (discoveryViewModel.getAddressVisibilityValue() && isLightThemeStatusBar != false) {
                 chooseAddressWidget?.updateWidget()
                 chooseAddressWidgetDivider?.hide()
+            }
+
+            // adjust progress view position for refresh layout
+            activity?.let {
+                mSwipeRefreshLayout.setProgressViewOffset(
+                    false,
+                    START_SWIPE_PROGRESS_POSITION,
+                    END_SWIPE_PROGRESS_POSITION
+                )
             }
         }
     }
