@@ -1,8 +1,9 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance
 
+import com.tokopedia.analytics.performance.perf.BlocksLoadableComponent
+import com.tokopedia.analytics.performance.perf.LoadableComponent
 import com.tokopedia.home.beranda.data.model.SubscriptionsData
 import com.tokopedia.home.beranda.data.model.TokopointsDrawerListHomeData
-import com.tokopedia.navigation_common.usecase.pojo.walletapp.WalletAppData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.STATE_ERROR
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.STATE_SUCCESS
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_REWARDS
@@ -12,13 +13,18 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.Ba
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.balancewidget.BalanceWidgetTypeFactory
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.balancewidget.BalanceWidgetVisitable
 import com.tokopedia.home.util.HomeServerLogger
+import com.tokopedia.navigation_common.usecase.pojo.walletapp.WalletAppData
 import com.tokopedia.network.exception.MessageErrorException
 
 data class HomeBalanceModel(
     var balanceDrawerItemModels: MutableList<BalanceDrawerItemModel> = mutableListOf(),
     var status: Int = STATUS_LOADING,
     var balancePositionSubscriptions: Int = DEFAULT_BALANCE_POSITION
-) : BalanceWidgetVisitable {
+) : BalanceWidgetVisitable,
+    LoadableComponent by BlocksLoadableComponent(
+        { status != STATUS_LOADING },
+        "HomeBalanceModel"
+    ) {
     companion object {
         const val ERROR_TITLE = "Gagal Memuat"
         const val ERROR_SUBTITLE = "Coba Lagi"
@@ -121,16 +127,21 @@ data class HomeBalanceModel(
     }
 
     fun containsSubscription(): Boolean {
-        val isContainsSubscription = if (balanceDrawerItemModels.size > balancePositionSubscriptions)
-            (balanceDrawerItemModels[balancePositionSubscriptions].drawerItemType == TYPE_SUBSCRIPTION &&
-                    balanceDrawerItemModels[balancePositionSubscriptions].state == STATE_SUCCESS)
-            else false
+        val isContainsSubscription = if (balanceDrawerItemModels.size > balancePositionSubscriptions) {
+            (
+                balanceDrawerItemModels[balancePositionSubscriptions].drawerItemType == TYPE_SUBSCRIPTION &&
+                    balanceDrawerItemModels[balancePositionSubscriptions].state == STATE_SUCCESS
+                )
+        } else {
+            false
+        }
         return isContainsSubscription
     }
 
     fun getSubscriptionBalanceCoachmark(): BalanceCoachmark? {
         if (balancePositionSubscriptions != DEFAULT_BALANCE_POSITION &&
-            balanceDrawerItemModels.size > balancePositionSubscriptions) {
+            balanceDrawerItemModels.size > balancePositionSubscriptions
+        ) {
             val balanceItem = balanceDrawerItemModels[balancePositionSubscriptions]
             val isShowCoachMark = balanceItem.state == STATE_SUCCESS && balanceItem.balanceCoachmark?.isShown == true
             if (isShowCoachMark) {
@@ -148,17 +159,17 @@ data class HomeBalanceModel(
         val tokopointMapData = tokopointDrawerListHomeData?.tokopointsDrawerList?.drawerList?.map {
             val type = TYPE_REWARDS
             it.mapToHomeBalanceItemModel(
-                    drawerItemType = type,
-                    state = STATE_SUCCESS,
-                    headerTitle = it.label,
-                    position = position
+                drawerItemType = type,
+                state = STATE_SUCCESS,
+                headerTitle = it.label,
+                position = position
             )
         }
         val tokopointAnimDrawerContent = tokopointMapData?.getOrNull(0)
         tokopointDrawerListHomeData?.tokopointsDrawerList?.coachmarkList?.getOrNull(0)?.coachmarkContent?.getOrNull(0)?.let {
             tokopointAnimDrawerContent?.balanceCoachmark = BalanceCoachmark(
-                    title = it.title,
-                    description = it.content
+                title = it.title,
+                description = it.content
             )
         }
         val alternateAnimDrawerContent = tokopointMapData?.toMutableList()?.apply {
@@ -167,25 +178,30 @@ data class HomeBalanceModel(
         tokopointAnimDrawerContent?.alternateBalanceDrawerItem = alternateAnimDrawerContent
         if (tokopointAnimDrawerContent != null) {
             flagStateCondition(
-                    itemType = tokopointAnimDrawerContent.drawerItemType,
-                    action = {
-                        if (position == DEFAULT_BALANCE_POSITION &&
-                                balanceDrawerItemModels.none { it.drawerItemType == TYPE_REWARDS }) {
-                            balanceDrawerItemModels.add(tokopointAnimDrawerContent)
-                        }
-                        else if (balanceDrawerItemModels.size > position &&
-                            balanceDrawerItemModels[position].drawerItemType == TYPE_REWARDS) {
-                            balanceDrawerItemModels[position] = tokopointAnimDrawerContent
-                        }
+                itemType = tokopointAnimDrawerContent.drawerItemType,
+                action = {
+                    if (position == DEFAULT_BALANCE_POSITION &&
+                        balanceDrawerItemModels.none { it.drawerItemType == TYPE_REWARDS }
+                    ) {
+                        balanceDrawerItemModels.add(tokopointAnimDrawerContent)
+                    } else if (balanceDrawerItemModels.size > position &&
+                        balanceDrawerItemModels[position].drawerItemType == TYPE_REWARDS
+                    ) {
+                        balanceDrawerItemModels[position] = tokopointAnimDrawerContent
                     }
+                }
             )
         } else {
-            flagStateCondition(itemType = TYPE_REWARDS,
-                    action = {
-                        balanceDrawerItemModels.add( getDefaultTokopointsErrorState(headerTitle, position).apply {
+            flagStateCondition(
+                itemType = TYPE_REWARDS,
+                action = {
+                    balanceDrawerItemModels.add(
+                        getDefaultTokopointsErrorState(headerTitle, position).apply {
                             state = STATE_ERROR
-                        })
-                    })
+                        }
+                    )
+                }
+            )
         }
     }
 
@@ -208,7 +224,9 @@ data class HomeBalanceModel(
                             title = subscriptionCoachmarkData.title,
                             isShown = subscriptionCoachmarkData.isShown
                         )
-                    } else BalanceCoachmark()
+                    } else {
+                        BalanceCoachmark()
+                    }
                 drawerSubscription.balanceCoachmark = coachMarkData
                 if (balanceDrawerItemModels.none { drawer -> drawer.drawerItemType == TYPE_SUBSCRIPTION }) {
                     balanceDrawerItemModels.add(drawerSubscription)
@@ -231,12 +249,18 @@ data class HomeBalanceModel(
                         itemType = balance.drawerItemType,
                         action = {
                             if (position == DEFAULT_BALANCE_POSITION &&
-                                balanceDrawerItemModels.none { it.drawerItemType == TYPE_WALLET_APP_LINKED
-                                        || it.drawerItemType == TYPE_WALLET_APP_NOT_LINKED }) {
+                                balanceDrawerItemModels.none {
+                                    it.drawerItemType == TYPE_WALLET_APP_LINKED ||
+                                        it.drawerItemType == TYPE_WALLET_APP_NOT_LINKED
+                                }
+                            ) {
                                 balanceDrawerItemModels.add(balance)
                             } else if (balanceDrawerItemModels.size > position &&
-                                (balanceDrawerItemModels[position].drawerItemType == TYPE_WALLET_APP_LINKED ||
-                                        balanceDrawerItemModels[position].drawerItemType == TYPE_WALLET_APP_NOT_LINKED)) {
+                                (
+                                    balanceDrawerItemModels[position].drawerItemType == TYPE_WALLET_APP_LINKED ||
+                                        balanceDrawerItemModels[position].drawerItemType == TYPE_WALLET_APP_NOT_LINKED
+                                    )
+                            ) {
                                 balanceDrawerItemModels[position] = balance
                             }
                         }
@@ -279,5 +303,3 @@ data class HomeBalanceModel(
         }
     }
 }
-
-

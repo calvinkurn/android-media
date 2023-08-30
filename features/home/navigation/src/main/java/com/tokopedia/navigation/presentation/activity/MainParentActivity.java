@@ -49,6 +49,7 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.analytics.performance.perf.BlocksPerformanceTrace;
+import com.tokopedia.analytics.performance.perf.BlocksSummaryModel;
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback;
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface;
 import com.tokopedia.applink.ApplinkConst;
@@ -110,10 +111,13 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.inject.Inject;
 
 import dagger.Lazy;
+import kotlin.Unit;
+import kotlin.jvm.functions.Function2;
 import rx.android.BuildConfig;
 
 /**
@@ -263,17 +267,7 @@ public class MainParentActivity extends BaseActivity implements
         //changes for triggering unittest checker
         startSelectedPagePerformanceMonitoring();
         startMainParentPerformanceMonitoring();
-        try {
-            performanceTrace = new BlocksPerformanceTrace(
-                    this.getContext().getApplicationContext(),
-                    PERFORMANCE_TRACE_HOME,
-                    LifecycleOwnerKt.getLifecycleScope(this),
-                    this,
-                    null
-            );
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
 
         if (pageLoadTimePerformanceCallback != null) {
             pageLoadTimePerformanceCallback.startCustomMetric(MAIN_PARENT_ON_CREATE_METRICS);
@@ -288,6 +282,30 @@ public class MainParentActivity extends BaseActivity implements
         cacheManager = PreferenceManager.getDefaultSharedPreferences(this);
         appUpdate = new FirebaseRemoteAppUpdate(this);
         createView(savedInstanceState);
+        try {
+            performanceTrace = new BlocksPerformanceTrace(
+                    this.getContext().getApplicationContext(),
+                    PERFORMANCE_TRACE_HOME,
+                    LifecycleOwnerKt.getLifecycleScope(this),
+                    this,
+                    new Function2<BlocksSummaryModel, Set<String>, Unit>() {
+                        @Override
+                        public Unit invoke(BlocksSummaryModel blocksSummaryModel, Set<String> strings) {
+                            if (blocksSummaryModel.getTimeToInitialLayout().getInflateTime() != 0) {
+                                Toaster.build(
+                                        findViewById(android.R.id.content).getRootView(),
+                                        "TTIL :"+blocksSummaryModel.getTimeToInitialLayout(),
+                                        Toaster.LENGTH_INDEFINITE,
+                                        Toaster.TYPE_NORMAL
+                                ).show();
+                            }
+                            return null;
+                        }
+                    }
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         WeaveInterface executeEventsWeave = new WeaveInterface() {
             @NotNull
             @Override
