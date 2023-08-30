@@ -15,6 +15,8 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.request.validat
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ProductDetailsItem
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
+import com.tokopedia.purchase_platform.common.revamp.CartCheckoutRevampRollenceManager
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 
 object PromoRequestMapper {
 
@@ -107,6 +109,8 @@ object PromoRequestMapper {
             state = CartConstant.PARAM_CART
             skipApply = 0
             cartType = CartConstant.PARAM_DEFAULT
+            isCartCheckoutRevamp = CartCheckoutRevampRollenceManager(RemoteConfigInstance.getInstance()
+                .abTestPlatform).isRevamp()
         }
     }
 
@@ -347,12 +351,16 @@ object PromoRequestMapper {
                 }
             }
         }
+        val isCartCheckoutRevamp = CartCheckoutRevampRollenceManager(
+            RemoteConfigInstance.getInstance().abTestPlatform
+        ).isRevamp()
 
         return PromoRequest(
             codes = globalPromo,
             state = "cart",
             isSuggested = 0,
-            orders = orders
+            orders = orders,
+            isCartCheckoutRevamp = isCartCheckoutRevamp
         )
     }
 
