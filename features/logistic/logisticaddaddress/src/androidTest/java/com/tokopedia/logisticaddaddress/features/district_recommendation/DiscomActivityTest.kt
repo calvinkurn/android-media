@@ -29,7 +29,9 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import com.tokopedia.logisticaddaddress.test.R as logisticaddaddressR
+import com.tokopedia.logisticaddaddress.R as logisticaddaddressR
+import com.tokopedia.logisticaddaddress.test.R as logisticaddaddresstestR
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 @RunWith(AndroidJUnit4::class)
 @MediumTest
@@ -50,7 +52,7 @@ class DiscomActivityTest {
     fun setup() {
         AddAddressInterceptor.resetAllCustomResponse()
         AddAddressInterceptor.setupGraphqlMockResponse(context)
-        logisticInterceptor.getDistrictRecommendationResponsePath = getRawString(context, logisticaddaddressR.raw.district_recommendation_jakarta)
+        logisticInterceptor.getDistrictRecommendationResponsePath = getRawString(context, logisticaddaddresstestR.raw.district_recommendation_jakarta)
         activityRule.launchActivity(createIntent())
         IdlingRegistry.getInstance().register(SimpleIdlingResource.countingIdlingResource)
     }
@@ -59,7 +61,7 @@ class DiscomActivityTest {
     fun givenValidQueryReturnsRequiredResults() {
         val testQuery = "jak"
         onView(withId(logisticaddaddressR.id.search_page_input)).perform(click())
-        onView(withId(logisticaddaddressR.id.searchbar_textfield))
+        onView(withId(unifycomponentsR.id.searchbar_textfield))
             .perform(click(), replaceText(testQuery), closeSoftKeyboard())
         Thread.sleep(1000L)
 
