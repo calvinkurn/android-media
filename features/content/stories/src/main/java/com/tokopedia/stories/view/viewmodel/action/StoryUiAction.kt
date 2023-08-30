@@ -16,4 +16,7 @@ sealed interface StoryUiAction {
     object PauseStory: StoryUiAction
 
     object ResumeStory: StoryUiAction
+
+    object ContentIsLoaded: StoryUiAction
+
 }

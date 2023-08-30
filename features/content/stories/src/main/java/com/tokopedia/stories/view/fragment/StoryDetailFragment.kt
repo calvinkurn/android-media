@@ -26,6 +26,7 @@ import com.tokopedia.stories.view.utils.TouchEventStory
 import com.tokopedia.stories.view.utils.onTouchEventStory
 import com.tokopedia.stories.view.viewmodel.StoryViewModel
 import com.tokopedia.stories.view.viewmodel.action.StoryUiAction
+import com.tokopedia.stories.view.viewmodel.action.StoryUiAction.ContentIsLoaded
 import com.tokopedia.stories.view.viewmodel.action.StoryUiAction.NextDetail
 import com.tokopedia.stories.view.viewmodel.action.StoryUiAction.PauseStory
 import com.tokopedia.stories.view.viewmodel.action.StoryUiAction.PreviousDetail
@@ -78,10 +79,25 @@ class StoryDetailFragment @Inject constructor(
     }
 
     private fun setupObserver() {
+        setupUiStateObserver()
+        setupUiEventObserver()
+    }
+
+    private fun setupUiStateObserver() {
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
             viewModel.uiState.withCache().collectLatest { (prevState, state) ->
                 renderStoryGroupHeader(prevState?.storyGroup, state.storyGroup)
                 renderStoryDetail(prevState?.storyDetail, state.storyDetail)
+            }
+        }
+    }
+
+    private fun setupUiEventObserver() {
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+            viewModel.uiEvent.collect { event ->
+                when (event) {
+                    else -> return@collect
+                }
             }
         }
     }
@@ -110,17 +126,14 @@ class StoryDetailFragment @Inject constructor(
 
         storyDetailsTimer(state)
 
-        val prevContent = prevState?.detailItems
         val currContent = state.detailItems[state.selectedDetailPosition]
-        if (!prevContent.isNullOrEmpty() &&
-            prevContent[prevState.selectedDetailPosition].imageContent == currContent.imageContent
-        ) return
+        if (currContent.isSameContent) return
 
         binding.ivStoryDetailContent.apply {
             setImageUrl(currContent.imageContent)
             onUrlLoaded = {
                 showStoryComponent(true)
-                resumeStory()
+                contentIsLoaded()
             }
         }
     }
@@ -213,6 +226,10 @@ class StoryDetailFragment @Inject constructor(
 
     private fun resumeStory() {
         viewModelAction(ResumeStory)
+    }
+
+    private fun contentIsLoaded() {
+        viewModelAction(ContentIsLoaded)
     }
 
     private fun showStoryComponent(isShow: Boolean) {

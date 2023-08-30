@@ -31,6 +31,7 @@ data class StoryDetailItemUiModel(
     val event: StoryDetailItemUiEvent = StoryDetailItemUiEvent.PAUSE,
     val imageContent: String = "",
     val resetValue: Int = -1,
+    val isSameContent: Boolean = false,
 ) {
 
     enum class StoryDetailItemUiEvent {

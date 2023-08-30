@@ -59,6 +59,7 @@ class StoryMapperImpl @Inject constructor() : StoryMapper {
                     event = StoryDetailItemUiEvent.PAUSE,
                     imageContent = story.media.link,
                     resetValue = -1,
+                    isSameContent = false,
                 )
             }
         )

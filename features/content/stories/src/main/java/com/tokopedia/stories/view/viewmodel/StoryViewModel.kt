@@ -86,6 +86,7 @@ class StoryViewModel @Inject constructor(
             StoryUiAction.PreviousDetail -> handlePrevious()
             StoryUiAction.PauseStory -> handleOnPauseStory()
             StoryUiAction.ResumeStory -> handleOnResumeStory()
+            StoryUiAction.ContentIsLoaded -> handleContentIsLoaded()
         }
     }
 
@@ -103,6 +104,12 @@ class StoryViewModel @Inject constructor(
     private fun handleGroupMainData(selectedGroup: Int) {
         mGroupPos.update { selectedGroup }
         setInitialDetailData()
+    }
+
+    private fun handleSetGroup(position: Int) {
+        viewModelScope.launch {
+            _uiEvent.emit(StoryUiEvent.SelectGroup(position))
+        }
     }
 
     private fun handleNext() {
@@ -128,17 +135,15 @@ class StoryViewModel @Inject constructor(
     }
 
     private fun handleOnPauseStory() {
-        updateDetailData(event = PAUSE)
+        updateDetailData(event = PAUSE, isSameContent = true)
     }
 
     private fun handleOnResumeStory() {
-        updateDetailData(event = RESUME)
+        updateDetailData(event = RESUME, isSameContent = true)
     }
 
-    private fun handleSetGroup(position: Int) {
-        viewModelScope.launch {
-            _uiEvent.emit(StoryUiEvent.SelectGroup(position))
-        }
+    private fun handleContentIsLoaded() {
+        updateDetailData(event = RESUME)
     }
 
     private fun setInitialDetailData() {
@@ -149,6 +154,7 @@ class StoryViewModel @Inject constructor(
             else requestStoryDetailData()
 
             updateGroupData(detail = detailData)
+            Timber.d("${detailData.selectedGroupId} - ${detailData.selectedDetailPosition} - ${detailData.selectedDetailPositionCached}")
 
             val isReset = detailData.selectedDetailPositionCached == detailData.detailItems.size.minus(1)
             updateDetailData(
@@ -180,6 +186,7 @@ class StoryViewModel @Inject constructor(
         position: Int = mDetailPos.value,
         event: StoryDetailItemUiEvent = PAUSE,
         isReset: Boolean = false,
+        isSameContent: Boolean = false,
     ) {
         mDetailPos.value = position
         val positionCached = mGroupItem.detail.selectedDetailPositionCached
@@ -194,11 +201,12 @@ class StoryViewModel @Inject constructor(
                         mResetValue.value = mResetValue.value.getRandomNumber()
                         mResetValue.value
                     } else mResetValue.value,
+                    isSameContent = isSameContent,
                 )
             }
         )
 
-        _storyDetail.value = currentDetail
+        _storyDetail.update { currentDetail }
     }
 
     private suspend fun requestStoryInitialData(): StoryGroupUiModel {
