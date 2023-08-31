@@ -5,9 +5,11 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.flexbox.FlexboxLayout
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -18,6 +20,7 @@ import com.tokopedia.product_service_widget.databinding.ItemProductbundleSingleW
 import com.tokopedia.productbundlewidget.adapter.ProductBundleSingleAdapter
 import com.tokopedia.productbundlewidget.listener.ProductBundleAdapterListener
 import com.tokopedia.productbundlewidget.model.*
+import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
@@ -49,6 +52,9 @@ class ProductBundleSingleViewHolder(
     private var rvBundleDetails: RecyclerView? = null
     private var widgetContainer: ConstraintLayout? = null
     private val bundleDetailAdapter = ProductBundleSingleAdapter()
+    private var cardBundling: CardUnify? = null
+    private var icBundleDiscount: IconUnify? = null
+//    private var isDarkMode: Boolean = false
 
     init {
         viewBinding?.apply {
@@ -63,6 +69,8 @@ class ProductBundleSingleViewHolder(
             imageBundleProduct = ivBundleImage
             rvBundleDetails = rvBundleSinglePackage
             widgetContainer = bundleWidgetContainer
+            cardBundling = container
+            icBundleDiscount = bundleWidgetFooter.icBundleDiscount
         }
         initBundleDetailsRecyclerView()
     }
@@ -72,6 +80,11 @@ class ProductBundleSingleViewHolder(
         val product = bundleDetail.products.firstOrNull() ?: BundleProductUiModel()
 
         initFooterStyle(bundle)
+
+        // Setup widget theme if the page owner wants to change the widget theme
+        overrideWidgetTheme(
+            isDarkMode =
+            fontColor = )
 
         // bundle card item details
         renderBundlePriceDetails(bundleDetail)
@@ -230,6 +243,24 @@ class ProductBundleSingleViewHolder(
 
     fun setListener(listener: ProductBundleAdapterListener?) {
         this.listener = listener
+    }
+
+    fun overrideWidgetTheme(isDarkMode: Boolean, fontColor: Int) {
+        if (isDarkMode) {
+            viewBinding?.bundleWidgetHeaderContainer?.let {
+                it.tvBundleNameLarge.setTextColor(ContextCompat.getColor(itemView.context, R.color.dms_high_emphasis))
+            }
+            cardBundling?.setBackgroundColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
+            typographyBundleName?.setTextColor(ContextCompat.getColor(itemView.context, R.color.dms_high_emphasis))
+            typographyBundlePreOrder?.setTextColor(ContextCompat.getColor(itemView.context, R.color.dms_low_emphasis))
+            typographyBundleProductName?.setTextColor(ContextCompat.getColor(itemView.context, R.color.dms_high_emphasis))
+            typographyBundleProductDisplayPrice?.setTextColor(ContextCompat.getColor(itemView.context, R.color.dms_high_emphasis))
+            typographyBundleProductOriginalPrice?.setTextColor(ContextCompat.getColor(itemView.context, R.color.dms_low_emphasis))
+            typographyBundleProductSavingAmount?.setTextColor(ContextCompat.getColor(itemView.context, R.color.dms_high_emphasis))
+            icBundleDiscount?.setImage(newLightEnable = ContextCompat.getColor(itemView.context, R.color.dms_high_emphasis))
+//            buttonAtc?.isInverse = true
+//            buttonAtc?.applyColorMode(colorMode = DARK_MODE)
+        }
     }
 
 }

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="dms_high_emphasis">#212121</color>
+    <color name="dms_low_emphasis">#6D7588</color>
+</resources>

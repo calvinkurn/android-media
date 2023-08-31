@@ -3,6 +3,7 @@ package com.tokopedia.productbundlewidget.adapter.viewholder
 import android.graphics.PorterDuff
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.media.loader.loadImage
@@ -24,9 +25,11 @@ class ProductBundleMultiplePackageGroupViewHolder(
 
     fun bind(
         item: List<BundleProductUiModel>,
-        onMoreProductClick: () -> Unit
+        onMoreProductClick: () -> Unit,
+        isOverrideWidgetTheme: Boolean
     ) {
         val context = itemView.context
+        isOverrideWidgetTheme(isOverrideWidgetTheme)
         val bundleProductItem = item.firstOrNull()
         val overlayColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White_32)
         viewBinding?.apply {
@@ -35,5 +38,14 @@ class ProductBundleMultiplePackageGroupViewHolder(
             ivBundleProductMultiple.setColorFilter(overlayColor, PorterDuff.Mode.MULTIPLY)
         }
         itemView.setOnClickListener { onMoreProductClick.invoke() }
+    }
+
+    private fun isOverrideWidgetTheme(isOverrideWidgetTheme: Boolean) {
+        if (isOverrideWidgetTheme) {
+            viewBinding?.tvBundleProductCount?.setTextColor(ContextCompat.getColor(
+                itemView.context,
+                com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
+            )
+        }
     }
 }
