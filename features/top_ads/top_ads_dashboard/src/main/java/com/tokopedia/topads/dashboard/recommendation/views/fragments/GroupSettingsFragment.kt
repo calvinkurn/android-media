@@ -29,16 +29,19 @@ class GroupSettingsFragment : BaseDaggerFragment() {
         ProductListAdapter(null, null)
     }
 
+    @JvmField
     @Inject
-    lateinit var viewModelFactory: ViewModelFactory
+    var viewModelFactory: ViewModelFactory? = null
 
     private var currentGroupSettingsState = GROUP_SETTINGS_STATE_CREATE
 
-    private val viewModel: ProductRecommendationViewModel by lazy(LazyThreadSafetyMode.NONE) {
-        ViewModelProvider(
-            requireActivity(),
-            viewModelFactory
-        )[ProductRecommendationViewModel::class.java]
+    private val viewModel: ProductRecommendationViewModel? by lazy(LazyThreadSafetyMode.NONE) {
+        viewModelFactory?.let {
+            ViewModelProvider(
+                requireActivity(),
+                it
+            )[ProductRecommendationViewModel::class.java]
+        }
     }
 
     override fun onCreateView(
@@ -67,11 +70,11 @@ class GroupSettingsFragment : BaseDaggerFragment() {
 
         binding?.featuredProductsCount?.text = String.format(
             getString(R.string.topads_insight_centre_featured_products),
-            viewModel.getSelectedProductItems()?.size
+            viewModel?.getSelectedProductItems()?.size
         )
         productListAdapter.submitList(
-            viewModel.getMapperInstance().convertProductItemToFeaturedProductsUiModel(
-                viewModel.getSelectedProductItems()
+            viewModel?.getMapperInstance()?.convertProductItemToFeaturedProductsUiModel(
+                viewModel?.getSelectedProductItems()
             )
         )
         showCreateGroupPage()

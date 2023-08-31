@@ -194,10 +194,8 @@
     <string name="product_and_advertising_costs_are_set_automatically_by_topads">Produk dan biaya iklan diatur otomatis oleh TopAds.</string>
     <string name="see_group_settings">Lihat Pengaturan Grup</string>
     <string name="setup_auto_ads">Atur Iklan Otomatis</string>
-    <string name="the_group_name_is_already_in_use">Nama grup sudah digunakan.</string>
     <string name="min_budget_rp">Min. anggaran Rp</string>
     <string name="max_budget_rp">Maks. anggaran Rp</string>
-    <string name="ad_groups_character_limit_error_msg">Grup iklan maksimal 70 karakter</string>
     <string name="see_ads_performance_tips_heading">Tips optimalkan iklan</string>
     <string name="keywords">Kata Kunci</string>
     <string name="topads_ads_performance_top_keyword">teratas</string>

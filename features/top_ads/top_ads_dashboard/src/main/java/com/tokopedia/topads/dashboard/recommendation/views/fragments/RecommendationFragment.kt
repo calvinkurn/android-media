@@ -21,6 +21,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.CONST_0
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.model.FragmentTabItem
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
@@ -217,7 +218,7 @@ class RecommendationFragment : BaseDaggerFragment() {
         viewModel?.recommendationStatsLiveData?.observe(viewLifecycleOwner){
             when(it){
                 is Success -> {
-                    if(it.data.productRecommendationStats.count > 0) {
+                    if(it.data.productRecommendationStats.count > CONST_0) {
                         potentialProductCard?.showWithCondition(true)
                         potentialProductCard?.findViewById<com.tokopedia.unifyprinciples.Typography>(
                             R.id.title

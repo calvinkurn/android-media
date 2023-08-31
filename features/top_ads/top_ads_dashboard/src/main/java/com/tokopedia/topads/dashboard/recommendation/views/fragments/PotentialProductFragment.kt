@@ -31,14 +31,17 @@ class PotentialProductFragment : BaseDaggerFragment() {
         )
     }
 
+    @JvmField
     @Inject
-    lateinit var viewModelFactory: ViewModelFactory
+    var viewModelFactory: ViewModelFactory? = null
 
-    private val viewModel: ProductRecommendationViewModel by lazy(LazyThreadSafetyMode.NONE) {
-        ViewModelProvider(
-            requireActivity(),
-            viewModelFactory
-        )[ProductRecommendationViewModel::class.java]
+    private val viewModel: ProductRecommendationViewModel? by lazy(LazyThreadSafetyMode.NONE) {
+        viewModelFactory?.let {
+            ViewModelProvider(
+                requireActivity(),
+                it
+            )[ProductRecommendationViewModel::class.java]
+        }
     }
 
     override fun onCreateView(
@@ -68,11 +71,11 @@ class PotentialProductFragment : BaseDaggerFragment() {
     }
 
     private fun setUpProductsList() {
-        if (viewModel.productItemsLiveData.value == null) {
+        if (viewModel?.productItemsLiveData?.value == null) {
             loadProducts()
             updateSelectedItemsCount(DEFAULT_SELECTED_ITEMS_COUNT)
         } else {
-            when (val products = viewModel.productItemsLiveData.value) {
+            when (val products = viewModel?.productItemsLiveData?.value) {
                 is TopadsProductListState.Success -> {
                     showProductsList()
                     productListAdapter.submitList(products.data)
@@ -84,7 +87,7 @@ class PotentialProductFragment : BaseDaggerFragment() {
                 is TopadsProductListState.Fail -> {
                     showEmptyState()
                     productListAdapter.submitList(
-                        viewModel.getMapperInstance().getEmptyProductListDefaultUiModel()
+                        viewModel?.getMapperInstance()?.getEmptyProductListDefaultUiModel()
                     )
                 }
                 else -> {}
@@ -125,11 +128,11 @@ class PotentialProductFragment : BaseDaggerFragment() {
 
     private fun loadProducts() {
         showLoader()
-        viewModel.loadProductList()
+        viewModel?.loadProductList()
     }
 
     private fun observeViewModel() {
-        viewModel.productItemsLiveData.observe(viewLifecycleOwner) {
+        viewModel?.productItemsLiveData?.observe(viewLifecycleOwner) {
             when (it) {
                 is TopadsProductListState.Success -> {
                     showProductsList()
@@ -140,7 +143,7 @@ class PotentialProductFragment : BaseDaggerFragment() {
                 is TopadsProductListState.Fail -> {
                     showEmptyState()
                     productListAdapter.submitList(
-                        viewModel.getMapperInstance().getEmptyProductListDefaultUiModel()
+                        viewModel?.getMapperInstance()?.getEmptyProductListDefaultUiModel()
                     )
                 }
                 else -> {}
@@ -162,7 +165,7 @@ class PotentialProductFragment : BaseDaggerFragment() {
         }
 
         binding?.selectAllCheckbox?.setOnClickListener {
-            when (val products = viewModel.productItemsLiveData.value) {
+            when (val products = viewModel?.productItemsLiveData?.value) {
                 is TopadsProductListState.Success -> {
                     products.data.forEach { item ->
                         (item as? ProductItemUiModel)?.isSelected =
@@ -185,7 +188,7 @@ class PotentialProductFragment : BaseDaggerFragment() {
     }
 
     private fun updateSelectAllCtaState() {
-        when (val products = viewModel.productItemsLiveData.value) {
+        when (val products = viewModel?.productItemsLiveData?.value) {
             is TopadsProductListState.Success -> {
                 val list = products.data.filter { (it as? ProductItemUiModel)?.isSelected ?: false }
                 updateSelectedItemsCount(list.size)

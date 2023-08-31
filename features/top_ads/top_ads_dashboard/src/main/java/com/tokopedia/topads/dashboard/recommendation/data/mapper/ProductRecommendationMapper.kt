@@ -4,7 +4,14 @@ import com.tokopedia.topads.common.data.model.DashGroupListResponse
 import com.tokopedia.topads.common.data.model.GroupListDataItem
 import com.tokopedia.topads.common.data.model.CountDataItem
 import com.tokopedia.topads.dashboard.data.model.ProductRecommendation
-import com.tokopedia.topads.dashboard.recommendation.data.model.local.*
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.ProductItemUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.EmptyProductListUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.EmptyGroupListUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.FailedGroupListUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.FeaturedProductsUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupItemUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.ProductListUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.LoadingGroupsUiModel
 import javax.inject.Inject
 
 class ProductRecommendationMapper @Inject constructor() {
@@ -28,27 +35,27 @@ class ProductRecommendationMapper @Inject constructor() {
         return productList
     }
 
-    fun getEmptyProductListDefaultUiModel(): List<EmptyProductListUiModel>{
+    fun getEmptyProductListDefaultUiModel(): List<EmptyProductListUiModel> {
         return listOf(EmptyProductListUiModel())
     }
 
-    fun getEmptyGroupListDefaultUiModel(): List<EmptyGroupListUiModel>{
+    fun getEmptyGroupListDefaultUiModel(): List<EmptyGroupListUiModel> {
         return listOf(EmptyGroupListUiModel())
     }
 
-    fun getFailedGroupStateDefaultUiModel(): List<FailedGroupListUiModel>{
+    fun getFailedGroupStateDefaultUiModel(): List<FailedGroupListUiModel> {
         return listOf(FailedGroupListUiModel())
     }
 
-    fun getGroupShimmerUiModel(): List<LoadingGroupsUiModel>{
+    fun getGroupShimmerUiModel(): List<LoadingGroupsUiModel> {
         val list = mutableListOf<LoadingGroupsUiModel>()
         // adding empty data for shimmer loader into UiModel
-        for(n in 1..6)
+        for (n in 1..6)
             list.add(LoadingGroupsUiModel(n.toString()))
         return list
     }
 
-    fun convertProductItemToFeaturedProductsUiModel(products: List<ProductListUiModel>?) : List<FeaturedProductsUiModel>{
+    fun convertProductItemToFeaturedProductsUiModel(products: List<ProductListUiModel>?): List<FeaturedProductsUiModel> {
         val featuredProductsList = mutableListOf<FeaturedProductsUiModel>()
         products?.forEach {
             (it as? ProductItemUiModel)?.apply {
@@ -66,7 +73,7 @@ class ProductRecommendationMapper @Inject constructor() {
     fun convertToGroupItemUiModel(
         groupList: List<GroupListDataItem>,
         totalAdsKeywords: List<CountDataItem>
-    ): List<GroupItemUiModel>{
+    ): List<GroupItemUiModel> {
         val list = mutableListOf<GroupItemUiModel>()
         groupList.forEach {
             val item = getTotalAdsForGroupId(it.groupId, totalAdsKeywords)
@@ -83,11 +90,14 @@ class ProductRecommendationMapper @Inject constructor() {
         return list
     }
 
-    private fun getTotalAdsForGroupId(groupId: String, totalAdsKeywords: List<CountDataItem>): CountDataItem? {
+    private fun getTotalAdsForGroupId(
+        groupId: String,
+        totalAdsKeywords: List<CountDataItem>
+    ): CountDataItem? {
         return totalAdsKeywords.filter { it.iD == groupId }.firstOrNull()
     }
 
-    fun getListOfGroupIds(groupList: DashGroupListResponse): List<String>{
+    fun getListOfGroupIds(groupList: DashGroupListResponse): List<String> {
         val groupIds = mutableListOf<String>()
         groupList.getTopadsDashboardGroups.data.forEach {
             groupIds.add(it.groupId)

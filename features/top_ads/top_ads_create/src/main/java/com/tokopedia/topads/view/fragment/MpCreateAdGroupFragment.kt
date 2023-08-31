@@ -142,7 +142,7 @@ class MpCreateAdGroupFragment : BaseDaggerFragment() {
                 binding?.groupName?.setMessage("")
                 if (p0 != null && !p0.isEmpty()) {
                     if (p0.toString().length > 70) {
-                        binding?.groupName?.setMessage(getString(R.string.ad_groups_character_limit_error_msg))
+                        binding?.groupName?.setMessage(getString(topadscommonR.string.topads_common_ad_groups_character_limit_error_msg))
                         binding?.groupName?.isInputError = true
                         validGroupName = false
                         checkAllFieldsValidations()
@@ -263,7 +263,7 @@ class MpCreateAdGroupFragment : BaseDaggerFragment() {
             checkAllFieldsValidations()
         } else {
             binding?.groupName?.isInputError = true
-            binding?.groupName?.setMessage(getString(R.string.the_group_name_is_already_in_use))
+            binding?.groupName?.setMessage(getString(topadscommonR.string.topads_common_the_group_name_is_already_in_use))
             validGroupName = false
             checkAllFieldsValidations()
         }

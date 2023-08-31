@@ -45,14 +45,17 @@ class ChooseGroupFragment : BaseDaggerFragment() {
         )
     }
 
+    @JvmField
     @Inject
-    lateinit var viewModelFactory: ViewModelFactory
+    var viewModelFactory: ViewModelFactory? = null
 
-    private val viewModel: ProductRecommendationViewModel by lazy(LazyThreadSafetyMode.NONE) {
-        ViewModelProvider(
-            requireActivity(),
-            viewModelFactory
-        )[ProductRecommendationViewModel::class.java]
+    private val viewModel: ProductRecommendationViewModel? by lazy(LazyThreadSafetyMode.NONE) {
+        viewModelFactory?.let {
+            ViewModelProvider(
+                requireActivity(),
+                it
+            )[ProductRecommendationViewModel::class.java]
+        }
     }
 
     override fun onCreateView(
@@ -73,7 +76,7 @@ class ChooseGroupFragment : BaseDaggerFragment() {
     private fun init() {
         binding?.btnSubmit?.text = String.format(
             getString(R.string.topads_insight_centre_advertise_product_with_count),
-            viewModel.getSelectedProductItems()?.size
+            viewModel?.getSelectedProductItems()?.size
         )
 
         binding?.groupsRv?.layoutManager = LinearLayoutManager(
@@ -83,8 +86,8 @@ class ChooseGroupFragment : BaseDaggerFragment() {
         )
         binding?.groupsRv?.adapter = groupListAdapter
 
-        viewModel.getTopAdsDeposit()
-        viewModel.getTopadsGroupList(DEFAULT_EMPTY_STRING, DEFAULT_GROUP_TYPE)
+        viewModel?.getTopAdsDeposit()
+        viewModel?.getTopadsGroupList(DEFAULT_EMPTY_STRING, DEFAULT_GROUP_TYPE)
 
         binding?.btnSubmit?.setOnClickListener { }
         binding?.searchGroup?.let {
@@ -96,11 +99,11 @@ class ChooseGroupFragment : BaseDaggerFragment() {
         val searchEditable = binding?.searchGroup?.searchBarTextField?.text
         searchGroup =
             if (searchEditable.isNullOrEmpty()) DEFAULT_EMPTY_STRING else searchEditable.toString()
-        viewModel.getTopadsGroupList(searchGroup, DEFAULT_GROUP_TYPE)
+        viewModel?.getTopadsGroupList(searchGroup, DEFAULT_GROUP_TYPE)
     }
 
     private fun observeViewModel() {
-        viewModel.groupListLiveData.observe(viewLifecycleOwner) {
+        viewModel?.groupListLiveData?.observe(viewLifecycleOwner) {
             when (val groups = it) {
                 is TopadsProductListState.Success -> {
                     groupListAdapter.submitList(groups.data)
@@ -110,18 +113,18 @@ class ChooseGroupFragment : BaseDaggerFragment() {
                 }
                 is TopadsProductListState.Fail -> {
                     groupListAdapter.submitList(
-                        viewModel.getMapperInstance().getFailedGroupStateDefaultUiModel()
+                        viewModel?.getMapperInstance()?.getFailedGroupStateDefaultUiModel()
                     )
                 }
                 is TopadsProductListState.Loading -> {
                     groupListAdapter.submitList(
-                        viewModel.getMapperInstance().getGroupShimmerUiModel()
+                        viewModel?.getMapperInstance()?.getGroupShimmerUiModel()
                     )
                 }
             }
         }
 
-        viewModel.createGroupLiveData.observe(viewLifecycleOwner) {
+        viewModel?.createGroupLiveData?.observe(viewLifecycleOwner) {
             when (val data = it) {
                 is TopadsProductListState.Success -> {
                     if (topadsDeposits > DEFAULT_TOPADS_DEPOSITS) {
@@ -132,13 +135,17 @@ class ChooseGroupFragment : BaseDaggerFragment() {
                 }
                 else -> {
                     view?.let {
-                        Toaster.build(it, getString(topadscommonR.string.topads_common_failed_to_create_ads_toast_msg),
+                        Toaster.build(
+                            it,
+                            getString(topadscommonR.string.topads_common_failed_to_create_ads_toast_msg),
                             Snackbar.LENGTH_LONG,
-                            Toaster.TYPE_ERROR, getString(topadscommonR.string.topads_common_try_again)).show()
+                            Toaster.TYPE_ERROR,
+                            getString(topadscommonR.string.topads_common_try_again)
+                        ).show()
                     }
 
                     binding?.btnSubmit?.let {
-                        if(it.isLoading){
+                        if (it.isLoading) {
                             it.isLoading = false
                         }
                     }
@@ -146,7 +153,7 @@ class ChooseGroupFragment : BaseDaggerFragment() {
             }
         }
 
-        viewModel.topadsDeposits.observe(viewLifecycleOwner) {
+        viewModel?.topadsDeposits?.observe(viewLifecycleOwner) {
             topadsDeposits = it.topadsDashboardDeposits.data.amount
         }
     }
@@ -155,12 +162,12 @@ class ChooseGroupFragment : BaseDaggerFragment() {
         binding?.btnSubmit?.setOnClickListener { btn ->
             if (binding?.btnSubmit?.isLoading != null && !(binding?.btnSubmit?.isLoading!!)) {
                 val productIds = mutableListOf<String>()
-                val list = viewModel.getSelectedProductItems()
+                val list = viewModel?.getSelectedProductItems()
                 list?.forEach { productIds.add(it.id()) }
-                viewModel.getGroupList()?.filter { (it as? GroupItemUiModel)?.isSelected ?: false }
+                viewModel?.getGroupList()?.filter { (it as? GroupItemUiModel)?.isSelected ?: false }
                     ?.firstOrNull()
                     ?.let {
-                        viewModel.topAdsMoveGroup(
+                        viewModel?.topAdsMoveGroup(
                             (it as GroupItemUiModel).groupId,
                             productIds
                         )
@@ -237,7 +244,7 @@ class ChooseGroupFragment : BaseDaggerFragment() {
     }
 
     private fun onItemCheckedChangeListener(groupId: String) {
-        viewModel.getGroupList()?.forEach {
+        viewModel?.getGroupList()?.forEach {
             val groupItem = it as? GroupItemUiModel
             groupItem?.isSelected = groupItem?.groupId == groupId
         }
@@ -247,12 +254,12 @@ class ChooseGroupFragment : BaseDaggerFragment() {
 
     private fun updateSubmitBtnState() {
         binding?.btnSubmit?.isEnabled =
-            !viewModel.getGroupList()?.filter { (it as? GroupItemUiModel)?.isSelected ?: false }
+            !viewModel?.getGroupList()?.filter { (it as? GroupItemUiModel)?.isSelected ?: false }
                 .isNullOrEmpty()
     }
 
     private fun reloadPage() {
-        viewModel.getTopadsGroupList(searchGroup, DEFAULT_GROUP_TYPE)
+        viewModel?.getTopadsGroupList(searchGroup, DEFAULT_GROUP_TYPE)
     }
 
     companion object {

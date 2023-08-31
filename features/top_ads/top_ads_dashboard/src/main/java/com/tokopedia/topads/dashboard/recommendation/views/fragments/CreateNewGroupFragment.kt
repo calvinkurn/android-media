@@ -16,14 +16,12 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.formatTo
 import com.tokopedia.topads.common.data.model.DataSuggestions
-import com.tokopedia.topads.common.data.response.DepositAmount
 import com.tokopedia.topads.common.view.sheet.CreateGroupBudgetHelpSheet
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.common.R as topadscommonR
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.databinding.FragmentTopadsCreateNewGroupBinding
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
-import com.tokopedia.topads.dashboard.recommendation.common.TopAdsProductRecommendationConstants
 import com.tokopedia.topads.dashboard.recommendation.common.TopAdsProductRecommendationConstants.AUTO_BID_CONST
 import com.tokopedia.topads.dashboard.recommendation.common.TopAdsProductRecommendationConstants.BASIC_DATE_FORMAT
 import com.tokopedia.topads.dashboard.recommendation.common.TopAdsProductRecommendationConstants.CONST_2
@@ -35,7 +33,6 @@ import com.tokopedia.topads.dashboard.recommendation.common.TopAdsProductRecomme
 import com.tokopedia.topads.dashboard.recommendation.common.TopAdsProductRecommendationConstants.MINIMUM_DAILY_BUDGET_DEFAULT_VALUE
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopadsProductListState
 import com.tokopedia.topads.dashboard.recommendation.viewmodel.ProductRecommendationViewModel
-import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsAddCreditActivity
 import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsCreditTopUpActivity
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.date.DateUtil
@@ -52,16 +49,19 @@ class CreateNewGroupFragment : BaseDaggerFragment() {
     private var counter: Int = 0
     private var minDailyBudget: Int = MINIMUM_DAILY_BUDGET_DEFAULT_VALUE
     private var maxDailyBudget: Int = MAXIMUM_DAILY_BUDGET_DEFAULT_VALUE
-    private var topadsDeposits: Int = TopAdsProductRecommendationConstants.DEFAULT_TOPADS_DEPOSITS
+    private var topadsDeposits: Int = DEFAULT_TOPADS_DEPOSITS
 
+    @JvmField
     @Inject
-    lateinit var viewModelFactory: ViewModelFactory
+    var viewModelFactory: ViewModelFactory? = null
 
-    private val viewModel: ProductRecommendationViewModel by lazy(LazyThreadSafetyMode.NONE) {
-        ViewModelProvider(
-            requireActivity(),
-            viewModelFactory
-        )[ProductRecommendationViewModel::class.java]
+    private val viewModel: ProductRecommendationViewModel? by lazy(LazyThreadSafetyMode.NONE) {
+        viewModelFactory?.let {
+            ViewModelProvider(
+                requireActivity(),
+                it
+            )[ProductRecommendationViewModel::class.java]
+        }
     }
 
     override fun onCreateView(
@@ -82,12 +82,12 @@ class CreateNewGroupFragment : BaseDaggerFragment() {
 
     private fun init() {
         val suggestions = arrayListOf(DataSuggestions("", listOf()))
-        viewModel.getBidInfo(suggestions)
-        viewModel.getTopAdsDeposit()
+        viewModel?.getBidInfo(suggestions)
+        viewModel?.getTopAdsDeposit()
 
         binding?.btnSubmit?.text = String.format(
             getString(R.string.topads_insight_centre_advertise_product_with_count),
-            viewModel.getSelectedProductItems()?.size
+            viewModel?.getSelectedProductItems()?.size
         )
     }
 
@@ -97,7 +97,7 @@ class CreateNewGroupFragment : BaseDaggerFragment() {
             getString(topadscommonR.string.topads_common_group) + " " + DateUtil.getCurrentDate()
                 .formatTo(BASIC_DATE_FORMAT) + (if (counter == 0) "" else " ($counter)")
         counter++
-        viewModel.validateGroupName(groupName)
+        viewModel?.validateGroupName(groupName)
     }
 
     private fun autoFillGroupName(groupName: String) {
@@ -110,7 +110,7 @@ class CreateNewGroupFragment : BaseDaggerFragment() {
     }
 
     private fun observeViewModel() {
-        viewModel.validateNameLiveData.observe(viewLifecycleOwner) {
+        viewModel?.validateNameLiveData?.observe(viewLifecycleOwner) {
             if (!isAutoFillGroupNameComplete) {
                 if (it.errors.isEmpty()) {
                     autoFillGroupName(it.data.groupName)
@@ -125,13 +125,13 @@ class CreateNewGroupFragment : BaseDaggerFragment() {
                 } else {
                     validGroupName = false
                     checkAllFieldsValidations()
-                    binding?.groupName?.setMessage("Nama grup sudah digunakan.")
+                    binding?.groupName?.setMessage(getString(topadscommonR.string.topads_common_the_group_name_is_already_in_use))
                     binding?.groupName?.isInputError = true
                 }
             }
         }
 
-        viewModel.bidInfoLiveData.observe(viewLifecycleOwner) { data ->
+        viewModel?.bidInfoLiveData?.observe(viewLifecycleOwner) { data ->
             data.firstOrNull()?.let {
                 minDailyBudget = it.minDailyBudget
                 maxDailyBudget =
@@ -143,7 +143,7 @@ class CreateNewGroupFragment : BaseDaggerFragment() {
             }
         }
 
-        viewModel.createGroupLiveData.observe(viewLifecycleOwner) {
+        viewModel?.createGroupLiveData?.observe(viewLifecycleOwner) {
             when (val data = it) {
                 is TopadsProductListState.Success -> {
                     if (topadsDeposits > DEFAULT_TOPADS_DEPOSITS) {
@@ -154,13 +154,17 @@ class CreateNewGroupFragment : BaseDaggerFragment() {
                 }
                 else -> {
                     view?.let {
-                        Toaster.build(it, getString(topadscommonR.string.topads_common_failed_to_create_ads_toast_msg),
+                        Toaster.build(
+                            it,
+                            getString(topadscommonR.string.topads_common_failed_to_create_ads_toast_msg),
                             Snackbar.LENGTH_LONG,
-                            Toaster.TYPE_ERROR, getString(topadscommonR.string.topads_common_try_again)).show()
+                            Toaster.TYPE_ERROR,
+                            getString(topadscommonR.string.topads_common_try_again)
+                        ).show()
                     }
 
                     binding?.btnSubmit?.let {
-                        if(it.isLoading){
+                        if (it.isLoading) {
                             it.isLoading = false
                         }
                     }
@@ -168,7 +172,7 @@ class CreateNewGroupFragment : BaseDaggerFragment() {
             }
         }
 
-        viewModel.topadsDeposits.observe(viewLifecycleOwner){
+        viewModel?.topadsDeposits?.observe(viewLifecycleOwner) {
             topadsDeposits = it.topadsDashboardDeposits.data.amount
         }
     }
@@ -243,12 +247,12 @@ class CreateNewGroupFragment : BaseDaggerFragment() {
                 super.onNumberChanged(number)
                 if (number < minDailyBudget) {
                     binding?.dailyBudget?.isInputError = true
-                    binding?.dailyBudget?.setMessage("Min. anggaran Rp $minDailyBudget")
+                    binding?.dailyBudget?.setMessage(String.format(getString(R.string.topads_insight_min_budget_rp),minDailyBudget))
                     validBudget = false
                     checkAllFieldsValidations()
                 } else if (number > maxDailyBudget) {
                     binding?.dailyBudget?.isInputError = true
-                    binding?.dailyBudget?.setMessage("Maks. anggaran Rp $maxDailyBudget")
+                    binding?.dailyBudget?.setMessage(String.format(getString(R.string.topads_insight_max_budget_rp),minDailyBudget))
                     validBudget = false
                     checkAllFieldsValidations()
                 } else {
@@ -263,7 +267,7 @@ class CreateNewGroupFragment : BaseDaggerFragment() {
         binding?.btnSubmit?.setOnClickListener {
             if (binding?.btnSubmit?.isLoading != null && !(binding?.btnSubmit?.isLoading!!)) {
                 binding?.btnSubmit?.isLoading = true
-                viewModel.topAdsCreateGroup(
+                viewModel?.topAdsCreateGroup(
                     getSelectedProductIds(),
                     binding?.groupName?.editText?.text.toString(),
                     CurrencyFormatHelper.convertRupiahToDouble(binding?.dailyBudget?.editText?.text.toString()),
@@ -280,7 +284,7 @@ class CreateNewGroupFragment : BaseDaggerFragment() {
     }
 
     private fun getSelectedProductIds(): List<String> {
-        val items = viewModel.getSelectedProductItems()
+        val items = viewModel?.getSelectedProductItems()
         val productIds = mutableListOf<String>()
         items?.forEach {
             productIds.add(it.id())
@@ -303,13 +307,13 @@ class CreateNewGroupFragment : BaseDaggerFragment() {
             binding?.groupName?.setMessage("")
             if (p0 != null && !p0.isEmpty()) {
                 if (p0.toString().length > 70) {
-                    binding?.groupName?.setMessage("Grup iklan maksimal 70 karakter")
+                    binding?.groupName?.setMessage(getString(topadscommonR.string.topads_common_ad_groups_character_limit_error_msg))
                     binding?.groupName?.isInputError = true
                     validGroupName = false
                     checkAllFieldsValidations()
                 } else {
                     binding?.groupName?.isInputError = false
-                    viewModel.validateGroupName(
+                    viewModel?.validateGroupName(
                         p0.toString()
                     )
                 }

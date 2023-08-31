@@ -297,4 +297,6 @@
     <string name="topads_common_later_keyword">Nanti Saja</string>
     <string name="topads_common_failed_to_create_ads_toast_msg">Oops, iklan gagal dibuat. Coba beberapa saat lagi, ya.</string>
     <string name="topads_common_try_again">Coba Lagi</string>
+    <string name="topads_common_the_group_name_is_already_in_use">Nama grup sudah digunakan.</string>
+    <string name="topads_common_ad_groups_character_limit_error_msg">Grup iklan maksimal 70 karakter</string>
 </resources>
