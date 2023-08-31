@@ -19,16 +19,11 @@ data class ChannelHeader(
     val serverTimeOffset: Long = 0,
     val headerType: HeaderType = HeaderType.CONTROL,
     val iconSubtitleUrl: String = "",
-    val maxLines: Int = DEFAULT_MAX_LINE,
 ) {
     internal val layoutStrategy: HeaderLayoutStrategy = HeaderLayoutStrategyFactory.create(headerType)
 
     enum class HeaderType {
         CONTROL,
         REVAMP
-    }
-
-    companion object {
-        private const val DEFAULT_MAX_LINE = 1
     }
 }

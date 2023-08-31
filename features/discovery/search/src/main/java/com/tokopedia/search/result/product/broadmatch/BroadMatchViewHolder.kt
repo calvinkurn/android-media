@@ -21,6 +21,7 @@ import com.tokopedia.search.databinding.SearchResultProductBroadMatchLayoutBindi
 import com.tokopedia.search.result.presentation.model.BadgeItemDataView
 import com.tokopedia.search.result.presentation.model.FreeOngkirDataView
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView
+import com.tokopedia.search.utils.SEARCH_PAGE_RESULT_MAX_LINE
 import com.tokopedia.search.utils.convertToChannelHeader
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -63,7 +64,8 @@ class BroadMatchViewHolder(
                 override fun onSeeAllClick(link: String) {
                     broadMatchListener.onBroadMatchSeeMoreClicked(broadMatchDataView)
                 }
-            }
+            },
+            maxLines = SEARCH_PAGE_RESULT_MAX_LINE
         )
         headerView.addOnImpressionListener(broadMatchDataView) {
             broadMatchListener.onBroadMatchImpressed(broadMatchDataView)

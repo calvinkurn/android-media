@@ -55,7 +55,8 @@ class HomeChannelHeaderView : FrameLayout {
         channelHeader: ChannelHeader,
         listener: HomeChannelHeaderListener? = null,
         colorMode: Int? = null,
-        ctaMode: Int? = null
+        ctaMode: Int? = null,
+        maxLines: Int = ONE_MAX_LINE,
     ) {
         init(channelHeader.layoutStrategy)
         this.listener = listener
@@ -66,6 +67,7 @@ class HomeChannelHeaderView : FrameLayout {
             this.headerCtaMode = it
         }
         handleHeaderComponent(channelHeader)
+        applyRuleHeaderTitleLine(maxLines)
     }
 
     private fun init(layoutStrategy: HeaderLayoutStrategy) {
@@ -120,7 +122,6 @@ class HomeChannelHeaderView : FrameLayout {
                 findViewById(R.id.channel_title)
             }
 
-            applyRuleHeaderTitleLine(channelHeader)
             channelTitle?.text = channelHeaderName
             channelTitle?.gravity = Gravity.CENTER_VERTICAL
             channelTitle?.visibility = View.VISIBLE
@@ -145,12 +146,12 @@ class HomeChannelHeaderView : FrameLayout {
         }
     }
 
-    private fun applyRuleHeaderTitleLine(channelHeader: ChannelHeader) {
-        when (channelHeader.maxLines) {
+    private fun applyRuleHeaderTitleLine(maxLines: Int) {
+        when (maxLines) {
             TWO_MAX_LINE -> {
-                channelTitle?.applyMaxLineHeaderTitle(channelHeader.maxLines, TWO_LINE_MAX_EMS, null)
+                channelTitle?.applyMaxLineHeaderTitle(maxLines, TWO_LINE_MAX_EMS, null)
             }
-            else -> channelTitle?.applyMaxLineHeaderTitle(channelHeader.maxLines, ONE_LINE_MAX_EMS, TextUtils.TruncateAt.END )
+            else -> channelTitle?.applyMaxLineHeaderTitle(maxLines, ONE_LINE_MAX_EMS, TextUtils.TruncateAt.END )
         }
     }
 
@@ -279,7 +280,7 @@ class HomeChannelHeaderView : FrameLayout {
         const val CTA_MODE_CLOSE = 2
 
         private const val ONE_LINE_MAX_EMS = 12
-
+        private const val ONE_MAX_LINE = 1
         private const val TWO_LINE_MAX_EMS = 32
         private const val TWO_MAX_LINE = 2
     }

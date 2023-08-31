@@ -23,6 +23,7 @@ import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchInspirationCarouselBinding
 import com.tokopedia.search.result.presentation.model.BadgeItemDataView
+import com.tokopedia.search.utils.SEARCH_PAGE_RESULT_MAX_LINE
 import com.tokopedia.search.utils.addItemDecorationIfNotExists
 import com.tokopedia.search.utils.convertToChannelHeader
 import com.tokopedia.search.utils.getHorizontalShadowOffset
@@ -141,7 +142,8 @@ class InspirationCarouselViewHolder(
                 override fun onSeeAllClick(link: String) {
                     inspirationCarouselListener.onInspirationCarouselSeeAllClicked(option)
                 }
-            }
+            },
+            maxLines = SEARCH_PAGE_RESULT_MAX_LINE
         )
     }
 
