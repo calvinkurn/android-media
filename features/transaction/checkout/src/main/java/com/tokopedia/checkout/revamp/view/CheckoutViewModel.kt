@@ -586,6 +586,7 @@ class CheckoutViewModel @Inject constructor(
                     if (checkoutItem is CheckoutEpharmacyModel && checkoutItem.epharmacy.showImageUpload && checkoutItem.epharmacy.consultationFlow) {
                         fetchEpharmacyData()
                     }
+                    // todo: if don't have promo applied, hit couponListRecom
                 }
             }
         }
@@ -1303,6 +1304,9 @@ class CheckoutViewModel @Inject constructor(
             isTradeIn,
             isTradeInByDropOff
         )
+        // todo: logic hit coupon list recom
+        // todo: logic auto expand
+        // todo: logic animate wording?
         listData.value = newItems
         calculateTotal()
         sendEEStep3()
@@ -1412,6 +1416,9 @@ class CheckoutViewModel @Inject constructor(
             isTradeIn,
             isTradeInByDropOff
         )
+        // todo: logic, hit coupon list recom
+        // todo: logic auto expand
+        // todo: logic animate wording?
         listData.value = newItems
         cartProcessor.processSaveShipmentState(
             listData.value,
@@ -1546,6 +1553,9 @@ class CheckoutViewModel @Inject constructor(
                 newOrder.validationMetadata = ""
             }
         }
+        // todo: logic hit coupon list recom
+        // todo: logic auto expand
+        // todo: logic animate wording?
         listData.value = newItems
         cartProcessor.processSaveShipmentState(
             listData.value,
