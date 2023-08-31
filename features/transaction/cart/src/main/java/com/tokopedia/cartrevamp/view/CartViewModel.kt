@@ -44,6 +44,7 @@ import com.tokopedia.cartrevamp.view.mapper.CartUiModelMapper
 import com.tokopedia.cartrevamp.view.mapper.PromoRequestMapper
 import com.tokopedia.cartrevamp.view.processor.CartCalculator
 import com.tokopedia.cartrevamp.view.uimodel.*
+import com.tokopedia.cartrevamp.view.util.CartPageAnalyticsUtil
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -60,7 +61,6 @@ import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnaly
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceAdd
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCartMapData
-import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCheckout
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceRecomProductCartMapData
 import com.tokopedia.purchase_platform.common.constant.CartConstant
@@ -396,7 +396,7 @@ class CartViewModel @Inject constructor(
         cartDataList.notifyObserver()
     }
 
-    private fun hasReachAllShopItems(data: Any): Boolean {
+    fun hasReachAllShopItems(data: Any): Boolean {
         return data is CartRecentViewHolderData ||
             data is CartWishlistHolderData ||
             data is CartTopAdsHeadlineData ||
@@ -620,82 +620,6 @@ class CartViewModel @Inject constructor(
                 }
             }
         }
-    }
-
-    fun generateCheckoutDataAnalytics(
-        cartItemDataList: List<CartItemHolderData>,
-        step: String
-    ): Map<String, Any> {
-        val checkoutMapData = HashMap<String, Any>()
-        val enhancedECommerceActionField = EnhancedECommerceActionField().apply {
-            setStep(step)
-            if (step == EnhancedECommerceActionField.STEP_0) {
-                setOption(EnhancedECommerceActionField.STEP_0_OPTION_VIEW_CART_PAGE)
-            } else if (step == EnhancedECommerceActionField.STEP_1) {
-                setOption(EnhancedECommerceActionField.STEP_1_OPTION_CART_PAGE_LOADED)
-            }
-        }
-        val enhancedECommerceCheckout = EnhancedECommerceCheckout().apply {
-            for (cartItemData in cartItemDataList) {
-                val enhancedECommerceProductCartMapData =
-                    getCheckoutEnhancedECommerceProductCartMapData(cartItemData)
-                addProduct(enhancedECommerceProductCartMapData.getProduct())
-            }
-            setCurrencyCode(EnhancedECommerceCartMapData.VALUE_CURRENCY_IDR)
-            setActionField(enhancedECommerceActionField.getActionFieldMap())
-        }
-        checkoutMapData[EnhancedECommerceCheckout.KEY_CHECKOUT] =
-            enhancedECommerceCheckout.getCheckoutMap()
-        return checkoutMapData
-    }
-
-    private fun getCheckoutEnhancedECommerceProductCartMapData(cartItemHolderData: CartItemHolderData): EnhancedECommerceProductCartMapData {
-        val enhancedECommerceProductCartMapData = EnhancedECommerceProductCartMapData().apply {
-            setDimension38(
-                cartItemHolderData.trackerAttribution.ifBlank {
-                    EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
-                }
-            )
-            setDimension45(cartItemHolderData.cartId)
-            setDimension54(cartItemHolderData.isFulfillment)
-            setDimension53(cartItemHolderData.productOriginalPrice > 0)
-            setProductName(cartItemHolderData.productName)
-            setProductID(cartItemHolderData.productId)
-            setPrice(cartItemHolderData.productPrice.toString())
-            setBrand(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
-            setCategory(
-                cartItemHolderData.category.ifBlank {
-                    EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
-                }
-            )
-            setVariant(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
-            setQty(cartItemHolderData.quantity)
-            setShopId(cartItemHolderData.shopHolderData.shopId)
-            setShopType(cartItemHolderData.shopHolderData.shopTypeInfo.titleFmt)
-            setShopName(cartItemHolderData.shopHolderData.shopName)
-            setCategoryId(cartItemHolderData.categoryId)
-            setWarehouseId(cartItemHolderData.warehouseId)
-            setProductWeight(cartItemHolderData.productWeight.toString())
-            setCartId(cartItemHolderData.cartId)
-            setPromoCode(cartItemHolderData.promoCodes)
-            setPromoDetails(cartItemHolderData.promoDetails)
-            setDimension83(cartItemHolderData.freeShippingName)
-            setDimension117(cartItemHolderData.bundleType)
-            setDimension118(cartItemHolderData.bundleId)
-            setCampaignId(cartItemHolderData.campaignId)
-            if (cartItemHolderData.shopCartShopGroupTickerData.tickerText.isNotBlank()) {
-                val fulfillText =
-                    if (cartItemHolderData.shopCartShopGroupTickerData.state == CartShopGroupTickerState.SUCCESS_AFFORD) {
-                        ConstantTransactionAnalytics.EventLabel.BO_FULFILL
-                    } else {
-                        ConstantTransactionAnalytics.EventLabel.BO_UNFULFILL
-                    }
-                setBoAffordability("${fulfillText}_${cartItemHolderData.shopBoMetadata.boType}")
-            } else {
-                setBoAffordability("")
-            }
-        }
-        return enhancedECommerceProductCartMapData
     }
 
     fun getPromoFlag(): Boolean {
@@ -924,7 +848,7 @@ class CartViewModel @Inject constructor(
         if (updateCartV2Data.data.status) {
             val checklistCondition = getChecklistCondition()
             _updateCartForCheckoutState.value = UpdateCartCheckoutState.Success(
-                generateCheckoutDataAnalytics(
+                CartPageAnalyticsUtil.generateCheckoutDataAnalytics(
                     cartItemDataList,
                     EnhancedECommerceActionField.STEP_1
                 ),

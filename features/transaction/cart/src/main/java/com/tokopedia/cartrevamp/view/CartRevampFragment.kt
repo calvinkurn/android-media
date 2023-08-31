@@ -80,6 +80,7 @@ import com.tokopedia.cartrevamp.view.mapper.PromoRequestMapper
 import com.tokopedia.cartrevamp.view.mapper.RecentViewMapper
 import com.tokopedia.cartrevamp.view.mapper.WishlistMapper
 import com.tokopedia.cartrevamp.view.uimodel.*
+import com.tokopedia.cartrevamp.view.util.CartPageAnalyticsUtil
 import com.tokopedia.cartrevamp.view.viewholder.CartItemViewHolder
 import com.tokopedia.cartrevamp.view.viewholder.CartRecommendationViewHolder
 import com.tokopedia.cartrevamp.view.viewholder.CartSelectedAmountViewHolder
@@ -3226,7 +3227,7 @@ class CartRevampFragment :
             viewModel.cartModel
         )
         cartPageAnalytics.enhancedECommerceCartLoadedStep0(
-            viewModel.generateCheckoutDataAnalytics(
+            CartPageAnalyticsUtil.generateCheckoutDataAnalytics(
                 cartItemDataList,
                 EnhancedECommerceActionField.STEP_0
             ),
