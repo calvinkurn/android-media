@@ -103,7 +103,8 @@
     <string name="edit_ad_item_title_ads_recommendation">Iklan di Rekomendasi</string>
     <string name="edit_ad_item_title_daily_budget">Anggaran Harian</string>
     <string name="edit_ad_item_title_potential_performance">Potensi tampil</string>
-    <string name="selected_product">%s produk dipilih</string>
+    <string name="selected_product">%d produk dipilih</string>
+    <string name="ads_search_item_template">Biaya iklan %s dan %s kata kunci</string>
 
 
 </resources>

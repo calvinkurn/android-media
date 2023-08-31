@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.topads.common.data.internal.ParamObject
+import com.tokopedia.topads.common.data.model.CountDataItem
 import com.tokopedia.topads.common.data.response.GroupInfoResponse
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.databinding.TopadsEditFragmentEditAdGroupBinding
@@ -30,6 +31,7 @@ import com.tokopedia.topads.edit.view.sheet.EditAdGroupSettingModeBottomSheet
 import com.tokopedia.topads.edit.view.viewholder.CustomDividerItemDecoration
 import com.tokopedia.topads.edit.viewmodel.EditAdGroupViewModel
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import java.text.DecimalFormat
 import javax.inject.Inject
 
 class EditAdGroupFragment : BaseDaggerFragment() {
@@ -49,7 +51,8 @@ class EditAdGroupFragment : BaseDaggerFragment() {
         viewModelProvider[EditAdGroupViewModel::class.java]
     }
 
-    var response: GroupInfoResponse.TopAdsGetPromoGroup.Data? = null
+    private var groupInfoResponse: GroupInfoResponse.TopAdsGetPromoGroup.Data? = null
+    private var countDataItemsResponse: List<CountDataItem>? = null
 
     //    private var groupId: String = "0"
     private var groupId: String = "24270188"
@@ -57,12 +60,33 @@ class EditAdGroupFragment : BaseDaggerFragment() {
 
     private fun getList(context: Context): MutableList<Visitable<*>> {
         return mutableListOf(
-            EditAdGroupItemUiModel(EditAdGroupItemTag.NAME, requireActivity().getString(R.string.edit_ad_item_title_name), hasDivider = true) { openAdGroupNameBottomSheet() },
-            EditAdGroupItemUiModel(EditAdGroupItemTag.PRODUCT, requireActivity().getString(R.string.edit_ad_item_title_product), hasDivider = true) { },
-            EditAdGroupItemUiModel(EditAdGroupItemTag.SETTING_MODE, requireActivity().getString(R.string.edit_ad_item_title_mode)) { openAdGroupSettingModeBottomSheet() },
-            EditAdGroupItemUiModel(EditAdGroupItemTag.ADS_SEARCH, requireActivity().getString(R.string.edit_ad_item_title_ads_search)) { },
-            EditAdGroupItemUiModel(EditAdGroupItemTag.ADS_RECOMMENDATION, requireActivity().getString(R.string.edit_ad_item_title_ads_recommendation)) { openAdGroupRecommendationBidBottomSheet() },
-            EditAdGroupItemUiModel(EditAdGroupItemTag.DAILY_BUDGET, requireActivity().getString(R.string.edit_ad_item_title_daily_budget), hasDivider = true) { openAdGroupDailyBudgetBottomSheet() },
+            EditAdGroupItemUiModel(
+                EditAdGroupItemTag.NAME,
+                requireActivity().getString(R.string.edit_ad_item_title_name),
+                hasDivider = true
+            ) { openAdGroupNameBottomSheet() },
+            EditAdGroupItemUiModel(
+                EditAdGroupItemTag.PRODUCT,
+                requireActivity().getString(R.string.edit_ad_item_title_product),
+                hasDivider = true
+            ) { },
+            EditAdGroupItemUiModel(
+                EditAdGroupItemTag.SETTING_MODE,
+                requireActivity().getString(R.string.edit_ad_item_title_mode)
+            ) { openAdGroupSettingModeBottomSheet() },
+            EditAdGroupItemUiModel(
+                EditAdGroupItemTag.ADS_SEARCH,
+                requireActivity().getString(R.string.edit_ad_item_title_ads_search)
+            ) { },
+            EditAdGroupItemUiModel(
+                EditAdGroupItemTag.ADS_RECOMMENDATION,
+                requireActivity().getString(R.string.edit_ad_item_title_ads_recommendation)
+            ) { openAdGroupRecommendationBidBottomSheet() },
+            EditAdGroupItemUiModel(
+                EditAdGroupItemTag.DAILY_BUDGET,
+                requireActivity().getString(R.string.edit_ad_item_title_daily_budget),
+                hasDivider = true
+            ) { openAdGroupDailyBudgetBottomSheet() },
             EditAdGroupItemAdsPotentialUiModel(
                 EditAdGroupItemTag.POTENTIAL_PERFORMANCE,
                 requireActivity().getString(R.string.edit_ad_item_title_potential_performance),
@@ -105,27 +129,59 @@ class EditAdGroupFragment : BaseDaggerFragment() {
         }
 
         viewModel.getGroupInfo(groupId, this::onSuccessGroupInfo)
+        viewModel.getTotalAdsAndKeywordsCount(groupId, this::onSuccessTotalAdsAndKeywordsCount)
     }
-
+    //TODO fix onSuccessGroupInfo and onSuccessTotalAdsAndKeywordsCount,
+    // since response succession coming in near time, there's possibility it causing IllegalStateException
     private fun onSuccessGroupInfo(data: GroupInfoResponse.TopAdsGetPromoGroup.Data) {
         val isBidAutomatic = checkBidIsAutomatic(data.strategies)
-
+        groupInfoResponse = data
         editAdGroupAdapter.apply {
             updateValue(EditAdGroupItemTag.NAME, data.groupName)
-            updateValue(EditAdGroupItemTag.PRODUCT, getProductText(data.groupTotal))
             updateValue(EditAdGroupItemTag.SETTING_MODE, getSettingModeText(isBidAutomatic))
             if (isBidAutomatic) {
                 removeItem(EditAdGroupItemTag.ADS_SEARCH)
                 removeItem(EditAdGroupItemTag.ADS_RECOMMENDATION)
             } else {
-                updateValue(EditAdGroupItemTag.ADS_SEARCH, getPriceBid(data.bidSettings, BID_SETTINGS_TYPE_SEARCH))
-                updateValue(EditAdGroupItemTag.ADS_RECOMMENDATION, getPriceBid(data.bidSettings, BID_SETTINGS_TYPE_BROWSE))
+                updateAdsSearchItem()
+                updateValue(
+                    EditAdGroupItemTag.ADS_RECOMMENDATION,
+                    getPriceBid(data.bidSettings, BID_SETTINGS_TYPE_BROWSE)
+                )
             }
             updateValue(EditAdGroupItemTag.DAILY_BUDGET, data.dailyBudget.toString())
         }
 
-        response = data
+
         setDividerOnRecyclerView()
+    }
+
+    private fun updateAdsSearchItem() {
+        val totalKeywords = countDataItemsResponse?.get(0)?.totalKeywords
+        val priceBid = groupInfoResponse?.bidSettings?.let {
+            getPriceBid(it, BID_SETTINGS_TYPE_SEARCH)
+        }
+        if (totalKeywords != null && priceBid != null) {
+            editAdGroupAdapter.updateValue(
+                EditAdGroupItemTag.ADS_SEARCH,
+                requireActivity().getString(
+                    R.string.ads_search_item_template,
+                    priceBid,
+                    totalKeywords.toString()
+                )
+            )
+        }
+    }
+
+
+    private fun onSuccessTotalAdsAndKeywordsCount(countDataItems: List<CountDataItem>) {
+        countDataItemsResponse = countDataItems
+        countDataItemsResponse?.get(0)?.totalProducts?.let {
+            editAdGroupAdapter.updateValue(EditAdGroupItemTag.PRODUCT, getProductText(it))
+        }
+
+        updateAdsSearchItem()
+
     }
 
     private fun setDividerOnRecyclerView() {
@@ -148,7 +204,7 @@ class EditAdGroupFragment : BaseDaggerFragment() {
         return strategies.contains(ParamObject.AUTO_BID_STATE)
     }
 
-    private fun getProductText(groupTotal: String): String {
+    private fun getProductText(groupTotal: Int): String {
         return getString(R.string.selected_product, groupTotal)
     }
 
@@ -157,7 +213,7 @@ class EditAdGroupFragment : BaseDaggerFragment() {
         settingsType: String
     ): String {
         val bidSetting = bidSettings.find { it.bidType == settingsType }
-        return bidSetting?.priceBid.toString()
+        return formatFloatWithSeparators(bidSetting?.priceBid)
     }
 
     private fun getSettingModeText(bidAutomatic: Boolean): String {
@@ -169,19 +225,24 @@ class EditAdGroupFragment : BaseDaggerFragment() {
     }
 
     private fun openAdGroupNameBottomSheet() {
-        response?.let {
-            EditAdGroupNameBottomSheet.newInstance(it.groupName).show(parentFragmentManager)
+        groupInfoResponse?.let {
+            EditAdGroupNameBottomSheet.newInstance(it.groupName, groupId)
+                .show(parentFragmentManager)
         }
     }
+
     private fun openAdGroupSettingModeBottomSheet() {
-        response?.let {
+        groupInfoResponse?.let {
             val isBidAutomatic = checkBidIsAutomatic(it.strategies)
-            EditAdGroupSettingModeBottomSheet.newInstance(isBidAutomatic).show(parentFragmentManager)
+            EditAdGroupSettingModeBottomSheet.newInstance(isBidAutomatic)
+                .show(parentFragmentManager)
         }
     }
+
     private fun openAdGroupRecommendationBidBottomSheet() {
         EditAdGroupRecommendationBidBottomSheet.newInstance().show(parentFragmentManager)
     }
+
     private fun openAdGroupDailyBudgetBottomSheet() {
         EditAdGroupDailyBudgetBottomSheet.newInstance().show(parentFragmentManager)
     }
@@ -193,10 +254,28 @@ class EditAdGroupFragment : BaseDaggerFragment() {
             return EditAdGroupFragment()
         }
 
-        private val potentialWidgetList: MutableList<EditAdGroupItemAdsPotentialWidgetUiModel> = mutableListOf(
-            EditAdGroupItemAdsPotentialWidgetUiModel("Di Pencarian", "400x/minggu", "+12% meningkat"),
-            EditAdGroupItemAdsPotentialWidgetUiModel("Di Rekomendasi", "400x/minggu", "+12% meningkat"),
-            EditAdGroupItemAdsPotentialWidgetUiModel("Total Tampil", "800x/minggu", "+12% meningkat")
-        )
+        private val potentialWidgetList: MutableList<EditAdGroupItemAdsPotentialWidgetUiModel> =
+            mutableListOf(
+                EditAdGroupItemAdsPotentialWidgetUiModel(
+                    "Di Pencarian",
+                    "400x/minggu",
+                    "+12% meningkat"
+                ),
+                EditAdGroupItemAdsPotentialWidgetUiModel(
+                    "Di Rekomendasi",
+                    "400x/minggu",
+                    "+12% meningkat"
+                ),
+                EditAdGroupItemAdsPotentialWidgetUiModel(
+                    "Total Tampil",
+                    "800x/minggu",
+                    "+12% meningkat"
+                )
+            )
+
+        fun formatFloatWithSeparators(value: Float?): String {
+            val formatter = DecimalFormat("###,###.###")
+            return "Rp. " + formatter.format(value)
+        }
     }
 }

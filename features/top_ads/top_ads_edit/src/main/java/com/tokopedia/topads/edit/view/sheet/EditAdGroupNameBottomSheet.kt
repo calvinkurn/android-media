@@ -12,6 +12,7 @@ class EditAdGroupNameBottomSheet: BottomSheetUnify()  {
 
     private var binding: TopadsEditSheetEditAdGroupNameBinding? = null
     private var groupName: String = ""
+    private var groupId: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
@@ -44,9 +45,10 @@ class EditAdGroupNameBottomSheet: BottomSheetUnify()  {
 
     companion object {
         private const val TOPADS_BOTTOM_SHEET_ACTION_TAG = "EDIT_AD_GROUP_NAME_BOTTOM_SHEET_TAG"
-        fun newInstance(groupName: String): EditAdGroupNameBottomSheet =
+        fun newInstance(groupName: String, groupId: String): EditAdGroupNameBottomSheet =
             EditAdGroupNameBottomSheet().apply {
                 this.groupName = groupName
+                this.groupId = groupId
             }
     }
 }
