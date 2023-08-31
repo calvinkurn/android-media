@@ -16,6 +16,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
@@ -1702,7 +1703,9 @@ class ShopPageHeaderFragmentV2 :
         viewPagerAdapterHeader?.notifyDataSetChanged()
         tabLayout?.apply {
             for (i in 0 until tabCount) {
-                getTabAt(i)?.customView = getTabView(i)
+                val tab = getTabAt(i)
+                tab?.customView = getTabView(i)
+                setupTabPressedEffect(tab, i)
             }
         }
         viewPager?.setCurrentItem(selectedPosition, false)
@@ -1748,6 +1751,31 @@ class ShopPageHeaderFragmentV2 :
             }
         })
         setTabLayoutBackgroundColor()
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun setupTabPressedEffect(tab: TabLayout.Tab?, position: Int) {
+        tab?.view?.let { tabView ->
+            tabView.setOnTouchListener{ v, event ->
+                if(position != getSelectedDynamicTabPosition()) {
+                    when(event.action){
+                        MotionEvent.ACTION_MOVE -> {
+                            (tabView.parent as ViewGroup).requestDisallowInterceptTouchEvent(true)
+                            if(event.x <= Int.ZERO || event.x >= v.width || event.y <= Int.ZERO || event.y >= v.height){
+                                viewPagerAdapterHeader?.handleSelectedTab(tab, false)
+                            }
+                        }
+                        MotionEvent.ACTION_DOWN -> {
+                            viewPagerAdapterHeader?.handleSelectedTab(tab, true)
+                        }
+                        MotionEvent.ACTION_CANCEL -> {
+                            viewPagerAdapterHeader?.handleSelectedTab(tab, false)
+                        }
+                    }
+                }
+                false
+            }
+        }
     }
 
     private fun setTabLayoutBackgroundColor() {

@@ -8,6 +8,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.DefaultLifecycleObserver
 import com.tokopedia.feedcomponent.util.util.doOnLayout
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.common.view.model.ImageHotspotData
 import com.tokopedia.shop.databinding.ImageHotspotViewBinding
@@ -23,6 +24,7 @@ class ImageHotspotView @JvmOverloads constructor(
 
     companion object {
         private val DEFAULT_CORNER_RADIUS = 4f.dpToPx().toInt()
+        private const val DEFAULT_RATIO = "1:1"
     }
 
     interface Listener {
@@ -48,9 +50,10 @@ class ImageHotspotView @JvmOverloads constructor(
     fun setData(
         imageHotspotData: ImageHotspotData,
         listenerBubbleView: Listener,
-        cornerRadius: Int = DEFAULT_CORNER_RADIUS
+        cornerRadius: Int = DEFAULT_CORNER_RADIUS,
+        ratio: String? = DEFAULT_RATIO
     ) {
-        setImageBanner(imageHotspotData.imageBannerUrl, cornerRadius)
+        setImageBanner(imageHotspotData.imageBannerUrl, cornerRadius, ratio)
         setHotspot(imageHotspotData.listHotspot, listenerBubbleView)
         setOnImageShoppingBagClicked()
     }
@@ -121,8 +124,9 @@ class ImageHotspotView @JvmOverloads constructor(
         return hotspotTagView
     }
 
-    private fun setImageBanner(imageBannerUrl: String, cornerRadius: Int) {
+    private fun setImageBanner(imageBannerUrl: String, cornerRadius: Int, ratio: String?) {
         imageBanner.apply {
+            (imageBanner.layoutParams as? LayoutParams)?.dimensionRatio = ratio.takeIf { !it.isNullOrEmpty() } ?: DEFAULT_RATIO
             loadImage(imageBannerUrl)
             this.cornerRadius = cornerRadius
         }
