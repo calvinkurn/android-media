@@ -42,7 +42,7 @@ class BlocksPerformanceTrace(
         const val ATTR_BLOCKS = "Blocks"
 
         const val FINISHED_LOADING_TTFL_BLOCKS_THRESHOLD = 1
-        const val FINISHED_LOADING_TTIL_BLOCKS_THRESHOLD = 5
+        const val FINISHED_LOADING_TTIL_BLOCKS_THRESHOLD = 3
     }
 
     private var startCurrentTimeMillis = 0L
