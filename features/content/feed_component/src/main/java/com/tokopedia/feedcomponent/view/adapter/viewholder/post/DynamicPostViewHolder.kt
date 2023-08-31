@@ -267,7 +267,7 @@ open class DynamicPostViewHolder(
                     if (header.cardSummary.isNotEmpty()) {
                         SpannableString(
                             String.format(
-                                getString(com.tokopedia.content.common.R.string.feed_header_time_format),
+                                getString(contentCommonR.string.feed_header_time_format),
                                 header.avatarDate,
                                 header.cardSummary
                             )
@@ -610,7 +610,7 @@ open class DynamicPostViewHolder(
                     if (like.fmt.isNotEmpty() && !like.fmt.equals("0")) {
                         like.fmt
                     } else {
-                        getString(com.tokopedia.content.common.R.string.kol_action_like)
+                        getString(contentCommonR.string.kol_action_like)
                     }
                 itemView.likeText.text = text
                 itemView.likeText.setTextColor(
@@ -651,7 +651,7 @@ open class DynamicPostViewHolder(
                 if (comment.fmt.isNotEmpty()) {
                     comment.fmt
                 } else {
-                    getString(com.tokopedia.content.common.R.string.kol_action_comment)
+                    getString(contentCommonR.string.kol_action_comment)
                 }
             } else {
                 if (comment.fmt.isNotEmpty()) comment.fmt else comment.value.toString()
