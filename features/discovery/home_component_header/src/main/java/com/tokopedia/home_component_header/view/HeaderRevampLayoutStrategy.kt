@@ -171,13 +171,6 @@ class HeaderRevampLayoutStrategy : HeaderLayoutStrategy {
                 ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
             }
         )
-        applyRuleTitle(channelHeader, channelTitle)
-    }
-
-    private fun applyRuleTitle(channelHeader: ChannelHeader, channelTitle: Typography?) {
-        channelTitle?.maxEms = channelHeader.pageSource.maxEms
-        channelTitle?.maxLines = channelHeader.pageSource.maxLines
-        channelTitle?.ellipsize = channelHeader.pageSource.ellipsize
     }
 
     override fun renderSubtitle(

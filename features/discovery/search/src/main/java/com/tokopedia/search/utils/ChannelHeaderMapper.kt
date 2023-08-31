@@ -15,7 +15,7 @@ internal fun BroadMatchDataView.convertToChannelHeader(context: Context) =
         url = this.url,
         iconSubtitleUrl = this.iconSubtitle,
         headerType = ChannelHeader.HeaderType.REVAMP,
-        pageSource = ChannelHeader.PageSource.SEARCH_RESULT_PAGE
+        maxLines = SEARCH_PAGE_RESULT_MAX_LINE
     )
 
 internal fun InspirationCarouselDataView.convertToChannelHeader(): ChannelHeader {
@@ -25,7 +25,7 @@ internal fun InspirationCarouselDataView.convertToChannelHeader(): ChannelHeader
         applink = if(isLayoutInspirationCarouselGrid(this)) options?.applink.orEmpty() else "" ,
         url = if(isLayoutInspirationCarouselGrid(this)) options?.url.orEmpty() else "",
         headerType = ChannelHeader.HeaderType.REVAMP,
-        pageSource = ChannelHeader.PageSource.SEARCH_RESULT_PAGE
+        maxLines = SEARCH_PAGE_RESULT_MAX_LINE
     )
 }
 
@@ -38,3 +38,5 @@ private fun Context.getTitle(broadMatchDataView: BroadMatchDataView) =
 private fun isLayoutInspirationCarouselGrid(element: InspirationCarouselDataView): Boolean {
     return element.layout == LAYOUT_INSPIRATION_CAROUSEL_GRID
 }
+
+private const val SEARCH_PAGE_RESULT_MAX_LINE = 2
