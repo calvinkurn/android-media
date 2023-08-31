@@ -3,7 +3,6 @@ package com.tokopedia.autocompletecomponent.initialstate
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.tokopedia.autocompletecomponent.createFakeBaseAppComponent
-import com.tokopedia.autocompletecomponent.di.DaggerAutoCompleteComponent
 import com.tokopedia.autocompletecomponent.initialstate.di.InitialStateViewListenerModule
 import com.tokopedia.autocompletecomponent.test.R
 

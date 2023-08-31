@@ -636,6 +636,7 @@ class ShipmentMapper @Inject constructor() {
                     type = item.type
                     qty = productQuantity
                     uniqueId = item.uniqueId
+                    iconUrl = item.iconUrl
                 }
             )
         }

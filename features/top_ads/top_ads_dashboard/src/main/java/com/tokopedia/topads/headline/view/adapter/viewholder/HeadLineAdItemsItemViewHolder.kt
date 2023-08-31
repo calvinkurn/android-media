@@ -14,7 +14,7 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.NOT_
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TIDAK_AKTIF
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TIDAK_DIBATASI
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TIDAK_TAMPIL
-import com.tokopedia.topads.dashboard.data.model.CountDataItem
+import com.tokopedia.topads.common.data.model.CountDataItem
 import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.view.sheet.TopadsSelectActionSheet
 import com.tokopedia.topads.headline.view.adapter.viewmodel.HeadLineAdItemsItemModel

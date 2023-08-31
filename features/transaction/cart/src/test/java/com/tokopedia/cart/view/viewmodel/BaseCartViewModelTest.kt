@@ -9,12 +9,12 @@ import com.tokopedia.cart.domain.usecase.FollowShopUseCase
 import com.tokopedia.cart.domain.usecase.GetCartRevampV4UseCase
 import com.tokopedia.cart.domain.usecase.UpdateAndReloadCartUseCase
 import com.tokopedia.cart.domain.usecase.UpdateCartAndGetLastApplyUseCase
-import com.tokopedia.cart.view.ICartListView
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.cartrevamp.domain.usecase.SetCartlistCheckboxStateUseCase
 import com.tokopedia.cartrevamp.view.CartViewModel
+import com.tokopedia.cartrevamp.view.helper.CartDataHelper
 import com.tokopedia.cartrevamp.view.processor.CartCalculator
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
@@ -29,6 +29,8 @@ import io.mockk.Runs
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
+import io.mockk.mockkObject
+import io.mockk.unmockkObject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.resetMain
@@ -63,14 +65,13 @@ open class BaseCartViewModelTest {
     var followShopUseCase: FollowShopUseCase = mockk()
     val cartShopGroupTickerAggregatorUseCase: CartShopGroupTickerAggregatorUseCase = mockk()
     val coroutineTestDispatchers: CoroutineTestDispatchers = CoroutineTestDispatchers
-    var view: ICartListView = mockk(relaxed = true)
     lateinit var cartViewModel: CartViewModel
 
     @get: Rule
     var instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
     @Before
-    fun setUp() {
+    open fun setUp() {
         Dispatchers.setMain(coroutineTestDispatchers.coroutineDispatcher)
         cartViewModel = CartViewModel(
             getCartRevampV4UseCase, deleteCartUseCase,
@@ -85,10 +86,12 @@ open class BaseCartViewModelTest {
         )
         every { addToWishListV2UseCase.cancelJobs() } just Runs
         every { deleteWishlistV2UseCase.cancelJobs() } just Runs
+        mockkObject(CartDataHelper)
     }
 
     @After
-    fun tearDown() {
+    open fun tearDown() {
+        unmockkObject(CartDataHelper)
         Dispatchers.resetMain()
     }
 }

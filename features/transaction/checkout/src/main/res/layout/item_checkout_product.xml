@@ -40,6 +40,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="12dp"
         android:layout_marginEnd="16dp"
+        tools:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/v_divider_shop" />
@@ -56,7 +57,7 @@
         app:typographyType="display_3_uppercase"
         app:typographyWeight="bold"
         tools:text="Pesanan 1"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_checkout_order_description"
@@ -75,6 +76,7 @@
         app:layout_constraintTop_toBottomOf="@id/checkout_ticker_shop_error"
         app:typographyType="display_3"
         app:typographyWeight="reguler"
+        tools:visibility="gone"
         tools:text="Preorder 300 hari • Tangerang Selatan" />
 
     <com.tokopedia.unifycomponents.ImageUnify

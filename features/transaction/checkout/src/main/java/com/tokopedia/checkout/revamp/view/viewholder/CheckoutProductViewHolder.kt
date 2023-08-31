@@ -87,7 +87,10 @@ class CheckoutProductViewHolder(
         renderShopInfo(product)
 
         bundleBinding.ivProductImageBundle.setImageUrl(product.imageUrl)
+        bundleBinding.ivProductImageBundleFrame.isVisible = true
+        bundleBinding.ivProductImageBundle.isVisible = true
         bundleBinding.tvProductNameBundle.text = "${product.quantity} x ${product.name}"
+        bundleBinding.tvProductNameBundle.isVisible = true
         if (product.ethicalDrugDataModel.needPrescription && product.ethicalDrugDataModel.iconUrl.isNotEmpty()) {
             product.ethicalDrugDataModel.iconUrl.getBitmapImageUrl(bundleBinding.root.context) {
                 try {
@@ -125,6 +128,7 @@ class CheckoutProductViewHolder(
             bundleBinding.tvCheckoutBundlePrice.isVisible = false
             (bundleBinding.vBundlingProductSeparator.layoutParams as? MarginLayoutParams)?.topMargin = 0
         }
+        bundleBinding.vBundlingProductSeparator.isVisible = true
 
         if (product.noteToSeller.isNotEmpty()) {
             bundleBinding.tvProductNotesBundle.text = "\"${product.noteToSeller}\""
@@ -140,6 +144,7 @@ class CheckoutProductViewHolder(
     private fun hideProductViews() {
         productBinding.apply {
             ivProductImage.isVisible = false
+            ivProductImageFrame.isVisible = false
             tvProductName.isVisible = false
             tvProductVariant.isVisible = false
             tvProductPrice.isVisible = false
@@ -158,7 +163,10 @@ class CheckoutProductViewHolder(
         renderShopInfo(product)
 
         productBinding.ivProductImage.setImageUrl(product.imageUrl)
+        productBinding.ivProductImageFrame.isVisible = true
+        productBinding.ivProductImage.isVisible = true
         productBinding.tvProductName.text = product.name
+        productBinding.tvProductName.isVisible = true
         if (product.ethicalDrugDataModel.needPrescription && product.ethicalDrugDataModel.iconUrl.isNotEmpty()) {
             product.ethicalDrugDataModel.iconUrl.getBitmapImageUrl(productBinding.root.context) {
                 try {
@@ -182,6 +190,7 @@ class CheckoutProductViewHolder(
                 .removeDecimalSuffix()
         val qty = product.quantity
         productBinding.tvProductPrice.text = "$qty x $priceInRp"
+        productBinding.tvProductPrice.isVisible = true
 
         if (product.noteToSeller.isNotEmpty()) {
             productBinding.tvProductNotes.text = "\"${product.noteToSeller}\""
@@ -202,6 +211,7 @@ class CheckoutProductViewHolder(
             tvCheckoutBundlePrice.isVisible = false
             vBundlingProductSeparator.isVisible = false
             ivProductImageBundle.isVisible = false
+            ivProductImageBundleFrame.isVisible = false
             tvProductNameBundle.isVisible = false
             tvProductVariantBundle.isVisible = false
             tvProductNotesBundle.isVisible = false
@@ -275,11 +285,22 @@ class CheckoutProductViewHolder(
     private fun renderGroupInfo(product: CheckoutProductModel) {
         if (product.shouldShowGroupInfo) {
             binding.vDividerOrder.isVisible = product.orderNumber > 1
-            binding.tvCheckoutOrderNumber.text = itemView.context.getString(
-                R.string.label_order_counter,
-                product.orderNumber
-            )
-            binding.tvCheckoutOrderNumber.isVisible = true
+            if (product.orderNumber == -1) {
+                binding.tvCheckoutOrderNumber.isVisible = false
+                binding.tvCheckoutOrderDescription.isVisible = false
+            } else {
+                binding.tvCheckoutOrderNumber.text = itemView.context.getString(
+                    R.string.label_order_counter_new,
+                    product.orderNumber
+                )
+                binding.tvCheckoutOrderNumber.isVisible = true
+                if (product.groupInfoDescription.isNotEmpty()) {
+                    binding.tvCheckoutOrderDescription.text = product.groupInfoDescription
+                    binding.tvCheckoutOrderDescription.isVisible = true
+                } else {
+                    binding.tvCheckoutOrderDescription.isVisible = false
+                }
+            }
             binding.bgCheckoutSupergraphicOrder.isVisible = true
             binding.bgCheckoutSupergraphicOrder.setBackgroundResource(R.drawable.checkout_module_bg_order)
             if (product.groupInfoBadgeUrl.isNotEmpty()) {
@@ -315,12 +336,6 @@ class CheckoutProductViewHolder(
                 }
             } else {
                 binding.ivCheckoutFreeShipping.isVisible = false
-            }
-            if (product.groupInfoDescription.isNotEmpty()) {
-                binding.tvCheckoutOrderDescription.text = product.groupInfoDescription
-                binding.tvCheckoutOrderDescription.isVisible = true
-            } else {
-                binding.tvCheckoutOrderDescription.isVisible = false
             }
         } else {
             binding.vDividerOrder.isVisible = false
@@ -419,7 +434,7 @@ class CheckoutProductViewHolder(
                     val addOnView =
                         ItemAddOnProductBinding.inflate(layoutInflater, productBinding.llAddonProductItems, false)
                     addOnView.apply {
-//                        icProductAddon.setImageUrl(addon)
+                        icCheckoutAddOnsItem.setImageUrl(addon.iconUrl)
                         tvCheckoutAddOnsItemName.text = SpannableString(addon.name).apply {
                             setSpan(UnderlineSpan(), 0, addon.name.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
                         }
@@ -499,6 +514,7 @@ class CheckoutProductViewHolder(
                     val addOnView =
                         ItemAddOnProductBinding.inflate(layoutInflater, bundleBinding.llAddonProductItemsBundle, false)
                     addOnView.apply {
+                        icCheckoutAddOnsItem.setImageUrl(addon.iconUrl)
                         tvCheckoutAddOnsItemName.text = addon.name
                         tvCheckoutAddOnsItemPrice.text = " (${CurrencyFormatUtil
                             .convertPriceValueToIdrFormat(addon.price, false)

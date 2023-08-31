@@ -275,6 +275,7 @@ const val SHIPMENT_ADDRESS_FORM_V4_QUERY =
                                 name
                                 status
                                 type
+                                icon_url
                             }
                         }
                         add_ons {

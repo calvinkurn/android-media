@@ -30,6 +30,7 @@
     <string name="cart_empty_with_promo_desc">Ayo belanja min. Rp100.000 untuk pakai promo cashback 10% maks. Rp50.000!</string>
     <string name="cart_empty_with_promo_btn">Belanja Pakai Promo</string>
     <string name="cart_item_button_checkout_count_format" formatted="false">Beli (%s)</string>
+    <string name="cart_item_button_checkout_count_format_reach_maximum_limit" formatted="false">Beli (%s+)</string>
     <string name="label_empty_cart_recent_view">Terakhir Dilihat</string>
     <string name="label_empty_cart_see_all">Lihat Semua</string>
     <string name="label_menu_cart_remove">Hapus</string>
