@@ -51,6 +51,7 @@ class StoryMapperImpl @Inject constructor() : StoryMapper {
 
     override fun mapStoryDetailRequest(dataDetail: StoryDetailsResponseModel): StoryDetailUiModel {
         return StoryDetailUiModel(
+            selectedGroupId = "",
             selectedDetailPosition = dataDetail.data.meta.selectedStoryIndex,
             selectedDetailPositionCached = dataDetail.data.meta.selectedStoryIndex,
             detailItems = dataDetail.data.stories.map { story ->

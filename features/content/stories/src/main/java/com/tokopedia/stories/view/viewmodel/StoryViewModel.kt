@@ -143,7 +143,7 @@ class StoryViewModel @Inject constructor(
     }
 
     private fun handleContentIsLoaded() {
-        updateDetailData(event = RESUME)
+        updateDetailData(event = RESUME, isSameContent = true)
     }
 
     private fun setInitialDetailData() {
@@ -154,7 +154,6 @@ class StoryViewModel @Inject constructor(
             else requestStoryDetailData()
 
             updateGroupData(detail = detailData)
-            Timber.d("${detailData.selectedGroupId} - ${detailData.selectedDetailPosition} - ${detailData.selectedDetailPositionCached}")
 
             val isReset = detailData.selectedDetailPositionCached == detailData.detailItems.size.minus(1)
             updateDetailData(
@@ -175,8 +174,13 @@ class StoryViewModel @Inject constructor(
                     storyGroupHeader.copy(isSelected = index == mGroupPos.value)
                 },
                 groupItems = group.groupItems.mapIndexed { index, storyGroupItemUiModel ->
-                    if (index == mGroupPos.value) storyGroupItemUiModel.copy(detail = detail)
-                    else storyGroupItemUiModel
+                    if (index == mGroupPos.value) {
+                        storyGroupItemUiModel.copy(
+                            detail = detail.copy(
+                                selectedGroupId = storyGroupItemUiModel.groupId,
+                            )
+                        )
+                    } else storyGroupItemUiModel
                 }
             )
         }
@@ -206,6 +210,7 @@ class StoryViewModel @Inject constructor(
             }
         )
 
+        updateGroupData(detail = currentDetail)
         _storyDetail.update { currentDetail }
     }
 
