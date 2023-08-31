@@ -325,6 +325,7 @@ class OfferLandingPageFragment :
             }
         }
         AtcVariantHelper.onActivityResultAtcVariant(requireContext(), requestCode, data) {
+            binding?.miniCartView.showToaster(this.atcMessage)
             fetchMiniCart()
         }
     }
@@ -524,7 +525,6 @@ class OfferLandingPageFragment :
                 productId = product.productId.toString(),
                 pageSource = VariantPageSource.BUY_MORE_GET_MORE,
                 shopId = shopId.toString(),
-                dismissAfterTransaction = true,
                 extParams = AtcVariantHelper.generateExtParams(
                     mapOf(
                         Constant.EXT_PARAM_OFFER_ID to stringOfferIds,
