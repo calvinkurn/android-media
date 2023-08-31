@@ -10,7 +10,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/Unify_NN0" >
+        android:background="@color/Unify_NN0">
 
         <View
             android:id="@+id/header_background"
@@ -19,6 +19,17 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/status_bar" />
+
+        <View
+            android:id="@+id/header_overlay"
+            android:layout_width="match_parent"
+            android:layout_height="190dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:background="@color/Unify_Static_Black"
+            android:alpha="0.48"
+            app:layout_constraintTop_toTopOf="@+id/status_bar"
+            app:layout_constraintBottom_toBottomOf="@+id/header_background"/>
 
         <View
             android:id="@+id/status_bar"

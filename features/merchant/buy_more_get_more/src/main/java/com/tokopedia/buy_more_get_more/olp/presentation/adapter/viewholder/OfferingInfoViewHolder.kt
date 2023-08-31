@@ -11,7 +11,7 @@ import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiMode
 import com.tokopedia.buy_more_get_more.olp.presentation.adapter.widget.TierListAdapter
 import com.tokopedia.buy_more_get_more.olp.presentation.listener.OfferingInfoListener
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.unifyprinciples.R.color.Unify_TN50
+import com.tokopedia.unifyprinciples.R.color.Unify_Static_White
 import com.tokopedia.utils.view.binding.viewBinding
 
 class OfferingInfoViewHolder(
@@ -59,7 +59,7 @@ class OfferingInfoViewHolder(
             cardTierInfo.setCardUnifyBackgroundColor(
                 MethodChecker.getColor(
                     itemView.context,
-                    Unify_TN50
+                    Unify_Static_White
                 )
             )
             rvTierList.apply {
