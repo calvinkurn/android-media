@@ -782,7 +782,7 @@ open class DiscoveryFragment :
             }
             mSwipeRefreshLayout?.isEnabled = true
             mSwipeRefreshLayout?.isRefreshing = false
-        })
+        }
 
         discoveryViewModel.getDiscoveryFabLiveData().observe(viewLifecycleOwner, {
             when (it) {
