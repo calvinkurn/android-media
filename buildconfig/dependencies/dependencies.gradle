@@ -103,7 +103,7 @@ ext {
     gojekSSOVersion = '1.0.1-67-0738bd6'
     playIntegrityVersion = '1.0.1'
     wearRemoteInteractionVersion = '1.0.0'
-    conversationsVersion = '7.7.1'
+    conversationsVersion = '7.9.1-54af4674'
     gojekCourierVersion = '0.1.5'
     gojekCourierClientVersion = '0.0.8.1@aar'
     profileInstallerVersion = '1.3.0-alpha01'

@@ -11,7 +11,6 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData
-import com.tokopedia.logisticcart.R
 import com.tokopedia.logisticcart.databinding.FragmentShipmentCourierChoiceBinding
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.di.DaggerShippingCourierComponent
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.di.ShippingCourierModule
@@ -21,6 +20,7 @@ import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoCleared
 import javax.inject.Inject
+import com.tokopedia.logisticcart.R as logisticcartR
 
 /**
  * Created by Irfan Khoirul on 06/08/18.
@@ -84,7 +84,7 @@ class ShippingCourierBottomsheet : ShippingCourierAdapterListener, BottomSheetUn
     private fun initBottomSheet() {
         showCloseIcon = true
         context?.let {
-            setTitle(it.getString(R.string.title_shipment_courier_bottomsheet))
+            setTitle(it.getString(logisticcartR.string.title_shipment_courier_bottomsheet))
         }
         clearContentPadding = true
         customPeekHeight = Resources.getSystem().displayMetrics.heightPixels / 2

@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
 import com.tokopedia.home_component.util.recordCrashlytics
 import com.tokopedia.home_component.widget.atf_banner.BannerDiffUtil
+import com.tokopedia.home_component.widget.atf_banner.BannerShimmerViewHolder
 import com.tokopedia.home_component.widget.atf_banner.BannerTypeFactoryImpl
 import com.tokopedia.home_component.widget.atf_banner.BannerVisitable
 import com.tokopedia.kotlin.extensions.view.ONE
@@ -38,10 +39,15 @@ class BannerRevampChannelAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        val index = position % currentList.size
-        return if (isIndexValid(index)) {
-            getItem(index).type(adapterTypeFactory)
-        } else HideViewHolder.LAYOUT
+        return try {
+            val index = position % currentList.size
+            return if (isIndexValid(index)) {
+                getItem(index).type(adapterTypeFactory)
+            } else BannerShimmerViewHolder.LAYOUT
+        } catch (e: Exception) {
+            e.recordCrashlytics()
+            BannerShimmerViewHolder.LAYOUT
+        }
     }
 
     override fun getItemCount(): Int {

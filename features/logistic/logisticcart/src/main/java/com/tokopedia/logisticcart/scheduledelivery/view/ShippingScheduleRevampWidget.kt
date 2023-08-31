@@ -13,7 +13,6 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.setOnClickDebounceListener
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticCommon.util.StringFormatterHelper.appendHtmlBoldText
-import com.tokopedia.logisticcart.R
 import com.tokopedia.logisticcart.databinding.ItemShipmentNowRevampScheduledOptionBinding
 import com.tokopedia.logisticcart.databinding.ShippingNowRevampWidgetBinding
 import com.tokopedia.logisticcart.scheduledelivery.analytics.ScheduleDeliveryAnalytics
@@ -28,6 +27,8 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import com.tokopedia.logisticcart.R as logisticcartR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ShippingScheduleRevampWidget : ConstraintLayout {
 
@@ -276,8 +277,8 @@ class ShippingScheduleRevampWidget : ConstraintLayout {
                     coachMarkItem.add(
                         CoachMark2Item(
                             this,
-                            context.getString(R.string.title_coachmark_option_schedule_delivery),
-                            context.getString(R.string.description_coachmark_option_schedule_delivery),
+                            context.getString(logisticcartR.string.title_coachmark_option_schedule_delivery),
+                            context.getString(logisticcartR.string.description_coachmark_option_schedule_delivery),
                             CoachMark2.POSITION_BOTTOM
                         )
                     )
@@ -299,13 +300,13 @@ class ShippingScheduleRevampWidget : ConstraintLayout {
             tvTitleShipment.setTextColor(
                 ContextCompat.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN950
+                    unifyprinciplesR.color.Unify_NN950
                 )
             )
             tvDescriptionShipment.setTextColor(
                 ContextCompat.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN950
+                    unifyprinciplesR.color.Unify_NN950
                 )
             )
         } else {
@@ -313,7 +314,7 @@ class ShippingScheduleRevampWidget : ConstraintLayout {
             val disableTextColor =
                 ContextCompat.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN400
+                    unifyprinciplesR.color.Unify_NN400
                 )
 
             tvTitleShipment.setTextColor(disableTextColor)

@@ -30,6 +30,7 @@
     <string name="cart_empty_with_promo_desc">Ayo belanja min. Rp100.000 untuk pakai promo cashback 10% maks. Rp50.000!</string>
     <string name="cart_empty_with_promo_btn">Belanja Pakai Promo</string>
     <string name="cart_item_button_checkout_count_format" formatted="false">Beli (%s)</string>
+    <string name="cart_item_button_checkout_count_format_reach_maximum_limit" formatted="false">Beli (%s+)</string>
     <string name="label_empty_cart_recent_view">Terakhir Dilihat</string>
     <string name="label_empty_cart_see_all">Lihat Semua</string>
     <string name="label_menu_cart_remove">Hapus</string>
@@ -59,7 +60,7 @@
     <string name="label_collapsed_product_quantity">%d barang</string>
     <string name="label_collapsed_product_bundle_quantity">%d paket</string>
     <string name="cart_label_all">Semua</string>
-    <string name="cart_label_selected_amount">%d product dipilih</string>
+    <string name="cart_label_selected_amount">%d produk terpilih</string>
     <string name="cart_label_change">Ganti</string>
     <string name="cart_label_packet">Paket</string>
     <string name="cart_label_product_name_with_quantity">%s x %s</string>
@@ -72,6 +73,7 @@
     <string name="content_desc_note_save">button save</string>
     <string name="cart_action_save">Simpan</string>
     <string name="cart_label_add_note">Tambah Catatan</string>
+    <string name="cart_label_new_note_bottom_sheet_title">Catatan produk</string>
     <string name="cart_max_quantity_error">Maks. beli %d</string>
     <string name="cart_min_quantity_error">Min. beli %d</string>
     <string name="cart_text_buy">Beli</string>

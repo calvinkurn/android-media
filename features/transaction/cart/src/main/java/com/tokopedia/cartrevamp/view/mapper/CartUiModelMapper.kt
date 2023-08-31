@@ -30,7 +30,6 @@ import com.tokopedia.cartrevamp.view.uimodel.CartAddOnWidgetData
 import com.tokopedia.cartrevamp.view.uimodel.CartEmptyHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartGroupHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
-import com.tokopedia.cartrevamp.view.uimodel.CartItemTickerErrorHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartShopBottomHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartShopCoachmarkPlusData
 import com.tokopedia.cartrevamp.view.uimodel.CartShopGroupTickerData
@@ -113,21 +112,6 @@ object CartUiModelMapper {
             desc = desc,
             imgUrl = imgUrl,
             btnText = btnText
-        )
-    }
-
-    fun mapTickerErrorUiModel(cartData: CartData): CartItemTickerErrorHolderData {
-        var errorItemCount = 0
-        cartData.unavailableSections.forEach { unavailableSection ->
-            unavailableSection.unavailableGroups.forEach { unavailableGroup ->
-                unavailableGroup.cartDetails.forEach { cartDetail ->
-                    errorItemCount += cartDetail.products.size
-                }
-            }
-        }
-
-        return CartItemTickerErrorHolderData(
-            errorProductCount = errorItemCount
         )
     }
 
@@ -316,6 +300,8 @@ object CartUiModelMapper {
         }
 
         cartData.unavailableSections.forEachIndexed { sectionIndex, unavailableSection ->
+            val disabledReasonHolderData = mapDisabledReasonUiModel(unavailableSection)
+            unavailableSectionList.add(disabledReasonHolderData)
             unavailableSection.unavailableGroups.forEachIndexed { groupIndex, unavailableGroup ->
                 val productUiModelList = mutableListOf<CartItemHolderData>()
                 val shopUiModel = mapGroupShop(unavailableGroup.shop, unavailableGroup.cartDetails)

@@ -1,16 +1,17 @@
 package com.tokopedia.tokochat.stub.di
 
 import android.content.Context
+import com.chuckerteam.chucker.api.ChuckerCollector
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.tokochat.tokochat_config_common.di.qualifier.TokoChatQualifier
-import com.tokochat.tokochat_config_common.repository.interceptor.ErrorResponseInterceptor
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.network.converter.StringResponseConverter
 import com.tokopedia.network.data.model.response.TkpdV4ResponseError
 import com.tokopedia.network.utils.OkHttpRetryPolicy
+import com.tokopedia.tokochat.config.di.qualifier.TokoChatQualifier
+import com.tokopedia.tokochat.config.repository.interceptor.ErrorResponseInterceptor
 import com.tokopedia.tokochat.data.repository.api.TokoChatDownloadImageApi
 import com.tokopedia.tokochat.data.repository.api.TokoChatImageApi
 import com.tokopedia.tokochat.data.repository.api.TokoChatUploadImageApi
@@ -25,6 +26,8 @@ import java.util.concurrent.TimeUnit
 
 @Module
 object TokoChatNetworkModuleStub {
+
+    const val PORT_NUMBER = 8090
 
     private const val NET_READ_TIMEOUT = 1
     private const val NET_WRITE_TIMEOUT = 1
@@ -104,7 +107,7 @@ object TokoChatNetworkModuleStub {
         @TokoChatQualifier okHttpClient: OkHttpClient
     ): Retrofit {
         return retrofitBuilder
-            .baseUrl("http://localhost:8090/") // local base url
+            .baseUrl("http://localhost:$PORT_NUMBER/") // local base url
             .addConverterFactory(StringResponseConverter())
             .client(okHttpClient).build()
     }
@@ -114,7 +117,9 @@ object TokoChatNetworkModuleStub {
     fun provideChuckerInterceptor(
         @TokoChatQualifier context: Context
     ): ChuckerInterceptor {
-        return ChuckerInterceptor(context)
+        val collector = ChuckerCollector(context, true)
+        collector.showNotification = true
+        return ChuckerInterceptor(context, collector)
     }
 
     @Provides

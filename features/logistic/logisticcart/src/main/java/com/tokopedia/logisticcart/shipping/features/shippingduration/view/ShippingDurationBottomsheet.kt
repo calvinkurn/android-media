@@ -15,7 +15,6 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceData
-import com.tokopedia.logisticcart.R
 import com.tokopedia.logisticcart.databinding.FragmentShipmentDurationChoiceBinding
 import com.tokopedia.logisticcart.shipping.features.shippingduration.di.DaggerShippingDurationComponent
 import com.tokopedia.logisticcart.shipping.model.ChooseShippingDurationState
@@ -34,6 +33,7 @@ import com.tokopedia.network.utils.ErrorHandler.Companion.getErrorMessage
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoCleared
 import javax.inject.Inject
+import com.tokopedia.logisticcart.R as logisticcartR
 
 /**
  * Created by Irfan Khoirul on 06/08/18.
@@ -164,7 +164,7 @@ class ShippingDurationBottomsheet : ShippingDurationAdapterListener,
     private fun initBottomSheet() {
         showCloseIcon = true
         context?.run {
-            setTitle(getString(R.string.title_bottomsheet_shipment_duration))
+            setTitle(getString(logisticcartR.string.title_bottomsheet_shipment_duration))
         }
 
         clearContentPadding = true
@@ -263,7 +263,7 @@ class ShippingDurationBottomsheet : ShippingDurationAdapterListener,
 
     private fun showNoCourierAvailable(message: String?) {
         shippingDurationBottomsheetListener?.onNoCourierAvailable(
-            message ?: context?.getString(R.string.label_no_courier_bottomsheet_message)
+            message ?: context?.getString(logisticcartR.string.label_no_courier_bottomsheet_message)
         )
         dismiss()
     }
@@ -321,7 +321,7 @@ class ShippingDurationBottomsheet : ShippingDurationAdapterListener,
 
     private fun showPromoCourierNotAvailable() {
         activity?.let {
-            showErrorPage(it.getString(R.string.logistic_promo_serviceid_mismatch_message))
+            showErrorPage(it.getString(logisticcartR.string.logistic_promo_serviceid_mismatch_message))
         }
     }
 
