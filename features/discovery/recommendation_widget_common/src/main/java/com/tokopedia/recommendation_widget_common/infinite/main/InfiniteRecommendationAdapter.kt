@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.adapterdelegate.AdapterDelegatesManager
 import com.tokopedia.recommendation_widget_common.infinite.component.loading.InfiniteLoadingDelegate
-import com.tokopedia.recommendation_widget_common.infinite.component.loading.InfiniteLoadingUiModel
 import com.tokopedia.recommendation_widget_common.infinite.component.loading.InfiniteLoadingViewHolder
 import com.tokopedia.recommendation_widget_common.infinite.component.product.InfiniteProductDelegate
 import com.tokopedia.recommendation_widget_common.infinite.component.product.InfiniteProductViewHolder
@@ -22,32 +21,12 @@ class InfiniteRecommendationAdapter(
 ) {
 
     private val delegatesManager = AdapterDelegatesManager<InfiniteRecommendationUiModel>()
-    private val singleLoadingItem = listOf(InfiniteLoadingUiModel)
 
     init {
         delegatesManager
             .addDelegate(InfiniteLoadingDelegate())
             .addDelegate(InfiniteProductDelegate())
             .addDelegate(InfiniteTitleDelegate())
-
-        submitList(singleLoadingItem)
-    }
-
-    fun init() {
-        submitList(singleLoadingItem)
-    }
-
-    fun removeLoading() {
-        val modifiedList = currentList.toMutableList().apply {
-            removeLast()
-        }
-        submitList(modifiedList)
-    }
-
-    fun appendComponents(components: List<InfiniteRecommendationUiModel>) {
-        val currentList = currentList.toMutableList()
-        currentList.addAll(currentList.size - 1, components)
-        submitList(currentList)
     }
 
     private fun determineFullSpan(holder: InfiniteRecommendationViewHolder<*>) {
@@ -102,5 +81,4 @@ class InfiniteRecommendationAdapter(
     override fun getItemViewType(position: Int): Int {
         return delegatesManager.getItemViewType(currentList, position)
     }
-
 }

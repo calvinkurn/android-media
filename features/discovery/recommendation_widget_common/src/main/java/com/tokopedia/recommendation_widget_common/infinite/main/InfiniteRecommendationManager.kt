@@ -23,18 +23,13 @@ class InfiniteRecommendationManager(
         this.productId = productId
         this.pageName = pageName
 
-        adapter.init()
         viewModel?.init()
     }
 
     private fun observeRecommendationProducts() {
         val lifecycleOwner = context as? LifecycleOwner ?: return
         viewModel?.components?.observe(lifecycleOwner) { components ->
-            if (components.isEmpty()) {
-                adapter.removeLoading()
-            } else {
-                adapter.appendComponents(components)
-            }
+            adapter.submitList(components)
         }
     }
 

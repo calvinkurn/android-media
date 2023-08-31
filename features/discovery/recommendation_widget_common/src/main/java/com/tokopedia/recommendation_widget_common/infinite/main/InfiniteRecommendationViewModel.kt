@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
+import com.tokopedia.recommendation_widget_common.infinite.component.loading.InfiniteLoadingUiModel
 import com.tokopedia.recommendation_widget_common.infinite.component.product.InfiniteProductUiModel
 import com.tokopedia.recommendation_widget_common.infinite.component.title.InfiniteTitleUiModel
 import com.tokopedia.recommendation_widget_common.infinite.main.base.InfiniteRecommendationUiModel
@@ -15,7 +16,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class InfiniteRecommendationViewModel @Inject constructor(
-    private val getRecommendationUseCase: GetRecommendationUseCase,
+    private val getRecommendationUseCase: GetRecommendationUseCase
 ) : ViewModel() {
 
     companion object {
@@ -32,6 +33,7 @@ class InfiniteRecommendationViewModel @Inject constructor(
     fun init() {
         currentPage = DEFAULT_CURRENT_PAGE
         nextPage = DEFAULT_NEXT_PAGE
+        _components.value = listOf(InfiniteLoadingUiModel)
     }
 
     fun fetchComponents(
@@ -50,28 +52,31 @@ class InfiniteRecommendationViewModel @Inject constructor(
             val recommendationResponse = getRecommendationUseCase.getData(requestParams)
             val recommendationWidget = recommendationResponse.firstOrNull()
 
-            if (recommendationWidget == null) {
-                _components.postValue(emptyList())
-            } else {
-                _components.postValue(recommendationWidget.toComponents())
-            }
+            val components = recommendationWidget.toComponents()
+            _components.postValue(components)
         }
     }
 
-    private fun RecommendationWidget.toComponents(): List<InfiniteRecommendationUiModel> {
-        val components = mutableListOf<InfiniteRecommendationUiModel>()
+    private fun RecommendationWidget?.toComponents(): List<InfiniteRecommendationUiModel> {
+        val components = _components.value?.toMutableList() ?: mutableListOf()
 
-        /**
-         * Add title only for the first page
-         */
-        if (currentPage == DEFAULT_NEXT_PAGE) {
-            components.add(InfiniteTitleUiModel(title))
+        if (this == null) {
+            components.removeLast()
+        } else {
+            /**
+             * Add title only for the first page
+             */
+            if (currentPage == DEFAULT_NEXT_PAGE) {
+                components.add(0, InfiniteTitleUiModel(title))
+            }
+
+            val products = recommendationItemList.map { InfiniteProductUiModel(it) }
+            components.addAll(components.size - 1, products)
+
+            if (!hasNext) components.removeLast()
+
+            this@InfiniteRecommendationViewModel.nextPage = nextPage
         }
-
-        val products = recommendationItemList.map { InfiniteProductUiModel(it) }
-        components.addAll(products)
-
-        this@InfiniteRecommendationViewModel.nextPage = nextPage
 
         return components
     }
