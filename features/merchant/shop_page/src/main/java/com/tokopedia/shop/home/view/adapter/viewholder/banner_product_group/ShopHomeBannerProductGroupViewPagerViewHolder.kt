@@ -39,18 +39,19 @@ class ShopHomeBannerProductGroupViewPagerViewHolder(
     }
 
     private val viewBinding: ItemShopHomeBannerProductGroupViewpagerBinding? by viewBinding()
+    private var isProductSuccessfullyLoaded = false
 
     init {
         disableTabSwipeBehavior()
     }
 
     override fun bind(model: ShopWidgetComponentBannerProductGroupUiModel) {
-
+        if (!isProductSuccessfullyLoaded){
             setupTitle(model)
             setupViewAllChevron(model)
             setupTabs(model.tabs, model.widgetStyle, model.header.isOverrideTheme, model.header.colorSchema)
             setupColors(model.header.isOverrideTheme, model.header.colorSchema)
-
+        }
     }
 
     private fun setupViewAllChevron(model: ShopWidgetComponentBannerProductGroupUiModel) {
@@ -136,7 +137,7 @@ class ShopHomeBannerProductGroupViewPagerViewHolder(
             fragment.setOnProductClick { selectedShowcase -> listener.onBannerProductGroupProductClick(selectedShowcase) }
             fragment.setOnVerticalBannerClick { verticalBanner -> listener.onBannerProductGroupVerticalBannerClick(verticalBanner) }
             fragment.setOnProductSuccessfullyLoaded { isProductSuccessfullyLoaded ->
-
+                this.isProductSuccessfullyLoaded = isProductSuccessfullyLoaded
             }
 
             val displayedTabName = currentTab.label
