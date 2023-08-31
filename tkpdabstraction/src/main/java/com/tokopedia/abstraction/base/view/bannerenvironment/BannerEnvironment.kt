@@ -36,9 +36,9 @@ class BannerEnvironment {
     private var decorView: ViewGroup? = null
 
     fun initializeBannerEnvironment(activity: Activity) {
-        if (!disableBannerSpecialCase(activity)) {
-            val enableBannerEnv = FirebaseRemoteConfigImpl(activity).getBoolean(RemoteConfigKey.ENABLE_BANNER_ENVIRONMENT, true)
-            if (enableBannerEnv && isBannerEnvironmentEnabled(activity)) {
+        val enableBannerEnv = FirebaseRemoteConfigImpl(activity).getBoolean(RemoteConfigKey.ENABLE_BANNER_ENVIRONMENT, true)
+        if (enableBannerEnv && isBannerEnvironmentEnabled(activity)) {
+            if (!disableBannerSpecialCase(activity)) {
                 addBanner((activity), getLiveStatus(activity))
             } else {
                 removeBannerIfVisible()
