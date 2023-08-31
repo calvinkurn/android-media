@@ -130,6 +130,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.pxToDp
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
@@ -298,7 +299,6 @@ class CartRevampFragment :
         private const val SPAN_SIZE_TWO = 2
 
         private const val CART_BULK_ACTION_COACH_MARK = "cart_bulk_action_coach_mark"
-        private const val CART_MAIN_COACH_MARK = "cart_main_coach_mark"
 
         const val CART_TRACE = "mp_cart"
         const val CART_ALL_TRACE = "mp_cart_all"
@@ -314,8 +314,10 @@ class CartRevampFragment :
         const val COACHMARK_VISIBLE_DELAY_DURATION = 500L
         const val DELAY_CHECK_BOX_GLOBAL = 500L
         const val KEY_OLD_BUNDLE_ID = "old_bundle_id"
-        const val KEY_NEW_BUNLDE_ID = "new_bundle_id"
+        const val KEY_NEW_BUNDLE_ID = "new_bundle_id"
         const val KEY_IS_CHANGE_VARIANT = "is_variant_changed"
+
+        private const val QUANTITY_MAX_LIMIT = 999
 
         private const val MAIN_FLOW_ONBOARDING_NOTES_INDEX = 0
         private const val MAIN_FLOW_ONBOARDING_WISHLIST_INDEX = 1
@@ -1359,12 +1361,17 @@ class CartRevampFragment :
     }
 
     override fun onProductAddOnClicked(cartItemData: CartItemHolderData) {
-        // tokopedia://addon/2148784281/?cartId=123123&selectedAddonIds=111,222,333&source=cart&warehouseId=789789&isTokocabang=false
         val productId = cartItemData.productId
         val cartId = cartItemData.cartId
         val addOnIds = arrayListOf<String>()
+        val deselectAddOnIds = arrayListOf<String>()
         cartItemData.addOnsProduct.listData.forEach {
-            addOnIds.add(it.id)
+            if (it.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK) {
+                addOnIds.add(it.id)
+            }
+            if (it.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_UNCHECK) {
+                deselectAddOnIds.add(it.id)
+            }
         }
 
         val price: Double
@@ -1385,6 +1392,7 @@ class CartRevampFragment :
                 AddOnConstant.QUERY_PARAM_CART_ID to cartId,
                 AddOnConstant.QUERY_PARAM_SELECTED_ADDON_IDS to addOnIds.toString().replace("[", "")
                     .replace("]", ""),
+                AddOnConstant.QUERY_PARAM_DESELECTED_ADDON_IDS to deselectAddOnIds.toString().replace("[", "").replace("]", ""),
                 AddOnConstant.QUERY_PARAM_PAGE_ATC_SOURCE to AddOnConstant.SOURCE_NORMAL_CHECKOUT,
                 AddOnConstant.QUERY_PARAM_WAREHOUSE_ID to cartItemData.warehouseId,
                 AddOnConstant.QUERY_PARAM_IS_TOKOCABANG to cartItemData.isFulfillment,
@@ -1396,8 +1404,6 @@ class CartRevampFragment :
                     .removeSingleDecimalSuffix()
             )
         )
-
-        println("++ applink = $applink")
 
         activity?.let {
             val intent = RouteManager.getIntent(it, applink)
@@ -2269,10 +2275,6 @@ class CartRevampFragment :
         return isPromoApplied
     }
 
-    private fun isTestingFlow(): Boolean {
-        return arguments?.getBoolean(CartConstant.IS_TESTING_FLOW, false) ?: false
-    }
-
     private fun loadRecommendation() {
         viewModel.processGetRecommendationData()
     }
@@ -2317,29 +2319,20 @@ class CartRevampFragment :
         viewModel.addToCartEvent.observe(viewLifecycleOwner) { addToCartEvent ->
             when (addToCartEvent) {
                 is AddToCartEvent.Success -> {
-                    if (addToCartEvent.addToCartDataModel.status.equals(
-                            AddToCartDataModel.STATUS_OK,
-                            true
-                        ) && addToCartEvent.addToCartDataModel.data.success == 1
-                    ) {
-                        triggerSendEnhancedEcommerceAddToCartSuccess(
-                            addToCartEvent.addToCartDataModel,
-                            addToCartEvent.productModel
-                        )
-                        resetRecentViewList()
-                        viewModel.processInitialGetCartData(
-                            cartId = "0",
-                            initialLoad = false,
-                            isLoadingTypeRefresh = false
-                        )
-                        if (addToCartEvent.addToCartDataModel.data.message.size > 0) {
-                            showToastMessageGreen(addToCartEvent.addToCartDataModel.data.message[0])
-                            notifyBottomCartParent()
-                        }
-                    } else {
-                        if (addToCartEvent.addToCartDataModel.errorMessage.size > 0) {
-                            showToastMessageRed(addToCartEvent.addToCartDataModel.errorMessage[0])
-                        }
+                    hideProgressLoading()
+                    triggerSendEnhancedEcommerceAddToCartSuccess(
+                        addToCartEvent.addToCartDataModel,
+                        addToCartEvent.productModel
+                    )
+                    resetRecentViewList()
+                    viewModel.processInitialGetCartData(
+                        cartId = "0",
+                        initialLoad = false,
+                        isLoadingTypeRefresh = false
+                    )
+                    if (addToCartEvent.addToCartDataModel.data.message.size > 0) {
+                        showToastMessageGreen(addToCartEvent.addToCartDataModel.data.message[0])
+                        notifyBottomCartParent()
                     }
                 }
 
@@ -3010,7 +3003,7 @@ class CartRevampFragment :
                 var newAddOnWording = ""
                 if (addOnProductDataResult.aggregatedData.title.isNotEmpty()) {
                     newAddOnWording =
-                        "${addOnProductDataResult.aggregatedData.title} <b>(${addOnProductDataResult.aggregatedData.price})</b>"
+                        "${addOnProductDataResult.aggregatedData.title} <b>(${CurrencyFormatUtil.convertPriceValueToIdrFormat(addOnProductDataResult.aggregatedData.price, false).removeDecimalSuffix()})</b>"
                 }
 
                 viewModel.updateAddOnByCartId(
@@ -3027,7 +3020,7 @@ class CartRevampFragment :
     private fun onResultFromEditBundle(resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
             val oldBundleId = data?.getStringExtra(KEY_OLD_BUNDLE_ID) ?: ""
-            val newBundleId = data?.getStringExtra(KEY_NEW_BUNLDE_ID) ?: ""
+            val newBundleId = data?.getStringExtra(KEY_NEW_BUNDLE_ID) ?: ""
             val isChangeVariant =
                 data?.getBooleanExtra(KEY_IS_CHANGE_VARIANT, false) ?: false
             val toBeDeletedBundleGroupId = viewModel.cartModel.toBeDeletedBundleGroupId
@@ -3051,9 +3044,7 @@ class CartRevampFragment :
     }
 
     private fun onResultFromPdp() {
-        if (!isTestingFlow()) {
-            refreshCartWithSwipeToRefresh()
-        }
+        refreshCartWithSwipeToRefresh()
     }
 
     private fun onResultFromPromoPage(resultCode: Int, data: Intent?) {
@@ -3317,11 +3308,8 @@ class CartRevampFragment :
     private fun renderCartNotEmpty(cartData: CartData) {
         FLAG_IS_CART_EMPTY = false
 
-        renderTickerError(cartData)
         renderCartAvailableItems(cartData)
         renderCartUnavailableItems(cartData)
-
-        viewModel.reCalculateSubTotal()
 
         cartPageAnalytics.eventViewCartListFinishRender()
         val cartItemDataList = CartDataHelper.getAllCartItemData(
@@ -3484,6 +3472,8 @@ class CartRevampFragment :
         renderSelectedAmount()
         setInitialCheckboxGlobalState(cartData)
         setSelectedAmountVisibility()
+
+        viewModel.reCalculateSubTotal()
 
         if (!cartData.isGlobalCheckboxState) {
             isFirstCheckEvent = false
@@ -3714,13 +3704,6 @@ class CartRevampFragment :
         }
     }
 
-    private fun renderTickerError(cartData: CartData) {
-        if (cartData.availableSection.availableGroupGroups.isNotEmpty() && cartData.unavailableSections.isNotEmpty()) {
-            val cartItemTickerErrorHolderData = CartUiModelMapper.mapTickerErrorUiModel(cartData)
-            viewModel.addItem(cartItemTickerErrorHolderData)
-        }
-    }
-
     private fun renderToShipmentFormSuccess(
         eeCheckoutData: Map<String, Any>,
         checkoutProductEligibleForCashOnDelivery: Boolean,
@@ -3777,7 +3760,10 @@ class CartRevampFragment :
         binding?.goToCourierPageButton?.text = if (viewModel.selectedAmountState.value <= 0) {
             String.format(getString(R.string.cart_text_buy))
         } else {
-            String.format(getString(R.string.cart_item_button_checkout_count_format), qty)
+            val quantityNumber = qty.toIntOrZero()
+            val reachMaximumLimit = quantityNumber > QUANTITY_MAX_LIMIT
+            val stringResourceId = if (reachMaximumLimit) R.string.cart_item_button_checkout_count_format_reach_maximum_limit else R.string.cart_item_button_checkout_count_format
+            String.format(getString(stringResourceId), quantityNumber.coerceAtMost(QUANTITY_MAX_LIMIT))
         }
         if (totalPriceString == "-") {
             onCartDataDisableToCheckout()
@@ -4218,19 +4204,21 @@ class CartRevampFragment :
     }
 
     private fun setMainFlowCoachMark(cartData: CartData) {
-        val mainFlowCoachMarkItems = arrayListOf<CoachMark2Item>()
-        generateSelectAllCoachMark(mainFlowCoachMarkItems)
-        mainFlowCoachMark?.let {
-            cartAdapter.setMainCoachMark(
-                CartMainCoachMarkUiModel(
-                    it,
-                    mainFlowCoachMarkItems,
-                    cartData.onboardingData.getOrNull(MAIN_FLOW_ONBOARDING_NOTES_INDEX)
-                        ?: CartOnBoardingData(),
-                    cartData.onboardingData.getOrNull(MAIN_FLOW_ONBOARDING_WISHLIST_INDEX)
-                        ?: CartOnBoardingData()
+        if (cartData.onboardingData.size > MAIN_FLOW_ONBOARDING_SELECT_ALL_INDEX) {
+            val mainFlowCoachMarkItems = arrayListOf<CoachMark2Item>()
+            generateSelectAllCoachMark(mainFlowCoachMarkItems)
+            mainFlowCoachMark?.let {
+                cartAdapter.setMainCoachMark(
+                    CartMainCoachMarkUiModel(
+                        it,
+                        mainFlowCoachMarkItems,
+                        cartData.onboardingData.getOrNull(MAIN_FLOW_ONBOARDING_NOTES_INDEX)
+                            ?: CartOnBoardingData(),
+                        cartData.onboardingData.getOrNull(MAIN_FLOW_ONBOARDING_WISHLIST_INDEX)
+                            ?: CartOnBoardingData()
+                    )
                 )
-            )
+            }
         }
     }
 
@@ -4251,7 +4239,8 @@ class CartRevampFragment :
             override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
                 val selectedAmountCoachMarkIndex = 1
                 if (currentIndex == selectedAmountCoachMarkIndex && isMockMainFlowCoachMarkShown) {
-                    val topItemPosition = (binding?.rvCart?.layoutManager as GridLayoutManager).findFirstVisibleItemPosition()
+                    val topItemPosition =
+                        (binding?.rvCart?.layoutManager as GridLayoutManager).findFirstVisibleItemPosition()
                     if (topItemPosition == RecyclerView.NO_POSITION) return
 
                     val adapterData = viewModel.cartDataList.value
@@ -4317,7 +4306,8 @@ class CartRevampFragment :
                 } else {
                     val selectedAmountViewHolder = findViewHolderForAdapterPosition(0)
                     if (selectedAmountViewHolder is CartSelectedAmountViewHolder) {
-                        val textActionDeleteView = selectedAmountViewHolder.getTextActionDeleteView()
+                        val textActionDeleteView =
+                            selectedAmountViewHolder.getTextActionDeleteView()
                         bulkActionCoachMarkItems.add(
                             CoachMark2Item(
                                 textActionDeleteView,

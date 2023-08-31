@@ -26,6 +26,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_AFFILIATE_CREATE_POST_V2
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_FEED_SOURCE_ID
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_FEED_SOURCE_NAME
@@ -34,6 +35,7 @@ import com.tokopedia.content.common.comment.PageSource
 import com.tokopedia.content.common.comment.analytic.ContentCommentAnalytics
 import com.tokopedia.content.common.comment.analytic.ContentCommentAnalyticsModel
 import com.tokopedia.content.common.comment.ui.ContentCommentBottomSheet
+import com.tokopedia.content.common.navigation.people.UserProfileActivityResult
 import com.tokopedia.content.common.report_content.bottomsheet.ContentReportBottomSheet
 import com.tokopedia.content.common.report_content.bottomsheet.ContentSubmitReportBottomSheet
 import com.tokopedia.content.common.report_content.bottomsheet.ContentThreeDotsMenuBottomSheet
@@ -41,6 +43,7 @@ import com.tokopedia.content.common.report_content.model.FeedMenuIdentifier
 import com.tokopedia.content.common.report_content.model.FeedMenuItem
 import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
 import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
+import com.tokopedia.content.common.util.Router
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.feed.component.product.FeedTaggedProductBottomSheet
@@ -52,6 +55,7 @@ import com.tokopedia.feedcomponent.util.FeedVideoCache
 import com.tokopedia.feedcomponent.util.util.DataMapper
 import com.tokopedia.feedcomponent.view.widget.FeedExoPlayer
 import com.tokopedia.feedplus.analytics.FeedAnalytics
+import com.tokopedia.feedplus.analytics.FeedFollowRecommendationAnalytics
 import com.tokopedia.feedplus.analytics.FeedMVCAnalytics
 import com.tokopedia.feedplus.data.FeedXCard
 import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_TOP_ADS
@@ -61,6 +65,7 @@ import com.tokopedia.feedplus.domain.mapper.MapperFeedModelToTrackerDataModel
 import com.tokopedia.feedplus.domain.mapper.MapperProductsToXProducts
 import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
 import com.tokopedia.feedplus.presentation.adapter.FeedContentAdapter
+import com.tokopedia.feedplus.presentation.adapter.listener.FeedFollowRecommendationListener
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
 import com.tokopedia.feedplus.presentation.adapter.util.FeedPostLayoutManager
 import com.tokopedia.feedplus.presentation.model.ActiveTabSource
@@ -77,12 +82,13 @@ import com.tokopedia.feedplus.presentation.model.FeedPostEvent
 import com.tokopedia.feedplus.presentation.model.FeedShareModel
 import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
 import com.tokopedia.feedplus.presentation.model.PostSourceModel
+import com.tokopedia.feedplus.presentation.model.FeedFollowRecommendationModel
+import com.tokopedia.feedplus.presentation.model.type.AuthorType
 import com.tokopedia.feedplus.presentation.uiview.FeedCampaignRibbonType
 import com.tokopedia.feedplus.presentation.uiview.FeedProductTagView
 import com.tokopedia.feedplus.presentation.util.VideoPlayerManager
 import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
 import com.tokopedia.feedplus.presentation.viewmodel.FeedPostViewModel
-import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
@@ -99,6 +105,7 @@ import com.tokopedia.mvcwidget.TokopointsCatalogMVCSummary
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
+import com.tokopedia.shop.common.util.ShopPageActivityResult
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
@@ -133,11 +140,13 @@ class FeedFragment :
         FeedContentAdapter(
             FeedAdapterTypeFactory(
                 this,
+                viewLifecycleOwner,
                 binding.rvFeedPost,
-                trackerModelMapper
+                trackerModelMapper,
+                feedFollowRecommendationListener,
             )
         ) {
-            if (feedPostViewModel.shouldShowNoMoreContent) return@FeedContentAdapter
+            if (feedPostViewModel.shouldShowNoMoreContent || !feedPostViewModel.hasNext) return@FeedContentAdapter
             adapter.showLoading()
             feedPostViewModel.fetchFeedPosts(data?.type ?: "")
         }
@@ -164,12 +173,20 @@ class FeedFragment :
     lateinit var commentAnalytics: ContentCommentAnalytics.Creator
 
     @Inject
+    lateinit var feedFollowRecommendationAnalytics: FeedFollowRecommendationAnalytics
+
+    @Inject
     lateinit var fragmentFactory: FragmentFactory
 
     @Inject
     lateinit var dispatchers: CoroutineDispatchers
 
-    @Inject lateinit var viewModelAssistedFactory: FeedMainViewModel.Factory
+    @Inject
+    lateinit var viewModelAssistedFactory: FeedMainViewModel.Factory
+      
+    @Inject
+    lateinit var router: Router
+      
     private val feedMainViewModel: FeedMainViewModel by viewModels(
         ownerProducer = {
             parentFragment ?: this
@@ -202,7 +219,8 @@ class FeedFragment :
                 childFragmentManager.findFragmentByTag(TAG_FEED_MENU_BOTTOMSHEET) as? ContentThreeDotsMenuBottomSheet
             if (feedMenuSheet != null && userSession.isLoggedIn) {
                 val item = adapter.currentList[getCurrentPosition()]?.data
-                val isVideo = item is FeedCardVideoContentModel || item is FeedCardLivePreviewContentModel
+                val isVideo =
+                    item is FeedCardVideoContentModel || item is FeedCardLivePreviewContentModel
 
                 feedMenuSheet.showReportLayoutWhenLaporkanClicked(isVideo = isVideo, action = {
                     ContentReportBottomSheet.getOrCreate(
@@ -239,6 +257,26 @@ class FeedFragment :
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (!userSession.isLoggedIn) return@registerForActivityResult
             feedPostViewModel.processSuspendedBuyProduct()
+        }
+
+    private val userProfileResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            it.data?.let { intent ->
+                val userId = UserProfileActivityResult.getUserId(intent)
+                val isFollow = UserProfileActivityResult.isFollow(intent)
+
+                feedPostViewModel.updateFollowStatus(userId, isFollow)
+            }
+        }
+
+    private val shopPageResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            it.data?.let { intent ->
+                val shopId = ShopPageActivityResult.getShopId(intent)
+                val isFollow = ShopPageActivityResult.isFollow(intent)
+
+                feedPostViewModel.updateFollowStatus(shopId, isFollow)
+            }
         }
 
     private var feedFollowersOnlyBottomSheet: FeedFollowersOnlyBottomSheet? = null
@@ -286,6 +324,69 @@ class FeedFragment :
     private var mHasVoucher: Boolean = false
     private var mCampaign: FeedCardCampaignModel? = null
 
+    private val feedFollowRecommendationListener = object : FeedFollowRecommendationListener {
+
+        override fun onImpressProfile(profile: FeedFollowRecommendationModel.Profile) {
+            feedFollowRecommendationAnalytics.eventImpressProfileRecommendation(
+                trackerModelMapper.transformProfileRecommendationToTrackerModel(profile)
+            )
+        }
+
+        override fun onClickFollow(profile: FeedFollowRecommendationModel.Profile) {
+            feedFollowRecommendationAnalytics.eventClickFollowProfileRecommendation(
+                trackerModelMapper.transformProfileRecommendationToTrackerModel(profile)
+            )
+
+            if (profile.isFollowed) {
+                feedPostViewModel.doUnfollowProfileRecommendation(profile.id, profile.encryptedId, profile.isShop)
+            } else {
+                feedPostViewModel.doFollowProfileRecommendation(profile.id, profile.encryptedId, profile.isShop)
+            }
+        }
+
+        override fun onCloseProfileRecommendation(profile: FeedFollowRecommendationModel.Profile) {
+            feedFollowRecommendationAnalytics.eventClickRemoveProfileRecommendation(
+                trackerModelMapper.transformProfileRecommendationToTrackerModel(profile)
+            )
+
+            feedPostViewModel.removeProfileRecommendation(profile)
+        }
+
+        override fun onClickProfileRecommendation(profile: FeedFollowRecommendationModel.Profile) {
+            feedFollowRecommendationAnalytics.eventClickProfileRecommendation(
+                trackerModelMapper.transformProfileRecommendationToTrackerModel(profile)
+            )
+
+            goToProfilePage(profile.applink, profile.isShop)
+        }
+
+        override fun reloadProfileRecommendation() {
+            feedPostViewModel.fetchFollowRecommendation(getCurrentPosition())
+        }
+
+        override fun onLoadNextProfileRecommendation() {
+            feedPostViewModel.fetchFollowRecommendation(getCurrentPosition())
+        }
+
+        override fun onClickViewOtherContent() {
+            feedMainViewModel.setActiveTab(FeedBaseFragment.TAB_TYPE_FOR_YOU)
+        }
+
+        override fun onSwipeProfileRecommendation() {
+            feedFollowRecommendationAnalytics.eventSwipeProfileRecommendation(
+                tabType = trackerModelMapper.tabType,
+                entryPoint = trackerModelMapper.entryPoint,
+            )
+        }
+
+        override fun onErrorPlayingVideo() {
+            showToast(
+                getString(feedR.string.feed_load_follow_recommendation_failed),
+                Toaster.TYPE_ERROR
+            )
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         childFragmentManager.fragmentFactory = fragmentFactory
@@ -305,7 +406,11 @@ class FeedFragment :
                     Lifecycle.Event.ON_RESUME -> {
                         if (checkResume(isOnResume = true)) resumeCurrentVideo()
                     }
-                    Lifecycle.Event.ON_PAUSE -> pauseCurrentVideo()
+                    Lifecycle.Event.ON_PAUSE -> {
+                        pauseCurrentVideo()
+
+                        feedFollowRecommendationAnalytics.sendAll()
+                    }
                     else -> {}
                 }
             }
@@ -347,22 +452,24 @@ class FeedFragment :
         observeReport()
         observeDelete()
         observeFollow()
+        observeUnfollow()
         observeLikeContent()
         observeResumePage()
         observeAddProductToCart()
         observeBuyProduct()
         observeReminder()
+        observeFeedRecommendationResult()
 
         observeEvent()
     }
 
     override fun onDestroyView() {
-        _binding = null
         dismissFeedProductBottomSheet()
         dismissFeedMenuBottomSheet()
         dismissAtcVariantBottomSheet()
         dismissShareBottomSheet()
         super.onDestroyView()
+        _binding = null
 
         videoPlayerManager.releaseAll()
     }
@@ -401,6 +508,10 @@ class FeedFragment :
         }
     }
 
+    override fun onProfileClicked(appLink: String, type: AuthorType) {
+        goToProfilePage(appLink, type.isShop)
+    }
+
     override fun onMenuItemClick(feedMenuItem: FeedMenuItem, contentId: String) {
         when (feedMenuItem.type) {
             FeedMenuIdentifier.Report -> {
@@ -408,7 +519,8 @@ class FeedFragment :
                     onGoToLogin()
                 } else {
                     val item = adapter.currentList[getCurrentPosition()]?.data
-                    val isVideo = item is FeedCardVideoContentModel || item is FeedCardLivePreviewContentModel
+                    val isVideo =
+                        item is FeedCardVideoContentModel || item is FeedCardLivePreviewContentModel
                     (childFragmentManager.findFragmentByTag(TAG_FEED_MENU_BOTTOMSHEET) as? ContentThreeDotsMenuBottomSheet)?.showReportLayoutWhenLaporkanClicked(
                         isVideo = isVideo,
                         action = {
@@ -1059,6 +1171,7 @@ class FeedFragment :
                         }
                     } else {
                         adapter.setList(it.data.items) {
+                            if (_binding == null) return@setList
                             updateBottomActionView(getCurrentPosition())
                         }
                         context?.let { ctx ->
@@ -1109,6 +1222,25 @@ class FeedFragment :
         }
     }
 
+    private fun observeUnfollow() {
+        feedPostViewModel.unfollowResult.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    showToast(
+                        getString(feedR.string.feed_message_success_unfollow, it.data),
+                        Toaster.TYPE_NORMAL
+                    )
+                }
+                is Fail -> {
+                    showToast(
+                        getString(feedR.string.feed_message_failed_unfollow),
+                        Toaster.TYPE_ERROR
+                    )
+                }
+            }
+        }
+    }
+
     private fun observeLikeContent() {
         feedPostViewModel.getLikeKolResp.observe(
             viewLifecycleOwner
@@ -1136,6 +1268,8 @@ class FeedFragment :
                 resumeCurrentVideo()
             } else {
                 pauseCurrentVideo()
+
+                feedFollowRecommendationAnalytics.sendAll()
             }
         }
     }
@@ -1221,6 +1355,7 @@ class FeedFragment :
         when (item) {
             is FeedCardVideoContentModel -> pauseVideo(item.id)
             is FeedCardLivePreviewContentModel -> pauseVideo(item.id)
+            is FeedFollowRecommendationModel -> adapter.pauseFollowRecommendationVideo(currentIndex)
             else -> {}
         }
     }
@@ -1233,6 +1368,7 @@ class FeedFragment :
         when (item) {
             is FeedCardVideoContentModel -> resumeVideo(item.id)
             is FeedCardLivePreviewContentModel -> resumeVideo(item.id)
+            is FeedFollowRecommendationModel -> adapter.resumeFollowRecommendationVideo(currentIndex)
             else -> {}
         }
     }
@@ -1650,6 +1786,20 @@ class FeedFragment :
         }
     }
 
+    private fun observeFeedRecommendationResult() {
+        feedPostViewModel.followRecommendationResult.observe(viewLifecycleOwner) {
+            when (it) {
+                is Fail -> {
+                    showToast(
+                        getString(feedR.string.feed_load_follow_recommendation_failed),
+                        Toaster.TYPE_ERROR
+                    )
+                }
+                else -> {}
+            }
+        }
+    }
+
     /**
      * Share
      */
@@ -1737,6 +1887,14 @@ class FeedFragment :
                 }
             )
         )
+    }
+
+    private fun goToProfilePage(appLink: String, isShop: Boolean) {
+        if (isShop) {
+            router.route(requireContext(), shopPageResult, appLink)
+        } else {
+            router.route(requireContext(), userProfileResult, appLink)
+        }
     }
 
     private fun dismissFeedProductBottomSheet() {

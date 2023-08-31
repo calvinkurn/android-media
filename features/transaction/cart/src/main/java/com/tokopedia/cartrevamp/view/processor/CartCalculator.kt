@@ -2,6 +2,7 @@ package com.tokopedia.cartrevamp.view.processor
 
 import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartModel
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import javax.inject.Inject
@@ -94,7 +95,9 @@ class CartCalculator @Inject constructor() {
             if (cartItemHolderData.addOnsProduct.listData.isNotEmpty()) {
                 updateCartModel(cartModel.copy(totalQtyWithAddon = totalItemQty))
                 cartItemHolderData.addOnsProduct.listData.forEach {
-                    subtotalPrice += (cartModel.totalQtyWithAddon * it.price)
+                    if (it.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_MANDATORY || it.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK) {
+                        subtotalPrice += (totalItemQty * it.price)
+                    }
                 }
             }
         }

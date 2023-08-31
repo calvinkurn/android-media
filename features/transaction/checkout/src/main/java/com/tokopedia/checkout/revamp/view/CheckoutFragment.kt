@@ -48,6 +48,7 @@ import com.tokopedia.checkout.revamp.di.DaggerCheckoutComponent
 import com.tokopedia.checkout.revamp.view.adapter.CheckoutAdapter
 import com.tokopedia.checkout.revamp.view.adapter.CheckoutAdapterListener
 import com.tokopedia.checkout.revamp.view.adapter.CheckoutDiffUtilCallback
+import com.tokopedia.checkout.revamp.view.processor.CheckoutResult
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCrossSellModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutEpharmacyModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutItem
@@ -232,13 +233,15 @@ class CheckoutFragment :
         get() = arguments != null && arguments?.getString(
             ShipmentFormRequest.EXTRA_DEVICE_ID,
             ""
-        ) != null && requireArguments().getString(ShipmentFormRequest.EXTRA_DEVICE_ID, "").isNotEmpty()
+        ) != null && requireArguments().getString(ShipmentFormRequest.EXTRA_DEVICE_ID, "")
+            .isNotEmpty()
 
     private val checkoutPageSource: String
         get() {
             var pageSource: String = CheckoutConstant.CHECKOUT_PAGE_SOURCE_PDP
             if (arguments != null && arguments?.getString(ShipmentFragment.ARG_CHECKOUT_PAGE_SOURCE) != null) {
-                pageSource = requireArguments().getString(ShipmentFragment.ARG_CHECKOUT_PAGE_SOURCE)!!
+                pageSource =
+                    requireArguments().getString(ShipmentFragment.ARG_CHECKOUT_PAGE_SOURCE)!!
             }
             return pageSource
         }
@@ -289,9 +292,9 @@ class CheckoutFragment :
                     shipmentCartItemModel.errorTitle
                 )
             } else if (shipmentCartItemModel is CheckoutOrderModel && (
-                !shipmentCartItemModel.isError && shipmentCartItemModel.isHasUnblockingError &&
-                    shipmentCartItemModel.unblockingErrorMessage.isNotEmpty()
-                ) && shipmentCartItemModel.firstProductErrorIndex > 0
+                    !shipmentCartItemModel.isError && shipmentCartItemModel.isHasUnblockingError &&
+                        shipmentCartItemModel.unblockingErrorMessage.isNotEmpty()
+                    ) && shipmentCartItemModel.firstProductErrorIndex > 0
             ) {
                 onViewTickerOrderError(
                     shipmentCartItemModel.shopId.toString(),
@@ -351,7 +354,6 @@ class CheckoutFragment :
             onBackPressed()
         }
         header = HeaderCheckoutBinding.inflate(LayoutInflater.from(context))
-        header.tvCheckoutHeaderAddressHeader.isVisible = false
         header.icCheckoutHeaderAddress.isVisible = false
         header.tvCheckoutHeaderAddressName.isVisible = false
         binding.headerCheckout.customView(header.root)
@@ -369,12 +371,10 @@ class CheckoutFragment :
                     (linearLayoutManager?.findFirstVisibleItemPosition() ?: -1) > 2
                 ) {
                     header.tvCheckoutHeaderText.animateGone()
-                    header.tvCheckoutHeaderAddressHeader.animateShow()
                     header.icCheckoutHeaderAddress.animateShow()
                     header.tvCheckoutHeaderAddressName.animateShow()
                 } else if (!header.tvCheckoutHeaderText.isVisible) {
                     header.tvCheckoutHeaderText.animateShow()
-                    header.tvCheckoutHeaderAddressHeader.animateGone()
                     header.icCheckoutHeaderAddress.animateGone()
                     header.tvCheckoutHeaderAddressName.animateGone()
                 }
@@ -1130,15 +1130,18 @@ class CheckoutFragment :
                 AddOnConstant.QUERY_PARAM_CART_ID to cartId,
                 AddOnConstant.QUERY_PARAM_SELECTED_ADDON_IDS to addOnIds.toString().replace("[", "")
                     .replace("]", ""),
-                AddOnConstant.QUERY_PARAM_DESELECTED_ADDON_IDS to deselectAddOnIds.toString().replace("[", "").replace("]", ""),
+                AddOnConstant.QUERY_PARAM_DESELECTED_ADDON_IDS to deselectAddOnIds.toString()
+                    .replace("[", "").replace("]", ""),
                 AddOnConstant.QUERY_PARAM_PAGE_ATC_SOURCE to AddOnConstant.SOURCE_NORMAL_CHECKOUT,
                 ApplinkConstInternalMechant.QUERY_PARAM_WAREHOUSE_ID to product.warehouseId,
                 AddOnConstant.QUERY_PARAM_IS_TOKOCABANG to product.isTokoCabang,
                 AddOnConstant.QUERY_PARAM_CATEGORY_ID to product.productCatId,
                 AddOnConstant.QUERY_PARAM_SHOP_ID to product.shopId,
                 AddOnConstant.QUERY_PARAM_QUANTITY to product.quantity,
-                AddOnConstant.QUERY_PARAM_PRICE to price.toBigDecimal().toPlainString().removeSingleDecimalSuffix(),
-                AddOnConstant.QUERY_PARAM_DISCOUNTED_PRICE to discountedPrice.toBigDecimal().toPlainString().removeSingleDecimalSuffix()
+                AddOnConstant.QUERY_PARAM_PRICE to price.toBigDecimal().toPlainString()
+                    .removeSingleDecimalSuffix(),
+                AddOnConstant.QUERY_PARAM_DISCOUNTED_PRICE to discountedPrice.toBigDecimal()
+                    .toPlainString().removeSingleDecimalSuffix()
             )
         )
 
@@ -1561,9 +1564,9 @@ class CheckoutFragment :
                     (
                         recipientAddressModel!!.latitude == null ||
                             recipientAddressModel.latitude.equals(
-                                    "0",
-                                    ignoreCase = true
-                                ) || recipientAddressModel.longitude == null ||
+                                "0",
+                                ignoreCase = true
+                            ) || recipientAddressModel.longitude == null ||
                             recipientAddressModel.longitude.equals("0", ignoreCase = true)
                         )
                 ) {
@@ -1630,56 +1633,55 @@ class CheckoutFragment :
         )
         val cartString = viewModel.listData.value[cartPosition].cartStringGroup
         if (!flagNeedToSetPinpoint) {
-            val shipmentCartItemModel =
-                viewModel.listData.value[cartPosition] as CheckoutOrderModel
-            val validateUsePromoRequest = viewModel.generateValidateUsePromoRequest().copy()
-            if (promoCode.isNotEmpty()) {
-                for (order in validateUsePromoRequest.orders) {
-                    if (order.cartStringGroup == shipmentCartItemModel.cartStringGroup && !order.codes.contains(
-                            promoCode
-                        )
-                    ) {
-                        if (shipmentCartItemModel.shipment.courierItemData?.selectedShipper?.logPromoCode != null) {
-                            // remove previous logistic promo code
-                            order.codes.remove(shipmentCartItemModel.shipment.courierItemData.selectedShipper.logPromoCode)
-                        }
-                        order.codes.add(promoCode)
-                        order.boCode = promoCode
-                    }
-                }
-            }
-            val shipmentCartItemModelLists =
-                viewModel.listData.value.filterIsInstance(CheckoutOrderModel::class.java)
-            if (shipmentCartItemModelLists.isNotEmpty() && !shipmentCartItemModel.isFreeShippingPlus) {
-                for (tmpShipmentCartItemModel in shipmentCartItemModelLists) {
-                    for (order in validateUsePromoRequest.orders) {
-                        if (shipmentCartItemModel.cartStringGroup != tmpShipmentCartItemModel.cartStringGroup && tmpShipmentCartItemModel.cartStringGroup == order.cartStringGroup && tmpShipmentCartItemModel.shipment.courierItemData?.selectedShipper?.logPromoCode != null &&
-                            !tmpShipmentCartItemModel.isFreeShippingPlus
-                        ) {
-                            order.codes.remove(tmpShipmentCartItemModel.shipment.courierItemData.selectedShipper.logPromoCode)
-                            order.boCode = ""
-                        }
-                    }
-                }
-            }
-            for (ordersItem in validateUsePromoRequest.orders) {
-                if (ordersItem.cartStringGroup == shipmentCartItemModel.cartStringGroup) {
-                    ordersItem.spId = courierItemData.shipperProductId
-                    ordersItem.shippingId = courierItemData.shipperId
-                    ordersItem.freeShippingMetadata = courierItemData.freeShippingMetadata
-                    ordersItem.boCampaignId = courierItemData.boCampaignId
-                    ordersItem.shippingSubsidy = courierItemData.shippingSubsidy
-                    ordersItem.benefitClass = courierItemData.benefitClass
-                    ordersItem.shippingPrice = courierItemData.shippingRate.toDouble()
-                    ordersItem.etaText = courierItemData.etaText!!
-                }
-            }
+//            val shipmentCartItemModel =
+//                viewModel.listData.value[cartPosition] as CheckoutOrderModel
+//            val validateUsePromoRequest = viewModel.generateValidateUsePromoRequest().copy()
+//            if (promoCode.isNotEmpty()) {
+//                for (order in validateUsePromoRequest.orders) {
+//                    if (order.cartStringGroup == shipmentCartItemModel.cartStringGroup && !order.codes.contains(
+//                            promoCode
+//                        )
+//                    ) {
+//                        if (shipmentCartItemModel.shipment.courierItemData?.selectedShipper?.logPromoCode != null) {
+//                            // remove previous logistic promo code
+//                            order.codes.remove(shipmentCartItemModel.shipment.courierItemData.selectedShipper.logPromoCode)
+//                        }
+//                        order.codes.add(promoCode)
+//                        order.boCode = promoCode
+//                    }
+//                }
+//            }
+//            val shipmentCartItemModelLists =
+//                viewModel.listData.value.filterIsInstance(CheckoutOrderModel::class.java)
+//            if (shipmentCartItemModelLists.isNotEmpty() && !shipmentCartItemModel.isFreeShippingPlus) {
+//                for (tmpShipmentCartItemModel in shipmentCartItemModelLists) {
+//                    for (order in validateUsePromoRequest.orders) {
+//                        if (shipmentCartItemModel.cartStringGroup != tmpShipmentCartItemModel.cartStringGroup && tmpShipmentCartItemModel.cartStringGroup == order.cartStringGroup && tmpShipmentCartItemModel.shipment.courierItemData?.selectedShipper?.logPromoCode != null &&
+//                            !tmpShipmentCartItemModel.isFreeShippingPlus
+//                        ) {
+//                            order.codes.remove(tmpShipmentCartItemModel.shipment.courierItemData.selectedShipper.logPromoCode)
+//                            order.boCode = ""
+//                        }
+//                    }
+//                }
+//            }
+//            for (ordersItem in validateUsePromoRequest.orders) {
+//                if (ordersItem.cartStringGroup == shipmentCartItemModel.cartStringGroup) {
+//                    ordersItem.spId = courierItemData.shipperProductId
+//                    ordersItem.shippingId = courierItemData.shipperId
+//                    ordersItem.freeShippingMetadata = courierItemData.freeShippingMetadata
+//                    ordersItem.boCampaignId = courierItemData.boCampaignId
+//                    ordersItem.shippingSubsidy = courierItemData.shippingSubsidy
+//                    ordersItem.benefitClass = courierItemData.benefitClass
+//                    ordersItem.shippingPrice = courierItemData.shippingRate.toDouble()
+//                    ordersItem.etaText = courierItemData.etaText!!
+//                }
+//            }
             viewModel.doValidateUseLogisticPromoNew(
                 cartPosition,
                 cartString,
-                validateUsePromoRequest,
                 promoCode,
-                showLoading = true,
+                true,
                 courierItemData,
                 courierData.productData.insurance
             )
@@ -1789,13 +1791,13 @@ class CheckoutFragment :
             isCod
         )
         if (isNeedPinpoint || courierItemData.isUsePinPoint && (
-            recipientAddressModel!!.latitude == null ||
-                recipientAddressModel.latitude.equals(
+                recipientAddressModel!!.latitude == null ||
+                    recipientAddressModel.latitude.equals(
                         "0",
                         ignoreCase = true
                     ) || recipientAddressModel.longitude == null ||
-                recipientAddressModel.longitude.equals("0", ignoreCase = true)
-            )
+                    recipientAddressModel.longitude.equals("0", ignoreCase = true)
+                )
         ) {
             setPinpoint(cartPosition)
         } else {
@@ -2016,7 +2018,8 @@ class CheckoutFragment :
     }
 
     override fun onCrossSellItemChecked(checked: Boolean, crossSellModel: CheckoutCrossSellModel) {
-        val shipmentCartItemModels = viewModel.listData.value.filterIsInstance(CheckoutProductModel::class.java)
+        val shipmentCartItemModels =
+            viewModel.listData.value.filterIsInstance(CheckoutProductModel::class.java)
         viewModel.updateCrossSell(checked)
         val digitalCategoryName = crossSellModel.crossSellModel.orderSummary.title
         val digitalProductId = crossSellModel.crossSellModel.id
@@ -2084,25 +2087,36 @@ class CheckoutFragment :
                     publicKey = FingerPrintUtil.getPublicKey(fpk)
                 }
             }
-            viewModel.checkout(publicKey, { showEpharmacyToaster ->
-                sendAnalyticsEpharmacyClickPembayaran(showEpharmacyToaster)
-            }) {
-                val paymentPassData = PaymentPassData()
-                paymentPassData.redirectUrl = it.checkoutData!!.redirectUrl
-                paymentPassData.transactionId = it.checkoutData.transactionId
-                paymentPassData.paymentId = it.checkoutData.paymentId
-                paymentPassData.callbackSuccessUrl = it.checkoutData.callbackSuccessUrl
-                paymentPassData.callbackFailedUrl = it.checkoutData.callbackFailedUrl
-                paymentPassData.queryString = it.checkoutData.queryString
-                val intent =
-                    RouteManager.getIntent(activity, ApplinkConstInternalPayment.PAYMENT_CHECKOUT)
-                intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData)
-                intent.putExtra(
-                    PaymentConstant.EXTRA_HAS_CLEAR_RED_STATE_PROMO_BEFORE_CHECKOUT,
-                    it.hasClearPromoBeforeCheckout
-                )
-                startActivityForResult(intent, PaymentConstant.REQUEST_CODE)
+            viewModel.checkout(publicKey, { onTriggerEpharmacyTracker(it) }) {
+                onSuccessCheckout(it)
             }
+        }
+    }
+
+    private fun onTriggerEpharmacyTracker(showErrorToaster: Boolean) {
+        sendAnalyticsEpharmacyClickPembayaran(showErrorToaster)
+    }
+
+    private fun onSuccessCheckout(checkoutResult: CheckoutResult) {
+        activity?.let { _ ->
+            val paymentPassData = PaymentPassData()
+            paymentPassData.redirectUrl = checkoutResult.checkoutData!!.redirectUrl
+            paymentPassData.transactionId = checkoutResult.checkoutData.transactionId
+            paymentPassData.paymentId = checkoutResult.checkoutData.paymentId
+            paymentPassData.callbackSuccessUrl = checkoutResult.checkoutData.callbackSuccessUrl
+            paymentPassData.callbackFailedUrl = checkoutResult.checkoutData.callbackFailedUrl
+            paymentPassData.queryString = checkoutResult.checkoutData.queryString
+            val intent =
+                RouteManager.getIntent(
+                    activity,
+                    ApplinkConstInternalPayment.PAYMENT_CHECKOUT
+                )
+            intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData)
+            intent.putExtra(
+                PaymentConstant.EXTRA_HAS_CLEAR_RED_STATE_PROMO_BEFORE_CHECKOUT,
+                checkoutResult.hasClearPromoBeforeCheckout
+            )
+            startActivityForResult(intent, PaymentConstant.REQUEST_CODE)
         }
     }
 
@@ -2335,7 +2349,8 @@ class CheckoutFragment :
                     epharmacyItem.epharmacy.epharmacyGroupIds,
                     false,
                     if (showErrorToaster) {
-                        activity?.getString(com.tokopedia.purchase_platform.common.R.string.pp_epharmacy_message_error_prescription_or_consultation_not_found) ?: ""
+                        activity?.getString(com.tokopedia.purchase_platform.common.R.string.pp_epharmacy_message_error_prescription_or_consultation_not_found)
+                            ?: ""
                     } else {
                         "success"
                     }

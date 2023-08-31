@@ -166,10 +166,10 @@ class CheckoutDataConverter @Inject constructor() {
         val groupShopList = cartShipmentAddressFormData.groupAddress[0].groupShop
         var isFirstPlusProductHasPassed = false
         for ((groupShopIndex, groupShop) in groupShopList.withIndex()) {
-//            var orderIndex = 0
-//            if (groupShopList.size > 1) {
-//                orderIndex = groupShopIndex + 1
-//            }
+            var orderIndex = -1
+            if (groupShopList.size > 1) {
+                orderIndex = groupShopIndex + 1
+            }
             val shipmentInformationData = groupShop.shipmentInformationData
             val shop = groupShop.groupShopData.first().shop
             var receiverName = ""
@@ -181,7 +181,7 @@ class CheckoutDataConverter @Inject constructor() {
             var cartItemIndex = 0
             groupShop.groupShopData.forEach {
                 val productList = convertFromProductList(
-                    groupShopIndex + 1,
+                    orderIndex,
                     cartItemIndex,
                     it,
                     groupShop,

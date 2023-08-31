@@ -1448,4 +1448,65 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
         // then
         assertEquals(false, result)
     }
+
+    @Test
+    fun do_validate_bo() {
+        // given
+        val orderModel = CheckoutOrderModel("123")
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(
+                recipientAddressModel = RecipientAddressModel().apply {
+                    id = "1"
+                    destinationDistrictId = "1"
+                    addressName = "jakarta"
+                    postalCode = "123"
+                    latitude = "123"
+                    longitude = "321"
+                }
+            ),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel("123", cartStringOrder = "12"),
+            orderModel,
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+
+        viewModel.logisticProcessor.isBoUnstackEnabled = true
+
+        coEvery {
+            validateUsePromoRevampUseCase.setParam(any()).executeOnBackground()
+        } returns ValidateUsePromoRevampUiModel(
+            status = "OK",
+            errorCode = "200",
+            promoUiModel = PromoUiModel(
+                voucherOrderUiModels = listOf(
+                    PromoCheckoutVoucherOrdersItemUiModel(
+                        code = "boCode",
+                        uniqueId = "12",
+                        cartStringGroup = "123",
+                        type = "logistic",
+                        messageUiModel = MessageUiModel(state = "green")
+                    )
+                )
+            )
+        )
+
+        // when
+        viewModel.doValidateUseLogisticPromoNew(
+            5,
+            "123",
+            "boCode",
+            true,
+            CourierItemData(logPromoCode = "boCode"),
+            InsuranceData()
+        )
+
+        // then
+        assertEquals(CheckoutOrderModel("123", boUniqueId = "12", shipment = CheckoutOrderShipment(courierItemData = CourierItemData(logPromoCode = "boCode"))), (viewModel.listData.value[5] as CheckoutOrderModel))
+    }
 }

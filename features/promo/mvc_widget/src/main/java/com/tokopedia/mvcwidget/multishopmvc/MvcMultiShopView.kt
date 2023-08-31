@@ -140,7 +140,7 @@ class MvcMultiShopView @JvmOverloads constructor(
                 }
             }
         }
-        tvShopName?.text = item.shopName
+        tvShopName?.text = MethodChecker.fromHtml(item.shopName).toString()
         tvCashBackTitle?.text = item.cashBackTitle
         tvCashBackValue?.text = item.cashBackValue
         tvCouponCount?.text = item.couponCount

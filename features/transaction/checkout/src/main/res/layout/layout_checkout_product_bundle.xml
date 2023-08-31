@@ -79,16 +79,24 @@
         app:layout_constraintTop_toBottomOf="@id/tv_checkout_bundle_price"
         tools:visibility="visible" />
 
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/iv_product_image_bundle"
+    <FrameLayout
+        android:id="@+id/iv_product_image_bundle_frame"
         android:layout_width="56dp"
         android:layout_height="56dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:foreground="@drawable/checkout_module_bg_product_image"
         app:layout_constraintStart_toEndOf="@+id/v_bundling_product_separator"
-        app:layout_constraintTop_toBottomOf="@id/tv_checkout_bundle_price"
-        tools:ignore="ContentDescription"
-        tools:src="@color/Unify_G400" />
+        app:layout_constraintTop_toBottomOf="@id/tv_checkout_bundle_price">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/iv_product_image_bundle"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            tools:ignore="ContentDescription"
+            tools:src="@color/Unify_G400" />
+
+    </FrameLayout>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_product_name_bundle"
@@ -100,8 +108,8 @@
         android:maxLines="2"
         android:textColor="@color/Unify_NN600"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/iv_product_image_bundle"
-        app:layout_constraintTop_toTopOf="@id/iv_product_image_bundle"
+        app:layout_constraintStart_toEndOf="@+id/iv_product_image_bundle_frame"
+        app:layout_constraintTop_toTopOf="@id/iv_product_image_bundle_frame"
         app:typographyType="display_3"
         app:typographyWeight="reguler"
         tools:text="Kaos Adidas Camo Tongue Tee White  gsf fsu gfsah hjsfj gsfugshj sjbfj hsjfh hsfjh vhsfh bjsf bjsfbjRed, XSbjsf bjsfbjRed, XS" />
@@ -138,7 +146,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="bottom"
-        app:constraint_referenced_ids="iv_product_image_bundle,tv_product_name_bundle,tv_product_variant_bundle,tv_product_notes_bundle" />
+        app:constraint_referenced_ids="iv_product_image_bundle_frame,tv_product_name_bundle,tv_product_variant_bundle,tv_product_notes_bundle" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_product_add_ons_section_title_bundle"
@@ -146,12 +154,12 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
-        tools:text="Tambahan"
         android:textColor="@color/Unify_NN950"
         app:layout_constraintStart_toEndOf="@id/v_bundling_product_separator"
         app:layout_constraintTop_toBottomOf="@id/barrier_checkout_product_bundle_info"
         app:typographyType="display_3"
-        app:typographyWeight="reguler" />
+        app:typographyWeight="reguler"
+        tools:text="Tambahan" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_product_add_ons_see_all_bundle"
@@ -159,7 +167,6 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="16dp"
-        tools:text="Lihat Semua"
         android:textColor="@color/Unify_GN500"
         app:layout_constrainedWidth="true"
         app:layout_constraintEnd_toEndOf="parent"
@@ -167,7 +174,8 @@
         app:layout_constraintStart_toEndOf="@id/tv_product_add_ons_section_title_bundle"
         app:layout_constraintTop_toTopOf="@id/tv_product_add_ons_section_title_bundle"
         app:typographyType="display_3"
-        app:typographyWeight="bold" />
+        app:typographyWeight="bold"
+        tools:text="Lihat Semua" />
 
     <LinearLayout
         android:id="@+id/ll_addon_product_items_bundle"

@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.recommendation_widget_common.RecommendationTypeConst.PAGENAME_VERTICAL
 import com.tokopedia.recommendation_widget_common.data.RecommendationEntity
 import com.tokopedia.recommendation_widget_common.di.recomwidget.RecommendationComponent
 import com.tokopedia.recommendation_widget_common.extension.mappingToRecommendationModel
@@ -130,7 +129,7 @@ class RecommendationWidgetViewTest {
 
     @Test
     fun recommendation_vertical() {
-        val pageName = PAGENAME_VERTICAL
+        val pageName = "pdp_vertical"
         val state = stateFrom(
             pageName = pageName,
             rawResponseId = R.raw.recom_vertical,

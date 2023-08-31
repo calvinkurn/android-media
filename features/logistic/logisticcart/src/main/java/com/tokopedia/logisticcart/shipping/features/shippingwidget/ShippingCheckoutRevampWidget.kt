@@ -24,7 +24,6 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticCommon.data.constant.InsuranceConstant
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.util.StringFormatterHelper.appendHtmlBoldText
-import com.tokopedia.logisticcart.R
 import com.tokopedia.logisticcart.databinding.ItemShipmentShippingExperienceCheckoutRevampBinding
 import com.tokopedia.logisticcart.scheduledelivery.view.ShippingScheduleRevampWidget
 import com.tokopedia.logisticcart.shipping.model.CashOnDeliveryProduct
@@ -45,6 +44,9 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import com.tokopedia.logisticcart.R as logisticcartR
+import com.tokopedia.purchase_platform.common.R as purchaseplatformcommonR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ShippingCheckoutRevampWidget : ConstraintLayout {
 
@@ -126,9 +128,9 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
     ) {
         binding?.apply {
             if (shippingWidgetUiModel.isShippingBorderRed) {
-                containerShippingExperience.setBackgroundResource(com.tokopedia.purchase_platform.common.R.drawable.bg_pp_rounded_red)
+                containerShippingExperience.setBackgroundResource(purchaseplatformcommonR.drawable.bg_pp_rounded_red)
             } else {
-                containerShippingExperience.setBackgroundResource(com.tokopedia.purchase_platform.common.R.drawable.bg_pp_rounded_grey)
+                containerShippingExperience.setBackgroundResource(purchaseplatformcommonR.drawable.bg_pp_rounded_grey)
             }
             if (shippingWidgetUiModel.isTriggerShippingVibrationAnimation) {
                 containerShippingExperience.animate()
@@ -170,20 +172,20 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
             shippingNowWidget.gone()
             if (shippingWidgetUiModel.courierErrorTitle.isEmpty()) {
                 labelErrorShippingTitle.text =
-                    context.getString(R.string.checkout_error_shipping_title)
+                    context.getString(logisticcartR.string.checkout_error_shipping_title)
             } else {
                 labelErrorShippingTitle.text = shippingWidgetUiModel.courierErrorTitle
             }
             if (shippingWidgetUiModel.courierErrorDescription.isEmpty()) {
                 labelErrorShippingDescription.text =
-                    context.getString(R.string.checkout_error_shipping_description)
+                    context.getString(logisticcartR.string.checkout_error_shipping_description)
             } else {
                 labelErrorShippingDescription.text = shippingWidgetUiModel.courierErrorDescription
             }
             layoutStateHasErrorShipping.visible()
             llShippingExperienceStateLoading.root.gone()
             containerShippingExperience.visible()
-            containerShippingExperience.setBackgroundResource(com.tokopedia.purchase_platform.common.R.drawable.bg_pp_rounded_grey)
+            containerShippingExperience.setBackgroundResource(purchaseplatformcommonR.drawable.bg_pp_rounded_grey)
         }
     }
 
@@ -229,7 +231,7 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
                     courierName = courierName,
                     labelPriceOrDuration = shippingWidgetUiModel.estimatedTimeArrival.ifEmpty {
                         context.getString(
-                            R.string.estimasi_tidak_tersedia
+                            logisticcartR.string.estimasi_tidak_tersedia
                         )
                     }
                 )
@@ -356,14 +358,14 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
                     }
                     whitelabelDescription = if (ontimeDelivery.textLabel.isNotEmpty()) {
                         context.getString(
-                            R.string.checkout_whitelabel_desc_otdg_url,
+                            logisticcartR.string.checkout_whitelabel_desc_otdg_url,
                             ontimeDelivery.textLabel,
                             ontimeDelivery.urlDetail,
                             ontimeDelivery.textUrl
                         )
                     } else {
                         context.getString(
-                            R.string.checkout_whitelabel_otdg_url,
+                            logisticcartR.string.checkout_whitelabel_otdg_url,
                             ontimeDelivery.urlDetail,
                             ontimeDelivery.textUrl
                         )
@@ -457,7 +459,7 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
             layoutStateNoSelectedShipping.gone()
             llShippingExperienceStateLoading.root.gone()
             containerShippingExperience.visible()
-            containerShippingExperience.setBackgroundResource(com.tokopedia.purchase_platform.common.R.drawable.bg_pp_rounded_grey)
+            containerShippingExperience.setBackgroundResource(purchaseplatformcommonR.drawable.bg_pp_rounded_grey)
             layoutStateHasSelectedNormalShipping.gone()
             layoutStateFailedShipping.gone()
             layoutStateHasErrorShipping.gone()
@@ -466,18 +468,18 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
             layoutShipmentInsurance.gone()
             shippingNowWidget.gone()
 
-            labelSelectedSingleShippingTitle.setText(R.string.checkout_label_set_pinpoint_title)
+            labelSelectedSingleShippingTitle.setText(logisticcartR.string.checkout_label_set_pinpoint_title)
             groupLabelSingleShipping.gone()
             context?.apply {
                 val pinpointErrorMessage =
-                    getString(R.string.checkout_label_set_pinpoint_description) + " "
-                val pinpointErrorAction = getString(R.string.checkout_label_set_pinpoint_action)
+                    getString(logisticcartR.string.checkout_label_set_pinpoint_description) + " "
+                val pinpointErrorAction = getString(logisticcartR.string.checkout_label_set_pinpoint_action)
                 val spannableString = SpannableString(pinpointErrorMessage + pinpointErrorAction)
                 spannableString.setSpan(
                     ForegroundColorSpan(
                         ContextCompat.getColor(
                             this,
-                            com.tokopedia.unifyprinciples.R.color.Unify_G500_96
+                            unifyprinciplesR.color.Unify_G500_96
                         )
                     ),
                     pinpointErrorMessage.length,
@@ -534,7 +536,7 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
             llShippingExperienceStateLoading.root.gone()
             layoutShipmentInsurance.gone()
             containerShippingExperience.visible()
-            containerShippingExperience.setBackgroundResource(com.tokopedia.purchase_platform.common.R.drawable.bg_pp_rounded_grey)
+            containerShippingExperience.setBackgroundResource(purchaseplatformcommonR.drawable.bg_pp_rounded_grey)
         }
     }
 
@@ -608,7 +610,7 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
         if (shippingWidgetUiModel.etaErrorCode == 0) {
             val labelFreeShippingEtaText =
                 shippingWidgetUiModel.estimatedTimeArrival.ifEmpty {
-                    context.getString(R.string.estimasi_tidak_tersedia)
+                    context.getString(logisticcartR.string.estimasi_tidak_tersedia)
                 }
             showLabelFreeShippingEtaText(labelFreeShippingEtaText)
         } else {
@@ -643,7 +645,7 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
             TextAndContentDescriptionUtil.setTextAndContentDescription(
                 labelSelectedShippingDuration,
                 shippingWidgetUiModel.estimatedTimeDelivery ?: "",
-                context.getString(R.string.content_desc_label_selected_shipping_duration)
+                context.getString(logisticcartR.string.content_desc_label_selected_shipping_duration)
             )
 
             labelSelectedShippingDuration.setOnClickListener {
@@ -673,7 +675,7 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
             TextAndContentDescriptionUtil.setTextAndContentDescription(
                 labelSelectedShippingCourier,
                 courierName,
-                context.getString(R.string.content_desc_label_selected_shipping_courier)
+                context.getString(logisticcartR.string.content_desc_label_selected_shipping_courier)
             )
             labelSelectedShippingPriceOrDuration.text = labelPriceOrDuration
         }
@@ -770,7 +772,7 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
         return if (shippingWidgetUiModel.etaErrorCode == 0 && shippingWidgetUiModel.estimatedTimeArrival.isNotEmpty()) {
             shippingWidgetUiModel.estimatedTimeArrival
         } else {
-            context.getString(R.string.estimasi_tidak_tersedia)
+            context.getString(logisticcartR.string.estimasi_tidak_tersedia)
         }
     }
 
@@ -865,16 +867,16 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
     }
 
     private fun Typography.setInsuranceWording(insuranceData: InsuranceWidgetUiModel) {
-        val tncLabel = context.getString(R.string.shipping_insurance_tnc_label)
+        val tncLabel = context.getString(logisticcartR.string.shipping_insurance_tnc_label)
         val title = if (insuranceData.insuranceType == InsuranceConstant.INSURANCE_TYPE_MUST) {
             context.getString(
-                R.string.shipping_insurance_title_mandatory,
+                logisticcartR.string.shipping_insurance_title_mandatory,
                 tncLabel,
                 insuranceData.insurancePrice.toRupiah()
             )
         } else {
             context.getString(
-                R.string.shipping_insurance_title_optional,
+                logisticcartR.string.shipping_insurance_title_optional,
                 tncLabel,
                 insuranceData.insurancePrice.toRupiah()
             )
@@ -894,7 +896,7 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
                 ds.isUnderlineText = true
                 ds.color = MethodChecker.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                    unifyprinciplesR.color.Unify_NN600
                 )
             }
         }
