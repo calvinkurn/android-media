@@ -12,6 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showToast
@@ -24,6 +25,7 @@ import com.tokopedia.stories.utils.withCache
 import com.tokopedia.stories.view.adapter.StoriesGroupAdapter
 import com.tokopedia.stories.view.components.indicator.StoriesDetailTimer
 import com.tokopedia.stories.view.model.BottomSheetType
+import com.tokopedia.stories.view.model.StoriesDetailItemUiModel
 import com.tokopedia.stories.view.model.StoriesDetailUiModel
 import com.tokopedia.stories.view.model.StoriesGroupUiModel
 import com.tokopedia.stories.view.model.isAnyShown
@@ -147,14 +149,16 @@ class StoriesDetailFragment @Inject constructor(
         if (prevState == state ||
             state == StoriesDetailUiModel() ||
             state.detailItems.isEmpty() ||
-            state.selectedGroupId != groupId
+            state.selectedGroupId != groupId || state.selectedDetailPosition < 0 || state.selectedDetailPositionCached < 0
         ) return
 
-        storiesDetailsTimer(state)
-        renderAuthor(state)
+        val currentItem = state.detailItems[state.selectedDetailPosition]
 
-        val currContent = state.detailItems[state.selectedDetailPosition]
-        if (currContent.isSameContent) return
+        storiesDetailsTimer(state)
+        renderAuthor(currentItem)
+
+        val currContent = state.detailItems.getOrNull(state.selectedDetailPosition)
+        if (currContent?.isSameContent == true || currContent == null) return
 
         // TODO handle loading state properly
         isShowLoading(false)
@@ -201,13 +205,12 @@ class StoriesDetailFragment @Inject constructor(
         }
     }
 
-    private fun renderAuthor(state: StoriesDetailUiModel) = with(binding.vStoriesPartner) {
-        //TODO()
-//        tvPartnerName.text = state.author.name
-//        ivIcon.setImageUrl(state.author.thumbnailUrl)
-//        btnFollow.gone()
-//        if (state.author is StoryAuthor.Shop)
-//            ivBadge.setImageUrl(state.author.badgeUrl)
+    private fun renderAuthor(state: StoriesDetailItemUiModel) = with(binding.vStoriesPartner) {
+        tvPartnerName.text = state.author.name
+        ivIcon.setImageUrl(state.author.thumbnailUrl)
+        btnFollow
+        if (state.author is StoryAuthor.Shop)
+            ivBadge.setImageUrl(state.author.badgeUrl)
     }
 
 

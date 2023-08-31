@@ -65,7 +65,8 @@ class StoriesThreeDotsBottomSheet @Inject constructor(
                         }
                     }
                 }
-                ThreeDotsPage(menuList = state.storiesDetail.detailItems[state.storiesDetail.selectedDetailPosition].menus, onDeleteStoryClicked = { item ->
+                val currentItem = state.storiesDetail.detailItems.getOrNull(state.storiesDetail.selectedDetailPosition)?.menus ?: return@setContent
+                ThreeDotsPage(menuList = currentItem, onDeleteStoryClicked = { item ->
                     viewModel.submitAction(StoriesUiAction.ShowDeleteDialog)
                 })
             }
