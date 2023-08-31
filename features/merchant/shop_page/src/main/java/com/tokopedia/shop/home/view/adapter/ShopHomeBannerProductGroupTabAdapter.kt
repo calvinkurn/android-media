@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.strikethrough
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.util.ShopUtilExt.setAdaptiveLabelDiscountColor
@@ -76,7 +75,7 @@ class ShopHomeBannerProductGroupTabAdapter : RecyclerView.Adapter<RecyclerView.V
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (val item = items[position]) {
-            is ShimmerItemType -> {}
+            is ShimmerItemType -> (holder as ShimmerViewHolder).bind(item)
             is ProductItemType -> (holder as ProductViewHolder).bind(item)
             is VerticalBannerItemType -> (holder as VerticalBannerViewHolder).bind(item)
         }
@@ -91,8 +90,15 @@ class ShopHomeBannerProductGroupTabAdapter : RecyclerView.Adapter<RecyclerView.V
     }
 
     inner class ShimmerViewHolder(
-        binding: ItemShopHomeBannerProductGroupShimmerBinding
-    ) : RecyclerView.ViewHolder(binding.root)
+        private val binding: ItemShopHomeBannerProductGroupShimmerBinding
+    ) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(item: ShimmerItemType) {
+            binding.shimmerMainBanner.isVisible = item.showShimmer
+            binding.shimmerFirstProduct.root.isVisible = item.showShimmer
+            binding.shimmerSecondProduct.root.isVisible = item.showShimmer
+            binding.shimmerThirdProduct.root.isVisible = item.showShimmer
+        }
+    }
 
     inner class ProductViewHolder(
         private val binding: ItemShopHomeBannerProductGroupProductInfoCardBinding

@@ -39,6 +39,7 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
         private const val BUNDLE_KEY_WIDGET_STYLE = "widget_style"
         private const val BUNDLE_KEY_OVERRIDE_THEME = "override_theme"
         private const val BUNDLE_KEY_COLOR_SCHEME = "color_scheme"
+        private const val BUNDLE_KEY_TAB_LABEL = "tab_label"
 
         @JvmStatic
         fun newInstance(
@@ -46,7 +47,8 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
             widgets: List<ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList>,
             widgetStyle: String,
             overrideTheme: Boolean,
-            colorScheme: ShopPageColorSchema
+            colorScheme: ShopPageColorSchema,
+            tabLabel: String
         ): ShopBannerProductGroupWidgetTabFragment {
             return ShopBannerProductGroupWidgetTabFragment().apply {
                 arguments = Bundle().apply {
@@ -55,6 +57,7 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
                     putString(BUNDLE_KEY_WIDGET_STYLE, widgetStyle)
                     putBoolean(BUNDLE_KEY_OVERRIDE_THEME, overrideTheme)
                     putParcelable(BUNDLE_KEY_COLOR_SCHEME, colorScheme)
+                    putString(BUNDLE_KEY_TAB_LABEL, tabLabel)
                 }
             }
         }
@@ -74,6 +77,8 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
     private val colorScheme by lazy {
         arguments?.getParcelable(BUNDLE_KEY_COLOR_SCHEME) ?: ShopPageColorSchema()
     }
+    private val tabLabel by lazy { arguments?.getString(BUNDLE_KEY_TAB_LABEL).orEmpty() }
+    private var onProductSuccessfullyLoaded: (Boolean) -> Unit = {}
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -155,15 +160,18 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
         viewModel.carouselWidgets.observe(viewLifecycleOwner) { result ->
             when(result) {
                 ShopBannerProductGroupWidgetTabViewModel.UiState.Loading -> {
-                    bannerProductGroupAdapter.submit(listOf(ShimmerItemType()))
+                    bannerProductGroupAdapter.submit(listOf(ShimmerItemType(showShimmer = true)))
                 }
 
                 is ShopBannerProductGroupWidgetTabViewModel.UiState.Success -> {
-                   showResult(result.data)
+                    println("Fetch products: Success fetching $tabLabel. Size is ${result.data.size }. Data: ${result.data}")
+                    showResult(result.data)
+                    onProductSuccessfullyLoaded(true)
                 }
 
                 is ShopBannerProductGroupWidgetTabViewModel.UiState.Error -> {
-                    bannerProductGroupAdapter.submit(emptyList())
+                    removeShimmerFromProductCarousel()
+                    onProductSuccessfullyLoaded(false)
                 }
             }
         }
@@ -171,11 +179,15 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
 
     private fun showResult(carouselItems: List<ShopHomeBannerProductGroupItemType>) {
         if (carouselItems.isEmpty()) {
-            bannerProductGroupAdapter.submit(emptyList())
+            removeShimmerFromProductCarousel()
         } else {
             showProductCarousel(carouselItems)
             showMainBanner()
         }
+    }
+
+    private fun removeShimmerFromProductCarousel() {
+        bannerProductGroupAdapter.submit(listOf(ShimmerItemType(showShimmer = false)))
     }
 
     @SuppressLint("PII Data Exposure")
@@ -198,5 +210,9 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
 
     fun setOnProductClick(onProductClick: (ProductItemType) -> Unit) {
         this.onProductClick = onProductClick
+    }
+
+    fun setOnProductSuccessfullyLoaded(onProductSuccessfullyLoaded: (Boolean) -> Unit) {
+        this.onProductSuccessfullyLoaded = onProductSuccessfullyLoaded
     }
 }

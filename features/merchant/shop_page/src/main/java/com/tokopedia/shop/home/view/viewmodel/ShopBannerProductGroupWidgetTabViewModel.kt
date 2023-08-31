@@ -78,7 +78,8 @@ class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
                     }
 
                     _carouselWidgets.postValue(UiState.Success(carouselWidgets))
-                } ,
+
+                },
                 onError = { throwable ->
                     _carouselWidgets.postValue(UiState.Error(throwable))
                 }
