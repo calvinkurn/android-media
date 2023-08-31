@@ -53,7 +53,7 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener, Default
 
     companion object {
         private const val CROSSED_TEXT_FORMAT = "<del>%s</del>"
-        private const val MESSAGE_SWITCH_INITIAL_DELAY = 2L
+        private const val MESSAGE_SWITCH_INITIAL_DELAY = 3L
     }
 
     @Inject
@@ -61,6 +61,7 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener, Default
 
     private var param = BmgmParamModel()
     private var shopIds = listOf<Long>()
+
     private var binding: ViewBmgmMiniCartWidgetBinding? = null
     private var footerBinding: ViewBmgmMiniCartSubTotalBinding? = null
     private val miniCartAdapter by lazy { BmgmMiniCartAdapter(this) }
@@ -119,7 +120,7 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener, Default
         viewModel.getMiniCartData(shopIds, param, false)
     }
 
-    fun refreshData() {
+    private fun refreshData() {
         viewModel.getMiniCartData(shopIds = shopIds, param = param, showLoadingState = true)
     }
 
@@ -225,16 +226,6 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener, Default
     private fun setupMessageWithAnimation(messages: List<String>) {
         if (messages.isEmpty()) return
         binding?.run {
-            var i = Int.ZERO
-            fun runAnimation() {
-                if (i == messages.size.minus(Int.ONE)) {
-                    i = Int.ZERO
-                    tvBmgmCartDiscount.setText(messages[i].parseAsHtml())
-                } else {
-                    tvBmgmCartDiscount.setText(messages[++i].parseAsHtml())
-                }
-            }
-
             tvBmgmCartDiscount.visible()
             tvBmgmCartDiscount.setFactory {
                 return@setFactory Typography(root.context).apply {
@@ -246,13 +237,24 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener, Default
                 messages.firstOrNull().orEmpty().parseAsHtml()
             )
             tvBmgmCartDiscount.addOnImpressionListener(impressHolder) {
-                tvBmgmCartDiscount.postDelayed({
-                    runAnimation()
-                }, TimeUnit.SECONDS.toMillis(MESSAGE_SWITCH_INITIAL_DELAY))
+                if (messages.size > Int.ONE) {
+                    flipTextWithAnimation(messages)
+                }
             }
-            tvBmgmCartDiscount.setOnClickListener {
-                runAnimation()
-            }
+        }
+    }
+
+    private var i = Int.ZERO
+    private fun flipTextWithAnimation(messages: List<String>) {
+        binding?.tvBmgmCartDiscount?.run {
+            postDelayed({
+                if (i == messages.size.minus(Int.ONE)) {
+                    i = Int.ZERO
+                } else {
+                    setText(messages[++i].parseAsHtml())
+                    flipTextWithAnimation(messages)
+                }
+            }, TimeUnit.SECONDS.toMillis(MESSAGE_SWITCH_INITIAL_DELAY))
         }
     }
 
