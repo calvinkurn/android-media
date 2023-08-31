@@ -5,8 +5,6 @@ import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -333,11 +331,7 @@ class SomDetailShippingViewHolder(
             setDescriptionClickEvent(object : TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
                     if (tickerInfo.actionUrl.isNotBlank()) {
-                        RouteManager.route(
-                            context,
-                            ApplinkConstInternalGlobal.WEBVIEW,
-                            tickerInfo.actionUrl
-                        )
+                        actionListener?.onDropOffButtonClicked(tickerInfo.actionUrl)
                     }
                 }
 
