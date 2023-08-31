@@ -173,7 +173,7 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleAdapterListener {
         val lifecycleOwner = context as? LifecycleOwner
         lifecycleOwner?.run {
             viewModel.bundleUiModels.observe(this) {
-                bundleAdapter.updateDataSet(it)
+                bundleAdapter?.updateDataSet(it)
             }
             viewModel.error.observe(this) {
                 listener?.onError(it)
