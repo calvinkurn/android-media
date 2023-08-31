@@ -208,7 +208,7 @@ class FeedPostViewModel @Inject constructor(
                         requireNotNull(postSource)
                         require(isNewData)
 
-                        if (!postSource.isCdp) {
+                        if (postSource.source != FeedBaseFragment.TAB_TYPE_CDP) {
                             getRelevantPosts(postSource)
                         } else {
                             FeedModel.Empty
@@ -768,7 +768,7 @@ class FeedPostViewModel @Inject constructor(
         var response = FeedModel(emptyList(), FeedPaginationModel.Empty)
         var thresholdGet = 3
         var nextCursor = cursor
-        val detailId = if (postSourceModel?.isCdp == true) postSourceModel.id else ""
+        val detailId = if (postSourceModel?.source == FeedBaseFragment.TAB_TYPE_CDP) postSourceModel.id else ""
 
         while (response.items.isEmpty() && --thresholdGet >= 0) {
             response = feedXHomeUseCase(
