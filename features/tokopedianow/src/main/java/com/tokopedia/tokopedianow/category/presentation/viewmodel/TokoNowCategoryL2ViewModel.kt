@@ -64,7 +64,7 @@ class TokoNowCategoryL2ViewModel @Inject constructor(
 
     override suspend fun loadFirstPage(tickerList: List<TickerData>) {
         val warehouses = addressData.getWarehousesData()
-        val getCategoryLayoutResponse = getCategoryLayout.execute(categoryIdL1)
+        val getCategoryLayoutResponse = getCategoryLayout.execute(categoryIdL2)
         val getCategoryDetailResponse = getCategoryDetailUseCase.execute(warehouses, categoryIdL1)
 
         visitableList.clear()
