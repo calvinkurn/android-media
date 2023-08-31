@@ -45,7 +45,6 @@ import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel
 import com.tokopedia.product.detail.data.model.datamodel.OngoingCampaignDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PdpRecommendationWidgetDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductBundlingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductCategoryCarouselDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentMainData
@@ -277,13 +276,6 @@ object DynamicProductDetailMapper {
                                 )
                             )
                         }
-                    } else if (component.componentName == PRODUCT_BUNDLING) {
-                        listOfComponent.add(
-                            ProductBundlingDataModel(
-                                type = component.type,
-                                name = component.componentName
-                            )
-                        )
                     }
                 }
                 ProductDetailConstant.CONTENT_WIDGET -> {
