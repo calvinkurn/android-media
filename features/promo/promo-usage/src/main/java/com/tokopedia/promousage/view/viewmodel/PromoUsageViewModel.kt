@@ -380,9 +380,9 @@ internal class PromoUsageViewModel @Inject constructor(
                 val currentItems = pageState.items
                 var (newClickedItem, updatedItems) = calculateClickPromo(clickedItem, currentItems)
                 processAndSendEventClickPromo(newClickedItem)
-                // Update Promo Recommendation when there's only one recommended promo
+                // Update Promo Recommendation section
                 val recommendationItem = updatedItems.getRecommendationItem()
-                if (recommendationItem != null && recommendationItem.codes.size == 1) {
+                if (recommendationItem != null) {
                     val (updatedPromoRecommendation, newUpdatedItems) =
                         calculateRecommendedPromo(newClickedItem, recommendationItem, updatedItems)
                     updatedItems = newUpdatedItems
