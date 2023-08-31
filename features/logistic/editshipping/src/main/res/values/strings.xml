@@ -77,8 +77,8 @@
     <string name="simpan">Simpan</string>
     <string name="tutup">Tutup</string>
     <string name="layanan_pengiriman">Layanan Pengiriman</string>
-    <string name="dijemput_kurir">Dijemput Kurir</string>
-    <string name="dijemput_kurir_desc">Kurir akan menjemput pesanan di alamatmu untuk diantar ke pembeli</string>
+    <string name="dijemput_kurir">Di-pickup kurir</string>
+    <string name="dijemput_kurir_desc">Kurir akan menjemput paket di alamat penjual untuk diantar ke pembeli.</string>
     <string name="antar_ke_gerai">Drop Off ke gerai</string>
     <string name="antar_ke_gerai_desc">Penjual antar langsung paket ke gerai terdekat dan dapat nomor resi.</string>
     <string name="detail_fitur">Detail Fitur</string>
