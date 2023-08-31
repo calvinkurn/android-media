@@ -5,16 +5,24 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/iv_product_image_bmgm"
+    <FrameLayout
+        android:id="@+id/iv_product_image_frame_bmgm"
         android:layout_width="56dp"
         android:layout_height="56dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:foreground="@drawable/checkout_module_bg_product_image"
         app:layout_constraintStart_toEndOf="@id/v_product_separator_bmgm"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="ContentDescription"
-        tools:src="@color/Unify_G400" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/iv_product_image_bmgm"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            tools:ignore="ContentDescription"
+            tools:src="@color/Unify_G400" />
+
+    </FrameLayout>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_product_name_bmgm"
@@ -26,8 +34,8 @@
         android:maxLines="2"
         android:textColor="@color/Unify_NN600"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/iv_product_image_bmgm"
-        app:layout_constraintTop_toTopOf="@id/iv_product_image_bmgm"
+        app:layout_constraintStart_toEndOf="@+id/iv_product_image_frame_bmgm"
+        app:layout_constraintTop_toTopOf="@id/iv_product_image_frame_bmgm"
         app:typographyType="display_3"
         app:typographyWeight="reguler"
         tools:text="Kaos Adidas Camo Tongue Tee White  gsf fsu gfsah hjsfj gsfugshj sjbfj hsjfh hsfjh vhsfh bjsf bjsfbjRed, XSbjsf bjsfbjRed, XS" />
@@ -92,7 +100,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="bottom"
-        app:constraint_referenced_ids="iv_product_image_bmgm,tv_product_price_bmgm,tv_product_notes_bmgm" />
+        app:constraint_referenced_ids="iv_product_image_frame_bmgm,tv_product_price_bmgm,tv_product_notes_bmgm" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_product_add_ons_section_title_bmgm"

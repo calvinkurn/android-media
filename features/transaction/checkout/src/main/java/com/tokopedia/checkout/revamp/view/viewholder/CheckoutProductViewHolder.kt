@@ -32,6 +32,7 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
@@ -222,59 +223,96 @@ class CheckoutProductViewHolder(
     }
 
     private fun renderBMGMItem(product: CheckoutProductModel) {
+
+        fun renderProductNameBmgm() {
+            with(bmgmBinding) {
+                tvProductNameBmgm.text = product.name
+                tvProductNameBmgm.show()
+
+                if (product.ethicalDrugDataModel.needPrescription && product.ethicalDrugDataModel.iconUrl.isNotEmpty()) {
+                    product.ethicalDrugDataModel.iconUrl.getBitmapImageUrl(bmgmBinding.root.context) {
+                        try {
+                            tvProductNameBmgm.text = SpannableStringBuilder("  ${product.name}").apply {
+                                setSpan(ImageSpan(bmgmBinding.root.context, it, DynamicDrawableSpan.ALIGN_CENTER), 0, 1, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+                            }
+                        } catch (t: Throwable) {
+                            t.printStackTrace()
+                        }
+                    }
+                }
+            }
+        }
+
+        fun renderImageBmgm() {
+            with(bmgmBinding) {
+                ivProductImageBmgm.show()
+                ivProductImageFrameBmgm.show()
+                ivProductImageBmgm.setImageUrl(product.imageUrl)
+            }
+        }
+
+        fun renderPriceBmgm() {
+            with(bmgmBinding) {
+                val priceInRp =
+                    CurrencyFormatUtil.convertPriceValueToIdrFormat(product.price, false)
+                        .removeDecimalSuffix()
+                val qty = product.quantity
+                tvProductPriceBmgm.text = "$qty x $priceInRp"
+                tvProductPriceBmgm.show()
+            }
+        }
+
+        fun renderVariantBmgm() {
+            with(bmgmBinding) {
+                tvProductVariantBmgm.shouldShowWithAction(product.variant.isNotBlank()) {
+                    tvProductVariantBmgm.text = product.variant
+                }
+            }
+        }
+
+        fun renderSellerNotesBmgm() {
+            with(bmgmBinding) {
+                tvProductNotesBmgm.shouldShowWithAction(product.noteToSeller.isNotEmpty()) {
+                    tvProductNotesBmgm.text = "\"${product.noteToSeller}\""
+                }
+            }
+        }
+
+        fun renderAdjustableSeparatorMarginBmgm() {
+            with(bmgmBinding) {
+                if (product.shouldShowBmgmInfo) {
+                    (vProductSeparatorBmgm.layoutParams as? MarginLayoutParams)?.topMargin = 8.dpToPx(itemView.resources.displayMetrics)
+                    (vProductSeparatorBmgm.layoutParams as? MarginLayoutParams)?.topMargin = 8.dpToPx(itemView.resources.displayMetrics)
+                } else {
+                    (vProductSeparatorBmgm.layoutParams as? MarginLayoutParams)?.topMargin = 0
+                }
+            }
+        }
+        
         hideProductViews()
         hideBundleViews()
         renderGroupInfo(product)
         renderBMGMGroupInfo(product)
         renderShopInfo(product)
 
-        with(bmgmBinding) {
-            ivProductImageBmgm.setImageUrl(product.imageUrl)
-            tvProductNameBmgm.text = product.name
-
-            if (product.ethicalDrugDataModel.needPrescription && product.ethicalDrugDataModel.iconUrl.isNotEmpty()) {
-                product.ethicalDrugDataModel.iconUrl.getBitmapImageUrl(bmgmBinding.root.context) {
-                    try {
-                        tvProductNameBmgm.text = SpannableStringBuilder("  ${product.name}").apply {
-                            setSpan(ImageSpan(bmgmBinding.root.context, it, DynamicDrawableSpan.ALIGN_CENTER), 0, 1, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
-                        }
-                    } catch (t: Throwable) {
-                        t.printStackTrace()
-                    }
-                }
-            }
-
-            val priceInRp =
-                CurrencyFormatUtil.convertPriceValueToIdrFormat(product.price, false)
-                    .removeDecimalSuffix()
-            val qty = product.quantity
-            tvProductPriceBmgm.text = "$qty x $priceInRp"
-
-            tvProductVariantBmgm.shouldShowWithAction(product.variant.isNotBlank()) {
-                tvProductVariantBmgm.text = product.variant
-            }
-            tvProductNotesBmgm.shouldShowWithAction(product.noteToSeller.isNotEmpty()) {
-                tvProductNotesBmgm.text = "\"${product.noteToSeller}\""
-            }
-
-            if (product.shouldShowBmgmInfo) {
-                (vProductSeparatorBmgm.layoutParams as? MarginLayoutParams)?.topMargin = 8.dpToPx(itemView.resources.displayMetrics)
-                (vProductSeparatorBmgm.layoutParams as? MarginLayoutParams)?.topMargin = 8.dpToPx(itemView.resources.displayMetrics)
-            } else {
-                (vProductSeparatorBmgm.layoutParams as? MarginLayoutParams)?.topMargin = 0
-            }
-
-            renderAddOnBMGM(product)
-            renderAddOnGiftingProductLevel(product)
-        }
+        renderProductNameBmgm()
+        renderImageBmgm()
+        renderPriceBmgm()
+        renderVariantBmgm()
+        renderSellerNotesBmgm()
+        renderAdjustableSeparatorMarginBmgm()
+        renderAddOnBMGM(product)
+        renderAddOnGiftingProductLevel(product)
     }
 
     private fun hideBMGMViews() {
         with(bmgmBinding) {
             ivProductImageBmgm.hide()
+            ivProductImageFrameBmgm.hide()
+            vProductSeparatorBmgm.hide()
             tvProductNameBmgm.hide()
-            tvProductVariantBmgm.hide()
             tvProductPriceBmgm.hide()
+            tvProductVariantBmgm.hide()
             tvProductNotesBmgm.hide()
             tvProductAddOnsSectionTitleBmgm.hide()
             tvProductAddOnsSeeAllBmgm.hide()
