@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.editor.data.repository.NavigationToolRepository
 import com.tokopedia.editor.ui.model.EditorModel
 import com.tokopedia.editor.ui.model.ImageModel
+import com.tokopedia.editor.ui.model.InputTextModel
 import com.tokopedia.editor.ui.model.VideoModel
 import com.tokopedia.picker.common.UniversalEditorParam
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -43,6 +44,18 @@ class MainEditorViewModel @Inject constructor(
 
     fun setAction(action: MainEditorEvent) {
         _event.tryEmit(action)
+    }
+
+    fun setTextState(textModel: InputTextModel) {
+        val newState = _state.value.copy()
+
+        // TODO: Need to adjust later to get editted text target and update the target instead of 1st item
+        val textUpdateTarget = newState.model?.image?.texts?.toList()?.firstOrNull()?.first ?: textModel.text
+        newState.model?.image?.texts?.set(textUpdateTarget, textModel)
+
+        _state.update {
+            newState
+        }
     }
 
     private fun initEditorModel(param: UniversalEditorParam) {

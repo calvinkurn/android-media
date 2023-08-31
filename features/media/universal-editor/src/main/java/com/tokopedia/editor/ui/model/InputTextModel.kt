@@ -2,6 +2,7 @@ package com.tokopedia.editor.ui.model
 
 import android.os.Parcelable
 import com.tokopedia.editor.util.FontAlignment
+import com.tokopedia.editor.util.FontDetail
 import kotlinx.parcelize.Parcelize
 
 /**
@@ -15,6 +16,7 @@ data class InputTextModel(
     var textColor: Int = DEFAULT_TEXT_COLOR,
     var backgroundColor: Int? = null,
     var textAlign: FontAlignment = FontAlignment.CENTER,
+    var fontDetail: FontDetail = FontDetail.OPEN_SAUCE_ONE_REGULAR,
     var config: AddTextModel? = null,
 ) : Parcelable {
     companion object {

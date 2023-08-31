@@ -5,7 +5,7 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.editor.ui.model.ColorModel
 import javax.inject.Inject
-import com.tokopedia.unifyprinciples.R.color as colorR
+import com.tokopedia.editor.R.color as colorR
 
 interface ColorProvider {
     fun getColorMap(): Map<Int, ColorModel>
@@ -22,14 +22,14 @@ class ColorProviderImp @Inject constructor(
 
     // map color for text & background & color name (TODO, wait for tracker detail)
     private val colorResList = listOf(
-        Triple(colorR.Unify_NN0, colorR.Unify_NN900, "white"),
-        Triple(colorR.Unify_NN900, colorR.Unify_NN0, "black"),
-        Triple(colorR.Unify_YN500, colorR.Unify_NN0, "yellow"),
-        Triple(colorR.Unify_RN500, colorR.Unify_NN0, "red"),
-        Triple(colorR.Unify_PN500, colorR.Unify_NN0, "purple"),
-        Triple(colorR.Unify_BN500, colorR.Unify_NN0, "blue"),
-        Triple(colorR.Unify_TN500, colorR.Unify_NN0, "teal"),
-        Triple(colorR.Unify_GN500, colorR.Unify_NN0, "green")
+        Triple(colorR.dms_universal_editor_nn_0, colorR.dms_universal_editor_nn_900, "white"),
+        Triple(colorR.dms_universal_editor_nn_900, colorR.dms_universal_editor_nn_0, "black"),
+        Triple(colorR.dms_universal_editor_yn_500, colorR.dms_universal_editor_nn_0, "yellow"),
+        Triple(colorR.dms_universal_editor_rn_500, colorR.dms_universal_editor_nn_0, "red"),
+        Triple(colorR.dms_universal_editor_pn_500, colorR.dms_universal_editor_nn_0, "purple"),
+        Triple(colorR.dms_universal_editor_bn_500, colorR.dms_universal_editor_nn_0, "blue"),
+        Triple(colorR.dms_universal_editor_tn_500, colorR.dms_universal_editor_nn_0, "teal"),
+        Triple(colorR.dms_universal_editor_gn_500, colorR.dms_universal_editor_nn_0, "green")
     )
 
     init {
