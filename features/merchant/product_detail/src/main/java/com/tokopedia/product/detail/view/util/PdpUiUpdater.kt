@@ -33,7 +33,6 @@ import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel
 import com.tokopedia.product.detail.data.model.datamodel.OngoingCampaignDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PdpComparisonWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PdpRecommendationWidgetDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductBundlingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentMainData
 import com.tokopedia.product.detail.data.model.datamodel.ProductCustomInfoTitleDataModel
@@ -80,7 +79,6 @@ import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationC
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
-import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselTrackingConst
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetMetadata
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetModel
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetSource
@@ -163,9 +161,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
 
     val productDetailInfoData: ProductDetailInfoDataModel?
         get() = mapOfData[ProductDetailConstant.PRODUCT_DETAIL] as? ProductDetailInfoDataModel
-
-    val productBundlingData: ProductBundlingDataModel?
-        get() = mapOfData[ProductDetailConstant.PRODUCT_BUNDLING] as? ProductBundlingDataModel
 
     val topAdsProductBundlingData: TopadsHeadlineUiModel?
         get() = mapOfData[ProductDetailConstant.SHOPADS_CAROUSEL] as? TopadsHeadlineUiModel
@@ -290,9 +285,8 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 }
             }
 
-            updateVerticalRecommendationWidget(productId, loadInitialData)
-
             if (loadInitialData) {
+                updateVerticalRecommendationWidget(productId)
                 verticalRecommendationItems.clear()
             }
         }
@@ -535,10 +529,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     totalRatingCount = it.rating.totalRating
                     totalReviewCount = it.rating.totalReviewTextAndImage
                 }
-            }
-
-            updateData(ProductDetailConstant.PRODUCT_BUNDLING) {
-                productBundlingData?.bundleInfo = it.bundleInfoMap[productId]
             }
 
             if (it.ticker.tickerInfo.isEmpty()) {
@@ -820,10 +810,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         if (it.ratesEstimate.isEmpty()) {
             removeComponent(ProductDetailConstant.SHIPMENT_V2)
             removeComponent(ProductDetailConstant.SHIPMENT)
-        }
-
-        if (it.bundleInfoMap.isEmpty()) {
-            removeComponent(ProductDetailConstant.PRODUCT_BUNDLING)
         }
 
         if (!it.validateTradeIn.isEligible) {
@@ -1141,13 +1127,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
     }
 
-    fun updateProductBundlingData(p2Data: ProductInfoP2UiData?, productId: String?) {
-        if (p2Data == null || productId == null) return
-        updateData(ProductDetailConstant.PRODUCT_BUNDLING) {
-            productBundlingData?.bundleInfo = p2Data.bundleInfoMap[productId]
-        }
-    }
-
     fun updatePlayWidget(playWidgetState: PlayWidgetState) {
         updateData(ProductDetailConstant.PLAY_CAROUSEL) {
             contentWidgetData?.playWidgetState = playWidgetState
@@ -1214,28 +1193,28 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
     }
 
-    private fun updateVerticalRecommendationWidget(productId: String, loadInitialData: Boolean) {
-        if (mapOfData.containsKey(RECOM_VERTICAL)) {
-            updateData(RECOM_VERTICAL, loadInitialData) {
-                val globalRecomWidgetTrackingModel = RecommendationWidgetTrackingModel(
-                    androidPageName = RecommendationCarouselTrackingConst.Category.PDP,
-                    eventActionImpression = RecommendationCarouselTrackingConst.Action.IMPRESSION_ON_PRODUCT_RECOMMENDATION_PDP,
-                    eventActionClick = RecommendationCarouselTrackingConst.Action.CLICK_ON_PRODUCT_RECOMMENDATION_PDP,
-                    listPageName = RecommendationCarouselTrackingConst.List.PDP
-                )
-                val globalRecomWidgetMetadata = RecommendationWidgetMetadata(
-                    pageSource = RecommendationWidgetSource.PDP.xSourceValue,
-                    pageName = RECOM_VERTICAL,
-                    productIds = if (productId.isBlank()) listOf() else listOf(productId)
-                )
-                mapOfData[RECOM_VERTICAL] = PdpRecommendationWidgetDataModel(
-                    RecommendationWidgetModel(
-                        metadata = globalRecomWidgetMetadata,
-                        trackingModel = globalRecomWidgetTrackingModel
-                    )
-                )
+    private fun updateVerticalRecommendationWidget(productId: String) {
+        mapOfData.forEach { (key, data) ->
+            if (key.startsWith(RECOM_VERTICAL)) {
+                updateData(key, true) {
+                    mapOfData[key] = (data as? PdpRecommendationWidgetDataModel)?.run {
+                        updateVerticalRecommendationWidgetProductId(productId)
+                    } ?: data
+                }
             }
         }
+    }
+
+    private fun PdpRecommendationWidgetDataModel.updateVerticalRecommendationWidgetProductId(
+        productId: String
+    ): PdpRecommendationWidgetDataModel {
+        return copy(
+            recommendationWidgetModel = recommendationWidgetModel.copy(
+                metadata = recommendationWidgetModel.metadata.copy(
+                    productIds = if (productId.isBlank()) listOf() else listOf(productId)
+                )
+            )
+        )
     }
 
     private fun updateDynamicOneLiner(p2: ProductInfoP2UiData) {

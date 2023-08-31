@@ -261,7 +261,7 @@ class FeedPlusFragment :
                 override fun onErrorCreatingUrl(linkerError: LinkerError?) {
                     showToast(
                         message = linkerError?.errorMessage
-                            ?: getString(R.string.default_request_error_unknown),
+                            ?: getString(com.tokopedia.abstraction.R.string.default_request_error_unknown),
                         type = Toaster.TYPE_ERROR
                     )
                 }
@@ -3996,7 +3996,7 @@ class FeedPlusFragment :
         product: FeedXProduct = FeedXProduct()
     ) = FeedTrackerData(
         postId = if (feedXCard.typename == TYPE_FEED_X_CARD_PLAY) feedXCard.playChannelID else feedXCard.id,
-        media = feedXCard.media.first(),
+        media = feedXCard.media.firstOrNull() ?: FeedXMedia(),
         postType = feedXCard.typename,
         isFollowed = feedXCard.followers.isFollowed,
         shopId = feedXCard.author.id,

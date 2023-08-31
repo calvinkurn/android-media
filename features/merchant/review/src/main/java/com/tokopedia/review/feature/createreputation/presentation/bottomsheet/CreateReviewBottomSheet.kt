@@ -222,14 +222,6 @@ class CreateReviewBottomSheet : BottomSheetUnify() {
             dialogHandler.showIncentivesExitWarningDialog()
             return
         }
-        if (viewModel.isGoodRating() && viewModel.isReviewTextEmpty() && viewModel.isMediaEmpty()) {
-            dialogHandler.showSendRatingOnlyDialog()
-            return
-        }
-        if (!viewModel.isReviewTextEmpty() || !viewModel.isMediaEmpty()) {
-            dialogHandler.showReviewUnsavedWarningDialog()
-            return
-        }
         isUserInitiateDismiss = true
         dismiss()
     }
@@ -520,41 +512,6 @@ class CreateReviewBottomSheet : BottomSheetUnify() {
                     dismiss()
                 }
             )
-        }
-
-        fun showSendRatingOnlyDialog() {
-            val title = getString(R.string.review_form_send_rating_only_dialog_title)
-            showDialog(
-                title,
-                getString(R.string.review_form_send_rating_only_body),
-                getString(R.string.review_form_send_rating_only_exit),
-                {
-                    isUserInitiateDismiss = true
-                    dismiss()
-                },
-                getString(R.string.review_form_send_rating_only),
-                {
-                    viewModel.submitReview()
-                    trackingHandler.trackClickDialogOption(title)
-                }
-            )
-            trackingHandler.trackViewDialog(title)
-        }
-
-        fun showReviewUnsavedWarningDialog() {
-            val title = getString(R.string.review_form_dismiss_form_dialog_title)
-            showDialog(
-                title,
-                getString(R.string.review_form_dismiss_form_dialog_body),
-                getString(R.string.review_edit_dialog_exit),
-                {
-                    isUserInitiateDismiss = true
-                    dismiss()
-                },
-                getString(R.string.review_form_dismiss_form_dialog_stay),
-                { trackingHandler.trackClickDialogOption(title) }
-            )
-            trackingHandler.trackViewDialog(title)
         }
 
         fun showReviewIncompleteDialog() {

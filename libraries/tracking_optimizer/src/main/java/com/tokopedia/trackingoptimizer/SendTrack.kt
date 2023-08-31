@@ -79,5 +79,6 @@ fun sendTrack(coroutineScope: CoroutineScope, trackingRepository: TrackRepositor
         deleteEEJob.join()
         decreaseCounter()
         onFinished.invoke()
+        TrackingQueueSingleton.mightHaveData = false
     }
 }

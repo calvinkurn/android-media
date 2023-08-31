@@ -3,6 +3,7 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tab
 import android.os.Handler
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
@@ -117,6 +118,24 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
                     }
                 }
             )
+
+            tabsViewModel.getTabMargin().observe(fragment.viewLifecycleOwner) {
+                if (it) {
+                    val params = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                    )
+                    params.setMargins(0, 0, 0, 16)
+                    tabsHolder.layoutParams = params
+                } else {
+                    val params = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                    )
+                    params.setMargins(0, 0, 0, 0)
+                    tabsHolder.layoutParams = params
+                }
+            }
         }
     }
 
@@ -191,6 +210,7 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
         tabsViewModel?.setSelectedState(tab.position, false)
         if (tab.customView == null || !(tab.customView is CustomViewCreator)) return
         ((tab.customView as CustomViewCreator).viewModel as TabsItemViewModel).setSelectionTabItem(false)
+        tabsViewModel?.shouldAddSpace(false)
     }
 
     override fun onTabReselected(tab: TabLayout.Tab) {

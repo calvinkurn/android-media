@@ -65,4 +65,13 @@
 
     <string name="centralized_promo_toolbar_title">Iklan dan Promosi</string>
     <string name="centralized_promo_first_voucher_label">First Voucher</string>
+
+
+    <!-- Dynamic Features Talk -->
+    <string name="title_talk_discuss">Diskusi</string>
+    <string name="title_reply_page">Balas Pertanyaan</string>
+    <string name="title_write_page">Kirim Pertanyaan</string>
+    <string name="title_seller_settings_page">Pengaturan Diskusi</string>
+
+
 </resources>

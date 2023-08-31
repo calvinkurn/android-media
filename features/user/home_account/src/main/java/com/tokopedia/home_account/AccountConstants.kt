@@ -50,12 +50,15 @@ object AccountConstants {
         const val VALUE_WISHLIST_PRODUCT = "%s - wishlist on product recommendation"
         const val DATA_DIMENSION_83 = "dimension83"
         const val VALUE_BEBAS_ONGKIR = "bebas ongkir"
+        const val KEY_TRACKER_ID = "trackerId"
+        const val VALUE_TRACKER_ID_45930 = "45930"
 
         object Screen {
             const val SCREEN_FUNDS_AND_INVESTMENT = "dana dan investasi page"
         }
 
         object Event {
+            const val EVENT_VIEW_ACCOUNT_IRIS = "viewAccountIris"
             const val EVENT_CLICK_HOME_PAGE = "clickHomePage"
             const val EVENT_CLICK_ACCOUNT = "clickAccount"
             const val EVENT_PRODUCT_CLICK = "productClick"
@@ -76,6 +79,7 @@ object AccountConstants {
         }
 
         object Action {
+            const val ACTION_VIEW_ON_ACCOUNT_SAYA_PAGE = "view on akun saya page"
             const val ACTION_CLICK_TOGGLE_ON_GEOLOCATION = "click toggle on geolocation"
             const val ACTION_CLICK_PRODUCT_RECOMMENDATION = "click - product recommendation"
             const val ACTION_IMPRESSION_PRODUCT_RECOMMENDATION = "impression - product recommendation"
@@ -102,6 +106,7 @@ object AccountConstants {
         }
 
         object Label {
+            const val LABEL_M2 = "m2"
             const val LABEL_EMPTY = ""
             const val LABEL_HYPEN = "-"
             const val LABEL_CLICK = "click"
@@ -149,11 +154,9 @@ object AccountConstants {
     }
 
     object Url {
-        const val BASE_MOBILE = "https://m.tokopedia.com/"
-        const val PATH_TERM_CONDITION = "terms.pl?isBack=true"
+        const val PATH_TERM_CONDITION = "terms?lang=id&isBack=true"
+        const val PATH_PRIVACY_POLICY = "privacy?lang=id&isBack=true"
         const val PATH_IP = "intellectual-property-protection"
-        const val PATH_PRIVACY_POLICY = "privacy.pl?isBack=true"
-        const val BASE_WEBVIEW_APPLINK = "tokopedia://webview?url="
         const val PATH_ABOUT_US = "about"
         const val PLAYSTORE_URL = "https://play.google.com/store/apps/details?id="
     }

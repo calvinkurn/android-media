@@ -37,6 +37,7 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrde
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.CourierInfoViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.DigitalRecommendationViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OrderResolutionViewHolder
+import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OwocInfoViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PartialProductItemViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PgRecommendationViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PofRefundInfoViewHolder
@@ -45,6 +46,7 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductLis
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.TickerViewHolder
 import com.tokopedia.buyerorderdetail.presentation.animator.BuyerOrderDetailToolbarMenuAnimator
 import com.tokopedia.buyerorderdetail.presentation.bottomsheet.BuyerOrderDetailBottomSheetManager
+import com.tokopedia.buyerorderdetail.presentation.bottomsheet.OwocBottomSheet
 import com.tokopedia.buyerorderdetail.presentation.bottomsheet.PofDetailRefundedBottomSheet
 import com.tokopedia.buyerorderdetail.presentation.bottomsheet.PofEstimateRefundInfoBottomSheet
 import com.tokopedia.buyerorderdetail.presentation.coachmark.CoachMarkManager
@@ -109,7 +111,8 @@ open class BuyerOrderDetailFragment :
     OrderResolutionViewHolder.OrderResolutionListener,
     ProductListToggleViewHolder.Listener,
     PofRefundInfoViewHolder.Listener,
-    ScpRewardsMedalTouchPointWidgetViewHolder.ScpRewardsMedalTouchPointWidgetListener {
+    ScpRewardsMedalTouchPointWidgetViewHolder.ScpRewardsMedalTouchPointWidgetListener,
+    OwocInfoViewHolder.Listener {
 
     companion object {
         @JvmStatic
@@ -161,6 +164,7 @@ open class BuyerOrderDetailFragment :
             this,
             this,
             digitalRecommendationData,
+            this,
             this,
             this,
             this,
@@ -237,9 +241,9 @@ open class BuyerOrderDetailFragment :
                 null
             ) as? BuyerOrderDetailToolbarMenu
             )?.apply {
-            setViewModel(viewModel)
-            setNavigator(navigator)
-        }
+                setViewModel(viewModel)
+                setNavigator(navigator)
+            }
     }
 
     override fun getScreenName() = BuyerOrderDetailFragment::class.java.simpleName
@@ -953,4 +957,10 @@ open class BuyerOrderDetailFragment :
     }
 
     private fun isScpRewardTouchPointEnabled(): Boolean = remoteConfig.getBoolean(SCP_REWARDS_MEDALI_TOUCH_POINT, true)
+
+    override fun onOwocInfoClicked(txId: String) {
+        BuyerOrderDetailTracker.sendClickOnOrderGroupWidget(viewModel.getOrderId())
+        val owocBottomSheet = OwocBottomSheet.newInstance(viewModel.getOrderId(), txId)
+        owocBottomSheet.show(childFragmentManager)
+    }
 }

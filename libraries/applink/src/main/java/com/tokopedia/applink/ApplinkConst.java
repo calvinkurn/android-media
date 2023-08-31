@@ -190,6 +190,7 @@ public interface ApplinkConst {
      * Tokochat (Chat with Gojek)
      */
     String TOKO_CHAT = "tokopedia://tokochat";
+    String TOKO_CHAT_LIST = "tokopedia://tokochat/list";
 
     String CHATBOT_HOST = "chatbot";
     String CHATBOT = "tokopedia://chatbot/{message_id}";
@@ -668,6 +669,9 @@ public interface ApplinkConst {
     interface Query {
         String ORDER_TRACKING_ORDER_ID = "order_id";
         String ORDER_TRACKING_URL_LIVE_TRACKING = "url_live_tracking";
+
+        String TX_ID = "tx_id";
+        String GROUP_TYPE = "group_type";
         String ORDER_TRACKING_CALLER = "caller";
 
         String IMAGE_PREVIEW_FILELOC = "fileloc";

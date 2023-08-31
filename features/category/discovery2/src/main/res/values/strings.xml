@@ -94,4 +94,5 @@
     <string name="card_empty_text_nlc">Lanjut intip promo kece di bawah, yuk~</string>
     <string name="semua_kategori">"Semua\nKategori"</string>
     <string name="terjual_habis_camel">Terjual Habis</string>
+    <string name="discovery_push_notification_banner_subscription_error_toaster_message">Yuk, pastikan internetmu lancar dengan cek ulang paket data, WIFI, atau jaringan di tempatmu.</string>
 </resources>
