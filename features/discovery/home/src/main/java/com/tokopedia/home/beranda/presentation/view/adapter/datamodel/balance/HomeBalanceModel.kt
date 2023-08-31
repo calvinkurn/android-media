@@ -1,7 +1,5 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance
 
-import com.tokopedia.analytics.performance.perf.BlocksLoadableComponent
-import com.tokopedia.analytics.performance.perf.LoadableComponent
 import com.tokopedia.home.beranda.data.model.SubscriptionsData
 import com.tokopedia.home.beranda.data.model.TokopointsDrawerListHomeData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.STATE_ERROR
@@ -20,11 +18,7 @@ data class HomeBalanceModel(
     var balanceDrawerItemModels: MutableList<BalanceDrawerItemModel> = mutableListOf(),
     var status: Int = STATUS_LOADING,
     var balancePositionSubscriptions: Int = DEFAULT_BALANCE_POSITION
-) : BalanceWidgetVisitable,
-    LoadableComponent by BlocksLoadableComponent(
-        { status != STATUS_LOADING },
-        "HomeBalanceModel"
-    ) {
+) : BalanceWidgetVisitable {
     companion object {
         const val ERROR_TITLE = "Gagal Memuat"
         const val ERROR_SUBTITLE = "Coba Lagi"
