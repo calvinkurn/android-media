@@ -55,7 +55,6 @@ import com.tokopedia.cartrevamp.view.uimodel.CartEmptyHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartGlobalEvent
 import com.tokopedia.cartrevamp.view.uimodel.CartGroupHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
-import com.tokopedia.cartrevamp.view.uimodel.CartItemTickerErrorHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartLoadingHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartModel
 import com.tokopedia.cartrevamp.view.uimodel.CartMutableLiveData
@@ -152,31 +151,31 @@ import kotlin.coroutines.CoroutineContext
 import kotlin.math.min
 
 class CartViewModel @Inject constructor(
-        private val getCartRevampV4UseCase: GetCartRevampV4UseCase,
-        private val deleteCartUseCase: DeleteCartUseCase,
-        private val undoDeleteCartUseCase: UndoDeleteCartUseCase,
-        private val updateCartUseCase: UpdateCartUseCase,
-        private val compositeSubscription: CompositeSubscription,
-        private val addToWishlistV2UseCase: AddToWishlistV2UseCase,
-        private val deleteWishlistV2UseCase: DeleteWishlistV2UseCase,
-        private val updateAndReloadCartUseCase: UpdateAndReloadCartUseCase,
-        private val userSessionInterface: UserSessionInterface,
-        private val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase,
-        private val getRecentViewUseCase: GetRecommendationUseCase,
-        private val getWishlistV2UseCase: GetWishlistV2UseCase,
-        private val getRecommendationUseCase: GetRecommendationUseCase,
-        private val addToCartUseCase: AddToCartUseCase,
-        private val addToCartExternalUseCase: AddToCartExternalUseCase,
-        private val seamlessLoginUsecase: SeamlessLoginUsecase,
-        private val updateCartCounterUseCase: UpdateCartCounterUseCase,
-        private val updateCartAndGetLastApplyUseCase: UpdateCartAndGetLastApplyUseCase,
-        private val setCartlistCheckboxStateUseCase: SetCartlistCheckboxStateUseCase,
-        private val followShopUseCase: FollowShopUseCase,
-        private val cartShopGroupTickerAggregatorUseCase: CartShopGroupTickerAggregatorUseCase,
-        private val getGroupProductTickerUseCase: BmGmGetGroupProductTickerUseCase,
-        private val schedulers: ExecutorSchedulers,
-        private val dispatchers: CoroutineDispatchers,
-        private val cartCalculator: CartCalculator
+    private val getCartRevampV4UseCase: GetCartRevampV4UseCase,
+    private val deleteCartUseCase: DeleteCartUseCase,
+    private val undoDeleteCartUseCase: UndoDeleteCartUseCase,
+    private val updateCartUseCase: UpdateCartUseCase,
+    private val compositeSubscription: CompositeSubscription,
+    private val addToWishlistV2UseCase: AddToWishlistV2UseCase,
+    private val deleteWishlistV2UseCase: DeleteWishlistV2UseCase,
+    private val updateAndReloadCartUseCase: UpdateAndReloadCartUseCase,
+    private val userSessionInterface: UserSessionInterface,
+    private val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase,
+    private val getRecentViewUseCase: GetRecommendationUseCase,
+    private val getWishlistV2UseCase: GetWishlistV2UseCase,
+    private val getRecommendationUseCase: GetRecommendationUseCase,
+    private val addToCartUseCase: AddToCartUseCase,
+    private val addToCartExternalUseCase: AddToCartExternalUseCase,
+    private val seamlessLoginUsecase: SeamlessLoginUsecase,
+    private val updateCartCounterUseCase: UpdateCartCounterUseCase,
+    private val updateCartAndGetLastApplyUseCase: UpdateCartAndGetLastApplyUseCase,
+    private val setCartlistCheckboxStateUseCase: SetCartlistCheckboxStateUseCase,
+    private val followShopUseCase: FollowShopUseCase,
+    private val cartShopGroupTickerAggregatorUseCase: CartShopGroupTickerAggregatorUseCase,
+    private val getGroupProductTickerUseCase: BmGmGetGroupProductTickerUseCase,
+    private val schedulers: ExecutorSchedulers,
+    private val dispatchers: CoroutineDispatchers,
+    private val cartCalculator: CartCalculator
 ) : ViewModel(), CoroutineScope {
 
     override val coroutineContext: CoroutineContext
