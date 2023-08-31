@@ -30,16 +30,21 @@ import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 
-class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parentComponent: AbstractViewHolder? = null)
-    : ListAdapter<ComponentsItem, AbstractViewHolder>(ComponentsDiffCallBacks()) {
+class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parentComponent: AbstractViewHolder? = null) :
+    ListAdapter<ComponentsItem, AbstractViewHolder>(ComponentsDiffCallBacks()) {
 
     companion object {
         private var noOfObject = 0
     }
     private var mCurrentHeader: Pair<Int, RecyclerView.ViewHolder>? = null
     private var componentList: ArrayList<ComponentsItem> = ArrayList()
-    private var viewHolderListModel = ViewModelProviders.of(fragment).get((DiscoveryListViewModel::class.java.canonicalName
-            ?: "") + noOfObject++, DiscoveryListViewModel::class.java)
+    private var viewHolderListModel = ViewModelProviders.of(fragment).get(
+        (
+            DiscoveryListViewModel::class.java.canonicalName
+                ?: ""
+            ) + noOfObject++,
+        DiscoveryListViewModel::class.java
+    )
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder {
         val itemView: View =
@@ -54,13 +59,15 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parent
 
     override fun onBindViewHolder(holder: AbstractViewHolder, position: Int) {
         try {
-            if (componentList.size <= position)  //tmp code need this handling to handle multithread enviorment
+            if (componentList.size <= position) {
+                // tmp code need this handling to handle multithread enviorment
                 return
+            }
             setViewSpanType(holder, componentList[position].properties?.template)
             if (mCurrentHeader?.first == position && mCurrentHeader?.second?.itemViewType == getItemViewType(
                     position
-                )
-                && (mCurrentHeader?.second as AbstractViewHolder).discoveryBaseViewModel != null
+                ) &&
+                (mCurrentHeader?.second as AbstractViewHolder).discoveryBaseViewModel != null
             ) {
                 holder.bindView(
                     (mCurrentHeader?.second as AbstractViewHolder).discoveryBaseViewModel!!,
@@ -88,21 +95,21 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parent
             ServerLogger.log(Priority.P2, "DISCO_DAGGER_VALIDATION", map)
             Utils.logException(e)
         }
-
     }
 
-
     override fun getItemViewType(position: Int): Int {
-        if (componentList.size <= position)
+        if (componentList.size <= position) {
             return 0
+        }
         val id = DiscoveryHomeFactory.getComponentId(componentList[position].name)
         return id ?: 0
     }
 
     override fun getItemId(position: Int): Long {
-        if (componentList.isNullOrEmpty() || position >= componentList.size
-            || componentList[position].data.isNullOrEmpty()
-            || componentList[position].data?.firstOrNull()?.productId.isNullOrEmpty()) {
+        if (componentList.isEmpty() || position >= componentList.size ||
+            componentList[position].data.isNullOrEmpty() ||
+            componentList[position].data?.firstOrNull()?.productId.isNullOrEmpty()
+        ) {
             return super.getItemId(position)
         }
         return componentList[position].data?.firstOrNull()?.productId?.toLongOrNull()
@@ -156,7 +163,6 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parent
                 else -> true
             }
         }
-
     }
 
     private fun clearListViewModel() {
@@ -171,12 +177,13 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parent
         return DiscoveryHomeFactory.isStickyHeader(getItemViewType(it)) || (componentList.size > it && componentList[it].isSticky)
     }
 
-    fun setCurrentHeader(currentHeader : Pair<Int, RecyclerView.ViewHolder>?){
+    fun setCurrentHeader(currentHeader: Pair<Int, RecyclerView.ViewHolder>?) {
         mCurrentHeader = currentHeader
         if (currentHeader == null) {
             (fragment as DiscoveryFragment).stickyHeaderIsHidden()
-        } else
+        } else {
             (fragment as DiscoveryFragment).showingStickyHeader()
+        }
     }
 
     fun getCurrentHeader() = mCurrentHeader
@@ -184,7 +191,6 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parent
     fun notifySectionId(it: String) {
         (fragment as? DiscoveryFragment)?.updateSelectedSection(it)
     }
-
 }
 
 class ComponentsDiffCallBacks : DiffUtil.ItemCallback<ComponentsItem>() {
@@ -193,6 +199,6 @@ class ComponentsDiffCallBacks : DiffUtil.ItemCallback<ComponentsItem>() {
     }
 
     override fun areContentsTheSame(oldItem: ComponentsItem, newItem: ComponentsItem): Boolean {
-        return newItem == oldItem && oldItem.shouldRefreshComponent?.equals(false)?:true
+        return newItem == oldItem && oldItem.shouldRefreshComponent?.equals(false) ?: true
     }
 }

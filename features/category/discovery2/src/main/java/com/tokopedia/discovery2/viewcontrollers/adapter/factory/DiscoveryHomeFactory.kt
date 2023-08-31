@@ -577,7 +577,7 @@ class DiscoveryHomeFactory {
         }
 
         fun isStickyHeader(viewType: Int): Boolean {
-            return viewType == ComponentsList.Tabs.ordinal || viewType == ComponentsList.AnchorTabs.ordinal
+            return viewType == ComponentsList.Tabs.ordinal || viewType == ComponentsList.TabsIcon.ordinal || viewType == ComponentsList.AnchorTabs.ordinal
         }
     }
 }
