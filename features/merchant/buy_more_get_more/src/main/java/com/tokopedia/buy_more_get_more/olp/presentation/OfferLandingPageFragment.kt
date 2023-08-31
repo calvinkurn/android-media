@@ -325,7 +325,9 @@ class OfferLandingPageFragment :
             }
         }
         AtcVariantHelper.onActivityResultAtcVariant(requireContext(), requestCode, data) {
-            binding?.miniCartView.showToaster(this.atcMessage)
+            if (this.atcMessage.isNotEmpty()) {
+                binding?.miniCartView.showToaster(this.atcMessage)
+            }
             fetchMiniCart()
         }
     }
