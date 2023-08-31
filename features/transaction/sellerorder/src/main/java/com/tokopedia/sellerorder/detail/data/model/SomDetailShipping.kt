@@ -31,5 +31,5 @@ data class SomDetailShipping(
     val shipmentLogo: String = "",
     val courierInfo: String = "",
     val logisticInfo: SomDetailOrder.Data.GetSomDetail.LogisticInfo = SomDetailOrder.Data.GetSomDetail.LogisticInfo(),
-    val dropOffInfo: TickerInfo = TickerInfo()
+    val shipmentTickerInfo: TickerInfo = TickerInfo()
 )

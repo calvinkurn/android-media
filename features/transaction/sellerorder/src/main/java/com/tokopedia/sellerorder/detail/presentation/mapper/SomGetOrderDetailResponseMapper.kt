@@ -182,7 +182,7 @@ object SomGetOrderDetailResponseMapper {
             logisticInfo = logisticInfo,
             shipmentLogo = flagOrderMeta.shipmentLogo,
             courierInfo = shipment.courierInfo,
-            dropOffInfo = shipment.tickerInfo
+            shipmentTickerInfo = shipment.tickerInfo
         )
     }
 

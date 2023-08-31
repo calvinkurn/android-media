@@ -313,9 +313,9 @@ class SomDetailShippingViewHolder(
                 )
 
                 // drop off maps
-                tickerDropOff.run {
-                    if (item.dataObject.dropOffInfo.text.isNotEmpty()) {
-                        setupTicker(this, item.dataObject.dropOffInfo)
+                tickerShipment.run {
+                    if (item.dataObject.shipmentTickerInfo.text.isNotEmpty()) {
+                        setupTicker(this, item.dataObject.shipmentTickerInfo)
                         show()
                     } else {
                         gone()
@@ -325,9 +325,9 @@ class SomDetailShippingViewHolder(
         }
     }
 
-    private fun setupTicker(tickerDropOff: Ticker?, tickerInfo: TickerInfo) {
-        tickerDropOff?.apply {
-            val tickerDescription = tickerInfo.description()
+    private fun setupTicker(ticker: Ticker, tickerInfo: TickerInfo) {
+        ticker.apply {
+            val tickerDescription = tickerInfo.formattedText()
             setHtmlDescription(tickerDescription)
 
             setDescriptionClickEvent(object : TickerCallback {
@@ -348,7 +348,7 @@ class SomDetailShippingViewHolder(
         }
     }
 
-    private fun TickerInfo.description(): String {
+    private fun TickerInfo.formattedText(): String {
         return String.format(
             binding?.root?.context?.getString(R.string.som_detail_ticker_description).orEmpty(),
             this.text,
