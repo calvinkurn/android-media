@@ -191,7 +191,6 @@ class FeedPostViewModel @Inject constructor(
         isNewData: Boolean = false,
         postSource: PostSourceModel? = null
     ) {
-        Timber.d("SOURCE : $source")
         if (fetchPostJob?.isActive == true) return
         if (!isNewData && !_hasNext) return
 
