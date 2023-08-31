@@ -70,12 +70,16 @@ class InputTextActivity : BaseActivity(), NavToolbarComponent.Listener {
         intent?.getParcelableExtra<InputTextModel>(
             INPUT_TEXT_STATE
         )?.let {
-            viewModel.updateText(it.text)
-            viewModel.updateSelectedColor(it.textColor)
-            viewModel.updateFontStyle(it.fontDetail)
+            var selectedColor = it.textColor
+
             it.backgroundColor?.let { backgroundColor ->
                 viewModel.updateBackgroundState(Pair(it.textColor, backgroundColor))
+                selectedColor = backgroundColor
             }
+
+            viewModel.updateText(it.text)
+            viewModel.updateSelectedColor(selectedColor)
+            viewModel.updateFontStyle(it.fontDetail)
             viewModel.updateAlignment(it.textAlign)
         }
     }
@@ -120,7 +124,11 @@ class InputTextActivity : BaseActivity(), NavToolbarComponent.Listener {
         val resultData = viewModel.getTextDetail()
 
         val intent = Intent()
-        intent.putExtra(INPUT_TEXT_RESULT, resultData)
+
+        // check if text only contain whitespace
+        if (resultData.text.trim().isNotEmpty()) {
+            intent.putExtra(INPUT_TEXT_RESULT, resultData)
+        }
 
         setResult(0, intent)
         finish()

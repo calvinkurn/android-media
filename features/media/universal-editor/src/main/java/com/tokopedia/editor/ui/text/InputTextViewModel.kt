@@ -4,12 +4,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.tokopedia.editor.ui.model.InputTextModel
+import com.tokopedia.editor.util.ColorProvider
 import com.tokopedia.editor.util.FontAlignment
 import com.tokopedia.editor.util.FontAlignment.Companion.next
 import com.tokopedia.editor.util.FontDetail
 import javax.inject.Inject
 
-class InputTextViewModel @Inject constructor(): ViewModel() {
+class InputTextViewModel @Inject constructor(
+    private val colorProvider: ColorProvider
+): ViewModel() {
     private val _selectedTextColor = MutableLiveData(-1)
     val selectedTextColor: LiveData<Int> get() = _selectedTextColor
 
@@ -28,6 +31,12 @@ class InputTextViewModel @Inject constructor(): ViewModel() {
 
     fun updateSelectedColor(colorId: Int) {
         _selectedTextColor.value = colorId
+
+        if (_backgroundColorSet.value != null) {
+            colorProvider.getColorMap()[colorId]?.let {
+                updateBackgroundState(Pair(it.textColorAlternate, it.colorInt))
+            }
+        }
     }
 
     fun getCurrentSelectedColor(): Int {

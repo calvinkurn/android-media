@@ -7,6 +7,7 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.editor.base.BaseEditorFragment
 import com.tokopedia.editor.databinding.FragmentInputTextBinding
 import com.tokopedia.editor.ui.components.InputTextColorItemView
@@ -21,10 +22,11 @@ import com.tokopedia.editor.R as resourceR
 import com.tokopedia.unifyprinciples.getTypeface as unifyTypeFaceGetter
 
 class InputTextFragment @Inject constructor(
-    private val colorProvider: ColorProvider
+    private val colorProvider: ColorProvider,
+    private val viewModelFactory: ViewModelProvider.Factory
 ) : BaseEditorFragment(resourceR.layout.fragment_input_text) {
 
-    private val viewModel: InputTextViewModel by activityViewModels()
+    private val viewModel: InputTextViewModel by activityViewModels { viewModelFactory }
     private val viewBinding: FragmentInputTextBinding? by viewBinding()
 
     override fun initView() {
@@ -99,17 +101,9 @@ class InputTextFragment @Inject constructor(
             }
 
             it.textBackgroundIconContainer.setOnClickListener {
+                // if background color is filled, if empty then set new color base on selected color
                 if (viewModel.backgroundColorSet.value == null) {
-                    viewModel.selectedTextColor.value?.let { textColorInt ->
-                        (colorProvider.getColorMap()[textColorInt])?.textColorAlternate?.let { backgroundColorInt ->
-                            viewModel.updateBackgroundState(
-                                Pair(
-                                    textColorInt,
-                                    backgroundColorInt
-                                )
-                            )
-                        }
-                    }
+                    implementBackgroundColor()
                 } else {
                     viewModel.updateBackgroundState(null)
                 }
@@ -190,6 +184,7 @@ class InputTextFragment @Inject constructor(
         val currentColor = viewModel.getCurrentSelectedColor()
         if (currentColor == viewTag) return
         setColorItemInactive(currentColor)
+
         viewModel.updateSelectedColor(viewTag)
     }
 
@@ -224,18 +219,14 @@ class InputTextFragment @Inject constructor(
     }
 
     private fun implementColor() {
-        val colorInt = viewModel.selectedTextColor.value ?: DEFAULT_TEXT_COLOR
-
         viewBinding?.addTextInput?.let {
             // config text with background
-            if (viewModel.backgroundColorSet.value != null) {
-                updateEditTextDrawable(colorInt)
-                it.setTextColor(
-                    colorProvider.getColorMap()[colorInt]?.textColorAlternate ?: DEFAULT_TEXT_COLOR
-                )
-            } else {
+            viewModel.backgroundColorSet.value?.let { (textColor, backgroundColor) ->
+                updateEditTextDrawable(backgroundColor)
+                it.setTextColor(textColor)
+            } ?: run {
                 updateEditTextDrawable(Color.TRANSPARENT)
-                it.setTextColor(colorInt)
+                it.setTextColor(viewModel.selectedTextColor.value ?: DEFAULT_TEXT_COLOR)
             }
         }
     }
@@ -252,6 +243,19 @@ class InputTextFragment @Inject constructor(
                 it.hint = ""
             } else {
                 it.hint = getString(resourceR.string.universal_editor_input_text_hint)
+            }
+        }
+    }
+
+    private fun implementBackgroundColor() {
+        viewModel.selectedTextColor.value?.let { selectedColor ->
+            (colorProvider.getColorMap()[selectedColor])?.textColorAlternate?.let { textColorInt ->
+                viewModel.updateBackgroundState(
+                    Pair(
+                        textColorInt,
+                        selectedColor
+                    )
+                )
             }
         }
     }
