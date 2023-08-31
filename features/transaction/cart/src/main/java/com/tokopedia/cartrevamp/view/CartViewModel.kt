@@ -38,12 +38,55 @@ import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
+import com.tokopedia.cartrevamp.domain.model.bmgm.request.BmGmGetGroupProductTickerParams
+import com.tokopedia.cartrevamp.domain.usecase.BmGmGetGroupProductTickerUseCase
 import com.tokopedia.cartrevamp.domain.usecase.SetCartlistCheckboxStateUseCase
 import com.tokopedia.cartrevamp.view.helper.CartDataHelper
 import com.tokopedia.cartrevamp.view.mapper.CartUiModelMapper
 import com.tokopedia.cartrevamp.view.mapper.PromoRequestMapper
 import com.tokopedia.cartrevamp.view.processor.CartCalculator
-import com.tokopedia.cartrevamp.view.uimodel.*
+import com.tokopedia.cartrevamp.view.uimodel.AddCartToWishlistV2Event
+import com.tokopedia.cartrevamp.view.uimodel.AddToCartEvent
+import com.tokopedia.cartrevamp.view.uimodel.AddToCartExternalEvent
+import com.tokopedia.cartrevamp.view.uimodel.CartAddOnProductData
+import com.tokopedia.cartrevamp.view.uimodel.CartBundlingBottomSheetData
+import com.tokopedia.cartrevamp.view.uimodel.CartCheckoutButtonState
+import com.tokopedia.cartrevamp.view.uimodel.CartEmptyHolderData
+import com.tokopedia.cartrevamp.view.uimodel.CartGlobalEvent
+import com.tokopedia.cartrevamp.view.uimodel.CartGroupHolderData
+import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
+import com.tokopedia.cartrevamp.view.uimodel.CartLoadingHolderData
+import com.tokopedia.cartrevamp.view.uimodel.CartModel
+import com.tokopedia.cartrevamp.view.uimodel.CartMutableLiveData
+import com.tokopedia.cartrevamp.view.uimodel.CartRecentViewHolderData
+import com.tokopedia.cartrevamp.view.uimodel.CartRecentViewItemHolderData
+import com.tokopedia.cartrevamp.view.uimodel.CartRecommendationItemHolderData
+import com.tokopedia.cartrevamp.view.uimodel.CartSectionHeaderHolderData
+import com.tokopedia.cartrevamp.view.uimodel.CartSelectedAmountHolderData
+import com.tokopedia.cartrevamp.view.uimodel.CartShopBottomHolderData
+import com.tokopedia.cartrevamp.view.uimodel.CartShopGroupTickerState
+import com.tokopedia.cartrevamp.view.uimodel.CartState
+import com.tokopedia.cartrevamp.view.uimodel.CartTopAdsHeadlineData
+import com.tokopedia.cartrevamp.view.uimodel.CartTrackerEvent
+import com.tokopedia.cartrevamp.view.uimodel.CartWishlistHolderData
+import com.tokopedia.cartrevamp.view.uimodel.CartWishlistItemHolderData
+import com.tokopedia.cartrevamp.view.uimodel.DeleteCartEvent
+import com.tokopedia.cartrevamp.view.uimodel.DisabledAccordionHolderData
+import com.tokopedia.cartrevamp.view.uimodel.DisabledCollapsedHolderData
+import com.tokopedia.cartrevamp.view.uimodel.DisabledItemHeaderHolderData
+import com.tokopedia.cartrevamp.view.uimodel.DisabledReasonHolderData
+import com.tokopedia.cartrevamp.view.uimodel.FollowShopEvent
+import com.tokopedia.cartrevamp.view.uimodel.GetBmGmGroupProductTickerState
+import com.tokopedia.cartrevamp.view.uimodel.LoadRecentReviewState
+import com.tokopedia.cartrevamp.view.uimodel.LoadRecommendationState
+import com.tokopedia.cartrevamp.view.uimodel.LoadWishlistV2State
+import com.tokopedia.cartrevamp.view.uimodel.PromoSummaryDetailData
+import com.tokopedia.cartrevamp.view.uimodel.RemoveFromWishlistEvent
+import com.tokopedia.cartrevamp.view.uimodel.SeamlessLoginEvent
+import com.tokopedia.cartrevamp.view.uimodel.UndoDeleteEvent
+import com.tokopedia.cartrevamp.view.uimodel.UpdateCartAndGetLastApplyEvent
+import com.tokopedia.cartrevamp.view.uimodel.UpdateCartCheckoutState
+import com.tokopedia.cartrevamp.view.uimodel.UpdateCartPromoState
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -129,6 +172,7 @@ class CartViewModel @Inject constructor(
     private val setCartlistCheckboxStateUseCase: SetCartlistCheckboxStateUseCase,
     private val followShopUseCase: FollowShopUseCase,
     private val cartShopGroupTickerAggregatorUseCase: CartShopGroupTickerAggregatorUseCase,
+    private val getGroupProductTickerUseCase: BmGmGetGroupProductTickerUseCase,
     private val schedulers: ExecutorSchedulers,
     private val dispatchers: CoroutineDispatchers,
     private val cartCalculator: CartCalculator
@@ -205,6 +249,9 @@ class CartViewModel @Inject constructor(
 
     private val _followShopEvent: MutableLiveData<FollowShopEvent> = MutableLiveData()
     val followShopEvent: LiveData<FollowShopEvent> = _followShopEvent
+
+    private val _bmGmGroupProductTickerState: MutableLiveData<GetBmGmGroupProductTickerState> = MutableLiveData()
+    val bmGmGroupProductTickerState: LiveData<GetBmGmGroupProductTickerState> = _bmGmGroupProductTickerState
 
     private val _tokoNowProductUpdater =
         MutableSharedFlow<Boolean>(replay = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
@@ -720,6 +767,11 @@ class CartViewModel @Inject constructor(
         // Collect all Cart Item & also calculate total weight on each shop
         val cartItemDataList = getAvailableCartItemDataList(dataList)
 
+        var subtotalBmGmDiscount = 0.0
+        dataList.forEach {
+            if (it.cartGroupBmGmHolderData.hasBmGmOffer) subtotalBmGmDiscount += it.cartGroupBmGmHolderData.discountBmGmAmount
+        }
+
         // Calculate total total item, price and cashback for marketplace product
         val returnValueMarketplaceProduct = cartCalculator.calculatePriceMarketplaceProduct(
             allCartItemDataList = cartItemDataList,
@@ -730,7 +782,7 @@ class CartViewModel @Inject constructor(
         )
         totalItemQty += returnValueMarketplaceProduct.first
         subtotalBeforeSlashedPrice += returnValueMarketplaceProduct.second.first
-        subtotalPrice += returnValueMarketplaceProduct.second.second
+        subtotalPrice += (returnValueMarketplaceProduct.second.second - subtotalBmGmDiscount)
         subtotalCashback += returnValueMarketplaceProduct.third
 
         updateSummaryTransactionUiModel(
@@ -2827,6 +2879,21 @@ class CartViewModel @Inject constructor(
                 }
             }
         )
+    }
+
+    fun getBmGmGroupProductTicker(params: BmGmGetGroupProductTickerParams) {
+        launch(dispatchers.io) {
+            try {
+                val result = getGroupProductTickerUseCase(params)
+                withContext(dispatchers.main) {
+                    _bmGmGroupProductTickerState.value = GetBmGmGroupProductTickerState.Success(Pair(params.carts[0].cartDetails[0].offer.offerId, result))
+                }
+            } catch (t: Throwable) {
+                withContext(dispatchers.main) {
+                    _bmGmGroupProductTickerState.value = GetBmGmGroupProductTickerState.Failed(Pair(params.carts[0].cartDetails[0].offer.offerId, t))
+                }
+            }
+        }
     }
 
     override fun onCleared() {
