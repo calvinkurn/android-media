@@ -13,7 +13,7 @@ import com.tokopedia.productbundlewidget.model.BundleUiModel
 
 class ProductBundleMultipleAdapter(
     private val listener: ProductBundleAdapterListener?,
-    private val isOverrideWidgetTheme: Boolean = false
+    private val isOverrideWidgetTheme: Boolean
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var bundleProducts: List<BundleProductUiModel> = listOf()

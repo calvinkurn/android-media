@@ -30,8 +30,9 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class ProductBundleSingleViewHolder(
     itemView: View,
-    private val containerWidgetParams: Int
-): RecyclerView.ViewHolder(itemView) {
+    private val containerWidgetParams: Int,
+    private val isOverrideWidgetTheme: Boolean
+) : RecyclerView.ViewHolder(itemView) {
 
     companion object {
         @LayoutRes
@@ -54,7 +55,6 @@ class ProductBundleSingleViewHolder(
     private val bundleDetailAdapter = ProductBundleSingleAdapter()
     private var cardBundling: CardUnify? = null
     private var icBundleDiscount: IconUnify? = null
-//    private var isDarkMode: Boolean = false
 
     init {
         viewBinding?.apply {
@@ -82,9 +82,7 @@ class ProductBundleSingleViewHolder(
         initFooterStyle(bundle)
 
         // Setup widget theme if the page owner wants to change the widget theme
-        overrideWidgetTheme(
-            isDarkMode =
-            fontColor = )
+        overrideWidgetTheme()
 
         // bundle card item details
         renderBundlePriceDetails(bundleDetail)
@@ -174,8 +172,10 @@ class ProductBundleSingleViewHolder(
             bundleDetail.useProductSoldInfo -> bundleDetail.productSoldInfo
             bundleDetail.isPreOrder -> bundleDetail.preOrderInfo
             bundleDetail.totalSold.isZero() -> ""
-            else -> itemView.context.getString(R.string.product_bundle_bundle_sold,
-                bundleDetail.totalSold.toString())
+            else -> itemView.context.getString(
+                R.string.product_bundle_bundle_sold,
+                bundleDetail.totalSold.toString()
+            )
         }
     }
 
@@ -245,8 +245,8 @@ class ProductBundleSingleViewHolder(
         this.listener = listener
     }
 
-    fun overrideWidgetTheme(isDarkMode: Boolean, fontColor: Int) {
-        if (isDarkMode) {
+    private fun overrideWidgetTheme() {
+        if (isOverrideWidgetTheme) {
             viewBinding?.bundleWidgetHeaderContainer?.let {
                 it.tvBundleNameLarge.setTextColor(ContextCompat.getColor(itemView.context, R.color.dms_high_emphasis))
             }
@@ -262,5 +262,4 @@ class ProductBundleSingleViewHolder(
 //            buttonAtc?.applyColorMode(colorMode = DARK_MODE)
         }
     }
-
 }

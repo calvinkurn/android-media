@@ -31,11 +31,11 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 
-
 class ProductBundleMultipleViewHolder(
     itemView: View,
-    private val containerWidgetParams: Int
-): RecyclerView.ViewHolder(itemView) {
+    private val containerWidgetParams: Int,
+    private val isOverrideWidgetTheme: Boolean
+) : RecyclerView.ViewHolder(itemView) {
 
     companion object {
         @LayoutRes
@@ -76,9 +76,7 @@ class ProductBundleMultipleViewHolder(
         initFooterStyle(bundle)
 
         // Setup widget theme if the page owner wants to change the widget theme
-        overrideWidgetTheme(
-            isDarkMode =
-            fontColor = )
+        overrideWidgetTheme()
 
         // bundle card item details
         typographyBundleName?.text = bundle.bundleName
@@ -103,8 +101,10 @@ class ProductBundleMultipleViewHolder(
             bundleDetail.useProductSoldInfo -> bundleDetail.productSoldInfo
             bundleDetail.isPreOrder -> bundleDetail.preOrderInfo
             bundleDetail.totalSold.isZero() -> ""
-            else -> itemView.context.getString(R.string.product_bundle_bundle_sold,
-                bundleDetail.totalSold.toString())
+            else -> itemView.context.getString(
+                R.string.product_bundle_bundle_sold,
+                bundleDetail.totalSold.toString()
+            )
         }
     }
 
@@ -221,8 +221,8 @@ class ProductBundleMultipleViewHolder(
         this.listener = listener
     }
 
-    fun overrideWidgetTheme(isDarkMode: Boolean, fontColor: Int) {
-        if (isDarkMode) {
+    private fun overrideWidgetTheme() {
+        if (isOverrideWidgetTheme) {
             viewBinding?.bundleWidgetHeaderContainer?.let {
                 it.tvBundleNameLarge.setTextColor(ContextCompat.getColor(itemView.context, R.color.dms_high_emphasis))
             }
@@ -235,6 +235,7 @@ class ProductBundleMultipleViewHolder(
 
             typographyBundleProductName?.setTextColor(ContextCompat.getColor(itemView.context, R.color.dms_high_emphasis))
             icBundleDiscount?.setImage(newLightEnable = ContextCompat.getColor(itemView.context, R.color.dms_high_emphasis))
+
 //            buttonAtc?.isInverse = true
 //            buttonAtc?.applyColorMode(colorMode = DARK_MODE)
         }
