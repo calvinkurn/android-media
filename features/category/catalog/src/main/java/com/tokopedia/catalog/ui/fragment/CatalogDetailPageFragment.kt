@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.catalog.databinding.FragmentCatalogReimagineDetailPageBinding
 import com.tokopedia.catalog.di.DaggerCatalogComponent
+import com.tokopedia.catalog.ui.model.NavigationProperties
 import com.tokopedia.catalog.ui.viewmodel.CatalogDetailPageViewModel
 import com.tokopedia.catalogcommon.adapter.CatalogAdapterFactoryImpl
 import com.tokopedia.catalogcommon.adapter.WidgetCatalogAdapter
@@ -21,27 +22,25 @@ import com.tokopedia.catalogcommon.customview.CatalogToolbar
 import com.tokopedia.catalogcommon.listener.HeroBannerListener
 import com.tokopedia.catalogcommon.uimodel.AccordionInformationUiModel
 import com.tokopedia.catalogcommon.uimodel.DummyUiModel
-import com.tokopedia.catalogcommon.uimodel.ExpertReviewUiModel
-import com.tokopedia.catalogcommon.uimodel.HeroBannerUiModel
 import com.tokopedia.catalogcommon.uimodel.PanelImageUiModel
 import com.tokopedia.catalogcommon.uimodel.SliderImageTextUiModel
 import com.tokopedia.catalogcommon.uimodel.StickyNavigationUiModel
 import com.tokopedia.catalogcommon.uimodel.TopFeaturesUiModel
 import com.tokopedia.catalogcommon.uimodel.TrustMakerUiModel
 import com.tokopedia.catalogcommon.util.DrawableExtension
-import com.tokopedia.catalogcommon.util.stringHexColorParseToInt
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener {
 
     @Inject
-    lateinit var catalogDetailPageViewModel: CatalogDetailPageViewModel
+    lateinit var viewModel: CatalogDetailPageViewModel
 
     private var binding by autoClearedNullable<FragmentCatalogReimagineDetailPageBinding>()
 
@@ -51,10 +50,6 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener {
                 heroBannerListener = this
             )
         )
-    }
-
-    private val widgets by lazy {
-        arrayListOf<Visitable<*>>()
     }
 
     companion object {
@@ -90,100 +85,10 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        catalogDetailPageViewModel.getA()
-        context?.let {
-            binding?.setupRvWidgets(false, true)
-            binding?.setupToolbar(false, true, "#ffffff")
-            binding?.stickySingleHeaderView?.containerHeight = binding?.toolbar?.height.orZero()
-
-            widgets.add(
-                HeroBannerUiModel(
-                    "bannercoy",
-                    "",
-                    "",
-                    widgetBackgroundColor = null,
-                    widgetTextColor = null,
-                    brandTitle = "Samsung",
-                    brandDesc = "360 RTrfvds Dewsign",
-                    brandIconUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Samsung_wordmark.svg/440px-Samsung_wordmark.svg.png",
-                    //brandIconUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/9/92/UNIQLO_logo.svg/1200px-UNIQLO_logo.svg.png",
-                    brandImageUrls = listOf(
-                        "https://placekitten.com/200/300",
-                        "https://placekitten.com/201/301",
-                        "https://placekitten.com/205/302"
-                    ),
-                    isPremium = true
-                )
-            )
-            widgets.add(
-                DummyUiModel(
-                    "dummybann",
-                    "",
-                    "",
-                    widgetBackgroundColor = null,
-                    widgetTextColor = null,
-                    content = "konten"
-                )
-            )
-            widgets.add(TrustMakerUiModel.dummyTrustMaker())
-            widgets.add(TopFeaturesUiModel.dummyTopFeatures())
-            widgets.add(StickyNavigationUiModel.dummyNavigation())
-            widgets.add(
-                PanelImageUiModel(
-                    "1", "2", "2",
-                    content = listOf(
-                        PanelImageUiModel.PanelImageItemData(
-                            imageUrl = "https://images.tokopedia.net/android/shop_page/image_product_empty_state_buyer.png",
-                            highlight = "",
-                            title = "asd",
-                            description = "ad"
-                        ),
-                        PanelImageUiModel.PanelImageItemData(
-                            imageUrl = "https://placekitten.com/200/300", highlight = "",
-                            title = "asd22", description = "ad22"
-                        ),
-                    )
-                )
-            )
-            widgets.add(
-                PanelImageUiModel(
-                    "1", "2", "2",
-                    content = listOf(
-                        PanelImageUiModel.PanelImageItemData(
-                            imageUrl = "https://images.tokopedia.net/android/shop_page/image_product_empty_state_buyer.png",
-                            highlight = "",
-                            title = "asd",
-                            description = "ad"
-                        ),
-                        PanelImageUiModel.PanelImageItemData(
-                            imageUrl = "https://placekitten.com/200/300", highlight = "",
-                            title = "asd22", description = "ad22"
-                        ),
-                    )
-                )
-            )
-            widgets.add(
-                PanelImageUiModel(
-                    "1", "2", "2",
-                    content = listOf(
-                        PanelImageUiModel.PanelImageItemData(
-                            imageUrl = "https://images.tokopedia.net/android/shop_page/image_product_empty_state_buyer.png",
-                            highlight = "",
-                            title = "asd",
-                            description = "ad"
-                        ),
-                        PanelImageUiModel.PanelImageItemData(
-                            imageUrl = "https://placekitten.com/200/300", highlight = "",
-                            title = "asd22", description = "ad22"
-                        ),
-                    )
-                )
-            )
-            widgets.add(ExpertReviewUiModel.dummyExpertReview())
-            widgets.add(SliderImageTextUiModel.dummySliderImageText())
-            widgets.add(AccordionInformationUiModel.dummyAccordion())
-            widgetAdapter.addWidget(widgets)
-            widgetAdapter.refreshSticky()
+        setupObservers()
+        if (arguments != null) {
+            val catalogId = requireArguments().getString(ARG_EXTRA_CATALOG_ID, "")
+            viewModel.getProductCatalog(catalogId, "", "", "android")
         }
     }
 
@@ -199,13 +104,24 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener {
         // no-op
     }
 
+    private fun setupObservers() {
+        viewModel.catalogDetailDataModel.observe(viewLifecycleOwner) {
+            if (it is Success) {
+                widgetAdapter.addMoreData(it.data.widgets)
+                binding?.setupToolbar(it.data.navigationProperties)
+                binding?.setupRvWidgets(it.data.navigationProperties)
+                setPriceCtaWidgetTheme(it.data.priceCtaProperties.textColor, it.data.priceCtaProperties.bgColor)
+            }
+        }
+    }
+
     private fun FragmentCatalogReimagineDetailPageBinding.setupRvWidgets(
-        isDarkMode: Boolean,
-        isPremium: Boolean
+        navigationProperties: NavigationProperties
     ) {
         val layoutManager = LinearLayoutManager(context)
         rvContent.layoutManager = layoutManager
         rvContent.adapter = widgetAdapter
+        rvContent.setBackgroundColor(navigationProperties.bgColor)
         rvContent.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
@@ -219,16 +135,14 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener {
                 } else {
                     Int.ZERO.toFloat()
                 }
-                toolbar.updateToolbarAppearance(scrollProgress, isDarkMode, isPremium)
-
+                toolbar.updateToolbarAppearance(scrollProgress, navigationProperties)
             }
         })
+        widgetAdapter.refreshSticky()
     }
 
     private fun FragmentCatalogReimagineDetailPageBinding.setupToolbar(
-        isDarkMode: Boolean,
-        isPremium: Boolean,
-        colorString: String
+        navigationProperties: NavigationProperties
     ) {
         val colorBgGradient = MethodChecker.getColor(
             context,
@@ -242,26 +156,29 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener {
             context,
             com.tokopedia.unifyprinciples.R.color.Unify_Static_White
         )
-        val colorFont = if (isDarkMode) colorFontDark else colorFontLight
+        val colorFont = if (navigationProperties.isDarkMode) colorFontDark else colorFontLight
 
         toolbarShadow.background =
             DrawableExtension.createGradientDrawable(colorTop = colorBgGradient)
         toolbar.setColors(colorFont)
-        toolbarShadow.isVisible = !isPremium
-        toolbarBg.setBackgroundColor(colorString.stringHexColorParseToInt())
+        toolbarShadow.isVisible = !navigationProperties.isPremium
+        toolbarBg.setBackgroundColor(navigationProperties.bgColor)
+        toolbar.title = navigationProperties.title
+        toolbar.setNavigationOnClickListener {
+            onNavBackClicked()
+        }
     }
 
     private fun CatalogToolbar.updateToolbarAppearance(
         scrollProgress: Float,
-        isDarkMode: Boolean,
-        isPremium: Boolean
+        navigationProperties: NavigationProperties
     ) {
-        if (!isDarkMode) {
+        if (!navigationProperties.isDarkMode) {
             val colorProgress: Int = COLOR_VALUE_MAX - (COLOR_VALUE_MAX * scrollProgress).toInt()
             setColors(Color.rgb(colorProgress, colorProgress, colorProgress))
         }
 
-        if (isPremium) {
+        if (navigationProperties.isPremium) {
             alpha = scrollProgress
         }
         binding?.toolbarBg?.alpha = scrollProgress

@@ -3,13 +3,13 @@ package com.tokopedia.catalogcommon.uimodel
 import com.tokopedia.catalogcommon.adapter.CatalogAdapterFactory
 
 data class DummyUiModel(
-    override val idWidget: String,
-    override val widgetType: String,
-    override val widgetName: String,
-    override val widgetBackgroundColor: Int? = null,
-    override val widgetTextColor: Int? = null,
-    override val darkMode: Boolean = false,
-    val content: String
+    override var idWidget: String = "",
+    override var widgetType: String = "",
+    override var widgetName: String = "",
+    override var widgetBackgroundColor: Int? = null,
+    override var widgetTextColor: Int? = null,
+    override var darkMode: Boolean = false,
+    val content: String = ""
 ) : BaseCatalogUiModel(
     idWidget, widgetType, widgetName, widgetBackgroundColor, widgetTextColor,
     darkMode
