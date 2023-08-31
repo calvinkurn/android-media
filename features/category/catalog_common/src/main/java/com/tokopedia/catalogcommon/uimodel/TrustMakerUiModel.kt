@@ -2,7 +2,7 @@ package com.tokopedia.catalogcommon.uimodel
 
 import com.tokopedia.catalogcommon.adapter.CatalogAdapterFactory
 import com.tokopedia.catalogcommon.util.stringHexColorParseToInt
-import com.tokopedia.catalogcommon.util.textColorMapping
+import com.tokopedia.catalogcommon.util.colorMapping
 
 data class TrustMakerUiModel(
     override var idWidget: String = "",
@@ -28,7 +28,7 @@ data class TrustMakerUiModel(
 
     companion object {
 
-        private const val dummyDarkMode = false
+        private const val dummyDarkMode = true
         fun dummyTrustMaker() = TrustMakerUiModel(
             "dummy", "", "", "#000000".stringHexColorParseToInt(),
             items = listOf(
@@ -37,24 +37,24 @@ data class TrustMakerUiModel(
                     "https://images.tokopedia.net/ta/icon/badge/OS-Badge-80.png",
                     "Lorep Ipsum",
                     subTitle = "Lorep Ipsum",
-                    textColorTitle = textColorMapping(dummyDarkMode,"#F5F6FF", "#212121"),
-                    textColorSubTitle = textColorMapping(dummyDarkMode,"#AEB2BF", "#6D7588")
+                    textColorTitle = colorMapping(dummyDarkMode,"#F5F6FF", "#212121"),
+                    textColorSubTitle = colorMapping(dummyDarkMode,"#AEB2BF", "#6D7588")
                 ),
                 ItemTrustMakerUiModel(
                     "",
                     "https://images.tokopedia.net/ta/icon/badge/OS-Badge-80.png",
                     "Futuristik TV 2022",
                     subTitle = "IF Design Award",
-                    textColorTitle = textColorMapping(dummyDarkMode,"#F5F6FF", "#212121"),
-                    textColorSubTitle = textColorMapping(dummyDarkMode,"#AEB2BF", "#6D7588")
+                    textColorTitle = colorMapping(dummyDarkMode,"#F5F6FF", "#212121"),
+                    textColorSubTitle = colorMapping(dummyDarkMode,"#AEB2BF", "#6D7588")
                 ),
                 ItemTrustMakerUiModel(
                     "",
                     "https://images.tokopedia.net/ta/icon/badge/OS-Badge-80.png",
                     "Lorep Ipsum",
                     subTitle = "Lorep Ipsum",
-                    textColorTitle = textColorMapping(dummyDarkMode,"#F5F6FF", "#212121"),
-                    textColorSubTitle = textColorMapping(dummyDarkMode,"#AEB2BF", "#6D7588")
+                    textColorTitle = colorMapping(dummyDarkMode,"#F5F6FF", "#212121"),
+                    textColorSubTitle = colorMapping(dummyDarkMode,"#AEB2BF", "#6D7588")
                 ),
             )
         )
