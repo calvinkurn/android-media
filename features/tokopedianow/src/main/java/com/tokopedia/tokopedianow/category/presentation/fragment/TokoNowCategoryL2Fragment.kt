@@ -188,8 +188,10 @@ class TokoNowCategoryL2Fragment : BaseCategoryFragment() {
 
     private fun setSelectedTabPosition(data: CategoryL2TabUiModel) {
         binding?.tabsUnify?.apply {
-            val selectedTabPosition = data.selectedTabPosition
-            tabLayout.getTabAt(selectedTabPosition)?.select()
+            tabLayout.post {
+                val selectedTabPosition = data.selectedTabPosition
+                tabLayout.getTabAt(selectedTabPosition)?.select()
+            }
         }
     }
 
