@@ -696,6 +696,7 @@ open class EmoneyPdpFragment :
                 })
             } else if (this::nfcAdapter.isInitialized && nfcAdapter != null) {
                 hideTickerNotSupported()
+                showProducts()
             } else {
                 showTickerNotSupported()
                 showRecentNumberAndPromo()
@@ -703,6 +704,7 @@ open class EmoneyPdpFragment :
             }
         } else {
             hideTickerNotSupported()
+            showProducts()
         }
     }
 
