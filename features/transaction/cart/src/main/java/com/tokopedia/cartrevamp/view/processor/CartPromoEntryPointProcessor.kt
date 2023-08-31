@@ -23,6 +23,10 @@ class CartPromoEntryPointProcessor @Inject constructor(
     private val chosenAddressRequestHelper: ChosenAddressRequestHelper
 ) {
 
+    companion object {
+        const val ICON_URL_ENTRY_POINT_APPLIED = "https://images.tokopedia.net/img/promo/icon/Applied.png"
+    }
+
     private fun generatePromoRequest(
         cartModel: CartModel,
         cartDataList: ArrayList<Any>
@@ -62,7 +66,7 @@ class CartPromoEntryPointProcessor @Inject constructor(
         lastApply: LastApplyUiModel,
         cartModel: CartModel,
         cartDataList: ArrayList<Any>
-    ) : EntryPointInfoEvent {
+    ): EntryPointInfoEvent {
         val hasSelectedItemInCart = CartDataHelper.hasSelectedCartItem(cartDataList)
         when (lastApply.userGroupPromoAbTest) {
 
@@ -101,9 +105,12 @@ class CartPromoEntryPointProcessor @Inject constructor(
                     } else {
                         if (response.promoListRecommendation.data.resultStatus.code == ResultStatus.STATUS_COUPON_LIST_EMPTY
                             || response.promoListRecommendation.data.resultStatus.code == ResultStatus.STATUS_USER_BLACKLISTED
-                            || response.promoListRecommendation.data.resultStatus.code == ResultStatus.STATUS_PHONE_NOT_VERIFIED) {
+                            || response.promoListRecommendation.data.resultStatus.code == ResultStatus.STATUS_PHONE_NOT_VERIFIED
+                        ) {
                             val entryPointInfo = getCouponListRecommendationMapper
-                                .mapPromoListRecommendationEntryPointResponseToEntryPointInfo(response)
+                                .mapPromoListRecommendationEntryPointResponseToEntryPointInfo(
+                                    response
+                                )
                             if (entryPointInfo.color == PromoEntryPointInfo.COLOR_GREEN) {
                                 EntryPointInfoEvent.ActiveNew(
                                     lastApply = lastApply,
@@ -120,9 +127,23 @@ class CartPromoEntryPointProcessor @Inject constructor(
                         }
                     }
                 } else {
-                    return EntryPointInfoEvent.Applied(
+                    val message = when {
+                        lastApply.additionalInfo.messageInfo.message.isNotBlank() -> {
+                            lastApply.additionalInfo.messageInfo.message
+                        }
+
+                        lastApply.defaultEmptyPromoMessage.isNotBlank() -> {
+                            lastApply.defaultEmptyPromoMessage
+                        }
+
+                        else -> {
+                            ""
+                        }
+                    }
+                    return EntryPointInfoEvent.AppliedNew(
                         lastApply = lastApply,
-                        message = lastApply.additionalInfo.messageInfo.detail
+                        leftIconUrl = ICON_URL_ENTRY_POINT_APPLIED,
+                        message = message
                     )
                 }
             }
@@ -135,7 +156,7 @@ class CartPromoEntryPointProcessor @Inject constructor(
                 }
 
                 val message = when {
-                    lastApply.additionalInfo.messageInfo.message.isNotEmpty() -> {
+                    lastApply.additionalInfo.messageInfo.message.isNotBlank() -> {
                         lastApply.additionalInfo.messageInfo.message
                     }
 
@@ -145,11 +166,12 @@ class CartPromoEntryPointProcessor @Inject constructor(
 
                     else -> ""
                 }
-                val hasAppliedPromo = lastApply.additionalInfo.messageInfo.detail.isNotEmpty()
-                return if (hasAppliedPromo) {
+                val detail = lastApply.additionalInfo.messageInfo.detail
+                return if (detail.isNotBlank()) {
                     EntryPointInfoEvent.Applied(
                         lastApply = lastApply,
-                        message = message
+                        message = message,
+                        detail = detail
                     )
                 } else {
                     if (message.isNotBlank()) {
@@ -167,7 +189,7 @@ class CartPromoEntryPointProcessor @Inject constructor(
         }
     }
 
-    fun getEntryPointInfoNoItemSelected() : EntryPointInfoEvent {
+    fun getEntryPointInfoNoItemSelected(): EntryPointInfoEvent {
         return EntryPointInfoEvent.Inactive(
             isNoItemSelected = true
         )

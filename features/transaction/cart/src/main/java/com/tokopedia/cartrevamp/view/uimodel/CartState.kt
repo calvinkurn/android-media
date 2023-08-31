@@ -224,9 +224,16 @@ sealed class EntryPointInfoEvent {
         val isNoItemSelected: Boolean = false,
     ) : EntryPointInfoEvent()
 
+    data class AppliedNew(
+        val lastApply: LastApplyUiModel,
+        val leftIconUrl: String,
+        val message: String
+    ) : EntryPointInfoEvent()
+
     data class Applied(
         val lastApply: LastApplyUiModel,
-        val message: String
+        val message: String,
+        val detail: String
     ) : EntryPointInfoEvent()
 
     data class Error(

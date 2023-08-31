@@ -2710,11 +2710,30 @@ class CartRevampFragment :
                     }
                 }
 
+                is EntryPointInfoEvent.AppliedNew -> {
+                    if (data.message.isNotBlank()) {
+                        binding?.promoCheckoutBtnCart?.showActiveNew(
+                            leftImageUrl = data.leftIconUrl,
+                            wording = data.message,
+                            rightIcon = IconUnify.CHEVRON_RIGHT,
+                            onClickListener = {
+                                checkGoToPromo()
+                                PromoRevampAnalytics.eventCartClickPromoSection(
+                                    listPromoCodes = viewModel.getAllPromosApplied(data.lastApply),
+                                    isApplied = true,
+                                    userId = userSession.userId
+                                )
+                            }
+                        )
+                        PromoRevampAnalytics.eventCartViewPromoAlreadyApplied()
+                    }
+                }
+
                 is EntryPointInfoEvent.Applied -> {
-                    if (data.message.isNotBlank() && data.lastApply.additionalInfo.messageInfo.detail.isNotEmpty()) {
+                    if (data.message.isNotBlank()) {
                         binding?.promoCheckoutBtnCart?.showApplied(
                             title = data.message,
-                            desc = data.lastApply.additionalInfo.messageInfo.detail,
+                            desc = data.detail,
                             rightIcon = IconUnify.CHEVRON_RIGHT,
                             summaries = emptyList(),
                             onClickListener = {
