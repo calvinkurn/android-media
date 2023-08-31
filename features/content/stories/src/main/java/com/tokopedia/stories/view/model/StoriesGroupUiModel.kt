@@ -39,29 +39,11 @@ data class StoriesDetailItemUiModel(
     val resetValue: Int = -1,
     val isSameContent: Boolean = false,
     val author: StoryAuthor = StoryAuthor.Unknown,
-    val menus: List<ContentMenuItem> = defaultMenu,
+    val menus: List<ContentMenuItem> = emptyList(),
 ) {
 
     enum class StoriesDetailItemUiEvent {
         PAUSE, RESUME,
     }
 
-}
-
-//TODO() please remove
-val defaultMenu = buildList<ContentMenuItem> {
-    add(
-        ContentMenuItem(
-            iconUnify = IconUnify.WARNING,
-            name = R.string.content_common_menu_report,
-            type = ContentMenuIdentifier.Report
-        )
-    )
-    add(
-        ContentMenuItem(
-            iconUnify = IconUnify.DELETE,
-            name = com.tokopedia.stories.R.string.stories_delete_story_title,
-            type = ContentMenuIdentifier.Delete,
-        )
-    )
 }

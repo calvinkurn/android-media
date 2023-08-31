@@ -170,6 +170,7 @@ class StoriesDetailFragment @Inject constructor(
                 contentIsLoaded()
             }
         }
+        binding.vStoriesKebabIcon.showWithCondition(currContent.menus.isNotEmpty())
     }
 
     private fun observeBottomSheetStatus(

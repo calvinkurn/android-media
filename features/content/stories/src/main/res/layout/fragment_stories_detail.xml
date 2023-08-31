@@ -185,6 +185,7 @@
         app:layout_constraintEnd_toEndOf="@+id/v_stories_product_icon"
         app:layout_constraintStart_toStartOf="@+id/v_stories_product_icon"
         app:icon_name="MENU_KEBAB_HORIZONTAL"
+        android:visibility="gone"
         app:unify_image_type="circle" />
 
     <com.tokopedia.iconunify.IconUnify
