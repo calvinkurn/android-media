@@ -242,7 +242,7 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
                 if (messageIndex == messages.size.minus(Int.ONE)) {
                     messageIndex = Int.ZERO
                 } else {
-                    setText(messages[++messageIndex].parseAsHtml())
+                    setText(messages.getOrNull(++messageIndex).orEmpty().parseAsHtml())
                     flipTextWithAnimation(messages)
                 }
             }, TimeUnit.SECONDS.toMillis(MESSAGE_SWITCH_INITIAL_DELAY))
