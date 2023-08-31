@@ -23,7 +23,10 @@ data class BmGmGetGroupProductTickerResponse(
         val icon: Icon = Icon(),
 
         @SerializedName("message")
-        val listMessage: List<Message> = emptyList()
+        val listMessage: List<Message> = emptyList(),
+
+        @SerializedName("discount_amount")
+        val discountAmount: Double = 0.0
     ) {
         data class Icon(
             @SerializedName("url")

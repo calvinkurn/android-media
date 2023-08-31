@@ -1130,7 +1130,7 @@ class CartRevampFragment :
 
             val cartGroupHolderData = cartAdapter.getCartGroupHolderDataByCartItemHolderData(cartItemHolderData)
             if (cartGroupHolderData != null) {
-                getGroupProductTicker(cartGroupHolderData)
+                getGroupProductTicker(cartGroupHolderData, cartItemHolderData.bmGmCartInfoData.bmGmData.offerId)
             }
         }
     }
@@ -1288,7 +1288,7 @@ class CartRevampFragment :
 
             val cartGroupHolderData = cartAdapter.getCartGroupHolderDataByCartItemHolderData(cartItemHolderData)
             if (cartGroupHolderData != null) {
-                getGroupProductTicker(cartGroupHolderData)
+                getGroupProductTicker(cartGroupHolderData, cartItemHolderData.bmGmCartInfoData.bmGmData.offerId)
             }
         }
     }
@@ -2763,6 +2763,11 @@ class CartRevampFragment :
                             listOfferMessage.add(s.text)
                         }
                         cartItem.bmGmCartInfoData.bmGmData.offerMessage = listOfferMessage
+
+                        val cartGroupHolderData = cartAdapter.getCartGroupHolderDataByCartItemHolderData(cartItem)
+                        cartGroupHolderData?.cartGroupBmGmHolderData?.discountBmGmAmount = data.pairOfferIdBmGmTickerResponse.second.data.discountAmount
+                        viewModel.reCalculateSubTotal()
+
                         cartAdapter.notifyItemChanged(index)
                     }
                 }
@@ -4864,9 +4869,9 @@ class CartRevampFragment :
         awaitClose { setOnCheckedChangeListener(null) }
     }
 
-    private fun getGroupProductTicker(cartGroupHolderData: CartGroupHolderData) {
+    private fun getGroupProductTicker(cartGroupHolderData: CartGroupHolderData, offerId: Long) {
         viewModel.getBmGmGroupProductTicker(
-            BmGmTickerRequestMapper.generateGetGroupProductTickerRequestParams(cartGroupHolderData)
+            BmGmTickerRequestMapper.generateGetGroupProductTickerRequestParams(cartGroupHolderData, offerId)
         )
     }
 
@@ -4881,7 +4886,7 @@ class CartRevampFragment :
         val pairCartItemHolderData = cartAdapter.getCartItemHolderDataAndIndexByOfferId(offerId)
         val cartGroupHolderData = cartAdapter.getCartGroupHolderDataByCartItemHolderData(pairCartItemHolderData.second)
         if (cartGroupHolderData != null) {
-            getGroupProductTicker(cartGroupHolderData)
+            getGroupProductTicker(cartGroupHolderData, offerId)
         }
     }
 }
