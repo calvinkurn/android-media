@@ -165,7 +165,6 @@ class EditAdOthersFragment : BaseDaggerFragment() {
             when {
                 stepperModel.dailyBudget != 0F -> {
                     budget = stepperModel.dailyBudget.toLong()
-                    limitBudgetSwitch.isChecked = true
                 }
                 stepperModel.adBidPrice != 0.0 -> {
                     budget = stepperModel.adBidPrice.toLong() * MULTIPLIER.toLong()
