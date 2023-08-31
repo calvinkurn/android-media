@@ -91,25 +91,5 @@ class ExpertReviewViewHolder(itemView: View) : AbstractViewHolder<ExpertReviewUi
             newLightEnable = ContextCompat.getColor(itemView.context, element.styleIconPlay.iconColor)
         )
         view.clLayout.setBackgroundResource(element.backgroundColor)
-//        if (element.darkMode) {
-//
-//            view.lnPlay.setBackgroundResource(R.drawable.bg_circle_border_dark)
-//            view.ivPlay.setImage(
-//                newDarkDisable = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White),
-//                newDarkEnable = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White),
-//                newLightDisable = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White),
-//                newLightEnable = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
-//            )
-//            view.clLayout.setBackgroundResource(com.tokopedia.catalogcommon.R.drawable.bg_rounded_border_dark)
-//        } else {
-//            view.lnPlay.setBackgroundResource(R.drawable.bg_circle_border_light)
-//            view.clLayout.setBackgroundResource(com.tokopedia.catalogcommon.R.drawable.bg_rounded_border_light)
-//            view.ivPlay.setImage(
-//                newDarkDisable = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_Black),
-//                newDarkEnable = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_Black),
-//                newLightDisable = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_Black),
-//                newLightEnable = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_Black)
-//            )
-//        }
     }
 }
