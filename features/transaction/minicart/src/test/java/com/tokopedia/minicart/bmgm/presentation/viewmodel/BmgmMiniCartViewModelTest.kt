@@ -1,6 +1,5 @@
 package com.tokopedia.minicart.bmgm.presentation.viewmodel
 
-import androidx.lifecycle.MutableLiveData
 import com.tokopedia.minicart.bmgm.domain.model.BmgmParamModel
 import com.tokopedia.minicart.bmgm.domain.usecase.GetBmgmMiniCartDataUseCase
 import com.tokopedia.minicart.bmgm.domain.usecase.LocalCacheUseCase
@@ -10,7 +9,11 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -69,7 +72,7 @@ class BmgmMiniCartViewModelTest : BaseCartCheckboxViewModelTest<BmgmMiniCartView
         runTest {
             val showLoadingState = false
             getMiniCartSuccessTestSetup(showLoadingState) { _, data ->
-                viewModel.cartData.verifySuccessEquals(BmgmState.Success(data))
+                assertEquals(BmgmState.Success(data), viewModel.cartData.value)
 
                 coVerify {
                     localCacheUseCase.saveToLocalCache(data)
@@ -84,7 +87,7 @@ class BmgmMiniCartViewModelTest : BaseCartCheckboxViewModelTest<BmgmMiniCartView
             val showLoadingState = true
             getMiniCartFailedTestSetup(showLoadingState) { sates, t ->
                 assertEquals(BmgmState.Loading, sates[0])
-                viewModel.cartData.verifyErrorEquals(BmgmState.Error(t))
+                viewModel.cartData.value.verifyErrorEquals(BmgmState.Error(t))
 
                 coVerify(inverse = true) {
                     localCacheUseCase.saveToLocalCache(any())
@@ -98,7 +101,7 @@ class BmgmMiniCartViewModelTest : BaseCartCheckboxViewModelTest<BmgmMiniCartView
         runTest {
             val showLoadingState = false
             getMiniCartFailedTestSetup(showLoadingState) { _, t ->
-                viewModel.cartData.verifyErrorEquals(BmgmState.Error(t))
+                viewModel.cartData.value.verifyErrorEquals(BmgmState.Error(t))
 
                 coVerify(inverse = true) {
                     localCacheUseCase.saveToLocalCache(any())
@@ -124,7 +127,7 @@ class BmgmMiniCartViewModelTest : BaseCartCheckboxViewModelTest<BmgmMiniCartView
         runTest {
             val state = BmgmState.Success(getMiniCartDummyData())
             val miniCartData =
-                privateMiniCartData.get(viewModel) as MutableLiveData<BmgmState<BmgmMiniCartDataUiModel>>
+                privateMiniCartData.get(viewModel) as MutableStateFlow<BmgmState<BmgmMiniCartDataUiModel>>
             miniCartData.value = state
 
             viewModel.storeCartDataToLocalCache()
@@ -142,7 +145,7 @@ class BmgmMiniCartViewModelTest : BaseCartCheckboxViewModelTest<BmgmMiniCartView
             val data = getMiniCartDummyData()
             val state = BmgmState.Loading
             val miniCartData =
-                privateMiniCartData.get(viewModel) as MutableLiveData<BmgmState<BmgmMiniCartDataUiModel>>
+                privateMiniCartData.get(viewModel) as MutableStateFlow<BmgmState<BmgmMiniCartDataUiModel>>
             miniCartData.value = state
 
             viewModel.storeCartDataToLocalCache()
@@ -168,8 +171,8 @@ class BmgmMiniCartViewModelTest : BaseCartCheckboxViewModelTest<BmgmMiniCartView
             getBmgmMiniCartDataUseCase.invoke(shopIds, param)
         } returns dummy
 
-        viewModel.cartData.observeForever {
-            state.add(it)
+        val job = launch(UnconfinedTestDispatcher()) {
+            viewModel.cartData.toList(state)
         }
 
         viewModel.getMiniCartData(shopIds, param, showLoadingState)
@@ -179,6 +182,8 @@ class BmgmMiniCartViewModelTest : BaseCartCheckboxViewModelTest<BmgmMiniCartView
         }
 
         assert(state, dummy)
+
+        job.cancel()
     }
 
     private fun TestScope.getMiniCartFailedTestSetup(
@@ -194,8 +199,8 @@ class BmgmMiniCartViewModelTest : BaseCartCheckboxViewModelTest<BmgmMiniCartView
             getBmgmMiniCartDataUseCase.invoke(shopIds, param)
         } throws throwable
 
-        viewModel.cartData.observeForever {
-            state.add(it)
+        val job = launch(UnconfinedTestDispatcher()) {
+            viewModel.cartData.toList(state)
         }
 
         viewModel.getMiniCartData(shopIds, param, showLoadingState)
@@ -205,5 +210,7 @@ class BmgmMiniCartViewModelTest : BaseCartCheckboxViewModelTest<BmgmMiniCartView
         }
 
         assert(state, throwable)
+
+        job.cancel()
     }
 }

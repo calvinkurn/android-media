@@ -164,6 +164,7 @@ class OfferLandingPageFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initMiniCart()
         setupObservables()
         setupProductRv()
         swipeRefreshLayout = binding?.swLayout
@@ -172,6 +173,10 @@ class OfferLandingPageFragment :
             isEnabled = true
             setOnRefreshListener { loadInitialData() }
         }
+    }
+
+    private fun initMiniCart() {
+        binding?.miniCartView?.init(lifecycleOwner = viewLifecycleOwner)
     }
 
     private fun setupObservables() {
@@ -209,7 +214,7 @@ class OfferLandingPageFragment :
                 is Success -> {
                     binding?.apply {
                         miniCartView.showToaster(atc.data.data.message.firstOrNull().orEmpty())
-                        fetchMiniCart()
+                        miniCartView.refreshAfterAtC()
                     }
                     viewModel.processEvent(OlpEvent.GetNotification)
                 }

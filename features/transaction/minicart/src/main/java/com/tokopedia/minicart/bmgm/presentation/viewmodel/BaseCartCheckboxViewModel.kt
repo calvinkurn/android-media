@@ -1,11 +1,12 @@
 package com.tokopedia.minicart.bmgm.presentation.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.minicart.bmgm.presentation.model.BmgmState
 import com.tokopedia.purchase_platform.common.feature.bmgm.domain.usecase.SetCartListCheckboxStateUseCase
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -18,20 +19,20 @@ open class BaseCartCheckboxViewModel(
     private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
-    private val _setCheckListState = MutableLiveData<BmgmState<Boolean>>()
-    val setCheckListState: LiveData<BmgmState<Boolean>>
+    private val _setCheckListState = MutableSharedFlow<BmgmState<Boolean>>()
+    val setCheckListState: SharedFlow<BmgmState<Boolean>>
         get() = _setCheckListState
 
     fun setCartListCheckboxState(cartIds: List<String>) {
-        launch {
+        viewModelScope.launch {
             runCatching {
-                _setCheckListState.value = BmgmState.Loading
+                _setCheckListState.emit(BmgmState.Loading)
                 val result = withContext(dispatchers.io) {
                     setCartListCheckboxStateUseCase.invoke(cartIds)
                 }
-                _setCheckListState.value = BmgmState.Success(result)
+                _setCheckListState.emit(BmgmState.Success(result))
             }.onFailure {
-                _setCheckListState.value = BmgmState.Error(it)
+                _setCheckListState.emit(BmgmState.Error(it))
             }
         }
     }
