@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
+import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -74,10 +75,15 @@ open class MainEditorActivity : AppCompatActivity(), NavToolbarComponent.Listene
     private val inputTextIntent = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) {
+        toolbar.setVisibility(true)
+        navigationTool.setVisibility(true)
+
         val result = it.data?.getParcelableExtra<InputTextModel>(InputTextActivity.INPUT_TEXT_RESULT)
 
+        if (result?.text?.isNotEmpty() != true) return@registerForActivityResult
+
         // TODO, bind input text result to ImageModel & VideoModel (re-implement previous pos detail / create new if no detail yet)
-        Toast.makeText(this, result?.text, Toast.LENGTH_LONG).show()
+        Toast.makeText(this, result?.text + "", Toast.LENGTH_LONG).show()
     }
 
     private val viewModel: MainEditorViewModel by viewModels { viewModelFactory }
@@ -130,6 +136,9 @@ open class MainEditorActivity : AppCompatActivity(), NavToolbarComponent.Listene
     private fun onToolClicked(@ToolType type: Int) {
         when (type) {
             ToolType.TEXT -> {
+                toolbar.setVisibility(false)
+                navigationTool.setVisibility(false)
+
                 val intent = InputTextActivity.create(this)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)

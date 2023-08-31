@@ -58,29 +58,26 @@ class InputTextActivity : BaseActivity(), NavToolbarComponent.Listener {
     }
 
     override fun onContinueClicked() {
-        val resultData = viewModel.getTextDetail()
+        finishActivity()
+    }
 
-        val intent = Intent()
-        intent.putExtra(INPUT_TEXT_RESULT, resultData)
-
-        setResult(0, intent)
-        finish()
+    @Deprecated("Deprecated in Java")
+    override fun onBackPressed() {
+        finishActivity()
     }
 
     private fun initView() {
         setupToolbar()
     }
 
-    private fun initObserver() {
-        viewModel.textValue.observe(this) {
-            toolbar.showContinueButtonAs(it.isNotEmpty())
-        }
-    }
+    private fun initObserver() {}
 
     private fun setupToolbar() {
         toolbar.onToolbarThemeChanged(ToolbarTheme.Transparent)
+        toolbar.setBackVisibility(false)
+        toolbar.setTitleVisibility(false)
+
         toolbar.showContinueButtonAs(true)
-        toolbar.setTitle(getString(R.string.universal_editor_nav_bar_add_text))
     }
 
     private fun initFragment() {
@@ -102,6 +99,16 @@ class InputTextActivity : BaseActivity(), NavToolbarComponent.Listener {
         ModuleInjector
             .get(this)
             .inject(this)
+    }
+
+    private fun finishActivity() {
+        val resultData = viewModel.getTextDetail()
+
+        val intent = Intent()
+        intent.putExtra(INPUT_TEXT_RESULT, resultData)
+
+        setResult(0, intent)
+        finish()
     }
 
     companion object {
