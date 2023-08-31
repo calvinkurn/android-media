@@ -25,6 +25,7 @@ import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.ColorMode
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -258,8 +259,8 @@ class ProductBundleSingleViewHolder(
             typographyBundleProductOriginalPrice?.setTextColor(ContextCompat.getColor(itemView.context, R.color.dms_low_emphasis))
             typographyBundleProductSavingAmount?.setTextColor(ContextCompat.getColor(itemView.context, R.color.dms_high_emphasis))
             icBundleDiscount?.setImage(newLightEnable = ContextCompat.getColor(itemView.context, R.color.dms_high_emphasis))
-//            buttonAtc?.isInverse = true
-//            buttonAtc?.applyColorMode(colorMode = DARK_MODE)
+
+            buttonAtc?.applyColorMode(colorMode = ColorMode.LIGHT_MODE)
         }
     }
 }

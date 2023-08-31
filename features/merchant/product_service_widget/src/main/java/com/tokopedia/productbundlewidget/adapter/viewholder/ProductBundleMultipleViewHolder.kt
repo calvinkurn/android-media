@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.flexbox.FlexboxLayout
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -28,6 +29,7 @@ import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.ColorMode
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -54,6 +56,7 @@ class ProductBundleMultipleViewHolder(
     private var rvBundleProducts: RecyclerView? = null
     private var widgetContainer: ConstraintLayout? = null
     private var cardBundling: CardUnify? = null
+    private var icBundleDiscount: IconUnify? = null
 
     init {
         viewBinding?.apply {
@@ -67,6 +70,7 @@ class ProductBundleMultipleViewHolder(
             rvBundleProducts = rvMultipleBundleProducts
             widgetContainer = bundleWidgetContainer
             cardBundling = container
+            icBundleDiscount = icBundleDiscount
         }
     }
 
@@ -232,12 +236,8 @@ class ProductBundleMultipleViewHolder(
             typographyBundleProductDisplayPrice?.setTextColor(ContextCompat.getColor(itemView.context, R.color.dms_high_emphasis))
             typographyBundleProductOriginalPrice?.setTextColor(ContextCompat.getColor(itemView.context, R.color.dms_low_emphasis))
             typographyBundleProductSavingAmount?.setTextColor(ContextCompat.getColor(itemView.context, R.color.dms_high_emphasis))
-
-            typographyBundleProductName?.setTextColor(ContextCompat.getColor(itemView.context, R.color.dms_high_emphasis))
             icBundleDiscount?.setImage(newLightEnable = ContextCompat.getColor(itemView.context, R.color.dms_high_emphasis))
-
-//            buttonAtc?.isInverse = true
-//            buttonAtc?.applyColorMode(colorMode = DARK_MODE)
+            buttonAtc?.applyColorMode(colorMode = ColorMode.LIGHT_MODE)
         }
     }
 }
