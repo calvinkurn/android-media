@@ -40,7 +40,7 @@ class ExpertReviewViewHolder(itemView: View) : AbstractViewHolder<ExpertReviewUi
                         binding?.root,
                         false
                     )
-                    setupColorIconPlay(itemExpert, view)
+                    setupColorIconPlayAndBackgroundColorCard(itemExpert, view)
 
 
 
@@ -81,7 +81,7 @@ class ExpertReviewViewHolder(itemView: View) : AbstractViewHolder<ExpertReviewUi
         }
     }
 
-    private fun setupColorIconPlay(element: ExpertReviewUiModel.ItemExpertReviewUiModel, view: ItemExpertReviewBinding) {
+    private fun setupColorIconPlayAndBackgroundColorCard(element: ExpertReviewUiModel.ItemExpertReviewUiModel, view: ItemExpertReviewBinding) {
 
         view.lnPlay.setBackgroundResource(element.styleIconPlay.background)
         view.ivPlay.setImage(
