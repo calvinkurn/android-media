@@ -81,11 +81,12 @@
             android:layout_height="wrap_content"
             android:background="@drawable/bg_circle_border_dark"
             android:padding="10dp">
-            <com.tokopedia.unifycomponents.ImageUnify
+            <com.tokopedia.iconunify.IconUnify
                 android:id="@+id/ivPlay"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                app:srcCompat="@drawable/ic_play_catalog_black"/>
+                app:icon_name="PLAY"
+                />
         </LinearLayout>
 
     </LinearLayout>

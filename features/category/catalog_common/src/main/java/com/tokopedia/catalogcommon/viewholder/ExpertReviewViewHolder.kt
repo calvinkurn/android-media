@@ -5,6 +5,7 @@ import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.core.content.ContextCompat
 import com.google.android.youtube.player.YouTubeApiServiceUtil
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -39,16 +40,9 @@ class ExpertReviewViewHolder(itemView: View) : AbstractViewHolder<ExpertReviewUi
                         binding?.root,
                         false
                     )
+                    setupColorIconPlay(itemExpert, view)
 
-                    if (element.darkMode) {
-                        view.lnPlay.setBackgroundResource(R.drawable.bg_circle_border_dark)
-                        view.ivPlay.setImageResource(R.drawable.ic_play_catalog_white)
-                        view.clLayout.setBackgroundResource(com.tokopedia.catalogcommon.R.drawable.bg_rounded_border_dark)
-                    } else {
-                        view.lnPlay.setBackgroundResource(R.drawable.bg_circle_border_light)
-                        view.clLayout.setBackgroundResource(com.tokopedia.catalogcommon.R.drawable.bg_rounded_border_light)
-                        view.ivPlay.setImageResource(R.drawable.ic_play_catalog_black)
-                    }
+
 
                     view.tvReview.text = itemExpert.reviewText
                     view.tvReview.setTextColor(itemExpert.textReviewColor)
@@ -69,7 +63,7 @@ class ExpertReviewViewHolder(itemView: View) : AbstractViewHolder<ExpertReviewUi
         }
     }
 
-    fun playVideoYoutube(videoLink: String) {
+    private fun playVideoYoutube(videoLink: String) {
         val uri = Uri.parse(videoLink)
 
         val youTubeVideoId = uri.getQueryParameter(KEY_YOUTUBE_VIDEO_ID) ?: ""
@@ -85,5 +79,37 @@ class ExpertReviewViewHolder(itemView: View) : AbstractViewHolder<ExpertReviewUi
                 )
             )
         }
+    }
+
+    private fun setupColorIconPlay(element: ExpertReviewUiModel.ItemExpertReviewUiModel, view: ItemExpertReviewBinding) {
+
+        view.lnPlay.setBackgroundResource(element.styleIconPlay.background)
+        view.ivPlay.setImage(
+            newDarkDisable = ContextCompat.getColor(itemView.context, element.styleIconPlay.iconColor),
+            newDarkEnable = ContextCompat.getColor(itemView.context, element.styleIconPlay.iconColor),
+            newLightDisable = ContextCompat.getColor(itemView.context,element.styleIconPlay.iconColor),
+            newLightEnable = ContextCompat.getColor(itemView.context, element.styleIconPlay.iconColor)
+        )
+        view.clLayout.setBackgroundResource(element.backgroundColor)
+//        if (element.darkMode) {
+//
+//            view.lnPlay.setBackgroundResource(R.drawable.bg_circle_border_dark)
+//            view.ivPlay.setImage(
+//                newDarkDisable = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White),
+//                newDarkEnable = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White),
+//                newLightDisable = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White),
+//                newLightEnable = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
+//            )
+//            view.clLayout.setBackgroundResource(com.tokopedia.catalogcommon.R.drawable.bg_rounded_border_dark)
+//        } else {
+//            view.lnPlay.setBackgroundResource(R.drawable.bg_circle_border_light)
+//            view.clLayout.setBackgroundResource(com.tokopedia.catalogcommon.R.drawable.bg_rounded_border_light)
+//            view.ivPlay.setImage(
+//                newDarkDisable = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_Black),
+//                newDarkEnable = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_Black),
+//                newLightDisable = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_Black),
+//                newLightEnable = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_Black)
+//            )
+//        }
     }
 }

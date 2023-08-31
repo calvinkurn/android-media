@@ -1,8 +1,8 @@
 package com.tokopedia.catalogcommon.uimodel
 
 import com.tokopedia.catalogcommon.adapter.CatalogAdapterFactory
+import com.tokopedia.catalogcommon.util.colorMapping
 import com.tokopedia.catalogcommon.util.stringHexColorParseToInt
-import com.tokopedia.catalogcommon.util.textColorMapping
 
 data class ExpertReviewUiModel(
     override val idWidget: String,
@@ -30,12 +30,19 @@ data class ExpertReviewUiModel(
         val textReviewColor: Int,
         val textTitleColor: Int,
         val textSubTitleColor: Int,
+        val backgroundColor: Int = com.tokopedia.catalogcommon.R.drawable.bg_rounded_border_light,
+        val styleIconPlay: StyleIconPlay = StyleIconPlay()
+    )
+
+    data class StyleIconPlay(
+        val iconColor: Int = com.tokopedia.unifyprinciples.R.color.Unify_Static_White,
+        val background: Int = com.tokopedia.catalogcommon.R.drawable.bg_circle_border_dark
     )
 
     companion object {
         private const val dummyDarkMode = false
         fun dummyExpertReview() = ExpertReviewUiModel(
-            "dummy", "", "", "#FFFFFF".stringHexColorParseToInt(),darkMode = dummyDarkMode,
+            "dummy", "", "", "#FFFFFF".stringHexColorParseToInt(), darkMode = dummyDarkMode,
             content = listOf(
                 ItemExpertReviewUiModel(
                     "https://upload.wikimedia.org/wikipedia/id/1/12/David_Brendi.jpeg",
@@ -43,9 +50,26 @@ data class ExpertReviewUiModel(
                     "David Gadgetin",
                     "1 line credibility",
                     "https://www.youtube.com/watch?v=vyZTwO74gQo",
-                    textReviewColor = textColorMapping(dummyDarkMode, "#F5F6FF", "#212121"),
-                    textTitleColor = textColorMapping(dummyDarkMode, "#F5F6FF", "#212121"),
-                    textSubTitleColor = textColorMapping(dummyDarkMode, "#AEB2BF", "#6D7588")
+                    textReviewColor = colorMapping(dummyDarkMode, "#F5F6FF", "#212121"),
+                    textTitleColor = colorMapping(dummyDarkMode, "#F5F6FF", "#212121"),
+                    textSubTitleColor = colorMapping(dummyDarkMode, "#AEB2BF", "#6D7588"),
+                    backgroundColor = colorMapping(
+                        dummyDarkMode,
+                        com.tokopedia.catalogcommon.R.drawable.bg_rounded_border_dark,
+                        com.tokopedia.catalogcommon.R.drawable.bg_rounded_border_light
+                    ),
+                    styleIconPlay = StyleIconPlay(
+                        iconColor = colorMapping(
+                            dummyDarkMode,
+                            com.tokopedia.unifyprinciples.R.color.Unify_Static_White,
+                            com.tokopedia.unifyprinciples.R.color.Unify_Static_Black
+                        ),
+                        background = colorMapping(
+                            dummyDarkMode,
+                            com.tokopedia.catalogcommon.R.drawable.bg_circle_border_dark,
+                            com.tokopedia.catalogcommon.R.drawable.bg_circle_border_light,
+                        )
+                    )
                 ),
                 ItemExpertReviewUiModel(
                     "https://upload.wikimedia.org/wikipedia/id/1/12/David_Brendi.jpeg",
@@ -53,9 +77,26 @@ data class ExpertReviewUiModel(
                     "David Gadgetin",
                     "1 line credibility",
                     "https://www.youtube.com/watch?v=vyZTwO74gQo",
-                    textReviewColor = textColorMapping(dummyDarkMode, "#F5F6FF", "#212121"),
-                    textTitleColor = textColorMapping(dummyDarkMode, "#F5F6FF", "#212121"),
-                    textSubTitleColor = textColorMapping(dummyDarkMode, "#AEB2BF", "#6D7588")
+                    textReviewColor = colorMapping(dummyDarkMode, "#F5F6FF", "#212121"),
+                    textTitleColor = colorMapping(dummyDarkMode, "#F5F6FF", "#212121"),
+                    textSubTitleColor = colorMapping(dummyDarkMode, "#AEB2BF", "#6D7588"),
+                    backgroundColor = colorMapping(
+                        dummyDarkMode,
+                        com.tokopedia.catalogcommon.R.drawable.bg_rounded_border_dark,
+                        com.tokopedia.catalogcommon.R.drawable.bg_rounded_border_light
+                    ),
+                    styleIconPlay = StyleIconPlay(
+                        iconColor = colorMapping(
+                            dummyDarkMode,
+                            com.tokopedia.unifyprinciples.R.color.Unify_Static_White,
+                            com.tokopedia.unifyprinciples.R.color.Unify_Static_Black
+                        ),
+                        background = colorMapping(
+                            dummyDarkMode,
+                            com.tokopedia.catalogcommon.R.drawable.bg_circle_border_dark,
+                            com.tokopedia.catalogcommon.R.drawable.bg_circle_border_light,
+                        )
+                    )
                 ),
                 ItemExpertReviewUiModel(
                     "https://upload.wikimedia.org/wikipedia/id/1/12/David_Brendi.jpeg",
@@ -63,11 +104,30 @@ data class ExpertReviewUiModel(
                     "David Gadgetin",
                     "1 line credibility",
                     "https://www.youtube.com/watch?v=vyZTwO74gQo",
-                    textReviewColor = textColorMapping(dummyDarkMode, "#F5F6FF", "#212121"),
-                    textTitleColor = textColorMapping(dummyDarkMode, "#F5F6FF", "#212121"),
-                    textSubTitleColor = textColorMapping(dummyDarkMode, "#AEB2BF", "#6D7588")
+                    textReviewColor = colorMapping(dummyDarkMode, "#F5F6FF", "#212121"),
+                    textTitleColor = colorMapping(dummyDarkMode, "#F5F6FF", "#212121"),
+                    textSubTitleColor = colorMapping(dummyDarkMode, "#AEB2BF", "#6D7588"),
+                    backgroundColor = colorMapping(
+                        dummyDarkMode,
+                        com.tokopedia.catalogcommon.R.drawable.bg_rounded_border_dark,
+                        com.tokopedia.catalogcommon.R.drawable.bg_rounded_border_light
+                    ),
+                    styleIconPlay = StyleIconPlay(
+                        iconColor = colorMapping(
+                            dummyDarkMode,
+                            com.tokopedia.unifyprinciples.R.color.Unify_Static_White,
+                            com.tokopedia.unifyprinciples.R.color.Unify_Static_Black
+                        ),
+                        background = colorMapping(
+                            dummyDarkMode,
+                            com.tokopedia.catalogcommon.R.drawable.bg_circle_border_dark,
+                            com.tokopedia.catalogcommon.R.drawable.bg_circle_border_light,
+                        )
+                    )
                 )
             )
+
         )
+
     }
 }
