@@ -45,6 +45,7 @@ import com.tokopedia.tokopedianow.common.model.TokoNowAdsCarouselUiModel
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.searchcategory.domain.mapper.VisitableMapper.updateProductItem
+import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
 import com.tokopedia.tokopedianow.searchcategory.domain.usecase.GetSortFilterUseCase
 import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_TOKONOW_DIRECTORY
 import com.tokopedia.tokopedianow.searchcategory.utils.QUICK_FILTER_TOKONOW_DIRECTORY
@@ -110,6 +111,7 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
     private var filterBottomSheetOpened: Boolean = false
 
     private var getProductJob: Job? = null
+    private var isAllProductShown = false
 
     init {
         miniCartSource = MiniCartSource.TokonowCategoryPage
@@ -139,10 +141,15 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
     }
 
     fun loadMore() {
-        if (getProductJob?.isCompleted != false) {
+        if (getProductJob?.isCompleted != false && !isAllProductShown) {
             launchCatchError(block = {
                 showLoadMoreLoading()
-                getProductList()
+
+                val productList = getProductList()
+                if(productList.isEmpty()) {
+                    isAllProductShown = true
+                }
+
                 hideLoadMoreLoading()
                 page++
             }) {
@@ -322,11 +329,14 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
         filterController.initFilterController(queryParams, filterList)
     }
 
-    private fun getProductListAsync(item: CategoryProductListUiModel): Deferred<Unit?> {
+    private fun getProductListAsync(
+        item: CategoryProductListUiModel
+    ): Deferred<List<AceSearchProductModel.Product>?> {
         return asyncCatchError(block = {
             visitableList.remove(item)
             getProductList()
         }) {
+            emptyList()
         }
     }
 
@@ -357,7 +367,7 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getProductList() {
+    private suspend fun getProductList(): List<AceSearchProductModel.Product> {
         val queryParams = createRequestQueryParams(
             source = CATEGORY_TOKONOW_DIRECTORY,
             rows = PRODUCT_ROWS,
@@ -373,6 +383,8 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
         )
 
         updateVisitableListLiveData()
+
+        return response.searchProduct.data.productList
     }
 
     private suspend fun getCategoryFilter(): DynamicFilterModel {
