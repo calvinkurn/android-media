@@ -133,6 +133,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.media.loader.loadImage
@@ -226,7 +227,7 @@ class CartRevampFragment :
 
     lateinit var cartAdapter: CartAdapter
     private var refreshHandler: RefreshHandler? = null
-    private var progressDialog: AlertDialog? = null
+    private var progressDialog: LoaderDialog? = null
 
     @Inject
     lateinit var cartItemDecoration: CartItemDecoration
@@ -364,9 +365,6 @@ class CartRevampFragment :
             binding?.swipeRefreshLayout?.let { swipeRefreshLayout ->
                 refreshHandler = RefreshHandler(it, swipeRefreshLayout, this)
             }
-            progressDialog = AlertDialog.Builder(it)
-                .setView(com.tokopedia.purchase_platform.common.R.layout.purchase_platform_progress_dialog_view)
-                .setCancelable(false).create()
         }
 
         initViewListener()
@@ -4177,13 +4175,16 @@ class CartRevampFragment :
     }
 
     private fun showProgressLoading() {
-        if (progressDialog?.isShowing == false) progressDialog?.show()
+        if (progressDialog == null) {
+            progressDialog = LoaderDialog(requireContext())
+            progressDialog?.show()
+        }
     }
 
     private fun hideProgressLoading() {
-        if (progressDialog?.isShowing == true) progressDialog?.dismiss()
-        if (refreshHandler?.isRefreshing == true) {
-            refreshHandler?.finishRefresh()
+        if (progressDialog != null) {
+            progressDialog?.dismiss()
+            progressDialog = null
         }
     }
 
