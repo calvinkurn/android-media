@@ -397,6 +397,7 @@ internal class PromoUsageViewModel @Inject constructor(
                 if (selectedPromoCodes.isNotEmpty()) {
                     val tncItem = updatedItems.getTncItem() ?: PromoTncItem()
                     updatedItems = updatedItems
+                        .filterNot { it is PromoTncItem }
                         .plus(tncItem.copy(selectedPromoCodes = selectedPromoCodes))
                 } else {
                     updatedItems = updatedItems
