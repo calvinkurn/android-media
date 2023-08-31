@@ -36,9 +36,13 @@ class MainEditorViewModel @Inject constructor(
                 setParam(event.param)
                 renderNavigationTools()
             }
-            is MainEditorEvent.ClickInputTextTool -> {
+            is MainEditorEvent.AddInputTextPage -> {
+                val empty = InputTextModel.default()
+                setAction(MainEditorEffect.OpenInputText(empty))
+            }
+            is MainEditorEvent.EditInputTextPage -> {
                 setAction(MainEditorEffect.OpenInputText(event.model))
-                updateDataOnActiveText(event.model, event.isEdited)
+                updateActiveTypography(event.typographyId)
             }
             is MainEditorEvent.InputTextResult -> {
                 updateActiveInputTextData(event.model)
@@ -61,12 +65,9 @@ class MainEditorViewModel @Inject constructor(
         }
     }
 
-    private fun updateDataOnActiveText(model: InputTextModel, isEdited: Boolean) {
+    private fun updateActiveTypography(id: Int) {
         _inputTextState.setValue {
-            copy(
-                isEdited = isEdited,
-                previousString = model.text
-            )
+            copy(typographyId = id)
         }
     }
 

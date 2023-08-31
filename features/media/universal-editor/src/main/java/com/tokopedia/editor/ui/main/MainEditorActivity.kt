@@ -3,8 +3,6 @@ package com.tokopedia.editor.ui.main
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
-import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -84,7 +82,7 @@ open class MainEditorActivity : AppCompatActivity(), NavToolbarComponent.Listene
         if (result.text.isEmpty()) return@registerForActivityResult
 
         viewModel.setTextState(result)
-        viewModel.setAction(MainEditorEvent.InputTextResult(result))
+        viewModel.onEvent(MainEditorEvent.InputTextResult(result))
     }
 
     private val viewModel: MainEditorViewModel by viewModels { viewModelFactory }
@@ -158,7 +156,7 @@ open class MainEditorActivity : AppCompatActivity(), NavToolbarComponent.Listene
     }
 
     private fun navigateToInputTextTool(model: InputTextModel) {
-        val intent = InputTextActivity.create(this)
+        val intent = InputTextActivity.create(this, model)
         inputTextIntent.launch(intent)
         overridePendingTransition(0,0)
     }

@@ -1,5 +1,6 @@
 package com.tokopedia.editor.ui.main.fragment.image.main
 
+import android.view.View
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -13,6 +14,7 @@ import com.tokopedia.editor.ui.main.uimodel.InputTextUiModel
 import com.tokopedia.editor.ui.main.uimodel.MainEditorEvent
 import com.tokopedia.editor.ui.model.InputTextModel
 import com.tokopedia.editor.ui.widget.DynamicTextCanvasView
+import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
@@ -21,7 +23,8 @@ import javax.inject.Inject
 
 class ImageMainEditorFragment @Inject constructor(
     private val param: EditorParamFetcher
-) : BaseEditorFragment(R.layout.fragment_image_main_editor), DynamicTextCanvasView.Listener {
+) : BaseEditorFragment(R.layout.fragment_image_main_editor)
+    , DynamicTextCanvasView.Listener {
 
     private val binding: FragmentImageMainEditorBinding? by viewBinding()
     private val viewModel: MainEditorViewModel by activityViewModels()
@@ -36,15 +39,14 @@ class ImageMainEditorFragment @Inject constructor(
     override fun initObserver() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                viewModel.inputTextState.collect {
-                    addOrEditTextOnCanvas(it)
-                }
+                viewModel.inputTextState.collect(::addOrEditTextOnCanvas)
             }
         }
     }
 
-    override fun onTextClick(text: Typography, model: InputTextModel) {
-        viewModel.onEvent(MainEditorEvent.ClickInputTextTool(model, true))
+    override fun onTextClick(text: View, model: InputTextModel?) {
+        if (model == null) return
+        viewModel.onEvent(MainEditorEvent.EditInputTextPage(text.id, model))
     }
 
     private fun addOrEditTextOnCanvas(state: InputTextUiModel) {
@@ -56,8 +58,8 @@ class ImageMainEditorFragment @Inject constructor(
 
         binding?.canvas?.setListener(this)
 
-        if (state.isEdited) {
-            binding?.canvas?.editText(state.previousString, state.model)
+        if (state.typographyId.isLessThanZero()) {
+            binding?.canvas?.editText(state)
         } else {
             binding?.canvas?.addText(state.model)
         }

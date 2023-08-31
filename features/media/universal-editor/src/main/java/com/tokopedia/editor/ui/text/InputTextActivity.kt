@@ -137,13 +137,14 @@ class InputTextActivity : BaseActivity(), NavToolbarComponent.Listener {
 
     companion object {
         private const val INPUT_TEXT_RESULT = "input_text_result"
-        const val EXTRA_INPUT_TEXT_MODEL = "extra_input_text_model"
+        private const val EXTRA_INPUT_TEXT_MODEL = "extra_input_text_model"
         const val INPUT_TEXT_STATE = "input_text_state"
 
-        fun create(context: Context): Intent {
+        fun create(context: Context, model: InputTextModel): Intent {
             return Intent(context, InputTextActivity::class.java).also {
                 it.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 it.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                it.putExtra(EXTRA_INPUT_TEXT_MODEL, model)
             }
         }
 

@@ -3,8 +3,7 @@ package com.tokopedia.editor.ui.main.uimodel
 import com.tokopedia.editor.ui.model.InputTextModel
 
 data class InputTextUiModel(
-    val isEdited: Boolean = false,
-    val previousString: String = "",
+    val typographyId: Int = -1,
     val model: InputTextModel? = null
 ) {
 

@@ -13,6 +13,7 @@ import javax.inject.Inject
 class InputTextViewModel @Inject constructor(
     private val colorProvider: ColorProvider
 ): ViewModel() {
+
     private val _selectedTextColor = MutableLiveData(-1)
     val selectedTextColor: LiveData<Int> get() = _selectedTextColor
 

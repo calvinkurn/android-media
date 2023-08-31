@@ -1,4 +1,6 @@
-package com.tokopedia.editor.ui.gesture.java;
+package com.tokopedia.editor.ui.gesture.api;
+
+import static com.tokopedia.editor.ui.widget.DynamicTextCanvasView.GRID_ID;
 
 import android.animation.ObjectAnimator;
 import android.content.Context;
@@ -8,14 +10,13 @@ import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.widget.Button;
 
 import com.tokopedia.editor.ui.gesture.listener.OnGestureControl;
 import com.tokopedia.editor.ui.gesture.listener.OnMultiTouchListener;
 import com.tokopedia.editor.ui.model.AddTextModel;
+import com.tokopedia.editor.ui.widget.DynamicTextCanvasView;
 import com.tokopedia.editor.ui.widget.GridGuidelineView;
 import com.tokopedia.iconunify.IconUnify;
-import com.tokopedia.unifyprinciples.Typography;
 
 public class MultiTouchListener implements View.OnTouchListener {
 
@@ -37,7 +38,7 @@ public class MultiTouchListener implements View.OnTouchListener {
     private OnGestureControl onGestureControl;
     boolean isTextPinchZoomable;
 
-    private final GridGuidelineView gridGuidelineView;
+    private GridGuidelineView gridGuidelineView;
     private final IconUnify deleteView;
 
     private float originalScaleX;
@@ -46,7 +47,10 @@ public class MultiTouchListener implements View.OnTouchListener {
     boolean isSelectedViewDraggedToTrash = false;
     boolean isDragging = false;
 
-    public MultiTouchListener(Context context, Typography view, GridGuidelineView guideline, IconUnify deleteView) {
+    private int lastPositionX = 0;
+    private int lastPositionY = 0;
+
+    public MultiTouchListener(Context context, View view, IconUnify deleteView) {
         this.deleteView = deleteView;
 
         // @Workaround: for initiate state
@@ -56,8 +60,6 @@ public class MultiTouchListener implements View.OnTouchListener {
         isTextPinchZoomable = true;
         scaleGestureDetector = new ScaleGestureDetector(new ScaleGestureListener(this));
         gestureListener = new GestureDetector(context, new GestureListener());
-
-        gridGuidelineView = guideline;
     }
 
     private float adjustAngle(float degrees) {
@@ -123,14 +125,28 @@ public class MultiTouchListener implements View.OnTouchListener {
         scaleGestureDetector.onTouchEvent(view, event);
         gestureListener.onTouchEvent(event);
 
-        if (!isTranslateEnabled) {
-            return true;
-        }
+        if (!isTranslateEnabled) return true;
 
         int action = event.getAction();
 
         int x = (int) event.getRawX();
         int y = (int) event.getRawY();
+
+        /*
+         * Save the last position of X and Y to set the ability of clickable of textView.
+         */
+        if (lastPositionX == 0 && lastPositionY == 0) {
+            lastPositionX = x;
+            lastPositionY = y;
+        }
+
+        /*
+         * Grid guidelines from parent
+         */
+        if (gridGuidelineView == null) {
+            gridGuidelineView = ((DynamicTextCanvasView) view.getParent())
+                    .findViewById(GRID_ID);
+        }
 
         switch (action & event.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
@@ -192,8 +208,10 @@ public class MultiTouchListener implements View.OnTouchListener {
                     }
 
                     // Show/hide vertical and horizontal guidelines based on alignment
-                    gridGuidelineView.setShowVerticalLine(isAlignedWithCenterX);
-                    gridGuidelineView.setShowHorizontalLine(isAlignedWithCenterY);
+                    if (gridGuidelineView != null) {
+                        gridGuidelineView.setShowVerticalLine(isAlignedWithCenterX);
+                        gridGuidelineView.setShowHorizontalLine(isAlignedWithCenterY);
+                    }
                 }
                 break;
             case MotionEvent.ACTION_CANCEL:
@@ -213,12 +231,21 @@ public class MultiTouchListener implements View.OnTouchListener {
                     view.setY(((View) view.getParent()).getHeight() / 2f - view.getHeight() / 2f);
                 }
 
-                gridGuidelineView.setShowVerticalLine(false);
-                gridGuidelineView.setShowHorizontalLine(false);
+                if (gridGuidelineView != null) {
+                    gridGuidelineView.setShowVerticalLine(false);
+                    gridGuidelineView.setShowHorizontalLine(false);
+                }
 
                 if (isPointerContain(x, y)) {
                     onMultiTouchListener.onRemoveView(view);
                 }
+
+                if (Math.abs(lastPositionX - x) < 10 && Math.abs(lastPositionY - y) < 10) {
+                    onGestureControl.onClick();
+                }
+
+                lastPositionX = 0;
+                lastPositionY = 0;
 
                 isDragging = false;
                 hideDeletionButton();
@@ -303,30 +330,11 @@ public class MultiTouchListener implements View.OnTouchListener {
         this.onGestureControl = onGestureControl;
     }
 
-    private final class GestureListener extends GestureDetector.SimpleOnGestureListener {
+    private static final class GestureListener extends GestureDetector.SimpleOnGestureListener {
 
         @Override
         public boolean onSingleTapConfirmed(MotionEvent e) {
-            if (onGestureControl != null) {
-                onGestureControl.onClick();
-            }
             return true;
-        }
-
-        @Override
-        public boolean onDown(MotionEvent e) {
-            if (onGestureControl != null) {
-                onGestureControl.onDown();
-            }
-            return true;
-        }
-
-        @Override
-        public void onLongPress(MotionEvent e) {
-            super.onLongPress(e);
-            if (onGestureControl != null) {
-                onGestureControl.onLongClick();
-            }
         }
     }
 }

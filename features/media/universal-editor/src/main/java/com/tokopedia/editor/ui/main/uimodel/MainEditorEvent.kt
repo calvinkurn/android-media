@@ -9,9 +9,11 @@ import com.tokopedia.picker.common.UniversalEditorParam
 sealed class MainEditorEvent {
     data class SetupView(val param: UniversalEditorParam) : MainEditorEvent()
 
-    data class ClickInputTextTool(
-        val model: InputTextModel,
-        val isEdited: Boolean = false
+    object AddInputTextPage : MainEditorEvent()
+
+    data class EditInputTextPage(
+        val typographyId: Int,
+        val model: InputTextModel
     ) : MainEditorEvent()
 
     data class InputTextResult(val model: InputTextModel) : MainEditorEvent()

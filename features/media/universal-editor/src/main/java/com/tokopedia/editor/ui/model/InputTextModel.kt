@@ -21,5 +21,7 @@ data class InputTextModel(
 ) : Parcelable {
     companion object {
         private const val DEFAULT_TEXT_COLOR = -1
+
+        fun default() = InputTextModel()
     }
 }
