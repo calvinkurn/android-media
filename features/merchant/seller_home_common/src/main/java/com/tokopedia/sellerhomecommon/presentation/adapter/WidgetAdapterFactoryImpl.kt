@@ -5,8 +5,44 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.sellerhomecommon.common.WidgetListener
-import com.tokopedia.sellerhomecommon.presentation.model.*
-import com.tokopedia.sellerhomecommon.presentation.view.viewholder.*
+import com.tokopedia.sellerhomecommon.presentation.model.AnnouncementWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.BarChartWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.CalendarWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.CardWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.CarouselWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.DescriptionWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.LineGraphWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.MilestoneWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.MultiComponentWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.MultiLineGraphWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.PieChartWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.PostListWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.ProgressWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.RecommendationWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.RichListWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.SectionWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.TableWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.TickerWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.UnificationWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.view.viewholder.AnnouncementViewHolder
+import com.tokopedia.sellerhomecommon.presentation.view.viewholder.BarChartViewHolder
+import com.tokopedia.sellerhomecommon.presentation.view.viewholder.CalendarViewHolder
+import com.tokopedia.sellerhomecommon.presentation.view.viewholder.CardViewHolder
+import com.tokopedia.sellerhomecommon.presentation.view.viewholder.CarouselViewHolder
+import com.tokopedia.sellerhomecommon.presentation.view.viewholder.DescriptionViewHolder
+import com.tokopedia.sellerhomecommon.presentation.view.viewholder.LineGraphViewHolder
+import com.tokopedia.sellerhomecommon.presentation.view.viewholder.MilestoneViewHolder
+import com.tokopedia.sellerhomecommon.presentation.view.viewholder.MultiComponentViewHolder
+import com.tokopedia.sellerhomecommon.presentation.view.viewholder.MultiLineGraphViewHolder
+import com.tokopedia.sellerhomecommon.presentation.view.viewholder.PieChartViewHolder
+import com.tokopedia.sellerhomecommon.presentation.view.viewholder.PostListViewHolder
+import com.tokopedia.sellerhomecommon.presentation.view.viewholder.ProgressViewHolder
+import com.tokopedia.sellerhomecommon.presentation.view.viewholder.RecommendationViewHolder
+import com.tokopedia.sellerhomecommon.presentation.view.viewholder.RichListViewHolder
+import com.tokopedia.sellerhomecommon.presentation.view.viewholder.SectionViewHolder
+import com.tokopedia.sellerhomecommon.presentation.view.viewholder.TableViewHolder
+import com.tokopedia.sellerhomecommon.presentation.view.viewholder.TickerViewHolder
+import com.tokopedia.sellerhomecommon.presentation.view.viewholder.UnificationViewHolder
 
 /**
  * Created By @ilhamsuaib on 19/05/20
@@ -88,6 +124,10 @@ class WidgetAdapterFactoryImpl(
         return RichListViewHolder.RES_LAYOUT
     }
 
+    override fun type(multiComponentWidget: MultiComponentWidgetUiModel): Int {
+        return MultiComponentViewHolder.RES_LAYOUT
+    }
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             SectionViewHolder.RES_LAYOUT -> SectionViewHolder(parent, listener)
@@ -108,6 +148,7 @@ class WidgetAdapterFactoryImpl(
             CalendarViewHolder.RES_LAYOUT -> CalendarViewHolder(parent, listener)
             UnificationViewHolder.RES_LAYOUT -> UnificationViewHolder(parent, listener)
             RichListViewHolder.RES_LAYOUT -> RichListViewHolder(parent, listener)
+            MultiComponentViewHolder.RES_LAYOUT -> MultiComponentViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
     }
