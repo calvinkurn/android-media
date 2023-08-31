@@ -14,4 +14,7 @@
     <dimen name="search_empty_state_image_show_ads_width">113dp</dimen>
     <dimen name="search_empty_state_image_show_ads_height">94dp</dimen>
 
+    <dimen name="search_inspiration_chips_margin_top_revamp">4dp</dimen>
+    <dimen name="search_inspiration_chips_margin_top_control">7dp</dimen>
+
 </resources>

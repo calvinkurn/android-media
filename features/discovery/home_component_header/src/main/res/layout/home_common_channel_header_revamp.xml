@@ -15,12 +15,16 @@
         android:layout="@layout/view_stub_header_title_revamp"
         android:layout_marginStart="@dimen/home_channel_header_margin_default"
         android:layout_marginLeft="@dimen/home_channel_header_margin_default"
-        android:layout_width="match_parent"
+        android:layout_marginRight="@dimen/home_channel_header_margin_default"
+        android:layout_marginEnd="@dimen/home_channel_header_margin_default"
+        android:layout_width="0dp"
         tools:visibility="visible"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/cta_button"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_goneMarginRight="0dp"
+        app:layout_goneMarginEnd="0dp"/>
 
     <ViewStub
         android:id="@+id/channel_subtitle_icon"

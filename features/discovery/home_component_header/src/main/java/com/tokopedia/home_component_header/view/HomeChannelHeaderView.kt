@@ -55,7 +55,8 @@ class HomeChannelHeaderView : FrameLayout {
         channelHeader: ChannelHeader,
         listener: HomeChannelHeaderListener? = null,
         colorMode: Int? = null,
-        ctaMode: Int? = null
+        ctaMode: Int? = null,
+        maxLines: Int = ONE_MAX_LINE,
     ) {
         init(channelHeader.layoutStrategy)
         this.listener = listener
@@ -66,6 +67,7 @@ class HomeChannelHeaderView : FrameLayout {
             this.headerCtaMode = it
         }
         handleHeaderComponent(channelHeader)
+        applyRuleHeaderTitleLine(maxLines)
     }
 
     private fun init(layoutStrategy: HeaderLayoutStrategy) {
@@ -119,6 +121,7 @@ class HomeChannelHeaderView : FrameLayout {
             } else {
                 findViewById(R.id.channel_title)
             }
+
             channelTitle?.text = channelHeaderName
             channelTitle?.gravity = Gravity.CENTER_VERTICAL
             channelTitle?.visibility = View.VISIBLE
@@ -141,6 +144,21 @@ class HomeChannelHeaderView : FrameLayout {
         } else {
             channelHeaderContainer.visibility = View.GONE
         }
+    }
+
+    private fun applyRuleHeaderTitleLine(maxLines: Int) {
+        when (maxLines) {
+            TWO_MAX_LINE -> {
+                channelTitle?.applyMaxLineHeaderTitle(maxLines, TWO_LINE_MAX_EMS, null)
+            }
+            else -> channelTitle?.applyMaxLineHeaderTitle(maxLines, ONE_LINE_MAX_EMS, TextUtils.TruncateAt.END )
+        }
+    }
+
+    private fun Typography?.applyMaxLineHeaderTitle(maxLine: Int, maxEms: Int, ellipsize: TextUtils.TruncateAt?) {
+        this?.maxLines = maxLine
+        this?.maxEms = maxEms
+        this?.ellipsize = ellipsize
     }
 
     private fun handleSubtitle(channelSubtitleName: String?, stubChannelSubtitle: View?, channelHeader: ChannelHeader) {
@@ -260,5 +278,10 @@ class HomeChannelHeaderView : FrameLayout {
         const val CTA_MODE_SEE_ALL = 0
         const val CTA_MODE_RELOAD = 1
         const val CTA_MODE_CLOSE = 2
+
+        private const val ONE_LINE_MAX_EMS = 12
+        private const val ONE_MAX_LINE = 1
+        private const val TWO_LINE_MAX_EMS = 32
+        private const val TWO_MAX_LINE = 2
     }
 }

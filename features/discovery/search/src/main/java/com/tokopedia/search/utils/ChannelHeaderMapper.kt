@@ -5,7 +5,6 @@ import com.tokopedia.home_component_header.model.ChannelHeader
 import com.tokopedia.search.R
 import com.tokopedia.search.result.product.broadmatch.BroadMatchDataView
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
-import com.tokopedia.search.result.product.inspirationcarousel.LAYOUT_INSPIRATION_CAROUSEL_CHIPS
 import com.tokopedia.search.result.product.inspirationcarousel.LAYOUT_INSPIRATION_CAROUSEL_GRID
 
 internal fun BroadMatchDataView.convertToChannelHeader(context: Context) =
@@ -37,3 +36,5 @@ private fun Context.getTitle(broadMatchDataView: BroadMatchDataView) =
 private fun isLayoutInspirationCarouselGrid(element: InspirationCarouselDataView): Boolean {
     return element.layout == LAYOUT_INSPIRATION_CAROUSEL_GRID
 }
+
+internal const val SEARCH_PAGE_RESULT_MAX_LINE = 2
