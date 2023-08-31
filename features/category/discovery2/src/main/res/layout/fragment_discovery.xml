@@ -21,15 +21,6 @@
         android:clipToPadding="false"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar">
 
-        <include
-            android:id="@+id/oldToolbar"
-            layout="@layout/item_toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            tools:layout_height="@dimen/dp_56"
-            tools:visibility = "visible"/>
-
         <com.tokopedia.searchbar.navigation_component.NavToolbar
             android:id="@+id/navToolbar"
             android:layout_width="match_parent"
@@ -44,7 +35,6 @@
             app:toolbarContentType="typeSearchbar"
             app:toolbarBackButton="back"
             app:toolbarPageName="@string/discovery_page_name"
-            android:visibility="gone"
             tools:visibility = "visible"/>
 
     </com.google.android.material.appbar.AppBarLayout>

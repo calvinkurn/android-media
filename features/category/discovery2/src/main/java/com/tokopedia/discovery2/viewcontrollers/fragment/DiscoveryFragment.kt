@@ -21,7 +21,6 @@ import android.view.WindowManager
 import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.appcompat.widget.Toolbar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.postDelayed
@@ -93,6 +92,7 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Compa
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.EMBED_CATEGORY
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.END_POINT
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.FORCED_NAVIGATION
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.HIDE_NAV_FEATURES
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PIN_PRODUCT
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PRODUCT_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.QUERY_PARENT
@@ -164,7 +164,6 @@ import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toPx
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.universal_sharing.tracker.PageType
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
@@ -220,9 +219,6 @@ open class DiscoveryFragment :
     private lateinit var mDiscoveryFab: CustomTopChatView
     private lateinit var mAnchorHeaderView: FrameLayout
     private lateinit var recyclerView: StickyHeadRecyclerView
-    private lateinit var typographyHeader: Typography
-    private lateinit var ivShare: ImageView
-    private lateinit var ivSearch: ImageView
     private lateinit var ivToTop: ImageView
     private lateinit var globalError: GlobalError
     private lateinit var navToolbar: NavToolbar
@@ -268,7 +264,6 @@ open class DiscoveryFragment :
     private var openScreenStatus = false
     private var pinnedAlreadyScrolled = false
     var pageLoadTimePerformanceInterface: PageLoadTimePerformanceInterface? = null
-    private var showOldToolbar: Boolean = false
     private var userAddressData: LocalCacheModel? = null
     private var staggeredGridLayoutManager: StaggeredGridLayoutManager? = null
     private var lastVisibleComponent: ComponentsItem? = null
@@ -306,6 +301,7 @@ open class DiscoveryFragment :
                 bundle.putString(SOURCE, queryParameterMap[SOURCE])
                 bundle.putString(COMPONENT_ID, queryParameterMap[COMPONENT_ID])
                 bundle.putString(ACTIVE_TAB, queryParameterMap[ACTIVE_TAB])
+                bundle.putString(HIDE_NAV_FEATURES, queryParameterMap[HIDE_NAV_FEATURES])
                 bundle.putString(TARGET_COMP_ID, queryParameterMap[TARGET_COMP_ID])
                 bundle.putString(PRODUCT_ID, queryParameterMap[PRODUCT_ID])
                 bundle.putString(PIN_PRODUCT, queryParameterMap[PIN_PRODUCT])
@@ -381,21 +377,12 @@ open class DiscoveryFragment :
     }
 
     private fun initToolbar(view: View) {
-        showOldToolbar = false
-        val oldToolbar: Toolbar = view.findViewById(R.id.oldToolbar)
         navToolbar = view.findViewById(R.id.navToolbar)
         viewLifecycleOwner.lifecycle.addObserver(navToolbar)
-        if (showOldToolbar) {
-            oldToolbar.visibility = View.VISIBLE
-            navToolbar.visibility = View.GONE
-        } else {
-            navToolbar.visibility = View.VISIBLE
-            oldToolbar.visibility = View.GONE
-            navToolbar.setOnBackButtonClickListener(
-                disableDefaultGtmTracker = true,
-                backButtonClickListener = ::handleBackPress
-            )
-        }
+        navToolbar.setOnBackButtonClickListener(
+            disableDefaultGtmTracker = true,
+            backButtonClickListener = ::handleBackPress
+        )
         if (arguments?.getString(DISCO_PAGE_SOURCE) == Constant.DiscoveryPageSource.HOME) {
             navToolbar.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_NONE)
             navToolbar.setIcon(
@@ -425,13 +412,7 @@ open class DiscoveryFragment :
     }
 
     private fun initView(view: View) {
-        typographyHeader = view.findViewById(R.id.typography_header)
         mAnchorHeaderView = view.findViewById(R.id.header_comp_holder)
-        ivShare = view.findViewById(R.id.iv_share)
-        ivSearch = view.findViewById(R.id.iv_search)
-        view.findViewById<ImageView>(R.id.iv_back).setOnClickListener {
-            handleBackPress()
-        }
         globalError = view.findViewById(R.id.global_error)
         recyclerView = view.findViewById(R.id.discovery_recyclerView)
         mSwipeRefreshLayout = view.findViewById(R.id.swiperefresh)
@@ -450,6 +431,8 @@ open class DiscoveryFragment :
             var dx = 0
             var scrollDist = 0
             val MINIMUM = 25.toPx()
+
+            @SuppressLint("PII Data Exposure")
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 this.dy = dy
@@ -599,7 +582,7 @@ open class DiscoveryFragment :
         } else if (!userPressed && isTabPresentToDoubleScroll) {
 //            isTabPresentToDoubleScroll = false
             pinnedAlreadyScrolled = false
-            discoveryAdapter.currentList?.let {
+            discoveryAdapter.currentList.let {
                 if (it.isNotEmpty()) {
                     scrollToPinnedComponent(it)
                 }
@@ -625,10 +608,10 @@ open class DiscoveryFragment :
 
     private fun updateLastVisibleComponent() {
         if (lastVisibleComponent != null && (
-            lastVisibleComponent?.name ==
-                ComponentsList.ProductCardRevamp.componentName || lastVisibleComponent?.name ==
-                ComponentsList.ProductCardSprintSale.componentName
-            )
+                lastVisibleComponent?.name ==
+                    ComponentsList.ProductCardRevamp.componentName || lastVisibleComponent?.name ==
+                    ComponentsList.ProductCardSprintSale.componentName
+                )
         ) {
             return
         }
@@ -638,11 +621,11 @@ open class DiscoveryFragment :
                 lastVisibleComponent = discoveryAdapter.currentList[positionArray.first()]
 
                 if (lastVisibleComponent != null && (
-                    lastVisibleComponent?.name ==
-                        ComponentsList.ProductCardRevampItem.componentName || lastVisibleComponent?.name ==
-                        ComponentsList.ProductCardSprintSaleItem.componentName ||
-                        lastVisibleComponent?.name == ComponentsList.ShimmerProductCard.componentName
-                    )
+                        lastVisibleComponent?.name ==
+                            ComponentsList.ProductCardRevampItem.componentName || lastVisibleComponent?.name ==
+                            ComponentsList.ProductCardSprintSaleItem.componentName ||
+                            lastVisibleComponent?.name == ComponentsList.ShimmerProductCard.componentName
+                        )
                 ) {
                     lastVisibleComponent = com.tokopedia.discovery2.datamapper
                         .getComponent(
@@ -771,7 +754,7 @@ open class DiscoveryFragment :
                     it.data.let { listComponent ->
                         if (mSwipeRefreshLayout.isRefreshing) setAdapter()
                         discoveryAdapter.addDataList(listComponent)
-                        if (listComponent.isNullOrEmpty()) {
+                        if (listComponent.isEmpty()) {
                             discoveryAdapter.addDataList(ArrayList())
                             setPageErrorState(Fail(IllegalStateException()))
                         } else {
@@ -1110,16 +1093,14 @@ open class DiscoveryFragment :
 
     private fun setToolBarPageInfoOnSuccess(data: PageInfo?) {
         handleShare(data)
-        if (showOldToolbar) {
-            ivSearch.show()
-            ivSearch.setOnClickListener {
-                getDiscoveryAnalytics().trackSearchClick()
-                handleSearchClick(data)
-            }
-            typographyHeader.text = data?.name ?: getString(R.string.discovery_tokopedia)
-        } else {
-            setupSearchBar(data)
-        }
+        setupSearchBar(data)
+    }
+
+    private fun setToolBarPageInfoOnFail() {
+        setCartAndNavIcon()
+        setupSearchBar(null)
+        mProgressBar.hide()
+        mSwipeRefreshLayout.isRefreshing = false
     }
 
     private fun handleShare(data: PageInfo?) {
@@ -1127,50 +1108,70 @@ open class DiscoveryFragment :
             navToolbar.updateNotification()
             return
         }
-        if (data?.share?.enabled == true) {
-            if (showOldToolbar) {
-                ivShare.show()
-                ivShare.setOnClickListener {
-                    handleShareClick(data)
-                }
-            } else {
-                navToolbar.setIcon(
-                    IconBuilder(getNavIconBuilderFlag())
-                        .addIcon(
-                            iconId = IconList.ID_SHARE,
-                            disableRouteManager = true,
-                            onClick = { handleShareClick(data) },
-                            disableDefaultGtmTracker = true
-                        )
-                        .addIcon(
-                            iconId = IconList.ID_CART,
-                            onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.CART) },
-                            disableDefaultGtmTracker = true
-                        )
-                        .addIcon(
-                            iconId = IconList.ID_NAV_GLOBAL,
-                            onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) },
-                            disableDefaultGtmTracker = true
-                        )
-                )
-                navToolbar.updateNotification()
-            }
+        if ((arguments?.getString(HIDE_NAV_FEATURES, "").isNullOrEmpty())) {
+            navWithShareData(data)
         } else {
-            if (showOldToolbar) {
-                ivShare.hide()
+            val hideNaveFeatures = arguments?.getString(HIDE_NAV_FEATURES, "")
+            if (hideNaveFeatures.isNullOrEmpty()) {
+                navWithShareData(data)
             } else {
-                setCartAndNavIcon()
+               val navIcons =  Utils.navIcons(getNavIconBuilderFlag(),
+                    onClick = { handleShareClick(data) },
+                    handleGlobalNavCartClick = {handleGlobalNavClick(Constant.TOP_NAV_BUTTON.CART)},
+                    handleGlobalMenuCartClick = {handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU)})
+
+                navToolbar.setIcon(navIcons[requireArguments().getString(HIDE_NAV_FEATURES)?.toInt()]!!)
+                navToolbar.updateNotification()
             }
         }
     }
 
-    private fun handleShareClick(data: PageInfo?) {
-        if (showOldToolbar) {
-            getDiscoveryAnalytics().trackShareClick()
+    private fun navWithShareData(data: PageInfo?) {
+        if (data?.share?.enabled == true) {
+            navToolbar.setIcon(
+                IconBuilder(getNavIconBuilderFlag())
+                    .addIcon(
+                        iconId = IconList.ID_SHARE,
+                        disableRouteManager = true,
+                        onClick = { handleShareClick(data) },
+                        disableDefaultGtmTracker = true
+                    )
+                    .addIcon(
+                        iconId = IconList.ID_CART,
+                        onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.CART) },
+                        disableDefaultGtmTracker = true
+                    )
+                    .addIcon(
+                        iconId = IconList.ID_NAV_GLOBAL,
+                        onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) },
+                        disableDefaultGtmTracker = true
+                    )
+            )
+            navToolbar.updateNotification()
         } else {
-            handleGlobalNavClick(Constant.TOP_NAV_BUTTON.SHARE)
+            setCartAndNavIcon()
         }
+    }
 
+    private fun setCartAndNavIcon() {
+        navToolbar.setIcon(
+            IconBuilder(getNavIconBuilderFlag())
+                .addIcon(
+                    iconId = IconList.ID_CART,
+                    onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.CART) },
+                    disableDefaultGtmTracker = true
+                )
+                .addIcon(
+                    iconId = IconList.ID_NAV_GLOBAL,
+                    onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) },
+                    disableDefaultGtmTracker = true
+                )
+        )
+        navToolbar.updateNotification()
+    }
+
+    private fun handleShareClick(data: PageInfo?) {
+        handleGlobalNavClick(Constant.TOP_NAV_BUTTON.SHARE)
         if (SharingUtil.isCustomSharingEnabled(context)) {
             sendUnifyShareGTM()
             showUniversalShareBottomSheet(data)
@@ -1352,35 +1353,7 @@ open class DiscoveryFragment :
         showUniversalShareBottomSheet(pageInfoHolder, path)
     }
 
-    private fun setToolBarPageInfoOnFail() {
-        if (showOldToolbar) {
-            typographyHeader.text = getString(R.string.discovery_tokopedia)
-            ivSearch.hide()
-            ivShare.hide()
-        } else {
-            setCartAndNavIcon()
-            setupSearchBar(null)
-        }
-        mProgressBar.hide()
-        mSwipeRefreshLayout.isRefreshing = false
-    }
 
-    private fun setCartAndNavIcon() {
-        navToolbar.setIcon(
-            IconBuilder(getNavIconBuilderFlag())
-                .addIcon(
-                    iconId = IconList.ID_CART,
-                    onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.CART) },
-                    disableDefaultGtmTracker = true
-                )
-                .addIcon(
-                    iconId = IconList.ID_NAV_GLOBAL,
-                    onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) },
-                    disableDefaultGtmTracker = true
-                )
-        )
-        navToolbar.updateNotification()
-    }
 
     private fun setupSearchBar(data: PageInfo?) {
         navToolbar.setupSearchbar(
@@ -1407,11 +1380,7 @@ open class DiscoveryFragment :
     }
 
     private fun handleBackPress() {
-        if (showOldToolbar) {
-            getDiscoveryAnalytics().trackBackClick()
-        } else {
-            handleGlobalNavClick(Constant.TOP_NAV_BUTTON.BACK_BUTTON)
-        }
+        handleGlobalNavClick(Constant.TOP_NAV_BUTTON.BACK_BUTTON)
         activity?.onBackPressed()
     }
 
@@ -1513,41 +1482,41 @@ open class DiscoveryFragment :
 
     private fun removePaddingIfComponent() {
         recyclerView.viewTreeObserver.addOnGlobalLayoutListener(object :
-                ViewTreeObserver.OnGlobalLayoutListener {
-                override fun onGlobalLayout() {
-                    var pos = Int.MIN_VALUE
-                    discoveryAdapter.currentList.forEachIndexed { index, componentsItem ->
-                        if (componentsItem.name == ComponentsList.Tabs.componentName) {
-                            pos = index
-                        }
-                        if (index == pos + 1) {
-                            val i = pos + 1
-                            val firstVisibleItemPositions =
-                                staggeredGridLayoutManager?.findFirstVisibleItemPositions(null)
-                            val lastVisibleItemPositions =
-                                staggeredGridLayoutManager?.findLastVisibleItemPositions(null)
+            ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                var pos = Int.MIN_VALUE
+                discoveryAdapter.currentList.forEachIndexed { index, componentsItem ->
+                    if (componentsItem.name == ComponentsList.Tabs.componentName) {
+                        pos = index
+                    }
+                    if (index == pos + 1) {
+                        val i = pos + 1
+                        val firstVisibleItemPositions =
+                            staggeredGridLayoutManager?.findFirstVisibleItemPositions(null)
+                        val lastVisibleItemPositions =
+                            staggeredGridLayoutManager?.findLastVisibleItemPositions(null)
 
-                            if (firstVisibleItemPositions != null && lastVisibleItemPositions != null) {
-                                val firstVisibleItemPosition =
-                                    firstVisibleItemPositions.minOrNull() ?: -1
-                                val lastVisibleItemPosition = lastVisibleItemPositions.maxOrNull() ?: -1
+                        if (firstVisibleItemPositions != null && lastVisibleItemPositions != null) {
+                            val firstVisibleItemPosition =
+                                firstVisibleItemPositions.minOrNull() ?: -1
+                            val lastVisibleItemPosition = lastVisibleItemPositions.maxOrNull() ?: -1
 
-                                if (firstVisibleItemPosition != RecyclerView.NO_POSITION && lastVisibleItemPosition != RecyclerView.NO_POSITION) {
-                                    if (i in firstVisibleItemPosition..lastVisibleItemPosition) {
-                                        recyclerView.setPaddingToInnerRV(
-                                            0,
-                                            recyclerView.dpToPx(0).toInt(),
-                                            0,
-                                            0
-                                        )
-                                    }
+                            if (firstVisibleItemPosition != RecyclerView.NO_POSITION && lastVisibleItemPosition != RecyclerView.NO_POSITION) {
+                                if (i in firstVisibleItemPosition..lastVisibleItemPosition) {
+                                    recyclerView.setPaddingToInnerRV(
+                                        0,
+                                        recyclerView.dpToPx(0).toInt(),
+                                        0,
+                                        0
+                                    )
                                 }
                             }
                         }
                     }
-                    recyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 }
-            })
+                recyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+            }
+        })
     }
 
     fun scrollToComponentWithID(componentID: String) {
@@ -1921,7 +1890,7 @@ open class DiscoveryFragment :
 
     override fun onResume() {
         super.onResume()
-        discoveryViewModel.getDiscoveryPageInfo().observe(viewLifecycleOwner, {
+        discoveryViewModel.getDiscoveryPageInfo().observe(viewLifecycleOwner) {
             if (!openScreenStatus) {
                 when (it) {
                     is Success -> {
@@ -1935,7 +1904,7 @@ open class DiscoveryFragment :
                     else -> sendOpenScreenAnalytics(discoveryViewModel.pageIdentifier)
                 }
             }
-        })
+        }
         context?.let {
             if (discoveryViewModel.getAddressVisibilityValue()) {
                 updateChooseAddressWidget()
