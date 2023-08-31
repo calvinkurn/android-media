@@ -5,10 +5,9 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewTreeLifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -35,6 +34,7 @@ import com.tokopedia.minicart.bmgm.presentation.viewmodel.BmgmMiniCartViewModel
 import com.tokopedia.minicart.databinding.ViewBmgmMiniCartSubTotalBinding
 import com.tokopedia.minicart.databinding.ViewBmgmMiniCartWidgetBinding
 import com.tokopedia.unifyprinciples.Typography
+import kotlinx.coroutines.flow.collectLatest
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
@@ -43,7 +43,7 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
  * Created by @ilhamsuaib on 31/07/23.
  */
 
-class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener, DefaultLifecycleObserver {
+class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
@@ -80,25 +80,26 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener, Default
         ).apply {
             footerBinding = ViewBmgmMiniCartSubTotalBinding.bind(root)
         }
-        setAsLifecycleObserver()
+        initInjector()
+        setupView()
         setupRecyclerView()
     }
 
-    override fun onCreate(owner: LifecycleOwner) {
-        super.onCreate(owner)
-        initInjector()
+    private fun setupView() {
+        binding?.run {
+            tvBmgmCartDiscount.setFactory {
+                return@setFactory Typography(root.context).apply {
+                    setType(Typography.DISPLAY_3)
+                    setTextColor(context.getResColor(unifyprinciplesR.color.Unify_NN950))
+                }
+            }
+        }
     }
 
-    override fun onDestroy(owner: LifecycleOwner) {
+    override fun onDetachedFromWindow() {
         viewModel.clearCartDataLocalCache()
         binding = null
-        super.onDestroy(owner)
-    }
-
-    override fun onAttachedToWindow() {
-        super.onAttachedToWindow()
-        observeCartData()
-        observeSetCarChecklistStatus()
+        super.onDetachedFromWindow()
     }
 
     override fun setOnItemClickedListener() {
@@ -106,18 +107,22 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener, Default
         RouteManager.route(context, ApplinkConstInternalGlobal.BMGM_MINI_CART)
     }
 
+    fun init(lifecycleOwner: LifecycleOwner) {
+        observeCartData(lifecycleOwner)
+        observeSetCarChecklistStatus(lifecycleOwner)
+    }
+
     fun fetchData(
-        shopIds: List<Long>,
-        offerIds: List<Long>,
-        offerJsonData: String,
-        warehouseIds: List<String>
+        shopIds: List<Long>, offerIds: List<Long>, offerJsonData: String, warehouseIds: List<String>
     ) {
         this.param = BmgmParamModel(
-            offerIds = offerIds,
-            offerJsonData = offerJsonData,
-            warehouseIds = warehouseIds
+            offerIds = offerIds, offerJsonData = offerJsonData, warehouseIds = warehouseIds
         )
         this.shopIds = shopIds
+        viewModel.getMiniCartData(shopIds, param, false)
+    }
+
+    fun refreshAfterAtC() {
         viewModel.getMiniCartData(shopIds, param, false)
     }
 
@@ -125,21 +130,24 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener, Default
         viewModel.getMiniCartData(shopIds = shopIds, param = param, showLoadingState = true)
     }
 
-    private fun setAsLifecycleObserver() {
-        getLifecycleOwner()?.lifecycle?.addObserver(this)
-    }
-
-    private fun getLifecycleOwner(): LifecycleOwner? {
-        return ViewTreeLifecycleOwner.get(this) ?: context as? LifecycleOwner
-    }
-
-    private fun observeCartData() {
-        getLifecycleOwner()?.let { lifecycleOwner ->
-            viewModel.cartData.observe(lifecycleOwner) {
+    private fun observeCartData(lifecycleOwner: LifecycleOwner) {
+        lifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.cartData.collect {
                 when (it) {
                     is BmgmState.Loading -> showMiniCartLoadingState()
                     is BmgmState.Success -> setOnSuccessGetCartData(it.data)
                     is BmgmState.Error -> showErrorState()
+                }
+            }
+        }
+    }
+
+    private fun observeSetCarChecklistStatus(lifecycleOwner: LifecycleOwner) {
+        lifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.setCheckListState.collectLatest {
+                when (it) {
+                    is BmgmState.Loading -> showLoadingButton()
+                    is BmgmState.Success, is BmgmState.Error -> openCartPage()
                 }
             }
         }
@@ -157,17 +165,6 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener, Default
 
     private fun dismissMiniCartLoadingState() {
         binding?.loadingStateGroup?.gone()
-    }
-
-    private fun observeSetCarChecklistStatus() {
-        getLifecycleOwner()?.let { liveCycleOwner ->
-            viewModel.setCheckListState.observe(liveCycleOwner) {
-                when (it) {
-                    is BmgmState.Loading -> showLoadingButton()
-                    is BmgmState.Success, is BmgmState.Error -> openCartPage()
-                }
-            }
-        }
     }
 
     private fun showErrorState() {
@@ -228,12 +225,6 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener, Default
         if (messages.isEmpty()) return
         binding?.run {
             tvBmgmCartDiscount.visible()
-            tvBmgmCartDiscount.setFactory {
-                return@setFactory Typography(root.context).apply {
-                    setType(Typography.DISPLAY_3)
-                    setTextColor(context.getResColor(unifyprinciplesR.color.Unify_NN950))
-                }
-            }
             tvBmgmCartDiscount.setCurrentText(
                 messages.firstOrNull().orEmpty().parseAsHtml()
             )

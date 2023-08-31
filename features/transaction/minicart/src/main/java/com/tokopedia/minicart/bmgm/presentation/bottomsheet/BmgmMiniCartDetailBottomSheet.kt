@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -29,6 +30,7 @@ import com.tokopedia.minicart.databinding.ViewBmgmMiniCartSubTotalBinding
 import com.tokopedia.purchase_platform.common.feature.bmgm.data.uimodel.BmgmCommonDataModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.currency.CurrencyFormatUtil
+import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
 /**
@@ -90,10 +92,12 @@ class BmgmMiniCartDetailBottomSheet : BottomSheetUnify() {
     }
 
     private fun observeCartListState() {
-        viewModel.setCheckListState.observe(viewLifecycleOwner) {
-            when (it) {
-                is BmgmState.Loading -> showLoadingButton()
-                is BmgmState.Success, is BmgmState.Error -> openCartPage()
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.setCheckListState.collectLatest {
+                when (it) {
+                    is BmgmState.Loading -> showLoadingButton()
+                    is BmgmState.Success, is BmgmState.Error -> openCartPage()
+                }
             }
         }
     }
