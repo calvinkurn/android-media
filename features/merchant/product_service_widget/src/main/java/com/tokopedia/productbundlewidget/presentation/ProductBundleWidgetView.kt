@@ -49,10 +49,10 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleAdapterListener {
     private var rvBundles: RecyclerView? = null
     private var pageSource: String = ""
     private var productId: String = ""
-    private val bundleAdapter = ProductBundleWidgetAdapter()
+    private var isOverrideWidgetTheme: Boolean = false
+    private var bundleAdapter: ProductBundleWidgetAdapter? = null
     private var listener: ProductBundleWidgetListener? = null
     private var startActivityResult: ((intent: Intent, requestCode: Int) -> Unit)? = null
-    private var isOverrideWidgetTheme: Boolean = false
 
     constructor(context: Context) : super(context) {
         setup(context, null)
@@ -204,10 +204,11 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleAdapterListener {
     }
 
     private fun setupItems(rvBundles: RecyclerView) {
+        bundleAdapter = ProductBundleWidgetAdapter(isOverrideWidgetTheme)
         rvBundles.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             adapter = bundleAdapter
-            bundleAdapter.setListener(this@ProductBundleWidgetView)
+            bundleAdapter?.setListener(this@ProductBundleWidgetView)
         }
     }
 
