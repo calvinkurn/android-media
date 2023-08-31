@@ -19,7 +19,7 @@ import javax.inject.Inject
 
 class CartPromoEntryPointProcessor @Inject constructor(
     private val getPromoListRecommendationEntryPointUseCase: PromoUsageGetPromoListRecommendationEntryPointUseCase,
-    private val getCouponListRecommendationMapper: PromoUsageGetPromoListRecommendationMapper,
+    private val getPromoListRecommendationMapper: PromoUsageGetPromoListRecommendationMapper,
     private val chosenAddressRequestHelper: ChosenAddressRequestHelper
 ) {
 
@@ -89,7 +89,7 @@ class CartPromoEntryPointProcessor @Inject constructor(
                     )
                     val response = getPromoListRecommendationEntryPointUseCase(param)
                     return if (response.promoListRecommendation.data.resultStatus.success) {
-                        val entryPointInfo = getCouponListRecommendationMapper
+                        val entryPointInfo = getPromoListRecommendationMapper
                             .mapPromoListRecommendationEntryPointResponseToEntryPointInfo(response)
                         if (entryPointInfo.color == PromoEntryPointInfo.COLOR_GREEN) {
                             EntryPointInfoEvent.ActiveNew(
@@ -107,7 +107,7 @@ class CartPromoEntryPointProcessor @Inject constructor(
                             || response.promoListRecommendation.data.resultStatus.code == ResultStatus.STATUS_USER_BLACKLISTED
                             || response.promoListRecommendation.data.resultStatus.code == ResultStatus.STATUS_PHONE_NOT_VERIFIED
                         ) {
-                            val entryPointInfo = getCouponListRecommendationMapper
+                            val entryPointInfo = getPromoListRecommendationMapper
                                 .mapPromoListRecommendationEntryPointResponseToEntryPointInfo(
                                     response
                                 )
