@@ -110,7 +110,7 @@ class GetAddOnByProductUseCase @Inject constructor(
                     AddOnRequest(
                         productId = param.productId,
                         warehouseId = param.warehouseId,
-                        addOnLevel = if (param.isTokocabang) ADDON_LEVEL_TC else ADDON_LEVEL_NON_TC,
+                        addOnLevel = ADDON_LEVEL_NON_TC,
                         typeFilters = typeFilters.map {
                             TypeFilters(
                                 type = it.name,
