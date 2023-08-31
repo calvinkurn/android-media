@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Add On  -->
+    <string name="om_detail_add_on_sample_label">Pelengkap</string>
+    <string name="om_detail_add_on_description_label">Pesan Kartu Ucapan</string>
+    <string name="om_detail_add_on_colon">:</string>
+    <string name="om_detail_add_on_label_to">Ke</string>
+    <string name="om_detail_add_on_label_from">Dari</string>
+    <string name="om_detail_add_on_description"><![CDATA[%1$s. <a href="#">%2$s</a>.]]></string>
+    <string name="om_detail_add_on_see_less_description">Tutup</string>
+    <string name="om_detail_add_on_see_more_description"><![CDATA[<a href="#">Lihat Selengkapnya</a>.]]></string>
+    <string name="om_detail_add_on_description_copyable_format"><![CDATA[Ke\t\t\t: %1$s<br/>Dari\t: %2$s<br/>%3$s]]></string>
+    <string name="om_detail_add_on_description_copied_message">Pesan berhasil disalin</string>
+    <string name="om_detail_shipment_name_chevron_right"><![CDATA[>]]></string>
+
+    <string name="order_bmgm_price_total">Total Harga</string>
+    <string name="order_bmgm_price_total_value">Rp1.630.000</string>
+    <string name="order_bmgm_not_yet_deducted_price_info_label">Harga ini belum termasuk potongan %s, ya.</string>
+    <string name="label_product_price_and_quantity">%1$d x %2$s</string>
+
+    <string name="om_error_message_cant_open_snapshot_when_waiting_invoice">Oops, halaman detail produk belum bisa di akses karena sedang menunggu invoice</string>
+
+</resources>

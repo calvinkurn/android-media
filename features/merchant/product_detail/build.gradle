@@ -12,6 +12,20 @@ android {
         it.java.srcDirs += "src/$it.name/kotlin"
     }
 
+    def pathSources = "src/main/res/"
+    sourceSets {
+        main {
+            res.srcDirs = [
+                    pathSources,
+                    pathSources + 'detail',
+                    pathSources + 'detail/bmgm',
+            ]
+        }
+        androidTest {
+            resources.srcDirs += "$projectDir/src/androidTest/resources"
+        }
+    }
+
     packagingOptions {
         exclude 'META-INF/**'
     }
@@ -33,7 +47,6 @@ android {
         viewBinding true
         buildConfig true
     }
-
 }
 
 buildscript {

@@ -67,6 +67,9 @@ object GetPostAtcLayoutQuery : GqlQueryInterface {
                         ... on pdpProductPostATCAddOns {
                             title
                         }
+                        ... on pdpProductPostATCBMGM {
+                            queryParam
+                        }
                     }
                 }
             }

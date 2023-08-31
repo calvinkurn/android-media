@@ -15,7 +15,10 @@ data class BmGmData(
     val offerIcon: String = "",
     @Expose
     @SerializedName("offer_message")
-    val offerMessage: String = "",
+    val offerMessage: List<String> = listOf(),
+    @Expose
+    @SerializedName("offer_status")
+    val offerStatus: Int = 1,
     @Expose
     @SerializedName("offer_landing_page_link")
     val offerLandingPageLink: String = "",
@@ -26,6 +29,6 @@ data class BmGmData(
     @SerializedName("offer_json_data")
     val offerJsonData: String = "",
     @Expose
-    @SerializedName("tiers_applied")
+    @SerializedName("tier_product")
     val tiersApplied: List<BmGmTiersApplied> = emptyList()
 )

@@ -8,7 +8,7 @@ import com.tokopedia.product.detail.postatc.view.PostAtcBottomSheet
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 
 interface RecommendationCallback {
-    fun fetchRecommendation(pageName: String, uniqueId: Int)
+    fun fetchRecommendation(pageName: String, uniqueId: Int, queryParam: String)
     fun onClickRecommendationItem(recommendationItem: RecommendationItem)
     fun onImpressRecommendationItem(recommendationItem: RecommendationItem)
 }
@@ -18,12 +18,14 @@ class RecommendationCallbackImpl(
 ) : RecommendationCallback, PostAtcBottomSheetDelegate by fragment {
     override fun fetchRecommendation(
         pageName: String,
-        uniqueId: Int
+        uniqueId: Int,
+        queryParam: String
     ) {
         viewModel.fetchRecommendation(
             viewModel.postAtcInfo.productId,
             pageName,
-            uniqueId
+            uniqueId,
+            queryParam
         )
     }
 

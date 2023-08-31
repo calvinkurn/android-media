@@ -88,6 +88,7 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant.PRODUCT_BUND
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.RECOM_VERTICAL
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.SHOPADS_CAROUSEL
 import com.tokopedia.product.detail.view.util.checkIfNumber
+import com.tokopedia.product.detail.view.viewholder.bmgm.BMGMDataModel
 import com.tokopedia.product.detail.view.widget.CampaignRibbon
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselTrackingConst
@@ -322,6 +323,11 @@ object DynamicProductDetailMapper {
                 ProductDetailConstant.SHOP_REVIEW -> {
                     listOfComponent.add(
                         ProductShopReviewDataModel(type = component.type, name = component.componentName)
+                    )
+                }
+                ProductDetailConstant.BMGM_TYPE -> {
+                    listOfComponent.add(
+                        BMGMDataModel(type = component.type, name = component.componentName)
                     )
                 }
             }
