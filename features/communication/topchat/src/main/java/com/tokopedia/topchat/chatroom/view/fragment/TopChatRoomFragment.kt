@@ -379,7 +379,7 @@ open class TopChatRoomFragment :
     private fun initComposeAreaMsg() {
         composeMsgArea?.initLayout(this, this)
     }
-     private fun initSrw() {
+    private fun initSrw() {
         rvSrw?.initialize(this, getSrwFrameLayoutListener())
     }
 
@@ -1654,7 +1654,11 @@ open class TopChatRoomFragment :
 
     private fun onAttachInvoiceSelected(data: Intent?, resultCode: Int) {
         if (data == null || resultCode != RESULT_OK) return
-        initInvoicePreview(data.extras)
+        val invoiceAttached = initInvoicePreview(data.extras)
+        if (invoiceAttached) {
+            removeSrwPreview()
+            showTemplateChatIfReady()
+        }
         viewModel.initAttachmentPreview()
     }
 
@@ -2706,8 +2710,6 @@ open class TopChatRoomFragment :
             onSendButtonClicked()
         }
     }
-
-
 
     private fun initKeyboardListener(view: View) {
         TopChatKeyboardHandler(
