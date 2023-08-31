@@ -173,7 +173,7 @@ open class EmoneyPdpFragment :
         emoneyPdpViewModel.getDppoConsent()
         loadData()
         renderCardState(detailPassData)
-        renderTickerBCAGenOne(detailPassData)
+        renderTickerNFCNotSupported()
 
         binding.emoneyPdpHeaderView.actionListener = this
         binding.emoneyPdpInputCardWidget.initView(this)
@@ -529,7 +529,7 @@ open class EmoneyPdpFragment :
                         // renderProduct
                         detailPassData = this
                         renderCardState(this)
-                        renderTickerBCAGenOne(this)
+                        renderTickerNFCNotSupported()
                     }
                 }
 
@@ -682,7 +682,10 @@ open class EmoneyPdpFragment :
     }
 
     private fun renderTickerNFCNotSupported() {
-        if (emoneyPdpViewModel.selectedOperatorIsBCA()) {
+        if (detailPassData.isBCAGenOne) {
+            showTickerNotSupported()
+            showRecentNumberAndPromo()
+        } else if (emoneyPdpViewModel.selectedOperatorIsBCA()) {
             if (this::nfcAdapter.isInitialized && !nfcAdapter.isEnabled) {
                 showTickerNotSupported()
                 showRecentNumberAndPromo()
