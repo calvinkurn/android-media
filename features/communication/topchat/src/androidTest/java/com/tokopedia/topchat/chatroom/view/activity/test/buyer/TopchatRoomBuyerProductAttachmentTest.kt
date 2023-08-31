@@ -23,11 +23,10 @@ import com.tokopedia.topchat.chatroom.view.activity.robot.composeAreaRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.generalResult
 import com.tokopedia.topchat.chatroom.view.activity.robot.generalRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.previewAttachmentRobot
-import com.tokopedia.topchat.chatroom.view.activity.robot.productCardResult
-import com.tokopedia.topchat.chatroom.view.activity.robot.productCardRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.productPreviewResult
 import com.tokopedia.topchat.chatroom.view.activity.robot.productPreviewRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.productResult
+import com.tokopedia.topchat.chatroom.view.activity.robot.productRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.srwResult
 import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.SOURCE_TOPCHAT
 import com.tokopedia.topchat.matchers.withTotalItem
@@ -287,7 +286,7 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         }
 
         // Then
-        productCardResult {
+        productResult {
             hasVariantLabel(R.id.tv_variant_color, testVariantColor, 1)
             hasVariantLabel(R.id.tv_variant_size, testVariantSize, 1)
         }
@@ -305,7 +304,7 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         generalRobot {
             scrollChatToPosition(4)
         }
-        productCardRobot {
+        productRobot {
             clickATCButtonAt(4)
         }
 
@@ -327,7 +326,7 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         generalRobot {
             scrollChatToPosition(4)
         }
-        productCardRobot {
+        productRobot {
             clickBuyButtonAt(4)
         }
 
@@ -349,7 +348,7 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         generalRobot {
             scrollChatToPosition(0)
         }
-        productCardRobot {
+        productRobot {
             clickBuyButtonAt(1)
         }
 
@@ -380,7 +379,7 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         generalRobot {
             scrollChatToPosition(0)
         }
-        productCardRobot {
+        productRobot {
             clickBuyButtonAt(1)
         }
 
@@ -412,13 +411,13 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         generalRobot {
             scrollChatToPosition(0)
         }
-        productCardRobot {
+        productRobot {
             clickWishlistButtonAt(1) // click wishlist
             clickWishlistButtonAt(1) // click go to wishlist
         }
 
         // Then
-        productCardResult {
+        productResult {
             hasProductWishlistButtonWithText("Cek Wishlist Kamu", 1)
         }
         generalResult {
@@ -439,7 +438,7 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         generalRobot {
             scrollChatToPosition(0)
         }
-        productCardRobot {
+        productRobot {
             clickWishlistButtonAt(1) // click wishlist
             clickWishlistButtonAt(1) // click go to wishlist
         }
@@ -463,7 +462,7 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         generalRobot {
             scrollChatToPosition(4)
         }
-        productCardRobot {
+        productRobot {
             clickBuyButtonAt(4)
         }
 
@@ -487,7 +486,7 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         generalRobot {
             scrollChatToPosition(4)
         }
-        productCardRobot {
+        productRobot {
             clickBuyButtonAt(4)
         }
 
@@ -509,7 +508,7 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         generalRobot {
             scrollChatToPosition(1)
         }
-        productCardRobot {
+        productRobot {
             clickProductAttachmentAt(1)
         }
 

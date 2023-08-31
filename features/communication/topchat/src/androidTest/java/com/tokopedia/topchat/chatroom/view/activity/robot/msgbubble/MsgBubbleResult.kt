@@ -70,4 +70,22 @@ object MsgBubbleResult {
             assertViewInRecyclerViewAt(position, chat_commonR.id.chat_status, matcher)
         }
     }
+
+    fun assertHeaderRightMsgBubbleAt(
+        position: Int,
+        matcher: Matcher<View>
+    ) {
+        generalResult {
+            assertViewInRecyclerViewAt(position, R.id.tvRole, matcher)
+        }
+    }
+
+    fun assertHeaderRightMsgBubbleBlueDotAt(
+        position: Int,
+        matcher: Matcher<View>
+    ) {
+        generalResult {
+            assertViewInRecyclerViewAt(position, R.id.img_sr_blue_dot, matcher)
+        }
+    }
 }

@@ -4,13 +4,11 @@ import android.app.Activity
 import android.app.Instrumentation
 import android.content.Context
 import android.content.Intent
-import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions.pressBackUnconditionally
-import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.idling.CountingIdlingResource
 import androidx.test.espresso.intent.Intents.intending
@@ -18,7 +16,6 @@ import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.attachcommon.data.ResultProduct
@@ -55,7 +52,6 @@ import com.tokopedia.topchat.chattemplate.domain.pojo.GetChatTemplateResponse
 import com.tokopedia.topchat.common.TopChatInternalRouter
 import com.tokopedia.topchat.common.network.TopchatCacheManager
 import com.tokopedia.topchat.common.websocket.FakeTopchatWebSocket
-import com.tokopedia.topchat.matchers.withRecyclerView
 import com.tokopedia.topchat.stub.chatroom.di.ChatComponentStub
 import com.tokopedia.topchat.stub.chatroom.di.DaggerChatComponentStub
 import com.tokopedia.topchat.stub.chatroom.usecase.AddToCartOccMultiUseCaseStub
@@ -89,7 +85,6 @@ import com.tokopedia.topchat.stub.common.usecase.MutationMoveChatToTrashUseCaseS
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.WebSocketResponse
 import org.hamcrest.CoreMatchers.not
-import org.hamcrest.Matcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -387,105 +382,6 @@ abstract class TopchatRoomTest {
         webSocketModifier: (WebSocketResponse) -> Unit
     ) {
         webSocketModifier(response)
-    }
-
-    protected fun assertLabelOnProductCard(
-        recyclerViewId: Int,
-        atPosition: Int,
-        viewMatcher: Matcher<in View>
-    ) {
-        onView(
-            withRecyclerView(recyclerViewId).atPositionOnView(
-                atPosition,
-                R.id.lb_product_label
-            )
-        ).check(matches(viewMatcher))
-    }
-
-    protected fun assertEmptyStockLabelOnProductCard(
-        recyclerViewId: Int,
-        atPosition: Int
-    ) {
-        assertLabelTextOnProductCard(recyclerViewId, atPosition, "Stok habis")
-    }
-
-    protected fun assertLabelTextOnProductCard(
-        recyclerViewId: Int,
-        atPosition: Int,
-        text: String
-    ) {
-        onView(
-            withRecyclerView(recyclerViewId).atPositionOnView(
-                atPosition,
-                R.id.lb_product_label
-            )
-        ).check(matches(withText(text)))
-    }
-
-    protected fun assertProductStockType(
-        recyclerViewId: Int,
-        atPosition: Int,
-        viewMatcher: Matcher<in View>
-    ) {
-        onView(
-            withRecyclerView(recyclerViewId).atPositionOnView(
-                atPosition,
-                R.id.tp_seller_stock_category
-            )
-        ).check(matches(viewMatcher))
-    }
-
-    protected fun assertProductStockTypeText(
-        recyclerViewId: Int,
-        atPosition: Int,
-        text: String
-    ) {
-        onView(
-            withRecyclerView(recyclerViewId).atPositionOnView(
-                atPosition,
-                R.id.tp_seller_stock_category
-            )
-        ).check(matches(withText(text)))
-    }
-
-//    protected fun assertSrwBubbleContentIsVisibleAt(
-//        position: Int
-//    ) {
-//        assertSrwBubbleContentContainerVisibility(position, isDisplayed())
-//        assertTemplateChatVisibility(not(isDisplayed()))
-//    }
-
-    protected fun assertHeaderRightMsgBubbleVisibility(
-        position: Int,
-        visibilityMatcher: Matcher<in View>
-    ) {
-        onView(
-            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
-                position,
-                R.id.tvRole
-            )
-        ).check(matches(visibilityMatcher))
-    }
-
-    protected fun assertHeaderRightMsgBubbleText(position: Int, msg: String) {
-        onView(
-            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
-                position,
-                R.id.tvRole
-            )
-        ).check(matches(withText(msg)))
-    }
-
-    protected fun assertHeaderRightMsgBubbleBlueDotVisibility(
-        position: Int,
-        visibilityMatcher: Matcher<in View>
-    ) {
-        onView(
-            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
-                position,
-                R.id.img_sr_blue_dot
-            )
-        ).check(matches(visibilityMatcher))
     }
 
     protected fun finishActivity() {

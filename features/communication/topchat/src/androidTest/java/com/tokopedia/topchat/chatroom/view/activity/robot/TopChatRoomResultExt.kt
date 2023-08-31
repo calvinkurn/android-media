@@ -10,7 +10,6 @@ import com.tokopedia.topchat.chatroom.view.activity.robot.longclickbubblemenu.Lo
 import com.tokopedia.topchat.chatroom.view.activity.robot.msgbubble.MsgBubbleResult
 import com.tokopedia.topchat.chatroom.view.activity.robot.orderprogress.OrderProgressResult
 import com.tokopedia.topchat.chatroom.view.activity.robot.previewattachment.ProductPreviewResult
-import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardResult
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductResult
 import com.tokopedia.topchat.chatroom.view.activity.robot.product_bundling.ProductBundlingResult
 import com.tokopedia.topchat.chatroom.view.activity.robot.replybubble.ReplyBubbleResult
@@ -33,7 +32,6 @@ fun headerResult(func: HeaderResult.() -> Unit) = HeaderResult.apply(func)
 fun orderProgressResult(func: OrderProgressResult.() -> Unit) = OrderProgressResult.apply(func)
 fun tickerReminderResult(func: TickerReminderResult.() -> Unit) = TickerReminderResult.apply(func)
 fun voucherResult(func: VoucherResult.() -> Unit) = VoucherResult.apply(func)
-fun productCardResult(func: ProductCardResult.() -> Unit) = ProductCardResult.apply(func)
 fun productBundlingResult(func: ProductBundlingResult.() -> Unit) = ProductBundlingResult.apply(func)
 fun longClickBubbleMenuResult(func: LongClickBubbleMenuResult.() -> Unit) = LongClickBubbleMenuResult.apply(func)
 fun imageAttachmentResult(func: ImageAttachmentResult.() -> Unit) = ImageAttachmentResult.apply(func)

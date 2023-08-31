@@ -10,8 +10,8 @@ import com.tokopedia.topchat.chatroom.view.activity.base.blockPromo
 import com.tokopedia.topchat.chatroom.view.activity.base.setFollowing
 import com.tokopedia.topchat.chatroom.view.activity.robot.generalResult
 import com.tokopedia.topchat.chatroom.view.activity.robot.generalRobot
-import com.tokopedia.topchat.chatroom.view.activity.robot.productCardResult
-import com.tokopedia.topchat.chatroom.view.activity.robot.productCardRobot
+import com.tokopedia.topchat.chatroom.view.activity.robot.productResult
+import com.tokopedia.topchat.chatroom.view.activity.robot.productRobot
 import com.tokopedia.topchat.stub.chatroom.view.fragment.TopChatRoomFragmentStub
 import org.junit.After
 import org.junit.Before
@@ -44,7 +44,7 @@ class TopchatRoomOCCTest : BaseBuyerTopchatRoomTest() {
         generalRobot {
             scrollChatToPosition(0)
         }
-        productCardRobot {
+        productRobot {
             clickBuyButtonAt(4)
         }
 
@@ -73,7 +73,7 @@ class TopchatRoomOCCTest : BaseBuyerTopchatRoomTest() {
         generalRobot {
             scrollChatToPosition(0)
         }
-        productCardRobot {
+        productRobot {
             clickBuyButtonAt(position = 4)
         }
 
@@ -96,7 +96,7 @@ class TopchatRoomOCCTest : BaseBuyerTopchatRoomTest() {
         generalRobot {
             scrollChatToPosition(0)
         }
-        productCardRobot {
+        productRobot {
             clickBuyButtonAt(position = 4)
         }
 
@@ -118,7 +118,7 @@ class TopchatRoomOCCTest : BaseBuyerTopchatRoomTest() {
         stubIntents()
 
         // Then
-        productCardResult {
+        productResult {
             hasProductCarouselBuyButtonWithText(
                 context.getString(com.tokopedia.chat_common.R.string.action_buy),
                 0
@@ -138,7 +138,7 @@ class TopchatRoomOCCTest : BaseBuyerTopchatRoomTest() {
         stubIntents()
 
         // Then
-        productCardResult {
+        productResult {
             hasProductCarouselBuyButtonWithText(
                 context.getString(com.tokopedia.chat_common.R.string.action_buy),
                 0
@@ -158,7 +158,7 @@ class TopchatRoomOCCTest : BaseBuyerTopchatRoomTest() {
         stubIntents()
 
         // Then
-        productCardResult {
+        productResult {
             hasProductCarouselBuyButtonWithText(
                 context.getString(com.tokopedia.chat_common.R.string.action_buy),
                 0
@@ -178,7 +178,7 @@ class TopchatRoomOCCTest : BaseBuyerTopchatRoomTest() {
         stubIntents()
 
         // Then
-        productCardResult {
+        productResult {
             hasProductCarouselBuyButtonWithText(
                 context.getString(com.tokopedia.chat_common.R.string.action_buy),
                 0
@@ -200,12 +200,12 @@ class TopchatRoomOCCTest : BaseBuyerTopchatRoomTest() {
         generalRobot {
             scrollChatToPosition(0)
         }
-        productCardRobot {
+        productRobot {
             clickBuyButtonAt(1)
         }
 
         // Then
-        productCardResult {
+        productResult {
             hasProductBuyButtonWithText(
                 context.getString(R.string.title_topchat_pre_order_camel),
                 1

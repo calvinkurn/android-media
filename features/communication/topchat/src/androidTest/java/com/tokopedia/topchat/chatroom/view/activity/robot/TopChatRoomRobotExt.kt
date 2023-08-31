@@ -12,7 +12,7 @@ import com.tokopedia.topchat.chatroom.view.activity.robot.previewattachment.Prev
 import com.tokopedia.topchat.chatroom.view.activity.robot.previewattachment.PreviewAttachmentRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.previewattachment.ProductPreviewRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.BannedProductRobot
-import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardRobot
+import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.product_bundling.ProductBundlingRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.replybubble.ReplyBubbleRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.srw.SrwRobot
@@ -29,7 +29,7 @@ fun broadcastRobot(func: BroadcastRobot.() -> Unit) = BroadcastRobot.apply(func)
 fun headerRobot(func: HeaderRobot.() -> Unit) = HeaderRobot.apply(func)
 fun tickerReminderRobot(func: TickerReminderRobot.() -> Unit) = TickerReminderRobot.apply(func)
 fun previewAttachmentResult(func: PreviewAttachmentResult.() -> Unit) = PreviewAttachmentResult.apply(func)
-fun productCardRobot(func: ProductCardRobot.() -> Unit) = ProductCardRobot.apply(func)
+fun productRobot(func: ProductRobot.() -> Unit) = ProductRobot.apply(func)
 fun previewAttachmentRobot(func: PreviewAttachmentRobot.() -> Unit) = PreviewAttachmentRobot.apply(func)
 fun srwRobot(func: SrwRobot.() -> Unit) = SrwRobot.apply(func)
 fun productBundlingRobot(func: ProductBundlingRobot.() -> Unit) = ProductBundlingRobot.apply(func)
