@@ -1,6 +1,5 @@
 package com.tokopedia.recommendation_widget_common.widget.global
 
-import android.R
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
@@ -18,6 +17,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
+import android.R as androidR
 
 /**
  * Created by frenzel on 11/03/23
@@ -118,7 +118,7 @@ class RecommendationWidgetView : LinearLayout {
     }
 
     private fun rootView(): View? =
-        context?.getActivityFromContext()?.findViewById(R.id.content)
+        context?.getActivityFromContext()?.findViewById(androidR.id.content)
 
     private fun showErrorMessage(parentRootView: View?, errorMessage: String?) {
         val toasterView = parentRootView ?: rootView() ?: return

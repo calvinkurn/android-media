@@ -23,6 +23,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import com.tokopedia.recommendation_widget_common.R as recommendation_widget_commonR
 
 class PostAtcTopAdsVerificationTest {
 
@@ -86,7 +87,7 @@ class PostAtcTopAdsVerificationTest {
             waitForData()
             clickOnEachItemRecyclerView(
                 viewHolder.itemView,
-                com.tokopedia.recommendation_widget_common.R.id.recommendation_carousel_product,
+                recommendation_widget_commonR.id.recommendation_carousel_product,
                 0
             )
         }

@@ -100,13 +100,12 @@ class RecommendationWidgetViewModel @Inject constructor(
             miniCartItem = stateValue.getMiniCartItemProduct(productId),
             miniCartSource = miniCartSource,
             onSuccessAddToCart = { addToCartData, miniCartData ->
-                model.widgetTracking?.sendEventAddToCart(
-                    RecommendationCarouselWidgetTrackingATC(
-                        item,
-                        addToCartData.data.cartId,
-                        addToCartData.data.quantity,
-                    )
+                val atcTrackingData = RecommendationCarouselWidgetTrackingATC(
+                    item,
+                    addToCartData.data.cartId,
+                    addToCartData.data.quantity,
                 )
+                model.widgetTracking?.sendEventAddToCart(atcTrackingData)
 
                 updateState {
                     it.refreshMiniCart(
