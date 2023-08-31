@@ -1238,7 +1238,6 @@ class CheckoutViewModel @Inject constructor(
             )
             validatePromo()
             pageState.value = CheckoutPageState.Normal
-            sendEEStep3()
         }
     }
 
@@ -1551,7 +1550,8 @@ class CheckoutViewModel @Inject constructor(
             listData.value,
             listData.value.address()!!.recipientAddressModel
         )
-        validatePromo()
+        calculateTotal()
+        sendEEStep3()
         pageState.value = CheckoutPageState.Normal
     }
 
