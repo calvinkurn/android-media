@@ -12,7 +12,7 @@ import com.tokopedia.scp_rewards.detail.domain.MedalDetailUseCase
 import com.tokopedia.scp_rewards.detail.domain.model.MedalDetailResponseModel
 import com.tokopedia.scp_rewards.detail.domain.model.MedaliBenefitList
 import com.tokopedia.scp_rewards.detail.domain.model.ScpRewardsCouponAutoApply
-import com.tokopedia.scp_rewards_widgets.medal_footer.FooterData
+import com.tokopedia.scp_rewards_widgets.common.model.CtaButton
 import javax.inject.Inject
 
 const val MDP_SECTION_TYPE_BENEFIT = "benefit"
@@ -87,23 +87,23 @@ class MedalDetailViewModel @Inject constructor(
         }
     }
 
-    fun applyCoupon(footerData: FooterData, shopId: Int? = null, couponCode: String) {
+    fun applyCoupon(ctaButton: CtaButton?, shopId: Int? = null, couponCode: String) {
         viewModelScope.launchCatchError(
             block = {
-                _autoApplyCoupon.postValue(AutoApplyState.Loading(footerData))
+                _autoApplyCoupon.postValue(AutoApplyState.Loading)
                 val response = couponAutoApplyUseCase.applyCoupon(shopId, couponCode)
                 if (response.data != null && response.data.resultStatus.code == SUCCESS_CODE) {
                     if (response.data.couponAutoApply?.isSuccess == true) {
-                        _autoApplyCoupon.postValue(AutoApplyState.SuccessCouponApplied(footerData, response.data))
+                        _autoApplyCoupon.postValue(AutoApplyState.SuccessCouponApplied(ctaButton, response.data))
                     } else {
-                        _autoApplyCoupon.postValue(AutoApplyState.SuccessCouponFailed(footerData, response.data))
+                        _autoApplyCoupon.postValue(AutoApplyState.SuccessCouponFailed(ctaButton, response.data))
                     }
                 } else {
                     throw Throwable()
                 }
             },
             onError = {
-                _autoApplyCoupon.postValue(AutoApplyState.Error(footerData, it))
+                _autoApplyCoupon.postValue(AutoApplyState.Error(ctaButton, it))
             }
         )
     }
@@ -128,9 +128,9 @@ class MedalDetailViewModel @Inject constructor(
     }
 
     sealed class AutoApplyState {
-        data class Loading(val footerData: FooterData) : AutoApplyState()
-        data class SuccessCouponApplied(val footerData: FooterData, val data: ScpRewardsCouponAutoApply?) : AutoApplyState()
-        data class SuccessCouponFailed(val footerData: FooterData, val data: ScpRewardsCouponAutoApply?) : AutoApplyState()
-        data class Error(val footerData: FooterData, val throwable: Throwable) : AutoApplyState()
+        object Loading : AutoApplyState()
+        data class SuccessCouponApplied(val ctaButton: CtaButton?, val data: ScpRewardsCouponAutoApply?) : AutoApplyState()
+        data class SuccessCouponFailed(val ctaButton: CtaButton?, val data: ScpRewardsCouponAutoApply?) : AutoApplyState()
+        data class Error(val ctaButton: CtaButton?, val throwable: Throwable) : AutoApplyState()
     }
 }

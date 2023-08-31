@@ -30,6 +30,7 @@ class WidgetCouponView @JvmOverloads constructor(
 
     fun renderCoupons(
         benefitSectionModel: MedalBenefitSectionModel,
+        onApplyClick: (MedalBenefitModel) -> Unit = {},
         onCtaClick: (String?) -> Unit = {},
         onErrorAction: () -> Unit = {}
     ) {
@@ -41,24 +42,28 @@ class WidgetCouponView @JvmOverloads constructor(
             binding.stackCoupon.hide()
             binding.cardEmptyCoupon.hide()
             binding.ivErrorState.visible()
-            return
+        } else {
+            handleCouponState(benefitList, benefitSectionModel, onApplyClick, onCtaClick)
         }
-        handleCouponState(benefitList, benefitSectionModel, onCtaClick)
+        requestLayout()
+    }
+
+    fun updateLoadingStatus(showLoader: Boolean) {
+        binding.stackCoupon.updateLoadingStatus(showLoader)
     }
 
     private fun handleCouponState(
         benefitList: List<MedalBenefitModel>,
         benefitSectionModel: MedalBenefitSectionModel,
-        onCtaClick: (String?) -> Unit,
+        onApplyClick: (MedalBenefitModel) -> Unit,
+        onCtaClick: (String?) -> Unit = {},
     ) {
         val benefit = benefitList.first()
         when (benefit.status) {
             CouponState.EMPTY -> {
                 binding.ivErrorState.hide()
                 binding.cardEmptyCoupon.visible()
-                binding.cardEmptyCoupon.setData(benefit) {
-                    onCtaClick(it)
-                }
+                binding.cardEmptyCoupon.setData(benefit, onCtaClick)
             }
 
             CouponState.ERROR -> {
@@ -76,16 +81,16 @@ class WidgetCouponView @JvmOverloads constructor(
                 binding.ivErrorState.hide()
                 binding.cardEmptyCoupon.hide()
                 binding.stackCoupon.visible()
-                binding.stackCoupon.setData(benefitList, benefitSectionModel.benefitInfo) { onCtaClick(it) }
-                binding.btnViewMore.apply {
-                    visibility = if (benefitList.size > 1) VISIBLE else GONE
-                    text = benefitSectionModel.cta?.text
-                    applyStyle(benefitSectionModel.cta?.style)
+                binding.stackCoupon.setData(benefitList, benefitSectionModel.benefitInfo, onApplyClick)
+
+                if (benefitList.size > 1 && benefitSectionModel.cta?.text.isNullOrEmpty().not()) {
+                    binding.btnViewMore.visible()
+                    binding.btnViewMore.text = benefitSectionModel.cta?.text
+                    binding.btnViewMore.applyStyle(benefitSectionModel.cta?.style)
                 }
             }
         }
     }
-
 
     private fun UnifyButton.applyStyle(style: String?) {
         when (style) {

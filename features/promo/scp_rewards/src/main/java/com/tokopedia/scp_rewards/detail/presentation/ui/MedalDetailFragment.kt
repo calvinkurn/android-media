@@ -123,25 +123,24 @@ class MedalDetailFragment : BaseDaggerFragment() {
             it?.let { safeResult ->
                 when (safeResult) {
                     is MedalDetailViewModel.AutoApplyState.Error -> {
-                        binding.viewMedalFooter.showLoading(safeResult.footerData.id, false)
+                        binding.couponView.updateLoadingStatus(false)
                         showToastAndNavigateToLink(
-                            safeResult.footerData.id,
                             safeResult.throwable.localizedMessage,
-                            safeResult.footerData.appLink,
-                            safeResult.footerData.url
+                            safeResult.ctaButton?.appLink,
+                            safeResult.ctaButton?.url
                         )
                     }
 
                     is MedalDetailViewModel.AutoApplyState.Loading -> {
-                        binding.viewMedalFooter.showLoading(safeResult.footerData.id, true)
+                        binding.couponView.updateLoadingStatus(true)
                     }
 
                     is MedalDetailViewModel.AutoApplyState.SuccessCouponApplied -> {
+                        binding.couponView.updateLoadingStatus(false)
                         showToastAndNavigateToLink(
-                            safeResult.footerData.id,
                             safeResult.data?.couponAutoApply?.infoMessage?.title,
-                            safeResult.footerData.appLink,
-                            safeResult.footerData.url
+                            safeResult.ctaButton?.appLink,
+                            safeResult.ctaButton?.url
                         )
                         MedalDetailAnalyticsImpl.sendImpressionAutoApplyToaster(
                             badgeId = medaliSlug,
@@ -153,11 +152,11 @@ class MedalDetailFragment : BaseDaggerFragment() {
                     }
 
                     is MedalDetailViewModel.AutoApplyState.SuccessCouponFailed -> {
+                        binding.couponView.updateLoadingStatus(false)
                         showToastAndNavigateToLink(
-                            safeResult.footerData.id,
                             safeResult.data?.couponAutoApply?.infoMessage?.title,
-                            safeResult.footerData.appLink,
-                            safeResult.footerData.url
+                            safeResult.ctaButton?.appLink,
+                            safeResult.ctaButton?.url
                         )
                         MedalDetailAnalyticsImpl.sendImpressionAutoApplyToaster(
                             badgeId = medaliSlug,
@@ -173,12 +172,10 @@ class MedalDetailFragment : BaseDaggerFragment() {
     }
 
     private fun showToastAndNavigateToLink(
-        id: Int?,
         message: String?,
         appLink: String?,
         url: String?
     ) {
-        binding.viewMedalFooter.showLoading(id, false)
         Toaster.apply {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
                 toasterCustomBottomHeight = getNavigationBarHeight()
@@ -257,15 +254,7 @@ class MedalDetailFragment : BaseDaggerFragment() {
                     )
                 }
             ) { data ->
-                if (data.autoApply) {
-                    medalDetailViewModel.applyCoupon(
-                        footerData = data,
-                        shopId = null,
-                        couponCode = data.couponCode.orEmpty()
-                    )
-                } else {
-                    requireContext().launchLink(data.appLink, data.url)
-                }
+                requireContext().launchLink(data.appLink, data.url)
                 sendClickCtaAnalytics(data)
             }
             sendViewCtaAnalytics(listOfButtons)
@@ -546,7 +535,17 @@ class MedalDetailFragment : BaseDaggerFragment() {
             )
             binding.couponView.renderCoupons(
                 benefitSectionModel = benefitSectionModel,
-                onCtaClick = { requireContext().launchLink(it) },
+                onApplyClick = { data ->
+                    if (data.cta?.isAutoApply == true) {
+                        medalDetailViewModel.applyCoupon(
+                            ctaButton = data.cta,
+                            shopId = null,
+                            couponCode = data.cta?.couponCode.orEmpty()
+                        )
+                    } else {
+                        requireContext().launchLink(data.appLink)
+                    }
+                },
                 onErrorAction = {
                     MedalDetailAnalyticsImpl.sendImpressionCouponError(
                         badgeId = medaliSlug,

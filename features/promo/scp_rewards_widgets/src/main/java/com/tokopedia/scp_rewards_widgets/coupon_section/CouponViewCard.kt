@@ -60,7 +60,7 @@ class CouponViewCard @JvmOverloads constructor(
         binding.layoutDetails.background = innerShapeDrawable
     }
 
-    fun setData(data: MedalBenefitModel, onApplyClick: (String?) -> Unit = {}) {
+    fun setData(data: MedalBenefitModel, onApplyClick: (MedalBenefitModel) -> Unit = {}) {
         with(binding) {
             tvTitle.text = data.title
             val tncList = data.tncList
@@ -85,7 +85,7 @@ class CouponViewCard @JvmOverloads constructor(
                 ribbonStatus.gone()
                 btnApply.text = data.cta?.text
                 btnApply.setOnClickListener {
-                    onApplyClick(data.cta?.appLink)
+                    onApplyClick(data)
                 }
             } else {
                 ivBackground.grayScaleFilter()
@@ -110,6 +110,10 @@ class CouponViewCard @JvmOverloads constructor(
                 applyEdgeTreatment(additionalInfoColor)
             }
         }
+    }
+
+    fun updateLoadingStatus(showLoader: Boolean) {
+        binding.btnApply.isLoading = showLoader
     }
 
     private fun ItemCouponLayoutBinding.applyColorToDrawable(color: String?) {

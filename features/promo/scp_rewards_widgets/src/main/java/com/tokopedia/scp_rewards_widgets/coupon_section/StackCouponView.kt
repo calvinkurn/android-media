@@ -28,15 +28,15 @@ class StackCouponView @JvmOverloads constructor(
         private const val CORNER_RADIUS = 12
     }
 
-    fun setData(list: List<MedalBenefitModel>, additionalInfo: String?, onApplyClick: (String?) -> Unit = {}) {
+    fun setData(list: List<MedalBenefitModel>, additionalInfo: String?, onApplyClick: (MedalBenefitModel) -> Unit = {}) {
         with(binding) {
             if (list.size == 1) {
                 cardMore.gone()
                 cardMiddle.gone()
                 cardBack.gone()
-                cardFront.setData(list.first()) { onApplyClick(it) }
+                cardFront.setData(list.first(), onApplyClick)
             } else {
-                cardFront.setData(list.first()) { onApplyClick(it) }
+                cardFront.setData(list.first(), onApplyClick)
                 cardMiddle.setData(list.first().apply { statusBadgeEnabled = false })
                 cardBack.setData(list.first().apply { statusBadgeEnabled = false })
 
@@ -57,5 +57,9 @@ class StackCouponView @JvmOverloads constructor(
                 tvMore.text = additionalInfo
             }
         }
+    }
+
+    fun updateLoadingStatus(showLoader: Boolean) {
+        binding.cardFront.updateLoadingStatus(showLoader)
     }
 }

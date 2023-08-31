@@ -30,7 +30,7 @@ object MedalBenefitMapper {
                 typeBackgroundColor = it.benefitType?.backgroundColor,
                 cta = CtaButton(
                     it.benefitCTA?.unifiedStyle, it.benefitCTA?.text, it.benefitCTA?.appLink,
-                    it.benefitCTA?.isAutoApply, it.benefitCTA?.couponCode
+                    it.benefitCTA?.url, it.benefitCTA?.isAutoApply, it.benefitCTA?.couponCode
                 )
             )
         }
