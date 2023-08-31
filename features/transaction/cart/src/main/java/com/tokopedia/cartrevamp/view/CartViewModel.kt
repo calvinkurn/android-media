@@ -396,7 +396,7 @@ class CartViewModel @Inject constructor(
         cartDataList.notifyObserver()
     }
 
-    private fun hasReachAllShopItems(data: Any): Boolean {
+    fun hasReachAllShopItems(data: Any): Boolean {
         return data is CartRecentViewHolderData ||
             data is CartWishlistHolderData ||
             data is CartTopAdsHeadlineData ||
