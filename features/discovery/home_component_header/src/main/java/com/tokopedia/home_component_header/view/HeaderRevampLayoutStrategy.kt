@@ -29,12 +29,6 @@ class HeaderRevampLayoutStrategy : HeaderLayoutStrategy {
         private const val PIVOT_Y_VALUE = 0.5f
         private const val ROTATE_FROM_DEGREES = 0f
         private const val ROTATE_DURATION = 500L
-
-        private const val DEFAULT_MAX_EMS = 12
-        private const val DEFAULT_MAX_LINE = 1
-
-        private const val SRP_MAX_EMS = 32
-        private const val SRP_MAX_LINE = 2
     }
 
     var ctaButtonRevamp: IconUnify? = null
@@ -181,22 +175,9 @@ class HeaderRevampLayoutStrategy : HeaderLayoutStrategy {
     }
 
     private fun applyRuleTitle(channelHeader: ChannelHeader, channelTitle: Typography?) {
-        when (channelHeader.pageSource) {
-            ChannelHeader.PageSource.SRP -> applyRuleTitleSRP(channelTitle)
-            else -> applyDefaultRuleTitle(channelTitle)
-        }
-    }
-
-    private fun applyDefaultRuleTitle(channelTitle: Typography?) {
-        channelTitle?.maxEms = DEFAULT_MAX_EMS
-        channelTitle?.maxLines = DEFAULT_MAX_LINE
-        channelTitle?.ellipsize = TextUtils.TruncateAt.END
-    }
-
-    private fun applyRuleTitleSRP(channelTitle: Typography?) {
-        channelTitle?.maxEms = SRP_MAX_EMS
-        channelTitle?.maxLines = SRP_MAX_LINE
-        channelTitle?.ellipsize = null
+        channelTitle?.maxEms = channelHeader.pageSource.maxEms
+        channelTitle?.maxLines = channelHeader.pageSource.maxLines
+        channelTitle?.ellipsize = channelHeader.pageSource.ellipsize
     }
 
     override fun renderSubtitle(
