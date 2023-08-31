@@ -1298,19 +1298,23 @@ internal class PromoUsageViewModel @Inject constructor(
                     var updatedItems = currentItems.map { item ->
                         when (item) {
                             is PromoItem -> {
-                                item.copy(
-                                    state = PromoItemState.Normal,
-                                    currentClashingPromoCodes = emptyList(),
-                                    currentClashingSecondaryPromoCodes = emptyList()
-                                )
+                                if (item.state !is PromoItemState.Ineligible) {
+                                    return@map item.copy(
+                                        state = PromoItemState.Normal,
+                                        currentClashingPromoCodes = emptyList(),
+                                        currentClashingSecondaryPromoCodes = emptyList()
+                                    )
+                                } else {
+                                    return@map item
+                                }
                             }
 
                             is PromoRecommendationItem -> {
-                                item.copy(selectedCodes = recommendedPromoCodes)
+                                return@map item.copy(selectedCodes = recommendedPromoCodes)
                             }
 
                             else -> {
-                                item
+                                return@map item
                             }
                         }
                     }
