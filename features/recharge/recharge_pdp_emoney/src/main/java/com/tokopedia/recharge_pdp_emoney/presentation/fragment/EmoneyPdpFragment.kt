@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.nfc.NfcAdapter
 import android.os.Bundle
+import android.provider.Settings
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.Menu
@@ -672,13 +673,9 @@ open class EmoneyPdpFragment :
         }
     }
 
-    private fun renderTickerBCAGenOne(detailPassData: DigitalCategoryDetailPassData) {
-        if (detailPassData.isBCAGenOne) {
-            showTickerNotSupported()
-            showRecentNumberAndPromo()
-        } else {
-            hideTickerNotSupported()
-        }
+    override fun onResume() {
+        super.onResume()
+        renderTickerNFCNotSupported()
     }
 
     private fun renderTickerNFCNotSupported() {
@@ -690,6 +687,13 @@ open class EmoneyPdpFragment :
                 showTickerNotSupported()
                 showRecentNumberAndPromo()
                 binding.tickerNotSupported.setHtmlDescription(getString(com.tokopedia.recharge_pdp_emoney.R.string.recharge_pdp_emoney_nfc_is_not_active))
+                binding.tickerNotSupported.setDescriptionClickEvent(object : TickerCallback {
+                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                        navigateToNFCSettings()
+                    }
+
+                    override fun onDismiss() {}
+                })
             } else if (this::nfcAdapter.isInitialized && nfcAdapter != null) {
                 hideTickerNotSupported()
             } else {
@@ -975,6 +979,11 @@ open class EmoneyPdpFragment :
                 e.printStackTrace()
             }
         }
+    }
+
+    protected fun navigateToNFCSettings() {
+        val intent = Intent(Settings.ACTION_NFC_SETTINGS)
+        startActivity(intent)
     }
 
     companion object {
