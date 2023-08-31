@@ -156,7 +156,6 @@ object SomGetOrderDetailResponseMapper {
     }
 
     private fun SomDetailOrder.Data.GetSomDetail.mapToShipmentUiModel(): SomDetailShipping {
-        // todo map response here
         return SomDetailShipping(
             shippingName = shipment.name + " - " + shipment.productName,
             receiverName = receiver.name,
@@ -182,7 +181,8 @@ object SomGetOrderDetailResponseMapper {
             isShippingPrinted = flagOrderMeta.isShippingPrinted,
             logisticInfo = logisticInfo,
             shipmentLogo = flagOrderMeta.shipmentLogo,
-            courierInfo = shipment.courierInfo
+            courierInfo = shipment.courierInfo,
+            dropOffInfo = shipment.tickerInfo
         )
     }
 

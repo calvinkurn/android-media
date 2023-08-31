@@ -292,7 +292,10 @@ data class SomDetailOrder(
 
                 @SerializedName("awb_upload_proof_text")
                 @Expose
-                val awbUploadProofText: String = ""
+                val awbUploadProofText: String = "",
+
+                @SerializedName("ticker_info")
+                val tickerInfo: TickerInfo = TickerInfo()
             )
 
             data class BookingInfo(

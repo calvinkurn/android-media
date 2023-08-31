@@ -1,5 +1,7 @@
 package com.tokopedia.sellerorder.detail.data.model
 
+import com.tokopedia.sellerorder.common.domain.model.TickerInfo
+
 /**
  * Created by fwidjaja on 2019-10-04.
  */
@@ -29,5 +31,5 @@ data class SomDetailShipping(
     val shipmentLogo: String = "",
     val courierInfo: String = "",
     val logisticInfo: SomDetailOrder.Data.GetSomDetail.LogisticInfo = SomDetailOrder.Data.GetSomDetail.LogisticInfo(),
-    val dropOffInfo: String = ""
+    val dropOffInfo: TickerInfo = TickerInfo()
 )
