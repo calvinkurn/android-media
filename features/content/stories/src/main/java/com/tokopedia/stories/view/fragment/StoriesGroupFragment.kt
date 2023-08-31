@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.stories.databinding.FragmentStoriesGroupBinding
 import com.tokopedia.stories.utils.withCache
 import com.tokopedia.stories.view.adapter.StoriesGroupPagerAdapter
@@ -30,6 +31,13 @@ class StoriesGroupFragment @Inject constructor(
         get() = _binding!!
 
     private val viewModel by activityViewModels<StoriesViewModel> { viewModelFactory }
+
+    private val pagerListener = object : ViewPager2.OnPageChangeCallback() {
+        override fun onPageSelected(position: Int) {
+            viewModelAction(StoriesUiAction.SetGroupMainData(position))
+            super.onPageSelected(position)
+        }
+    }
 
     private val pagerAdapter: StoriesGroupPagerAdapter by lazy(LazyThreadSafetyMode.NONE) {
         StoriesGroupPagerAdapter(
@@ -63,16 +71,14 @@ class StoriesGroupFragment @Inject constructor(
         viewModel.submitAction(event)
     }
 
-    private fun setupViews() = with(binding.storiesGroupViewPager) {
-        if (adapter != null) return@with
-        adapter = pagerAdapter
-        setPageTransformer(ZoomOutPageTransformer())
-        registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                viewModelAction(StoriesUiAction.SetGroupMainData(position))
-                super.onPageSelected(position)
-            }
-        })
+    private fun setupViews() = with(binding) {
+        isShowLoading(true)
+
+        layoutGroupLoading.icCloseLoading.setOnClickListener { activity?.finish() }
+        if (storiesGroupViewPager.adapter != null) return@with
+        storiesGroupViewPager.adapter = pagerAdapter
+        storiesGroupViewPager.setPageTransformer(ZoomOutPageTransformer())
+        storiesGroupViewPager.registerOnPageChangeCallback(pagerListener)
     }
 
     private fun setupObserver() {
@@ -107,15 +113,24 @@ class StoriesGroupFragment @Inject constructor(
         if (prevState == null || prevState.groupItems.size == state.groupItems.size) return
 
         pagerAdapter.setStoriesGroup(state)
-        pagerAdapter.notifyItemRangeInserted(pagerAdapter.itemCount, state.groupItems.size)
+        pagerAdapter.notifyItemRangeChanged(0, state.groupItems.size)
+
+        // TODO handle loading state properly
+        isShowLoading(false)
     }
 
     private fun selectGroupEvent(position: Int) = with(binding.storiesGroupViewPager) {
         currentItem = position
     }
 
+    private fun isShowLoading(isShowLoading: Boolean) = with(binding){
+        layoutGroupLoading.container.showWithCondition(isShowLoading)
+        storiesGroupViewPager.showWithCondition(!isShowLoading)
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
+        binding.storiesGroupViewPager.unregisterOnPageChangeCallback(pagerListener)
         _binding = null
     }
 

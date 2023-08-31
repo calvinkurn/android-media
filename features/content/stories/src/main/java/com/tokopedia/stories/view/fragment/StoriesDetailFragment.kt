@@ -156,6 +156,9 @@ class StoriesDetailFragment @Inject constructor(
         val currContent = state.detailItems[state.selectedDetailPosition]
         if (currContent.isSameContent) return
 
+        // TODO handle loading state properly
+        isShowLoading(false)
+
         binding.ivStoriesDetailContent.apply {
             setImageUrl(currContent.imageContent)
             onUrlLoaded = {
@@ -209,9 +212,9 @@ class StoriesDetailFragment @Inject constructor(
 
 
     private fun setupStoriesView() = with(binding) {
-        icClose.setOnClickListener {
-            activity?.finish()
-        }
+        isShowLoading(true)
+
+        icClose.setOnClickListener { activity?.finish() }
 
         rvStoriesCategory.apply {
             adapter = mAdapter
@@ -286,6 +289,12 @@ class StoriesDetailFragment @Inject constructor(
 
     private fun viewModelAction(event: StoriesUiAction) {
         viewModel.submitAction(event)
+    }
+
+    private fun isShowLoading(isShowLoading: Boolean) = with(binding){
+        layoutTimer.llTimer.showWithCondition(isShowLoading)
+        layoutDeclarative.loaderDecorativeWhite.showWithCondition(isShowLoading)
+        ivStoriesDetailContent.showWithCondition(!isShowLoading)
     }
 
     override fun onDestroyView() {
