@@ -9,7 +9,9 @@ import android.widget.ImageView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
@@ -96,6 +98,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.io.File
 import javax.inject.Inject
@@ -256,7 +259,12 @@ open class TokoChatFragment @Inject constructor(
         addInitialShimmering()
         // Do not init when order id empty
         if (viewModel.gojekOrderId.isNotBlank()) {
-            initGroupBooking()
+            // All trackers need tkpd order id
+            if (viewModel.tkpdOrderId.isNotBlank()) {
+                initGroupBooking()
+            } else {
+                viewModel.translateGojekOrderId(viewModel.gojekOrderId)
+            }
         }
     }
 
@@ -284,10 +292,20 @@ open class TokoChatFragment @Inject constructor(
     }
 
     private fun observeTkpdOrderId() {
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            viewModel.isTkpdOrderStatusFailed.collectLatest {
-                hideTransactionLocalLoad()
-                setShowTransactionLocalLoad()
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                var isFinished = false
+                viewModel.isTkpdOrderStatus.collectLatest { status ->
+                    if (!isFinished) {
+                        status?.let {
+                            when (it) {
+                                true -> isFinished = true // No need to call this again
+                                false -> setShowTransactionLocalLoad()
+                            }
+                            initGroupBooking() // Success or fail, init group booking
+                        }
+                    }
+                }
             }
         }
     }
@@ -407,6 +425,7 @@ open class TokoChatFragment @Inject constructor(
         observeImageUploadError()
         observeError()
         observeUserConsent()
+        observeTkpdOrderId()
     }
 
     private fun observeError() {
@@ -571,9 +590,6 @@ open class TokoChatFragment @Inject constructor(
                     ) {
                         viewModel.updateOrderStatusParam(Pair(viewModel.tkpdOrderId, viewModel.source))
                     }
-                    tokoChatAnalytics?.sendPendingImpressionOnImageAttachment(
-                        it.data.tokochatOrderProgress.state
-                    )
                 }
                 is Fail -> {
                     logExceptionTokoChat(
@@ -727,14 +743,20 @@ open class TokoChatFragment @Inject constructor(
     }
 
     private fun loadTransactionWidget(isFromLocalLoad: Boolean = false) {
-        baseBinding?.tokochatTransactionOrder?.showShimmeringWidget()
         if (viewModel.tkpdOrderId.isNotBlank()) {
+            baseBinding?.tokochatTransactionOrder?.showShimmeringWidget()
             viewModel.loadOrderCompletedStatus(viewModel.tkpdOrderId, viewModel.source)
-        } else {
-            if (!isFromLocalLoad) {
-                observeTkpdOrderId() // Only need to observe this if tkpdOrderId is empty
-            }
+        } else if (isFromLocalLoad) {
+            // Re-fetch tkpd order id from local load click
+            baseBinding?.tokochatTransactionOrder?.showShimmeringWidget()
             viewModel.translateGojekOrderId(viewModel.gojekOrderId)
+        } else {
+            // No tkpd order id from param & fail to get tkpd order id from remote
+            // Set the header
+            headerUiModel?.let { header ->
+                setupToolbarData(header)
+                showHeader()
+            }
         }
     }
 
@@ -872,7 +894,9 @@ open class TokoChatFragment @Inject constructor(
             }
 
             callMenu.run {
-                val isCallIconDisabled = getOrderState() in listOf(OrderStatusType.COMPLETED, OrderStatusType.CANCELLED)
+                val isCallIconDisabled = getOrderState() in
+                    listOf(OrderStatusType.COMPLETED, OrderStatusType.CANCELLED) ||
+                    getOrderState().isBlank()
 
                 if (isCallIconDisabled) {
                     isEnabled = false
