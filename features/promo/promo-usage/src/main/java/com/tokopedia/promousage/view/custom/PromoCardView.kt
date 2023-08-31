@@ -10,7 +10,9 @@ import android.graphics.Region
 import android.util.AttributeSet
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.toPx
+import kotlin.math.roundToInt
 
 class PromoCardView @JvmOverloads constructor(
     context: Context,
@@ -40,7 +42,7 @@ class PromoCardView @JvmOverloads constructor(
     }
 
     private val voucherBackground = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+        color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN100)
         style = Paint.Style.FILL
     }
 
@@ -62,16 +64,6 @@ class PromoCardView @JvmOverloads constructor(
         CARD_VIEW_CORNER_RADIUS, CARD_VIEW_CORNER_RADIUS    // Bottom left radius in px
     )
 
-    private val cardViewBorderPath by lazy {
-        Path().apply {
-            addRoundRect(
-                RectF(0f, 0f, width.toFloat(), height.toFloat()),
-                cardViewCorners,
-                Path.Direction.CW
-            )
-            close()
-        }
-    }
     private val voucherExpiryDateHeightPx by lazy { EXPIRED_DATE_BACKGROUND_HEIGHT.toPx() }
     private val voucherCircleMarginBottomPX by lazy { CIRCLE_CUT_OUT_MARGIN_BOTTOM.toPx() }
 
@@ -135,6 +127,14 @@ class PromoCardView @JvmOverloads constructor(
     }
 
     private fun drawCardViewBorder(canvas: Canvas?) {
+        val cardViewBorderPath = Path().apply {
+            addRoundRect(
+                RectF(0f, 0f, width.toFloat(), height.toFloat()),
+                cardViewCorners,
+                Path.Direction.CW
+            )
+            close()
+        }
         canvas?.drawPath(cardViewBorderPath, cardViewBorder)
     }
 

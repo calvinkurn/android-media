@@ -4,7 +4,8 @@ data class PromoEntryPointInfo(
     val iconUrl: String = "",
     val messages: List<String> = emptyList(),
     val color: String = "",
-    val isClickable: Boolean = false
+    val isClickable: Boolean = false,
+    val statusCode: String = ""
 ) {
     companion object {
         const val COLOR_GREEN = "green"

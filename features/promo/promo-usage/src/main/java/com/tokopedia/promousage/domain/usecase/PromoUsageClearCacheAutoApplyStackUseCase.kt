@@ -21,7 +21,7 @@ class PromoUsageClearCacheAutoApplyStackUseCase @Inject constructor(
 ) {
 
     override suspend fun execute(params: ClearPromoRequest): ClearCacheAutoApplyStackResponse {
-        return repository.request(graphqlQuery(), params)
+        return repository.request(PromoUsageClearCacheAutoApplyStackQuery(), params)
     }
 
     override fun graphqlQuery(): String = QUERY.trimIndent()

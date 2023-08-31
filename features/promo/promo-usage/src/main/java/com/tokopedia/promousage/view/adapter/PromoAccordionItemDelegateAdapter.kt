@@ -47,10 +47,10 @@ class PromoAccordionItemDelegateAdapter(
         fun bind(item: PromoItem) {
             with(binding) {
                 if (item.isRecommended) {
-                    clPromoBackground.background = ColorDrawable(
-                        ContextCompat
-                            .getColor(root.context, android.R.color.transparent)
-                    )
+//                    clPromoBackground.background = ColorDrawable(
+//                        ContextCompat
+//                            .getColor(root.context, android.R.color.transparent)
+//                    )
                     if (item.isLastRecommended) {
                         vcvPromo.setMargin(
                             NORMAL_MARGIN_START_END_IN_DP.toPx(),
@@ -81,11 +81,11 @@ class PromoAccordionItemDelegateAdapter(
                     )
                     bottomDivider.visible()
                 } else {
-                    clPromoBackground.background = ColorDrawable(
-                        ContextCompat
-                            .getColor(root.context,
-                                com.tokopedia.unifyprinciples.R.color.Unify_Background)
-                    )
+//                    clPromoBackground.background = ColorDrawable(
+//                        ContextCompat
+//                            .getColor(root.context,
+//                                com.tokopedia.unifyprinciples.R.color.Unify_Background)
+//                    )
                     vcvPromo.setMargin(
                         NORMAL_MARGIN_START_END_IN_DP.toPx(),
                         NORMAL_MARGIN_TOP_IN_DP.toPx(),

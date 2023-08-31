@@ -19,7 +19,7 @@ class PromoUsageValidateUseUseCase @Inject constructor(
 ) : CoroutineUseCase<ValidateUsePromoUsageParam, ValidateUseResponse>(Dispatchers.IO) {
 
     override suspend fun execute(params: ValidateUsePromoUsageParam): ValidateUseResponse {
-        return repository.request(graphqlQuery(), params)
+        return repository.request(PromoUsageValidateUseQuery(), params)
     }
 
     override fun graphqlQuery(): String = QUERY.trimIndent()

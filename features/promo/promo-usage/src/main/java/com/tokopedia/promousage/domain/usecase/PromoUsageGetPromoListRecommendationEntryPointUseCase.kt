@@ -21,7 +21,7 @@ class PromoUsageGetPromoListRecommendationEntryPointUseCase @Inject constructor(
 ) {
 
     override suspend fun execute(params: GetPromoListRecommendationParam): GetPromoListRecommendationEntryPointResponse {
-        return repository.request(graphqlQuery(), params)
+        return repository.request(PromoUsageGetPromoListRecommendationEntryPointQuery(), params)
     }
 
     override fun graphqlQuery(): String = QUERY.trimIndent()

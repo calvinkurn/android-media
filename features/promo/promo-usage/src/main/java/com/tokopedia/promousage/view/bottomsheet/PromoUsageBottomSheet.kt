@@ -280,7 +280,6 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                 com.tokopedia.unifyprinciples.R.color.Unify_Background
             )
         binding.ivPromoRecommendationBackground.invisible()
-        binding.rvPromo.itemAnimator = null
         binding.rvPromo.layoutManager = LinearLayoutManager(context)
         binding.rvPromo.adapter = recyclerViewAdapter
         when (entryPoint) {
@@ -347,8 +346,9 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         observeKeyboardVisibility()
     }
 
-    private fun addHeaderScrollListener() {
+    private fun addScrollListeners() {
         binding.rvPromo.clearOnScrollListeners()
+        // Header scroll listener
         binding.rvPromo.addOnScrollListener(object : OnScrollListener() {
             var scrollY = 0f
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -371,6 +371,14 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                 } else {
                     renderTransparentHeader()
                 }
+            }
+        })
+        // Background scroll listener
+        binding.rvPromo.addOnScrollListener(object : OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val scrollY = binding.rvPromo.computeVerticalScrollOffset().toFloat()
+                binding.ivPromoRecommendationBackground.translationY = -scrollY
             }
         })
     }
@@ -473,7 +481,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
             when (uiAction) {
                 is GetPromoRecommendationUiAction.NotEmpty -> {
                     renderPromoRecommendationBackground(uiAction.promoRecommendation)
-                    addHeaderScrollListener()
+                    addScrollListeners()
                     renderTransparentHeader()
                 }
 

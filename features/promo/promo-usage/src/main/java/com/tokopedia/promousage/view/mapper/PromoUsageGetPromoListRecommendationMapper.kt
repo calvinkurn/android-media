@@ -40,7 +40,8 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
             messages = response.promoListRecommendation.data.entryPointInfo.messages,
             iconUrl = response.promoListRecommendation.data.entryPointInfo.iconUrl,
             color = response.promoListRecommendation.data.entryPointInfo.state,
-            isClickable = response.promoListRecommendation.data.entryPointInfo.clickable
+            isClickable = response.promoListRecommendation.data.entryPointInfo.clickable,
+            statusCode = response.promoListRecommendation.data.resultStatus.code
         )
     }
 
