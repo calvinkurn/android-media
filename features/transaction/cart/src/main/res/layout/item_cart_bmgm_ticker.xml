@@ -51,7 +51,7 @@
         app:layout_constraintTop_toTopOf="@id/iv_ticker_bg"
         app:layout_constraintBottom_toBottomOf="@id/iv_ticker_bg"/>
 
-    <View
+    <!--<View
         android:id="@+id/v_bmgm_product_separator"
         android:layout_width="2dp"
         android:layout_height="10dp"
@@ -61,7 +61,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="@id/ic_bmgm_ticker"
         app:layout_constraintBottom_toBottomOf="parent"
-        tools:visibility="visible" />
+        tools:visibility="visible" />-->
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/cart_shop_ticker_small_loader"
@@ -87,15 +87,28 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:loader_type="line" />
 
+    <!--this placeholder view for constraint mini vertical divider-->
+
     <View
-        android:id="@+id/v_bmgm_product_loader_separator"
+        android:id="@+id/v_bmgm_placeholder"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="6dp"
+        app:srcCompat="@drawable/ic_left_cart_basket_building"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/iv_ticker_bg"
+        app:layout_constraintBottom_toBottomOf="@id/iv_ticker_bg"
+        android:visibility="invisible"/>
+
+    <View
+        android:id="@+id/v_bmgm_separator"
         android:layout_width="2dp"
         android:layout_height="10dp"
         android:layout_marginTop="6dp"
         android:background="@color/Unify_NN100"
         app:layout_constraintTop_toBottomOf="@id/iv_ticker_bg"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="@id/cart_shop_ticker_small_loader"
+        app:layout_constraintEnd_toEndOf="@id/v_bmgm_placeholder"
         app:layout_constraintBottom_toBottomOf="parent"
         tools:visibility="visible" />
 

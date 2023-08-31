@@ -36,6 +36,8 @@ class CartItemAdapter {
         fun onProductAddOnClicked(cartItemData: CartItemHolderData)
         fun onAddOnsProductWidgetImpression(addOnType: Int, productId: String)
         fun onClickAddOnsProductWidgetCart(addOnType: Int, productId: String)
-        fun onClickBmGmChevronRight(cartDetailInfo: CartDetailInfo, shopId: String)
+        fun onBmGmChevronRightClicked(offerId: Long)
+        fun onBmGmTickerReloadClicked(offerId: Long)
+
     }
 }

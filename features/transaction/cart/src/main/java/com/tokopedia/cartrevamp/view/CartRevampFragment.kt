@@ -85,7 +85,6 @@ import com.tokopedia.cartrevamp.view.uimodel.AddToCartEvent
 import com.tokopedia.cartrevamp.view.uimodel.AddToCartExternalEvent
 import com.tokopedia.cartrevamp.view.uimodel.CartBundlingBottomSheetData
 import com.tokopedia.cartrevamp.view.uimodel.CartCheckoutButtonState
-import com.tokopedia.cartrevamp.view.uimodel.CartDetailInfo
 import com.tokopedia.cartrevamp.view.uimodel.CartGlobalEvent
 import com.tokopedia.cartrevamp.view.uimodel.CartGroupHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
@@ -1129,8 +1128,7 @@ class CartRevampFragment :
 
             val cartGroupHolderData = cartAdapter.getCartGroupHolderDataByCartItemHolderData(cartItemHolderData)
             if (cartGroupHolderData != null) {
-                viewModel.getBmGmGroupProductTicker(
-                        BmGmTickerRequestMapper.generateGetGroupProductTickerRequestParams(cartGroupHolderData))
+                getGroupProductTicker(cartGroupHolderData)
             }
         }
     }
@@ -1288,8 +1286,7 @@ class CartRevampFragment :
 
             val cartGroupHolderData = cartAdapter.getCartGroupHolderDataByCartItemHolderData(cartItemHolderData)
             if (cartGroupHolderData != null) {
-                viewModel.getBmGmGroupProductTicker(
-                        BmGmTickerRequestMapper.generateGetGroupProductTickerRequestParams(cartGroupHolderData))
+                getGroupProductTicker(cartGroupHolderData)
             }
         }
     }
@@ -1507,21 +1504,6 @@ class CartRevampFragment :
 
     override fun onClickAddOnsProductWidgetCart(addOnType: Int, productId: String) {
         cartPageAnalytics.eventClickAddOnsWidgetCart(addOnType, productId)
-    }
-
-    override fun onClickBmGmChevronRight(cartDetailInfo: CartDetailInfo, shopId: String) {
-        val listWarehouseId = arrayListOf<Long>()
-        val listProductId = arrayListOf<String>()
-        cartDetailInfo.bmGmTierProductList.forEach {
-            it.listProduct.forEach { bmGmProductData ->
-                listWarehouseId.add(bmGmProductData.warehouseId)
-                listProductId.add(bmGmProductData.productId)
-            }
-        }
-        val applink = "tokopedia://buymoresavemore/${cartDetailInfo.bmGmData.offerId}/?warehouse_ids=$listWarehouseId&product_ids=$listProductId&shop_ids=$shopId"
-        activity?.let {
-            RouteManager.route(it, applink)
-        }
     }
 
     private fun addEndlessRecyclerViewScrollListener(
@@ -4891,5 +4873,25 @@ class CartRevampFragment :
             trySend(isChecked).isSuccess
         }
         awaitClose { setOnCheckedChangeListener(null) }
+    }
+
+    private fun getGroupProductTicker(cartGroupHolderData: CartGroupHolderData) {
+        viewModel.getBmGmGroupProductTicker(
+                BmGmTickerRequestMapper.generateGetGroupProductTickerRequestParams(cartGroupHolderData))
+    }
+
+    override fun onBmGmChevronRightClicked(offerId: Long) {
+        val applink = "tokopedia://buymoresavemore/$offerId"
+        activity?.let {
+            RouteManager.route(it, applink)
+        }
+    }
+
+    override fun onBmGmTickerReloadClicked(offerId: Long) {
+        val pairCartItemHolderData = cartAdapter.getCartItemHolderDataAndIndexByOfferId(offerId)
+        val cartGroupHolderData = cartAdapter.getCartGroupHolderDataByCartItemHolderData(pairCartItemHolderData.second)
+        if (cartGroupHolderData != null) {
+            getGroupProductTicker(cartGroupHolderData)
+        }
     }
 }

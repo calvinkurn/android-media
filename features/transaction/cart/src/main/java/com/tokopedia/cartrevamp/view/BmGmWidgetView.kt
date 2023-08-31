@@ -22,7 +22,7 @@ class BmGmWidgetView @JvmOverloads constructor(
 ) : BaseCustomView(context, attrs, defStyleAttr) {
 
     private var binding: ItemCartBmgmTickerBinding? = ItemCartBmgmTickerBinding.inflate(LayoutInflater.from(context), this, true)
-    private var bmGmWidgetViewListener: BmGmWidgetViewListener? = null
+    var offerId: Long = 0L
 
     var state: State = State.ACTIVE
         set(value) {
@@ -60,11 +60,6 @@ class BmGmWidgetView @JvmOverloads constructor(
         }
     }
 
-    fun setListener(listener: BmGmWidgetViewListener) {
-        this.bmGmWidgetViewListener = listener
-        initView()
-    }
-
     private fun initView() {
         when (state) {
             State.LOADING -> setViewLoading()
@@ -86,9 +81,6 @@ class BmGmWidgetView @JvmOverloads constructor(
             tvBmgmTicker.gone()
             icBmgmTicker.gone()
             iuTickerRightIcon.gone()
-            vBmgmProductSeparator.gone()
-
-            vBmgmProductLoaderSeparator.visible()
             cartShopTickerLargeLoader.type =
                     LoaderUnify.TYPE_LINE
             cartShopTickerLargeLoader.show()
@@ -96,18 +88,16 @@ class BmGmWidgetView @JvmOverloads constructor(
                     LoaderUnify.TYPE_RECT
             cartShopTickerSmallLoader.show()
             ivTickerBg.setImageResource(com.tokopedia.cart.R.drawable.bg_cart_basket_building_loading_ticker)
-            layoutBasketBuildingTicker.setOnClickListener(null)
         }
     }
 
     private fun setViewActive() {
         binding?.run {
-            vBmgmProductLoaderSeparator.gone()
+            layoutBasketBuildingTicker.visible()
             cartShopTickerSmallLoader.gone()
             cartShopTickerLargeLoader.gone()
 
             ivTickerBg.setImageResource(com.tokopedia.cart.R.drawable.bg_cart_bmgm)
-            vBmgmProductSeparator.visible()
             tvBmgmTicker.visible()
             tvBmgmTicker.text = title
 
@@ -115,18 +105,16 @@ class BmGmWidgetView @JvmOverloads constructor(
             icBmgmTicker.loadImage(urlLeftIcon)
 
             iuTickerRightIcon.visible()
-            iuTickerRightIcon.setOnClickListener {
-                bmGmWidgetViewListener?.onChevronRightClicked()
-            }
         }
     }
 
     private fun setViewInactive() {
         binding?.run {
+            layoutBasketBuildingTicker.visible()
             cartShopTickerLargeLoader.gone()
             cartShopTickerSmallLoader.gone()
-            tvBmgmTicker.text = "Info promosi gagal dimuat. Muat ulang, yuk!"
             tvBmgmTicker.show()
+            tvBmgmTicker.text = "Info promosi gagal dimuat. Muat ulang, yuk!"
             icBmgmTicker.gone()
             val iconColor = MethodChecker.getColor(
                     root.context,
@@ -135,10 +123,8 @@ class BmGmWidgetView @JvmOverloads constructor(
             val reloadIcon = getIconUnifyDrawable(root.context, IconUnify.RELOAD, iconColor)
             iuTickerRightIcon.setImageDrawable(reloadIcon)
             iuTickerRightIcon.show()
+
             ivTickerBg.setImageResource(R.drawable.bg_cart_basket_building_error_ticker)
-            layoutBasketBuildingTicker.setOnClickListener {
-                bmGmWidgetViewListener?.onReloadClicked()
-            }
             layoutBasketBuildingTicker.show()
         }
     }

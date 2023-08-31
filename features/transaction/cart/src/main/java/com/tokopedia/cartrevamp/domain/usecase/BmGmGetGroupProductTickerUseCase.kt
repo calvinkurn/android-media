@@ -26,7 +26,7 @@ class BmGmGetGroupProductTickerUseCase @Inject constructor(
                 "error_message":[],
                 "data":{
                     "type": "BMGM",
-                    "action": "", // need action from client, if empty means success and no action required
+                    "action": "RELOAD", // need action from client, if empty means success and no action required
                     "icon": {
                         "url": "http://tokopedia.com/icon.png"
                     },
