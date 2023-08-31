@@ -5,12 +5,12 @@ import com.tokopedia.catalogcommon.util.colorMapping
 import com.tokopedia.catalogcommon.util.stringHexColorParseToInt
 
 data class ExpertReviewUiModel(
-    override val idWidget: String,
-    override val widgetType: String,
-    override val widgetName: String,
-    override val widgetBackgroundColor: Int? = null,
-    override val widgetTextColor: Int? = null,
-    override val darkMode: Boolean = false,
+    override var idWidget: String,
+    override var widgetType: String,
+    override var widgetName: String,
+    override var widgetBackgroundColor: Int? = null,
+    override var widgetTextColor: Int? = null,
+    override var darkMode: Boolean = false,
     val content: List<ItemExpertReviewUiModel>
 ) : BaseCatalogUiModel(
     idWidget, widgetType, widgetName, widgetBackgroundColor, widgetTextColor,
