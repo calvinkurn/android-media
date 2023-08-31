@@ -48,6 +48,7 @@ import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery.common.utils.toDpInt
+import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.Constant.DISCO_PAGE_SOURCE
 import com.tokopedia.discovery2.R
@@ -75,7 +76,6 @@ import com.tokopedia.discovery2.data.PageInfo
 import com.tokopedia.discovery2.data.ParamsForOpenScreen
 import com.tokopedia.discovery2.data.ScrollData
 import com.tokopedia.discovery2.data.productcarditem.DiscoATCRequestParams
-import com.tokopedia.discovery2.datamapper.DYNAMIC_COMPONENT_IDENTIFIER
 import com.tokopedia.discovery2.datamapper.discoComponentQuery
 import com.tokopedia.discovery2.datamapper.discoveryPageData
 import com.tokopedia.discovery2.datamapper.getSectionPositionMap
@@ -112,6 +112,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.mast
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvoucher.DiscoMerchantVoucherViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.playwidget.DiscoveryPlayWidgetViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel.ProductCardCarouselViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomTopChatView
 import com.tokopedia.discovery2.viewcontrollers.customview.StickyHeadRecyclerView
@@ -752,7 +753,7 @@ open class DiscoveryFragment :
     }
 
     private fun setUpObserver() {
-        discoveryViewModel.getDiscoveryResponseList().observe(viewLifecycleOwner, {
+        discoveryViewModel.getDiscoveryResponseList().observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     it.data.let { listComponent ->
@@ -771,6 +772,7 @@ open class DiscoveryFragment :
                     stopDiscoveryPagePerformanceMonitoring()
                     recyclerView.post {
                         scrollToLastSection()
+                        addMarginInRuntime(it.data)
                     }
                 }
                 is Fail -> {
@@ -779,7 +781,7 @@ open class DiscoveryFragment :
                 }
             }
             mSwipeRefreshLayout.isRefreshing = false
-        })
+        }
 
         discoveryViewModel.getDiscoveryFabLiveData().observe(viewLifecycleOwner, {
             when (it) {
@@ -952,6 +954,35 @@ open class DiscoveryFragment :
                 }
             }
         })
+    }
+
+    private fun addMarginInRuntime(data: List<ComponentsItem>) {
+        val componentsToExclude = mutableSetOf<String>(ComponentsList.CLPFeatureProducts.componentName,
+            ComponentsList.MerchantVoucherCarousel.componentName,
+            ComponentsList.ProductCardRevamp.componentName,
+            ComponentsList.LihatSemua.componentName
+        )
+        data.let { data ->
+            data.forEachIndexed { index, item ->
+                if (item.name == ComponentNames.Tabs.componentName) {
+                    val tabsViewModel = discoveryAdapter.getTabItem() as? TabsViewModel
+                    if (componentsToExclude.contains(data.getOrNull(index+1)?.name ?: "")) {
+                        tabsViewModel?.shouldAddSpace(false)
+                    } else if (data.getOrNull(index+1)?.name == ComponentsList.Section.componentName) {
+                        val latestComponent = data.getOrNull(index+1)?.getComponentsItem()?.getOrNull(0)?.name
+                            ?: return@let
+                        if (latestComponent == ComponentsList.LihatSemua.componentName || componentsToExclude.contains(latestComponent)) {
+                            tabsViewModel?.shouldAddSpace(false)
+                        } else {
+                            tabsViewModel?.shouldAddSpace(true)
+                        }
+                    }
+                    else
+                        tabsViewModel?.shouldAddSpace(true)
+                    return@let
+                }
+            }
+        }
     }
 
     private fun setupBackgroundForHeader(data: PageInfo?) {
