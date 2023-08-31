@@ -2383,13 +2383,13 @@ class CartRevampFragment :
                 is CartState.Success -> {
                     renderLoadGetCartDataFinish()
                     renderInitialGetCartListDataSuccess(state.data)
-                    // stopCartPerformanceTrace()
+                    stopCartPerformanceTrace()
                 }
 
                 is CartState.Failed -> {
                     renderLoadGetCartDataFinish()
                     renderErrorInitialGetCartListData(state.throwable)
-                    // stopCartPerformanceTrace()
+                    stopCartPerformanceTrace()
                 }
             }
         }
@@ -2762,7 +2762,6 @@ class CartRevampFragment :
                         val (index, cartItem) = cartAdapter.getCartItemHolderDataAndIndexByOfferId(data.pairOfferIdBmGmTickerResponse.first)
                         cartItem.stateTickerBmGm = CART_BMGM_STATE_TICKER_INACTIVE
                         cartAdapter.notifyItemChanged(index)
-
                     } else if (data.pairOfferIdBmGmTickerResponse.second.data.action.isEmpty()) {
                         val (index, cartItem) = cartAdapter.getCartItemHolderDataAndIndexByOfferId(data.pairOfferIdBmGmTickerResponse.first)
                         cartItem.stateTickerBmGm = CART_BMGM_STATE_TICKER_ACTIVE
@@ -4877,7 +4876,8 @@ class CartRevampFragment :
 
     private fun getGroupProductTicker(cartGroupHolderData: CartGroupHolderData) {
         viewModel.getBmGmGroupProductTicker(
-                BmGmTickerRequestMapper.generateGetGroupProductTickerRequestParams(cartGroupHolderData))
+            BmGmTickerRequestMapper.generateGetGroupProductTickerRequestParams(cartGroupHolderData)
+        )
     }
 
     override fun onBmGmChevronRightClicked(offerId: Long) {
