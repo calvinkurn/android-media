@@ -964,7 +964,7 @@ open class DiscoveryFragment :
         data.let { data ->
             data.forEachIndexed { index, item ->
                 if (item.name == ComponentNames.Tabs.componentName) {
-                    val tabsViewModel = discoveryAdapter.getTabItem() as TabsViewModel?
+                    val tabsViewModel = discoveryAdapter.getTabItem() as? TabsViewModel
                     if (componentsToExclude.contains(data.getOrNull(index+1)?.name ?: "")) {
                         tabsViewModel?.shouldAddSpace(false)
                     } else if (data.getOrNull(index+1)?.name == ComponentsList.Section.componentName) {
