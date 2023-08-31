@@ -151,7 +151,9 @@ class ShopHomeDisplayBannerProductHotspotViewHolder(
                             productPrice = productHotspot.displayedPrice,
                         )
                     },
-                ), listenerBubbleView = this
+                ),
+                listenerBubbleView = this,
+                ratio = ratio
             )
         }
     }

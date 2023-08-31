@@ -11,7 +11,8 @@ import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerProductHotspotU
 class ShopHomeDisplayBannerProductHotspotItemViewHolder(
     viewBinding: ShopHomeDisplayBannerProductHotspotItemBinding,
     private val widgetUiModel: ShopWidgetDisplayBannerProductHotspotUiModel?,
-    private val listener: ShopHomeDisplayBannerProductHotspotViewHolder.Listener?
+    private val listener: ShopHomeDisplayBannerProductHotspotViewHolder.Listener?,
+    private val ratio: String?
 ) : RecyclerView.ViewHolder(viewBinding.root), ImageHotspotView.Listener {
 
     private val imageBannerHotspot: ImageHotspotView = viewBinding.imageBannerHotspot
@@ -33,7 +34,9 @@ class ShopHomeDisplayBannerProductHotspotItemViewHolder(
                         productPrice = productHotspot.displayedPrice,
                     )
                 },
-            ), listenerBubbleView = this
+            ),
+            listenerBubbleView = this,
+            ratio = ratio
         )
     }
 

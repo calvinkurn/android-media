@@ -25,7 +25,7 @@ class HotspotBubbleView @JvmOverloads constructor(
 ) : ConstraintLayout(context, attrs, defStyleAttr), LifecycleObserver {
 
     companion object {
-        private const val THRESHOLD_POS_Y_TO_INFLATE_TAGGING_BUBBLE_DOWNWARD = 0.70
+        private const val THRESHOLD_POS_Y_TO_INFLATE_TAGGING_BUBBLE_DOWNWARD = 0.60
         private const val POSITION_TOP = 1
         private const val POSITION_BOTTOM = 2
         private const val INT_TWO = 2
@@ -102,7 +102,7 @@ class HotspotBubbleView @JvmOverloads constructor(
             (measuredWidth.toFloat() / INT_TWO) - finalPointerView?.measuredWidth?.toFloat()
                 ?.div(INT_TWO)
                 .orZero()
-        y = if (position > POSITION_TOP) {
+        y = if (position == POSITION_TOP) {
             (bannerImageHeight.toFloat() * (hotspotData.y)) - measuredHeight - finalPointerView?.measuredHeight.orZero()
         } else {
             (bannerImageHeight.toFloat() * (hotspotData.y)) + hotspotTagView.measuredHeight
@@ -120,10 +120,10 @@ class HotspotBubbleView @JvmOverloads constructor(
 
     private fun determineBubbleVerticalPosition(hotspotData: ImageHotspotData.HotspotData) {
         position = if (hotspotData.y > THRESHOLD_POS_Y_TO_INFLATE_TAGGING_BUBBLE_DOWNWARD) {
-            finalPointerView = productTagPointerTop
+            finalPointerView = productTagPointerBottom
             POSITION_TOP
         } else {
-            finalPointerView = productTagPointerBottom
+            finalPointerView = productTagPointerTop
             POSITION_BOTTOM
         }
     }
