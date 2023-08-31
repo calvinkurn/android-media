@@ -15,7 +15,13 @@ data class HomeHeaderDataModel(
 ) : ImpressHolder(),
     HomeVisitable,
     LoadableComponent by BlocksLoadableComponent(
-        { headerDataModel?.homeBalanceModel?.status != HomeBalanceModel.STATUS_LOADING },
+        {
+            if (headerDataModel?.isUserLogin == true) {
+                headerDataModel.homeBalanceModel.status != HomeBalanceModel.STATUS_LOADING
+            } else {
+                true
+            }
+        },
         "HomeHeaderDataModel"
     ) {
     var createdTimeMillis = ""
