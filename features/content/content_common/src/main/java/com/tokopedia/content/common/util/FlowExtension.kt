@@ -26,7 +26,7 @@ data class CachedState<T>(val prevValue: T? = null, val value: T) {
     }
 }
 
-internal fun <T: Any> Flow<T>.withCache(): Flow<CachedState<T>> {
+fun <T: Any> Flow<T>.withCache(): Flow<CachedState<T>> {
     var cachedValue : T? = null
     return map {
         val prevValue = cachedValue
