@@ -38,7 +38,6 @@ class LocalCacheUseCase @Inject constructor(
         return BmgmCommonDataModel(
             offerId = model.offerId,
             offerName = model.offerName,
-            offerMessage = model.offerMessage,
             totalDiscount = model.totalDiscount,
             finalPrice = model.finalPrice,
             priceBeforeBenefit = model.priceBeforeBenefit,
