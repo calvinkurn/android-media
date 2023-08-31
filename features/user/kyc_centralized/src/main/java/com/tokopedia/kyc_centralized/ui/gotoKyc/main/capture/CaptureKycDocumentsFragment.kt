@@ -115,6 +115,9 @@ class CaptureKycDocumentsFragment : BaseDaggerFragment() {
                     UnifiedKycFlowResult.DOC_TYPE_SWITCHED -> {
                         finishWithResultCancelAndRemoveCache()
                     }
+                    UnifiedKycFlowResult.CHALLENGE_IN_PROGRESS -> {
+                        //NoOp
+                    }
                 }
             }
         }
