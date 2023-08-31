@@ -122,6 +122,7 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.interfaces.ShareCallback
@@ -608,10 +609,10 @@ open class DiscoveryFragment :
 
     private fun updateLastVisibleComponent() {
         if (lastVisibleComponent != null && (
-                lastVisibleComponent?.name ==
-                    ComponentsList.ProductCardRevamp.componentName || lastVisibleComponent?.name ==
-                    ComponentsList.ProductCardSprintSale.componentName
-                )
+            lastVisibleComponent?.name ==
+                ComponentsList.ProductCardRevamp.componentName || lastVisibleComponent?.name ==
+                ComponentsList.ProductCardSprintSale.componentName
+            )
         ) {
             return
         }
@@ -621,11 +622,11 @@ open class DiscoveryFragment :
                 lastVisibleComponent = discoveryAdapter.currentList[positionArray.first()]
 
                 if (lastVisibleComponent != null && (
-                        lastVisibleComponent?.name ==
-                            ComponentsList.ProductCardRevampItem.componentName || lastVisibleComponent?.name ==
-                            ComponentsList.ProductCardSprintSaleItem.componentName ||
-                            lastVisibleComponent?.name == ComponentsList.ShimmerProductCard.componentName
-                        )
+                    lastVisibleComponent?.name ==
+                        ComponentsList.ProductCardRevampItem.componentName || lastVisibleComponent?.name ==
+                        ComponentsList.ProductCardSprintSaleItem.componentName ||
+                        lastVisibleComponent?.name == ComponentsList.ShimmerProductCard.componentName
+                    )
                 ) {
                     lastVisibleComponent = com.tokopedia.discovery2.datamapper
                         .getComponent(
@@ -1093,12 +1094,12 @@ open class DiscoveryFragment :
 
     private fun setToolBarPageInfoOnSuccess(data: PageInfo?) {
         handleShare(data)
-        setupSearchBar(data)
+        setSearchBar(data)
     }
 
     private fun setToolBarPageInfoOnFail() {
         setCartAndNavIcon()
-        setupSearchBar(null)
+        setSearchBar(null)
         mProgressBar.hide()
         mSwipeRefreshLayout.isRefreshing = false
     }
@@ -1108,22 +1109,44 @@ open class DiscoveryFragment :
             navToolbar.updateNotification()
             return
         }
-        if ((arguments?.getString(HIDE_NAV_FEATURES, "").isNullOrEmpty())) {
+        handleHideNavFun(data)
+    }
+
+    private fun handleHideNavFun(data: PageInfo?) {
+        val hideNaveFeaturesValue = arguments?.getString(HIDE_NAV_FEATURES, "")
+        if (hideNaveFeaturesValue.isNullOrEmpty()) {
             navWithShareData(data)
         } else {
-            val hideNaveFeatures = arguments?.getString(HIDE_NAV_FEATURES, "")
-            if (hideNaveFeatures.isNullOrEmpty()) {
-                navWithShareData(data)
-            } else {
-               val navIcons =  Utils.navIcons(getNavIconBuilderFlag(),
-                    onClick = { handleShareClick(data) },
-                    handleGlobalNavCartClick = {handleGlobalNavClick(Constant.TOP_NAV_BUTTON.CART)},
-                    handleGlobalMenuCartClick = {handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU)})
-
-                navToolbar.setIcon(navIcons[requireArguments().getString(HIDE_NAV_FEATURES)?.toInt()]!!)
-                navToolbar.updateNotification()
+            val navIcons = Utils.navIcons(
+                getNavIconBuilderFlag(),
+                onClick = { handleShareClick(data) },
+                handleGlobalNavCartClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.CART) },
+                handleGlobalMenuCartClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) }
+            )
+            navIcons[requireArguments().getString(HIDE_NAV_FEATURES)?.toIntOrZero()]?.let {
+                navToolbar.setIcon(
+                    it
+                )
             }
+            navToolbar.updateNotification()
         }
+    }
+
+    private fun setSearchBar(data: PageInfo?) {
+//        if (arguments?.getString(HIDE_NAV_FEATURES)?.toIntOrZero() !in listOf(3, 13, 23, 123)) {}
+        navToolbar.setupSearchbar(
+            hints = listOf(
+                HintData(
+                    placeholder = data?.searchTitle
+                        ?: getString(R.string.discovery_default_search_title)
+                )
+            ),
+            searchbarClickCallback = {
+                handleGlobalNavClick(Constant.TOP_NAV_BUTTON.SEARCH_BAR)
+                handleSearchClick(data)
+            },
+            disableDefaultGtmTracker = true
+        )
     }
 
     private fun navWithShareData(data: PageInfo?) {
@@ -1353,24 +1376,6 @@ open class DiscoveryFragment :
         showUniversalShareBottomSheet(pageInfoHolder, path)
     }
 
-
-
-    private fun setupSearchBar(data: PageInfo?) {
-        navToolbar.setupSearchbar(
-            hints = listOf(
-                HintData(
-                    placeholder = data?.searchTitle
-                        ?: getString(R.string.discovery_default_search_title)
-                )
-            ),
-            searchbarClickCallback = {
-                handleGlobalNavClick(Constant.TOP_NAV_BUTTON.SEARCH_BAR)
-                handleSearchClick(data)
-            },
-            disableDefaultGtmTracker = true
-        )
-    }
-
     private fun handleSearchClick(data: PageInfo?) {
         if (data?.searchApplink?.isNotEmpty() == true) {
             RouteManager.route(context, data.searchApplink)
@@ -1482,41 +1487,41 @@ open class DiscoveryFragment :
 
     private fun removePaddingIfComponent() {
         recyclerView.viewTreeObserver.addOnGlobalLayoutListener(object :
-            ViewTreeObserver.OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                var pos = Int.MIN_VALUE
-                discoveryAdapter.currentList.forEachIndexed { index, componentsItem ->
-                    if (componentsItem.name == ComponentsList.Tabs.componentName) {
-                        pos = index
-                    }
-                    if (index == pos + 1) {
-                        val i = pos + 1
-                        val firstVisibleItemPositions =
-                            staggeredGridLayoutManager?.findFirstVisibleItemPositions(null)
-                        val lastVisibleItemPositions =
-                            staggeredGridLayoutManager?.findLastVisibleItemPositions(null)
+                ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    var pos = Int.MIN_VALUE
+                    discoveryAdapter.currentList.forEachIndexed { index, componentsItem ->
+                        if (componentsItem.name == ComponentsList.Tabs.componentName) {
+                            pos = index
+                        }
+                        if (index == pos + 1) {
+                            val i = pos + 1
+                            val firstVisibleItemPositions =
+                                staggeredGridLayoutManager?.findFirstVisibleItemPositions(null)
+                            val lastVisibleItemPositions =
+                                staggeredGridLayoutManager?.findLastVisibleItemPositions(null)
 
-                        if (firstVisibleItemPositions != null && lastVisibleItemPositions != null) {
-                            val firstVisibleItemPosition =
-                                firstVisibleItemPositions.minOrNull() ?: -1
-                            val lastVisibleItemPosition = lastVisibleItemPositions.maxOrNull() ?: -1
+                            if (firstVisibleItemPositions != null && lastVisibleItemPositions != null) {
+                                val firstVisibleItemPosition =
+                                    firstVisibleItemPositions.minOrNull() ?: -1
+                                val lastVisibleItemPosition = lastVisibleItemPositions.maxOrNull() ?: -1
 
-                            if (firstVisibleItemPosition != RecyclerView.NO_POSITION && lastVisibleItemPosition != RecyclerView.NO_POSITION) {
-                                if (i in firstVisibleItemPosition..lastVisibleItemPosition) {
-                                    recyclerView.setPaddingToInnerRV(
-                                        0,
-                                        recyclerView.dpToPx(0).toInt(),
-                                        0,
-                                        0
-                                    )
+                                if (firstVisibleItemPosition != RecyclerView.NO_POSITION && lastVisibleItemPosition != RecyclerView.NO_POSITION) {
+                                    if (i in firstVisibleItemPosition..lastVisibleItemPosition) {
+                                        recyclerView.setPaddingToInnerRV(
+                                            0,
+                                            recyclerView.dpToPx(0).toInt(),
+                                            0,
+                                            0
+                                        )
+                                    }
                                 }
                             }
                         }
                     }
+                    recyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 }
-                recyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
-            }
-        })
+            })
     }
 
     fun scrollToComponentWithID(componentID: String) {

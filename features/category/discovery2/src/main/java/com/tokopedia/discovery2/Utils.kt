@@ -33,6 +33,8 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalWarehouseModel
 import com.tokopedia.minicart.common.domain.data.*
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
+import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.user.session.UserSession
 import java.net.URLDecoder
 import java.net.URLEncoder
@@ -41,8 +43,6 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.regex.Pattern
 import kotlin.math.floor
-import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
-import com.tokopedia.searchbar.navigation_component.icons.IconList
 
 const val LABEL_PRODUCT_STATUS = "status"
 const val LABEL_PRICE = "price"
@@ -228,18 +228,30 @@ class Utils {
         fun addAddressQueryMap(userAddressData: LocalCacheModel?): MutableMap<String, String> {
             val addressQueryParameterMap = mutableMapOf<String, String>()
             userAddressData?.let {
-                if (it.address_id.isNotEmpty()) addressQueryParameterMap[Constant.ChooseAddressQueryParams.RPC_USER_ADDRESS_ID] =
-                    it.address_id
-                if (it.city_id.isNotEmpty()) addressQueryParameterMap[Constant.ChooseAddressQueryParams.RPC_USER_CITY_ID] =
-                    it.city_id
-                if (it.district_id.isNotEmpty()) addressQueryParameterMap[Constant.ChooseAddressQueryParams.RPC_USER_DISTRICT_ID] =
-                    it.district_id
-                if (it.lat.isNotEmpty()) addressQueryParameterMap[Constant.ChooseAddressQueryParams.RPC_USER_LAT] =
-                    it.lat
-                if (it.long.isNotEmpty()) addressQueryParameterMap[Constant.ChooseAddressQueryParams.RPC_USER_LONG] =
-                    it.long
-                if (it.postal_code.isNotEmpty()) addressQueryParameterMap[Constant.ChooseAddressQueryParams.RPC_USER_POST_CODE] =
-                    it.postal_code
+                if (it.address_id.isNotEmpty()) {
+                    addressQueryParameterMap[Constant.ChooseAddressQueryParams.RPC_USER_ADDRESS_ID] =
+                        it.address_id
+                }
+                if (it.city_id.isNotEmpty()) {
+                    addressQueryParameterMap[Constant.ChooseAddressQueryParams.RPC_USER_CITY_ID] =
+                        it.city_id
+                }
+                if (it.district_id.isNotEmpty()) {
+                    addressQueryParameterMap[Constant.ChooseAddressQueryParams.RPC_USER_DISTRICT_ID] =
+                        it.district_id
+                }
+                if (it.lat.isNotEmpty()) {
+                    addressQueryParameterMap[Constant.ChooseAddressQueryParams.RPC_USER_LAT] =
+                        it.lat
+                }
+                if (it.long.isNotEmpty()) {
+                    addressQueryParameterMap[Constant.ChooseAddressQueryParams.RPC_USER_LONG] =
+                        it.long
+                }
+                if (it.postal_code.isNotEmpty()) {
+                    addressQueryParameterMap[Constant.ChooseAddressQueryParams.RPC_USER_POST_CODE] =
+                        it.postal_code
+                }
             }
             return addressQueryParameterMap
         }
@@ -507,9 +519,9 @@ class Utils {
                 componentsItem.data?.firstOrNull()?.let { dataItem ->
                     if (dataItem.hasATC && !dataItem.parentProductId.isNullOrEmpty() && map.containsKey(
                             MiniCartItemKey(
-                                dataItem.parentProductId ?: "",
-                                type = MiniCartItemType.PARENT
-                            )
+                                    dataItem.parentProductId ?: "",
+                                    type = MiniCartItemType.PARENT
+                                )
                         )
                     ) {
                         map.getMiniCartItemParentProduct(
@@ -669,86 +681,85 @@ class Utils {
         }
 
         fun navIcons(
-            navIconBuilderFlag: IconBuilderFlag, onClick: () -> Unit,
+            navIconBuilderFlag: IconBuilderFlag,
+            onClick: () -> Unit,
             handleGlobalNavCartClick: () -> Unit,
             handleGlobalMenuCartClick: () -> Unit
         ): MutableMap<Int, IconBuilder> {
-
             val navIconMap = mutableMapOf<Int, IconBuilder>()
             navIconMap[1] = IconBuilder(navIconBuilderFlag).addIcon(
                 iconId = IconList.ID_SHARE,
                 disableRouteManager = true,
-                onClick = { onClick },
+                onClick = onClick,
                 disableDefaultGtmTracker = true
             ).addIcon(
                 iconId = IconList.ID_CART,
-                onClick = { handleGlobalNavCartClick },
+                onClick = handleGlobalNavCartClick,
                 disableDefaultGtmTracker = true
             )
 
             navIconMap[2] = IconBuilder(navIconBuilderFlag).addIcon(
                 iconId = IconList.ID_SHARE,
                 disableRouteManager = true,
-                onClick = { onClick },
+                onClick = onClick,
                 disableDefaultGtmTracker = true
             ).addIcon(
                 iconId = IconList.ID_NAV_GLOBAL,
-                onClick = { handleGlobalMenuCartClick },
+                onClick = handleGlobalMenuCartClick,
                 disableDefaultGtmTracker = true
             )
 
             navIconMap[3] = IconBuilder(navIconBuilderFlag).addIcon(
                 iconId = IconList.ID_SHARE,
                 disableRouteManager = true,
-                onClick = { onClick },
+                onClick = onClick,
                 disableDefaultGtmTracker = true
             ).addIcon(
                 iconId = IconList.ID_NAV_GLOBAL,
-                onClick = { handleGlobalMenuCartClick },
+                onClick = handleGlobalMenuCartClick,
                 disableDefaultGtmTracker = true
             ).addIcon(
                 iconId = IconList.ID_CART,
-                onClick = { handleGlobalNavCartClick },
+                onClick = handleGlobalNavCartClick,
                 disableDefaultGtmTracker = true
             )
 
             navIconMap[12] = IconBuilder(navIconBuilderFlag).addIcon(
                 iconId = IconList.ID_SHARE,
                 disableRouteManager = true,
-                onClick = { onClick },
+                onClick = onClick,
                 disableDefaultGtmTracker = true
             )
 
             navIconMap[13] = IconBuilder(navIconBuilderFlag).addIcon(
                 iconId = IconList.ID_SHARE,
                 disableRouteManager = true,
-                onClick = { onClick },
+                onClick = onClick,
                 disableDefaultGtmTracker = true
             ).addIcon(
                 iconId = IconList.ID_CART,
-                onClick = { handleGlobalNavCartClick },
+                onClick = handleGlobalNavCartClick,
                 disableDefaultGtmTracker = true
             )
 
             navIconMap[23] = IconBuilder(navIconBuilderFlag).addIcon(
                 iconId = IconList.ID_SHARE,
                 disableRouteManager = true,
-                onClick = { onClick },
+                onClick = onClick,
                 disableDefaultGtmTracker = true
             ).addIcon(
                 iconId = IconList.ID_NAV_GLOBAL,
-                onClick = { handleGlobalMenuCartClick },
+                onClick = handleGlobalMenuCartClick,
                 disableDefaultGtmTracker = true
             )
 
             navIconMap[123] = IconBuilder(navIconBuilderFlag).addIcon(
                 iconId = IconList.ID_SHARE,
                 disableRouteManager = true,
-                onClick = { onClick },
+                onClick = onClick,
                 disableDefaultGtmTracker = true
             )
             return navIconMap
         }
-
     }
 }
