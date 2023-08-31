@@ -104,6 +104,7 @@ class BmgmMiniCartDetailBottomSheet : BottomSheetUnify() {
 
     private fun openCartPage() {
         dismissLoadingButton()
+        dismiss()
         RouteManager.route(context, ApplinkConst.CART)
     }
 
