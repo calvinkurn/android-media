@@ -548,8 +548,9 @@ open class DiscoveryFragment :
                     if (hasColouredHeader) {
                         if (isLightThemeStatusBar != false) {
                             requestStatusBarDark()
-                            navToolbar.setShowShadowEnabled(true)
-                            navToolbar.showShadow(true)
+                  // Don't uncomment - It will show a black line between toolbar and choose address in dark mode
+                 //           navToolbar.setShowShadowEnabled(true)
+                 //           navToolbar.showShadow(true)
                         }
                     }
                 }
@@ -963,8 +964,10 @@ open class DiscoveryFragment :
             if (isLightThemeStatusBar == true) {
                 navToolbar.hideShadow()
             } else {
-                navToolbar.setShowShadowEnabled(true)
-                navToolbar.showShadow(true)
+        // Don't uncomment - It will show a black line between toolbar and choose address in dark mode
+       //         navToolbar.setShowShadowEnabled(true)
+      //          navToolbar.showShadow(true)
+                navToolbar.hideShadow()
             }
             appBarLayout.elevation = 0f
             setupHexBackgroundColor(data?.thematicHeader?.color ?: "")
