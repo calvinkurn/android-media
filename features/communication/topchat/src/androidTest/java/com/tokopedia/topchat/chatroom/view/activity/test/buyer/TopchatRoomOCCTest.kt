@@ -119,7 +119,7 @@ class TopchatRoomOCCTest : BaseBuyerTopchatRoomTest() {
 
         // Then
         productResult {
-            hasProductCarouselBuyButtonWithText(
+            hasProductCarouselBroadcastBuyButtonWithText(
                 context.getString(com.tokopedia.chat_common.R.string.action_buy),
                 0
             )
@@ -139,7 +139,7 @@ class TopchatRoomOCCTest : BaseBuyerTopchatRoomTest() {
 
         // Then
         productResult {
-            hasProductCarouselBuyButtonWithText(
+            hasProductCarouselBroadcastBuyButtonWithText(
                 context.getString(com.tokopedia.chat_common.R.string.action_buy),
                 0
             )
@@ -159,7 +159,7 @@ class TopchatRoomOCCTest : BaseBuyerTopchatRoomTest() {
 
         // Then
         productResult {
-            hasProductCarouselBuyButtonWithText(
+            hasProductCarouselBroadcastBuyButtonWithText(
                 context.getString(com.tokopedia.chat_common.R.string.action_buy),
                 0
             )
@@ -179,7 +179,7 @@ class TopchatRoomOCCTest : BaseBuyerTopchatRoomTest() {
 
         // Then
         productResult {
-            hasProductCarouselBuyButtonWithText(
+            hasProductCarouselBroadcastBuyButtonWithText(
                 context.getString(com.tokopedia.chat_common.R.string.action_buy),
                 0
             )

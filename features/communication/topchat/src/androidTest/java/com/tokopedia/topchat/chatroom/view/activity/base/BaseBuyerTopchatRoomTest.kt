@@ -58,7 +58,7 @@ open class BaseBuyerTopchatRoomTest : TopchatRoomTest() {
             WebSocketResponse::class.java
         )
         wsSellerProductResponse = AndroidFileUtil.parse(
-            "buyer/ws_seller_attach_product.json",
+            "ws/seller/ws_seller_attach_product.json",
             WebSocketResponse::class.java
         )
         wsInterlocutorResponseText = AndroidFileUtil.parse(

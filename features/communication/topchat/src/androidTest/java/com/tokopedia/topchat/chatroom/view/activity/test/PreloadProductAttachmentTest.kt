@@ -10,8 +10,6 @@ import com.tokopedia.topchat.chatroom.view.activity.robot.composeAreaRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.productPreviewResult
 import com.tokopedia.topchat.chatroom.view.activity.robot.productPreviewRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.srwResult
-import com.tokopedia.topchat.chatroom.view.activity.test.buyer.TopchatRoomBuyerProductAttachmentTest.Companion.exProductId
-import com.tokopedia.topchat.chatroom.view.activity.test.buyer.TopchatRoomBuyerProductAttachmentTest.Companion.putProductAttachmentIntent
 import org.hamcrest.CoreMatchers.not
 import org.junit.Test
 
@@ -42,7 +40,7 @@ class PreloadProductAttachmentTest : TopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
-            .generatePreAttachPayload(exProductId)
+            .generatePreAttachPayload(EX_PRODUCT_ID)
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
@@ -84,7 +82,7 @@ class PreloadProductAttachmentTest : TopchatRoomTest() {
 
         // When
         getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
-            .generatePreAttachPayload(exProductId)
+            .generatePreAttachPayload(EX_PRODUCT_ID)
         productPreviewRobot {
             clickRetryButtonAt(0)
         }
@@ -193,7 +191,7 @@ class PreloadProductAttachmentTest : TopchatRoomTest() {
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwUseCase.defaultResponse
         getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
-            .generatePreAttachPayload(exProductId)
+            .generatePreAttachPayload(EX_PRODUCT_ID)
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
@@ -257,7 +255,7 @@ class PreloadProductAttachmentTest : TopchatRoomTest() {
 
         // When
         getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
-            .generatePreAttachPayload(exProductId)
+            .generatePreAttachPayload(EX_PRODUCT_ID)
         productPreviewRobot {
             clickRetryButtonAt(0)
         }

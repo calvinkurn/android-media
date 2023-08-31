@@ -1,7 +1,9 @@
 package com.tokopedia.topchat.chatroom.view.activity.test.seller
 
 import android.view.Gravity
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.UpdateCampaignVariantResult
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
@@ -671,6 +673,95 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
             hasProductPrice(1, "")
             hasNoVisibleEmptyStockLabelAt(1)
             hasNoVisibleRemindMeBtnAt(1)
+        }
+    }
+
+    @Test
+    fun seller_can_sent_preview_single_product() {
+        // Given
+        getChatUseCase.response = firstPageChatAsSeller
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generatePreAttachPayload(EX_PRODUCT_ID)
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
+
+        // When
+        composeAreaRobot {
+            typeMessageComposeArea("Hi barang ini ready?")
+            clickSendBtn()
+        }
+
+        // Then
+        productResult {
+            assertProductPreviewAttachmentAtPosition(position = 1)
+            assertProductStockTypeAt(
+                position = 1,
+                withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)
+            )
+        }
+    }
+
+    @Test
+    fun seller_can_sent_preview_double_product() {
+        // Given
+        getChatUseCase.response = firstPageChatAsSeller
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generate2PreAttachPayload()
+        launchChatRoomActivity {
+            putProductAttachmentIntent(
+                it,
+                listOf("2495612915", "4533627959")
+            )
+        }
+
+        // When
+        composeAreaRobot {
+            typeMessageComposeArea("Hi barang ini ready?")
+            clickSendBtn()
+        }
+
+        // Then
+        productResult {
+            assertProductCarouselWithTotal(position = 1, total = 2)
+            assertStockCountBtnOnCarouselAt(
+                position = 0, withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE))
+            assertStockCountBtnOnCarouselAt(
+                position = 1, withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE))
+        }
+    }
+
+    @Test
+    fun seller_can_sent_preview_triple_product() {
+        // Given
+        getChatUseCase.response = firstPageChatAsSeller
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generate3PreAttachPayload()
+        launchChatRoomActivity {
+            putProductAttachmentIntent(
+                it,
+                listOf("2495612915", "4533627959", "1988283205")
+            )
+        }
+
+        // When
+        composeAreaRobot {
+            typeMessageComposeArea("Hi barang ini ready?")
+            clickSendBtn()
+        }
+
+        // Then
+        productResult {
+            assertProductCarouselWithTotal(position = 1, total = 3)
+            assertStockCountBtnOnCarouselAt(
+                position = 0, withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE))
+            assertStockCountBtnOnCarouselAt(
+                position = 1, withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE))
+            assertStockCountBtnOnCarouselAt(
+                position = 2, withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE))
         }
     }
 }

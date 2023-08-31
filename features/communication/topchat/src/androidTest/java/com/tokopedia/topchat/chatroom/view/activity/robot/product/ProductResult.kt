@@ -6,10 +6,16 @@ import androidx.annotation.StringRes
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
+import com.tokopedia.chat_common.data.ProductAttachmentUiModel
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.assertion.atPositionIsInstanceOf
+import com.tokopedia.topchat.assertion.withItemCount
 import com.tokopedia.topchat.chatroom.view.activity.robot.generalResult
+import com.tokopedia.topchat.chatroom.view.uimodel.TopchatProductAttachmentPreviewUiModel
 import com.tokopedia.topchat.matchers.withRecyclerView
+import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Matcher
 
@@ -33,10 +39,40 @@ object ProductResult {
 
     fun hasProductCarouselBuyButtonWithText(buttonText: String, position: Int) {
         onView(
+            withRecyclerView(R.id.rv_product)
+                .atPositionOnView(position, R.id.tv_buy)
+        )
+            .check(matches(withText(buttonText)))
+    }
+
+    fun hasProductCarouselBroadcastBuyButtonWithText(buttonText: String, position: Int) {
+        onView(
             withRecyclerView(R.id.rv_product_carousel)
                 .atPositionOnView(position, R.id.tv_buy)
         )
             .check(matches(withText(buttonText)))
+    }
+
+    fun assertProductAttachmentAtPosition(position: Int) {
+        onView(
+            withId(R.id.recycler_view_chatroom)
+        ).check(
+            atPositionIsInstanceOf(
+                position,
+                ProductAttachmentUiModel::class.java
+            )
+        )
+    }
+
+    fun assertProductPreviewAttachmentAtPosition(position: Int) {
+        onView(
+            withId(R.id.recycler_view_chatroom)
+        ).check(
+            atPositionIsInstanceOf(
+                position,
+                TopchatProductAttachmentPreviewUiModel::class.java
+            )
+        )
     }
 
     fun hasProductWishlistButtonWithText(buttonText: String, position: Int) {
@@ -221,6 +257,16 @@ object ProductResult {
         }
     }
 
+    fun assertStockCountBtnOnCarouselAt(
+        position: Int,
+        matcher: Matcher<View>
+    ) {
+        onView(
+            withRecyclerView(R.id.rv_product)
+                .atPositionOnView(position, R.id.btn_update_stock)
+        ).check(matches(matcher))
+    }
+
     fun assertStockCountOnCarouselAt(
         position: Int,
         matcher: Matcher<View>
@@ -239,6 +285,15 @@ object ProductResult {
             withRecyclerView(R.id.rv_product_carousel)
                 .atPositionOnView(position, R.id.tp_seller_stock_count)
         ).check(matches(matcher))
+    }
+
+    fun assertProductCarouselWithTotal(position: Int, total: Int) {
+        onView(
+            withRecyclerView(R.id.recycler_view_chatroom)
+                .atPositionOnView(position, R.id.rv_product)
+        ).check(
+            withItemCount(equalTo(total))
+        )
     }
 
     fun assertTokoCabangAt(

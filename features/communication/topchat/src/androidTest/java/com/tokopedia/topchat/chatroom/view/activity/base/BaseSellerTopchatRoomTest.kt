@@ -17,6 +17,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentR
 import com.tokopedia.topchat.chattemplate.domain.pojo.GetChatTemplate
 import com.tokopedia.topchat.chattemplate.domain.pojo.GetChatTemplateResponse
 import com.tokopedia.topchat.chattemplate.domain.pojo.TopchatChatTemplates
+import com.tokopedia.websocket.WebSocketResponse
 
 open class BaseSellerTopchatRoomTest : TopchatRoomTest() {
 
@@ -33,6 +34,7 @@ open class BaseSellerTopchatRoomTest : TopchatRoomTest() {
     protected var sellerProductAttachment = ChatAttachmentResponse()
     protected var sellerProductVariantAttachment = ChatAttachmentResponse()
     protected var sellerProductVariantAttachmentWithParentId = ChatAttachmentResponse()
+    protected var wsBuyerProductResponse: WebSocketResponse = WebSocketResponse()
 
     private val templateChats = arrayListOf(
         "I am seller",
@@ -52,6 +54,10 @@ open class BaseSellerTopchatRoomTest : TopchatRoomTest() {
                     templates = templateChats
                 )
             )
+        )
+        wsBuyerProductResponse = AndroidFileUtil.parse(
+            "ws/buyer/ws_buyer_attach_product.json",
+            WebSocketResponse::class.java
         )
     }
 

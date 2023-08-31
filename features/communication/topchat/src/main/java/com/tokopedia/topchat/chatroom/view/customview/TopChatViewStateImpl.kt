@@ -294,14 +294,6 @@ open class TopChatViewStateImpl constructor(
         return super.getAdapter() as TopChatRoomAdapter
     }
 
-    fun removeDummy(visitable: Visitable<*>) {
-        getAdapter().removeDummy(visitable)
-    }
-
-    fun addMessage(visitable: Visitable<*>) {
-        getAdapter().addNewMessage(visitable)
-    }
-
     fun onSuccessLoadFirstTime(
         viewModel: ChatroomViewModel,
         onToolbarClicked: () -> Unit,

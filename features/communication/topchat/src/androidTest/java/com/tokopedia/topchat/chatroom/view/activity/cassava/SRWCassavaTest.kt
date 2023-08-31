@@ -6,9 +6,8 @@ import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.topchat.chatroom.view.activity.base.BaseBuyerTopchatRoomTest
-import com.tokopedia.topchat.chatroom.view.activity.robot.srw.SrwRobot.dismissSrwOnboarding
+import com.tokopedia.topchat.chatroom.view.activity.robot.generalRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.srwRobot
-import com.tokopedia.topchat.chatroom.view.activity.test.buyer.TopchatRoomBuyerProductAttachmentTest.Companion.putProductAttachmentIntent
 import com.tokopedia.topchat.chatroom.view.custom.SrwFrameLayout
 import org.junit.Rule
 import org.junit.Test
@@ -46,6 +45,9 @@ class SRWCassavaTest : BaseBuyerTopchatRoomTest() {
         }
 
         // When
+        generalRobot {
+            hideKeyboard()
+        }
         srwRobot {
             clickSrwPreviewItemAt(0)
         }
@@ -66,6 +68,11 @@ class SRWCassavaTest : BaseBuyerTopchatRoomTest() {
             putProductAttachmentIntent(it)
         }
 
+        // When
+        generalRobot {
+            hideKeyboard()
+        }
+
         // Close
         finishChatRoomActivity()
     }
@@ -83,7 +90,12 @@ class SRWCassavaTest : BaseBuyerTopchatRoomTest() {
         }
 
         // When
-        dismissSrwOnboarding()
+        generalRobot {
+            hideKeyboard()
+        }
+        srwRobot {
+            dismissSrwOnboarding()
+        }
 
         // Close
         finishChatRoomActivity()

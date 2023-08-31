@@ -47,4 +47,8 @@ object GeneralRobot {
     fun pressBack() {
         Espresso.pressBack()
     }
+
+    fun hideKeyboard() {
+        Espresso.closeSoftKeyboard()
+    }
 }

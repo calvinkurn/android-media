@@ -40,7 +40,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.attachcommon.data.VoucherPreview
-import com.tokopedia.chat_common.BaseChatFragment
 import com.tokopedia.chat_common.BaseChatToolbarActivity
 import com.tokopedia.chat_common.data.AttachInvoiceSentUiModel
 import com.tokopedia.chat_common.data.AttachmentType
@@ -62,6 +61,7 @@ import com.tokopedia.chat_common.domain.pojo.attachmentmenu.ProductMenu
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.VoucherMenu
 import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
 import com.tokopedia.chat_common.util.IdentifierUtil
+import com.tokopedia.chat_common.view.fragment.BaseChatFragment
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderUiModel
@@ -161,6 +161,7 @@ import com.tokopedia.topchat.chatroom.view.listener.TopChatVoucherListener
 import com.tokopedia.topchat.chatroom.view.onboarding.ReplyBubbleOnBoarding
 import com.tokopedia.topchat.chatroom.view.uimodel.BroadcastSpamHandlerUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.InvoicePreviewUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.ProductCarouselUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.ReminderTickerUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.ReviewUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.SendablePreview
@@ -476,6 +477,12 @@ open class TopChatRoomFragment :
         if (!adapter.hasPreviewOnList(previewMsg.localId)) {
             adapter.addHeaderDateIfDifferent(previewMsg)
             adapter.addNewMessage(previewMsg)
+
+            if (previewMsg is ProductAttachmentUiModel) {
+                // Handle product attachment
+                mapToAttachmentCarouselIfEligible(previewMsg as Visitable<*>)
+            }
+
             topchatViewState?.scrollToBottom()
         }
     }
@@ -1049,9 +1056,14 @@ open class TopChatRoomFragment :
         if (chatBubble != null && hasPreviewOnList) {
             adapter.updatePreviewUiModel(visitable, chatBubble.localId)
         } else {
-            viewState?.removeDummyIfExist(visitable)
             viewState?.onReceiveMessageEvent(visitable)
         }
+
+        // Handle multiple product
+        if (visitable is ProductAttachmentUiModel) {
+            mapToAttachmentCarouselIfEligible(visitable)
+        }
+
         topchatViewState?.scrollDownWhenInBottom()
         isMoveItemInboxToTop = true
 
@@ -1061,6 +1073,53 @@ open class TopChatRoomFragment :
         }
 
         renderTickerReminder(chatBubble)
+    }
+
+    private fun shouldChangeToCarouselProductAttachment(
+        lastVisitable: Visitable<*>,
+        visitable: Visitable<*>
+    ): Boolean {
+        return (
+            visitable is ProductAttachmentUiModel &&
+                lastVisitable is ProductAttachmentUiModel &&
+                lastVisitable.from == visitable.from
+            )
+    }
+
+    private fun shouldAddToCarouselProductAttachment(
+        lastVisitable: Visitable<*>,
+        visitable: Visitable<*>
+    ): Boolean {
+        return (
+            visitable is ProductAttachmentUiModel &&
+                lastVisitable is ProductCarouselUiModel &&
+                lastVisitable.from == visitable.from
+            )
+    }
+
+    private fun mapToAttachmentCarouselIfEligible(visitable: Visitable<*>) {
+        val index = adapter.data.indexOf(visitable)
+        val lastVisitable = adapter.data.getOrNull(index + Int.ONE) ?: return
+        // Create new carousel if needed
+        if (shouldChangeToCarouselProductAttachment(lastVisitable, visitable)) {
+            ProductCarouselUiModel.mapToCarousel(
+                listOf(
+                    lastVisitable,
+                    visitable
+                )
+            )?.let { carousel ->
+                adapter.removeElement(lastVisitable) // Remove last product
+                adapter.removeElement(visitable) // Remove current product
+                adapter.addElement(index, carousel) // Add the new carousel
+            }
+            // Update existing carousel if needed
+        } else if (shouldAddToCarouselProductAttachment(lastVisitable, visitable)) {
+            (lastVisitable as ProductCarouselUiModel).apply {
+                this.products = this.products.toMutableList() + visitable
+                adapter.notifyItemChanged(index + Int.ONE) // Update product in carousel
+                adapter.removeElement(visitable) // Remove current product
+            }
+        }
     }
 
     private fun renderTickerReminder(chatBubble: BaseChatUiModel?) {
@@ -1199,12 +1258,6 @@ open class TopChatRoomFragment :
         return TopChatRoomAdapter(context, typeFactory).also {
             adapter = it
         }
-    }
-
-    override fun addDummyMessage(visitable: Visitable<*>) {}
-
-    override fun removeDummy(visitable: Visitable<*>) {
-        topchatViewState?.removeDummy(visitable)
     }
 
     override fun onErrorUploadImage(errorMessage: String, it: ImageUploadUiModel) {
