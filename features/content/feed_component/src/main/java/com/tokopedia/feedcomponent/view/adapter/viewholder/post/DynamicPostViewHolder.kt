@@ -69,7 +69,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.item_dynamic_post.view.*
 import kotlinx.android.synthetic.main.item_posttag.view.*
 import java.net.URLEncoder
-import com.tokopedia.content.common.R as contentCommonR
+import com.tokopedia.content.common.R as contentcommonR
 
 /**
  * @author by milhamj on 28/11/18.
@@ -233,17 +233,17 @@ open class DynamicPostViewHolder(
                 itemView.authorBadge.show()
                 itemView.authorBadge.loadImage(header.avatarBadgeImage)
                 itemView.authorTitle.setMargin(
-                    itemView.getDimens(contentCommonR.dimen.content_common_dp_4),
+                    itemView.getDimens(contentcommonR.dimen.content_common_dp_4),
                     0,
-                    itemView.getDimens(contentCommonR.dimen.content_common_space_8),
+                    itemView.getDimens(contentcommonR.dimen.content_common_space_8),
                     0
                 )
             } else {
                 itemView.authorBadge.hide()
                 itemView.authorTitle.setMargin(
-                    itemView.getDimens(contentCommonR.dimen.content_common_space_8),
+                    itemView.getDimens(contentcommonR.dimen.content_common_space_8),
                     0,
-                    itemView.getDimens(contentCommonR.dimen.content_common_space_8),
+                    itemView.getDimens(contentcommonR.dimen.content_common_space_8),
                     0
                 )
             }
@@ -267,7 +267,7 @@ open class DynamicPostViewHolder(
                     if (header.cardSummary.isNotEmpty()) {
                         SpannableString(
                             String.format(
-                                getString(contentCommonR.string.feed_header_time_format),
+                                getString(contentcommonR.string.feed_header_time_format),
                                 header.avatarDate,
                                 header.cardSummary
                             )
@@ -364,7 +364,7 @@ open class DynamicPostViewHolder(
     private fun animateFooter() {
         Handler().postDelayed({
             itemView.footerBackground.animation =
-                AnimationUtils.loadAnimation(itemView.context, contentCommonR.anim.anim_fade_in)
+                AnimationUtils.loadAnimation(itemView.context, contentcommonR.anim.anim_fade_in)
             itemView.footerBackground.visibility = View.VISIBLE
         }, ANIMATION_DURATION)
     }
@@ -610,7 +610,7 @@ open class DynamicPostViewHolder(
                     if (like.fmt.isNotEmpty() && !like.fmt.equals("0")) {
                         like.fmt
                     } else {
-                        getString(contentCommonR.string.kol_action_like)
+                        getString(contentcommonR.string.kol_action_like)
                     }
                 itemView.likeText.text = text
                 itemView.likeText.setTextColor(
@@ -651,7 +651,7 @@ open class DynamicPostViewHolder(
                 if (comment.fmt.isNotEmpty()) {
                     comment.fmt
                 } else {
-                    getString(contentCommonR.string.kol_action_comment)
+                    getString(contentcommonR.string.kol_action_comment)
                 }
             } else {
                 if (comment.fmt.isNotEmpty()) comment.fmt else comment.value.toString()
