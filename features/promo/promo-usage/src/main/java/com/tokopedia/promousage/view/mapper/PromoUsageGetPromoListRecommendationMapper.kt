@@ -1,6 +1,7 @@
 package com.tokopedia.promousage.view.mapper
 
 import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.network.constant.TkpdBaseURL.Promo
 import com.tokopedia.promousage.data.response.BenefitDetail
 import com.tokopedia.promousage.data.response.Coupon
 import com.tokopedia.promousage.data.response.CouponCardDetail
@@ -123,15 +124,17 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
                         val totalPromoInSectionCount = coupons.size
                         if (totalPromoInSectionCount > 1) {
                             val isExpanded = !couponSection.isCollapsed
-                            val hiddenPromoCount = totalPromoInSectionCount - 1
-                            items.add(
-                                PromoAccordionViewAllItem(
-                                    headerId = couponSection.id,
-                                    hiddenPromoCount = hiddenPromoCount,
-                                    isExpanded = isExpanded,
-                                    isVisible = isExpanded
+                            if (isExpanded) {
+                                val hiddenPromoCount = totalPromoInSectionCount - 1
+                                items.add(
+                                    PromoAccordionViewAllItem(
+                                        headerId = couponSection.id,
+                                        hiddenPromoCount = hiddenPromoCount,
+                                        isExpanded = true,
+                                        isVisible = true
+                                    )
                                 )
-                            )
+                            }
                         }
                     }
                 }
@@ -220,10 +223,23 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
         }
 
         val benefitDetail = coupon.benefitDetails.firstOrNull() ?: BenefitDetail()
-        val isExpandedOrVisible = if (couponSection.id == PromoPageSection.SECTION_RECOMMENDATION) {
-            true
-        } else {
-            !couponSection.isCollapsed && index.isZero()
+        val isExpanded = when(couponSection.id) {
+            PromoPageSection.SECTION_RECOMMENDATION -> {
+                true
+            }
+
+            else -> {
+                !couponSection.isCollapsed && index.isZero()
+            }
+        }
+        val isVisible = when (couponSection.id) {
+            PromoPageSection.SECTION_RECOMMENDATION -> {
+                true
+            }
+
+            else -> {
+                isExpanded && index.isZero()
+            }
         }
         return PromoItem(
             id = coupon.id,
@@ -285,8 +301,8 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
             isBebasOngkir = coupon.isBebasOngkir || secondaryCoupon.isBebasOngkir,
             isHighlighted = coupon.isHighlighted || secondaryCoupon.isHighlighted,
             isLastRecommended = isRecommended && index == couponSection.coupons.size - 1,
-            isExpanded = isExpandedOrVisible,
-            isVisible = isExpandedOrVisible,
+            isExpanded = isExpanded,
+            isVisible = isVisible,
         )
     }
 
