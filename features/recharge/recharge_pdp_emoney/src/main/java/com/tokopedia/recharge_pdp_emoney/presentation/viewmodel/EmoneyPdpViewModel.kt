@@ -14,7 +14,6 @@ import com.tokopedia.common.topupbills.usecase.RechargeCatalogProductInputUseCas
 import com.tokopedia.common.topupbills.utils.generateRechargeCheckoutToken
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.usecase.GetDppoConsentUseCase
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.recharge_pdp_emoney.presentation.model.EmoneyDppoConsentModel
 import com.tokopedia.recharge_pdp_emoney.utils.EmoneyPdpMapper.mapDppoConsentToEmoneyModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -151,8 +150,14 @@ class EmoneyPdpViewModel @Inject constructor(
         return digitalCheckoutPassData
     }
 
+    fun selectedOperatorIsBCA(): Boolean {
+        return selectedOperator.value?.operator?.attributes?.name?.contains(BCA_OPERATOR_NAME) ?: false
+    }
+
     companion object {
         const val ERROR_GRPC_TIMEOUT = "grpc timeout"
         const val EMONEY_CATEGORY_ID = 34
+
+        const val BCA_OPERATOR_NAME = "BCA"
     }
 }
