@@ -8,8 +8,8 @@ data class StoriesUiState(
     companion object {
         val Empty
             get() = StoriesUiState(
-                storiesDetail = StoriesDetailUiModel.Empty,
-                storiesGroup = emptyList(),
+                storiesDetail = StoriesDetailUiModel(),
+                storiesGroup = StoriesGroupUiModel(),
                 bottomSheetStatus = BottomSheetStatusDefault
             )
     }

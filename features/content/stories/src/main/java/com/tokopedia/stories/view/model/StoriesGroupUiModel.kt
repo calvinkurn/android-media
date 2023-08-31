@@ -1,5 +1,11 @@
 package com.tokopedia.stories.view.model
 
+import com.tokopedia.content.common.R
+import com.tokopedia.content.common.report_content.model.ContentMenuIdentifier
+import com.tokopedia.content.common.report_content.model.ContentMenuItem
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.stories.uimodel.StoryAuthor
+
 data class StoriesGroupUiModel(
     val selectedGroupId: String = "",
     val selectedGroupPosition: Int = -1,
@@ -32,10 +38,30 @@ data class StoriesDetailItemUiModel(
     val imageContent: String = "",
     val resetValue: Int = -1,
     val isSameContent: Boolean = false,
+    val author: StoryAuthor = StoryAuthor.Unknown,
+    val menus: List<ContentMenuItem> = defaultMenu,
 ) {
 
     enum class StoriesDetailItemUiEvent {
         PAUSE, RESUME,
     }
 
+}
+
+//TODO() please remove
+val defaultMenu = buildList<ContentMenuItem> {
+    add(
+        ContentMenuItem(
+            iconUnify = IconUnify.WARNING,
+            name = R.string.content_common_menu_report,
+            type = ContentMenuIdentifier.Report
+        )
+    )
+    add(
+        ContentMenuItem(
+            iconUnify = IconUnify.DELETE,
+            name = com.tokopedia.stories.R.string.stories_delete_story_title,
+            type = ContentMenuIdentifier.Delete,
+        )
+    )
 }

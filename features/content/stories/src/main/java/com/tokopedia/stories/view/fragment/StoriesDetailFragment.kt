@@ -114,7 +114,7 @@ class StoriesDetailFragment @Inject constructor(
             viewModel.uiEvent.collectLatest { event ->
                 when (event) {
                     StoriesUiEvent.OpenKebab -> {
-                        if (groupId != viewModel.groupId) return@collectLatest
+                        if (groupId != viewModel.mGroupId) return@collectLatest
                         StoriesThreeDotsBottomSheet
                             .getOrCreateFragment(
                                 childFragmentManager,
@@ -199,11 +199,12 @@ class StoriesDetailFragment @Inject constructor(
     }
 
     private fun renderAuthor(state: StoriesDetailUiModel) = with(binding.vStoriesPartner) {
-        tvPartnerName.text = state.author.name
-        ivIcon.setImageUrl(state.author.thumbnailUrl)
-        btnFollow.gone()
-        if (state.author is StoryAuthor.Shop)
-            ivBadge.setImageUrl(state.author.badgeUrl)
+        //TODO()
+//        tvPartnerName.text = state.author.name
+//        ivIcon.setImageUrl(state.author.thumbnailUrl)
+//        btnFollow.gone()
+//        if (state.author is StoryAuthor.Shop)
+//            ivBadge.setImageUrl(state.author.badgeUrl)
     }
 
 
