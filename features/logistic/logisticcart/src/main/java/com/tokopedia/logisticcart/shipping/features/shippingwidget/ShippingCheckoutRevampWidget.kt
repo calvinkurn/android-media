@@ -35,6 +35,7 @@ import com.tokopedia.logisticcart.shipping.model.ShippingWidgetUiModel
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil
@@ -212,6 +213,7 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
     fun renderFreeShippingCourier(shippingWidgetUiModel: ShippingWidgetUiModel) {
         hideShipperName(shippingWidgetUiModel.hideShipperName)
         renderFreeShippingTitle(shippingWidgetUiModel)
+        renderFreeShippingCod(shippingWidgetUiModel)
         renderFreeShippingEta(shippingWidgetUiModel)
         showInsuranceInfo(shippingWidgetUiModel)
         renderFreeShippingLogo(shippingWidgetUiModel.freeShippingLogo)
@@ -335,7 +337,7 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
                     false
                 ).removeDecimalSuffix()
                 })"
-                val htmlLinkHelper = HtmlLinkHelper(labelSelectedFreeShipping.context, titleText)
+                val htmlLinkHelper = HtmlLinkHelper(labelSelectedWhitelabelShipping.context, titleText)
                 labelSelectedWhitelabelShipping.text = htmlLinkHelper.spannedString
                 labelSelectedWhitelabelShipping.setWeight(Typography.BOLD)
             }
@@ -777,7 +779,15 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
     }
 
     private fun showLabelCodOnNormalShipping(codProductData: CashOnDeliveryProduct?) {
-        binding?.lblCodAvailable?.apply {
+        binding?.lblCodAvailable?.showCodLabel(codProductData)
+    }
+
+    private fun renderFreeShippingCod(shippingWidgetUiModel: ShippingWidgetUiModel) {
+        binding?.lblCodFreeShipping?.showCodLabel(shippingWidgetUiModel.cashOnDelivery)
+    }
+
+    private fun Label?.showCodLabel(codProductData: CashOnDeliveryProduct?) {
+        this?.apply {
             if (codProductData != null && codProductData.isCodAvailable == 1) {
                 visible()
                 text = codProductData.codText
