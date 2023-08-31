@@ -32,7 +32,7 @@ class StoriesGroupPagerAdapter(
             classLoader = fragmentActivity.classLoader,
         ).apply { 
             arguments = Bundle().apply {
-                putString(STORY_GROUP_ID, groupData.groupItems[position].groupId)
+                putString(STORY_GROUP_ID, groupData.groupItems.getOrNull(position)?.groupId)
             }
         }
     }

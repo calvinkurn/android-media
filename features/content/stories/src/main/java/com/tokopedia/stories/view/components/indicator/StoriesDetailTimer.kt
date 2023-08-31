@@ -74,13 +74,14 @@ private fun StoriesDetailTimerContent(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .padding(horizontal = 8.dp)
-            .background(Color.Transparent),
+            .background(Color.Transparent)
+            .height(4.dp),
     ) {
         for (index in 0 until count) {
             Row(
                 modifier = Modifier
                     .height(4.dp)
-                    .clip(RoundedCornerShape(50))
+                    .clip(RoundedCornerShape(60))
                     .weight(1f)
                     .background(Color.White.copy(alpha = 0.4f))
             ) {
