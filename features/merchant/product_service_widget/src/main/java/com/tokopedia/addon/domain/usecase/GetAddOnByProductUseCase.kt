@@ -8,7 +8,9 @@ import com.tokopedia.addon.domain.model.GetAddOnByProductResponse
 import com.tokopedia.addon.domain.model.Source
 import com.tokopedia.addon.domain.model.TypeFilters
 import com.tokopedia.addon.presentation.uimodel.AddOnParam
+import com.tokopedia.common.ProductServiceWidgetConstant.ADDON_PAGE_SOURCE_PDP
 import com.tokopedia.common.ProductServiceWidgetConstant.SQUAD_VALUE_ADDON
+import com.tokopedia.common.ProductServiceWidgetConstant.SQUAD_VALUE_ADDON_PDP
 import com.tokopedia.common.ProductServiceWidgetConstant.USECASE_ADDON_VALUE
 import com.tokopedia.gifting.presentation.uimodel.AddOnType
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
@@ -127,7 +129,9 @@ class GetAddOnByProductUseCase @Inject constructor(
                         ),
                     )
                 ),
-                source = Source(usecase = USECASE_ADDON_VALUE, squad = SQUAD_VALUE_ADDON)
+                source = Source(usecase = USECASE_ADDON_VALUE, squad =
+                    if (param.pageSource.isEmpty() || param.pageSource == ADDON_PAGE_SOURCE_PDP) SQUAD_VALUE_ADDON_PDP
+                    else SQUAD_VALUE_ADDON)
             )
         )
         setRequestParams(requestParams.parameters)
