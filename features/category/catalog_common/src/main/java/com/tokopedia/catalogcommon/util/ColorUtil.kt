@@ -10,9 +10,9 @@ fun Int?.orDefaultColor(context: Context,default: Int = com.tokopedia.unifyprinc
 }
 
 fun String.stringHexColorParseToInt(alphaPercentage:Int = 100): Int {
-    val colorValue = Color.parseColor(this)
-    val alphaValue: Int = (alphaPercentage * 255) / 100
     return try {
+        val colorValue = Color.parseColor(this)
+        val alphaValue: Int = (alphaPercentage * 255) / 100
         Color.argb(alphaValue, Color.red(colorValue), Color.green(colorValue), Color.blue(colorValue))
     }catch (e:Exception){
         Color.RED

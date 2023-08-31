@@ -15,11 +15,17 @@ data class CatalogResponseData(
         @SerializedName("basicInfo")
         val basicInfo: BasicInfo,
         @Expose
+        @SerializedName("globalStyle")
+        val globalStyle: GlobalStyle?,
+        @Expose
         @SerializedName("comparisonInfo")
         val comparisonInfoComponentData: ComponentData?,
         @Expose
         @SerializedName("components")
-        val components: List<BasicInfo.Component>?
+        val components: List<BasicInfo.Component>?,
+        @Expose
+        @SerializedName("layout")
+        val layouts: List<BasicInfo.Layout>?
     ) {
         data class BasicInfo(
             @Expose
@@ -118,7 +124,32 @@ data class CatalogResponseData(
                 @SerializedName("data")
                 val data: List<ComponentData>?
             )
+
+            data class Layout(
+                @Expose
+                @SerializedName("name")
+                val name: String = "",
+                @Expose
+                @SerializedName("type")
+                val type: String = "",
+                @Expose
+                @SerializedName("data")
+                val data: LayoutData?
+            )
         }
+
+        data class GlobalStyle (
+            @SerializedName("darkMode")
+            val darkMode: Boolean = false,
+            @SerializedName("presetKey")
+            val presetKey: String = "",
+            @SerializedName("bgColor")
+            val bgColor: String = "",
+            @SerializedName("primaryColor")
+            val primaryColor: String = "",
+            @SerializedName("secondaryColor")
+            val secondaryColor: String = ""
+        )
     }
 }
 

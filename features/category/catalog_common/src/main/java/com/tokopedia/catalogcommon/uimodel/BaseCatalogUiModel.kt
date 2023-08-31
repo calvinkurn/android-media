@@ -4,10 +4,10 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.catalogcommon.adapter.CatalogAdapterFactory
 
 abstract class BaseCatalogUiModel(
-    open val idWidget: String,
-    open val widgetType: String,
-    open val widgetName: String,
-    open val widgetBackgroundColor: Int? = null,
-    open val widgetTextColor: Int? = null,
-    open val darkMode: Boolean = false
+    open var idWidget: String = "",
+    open var widgetType: String = "",
+    open var widgetName: String = "",
+    open var widgetBackgroundColor: Int? = null,
+    open var widgetTextColor: Int? = null,
+    open var darkMode: Boolean = false
 ) : Visitable<CatalogAdapterFactory>

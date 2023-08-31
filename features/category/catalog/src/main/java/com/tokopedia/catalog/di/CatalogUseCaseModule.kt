@@ -3,6 +3,7 @@ package com.tokopedia.catalog.di
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.basemvvm.repository.BaseRepository
+import com.tokopedia.catalog.ui.mapper.CatalogDetailUiMapper
 import com.tokopedia.oldcatalog.repository.CatalogAllReviewRepository
 import com.tokopedia.oldcatalog.repository.CatalogComparisonProductRepository
 import com.tokopedia.oldcatalog.repository.catalogdetail.CatalogDetailRepository
@@ -62,8 +63,11 @@ class CatalogUseCaseModule {
 
     @CatalogScope
     @Provides
-    fun getProductCatalogOneUseCase(catalogDetailRepository: CatalogDetailRepository): CatalogDetailUseCase {
-        return CatalogDetailUseCase(catalogDetailRepository)
+    fun getProductCatalogOneUseCase(
+        catalogDetailRepository: CatalogDetailRepository,
+        context: Context
+    ): CatalogDetailUseCase {
+        return CatalogDetailUseCase(catalogDetailRepository, CatalogDetailUiMapper(context))
     }
 
     @CatalogScope

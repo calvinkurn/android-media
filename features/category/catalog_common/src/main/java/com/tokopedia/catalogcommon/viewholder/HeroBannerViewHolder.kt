@@ -32,6 +32,7 @@ class HeroBannerViewHolder(
     private val binding by viewBinding<WidgetItemBannerHeroBinding>()
     private var isAutosliding = true
     private var brandImageCount = 0
+    private var brandDescriptions: List<String> = emptyList()
 
     init {
         binding?.carouselBanner?.setupCarouselBanner()
@@ -48,6 +49,8 @@ class HeroBannerViewHolder(
                     binding?.bannerIndicator?.setBannerIndicators(brandImageCount, current)
                     isAutosliding = true
                     binding?.bannerIndicator?.continueAnimation()
+                    binding?.tfSubtitleBannerPremium?.text =
+                        brandDescriptions.getOrNull(current).orEmpty()
                 }
             }
         }
@@ -65,6 +68,8 @@ class HeroBannerViewHolder(
                 if (isAutosliding) {
                     val imgPosition = position % brandImageCount
                     binding?.carouselBanner?.activeIndex = imgPosition
+                    binding?.tfSubtitleBannerPremium?.text =
+                        brandDescriptions.getOrNull(imgPosition).orEmpty()
                 }
             }
             override fun getCurrentPosition(position: Int) {
@@ -92,10 +97,10 @@ class HeroBannerViewHolder(
         val cardColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
         val colorBg = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_Black)
         tfTitleBannerPremium.text = element.brandTitle
-        tfSubtitleBannerPremium.text = element.brandDesc
         iuBrandPremium.loadImage(element.brandIconUrl)
         iuBrandPremiumCard.background = createGradientDrawable(cardColor, cardColor, CIRCULAR_CARD_RADIUS)
         bgGradient.background = createGradientDrawable(colorBottom = colorBg)
+        brandDescriptions = element.brandDescriptions
     }
 
     private fun WidgetItemBannerHeroBinding.renderRegularBrandData(element: HeroBannerUiModel) {
