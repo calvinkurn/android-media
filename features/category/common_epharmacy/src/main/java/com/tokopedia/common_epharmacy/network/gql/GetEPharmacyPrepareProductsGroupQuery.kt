@@ -7,9 +7,10 @@ object GetEPharmacyPrepareProductsGroupQuery : GqlQueryInterface {
 
     override fun getOperationNameList() = listOf(OPERATION_NAME)
 
+    /*
     override fun getQuery() = """
             mutation $OPERATION_NAME(${'$'}source: String!) {
-              prepareProductsGroup(source: ${'$'}source) 
+              prepareProductsGroup(source: ${'$'}source)
               {
                 header {
                   process_time
@@ -126,8 +127,8 @@ object GetEPharmacyPrepareProductsGroupQuery : GqlQueryInterface {
               }
             }
     """.trimIndent()
+    */
 
-    /*
     override fun getQuery() = """
             mutation $OPERATION_NAME() {
               prepareProductsGroup()
@@ -157,15 +158,12 @@ object GetEPharmacyPrepareProductsGroupQuery : GqlQueryInterface {
                       enabler_name
                       enabler_logo_url
                       pwa_link
-                      price
                       operating_schedule {
                         daily {
                           open_time
                           close_time
                         }
                         close_days
-                        duration
-                        is_closing_hour
                       }
                       status
                     }
@@ -215,30 +213,19 @@ object GetEPharmacyPrepareProductsGroupQuery : GqlQueryInterface {
                         product_image
                         item_weight
                         product_total_weight_fmt
-                        qty_comparison {
-                          initial_qty
-                          recommended_qty
-                        }
                       }
                     }
-                    pap_primary_cta {
+                    prescription_cta {
+                      logo_url
                       title
-                      redirect_link_apps
-                      redirect_link_web
-                      state
-                      pap_secondary_cta {
-                        title
-                        redirect_link_apps
-                        redirect_link_web
-                        state
-                      }
+                      subtitle
+                      action_type
                     }
                   }
                 }
               }
             }
     """.trimIndent()
-    */
 
     override fun getTopOperationName() = OPERATION_NAME
 }
