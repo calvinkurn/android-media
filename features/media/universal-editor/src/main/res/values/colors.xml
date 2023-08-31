@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <color name="dms_universal_editor_nn_0">#FFFFFF</color>
+    <color name="dms_universal_editor_nn_900">#2E3137</color>
+    <color name="dms_universal_editor_yn_500">#FF7F17</color>
+    <color name="dms_universal_editor_rn_500">#F94D63</color>
+    <color name="dms_universal_editor_pn_500">#9342ED</color>
+    <color name="dms_universal_editor_bn_500">#0094CF</color>
+    <color name="dms_universal_editor_tn_500">#009F92</color>
+    <color name="dms_universal_editor_gn_500">#00AA5B</color>
 </resources>
