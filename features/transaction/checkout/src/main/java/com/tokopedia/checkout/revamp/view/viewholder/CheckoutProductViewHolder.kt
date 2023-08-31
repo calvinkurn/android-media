@@ -32,7 +32,6 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
@@ -223,7 +222,6 @@ class CheckoutProductViewHolder(
     }
 
     private fun renderBMGMItem(product: CheckoutProductModel) {
-
         fun renderProductNameBmgm() {
             with(bmgmBinding) {
                 tvProductNameBmgm.text = product.name
@@ -288,7 +286,7 @@ class CheckoutProductViewHolder(
                 }
             }
         }
-        
+
         hideProductViews()
         hideBundleViews()
         renderGroupInfo(product)
@@ -301,6 +299,7 @@ class CheckoutProductViewHolder(
         renderVariantBmgm()
         renderSellerNotesBmgm()
         renderAdjustableSeparatorMarginBmgm()
+
         renderAddOnBMGM(product)
         renderAddOnGiftingProductLevel(product)
     }
@@ -615,6 +614,7 @@ class CheckoutProductViewHolder(
                     tvProductAddOnsSectionTitleBmgm.text = addOnProduct.title
                     tvProductAddOnsSeeAllBmgm.apply {
                         visible()
+                        text = addOnProduct.bottomsheet.title
                         setOnClickListener {
                             listener.onClickSeeAllAddOnProductService(product)
                         }
