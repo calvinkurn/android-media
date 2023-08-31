@@ -4,7 +4,7 @@ import android.os.Bundle
 import com.tokopedia.analytics.performance.perf.BlocksLoadableComponent
 import com.tokopedia.analytics.performance.perf.LoadableComponent
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFactory
 import com.tokopedia.kotlin.model.ImpressHolder
@@ -16,10 +16,14 @@ data class HomeHeaderDataModel(
     HomeVisitable,
     LoadableComponent by BlocksLoadableComponent(
         {
-            if (headerDataModel?.isUserLogin == true) {
-                headerDataModel.homeBalanceModel.status != HomeBalanceModel.STATUS_LOADING
-            } else {
+            if (headerDataModel?.isUserLogin == false) {
                 true
+            } else if (headerDataModel?.isUserLogin == true && headerDataModel.homeBalanceModel.balanceDrawerItemModels.isNotEmpty()) {
+                headerDataModel.homeBalanceModel.balanceDrawerItemModels.all {
+                    it.state != BalanceDrawerItemModel.STATE_LOADING
+                }
+            } else {
+                false
             }
         },
         "HomeHeaderDataModel"
