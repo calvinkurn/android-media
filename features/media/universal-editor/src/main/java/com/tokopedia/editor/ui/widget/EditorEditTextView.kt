@@ -23,6 +23,7 @@ import com.tokopedia.editor.R
 import com.tokopedia.editor.ui.model.InputTextModel
 import com.tokopedia.editor.util.FontAlignment
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.getTypeface as unifyTypeFaceGetter
 
 class EditorEditTextView @JvmOverloads constructor(
@@ -31,12 +32,14 @@ class EditorEditTextView @JvmOverloads constructor(
 ) : AppCompatEditText(context, attributeSet) {
 
     init {
-        id = View.generateViewId()
-
         setTextSize(TypedValue.COMPLEX_UNIT_SP, 24f)
         setBackgroundResource(R.drawable.bg_text_rounded)
 
-        setPadding(4)
+        setPadding(10.toPx())
+    }
+
+    fun setViewId() {
+        id = View.generateViewId()
     }
 
     fun styleInsets(model: InputTextModel) {
@@ -72,7 +75,7 @@ class EditorEditTextView @JvmOverloads constructor(
         }
 
         val (textColor, backgroundColor) = model.backgroundColor ?: return
-        setTextColor(textColor)
-        background.setColorFilter(backgroundColor, PorterDuff.Mode.DST_ATOP)
+        setTextColor(backgroundColor)
+        background.setColorFilter(textColor, PorterDuff.Mode.DST_ATOP)
     }
 }

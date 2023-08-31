@@ -42,6 +42,7 @@ class DynamicTextCanvasView @JvmOverloads constructor(
 
     fun addText(model: InputTextModel) {
         val textView = EditorEditTextView(context)
+        textView.setViewId()
         textView.styleInsets(model)
         textView.setAsTextView()
 

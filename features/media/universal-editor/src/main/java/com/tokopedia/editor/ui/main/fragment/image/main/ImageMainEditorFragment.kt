@@ -58,7 +58,7 @@ class ImageMainEditorFragment @Inject constructor(
 
         binding?.canvas?.setListener(this)
 
-        if (state.typographyId.isLessThanZero()) {
+        if (state.typographyId != -1) {
             binding?.canvas?.editText(state)
         } else {
             binding?.canvas?.addText(state.model)
