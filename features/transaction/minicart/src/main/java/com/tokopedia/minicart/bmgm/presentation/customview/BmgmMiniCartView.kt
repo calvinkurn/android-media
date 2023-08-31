@@ -61,6 +61,7 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener, Default
 
     private var param = BmgmParamModel()
     private var shopIds = listOf<Long>()
+    private var messageIndex = Int.ZERO
 
     private var binding: ViewBmgmMiniCartWidgetBinding? = null
     private var footerBinding: ViewBmgmMiniCartSubTotalBinding? = null
@@ -244,14 +245,13 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener, Default
         }
     }
 
-    private var i = Int.ZERO
     private fun flipTextWithAnimation(messages: List<String>) {
         binding?.tvBmgmCartDiscount?.run {
             postDelayed({
-                if (i == messages.size.minus(Int.ONE)) {
-                    i = Int.ZERO
+                if (messageIndex == messages.size.minus(Int.ONE)) {
+                    messageIndex = Int.ZERO
                 } else {
-                    setText(messages[++i].parseAsHtml())
+                    setText(messages[++messageIndex].parseAsHtml())
                     flipTextWithAnimation(messages)
                 }
             }, TimeUnit.SECONDS.toMillis(MESSAGE_SWITCH_INITIAL_DELAY))
