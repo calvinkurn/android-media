@@ -6,6 +6,9 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -37,8 +40,8 @@ abstract class BaseCartCheckboxViewModelTest<T: BaseCartCheckboxViewModel> : Bas
                 setCartListCheckboxStateUseCase.invoke(cartIds)
             } returns true
 
-            viewModel.setCheckListState.observeForever {
-                results.add(it)
+            val job = launch(UnconfinedTestDispatcher()) {
+                viewModel.setCheckListState.toList(results)
             }
 
             viewModel.setCartListCheckboxState(cartIds)
@@ -52,7 +55,8 @@ abstract class BaseCartCheckboxViewModelTest<T: BaseCartCheckboxViewModel> : Bas
 
             //then set to success state
             assertEquals(BmgmState.Success(true), results[1])
-            viewModel.setCheckListState.verifySuccessEquals(BmgmState.Success(true))
+
+            job.cancel()
         }
     }
 
@@ -65,8 +69,8 @@ abstract class BaseCartCheckboxViewModelTest<T: BaseCartCheckboxViewModel> : Bas
                 setCartListCheckboxStateUseCase.invoke(cartIds)
             } returns false
 
-            viewModel.setCheckListState.observeForever {
-                results.add(it)
+            val job = launch(UnconfinedTestDispatcher()) {
+                viewModel.setCheckListState.toList(results)
             }
 
             viewModel.setCartListCheckboxState(cartIds)
@@ -80,7 +84,8 @@ abstract class BaseCartCheckboxViewModelTest<T: BaseCartCheckboxViewModel> : Bas
 
             //then set to success state
             assertEquals(BmgmState.Success(false), results[1])
-            viewModel.setCheckListState.verifySuccessEquals(BmgmState.Success(false))
+
+            job.cancel()
         }
     }
 
@@ -95,8 +100,8 @@ abstract class BaseCartCheckboxViewModelTest<T: BaseCartCheckboxViewModel> : Bas
                 setCartListCheckboxStateUseCase.invoke(cartIds)
             } throws throwable
 
-            viewModel.setCheckListState.observeForever {
-                results.add(it)
+            val job = launch(UnconfinedTestDispatcher()) {
+                viewModel.setCheckListState.toList(results)
             }
 
             viewModel.setCartListCheckboxState(cartIds)
@@ -109,7 +114,9 @@ abstract class BaseCartCheckboxViewModelTest<T: BaseCartCheckboxViewModel> : Bas
             assertEquals(BmgmState.Loading, results[0])
 
             //then set to error state
-            viewModel.setCheckListState.verifyErrorEquals(BmgmState.Error(throwable))
+            results[1].verifyErrorEquals(BmgmState.Error(throwable))
+
+            job.cancel()
         }
     }
 }
