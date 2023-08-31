@@ -19,11 +19,17 @@ data class ChannelHeader(
     val serverTimeOffset: Long = 0,
     val headerType: HeaderType = HeaderType.CONTROL,
     val iconSubtitleUrl: String = "",
+    val pageSource: PageSource = PageSource.HOME
 ) {
     internal val layoutStrategy: HeaderLayoutStrategy = HeaderLayoutStrategyFactory.create(headerType)
 
     enum class HeaderType {
         CONTROL,
         REVAMP
+    }
+
+    enum class PageSource {
+        HOME,
+        SRP
     }
 }

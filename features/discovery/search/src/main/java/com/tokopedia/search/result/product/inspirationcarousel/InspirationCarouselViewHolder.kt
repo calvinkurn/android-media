@@ -5,6 +5,7 @@ import android.view.View
 import androidx.annotation.DimenRes
 import androidx.annotation.LayoutRes
 import androidx.cardview.widget.CardView
+import androidx.core.view.marginTop
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -13,6 +14,7 @@ import com.tokopedia.carouselproductcard.CarouselProductCardListener
 import com.tokopedia.home_component_header.view.HomeChannelHeaderListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ProductCardGridView
@@ -165,7 +167,7 @@ class InspirationCarouselViewHolder(
 
         binding?.inspirationCarouselChipsList?.let {
             it.visible()
-
+            setMarginChipsList(it)
             it.layoutManager = createLayoutManager()
             it.adapter = InspirationCarouselChipsAdapter(
                 adapterPosition, element, inspirationCarouselListener
@@ -179,6 +181,18 @@ class InspirationCarouselViewHolder(
 
             val scrollPosition = element.options.indexOfFirst { option -> option.isChipsActive }
             it.scrollToPosition(scrollPosition)
+        }
+    }
+
+    private fun setMarginChipsList(inspirationCarouselChipsList: RecyclerView) {
+        if (isReimagine) {
+            val resource = inspirationCarouselChipsList.context.resources
+            val topMargin = resource.getDimensionPixelSize(R.dimen.search_inspiration_chips_margin_top_revamp)
+            inspirationCarouselChipsList.setMargin(0, topMargin, 0, 0)
+        } else {
+            val resource = inspirationCarouselChipsList.context.resources
+            val topMargin = resource.getDimensionPixelSize(R.dimen.search_inspiration_chips_margin_top_control)
+            inspirationCarouselChipsList.setMargin(0, topMargin, 0, 0)
         }
     }
 
