@@ -16,12 +16,10 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.minicart.R
 import com.tokopedia.minicart.bmgm.common.di.DaggerBmgmComponent
 import com.tokopedia.minicart.bmgm.domain.model.BmgmParamModel
@@ -72,7 +70,7 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
             owner, viewModelFactory
         )[BmgmMiniCartViewModel::class.java]
     }
-    private val impressHolder = ImpressHolder()
+    private var hasVisited = false
 
     init {
         binding = ViewBmgmMiniCartWidgetBinding.inflate(
@@ -225,13 +223,22 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
         if (messages.isEmpty()) return
         binding?.run {
             tvBmgmCartDiscount.visible()
-            tvBmgmCartDiscount.setCurrentText(
-                messages.firstOrNull().orEmpty().parseAsHtml()
-            )
-            tvBmgmCartDiscount.addOnImpressionListener(impressHolder) {
-                if (messages.size > Int.ONE) {
-                    flipTextWithAnimation(messages)
+            if (messages.size > Int.ONE) {
+                if (hasVisited) {
+                    hasVisited = true
+                    tvBmgmCartDiscount.setCurrentText(
+                        messages.firstOrNull().orEmpty().parseAsHtml()
+                    )
+                } else {
+                    tvBmgmCartDiscount.setText(
+                        messages.firstOrNull().orEmpty().parseAsHtml()
+                    )
                 }
+                flipTextWithAnimation(messages)
+            } else {
+                tvBmgmCartDiscount.setCurrentText(
+                    messages.firstOrNull().orEmpty().parseAsHtml()
+                )
             }
         }
     }
