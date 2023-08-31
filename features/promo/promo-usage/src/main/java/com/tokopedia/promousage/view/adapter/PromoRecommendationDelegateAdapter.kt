@@ -35,8 +35,6 @@ class PromoRecommendationDelegateAdapter(
         private val binding: PromoUsageItemVoucherRecommendationBinding
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: PromoRecommendationItem) {
-            val selectedRecommendedPromoCount = item.selectedCodes.size
-            val recommendedPromoCount = item.codes.size
             binding.btnRecommendationUseVoucher.setOnClickListener {
                 startButtonAnimation {
                     startMessageAnimation(item.messageSelected) {
@@ -59,10 +57,10 @@ class PromoRecommendationDelegateAdapter(
                     binding.ivCheckmark.invisible()
                     binding.ivCheckmarkOutline.invisible()
                 }
-                if (selectedRecommendedPromoCount < recommendedPromoCount) {
-                    binding.btnRecommendationUseVoucher.visible()
-                } else {
+                if (item.selectedCodes.containsAll(item.codes)) {
                     binding.btnRecommendationUseVoucher.invisible()
+                } else {
+                    binding.btnRecommendationUseVoucher.visible()
                 }
             } else {
                 binding.ivCheckmark.invisible()

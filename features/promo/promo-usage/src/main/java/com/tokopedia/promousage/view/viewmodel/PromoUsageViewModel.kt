@@ -427,6 +427,7 @@ internal class PromoUsageViewModel @Inject constructor(
                             delay(1_000L)
                         }
 
+                        // Calculate clash
                         val clashCalculationResult =
                             calculateClickPromo(newClickedItem, currentItems)
                         updatedItems = clashCalculationResult.second
