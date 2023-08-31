@@ -5,6 +5,8 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -37,19 +39,18 @@ class ShopHomeBannerProductGroupViewPagerViewHolder(
     }
 
     private val viewBinding: ItemShopHomeBannerProductGroupViewpagerBinding? by viewBinding()
-    private var isProductSuccessfullyLoaded: Boolean = false
 
     init {
         disableTabSwipeBehavior()
     }
 
     override fun bind(model: ShopWidgetComponentBannerProductGroupUiModel) {
-        if (!isProductSuccessfullyLoaded) {
+
             setupTitle(model)
             setupViewAllChevron(model)
             setupTabs(model.tabs, model.widgetStyle, model.header.isOverrideTheme, model.header.colorSchema)
             setupColors(model.header.isOverrideTheme, model.header.colorSchema)
-        }
+
     }
 
     private fun setupViewAllChevron(model: ShopWidgetComponentBannerProductGroupUiModel) {
@@ -73,7 +74,7 @@ class ShopHomeBannerProductGroupViewPagerViewHolder(
         colorScheme: ShopPageColorSchema
     ) {
         val fragments = createFragments(tabs, widgetStyle, overrideTheme, colorScheme)
-        val pagerAdapter = TabPagerAdapter(provider.fragment, fragments)
+        val pagerAdapter = TabPagerAdapter(provider.productCarouselHostFragmentManager, provider.productCarouselHostLifecycle, fragments)
 
         viewBinding?.run {
             viewPager.adapter = pagerAdapter
@@ -105,9 +106,10 @@ class ShopHomeBannerProductGroupViewPagerViewHolder(
     }
 
     private class TabPagerAdapter(
-        fragment: Fragment,
+        fragmentManager: FragmentManager,
+        lifecycle: Lifecycle,
         private val fragments: List<Pair<String, Fragment>>
-    ) : FragmentStateAdapter(fragment) {
+    ) : FragmentStateAdapter(fragmentManager, lifecycle) {
 
         override fun getItemCount(): Int = fragments.size
         override fun createFragment(position: Int) = fragments[position].second
@@ -134,7 +136,7 @@ class ShopHomeBannerProductGroupViewPagerViewHolder(
             fragment.setOnProductClick { selectedShowcase -> listener.onBannerProductGroupProductClick(selectedShowcase) }
             fragment.setOnVerticalBannerClick { verticalBanner -> listener.onBannerProductGroupVerticalBannerClick(verticalBanner) }
             fragment.setOnProductSuccessfullyLoaded { isProductSuccessfullyLoaded ->
-                this.isProductSuccessfullyLoaded = isProductSuccessfullyLoaded
+
             }
 
             val displayedTabName = currentTab.label

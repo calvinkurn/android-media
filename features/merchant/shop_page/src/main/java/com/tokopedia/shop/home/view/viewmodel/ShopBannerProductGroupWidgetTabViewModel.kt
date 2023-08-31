@@ -58,6 +58,7 @@ class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
         overrideTheme: Boolean,
         colorSchema: ShopPageColorSchema
     ) {
+        getShopProductUseCase.clearCache()
         _carouselWidgets.postValue(UiState.Loading)
 
         val productMetadata = getProductMetadata(widgets)

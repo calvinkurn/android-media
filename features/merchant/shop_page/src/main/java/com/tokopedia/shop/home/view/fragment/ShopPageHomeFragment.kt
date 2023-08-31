@@ -21,6 +21,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -205,6 +206,9 @@ import com.tokopedia.shop.home.util.ShopBannerProductGroupWidgetTabDependencyPro
 import com.tokopedia.shop.home.view.listener.ShopBannerProductGroupListener
 import com.tokopedia.shop.home.view.customview.directpurchase.DirectPurchaseWidgetView
 import com.tokopedia.shop.home.view.customview.directpurchase.ProductCardDirectPurchaseDataModel
+import com.tokopedia.shop.home.view.model.banner_product_group.appearance.ShimmerItemType
+import com.tokopedia.shop.home.view.model.banner_product_group.appearance.ShopHomeBannerProductGroupItemType
+import com.tokopedia.shop.home.view.viewmodel.ShopBannerProductGroupWidgetTabViewModel
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragment
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragmentV2
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPageHeaderPerformanceMonitoringListener
@@ -5073,8 +5077,10 @@ open class ShopPageHomeFragment :
         RouteManager.route(activity ?: return, selectedShowcase.ctaLink)
     }
 
-    override val fragment: Fragment
-        get() = this
+    override val productCarouselHostFragmentManager: FragmentManager
+        get() = childFragmentManager
+    override val productCarouselHostLifecycle: Lifecycle
+        get() = this.viewLifecycleOwner.lifecycle
 
     override val currentShopId: String
         get() = shopId

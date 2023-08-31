@@ -118,6 +118,10 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         observeCarouselsWidgets()
         setupRecyclerView()
+    }
+
+    override fun onResume() {
+        super.onResume()
         getCarouselWidgets()
     }
 
@@ -160,6 +164,7 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
         viewModel.carouselWidgets.observe(viewLifecycleOwner) { result ->
             when(result) {
                 ShopBannerProductGroupWidgetTabViewModel.UiState.Loading -> {
+                    println("Fetch products: Loading $tabLabel")
                     bannerProductGroupAdapter.submit(listOf(ShimmerItemType(showShimmer = true)))
                 }
 
