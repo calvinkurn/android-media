@@ -1,6 +1,8 @@
 package com.tokopedia.catalogcommon.adapter
 
 import com.tokopedia.catalogcommon.uimodel.AccordionInformationUiModel
+import com.tokopedia.catalogcommon.uimodel.BannerCatalogUiModel
+import com.tokopedia.catalogcommon.uimodel.DoubleBannerCatalogUiModel
 import com.tokopedia.catalogcommon.uimodel.DummyUiModel
 import com.tokopedia.catalogcommon.uimodel.ExpertReviewUiModel
 import com.tokopedia.catalogcommon.uimodel.HeroBannerUiModel
@@ -23,5 +25,6 @@ interface CatalogAdapterFactory {
     fun type(uiModel: TrustMakerUiModel): Int
     fun type(uiModel: TextDescriptionUiModel): Int
     fun type(uiModel: ExpertReviewUiModel): Int
-
+    fun type(uiModel: BannerCatalogUiModel): Int
+    fun type(uiModel: DoubleBannerCatalogUiModel): Int
 }
