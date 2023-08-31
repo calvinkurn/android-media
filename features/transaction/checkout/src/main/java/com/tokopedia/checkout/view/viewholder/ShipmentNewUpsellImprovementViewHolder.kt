@@ -48,9 +48,9 @@ class ShipmentNewUpsellImprovementViewHolder(
     private val checkoutUpsellLogo: ImageUnify =
         itemView.findViewById(R.id.checkout_upsell_logo)
     private val checkoutUpsellTitle: Typography =
-        itemView.findViewById(R.id.checkout_upsell_title)
+        itemView.findViewById(R.id.tv_checkout_upsell_title)
     private val checkoutUpsellDescription: Typography =
-        itemView.findViewById(R.id.checkout_upsell_description)
+        itemView.findViewById(R.id.tv_checkout_upsell_description)
     private val checkoutUpsellIcon: ImageUnify =
         itemView.findViewById(R.id.checkout_upsell_icon)
     private val checkoutUpsellContentGroup: Group =

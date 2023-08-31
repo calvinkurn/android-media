@@ -16,5 +16,7 @@ data class EgoldAttributes(
     @SerializedName("tier_data")
     var egoldTieringDataArrayList: List<EgoldTieringData> = emptyList(),
     @SerializedName("hyperlink_text")
-    var hyperlinkText: EgoldHyperlinkText = EgoldHyperlinkText()
+    var hyperlinkText: EgoldHyperlinkText = EgoldHyperlinkText(),
+    @SerializedName("icon_url")
+    val iconUrl: String = ""
 )

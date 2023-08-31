@@ -191,7 +191,7 @@ class ProductBundlingItemAdapter(
 
         private fun onItemActionClicked(key: String) {
             element?.let {
-                when(key) {
+                when (key) {
                     BuyerOrderDetailActionButtonKey.BUY_AGAIN -> {
                         listener.onBundleItemAddToCart(it)
                     }

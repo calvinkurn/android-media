@@ -619,6 +619,7 @@ class ShipmentMapper @Inject constructor() {
                     type = item.type
                     qty = productQuantity
                     uniqueId = item.uniqueId
+                    iconUrl = item.iconUrl
                 }
             )
         }
@@ -978,6 +979,7 @@ class ShipmentMapper @Inject constructor() {
             description = shipmentAddressFormDataResponse.donation.description
             nominal = shipmentAddressFormDataResponse.donation.nominal
             isChecked = shipmentAddressFormDataResponse.isDonationCheckboxStatus
+            iconUrl = shipmentAddressFormDataResponse.donation.iconUrl
         }
     }
 
@@ -1038,6 +1040,7 @@ class ShipmentMapper @Inject constructor() {
             hyperlinkText = shipmentAddressFormDataResponse.egoldAttributes.hyperlinkText.text
             hyperlinkUrl = shipmentAddressFormDataResponse.egoldAttributes.hyperlinkText.url
             isShowHyperlink = shipmentAddressFormDataResponse.egoldAttributes.hyperlinkText.isShow
+            iconUrl = shipmentAddressFormDataResponse.egoldAttributes.iconUrl
 
             val tmpEgoldTieringModelArrayList: ArrayList<EgoldTieringModel> = arrayListOf()
             shipmentAddressFormDataResponse.egoldAttributes.egoldTieringDataArrayList.forEach {

@@ -30,5 +30,5 @@ data class BmGmData(
     val offerJsonData: String = "",
     @Expose
     @SerializedName("tier_product")
-    val tiersApplied: List<BmGmTiersApplied> = emptyList()
+    val tierProductList: List<BmGmTierProduct> = emptyList()
 )

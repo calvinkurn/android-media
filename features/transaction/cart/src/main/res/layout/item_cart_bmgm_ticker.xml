@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_basket_building_ticker"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="12dp"
+    android:layout_marginBottom="10dp">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/iv_ticker_bg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/bg_cart_bmgm"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/ic_bmgm_ticker"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="6dp"
+        app:srcCompat="@drawable/ic_left_cart_basket_building"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/iv_ticker_bg"
+        app:layout_constraintBottom_toBottomOf="@id/iv_ticker_bg"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_bmgm_ticker"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:maxLines="1"
+        android:ellipsize="end"
+        app:typographyType="display_3"
+        app:layout_constraintStart_toEndOf="@id/ic_bmgm_ticker"
+        app:layout_constraintTop_toTopOf="@id/iv_ticker_bg"
+        app:layout_constraintBottom_toBottomOf="@id/iv_ticker_bg"
+        app:layout_constraintEnd_toStartOf="@id/iu_ticker_right_icon"
+        tools:text="Ongkirmu Rp10.000 Rp30.000 karena Bebas Ongkir!" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/iu_ticker_right_icon"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        app:icon_name="CHEVRON_RIGHT"
+        android:layout_centerVertical="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/iv_ticker_bg"
+        app:layout_constraintBottom_toBottomOf="@id/iv_ticker_bg"/>
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/cart_shop_ticker_small_loader"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="6dp"
+        android:visibility="gone"
+        app:loader_type="rect"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/iv_ticker_bg"
+        app:layout_constraintBottom_toBottomOf="@id/iv_ticker_bg"
+        />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/cart_shop_ticker_large_loader"
+        android:layout_width="0dp"
+        android:layout_height="8dp"
+        android:layout_marginStart="4dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="@id/cart_shop_ticker_small_loader"
+        app:layout_constraintBottom_toBottomOf="@id/cart_shop_ticker_small_loader"
+        app:layout_constraintStart_toEndOf="@id/cart_shop_ticker_small_loader"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:loader_type="line" />
+
+    <!--this placeholder view for constraint mini vertical divider-->
+
+    <View
+        android:id="@+id/v_bmgm_placeholder"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="6dp"
+        app:srcCompat="@drawable/ic_left_cart_basket_building"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/iv_ticker_bg"
+        app:layout_constraintBottom_toBottomOf="@id/iv_ticker_bg"
+        android:visibility="invisible"/>
+
+    <View
+        android:id="@+id/v_bmgm_separator"
+        android:layout_width="2dp"
+        android:layout_height="10dp"
+        android:layout_marginTop="6dp"
+        android:background="@color/Unify_NN100"
+        app:layout_constraintTop_toBottomOf="@id/iv_ticker_bg"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/v_bmgm_placeholder"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:visibility="visible" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

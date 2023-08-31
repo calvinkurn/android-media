@@ -672,7 +672,6 @@ open class DynamicProductDetailFragment :
         recommendationCarouselPositionSavedState.clear()
         shouldRefreshProductInfoBottomSheet = true
         shouldRefreshShippingBottomSheet = true
-        recommendationWidgetViewModel?.refresh()
         super.onSwipeRefresh()
     }
 
@@ -3345,6 +3344,7 @@ open class DynamicProductDetailFragment :
         }
 
         setupProductVideoCoordinator()
+        recommendationWidgetViewModel?.refresh()
         submitInitialList(pdpUiUpdater?.mapOfData?.values?.toList().orEmpty())
     }
 
