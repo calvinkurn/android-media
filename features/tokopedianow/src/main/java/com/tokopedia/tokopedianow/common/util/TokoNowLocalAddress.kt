@@ -8,6 +8,7 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.tokopedianow.common.domain.mapper.AddressMapper
+import com.tokopedia.tokopedianow.common.domain.model.WarehouseData
 import java.util.*
 import javax.inject.Inject
 
@@ -37,10 +38,10 @@ class TokoNowLocalAddress @Inject constructor(@ApplicationContext private val co
                 lastUpdate = tokonow.tokonowLastUpdate
             )
         }
-        updateLocalData()
+        updateLocalDataIfAddressHasUpdated()
     }
 
-    fun updateLocalData() {
+    fun updateLocalDataIfAddressHasUpdated() {
         if (isChoosenAddressUpdated()) {
             localAddressData = ChooseAddressUtils.getLocalizingAddressData(context)
         }
@@ -50,22 +51,31 @@ class TokoNowLocalAddress @Inject constructor(@ApplicationContext private val co
         return ChooseAddressUtils.isLocalizingAddressHasUpdated(context, localAddressData)
     }
 
-    fun setLocalData(data: LocalCacheModel) {
-        localAddressData = data
+    fun isOutOfCoverage(): Boolean {
+        return getWarehouseId() == OOC_WAREHOUSE_ID
+    }
+
+    fun getWarehouseId(): Long {
+        updateLocalDataIfAddressHasUpdated()
+        return localAddressData.warehouse_id.toLongOrZero()
+    }
+
+    fun getShopId(): Long {
+        updateLocalDataIfAddressHasUpdated()
+        return localAddressData.shop_id.toLongOrZero()
+    }
+
+    fun getWarehousesData(): List<WarehouseData> {
+        updateLocalDataIfAddressHasUpdated()
+        return AddressMapper.mapToWarehousesData(localAddressData)
     }
 
     fun getAddressData(): LocalCacheModel {
-        if(isChoosenAddressUpdated()) {
-            localAddressData = ChooseAddressUtils.getLocalizingAddressData(context)
-        }
+        updateLocalDataIfAddressHasUpdated()
         return localAddressData
     }
 
-    fun isOutOfCoverage() = getWarehouseId() == OOC_WAREHOUSE_ID
-
-    fun getWarehouseId(): Long = localAddressData.warehouse_id.toLongOrZero()
-
-    fun getShopId() = localAddressData.shop_id.toLongOrZero()
-
-    fun getWarehousesData() = AddressMapper.mapToWarehousesData(localAddressData)
+    fun setLocalData(data: LocalCacheModel) {
+        localAddressData = data
+    }
 }

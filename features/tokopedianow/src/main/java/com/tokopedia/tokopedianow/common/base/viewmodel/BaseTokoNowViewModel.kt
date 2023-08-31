@@ -149,7 +149,7 @@ open class BaseTokoNowViewModel(
 
     fun getWarehouseId(): String = addressData.getWarehouseId().toString()
 
-    fun updateAddressData() = addressData.updateLocalData()
+    fun updateAddressData() = addressData.updateLocalDataIfAddressHasUpdated()
 
     fun createAffiliateLink(url: String) = affiliateService.createAffiliateLink(url)
 

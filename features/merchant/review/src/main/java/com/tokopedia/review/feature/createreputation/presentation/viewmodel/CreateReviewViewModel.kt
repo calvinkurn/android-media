@@ -80,7 +80,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterIsInstance
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
@@ -168,7 +170,7 @@ class CreateReviewViewModel @Inject constructor(
     private val feedbackId = MutableStateFlow("")
     private val reputationId = MutableStateFlow("")
     private val utmSource = MutableStateFlow("")
-    private val sendingReview = MutableStateFlow(false)
+    private val sendReview = MutableStateFlow(false)
     private val reviewForm = MutableStateFlow<ReviewFormRequestState>(RequestState.Idle)
     private val incentiveOvo = MutableStateFlow<IncentiveOvoRequestState>(RequestState.Idle)
     private val reviewTemplate = MutableStateFlow<ReviewTemplateRequestState>(RequestState.Idle)
@@ -192,14 +194,16 @@ class CreateReviewViewModel @Inject constructor(
 
     // region misc state
     private val canRenderForm = combine(
-        reviewForm.filterIsInstance(), incentiveOvo, reviewTemplate.filterIsInstance(),
-        badRatingCategories.filterIsInstance(), ::mapCanRenderForm
+        reviewForm, incentiveOvo, reviewTemplate, badRatingCategories, ::mapCanRenderForm
     ).toStateFlow(false)
     private val isGoodRating = rating.mapLatest(::mapIsGoodRating).toStateFlow(false)
-    private val hasIncentive = incentiveOvo.filterIsInstance<IncentiveOvoRequestSuccessState>()
-        .mapLatest(::mapHasIncentive).toStateFlow(false)
+    private val hasIncentive = incentiveOvo
+        .filterIsInstance<IncentiveOvoRequestSuccessState>()
+        .mapLatest(::mapHasIncentive)
+        .toStateFlow(false)
     private val hasOngoingChallenge = incentiveOvo
-        .filterIsInstance<IncentiveOvoRequestSuccessState>().mapLatest(::mapHasOngoingChallenge)
+        .filterIsInstance<IncentiveOvoRequestSuccessState>()
+        .mapLatest(::mapHasOngoingChallenge)
         .toStateFlow(false)
     private val isAnyBadRatingCategorySelected = badRatingCategories.mapLatest(
         ::mapIsAnyBadRatingCategorySelected
@@ -266,8 +270,7 @@ class CreateReviewViewModel @Inject constructor(
 
     // region template state
     val templateUiState = combine(
-        canRenderForm, isGoodRating, reviewTemplate.filterIsInstance(),
-        ::mapTemplateUiState
+        canRenderForm, isGoodRating, reviewTemplate, ::mapTemplateUiState
     ).toStateFlow(CreateReviewTemplateUiState.Loading)
     // endregion template state
 
@@ -308,13 +311,13 @@ class CreateReviewViewModel @Inject constructor(
     // region submit button state
     val submitButtonUiState = combine(
         canRenderForm, isGoodRating, reviewText, isBadRatingOtherCategorySelected,
-        isAnyBadRatingCategorySelected, badRatingCategoriesUiState, sendingReview, ::mapSubmitButtonUiState
+        isAnyBadRatingCategorySelected, badRatingCategoriesUiState, sendReview, ::mapSubmitButtonUiState
     ).toStateFlow(CreateReviewSubmitButtonUiState.Loading)
     // endregion submit button state
 
     // region create review bottom sheet state
     val createReviewBottomSheetUiState = combine(
-        reviewForm, bottomSheetBottomInset, ::mapCreateReviewBottomSheetUiState
+        reviewForm, badRatingCategories, bottomSheetBottomInset, ::mapCreateReviewBottomSheetUiState
     ).toStateFlow(CreateReviewBottomSheetUiState.Showing(Int.ZERO))
 
     // endregion create review bottom sheet state
@@ -373,17 +376,20 @@ class CreateReviewViewModel @Inject constructor(
     // endregion extensions
 
     // region state mapper
-    @Suppress("UNUSED_PARAMETER")
     private fun mapCanRenderForm(
-        reviewForm: ReviewFormRequestSuccessState,
+        reviewForm: ReviewFormRequestState,
         incentiveOvo: IncentiveOvoRequestState,
-        reviewTemplates: ReviewTemplateRequestSuccessState,
-        badRatingCategories: BadRatingCategoriesRequestSuccessState
+        reviewTemplates: ReviewTemplateRequestState,
+        badRatingCategories: BadRatingCategoriesRequestState
     ): Boolean {
-        val isReviewFormValid = reviewForm.result.productrevGetForm.validToReview &&
-                reviewForm.result.productrevGetForm.productData.productStatus != Int.ZERO
+        val isReviewFormValid = (reviewForm as? ReviewFormRequestSuccessState)?.let {
+            it.result.productrevGetForm.validToReview &&
+                it.result.productrevGetForm.productData.productStatus != Int.ZERO
+        } ?: false
         val isIncentiveOvoLoaded = incentiveOvo is RequestState.CompleteRequestState
-        return isReviewFormValid && isIncentiveOvoLoaded
+        val isReviewTemplatesLoaded = reviewTemplates is RequestState.CompleteRequestState
+        val isBadRatingCategoriesSuccess = badRatingCategories is RequestState.Success
+        return isReviewFormValid && isIncentiveOvoLoaded && isReviewTemplatesLoaded && isBadRatingCategoriesSuccess
     }
 
     private fun mapIsGoodRating(rating: Int): Boolean {
@@ -670,12 +676,25 @@ class CreateReviewViewModel @Inject constructor(
     private fun mapTemplateUiState(
         canRenderForm: Boolean,
         isGoodRating: Boolean,
-        reviewTemplates: ReviewTemplateRequestSuccessState
+        reviewTemplates: ReviewTemplateRequestState
     ): CreateReviewTemplateUiState {
-        val templates = if (canRenderForm) {
-            getReviewTemplatesToShow(reviewTemplates, isGoodRating)
-        } else {
-            return CreateReviewTemplateUiState.Loading
+        val templates = when (reviewTemplates) {
+            is RequestState.CompleteRequestState -> {
+                if (reviewTemplates is RequestState.Success) {
+                    if (canRenderForm) {
+                        getReviewTemplatesToShow(reviewTemplates, isGoodRating)
+                    } else {
+                        return CreateReviewTemplateUiState.Loading
+                    }
+                } else {
+                    if (canRenderForm) {
+                        emptyList()
+                    } else {
+                        return CreateReviewTemplateUiState.Loading
+                    }
+                }
+            }
+            else -> return CreateReviewTemplateUiState.Loading
         }
         return when {
             templates.isEmpty() -> CreateReviewTemplateUiState.Hidden(emptyList())
@@ -811,10 +830,26 @@ class CreateReviewViewModel @Inject constructor(
     }
 
     private fun mapCreateReviewBottomSheetUiState(
-        reviewForm: ReviewFormRequestState, bottomInset: Int
+        reviewForm: ReviewFormRequestState,
+        badRatingCategories: BadRatingCategoriesRequestState,
+        bottomInset: Int
     ): CreateReviewBottomSheetUiState {
         var uiState = createReviewBottomSheetUiState.value
-        if (reviewForm is RequestState.Success && !reviewForm.result.productrevGetForm.validToReview) {
+        if (reviewForm is RequestState.Error) {
+            getErrorCode(reviewForm.throwable)
+            uiState = CreateReviewBottomSheetUiState.ShouldDismiss(
+                success = false,
+                message = StringRes(R.string.review_toaster_page_error),
+                feedbackId = ""
+            )
+        } else if (badRatingCategories is RequestState.Error) {
+            getErrorCode(badRatingCategories.throwable)
+            uiState = CreateReviewBottomSheetUiState.ShouldDismiss(
+                success = false,
+                message = StringRes(R.string.review_toaster_page_error),
+                feedbackId = ""
+            )
+        } else if (reviewForm is RequestState.Success && !reviewForm.result.productrevGetForm.validToReview) {
             uiState = CreateReviewBottomSheetUiState.ShouldDismiss(
                 success = false,
                 message = StringRes(R.string.review_pending_invalid_to_review),
@@ -824,12 +859,6 @@ class CreateReviewViewModel @Inject constructor(
             uiState = CreateReviewBottomSheetUiState.ShouldDismiss(
                 success = false,
                 message = StringRes(R.string.review_pending_deleted_product_error_toaster),
-                feedbackId = ""
-            )
-        } else if (reviewForm is RequestState.Error) {
-            uiState = CreateReviewBottomSheetUiState.ShouldDismiss(
-                success = false,
-                message = StringRes(R.string.review_toaster_page_error),
                 feedbackId = ""
             )
         } else if (uiState is CreateReviewBottomSheetUiState.Showing) {
@@ -880,6 +909,8 @@ class CreateReviewViewModel @Inject constructor(
             } else {
                 PostSubmitUiState.ShowThankYouToaster(postSubmitReviewResult.result)
             }
+        } else if (postSubmitReviewResult is RequestState.Error) {
+            PostSubmitUiState.ShowThankYouToaster(null)
         } else {
             PostSubmitUiState.Hidden
         }
@@ -899,13 +930,16 @@ class CreateReviewViewModel @Inject constructor(
         reviewText: CreateReviewTextAreaTextUiModel,
         mediaPickerUiState: CreateReviewMediaPickerUiState,
         incentiveOvo: IncentiveOvoRequestState,
-        submitReviewResult: SubmitReviewRequestState
+        submitReviewResult: SubmitReviewRequestState,
+        postSubmitReviewResult: PostSubmitReviewRequestState
     ): ProductrevGetPostSubmitBottomSheetUseCase.PostSubmitReviewRequestParams? {
         return if (
+            postSubmitReviewResult !is RequestState.Requesting &&
+            postSubmitReviewResult !is RequestState.CompleteRequestState &&
             submitReviewResult is RequestState.Success &&
             submitReviewResult.result.productrevSuccessIndicator?.success == true &&
             mediaPickerUiState is CreateReviewMediaPickerUiState.SuccessUpload &&
-            incentiveOvo is RequestState.Success
+            incentiveOvo is RequestState.CompleteRequestState
         ) {
             val hasPendingIncentive = hasPendingIncentive()
             ProductrevGetPostSubmitBottomSheetUseCase.PostSubmitReviewRequestParams(
@@ -915,13 +949,13 @@ class CreateReviewViewModel @Inject constructor(
                     media.uploadId.takeIf { uploadId -> uploadId.isNotBlank() }
                 }.count(),
                 isInboxEmpty = hasPendingIncentive.not(),
-                incentiveAmount = incentiveOvo.result?.productrevIncentiveOvo?.amount.orZero()
+                incentiveAmount = (incentiveOvo as? RequestState.Success)?.result?.productrevIncentiveOvo?.amount.orZero()
             )
         } else null
     }
 
     private fun mapSubmitReviewRequestParams(
-        sendingReview: Boolean,
+        sendReview: Boolean,
         reputationId: String,
         productId: String,
         shopId: String,
@@ -931,9 +965,15 @@ class CreateReviewViewModel @Inject constructor(
         anonymous: Boolean,
         mediaPickerUiState: CreateReviewMediaPickerUiState,
         utmSource: String,
-        badRatingCategoriesUiState: CreateReviewBadRatingCategoriesUiState
+        badRatingCategoriesUiState: CreateReviewBadRatingCategoriesUiState,
+        submitReviewResult: SubmitReviewRequestState
     ): ProductrevSubmitReviewUseCase.SubmitReviewRequestParams? {
-        return if (sendingReview && mediaPickerUiState is CreateReviewMediaPickerUiState.SuccessUpload) {
+        return if (
+            sendReview &&
+            mediaPickerUiState is CreateReviewMediaPickerUiState.SuccessUpload &&
+            submitReviewResult !is RequestState.Requesting &&
+            !(submitReviewResult is RequestState.Success && submitReviewResult.result.productrevSuccessIndicator?.success == true)
+        ) {
             ProductrevSubmitReviewUseCase.SubmitReviewRequestParams(
                 reputationId = reputationId,
                 productId = productId,
@@ -1002,7 +1042,8 @@ class CreateReviewViewModel @Inject constructor(
 
     private fun observeMediaTemplatesToAppend() {
         launch {
-            reviewTemplate.filterIsInstance<ReviewTemplateRequestSuccessState>()
+            reviewTemplate
+                .filterIsInstance<ReviewTemplateRequestSuccessState>()
                 .collect(::appendSelectedTemplatesToReviewText)
         }
     }
@@ -1010,10 +1051,10 @@ class CreateReviewViewModel @Inject constructor(
     private fun observeShouldSubmitReview() {
         launch {
             combine(
-                sendingReview, reputationId, productId, shopId, reputationScore, rating, reviewText,
-                anonymous, mediaPickerUiState, utmSource, badRatingCategoriesUiState,
+                sendReview, reputationId, productId, shopId, reputationScore, rating, reviewText,
+                anonymous, mediaPickerUiState, utmSource, badRatingCategoriesUiState, submitReviewResult,
                 ::mapSubmitReviewRequestParams
-            ).collectLatest(::trySubmitReview)
+            ).filterNotNull().collectLatest(::trySubmitReview)
         }
     }
 
@@ -1021,8 +1062,8 @@ class CreateReviewViewModel @Inject constructor(
         launch {
             combine(
                 feedbackId, reviewText, mediaPickerUiState, incentiveOvo, _submitReviewResult,
-                ::mapPostSubmitReviewRequestParams
-            ).collectLatest { it?.let { getPostSubmitReviewData(it) } }
+                postSubmitReviewResult, ::mapPostSubmitReviewRequestParams
+            ).filterNotNull().collectLatest(::getPostSubmitReviewData)
         }
     }
 
@@ -1030,7 +1071,9 @@ class CreateReviewViewModel @Inject constructor(
         launch {
             combine(
                 reputationId, productId, reviewForm, ::mapShouldLoadForm
-            ).collectLatest { if (it) getProductReputation() }
+            ).filter { shouldLoad ->
+                shouldLoad
+            }.collectLatest { getProductReputation() }
         }
     }
 
@@ -1038,14 +1081,19 @@ class CreateReviewViewModel @Inject constructor(
         launch {
             combine(
                 reputationId, productId, incentiveOvo, ::mapShouldLoadIncentiveOvo
-            ).collectLatest { if (it) getProductIncentiveOvo() }
+            ).filter { shouldLoad ->
+                shouldLoad
+            }.collectLatest { getProductIncentiveOvo() }
         }
     }
 
     private fun observeShouldLoadReviewTemplates() {
         launch {
-            combine(productId, reviewTemplate, ::mapShouldLoadReviewTemplates)
-                .collectLatest { if (it) getReviewTemplates() }
+            combine(
+                productId, reviewTemplate, ::mapShouldLoadReviewTemplates
+            ).filter { shouldLoad ->
+                shouldLoad
+            }.collectLatest { getReviewTemplates() }
         }
     }
 
@@ -1053,7 +1101,9 @@ class CreateReviewViewModel @Inject constructor(
         launch {
             badRatingCategories.mapLatest{ badRatingCategories ->
                 badRatingCategories is RequestState.Idle
-            }.collectLatest { if (it) getBadRatingCategories() }
+            }.filter { shouldLoad ->
+                shouldLoad
+            }.collectLatest { getBadRatingCategories() }
         }
     }
     // endregion state observer
@@ -1261,21 +1311,19 @@ class CreateReviewViewModel @Inject constructor(
     }
 
     private suspend fun trySubmitReview(
-        requestParams: ProductrevSubmitReviewUseCase.SubmitReviewRequestParams?
+        requestParams: ProductrevSubmitReviewUseCase.SubmitReviewRequestParams
     ) {
         try {
-            requestParams?.let {
-                _submitReviewResult.value = RequestState.Requesting()
-                submitReviewUseCase.setParams(it)
-                val result = submitReviewUseCase.executeOnBackground()
-                feedbackId.value = result.productrevSuccessIndicator?.feedbackID.orEmpty()
-                _submitReviewResult.value = RequestState.Success(result)
-            }
+            _submitReviewResult.value = RequestState.Requesting()
+            submitReviewUseCase.setParams(requestParams)
+            val result = submitReviewUseCase.executeOnBackground()
+            feedbackId.value = result.productrevSuccessIndicator?.feedbackID.orEmpty()
+            _submitReviewResult.value = RequestState.Success(result)
         } catch (t: Throwable) {
             _submitReviewResult.value = RequestState.Error(t)
             enqueueErrorSubmitReviewToaster(getErrorCode(t))
         }
-        sendingReview.value = false
+        sendReview.value = false
     }
 
     private fun enqueueErrorUploadMediaToaster(errorCode: String) {
@@ -1362,7 +1410,7 @@ class CreateReviewViewModel @Inject constructor(
         when(val currentMediaPickerUiState = mediaPickerUiState.value) {
             is CreateReviewMediaPickerUiState.FailedUpload -> enqueueErrorUploadMediaToaster(currentMediaPickerUiState.errorCode)
             is CreateReviewMediaPickerUiState.Uploading -> enqueueWaitForUploadMediaToaster()
-            else -> sendingReview.value = true
+            else -> sendReview.value = true
         }
     }
 
@@ -1608,7 +1656,7 @@ class CreateReviewViewModel @Inject constructor(
             putBoolean(SAVED_STATE_SHOULD_SHOW_INCENTIVE_BOTTOM_SHEET, shouldShowIncentiveBottomSheet.value)
             putBoolean(SAVED_STATE_SHOULD_SHOW_TEXT_AREA_BOTTOM_SHEET, shouldShowTextAreaBottomSheet.value)
             putBoolean(SAVED_STATE_SHOULD_SHOW_ANONYMOUS_INFO_BOTTOM_SHEET, shouldShowAnonymousInfoBottomSheet.value)
-            putBoolean(SAVED_STATE_SENDING_REVIEW, sendingReview.value)
+            putBoolean(SAVED_STATE_SENDING_REVIEW, sendReview.value)
             putSerializable(SAVED_STATE_REVIEW_FORM, reviewForm.value)
             putSerializable(SAVED_STATE_INCENTIVE_OVO, incentiveOvo.value)
             putSerializable(SAVED_STATE_REVIEW_TEMPLATE, reviewTemplate.value)
@@ -1637,7 +1685,7 @@ class CreateReviewViewModel @Inject constructor(
             shouldShowIncentiveBottomSheet.value = getSavedState(SAVED_STATE_SHOULD_SHOW_INCENTIVE_BOTTOM_SHEET, shouldShowIncentiveBottomSheet.value)!!
             shouldShowTextAreaBottomSheet.value = getSavedState(SAVED_STATE_SHOULD_SHOW_TEXT_AREA_BOTTOM_SHEET, shouldShowTextAreaBottomSheet.value)!!
             shouldShowAnonymousInfoBottomSheet.value = getSavedState(SAVED_STATE_SHOULD_SHOW_ANONYMOUS_INFO_BOTTOM_SHEET, shouldShowAnonymousInfoBottomSheet.value)!!
-            sendingReview.value = getSavedState(SAVED_STATE_SENDING_REVIEW, sendingReview.value)!!
+            sendReview.value = getSavedState(SAVED_STATE_SENDING_REVIEW, sendReview.value)!!
             reviewText.value = getSavedState(SAVED_STATE_REVIEW_TEXT, reviewText.value)!!.copy(source = CreateReviewTextAreaTextUiModel.Source.SAVED_INSTANCE_STATE)
             shopId.value = getSavedState(SAVED_STATE_SHOP_ID, shopId.value)!!
             productId.value = getSavedState(SAVED_STATE_PRODUCT_ID, productId.value)!!
