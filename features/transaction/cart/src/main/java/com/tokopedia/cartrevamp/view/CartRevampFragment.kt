@@ -126,7 +126,6 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.hideLoading
 import com.tokopedia.kotlin.extensions.view.ifNull
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.pxToDp
@@ -1336,12 +1335,17 @@ class CartRevampFragment :
     }
 
     override fun onProductAddOnClicked(cartItemData: CartItemHolderData) {
-        // tokopedia://addon/2148784281/?cartId=123123&selectedAddonIds=111,222,333&source=cart&warehouseId=789789&isTokocabang=false
         val productId = cartItemData.productId
         val cartId = cartItemData.cartId
         val addOnIds = arrayListOf<String>()
+        val deselectAddOnIds = arrayListOf<String>()
         cartItemData.addOnsProduct.listData.forEach {
-            addOnIds.add(it.id)
+            if (it.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK) {
+                addOnIds.add(it.id)
+            }
+            if (it.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_UNCHECK) {
+                deselectAddOnIds.add(it.id)
+            }
         }
 
         val price: Double
@@ -1362,6 +1366,7 @@ class CartRevampFragment :
                 AddOnConstant.QUERY_PARAM_CART_ID to cartId,
                 AddOnConstant.QUERY_PARAM_SELECTED_ADDON_IDS to addOnIds.toString().replace("[", "")
                     .replace("]", ""),
+                AddOnConstant.QUERY_PARAM_DESELECTED_ADDON_IDS to deselectAddOnIds.toString().replace("[", "").replace("]", ""),
                 AddOnConstant.QUERY_PARAM_PAGE_ATC_SOURCE to AddOnConstant.SOURCE_NORMAL_CHECKOUT,
                 AddOnConstant.QUERY_PARAM_WAREHOUSE_ID to cartItemData.warehouseId,
                 AddOnConstant.QUERY_PARAM_IS_TOKOCABANG to cartItemData.isFulfillment,
@@ -1373,8 +1378,6 @@ class CartRevampFragment :
                     .removeSingleDecimalSuffix()
             )
         )
-
-        println("++ applink = $applink")
 
         activity?.let {
             val intent = RouteManager.getIntent(it, applink)
@@ -3103,7 +3106,7 @@ class CartRevampFragment :
                 var newAddOnWording = ""
                 if (addOnProductDataResult.aggregatedData.title.isNotEmpty()) {
                     newAddOnWording =
-                        "${addOnProductDataResult.aggregatedData.title} <b>(${addOnProductDataResult.aggregatedData.price})</b>"
+                        "${addOnProductDataResult.aggregatedData.title} <b>(${CurrencyFormatUtil.convertPriceValueToIdrFormat(addOnProductDataResult.aggregatedData.price, false).removeDecimalSuffix()})</b>"
                 }
 
                 viewModel.updateAddOnByCartId(

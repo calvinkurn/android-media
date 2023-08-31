@@ -1076,23 +1076,15 @@ class CartViewModel @Inject constructor(
             )
             updateCartUseCase.execute(
                 onSuccess = {
-                    onSuccessUpdateCartForPromo()
+                    _updateCartForPromoState.value = UpdateCartPromoState.Success
                 },
-                onError = {
-                    onErrorUpdateCartForPromo(it)
+                onError = { throwable ->
+                    _updateCartForPromoState.value = UpdateCartPromoState.Failed(throwable)
                 }
             )
         } else {
             _globalEvent.value = CartGlobalEvent.ProgressLoading(false)
         }
-    }
-
-    private fun onErrorUpdateCartForPromo(throwable: Throwable) {
-        _updateCartForPromoState.value = UpdateCartPromoState.Failed(throwable)
-    }
-
-    private fun onSuccessUpdateCartForPromo() {
-        _updateCartForPromoState.value = UpdateCartPromoState.Success
     }
 
     fun updatePromoSummaryData(lastApplyUiModel: LastApplyUiModel) {
@@ -1115,25 +1107,6 @@ class CartViewModel @Inject constructor(
     }
 
     fun checkForShipmentForm() {
-//        var hasCheckedAvailableItem = false
-//        loop@ for (any in cartDataList.value) {
-//            if (hasCheckedAvailableItem) break@loop
-//            if (any is CartGroupHolderData) {
-//                if (any.isAllSelected) {
-//                    hasCheckedAvailableItem = true
-//                } else if (any.isPartialSelected) {
-//                    any.productUiModelList.let {
-//                        innerLoop@ for (cartItemHolderData in it) {
-//                            if (cartItemHolderData.isSelected) {
-//                                hasCheckedAvailableItem = true
-//                                break@innerLoop
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        }
-
         if (_selectedAmountState.value > 0) {
             _cartCheckoutButtonState.value = CartCheckoutButtonState.ENABLE
         } else {
@@ -2731,7 +2704,7 @@ class CartViewModel @Inject constructor(
                             CartAddOnProductData(
                                 id = it.id,
                                 uniqueId = it.uniqueId,
-                                status = it.getSelectedStatus().value,
+                                status = it.getSaveAddonSelectedStatus().value,
                                 type = it.addOnType,
                                 price = it.price.toDouble()
                             )
@@ -2742,6 +2715,7 @@ class CartViewModel @Inject constructor(
                 }
             }
         }
+        reCalculateSubTotal()
     }
 
     fun updateWishlistDataByProductId(productId: String, isWishlisted: Boolean) {

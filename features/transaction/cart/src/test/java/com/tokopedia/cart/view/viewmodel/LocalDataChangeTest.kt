@@ -3,7 +3,6 @@ package com.tokopedia.cart.view.viewmodel
 import com.tokopedia.cartrevamp.view.helper.CartDataHelper
 import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
 import io.mockk.every
-import io.mockk.mockkObject
 import junit.framework.TestCase.assertTrue
 import org.junit.Assert.assertFalse
 import org.junit.Test
@@ -22,7 +21,6 @@ class LocalDataChangeTest : BaseCartViewModelTest() {
             )
         }
 
-        mockkObject(CartDataHelper)
         every { CartDataHelper.getAllCartItemData(any(), any()) } returns cartDataList
 
         // WHEN
@@ -43,7 +41,7 @@ class LocalDataChangeTest : BaseCartViewModelTest() {
                 }
             )
         }
-        mockkObject(CartDataHelper)
+
         every { CartDataHelper.getAllCartItemData(any(), any()) } returns cartDataList
 
         // WHEN
@@ -67,7 +65,6 @@ class LocalDataChangeTest : BaseCartViewModelTest() {
             )
         }
 
-        mockkObject(CartDataHelper)
         every { CartDataHelper.getAllCartItemData(any(), any()) } returns cartDataList
 
         // WHEN
@@ -91,7 +88,6 @@ class LocalDataChangeTest : BaseCartViewModelTest() {
             )
         }
 
-        mockkObject(CartDataHelper)
         every { CartDataHelper.getAllCartItemData(any(), any()) } returns cartDataList
 
         // WHEN

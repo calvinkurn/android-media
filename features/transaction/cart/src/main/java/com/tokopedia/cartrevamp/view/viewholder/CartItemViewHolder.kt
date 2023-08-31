@@ -210,7 +210,6 @@ class CartItemViewHolder constructor(
 
                             data.selectedUnavailableActionId == Action.ACTION_SIMILARPRODUCT && it.id == Action.ACTION_SIMILARPRODUCT -> {
                                 renderActionSimilarProduct(it, data)
-                                renderActionDelete(data)
                             }
 
                             data.selectedUnavailableActionId == Action.ACTION_FOLLOWSHOP && it.id == Action.ACTION_FOLLOWSHOP -> {
@@ -220,6 +219,12 @@ class CartItemViewHolder constructor(
                             data.selectedUnavailableActionId == Action.ACTION_VERIFICATION && it.id == Action.ACTION_VERIFICATION -> {
                                 renderVerification(it, data)
                             }
+                        }
+                    }
+
+                    Action.ACTION_DELETE -> {
+                        if (data.isError) {
+                            renderActionDelete(data)
                         }
                     }
                 }
