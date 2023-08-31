@@ -1,7 +1,7 @@
 package com.tokopedia.stories.view.model
 
 data class StoriesUiState(
-    val storiesGroup: List<StoriesGroupUiModel>,
+    val storiesGroup: StoriesGroupUiModel,
     val storiesDetail: StoriesDetailUiModel,
     val bottomSheetStatus: Map<BottomSheetType, Boolean>
 ) {

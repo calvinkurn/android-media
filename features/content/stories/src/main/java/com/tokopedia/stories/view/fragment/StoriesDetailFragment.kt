@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showToast
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
@@ -31,6 +32,7 @@ import com.tokopedia.stories.view.utils.TouchEventStories
 import com.tokopedia.stories.view.utils.onTouchEventStories
 import com.tokopedia.stories.view.viewmodel.StoriesViewModel
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction
+import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction.ContentIsLoaded
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction.NextDetail
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction.PauseStories
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction.PreviousDetail
@@ -40,7 +42,7 @@ import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
 class StoriesDetailFragment @Inject constructor(
-    private val viewModelFactory: ViewModelProvider.Factory,
+    private val viewModelFactory: ViewModelProvider.Factory
 ) : TkpdBaseV4Fragment() {
 
     private var _binding: FragmentStoriesDetailBinding? = null
@@ -52,7 +54,7 @@ class StoriesDetailFragment @Inject constructor(
     private val mAdapter: StoriesGroupAdapter by lazyThreadSafetyNone {
         StoriesGroupAdapter(object : StoriesGroupAdapter.Listener {
             override fun onClickGroup(position: Int) {
-                viewModelAction(StoriesUiAction.SetGroupMainData(position))
+                viewModelAction(StoriesUiAction.SetGroup(position))
             }
         })
     }
@@ -89,41 +91,78 @@ class StoriesDetailFragment @Inject constructor(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupStoriesView()
-        observeEvent()
-    }
-
-    override fun onResume() {
-        super.onResume()
         setupObserver()
     }
 
     private fun setupObserver() {
-        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+        setupUiStateObserver()
+        setupUiEventObserver()
+    }
+
+    private fun setupUiStateObserver() {
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
             viewModel.uiState.withCache().collectLatest { (prevState, state) ->
-                renderStoriesGroup(prevState?.storiesGroup, state.storiesGroup)
+                renderStoriesGroupHeader(prevState?.storiesGroup, state.storiesGroup)
                 renderStoriesDetail(prevState?.storiesDetail, state.storiesDetail)
                 observeBottomSheetStatus(prevState?.bottomSheetStatus, state.bottomSheetStatus)
             }
         }
     }
 
-    private fun renderStoriesGroup(
-        prevState: List<StoriesGroupUiModel>?,
-        state: List<StoriesGroupUiModel>,
+    private fun setupUiEventObserver() {
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+            viewModel.uiEvent.collectLatest { event ->
+                when (event) {
+                    StoriesUiEvent.OpenKebab -> {
+                        if (groupId != viewModel.groupId) return@collectLatest
+                        StoriesThreeDotsBottomSheet
+                            .getOrCreateFragment(
+                                childFragmentManager,
+                                requireActivity().classLoader
+                            )
+                            .show(childFragmentManager)
+                    }
+                    else -> {}
+                }
+            }
+        }
+    }
+
+    private fun renderStoriesGroupHeader(
+        prevState: StoriesGroupUiModel?,
+        state: StoriesGroupUiModel,
     ) {
-        if (prevState == state) return
-        mAdapter.setItems(state)
+        if (prevState?.groupHeader == state.groupHeader ||
+            groupId != state.selectedGroupId
+        ) return
+
+        mAdapter.setItems(state.groupHeader)
+        mAdapter.notifyItemRangeInserted(mAdapter.itemCount, state.groupHeader.size)
     }
 
     private fun renderStoriesDetail(
         prevState: StoriesDetailUiModel?,
-        state: StoriesDetailUiModel,
+        state: StoriesDetailUiModel
     ) {
-        if (prevState == state || state == StoriesDetailUiModel.Empty) return
+        if (prevState == state ||
+            state == StoriesDetailUiModel() ||
+            state.detailItems.isEmpty() ||
+            state.selectedGroupId != groupId
+        ) return
 
         storiesDetailsTimer(state)
-        binding.ivStoriesDetailContent.setImageUrl(state.imageContent)
         renderAuthor(state)
+
+        val currContent = state.detailItems[state.selectedDetailPosition]
+        if (currContent.isSameContent) return
+
+        binding.ivStoriesDetailContent.apply {
+            setImageUrl(currContent.imageContent)
+            onUrlLoaded = {
+                showStoriesComponent(true)
+                contentIsLoaded()
+            }
+        }
     }
 
     private fun observeBottomSheetStatus(
@@ -140,28 +179,35 @@ class StoriesDetailFragment @Inject constructor(
                 setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
                 setContent {
                     StoriesDetailTimer(
-                        itemCount = viewModel.mDetailMaxInGroup,
-                        data = state,
-                    ) { viewModelAction(NextDetail) }
+                        currentPosition = state.selectedDetailPosition,
+                        itemCount = state.detailItems.size,
+                        data = state.detailItems[state.selectedDetailPosition],
+                    ) {
+                        /** TODO
+                         * all state already updated using the new groupId
+                         * but the oldest data that we left (ui action swipe) still there
+                         * need other way to stop the oldest data if the position is invalid
+                         * it also causing broken timer experience when (ui action swipe)
+                         * invalid -> groupId != viewModel.mGroupId
+                         **/
+                        if (groupId != viewModel.mGroupId) return@StoriesDetailTimer
+                        viewModelAction(NextDetail)
+                    }
                 }
             }
         }
-        isShouldShowStoriesComponent(true)
     }
 
     private fun renderAuthor(state: StoriesDetailUiModel) = with(binding.vStoriesPartner) {
         tvPartnerName.text = state.author.name
         ivIcon.setImageUrl(state.author.thumbnailUrl)
-        btnFollow.setOnClickListener {
-            //TODO(): Follow
-        }
+        btnFollow.gone()
         if (state.author is StoryAuthor.Shop)
             ivBadge.setImageUrl(state.author.badgeUrl)
     }
 
 
     private fun setupStoriesView() = with(binding) {
-        binding.icClose.hide()
         icClose.setOnClickListener {
             activity?.finish()
         }
@@ -173,18 +219,38 @@ class StoriesDetailFragment @Inject constructor(
 
         flStoriesPrev.onTouchEventStories { event ->
             when (event) {
-                TouchEventStories.PAUSE -> pauseStories()
+                TouchEventStories.PAUSE -> {
+                    flStoriesNext.hide()
+                    flStoriesProduct.hide()
+                    showStoriesComponent(false)
+                    pauseStories()
+                }
 
-                TouchEventStories.RESUME -> resumeStories()
+                TouchEventStories.RESUME -> {
+                    flStoriesNext.show()
+                    flStoriesProduct.show()
+                    showStoriesComponent(true)
+                    resumeStories()
+                }
 
                 TouchEventStories.NEXT_PREV -> viewModelAction(PreviousDetail)
             }
         }
         flStoriesNext.onTouchEventStories { event ->
             when (event) {
-                TouchEventStories.PAUSE -> pauseStories()
+                TouchEventStories.PAUSE -> {
+                    flStoriesPrev.hide()
+                    flStoriesProduct.hide()
+                    showStoriesComponent(false)
+                    pauseStories()
+                }
 
-                TouchEventStories.RESUME -> resumeStories()
+                TouchEventStories.RESUME -> {
+                    flStoriesPrev.show()
+                    flStoriesProduct.show()
+                    showStoriesComponent(true)
+                    resumeStories()
+                }
 
                 TouchEventStories.NEXT_PREV -> viewModelAction(NextDetail)
             }
@@ -202,43 +268,23 @@ class StoriesDetailFragment @Inject constructor(
     }
 
     private fun pauseStories() {
-        isShouldShowStoriesComponent(false)
         viewModelAction(PauseStories)
     }
 
     private fun resumeStories() {
-        isShouldShowStoriesComponent(true)
         viewModelAction(ResumeStories)
     }
 
-    private fun isShouldShowStoriesComponent(isShow: Boolean) {
-        binding.icClose.showWithCondition(isShow)
-        binding.rvStoriesCategory.showWithCondition(isShow)
-        binding.cvStoriesDetailTimer.showWithCondition(isShow)
+    private fun contentIsLoaded() {
+        viewModelAction(ContentIsLoaded)
+    }
+
+    private fun showStoriesComponent(isShow: Boolean) {
+        binding.storiesComponent.showWithCondition(isShow)
     }
 
     private fun viewModelAction(event: StoriesUiAction) {
         viewModel.submitAction(event)
-    }
-
-    private fun observeEvent() {
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            viewModel.uiEvent.collectLatest { event ->
-                when (event) {
-                    StoriesUiEvent.OpenKebab -> {
-                        if (groupId != viewModel.groupId) return@collectLatest
-                        StoriesThreeDotsBottomSheet
-                            .getOrCreateFragment(
-                                childFragmentManager,
-                                requireActivity().classLoader
-                            )
-                            .show(childFragmentManager)
-                    }
-
-                    else -> {}
-                }
-            }
-        }
     }
 
     override fun onDestroyView() {
@@ -248,10 +294,11 @@ class StoriesDetailFragment @Inject constructor(
 
     companion object {
         private const val TAG = "StoriesDetailFragment"
+        const val STORY_GROUP_ID = "StoriesGroupId"
 
         fun getFragment(
             fragmentManager: FragmentManager,
-            classLoader: ClassLoader,
+            classLoader: ClassLoader
         ): StoriesDetailFragment {
             val oldInstance = fragmentManager.findFragmentByTag(TAG) as? StoriesDetailFragment
             return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
@@ -260,5 +307,4 @@ class StoriesDetailFragment @Inject constructor(
             ) as StoriesDetailFragment
         }
     }
-
 }

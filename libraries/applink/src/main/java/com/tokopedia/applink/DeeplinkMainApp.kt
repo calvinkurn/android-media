@@ -994,10 +994,6 @@ object DeeplinkMainApp {
                 "shop/{shop_id}",
                 DeeplinkMapperContent::getRegisteredNavigation
             ),
-            DLP.matchPattern(
-                "shop/{shop_id}/{stories_id}",
-                DeeplinkMapperContent::getRegisteredNavigation
-            ),
         ),
         "topads" to mutableListOf(
             DLP.startsWith(

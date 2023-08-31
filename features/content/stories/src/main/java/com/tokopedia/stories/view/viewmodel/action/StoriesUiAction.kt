@@ -8,6 +8,8 @@ sealed interface StoriesUiAction {
     data class SetArgumentsData(val data: Bundle?): StoriesUiAction
     data class SetGroupMainData(val selectedGroup: Int): StoriesUiAction
 
+    data class SetGroup(val selectedGroup: Int): StoriesUiAction
+
     object NextDetail: StoriesUiAction
 
     object PreviousDetail: StoriesUiAction
@@ -23,4 +25,5 @@ sealed interface StoriesUiAction {
     object ShowDeleteDialog : StoriesUiAction
 
     object DeleteStory : StoriesUiAction
+    object ContentIsLoaded: StoriesUiAction
 }
