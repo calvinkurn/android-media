@@ -49,7 +49,8 @@ data class AttributesEmoneyInquiry(
         var issuer_id: Int = 0,
         var operatorId: String = "",
         var pendingBalance: Int = 0,
-        var extraPendingBalance: Boolean = false
+        var extraPendingBalance: Boolean = false,
+        var showAdditionalBalance: Boolean = false
 )
 
 data class EmoneyInquiryError(

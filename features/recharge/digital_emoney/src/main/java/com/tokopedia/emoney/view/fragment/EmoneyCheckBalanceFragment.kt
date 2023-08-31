@@ -165,7 +165,7 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
                 bcaBalanceViewModel.processBCATagBalance(IsoDep.get(tag), TEMP_M_ID, TEMP_T_ID)
             } else if(bcaIsMyCard.strLogRsp.startsWith(GEN_1_CARD)){
                 val dataBalance = bcaLibrary.C_BCACheckBalance()
-                showCardLastBalance(BCAResponseMapper.bcaMapper(dataBalance, true))
+                showCardLastBalance(BCAResponseMapper.bcaMapper(dataBalance, true, pendingBalance = 0))
             } else {
                 context?.let { context ->
                     showError(

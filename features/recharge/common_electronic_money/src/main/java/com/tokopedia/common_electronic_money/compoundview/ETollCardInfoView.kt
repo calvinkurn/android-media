@@ -2,10 +2,12 @@ package com.tokopedia.common_electronic_money.compoundview
 
 import android.content.Context
 import android.graphics.Typeface
+import android.text.Html
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.applink.ApplinkConst
@@ -13,6 +15,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.common_electronic_money.R
 import com.tokopedia.common_electronic_money.data.AttributesEmoneyInquiry
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.BaseCustomView
@@ -50,6 +53,8 @@ class ETollCardInfoView @JvmOverloads constructor(
     private val textCardNumberLoader: LoaderUnify
     private val imageIssuerLoader: LoaderUnify
     private val tickerExtraPendingBalance: Ticker
+    private val viewAdditionalBalance: LinearLayout
+    private val tgAdditionalBalance: Typography
     private lateinit var listener: OnClickCardInfoListener
 
     val cardNumber: String
@@ -79,6 +84,8 @@ class ETollCardInfoView @JvmOverloads constructor(
         textLabelCardNumberLoader = view.findViewById(R.id.text_label_card_number_loader)
         textCardNumberLoader = view.findViewById(R.id.text_card_number_loader)
         tickerExtraPendingBalance = view.findViewById(R.id.tickerExtraPendingBalance)
+        viewAdditionalBalance = view.findViewById(R.id.view_additional_balance)
+        tgAdditionalBalance = view.findViewById(R.id.tg_additional_balance)
     }
 
     fun showCardInfo(attributesEmoneyInquiry: AttributesEmoneyInquiry) {
@@ -109,6 +116,12 @@ class ETollCardInfoView @JvmOverloads constructor(
         } else {
             hideTickerInfo()
         }
+        if (attributesEmoneyInquiry.showAdditionalBalance &&
+            attributesEmoneyInquiry.pendingBalance.isMoreThanZero()) {
+            showAdditionalBalanceInfo(attributesEmoneyInquiry.pendingBalance)
+        } else {
+            hideAdditionalBalanceInfo()
+        }
     }
 
     private fun showTickerInfo() {
@@ -125,6 +138,19 @@ class ETollCardInfoView @JvmOverloads constructor(
 
     private fun hideTickerInfo() {
         tickerExtraPendingBalance.hide()
+    }
+
+    private fun showAdditionalBalanceInfo(pendingBalance: Int) {
+        viewAdditionalBalance.show()
+        val pendingBalanceCurrency = CurrencyFormatUtil
+            .convertPriceValueToIdrFormat(pendingBalance, true)
+        tgAdditionalBalance.text = Html.fromHtml(
+            context.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_bca_additional_balance_view,
+            pendingBalanceCurrency))
+    }
+
+    private fun hideAdditionalBalanceInfo() {
+        viewAdditionalBalance.hide()
     }
 
     fun showLoading() {
@@ -145,6 +171,9 @@ class ETollCardInfoView @JvmOverloads constructor(
         val paramsTextDate = textDate.layoutParams
         paramsTextDate.width = textDate.measuredWidth
         textDate.layoutParams = paramsTextDate
+
+        hideTickerInfo()
+        hideAdditionalBalanceInfo()
     }
 
     fun removeCardInfo() {

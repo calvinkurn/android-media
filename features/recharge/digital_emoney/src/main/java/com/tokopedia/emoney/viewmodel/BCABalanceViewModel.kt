@@ -34,7 +34,7 @@ class BCABalanceViewModel @Inject constructor(
             run {
                 try {
                     val bcaCheckBalanceResult = bcaLibrary.C_BCACheckBalance()
-                    val mappedResult = BCAResponseMapper.bcaMapper(bcaCheckBalanceResult, false, isExtraPendingBalance = false)
+                    val mappedResult = BCAResponseMapper.bcaMapper(bcaCheckBalanceResult, false, isExtraPendingBalance = false, bcaCheckBalanceResult.balance) //TODO Change to pending balance
                     val bcaGetConfig = bcaLibrary.C_BCAGetConfig()
                     val bcaLastTopUp = bcaLibrary.BCAlastBCATopUp()
                     Log.d("SETCONFIGG", bcaSetConfig.strLogRsp+" _hahaha_ "+bcaGetConfig.strConfig+ "_hahahahaha_"+bcaLastTopUp.strLogRsp)

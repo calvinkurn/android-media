@@ -99,9 +99,28 @@
             android:background="@color/Unify_NN50" />
 
         <LinearLayout
+            android:id="@+id/view_additional_balance"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:background="@color/Unify_NN50"
+            >
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tg_additional_balance"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                tools:text="Saldo 50.000 berhasil ditambahkan"
+                app:typographyType="small"
+                android:textColor="@color/Unify_NN600"
+                android:gravity="center"
+                />
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/view_remaining_balance"
             android:layout_width="match_parent"
-            android:layout_height="180dp"
+            android:layout_height="160dp"
             android:layout_marginTop="0.1dp"
             android:gravity="center"
             android:orientation="vertical"
