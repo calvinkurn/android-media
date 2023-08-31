@@ -45,6 +45,7 @@ import com.tokopedia.feedplus.domain.usecase.FeedCampaignCheckReminderUseCase
 import com.tokopedia.feedplus.domain.usecase.FeedCampaignReminderUseCase
 import com.tokopedia.feedplus.domain.usecase.FeedXHomeUseCase
 import com.tokopedia.feedplus.domain.usecase.FeedXRecomWidgetUseCase
+import com.tokopedia.feedplus.presentation.fragment.FeedBaseFragment
 import com.tokopedia.feedplus.presentation.model.FeedAuthorModel
 import com.tokopedia.feedplus.presentation.model.FeedCardCampaignModel
 import com.tokopedia.feedplus.presentation.model.FeedCardCtaModel
@@ -653,7 +654,7 @@ class FeedPostViewModelTest {
         coEvery { feedXHomeUseCase(any()) } returns dummyData
 
         // when
-        viewModel.fetchFeedPosts("", true, postSource = PostSourceModel("1", null, true))
+        viewModel.fetchFeedPosts("", true, postSource = PostSourceModel("1", FeedBaseFragment.TAB_TYPE_CDP))
 
         // then
         assert(!viewModel.shouldShowNoMoreContent)
@@ -677,7 +678,7 @@ class FeedPostViewModelTest {
         coEvery { feedXHomeUseCase(any()) } returns getDummyFeedModel()
 
         // when
-        viewModel.fetchFeedPosts("", postSource = PostSourceModel("1", null, true))
+        viewModel.fetchFeedPosts("", postSource = PostSourceModel("1", FeedBaseFragment.TAB_TYPE_CDP))
 
         // then
         assert(!viewModel.shouldShowNoMoreContent)
@@ -704,7 +705,7 @@ class FeedPostViewModelTest {
         coEvery { feedXHomeUseCase(any()) } returns getDummyFeedModel()
 
         // when
-        viewModel.fetchFeedPosts("", true, PostSourceModel("1", null, false))
+        viewModel.fetchFeedPosts("", true, PostSourceModel("1", null))
 
         // then
         assert(!viewModel.shouldShowNoMoreContent)
