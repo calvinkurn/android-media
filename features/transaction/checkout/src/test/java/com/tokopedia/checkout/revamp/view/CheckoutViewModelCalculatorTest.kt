@@ -143,6 +143,132 @@ class CheckoutViewModelCalculatorTest : BaseCheckoutViewModelTest() {
     }
 
     @Test
+    fun `GIVEN single offer bmgm cart WHEN update cost THEN should calculate cart with bmgm total discount price`() {
+        // Given
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(
+                recipientAddressModel = RecipientAddressModel().apply {
+                    id = "1"
+                    destinationDistrictId = "1"
+                    addressName = "jakarta"
+                    postalCode = "123"
+                    latitude = "123"
+                    longitude = "321"
+                }
+            ),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel(
+                "123",
+                isError = false,
+                quantity = 1,
+                price = 1000.0,
+                isBMGMItem = true,
+                shouldShowBmgmInfo = true,
+                bmgmOfferName = "tokopedia 1",
+                bmgmOfferMessage = listOf("jakarta"),
+                bmgmTotalDiscount = 500.0,
+                bmgmItemPosition = ShipmentMapper.BMGM_ITEM_HEADER
+            ),
+            CheckoutProductModel(
+                "123",
+                isError = false,
+                quantity = 1,
+                price = 2000.0,
+                isBMGMItem = true,
+                shouldShowBmgmInfo = true,
+                bmgmOfferName = "tokopedia 2",
+                bmgmOfferMessage = listOf("medan"),
+                bmgmTotalDiscount = 500.0,
+                bmgmItemPosition = ShipmentMapper.BMGM_ITEM_DEFAULT
+            ),
+            CheckoutOrderModel("123"),
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+
+        // When
+        viewModel.calculateTotal()
+
+        // Then
+        assertEquals(2500.0, viewModel.listData.value.cost()!!.finalItemPrice, 0.0)
+        assertEquals(2, viewModel.listData.value.cost()!!.totalItem)
+    }
+
+    @Test
+    fun `GIVEN multi offer bmgm cart WHEN update cost THEN should calculate cart with bmgm total with correct discount price`() {
+        // Given
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(
+                recipientAddressModel = RecipientAddressModel().apply {
+                    id = "1"
+                    destinationDistrictId = "1"
+                    addressName = "jakarta"
+                    postalCode = "123"
+                    latitude = "123"
+                    longitude = "321"
+                }
+            ),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel(
+                "123",
+                isError = false,
+                quantity = 1,
+                price = 1000.0,
+                isBMGMItem = true,
+                shouldShowBmgmInfo = true,
+                bmgmOfferName = "tokopedia 1",
+                bmgmOfferMessage = listOf("jakarta"),
+                bmgmTotalDiscount = 500.0,
+                bmgmItemPosition = ShipmentMapper.BMGM_ITEM_HEADER
+            ),
+            CheckoutProductModel(
+                "123",
+                isError = false,
+                quantity = 1,
+                price = 2000.0,
+                isBMGMItem = true,
+                shouldShowBmgmInfo = false,
+                bmgmOfferName = "tokopedia 2",
+                bmgmOfferMessage = listOf("jakarta"),
+                bmgmTotalDiscount = 500.0,
+                bmgmItemPosition = ShipmentMapper.BMGM_ITEM_DEFAULT
+            ),
+            CheckoutProductModel(
+                "123",
+                isError = false,
+                quantity = 1,
+                price = 1000.0,
+                isBMGMItem = true,
+                shouldShowBmgmInfo = true,
+                bmgmOfferName = "tokopedia 3",
+                bmgmOfferMessage = listOf("medan"),
+                bmgmTotalDiscount = 600.0,
+                bmgmItemPosition = ShipmentMapper.BMGM_ITEM_HEADER
+            ),
+            CheckoutOrderModel("123"),
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+
+        // When
+        viewModel.calculateTotal()
+
+        // Then
+        assertEquals(2900.0, viewModel.listData.value.cost()!!.finalItemPrice, 0.0)
+        assertEquals(3, viewModel.listData.value.cost()!!.totalItem)
+    }
+
+    @Test
     fun `GIVEN add ons product level cart WHEN update cost THEN should calculate cart with add ons product level price`() {
         // Given
         viewModel.listData.value = listOf(

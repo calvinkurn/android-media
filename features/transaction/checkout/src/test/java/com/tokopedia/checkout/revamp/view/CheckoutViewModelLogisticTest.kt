@@ -1,5 +1,6 @@
 package com.tokopedia.checkout.revamp.view
 
+import com.tokopedia.checkout.domain.mapper.ShipmentMapper
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutAddressModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutButtonPaymentModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCostModel
@@ -107,6 +108,62 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             ).apply { warehouseId("0") }.build(),
             ratesParam
         )
+    }
+
+    @Test
+    fun `GIVEN bmgm in cart WHEN get shipping rates THEN should calculate orderValue with bmgm discount`() {
+        // given
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(
+                recipientAddressModel = RecipientAddressModel().apply {
+                    id = "1"
+                    destinationDistrictId = "1"
+                    addressName = "jakarta"
+                    postalCode = "123"
+                    latitude = "123"
+                    longitude = "321"
+                }
+            ),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel(
+                "123",
+                isError = false,
+                quantity = 1,
+                price = 1000.0,
+                isBMGMItem = true,
+                shouldShowBmgmInfo = true,
+                bmgmOfferName = "tokopedia 1",
+                bmgmOfferMessage = listOf("jakarta"),
+                bmgmTotalDiscount = 500.0,
+                bmgmItemPosition = ShipmentMapper.BMGM_ITEM_HEADER
+            ),
+            CheckoutProductModel(
+                "123",
+                isError = false,
+                quantity = 1,
+                price = 2000.0,
+                isBMGMItem = true,
+                shouldShowBmgmInfo = true,
+                bmgmOfferName = "tokopedia 2",
+                bmgmOfferMessage = listOf("medan"),
+                bmgmTotalDiscount = 500.0,
+                bmgmItemPosition = ShipmentMapper.BMGM_ITEM_DEFAULT
+            ),
+            CheckoutOrderModel("123"),
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+
+        // when
+        val ratesParam = viewModel.generateRatesParam(CheckoutOrderModel("123"), "")
+
+        // then
+        assertEquals("2500", ratesParam.order_value)
     }
 
     @Test
