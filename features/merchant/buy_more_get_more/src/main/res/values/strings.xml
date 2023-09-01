@@ -1,7 +1,7 @@
 <resources>
 
     <!--    OLP Header-->
-    <string name="bmgm_title">Buy More Get More</string>
+    <string name="bmgm_title">Buy More Save More</string>
     <string name="bmgm_product_count_placeholder">%S Produk</string>
     <string name="bmgm_tier_info_placeholder"><![CDATA[Beli %d <b>diskon %2d&#37;</b>]]></string>
     <string name="bmgb_bullet_symbol">&#8226;</string>

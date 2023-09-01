@@ -4,7 +4,7 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-class EgoldAttributeModel(
+data class EgoldAttributeModel(
     var isEligible: Boolean = false,
     var isTiering: Boolean = false,
     var minEgoldRange: Int = 0,
@@ -19,5 +19,6 @@ class EgoldAttributeModel(
     var isEnabled: Boolean = true,
     var hyperlinkText: String? = null,
     var hyperlinkUrl: String? = null,
-    var isShowHyperlink: Boolean = false
+    var isShowHyperlink: Boolean = false,
+    var iconUrl: String = ""
 ) : Parcelable

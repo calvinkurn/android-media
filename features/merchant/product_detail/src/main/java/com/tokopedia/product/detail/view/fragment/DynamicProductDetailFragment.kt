@@ -3694,7 +3694,6 @@ open class DynamicProductDetailFragment :
             deselectedAddonsIds = addonsIds[2] ?: emptyList(),
             isFulfillment = cartDataModel.isFulfillment,
             selectedAddonsIds = addonsIds[1] ?: emptyList(),
-            warehouseId = cartDataModel.warehouseId,
             quantity = cartDataModel.quantity
         )
 
@@ -3703,6 +3702,7 @@ open class DynamicProductDetailFragment :
             layoutId = postAtcLayout.layoutId,
             pageSource = PostAtcParams.Source.PDP.name,
             session = postAtcLayout.postAtcSession,
+            warehouseId = cartDataModel.warehouseId,
             addons = addons
         )
 

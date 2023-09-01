@@ -10,7 +10,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/Unify_NN0" >
+        android:background="@color/Unify_NN0">
 
         <View
             android:id="@+id/header_background"
@@ -20,58 +20,80 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/status_bar" />
 
-    <View
-        android:id="@+id/status_bar"
-        android:layout_width="match_parent"
-        android:layout_height="32dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <com.tokopedia.buy_more_get_more.olp.common.customview.OlpToolbar
-        android:id="@+id/header"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/status_bar" />
-
-    <include
-        android:id="@+id/loading_state_olp"
-        layout="@layout/loading_state_olp"
-        android:visibility="gone" />
-
-    <com.tokopedia.buy_more_get_more.olp.view.widget.StickySingleHeaderView
-        android:id="@+id/sticky_content"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/miniCartView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/header">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_olp"
+        <View
+            android:id="@+id/header_overlay"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clipChildren="false"
-            android:clipToPadding="false"
-            android:focusable="false"
-            android:focusableInTouchMode="false" />
+            android:layout_height="190dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:background="@color/Unify_Static_Black"
+            android:alpha="0.48"
+            app:layout_constraintTop_toTopOf="@+id/status_bar"
+            app:layout_constraintBottom_toBottomOf="@+id/header_background"/>
 
-    </com.tokopedia.buy_more_get_more.olp.view.widget.StickySingleHeaderView>
+        <View
+            android:id="@+id/status_bar"
+            android:layout_width="match_parent"
+            android:layout_height="32dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.buy_more_get_more.olp.common.customview.OlpToolbar
+            android:id="@+id/header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/status_bar" />
+
+        <include
+            android:id="@+id/loading_state_olp"
+            layout="@layout/loading_state_olp"
+            android:visibility="gone" />
+
+        <com.tokopedia.buy_more_get_more.olp.view.widget.StickySingleHeaderView
+            android:id="@+id/sticky_content"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/miniCartBarrier"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/header">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_olp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false" />
+
+        </com.tokopedia.buy_more_get_more.olp.view.widget.StickySingleHeaderView>
+
+        <View
+            android:id="@+id/miniCartBarrier"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/miniCartView"
+            app:layout_constraintVertical_bias="0" />
 
         <com.tokopedia.minicart.bmgm.presentation.customview.BmgmMiniCartView
             android:id="@+id/miniCartView"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             tools:layout_height="60dp" />
 
-        <com.tokopedia.empty_state.EmptyStateUnify
+        <com.tokopedia.globalerror.GlobalError
             android:id="@+id/errorPageLarge"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -80,11 +102,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/header"
-            app:layout_constraintVertical_bias="0.3"
-            app:unifyEmptyStateDescription="test"
-            app:unifyEmptyStateImageUrl="https://images.tokopedia.net/android/merchant_voucher/il_mvc_no_result.webp"
-            app:unifyEmptyStatePrimaryCTAText="test"
-            app:unifyEmptyStateTitle="" />
+            app:layout_constraintVertical_bias="0.3" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>

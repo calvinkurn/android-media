@@ -5,6 +5,7 @@ import androidx.core.view.marginEnd
 import androidx.core.view.marginStart
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.dpToPx
+import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.setMargin
@@ -12,6 +13,8 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.minicart.R
 import com.tokopedia.minicart.bmgm.presentation.model.MiniCartDetailUiModel
 import com.tokopedia.minicart.databinding.ItemBmgmMiniCartDetailProductBinding
+import com.tokopedia.utils.view.DarkModeUtil
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created by @ilhamsuaib on 31/07/23.
@@ -23,7 +26,7 @@ class BmgmMiniCartDetailProductViewHolder(
 
     companion object {
         val RES_LAYOUT = R.layout.item_bmgm_mini_cart_detail_product
-        private const val PRODUCT_NAME_FORMAT = "<b>%sx</b> %s"
+        private const val PRODUCT_NAME_FORMAT = "<font color=\"%s\"><b>%sx</b></font> %s"
     }
 
     private val binding = ItemBmgmMiniCartDetailProductBinding.bind(itemView)
@@ -35,12 +38,15 @@ class BmgmMiniCartDetailProductViewHolder(
     private fun showProduct(element: MiniCartDetailUiModel.Product) {
         with(binding) {
             val product = element.product
+            val colorStr = DarkModeUtil.getDmsHexColorByIntColor(
+                root.context.getResColor(unifyprinciplesR.color.Unify_NN950)
+            )
             val productName = String.format(
-                PRODUCT_NAME_FORMAT, product.quantity.toString(), product.productName
-            ).parseAsHtml()
-            tvBmgmDetailProductName.text = productName
+                PRODUCT_NAME_FORMAT, colorStr, product.quantity.toString(), product.productName
+            )
+            tvBmgmDetailProductName.text = productName.parseAsHtml()
             tvBmgmDetailProductPrice.text = product.getProductPriceFmt()
-            dividerBmgmDetailProduct.isVisible = element.isDiscountedProduct
+            dividerBmgmDetailProduct.isVisible = element.showVerticalDivider
             showProductImage(element)
         }
     }
@@ -50,7 +56,7 @@ class BmgmMiniCartDetailProductViewHolder(
             val product = element.product
             loadImage(product.productImage)
 
-            if (element.isDiscountedProduct) {
+            if (element.showVerticalDivider) {
                 val topMargin = if (element.showTopSpace) {
                     context.dpToPx(8)
                 } else {

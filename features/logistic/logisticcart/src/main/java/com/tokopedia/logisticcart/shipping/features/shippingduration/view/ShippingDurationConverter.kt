@@ -12,6 +12,7 @@ import com.tokopedia.logisticcart.shipping.model.DynamicPriceModel
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.MerchantVoucherModel
 import com.tokopedia.logisticcart.shipping.model.PreOrderModel
+import com.tokopedia.logisticcart.shipping.model.ProductShipmentDetailModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
@@ -29,20 +30,16 @@ class ShippingDurationConverter @Inject constructor() {
         val shippingRecommendationData = ShippingRecommendationData()
 
         // Check response not null
-        if (ratesData != null && ratesData.ratesDetailData != null) {
+        if (ratesData?.ratesDetailData != null) {
             // Check if has error
-            if (ratesData.ratesDetailData.error != null &&
-                !ratesData.ratesDetailData.error.errorMessage.isNullOrEmpty()
-            ) {
+            if (ratesData.ratesDetailData.error.errorMessage.isNotEmpty()) {
                 shippingRecommendationData.errorMessage =
                     ratesData.ratesDetailData.error.errorMessage
                 shippingRecommendationData.errorId = ratesData.ratesDetailData.error.errorId
             }
 
             // Check has service / duration list
-            if (ratesData.ratesDetailData.services != null &&
-                ratesData.ratesDetailData.services.isNotEmpty()
-            ) {
+            if (ratesData.ratesDetailData.services.isNotEmpty()) {
                 // Setting up for Logistic Promo
                 shippingRecommendationData.logisticPromo = convertToPromoModel(
                     ratesData.ratesDetailData.listPromoStacking.firstOrNull()
@@ -53,8 +50,8 @@ class ShippingDurationConverter @Inject constructor() {
                     ratesData.ratesDetailData.listPromoStacking.mapNotNull { convertToPromoModel(it) }
 
                 // Setting up for Logistic Pre Order
-                shippingRecommendationData.preOrderModel =
-                    convertToPreOrderModel(ratesData.ratesDetailData.preOrder)
+                shippingRecommendationData.productShipmentDetailModel =
+                    convertShipmentDetailData(ratesData.ratesDetailData)
 
                 // Has service / duration list
                 shippingRecommendationData.shippingDurationUiModels =
@@ -64,14 +61,24 @@ class ShippingDurationConverter @Inject constructor() {
         return shippingRecommendationData
     }
 
+    private fun convertShipmentDetailData(ratesDetailData: RatesDetailData): ProductShipmentDetailModel? {
+        return if (ratesDetailData.weight.isEmpty() && ratesDetailData.originData.cityName.isEmpty() && !ratesDetailData.preOrder.display) {
+            null
+        } else {
+            ProductShipmentDetailModel(
+                weight = ratesDetailData.weight,
+                originCity = ratesDetailData.originData.cityName,
+                preOrderModel = convertToPreOrderModel(ratesDetailData.preOrder)
+            )
+        }
+    }
+
     private fun convertShippingDuration(ratesDetailData: RatesDetailData): List<ShippingDurationUiModel> {
         val serviceDataList = ratesDetailData.services
         val ratesId = ratesDetailData.ratesId
         // Check if has blackbox info
         var blackboxInfo = ""
-        if (ratesDetailData.info != null && ratesDetailData.info.blackboxInfo != null &&
-            !ratesDetailData.info.blackboxInfo.textInfo.isNullOrEmpty()
-        ) {
+        if (ratesDetailData.info.blackboxInfo.textInfo.isNotEmpty()) {
             blackboxInfo = ratesDetailData.info.blackboxInfo.textInfo
         }
         val shippingDurationUiModels: MutableList<ShippingDurationUiModel> = ArrayList()
@@ -86,7 +93,7 @@ class ShippingDurationConverter @Inject constructor() {
                 serviceData.products,
                 ratesId,
                 blackboxInfo,
-                convertToPreOrderModel(ratesDetailData.preOrder)
+                convertShipmentDetailData(ratesDetailData),
             )
             shippingDurationUiModel.serviceData.isUiRatesHidden =
                 shippingDurationUiModel.serviceData.isUiRatesHidden || (shippingDurationUiModel.serviceData.selectedShipperProductId == 0 && shippingCourierUiModels.all { it.productData.isUiRatesHidden })
@@ -94,34 +101,28 @@ class ShippingDurationConverter @Inject constructor() {
             if (shippingCourierUiModels.isNotEmpty()) {
                 shippingDurationUiModels.add(shippingDurationUiModel)
             }
-            if (serviceData.error != null && !serviceData.error.errorMessage.isNullOrEmpty()) {
+            if (serviceData.error.errorMessage.isNotEmpty()) {
                 if (serviceData.error.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED) {
                     serviceData.texts.textRangePrice = serviceData.error.errorMessage
                 } else {
                     shippingDurationUiModel.errorMessage = serviceData.error.errorMessage
                 }
             }
-            if (serviceData.codData != null) {
-                shippingDurationUiModel.isCodAvailable = serviceData.codData.isCod == COD_TRUE_VAL
-                shippingDurationUiModel.codText = serviceData.codData.codText
-            }
-            if (serviceData.merchantVoucherData != null) {
-                val merchantVoucherData = serviceData.merchantVoucherData
-                val merchantVoucherModel = MerchantVoucherModel(
-                    merchantVoucherData.isMvc,
-                    merchantVoucherData.mvcTitle,
-                    merchantVoucherData.mvcLogo,
-                    merchantVoucherData.mvcErrorMessage
-                )
-                shippingDurationUiModel.merchantVoucherModel = merchantVoucherModel
-            }
-            if (serviceData.features != null) {
-                val featuresData = serviceData.features
-                val dynamicPriceModel = DynamicPriceModel(
-                    featuresData.dynamicPricing.textLabel
-                )
-                shippingDurationUiModel.dynamicPriceModel = dynamicPriceModel
-            }
+            shippingDurationUiModel.isCodAvailable = serviceData.codData.isCod == COD_TRUE_VAL
+            shippingDurationUiModel.codText = serviceData.codData.codText
+            val merchantVoucherData = serviceData.merchantVoucherData
+            val merchantVoucherModel = MerchantVoucherModel(
+                merchantVoucherData.isMvc,
+                merchantVoucherData.mvcTitle,
+                merchantVoucherData.mvcLogo,
+                merchantVoucherData.mvcErrorMessage
+            )
+            shippingDurationUiModel.merchantVoucherModel = merchantVoucherModel
+            val featuresData = serviceData.features
+            val dynamicPriceModel = DynamicPriceModel(
+                featuresData.dynamicPricing.textLabel
+            )
+            shippingDurationUiModel.dynamicPriceModel = dynamicPriceModel
         }
         return shippingDurationUiModels
     }
@@ -139,7 +140,7 @@ class ShippingDurationConverter @Inject constructor() {
         productDataList: List<ProductData>,
         ratesId: String,
         blackboxInfo: String,
-        preOrderModel: PreOrderModel?
+        productShipmentDetailModel: ProductShipmentDetailModel?
     ): List<ShippingCourierUiModel> {
         val shippingCourierUiModels: MutableList<ShippingCourierUiModel> = ArrayList()
         for (productData in productDataList) {
@@ -149,7 +150,7 @@ class ShippingDurationConverter @Inject constructor() {
                 shippingCourierUiModels,
                 productData,
                 blackboxInfo,
-                preOrderModel
+                productShipmentDetailModel
             )
         }
         return shippingCourierUiModels
@@ -161,16 +162,16 @@ class ShippingDurationConverter @Inject constructor() {
         shippingCourierUiModels: MutableList<ShippingCourierUiModel>,
         productData: ProductData,
         blackboxInfo: String,
-        preOrderModel: PreOrderModel?
+        productShipmentDetailModel: ProductShipmentDetailModel?
     ) {
         val shippingCourierUiModel = ShippingCourierUiModel()
         shippingCourierUiModel.productData = productData
         shippingCourierUiModel.blackboxInfo = blackboxInfo
         shippingCourierUiModel.serviceData = shippingDurationUiModel.serviceData
         shippingCourierUiModel.ratesId = ratesId
-        shippingCourierUiModel.preOrderModel = preOrderModel
+        shippingCourierUiModel.productShipmentDetailModel = productShipmentDetailModel
         shippingCourierUiModel.productData.isRecommend =
-            productData.isRecommend && (productData.error?.errorMessage?.isEmpty() != false)
+            productData.isRecommend && (productData.error.errorMessage.isEmpty())
         shippingCourierUiModels.add(shippingCourierUiModel)
     }
 
@@ -210,7 +211,9 @@ class ShippingDurationConverter @Inject constructor() {
             gson.toJson(promo.freeShippingMetadata),
             promo.freeShippingMetadata.benefitClass,
             promo.freeShippingMetadata.shippingSubsidy,
-            promo.boCampaignId
+            promo.boCampaignId,
+            promo.quotaMessage,
+            promo.imageUrlChosen
         )
     }
 

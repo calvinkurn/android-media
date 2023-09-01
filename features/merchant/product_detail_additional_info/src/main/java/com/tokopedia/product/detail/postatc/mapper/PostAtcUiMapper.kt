@@ -60,7 +60,7 @@ private fun toAddonsUiModel(
             cartId = postAtcInfo.cartId,
             title = data.title,
             productId = postAtcInfo.productId,
-            warehouseId = addons.warehouseId,
+            warehouseId = postAtcInfo.warehouseId,
             isFulfillment = addons.isFulfillment,
             selectedAddonsIds = addons.selectedAddonsIds,
             deselectedAddonsIds = addons.deselectedAddonsIds,

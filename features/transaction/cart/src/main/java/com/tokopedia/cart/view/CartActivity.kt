@@ -3,7 +3,10 @@ package com.tokopedia.cart.view
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.cart.R
+import com.tokopedia.cartrevamp.view.CartRevampFragment
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutActivity
+import com.tokopedia.purchase_platform.common.revamp.CartCheckoutRevampRollenceManager
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.telemetry.ITelemetryActivity
 
 class CartActivity :
@@ -11,6 +14,7 @@ class CartActivity :
     ITelemetryActivity {
 
     private var fragment: CartFragment? = null
+    private var revampFragment: CartRevampFragment? = null
     private var cartId: String? = null
     private var productId: Long = 0L
 
@@ -36,6 +40,8 @@ class CartActivity :
     override fun onBackPressed() {
         if (fragment != null) {
             fragment?.onBackPressed()
+        } else if (revampFragment != null) {
+            revampFragment?.onBackPressed()
         } else {
             finish()
         }
@@ -50,8 +56,14 @@ class CartActivity :
         bundle.putString(EXTRA_CART_ID, cartId)
         bundle.putLong(EXTRA_PRODUCT_ID, productId)
         bundle.putBoolean(EXTRA_IS_FROM_CART_ACTIVITY, true)
-        fragment = CartFragment.newInstance(bundle, "")
-        return fragment
+        val isRevamp = CartCheckoutRevampRollenceManager(RemoteConfigInstance.getInstance().abTestPlatform).isRevamp()
+        return if (isRevamp) {
+            revampFragment = CartRevampFragment.newInstance(bundle, "")
+            revampFragment
+        } else {
+            fragment = CartFragment.newInstance(bundle, "")
+            fragment
+        }
     }
 
     companion object {

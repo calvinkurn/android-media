@@ -8,13 +8,18 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.buy_more_get_more.databinding.BmgmBottomSheetTncBinding
 import com.tokopedia.buy_more_get_more.olp.presentation.bottomsheet.adapter.TncAdapter
+import com.tokopedia.buy_more_get_more.olp.presentation.bottomsheet.listener.TncListener
 import com.tokopedia.buy_more_get_more.olp.utils.BundleConstant
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import java.util.*
+import kotlin.collections.ArrayList
 
-class TncBottomSheet: BottomSheetUnify() {
+class TncBottomSheet : BottomSheetUnify(), TncListener {
 
     companion object {
         @JvmStatic
@@ -55,7 +60,7 @@ class TncBottomSheet: BottomSheetUnify() {
 
     private fun RecyclerView.setupTnc() {
         layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        adapter = TncAdapter().apply {
+        adapter = TncAdapter(this@TncBottomSheet).apply {
             setDataList(tnc ?: return)
         }
     }
@@ -65,6 +70,12 @@ class TncBottomSheet: BottomSheetUnify() {
         show(fragment.childFragmentManager, "")
     }
 
+    override fun onClickedTncUrl(url: String) {
+        RouteManager.route(
+            context,
+            String.format(Locale.getDefault(), "%s?url=%s", ApplinkConst.WEBVIEW, url)
+        )
+    }
 }
 
 

@@ -40,7 +40,7 @@ import com.tokopedia.campaign.delegates.HasPaginatedList
 import com.tokopedia.campaign.delegates.HasPaginatedListImpl
 import com.tokopedia.campaign.helper.BuyMoreGetMoreHelper
 import com.tokopedia.campaign.utils.extension.showToaster
-import com.tokopedia.imageassets.TokopediaImageUrl
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.toLongSafely
@@ -52,6 +52,10 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import com.tokopedia.utils.resources.isDarkMode
+import java.net.ConnectException
+import java.net.SocketException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 class OfferLandingPageFragment :
@@ -145,6 +149,8 @@ class OfferLandingPageFragment :
     override fun onResume() {
         super.onResume()
 //        loadInitialData()
+        viewModel.processEvent(OlpEvent.GetNotification)
+        fetchMiniCart()
     }
 
     override fun onCreateView(
@@ -158,6 +164,7 @@ class OfferLandingPageFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initMiniCart()
         setupObservables()
         setupProductRv()
         swipeRefreshLayout = binding?.swLayout
@@ -166,6 +173,10 @@ class OfferLandingPageFragment :
             isEnabled = true
             setOnRefreshListener { loadInitialData() }
         }
+    }
+
+    private fun initMiniCart() {
+        binding?.miniCartView?.init(lifecycleOwner = viewLifecycleOwner)
     }
 
     private fun setupObservables() {
@@ -203,25 +214,31 @@ class OfferLandingPageFragment :
                 is Success -> {
                     binding?.apply {
                         miniCartView.showToaster(atc.data.data.message.firstOrNull().orEmpty())
-                        fetchMiniCart()
+                        miniCartView.refreshAfterAtC()
                     }
                     viewModel.processEvent(OlpEvent.GetNotification)
                 }
 
                 is Fail -> {
                     binding?.miniCartView.showToaster(message = atc.throwable.localizedMessage)
+                    setDefaultErrorSelection(atc.throwable)
                 }
             }
         }
 
         viewModel.error.observe(viewLifecycleOwner) { throwable ->
-            setViewState(VIEW_ERROR)
+            setDefaultErrorSelection(throwable)
         }
     }
 
     private fun setupHeader(offerInfoForBuyer: OfferInfoForBuyerUiModel) {
         setupToolbar(offerInfoForBuyer)
         binding?.headerBackground?.setBackgroundResource(R.drawable.olp_header)
+        if (activity?.isDarkMode() == true) {
+            binding?.headerOverlay?.visible()
+        } else {
+            binding?.headerOverlay?.gone()
+        }
         olpAdapter?.submitList(
             newList = listOf(
                 offerInfoForBuyer,
@@ -253,6 +270,7 @@ class OfferLandingPageFragment :
     }
 
     private fun renderSortFilter(sortId: String, sortName: String) {
+        resetPaging()
         olpAdapter?.apply {
             changeSelectedSortFilter(sortId, sortName)
             removeProductList()
@@ -268,6 +286,7 @@ class OfferLandingPageFragment :
 
     override fun loadInitialData() {
         setViewState(VIEW_LOADING)
+        resetPaging()
         viewModel.processEvent(
             OlpEvent.SetInitialUiState(
                 offerIds = listOf(offerId.toLongSafely()),
@@ -311,6 +330,7 @@ class OfferLandingPageFragment :
             }
         }
         AtcVariantHelper.onActivityResultAtcVariant(requireContext(), requestCode, data) {
+            fetchMiniCart()
         }
     }
 
@@ -360,6 +380,7 @@ class OfferLandingPageFragment :
                     statusBar.gone()
                     header.gone()
                     headerBackground.gone()
+                    headerOverlay.gone()
                     stickyContent.gone()
                     errorPageLarge.gone()
                     miniCartView.gone()
@@ -367,14 +388,14 @@ class OfferLandingPageFragment :
             }
 
             VIEW_ERROR -> {
-                context?.let { activity?.setDefaultStatusBar(it) }
+                activity?.setDefaultStatusBar()
                 viewModel.processEvent(OlpEvent.GetNotification)
                 when (status) {
                     Status.INVALID_OFFER_ID -> {
                         setErrorPage(
                             title = getString(R.string.bmgm_title_error_not_found),
                             description = getString(R.string.bmgm_description_error_not_found),
-                            imageUrl = TokopediaImageUrl.OLP_GLOBAL_ERROR_ILLUSTRATION,
+                            errorType = GlobalError.PAGE_NOT_FOUND,
                             primaryCtaText = getString(R.string.bmgm_cta_text_error_not_found),
                             primaryCtaAction = { loadInitialData() }
                         )
@@ -384,7 +405,7 @@ class OfferLandingPageFragment :
                         setErrorPage(
                             title = getString(R.string.bmgm_title_error_ended_promo),
                             description = getString(R.string.bmgm_description_error_ended_promo),
-                            imageUrl = TokopediaImageUrl.OLP_GLOBAL_ERROR_ILLUSTRATION,
+                            errorType = GlobalError.PAGE_NOT_FOUND,
                             primaryCtaText = getString(R.string.bmgm_cta_text_error_ended_promo),
                             primaryCtaAction = { activity?.finish() }
                         )
@@ -394,9 +415,19 @@ class OfferLandingPageFragment :
                         setErrorPage(
                             title = getString(R.string.bmgm_title_error_out_of_stock),
                             description = getString(R.string.bmgm_description_error_out_of_stock),
-                            imageUrl = TokopediaImageUrl.OLP_GLOBAL_ERROR_ILLUSTRATION,
+                            errorType = GlobalError.PAGE_NOT_FOUND,
                             primaryCtaText = getString(R.string.bmgm_cta_text_error_out_of_stock),
                             primaryCtaAction = { activity?.finish() }
+                        )
+                    }
+
+                    Status.NO_CONNECTION -> {
+                        setErrorPage(
+                            title = getString(R.string.bmgm_title_error_no_internet_connection),
+                            description = getString(R.string.bmgm_description_error_no_internet_connection),
+                            errorType = GlobalError.NO_CONNECTION,
+                            primaryCtaText = getString(R.string.bmgm_cta_text_error_no_internet_connection),
+                            primaryCtaAction = { loadInitialData() }
                         )
                     }
 
@@ -404,7 +435,7 @@ class OfferLandingPageFragment :
                         setErrorPage(
                             title = getString(R.string.bmgm_title_error_server),
                             description = getString(R.string.bmgm_description_error_server),
-                            imageUrl = TokopediaImageUrl.OLP_SERVER_ERROR_ILLUSTRATION,
+                            errorType = GlobalError.SERVER_ERROR,
                             primaryCtaText = getString(R.string.bmgm_cta_text_error_server),
                             primaryCtaAction = { loadInitialData() }
                         )
@@ -430,7 +461,7 @@ class OfferLandingPageFragment :
     private fun setErrorPage(
         title: String,
         description: String,
-        imageUrl: String,
+        errorType: Int,
         primaryCtaText: String,
         primaryCtaAction: () -> Unit
     ) {
@@ -441,11 +472,11 @@ class OfferLandingPageFragment :
             stickyContent.gone()
             errorPageLarge.apply {
                 visible()
-                setTitle(title)
-                setDescription(description)
-                setImageUrl(imageUrl)
-                setPrimaryCTAText(primaryCtaText)
-                setPrimaryCTAClickListener {
+                setType(errorType)
+                errorTitle.text = title
+                errorDescription.text = description
+                errorAction.text = primaryCtaText
+                setActionClickListener {
                     primaryCtaAction.invoke()
                 }
             }
@@ -491,12 +522,14 @@ class OfferLandingPageFragment :
     private fun openAtcVariant(product: OfferProductListUiModel.Product) {
         val stringOfferIds = viewModel.currentState.offerIds.joinToString(",")
         val stringWarehouseIds = viewModel.currentState.warehouseIds.joinToString(",")
+        val shopId = viewModel.currentState.shopData.shopId
         context?.let {
             AtcVariantHelper.goToAtcVariant(
                 context = it,
                 productId = product.productId.toString(),
                 pageSource = VariantPageSource.BUY_MORE_GET_MORE,
-                shopId = shopIds,
+                shopId = shopId.toString(),
+                dismissAfterTransaction = true,
                 extParams = AtcVariantHelper.generateExtParams(
                     mapOf(
                         Constant.EXT_PARAM_OFFER_ID to stringOfferIds,
@@ -511,6 +544,7 @@ class OfferLandingPageFragment :
     private fun fetchMiniCart() {
         val currentUiState = viewModel.currentState
         binding?.miniCartView?.fetchData(
+            shopIds = listOf(currentUiState.shopData.shopId),
             offerIds = currentUiState.offerIds,
             offerJsonData = currentUiState.offeringJsonData,
             warehouseIds = currentUiState.warehouseIds.map { it.toString() }
@@ -563,6 +597,17 @@ class OfferLandingPageFragment :
         context?.let {
             val intent = RouteManager.getIntent(it, ApplinkConst.LOGIN)
             startActivityForResult(intent, requestCode)
+        }
+    }
+
+    private fun setDefaultErrorSelection(throwable: Throwable) {
+        when (throwable) {
+            is ConnectException, is SocketException, is UnknownHostException -> {
+                setViewState(VIEW_ERROR, Status.NO_CONNECTION)
+            }
+            else -> {
+                setViewState(VIEW_ERROR)
+            }
         }
     }
 

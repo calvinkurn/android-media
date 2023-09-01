@@ -19,7 +19,7 @@ sealed interface MiniCartDetailUiModel : Visitable<BmgmMiniCartDetailAdapterFact
     }
 
     data class Product(
-        val isDiscountedProduct: Boolean,
+        val showVerticalDivider: Boolean,
         val product: BmgmCommonDataModel.ProductModel,
         val showTopSpace: Boolean = false,
         val showBottomSpace: Boolean = false
