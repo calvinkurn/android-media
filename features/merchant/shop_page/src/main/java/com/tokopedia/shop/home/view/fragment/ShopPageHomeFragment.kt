@@ -5113,26 +5113,26 @@ open class ShopPageHomeFragment :
     }
 
     override fun onAddButtonProductDirectPurchaseClick(data: ProductCardDirectPurchaseDataModel) {
-        if (isLogin) {
-            if (isOwner) {
-                val sellerViewAtcErrorMessage = getString(R.string.shop_page_seller_atc_error_message)
-                showErrorToast(sellerViewAtcErrorMessage)
+        if(isOwner){
+            val sellerViewAtcErrorMessage = getString(R.string.shop_page_seller_atc_error_message)
+            showErrorToast(sellerViewAtcErrorMessage)
+        } else {
+            if(data.isVariant){
+                AtcVariantHelper.goToAtcVariant(
+                    context = requireContext(),
+                    productId = data.productId,
+                    pageSource = VariantPageSource.SHOP_PAGE_PAGESOURCE,
+                    shopId = shopId,
+                    startActivitResult = this::startActivityForResult,
+                    showQuantityEditor = false
+                )
             } else {
-                if(data.isVariant){
-                    AtcVariantHelper.goToAtcVariant(
-                        context = requireContext(),
-                        productId = data.productId,
-                        pageSource = VariantPageSource.SHOP_PAGE_PAGESOURCE,
-                        shopId = shopId,
-                        startActivitResult = this::startActivityForResult,
-                        showQuantityEditor = false
-                    )
-                } else {
+                if (isLogin) {
                     addToCartDirectPurchaseProductWidget(data)
+                } else {
+                    redirectToLoginPage()
                 }
             }
-        } else {
-            redirectToLoginPage()
         }
     }
 
