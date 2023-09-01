@@ -13,6 +13,7 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseAdapter
+import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseChannelViewHolder
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiAction
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiState
@@ -40,7 +41,14 @@ class FeedBrowseFragment @Inject constructor(
     private var _binding: FragmentFeedBrowseBinding? = null
     private val binding get() = _binding!!
 
-    private val adapter by lazy { FeedBrowseAdapter() }
+    private val channelListener = object : FeedBrowseChannelViewHolder.Listener {
+        override fun onRetryClicked(extraParams: Map<String, Any>, widgetId: String) {
+            viewModel.submitAction(
+                FeedBrowseUiAction.FetchCards(extraParams, widgetId)
+            )
+        }
+    }
+    private val adapter by lazy { FeedBrowseAdapter(channelListener) }
 
     private val viewModel: FeedBrowseViewModel by viewModels { viewModelFactory }
 
@@ -120,11 +128,11 @@ class FeedBrowseFragment @Inject constructor(
     private fun showPlaceholder() {
         renderContent(
             listOf(
-                FeedBrowseUiModel.Placeholder(FeedBrowsePlaceholderView.Type.Title),
-                FeedBrowseUiModel.Placeholder(FeedBrowsePlaceholderView.Type.Chips),
-                FeedBrowseUiModel.Placeholder(FeedBrowsePlaceholderView.Type.Cards),
-                FeedBrowseUiModel.Placeholder(FeedBrowsePlaceholderView.Type.Title),
-                FeedBrowseUiModel.Placeholder(FeedBrowsePlaceholderView.Type.Cards)
+                FeedBrowseUiModel.Placeholder(type = FeedBrowsePlaceholderView.Type.Title),
+                FeedBrowseUiModel.Placeholder(type = FeedBrowsePlaceholderView.Type.Chips),
+                FeedBrowseUiModel.Placeholder(type = FeedBrowsePlaceholderView.Type.Cards),
+                FeedBrowseUiModel.Placeholder(type = FeedBrowsePlaceholderView.Type.Title),
+                FeedBrowseUiModel.Placeholder(type = FeedBrowsePlaceholderView.Type.Cards)
             )
         )
     }

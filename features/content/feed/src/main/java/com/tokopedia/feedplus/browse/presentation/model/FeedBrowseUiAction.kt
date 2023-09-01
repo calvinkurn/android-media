@@ -5,7 +5,10 @@ package com.tokopedia.feedplus.browse.presentation.model
  */
 sealed interface FeedBrowseUiAction {
 
-    object LoadInitialPage : FeedBrowseUiAction
+    object LoadInitialPage: FeedBrowseUiAction
 
-    data class FetchCards(val type: String) : FeedBrowseUiAction
+    data class FetchCards(
+        val extraParams: Map<String, Any>,
+        val widgetId: String
+    ): FeedBrowseUiAction
 }

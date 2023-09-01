@@ -1,25 +1,21 @@
 package com.tokopedia.feedplus.browse.presentation.model
 
 import com.tokopedia.feedplus.browse.presentation.view.FeedBrowsePlaceholderView
-import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 
 /**
  * Created by meyta.taliti on 11/08/23.
  */
-open class FeedBrowseUiModel(
-    val id: String = "", // @TrackingField
-) {
+sealed class FeedBrowseUiModel {
+
     data class Placeholder(
         val type: FeedBrowsePlaceholderView.Type
     ): FeedBrowseUiModel()
 
-    data class Cards(
+    data class Channel(
+        val id: String,
         val title: String,
-        val model: PlayWidgetUiModel
-    ): FeedBrowseUiModel()
-
-    data class Chips(
-        val title: String,
-        val chips: Map<FeedBrowseChipUiModel, List<Cards>>
+        val extraParams: Map<String, String>,
+        val chipUiState: ChipUiState,
+        val channelUiState: ChannelUiState
     ): FeedBrowseUiModel()
 }

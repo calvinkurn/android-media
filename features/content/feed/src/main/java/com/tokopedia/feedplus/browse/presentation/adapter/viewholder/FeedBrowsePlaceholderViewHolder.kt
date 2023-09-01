@@ -1,7 +1,6 @@
 package com.tokopedia.feedplus.browse.presentation.adapter.viewholder
 
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiModel
 import com.tokopedia.feedplus.browse.presentation.view.FeedBrowsePlaceholderView
 import com.tokopedia.feedplus.databinding.ItemFeedBrowsePlaceholderBinding
 
@@ -14,7 +13,7 @@ class FeedBrowsePlaceholderViewHolder(
 
     private val placeholderView = binding.root
 
-    fun bind(data: FeedBrowseUiModel.Placeholder) {
-        placeholderView.show(data.type)
+    fun bind(type: FeedBrowsePlaceholderView.Type) {
+        placeholderView.show(type)
     }
 }

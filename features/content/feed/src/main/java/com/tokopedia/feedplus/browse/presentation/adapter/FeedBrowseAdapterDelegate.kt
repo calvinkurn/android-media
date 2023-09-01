@@ -4,12 +4,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
-import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseCardsViewHolder
-import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseChipsViewHolder
+import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseChannelViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowsePlaceholderViewHolder
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiModel
-import com.tokopedia.feedplus.databinding.ItemFeedBrowseCardsBinding
-import com.tokopedia.feedplus.databinding.ItemFeedBrowseChipsBinding
+import com.tokopedia.feedplus.databinding.ItemFeedBrowseChannelBinding
 import com.tokopedia.feedplus.databinding.ItemFeedBrowsePlaceholderBinding
 
 /**
@@ -26,7 +24,7 @@ class FeedBrowseAdapterDelegate private constructor() {
             item: FeedBrowseUiModel.Placeholder,
             holder: FeedBrowsePlaceholderViewHolder
         ) {
-            holder.bind(item)
+            holder.bind(item.type)
         }
 
         override fun onCreateViewHolder(
@@ -43,14 +41,16 @@ class FeedBrowseAdapterDelegate private constructor() {
         }
     }
 
-    internal class Chips:
-        TypedAdapterDelegate<FeedBrowseUiModel.Chips, FeedBrowseUiModel, FeedBrowseChipsViewHolder>(
-            com.tokopedia.feedplus.R.layout.item_feed_browse_chips
+    internal class Channel(
+        private val listener: FeedBrowseChannelViewHolder.Listener
+    ):
+        TypedAdapterDelegate<FeedBrowseUiModel.Channel, FeedBrowseUiModel, FeedBrowseChannelViewHolder>(
+            com.tokopedia.feedplus.R.layout.item_feed_browse_channel
         ) {
 
         override fun onBindViewHolder(
-            item: FeedBrowseUiModel.Chips,
-            holder: FeedBrowseChipsViewHolder
+            item: FeedBrowseUiModel.Channel,
+            holder: FeedBrowseChannelViewHolder
         ) {
             holder.bind(item)
         }
@@ -58,39 +58,14 @@ class FeedBrowseAdapterDelegate private constructor() {
         override fun onCreateViewHolder(
             parent: ViewGroup,
             basicView: View
-        ): FeedBrowseChipsViewHolder {
-            return FeedBrowseChipsViewHolder(
-                ItemFeedBrowseChipsBinding.inflate(
+        ): FeedBrowseChannelViewHolder {
+            return FeedBrowseChannelViewHolder(
+                ItemFeedBrowseChannelBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false,
-                )
-            )
-        }
-    }
-
-    internal class Cards:
-        TypedAdapterDelegate<FeedBrowseUiModel.Cards, FeedBrowseUiModel, FeedBrowseCardsViewHolder>(
-            com.tokopedia.feedplus.R.layout.item_feed_browse_cards
-        ) {
-
-        override fun onBindViewHolder(
-            item: FeedBrowseUiModel.Cards,
-            holder: FeedBrowseCardsViewHolder
-        ) {
-            holder.bind(item)
-        }
-
-        override fun onCreateViewHolder(
-            parent: ViewGroup,
-            basicView: View
-        ): FeedBrowseCardsViewHolder {
-            return FeedBrowseCardsViewHolder(
-                ItemFeedBrowseCardsBinding.inflate(
-                    LayoutInflater.from(parent.context),
-                    parent,
-                    false,
-                )
+                ),
+                listener
             )
         }
     }
