@@ -4,13 +4,9 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.*
-import com.tokopedia.home_component.widget.shop_flash_sale.item.ShopFlashSaleItemTypeFactory
 import com.tokopedia.home_component.widget.special_release.SpecialReleaseRevampItemDataModel
 
-interface CommonCarouselProductCardTypeFactory:
-    AdapterTypeFactory,
-    ShopFlashSaleItemTypeFactory
-{
+interface CommonCarouselProductCardTypeFactory: AdapterTypeFactory {
     fun type(cardDataModelCarousel: CarouselEmptyCardDataModel): Int = 0
     fun type(dataModel: CarouselProductCardDataModel): Int = 0
     fun type(dataModelCarousel: CarouselSeeMorePdpDataModel): Int = 0

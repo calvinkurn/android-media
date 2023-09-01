@@ -1,19 +1,9 @@
 package com.tokopedia.home_component.widget.common.carousel
 
-import androidx.recyclerview.widget.DiffUtil
+import android.os.Bundle
 
-class HomeComponentCarouselDiffUtil: DiffUtil.ItemCallback<HomeComponentCarouselVisitable>() {
-    override fun areItemsTheSame(
-        oldItem: HomeComponentCarouselVisitable,
-        newItem: HomeComponentCarouselVisitable
-    ): Boolean {
-        return oldItem.getId() == newItem.getId()
-    }
-
-    override fun areContentsTheSame(
-        oldItem: HomeComponentCarouselVisitable,
-        newItem: HomeComponentCarouselVisitable
-    ): Boolean {
-        return oldItem.equalsWith(newItem)
-    }
+interface HomeComponentCarouselDiffUtil {
+    fun getId(): String
+    fun equalsWith(visitable: Any?): Boolean
+    fun getChangePayloadFrom(visitable: Any?): Bundle? = null
 }

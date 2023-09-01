@@ -1,11 +1,11 @@
 package com.tokopedia.home_component.widget.shop_flash_sale
 
 import android.os.Bundle
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCarouselProductCardTypeFactory
 import com.tokopedia.home_component.visitable.HomeComponentVisitable
-import com.tokopedia.home_component.widget.common.carousel.HomeComponentCarouselVisitable
-import com.tokopedia.home_component.widget.shop_flash_sale.item.ShopFlashSaleProductGridShimmerDataModel
 import com.tokopedia.home_component.widget.shop_flash_sale.tab.ShopFlashSaleTabDataModel
 import com.tokopedia.home_component_header.model.ChannelHeader
 
@@ -24,7 +24,7 @@ data class ShopFlashSaleWidgetDataModel(
     val channelModel: ChannelModel,
     val channelHeader: ChannelHeader = ChannelHeader(),
     val tabList: List<ShopFlashSaleTabDataModel> = listOf(),
-    val itemList: List<HomeComponentCarouselVisitable>? = null,
+    val itemList: List<Visitable<out CommonCarouselProductCardTypeFactory>> = listOf(),
     val timer: ShopFlashSaleTimerDataModel? = null,
 ): HomeComponentVisitable {
 

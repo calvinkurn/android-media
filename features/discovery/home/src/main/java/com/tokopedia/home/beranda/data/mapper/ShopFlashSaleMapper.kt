@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.data.mapper
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.beranda.data.mapper.factory.DynamicChannelComponentMapper
 import com.tokopedia.home.beranda.data.mapper.factory.DynamicChannelComponentMapper.mapToChannelGrid
 import com.tokopedia.home.beranda.data.mapper.factory.DynamicChannelComponentMapper.mapToHomeComponentHeader
@@ -9,7 +10,7 @@ import com.tokopedia.home_component.model.ChannelViewAllCard
 import com.tokopedia.home_component.model.TrackingAttributionModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselProductCardDataModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselViewAllCardDataModel
-import com.tokopedia.home_component.widget.common.carousel.HomeComponentCarouselVisitable
+import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCarouselProductCardTypeFactory
 import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleTimerDataModel
 import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleWidgetDataModel
 import com.tokopedia.home_component.widget.shop_flash_sale.item.ShopFlashSaleErrorDataModel
@@ -60,7 +61,7 @@ object ShopFlashSaleMapper {
         return if (recomData.isNotEmpty() && recomData.first().recommendationItemList.isNotEmpty()) {
             val recomWidget = recomData.first()
             val trackingModel = currentDataModel.channelModel.trackingAttributionModel
-            val carouselList = mutableListOf<HomeComponentCarouselVisitable>().apply {
+            val carouselList = mutableListOf<Visitable<CommonCarouselProductCardTypeFactory>>().apply {
                 addAll(getProducts(recomWidget, trackingModel))
                 add(getViewAllCard(trackingModel, recomWidget.seeMoreAppLink))
             }
@@ -90,7 +91,7 @@ object ShopFlashSaleMapper {
     private fun getProducts(
         recomWidget: RecommendationWidget,
         trackingModel: TrackingAttributionModel,
-    ): List<HomeComponentCarouselVisitable> {
+    ): List<CarouselProductCardDataModel> {
         return recomWidget.recommendationItemList.mapIndexed { index, item ->
             CarouselProductCardDataModel(
                 productModel = item.toProductCardModel(
@@ -106,7 +107,7 @@ object ShopFlashSaleMapper {
     private fun getViewAllCard(
         trackingModel: TrackingAttributionModel,
         seeMoreAppLink: String,
-    ): CarouselViewAllCardDataModel{
+    ): CarouselViewAllCardDataModel {
         val viewAllCardTitle = if(seeMoreAppLink.isEmpty())
             VIEW_ALL_CARD_TITLE_BELOW_THRESHOLD
         else VIEW_ALL_CARD_TITLE_ABOVE_THRESHOLD

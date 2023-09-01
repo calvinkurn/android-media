@@ -22,8 +22,7 @@ object ShopFlashSaleTracking: BaseTrackerConst() {
     private const val TRACKER_ID_PRODUCT_CLICK = "45516"
     private const val TRACKER_ID_CLICK_SHOP_TAB = "45517"
     private const val TRACKER_ID_CLICK_VIEW_ALL = "45518"
-    private const val TRACKER_ID_CLICK_SHOP_NAME = "45598"
-    private const val TRACKER_ID_CLICK_VIEW_ALL_CARD = "45598"
+    private const val TRACKER_ID_CLICK_VIEW_ALL_CARD = "46117"
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4099
     // Tracker ID: 45515

@@ -12,7 +12,7 @@ import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCa
 import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCarouselProductCardTypeFactoryImpl
 import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.home_component.util.NpaLinearLayoutManager
-import com.tokopedia.home_component.widget.common.CarouselListAdapter
+import com.tokopedia.home_component.widget.common.carousel.CarouselListAdapter
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.utils.view.binding.viewBinding
@@ -32,9 +32,7 @@ class SpecialReleaseRevampViewHolder(
 
     private val binding: HomeComponentSpecialReleaseRevampBinding? by viewBinding()
     private val typeFactory: CommonCarouselProductCardTypeFactory by lazy { CommonCarouselProductCardTypeFactoryImpl() }
-    private val adapter: CarouselListAdapter<SpecialReleaseRevampItemDataModel, CommonCarouselProductCardTypeFactory> by lazy {
-        CarouselListAdapter(typeFactory, SpecialReleaseDiffUtil())
-    }
+    private val adapter by lazy { CarouselListAdapter(typeFactory, SpecialReleaseDiffUtil()) }
 
     override fun bind(element: SpecialReleaseRevampDataModel) {
         binding?.let {
@@ -49,7 +47,7 @@ class SpecialReleaseRevampViewHolder(
         bind(element)
     }
 
-    fun initAdapter() {
+    private fun initAdapter() {
         val layoutManager = NpaLinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL)
         binding?.homeComponentSpecialReleaseRv?.apply {
             setLayoutManager(layoutManager)

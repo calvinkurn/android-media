@@ -4,14 +4,15 @@ import android.os.Bundle
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.databinding.HomeComponentShopFlashSaleBinding
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.model.TrackingAttributionModel
+import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCarouselProductCardTypeFactory
 import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.home_component.util.NpaLinearLayoutManager
-import com.tokopedia.home_component.widget.common.CarouselListAdapter
-import com.tokopedia.home_component.widget.common.carousel.HomeComponentCarouselDiffUtil
+import com.tokopedia.home_component.widget.common.carousel.CarouselListAdapter
 import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleWidgetDataModel.Companion.PAYLOAD_ITEM_LIST_CHANGED
 import com.tokopedia.home_component.widget.shop_flash_sale.item.ShopFlashSaleItemDecoration
 import com.tokopedia.home_component.widget.shop_flash_sale.item.ShopFlashSaleItemTypeFactoryImpl
@@ -58,7 +59,7 @@ class ShopFlashSaleWidgetViewHolder(
     private val itemAdapter by lazy {
         CarouselListAdapter(
             ShopFlashSaleItemTypeFactoryImpl(listener, this),
-            HomeComponentCarouselDiffUtil()
+            ShopFlashSaleItemDiffUtil()
         )
     }
 
@@ -118,12 +119,7 @@ class ShopFlashSaleWidgetViewHolder(
     }
 
     private fun updateContent(model: ShopFlashSaleWidgetDataModel) {
-        if(model.itemList != null) {
-            binding?.homeComponentShopFlashSaleItemRv?.show()
-            itemAdapter.submitList(model.itemList)
-        } else {
-            binding?.homeComponentShopFlashSaleItemRv?.hide()
-        }
+        itemAdapter.submitList(model.itemList as? List<Visitable<CommonCarouselProductCardTypeFactory>>)
     }
 
     private fun renderTimer(model: ShopFlashSaleTimerDataModel?) {

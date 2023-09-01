@@ -1,9 +1,9 @@
 package com.tokopedia.home_component.widget.shop_flash_sale.item
 
-import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCarouselProductCardTypeFactory
-import com.tokopedia.home_component.widget.common.carousel.HomeComponentCarouselVisitable
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.home_component.widget.common.carousel.HomeComponentCarouselDiffUtil
 
-class ShopFlashSaleErrorDataModel: HomeComponentCarouselVisitable {
+class ShopFlashSaleErrorDataModel: Visitable<ShopFlashSaleItemTypeFactory>, HomeComponentCarouselDiffUtil {
 
     companion object{
         const val ID = "SHOP_FLASH_SALE_ERROR_ID"
@@ -18,7 +18,7 @@ class ShopFlashSaleErrorDataModel: HomeComponentCarouselVisitable {
         return visitable is ShopFlashSaleErrorDataModel
     }
 
-    override fun type(typeFactory: CommonCarouselProductCardTypeFactory): Int {
+    override fun type(typeFactory: ShopFlashSaleItemTypeFactory): Int {
         return typeFactory.type(this)
     }
 }

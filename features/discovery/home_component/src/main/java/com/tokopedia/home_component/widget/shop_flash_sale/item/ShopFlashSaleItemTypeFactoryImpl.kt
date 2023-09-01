@@ -2,6 +2,7 @@ package com.tokopedia.home_component.widget.shop_flash_sale.item
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCarouselProductCardTypeFactory
 import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCarouselProductCardTypeFactoryImpl
 import com.tokopedia.home_component.widget.shop_flash_sale.tab.ShopFlashSaleShopListener
 import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleWidgetListener
@@ -9,7 +10,9 @@ import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleWidgetLi
 internal open class ShopFlashSaleItemTypeFactoryImpl(
     listener: ShopFlashSaleWidgetListener,
     private val internalListener: ShopFlashSaleShopListener,
-): ShopFlashSaleItemTypeFactory, CommonCarouselProductCardTypeFactoryImpl(listener = listener) {
+    private val commonCarouselTypeFactory: CommonCarouselProductCardTypeFactory = CommonCarouselProductCardTypeFactoryImpl(listener = listener)
+): ShopFlashSaleItemTypeFactory,
+    CommonCarouselProductCardTypeFactory by commonCarouselTypeFactory {
 
     override fun type(dataModel: ShopFlashSaleProductGridShimmerDataModel): Int {
         return ShopFlashSaleProductGridShimmerViewHolder.LAYOUT
@@ -23,7 +26,7 @@ internal open class ShopFlashSaleItemTypeFactoryImpl(
         return when(viewType) {
             ShopFlashSaleProductGridShimmerViewHolder.LAYOUT -> ShopFlashSaleProductGridShimmerViewHolder(view)
             ShopFlashSaleErrorViewHolder.LAYOUT -> ShopFlashSaleErrorViewHolder(view, internalListener)
-            else -> super.createViewHolder(view, viewType)
+            else -> commonCarouselTypeFactory.createViewHolder(view, viewType)
         }
     }
 }
