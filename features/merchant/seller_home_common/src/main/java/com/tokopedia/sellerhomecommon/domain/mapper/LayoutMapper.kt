@@ -11,6 +11,8 @@ import com.tokopedia.sellerhomecommon.common.EmptyLayoutException
 import com.tokopedia.sellerhomecommon.common.WidgetType
 import com.tokopedia.sellerhomecommon.common.const.WidgetGridSize
 import com.tokopedia.sellerhomecommon.domain.model.GetLayoutResponse
+import com.tokopedia.sellerhomecommon.domain.model.TooltipModel
+import com.tokopedia.sellerhomecommon.domain.model.WidgetEmptyStateModel
 import com.tokopedia.sellerhomecommon.domain.model.WidgetModel
 import com.tokopedia.sellerhomecommon.presentation.model.AnnouncementWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.BarChartWidgetUiModel
@@ -22,6 +24,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.CarouselWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.DescriptionWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.LineGraphWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MilestoneWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.MultiComponentWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MultiLineGraphWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.PieChartWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.PostListWidgetUiModel
@@ -54,10 +57,33 @@ class LayoutMapper @Inject constructor(
         response: GetLayoutResponse,
         isFromCache: Boolean
     ): WidgetLayoutUiModel {
-        val widgets = response.layout.widget.orEmpty()
-        if (widgets.isNotEmpty()) {
+
+        val widgets: MutableList<WidgetModel> = response.layout.widget.orEmpty().toMutableList()
+
+        val dummyWidgets = widgets.apply {
+            add(
+                0,
+                WidgetModel(
+                    id = null,
+                    appLink = null,
+                    ctaText = null,
+                    gridSize = null,
+                    dataKey = "",
+                    subtitle = null,
+                    tooltip = TooltipModel(null, null, true, null),
+                    title = null,
+                    widgetType = "multiComponent",
+                    isShowEmpty = null,
+                    postFilter = null,
+                    emptyStateModel = WidgetEmptyStateModel(),
+                    searchTableColumnFilters = null,
+                )
+            )
+        }
+
+        if (dummyWidgets.isNotEmpty()) {
             val mappedList = ArrayList<BaseWidgetUiModel<out BaseDataUiModel>>()
-            widgets.forEach { widget ->
+            dummyWidgets.forEach { widget ->
                 val widgetType = widget.widgetType.orEmpty()
                 if (WidgetType.isValidWidget(widgetType)) {
                     val mappedWidget = getWidgetByWidgetType(widgetType, widget, isFromCache)
@@ -110,6 +136,9 @@ class LayoutMapper @Inject constructor(
                 } else {
                     mapToSectionWidget(widget, isFromCache)
                 }
+            }
+            WidgetType.MULTI_COMPONENT.asLowerCase() -> {
+                mapToMultiComponentWidget(widget, isFromCache)
             }
             else -> null
         }
@@ -555,6 +584,31 @@ class LayoutMapper @Inject constructor(
             id = (widget.id.orZero()).toString(),
             widgetType = widget.widgetType.orEmpty(),
             title = widget.title.orEmpty() + DOUBLE_DOTS_CALENDAR_TITLE,
+            subtitle = widget.subtitle.orEmpty(),
+            tooltip = tooltipMapper.mapRemoteModelToUiModel(widget.tooltip),
+            tag = widget.tag.orEmpty(),
+            appLink = widget.appLink.orEmpty(),
+            dataKey = widget.dataKey.orEmpty(),
+            ctaText = widget.ctaText.orEmpty(),
+            gridSize = getGridSize(widget.gridSize.orZero(), WidgetGridSize.GRID_SIZE_4),
+            isShowEmpty = widget.isShowEmpty.orFalse(),
+            data = null,
+            isLoaded = false,
+            isLoading = false,
+            isFromCache = fromCache,
+            emptyState = widget.emptyStateModel.mapToUiModel(),
+            useRealtime = widget.useRealtime
+        )
+    }
+
+    private fun mapToMultiComponentWidget(
+        widget: WidgetModel,
+        fromCache: Boolean
+    ): MultiComponentWidgetUiModel {
+        return MultiComponentWidgetUiModel(
+            id = (widget.id.orZero()).toString(),
+            widgetType = widget.widgetType.orEmpty(),
+            title = widget.title.orEmpty(),
             subtitle = widget.subtitle.orEmpty(),
             tooltip = tooltipMapper.mapRemoteModelToUiModel(widget.tooltip),
             tag = widget.tag.orEmpty(),

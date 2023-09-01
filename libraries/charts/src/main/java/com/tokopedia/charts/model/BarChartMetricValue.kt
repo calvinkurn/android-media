@@ -7,7 +7,7 @@ import com.tokopedia.charts.common.ChartColor
  */
 
 data class BarChartMetricValue(
-    val value: Int,
+    val value: Float,
     val yLabel: String,
     val xLabel: String,
     val barColor: String = ChartColor.DMS_DEFAULT_BAR_COLOR

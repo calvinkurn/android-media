@@ -253,7 +253,7 @@ class BarChartViewHolder(
                 barHexColor = it.barHexColor,
                 values = it.value.mapIndexed { i, item ->
                     val xLabel = getXLabel(xLabels, i)
-                    return@mapIndexed BarChartMetricValue(item.value, item.valueFmt, xLabel)
+                    return@mapIndexed BarChartMetricValue(item.value.toFloat(), item.valueFmt, xLabel)
                 }
             )
         }.orEmpty()

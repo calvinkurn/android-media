@@ -42,6 +42,10 @@ class MultiComponentViewHolder(
     }
 
     private fun setTabs(tabList: List<MultiComponentTab>) {
+        binding.tabsShcMultiComponent.tabLayout.removeAllTabs()
+        tabList.forEach {
+            binding.tabsShcMultiComponent.addNewTab(it.title)
+        }
         binding.vpShcMultiComponent.run {
             adapter = MultiComponentAdapter(tabList)
         }

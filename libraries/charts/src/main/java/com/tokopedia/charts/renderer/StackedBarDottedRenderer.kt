@@ -30,9 +30,9 @@ class StackedBarDottedRenderer(
         return Paint().apply {
             color = Color.parseColor(dottedLineColorString)
             style = Paint.Style.STROKE
-            strokeWidth = 10f
+            strokeWidth = 2f
             pathEffect = DashPathEffect(
-                floatArrayOf(16f, 16f),
+                floatArrayOf(8f, 8f),
                 0f
             )
         }
@@ -40,12 +40,12 @@ class StackedBarDottedRenderer(
 
     private fun Canvas.drawDottedLine(barBuffer: BarBuffer) {
         for (index in 0 until (barBuffer.buffer.size * mAnimator.phaseX).toInt() step 4) {
-            val left = barBuffer.buffer[index] - 12f
-            val right = barBuffer.buffer[index + 2] + 12f
-            val top = barBuffer.buffer[index + 1] + 5f
+            val left = barBuffer.buffer[index] - 16f
+            val right = barBuffer.buffer[index + 2] + 16f
+            val top = barBuffer.buffer[index + 1] + 1f
 
             if (index == barWithDottedLineIndex) {
-                drawRect(left, top, right + 10f, top, getDottedLinePaint())
+                drawRect(left, top, right, top, getDottedLinePaint())
             }
         }
     }

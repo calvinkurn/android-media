@@ -26,6 +26,9 @@ import com.tokopedia.sellerhomecommon.presentation.model.BaseWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CardDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CarouselDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.LineGraphDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.MultiComponentData
+import com.tokopedia.sellerhomecommon.presentation.model.MultiComponentDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.MultiComponentTab
 import com.tokopedia.sellerhomecommon.presentation.model.MultiLineGraphDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.PieChartDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.PostListDataUiModel
@@ -91,6 +94,8 @@ class StatisticViewModel @Inject constructor(
         get() = _barChartWidgetData
     val announcementWidgetData: LiveData<Result<List<AnnouncementDataUiModel>>>
         get() = _announcementWidgetData
+    val multiComponentWidgetData: LiveData<Result<List<MultiComponentDataUiModel>>>
+        get() = _multiComponentWidgetData
 
     private val shopId by lazy { userSession.shopId }
     private val _widgetLayout = MutableLiveData<Result<List<BaseWidgetUiModel<*>>>>()
@@ -106,6 +111,7 @@ class StatisticViewModel @Inject constructor(
     private val _pieChartWidgetData = MutableLiveData<Result<List<PieChartDataUiModel>>>()
     private val _barChartWidgetData = MutableLiveData<Result<List<BarChartDataUiModel>>>()
     private val _announcementWidgetData = MutableLiveData<Result<List<AnnouncementDataUiModel>>>()
+    private val _multiComponentWidgetData = MutableLiveData<Result<List<MultiComponentDataUiModel>>>()
 
     private var dynamicParameter = ParamCommonWidgetModel()
 
@@ -287,6 +293,52 @@ class StatisticViewModel @Inject constructor(
             _announcementWidgetData.postValue(result)
         }, onError = {
             _announcementWidgetData.postValue(Fail(it))
+        })
+    }
+
+    fun getMultiComponentWidgetData(dataKeys: List<String>) {
+        launchCatchError(block = {
+            val result = Success(
+                listOf(
+                    MultiComponentDataUiModel(
+                        tabs = listOf(
+                            MultiComponentTab(
+                                id = "tab_plus",
+                                title = "PLUS",
+                                components = listOf(
+                                    MultiComponentData(
+                                        componentType = "pieChart",
+                                        dataKey = "plusSelling",
+                                        configuration = "",
+                                        metricParam = ""
+                                    )
+                                ),
+                                isError = false,
+                                isLoaded = false,
+                                data = listOf()
+                            ),
+                            MultiComponentTab(
+                                id = "tab_bebas_ongkir",
+                                title = "Bebas Ongkir",
+                                components = listOf(
+                                    MultiComponentData(
+                                        componentType = "pieChart",
+                                        dataKey = "bebasOngkirSelling",
+                                        configuration = "",
+                                        metricParam = ""
+                                    )
+                                ),
+                                isError = false,
+                                isLoaded = false,
+                                data = listOf()
+                            )
+                        )
+                    )
+                )
+            )
+            _multiComponentWidgetData.postValue(result)
+        }, onError = {
+            _multiComponentWidgetData.postValue(Fail(it))
         })
     }
 }

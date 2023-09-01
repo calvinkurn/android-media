@@ -96,7 +96,7 @@ class BarChartView(context: Context, attrs: AttributeSet?) : LinearLayout(contex
         val barDataSets = mutableListOf<BarDataSet>()
         data.metrics.forEach { metric ->
             val barEntries: List<BarEntry> = metric.values.mapIndexed { i, value ->
-                BarEntry(i.toFloat(), value.value.toFloat(), value)
+                BarEntry(i.toFloat(), value.value, value)
             }
             val dataSet = BarDataSet(barEntries, metric.title)
             dataSet.color = getColor(metric.barHexColor)
@@ -121,7 +121,7 @@ class BarChartView(context: Context, attrs: AttributeSet?) : LinearLayout(contex
 
         data.metrics.forEach { metric ->
             val barEntries: List<BarEntry> = metric.values.mapIndexed { i, value ->
-                BarEntry(i.toFloat(), value.values.map { it.value.toFloat() }.toFloatArray(), value)
+                BarEntry(i.toFloat(), value.values.map { it.value }.toFloatArray(), value)
             }
             val dataSet = BarDataSet(barEntries, metric.title)
             dataSet.colors = getStackedBarColors(data)
@@ -131,7 +131,9 @@ class BarChartView(context: Context, attrs: AttributeSet?) : LinearLayout(contex
             barDataSets.add(dataSet)
         }
 
-        val barData = BarData(barDataSets.toList())
+        val barData = BarData(barDataSets.toList()).apply {
+            barWidth = 0.5f
+        }
         binding?.barChart?.data = barData
 
         if (data.metrics.size > 1) {
@@ -286,5 +288,7 @@ class BarChartView(context: Context, attrs: AttributeSet?) : LinearLayout(contex
             setDrawGridLines(axisConfig.isGridEnabled)
             textColor = axisConfig.textColor
         }
+        binding?.barChart?.axisLeft?.setDrawAxisLine(false)
+
     }
 }

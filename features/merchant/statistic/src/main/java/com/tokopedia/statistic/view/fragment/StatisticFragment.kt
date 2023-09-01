@@ -47,6 +47,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.CarouselWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.DateFilterItem
 import com.tokopedia.sellerhomecommon.presentation.model.DescriptionWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.LineGraphWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.MultiComponentWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MultiLineGraphWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.PieChartWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.PostItemUiModel
@@ -229,6 +230,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         observeWidgetData(mViewModel.pieChartWidgetData, WidgetType.PIE_CHART)
         observeWidgetData(mViewModel.barChartWidgetData, WidgetType.BAR_CHART)
         observeWidgetData(mViewModel.announcementWidgetData, WidgetType.ANNOUNCEMENT)
+        observeWidgetData(mViewModel.multiComponentWidgetData, WidgetType.MULTI_COMPONENT)
         observeTickers()
     }
 
@@ -786,6 +788,12 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         mViewModel.getAnnouncementWidgetData(dataKeys)
     }
 
+    private fun fetchMultiComponentData(widgets: List<BaseWidgetUiModel<*>>) {
+        widgets.forEach { it.isLoaded = true }
+        val dataKeys: List<String> = Utils.getWidgetDataKeys<MultiComponentWidgetUiModel>(widgets)
+        mViewModel.getMultiComponentWidgetData(dataKeys)
+    }
+
     private fun selectDateRange() {
         if (!isAdded || context == null) return
         StatisticTracker.sendDateFilterEvent(userSession)
@@ -911,6 +919,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         groupedWidgets[WidgetType.PIE_CHART]?.run { fetchPieChartData(this) }
         groupedWidgets[WidgetType.BAR_CHART]?.run { fetchBarChartData(this) }
         groupedWidgets[WidgetType.ANNOUNCEMENT]?.run { fetchAnnouncementData(this) }
+        groupedWidgets[WidgetType.MULTI_COMPONENT]?.run { fetchMultiComponentData(this) }
     }
 
     private fun setOnErrorGetLayout(throwable: Throwable) = view?.run {
