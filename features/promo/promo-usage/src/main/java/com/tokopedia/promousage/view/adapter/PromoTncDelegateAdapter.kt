@@ -7,7 +7,7 @@ import com.tokopedia.promousage.R
 import com.tokopedia.promousage.databinding.PromoUsageItemPromoTncBinding
 import com.tokopedia.promousage.domain.entity.list.PromoTncItem
 import com.tokopedia.promousage.util.composite.DelegateAdapter
-import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.promousage.util.extension.toSpannableHtmlString
 
 internal class PromoTncDelegateAdapter(
     private val onClickPromoTnc: (PromoTncItem) -> Unit
@@ -30,7 +30,7 @@ internal class PromoTncDelegateAdapter(
         fun bind(item: PromoTncItem) {
             with(binding) {
                 val tncLabel = tpgTncLabel.context.getString(R.string.promo_voucher_view_tnc_label)
-                tpgTncLabel.text = HtmlLinkHelper(tpgTncLabel.context, tncLabel).spannedString
+                tpgTncLabel.text = tncLabel.toSpannableHtmlString(tpgTncLabel.context)
                 tpgTncLabel.setOnClickListener {
                     onClickPromoTnc(item)
                 }

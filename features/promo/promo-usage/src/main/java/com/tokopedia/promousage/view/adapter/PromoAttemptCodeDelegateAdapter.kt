@@ -16,9 +16,9 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.promousage.R
 import com.tokopedia.promousage.databinding.PromoUsageItemPromoAttemptBinding
 import com.tokopedia.promousage.domain.entity.list.PromoAttemptItem
-import com.tokopedia.promousage.view.custom.TextDrawable
 import com.tokopedia.promousage.util.composite.DelegateAdapter
-import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.promousage.util.extension.toSpannableHtmlString
+import com.tokopedia.promousage.view.custom.TextDrawable
 import com.tokopedia.unifycomponents.toPx
 
 internal class PromoAttemptCodeDelegateAdapter(
@@ -62,7 +62,7 @@ internal class PromoAttemptCodeDelegateAdapter(
                 }
                 if (item.label.isNotBlank()) {
                     tauVoucherCode.labelText.text =
-                        HtmlLinkHelper(tauVoucherCode.context, item.label).spannedString
+                        item.label.toSpannableHtmlString(tauVoucherCode.context)
                 }
                 if (item.attemptedPromoCode.isNotBlank()) {
                     tauVoucherCode.editText.setText(item.attemptedPromoCode)

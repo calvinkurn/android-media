@@ -56,6 +56,7 @@ import com.tokopedia.promousage.util.analytics.PromoUsageAnalytics
 import com.tokopedia.promousage.util.composite.CompositeAdapter
 import com.tokopedia.promousage.util.composite.DelegateAdapterItem
 import com.tokopedia.promousage.util.extension.getErrorMessage
+import com.tokopedia.promousage.util.extension.toSpannableHtmlString
 import com.tokopedia.promousage.util.view.BottomSheetUtil
 import com.tokopedia.promousage.view.adapter.PromoAccordionHeaderDelegateAdapter
 import com.tokopedia.promousage.view.adapter.PromoAccordionItemDelegateAdapter
@@ -77,7 +78,6 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.request.promoli
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
-import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.unifycomponents.toPx
@@ -765,7 +765,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                 "${promoSavingInfo.message} <b>Rp{{benefit_amount}}</b> ({{promo_count}} promo)"
                     .replace("{{benefit_amount}}", formattedTotalVoucherAmount)
                     .replace("{{promo_count}}", promoSavingInfo.selectedPromoCount.toString())
-            tpgTotalSavings.text = HtmlLinkHelper(root.context, text).spannedString
+            tpgTotalSavings.text = text.toSpannableHtmlString(tpgTotalSavings.context)
             clSavingInfo.isVisible = promoSavingInfo.isVisible
         }
     }

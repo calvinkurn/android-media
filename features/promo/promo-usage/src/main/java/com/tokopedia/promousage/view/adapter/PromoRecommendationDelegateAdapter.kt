@@ -13,7 +13,7 @@ import com.tokopedia.promousage.R
 import com.tokopedia.promousage.databinding.PromoUsageItemVoucherRecommendationBinding
 import com.tokopedia.promousage.domain.entity.list.PromoRecommendationItem
 import com.tokopedia.promousage.util.composite.DelegateAdapter
-import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.promousage.util.extension.toSpannableHtmlString
 
 class PromoRecommendationDelegateAdapter(
     private val onClickUsePromoRecommendation: () -> Unit
@@ -46,10 +46,10 @@ class PromoRecommendationDelegateAdapter(
             }
             if (item.selectedCodes.containsAll(item.codes)) {
                 binding.tpgRecommendationTitle.text =
-                    HtmlLinkHelper(binding.tpgRecommendationTitle.context, item.messageSelected).spannedString
+                    item.messageSelected.toSpannableHtmlString(binding.tpgRecommendationTitle.context)
             } else {
                 binding.tpgRecommendationTitle.text =
-                    HtmlLinkHelper(binding.tpgRecommendationTitle.context, item.message).spannedString
+                    item.message.toSpannableHtmlString(binding.tpgRecommendationTitle.context)
             }
             if (item.codes.size > 1) {
                 if (item.selectedCodes.containsAll(item.codes)) {
@@ -117,7 +117,7 @@ class PromoRecommendationDelegateAdapter(
         ) {
             binding.tpgRecommendationTitle.animateGone {
                 binding.tpgRecommendationTitle.text =
-                    HtmlLinkHelper(binding.tpgRecommendationTitle.context, newMessage).spannedString
+                    newMessage.toSpannableHtmlString(binding.tpgRecommendationTitle.context)
                 binding.tpgRecommendationTitle.animateShow {
                     onCompleted?.invoke()
                 }

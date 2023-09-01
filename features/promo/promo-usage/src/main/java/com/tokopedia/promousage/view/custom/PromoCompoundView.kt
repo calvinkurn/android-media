@@ -34,7 +34,7 @@ import com.tokopedia.promousage.domain.entity.PromoItemState
 import com.tokopedia.promousage.domain.entity.list.PromoItem
 import com.tokopedia.promousage.util.IconHelper
 import com.tokopedia.promousage.util.extension.isGreyscale
-import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.promousage.util.extension.toSpannableHtmlString
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.UnifyMotion
 
@@ -168,7 +168,7 @@ class PromoCompoundView @JvmOverloads constructor(
                 else -> com.tokopedia.unifyprinciples.R.color.Unify_NN950
             }
             tpgPromoBenefitAmount.setTextColorCompat(defaultTextColorResId)
-            tpgPromoBenefitAmount.text = HtmlLinkHelper(context, promo.benefitAmountStr).spannedString
+            tpgPromoBenefitAmount.text = promo.benefitAmountStr.toSpannableHtmlString(context)
             if (promo.state !is PromoItemState.Loading) {
                 tpgPromoBenefitAmount.visible()
             } else {
@@ -216,7 +216,7 @@ class PromoCompoundView @JvmOverloads constructor(
                     promoInfoChildView.iuPromoInfo.gone()
                 }
                 promoInfoChildView.tpgPromoInfo.text =
-                    HtmlLinkHelper(context, promoInfo.title).spannedString
+                    promoInfo.title.toSpannableHtmlString(context)
                 llPromoInfo.addView(promoInfoChildView.root)
             }
             if (promo.state !is PromoItemState.Loading
@@ -270,7 +270,8 @@ class PromoCompoundView @JvmOverloads constructor(
 
     private fun renderExpiryInfo(promo: PromoItem) {
         binding?.run {
-            tpgPromoExpiryInfo.text = HtmlLinkHelper(context, promo.expiryInfo).spannedString
+            tpgPromoExpiryInfo.text = promo.expiryInfo
+                .toSpannableHtmlString(tpgPromoExpiryInfo.context)
             tpgPromoExpiryInfo.visible()
         }
     }
@@ -280,7 +281,8 @@ class PromoCompoundView @JvmOverloads constructor(
             when (promo.state) {
                 is PromoItemState.Disabled -> {
                     if (promo.state.message.isNotBlank()) {
-                        tpgAdditionalInfoMessage.text = HtmlLinkHelper(context, promo.state.message).spannedString
+                        tpgAdditionalInfoMessage.text = promo.state.message
+                            .toSpannableHtmlString(tpgAdditionalInfoMessage.context)
                         tpgAdditionalInfoMessage
                             .setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_YN600)
                         iuAdditionalInfoIcon.gone()
@@ -305,7 +307,7 @@ class PromoCompoundView @JvmOverloads constructor(
                         promo.cta.text.isNotBlank() && promo.cta.appLink.isNotBlank()
                     if (isPromoGopayLater && isPromoCtaRegisterGopayLater && isPromoCtaValid) {
                         tpgAdditionalInfoMessage.text =
-                            HtmlLinkHelper(context, promo.cta.text).spannedString
+                            promo.cta.text.toSpannableHtmlString(tpgAdditionalInfoMessage.context)
                         tpgAdditionalInfoMessage
                             .setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_NN950)
                         iuAdditionalInfoIcon.visible()
