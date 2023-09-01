@@ -4,7 +4,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.home_component.databinding.HomeComponentShopFlashSaleTabBinding
+import com.tokopedia.home_component.databinding.HomeComponentShopFlashSaleTabItemBinding
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.util.getHexColorFromIdColor
 import com.tokopedia.home_component.util.setGradientBackground
@@ -15,16 +15,16 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.utils.view.binding.viewBinding
 
-class ShopFlashSaleTabViewHolder(
+internal class ShopFlashSaleTabViewHolder(
     itemView: View,
-    private val shopFlashSaleShopListener: ShopFlashSaleShopListener,
+    private val shopTabListener: ShopTabListener? = null,
 ): RecyclerView.ViewHolder(itemView) {
     companion object {
         @LayoutRes
-        val LAYOUT = com.tokopedia.home_component.R.layout.home_component_shop_flash_sale_tab
+        val LAYOUT = com.tokopedia.home_component.R.layout.home_component_shop_flash_sale_tab_item
     }
 
-    private val binding: HomeComponentShopFlashSaleTabBinding? by viewBinding()
+    private val binding: HomeComponentShopFlashSaleTabItemBinding? by viewBinding()
 
     fun bind(tab: ShopFlashSaleTabDataModel) {
         setTabListener(tab)
@@ -44,7 +44,7 @@ class ShopFlashSaleTabViewHolder(
 
     private fun setTabListener(tab: ShopFlashSaleTabDataModel) {
         binding?.containerShopFlashSaleTab?.setOnClickListener {
-            shopFlashSaleShopListener.onShopTabClick(tab)
+            shopTabListener?.onShopTabClick(tab)
         }
     }
 

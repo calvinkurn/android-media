@@ -7,6 +7,7 @@ data class ShopFlashSaleTabDataModel(
     val channelGrid: ChannelGrid,
     val trackingAttributionModel: TrackingAttributionModel,
     val isActivated: Boolean,
+    val shopTabListener: ShopTabListener? = null,
 ) {
     companion object {
         const val PAYLOAD_ACTIVATED = "isActivatedChange"

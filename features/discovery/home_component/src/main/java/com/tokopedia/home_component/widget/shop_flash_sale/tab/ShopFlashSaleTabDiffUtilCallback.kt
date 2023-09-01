@@ -1,10 +1,9 @@
 package com.tokopedia.home_component.widget.shop_flash_sale.tab
 
 import android.os.Bundle
-import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.DiffUtil
 
-internal class ShopFlashSaleTabDiffUtil: DiffUtil.ItemCallback<ShopFlashSaleTabDataModel>() {
+internal class ShopFlashSaleTabDiffUtilCallback: DiffUtil.ItemCallback<ShopFlashSaleTabDataModel>() {
     override fun areItemsTheSame(
         oldItem: ShopFlashSaleTabDataModel,
         newItem: ShopFlashSaleTabDataModel

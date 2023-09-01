@@ -16,10 +16,9 @@ import com.tokopedia.home_component.widget.common.carousel.CarouselListAdapter
 import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleWidgetDataModel.Companion.PAYLOAD_ITEM_LIST_CHANGED
 import com.tokopedia.home_component.widget.shop_flash_sale.item.ShopFlashSaleItemDecoration
 import com.tokopedia.home_component.widget.shop_flash_sale.item.ShopFlashSaleItemTypeFactoryImpl
-import com.tokopedia.home_component.widget.shop_flash_sale.tab.ShopFlashSaleTabAdapter
 import com.tokopedia.home_component.widget.shop_flash_sale.tab.ShopFlashSaleTabDataModel
-import com.tokopedia.home_component.widget.shop_flash_sale.tab.ShopFlashSaleTabDiffUtil
 import com.tokopedia.home_component.widget.shop_flash_sale.tab.ShopFlashSaleShopListener
+import com.tokopedia.home_component.widget.shop_flash_sale.tab.ShopTabListener
 import com.tokopedia.home_component_header.model.ChannelHeader
 import com.tokopedia.home_component_header.view.HomeChannelHeaderListener
 import com.tokopedia.kotlin.extensions.view.hide
@@ -30,7 +29,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 class ShopFlashSaleWidgetViewHolder(
     itemView: View,
     val listener: ShopFlashSaleWidgetListener
-): AbstractViewHolder<ShopFlashSaleWidgetDataModel>(itemView), ShopFlashSaleShopListener {
+): AbstractViewHolder<ShopFlashSaleWidgetDataModel>(itemView), ShopFlashSaleShopListener, ShopTabListener {
 
     companion object {
         @LayoutRes
@@ -38,22 +37,10 @@ class ShopFlashSaleWidgetViewHolder(
     }
 
     private val binding: HomeComponentShopFlashSaleBinding? by viewBinding()
-    private val tabLayoutManager by lazy {
-        NpaLinearLayoutManager(
-            itemView.context,
-            LinearLayoutManager.HORIZONTAL
-        )
-    }
     private val itemLayoutManager by lazy {
         NpaLinearLayoutManager(
             itemView.context,
             LinearLayoutManager.HORIZONTAL
-        )
-    }
-    private val tabAdapter by lazy {
-        ShopFlashSaleTabAdapter(
-            ShopFlashSaleTabDiffUtil(),
-            this
         )
     }
     private val itemAdapter by lazy {
@@ -66,7 +53,6 @@ class ShopFlashSaleWidgetViewHolder(
     private var shopFlashSaleWidgetDataModel: ShopFlashSaleWidgetDataModel? = null
 
     init {
-        initShopTabAdapter()
         initItemAdapter()
     }
 
@@ -74,7 +60,7 @@ class ShopFlashSaleWidgetViewHolder(
         shopFlashSaleWidgetDataModel = element
         setChannelDivider(element.channelModel)
         setHeaderComponent(element.channelHeader, element.channelModel.trackingAttributionModel)
-        updateTab(element)
+        updateTab(element.tabList)
         updateContent(element)
         renderTimer(element.timer)
     }
@@ -114,8 +100,8 @@ class ShopFlashSaleWidgetViewHolder(
         )
     }
 
-    private fun updateTab(model: ShopFlashSaleWidgetDataModel) {
-        tabAdapter.submitList(model.tabList)
+    private fun updateTab(tabList: List<ShopFlashSaleTabDataModel>) {
+        binding?.homeComponentShopFlashSaleTab?.submitList(tabList, this)
     }
 
     private fun updateContent(model: ShopFlashSaleWidgetDataModel) {
@@ -147,14 +133,6 @@ class ShopFlashSaleWidgetViewHolder(
         } else {
             binding?.shimmerTimerShopFlashSale?.hide()
             binding?.timerShopFlashSale?.hide()
-        }
-    }
-
-    private fun initShopTabAdapter() {
-        binding?.homeComponentShopFlashSaleTabRv?.apply {
-            layoutManager = tabLayoutManager
-            itemAnimator = null
-            adapter = tabAdapter
         }
     }
 
@@ -192,6 +170,6 @@ class ShopFlashSaleWidgetViewHolder(
             it.copy(isActivated = it.channelGrid.id == element.channelGrid.id)
         }
         shopFlashSaleWidgetDataModel = widgetDataModel.copy(tabList = newList)
-        tabAdapter.submitList(newList)
+        updateTab(newList)
     }
 }
