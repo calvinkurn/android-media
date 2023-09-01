@@ -315,15 +315,19 @@ class CartViewModel @Inject constructor(
         }
 
         if (cartItemCount == 1) {
-            var tmpIndex = 0
             cartDataList.value.forEachIndexed { index, any ->
                 when (any) {
                     is CartGroupHolderData -> {
-                        tmpIndex = index
                         any.isAllSelected = true
                         any.productUiModelList.forEach {
                             it.isSelected = true
                         }
+                        _globalEvent.value = CartGlobalEvent.AdapterItemChanged(index)
+                    }
+
+                    is CartItemHolderData -> {
+                        any.isSelected = true
+                        _globalEvent.value = CartGlobalEvent.AdapterItemChanged(index)
                     }
 
                     is DisabledItemHeaderHolderData, is CartSectionHeaderHolderData -> {
@@ -331,8 +335,6 @@ class CartViewModel @Inject constructor(
                     }
                 }
             }
-
-            _globalEvent.value = CartGlobalEvent.AdapterItemChanged(tmpIndex)
 
             return true
         }
