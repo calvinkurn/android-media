@@ -7,11 +7,9 @@ data class BmGmProduct(
     @Expose
     @SerializedName("product_id")
     val productId: String = "",
-
     @Expose
     @SerializedName("warehouse_id")
     val warehouseId: Long = 0L,
-
     @Expose
     @SerializedName("quantity")
     val quantity: Int = 0,
