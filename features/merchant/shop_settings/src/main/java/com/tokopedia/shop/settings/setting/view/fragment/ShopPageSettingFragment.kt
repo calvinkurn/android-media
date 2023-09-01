@@ -20,7 +20,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.empty_state.EmptyStateUnify
-import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
@@ -175,7 +174,6 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
         shopPageSettingAdapter?.setShopPageSettingList(shopPageSettingList)
 
         observeRoleAccess()
-        observeMultiLocationEligibility()
 
         // get shop info
         getShopInfo()
@@ -200,7 +198,7 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
     private fun onSuccessGetShopInfo(shopInfo: ShopInfo) {
         this.shopInfo = shopInfo
         shopId = shopInfo.shopCore.shopID.takeIf { it.isNotEmpty() } ?: Int.ZERO.toString()
-        getShopMultiLocationEligibility(shopId)
+        shopPageSettingAdapter?.setMultiLocationEligibility()
         customDimensionShopPage.updateCustomDimensionData(shopId, isOfficial, isGold)
         setViewState(VIEW_CONTENT)
     }
@@ -218,10 +216,6 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
             setViewState(VIEW_LOADING)
         }
         shopPageSettingViewModel?.getShop(shopId, shopDomain, isRefresh)
-    }
-
-    private fun getShopMultiLocationEligibility(shopId: String?) {
-        shopPageSettingViewModel?.getMultiLocationEligibility(shopId)
     }
 
     private fun setViewState(viewState: Int) {
@@ -261,15 +255,6 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
         shopPageSettingViewModel?.shopSettingAccessLiveData?.observe(viewLifecycleOwner) { result ->
             if (result is Success) {
                 shopSettingAccess = result.data
-            }
-        }
-    }
-
-    private fun observeMultiLocationEligibility() {
-        shopPageSettingViewModel?.shopMultiLocationEligibility?.observe(viewLifecycleOwner) { result ->
-            if (result is Success) {
-                val isEligibleForMultiLocation = result.data == Int.ONE
-                shopPageSettingAdapter?.setMultiLocationEligibility(isEligibleForMultiLocation)
             }
         }
     }

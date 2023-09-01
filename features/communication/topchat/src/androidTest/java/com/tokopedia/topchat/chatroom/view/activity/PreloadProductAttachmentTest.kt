@@ -4,15 +4,13 @@ import android.content.Intent
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.common.network.util.CommonUtil
-import com.tokopedia.topchat.chatroom.view.activity.TopchatRoomBuyerProductAttachmentTest.Companion.exProductId
-import com.tokopedia.topchat.chatroom.view.activity.TopchatRoomBuyerProductAttachmentTest.Companion.putProductAttachmentIntent
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductPreviewResult
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductPreviewRobot
 import org.hamcrest.CoreMatchers.not
 import org.junit.Test
 
-class PreloadProductAttachmentTest: TopchatRoomTest() {
+class PreloadProductAttachmentTest : TopchatRoomTest() {
 
     @Test
     fun should_show_loading_product_preview() {
@@ -37,7 +35,7 @@ class PreloadProductAttachmentTest: TopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
-                .generatePreAttachPayload(exProductId)
+            .generatePreAttachPayload(EX_PRODUCT_ID)
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
@@ -75,7 +73,7 @@ class PreloadProductAttachmentTest: TopchatRoomTest() {
 
         // When
         getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
-                .generatePreAttachPayload(exProductId)
+            .generatePreAttachPayload(EX_PRODUCT_ID)
         ProductPreviewRobot.clickRetryButtonAt(0)
 
         // Then
@@ -164,7 +162,7 @@ class PreloadProductAttachmentTest: TopchatRoomTest() {
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwUseCase.defaultResponse
         getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
-                .generatePreAttachPayload(exProductId)
+            .generatePreAttachPayload(EX_PRODUCT_ID)
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
@@ -218,7 +216,7 @@ class PreloadProductAttachmentTest: TopchatRoomTest() {
 
         // When
         getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
-                .generatePreAttachPayload(exProductId)
+            .generatePreAttachPayload(EX_PRODUCT_ID)
         ProductPreviewRobot.clickRetryButtonAt(0)
 
         // Then
