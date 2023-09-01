@@ -92,6 +92,7 @@ import com.tokopedia.cartrevamp.view.uimodel.CartRecentViewItemHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartRecommendationItemHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartSectionHeaderHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartSelectedAmountHolderData
+import com.tokopedia.cartrevamp.view.uimodel.CartShopGroupTickerData
 import com.tokopedia.cartrevamp.view.uimodel.CartShopGroupTickerState
 import com.tokopedia.cartrevamp.view.uimodel.CartState
 import com.tokopedia.cartrevamp.view.uimodel.CartTrackerEvent
