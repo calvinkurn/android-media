@@ -16,20 +16,17 @@ import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
-import com.tokopedia.mvcwidget.MvcData
-import com.tokopedia.mvcwidget.TokopointsCatalogMVCSummaryResponse
-import com.tokopedia.mvcwidget.trackers.MvcSource
+import com.tokopedia.stories.R
 import com.tokopedia.stories.databinding.FragmentStoriesProductBinding
 import com.tokopedia.stories.utils.withCache
 import com.tokopedia.stories.view.model.BottomSheetType
+import com.tokopedia.stories.view.model.ProductBottomSheetUiState
 import com.tokopedia.stories.view.viewmodel.StoriesViewModel
 import com.tokopedia.stories.view.viewmodel.action.StoriesProductAction
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
-import com.tokopedia.stories.R
-import com.tokopedia.stories.view.model.ProductBottomSheetUiState
 
 /**
  * @author by astidhiyaa on 25/07/23
@@ -72,31 +69,18 @@ class StoriesProductBottomSheet @Inject constructor(
     private fun observeUiState() {
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             viewModel.uiState.withCache().collectLatest { (prevState, state) ->
-                renderProducts(prevState?.productSheet?.products, state.productSheet.products)
-                renderMvc(prevState?.productSheet?.vouchers, state.productSheet.vouchers)
+                renderProducts(prevState?.productSheet, state.productSheet)
             }
         }
     }
 
-    private fun renderProducts(prevState: ProductBottomSheetUiState.ProductList?, state: ProductBottomSheetUiState.ProductList) {
+    private fun renderProducts(prevState: ProductBottomSheetUiState?, state: ProductBottomSheetUiState) {
         if (prevState == state) return
 
         binding.storiesProductSheetLoader.showWithCondition(state.resultState is ResultState.Loading)
         binding.rvStoriesProduct.shouldShowWithAction(state.resultState is ResultState.Success) {
             productAdapter.setItemsAndAnimateChanges(state.products)
         }
-    }
-
-    private fun renderMvc(prevState: TokopointsCatalogMVCSummaryResponse?, state: TokopointsCatalogMVCSummaryResponse) {
-        if (prevState == state) return
-
-        val mvcData = state.data?.animatedInfoList.orEmpty()
-        binding.mvcStoriesWidget.setData(
-            mvcData = MvcData(mvcData),
-            shopId = viewModel.mShopId,
-            source = MvcSource.FEED_BOTTOM_SHEET,
-        )
-        binding.mvcStoriesWidget.showWithCondition(mvcData.isNotEmpty())
     }
 
     override fun onResume() {

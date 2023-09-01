@@ -6,18 +6,16 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
-import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.mvcwidget.TokopointsCatalogMVCSummaryResponse
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.stories.view.model.BottomSheetStatusDefault
-import com.tokopedia.stories.view.model.BottomSheetType
-import com.tokopedia.stories.view.model.ProductBottomSheetUiState
 import com.tokopedia.stories.data.repository.StoriesRepository
 import com.tokopedia.stories.domain.model.StoriesAuthorType
 import com.tokopedia.stories.domain.model.StoriesRequestModel
 import com.tokopedia.stories.domain.model.StoriesSource
 import com.tokopedia.stories.utils.getRandomNumber
+import com.tokopedia.stories.view.model.BottomSheetStatusDefault
+import com.tokopedia.stories.view.model.BottomSheetType
+import com.tokopedia.stories.view.model.ProductBottomSheetUiState
 import com.tokopedia.stories.view.model.StoriesDetailItemUiModel.StoriesDetailItemUiEvent
 import com.tokopedia.stories.view.model.StoriesDetailItemUiModel.StoriesDetailItemUiEvent.PAUSE
 import com.tokopedia.stories.view.model.StoriesDetailItemUiModel.StoriesDetailItemUiEvent.RESUME
@@ -50,12 +48,7 @@ class StoriesViewModel @Inject constructor(
     private val _storiesGroup = MutableStateFlow(StoriesGroupUiModel())
     private val _storiesDetail = MutableStateFlow(StoriesDetailUiModel())
     private val bottomSheetStatus = MutableStateFlow(BottomSheetStatusDefault)
-    private val products = MutableStateFlow(ProductBottomSheetUiState.ProductList.Empty)
-    private val vouchers = MutableStateFlow(TokopointsCatalogMVCSummaryResponse())
-
-    private val productSheet = combine(products, vouchers) {
-        products, vouchers -> ProductBottomSheetUiState(products = products, vouchers = vouchers)
-    }
+    private val products = MutableStateFlow(ProductBottomSheetUiState.Empty)
 
     private val mGroupPos = MutableStateFlow(-1)
     private val mDetailPos = MutableStateFlow(-1)
@@ -99,14 +92,14 @@ class StoriesViewModel @Inject constructor(
         _storiesGroup,
         _storiesDetail,
         bottomSheetStatus,
-        productSheet,
+        products,
         combineState,
-    ) { storiesCategories, storiesItem, bottomSheet, productSheet, combineState ->
+    ) { storiesCategories, storiesItem, bottomSheet, product, combineState ->
         StoriesUiState(
             storiesGroup = storiesCategories,
             storiesDetail = storiesItem,
             bottomSheetStatus = bottomSheet,
-            productSheet = productSheet,
+            productSheet = product,
             combineState = combineState,
         )
     }
@@ -282,10 +275,8 @@ class StoriesViewModel @Inject constructor(
     private fun getProducts() {
         viewModelScope.launchCatchError(block = {
             products.update { product -> product.copy(resultState = ResultState.Loading) }
-            val productsDeferred = asyncCatchError(block = { repository.getStoriesProducts(mShopId, "") }) { emptyList() }
-            val vouchersDeferred = asyncCatchError(block = { repository.getMvcWidget(mShopId) }) { TokopointsCatalogMVCSummaryResponse() }
-            products.update { productList -> productList.copy(products = productsDeferred.await().orEmpty(), resultState = ResultState.Success) }
-            vouchers.update { vouchersDeferred.await() ?: TokopointsCatalogMVCSummaryResponse() }
+            val productList = repository.getStoriesProducts(mShopId, "")
+            products.update { products -> products.copy(products = productList, resultState = ResultState.Success) }
         }, onError = {
             products.update { product -> product.copy(resultState = ResultState.Fail(it)) } //TODO() change result state?
         })
@@ -297,7 +288,7 @@ class StoriesViewModel @Inject constructor(
                 val response = repository.addToCart(
                     productId = product.id,
                     price = product.finalPrice,
-                    shopId = "",
+                    shopId = mShopId,
                     productName = product.title
                 )
             }, onError = {})

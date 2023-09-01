@@ -130,8 +130,6 @@ dependencies {
     }
 
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
-
-    api projectOrAar(rootProject.ext.features.promoMvcWidget)
 }
 
 
