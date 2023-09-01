@@ -8,6 +8,7 @@ import com.tokopedia.developer_options.presentation.model.AccessTokenUiModel
 import com.tokopedia.developer_options.presentation.model.AnalyticsLogOnNotificationUiModel
 import com.tokopedia.developer_options.presentation.model.AppVersionUiModel
 import com.tokopedia.developer_options.presentation.model.ApplinkLogOnNotificationUiModel
+import com.tokopedia.developer_options.presentation.model.BannerEnvironmentUiModel
 import com.tokopedia.developer_options.presentation.model.BranchLinkUiModel
 import com.tokopedia.developer_options.presentation.model.CassavaUiModel
 import com.tokopedia.developer_options.presentation.model.ConvertResourceIdUiModel
@@ -63,6 +64,7 @@ import com.tokopedia.developer_options.presentation.viewholder.AccessTokenViewHo
 import com.tokopedia.developer_options.presentation.viewholder.AnalyticsLogOnNotificationViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.AppVersionViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.ApplinkLogOnNotificationViewHolder
+import com.tokopedia.developer_options.presentation.viewholder.BannerEnvironmentViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.BranchLinkViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.CassavaViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.ConvertResourceIdViewHolder
@@ -187,6 +189,7 @@ class DeveloperOptionTypeFactoryImpl(
     override fun type(uiModel: DeprecatedApiSwitcherToasterUiModel): Int = DeprecatedAPISwitcherToasterViewHolder.LAYOUT
     override fun type(uiModel: BranchLinkUiModel): Int = BranchLinkViewHolder.LAYOUT
     override fun type(uiModel: FpiMonitoringUiModel): Int = EnableFpiMonitoringViewHolder.LAYOUT
+    override fun type(uiModel: BannerEnvironmentUiModel): Int = BannerEnvironmentViewHolder.LAYOUT
 
     override fun type(uiModel: UserIdUiModel): Int = UserIdViewHolder.LAYOUT
     override fun type(uiModel: ShopIdUiModel): Int = ShopIdViewHolder.LAYOUT
@@ -247,6 +250,7 @@ class DeveloperOptionTypeFactoryImpl(
             EnableFpiMonitoringViewHolder.LAYOUT -> EnableFpiMonitoringViewHolder(view)
             UserIdViewHolder.LAYOUT -> UserIdViewHolder(view, userIdListener)
             ShopIdViewHolder.LAYOUT -> ShopIdViewHolder(view, shopIdListener)
+            BannerEnvironmentViewHolder.LAYOUT -> BannerEnvironmentViewHolder(view)
             else -> super.createViewHolder(view, type)
         }
     }

@@ -9,15 +9,12 @@ import com.tokopedia.inbox.universalinbox.data.entity.UniversalInboxWidgetDataRe
 import com.tokopedia.inbox.universalinbox.data.entity.UniversalInboxWidgetMetaResponse
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxResourceProvider
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.CHATBOT_TYPE
+import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.GOJEK_REPLACE_TEXT
+import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.GOJEK_TYPE
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.PAGE_SOURCE_KEY
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.PAGE_SOURCE_REVIEW_INBOX
-import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.ROLLENCE_TYPE_A
-import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.ROLLENCE_TYPE_B
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.WIDGET_PAGE_NAME
-import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.getVariant
-import com.tokopedia.inbox.universalinbox.util.toggle.UniversalInboxAbPlatform
 import com.tokopedia.inbox.universalinbox.view.uimodel.MenuItemType
-import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuSectionUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuSeparatorUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxShopInfoUiModel
@@ -31,12 +28,14 @@ import com.tokopedia.recommendation_widget_common.widget.carousel.global.Recomme
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetMetadata
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetModel
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetTrackingModel
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 open class UniversalInboxMenuMapper @Inject constructor(
-    private val resourceProvider: UniversalInboxResourceProvider,
-    private val abTestPlatform: UniversalInboxAbPlatform
+    private val resourceProvider: UniversalInboxResourceProvider
 ) {
 
     fun getStaticMenu(userSession: UserSessionInterface): List<Any> {
@@ -48,13 +47,6 @@ open class UniversalInboxMenuMapper @Inject constructor(
     // Generate Chat Section
     private fun getChatSectionList(userSession: UserSessionInterface): List<Any> {
         val chatSectionList = arrayListOf<Any>()
-        if (isVariantA()) {
-            chatSectionList.add(
-                UniversalInboxMenuSectionUiModel(
-                    resourceProvider.getSectionChatTitle()
-                )
-            )
-        }
         chatSectionList.add(
             UniversalInboxMenuUiModel(
                 type = MenuItemType.CHAT_BUYER,
@@ -92,13 +84,6 @@ open class UniversalInboxMenuMapper @Inject constructor(
 
     private fun getOthersSectionList(): List<Any> {
         val othersSectionList = arrayListOf<Any>()
-        if (isVariantA()) {
-            othersSectionList.add(
-                UniversalInboxMenuSectionUiModel(
-                    resourceProvider.getSectionOthersTitle()
-                )
-            )
-        }
         othersSectionList.apply {
             add(
                 UniversalInboxMenuUiModel(
@@ -142,12 +127,13 @@ open class UniversalInboxMenuMapper @Inject constructor(
 
     fun mapWidgetMetaToUiModel(
         widgetMeta: UniversalInboxWidgetMetaResponse?,
-        allCounter: UniversalInboxAllCounterResponse?
+        allCounter: UniversalInboxAllCounterResponse?,
+        driverCounter: Result<Pair<Int, Int>>?
     ): UniversalInboxWidgetMetaUiModel {
         val result = UniversalInboxWidgetMetaUiModel()
         if (widgetMeta != null) {
             widgetMeta.metaData.forEach {
-                it.mapToUiModel(allCounter)?.let { uiModel ->
+                it.mapToUiModel(allCounter, driverCounter)?.let { uiModel ->
                     result.widgetList.add(uiModel)
                 }
             }
@@ -158,15 +144,18 @@ open class UniversalInboxMenuMapper @Inject constructor(
     }
 
     private fun UniversalInboxWidgetDataResponse.mapToUiModel(
-        allCounter: UniversalInboxAllCounterResponse? = null
+        allCounter: UniversalInboxAllCounterResponse? = null,
+        driverCounter: Result<Pair<Int, Int>>? = null
     ): UniversalInboxWidgetUiModel? {
-        val counter = when (this.type) {
+        return when (this.type) {
             CHATBOT_TYPE -> {
-                allCounter?.othersUnread?.helpUnread ?: Int.ZERO
+                this.mapToWidget(allCounter?.othersUnread?.helpUnread ?: Int.ZERO)
             }
-            else -> Int.ZERO
+            GOJEK_TYPE -> {
+                this.mapToDriverWidget(driverCounter)
+            }
+            else -> this.mapToWidget() // Default
         }
-        return this.mapToWidget(counter)
     }
 
     private fun UniversalInboxWidgetDataResponse.mapToWidget(
@@ -187,6 +176,48 @@ open class UniversalInboxMenuMapper @Inject constructor(
         }
     }
 
+    private fun UniversalInboxWidgetDataResponse.mapToDriverWidget(
+        driverCounter: Result<Pair<Int, Int>>?
+    ): UniversalInboxWidgetUiModel? {
+        return if (driverCounter != null) {
+            when (driverCounter) {
+                is Success -> {
+                    if (!this.isDynamic && driverCounter.data.first < Int.ONE) {
+                        null
+                    } else {
+                        // Show when only active channel is not zero or dynamic from BE
+                        UniversalInboxWidgetUiModel(
+                            icon = this.icon.toIntOrZero(),
+                            title = this.title,
+                            subtext = this.subtext.replace(
+                                oldValue = GOJEK_REPLACE_TEXT,
+                                newValue = "${driverCounter.data.first}",
+                                ignoreCase = true
+                            ),
+                            applink = this.applink,
+                            counter = driverCounter.data.second,
+                            type = this.type
+                        )
+                    }
+                }
+                is Fail -> {
+                    // Return widget error with data
+                    UniversalInboxWidgetUiModel(
+                        icon = this.icon.toIntOrZero(),
+                        title = this.title,
+                        subtext = this.subtext,
+                        applink = this.applink,
+                        counter = Int.ZERO,
+                        type = this.type,
+                        isError = true
+                    )
+                }
+            }
+        } else {
+            null // Return null if driver counter is null
+        }
+    }
+
     private fun generateRecommendationWidgetModel(): RecommendationWidgetModel {
         return RecommendationWidgetModel(
             metadata = RecommendationWidgetMetadata(
@@ -199,14 +230,5 @@ open class UniversalInboxMenuMapper @Inject constructor(
                 listPageName = RecommendationCarouselTrackingConst.List.INBOX
             )
         )
-    }
-
-    private fun isVariantA(): Boolean {
-        return getVariant(abTestPlatform) == VariantType.INBOX_VAR_A
-    }
-
-    enum class VariantType(val type: String) {
-        INBOX_VAR_A(ROLLENCE_TYPE_A),
-        INBOX_VAR_B(ROLLENCE_TYPE_B)
     }
 }

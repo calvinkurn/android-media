@@ -93,6 +93,10 @@ class AddEditProductDescriptionViewModel @Inject constructor(
         }
     }
 
+    val isRemovingSingleVariant = Transformations.map(productInputModel) {
+        it.isRemovingSingleVariant
+    }
+
     init {
         initVideoYoutube()
         initDescription()

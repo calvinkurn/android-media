@@ -21,11 +21,13 @@ import com.tokopedia.autocompletecomponent.suggestion.title.SuggestionTitleDataV
 import com.tokopedia.autocompletecomponent.suggestion.topshop.SuggestionTopShopListener
 import com.tokopedia.autocompletecomponent.suggestion.topshop.SuggestionTopShopWidgetViewHolder
 import com.tokopedia.autocompletecomponent.suggestion.topshop.SuggestionTopShopWidgetDataView
+import com.tokopedia.discovery.common.reimagine.Search1InstAuto
 
 class SuggestionAdapterTypeFactory(
     private val suggestionListener: SuggestionListener,
     private val suggestionTopShopListener: SuggestionTopShopListener,
     private val suggestionChipListener: SuggestionChipListener,
+    private var isReimagine: Boolean
 ) : BaseAdapterTypeFactory(), SuggestionTypeFactory {
 
     override fun type(suggestionTitleDataView: SuggestionTitleDataView): Int {
@@ -64,7 +66,7 @@ class SuggestionAdapterTypeFactory(
         return when (type) {
             SuggestionTitleViewHolder.LAYOUT -> SuggestionTitleViewHolder(parent)
             SuggestionSingleLineViewHolder.LAYOUT -> SuggestionSingleLineViewHolder(parent, suggestionListener)
-            SuggestionDoubleLineViewHolder.LAYOUT -> SuggestionDoubleLineViewHolder(parent, suggestionListener)
+            SuggestionDoubleLineViewHolder.LAYOUT -> SuggestionDoubleLineViewHolder(parent, suggestionListener, isReimagine)
             SuggestionTopShopWidgetViewHolder.LAYOUT -> SuggestionTopShopWidgetViewHolder(parent, suggestionTopShopListener)
             SuggestionDoubleLineWithoutImageViewHolder.LAYOUT -> SuggestionDoubleLineWithoutImageViewHolder(parent, suggestionListener)
             SuggestionSeparatorViewHolder.LAYOUT -> SuggestionSeparatorViewHolder(parent)

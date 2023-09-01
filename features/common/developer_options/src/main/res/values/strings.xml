@@ -137,6 +137,7 @@
     <string name="deprecated_api_switcher_toaster">Show Deprecated API Switcher Toaster</string>
     <string name="extract_branch_link">Extract Branch Link</string>
     <string name="hint_branch_et">Put your Branch Link Here ex: https://tokopedia.link/5lT0NZpifAb</string>
+    <string name="banner_environment">Enable Banner Environment</string>
 
     <string name="copy_id">Copied Id %s</string>
 </resources>
