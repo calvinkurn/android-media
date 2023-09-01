@@ -21,6 +21,10 @@ labels:
 
 ## Release Notes
 
+<!--start expand:1 September 2023-->
+Remove Shop Single Location
+<!--end expand-->
+
 <!--start expand:19 March 2021 (MA-3.199/SA-2.49)-->
 [First release](https://tokopedia.atlassian.net/browse/AN-22308)
 <!--end expand-->
@@ -41,15 +45,13 @@ Revamp shipping editor to be a place to set up (activate-deactivate) courier onl
 
 ## Navigation
 
-(can be accessed only with seller multi location account) 
-
 MA/SA -> pengaturan toko -> Tambah dan ubah lokasi toko -> edit lokasi
 
 ![](../res/editshopmultilocation/navigation.png) 
 
 ## How-to
 
-To show edit address multi location page you can call `ApplinkConstInternalLogistic.SHOP_EDIT_ADDRESS` with seller account that support multi location warehouse.
+To show edit address multi location page you can call `ApplinkConstInternalLogistic.SHOP_EDIT_ADDRESS` 
 
 
 
