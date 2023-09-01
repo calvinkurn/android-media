@@ -193,7 +193,6 @@ class StoriesDetailFragment @Inject constructor(
         storiesDetailsTimer(state)
         renderAuthor(currentItem)
         renderNotch(currentItem)
-//        binding.vStoriesProductIcon.tvPlayProductCount.text = state.productCount.toString() //TODO map as string
 
         val currContent = state.detailItems.getOrNull(state.selectedDetailPosition)
         if (currContent?.isSameContent == true || currContent == null) return
@@ -321,13 +320,14 @@ class StoriesDetailFragment @Inject constructor(
     }
 
     private fun renderNotch(state: StoriesDetailItemUiModel) {
+        binding.vStoriesProductIcon.tvPlayProductCount.text = state.productCount
         with(binding.notchStoriesProduct) {
             apply {
                 setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
                 setContent {
-//                    StoriesProductNotch(state.productCount) {
-//                        viewModelAction(StoriesUiAction.OpenProduct)
-//                    }
+                    StoriesProductNotch(state.productCount) {
+                        viewModelAction(StoriesUiAction.OpenProduct)
+                    }
                 }
             }
         }

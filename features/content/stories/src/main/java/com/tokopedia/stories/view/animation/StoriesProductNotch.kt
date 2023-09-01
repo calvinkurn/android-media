@@ -35,7 +35,7 @@ import com.tokopedia.stories.R
  * @author by astidhiyaa on 18/08/23
  */
 @Composable
-fun StoriesProductNotch(productCount: Int, onClick: () -> Unit) {
+fun StoriesProductNotch(productCount: String, onClick: () -> Unit) {
     NestTheme {
         val ctx = LocalContext.current
 

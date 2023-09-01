@@ -40,6 +40,7 @@ data class StoriesDetailItemUiModel(
     val isSameContent: Boolean = false,
     val author: StoryAuthor = StoryAuthor.Unknown,
     val menus: List<ContentMenuItem> = emptyList(),
+    val productCount: String = "",
 ) {
 
     enum class StoriesDetailItemUiEvent {

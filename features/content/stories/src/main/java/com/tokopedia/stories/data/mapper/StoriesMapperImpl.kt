@@ -55,6 +55,7 @@ class StoriesMapperImpl @Inject constructor(private val userSession: UserSession
                                         badgeUrl = stories.author.badgeURL
                                     ),
                                     menus = buildMenu(stories.interaction, stories.author),
+                                    productCount = stories.totalProductsFmt.ifEmpty { "0" }
                                 )
                             }
                         )
@@ -78,6 +79,7 @@ class StoriesMapperImpl @Inject constructor(private val userSession: UserSession
                     isSameContent = false,
                     author = buildAuthor(stories.author),
                     menus = buildMenu(stories.interaction, stories.author),
+                    productCount = stories.totalProductsFmt.ifEmpty { "0" }
                 )
             }
         )
