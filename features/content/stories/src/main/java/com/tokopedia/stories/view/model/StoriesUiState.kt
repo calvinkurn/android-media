@@ -5,7 +5,7 @@ import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.mvcwidget.TokopointsCatalogMVCSummaryResponse
 
 data class StoriesUiState(
-    val storiesGroup: List<StoriesGroupUiModel>,
+    val storiesGroup: StoriesGroupUiModel,
     val storiesDetail: StoriesDetailUiModel,
     val bottomSheetStatus: Map<BottomSheetType, Boolean>,
     val productSheet: ProductBottomSheetUiState,
@@ -13,8 +13,8 @@ data class StoriesUiState(
     companion object {
         val Empty
             get() = StoriesUiState(
-                storiesDetail = StoriesDetailUiModel.Empty,
-                storiesGroup = emptyList(),
+                storiesDetail = StoriesDetailUiModel(),
+                storiesGroup = StoriesGroupUiModel(),
                 bottomSheetStatus = BottomSheetStatusDefault,
                 productSheet = ProductBottomSheetUiState.Empty,
             )

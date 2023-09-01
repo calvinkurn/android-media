@@ -5,6 +5,10 @@
     android:layout_height="match_parent"
     android:background="@color/Unify_Static_Black">
 
+    <include
+        android:id="@+id/layout_group_loading"
+        layout="@layout/layout_loading_group" />
+
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/stories_group_view_pager"
         android:layout_width="0dp"

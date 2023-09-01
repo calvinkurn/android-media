@@ -10,6 +10,7 @@ sealed interface StoriesUiAction {
     data class SetGroupMainData(val selectedGroup: Int) : StoriesUiAction
 
     object NextDetail : StoriesUiAction
+    data class SetGroup(val selectedGroup: Int) : StoriesUiAction
 
     object PreviousDetail : StoriesUiAction
 
@@ -35,7 +36,11 @@ sealed interface StoriesUiAction {
     data class ShowVariantSheet(val product: ContentTaggedProductUiModel) : StoriesUiAction
 
     object FetchProduct : StoriesUiAction
+
+    object DeleteStory : StoriesUiAction
+    object ContentIsLoaded : StoriesUiAction
 }
+
 
 enum class StoriesProductAction {
     ATC, Buy;

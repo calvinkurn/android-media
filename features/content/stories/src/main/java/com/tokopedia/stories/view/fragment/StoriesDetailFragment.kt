@@ -18,6 +18,7 @@ import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.product.detail.common.VariantPageSource
@@ -32,6 +33,7 @@ import com.tokopedia.stories.view.adapter.StoriesGroupAdapter
 import com.tokopedia.stories.view.animation.StoriesProductNotch
 import com.tokopedia.stories.view.components.indicator.StoriesDetailTimer
 import com.tokopedia.stories.view.model.BottomSheetType
+import com.tokopedia.stories.view.model.StoriesDetailItemUiModel
 import com.tokopedia.stories.view.model.StoriesDetailUiModel
 import com.tokopedia.stories.view.model.StoriesGroupUiModel
 import com.tokopedia.stories.view.model.isAnyShown
@@ -41,6 +43,7 @@ import com.tokopedia.stories.view.utils.TouchEventStories
 import com.tokopedia.stories.view.utils.onTouchEventStories
 import com.tokopedia.stories.view.viewmodel.StoriesViewModel
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction
+import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction.ContentIsLoaded
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction.NextDetail
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction.PauseStories
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction.PreviousDetail
@@ -63,7 +66,7 @@ class StoriesDetailFragment @Inject constructor(
     private val mAdapter: StoriesGroupAdapter by lazyThreadSafetyNone {
         StoriesGroupAdapter(object : StoriesGroupAdapter.Listener {
             override fun onClickGroup(position: Int) {
-                viewModelAction(StoriesUiAction.SetGroupMainData(position))
+                viewModelAction(StoriesUiAction.SetGroup(position))
             }
         })
     }
@@ -109,167 +112,30 @@ class StoriesDetailFragment @Inject constructor(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupStoriesView()
-        observeEvent()
-    }
-
-    override fun onResume() {
-        super.onResume()
         setupObserver()
     }
 
     private fun setupObserver() {
-        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+        setupUiStateObserver()
+        setupUiEventObserver()
+    }
+
+    private fun setupUiStateObserver() {
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
             viewModel.uiState.withCache().collectLatest { (prevState, state) ->
-                renderStoriesGroup(prevState?.storiesGroup, state.storiesGroup)
+                renderStoriesGroupHeader(prevState?.storiesGroup, state.storiesGroup)
                 renderStoriesDetail(prevState?.storiesDetail, state.storiesDetail)
                 observeBottomSheetStatus(prevState?.bottomSheetStatus, state.bottomSheetStatus)
             }
         }
     }
 
-    private fun renderStoriesGroup(
-        prevState: List<StoriesGroupUiModel>?,
-        state: List<StoriesGroupUiModel>,
-    ) {
-        if (prevState == state) return
-        mAdapter.setItems(state)
-    }
-
-    private fun renderStoriesDetail(
-        prevState: StoriesDetailUiModel?,
-        state: StoriesDetailUiModel,
-    ) {
-        if (prevState == state || state == StoriesDetailUiModel.Empty) return
-
-        storiesDetailsTimer(state)
-        binding.ivStoriesDetailContent.setImageUrl(state.imageContent)
-        binding.vStoriesProductIcon.tvPlayProductCount.text = state.productCount.toString() //TODO map as string
-        renderAuthor(state)
-        renderNotch(state)
-    }
-
-    private fun observeBottomSheetStatus(
-        prevState: Map<BottomSheetType, Boolean>?,
-        state: Map<BottomSheetType, Boolean>,
-    ) {
-        if (prevState == state) return
-        if (state.isAnyShown.orFalse()) pauseStories() else resumeStories()
-    }
-
-    private fun storiesDetailsTimer(state: StoriesDetailUiModel) {
-        with(binding.cvStoriesDetailTimer) {
-            apply {
-                setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-                setContent {
-                    StoriesDetailTimer(
-                        itemCount = viewModel.mDetailMaxInGroup,
-                        data = state,
-                    ) { viewModelAction(NextDetail) }
-                }
-            }
-        }
-        isShouldShowStoriesComponent(true)
-    }
-
-    private fun renderAuthor(state: StoriesDetailUiModel) = with(binding.vStoriesPartner) {
-        tvPartnerName.text = state.author.name
-        ivIcon.setImageUrl(state.author.thumbnailUrl)
-        btnFollow.setOnClickListener {
-            //TODO(): Follow
-        }
-        if (state.author is StoryAuthor.Shop)
-            ivBadge.setImageUrl(state.author.badgeUrl)
-    }
-
-
-    private fun setupStoriesView() = with(binding) {
-        binding.icClose.hide()
-        icClose.setOnClickListener {
-            activity?.finish()
-        }
-
-        rvStoriesCategory.apply {
-            adapter = mAdapter
-            layoutManager = mLayoutManager
-        }
-
-        flStoriesPrev.onTouchEventStories { event ->
-            when (event) {
-                TouchEventStories.PAUSE -> pauseStories()
-
-                TouchEventStories.RESUME -> resumeStories()
-
-                TouchEventStories.NEXT_PREV -> viewModelAction(PreviousDetail)
-                else -> {}
-            }
-        }
-        flStoriesNext.onTouchEventStories { event ->
-            when (event) {
-                TouchEventStories.PAUSE -> pauseStories()
-
-                TouchEventStories.RESUME -> resumeStories()
-
-                TouchEventStories.NEXT_PREV -> viewModelAction(NextDetail)
-                else -> {}
-            }
-        }
-        vStoriesKebabIcon.setOnClickListener {
-            viewModelAction(StoriesUiAction.OpenKebabMenu)
-        }
-        vStoriesProductIcon.root.setOnClickListener {
-            viewModelAction(StoriesUiAction.OpenProduct)
-        }
-        flStoriesProduct.onTouchEventStories { event ->
-            when (event) {
-                TouchEventStories.SWIPE_UP -> {
-                    if (groupId != viewModel.groupId) return@onTouchEventStories
-                    viewModelAction(StoriesUiAction.OpenProduct)
-                }
-                else -> {}
-            }
-
-        }
-    }
-
-    private fun renderNotch(state: StoriesDetailUiModel) {
-        with(binding.notchStoriesProduct) {
-            apply {
-                setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-                setContent {
-                    StoriesProductNotch(state.productCount) {
-                        viewModelAction(StoriesUiAction.OpenProduct)
-                    }
-                }
-            }
-        }
-    }
-
-    private fun pauseStories() {
-        isShouldShowStoriesComponent(false)
-        viewModelAction(PauseStories)
-    }
-
-    private fun resumeStories() {
-        isShouldShowStoriesComponent(true)
-        viewModelAction(ResumeStories)
-    }
-
-    private fun isShouldShowStoriesComponent(isShow: Boolean) {
-        binding.icClose.showWithCondition(isShow)
-        binding.rvStoriesCategory.showWithCondition(isShow)
-        binding.cvStoriesDetailTimer.showWithCondition(isShow)
-    }
-
-    private fun viewModelAction(event: StoriesUiAction) {
-        viewModel.submitAction(event)
-    }
-
-    private fun observeEvent() {
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+    private fun setupUiEventObserver() {
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
             viewModel.uiEvent.collectLatest { event ->
                 when (event) {
                     StoriesUiEvent.OpenKebab -> {
-                        if (groupId != viewModel.groupId) return@collectLatest
+                        if (groupId != viewModel.mGroupId) return@collectLatest
                         StoriesThreeDotsBottomSheet
                             .getOrCreateFragment(
                                 childFragmentManager,
@@ -277,9 +143,8 @@ class StoriesDetailFragment @Inject constructor(
                             )
                             .show(childFragmentManager)
                     }
-
                     StoriesUiEvent.OpenProduct -> {
-                        if (groupId != viewModel.groupId) return@collectLatest
+                        if (groupId != viewModel.mGroupId) return@collectLatest
 
                         StoriesProductBottomSheet.getOrCreateFragment(
                             childFragmentManager,
@@ -298,6 +163,200 @@ class StoriesDetailFragment @Inject constructor(
         }
     }
 
+    private fun renderStoriesGroupHeader(
+        prevState: StoriesGroupUiModel?,
+        state: StoriesGroupUiModel,
+    ) {
+        if (prevState?.groupHeader == state.groupHeader ||
+            groupId != state.selectedGroupId
+        ) return
+
+        mAdapter.setItems(state.groupHeader)
+        mAdapter.notifyItemRangeInserted(mAdapter.itemCount, state.groupHeader.size)
+    }
+
+    private fun renderStoriesDetail(
+        prevState: StoriesDetailUiModel?,
+        state: StoriesDetailUiModel
+    ) {
+        if (prevState == state ||
+            state == StoriesDetailUiModel() ||
+            state.detailItems.isEmpty() ||
+            state.selectedGroupId != groupId || state.selectedDetailPosition < 0 || state.selectedDetailPositionCached < 0
+        ) return
+
+        val currentItem = state.detailItems[state.selectedDetailPosition]
+
+        storiesDetailsTimer(state)
+        renderAuthor(currentItem)
+        renderNotch(currentItem)
+//        binding.vStoriesProductIcon.tvPlayProductCount.text = state.productCount.toString() //TODO map as string
+
+        val currContent = state.detailItems.getOrNull(state.selectedDetailPosition)
+        if (currContent?.isSameContent == true || currContent == null) return
+
+        // TODO handle loading state properly
+        isShowLoading(false)
+
+        binding.ivStoriesDetailContent.apply {
+            setImageUrl(currContent.imageContent)
+            onUrlLoaded = {
+                showStoriesComponent(true)
+                contentIsLoaded()
+            }
+        }
+        binding.vStoriesKebabIcon.showWithCondition(currContent.menus.isNotEmpty())
+    }
+
+    private fun observeBottomSheetStatus(
+        prevState: Map<BottomSheetType, Boolean>?,
+        state: Map<BottomSheetType, Boolean>,
+    ) {
+        if (prevState == state) return
+        if (state.isAnyShown.orFalse()) pauseStories() else resumeStories()
+    }
+
+    private fun storiesDetailsTimer(state: StoriesDetailUiModel) {
+        with(binding.cvStoriesDetailTimer) {
+            apply {
+                setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+                setContent {
+                    StoriesDetailTimer(
+                        currentPosition = state.selectedDetailPosition,
+                        itemCount = state.detailItems.size,
+                        data = state.detailItems[state.selectedDetailPosition],
+                    ) {
+                        /** TODO
+                         * all state already updated using the new groupId
+                         * but the oldest data that we left (ui action swipe) still there
+                         * need other way to stop the oldest data if the position is invalid
+                         * it also causing broken timer experience when (ui action swipe)
+                         * invalid -> groupId != viewModel.mGroupId
+                         **/
+                        if (groupId != viewModel.mGroupId) return@StoriesDetailTimer
+                        viewModelAction(NextDetail)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun renderAuthor(state: StoriesDetailItemUiModel) = with(binding.vStoriesPartner) {
+        tvPartnerName.text = state.author.name
+        ivIcon.setImageUrl(state.author.thumbnailUrl)
+        btnFollow
+        if (state.author is StoryAuthor.Shop)
+            ivBadge.setImageUrl(state.author.badgeUrl)
+    }
+
+
+    private fun setupStoriesView() = with(binding) {
+        isShowLoading(true)
+
+        icClose.setOnClickListener { activity?.finish() }
+
+        rvStoriesCategory.apply {
+            adapter = mAdapter
+            layoutManager = mLayoutManager
+        }
+
+        flStoriesPrev.onTouchEventStories { event ->
+            when (event) {
+                TouchEventStories.PAUSE -> {
+                    flStoriesNext.hide()
+                    flStoriesProduct.hide()
+                    showStoriesComponent(false)
+                    pauseStories()
+                }
+
+                TouchEventStories.RESUME -> {
+                    flStoriesNext.show()
+                    flStoriesProduct.show()
+                    showStoriesComponent(true)
+                    resumeStories()
+                }
+
+                TouchEventStories.NEXT_PREV -> viewModelAction(PreviousDetail)
+                else -> {}
+            }
+        }
+        flStoriesNext.onTouchEventStories { event ->
+            when (event) {
+                TouchEventStories.PAUSE -> {
+                    flStoriesPrev.hide()
+                    flStoriesProduct.hide()
+                    showStoriesComponent(false)
+                    pauseStories()
+                }
+
+                TouchEventStories.RESUME -> {
+                    flStoriesPrev.show()
+                    flStoriesProduct.show()
+                    showStoriesComponent(true)
+                    resumeStories()
+                }
+
+                TouchEventStories.NEXT_PREV -> viewModelAction(NextDetail)
+                else -> {}
+            }
+        }
+        vStoriesKebabIcon.setOnClickListener {
+            viewModelAction(StoriesUiAction.OpenKebabMenu)
+        }
+        vStoriesProductIcon.root.setOnClickListener {
+            viewModelAction(StoriesUiAction.OpenProduct)
+        }
+        flStoriesProduct.onTouchEventStories { event ->
+            when (event) {
+                TouchEventStories.SWIPE_UP -> {
+                    if (groupId != viewModel.mGroupId) return@onTouchEventStories
+                    viewModelAction(StoriesUiAction.OpenProduct)
+                }
+                else -> {}
+            }
+
+        }
+    }
+
+    private fun renderNotch(state: StoriesDetailItemUiModel) {
+        with(binding.notchStoriesProduct) {
+            apply {
+                setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+                setContent {
+//                    StoriesProductNotch(state.productCount) {
+//                        viewModelAction(StoriesUiAction.OpenProduct)
+//                    }
+                }
+            }
+        }
+    }
+
+    private fun pauseStories() {
+        viewModelAction(PauseStories)
+    }
+
+    private fun resumeStories() {
+        viewModelAction(ResumeStories)
+    }
+
+    private fun contentIsLoaded() {
+        viewModelAction(ContentIsLoaded)
+    }
+
+    private fun showStoriesComponent(isShow: Boolean) {
+        binding.storiesComponent.showWithCondition(isShow)
+    }
+
+    private fun viewModelAction(event: StoriesUiAction) {
+        viewModel.submitAction(event)
+    }
+
+    private fun isShowLoading(isShowLoading: Boolean) = with(binding){
+        layoutTimer.llTimer.showWithCondition(isShowLoading)
+        layoutDeclarative.loaderDecorativeWhite.showWithCondition(isShowLoading)
+        ivStoriesDetailContent.showWithCondition(!isShowLoading)
+    }
+
     private fun goTo(appLink: String) {
         router.route(requireContext(), appLink)
     }
@@ -307,9 +366,9 @@ class StoriesDetailFragment @Inject constructor(
             ProductVariantBottomSheetParams(
                 pageSource = VariantPageSource.STORIES_PAGESOURCE.source,
                 productId = product.id,
-                shopId = shopId,
+                shopId = shopId, //is shop id mandatory from applink?
                 dismissAfterTransaction = false,
-                trackerCdListName = viewModel.storyId,
+                trackerCdListName = "viewModel.storyId",
             )
         )
 
@@ -331,10 +390,11 @@ class StoriesDetailFragment @Inject constructor(
     companion object {
         private const val TAG = "StoriesDetailFragment"
         private const val VARIANT_BOTTOM_SHEET_TAG = "atc variant bottom sheet"
+        const val STORY_GROUP_ID = "StoriesGroupId"
 
         fun getFragment(
             fragmentManager: FragmentManager,
-            classLoader: ClassLoader,
+            classLoader: ClassLoader
         ): StoriesDetailFragment {
             val oldInstance = fragmentManager.findFragmentByTag(TAG) as? StoriesDetailFragment
             return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
@@ -343,5 +403,4 @@ class StoriesDetailFragment @Inject constructor(
             ) as StoriesDetailFragment
         }
     }
-
 }
