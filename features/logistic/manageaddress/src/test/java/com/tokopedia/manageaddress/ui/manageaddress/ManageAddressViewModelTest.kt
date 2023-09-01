@@ -45,9 +45,12 @@ import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.usercomponents.userconsent.common.AttributeDataModel
 import com.tokopedia.usercomponents.userconsent.common.CollectionPointDataModel
 import com.tokopedia.usercomponents.userconsent.common.ConsentCollectionResponse
+import com.tokopedia.usercomponents.userconsent.common.PurposeDataModel
 import com.tokopedia.usercomponents.userconsent.common.UserConsentCollectionDataModel
+import com.tokopedia.usercomponents.userconsent.common.UserConsentConst
 import com.tokopedia.usercomponents.userconsent.domain.collection.GetConsentCollectionUseCase
 import io.mockk.coEvery
 import io.mockk.every
@@ -264,7 +267,12 @@ class ManageAddressViewModelTest {
         val mockCollectionPoints = mutableListOf(
             CollectionPointDataModel(
                 id = "id",
-                consentType = "type"
+                consentType = "type",
+                attributes = AttributeDataModel(
+                    collectionPointPurposeRequirement = UserConsentConst.MANDATORY,
+                    collectionPointStatementOnlyFlag = UserConsentConst.NO_CHECKLIST
+                ),
+                purposes = mutableListOf(PurposeDataModel(id = "id", version = "version"))
             )
         )
 
@@ -282,6 +290,59 @@ class ManageAddressViewModelTest {
 
         manageAddressViewModel.deletePeopleAddress("1")
         verify { observerResultRemovedAddress.onChanged(match { it is ManageAddressState.Success }) }
+    }
+
+    @Test
+    fun `WHEN delete address but doesnt get collection point THEN show error from user consent response`() {
+        val mockResponseDeletePeopleAddressGqlResponse = DeletePeopleAddressGqlResponse(
+            DeletePeopleAddressResponse(
+                data = DeletePeopleAddressData(success = 1),
+                status = ManageAddressConstant.STATUS_OK
+            )
+        )
+        val errorResponse = "error response"
+
+        val mockResponse = ConsentCollectionResponse(
+            UserConsentCollectionDataModel(
+                errorMessages = listOf(errorResponse),
+                success = false,
+                collectionPoints = mutableListOf()
+            )
+        )
+
+        coEvery {
+            getUserConsentCollection(any())
+        } returns mockResponse
+        coEvery { deletePeopleAddressUseCase.invoke(any()) } returns mockResponseDeletePeopleAddressGqlResponse
+
+        manageAddressViewModel.deletePeopleAddress("1")
+        verify { observerResultRemovedAddress.onChanged(match { (it as ManageAddressState.Fail).throwable?.message == errorResponse }) }
+    }
+
+    @Test
+    fun `WHEN delete address but doesnt get collection point and user consent response doesnt have error response THEN show default error message`() {
+        val mockResponseDeletePeopleAddressGqlResponse = DeletePeopleAddressGqlResponse(
+            DeletePeopleAddressResponse(
+                data = DeletePeopleAddressData(success = 1),
+                status = ManageAddressConstant.STATUS_OK
+            )
+        )
+
+        val mockResponse = ConsentCollectionResponse(
+            UserConsentCollectionDataModel(
+                errorMessages = listOf(),
+                success = true,
+                collectionPoints = mutableListOf()
+            )
+        )
+
+        coEvery {
+            getUserConsentCollection(any())
+        } returns mockResponse
+        coEvery { deletePeopleAddressUseCase.invoke(any()) } returns mockResponseDeletePeopleAddressGqlResponse
+
+        manageAddressViewModel.deletePeopleAddress("1")
+        verify { observerResultRemovedAddress.onChanged(match { (it as ManageAddressState.Fail).throwable?.message == "Terjadi kesalahan. Silahkan coba lagi." }) }
     }
 
     @Test
@@ -672,7 +733,8 @@ class ManageAddressViewModelTest {
     fun `WHEN setupTicker with ticker type info THEN return TickerModel with TYPE_INFORMATION`() {
         val tickerType = TargetedTickerMapper.TICKER_INFO_TYPE
         val response = TickerDataProvider.provideDummy()
-        val tickerItemInfoId = response.getTargetedTickerData.list.find { it.type == tickerType }?.id
+        val tickerItemInfoId =
+            response.getTargetedTickerData.list.find { it.type == tickerType }?.id
         coEvery { tickerUseCase.invoke(any()) } returns response
 
         // when
@@ -688,7 +750,8 @@ class ManageAddressViewModelTest {
     fun `WHEN setupTicker with ticker type warning THEN return TickerModel with TYPE_WARNING`() {
         val tickerType = TargetedTickerMapper.TICKER_WARNING_TYPE
         val response = TickerDataProvider.provideDummy()
-        val tickerItemInfoId = response.getTargetedTickerData.list.find { it.type == tickerType }?.id
+        val tickerItemInfoId =
+            response.getTargetedTickerData.list.find { it.type == tickerType }?.id
         coEvery { tickerUseCase.invoke(any()) } returns response
 
         // when
@@ -704,7 +767,8 @@ class ManageAddressViewModelTest {
     fun `WHEN setupTicker with ticker type error THEN return TickerModel with TYPE_ERROR`() {
         val tickerType = TargetedTickerMapper.TICKER_ERROR_TYPE
         val response = TickerDataProvider.provideDummy()
-        val tickerItemInfoId = response.getTargetedTickerData.list.find { it.type == tickerType }?.id
+        val tickerItemInfoId =
+            response.getTargetedTickerData.list.find { it.type == tickerType }?.id
         coEvery { tickerUseCase.invoke(any()) } returns response
 
         // when
@@ -720,7 +784,8 @@ class ManageAddressViewModelTest {
     fun `WHEN setupTicker with ticker type announcement THEN return TickerModel with TYPE_ANNOUNCEMENT`() {
         val tickerType = "announcement"
         val response = TickerDataProvider.provideDummy()
-        val tickerItemInfoId = response.getTargetedTickerData.list.find { it.type == tickerType }?.id
+        val tickerItemInfoId =
+            response.getTargetedTickerData.list.find { it.type == tickerType }?.id
         coEvery { tickerUseCase.invoke(any()) } returns response
 
         // when
@@ -736,7 +801,8 @@ class ManageAddressViewModelTest {
     fun `WHEN setupTicker with action THEN return TickerModel content with hyperlink text`() {
         val response = TickerDataProvider.provideDummy()
         val tickerItemWithAction = response.getTargetedTickerData.list.first()
-        val expected = "${tickerItemWithAction.content} <a href=\"${tickerItemWithAction.action.appURL}\">${tickerItemWithAction.action.label}</a>"
+        val expected =
+            "${tickerItemWithAction.content} <a href=\"${tickerItemWithAction.action.appURL}\">${tickerItemWithAction.action.label}</a>"
         coEvery { tickerUseCase.invoke(any()) } returns response
 
         // when
@@ -751,7 +817,8 @@ class ManageAddressViewModelTest {
     @Test
     fun `WHEN setupTicker without action THEN return TickerModel content without hyperlink text`() {
         val response = TickerDataProvider.provideDummy()
-        val tickerItemWithoutAction = response.getTargetedTickerData.list.find { it.action.label.isEmpty() }
+        val tickerItemWithoutAction =
+            response.getTargetedTickerData.list.find { it.action.label.isEmpty() }
         val expected = "${tickerItemWithoutAction?.content}"
         coEvery { tickerUseCase.invoke(any()) } returns response
 
@@ -767,7 +834,8 @@ class ManageAddressViewModelTest {
     @Test
     fun `WHEN setupTicker with app url THEN return TickerModel linkUrl with appUrl`() {
         val response = TickerDataProvider.provideDummy()
-        val tickerItemWithAppUrl = response.getTargetedTickerData.list.find { it.action.appURL.isNotEmpty() }
+        val tickerItemWithAppUrl =
+            response.getTargetedTickerData.list.find { it.action.appURL.isNotEmpty() }
         val expected = "${tickerItemWithAppUrl?.action?.appURL}"
         coEvery { tickerUseCase.invoke(any()) } returns response
 
@@ -783,7 +851,8 @@ class ManageAddressViewModelTest {
     @Test
     fun `WHEN setupTicker with web url THEN return TickerModel linkUrl with webUrl`() {
         val response = TickerDataProvider.provideDummy()
-        val tickerItemWithWebUrl = response.getTargetedTickerData.list.find { it.action.webURL.isNotEmpty() }
+        val tickerItemWithWebUrl =
+            response.getTargetedTickerData.list.find { it.action.webURL.isNotEmpty() }
         val expected = "${tickerItemWithWebUrl?.action?.webURL}"
         coEvery { tickerUseCase.invoke(any()) } returns response
 
@@ -799,7 +868,9 @@ class ManageAddressViewModelTest {
     @Test
     fun `WHEN setupTicker with web url and app url THEN return TickerModel linkUrl with appUrl`() {
         val response = TickerDataProvider.provideDummy()
-        val tickerItemWithAppAndWebUrl = response.getTargetedTickerData.list.find { it.action.appURL.isNotEmpty().and(it.action.webURL.isNotEmpty()) }
+        val tickerItemWithAppAndWebUrl = response.getTargetedTickerData.list.find {
+            it.action.appURL.isNotEmpty().and(it.action.webURL.isNotEmpty())
+        }
         val expected = "${tickerItemWithAppAndWebUrl?.action?.appURL}"
         coEvery { tickerUseCase.invoke(any()) } returns response
 

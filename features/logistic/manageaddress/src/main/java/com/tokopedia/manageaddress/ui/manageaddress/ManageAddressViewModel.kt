@@ -246,10 +246,6 @@ class ManageAddressViewModel @Inject constructor(
             throw Throwable(message)
         }
         val collection = userConsent.data.collectionPoints.first()
-        val dataElements = mutableMapOf<String, String>()
-        userConsentParam.dataElements.forEach { it ->
-            dataElements[it.elementName] = it.elementValue
-        }
         val purposes: MutableList<UserConsentPayload.PurposeDataModel> = mutableListOf()
         collection.purposes.forEach {
             purposes.add(
@@ -273,7 +269,7 @@ class ManageAddressViewModel @Inject constructor(
         return UserConsentPayload(
             identifier = userConsentParam.identifier,
             collectionId = collection.id,
-            dataElements = dataElements,
+            dataElements = mutableMapOf(),
             default = isErrorGetConsent,
             purposes = purposes
         ).toString()
