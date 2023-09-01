@@ -24,7 +24,7 @@ import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerTimerUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetVoucherSliderUiModel
 import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseNavigationBannerWidgetStyle
 import com.tokopedia.shop.home.view.model.StatusCampaign
-import com.tokopedia.shop.home.view.model.banner_product_group.ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.ComponentType
+import com.tokopedia.shop.home.view.model.banner_product_group.ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.ComponentName
 import com.tokopedia.shop.home.view.model.banner_product_group.ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.Data.LinkType
 import com.tokopedia.shop.home.view.model.showcase_navigation.Showcase
 import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseCornerShape
@@ -249,10 +249,10 @@ object ShopPageWidgetMapper {
         val tabs = response.data.map { tab ->
             val componentList = tab.componentList.map { component ->
 
-                val componentType = when (component.componentType) {
-                    ComponentType.PRODUCT.id -> ComponentType.PRODUCT
-                    ComponentType.DISPLAY_SINGLE_COLUMN.id -> ComponentType.DISPLAY_SINGLE_COLUMN
-                    else -> ComponentType.DISPLAY_SINGLE_COLUMN
+                val componentName = when (component.componentType) {
+                    ComponentName.PRODUCT.id -> ComponentName.PRODUCT
+                    ComponentName.DISPLAY_SINGLE_COLUMN.id -> ComponentName.DISPLAY_SINGLE_COLUMN
+                    else -> ComponentName.DISPLAY_SINGLE_COLUMN
                 }
 
                 val data = component.data.map { data ->
@@ -274,8 +274,7 @@ object ShopPageWidgetMapper {
 
                 ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList(
                     component.componentID,
-                    component.componentName,
-                    componentType,
+                    componentName,
                     data
                 )
             }

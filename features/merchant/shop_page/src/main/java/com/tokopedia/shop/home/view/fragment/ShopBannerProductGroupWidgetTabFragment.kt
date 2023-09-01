@@ -29,7 +29,7 @@ import com.tokopedia.shop.home.view.viewmodel.ShopBannerProductGroupWidgetTabVie
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 import kotlin.collections.ArrayList
-import com.tokopedia.shop.home.view.model.banner_product_group.ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.ComponentType
+import com.tokopedia.shop.home.view.model.banner_product_group.ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.ComponentName
 
 class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
 
@@ -122,7 +122,7 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
     }
 
     private fun showMainBanner() {
-        val singleBanners = widgets.firstOrNull { widget -> widget.componentType == ComponentType.DISPLAY_SINGLE_COLUMN }
+        val singleBanners = widgets.firstOrNull { widget -> widget.componentName == ComponentName.DISPLAY_SINGLE_COLUMN }
 
         val hasMainBanner = singleBanners != null
         if (hasMainBanner) {

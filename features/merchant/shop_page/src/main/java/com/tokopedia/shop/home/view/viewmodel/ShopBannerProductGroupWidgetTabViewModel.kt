@@ -16,7 +16,7 @@ import com.tokopedia.shop.home.view.model.banner_product_group.appearance.Vertic
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import javax.inject.Inject
-import com.tokopedia.shop.home.view.model.banner_product_group.ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.ComponentType
+import com.tokopedia.shop.home.view.model.banner_product_group.ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.ComponentName
 import com.tokopedia.shop.product.data.model.ShopFeaturedProductParams
 import com.tokopedia.shop.product.domain.interactor.GetShopFeaturedProductUseCase
 import com.tokopedia.user.session.UserSessionInterface
@@ -94,7 +94,7 @@ class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
     }
 
     private fun getVerticalBanner(widgets: List<ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList>): List<VerticalBannerItemType> {
-        val bannerComponents = widgets.filter { widget -> widget.componentType == ComponentType.DISPLAY_SINGLE_COLUMN }
+        val bannerComponents = widgets.filter { widget -> widget.componentName == ComponentName.DISPLAY_SINGLE_COLUMN }
         val banner = bannerComponents.getOrNull(0)
         val bannerWidgets = banner?.data ?: emptyList()
 
@@ -110,7 +110,7 @@ class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
     private fun getProductMetadata(
         widgets: List<ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList>
     ): ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.Data? {
-        val productComponents = widgets.filter { widget -> widget.componentType == ComponentType.PRODUCT }
+        val productComponents = widgets.filter { widget -> widget.componentName == ComponentName.PRODUCT }
 
         val product = productComponents.getOrNull(0)
         val productMetadata = product?.data?.getOrNull(0)

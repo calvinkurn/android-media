@@ -116,10 +116,19 @@ class ShopHomeBannerProductGroupTabAdapter : RecyclerView.Adapter<RecyclerView.V
                 renderSlashedProductPrice(product)
                 renderProductRating(product)
                 renderProductSoldCount(product)
+                renderBulletSeparator(product)
                 setupColors(item.overrideTheme, item.colorSchema)
 
                 binding.root.setOnClickListener { onProductClick(product) }
             }
+        }
+
+        private fun renderBulletSeparator(product: ProductItemType) {
+            val hasBeenPurchased = product.soldCount.isNotEmpty()
+            val hasRating = product.rating.isNotEmpty()
+
+            val showBulletSeparator = hasBeenPurchased && hasRating && product.showProductInfo
+            binding.tpgBullet.isVisible = showBulletSeparator
         }
 
         private fun renderProductSoldCount(product: ProductItemType) {
@@ -135,12 +144,10 @@ class ShopHomeBannerProductGroupTabAdapter : RecyclerView.Adapter<RecyclerView.V
 
             binding.tpgRating.isVisible = showProductRating
             binding.imgStar.isVisible = showProductRating
-            binding.tpgBullet.isVisible = showProductRating
 
             if (showProductRating) {
                 binding.tpgRating.text = product.rating
                 binding.imgStar.setBackgroundResource(R.drawable.ic_shop_home_star_filled)
-                binding.tpgBullet.text = binding.tpgBullet.context?.getString(R.string.shop_page_dot_character)
             }
         }
 

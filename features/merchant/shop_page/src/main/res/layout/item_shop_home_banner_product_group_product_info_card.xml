@@ -76,9 +76,9 @@
         android:id="@+id/imgStar"
         android:layout_width="16dp"
         android:layout_height="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/tpgRating"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/barrier"
+        app:layout_constraintTop_toTopOf="@+id/tpgRating"
         tools:srcCompat="@drawable/ic_shop_home_star_filled" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -89,7 +89,6 @@
         android:paddingTop="4dp"
         android:paddingBottom="4dp"
         android:textColor="@color/Unify_NN600"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/imgStar"
         app:layout_constraintTop_toBottomOf="@+id/barrier"
         app:typographyType="display_3"
@@ -99,14 +98,16 @@
         android:id="@+id/tpgBullet"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingTop="4dp"
         android:paddingStart="4dp"
+        android:paddingTop="4dp"
         android:paddingEnd="4dp"
+        android:visibility="gone"
         android:paddingBottom="4dp"
+        android:text="@string/shop_page_dot_character"
         android:textColor="@color/Unify_NN600"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/tpgRating"
         app:layout_constraintStart_toEndOf="@id/tpgRating"
-        app:layout_constraintTop_toBottomOf="@+id/barrier"
+        app:layout_constraintTop_toTopOf="@+id/tpgRating"
         app:typographyType="display_3" />
 
 
