@@ -24,5 +24,5 @@
     <string name="universal_editor_input_tool_confirmation_secondary_cta">Keluar tanpa Simpan</string>
 
     <!-- Placement Text -->
-    <style name="universal_editor_placement_tool_reset">Reset</style>
+    <string name="universal_editor_placement_tool_reset">Reset</string>
 </resources>
