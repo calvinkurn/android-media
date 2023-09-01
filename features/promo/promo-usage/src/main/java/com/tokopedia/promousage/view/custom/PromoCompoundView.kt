@@ -52,6 +52,7 @@ class PromoCompoundView @JvmOverloads constructor(
         private const val COLOR_STRING_BLUE = "blue"
         private const val COLOR_STRING_GREEN = "green"
         private const val COLOR_STRING_ORANGE = "orange"
+        private const val COLOR_STRING_RED = "red"
     }
 
     private var scaleAnimator: ValueAnimator = ValueAnimator.ofFloat()
@@ -154,6 +155,7 @@ class PromoCompoundView @JvmOverloads constructor(
             COLOR_STRING_BLUE -> com.tokopedia.unifyprinciples.R.color.Unify_BN500
             COLOR_STRING_ORANGE -> com.tokopedia.unifyprinciples.R.color.Unify_YN500
             COLOR_STRING_GREEN -> com.tokopedia.unifyprinciples.R.color.Unify_GN500
+            COLOR_STRING_RED -> com.tokopedia.unifyprinciples.R.color.Unify_RN500
             else -> com.tokopedia.unifyprinciples.R.color.Unify_NN950
         }
     }
