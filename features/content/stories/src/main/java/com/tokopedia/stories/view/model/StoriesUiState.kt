@@ -2,13 +2,13 @@ package com.tokopedia.stories.view.model
 
 import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
-import com.tokopedia.mvcwidget.TokopointsCatalogMVCSummaryResponse
 
 data class StoriesUiState(
     val storiesGroup: StoriesGroupUiModel,
     val storiesDetail: StoriesDetailUiModel,
     val bottomSheetStatus: Map<BottomSheetType, Boolean>,
     val productSheet: ProductBottomSheetUiState,
+    val combineState: CombineState,
 ) {
     companion object {
         val Empty
@@ -17,7 +17,16 @@ data class StoriesUiState(
                 storiesGroup = StoriesGroupUiModel(),
                 bottomSheetStatus = BottomSheetStatusDefault,
                 productSheet = ProductBottomSheetUiState.Empty,
+                combineState = CombineState.Empty,
             )
+    }
+
+    data class CombineState(
+        val deleteState: ResultState,
+    ) {
+        companion object {
+            val Empty get() = CombineState(deleteState = ResultState.Loading)
+        }
     }
 }
 
@@ -26,27 +35,14 @@ enum class BottomSheetType {
 }
 
 data class ProductBottomSheetUiState(
-    val products: ProductList,
-    val vouchers: TokopointsCatalogMVCSummaryResponse,
+    val products: List<ContentTaggedProductUiModel>,
+    val resultState: ResultState
 ) {
-    data class ProductList(
-        val products: List<ContentTaggedProductUiModel>,
-        val resultState: ResultState
-    ) {
-        companion object {
-            val Empty
-                get() = ProductList(
-                    products = emptyList(),
-                    resultState = ResultState.Loading
-                )
-        }
-    }
-
     companion object {
         val Empty
             get() = ProductBottomSheetUiState(
-                products = ProductList.Empty,
-                vouchers = TokopointsCatalogMVCSummaryResponse(),
+                products = emptyList(),
+                resultState = ResultState.Loading,
             )
     }
 }

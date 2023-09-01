@@ -6,17 +6,16 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
-import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.mvcwidget.TokopointsCatalogMVCSummaryResponse
-import com.tokopedia.stories.view.model.BottomSheetStatusDefault
-import com.tokopedia.stories.view.model.BottomSheetType
-import com.tokopedia.stories.view.model.ProductBottomSheetUiState
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.stories.data.repository.StoriesRepository
 import com.tokopedia.stories.domain.model.StoriesAuthorType
 import com.tokopedia.stories.domain.model.StoriesRequestModel
 import com.tokopedia.stories.domain.model.StoriesSource
 import com.tokopedia.stories.utils.getRandomNumber
+import com.tokopedia.stories.view.model.BottomSheetStatusDefault
+import com.tokopedia.stories.view.model.BottomSheetType
+import com.tokopedia.stories.view.model.ProductBottomSheetUiState
 import com.tokopedia.stories.view.model.StoriesDetailItemUiModel.StoriesDetailItemUiEvent
 import com.tokopedia.stories.view.model.StoriesDetailItemUiModel.StoriesDetailItemUiEvent.PAUSE
 import com.tokopedia.stories.view.model.StoriesDetailItemUiModel.StoriesDetailItemUiEvent.RESUME
@@ -36,6 +35,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import com.tokopedia.stories.R
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -49,16 +49,12 @@ class StoriesViewModel @Inject constructor(
     private val _storiesGroup = MutableStateFlow(StoriesGroupUiModel())
     private val _storiesDetail = MutableStateFlow(StoriesDetailUiModel())
     private val bottomSheetStatus = MutableStateFlow(BottomSheetStatusDefault)
-    private val products = MutableStateFlow(ProductBottomSheetUiState.ProductList.Empty)
-    private val vouchers = MutableStateFlow(TokopointsCatalogMVCSummaryResponse())
-
-    private val productSheet = combine(products, vouchers) {
-        products, vouchers -> ProductBottomSheetUiState(products = products, vouchers = vouchers)
-    }
+    private val products = MutableStateFlow(ProductBottomSheetUiState.Empty)
 
     private val mGroupPos = MutableStateFlow(-1)
     private val mDetailPos = MutableStateFlow(-1)
     private val mResetValue = MutableStateFlow(-1)
+    private val combineState = MutableStateFlow(StoriesUiState.CombineState.Empty)
 
     val mGroupId: String
         get() {
@@ -83,6 +79,12 @@ class StoriesViewModel @Inject constructor(
             return _storiesGroup.value.groupItems[currPosition].detail.detailItems.size
         }
 
+    val storyId : String
+        get() {
+            val currentItem = mGroupItem.detail.detailItems
+            return currentItem.getOrNull(mGroupItem.detail.selectedDetailPosition)?.id.orEmpty()
+        }
+
     private val _uiEvent = MutableSharedFlow<StoriesUiEvent>(extraBufferCapacity = 100)
     val uiEvent: Flow<StoriesUiEvent>
         get() = _uiEvent
@@ -91,24 +93,17 @@ class StoriesViewModel @Inject constructor(
         _storiesGroup,
         _storiesDetail,
         bottomSheetStatus,
-        productSheet,
-    ) { storiesCategories, storiesItem, bottomSheet, productSheet ->
+        products,
+        combineState,
+    ) { storiesCategories, storiesItem, bottomSheet, product, combineState ->
         StoriesUiState(
             storiesGroup = storiesCategories,
             storiesDetail = storiesItem,
             bottomSheetStatus = bottomSheet,
-            productSheet = productSheet,
+            productSheet = product,
+            combineState = combineState,
         )
     }
-
-    /**
-     * TODO()
-    val storyId : String
-        get()  {
-            val currentGroup = _storiesGroup.value.firstOrNull { story -> story.selected }
-            return currentGroup?.details?.get(currentGroup.selectedDetail)?.id.orEmpty()
-        }
-    */
 
     fun submitAction(action: StoriesUiAction) {
         when (action) {
@@ -282,10 +277,8 @@ class StoriesViewModel @Inject constructor(
     private fun getProducts() {
         viewModelScope.launchCatchError(block = {
             products.update { product -> product.copy(resultState = ResultState.Loading) }
-            val productsDeferred = asyncCatchError(block = { repository.getStoriesProducts(mShopId, "") }) { emptyList() }
-            val vouchersDeferred = asyncCatchError(block = { repository.getMvcWidget(mShopId) }) { TokopointsCatalogMVCSummaryResponse() }
-            products.update { productList -> productList.copy(products = productsDeferred.await().orEmpty(), resultState = ResultState.Success) }
-            vouchers.update { vouchersDeferred.await() ?: TokopointsCatalogMVCSummaryResponse() }
+            val productList = repository.getStoriesProducts(mShopId, storyId)
+            products.update { products -> products.copy(products = productList, resultState = ResultState.Success) }
         }, onError = {
             products.update { product -> product.copy(resultState = ResultState.Fail(it)) } //TODO() change result state?
         })
@@ -297,10 +290,16 @@ class StoriesViewModel @Inject constructor(
                 val response = repository.addToCart(
                     productId = product.id,
                     price = product.finalPrice,
-                    shopId = "",
+                    shopId = mShopId,
                     productName = product.title
                 )
-            }, onError = {})
+
+                if (response) {
+                    _uiEvent.emit(StoriesUiEvent.ShowInfoEvent(R.string.stories_product_atc_success))
+                } else {
+                    _uiEvent.emit(StoriesUiEvent.ShowErrorEvent(MessageErrorException()))
+                }
+            }, onError = { _uiEvent.emit(StoriesUiEvent.ShowErrorEvent(it)) })
         }
     }
 
@@ -355,9 +354,20 @@ class StoriesViewModel @Inject constructor(
 
     private fun handleDeleteStory() {
         viewModelScope.launchCatchError(block = {
-            //repository.deleteStory(storyId)
-            //TODO if true emit next story else show toast
-        }, onError = {})
+            val response = repository.deleteStory(storyId)
+            if (response) {
+                //Remove story~
+                val newList = _storiesGroup.value.groupItems.map {
+                    if (it == mGroupItem) it.copy(detail = it.detail.copy(detailItems = it.detail.detailItems.filterNot { item -> item.id == storyId }))
+                    else it
+                }
+                _storiesGroup.update {
+                    group -> group.copy(groupItems = newList)
+                }
+            } else {
+                _uiEvent.emit(StoriesUiEvent.ShowErrorEvent(MessageErrorException()))
+            }
+        }, onError = { _uiEvent.emit(StoriesUiEvent.ShowErrorEvent(it)) })
     }
 
     private fun updateDetailData(

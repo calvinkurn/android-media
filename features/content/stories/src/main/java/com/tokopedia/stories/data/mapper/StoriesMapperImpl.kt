@@ -6,6 +6,7 @@ import com.tokopedia.content.common.report_content.model.ContentMenuItem
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.stories.domain.model.detail.StoriesDetailsResponseModel
 import com.tokopedia.stories.domain.model.group.StoriesGroupsResponseModel
+import com.tokopedia.stories.uimodel.AuthorType
 import com.tokopedia.stories.uimodel.StoryAuthor
 import com.tokopedia.stories.view.model.StoriesDetailItemUiModel
 import com.tokopedia.stories.view.model.StoriesDetailItemUiModel.StoriesDetailItemUiEvent
@@ -55,7 +56,8 @@ class StoriesMapperImpl @Inject constructor(private val userSession: UserSession
                                         badgeUrl = stories.author.badgeURL
                                     ),
                                     menus = buildMenu(stories.interaction, stories.author),
-                                    share = StoriesDetailItemUiModel.Sharing(isShareable = stories.interaction.shareable, metadata = LinkProperties(ogTitle = stories.meta.shareTitle, ogImageUrl = stories.meta.shareImage, ogDescription = stories.meta.shareDescription))
+                                    share = StoriesDetailItemUiModel.Sharing(isShareable = stories.interaction.shareable, metadata = LinkProperties(ogTitle = stories.meta.shareTitle, ogImageUrl = stories.meta.shareImage, ogDescription = stories.meta.shareDescription)),
+                                    productCount = stories.totalProductsFmt.ifEmpty { "0" },
                                 )
                             }
                         )
@@ -77,14 +79,10 @@ class StoriesMapperImpl @Inject constructor(private val userSession: UserSession
                     imageContent = stories.media.link,
                     resetValue = -1,
                     isSameContent = false,
-                    author = StoryAuthor.Shop(
-                        shopName = stories.author.name,
-                        shopId = stories.author.id,
-                        avatarUrl = stories.author.thumbnailURL,
-                        badgeUrl = stories.author.badgeURL
-                    ),
+                    author = buildAuthor(stories.author),
                     menus = buildMenu(stories.interaction, stories.author),
-                    share = StoriesDetailItemUiModel.Sharing(isShareable = stories.interaction.shareable, metadata = LinkProperties(ogTitle = stories.meta.shareTitle, ogImageUrl = stories.meta.shareImage, ogDescription = stories.meta.shareDescription))
+                    share = StoriesDetailItemUiModel.Sharing(isShareable = stories.interaction.shareable, metadata = LinkProperties(ogTitle = stories.meta.shareTitle, ogImageUrl = stories.meta.shareImage, ogDescription = stories.meta.shareDescription)),
+                    productCount = stories.totalProductsFmt.ifEmpty { "0" },
                 )
             }
         )
@@ -117,4 +115,22 @@ class StoriesMapperImpl @Inject constructor(private val userSession: UserSession
             }
         }
 
+    private fun buildAuthor(author: StoriesDetailsResponseModel.ContentStoriesDetails.Stories.Author): StoryAuthor {
+        val type = AuthorType.convertValue(author.type)
+
+        return if (type == AuthorType.User) {
+            StoryAuthor.Buyer(
+                userName = author.name,
+                userId = author.id,
+                avatarUrl = author.thumbnailURL,
+            )
+        } else {
+            StoryAuthor.Shop(
+                shopName = author.name,
+                shopId = author.id,
+                avatarUrl = author.thumbnailURL,
+                badgeUrl = author.badgeURL
+            )
+        }
+    }
 }

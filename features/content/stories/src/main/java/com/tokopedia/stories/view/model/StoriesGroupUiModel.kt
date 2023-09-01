@@ -39,6 +39,7 @@ data class StoriesDetailItemUiModel(
     val author: StoryAuthor = StoryAuthor.Unknown,
     val menus: List<ContentMenuItem> = emptyList(),
     val share: Sharing,
+    val productCount: String = "",
 ) {
 
     enum class StoriesDetailItemUiEvent {
