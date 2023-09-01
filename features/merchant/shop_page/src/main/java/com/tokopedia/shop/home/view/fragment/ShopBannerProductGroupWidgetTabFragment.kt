@@ -39,7 +39,6 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
         private const val BUNDLE_KEY_WIDGET_STYLE = "widget_style"
         private const val BUNDLE_KEY_OVERRIDE_THEME = "override_theme"
         private const val BUNDLE_KEY_COLOR_SCHEME = "color_scheme"
-        private const val BUNDLE_KEY_TAB_LABEL = "tab_label"
 
         @JvmStatic
         fun newInstance(
@@ -47,8 +46,7 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
             widgets: List<ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList>,
             widgetStyle: String,
             overrideTheme: Boolean,
-            colorScheme: ShopPageColorSchema,
-            tabLabel: String
+            colorScheme: ShopPageColorSchema
         ): ShopBannerProductGroupWidgetTabFragment {
             return ShopBannerProductGroupWidgetTabFragment().apply {
                 arguments = Bundle().apply {
@@ -57,7 +55,6 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
                     putString(BUNDLE_KEY_WIDGET_STYLE, widgetStyle)
                     putBoolean(BUNDLE_KEY_OVERRIDE_THEME, overrideTheme)
                     putParcelable(BUNDLE_KEY_COLOR_SCHEME, colorScheme)
-                    putString(BUNDLE_KEY_TAB_LABEL, tabLabel)
                 }
             }
         }
@@ -77,7 +74,6 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
     private val colorScheme by lazy {
         arguments?.getParcelable(BUNDLE_KEY_COLOR_SCHEME) ?: ShopPageColorSchema()
     }
-    private val tabLabel by lazy { arguments?.getString(BUNDLE_KEY_TAB_LABEL).orEmpty() }
     private var onProductSuccessfullyLoaded: (Boolean) -> Unit = {}
 
     @Inject

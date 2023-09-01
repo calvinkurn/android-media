@@ -130,8 +130,7 @@ class ShopHomeBannerProductGroupViewPagerViewHolder(
                 currentTab.componentList,
                 widgetStyle,
                 overrideTheme,
-                colorScheme,
-                currentTab.label
+                colorScheme
             )
             fragment.setOnMainBannerClick { mainBanner -> listener.onBannerProductGroupMainBannerClick(mainBanner) }
             fragment.setOnProductClick { selectedShowcase -> listener.onBannerProductGroupProductClick(selectedShowcase) }
