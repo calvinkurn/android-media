@@ -29,6 +29,11 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.mediauploader)
     implementation projectOrAar(rootProject.ext.features.sellerActiveCommon)
 
+    implementation rootProject.ext.ktorDependencies.ktorOkhttp
+    implementation rootProject.ext.ktorDependencies.ktorContentNegotiation
+    implementation rootProject.ext.ktorDependencies.ktorSerializationJson
+    implementation rootProject.ext.ktorDependencies.ktorLogging
+
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
