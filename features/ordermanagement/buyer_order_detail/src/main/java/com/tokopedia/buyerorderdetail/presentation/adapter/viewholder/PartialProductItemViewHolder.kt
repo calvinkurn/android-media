@@ -19,10 +19,6 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
-import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
-import com.tokopedia.user.session.UserSession
-import java.security.PrivateKey
 
 class PartialProductItemViewHolder(
     private val itemView: View?,
@@ -204,7 +200,8 @@ class PartialProductItemViewHolder(
     }
 
     private fun openShareBottomSheet() {
-        bottomSheetListener?.onShareButtonClicked(element)
+        bottomSheetListener.onShareButtonClicked(element)
+        BuyerOrderDetailTracker.sendClickOnShareButton(element.orderId, element.productId, element.orderStatusId)
     }
 
     interface ProductViewListener {

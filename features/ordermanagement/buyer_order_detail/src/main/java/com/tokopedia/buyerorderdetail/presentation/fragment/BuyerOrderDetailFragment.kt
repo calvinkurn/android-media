@@ -95,10 +95,12 @@ import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.tracker.PageType
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.AffiliateInput
 import com.tokopedia.universal_sharing.view.model.LinkProperties
 import com.tokopedia.universal_sharing.view.model.PageDetail
 import com.tokopedia.universal_sharing.view.model.Product
+import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.universal_sharing.view.model.Shop
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -978,14 +980,17 @@ open class BuyerOrderDetailFragment :
 
     override fun onShareButtonClicked(element: ProductListUiModel.ProductUiModel) {
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance(view).apply {
-//            init(object : ShareBottomsheetListener {
-//                override fun onShareOptionClicked(shareModel: ShareModel) {
-//                }
-//
-//                override fun onCloseOptionClicked() {
-//                    dismiss()
-//                }
-//            })
+            init(object : ShareBottomsheetListener {
+                override fun onShareOptionClicked(shareModel: ShareModel) {
+                    BuyerOrderDetailTracker.sendClickOnSelectionOfSharingChannels(shareModel.channel ?: "", element.orderId, element.productId, element.orderStatusId)
+                }
+
+                override fun onCloseOptionClicked() {
+                    BuyerOrderDetailTracker.sendClickOnClosingBottomSheet(element.orderId, element.productId, element.orderStatusId)
+                    dismiss()
+                }
+            })
+
             enableDefaultShareIntent()
 
             val shareString = this@BuyerOrderDetailFragment.getString(R.string.buyer_order_detail_share_text, element.priceText)
@@ -995,7 +1000,6 @@ open class BuyerOrderDetailFragment :
                 LinkProperties(
                     linkerType = PRODUCT_TYPE,
                     ogTitle = "${element.productName} - ${element.priceText}",
-                    ogDescription = "${element.productName} - ${element.productNote}",
                     ogImageUrl = element.productThumbnailUrl,
                     desktopUrl = element.productUrl,
                     id = element.orderDetailId
@@ -1030,5 +1034,6 @@ open class BuyerOrderDetailFragment :
             requireActivity().supportFragmentManager,
             this@BuyerOrderDetailFragment
         )
+        BuyerOrderDetailTracker.eventImpressionShareBottomSheet(element.orderId, element.productId, element.orderStatusId)
     }
 }

@@ -41,8 +41,11 @@ import com.tokopedia.interceptors.authenticator.TkpdAuthenticatorGql;
 import com.tokopedia.interceptors.refreshtoken.RefreshTokenGql;
 import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.linker.LinkerManager;
+import com.tokopedia.linker.interfaces.LinkerRouter;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.R;
@@ -65,13 +68,15 @@ public class MyApplication extends BaseMainApplication
         implements AbstractionRouter,
         NetworkRouter,
         ApplinkRouter,
-        TkpdCoreRouter {
+        TkpdCoreRouter,
+        LinkerRouter {
 
     // Used to loadWishlist the 'native-lib' library on application startup.
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
     }
+    protected RemoteConfig remoteConfig;
 
     @Override
     public void onCreate() {
@@ -404,6 +409,16 @@ public class MyApplication extends BaseMainApplication
         GlobalConfig.INTERNAL_FILE_DIR = this.getFilesDir().getAbsolutePath();
         GlobalConfig.EXTERNAL_CACHE_DIR = this.getExternalCacheDir() != null ? this.getExternalCacheDir().getAbsolutePath() : "";
         GlobalConfig.EXTERNAL_FILE_DIR = this.getExternalFilesDir(null) != null ? this.getExternalFilesDir(null).getAbsolutePath() : "";
+    }
+
+    protected void initRemoteConfig() {
+        remoteConfig = new FirebaseRemoteConfigImpl(this);
+    }
+
+    @Override
+    public boolean getBooleanRemoteConfig(String key, boolean defaultValue) {
+        initRemoteConfig();
+        return remoteConfig.getBoolean(key, defaultValue);
     }
 
     public static class AppsflyerAnalytics extends DummyAnalytics {
