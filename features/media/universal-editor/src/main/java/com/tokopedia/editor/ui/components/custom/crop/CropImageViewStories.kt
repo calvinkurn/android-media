@@ -55,8 +55,6 @@ open class CropImageViewStories : CropImageView {
     }
 
     override fun setImageUri(imageUri: Uri, outputUri: Uri?) {
-        setBackgroundColor(Color.RED)
-
         outputPath = outputUri
 
         outputPath?.path?.let {
