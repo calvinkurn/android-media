@@ -198,17 +198,17 @@ class CartGroupViewHolder(
         binding.cbSelectShop.let {
             compositeSubscription.add(
                 rxViewClickDebounce(it, CHECKBOX_WATCHER_DEBOUNCE_TIME).subscribe(object :
-                    Subscriber<Boolean>() {
-                    override fun onNext(isChecked: Boolean) {
-                        cbSelectShopClickListener(cartGroupHolderData)
-                    }
+                        Subscriber<Boolean>() {
+                        override fun onNext(isChecked: Boolean) {
+                            cbSelectShopClickListener(cartGroupHolderData)
+                        }
 
-                    override fun onCompleted() {
-                    }
+                        override fun onCompleted() {
+                        }
 
-                    override fun onError(e: Throwable?) {
-                    }
-                })
+                        override fun onError(e: Throwable?) {
+                        }
+                    })
             )
         }
     }
@@ -364,7 +364,7 @@ class CartGroupViewHolder(
             binding.itemCartBasketBuilding.apply {
                 val cartShopGroupTicker = cartGroupHolderData.cartShopGroupTicker
                 when (cartShopGroupTicker.state) {
-                    CartShopGroupTickerState.FIRST_LOAD, CartShopGroupTickerState.LOADING -> {
+                    CartShopGroupTickerState.LOADING -> {
                         tvBmgmTicker.gone()
                         icBmgmTicker.gone()
                         iuTickerRightIcon.gone()
@@ -441,7 +441,7 @@ class CartGroupViewHolder(
                         layoutBasketBuildingTicker.show()
                     }
 
-                    CartShopGroupTickerState.EMPTY -> {
+                    CartShopGroupTickerState.FIRST_LOAD, CartShopGroupTickerState.EMPTY -> {
                         layoutBasketBuildingTicker.gone()
                     }
                 }
@@ -450,6 +450,7 @@ class CartGroupViewHolder(
                 }
             }
         } else {
+            cartGroupHolderData.cartShopGroupTicker.state = CartShopGroupTickerState.FIRST_LOAD
             binding.itemCartBasketBuilding.layoutBasketBuildingTicker.gone()
         }
     }

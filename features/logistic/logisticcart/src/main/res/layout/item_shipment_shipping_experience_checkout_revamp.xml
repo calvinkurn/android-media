@@ -168,7 +168,7 @@
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="gone">
+        tools:visibility="visible">
 
         <ImageView
             android:id="@+id/img_logo_free_shipping"
@@ -190,6 +190,19 @@
             app:typographyType="display_3"
             app:typographyWeight="bold"
             tools:text="Pengiriman Bebas Ongkir (2-3 Hari)" />
+
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/lbl_cod_free_shipping"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:text="@string/tersedia_bayar_di_tempat"
+            android:visibility="gone"
+            app:labelType="general_light_grey"
+            app:layout_constraintBottom_toBottomOf="@id/label_selected_free_shipping"
+            app:layout_constraintStart_toEndOf="@id/label_selected_free_shipping"
+            app:layout_constraintTop_toTopOf="@id/label_selected_free_shipping"
+            tools:visibility="visible" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/label_free_shipping_eta"
@@ -289,7 +302,7 @@
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible">
+        tools:visibility="gone">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/label_selected_single_shipping_title"

@@ -292,9 +292,9 @@ class CheckoutFragment :
                     shipmentCartItemModel.errorTitle
                 )
             } else if (shipmentCartItemModel is CheckoutOrderModel && (
-                    !shipmentCartItemModel.isError && shipmentCartItemModel.isHasUnblockingError &&
-                        shipmentCartItemModel.unblockingErrorMessage.isNotEmpty()
-                    ) && shipmentCartItemModel.firstProductErrorIndex > 0
+                !shipmentCartItemModel.isError && shipmentCartItemModel.isHasUnblockingError &&
+                    shipmentCartItemModel.unblockingErrorMessage.isNotEmpty()
+                ) && shipmentCartItemModel.firstProductErrorIndex > 0
             ) {
                 onViewTickerOrderError(
                     shipmentCartItemModel.shopId.toString(),
@@ -1528,7 +1528,31 @@ class CheckoutFragment :
         isClearPromo: Boolean
     ) {
         val courierItemData: CourierItemData?
-        if (selectedCourier != null) {
+        if (shippingCourierUiModels.isNotEmpty()) {
+            val serviceDataTracker = shippingCourierUiModels[0].serviceData
+            checkoutAnalyticsCourierSelection.eventClickChecklistPilihDurasiPengiriman(
+                serviceDataTracker.isPromo == 1,
+                serviceDataTracker.serviceName,
+                serviceDataTracker.codData.isCod == 1,
+                CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                    serviceDataTracker.rangePrice.minPrice,
+                    false
+                ).removeDecimalSuffix(),
+                CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                    serviceDataTracker.rangePrice.maxPrice,
+                    false
+                ).removeDecimalSuffix()
+            )
+        }
+        if (flagNeedToSetPinpoint) {
+            setPinpoint(cartPosition)
+        } else if (selectedCourier == null) {
+            // If there's no recommendation, user choose courier manually
+            onChangeShippingCourier(
+                cartPosition,
+                shippingCourierUiModels
+            )
+        } else {
             courierItemData =
                 shippingCourierConverter.convertToCourierItemDataNew(selectedCourier)
             if (isTradeIn) {
@@ -1564,9 +1588,9 @@ class CheckoutFragment :
                     (
                         recipientAddressModel!!.latitude == null ||
                             recipientAddressModel.latitude.equals(
-                                "0",
-                                ignoreCase = true
-                            ) || recipientAddressModel.longitude == null ||
+                                    "0",
+                                    ignoreCase = true
+                                ) || recipientAddressModel.longitude == null ||
                             recipientAddressModel.longitude.equals("0", ignoreCase = true)
                         )
                 ) {
@@ -1739,6 +1763,22 @@ class CheckoutFragment :
         checkoutAnalyticsCourierSelection.eventClickCourierCourierSelectionClickUbahKurir(label)
     }
 
+    private fun onChangeShippingCourier(position: Int, shippingCourierUiModels: List<ShippingCourierUiModel>) {
+        if (!viewModel.isLoading()) {
+            if (activity != null) {
+                ShippingCourierBottomsheet.show(
+                    parentFragmentManager,
+                    this,
+                    shippingCourierUiModels,
+                    viewModel.listData.value.address()!!.recipientAddressModel,
+                    position,
+                    false
+                )
+                checkHasCourierPromo(shippingCourierUiModels)
+            }
+        }
+    }
+
     override fun onChangeShippingCourier(order: CheckoutOrderModel, position: Int) {
         if (!viewModel.isLoading()) {
             sendAnalyticsOnClickChangeCourierShipmentRecommendation(order)
@@ -1791,13 +1831,13 @@ class CheckoutFragment :
             isCod
         )
         if (isNeedPinpoint || courierItemData.isUsePinPoint && (
-                recipientAddressModel!!.latitude == null ||
-                    recipientAddressModel.latitude.equals(
+            recipientAddressModel!!.latitude == null ||
+                recipientAddressModel.latitude.equals(
                         "0",
                         ignoreCase = true
                     ) || recipientAddressModel.longitude == null ||
-                    recipientAddressModel.longitude.equals("0", ignoreCase = true)
-                )
+                recipientAddressModel.longitude.equals("0", ignoreCase = true)
+            )
         ) {
             setPinpoint(cartPosition)
         } else {
@@ -2430,23 +2470,6 @@ class CheckoutFragment :
                 val validateUsePromoRequest =
                     data.getParcelableExtra<ValidateUsePromoRequest>(ARGS_LAST_VALIDATE_USE_REQUEST)
                 if (validateUsePromoRequest != null) {
-                    var stillHasPromo = false
-                    for (promoGlobalCode in validateUsePromoRequest.codes) {
-                        if (promoGlobalCode.isNotEmpty()) {
-                            stillHasPromo = true
-                            break
-                        }
-                    }
-                    if (!stillHasPromo) {
-                        for (order in validateUsePromoRequest.orders) {
-                            for (promoMerchantCode in order.codes) {
-                                if (promoMerchantCode.isNotEmpty()) {
-                                    stillHasPromo = true
-                                    break
-                                }
-                            }
-                        }
-                    }
                     val validateUsePromoRevampUiModel =
                         data.getParcelableExtra<ValidateUsePromoRevampUiModel>(
                             ARGS_VALIDATE_USE_DATA_RESULT

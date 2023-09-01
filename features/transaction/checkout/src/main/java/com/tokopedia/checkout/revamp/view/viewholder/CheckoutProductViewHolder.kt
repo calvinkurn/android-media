@@ -1,6 +1,8 @@
 package com.tokopedia.checkout.revamp.view.viewholder
 
 import android.annotation.SuppressLint
+import android.graphics.ColorMatrix
+import android.graphics.ColorMatrixColorFilter
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.SpannableStringBuilder
@@ -76,9 +78,19 @@ class CheckoutProductViewHolder(
         if (product.ethicalDrugDataModel.needPrescription && product.ethicalDrugDataModel.iconUrl.isNotEmpty()) {
             product.ethicalDrugDataModel.iconUrl.getBitmapImageUrl(bundleBinding.root.context) {
                 try {
-                    bundleBinding.tvProductNameBundle.text = SpannableStringBuilder("  ${product.quantity} x ${product.name}").apply {
-                        setSpan(ImageSpan(bundleBinding.root.context, it, DynamicDrawableSpan.ALIGN_CENTER), 0, 1, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
-                    }
+                    bundleBinding.tvProductNameBundle.text =
+                        SpannableStringBuilder("  ${product.quantity} x ${product.name}").apply {
+                            setSpan(
+                                ImageSpan(
+                                    bundleBinding.root.context,
+                                    it,
+                                    DynamicDrawableSpan.ALIGN_CENTER
+                                ),
+                                0,
+                                1,
+                                Spannable.SPAN_INCLUSIVE_EXCLUSIVE
+                            )
+                        }
                 } catch (t: Throwable) {
                     t.printStackTrace()
                 }
@@ -102,13 +114,15 @@ class CheckoutProductViewHolder(
             bundleBinding.tvCheckoutBundleSeparator.isVisible = true
             bundleBinding.tvCheckoutBundleName.isVisible = true
             bundleBinding.tvCheckoutBundlePrice.isVisible = true
-            (bundleBinding.vBundlingProductSeparator.layoutParams as? MarginLayoutParams)?.topMargin = 8.dpToPx(itemView.resources.displayMetrics)
+            (bundleBinding.vBundlingProductSeparator.layoutParams as? MarginLayoutParams)?.topMargin =
+                8.dpToPx(itemView.resources.displayMetrics)
         } else {
             bundleBinding.tvProductIdentifierBundle.isVisible = false
             bundleBinding.tvCheckoutBundleSeparator.isVisible = false
             bundleBinding.tvCheckoutBundleName.isVisible = false
             bundleBinding.tvCheckoutBundlePrice.isVisible = false
-            (bundleBinding.vBundlingProductSeparator.layoutParams as? MarginLayoutParams)?.topMargin = 0
+            (bundleBinding.vBundlingProductSeparator.layoutParams as? MarginLayoutParams)?.topMargin =
+                0
         }
         bundleBinding.vBundlingProductSeparator.isVisible = true
 
@@ -151,9 +165,19 @@ class CheckoutProductViewHolder(
         if (product.ethicalDrugDataModel.needPrescription && product.ethicalDrugDataModel.iconUrl.isNotEmpty()) {
             product.ethicalDrugDataModel.iconUrl.getBitmapImageUrl(productBinding.root.context) {
                 try {
-                    productBinding.tvProductName.text = SpannableStringBuilder("  ${product.name}").apply {
-                        setSpan(ImageSpan(productBinding.root.context, it, DynamicDrawableSpan.ALIGN_CENTER), 0, 1, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
-                    }
+                    productBinding.tvProductName.text =
+                        SpannableStringBuilder("  ${product.name}").apply {
+                            setSpan(
+                                ImageSpan(
+                                    productBinding.root.context,
+                                    it,
+                                    DynamicDrawableSpan.ALIGN_CENTER
+                                ),
+                                0,
+                                1,
+                                Spannable.SPAN_INCLUSIVE_EXCLUSIVE
+                            )
+                        }
                 } catch (t: Throwable) {
                     t.printStackTrace()
                 }
@@ -317,25 +341,41 @@ class CheckoutProductViewHolder(
             addOnProduct.listAddOnProductData.forEach { addon ->
                 if (addon.name.isNotEmpty()) {
                     val addOnView =
-                        ItemAddOnProductBinding.inflate(layoutInflater, productBinding.llAddonProductItems, false)
+                        ItemAddOnProductBinding.inflate(
+                            layoutInflater,
+                            productBinding.llAddonProductItems,
+                            false
+                        )
                     addOnView.apply {
                         icCheckoutAddOnsItem.setImageUrl(addon.iconUrl)
+                        val colorMatrix = ColorMatrix()
+                        colorMatrix.setSaturation(0F)
+                        icCheckoutAddOnsItem.colorFilter = ColorMatrixColorFilter(colorMatrix)
                         tvCheckoutAddOnsItemName.text = SpannableString(addon.name).apply {
-                            setSpan(UnderlineSpan(), 0, addon.name.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+                            setSpan(
+                                UnderlineSpan(),
+                                0,
+                                addon.name.length,
+                                Spannable.SPAN_INCLUSIVE_EXCLUSIVE
+                            )
                         }
-                        tvCheckoutAddOnsItemPrice.text = " (${CurrencyFormatUtil
+                        tvCheckoutAddOnsItemPrice.text = " (${
+                        CurrencyFormatUtil
                             .convertPriceValueToIdrFormat(addon.price, false)
-                            .removeDecimalSuffix()})"
+                            .removeDecimalSuffix()
+                        })"
                         cbCheckoutAddOns.setOnCheckedChangeListener { _, _ -> }
                         when (addon.status) {
                             AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK -> {
                                 cbCheckoutAddOns.isChecked = true
                                 cbCheckoutAddOns.isEnabled = true
                             }
+
                             AddOnConstant.ADD_ON_PRODUCT_STATUS_MANDATORY -> {
                                 cbCheckoutAddOns.isChecked = true
                                 cbCheckoutAddOns.isEnabled = false
                             }
+
                             else -> {
                                 cbCheckoutAddOns.isChecked = false
                                 cbCheckoutAddOns.isEnabled = true
@@ -397,23 +437,34 @@ class CheckoutProductViewHolder(
             addOnProduct.listAddOnProductData.forEach { addon ->
                 if (addon.name.isNotEmpty()) {
                     val addOnView =
-                        ItemAddOnProductBinding.inflate(layoutInflater, bundleBinding.llAddonProductItemsBundle, false)
+                        ItemAddOnProductBinding.inflate(
+                            layoutInflater,
+                            bundleBinding.llAddonProductItemsBundle,
+                            false
+                        )
                     addOnView.apply {
                         icCheckoutAddOnsItem.setImageUrl(addon.iconUrl)
+                        val colorMatrix = ColorMatrix()
+                        colorMatrix.setSaturation(0F)
+                        icCheckoutAddOnsItem.colorFilter = ColorMatrixColorFilter(colorMatrix)
                         tvCheckoutAddOnsItemName.text = addon.name
-                        tvCheckoutAddOnsItemPrice.text = " (${CurrencyFormatUtil
+                        tvCheckoutAddOnsItemPrice.text = " (${
+                        CurrencyFormatUtil
                             .convertPriceValueToIdrFormat(addon.price, false)
-                            .removeDecimalSuffix()})"
+                            .removeDecimalSuffix()
+                        })"
                         cbCheckoutAddOns.setOnCheckedChangeListener { _, _ -> }
                         when (addon.status) {
                             AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK -> {
                                 cbCheckoutAddOns.isChecked = true
                                 cbCheckoutAddOns.isEnabled = true
                             }
+
                             AddOnConstant.ADD_ON_PRODUCT_STATUS_MANDATORY -> {
                                 cbCheckoutAddOns.isChecked = true
                                 cbCheckoutAddOns.isEnabled = false
                             }
+
                             else -> {
                                 cbCheckoutAddOns.isChecked = false
                                 cbCheckoutAddOns.isEnabled = true
@@ -469,7 +520,10 @@ class CheckoutProductViewHolder(
                     )
                 }
             } else if (addOns.status == 2) {
-                binding.buttonGiftingAddonProductLevel.showInactive(addOns.addOnsButtonModel.title, addOns.addOnsButtonModel.description)
+                binding.buttonGiftingAddonProductLevel.showInactive(
+                    addOns.addOnsButtonModel.title,
+                    addOns.addOnsButtonModel.description
+                )
             }
             binding.buttonGiftingAddonProductLevel.setOnClickListener {
                 listener.onClickAddOnGiftingProductLevel(
@@ -521,31 +575,33 @@ class CheckoutProductViewHolder(
                             checkoutTickerShopError.setHtmlDescription(
                                 "$errorTitle ${itemView.context.getString(R.string.checkout_ticker_lihat_cta_suffix)}"
                             )
-                            checkoutTickerShopError.setDescriptionClickEvent(object : TickerCallback {
-                                override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                                    listener.onClickLihatOnTickerOrderError(
-                                        order.shopId.toString(),
-                                        errorTitle,
-                                        order,
-                                        bindingAdapterPosition
-                                    )
-                                }
+                            checkoutTickerShopError.setDescriptionClickEvent(object :
+                                    TickerCallback {
+                                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                                        listener.onClickLihatOnTickerOrderError(
+                                            order.shopId.toString(),
+                                            errorTitle,
+                                            order,
+                                            bindingAdapterPosition
+                                        )
+                                    }
 
-                                override fun onDismiss() {
-                                    // no op
-                                }
-                            })
+                                    override fun onDismiss() {
+                                        // no op
+                                    }
+                                })
                         } else {
                             checkoutTickerShopError.setTextDescription(errorTitle)
-                            checkoutTickerShopError.setDescriptionClickEvent(object : TickerCallback {
-                                override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                                    // no op
-                                }
+                            checkoutTickerShopError.setDescriptionClickEvent(object :
+                                    TickerCallback {
+                                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                                        // no op
+                                    }
 
-                                override fun onDismiss() {
-                                    // no op
-                                }
-                            })
+                                    override fun onDismiss() {
+                                        // no op
+                                    }
+                                })
                         }
                     }
                     checkoutTickerShopError.tickerType = Ticker.TYPE_ERROR
@@ -591,13 +647,17 @@ class CheckoutProductViewHolder(
     private fun renderCustomError(order: CheckoutOrderModel) {
         with(binding) {
             if ((
-                    !order.isError && order.isHasUnblockingError &&
-                        order.unblockingErrorMessage.isNotEmpty()
-                    ) &&
+                !order.isError && order.isHasUnblockingError &&
+                    order.unblockingErrorMessage.isNotEmpty()
+                ) &&
                 order.firstProductErrorIndex > -1
             ) {
                 val errorMessage = order.unblockingErrorMessage
-                checkoutTickerShopError.setHtmlDescription(errorMessage + " " + itemView.context.getString(R.string.checkout_ticker_lihat_cta_suffix))
+                checkoutTickerShopError.setHtmlDescription(
+                    errorMessage + " " + itemView.context.getString(
+                        R.string.checkout_ticker_lihat_cta_suffix
+                    )
+                )
                 checkoutTickerShopError.setDescriptionClickEvent(object : TickerCallback {
 
                     override fun onDescriptionViewClick(linkUrl: CharSequence) {
