@@ -30,7 +30,7 @@ class SpacingViewHolder(itemView: View, private val fragment: Fragment) : Abstra
         spacingViewModel?.getComponentData()?.observe(
             fragment.viewLifecycleOwner,
             Observer {
-                spacingViewModel?.setupSpacingView()
+                spacingViewModel?.setupSpacingView(fragment.context)
             }
         )
 
