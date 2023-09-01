@@ -13,7 +13,7 @@ interface StoriesRepository {
 
     suspend fun deleteStory(storyId: String) : Boolean
 
-    suspend fun getStoriesProducts(shopId: String, cursor: String) : List<ContentTaggedProductUiModel>
+    suspend fun getStoriesProducts(shopId: String, storyId: String) : List<ContentTaggedProductUiModel>
 
     suspend fun addToCart(productId: String, productName: String, shopId: String, price: Double) : Boolean
 }

@@ -275,7 +275,7 @@ class StoriesViewModel @Inject constructor(
     private fun getProducts() {
         viewModelScope.launchCatchError(block = {
             products.update { product -> product.copy(resultState = ResultState.Loading) }
-            val productList = repository.getStoriesProducts(mShopId, "")
+            val productList = repository.getStoriesProducts(mShopId, storyId)
             products.update { products -> products.copy(products = productList, resultState = ResultState.Success) }
         }, onError = {
             products.update { product -> product.copy(resultState = ResultState.Fail(it)) } //TODO() change result state?

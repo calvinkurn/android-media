@@ -49,14 +49,13 @@ class StoriesRepositoryImpl @Inject constructor(
 
     override suspend fun getStoriesProducts(
         shopId: String,
-        cursor: String
+        storyId: String,
     ): List<ContentTaggedProductUiModel> {
         return withContext(dispatchers.io) {
             val response = storiesProductUseCase(
                 storiesProductUseCase.convertToMap(
                     StoriesProductUseCase.Param(
-                        id = shopId,
-                        cursor = cursor
+                        id = storyId,
                     )
                 )
             )

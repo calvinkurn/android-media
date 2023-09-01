@@ -29,15 +29,14 @@ class StoriesProductUseCase @Inject constructor(
             REQ_PARAM to mapOf(
                 SHOP_ID to params.id,
                 REQ_WAREHOUSE_ID to whId,
-                REQ_LIMIT to 10,
-                REQ_WITH_TRACKING to false,
+                REQ_LIMIT to 50,
+                REQ_WITH_TRACKING to true,
             )
         )
     }
 
     data class Param(
         val id: String,
-        val cursor: String,
     )
 
     companion object {
