@@ -132,6 +132,8 @@ public interface ApplinkConst {
     String DISCOVERY_SEARCH_UNIVERSAL = "tokopedia://universal-page";
     String DISCOVERY_HOTLIST_DETAIL = "tokopedia://hot/{alias}";
     String DISCOVERY_CATALOG = "tokopedia://catalog";
+
+    String DISCOVERY_CATALOG_PRODUCT_LIST = "tokopedia://catalog/product_list";
     String PAYMENT_BACK_TO_DEFAULT = "tokopedia://payment/backtodefault";
     String WISHLIST = "tokopedia://wishlist";
     String NEW_WISHLIST = "tokopedia://new-wishlist";

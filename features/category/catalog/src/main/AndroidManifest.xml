@@ -1,12 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tokopedia.catalog">
 
     <application>
         <activity
-            android:name="com.tokopedia.catalog.ui.activity.CatalogDetailPageActivity"
-            android:theme="@style/Theme.WhiteUnify"
+            android:name=".ui.activity.CatalogProductListActivity"
+            android:exported="false"
             android:screenOrientation="portrait"
-            android:exported="false">
+            android:theme="@style/Theme.WhiteUnify">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/catalog_host"
+                    android:pathPattern="@string/applink_catalog_product_list"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ui.activity.CatalogDetailPageActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.WhiteUnify">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -19,21 +37,19 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
-
         <activity
             android:name="com.tokopedia.oldcatalog.ui.activity.CatalogDetailPageActivity"
-            android:theme="@style/Theme.WhiteUnify"
+            android:exported="false"
             android:screenOrientation="portrait"
-            android:exported="false"/>
-
+            android:theme="@style/Theme.WhiteUnify" />
         <activity
             android:name="com.tokopedia.oldcatalog.ui.activity.CatalogGalleryActivity"
-            android:theme="@style/Theme.WhiteUnify"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.WhiteUnify" />
         <activity
             android:name="com.tokopedia.oldcatalog.ui.activity.CatalogYoutubePlayerActivity"
-            android:theme="@style/Theme.WhiteUnify"
-            android:screenOrientation="landscape" />
-
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.WhiteUnify" />
     </application>
+
 </manifest>
