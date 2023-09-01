@@ -23,6 +23,7 @@ import com.tokopedia.stories.view.components.indicator.StoriesDetailTimer
 import com.tokopedia.stories.view.model.StoriesDetailUiModel
 import com.tokopedia.stories.view.model.StoriesGroupUiModel
 import com.tokopedia.stories.view.utils.TouchEventStories
+import com.tokopedia.stories.view.utils.isNetworkError
 import com.tokopedia.stories.view.utils.onTouchEventStories
 import com.tokopedia.stories.view.viewmodel.StoriesViewModel
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction
@@ -31,6 +32,7 @@ import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction.NextDetail
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction.PauseStories
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction.PreviousDetail
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction.ResumeStories
+import com.tokopedia.stories.view.viewmodel.event.StoriesUiEvent
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
@@ -96,6 +98,12 @@ class StoriesDetailFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
             viewModel.uiEvent.collect { event ->
                 when (event) {
+                    is StoriesUiEvent.ErrorDetailPage -> {
+                        if (viewModel.mGroupId != groupId) return@collect
+                        if (event.throwable.isNetworkError) showToast("error detail network ${event.throwable}")
+                        else showToast("error detail content ${event.throwable}")
+                        showPageLoading(false)
+                    }
                     else -> return@collect
                 }
             }

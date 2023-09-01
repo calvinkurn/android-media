@@ -24,7 +24,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 class StoriesViewModel @Inject constructor(
@@ -97,7 +96,7 @@ class StoriesViewModel @Inject constructor(
             _storiesGroup.value = requestStoriesInitialData()
             mGroupPos.value = _storiesGroup.value.selectedGroupPosition
         }) { exception ->
-            Timber.d("fail fetch main data $exception")
+            _uiEvent.emit(StoriesUiEvent.ErrorGroupPage(exception))
         }
     }
 
@@ -161,7 +160,8 @@ class StoriesViewModel @Inject constructor(
                 isReset = isReset,
             )
         }) { exception ->
-            Timber.d("fail fetch new detail $exception")
+            updateGroupData(detail = StoriesDetailUiModel())
+            _uiEvent.emit(StoriesUiEvent.ErrorDetailPage(exception))
         }
     }
 

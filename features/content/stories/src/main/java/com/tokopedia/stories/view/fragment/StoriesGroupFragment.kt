@@ -10,12 +10,14 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.kotlin.extensions.view.showToast
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.stories.databinding.FragmentStoriesGroupBinding
 import com.tokopedia.stories.utils.withCache
 import com.tokopedia.stories.view.adapter.StoriesGroupPagerAdapter
 import com.tokopedia.stories.view.animation.ZoomOutPageTransformer
 import com.tokopedia.stories.view.model.StoriesGroupUiModel
+import com.tokopedia.stories.view.utils.isNetworkError
 import com.tokopedia.stories.view.viewmodel.StoriesViewModel
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction
 import com.tokopedia.stories.view.viewmodel.event.StoriesUiEvent
@@ -62,9 +64,13 @@ class StoriesGroupFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModelAction(StoriesUiAction.SetArgumentsData(arguments))
         setupViews()
         setupObserver()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModelAction(StoriesUiAction.SetArgumentsData(arguments))
     }
 
     private fun viewModelAction(event: StoriesUiAction) {
@@ -100,6 +106,12 @@ class StoriesGroupFragment @Inject constructor(
                 when (event) {
                     is StoriesUiEvent.SelectGroup -> selectGroupEvent(event.position)
                     StoriesUiEvent.FinishedAllStories -> activity?.finish()
+                    is StoriesUiEvent.ErrorGroupPage -> {
+                        if (event.throwable.isNetworkError) showToast("error group network ${event.throwable}")
+                        else showToast("error group content ${event.throwable}")
+                        showPageLoading(false)
+                    }
+                    else -> return@collect
                 }
             }
         }
