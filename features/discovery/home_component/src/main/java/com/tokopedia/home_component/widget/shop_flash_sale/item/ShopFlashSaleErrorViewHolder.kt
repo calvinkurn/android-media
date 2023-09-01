@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.home_component.databinding.HomeComponentErrorStateBinding
 import com.tokopedia.home_component.widget.shop_flash_sale.tab.ShopFlashSaleShopListener
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.home_component.R as home_componentR
 
 internal class ShopFlashSaleErrorViewHolder(
     itemView: View,
@@ -13,7 +14,7 @@ internal class ShopFlashSaleErrorViewHolder(
 ): AbstractViewHolder<ShopFlashSaleErrorDataModel>(itemView) {
     companion object {
         @LayoutRes
-        val LAYOUT = com.tokopedia.home_component.R.layout.home_component_error_state
+        val LAYOUT = home_componentR.layout.home_component_error_state
     }
 
     private val binding: HomeComponentErrorStateBinding? by viewBinding()

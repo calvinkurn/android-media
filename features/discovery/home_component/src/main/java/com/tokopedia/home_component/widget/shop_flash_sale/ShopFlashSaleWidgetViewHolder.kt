@@ -25,6 +25,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.home_component.R as home_componentR
 
 class ShopFlashSaleWidgetViewHolder(
     itemView: View,
@@ -33,7 +34,7 @@ class ShopFlashSaleWidgetViewHolder(
 
     companion object {
         @LayoutRes
-        val LAYOUT = com.tokopedia.home_component.R.layout.home_component_shop_flash_sale
+        val LAYOUT = home_componentR.layout.home_component_shop_flash_sale
     }
 
     private val binding: HomeComponentShopFlashSaleBinding? by viewBinding()

@@ -14,6 +14,8 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.home_component.R as home_componentR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 internal class ShopFlashSaleTabViewHolder(
     itemView: View,
@@ -21,7 +23,7 @@ internal class ShopFlashSaleTabViewHolder(
 ): RecyclerView.ViewHolder(itemView) {
     companion object {
         @LayoutRes
-        val LAYOUT = com.tokopedia.home_component.R.layout.home_component_shop_flash_sale_tab_item
+        val LAYOUT = home_componentR.layout.home_component_shop_flash_sale_tab_item
     }
 
     private val binding: HomeComponentShopFlashSaleTabItemBinding? by viewBinding()
@@ -52,8 +54,8 @@ internal class ShopFlashSaleTabViewHolder(
         if(isActivated) {
             binding?.containerShopFlashSaleTab?.setGradientBackground(
                 arrayListOf(
-                    getHexColorFromIdColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN0),
-                    getHexColorFromIdColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN50)
+                    getHexColorFromIdColor(itemView.context, unifyprinciplesR.color.Unify_NN0),
+                    getHexColorFromIdColor(itemView.context, unifyprinciplesR.color.Unify_GN50)
                 )
             )
         } else {
