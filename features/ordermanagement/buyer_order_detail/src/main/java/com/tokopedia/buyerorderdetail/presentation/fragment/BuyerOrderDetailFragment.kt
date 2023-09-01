@@ -3,6 +3,7 @@ package com.tokopedia.buyerorderdetail.presentation.fragment
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,6 +16,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.atc_common.domain.model.response.AtcMultiData
 import com.tokopedia.buyerorderdetail.R
@@ -1002,6 +1004,7 @@ open class BuyerOrderDetailFragment :
                     ogTitle = "${element.productName} - ${element.priceText}",
                     ogImageUrl = element.productThumbnailUrl,
                     desktopUrl = element.productUrl,
+                    deeplink = Uri.parse(UriUtil.buildUri(ApplinkConst.PRODUCT_INFO, element.productId)).toString(),
                     id = element.orderDetailId
                 )
             )
