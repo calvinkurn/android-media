@@ -50,16 +50,25 @@ class ShopHomeV4TerlarisViewHolder(
     private var productName1: TextView? = viewBinding?.terlarisProductName1
     private var productPrice1: TextView? = viewBinding?.terlarisProductPrice1
     private var productRank1: TextView? = viewBinding?.terlarisProductRankNumber1
+    private var containerDiscount1 = viewBinding?.terlarisContainerDiscount1
+    private var labelDiscount1 = viewBinding?.terlarisLabelDiscountPercentage1
+    private var productOriginalPrice1: TextView? = viewBinding?.terlarisOriginalPrice1
     private var prodcutCard2: ConstraintLayout? = viewBinding?.terlarisProductDetail2
     private var productImg2: ImageUnify? = viewBinding?.terlarisImgProduct2
     private var productName2: TextView? = viewBinding?.terlarisProductName2
     private var productPrice2: TextView? = viewBinding?.terlarisProductPrice2
     private var productRank2: TextView? = viewBinding?.terlarisProductRankNumber2
+    private var containerDiscount2 = viewBinding?.terlarisContainerDiscount2
+    private var labelDiscount2 = viewBinding?.terlarisLabelDiscountPercentage1
+    private var productOriginalPrice2: TextView? = viewBinding?.terlarisOriginalPrice2
     private var prodcutCard3: ConstraintLayout? = viewBinding?.terlarisProductDetail3
     private var productImg3: ImageUnify? = viewBinding?.terlarisImgProduct3
     private var productName3: TextView? = viewBinding?.terlarisProductName3
     private var productPrice3: TextView? = viewBinding?.terlarisProductPrice3
     private var productRank3: TextView? = viewBinding?.terlarisProductRankNumber3
+    private var containerDiscount3 = viewBinding?.terlarisContainerDiscount3
+    private var labelDiscount3 = viewBinding?.terlarisLabelDiscountPercentage1
+    private var productOriginalPrice3: TextView? = viewBinding?.terlarisOriginalPrice3
     private val whiteColor = com.tokopedia.unifyprinciples.R.color.Unify_N0
 
     override fun bind(element: ShopHomeCarousellProductUiModel?) {
@@ -116,6 +125,7 @@ class ShopHomeV4TerlarisViewHolder(
 
     private fun showLayoutThreeItem(productList: List<List<ShopHomeProductUiModel>>) {
         if (productList.isNotEmpty() && productList[0].size == PRODUCT_THREE) {
+            // First product
             containerThreeProducts?.visibility = View.VISIBLE
             prodcutCard1?.setOnClickListener {
                 listener.onProductClick(productList[0][0].id)
@@ -124,6 +134,15 @@ class ShopHomeV4TerlarisViewHolder(
             productName1?.text = productList[0][0].name
             productPrice1?.text = productList[0][0].displayedPrice
             productRank1?.text = "1"
+            if (!productList[0][0].discountPercentage.isNullOrEmpty() &&
+                !productList[0][0].originalPrice.isNullOrEmpty()) {
+                containerDiscount1?.visibility = View.VISIBLE
+                labelDiscount1?.text = productList[0][0].discountPercentage
+                productOriginalPrice1?.text = productList[0][0].originalPrice
+            } else {
+                containerDiscount1?.visibility = View.GONE
+            }
+            // Second product
             prodcutCard2?.setOnClickListener {
                 listener.onProductClick(productList[0][1].id)
             }
@@ -131,6 +150,15 @@ class ShopHomeV4TerlarisViewHolder(
             productName2?.text = productList[0][1].name
             productPrice2?.text = productList[0][1].displayedPrice
             productRank2?.text = "2"
+            if (!productList[0][1].discountPercentage.isNullOrEmpty() &&
+                !productList[0][1].originalPrice.isNullOrEmpty()) {
+                containerDiscount2?.visibility = View.VISIBLE
+                labelDiscount2?.text = productList[0][1].discountPercentage
+                productOriginalPrice2?.text = productList[0][1].originalPrice
+            } else {
+                containerDiscount2?.visibility = View.GONE
+            }
+            // Third product
             prodcutCard3?.setOnClickListener {
                 listener.onProductClick(productList[0][2].id)
             }
@@ -138,6 +166,14 @@ class ShopHomeV4TerlarisViewHolder(
             productName3?.text = productList[0][2].name
             productPrice3?.text = productList[0][2].displayedPrice
             productRank3?.text = "3"
+            if (!productList[0][2].discountPercentage.isNullOrEmpty() &&
+                !productList[0][2].originalPrice.isNullOrEmpty()) {
+                containerDiscount3?.visibility = View.VISIBLE
+                labelDiscount3?.text = productList[0][2].discountPercentage
+                productOriginalPrice3?.text = productList[0][2].originalPrice
+            } else {
+                containerDiscount3?.visibility = View.GONE
+            }
         }
     }
 
