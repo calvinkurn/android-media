@@ -548,13 +548,13 @@ class MedalDetailFragment : BaseDaggerFragment() {
                     }
                 },
                 onCtaClick = { deepLink, webLink ->
-                    requireContext().launchLink(deepLink, webLink)
+                    MedalBonusBottomSheet.show(parentFragmentManager, "")
                 },
                 onCardTap = { data, isSingle ->
                     if (isSingle) {
                         requireContext().launchLink(data.appLink, data.url)
                     } else {
-                        // todo add bottom sheet link
+                        MedalBonusBottomSheet.show(parentFragmentManager, "")
                     }
                 },
                 onErrorAction = {
