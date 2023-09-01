@@ -715,14 +715,15 @@ class Utils {
                 onClick = onClick,
                 disableDefaultGtmTracker = true
             ).addIcon(
-                iconId = IconList.ID_NAV_GLOBAL,
-                onClick = handleGlobalMenuCartClick,
-                disableDefaultGtmTracker = true
-            ).addIcon(
                 iconId = IconList.ID_CART,
                 onClick = handleGlobalNavCartClick,
                 disableDefaultGtmTracker = true
             )
+                .addIcon(
+                    iconId = IconList.ID_NAV_GLOBAL,
+                    onClick = handleGlobalMenuCartClick,
+                    disableDefaultGtmTracker = true
+                )
 
             navIconMap[12] = IconBuilder(navIconBuilderFlag).addIcon(
                 iconId = IconList.ID_SHARE,
