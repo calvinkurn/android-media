@@ -11,7 +11,6 @@ import android.os.Handler
 import android.os.Looper
 import android.text.TextUtils
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -80,7 +79,6 @@ import com.tokopedia.cartrevamp.view.mapper.PromoRequestMapper
 import com.tokopedia.cartrevamp.view.mapper.RecentViewMapper
 import com.tokopedia.cartrevamp.view.mapper.WishlistMapper
 import com.tokopedia.cartrevamp.view.uimodel.*
-import com.tokopedia.cartrevamp.view.uimodel.CartShopGroupTickerData
 import com.tokopedia.cartrevamp.view.util.CartPageAnalyticsUtil
 import com.tokopedia.cartrevamp.view.viewholder.CartItemViewHolder
 import com.tokopedia.cartrevamp.view.viewholder.CartRecommendationViewHolder
@@ -559,7 +557,6 @@ class CartRevampFragment :
 
     override fun checkCartShopGroupTicker(cartGroupHolderData: CartGroupHolderData) {
         if (cartGroupHolderData.cartShopGroupTicker.enableCartAggregator && !cartGroupHolderData.isError && cartGroupHolderData.hasSelectedProduct) {
-            Log.d("<RESULT>", "checkCartShopGroupTicker: ${cartGroupHolderData.cartShopGroupTicker.needToShowLoading()}")
             if (cartGroupHolderData.cartShopGroupTicker.needToShowLoading()) {
                 cartGroupHolderData.cartShopGroupTicker.state = CartShopGroupTickerState.LOADING
             }
