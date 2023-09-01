@@ -61,7 +61,6 @@ import com.tokopedia.cart.data.model.response.shopgroupsimplified.LocalizationCh
 import com.tokopedia.cart.databinding.FragmentCartRevampBinding
 import com.tokopedia.cart.view.CartActivity
 import com.tokopedia.cart.view.CartFragment
-import com.tokopedia.cart.view.uimodel.CartShopGroupTickerData
 import com.tokopedia.cartcommon.data.response.common.Button
 import com.tokopedia.cartcommon.data.response.common.OutOfService
 import com.tokopedia.cartrevamp.view.adapter.cart.CartAdapter
@@ -558,7 +557,9 @@ class CartRevampFragment :
 
     override fun checkCartShopGroupTicker(cartGroupHolderData: CartGroupHolderData) {
         if (cartGroupHolderData.cartShopGroupTicker.enableCartAggregator && !cartGroupHolderData.isError && cartGroupHolderData.hasSelectedProduct) {
-            cartGroupHolderData.cartShopGroupTicker.state = CartShopGroupTickerState.LOADING
+            if (cartGroupHolderData.cartShopGroupTicker.needToShowLoading()) {
+                cartGroupHolderData.cartShopGroupTicker.state = CartShopGroupTickerState.LOADING
+            }
             viewModel.checkCartShopGroupTicker(cartGroupHolderData)
         }
     }
