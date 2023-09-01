@@ -29,6 +29,7 @@ import com.tokopedia.logisticseller.common.Utils
 import com.tokopedia.logisticseller.common.Utils.updateShopActive
 import com.tokopedia.logisticseller.common.errorhandler.LogisticSellerErrorHandler
 import com.tokopedia.logisticseller.databinding.FragmentSomConfirmShippingBinding
+import com.tokopedia.logisticseller.ui.confirmshipping.data.ConfirmShippingAnalytics
 import com.tokopedia.logisticseller.ui.confirmshipping.data.model.SomCourierList
 import com.tokopedia.logisticseller.ui.confirmshipping.di.ConfirmShippingComponent
 import com.tokopedia.logisticseller.ui.confirmshipping.di.DaggerConfirmShippingComponent
@@ -251,7 +252,7 @@ class ConfirmShippingFragment : BaseDaggerFragment(), BottomSheetCourierListAdap
             Observer {
                 when (it) {
                     is Success -> {
-//                    SomAnalytics.eventClickKonfirmasi(true)
+                        ConfirmShippingAnalytics.eventClickKonfirmasi(true)
                         confirmShippingResponseMsg = if (it.data.listMessage.isNotEmpty()) {
                             it.data.listMessage.first()
                         } else {
@@ -268,7 +269,7 @@ class ConfirmShippingFragment : BaseDaggerFragment(), BottomSheetCourierListAdap
 
                     is Fail -> {
                         LogisticSellerErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_CONFIRM_SHIPPING)
-//                    SomAnalytics.eventClickKonfirmasi(false)
+                        ConfirmShippingAnalytics.eventClickKonfirmasi(false)
                         context?.run {
                             Utils.showToasterError(LogisticSellerErrorHandler.getErrorMessage(it.throwable, this), view)
                         }

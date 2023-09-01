@@ -2,9 +2,6 @@ package com.tokopedia.logisticseller.ui.requestpickup.presentation.fragment
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.SpannableString
@@ -22,7 +19,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.logisticseller.R
 import com.tokopedia.logisticseller.common.LogisticSellerConst.PARAM_ORDER_ID
 import com.tokopedia.logisticseller.common.LogisticSellerConst.RESULT_PROCESS_REQ_PICKUP
@@ -30,6 +26,7 @@ import com.tokopedia.logisticseller.common.Utils
 import com.tokopedia.logisticseller.common.Utils.updateShopActive
 import com.tokopedia.logisticseller.common.errorhandler.LogisticSellerErrorHandler
 import com.tokopedia.logisticseller.databinding.FragmentRequestPickupBinding
+import com.tokopedia.logisticseller.ui.requestpickup.data.RequestPickupAnalytics
 import com.tokopedia.logisticseller.ui.requestpickup.data.mapper.SchedulePickupMapper
 import com.tokopedia.logisticseller.ui.requestpickup.data.model.ScheduleTime
 import com.tokopedia.logisticseller.ui.requestpickup.data.model.SomConfirmReqPickup
@@ -46,7 +43,6 @@ import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
@@ -259,7 +255,6 @@ class RequestPickupFragment :
                 }
 
                 requestPickupTips.description = result
-
             } else {
                 requestPickupTips.visibility = View.GONE
             }
@@ -354,7 +349,7 @@ class RequestPickupFragment :
             }
 
             btnReqPickup.setOnClickListener {
-//                SomAnalytics.eventClickRequestPickupPopup()
+                RequestPickupAnalytics.eventClickRequestPickupPopup()
                 processReqPickup()
                 observingProcessReqPickup()
             }
@@ -419,8 +414,4 @@ class RequestPickupFragment :
         binding?.tvSchedule?.text = "${scheduleTime.day}, $formattedTime"
         currSchedulePickupTime = "${scheduleTime.day}, $formattedTime"
     }
-
 }
-
-
-
