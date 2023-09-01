@@ -1350,9 +1350,24 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             SuccessDataUiModel(true)
         )
 
+        val scheduleDeliveryUiModel = ScheduleDeliveryUiModel(
+            true,
+            deliveryProduct = DeliveryProduct(
+                promoStacking = PromoStacking(
+                    disabled = false,
+                    promoCode = "boCode"
+                )
+            )
+        )
         val orderModel = CheckoutOrderModel(
             "123",
-            shipment = CheckoutOrderShipment(courierItemData = CourierItemData(logPromoCode = "boCode"))
+            shipment = CheckoutOrderShipment(
+                courierItemData = CourierItemData(
+                    logPromoCode = "boCode",
+                    scheduleDeliveryUiModel = scheduleDeliveryUiModel,
+                    etaText = ""
+                )
+            )
         )
         viewModel.listData.value = listOf(
             CheckoutTickerErrorModel(errorMessage = ""),
@@ -1379,23 +1394,19 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
         )
-        val scheduleDeliveryUiModel = ScheduleDeliveryUiModel(
-            true,
-            deliveryProduct = DeliveryProduct(
-                promoStacking = PromoStacking(
-                    disabled = false,
-                    promoCode = "boCode"
-                )
-            )
+        val newScheduleDeliveryUiModel = scheduleDeliveryUiModel.copy(false)
+        val courierItemData = CourierItemData(
+            logPromoCode = "boCode",
+            scheduleDeliveryUiModel = newScheduleDeliveryUiModel,
+            etaText = ""
         )
-        val courierItemData = CourierItemData(scheduleDeliveryUiModel = scheduleDeliveryUiModel)
 
         // when
         viewModel.setSelectedScheduleDelivery(
             5,
             orderModel,
             orderModel.shipment.courierItemData!!,
-            scheduleDeliveryUiModel,
+            newScheduleDeliveryUiModel,
             courierItemData
         )
 
@@ -1408,7 +1419,7 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             LastApplyUiModel(
                 voucherOrders = listOf(
                     LastApplyVoucherOrdersItemUiModel(
-                        code = "boCode2",
+                        code = "boCode",
                         "12",
                         message = LastApplyMessageUiModel(state = "green"),
                         type = "logistic",
@@ -1418,7 +1429,7 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             ),
             (viewModel.listData.value[7] as CheckoutPromoModel).promo
         )
-        coVerify(exactly = 1) {
+        coVerify(inverse = true) {
             clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground()
         }
         coVerify(exactly = 1) {
@@ -1503,6 +1514,21 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
                 shippingCourierUiModels = listOf(shippingCourierUiModel)
             ),
             (viewModel.listData.value[5] as CheckoutOrderModel).shipment
+        )
+    }
+
+    @Test
+    fun should_auto_load_courier() {
+        assertEquals(false, viewModel.shouldAutoLoadCourier(CheckoutOrderModel("123"), null))
+        assertEquals(
+            false,
+            viewModel.shouldAutoLoadCourier(
+                CheckoutOrderModel("123"),
+                RecipientAddressModel().apply {
+                    this.isTradeIn = true
+                    this.selectedTabIndex = 0
+                }
+            )
         )
     }
 
@@ -1731,7 +1757,7 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             "123",
             "boCode",
             true,
-            CourierItemData(logPromoCode = "boCode"),
+            CourierItemData(logPromoCode = "boCode", etaText = ""),
             InsuranceData()
         )
 
@@ -1740,7 +1766,12 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             CheckoutOrderModel(
                 "123",
                 boUniqueId = "12",
-                shipment = CheckoutOrderShipment(courierItemData = CourierItemData(logPromoCode = "boCode"))
+                shipment = CheckoutOrderShipment(
+                    courierItemData = CourierItemData(
+                        logPromoCode = "boCode",
+                        etaText = ""
+                    )
+                )
             ),
             (viewModel.listData.value[5] as CheckoutOrderModel)
         )

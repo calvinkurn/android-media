@@ -591,7 +591,7 @@ class CheckoutViewModel @Inject constructor(
         }
     }
 
-    private fun shouldAutoLoadCourier(
+    internal fun shouldAutoLoadCourier(
         shipmentCartItemModel: CheckoutOrderModel,
         recipientAddressModel: RecipientAddressModel?
     ): Boolean {
@@ -1366,7 +1366,7 @@ class CheckoutViewModel @Inject constructor(
                     ordersItem.shippingSubsidy = courierItemData.shippingSubsidy
                     ordersItem.benefitClass = courierItemData.benefitClass
                     ordersItem.shippingPrice = courierItemData.shippingRate.toDouble()
-                    ordersItem.etaText = courierItemData.etaText ?: ""
+                    ordersItem.etaText = courierItemData.etaText!!
                 }
             }
             doValidateUseLogisticPromo(
