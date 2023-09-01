@@ -16,12 +16,15 @@ import com.tokopedia.shop.home.view.model.banner_product_group.appearance.Vertic
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import javax.inject.Inject
-import com.tokopedia.shop.home.view.model.banner_product_group.ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.ComponentType
+import com.tokopedia.shop.home.view.model.banner_product_group.ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.ComponentName
 import com.tokopedia.shop.product.data.model.ShopFeaturedProductParams
 import com.tokopedia.shop.product.domain.interactor.GetShopFeaturedProductUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.shop.common.data.source.cloud.model.LabelGroup
+import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.home.view.model.banner_product_group.ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.Data.LinkType
+import kotlinx.coroutines.SupervisorJob
+import kotlin.coroutines.CoroutineContext
 
 @SuppressLint("PII Data Exposure")
 class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
@@ -31,11 +34,15 @@ class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
     private val userSession: UserSessionInterface
 ) : BaseViewModel(dispatcherProvider.main) {
 
+    override val coroutineContext: CoroutineContext
+        get() = SupervisorJob() + dispatcherProvider.main
+
     companion object {
         private const val FIRST_LABEL_INDEX = 0
         private const val FIRST_PAGE = 1
         private const val PRODUCT_COUNT_TO_FETCH = 5
         private const val LABEL_TITLE_PRODUCT_SOLD_COUNT = "Terjual"
+        private const val SORT_ID_SORT_BY_SOLD_DESC = 8
     }
 
     private val _carouselWidgets = MutableLiveData<UiState>()
@@ -44,7 +51,7 @@ class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
 
     sealed class UiState {
         object Loading: UiState()
-        data class Success(val data: List<ShopHomeBannerProductGroupItemType?>): UiState()
+        data class Success(val data: List<ShopHomeBannerProductGroupItemType>): UiState()
         data class Error(val error: Throwable): UiState()
     }
 
@@ -52,89 +59,128 @@ class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
         widgets: List<ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList>,
         shopId: String,
         userAddress: LocalCacheModel,
-        widgetStyle: String
+        widgetStyle: String,
+        overrideTheme: Boolean,
+        colorSchema: ShopPageColorSchema
     ) {
+        getShopProductUseCase.clearCache()
         _carouselWidgets.postValue(UiState.Loading)
 
-        val firstProductWidget = getProductWidgets(widgets) ?: return
+        val productMetadata = getProductMetadata(widgets)
 
-        launchCatchError(
-            context = dispatcherProvider.io,
-            block = {
+        if (productMetadata != null) {
+            launchCatchError(
+                context = dispatcherProvider.io,
+                block = {
 
-                val products = getProducts(shopId, userAddress, firstProductWidget)
+                    val products = getProductsByProductMetadata(shopId, userAddress, productMetadata, overrideTheme, colorSchema)
 
-                val hasVerticalBanner = widgetStyle == ShopWidgetComponentBannerProductGroupUiModel.WidgetStyle.VERTICAL.id
-                val carouselWidgets = if (hasVerticalBanner) {
-                    val verticalBanner = getVerticalBanner(widgets)
-                    verticalBanner + products
-                } else {
-                    products
+                    val hasVerticalBanner = widgetStyle == ShopWidgetComponentBannerProductGroupUiModel.WidgetStyle.VERTICAL.id
+                    val carouselWidgets = if (hasVerticalBanner) {
+                        val verticalBanner = getVerticalBanner(widgets)
+                        verticalBanner + products
+                    } else {
+                        products
+                    }
+
+                    _carouselWidgets.postValue(UiState.Success(carouselWidgets))
+
+                },
+                onError = { throwable ->
+                    _carouselWidgets.postValue(UiState.Error(throwable))
                 }
-
-                _carouselWidgets.postValue(UiState.Success(carouselWidgets))
-            } ,
-            onError = { throwable ->
-                _carouselWidgets.postValue(UiState.Error(throwable))
-            }
-        )
+            )
+        }
     }
 
     private fun getVerticalBanner(widgets: List<ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList>): List<VerticalBannerItemType> {
-        val bannerComponents = widgets.filter { widget -> widget.componentType == ComponentType.DISPLAY_SINGLE_COLUMN }
+        val bannerComponents = widgets.filter { widget -> widget.componentName == ComponentName.DISPLAY_SINGLE_COLUMN }
         val banner = bannerComponents.getOrNull(0)
-        val bannerWidget = banner?.data?.getOrNull(0)
-        return listOf(VerticalBannerItemType(bannerWidget?.imageUrl.orEmpty(), bannerWidget?.ctaLink.orEmpty()))
+        val bannerWidgets = banner?.data ?: emptyList()
+
+        return if (bannerWidgets.isEmpty()) {
+            emptyList()
+        } else {
+            val bannerImageUrl = bannerWidgets[0].imageUrl
+            val ctaLink = bannerWidgets[0].ctaLink
+            listOf(VerticalBannerItemType(bannerImageUrl, ctaLink))
+        }
     }
 
-    private fun getProductWidgets(
+    private fun getProductMetadata(
         widgets: List<ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList>
     ): ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.Data? {
-        val productComponents = widgets.filter { widget -> widget.componentType == ComponentType.PRODUCT }
+        val productComponents = widgets.filter { widget -> widget.componentName == ComponentName.PRODUCT }
 
         val product = productComponents.getOrNull(0)
         val productMetadata = product?.data?.getOrNull(0)
         return productMetadata
     }
 
-    private suspend fun getProducts(
+    private suspend fun getProductsByProductMetadata(
         shopId: String,
         userAddress: LocalCacheModel,
         productWidget: ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.Data,
+        overrideTheme: Boolean,
+        colorSchema: ShopPageColorSchema
     ): List<ProductItemType> {
         val showProductInfo = productWidget.isShowProductInfo
 
         return when(productWidget.linkType) {
             LinkType.FEATURED_PRODUCT -> {
-                val featuredProducts = getFeaturedProducts(shopId, userSession.userId, userAddress, showProductInfo)
+                val featuredProducts = getFeaturedProducts(shopId, userSession.userId, userAddress, showProductInfo, overrideTheme, colorSchema)
                 featuredProducts
             }
             LinkType.PRODUCT -> {
                 val sortId = productWidget.linkId
-                val showcaseId = ShopPageConstant.ALL_SHOWCASE_ID
-                val sortedProducts = getSortedProducts(shopId, showcaseId, userAddress, sortId, showProductInfo)
+                val sortedProducts = getSortedProducts(shopId, userAddress, sortId, showProductInfo, overrideTheme, colorSchema)
                 sortedProducts
             }
             LinkType.SHOWCASE -> {
-                val sortId = productWidget.linkId
                 val showcaseId = productWidget.linkId.toString()
-                val showCaseProducts = getSortedProducts(shopId, showcaseId, userAddress, sortId, showProductInfo)
+                val showCaseProducts = getShowcaseProduct(shopId, showcaseId, userAddress, showProductInfo, overrideTheme, colorSchema)
                 showCaseProducts
             }
         }
     }
 
-    private suspend fun getSortedProducts(
+    private suspend fun getShowcaseProduct(
         shopId: String,
         showcaseId: String,
         userAddress: LocalCacheModel,
-        sortId: Long,
-        showProductInfo: Boolean
+        showProductInfo: Boolean,
+        overrideTheme: Boolean,
+        colorSchema: ShopPageColorSchema
     ): List<ProductItemType> {
-        getShopProductUseCase.params = GqlGetShopProductUseCase.createParams(
+        val params = GqlGetShopProductUseCase.createParams(
             shopId,
             ShopProductFilterInput().apply {
                 etalaseMenu = showcaseId
+                this.page = FIRST_PAGE
+                sort = SORT_ID_SORT_BY_SOLD_DESC
+                perPage = PRODUCT_COUNT_TO_FETCH
+                userDistrictId = userAddress.district_id
+                userCityId = userAddress.city_id
+                userLat = userAddress.lat
+                userLong = userAddress.long
+            }
+        )
+
+        return getProducts(showProductInfo, overrideTheme, colorSchema, params)
+    }
+
+    private suspend fun getSortedProducts(
+        shopId: String,
+        userAddress: LocalCacheModel,
+        sortId: Long,
+        showProductInfo: Boolean,
+        overrideTheme: Boolean,
+        colorSchema: ShopPageColorSchema
+    ): List<ProductItemType> {
+        val params = GqlGetShopProductUseCase.createParams(
+            shopId,
+            ShopProductFilterInput().apply {
+                etalaseMenu = ShopPageConstant.ALL_SHOWCASE_ID
                 this.page = FIRST_PAGE
                 sort = sortId.toInt()
                 perPage = PRODUCT_COUNT_TO_FETCH
@@ -144,33 +190,17 @@ class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
                 userLong = userAddress.long
             }
         )
-        val response = getShopProductUseCase.executeOnBackground()
 
-        val products = response.data.map { product ->
-            val soldLabel = product.labelGroupList.soldCount()
-
-            ProductItemType(
-                product.productId,
-                product.primaryImage.thumbnail,
-                product.name,
-                product.price.textIdr,
-                product.campaign.originalPriceFmt,
-                product.campaign.discountedPercentage.toIntOrZero(),
-                product.stats.averageRating,
-                soldLabel,
-                product.appLink,
-                showProductInfo
-            )
-        }
-
-        return products
+        return getProducts(showProductInfo, overrideTheme, colorSchema, params)
     }
 
     private suspend fun getFeaturedProducts(
         shopId: String,
         userId: String,
         userAddress: LocalCacheModel,
-        showProductInfo: Boolean
+        showProductInfo: Boolean,
+        overrideTheme: Boolean,
+        colorSchema: ShopPageColorSchema
     ): List<ProductItemType> {
         getShopFeaturedProductUseCase.params = GetShopFeaturedProductUseCase.createParams(
             ShopFeaturedProductParams(
@@ -195,13 +225,47 @@ class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
                 product.labelGroupList.soldCount(),
                 "tokopedia://product/${product.productId}",
                 showProductInfo,
-                product.productId
+                product.productId,
+                overrideTheme,
+                colorSchema
             )
         }
 
         return featuredProducts
     }
 
+    private suspend fun getProducts(
+        showProductInfo: Boolean,
+        overrideTheme: Boolean,
+        colorSchema: ShopPageColorSchema,
+        params: Map<String, Any>
+    ) : List<ProductItemType> {
+        getShopProductUseCase.params = params
+
+        val response = getShopProductUseCase.executeOnBackground()
+
+        val products = response.data.map { product ->
+            val soldLabel = product.labelGroupList.soldCount()
+
+            ProductItemType(
+                product.productId,
+                product.primaryImage.thumbnail,
+                product.name,
+                product.price.textIdr,
+                product.campaign.originalPriceFmt,
+                product.campaign.discountedPercentage.toIntOrZero(),
+                product.stats.averageRating,
+                soldLabel,
+                product.appLink,
+                showProductInfo,
+                product.productId,
+                overrideTheme,
+                colorSchema
+            )
+        }
+
+        return products
+    }
 
     private fun List<LabelGroup>.soldCount() : String {
         val soldLabels = filter { labelGroup ->

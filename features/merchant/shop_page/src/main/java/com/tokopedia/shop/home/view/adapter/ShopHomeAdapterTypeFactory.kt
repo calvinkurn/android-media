@@ -105,7 +105,7 @@ import com.tokopedia.shop.home.view.adapter.viewholder.directpurchasebyetalase.S
 import com.tokopedia.shop.home.view.model.banner_product_group.ShopWidgetComponentBannerProductGroupUiModel
 import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.CarouselAppearance
 import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.LeftMainBannerAppearance
-import com.tokopedia.shop.home.view.model.showcase_navigation.ShopHomeShowcaseNavigationUiModel
+import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseNavigationUiModel
 import com.tokopedia.shop.product.view.datamodel.ShopProductSortFilterUiModel
 import com.tokopedia.shop.product.view.viewholder.ShopProductSortFilterViewHolder
 import com.tokopedia.shop_widget.common.util.WidgetState
@@ -287,7 +287,7 @@ open class ShopHomeAdapterTypeFactory(
     }
 
     private fun determineShowcaseNavigationBannerWidgetAppearance(model: BaseShopHomeWidgetUiModel): Int {
-        val uiModel = (model as? ShopHomeShowcaseNavigationUiModel)  ?: ShopHomeShowcaseNavigationUiModel()
+        val uiModel = (model as? ShowcaseNavigationUiModel)  ?: ShowcaseNavigationUiModel()
         val isLoading = uiModel.isWidgetShowPlaceholder().orFalse()
 
         return when {

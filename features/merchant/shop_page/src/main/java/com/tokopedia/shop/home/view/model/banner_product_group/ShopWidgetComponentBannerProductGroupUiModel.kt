@@ -37,11 +37,10 @@ data class ShopWidgetComponentBannerProductGroupUiModel(
         @Parcelize
         data class ComponentList(
             val componentId: Long,
-            val componentName: String,
-            val componentType: ComponentType,
+            val componentName: ComponentName,
             val data: List<Data>
         ) : Parcelable {
-            enum class ComponentType(val id: String) {
+            enum class ComponentName(val id: String) {
                 DISPLAY_SINGLE_COLUMN("display_single_column"),
                 PRODUCT("product")
             }
