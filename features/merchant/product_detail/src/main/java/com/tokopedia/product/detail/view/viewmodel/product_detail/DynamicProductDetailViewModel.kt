@@ -94,6 +94,7 @@ import com.tokopedia.recommendation_widget_common.affiliate.RecommendationNowAff
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.extension.DEFAULT_QTY_1
+import com.tokopedia.recommendation_widget_common.extension.PAGENAME_IDENTIFIER_RECOM_ATC
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
@@ -528,6 +529,7 @@ class DynamicProductDetailViewModel @Inject constructor(
                 shopDomain = productParams.shopDomain
                 forceRefresh = refreshPage
                 userLocationCache = userLocationLocal
+                var hasQuantityEditor = false
                 getPdpLayout(
                     productId = productParams.productId.orEmpty(),
                     shopDomain = productParams.shopDomain.orEmpty(),
@@ -566,9 +568,12 @@ class DynamicProductDetailViewModel @Inject constructor(
 
                     // Render initial data
                     _productLayout.postValue(processedList.asSuccess())
+                    hasQuantityEditor = processedList.any {
+                        it.name().contains(PAGENAME_IDENTIFIER_RECOM_ATC)
+                    }
                 }
                 // Then update the following, it will not throw anything when error
-                getProductP2(urlQuery)
+                getProductP2(urlQuery, hasQuantityEditor)
             }.onFailure {
                 _productLayout.postValue(it.asFail())
             }
@@ -674,8 +679,7 @@ class DynamicProductDetailViewModel @Inject constructor(
             _addToCartLiveData.value = result.asSuccess()
         }
     }
-
-    private suspend fun getProductP2(urlQuery: String = "") {
+    private suspend fun getProductP2(urlQuery: String = "", hasQuantityEditor: Boolean = false) {
         getDynamicProductInfoP1?.let {
             val p2LoginDeferred: Deferred<ProductInfoP2Login>? = if (isUserSessionActive) {
                 getProductInfoP2LoginAsync(
@@ -689,7 +693,7 @@ class DynamicProductDetailViewModel @Inject constructor(
                 productId = it.basic.productID,
                 pdpSession = it.pdpSession,
                 shopId = it.basic.shopID,
-                isTokoNow = it.basic.isTokoNow
+                hasQuantityEditor = it.basic.isTokoNow || hasQuantityEditor,
             )
             val p2OtherDeffered: Deferred<ProductInfoP2Other> =
                 getProductInfoP2OtherAsync(it.basic.productID, it.basic.getShopId())
@@ -1124,7 +1128,7 @@ class DynamicProductDetailViewModel @Inject constructor(
         productId: String,
         pdpSession: String,
         shopId: String,
-        isTokoNow: Boolean
+        hasQuantityEditor: Boolean,
     ): Deferred<ProductInfoP2UiData> {
         return async(dispatcher.io) {
             getP2DataAndMiniCartUseCase.get().executeOnBackground(
@@ -1135,7 +1139,7 @@ class DynamicProductDetailViewModel @Inject constructor(
                     generateUserLocationRequest(userLocationCache),
                     generateTokoNowRequest(userLocationCache)
                 ),
-                isTokoNow = isTokoNow,
+                hasQuantityEditor = hasQuantityEditor,
                 shopId = shopId,
                 forceRefresh = forceRefresh,
                 isLoggedIn = isUserSessionActive,
