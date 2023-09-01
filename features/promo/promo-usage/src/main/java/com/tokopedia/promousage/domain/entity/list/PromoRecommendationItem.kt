@@ -11,5 +11,7 @@ data class PromoRecommendationItem(
     val messageSelected: String = "",
     val backgroundUrl: String = "",
     val animationUrl: String = "",
-    val backgroundColor: String = "#763BD7"
+    val backgroundColor: String = "#763BD7",
+
+    val isCalculating: Boolean = false
 ) : DelegateAdapterItem

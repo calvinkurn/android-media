@@ -36,9 +36,11 @@ class PromoRecommendationDelegateAdapter(
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: PromoRecommendationItem) {
             binding.btnRecommendationUseVoucher.setOnClickListener {
-                startButtonAnimation {
-                    startMessageAnimation(item.messageSelected) {
-                        onClickUsePromoRecommendation()
+                if (!item.isCalculating) {
+                    startButtonAnimation {
+                        startMessageAnimation(item.messageSelected) {
+                            onClickUsePromoRecommendation()
+                        }
                     }
                 }
             }

@@ -49,6 +49,7 @@ data class PromoItem(
     val isExpanded: Boolean = false,
     val isVisible: Boolean = false,
     val isCausingOtherPromoClash: Boolean = false,
+    val isCalculating: Boolean = false
 ) : DelegateAdapterItem {
 
     companion object {

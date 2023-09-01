@@ -395,7 +395,9 @@ internal class PromoUsageViewModel @Inject constructor(
                         var hasLoadingPromo = false
                         var updatedItems = pageState.items
                             .map { item ->
-                                if (item is PromoItem) {
+                                if (item is PromoRecommendationItem) {
+                                    return@map item.copy(isCalculating = true)
+                                } else if (item is PromoItem) {
                                     val isClickedItem = item.code == clickedItem.code
                                     val isMvcPromo = item.shopId > 0
                                     val isDisabledOrIneligibleOrSelected =
@@ -410,9 +412,9 @@ internal class PromoUsageViewModel @Inject constructor(
                                             state = PromoItemState.Loading
                                         )
                                     } else if (isClickedItem) {
-                                        return@map newClickedItem
+                                        return@map newClickedItem.copy(isCalculating = true)
                                     } else {
-                                        return@map item
+                                        return@map item.copy(isCalculating = true)
                                     }
                                 } else {
                                     return@map item
@@ -461,13 +463,13 @@ internal class PromoUsageViewModel @Inject constructor(
 
                         // Update TnC section
                         val selectedPromoCodes = updatedItems.getSelectedPromoCodes()
-                        if (selectedPromoCodes.isNotEmpty()) {
+                        updatedItems = if (selectedPromoCodes.isNotEmpty()) {
                             val tncItem = updatedItems.getTncItem() ?: PromoTncItem()
-                            updatedItems = updatedItems
+                            updatedItems
                                 .filterNot { it is PromoTncItem }
                                 .plus(tncItem.copy(selectedPromoCodes = selectedPromoCodes))
                         } else {
-                            updatedItems = updatedItems
+                            updatedItems
                                 .filterNot { it is PromoTncItem }
                         }
 
@@ -476,6 +478,19 @@ internal class PromoUsageViewModel @Inject constructor(
                             items = updatedItems,
                             previousSavingInfo = pageState.savingInfo
                         )
+
+                        // Remove isCalculating after all process is done
+                        updatedItems = updatedItems.map { item ->
+                            if (item is PromoRecommendationItem) {
+                                return@map item.copy(isCalculating = false)
+                            } else if (item is PromoItem) {
+                                return@map item.copy(isCalculating = false)
+                            } else {
+                                return@map item
+                            }
+                        }
+
+                        // Update items
                         _promoPageUiState.postValue(
                             pageState.copy(
                                 items = updatedItems,
