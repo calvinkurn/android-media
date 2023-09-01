@@ -68,8 +68,8 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 import com.tokopedia.design.R as designR
-import com.tokopedia.scp_rewards_common.R as scpRewardsCommonR
-import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.scp_rewards_common.R as scp_rewards_commonR
+import com.tokopedia.unifyprinciples.R as unify_principles_R
 
 class MedalCelebrationBottomSheet : BottomSheetUnify() {
 
@@ -218,9 +218,9 @@ class MedalCelebrationBottomSheet : BottomSheetUnify() {
 
     private fun setCloseBtnColor(whiteBtn: Boolean = true) {
         val iconColor = if (whiteBtn) {
-            ResourcesCompat.getColor(resources, unifyprinciplesR.color.Unify_NN0, null)
+            ResourcesCompat.getColor(resources, unify_principles_R.color.Unify_NN0, null)
         } else {
-            ResourcesCompat.getColor(resources, unifyprinciplesR.color.Unify_NN900, null)
+            ResourcesCompat.getColor(resources, unify_principles_R.color.Unify_NN900, null)
         }
         binding?.btnClose?.setImage(
             newLightEnable = iconColor,
@@ -635,7 +635,9 @@ class MedalCelebrationBottomSheet : BottomSheetUnify() {
     private fun animateBadge() {
         val badgeDrawable = if (isFallbackCase) {
             changeBadgeSize()
-            ResourcesCompat.getDrawable(resources, scpRewardsCommonR.drawable.fallback_badge, null)
+            context?.let {
+                ResourcesCompat.getDrawable(it.resources, scp_rewards_commonR.drawable.fallback_badge, null)
+            }
         } else {
             badge_image
         }
