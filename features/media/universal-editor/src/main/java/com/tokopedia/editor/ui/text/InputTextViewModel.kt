@@ -4,18 +4,22 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.tokopedia.editor.ui.model.InputTextModel
+import com.tokopedia.editor.util.ColorProvider
 import com.tokopedia.editor.util.FontAlignment
 import com.tokopedia.editor.util.FontAlignment.Companion.next
 import com.tokopedia.editor.util.FontDetail
 import javax.inject.Inject
 
-class InputTextViewModel @Inject constructor(): ViewModel() {
+class InputTextViewModel @Inject constructor(
+    private val colorProvider: ColorProvider
+): ViewModel() {
     private val _selectedTextColor = MutableLiveData(-1)
     val selectedTextColor: LiveData<Int> get() = _selectedTextColor
 
     private val _selectedAlignment = MutableLiveData(FontAlignment.CENTER)
     val selectedAlignment: LiveData<FontAlignment> get() = _selectedAlignment
 
+    // 1st text, 2nd background
     private val _backgroundColorSet = MutableLiveData<Pair<Int, Int>?>(null)
     val backgroundColorSet: LiveData<Pair<Int, Int>?> get() = _backgroundColorSet
 
@@ -27,6 +31,12 @@ class InputTextViewModel @Inject constructor(): ViewModel() {
 
     fun updateSelectedColor(colorId: Int) {
         _selectedTextColor.value = colorId
+
+        if (_backgroundColorSet.value != null) {
+            colorProvider.getColorMap()[colorId]?.let {
+                updateBackgroundState(Pair(it.textColorAlternate, it.colorInt))
+            }
+        }
     }
 
     fun getCurrentSelectedColor(): Int {
@@ -35,6 +45,13 @@ class InputTextViewModel @Inject constructor(): ViewModel() {
 
     fun increaseAlignment() {
         _selectedAlignment.value = _selectedAlignment.value?.next()
+    }
+
+    fun updateAlignment(alignmentTarget: FontAlignment) {
+        val diff = alignmentTarget.value - FontAlignment.CENTER.value
+        for(i in 0 until diff) {
+            increaseAlignment()
+        }
     }
 
     fun updateBackgroundState(backgroundColorSet: Pair<Int, Int>?) {
@@ -53,12 +70,20 @@ class InputTextViewModel @Inject constructor(): ViewModel() {
         val text = _textValue.value ?: ""
         val textColor = _selectedTextColor.value ?: -1
         val textAlignment = _selectedAlignment.value ?: FontAlignment.CENTER
+        val fontDetail = _selectedFontStyle.value ?: FontDetail.OPEN_SAUCE_ONE_REGULAR
 
-        return InputTextModel(
+        val result = InputTextModel(
             text = text,
+            textAlign = textAlignment,
             textColor = textColor,
-            backgroundColor = _backgroundColorSet.value,
-            textAlign = textAlignment
+            fontDetail = fontDetail
         )
+
+        _backgroundColorSet.value?.let {
+            result.textColor = it.first
+            result.backgroundColor = it.second
+        }
+
+        return result
     }
 }

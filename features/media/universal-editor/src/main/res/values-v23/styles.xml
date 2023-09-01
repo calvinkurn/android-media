@@ -15,9 +15,11 @@
         <item name="windowNoTitle">true</item>
 
         <item name="android:statusBarColor">@color/Unify_Static_Black</item>
+        <item name="android:windowLightStatusBar">false</item>
     </style>
 
     <style name="MainEditor" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:statusBarColor">@color/Unify_Static_Black</item>
+        <item name="android:windowLightStatusBar">false</item>
     </style>
 </resources>

@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
+import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -77,10 +78,14 @@ open class MainEditorActivity : AppCompatActivity(), NavToolbarComponent.Listene
     private val inputTextIntent = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) {
+        toolbar.setVisibility(true)
+        navigationTool.setVisibility(true)
+
         val result = it.data?.getParcelableExtra<InputTextModel>(InputTextActivity.INPUT_TEXT_RESULT)
 
-        // TODO, bind input text result to ImageModel & VideoModel (re-implement previous pos detail / create new if no detail yet)
-        Toast.makeText(this, result?.text, Toast.LENGTH_LONG).show()
+        if (result?.text?.isNotEmpty() != true) return@registerForActivityResult
+
+        viewModel.setTextState(result)
     }
 
     private val placementIntent = registerForActivityResult(
@@ -149,15 +154,18 @@ open class MainEditorActivity : AppCompatActivity(), NavToolbarComponent.Listene
     private fun onToolClicked(@ToolType type: Int) {
         when (type) {
             ToolType.TEXT -> {
+                toolbar.setVisibility(false)
+                navigationTool.setVisibility(false)
+
                 val intent = InputTextActivity.create(this)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+
+                // TODO: only for development purpose for testing implement previous text state. this will be used on text edit state later
+                intent.putExtra(InputTextActivity.INPUT_TEXT_STATE, viewModel.state.value.model?.image?.texts?.toList()?.firstOrNull()?.second)
+
                 inputTextIntent.launch(intent)
                 this.overridePendingTransition(0,0)
-//                val content = getRandomString(10)
-//                val canvas = findViewById<DynamicTextCanvasView>(R.id.canvas)
-//                canvas.addButtonView(findViewById(R.id.btn_delete))
-//                canvas.addText(content)
             }
             ToolType.PLACEMENT -> {
                 val intent = PlacementImageActivity.create(this)

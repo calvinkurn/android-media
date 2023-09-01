@@ -11,5 +11,5 @@ data class ImageModel(
      * 1. text
      * 2. configuration
      */
-    var texts: Map<String, InputTextModel> = emptyMap()
+    var texts: MutableMap<String, InputTextModel> = mutableMapOf()
 ) : Parcelable
