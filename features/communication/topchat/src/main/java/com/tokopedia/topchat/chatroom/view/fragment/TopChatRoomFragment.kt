@@ -1804,7 +1804,7 @@ open class TopChatRoomFragment :
         } else {
             val addToCartParam = AddToCartParam.mapUiModelToParam(
                 element,
-                AddToCartParam.SOURCE_ACTION_BUY
+                AddToCartParam.ACTION_BUY
             )
             viewModel.addProductToCart(addToCartParam)
         }
@@ -1828,7 +1828,7 @@ open class TopChatRoomFragment :
         } else {
             val addToCartParam = AddToCartParam.mapUiModelToParam(
                 element,
-                AddToCartParam.SOURCE_ACTION_ATC
+                AddToCartParam.ACTION_ATC
             )
             viewModel.addProductToCart(addToCartParam)
         }
@@ -2898,11 +2898,11 @@ open class TopChatRoomFragment :
         viewModel.addToCart.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    when (it.data.source) {
-                        AddToCartParam.SOURCE_ACTION_ATC -> {
+                    when (it.data.action) {
+                        AddToCartParam.ACTION_ATC -> {
                             onSuccessClickATCFromProductAttachment(it.data)
                         }
-                        AddToCartParam.SOURCE_ACTION_BUY -> {
+                        AddToCartParam.ACTION_BUY -> {
                             onSuccessClickBuyFromProductAttachment(it.data)
                         }
                     }
