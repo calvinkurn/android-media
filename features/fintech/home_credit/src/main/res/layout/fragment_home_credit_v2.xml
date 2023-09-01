@@ -190,6 +190,7 @@
         android:layout_width="300dp"
         android:layout_height="200dp"
         android:background="@color/Unify_GN500"
+        android:scaleType="fitXY"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
 

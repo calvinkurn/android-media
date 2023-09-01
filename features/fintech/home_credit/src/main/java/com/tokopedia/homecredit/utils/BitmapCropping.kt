@@ -6,7 +6,10 @@ import android.view.View
 import com.otaliastudios.cameraview.CameraView
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.dpToPx
+import com.tokopedia.unifycomponents.toPx
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.withContext
@@ -33,7 +36,7 @@ class BitmapCropping constructor(
 
     fun doCropping(bitmap: Bitmap, frame: View, listener: BitmapProcessingListener) {
         launchCatchError(coroutineContext, block = {
-            val bitmapCropped = doCroppingWithFrame(bitmap, frame)
+            val bitmapCropped = doCroppingWithFrame(bitmap, frame, 0)
 
             withContext(coroutineDispatchers.main) {
                 listener.onBitmapReady(bitmapCropped)
@@ -84,12 +87,26 @@ class BitmapCropping constructor(
             else -> newH
         }
 
+//        return Bitmap.createBitmap(
+//            bitmap,
+//            offsetX.roundToInt(),
+//            offsetY.roundToInt(),
+//            newW.roundToInt(),
+//            newH.roundToInt()
+//        )
+
+        val ratioW = bitmap.width / camera.width
+        val ratioH = bitmap.height / camera.height
+
+        val framePos = IntArray(2)
+        frame.getLocationInWindow(framePos)
+
         return Bitmap.createBitmap(
             bitmap,
-            offsetX.roundToInt(),
-            offsetY.roundToInt(),
-            newW.roundToInt(),
-            newH.roundToInt()
+            (bitmap.width / 2) - (frame.width * ratioW),
+            (bitmap.height / 2) - (frame.height * ratioH),
+            frame.width * ratioW,
+            frame.height * ratioH
         )
     }
 

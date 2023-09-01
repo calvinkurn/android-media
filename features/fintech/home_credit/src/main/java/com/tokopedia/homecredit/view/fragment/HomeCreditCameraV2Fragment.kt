@@ -91,7 +91,7 @@ class HomeCreditCameraV2Fragment(
             }
         }
 
-        observeViewModel()
+//        observeViewModel()
         setupViews()
         initCameraListener()
     }
@@ -221,13 +221,12 @@ class HomeCreditCameraV2Fragment(
                                 bitmap,
                                 binding?.cameraCutoutKtp!!,
                                 object : BitmapProcessingListener {
-                                    override fun onBitmapReady(bitmap: Bitmap) {
-                                        val byteArray = bitmapToByteArray(bitmap)
-
-                                        Glide.with(context!!).load(bitmap).centerCrop().into(binding?.testajadulu!!)
+                                    override fun onBitmapReady(croppedBitmap: Bitmap) {
+                                        val byteArray = bitmapToByteArray(croppedBitmap)
 
                                         CameraUtils.writeToFile(byteArray, getFileLocationFromDirectory()) {
                                             finalCameraResultFilePath = it?.path ?: ""
+                                            Glide.with(context!!).load(finalCameraResultFilePath).into(binding?.testajadulu!!)
                                             loadImagePreview()
                                             showCameraPreviewActionButtons()
                                             hideCameraProp()
