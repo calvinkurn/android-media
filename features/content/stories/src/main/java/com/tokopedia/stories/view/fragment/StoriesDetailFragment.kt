@@ -1,6 +1,6 @@
 package com.tokopedia.stories.view.fragment
 
-import android.os.Bundle
+import  android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +17,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -49,6 +50,7 @@ import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction.PauseStories
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction.PreviousDetail
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction.ResumeStories
 import com.tokopedia.stories.view.viewmodel.event.StoriesUiEvent
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
@@ -157,6 +159,7 @@ class StoriesDetailFragment @Inject constructor(
                     }
                     is StoriesUiEvent.NavigateEvent -> goTo(event.appLink)
                     is StoriesUiEvent.ShowVariantSheet -> openVariantBottomSheet(event.product)
+                    is StoriesUiEvent.ShowErrorEvent -> showToaster(message = event.message.message.orEmpty(), type = Toaster.TYPE_ERROR)
                     else -> {}
                 }
             }
@@ -244,9 +247,8 @@ class StoriesDetailFragment @Inject constructor(
     private fun renderAuthor(state: StoriesDetailItemUiModel) = with(binding.vStoriesPartner) {
         tvPartnerName.text = state.author.name
         ivIcon.setImageUrl(state.author.thumbnailUrl)
-        btnFollow
-        if (state.author is StoryAuthor.Shop)
-            ivBadge.setImageUrl(state.author.badgeUrl)
+        btnFollow.gone()
+        if (state.author is StoryAuthor.Shop) ivBadge.setImageUrl(state.author.badgeUrl)
     }
 
 
@@ -368,18 +370,32 @@ class StoriesDetailFragment @Inject constructor(
                 productId = product.id,
                 shopId = shopId, //is shop id mandatory from applink?
                 dismissAfterTransaction = false,
-                trackerCdListName = "viewModel.storyId",
+                trackerCdListName = viewModel.storyId,
             )
         )
 
         showImmediately(childFragmentManager, VARIANT_BOTTOM_SHEET_TAG) {
             variantSheet = AtcVariantBottomSheet()
-            variantSheet.setOnDismissListener {  }
+            variantSheet.setOnDismissListener { }
             variantSheet.bottomSheetClose.setOnClickListener {
                 viewModelAction(StoriesUiAction.DismissSheet(BottomSheetType.GVBS))
             }
             variantSheet
         }
+    }
+    private fun showToaster(
+        message: String,
+        type: Int = Toaster.TYPE_NORMAL,
+        actionText: String = "",
+        clickListener: View.OnClickListener = View.OnClickListener {}
+    ) {
+        Toaster.build(
+            requireView(),
+            message,
+            type = type,
+            actionText = actionText,
+            clickListener = clickListener
+        ).show()
     }
 
     override fun onDestroyView() {

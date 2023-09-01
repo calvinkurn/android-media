@@ -44,10 +44,10 @@ class StoriesRepositoryImpl @Inject constructor(
         return@withContext mapper.mapStoriesDetailRequest(storiesDetailData)
     }
 
-    override suspend fun deleteStory(storyId: String) : Boolean {
+    override suspend fun deleteStory(storyId: String) : Boolean = withContext(dispatchers.io) {
         val param = UpdateStoryUseCase.Param(storyId, StoryActionType.Delete)
         val response = updateStoryUseCase(param)
-        return response.storyId.storyId == storyId
+        response.storyId.storyId == storyId
     }
 
     override suspend fun getStoriesProducts(

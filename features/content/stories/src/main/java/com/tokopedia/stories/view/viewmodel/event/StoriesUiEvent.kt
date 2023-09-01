@@ -13,4 +13,6 @@ sealed interface StoriesUiEvent {
     data class NavigateEvent(val appLink: String) : StoriesUiEvent
     data class ShowVariantSheet(val product: ContentTaggedProductUiModel) : StoriesUiEvent
     object FinishedAllStories: StoriesUiEvent
+    //TODO() : add click listener if needed
+    data class ShowErrorEvent(val message: Throwable) : StoriesUiEvent
 }
