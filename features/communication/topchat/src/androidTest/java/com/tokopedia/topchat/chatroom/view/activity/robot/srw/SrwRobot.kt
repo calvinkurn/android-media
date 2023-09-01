@@ -8,6 +8,7 @@ import com.tokopedia.topchat.R
 import com.tokopedia.topchat.matchers.withIndex
 import com.tokopedia.topchat.matchers.withRecyclerView
 import org.hamcrest.CoreMatchers
+import com.tokopedia.coachmark.R as coachmarkR
 
 object SrwRobot {
     fun clickSrwQuestion(position: Int) {
@@ -18,7 +19,7 @@ object SrwRobot {
     }
 
     fun dismissSrwOnboarding() {
-        onView(ViewMatchers.withId(com.tokopedia.coachmark.R.id.simple_ic_close))
+        onView(ViewMatchers.withId(coachmarkR.id.simple_ic_close))
             .inRoot(isPlatformPopup())
             .perform(click())
     }

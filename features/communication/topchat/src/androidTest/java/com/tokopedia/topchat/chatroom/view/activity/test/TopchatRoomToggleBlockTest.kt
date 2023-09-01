@@ -1,5 +1,6 @@
 package com.tokopedia.topchat.chatroom.view.activity.test
 
+import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.activity.robot.generalResult
 import com.tokopedia.topchat.chatroom.view.activity.robot.headerRobot
@@ -27,7 +28,7 @@ class TopchatRoomToggleBlockTest : TopchatRoomTest() {
 
         // Then
         generalResult {
-            assertToasterText(context.getString(com.tokopedia.topchat.R.string.title_success_block_chat))
+            assertToasterText(context.getString(R.string.title_success_block_chat))
         }
     }
 
@@ -50,7 +51,7 @@ class TopchatRoomToggleBlockTest : TopchatRoomTest() {
 
         // Then
         generalResult {
-            assertToasterText(context.getString(com.tokopedia.topchat.R.string.title_success_unblock_chat))
+            assertToasterText(context.getString(R.string.title_success_unblock_chat))
         }
     }
 
