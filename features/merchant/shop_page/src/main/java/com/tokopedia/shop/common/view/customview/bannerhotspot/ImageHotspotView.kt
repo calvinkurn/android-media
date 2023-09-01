@@ -8,7 +8,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.DefaultLifecycleObserver
 import com.tokopedia.feedcomponent.util.util.doOnLayout
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.common.view.model.ImageHotspotData
 import com.tokopedia.shop.databinding.ImageHotspotViewBinding
@@ -88,13 +87,25 @@ class ImageHotspotView @JvmOverloads constructor(
     ) {
         this.listHotspot = listHotspot
         imageBanner.doOnLayout {
-            listHotspot.forEachIndexed { index, hotspotData ->
-                val hotspotTagView = createHotspotTagView(hotspotData)
-                val bubbleView =
-                    createBubbleView(hotspotData, hotspotTagView, index, listenerBubbleView)
-                addView(hotspotTagView)
-                addView(bubbleView)
-            }
+            addHotspotTagView(listHotspot, listenerBubbleView)
+            addBubbleView(listHotspot)
+        }
+    }
+
+    private fun addBubbleView(listHotspot: List<ImageHotspotData.HotspotData>) {
+        listHotspot.forEach {
+            addView(it.bubbleView)
+        }
+    }
+
+    private fun addHotspotTagView(
+        listHotspot: List<ImageHotspotData.HotspotData>,
+        listenerBubbleView: Listener
+    ) {
+        listHotspot.forEachIndexed { index, hotspotData ->
+            val hotspotTagView = createHotspotTagView(hotspotData)
+            createBubbleView(hotspotData, hotspotTagView, index, listenerBubbleView)
+            addView(hotspotTagView)
         }
     }
 

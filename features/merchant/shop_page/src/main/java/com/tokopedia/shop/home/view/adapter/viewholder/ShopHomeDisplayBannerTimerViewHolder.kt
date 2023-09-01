@@ -1,5 +1,6 @@
 package com.tokopedia.shop.home.view.adapter.viewholder
 
+import android.graphics.PorterDuff
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -60,7 +61,7 @@ class ShopHomeDisplayBannerTimerViewHolder(
     private val loaderRemindMe: View? = viewBinding?.loaderRemindMe
     private val remindMeText: Typography? = viewBinding?.textRemindMe
     private val remindMeIcon: IconUnify? = viewBinding?.ivRemindMeBell
-    private val textSeeAll: Typography? = viewBinding?.textSeeAll
+    private var iconCtaChevron: IconUnify? = viewBinding?.iconCtaChevron
     private val imageTnc: ImageView? = viewBinding?.imageTnc
     private val textTitle: Typography? = viewBinding?.textTitle
     private val containerProductList: View? = viewBinding?.containerProductList
@@ -123,12 +124,10 @@ class ShopHomeDisplayBannerTimerViewHolder(
         val ctaText = uiModel.header.ctaText
         val statusCampaign = uiModel.data?.status
         val isShowCta = checkIsShowCta(ctaText, statusCampaign)
-        textSeeAll?.apply {
+        iconCtaChevron?.apply {
             if (!isShowCta) {
-                text = ""
                 hide()
             } else {
-                text = ctaText
                 setOnClickListener {
                     listener.onClickCtaDisplayBannerTimerWidget(bindingAdapterPosition, uiModel)
                 }
@@ -235,7 +234,7 @@ class ShopHomeDisplayBannerTimerViewHolder(
         val informationIconColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.ICON_CTA_LINK_COLOR)
         textTitle?.setTextColor(titleColor)
         textTimeDescription?.setTextColor(subTitleColor)
-        textSeeAll?.setTextColor(ctaColor)
+        iconCtaChevron?.setColorFilter(ctaColor, PorterDuff.Mode.SRC_ATOP)
         imageTnc?.setColorFilter(informationIconColor)
         timerUnify?.timerVariant = TimerUnifySingle.VARIANT_MAIN
         timerMoreThanOneDay?.apply {
@@ -253,7 +252,7 @@ class ShopHomeDisplayBannerTimerViewHolder(
         )
         textTitle?.setTextColor(festivityTextColor)
         textTimeDescription?.setTextColor(festivityTextColor)
-        textSeeAll?.setTextColor(festivityTextColor)
+        iconCtaChevron?.setColorFilter(festivityTextColor, PorterDuff.Mode.SRC_ATOP)
         imageTnc?.setColorFilter(festivityTextColor)
         timerUnify?.timerVariant = TimerUnifySingle.VARIANT_ALTERNATE
         timerMoreThanOneDay?.apply {
@@ -288,7 +287,7 @@ class ShopHomeDisplayBannerTimerViewHolder(
         )
         textTitle?.setTextColor(defaultTitleColor)
         textTimeDescription?.setTextColor(defaultSubTitleColor)
-        textSeeAll?.setTextColor(defaultCtaColor)
+        iconCtaChevron?.setColorFilter(defaultCtaColor, PorterDuff.Mode.SRC_ATOP)
         imageTnc?.setColorFilter(defaultInformationIconColor)
         timerUnify?.timerVariant = TimerUnifySingle.VARIANT_MAIN
         timerMoreThanOneDay?.apply {

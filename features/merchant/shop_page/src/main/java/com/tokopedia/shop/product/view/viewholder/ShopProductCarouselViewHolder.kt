@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
 import com.tokopedia.carouselproductcard.CarouselProductCardView
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.productcard.ProductCardModel
@@ -41,7 +42,7 @@ class ShopProductCarouselViewHolder(
 
     private val viewBinding: ItemNewShopProductCarouselBinding? by viewBinding()
     private var tvTitle: TextView? = null
-    private var tvSeeAll: TextView? = null
+    private var iconCtaChevron: IconUnify? = null
     private var recyclerView: CarouselProductCardView? = null
     private var ivBadge: ImageView? = null
 
@@ -55,7 +56,7 @@ class ShopProductCarouselViewHolder(
             visitable.shopProductFeaturedViewModelList?.let {
                 bindShopProductCarousel(it)
             }
-            tvSeeAll!!.visibility = View.GONE
+            iconCtaChevron?.visibility = View.GONE
         } else if (visitable is EtalaseHighlightCarouselUiModel) {
             visitable.shopProductUiModelList?.let {
                 bindShopProductCarousel(it)
@@ -68,12 +69,12 @@ class ShopProductCarouselViewHolder(
             } else {
                 ivBadge!!.visibility = View.GONE
             }
-            tvSeeAll!!.setOnClickListener {
+            iconCtaChevron?.setOnClickListener {
                 shopEtalaseViewModel?.let {
                     shopCarouselSeeAllClickedListener?.onSeeAllClicked(shopEtalaseViewModel)
                 }
             }
-            tvSeeAll!!.visibility = View.VISIBLE
+            iconCtaChevron?.visibility = View.VISIBLE
         }
     }
 
@@ -138,7 +139,7 @@ class ShopProductCarouselViewHolder(
     private fun findViews() {
         tvTitle = viewBinding?.layoutShopProductCarouselTitle?.tvTitle
         ivBadge = viewBinding?.layoutShopProductCarouselTitle?.imageViewEtalaseBadge
-        tvSeeAll = viewBinding?.layoutShopProductCarouselTitle?.tvSeeAll
+        iconCtaChevron = viewBinding?.layoutShopProductCarouselTitle?.iconCtaChevron
         recyclerView = viewBinding?.recyclerViewCarousel
     }
 
