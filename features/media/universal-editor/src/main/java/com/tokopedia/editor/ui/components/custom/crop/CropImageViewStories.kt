@@ -9,9 +9,11 @@ import android.graphics.Matrix
 import android.graphics.Paint
 import android.graphics.RectF
 import android.net.Uri
+import android.os.Handler
 import android.util.AttributeSet
 import androidx.core.graphics.values
 import com.tokopedia.editor.ui.model.ImagePlacementModel
+import com.tokopedia.unifycomponents.toPx
 import com.yalantis.ucrop.model.ImageState
 import com.yalantis.ucrop.util.BitmapLoadUtils
 import com.yalantis.ucrop.util.RectUtils
@@ -28,6 +30,8 @@ open class CropImageViewStories : CropImageView {
     private val mCropRect: RectF = RectF()
 
     private var outputPath: Uri? = null
+
+    var listener: Listener? = null
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attributeSet: AttributeSet) : super(context, attributeSet)
@@ -51,6 +55,8 @@ open class CropImageViewStories : CropImageView {
     }
 
     override fun setImageUri(imageUri: Uri, outputUri: Uri?) {
+        setBackgroundColor(Color.RED)
+
         outputPath = outputUri
 
         outputPath?.path?.let {
@@ -69,6 +75,15 @@ open class CropImageViewStories : CropImageView {
 
     override fun getMinScale(): Float {
         return 0.1f
+    }
+
+    // used as finish listener since setImageUri process using setImageBitmap on load complete
+    override fun setImageBitmap(bitmap: Bitmap?) {
+        super.setImageBitmap(bitmap)
+
+        Handler().postDelayed({
+            listener?.onFinish()
+        }, FINISH_DELAY)
     }
 
     fun customCrop(onFinish: (placementModel: ImagePlacementModel) -> Unit) {
@@ -171,10 +186,16 @@ open class CropImageViewStories : CropImageView {
         }
     }
 
+    interface Listener {
+        fun onFinish()
+    }
+
     companion object {
         private const val INDEX_TRANSLATE_X = 2
         private const val INDEX_TRANSLATE_Y = 5
 
         private const val IMAGE_QUALITY = 100
+
+        private const val FINISH_DELAY = 250L
     }
 }

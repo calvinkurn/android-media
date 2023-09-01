@@ -9,6 +9,8 @@ class OverlayViewStories: OverlayView {
     constructor(context: Context): super(context)
     constructor(context: Context, attributeSet: AttributeSet): super(context, attributeSet)
 
+    var topGap = 0f;
+
     fun processStyledAttributesOpen(a: TypedArray) {
         super.processStyledAttributes(a)
     }
@@ -18,6 +20,7 @@ class OverlayViewStories: OverlayView {
 
         // set top space 0 then distribute the space to bottom
         cropViewRect.let {
+            topGap = it.top
             it.set(
                 it.left,
                 0f,

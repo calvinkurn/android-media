@@ -2,12 +2,16 @@ package com.tokopedia.editor.ui.placement
 
 import android.net.Uri
 import android.os.Handler
+import android.widget.Toast
 import androidx.core.graphics.values
 import androidx.fragment.app.activityViewModels
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.editor.R
 import com.tokopedia.editor.base.BaseEditorFragment
 import com.tokopedia.editor.databinding.FragmentPlacementBinding
+import com.tokopedia.editor.ui.components.custom.crop.StoriesEditorUcrop
 import com.tokopedia.editor.ui.model.ImagePlacementModel
+import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.utils.file.FileUtil
 import com.tokopedia.utils.view.binding.viewBinding
 import com.yalantis.ucrop.view.TransformImageView
@@ -24,18 +28,20 @@ class PlacementImageFragment @Inject constructor() : BaseEditorFragment(R.layout
     private var translateX = 0f
     private var translateY = 0f
 
+    private var loaderDialog: LoaderDialog? = null
+
     override fun initObserver() {
         viewModel.imagePath.observe(viewLifecycleOwner) {
             viewBinding?.cropArea?.let { ucropRef ->
                 ucropRef.getCropImageView()?.let { gestureCropImage ->
+                    showLoadingDialog()
                     gestureCropImage.setImageUri(
                         imageUri = Uri.fromFile(File(it)),
                         outputUri = Uri.parse(getOutputPath())
                     )
 
-                    gestureCropImage.setTransformImageListener(object :
-                        TransformImageView.TransformImageListener {
-                        override fun onLoadComplete() {
+                    ucropRef.listener = object: StoriesEditorUcrop.Listener {
+                        override fun onFinish() {
                             gestureCropImage.post {
                                 ucropRef.getOverlayView()?.setTargetAspectRatio(IMAGE_RATIO)
 
@@ -50,13 +56,7 @@ class PlacementImageFragment @Inject constructor() : BaseEditorFragment(R.layout
                                 }, PREV_STATE_DELAY)
                             }
                         }
-
-                        override fun onLoadFailure(e: Exception) {}
-
-                        override fun onRotate(currentAngle: Float) {}
-
-                        override fun onScale(currentScale: Float) {}
-                    })
+                    }
                 }
             }
         }
@@ -97,9 +97,13 @@ class PlacementImageFragment @Inject constructor() : BaseEditorFragment(R.layout
                     cropImageView.postTranslate(previousModel.translateX, previousModel.translateY)
 
                     viewModel.initialImageMatrix = it.cropArea.getCropImageView()?.imageMatrix?.values()
+
+                    hideLoadingDialog()
                 }, PREV_STATE_DELAY)
             } ?: run{
                 viewModel.initialImageMatrix = it.cropArea.getCropImageView()?.imageMatrix?.values()
+
+                hideLoadingDialog()
             }
         }
     }
@@ -128,6 +132,20 @@ class PlacementImageFragment @Inject constructor() : BaseEditorFragment(R.layout
             gestureCropImage.postTranslate(-currentTranslateX, -currentTranslateY)
             gestureCropImage.postTranslate(translateX, translateY)
         }
+    }
+
+    private fun showLoadingDialog() {
+        loaderDialog?.show() ?: run {
+            context?.let {
+                loaderDialog = LoaderDialog(it)
+                loaderDialog?.setLoadingText("")
+                loaderDialog?.show()
+            }
+        }
+    }
+
+    private fun hideLoadingDialog() {
+        loaderDialog?.dismiss()
     }
 
     companion object {

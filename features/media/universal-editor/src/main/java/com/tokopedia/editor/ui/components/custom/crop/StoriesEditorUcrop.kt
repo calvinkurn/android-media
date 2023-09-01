@@ -2,6 +2,7 @@ package com.tokopedia.editor.ui.components.custom.crop
 
 import android.content.Context
 import android.graphics.Color
+import android.os.Handler
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -15,17 +16,29 @@ class StoriesEditorUcrop(context: Context, attrs: AttributeSet) : FrameLayout(co
     private var mGestureCropImageView: GestureCropImageViewStories? = null
     private var mViewOverlay: OverlayViewStories? = null
 
+    var listener: Listener? = null
+
     init {
         LayoutInflater.from(context).inflate(R.layout.ucrop_stories_layout, this, true)
         mGestureCropImageView = findViewById<View>(R.id.image_view_crop) as GestureCropImageViewStories
         mViewOverlay = findViewById<View>(R.id.view_overlay) as OverlayViewStories
+
         val attribute = context.obtainStyledAttributes(attrs, R.styleable.ucrop_UCropView)
-        mViewOverlay!!.processStyledAttributesOpen(attribute)
-        mGestureCropImageView!!.processStyledAttributesOpen(attribute)
+        mViewOverlay?.processStyledAttributesOpen(attribute)
+        mGestureCropImageView?.let {
+            it.processStyledAttributesOpen(attribute)
+            it.setBackgroundColor(Color.BLACK)
+            it.listener = object: CropImageViewStories.Listener {
+                override fun onFinish() {
+                    // adjust image load positioning due to changes on overlay position placement
+                    it.postTranslate(0f, -(mViewOverlay?.topGap ?: 0f))
+                    listener?.onFinish()
+                }
+            }
+        }
+
         attribute.recycle()
         setListenersToViews()
-
-        mGestureCropImageView!!.setBackgroundColor(Color.BLACK)
     }
 
     private fun setListenersToViews() {
@@ -57,5 +70,9 @@ class StoriesEditorUcrop(context: Context, attrs: AttributeSet) : FrameLayout(co
         setListenersToViews()
         mGestureCropImageView!!.setCropRect(getOverlayView()!!.cropViewRect)
         addView(mGestureCropImageView, 0)
+    }
+
+    interface Listener {
+        fun onFinish()
     }
 }
