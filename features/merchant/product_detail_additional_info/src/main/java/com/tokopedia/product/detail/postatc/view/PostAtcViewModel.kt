@@ -55,6 +55,7 @@ class PostAtcViewModel @Inject constructor(
             pageSource = postAtcParams.pageSource,
             productId = productId,
             session = postAtcParams.session,
+            warehouseId = postAtcParams.warehouseId,
             userLocationRequest = localCacheModel.toUserLocationRequest()
         )
 

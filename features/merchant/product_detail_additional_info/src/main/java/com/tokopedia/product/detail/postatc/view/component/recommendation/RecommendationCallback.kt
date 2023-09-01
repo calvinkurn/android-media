@@ -37,6 +37,7 @@ class RecommendationCallbackImpl(
             viewModel.postAtcInfo.productId,
             userSession.userId,
             userSession.isLoggedIn,
+            viewModel.postAtcInfo.warehouseId,
             recommendationItem,
             trackingQueue
         )
@@ -50,6 +51,7 @@ class RecommendationCallbackImpl(
             viewModel.postAtcInfo.productId,
             userSession.userId,
             userSession.isLoggedIn,
+            viewModel.postAtcInfo.warehouseId,
             recommendationItem,
             trackingQueue
         )

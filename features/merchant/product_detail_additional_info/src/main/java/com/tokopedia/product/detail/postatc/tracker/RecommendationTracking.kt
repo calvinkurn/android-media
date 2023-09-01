@@ -9,6 +9,7 @@ object RecommendationTracking {
         productId: String,
         userId: String,
         isLoggedIn: Boolean,
+        warehouseId: String,
         item: RecommendationItem,
         trackingQueue: TrackingQueue
     ) {
@@ -59,7 +60,8 @@ object RecommendationTracking {
                             "item_name" to item.name,
                             "item_variant" to "none / other",
                             "price" to removeCurrencyPrice(item.price),
-                            "dimension83" to bebasOngkirValue
+                            "dimension83" to bebasOngkirValue,
+                            "dimension56" to warehouseId
                         )
                     )
                 )
@@ -74,6 +76,7 @@ object RecommendationTracking {
         productId: String,
         userId: String,
         isLoggedIn: Boolean,
+        warehouseId: String,
         item: RecommendationItem,
         trackingQueue: TrackingQueue
     ) {
@@ -91,7 +94,7 @@ object RecommendationTracking {
                 append(" - product topads")
             }
 
-            append(" - ${productId}")
+            append(" - $productId")
         }
 
         val bebasOngkirValue =
@@ -122,7 +125,8 @@ object RecommendationTracking {
                         "variant" to "none / other",
                         "list" to itemListBuilder.toString(),
                         "position" to item.position,
-                        "dimension83" to bebasOngkirValue
+                        "dimension83" to bebasOngkirValue,
+                        "dimension56" to warehouseId
                     )
                 )
             ),
