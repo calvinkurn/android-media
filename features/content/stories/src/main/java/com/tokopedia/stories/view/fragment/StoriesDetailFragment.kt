@@ -1,6 +1,6 @@
 package com.tokopedia.stories.view.fragment
 
-import android.os.Bundle
+import  android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -209,9 +209,8 @@ class StoriesDetailFragment @Inject constructor(
     private fun renderAuthor(state: StoriesDetailItemUiModel) = with(binding.vStoriesPartner) {
         tvPartnerName.text = state.author.name
         ivIcon.setImageUrl(state.author.thumbnailUrl)
-        btnFollow
-        if (state.author is StoryAuthor.Shop)
-            ivBadge.setImageUrl(state.author.badgeUrl)
+        btnFollow.gone()
+        if (state.author is StoryAuthor.Shop) ivBadge.setImageUrl(state.author.badgeUrl)
     }
 
 
