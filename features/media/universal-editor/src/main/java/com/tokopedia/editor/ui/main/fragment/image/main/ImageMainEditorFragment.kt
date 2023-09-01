@@ -26,14 +26,13 @@ class ImageMainEditorFragment @Inject constructor(
 
     override fun initObserver() {}
 
-    fun updateImage(newPath: String) {
+    override fun onLoadContent(path: String) {
         binding?.imgSample?.let {
             it.clearImage()
-            it.loadImage(newPath) {
+            it.loadImage(path) {
                 useCache(false)
                 setCacheStrategy(MediaCacheStrategy.NONE)
             }
         }
     }
-
 }

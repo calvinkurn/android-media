@@ -37,13 +37,9 @@ class PagerContainerUiComponent constructor(
     }
 
     fun updateView(newPath: String?) {
-        newPath?.let {
-            mAdapter?.fragments?.first()?.let { fragment ->
-                try {
-                    (fragment as ImageMainEditorFragment).updateImage(it)
-                } catch (_: Exception) {}
-            }
-        }
+        if (newPath == null) return
+        val fragment = mAdapter?.fragments?.first() ?: return
+        fragment.onLoadContent(newPath)
     }
 
     private fun setFragmentDisplayed(param: UniversalEditorParam) {
