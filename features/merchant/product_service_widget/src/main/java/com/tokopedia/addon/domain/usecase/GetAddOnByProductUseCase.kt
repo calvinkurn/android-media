@@ -130,7 +130,7 @@ class GetAddOnByProductUseCase @Inject constructor(
                     )
                 ),
                 source = Source(usecase = USECASE_ADDON_VALUE, squad =
-                    if (param.pageSource.isEmpty() || param.pageSource == ADDON_PAGE_SOURCE_PDP) SQUAD_VALUE_ADDON_PDP
+                    if (param.pageSource == ADDON_PAGE_SOURCE_PDP) SQUAD_VALUE_ADDON_PDP
                     else SQUAD_VALUE_ADDON)
             )
         )
