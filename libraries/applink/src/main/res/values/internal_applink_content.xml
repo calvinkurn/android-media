@@ -19,7 +19,6 @@
 
     <string name="host_stories" translatable="false">stories</string>
     <string name="path_stories_shop" translatable="false">/shop/.*\</string>
-    <string name="path_stories_shop_stories" translatable="false">/shop/.*\/.*\</string>
 
     <string name="applink_title_on_boarding">Onboarding</string>
 

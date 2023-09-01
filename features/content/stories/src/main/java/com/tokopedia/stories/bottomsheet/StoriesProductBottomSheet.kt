@@ -5,58 +5,129 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.platform.LocalContext
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
-import com.tokopedia.kotlin.extensions.view.showToast
+import androidx.lifecycle.lifecycleScope
+import com.tokopedia.content.common.types.ResultState
+import com.tokopedia.content.common.ui.adapter.ContentTaggedProductBottomSheetAdapter
+import com.tokopedia.content.common.ui.viewholder.ContentTaggedProductBottomSheetViewHolder
+import com.tokopedia.content.common.view.ContentTaggedProductUiModel
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
+import com.tokopedia.mvcwidget.MvcData
+import com.tokopedia.mvcwidget.TokopointsCatalogMVCSummaryResponse
+import com.tokopedia.mvcwidget.trackers.MvcSource
+import com.tokopedia.stories.databinding.FragmentStoriesProductBinding
+import com.tokopedia.stories.utils.withCache
 import com.tokopedia.stories.view.model.BottomSheetType
-import com.tokopedia.stories.view.model.StoriesUiState
 import com.tokopedia.stories.view.viewmodel.StoriesViewModel
+import com.tokopedia.stories.view.viewmodel.action.StoriesProductAction
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
+import com.tokopedia.stories.R
+import com.tokopedia.stories.view.model.ProductBottomSheetUiState
 
 /**
  * @author by astidhiyaa on 25/07/23
  */
 class StoriesProductBottomSheet @Inject constructor(
     private val viewModelFactory: ViewModelProvider.Factory,
-) : BottomSheetUnify() {
+) : BottomSheetUnify(), ContentTaggedProductBottomSheetViewHolder.Listener {
 
     private val viewModel by activityViewModels<StoriesViewModel> { viewModelFactory }
+
+    private var _binding: FragmentStoriesProductBinding? = null
+    private val binding: FragmentStoriesProductBinding get() = _binding!!
+
+    private val productAdapter by lazyThreadSafetyNone {
+        ContentTaggedProductBottomSheetAdapter(this)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val composable = ComposeView(requireContext()).apply {
-            setContent {
-                val ctx = LocalContext.current
-                val state by viewModel.uiState.collectAsState(initial = StoriesUiState.Empty)
-                LaunchedEffect(Unit) {
-                    //observe  event
-                }
-                ProductPage(products = state.products,
-                    onCardClicked = { item, pos -> showToast("product clicked ${item.title}") },
-                    onBuyClicked = { item, pos -> showToast("product buy ${item.title}") },
-                    onAtcClicked = { item, pos -> showToast("product atc ${item.title}") })
-            }
-        }
-        setChild(composable)
-        setTitle("Produk pilihan")
+        _binding = FragmentStoriesProductBinding.inflate(inflater, container, false)
+
+        setChild(binding.root)
+        setTitle(getString(R.string.stories_product_bottomsheet_title))
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupView()
+        observeUiState()
+    }
 
-        viewModel.getProducts()
+    private fun setupView() {
+        binding.rvStoriesProduct.adapter = productAdapter
+    }
+
+    private fun observeUiState() {
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            viewModel.uiState.withCache().collectLatest { (prevState, state) ->
+                renderProducts(prevState?.productSheet?.products, state.productSheet.products)
+                renderMvc(prevState?.productSheet?.vouchers, state.productSheet.vouchers)
+            }
+        }
+    }
+
+    private fun renderProducts(prevState: ProductBottomSheetUiState.ProductList?, state: ProductBottomSheetUiState.ProductList) {
+        if (prevState == state) return
+
+        binding.storiesProductSheetLoader.showWithCondition(state.resultState is ResultState.Loading)
+        binding.rvStoriesProduct.shouldShowWithAction(state.resultState is ResultState.Success) {
+            productAdapter.setItemsAndAnimateChanges(state.products)
+        }
+    }
+
+    private fun renderMvc(prevState: TokopointsCatalogMVCSummaryResponse?, state: TokopointsCatalogMVCSummaryResponse) {
+        if (prevState == state) return
+
+        val mvcData = state.data?.animatedInfoList.orEmpty()
+        binding.mvcStoriesWidget.setData(
+            mvcData = MvcData(mvcData),
+            shopId = viewModel.mShopId,
+            source = MvcSource.FEED_BOTTOM_SHEET,
+        )
+        binding.mvcStoriesWidget.showWithCondition(mvcData.isNotEmpty())
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.submitAction(StoriesUiAction.FetchProduct)
+    }
+
+    override fun onProductCardClicked(product: ContentTaggedProductUiModel, itemPosition: Int) {
+        viewModel.submitAction(StoriesUiAction.Navigate(product.appLink))
+    }
+
+    override fun onAddToCartProductButtonClicked(
+        product: ContentTaggedProductUiModel,
+        itemPosition: Int
+    ) {
+        handleProductAction(StoriesProductAction.ATC, product)
+    }
+
+    override fun onBuyProductButtonClicked(
+        product: ContentTaggedProductUiModel,
+        itemPosition: Int
+    ) {
+        handleProductAction(StoriesProductAction.Buy, product)
+    }
+
+    private fun handleProductAction(type: StoriesProductAction, product: ContentTaggedProductUiModel) {
+        if (product.showGlobalVariant) {
+            viewModel.submitAction(StoriesUiAction.ShowVariantSheet(product))
+        } else {
+            viewModel.submitAction(StoriesUiAction.ProductAction(type, product))
+        }
     }
 
     fun show(fg: FragmentManager) {

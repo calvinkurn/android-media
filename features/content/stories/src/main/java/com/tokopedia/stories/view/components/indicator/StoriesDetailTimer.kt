@@ -23,22 +23,29 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.tokopedia.stories.uimodel.StoryAuthor
+import com.tokopedia.stories.view.model.StoriesDetailItemUiModel
+import com.tokopedia.stories.view.model.StoriesDetailItemUiModel.StoriesDetailItemUiEvent
 import com.tokopedia.stories.view.model.StoriesDetailUiModel
-import com.tokopedia.stories.view.model.StoriesDetailUiModel.StoriesDetailUiEvent.PAUSE
-import com.tokopedia.stories.view.model.StoriesDetailUiModel.StoriesDetailUiEvent.START
+import kotlinx.coroutines.delay
 
 @Composable
 fun StoriesDetailTimer(
+    currentPosition: Int,
     itemCount: Int,
-    data: StoriesDetailUiModel,
+    data: StoriesDetailItemUiModel,
     timerFinished: () -> Unit,
 ) {
-    val anim = remember(data.selected, data.id) { Animatable(INITIAL_ANIMATION) }
+    val anim = remember(
+        currentPosition,
+        data.id,
+        data.resetValue,
+    ) { Animatable(INITIAL_ANIMATION) }
 
     LaunchedEffect(data) {
         when (data.event) {
-            PAUSE -> anim.stop()
-            START -> {
+            StoriesDetailItemUiEvent.PAUSE -> anim.stop()
+            StoriesDetailItemUiEvent.RESUME -> {
+                delay(100)
                 anim.animateTo(
                     targetValue = TARGET_ANIMATION,
                     animationSpec = tween(
@@ -49,12 +56,12 @@ fun StoriesDetailTimer(
             }
         }
 
-        if (anim.value == anim.targetValue) timerFinished.invoke()
+        if ((anim.value == anim.targetValue) && (anim.targetValue != 0F)) timerFinished.invoke()
     }
 
     StoriesDetailTimerContent(
         count = itemCount,
-        currentPosition = data.selected,
+        currentPosition = currentPosition,
         progress = anim.value,
     )
 }
@@ -69,13 +76,14 @@ private fun StoriesDetailTimerContent(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .padding(horizontal = 8.dp)
-            .background(Color.Transparent),
+            .background(Color.Transparent)
+            .height(4.dp),
     ) {
         for (index in 0 until count) {
             Row(
                 modifier = Modifier
                     .height(4.dp)
-                    .clip(RoundedCornerShape(50))
+                    .clip(RoundedCornerShape(60))
                     .weight(1f)
                     .background(Color.White.copy(alpha = 0.4f))
             ) {
@@ -100,14 +108,9 @@ private fun StoriesDetailTimerContent(
 @Composable
 internal fun StoriesDetailTimerPreview() {
     StoriesDetailTimer(
+        currentPosition = 0,
         itemCount = 3,
-        data = StoriesDetailUiModel(
-            id = "1",
-            selected = 1,
-            event = START,
-            imageContent = "",
-            author = StoryAuthor.Buyer("", "", "")
-        )
+        data = StoriesDetailItemUiModel()
     ) { }
 }
 

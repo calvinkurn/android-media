@@ -1,17 +1,18 @@
-package com.tokopedia.feed.component.product
+package com.tokopedia.content.common.ui.adapter
 
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
+import com.tokopedia.content.common.ui.viewholder.ContentTaggedProductBottomSheetViewHolder
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
-import com.tokopedia.feedcomponent.R
+import com.tokopedia.content.common.R as commonR
 
 /**
  * Created by meyta.taliti on 11/05/23.
  */
-class FeedTaggedProductBottomSheetAdapter(
-    listener: FeedTaggedProductBottomSheetViewHolder.Listener
+class ContentTaggedProductBottomSheetAdapter(
+    listener: ContentTaggedProductBottomSheetViewHolder.Listener
 ): BaseDiffUtilAdapter<ContentTaggedProductUiModel>(isFlexibleType = true) {
 
     init {
@@ -33,12 +34,12 @@ class FeedTaggedProductBottomSheetAdapter(
     }
 
     class Delegate(
-        private val listener: FeedTaggedProductBottomSheetViewHolder.Listener
-    ): TypedAdapterDelegate<ContentTaggedProductUiModel, ContentTaggedProductUiModel, FeedTaggedProductBottomSheetViewHolder>(R.layout.item_feed_tagged_product) {
+        private val listener: ContentTaggedProductBottomSheetViewHolder.Listener
+    ): TypedAdapterDelegate<ContentTaggedProductUiModel, ContentTaggedProductUiModel, ContentTaggedProductBottomSheetViewHolder>(commonR.layout.item_content_tagged_product) {
 
         override fun onBindViewHolder(
             item: ContentTaggedProductUiModel,
-            holder: FeedTaggedProductBottomSheetViewHolder
+            holder: ContentTaggedProductBottomSheetViewHolder
         ) {
             holder.bind(item)
         }
@@ -46,8 +47,8 @@ class FeedTaggedProductBottomSheetAdapter(
         override fun onCreateViewHolder(
             parent: ViewGroup,
             basicView: View
-        ): FeedTaggedProductBottomSheetViewHolder {
-            return FeedTaggedProductBottomSheetViewHolder.create(
+        ): ContentTaggedProductBottomSheetViewHolder {
+            return ContentTaggedProductBottomSheetViewHolder.create(
                 parent,
                 listener
             )

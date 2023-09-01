@@ -1,26 +1,54 @@
 package com.tokopedia.stories.view.model
 
+import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
+import com.tokopedia.mvcwidget.TokopointsCatalogMVCSummaryResponse
 
 data class StoriesUiState(
-    val storiesGroup: List<StoriesGroupUiModel>,
+    val storiesGroup: StoriesGroupUiModel,
     val storiesDetail: StoriesDetailUiModel,
     val bottomSheetStatus: Map<BottomSheetType, Boolean>,
-    val products: List<ContentTaggedProductUiModel>,
+    val productSheet: ProductBottomSheetUiState,
 ) {
     companion object {
         val Empty
             get() = StoriesUiState(
-                storiesDetail = StoriesDetailUiModel.Empty,
-                storiesGroup = emptyList(),
+                storiesDetail = StoriesDetailUiModel(),
+                storiesGroup = StoriesGroupUiModel(),
                 bottomSheetStatus = BottomSheetStatusDefault,
-                products = listProduct,
+                productSheet = ProductBottomSheetUiState.Empty,
             )
     }
 }
 
 enum class BottomSheetType {
-    Kebab, Product, Sharing, Unknown;
+    Kebab, Product, Sharing, GVBS, Unknown;
+}
+
+data class ProductBottomSheetUiState(
+    val products: ProductList,
+    val vouchers: TokopointsCatalogMVCSummaryResponse,
+) {
+    data class ProductList(
+        val products: List<ContentTaggedProductUiModel>,
+        val resultState: ResultState
+    ) {
+        companion object {
+            val Empty
+                get() = ProductList(
+                    products = emptyList(),
+                    resultState = ResultState.Loading
+                )
+        }
+    }
+
+    companion object {
+        val Empty
+            get() = ProductBottomSheetUiState(
+                products = ProductList.Empty,
+                vouchers = TokopointsCatalogMVCSummaryResponse(),
+            )
+    }
 }
 
 val Map<BottomSheetType, Boolean>.isAnyShown: Boolean
@@ -30,6 +58,7 @@ val BottomSheetStatusDefault: Map<BottomSheetType, Boolean>
         BottomSheetType.Sharing to false,
         BottomSheetType.Product to false,
         BottomSheetType.Kebab to false,
+        BottomSheetType.GVBS to false,
     )
 
 

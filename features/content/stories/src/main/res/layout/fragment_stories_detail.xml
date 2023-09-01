@@ -1,11 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingBottom="@dimen/content_common_space_16"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/Unify_Static_Black">
+
+    <include
+        android:id="@+id/layout_timer"
+        layout="@layout/layout_loading_timer" />
+
+    <include
+        android:id="@+id/layout_declarative"
+        layout="@layout/layout_loading_declarative" />
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_stories_detail_content"
@@ -36,10 +44,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/guideline_bot_overlay" />
 
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/stories_component"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="cv_stories_detail_timer, ic_close, rv_stories_category" />
+
     <androidx.compose.ui.platform.ComposeView
         android:id="@+id/cv_stories_detail_timer"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="4dp"
         android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -129,6 +143,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/guideline_bot" >
+
+        <androidx.compose.ui.platform.ComposeView
+            android:id="@+id/notch_stories_product"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/content_common_space_16"
+            android:layout_marginEnd="@dimen/content_common_space_16" />
     </FrameLayout>
 
     <include
@@ -161,8 +183,8 @@
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/v_stories_kebab_icon"
-        android:layout_width="@dimen/layout_lvl5"
-        android:layout_height="@dimen/layout_lvl5"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
         android:padding="@dimen/unify_space_4"
         android:layout_marginBottom="@dimen/unify_space_8"
         app:icon_color_light_enable="@color/Unify_Static_White"
@@ -171,6 +193,7 @@
         app:layout_constraintEnd_toEndOf="@+id/v_stories_product_icon"
         app:layout_constraintStart_toStartOf="@+id/v_stories_product_icon"
         app:icon_name="MENU_KEBAB_HORIZONTAL"
+        android:visibility="gone"
         app:unify_image_type="circle" />
 
     <com.tokopedia.iconunify.IconUnify
@@ -186,15 +209,5 @@
         app:layout_constraintStart_toStartOf="@+id/v_stories_kebab_icon"
         app:icon_name="SHARE"
         app:unify_image_type="circle" />
-
-    <androidx.compose.ui.platform.ComposeView
-        android:id="@+id/notch_stories_product"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/content_common_space_16"
-        android:layout_marginEnd="@dimen/content_common_space_16"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/guideline_bot" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -8,27 +8,26 @@ import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.stories.R
 import com.tokopedia.stories.databinding.ItemStoriesGroupBinding
-import com.tokopedia.stories.view.model.StoriesGroupUiModel
+import com.tokopedia.stories.view.model.StoriesGroupHeader
 
 class StoriesGroupAdapter(
     listener: Listener
-) : BaseDiffUtilAdapter<StoriesGroupUiModel>() {
+) : BaseDiffUtilAdapter<StoriesGroupHeader>() {
 
     init {
-        delegatesManager
-            .addDelegate(StoriesGroupAdapterDelegate.StoriesGroup(listener))
+        delegatesManager.addDelegate(StoriesGroupAdapterDelegate.StoriesGroup(listener))
     }
 
     override fun areItemsTheSame(
-        oldItem: StoriesGroupUiModel,
-        newItem: StoriesGroupUiModel
+        oldItem: StoriesGroupHeader,
+        newItem: StoriesGroupHeader
     ): Boolean {
-        return oldItem.id == newItem.id
+        return oldItem.groupId == newItem.groupId
     }
 
     override fun areContentsTheSame(
-        oldItem: StoriesGroupUiModel,
-        newItem: StoriesGroupUiModel
+        oldItem: StoriesGroupHeader,
+        newItem: StoriesGroupHeader
     ): Boolean {
         return oldItem == newItem
     }
@@ -43,11 +42,11 @@ internal class StoriesGroupAdapterDelegate {
 
     internal class StoriesGroup(
         private val listener: StoriesGroupAdapter.Listener
-    ) : TypedAdapterDelegate<StoriesGroupUiModel, StoriesGroupUiModel,
+    ) : TypedAdapterDelegate<StoriesGroupHeader, StoriesGroupHeader,
         StoriesGroupViewHolder>(R.layout.layout_empty) {
 
         override fun onBindViewHolder(
-            item: StoriesGroupUiModel,
+            item: StoriesGroupHeader,
             holder: StoriesGroupViewHolder
         ) {
             holder.bind(item)
@@ -67,11 +66,11 @@ class StoriesGroupViewHolder(
     private val binding: ItemStoriesGroupBinding,
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(data: StoriesGroupUiModel) {
+    fun bind(data: StoriesGroupHeader) {
         binding.imgGroupImage.setImageUrl(data.image)
         binding.txtGroupTitle.text = data.title
 
-        if (data.selected) selectedView()
+        if (data.isSelected) selectedView()
         else unSelectedView()
 
         binding.root.setOnClickListener {

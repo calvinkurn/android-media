@@ -19,7 +19,11 @@ data class ContentTaggedProductUiModel(
     data class Affiliate(
         val id: String,
         val channel: String
-    )
+    ) {
+        companion object {
+            val Empty get() = Affiliate(id = "", channel = "")
+        }
+    }
 
     data class Shop(
         val id: String,

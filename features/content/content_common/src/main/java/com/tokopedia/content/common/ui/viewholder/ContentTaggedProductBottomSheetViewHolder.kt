@@ -1,17 +1,17 @@
-package com.tokopedia.feed.component.product
+package com.tokopedia.content.common.ui.viewholder
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.BaseViewHolder
+import com.tokopedia.content.common.databinding.ItemContentTaggedProductBinding
 import com.tokopedia.content.common.view.ContentTaggedProductBottomSheetItemView
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
-import com.tokopedia.feedcomponent.databinding.ItemFeedTaggedProductBinding
 
 /**
  *Created by shruti.agarwal on 23/02/23
  */
-class FeedTaggedProductBottomSheetViewHolder(
-    private val binding: ItemFeedTaggedProductBinding,
+class ContentTaggedProductBottomSheetViewHolder(
+    private val binding: ItemContentTaggedProductBinding,
     listener: Listener
 ) : BaseViewHolder(binding.root) {
 
@@ -66,8 +66,8 @@ class FeedTaggedProductBottomSheetViewHolder(
         fun create(
             parent: ViewGroup,
             listener: Listener
-        ) = FeedTaggedProductBottomSheetViewHolder(
-            ItemFeedTaggedProductBinding.inflate(
+        ) = ContentTaggedProductBottomSheetViewHolder(
+            ItemContentTaggedProductBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false,

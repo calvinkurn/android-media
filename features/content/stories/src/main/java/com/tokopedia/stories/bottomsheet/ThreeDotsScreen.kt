@@ -19,8 +19,8 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import coil.compose.rememberImagePainter
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.content.common.report_content.model.FeedMenuIdentifier
-import com.tokopedia.content.common.report_content.model.FeedMenuItem
+import com.tokopedia.content.common.report_content.model.ContentMenuIdentifier
+import com.tokopedia.content.common.report_content.model.ContentMenuItem
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
@@ -32,9 +32,9 @@ import com.tokopedia.unifyprinciples.R
 
 @Composable
 fun ThreeDotsPage(
-    menuList: List<FeedMenuItem>,
-    onDeleteStoryClicked: (FeedMenuItem) -> Unit,
-    onMenuClicked: (FeedMenuItem) -> Unit = {}
+    menuList: List<ContentMenuItem>,
+    onDeleteStoryClicked: (ContentMenuItem) -> Unit,
+    onMenuClicked: (ContentMenuItem) -> Unit = {}
 ) {
     NestTheme {
         ConstraintLayout(
@@ -56,7 +56,7 @@ fun ThreeDotsPage(
                 items(menuList) {
                     ItemMenu(
                         menu = it,
-                        onMenuClicked = if (it.type == FeedMenuIdentifier.Delete) onDeleteStoryClicked else onMenuClicked
+                        onMenuClicked = if (it.type == ContentMenuIdentifier.Delete) onDeleteStoryClicked else onMenuClicked
                     )
                 }
             }
@@ -65,7 +65,7 @@ fun ThreeDotsPage(
 }
 
 @Composable
-fun ItemMenu(menu: FeedMenuItem, onMenuClicked: (FeedMenuItem) -> Unit) {
+fun ItemMenu(menu: ContentMenuItem, onMenuClicked: (ContentMenuItem) -> Unit) {
     ConstraintLayout(
         modifier = Modifier
             .fillMaxWidth()
@@ -77,7 +77,7 @@ fun ItemMenu(menu: FeedMenuItem, onMenuClicked: (FeedMenuItem) -> Unit) {
         val (iconView, nameView, dividerView) = createRefs()
 
         val styleColor = when (menu.type) {
-            FeedMenuIdentifier.Report, FeedMenuIdentifier.Delete -> {
+            ContentMenuIdentifier.Report, ContentMenuIdentifier.Delete -> {
                 R.color.Unify_RN500
             }
 

@@ -55,7 +55,7 @@ class StoriesThreeDotsBottomSheet @Inject constructor(
                                         primaryCTAText = getString(commonR.string.card_dialog_title_delete),
                                         secondaryCTAText = getString(commonR.string.card_dialog_title_cancel),
                                         primaryAction = {
-                                            //TODO () hit gql
+                                            viewModel.submitAction(StoriesUiAction.DeleteStory)
                                         }
                                     )
                                 }
@@ -65,7 +65,8 @@ class StoriesThreeDotsBottomSheet @Inject constructor(
                         }
                     }
                 }
-                ThreeDotsPage(menuList = state.storiesDetail.menus, onDeleteStoryClicked = { item ->
+                val currentItem = state.storiesDetail.detailItems.getOrNull(state.storiesDetail.selectedDetailPosition)?.menus ?: return@setContent
+                ThreeDotsPage(menuList = currentItem, onDeleteStoryClicked = { item ->
                     viewModel.submitAction(StoriesUiAction.ShowDeleteDialog)
                 })
             }
