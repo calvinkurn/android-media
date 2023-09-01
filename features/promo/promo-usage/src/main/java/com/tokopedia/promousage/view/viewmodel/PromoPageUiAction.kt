@@ -60,11 +60,13 @@ sealed class AttemptPromoUiAction {
 
 sealed class ApplyPromoUiAction {
 
-    data class Success(
+    data class SuccessWithApplyPromo(
         val entryPoint: PromoPageEntryPoint,
         val validateUse: ValidateUsePromoRevampUiModel,
         val lastValidateUsePromoRequest: ValidateUsePromoRequest
     ) : ApplyPromoUiAction()
+
+    object SuccessNoAction : ApplyPromoUiAction()
 
     data class Failed(
         val throwable: Throwable,
@@ -77,3 +79,24 @@ sealed class PromoCtaUiAction {
     data class RegisterGoPayLaterCicil(val cta: PromoCta) : PromoCtaUiAction()
 }
 
+sealed class ClosePromoPageUiAction {
+
+    data class SuccessWithApplyPromo(
+        val entryPoint: PromoPageEntryPoint,
+        val validateUse: ValidateUsePromoRevampUiModel,
+        val lastValidateUsePromoRequest: ValidateUsePromoRequest
+    ) : ClosePromoPageUiAction()
+
+    data class SuccessWithClearPromo(
+        val entryPoint: PromoPageEntryPoint,
+        val clearPromo: ClearPromoUiModel,
+        val lastValidateUsePromoRequest: ValidateUsePromoRequest,
+        val isFlowMvcLockToCourier: Boolean
+    ) : ClosePromoPageUiAction()
+
+    object SuccessNoAction : ClosePromoPageUiAction()
+
+    data class Failed(
+        val throwable: Throwable
+    ) : ClosePromoPageUiAction()
+}

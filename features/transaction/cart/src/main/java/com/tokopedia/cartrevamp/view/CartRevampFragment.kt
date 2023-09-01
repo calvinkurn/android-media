@@ -20,7 +20,6 @@ import android.widget.ImageView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.Keep
-import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -4904,11 +4903,42 @@ class CartRevampFragment :
         awaitClose { setOnCheckedChangeListener(null) }
     }
 
-    override fun onClosePromo() {
+    override fun onClosePageWithApplyPromo(
+        entryPoint: PromoPageEntryPoint,
+        validateUse: ValidateUsePromoRevampUiModel,
+        lastValidateUsePromoRequest: ValidateUsePromoRequest
+    ) {
+        viewModel.cartModel.lastValidateUseRequest = lastValidateUsePromoRequest
+        viewModel.validateBoPromo(validateUse)
+        viewModel.cartModel.apply {
+            lastValidateUseResponse = validateUse
+            lastUpdateCartAndGetLastApplyResponse = null
+            isLastApplyResponseStillValid = false
+        }
+        updatePromoCheckoutStickyButton(validateUse.promoUiModel)
+    }
+
+    override fun onClosePageWithClearPromo(
+        entryPoint: PromoPageEntryPoint,
+        clearPromo: ClearPromoUiModel,
+        lastValidateUsePromoRequest: ValidateUsePromoRequest,
+        isFlowMvcLockToCourier: Boolean
+    ) {
+        viewModel.cartModel.apply {
+            isLastApplyResponseStillValid = false
+            lastValidateUseResponse = null
+            lastUpdateCartAndGetLastApplyResponse = null
+        }
+        updatePromoCheckoutStickyButton(
+            PromoUiModel(titleDescription = clearPromo.successDataModel.defaultEmptyPromoMessage)
+        )
+    }
+
+    override fun onClosePageWithNoAction() {
         // no-op
     }
 
-    override fun onApplyPromoSuccess(
+    override fun onApplyPromo(
         entryPoint: PromoPageEntryPoint,
         validateUse: ValidateUsePromoRevampUiModel,
         lastValidateUsePromoRequest: ValidateUsePromoRequest

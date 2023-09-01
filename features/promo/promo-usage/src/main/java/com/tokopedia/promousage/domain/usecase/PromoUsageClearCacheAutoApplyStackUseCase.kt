@@ -5,6 +5,7 @@ import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
+import com.tokopedia.promousage.data.request.ClearCacheAutoApplyStackParam
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.clearpromo.ClearCacheAutoApplyStackResponse
 import kotlinx.coroutines.Dispatchers
@@ -16,11 +17,11 @@ import javax.inject.Inject
 )
 class PromoUsageClearCacheAutoApplyStackUseCase @Inject constructor(
     @ApplicationContext private val repository: GraphqlRepository
-) : CoroutineUseCase<ClearPromoRequest, ClearCacheAutoApplyStackResponse>(
+) : CoroutineUseCase<ClearCacheAutoApplyStackParam, ClearCacheAutoApplyStackResponse>(
     Dispatchers.IO
 ) {
 
-    override suspend fun execute(params: ClearPromoRequest): ClearCacheAutoApplyStackResponse {
+    override suspend fun execute(params: ClearCacheAutoApplyStackParam): ClearCacheAutoApplyStackResponse {
         return repository.request(PromoUsageClearCacheAutoApplyStackQuery(), params)
     }
 

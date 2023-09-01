@@ -5,7 +5,6 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.Outline
 import android.os.Bundle
-import android.os.Handler
 import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
@@ -67,6 +66,7 @@ import com.tokopedia.promousage.view.adapter.PromoTncDelegateAdapter
 import com.tokopedia.promousage.view.viewmodel.ApplyPromoUiAction
 import com.tokopedia.promousage.view.viewmodel.AttemptPromoUiAction
 import com.tokopedia.promousage.view.viewmodel.ClearPromoUiAction
+import com.tokopedia.promousage.view.viewmodel.ClosePromoPageUiAction
 import com.tokopedia.promousage.view.viewmodel.GetPromoRecommendationUiAction
 import com.tokopedia.promousage.view.viewmodel.PromoCtaUiAction
 import com.tokopedia.promousage.view.viewmodel.PromoPageUiState
@@ -278,7 +278,12 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
 
         binding.tpgBottomSheetHeaderTitle.text = context?.getString(R.string.promo_voucher_promo)
         binding.btnBottomSheetHeaderClose.setOnClickListener {
-            dismiss()
+            renderLoadingDialog(true)
+            viewModel.onClosePromoPage(
+                entryPoint = entryPoint,
+                validateUsePromoRequest = validateUsePromoRequest,
+                boPromoCodes = boPromoCodes
+            )
         }
         binding.clTickerInfo.gone()
         binding.clBottomSheetContent.background = BottomSheetUtil
@@ -512,6 +517,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         observePromoCtaUiAction()
         observeClearPromoUiAction()
         observeApplyPromoUiAction()
+        observeClosePromoPageUiAction()
     }
 
     private fun observePromoRecommendationUiAction() {
@@ -833,6 +839,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
             when (uiAction) {
                 is ClearPromoUiAction.Success -> {
                     renderLoadingDialog(false)
+                    dismiss()
                     listener?.onClearPromoSuccess(
                         entryPoint = uiAction.entryPoint,
                         clearPromo = uiAction.clearPromo,
@@ -853,14 +860,19 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
     private fun observeApplyPromoUiAction() {
         viewModel.applyPromoUiAction.observe(viewLifecycleOwner) { uiAction ->
             when (uiAction) {
-                is ApplyPromoUiAction.Success -> {
+                is ApplyPromoUiAction.SuccessWithApplyPromo -> {
                     renderLoadingDialog(false)
                     dismiss()
-                    listener?.onApplyPromoSuccess(
+                    listener?.onApplyPromo(
                         entryPoint = uiAction.entryPoint,
                         validateUse = uiAction.validateUse,
                         lastValidateUsePromoRequest = uiAction.lastValidateUsePromoRequest
                     )
+                }
+
+                is ApplyPromoUiAction.SuccessNoAction -> {
+                    renderLoadingDialog(false)
+                    dismiss()
                 }
 
                 is ApplyPromoUiAction.Failed -> {
@@ -870,6 +882,44 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                     }
                     showToastMessage(uiAction.throwable)
                     listener?.onApplyPromoFailed(uiAction.throwable)
+                }
+            }
+        }
+    }
+
+    private fun observeClosePromoPageUiAction() {
+        viewModel.closePromoPageUiAction.observe(viewLifecycleOwner) { uiAction ->
+            when (uiAction) {
+                is ClosePromoPageUiAction.SuccessWithApplyPromo -> {
+                    renderLoadingDialog(false)
+                    dismiss()
+                    listener?.onClosePageWithApplyPromo(
+                        entryPoint = uiAction.entryPoint,
+                        validateUse = uiAction.validateUse,
+                        lastValidateUsePromoRequest = uiAction.lastValidateUsePromoRequest
+                    )
+                }
+
+                is ClosePromoPageUiAction.SuccessWithClearPromo -> {
+                    renderLoadingDialog(false)
+                    dismiss()
+                    listener?.onClosePageWithClearPromo(
+                        entryPoint = uiAction.entryPoint,
+                        clearPromo = uiAction.clearPromo,
+                        lastValidateUsePromoRequest = uiAction.lastValidateUsePromoRequest,
+                        isFlowMvcLockToCourier = uiAction.isFlowMvcLockToCourier
+                    )
+                }
+
+                is ClosePromoPageUiAction.SuccessNoAction -> {
+                    renderLoadingDialog(false)
+                    dismiss()
+                    listener?.onClosePageWithNoAction()
+                }
+
+                is ClosePromoPageUiAction.Failed -> {
+                    renderLoadingDialog(false)
+                    dismiss()
                 }
             }
         }
@@ -978,9 +1028,22 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
 
     interface Listener {
 
-        fun onClosePromo()
+        fun onClosePageWithApplyPromo(
+            entryPoint: PromoPageEntryPoint,
+            validateUse: ValidateUsePromoRevampUiModel,
+            lastValidateUsePromoRequest: ValidateUsePromoRequest
+        )
 
-        fun onApplyPromoSuccess(
+        fun onClosePageWithClearPromo(
+            entryPoint: PromoPageEntryPoint,
+            clearPromo: ClearPromoUiModel,
+            lastValidateUsePromoRequest: ValidateUsePromoRequest,
+            isFlowMvcLockToCourier: Boolean
+        )
+
+        fun onClosePageWithNoAction()
+
+        fun onApplyPromo(
             entryPoint: PromoPageEntryPoint,
             validateUse: ValidateUsePromoRevampUiModel,
             lastValidateUsePromoRequest: ValidateUsePromoRequest
