@@ -1,6 +1,7 @@
 package com.tokopedia.shop.home.view.adapter.viewholder
 
 import android.view.View
+import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -14,7 +15,6 @@ import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.setLayoutHeight
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.shop.R
@@ -200,7 +200,9 @@ class ShopHomeDisplayBannerProductHotspotViewHolder(
                 val firstChildHeight = recyclerViewProductHotspot.findViewHolderForAdapterPosition(
                     Int.ZERO
                 )?.itemView?.height.orZero()
-                recyclerViewProductHotspot.setLayoutHeight(firstChildHeight)
+                val lp = recyclerViewProductHotspot.layoutParams as? ViewGroup.LayoutParams
+                lp?.height = firstChildHeight
+                recyclerViewProductHotspot.layoutParams = lp
                 recyclerViewProductHotspot.viewTreeObserver.removeOnGlobalLayoutListener(this)
             }
         })

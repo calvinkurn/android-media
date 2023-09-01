@@ -41,7 +41,7 @@ import com.tokopedia.shop.home.WidgetName.SHOWCASE_SLIDER_SMALL
 import com.tokopedia.shop.home.WidgetName.SHOWCASE_SLIDER_TWO_ROWS
 import com.tokopedia.shop.home.WidgetName.SLIDER_BANNER
 import com.tokopedia.shop.home.WidgetName.SLIDER_SQUARE_BANNER
-import com.tokopedia.shop.home.WidgetName.TERLARIS
+import com.tokopedia.shop.home.WidgetName.PRODUCT_VERTICAL
 import com.tokopedia.shop.home.WidgetName.TRENDING
 import com.tokopedia.shop.home.WidgetName.VIDEO
 import com.tokopedia.shop.home.WidgetName.VOUCHER_STATIC
@@ -189,8 +189,7 @@ open class ShopHomeAdapterTypeFactory(
             BANNER_PRODUCT_HOTSPOT -> {
                 getShopHomeDisplayBannerProductHotspotViewHolder()
             }
-            // New widget for Shop Page Revamp V4
-            TERLARIS -> getTerlarisViewHolder(baseShopHomeWidgetUiModel)
+            PRODUCT_VERTICAL -> getTerlarisViewHolder(baseShopHomeWidgetUiModel)
             DIRECT_PURCHASED_BY_ETALASE -> ShopHomeDirectPurchasedByEtalaseViewHolder.LAYOUT
 
             else -> HideViewHolder.LAYOUT
