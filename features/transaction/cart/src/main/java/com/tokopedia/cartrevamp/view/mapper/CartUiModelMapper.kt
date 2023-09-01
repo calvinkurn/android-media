@@ -222,7 +222,7 @@ object CartUiModelMapper {
                     } else {
                         ""
                     }
-                cartGroupBmGmHolderData = mapGroupBmGmHolder(availableGroup.groupShopCartData.getOrNull(0)?.cartDetails)
+                cartGroupBmGmHolderData = mapGroupBmGmHolder(availableGroup.cartString, availableGroup.groupShopCartData.getOrNull(0)?.cartDetails)
             }
             cartGroupHolderDataList.add(groupUiModel)
             if (!groupUiModel.isCollapsed) {
@@ -829,7 +829,7 @@ object CartUiModelMapper {
         }
     }
 
-    private fun mapGroupBmGmHolder(cartDetail: List<CartDetail>?): CartGroupBmGmHolderData {
+    private fun mapGroupBmGmHolder(cartString: String, cartDetail: List<CartDetail>?): CartGroupBmGmHolderData {
         var hasBmGm = false
         var totalDiscount = 0.0
         var offerId = 0L
@@ -841,14 +841,11 @@ object CartUiModelMapper {
             }
         }
         return CartGroupBmGmHolderData(
-                hasBmGmOffer = hasBmGm,
-                discountBmGmAmount = totalDiscount,
-                offerId = offerId
+            hasBmGmOffer = hasBmGm,
+            discountBmGmAmount = totalDiscount,
+            offerId = offerId,
+            cartBmGmGroupTickerCartString = "$cartString-$offerId"
         )
-    }
-
-    private fun checkIsBmGmProduct(cartDetail: CartDetail): Boolean {
-        return cartDetail.cartDetailInfo.cartDetailType == CART_DETAIL_TYPE_BMGM
     }
 
     private fun checkNeedToShowTickerBmGm(cartDetail: CartDetail, productId: String): Boolean {
@@ -878,15 +875,15 @@ object CartUiModelMapper {
                     loop@ for (product in cartDetail.products) {
                         if (product.productId == bmGmProduct.productId) {
                             listProductTiersApplied.add(
-                                    CartDetailInfo.BmGmTierProductData.BmGmProductData(
-                                            cartId = bmGmProduct.cartId,
-                                            shopId = shopData.shopId,
-                                            productId = bmGmProduct.productId,
-                                            warehouseId = bmGmProduct.warehouseId,
-                                            qty = bmGmProduct.quantity,
-                                            finalPrice = bmGmProduct.priceBeforeBenefit,
-                                            checkboxState = product.isCheckboxState
-                                    )
+                                CartDetailInfo.BmGmTierProductData.BmGmProductData(
+                                    cartId = bmGmProduct.cartId,
+                                    shopId = shopData.shopId,
+                                    productId = bmGmProduct.productId,
+                                    warehouseId = bmGmProduct.warehouseId,
+                                    qty = bmGmProduct.quantity,
+                                    finalPrice = bmGmProduct.priceBeforeBenefit,
+                                    checkboxState = product.isCheckboxState
+                                )
                             )
                             break@loop
                         }
@@ -894,24 +891,24 @@ object CartUiModelMapper {
                 }
 
                 listTiersApplied.add(
-                        CartDetailInfo.BmGmTierProductData(
-                                tierId = tierProduct.tierId,
-                                listProduct = listProductTiersApplied
-                        )
+                    CartDetailInfo.BmGmTierProductData(
+                        tierId = tierProduct.tierId,
+                        listProduct = listProductTiersApplied
+                    )
                 )
             }
             return CartDetailInfo(
-                    cartDetailType = cartDetail.cartDetailInfo.cartDetailType,
-                    bmGmData = CartDetailInfo.BmGmData(
-                            offerId = cartDetail.cartDetailInfo.bmgmData.offerId,
-                            offerName = cartDetail.cartDetailInfo.bmgmData.offerName,
-                            offerIcon = cartDetail.cartDetailInfo.bmgmData.offerIcon,
-                            offerMessage = cartDetail.cartDetailInfo.bmgmData.offerMessage,
-                            offerLandingPageLink = cartDetail.cartDetailInfo.bmgmData.offerLandingPageLink,
-                            totalDiscount = cartDetail.cartDetailInfo.bmgmData.totalDiscount,
-                            offerJsonData = cartDetail.cartDetailInfo.bmgmData.offerJsonData
-                    ),
-                    bmGmTierProductList = listTiersApplied
+                cartDetailType = cartDetail.cartDetailInfo.cartDetailType,
+                bmGmData = CartDetailInfo.BmGmData(
+                    offerId = cartDetail.cartDetailInfo.bmgmData.offerId,
+                    offerName = cartDetail.cartDetailInfo.bmgmData.offerName,
+                    offerIcon = cartDetail.cartDetailInfo.bmgmData.offerIcon,
+                    offerMessage = cartDetail.cartDetailInfo.bmgmData.offerMessage,
+                    offerLandingPageLink = cartDetail.cartDetailInfo.bmgmData.offerLandingPageLink,
+                    totalDiscount = cartDetail.cartDetailInfo.bmgmData.totalDiscount,
+                    offerJsonData = cartDetail.cartDetailInfo.bmgmData.offerJsonData
+                ),
+                bmGmTierProductList = listTiersApplied
             )
         } else {
             return CartDetailInfo()

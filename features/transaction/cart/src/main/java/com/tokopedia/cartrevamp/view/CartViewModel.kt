@@ -46,7 +46,6 @@ import com.tokopedia.cartrevamp.view.mapper.CartUiModelMapper
 import com.tokopedia.cartrevamp.view.mapper.PromoRequestMapper
 import com.tokopedia.cartrevamp.view.processor.CartCalculator
 import com.tokopedia.cartrevamp.view.uimodel.*
-import com.tokopedia.cartrevamp.view.util.CartPageAnalyticsUtil
 import com.tokopedia.cartrevamp.view.uimodel.AddCartToWishlistV2Event
 import com.tokopedia.cartrevamp.view.uimodel.AddToCartEvent
 import com.tokopedia.cartrevamp.view.uimodel.AddToCartExternalEvent
@@ -89,6 +88,7 @@ import com.tokopedia.cartrevamp.view.uimodel.UndoDeleteEvent
 import com.tokopedia.cartrevamp.view.uimodel.UpdateCartAndGetLastApplyEvent
 import com.tokopedia.cartrevamp.view.uimodel.UpdateCartCheckoutState
 import com.tokopedia.cartrevamp.view.uimodel.UpdateCartPromoState
+import com.tokopedia.cartrevamp.view.util.CartPageAnalyticsUtil
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -259,6 +259,7 @@ class CartViewModel @Inject constructor(
     val tokoNowProductUpdater: SharedFlow<Boolean> = _tokoNowProductUpdater
 
     private var cartShopGroupTickerJob: Job? = null
+    private var cartBmGmGroupTickerJob: Job? = null
 
     companion object {
         private const val CART_SHOP_GROUP_TICKER_DELAY = 500L
@@ -2808,8 +2809,12 @@ class CartViewModel @Inject constructor(
         )
     }
 
-    fun getBmGmGroupProductTicker(params: BmGmGetGroupProductTickerParams) {
-        launch(dispatchers.io) {
+    fun getBmGmGroupProductTicker(cartBmGmGroupTickerCartString: String, params: BmGmGetGroupProductTickerParams) {
+        if (cartModel.lastCartBmGmGroupTickerCartString == cartBmGmGroupTickerCartString) {
+            cartBmGmGroupTickerJob?.cancel()
+        }
+        cartModel.lastCartBmGmGroupTickerCartString = cartBmGmGroupTickerCartString
+        cartBmGmGroupTickerJob = viewModelScope.launch(dispatchers.io) {
             try {
                 val result = getGroupProductTickerUseCase(params)
                 withContext(dispatchers.main) {
@@ -2825,6 +2830,7 @@ class CartViewModel @Inject constructor(
 
     override fun onCleared() {
         cartShopGroupTickerJob?.cancel()
+        cartBmGmGroupTickerJob?.cancel()
         super.onCleared()
     }
 }
