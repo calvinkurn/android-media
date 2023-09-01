@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.Outline
 import android.os.Bundle
+import android.os.Handler
 import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
@@ -71,6 +72,7 @@ import com.tokopedia.promousage.view.viewmodel.PromoCtaUiAction
 import com.tokopedia.promousage.view.viewmodel.PromoPageUiState
 import com.tokopedia.promousage.view.viewmodel.PromoUsageViewModel
 import com.tokopedia.promousage.view.viewmodel.UsePromoRecommendationUiAction
+import com.tokopedia.promousage.view.viewmodel.getRecommendationItem
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
@@ -102,6 +104,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         private const val BUNDLE_KEY_IS_FLOW_MVC_LOCK_TO_COURIER = "is_flow_mvc_lock_to_courier"
 
         private const val BOTTOM_SHEET_MARGIN_TOP_IN_DP = 64
+        private const val BOTTOM_SHEET_HEADER_HEIGHT_IN_DP = 56
 
         @JvmStatic
         fun newInstance(
@@ -346,6 +349,8 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         observeKeyboardVisibility()
     }
 
+    private var backgroundTranslationY = 0
+    private var promoRecommendationHeight = 0
     private fun addScrollListeners() {
         binding.rvPromo.clearOnScrollListeners()
         // Header scroll listener
@@ -356,6 +361,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                 scrollY += dy.toFloat()
                 scrollY = max(scrollY, 0f)
 
+                // Handle header change
                 if (scrollY > 0) {
                     val layoutManager: LinearLayoutManager? = recyclerView.layoutManager as? LinearLayoutManager
                     if (layoutManager != null) {
@@ -371,16 +377,72 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                 } else {
                     renderTransparentHeader()
                 }
+
+                // Handle background translation
+                val bgTranslationY = backgroundTranslationY - scrollY
+                if (bgTranslationY >= BOTTOM_SHEET_HEADER_HEIGHT_IN_DP.toPx()) {
+                    binding.dummyBackground.translationY = bgTranslationY
+                } else {
+                    binding.dummyBackground.translationY =
+                        BOTTOM_SHEET_HEADER_HEIGHT_IN_DP.toPx().toFloat()
+                }
             }
         })
-        // Background scroll listener
+    }
+
+    private fun listenToScrollChangeToAdjustDummyBackground(items: List<DelegateAdapterItem>) {
         binding.rvPromo.addOnScrollListener(object : OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                val scrollY = binding.rvPromo.computeVerticalScrollOffset().toFloat()
-                binding.ivPromoRecommendationBackground.translationY = -scrollY
+                val promoRecommendation = items.getRecommendationItem()
+                if (promoRecommendation != null) {
+                    val layoutManager = binding.rvPromo.layoutManager as? LinearLayoutManager
+                    if (layoutManager != null) {
+                        val currentItemPosition = layoutManager.findFirstVisibleItemPosition()
+                        if (currentItemPosition < promoRecommendation.codes.size) {
+                            val promoRecommendationItemHeight = promoRecommendation.codes
+                                .mapIndexed { index, _ -> layoutManager.getChildAt(index + 1)?.height ?: 0 }
+                                .sum()
+                                .plus(layoutManager.getChildAt(0)?.height ?: 0)
+                            val translationY =
+                                BOTTOM_SHEET_HEADER_HEIGHT_IN_DP.toPx() + promoRecommendationItemHeight
+                            backgroundTranslationY = translationY
+                            binding.dummyBackground.translationY = translationY.toFloat()
+                            binding.rvPromo.removeOnScrollListener(this)
+                        } else if (currentItemPosition > promoRecommendation.codes.size) {
+                            binding.dummyBackground.translationY = 0f
+                            binding.rvPromo.removeOnScrollListener(this)
+                        }
+                    }
+                }
             }
         })
+    }
+
+    private fun adjustDummyBackground(items: List<DelegateAdapterItem>) {
+        Handler().postDelayed({
+            val promoRecommendation = items.getRecommendationItem()
+            if (promoRecommendation != null) {
+                val layoutManager = binding.rvPromo.layoutManager as? LinearLayoutManager
+                if (layoutManager != null) {
+                    val currentItemPosition = layoutManager.findFirstVisibleItemPosition()
+                    if (currentItemPosition == 0) {
+                        promoRecommendationHeight = promoRecommendation.codes
+                            .mapIndexed { index, _ ->
+                                layoutManager.getChildAt(index + 1)?.height ?: 0
+                            }
+                            .sum()
+                            .plus(layoutManager.getChildAt(0)?.height ?: 0)
+                        val translationY =
+                            BOTTOM_SHEET_HEADER_HEIGHT_IN_DP.toPx() + promoRecommendationHeight
+                        backgroundTranslationY = translationY
+                        binding.dummyBackground.translationY = translationY.toFloat()
+                    } else {
+                        listenToScrollChangeToAdjustDummyBackground(items)
+                    }
+                }
+            }
+        }, 100L)
     }
 
     private fun clearHeaderScrollListener() {
@@ -547,6 +609,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                     renderSavingInfo(state.savingInfo)
                     renderError(false)
                     refreshBottomSheetHeight(state)
+                    adjustDummyBackground(state.items)
                 }
 
                 is PromoPageUiState.Error -> {
@@ -567,11 +630,6 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
 
     private fun renderPromoRecommendationBackground(promoRecommendation: PromoRecommendationItem) {
         with(binding) {
-            clBottomSheetContent.background = BottomSheetUtil
-                .generateBackgroundDrawableWithColor(
-                    root.context,
-                    promoRecommendation.backgroundColor
-                )
             clBottomSheetContent.outlineProvider = object : ViewOutlineProvider() {
                 override fun getOutline(view: View?, outline: Outline?) {
                     val cornerRadius = 16.toPx()
@@ -589,6 +647,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
             clBottomSheetContent.clipToOutline = true
             clBottomSheetContent.clipChildren = true
             ivPromoRecommendationBackground.loadImage(promoRecommendation.backgroundUrl)
+            //ivPromoRecommendationBackground.setBackgroundColor(Color.parseColor(promoRecommendation.backgroundColor))
             ivPromoRecommendationBackground.visible()
         }
     }

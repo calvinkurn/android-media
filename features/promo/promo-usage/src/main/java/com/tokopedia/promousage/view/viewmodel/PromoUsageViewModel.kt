@@ -398,9 +398,10 @@ internal class PromoUsageViewModel @Inject constructor(
                                 if (item is PromoItem) {
                                     val isClickedItem = item.code == clickedItem.code
                                     val isMvcPromo = item.shopId > 0
-                                    val isDisabledOrIneligibleOrSelected = item.state is PromoItemState.Disabled
-                                        || item.state is PromoItemState.Ineligible
-                                        || item.state is PromoItemState.Selected
+                                    val isDisabledOrIneligibleOrSelected =
+                                        item.state is PromoItemState.Disabled
+                                            || item.state is PromoItemState.Ineligible
+                                            || item.state is PromoItemState.Selected
                                     if (!isClickedItem && isMvcPromo && !isDisabledOrIneligibleOrSelected) {
                                         if (!hasLoadingPromo) {
                                             hasLoadingPromo = true
@@ -437,11 +438,20 @@ internal class PromoUsageViewModel @Inject constructor(
                         val recommendationItem = updatedItems.getRecommendationItem()
                         if (recommendationItem != null) {
                             val (updatedPromoRecommendation, newUpdatedItems) =
-                                calculateRecommendedPromo(newClickedItem, recommendationItem, updatedItems)
+                                calculateRecommendedPromo(
+                                    newClickedItem,
+                                    recommendationItem,
+                                    updatedItems
+                                )
                             updatedItems = newUpdatedItems
-                            if (updatedPromoRecommendation.selectedCodes.containsAll(updatedPromoRecommendation.codes)) {
+                            if (updatedPromoRecommendation.selectedCodes.containsAll(
+                                    updatedPromoRecommendation.codes
+                                )
+                            ) {
                                 _usePromoRecommendationUiAction.postValue(
-                                    UsePromoRecommendationUiAction.Success(updatedPromoRecommendation)
+                                    UsePromoRecommendationUiAction.Success(
+                                        updatedPromoRecommendation
+                                    )
                                 )
                             }
                         }
@@ -485,7 +495,7 @@ internal class PromoUsageViewModel @Inject constructor(
         clickedItem: PromoItem,
         recommendationItem: PromoRecommendationItem,
         items: List<DelegateAdapterItem>
-    ) : Pair<PromoRecommendationItem, List<DelegateAdapterItem>> {
+    ): Pair<PromoRecommendationItem, List<DelegateAdapterItem>> {
         val selectedRecommendationCodes = if (clickedItem.state is PromoItemState.Selected) {
             recommendationItem.selectedCodes.plus(clickedItem.code)
         } else {
@@ -507,7 +517,7 @@ internal class PromoUsageViewModel @Inject constructor(
     private fun calculateClickPromo(
         clickedItem: PromoItem,
         items: List<DelegateAdapterItem>
-    ) : Pair<PromoItem, List<DelegateAdapterItem>> {
+    ): Pair<PromoItem, List<DelegateAdapterItem>> {
         var newClickedItem = clickedItem.copy()
         var updatedItems = items
             .map { item ->
@@ -546,14 +556,18 @@ internal class PromoUsageViewModel @Inject constructor(
     private fun calculateClash(
         selectedItem: PromoItem,
         updatedItems: List<DelegateAdapterItem>
-    ) : Pair<List<DelegateAdapterItem>, Boolean> {
+    ): Pair<List<DelegateAdapterItem>, Boolean> {
         var isSelectedPromoCausingClash = false
         var processedItems = updatedItems
         if (selectedItem.state is PromoItemState.Selected) {
             processedItems = updatedItems.map { item ->
                 if (item is PromoItem && item.code != selectedItem.code
-                    && item.state !is PromoItemState.Ineligible) {
-                    val (resultItem, isCausingClash) = checkAndSetClashOnSelectionEvent(item, selectedItem)
+                    && item.state !is PromoItemState.Ineligible
+                ) {
+                    val (resultItem, isCausingClash) = checkAndSetClashOnSelectionEvent(
+                        item,
+                        selectedItem
+                    )
                     if (!isSelectedPromoCausingClash) {
                         isSelectedPromoCausingClash = isCausingClash
                     }
@@ -565,7 +579,8 @@ internal class PromoUsageViewModel @Inject constructor(
         } else if (selectedItem.state is PromoItemState.Normal) {
             processedItems = updatedItems.map { item ->
                 if (item is PromoItem && item.code != selectedItem.code
-                    && item.state !is PromoItemState.Ineligible) {
+                    && item.state !is PromoItemState.Ineligible
+                ) {
                     val (resultItem, _) = checkAndSetClashOnDeselectionEvent(item, selectedItem)
                     return@map resultItem
                 } else {
@@ -604,7 +619,8 @@ internal class PromoUsageViewModel @Inject constructor(
             val secondaryClashingInfo = resultItem.secondaryPromo.clashingInfos
                 .firstOrNull { it.code == selectedPromoCode }
             if (secondaryClashingInfo != null
-                && !resultItem.currentClashingSecondaryPromoCodes.contains(selectedPromoCode)) {
+                && !resultItem.currentClashingSecondaryPromoCodes.contains(selectedPromoCode)
+            ) {
                 val clashingSecondaryCodes = resultItem.currentClashingSecondaryPromoCodes
                     .plus(selectedPromoCode)
                 resultItem = resultItem.copy(
@@ -632,7 +648,8 @@ internal class PromoUsageViewModel @Inject constructor(
         val primaryClashingInfo = resultItem.clashingInfos
             .firstOrNull { it.code == selectedPromoCode }
         if (primaryClashingInfo != null
-            && resultItem.currentClashingPromoCodes.contains(selectedPromoCode)) {
+            && resultItem.currentClashingPromoCodes.contains(selectedPromoCode)
+        ) {
             val clashingPrimaryCodes = resultItem.currentClashingPromoCodes
                 .minus(selectedPromoCode)
             if (clashingPrimaryCodes.isNotEmpty()) {
@@ -664,7 +681,8 @@ internal class PromoUsageViewModel @Inject constructor(
             val secondaryClashingInfo = resultItem.secondaryPromo.clashingInfos
                 .firstOrNull { it.code == selectedPromoCode }
             if (secondaryClashingInfo != null
-                && resultItem.currentClashingSecondaryPromoCodes.contains(selectedPromoCode)) {
+                && resultItem.currentClashingSecondaryPromoCodes.contains(selectedPromoCode)
+            ) {
                 val clashingSecondaryCodes = resultItem.currentClashingSecondaryPromoCodes
                     .minus(selectedPromoCode)
                 if (clashingSecondaryCodes.isNotEmpty()) {
@@ -698,7 +716,7 @@ internal class PromoUsageViewModel @Inject constructor(
 
     private fun sortPromo(
         items: List<DelegateAdapterItem>
-    ) : List<DelegateAdapterItem> {
+    ): List<DelegateAdapterItem> {
         val resultItems = items.toMutableList()
         val headers = items.mapIndexed { index, item -> index to item }
             .filter { it.second is PromoAccordionHeaderItem }
@@ -717,7 +735,7 @@ internal class PromoUsageViewModel @Inject constructor(
 
     private fun sortPromoInSection(
         items: List<PromoItem>
-    ) : List<PromoItem> {
+    ): List<PromoItem> {
         val resultItems = mutableListOf<PromoItem>()
         val selectedItems = items.filter { it.state is PromoItemState.Selected }
             .sortedBy { it.index }
@@ -1220,7 +1238,8 @@ internal class PromoUsageViewModel @Inject constructor(
                     }
                 order.codes.forEach { orderCode ->
                     if (!boPromoCodes.contains(orderCode)
-                        && !newClearPromoOrder.codes.contains(orderCode)) {
+                        && !newClearPromoOrder.codes.contains(orderCode)
+                    ) {
                         val updatedCodes = newClearPromoOrder.codes.also {
                             it.add(orderCode)
                         }
@@ -1413,10 +1432,15 @@ internal class PromoUsageViewModel @Inject constructor(
                         }
                     }
                     recommendedPromoCodes.forEach { code ->
-                        val recommendedPromo = updatedItems
-                            .firstOrNull { it is PromoItem && it.code == code } as? PromoItem
+                        var recommendedPromo = updatedItems
+                            .firstOrNull { item -> item is PromoItem && item.code == code } as? PromoItem
                         if (recommendedPromo != null) {
-                            val (_, newUpdatedItems) = calculateClickPromo(recommendedPromo, updatedItems)
+                            recommendedPromo =
+                                recommendedPromo.copy(state = PromoItemState.Selected)
+                            val (_, newUpdatedItems) = calculateClickPromo(
+                                recommendedPromo,
+                                updatedItems
+                            )
                             updatedItems = newUpdatedItems
                         }
                     }
@@ -1600,6 +1624,18 @@ internal class PromoUsageViewModel @Inject constructor(
                         clickedItem.code
                     )
                 }
+            }
+        }
+    }
+
+    fun getCurrentItems(): List<DelegateAdapterItem> {
+        return when (val currentState = _promoPageUiState.value) {
+            is PromoPageUiState.Success -> {
+                currentState.items
+            }
+
+            else -> {
+                emptyList()
             }
         }
     }
