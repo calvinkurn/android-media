@@ -36,9 +36,9 @@ class BannerEnvironment {
     private var decorView: ViewGroup? = null
 
     fun initializeBannerEnvironment(activity: Activity) {
-        if (!disableBannerSpecialCase(activity)) {
-            val enableBannerEnv = FirebaseRemoteConfigImpl(activity).getBoolean(RemoteConfigKey.ENABLE_BANNER_ENVIRONMENT, true)
-            if (enableBannerEnv && isBannerEnvironmentEnabled(activity)) {
+        val enableBannerEnv = FirebaseRemoteConfigImpl(activity).getBoolean(RemoteConfigKey.ENABLE_BANNER_ENVIRONMENT, true)
+        if (enableBannerEnv && isBannerEnvironmentEnabled(activity)) {
+            if (!disableBannerSpecialCase(activity)) {
                 addBanner((activity), getLiveStatus(activity))
             } else {
                 removeBannerIfVisible()
@@ -52,7 +52,7 @@ class BannerEnvironment {
 
     private fun addBanner(activity: Activity, liveStatus: String) {
         removeBannerIfVisible()
-        decorView = activity.window.decorView as ViewGroup
+        decorView = activity.window.decorView as? ViewGroup
         bannerEnvironmentView = BannerEnvironmentView(activity).apply {
             updateText(liveStatus, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
             updateBannerColor(com.tokopedia.unifyprinciples.R.color.Unify_GN500)
@@ -67,7 +67,7 @@ class BannerEnvironment {
      * ex: bottomsheet with dim 0 activity
      */
     private fun disableBannerSpecialCase(activity: Activity): Boolean {
-        val backgroundColor = (activity.window.decorView.background as ColorDrawable).color
+        val backgroundColor = (activity.window.decorView.background as? ColorDrawable)?.color
         val transparentColor = activity.resources.getColor(android.R.color.transparent)
 
         return activity.window.attributes.dimAmount == 0.0f || backgroundColor == transparentColor

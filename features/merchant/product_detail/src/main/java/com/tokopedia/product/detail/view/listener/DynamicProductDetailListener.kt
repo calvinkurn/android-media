@@ -444,17 +444,11 @@ interface DynamicProductDetailListener {
     )
 
     /**
-     * ProductBundlingViewHolder
+     * GlobalBundlingViewHolder
      */
     fun removeComponent(componentName: String)
 
     fun onImpressionProductBundling(
-        bundleId: String,
-        bundleType: String,
-        componentTrackDataModel: ComponentTrackDataModel
-    )
-
-    fun onClickCheckBundling(
         bundleId: String,
         bundleType: String,
         componentTrackDataModel: ComponentTrackDataModel

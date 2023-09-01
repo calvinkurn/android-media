@@ -1,5 +1,6 @@
 package com.tokopedia.seller.menu.presentation.fragment
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,7 +8,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.seller.active.common.worker.UpdateShopActiveWorker
 import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
@@ -17,10 +17,7 @@ import com.tokopedia.seller.menu.di.component.DaggerSellerMenuComponent
 import com.tokopedia.seller.menu.presentation.adapter.SellerMenuAdapter
 import com.tokopedia.seller.menu.presentation.adapter.SellerMenuAdapterTypeFactory
 import com.tokopedia.seller.menu.presentation.util.SellerSettingsList
-import com.tokopedia.seller.menu.presentation.viewmodel.SellerSettingViewModel
 import com.tokopedia.shopadmin.common.util.AdminPermissionMapper
-import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
@@ -32,9 +29,6 @@ class SellerSettingsFragment : Fragment(), SettingTrackingListener {
 
     @Inject
     lateinit var userSession: UserSessionInterface
-
-    @Inject
-    lateinit var viewModel: SellerSettingViewModel
 
     @Inject
     lateinit var adminPermissionMapper: AdminPermissionMapper
@@ -68,8 +62,7 @@ class SellerSettingsFragment : Fragment(), SettingTrackingListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupSettingsList()
-        viewModel.getShopLocEligible(userSession.shopId.toLong())
-        observe(viewModel.shopLocEligible, ::setupLocationSettings)
+        setupLocationSettings()
         startShopActiveService()
     }
 
@@ -101,25 +94,18 @@ class SellerSettingsFragment : Fragment(), SettingTrackingListener {
         }
     }
 
-    private fun setupLocationSettings(isEligibleMultiloc: Result<Boolean>) {
-        when (isEligibleMultiloc) {
-            is Success -> {
-                val settingsList = context?.let {
-                    SellerSettingsList.create(
-                        it,
-                        isEligibleMultiloc.data,
-                        userSession,
-                        adminPermissionMapper
-                    )
-                }
-                sellerMenuAdapter.clearAllElements()
-                sellerMenuAdapter.addElement(settingsList)
-                sellerMenuAdapter.notifyDataSetChanged()
-            }
-            else -> {
-                //no-op
-            }
+    @SuppressLint("NotifyDataSetChanged")
+    private fun setupLocationSettings() {
+        val settingsList = context?.let {
+            SellerSettingsList.create(
+                it,
+                userSession,
+                adminPermissionMapper
+            )
         }
+        sellerMenuAdapter.clearAllElements()
+        sellerMenuAdapter.addElement(settingsList)
+        sellerMenuAdapter.notifyDataSetChanged()
     }
 
     private fun startShopActiveService() {
@@ -127,5 +113,4 @@ class SellerSettingsFragment : Fragment(), SettingTrackingListener {
             UpdateShopActiveWorker.execute(it)
         }
     }
-
 }
