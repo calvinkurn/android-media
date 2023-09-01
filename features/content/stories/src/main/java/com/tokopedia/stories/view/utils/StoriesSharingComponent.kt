@@ -2,6 +2,7 @@ package com.tokopedia.stories.view.utils
 
 import android.view.View
 import androidx.fragment.app.FragmentManager
+import com.tokopedia.stories.view.model.StoriesDetailItemUiModel
 import com.tokopedia.stories.view.model.StoriesDetailUiModel
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
@@ -27,7 +28,7 @@ class StoriesSharingComponent (rootView: View) {
         mListener = listener
     }
 
-    fun show (fg: FragmentManager, data: StoriesDetailUiModel.Sharing) {
+    fun show (fg: FragmentManager, data: StoriesDetailItemUiModel.Sharing) {
         if (sharingSheet.isAdded) return
         sharingSheet.setMetaData(
             tnImage = data.metadata.ogImageUrl,

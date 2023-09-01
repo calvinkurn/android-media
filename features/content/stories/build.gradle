@@ -86,7 +86,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.productDetailCommon)
     implementation projectOrAar(rootProject.ext.features.atc_common)
     implementation projectOrAar(rootProject.ext.features.shopCommon)
->>>>>>> 86ce8425bcdde345f33347ca7bedf5f6d4277d2f
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase

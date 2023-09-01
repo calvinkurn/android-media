@@ -1,10 +1,8 @@
 package com.tokopedia.stories.view.model
 
-import com.tokopedia.content.common.R
-import com.tokopedia.content.common.report_content.model.ContentMenuIdentifier
 import com.tokopedia.content.common.report_content.model.ContentMenuItem
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.stories.uimodel.StoryAuthor
+import com.tokopedia.universal_sharing.view.model.LinkProperties
 
 data class StoriesGroupUiModel(
     val selectedGroupId: String = "",
@@ -40,10 +38,19 @@ data class StoriesDetailItemUiModel(
     val isSameContent: Boolean = false,
     val author: StoryAuthor = StoryAuthor.Unknown,
     val menus: List<ContentMenuItem> = emptyList(),
+    val share: Sharing,
 ) {
 
     enum class StoriesDetailItemUiEvent {
         PAUSE, RESUME,
     }
 
+    data class Sharing(
+        val isShareable: Boolean,
+        val metadata: LinkProperties,
+    ) {
+        companion object {
+            val Empty get() = Sharing(isShareable = false, metadata = LinkProperties())
+        }
+    }
 }

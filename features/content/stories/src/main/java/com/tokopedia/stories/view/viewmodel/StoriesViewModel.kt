@@ -24,7 +24,6 @@ import com.tokopedia.stories.view.model.StoriesDetailUiModel
 import com.tokopedia.stories.view.model.StoriesGroupItemUiModel
 import com.tokopedia.stories.view.model.StoriesGroupUiModel
 import com.tokopedia.stories.view.model.StoriesUiState
-import com.tokopedia.stories.view.utils.StoriesSharingComponent
 import com.tokopedia.stories.view.model.isAnyShown
 import com.tokopedia.stories.view.viewmodel.action.StoriesProductAction
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction
@@ -307,8 +306,8 @@ class StoriesViewModel @Inject constructor(
 
     private fun handleSharing() {
         viewModelScope.launch {
-//            val data = _storiesDetail.value.share
-//            _uiEvent.emit(StoriesUiEvent.TapSharing(data))
+            val data = _storiesDetail.value.detailItems.getOrNull(_storiesDetail.value.selectedDetailPosition)?.share ?: return@launch
+            _uiEvent.emit(StoriesUiEvent.TapSharing(data))
             bottomSheetStatus.update { bottomSheet ->
                 bottomSheet.mapValues {
                     if (it.key == BottomSheetType.Sharing)

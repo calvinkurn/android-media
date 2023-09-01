@@ -13,6 +13,7 @@ import com.tokopedia.stories.view.model.StoriesDetailUiModel
 import com.tokopedia.stories.view.model.StoriesGroupHeader
 import com.tokopedia.stories.view.model.StoriesGroupItemUiModel
 import com.tokopedia.stories.view.model.StoriesGroupUiModel
+import com.tokopedia.universal_sharing.view.model.LinkProperties
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -54,6 +55,7 @@ class StoriesMapperImpl @Inject constructor(private val userSession: UserSession
                                         badgeUrl = stories.author.badgeURL
                                     ),
                                     menus = buildMenu(stories.interaction, stories.author),
+                                    share = StoriesDetailItemUiModel.Sharing(isShareable = stories.interaction.shareable, metadata = LinkProperties(ogTitle = stories.meta.shareTitle, ogImageUrl = stories.meta.shareImage, ogDescription = stories.meta.shareDescription))
                                 )
                             }
                         )
@@ -82,6 +84,7 @@ class StoriesMapperImpl @Inject constructor(private val userSession: UserSession
                         badgeUrl = stories.author.badgeURL
                     ),
                     menus = buildMenu(stories.interaction, stories.author),
+                    share = StoriesDetailItemUiModel.Sharing(isShareable = stories.interaction.shareable, metadata = LinkProperties(ogTitle = stories.meta.shareTitle, ogImageUrl = stories.meta.shareImage, ogDescription = stories.meta.shareDescription))
                 )
             }
         )
