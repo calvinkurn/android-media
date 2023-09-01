@@ -133,7 +133,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_below="@+id/terlaris_product_name_1"
                                 android:textSize="12sp"
-                                android:textColor="@color/Unify_NN400"
+                                android:textColor="@color/dms_static_NN400"
                                 android:layout_marginLeft="4dp"
                                 app:typographyWeight="reguler"
                                 tools:text="Rp38.400.000" />
@@ -253,7 +253,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_below="@+id/terlaris_product_name_1"
                                 android:textSize="12sp"
-                                android:textColor="@color/Unify_NN400"
+                                android:textColor="@color/dms_static_NN400"
                                 android:layout_marginLeft="4dp"
                                 app:typographyWeight="reguler"
                                 tools:text="Rp9.400.000" />
@@ -373,7 +373,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_below="@+id/terlaris_product_name_3"
                                 android:textSize="12sp"
-                                android:textColor="@color/Unify_NN400"
+                                android:textColor="@color/dms_static_NN400"
                                 android:layout_marginLeft="4dp"
                                 app:typographyWeight="reguler"
                                 tools:text="Rp8.800.000" />
