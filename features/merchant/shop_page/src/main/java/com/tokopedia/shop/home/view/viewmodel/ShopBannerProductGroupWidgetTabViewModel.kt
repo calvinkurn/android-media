@@ -23,6 +23,8 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.shop.common.data.source.cloud.model.LabelGroup
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.home.view.model.banner_product_group.ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.Data.LinkType
+import kotlinx.coroutines.SupervisorJob
+import kotlin.coroutines.CoroutineContext
 
 @SuppressLint("PII Data Exposure")
 class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
@@ -31,6 +33,9 @@ class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
     private val getShopFeaturedProductUseCase: GetShopFeaturedProductUseCase,
     private val userSession: UserSessionInterface
 ) : BaseViewModel(dispatcherProvider.main) {
+
+    override val coroutineContext: CoroutineContext
+        get() = SupervisorJob() + dispatcherProvider.main
 
     companion object {
         private const val FIRST_LABEL_INDEX = 0

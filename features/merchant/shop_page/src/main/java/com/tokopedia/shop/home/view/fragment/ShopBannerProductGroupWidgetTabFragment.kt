@@ -164,12 +164,11 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
         viewModel.carouselWidgets.observe(viewLifecycleOwner) { result ->
             when(result) {
                 ShopBannerProductGroupWidgetTabViewModel.UiState.Loading -> {
-                    println("Fetch products: Loading $tabLabel")
+                    binding?.imgMainBanner?.gone()
                     bannerProductGroupAdapter.submit(listOf(ShimmerItemType(showShimmer = true)))
                 }
 
                 is ShopBannerProductGroupWidgetTabViewModel.UiState.Success -> {
-                    println("Fetch products: Success fetching $tabLabel. Size is ${result.data.size }. Data: ${result.data}")
                     showResult(result.data)
                     onProductSuccessfullyLoaded(true)
                 }
