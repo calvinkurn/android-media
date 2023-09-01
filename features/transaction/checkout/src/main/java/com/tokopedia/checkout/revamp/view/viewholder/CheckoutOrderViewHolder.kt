@@ -80,7 +80,9 @@ class CheckoutOrderViewHolder(
             // todo custom error wording
             binding.shippingWidget.renderErrorCourierState(
                 ShippingWidgetUiModel(
-                    currentAddress = RecipientAddressModel()
+                    currentAddress = RecipientAddressModel(),
+                    courierErrorTitle = order.courierSelectionErrorTitle,
+                    courierErrorDescription = order.courierSelectionErrorDescription
                 )
             )
         } else if (order.shipment.isLoading) {
@@ -378,7 +380,6 @@ class CheckoutOrderViewHolder(
     }
 
     private fun renderErrorPinpointCourier() {
-//        binding.containerShippingOptions.root.visibility = View.VISIBLE
         binding.shippingWidget.renderErrorPinpointCourier()
     }
 

@@ -20,7 +20,7 @@ import com.tokopedia.unifycomponents.toPx
 class CheckoutUpsellViewHolder(
     private val binding: ItemCheckoutUpsellBinding,
     private val actionListener: CheckoutAdapterListener
-): RecyclerView.ViewHolder(binding.root) {
+) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(data: ShipmentNewUpsellModel) {
         if (!data.isShow) {
@@ -43,12 +43,6 @@ class CheckoutUpsellViewHolder(
 
     private fun renderLoading() {
         binding.run {
-//            checkoutUpsellCard.setCardUnifyBackgroundColor(
-//                MethodChecker.getColor(
-//                    itemView.context,
-//                    com.tokopedia.unifyprinciples.R.color.Unify_Background
-//                )
-//            )
             checkoutUpsellCardOverlay.setOnClickListener(null)
             checkoutUpsellContentGroup.gone()
             checkoutUpsellBackgroundImage.loadImage(R.drawable.checkout_module_upsell_new_background)
@@ -64,12 +58,6 @@ class CheckoutUpsellViewHolder(
 
     private fun renderContent(data: ShipmentNewUpsellModel) {
         binding.run {
-//            checkoutUpsellCard.setCardUnifyBackgroundColor(
-//                MethodChecker.getColor(
-//                    itemView.context,
-//                    com.tokopedia.unifyprinciples.R.color.Unify_Background
-//                )
-//            )
             checkoutUpsellBackgroundImage.cornerRadius = Int.ZERO
             checkoutUpsellBackgroundImage.visible()
             checkoutUpsellLogoContainer.radius = CARD_VIEW_MAX_RADIUS.toPx().toFloat()
