@@ -4,11 +4,11 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.shop.R
-import com.tokopedia.shop.home.view.model.showcase_navigation.ShopHomeShowcaseNavigationUiModel
+import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseNavigationUiModel
 
 class ShopHomeShowCaseNavigationLeftMainBannerPlaceholderViewHolder(
     itemView: View,
-) : AbstractViewHolder<ShopHomeShowcaseNavigationUiModel>(itemView) {
+) : AbstractViewHolder<ShowcaseNavigationUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -16,7 +16,7 @@ class ShopHomeShowCaseNavigationLeftMainBannerPlaceholderViewHolder(
 
     }
 
-    override fun bind(model: ShopHomeShowcaseNavigationUiModel) {
+    override fun bind(model: ShowcaseNavigationUiModel) {
 
     }
 

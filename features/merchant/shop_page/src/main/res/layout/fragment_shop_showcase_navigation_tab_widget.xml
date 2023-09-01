@@ -22,7 +22,7 @@
         tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/imgMainShowcaseTitle"
+        android:id="@+id/tpgMainShowcaseTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -55,7 +55,7 @@
         tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/imgFirstShowcaseTitle"
+        android:id="@+id/tpgFirstShowcaseTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
@@ -106,7 +106,7 @@
         android:layout_marginEnd="8dp"
         android:visibility="invisible"
         app:layout_constraintEnd_toStartOf="@+id/imgFourthShowcase"
-        app:layout_constraintTop_toBottomOf="@+id/imgFirstShowcaseTitle"
+        app:layout_constraintTop_toBottomOf="@+id/tpgFirstShowcaseTitle"
         app:unify_image_corner_radius="8"
         tools:visibility="visible" />
 
@@ -139,7 +139,7 @@
         tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/imgFourthShowcaseTitle"
+        android:id="@+id/tpgFourthShowcaseTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"

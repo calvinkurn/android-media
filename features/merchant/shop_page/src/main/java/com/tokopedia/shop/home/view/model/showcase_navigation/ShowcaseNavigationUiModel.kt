@@ -9,7 +9,7 @@ import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
 import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.ShopHomeShowcaseNavigationBannerWidgetAppearance
 import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.TopMainBannerAppearance
 
-data class ShopHomeShowcaseNavigationUiModel(
+data class ShowcaseNavigationUiModel(
     val appearance: ShopHomeShowcaseNavigationBannerWidgetAppearance = TopMainBannerAppearance(
         title = "",
         viewAllCtaAppLink = "",

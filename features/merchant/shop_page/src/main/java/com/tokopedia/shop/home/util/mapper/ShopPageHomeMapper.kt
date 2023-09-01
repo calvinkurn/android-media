@@ -442,7 +442,7 @@ object ShopPageHomeMapper {
                         ShopPageWidgetMapper.mapToBannerTimerWidget(widgetResponse, widgetLayout, isOverrideTheme, colorSchema)
                     }
                     SHOWCASE_NAVIGATION_BANNER -> {
-                        ShopPageWidgetMapper.mapToHomeShowcaseNavigationWidget(widgetResponse)
+                        ShopPageWidgetMapper.mapToHomeShowcaseNavigationWidget(widgetResponse, isOverrideTheme, widgetLayout, colorSchema)
                     }
 
                     BANNER_PRODUCT_HOTSPOT -> {
@@ -516,7 +516,7 @@ object ShopPageHomeMapper {
             DYNAMIC.toLowerCase(Locale.getDefault()) -> mapCarouselPlayWidget(widgetResponse, widgetLayout, isOverrideTheme, colorSchema)
             COMPONENT.toLowerCase(Locale.getDefault()) -> {
                 when (widgetResponse.name) {
-                    WidgetName.BANNER_PRODUCT_GROUP -> ShopPageWidgetMapper.mapToHomeBannerProductGroupWidget(widgetResponse)
+                    WidgetName.BANNER_PRODUCT_GROUP -> ShopPageWidgetMapper.mapToHomeBannerProductGroupWidget(widgetResponse, widgetLayout, isOverrideTheme, colorSchema)
                     else -> null
                 }
             }

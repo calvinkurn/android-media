@@ -4,21 +4,29 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.ShopComponentHelper
+import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.FragmentShopShowcaseNavigationTabWidgetBinding
 import com.tokopedia.shop.home.di.component.DaggerShopPageHomeComponent
 import com.tokopedia.shop.home.di.module.ShopPageHomeModule
 import com.tokopedia.shop.home.view.model.showcase_navigation.Showcase
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlin.collections.ArrayList
+import com.tokopedia.shop.R
 
 class ShopShowcaseNavigationTabWidgetFragment : BaseDaggerFragment() {
 
     companion object {
         private const val BUNDLE_KEY_SHOWCASES = "showcases"
+        private const val BUNDLE_KEY_OVERRIDE_THEME = "override_theme"
+        private const val BUNDLE_KEY_COLOR_SCHEME = "color_scheme"
+
         private const val FIRST_SHOWCASE_INDEX = 0
         private const val SECOND_SHOWCASE_INDEX = 1
         private const val THIRD_SHOWCASE_INDEX = 2
@@ -27,11 +35,15 @@ class ShopShowcaseNavigationTabWidgetFragment : BaseDaggerFragment() {
 
         @JvmStatic
         fun newInstance(
-            showcases: List<Showcase>
+            showcases: List<Showcase>,
+            overrideTheme: Boolean,
+            colorScheme: ShopPageColorSchema,
         ): ShopShowcaseNavigationTabWidgetFragment {
             return ShopShowcaseNavigationTabWidgetFragment().apply {
                 arguments = Bundle().apply {
                     putParcelableArrayList(BUNDLE_KEY_SHOWCASES, ArrayList(showcases))
+                    putBoolean(BUNDLE_KEY_OVERRIDE_THEME, overrideTheme)
+                    putParcelable(BUNDLE_KEY_COLOR_SCHEME, colorScheme)
                 }
             }
         }
@@ -40,6 +52,12 @@ class ShopShowcaseNavigationTabWidgetFragment : BaseDaggerFragment() {
 
     private val showcases by lazy {
         arguments?.getParcelableArrayList<Showcase>(BUNDLE_KEY_SHOWCASES)?.toList().orEmpty()
+    }
+
+    private val overrideTheme by lazy { arguments?.getBoolean(BUNDLE_KEY_OVERRIDE_THEME).orFalse() }
+
+    private val colorScheme by lazy {
+        arguments?.getParcelable(BUNDLE_KEY_COLOR_SCHEME) ?: ShopPageColorSchema()
     }
 
     private var onShowcaseClick : (Showcase) -> Unit = {}
@@ -71,6 +89,7 @@ class ShopShowcaseNavigationTabWidgetFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         renderShowcase(showcases)
+        setupColors(overrideTheme, colorScheme)
     }
 
     private fun renderShowcase(
@@ -84,24 +103,24 @@ class ShopShowcaseNavigationTabWidgetFragment : BaseDaggerFragment() {
 
         mainShowcase?.let {
             binding?.imgMainShowcase?.loadImage(mainShowcase.imageUrl)
-            binding?.imgMainShowcaseTitle?.text = mainShowcase.name
+            binding?.tpgMainShowcaseTitle?.text = mainShowcase.name
 
             binding?.imgMainShowcase?.visible()
-            binding?.imgMainShowcaseTitle?.visible()
+            binding?.tpgMainShowcaseTitle?.visible()
 
             binding?.imgMainShowcase?.setOnClickListener { onShowcaseClick(mainShowcase) }
-            binding?.imgMainShowcaseTitle?.setOnClickListener { onShowcaseClick(mainShowcase) }
+            binding?.tpgMainShowcaseTitle?.setOnClickListener { onShowcaseClick(mainShowcase) }
         }
 
         firstShowcase?.let {
             binding?.imgFirstShowcase?.loadImage(firstShowcase.imageUrl)
-            binding?.imgFirstShowcaseTitle?.text = firstShowcase.name
+            binding?.tpgFirstShowcaseTitle?.text = firstShowcase.name
 
             binding?.imgFirstShowcase?.visible()
-            binding?.imgFirstShowcaseTitle?.visible()
+            binding?.tpgFirstShowcaseTitle?.visible()
 
             binding?.imgFirstShowcase?.setOnClickListener { onShowcaseClick(firstShowcase) }
-            binding?.imgFirstShowcaseTitle?.setOnClickListener { onShowcaseClick(firstShowcase) }
+            binding?.tpgFirstShowcaseTitle?.setOnClickListener { onShowcaseClick(firstShowcase) }
         }
 
         secondShowcase?.let {
@@ -128,13 +147,13 @@ class ShopShowcaseNavigationTabWidgetFragment : BaseDaggerFragment() {
 
         fourthShowcase?.let {
             binding?.imgFourthShowcase?.loadImage(fourthShowcase.imageUrl)
-            binding?.imgFourthShowcaseTitle?.text = fourthShowcase.name
+            binding?.tpgFourthShowcaseTitle?.text = fourthShowcase.name
 
             binding?.imgFourthShowcase?.visible()
-            binding?.imgFourthShowcaseTitle?.visible()
+            binding?.tpgFourthShowcaseTitle?.visible()
 
             binding?.imgFourthShowcase?.setOnClickListener { onShowcaseClick(fourthShowcase) }
-            binding?.imgFourthShowcaseTitle?.setOnClickListener { onShowcaseClick(fourthShowcase) }
+            binding?.tpgFourthShowcaseTitle?.setOnClickListener { onShowcaseClick(fourthShowcase) }
         }
     }
 
@@ -142,4 +161,20 @@ class ShopShowcaseNavigationTabWidgetFragment : BaseDaggerFragment() {
         this.onShowcaseClick = onShowcaseClick
     }
 
+    private fun setupColors(overrideTheme: Boolean, colorSchema: ShopPageColorSchema) {
+        val mainShowcaseTextColor = ContextCompat.getColor(context ?: return, R.color.clr_dms_icon_white)
+        val lowEmphasizeColor = if (overrideTheme) {
+            colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_LOW_EMPHASIS)
+        } else {
+            ContextCompat.getColor(context ?: return, unifycomponentsR.color.Unify_NN950)
+        }
+
+        binding?.apply {
+            tpgMainShowcaseTitle.setTextColor(mainShowcaseTextColor)
+            tpgFirstShowcaseTitle.setTextColor(lowEmphasizeColor)
+            tpgSecondShowcaseTitle.setTextColor(lowEmphasizeColor)
+            tpgThirdShowcaseTitle.setTextColor(lowEmphasizeColor)
+            tpgFourthShowcaseTitle.setTextColor(lowEmphasizeColor)
+        }
+    }
 }

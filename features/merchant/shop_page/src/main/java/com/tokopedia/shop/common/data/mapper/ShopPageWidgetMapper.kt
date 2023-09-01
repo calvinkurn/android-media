@@ -15,16 +15,16 @@ import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.CarouselAppearance
 import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.LeftMainBannerAppearance
 import com.tokopedia.shop.home.view.model.banner_product_group.ShopWidgetComponentBannerProductGroupUiModel
-import com.tokopedia.shop.home.view.model.showcase_navigation.ShopHomeShowcaseNavigationUiModel
 import com.tokopedia.shop.home.view.customview.directpurchase.Etalase
 import com.tokopedia.shop.home.view.customview.directpurchase.Title
 import com.tokopedia.shop.home.view.customview.directpurchase.WidgetData
+import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseNavigationUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerProductHotspotUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerTimerUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetVoucherSliderUiModel
 import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseNavigationBannerWidgetStyle
 import com.tokopedia.shop.home.view.model.StatusCampaign
-import com.tokopedia.shop.home.view.model.banner_product_group.ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.ComponentType
+import com.tokopedia.shop.home.view.model.banner_product_group.ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.ComponentName
 import com.tokopedia.shop.home.view.model.banner_product_group.ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.Data.LinkType
 import com.tokopedia.shop.home.view.model.showcase_navigation.Showcase
 import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseCornerShape
@@ -186,7 +186,12 @@ object ShopPageWidgetMapper {
         )
     }
 
-    fun mapToHomeShowcaseNavigationWidget(response: ShopLayoutWidget.Widget): ShopHomeShowcaseNavigationUiModel {
+    fun mapToHomeShowcaseNavigationWidget(
+        response: ShopLayoutWidget.Widget,
+        isOverrideTheme: Boolean,
+        widgetLayout: ShopPageWidgetUiModel?,
+        colorSchema: ShopPageColorSchema
+    ): ShowcaseNavigationUiModel {
         val tabs = response.data.map { tab ->
             val showcases = tab.showcaseList.map { showcase ->
                 Showcase(
@@ -226,22 +231,28 @@ object ShopPageWidgetMapper {
         }
 
 
-        return ShopHomeShowcaseNavigationUiModel(
+        return ShowcaseNavigationUiModel(
             appearance = appearance,
             widgetId = response.widgetID,
+            header = ShopPageHomeMapper.mapToHeaderModel(response.header, widgetLayout, isOverrideTheme, colorSchema),
             layoutOrder = response.layoutOrder,
             name = response.name,
             type = response.type
         )
     }
-    fun mapToHomeBannerProductGroupWidget(response: ShopLayoutWidget.Widget): ShopWidgetComponentBannerProductGroupUiModel {
+    fun mapToHomeBannerProductGroupWidget(
+        response: ShopLayoutWidget.Widget,
+        widgetLayout: ShopPageWidgetUiModel?,
+        isOverrideTheme: Boolean,
+        colorSchema: ShopPageColorSchema
+    ): ShopWidgetComponentBannerProductGroupUiModel {
         val tabs = response.data.map { tab ->
             val componentList = tab.componentList.map { component ->
 
-                val componentType = when (component.componentType) {
-                    ComponentType.PRODUCT.id -> ComponentType.PRODUCT
-                    ComponentType.DISPLAY_SINGLE_COLUMN.id -> ComponentType.DISPLAY_SINGLE_COLUMN
-                    else -> ComponentType.DISPLAY_SINGLE_COLUMN
+                val componentName = when (component.componentType) {
+                    ComponentName.PRODUCT.id -> ComponentName.PRODUCT
+                    ComponentName.DISPLAY_SINGLE_COLUMN.id -> ComponentName.DISPLAY_SINGLE_COLUMN
+                    else -> ComponentName.DISPLAY_SINGLE_COLUMN
                 }
 
                 val data = component.data.map { data ->
@@ -263,8 +274,7 @@ object ShopPageWidgetMapper {
 
                 ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList(
                     component.componentID,
-                    component.componentName,
-                    componentType,
+                    componentName,
                     data
                 )
             }
@@ -278,6 +288,7 @@ object ShopPageWidgetMapper {
             widgetId = response.widgetID,
             layoutOrder = response.layoutOrder,
             title = response.header.title,
+            header = ShopPageHomeMapper.mapToHeaderModel(response.header, widgetLayout, isOverrideTheme, colorSchema),
             tabs = tabs,
             name = response.name,
             type = response.type,

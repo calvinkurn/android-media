@@ -1,12 +1,17 @@
 package com.tokopedia.shop.common.view.model
 
 import android.graphics.Color
+import android.os.Parcelable
 import com.tokopedia.kotlin.extensions.view.ZERO
+import kotlinx.parcelize.Parcelize
+import kotlinx.parcelize.RawValue
 
+@Parcelize
 data class ShopPageColorSchema(
-    val listColorSchema: List<ColorSchema> = listOf()
-){
-    enum class ColorSchemaName(val value: String) {
+    val listColorSchema: @RawValue List<ColorSchema> = listOf()
+): Parcelable {
+    @Parcelize
+    enum class ColorSchemaName(val value: String) : Parcelable{
         TEXT_HIGH_EMPHASIS("textColorHighEmphasis"),
         TEXT_LOW_EMPHASIS("textColorLowEmphasis"),
         DISABLED_TEXT_COLOR("disabledTextColor"),
@@ -16,12 +21,12 @@ data class ShopPageColorSchema(
         BG_PRIMARY_COLOR("bgPrimaryColor"),
         DIVIDER("divider"),
     }
-
+    @Parcelize
     data class ColorSchema(
         val name: String = "",
         val type: String = "",
         val value: String = ""
-    )
+    ): Parcelable
 
     fun getColorSchema(colorSchemaName: ColorSchemaName): ColorSchema? {
         return listColorSchema.firstOrNull { it.name == colorSchemaName.value }

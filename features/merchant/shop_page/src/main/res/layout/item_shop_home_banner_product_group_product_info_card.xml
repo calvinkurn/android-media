@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_height="246dp"
     android:layout_marginEnd="4dp">
 
     <com.tokopedia.unifycomponents.ImageUnify
@@ -41,12 +41,13 @@
         app:typographyWeight="bold"
         tools:text="Rp18.849.000" />
 
-    <com.tokopedia.unifycomponents.Label
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/labelDiscount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        app:labelType="general_light_red"
+        android:textSize="11sp"
+        android:padding="4dp"
         app:layout_constraintStart_toStartOf="@+id/imgProduct"
         app:layout_constraintTop_toBottomOf="@id/tpgProductPrice"
         tools:text="20%" />
@@ -64,14 +65,21 @@
         app:typographyType="display_3"
         tools:text="Rp20.849.000" />
 
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="tpgSlashedProductPrice, labelDiscount, tpgProductPrice"/>
+
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/imgStar"
         android:layout_width="16dp"
         android:layout_height="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/tpgRating"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/labelDiscount"
-        app:srcCompat="@drawable/ic_shop_home_star_filled" />
+        app:layout_constraintTop_toTopOf="@+id/tpgRating"
+        tools:srcCompat="@drawable/ic_shop_home_star_filled" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tpgRating"
@@ -81,9 +89,8 @@
         android:paddingTop="4dp"
         android:paddingBottom="4dp"
         android:textColor="@color/Unify_NN600"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/imgStar"
-        app:layout_constraintTop_toBottomOf="@+id/labelDiscount"
+        app:layout_constraintTop_toBottomOf="@+id/barrier"
         app:typographyType="display_3"
         tools:text="4.8" />
 
@@ -91,16 +98,18 @@
         android:id="@+id/tpgBullet"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingTop="4dp"
         android:paddingStart="4dp"
+        android:paddingTop="4dp"
         android:paddingEnd="4dp"
+        android:visibility="gone"
         android:paddingBottom="4dp"
         android:text="@string/shop_page_dot_character"
         android:textColor="@color/Unify_NN600"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/tpgRating"
         app:layout_constraintStart_toEndOf="@id/tpgRating"
-        app:layout_constraintTop_toBottomOf="@+id/labelDiscount"
+        app:layout_constraintTop_toTopOf="@+id/tpgRating"
         app:typographyType="display_3" />
+
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tpgProductSoldCount"
@@ -109,11 +118,10 @@
         android:paddingTop="4dp"
         android:paddingBottom="4dp"
         android:textColor="@color/Unify_NN600"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/tpgBullet"
-        app:layout_constraintTop_toBottomOf="@+id/labelDiscount"
+        app:layout_constraintTop_toBottomOf="@+id/barrier"
         app:typographyType="display_3"
         tools:text="Terjual 500" />
 
