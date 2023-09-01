@@ -9,11 +9,13 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
@@ -404,6 +406,13 @@ class MainAddressFragment :
                     setChosenAddressFromChosenAddressResponse(it.data.isStateChosenAddressChanged, it.data.chosenAddressData, it.data.tokonow)
                     showToaster(getString(R.string.toaster_remove_address_success))
                     viewModel.searchAddress(viewModel.savedQuery, prevState, it.data.chosenAddressData.addressId, true)
+                }
+
+                is ManageAddressState.Fail -> {
+                    it.throwable?.run {
+                        showToaster(message.orEmpty(), toastType = Toaster.TYPE_ERROR)
+                        logToCrashlytics(this)
+                    }
                 }
 
                 else -> {
@@ -1025,6 +1034,14 @@ class MainAddressFragment :
     private fun showToaster(message: String, toastType: Int = Toaster.TYPE_NORMAL) {
         view?.let {
             Toaster.build(it, message, Toaster.LENGTH_SHORT, toastType).show()
+        }
+    }
+
+    private fun logToCrashlytics(exception: Throwable) {
+        if (!GlobalConfig.DEBUG) {
+            FirebaseCrashlytics.getInstance().recordException(exception)
+        } else {
+            exception.printStackTrace()
         }
     }
 
