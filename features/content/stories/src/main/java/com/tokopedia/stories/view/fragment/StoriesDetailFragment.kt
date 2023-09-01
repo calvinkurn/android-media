@@ -40,6 +40,7 @@ import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction.PauseStories
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction.PreviousDetail
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction.ResumeStories
 import com.tokopedia.stories.view.viewmodel.event.StoriesUiEvent
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
@@ -124,6 +125,7 @@ class StoriesDetailFragment @Inject constructor(
                             )
                             .show(childFragmentManager)
                     }
+                    is StoriesUiEvent.ShowErrorEvent -> showToaster(message = event.message.message.orEmpty(), type = Toaster.TYPE_ERROR)
                     else -> {}
                 }
             }
@@ -298,6 +300,21 @@ class StoriesDetailFragment @Inject constructor(
         layoutTimer.llTimer.showWithCondition(isShowLoading)
         layoutDeclarative.loaderDecorativeWhite.showWithCondition(isShowLoading)
         ivStoriesDetailContent.showWithCondition(!isShowLoading)
+    }
+
+    private fun showToaster(
+        message: String,
+        type: Int = Toaster.TYPE_NORMAL,
+        actionText: String = "",
+        clickListener: View.OnClickListener = View.OnClickListener {}
+    ) {
+        Toaster.build(
+            requireView(),
+            message,
+            type = type,
+            actionText = actionText,
+            clickListener = clickListener
+        ).show()
     }
 
     override fun onDestroyView() {

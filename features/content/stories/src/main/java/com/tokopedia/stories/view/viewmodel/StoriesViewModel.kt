@@ -3,6 +3,7 @@ package com.tokopedia.stories.view.viewmodel
 import android.os.Bundle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.stories.view.model.BottomSheetStatusDefault
 import com.tokopedia.stories.view.model.BottomSheetType
 import com.tokopedia.stories.data.repository.StoriesRepository
@@ -43,6 +44,7 @@ class StoriesViewModel @Inject constructor(
     private val mGroupPos = MutableStateFlow(-1)
     private val mDetailPos = MutableStateFlow(-1)
     private val mResetValue = MutableStateFlow(-1)
+    private val combineState = MutableStateFlow(StoriesUiState.CombineState.Empty)
 
     val mGroupId: String
         get() {
@@ -67,6 +69,12 @@ class StoriesViewModel @Inject constructor(
             return _storiesGroup.value.groupItems[currPosition].detail.detailItems.size
         }
 
+    val storyId : String
+        get() {
+            val currentItem = mGroupItem.detail.detailItems
+            return currentItem.getOrNull(mGroupItem.detail.selectedDetailPosition)?.id.orEmpty()
+        }
+
     private val _uiEvent = MutableSharedFlow<StoriesUiEvent>(extraBufferCapacity = 100)
     val uiEvent: Flow<StoriesUiEvent>
         get() = _uiEvent
@@ -74,23 +82,16 @@ class StoriesViewModel @Inject constructor(
     val uiState = combine(
         _storiesGroup,
         _storiesDetail,
-        bottomSheetStatus
-    ) { storiesCategories, storiesItem, bottomSheet ->
+        bottomSheetStatus,
+        combineState,
+    ) { storiesCategories, storiesItem, bottomSheet, combineState ->
         StoriesUiState(
             storiesGroup = storiesCategories,
             storiesDetail = storiesItem,
             bottomSheetStatus = bottomSheet,
+            combineState = combineState,
         )
     }
-
-    /**
-     * TODO()
-    val storyId : String
-        get()  {
-            val currentGroup = _storiesGroup.value.firstOrNull { story -> story.selected }
-            return currentGroup?.details?.get(currentGroup.selectedDetail)?.id.orEmpty()
-        }
-    */
 
     fun submitAction(action: StoriesUiAction) {
         when (action) {
@@ -240,9 +241,20 @@ class StoriesViewModel @Inject constructor(
 
     private fun handleDeleteStory() {
         viewModelScope.launchCatchError(block = {
-            //repository.deleteStory(storyId)
-            //TODO if true emit next story else show toast
-        }, onError = {})
+            val response = repository.deleteStory(storyId)
+            if (response) {
+                //Remove story~
+                val newList = _storiesGroup.value.groupItems.map {
+                    if (it == mGroupItem) it.copy(detail = it.detail.copy(detailItems = it.detail.detailItems.filterNot { item -> item.id == storyId }))
+                    else it
+                }
+                _storiesGroup.update {
+                    group -> group.copy(groupItems = newList)
+                }
+            } else {
+                _uiEvent.emit(StoriesUiEvent.ShowErrorEvent(MessageErrorException()))
+            }
+        }, onError = { _uiEvent.emit(StoriesUiEvent.ShowErrorEvent(it)) })
     }
 
     private fun updateDetailData(

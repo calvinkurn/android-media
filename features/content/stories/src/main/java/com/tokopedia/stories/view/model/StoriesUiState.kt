@@ -1,17 +1,29 @@
 package com.tokopedia.stories.view.model
 
+import com.tokopedia.content.common.types.ResultState
+
 data class StoriesUiState(
     val storiesGroup: StoriesGroupUiModel,
     val storiesDetail: StoriesDetailUiModel,
-    val bottomSheetStatus: Map<BottomSheetType, Boolean>
+    val bottomSheetStatus: Map<BottomSheetType, Boolean>,
+    val combineState: CombineState,
 ) {
     companion object {
         val Empty
             get() = StoriesUiState(
                 storiesDetail = StoriesDetailUiModel(),
                 storiesGroup = StoriesGroupUiModel(),
-                bottomSheetStatus = BottomSheetStatusDefault
+                bottomSheetStatus = BottomSheetStatusDefault,
+                combineState = CombineState.Empty,
             )
+    }
+
+    data class CombineState(
+        val deleteState: ResultState,
+    ) {
+        companion object {
+            val Empty get() = CombineState(deleteState = ResultState.Loading)
+        }
     }
 }
 
