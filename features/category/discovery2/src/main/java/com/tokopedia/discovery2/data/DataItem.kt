@@ -34,6 +34,9 @@ data class DataItem(
     @SerializedName("target_component_id")
     var targetComponentId: String? = "",
 
+    @SerializedName("target_component_ids")
+    var targetComponentIds: List<Int> = emptyList(),
+
     @SerializedName("background_image")
     val backgroundImage: String? = "",
 

@@ -5,6 +5,7 @@ import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.Constant.Calendar.DYNAMIC
 import com.tokopedia.discovery2.Constant.Calendar.STATIC
 import com.tokopedia.discovery2.Constant.ProductTemplate.GRID
+import com.tokopedia.discovery2.Constant.PropertyType.TARGETING_BANNER
 import com.tokopedia.discovery2.Constant.TopAdsSdk.TOP_ADS_GSLP_TDN
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.Utils.Companion.areFiltersApplied
@@ -196,6 +197,14 @@ class DiscoveryPageDataMapper(
                 addPageInfoToExplicitWidget(component)
                 listComponents.add(component)
             }
+            ComponentNames.SliderBanner.componentName -> {
+                listComponents.addAll(
+                    getTargetingBannerParsed(
+                        component = component,
+                        position = position
+                    )
+                )
+            }
             else -> listComponents.add(component)
         }
         return listComponents
@@ -268,6 +277,68 @@ class DiscoveryPageDataMapper(
 
     private fun addPageInfoToExplicitWidget(component: ComponentsItem) {
         component.pageType = pageInfo.type ?: EMPTY_STRING
+    }
+
+    private fun getTargetingBannerParsed(component: ComponentsItem, position: Int): List<ComponentsItem> {
+        val listComponents: ArrayList<ComponentsItem> = ArrayList()
+        // set components item if components item is null
+        setComponentsItemTargetingBanner(
+            component = component
+        )
+        // add component
+        listComponents.add(component)
+        // add all items based on component item
+        listComponents.addAll(
+            getComponentsItemListTargetingBannerParsed(
+                component = component,
+                position = position,
+                totalData = listComponents.size
+            )
+        )
+        return listComponents
+    }
+
+    private fun setComponentsItemTargetingBanner(
+        component: ComponentsItem
+    ) {
+        if (component.getComponentsItem().isNullOrEmpty() && component.properties?.type == TARGETING_BANNER) {
+            component.setComponentsItem(
+                listComponents = DiscoveryDataMapper().mapListToComponentList(
+                    itemList = component.data.orEmpty(),
+                    subComponentName = component.name.orEmpty(),
+                    properties = component.properties,
+                    creativeName = component.creativeName,
+                    parentComponentPosition = component.position,
+                    parentSectionId = component.parentSectionId
+                )
+            )
+        }
+    }
+
+    private fun getComponentsItemListTargetingBannerParsed(
+        component: ComponentsItem,
+        position: Int,
+        totalData: Int
+    ): List<ComponentsItem> {
+        component.getComponentsItem()?.forEachIndexed { index, componentItem ->
+            componentItem.data?.firstOrNull()?.let { dataItem ->
+                if (component.itemPosition == index || component.isFirstShown) {
+                    component.isFirstShown = false
+                    dataItem.targetComponentIds.forEach { id ->
+                        getComponent(
+                            componentId = id.toString(),
+                            pageName = pageInfo.identifier.orEmpty()
+                        )?.let { component ->
+                            return parseComponent(
+                                component = component,
+                                position = position + totalData
+                            )
+                        }
+                    }
+                }
+            }
+        }
+        return emptyList()
     }
 
     private fun parseTab(component: ComponentsItem, position: Int): List<ComponentsItem> {

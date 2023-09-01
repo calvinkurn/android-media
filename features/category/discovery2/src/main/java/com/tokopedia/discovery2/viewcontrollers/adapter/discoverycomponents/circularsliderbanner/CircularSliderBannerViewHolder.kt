@@ -14,7 +14,6 @@ import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.
 import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularViewPager
 import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularViewPager.IndicatorPageChangeListener
 import com.tokopedia.circular_view_pager.presentation.widgets.pageIndicator.CircularPageIndicator
-import com.tokopedia.discovery2.Constant.PropertyType.ATF_BANNER
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.Utils.Companion.routingBasedOnMoveAction
@@ -24,6 +23,7 @@ import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.home_component.customview.bannerindicator.BannerIndicator
 import com.tokopedia.home_component.customview.bannerindicator.BannerIndicatorListener
 import com.tokopedia.home_component.viewholders.BannerComponentViewHolder.Companion.FLING_DURATION
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.kotlin.extensions.view.show
@@ -42,7 +42,7 @@ class CircularSliderBannerViewHolder(itemView: View, val fragment: Fragment) : A
     private var debounceHandler = Handler(Looper.getMainLooper())
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
-        sliderBannerViewModel = discoveryBaseViewModel as CircularSliderBannerViewModel
+        sliderBannerViewModel = discoveryBaseViewModel as? CircularSliderBannerViewModel
         sliderBannerViewModel?.getItemsList()?.let {
             sendBannerImpression()
             cvSliderBanner.setAdapter(bannerCircularAdapter)
@@ -65,6 +65,11 @@ class CircularSliderBannerViewHolder(itemView: View, val fragment: Fragment) : A
                     sliderBannerTitle.setTextAndCheckShow(item)
                 }
             )
+            sliderBannerViewModel?.getSyncPageLiveData()?.observe(
+                it
+            ) { needResync ->
+                if (needResync) (fragment as? DiscoveryFragment)?.reSync()
+            }
         }
     }
 
@@ -77,7 +82,7 @@ class CircularSliderBannerViewHolder(itemView: View, val fragment: Fragment) : A
 
     private fun setUpIndicator(item: ArrayList<CircularModel>) {
         if (item.size > 1) {
-            if (sliderBannerViewModel?.getPropertyType() == ATF_BANNER) {
+            if (sliderBannerViewModel?.isExpandableIndicatorNeeded().orFalse()) {
                 setBannerExpandableIndicatorAnimation(item)
             } else {
                 setBannerIndicatorAnimation()
@@ -105,6 +110,7 @@ class CircularSliderBannerViewHolder(itemView: View, val fragment: Fragment) : A
 
                 override fun onChangeCurrentPosition(position: Int) {
                     cvSliderBanner.setCurrentPosition(position)
+                    sliderBannerViewModel?.onBannerChanged(position)
                 }
             }
         )

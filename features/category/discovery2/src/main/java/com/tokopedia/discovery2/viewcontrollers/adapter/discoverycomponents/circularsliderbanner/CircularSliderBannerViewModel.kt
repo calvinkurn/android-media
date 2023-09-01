@@ -4,6 +4,8 @@ import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularModel
+import com.tokopedia.discovery2.Constant.PropertyType.ATF_BANNER
+import com.tokopedia.discovery2.Constant.PropertyType.TARGETING_BANNER
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.discoveryext.checkForNullAndSize
@@ -11,6 +13,10 @@ import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 
 class CircularSliderBannerViewModel(application: Application, val components: ComponentsItem,private val position: Int) : DiscoveryBaseViewModel() {
+    private companion object {
+        const val INITIAL_POSITION = 1
+    }
+
     private val title: MutableLiveData<String> = MutableLiveData()
     init {
         title.value = components.title
@@ -35,9 +41,18 @@ class CircularSliderBannerViewModel(application: Application, val components: Co
         return null
     }
 
-    fun getPropertyType(): String {
-        return components.properties?.type.orEmpty()
+    fun isExpandableIndicatorNeeded(): Boolean = getPropertyType() == ATF_BANNER || getPropertyType() == TARGETING_BANNER
+
+    fun onBannerChanged(position: Int) {
+        components.itemPosition = position - INITIAL_POSITION
+        if (getPropertyType() == TARGETING_BANNER) {
+            this.syncData.value = true
+        }
     }
 
     fun getComponentPosition() = position
+
+    private fun getPropertyType(): String {
+        return components.properties?.type.orEmpty()
+    }
 }
