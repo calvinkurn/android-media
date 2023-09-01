@@ -1530,6 +1530,78 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
                 }
             )
         )
+        assertEquals(
+            false,
+            viewModel.shouldAutoLoadCourier(
+                CheckoutOrderModel("123", shippingId = 1),
+                RecipientAddressModel().apply {
+                    this.isTradeIn = true
+                    this.selectedTabIndex = 1
+                }
+            )
+        )
+        assertEquals(
+            false,
+            viewModel.shouldAutoLoadCourier(
+                CheckoutOrderModel("123", shippingId = 1, spId = 1),
+                RecipientAddressModel().apply {
+                    this.isTradeIn = true
+                    this.selectedTabIndex = 1
+                }
+            )
+        )
+        assertEquals(
+            true,
+            viewModel.shouldAutoLoadCourier(
+                CheckoutOrderModel("123", shippingId = 1, spId = 1),
+                RecipientAddressModel().apply {
+                    this.isTradeIn = true
+                    this.selectedTabIndex = 1
+                    this.dropOffAddressName = "a"
+                }
+            )
+        )
+        assertEquals(
+            false,
+            viewModel.shouldAutoLoadCourier(
+                CheckoutOrderModel("123", shippingId = 1, spId = 1),
+                RecipientAddressModel().apply {
+                    this.isTradeIn = true
+                    this.selectedTabIndex = 0
+                }
+            )
+        )
+        assertEquals(
+            false,
+            viewModel.shouldAutoLoadCourier(
+                CheckoutOrderModel("123", shippingId = 1),
+                RecipientAddressModel().apply {
+                    this.isTradeIn = true
+                    this.selectedTabIndex = 0
+                }
+            )
+        )
+        assertEquals(
+            false,
+            viewModel.shouldAutoLoadCourier(
+                CheckoutOrderModel("123"),
+                RecipientAddressModel().apply {
+                    this.isTradeIn = true
+                    this.selectedTabIndex = 1
+                }
+            )
+        )
+        assertEquals(
+            true,
+            viewModel.shouldAutoLoadCourier(
+                CheckoutOrderModel("123", shippingId = 1, spId = 1),
+                RecipientAddressModel().apply {
+                    this.isTradeIn = true
+                    this.selectedTabIndex = 0
+                    this.provinceName = "a"
+                }
+            )
+        )
     }
 
     @Test

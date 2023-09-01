@@ -380,7 +380,6 @@ class CheckoutOrderViewHolder(
     }
 
     private fun renderErrorPinpointCourier() {
-//        binding.containerShippingOptions.root.visibility = View.VISIBLE
         binding.shippingWidget.renderErrorPinpointCourier()
     }
 
