@@ -43,6 +43,7 @@ import com.tokopedia.kyc_centralized.ui.gotoKyc.utils.getGotoKycErrorMessage
 import com.tokopedia.kyc_centralized.ui.gotoKyc.utils.removeGotoKycImage
 import com.tokopedia.kyc_centralized.ui.gotoKyc.utils.removeGotoKycPreference
 import com.tokopedia.kyc_centralized.util.KycSharedPreference
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
@@ -60,6 +61,9 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
     lateinit var kycSharedPreference: KycSharedPreference
 
     @Inject
+    lateinit var userSessionInterface: UserSessionInterface
+
+    @Inject
     lateinit var oneKycSdk: OneKycSdk
 
     private var isReVerify = false
@@ -73,6 +77,17 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
             }
             else -> {
                 finishWithResult(result.resultCode)
+            }
+        }
+    }
+
+    private val startLoginForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+        when (result.resultCode) {
+            Activity.RESULT_OK -> {
+                saveInitDataToPreference()
+            }
+            else -> {
+                finishWithResult(Activity.RESULT_CANCELED)
             }
         }
     }
@@ -132,8 +147,24 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
             viewModel.setProjectId(projectId)
             viewModel.setSource(source.orEmpty())
 
-            saveInitDataToPreference()
+            handleRequireLogin()
         }
+    }
+
+    private fun handleRequireLogin() {
+        if (userSessionInterface.isLoggedIn) {
+            saveInitDataToPreference()
+        } else {
+            gotoLogin()
+        }
+    }
+
+    private fun gotoLogin() {
+        val intent = RouteManager.getIntent(
+            context,
+            ApplinkConstInternalUserPlatform.LOGIN
+        )
+        startLoginForResult.launch(intent)
     }
 
     private fun saveInitDataToPreference() {
