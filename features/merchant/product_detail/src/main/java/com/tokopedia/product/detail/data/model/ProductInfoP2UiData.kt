@@ -5,7 +5,6 @@ import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.product.detail.data.model.bmgm.BMGMData
 import com.tokopedia.product.detail.common.data.model.ar.ProductArInfo
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkir
-import com.tokopedia.product.detail.common.data.model.bundleinfo.BundleInfo
 import com.tokopedia.product.detail.common.data.model.carttype.AlternateCopy
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimate
@@ -62,7 +61,6 @@ data class ProductInfoP2UiData(
     var helpfulReviews: List<Review>? = null,
     var miniCart: MutableMap<String, MiniCartItem.MiniCartItemProduct>? = null,
     var alternateCopy: List<AlternateCopy> = listOf(),
-    var bundleInfoMap: Map<String, BundleInfo> = emptyMap(),
     var rating: ProductRatingCount = ProductRatingCount(),
     var ticker: ProductTicker = ProductTicker(),
     var navBar: NavBar = NavBar(),

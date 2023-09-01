@@ -19,7 +19,6 @@ import com.tokopedia.product.detail.data.model.datamodel.OngoingCampaignDataMode
 import com.tokopedia.product.detail.data.model.datamodel.PageErrorDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PdpComparisonWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PdpRecommendationWidgetDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductBundlingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductCategoryCarouselDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductCustomInfoDataModel
@@ -61,7 +60,6 @@ import com.tokopedia.product.detail.view.viewholder.PageErrorViewHolder
 import com.tokopedia.product.detail.view.viewholder.PdpComparisonWidgetViewHolder
 import com.tokopedia.product.detail.view.viewholder.PdpRecommendationWidgetViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductArViewHolder
-import com.tokopedia.product.detail.view.viewholder.ProductBundlingViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductCategoryCarouselViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductContentViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductCustomInfoTitleViewHolder
@@ -210,10 +208,6 @@ class DynamicProductDetailAdapterFactoryImpl(
         return TopAdsHeadlineViewHolder.LAYOUT
     }
 
-    override fun type(data: ProductBundlingDataModel): Int {
-        return ProductBundlingViewHolder.LAYOUT
-    }
-
     override fun type(data: ContentWidgetDataModel): Int {
         return ContentWidgetViewHolder.LAYOUT
     }
@@ -339,7 +333,6 @@ class DynamicProductDetailAdapterFactoryImpl(
                 listener
             )
             TopAdsHeadlineViewHolder.LAYOUT -> TopAdsHeadlineViewHolder(view, userId, listener)
-            ProductBundlingViewHolder.LAYOUT -> ProductBundlingViewHolder(view, listener)
             ContentWidgetViewHolder.LAYOUT -> {
                 val playWidgetView: View? = view.findViewById(R.id.pdp_play_widget_view)
                 if (playWidgetView != null) {

@@ -13,8 +13,6 @@ import com.tokopedia.product.detail.postatc.data.model.PostAtcLayout
 import com.tokopedia.product.detail.postatc.mapper.mapToUiModel
 import com.tokopedia.product.detail.postatc.mapper.toUserLocationRequest
 import com.tokopedia.product.detail.postatc.usecase.GetPostAtcLayoutUseCase
-import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
-import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.viewutil.asFail
 import com.tokopedia.recommendation_widget_common.viewutil.asSuccess
@@ -23,7 +21,6 @@ import javax.inject.Inject
 
 class PostAtcViewModel @Inject constructor(
     private val getPostAtcLayoutUseCase: GetPostAtcLayoutUseCase,
-    private val getRecommendationUseCase: GetRecommendationUseCase,
     dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
@@ -80,30 +77,6 @@ class PostAtcViewModel @Inject constructor(
             val uiModels = result.components.mapToUiModel(postAtcInfo)
             _layouts.value = uiModels.asSuccess()
         }, onError = { _layouts.value = it.asFail() })
-    }
-
-    fun fetchRecommendation(
-        productId: String,
-        pageName: String,
-        uniqueId: Int,
-        queryParam: String
-    ) {
-        launchCatchError(block = {
-            val requestParams = GetRecommendationRequestParam(
-                pageName = pageName,
-                productIds = listOf(productId),
-                queryParam = queryParam
-            )
-            val result = getRecommendationUseCase.getData(requestParams)
-            if (result.isEmpty()) throw Throwable()
-
-            val widget = result.first()
-            if (widget.recommendationItemList.isEmpty()) throw Throwable()
-
-            _recommendations.value = uniqueId to widget.asSuccess()
-        }, onError = {
-                _recommendations.value = uniqueId to it.asFail()
-            })
     }
 
     private fun updateInfo(data: PostAtcLayout) {
