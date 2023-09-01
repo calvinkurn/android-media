@@ -10,7 +10,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/bmgmBundledProduct"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:background="@drawable/bg_bmgm_mini_cart_upselling_group"
         android:padding="4dp">
 
@@ -31,7 +31,7 @@
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvBmgmBundledDiscount"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_marginTop="30dp"
             android:background="@drawable/bg_bmgm_mini_cart_upselling_discount"
             android:gravity="center"
@@ -39,9 +39,11 @@
             android:textColor="@color/Unify_NN0"
             android:textSize="8sp"
             android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/rvBmgmBundledProduct"
             app:layout_constraintStart_toStartOf="@+id/rvBmgmBundledProduct"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1"
             tools:ignore="SmallSp"
             tools:text="diskon 25%" />
     </androidx.constraintlayout.widget.ConstraintLayout>
