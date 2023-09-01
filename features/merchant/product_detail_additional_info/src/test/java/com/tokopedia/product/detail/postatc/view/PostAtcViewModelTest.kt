@@ -218,6 +218,7 @@ class PostAtcViewModelTest {
         val productId = "111"
         val pageName = "pdp_atc_1"
         val uniqueId = 1234
+        val queryParam = ""
 
         val recomItem = RecommendationItem()
         val recomWidget = RecommendationWidget(
@@ -236,7 +237,7 @@ class PostAtcViewModelTest {
             getRecommendationUseCase.getData(requestParam)
         } returns response
 
-        viewModel.fetchRecommendation(productId, pageName, uniqueId)
+        viewModel.fetchRecommendation(productId, pageName, uniqueId, queryParam)
 
         val result = viewModel.recommendations.value
         Assert.assertEquals(uniqueId, result?.first)
@@ -251,7 +252,7 @@ class PostAtcViewModelTest {
         val productId = "111"
         val pageName = "pdp_atc_1"
         val uniqueId = 1234
-
+        val queryParam = ""
         val requestParam = GetRecommendationRequestParam(
             pageNumber = 1,
             pageName = pageName,
@@ -264,7 +265,7 @@ class PostAtcViewModelTest {
             getRecommendationUseCase.getData(requestParam)
         } throws Throwable(errorMessage)
 
-        viewModel.fetchRecommendation(productId, pageName, uniqueId)
+        viewModel.fetchRecommendation(productId, pageName, uniqueId, queryParam)
 
         val result = viewModel.recommendations.value
         Assert.assertEquals(uniqueId, result?.first)
@@ -276,7 +277,7 @@ class PostAtcViewModelTest {
         val productId = "111"
         val pageName = "pdp_atc_1"
         val uniqueId = 1234
-
+        val queryParam = ""
         val requestParam = GetRecommendationRequestParam(
             pageNumber = 1,
             pageName = pageName,
@@ -289,7 +290,7 @@ class PostAtcViewModelTest {
             getRecommendationUseCase.getData(requestParam)
         } returns response
 
-        viewModel.fetchRecommendation(productId, pageName, uniqueId)
+        viewModel.fetchRecommendation(productId, pageName, uniqueId, queryParam)
 
         val result = viewModel.recommendations.value
         Assert.assertEquals(uniqueId, result?.first)
@@ -301,7 +302,7 @@ class PostAtcViewModelTest {
         val productId = "111"
         val pageName = "pdp_atc_1"
         val uniqueId = 1234
-
+        val queryParam = ""
         val recomWidget = RecommendationWidget()
 
         val requestParam = GetRecommendationRequestParam(
@@ -316,7 +317,7 @@ class PostAtcViewModelTest {
             getRecommendationUseCase.getData(requestParam)
         } returns response
 
-        viewModel.fetchRecommendation(productId, pageName, uniqueId)
+        viewModel.fetchRecommendation(productId, pageName, uniqueId, queryParam)
 
         val result = viewModel.recommendations.value
         Assert.assertEquals(uniqueId, result?.first)
