@@ -450,6 +450,7 @@ class CartGroupViewHolder(
                 }
             }
         } else {
+            cartGroupHolderData.cartShopGroupTicker.state = CartShopGroupTickerState.FIRST_LOAD
             binding.itemCartBasketBuilding.layoutBasketBuildingTicker.gone()
         }
     }
