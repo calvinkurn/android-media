@@ -993,7 +993,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         mapOfData.filterValues { it is ProductRecommendationDataModel }.keys.forEach { key ->
             val productRecom = (mapOfData[key] as ProductRecommendationDataModel).copy()
             productRecom.recomWidgetData?.let { recomData ->
-                if (recomData.layoutType == LAYOUTTYPE_HORIZONTAL_ATC) {
+                if (recomData.hasQuantityEditor()) {
                     updateRecomWidgetQtyDataFromMiniCart(recomData.copy(), miniCart, key)
                 }
             }

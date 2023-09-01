@@ -274,6 +274,7 @@ import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormReque
 import com.tokopedia.recommendation_widget_common.RecommendationTypeConst
 import com.tokopedia.recommendation_widget_common.affiliate.RecommendationNowAffiliateData
 import com.tokopedia.recommendation_widget_common.extension.DEFAULT_QTY_1
+import com.tokopedia.recommendation_widget_common.extension.PAGENAME_IDENTIFIER_RECOM_ATC
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -1115,7 +1116,18 @@ open class DynamicProductDetailFragment :
     }
 
     private fun reloadMiniCart() {
-        if (viewModel.getDynamicProductInfoP1 == null || context == null || viewModel.getDynamicProductInfoP1?.basic?.isTokoNow == false || firstOpenPage == true || !viewModel.isUserSessionActive) return
+        val hasQuantityEditor =
+            viewModel.getDynamicProductInfoP1?.basic?.isTokoNow == true
+                || (viewModel.productLayout.value as? Success<List<DynamicPdpDataModel>>)
+                    ?.data
+                    ?.any { it.name().contains(PAGENAME_IDENTIFIER_RECOM_ATC) } == true
+
+        if (viewModel.getDynamicProductInfoP1 == null
+            || context == null
+            || !hasQuantityEditor
+            || firstOpenPage == true
+            || !viewModel.isUserSessionActive) return
+
         val data = viewModel.getDynamicProductInfoP1
         viewModel.getMiniCart(data?.basic?.shopID ?: "")
     }
