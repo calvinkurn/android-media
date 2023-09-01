@@ -8,7 +8,7 @@ import java.util.Date
 @SuppressLint("SimpleDateFormat")
 data class ShopFlashSaleTimerDataModel (
     val endDate: String = "",
-    val format: SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZZZZ"),
+    val format: SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ssZZZZ"),
     val isLoading: Boolean = false,
 ) {
     val expiredTime: Date
