@@ -5,9 +5,9 @@ import com.tokopedia.catalogcommon.util.colorMapping
 import com.tokopedia.catalogcommon.util.stringHexColorParseToInt
 
 data class ExpertReviewUiModel(
-    override var idWidget: String,
-    override var widgetType: String,
-    override var widgetName: String,
+    override var idWidget: String = "",
+    override var widgetType: String = "",
+    override var widgetName: String = "",
     override var widgetBackgroundColor: Int? = null,
     override var widgetTextColor: Int? = null,
     override var darkMode: Boolean = false,
