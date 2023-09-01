@@ -26,6 +26,7 @@ import com.tokopedia.autocompletecomponent.suggestion.topshop.SuggestionTopShopL
 import com.tokopedia.autocompletecomponent.util.HasViewModelFactory
 import com.tokopedia.autocompletecomponent.util.OnScrollListenerAutocomplete
 import com.tokopedia.autocompletecomponent.util.SCREEN_UNIVERSEARCH
+import com.tokopedia.autocompletecomponent.util.SuggestionMPSListener
 import com.tokopedia.autocompletecomponent.util.getModifiedApplink
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
@@ -56,8 +57,10 @@ class SuggestionFragment :
         @JvmStatic
         fun create(
             component: SuggestionComponent,
+            mpsListener: SuggestionMPSListener
         ) = SuggestionFragment().apply {
             component.inject(this)
+            mpsSuggestionListener = mpsListener
         }
     }
 
@@ -104,6 +107,10 @@ class SuggestionFragment :
     }
 
     private var coachMark: CoachMark2? = null
+
+    private var mpsSuggestionListener: SuggestionMPSListener? = null
+
+    private var isMps: Boolean= false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -196,9 +203,9 @@ class SuggestionFragment :
         outState.putString(ACTIVE_KEYWORD_VALUE, activeKeyword.keyword)
     }
 
-    fun getSuggestion(searchParameter: Map<String, String>, activeKeyword: SearchBarKeyword) {
+    fun getSuggestion(searchParameter: Map<String, String>, activeKeyword: SearchBarKeyword, isMps: Boolean) {
         performanceMonitoring = PerformanceMonitoring.start(MP_SEARCH_AUTOCOMPLETE)
-
+        this.isMps = isMps
         presenter?.getSuggestion(searchParameter, activeKeyword)
     }
 
@@ -211,7 +218,11 @@ class SuggestionFragment :
     }
 
     override fun onItemClicked(item: BaseSuggestionDataView) {
-        presenter?.onSuggestionItemClicked(item)
+        if(isMps) {
+            mpsSuggestionListener?.clickSuggestionMPS(item)
+        } else {
+            presenter?.onSuggestionItemClicked(item)
+        }
     }
 
     override fun onChipImpressed(item: BaseSuggestionDataView.ChildItem) {

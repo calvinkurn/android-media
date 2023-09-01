@@ -42,6 +42,7 @@ import com.tokopedia.autocompletecomponent.searchbar.SearchBarKeywordListener
 import com.tokopedia.autocompletecomponent.searchbar.SearchBarState
 import com.tokopedia.autocompletecomponent.searchbar.SearchBarView
 import com.tokopedia.autocompletecomponent.searchbar.SearchBarViewModel
+import com.tokopedia.autocompletecomponent.suggestion.BaseSuggestionDataView
 import com.tokopedia.autocompletecomponent.suggestion.SuggestionFragment
 import com.tokopedia.autocompletecomponent.suggestion.SuggestionFragment.Companion.SUGGESTION_FRAGMENT_TAG
 import com.tokopedia.autocompletecomponent.suggestion.SuggestionFragment.SuggestionViewUpdateListener
@@ -49,6 +50,7 @@ import com.tokopedia.autocompletecomponent.suggestion.di.DaggerSuggestionCompone
 import com.tokopedia.autocompletecomponent.suggestion.di.SuggestionComponent
 import com.tokopedia.autocompletecomponent.suggestion.di.SuggestionViewListenerModule
 import com.tokopedia.autocompletecomponent.util.HasViewModelFactory
+import com.tokopedia.autocompletecomponent.util.SuggestionMPSListener
 import com.tokopedia.autocompletecomponent.util.UrlParamHelper
 import com.tokopedia.autocompletecomponent.util.addComponentId
 import com.tokopedia.autocompletecomponent.util.addQueryIfEmpty
@@ -69,6 +71,7 @@ import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.discovery.common.utils.Dimension90Utils
 import com.tokopedia.discovery.common.utils.UrlParamUtils.isTokoNow
 import com.tokopedia.iris.IrisAnalytics
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
@@ -83,6 +86,7 @@ open class BaseAutoCompleteActivity: BaseActivity(),
     InitialStateViewUpdateListener,
     SearchBarKeywordListener,
     SearchBarView.SearchBarViewListener,
+    SuggestionMPSListener,
     HasViewModelFactory {
 
     private val searchBarView by lazy {
@@ -259,7 +263,7 @@ open class BaseAutoCompleteActivity: BaseActivity(),
         val suggestionComponent = createSuggestionComponent()
 
         val initialStateFragment = InitialStateFragment.create(initialStateComponent)
-        val suggestionFragment = SuggestionFragment.create(suggestionComponent)
+        val suggestionFragment = SuggestionFragment.create(suggestionComponent, this)
 
         commitFragments(initialStateFragment, suggestionFragment)
     }
@@ -509,7 +513,8 @@ open class BaseAutoCompleteActivity: BaseActivity(),
             getInitialStateFragment()?.show(searchParameterMap)
         } else {
             val activeKeyword = viewModel?.activeKeyword ?: return
-            getSuggestionFragment()?.getSuggestion(searchParameterMap, activeKeyword)
+            val isMps = viewModel?.isMps().orFalse()
+            getSuggestionFragment()?.getSuggestion(searchParameterMap, activeKeyword, isMps)
         }
     }
 
@@ -721,6 +726,10 @@ open class BaseAutoCompleteActivity: BaseActivity(),
                 CoachMark2.POSITION_BOTTOM
             )
         )
+    }
+
+    override fun clickSuggestionMPS(item: BaseSuggestionDataView) {
+        viewModel?.onKeywordAdded(item.title)
     }
 
     companion object {

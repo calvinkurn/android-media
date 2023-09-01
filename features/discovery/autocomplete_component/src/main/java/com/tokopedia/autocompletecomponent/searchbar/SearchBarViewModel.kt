@@ -387,6 +387,11 @@ class SearchBarViewModel @Inject constructor(
         }
     }
 
+    fun isMps(): Boolean {
+        val currentKeywords = _searchBarKeywords.value ?: emptyList()
+        return currentKeywords.isNotEmpty()
+    }
+
     companion object {
         private const val SEARCH_PARAMETER_DELAY_MS: Long = 200
     }
