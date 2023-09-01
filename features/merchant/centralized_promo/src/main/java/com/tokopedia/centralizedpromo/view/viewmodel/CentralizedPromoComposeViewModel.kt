@@ -13,18 +13,18 @@ import com.tokopedia.centralizedpromo.domain.usecase.PromoPlayAuthorConfigUseCas
 import com.tokopedia.centralizedpromo.view.LayoutType
 import com.tokopedia.centralizedpromo.view.LayoutType.ON_GOING_PROMO
 import com.tokopedia.centralizedpromo.view.LayoutType.PROMO_CREATION
-import com.tokopedia.centralizedpromo.view.LoadingType
 import com.tokopedia.centralizedpromo.view.PromoCreationMapper
 import com.tokopedia.centralizedpromo.view.fragment.CentralizedPromoFragment
 import com.tokopedia.centralizedpromo.view.model.BaseUiModel
 import com.tokopedia.centralizedpromo.view.model.CentralizedPromoEvent
 import com.tokopedia.centralizedpromo.view.model.CentralizedPromoEvent.CoachMarkShown
 import com.tokopedia.centralizedpromo.view.model.CentralizedPromoEvent.FilterUpdate
+import com.tokopedia.centralizedpromo.view.model.CentralizedPromoEvent.LoadOnGoingPromo
+import com.tokopedia.centralizedpromo.view.model.CentralizedPromoEvent.LoadPromoCreation
 import com.tokopedia.centralizedpromo.view.model.CentralizedPromoEvent.UpdateRbacBottomSheet
+import com.tokopedia.centralizedpromo.view.model.CentralizedPromoResult
+import com.tokopedia.centralizedpromo.view.model.CentralizedPromoResult.Loading
 import com.tokopedia.centralizedpromo.view.model.CentralizedPromoUiState
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -46,7 +46,7 @@ class CentralizedPromoComposeViewModel @Inject constructor(
     private val dispatcher: CoroutineDispatchers
 ) : ViewModel() {
 
-    private val _layoutList = MutableStateFlow(CentralizedPromoUiState(isLoading = LoadingType.ALL))
+    private val _layoutList = MutableStateFlow(CentralizedPromoUiState())
     val layoutList = _layoutList.asStateFlow()
 
     private val _toasterState = MutableSharedFlow<Boolean>()
@@ -71,6 +71,12 @@ class CentralizedPromoComposeViewModel @Inject constructor(
             }
             is CoachMarkShown -> {
                 setKeyRBAC(event.key + CENTRALIZED_PROMO_COACHMARK_KEY)
+            }
+            is LoadPromoCreation -> {
+                loadPromoCreation()
+            }
+            is LoadOnGoingPromo -> {
+                loadOnGoingPromo()
             }
             else -> {
                 swipeToRefresh()
@@ -100,7 +106,7 @@ class CentralizedPromoComposeViewModel @Inject constructor(
         _layoutList.update {
             it.copy(
                 selectedTabFilterData = selectedTabFilterData,
-                isLoading = LoadingType.PROMO_LIST
+                promoCreationData = Loading
             )
         }
         getOnGoingOrPromoCreation(
@@ -109,11 +115,38 @@ class CentralizedPromoComposeViewModel @Inject constructor(
         )
     }
 
+    private fun loadOnGoingPromo() {
+        _layoutList.update {
+            it.copy(
+                onGoingData = Loading
+            )
+        }
+
+        getOnGoingOrPromoCreation(
+            ON_GOING_PROMO,
+            tabId = _layoutList.value.selectedTabId()
+        )
+    }
+
+    private fun loadPromoCreation() {
+        _layoutList.update {
+            it.copy(
+                promoCreationData = Loading
+            )
+        }
+
+        getOnGoingOrPromoCreation(
+            PROMO_CREATION,
+            tabId = _layoutList.value.selectedTabId()
+        )
+    }
+
     private fun swipeToRefresh() {
         _layoutList.update {
             it.copy(
                 isSwipeRefresh = true,
-                isLoading = LoadingType.ALL
+                promoCreationData = Loading,
+                onGoingData = Loading
             )
         }
 
@@ -141,11 +174,13 @@ class CentralizedPromoComposeViewModel @Inject constructor(
                     }
                 }
 
-                if (updatedState.onGoingData is Fail || updatedState.promoCreationData is Fail) {
+                if (updatedState.onGoingData is CentralizedPromoResult.Fail
+                    || updatedState.promoCreationData is CentralizedPromoResult.Fail
+                ) {
                     showToasterState()
                 }
 
-                updatedState.copy(isLoading = LoadingType.NONE, isSwipeRefresh = false)
+                updatedState.copy(isSwipeRefresh = false)
             }
         }
     }
@@ -161,21 +196,26 @@ class CentralizedPromoComposeViewModel @Inject constructor(
         PROMO_CREATION -> getPromoCreation(tabId)
     }
 
-    private suspend fun getOnGoingPromotion(): Result<BaseUiModel> {
+    private suspend fun getOnGoingPromotion(): CentralizedPromoResult<BaseUiModel> {
         return try {
             getOnGoingPromotionUseCase.params =
                 GetOnGoingPromotionUseCase.getRequestParams(false)
-            Success(getOnGoingPromotionUseCase.executeOnBackground())
+            val result = getOnGoingPromotionUseCase.executeOnBackground()
+            if (result.items.isEmpty()) {
+                CentralizedPromoResult.Empty
+            } else {
+                CentralizedPromoResult.Success(getOnGoingPromotionUseCase.executeOnBackground())
+            }
         } catch (e: Throwable) {
             CentralizedPromoErrorHandler.logException(
                 e,
                 String.format(CentralizedPromoFragment.ERROR_GET_LAYOUT_DATA, ON_GOING_PROMO)
             )
-            Fail(e)
+            CentralizedPromoResult.Fail(e, e.message.toString())
         }
     }
 
-    private suspend fun getPromoCreation(tabId: String): Result<BaseUiModel> {
+    private suspend fun getPromoCreation(tabId: String): CentralizedPromoResult<BaseUiModel> {
         return try {
             val responseDeferred =
                 viewModelScope.async {
@@ -188,13 +228,17 @@ class CentralizedPromoComposeViewModel @Inject constructor(
                 responseDeferred.await(),
                 hasPlayContentDeferred.await()
             )
-            Success(promotionListUiModel)
+            if (promotionListUiModel.items.isEmpty()) {
+                CentralizedPromoResult.Empty
+            } else {
+                CentralizedPromoResult.Success(promotionListUiModel)
+            }
         } catch (e: Throwable) {
             CentralizedPromoErrorHandler.logException(
                 e,
                 String.format(CentralizedPromoFragment.ERROR_GET_LAYOUT_DATA, PROMO_CREATION)
             )
-            Fail(e)
+            CentralizedPromoResult.Fail(e, e.message.toString())
         }
 
     }

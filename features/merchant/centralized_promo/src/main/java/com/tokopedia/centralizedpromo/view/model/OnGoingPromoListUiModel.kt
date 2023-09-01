@@ -1,9 +1,11 @@
 package com.tokopedia.centralizedpromo.view.model
 
+import androidx.compose.runtime.Immutable
 import com.tokopedia.centralizedpromo.view.adapter.CentralizedPromoAdapterTypeFactory
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.nest.principles.utils.ImpressionHolder
 
+@Immutable
 data class OnGoingPromoListUiModel(
         val title: String,
         override val items: List<OnGoingPromoUiModel>,

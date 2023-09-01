@@ -33,8 +33,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Devices
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.FragmentActivity
 import com.tokopedia.applink.ApplinkConst
@@ -44,20 +42,16 @@ import com.tokopedia.centralizedpromo.R.drawable
 import com.tokopedia.centralizedpromo.R.string
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoTracking
 import com.tokopedia.centralizedpromo.view.LayoutType.PROMO_CREATION
-import com.tokopedia.centralizedpromo.view.LoadingType
-import com.tokopedia.centralizedpromo.view.LoadingType.ALL
 import com.tokopedia.centralizedpromo.view.bottomSheet.DetailPromoBottomSheet
 import com.tokopedia.centralizedpromo.view.fragment.CentralizedPromoFragment
 import com.tokopedia.centralizedpromo.view.model.BaseUiModel
 import com.tokopedia.centralizedpromo.view.model.CentralizedPromoEvent
+import com.tokopedia.centralizedpromo.view.model.CentralizedPromoResult
 import com.tokopedia.centralizedpromo.view.model.CentralizedPromoUiState
 import com.tokopedia.centralizedpromo.view.model.FilterPromoUiModel
-import com.tokopedia.centralizedpromo.view.model.Footer
 import com.tokopedia.centralizedpromo.view.model.OnGoingPromoListUiModel
-import com.tokopedia.centralizedpromo.view.model.OnGoingPromoUiModel
 import com.tokopedia.centralizedpromo.view.model.PromoCreationListUiModel
 import com.tokopedia.centralizedpromo.view.model.PromoCreationUiModel
-import com.tokopedia.centralizedpromo.view.model.Status
 import com.tokopedia.header.compose.NestHeader
 import com.tokopedia.header.compose.NestHeaderType
 import com.tokopedia.nest.components.CoachMarkAnchor
@@ -65,9 +59,6 @@ import com.tokopedia.nest.components.coachmarkableOn
 import com.tokopedia.nest.principles.utils.addImpression
 import com.tokopedia.sortfilter.compose.NestSortFilter
 import com.tokopedia.sortfilter.compose.SortFilter
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
 import java.util.*
 
 /**
@@ -122,8 +113,7 @@ fun CentralizedPromoScreen(
                 ) {
 
                     HeaderSection(
-                        uiState.onGoingData,
-                        uiState.isLoadingHeader(),
+                        onGoingResult = uiState.onGoingData,
                         onGoingPromoImpressed = {
                             impressOnGoingPromo(it)
                         },
@@ -133,16 +123,13 @@ fun CentralizedPromoScreen(
                             )
                         },
                         onLocalLoadRefreshClicked = {
-                            if (!uiState.isSwipeRefresh) {
-                                onEvent.invoke(CentralizedPromoEvent.SwipeRefresh)
-                            }
+                            onEvent.invoke(CentralizedPromoEvent.LoadOnGoingPromo)
                         }
                     )
 
                     BodySection(
                         promoCreationData = uiState.promoCreationData,
                         selectedTabId = uiState.selectedTabId(),
-                        isLoadingPromoList = uiState.isLoadingBody(),
                         onFilterClicked = { tabData ->
                             CentralizedPromoTracking.sendClickFilter(tabData.first)
                             onEvent.invoke(
@@ -165,23 +152,20 @@ fun CentralizedPromoScreen(
                             impressPromoCreation(it, uiState.selectedTabName())
                         },
                         onLocalLoadRefreshClicked = {
-                            if (!uiState.isSwipeRefresh) {
-                                onEvent.invoke(CentralizedPromoEvent.SwipeRefresh)
-                            }
-                        },
-                        coachMarkListener = { pageId ->
-                            //disable coachmarlableOn when we don't have to show coachmark anymore
-                            if (enableCoachMark) {
-                                Modifier.coachmarkableOn(
-                                    pageId == PromoCreationUiModel.PAGE_ID_SHOP_COUPON
-                                ) {
-                                    coachMarkAnchor.invoke(it, pageId)
-                                }
-                            } else {
-                                Modifier
-                            }
+                            onEvent.invoke(CentralizedPromoEvent.LoadPromoCreation)
                         }
-                    )
+                    ) { pageId ->
+                        //disable coachmarlableOn when we don't have to show coachmark anymore
+                        if (enableCoachMark) {
+                            Modifier.coachmarkableOn(
+                                pageId == PromoCreationUiModel.PAGE_ID_SHOP_COUPON
+                            ) {
+                                coachMarkAnchor.invoke(it, pageId)
+                            }
+                        } else {
+                            Modifier
+                        }
+                    }
                 }
 
                 PullRefreshIndicator(
@@ -284,42 +268,47 @@ private fun getPlayPerformanceApplink(): String {
 
 
 private fun LazyGridScope.BodySection(
-    promoCreationData: Result<BaseUiModel>?,
+    promoCreationData: CentralizedPromoResult<BaseUiModel>,
     selectedTabId: String,
-    isLoadingPromoList: Boolean,
     onFilterClicked: (Pair<String, String>) -> Unit,
     onPromoClicked: (PromoCreationUiModel) -> Unit,
     promoCreationImpressed: (String) -> Unit,
     onLocalLoadRefreshClicked: () -> Unit,
     coachMarkListener: (String) -> Modifier
 ) {
-    val promoCreationDataCast = (promoCreationData as? Success)?.data as? PromoCreationListUiModel
 
-    TitleBody()
-
-    if (promoCreationDataCast != null) {
-        FilterSection(promoCreationDataCast.filterItems, selectedTabId) {
-            onFilterClicked.invoke(it)
-        }
+    if (promoCreationData !is CentralizedPromoResult.Empty) {
+        TitleBody()
     }
 
-    if (isLoadingPromoList) {
-        PromotionCardShimmerGrid(modifier = Modifier.padding(top = 8.dp))
-    } else if (promoCreationData != null) {
-        when (promoCreationData) {
-            is Success -> {
-                if (promoCreationDataCast != null) {
-                    PromoCreationSection(
-                        list = promoCreationDataCast.items,
-                        onPromoClicked = onPromoClicked,
-                        promoCreationImpressed = promoCreationImpressed,
-                        coachMarkListener = coachMarkListener,
-                    )
+    when (promoCreationData) {
+        is CentralizedPromoResult.Loading -> {
+            PromotionCardShimmerGrid(modifier = Modifier.padding(top = 8.dp))
+        }
+        is CentralizedPromoResult.Success -> {
+            val promoCreationDataCast =
+                (promoCreationData as? CentralizedPromoResult.Success)?.data as? PromoCreationListUiModel
+            if (promoCreationDataCast != null) {
+                FilterSection(promoCreationDataCast.filterItems, selectedTabId) {
+                    onFilterClicked.invoke(it)
                 }
+
+                PromoCreationSection(
+                    list = promoCreationDataCast.items,
+                    onPromoClicked = onPromoClicked,
+                    promoCreationImpressed = promoCreationImpressed,
+                    coachMarkListener = coachMarkListener,
+                )
             }
-            is Fail -> {
-                CentralizedPromoError(promoCreationData.throwable, onLocalLoadRefreshClicked)
-            }
+        }
+        is CentralizedPromoResult.Fail -> {
+            CentralizedPromoError(
+                promoCreationData.throwable ?: Throwable(),
+                onLocalLoadRefreshClicked
+            )
+        }
+        else -> {
+
         }
     }
 }
@@ -350,34 +339,38 @@ private fun LazyGridScope.FilterSection(
 }
 
 private fun LazyGridScope.HeaderSection(
-    onGoingResult: Result<BaseUiModel>?,
-    isOnGoingLoading: Boolean,
+    onGoingResult: CentralizedPromoResult<BaseUiModel>,
     routeToUrl: (String) -> Unit,
     onGoingPromoImpressed: (String) -> Unit,
     onLocalLoadRefreshClicked: () -> Unit
 ) {
 
-    if (isOnGoingLoading) {
+    if (onGoingResult !is CentralizedPromoResult.Empty) {
         TitleHeader()
-        OnGoingCardShimmerRow()
-    } else if (onGoingResult != null) {
-        when (onGoingResult) {
-            is Success -> {
-                val onGoingResultCast = onGoingResult.data as? OnGoingPromoListUiModel
+    }
 
-                if (onGoingResultCast != null && onGoingResultCast.items.isNotEmpty()) {
-                    TitleHeader()
-                    OnGoingPromoSection(
-                        result = onGoingResultCast,
-                        routeToUrl = routeToUrl,
-                        onGoingPromoImpressed = onGoingPromoImpressed
-                    )
-                }
+    when (onGoingResult) {
+        is CentralizedPromoResult.Loading -> {
+            OnGoingCardShimmerRow()
+        }
+        is CentralizedPromoResult.Success -> {
+            val onGoingResultCast = onGoingResult.data as? OnGoingPromoListUiModel
+            if (onGoingResultCast != null) {
+                OnGoingPromoSection(
+                    result = onGoingResultCast,
+                    routeToUrl = routeToUrl,
+                    onGoingPromoImpressed = onGoingPromoImpressed
+                )
             }
-            is Fail -> {
-                TitleHeader()
-                CentralizedPromoError(onGoingResult.throwable, onLocalLoadRefreshClicked)
-            }
+        }
+        is CentralizedPromoResult.Fail -> {
+            CentralizedPromoError(
+                onGoingResult.throwable ?: Throwable(),
+                onLocalLoadRefreshClicked
+            )
+        }
+        else -> {
+
         }
     }
 }
@@ -475,55 +468,4 @@ private fun BackgroundDrawable() {
             painter = painterResource(drawable.bg_bottom_circle), contentDescription = null
         )
     }
-}
-
-@Preview(name = "NEXUS_7", device = Devices.NEXUS_5)
-@Composable
-private fun CentralizedPromoScreenLoadingPreview() {
-    CentralizedPromoScreen(
-        uiState = CentralizedPromoUiState(
-            isLoading = ALL
-        )
-    )
-}
-
-@Preview(name = "NEXUS_7", device = Devices.NEXUS_5)
-@Composable
-private fun CentralizedPromoScreenSuccessPreview() {
-    CentralizedPromoScreen(
-        uiState = CentralizedPromoUiState(
-            isLoading = LoadingType.PROMO_LIST,
-            onGoingData = Success(
-                OnGoingPromoListUiModel(
-                    title = "Fitur Ku", items = listOf(
-                        OnGoingPromoUiModel(
-                            title = "Flash Sale Tokopedia",
-                            status = Status(
-                                text = "Mendatang",
-                                count = 3,
-                                url = "test"
-                            ),
-                            footer = Footer(
-                                text = "",
-                                url = "test"
-                            )
-                        ),
-                        OnGoingPromoUiModel(
-                            title = "Flash Sale Tokopedia",
-                            status = Status(
-                                text = "Mendatang",
-                                count = 3,
-                                url = "test"
-                            ),
-                            footer = Footer(
-                                text = "",
-                                url = "test"
-                            )
-                        )
-                    ),
-                    errorMessage = ""
-                )
-            )
-        )
-    )
 }

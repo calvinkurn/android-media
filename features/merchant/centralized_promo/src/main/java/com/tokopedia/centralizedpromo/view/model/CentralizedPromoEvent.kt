@@ -10,8 +10,9 @@ sealed class CentralizedPromoEvent {
     data class CoachMarkShown(val key: String) :
         CentralizedPromoEvent()
 
-    data class UpdateToasterState(val showToaster: Boolean) :
-        CentralizedPromoEvent()
+    object LoadPromoCreation : CentralizedPromoEvent()
+
+    object LoadOnGoingPromo : CentralizedPromoEvent()
 
     object SwipeRefresh : CentralizedPromoEvent()
 }
