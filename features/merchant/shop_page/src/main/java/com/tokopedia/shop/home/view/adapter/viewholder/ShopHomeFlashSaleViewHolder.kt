@@ -1,6 +1,7 @@
 package com.tokopedia.shop.home.view.adapter.viewholder
 
 import android.graphics.Color
+import android.graphics.PorterDuff
 import android.graphics.drawable.GradientDrawable
 import android.os.Handler
 import android.view.View
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.util.ShopUtil
@@ -42,7 +44,7 @@ class ShopHomeFlashSaleViewHolder(
     private var uiModel: ShopHomeFlashSaleUiModel? = null
     private val flashSaleCampaignNameView: Typography? = itemView.findViewById(R.id.tgp_flash_sale_campaign_name)
     private val tncInfoIconView: AppCompatImageView? = itemView.findViewById(R.id.iv_tnc_info_icon)
-    private val ctaSeeAllView: Typography? = itemView.findViewById(R.id.tgp_cta_see_all)
+    private var iconCtaChevron: IconUnify? = itemView.findViewById(R.id.icon_cta_chevron)
     private val singleBackGroundView: View? = itemView.findViewById(R.id.bg_single)
     private val doubleBackGroundView: View? = itemView.findViewById(R.id.bg_double)
     private val multipleBackGroundView: View? = itemView.findViewById(R.id.bg_multiple)
@@ -116,7 +118,7 @@ class ShopHomeFlashSaleViewHolder(
         val informationIconColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.ICON_CTA_LINK_COLOR)
         flashSaleCampaignNameView?.setTextColor(titleColor)
         timerDescriptionView?.setTextColor(subTitleColor)
-        ctaSeeAllView?.setTextColor(ctaColor)
+        iconCtaChevron?.setColorFilter(ctaColor, PorterDuff.Mode.SRC_ATOP)
         tncInfoIconView?.setColorFilter(informationIconColor)
         timerView?.timerVariant = TimerUnifySingle.VARIANT_MAIN
         val flashSaleItem = element.data?.firstOrNull()
@@ -136,7 +138,7 @@ class ShopHomeFlashSaleViewHolder(
         val defaultInformationIconColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN900)
         flashSaleCampaignNameView?.setTextColor(defaultTitleColor)
         timerDescriptionView?.setTextColor(defaultSubTitleColor)
-        ctaSeeAllView?.setTextColor(defaultCtaColor)
+        iconCtaChevron?.setColorFilter(defaultCtaColor, PorterDuff.Mode.SRC_ATOP)
         tncInfoIconView?.setColorFilter(defaultInformationIconColor)
         timerView?.timerVariant = TimerUnifySingle.VARIANT_MAIN
         val flashSaleItem = element.data?.firstOrNull()
@@ -161,7 +163,7 @@ class ShopHomeFlashSaleViewHolder(
         val festivityTextColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
         flashSaleCampaignNameView?.setTextColor(festivityTextColor)
         timerDescriptionView?.setTextColor(festivityTextColor)
-        ctaSeeAllView?.setTextColor(festivityTextColor)
+        iconCtaChevron?.setColorFilter(festivityTextColor, PorterDuff.Mode.SRC_ATOP)
         tncInfoIconView?.setColorFilter(festivityTextColor)
         timerView?.timerVariant = TimerUnifySingle.VARIANT_ALTERNATE
         singleBackGroundView?.hide()
@@ -254,7 +256,7 @@ class ShopHomeFlashSaleViewHolder(
                 listener.onClickTncFlashSaleWidget(this)
             }
         }
-        ctaSeeAllView?.setOnClickListener {
+        iconCtaChevron?.setOnClickListener {
             uiModel?.run {
                 listener.onClickSeeAllFlashSaleWidget(this)
             }
@@ -285,8 +287,8 @@ class ShopHomeFlashSaleViewHolder(
 
     private fun setupCtaSeeAll(productSize: Int, statusCampaign: String?) {
         val isUpcoming = isStatusCampaignUpcoming(statusCampaign.orEmpty())
-        if (productSize <= MAX_PRODUCT_CARD_SIZE || isUpcoming) ctaSeeAllView?.hide()
-        else ctaSeeAllView?.show()
+        if (productSize <= MAX_PRODUCT_CARD_SIZE || isUpcoming) iconCtaChevron?.hide()
+        else iconCtaChevron?.show()
     }
 
     private fun setupFlashSaleBackgroundView(productList: List<ShopHomeProductUiModel>, startBackGroundColor: String?, endBackGroundColor: String?) {

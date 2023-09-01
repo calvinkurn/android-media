@@ -113,6 +113,7 @@ class ThematicWidgetViewHolder(
             model = element.header,
             listener = this
         )
+        dynamicHeaderCustomView?.setShopPageCta(element.header)
         setupRecyclerView()
         setupImage(
             imageBanner = element.imageBanner
@@ -148,7 +149,7 @@ class ThematicWidgetViewHolder(
     }
 
     private fun configDefaultColor(uiModel: ThematicWidgetUiModel) {
-        dynamicHeaderCustomView?.configNonFestivity()
+        dynamicHeaderCustomView?.configDefaultColor()
         configMarginNonFestivity()
         setupBackgroundColor(
             startBackGroundColor = uiModel.firstBackgroundColor,
@@ -157,7 +158,7 @@ class ThematicWidgetViewHolder(
     }
 
     private fun configFestivity(uiModel: ThematicWidgetUiModel) {
-        dynamicHeaderCustomView?.configFestivity()
+        dynamicHeaderCustomView?.configShopPageFestivityColor()
         when(uiModel.name){
             BIG_CAMPAIGN_THEMATIC -> {
                 configMarginFestivity()

@@ -51,20 +51,17 @@
         app:layout_constraintBottom_toBottomOf="@id/tgp_flash_sale_timer_desc"
         app:timer_unify_single_variant="main" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tgp_cta_see_all"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/icon_cta_chevron"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         android:layout_marginEnd="16dp"
-        android:visibility="gone"
-        android:text="@string/shop_page_label_see_all"
-        android:textColor="@color/Unify_GN500"
+        app:icon_name="CHEVRON_RIGHT"
+        android:visibility="visible"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toBottomOf="@id/tus_flash_sale_timer"
-        app:layout_constraintTop_toTopOf="@id/tus_flash_sale_timer"
-        app:layout_constraintVertical_bias="0.318"
-        app:typographyType="body_3"
-        app:typographyWeight="bold" />
+        app:layout_constraintTop_toTopOf="@id/tgp_flash_sale_campaign_name"
+        app:layout_constraintVertical_bias="0.5" />
 
     <com.tokopedia.unifycomponents.CardUnify2
         android:id="@+id/flash_sale_reminder_view"

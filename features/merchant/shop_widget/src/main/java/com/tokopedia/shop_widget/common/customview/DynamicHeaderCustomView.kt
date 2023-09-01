@@ -2,6 +2,7 @@ package com.tokopedia.shop_widget.common.customview
 
 import android.view.LayoutInflater
 import android.content.Context
+import android.graphics.PorterDuff
 import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
@@ -9,6 +10,7 @@ import androidx.annotation.AttrRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -33,6 +35,7 @@ class DynamicHeaderCustomView: FrameLayout {
     private var tpSeeAll: Typography? = null
     private var tpTitle: Typography? = null
     private var tpSubtitle: Typography? = null
+    private var iconCtaChevron: IconUnify? = null
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
@@ -61,6 +64,7 @@ class DynamicHeaderCustomView: FrameLayout {
         tpTitle = itemView?.findViewById(R.id.tp_title)
         tpSubtitle = itemView?.findViewById(R.id.tp_subtitle)
         tpSeeAll =  itemView?.findViewById(R.id.tp_see_all)
+        iconCtaChevron = itemView?.findViewById(R.id.icon_cta_chevron)
     }
 
     private fun setTitle(title: String) {
@@ -144,21 +148,21 @@ class DynamicHeaderCustomView: FrameLayout {
         return statusCampaign.equals(StatusCampaign.ONGOING.statusCampaign, true)
     }
 
-    fun configFestivity(){
+    fun configShopPageFestivityColor(){
         val festivityTextColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
         tpTitle?.setTextColor(festivityTextColor)
         tpSubtitle?.setTextColor(festivityTextColor)
-        tpSeeAll?.setTextColor(festivityTextColor)
+        iconCtaChevron?.setColorFilter(festivityTextColor, PorterDuff.Mode.SRC_ATOP)
         tusCountDown?.timerVariant = TimerUnifySingle.VARIANT_ALTERNATE
     }
 
-    fun configNonFestivity(){
+    fun configDefaultColor(){
         val defaultTitleColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
         val defaultSubTitleColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
         val defaultCtaColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
         tpTitle?.setTextColor(defaultTitleColor)
         tpSubtitle?.setTextColor(defaultSubTitleColor)
-        tpSeeAll?.setTextColor(defaultCtaColor)
+        iconCtaChevron?.setColorFilter(defaultCtaColor, PorterDuff.Mode.SRC_ATOP)
         tusCountDown?.timerVariant = TimerUnifySingle.VARIANT_MAIN
     }
 
@@ -168,8 +172,21 @@ class DynamicHeaderCustomView: FrameLayout {
         val ctaTextColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.CTA_TEXT_LINK_COLOR)
         tpTitle?.setTextColor(highEmphasizeColor)
         tpSubtitle?.setTextColor(lowEmphasizeColor)
-        tpSeeAll?.setTextColor(ctaTextColor)
+        iconCtaChevron?.setColorFilter(ctaTextColor, PorterDuff.Mode.SRC_ATOP)
         tusCountDown?.timerVariant = TimerUnifySingle.VARIANT_MAIN
+    }
+
+    fun setShopPageCta(model: DynamicHeaderUiModel) {
+        val ctaTextLink = model.ctaTextLink
+        tpSeeAll?.hide()
+        if (ctaTextLink.isNotBlank()) {
+            iconCtaChevron?.setOnClickListener {
+                listener?.onSeeAllClick(ctaTextLink)
+            }
+            iconCtaChevron?.show()
+        } else {
+            iconCtaChevron?.hide()
+        }
     }
 
     interface HeaderCustomViewListener {
