@@ -35,6 +35,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import com.tokopedia.stories.R
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -291,7 +292,13 @@ class StoriesViewModel @Inject constructor(
                     shopId = mShopId,
                     productName = product.title
                 )
-            }, onError = {})
+
+                if (response) {
+                    _uiEvent.emit(StoriesUiEvent.ShowInfoEvent(R.string.stories_product_atc_success))
+                } else {
+                    _uiEvent.emit(StoriesUiEvent.ShowErrorEvent(MessageErrorException()))
+                }
+            }, onError = { _uiEvent.emit(StoriesUiEvent.ShowErrorEvent(it)) })
         }
     }
 

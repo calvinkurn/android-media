@@ -15,4 +15,5 @@ sealed interface StoriesUiEvent {
     object FinishedAllStories: StoriesUiEvent
     //TODO() : add click listener if needed
     data class ShowErrorEvent(val message: Throwable) : StoriesUiEvent
+    data class ShowInfoEvent(val message: Int) : StoriesUiEvent
 }

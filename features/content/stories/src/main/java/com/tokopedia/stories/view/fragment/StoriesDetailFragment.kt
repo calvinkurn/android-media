@@ -160,6 +160,10 @@ class StoriesDetailFragment @Inject constructor(
                     is StoriesUiEvent.NavigateEvent -> goTo(event.appLink)
                     is StoriesUiEvent.ShowVariantSheet -> openVariantBottomSheet(event.product)
                     is StoriesUiEvent.ShowErrorEvent -> showToaster(message = event.message.message.orEmpty(), type = Toaster.TYPE_ERROR)
+                    is StoriesUiEvent.ShowInfoEvent -> {
+                        val message = getString(event.message)
+                        showToaster(message = message,)
+                    }
                     else -> {}
                 }
             }
