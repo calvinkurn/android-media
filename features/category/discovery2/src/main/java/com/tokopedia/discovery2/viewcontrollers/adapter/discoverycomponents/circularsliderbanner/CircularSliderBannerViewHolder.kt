@@ -110,7 +110,6 @@ class CircularSliderBannerViewHolder(itemView: View, val fragment: Fragment) : A
 
                 override fun onChangeCurrentPosition(position: Int) {
                     cvSliderBanner.setCurrentPosition(position)
-                    sliderBannerViewModel?.onBannerChanged(position)
                 }
             }
         )
@@ -134,6 +133,7 @@ class CircularSliderBannerViewHolder(itemView: View, val fragment: Fragment) : A
                             debounceHandler.removeCallbacksAndMessages(null)
                             debounceHandler.postDelayed(
                                 {
+                                    sliderBannerViewModel?.onBannerChanged(expandableIndicatorPosition)
                                     sliderExpandableIndicator.startIndicatorByPosition(expandableIndicatorPosition)
                                     isDraggingWithExpandableIndicator = false
                                 },

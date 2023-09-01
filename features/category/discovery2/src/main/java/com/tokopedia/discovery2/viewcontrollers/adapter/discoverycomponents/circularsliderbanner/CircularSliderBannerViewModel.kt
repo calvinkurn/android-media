@@ -13,10 +13,6 @@ import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 
 class CircularSliderBannerViewModel(application: Application, val components: ComponentsItem,private val position: Int) : DiscoveryBaseViewModel() {
-    private companion object {
-        const val INITIAL_POSITION = 1
-    }
-
     private val title: MutableLiveData<String> = MutableLiveData()
     init {
         title.value = components.title
@@ -44,7 +40,7 @@ class CircularSliderBannerViewModel(application: Application, val components: Co
     fun isExpandableIndicatorNeeded(): Boolean = getPropertyType() == ATF_BANNER || getPropertyType() == TARGETING_BANNER
 
     fun onBannerChanged(position: Int) {
-        components.itemPosition = position - INITIAL_POSITION
+        components.itemPosition = position
         if (getPropertyType() == TARGETING_BANNER) {
             this.syncData.value = true
         }
