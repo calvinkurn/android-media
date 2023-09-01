@@ -49,7 +49,7 @@ class CheckoutEpharmacyViewHolder(
                 ViewGroup.LayoutParams.WRAP_CONTENT
             )
         }
-        if (uploadPrescriptionUiModel.uploadedImageCount < 0) {
+        if (uploadPrescriptionUiModel.uploadedImageCount <= 0) {
             binding.uploadIcon.loadImage(getIconUnifyDrawable(binding.root.context, IconUnify.DOCTOR_RECEIPT, MethodChecker.getColor(binding.root.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)))
             if (uploadPrescriptionUiModel.hasInvalidPrescription) {
                 binding.uploadPrescriptionText.text =

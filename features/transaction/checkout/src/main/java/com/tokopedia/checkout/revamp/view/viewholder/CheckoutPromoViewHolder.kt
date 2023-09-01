@@ -52,7 +52,7 @@ class CheckoutPromoViewHolder(private val binding: ItemCheckoutPromoBinding, pri
                 titleValue,
                 promo.additionalInfo.messageInfo.detail,
                 IconUnify.CHEVRON_RIGHT,
-                promo.additionalInfo.usageSummaries.map { PromoEntryPointSummaryItem(it.description, it.amountStr) },
+                promo.additionalInfo.usageSummaries.map { PromoEntryPointSummaryItem(it.description, it.amountStr, it.currencyDetailsStr) },
                 showConfetti = true
             ) {
                 listener.onClickPromoCheckout(promo)
