@@ -38,7 +38,6 @@ import com.tokopedia.manageaddress.domain.usecase.shareaddress.ValidateShareAddr
 import com.tokopedia.manageaddress.domain.usecase.shareaddress.ValidateShareAddressAsSenderUseCase
 import com.tokopedia.manageaddress.ui.uimodel.ValidateShareAddressState
 import com.tokopedia.manageaddress.util.ManageAddressConstant
-import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.url.Env
@@ -257,14 +256,14 @@ class ManageAddressViewModelTest {
         )
 
         coEvery { deletePeopleAddressUseCase.invoke(any()) } returns mockResponseDeletePeopleAddressGqlResponse
-        manageAddressViewModel.deletePeopleAddress("1", "")
+        manageAddressViewModel.deletePeopleAddress("1")
         verify { observerResultRemovedAddress.onChanged(match { it is ManageAddressState.Success }) }
     }
 
     @Test
     fun `Delete Address Fail`() {
         coEvery { deletePeopleAddressUseCase.invoke(any()) } throws mockThrowable
-        manageAddressViewModel.deletePeopleAddress("1", "")
+        manageAddressViewModel.deletePeopleAddress("1")
         verify { observerResultRemovedAddress.onChanged(match { it is ManageAddressState.Fail }) }
     }
 
@@ -504,7 +503,7 @@ class ManageAddressViewModelTest {
         coEvery { deletePeopleAddressUseCase.invoke(any()) } returns mockResponseDeletePeopleAddressGqlResponse
 
         // When
-        manageAddressViewModel.deletePeopleAddress("1", "")
+        manageAddressViewModel.deletePeopleAddress("1")
 
         // Then
         verify { observerResultRemovedAddress.onChanged(match { it is ManageAddressState.Fail }) }
