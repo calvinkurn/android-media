@@ -28,15 +28,21 @@ class StackCouponView @JvmOverloads constructor(
         private const val CORNER_RADIUS = 12
     }
 
-    fun setData(list: List<MedalBenefitModel>, additionalInfo: String?, onApplyClick: (MedalBenefitModel) -> Unit = {}) {
+    fun setData(
+        list: List<MedalBenefitModel>,
+        additionalInfo: String?,
+        onApplyClick: (MedalBenefitModel) -> Unit = {},
+        onCardTap: (MedalBenefitModel, Boolean) -> Unit = { _, _ -> }
+    ) {
         with(binding) {
+            cardFront.setData(list.first(), onApplyClick) {
+                onCardTap(it, list.size == 1)
+            }
             if (list.size == 1) {
                 cardMore.gone()
                 cardMiddle.gone()
                 cardBack.gone()
-                cardFront.setData(list.first(), onApplyClick)
             } else {
-                cardFront.setData(list.first(), onApplyClick)
                 cardMiddle.setData(list.first().apply { statusBadgeEnabled = false })
                 cardBack.setData(list.first().apply { statusBadgeEnabled = false })
 
@@ -51,7 +57,6 @@ class StackCouponView @JvmOverloads constructor(
                         .apply {
                             setTint(ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN0))
                         }
-
                 }
 
                 tvMore.text = additionalInfo

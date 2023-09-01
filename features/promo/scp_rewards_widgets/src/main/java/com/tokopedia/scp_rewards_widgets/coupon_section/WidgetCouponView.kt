@@ -31,7 +31,8 @@ class WidgetCouponView @JvmOverloads constructor(
     fun renderCoupons(
         benefitSectionModel: MedalBenefitSectionModel,
         onApplyClick: (MedalBenefitModel) -> Unit = {},
-        onCtaClick: (String?) -> Unit = {},
+        onCardTap: (MedalBenefitModel, Boolean) -> Unit = { _, _ -> },
+        onCtaClick: (String?, String?) -> Unit = { _, _ -> },
         onErrorAction: () -> Unit = {}
     ) {
         binding.tvTitle.text = benefitSectionModel.title
@@ -43,7 +44,7 @@ class WidgetCouponView @JvmOverloads constructor(
             binding.cardEmptyCoupon.hide()
             binding.ivErrorState.visible()
         } else {
-            handleCouponState(benefitList, benefitSectionModel, onApplyClick, onCtaClick)
+            handleCouponState(benefitList, benefitSectionModel, onApplyClick, onCardTap, onCtaClick)
         }
         requestLayout()
     }
@@ -55,8 +56,9 @@ class WidgetCouponView @JvmOverloads constructor(
     private fun handleCouponState(
         benefitList: List<MedalBenefitModel>,
         benefitSectionModel: MedalBenefitSectionModel,
-        onApplyClick: (MedalBenefitModel) -> Unit,
-        onCtaClick: (String?) -> Unit = {},
+        onApplyClick: (MedalBenefitModel) -> Unit = {},
+        onCardTap: (MedalBenefitModel, Boolean) -> Unit = { _, _ -> },
+        onCtaClick: (String?, String?) -> Unit = { _, _ -> }
     ) {
         val benefit = benefitList.first()
         when (benefit.status) {
@@ -81,12 +83,15 @@ class WidgetCouponView @JvmOverloads constructor(
                 binding.ivErrorState.hide()
                 binding.cardEmptyCoupon.hide()
                 binding.stackCoupon.visible()
-                binding.stackCoupon.setData(benefitList, benefitSectionModel.benefitInfo, onApplyClick)
+                binding.stackCoupon.setData(benefitList, benefitSectionModel.benefitInfo, onApplyClick, onCardTap)
 
                 if (benefitList.size > 1 && benefitSectionModel.cta?.text.isNullOrEmpty().not()) {
                     binding.btnViewMore.visible()
                     binding.btnViewMore.text = benefitSectionModel.cta?.text
                     binding.btnViewMore.applyStyle(benefitSectionModel.cta?.style)
+                    binding.btnViewMore.setOnClickListener {
+                        onCtaClick(benefitSectionModel.cta?.appLink, benefitSectionModel.cta?.deepLink)
+                    }
                 }
             }
         }

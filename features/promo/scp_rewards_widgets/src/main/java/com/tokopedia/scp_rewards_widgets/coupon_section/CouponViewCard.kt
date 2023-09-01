@@ -60,7 +60,11 @@ class CouponViewCard @JvmOverloads constructor(
         binding.layoutDetails.background = innerShapeDrawable
     }
 
-    fun setData(data: MedalBenefitModel, onApplyClick: (MedalBenefitModel) -> Unit = {}) {
+    fun setData(
+        data: MedalBenefitModel,
+        onApplyClick: (MedalBenefitModel) -> Unit = {},
+        onCardTap: ((MedalBenefitModel) -> Unit)? = null
+    ) {
         with(binding) {
             tvTitle.text = data.title
             val tncList = data.tncList
@@ -100,6 +104,9 @@ class CouponViewCard @JvmOverloads constructor(
                     ribbonStatus.visible()
                     ribbonStatus.setData(data.statusBadgeText, data.statusBadgeColor)
                 }
+            }
+            onCardTap?.let {
+                root.setOnClickListener { onCardTap(data) }
             }
             root.post {
                 val additionalInfoColor = if (data.isActive) {

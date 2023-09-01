@@ -15,17 +15,16 @@ class CouponEmptyCard @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : MaterialCardView(context, attrs, defStyleAttr) {
 
-
     private var binding = ItemCouponEmptyLayoutBinding.inflate(LayoutInflater.from(context), this)
 
-    fun setData(data: MedalBenefitModel, onCtaClick: (String?) -> Unit) {
+    fun setData(data: MedalBenefitModel, onCtaClick: (String?, String?) -> Unit) {
         with(binding) {
             tvTitle.text = data.title
             tvDescription.text = data.statusDescription
             ivIcon.setImageUrl(data.medaliImageURL.orEmpty())
             btnSeeBonusHistory.text = data.cta?.text
             btnSeeBonusHistory.setOnClickListener {
-                onCtaClick(data.cta?.appLink)
+                onCtaClick(data.cta?.appLink, data.cta?.url)
             }
         }
     }

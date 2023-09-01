@@ -21,7 +21,7 @@ data class MedaliBenefitList(
     @SerializedName("benefitInfo") val benefitInfo: String? = null,
     @SerializedName("benefit") val benefitList: List<MedaliBenefit>? = null,
     @SerializedName("cta") val cta: Cta? = null,
-    @SerializedName("paging") val paging: PageInfo? = null,
+    @SerializedName("paging") val paging: PageInfo? = null
 )
 
 data class Category(
@@ -42,6 +42,7 @@ data class MedaliBenefit(
     @SerializedName("title") val title: String? = null,
     @SerializedName("statusDescription") val statusDescription: String? = null,
     @SerializedName("appLink") val appLink: String? = null,
+    @SerializedName("url") val url: String? = null,
     @SerializedName("tnc") val tncList: List<Tnc>? = null,
     @SerializedName("type") val benefitType: BenefitType? = null,
     @SerializedName("benefitCTA") val benefitCTA: BenefitButton? = null

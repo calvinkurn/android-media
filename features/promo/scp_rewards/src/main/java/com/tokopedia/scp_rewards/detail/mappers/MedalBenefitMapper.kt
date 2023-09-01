@@ -5,7 +5,6 @@ import com.tokopedia.scp_rewards.detail.domain.model.MedaliBenefitList
 import com.tokopedia.scp_rewards_widgets.common.model.CtaButton
 import com.tokopedia.scp_rewards_widgets.model.MedalBenefitModel
 
-
 object MedalBenefitMapper {
 
     fun mapBenefitApiResponseToBenefitModelList(
@@ -16,6 +15,7 @@ object MedalBenefitMapper {
                 title = it.title,
                 isActive = it.isActive,
                 status = it.status,
+                url = it.url,
                 appLink = it.appLink,
                 tncList = it.tncList?.map { tnc -> tnc.text.orEmpty() },
                 medaliImageURL = it.medaliImageURL,
@@ -29,8 +29,12 @@ object MedalBenefitMapper {
                 typeImageURL = it.benefitType?.iconImageURL,
                 typeBackgroundColor = it.benefitType?.backgroundColor,
                 cta = CtaButton(
-                    it.benefitCTA?.unifiedStyle, it.benefitCTA?.text, it.benefitCTA?.appLink,
-                    it.benefitCTA?.url, it.benefitCTA?.isAutoApply, it.benefitCTA?.couponCode
+                    it.benefitCTA?.unifiedStyle,
+                    it.benefitCTA?.text,
+                    it.benefitCTA?.appLink,
+                    it.benefitCTA?.url,
+                    it.benefitCTA?.isAutoApply,
+                    it.benefitCTA?.couponCode
                 )
             )
         }
