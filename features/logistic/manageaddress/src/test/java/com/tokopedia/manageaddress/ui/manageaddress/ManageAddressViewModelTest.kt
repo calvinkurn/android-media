@@ -45,6 +45,10 @@ import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.usercomponents.userconsent.common.CollectionPointDataModel
+import com.tokopedia.usercomponents.userconsent.common.ConsentCollectionResponse
+import com.tokopedia.usercomponents.userconsent.common.UserConsentCollectionDataModel
+import com.tokopedia.usercomponents.userconsent.domain.collection.GetConsentCollectionUseCase
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -75,6 +79,7 @@ class ManageAddressViewModelTest {
     private val setDefaultPeopleAddressUseCase =
         mockk<SetDefaultPeopleAddressUseCase>(relaxed = true)
     private val eligibleForAddressUseCase: EligibleForAddressUseCase = mockk(relaxed = true)
+    private val getUserConsentCollection: GetConsentCollectionUseCase = mockk(relaxed = true)
     private val chooseAddressRepo: ChooseAddressRepository = mockk(relaxed = true)
     private val chooseAddressMapper: ChooseAddressMapper = mockk(relaxed = true)
     private val chosenAddressObserver: Observer<Result<ChosenAddressModel>> = mockk(relaxed = true)
@@ -114,7 +119,8 @@ class ManageAddressViewModelTest {
             eligibleForAddressUseCase,
             validateShareAddressAsReceiverUseCase,
             validateShareAddressAsSenderUseCase,
-            tickerUseCase
+            tickerUseCase,
+            getUserConsentCollection
         )
         manageAddressViewModel.getChosenAddress.observeForever(chosenAddressObserver)
         manageAddressViewModel.setChosenAddress.observeForever(chosenAddressObserver)
@@ -255,7 +261,25 @@ class ManageAddressViewModelTest {
             )
         )
 
+        val mockCollectionPoints = mutableListOf(
+            CollectionPointDataModel(
+                id = "id",
+                consentType = "type"
+            )
+        )
+
+        val mockResponse = ConsentCollectionResponse(
+            UserConsentCollectionDataModel(
+                success = true,
+                collectionPoints = mockCollectionPoints
+            )
+        )
+
+        coEvery {
+            getUserConsentCollection(any())
+        } returns mockResponse
         coEvery { deletePeopleAddressUseCase.invoke(any()) } returns mockResponseDeletePeopleAddressGqlResponse
+
         manageAddressViewModel.deletePeopleAddress("1")
         verify { observerResultRemovedAddress.onChanged(match { it is ManageAddressState.Success }) }
     }
