@@ -6,8 +6,9 @@
     android:layout_height="match_parent"
     tools:context=".ui.activity.CatalogProductListActivity">
 
-    <com.tokopedia.unifyprinciples.Typography
+    <FrameLayout
+        android:id="@+id/catalog_product_list_parent_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="TESS"/>
+        />
 </androidx.constraintlayout.widget.ConstraintLayout>
