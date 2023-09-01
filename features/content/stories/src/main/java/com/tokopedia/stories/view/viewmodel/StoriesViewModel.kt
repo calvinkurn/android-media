@@ -310,8 +310,7 @@ class StoriesViewModel @Inject constructor(
             _uiEvent.emit(StoriesUiEvent.TapSharing(data))
             bottomSheetStatus.update { bottomSheet ->
                 bottomSheet.mapValues {
-                    if (it.key == BottomSheetType.Sharing)
-                        true
+                    if (it.key == BottomSheetType.Sharing) true
                     else it.value
                 }
             }
