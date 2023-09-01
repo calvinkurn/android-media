@@ -325,8 +325,8 @@ class OfferLandingPageFragment :
             }
         }
         AtcVariantHelper.onActivityResultAtcVariant(requireContext(), requestCode, data) {
-            if (this.atcMessage.isNotEmpty()) {
-                binding?.miniCartView.showToaster(this.atcMessage)
+            if (atcMessage.isNotEmpty()) {
+                binding?.miniCartView.showToaster(atcMessage)
             }
             fetchMiniCart()
         }
@@ -527,6 +527,7 @@ class OfferLandingPageFragment :
                 productId = product.productId.toString(),
                 pageSource = VariantPageSource.BUY_MORE_GET_MORE,
                 shopId = shopId.toString(),
+                saveAfterClose = false,
                 extParams = AtcVariantHelper.generateExtParams(
                     mapOf(
                         Constant.EXT_PARAM_OFFER_ID to stringOfferIds,
