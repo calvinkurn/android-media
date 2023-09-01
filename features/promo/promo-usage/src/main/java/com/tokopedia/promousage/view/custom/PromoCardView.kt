@@ -22,8 +22,8 @@ class PromoCardView @JvmOverloads constructor(
 
     companion object {
         private const val CARD_VIEW_CORNER_RADIUS = 24f // Corner radius for the CardView
-        private const val EXPIRED_DATE_BACKGROUND_HEIGHT = 38f
-        private const val CIRCLE_CUT_OUT_MARGIN_BOTTOM = 28f
+        private const val EXPIRED_DATE_BACKGROUND_HEIGHT = 42f
+        private const val CIRCLE_CUT_OUT_MARGIN_BOTTOM = 30f
         private const val CIRCLE_RADIUS = 20F
     }
 

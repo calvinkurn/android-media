@@ -173,7 +173,7 @@
                 android:minHeight="16dp"
                 android:orientation="vertical"
                 android:layout_marginTop="4dp"
-                android:layout_marginBottom="12dp"
+                android:layout_marginBottom="16dp"
                 app:layout_constraintBottom_toTopOf="@id/tpgPromoExpiryInfo"
                 app:layout_constraintEnd_toEndOf="@+id/tpgPromoBenefitAmount"
                 app:layout_constraintStart_toStartOf="parent"/>
