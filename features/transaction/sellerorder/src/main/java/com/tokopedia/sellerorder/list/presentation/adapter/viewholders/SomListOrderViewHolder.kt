@@ -10,10 +10,10 @@ import android.view.MotionEvent
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.imageassets.TokopediaImageUrl
-import com.tokopedia.imageassets.utils.loadProductImage
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.imageassets.TokopediaImageUrl
+import com.tokopedia.imageassets.utils.loadProductImage
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -156,8 +156,9 @@ open class SomListOrderViewHolder(
                 btnQuickAction?.buttonVariant = if (firstButton.type == SomConsts.KEY_PRIMARY_DIALOG_BUTTON) UnifyButton.Variant.FILLED else UnifyButton.Variant.GHOST
                 btnQuickAction?.setOnClickListener { onQuickActionButtonClicked(element) }
                 btnQuickAction?.show()
+                btnQuickAction?.isEnabled = true
             } else {
-                btnQuickAction?.gone()
+                btnQuickAction?.isEnabled = false
             }
         }
     }
