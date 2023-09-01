@@ -95,7 +95,9 @@ fun SuggestionSearchScreen(
                 .padding(bottom = 8.dp),
             state = lazyListState
         ) {
-            itemsIndexed(uiState?.suggestionSellerSearchList.orEmpty()) { index, item ->
+            itemsIndexed(uiState?.suggestionSellerSearchList.orEmpty(), key = { _, suggestionItem ->
+                suggestionItem.hashCode()
+            }) { index, item ->
                 when (item) {
                     is TitleHeaderSellerSearchUiModel -> {
                         TitleHeaderSellerSearch(item)

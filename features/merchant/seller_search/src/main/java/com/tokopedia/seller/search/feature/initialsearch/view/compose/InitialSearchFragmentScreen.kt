@@ -63,7 +63,9 @@ fun InitialSearchFragmentScreen(
         Modifier.fillMaxSize(),
         state = lazyListState
     ) {
-        itemsIndexed(uiState?.initialStateList.orEmpty()) { index, item ->
+        itemsIndexed(uiState?.initialStateList.orEmpty(), key = { _, item ->
+            item.hashCode()
+        }) { index, item ->
             when (item) {
                 is SellerSearchNoHistoryUiModel -> {
                     NoHistoryState()

@@ -42,7 +42,7 @@ fun GlobalSellerSearchView(
             modifier = Modifier
                 .padding(start = 12.dp)
                 .clickable {
-                    uiEffect(GlobalSearchUiEvent.OnBackButtonClicked(uiState.searchBarKeyword))
+                    uiEffect(GlobalSearchUiEvent.OnBackButtonClicked(""))
                     keyboardController?.hide()
                 },
             source = ImageSource.Painter(R.drawable.ic_back_searchbar),
