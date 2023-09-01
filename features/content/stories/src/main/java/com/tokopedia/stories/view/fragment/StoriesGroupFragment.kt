@@ -72,7 +72,7 @@ class StoriesGroupFragment @Inject constructor(
     }
 
     private fun setupViews() = with(binding) {
-        isShowLoading(true)
+        showPageLoading(true)
 
         layoutGroupLoading.icCloseLoading.setOnClickListener { activity?.finish() }
         if (storiesGroupViewPager.adapter != null) return@with
@@ -114,15 +114,14 @@ class StoriesGroupFragment @Inject constructor(
         pagerAdapter.setStoriesGroup(state)
         pagerAdapter.notifyItemRangeChanged(0, state.groupItems.size)
 
-        // TODO handle loading state properly
-        isShowLoading(false)
+        showPageLoading(false)
     }
 
     private fun selectGroupEvent(position: Int) = with(binding.storiesGroupViewPager) {
         currentItem = position
     }
 
-    private fun isShowLoading(isShowLoading: Boolean) = with(binding){
+    private fun showPageLoading(isShowLoading: Boolean) = with(binding){
         layoutGroupLoading.container.showWithCondition(isShowLoading)
         storiesGroupViewPager.showWithCondition(!isShowLoading)
     }

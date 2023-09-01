@@ -129,8 +129,7 @@ class StoriesDetailFragment @Inject constructor(
         val currContent = state.detailItems[state.selectedDetailPosition]
         if (currContent.isSameContent) return
 
-        // TODO handle loading state properly
-        isShowLoading(false)
+        showPageLoading(false)
 
         binding.ivStoriesDetailContent.apply {
             setImageUrl(currContent.imageContent)
@@ -167,7 +166,7 @@ class StoriesDetailFragment @Inject constructor(
     }
 
     private fun setupStoriesView() = with(binding) {
-        isShowLoading(true)
+        showPageLoading(true)
 
         icClose.setOnClickListener { activity?.finish() }
 
@@ -243,7 +242,7 @@ class StoriesDetailFragment @Inject constructor(
         viewModel.submitAction(event)
     }
 
-    private fun isShowLoading(isShowLoading: Boolean) = with(binding){
+    private fun showPageLoading(isShowLoading: Boolean) = with(binding){
         layoutTimer.llTimer.showWithCondition(isShowLoading)
         layoutDeclarative.loaderDecorativeWhite.showWithCondition(isShowLoading)
         ivStoriesDetailContent.showWithCondition(!isShowLoading)
