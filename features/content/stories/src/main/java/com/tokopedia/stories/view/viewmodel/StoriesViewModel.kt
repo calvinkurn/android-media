@@ -44,7 +44,7 @@ class StoriesViewModel @Inject constructor(
     private val userSession: UserSessionInterface,
 ) : ViewModel() {
 
-    private var mShopId: String = ""
+    var mShopId: String = ""
 
     private val _storiesGroup = MutableStateFlow(StoriesGroupUiModel())
     private val _storiesDetail = MutableStateFlow(StoriesDetailUiModel())

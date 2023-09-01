@@ -93,7 +93,7 @@ class StoriesProductBottomSheet @Inject constructor(
         val mvcData = state.data?.animatedInfoList.orEmpty()
         binding.mvcStoriesWidget.setData(
             mvcData = MvcData(mvcData),
-            shopId = viewModel.shopId,
+            shopId = viewModel.mShopId,
             source = MvcSource.FEED_BOTTOM_SHEET,
         )
         binding.mvcStoriesWidget.showWithCondition(mvcData.isNotEmpty())
