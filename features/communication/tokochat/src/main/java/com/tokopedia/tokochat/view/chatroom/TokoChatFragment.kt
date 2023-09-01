@@ -298,10 +298,7 @@ open class TokoChatFragment @Inject constructor(
                 viewModel.isTkpdOrderStatus.collectLatest { status ->
                     if (!isFinished) {
                         status?.let {
-                            when (it) {
-                                true -> isFinished = true // No need to call this again
-                                false -> setShowTransactionLocalLoad()
-                            }
+                            isFinished = it
                             initGroupBooking() // Success or fail, init group booking
                         }
                     }
@@ -752,11 +749,8 @@ open class TokoChatFragment @Inject constructor(
             viewModel.translateGojekOrderId(viewModel.gojekOrderId)
         } else {
             // No tkpd order id from param & fail to get tkpd order id from remote
-            // Set the header
-            headerUiModel?.let { header ->
-                setupToolbarData(header)
-                showHeader()
-            }
+            // Set local load & the header
+            setShowTransactionLocalLoad()
         }
     }
 

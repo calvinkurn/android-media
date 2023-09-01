@@ -646,6 +646,7 @@ class TokoChatViewModel @Inject constructor(
     fun translateGojekOrderId(gojekOrderId: String) {
         viewModelScope.launch {
             try {
+                _isTkpdOrderStatus.value = null // reset value
                 getTkpdOrderIdUseCase(gojekOrderId).collectLatest {
                     tkpdOrderId = it
                     _isTkpdOrderStatus.value = true
