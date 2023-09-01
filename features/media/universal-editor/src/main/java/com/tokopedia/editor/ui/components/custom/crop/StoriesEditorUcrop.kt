@@ -19,10 +19,10 @@ class StoriesEditorUcrop(context: Context, attrs: AttributeSet) : FrameLayout(co
         LayoutInflater.from(context).inflate(R.layout.ucrop_stories_layout, this, true)
         mGestureCropImageView = findViewById<View>(R.id.image_view_crop) as GestureCropImageViewStories
         mViewOverlay = findViewById<View>(R.id.view_overlay) as OverlayViewStories
-        val a = context.obtainStyledAttributes(attrs, R.styleable.ucrop_UCropView)
-        mViewOverlay!!.processStyledAttributesOpen(a)
-        mGestureCropImageView!!.processStyledAttributesOpen(a)
-        a.recycle()
+        val attribute = context.obtainStyledAttributes(attrs, R.styleable.ucrop_UCropView)
+        mViewOverlay!!.processStyledAttributesOpen(attribute)
+        mGestureCropImageView!!.processStyledAttributesOpen(attribute)
+        attribute.recycle()
         setListenersToViews()
 
         mGestureCropImageView!!.setBackgroundColor(Color.BLACK)
