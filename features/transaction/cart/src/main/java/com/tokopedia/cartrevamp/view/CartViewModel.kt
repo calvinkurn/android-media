@@ -137,6 +137,7 @@ class CartViewModel @Inject constructor(
     override val coroutineContext: CoroutineContext
         get() = SupervisorJob() + dispatchers.immediate
 
+    // Cart Global Variable
     var cartModel: CartModel = CartModel()
         private set
 
@@ -1160,7 +1161,7 @@ class CartViewModel @Inject constructor(
         cartDataList.notifyObserver()
     }
 
-    private fun addCartTopAdsHeadlineData(index: Int) {
+    fun addCartTopAdsHeadlineData(index: Int) {
         val cartProductIds = mutableListOf<String>()
         loop@ for (item in cartDataList.value) {
             when (item) {
@@ -2706,31 +2707,6 @@ class CartViewModel @Inject constructor(
                 }
             }
         )
-    }
-
-    fun getCartItemByBundleGroupId(
-        bundleId: String,
-        bundleGroupId: String
-    ): List<CartItemHolderData> {
-        val cartItemHolderDataList = mutableListOf<CartItemHolderData>()
-        loop@ for (data in cartDataList.value) {
-            if (cartItemHolderDataList.isNotEmpty()) {
-                break@loop
-            }
-            when (data) {
-                is CartGroupHolderData -> {
-                    data.productUiModelList.forEach { cartItemHolderData ->
-                        if (cartItemHolderData.isBundlingItem && cartItemHolderData.bundleId == bundleId && cartItemHolderData.bundleGroupId == bundleGroupId) {
-                            cartItemHolderDataList.add(cartItemHolderData)
-                        }
-                    }
-                }
-
-                hasReachAllShopItems(data) -> break@loop
-            }
-        }
-
-        return cartItemHolderDataList
     }
 
     fun updateCartDataList(newList: ArrayList<Any>) {
