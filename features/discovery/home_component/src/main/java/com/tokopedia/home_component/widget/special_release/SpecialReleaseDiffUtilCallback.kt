@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.DiffUtil
 /**
  * Created by frenzel
  */
-internal class SpecialReleaseDiffUtil: DiffUtil.ItemCallback<SpecialReleaseRevampItemDataModel>() {
+internal class SpecialReleaseDiffUtilCallback: DiffUtil.ItemCallback<SpecialReleaseRevampItemDataModel>() {
     override fun areItemsTheSame(
         oldItem: SpecialReleaseRevampItemDataModel,
         newItem: SpecialReleaseRevampItemDataModel

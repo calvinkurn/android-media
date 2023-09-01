@@ -59,7 +59,7 @@ class ShopFlashSaleWidgetViewHolder(
     private val itemAdapter by lazy {
         CarouselListAdapter(
             ShopFlashSaleItemTypeFactoryImpl(listener, this),
-            ShopFlashSaleItemDiffUtil()
+            ShopFlashSaleItemDiffUtilCallback()
         )
     }
 

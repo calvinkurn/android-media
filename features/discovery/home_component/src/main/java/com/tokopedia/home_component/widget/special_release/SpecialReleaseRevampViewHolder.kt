@@ -32,7 +32,7 @@ class SpecialReleaseRevampViewHolder(
 
     private val binding: HomeComponentSpecialReleaseRevampBinding? by viewBinding()
     private val typeFactory: CommonCarouselProductCardTypeFactory by lazy { CommonCarouselProductCardTypeFactoryImpl() }
-    private val adapter by lazy { CarouselListAdapter(typeFactory, SpecialReleaseDiffUtil()) }
+    private val adapter by lazy { CarouselListAdapter(typeFactory, SpecialReleaseDiffUtilCallback()) }
 
     override fun bind(element: SpecialReleaseRevampDataModel) {
         binding?.let {

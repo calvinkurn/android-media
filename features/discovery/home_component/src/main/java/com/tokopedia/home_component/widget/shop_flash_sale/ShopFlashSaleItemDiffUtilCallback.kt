@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCarouselProductCardTypeFactory
 import com.tokopedia.home_component.widget.common.carousel.HomeComponentCarouselDiffUtil
 
-class ShopFlashSaleItemDiffUtil: DiffUtil.ItemCallback<Visitable<CommonCarouselProductCardTypeFactory>>() {
+class ShopFlashSaleItemDiffUtilCallback: DiffUtil.ItemCallback<Visitable<CommonCarouselProductCardTypeFactory>>() {
     override fun areItemsTheSame(
         oldItem: Visitable<CommonCarouselProductCardTypeFactory>,
         newItem: Visitable<CommonCarouselProductCardTypeFactory>
