@@ -609,10 +609,10 @@ open class DiscoveryFragment :
 
     private fun updateLastVisibleComponent() {
         if (lastVisibleComponent != null && (
-            lastVisibleComponent?.name ==
-                ComponentsList.ProductCardRevamp.componentName || lastVisibleComponent?.name ==
-                ComponentsList.ProductCardSprintSale.componentName
-            )
+                lastVisibleComponent?.name ==
+                    ComponentsList.ProductCardRevamp.componentName || lastVisibleComponent?.name ==
+                    ComponentsList.ProductCardSprintSale.componentName
+                )
         ) {
             return
         }
@@ -622,11 +622,11 @@ open class DiscoveryFragment :
                 lastVisibleComponent = discoveryAdapter.currentList[positionArray.first()]
 
                 if (lastVisibleComponent != null && (
-                    lastVisibleComponent?.name ==
-                        ComponentsList.ProductCardRevampItem.componentName || lastVisibleComponent?.name ==
-                        ComponentsList.ProductCardSprintSaleItem.componentName ||
-                        lastVisibleComponent?.name == ComponentsList.ShimmerProductCard.componentName
-                    )
+                        lastVisibleComponent?.name ==
+                            ComponentsList.ProductCardRevampItem.componentName || lastVisibleComponent?.name ==
+                            ComponentsList.ProductCardSprintSaleItem.componentName ||
+                            lastVisibleComponent?.name == ComponentsList.ShimmerProductCard.componentName
+                        )
                 ) {
                     lastVisibleComponent = com.tokopedia.discovery2.datamapper
                         .getComponent(
@@ -1092,11 +1092,13 @@ open class DiscoveryFragment :
         }
     }
 
+    // Setting NavToolbar on Success Response
     private fun setToolBarPageInfoOnSuccess(data: PageInfo?) {
-        handleShare(data)
+        settingUpNavBar(data)
         setSearchBar(data)
     }
 
+    // Setting NavToolbar on Fail Response
     private fun setToolBarPageInfoOnFail() {
         setCartAndNavIcon()
         setSearchBar(null)
@@ -1104,15 +1106,15 @@ open class DiscoveryFragment :
         mSwipeRefreshLayout.isRefreshing = false
     }
 
-    private fun handleShare(data: PageInfo?) {
+    private fun settingUpNavBar(data: PageInfo?) {
         if (arguments?.getString(DISCO_PAGE_SOURCE) == Constant.DiscoveryPageSource.HOME) {
             navToolbar.updateNotification()
             return
         }
-        handleHideNavFun(data)
+        handleHideNavbarIcons(data)
     }
 
-    private fun handleHideNavFun(data: PageInfo?) {
+    private fun handleHideNavbarIcons(data: PageInfo?) {
         val hideNaveFeaturesValue = arguments?.getString(HIDE_NAV_FEATURES, "")
         if (hideNaveFeaturesValue.isNullOrEmpty()) {
             navWithShareData(data)
@@ -1133,20 +1135,23 @@ open class DiscoveryFragment :
     }
 
     private fun setSearchBar(data: PageInfo?) {
-//        if (arguments?.getString(HIDE_NAV_FEATURES)?.toIntOrZero() !in listOf(3, 13, 23, 123)) {}
-        navToolbar.setupSearchbar(
-            hints = listOf(
-                HintData(
-                    placeholder = data?.searchTitle
-                        ?: getString(R.string.discovery_default_search_title)
-                )
-            ),
-            searchbarClickCallback = {
-                handleGlobalNavClick(Constant.TOP_NAV_BUTTON.SEARCH_BAR)
-                handleSearchClick(data)
-            },
-            disableDefaultGtmTracker = true
-        )
+        if (arguments?.getString(HIDE_NAV_FEATURES)?.toIntOrZero() !in listOf(3, 13, 23, 123)) {
+            navToolbar.setupSearchbar(
+                hints = listOf(
+                    HintData(
+                        placeholder = data?.searchTitle
+                            ?: getString(R.string.discovery_default_search_title)
+                    )
+                ),
+                searchbarClickCallback = {
+                    handleGlobalNavClick(Constant.TOP_NAV_BUTTON.SEARCH_BAR)
+                    handleSearchClick(data)
+                },
+                disableDefaultGtmTracker = true
+            )
+        } else {
+            navToolbar.setSearchBarAlpha(0F)
+        }
     }
 
     private fun navWithShareData(data: PageInfo?) {
@@ -1487,41 +1492,41 @@ open class DiscoveryFragment :
 
     private fun removePaddingIfComponent() {
         recyclerView.viewTreeObserver.addOnGlobalLayoutListener(object :
-                ViewTreeObserver.OnGlobalLayoutListener {
-                override fun onGlobalLayout() {
-                    var pos = Int.MIN_VALUE
-                    discoveryAdapter.currentList.forEachIndexed { index, componentsItem ->
-                        if (componentsItem.name == ComponentsList.Tabs.componentName) {
-                            pos = index
-                        }
-                        if (index == pos + 1) {
-                            val i = pos + 1
-                            val firstVisibleItemPositions =
-                                staggeredGridLayoutManager?.findFirstVisibleItemPositions(null)
-                            val lastVisibleItemPositions =
-                                staggeredGridLayoutManager?.findLastVisibleItemPositions(null)
+            ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                var pos = Int.MIN_VALUE
+                discoveryAdapter.currentList.forEachIndexed { index, componentsItem ->
+                    if (componentsItem.name == ComponentsList.Tabs.componentName) {
+                        pos = index
+                    }
+                    if (index == pos + 1) {
+                        val i = pos + 1
+                        val firstVisibleItemPositions =
+                            staggeredGridLayoutManager?.findFirstVisibleItemPositions(null)
+                        val lastVisibleItemPositions =
+                            staggeredGridLayoutManager?.findLastVisibleItemPositions(null)
 
-                            if (firstVisibleItemPositions != null && lastVisibleItemPositions != null) {
-                                val firstVisibleItemPosition =
-                                    firstVisibleItemPositions.minOrNull() ?: -1
-                                val lastVisibleItemPosition = lastVisibleItemPositions.maxOrNull() ?: -1
+                        if (firstVisibleItemPositions != null && lastVisibleItemPositions != null) {
+                            val firstVisibleItemPosition =
+                                firstVisibleItemPositions.minOrNull() ?: -1
+                            val lastVisibleItemPosition = lastVisibleItemPositions.maxOrNull() ?: -1
 
-                                if (firstVisibleItemPosition != RecyclerView.NO_POSITION && lastVisibleItemPosition != RecyclerView.NO_POSITION) {
-                                    if (i in firstVisibleItemPosition..lastVisibleItemPosition) {
-                                        recyclerView.setPaddingToInnerRV(
-                                            0,
-                                            recyclerView.dpToPx(0).toInt(),
-                                            0,
-                                            0
-                                        )
-                                    }
+                            if (firstVisibleItemPosition != RecyclerView.NO_POSITION && lastVisibleItemPosition != RecyclerView.NO_POSITION) {
+                                if (i in firstVisibleItemPosition..lastVisibleItemPosition) {
+                                    recyclerView.setPaddingToInnerRV(
+                                        0,
+                                        recyclerView.dpToPx(0).toInt(),
+                                        0,
+                                        0
+                                    )
                                 }
                             }
                         }
                     }
-                    recyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 }
-            })
+                recyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+            }
+        })
     }
 
     fun scrollToComponentWithID(componentID: String) {
