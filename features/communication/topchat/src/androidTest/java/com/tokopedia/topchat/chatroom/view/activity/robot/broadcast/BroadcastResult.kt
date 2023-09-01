@@ -13,12 +13,13 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.assertion.atPositionIsInstanceOf
-import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralResult.assertViewInRecyclerViewAt
+import com.tokopedia.topchat.chatroom.view.activity.robot.generalResult
 import com.tokopedia.topchat.chatroom.view.uimodel.BroadCastUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.BroadcastSpamHandlerUiModel
 import com.tokopedia.topchat.matchers.withRecyclerView
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Matcher
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 object BroadcastResult {
 
@@ -51,10 +52,10 @@ object BroadcastResult {
         @ColorRes val color: Int
         if (isVisible) {
             matcher = matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE))
-            color = com.tokopedia.unifyprinciples.R.color.Unify_NN400
+            color = unifyprinciplesR.color.Unify_NN400
         } else {
             matcher = matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE))
-            color = com.tokopedia.unifyprinciples.R.color.Unify_GN500
+            color = unifyprinciplesR.color.Unify_GN500
         }
         onView(withId(R.id.topchat_cta_broadcast_label)).check(matcher)
         onView(withId(R.id.topchat_cta_broadcast_tv)).check(
@@ -66,56 +67,72 @@ object BroadcastResult {
         position: Int,
         matcher: Matcher<View>
     ) {
-        assertViewInRecyclerViewAt(position, R.id.broadcast_campaign_label, matcher)
+        generalResult {
+            assertViewInRecyclerViewAt(position, R.id.broadcast_campaign_label, matcher)
+        }
     }
 
     fun assertBroadcastCampaignLabelDescAt(
         position: Int,
         matcher: Matcher<View>
     ) {
-        assertViewInRecyclerViewAt(position, R.id.tp_broadcast_campaign_status, matcher)
+        generalResult {
+            assertViewInRecyclerViewAt(position, R.id.tp_broadcast_campaign_status, matcher)
+        }
     }
 
     fun assertBroadcastCampaignLabelCountdownAt(
         position: Int,
         matcher: Matcher<View>
     ) {
-        assertViewInRecyclerViewAt(position, R.id.tu_bc_countdown, matcher)
+        generalResult {
+            assertViewInRecyclerViewAt(position, R.id.tu_bc_countdown, matcher)
+        }
     }
 
     fun assertBroadcastCampaignLabelStartDateIconAt(
         position: Int,
         matcher: Matcher<View>
     ) {
-        assertViewInRecyclerViewAt(position, R.id.iu_broadcast_start_date, matcher)
+        generalResult {
+            assertViewInRecyclerViewAt(position, R.id.iu_broadcast_start_date, matcher)
+        }
     }
 
     fun assertBroadcastCampaignLabelStartDateTextAt(
         position: Int,
         matcher: Matcher<View>
     ) {
-        assertViewInRecyclerViewAt(position, R.id.tp_broadcast_start_date, matcher)
+        generalResult {
+            assertViewInRecyclerViewAt(position, R.id.tp_broadcast_start_date, matcher)
+        }
     }
 
     fun assertBroadcastTitleHandle(
         position: Int,
         matcher: Matcher<View>
     ) {
-        assertViewInRecyclerViewAt(position, R.id.title_bc_handle, matcher)
+        generalResult {
+            assertViewInRecyclerViewAt(position, R.id.title_bc_handle, matcher)
+        }
     }
 
     fun assertBroadcastBtnStopPromo(
         position: Int,
         matcher: Matcher<View>
     ) {
-        assertViewInRecyclerViewAt(position, R.id.btn_stop_promo, matcher)
+        generalResult {
+            assertViewInRecyclerViewAt(position, R.id.btn_stop_promo, matcher)
+        }
     }
 
     fun assertBroadcastBtnFollowShop(
         position: Int,
         matcher: Matcher<View>
     ) {
-        assertViewInRecyclerViewAt(position, R.id.btn_follow_shop, matcher)
+        generalResult {
+            assertViewInRecyclerViewAt(position, R.id.btn_follow_shop, matcher)
+        }
     }
 
     fun assertBroadcastTitleHandleNotExist(
@@ -155,6 +172,8 @@ object BroadcastResult {
         position: Int,
         matcher: Matcher<View>
     ) {
-        assertViewInRecyclerViewAt(position, R.id.iv_banner, matcher)
+        generalResult {
+            assertViewInRecyclerViewAt(position, R.id.iv_banner, matcher)
+        }
     }
 }

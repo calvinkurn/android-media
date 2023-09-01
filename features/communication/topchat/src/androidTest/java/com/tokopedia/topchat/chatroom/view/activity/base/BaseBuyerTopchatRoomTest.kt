@@ -3,7 +3,6 @@ package com.tokopedia.topchat.chatroom.view.activity.base
 import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.ChatSmartReplyQuestionResponse
 import com.tokopedia.websocket.WebSocketResponse
-import org.hamcrest.CoreMatchers.not
 
 open class BaseBuyerTopchatRoomTest : TopchatRoomTest() {
 

@@ -7,15 +7,14 @@ import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.tokopedia.test.application.espresso_component.CommonMatcher
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.matchers.withRecyclerView
+import com.tokopedia.topchat.chatroom.view.activity.robot.generalRobot
 
 object ProductBundlingRobot {
 
     fun clickCtaProductBundling(position: Int) {
-        onView(
-            withRecyclerView(R.id.recycler_view_chatroom)
-                .atPositionOnView(position, R.id.button_open_package)
-        ).perform(click())
+        generalRobot {
+            doActionOnListItemAt(position, R.id.button_open_package, click())
+        }
     }
 
     fun doScrollProductBundlingToPosition(position: Int) {
@@ -30,10 +29,9 @@ object ProductBundlingRobot {
     }
 
     fun clickOnImageSingleItemBundling() {
-        onView(
-            withRecyclerView(R.id.recycler_view_chatroom)
-                .atPositionOnView(0, R.id.iv_single_product_thumbnail)
-        ).perform(click())
+        generalRobot {
+            doActionOnListItemAt(0, R.id.button_open_package, click())
+        }
     }
 
     fun doScrollProductBundlingToPositionInBroadcast(position: Int) {

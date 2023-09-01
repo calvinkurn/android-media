@@ -5,8 +5,7 @@ import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
-import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductRobot.clickATCButtonAt
-import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductRobot.clickBuyButtonAt
+import com.tokopedia.topchat.chatroom.view.activity.robot.productRobot
 import org.junit.Rule
 import org.junit.Test
 
@@ -25,8 +24,10 @@ class AtcBuyCassavaTest : TopchatRoomTest() {
         launchChatRoomActivity()
         stubIntents()
 
-        clickATCButtonAt(1)
-        clickBuyButtonAt(1)
+        productRobot {
+            clickATCButtonAt(1)
+            clickBuyButtonAt(1)
+        }
 
         // Then
         assertThat(cassavaTestRule.validate(journeyId), hasAllSuccess())

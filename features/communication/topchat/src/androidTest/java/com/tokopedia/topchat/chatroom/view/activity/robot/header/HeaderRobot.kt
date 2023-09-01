@@ -6,11 +6,12 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.tokopedia.topchat.R
+import com.tokopedia.chat_common.R as chat_commonR
 
 object HeaderRobot {
 
     fun clickThreeDotsMenu() {
-        onView(withId(com.tokopedia.chat_common.R.id.header_menu)).perform(click())
+        onView(withId(chat_commonR.id.header_menu)).perform(click())
     }
 
     fun clickFollowMenu() {

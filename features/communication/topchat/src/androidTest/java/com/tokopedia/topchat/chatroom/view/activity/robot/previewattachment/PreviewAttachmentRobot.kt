@@ -10,7 +10,7 @@ object PreviewAttachmentRobot {
 
     fun scrollToPosition(position: Int) {
         onView(withId(R.id.rv_attachment_preview)).perform(
-            RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(2)
+            RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(position)
         )
     }
 }

@@ -8,8 +8,8 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatroom.view.activity.robot.generalResult
 import com.tokopedia.topchat.chatroom.view.activity.robot.replybubble.ReplyBubbleMatcher.matchReplyBoxChildWithId
-import com.tokopedia.topchat.matchers.withRecyclerView
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Matcher
 
@@ -56,39 +56,36 @@ object ReplyBubbleResult {
         viewId: Int,
         matcher: Matcher<View>
     ) {
-        onView(
-            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
-                position,
-                viewId
-            )
-        ).check(matches(matcher))
+        generalResult {
+            assertViewInRecyclerViewAt(position, viewId, matcher)
+        }
     }
 
-    fun assertReplyCompose(matcher: Matcher<in View>) {
+    fun assertReplyCompose(matcher: Matcher<View>) {
         onView(
             matchReplyBoxChildWithId(R.id.trb_container)
         ).check(matches(matcher))
     }
 
-    fun assertReplyComposeIcon(matcher: Matcher<in View>) {
+    fun assertReplyComposeIcon(matcher: Matcher<View>) {
         onView(
             matchReplyBoxChildWithId(R.id.iv_reply_icon)
         ).check(matches(matcher))
     }
 
-    fun assertReplyComposeTitle(matcher: Matcher<in View>) {
+    fun assertReplyComposeTitle(matcher: Matcher<View>) {
         onView(
             matchReplyBoxChildWithId(R.id.tp_reply_from)
         ).check(matches(matcher))
     }
 
-    fun assertReplyComposeMsg(matcher: Matcher<in View>) {
+    fun assertReplyComposeMsg(matcher: Matcher<View>) {
         onView(
             matchReplyBoxChildWithId(R.id.tp_reply_msg)
         ).check(matches(matcher))
     }
 
-    fun assertReplyComposeCloseBtn(matcher: Matcher<in View>) {
+    fun assertReplyComposeCloseBtn(matcher: Matcher<View>) {
         onView(
             matchReplyBoxChildWithId(R.id.iv_rb_close)
         ).check(matches(matcher))
@@ -100,12 +97,9 @@ object ReplyBubbleResult {
         )
     }
 
-    fun assertMsgBubbleAt(position: Int, matcher: Matcher<in View>) {
-        onView(
-            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
-                position,
-                R.id.tvMessage
-            )
-        ).check(matches(matcher))
+    fun assertMsgBubbleAt(position: Int, matcher: Matcher<View>) {
+        generalResult {
+            assertViewInRecyclerViewAt(position, R.id.tvMessage, matcher)
+        }
     }
 }

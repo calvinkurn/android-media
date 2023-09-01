@@ -9,31 +9,27 @@ import com.tokopedia.topchat.matchers.withRecyclerView
 object ProductRobot {
 
     fun clickBuyButtonAt(position: Int) {
-        onView(
-            withRecyclerView(R.id.recycler_view_chatroom)
-                .atPositionOnView(position, R.id.tv_buy)
-        ).perform(click())
+        generalRobot {
+            doActionOnListItemAt(position, R.id.tv_buy, click())
+        }
     }
 
     fun clickATCButtonAt(position: Int) {
-        onView(
-            withRecyclerView(R.id.recycler_view_chatroom)
-                .atPositionOnView(position, R.id.tv_atc)
-        ).perform(click())
+        generalRobot {
+            doActionOnListItemAt(position, R.id.tv_atc, click())
+        }
     }
 
     fun clickWishlistButtonAt(position: Int) {
-        onView(
-            withRecyclerView(R.id.recycler_view_chatroom)
-                .atPositionOnView(position, R.id.tv_wishlist)
-        ).perform(click())
+        generalRobot {
+            doActionOnListItemAt(position, R.id.tv_wishlist, click())
+        }
     }
 
     fun clickProductAttachmentAt(position: Int) {
-        onView(
-            withRecyclerView(R.id.recycler_view_chatroom)
-                .atPositionOnView(position, R.id.cl_info)
-        ).perform(click())
+        generalRobot {
+            doActionOnListItemAt(position, R.id.cl_info, click())
+        }
     }
 
     fun clickChangeStockBtnAt(position: Int) {
