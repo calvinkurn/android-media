@@ -21,6 +21,13 @@ class FeedBrowseActivity : BaseActivity() {
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_feed_browse)
+
+        supportFragmentManager.beginTransaction()
+            .add(
+                R.id.feed_browse_container,
+                FeedBrowseFragment.create(supportFragmentManager, classLoader, intent.extras)
+            )
+            .commit()
     }
 
     private fun inject() {

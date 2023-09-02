@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
@@ -42,11 +43,13 @@ import javax.inject.Inject
  */
 class FeedBrowseFragment @Inject constructor(
     viewModelFactory: ViewModelProvider.Factory,
-    private val tracker: FeedBrowseTracker,
+    private val trackerFactory: FeedBrowseTracker.Factory,
 ) : TkpdBaseV4Fragment() {
 
     private var _binding: FragmentFeedBrowseBinding? = null
     private val binding get() = _binding!!
+
+    private lateinit var tracker: FeedBrowseTracker
 
     private val channelListener = object : FeedBrowseChannelViewHolder.Listener {
         override fun onRetryClicked(
@@ -98,6 +101,13 @@ class FeedBrowseFragment @Inject constructor(
         requireActivity().onBackPressedDispatcher.addCallback(
             this,
             onBackPressedCallback
+        )
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        tracker = trackerFactory.create(
+            prefix = arguments?.getString(KEY_PREFIX).orEmpty()
         )
     }
 
@@ -235,5 +245,23 @@ class FeedBrowseFragment @Inject constructor(
     private fun exitPage() {
         tracker.sendClickBackExitEvent()
         requireActivity().finish()
+    }
+
+    companion object {
+
+        const val KEY_PREFIX = "extra_prefix"
+
+        fun create(
+            fragmentManager: FragmentManager,
+            classLoader: ClassLoader,
+            bundle: Bundle?
+        ): FeedBrowseFragment {
+            return fragmentManager.fragmentFactory.instantiate(
+                classLoader,
+                FeedBrowseFragment::class.java.name
+            ).apply {
+                arguments = bundle
+            } as FeedBrowseFragment
+        }
     }
 }

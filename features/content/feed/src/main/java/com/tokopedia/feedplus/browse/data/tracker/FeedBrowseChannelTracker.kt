@@ -12,4 +12,8 @@ interface FeedBrowseChannelTracker {
     fun sendClickChannelCardEvent()
 
     fun sendClickChipsWidgetEvent()
+
+    interface Factory {
+        fun create(prefix: String): FeedBrowseChannelTracker
+    }
 }

@@ -25,7 +25,7 @@ abstract class FeedBrowseBindModule {
      * Analytics
      */
     @Binds
-    abstract fun bindChannelTracker(
-        feedBrowseChannelTrackerImpl: FeedBrowseChannelTrackerImpl
-    ): FeedBrowseChannelTracker
+    abstract fun bindChannelTrackerFactory(
+        feedBrowseChannelTrackerImpl: FeedBrowseChannelTrackerImpl.Factory
+    ): FeedBrowseChannelTracker.Factory
 }

@@ -24,7 +24,7 @@ import javax.inject.Inject
  * Created By : Muhammad Furqan on 16/04/23
  */
 class FeedNavigationAnalytics @Inject constructor(
-    userSession: UserSessionInterface
+    private val userSession: UserSessionInterface
 ) {
 
     private object Event {
@@ -44,9 +44,10 @@ class FeedNavigationAnalytics @Inject constructor(
         const val CLICK_PROFILE_BUTTON = "click - user profile entry point"
     }
 
-    private val userId = userSession.userId
+    private val userId: String
+        get() = userSession.userId
 
-    private val activeTab: String
+    val activeTab: String
         get() {
             return getPrefix(_activeTab?.type.orEmpty())
         }
