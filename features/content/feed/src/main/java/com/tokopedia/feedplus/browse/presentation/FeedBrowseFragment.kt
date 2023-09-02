@@ -1,10 +1,12 @@
 package com.tokopedia.feedplus.browse.presentation
 
+import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -12,8 +14,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.feedplus.browse.data.tracker.FeedBrowseTracker
 import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseAdapter
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseChannelViewHolder
+import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseChipUiModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiAction
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiState
@@ -23,6 +28,7 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.io.InterruptedIOException
@@ -35,22 +41,65 @@ import javax.inject.Inject
  * Created by meyta.taliti on 11/08/23.
  */
 class FeedBrowseFragment @Inject constructor(
-    viewModelFactory: ViewModelProvider.Factory
+    viewModelFactory: ViewModelProvider.Factory,
+    private val tracker: FeedBrowseTracker,
 ) : TkpdBaseV4Fragment() {
 
     private var _binding: FragmentFeedBrowseBinding? = null
     private val binding get() = _binding!!
 
     private val channelListener = object : FeedBrowseChannelViewHolder.Listener {
-        override fun onRetryClicked(extraParams: Map<String, Any>, widgetId: String) {
+        override fun onRetryClicked(
+            extraParams: Map<String, Any>,
+            widgetModel: FeedBrowseUiModel.Channel
+        ) {
             viewModel.submitAction(
-                FeedBrowseUiAction.FetchCards(extraParams, widgetId)
+                FeedBrowseUiAction.FetchCards(extraParams, widgetModel.id)
+            )
+        }
+
+        override fun onCardClicked(
+            channelModel: PlayWidgetChannelUiModel,
+            widgetModel: FeedBrowseUiModel.Channel
+        ) {
+            tracker.sendClickChannelCardEvent()
+            goToPage(channelModel.appLink)
+        }
+
+        override fun onChipClicked(
+            chipModel: FeedBrowseChipUiModel,
+            widgetModel: FeedBrowseUiModel.Channel
+        ) {
+            viewModel.submitAction(FeedBrowseUiAction.SelectChip(chipModel, widgetModel.id))
+        }
+
+        override fun onChipSelected(
+            chipModel: FeedBrowseChipUiModel,
+            widgetModel: FeedBrowseUiModel.Channel
+        ) {
+            tracker.sendClickChipsWidgetEvent()
+            viewModel.submitAction(
+                FeedBrowseUiAction.FetchCards(chipModel.extraParams, widgetModel.id)
             )
         }
     }
     private val adapter by lazy { FeedBrowseAdapter(channelListener) }
 
     private val viewModel: FeedBrowseViewModel by viewModels { viewModelFactory }
+
+    private val onBackPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            exitPage()
+        }
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        requireActivity().onBackPressedDispatcher.addCallback(
+            this,
+            onBackPressedCallback
+        )
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -119,7 +168,7 @@ class FeedBrowseFragment @Inject constructor(
         (activity as? AppCompatActivity)?.setSupportActionBar(binding.feedBrowseHeader)
         binding.feedBrowseHeader.setBackgroundColor(Color.TRANSPARENT)
         binding.feedBrowseHeader.setNavigationOnClickListener {
-            activity?.finish()
+            exitPage()
         }
 
         binding.feedBrowseList.adapter = adapter
@@ -147,6 +196,13 @@ class FeedBrowseFragment @Inject constructor(
                 GlobalError.MAINTENANCE
             }
         }
+        binding.feedBrowseError.setActionClickListener {
+            if (errorType == GlobalError.MAINTENANCE) {
+                exitPage()
+            } else {
+                viewModel.submitAction(FeedBrowseUiAction.LoadInitialPage)
+            }
+        }
         binding.feedBrowseError.setType(errorType)
         binding.feedBrowseError.show()
     }
@@ -170,5 +226,14 @@ class FeedBrowseFragment @Inject constructor(
     private fun renderContent(widgets: List<FeedBrowseUiModel>) {
         if (widgets.isEmpty()) return
         adapter.setItemsAndAnimateChanges(widgets)
+    }
+
+    private fun goToPage(appLink: String) {
+        RouteManager.route(requireContext(), appLink)
+    }
+
+    private fun exitPage() {
+        tracker.sendClickBackExitEvent()
+        requireActivity().finish()
     }
 }

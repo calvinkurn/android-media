@@ -59,7 +59,7 @@ class FeedBrowseMapper @Inject constructor() {
     }
 
     private fun mapChips(data: Content): List<FeedBrowseChipUiModel> {
-        return data.items.map { item ->
+        return data.items.mapIndexed { index, item ->
             FeedBrowseChipUiModel(
                 id = item.id,
                 label = item.label,
@@ -68,7 +68,7 @@ class FeedBrowseMapper @Inject constructor() {
                     "source_type" to item.sourceType,
                     "source_id" to item.sourceId
                 ),
-                isSelected = false
+                isSelected = index == 0 // select first chip
             )
         }
     }

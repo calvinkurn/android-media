@@ -7,12 +7,14 @@ import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseCardViewHolder
 import com.tokopedia.feedplus.databinding.ItemFeedBrowseCardBinding
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.play.widget.ui.widget.PlayWidgetCardView
 
 /**
  * Created by meyta.taliti on 31/08/23.
  */
-class CardAdapterDelegate :
-    TypedAdapterDelegate<PlayWidgetChannelUiModel, PlayWidgetChannelUiModel, FeedBrowseCardViewHolder>(
+class CardAdapterDelegate(
+    private val listener: PlayWidgetCardView.Listener
+): TypedAdapterDelegate<PlayWidgetChannelUiModel, PlayWidgetChannelUiModel, FeedBrowseCardViewHolder>(
         com.tokopedia.feedplus.R.layout.item_feed_browse_card
     ) {
     override fun onBindViewHolder(
@@ -31,7 +33,8 @@ class CardAdapterDelegate :
                 LayoutInflater.from(parent.context),
                 parent,
                 false,
-            )
+            ),
+            listener
         )
     }
 }

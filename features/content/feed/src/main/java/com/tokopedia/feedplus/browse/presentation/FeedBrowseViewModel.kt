@@ -7,6 +7,7 @@ import com.tokopedia.content.common.util.UiEventManager
 import com.tokopedia.feedplus.browse.data.FeedBrowseRepository
 import com.tokopedia.feedplus.browse.presentation.model.ChannelUiState
 import com.tokopedia.feedplus.browse.presentation.model.ChipUiState
+import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseChipUiModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemUiModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiAction
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiEvent
@@ -60,6 +61,7 @@ class FeedBrowseViewModel @Inject constructor(
             is FeedBrowseUiAction.FetchCards -> {
                 handleFetchWidget(action.extraParams, action.widgetId)
             }
+            is FeedBrowseUiAction.SelectChip -> handleSelectChip(action.model, action.widgetId)
         }
     }
 
@@ -100,6 +102,23 @@ class FeedBrowseViewModel @Inject constructor(
             val response = repository.getWidget(extraParams)
             updateChannelWidget(widgetId) { prevWidget ->
                 replaceContent(prevWidget, response)
+            }
+        }
+    }
+
+    private fun handleSelectChip(chip: FeedBrowseChipUiModel, widgetId: String) {
+        viewModelScope.launch {
+            updateChannelWidget(widgetId) { prevWidget ->
+                prevWidget.copy(
+                    chipUiState = if (prevWidget.chipUiState is ChipUiState.Data) {
+                        prevWidget.chipUiState.copy(
+                            items = prevWidget.chipUiState.items.map {
+                                it.copy(isSelected = it.id == chip.id)
+                            },
+                        )
+                    } else prevWidget.chipUiState,
+                    channelUiState = ChannelUiState.Placeholder
+                )
             }
         }
     }

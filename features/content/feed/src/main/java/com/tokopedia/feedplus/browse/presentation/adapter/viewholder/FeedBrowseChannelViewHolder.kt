@@ -8,12 +8,15 @@ import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseChipAdapter
 import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseItemDecoration
 import com.tokopedia.feedplus.browse.presentation.model.ChannelUiState
 import com.tokopedia.feedplus.browse.presentation.model.ChipUiState
+import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseChipUiModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiModel
 import com.tokopedia.feedplus.browse.presentation.view.FeedBrowseErrorView
 import com.tokopedia.feedplus.browse.presentation.view.FeedBrowsePlaceholderView
 import com.tokopedia.feedplus.databinding.ItemFeedBrowseChannelBinding
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.play.widget.ui.widget.PlayWidgetCardView
 
 /**
  * Created by meyta.taliti on 11/08/23.
@@ -42,18 +45,37 @@ class FeedBrowseChannelViewHolder(
     private val recyclerViewCard = binding.feedBrowseCards
 
     private val chipListener = object : FeedBrowseChipViewHolder.Listener {
+        override fun onChipClicked(model: FeedBrowseChipUiModel) {
+            val widgetData = mData ?: return
+            listener.onChipClicked(model, widgetData)
+        }
+
+        override fun onChipSelected(model: FeedBrowseChipUiModel) {
+            val widgetData = mData ?: return
+            listener.onChipSelected(model, widgetData)
+        }
     }
     private val chipAdapter by lazy { FeedBrowseChipAdapter(chipListener) }
     private val chipItemDecoration = FeedBrowseItemDecoration(
         context = binding.root.context,
-        spacing = com.tokopedia.feedplus.R.dimen.feed_space_2
+        spacingHorizontal = com.tokopedia.feedplus.R.dimen.feed_space_2,
+        spacingTop = com.tokopedia.feedplus.R.dimen.feed_space_12
     )
 
-    private val cardAdapter by lazy { FeedBrowseCardAdapter() }
+    private val cardListener = object : PlayWidgetCardView.Listener {
+        override fun onCardClicked(view: PlayWidgetCardView, item: PlayWidgetChannelUiModel) {
+            val widgetData = mData ?: return
+            listener.onCardClicked(item, widgetData)
+        }
+    }
+    private val cardAdapter by lazy { FeedBrowseCardAdapter(cardListener) }
     private val cardItemDecoration = FeedBrowseItemDecoration(
         context = binding.root.context,
-        spacing = com.tokopedia.feedplus.R.dimen.feed_space_8
+        spacingHorizontal = com.tokopedia.feedplus.R.dimen.feed_space_8,
+        spacingTop = com.tokopedia.unifyprinciples.R.dimen.layout_lvl0
     )
+
+    private var mData: FeedBrowseUiModel.Channel? = null
 
     init {
         recyclerViewCard.adapter = cardAdapter
@@ -64,6 +86,7 @@ class FeedBrowseChannelViewHolder(
     }
 
     fun bind(item: FeedBrowseUiModel.Channel) {
+        mData = item
         setupTitle(item.title)
         setupContent(item)
     }
@@ -89,7 +112,7 @@ class FeedBrowseChannelViewHolder(
                 showErrorView()
                 errorView.setOnClickListener {
                     val extraParams = channelUiState.extraParams ?: item.extraParams
-                    onRetryClicked(extraParams, item.id)
+                    onRetryClicked(extraParams, item)
                 }
             }
         }
@@ -113,17 +136,13 @@ class FeedBrowseChannelViewHolder(
     }
 
     private fun setupChips(chip: ChipUiState.Data) {
-        if (chip.items.isEmpty()) {
-            recyclerViewChip.hide()
-        } else {
-            chipAdapter.setItemsAndAnimateChanges(chip.items)
-            recyclerViewChip.show()
-        }
+        // todo: better handling notify set changed?
+        chipAdapter.setItemsAndAnimateChanges(chip.items)
     }
 
     private fun setupCards(channel: ChannelUiState.Data) {
+        // todo: better handling notify set changed?
         cardAdapter.setItemsAndAnimateChanges(channel.items)
-        recyclerViewCard.show()
     }
 
     private fun addToPlaceholderView(view: View) {
@@ -144,13 +163,19 @@ class FeedBrowseChannelViewHolder(
         binding.feedBrowsePlaceholder.removeAllViews()
     }
 
-    private fun onRetryClicked(extraParams: Map<String, Any>, widgetId: String) {
+    private fun onRetryClicked(extraParams: Map<String, Any>, widgetModel: FeedBrowseUiModel.Channel) {
         errorView.startAnimating()
-        listener.onRetryClicked(extraParams, widgetId)
+        listener.onRetryClicked(extraParams, widgetModel)
     }
 
     interface Listener {
-        fun onRetryClicked(extraParams: Map<String, Any>, widgetId: String)
+        fun onRetryClicked(extraParams: Map<String, Any>, widgetModel: FeedBrowseUiModel.Channel)
+
+        fun onCardClicked(channelModel: PlayWidgetChannelUiModel, widgetModel: FeedBrowseUiModel.Channel)
+
+        fun onChipClicked(chipModel: FeedBrowseChipUiModel, widgetModel: FeedBrowseUiModel.Channel)
+
+        fun onChipSelected(chipModel: FeedBrowseChipUiModel, widgetModel: FeedBrowseUiModel.Channel)
     }
 
 }

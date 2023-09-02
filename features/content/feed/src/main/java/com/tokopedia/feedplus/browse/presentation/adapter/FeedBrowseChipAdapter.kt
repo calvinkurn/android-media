@@ -10,7 +10,7 @@ import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseChipUiModel
  */
 class FeedBrowseChipAdapter(
     listener: FeedBrowseChipViewHolder.Listener
-): BaseDiffUtilAdapter<FeedBrowseChipUiModel>(isFlexibleType = true) {
+): BaseDiffUtilAdapter<FeedBrowseChipUiModel>() {
 
     init {
         delegatesManager.addDelegate(ChipAdapterDelegate(listener))

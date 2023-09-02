@@ -7,6 +7,11 @@ sealed interface FeedBrowseUiAction {
 
     object LoadInitialPage: FeedBrowseUiAction
 
+    data class SelectChip(
+        val model: FeedBrowseChipUiModel,
+        val widgetId: String,
+    ): FeedBrowseUiAction
+
     data class FetchCards(
         val extraParams: Map<String, Any>,
         val widgetId: String
