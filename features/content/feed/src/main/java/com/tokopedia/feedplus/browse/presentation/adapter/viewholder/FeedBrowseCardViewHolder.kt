@@ -2,6 +2,7 @@ package com.tokopedia.feedplus.browse.presentation.adapter.viewholder
 
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.feedplus.databinding.ItemFeedBrowseCardBinding
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.widget.PlayWidgetCardView
 
@@ -10,7 +11,7 @@ import com.tokopedia.play.widget.ui.widget.PlayWidgetCardView
  */
 class FeedBrowseCardViewHolder(
     binding: ItemFeedBrowseCardBinding,
-    listener: Listener
+    private val listener: Listener
 ) : RecyclerView.ViewHolder(binding.root) {
 
     private val playWidget = binding.root
@@ -27,9 +28,16 @@ class FeedBrowseCardViewHolder(
 
     fun bind(item: PlayWidgetChannelUiModel) {
         playWidget.setData(item)
+        playWidget.addOnImpressionListener(item.impressHolder) {
+            listener.onCardImpressed(item, bindingAdapterPosition)
+        }
     }
 
     interface Listener {
+        fun onCardImpressed(
+            item: PlayWidgetChannelUiModel,
+            position: Int
+        )
         fun onCardClicked(
             item: PlayWidgetChannelUiModel,
             position: Int

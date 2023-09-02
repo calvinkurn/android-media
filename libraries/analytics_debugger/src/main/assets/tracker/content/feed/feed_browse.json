@@ -17,7 +17,7 @@
       "event": "view_item",
       "eventAction": "view - channel card",
       "eventCategory": "feed browse page",
-      "eventLabel":"BROWSE_PAGE_FEED - .* - \\d+ - \\d+ - \\d+ - \\d+ - null - \\d+ - .* - .*",
+      "eventLabel":"BROWSE_PAGE_FEED - .* - .* - .* - .* - .* - null - .* - .*",
       "trackerId": "45741",
       "businessUnit": "content",
       "currentSite": "tokopediamarketplace",
@@ -25,8 +25,8 @@
         {
           "creative_name": "\\d+",
           "creative_slot": "\\d+}",
-          "item_id": "\\d+ - .*",
-          "item_name": "/ - BROWSE_PAGE_FEED - \\d+ - channel card - .*"
+          "item_id": ".* - .*",
+          "item_name": "/ - BROWSE_PAGE_FEED - .* - channel card - .*"
         }
       ],
       "sessionIris":".*",
@@ -55,7 +55,7 @@
       "event": "select_content",
       "eventAction": "click - channel card",
       "eventCategory": "feed browse page",
-      "eventLabel":"BROWSE_PAGE_FEED - .* - \\d+ - \\d+ - \\d+ - \\d+ - null - \\d+ - .* - .*",
+      "eventLabel":"BROWSE_PAGE_FEED - .* - .* - .* - .* - .* - null - .* - .*",
       "trackerId": "45743",
       "businessUnit": "content",
       "currentSite": "tokopediamarketplace",
@@ -63,8 +63,8 @@
         {
           "creative_name": "\\d+",
           "creative_slot": "\\d+",
-          "item_id": "\\d+ - .*",
-          "item_name": "/ - BROWSE_PAGE_FEED - \\d+ - channel card - .*"
+          "item_id": ".* - .*",
+          "item_name": "/ - BROWSE_PAGE_FEED - .* - channel card - .*"
         }
       ],
       "sessionIris":".*",

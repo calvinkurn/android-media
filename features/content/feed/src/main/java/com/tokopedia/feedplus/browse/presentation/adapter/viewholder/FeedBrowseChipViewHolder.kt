@@ -3,6 +3,7 @@ package com.tokopedia.feedplus.browse.presentation.adapter.viewholder
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseChipUiModel
 import com.tokopedia.feedplus.databinding.ItemFeedBrowseChipBinding
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.unifycomponents.ChipsUnify
 
 /**
@@ -24,6 +25,10 @@ class FeedBrowseChipViewHolder(
             if (chipView.chipType == ChipsUnify.TYPE_SELECTED) return@setOnClickListener
             listener.onChipClicked(item)
         }
+
+        chipView.addOnImpressionListener(item.impressHolder) {
+            listener.onChipImpressed(item, bindingAdapterPosition)
+        }
     }
 
     private fun onChipSelected(item: FeedBrowseChipUiModel) {
@@ -42,6 +47,8 @@ class FeedBrowseChipViewHolder(
     }
 
     interface Listener {
+        fun onChipImpressed(model: FeedBrowseChipUiModel, position: Int)
+
         fun onChipClicked(model: FeedBrowseChipUiModel)
 
         fun onChipSelected(model: FeedBrowseChipUiModel, position: Int)

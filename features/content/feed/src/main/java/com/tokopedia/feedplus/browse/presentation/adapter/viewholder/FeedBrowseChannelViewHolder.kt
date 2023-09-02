@@ -45,6 +45,11 @@ class FeedBrowseChannelViewHolder(
     private val recyclerViewCard = binding.feedBrowseCards
 
     private val chipListener = object : FeedBrowseChipViewHolder.Listener {
+        override fun onChipImpressed(model: FeedBrowseChipUiModel, position: Int) {
+            val widgetData = mData ?: return
+            listener.onChipImpressed(model, widgetData, position, bindingAdapterPosition)
+        }
+
         override fun onChipClicked(model: FeedBrowseChipUiModel) {
             val widgetData = mData ?: return
             listener.onChipClicked(model, widgetData)
@@ -63,6 +68,12 @@ class FeedBrowseChannelViewHolder(
     )
 
     private val cardListener = object : FeedBrowseCardViewHolder.Listener {
+        override fun onCardImpressed(item: PlayWidgetChannelUiModel, position: Int) {
+            val widgetData = mData ?: return
+            val config = (widgetData.channelUiState as? ChannelUiState.Data)?.config ?: return
+            listener.onCardImpressed(item, config, widgetData, position, bindingAdapterPosition)
+        }
+
         override fun onCardClicked(item: PlayWidgetChannelUiModel, position: Int) {
             val widgetData = mData ?: return
             val config = (widgetData.channelUiState as? ChannelUiState.Data)?.config ?: return
