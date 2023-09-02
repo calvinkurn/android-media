@@ -30,7 +30,7 @@ object ProductBundlingRobot {
 
     fun clickOnImageSingleItemBundling() {
         generalRobot {
-            doActionOnListItemAt(0, R.id.button_open_package, click())
+            doActionOnListItemAt(0, R.id.iv_single_product_thumbnail, click())
         }
     }
 

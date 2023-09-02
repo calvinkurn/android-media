@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.RecyclerView
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
-import java.util.*
 
 class RecyclerViewMatcher(private val recyclerViewId: Int) {
     fun atPosition(position: Int): Matcher<View> {
@@ -23,11 +22,7 @@ class RecyclerViewMatcher(private val recyclerViewId: Int) {
                     idDescription = try {
                         resources!!.getResourceName(recyclerViewId)
                     } catch (var4: Resources.NotFoundException) {
-                        String.format(
-                            Locale.getDefault(),
-                            "%s (resource name not found)",
-                            Integer.valueOf(recyclerViewId)
-                        )
+                        "${Integer.valueOf(recyclerViewId)} (resource name not found)"
                     }
                 }
                 description?.appendText("with id: $idDescription")
