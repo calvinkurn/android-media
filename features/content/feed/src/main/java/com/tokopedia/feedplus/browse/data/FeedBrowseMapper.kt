@@ -1,6 +1,8 @@
 package com.tokopedia.feedplus.browse.data
 
 import com.tokopedia.content.common.model.Content
+import com.tokopedia.content.common.model.ContentItem
+import com.tokopedia.content.common.model.ContentSlotMeta
 import com.tokopedia.content.common.model.FeedXHeaderResponse
 import com.tokopedia.content.common.model.WidgetSlot
 import com.tokopedia.feedplus.browse.presentation.model.ChannelUiState
@@ -12,6 +14,7 @@ import com.tokopedia.feedplus.data.FeedXHomeEntity
 import com.tokopedia.play.widget.ui.model.PlayGridType
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelTypeTransition
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetPartnerUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.PlayWidgetShareUiModel
@@ -47,12 +50,15 @@ class FeedBrowseMapper @Inject constructor() {
     fun mapWidget(response: WidgetSlot): FeedBrowseItemUiModel {
         val data = response.playGetContentSlot.data
         val firstWidget = data.first()
-        return when(firstWidget.type) {
+        return when (firstWidget.type) {
             "tabMenu" -> {
                 ChipUiState.Data(mapChips(firstWidget))
             }
             "channelBlock" -> {
-                ChannelUiState.Data(mapChannel(firstWidget))
+                ChannelUiState.Data(
+                    mapChannel(firstWidget),
+                    mapConfig(response.playGetContentSlot.playGetContentSlot)
+                )
             }
             else -> ChannelUiState.Error(IllegalStateException())
         }
@@ -75,35 +81,41 @@ class FeedBrowseMapper @Inject constructor() {
 
     private fun mapChannel(data: Content): List<PlayWidgetChannelUiModel> {
         return data.items.map { item ->
-            mapChannel(
-                channelType = PlayWidgetChannelType.getByValue(item.airTime),
-                totalView = item.stats.view.formatted,
-                coverUrl = item.coverUrl
-            )
+            mapChannel(item)
         }
     }
 
+    private fun mapConfig(data: ContentSlotMeta): PlayWidgetConfigUiModel {
+        return PlayWidgetConfigUiModel.Empty.copy(
+            autoRefresh = data.autoRefresh,
+            autoRefreshTimer = data.autoRefreshTimer,
+            autoPlay = data.isAutoplay,
+            autoPlayAmount = data.maxAutoplayInCell
+        )
+    }
+
     private fun mapChannel(
-        channelType: PlayWidgetChannelType,
-        totalView: String,
-        coverUrl: String,
+        item: ContentItem
     ): PlayWidgetChannelUiModel {
+        val channelType = PlayWidgetChannelType.getByValue(item.airTime)
+        val totalView = item.stats.view.formatted
+        val coverUrl = item.coverUrl
         return PlayWidgetChannelUiModel(
-            channelId = "1",
-            title = "",
-            appLink = "",
-            startTime = "",
+            channelId = item.id,
+            title = item.title,
+            appLink = item.appLink,
+            startTime = item.startTime,
             totalView = PlayWidgetTotalView(totalView, true),
             promoType = PlayWidgetPromoType.NoPromo,
             reminderType = PlayWidgetReminderType.NotReminded,
-            partner = PlayWidgetPartnerUiModel.Empty,
+            partner = PlayWidgetPartnerUiModel.Empty.copy(id = item.partner.id),
             video = PlayWidgetVideoUiModel.Empty.copy(coverUrl = coverUrl),
             channelType = channelType,
             hasGame = false,
             share = PlayWidgetShareUiModel("", false),
             performanceSummaryLink = "",
             poolType = "",
-            recommendationType = "",
+            recommendationType = item.recommendationType,
             hasAction = false,
             products = emptyList(),
             shouldShowPerformanceDashboard = false,

@@ -7,5 +7,5 @@ data class FeedBrowseChipUiModel(
     val id: String,
     val label: String,
     val extraParams: Map<String, Any> = emptyMap(),
-    val isSelected: Boolean = false
+    val isSelected: Boolean
 )

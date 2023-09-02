@@ -6,23 +6,19 @@ import com.tokopedia.content.analytic.Event
 import com.tokopedia.content.analytic.Key
 import com.tokopedia.track.builder.Tracker
 import com.tokopedia.user.session.UserSessionInterface
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
+import javax.inject.Inject
 
 /**
  * Created by meyta.taliti on 01/09/23.
  * https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4134
  */
-class FeedBrowseTracker @AssistedInject constructor(
-    @Assisted private val prefix: String, // can only be filled when opening page from browse icon in unified feed
+class FeedBrowseTracker @Inject constructor(
     channelTracker: FeedBrowseChannelTracker.Factory,
     private val userSession: UserSessionInterface
-): FeedBrowseChannelTracker by channelTracker.create(prefix) {
+) : FeedBrowseChannelTracker by channelTracker.create(PREFIX_VALUE) {
 
-    @AssistedFactory
-    interface Factory {
-        fun create(prefix: String) : FeedBrowseTracker
+    companion object {
+        private const val PREFIX_VALUE = "BROWSE_PAGE_FEED"
     }
 
     fun sendClickBackExitEvent() {
@@ -30,7 +26,7 @@ class FeedBrowseTracker @AssistedInject constructor(
             .setEvent(Event.clickHomepage)
             .setEventAction("click - back exit browse")
             .setEventCategory("feed browse page")
-            .setEventLabel(prefix)
+            .setEventLabel(PREFIX_VALUE)
             .setCustomProperty(Key.trackerId, "45745")
             .setBusinessUnit(BusinessUnit.content)
             .setCurrentSite(CurrentSite.tokopediaMarketplace)

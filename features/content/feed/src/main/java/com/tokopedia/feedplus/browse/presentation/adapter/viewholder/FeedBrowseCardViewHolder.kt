@@ -10,16 +10,29 @@ import com.tokopedia.play.widget.ui.widget.PlayWidgetCardView
  */
 class FeedBrowseCardViewHolder(
     binding: ItemFeedBrowseCardBinding,
-    listener: PlayWidgetCardView.Listener
-): RecyclerView.ViewHolder(binding.root) {
+    listener: Listener
+) : RecyclerView.ViewHolder(binding.root) {
 
     private val playWidget = binding.root
 
+    private val playWidgetListener = object : PlayWidgetCardView.Listener {
+        override fun onCardClicked(view: PlayWidgetCardView, item: PlayWidgetChannelUiModel) {
+            listener.onCardClicked(item, bindingAdapterPosition)
+        }
+    }
+
     init {
-        playWidget.setListener(listener)
+        playWidget.setListener(playWidgetListener)
     }
 
     fun bind(item: PlayWidgetChannelUiModel) {
         playWidget.setData(item)
+    }
+
+    interface Listener {
+        fun onCardClicked(
+            item: PlayWidgetChannelUiModel,
+            position: Int
+        )
     }
 }

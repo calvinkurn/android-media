@@ -28,7 +28,6 @@ import com.tokopedia.createpost.common.analyics.FeedTrackerImagePickerInsta
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.analytics.FeedAnalytics
 import com.tokopedia.feedplus.analytics.FeedNavigationAnalytics
-import com.tokopedia.feedplus.browse.presentation.FeedBrowseFragment
 import com.tokopedia.feedplus.databinding.FragmentFeedBaseBinding
 import com.tokopedia.feedplus.di.FeedMainInjector
 import com.tokopedia.feedplus.presentation.activityresultcontract.OpenCreateShortsContract
@@ -533,10 +532,7 @@ class FeedBaseFragment :
 
         binding.containerFeedTopNav.btnFeedBrowse.setOnClickListener {
             feedNavigationAnalytics.sendClickBrowseIconEvent()
-            val intent = RouteManager.getIntent(requireContext(), meta.browseApplink).apply {
-                putExtra(FeedBrowseFragment.KEY_PREFIX, feedNavigationAnalytics.activeTab)
-            }
-            if (intent != null) startActivity(intent)
+            openAppLink.launch(meta.browseApplink)
         }
 
         binding.containerFeedTopNav.feedUserProfileImage.setOnClickListener {

@@ -30,6 +30,8 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
+import com.tokopedia.play_common.util.extension.withCache
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.io.InterruptedIOException
@@ -43,13 +45,11 @@ import javax.inject.Inject
  */
 class FeedBrowseFragment @Inject constructor(
     viewModelFactory: ViewModelProvider.Factory,
-    private val trackerFactory: FeedBrowseTracker.Factory,
+    private val tracker: FeedBrowseTracker
 ) : TkpdBaseV4Fragment() {
 
     private var _binding: FragmentFeedBrowseBinding? = null
     private val binding get() = _binding!!
-
-    private lateinit var tracker: FeedBrowseTracker
 
     private val channelListener = object : FeedBrowseChannelViewHolder.Listener {
         override fun onRetryClicked(
@@ -61,12 +61,52 @@ class FeedBrowseFragment @Inject constructor(
             )
         }
 
+        override fun onCardImpressed(
+            channelModel: PlayWidgetChannelUiModel,
+            config: PlayWidgetConfigUiModel,
+            widgetModel: FeedBrowseUiModel.Channel,
+            channelPositionInList: Int,
+            verticalWidgetPosition: Int
+        ) {
+            tracker.sendViewChannelCardEvent(
+                item = channelModel,
+                config = config,
+                widget = widgetModel,
+                channelPositionInList = channelPositionInList,
+                verticalWidgetPosition = verticalWidgetPosition
+            )
+        }
+
         override fun onCardClicked(
             channelModel: PlayWidgetChannelUiModel,
-            widgetModel: FeedBrowseUiModel.Channel
+            config: PlayWidgetConfigUiModel,
+            widgetModel: FeedBrowseUiModel.Channel,
+            channelPositionInList: Int,
+            verticalWidgetPosition: Int
+
         ) {
-            tracker.sendClickChannelCardEvent()
+            tracker.sendClickChannelCardEvent(
+                item = channelModel,
+                config = config,
+                widget = widgetModel,
+                channelPositionInList = channelPositionInList,
+                verticalWidgetPosition = verticalWidgetPosition
+            )
             goToPage(channelModel.appLink)
+        }
+
+        override fun onChipImpressed(
+            chipModel: FeedBrowseChipUiModel,
+            widgetModel: FeedBrowseUiModel.Channel,
+            chipPositionInList: Int,
+            verticalWidgetPosition: Int
+        ) {
+            tracker.sendViewChipsWidgetEvent(
+                chipModel,
+                widgetModel,
+                chipPositionInList,
+                verticalWidgetPosition
+            )
         }
 
         override fun onChipClicked(
@@ -78,9 +118,16 @@ class FeedBrowseFragment @Inject constructor(
 
         override fun onChipSelected(
             chipModel: FeedBrowseChipUiModel,
-            widgetModel: FeedBrowseUiModel.Channel
+            widgetModel: FeedBrowseUiModel.Channel,
+            chipPositionInList: Int,
+            verticalWidgetPosition: Int
         ) {
-            tracker.sendClickChipsWidgetEvent()
+            tracker.sendClickChipsWidgetEvent(
+                chipModel,
+                widgetModel,
+                chipPositionInList,
+                verticalWidgetPosition
+            )
             viewModel.submitAction(
                 FeedBrowseUiAction.FetchCards(chipModel.extraParams, widgetModel.id)
             )
@@ -101,13 +148,6 @@ class FeedBrowseFragment @Inject constructor(
         requireActivity().onBackPressedDispatcher.addCallback(
             this,
             onBackPressedCallback
-        )
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        tracker = trackerFactory.create(
-            prefix = arguments?.getString(KEY_PREFIX).orEmpty()
         )
     }
 
@@ -143,7 +183,12 @@ class FeedBrowseFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.uiState
                 .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
-                .collectLatest { state ->
+                .withCache()
+                .collectLatest { cachedState ->
+
+                    val state = cachedState.value
+                    val prevState = cachedState.prevValue
+
                     when (state) {
                         FeedBrowseUiState.Placeholder -> {
                             hideError()
@@ -152,8 +197,9 @@ class FeedBrowseFragment @Inject constructor(
                         is FeedBrowseUiState.Success -> {
                             hideError()
                             showContent()
-                            renderHeader(state.title)
-                            renderContent(state.widgets)
+
+                            renderHeader(if (prevState is FeedBrowseUiState.Success) prevState.title else null, state.title)
+                            renderContent(if (prevState is FeedBrowseUiState.Success) prevState.widgets else null, state.widgets)
                         }
                         is FeedBrowseUiState.Error -> {
                             hideContent()
@@ -186,7 +232,7 @@ class FeedBrowseFragment @Inject constructor(
 
     private fun showPlaceholder() {
         renderContent(
-            listOf(
+            newWidgets = listOf(
                 FeedBrowseUiModel.Placeholder(type = FeedBrowsePlaceholderView.Type.Title),
                 FeedBrowseUiModel.Placeholder(type = FeedBrowsePlaceholderView.Type.Chips),
                 FeedBrowseUiModel.Placeholder(type = FeedBrowsePlaceholderView.Type.Cards),
@@ -229,13 +275,19 @@ class FeedBrowseFragment @Inject constructor(
         binding.feedBrowseList.hide()
     }
 
-    private fun renderHeader(title: String) {
-        binding.feedBrowseHeader.title = title
+    private fun renderHeader(cachedTitle: String?, newTitle: String) {
+        if (cachedTitle == newTitle) return
+        binding.feedBrowseHeader.title = newTitle
     }
 
-    private fun renderContent(widgets: List<FeedBrowseUiModel>) {
-        if (widgets.isEmpty()) return
-        adapter.setItemsAndAnimateChanges(widgets)
+    private fun renderContent(
+        cachedWidgets: List<FeedBrowseUiModel>? = null,
+        newWidgets: List<FeedBrowseUiModel>
+    ) {
+        if (cachedWidgets == newWidgets) return
+        if (newWidgets.isEmpty()) return
+
+        adapter.setItemsAndAnimateChanges(newWidgets)
     }
 
     private fun goToPage(appLink: String) {
@@ -248,8 +300,6 @@ class FeedBrowseFragment @Inject constructor(
     }
 
     companion object {
-
-        const val KEY_PREFIX = "extra_prefix"
 
         fun create(
             fragmentManager: FragmentManager,

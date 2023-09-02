@@ -1,6 +1,5 @@
 package com.tokopedia.feedplus.browse.presentation.adapter.viewholder
 
-import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseChipUiModel
 import com.tokopedia.feedplus.databinding.ItemFeedBrowseChipBinding
@@ -12,17 +11,14 @@ import com.tokopedia.unifycomponents.ChipsUnify
 class FeedBrowseChipViewHolder(
     binding: ItemFeedBrowseChipBinding,
     private val listener: Listener
-): RecyclerView.ViewHolder(binding.root) {
+) : RecyclerView.ViewHolder(binding.root) {
 
     private val chipView = binding.cuFeedBrowseLabel
 
     fun bind(item: FeedBrowseChipUiModel) {
         chipView.chipText = item.label
-        chipView.selectedChangeListener = { isActive ->
-            if (isActive) listener.onChipSelected(item)
-        }
 
-        updateChip(item.isSelected)
+        onChipSelected(item)
 
         chipView.setOnClickListener {
             if (chipView.chipType == ChipsUnify.TYPE_SELECTED) return@setOnClickListener
@@ -30,18 +26,24 @@ class FeedBrowseChipViewHolder(
         }
     }
 
-    private fun updateChip(isSelected: Boolean) {
-        val newChipType = if (isSelected) {
+    private fun onChipSelected(item: FeedBrowseChipUiModel) {
+        val newChipType = if (item.isSelected) {
             ChipsUnify.TYPE_SELECTED
         } else {
             ChipsUnify.TYPE_NORMAL
         }
-        chipView.chipType = newChipType
+        if (chipView.chipType != newChipType) {
+            chipView.chipType = newChipType
+        }
+
+        if (item.isSelected) {
+            listener.onChipSelected(item, bindingAdapterPosition)
+        }
     }
 
     interface Listener {
         fun onChipClicked(model: FeedBrowseChipUiModel)
 
-        fun onChipSelected(model: FeedBrowseChipUiModel)
+        fun onChipSelected(model: FeedBrowseChipUiModel, position: Int)
     }
 }

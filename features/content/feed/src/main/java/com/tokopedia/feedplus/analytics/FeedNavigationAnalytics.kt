@@ -47,7 +47,7 @@ class FeedNavigationAnalytics @Inject constructor(
     private val userId: String
         get() = userSession.userId
 
-    val activeTab: String
+    private val activeTab: String
         get() {
             return getPrefix(_activeTab?.type.orEmpty())
         }

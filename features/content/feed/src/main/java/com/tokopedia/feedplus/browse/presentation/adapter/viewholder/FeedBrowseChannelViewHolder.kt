@@ -16,15 +16,15 @@ import com.tokopedia.feedplus.databinding.ItemFeedBrowseChannelBinding
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
-import com.tokopedia.play.widget.ui.widget.PlayWidgetCardView
+import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
 
 /**
  * Created by meyta.taliti on 11/08/23.
  */
 class FeedBrowseChannelViewHolder(
     private val binding: ItemFeedBrowseChannelBinding,
-    private val listener: Listener,
-): RecyclerView.ViewHolder(binding.root) {
+    private val listener: Listener
+) : RecyclerView.ViewHolder(binding.root) {
 
     private val errorView: FeedBrowseErrorView = FeedBrowseErrorView(binding.root.context).apply {
         layoutParams = LinearLayout.LayoutParams(
@@ -50,9 +50,9 @@ class FeedBrowseChannelViewHolder(
             listener.onChipClicked(model, widgetData)
         }
 
-        override fun onChipSelected(model: FeedBrowseChipUiModel) {
+        override fun onChipSelected(model: FeedBrowseChipUiModel, position: Int) {
             val widgetData = mData ?: return
-            listener.onChipSelected(model, widgetData)
+            listener.onChipSelected(model, widgetData, position, bindingAdapterPosition)
         }
     }
     private val chipAdapter by lazy { FeedBrowseChipAdapter(chipListener) }
@@ -62,10 +62,11 @@ class FeedBrowseChannelViewHolder(
         spacingTop = com.tokopedia.feedplus.R.dimen.feed_space_12
     )
 
-    private val cardListener = object : PlayWidgetCardView.Listener {
-        override fun onCardClicked(view: PlayWidgetCardView, item: PlayWidgetChannelUiModel) {
+    private val cardListener = object : FeedBrowseCardViewHolder.Listener {
+        override fun onCardClicked(item: PlayWidgetChannelUiModel, position: Int) {
             val widgetData = mData ?: return
-            listener.onCardClicked(item, widgetData)
+            val config = (widgetData.channelUiState as? ChannelUiState.Data)?.config ?: return
+            listener.onCardClicked(item, config, widgetData, position, bindingAdapterPosition)
         }
     }
     private val cardAdapter by lazy { FeedBrowseCardAdapter(cardListener) }
@@ -85,23 +86,24 @@ class FeedBrowseChannelViewHolder(
         recyclerViewChip.addItemDecoration(chipItemDecoration)
     }
 
-    fun bind(item: FeedBrowseUiModel.Channel) {
+    fun updateItem(item: FeedBrowseUiModel.Channel) {
         mData = item
+    }
+
+    fun bind(item: FeedBrowseUiModel.Channel) {
+        updateItem(item)
         setupTitle(item.title)
         setupContent(item)
     }
 
-    private fun setupContent(item: FeedBrowseUiModel.Channel) {
-        val chipUiState = item.chipUiState
-        val channelUiState = item.channelUiState
-
-        errorView.stop()
-
+    fun bindChipUiState(chipUiState: ChipUiState) {
         when (chipUiState) {
             ChipUiState.Placeholder -> showPlaceholderView()
             is ChipUiState.Data -> setupChips(chipUiState)
         }
+    }
 
+    fun bindChannelUiState(channelUiState: ChannelUiState, item: FeedBrowseUiModel.Channel) {
         when (channelUiState) {
             ChannelUiState.Placeholder -> showPlaceholderView()
             is ChannelUiState.Data -> {
@@ -116,6 +118,16 @@ class FeedBrowseChannelViewHolder(
                 }
             }
         }
+    }
+
+    private fun setupContent(item: FeedBrowseUiModel.Channel) {
+        val chipUiState = item.chipUiState
+        val channelUiState = item.channelUiState
+
+        errorView.stop()
+
+        bindChipUiState(chipUiState)
+        bindChannelUiState(channelUiState, item)
     }
 
     private fun showErrorView() {
@@ -136,12 +148,10 @@ class FeedBrowseChannelViewHolder(
     }
 
     private fun setupChips(chip: ChipUiState.Data) {
-        // todo: better handling notify set changed?
         chipAdapter.setItemsAndAnimateChanges(chip.items)
     }
 
     private fun setupCards(channel: ChannelUiState.Data) {
-        // todo: better handling notify set changed?
         cardAdapter.setItemsAndAnimateChanges(channel.items)
     }
 
@@ -171,11 +181,45 @@ class FeedBrowseChannelViewHolder(
     interface Listener {
         fun onRetryClicked(extraParams: Map<String, Any>, widgetModel: FeedBrowseUiModel.Channel)
 
-        fun onCardClicked(channelModel: PlayWidgetChannelUiModel, widgetModel: FeedBrowseUiModel.Channel)
+        fun onCardImpressed(
+            channelModel: PlayWidgetChannelUiModel,
+            config: PlayWidgetConfigUiModel,
+            widgetModel: FeedBrowseUiModel.Channel,
+            channelPositionInList: Int,
+            verticalWidgetPosition: Int
+        )
 
-        fun onChipClicked(chipModel: FeedBrowseChipUiModel, widgetModel: FeedBrowseUiModel.Channel)
+        fun onCardClicked(
+            channelModel: PlayWidgetChannelUiModel,
+            config: PlayWidgetConfigUiModel,
+            widgetModel: FeedBrowseUiModel.Channel,
+            channelPositionInList: Int,
+            verticalWidgetPosition: Int
+        )
 
-        fun onChipSelected(chipModel: FeedBrowseChipUiModel, widgetModel: FeedBrowseUiModel.Channel)
+        fun onChipImpressed(
+            chipModel: FeedBrowseChipUiModel,
+            widgetModel: FeedBrowseUiModel.Channel,
+            chipPositionInList: Int,
+            verticalWidgetPosition: Int
+        )
+
+        fun onChipClicked(
+            chipModel: FeedBrowseChipUiModel,
+            widgetModel: FeedBrowseUiModel.Channel
+        )
+
+        fun onChipSelected(
+            chipModel: FeedBrowseChipUiModel,
+            widgetModel: FeedBrowseUiModel.Channel,
+            chipPositionInList: Int,
+            verticalWidgetPosition: Int
+        )
     }
 
+    companion object {
+
+        const val NOTIFY_CHANNEL_STATE = "NotifyChannelState"
+        const val NOTIFY_CHIP_STATE = "NotifyChipState"
+    }
 }
