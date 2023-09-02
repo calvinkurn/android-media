@@ -8,4 +8,6 @@ import com.tokopedia.editor.ui.model.InputTextModel
  */
 sealed class MainEditorEffect {
     data class OpenInputText(val model: InputTextModel) : MainEditorEffect()
+
+    data class ParentToolbarVisibility(val visible: Boolean) : MainEditorEffect()
 }

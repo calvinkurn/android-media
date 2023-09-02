@@ -1,4 +1,4 @@
-package com.tokopedia.editor.ui.main.uimodel
+package com.tokopedia.editor.ui.main
 
 import com.tokopedia.editor.data.model.NavigationTool
 import com.tokopedia.editor.ui.model.EditorModel

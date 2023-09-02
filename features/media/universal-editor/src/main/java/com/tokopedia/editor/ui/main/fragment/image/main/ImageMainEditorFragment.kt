@@ -13,23 +13,22 @@ import com.tokopedia.editor.ui.main.MainEditorViewModel
 import com.tokopedia.editor.ui.main.uimodel.InputTextUiModel
 import com.tokopedia.editor.ui.main.uimodel.MainEditorEvent
 import com.tokopedia.editor.ui.model.InputTextModel
-import com.tokopedia.editor.ui.widget.DynamicTextCanvasView
-import com.tokopedia.kotlin.extensions.view.isLessThanZero
+import com.tokopedia.editor.ui.widget.DynamicTextCanvasLayout
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ImageMainEditorFragment @Inject constructor(
     private val param: EditorParamFetcher
-) : BaseEditorFragment(R.layout.fragment_image_main_editor)
-    , DynamicTextCanvasView.Listener {
+) : BaseEditorFragment(R.layout.fragment_image_main_editor), DynamicTextCanvasLayout.Listener {
 
     private val binding: FragmentImageMainEditorBinding? by viewBinding()
     private val viewModel: MainEditorViewModel by activityViewModels()
 
     override fun initView() {
+        binding?.canvas?.setListener(this)
+
         lifecycleScope.launchWhenCreated {
             val file = param.get().firstFile.path
             binding?.imgSample?.loadImage(file)
@@ -39,33 +38,28 @@ class ImageMainEditorFragment @Inject constructor(
     override fun initObserver() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                viewModel.inputTextState.collect(::addOrEditTextOnCanvas)
+                viewModel.inputTextState.collect(::addOrEditTextOnLayout)
             }
         }
     }
 
     override fun onTextClick(text: View, model: InputTextModel?) {
         if (model == null) return
+
         viewModel.onEvent(MainEditorEvent.EditInputTextPage(text.id, model))
     }
 
-    private fun addOrEditTextOnCanvas(state: InputTextUiModel) {
-        if (state.model == null) return
+    private fun addOrEditTextOnLayout(state: InputTextUiModel) {
+        val (typographyId, model) = state
+        if (model == null) return
 
-        binding?.btnDelete?.let {
-            binding?.canvas?.addButtonView(it)
-        }
-
-        binding?.canvas?.setListener(this)
-
-        if (state.typographyId != -1) {
-            binding?.canvas?.editText(state)
+        if (typographyId != -1) {
+            binding?.canvas?.modifySelectedText(id, model)
         } else {
-            binding?.canvas?.addText(state.model)
+            binding?.canvas?.addNewText(model)
         }
 
-        // reset active input text
+        // reset active every input text invoked
         viewModel.onEvent(MainEditorEvent.ResetActiveInputText)
     }
-
 }

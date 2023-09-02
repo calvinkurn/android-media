@@ -1,28 +1,21 @@
+@file:Suppress("UsePropertyAccessSyntax", "DEPRECATION")
+
 package com.tokopedia.editor.ui.widget
 
 import android.content.Context
+import android.graphics.BlendMode
+import android.graphics.BlendModeColorFilter
 import android.graphics.Color
 import android.graphics.PorterDuff
-import android.graphics.drawable.Drawable
-import android.graphics.drawable.GradientDrawable
-import android.text.Editable
-import android.text.InputType
-import android.text.SpannableString
-import android.text.SpannableStringBuilder
-import android.text.Spanned
-import android.text.TextWatcher
-import android.text.style.BackgroundColorSpan
+import android.os.Build
 import android.util.AttributeSet
 import android.util.TypedValue
-import android.view.Gravity
 import android.view.View
 import androidx.appcompat.widget.AppCompatEditText
-import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.view.setPadding
 import com.tokopedia.editor.R
 import com.tokopedia.editor.ui.model.InputTextModel
-import com.tokopedia.editor.util.FontAlignment
-import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.editor.util.FontAlignment.Companion.toGravity
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.getTypeface as unifyTypeFaceGetter
 
@@ -32,50 +25,73 @@ class EditorEditTextView @JvmOverloads constructor(
 ) : AppCompatEditText(context, attributeSet) {
 
     init {
-        setTextSize(TypedValue.COMPLEX_UNIT_SP, 24f)
         setBackgroundResource(R.drawable.bg_text_rounded)
-
-        setPadding(10.toPx())
     }
 
+    /**
+     * Set default properties for [EditorEditTextView]
+     *
+     * This setter will set the textSize and padding default.
+     */
+    fun default() {
+        setTextSize(TypedValue.COMPLEX_UNIT_SP, DEFAULT_FONT_SIZE)
+        setPadding(DEFAULT_BACKGROUND_PADDING.toPx())
+    }
+
+    /**
+     * Set a custom view id for [EditorEditTextView]
+     *
+     * This id will be recognized as viewId during view addition within container,
+     * such as when the user add a text into [DynamicTextCanvasLayout].
+     *
+     * If we didn't set the id, hence the view inside the container is unrecognisable.
+     *
+     * This setter will used for typographyId in [InputTextUiModel]
+     */
     fun setViewId() {
         id = View.generateViewId()
     }
 
+    /**
+     * Apply the custom styles from [InputTextModel]
+     *
+     * This insets contain a text, typeface, alignment, as well as colors.
+     * The styles will be generated from [InputTextActivity].
+     */
     fun styleInsets(model: InputTextModel) {
+        val typeface = unifyTypeFaceGetter(context, model.fontDetail.fontName)
+        setTypeface(typeface, model.fontDetail.fontStyle)
+
         setText(model.text)
-        gravity = textAlignment(model.textAlign)
-
-        unifyTypeFaceGetter(context, model.textStyle.fontName).let {
-            setTypeface(it, model.textStyle.fontStyle)
-        }
-
-        textColor(model)
+        setTextColor(model.textColor)
+        setGravity(model.textAlign.toGravity())
+        setBackgroundTextColor(model.backgroundColor)
     }
 
+    /**
+     * Mark the EditText of [EditorEditTextView] as read-only.
+     */
     fun setAsTextView() {
         isClickable = false
         isFocusable = false
         isCursorVisible = false
     }
 
-    fun textAlignment(alignment: FontAlignment): Int {
-        return when (alignment) {
-            FontAlignment.CENTER -> Gravity.CENTER
-            FontAlignment.LEFT -> Gravity.START
-            FontAlignment.RIGHT -> Gravity.END
-        }
-    }
-
-    private fun textColor(model: InputTextModel) {
-        if (model.backgroundColor == null) {
-            setTextColor(model.textColor)
+    private fun setBackgroundTextColor(color: Int?) {
+        if (color == null) {
             setBackgroundColor(Color.TRANSPARENT)
             return
         }
 
-        val (textColor, backgroundColor) = model.backgroundColor ?: return
-        setTextColor(backgroundColor)
-        background.setColorFilter(textColor, PorterDuff.Mode.DST_ATOP)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            background.colorFilter = BlendModeColorFilter(color, BlendMode.DST_ATOP)
+        } else {
+            background.setColorFilter(color, PorterDuff.Mode.DST_ATOP)
+        }
+    }
+
+    companion object {
+        private const val DEFAULT_FONT_SIZE = 16f
+        private const val DEFAULT_BACKGROUND_PADDING = 4
     }
 }

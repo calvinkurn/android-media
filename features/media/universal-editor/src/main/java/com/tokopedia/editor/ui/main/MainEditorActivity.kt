@@ -3,7 +3,7 @@ package com.tokopedia.editor.ui.main
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentFactory
@@ -17,7 +17,6 @@ import com.tokopedia.editor.ui.main.component.NavigationToolUiComponent
 import com.tokopedia.editor.ui.main.component.PagerContainerUiComponent
 import com.tokopedia.editor.ui.main.uimodel.MainEditorEffect
 import com.tokopedia.editor.ui.main.uimodel.MainEditorEvent
-import com.tokopedia.editor.ui.main.uimodel.MainEditorUiModel
 import com.tokopedia.editor.ui.model.InputTextModel
 import com.tokopedia.editor.ui.text.InputTextActivity
 import com.tokopedia.picker.common.EXTRA_UNIVERSAL_EDITOR_PARAM
@@ -72,16 +71,8 @@ open class MainEditorActivity : AppCompatActivity(), NavToolbarComponent.Listene
         )
     }
 
-    private val inputTextIntent = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()
-    ) {
-        toolbar.setVisibility(true)
-        navigationTool.setVisibility(true)
-
-        val result = InputTextActivity.result(it)?: return@registerForActivityResult
-        if (result.text.isEmpty()) return@registerForActivityResult
-
-        viewModel.setTextState(result)
+    private val inputTextIntent = registerForActivityResult(StartActivityForResult()) {
+        val result = InputTextActivity.result(it)
         viewModel.onEvent(MainEditorEvent.InputTextResult(result))
     }
 
@@ -128,6 +119,10 @@ open class MainEditorActivity : AppCompatActivity(), NavToolbarComponent.Listene
                     is MainEditorEffect.OpenInputText -> {
                         navigateToInputTextTool(it.model)
                     }
+                    is MainEditorEffect.ParentToolbarVisibility -> {
+                        toolbar.setVisibility(it.visible)
+                        navigationTool.setVisibility(it.visible)
+                    }
                 }
             }
         }
@@ -141,14 +136,7 @@ open class MainEditorActivity : AppCompatActivity(), NavToolbarComponent.Listene
 
     private fun onToolClicked(@ToolType type: Int) {
         when (type) {
-            ToolType.TEXT -> {
-                toolbar.setVisibility(false)
-                navigationTool.setVisibility(false)
-
-                viewModel.onEvent(
-                    MainEditorEvent.ClickInputTextTool(InputTextModel())
-                )
-            }
+            ToolType.TEXT -> viewModel.onEvent(MainEditorEvent.AddInputTextPage)
             ToolType.PLACEMENT -> {}
             ToolType.AUDIO_MUTE -> {}
             else -> Unit

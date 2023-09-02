@@ -1,5 +1,7 @@
 package com.tokopedia.editor.util
 
+import android.view.Gravity
+
 enum class FontAlignment(val value: Int) {
     CENTER(0), RIGHT(1), LEFT(2);
 
@@ -15,6 +17,14 @@ enum class FontAlignment(val value: Int) {
             }
 
             return getToolIdByIndex(newIndex) ?: CENTER
+        }
+
+        fun FontAlignment.toGravity(): Int {
+            return when (this) {
+                CENTER -> Gravity.CENTER
+                LEFT -> Gravity.START
+                RIGHT -> Gravity.END
+            }
         }
     }
 }

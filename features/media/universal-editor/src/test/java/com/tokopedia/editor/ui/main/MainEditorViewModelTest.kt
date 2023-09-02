@@ -8,19 +8,19 @@ import com.tokopedia.editor.ui.model.InputTextModel
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.picker.common.UniversalEditorParam
 import com.tokopedia.picker.common.types.ToolType
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import io.mockk.Runs
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
-import org.junit.After
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class MainEditorViewModelTest {
 
     private val navigationToolRepository = mockk<NavigationToolRepository>()
@@ -45,7 +45,7 @@ class MainEditorViewModelTest {
         mockNavigationTool()
 
         // When
-        sendEvent(MainEditorEvent.SetupView(param))
+        onEvent(MainEditorEvent.SetupView(param))
 
         // Then
         assertTrue(viewModel.mainEditorState.value.param == param)
@@ -58,11 +58,14 @@ class MainEditorViewModelTest {
         val model = InputTextModel(text = "add a new text")
 
         // Verify
-        sendEvent(MainEditorEvent.AddInputTextPage)
-        assertTrue(viewModel.uiEffect.first() is MainEditorEffect.OpenInputText)
+        onEvent(MainEditorEvent.AddInputTextPage)
+
+        val effect = recordEffect()
+        assertTrue(effect[0] is MainEditorEffect.OpenInputText)
+        assertTrue(effect[1] is MainEditorEffect.ParentToolbarVisibility)
 
         // Verify
-        sendEvent(MainEditorEvent.InputTextResult(model))
+        onEvent(MainEditorEvent.InputTextResult(model))
         assertTrue(viewModel.inputTextState.value.model?.text == model.text)
     }
 
@@ -73,35 +76,66 @@ class MainEditorViewModelTest {
         val model = InputTextModel()
 
         // Verify
-        sendEvent(MainEditorEvent.EditInputTextPage(typographyId, model))
+        onEvent(MainEditorEvent.EditInputTextPage(typographyId, model))
         assertTrue(viewModel.inputTextState.value.typographyId.isMoreThanZero())
-        assertTrue(viewModel.uiEffect.first() is MainEditorEffect.OpenInputText)
+
+        val effect = recordEffect()
+        assertTrue(effect[0] is MainEditorEffect.OpenInputText)
+        assertTrue(effect[1] is MainEditorEffect.ParentToolbarVisibility)
 
         // Verify
         val newModel = InputTextModel(text = "a new text")
-        sendEvent(MainEditorEvent.InputTextResult(newModel))
+        onEvent(MainEditorEvent.InputTextResult(newModel))
         assertTrue(viewModel.inputTextState.value.model?.text == newModel.text)
     }
 
     @Test
     fun `it should be able get input text result`() = runTest {
         // Given
+        val expectedValue = "test"
+        val model = InputTextModel(expectedValue)
+
+        // When
+        onEvent(MainEditorEvent.InputTextResult(model))
+
+        // Then
+        assertTrue(viewModel.inputTextState.value.model?.text == expectedValue)
+    }
+
+    @Test
+    fun `it should not be able get input text result`() = runTest {
+        // Given
         val model = InputTextModel()
 
         // When
-        sendEvent(MainEditorEvent.InputTextResult(model))
+        onEvent(MainEditorEvent.InputTextResult(model))
 
         // Then
-        assertTrue(viewModel.inputTextState.value.model != null)
+        assertTrue(viewModel.inputTextState.value.model == null)
     }
 
     @Test
     fun `it should be able get reset active input text model`() = runTest {
         // When
-        sendEvent(MainEditorEvent.ResetActiveInputText)
+        onEvent(MainEditorEvent.ResetActiveInputText)
 
         // Then
         assertTrue(viewModel.inputTextState.value.model == null)
+    }
+
+    private fun recordEffect(): List<MainEditorEffect> {
+        val dispatchers = CoroutineTestDispatchers
+        val scope = CoroutineScope(dispatchers.immediate)
+        val effects = mutableListOf<MainEditorEffect>()
+
+        scope.launch {
+            viewModel.uiEffect.collect {
+                effects.add(it)
+            }
+        }
+
+        scope.cancel()
+        return effects
     }
 
     private fun mockParamFetcher() {
@@ -116,7 +150,7 @@ class MainEditorViewModelTest {
         )
     }
 
-    private fun sendEvent(event: MainEditorEvent) {
+    private fun onEvent(event: MainEditorEvent) {
         viewModel.onEvent(event)
     }
 }

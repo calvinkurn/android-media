@@ -5,7 +5,6 @@ import com.tokopedia.editor.data.repository.NavigationToolRepository
 import com.tokopedia.editor.ui.main.uimodel.InputTextUiModel
 import com.tokopedia.editor.ui.main.uimodel.MainEditorEffect
 import com.tokopedia.editor.ui.main.uimodel.MainEditorEvent
-import com.tokopedia.editor.ui.main.uimodel.MainEditorUiModel
 import com.tokopedia.editor.ui.model.InputTextModel
 import com.tokopedia.editor.util.setValue
 import com.tokopedia.picker.common.UniversalEditorParam
@@ -37,15 +36,17 @@ class MainEditorViewModel @Inject constructor(
                 renderNavigationTools()
             }
             is MainEditorEvent.AddInputTextPage -> {
-                val empty = InputTextModel.default()
-                setAction(MainEditorEffect.OpenInputText(empty))
+                setAction(MainEditorEffect.OpenInputText(InputTextModel.default()))
+                setAction(MainEditorEffect.ParentToolbarVisibility(false))
             }
             is MainEditorEvent.EditInputTextPage -> {
                 setAction(MainEditorEffect.OpenInputText(event.model))
-                updateActiveTypography(event.typographyId)
+                setAction(MainEditorEffect.ParentToolbarVisibility(false))
+                updateCurrentTypographyId(event.typographyId)
             }
             is MainEditorEvent.InputTextResult -> {
-                updateActiveInputTextData(event.model)
+                updateCurrentTextModel(event.model)
+                setAction(MainEditorEffect.ParentToolbarVisibility(true))
             }
             is MainEditorEvent.ResetActiveInputText -> {
                 _inputTextState.value = InputTextUiModel.reset()
@@ -53,25 +54,15 @@ class MainEditorViewModel @Inject constructor(
         }
     }
 
-    fun setTextState(textModel: InputTextModel) {
-        val newState = _state.value.copy()
-
-        // TODO: Need to adjust later to get editted text target and update the target instead of 1st item
-        val textUpdateTarget = newState.model?.image?.texts?.toList()?.firstOrNull()?.first ?: textModel.text
-        newState.model?.image?.texts?.set(textUpdateTarget, textModel)
-
-        _state.update {
-            newState
-        }
-    }
-
-    private fun updateActiveTypography(id: Int) {
+    private fun updateCurrentTypographyId(id: Int) {
         _inputTextState.setValue {
             copy(typographyId = id)
         }
     }
 
-    private fun updateActiveInputTextData(model: InputTextModel) {
+    private fun updateCurrentTextModel(model: InputTextModel) {
+        if (model.text.isEmpty()) return
+
         _inputTextState.setValue {
             copy(model = model)
         }

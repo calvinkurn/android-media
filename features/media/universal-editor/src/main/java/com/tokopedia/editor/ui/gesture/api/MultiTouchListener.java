@@ -1,10 +1,7 @@
 package com.tokopedia.editor.ui.gesture.api;
 
-import static com.tokopedia.editor.ui.widget.DynamicTextCanvasView.GRID_ID;
-
 import android.animation.ObjectAnimator;
 import android.content.Context;
-
 import android.view.GestureDetector;
 import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
@@ -14,9 +11,7 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import com.tokopedia.editor.ui.gesture.listener.OnGestureControl;
 import com.tokopedia.editor.ui.gesture.listener.OnMultiTouchListener;
 import com.tokopedia.editor.ui.model.AddTextModel;
-import com.tokopedia.editor.ui.widget.DynamicTextCanvasView;
-import com.tokopedia.editor.ui.widget.GridGuidelineView;
-import com.tokopedia.iconunify.IconUnify;
+import com.tokopedia.editor.ui.widget.DynamicTextCanvasParent;
 
 public class MultiTouchListener implements View.OnTouchListener {
 
@@ -36,10 +31,8 @@ public class MultiTouchListener implements View.OnTouchListener {
     private final ScaleGestureDetector scaleGestureDetector;
     private OnMultiTouchListener onMultiTouchListener;
     private OnGestureControl onGestureControl;
+    private DynamicTextCanvasParent parent;
     boolean isTextPinchZoomable;
-
-    private GridGuidelineView gridGuidelineView;
-    private final IconUnify deleteView;
 
     private float originalScaleX;
     private float originalScaleY;
@@ -50,9 +43,7 @@ public class MultiTouchListener implements View.OnTouchListener {
     private int lastPositionX = 0;
     private int lastPositionY = 0;
 
-    public MultiTouchListener(Context context, View view, IconUnify deleteView) {
-        this.deleteView = deleteView;
-
+    public MultiTouchListener(Context context, View view) {
         // @Workaround: for initiate state
         originalScaleX = view.getScaleX();
         originalScaleY = view.getScaleY();
@@ -81,8 +72,8 @@ public class MultiTouchListener implements View.OnTouchListener {
         view.setScaleX(scale);
         view.setScaleY(scale);
 
-        // this condition will update original scale value and
-        // preventing the overlapping value while scale-down animation appear.
+        // this condition will update original scale value and prevent-
+        // the overlapping value while scale-down animation.
         if (!isSelectedViewDraggedToTrash) {
             originalScaleX = view.getScaleX();
             originalScaleY = view.getScaleY();
@@ -138,14 +129,6 @@ public class MultiTouchListener implements View.OnTouchListener {
         if (lastPositionX == 0 && lastPositionY == 0) {
             lastPositionX = x;
             lastPositionY = y;
-        }
-
-        /*
-         * Grid guidelines from parent
-         */
-        if (gridGuidelineView == null) {
-            gridGuidelineView = ((DynamicTextCanvasView) view.getParent())
-                    .findViewById(GRID_ID);
         }
 
         switch (action & event.getActionMasked()) {
@@ -208,10 +191,8 @@ public class MultiTouchListener implements View.OnTouchListener {
                     }
 
                     // Show/hide vertical and horizontal guidelines based on alignment
-                    if (gridGuidelineView != null) {
-                        gridGuidelineView.setShowVerticalLine(isAlignedWithCenterX);
-                        gridGuidelineView.setShowHorizontalLine(isAlignedWithCenterY);
-                    }
+                    parent.getGridGuidelineView().setShowVerticalLine(isAlignedWithCenterX);
+                    parent.getGridGuidelineView().setShowHorizontalLine(isAlignedWithCenterY);
                 }
                 break;
             case MotionEvent.ACTION_CANCEL:
@@ -231,10 +212,8 @@ public class MultiTouchListener implements View.OnTouchListener {
                     view.setY(((View) view.getParent()).getHeight() / 2f - view.getHeight() / 2f);
                 }
 
-                if (gridGuidelineView != null) {
-                    gridGuidelineView.setShowVerticalLine(false);
-                    gridGuidelineView.setShowHorizontalLine(false);
-                }
+                parent.getGridGuidelineView().setShowVerticalLine(false);
+                parent.getGridGuidelineView().setShowHorizontalLine(false);
 
                 if (isPointerContain(x, y)) {
                     onMultiTouchListener.onRemoveView(view);
@@ -273,21 +252,21 @@ public class MultiTouchListener implements View.OnTouchListener {
 
     private boolean isPointerContain(float x, float y) {
         int[] location = new int[2];
-        deleteView.getLocationOnScreen(location);
+        parent.getDeletionButtonView().getLocationOnScreen(location);
 
-        int buttonWidth = deleteView.getWidth();
-        int buttonHeight = deleteView.getHeight();
+        int buttonWidth = parent.getDeletionButtonView().getWidth();
+        int buttonHeight = parent.getDeletionButtonView().getHeight();
 
         return ((x >= location[0]) && (x <= location[0] + buttonWidth)) &&
                 ((y >= location[1]) && (y <= location[1] + buttonHeight));
     }
 
     private void showDeletionButton() {
-        deleteView.setVisibility(View.VISIBLE);
+        parent.getDeletionButtonView().setVisibility(View.VISIBLE);
     }
 
     private void hideDeletionButton() {
-        deleteView.setVisibility(View.GONE);
+        parent.getDeletionButtonView().setVisibility(View.GONE);
     }
 
     private boolean isAlignedWithCenterX(View view) {
@@ -320,6 +299,10 @@ public class MultiTouchListener implements View.OnTouchListener {
         // Start the animations
         scaleXAnimator.start();
         scaleYAnimator.start();
+    }
+
+    public void setParentComponent(DynamicTextCanvasParent parent) {
+        this.parent = parent;
     }
 
     public void setOnMultiTouchListener(OnMultiTouchListener onMultiTouchListener) {

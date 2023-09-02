@@ -9,7 +9,7 @@
 
     <include layout="@layout/uc_pager_container" />
 
-    <com.tokopedia.editor.ui.widget.DynamicTextCanvasView
+    <com.tokopedia.editor.ui.widget.DynamicTextCanvasLayout
         android:id="@+id/canvas"
         android:layout_width="0dp"
         android:layout_height="0dp"
