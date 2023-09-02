@@ -161,7 +161,7 @@ class FeedNavigationAnalytics @Inject constructor(
             .setEvent(com.tokopedia.content.analytic.Event.clickContent)
             .setEventAction("click - browse icon")
             .setEventCategory(com.tokopedia.content.analytic.EventCategory.unifiedFeed)
-            .setEventLabel("$userId - $$activeTab")
+            .setEventLabel("$userId - $activeTab")
             .setCustomProperty(Key.trackerId, "45724")
             .setBusinessUnit(BusinessUnit.content)
             .setCurrentSite(CurrentSite.tokopediaMarketplace)
