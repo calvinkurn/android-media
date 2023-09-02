@@ -7,6 +7,7 @@ import androidx.test.espresso.matcher.BoundedMatcher
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
+import java.util.*
 
 class RecyclerViewMatcher(private val recyclerViewId: Int) {
 
@@ -25,6 +26,7 @@ class RecyclerViewMatcher(private val recyclerViewId: Int) {
                         resources!!.getResourceName(recyclerViewId)
                     } catch (var4: Resources.NotFoundException) {
                         String.format(
+                            Locale.getDefault(),
                             "%s (resource name not found)",
                             Integer.valueOf(recyclerViewId)
                         )
