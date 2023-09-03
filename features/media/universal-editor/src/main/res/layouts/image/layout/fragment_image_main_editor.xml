@@ -18,7 +18,7 @@
         tools:ignore="ContentDescription" />
 
     <com.tokopedia.editor.ui.widget.DynamicTextCanvasLayout
-        android:id="@+id/canvas"
+        android:id="@+id/container"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintDimensionRatio="H,9:16"

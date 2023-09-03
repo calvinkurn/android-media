@@ -24,16 +24,13 @@ class EditorEditTextView @JvmOverloads constructor(
     attributeSet: AttributeSet? = null
 ) : AppCompatEditText(context, attributeSet) {
 
-    init {
-        setBackgroundResource(R.drawable.bg_text_rounded)
-    }
-
     /**
      * Set default properties for [EditorEditTextView]
      *
      * This setter will set the textSize and padding default.
      */
     fun default() {
+        setBackgroundResource(R.drawable.bg_text_rounded)
         setTextSize(TypedValue.COMPLEX_UNIT_SP, DEFAULT_FONT_SIZE)
         setPadding(DEFAULT_BACKGROUND_PADDING.toPx())
     }
@@ -78,15 +75,12 @@ class EditorEditTextView @JvmOverloads constructor(
     }
 
     private fun setBackgroundTextColor(color: Int?) {
-        if (color == null) {
-            setBackgroundColor(Color.TRANSPARENT)
-            return
-        }
+        val mColor = color ?: Color.TRANSPARENT
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            background.colorFilter = BlendModeColorFilter(color, BlendMode.DST_ATOP)
+            background.colorFilter = BlendModeColorFilter(mColor, BlendMode.DST_ATOP)
         } else {
-            background.setColorFilter(color, PorterDuff.Mode.DST_ATOP)
+            background.setColorFilter(mColor, PorterDuff.Mode.DST_ATOP)
         }
     }
 

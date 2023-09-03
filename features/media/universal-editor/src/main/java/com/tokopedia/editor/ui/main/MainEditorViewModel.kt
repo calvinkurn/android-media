@@ -2,7 +2,7 @@ package com.tokopedia.editor.ui.main
 
 import androidx.lifecycle.ViewModel
 import com.tokopedia.editor.data.repository.NavigationToolRepository
-import com.tokopedia.editor.ui.main.uimodel.InputTextUiModel
+import com.tokopedia.editor.ui.main.uimodel.InputTextParam
 import com.tokopedia.editor.ui.main.uimodel.MainEditorEffect
 import com.tokopedia.editor.ui.main.uimodel.MainEditorEvent
 import com.tokopedia.editor.ui.model.InputTextModel
@@ -21,7 +21,7 @@ class MainEditorViewModel @Inject constructor(
 
     private var _uiEffect = MutableSharedFlow<MainEditorEffect>(replay = 50)
     private var _mainEditorState = MutableStateFlow(MainEditorUiModel())
-    private var _inputTextState = MutableStateFlow(InputTextUiModel())
+    private var _inputTextState = MutableStateFlow(InputTextParam())
 
     val mainEditorState = _mainEditorState.asStateFlow()
     val inputTextState = _inputTextState.asStateFlow()
@@ -32,7 +32,7 @@ class MainEditorViewModel @Inject constructor(
     fun onEvent(event: MainEditorEvent) {
         when (event) {
             is MainEditorEvent.SetupView -> {
-                setParam(event.param)
+                setGlobalEditorParam(event.param)
                 renderNavigationTools()
             }
             is MainEditorEvent.AddInputTextPage -> {
@@ -42,25 +42,25 @@ class MainEditorViewModel @Inject constructor(
             is MainEditorEvent.EditInputTextPage -> {
                 setAction(MainEditorEffect.OpenInputText(event.model))
                 setAction(MainEditorEffect.ParentToolbarVisibility(false))
-                updateCurrentTypographyId(event.typographyId)
+                updateViewIdOnUiParam(event.typographyId)
             }
             is MainEditorEvent.InputTextResult -> {
-                updateCurrentTextModel(event.model)
+                updateModelOnUiParam(event.model)
                 setAction(MainEditorEffect.ParentToolbarVisibility(true))
             }
             is MainEditorEvent.ResetActiveInputText -> {
-                _inputTextState.value = InputTextUiModel.reset()
+                _inputTextState.value = InputTextParam.reset()
             }
         }
     }
 
-    private fun updateCurrentTypographyId(id: Int) {
+    private fun updateViewIdOnUiParam(id: Int) {
         _inputTextState.setValue {
-            copy(typographyId = id)
+            copy(viewId = id)
         }
     }
 
-    private fun updateCurrentTextModel(model: InputTextModel) {
+    private fun updateModelOnUiParam(model: InputTextModel) {
         if (model.text.isEmpty()) return
 
         _inputTextState.setValue {
@@ -74,7 +74,7 @@ class MainEditorViewModel @Inject constructor(
         }
     }
 
-    private fun setParam(param: UniversalEditorParam) {
+    private fun setGlobalEditorParam(param: UniversalEditorParam) {
         paramFetcher.set(param)
 
         _mainEditorState.setValue {

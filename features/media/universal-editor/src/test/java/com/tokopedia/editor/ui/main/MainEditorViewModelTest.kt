@@ -77,7 +77,7 @@ class MainEditorViewModelTest {
 
         // Verify
         onEvent(MainEditorEvent.EditInputTextPage(typographyId, model))
-        assertTrue(viewModel.inputTextState.value.typographyId.isMoreThanZero())
+        assertTrue(viewModel.inputTextState.value.viewId.isMoreThanZero())
 
         val effect = recordEffect()
         assertTrue(effect[0] is MainEditorEffect.OpenInputText)

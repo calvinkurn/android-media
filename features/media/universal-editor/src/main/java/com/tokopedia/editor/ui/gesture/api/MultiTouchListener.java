@@ -11,7 +11,8 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import com.tokopedia.editor.ui.gesture.listener.OnGestureControl;
 import com.tokopedia.editor.ui.gesture.listener.OnMultiTouchListener;
 import com.tokopedia.editor.ui.model.AddTextModel;
-import com.tokopedia.editor.ui.widget.DynamicTextCanvasParent;
+import com.tokopedia.editor.ui.widget.DynamicTextCanvasLayout;
+import com.tokopedia.editor.ui.widget.GridGuidelineView;
 
 public class MultiTouchListener implements View.OnTouchListener {
 
@@ -31,13 +32,15 @@ public class MultiTouchListener implements View.OnTouchListener {
     private final ScaleGestureDetector scaleGestureDetector;
     private OnMultiTouchListener onMultiTouchListener;
     private OnGestureControl onGestureControl;
-    private DynamicTextCanvasParent parent;
-    boolean isTextPinchZoomable;
+
+    private GridGuidelineView gridGuidelineView;
+    private View deletionButtonView;
 
     private float originalScaleX;
     private float originalScaleY;
 
     boolean isSelectedViewDraggedToTrash = false;
+    boolean isTextPinchZoomable;
     boolean isDragging = false;
 
     private int lastPositionX = 0;
@@ -116,6 +119,14 @@ public class MultiTouchListener implements View.OnTouchListener {
         scaleGestureDetector.onTouchEvent(view, event);
         gestureListener.onTouchEvent(event);
 
+        if (gridGuidelineView == null) {
+            gridGuidelineView = ((View) view.getParent()).findViewById(DynamicTextCanvasLayout.VIEW_GRID_GUIDELINE_ID);
+        }
+
+        if (deletionButtonView == null) {
+            deletionButtonView = ((View) view.getParent()).findViewById(DynamicTextCanvasLayout.VIEW_DELETION_BUTTON_ID);
+        }
+
         if (!isTranslateEnabled) return true;
 
         int action = event.getAction();
@@ -191,8 +202,8 @@ public class MultiTouchListener implements View.OnTouchListener {
                     }
 
                     // Show/hide vertical and horizontal guidelines based on alignment
-                    parent.getGridGuidelineView().setShowVerticalLine(isAlignedWithCenterX);
-                    parent.getGridGuidelineView().setShowHorizontalLine(isAlignedWithCenterY);
+                    gridGuidelineView.setShowVerticalLine(isAlignedWithCenterX);
+                    gridGuidelineView.setShowHorizontalLine(isAlignedWithCenterY);
                 }
                 break;
             case MotionEvent.ACTION_CANCEL:
@@ -212,8 +223,8 @@ public class MultiTouchListener implements View.OnTouchListener {
                     view.setY(((View) view.getParent()).getHeight() / 2f - view.getHeight() / 2f);
                 }
 
-                parent.getGridGuidelineView().setShowVerticalLine(false);
-                parent.getGridGuidelineView().setShowHorizontalLine(false);
+                gridGuidelineView.setShowVerticalLine(false);
+                gridGuidelineView.setShowHorizontalLine(false);
 
                 if (isPointerContain(x, y)) {
                     onMultiTouchListener.onRemoveView(view);
@@ -252,21 +263,21 @@ public class MultiTouchListener implements View.OnTouchListener {
 
     private boolean isPointerContain(float x, float y) {
         int[] location = new int[2];
-        parent.getDeletionButtonView().getLocationOnScreen(location);
+        deletionButtonView.getLocationOnScreen(location);
 
-        int buttonWidth = parent.getDeletionButtonView().getWidth();
-        int buttonHeight = parent.getDeletionButtonView().getHeight();
+        int buttonWidth = deletionButtonView.getWidth();
+        int buttonHeight = deletionButtonView.getHeight();
 
         return ((x >= location[0]) && (x <= location[0] + buttonWidth)) &&
                 ((y >= location[1]) && (y <= location[1] + buttonHeight));
     }
 
     private void showDeletionButton() {
-        parent.getDeletionButtonView().setVisibility(View.VISIBLE);
+        deletionButtonView.setVisibility(View.VISIBLE);
     }
 
     private void hideDeletionButton() {
-        parent.getDeletionButtonView().setVisibility(View.GONE);
+        deletionButtonView.setVisibility(View.GONE);
     }
 
     private boolean isAlignedWithCenterX(View view) {
@@ -299,10 +310,6 @@ public class MultiTouchListener implements View.OnTouchListener {
         // Start the animations
         scaleXAnimator.start();
         scaleYAnimator.start();
-    }
-
-    public void setParentComponent(DynamicTextCanvasParent parent) {
-        this.parent = parent;
     }
 
     public void setOnMultiTouchListener(OnMultiTouchListener onMultiTouchListener) {

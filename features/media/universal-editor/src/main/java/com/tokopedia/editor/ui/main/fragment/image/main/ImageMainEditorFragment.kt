@@ -10,7 +10,7 @@ import com.tokopedia.editor.base.BaseEditorFragment
 import com.tokopedia.editor.databinding.FragmentImageMainEditorBinding
 import com.tokopedia.editor.ui.main.EditorParamFetcher
 import com.tokopedia.editor.ui.main.MainEditorViewModel
-import com.tokopedia.editor.ui.main.uimodel.InputTextUiModel
+import com.tokopedia.editor.ui.main.uimodel.InputTextParam
 import com.tokopedia.editor.ui.main.uimodel.MainEditorEvent
 import com.tokopedia.editor.ui.model.InputTextModel
 import com.tokopedia.editor.ui.widget.DynamicTextCanvasLayout
@@ -27,7 +27,7 @@ class ImageMainEditorFragment @Inject constructor(
     private val viewModel: MainEditorViewModel by activityViewModels()
 
     override fun initView() {
-        binding?.canvas?.setListener(this)
+        binding?.container?.setListener(this)
 
         lifecycleScope.launchWhenCreated {
             val file = param.get().firstFile.path
@@ -43,23 +43,15 @@ class ImageMainEditorFragment @Inject constructor(
         }
     }
 
-    override fun onTextClick(text: View, model: InputTextModel?) {
-        if (model == null) return
-
+    override fun onTextClick(text: View, model: InputTextModel) {
         viewModel.onEvent(MainEditorEvent.EditInputTextPage(text.id, model))
     }
 
-    private fun addOrEditTextOnLayout(state: InputTextUiModel) {
+    private fun addOrEditTextOnLayout(state: InputTextParam) {
         val (typographyId, model) = state
         if (model == null) return
 
-        if (typographyId != -1) {
-            binding?.canvas?.modifySelectedText(id, model)
-        } else {
-            binding?.canvas?.addNewText(model)
-        }
-
-        // reset active every input text invoked
+        binding?.container?.addOrEditText(typographyId, model)
         viewModel.onEvent(MainEditorEvent.ResetActiveInputText)
     }
 }

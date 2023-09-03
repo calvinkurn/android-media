@@ -18,16 +18,10 @@ import com.tokopedia.editor.ui.model.InputTextModel
 import com.tokopedia.editor.util.FontAlignment
 import com.tokopedia.editor.util.FontAlignment.Companion.toGravity
 
-interface DynamicTextCanvasParent {
-
-    val gridGuidelineView: GridGuidelineView
-    val deletionButtonView: View
-}
-
 class DynamicTextCanvasLayout @JvmOverloads constructor(
     private val context: Context,
     attributeSet: AttributeSet? = null
-) : FrameLayout(context, attributeSet), OnMultiTouchListener, DynamicTextCanvasParent {
+) : FrameLayout(context, attributeSet), OnMultiTouchListener {
 
     /**
      * Create a grid guidelines and snap effect threshold.
@@ -38,8 +32,7 @@ class DynamicTextCanvasLayout @JvmOverloads constructor(
      *
      * The grid visibility controlled by TouchListener of textView.
      */
-    override val gridGuidelineView: GridGuidelineView
-        get() = GridGuidelineView(context)
+    private val gridGuidelineView = GridGuidelineView(context)
 
     /**
      * Deletion Button uses for textView removal.
@@ -48,10 +41,9 @@ class DynamicTextCanvasLayout @JvmOverloads constructor(
      * There's no action listener needed to delete. instead, the view removal
      * will be executed if the pointer position in this button area.
      */
-    override val deletionButtonView: View
-        get() = LayoutInflater
-            .from(context)
-            .inflate(DELETION_LAYOUT, this, false)
+    private val deletionButtonView = LayoutInflater
+        .from(context)
+        .inflate(DELETION_LAYOUT, this, false)
 
     /**
      * Collect the [InputTextModel] that already added on this container.
@@ -65,44 +57,13 @@ class DynamicTextCanvasLayout @JvmOverloads constructor(
         createDeletionButtonView()
     }
 
-    fun modifySelectedText(id: Int, model: InputTextModel) {
-        val view = findViewById<EditorEditTextView>(id) ?: return
-
-        // If there's an alignment changes, we have to force update the text view
-        if (view.gravity != defaultTextGravityAlignment(model.textAlign)) {
-            removeView(view)
-            addNewText(model)
+    fun addOrEditText(id: Int, model: InputTextModel) {
+        if (id != -1) {
+            editText(id, model)
             return
         }
 
-        view.styleInsets(model)
-        id.updateModel(model)
-    }
-
-    fun addNewText(model: InputTextModel) {
-        val layoutParams = defaultLayoutParamEditTextView(model.textAlign)
-        val textView = onCreateEditorEditTextView(model)
-
-        val touchListener = MultiTouchListener(context, textView)
-
-        // Due the Text that have been added need a deletion and grid component from parent,
-        // Hence we have to delegate the parent's contract into [MultiTouchListener].
-        touchListener.setParentComponent(this)
-
-        // For now only supported to get the view removal callback
-        touchListener.setOnMultiTouchListener(this)
-
-        // Propagate each click listener of any textView were added on this container.
-        touchListener.setOnGestureControl(object : OnGestureControl {
-            override fun onClick() {
-                listener?.onTextClick(textView, models[textView.id])
-            }
-        })
-
-        textView.setOnTouchListener(touchListener)
-        addView(textView, layoutParams)
-
-        textView.id.updateModel(model)
+        addText(model)
     }
 
     fun setListener(listener: Listener) {
@@ -113,8 +74,48 @@ class DynamicTextCanvasLayout @JvmOverloads constructor(
         removeView(view)
     }
 
+    private fun editText(id: Int, model: InputTextModel) {
+        val view = findViewById<EditorEditTextView>(id) ?: return
+
+        // If there's an alignment changes, we have to force update the text view
+        if (view.gravity != defaultTextGravityAlignment(model.textAlign)) {
+            removeView(view)
+            addText(model)
+            return
+        }
+
+        view.styleInsets(model)
+        id.updateModel(model)
+    }
+
+    private fun addText(model: InputTextModel) {
+        val layoutParams = defaultLayoutParamEditTextView(model.textAlign)
+        val textView = EditorEditTextView(context)
+
+        textView.setViewId()
+        textView.default()
+        textView.styleInsets(model)
+        textView.setAsTextView()
+
+        val touchListener = MultiTouchListener(context, textView)
+        touchListener.setOnMultiTouchListener(this)
+
+        // Propagate each click listener of any textView were added on this container.
+        touchListener.setOnGestureControl(object : OnGestureControl {
+            override fun onClick() {
+                val model = models[textView.id] ?: return
+                listener?.onTextClick(textView, model)
+            }
+        })
+
+        textView.setOnTouchListener(touchListener)
+        addView(textView, layoutParams)
+
+        textView.id.updateModel(model)
+    }
+
     private fun createGridGuidelineView() {
-        gridGuidelineView.id = View.generateViewId()
+        gridGuidelineView.id = VIEW_GRID_GUIDELINE_ID
         addView(gridGuidelineView, matchContentLayoutParams())
     }
 
@@ -124,18 +125,9 @@ class DynamicTextCanvasLayout @JvmOverloads constructor(
             it.bottomMargin = DELETION_BOTTOM_MARGIN
         }
 
-        deletionButtonView.id = View.generateViewId()
+        deletionButtonView.id = VIEW_DELETION_BUTTON_ID
         addView(deletionButtonView, layoutParams)
     }
-
-    private fun onCreateEditorEditTextView(model: InputTextModel) =
-        EditorEditTextView(context).apply {
-            setViewId()
-
-            default()
-            styleInsets(model)
-            setAsTextView()
-        }
 
     private fun defaultLayoutParamEditTextView(alignment: FontAlignment) =
         wrapContentLayoutParams().also {
@@ -159,11 +151,15 @@ class DynamicTextCanvasLayout @JvmOverloads constructor(
         LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
 
     interface Listener {
-        fun onTextClick(text: View, model: InputTextModel?)
+        fun onTextClick(text: View, model: InputTextModel)
     }
 
     companion object {
-        @LayoutRes val DELETION_LAYOUT = R.layout.view_deletion_button
+        @LayoutRes
+        val DELETION_LAYOUT = R.layout.view_deletion_button
+
+        const val VIEW_GRID_GUIDELINE_ID = 123
+        const val VIEW_DELETION_BUTTON_ID = 456
 
         private const val DEFAULT_TEXT_MARGIN = 20
         private const val DELETION_BOTTOM_MARGIN = 24
