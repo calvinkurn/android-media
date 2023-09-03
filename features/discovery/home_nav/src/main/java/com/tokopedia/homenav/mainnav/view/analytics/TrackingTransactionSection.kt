@@ -14,10 +14,8 @@ import com.tokopedia.track.builder.util.BaseTrackerConst
 object TrackingTransactionSection : BaseTrackerConst() {
     private const val PROMOTION_NAME_REVIEW = "/global_menu - review_card"
     private const val PROMOTION_NAME_ORDER_STATUS = "/global_menu - order_status_card"
-    private const val PROMOTION_ID_FORMAT = "%s_%s_%s"
-    private const val STAR_RATING = "star rating"
-    private const val PRODUCT_CARD = "product card"
-    private const val CREATIVE_NAME_CLICK_REVIEW_FORMAT = "%s_%s"
+    private const val REVIEW_PROMOTION_ID_FORMAT = "%s - %s - %s - %s"
+    private const val ORDER_PROMOTION_ID_FORMAT = "%s - %s"
     private const val ITEM_NAME_WISHLIST = "/global_menu - wishlist_card"
 
     /**
@@ -48,7 +46,7 @@ object TrackingTransactionSection : BaseTrackerConst() {
                         putString(Promotion.CREATIVE_NAME, orderLabel)
                         putString(Promotion.CREATIVE_SLOT, (position + 1).toString())
                         putString(Promotion.ITEM_NAME, PROMOTION_NAME_ORDER_STATUS)
-                        putString(Promotion.ITEM_ID, PROMOTION_ID_FORMAT.format("0", orderId))
+                        putString(Promotion.ITEM_ID, ORDER_PROMOTION_ID_FORMAT.format("0", orderId))
                     }
                 )
             )
@@ -78,9 +76,8 @@ object TrackingTransactionSection : BaseTrackerConst() {
             promotions = listOf(
                 Promotion(
                     creative = orderLabel,
-                    id = "%s - %s".format(bannerId, orderId),
-                    name = "/global_menu - order_status_card",
-                    creativeUrl = "",
+                    id = ORDER_PROMOTION_ID_FORMAT.format(bannerId, orderId),
+                    name = PROMOTION_NAME_ORDER_STATUS,
                     position = (position + 1).toString()
                 )
             )
@@ -202,10 +199,9 @@ object TrackingTransactionSection : BaseTrackerConst() {
             eventLabel = Label.NONE,
             promotions = listOf(
                 Promotion(
-                    creative = Value.EMPTY,
-                    id = PROMOTION_ID_FORMAT.format("0", element.reputationId, element.productId),
+                    creative = element.productName,
+                    id = REVIEW_PROMOTION_ID_FORMAT.format("0", element.reputationId, "0", element.productId),
                     name = PROMOTION_NAME_REVIEW,
-                    creativeUrl = Value.EMPTY,
                     position = positionCard
                 )
             )
@@ -219,10 +215,10 @@ object TrackingTransactionSection : BaseTrackerConst() {
     }
 
     /**
-     * Tracker ID: 30845
+     * Tracker ID: 30843
      * Thanos: https://mynakama.tokopedia.com/datatracker/requestdetail/view/1890
      */
-    fun clickReviewStars(
+    fun clickReviewCard(
         position: Int,
         userId: String,
         element: NavReviewModel,
@@ -232,12 +228,11 @@ object TrackingTransactionSection : BaseTrackerConst() {
     ) {
         val bundle = Bundle()
         bundle.putString(Event.KEY, Event.SELECT_CONTENT)
-        bundle.putString(Action.KEY, "click review card - product star rating")
+        bundle.putString(Action.KEY, "click on review card")
         bundle.putString(Category.KEY, MainNavTrackingConst.GLOBAL_MENU)
         bundle.putString(
             Label.KEY,
-            "%s - %s - %s - %s".format(
-                STAR_RATING,
+            "%s - %s - %s".format(
                 element.reputationId,
                 starRating,
                 element.productId
@@ -247,11 +242,11 @@ object TrackingTransactionSection : BaseTrackerConst() {
         bundle.putString(CurrentSite.KEY, CurrentSite.DEFAULT)
         bundle.putString(KEY_PAGE_SOURCE, pageSource.asTrackingPageSource(pageSourcePath))
         bundle.putString(UserId.KEY, userId)
-        bundle.putString(TrackerId.KEY, "30845")
+        bundle.putString(TrackerId.KEY, "30843")
         val promotion = Bundle()
         promotion.putString(
             Promotion.CREATIVE_NAME,
-            CREATIVE_NAME_CLICK_REVIEW_FORMAT.format(STAR_RATING, starRating)
+            element.productName
         )
         val horizontalPosition = (position + 1).toString()
         promotion.putString(Promotion.CREATIVE_SLOT, horizontalPosition)
@@ -261,10 +256,10 @@ object TrackingTransactionSection : BaseTrackerConst() {
         )
         promotion.putString(
             Promotion.ITEM_ID,
-            String.format(
-                PROMOTION_ID_FORMAT,
+            REVIEW_PROMOTION_ID_FORMAT.format(
                 "0",
                 element.reputationId,
+                starRating,
                 element.productId
             )
         )
@@ -272,57 +267,7 @@ object TrackingTransactionSection : BaseTrackerConst() {
         getTracker().sendEnhanceEcommerceEvent(Event.SELECT_CONTENT, bundle)
     }
 
-    /**
-     * Tracker ID: 31120
-     * Thanos: https://mynakama.tokopedia.com/datatracker/requestdetail/view/1890
-     */
-    fun clickReviewCard(
-        position: Int,
-        userId: String,
-        element: NavReviewModel,
-        pageSource: NavSource,
-        pageSourcePath: String = ""
-    ) {
-        val bundle = Bundle()
-        bundle.putString(Event.KEY, Event.SELECT_CONTENT)
-        bundle.putString(Action.KEY, "click review card - product card")
-        bundle.putString(Category.KEY, MainNavTrackingConst.GLOBAL_MENU)
-        bundle.putString(
-            Label.KEY,
-            "%s - %s - %s".format(
-                PRODUCT_CARD,
-                element.reputationId,
-                element.productId
-            )
-        )
-        bundle.putString(BusinessUnit.KEY, BusinessUnit.DEFAULT)
-        bundle.putString(CurrentSite.KEY, CurrentSite.DEFAULT)
-        bundle.putString(KEY_PAGE_SOURCE, pageSource.asTrackingPageSource(pageSourcePath))
-        bundle.putString(UserId.KEY, userId)
-        bundle.putString(TrackerId.KEY, "31120")
-        val promotion = Bundle()
-        promotion.putString(
-            Promotion.CREATIVE_NAME,
-            CREATIVE_NAME_CLICK_REVIEW_FORMAT.format(PRODUCT_CARD, Value.EMPTY)
-        )
-        val horizontalPosition = (position + 1).toString()
-        promotion.putString(Promotion.CREATIVE_SLOT, horizontalPosition)
-        promotion.putString(
-            Promotion.ITEM_NAME,
-            PROMOTION_NAME_REVIEW
-        )
-        promotion.putString(
-            Promotion.ITEM_ID,
-            PROMOTION_ID_FORMAT.format(
-                "0",
-                element.reputationId,
-                element.productId
-            )
-        )
-        bundle.putParcelableArrayList(Promotion.KEY, arrayListOf(promotion))
-        getTracker().sendEnhanceEcommerceEvent(Event.SELECT_CONTENT, bundle)
-    }
-
+    @Deprecated("old global menu tracker")
     /**
      * Tracker ID: 30860
      * Thanos: https://mynakama.tokopedia.com/datatracker/requestdetail/view/1890
@@ -344,7 +289,7 @@ object TrackingTransactionSection : BaseTrackerConst() {
     }
 
     /**
-     * Tracker ID: 30860
+     * Tracker ID: 30854
      * Thanos: https://mynakama.tokopedia.com/datatracker/requestdetail/view/1890
      */
     fun clickOnViewAllCard(
@@ -365,7 +310,7 @@ object TrackingTransactionSection : BaseTrackerConst() {
         bundle.putString(CurrentSite.KEY, CurrentSite.DEFAULT)
         bundle.putString(BusinessUnit.KEY, BusinessUnit.DEFAULT)
         bundle.putString(KEY_PAGE_SOURCE, pageSource.asTrackingPageSource(pageSourcePath))
-        bundle.putString(TrackerId.KEY, "30860")
+        bundle.putString(TrackerId.KEY, "30854")
         getTracker().sendEnhanceEcommerceEvent(Event.CLICK_HOMEPAGE, bundle)
     }
 }

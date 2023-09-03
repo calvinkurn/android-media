@@ -366,15 +366,10 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     override fun onReviewCardClicked(
         element: NavReviewModel,
         position: Int,
-        isClickStar: Boolean,
         ratingValue: String,
         uri: String
     ) {
-        if(isClickStar) {
-            TrackingTransactionSection.clickReviewStars(position, userSession.userId, element, ratingValue, pageSource, pageSourcePath)
-        } else {
-            TrackingTransactionSection.clickReviewCard(position, userSession.userId, element, pageSource, pageSourcePath)
-        }
+        TrackingTransactionSection.clickReviewCard(position, userSession.userId, element, ratingValue, pageSource, pageSourcePath)
         val intent = RouteManager.getIntent(context, uri)
         startActivityForResult(intent, REQUEST_REVIEW_PRODUCT)
     }
