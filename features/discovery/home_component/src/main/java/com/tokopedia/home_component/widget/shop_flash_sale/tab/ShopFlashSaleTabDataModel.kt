@@ -4,9 +4,9 @@ import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.TrackingAttributionModel
 
 data class ShopFlashSaleTabDataModel(
-    val channelGrid: ChannelGrid,
-    val trackingAttributionModel: TrackingAttributionModel,
-    val isActivated: Boolean,
+    val channelGrid: ChannelGrid = ChannelGrid(),
+    val trackingAttributionModel: TrackingAttributionModel = TrackingAttributionModel(),
+    val isActivated: Boolean = false,
     val shopTabListener: ShopTabListener? = null,
 ) {
     companion object {

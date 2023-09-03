@@ -815,13 +815,11 @@ open class HomeRevampViewModel @Inject constructor(
                         position = index
                     )
                     val newDataModel = homeRecommendationUseCase.get().getShopFlashSaleProducts(currentDataModel, shopId)
-                    if(newDataModel != currentDataModel) {
-                        updateWidget(
-                            visitable = newDataModel,
-                            visitableToChange = currentDataModel,
-                            position = index
-                        )
-                    }
+                    updateWidget(
+                        visitable = newDataModel,
+                        visitableToChange = currentDataModel,
+                        position = index
+                    )
                 }
             }
         )

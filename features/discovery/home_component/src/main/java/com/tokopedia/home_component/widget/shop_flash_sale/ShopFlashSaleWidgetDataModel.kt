@@ -6,6 +6,9 @@ import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCarouselProductCardTypeFactory
 import com.tokopedia.home_component.visitable.HomeComponentVisitable
+import com.tokopedia.home_component.widget.common.DataStatus
+import com.tokopedia.home_component.widget.shop_flash_sale.item.ShopFlashSaleErrorDataModel
+import com.tokopedia.home_component.widget.shop_flash_sale.item.ShopFlashSaleProductGridShimmerDataModel
 import com.tokopedia.home_component.widget.shop_flash_sale.tab.ShopFlashSaleTabDataModel
 import com.tokopedia.home_component_header.model.ChannelHeader
 
@@ -50,6 +53,14 @@ data class ShopFlashSaleWidgetDataModel(
 
     override fun type(typeFactory: HomeComponentTypeFactory): Int {
         return typeFactory.type(this)
+    }
+
+    override fun getStatus(): DataStatus {
+        return if(itemList.all { it is ShopFlashSaleProductGridShimmerDataModel })
+            DataStatus.LOADING
+        else if(itemList.all { it is ShopFlashSaleErrorDataModel })
+            DataStatus.ERROR
+        else DataStatus.SUCCESS
     }
 
     fun getActivatedTab(): ShopFlashSaleTabDataModel? {
