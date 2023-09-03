@@ -106,6 +106,4 @@ interface CheckoutAdapterListener {
     fun onInsuranceTncClicked()
 
     fun onProcessToPayment()
-
-    fun onBindButtonPayment()
 }

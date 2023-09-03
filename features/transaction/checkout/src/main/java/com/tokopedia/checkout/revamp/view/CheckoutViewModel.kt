@@ -161,10 +161,6 @@ class CheckoutViewModel @Inject constructor(
 
     private var codData: CodModel? = null
 
-    // add ons product
-    // list summary add on - ready to render
-//    private var listSummaryAddOnModel: List<ShipmentAddOnSummaryModel> = emptyList()
-
     // list summary default
     private var summariesAddOnUiModel: HashMap<Int, String> = hashMapOf()
 
@@ -592,7 +588,7 @@ class CheckoutViewModel @Inject constructor(
         }
     }
 
-    private fun shouldAutoLoadCourier(
+    internal fun shouldAutoLoadCourier(
         shipmentCartItemModel: CheckoutOrderModel,
         recipientAddressModel: RecipientAddressModel?
     ): Boolean {
@@ -657,22 +653,22 @@ class CheckoutViewModel @Inject constructor(
                     )
                 )
                 pageState.value = CheckoutPageState.Normal
-                if (isHandleFallback) {
-                    // todo test this in trade in
-                    val address = listData.value.address()?.recipientAddressModel
-                    if (address != null) {
-                        if (address.selectedTabIndex == RecipientAddressModel.TAB_ACTIVE_ADDRESS_DEFAULT) {
-                            address.selectedTabIndex =
-                                RecipientAddressModel.TAB_ACTIVE_ADDRESS_TRADE_IN
-                            address.isIgnoreSelectionAction = true
-                        } else if (address.selectedTabIndex == RecipientAddressModel.TAB_ACTIVE_ADDRESS_TRADE_IN) {
-                            address.locationDataModel = null
-                            address.dropOffAddressDetail = ""
-                            address.dropOffAddressName = ""
-                        }
-                        listData.value = listData.value
-                    }
-                }
+//                if (isHandleFallback) {
+//                    // todo test this in trade in
+//                    val address = listData.value.address()?.recipientAddressModel
+//                    if (address != null) {
+//                        if (address.selectedTabIndex == RecipientAddressModel.TAB_ACTIVE_ADDRESS_DEFAULT) {
+//                            address.selectedTabIndex =
+//                                RecipientAddressModel.TAB_ACTIVE_ADDRESS_TRADE_IN
+//                            address.isIgnoreSelectionAction = true
+//                        } else if (address.selectedTabIndex == RecipientAddressModel.TAB_ACTIVE_ADDRESS_TRADE_IN) {
+//                            address.locationDataModel = null
+//                            address.dropOffAddressDetail = ""
+//                            address.dropOffAddressName = ""
+//                        }
+//                        listData.value = listData.value
+//                    }
+//                }
             }
         }
     }
@@ -1370,7 +1366,7 @@ class CheckoutViewModel @Inject constructor(
                     ordersItem.shippingSubsidy = courierItemData.shippingSubsidy
                     ordersItem.benefitClass = courierItemData.benefitClass
                     ordersItem.shippingPrice = courierItemData.shippingRate.toDouble()
-                    ordersItem.etaText = courierItemData.etaText ?: ""
+                    ordersItem.etaText = courierItemData.etaText!!
                 }
             }
             doValidateUseLogisticPromo(
@@ -1690,7 +1686,6 @@ class CheckoutViewModel @Inject constructor(
             pageState.value = CheckoutPageState.Loading
             val items = listData.value.toMutableList()
             var firstErrorIndex = -1
-            var continueCheckout = true
             var hasValidOrder = false
             var hasUnselectedCourier = false
             var isPrescriptionFrontEndValidationError = false
@@ -1752,6 +1747,15 @@ class CheckoutViewModel @Inject constructor(
                     triggerEpharmacyTracker.invoke(true)
                 }
                 return@launch
+            }
+            if (!hasValidOrder) {
+                commonToaster.emit(
+                    CheckoutPageToaster(
+                        Toaster.TYPE_ERROR,
+                        "Barangmu lagi nggak bisa dibeli. Silakan balik ke keranjang untuk cek belanjaanmu."
+                    )
+                )
+                pageState.value = CheckoutPageState.Normal
             }
             val errorToaster =
                 addOnProcessor.saveAddOnsProductBeforeCheckout(listData.value, isOneClickShipment)
@@ -1818,15 +1822,13 @@ class CheckoutViewModel @Inject constructor(
                                 deletedVoucherOrder.add(voucherOrdersItemUiModel)
                             }
                         }
-                        if (deletedVoucherOrder.size > 0) {
-                            for (voucherOrdersItemUiModel in deletedVoucherOrder) {
-                                voucherOrderUiModels.remove(
-                                    voucherOrdersItemUiModel
-                                )
-                            }
-                            validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels =
-                                voucherOrderUiModels
+                        for (voucherOrdersItemUiModel in deletedVoucherOrder) {
+                            voucherOrderUiModels.remove(
+                                voucherOrdersItemUiModel
+                            )
                         }
+                        validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels =
+                            voucherOrderUiModels
                         doCheckout(
                             validateUsePromoRevampUiModel,
                             fingerprintPublicKey,
@@ -1857,6 +1859,7 @@ class CheckoutViewModel @Inject constructor(
                         CheckoutConstant.DEFAULT_ERROR_MESSAGE_VALIDATE_PROMO
                     )
                 )
+                pageState.value = CheckoutPageState.Normal
             }
         }
     }
