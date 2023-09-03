@@ -38,12 +38,12 @@ class EditorEditTextView @JvmOverloads constructor(
     /**
      * Set a custom view id for [EditorEditTextView]
      *
-     * This id will be recognized as viewId during view addition within container,
-     * such as when the user add a text into [DynamicTextCanvasLayout].
+     * This id will be recognized as viewId during view creation in container,
+     * e.g. when the user add a new text object into [DynamicTextCanvasLayout].
      *
-     * If we didn't set the id, hence the view inside the container is unrecognisable.
+     * If we didn't set this, thus the view inside the container is unrecognisable.
      *
-     * This setter will used for typographyId in [InputTextUiModel]
+     * This setter will used for [viewId] in [InputTextUiModel]
      */
     fun setViewId() {
         id = View.generateViewId()
