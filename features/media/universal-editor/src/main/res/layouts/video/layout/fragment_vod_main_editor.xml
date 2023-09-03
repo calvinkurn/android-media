@@ -5,6 +5,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <com.google.android.exoplayer2.ui.PlayerView
+        android:id="@+id/player_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:resize_mode="fixed_width"
+        app:surface_type="texture_view"
+        app:use_artwork="false"
+        app:use_controller="false" />
+
     <com.tokopedia.editor.ui.widget.DynamicTextCanvasLayout
         android:id="@+id/container"
         android:layout_width="0dp"
