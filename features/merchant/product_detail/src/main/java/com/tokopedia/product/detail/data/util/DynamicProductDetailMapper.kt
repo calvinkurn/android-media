@@ -87,6 +87,7 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant.PRODUCT_BUND
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.RECOM_VERTICAL
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.SHOPADS_CAROUSEL
 import com.tokopedia.product.detail.view.util.checkIfNumber
+import com.tokopedia.product.detail.view.viewholder.a_plus_content.APlusImageUiModel
 import com.tokopedia.product.detail.view.widget.CampaignRibbon
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselTrackingConst
@@ -118,6 +119,7 @@ object DynamicProductDetailMapper {
      */
     fun mapIntoVisitable(data: List<Component>): MutableList<DynamicPdpDataModel> {
         val listOfComponent: MutableList<DynamicPdpDataModel> = mutableListOf()
+        var firstAPlusMedia = true
         data.forEachIndexed { index, component ->
             when (component.type) {
                 ProductDetailConstant.NOTIFY_ME -> {
@@ -315,6 +317,28 @@ object DynamicProductDetailMapper {
                     listOfComponent.add(
                         ProductShopReviewDataModel(type = component.type, name = component.componentName)
                     )
+                }
+                ProductDetailConstant.A_PLUS_IMAGE -> {
+                    val aPlusData = component.componentData.firstOrNull() ?: return@forEachIndexed
+                    val aPlusMediaData = aPlusData.contentMedia.firstOrNull() ?: return@forEachIndexed
+                    // only add to component list if the media url is not blank and media ratio is valid
+                    // or it is used to show toggle button (CTA text is not blank)
+                    if (aPlusData.requiredForContentMediaToggle() || aPlusMediaData.valid()) {
+                        listOfComponent.add(
+                            APlusImageUiModel(
+                                type = component.type,
+                                name = component.componentName,
+                                url = aPlusMediaData.url,
+                                ratio = aPlusMediaData.ratio,
+                                title = aPlusData.title,
+                                description = aPlusData.description,
+                                showOnCollapsed = aPlusData.show,
+                                ctaText = aPlusData.ctaText,
+                                showTopDivider = firstAPlusMedia
+                            )
+                        )
+                        firstAPlusMedia = false
+                    }
                 }
             }
         }
