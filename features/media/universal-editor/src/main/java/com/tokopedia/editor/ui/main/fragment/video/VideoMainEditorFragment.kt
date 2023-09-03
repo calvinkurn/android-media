@@ -92,5 +92,4 @@ class VideoMainEditorFragment @Inject constructor(
         binding?.container?.addOrEditText(typographyId, model)
         viewModel.onEvent(MainEditorEvent.ResetActiveInputText)
     }
-
 }
