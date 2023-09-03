@@ -28,8 +28,6 @@ import com.tokopedia.homenav.mainnav.domain.model.AffiliateUserDetailData
 import com.tokopedia.homenav.mainnav.domain.model.MainNavProfileCache
 import com.tokopedia.homenav.mainnav.domain.model.NavNotificationModel
 import com.tokopedia.homenav.mainnav.domain.model.NavOrderListModel
-import com.tokopedia.homenav.mainnav.domain.model.NavPaymentOrder
-import com.tokopedia.homenav.mainnav.domain.model.NavProductOrder
 import com.tokopedia.homenav.mainnav.domain.usecases.GetAffiliateUserUseCase
 import com.tokopedia.homenav.mainnav.domain.usecases.GetCategoryGroupUseCase
 import com.tokopedia.homenav.mainnav.domain.usecases.GetNavNotification
@@ -181,6 +179,8 @@ class MainNavViewModel @Inject constructor(
         this.pageSource = pageSource
         if (isLaunchedFromHome()) {
             removeHomeBackButtonMenu()
+            if (isUsingMePageRollenceVariant())
+                addMePageProfileSeparator()
         } else { addHomeBackButtonMenu() }
     }
 
@@ -281,6 +281,12 @@ class MainNavViewModel @Inject constructor(
         val listOfHomeMenuSection = mutableListOf<Visitable<*>>()
         listOfHomeMenuSection.add(clientMenuGenerator.get().getMenu(menuId = ID_HOME, sectionId = MainNavConst.Section.HOME))
         listOfHomeMenuSection.add(SeparatorDataModel(sectionId = MainNavConst.Section.HOME, isMePageVariant = isUsingMePageRollenceVariant()))
+        addWidgetList(listOfHomeMenuSection, INDEX_HOME_BACK_SEPARATOR)
+    }
+
+    private fun addMePageProfileSeparator() {
+        val listOfHomeMenuSection = mutableListOf<Visitable<*>>()
+        listOfHomeMenuSection.add(SeparatorDataModel(sectionId = MainNavConst.Section.PROFILE, isMePageVariant = isUsingMePageRollenceVariant()))
         addWidgetList(listOfHomeMenuSection, INDEX_HOME_BACK_SEPARATOR)
     }
 
@@ -420,16 +426,6 @@ class MainNavViewModel @Inject constructor(
         }
     }
 
-    private fun getOrderHistory(
-        paymentList: List<NavPaymentOrder>,
-        productOrderList: List<NavProductOrder>
-    ): Pair<List<NavPaymentOrder>, List<NavProductOrder>> {
-        return Pair(
-            paymentList,
-            productOrderList.take(ON_GOING_TRANSACTION_TO_SHOW)
-        )
-    }
-
     private suspend fun getOnGoingTransaction() {
         // find error state if available and change to shimmering
         val transactionErrorState = _mainNavListVisitable.withIndex().find {
@@ -445,10 +441,8 @@ class MainNavViewModel @Inject constructor(
             if (paymentList.isNotEmpty() || orderList.isNotEmpty()) {
                 val othersTransactionCount = orderList.size - ON_GOING_TRANSACTION_TO_SHOW
 
-                val (paymentListToShow, orderListToShow) = getOrderHistory(paymentList, orderList)
-
                 val transactionListItemViewModel = TransactionListItemDataModel(
-                    NavOrderListModel(orderListToShow, paymentListToShow),
+                    NavOrderListModel(orderList.take(ON_GOING_TRANSACTION_TO_SHOW), paymentList),
                     othersTransactionCount
                 )
 
@@ -472,10 +466,10 @@ class MainNavViewModel @Inject constructor(
             val orderList = getUohOrdersNavUseCase.get().executeOnBackground()
 
             if (paymentList.isNotEmpty() || orderList.isNotEmpty()) {
-                val totalTransaction = paymentList.size + orderList.size
+                val paymentListToShow = paymentList.take(MAX_CARD_SHOWN_REVAMP)
+                val orderListToShow = orderList.take(MAX_CARD_SHOWN_REVAMP - paymentListToShow.size)
+                val otherTransaction = paymentList.size + orderList.size - MAX_CARD_SHOWN_REVAMP
 
-                val (paymentListToShow, orderListToShow) = getOrderHistory(paymentList, orderList)
-                val otherTransaction = totalTransaction - MAX_CARD_SHOWN_REVAMP
                 val transactionListItemViewModel = TransactionListItemDataModel(
                     NavOrderListModel(orderListToShow, paymentListToShow),
                     otherTransaction,
@@ -490,7 +484,7 @@ class MainNavViewModel @Inject constructor(
                 deleteWidget<InitialShimmerTransactionRevampDataModel>()
                 updateMenu(ID_ALL_TRANSACTION, showCta = false)
             }
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             deleteWidget<InitialShimmerTransactionRevampDataModel>()
             updateMenu(ID_ALL_TRANSACTION, showCta = false)
         }
@@ -512,7 +506,7 @@ class MainNavViewModel @Inject constructor(
                 deleteWidget<ShimmerReviewDataModel>()
                 updateMenu(ID_REVIEW, showCta = false)
             }
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             deleteWidget<ShimmerReviewDataModel>()
             updateMenu(ID_REVIEW, showCta = false)
         }
@@ -549,7 +543,7 @@ class MainNavViewModel @Inject constructor(
                 transactionDataList = mutableListOf(
                     it.getSectionTitle(IDENTIFIER_TITLE_MY_ACTIVITY),
                     InitialShimmerTransactionDataModel(),
-                    it.getMenu(menuId = ClientMenuGenerator.ID_ALL_TRANSACTION, sectionId = MainNavConst.Section.ORDER),
+                    it.getMenu(menuId = ID_ALL_TRANSACTION, sectionId = MainNavConst.Section.ORDER),
                     it.getMenu(menuId = ID_WISHLIST_MENU, sectionId = MainNavConst.Section.ORDER),
                     it.getMenu(menuId = ID_REVIEW, sectionId = MainNavConst.Section.ORDER),
                     it.getMenu(menuId = ID_FAVORITE_SHOP, sectionId = MainNavConst.Section.ORDER)
@@ -557,7 +551,7 @@ class MainNavViewModel @Inject constructor(
             } else {
                 transactionDataList = mutableListOf(
                     it.getSectionTitle(IDENTIFIER_TITLE_MY_ACTIVITY),
-                    it.getMenu(menuId = ClientMenuGenerator.ID_ALL_TRANSACTION, sectionId = MainNavConst.Section.ORDER),
+                    it.getMenu(menuId = ID_ALL_TRANSACTION, sectionId = MainNavConst.Section.ORDER),
                     it.getMenu(menuId = ID_WISHLIST_MENU, sectionId = MainNavConst.Section.ORDER),
                     it.getMenu(menuId = ID_REVIEW, sectionId = MainNavConst.Section.ORDER),
                     it.getMenu(menuId = ID_FAVORITE_SHOP, sectionId = MainNavConst.Section.ORDER)
@@ -571,7 +565,7 @@ class MainNavViewModel @Inject constructor(
         return clientMenuGenerator.get().let {
             val isLoggedIn = userSession.get().isLoggedIn
             mutableListOf<Visitable<*>>().apply {
-                add(it.getMenu(menuId = ClientMenuGenerator.ID_ALL_TRANSACTION, sectionId = MainNavConst.Section.ORDER))
+                add(it.getMenu(menuId = ID_ALL_TRANSACTION, sectionId = MainNavConst.Section.ORDER, showCta = isLoggedIn && isUsingMePageRollenceVariant()))
                 if (isLoggedIn) add(InitialShimmerTransactionRevampDataModel())
                 add(it.getMenu(menuId = ID_REVIEW, sectionId = MainNavConst.Section.ORDER, showCta = isLoggedIn && isUsingMePageRollenceVariant()))
                 if (isLoggedIn) add(ShimmerReviewDataModel())

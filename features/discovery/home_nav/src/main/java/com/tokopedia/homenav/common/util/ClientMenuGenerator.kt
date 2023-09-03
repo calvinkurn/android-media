@@ -54,7 +54,7 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
             ID_COMPLAIN -> return getComplainMenu(notifCount, sectionId)
             ID_TOKOPEDIA_CARE -> return getTokopediaCareMenu(notifCount, sectionId)
             ID_QR_CODE -> return getQRCodeMenu(notifCount, sectionId)
-            ID_ALL_TRANSACTION -> return getAllTransactionMenu(notifCount, sectionId)
+            ID_ALL_TRANSACTION -> return getAllTransactionMenu(notifCount, sectionId, showCta)
             ID_TICKET -> return getTicketMenu(notifCount, sectionId)
             ID_REVIEW -> return getReviewMenu(notifCount, sectionId, showCta)
             ID_HOME -> return getHomeMenu(notifCount, sectionId)
@@ -163,7 +163,7 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
         )
     }
 
-    private fun getAllTransactionMenu(notifCount: String, sectionId: Int): HomeNavMenuDataModel {
+    private fun getAllTransactionMenu(notifCount: String, sectionId: Int, showCta: Boolean): HomeNavMenuDataModel {
         return HomeNavMenuDataModel(
             id = ID_ALL_TRANSACTION,
             srcIconId = IconUnify.LIST_TRANSACTION,
@@ -171,6 +171,7 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
             applink = ApplinkConst.PURCHASE_ORDER.needLoginValidation(),
             notifCount = notifCount,
             sectionId = sectionId,
+            showCta = showCta
         )
     }
 
