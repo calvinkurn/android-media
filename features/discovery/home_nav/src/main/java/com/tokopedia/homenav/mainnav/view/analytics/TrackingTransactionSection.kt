@@ -267,11 +267,11 @@ object TrackingTransactionSection : BaseTrackerConst() {
         getTracker().sendEnhanceEcommerceEvent(Event.SELECT_CONTENT, bundle)
     }
 
-    @Deprecated("old global menu tracker")
     /**
      * Tracker ID: 30860
      * Thanos: https://mynakama.tokopedia.com/datatracker/requestdetail/view/1890
      */
+    @Deprecated("old global menu tracker")
     fun getClickViewAllTransaction(
         pageSource: NavSource,
         pageSourcePath: String = ""

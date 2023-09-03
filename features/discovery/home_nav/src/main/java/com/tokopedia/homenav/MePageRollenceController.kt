@@ -12,7 +12,7 @@ object MePageRollenceController {
     fun fetchMePageRollenceValue() {
         rollenceMePageValue = try {
             RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.ME_PAGE_EXP)
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             ""
         }
     }
