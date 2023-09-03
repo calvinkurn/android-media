@@ -12,6 +12,7 @@ import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.homenav.mainnav.view.datamodel.SeparatorDataModel
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.homenav.R as homenavR
 
 class SeparatorViewHolder(itemView: View,
                           mainNavListener: MainNavListener
@@ -35,7 +36,7 @@ class SeparatorViewHolder(itemView: View,
         val dividerLayoutParams = binding?.dividerUnify?.layoutParams as? MarginLayoutParams
         if(element.isMePageVariant){
             val marginTop = if(element.sectionId == MainNavConst.Section.PROFILE) MEPAGE_MARGIN_TOP_PROFILE else MEPAGE_MARGIN_VERTICAL
-            dividerLayoutParams?.height = context.resources.getDimensionPixelSize(com.tokopedia.homenav.R.dimen.nav_mepage_divider_height)
+            dividerLayoutParams?.height = context.resources.getDimensionPixelSize(homenavR.dimen.nav_mepage_divider_height)
             dividerLayoutParams?.setMargins(
                 MEPAGE_MARGIN_HORIZONTAL.toPx(),
                 marginTop.toPx(),
@@ -43,7 +44,7 @@ class SeparatorViewHolder(itemView: View,
                 MEPAGE_MARGIN_VERTICAL.toPx()
             )
         } else {
-            dividerLayoutParams?.height = context.resources.getDimensionPixelSize(com.tokopedia.homenav.R.dimen.nav_control_divider_height)
+            dividerLayoutParams?.height = context.resources.getDimensionPixelSize(homenavR.dimen.nav_control_divider_height)
             dividerLayoutParams?.setMargins(
                 CONTROL_MARGIN_HORIZONTAL.toPx(),
                 CONTROL_MARGIN_VERTICAL.toPx(),
