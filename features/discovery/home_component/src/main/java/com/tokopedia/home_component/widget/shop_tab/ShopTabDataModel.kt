@@ -1,4 +1,4 @@
-package com.tokopedia.home_component.widget.shop_flash_sale.tab
+package com.tokopedia.home_component.widget.shop_tab
 
 data class ShopTabDataModel(
     val id: String = "",

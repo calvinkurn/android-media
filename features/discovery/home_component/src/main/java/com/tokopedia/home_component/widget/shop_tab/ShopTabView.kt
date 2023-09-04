@@ -1,4 +1,4 @@
-package com.tokopedia.home_component.widget.shop_flash_sale.tab
+package com.tokopedia.home_component.widget.shop_tab
 
 import android.content.Context
 import android.util.AttributeSet
@@ -38,8 +38,6 @@ class ShopTabView : LinearLayout, ShopTabListener {
         )
     }
 
-    private val shopTabList = mutableListOf<ShopTabDataModel>()
-
     init {
         binding = HomeComponentShopFlashSaleTabListBinding.inflate(LayoutInflater.from(context), this, true)
         initShopTabAdapter()
@@ -65,15 +63,13 @@ class ShopTabView : LinearLayout, ShopTabListener {
         tabList: List<ShopTabDataModel>,
         onUpdateFinished: () -> Unit = { },
     ) {
-        shopTabList.clear()
-        shopTabList.addAll(tabList)
-        tabAdapter.submitList(shopTabList.toList()) {
+        tabAdapter.submitList(tabList) {
             onUpdateFinished.invoke()
         }
     }
 
     override fun onShopTabClick(element: ShopTabDataModel) {
-        val newList = shopTabList.map {
+        val newList = tabAdapter.currentList.map {
             it.copy(isActivated = it.id == element.id)
         }
         updateShopTabList(newList) {

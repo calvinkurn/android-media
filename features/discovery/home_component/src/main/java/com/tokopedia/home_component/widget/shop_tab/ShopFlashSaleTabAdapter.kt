@@ -1,4 +1,4 @@
-package com.tokopedia.home_component.widget.shop_flash_sale.tab
+package com.tokopedia.home_component.widget.shop_tab
 
 import android.os.Bundle
 import android.view.LayoutInflater

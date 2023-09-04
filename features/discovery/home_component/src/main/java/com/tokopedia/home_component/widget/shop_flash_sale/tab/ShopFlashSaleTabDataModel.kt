@@ -7,5 +7,4 @@ data class ShopFlashSaleTabDataModel(
     val channelGrid: ChannelGrid = ChannelGrid(),
     val trackingAttributionModel: TrackingAttributionModel = TrackingAttributionModel(),
     val isActivated: Boolean = false,
-    val shopTabListener: ShopTabListener? = null,
 )

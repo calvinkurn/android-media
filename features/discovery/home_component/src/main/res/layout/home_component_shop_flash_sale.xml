@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/home_component_shop_flash_sale_divider_header"/>
 
-    <com.tokopedia.home_component.widget.shop_flash_sale.tab.ShopTabView
+    <com.tokopedia.home_component.widget.shop_tab.ShopTabView
         android:id="@+id/home_component_shop_flash_sale_tab"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

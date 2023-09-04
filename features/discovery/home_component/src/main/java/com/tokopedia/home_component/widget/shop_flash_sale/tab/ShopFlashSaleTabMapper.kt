@@ -1,9 +1,8 @@
-package com.tokopedia.home_component.widget.shop_flash_sale
+package com.tokopedia.home_component.widget.shop_flash_sale.tab
 
-import com.tokopedia.home_component.widget.shop_flash_sale.tab.ShopFlashSaleTabDataModel
-import com.tokopedia.home_component.widget.shop_flash_sale.tab.ShopTabDataModel
+import com.tokopedia.home_component.widget.shop_tab.ShopTabDataModel
 
-object ShopFlashSaleWidgetMapper {
+object ShopFlashSaleTabMapper {
     fun mapShopTabModel(model: ShopFlashSaleTabDataModel): ShopTabDataModel {
         return ShopTabDataModel(
             id = model.channelGrid.id,

@@ -1,11 +1,10 @@
-package com.tokopedia.home_component.widget.shop_flash_sale.tab
+package com.tokopedia.home_component.widget.shop_tab
 
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home_component.databinding.HomeComponentShopFlashSaleTabItemBinding
-import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.util.getHexColorFromIdColor
 import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.kotlin.extensions.view.gone

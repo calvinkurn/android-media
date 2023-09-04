@@ -10,7 +10,6 @@ import com.tokopedia.home_component.widget.common.DataStatus
 import com.tokopedia.home_component.widget.shop_flash_sale.item.ShopFlashSaleErrorDataModel
 import com.tokopedia.home_component.widget.shop_flash_sale.item.ShopFlashSaleProductGridShimmerDataModel
 import com.tokopedia.home_component.widget.shop_flash_sale.tab.ShopFlashSaleTabDataModel
-import com.tokopedia.home_component.widget.shop_flash_sale.tab.ShopTabDataModel
 import com.tokopedia.home_component_header.model.ChannelHeader
 
 /**
