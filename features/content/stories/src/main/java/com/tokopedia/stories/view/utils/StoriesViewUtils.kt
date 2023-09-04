@@ -5,6 +5,7 @@ import android.view.MotionEvent
 import android.view.View
 import androidx.core.view.GestureDetectorCompat
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
+import com.tokopedia.unifycomponents.Toaster
 import kotlin.math.atan2
 
 internal fun View.onTouchEventStories(
@@ -49,4 +50,21 @@ internal fun View.onTouchEventStories(
 
 enum class TouchEventStories {
     PAUSE, RESUME, NEXT_PREV, SWIPE_UP
+}
+
+internal fun View.showToaster(
+    message: String,
+    type: Int = Toaster.TYPE_NORMAL,
+    actionText: String = "",
+    bottomHeight : Int = 0,
+    clickListener: View.OnClickListener = View.OnClickListener {}
+) {
+    Toaster.toasterCustomBottomHeight = bottomHeight
+    Toaster.build(
+        this,
+        message,
+        type = type,
+        actionText = actionText,
+        clickListener = clickListener
+    ).show()
 }

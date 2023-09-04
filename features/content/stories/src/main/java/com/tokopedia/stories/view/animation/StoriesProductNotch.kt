@@ -42,10 +42,10 @@ fun StoriesProductNotch(productCount: String, onClick: () -> Unit) {
         val infiniteTransition = rememberInfiniteTransition()
 
         val y by infiniteTransition.animateFloat(
-            initialValue = 30f,
+            initialValue = 0f,
             targetValue = 10f,
             animationSpec = infiniteRepeatable(
-                animation = tween(durationMillis = 300),
+                animation = tween(durationMillis = 300, delayMillis = 200),
                 repeatMode = RepeatMode.Reverse
             )
         )
