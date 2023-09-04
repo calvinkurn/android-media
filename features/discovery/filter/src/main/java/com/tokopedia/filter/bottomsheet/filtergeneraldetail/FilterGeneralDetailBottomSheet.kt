@@ -12,9 +12,8 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.filter.R
 import com.tokopedia.filter.common.data.Filter
-import com.tokopedia.filter.common.data.Option
+import com.tokopedia.filter.common.data.Sort
 import com.tokopedia.filter.common.helper.addItemDecorationIfNotExists
-import com.tokopedia.filter.common.helper.configureBottomSheetHeight
 import com.tokopedia.filter.common.helper.copyParcelable
 import com.tokopedia.filter.common.helper.createFilterDividerItemDecoration
 import com.tokopedia.filter.common.helper.setBottomSheetActionBold
@@ -34,8 +33,8 @@ class FilterGeneralDetailBottomSheet: BottomSheetUnify(), FilterGeneralDetailAda
         private const val FILTER_GENERAL_DETAIL_BOTTOM_SHEET_TAG = "FILTER_GENERAL_DETAIL_BOTTOM_SHEET_TAG"
     }
 
-    private var filter: Filter? = null
-    private var originalSelectedOptionList = mutableListOf<Option>()
+    private var filter: GeneralFilterSort? = null
+    private var originalSelectedOptionList = mutableListOf<GeneralFilterSortOptions>()
     private var callback: Callback? = null
     private var buttonApplyFilterDetailText: String? = null
 
@@ -46,6 +45,7 @@ class FilterGeneralDetailBottomSheet: BottomSheetUnify(), FilterGeneralDetailAda
     }
 
     private var enableResetButton = true
+    private var isNeedShowLoader = false
 
     private var binding: FilterGeneralDetailBottomSheetBinding? = null
 
@@ -62,8 +62,47 @@ class FilterGeneralDetailBottomSheet: BottomSheetUnify(), FilterGeneralDetailAda
             show(fragmentManager, FILTER_GENERAL_DETAIL_BOTTOM_SHEET_TAG)
     }
 
-    private fun Filter?.getSelectedOptions(): List<Option> {
-        return this?.options?.filter { it.inputState.toBoolean() } ?: listOf()
+    fun show(
+        fragmentManager: FragmentManager,
+        filter: GeneralFilterSort,
+        selectedOption: GeneralFilterSortOptions?,
+        callback: Callback,
+        isNeedShowLoader: Boolean,
+        buttonApplyFilterDetailText: String? = null, enableResetButton:Boolean = true) {
+        this.filter = filter
+        selectedOption?.let { this.originalSelectedOptionList = arrayListOf(it) }
+        this.isNeedShowLoader = isNeedShowLoader
+        this.callback = callback
+        this.buttonApplyFilterDetailText = buttonApplyFilterDetailText
+        this.enableResetButton = enableResetButton
+
+        show(fragmentManager, FILTER_GENERAL_DETAIL_BOTTOM_SHEET_TAG)
+    }
+
+    fun setDynamicItem(sortOptions: GeneralFilterSort, selectedOption: Sort?) {
+        this.filter = sortOptions
+        selectedOption?.let {
+            originalSelectedOptionList = mutableListOf(it)
+        }
+        setOptionsList()
+        setVisibleUnifyLoader(false)
+    }
+
+    fun setResultCountText(buttonApplySortFilterText: String) {
+        binding?.buttonApplyFilterDetail?.let {
+            it.isLoading = buttonApplySortFilterText.isEmpty()
+            it.text = buttonApplySortFilterText
+        }
+    }
+
+    private fun setOptionsList() {
+        filter?.getItemOptions()?.let {
+            filterGeneralDetailAdapter.setOptionList(it)
+        }
+    }
+
+    private fun GeneralFilterSort?.getSelectedOptions(): List<GeneralFilterSortOptions> {
+        return this?.getItemOptions()?.filter { it.inputState.toBoolean() } ?: listOf()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,7 +114,7 @@ class FilterGeneralDetailBottomSheet: BottomSheetUnify(), FilterGeneralDetailAda
     private fun initView() {
         initViewSettings()
 
-        setTitle(filter?.title ?: "")
+        setTitle(filter?.getTitleOptions() ?: "")
 
         initButtonReset()
 
@@ -84,11 +123,18 @@ class FilterGeneralDetailBottomSheet: BottomSheetUnify(), FilterGeneralDetailAda
         filterGeneralDetailBottomSheetView = binding?.root
         setChild(filterGeneralDetailBottomSheetView)
 
+        setVisibleUnifyLoader(isNeedShowLoader)
+
         initSearchBar()
 
         initRecyclerView()
 
         initButtonApplyDetailFilter()
+    }
+
+    private fun setVisibleUnifyLoader(isNeedShowLoader : Boolean) {
+        binding?.progressBarSortBottomSheet?.showWithCondition(isNeedShowLoader)
+        binding?.buttonApplyFilterDetailContainer?.showWithCondition(!isNeedShowLoader)
     }
 
     private fun initButtonReset() {
@@ -100,12 +146,12 @@ class FilterGeneralDetailBottomSheet: BottomSheetUnify(), FilterGeneralDetailAda
         }
     }
 
-    private fun Filter?.hasActiveOptions(): Boolean {
+    private fun GeneralFilterSort?.hasActiveOptions(): Boolean {
         return this.getSelectedOptions().isNotEmpty()
     }
 
     private fun initViewSettings() {
-        if (filter?.isLocationFilter == true)
+        if (filter?.isFilterForLocation() == true)
             initViewSettingsLocationFilter()
         else
             initViewSettingsNonLocationFilter()
@@ -127,7 +173,7 @@ class FilterGeneralDetailBottomSheet: BottomSheetUnify(), FilterGeneralDetailAda
     }
 
     private fun onResetFilter(view: View) {
-        filter?.options?.forEach { it.inputState = "" }
+        filter?.getItemOptions()?.forEach { it.inputState = "" }
 
         filterGeneralDetailAdapter.notifyDataSetChanged()
 
@@ -166,14 +212,14 @@ class FilterGeneralDetailBottomSheet: BottomSheetUnify(), FilterGeneralDetailAda
 
     private fun initSearchBar() {
         binding?.searchBarFilterDetail?.let {
-            it.shouldShowWithAction(filter?.search?.searchable == 1) {
+            it.shouldShowWithAction(filter?.getSearchable()?.searchable == 1) {
                 initVisibleSearchBar(it)
             }
         }
     }
 
     private fun initVisibleSearchBar(searchBarFilterDetail: SearchBarUnify?) {
-        searchBarFilterDetail?.searchBarPlaceholder = filter?.search?.placeholder ?: ""
+        searchBarFilterDetail?.searchBarPlaceholder = filter?.getSearchable()?.placeholder ?: ""
         searchBarFilterDetail?.showIcon = false
         context?.let{
             searchBarFilterDetail?.searchBarTextField?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96))
@@ -194,17 +240,17 @@ class FilterGeneralDetailBottomSheet: BottomSheetUnify(), FilterGeneralDetailAda
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            optionSearchFilter.setOptionList(filter?.options ?: listOf())
+            optionSearchFilter.setOptionList(filter?.getItemOptions() ?: listOf())
             optionSearchFilter.filter(s)
         }
     }
 
     private fun initRecyclerView() {
         binding?.recyclerViewFilterDetailBottomSheet?.let {
-            filterGeneralDetailAdapter.setOptionList(filter?.options ?: listOf())
+            setOptionsList()
 
             val layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
-            val itemDecorationLeftMargin = getFilterDividerItemDecorationLeftMargin(filter?.isColorFilter ?: false)
+            val itemDecorationLeftMargin = getFilterDividerItemDecorationLeftMargin(filter?.isFilterForColor() ?: false)
             val itemDecoration = createFilterDividerItemDecoration(it.context, layoutManager.orientation, itemDecorationLeftMargin)
 
             it.adapter = filterGeneralDetailAdapter
@@ -227,7 +273,7 @@ class FilterGeneralDetailBottomSheet: BottomSheetUnify(), FilterGeneralDetailAda
 
     private fun initButtonApplyDetailFilter() {
         binding?.buttonApplyFilterDetail?.setOnClickListener {
-            callback?.onApplyButtonClicked(filter?.options)
+            callback?.onApplyButtonClicked(filter?.getItemOptions())
             dismiss()
         }
 
@@ -252,7 +298,7 @@ class FilterGeneralDetailBottomSheet: BottomSheetUnify(), FilterGeneralDetailAda
         super.onDestroyView()
     }
 
-    override fun onOptionClick(option: Option, isChecked: Boolean, position: Int) {
+    override fun onOptionClick(option: GeneralFilterSortOptions, isChecked: Boolean, position: Int) {
         processOptionClick(option, isChecked)
 
         notifyAdapterChanges(option, position)
@@ -262,15 +308,15 @@ class FilterGeneralDetailBottomSheet: BottomSheetUnify(), FilterGeneralDetailAda
         callback?.onOptionClick(option,isChecked,position)
     }
 
-    private fun processOptionClick(option: Option, isChecked: Boolean) {
+    private fun processOptionClick(option: GeneralFilterSortOptions, isChecked: Boolean) {
         option.inputState = isChecked.toString()
 
-        if (option.isTypeRadio)
-            filter?.options?.processRadioTypeOption(option)
+        if (option.isTypeOptionRadio())
+            filter?.getItemOptions()?.processRadioTypeOption(option)
     }
 
-    private fun notifyAdapterChanges(option: Option, position: Int) {
-        if (option.isTypeRadio)
+    private fun notifyAdapterChanges(option: GeneralFilterSortOptions, position: Int) {
+        if (option.isTypeOptionRadio())
             filterGeneralDetailAdapter.notifyItemRangeChanged(0, filterGeneralDetailAdapter.itemCount, FilterGeneralDetailAdapter.Payload.BIND_INPUT_STATE_ONLY)
         else
             filterGeneralDetailAdapter.notifyItemChanged(position, FilterGeneralDetailAdapter.Payload.BIND_INPUT_STATE_ONLY)
@@ -278,16 +324,16 @@ class FilterGeneralDetailBottomSheet: BottomSheetUnify(), FilterGeneralDetailAda
 
     private fun getButtonResetVisibility(isChecked: Boolean) = isChecked || filter.hasActiveOptions()
 
-    private fun List<Option>.processRadioTypeOption(selectedOption: Option) {
+    private fun List<GeneralFilterSortOptions>.processRadioTypeOption(selectedOption: GeneralFilterSortOptions) {
         this.filter { it.isDifferentOptionAndSameInputState(selectedOption) }.map { it.inputState = "" }
     }
 
-    private fun Option.isDifferentOptionAndSameInputState(option: Option): Boolean {
+    private fun GeneralFilterSortOptions.isDifferentOptionAndSameInputState(option: GeneralFilterSortOptions): Boolean {
         return uniqueId != option.uniqueId && inputState.toBoolean() == option.inputState.toBoolean()
     }
 
     interface Callback {
-        fun onApplyButtonClicked(optionList: List<Option>?)
-        fun onOptionClick(option: Option, isChecked: Boolean, position: Int){}
+        fun onApplyButtonClicked(optionList: List<GeneralFilterSortOptions>?)
+        fun onOptionClick(option: GeneralFilterSortOptions, isChecked: Boolean, position: Int){}
     }
 }

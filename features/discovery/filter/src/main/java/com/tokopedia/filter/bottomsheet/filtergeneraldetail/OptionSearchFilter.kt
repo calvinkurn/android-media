@@ -5,12 +5,12 @@ import com.tokopedia.filter.common.data.Option
 import java.util.*
 
 internal class OptionSearchFilter(
-        private val onReceiveFilterResult: (List<Option>) -> Unit
+        private val onReceiveFilterResult: (List<GeneralFilterSortOptions>) -> Unit
 ): Filter() {
 
-    private val sourceData = mutableListOf<Option>()
+    private val sourceData = mutableListOf<GeneralFilterSortOptions>()
 
-    fun setOptionList(optionList: List<Option>) {
+    fun setOptionList(optionList: List<GeneralFilterSortOptions>) {
         sourceData.clear()
         sourceData.addAll(optionList)
     }

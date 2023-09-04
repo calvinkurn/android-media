@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.VERTICAL
@@ -25,6 +24,7 @@ import com.tokopedia.filter.bottomsheet.pricefilter.PriceFilterViewListener
 import com.tokopedia.filter.bottomsheet.pricefilter.PriceFilterViewModel
 import com.tokopedia.filter.bottomsheet.pricefilter.PriceOptionViewModel
 import com.tokopedia.filter.bottomsheet.filter.pricerangecheckbox.PriceRangeFilterCheckboxListener
+import com.tokopedia.filter.bottomsheet.filtergeneraldetail.GeneralFilterSortOptions
 import com.tokopedia.filter.bottomsheet.sort.SortItemViewModel
 import com.tokopedia.filter.bottomsheet.sort.SortViewListener
 import com.tokopedia.filter.common.data.DynamicFilterModel
@@ -111,10 +111,10 @@ class SortFilterBottomSheet: BottomSheetUnify() {
 
     private fun onSeeAllFilterGeneralClick(filterViewModel: FilterViewModel) {
         val filterDetailCallback = object: FilterGeneralDetailBottomSheet.Callback {
-            override fun onApplyButtonClicked(optionList: List<Option>?) {
+            override fun onApplyButtonClicked(optionList: List<GeneralFilterSortOptions>?) {
                 sortFilterBottomSheetViewModel?.onApplyFilterFromDetailPage(
                     filterViewModel,
-                    optionList,
+                    optionList?.filterIsInstance<Option>(),
                 )
             }
         }

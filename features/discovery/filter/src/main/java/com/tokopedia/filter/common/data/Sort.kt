@@ -1,16 +1,16 @@
 package com.tokopedia.filter.common.data
 
-import android.os.Parcel
 import android.os.Parcelable
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.filter.bottomsheet.filtergeneraldetail.GeneralFilterSortOptions
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 class Sort(@SerializedName("name")
            @Expose
-           var name: String = "",
+           override var name: String = "",
 
            @SerializedName("key")
            @Expose
@@ -26,7 +26,14 @@ class Sort(@SerializedName("name")
 
            @SerializedName("applyFilter")
            @Expose
-           var applyFilter: String = "") : Parcelable {
+           var applyFilter: String = "",
+
+           override var inputState: String = "",
+
+) : Parcelable, GeneralFilterSortOptions {
+
+    override val uniqueId: String
+        get() = key + Option.UID_FIRST_SEPARATOR_SYMBOL + value + Option.UID_SECOND_SEPARATOR_SYMBOL + name
 
     override fun toString(): String {
         return name

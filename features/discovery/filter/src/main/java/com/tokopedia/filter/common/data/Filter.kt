@@ -4,6 +4,8 @@ import android.os.Parcelable
 import com.google.gson.Gson
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.filter.bottomsheet.filtergeneraldetail.GeneralFilterSort
+import com.tokopedia.filter.bottomsheet.filtergeneraldetail.GeneralFilterSortOptions
 import kotlinx.android.parcel.Parcelize
 import java.util.ArrayList
 
@@ -38,25 +40,25 @@ class Filter(@SerializedName("title")
 
              @SerializedName("options")
              @Expose
-             var options: List<Option> = ArrayList()) : Parcelable {
+             var options: List<Option> = ArrayList()) : Parcelable, GeneralFilterSort {
 
     fun clone(
-            title: String? = null,
-            subTitle: String? = null,
-            templateName: String? = null,
-            search: Search? = null,
-            isNew: Boolean? = null,
-            filterAttributeDetail: String? = null,
-            options: List<Option>? = null,
+        title: String? = null,
+        subTitle: String? = null,
+        templateName: String? = null,
+        search: Search? = null,
+        isNew: Boolean? = null,
+        filterAttributeDetail: String? = null,
+        options: List<Option>? = null,
     ): Filter {
         return Filter(
-                title = title ?: this.title,
-                subTitle = subTitle ?: this.subTitle,
-                templateName = templateName ?: this.templateName,
-                search = search ?: this.search,
-                isNew = isNew ?: this.isNew,
-                filterAttributeDetail = filterAttributeDetail ?: this.filterAttributeDetail,
-                options = options ?: this.options,
+            title = title ?: this.title,
+            subTitle = subTitle ?: this.subTitle,
+            templateName = templateName ?: this.templateName,
+            search = search ?: this.search,
+            isNew = isNew ?: this.isNew,
+            filterAttributeDetail = filterAttributeDetail ?: this.filterAttributeDetail,
+            options = options ?: this.options,
         )
     }
 
@@ -92,8 +94,8 @@ class Filter(@SerializedName("title")
 
     val isExpandableFilter: Boolean
         get() = (isCategoryFilter || isColorFilter || isRatingFilter
-                || isSizeFilter || isBrandFilter || isLocationFilter
-                || isOtherFilter || options.size > 1)
+            || isSizeFilter || isBrandFilter || isLocationFilter
+            || isOtherFilter || options.size > 1)
 
     val isKeywordFilter: Boolean
         get() = TEMPLATE_NEGATIVE_KEYWORD == templateName
@@ -109,6 +111,26 @@ class Filter(@SerializedName("title")
                 } + levelTwoCategory.asOption()
             } + option
         }
+    }
+
+    override fun getItemOptions(): List<GeneralFilterSortOptions> {
+        return options
+    }
+
+    override fun getTitleOptions(): String {
+        return title
+    }
+
+    override fun isFilterForLocation(): Boolean {
+        return isLocationFilter
+    }
+
+    override fun isFilterForColor(): Boolean {
+        return isColorFilter
+    }
+
+    override fun getSearchable(): Search {
+        return search
     }
 
     override fun toString(): String {

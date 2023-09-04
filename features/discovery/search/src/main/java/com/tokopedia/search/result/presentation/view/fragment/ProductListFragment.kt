@@ -36,6 +36,7 @@ import com.tokopedia.discovery.common.reimagine.ReimagineRollence
 import com.tokopedia.discovery.common.reimagine.Search2Component
 import com.tokopedia.discovery.common.utils.Dimension90Utils
 import com.tokopedia.filter.bottomsheet.filtergeneraldetail.FilterGeneralDetailBottomSheet
+import com.tokopedia.filter.bottomsheet.filtergeneraldetail.GeneralFilterSortOptions
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.common.helper.getSortFilterCount
@@ -1138,7 +1139,7 @@ class ProductListFragment: BaseDaggerFragment(),
 
         override fun onFilterClicked() { openBottomSheetFilterRevamp() }
 
-        override fun onSortClicked() { }
+        override fun onSortClicked() { openBottomSheetSortRevamp() }
     }
 
     private fun setSortFilterNewNotification(items: List<SortFilterItem>) {
@@ -1383,6 +1384,12 @@ class ProductListFragment: BaseDaggerFragment(),
     }
     //endregion
 
+    //region Bottom Sheet Sort
+    private fun openBottomSheetSortRevamp() {
+        presenter?.openSortPage(getSearchParameter()?.getSearchParameterMap())
+    }
+    //endregion
+
     override fun onLocalizingAddressSelected() {
         presenter?.onLocalizingAddressSelected()
     }
@@ -1390,8 +1397,8 @@ class ProductListFragment: BaseDaggerFragment(),
     //region dropdown quick filter
     override fun openBottomsheetMultipleOptionsQuickFilter(filter: Filter) {
         val filterDetailCallback = object: FilterGeneralDetailBottomSheet.Callback {
-            override fun onApplyButtonClicked(optionList: List<Option>?) {
-                presenter?.onApplyDropdownQuickFilter(optionList)
+            override fun onApplyButtonClicked(optionList: List<GeneralFilterSortOptions>?) {
+                presenter?.onApplyDropdownQuickFilter(optionList?.filterIsInstance<Option>())
             }
         }
 
