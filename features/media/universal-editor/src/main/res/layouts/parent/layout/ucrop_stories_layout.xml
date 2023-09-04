@@ -5,14 +5,14 @@
 
     <!-- Padding for both views can be different -->
 
-    <com.tokopedia.editor.ui.components.custom.crop.StoryGestureCropImageView
+    <com.tokopedia.editor.ui.widget.crop.StoryGestureCropImageView
         android:id="@+id/image_view_crop"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"/>
 
-    <com.tokopedia.editor.ui.components.custom.crop.StoryOverlayView
+    <com.tokopedia.editor.ui.widget.crop.StoryOverlayView
         android:id="@+id/view_overlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

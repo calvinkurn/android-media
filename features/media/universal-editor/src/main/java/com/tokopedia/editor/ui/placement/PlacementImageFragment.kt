@@ -4,12 +4,11 @@ import android.net.Uri
 import android.os.Handler
 import androidx.core.graphics.values
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.editor.R
 import com.tokopedia.editor.base.BaseEditorFragment
 import com.tokopedia.editor.databinding.FragmentPlacementBinding
-import com.tokopedia.editor.ui.components.custom.crop.StoryEditorUCropLayout
+import com.tokopedia.editor.ui.widget.crop.StoryEditorUCropLayout
 import com.tokopedia.editor.ui.model.ImagePlacementModel
 import com.tokopedia.editor.util.getEditorCacheFolderPath
 import com.tokopedia.loaderdialog.LoaderDialog

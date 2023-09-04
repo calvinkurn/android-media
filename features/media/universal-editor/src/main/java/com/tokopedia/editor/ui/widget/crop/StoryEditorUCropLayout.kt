@@ -1,4 +1,4 @@
-package com.tokopedia.editor.ui.components.custom.crop
+package com.tokopedia.editor.ui.widget.crop
 
 import android.content.Context
 import android.graphics.Color

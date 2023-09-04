@@ -1,4 +1,4 @@
-package com.tokopedia.editor.ui.components.custom.crop
+package com.tokopedia.editor.ui.widget.crop
 
 import android.content.Context
 import android.content.res.TypedArray
@@ -12,15 +12,10 @@ import android.net.Uri
 import android.os.Handler
 import android.util.AttributeSet
 import androidx.core.graphics.values
-import com.tokopedia.editor.ui.model.ImagePlacementModel
 import com.yalantis.ucrop.model.ImageState
 import com.yalantis.ucrop.util.BitmapLoadUtils
 import com.yalantis.ucrop.util.RectUtils
 import com.yalantis.ucrop.view.CropImageView
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
 import java.io.File
 import java.io.OutputStream
 

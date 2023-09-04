@@ -1,4 +1,4 @@
-package com.tokopedia.editor.ui.components
+package com.tokopedia.editor.ui.widget
 
 import android.content.Context
 import android.graphics.drawable.GradientDrawable
