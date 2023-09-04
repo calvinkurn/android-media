@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
@@ -119,8 +120,14 @@ class StoriesGroupFragment @Inject constructor(
                     is StoriesUiEvent.SelectGroup -> selectGroupEvent(event.position, event.showAnimation)
                     StoriesUiEvent.FinishedAllStories -> activity?.finish()
                     is StoriesUiEvent.ErrorGroupPage -> {
-                        if (event.throwable.isNetworkError) showToast("error group network ${event.throwable}")
-                        else showToast("error group content ${event.throwable}")
+                        if (event.throwable.isNetworkError) {
+                            // TODO handle error network here
+                            showToast("error group network ${event.throwable}")
+                        }
+                        else {
+                            // TODO handle error fetch here
+                            showToast("error group content ${event.throwable}")
+                        }
                         showPageLoading(false)
                     }
                     else -> return@collect
@@ -134,6 +141,16 @@ class StoriesGroupFragment @Inject constructor(
         state: StoriesGroupUiModel
     ) {
         if (prevState == null || prevState.groupItems.size == state.groupItems.size) return
+
+        if (state.groupItems.isEmpty()) {
+            // TODO handle error empty data state here
+            Toast.makeText(
+                requireContext(),
+                "Don't worry this is debug: data categories is empty"
+                , Toast.LENGTH_LONG
+            ).show()
+            return
+        }
 
         pagerAdapter.setStoriesGroup(state)
         pagerAdapter.notifyItemRangeChanged(0, state.groupItems.size)

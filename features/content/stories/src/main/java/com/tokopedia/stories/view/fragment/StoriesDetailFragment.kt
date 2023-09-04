@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
@@ -100,8 +101,14 @@ class StoriesDetailFragment @Inject constructor(
                 when (event) {
                     is StoriesUiEvent.ErrorDetailPage -> {
                         if (viewModel.mGroupId != groupId) return@collect
-                        if (event.throwable.isNetworkError) showToast("error detail network ${event.throwable}")
-                        else showToast("error detail content ${event.throwable}")
+                        if (event.throwable.isNetworkError) {
+                            // TODO handle error network here
+                            showToast("error detail network ${event.throwable}")
+                        }
+                        else {
+                            // TODO handle error fetch here
+                            showToast("error detail content ${event.throwable}")
+                        }
                         showPageLoading(false)
                     }
                     else -> return@collect
@@ -128,9 +135,18 @@ class StoriesDetailFragment @Inject constructor(
     ) {
         if (prevState == state ||
             state == StoriesDetailUiModel() ||
-            state.detailItems.isEmpty() ||
             state.selectedGroupId != groupId
         ) return
+
+        if (state.detailItems.isEmpty()) {
+            // TODO handle error empty data state here
+            Toast.makeText(
+                requireContext(),
+                "Don't worry this is debug: data stories $groupId is empty"
+                , Toast.LENGTH_LONG
+            ).show()
+            return
+        }
 
         storiesDetailsTimer(state)
 
