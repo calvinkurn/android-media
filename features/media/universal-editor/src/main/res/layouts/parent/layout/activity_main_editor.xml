@@ -9,7 +9,7 @@
 
     <include layout="@layout/uc_pager_container" />
 
-    <com.tokopedia.editor.ui.widget.DynamicTextCanvasView
+    <com.tokopedia.editor.ui.widget.DynamicTextCanvasLayout
         android:id="@+id/canvas"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -17,23 +17,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
-
-    <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/btn_delete"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        app:icon_name="DELETE"
-        app:icon_color_light_enable="@color/white"
-        app:icon_color_night_enable="@color/white"
-        android:background="@drawable/editor_bg_button_removal"
-        android:padding="8dp"
-        android:visibility="gone"
-        android:layout_marginBottom="24dp"
-        app:layout_constraintBottom_toBottomOf="@+id/canvas"
-        app:layout_constraintEnd_toEndOf="@+id/canvas"
-        app:layout_constraintStart_toStartOf="@+id/canvas"
-        tools:visibility="visible"/>
-
 
     <androidx.appcompat.widget.Toolbar
         android:elevation="2dp"
