@@ -660,4 +660,17 @@ class CheckoutViewModelPromoTest : BaseCheckoutViewModelTest() {
         // then
         assertEquals(arrayListOf("boCode"), result)
     }
+
+//    @Test
+//    fun remove_invalid_bo_code_from_promo_request() {
+//        var validateUsePromoRequest = ValidateUsePromoRequest()
+//        viewModel.removeInvalidBoCodeFromPromoRequest(CheckoutOrderModel("123", isFreeShippingPlus = true), listOf(),
+//            validateUsePromoRequest
+//        )
+//        assertEquals(ValidateUsePromoRequest(), validateUsePromoRequest)
+//
+//        viewModel.removeInvalidBoCodeFromPromoRequest(CheckoutOrderModel("123"), listOf(),
+//            validateUsePromoRequest
+//        )
+//    }
 }

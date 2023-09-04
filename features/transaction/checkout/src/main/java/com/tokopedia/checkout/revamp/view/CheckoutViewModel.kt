@@ -56,7 +56,6 @@ import com.tokopedia.logisticcart.shipping.model.CodModel
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.logisticcart.shipping.model.RatesParam
 import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel
-import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
@@ -1259,7 +1258,7 @@ class CheckoutViewModel @Inject constructor(
         return ArrayList(promoProcessor.bboPromoCodes)
     }
 
-    private fun removeInvalidBoCodeFromPromoRequest(
+    internal fun removeInvalidBoCodeFromPromoRequest(
         order: CheckoutOrderModel,
         list: List<CheckoutItem>,
         validateUsePromoRequest: ValidateUsePromoRequest
@@ -1267,15 +1266,13 @@ class CheckoutViewModel @Inject constructor(
         if (!order.isFreeShippingPlus) {
             val shipmentCartItemModelLists =
                 list.filterIsInstance(
-                    ShipmentCartItemModel::class.java
+                    CheckoutOrderModel::class.java
                 )
             for (tmpShipmentCartItemModel in shipmentCartItemModelLists) {
                 for (promoOrder in validateUsePromoRequest.orders) {
-                    if (order.cartStringGroup != tmpShipmentCartItemModel.cartStringGroup && tmpShipmentCartItemModel.cartStringGroup == promoOrder.cartStringGroup && tmpShipmentCartItemModel.selectedShipmentDetailData != null && tmpShipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier != null &&
-                        !tmpShipmentCartItemModel.isFreeShippingPlus
-                    ) {
+                    if (order.cartStringGroup != tmpShipmentCartItemModel.cartStringGroup && tmpShipmentCartItemModel.cartStringGroup == promoOrder.cartStringGroup && tmpShipmentCartItemModel.shipment.courierItemData != null && !tmpShipmentCartItemModel.isFreeShippingPlus) {
                         promoOrder.codes.remove(
-                            tmpShipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier!!.selectedShipper.logPromoCode
+                            tmpShipmentCartItemModel.shipment.courierItemData.selectedShipper.logPromoCode
                         )
                         promoOrder.boCode = ""
                     }

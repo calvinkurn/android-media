@@ -363,7 +363,7 @@ class CheckoutCartProcessor @Inject constructor(
         val productId =
             listData.firstOrNullInstanceOf(CheckoutProductModel::class.java)?.productId ?: 0
         if (productId != 0L) {
-            GlobalScope.launch {
+            GlobalScope.launch(dispatchers.io) {
                 try {
                     releaseBookingUseCase.get().invoke(productId)
                 } catch (t: Throwable) {
