@@ -11,6 +11,7 @@ import android.text.style.ForegroundColorSpan
 import android.text.style.TypefaceSpan
 import android.util.AttributeSet
 import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.ImageView
@@ -34,6 +35,9 @@ import com.tokopedia.topads.sdk.TopAdsConstants.FULFILLMENT
 import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_8
 import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_9
 import com.tokopedia.topads.sdk.base.adapter.Item
+import com.tokopedia.topads.sdk.databinding.LayoutAdsBannerDigitalBinding
+import com.tokopedia.topads.sdk.databinding.LayoutAdsBannerShopAPagerBinding
+import com.tokopedia.topads.sdk.databinding.LayoutAdsBannerShopBPagerBinding
 import com.tokopedia.topads.sdk.domain.model.*
 import com.tokopedia.topads.sdk.listener.*
 import com.tokopedia.topads.sdk.shopwidgetthreeproducts.listener.ShopWidgetAddToCartClickListener
@@ -54,10 +58,6 @@ import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifycomponents.toPx
-import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.layout_ads_banner_digital.view.*
-import kotlinx.android.synthetic.main.layout_ads_banner_shop_a_pager.view.*
-import kotlinx.android.synthetic.main.layout_ads_banner_shop_b_pager.view.*
 import org.apache.commons.text.StringEscapeUtils
 import java.util.Calendar
 import java.util.Date
@@ -96,6 +96,10 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
         TopAdsUrlHitter(context.applicationContext)
     }
 
+    private var bindingShopA : LayoutAdsBannerShopAPagerBinding? = null
+    private var bindingShopB : LayoutAdsBannerShopBPagerBinding? = null
+    private var bindingBannerDigital : LayoutAdsBannerDigitalBinding? = null
+
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
         if (isFlashSaleTokoLabel && flashSaleTimerData != null) {
@@ -127,6 +131,9 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
         val cpmData = cpmModel?.data?.firstOrNull()
         if (template == NO_TEMPLATE && isEligible(cpmData)) {
             View.inflate(getContext(), R.layout.layout_ads_banner_shop_a_pager, this)
+            bindingShopA = LayoutAdsBannerShopAPagerBinding.inflate(LayoutInflater.from(getContext()))
+            bindingShopB = LayoutAdsBannerShopBPagerBinding.inflate(LayoutInflater.from(getContext()))
+            bindingBannerDigital = LayoutAdsBannerDigitalBinding.inflate(LayoutInflater.from(getContext()))
             BannerShopProductViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_a_product
             BannerShopViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_a
             BannerShowMoreViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_a_more
@@ -135,7 +142,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
             val list = findViewById<RecyclerView>(R.id.list)
             list.layoutManager = LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false)
             list.adapter = bannerAdsAdapter
-            list.addOnScrollListener(CustomScrollListener(back_view))
+            list.addOnScrollListener(CustomScrollListener(bindingShopB?.backView?.root))
             val snapHelper = GravitySnapHelper(Gravity.START)
             snapHelper.attachToRecyclerView(list)
 
@@ -198,19 +205,19 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                             shop_badge.hide()
                         }
                     }
-                    shop_name?.text = MethodChecker.fromHtml(cpmData.cpm.cpmShop.name)
-                    description?.text = cpmData.cpm.cpmShop.slogan
+                    bindingShopA?.shopName?.text = MethodChecker.fromHtml(cpmData.cpm.cpmShop.name)
+                    bindingBannerDigital?.description?.text = cpmData.cpm.cpmShop.slogan
                     if (cpmData.cpm.cpmShop.isFollowed != null && topAdsShopFollowBtnClickListener != null) {
                         bindFavorite(cpmData.cpm.cpmShop.isFollowed)
-                        btnFollow.setOnClickListener {
+                        bindingShopA?.btnFollow?.setOnClickListener {
                             cpmData.cpm.cpmShop.id.let { it1 -> topAdsShopFollowBtnClickListener?.onFollowClick(it1, cpmData.id) }
                             if (!cpmData.cpm.cpmShop.isFollowed) {
                                 topAdsUrlHitter.hitClickUrl(className, cpmData.adClickUrl, "", "", "")
                             }
                         }
-                        btnFollow.show()
+                        bindingShopA?.btnFollow?.show()
                     } else {
-                        btnFollow.hide()
+                        bindingShopA?.btnFollow?.hide()
                     }
 
                     shopDetail.setOnClickListener {
@@ -649,13 +656,13 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
 
     private fun bindFavorite(isFollowed: Boolean) {
         if (isFollowed) {
-            btnFollow.buttonVariant = UnifyButton.Variant.GHOST
-            btnFollow.buttonType = UnifyButton.Type.ALTERNATE
-            btnFollow.text = btnFollow.context.getString(R.string.topads_following)
+            bindingShopA?.btnFollow?.buttonVariant = UnifyButton.Variant.GHOST
+            bindingShopA?.btnFollow?.buttonType = UnifyButton.Type.ALTERNATE
+            bindingShopA?.btnFollow?.text = bindingShopA?.btnFollow?.context?.getString(R.string.topads_following)
         } else {
-            btnFollow.buttonVariant = UnifyButton.Variant.FILLED
-            btnFollow.buttonType = UnifyButton.Type.MAIN
-            btnFollow.text = btnFollow.context.getString(R.string.topads_follow)
+            bindingShopA?.btnFollow?.buttonVariant = UnifyButton.Variant.FILLED
+            bindingShopA?.btnFollow?.buttonType = UnifyButton.Type.MAIN
+            bindingShopA?.btnFollow?.text = bindingShopA?.btnFollow?.context?.getString(R.string.topads_follow)
         }
     }
 
@@ -795,8 +802,8 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                     .load(cpm.cpmImage.fullEcs)
                     .into(object : CustomTarget<Bitmap>() {
                         override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                            if (image != null) {
-                                image.setImageBitmap(resource)
+                            if (bindingBannerDigital?.image != null) {
+                                bindingBannerDigital?.image?.setImageBitmap(resource)
                                 topAdsUrlHitter.hitImpressionUrl(className, cpm.cpmImage.fullUrl, "", "", "")
                             }
                         }
@@ -805,9 +812,9 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
 
                         }
                     })
-            name.text = escapeHTML(if (cpm.name == null) "" else cpm.name)
-            description.text = escapeHTML(if (cpm.decription == null) "" else cpm.decription)
-            cta_btn.text = if (cpm.cta == null) "" else cpm.cta
+            bindingBannerDigital?.name?.text = escapeHTML(if (cpm.name == null) "" else cpm.name)
+            bindingBannerDigital?.description?.text = escapeHTML(if (cpm.decription == null) "" else cpm.decription)
+            bindingBannerDigital?.ctaBtn?.text = if (cpm.cta == null) "" else cpm.cta
         } catch (e: Exception) {
             e.printStackTrace()
         }
