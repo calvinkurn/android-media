@@ -5,7 +5,6 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.home.beranda.data.datasource.local.HomeRoomDataSource
-import com.tokopedia.home.beranda.data.model.AtfData
 import com.tokopedia.home.beranda.data.model.HomeAtfData
 import com.tokopedia.home.beranda.domain.interactor.HomeRepository
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
@@ -27,8 +26,8 @@ class HomeAtfRepository @Inject constructor(
 
     override suspend fun executeOnBackground(): HomeAtfData {
         graphqlUseCase.clearCache()
-        val listOfExpKey = listOf(RollenceKey.HOME_COMPONENT_ATF, RollenceKey.HOME_LOAD_TIME_KEY).joinToString(",")
-        val listOfExpValue = listOf(HomeRollenceController.rollenceAtfValue, HomeRollenceController.rollenceLoadTime).joinToString(",")
+        val listOfExpKey = listOf(RollenceKey.HOME_COMPONENT_ATF, RollenceKey.HOME_LOAD_TIME_KEY).joinToString(EXP_SEPARATOR)
+        val listOfExpValue = listOf(HomeRollenceController.rollenceAtfValue, HomeRollenceController.rollenceLoadTime).joinToString(EXP_SEPARATOR)
         params.putString(EXPERIMENT, listOfExpKey)
         params.putString(VARIANT, listOfExpValue)
         graphqlUseCase.setRequestParams(params.parameters)
@@ -46,5 +45,6 @@ class HomeAtfRepository @Inject constructor(
     companion object {
         private const val EXPERIMENT = "experiment"
         private const val VARIANT = "variant"
+        private const val EXP_SEPARATOR = ";"
     }
 }
