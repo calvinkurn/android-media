@@ -19,10 +19,12 @@ import javax.inject.Inject
 /**
  * Created by fwidjaja on 2019-11-12.
  */
-class RequstPickupViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
-                                                private val somConfirmReqPickupUseCase: SomConfirmReqPickupUseCase,
-                                                private val somProcessReqPickupUseCase: SomProcessReqPickupUseCase
+class RequestPickupViewModel @Inject constructor(
+    dispatcher: CoroutineDispatchers,
+    private val somConfirmReqPickupUseCase: SomConfirmReqPickupUseCase,
+    private val somProcessReqPickupUseCase: SomProcessReqPickupUseCase
 ) : BaseViewModel(dispatcher.io) {
+
     private val _confirmReqPickupResult = MutableLiveData<Result<SomConfirmReqPickup.Data>>()
     val confirmReqPickupResult: LiveData<Result<SomConfirmReqPickup.Data>>
         get() = _confirmReqPickupResult

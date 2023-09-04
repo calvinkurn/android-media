@@ -7,7 +7,7 @@ import com.tokopedia.logisticseller.ui.requestpickup.data.model.SomProcessReqPic
 import com.tokopedia.logisticseller.ui.requestpickup.data.model.SomProcessReqPickupParam
 import com.tokopedia.logisticseller.ui.requestpickup.domain.usecase.SomConfirmReqPickupUseCase
 import com.tokopedia.logisticseller.ui.requestpickup.domain.usecase.SomProcessReqPickupUseCase
-import com.tokopedia.logisticseller.ui.requestpickup.presentation.viewmodel.RequstPickupViewModel
+import com.tokopedia.logisticseller.ui.requestpickup.presentation.viewmodel.RequestPickupViewModel
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -33,7 +33,7 @@ class SomConfirmReqPickupViewModelTest {
     @get:Rule
     var coroutineTestRule = CoroutineTestRule()
 
-    private lateinit var somConfirmReqPickupViewModel: RequstPickupViewModel
+    private lateinit var somConfirmReqPickupViewModel: RequestPickupViewModel
     private var listCourier = listOf<SomConfirmReqPickup.Data.MpLogisticPreShipInfo.DataSuccess.Detail.Shipper>()
     private var listMsg = listOf<String>()
 
@@ -46,7 +46,7 @@ class SomConfirmReqPickupViewModelTest {
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-        somConfirmReqPickupViewModel = RequstPickupViewModel(
+        somConfirmReqPickupViewModel = RequestPickupViewModel(
             coroutineTestRule.dispatchers,
             somConfirmReqPickupUseCase,
             somProcessReqPickupUseCase

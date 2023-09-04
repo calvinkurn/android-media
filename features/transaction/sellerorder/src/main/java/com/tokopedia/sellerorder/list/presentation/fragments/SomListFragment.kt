@@ -2282,7 +2282,7 @@ open class SomListFragment :
     private fun getOldEmptyState(
         isTopAdsActive: Boolean
     ): SomListEmptyStateUiModel {
-        val isSellerApp = GlobalConfig.isSellerApp()
+        val isSellerApp = true
         val isNewOrderFilterSelected =
             somListOrderStatusFilterTab?.isNewOrderFilterSelected() == true
         val isNonStatusOrderFilterApplied = somListSortFilterTab?.isNonStatusOrderFilterApplied(

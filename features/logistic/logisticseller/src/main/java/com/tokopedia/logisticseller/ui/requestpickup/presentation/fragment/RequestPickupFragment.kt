@@ -2,10 +2,11 @@ package com.tokopedia.logisticseller.ui.requestpickup.presentation.fragment
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.text.SpannableString
-import android.text.Spanned
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -36,21 +37,23 @@ import com.tokopedia.logisticseller.ui.requestpickup.data.model.SomProcessReqPic
 import com.tokopedia.logisticseller.ui.requestpickup.di.DaggerSomConfirmReqPickupComponent
 import com.tokopedia.logisticseller.ui.requestpickup.di.SomConfirmReqPickupComponent
 import com.tokopedia.logisticseller.ui.requestpickup.presentation.adapter.SchedulePickupAdapter
-import com.tokopedia.logisticseller.ui.requestpickup.presentation.viewmodel.RequstPickupViewModel
+import com.tokopedia.logisticseller.ui.requestpickup.presentation.adapter.SomConfirmReqPickupCourierNotesAdapter
+import com.tokopedia.logisticseller.ui.requestpickup.presentation.viewmodel.RequestPickupViewModel
 import com.tokopedia.logisticseller.ui.requestpickup.util.DateMapper
-import com.tokopedia.logisticseller.ui.requestpickup.util.NumberIndentSpan
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.utils.htmltags.HtmlUtil
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
+import timber.log.Timber
+import java.net.URLEncoder
 import javax.inject.Inject
 
 /**
@@ -70,6 +73,7 @@ class RequestPickupFragment :
     private var currSchedulePickupTime = ""
     private var confirmReqPickupResponse = SomConfirmReqPickup.Data.MpLogisticPreShipInfo()
     private var processReqPickupResponse = SomProcessReqPickup.Data.MpLogisticRequestPickup()
+    private lateinit var confirmReqPickupCourierNotesAdapter: SomConfirmReqPickupCourierNotesAdapter
 
     private var bottomSheetSchedulePickup: BottomSheetUnify? = null
     private var bottomSheetSchedulePickupTodayAdapter = SchedulePickupAdapter(this)
@@ -84,7 +88,7 @@ class RequestPickupFragment :
     private val tomorrow: String = "Besok"
 
     private val somConfirmRequestPickupViewModel by lazy {
-        ViewModelProviders.of(this, viewModelFactory)[RequstPickupViewModel::class.java]
+        ViewModelProviders.of(this, viewModelFactory)[RequestPickupViewModel::class.java]
     }
 
     private val binding by viewBinding(FragmentRequestPickupBinding::bind)
@@ -220,16 +224,17 @@ class RequestPickupFragment :
         binding?.run {
             shopAddress.text = confirmReqPickupResponse.dataSuccess.pickupLocation.address
             shopPhone.text = confirmReqPickupResponse.dataSuccess.pickupLocation.phone
+            setInvoiceNumber(confirmReqPickupResponse.dataSuccess.detail.invoice)
 
             if (confirmReqPickupResponse.dataSuccess.detail.listShippers.isNotEmpty()) {
                 val shipper = confirmReqPickupResponse.dataSuccess.detail.listShippers[0]
                 ivCourier.loadImageWithoutPlaceholder(shipper.courierImg)
 
                 context?.let {
-                    val htmlCourierNameService = HtmlLinkHelper(it, "<b>${shipper.name} -  ${shipper.service}</b>")
+                    val htmlCourierNameService = HtmlLinkHelper(it, "<b>${shipper.name}</b> ${shipper.service}")
                     tvCourierNameService.text = htmlCourierNameService.spannedString
 
-                    val htmlCourierCountService = HtmlLinkHelper(it, "${shipper.count} pesanan")
+                    val htmlCourierCountService = HtmlLinkHelper(it, "${shipper.countText} <b>${shipper.count}</b>")
                     tvCourierCount.text = htmlCourierCountService.spannedString
                 }
 
@@ -239,25 +244,43 @@ class RequestPickupFragment :
                     tvCourierNotes.text =
                         getString(R.string.courier_option_schedule, confirmReqPickupResponse.dataSuccess.detail.orchestraPartner)
                 }
+
+
             }
 
             if (confirmReqPickupResponse.dataSuccess.notes.listNotes.isNotEmpty()) {
-                requestPickupTips.visibility = View.VISIBLE
-                val listNotes = confirmReqPickupResponse.dataSuccess.notes.listNotes
-                requestPickupTips.title = HtmlUtil.fromHtml("<b>Pastikan</b></br>")
-                val description = listNotes.joinToString("\n")
-                val result = SpannableString(description + "\n")
-                var last = 0
-                listNotes.forEachIndexed { index, desc ->
-                    val start = description.indexOf(desc, last)
-                    last = start + desc.length
-                    result.setSpan(NumberIndentSpan(index + 1), start, last, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                confirmReqPickupCourierNotesAdapter = SomConfirmReqPickupCourierNotesAdapter()
+                labelPastikan.visibility = View.VISIBLE
+                rvCourierNotes.visibility = View.VISIBLE
+                rvCourierNotes.run {
+                    layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
+                    adapter = confirmReqPickupCourierNotesAdapter
                 }
 
-                requestPickupTips.description = result
+                confirmReqPickupCourierNotesAdapter.listCourierNotes =
+                    confirmReqPickupResponse.dataSuccess.notes.listNotes.toMutableList()
+                confirmReqPickupCourierNotesAdapter.notifyDataSetChanged()
+
+
             } else {
-                requestPickupTips.visibility = View.GONE
+                labelPastikan.visibility = View.GONE
+                rvCourierNotes.visibility = View.GONE
             }
+
+            val dropOffNotes = confirmReqPickupResponse.dataSuccess.dropOffLocation.dropOffNotes
+
+//            if (dropOffNotes.text.isNotEmpty() && dropOffNotes.title.isNotEmpty() && dropOffNotes.urlText.isNotEmpty()) {
+
+            dropoffInfoTitle.text = dropOffNotes.title
+                dropoffInfoText.text = dropOffNotes.text
+            dropoffInfoButton.apply {
+//                text = dropOffNotes.urlText
+                setOnClickListener {
+                    openWebview("www.google.com")
+                }
+            }
+//            }
+
 
             if (confirmReqPickupResponse.dataSuccess.schedule_time.today.isNotEmpty() || confirmReqPickupResponse.dataSuccess.schedule_time.tomorrow.isNotEmpty()) {
                 val schedulePickupMapper = SchedulePickupMapper()
@@ -318,6 +341,7 @@ class RequestPickupFragment :
                         openBottomSheetSchedulePickup()
                     }
                 }
+
             } else {
                 rlSchedulePickup.visibility = View.GONE
             }
@@ -340,7 +364,7 @@ class RequestPickupFragment :
                         }
 
                         override fun onDismiss() {
-                            // no-op
+                            //no-op
                         }
                     })
                 }
@@ -413,5 +437,26 @@ class RequestPickupFragment :
         currSchedulePickupKey = scheduleTime.key
         binding?.tvSchedule?.text = "${scheduleTime.day}, $formattedTime"
         currSchedulePickupTime = "${scheduleTime.day}, $formattedTime"
+    }
+
+    private fun setInvoiceNumber(invoiceNumber: String) {
+        if (invoiceNumber.isNotEmpty()) {
+            binding?.tvInvoiceNumber?.text = invoiceNumber
+            binding?.maskTriggerInvoiceNumber?.setOnClickListener {
+                onTextCopied(getString(R.string.invoice_label), invoiceNumber)
+            }
+        } else {
+            binding?.btnCopyInvoiceNumber?.visibility = View.GONE
+        }
+    }
+
+    private fun onTextCopied(label: String, str: String) {
+        val clipboardManager = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        clipboardManager.setPrimaryClip(ClipData.newPlainText(label, str))
+        Toaster.build(requireView(), getString(R.string.success_invoice_copied), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
+    }
+
+    private fun openWebview(url: String) {
+        RouteManager.route(activity, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
     }
 }

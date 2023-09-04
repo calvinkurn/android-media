@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
-import com.tokopedia.logisticseller.ui.requestpickup.presentation.viewmodel.RequstPickupViewModel
+import com.tokopedia.logisticseller.ui.requestpickup.presentation.viewmodel.RequestPickupViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -22,6 +22,6 @@ abstract class SomConfirmReqPickupViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(RequstPickupViewModel::class)
-    internal abstract fun somConfirmRequestPickupViewModel(viewModel: RequstPickupViewModel): ViewModel
+    @ViewModelKey(RequestPickupViewModel::class)
+    internal abstract fun somConfirmRequestPickupViewModel(viewModel: RequestPickupViewModel): ViewModel
 }

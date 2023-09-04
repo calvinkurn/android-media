@@ -40,6 +40,10 @@ data class SomConfirmReqPickup(
                 @Expose
                 val pickupLocation: PickupLocation = PickupLocation(),
 
+                @SerializedName("drop_off_location")
+                @Expose
+                val dropOffLocation: DropOffLocation = DropOffLocation(),
+
                 @SerializedName("detail")
                 @Expose
                 val detail: Detail = Detail(),
@@ -71,6 +75,31 @@ data class SomConfirmReqPickup(
                     @Expose
                     val phone: String = ""
                 ) : Parcelable
+
+                @Parcelize
+                data class DropOffLocation(
+
+                    @SerializedName("drop_off_notes")
+                    val dropOffNotes: DropOffNotes = DropOffNotes()
+
+                ) : Parcelable {
+
+                    @Parcelize
+                    data class DropOffNotes(
+                        @SerializedName("title")
+                        val title: String = "",
+
+                        @SerializedName("text")
+                        val text: String = "",
+
+                        @SerializedName("url_text")
+                        val urlText: String = "",
+
+                        @SerializedName("url_detail")
+                        val urlDetail: String = "",
+                    ) : Parcelable
+
+                }
 
                 @Parcelize
                 data class Detail(
