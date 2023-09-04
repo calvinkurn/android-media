@@ -449,6 +449,7 @@ object ShopPageTrackingConstant {
         const val CLICK_REIMAGINED_SHOWCASE_NAVIGATION_VIEW_ALL = "reimagined - click navigasi etalase all"
         const val IMPRESSION_REIMAGINED_SHOWCASE_NAVIGATION_WITH_TAB = "reimagined - impression navigasi etalase with tab"
         const val CLICK_REIMAGINED_SHOWCASE_NAVIGATION_WITH_TAB = "reimagined - click tab navigasi etalase with tab"
+        const val CLICK_REIMAGINED_BANNER_SHOWCASE_NAVIGATION_WITH_TAB = "reimagined - click banner navigasi etalase with tab"
     }
 
     object EventCategory {
@@ -526,6 +527,7 @@ object ShopPageTrackingConstant {
         const val TRACKER_ID_CLICK_VIEW_ALL_REIMAGINED_SHOWCASE_NAVIGATION = "45926"
         const val TRACKER_ID_IMPRESSION_REIMAGINED_SHOWCASE_NAVIGATION_WITH_TAB= "45927"
         const val TRACKER_ID_CLICK_REIMAGINED_SHOWCASE_NAVIGATION_WITH_TAB = "45928"
+        const val TRACKER_ID_CLICK_REIMAGINED_BANNER_SHOWCASE_NAVIGATION_WITH_TAB = "45929"
     }
 
     object Key {

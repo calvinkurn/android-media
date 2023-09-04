@@ -95,6 +95,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CLICK_PE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CLICK_PRODUCT_ATC
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CLICK_PRODUCT_ATC_QUANTITY
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CLICK_PRODUCT_ATC_RESET
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CLICK_REIMAGINED_BANNER_SHOWCASE_NAVIGATION_WITH_TAB
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CLICK_REIMAGINED_SHOWCASE_NAVIGATION
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CLICK_REIMAGINED_SHOWCASE_NAVIGATION_VIEW_ALL
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CLICK_REIMAGINED_SHOWCASE_NAVIGATION_WITH_TAB
@@ -210,6 +211,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_MULTIPLE_BUNDLE_PRODUCT
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_PERSONALIZATION_TRENDING_WIDGET_ITEM
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_PRODUCT_SHOP_DECOR
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_REIMAGINED_BANNER_SHOWCASE_NAVIGATION_WITH_TAB
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_REIMAGINED_SHOWCASE_NAVIGATION
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_REIMAGINED_SHOWCASE_NAVIGATION_WITH_TAB
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_REMIND_ME_BANNER_TIMER_HOME_TAB
@@ -3538,7 +3540,7 @@ class ShopPageHomeTracking(
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4148
     // Tracker ID: 45948
-    fun sendReimaginedClickTabNavigasiEtalaseWithTabEvent(
+    fun sendShowcaseNavigationWithTabClick(
         tabName: String,
         shopId: String,
         userId: String
@@ -3558,25 +3560,37 @@ class ShopPageHomeTracking(
     }
 
 
-    /*
+
      // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4148
      // Tracker ID: 45949
-     fun sendReimaginedClickBannerNavigasiEtalaseWithTabEvent (eventLabel: String, promotions: JSONArray, sessionIris: String, shopId: String, userId: String) {
-         Tracker.Builder()
-             .setEvent("select_content")
-             .setEventAction("reimagined - click banner navigasi etalase with tab")
-             .setEventCategory("shop page - buyer")
-             .setEventLabel(eventLabel)
-             .setCustomProperty("trackerId", "45949")
-             .setBusinessUnit("Physical Goods")
-             .setCurrentSite("tokopediamarketplace")
-             .setCustomProperty("promotions", promotions)
+     fun sendShowcaseNavigationMainBannerClick(
+         tabName: String,
+         showcase: Showcase,
+         shopId: String,
+         userId: String
+     ) {
+         val eventLabel = "$tabName - ${showcase.id}"
+         val bundledShowcase = Bundle().apply {
+             putString(CREATIVE_NAME, "")
+             putInt(CREATIVE_SLOT, 0)
+             putString(ITEM_ID, showcase.id)
+             putString(ITEM_NAME, showcase.name)
+         }
 
-             .setShopId(shopId)
-             .setUserId(userId)
-             .build()
-             .send()
-         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, eventBundle)
+         val bundle = Bundle().apply {
+             putString(EVENT, SELECT_CONTENT)
+             putString(EVENT_ACTION, CLICK_REIMAGINED_BANNER_SHOWCASE_NAVIGATION_WITH_TAB)
+             putString(EVENT_CATEGORY, SHOP_PAGE_BUYER)
+             putString(EVENT_LABEL, eventLabel)
+             putString(TRACKER_ID, TRACKER_ID_CLICK_REIMAGINED_BANNER_SHOWCASE_NAVIGATION_WITH_TAB)
+             putString(BUSINESS_UNIT, PHYSICAL_GOODS_PASCAL_CASE)
+             putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
+             putString(SHOP_ID, shopId)
+             putString(USER_ID, userId)
+             putParcelableArrayList(PROMOTIONS, arrayListOf(bundledShowcase))
+         }
+
+         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(PROMO_CLICK, bundle)
      }
      //endregion
 
