@@ -1989,13 +1989,7 @@ class CheckoutViewModel @Inject constructor(
     }
 
     fun validatePrescriptionOnBackPressed(): CheckoutEpharmacyModel? {
-        val epharmacy = listData.value.epharmacy()
-        if (epharmacy != null && epharmacy.epharmacy.showImageUpload) {
-            if (epharmacy.epharmacy.uploadedImageCount > 0 || epharmacy.epharmacy.hasInvalidPrescription) {
-                return epharmacy
-            }
-        }
-        return null
+        return addOnProcessor.validatePrescriptionOnBackPressed(listData.value.epharmacy())
     }
 
     fun validateClearAllBoPromo(
