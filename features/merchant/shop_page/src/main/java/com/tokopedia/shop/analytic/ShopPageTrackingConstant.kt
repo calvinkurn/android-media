@@ -444,12 +444,22 @@ object ShopPageTrackingConstant {
         const val CLICK_CTA_SLIDER_BANNER_HIGHLIGHT = "campaign tab - click jelajahi home anchor"
         const val IMPRESSION_CAMPAIGN_PLAY_WIDGET_ITEM = "campaign tab - impression product play"
         const val CLICK_CAMPAIGN_PLAY_WIDGET_ITEM = "campaign tab - click product play"
+
+        //Showcase Navigation Widget - Without tab
         const val IMPRESSION_REIMAGINED_SHOWCASE_NAVIGATION = "reimagined - impression navigasi etalase banner"
         const val CLICK_REIMAGINED_SHOWCASE_NAVIGATION = "reimagined - click navigasi etalase banner"
         const val CLICK_REIMAGINED_SHOWCASE_NAVIGATION_VIEW_ALL = "reimagined - click navigasi etalase all"
+
+        //Showcase Navigation Widget - With tab
         const val IMPRESSION_REIMAGINED_SHOWCASE_NAVIGATION_WITH_TAB = "reimagined - impression navigasi etalase with tab"
         const val CLICK_REIMAGINED_SHOWCASE_NAVIGATION_WITH_TAB = "reimagined - click tab navigasi etalase with tab"
         const val CLICK_REIMAGINED_BANNER_SHOWCASE_NAVIGATION_WITH_TAB = "reimagined - click banner navigasi etalase with tab"
+
+        //Product Carousel Widget
+        const val IMPRESSION_REIMAGINED_BANNER_PRODUCT_CAROUSEL = "reimagined - impression advanced carousel"
+        const val CLICK_REIMAGINED_BANNER_PRODUCT_CAROUSEL = "reimagined - click banner advanced carousel"
+        const val CLICK_REIMAGINED_PRODUCT_CAROUSEL = "reimagined - click product advanced carousel"
+
     }
 
     object EventCategory {
@@ -522,12 +532,19 @@ object ShopPageTrackingConstant {
         const val TRACKER_ID_IMPRESSION_SLIDER_BANNER_HIGHLIGHT_WIDGET = "44365"
         const val TRACKER_ID_CLICK_PRODUCT_SLIDER_BANNER_HIGHLIGHT_WIDGET = "44366"
         const val TRACKER_ID_CLICK_EXPLORE_SHOP_SLIDER_BANNER_HIGHLIGHT_WIDGET = "44368"
+
+        //Showcase Navigation Widget
         const val TRACKER_ID_IMPRESSION_REIMAGINED_SHOWCASE_NAVIGATION = "45924"
-        const val TRACKER_ID_CLICK_REIMAGINED_SHOWCASE_NAVIGATION = "45924"
+        const val TRACKER_ID_CLICK_REIMAGINED_SHOWCASE_NAVIGATION = "45925"
         const val TRACKER_ID_CLICK_VIEW_ALL_REIMAGINED_SHOWCASE_NAVIGATION = "45926"
         const val TRACKER_ID_IMPRESSION_REIMAGINED_SHOWCASE_NAVIGATION_WITH_TAB= "45927"
         const val TRACKER_ID_CLICK_REIMAGINED_SHOWCASE_NAVIGATION_WITH_TAB = "45928"
         const val TRACKER_ID_CLICK_REIMAGINED_BANNER_SHOWCASE_NAVIGATION_WITH_TAB = "45929"
+
+        //Product Carousel Widget
+        const val TRACKER_ID_IMPRESSION_REIMAGINED_BANNER_PRODUCT_CAROUSEL = "45950"
+        const val TRACKER_ID_CLICK_REIMAGINED_BANNER_PRODUCT_CAROUSEL = "45951"
+        const val TRACKER_ID_CLICK_REIMAGINED_PRODUCT_CAROUSEL = "45952"
     }
 
     object Key {
