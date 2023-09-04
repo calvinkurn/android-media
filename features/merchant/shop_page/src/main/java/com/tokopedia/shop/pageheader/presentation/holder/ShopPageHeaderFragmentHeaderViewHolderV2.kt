@@ -66,6 +66,7 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.unifyprinciples.ColorMode
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.UnifyMotion
 import java.util.*
@@ -296,6 +297,13 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
             buttonChat?.hide()
             buttonFollow?.hide()
         }
+        if (isOverrideTheme) {
+            buttonChat?.applyColorMode(ColorMode.LIGHT_MODE)
+            buttonFollow?.applyColorMode(ColorMode.LIGHT_MODE)
+        } else {
+            buttonChat?.applyColorMode(ColorMode.DEFAULT)
+            buttonFollow?.applyColorMode(ColorMode.DEFAULT)
+        }
     }
 
     private fun getShopActionButtonData(listWidgetShopData: List<ShopPageHeaderWidgetUiModel>): ShopPageHeaderWidgetUiModel? {
@@ -480,36 +488,11 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
     }
 
     fun updateFollowButton(model: ShopFollowButtonUiModel) {
-        val shopFollowButtonVariantType = ShopUtil.getShopFollowButtonAbTestVariant().orEmpty()
         val isFollowing = model.isFollowing
         buttonFollow?.apply {
-            when (shopFollowButtonVariantType) {
-                RollenceKey.AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_OLD -> {
-                    // existing/old variant type follow button
-                    buttonSize = UnifyButton.Size.MICRO
-                    buttonVariant = UnifyButton.Variant.GHOST
-                    buttonType =
-                        UnifyButton.Type.ALTERNATE.takeIf { isFollowing } ?: UnifyButton.Type.MAIN
-                }
-
-                RollenceKey.AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_SMALL -> {
-                    // new variant type follow button micro size
-                    buttonSize = UnifyButton.Size.MICRO
-                    buttonVariant = UnifyButton.Variant.GHOST.takeIf { isFollowing }
-                        ?: UnifyButton.Variant.FILLED
-                    buttonType =
-                        UnifyButton.Type.ALTERNATE.takeIf { isFollowing } ?: UnifyButton.Type.MAIN
-                }
-
-                RollenceKey.AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_BIG -> {
-                    // new variant type follow button small size
-                    buttonSize = UnifyButton.Size.SMALL
-                    buttonVariant = UnifyButton.Variant.GHOST.takeIf { isFollowing }
-                        ?: UnifyButton.Variant.FILLED
-                    buttonType =
-                        UnifyButton.Type.ALTERNATE.takeIf { isFollowing } ?: UnifyButton.Type.MAIN
-                }
-            }
+            buttonSize = UnifyButton.Size.MICRO
+            buttonVariant = UnifyButton.Variant.FILLED.takeIf { !isFollowing } ?: UnifyButton.Variant.GHOST
+            buttonType = UnifyButton.Type.MAIN
             val isShowLoading = model.isShowLoading
             isLoading = isShowLoading
             if (!isShowLoading)
