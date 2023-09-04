@@ -4,5 +4,6 @@ import android.content.Context
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 
 internal fun String.toSpannableHtmlString(context: Context): CharSequence? {
-    return HtmlLinkHelper(context, replace("<a>", "<a href=\"\">")).spannedString
+    val text = this.replace("&amp;", "&").replace("<a>", "<a href=\"\">")
+    return HtmlLinkHelper(context, text).spannedString
 }
