@@ -3,8 +3,6 @@ package com.tokopedia.feedplus.domain.usecase
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.feedplus.data.FeedXHomeEntity
-import com.tokopedia.feedplus.domain.mapper.MapperFeedXHome
-import com.tokopedia.feedplus.presentation.model.FeedModel
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
@@ -16,18 +14,17 @@ import javax.inject.Inject
  */
 class FeedXHomeUseCase @Inject constructor(
     @ApplicationContext private val graphqlRepository: GraphqlRepository,
-    private val uiMapper: MapperFeedXHome,
     private val addressHelper: ChosenAddressRequestHelper,
     dispatcher: CoroutineDispatchers
-) : CoroutineUseCase<Map<String, Any>, FeedModel>(dispatcher.io) {
+) : CoroutineUseCase<Map<String, Any>, FeedXHomeEntity>(dispatcher.io) {
 
-    override suspend fun execute(params: Map<String, Any>): FeedModel {
+    override suspend fun execute(params: Map<String, Any>): FeedXHomeEntity {
         val response =
             graphqlRepository.request<Map<String, Any>, FeedXHomeEntity.Response>(
                 graphqlQuery(),
                 params
             )
-        return uiMapper.transform(response.feedXHome)
+        return response.feedXHome
     }
 
     override fun graphqlQuery(): String = """
@@ -330,7 +327,7 @@ class FeedXHomeUseCase @Inject constructor(
             fragment FeedXCardPlaceholder on FeedXCardPlaceholder {
               id
               type
-              mods
+              title
             }
             
             fragment FeedXAuthor on FeedXAuthor {
@@ -382,7 +379,7 @@ class FeedXHomeUseCase @Inject constructor(
 
     fun createParams(
         source: String,
-        cursor: String,
+        cursor: String = "",
         limit: Int = 0,
         detailId: String = ""
     ): Map<String, Any> {

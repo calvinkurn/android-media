@@ -1,7 +1,6 @@
 package com.tokopedia.feedplus.browse.presentation
 
 import android.graphics.Color
-import android.graphics.Rect
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,14 +11,24 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
-import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseAdapter
+import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseChannelViewHolder
+import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiAction
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiModel
+import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiState
+import com.tokopedia.feedplus.browse.presentation.view.FeedBrowsePlaceholderView
 import com.tokopedia.feedplus.databinding.FragmentFeedBrowseBinding
+import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.io.InterruptedIOException
+import java.net.SocketException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 /**
@@ -32,7 +41,14 @@ class FeedBrowseFragment @Inject constructor(
     private var _binding: FragmentFeedBrowseBinding? = null
     private val binding get() = _binding!!
 
-    private val adapter by lazy { FeedBrowseAdapter() }
+    private val channelListener = object : FeedBrowseChannelViewHolder.Listener {
+        override fun onRetryClicked(extraParams: Map<String, Any>, widgetId: String) {
+            viewModel.submitAction(
+                FeedBrowseUiAction.FetchCards(extraParams, widgetId)
+            )
+        }
+    }
+    private val adapter by lazy { FeedBrowseAdapter(channelListener) }
 
     private val viewModel: FeedBrowseViewModel by viewModels { viewModelFactory }
 
@@ -51,6 +67,8 @@ class FeedBrowseFragment @Inject constructor(
         setupView()
         observeUiState()
         observeUiEvent()
+
+        viewModel.submitAction(FeedBrowseUiAction.LoadInitialPage)
     }
 
     override fun getScreenName(): String {
@@ -67,17 +85,29 @@ class FeedBrowseFragment @Inject constructor(
             viewModel.uiState
                 .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
                 .collectLatest { state ->
-                    if (state == null) return@collectLatest
-
-                    renderHeader(state.title)
-                    renderContent(state.widgets)
+                    when (state) {
+                        FeedBrowseUiState.Placeholder -> {
+                            hideError()
+                            showPlaceholder()
+                        }
+                        is FeedBrowseUiState.Success -> {
+                            hideError()
+                            showContent()
+                            renderHeader(state.title)
+                            renderContent(state.widgets)
+                        }
+                        is FeedBrowseUiState.Error -> {
+                            hideContent()
+                            showError(state.throwable)
+                        }
+                    }
                 }
         }
     }
 
     private fun observeUiEvent() {
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.uiState
+            viewModel.uiEvent
                 .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.RESUMED)
                 .collect { event ->
                     if (event == null) return@collect
@@ -93,19 +123,44 @@ class FeedBrowseFragment @Inject constructor(
         }
 
         binding.feedBrowseList.adapter = adapter
-        binding.feedBrowseList.addItemDecoration(
-            object : RecyclerView.ItemDecoration() {
-                override fun getItemOffsets(
-                    outRect: Rect,
-                    view: View,
-                    parent: RecyclerView,
-                    state: RecyclerView.State
-                ) {
-                    outRect.top = resources.getDimensionPixelOffset(R.dimen.feed_space_12)
-                    outRect.bottom = resources.getDimensionPixelOffset(R.dimen.feed_space_12)
-                }
-            }
+    }
+
+    private fun showPlaceholder() {
+        renderContent(
+            listOf(
+                FeedBrowseUiModel.Placeholder(type = FeedBrowsePlaceholderView.Type.Title),
+                FeedBrowseUiModel.Placeholder(type = FeedBrowsePlaceholderView.Type.Chips),
+                FeedBrowseUiModel.Placeholder(type = FeedBrowsePlaceholderView.Type.Cards),
+                FeedBrowseUiModel.Placeholder(type = FeedBrowsePlaceholderView.Type.Title),
+                FeedBrowseUiModel.Placeholder(type = FeedBrowsePlaceholderView.Type.Cards)
+            )
         )
+    }
+
+    private fun showError(throwable: Throwable) {
+        val errorType = when (throwable) {
+            is SocketTimeoutException -> GlobalError.PAGE_FULL
+            is UnknownHostException,
+            is SocketException,
+            is InterruptedIOException -> GlobalError.NO_CONNECTION
+            else -> {
+                GlobalError.MAINTENANCE
+            }
+        }
+        binding.feedBrowseError.setType(errorType)
+        binding.feedBrowseError.show()
+    }
+
+    private fun hideError() {
+        binding.feedBrowseError.gone()
+    }
+
+    private fun showContent() {
+        binding.feedBrowseList.show()
+    }
+
+    private fun hideContent() {
+        binding.feedBrowseList.hide()
     }
 
     private fun renderHeader(title: String) {
@@ -113,7 +168,7 @@ class FeedBrowseFragment @Inject constructor(
     }
 
     private fun renderContent(widgets: List<FeedBrowseUiModel>) {
-        adapter.setItems(widgets)
-        adapter.notifyDataSetChanged()
+        if (widgets.isEmpty()) return
+        adapter.setItemsAndAnimateChanges(widgets)
     }
 }
