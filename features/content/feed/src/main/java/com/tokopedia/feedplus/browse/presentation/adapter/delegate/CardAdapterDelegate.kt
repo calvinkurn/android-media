@@ -11,10 +11,11 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 /**
  * Created by meyta.taliti on 31/08/23.
  */
-class CardAdapterDelegate :
-    TypedAdapterDelegate<PlayWidgetChannelUiModel, PlayWidgetChannelUiModel, FeedBrowseCardViewHolder>(
-        com.tokopedia.feedplus.R.layout.item_feed_browse_card
-    ) {
+class CardAdapterDelegate(
+    private val listener: FeedBrowseCardViewHolder.Listener
+) : TypedAdapterDelegate<PlayWidgetChannelUiModel, PlayWidgetChannelUiModel, FeedBrowseCardViewHolder>(
+    com.tokopedia.feedplus.R.layout.item_feed_browse_card
+) {
     override fun onBindViewHolder(
         item: PlayWidgetChannelUiModel,
         holder: FeedBrowseCardViewHolder
@@ -30,8 +31,9 @@ class CardAdapterDelegate :
             ItemFeedBrowseCardBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
-                false,
-            )
+                false
+            ),
+            listener
         )
     }
 }

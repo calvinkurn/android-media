@@ -13,7 +13,7 @@ import dagger.Component
     modules = [
         FeedBrowseModule::class,
         FeedBrowseViewModelModule::class,
-        FeedBrowseRepositoryModule::class,
+        FeedBrowseBindModule::class,
         FeedBrowseFragmentModule::class
     ],
     dependencies = [BaseAppComponent::class]

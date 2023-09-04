@@ -1,5 +1,6 @@
 package com.tokopedia.feedplus.browse.presentation.adapter
 
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,7 +16,7 @@ import com.tokopedia.feedplus.databinding.ItemFeedBrowsePlaceholderBinding
  */
 class FeedBrowseAdapterDelegate private constructor() {
 
-    internal class Placeholder:
+    internal class Placeholder :
         TypedAdapterDelegate<FeedBrowseUiModel.Placeholder, FeedBrowseUiModel, FeedBrowsePlaceholderViewHolder>(
             com.tokopedia.feedplus.R.layout.item_feed_browse_placeholder
         ) {
@@ -35,7 +36,7 @@ class FeedBrowseAdapterDelegate private constructor() {
                 ItemFeedBrowsePlaceholderBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
-                    false,
+                    false
                 )
             )
         }
@@ -43,7 +44,7 @@ class FeedBrowseAdapterDelegate private constructor() {
 
     internal class Channel(
         private val listener: FeedBrowseChannelViewHolder.Listener
-    ):
+    ) :
         TypedAdapterDelegate<FeedBrowseUiModel.Channel, FeedBrowseUiModel, FeedBrowseChannelViewHolder>(
             com.tokopedia.feedplus.R.layout.item_feed_browse_channel
         ) {
@@ -55,6 +56,20 @@ class FeedBrowseAdapterDelegate private constructor() {
             holder.bind(item)
         }
 
+        override fun onBindViewHolderWithPayloads(
+            item: FeedBrowseUiModel.Channel,
+            holder: FeedBrowseChannelViewHolder,
+            payloads: Bundle
+        ) {
+            if (payloads.getBoolean(FeedBrowseChannelViewHolder.NOTIFY_CHIP_STATE)) {
+                holder.bindChipUiState(item.chipUiState)
+            }
+            if (payloads.getBoolean(FeedBrowseChannelViewHolder.NOTIFY_CHANNEL_STATE)) {
+                holder.bindChannelUiState(item.channelUiState, item)
+            }
+            holder.updateItem(item)
+        }
+
         override fun onCreateViewHolder(
             parent: ViewGroup,
             basicView: View
@@ -63,7 +78,7 @@ class FeedBrowseAdapterDelegate private constructor() {
                 ItemFeedBrowseChannelBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
-                    false,
+                    false
                 ),
                 listener
             )
