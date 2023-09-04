@@ -53,7 +53,9 @@ data class LayoutData(
         @SerializedName("isPremium")
         val isPremium: Boolean = false,
         @SerializedName("columnType")
-        val columnType: Boolean = false
+        val columnType: Boolean = false,
+        @SerializedName("bannerRatio")
+        val bannerRatio: String = ""
     )
 
     data class Hero (

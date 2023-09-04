@@ -5,6 +5,8 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.catalogcommon.listener.HeroBannerListener
 import com.tokopedia.catalogcommon.uimodel.AccordionInformationUiModel
+import com.tokopedia.catalogcommon.uimodel.BannerCatalogUiModel
+import com.tokopedia.catalogcommon.uimodel.DoubleBannerCatalogUiModel
 import com.tokopedia.catalogcommon.uimodel.DummyUiModel
 import com.tokopedia.catalogcommon.uimodel.ExpertReviewUiModel
 import com.tokopedia.catalogcommon.uimodel.HeroBannerUiModel
@@ -15,6 +17,8 @@ import com.tokopedia.catalogcommon.uimodel.TextDescriptionUiModel
 import com.tokopedia.catalogcommon.uimodel.TopFeaturesUiModel
 import com.tokopedia.catalogcommon.uimodel.TrustMakerUiModel
 import com.tokopedia.catalogcommon.viewholder.AccordionInformationViewHolder
+import com.tokopedia.catalogcommon.viewholder.BannerViewHolder
+import com.tokopedia.catalogcommon.viewholder.DoubleBannerViewHolder
 import com.tokopedia.catalogcommon.viewholder.DummyViewHolder
 import com.tokopedia.catalogcommon.viewholder.ExpertReviewViewHolder
 import com.tokopedia.catalogcommon.viewholder.HeroBannerViewHolder
@@ -43,6 +47,8 @@ class CatalogAdapterFactoryImpl(
             BannerRevampViewHolder.LAYOUT -> BannerRevampViewHolder(view, null)
             AccordionInformationViewHolder.LAYOUT -> AccordionInformationViewHolder(view)
             TextDescriptionViewHolder.LAYOUT -> TextDescriptionViewHolder(view)
+            BannerViewHolder.LAYOUT -> BannerViewHolder(view)
+            DoubleBannerViewHolder.LAYOUT -> DoubleBannerViewHolder(view)
             ExpertReviewViewHolder.LAYOUT -> ExpertReviewViewHolder(view)
             else -> super.createViewHolder(view, type)
         }
@@ -86,5 +92,13 @@ class CatalogAdapterFactoryImpl(
 
     override fun type(uiModel: ExpertReviewUiModel): Int {
         return ExpertReviewViewHolder.LAYOUT
+    }
+
+    override fun type(uiModel: BannerCatalogUiModel): Int {
+        return BannerViewHolder.LAYOUT
+    }
+
+    override fun type(uiModel: DoubleBannerCatalogUiModel): Int {
+        return DoubleBannerViewHolder.LAYOUT
     }
 }

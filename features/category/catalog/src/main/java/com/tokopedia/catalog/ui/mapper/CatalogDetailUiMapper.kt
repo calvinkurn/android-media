@@ -10,7 +10,9 @@ import com.tokopedia.catalog.ui.model.NavigationProperties
 import com.tokopedia.catalog.ui.model.PriceCtaProperties
 import com.tokopedia.catalog.ui.model.WidgetTypes
 import com.tokopedia.catalogcommon.uimodel.AccordionInformationUiModel
+import com.tokopedia.catalogcommon.uimodel.BannerCatalogUiModel
 import com.tokopedia.catalogcommon.uimodel.BaseCatalogUiModel
+import com.tokopedia.catalogcommon.uimodel.DoubleBannerCatalogUiModel
 import com.tokopedia.catalogcommon.uimodel.DummyUiModel
 import com.tokopedia.catalogcommon.uimodel.ExpertReviewUiModel
 import com.tokopedia.catalogcommon.uimodel.HeroBannerUiModel
@@ -41,8 +43,8 @@ class CatalogDetailUiMapper @Inject constructor(
                 WidgetTypes.CATALOG_FEATURE_TOP.type -> it.mapToTopFeature(remoteModel)
                 WidgetTypes.CATALOG_TRUSTMAKER.type -> it.mapToTrustMaker(isDarkMode)
                 WidgetTypes.CATALOG_CHARACTERISTIC.type -> { DummyUiModel(content = it.name)}
-                WidgetTypes.CATALOG_BANNER_SINGLE.type -> { DummyUiModel(content = it.name)}
-                WidgetTypes.CATALOG_BANNER_DOUBLE.type -> { DummyUiModel(content = it.name)}
+                WidgetTypes.CATALOG_BANNER_SINGLE.type -> it.mapToBannerImage(isDarkMode)
+                WidgetTypes.CATALOG_BANNER_DOUBLE.type -> it.mapToDoubleBannerImage(isDarkMode)
                 WidgetTypes.CATALOG_PANEL_IMAGE.type -> { DummyUiModel(content = it.name)}
                 WidgetTypes.CATALOG_NAVIGATION.type -> it.mapToStickyNavigation()
                 WidgetTypes.CATALOG_SLIDER_IMAGE.type -> it.mapToSliderImageText(isDarkMode)
@@ -225,6 +227,27 @@ class CatalogDetailUiMapper @Inject constructor(
         )
     }
 
+    private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToBannerImage(
+        darkMode: Boolean
+    ): BannerCatalogUiModel {
+        return BannerCatalogUiModel(
+            darkMode = darkMode,
+            imageUrl = data?.singleBanner?.imageUrl.orEmpty(),
+            ratio = BannerCatalogUiModel.Ratio.values().firstOrNull {
+                it.ratioName == data?.style?.bannerRatio.orEmpty()
+            } ?: BannerCatalogUiModel.Ratio.TWO_BY_ONE
+        )
+    }
+
+    private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToDoubleBannerImage(
+        darkMode: Boolean
+    ): DoubleBannerCatalogUiModel {
+        return DoubleBannerCatalogUiModel(
+            darkMode = darkMode,
+            imageUrls = data?.doubleBanner?.map { it.imageUrl }.orEmpty()
+        )
+    }
+    
     private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToExpertReview(isDarkMode: Boolean): ExpertReviewUiModel {
         return ExpertReviewUiModel(
             content = data?.expertReview.orEmpty().map {
