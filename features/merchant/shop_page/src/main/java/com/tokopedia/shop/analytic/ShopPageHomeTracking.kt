@@ -104,6 +104,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.IMPRESSI
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.IMPRESSION_PERSO_PRODUCT_COMPARISON
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.IMPRESSION_PRODUCT_ATC
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.IMPRESSION_REIMAGINED_SHOWCASE_NAVIGATION
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.IMPRESSION_REIMAGINED_SHOWCASE_NAVIGATION_WITH_TAB
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventCategory.SHOP_PAGE_BUYER_DIRECT_PURCHASE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.FESTIVITY
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.FLASH_SALE
@@ -214,11 +215,13 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_SHOP_PERSO_PRODUCT_COMPARISON
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_SINGLE_BUNDLE_PRODUCT
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_VIEW_ALL_REIMAGINED_SHOWCASE_NAVIGATION
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_VIEW_ALL_REIMAGINED_SHOWCASE_NAVIGATION_WITH_TAB
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_IMPRESSION_BANNER_TIMER_HOME_TAB
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_IMPRESSION_MULTIPLE_BUNDLING_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_IMPRESSION_PERSONALIZATION_TRENDING_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_IMPRESSION_PERSONALIZATION_TRENDING_WIDGET_ITEM
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_IMPRESSION_REIMAGINED_SHOWCASE_NAVIGATION
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_IMPRESSION_REIMAGINED_SHOWCASE_NAVIGATION_WITH_TAB
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_IMPRESSION_SHOP_DECOR
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_IMPRESSION_SHOP_PERSO_PRODUCT_COMPARISON
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_IMPRESSION_SINGLE_BUNDLING_WIDGET
@@ -3508,16 +3511,22 @@ class ShopPageHomeTracking(
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4148
     // Tracker ID: 45927
-    fun sendReimaginedImpressionNavigasiEtalaseWithTabEvent (eventLabel: String, sessionIris: String, shopId: String, userId: String) {
+    fun sendShowcaseNavigationBannerWithTabImpression(
+        tabName: String,
+        showcaseId: String,
+        shopId: String,
+        userId: String
+    ) {
+        val eventLabel = "$tabName - $showcaseId"
+
         Tracker.Builder()
-            .setEvent("viewPGIris")
-            .setEventAction("reimagined - impression navigasi etalase with tab")
-            .setEventCategory("shop page - buyer")
+            .setEvent(VIEW_PG_IRIS)
+            .setEventAction(IMPRESSION_REIMAGINED_SHOWCASE_NAVIGATION_WITH_TAB)
+            .setEventCategory(SHOP_PAGE_BUYER)
             .setEventLabel(eventLabel)
-            .setCustomProperty("trackerId", "45927")
-            .setBusinessUnit("Physical Goods")
-            .setCurrentSite("tokopediamarketplace")
-            
+            .setCustomProperty(TRACKER_ID, TRACKER_ID_IMPRESSION_REIMAGINED_SHOWCASE_NAVIGATION_WITH_TAB)
+            .setBusinessUnit(PHYSICAL_GOODS_PASCAL_CASE)
+            .setCurrentSite(TOKOPEDIA_MARKETPLACE)
             .setShopId(shopId)
             .setUserId(userId)
             .build()
@@ -3530,7 +3539,7 @@ class ShopPageHomeTracking(
         fun sendReimaginedClickTabNavigasiEtalaseWithTabEvent (eventLabel: String, sessionIris: String, shopId: String, userId: String) {
             Tracker.Builder()
                 .setEvent("clickPG")
-                .setEventAction("reimagined - click tab navigasi etalase with tab")
+                .setEventAction("reimagined - click tab navigasi etalase with tab")TRACKER_ID_CLICK_REIMAGINED_SHOWCASE_NAVIGATION_WITH_TAB
                 .setEventCategory("shop page - buyer")
                 .setEventLabel(eventLabel)
                 .setCustomProperty("trackerId", "45948")
