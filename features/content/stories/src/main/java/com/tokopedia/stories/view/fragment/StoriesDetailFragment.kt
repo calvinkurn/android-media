@@ -20,6 +20,7 @@ import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showToast
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.product.detail.common.VariantPageSource
@@ -41,6 +42,7 @@ import com.tokopedia.stories.view.model.isAnyShown
 import com.tokopedia.stories.view.utils.SHOP_ID
 import com.tokopedia.stories.view.utils.STORIES_GROUP_ID
 import com.tokopedia.stories.view.utils.TouchEventStories
+import com.tokopedia.stories.view.utils.isNetworkError
 import com.tokopedia.stories.view.utils.onTouchEventStories
 import com.tokopedia.stories.view.viewmodel.StoriesViewModel
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction
@@ -164,6 +166,12 @@ class StoriesDetailFragment @Inject constructor(
                         val message = getString(event.message)
                         showToaster(message = message,)
                     }
+                    is StoriesUiEvent.ErrorDetailPage -> {
+                        if (viewModel.mGroupId != groupId) return@collectLatest
+                        if (event.throwable.isNetworkError) showToast("error detail network ${event.throwable}")
+                        else showToast("error detail content ${event.throwable}")
+                        showPageLoading(false)
+                    }
                     else -> {}
                 }
             }
@@ -201,8 +209,7 @@ class StoriesDetailFragment @Inject constructor(
         val currContent = state.detailItems.getOrNull(state.selectedDetailPosition)
         if (currContent?.isSameContent == true || currContent == null) return
 
-        // TODO handle loading state properly
-        isShowLoading(false)
+        showPageLoading(false)
 
         binding.ivStoriesDetailContent.apply {
             setImageUrl(currContent.imageContent)
@@ -256,7 +263,7 @@ class StoriesDetailFragment @Inject constructor(
 
 
     private fun setupStoriesView() = with(binding) {
-        isShowLoading(true)
+        showPageLoading(true)
 
         icClose.setOnClickListener { activity?.finish() }
 
@@ -357,7 +364,7 @@ class StoriesDetailFragment @Inject constructor(
         viewModel.submitAction(event)
     }
 
-    private fun isShowLoading(isShowLoading: Boolean) = with(binding){
+    private fun showPageLoading(isShowLoading: Boolean) = with(binding){
         layoutTimer.llTimer.showWithCondition(isShowLoading)
         layoutDeclarative.loaderDecorativeWhite.showWithCondition(isShowLoading)
         ivStoriesDetailContent.showWithCondition(!isShowLoading)

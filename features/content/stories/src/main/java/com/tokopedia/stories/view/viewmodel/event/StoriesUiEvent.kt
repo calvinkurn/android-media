@@ -16,4 +16,6 @@ sealed interface StoriesUiEvent {
     //TODO() : add click listener if needed
     data class ShowErrorEvent(val message: Throwable) : StoriesUiEvent
     data class ShowInfoEvent(val message: Int) : StoriesUiEvent
+    data class ErrorGroupPage(val throwable: Throwable): StoriesUiEvent
+    data class ErrorDetailPage(val throwable: Throwable): StoriesUiEvent
 }
