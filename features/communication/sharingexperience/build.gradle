@@ -1,0 +1,135 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-kapt.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+android {
+    namespace 'com.tokopedia.sharingexperience'
+    testNamespace 'com.tokopedia.sharingexperience.test'
+    buildFeatures {
+        viewBinding true
+    }
+    defaultConfig {
+        multiDexEnabled true
+        testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
+    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_11
+    }
+    buildFeatures {
+        buildConfig true
+    }
+    sourceSets {
+        main {
+            res {
+                srcDirs 'src/main/res'
+            }
+        }
+    }
+    testOptions {
+        unitTests.all {
+            jacoco {
+                includeNoLocationClasses = true
+                excludes = ['jdk.internal.*']
+            }
+        }
+        animationsDisabled = true
+    }
+}
+
+dependencies {
+    implementation projectOrAar(rootProject.ext.features.medialoader)
+    implementation projectOrAar(rootProject.ext.features.mediapickerCommon)
+
+    implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
+    implementation projectOrAar(rootProject.ext.libraries.baseList)
+    implementation projectOrAar(rootProject.ext.libraries.track)
+    implementation projectOrAar(rootProject.ext.libraries.applink)
+    implementation projectOrAar(rootProject.ext.libraries.graphql)
+    implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
+
+    implementation projectOrAar(rootProject.ext.libraries.usersession)
+    implementation projectOrAar(rootProject.ext.libraries.adapterDelegate)
+
+//    implementation rootProject.ext.unifyDependencies.principles
+//    implementation rootProject.ext.unifyDependencies.components
+//    implementation rootProject.ext.unifyDependencies.icons
+//    implementation rootProject.ext.unifyDependencies.global_error
+//    implementation rootProject.ext.unifyDependencies.principles
+//    implementation rootProject.ext.unifyDependencies.header
+
+    implementation rootProject.ext.playServicesDependencies.core
+
+//    implementation rootProject.ext.tkpdInternalLibDependencies.url
+//    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+//    implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
+//    implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
+//    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+
+    implementation rootProject.ext.miscDependencies.dagger
+    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
+    implementation rootProject.ext.miscDependencies.liveDataKtx
+    implementation rootProject.ext.miscDependencies.multiDex
+    implementation rootProject.ext.miscDependencies.viewModelKtx
+    implementation rootProject.ext.miscDependencies.coreKtx
+    kapt rootProject.ext.miscDependencies.daggerCompiler
+
+    implementation rootProject.ext.debugToolsDependencies.chuck
+
+    implementation rootProject.ext.testDependencies.espressoIdlingResource
+
+    implementation (rootProject.ext.firebase.crashlytics) {
+        transitive = true
+    }
+
+    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cassavaTest
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.remoteConfig)
+
+    androidTestImplementation rootProject.ext.testDependencies.espressoCore
+    androidTestImplementation rootProject.ext.testDependencies.espressoContrib
+    androidTestImplementation rootProject.ext.testDependencies.espressoIntents
+    androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
+    androidTestImplementation rootProject.ext.testDependencies.androidxTest
+    androidTestImplementation rootProject.ext.testDependencies.okhttpIdlingResource
+
+    androidTestImplementation rootProject.ext.miscDependencies.dagger
+    kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
+
+    androidTestImplementation rootProject.ext.playServicesDependencies.analytics
+
+    testImplementation rootProject.ext.testDependencies.junit
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.mockitorCore
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.testDependencies.testCoreKtx
+    testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
+}
+
+project.ext {
+    artifactId = 'sharing_experience'
+    groupId = 'com.tokopedia.communication'
+    versionName = "0.0.1"
+    artifactName = "sharing_experience-release"
+}
+
+apply from: '../../../publish_local.gradle'
+apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'
