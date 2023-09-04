@@ -109,7 +109,7 @@ open class DynamicPostViewHolder(
     private val authorBadge: ImageView = itemView.findViewById(R.id.authorBadge)
     private val cardTitle: CardTitleView = itemView.findViewById(R.id.cardTitle)
     private val clHeader: ConstraintLayout = itemView.findViewById(R.id.header)
-    private val likeIcon: AppCompatImageView = itemView.findViewById(R.id.likeIcon)
+    private val likeIcon: IconUnify = itemView.findViewById(R.id.likeIcon)
     private val commentText: Typography = itemView.findViewById(R.id.commentText)
     private val tvCaption: Typography = itemView.findViewById(R.id.caption)
     private val contentLayout: RelativeLayout = itemView.findViewById(R.id.contentLayout)
@@ -262,7 +262,7 @@ open class DynamicPostViewHolder(
                 authorBadge.show()
                 authorBadge.loadImage(header.avatarBadgeImage)
                 authorTitle.setMargin(
-                    itemView.getDimens(contentCommonR.dimen.content_common_dp_4),
+                    itemView.getDimens(contentcommonR.dimen.content_common_dp_4),
                     0,
                     itemView.getDimens(contentcommonR.dimen.content_common_space_8),
                     0
@@ -270,7 +270,7 @@ open class DynamicPostViewHolder(
             } else {
                 authorBadge.hide()
                 authorTitle.setMargin(
-                    itemView.getDimens(contentCommonR.dimen.content_common_space_8),
+                    itemView.getDimens(contentcommonR.dimen.content_common_space_8),
                     0,
                     itemView.getDimens(contentcommonR.dimen.content_common_space_8),
                     0
@@ -393,7 +393,7 @@ open class DynamicPostViewHolder(
     private fun animateFooter() {
         Handler().postDelayed({
             footerBackground.animation =
-                AnimationUtils.loadAnimation(itemView.context, contentCommonR.anim.anim_fade_in)
+                AnimationUtils.loadAnimation(itemView.context, contentcommonR.anim.anim_fade_in)
             footerBackground.visibility = View.VISIBLE
         }, ANIMATION_DURATION)
     }
@@ -609,36 +609,39 @@ open class DynamicPostViewHolder(
     private fun bindLike(like: Like) {
         when {
             like.isChecked -> {
-                likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_thumb_green)
+                updateLikeButton(true)
                 val likeCount = if (like.fmt.isEmpty()) like.value.toString() else like.fmt
                 likeText.text = likeCount
                 likeText.setTextColor(
                     MethodChecker.getColor(
                         likeText.context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_G400
+                        com.tokopedia.unifyprinciples.R.color.Unify_GN500
                     )
                 )
             }
             like.value > 0 -> {
-                likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_feed_thumb)
+                updateLikeButton(false)
                 likeText.text = like.fmt
                 likeText.setTextColor(
                     MethodChecker.getColor(
                         likeText.context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_N700_44
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN950_44
                     )
                 )
             }
             else -> {
-                likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_feed_thumb)
+                updateLikeButton(false)
                 val text: String =
-                    if (like.fmt.isNotEmpty() && !like.fmt.equals("0")) like.fmt
-                    else getString(com.tokopedia.content.common.R.string.kol_action_like)
+                    if (like.fmt.isNotEmpty() && !like.fmt.equals("0")) {
+                        like.fmt
+                    } else {
+                        getString(contentcommonR.string.kol_action_like)
+                    }
                 likeText.text = text
                 likeText.setTextColor(
                     MethodChecker.getColor(
                         likeIcon.context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_N700_44
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN950_44
                     )
                 )
             }
@@ -649,7 +652,7 @@ open class DynamicPostViewHolder(
         val likedColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
         val dislikeColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN300)
         if (isLiked) {
-            itemView.likeIcon.setImage(
+            likeIcon.setImage(
                 newIconId = IconUnify.THUMB_FILLED,
                 newLightEnable = likedColor,
                 newLightDisable = dislikeColor,
@@ -657,7 +660,7 @@ open class DynamicPostViewHolder(
                 newDarkDisable = dislikeColor
             )
         } else {
-            itemView.likeIcon.setImage(
+            likeIcon.setImage(
                 newIconId = IconUnify.THUMB_FILLED,
                 newLightEnable = dislikeColor,
                 newLightDisable = likedColor,
