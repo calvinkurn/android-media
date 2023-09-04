@@ -54,6 +54,7 @@ class BroadMatchViewHolder(
             hideOldHeader()
             bindHeaderViewRevamp(element)
             bindReimagineCarousel(element)
+            paddingReimagineVariant()
         } else {
             hideHeaderRevamp()
             showOldHeader()
@@ -62,8 +63,8 @@ class BroadMatchViewHolder(
             bindSubtitleImage(element)
             bindSeeMore(element)
             bindCarousel(element)
+            paddingControlVariant()
         }
-        setPadding()
     }
 
     private fun showHeaderRevamp() {
@@ -289,14 +290,6 @@ class BroadMatchViewHolder(
 
     private fun FreeOngkirDataView.toProductCardModelFreeOngkir(): ProductCardModel.FreeOngkir {
         return ProductCardModel.FreeOngkir(isActive, imageUrl)
-    }
-
-    private fun setPadding(){
-        if(isReimagine) {
-            paddingReimagineVariant()
-        } else {
-            paddingControlVariant()
-        }
     }
 
     private fun paddingReimagineVariant() {
