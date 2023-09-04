@@ -56,6 +56,8 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey.DISABLE_DROPOFF_MAPS
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
@@ -150,12 +152,25 @@ class ShippingEditorFragment :
         binding?.run {
             btnSaveShipper.setOnClickListener { saveButtonShippingEditor() }
             buttonDropOff.let {
-                it.setDrawable(getIconUnifyDrawable(root.context, IconUnify.LOCATION))
-                it.setOnClickListener {
-                    RouteManager.route(root.context, generateWebviewApplink("${TokopediaUrl.getInstance().WEB}dropoff-maps?source=shipping-editor"))
+                if (showDropOffMaps()) {
+                    it.setDrawable(getIconUnifyDrawable(root.context, IconUnify.LOCATION))
+                    it.setOnClickListener {
+                        RouteManager.route(root.context, generateWebviewApplink("${TokopediaUrl.getInstance().WEB}$DROPOFF_MAPS_URL"))
+                    }
+                    it.visible()
+                } else {
+                    it.gone()
                 }
             }
         }
+    }
+
+    private fun showDropOffMaps(): Boolean {
+        val dropoffMapsRollence = RemoteConfigInstance.getInstance().abTestPlatform.getString(
+            DISABLE_DROPOFF_MAPS,
+            ""
+        )
+        return dropoffMapsRollence != DISABLE_DROPOFF_MAPS
     }
 
     private fun renderTickerOnDemand() {
@@ -995,5 +1010,6 @@ class ShippingEditorFragment :
 
         private const val STATE_AWB_VALIDATION = "awb_otomatis"
         private const val ERROR_CODE_NO_ACCESS = "555"
+        private const val DROPOFF_MAPS_URL = "dropoff-maps?source=shipping-editor"
     }
 }
