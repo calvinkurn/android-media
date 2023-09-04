@@ -1087,16 +1087,22 @@ class CartRevampFragment :
 
     override fun onCartItemCheckChanged(position: Int, cartItemHolderData: CartItemHolderData) {
         val selected = !cartItemHolderData.isSelected
+        viewModel.setItemSelected(position, cartItemHolderData, selected)
         updateStateAfterCheckChanged(selected)
     }
 
     override fun onBundleItemCheckChanged(cartItemHolderData: CartItemHolderData) {
-        val (index, _) = cartAdapter.getCartGroupHolderDataAndIndexByCartString(
+        val (index, groupData) = cartAdapter.getCartGroupHolderDataAndIndexByCartString(
             cartItemHolderData.cartString,
             false
         )
         if (index > 0) {
             val selected = !cartItemHolderData.isSelected
+            groupData.forEachIndexed { position, data ->
+                if (data is CartItemHolderData && data.isBundlingItem && data.bundleId == cartItemHolderData.bundleId && data.bundleGroupId == cartItemHolderData.bundleGroupId) {
+                    viewModel.setItemSelected(index + position, cartItemHolderData, selected)
+                }
+            }
             updateStateAfterCheckChanged(selected)
         }
     }
@@ -2714,8 +2720,6 @@ class CartRevampFragment :
 
         if (isLastItem) {
             refreshCartWithSwipeToRefresh()
-        } else {
-            viewModel.setLastItemAlwaysSelected()
         }
     }
 
@@ -2816,10 +2820,6 @@ class CartRevampFragment :
 
             isFromEditBundle -> {
                 refreshCartWithProgressDialog()
-            }
-
-            else -> {
-                setLastItemAlwaysSelected()
             }
         }
     }
@@ -3078,6 +3078,7 @@ class CartRevampFragment :
 
     private fun refreshCartWithSwipeToRefresh() {
         bulkActionCoachMark?.dismissCoachMark()
+        hasShowBulkActionCoachMark = false
         refreshHandler?.isRefreshing = true
         resetRecentViewList()
         if (viewModel.dataHasChanged()) {
@@ -3979,13 +3980,6 @@ class CartRevampFragment :
 
     private fun setHasTriedToLoadRecommendation() {
         hasTriedToLoadRecommendation = true
-    }
-
-    private fun setLastItemAlwaysSelected() {
-        val tmpIsLastItem = viewModel.setLastItemAlwaysSelected()
-        if (tmpIsLastItem) {
-            binding?.checkboxGlobal?.isChecked = true
-        }
     }
 
     private fun setSelectedAmountVisibility() {

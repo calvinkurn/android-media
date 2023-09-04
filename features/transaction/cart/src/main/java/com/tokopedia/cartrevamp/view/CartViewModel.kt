@@ -337,50 +337,6 @@ class CartViewModel @Inject constructor(
         }
     }
 
-    fun setLastItemAlwaysSelected(): Boolean {
-        var cartItemCount = 0
-        cartDataList.value.forEach outer@{ any ->
-            when (any) {
-                is CartGroupHolderData -> {
-                    any.productUiModelList.forEach { _ ->
-                        cartItemCount++
-
-                        if (cartItemCount > 1) {
-                            return@outer
-                        }
-                    }
-                }
-            }
-        }
-
-        if (cartItemCount == 1) {
-            cartDataList.value.forEachIndexed { index, any ->
-                when (any) {
-                    is CartGroupHolderData -> {
-                        any.isAllSelected = true
-                        any.productUiModelList.forEach {
-                            it.isSelected = true
-                        }
-                        _globalEvent.value = CartGlobalEvent.AdapterItemChanged(index)
-                    }
-
-                    is CartItemHolderData -> {
-                        any.isSelected = true
-                        _globalEvent.value = CartGlobalEvent.AdapterItemChanged(index)
-                    }
-
-                    is DisabledItemHeaderHolderData, is CartSectionHeaderHolderData -> {
-                        return@forEachIndexed
-                    }
-                }
-            }
-
-            return true
-        }
-
-        return false
-    }
-
     fun removeAccordionDisabledItem() {
         var item: DisabledAccordionHolderData? = null
         cartDataList.value.forEach {
@@ -1544,6 +1500,46 @@ class CartViewModel @Inject constructor(
             )
         } else {
             _globalEvent.value = CartGlobalEvent.ProgressLoading(false)
+        }
+    }
+
+    fun setItemSelected(position: Int, cartItemHolderData: CartItemHolderData, selected: Boolean) {
+        var updatedShopData: CartGroupHolderData? = null
+        var shopBottomIndex: Int? = null
+        for ((id, data) in cartDataList.value.withIndex()) {
+            if (data is CartGroupHolderData && data.cartString == cartItemHolderData.cartString && data.isError == cartItemHolderData.isError) {
+                data.productUiModelList.forEachIndexed { index, item ->
+                    if ((id + 1 + index) == position) {
+                        item.isSelected = selected
+                    }
+                }
+
+                var selectedCount = 0
+                data.productUiModelList.forEach {
+                    if (it.isSelected) {
+                        selectedCount++
+                    }
+                }
+
+                if (selectedCount == 0) {
+                    data.isAllSelected = false
+                    data.isPartialSelected = false
+                } else if (selectedCount > 0 && selectedCount < data.productUiModelList.size) {
+                    data.isAllSelected = false
+                    data.isPartialSelected = true
+                } else {
+                    data.isAllSelected = true
+                    data.isPartialSelected = false
+                }
+                updateSelectedAmount()
+                updatedShopData = data
+            } else if (data is CartShopBottomHolderData && data.shopData.cartString == cartItemHolderData.cartString && updatedShopData != null) {
+                shopBottomIndex = id
+                break
+            }
+        }
+        if (shopBottomIndex != null && updatedShopData != null) {
+            cartDataList.value[shopBottomIndex] = CartShopBottomHolderData(updatedShopData)
         }
     }
 

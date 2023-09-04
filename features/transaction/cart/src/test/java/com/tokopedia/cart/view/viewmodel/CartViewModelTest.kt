@@ -299,87 +299,6 @@ class CartViewModelTest : BaseCartViewModelTest() {
     }
     // endregion
 
-    // region setLastItemAlwaysSelected
-    @Test
-    fun `WHEN setLastItemAlwaysSelected group with one cart item THEN should return true`() {
-        // GIVEN
-        val itemCartOne = CartItemHolderData(isSelected = false)
-
-        val cartGroupHolderData = CartGroupHolderData(
-            isAllSelected = false,
-            isError = false,
-            isCollapsed = true,
-            productUiModelList = mutableListOf(
-                itemCartOne
-            )
-        )
-        cartViewModel.cartDataList.value = arrayListOf(cartGroupHolderData)
-
-        // WHEN
-        val isSelected = cartViewModel.setLastItemAlwaysSelected()
-
-        // THEN
-        assertTrue(isSelected)
-    }
-
-    @Test
-    fun `WHEN setLastItemAlwaysSelected group with multiple cart items THEN should return false`() {
-        // GIVEN
-        val itemCartOne = CartItemHolderData(isSelected = false)
-        val itemCartTwo = CartItemHolderData(isSelected = false)
-
-        val cartGroupHolderData = CartGroupHolderData(
-            isAllSelected = false,
-            isError = false,
-            isCollapsed = true,
-            productUiModelList = mutableListOf(
-                itemCartOne,
-                itemCartTwo
-            )
-        )
-        cartViewModel.cartDataList.value = arrayListOf(cartGroupHolderData)
-
-        // WHEN
-        val isSelected = cartViewModel.setLastItemAlwaysSelected()
-
-        // THEN
-        assertFalse(isSelected)
-    }
-
-    @Test
-    fun `WHEN setLastItemAlwaysSelected with empty cart items THEN should return false`() {
-        // GIVEN
-        val cartGroupHolderData = CartGroupHolderData(
-            isAllSelected = false,
-            isError = false,
-            isCollapsed = true,
-            productUiModelList = arrayListOf()
-        )
-        cartViewModel.cartDataList.value = arrayListOf(cartGroupHolderData)
-
-        // WHEN
-        val isSelected = cartViewModel.setLastItemAlwaysSelected()
-
-        // THEN
-        assertFalse(isSelected)
-    }
-
-    @Test
-    fun `WHEN setLastItemAlwaysSelected with unavailable items THEN should return false`() {
-        // GIVEN
-        val disabledItemHeaderData = DisabledItemHeaderHolderData()
-        val cartSectionHeaderHolderData = CartSectionHeaderHolderData()
-        cartViewModel.cartDataList.value =
-            arrayListOf(disabledItemHeaderData, cartSectionHeaderHolderData)
-
-        // WHEN
-        val isSelected = cartViewModel.setLastItemAlwaysSelected()
-
-        // THEN
-        assertFalse(isSelected)
-    }
-    // endregion
-
     // region removeAccordionDisabledItem
     @Test
     fun `WHEN removeAccordionDisabledItem THEN DisabledItemHeaderHolderData should be removed`() {
@@ -1762,8 +1681,56 @@ class CartViewModelTest : BaseCartViewModelTest() {
     }
     // end region
 
-    // region onCleared
+    // region removeProductByCartId
+    @Test
+    fun `WHEN removeProductByCartId THEN `() {
+        // GIVEN
+        val cartItemHolderData = CartItemHolderData(cartId = "123", isSelected = true)
+        val cartItemHolderDataTwo = CartItemHolderData(cartId = "124", isSelected = true)
+        val cartItemHolderDataThree = CartItemHolderData(cartId = "125", isSelected = true)
+        val cartItemHolderDataFour = CartItemHolderData(cartId = "126", isSelected = false)
+        val cartGroupHolderData = CartGroupHolderData(
+            productUiModelList = mutableListOf(
+                cartItemHolderData,
+                cartItemHolderDataTwo,
+                cartItemHolderDataThree,
+                cartItemHolderDataFour
+            )
+        )
 
+        val disabledReasonHolderData = DisabledReasonHolderData()
+        val cartItemHolderSecondData = CartItemHolderData(cartId = "234", isSelected = true, isError = true)
+        val cartItemHolderSecondDataTwo = CartItemHolderData(cartId = "235", isSelected = true, isError = true)
+        val cartGroupHolderDataTwo = CartGroupHolderData(
+            productUiModelList = mutableListOf(
+                cartItemHolderSecondData,
+                cartItemHolderSecondDataTwo
+            )
+        )
+
+        cartViewModel.cartDataList.value = arrayListOf(
+            cartGroupHolderData,
+            cartItemHolderData,
+            cartItemHolderDataTwo,
+            cartItemHolderDataThree,
+            cartItemHolderDataFour,
+            disabledReasonHolderData,
+            cartGroupHolderDataTwo,
+            cartItemHolderSecondData,
+            cartItemHolderSecondDataTwo
+        )
+
+        // WHEN
+        cartViewModel.removeProductByCartId(
+            listOf("123", "124", "234", "235"),
+            needRefresh = true,
+            isFromGlobalCheckbox = false
+        )
+
+        // THEN
+        val toBeRemovedIndices = listOf(5, 6, 7, 8)
+        val toBeUpdatedIndices = listOf(0)
+    }
     // endregion
 
     override fun tearDown() {
