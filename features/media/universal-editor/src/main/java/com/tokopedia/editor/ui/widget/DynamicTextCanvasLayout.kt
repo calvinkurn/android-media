@@ -4,6 +4,8 @@ package com.tokopedia.editor.ui.widget
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -68,6 +70,15 @@ class DynamicTextCanvasLayout @JvmOverloads constructor(
 
     fun setListener(listener: Listener) {
         this.listener = listener
+    }
+
+    fun exportAsBitmap(): Bitmap {
+        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+
+        draw(canvas)
+
+        return bitmap
     }
 
     override fun onRemoveView(view: View) {
