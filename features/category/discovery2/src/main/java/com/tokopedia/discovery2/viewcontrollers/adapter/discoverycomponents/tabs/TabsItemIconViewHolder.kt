@@ -12,7 +12,7 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.unifyprinciples.R as RUnify
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 import com.tokopedia.unifyprinciples.Typography as RTypography
 
 class TabsItemIconViewHolder(itemView: View, fragment: Fragment) :
@@ -82,14 +82,14 @@ class TabsItemIconViewHolder(itemView: View, fragment: Fragment) :
                 tabTextView.setTextColor(
                     ContextCompat.getColor(
                         itemView.context,
-                        RUnify.color.Unify_GN500
+                        unifyprinciplesR.color.Unify_GN500
                     )
                 )
             } else {
                 tabTextView.setTextColor(
                     ContextCompat.getColor(
                         itemView.context,
-                        RUnify.color.Unify_NN400
+                        unifyprinciplesR.color.Unify_NN400
                     )
                 )
             }
