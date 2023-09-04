@@ -14,12 +14,14 @@ import com.tokopedia.catalogcommon.uimodel.BannerCatalogUiModel
 import com.tokopedia.catalogcommon.uimodel.BaseCatalogUiModel
 import com.tokopedia.catalogcommon.uimodel.DoubleBannerCatalogUiModel
 import com.tokopedia.catalogcommon.uimodel.DummyUiModel
+import com.tokopedia.catalogcommon.uimodel.ExpertReviewUiModel
 import com.tokopedia.catalogcommon.uimodel.HeroBannerUiModel
 import com.tokopedia.catalogcommon.uimodel.SliderImageTextUiModel
 import com.tokopedia.catalogcommon.uimodel.StickyNavigationUiModel
 import com.tokopedia.catalogcommon.uimodel.TextDescriptionUiModel
 import com.tokopedia.catalogcommon.uimodel.TopFeaturesUiModel
 import com.tokopedia.catalogcommon.uimodel.TrustMakerUiModel
+import com.tokopedia.catalogcommon.util.colorMapping
 import com.tokopedia.catalogcommon.util.stringHexColorParseToInt
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.orTrue
@@ -47,7 +49,7 @@ class CatalogDetailUiMapper @Inject constructor(
                 WidgetTypes.CATALOG_NAVIGATION.type -> it.mapToStickyNavigation()
                 WidgetTypes.CATALOG_SLIDER_IMAGE.type -> it.mapToSliderImageText(isDarkMode)
                 WidgetTypes.CATALOG_TEXT.type -> it.mapToTextDescription(isDarkMode)
-                WidgetTypes.CATALOG_REVIEW_EXPERT.type -> { DummyUiModel(content = it.name)}
+                WidgetTypes.CATALOG_REVIEW_EXPERT.type -> it.mapToExpertReview(isDarkMode)
                 WidgetTypes.CATALOG_FEATURE_SUPPORT.type -> { DummyUiModel(content = it.name)}
                 WidgetTypes.CATALOG_ACCORDION.type -> it.mapToAccordion(isDarkMode)
                 WidgetTypes.CATALOG_COLUMN_INFO.type -> { DummyUiModel(content = it.name)}
@@ -243,6 +245,40 @@ class CatalogDetailUiMapper @Inject constructor(
         return DoubleBannerCatalogUiModel(
             darkMode = darkMode,
             imageUrls = data?.doubleBanner?.map { it.imageUrl }.orEmpty()
+        )
+    }
+    
+    private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToExpertReview(isDarkMode: Boolean): ExpertReviewUiModel {
+        return ExpertReviewUiModel(
+            content = data?.expertReview.orEmpty().map {
+                ExpertReviewUiModel.ItemExpertReviewUiModel(
+                    imageReviewer = it.imageUrl,
+                    reviewText = it.review,
+                    title = it.name,
+                    subTitle = it.title,
+                    videoLink = it.videoUrl,
+                    textReviewColor = getTextColor(isDarkMode),
+                    textTitleColor = getTextColor(isDarkMode),
+                    textSubTitleColor = getTextColor(isDarkMode),
+                    backgroundColor = colorMapping(
+                        isDarkMode,
+                        com.tokopedia.catalogcommon.R.drawable.bg_rounded_border_dark,
+                        com.tokopedia.catalogcommon.R.drawable.bg_rounded_border_light
+                    ),
+                    styleIconPlay = ExpertReviewUiModel.StyleIconPlay(
+                        iconColor = colorMapping(
+                            isDarkMode,
+                            com.tokopedia.unifyprinciples.R.color.Unify_Static_White,
+                            com.tokopedia.unifyprinciples.R.color.Unify_Static_Black
+                        ),
+                        background = colorMapping(
+                            isDarkMode,
+                            com.tokopedia.catalogcommon.R.drawable.bg_circle_border_dark,
+                            com.tokopedia.catalogcommon.R.drawable.bg_circle_border_light,
+                        )
+                    )
+                )
+            }
         )
     }
 

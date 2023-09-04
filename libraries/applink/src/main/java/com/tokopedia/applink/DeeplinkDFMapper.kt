@@ -77,6 +77,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalCategory.FINAL_PRICE
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.INTERNAL_BELANJA_CATEGORY
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.INTERNAL_CATALOG
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.INTERNAL_CATALOG_LIBRARY
+import com.tokopedia.applink.internal.ApplinkConstInternalCategory.INTERNAL_CATALOG_PRODUCT_LIST
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.INTERNAL_CATEGORY
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.INTERNAL_EXPLORE_CATEGORY
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.INTERNAL_E_PHARMACY
@@ -316,6 +317,7 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(FINAL_PRICE) }, DF_CATEGORY_TRADE_IN, R.string.applink_harga_final))
             add(DFP({ it.startsWith(MONEYIN_INTERNAL) }, DF_CATEGORY_TRADE_IN, R.string.money_in))
             add(DFP({ it.startsWith(INTERNAL_EXPLORE_CATEGORY) }, DF_BASE, R.string.applink_title_explore_category))
+            add(DFP({ it.startsWith(INTERNAL_CATALOG_PRODUCT_LIST) }, DF_BASE, R.string.applink_title_catalog_product_list))
             add(DFP({ it.startsWith(INTERNAL_CATALOG) }, DF_BASE, R.string.applink_title_catalog))
             add(DFP({ it.startsWith(INTERNAL_E_PHARMACY) }, DF_CATEGORY_EPHARMACY, R.string.applink_title_e_pharmacy))
             add(DFP({ it.startsWith(INTERNAL_CATALOG_LIBRARY) }, DF_CATEGORY_CATALOG_LIBRARY, R.string.applink_title_catalog_library))
