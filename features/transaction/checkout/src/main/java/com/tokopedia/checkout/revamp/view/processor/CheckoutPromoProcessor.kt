@@ -6,12 +6,18 @@ import com.tokopedia.checkout.revamp.view.promo
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutItem
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPageToaster
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPromoModel
 import com.tokopedia.checkout.view.CheckoutLogger
 import com.tokopedia.checkout.view.ShipmentViewModel
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.promousage.data.request.GetPromoListRecommendationParam
+import com.tokopedia.promousage.domain.entity.PromoEntryPointInfo
+import com.tokopedia.promousage.domain.usecase.PromoUsageGetPromoListRecommendationEntryPointUseCase
+import com.tokopedia.promousage.view.mapper.PromoUsageGetPromoListRecommendationMapper
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.analytics.PromoRevampAnalytics
 import com.tokopedia.purchase_platform.common.constant.CartConstant
@@ -33,6 +39,8 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoCheckoutVoucherOrdersItemUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata
+import com.tokopedia.purchase_platform.common.revamp.CartCheckoutRevampRollenceManager
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -41,6 +49,9 @@ import javax.inject.Inject
 class CheckoutPromoProcessor @Inject constructor(
     private val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase,
     private val validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase,
+    private val getPromoListRecommendationEntryPointUseCase: PromoUsageGetPromoListRecommendationEntryPointUseCase,
+    private val getPromoListRecommendationMapper: PromoUsageGetPromoListRecommendationMapper,
+    private val chosenAddressRequestHelper: ChosenAddressRequestHelper,
     private val mTrackerShipment: CheckoutAnalyticsCourierSelection,
     private val toasterProcessor: CheckoutToasterProcessor,
     private val helper: CheckoutDataHelper,
@@ -158,6 +169,9 @@ class CheckoutPromoProcessor @Inject constructor(
             globalPromoCodes.addAll(lastApplyUiModel.codes)
         }
         promoRequest.codes = globalPromoCodes
+        promoRequest.isCartCheckoutRevamp = CartCheckoutRevampRollenceManager(
+            RemoteConfigInstance.getInstance().abTestPlatform
+        ).isRevamp()
         return promoRequest
     }
 
@@ -1127,6 +1141,19 @@ class CheckoutPromoProcessor @Inject constructor(
             }
         }
         validateUsePromoRevampUiModel = null
+    }
+
+    suspend fun getEntryPointInfo(
+        promoRequest: PromoRequest
+    ): PromoEntryPointInfo {
+        val param = GetPromoListRecommendationParam.create(
+            promoRequest = promoRequest,
+            chosenAddress = chosenAddressRequestHelper.getChosenAddress(),
+            isPromoRevamp = true
+        )
+        val response = getPromoListRecommendationEntryPointUseCase(param)
+        return getPromoListRecommendationMapper
+            .mapPromoListRecommendationEntryPointResponseToEntryPointInfo(response)
     }
 
     companion object {

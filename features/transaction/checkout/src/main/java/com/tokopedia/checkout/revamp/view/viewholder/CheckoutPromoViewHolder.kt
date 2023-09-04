@@ -7,9 +7,15 @@ import com.tokopedia.checkout.revamp.view.adapter.CheckoutAdapterListener
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPromoModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.ifNull
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.promocheckout.common.view.uimodel.PromoEntryPointSummaryItem
+import com.tokopedia.promousage.data.response.EntryPointInfo
+import com.tokopedia.promousage.data.response.ResultStatus
+import com.tokopedia.promousage.domain.entity.PromoEntryPointInfo
+import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.UserGroupMetadata
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUsageSummariesUiModel
 
 class CheckoutPromoViewHolder(private val binding: ItemCheckoutPromoBinding, private val listener: CheckoutAdapterListener) :
     RecyclerView.ViewHolder(binding.root) {
@@ -24,9 +30,112 @@ class CheckoutPromoViewHolder(private val binding: ItemCheckoutPromoBinding, pri
             binding.root.visible()
         }
 
-        val titleValue: String
         val promo = promoModel.promo
 
+        if (promo.userGroupPromoAbTest == UserGroupMetadata.PROMO_USER_GROUP_A
+            || promo.userGroupPromoAbTest == UserGroupMetadata.PROMO_USER_GROUP_B) {
+            processNewEntryPointInfo(promo, promoModel.entryPointInfo)
+        } else {
+            processOldEntryPointInfo(promo)
+        }
+    }
+
+    private fun processNewEntryPointInfo(
+        lastApply: LastApplyUiModel,
+        entryPointInfo: PromoEntryPointInfo?
+    ) {
+        val isUsingGlobalPromo = lastApply.codes.isNotEmpty()
+        val isUsingBoPromo = lastApply.voucherOrders
+            .any { it.code.isNotEmpty() && it.message.state != "red" }
+        if (!isUsingGlobalPromo && !isUsingBoPromo) {
+            if (entryPointInfo != null) {
+                if (!entryPointInfo.isSuccess) {
+                    binding.btnCheckoutPromo.showError {
+                        listener.onClickReloadPromoWidget()
+                    }
+                } else {
+                    val message = entryPointInfo.messages.firstOrNull().ifNull { "" }
+                    if (entryPointInfo.color == PromoEntryPointInfo.COLOR_GREEN) {
+                        binding.btnCheckoutPromo.showActiveNew(
+                            leftImageUrl = entryPointInfo.iconUrl,
+                            wording = message,
+                            rightIcon = IconUnify.CHEVRON_RIGHT,
+                            onClickListener = {
+                                if (entryPointInfo.isClickable) {
+                                    listener.onClickPromoCheckout(lastApply)
+                                }
+                            }
+                        )
+                    } else {
+                        binding.btnCheckoutPromo.showInactiveNew(
+                            leftImageUrl = entryPointInfo.iconUrl,
+                            wording = message,
+                            onClickListener = {
+                                if (entryPointInfo.isClickable) {
+                                    listener.onClickPromoCheckout(lastApply)
+                                }
+                            }
+                        )
+                    }
+                }
+            } else {
+                binding.btnCheckoutPromo.showLoading()
+            }
+        } else {
+            val message = when {
+                lastApply.additionalInfo.messageInfo.message.isNotBlank() -> {
+                    lastApply.additionalInfo.messageInfo.message
+                }
+
+                lastApply.defaultEmptyPromoMessage.isNotBlank() -> {
+                    lastApply.defaultEmptyPromoMessage
+                }
+
+                else -> {
+                    ""
+                }
+            }
+            val boPromoSummaries = lastApply.additionalInfo.usageSummaries
+                .filter { it.type == PROMO_TYPE_BEBAS_ONGKIR }
+                .map {
+                    PromoEntryPointSummaryItem(
+                        title = it.description,
+                        value = it.amountStr
+                    )
+                }
+            val otherPromoSummaries = lastApply.additionalInfo.usageSummaries
+                .filter { it.type != PROMO_TYPE_BEBAS_ONGKIR }
+                .map {
+                    PromoEntryPointSummaryItem(
+                        title = it.description,
+                        value = it.amountStr
+                    )
+                }
+            val secondaryText = if (otherPromoSummaries.isEmpty()) {
+                entryPointInfo?.messages?.firstOrNull().ifNull { "" }
+            } else {
+                ""
+            }
+            val isSecondaryTextEnabled = otherPromoSummaries.isEmpty()
+            val isExpanded = otherPromoSummaries.isEmpty()
+            binding.btnCheckoutPromo.showActiveNewExpandable(
+                leftImageUrl = ICON_URL_ENTRY_POINT_APPLIED,
+                wording = message,
+                firstLevelSummary = boPromoSummaries,
+                groupedSummary = otherPromoSummaries,
+                secondaryText = secondaryText,
+                isSecondaryTextEnabled = isSecondaryTextEnabled,
+                isExpanded = isExpanded,
+                animateWording = true,
+                onClickListener = {
+                    listener.onClickPromoCheckout(lastApply)
+                }
+            )
+        }
+    }
+
+    private fun processOldEntryPointInfo(promo: LastApplyUiModel) {
+        val titleValue: String
         when {
             promo.additionalInfo.messageInfo.message.isNotEmpty() -> {
                 titleValue = promo.additionalInfo.messageInfo.message
@@ -82,5 +191,8 @@ class CheckoutPromoViewHolder(private val binding: ItemCheckoutPromoBinding, pri
 
     companion object {
         val VIEW_TYPE = R.layout.item_checkout_promo
+
+        private const val ICON_URL_ENTRY_POINT_APPLIED = "https://images.tokopedia.net/img/promo/icon/Applied.png"
+        private const val PROMO_TYPE_BEBAS_ONGKIR = "bebas_ongkir"
     }
 }

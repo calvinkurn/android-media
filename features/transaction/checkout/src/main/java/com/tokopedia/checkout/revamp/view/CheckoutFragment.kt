@@ -76,6 +76,7 @@ import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultation
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.fingerprint.util.FingerPrintUtil
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.showToast
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.localizationchooseaddress.common.ChosenAddress
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressTokonow
@@ -104,6 +105,8 @@ import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.promousage.domain.entity.PromoPageEntryPoint
+import com.tokopedia.promousage.view.bottomsheet.PromoUsageBottomSheet
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsChangeAddress
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
@@ -152,6 +155,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.utils.lifecycle.autoCleared
 import com.tokopedia.utils.time.TimeHelper
+import timber.log.Timber
 import javax.inject.Inject
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.Product as GiftingProduct
 
@@ -160,7 +164,8 @@ class CheckoutFragment :
     CheckoutAdapterListener,
     ShippingDurationBottomsheetListener,
     ShippingCourierBottomsheetListener,
-    ExpireTimeDialogListener {
+    ExpireTimeDialogListener,
+    PromoUsageBottomSheet.Listener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -692,7 +697,7 @@ class CheckoutFragment :
             }
 
             REQUEST_CODE_PROMO -> {
-                onResultFromPromo(resultCode, data)
+                onActivityResultFromPromo(resultCode, data)
             }
         }
     }
@@ -1815,22 +1820,39 @@ class CheckoutFragment :
         if (!viewModel.isLoading()) {
             val validateUseRequestParam = viewModel.generateValidateUsePromoRequest()
             val promoRequestParam = viewModel.generateCouponListRecommendationRequest()
-            val intent =
-                RouteManager.getIntent(
-                    activity,
-                    ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE
+            if (viewModel.useNewPromoPage(lastApplyUiModel)) {
+                val totalAmount = viewModel.listData.value.buttonPayment()!!.totalPriceNum
+                val bottomSheetPromo = PromoUsageBottomSheet.newInstance(
+                    entryPoint = PromoPageEntryPoint.CART_PAGE,
+                    promoRequest = promoRequestParam,
+                    validateUsePromoRequest = validateUseRequestParam,
+                    boPromoCodes = viewModel.getBboPromoCodes(),
+                    totalAmount = totalAmount,
+                    listener = this@CheckoutFragment
                 )
-            intent.putExtra(ARGS_PAGE_SOURCE, PAGE_CHECKOUT)
-            intent.putExtra(ARGS_PROMO_REQUEST, promoRequestParam)
-            intent.putExtra(ARGS_VALIDATE_USE_REQUEST, validateUseRequestParam)
-            intent.putStringArrayListExtra(ARGS_BBO_PROMO_CODES, viewModel.getBboPromoCodes())
-            setChosenAddressForTradeInDropOff(intent)
-            setPromoExtraMvcLockCourierFlow(intent)
-            startActivityForResult(intent, REQUEST_CODE_PROMO)
-            if (isTradeIn) {
-                checkoutTradeInAnalytics.eventTradeInClickPromo(viewModel.isTradeInByDropOff)
+                bottomSheetPromo.show(childFragmentManager)
+            } else {
+                val intent =
+                    RouteManager.getIntent(
+                        activity,
+                        ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE
+                    )
+                intent.putExtra(ARGS_PAGE_SOURCE, PAGE_CHECKOUT)
+                intent.putExtra(ARGS_PROMO_REQUEST, promoRequestParam)
+                intent.putExtra(ARGS_VALIDATE_USE_REQUEST, validateUseRequestParam)
+                intent.putStringArrayListExtra(ARGS_BBO_PROMO_CODES, viewModel.getBboPromoCodes())
+                setChosenAddressForTradeInDropOff(intent)
+                setPromoExtraMvcLockCourierFlow(intent)
+                startActivityForResult(intent, REQUEST_CODE_PROMO)
+                if (isTradeIn) {
+                    checkoutTradeInAnalytics.eventTradeInClickPromo(viewModel.isTradeInByDropOff)
+                }
             }
         }
+    }
+
+    override fun onClickReloadPromoWidget() {
+        viewModel.reloadEntryPointInfo()
     }
 
     private fun setChosenAddressForTradeInDropOff(intent: Intent) {
@@ -2332,7 +2354,7 @@ class CheckoutFragment :
     }
     // endregion
 
-    private fun onResultFromPromo(resultCode: Int, data: Intent?) {
+    private fun onActivityResultFromPromo(resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
             if (data!!.getStringExtra(ARGS_PROMO_ERROR) != null && data.getStringExtra(
                     ARGS_PROMO_ERROR
@@ -2342,39 +2364,43 @@ class CheckoutFragment :
             } else {
                 val validateUsePromoRequest =
                     data.getParcelableExtra<ValidateUsePromoRequest>(ARGS_LAST_VALIDATE_USE_REQUEST)
-                if (validateUsePromoRequest != null) {
-                    val validateUsePromoRevampUiModel =
-                        data.getParcelableExtra<ValidateUsePromoRevampUiModel>(
-                            ARGS_VALIDATE_USE_DATA_RESULT
-                        )
-                    if (validateUsePromoRevampUiModel != null) {
-                        for (voucherOrdersItemUiModel in validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels) {
-                            for (order in validateUsePromoRequest.orders) {
-                                if (voucherOrdersItemUiModel.uniqueId == order.uniqueId && voucherOrdersItemUiModel.isTypeLogistic()) {
-                                    order.codes.remove(voucherOrdersItemUiModel.code)
-                                    order.boCode = ""
-                                }
-                            }
-                        }
-                    }
-                }
                 val validateUsePromoRevampUiModel =
                     data.getParcelableExtra<ValidateUsePromoRevampUiModel>(
                         ARGS_VALIDATE_USE_DATA_RESULT
                     )
-                if (validateUsePromoRevampUiModel != null) {
-                    viewModel.validateBoPromo(validateUsePromoRevampUiModel)
-                }
                 val clearPromoUiModel =
                     data.getParcelableExtra<ClearPromoUiModel>(ARGS_CLEAR_PROMO_RESULT)
-                if (clearPromoUiModel != null) {
-                    val promoUiModel = PromoUiModel()
-                    promoUiModel.titleDescription =
-                        clearPromoUiModel.successDataModel.defaultEmptyPromoMessage
-                    if (validateUsePromoRequest != null) {
-                        viewModel.validateClearAllBoPromo(validateUsePromoRequest, promoUiModel)
+                onResultFromPromo(validateUsePromoRequest, validateUsePromoRevampUiModel, clearPromoUiModel)
+            }
+        }
+    }
+
+    private fun onResultFromPromo(
+        validateUsePromoRequest: ValidateUsePromoRequest?,
+        validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel?,
+        clearPromoUiModel: ClearPromoUiModel?
+    ) {
+        if (validateUsePromoRequest != null) {
+            if (validateUsePromoRevampUiModel != null) {
+                for (voucherOrdersItemUiModel in validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels) {
+                    for (order in validateUsePromoRequest.orders) {
+                        if (voucherOrdersItemUiModel.uniqueId == order.uniqueId && voucherOrdersItemUiModel.isTypeLogistic()) {
+                            order.codes.remove(voucherOrdersItemUiModel.code)
+                            order.boCode = ""
+                        }
                     }
                 }
+            }
+        }
+        if (validateUsePromoRevampUiModel != null) {
+            viewModel.validateBoPromo(validateUsePromoRevampUiModel)
+        }
+        if (clearPromoUiModel != null) {
+            val promoUiModel = PromoUiModel()
+            promoUiModel.titleDescription =
+                clearPromoUiModel.successDataModel.defaultEmptyPromoMessage
+            if (validateUsePromoRequest != null) {
+                viewModel.validateClearAllBoPromo(validateUsePromoRequest, promoUiModel)
             }
         }
     }
@@ -2391,5 +2417,67 @@ class CheckoutFragment :
             viewModel.clearAllBoOnTemporaryUpsell()
             activity?.finish()
         }
+    }
+
+    override fun onClosePageWithApplyPromo(
+        entryPoint: PromoPageEntryPoint,
+        validateUse: ValidateUsePromoRevampUiModel,
+        lastValidateUsePromoRequest: ValidateUsePromoRequest
+    ) {
+        onResultFromPromo(
+            validateUsePromoRequest = lastValidateUsePromoRequest,
+            validateUsePromoRevampUiModel = validateUse,
+            clearPromoUiModel = null,
+        )
+    }
+
+    override fun onClosePageWithClearPromo(
+        entryPoint: PromoPageEntryPoint,
+        clearPromo: ClearPromoUiModel,
+        lastValidateUsePromoRequest: ValidateUsePromoRequest,
+        isFlowMvcLockToCourier: Boolean
+    ) {
+        onResultFromPromo(
+            validateUsePromoRequest = lastValidateUsePromoRequest,
+            validateUsePromoRevampUiModel = null,
+            clearPromoUiModel = clearPromo,
+        )
+    }
+
+    override fun onClosePageWithNoAction() {
+        // no-op
+    }
+
+    override fun onApplyPromo(
+        entryPoint: PromoPageEntryPoint,
+        validateUse: ValidateUsePromoRevampUiModel,
+        lastValidateUsePromoRequest: ValidateUsePromoRequest
+    ) {
+        onResultFromPromo(
+            validateUsePromoRequest = lastValidateUsePromoRequest,
+            validateUsePromoRevampUiModel = validateUse,
+            clearPromoUiModel = null,
+        )
+    }
+
+    override fun onApplyPromoFailed(throwable: Throwable) {
+        showToast(throwable.message)
+    }
+
+    override fun onClearPromoSuccess(
+        entryPoint: PromoPageEntryPoint,
+        clearPromo: ClearPromoUiModel,
+        lastValidateUsePromoRequest: ValidateUsePromoRequest,
+        isFlowMvcLockToCourier: Boolean
+    ) {
+        onResultFromPromo(
+            validateUsePromoRequest = lastValidateUsePromoRequest,
+            validateUsePromoRevampUiModel = null,
+            clearPromoUiModel = clearPromo,
+        )
+    }
+
+    override fun onClearPromoFailed(throwable: Throwable) {
+        showToast(throwable.message)
     }
 }

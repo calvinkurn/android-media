@@ -1,6 +1,7 @@
 package com.tokopedia.checkout.revamp.view
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.addon.presentation.uimodel.AddOnPageResult
@@ -83,6 +84,7 @@ import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveA
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoOrder
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
+import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.UserGroupMetadata
 import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.LastApplyUiMapper
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoCheckoutVoucherOrdersItemUiModel
@@ -582,7 +584,9 @@ class CheckoutViewModel @Inject constructor(
                     if (checkoutItem is CheckoutEpharmacyModel && checkoutItem.epharmacy.showImageUpload && checkoutItem.epharmacy.consultationFlow) {
                         fetchEpharmacyData()
                     }
-                    // todo: if don't have promo applied, hit couponListRecom
+                    if (checkoutItem is CheckoutPromoModel) {
+                        fetchInitialEntryPointInfo()
+                    }
                 }
             }
         }
@@ -712,6 +716,59 @@ class CheckoutViewModel @Inject constructor(
                     pageState.value = CheckoutPageState.EpharmacyCoachMark
                     calculateTotal()
                 }
+            }
+        }
+    }
+
+    private fun fetchInitialEntryPointInfo() {
+        viewModelScope.launch(dispatchers.immediate) {
+            val checkoutModel = listData.value.promo()!!
+            if (!useNewPromoPage(checkoutModel.promo)) {
+                return@launch
+            }
+            val isUsingGlobalPromo = checkoutModel.promo
+                .codes.isNotEmpty()
+            val isUsingPromo = checkoutModel
+                .promo.voucherOrders.any { it.code.isNotEmpty() && it.message.state != "red" }
+            if (!isUsingGlobalPromo && !isUsingPromo) {
+                val entryPointInfo = promoProcessor.getEntryPointInfo(
+                    generateCouponListRecommendationRequest()
+                )
+                withContext(dispatchers.main) {
+                    listData.value = listData.value.map { model ->
+                        if (model is CheckoutPromoModel) {
+                            return@map checkoutModel.copy(entryPointInfo = entryPointInfo)
+                        } else {
+                            return@map model
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private suspend fun fetchEntryPointInfo(data: List<CheckoutItem>) : List<CheckoutItem> {
+        val checkoutModel = data.promo()!!
+        if (!useNewPromoPage(checkoutModel.promo)) {
+            return data
+        }
+        val entryPointInfo = promoProcessor
+            .getEntryPointInfo(generateCouponListRecommendationRequest())
+        return data.map { model ->
+            if (model is CheckoutPromoModel) {
+                return@map model.copy(entryPointInfo = entryPointInfo)
+            } else {
+                return@map model
+            }
+        }
+    }
+
+    fun reloadEntryPointInfo() {
+        viewModelScope.launch(dispatchers.immediate) {
+            val data = listData.value
+            val newData = fetchEntryPointInfo(data)
+            withContext(dispatchers.main) {
+                listData.value = newData
             }
         }
     }
@@ -1287,7 +1344,7 @@ class CheckoutViewModel @Inject constructor(
 
     private suspend fun validatePromo() {
         val checkoutItems = listData.value.toMutableList()
-        val newItems = promoProcessor.validateUse(
+        var newItems = promoProcessor.validateUse(
             promoProcessor.generateValidateUsePromoRequest(
                 checkoutItems,
                 isTradeIn,
@@ -1299,9 +1356,7 @@ class CheckoutViewModel @Inject constructor(
             isTradeIn,
             isTradeInByDropOff
         )
-        // todo: logic hit coupon list recom
-        // todo: logic auto expand
-        // todo: logic animate wording?
+        newItems = fetchEntryPointInfo(newItems)
         listData.value = newItems
         calculateTotal()
         sendEEStep3()
@@ -1401,7 +1456,7 @@ class CheckoutViewModel @Inject constructor(
                 )
             listData.value = checkoutItems
         }
-        val newItems = promoProcessor.validateUseLogisticPromo(
+        var newItems = promoProcessor.validateUseLogisticPromo(
             validateUsePromoRequest,
             cartString,
             promoCode,
@@ -1411,9 +1466,7 @@ class CheckoutViewModel @Inject constructor(
             isTradeIn,
             isTradeInByDropOff
         )
-        // todo: logic, hit coupon list recom
-        // todo: logic auto expand
-        // todo: logic animate wording?
+        newItems = fetchEntryPointInfo(newItems)
         listData.value = newItems
         cartProcessor.processSaveShipmentState(
             listData.value,
@@ -2485,6 +2538,11 @@ class CheckoutViewModel @Inject constructor(
             )
             validatePromo()
         }
+    }
+
+    fun useNewPromoPage(lastApplyUiModel: LastApplyUiModel) : Boolean {
+        return lastApplyUiModel.userGroupPromoAbTest == UserGroupMetadata.PROMO_USER_GROUP_A ||
+            lastApplyUiModel.userGroupPromoAbTest == UserGroupMetadata.PROMO_USER_GROUP_B
     }
 
     companion object {

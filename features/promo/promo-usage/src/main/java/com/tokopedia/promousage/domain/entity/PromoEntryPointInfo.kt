@@ -5,6 +5,8 @@ data class PromoEntryPointInfo(
     val messages: List<String> = emptyList(),
     val color: String = "",
     val isClickable: Boolean = false,
+
+    val isSuccess: Boolean = false,
     val statusCode: String = ""
 ) {
     companion object {

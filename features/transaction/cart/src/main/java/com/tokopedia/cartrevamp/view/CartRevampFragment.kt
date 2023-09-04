@@ -2600,8 +2600,9 @@ class CartRevampFragment :
                     }
                     val isClickable = data.entryPointInfo?.isClickable ?: false
                     if (message.isNotBlank()) {
-                        binding?.promoCheckoutBtnCart?.showInactive(
-                            message,
+                        binding?.promoCheckoutBtnCart?.showInactiveNew(
+                            leftImageUrl = data.entryPointInfo?.iconUrl ?: "",
+                            wording = message,
                             onClickListener = {
                                 if (data.isNoItemSelected) {
                                     showToastMessageGreen(getString(R.string.promo_choose_item_cart))

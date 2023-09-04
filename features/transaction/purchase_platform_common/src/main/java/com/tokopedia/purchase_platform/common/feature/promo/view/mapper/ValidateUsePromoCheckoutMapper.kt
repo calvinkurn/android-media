@@ -9,6 +9,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.response.valida
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.TickerInfo
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.TrackingDetailsItem
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.UsageSummaries
+import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.UserGroupMetadata
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.ValidateUsePromoRevamp
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.VoucherOrdersItem
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.PromoSpId
@@ -51,7 +52,12 @@ class ValidateUsePromoCheckoutMapper {
                 benefitSummaryInfoUiModel = mapToBenefitSummaryInfoUiModel(promo.benefitSummaryInfo),
                 voucherOrderUiModels = ArrayList(mapListVoucherOrders(promo.voucherOrders)),
                 tickerInfoUiModel = mapTickerInfoUiModel(promo.tickerInfo),
-                trackingDetailUiModels = mapTrackingDetails(promo.trackingDetails)
+                trackingDetailUiModels = mapTrackingDetails(promo.trackingDetails),
+                // TODO: Use backend response when ready
+                userGroupPromoAbTest = UserGroupMetadata.PROMO_USER_GROUP_A
+//                userGroupPromoAbTest = promo.userGroupMetadata
+//                    .firstOrNull { it.key == UserGroupMetadata.KEY_PROMO_AB_TEST_USER_GROUP }?.value
+//                    .ifNull { "" }
             )
         }
 

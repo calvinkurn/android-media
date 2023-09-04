@@ -839,13 +839,13 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
             when (uiAction) {
                 is ClearPromoUiAction.Success -> {
                     renderLoadingDialog(false)
-                    dismiss()
                     listener?.onClearPromoSuccess(
                         entryPoint = uiAction.entryPoint,
                         clearPromo = uiAction.clearPromo,
                         lastValidateUsePromoRequest = uiAction.lastValidateUseRequest,
                         isFlowMvcLockToCourier = isFlowMvcLockToCourier
                     )
+                    dismiss()
                 }
 
                 is ClearPromoUiAction.Failed -> {
@@ -862,12 +862,12 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
             when (uiAction) {
                 is ApplyPromoUiAction.SuccessWithApplyPromo -> {
                     renderLoadingDialog(false)
-                    dismiss()
                     listener?.onApplyPromo(
                         entryPoint = uiAction.entryPoint,
                         validateUse = uiAction.validateUse,
                         lastValidateUsePromoRequest = uiAction.lastValidateUsePromoRequest
                     )
+                    dismiss()
                 }
 
                 is ApplyPromoUiAction.SuccessNoAction -> {
@@ -882,6 +882,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                     }
                     showToastMessage(uiAction.throwable)
                     listener?.onApplyPromoFailed(uiAction.throwable)
+                    dismiss()
                 }
             }
         }
@@ -1019,7 +1020,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
     }
 
     private fun showToastMessage(throwable: Throwable) {
-        context?.let { showToastMessage(throwable.getErrorMessage(it)) }
+        binding.root.context?.let { showToastMessage(throwable.getErrorMessage(it)) }
     }
 
     private fun showToastMessage(message: String) {

@@ -87,6 +87,8 @@ interface CheckoutAdapterListener {
 
     fun onClickPromoCheckout(lastApplyUiModel: LastApplyUiModel)
 
+    fun onClickReloadPromoWidget()
+
     fun onSendAnalyticsClickPromoCheckout(isApplied: Boolean, listAllPromoCodes: List<String>)
 
     fun onSendAnalyticsViewPromoCheckoutApplied()
