@@ -1,5 +1,6 @@
 package com.tokopedia.checkout.revamp.view
 
+import com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupAddress
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop
@@ -8,6 +9,7 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.Product
 import com.tokopedia.checkout.domain.model.checkout.CheckoutData
 import com.tokopedia.checkout.domain.model.checkout.MessageData
 import com.tokopedia.checkout.domain.model.checkout.PriceValidationData
+import com.tokopedia.checkout.domain.model.checkout.Prompt
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutAddressModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutButtonPaymentModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCostModel
@@ -25,6 +27,11 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutUpsellModel
 import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
+import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
+import com.tokopedia.purchase_platform.common.feature.addons.data.model.AddOnProductDataItemModel
+import com.tokopedia.purchase_platform.common.feature.addons.data.model.AddOnProductDataModel
+import com.tokopedia.purchase_platform.common.feature.addons.data.response.SaveAddOnStateResponse
+import com.tokopedia.purchase_platform.common.feature.addons.data.response.SaveAddOnsResponse
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.model.EthicalDrugDataModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
@@ -95,6 +102,61 @@ class CheckoutViewModelCheckoutTest : BaseCheckoutViewModelTest() {
 
         // Then
         assertEquals(true, invokeSuccess)
+    }
+
+    @Test
+    fun checkoutSuccessTradeIn_ShouldGoToPaymentPage() {
+        // Given
+        viewModel.isTradeIn = true
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(
+                recipientAddressModel = RecipientAddressModel().apply {
+                    id = "1"
+                    addressName = "address 1"
+                    street = "street 1"
+                    postalCode = "12345"
+                    destinationDistrictId = "1"
+                    cityId = "1"
+                    provinceId = "1"
+                    recipientName = "user 1"
+                    recipientPhoneNumber = "1234567890"
+                }
+            ),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel("123"),
+            CheckoutOrderModel(
+                "123",
+                shipment = CheckoutOrderShipment(courierItemData = CourierItemData())
+            ),
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+
+        coEvery {
+            validateUsePromoRevampUseCase.setParam(any()).executeOnBackground()
+        } returns ValidateUsePromoRevampUiModel(status = "OK", errorCode = "200")
+
+        val transactionId = "1234"
+        coEvery { checkoutGqlUseCase(any()) } returns CheckoutData().apply {
+            this.transactionId = transactionId
+        }
+        var invokeSuccess = false
+
+        // When
+        viewModel.checkout("", { }, {
+            invokeSuccess = true
+        })
+
+        // Then
+        assertEquals(true, invokeSuccess)
+        verify {
+            mTrackerShipment.sendEnhancedECommerceCheckout(any(), match { it.keys.size == 3 }, any(), any(), any(), CheckoutTradeInAnalytics.EVENT_CATEGORY_SELF_PICKUP_ADDRESS_SELECTION_TRADE_IN, any(), any(), "4")
+        }
     }
 
     @Test
@@ -230,7 +292,10 @@ class CheckoutViewModelCheckoutTest : BaseCheckoutViewModelTest() {
 
         // Then
         assertEquals(false, invokeSuccess)
-        assertEquals(CheckoutPageState.PriceValidation(priceValidationData), viewModel.pageState.value)
+        assertEquals(
+            CheckoutPageState.PriceValidation(priceValidationData),
+            viewModel.pageState.value
+        )
     }
 
     @Test
@@ -304,7 +369,92 @@ class CheckoutViewModelCheckoutTest : BaseCheckoutViewModelTest() {
         assertEquals(false, invokeSuccess)
         assertEquals(CheckoutPageToaster(Toaster.TYPE_ERROR, errorMessage), latestToaster)
         verify {
-            mTrackerShipment.eventClickAtcCourierSelectionClickPilihMetodePembayaranNotSuccess(errorMessage)
+            mTrackerShipment.eventClickAtcCourierSelectionClickPilihMetodePembayaranNotSuccess(
+                errorMessage
+            )
+        }
+    }
+
+    @Test
+    fun `WHEN checkout failed without error message from backend THEN should show default error and reload page`() {
+        // Given
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(
+                recipientAddressModel = RecipientAddressModel().apply {
+                    id = "1"
+                    addressName = "address 1"
+                    street = "street 1"
+                    postalCode = "12345"
+                    destinationDistrictId = "1"
+                    cityId = "1"
+                    provinceId = "1"
+                    recipientName = "user 1"
+                    recipientPhoneNumber = "1234567890"
+                }
+            ),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel("123"),
+            CheckoutOrderModel(
+                "123",
+                shipment = CheckoutOrderShipment(courierItemData = CourierItemData())
+            ),
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+
+        coEvery {
+            validateUsePromoRevampUseCase.setParam(any()).executeOnBackground()
+        } returns ValidateUsePromoRevampUiModel(status = "OK", errorCode = "200")
+
+        val errorMessage = ""
+        coEvery { checkoutGqlUseCase(any()) } returns CheckoutData().apply {
+            this.isError = true
+            this.errorMessage = errorMessage
+        }
+        var invokeSuccess = false
+
+        coEvery { getShipmentAddressFormV4UseCase.invoke(any()) } returns CartShipmentAddressFormData(
+            isError = false,
+            groupAddress = listOf(
+                GroupAddress(
+                    groupShop = listOf(
+                        GroupShop(
+                            groupShopData = listOf(
+                                GroupShopV2(
+                                    products = listOf(
+                                        Product()
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        )
+
+        // When
+        viewModel.checkout("", { }, {
+            invokeSuccess = true
+        })
+
+        // Then
+        assertEquals(false, invokeSuccess)
+        assertEquals(
+            CheckoutPageToaster(
+                Toaster.TYPE_ERROR,
+                "Terjadi kesalahan. Ulangi beberapa saat lagi"
+            ),
+            latestToaster
+        )
+        verify {
+            mTrackerShipment.eventClickAtcCourierSelectionClickPilihMetodePembayaranNotSuccess(
+                errorMessage
+            )
         }
     }
 
@@ -376,7 +526,9 @@ class CheckoutViewModelCheckoutTest : BaseCheckoutViewModelTest() {
         assertEquals(false, invokeSuccess)
         assertEquals(true, latestToaster != null)
         verify {
-            mTrackerShipment.eventClickAtcCourierSelectionClickPilihMetodePembayaranNotSuccess(exception.message)
+            mTrackerShipment.eventClickAtcCourierSelectionClickPilihMetodePembayaranNotSuccess(
+                exception.message
+            )
         }
     }
 
@@ -402,6 +554,11 @@ class CheckoutViewModelCheckoutTest : BaseCheckoutViewModelTest() {
             CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
             CheckoutProductModel("123"),
             CheckoutOrderModel("123", shipment = CheckoutOrderShipment()),
+            CheckoutProductModel("234"),
+            CheckoutOrderModel(
+                "234",
+                shipment = CheckoutOrderShipment(courierItemData = CourierItemData())
+            ),
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
             CheckoutCostModel(),
@@ -451,7 +608,10 @@ class CheckoutViewModelCheckoutTest : BaseCheckoutViewModelTest() {
                 }
             ),
             CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
-            CheckoutProductModel("123", ethicalDrugDataModel = EthicalDrugDataModel(needPrescription = true)),
+            CheckoutProductModel(
+                "123",
+                ethicalDrugDataModel = EthicalDrugDataModel(needPrescription = true)
+            ),
             CheckoutOrderModel(
                 "123",
                 shipment = CheckoutOrderShipment(
@@ -462,7 +622,13 @@ class CheckoutViewModelCheckoutTest : BaseCheckoutViewModelTest() {
                 ),
                 hasEthicalProducts = true
             ),
-            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel(showImageUpload = true, frontEndValidation = true, consultationFlow = true)),
+            CheckoutEpharmacyModel(
+                epharmacy = UploadPrescriptionUiModel(
+                    showImageUpload = true,
+                    frontEndValidation = true,
+                    consultationFlow = true
+                )
+            ),
             CheckoutPromoModel(promo = LastApplyUiModel()),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
@@ -477,7 +643,10 @@ class CheckoutViewModelCheckoutTest : BaseCheckoutViewModelTest() {
 
         // Then
         assertEquals(true, triggerEpharmacyTracker)
-        assertEquals(true, (viewModel.listData.value[6] as CheckoutEpharmacyModel).epharmacy.isError)
+        assertEquals(
+            true,
+            (viewModel.listData.value[6] as CheckoutEpharmacyModel).epharmacy.isError
+        )
     }
 
     @Test
@@ -604,5 +773,394 @@ class CheckoutViewModelCheckoutTest : BaseCheckoutViewModelTest() {
                 }
             )
         }
+    }
+
+    @Test
+    fun checkoutWithRedPromo_clearPromoFailed_ShouldShowError() {
+        // Given
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(
+                recipientAddressModel = RecipientAddressModel().apply {
+                    id = "1"
+                    addressName = "address 1"
+                    street = "street 1"
+                    postalCode = "12345"
+                    destinationDistrictId = "1"
+                    cityId = "1"
+                    provinceId = "1"
+                    recipientName = "user 1"
+                    recipientPhoneNumber = "1234567890"
+                }
+            ),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel("123", cartStringOrder = "1"),
+            CheckoutOrderModel(
+                "123",
+                shipment = CheckoutOrderShipment(
+                    courierItemData = CourierItemData(
+                        shipperId = 1,
+                        shipperProductId = 1,
+                        logPromoCode = "boCode"
+                    )
+                )
+            ),
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(
+                promo = LastApplyUiModel(
+                    codes = listOf("a"),
+                    voucherOrders = listOf(
+                        LastApplyVoucherOrdersItemUiModel(
+                            code = "b",
+                            uniqueId = "1",
+                            type = "cashback",
+                            cartStringGroup = "123"
+                        ),
+                        LastApplyVoucherOrdersItemUiModel(
+                            code = "boCode",
+                            uniqueId = "1",
+                            type = "logistic",
+                            spId = 1,
+                            shippingId = 1,
+                            cartStringGroup = "123"
+                        )
+                    )
+                )
+            ),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+
+        coEvery {
+            validateUsePromoRevampUseCase.setParam(any()).executeOnBackground()
+        } returns ValidateUsePromoRevampUiModel(
+            status = "OK",
+            errorCode = "200",
+            promoUiModel = PromoUiModel(
+                codes = listOf("a"),
+                messageUiModel = MessageUiModel(state = "red"),
+                voucherOrderUiModels = listOf(
+                    PromoCheckoutVoucherOrdersItemUiModel(
+                        code = "b",
+                        uniqueId = "1",
+                        cartStringGroup = "123",
+                        type = "cashback",
+                        messageUiModel = MessageUiModel(state = "green")
+                    ),
+                    PromoCheckoutVoucherOrdersItemUiModel(
+                        code = "boCode",
+                        uniqueId = "1",
+                        cartStringGroup = "123",
+                        type = "logistic",
+                        spId = 1,
+                        shippingId = 1,
+                        messageUiModel = MessageUiModel(state = "red")
+                    )
+                )
+            )
+        )
+
+        coEvery {
+            clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground()
+        } throws IOException()
+
+        val transactionId = "1234"
+        coEvery { checkoutGqlUseCase(any()) } returns CheckoutData().apply {
+            this.transactionId = transactionId
+        }
+        var invokeSuccess = false
+
+        // When
+        viewModel.checkout("", { }, {
+            invokeSuccess = true
+        })
+
+        // Then
+        assertEquals(false, invokeSuccess)
+        coVerify {
+            clearCacheAutoApplyStackUseCase.setParams(
+                match {
+                    it.orderData.codes.contains("a") && it.orderData.orders[0].codes.contains(
+                        "boCode"
+                    )
+                }
+            )
+        }
+        coVerify(inverse = true) {
+            checkoutGqlUseCase(any())
+        }
+        assertEquals(
+            CheckoutPageToaster(
+                Toaster.TYPE_ERROR,
+                CheckoutConstant.DEFAULT_ERROR_MESSAGE_VALIDATE_PROMO
+            ),
+            latestToaster
+        )
+    }
+
+    @Test
+    fun `WHEN checkout error with prompt THEN should show prompt`() {
+        // Given
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(
+                recipientAddressModel = RecipientAddressModel().apply {
+                    id = "1"
+                    addressName = "address 1"
+                    street = "street 1"
+                    postalCode = "12345"
+                    destinationDistrictId = "1"
+                    cityId = "1"
+                    provinceId = "1"
+                    recipientName = "user 1"
+                    recipientPhoneNumber = "1234567890"
+                }
+            ),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel("123"),
+            CheckoutOrderModel(
+                "123",
+                shipment = CheckoutOrderShipment(courierItemData = CourierItemData())
+            ),
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+
+        coEvery {
+            validateUsePromoRevampUseCase.setParam(any()).executeOnBackground()
+        } returns ValidateUsePromoRevampUiModel(status = "OK", errorCode = "200")
+
+        val prompt = Prompt().apply {
+            eligible = true
+            title = "Title"
+            description = "Description"
+        }
+        coEvery { checkoutGqlUseCase(any()) } returns CheckoutData().apply {
+            this.isError = true
+            this.prompt = prompt
+        }
+        var invokeSuccess = false
+
+        // When
+        viewModel.checkout("", { }, {
+            invokeSuccess = true
+        })
+
+        // Then
+        assertEquals(false, invokeSuccess)
+        assertEquals(CheckoutPageState.Prompt(prompt), viewModel.pageState.value)
+    }
+
+    @Test
+    fun checkoutWithPromoFailed_shouldShowError() {
+        // Given
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(
+                recipientAddressModel = RecipientAddressModel().apply {
+                    id = "1"
+                    addressName = "address 1"
+                    street = "street 1"
+                    postalCode = "12345"
+                    destinationDistrictId = "1"
+                    cityId = "1"
+                    provinceId = "1"
+                    recipientName = "user 1"
+                    recipientPhoneNumber = "1234567890"
+                }
+            ),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel("123"),
+            CheckoutOrderModel(
+                "123",
+                shipment = CheckoutOrderShipment(courierItemData = CourierItemData())
+            ),
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+
+        coEvery {
+            validateUsePromoRevampUseCase.setParam(any()).executeOnBackground()
+        } throws IOException()
+
+        coEvery { checkoutGqlUseCase(any()) } returns CheckoutData().apply {
+            this.transactionId = "1234"
+        }
+        var invokeSuccess = false
+
+        // When
+        viewModel.checkout("", { }, {
+            invokeSuccess = true
+        })
+
+        // Then
+        assertEquals(false, invokeSuccess)
+        coVerify(inverse = true) {
+            checkoutGqlUseCase(any())
+        }
+        assertEquals(
+            CheckoutPageToaster(
+                Toaster.TYPE_ERROR,
+                CheckoutConstant.DEFAULT_ERROR_MESSAGE_VALIDATE_PROMO
+            ),
+            latestToaster
+        )
+    }
+
+    @Test
+    fun checkoutSuccessWithAddOns_ShouldGoToPaymentPage() {
+        // Given
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(
+                recipientAddressModel = RecipientAddressModel().apply {
+                    id = "1"
+                    addressName = "address 1"
+                    street = "street 1"
+                    postalCode = "12345"
+                    destinationDistrictId = "1"
+                    cityId = "1"
+                    provinceId = "1"
+                    recipientName = "user 1"
+                    recipientPhoneNumber = "1234567890"
+                }
+            ),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel(
+                "123",
+                cartId = 12,
+                addOnProduct = AddOnProductDataModel(
+                    listAddOnProductData = arrayListOf(
+                        AddOnProductDataItemModel(uniqueId = "a1", status = 0),
+                        AddOnProductDataItemModel(uniqueId = "a2", status = 1)
+                    )
+                )
+            ),
+            CheckoutProductModel(
+                "123",
+                cartId = 13
+            ),
+            CheckoutOrderModel(
+                "123",
+                shipment = CheckoutOrderShipment(courierItemData = CourierItemData())
+            ),
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+
+        coEvery {
+            saveAddOnProductUseCase.executeOnBackground()
+        } returns SaveAddOnStateResponse(SaveAddOnsResponse(status = "OK"))
+
+        coEvery {
+            validateUsePromoRevampUseCase.setParam(any()).executeOnBackground()
+        } returns ValidateUsePromoRevampUiModel(status = "OK", errorCode = "200")
+
+        val transactionId = "1234"
+        coEvery { checkoutGqlUseCase(any()) } returns CheckoutData().apply {
+            this.transactionId = transactionId
+        }
+        var invokeSuccess = false
+
+        // When
+        viewModel.checkout("", { }, {
+            invokeSuccess = true
+        })
+
+        // Then
+        assertEquals(true, invokeSuccess)
+        coVerify {
+            saveAddOnProductUseCase.setParams(
+                match { it.addOns[0].addOnKey == "12" && it.addOns[0].addOnData.size == 2 && it.addOns[1].addOnKey == "13" && it.addOns[1].addOnData.isEmpty() && it.addOns.size == 2 },
+                false
+            )
+        }
+    }
+
+    @Test
+    fun checkoutWithAddOnsFailed_ShouldShowError() {
+        // Given
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(
+                recipientAddressModel = RecipientAddressModel().apply {
+                    id = "1"
+                    addressName = "address 1"
+                    street = "street 1"
+                    postalCode = "12345"
+                    destinationDistrictId = "1"
+                    cityId = "1"
+                    provinceId = "1"
+                    recipientName = "user 1"
+                    recipientPhoneNumber = "1234567890"
+                }
+            ),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel(
+                "123",
+                cartId = 12,
+                addOnProduct = AddOnProductDataModel(
+                    listAddOnProductData = arrayListOf(
+                        AddOnProductDataItemModel(uniqueId = "a1", status = 0),
+                        AddOnProductDataItemModel(uniqueId = "a2", status = 1)
+                    )
+                )
+            ),
+            CheckoutProductModel(
+                "123",
+                cartId = 13
+            ),
+            CheckoutOrderModel(
+                "123",
+                shipment = CheckoutOrderShipment(courierItemData = CourierItemData())
+            ),
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+
+        val ioException = IOException()
+        coEvery {
+            saveAddOnProductUseCase.executeOnBackground()
+        } throws ioException
+
+        coEvery {
+            validateUsePromoRevampUseCase.setParam(any()).executeOnBackground()
+        } returns ValidateUsePromoRevampUiModel(status = "OK", errorCode = "200")
+
+        val transactionId = "1234"
+        coEvery { checkoutGqlUseCase(any()) } returns CheckoutData().apply {
+            this.transactionId = transactionId
+        }
+        var invokeSuccess = false
+
+        // When
+        viewModel.checkout("", { }, {
+            invokeSuccess = true
+        })
+
+        // Then
+        assertEquals(false, invokeSuccess)
+        assertEquals(
+            CheckoutPageToaster(Toaster.TYPE_ERROR, throwable = ioException),
+            latestToaster
+        )
     }
 }

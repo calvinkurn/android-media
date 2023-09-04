@@ -80,22 +80,18 @@ class CheckoutPaymentProcessor @Inject constructor(
     }
 
     suspend fun getDynamicPaymentFee(request: PaymentFeeCheckoutRequest): PaymentFeeResponse? {
-//        view?.showPaymentFeeSkeletonLoading()
         return withContext(dispatchers.io) {
             try {
                 getPaymentFeeCheckoutUseCase.setParams(request)
                 val paymentFeeGqlResponse = getPaymentFeeCheckoutUseCase.executeOnBackground()
                 if (paymentFeeGqlResponse.response.success) {
                     return@withContext paymentFeeGqlResponse.response
-//                    view?.showPaymentFeeData(paymentFeeGqlResponse.response)
                 } else {
                     return@withContext null
-//                    view?.showPaymentFeeTickerFailedToLoad(shipmentPlatformFeeData.errorWording)
                 }
             } catch (t: Throwable) {
                 Timber.d(t)
                 return@withContext null
-//                view?.showPaymentFeeTickerFailedToLoad(shipmentPlatformFeeData.errorWording)
             }
         }
     }

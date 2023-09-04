@@ -19,7 +19,6 @@ data class CheckoutProductModel(
     val price: Double = 0.0,
     val originalPrice: Double = 0.0,
     val campaignId: Int = 0,
-//    val currency: Int = 0,
     val variant: String = "",
     val variantParentId: String = "",
     val weightUnit: Int = 0,

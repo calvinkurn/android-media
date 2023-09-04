@@ -193,7 +193,6 @@ class CheckoutDataConverter @Inject constructor() {
                 cartItemIndex += productList.size
             }
             checkoutItems.addAll(products)
-//            cartItemModels.lastOrNull()?.isLastItemInOrder = true
             val fobject = levelUpParametersFromProductToCartSeller(products)
             val order = CheckoutOrderModel(
                 cartStringGroup = groupShop.cartString,
@@ -277,14 +276,6 @@ class CheckoutDataConverter @Inject constructor() {
                     order.hasNonEthicalProducts = true
                 }
             }
-//            shipmentCartItemModel.shipmentCartData = RatesDataConverter()
-//                .getShipmentCartData(
-//                    userAddress,
-//                    groupShop,
-//                    shipmentCartItemModel,
-//                    cartShipmentAddressFormData.keroToken,
-//                    cartShipmentAddressFormData.keroUnixTime.toString()
-//                )
             if (groupShop.isFulfillment) {
                 order.shopLocation = groupShop.fulfillmentName
             }
@@ -300,55 +291,6 @@ class CheckoutDataConverter @Inject constructor() {
             } else {
                 order.coachmarkPlus = CoachmarkPlusData()
             }
-
-//            // top
-//            val shipmentCartItemTopModel =
-//                ShipmentCartItemTopModel(
-//                    cartStringGroup = groupShop.cartString,
-//                    isError = shipmentCartItemModel.isError,
-//                    errorTitle = shipmentCartItemModel.errorTitle,
-//                    errorDescription = shipmentCartItemModel.errorDescription,
-//                    isHasUnblockingError = shipmentCartItemModel.isHasUnblockingError,
-//                    unblockingErrorMessage = shipmentCartItemModel.unblockingErrorMessage,
-//                    firstProductErrorIndex = shipmentCartItemModel.firstProductErrorIndex,
-//                    isCustomEpharmacyError = shipmentCartItemModel.isCustomEpharmacyError,
-//                    shopId = shipmentCartItemModel.shopId,
-//                    shopName = shipmentCartItemModel.groupInfoName,
-//                    orderNumber = shipmentCartItemModel.orderNumber,
-//                    preOrderInfo = shipmentCartItemModel.preOrderInfo,
-//                    freeShippingBadgeUrl = shipmentCartItemModel.freeShippingBadgeUrl,
-//                    isFreeShippingPlus = shipmentCartItemModel.isFreeShippingPlus,
-//                    shopLocation = shipmentCartItemModel.shopLocation,
-//                    shopAlertMessage = shipmentCartItemModel.shopAlertMessage,
-//                    shopTypeInfoData = shipmentCartItemModel.shopTypeInfoData,
-//                    shopTickerTitle = shipmentCartItemModel.shopTickerTitle,
-//                    shopTicker = shipmentCartItemModel.shopTicker,
-//                    enablerLabel = shipmentCartItemModel.enablerLabel,
-//                    hasTradeInItem = shipmentCartItemModel.cartItemModels.firstOrNull { it.isValidTradeIn } != null,
-//                    isFulfillment = shipmentCartItemModel.isFulfillment,
-//                    fulfillmentBadgeUrl = shipmentCartItemModel.fulfillmentBadgeUrl,
-//                    uiGroupType = shipmentCartItemModel.uiGroupType,
-//                    groupInfoName = shipmentCartItemModel.groupInfoName,
-//                    groupInfoBadgeUrl = shipmentCartItemModel.groupInfoBadgeUrl,
-//                    groupInfoDescription = shipmentCartItemModel.groupInfoDescription,
-//                    groupInfoDescriptionBadgeUrl = shipmentCartItemModel.groupInfoDescriptionBadgeUrl
-//                )
-// //            checkoutItems.add(shipmentCartItemTopModel)
-//            if (shipmentCartItemModel.isStateAllItemViewExpanded) {
-//                shipmentCartItemModel.cartItemModels.forEach {
-// //                    checkoutItems.add(it)
-//                }
-//            } else {
-// //                checkoutItems.add(shipmentCartItemModel.cartItemModels.first())
-//            }
-//            if (shipmentCartItemModel.cartItemModels.size > 1) {
-// //                checkoutItems.add(
-// //                    CartItemExpandModel(
-// //                        cartStringGroup = shipmentCartItemModel.cartStringGroup,
-// //                        cartSize = shipmentCartItemModel.cartItemModels.size
-// //                    )
-// //                )
-//            }
             checkoutItems.add(order)
         }
         return checkoutItems
@@ -446,7 +388,6 @@ class CheckoutDataConverter @Inject constructor() {
             name = product.productName,
             shopId = groupShopV2.shop.shopId.toString(),
             shopName = product.shopName,
-//            currency = product.productPriceCurrency,
             imageUrl = product.productImageSrc200Square,
             price = if (product.productWholesalePrice != 0.0) product.productWholesalePrice else product.productPrice,
             isWholesalePrice = product.productWholesalePrice != 0.0,

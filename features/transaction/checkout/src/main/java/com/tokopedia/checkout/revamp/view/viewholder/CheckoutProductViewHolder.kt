@@ -849,16 +849,12 @@ class CheckoutProductViewHolder(
                     checkoutTickerShopError.tickerShape = Ticker.SHAPE_LOOSE
                     checkoutTickerShopError.closeButtonVisibility = View.GONE
                     checkoutTickerShopError.visible()
-//                    layoutError.visible()
                 } else {
                     checkoutTickerShopError.gone()
-//                    layoutError.gone()
                 }
             } else {
                 checkoutTickerShopError.gone()
-//                layoutError.gone()
             }
-//            layoutWarning.gone()
         }
     }
 
