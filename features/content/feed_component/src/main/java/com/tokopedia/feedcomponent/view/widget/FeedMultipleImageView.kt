@@ -134,7 +134,7 @@ class FeedMultipleImageView @JvmOverloads constructor(
 
             fun bind(item: MediaItem, feedType: String) {
                 with(itemView) {
-                    val btnDeleteMargin = context.resources.getDimensionPixelSize(if (itemCount == 1) R.dimen.dp_16 else R.dimen.dp_8)
+                    val btnDeleteMargin = context.resources.getDimensionPixelSize(if (itemCount == 1) com.tokopedia.design.R.dimen.dp_16 else com.tokopedia.design.R.dimen.dp_8)
                     val layoutParams = delete.layoutParams as LayoutParams
                     layoutParams.setMargins(btnDeleteMargin, btnDeleteMargin, btnDeleteMargin, btnDeleteMargin)
                     delete.layoutParams = layoutParams
@@ -144,7 +144,7 @@ class FeedMultipleImageView @JvmOverloads constructor(
                     delete.visibility = if (item.isSelected) View.GONE else View.VISIBLE
                     if (item.videos.isNotEmpty()) {
                         ic_play_vid.shouldShowWithAction(item.type == TYPE_VIDEO) {
-                            val modLength = context.resources.getDimensionPixelSize(if (itemCount == 1) R.dimen.dp_72 else R.dimen.dp_36)
+                            val modLength = context.resources.getDimensionPixelSize(if (itemCount == 1) com.tokopedia.design.R.dimen.dp_72 else com.tokopedia.design.R.dimen.dp_36)
                             ic_play_vid.layoutParams.width = modLength
                             ic_play_vid.layoutParams.height = modLength
                         }

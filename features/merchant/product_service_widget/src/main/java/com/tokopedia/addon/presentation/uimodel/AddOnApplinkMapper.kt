@@ -13,6 +13,7 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 object AddOnApplinkMapper {
 
     private const val SELECTED_ADDON_IDS = "selectedAddonIds"
+    private const val DESELECTED_ADDON_IDS = "deselectedAddonIds"
     private const val SOURCE = "source"
     private const val CART_ID = "cartId"
     private const val WAREHOUSE_ID = "warehouseId"
@@ -29,6 +30,18 @@ object AddOnApplinkMapper {
         var selectedProductIds: List<String> = emptyList()
         try {
             uri.getQueryParameter(SELECTED_ADDON_IDS)?.filterNot { it.isWhitespace() }?.let {
+                if (it.isNotEmpty()) selectedProductIds = it.split(APPLINK_ARRAY_DELIMITER)
+            }
+        } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
+        }
+        return selectedProductIds
+    }
+
+    fun getDeselectedAddonIdsFromUri(uri: Uri): List<String> {
+        var selectedProductIds: List<String> = emptyList()
+        try {
+            uri.getQueryParameter(DESELECTED_ADDON_IDS)?.filterNot { it.isWhitespace() }?.let {
                 if (it.isNotEmpty()) selectedProductIds = it.split(APPLINK_ARRAY_DELIMITER)
             }
         } catch (e: Exception) {
@@ -59,6 +72,7 @@ object AddOnApplinkMapper {
         val price = uri.getQueryParameter(PRICE).toLongOrZero()
         val discountedPrice = uri.getQueryParameter(DISCOUNTED_PRICE).toLongOrZero()
         val condition = uri.getQueryParameter(CONDITION).toString()
+        val pageSource = uri.getQueryParameter(SOURCE).orEmpty()
         return AddOnParam(
             productId = productId,
             warehouseId = warehouseId,
@@ -69,6 +83,7 @@ object AddOnApplinkMapper {
             price = price,
             discountedPrice = discountedPrice,
             condition = condition,
+            pageSource = pageSource
         )
     }
 }

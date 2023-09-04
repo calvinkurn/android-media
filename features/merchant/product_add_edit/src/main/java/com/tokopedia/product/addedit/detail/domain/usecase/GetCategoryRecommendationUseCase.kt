@@ -40,6 +40,8 @@ class GetCategoryRecommendationUseCase @Inject constructor(
                 "    categories {\n" +
                 "      id\n" +
                 "      name\n" +
+                "      confidence_score\n" +
+                "      precision\n" +
                 "    }\n" +
                 "  }\n" +
                 "}"

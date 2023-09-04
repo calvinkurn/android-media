@@ -177,6 +177,7 @@ data class DynamicHomeChannel(
             const val LAYOUT_DEALS_WIDGET: String = "content_card"
             const val LAYOUT_FLASH_SALE_WIDGET: String = "kejar_diskon_carousel"
             const val LAYOUT_SPECIAL_RELEASE_REVAMP: String = "rilisan_spesial"
+            const val LAYOUT_SPECIAL_SHOP_FLASH_SALE: String = "flash_sale_toko"
             const val channelId: String = "channelId"
             const val DIVIDER_NO_DIVIDER = 0
         }

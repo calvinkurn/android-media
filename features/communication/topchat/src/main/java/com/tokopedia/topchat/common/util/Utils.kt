@@ -98,4 +98,8 @@ object Utils {
             onClick()
         }
     }
+
+    fun getBuildVersion(): Int {
+        return Build.VERSION.SDK_INT
+    }
 }

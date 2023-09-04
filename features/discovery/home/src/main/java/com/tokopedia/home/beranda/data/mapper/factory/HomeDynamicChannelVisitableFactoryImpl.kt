@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.analytics.v2.LegoBannerTracking
 import com.tokopedia.home.beranda.data.datasource.default_data_source.HomeDefaultDataSource
+import com.tokopedia.home.beranda.data.mapper.ShopFlashSaleMapper
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.domain.model.HomeChannelData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
@@ -19,6 +20,7 @@ import com.tokopedia.home_component.visitable.*
 import com.tokopedia.home_component.widget.special_release.SpecialReleaseRevampDataModel
 import com.tokopedia.home_component_header.model.ChannelHeader
 import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
+import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -207,6 +209,9 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 }
                 DynamicHomeChannel.Channels.LAYOUT_SPECIAL_RELEASE_REVAMP -> {
                     createSpecialReleaseRevamp(channel, position)
+                }
+                DynamicHomeChannel.Channels.LAYOUT_SPECIAL_SHOP_FLASH_SALE -> {
+                    createShopFlashSale(channel, position)
                 }
             }
         }
@@ -401,7 +406,8 @@ class HomeDynamicChannelVisitableFactoryImpl(
                         channelId = channel.id,
                         serverTimeOffset = ServerTimeOffsetUtil.getServerTimeOffsetFromUnix(
                             channel.header.serverTimeUnix
-                        )
+                        ),
+                        headerType = BestSellerMapper.getHeaderType()
                     )
                 )
             )
@@ -412,14 +418,16 @@ class HomeDynamicChannelVisitableFactoryImpl(
         channel: DynamicHomeChannel.Channels,
         verticalPosition: Int,
     ) {
-        visitableList.add(
-            BestSellerDataModel(
-                channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(
-                    channel = channel.copy(header = channel.header.copy(applink = VALUE_EMPTY_APPLINK)),
-                    verticalPosition = verticalPosition,
-                ),
+        if(!isCache) {
+            visitableList.add(
+                BestSellerDataModel(
+                    channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(
+                        channel = channel.copy(header = channel.header.copy(applink = VALUE_EMPTY_APPLINK)),
+                        verticalPosition = verticalPosition,
+                    ),
+                )
             )
-        )
+        }
     }
 
     private fun createCampaignWidget(
@@ -947,6 +955,12 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 verticalPosition
             )
         )
+    }
+
+    private fun createShopFlashSale(channel: DynamicHomeChannel.Channels, verticalPosition: Int) {
+        if(!isCache) {
+            visitableList.add(ShopFlashSaleMapper.mapShopFlashSaleWidgetDataModel(channel, verticalPosition))
+        }
     }
 
     override fun build(): List<Visitable<*>> = visitableList
