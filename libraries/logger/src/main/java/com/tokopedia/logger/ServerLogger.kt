@@ -1,7 +1,6 @@
 package com.tokopedia.logger
 
 import com.tokopedia.logger.utils.Priority
-import com.tokopedia.logger.utils.LoggerReporting
 
 object ServerLogger {
     @JvmStatic

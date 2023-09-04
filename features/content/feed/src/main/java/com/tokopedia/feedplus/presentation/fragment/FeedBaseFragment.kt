@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.launch
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -49,6 +50,9 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.navigation_common.listener.FragmentListener
 import com.tokopedia.play_common.shortsuploader.analytic.PlayShortsUploadAnalytic
+import com.tokopedia.play_common.view.doOnApplyWindowInsets
+import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
+import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Job
@@ -104,6 +108,14 @@ class FeedBaseFragment :
 
     private val toasterBottomMargin by lazy {
         resources.getDimensionPixelOffset(R.dimen.feed_toaster_bottom_margin)
+    }
+
+    private val tabExtraTopOffset24 by lazy {
+        resources.getDimensionPixelOffset(R.dimen.feed_space_24)
+    }
+
+    private val tabExtraTopOffset16 by lazy {
+        resources.getDimensionPixelOffset(R.dimen.feed_space_16)
     }
 
     private val adapter by lazy {
@@ -200,12 +212,19 @@ class FeedBaseFragment :
         feedMainViewModel.fetchFeedTabs()
 
         setupView()
+        setupInsets()
 
         observeFeedTabData()
 
         observeEvent()
 
         observeUpload()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        binding.containerFeedTopNav.vMenuCenter.requestApplyInsetsWhenAttached()
+        binding.loaderFeedTopNav.root.requestApplyInsetsWhenAttached()
     }
 
     override fun onDestroyView() {
@@ -340,6 +359,27 @@ class FeedBaseFragment :
         binding.viewVerticalSwipeOnboarding.setText(
             getString(R.string.feed_check_next_content)
         )
+    }
+
+    private fun setupInsets() {
+        binding.containerFeedTopNav.vMenuCenter.doOnApplyWindowInsets { _, insets, _, margin ->
+
+            val topInsetsMargin = (insets.systemWindowInsetTop + tabExtraTopOffset24).coerceAtLeast(margin.top)
+
+            getAllMotionScene().forEach {
+                it.setMargin(binding.containerFeedTopNav.vMenuCenter.id, ConstraintSet.TOP, topInsetsMargin)
+            }
+        }
+
+        binding.loaderFeedTopNav.root.doOnApplyWindowInsets { v, insets, _, margin ->
+
+            val topInsetsMargin = (insets.systemWindowInsetTop + tabExtraTopOffset16).coerceAtLeast(margin.top)
+
+            val marginLayoutParams = v.layoutParams as ViewGroup.MarginLayoutParams
+            marginLayoutParams.updateMargins(top = topInsetsMargin)
+
+            v.parent.requestLayout()
+        }
     }
 
     private fun checkResume(): Boolean {
@@ -743,13 +783,20 @@ class FeedBaseFragment :
         binding.feedError.hide()
     }
 
+    private fun getAllMotionScene(): List<ConstraintSet> {
+        return listOf(
+            binding.containerFeedTopNav.root.getConstraintSet(R.id.start),
+            binding.containerFeedTopNav.root.getConstraintSet(R.id.end),
+        )
+    }
+
     companion object {
         const val TAB_FIRST_INDEX = 0
         const val TAB_SECOND_INDEX = 1
 
         const val TAB_TYPE_FOR_YOU = "foryou"
         const val TAB_TYPE_FOLLOWING = "following"
-        const val CDP = "cdp"
+        const val TAB_TYPE_CDP = "cdp"
 
         private const val EXTRAS_UTM_MEDIUM = "utm_medium"
         private const val PARAM_PUSH_NOTIFICATION = "push"

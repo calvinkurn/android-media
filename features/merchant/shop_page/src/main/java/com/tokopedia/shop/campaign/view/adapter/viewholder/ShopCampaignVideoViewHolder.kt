@@ -8,6 +8,8 @@ import androidx.constraintlayout.widget.Group
 import com.google.android.youtube.player.YouTubeApiServiceUtil
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
@@ -145,7 +147,7 @@ class ShopCampaignVideoViewHolder(
             if (YouTubeApiServiceUtil.isYouTubeApiServiceAvailable(it.applicationContext)
                 == YouTubeInitializationResult.SUCCESS
             ) {
-                it.startActivity(ShopHomePageYoutubePlayerActivity.createIntent(it, youTubeVideoId))
+                redirectToYoutubePlayerPage(youTubeVideoId)
             } else {
                 it.startActivity(
                     Intent(
@@ -155,6 +157,10 @@ class ShopCampaignVideoViewHolder(
                 )
             }
         }
+    }
+
+    private fun redirectToYoutubePlayerPage(youTubeVideoId: String) {
+        RouteManager.route(itemView.context, ApplinkConst.YOUTUBE_PLAYER, youTubeVideoId)
     }
 
     private fun YoutubeVideoDetailModel?.getMaxResThumbnailUrl(): String {

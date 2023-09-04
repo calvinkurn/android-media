@@ -172,12 +172,12 @@ class AffiliateTransactionDetailFragment :
     }
 
     private fun setData(commissionData: AffiliateCommissionDetailsData.GetAffiliateCommissionDetail?) {
-        if (commissionData?.data?.commissionType != TRAFFIC_TYPE) {
+        if (commissionData?.commissionDetailData?.commissionType != TRAFFIC_TYPE) {
             showView()
-            sendOrderOpenScreenEvent(commissionData?.data?.pageType)
+            sendOrderOpenScreenEvent(commissionData?.commissionDetailData?.pageType)
             setProductTransactionData(commissionData)
         } else {
-            sendTrafficOpenScreenEvent(commissionData.data?.pageType)
+            sendTrafficOpenScreenEvent(commissionData.commissionDetailData?.pageType)
             setTrafficTransactionView()
         }
     }
@@ -224,19 +224,19 @@ class AffiliateTransactionDetailFragment :
     private fun setProductTransactionData(
         commissionData: AffiliateCommissionDetailsData.GetAffiliateCommissionDetail?
     ) {
-        commissionData?.data?.cardDetail?.image?.androidURL?.let { url ->
+        commissionData?.commissionDetailData?.cardDetail?.image?.androidURL?.let { url ->
             view?.findViewById<ImageUnify>(R.id.product_image)?.setImageUrl(
                 url
             )
         }
         view?.findViewById<Typography>(R.id.product_name)?.text =
-            commissionData?.data?.cardDetail?.cardTitle
+            commissionData?.commissionDetailData?.cardDetail?.cardTitle
         view?.findViewById<Typography>(R.id.product_status)?.text =
-            commissionData?.data?.cardDetail?.cardPriceFormatted
+            commissionData?.commissionDetailData?.cardDetail?.cardPriceFormatted
         view?.findViewById<Typography>(R.id.shop_name)?.text =
-            commissionData?.data?.cardDetail?.shopName
+            commissionData?.commissionDetailData?.cardDetail?.shopName
         view?.findViewById<Typography>(R.id.transaction_date)?.text =
-            commissionData?.data?.createdAt?.let {
+            commissionData?.commissionDetailData?.createdAt?.let {
                 DateUtils().formatDate(newFormat = NEW_DATE_FORMAT, dateString = it)
             }
         view?.findViewById<Typography>(R.id.promotion_link)?.text = getPageType(commissionData)
@@ -247,7 +247,7 @@ class AffiliateTransactionDetailFragment :
                 append(getPageType(commissionData))
             }
             this.setOnClickListener {
-                commissionData?.data?.cardDetail?.hyperlink?.androidURL?.let { url ->
+                commissionData?.commissionDetailData?.cardDetail?.hyperlink?.androidURL?.let { url ->
                     affiliateVM?.extractBranchLink(url)
                 }
             }
@@ -255,7 +255,7 @@ class AffiliateTransactionDetailFragment :
     }
 
     private fun getPageType(commissionData: AffiliateCommissionDetailsData.GetAffiliateCommissionDetail?): String {
-        return when (commissionData?.data?.pageType?.uppercase()) {
+        return when (commissionData?.commissionDetailData?.pageType?.uppercase()) {
             PAGE_PDP -> "Produk"
             PAGE_SHOP -> "Toko"
             PAGE_EVENT -> "Event"

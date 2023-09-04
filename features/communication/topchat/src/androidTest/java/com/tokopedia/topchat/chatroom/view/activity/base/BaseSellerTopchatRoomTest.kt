@@ -3,13 +3,8 @@ package com.tokopedia.topchat.chatroom.view.activity.base
 import android.app.Activity
 import android.app.Instrumentation
 import android.content.Intent
-import android.view.View
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
-import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.google.gson.Gson
 import com.tokopedia.chat_common.data.ProductAttachmentUiModel
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
@@ -18,13 +13,11 @@ import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCo
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.UpdateCampaignVariantResult
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.topchat.AndroidFileUtil
-import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentResponse
 import com.tokopedia.topchat.chattemplate.domain.pojo.GetChatTemplate
 import com.tokopedia.topchat.chattemplate.domain.pojo.GetChatTemplateResponse
 import com.tokopedia.topchat.chattemplate.domain.pojo.TopchatChatTemplates
-import com.tokopedia.topchat.matchers.withRecyclerView
-import org.hamcrest.Matcher
+import com.tokopedia.websocket.WebSocketResponse
 
 open class BaseSellerTopchatRoomTest : TopchatRoomTest() {
 
@@ -41,9 +34,11 @@ open class BaseSellerTopchatRoomTest : TopchatRoomTest() {
     protected var sellerProductAttachment = ChatAttachmentResponse()
     protected var sellerProductVariantAttachment = ChatAttachmentResponse()
     protected var sellerProductVariantAttachmentWithParentId = ChatAttachmentResponse()
+    protected var wsBuyerProductResponse: WebSocketResponse = WebSocketResponse()
 
     private val templateChats = arrayListOf(
-            "I am seller", "Yes, this product is ready"
+        "I am seller",
+        "Yes, this product is ready"
     )
 
     override fun before() {
@@ -54,126 +49,73 @@ open class BaseSellerTopchatRoomTest : TopchatRoomTest() {
     private fun setupDefaultResponse() {
         chatSrwUseCase.response = chatSrwResponse
         getTemplateChatRoomUseCase.response = GetChatTemplateResponse(
-            GetChatTemplate(sellerTemplate = TopchatChatTemplates(
-                templates = templateChats
-            ))
+            GetChatTemplate(
+                sellerTemplate = TopchatChatTemplates(
+                    templates = templateChats
+                )
+            )
+        )
+        wsBuyerProductResponse = AndroidFileUtil.parse(
+            "ws/buyer/ws_buyer_attach_product.json",
+            WebSocketResponse::class.java
         )
     }
 
     override fun setupResponse() {
         super.setupResponse()
         sellerSmartReply = AndroidFileUtil.parse(
-                "seller/success_chat_reply_smart_reply.json",
-                GetExistingChatPojo::class.java
+            "seller/success_chat_reply_smart_reply.json",
+            GetExistingChatPojo::class.java
         )
         sellerTopBot = AndroidFileUtil.parse(
-                "seller/success_chat_reply_topbot.json",
-                GetExistingChatPojo::class.java
+            "seller/success_chat_reply_topbot.json",
+            GetExistingChatPojo::class.java
         )
         sellerAutoReply = AndroidFileUtil.parse(
-                "seller/success_chat_reply_auto_reply.json",
-                GetExistingChatPojo::class.java
+            "seller/success_chat_reply_auto_reply.json",
+            GetExistingChatPojo::class.java
         )
         sellerSourceInbox = AndroidFileUtil.parse(
-                "seller/success_chat_reply_source_inbox.json",
-                GetExistingChatPojo::class.java
+            "seller/success_chat_reply_source_inbox.json",
+            GetExistingChatPojo::class.java
         )
         sellerProductChatReplies = AndroidFileUtil.parse(
-                "seller/success_get_chat_first_page_as_seller.json",
-                GetExistingChatPojo::class.java
+            "seller/success_get_chat_first_page_as_seller.json",
+            GetExistingChatPojo::class.java
         )
         sellerProductVariantChatReplies = AndroidFileUtil.parse(
-                "seller/get_chatReply_with_product_variant.json",
-                GetExistingChatPojo::class.java
+            "seller/get_chatReply_with_product_variant.json",
+            GetExistingChatPojo::class.java
         )
         sellerProductCarouselChatReplies = AndroidFileUtil.parse(
-                "seller/success_get_chat_first_page_product_carousel_as_seller.json",
-                GetExistingChatPojo::class.java
+            "seller/success_get_chat_first_page_product_carousel_as_seller.json",
+            GetExistingChatPojo::class.java
         )
         sellerBroadcastProductCarouselChatReplies = AndroidFileUtil.parse(
-                "seller/success_get_chat_first_page_broadcast_" +
-                        "product_carousel_as_seller.json",
-                GetExistingChatPojo::class.java
+            "seller/success_get_chat_first_page_broadcast_" +
+                "product_carousel_as_seller.json",
+            GetExistingChatPojo::class.java
         )
         sellerProductAttachment = AndroidFileUtil.parse(
-                "seller/success_get_chat_attachments_seller.json",
-                ChatAttachmentResponse::class.java
+            "seller/success_get_chat_attachments_seller.json",
+            ChatAttachmentResponse::class.java
         )
         sellerProductVariantAttachment = AndroidFileUtil.parse(
-                "seller/success_get_chat_attachments_with_product_variant.json",
-                ChatAttachmentResponse::class.java
+            "seller/success_get_chat_attachments_with_product_variant.json",
+            ChatAttachmentResponse::class.java
         )
         sellerProductVariantAttachmentWithParentId = AndroidFileUtil.parse(
-                "seller/success_get_chat_attachments_with_product_variant_parentid.json",
-                ChatAttachmentResponse::class.java
+            "seller/success_get_chat_attachments_with_product_variant_parentid.json",
+            ChatAttachmentResponse::class.java
         )
-    }
-
-    protected fun assertStockCountVisibilityAt(
-            recyclerViewId: Int,
-            productCardPosition: Int,
-            viewMatcher: Matcher<in View>
-    ) {
-        onView(
-                withRecyclerView(recyclerViewId).atPositionOnView(
-                        productCardPosition, R.id.tp_seller_stock_count
-                )
-        ).check(matches(viewMatcher))
-    }
-
-    protected fun assertStockCountValueAt(
-            recyclerViewId: Int,
-            productCardPosition: Int,
-            stockCount: Int
-    ) {
-        onView(
-                withRecyclerView(recyclerViewId).atPositionOnView(
-                        productCardPosition, R.id.tp_seller_stock_count
-                )
-        ).check(matches(withText("$stockCount")))
-    }
-
-    protected fun assertStockCountBtnVisibilityAt(
-            recyclerViewId: Int,
-            productCardPosition: Int,
-            viewMatcher: Matcher<in View>
-    ) {
-        onView(
-                withRecyclerView(recyclerViewId).atPositionOnView(
-                        productCardPosition, R.id.btn_update_stock
-                )
-        ).check(matches(viewMatcher))
-    }
-
-    protected fun clickChangeStockBtn(
-            recyclerViewId: Int,
-            atPosition: Int
-    ) {
-        onView(
-                withRecyclerView(recyclerViewId).atPositionOnView(
-                        atPosition, R.id.btn_update_stock
-                )
-        ).perform(ViewActions.click())
-    }
-
-    protected fun assertTokoCabangVisibility(
-            recyclerViewId: Int,
-            productCardPosition: Int,
-            viewMatcher: Matcher<in View>
-    ) {
-        onView(
-                withRecyclerView(recyclerViewId).atPositionOnView(
-                        productCardPosition, R.id.ll_seller_fullfilment
-                )
-        ).check(matches(viewMatcher))
     }
 
     protected fun createSuccessUpdateStockIntentResult(
-            productId: String,
-            stock: Int,
-            status: ProductStatus,
-            productName: String = "Product Testing",
-            variantMap: HashMap<String, UpdateCampaignVariantResult>? = null
+        productId: String,
+        stock: Int,
+        status: ProductStatus,
+        productName: String = "Product Testing",
+        variantMap: HashMap<String, UpdateCampaignVariantResult>? = null
     ) {
         val intent = Intent().apply {
             putExtra(ProductManageCommonConstant.EXTRA_PRODUCT_ID, productId)
@@ -183,28 +125,29 @@ open class BaseSellerTopchatRoomTest : TopchatRoomTest() {
             putExtra(ProductManageCommonConstant.EXTRA_UPDATE_VARIANTS_MAP, variantMap)
         }
         intending(anyIntent()).respondWith(
-                Instrumentation.ActivityResult(Activity.RESULT_OK, intent)
+            Instrumentation.ActivityResult(Activity.RESULT_OK, intent)
         )
     }
 
     protected fun createErrorUpdateStockIntentResult(
-            errorMsg: String
+        errorMsg: String
     ) {
         val intent = Intent().apply {
             putExtra(ProductManageCommonConstant.EXTRA_UPDATE_MESSAGE, errorMsg)
         }
         intending(anyIntent()).respondWith(
-                Instrumentation.ActivityResult(Activity.RESULT_CANCELED, intent)
+            Instrumentation.ActivityResult(Activity.RESULT_CANCELED, intent)
         )
     }
 
     protected fun ChatAttachmentResponse.setCampaignStock(
-            attachmentIndex: Int,
-            isCampaign: Boolean
+        attachmentIndex: Int,
+        isCampaign: Boolean
     ): ChatAttachmentResponse {
         val attachment = chatAttachments.list[attachmentIndex]
         val product = gson.fromJson(
-                attachment.attributes, ProductAttachmentAttributes::class.java
+            attachment.attributes,
+            ProductAttachmentAttributes::class.java
         )
         if (isCampaign) {
             product.productProfile.campaignId = "1000"
@@ -220,12 +163,13 @@ open class BaseSellerTopchatRoomTest : TopchatRoomTest() {
     }
 
     protected fun ChatAttachmentResponse.setEmptyStock(
-            attachmentIndex: Int,
-            isEmpty: Boolean
+        attachmentIndex: Int,
+        isEmpty: Boolean
     ): ChatAttachmentResponse {
         val attachment = chatAttachments.list[attachmentIndex]
         val product = gson.fromJson(
-                attachment.attributes, ProductAttachmentAttributes::class.java
+            attachment.attributes,
+            ProductAttachmentAttributes::class.java
         )
         if (isEmpty) {
             product.productProfile.status = ProductAttachmentUiModel.statusWarehouse
@@ -239,12 +183,13 @@ open class BaseSellerTopchatRoomTest : TopchatRoomTest() {
     }
 
     protected fun ChatAttachmentResponse.setFulFillment(
-            attachmentIndex: Int,
-            isFulFillment: Boolean
+        attachmentIndex: Int,
+        isFulFillment: Boolean
     ): ChatAttachmentResponse {
         val attachment = chatAttachments.list[attachmentIndex]
         val product = gson.fromJson(
-                attachment.attributes, ProductAttachmentAttributes::class.java
+            attachment.attributes,
+            ProductAttachmentAttributes::class.java
         )
         if (product.productProfile.isFulFillment != isFulFillment) {
             product.productProfile.isFulFillment = isFulFillment
