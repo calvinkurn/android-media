@@ -2142,6 +2142,14 @@ class ShopPageHeaderFragmentV2 :
         toggleFollowUnfollowButton()
     }
 
+    override fun onUspClicked(listDynamicUspValue: List<String>) {
+        sendClickHeaderShopUsp(listDynamicUspValue)
+    }
+
+    private fun sendClickHeaderShopUsp(listDynamicUspValue: List<String>) {
+        shopPageTracking?.clickHeaderShopUsp(shopId, userId, listDynamicUspValue)
+    }
+
     override fun onCompleteCheckRequestModerateStatus(moderateStatusResult: ShopModerateRequestResult) {
         when (moderateStatusResult.status) {
             ShopModerateRequestStatusCode.SHOP_MODERATED, ShopModerateRequestStatusCode.SHOP_MODERATION_REQUEST_REJECTED -> {

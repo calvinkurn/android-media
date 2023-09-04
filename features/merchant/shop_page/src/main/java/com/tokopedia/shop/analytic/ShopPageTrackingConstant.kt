@@ -446,6 +446,7 @@ object ShopPageTrackingConstant {
         const val CLICK_CAMPAIGN_PLAY_WIDGET_ITEM = "campaign tab - click product play"
         const val REIMAGINED_CLICK_HEADER_SHOP_NAME = "reimagined - click header shop name"
         const val REIMAGINED_CLICK_HEADER_SHOP_REVIEW = "reimagined - click header shop review"
+        const val REIMAGINED_CLICK_HEADER_SHOP_USP = "reimagined - click header shop usp"
 
     }
 
@@ -521,6 +522,7 @@ object ShopPageTrackingConstant {
         const val TRACKER_ID_CLICK_EXPLORE_SHOP_SLIDER_BANNER_HIGHLIGHT_WIDGET = "44368"
         const val TRACKER_ID_REIMAGINED_CLICK_HEADER_SHOP_NAME = "45907"
         const val TRACKER_ID_REIMAGINED_CLICK_HEADER_SHOP_REVIEW = "45908"
+        const val TRACKER_ID_REIMAGINED_CLICK_HEADER_SHOP_USP = "45909"
     }
 
     object Key {

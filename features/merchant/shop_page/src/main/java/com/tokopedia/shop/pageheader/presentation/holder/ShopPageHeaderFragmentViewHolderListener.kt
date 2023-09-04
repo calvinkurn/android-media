@@ -21,4 +21,6 @@ interface ShopPageHeaderFragmentViewHolderListener {
     fun onChatButtonClicked(){}
 
     fun onFollowButtonClicked(){}
+
+    fun onUspClicked(listDynamicUspValue: List<String>) {}
 }

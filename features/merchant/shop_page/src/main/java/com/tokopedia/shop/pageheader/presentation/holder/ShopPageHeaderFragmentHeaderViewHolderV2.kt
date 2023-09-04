@@ -364,9 +364,7 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
         imageRatingIcon?.setOnClickListener {
             listenerHeader?.onShopReviewClicked(appLink)
         }
-        val listDynamicUspValue = listWidgetShopData.getDynamicUspComponent()?.text?.map { it.textHtml }.orEmpty()
-        updateDynamicUspValue(listDynamicUspValue.firstOrNull().orEmpty())
-        startDynamicUspCycle(listWidgetShopData)
+        configDynamicUsp(listWidgetShopData)
         if(isOverrideTheme) {
             val textColor = shopHeaderConfig?.colorSchema?.getColorSchema(
                 ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS
@@ -374,6 +372,15 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
             textRatingDescription?.setTextColor(ShopUtil.parseColorFromHexString(textColor))
             textDynamicUspPerformance?.setTextColor(ShopUtil.parseColorFromHexString(textColor))
         }
+    }
+
+    private fun configDynamicUsp(listWidgetShopData: List<ShopPageHeaderWidgetUiModel>) {
+        val listDynamicUspValue = listWidgetShopData.getDynamicUspComponent()?.text?.map { it.textHtml }.orEmpty()
+        updateDynamicUspValue(listDynamicUspValue.firstOrNull().orEmpty())
+        textDynamicUspPerformance?.setOnClickListener {
+            listenerHeader?.onUspClicked(listDynamicUspValue)
+        }
+        startDynamicUspCycle(listWidgetShopData)
     }
 
     private fun setShopLogoImage(listWidgetShopData: List<ShopPageHeaderWidgetUiModel>) {
