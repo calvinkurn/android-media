@@ -285,6 +285,18 @@ class CheckoutViewModel @Inject constructor(
                                     0
                                 )
                             )
+                            if (crossSellModel.isChecked) {
+                                val digitalCategoryName = crossSellModel.orderSummary.title
+                                val digitalProductName = crossSellModel.info.title
+                                val eventLabel = "$digitalCategoryName - ${crossSellModel.id}"
+                                mTrackerShipment.eventViewAutoCheckCrossSell(
+                                    userSessionInterface.userId,
+                                    0.toString(),
+                                    eventLabel,
+                                    digitalProductName,
+                                    ArrayList(items.mapNotNull { if (it is CheckoutProductModel) it.productCatId else null })
+                                )
+                            }
                         }
                         if (saf.cartShipmentAddressFormData.egoldAttributes != null && saf.cartShipmentAddressFormData.egoldAttributes!!.isEnabled && saf.cartShipmentAddressFormData.egoldAttributes!!.isEligible) {
                             crossSellList.add(
