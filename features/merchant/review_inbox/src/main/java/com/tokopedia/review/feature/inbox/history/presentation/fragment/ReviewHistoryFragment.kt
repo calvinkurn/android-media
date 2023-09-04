@@ -1,10 +1,13 @@
 package com.tokopedia.review.feature.inbox.history.presentation.fragment
 
+import android.app.Activity
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -39,6 +42,7 @@ import com.tokopedia.review.feature.inbox.history.presentation.util.SearchTextWa
 import com.tokopedia.review.feature.inbox.history.presentation.viewmodel.ReviewHistoryViewModel
 import com.tokopedia.review.inbox.R
 import com.tokopedia.review.inbox.databinding.FragmentReviewHistoryBinding
+import com.tokopedia.reviewcommon.constant.ReviewCommonConstants
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.util.ReviewMediaGalleryRouter
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.adapter.typefactory.ReviewMediaThumbnailTypeFactory
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailUiModel
@@ -64,6 +68,11 @@ class ReviewHistoryFragment :
 
     private val reviewHistoryAdapter: ReviewHistoryAdapter
         get() = adapter as ReviewHistoryAdapter
+
+    private val reviewDetailLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult(),
+        ::onReceiveReviewDetailResult
+    )
 
     override fun getComponent(): ReviewHistoryComponent? {
         return activity?.run {
@@ -259,11 +268,13 @@ class ReviewHistoryFragment :
     }
 
     private fun goToReviewDetails(feedbackId: String) {
-        RouteManager.route(
+        val intent = RouteManager.getIntent(
             context,
             Uri.parse(UriUtil.buildUri(ApplinkConstInternalMarketplace.REVIEW_DETAIL, feedbackId))
-                .buildUpon().toString()
+                .buildUpon()
+                .toString()
         )
+        reviewDetailLauncher.launch(intent)
     }
 
     private fun goToImagePreview(
@@ -352,6 +363,13 @@ class ReviewHistoryFragment :
         binding?.reviewHistoryConnectionError?.reviewConnectionErrorRetryButton?.setOnClickListener {
             loadInitialData()
         }
+    }
+
+    private fun onReceiveReviewDetailResult(result: ActivityResult) {
+        if (
+            result.resultCode == Activity.RESULT_OK &&
+            result.data?.getBooleanExtra(ReviewCommonConstants.REVIEW_EDITED, false).orFalse()
+        ) onSwipeRefresh()
     }
 
     private inner class ReviewMediaThumbnailListener: ReviewMediaThumbnailTypeFactory.Listener {

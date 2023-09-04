@@ -5,6 +5,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.topads.create.R
+import com.tokopedia.topads.common.R as topadscommonR
 import com.tokopedia.topads.create.databinding.AdGroupErrorViewholderLayoutBinding
 import com.tokopedia.topads.view.adapter.adgrouplist.model.ErrorUiModel
 import com.tokopedia.utils.view.binding.viewBinding
@@ -38,8 +39,8 @@ class ErrorViewHolder(itemView:View,listener:ErrorListener? = null) : AbstractVi
                }
                GlobalError.PAGE_NOT_FOUND -> {
                    binding?.error?.apply {
-                       errorTitle.text = context.getString(R.string.ad_group_search_error_title)
-                       errorDescription.text = context.getString(R.string.ad_group_search_error_desc)
+                       errorTitle.text = context.getString(topadscommonR.string.topads_commong_ad_group_search_error_title)
+                       errorDescription.text = context.getString(topadscommonR.string.topads_common_ad_group_search_error_desc)
                        errorAction.visibility = View.GONE
                    }
                }
