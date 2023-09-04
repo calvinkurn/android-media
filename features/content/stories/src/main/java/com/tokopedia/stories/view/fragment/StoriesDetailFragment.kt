@@ -49,7 +49,7 @@ class StoriesDetailFragment @Inject constructor(
     private val mAdapter: StoriesGroupAdapter by lazyThreadSafetyNone {
         StoriesGroupAdapter(object : StoriesGroupAdapter.Listener {
             override fun onClickGroup(position: Int) {
-                viewModelAction(StoriesUiAction.SetGroup(position))
+                viewModelAction(StoriesUiAction.SetGroup(position, false))
             }
         })
     }

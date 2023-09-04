@@ -80,7 +80,7 @@ class StoriesViewModel @Inject constructor(
         when (action) {
             is StoriesUiAction.SetArgumentsData -> handleSetInitialData(action.data)
             is StoriesUiAction.SetGroupMainData -> handleGroupMainData(action.selectedGroup)
-            is StoriesUiAction.SetGroup -> handleSetGroup(action.selectedGroup)
+            is StoriesUiAction.SetGroup -> handleSetGroup(action.selectedGroup, action.showAnimation)
             StoriesUiAction.NextDetail -> handleNext()
             StoriesUiAction.PreviousDetail -> handlePrevious()
             StoriesUiAction.PauseStories -> handleOnPauseStories()
@@ -105,9 +105,9 @@ class StoriesViewModel @Inject constructor(
         setInitialDetailData()
     }
 
-    private fun handleSetGroup(position: Int) {
+    private fun handleSetGroup(position: Int, showAnimation: Boolean) {
         viewModelScope.launch {
-            _uiEvent.emit(StoriesUiEvent.SelectGroup(position))
+            _uiEvent.emit(StoriesUiEvent.SelectGroup(position, showAnimation))
         }
     }
 
@@ -117,7 +117,7 @@ class StoriesViewModel @Inject constructor(
 
         when {
             newDetailPosition < mDetailSize -> updateDetailData(position = newDetailPosition)
-            newGroupPosition < mGroupSize -> handleSetGroup(position = newGroupPosition)
+            newGroupPosition < mGroupSize -> handleSetGroup(position = newGroupPosition, true)
             else -> viewModelScope.launch { _uiEvent.emit(StoriesUiEvent.FinishedAllStories) }
         }
     }
@@ -128,7 +128,7 @@ class StoriesViewModel @Inject constructor(
 
         when {
             newDetailPosition > -1 -> updateDetailData(position = newDetailPosition)
-            newGroupPosition > -1 -> handleSetGroup(position = newGroupPosition)
+            newGroupPosition > -1 -> handleSetGroup(position = newGroupPosition, true)
             else -> updateDetailData(event = RESUME, isReset = true)
         }
     }

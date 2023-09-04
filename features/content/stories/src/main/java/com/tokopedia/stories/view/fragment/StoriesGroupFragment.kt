@@ -104,7 +104,7 @@ class StoriesGroupFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
             viewModel.uiEvent.collect { event ->
                 when (event) {
-                    is StoriesUiEvent.SelectGroup -> selectGroupEvent(event.position)
+                    is StoriesUiEvent.SelectGroup -> selectGroupEvent(event.position, event.showAnimation)
                     StoriesUiEvent.FinishedAllStories -> activity?.finish()
                     is StoriesUiEvent.ErrorGroupPage -> {
                         if (event.throwable.isNetworkError) showToast("error group network ${event.throwable}")
@@ -129,8 +129,8 @@ class StoriesGroupFragment @Inject constructor(
         showPageLoading(false)
     }
 
-    private fun selectGroupEvent(position: Int) = with(binding.storiesGroupViewPager) {
-        currentItem = position
+    private fun selectGroupEvent(position: Int, showAnimation: Boolean ) = with(binding.storiesGroupViewPager) {
+        setCurrentItem(position, showAnimation)
     }
 
     private fun showPageLoading(isShowLoading: Boolean) = with(binding){
