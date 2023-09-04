@@ -23,4 +23,6 @@ sealed class MainEditorEvent {
     object ResetActiveInputText : MainEditorEvent()
 
     object PlacementImagePage : MainEditorEvent()
+
+    data class PlacementImageResult(val model: ImagePlacementModel?) : MainEditorEvent()
 }

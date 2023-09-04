@@ -81,11 +81,12 @@ open class MainEditorActivity : AppCompatActivity(), NavToolbarComponent.Listene
     }
 
     private val placementIntent = registerForActivityResult(StartActivityForResult()) {
-        val result = it.data?.getParcelableExtra<ImagePlacementModel>(PlacementImageActivity.PLACEMENT_RESULT_KEY)
+        val result = PlacementImageActivity.result(it)
+        viewModel.onEvent(MainEditorEvent.PlacementImageResult(result))
 
-        if (result?.path?.isNotEmpty() == true) {
-            viewModel.updatePlacement(result)
-        }
+//        if (result?.path?.isNotEmpty() == true) {
+//            viewModel.updatePlacement(result)
+//        }
     }
 
     private val viewModel: MainEditorViewModel by viewModels { viewModelFactory }
@@ -122,6 +123,10 @@ open class MainEditorActivity : AppCompatActivity(), NavToolbarComponent.Listene
 
     private fun initObserver() {
         lifecycleScope.launchWhenCreated {
+            viewModel.mainEditorState.collect(::initView)
+        }
+
+        lifecycleScope.launchWhenCreated {
             viewModel.uiEffect.collect {
                 when (it) {
                     is MainEditorEffect.OpenInputText -> {
@@ -133,6 +138,9 @@ open class MainEditorActivity : AppCompatActivity(), NavToolbarComponent.Listene
                     }
                     is MainEditorEffect.OpenPlacementPage -> {
                         navigateToPlacementImagePage(it.sourcePath, it.model)
+                    }
+                    is MainEditorEffect.UpdatePagerSourcePath -> {
+                        pagerContainer.updateView(it.newSourcePath)
                     }
                 }
             }

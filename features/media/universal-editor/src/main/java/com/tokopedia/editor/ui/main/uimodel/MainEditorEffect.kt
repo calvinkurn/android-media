@@ -13,4 +13,6 @@ sealed class MainEditorEffect {
     data class ParentToolbarVisibility(val visible: Boolean) : MainEditorEffect()
 
     data class OpenPlacementPage(val sourcePath: String, val model: ImagePlacementModel?) : MainEditorEffect()
+
+    data class UpdatePagerSourcePath(val newSourcePath: String, val pagerTag: String) : MainEditorEffect()
 }

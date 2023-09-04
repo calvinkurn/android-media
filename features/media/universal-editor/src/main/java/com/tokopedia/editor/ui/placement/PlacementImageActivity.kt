@@ -3,6 +3,7 @@ package com.tokopedia.editor.ui.placement
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.result.ActivityResult
 import androidx.activity.viewModels
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProvider
@@ -13,6 +14,8 @@ import com.tokopedia.editor.di.ModuleInjector
 import com.tokopedia.editor.ui.EditorFragmentProvider
 import com.tokopedia.editor.ui.EditorFragmentProviderImpl
 import com.tokopedia.editor.ui.model.ImagePlacementModel
+import com.tokopedia.editor.ui.model.InputTextModel
+import com.tokopedia.editor.ui.text.InputTextActivity
 import com.tokopedia.editor.util.getEditorCacheFolderPath
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.component.NavToolbarComponent
@@ -99,7 +102,6 @@ class PlacementImageActivity : BaseActivity(), NavToolbarComponent.Listener {
 
     private fun initObserver() {
         viewModel.placementModelResult.observe(this) {
-            val x = 0
             it?.let { resultModel ->
                 viewModel.updateLoadingState(false)
                 setResult(
@@ -174,6 +176,10 @@ class PlacementImageActivity : BaseActivity(), NavToolbarComponent.Listener {
             intent.putExtra(PLACEMENT_MODEL_KEY, previousState)
 
             return intent
+        }
+
+        fun result(result: ActivityResult): ImagePlacementModel? {
+            return result.data?.getParcelableExtra(PLACEMENT_RESULT_KEY)
         }
 
         fun createIntentResult(placementModel: ImagePlacementModel?): Intent {
