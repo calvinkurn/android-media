@@ -95,6 +95,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CLICK_PE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CLICK_PRODUCT_ATC
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CLICK_PRODUCT_ATC_QUANTITY
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CLICK_PRODUCT_ATC_RESET
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CLICK_REIMAGINED_SHOWCASE_NAVIGATION
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CLICK_REMIND_ME_EXCLUSIVE_LAUNCH_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.IMPRESSION_EXCLUSIVE_LAUNCH_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.IMPRESSION_PERSONALIZATION_TRENDING_WIDGET
@@ -275,7 +276,6 @@ import com.tokopedia.shop.home.view.model.showcase_navigation.Showcase
 import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseNavigationUiModel
 import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.CarouselAppearance
 import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.LeftMainBannerAppearance
-import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.ShopHomeShowcaseNavigationBannerWidgetAppearance
 import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.TopMainBannerAppearance
 import com.tokopedia.shop_widget.thematicwidget.uimodel.ProductCardUiModel
 import com.tokopedia.track.TrackApp
@@ -3385,7 +3385,7 @@ class ShopPageHomeTracking(
     //region Showcase navigation widget tracker
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4148
     // Tracker ID: 45924
-    fun sendReimaginedImpressionNavigasiEtalaseBannerEvent(
+    fun sendShowcaseNavigationBannerWidgetImpression(
         shopId: String,
         userId: String,
         uiModel: ShowcaseNavigationUiModel
@@ -3441,27 +3441,39 @@ class ShopPageHomeTracking(
     }
 
 
-    /*// Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4148
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4148
     // Tracker ID: 45925
-    fun sendReimaginedClickNavigasiEtalaseBannerEvent (eventLabel: String, promotions: JSONArray, sessionIris: String, shopId: String, userId: String) {
-        Tracker.Builder()
-            .setEvent("select_content")
-            .setEventAction("reimagined - click navigasi etalase banner")
-            .setEventCategory("shop page - buyer")
-            .setEventLabel(eventLabel)
-            .setCustomProperty("trackerId", "45925")
-            .setBusinessUnit("Physical Goods")
-            .setCurrentSite("tokopediamarketplace")
-            .setCustomProperty("promotions", promotions)
-            .setCustomProperty("sessionIris", sessionIris)
-            .setShopId(shopId)
-            .setUserId(userId)
-            .build()
-            .send()
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, eventBundle)
+    fun sendShowcaseNavigationBannerWidgetClick (shopId: String, userId: String, uiModel: ShowcaseNavigationUiModel, showcase: Showcase) {
+        val eventLabel = when(uiModel.appearance) {
+            is LeftMainBannerAppearance -> "hero etalase-left - ${showcase.id}"
+            is TopMainBannerAppearance -> "hero etalase-top - ${showcase.id}"
+            is CarouselAppearance -> "no hero etalase - ${showcase.id}"
+        }
+
+        val bundledShowcase = Bundle().apply {
+            putString(CREATIVE_NAME, "")
+            putInt(CREATIVE_SLOT, 0)
+            putString(ITEM_ID, showcase.id)
+            putString(ITEM_NAME, showcase.name)
+        }
+
+        val bundle = Bundle().apply {
+            putString(EVENT, SELECT_CONTENT)
+            putString(EVENT_ACTION, CLICK_REIMAGINED_SHOWCASE_NAVIGATION)
+            putString(EVENT_CATEGORY, SHOP_PAGE_BUYER)
+            putString(EVENT_LABEL, eventLabel)
+            putString(TRACKER_ID, TRACKER_ID_IMPRESSION_REIMAGINED_SHOWCASE_NAVIGATION)
+            putString(BUSINESS_UNIT, PHYSICAL_GOODS_PASCAL_CASE)
+            putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
+            putString(SHOP_ID, shopId)
+            putString(USER_ID, userId)
+            putParcelableArrayList(PROMOTIONS, arrayListOf(bundledShowcase))
+        }
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(PROMO_CLICK, bundle)
     }
 
-
+    /*
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4148
     // Tracker ID: 45926
     fun sendReimaginedClickNavigasiEtalaseAllEvent (eventLabel: String, sessionIris: String, shopId: String, userId: String) {
@@ -3473,7 +3485,7 @@ class ShopPageHomeTracking(
             .setCustomProperty("trackerId", "45926")
             .setBusinessUnit("Physical Goods")
             .setCurrentSite("tokopediamarketplace")
-            .setCustomProperty("sessionIris", sessionIris)
+
             .setShopId(shopId)
             .setUserId(userId)
             .build()
@@ -3491,7 +3503,7 @@ class ShopPageHomeTracking(
             .setCustomProperty("trackerId", "45927")
             .setBusinessUnit("Physical Goods")
             .setCurrentSite("tokopediamarketplace")
-            .setCustomProperty("sessionIris", sessionIris)
+            
             .setShopId(shopId)
             .setUserId(userId)
             .build()
@@ -3510,7 +3522,7 @@ class ShopPageHomeTracking(
             .setCustomProperty("trackerId", "45948")
             .setBusinessUnit("Physical Goods")
             .setCurrentSite("tokopediamarketplace")
-            .setCustomProperty("sessionIris", sessionIris)
+            
             .setShopId(shopId)
             .setUserId(userId)
             .build()
@@ -3530,7 +3542,7 @@ class ShopPageHomeTracking(
             .setBusinessUnit("Physical Goods")
             .setCurrentSite("tokopediamarketplace")
             .setCustomProperty("promotions", promotions)
-            .setCustomProperty("sessionIris", sessionIris)
+            
             .setShopId(shopId)
             .setUserId(userId)
             .build()
@@ -3553,7 +3565,7 @@ class ShopPageHomeTracking(
             .setBusinessUnit("Physical Goods")
             .setCurrentSite("tokopediamarketplace")
             .setCustomProperty("promotions", promotions)
-            .setCustomProperty("sessionIris", sessionIris)
+            
             .setShopId(shopId)
             .setUserId(userId)
             .build()
@@ -3574,7 +3586,7 @@ class ShopPageHomeTracking(
             .setBusinessUnit("Physical Goods")
             .setCurrentSite("tokopediamarketplace")
             .setCustomProperty("promotions", promotions)
-            .setCustomProperty("sessionIris", sessionIris)
+            
             .setShopId(shopId)
             .setUserId(userId)
             .build()
@@ -3596,7 +3608,7 @@ class ShopPageHomeTracking(
             .setCurrentSite("tokopediamarketplace")
             .setCustomProperty("item_list", "/shoppage reimagined - advanced carousel")
             .setCustomProperty("items", items)
-            .setCustomProperty("sessionIris", sessionIris)
+            
             .setShopId(shopId)
             .setUserId(userId)
             .build()

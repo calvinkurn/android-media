@@ -206,11 +206,7 @@ import com.tokopedia.shop.home.util.ShopBannerProductGroupWidgetTabDependencyPro
 import com.tokopedia.shop.home.view.listener.ShopBannerProductGroupListener
 import com.tokopedia.shop.home.view.customview.directpurchase.DirectPurchaseWidgetView
 import com.tokopedia.shop.home.view.customview.directpurchase.ProductCardDirectPurchaseDataModel
-import com.tokopedia.shop.home.view.model.banner_product_group.appearance.ShimmerItemType
-import com.tokopedia.shop.home.view.model.banner_product_group.appearance.ShopHomeBannerProductGroupItemType
 import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseNavigationUiModel
-import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.ShopHomeShowcaseNavigationBannerWidgetAppearance
-import com.tokopedia.shop.home.view.viewmodel.ShopBannerProductGroupWidgetTabViewModel
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragment
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragmentV2
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPageHeaderPerformanceMonitoringListener
@@ -5077,11 +5073,12 @@ open class ShopPageHomeFragment :
         selectedShowcase: Showcase,
         uiModel: ShowcaseNavigationUiModel
     ) {
+        shopPageHomeTracking.sendShowcaseNavigationBannerWidgetClick(shopId, userId, uiModel, selectedShowcase)
         RouteManager.route(activity ?: return, selectedShowcase.ctaLink)
     }
 
     override fun onNavigationBannerImpression(uiModel: ShowcaseNavigationUiModel) {
-        shopPageHomeTracking.sendReimaginedImpressionNavigasiEtalaseBannerEvent(shopId, userId, uiModel)
+        shopPageHomeTracking.sendShowcaseNavigationBannerWidgetImpression(shopId, userId, uiModel)
     }
 
     override val productCarouselHostFragmentManager: FragmentManager
