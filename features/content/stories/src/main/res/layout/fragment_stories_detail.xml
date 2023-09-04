@@ -202,4 +202,13 @@
         app:icon_name="SHARE"
         app:unify_image_type="circle" />
 
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/v_stories_no_inet"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rv_stories_category"
+        app:layout_constraintBottom_toBottomOf="@id/iv_stories_detail_content"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

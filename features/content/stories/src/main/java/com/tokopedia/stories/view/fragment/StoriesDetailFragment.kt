@@ -22,6 +22,8 @@ import com.tokopedia.stories.bottomsheet.StoriesThreeDotsBottomSheet
 import com.tokopedia.stories.databinding.FragmentStoriesDetailBinding
 import com.tokopedia.stories.uimodel.StoryAuthor
 import com.tokopedia.stories.utils.withCache
+import com.tokopedia.stories.view.StoriesFailedLoad
+import com.tokopedia.stories.view.StoriesUnavailable
 import com.tokopedia.stories.view.adapter.StoriesGroupAdapter
 import com.tokopedia.stories.view.components.indicator.StoriesDetailTimer
 import com.tokopedia.stories.view.model.BottomSheetType
@@ -129,8 +131,8 @@ class StoriesDetailFragment @Inject constructor(
                     is StoriesUiEvent.ShowErrorEvent -> showToaster(message = event.message.message.orEmpty(), type = Toaster.TYPE_ERROR)
                     is StoriesUiEvent.ErrorDetailPage -> {
                         if (viewModel.mGroupId != groupId) return@collectLatest
-                        if (event.throwable.isNetworkError) showToast("error detail network ${event.throwable}")
-                        else showToast("error detail content ${event.throwable}")
+                        if (event.throwable.isNetworkError) setNoInternet(true)
+                        else setNoContent(true)
                         showPageLoading(false)
                     }
                     else -> return@collectLatest
@@ -160,6 +162,9 @@ class StoriesDetailFragment @Inject constructor(
             state.detailItems.isEmpty() ||
             state.selectedGroupId != groupId || state.selectedDetailPosition < 0 || state.selectedDetailPositionCached < 0
         ) return
+
+        setNoInternet(false)
+        setNoContent(false)
 
         val currentItem = state.detailItems[state.selectedDetailPosition]
 
@@ -321,6 +326,30 @@ class StoriesDetailFragment @Inject constructor(
             actionText = actionText,
             clickListener = clickListener
         ).show()
+    }
+
+    private fun setNoInternet(isShow: Boolean) = with(binding.vStoriesNoInet) {
+        apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                StoriesFailedLoad (onRetryClicked = {
+                    viewModelAction(StoriesUiAction.SetArgumentsData(arguments)) //Should be refreshing~
+                })
+            }
+        }
+        showWithCondition(isShow)
+    }
+
+    private fun setNoContent(isShow: Boolean) = with(binding.vStoriesNoInet) {
+        apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                StoriesUnavailable (onRetryClicked = {
+                    viewModelAction(StoriesUiAction.SetArgumentsData(arguments)) //Should be refreshing~
+                })
+            }
+        }
+        showWithCondition(isShow)
     }
 
     override fun onDestroyView() {
