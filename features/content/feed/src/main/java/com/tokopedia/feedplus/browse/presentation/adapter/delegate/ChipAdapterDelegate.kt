@@ -7,6 +7,7 @@ import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseChipViewHolder
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseChipUiModel
 import com.tokopedia.feedplus.databinding.ItemFeedBrowseChipBinding
+import com.tokopedia.feedplus.R as feedplusR
 
 /**
  * Created by meyta.taliti on 31/08/23.
@@ -15,7 +16,7 @@ class ChipAdapterDelegate(
     private val listener: FeedBrowseChipViewHolder.Listener
 ):
     TypedAdapterDelegate<FeedBrowseChipUiModel, FeedBrowseChipUiModel, FeedBrowseChipViewHolder>(
-        com.tokopedia.feedplus.R.layout.item_feed_browse_chip
+        feedplusR.layout.item_feed_browse_chip
     ) {
 
     override fun onBindViewHolder(

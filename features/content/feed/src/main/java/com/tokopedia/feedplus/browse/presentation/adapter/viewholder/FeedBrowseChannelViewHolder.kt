@@ -2,7 +2,9 @@ package com.tokopedia.feedplus.browse.presentation.adapter.viewholder
 
 import android.view.View
 import android.widget.LinearLayout
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.feedplus.browse.presentation.adapter.CenterScrollLayoutManager
 import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseCardAdapter
 import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseChipAdapter
 import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseItemDecoration
@@ -17,6 +19,8 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
+import com.tokopedia.feedplus.R as feedplusR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created by meyta.taliti on 11/08/23.
@@ -63,8 +67,8 @@ class FeedBrowseChannelViewHolder(
     private val chipAdapter by lazy { FeedBrowseChipAdapter(chipListener) }
     private val chipItemDecoration = FeedBrowseItemDecoration(
         context = binding.root.context,
-        spacingHorizontal = com.tokopedia.feedplus.R.dimen.feed_space_2,
-        spacingTop = com.tokopedia.feedplus.R.dimen.feed_space_12
+        spacingHorizontal = feedplusR.dimen.feed_space_2,
+        spacingTop = feedplusR.dimen.feed_space_12
     )
 
     private val cardListener = object : FeedBrowseCardViewHolder.Listener {
@@ -83,8 +87,8 @@ class FeedBrowseChannelViewHolder(
     private val cardAdapter by lazy { FeedBrowseCardAdapter(cardListener) }
     private val cardItemDecoration = FeedBrowseItemDecoration(
         context = binding.root.context,
-        spacingHorizontal = com.tokopedia.feedplus.R.dimen.feed_space_8,
-        spacingTop = com.tokopedia.unifyprinciples.R.dimen.layout_lvl0
+        spacingHorizontal = feedplusR.dimen.feed_space_8,
+        spacingTop = unifyprinciplesR.dimen.layout_lvl0
     )
 
     private var mData: FeedBrowseUiModel.Channel? = null
@@ -95,6 +99,7 @@ class FeedBrowseChannelViewHolder(
 
         recyclerViewChip.adapter = chipAdapter
         recyclerViewChip.addItemDecoration(chipItemDecoration)
+        recyclerViewChip.layoutManager = CenterScrollLayoutManager(binding.root.context, LinearLayoutManager.HORIZONTAL, false)
     }
 
     fun updateItem(item: FeedBrowseUiModel.Channel) {
@@ -160,6 +165,14 @@ class FeedBrowseChannelViewHolder(
 
     private fun setupChips(chip: ChipUiState.Data) {
         chipAdapter.setItemsAndAnimateChanges(chip.items)
+        autoScrollChip(chip)
+    }
+
+    private fun autoScrollChip(chip: ChipUiState.Data) {
+        val selectedIndex = chip.items.indexOfFirst { it.isSelected }
+        if (selectedIndex in 0 until chip.items.size) {
+            recyclerViewChip.scrollToPosition(selectedIndex)
+        }
     }
 
     private fun setupCards(channel: ChannelUiState.Data) {

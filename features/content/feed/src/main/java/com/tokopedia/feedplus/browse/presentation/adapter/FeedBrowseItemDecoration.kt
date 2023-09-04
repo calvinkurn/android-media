@@ -5,6 +5,7 @@ import android.graphics.Rect
 import android.view.View
 import androidx.annotation.DimenRes
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.feedplus.R as feedplusR
 
 /**
  * Created by meyta.taliti on 22/08/23.
@@ -15,8 +16,8 @@ class FeedBrowseItemDecoration(
     @DimenRes spacingTop: Int,
 ) : RecyclerView.ItemDecoration() {
 
-    private val spacingStart = getDimensionInPixel(com.tokopedia.feedplus.R.dimen.feed_space_16)
-    private val spacingEnd = getDimensionInPixel(com.tokopedia.feedplus.R.dimen.feed_space_16)
+    private val spacingStart = getDimensionInPixel(feedplusR.dimen.feed_space_16)
+    private val spacingEnd = getDimensionInPixel(feedplusR.dimen.feed_space_16)
     private val spacingHorizontalPx = getDimensionInPixel(spacingHorizontal)
     private val spacingTopPx = getDimensionInPixel(spacingTop)
 
