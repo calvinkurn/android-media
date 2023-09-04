@@ -1,7 +1,6 @@
 package com.tokopedia.cartrevamp.view
 
 import android.os.Bundle
-import android.widget.ImageView
 import androidx.core.os.bundleOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -43,9 +42,48 @@ import com.tokopedia.cartrevamp.view.helper.CartDataHelper
 import com.tokopedia.cartrevamp.view.mapper.CartUiModelMapper
 import com.tokopedia.cartrevamp.view.mapper.PromoRequestMapper
 import com.tokopedia.cartrevamp.view.processor.CartCalculator
-import com.tokopedia.cartrevamp.view.uimodel.*
+import com.tokopedia.cartrevamp.view.uimodel.AddCartToWishlistV2Event
+import com.tokopedia.cartrevamp.view.uimodel.AddToCartEvent
+import com.tokopedia.cartrevamp.view.uimodel.AddToCartExternalEvent
+import com.tokopedia.cartrevamp.view.uimodel.CartAddOnProductData
+import com.tokopedia.cartrevamp.view.uimodel.CartBundlingBottomSheetData
+import com.tokopedia.cartrevamp.view.uimodel.CartCheckoutButtonState
+import com.tokopedia.cartrevamp.view.uimodel.CartEmptyHolderData
+import com.tokopedia.cartrevamp.view.uimodel.CartGlobalEvent
+import com.tokopedia.cartrevamp.view.uimodel.CartGroupHolderData
+import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
+import com.tokopedia.cartrevamp.view.uimodel.CartLoadingHolderData
+import com.tokopedia.cartrevamp.view.uimodel.CartModel
+import com.tokopedia.cartrevamp.view.uimodel.CartMutableLiveData
+import com.tokopedia.cartrevamp.view.uimodel.CartRecentViewHolderData
+import com.tokopedia.cartrevamp.view.uimodel.CartRecentViewItemHolderData
+import com.tokopedia.cartrevamp.view.uimodel.CartRecommendationItemHolderData
+import com.tokopedia.cartrevamp.view.uimodel.CartSectionHeaderHolderData
+import com.tokopedia.cartrevamp.view.uimodel.CartSelectedAmountHolderData
+import com.tokopedia.cartrevamp.view.uimodel.CartShopBottomHolderData
+import com.tokopedia.cartrevamp.view.uimodel.CartShopGroupTickerState
+import com.tokopedia.cartrevamp.view.uimodel.CartState
+import com.tokopedia.cartrevamp.view.uimodel.CartTopAdsHeadlineData
+import com.tokopedia.cartrevamp.view.uimodel.CartTrackerEvent
+import com.tokopedia.cartrevamp.view.uimodel.CartWishlistHolderData
+import com.tokopedia.cartrevamp.view.uimodel.CartWishlistItemHolderData
+import com.tokopedia.cartrevamp.view.uimodel.DeleteCartEvent
+import com.tokopedia.cartrevamp.view.uimodel.DisabledAccordionHolderData
+import com.tokopedia.cartrevamp.view.uimodel.DisabledCollapsedHolderData
+import com.tokopedia.cartrevamp.view.uimodel.DisabledItemHeaderHolderData
+import com.tokopedia.cartrevamp.view.uimodel.DisabledReasonHolderData
+import com.tokopedia.cartrevamp.view.uimodel.FollowShopEvent
+import com.tokopedia.cartrevamp.view.uimodel.LoadRecentReviewState
+import com.tokopedia.cartrevamp.view.uimodel.LoadRecommendationState
+import com.tokopedia.cartrevamp.view.uimodel.LoadWishlistV2State
+import com.tokopedia.cartrevamp.view.uimodel.PromoSummaryDetailData
+import com.tokopedia.cartrevamp.view.uimodel.RemoveFromWishlistEvent
+import com.tokopedia.cartrevamp.view.uimodel.SeamlessLoginEvent
+import com.tokopedia.cartrevamp.view.uimodel.UndoDeleteEvent
+import com.tokopedia.cartrevamp.view.uimodel.UpdateCartAndGetLastApplyEvent
+import com.tokopedia.cartrevamp.view.uimodel.UpdateCartCheckoutState
+import com.tokopedia.cartrevamp.view.uimodel.UpdateCartPromoState
 import com.tokopedia.cartrevamp.view.util.CartPageAnalyticsUtil
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -1556,46 +1594,6 @@ class CartViewModel @Inject constructor(
         }
     }
 
-    fun setItemSelected(position: Int, cartItemHolderData: CartItemHolderData, selected: Boolean) {
-        var updatedShopData: CartGroupHolderData? = null
-        var shopBottomIndex: Int? = null
-        for ((id, data) in cartDataList.value.withIndex()) {
-            if (data is CartGroupHolderData && data.cartString == cartItemHolderData.cartString && data.isError == cartItemHolderData.isError) {
-                data.productUiModelList.forEachIndexed { index, item ->
-                    if ((id + 1 + index) == position) {
-                        item.isSelected = selected
-                    }
-                }
-
-                var selectedCount = 0
-                data.productUiModelList.forEach {
-                    if (it.isSelected) {
-                        selectedCount++
-                    }
-                }
-
-                if (selectedCount == 0) {
-                    data.isAllSelected = false
-                    data.isPartialSelected = false
-                } else if (selectedCount > 0 && selectedCount < data.productUiModelList.size) {
-                    data.isAllSelected = false
-                    data.isPartialSelected = true
-                } else {
-                    data.isAllSelected = true
-                    data.isPartialSelected = false
-                }
-                updateSelectedAmount()
-                updatedShopData = data
-            } else if (data is CartShopBottomHolderData && data.shopData.cartString == cartItemHolderData.cartString && updatedShopData != null) {
-                shopBottomIndex = id
-                break
-            }
-        }
-        if (shopBottomIndex != null && updatedShopData != null) {
-            cartDataList.value[shopBottomIndex] = CartShopBottomHolderData(updatedShopData)
-        }
-    }
-
     fun processAddToCart(productModel: Any) {
         _globalEvent.value = CartGlobalEvent.ProgressLoading(true)
 
@@ -1955,9 +1953,7 @@ class CartViewModel @Inject constructor(
         productId: String,
         userId: String,
         isLastItem: Boolean,
-        source: String,
-        wishlistIcon: IconUnify,
-        animatedWishlistImage: ImageView
+        source: String
     ) {
         viewModelScope.launch(dispatchers.io) {
             addToWishlistV2UseCase.setParams(productId, userId)
@@ -1968,9 +1964,7 @@ class CartViewModel @Inject constructor(
                         result.data,
                         productId,
                         isLastItem,
-                        source,
-                        wishlistIcon,
-                        animatedWishlistImage
+                        source
                     )
                 } else {
                     val error = (result as Fail).throwable
@@ -1984,7 +1978,6 @@ class CartViewModel @Inject constructor(
         productId: String,
         userId: String,
         isFromCart: Boolean,
-        wishlistIcon: IconUnify? = null,
         position: Int = 0
     ) {
         viewModelScope.launch(dispatchers.io) {
@@ -1994,10 +1987,7 @@ class CartViewModel @Inject constructor(
                 if (result is Success) {
                     if (isFromCart) {
                         _removeFromWishlistEvent.value =
-                            RemoveFromWishlistEvent.RemoveWishlistFromCartSuccess(
-                                wishlistIcon,
-                                position
-                            )
+                            RemoveFromWishlistEvent.RemoveWishlistFromCartSuccess(position)
                     } else {
                         _removeFromWishlistEvent.value = RemoveFromWishlistEvent.Success(
                             result.data,
@@ -2163,7 +2153,7 @@ class CartViewModel @Inject constructor(
         return Triple(toBeRemovedIndices, toBeUpdatedIndices, newCartDataList)
     }
 
-    private fun updateShopShownByCartGroup(cartGroupHolderData: CartGroupHolderData) {
+    internal fun updateShopShownByCartGroup(cartGroupHolderData: CartGroupHolderData) {
         if (cartGroupHolderData.isUsingOWOCDesign()) {
             val groupPromoHolderDataMap = hashMapOf<String, MutableList<CartItemHolderData>>()
             cartGroupHolderData.productUiModelList.forEach {
