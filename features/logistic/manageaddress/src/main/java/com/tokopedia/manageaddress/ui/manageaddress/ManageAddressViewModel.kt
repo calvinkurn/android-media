@@ -43,7 +43,6 @@ import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.usercomponents.userconsent.common.CollectionPointDataModel
 import com.tokopedia.usercomponents.userconsent.common.UserConsentConst
 import com.tokopedia.usercomponents.userconsent.common.UserConsentPayload
 import com.tokopedia.usercomponents.userconsent.domain.collection.ConsentCollectionParam
@@ -256,12 +255,7 @@ class ManageAddressViewModel @Inject constructor(
                     * default value of transactionType is OPT_OUT, because the first time show checkbox always uncheck
                     * specially for consentTypeInfo (that no checkbox show) the value must be OPT_IN.
                     */
-                    transactionType =
-                    if (collection.isConsentTypeInfo()) {
-                        UserConsentConst.CONSENT_OPT_IN
-                    } else {
-                        it.transactionType
-                    },
+                    transactionType = UserConsentConst.CONSENT_OPT_OUT,
                     dataElementType = it.attribute.dataElementType
                 )
             )
@@ -273,10 +267,6 @@ class ManageAddressViewModel @Inject constructor(
             default = isErrorGetConsent,
             purposes = purposes
         ).toString()
-    }
-
-    private fun CollectionPointDataModel.isConsentTypeInfo(): Boolean {
-        return (this.attributes.collectionPointPurposeRequirement == UserConsentConst.MANDATORY && this.attributes.collectionPointStatementOnlyFlag == UserConsentConst.NO_CHECKLIST)
     }
 
     fun setDefaultPeopleAddress(
