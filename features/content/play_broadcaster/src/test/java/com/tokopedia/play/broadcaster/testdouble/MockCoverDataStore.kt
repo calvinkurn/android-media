@@ -8,6 +8,7 @@ import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import io.mockk.mockk
+import kotlinx.coroutines.flow.Flow
 
 /**
  * Created by jegul on 25/09/20
@@ -18,10 +19,14 @@ class MockCoverDataStore(
 
     private val realImpl = CoverDataStoreImpl(dispatcherProvider, mockk())
 
-    private var isSuccess: Boolean = false
+    private var uploadSelectedCoverResponse: () -> NetworkResult<Unit> = {NetworkResult.Success(Unit) }
 
     override fun getObservableSelectedCover(): LiveData<PlayCoverUiModel> {
         return realImpl.getObservableSelectedCover()
+    }
+
+    override fun getSelectedCoverAsFlow(): Flow<PlayCoverUiModel> {
+        return realImpl.getSelectedCoverAsFlow()
     }
 
     override fun getSelectedCover(): PlayCoverUiModel? {
@@ -40,6 +45,10 @@ class MockCoverDataStore(
         authorId: String,
         channelId: String
     ): NetworkResult<Unit> {
-        return realImpl.uploadSelectedCover(channelId, authorId)
+        return uploadSelectedCoverResponse()
+    }
+
+    fun setUploadSelectedCoverResponse(uploadSelectedCoverResponse: () -> NetworkResult<Unit>) {
+        this.uploadSelectedCoverResponse = uploadSelectedCoverResponse
     }
 }

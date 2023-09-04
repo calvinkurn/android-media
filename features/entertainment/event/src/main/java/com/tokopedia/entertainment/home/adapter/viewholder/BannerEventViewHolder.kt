@@ -10,11 +10,11 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.banner.BannerView
 import com.tokopedia.banner.Indicator
 import com.tokopedia.entertainment.R
+import com.tokopedia.entertainment.databinding.EntBannerViewBinding
 import com.tokopedia.entertainment.home.adapter.listener.TrackingListener
 import com.tokopedia.entertainment.home.adapter.viewmodel.BannerModel
 import com.tokopedia.entertainment.home.fragment.NavEventHomeFragment
-import kotlinx.android.synthetic.main.ent_banner_view.view.*
-
+import com.tokopedia.utils.view.binding.viewBinding
 
 /**
  * Author errysuprayogi on 27,January,2020
@@ -26,15 +26,18 @@ class BannerEventViewHolder(itemView: View, val listener: TrackingListener) : Ab
     var context: Context
     var el: BannerModel? = null
 
+    private val binding: EntBannerViewBinding? by viewBinding()
     init {
         context = itemView.context
-        itemView.banner_home_ent?.onPromoClickListener = this
-        itemView.banner_home_ent?.onPromoAllClickListener = this
-        itemView.banner_home_ent?.setOnPromoScrolledListener(this)
-        itemView.banner_home_ent?.setOnPromoLoadedListener(this)
-        itemView.banner_home_ent?.setOnPromoDragListener(this)
-        itemView.banner_home_ent?.setBannerSeeAllTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
-        itemView.banner_home_ent?.setBannerIndicator(Indicator.GREEN)
+        binding?.bannerHomeEnt?.run {
+            onPromoClickListener = this@BannerEventViewHolder
+            onPromoAllClickListener = this@BannerEventViewHolder
+            setOnPromoScrolledListener(this@BannerEventViewHolder)
+            setOnPromoLoadedListener(this@BannerEventViewHolder)
+            setOnPromoDragListener(this@BannerEventViewHolder)
+            setBannerSeeAllTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
+            setBannerIndicator(Indicator.GREEN)
+        }
     }
 
     override fun onPromoClick(p: Int) {
@@ -71,13 +74,13 @@ class BannerEventViewHolder(itemView: View, val listener: TrackingListener) : Ab
 
     override fun bind(element: BannerModel) {
         el = element
-        itemView.banner_home_ent?.setPromoList(element.items)
+        binding?.bannerHomeEnt?.setPromoList(element.items)
         if (element.items.size == 1) {
             itemView.viewTreeObserver.addOnGlobalLayoutListener(
                     object : ViewTreeObserver.OnGlobalLayoutListener {
                         override fun onGlobalLayout() {
                             itemView.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                            itemView.banner_home_ent?.apply {
+                            binding?.bannerHomeEnt?.run {
                                 customWidth = itemView.measuredWidth - itemView.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl4)
                                 buildView()
                             }
@@ -85,7 +88,7 @@ class BannerEventViewHolder(itemView: View, val listener: TrackingListener) : Ab
                     })
         }
 
-        itemView.banner_home_ent?.buildView()
+        binding?.bannerHomeEnt?.buildView()
 
     }
 

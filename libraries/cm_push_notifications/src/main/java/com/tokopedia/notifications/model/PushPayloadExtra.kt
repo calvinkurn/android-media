@@ -18,6 +18,9 @@ data class PushPayloadExtra(
 
     @SerializedName(REPLY_TYPE)
     @Expose
-    var replyType: String? = null
+    var replyType: String? = null,
+
+    @SerializedName("user_type")
+    var userType: String? = null
 
 ) : Parcelable

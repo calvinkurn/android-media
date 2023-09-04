@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/channel_title_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="16dp"
+    android:paddingBottom="12dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <ViewStub
+        android:id="@+id/channel_title"
+        android:inflatedId="@+id/channel_title"
+        android:layout="@layout/view_stub_header_title_revamp"
+        android:layout_marginStart="@dimen/home_channel_header_margin_default"
+        android:layout_marginLeft="@dimen/home_channel_header_margin_default"
+        android:layout_width="match_parent"
+        tools:visibility="visible"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <ViewStub
+        android:id="@+id/channel_subtitle"
+        android:inflatedId="@+id/channel_subtitle"
+        android:layout="@layout/view_stub_header_subtitle_revamp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/home_channel_header_margin_default"
+        android:layout_marginLeft="@dimen/home_channel_header_margin_default"
+        android:layout_marginTop="@dimen/home_channel_header_subtitle_top_padding"
+        android:visibility="gone"
+        tools:visibility="visible"
+        tools:text="Berakhir dalam"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/channel_title"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <ViewStub
+        android:id="@+id/count_down"
+        android:inflatedId="@+id/count_down"
+        android:layout="@layout/view_stub_header_count_down_view"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        app:layout_goneMarginLeft="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/channel_title"
+        app:layout_constraintStart_toEndOf="@+id/channel_subtitle"
+        android:layout_marginTop="@dimen/home_channel_header_timer_top_padding"
+        android:visibility="gone"
+        tools:layout_height="20dp"
+        tools:layout_width="100dp"
+        tools:visibility="visible"/>
+
+    <ViewStub
+        android:id="@+id/cta_button"
+        android:inflatedId="@+id/cta_button"
+        android:layout="@layout/view_stub_header_cta_revamp"
+        android:layout_marginRight="@dimen/home_channel_header_margin_default"
+        android:layout_marginEnd="@dimen/home_channel_header_margin_default"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

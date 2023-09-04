@@ -94,7 +94,7 @@ class EventPDPTracking constructor(val userSession: UserSessionInterface, val ir
             putString(TrackAppUtils.EVENT_ACTION, "view checkout")
             putString(TrackAppUtils.EVENT_LABEL, String.format("%s -  %s", title, productDetailData.displayName))
             putString(CHECKOUT_OPTION, "cart page loaded")
-            putString(CHECKOUT_STEP, "1")
+            putString(CHECKOUT_STEP, "0")
             putParcelableArrayList(ITEMS, getProductFromMetaData(items,title))
         }
         eventDataLayer.addGeneralCheckoutProgress(userId)

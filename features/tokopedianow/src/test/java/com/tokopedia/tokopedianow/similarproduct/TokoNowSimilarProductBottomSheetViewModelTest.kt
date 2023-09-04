@@ -65,8 +65,8 @@ class TokoNowSimilarProductBottomSheetViewModelTest {
 
         viewModel = TokoNowSimilarProductBottomSheetViewModel(
             getSimilarProductUseCase,
-            userSession,
             addressData,
+            userSession,
             addToCartUseCase,
             updateCartUseCase,
             deleteCartUseCase,
@@ -81,8 +81,8 @@ class TokoNowSimilarProductBottomSheetViewModelTest {
     fun `user id and loggedIn test`(){
         every { userSession.isLoggedIn } returns true
         every { userSession.userId } returns ""
-        assertEquals(true, viewModel.isLoggedIn)
-        assertEquals("", viewModel.userId)
+        assertEquals(true, viewModel.isLoggedIn())
+        assertEquals("", viewModel.getUserId())
     }
 
     @Test
@@ -111,17 +111,33 @@ class TokoNowSimilarProductBottomSheetViewModelTest {
         )
 
         val response = ProductRecommendationResponse(productRecommendationWidgetSingle = ProductRecommendationResponse.ProductRecommendationWidgetSingle(data = ProductRecommendationResponse.ProductRecommendationWidgetSingle.Data(recommendation = listOf(recommendationItem))))
+
         coEvery {
             getSimilarProductUseCase.execute(any(), any(), any())
         } returns response
 
-        every {
-            addressData.getAddressData()
-        } returns returnLocalCacheModel()
+        addressData = mockk(relaxed = true)
+
+        coEvery { addressData.getWarehouseId() } returns returnLocalCacheModel().warehouse_id.toLong()
+
+        viewModel = TokoNowSimilarProductBottomSheetViewModel(
+            getSimilarProductUseCase,
+            addressData,
+            userSession,
+            addToCartUseCase,
+            updateCartUseCase,
+            deleteCartUseCase,
+            getMiniCartUseCase,
+            affiliateService,
+            getTargetedTickerUseCase,
+            CoroutineTestDispatchers
+        )
 
         viewModel.getSimilarProductList("123")
+
         viewModel.similarProductList.verifyValueEquals(response.productRecommendationWidgetSingle?.data?.recommendation)
-        assertEquals("412", viewModel.warehouseId)
+
+        assertEquals("412", viewModel.getWarehouseId())
     }
 
     @Test

@@ -1,7 +1,9 @@
 package com.tokopedia.tokopedianow.repurchase.domain.param
 
+import com.tokopedia.tokopedianow.common.domain.model.WarehouseData
+
 data class GetRepurchaseProductListParam(
-    val warehouseID: String,
+    val warehouses: List<WarehouseData>,
     val sort: Int,
     val dateStart: String? = null,
     val dateEnd: String? = null,

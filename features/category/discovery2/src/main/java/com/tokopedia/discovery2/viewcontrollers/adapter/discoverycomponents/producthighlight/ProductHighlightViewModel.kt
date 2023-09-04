@@ -25,8 +25,9 @@ class ProductHighlightViewModel(val application: Application, val components: Co
     private val _hideShimmer = SingleLiveEvent<Boolean>()
     private val _showErrorState = SingleLiveEvent<Boolean>()
 
+    @JvmField
     @Inject
-    lateinit var productHighlightUseCase: ProductHighlightUseCase
+    var productHighlightUseCase: ProductHighlightUseCase? = null
 
     fun getProductHighlightCardItemsListData(): LiveData<ComponentsItem> = productHighlightCardList
     val hideShimmer: LiveData<Boolean> = _hideShimmer
@@ -42,21 +43,21 @@ class ProductHighlightViewModel(val application: Application, val components: Co
 
     private fun fetchProductHighlightData() {
         launchCatchError(block = {
-            if (productHighlightUseCase.loadFirstPageComponents(components.id, components.pageEndPoint)) {
+            if (productHighlightUseCase?.loadFirstPageComponents(components.id, components.pageEndPoint) == true) {
                 if (components.data.isNullOrEmpty()) {
                     _hideShimmer.value = true
                 }
                 productHighlightCardList.value = components
             }
         }, onError = {
-            components.noOfPagesLoaded = 1
-            if (it is UnknownHostException || it is SocketTimeoutException) {
-                components.verticalProductFailState = true
-                _showErrorState.value = true
-            } else {
-                _hideShimmer.value = true
-            }
-        })
+                components.noOfPagesLoaded = 1
+                if (it is UnknownHostException || it is SocketTimeoutException) {
+                    components.verticalProductFailState = true
+                    _showErrorState.value = true
+                } else {
+                    _hideShimmer.value = true
+                }
+            })
     }
 
     fun layoutSelector(): Int {

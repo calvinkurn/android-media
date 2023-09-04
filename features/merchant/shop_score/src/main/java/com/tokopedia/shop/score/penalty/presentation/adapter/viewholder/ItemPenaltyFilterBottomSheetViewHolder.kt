@@ -10,11 +10,10 @@ import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.PenaltyFilterItemDecoration
 import com.tokopedia.shop.score.databinding.ItemPenaltyFilterListBinding
 import com.tokopedia.shop.score.penalty.presentation.adapter.FilterPenaltyBottomSheetListener
-import com.tokopedia.shop.score.penalty.presentation.adapter.filter.FilterPenaltyAdapter.Companion.PAYLOAD_CHIPS_FILTER
+import com.tokopedia.shop.score.penalty.presentation.adapter.filter.FilterPenaltyAdapter
 import com.tokopedia.shop.score.penalty.presentation.adapter.filter.ItemChipsFilterPenaltyAdapter
 import com.tokopedia.shop.score.penalty.presentation.model.PenaltyFilterUiModel
 import com.tokopedia.utils.view.binding.viewBinding
-
 
 class ItemPenaltyFilterBottomSheetViewHolder(
     view: View,
@@ -23,6 +22,8 @@ class ItemPenaltyFilterBottomSheetViewHolder(
 
     companion object {
         val LAYOUT = R.layout.item_penalty_filter_list
+
+        private const val MIN_SHOWN_CHIPS_COUNT = 5
     }
 
     private val binding: ItemPenaltyFilterListBinding? by viewBinding()
@@ -33,8 +34,8 @@ class ItemPenaltyFilterBottomSheetViewHolder(
         itemChipsFilterPenaltyAdapter =
             ItemChipsFilterPenaltyAdapter(penaltyBottomSheetListener, element.title)
         binding?.run {
-            tvTitleHeaderPenaltyFilter.text = element.title
-            dividerSomFilter.showWithCondition(element.isDividerVisible)
+            tvPenaltyFilterTitle.text = element.title
+            dividerPenaltyFilter.showWithCondition(element.isDividerVisible)
         }
         setupChipsAdapter(element)
     }
@@ -43,7 +44,7 @@ class ItemPenaltyFilterBottomSheetViewHolder(
         if (element == null || payloads.isNullOrEmpty()) return
 
         when (payloads.getOrNull(0) as? Int) {
-            PAYLOAD_CHIPS_FILTER -> setupChipsAdapter(element)
+            FilterPenaltyAdapter.PAYLOAD_CHIPS_FILTER -> setupChipsAdapter(element)
         }
     }
 
@@ -60,8 +61,23 @@ class ItemPenaltyFilterBottomSheetViewHolder(
                 it.layoutManager = layoutManagerChips
                 ViewCompat.setLayoutDirection(it, ViewCompat.LAYOUT_DIRECTION_LTR)
                 it.adapter = itemChipsFilterPenaltyAdapter
-                itemChipsFilterPenaltyAdapter?.setItemChipsFilterPenaltyList(data.chipsFilterList)
+                itemChipsFilterPenaltyAdapter?.setItemChipsFilterPenaltyList(data.shownFilterList)
+            }
+            displaySeeAllButton(data)
+        }
+    }
+
+    private fun displaySeeAllButton(data: PenaltyFilterUiModel) {
+        (data.chipsFilterList.size > MIN_SHOWN_CHIPS_COUNT).let { shouldShow ->
+            binding?.tvPenaltyFilterSeeAll?.run {
+                showWithCondition(shouldShow)
+                if (shouldShow) {
+                    setOnClickListener {
+                        penaltyBottomSheetListener.onSeeAllButtonClicked(data)
+                    }
+                }
             }
         }
     }
+
 }

@@ -12,17 +12,19 @@ import com.tokopedia.play.widget.player.PlayVideoPlayerReceiver
 import com.tokopedia.play.widget.ui.autoplay.AutoPlayModel
 import com.tokopedia.play.widget.ui.autoplay.AutoPlayReceiverDecider
 import com.tokopedia.play.widget.ui.autoplay.DefaultAutoPlayReceiverDecider
+import com.tokopedia.play.widget.ui.coordinator.PlayWidgetAutoPlayCoordinator
 import com.tokopedia.play.widget.ui.listener.PlayWidgetInternalListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetType
+import com.tokopedia.play.widget.ui.model.WidgetInList
 import kotlinx.coroutines.*
 
 /**
  * Created by jegul on 21/10/20
  */
 class PlayFeedWidgetAutoPlayCoordinator(
-        private val scope: CoroutineScope,
-        private val mainCoroutineDispatcher: CoroutineDispatcher = Dispatchers.Main.immediate
+    private val scope: CoroutineScope,
+    private val mainCoroutineDispatcher: CoroutineDispatcher = Dispatchers.Main.immediate
 ) : PlayWidgetInternalListener {
 
     private var autoPlayJob: Job? = null
@@ -35,6 +37,10 @@ class PlayFeedWidgetAutoPlayCoordinator(
 
     override fun onWidgetCardsScrollChanged(widgetCardsContainer: RecyclerView) {
         startAutoPlay(widgetCardsContainer)
+    }
+
+    override fun onFocusedWidgetsChanged(focusedWidgets: List<WidgetInList>) {
+        startAutoPlay(focusedWidgets)
     }
 
     override fun onWidgetDetached(widget: View) {
@@ -115,6 +121,37 @@ class PlayFeedWidgetAutoPlayCoordinator(
                             videoPlayerMap[nextIdlePlayer] = it
                         }
                     }
+        }
+    }
+
+    private fun startAutoPlay(focusedWidgets: List<WidgetInList>) {
+        autoPlayJob?.cancel()
+
+        val autoPlayEligibleReceivers = autoPlayReceiverDecider.getEligibleAutoPlayReceivers(
+            visibleCards = focusedWidgets.map {
+                AutoPlayModel(it.widget, it.position)
+            },
+            itemCount = focusedWidgets.size,
+            maxAutoPlay = getMaxAutoPlayCard()
+        )
+
+        videoPlayerMap.entries.forEach {
+            if (it.value !in autoPlayEligibleReceivers) clearPlayerEntry(it)
+        }
+
+        autoPlayJob = scope.launch(mainCoroutineDispatcher) {
+            delay(MAX_DELAY)
+
+            autoPlayEligibleReceivers
+                .filter { it.getPlayer() == null }
+                .forEach {
+                    val nextIdlePlayer = getNextIdlePlayer()
+
+                    if (nextIdlePlayer != null) {
+                        it.setPlayer(nextIdlePlayer)
+                        videoPlayerMap[nextIdlePlayer] = it
+                    }
+                }
         }
     }
 

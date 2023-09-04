@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
     <corners android:radius="@dimen/layout_lvl1"/>
-    <solid android:color="@color/Unify_N0"/>
+    <solid android:color="@color/Unify_NN0"/>
     <stroke android:width="@dimen/spacing_lvl1" android:color="@color/play_dms_stroke_quiz"/>
 </shape>

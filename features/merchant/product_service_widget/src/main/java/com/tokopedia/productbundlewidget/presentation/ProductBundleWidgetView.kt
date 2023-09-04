@@ -8,13 +8,14 @@ import androidx.annotation.ColorRes
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.common.ProductServiceWidgetConstant.PRODUCT_ID_DEFAULT_VALUE
 import com.tokopedia.common.ProductServiceWidgetConstant.PRODUCT_BUNDLE_APPLINK_WITH_PARAM
 import com.tokopedia.common.ProductServiceWidgetConstant.PRODUCT_BUNDLE_REQUEST_CODE
+import com.tokopedia.common.ProductServiceWidgetConstant.PRODUCT_ID_DEFAULT_VALUE
 import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.setMargin
@@ -24,7 +25,11 @@ import com.tokopedia.product_service_widget.R
 import com.tokopedia.productbundlewidget.adapter.ProductBundleWidgetAdapter
 import com.tokopedia.productbundlewidget.listener.ProductBundleAdapterListener
 import com.tokopedia.productbundlewidget.listener.ProductBundleWidgetListener
-import com.tokopedia.productbundlewidget.model.*
+import com.tokopedia.productbundlewidget.model.BundleDetailUiModel
+import com.tokopedia.productbundlewidget.model.BundleProductUiModel
+import com.tokopedia.productbundlewidget.model.BundleTypes
+import com.tokopedia.productbundlewidget.model.BundleUiModel
+import com.tokopedia.productbundlewidget.model.GetBundleParam
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
@@ -41,6 +46,7 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleAdapterListener {
     lateinit var viewModel: ProductBundleWidgetViewModel
 
     private var tfTitle: Typography? = null
+    private var rvBundles: RecyclerView? = null
     private var pageSource: String = ""
     private var productId: String = ""
     private val bundleAdapter = ProductBundleWidgetAdapter()
@@ -176,11 +182,13 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleAdapterListener {
 
     private fun setup(context: Context, attrs: AttributeSet?) {
         val view = View.inflate(context, R.layout.customview_product_bundle_widget, this)
-        val rvBundles: RecyclerView = view.findViewById(R.id.rv_bundles)
+        rvBundles = view.findViewById(R.id.rv_bundles)
         tfTitle = view.findViewById(R.id.tf_title)
-        setupItems(rvBundles)
-        defineCustomAttributes(attrs)
-        adjustPadding(rvBundles)
+        rvBundles?.let {
+            setupItems(it)
+            defineCustomAttributes(attrs)
+            adjustPadding(it)
+        }
         initInjector()
     }
 
@@ -267,6 +275,14 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleAdapterListener {
         productId = param.productId
         param.apply {
             viewModel.getBundleInfo(param)
+        }
+    }
+
+    fun setBundlingCarouselTopMargin(margin: Int) {
+        try {
+            rvBundles?.setMargin(paddingStart, margin, paddingEnd, paddingBottom)
+        } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
         }
     }
 

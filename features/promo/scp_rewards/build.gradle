@@ -1,0 +1,85 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+android {
+    namespace 'com.tokopedia.scp_rewards'
+    testNamespace 'com.tokopedia.scp_rewards.test'
+    buildFeatures {
+        viewBinding true
+    }
+}
+
+dependencies {
+
+    implementation rootProject.ext.supportLibDependencies.appCompactV7
+    implementation rootProject.ext.miscDependencies.coreKtx
+    implementation (rootProject.ext.firebase.crashlytics)
+    testImplementation rootProject.ext.testDependencies.junit
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.miscDependencies.coroutineTest
+
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.miscDependencies.lottie
+
+    //Network Dependencies
+    implementation projectOrAar(rootProject.ext.libraries.graphql)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
+
+    //Unify Dependencies
+    implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.header
+    implementation rootProject.ext.unifyDependencies.icons
+    implementation rootProject.ext.unifyDependencies.global_error
+    implementation rootProject.ext.unifyDependencies.coach_mark
+    implementation projectOrAar(rootProject.ext.features.scpRewardsCommon)
+    implementation projectOrAar(rootProject.ext.features.scpRewardsWidgets)
+    implementation projectOrAar(rootProject.ext.libraries.applink)
+
+    //Image Dependecies
+    implementation rootProject.ext.networkDependencies.glide
+
+    //abstraction
+    implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
+    implementation projectOrAar(rootProject.ext.libraries.baseList)
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.miscDependencies.lottie
+
+    implementation rootProject.ext.miscDependencies.viewModelKtx
+
+    //track
+    implementation projectOrAar(rootProject.ext.libraries.track)
+
+    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
+
+    //test
+    testImplementation rootProject.ext.miscDependencies.coroutineTest
+    testImplementation rootProject.ext.miscDependencies.coroutineCore
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
+    testImplementation rootProject.ext.testDependencies.kotlinTest
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+}
+
+project.ext {
+    artifactId = 'scp-rewards'
+    groupId = 'com.tokopedia.promo'
+    versionName = "0.0.1"
+    artifactName = "scp_rewards-release"
+}
+
+
+apply from: '../../../publish_local.gradle'
+apply from: '../../../jacoco_task.gradle'

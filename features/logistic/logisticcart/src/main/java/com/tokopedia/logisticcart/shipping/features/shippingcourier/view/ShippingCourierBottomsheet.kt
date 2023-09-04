@@ -11,7 +11,6 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.logisticCommon.data.constant.CourierConstant
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData
 import com.tokopedia.logisticcart.R
@@ -94,21 +93,6 @@ class ShippingCourierBottomsheet : ShippingCourierContract.View, ShippingCourier
         bottomSheet?.setOnDismissListener { bottomSheet = null }
     }
 
-    fun setShippingCourierViewModels(
-        shippingCourierUiModels: List<ShippingCourierUiModel>?,
-        cartPosition: Int,
-        preOrderModel: PreOrderModel?
-    ) {
-        hideLoading()
-        if (shippingCourierUiModels != null && shippingCourierUiModels.isNotEmpty()) {
-            mCourierModelList = shippingCourierUiModels
-            mPreOrderModel = preOrderModel
-            setupRecyclerView(cartPosition)
-        } else if (activity != null) {
-            showErrorPage(activity!!.getString(R.string.message_error_shipping_general))
-        }
-    }
-
     private fun initializeInjector() {
         val component = DaggerShippingCourierComponent.builder()
             .shippingCourierModule(ShippingCourierModule())
@@ -138,15 +122,15 @@ class ShippingCourierBottomsheet : ShippingCourierContract.View, ShippingCourier
             if (shippingCourierUiModels != null) {
                 mCourierModelList = shippingCourierUiModels
                 setupRecyclerView(cartPosition)
-            } else {
-                showLoading()
+            } else if (activity != null) {
+                showErrorPage(activity!!.getString(R.string.message_error_shipping_general))
             }
         }
     }
 
     private fun setupRecyclerView(cartPosition: Int) {
         shippingCourierAdapter.setShippingCourierAdapterListener(this)
-        shippingCourierAdapter.setShippingCourierViewModels(convertCourierListToUiModel(mCourierModelList, mPreOrderModel, isOcc))
+        shippingCourierAdapter.setShippingCourierViewModels(convertCourierListToUiModel(mCourierModelList, mPreOrderModel))
         shippingCourierAdapter.setCartPosition(cartPosition)
         val linearLayoutManager = LinearLayoutManager(
             activity,
@@ -206,13 +190,16 @@ class ShippingCourierBottomsheet : ShippingCourierContract.View, ShippingCourier
         }
     }
 
-    private fun convertCourierListToUiModel(shippingCourierUiModels: List<ShippingCourierUiModel>, preOrderModel: PreOrderModel?, isOcc: Boolean): MutableList<RatesViewModelType> {
-        val eligibleCourierList = shippingCourierUiModels.filter { courier -> !courier.productData.isUiRatesHidden }.toMutableList()
+    private fun convertCourierListToUiModel(
+        shippingCourierUiModels: List<ShippingCourierUiModel>,
+        preOrderModel: PreOrderModel?
+    ): MutableList<RatesViewModelType> {
+        val eligibleCourierList =
+            shippingCourierUiModels.filter { courier -> !courier.productData.isUiRatesHidden }.toMutableList()
         val uiModel: MutableList<RatesViewModelType> = mutableListOf()
         uiModel.addAll(eligibleCourierList)
-        eligibleCourierList.getOrNull(0)?.let {
-                firstCourier ->
-            setNotifierModel(uiModel, firstCourier, isOcc)
+        eligibleCourierList.getOrNull(0)?.let { firstCourier ->
+            setNotifierModel(uiModel, firstCourier)
         }
 
         if (preOrderModel?.display == true) {
@@ -223,15 +210,11 @@ class ShippingCourierBottomsheet : ShippingCourierContract.View, ShippingCourier
 
     private fun setNotifierModel(
         uiModel: MutableList<RatesViewModelType>,
-        shippingCourierUiModel: ShippingCourierUiModel,
-        isOcc: Boolean
+        shippingCourierUiModel: ShippingCourierUiModel
     ) {
-        if (isOcc && shippingCourierUiModel.productData.shipperId in CourierConstant.INSTANT_SAMEDAY_COURIER) {
-            uiModel.add(0, NotifierModel(NotifierModel.TYPE_DEFAULT))
-        } else if (shippingCourierUiModel.serviceData.serviceName == INSTAN_VIEW_TYPE) {
-            uiModel.add(0, NotifierModel(NotifierModel.TYPE_INSTAN))
-        } else if (shippingCourierUiModel.serviceData.serviceName == SAME_DAY_VIEW_TYPE) {
-            uiModel.add(0, NotifierModel(NotifierModel.TYPE_SAMEDAY))
+        val textServiceTicker = shippingCourierUiModel.serviceData.texts.textServiceTicker
+        if (textServiceTicker.isNotEmpty()) {
+            uiModel.add(0, NotifierModel(textServiceTicker))
         }
     }
 

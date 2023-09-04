@@ -6,5 +6,5 @@
     android:layout_gravity="center_horizontal"
     android:layout_marginLeft="8dp"
     android:layout_marginRight="8dp"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_NN0"
     android:orientation="vertical" />

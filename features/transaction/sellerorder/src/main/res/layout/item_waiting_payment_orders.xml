@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:paddingStart="@dimen/layout_lvl2"
         android:text="@string/label_payment_deadline"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN950_68"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_3" />
@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl1"
         android:paddingEnd="@dimen/layout_lvl2"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN950_68"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/tvLabelPaymentDeadline"
         app:layout_constraintTop_toTopOf="parent"
@@ -39,7 +39,7 @@
         android:layout_marginTop="4dp"
         android:paddingStart="@dimen/layout_lvl2"
         android:text="@string/label_buyer_and_place_name"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvLabelPaymentDeadline"
         app:typographyType="body_3" />
@@ -51,7 +51,7 @@
         android:layout_marginStart="@dimen/spacing_lvl1"
         android:layout_marginTop="4dp"
         android:paddingEnd="@dimen/layout_lvl2"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/tvLabelBuyerNameAndPlace"
         app:layout_constraintTop_toBottomOf="@id/tvLabelPaymentDeadline"
@@ -66,7 +66,7 @@
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginTop="12dp"
         android:layout_marginEnd="@dimen/layout_lvl2"
-        android:background="@color/Unify_N75"
+        android:background="@color/Unify_NN50"
         app:layout_constraintTop_toBottomOf="@id/tvValueBuyerNameAndPlace" />
 
     <androidx.recyclerview.widget.RecyclerView
@@ -87,7 +87,7 @@
         android:layout_marginTop="2dp"
         android:paddingStart="@dimen/layout_lvl2"
         android:paddingEnd="@dimen/layout_lvl1"
-        android:textColor="@color/Unify_G500"
+        android:textColor="@color/Unify_GN500"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/rvWaitingPaymentOrderProducts"
         app:typographyType="body_2"

@@ -35,7 +35,11 @@ data class ProductVariant(
         @SerializedName("weight")
         val weight: Int,
         @SerializedName("weightUnit")
-        val weightUnit: String
+        val weightUnit: String,
+        @SerializedName("hasDTStock")
+        val hasDTStock: Boolean,
+        @SerializedName("isCampaign")
+        val isCampaign: Boolean
 )
 
 data class Selection(

@@ -2,7 +2,6 @@ package com.tokopedia.applink
 
 import android.net.Uri
 import android.os.Bundle
-import com.tokopedia.config.GlobalConfig
 import java.net.URLDecoder
 import java.util.*
 import java.util.regex.Pattern
@@ -99,7 +98,8 @@ object UriUtil {
                         uriPattern.pathSegments[i].substring(
                             1,
                             uriPattern.pathSegments[i].length - 1
-                        ), uri.pathSegments[i]
+                        ),
+                        uri.pathSegments[i]
                     )
                 }
                 i++
@@ -161,14 +161,24 @@ object UriUtil {
 
     fun matchPathsWithPattern(patternPaths: List<String>, inputPaths: List<String>): List<String>? {
         try {
+            val patternPathsTrim = if (patternPaths.size == 1 && patternPaths.first() == "") {
+                emptyList()
+            } else {
+                patternPaths
+            }
+            val inputPathsTrim = if (inputPaths.size == 1 && inputPaths.first() == "") {
+                emptyList()
+            } else {
+                inputPaths
+            }
             val resultList: MutableList<String> = ArrayList()
-            val uriPatternSize = patternPaths.size
-            if (uriPatternSize != inputPaths.size) {
+            val uriPatternSize = patternPathsTrim.size
+            if (uriPatternSize != inputPathsTrim.size) {
                 return null
             }
             var i = 0
             while (i < uriPatternSize) {
-                val pathpattern = patternPaths[i]
+                val pathpattern = patternPathsTrim[i]
                 if (pathpattern.startsWith("{") && pathpattern.endsWith("}")) {
                     resultList.add(inputPaths[i])
                     i++
@@ -247,52 +257,6 @@ object UriUtil {
         } catch (e: Exception) {
             null
         }
-    }
-
-    fun destructureUriToMap(
-        uriPatternString: String,
-        uri: Uri,
-        checkScheme: Boolean
-    ): MutableMap<String, Any> {
-        val result: MutableMap<String, Any> = HashMap()
-        try {
-            val uriPattern = Uri.parse(uriPatternString) ?: return result
-            if (checkScheme && uriPattern.scheme != null && uriPattern.scheme != uri.scheme) {
-                return result
-            }
-            var uriSegmentSize = uri.pathSegments.size
-            if (uriSegmentSize == 0) {
-                uriSegmentSize = uriPattern.queryParameterNames.size
-                if (uriSegmentSize > 0) {
-                    val itr: Iterator<*> = uriPattern.queryParameterNames.iterator()
-                    while (itr.hasNext()) {
-                        val paramName = itr.next().toString()
-                        val paramValue: Any? = uri.getQueryParameter(paramName)
-                        if (paramValue != null) {
-                            result[paramName] = paramValue
-                        }
-                    }
-                } else {
-                    return result
-                }
-            } else {
-                val itr: Iterator<*> = uriPattern.pathSegments.iterator()
-                var i = 0
-                while (itr.hasNext()) {
-                    val segmentName = itr.next().toString()
-                    if (segmentName.startsWith("{") &&
-                        segmentName.endsWith("}")
-                    ) {
-                        result[segmentName.substring(1, segmentName.length - 1)] =
-                            uri.pathSegments[i]
-                    }
-                    i++
-                }
-            }
-        } catch (e: Exception) {
-            return result
-        }
-        return result
     }
 
     /**
@@ -375,7 +339,9 @@ object UriUtil {
         val qIndex = deeplink.indexOf('?')
         val deeplinkWithoutQuery = if (uri.query?.isNotEmpty() == true && qIndex > 0) {
             deeplink.substring(0, qIndex)
-        } else deeplink
+        } else {
+            deeplink
+        }
         return if (deeplinkWithoutQuery.endsWith("/")) {
             deeplinkWithoutQuery.substringBeforeLast("/")
         } else {

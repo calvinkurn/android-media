@@ -3,17 +3,6 @@
   "mode": "exact",
   "query": [
     {
-      "event": "clickHomepage",
-      "eventAction": "click view all transaction",
-      "eventCategory": "global menu",
-      "eventLabel": "",
-      "businessUnit": "home & browse",
-      "currentSite": "tokopediamarketplace",
-      "sessionIris": ".*",
-      "userId": ".*",
-      "clientId": ".*"
-    },
-    {
       "event": "view_item",
       "eventAction": "impression on order status",
       "eventCategory": "global menu",
@@ -29,18 +18,44 @@
           "creative_url": ""
         }
       ],
+      "pageSource": ".*",
       "userId": ".*",
-      "sessionIris": ".*"
+      "sessionIris": ".*",
+      "trackerId": "30622"
     },
     {
-      "event": "clickHomepage",
+      "event": "select_content",
       "eventAction": "click on order status",
       "eventCategory": "global menu",
       "eventLabel": ".*",
+      "trackerId": "18484",
       "businessUnit": "home & browse",
       "currentSite": "tokopediamarketplace",
+      "pageSource": ".*",
+      "promotions": [
+        {
+          "creative_name": ".*",
+          "creative_slot": ".*",
+          "item_id": ".* - .*",
+          "item_name": "/global_menu - order_status_card"
+        }
+      ],
+      "userId": ".*",
       "sessionIris": ".*",
-      "userId": ".*"
+      "clientId": ".*"
+    },
+    {
+      "event": "clickHomepage",
+      "eventAction": "click view all card",
+      "eventCategory": "global menu",
+      "eventLabel": "order status",
+      "businessUnit": "home & browse",
+      "currentSite": "tokopediamarketplace",
+      "trackerId": "30854",
+      "pageSource": ".*",
+      "userId": ".*",
+      "sessionIris": ".*",
+      "clientId": ".*"
     }
   ]
 }

@@ -1,0 +1,16 @@
+{
+  "readme": "click login widget",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "clickHomepage",
+      "eventAction": "click login button on login widget",
+      "eventCategory": "homepage",
+      "eventLabel": "",
+      "trackerId": "41946",
+      "businessUnit": "home & browse",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*"
+    }
+  ]
+}

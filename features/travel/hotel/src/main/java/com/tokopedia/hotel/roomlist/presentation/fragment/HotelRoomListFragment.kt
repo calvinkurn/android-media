@@ -232,7 +232,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
             it.filterRecyclerView.listener = this
             it.filterRecyclerView.setItem(arrayListOf(getString(R.string.hotel_room_list_filter_free_breakfast),
                 getString(R.string.hotel_room_list_filter_free_cancelable)),
-                com.tokopedia.unifyprinciples.R.color.Unify_G300)
+                com.tokopedia.unifyprinciples.R.color.Unify_GN300)
 
             it.recyclerView.addItemDecoration(object : RecyclerView.ItemDecoration() {
                 override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {

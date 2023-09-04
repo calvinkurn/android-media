@@ -40,6 +40,9 @@ import com.tokopedia.shop.pageheader.util.ShopPageHeaderMapper
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.universal_sharing.view.model.AffiliateInput
+import com.tokopedia.universal_sharing.view.model.GenerateAffiliateLinkEligibility
+import com.tokopedia.universal_sharing.view.usecase.AffiliateEligibilityCheckUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -105,6 +108,9 @@ class ShopPageHeaderViewModelTest {
     lateinit var gqlGetShopOperationalHourStatusUseCase: Lazy<GQLGetShopOperationalHourStatusUseCase>
 
     @RelaxedMockK
+    lateinit var eligibilityCheckUseCase: Lazy<AffiliateEligibilityCheckUseCase>
+
+    @RelaxedMockK
     lateinit var sharedPreferences: SharedPreferences
 
     @RelaxedMockK
@@ -123,6 +129,7 @@ class ShopPageHeaderViewModelTest {
     private lateinit var shopPageHeaderViewModel: ShopPageHeaderViewModel
 
     private val SAMPLE_SHOP_ID = "123"
+    private val mockShopHomeTabName = "HomeTab"
     private val mockExtParam = "fs_widget%3D23600"
 
     private val addressWidgetData: LocalCacheModel = LocalCacheModel()
@@ -144,6 +151,7 @@ class ShopPageHeaderViewModelTest {
             getFollowStatusUseCase,
             updateFollowStatusUseCase,
             gqlGetShopOperationalHourStatusUseCase,
+            eligibilityCheckUseCase,
             sharedPreferences,
             testCoroutineDispatcherProvider,
             playShortsEntryPointRemoteConfig
@@ -196,7 +204,8 @@ class ShopPageHeaderViewModelTest {
             "",
             false,
             addressWidgetData,
-            mockExtParam
+            mockExtParam,
+            mockShopHomeTabName
         )
         coVerify { getShopPageP1DataUseCase.get().executeOnBackground() }
         assertTrue(shopPageHeaderViewModel.shopPageP1Data.value is Success)
@@ -231,7 +240,8 @@ class ShopPageHeaderViewModelTest {
             etalaseId = "",
             isRefresh = false,
             widgetUserAddressLocalData = addressWidgetData,
-            extParam = mockExtParam
+            extParam = mockExtParam,
+            tabName = mockShopHomeTabName
         )
         coVerify { getShopPageP1DataUseCase.get().executeOnBackground() }
         assertTrue(shopPageHeaderViewModel.shopPageP1Data.value is Success)
@@ -274,7 +284,8 @@ class ShopPageHeaderViewModelTest {
             "",
             false,
             addressWidgetData,
-            mockExtParam
+            mockExtParam,
+            mockShopHomeTabName
         )
         coVerify { getShopPageP1DataUseCase.get().executeOnBackground() }
         assertTrue(shopPageHeaderViewModel.shopPageP1Data.value is Fail)
@@ -293,7 +304,8 @@ class ShopPageHeaderViewModelTest {
             "",
             true,
             addressWidgetData,
-            mockExtParam
+            mockExtParam,
+            mockShopHomeTabName
         )
         coVerify { getShopPageP1DataUseCase.get().executeOnBackground() }
         assertTrue(shopPageHeaderViewModel.shopPageP1Data.value is Fail)
@@ -312,7 +324,8 @@ class ShopPageHeaderViewModelTest {
             "",
             true,
             addressWidgetData,
-            mockExtParam
+            mockExtParam,
+            mockShopHomeTabName
         )
         assertTrue(shopPageHeaderViewModel.shopPageP1Data.value != null)
     }
@@ -785,5 +798,39 @@ class ShopPageHeaderViewModelTest {
         } throws Exception()
         shopPageHeaderViewModel.saveAffiliateChannel(mockAffiliateChannel)
         assert(sharedPreferences.getString("", "")?.isEmpty() == true)
+    }
+
+    @Test
+    fun `when check affiliate is success`() {
+        val mockData = GenerateAffiliateLinkEligibility()
+        val mockParam = AffiliateInput()
+
+        coEvery {
+            eligibilityCheckUseCase.get().executeOnBackground()
+        } returns mockData
+
+        shopPageHeaderViewModel.checkAffiliate(mockParam)
+        coVerify {
+            eligibilityCheckUseCase.get().executeOnBackground()
+        }
+        assertTrue(shopPageHeaderViewModel.resultAffiliate.value is Success)
+    }
+
+    @Test
+    fun `when check affiliate throws error`() {
+        val mockError = Exception()
+        val mockParam = AffiliateInput()
+        coEvery {
+            eligibilityCheckUseCase.get().executeOnBackground()
+        } throws mockError
+
+        shopPageHeaderViewModel.checkAffiliate(mockParam)
+        coVerify {
+            eligibilityCheckUseCase.get().executeOnBackground()
+        }
+        coVerify {
+            eligibilityCheckUseCase.get().executeOnBackground()
+        }
+        assertTrue(shopPageHeaderViewModel.resultAffiliate.value is Fail)
     }
 }

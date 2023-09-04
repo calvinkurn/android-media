@@ -1,6 +1,8 @@
 package com.tokopedia.recommendation_widget_common.widget.bestseller.mapper
 
 import android.content.Context
+import com.tokopedia.home_component_header.model.ChannelHeader
+import com.tokopedia.home_component_header.util.HomeChannelHeaderRollenceController
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.recommendation_widget_common.R
@@ -23,7 +25,7 @@ class BestSellerMapper (
         currentModel: BestSellerDataModel = BestSellerDataModel()
     ): BestSellerDataModel{
         val productList = mappingProductCards(recommendationWidget.recommendationItemList, cardInteraction)
-        return BestSellerDataModel(
+        return currentModel.copy(
             channelId = recommendationWidget.channelId,
             title = recommendationWidget.title,
             subtitle = recommendationWidget.subtitle,
@@ -33,8 +35,13 @@ class BestSellerMapper (
             recommendationItemList = recommendationWidget.recommendationItemList,
             filterChip = recommendationWidget.recommendationFilterChips,
             seeMoreAppLink = recommendationWidget.seeMoreAppLink,
-            dividerType = currentModel.dividerType,
-            dividerSize = currentModel.dividerSize
+            channelHeader = ChannelHeader(
+                channelId = recommendationWidget.channelId,
+                name = recommendationWidget.title,
+                subtitle = recommendationWidget.subtitle,
+                applink = recommendationWidget.seeMoreAppLink,
+                headerType = getHeaderType(),
+            )
         )
     }
 
@@ -50,5 +57,13 @@ class BestSellerMapper (
             coroutineDispatcher = Dispatchers.IO,
             productImageWidth = context.resources.getDimensionPixelSize(R.dimen.product_card_carousel_item_width)
         )
+    }
+
+    companion object {
+        fun getHeaderType(): ChannelHeader.HeaderType {
+            return if(HomeChannelHeaderRollenceController.isHeaderUsingRollenceVariant()) {
+                ChannelHeader.HeaderType.REVAMP
+            } else ChannelHeader.HeaderType.CONTROL
+        }
     }
 }

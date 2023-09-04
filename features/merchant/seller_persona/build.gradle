@@ -6,6 +6,8 @@ apply plugin: 'androidx.navigation.safeargs.kotlin'
 apply plugin: 'kotlin-parcelize'
 
 android {
+    namespace 'com.tokopedia.sellerpersona'
+    testNamespace 'com.tokopedia.sellerpersona.test'
     defaultConfig {
         multiDexEnabled true
     }
@@ -38,7 +40,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.baseList)
     implementation projectOrAar(rootProject.ext.libraries.graphql)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.network)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.track)
@@ -62,6 +63,8 @@ dependencies {
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.supportLibDependencies.design
+
+    implementation rootProject.ext.playServicesDependencies.core
 
     compileOnly rootProject.ext.miscDependencies.javaxAnnotation
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor

@@ -9,6 +9,8 @@ import com.tokopedia.buyerorderdetail.databinding.PartialItemBuyerOrderDetailAdd
 import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.AddonsListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
+import com.tokopedia.imageassets.TokopediaImageUrl
+import com.tokopedia.imageassets.utils.loadProductImage
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -59,6 +61,9 @@ open class ProductViewHolder(
                     partialProductItemViewHolder?.bindProductItemPayload(oldItem, newItem)
                     if (oldItem.button != newItem.button || oldItem.isProcessing != newItem.isProcessing) {
                         setupButton(newItem.button, newItem.isProcessing)
+                    }
+                    if (oldItem.addonsListUiModel != newItem.addonsListUiModel) {
+                        setupAddonSection(newItem.addonsListUiModel)
                     }
                     return
                 }
@@ -115,7 +120,10 @@ open class ProductViewHolder(
 
     protected open fun setupProductThumbnail(productThumbnailUrl: String) {
         ivBuyerOrderDetailProductThumbnail?.apply {
-            setImageUrl(productThumbnailUrl)
+            loadProductImage(
+                url = productThumbnailUrl,
+                archivedUrl = TokopediaImageUrl.IMG_ARCHIVED_PRODUCT_SMALL
+            )
         }
     }
 

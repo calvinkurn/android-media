@@ -18,11 +18,13 @@ import com.google.android.play.core.splitcompat.SplitCompat;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.device.info.model.AdditionalInfoModel;
 import com.tokopedia.devicefingerprint.header.FingerprintModelGenerator;
 import com.tokopedia.network.authentication.AuthConstant;
 import com.tokopedia.network.authentication.AuthHelper;
 import com.tokopedia.network.authentication.AuthKey;
 import com.tokopedia.network.data.model.FingerprintModel;
+import com.tokopedia.network.utils.ThemeUtils;
 import com.tokopedia.network.utils.URLGenerator;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -33,6 +35,7 @@ import com.tokopedia.webview.ext.HtmlWebHelperKt;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 /**
@@ -50,6 +53,8 @@ public class TkpdWebView extends WebView {
     private RemoteConfig remoteConfig;
     private static final String KEY_FINGERPRINT_DATA = "Fingerprint-Data";
     private static final String KEY_FINGERPRINT_HASH = "Fingerprint-Hash";
+
+    private static final String KEY_FINTECH_FINGERPRINT_DATA = "Fintech-Fingerprint-Data";
 
     private @Nullable
     TkpdWebView.WebviewScrollListener scrollListener = null;
@@ -130,7 +135,8 @@ public class TkpdWebView extends WebView {
                     AuthKey.KEY_WSV4,
                     AuthConstant.DATE_FORMAT,
                     userSession.getUserId(),
-                    userSession);
+                    userSession,
+                    ThemeUtils.getHeader(getContext()));
             String deviceId = userSession.getDeviceId();
             header.put(HEADER_TKPD_SESSION_ID, deviceId);
             header.put(HEADER_TKPD_SESSION_ID2, deviceId);
@@ -147,7 +153,25 @@ public class TkpdWebView extends WebView {
                     KEY_FINGERPRINT_HASH,
                     AuthHelper.Companion.getMD5Hash(hash + "+" + userSession.getUserId())
             );
+
+            addAdditionalInfoHeader(header);
+
             loadUrl(urlToLoad, header);
+        }
+    }
+
+    private void addAdditionalInfoHeader(Map<String, String> header) {
+        if (remoteConfig.getBoolean(RemoteConfigKey.FINTECH_ENABLE_ADDITIONAL_DEVICE_INFO_HEADER, true)) {
+            byte[] additionalInfoJson = AdditionalInfoModel.Companion
+                    .generateJson(getContext().getApplicationContext())
+                    .getBytes(StandardCharsets.UTF_8);
+
+            String additionalInfoBase64 = Base64.encodeToString(additionalInfoJson, Base64.DEFAULT).replace("\n", "").replace("\r", "").trim();
+
+            header.put(
+                    KEY_FINTECH_FINGERPRINT_DATA,
+                    additionalInfoBase64
+            );
         }
     }
 

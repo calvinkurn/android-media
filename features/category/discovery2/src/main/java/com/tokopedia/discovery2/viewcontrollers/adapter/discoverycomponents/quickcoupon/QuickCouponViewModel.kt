@@ -3,10 +3,8 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.qui
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.quickcouponresponse.ClickCouponData
-import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
 import com.tokopedia.discovery2.usecase.HideSectionUseCase
 import com.tokopedia.discovery2.usecase.quickcouponusecase.QuickCouponUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
@@ -29,15 +27,16 @@ class QuickCouponViewModel(val application: Application, private val components:
     private val loggedInStatusLiveData: MutableLiveData<Boolean> = MutableLiveData()
     private val _hideSection = SingleLiveEvent<String>()
 
+    @JvmField
     @Inject
-    lateinit var quickCouponUseCase: QuickCouponUseCase
+    var quickCouponUseCase: QuickCouponUseCase? = null
 
+    @JvmField
     @Inject
-    lateinit var hideSectionUseCase: HideSectionUseCase
+    var hideSectionUseCase: HideSectionUseCase? = null
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
-
 
     fun getCouponStatus() = couponAppliedStatus
     fun getComponentPosition() = componentPosition
@@ -60,7 +59,7 @@ class QuickCouponViewModel(val application: Application, private val components:
 
     private fun fetchCouponDetailData() {
         launchCatchError(block = {
-            quickCouponUseCase.getCouponDetail(components.pagePath).clickCouponData?.let {
+            quickCouponUseCase?.getCouponDetail(components.pagePath)?.clickCouponData?.let {
                 clickCouponLiveData.value = it
                 checkComponentVisibility()
                 loggedInStatus()
@@ -68,16 +67,17 @@ class QuickCouponViewModel(val application: Application, private val components:
                 hideIfPresentInSection()
             }
         }, onError = {
-            hideIfPresentInSection()
-            it.printStackTrace()
-        })
+                hideIfPresentInSection()
+                it.printStackTrace()
+            })
     }
 
     private fun hideIfPresentInSection() {
-        val response = hideSectionUseCase.checkForHideSectionHandling(components)
-        if(response.shouldHideSection){
-            if(response.sectionId.isNotEmpty())
+        val response = hideSectionUseCase?.checkForHideSectionHandling(components)
+        if (response?.shouldHideSection == true) {
+            if (response.sectionId.isNotEmpty()) {
                 _hideSection.value = response.sectionId
+            }
             syncData.value = true
         }
     }
@@ -86,8 +86,7 @@ class QuickCouponViewModel(val application: Application, private val components:
         clickCouponLiveData.value?.isApplicable?.let {
             if (it) {
                 updateCouponAppliedStatus()
-            }
-            else{
+            } else {
                 hideIfPresentInSection()
             }
             components.isApplicable = it
@@ -103,9 +102,9 @@ class QuickCouponViewModel(val application: Application, private val components:
 
     override fun loggedInCallback() {
         val isLoggedIn = UserSession(application).isLoggedIn
-        if(isLoggedIn){
+        if (isLoggedIn) {
             fetchCouponDetailData()
-        }else{
+        } else {
             components.couponDetailClicked = false
             components.couponAppliedClicked = false
         }
@@ -115,21 +114,21 @@ class QuickCouponViewModel(val application: Application, private val components:
 
     fun checkMobileVerificationStatus() {
         launchCatchError(
-                block = {
-                    quickCouponUseCase.getMobileVerificationStatus().verificationStatus?.let {
-                        it.phoneVerified?.let { status ->
-                            phoneVerificationStatus.value = status
-                        }
+            block = {
+                quickCouponUseCase?.getMobileVerificationStatus()?.verificationStatus?.let {
+                    it.phoneVerified?.let { status ->
+                        phoneVerificationStatus.value = status
                     }
-                },
-                onError = {
-                    it.printStackTrace()
                 }
+            },
+            onError = {
+                it.printStackTrace()
+            }
         )
     }
 
     override fun isPhoneVerificationSuccess(phoneVerifyStatus: Boolean) {
-        if(phoneVerifyStatus){
+        if (phoneVerifyStatus) {
             applyQuickCoupon()
         }
     }
@@ -137,15 +136,15 @@ class QuickCouponViewModel(val application: Application, private val components:
     fun applyQuickCoupon() {
         clickCouponLiveData.value?.realCode?.let { realCode ->
             launchCatchError(block = {
-                quickCouponUseCase.applyQuickCoupon(realCode).applyCouponData?.let { applyCouponData ->
+                quickCouponUseCase?.applyQuickCoupon(realCode)?.applyCouponData?.let { applyCouponData ->
                     applyCouponData.success?.let {
                         couponAppliedStatus.value = it
                         couponAdded.value = it
                     }
                 }
             }, onError = {
-                it.printStackTrace()
-            })
+                    it.printStackTrace()
+                })
         }
     }
 

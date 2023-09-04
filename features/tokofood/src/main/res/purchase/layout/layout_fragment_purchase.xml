@@ -10,7 +10,7 @@
         android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/Unify_N0"
+        android:background="@color/Unify_NN0"
         android:theme="@style/AppTheme.AppBarOverlay"
         app:elevation="0dp">
 
@@ -29,7 +29,7 @@
         android:id="@+id/layout_global_error_purchase"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/Unify_N0"
+        android:background="@color/Unify_NN0"
         android:gravity="center"
         android:padding="16dp"
         android:visibility="gone"
@@ -39,7 +39,7 @@
         android:id="@+id/no_pinpoint_purchase"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/Unify_N0"
+        android:background="@color/Unify_NN0"
         android:gravity="center"
         android:visibility="gone"
         tools:visibility="gone" />

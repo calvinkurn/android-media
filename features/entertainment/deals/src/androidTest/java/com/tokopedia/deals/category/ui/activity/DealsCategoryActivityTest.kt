@@ -104,7 +104,7 @@ class DealsCategoryActivityTest {
 
     private fun clickOnRelaksasiTab() {
         Thread.sleep(5000)
-        onView(AllOf.allOf(withId(R.id.tab_item_text_id), withText(DUMMY_RESPONSE_SECOND_CATEGORY_TITLE))).perform(click())
+        onView(AllOf.allOf(withId(com.tokopedia.unifycomponents.R.id.tab_item_text_id), withText(DUMMY_RESPONSE_SECOND_CATEGORY_TITLE))).perform(click())
     }
 
     private fun swipeUpOnCategoryTab() {
@@ -121,7 +121,7 @@ class DealsCategoryActivityTest {
 
     private fun filterProducts() {
         Thread.sleep(5000)
-        onView(AllOf.allOf(withId(R.id.tab_item_text_id), withText(DUMMY_RESPONSE_FIRST_CATEGORY_TITLE))).perform(click())
+        onView(AllOf.allOf(withId(com.tokopedia.unifycomponents.R.id.tab_item_text_id), withText(DUMMY_RESPONSE_FIRST_CATEGORY_TITLE))).perform(click())
 
         Thread.sleep(3000)
         onView(CommonMatcher.firstView(withText(DUMMY_FILTER_CHIPS_ONE))).perform(click())

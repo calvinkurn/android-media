@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.play_common.view.RoundedConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/Unify_NN300"
+    app:rcl_cornerRadius="12dp"
+    >
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/img_cover"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+    <com.google.android.exoplayer2.ui.PlayerView
+        android:id="@+id/player_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:resize_mode="zoom"
+        app:shutter_background_color="@color/transparent"
+        app:surface_type="texture_view"
+        app:use_artwork="false"
+        app:use_controller="false"
+        />
+
+    <include
+        layout="@layout/view_play_widget_carousel_top_overlay"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.173"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0"
+        />
+
+    <include
+        layout="@layout/view_play_widget_carousel_bottom_overlay"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.36"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_live_badge"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:layout_marginStart="12dp"
+        android:background="@drawable/bg_play_widget_live_badge"
+        android:gravity="center"
+        android:paddingHorizontal="4dp"
+        android:text="LIVE"
+        android:textColor="@color/Unify_Static_White"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/view_play_widget_total_views"
+        app:layout_constraintBottom_toBottomOf="@id/view_play_widget_total_views"
+        app:typographyType="small"
+        app:typographyWeight="bold"
+        />
+
+    <include
+        android:id="@+id/view_play_widget_total_views"
+        layout="@layout/view_play_widget_total_views"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:layout_marginTop="12dp"
+        app:layout_constraintStart_toEndOf="@id/tv_live_badge"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_goneMarginStart="12dp"
+        />
+
+    <include
+        android:id="@+id/view_play_widget_action_button"
+        layout="@layout/view_play_widget_carousel_action_button"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:layout_marginEnd="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/view_play_widget_total_views"
+        />
+
+    <include
+        android:id="@+id/view_play_widget_caption"
+        layout="@layout/view_play_widget_caption"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@id/view_play_widget_partner_info"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/view_play_widget_partner_info"
+        />
+
+    <include
+        android:id="@+id/view_play_widget_partner_info"
+        layout="@layout/view_play_widget_partner_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toTopOf="@id/scrollable_host_products"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_goneMarginBottom="12dp"
+        />
+
+    <com.tokopedia.content.common.util.scroll.NestedScrollableHost
+        android:id="@+id/scrollable_host_products"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:lockScroll="true"
+        >
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_products"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:listitem="@layout/item_play_widget_carousel_product"
+            />
+
+    </com.tokopedia.content.common.util.scroll.NestedScrollableHost>
+
+    <include
+        android:id="@+id/view_play_widget_overlay"
+        layout="@layout/view_play_widget_overlay"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+</com.tokopedia.play_common.view.RoundedConstraintLayout>

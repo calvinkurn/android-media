@@ -5,7 +5,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.common.data.response.groupitem.DataItem
 import com.tokopedia.topads.dashboard.R
-import com.tokopedia.topads.dashboard.data.model.CountDataItem
+import com.tokopedia.topads.common.data.model.CountDataItem
 import com.tokopedia.topads.headline.view.adapter.viewmodel.HeadLineAdItemsEmptyModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton

@@ -61,7 +61,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:alpha="0.5"
-            android:background="@color/Unify_NN900"
+            android:background="@color/review_dms_media_image_thumbnail_overlay_see_more_background"
             app:layout_constraintBottom_toBottomOf="@id/iv_review_media_image_thumbnail"
             app:layout_constraintEnd_toEndOf="@id/iv_review_media_image_thumbnail"
             app:layout_constraintStart_toStartOf="@id/iv_review_media_image_thumbnail"

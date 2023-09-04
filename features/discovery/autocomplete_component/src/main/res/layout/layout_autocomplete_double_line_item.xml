@@ -37,6 +37,21 @@
         app:layout_constraintTop_toBottomOf="@id/doubleLineTitle" />
 
     <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/autoCompleteDotAds"
+        android:layout_width="2dp"
+        android:layout_height="2dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
+        android:src="@drawable/autocomplete_dot_image"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/adText"
+        app:layout_constraintEnd_toStartOf="@+id/doubleLineTitle"
+        app:layout_constraintStart_toEndOf="@+id/adText"
+        app:layout_constraintTop_toTopOf="@+id/adText"
+        app:layout_constraintVertical_bias="0.6"
+        tools:visibility="gone" />
+
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iconTitle"
         android:contentDescription="@string/content_desc_dl_iconTitle"
         android:layout_width="16dp"
@@ -49,6 +64,20 @@
         app:layout_constraintBottom_toTopOf="@id/doubleLineTitle"
         app:layout_constraintLeft_toRightOf="@id/adText"
         app:layout_constraintTop_toBottomOf="@id/doubleLineTitle" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/autoCompleteIconTitleReimagine"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
+        android:contentDescription="@string/content_desc_dl_iconTitle"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/iconImage"
+        app:layout_constraintEnd_toEndOf="@+id/iconImage"
+        app:layout_constraintTop_toTopOf="@+id/iconImage"
+        app:layout_constraintVertical_bias="1.0"
+        android:background="@drawable/autocomplete_title_image_border"
+        tools:src="@drawable/ic_official_store"
+        tools:visibility="visible" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iconSubtitle"
@@ -75,7 +104,7 @@
         android:maxLines="1"
         android:minHeight="20dp"
         android:text="@string/dummy_recent_search_two_lines"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:layout_constraintBottom_toTopOf="@id/doubleLineSubtitle"
         app:layout_constraintLeft_toRightOf="@id/iconTitle"
         app:layout_constraintRight_toLeftOf="@id/doubleLineLabel"
@@ -97,7 +126,7 @@
         android:ellipsize="end"
         android:maxLines="1"
         android:text="@string/dummy_recent_search_subtitle"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN950_68"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/iconImage"
         app:layout_constraintLeft_toRightOf="@id/iconSubtitle"

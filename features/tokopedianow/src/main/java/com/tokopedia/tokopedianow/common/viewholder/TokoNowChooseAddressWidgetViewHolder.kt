@@ -2,6 +2,7 @@ package com.tokopedia.tokopedianow.common.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.coachmark.CoachMark2
@@ -10,11 +11,14 @@ import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
+import com.tokopedia.tokopedianow.common.util.ViewUtil.safeParseColor
 import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowChooseAddressWidgetBinding
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.SOURCE
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.SOURCE_TRACKING
+import com.tokopedia.utils.resources.isDarkMode
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class TokoNowChooseAddressWidgetViewHolder(
         itemView: View,
@@ -33,14 +37,15 @@ class TokoNowChooseAddressWidgetViewHolder(
     private var chooseAddressWidget: ChooseAddressWidget? = null
     private var coachMark: CoachMark2? = null
 
-    override fun bind(element: TokoNowChooseAddressWidgetUiModel?) {
-        setupChooseAddressWidget()
+    override fun bind(element: TokoNowChooseAddressWidgetUiModel) {
+        setupChooseAddressWidget(element)
     }
 
-    private fun bindChooseAddressWidget() {
+    private fun bindChooseAddressWidget(element: TokoNowChooseAddressWidgetUiModel) {
         tokoNowView?.getFragmentPage()?.let { fragment ->
             chooseAddressWidget?.bindChooseAddress(object : ChooseAddressWidget.ChooseAddressWidgetListener {
                 override fun onLocalizingAddressUpdatedFromWidget() {
+                    chooseAddressWidget?.updateWidget()
                     tokoNowView.refreshLayoutPage()
                 }
 
@@ -69,14 +74,35 @@ class TokoNowChooseAddressWidgetViewHolder(
                 override fun isFromTokonowPage(): Boolean {
                     return true
                 }
+
+                override fun onChangeTextColor(): Int {
+                    return unifyprinciplesR.color.Unify_NN950_96
+                }
             })
         }
     }
 
-    private fun setupChooseAddressWidget() {
+    private fun setupChooseAddressWidget(element: TokoNowChooseAddressWidgetUiModel) {
         chooseAddressWidget = binding?.chooseAddressWidget
-        bindChooseAddressWidget()
+        bindChooseAddressWidget(element)
         showCoachMark()
+        setBackgroundColor(element)
+    }
+
+    private fun setBackgroundColor(element: TokoNowChooseAddressWidgetUiModel) {
+        if (element.backgroundLightColor.isNotBlank() || element.backgroundDarkColor.isNotBlank()) {
+            binding?.root?.apply {
+                setBackgroundColor(
+                    safeParseColor(
+                        color = if (context.isDarkMode()) element.backgroundDarkColor else element.backgroundLightColor,
+                        defaultColor = ContextCompat.getColor(
+                            itemView.context,
+                            R.color.tokopedianow_card_dms_color
+                        )
+                    )
+                )
+            }
+        }
     }
 
     private fun showCoachMark(){

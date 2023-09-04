@@ -3,10 +3,12 @@ package com.tokopedia.play.widget.analytic.list
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.play.widget.analytic.PlayWidgetAnalyticListener
 import com.tokopedia.play.widget.ui.*
+import com.tokopedia.play.widget.ui.carousel.PlayWidgetCarouselView
 import com.tokopedia.play.widget.ui.model.PlayWidgetBackgroundUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetBannerUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetProduct
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 
 /**
@@ -282,5 +284,76 @@ class DefaultPlayWidgetInListAnalyticListener(
 
     override fun onImpressBannerCard(view: PlayWidgetSmallView) {
         analytic.onImpressBannerCard(view, verticalWidgetPosition)
+    }
+
+    /**
+     * Region Carousel
+     */
+    override fun onImpressChannelCard(
+        view: PlayWidgetCarouselView,
+        item: PlayWidgetChannelUiModel,
+        config: PlayWidgetConfigUiModel,
+        channelPositionInList: Int
+    ) {
+        analytic.onImpressChannelCard(view, item, config, channelPositionInList, verticalWidgetPosition)
+    }
+
+    override fun onClickChannelCard(
+        view: PlayWidgetCarouselView,
+        item: PlayWidgetChannelUiModel,
+        config: PlayWidgetConfigUiModel,
+        channelPositionInList: Int
+    ) {
+        analytic.onClickChannelCard(view, item, config, channelPositionInList, verticalWidgetPosition)
+    }
+
+    override fun onClickPartnerName(
+        view: PlayWidgetCarouselView,
+        item: PlayWidgetChannelUiModel,
+        config: PlayWidgetConfigUiModel,
+        channelPositionInList: Int
+    ) {
+        analytic.onClickPartnerName(view, item, config, channelPositionInList, verticalWidgetPosition)
+    }
+
+    override fun onClickToggleMuteButton(
+        view: PlayWidgetCarouselView,
+        item: PlayWidgetChannelUiModel,
+        config: PlayWidgetConfigUiModel,
+        channelPositionInList: Int
+    ) {
+        analytic.onClickToggleMuteButton(view, item, config, channelPositionInList, verticalWidgetPosition)
+    }
+
+    override fun onClickToggleReminderChannel(
+        view: PlayWidgetCarouselView,
+        item: PlayWidgetChannelUiModel,
+        config: PlayWidgetConfigUiModel,
+        channelPositionInList: Int,
+        isRemindMe: Boolean
+    ) {
+        analytic.onClickToggleReminderChannel(view, item, config, channelPositionInList, isRemindMe, verticalWidgetPosition)
+    }
+
+    override fun onImpressProductCard(
+        view: PlayWidgetCarouselView,
+        item: PlayWidgetChannelUiModel,
+        config: PlayWidgetConfigUiModel,
+        product: PlayWidgetProduct,
+        productPosition: Int,
+        channelPositionInList: Int,
+    ) {
+        analytic.onImpressProductCard(view, item, config, product, productPosition, channelPositionInList, verticalWidgetPosition)
+    }
+
+    override fun onClickProductCard(
+        view: PlayWidgetCarouselView,
+        item: PlayWidgetChannelUiModel,
+        config: PlayWidgetConfigUiModel,
+        product: PlayWidgetProduct,
+        productPosition: Int,
+        channelPositionInList: Int,
+    ) {
+        analytic.onClickProductCard(view, item, config, product, productPosition, channelPositionInList, verticalWidgetPosition)
     }
 }

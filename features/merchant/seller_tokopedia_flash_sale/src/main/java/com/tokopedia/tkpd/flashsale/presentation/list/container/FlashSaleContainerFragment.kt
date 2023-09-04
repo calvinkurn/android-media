@@ -1,7 +1,5 @@
 package com.tokopedia.tkpd.flashsale.presentation.list.container
 
-import com.tokopedia.imageassets.TokopediaImageUrl
-
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,10 +14,12 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.campaign.components.bottomsheet.rbac.IneligibleAccessWarningBottomSheet
 import com.tokopedia.campaign.components.ineligibleaccessview.IneligibleAccessView
+import com.tokopedia.campaign.entity.RemoteTicker
 import com.tokopedia.campaign.utils.extension.doOnDelayFinished
 import com.tokopedia.campaign.utils.extension.routeToUrl
 import com.tokopedia.campaign.utils.extension.showToasterError
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
@@ -35,27 +35,28 @@ import com.tokopedia.tkpd.flashsale.domain.entity.TabMetadata
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.FlashSaleListPageTab
 import com.tokopedia.tkpd.flashsale.presentation.detail.CampaignDetailActivity
 import com.tokopedia.tkpd.flashsale.presentation.list.child.FlashSaleListFragment
+import com.tokopedia.tkpd.flashsale.util.ResourceProvider
+import com.tokopedia.tkpd.flashsale.util.TickerUtil
 import com.tokopedia.tkpd.flashsale.util.constant.TabConstant
 import com.tokopedia.tkpd.flashsale.util.tracker.FlashSaleListPageTracker
 import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.unifycomponents.setCustomText
-import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 class FlashSaleContainerFragment : BaseDaggerFragment() {
 
     companion object {
-        private const val REDIRECTION_DELAY : Long = 500
+        private const val REDIRECTION_DELAY: Long = 500
         private const val DEFAULT_TOTAL_CAMPAIGN_COUNT = 0
         private const val FEATURE_LEARN_MORE_ARTICLE_URL = "https://seller.tokopedia.com/edu/fitur-admin-toko/"
         private const val SELLER_EDU_ARTICLE_URL = "https://seller.tokopedia.com/edu/cara-daftar-produk-flash-sale/"
         private const val INELIGIBLE_ACCESS_IMAGE_URL = TokopediaImageUrl.INELIGIBLE_ACCESS_IMAGE_URL
+
         @JvmStatic
         fun newInstance() = FlashSaleContainerFragment()
     }
@@ -88,7 +89,8 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
             .inject(this)
     }
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = StfsFragmentFlashSaleListContainerBinding.inflate(inflater, container, false)
@@ -101,7 +103,11 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
         observeUiEffect()
         observeUiState()
         applyUnifyBackgroundColor()
-        viewModel.processEvent(FlashSaleContainerViewModel.UiEvent.GetPrerequisiteData)
+        val rollenceValues = TickerUtil.getRollenceValues()
+        viewModel.processEvent(
+            event = FlashSaleContainerViewModel.UiEvent.GetPrerequisiteData,
+            rollenceValueList = rollenceValues
+        )
     }
 
     override fun onResume() {
@@ -162,13 +168,19 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun navigateToFlashSaleDetailPage(campaignId : Long) {
+    private fun navigateToFlashSaleDetailPage(campaignId: Long) {
         CampaignDetailActivity.start(context ?: return, campaignId)
     }
 
     private fun handleUiState(uiState: FlashSaleContainerViewModel.UiState) {
         renderLoadingState(uiState.isLoading, uiState.error)
-        renderTicker(uiState.showTicker, uiState.tickerMessage, uiState.error, uiState.isLoading, uiState.isEligibleUsingFeature)
+        renderTicker(
+            showTicker = uiState.showTicker,
+            tickerList = uiState.tickerList,
+            error = uiState.error,
+            isLoading = uiState.isLoading,
+            isEligibleUsingFeature = uiState.isEligibleUsingFeature
+        )
         renderTabs(uiState.tabs, uiState.error, findTargetTabDestination() ?: return, uiState.isEligibleUsingFeature)
         renderErrorState(uiState.error)
         renderIneligibleAccessWarning(uiState.isEligibleUsingFeature)
@@ -192,12 +204,15 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
 
     private fun renderErrorState(error: Throwable?) {
         val isError = error != null
+        val rollenceValues = TickerUtil.getRollenceValues()
         binding?.globalError?.isVisible = isError
         binding?.globalError?.setActionClickListener {
-            viewModel.processEvent(FlashSaleContainerViewModel.UiEvent.GetPrerequisiteData)
+            viewModel.processEvent(
+                event = FlashSaleContainerViewModel.UiEvent.GetPrerequisiteData,
+                rollenceValueList = rollenceValues
+            )
         }
     }
-
 
     private fun renderLoadingState(isLoading: Boolean, error: Throwable?) {
         val isError = error != null
@@ -225,7 +240,7 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
 
             val fragment = FlashSaleListFragment.newInstance(tabId, tabName)
 
-            val displayedTabName = "${currentTab.displayName} (${totalFlashSaleCount})"
+            val displayedTabName = "${currentTab.displayName} ($totalFlashSaleCount)"
             pages.add(Pair(displayedTabName, fragment))
         }
 
@@ -250,7 +265,7 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
 
     private fun renderTicker(
         showTicker: Boolean,
-        remoteTickerMessage: String,
+        tickerList: List<RemoteTicker>,
         error: Throwable?,
         isLoading: Boolean,
         isEligibleUsingFeature: Boolean
@@ -259,7 +274,7 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
         val shouldDisplayTicker = showTicker && !isError && !isLoading && isEligibleUsingFeature
 
         if (shouldDisplayTicker) {
-            displayTicker(remoteTickerMessage)
+            displayTicker(tickerList)
         }
     }
 
@@ -271,15 +286,14 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
         }
     }
 
-
     private fun handleAutoRedirectionToSpecificTab(currentPosition: Int, targetTabPosition: Int) {
         if (currentPosition == targetTabPosition) {
             focusTo(targetTabPosition)
         }
     }
 
-    private fun focusTo(tabPosition : Int) {
-        //Add some spare time to make sure tabs are successfully drawn before select and focusing to a tab
+    private fun focusTo(tabPosition: Int) {
+        // Add some spare time to make sure tabs are successfully drawn before select and focusing to a tab
         doOnDelayFinished(REDIRECTION_DELAY) {
             val tabLayout = binding?.tabsUnify?.getUnifyTabLayout()
             val tab = tabLayout?.getTabAt(tabPosition)
@@ -287,44 +301,44 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun displayTicker(remoteTickerMessage: String) {
+    private fun displayTicker(tickerList: List<RemoteTicker>) {
+        if (context == null) return
         binding?.run {
             ticker.isVisible = true
+            var tickerDataList: MutableList<TickerData> = mutableListOf()
+            tickerList.map {
+                val description = ResourceProvider(context).getTickerDescriptionFormat(
+                    content = it.description,
+                    link = it.actionAppUrl,
+                    textLink = it.actionLabel
+                )
 
-            val defaultTicker = TickerData(
-                title = "",
-                description = getString(R.string.stfs_multi_location_ticker),
-                isFromHtml = true,
-                type = Ticker.TYPE_ANNOUNCEMENT
-            )
-            val remoteTicker = TickerData(
-                title = "",
-                description = remoteTickerMessage,
-                isFromHtml = true,
-                type = Ticker.TYPE_ANNOUNCEMENT
-            )
+                tickerDataList.add(
+                    TickerData(
+                        title = it.title,
+                        description = description,
+                        type = TickerUtil.getTickerType(it.type),
+                        isFromHtml = true
+                    )
+                )
+            }
 
-            val tickers = if (remoteTickerMessage.isEmpty()) listOf(defaultTicker) else listOf(remoteTicker, defaultTicker)
-
-            val tickerAdapter = TickerPagerAdapter(activity ?: return, tickers)
+            val tickerAdapter = TickerPagerAdapter(activity ?: return, tickerDataList)
             tickerAdapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
                 override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
-                    sendTickerHyperlinkClickEvent(linkUrl.toString())
+                    sendTickerHyperlinkClickEvent(linkUrl = linkUrl.toString(), description = itemData.toString())
                     routeToUrl(linkUrl.toString())
                 }
             })
 
-
-            ticker.addPagerView(tickerAdapter, tickers)
+            ticker.addPagerView(tickerAdapter, tickerDataList)
             ticker.setDescriptionClickEvent(object : TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
                     routeToUrl(linkUrl.toString())
                 }
 
                 override fun onDismiss() {
-                    viewModel.processEvent(FlashSaleContainerViewModel.UiEvent.DismissMultiLocationTicker)
                 }
-
             })
         }
     }
@@ -335,7 +349,7 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
         val appLinkData = RouteManager.getIntent(activity, activity?.intent?.data.toString()).data
 
         val lastPathSegment = appLinkData?.lastPathSegment.orEmpty()
-        val tabPosition =  when (lastPathSegment) {
+        val tabPosition = when (lastPathSegment) {
             "upcoming" -> FlashSaleListPageTab.UPCOMING.position
             "registered" -> FlashSaleListPageTab.REGISTERED.position
             "ongoing" -> FlashSaleListPageTab.ONGOING.position
@@ -352,8 +366,7 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 
-    private fun sendTickerHyperlinkClickEvent(linkUrl: String) {
-        val description = getString(R.string.stfs_multi_location_ticker_description)
+    private fun sendTickerHyperlinkClickEvent(linkUrl: String, description: String) {
         val eventLabel = "$description - $linkUrl"
         tracker.sendClickReadArticleEvent(eventLabel)
     }

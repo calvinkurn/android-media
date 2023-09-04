@@ -40,6 +40,7 @@
     <string name="product_manage_filter_active">Aktif (%d)</string>
     <string name="product_manage_filter_banned">Pelanggaran (%d)</string>
     <string name="product_manage_filter_inactive">Nonaktif (%d)</string>
+    <string name="product_manage_filter_archival">Diarsipkan (%d)</string>
     <string name="product_manage_bottom_sheet_title">Atur</string>
     <string name="product_manage_preview_menu">Lihat Preview Produk</string>
     <string name="product_manage_duplicate_product_menu">Duplikat Produk</string>
@@ -113,8 +114,9 @@
     <string name="product_manage_dialog_delete_products_title">Hapus %d Produk?</string>
     <string name="product_manage_dialog_edit_products_inactive_title">Nonaktifkan %d Produk?</string>
     <string name="product_manage_edit_products_inactive_button">Ya, Nonaktifkan</string>
-    <string name="product_manage_edit_products_inactive_success">%d produk berhasil dinonaktifkan.</string>
+    <string name="product_manage_edit_products_inactive_success">Beberapa status produk berhasil dinonaktifkan.</string>
     <string name="product_manage_delete_products_success">%d produk berhasil dihapus.</string>
+    <string name="product_manage_delete_products_failed">%d produk gagal dihapus karena sedang dijadwalkan untuk campaign.</string>
     <string name="product_manage_delete_products_retry">%1$d produk berhasil dihapus, %2$d gagal dihapus.</string>
     <string name="product_manage_edit_products_inactive_retry">%1$d produk berhasil dinonaktifkan, %2$d gagal dinonaktifkan.</string>
     <string name="product_manage_edit_products_retry">%1$d produk berhasil diubah, %2$d gagal diubah.</string>
@@ -173,7 +175,6 @@
     <string name="broadcast_chat_error_state_message_empty_variant">Oops, Broadcast Chat gagal dibuat. Yuk, coba lagi!</string>
     <string name="broadcast_chat_error_state_action_oke">Oke</string>
     <string name="broadcast_chat_error_state_action_retry">Ulangi</string>
-
     <!--content desc-->
     <string name="content_desc_btnEditPrice">button ubah harga</string>
     <string name="content_desc_btnEditStock">button ubah stok</string>
@@ -221,4 +222,20 @@
 
     <string name="product_tobacco_message">Produk tidak dapat dilihat di aplikasi ini. Kamu bisa cek lewat desktop atau web, ya.</string>
     <string name="product_tobacco_message_not_allow_bulk_edit_all">Produk yang tidak dapat dipilih karena larangan dari Google Policy</string>
+    <string name="label_oke">Oke</string>
+
+    <string name="product_manage_toaster_campaign_deactivate">Status produk tidak dapat diubah karena sedang dijadwalkan untuk memiliki promosi diskon.</string>
+    <string name="product_manage_multi_edit_failed_toaster_campaign_deactivate">%1$d produk gagal dinonaktifkan karena sedang dijadwalkan untuk memiliki promosi diskon.</string>
+
+    <string name="text_potential_archival">Berpotensi Diarsipkan</string>
+    <string name="text_archival">Diarsipkan</string>
+    <string name="product_manage_more">Selengkapnya</string>
+    <string name="text_product_have_archived_by_tokopedia">Produk telah diarsipkan oleh Tokopedia</string>
+    <string name="product_manage_text_potential_product_to_archived">Produk berpotensi diarsipkan oleh Tokopedia</string>
+    <string name="product_manage_text_title_product_archival_bottom_sheet">Detail pengarsipan produk</string>
+    <string name="product_archival_info_time_grace_period"><![CDATA[Pada <b>%s</b>, produk ini akan diarsipkan karena:]]></string>
+    <string name="product_archival_info_time_archived"><![CDATA[Pada <b>%s</b>, produk ini diarsipkan karena:]]></string>
+    <string name="product_archival_edu"><![CDATA[Pelajari tentang produk yang diarsipkan <a href="%s" target="_blank"><span style=color:#00AA5B;>di sini</span></a>]]></string>
+    <string name="product_manage_go_to_help_page">Ke Halaman Bantuan</string>
+
 </resources>

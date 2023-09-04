@@ -1,7 +1,6 @@
 apply plugin: 'com.android.dynamic-feature'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'io.hansel.preprocessor.feature'
-apply plugin: 'robust'
 
 buildscript {
     repositories {
@@ -15,6 +14,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.df.base'
+    testNamespace 'com.tokopedia.df.base.test'
 
     signingConfigs {
         debug {
@@ -66,7 +67,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.catalogLibrary)
     implementation projectOrAar(rootProject.ext.features.kategori)
     implementation projectOrAar(rootProject.ext.features.categoryLevels)
-    implementation projectOrAar(rootProject.ext.features.affiliateToko)
+//    implementation projectOrAar(rootProject.ext.features.affiliateToko)
     implementation projectOrAar(rootProject.ext.features.ePharmacy)
     //implementation projectOrAar(rootProject.ext.features.agerestriction) //Need to fix the structure
 
@@ -119,6 +120,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.shopPage)
     implementation projectOrAar(rootProject.ext.features.shopPageWidget)
     implementation projectOrAar(rootProject.ext.features.feedShop)
+    implementation projectOrAar(rootProject.ext.features.sellerShopNib)
 
     //Operational
 
@@ -127,6 +129,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.pms)
     implementation projectOrAar(rootProject.ext.features.goPayKyc)
     implementation projectOrAar(rootProject.ext.features.withdraw)
+    implementation projectOrAar(rootProject.ext.features.thankYouNative)
 
     //Promo
     implementation projectOrAar(rootProject.ext.features.promoCheckout)

@@ -198,7 +198,7 @@ class GridPostAdapter(
                 setTextColor(
                     MethodChecker.getColor(
                         itemView.context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_R500
+                        com.tokopedia.unifyprinciples.R.color.Unify_RN500
                     )
                 )
                 show()
@@ -214,7 +214,7 @@ class GridPostAdapter(
                 setTextColor(
                     MethodChecker.getColor(
                         itemView.context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_G500
+                        com.tokopedia.unifyprinciples.R.color.Unify_GN500
                     )
                 )
                 show()
@@ -236,7 +236,7 @@ class GridPostAdapter(
             extraProduct.background = ColorDrawable(
                 MethodChecker.getColor(
                     itemView.context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N700_32
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN950_32
                 )
             )
             extraProduct.show()

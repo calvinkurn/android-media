@@ -16,9 +16,17 @@ class CatalogMVCListUseCase @Inject constructor(var gqlWrapper: GqlUseCaseWrappe
         return gqlWrapper?.getResponse(getResponseClazz(), TokopointsCatalogMvcQuery.GQL_QUERY, map)
     }
 
-    fun getQueryParams(shopId: String, productId: String = "", source: Int = MvcSource.DEFAULT): HashMap<String, Any> {
+    fun getQueryParams(
+        shopId: String,
+        productId: String = "",
+        source: Int = MvcSource.DEFAULT,
+        additionalParamJson: String = ""
+    ): HashMap<String, Any> {
         val variables = HashMap<String, Any>()
+
         variables[TokopointsCatalogMVCParams.SHOP_ID] = shopId
+        variables[TokopointsCatalogMVCParams.ADDITIONAL_PARAM_JSON] = additionalParamJson
+
         if(productId.isNullOrEmpty().not()){
             variables[TokopointsCatalogMVCParams.PRODUCT_ID] = productId
         }
@@ -60,6 +68,7 @@ class CatalogMVCListUseCase @Inject constructor(var gqlWrapper: GqlUseCaseWrappe
 object TokopointsCatalogMVCParams {
     const val SHOP_ID = "shopID"
     const val PRODUCT_ID = "productID"
+    const val ADDITIONAL_PARAM_JSON = "additionalParamJSON"
     const val SOURCE = "source"
     const val LIMIT = "limit"
     const val API_VERSION = "apiVersion"

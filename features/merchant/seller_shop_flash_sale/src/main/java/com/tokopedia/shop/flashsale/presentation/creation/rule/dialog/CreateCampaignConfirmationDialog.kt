@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsDialogCreateCampaignConfirmationBinding
 import com.tokopedia.shop.flashsale.common.customcomponent.ModalBottomSheet
+import com.tokopedia.shop.flashsale.common.extension.setFragmentToUnifyBgColor
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 class CreateCampaignConfirmationDialog : ModalBottomSheet() {
@@ -43,6 +44,7 @@ class CreateCampaignConfirmationDialog : ModalBottomSheet() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setFragmentToUnifyBgColor()
         initContent()
     }
 

@@ -2,19 +2,17 @@ package com.tokopedia.catalog.viewholder.components
 
 import android.content.Context
 import android.view.View
-import android.widget.ImageView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.catalog.R
 import com.tokopedia.catalog.adapter.gallery.CatalogImageReviewAdapter
 import com.tokopedia.catalog.analytics.CatalogDetailAnalytics
 import com.tokopedia.catalog.listener.CatalogDetailListener
 import com.tokopedia.catalog.model.raw.CatalogImage
 import com.tokopedia.catalog.model.raw.CatalogProductReviewResponse
-import com.tokopedia.kotlin.extensions.view.displayTextOrHide
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.reviewcommon.feature.reviewer.presentation.widget.ShopReviewBasicInfoWidget
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
@@ -23,11 +21,6 @@ class CatalogReviewViewHolder(private val view: View) : RecyclerView.ViewHolder(
 
     companion object {
         const val MAX_LINES_REVIEW_DESCRIPTION = 3
-        const val RATING_ONE = 1
-        const val RATING_TWO = 2
-        const val RATING_THREE = 3
-        const val RATING_FOUR = 4
-        const val RATING_FIVE = 5
 
         val LAYOUT = R.layout.item_catalog_review
     }
@@ -39,6 +32,10 @@ class CatalogReviewViewHolder(private val view: View) : RecyclerView.ViewHolder(
     private val layoutManager = LinearLayoutManager(view.context, RecyclerView.HORIZONTAL, false)
 
     private var catalogDetailListener: CatalogDetailListener? = null
+
+    private val shopReviewWidget: ShopReviewBasicInfoWidget by lazy(LazyThreadSafetyMode.NONE) {
+        itemView.findViewById(R.id.catalog_shop_review_widget)
+    }
 
     fun bind(
         model: CatalogProductReviewResponse.CatalogGetProductReview.ReviewData.Review,
@@ -54,34 +51,17 @@ class CatalogReviewViewHolder(private val view: View) : RecyclerView.ViewHolder(
         catalogName = argCatalogName
         catalogId = argCatalogId
         catalogDetailListener = listener
-        setReviewStars(model.rating)
-        view.findViewById<Typography>(R.id.txt_user_name_catalog)?.displayTextOrHide(model.reviewerName ?: "")
-        view.findViewById<Typography>(R.id.txt_date_user_catalog)?.displayTextOrHide(model.reviewDate ?: "")
+
+        renderWidget(model)
         setReviewDescription(model.reviewText ?: "", model.reviewId ?: "")
         view.findViewById<RecyclerView>(R.id.image_review_rv_catalog)
         renderReviewImage(model, catalogDetailListener)
     }
 
-    private fun getRatingDrawable(param: Int): Int {
-        return when (param) {
-            RATING_ONE -> R.drawable.catalog_ic_rating_star_one
-            RATING_TWO -> R.drawable.catalog_ic_rating_star_two
-            RATING_THREE -> R.drawable.catalog_ic_rating_star_three
-            RATING_FOUR -> R.drawable.catalog_ic_rating_star_four
-            RATING_FIVE -> R.drawable.catalog_ic_rating_star_five
-            else -> R.drawable.catalog_ic_rating_star_zero
-        }
-    }
-
-    private fun setReviewStars(rating: Int?) {
-        view.findViewById<ImageView>(R.id.rating_review_catalog)?.apply {
-            if (rating == 0 || rating == null) {
-                hide()
-                return
-            }
-            setImageDrawable(MethodChecker.getDrawable(context, getRatingDrawable(rating)))
-            show()
-        }
+    private fun renderWidget(model: CatalogProductReviewResponse.CatalogGetProductReview.ReviewData.Review) {
+        shopReviewWidget.setRating(model.rating ?: 0)
+        shopReviewWidget.setReviewerName(model.reviewerName ?: "")
+        shopReviewWidget.setCreateTime(model.reviewDate ?: "")
     }
 
     private fun setReviewDescription(description: String, reviewId: String) {

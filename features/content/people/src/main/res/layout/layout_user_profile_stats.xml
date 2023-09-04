@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:id="@+id/ll_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/text_content_count"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:textColor="@color/Unify_NN950"
+            app:typographyType="display_1"
+            app:typographyWeight="bold"
+            tools:text="999" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/text_content_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="@string/up_lb_post"
+            android:textColor="@color/Unify_NN600"
+            app:typographyType="display_2" />
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/view_review_divider"
+        android:layout_width="@dimen/user_profile_dp_1"
+        android:layout_height="@dimen/unify_space_32"
+        android:layout_gravity="center_vertical"
+        android:background="@color/Unify_NN300" />
+
+    <LinearLayout
+        android:id="@+id/ll_review"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/text_review_count"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:textColor="@color/Unify_NN950"
+            app:typographyType="display_1"
+            app:typographyWeight="bold"
+            tools:text="999" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/text_review_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="@string/up_lb_review"
+            android:textColor="@color/Unify_NN600"
+            app:typographyType="display_2" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="@dimen/user_profile_dp_1"
+        android:layout_height="@dimen/unify_space_32"
+        android:layout_gravity="center_vertical"
+        android:background="@color/Unify_NN300" />
+
+    <LinearLayout
+        android:id="@+id/ll_follower"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/text_follower_count"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:textColor="@color/Unify_NN950"
+            app:typographyType="display_1"
+            app:typographyWeight="bold"
+            tools:text="999" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/text_follower_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="@string/up_lb_follower"
+            android:textColor="@color/Unify_NN600"
+            app:typographyType="display_2" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="@dimen/user_profile_dp_1"
+        android:layout_height="@dimen/unify_space_32"
+        android:layout_gravity="center_vertical"
+        android:background="@color/Unify_NN300" />
+
+    <LinearLayout
+        android:id="@+id/ll_following"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/text_following_count"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:textColor="@color/Unify_NN950"
+            app:typographyType="display_1"
+            app:typographyWeight="bold"
+            tools:text="999" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/text_following_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="@string/up_lb_following"
+            android:textColor="@color/Unify_NN600"
+            app:typographyType="display_2" />
+
+    </LinearLayout>
+
+</LinearLayout>

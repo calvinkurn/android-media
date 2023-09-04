@@ -20,6 +20,12 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.tokochat.common.util.TokoChatCacheManager
+import com.tokopedia.tokochat.common.util.TokoChatCacheManagerImpl.Companion.TOKOCHAT_IMAGE_ATTACHMENT_MAP
+import com.tokopedia.tokochat.common.util.TokoChatValueUtil
+import com.tokopedia.tokochat.common.util.TokoChatValueUtil.IMAGE_ATTACHMENT_MSG
+import com.tokopedia.tokochat.common.util.TokoChatValueUtil.TOKOFOOD_SERVICE_TYPE
+import com.tokopedia.tokochat.domain.cache.TokoChatBubblesCache
 import com.tokopedia.tokochat.domain.response.extension.TokoChatExtensionPayload
 import com.tokopedia.tokochat.domain.response.orderprogress.TokoChatOrderProgressResponse
 import com.tokopedia.tokochat.domain.response.orderprogress.param.TokoChatOrderProgressParam
@@ -29,21 +35,19 @@ import com.tokopedia.tokochat.domain.usecase.GetTokoChatRoomTickerUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatChannelUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatGetChatHistoryUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatGetImageUseCase
+import com.tokopedia.tokochat.domain.usecase.TokoChatGetTokopediaOrderIdUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatGetTypingUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatMarkAsReadUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatOrderProgressUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatRegistrationChannelUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatSendMessageUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatUploadImageUseCase
+import com.tokopedia.tokochat.util.TokoChatValueUtil.BUBBLES_PREF
 import com.tokopedia.tokochat.util.TokoChatValueUtil.IMAGE_EXTENSION
 import com.tokopedia.tokochat.util.TokoChatValueUtil.PICTURE
 import com.tokopedia.tokochat.util.TokoChatViewUtil
 import com.tokopedia.tokochat.util.TokoChatViewUtil.Companion.getTokoChatPhotoPath
 import com.tokopedia.tokochat.view.chatroom.uimodel.TokoChatImageAttachmentExtensionProvider
-import com.tokopedia.tokochat_common.util.TokoChatCacheManager
-import com.tokopedia.tokochat_common.util.TokoChatCacheManagerImpl.Companion.TOKOCHAT_IMAGE_ATTACHMENT_MAP
-import com.tokopedia.tokochat_common.util.TokoChatValueUtil
-import com.tokopedia.tokochat_common.util.TokoChatValueUtil.IMAGE_ATTACHMENT_MSG
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -52,9 +56,10 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.emptyFlow
@@ -81,6 +86,7 @@ class TokoChatViewModel @Inject constructor(
     private val getImageUrlUseCase: TokoChatGetImageUseCase,
     private val uploadImageUseCase: TokoChatUploadImageUseCase,
     private val getNeedConsentUseCase: GetNeedConsentUseCase,
+    private val getTkpdOrderIdUseCase: TokoChatGetTokopediaOrderIdUseCase,
     private val viewUtil: TokoChatViewUtil,
     private val imageAttachmentExtensionProvider: TokoChatImageAttachmentExtensionProvider,
     private val cacheManager: TokoChatCacheManager,
@@ -121,6 +127,10 @@ class TokoChatViewModel @Inject constructor(
     val imageUploadError: LiveData<Pair<String, Throwable>>
         get() = _imageUploadError
 
+    private val _isTkpdOrderStatusFailed = MutableStateFlow(false)
+    val isTkpdOrderStatusFailed: StateFlow<Boolean>
+        get() = _isTkpdOrderStatusFailed
+
     private val _error = MutableLiveData<Pair<Throwable, String>>()
     val error: LiveData<Pair<Throwable, String>>
         get() = _error
@@ -131,6 +141,7 @@ class TokoChatViewModel @Inject constructor(
     var isFromTokoFoodPostPurchase = false
     var pushNotifTemplateKey = ""
     var channelId = ""
+    var isFromBubble = false
 
     @Volatile
     var imageAttachmentMap = mutableMapOf<String, String>()
@@ -230,7 +241,7 @@ class TokoChatViewModel @Inject constructor(
         }
     }
 
-    fun getChatHistory(channelId: String): LiveData<List<ConversationsMessage>> {
+    fun getChatHistory(channelId: String): LiveData<List<ConversationsMessage>>? {
         return try {
             getChatHistoryUseCase(channelId)
         } catch (throwable: Throwable) {
@@ -271,7 +282,7 @@ class TokoChatViewModel @Inject constructor(
         }
     }
 
-    fun getTypingStatus(): LiveData<List<String>> {
+    fun getTypingStatus(): LiveData<List<String>>? {
         return try {
             getTypingUseCase.getTypingStatus()
         } catch (throwable: Throwable) {
@@ -347,7 +358,7 @@ class TokoChatViewModel @Inject constructor(
         return registrationChannelUseCase.getUserId()
     }
 
-    fun getMemberLeft(): MutableLiveData<String> {
+    fun getMemberLeft(): MutableLiveData<String>? {
         return try {
             chatChannelUseCase.getMemberLeftLiveData()
         } catch (throwable: Throwable) {
@@ -390,7 +401,7 @@ class TokoChatViewModel @Inject constructor(
         }
     }
 
-    fun getLiveChannel(channelId: String): LiveData<ConversationsChannel?> {
+    fun getLiveChannel(channelId: String): LiveData<ConversationsChannel?>? {
         return try {
             chatChannelUseCase.getLiveChannel(channelId)
         } catch (throwable: Throwable) {
@@ -602,8 +613,51 @@ class TokoChatViewModel @Inject constructor(
         }
     }
 
+    fun shouldShowTickerBubblesCache(): Boolean {
+        val cacheResult = cacheManager.loadCache(BUBBLES_PREF, TokoChatBubblesCache::class.java)
+        // If no cache from Awareness bottom sheet, return false
+        return if (cacheResult != null) {
+            // True only if channel id is the same & ticker is not closed
+            cacheResult.channelId == channelId && cacheResult.hasShownTicker == false
+        } else {
+            false
+        }
+    }
+
+    fun shouldShowBottomsheetBubblesCache(): Boolean {
+        val cacheResult = cacheManager.loadCache(BUBBLES_PREF, TokoChatBubblesCache::class.java)
+        return cacheResult == null
+    }
+
+    fun setBubblesPref(
+        hasShownBottomSheet: Boolean = true,
+        hasShownTicker: Boolean
+    ) {
+        cacheManager.saveCache(
+            BUBBLES_PREF,
+            TokoChatBubblesCache(
+                channelId = channelId,
+                hasShownBottomSheet = hasShownBottomSheet, // Need true to show ticker
+                hasShownTicker = hasShownTicker // If true, ticker won't show again
+            )
+        )
+    }
+
+    fun translateGojekOrderId(gojekOrderId: String) {
+        viewModelScope.launch {
+            try {
+                getTkpdOrderIdUseCase(gojekOrderId).collectLatest {
+                    tkpdOrderId = it
+                    loadOrderCompletedStatus(tkpdOrderId, source)
+                }
+            } catch (throwable: Throwable) {
+                _isTkpdOrderStatusFailed.value = true
+                _error.value = Pair(throwable, ::translateGojekOrderId.name)
+            }
+        }
+    }
+
     companion object {
-        const val TOKOFOOD_SERVICE_TYPE = 5
         const val DELAY_UPDATE_ORDER_STATE = 5000L
         private const val DELAY_FETCH_IMAGE = 500L
         private const val ERROR_COMPRESSED_IMAGE_NULL = "Compressed image null"

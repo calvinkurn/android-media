@@ -19,7 +19,7 @@
         android:id="@+id/container_banner_mix_more"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/Unify_N0">
+        android:background="@color/Unify_NN0">
 
         <ImageView
             android:id="@+id/background_banner_mix_more"
@@ -39,7 +39,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="@string/recom_see_more_dc_mix"
-            android:textColor="@color/Unify_G500"
+            android:textColor="@color/Unify_GN500"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/banner_mix_arrow"
             app:layout_constraintStart_toStartOf="@+id/banner_mix_arrow"

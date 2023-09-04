@@ -17,11 +17,15 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.iris'
+    testNamespace 'com.tokopedia.iris.test'
+}
+
 dependencies {
 
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
-    implementation projectOrAar(rootProject.ext.libraries.analytics)
     if (rootProject.ext.debugToolsEnabled) {
         implementation projectOrAar(rootProject.ext.libraries.analyticsDebugger)
     } else {
@@ -29,6 +33,7 @@ dependencies {
     }
     implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation projectOrAar(rootProject.ext.libraries.network)
+    implementation projectOrAar(rootProject.ext.libraries.deviceInfo)
     implementation rootProject.ext.tkpdInternalLibDependencies.url
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout

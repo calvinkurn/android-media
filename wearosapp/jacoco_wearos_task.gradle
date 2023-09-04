@@ -22,9 +22,9 @@ def executionDataFiles = fileTree(dir: project.buildDir, includes: ['jacoco/test
 task jacocoTestReport(type: JacocoReport, dependsOn: ['testLiveProdDebugUnitTest']) {
 
     reports {
-        xml.enabled = true
-        html.enabled = true
-        csv.enabled = true
+//        xml.enabled = true
+//        html.enabled = true
+//        csv.enabled = true
         xml.destination file("${rootProject.buildDir}/reports/jacocoTestReport-${project.name}.xml")
         html.destination file("${buildDir}/reports/jacoco")
         csv.destination file("${buildDir}/reports/jacocoTestReport.csv")

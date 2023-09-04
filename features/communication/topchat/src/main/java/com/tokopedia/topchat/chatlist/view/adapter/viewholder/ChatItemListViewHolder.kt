@@ -53,8 +53,8 @@ class ChatItemListViewHolder constructor(
     private val label: Label = itemView.findViewById(R.id.user_label)
     private val pin: ImageView = itemView.findViewById(R.id.ivPin)
     private val smartReplyIndicator: View? = itemView.findViewById(R.id.view_smart_reply_indicator)
-    private val unreadSpanColor: Int = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
-    private val readSpanColor: Int = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
+    private val unreadSpanColor: Int = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+    private val readSpanColor: Int = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68)
     private val typingImage: ImageUnify = itemView.findViewById(com.tokopedia.chat_common.R.id.iv_typing)
     private val typingText: Typography = itemView.findViewById(com.tokopedia.chat_common.R.id.tv_typing)
     private val labelIcon: ImageUnify? = itemView.findViewById(R.id.chatlist_img_label_icon)
@@ -299,10 +299,10 @@ class ChatItemListViewHolder constructor(
         message.setLines(2)
         message.maxLines = 2
         message.setTypeface(null, NORMAL)
-        message.setTextColor(MethodChecker.getColor(message.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+        message.setTextColor(MethodChecker.getColor(message.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68))
         if (chat.isActive) {
             itemView.setBackgroundColor(
-                MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G100)
+                MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN50)
             )
         } else {
             itemView.setBackgroundColor(
@@ -372,8 +372,7 @@ class ChatItemListViewHolder constructor(
 
     private fun bindLabelIcon(chat: ItemChatListPojo) {
         chat.labelIcon.run {
-            val validation = isNotEmpty() && listener.getRollenceValue(ROLLENCE_MVC_ICON)
-            if (validation) {
+            if (isNotEmpty()) {
                 labelIcon?.showWithCondition(!listener.isTabSeller())
                 labelIcon?.loadImage(chat.labelIcon)
             } else {
@@ -396,9 +395,6 @@ class ChatItemListViewHolder constructor(
         const val PAYLOAD_STOP_TYPING_STATE = 5431
         const val PAYLOAD_UPDATE_PIN_STATUS = 5432
         const val PAYLOAD_NEW_INCOMING_CHAT = 5433
-
-        // rollence MVC icon
-        const val ROLLENCE_MVC_ICON = "MVC_BCchatlist"
 
         const val BUYER_TAG = "Pengguna"
         const val SELLER_TAG = "Penjual"

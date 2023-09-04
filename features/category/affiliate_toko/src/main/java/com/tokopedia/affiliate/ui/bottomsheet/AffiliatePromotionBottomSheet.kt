@@ -61,7 +61,8 @@ import javax.inject.Inject
 class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, AddSocialInterface {
 
     @Inject
-    lateinit var userSessionInterface: UserSessionInterface
+    @JvmField
+    var userSessionInterface: UserSessionInterface? = null
 
     private var contentView: View? = null
     private val adapter: AffiliateAdapter = AffiliateAdapter(
@@ -89,8 +90,9 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
     private var selectedIds = arrayListOf<Int>()
 
     @Inject
-    lateinit var viewModelProvider: ViewModelProvider.Factory
-    private lateinit var affiliatePromotionBSViewModel: AffiliatePromotionBSViewModel
+    @JvmField
+    var viewModelProvider: ViewModelProvider.Factory? = null
+    private var affiliatePromotionBSViewModel: AffiliatePromotionBSViewModel? = null
 
     companion object {
 
@@ -180,7 +182,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                 affiliatePromotionBottomSheetInterface = bottomSheetInterface
                 selectedIds = params.idArray ?: arrayListOf()
                 arguments = Bundle().apply {
-                    putSerializable(KEY_PARAMS, params)
+                    putParcelable(KEY_PARAMS, params)
                 }
             }
         }
@@ -197,7 +199,8 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
         savedInstanceState: Bundle?
     ): View? {
         affiliatePromotionBSViewModel =
-            ViewModelProvider(this, viewModelProvider)[AffiliatePromotionBSViewModel::class.java]
+            viewModelProvider?.let { ViewModelProvider(this, it) }
+                ?.get(AffiliatePromotionBSViewModel::class.java)
         init()
         return super.onCreateView(inflater, container, savedInstanceState)
     }
@@ -226,12 +229,12 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
             arguments?.let { bundle ->
                 val params: AffiliatePromotionBottomSheetParams? =
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                        bundle.getSerializable(
+                        bundle.getParcelable(
                             KEY_PARAMS,
                             AffiliatePromotionBottomSheetParams::class.java
                         )
                     } else {
-                        bundle.getSerializable(KEY_PARAMS) as? AffiliatePromotionBottomSheetParams
+                        bundle.getParcelable(KEY_PARAMS) as? AffiliatePromotionBottomSheetParams
                     }
                 findViewById<Typography>(R.id.product_name).text =
                     params?.itemName ?: bundle.getString(KEY_PRODUCT_NAME)
@@ -275,6 +278,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                             )
                         )
                     }
+
                     ORIGIN_PROMO_TOKO_NOW -> {
                         findViewById<IconUnify>(R.id.icon_ssa_message).setOnClickListener {
                             RouteManager.route(
@@ -283,6 +287,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                             )
                         }
                     }
+
                     ORIGIN_PROMO_DISCO_BANNER, ORIGIN_PROMO_DISCO_BANNER_LIST -> {
                         findViewById<IconUnify>(R.id.icon_ssa_message).setOnClickListener {
                             RouteManager.route(
@@ -439,18 +444,20 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
             .build()
 
     private fun setObservers(contentView: View) {
-        affiliatePromotionBSViewModel.generateLinkData().observe(this) {
+        affiliatePromotionBSViewModel?.generateLinkData()?.observe(this) {
             it?.let { data ->
                 when (type) {
                     PAGE_TYPE_PDP -> sendClickEventProduct(
                         data.linkID,
                         AffiliateAnalytics.LabelKeys.SUCCESS
                     )
+
                     PAGE_TYPE_SHOP -> sendClickPGeventShop(
                         data.linkID,
                         AffiliateAnalytics.LabelKeys.SUCCESS,
                         status
                     )
+
                     PAGE_TYPE_CAMPAIGN -> sendClickEventCampaign(
                         data.linkID,
                         AffiliateAnalytics.LabelKeys.SUCCESS
@@ -471,10 +478,11 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                     Toaster.TYPE_NORMAL
                 ).show()
             } ?: kotlin.run {
-                when (PAGE_TYPE_PDP) {
+                when (type) {
                     PAGE_TYPE_PDP -> sendClickEventProduct("", AffiliateAnalytics.LabelKeys.FAIL)
                     PAGE_TYPE_SHOP ->
                         sendClickPGeventShop("", AffiliateAnalytics.LabelKeys.FAIL, status)
+
                     PAGE_TYPE_CAMPAIGN -> sendClickEventCampaign(
                         "",
                         AffiliateAnalytics.LabelKeys.FAIL
@@ -490,13 +498,13 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
             }
         }
 
-        affiliatePromotionBSViewModel.loading().observe(this) { isLoad ->
+        affiliatePromotionBSViewModel?.loading()?.observe(this) { isLoad ->
             if (isLoad != null) {
                 loading(isLoad)
             }
         }
 
-        affiliatePromotionBSViewModel.getErrorMessage().observe(this) { error ->
+        affiliatePromotionBSViewModel?.getErrorMessage()?.observe(this) { error ->
             if (error != null) {
                 when (type) {
                     PAGE_TYPE_PDP -> sendClickEventProduct("", AffiliateAnalytics.LabelKeys.FAIL)
@@ -505,6 +513,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                         AffiliateAnalytics.LabelKeys.FAIL,
                         status
                     )
+
                     PAGE_TYPE_CAMPAIGN -> sendClickEventCampaign(
                         "",
                         AffiliateAnalytics.LabelKeys.FAIL
@@ -523,12 +532,12 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
     private fun sendClickEventProduct(linkID: String?, state: String) {
         val params: AffiliatePromotionBottomSheetParams? =
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                arguments?.getSerializable(
+                arguments?.getParcelable(
                     KEY_PARAMS,
                     AffiliatePromotionBottomSheetParams::class.java
                 )
             } else {
-                arguments?.getSerializable(KEY_PARAMS) as? AffiliatePromotionBottomSheetParams
+                arguments?.getParcelable(KEY_PARAMS) as? AffiliatePromotionBottomSheetParams
             }
         var eventAction = ""
         var eventCategory = ""
@@ -543,6 +552,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                     eventLabel += " - komisi extra"
                 }
             }
+
             ORIGIN_HOME_GENERATED -> {
                 eventAction = AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK_DAFTAR_LINK_PRODUK
                 eventCategory = AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE_BOTTOM_SHEET
@@ -550,6 +560,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                     eventLabel += " - komisi extra"
                 }
             }
+
             ORIGIN_PERNAH_DIBELI_PROMOSIKA -> {
                 eventAction = AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK_PERNAH_DIABEL
                 eventCategory =
@@ -558,6 +569,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                     eventLabel += " - komisi extra"
                 }
             }
+
             ORIGIN_TERAKHIR_DILIHAT -> {
                 eventAction = AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK_PERNAH_DILIHAT
                 eventCategory =
@@ -566,6 +578,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                     eventLabel += " - komisi extra"
                 }
             }
+
             ORIGIN_PROMOSIKAN -> {
                 eventAction = AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK_RESULT_PAGE
                 eventCategory =
@@ -580,19 +593,19 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
             eventAction,
             eventCategory,
             eventLabel,
-            userSessionInterface.userId
+            userSessionInterface?.userId.orEmpty()
         )
     }
 
     private fun sendClickPGeventShop(linkID: String?, status: String, entryFlag: String) {
         val params: AffiliatePromotionBottomSheetParams? =
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                arguments?.getSerializable(
+                arguments?.getParcelable(
                     KEY_PARAMS,
                     AffiliatePromotionBottomSheetParams::class.java
                 )
             } else {
-                arguments?.getSerializable(KEY_PARAMS) as? AffiliatePromotionBottomSheetParams
+                arguments?.getParcelable(KEY_PARAMS) as? AffiliatePromotionBottomSheetParams
             }
         var eventAction = ""
         var eventCategory = ""
@@ -608,6 +621,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                     eventLabel += "komisi extra"
                 }
             }
+
             ORIGIN_PROMOSIKAN -> {
                 eventAction = AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK_SHOP_SEARCH_RESULT
                 eventCategory = AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_BOTTOM_SHEET
@@ -616,6 +630,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                     eventLabel += " - komisi extra"
                 }
             }
+
             ORIGIN_SSA_SHOP -> {
                 event = AffiliateAnalytics.EventKeys.CLICK_CONTENT
                 eventAction = AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK_SSA_SHOP
@@ -628,19 +643,19 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
             eventAction,
             eventCategory,
             eventLabel,
-            userSessionInterface.userId
+            userSessionInterface?.userId.orEmpty()
         )
     }
 
     private fun sendClickEventCampaign(linkID: String?, status: String) {
         val params: AffiliatePromotionBottomSheetParams? =
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                arguments?.getSerializable(
+                arguments?.getParcelable(
                     KEY_PARAMS,
                     AffiliatePromotionBottomSheetParams::class.java
                 )
             } else {
-                arguments?.getSerializable(KEY_PARAMS) as? AffiliatePromotionBottomSheetParams
+                arguments?.getParcelable(KEY_PARAMS) as? AffiliatePromotionBottomSheetParams
             }
         var eventAction = ""
         var eventCategory = ""
@@ -652,11 +667,13 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                 eventCategory = AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE_BOTTOM_SHEET
                 eventLabel = "$linkID - $status"
             }
+
             ORIGIN_PROMO_DISCO_BANNER -> {
                 eventAction = AffiliateAnalytics.ActionKeys.CLICK_SALIN_DISCO_BANNER
                 eventCategory = AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_BOTTOM_SHEET
                 eventLabel = "$linkID - $status"
             }
+
             ORIGIN_PROMO_DISCO_BANNER_LIST -> {
                 eventAction = AffiliateAnalytics.ActionKeys.CLICK_SALIN_DISCO_BANNER_LIST
                 eventCategory = AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_BOTTOM_SHEET
@@ -671,7 +688,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
             eventAction,
             eventCategory,
             eventLabel,
-            userSessionInterface.userId
+            userSessionInterface?.userId.orEmpty()
         )
     }
 
@@ -693,7 +710,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                 AffiliateAnalytics.ActionKeys.IMPRESSION_HOME_PORTAL_B_S,
                 AffiliateAnalytics.CategoryKeys.HOME_PORTAL_B_S,
                 "",
-                userSessionInterface.userId
+                userSessionInterface?.userId.orEmpty()
             )
         } else if (originScreen == ORIGIN_PROMOSIKAN) {
             AffiliateAnalytics.sendEvent(
@@ -701,7 +718,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                 AffiliateAnalytics.ActionKeys.IMPRESSION_PROMOSIKAN_SRP_B_S,
                 AffiliateAnalytics.CategoryKeys.PROMOSIKAN_SRP_B_S,
                 "",
-                userSessionInterface.userId
+                userSessionInterface?.userId.orEmpty()
             )
         }
     }
@@ -709,7 +726,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
     override fun onShareButtonClick(name: String?, id: Int?, serviceFormat: String?) {
         currentName = name
         currentServiceFormat = serviceFormat ?: ""
-        affiliatePromotionBSViewModel.affiliateGenerateLink(
+        affiliatePromotionBSViewModel?.affiliateGenerateLink(
             id,
             type,
             productId,

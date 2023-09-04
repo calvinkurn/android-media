@@ -14,17 +14,12 @@ import com.tokopedia.homenav.base.diffutil.holder.HomeNavMenuViewHolder
 import com.tokopedia.homenav.base.diffutil.holder.HomeNavTickerViewHolder
 import com.tokopedia.homenav.base.diffutil.holder.HomeNavTitleViewHolder
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.*
-import com.tokopedia.homenav.mainnav.view.adapter.viewholder.favoriteshop.ErrorFavoriteShopViewHolder
-import com.tokopedia.homenav.mainnav.view.adapter.viewholder.favoriteshop.FavoriteShopViewHolder
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.review.ErrorReviewViewHolder
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.review.ReviewViewHolder
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.wishlist.ErrorWishlistViewHolder
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.wishlist.WishlistViewHolder
 import com.tokopedia.homenav.mainnav.view.datamodel.*
 import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel
-import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.ErrorStateFavoriteShopDataModel
-import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.FavoriteShopListDataModel
-import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.ShimmerFavoriteShopDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.review.ErrorStateReviewDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.review.ReviewListDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.review.ShimmerReviewDataModel
@@ -70,10 +65,6 @@ class MainNavTypeFactoryImpl(
         return WishlistViewHolder.LAYOUT
     }
 
-    override fun type(favoriteShopListDataModel: FavoriteShopListDataModel): Int {
-        return FavoriteShopViewHolder.LAYOUT
-    }
-
     override fun type(reviewListDataModel: ReviewListDataModel): Int {
         return ReviewViewHolder.LAYOUT
     }
@@ -98,10 +89,6 @@ class MainNavTypeFactoryImpl(
         return InitialShimmeringTransactionDataViewHolder.LAYOUT
     }
 
-    override fun type(shimmerFavoriteShopDataModel: ShimmerFavoriteShopDataModel): Int {
-        return InitialShimmeringTransactionDataRevampViewHolder.LAYOUT
-    }
-
     override fun type(shimmerWishlistDataModel: ShimmerWishlistDataModel): Int {
         return InitialShimmeringTransactionDataRevampViewHolder.LAYOUT
     }
@@ -116,10 +103,6 @@ class MainNavTypeFactoryImpl(
 
     override fun type(errorStateOngoingTransactionModel: ErrorStateOngoingTransactionModel): Int {
         return ErrorStateOngoingTransactionViewHolder.LAYOUT
-    }
-
-    override fun type(errorStateFavoriteShopDataModel: ErrorStateFavoriteShopDataModel): Int {
-        return ErrorFavoriteShopViewHolder.LAYOUT
     }
 
     override fun type(errorStateWishlistDataModel: ErrorStateWishlistDataModel): Int {
@@ -145,9 +128,7 @@ class MainNavTypeFactoryImpl(
             InitialShimmeringTransactionDataRevampViewHolder.LAYOUT -> InitialShimmeringTransactionDataRevampViewHolder(view)
             InitialShimmeringTransactionDataViewHolder.LAYOUT -> InitialShimmeringTransactionDataViewHolder(view)
             WishlistViewHolder.LAYOUT -> WishlistViewHolder(view, mainNavListener)
-            FavoriteShopViewHolder.LAYOUT -> FavoriteShopViewHolder(view, mainNavListener)
             ErrorWishlistViewHolder.LAYOUT -> ErrorWishlistViewHolder(view, mainNavListener)
-            ErrorFavoriteShopViewHolder.LAYOUT -> ErrorFavoriteShopViewHolder(view, mainNavListener)
             ReviewViewHolder.LAYOUT -> ReviewViewHolder(view, mainNavListener)
             ErrorReviewViewHolder.LAYOUT -> ErrorReviewViewHolder(view, mainNavListener)
             else -> throw TypeNotSupportedException.create("Layout not supported")

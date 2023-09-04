@@ -1,7 +1,7 @@
 package com.tokopedia.cart.view.presenter
 
+import com.tokopedia.cart.view.uimodel.CartGroupHolderData
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
-import com.tokopedia.cart.view.uimodel.CartShopHolderData
 import io.mockk.every
 import org.junit.Test
 
@@ -12,10 +12,10 @@ class WeightCalculationTest : BaseCartTest() {
     private lateinit var secondProductFirstShop: CartItemHolderData
     private lateinit var secondProductSecondShop: CartItemHolderData
 
-    private lateinit var firstShop: CartShopHolderData
-    private lateinit var secondShop: CartShopHolderData
+    private lateinit var firstShop: CartGroupHolderData
+    private lateinit var secondShop: CartGroupHolderData
 
-    private lateinit var cartShops: ArrayList<CartShopHolderData>
+    private lateinit var cartShops: ArrayList<CartGroupHolderData>
 
     private fun initializeData() {
         //region First Item In First Shop
@@ -60,13 +60,13 @@ class WeightCalculationTest : BaseCartTest() {
         //endregion
 
         //region First Shop
-        firstShop = CartShopHolderData().apply {
+        firstShop = CartGroupHolderData().apply {
             productUiModelList = arrayListOf(firstProductFirstShop, secondProductFirstShop)
         }
         //endregion
 
         //region Second Shop
-        secondShop = CartShopHolderData().apply {
+        secondShop = CartGroupHolderData().apply {
             productUiModelList = arrayListOf(firstProductSecondShop, secondProductSecondShop)
         }
         //endregion

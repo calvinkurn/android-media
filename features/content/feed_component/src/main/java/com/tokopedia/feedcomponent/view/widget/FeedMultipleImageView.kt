@@ -18,7 +18,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
-import com.tokopedia.content.common.R as contentCommonR
+import com.tokopedia.content.common.R as contentcommonR
 
 /**
  * @author by yoasfs on 2019-07-01
@@ -38,7 +38,7 @@ class FeedMultipleImageView @JvmOverloads constructor(
     private val itemDecoration: RecyclerView.ItemDecoration
 
     init {
-        itemDecoration = ItemOffsetDecoration(context.resources.getDimensionPixelSize(contentCommonR.dimen.content_common_dp_4))
+        itemDecoration = ItemOffsetDecoration(context.resources.getDimensionPixelSize(contentcommonR.dimen.content_common_dp_4))
         init()
     }
 
@@ -155,8 +155,7 @@ class FeedMultipleImageView @JvmOverloads constructor(
                 ivDelete.visibility = if (item.isSelected) View.GONE else View.VISIBLE
                 if (item.videos.isNotEmpty()) {
                     icPlayVid.shouldShowWithAction(item.type == TYPE_VIDEO) {
-                        val modLength =
-                            itemView.context.resources.getDimensionPixelSize(if (itemCount == 1) R.dimen.dp_72 else R.dimen.dp_36)
+                        val modLength = itemView.context.resources.getDimensionPixelSize(if (itemCount == 1) R.dimen.dp_72 else R.dimen.dp_36)
                         icPlayVid.layoutParams.width = modLength
                         icPlayVid.layoutParams.height = modLength
                     }

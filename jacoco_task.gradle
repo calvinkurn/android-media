@@ -10,7 +10,8 @@ def kotlinFileExecute = [
         '**/*ViewModel.*',
         '**/*ViewModel$*$**.*',
         '**/*Presenter.*',
-        '**/*Presenter$*$**.*'
+        '**/*Presenter$*$**.*',
+        '**/com/tokopedia/applink/Deeplink*.*'
 ]
 
 def javaClasses = fileTree(dir: "$project.buildDir/intermediates/javac/debug/classes", includes: javaFileExecute)

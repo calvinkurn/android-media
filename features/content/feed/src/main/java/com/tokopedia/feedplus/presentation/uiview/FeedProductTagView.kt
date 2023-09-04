@@ -49,29 +49,33 @@ class FeedProductTagView(
         this.products = products
         this.positionInFeed = positionInFeed
 
-        bindText(products)
+        bindText(products, totalProducts)
     }
 
     fun bindText(
-        products: List<FeedCardProductModel>
+        products: List<FeedCardProductModel>,
+        totalProducts: Int
     ) {
+        this.totalProducts = totalProducts
         with(binding) {
             when {
-                products.size == PRODUCT_COUNT_ZERO -> {
+                products.size == PRODUCT_COUNT_ZERO && totalProducts == PRODUCT_COUNT_ZERO -> {
                     root.hide()
                 }
                 products.size == PRODUCT_COUNT_ONE -> {
                     tvTagProduct.text = products.firstOrNull()?.name
                     root.show()
                 }
-                products.size > PRODUCT_COUNT_NINETY_NINE -> {
+                totalProducts > PRODUCT_COUNT_NINETY_NINE -> {
                     tvTagProduct.text =
                         root.context.getString(R.string.feeds_tag_product_99_more_text)
                     root.show()
                 }
                 else -> {
+                    val total =
+                        if (totalProducts > PRODUCT_COUNT_ZERO) totalProducts else products.size
                     tvTagProduct.text =
-                        root.context.getString(R.string.feeds_tag_product_text, products.size)
+                        root.context.getString(R.string.feeds_tag_product_text, total)
                     root.show()
                 }
             }
@@ -102,7 +106,7 @@ class FeedProductTagView(
     }
 
     fun showIfPossible() {
-        bindText(this.products)
+        bindText(this.products, this.totalProducts)
     }
 
     companion object {

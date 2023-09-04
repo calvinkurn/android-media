@@ -20,7 +20,7 @@ class AutoAdsQueryModule(val context: Context) {
     @IntoMap
     @StringKey(RawQueryKeyObject.QUERY_GET_AUTO_ADS)
     fun queryGetAutoAds(@ActivityContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.query_auto_ads_status)
+            GraphqlHelper.loadRawString(context.resources, com.tokopedia.topads.common.R.raw.query_auto_ads_status)
 
     @Provides
     @IntoMap

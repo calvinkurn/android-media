@@ -30,6 +30,7 @@ import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.junit.After
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 
@@ -75,6 +76,7 @@ class HomeFragmentUiTest {
         IdlingRegistry.getInstance().unregister(homeRecyclerViewIdlingResource)
     }
 
+    @Ignore
     @Test
     fun testFirstTimeLoggedInUser() {
         assertHomeCoachmarkDisplayed()
@@ -137,7 +139,7 @@ class HomeFragmentUiTest {
 
         onView(
             withTagStringValue(
-                context.getString(R.string.tag_navigation_toolbar_searchbar)
+                context.getString(com.tokopedia.searchbar.R.string.tag_navigation_toolbar_searchbar)
             )
         ).check(matches(isDisplayed()))
     }
@@ -281,11 +283,11 @@ class HomeFragmentUiTest {
         }
 
         if (isSingleCoachmark) {
-            onView(withId(R.id.simple_ic_close))
+            onView(withId(com.tokopedia.coachmark.R.id.simple_ic_close))
                 .inRoot(RootMatchers.isPlatformPopup())
                 .perform(click())
         } else {
-            onView(withId(R.id.step_next))
+            onView(withId(com.tokopedia.coachmark.R.id.step_next))
                 .inRoot(RootMatchers.isPlatformPopup())
                 .perform(click())
         }

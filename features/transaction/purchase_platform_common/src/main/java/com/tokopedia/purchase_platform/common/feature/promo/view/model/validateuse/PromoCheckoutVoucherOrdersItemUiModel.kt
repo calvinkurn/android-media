@@ -23,7 +23,8 @@ data class PromoCheckoutVoucherOrdersItemUiModel(
     var success: Boolean = false,
     var invoiceDescription: String = "",
     var orderId: Int = -1,
-    var warehouseId: Int = -1
+    var warehouseId: Int = -1,
+    var cartStringGroup: String = ""
 ) : Parcelable {
     companion object {
         private const val TYPE_LOGISTIC = "logistic"

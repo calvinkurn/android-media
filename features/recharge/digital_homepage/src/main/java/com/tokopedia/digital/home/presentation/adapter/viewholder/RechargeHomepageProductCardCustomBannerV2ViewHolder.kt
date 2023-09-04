@@ -70,7 +70,7 @@ class RechargeHomepageProductCardCustomBannerV2ViewHolder(
                     contentContainer.setCardBackgroundColor(
                         MethodChecker.getColor(
                             root.context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_N0
+                            com.tokopedia.unifyprinciples.R.color.Unify_NN0
                         )
                     )
             } catch (e: Throwable) {

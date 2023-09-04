@@ -4,9 +4,11 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.promocheckoutmarketplace.data.response.AdditionalBoData
 import com.tokopedia.promocheckoutmarketplace.data.response.BenefitDetail
 import com.tokopedia.promocheckoutmarketplace.data.response.BoClashingInfo
+import com.tokopedia.promocheckoutmarketplace.data.response.CTA
 import com.tokopedia.promocheckoutmarketplace.data.response.ClashingInfo
 import com.tokopedia.promocheckoutmarketplace.data.response.PromoCoachmark
 import com.tokopedia.promocheckoutmarketplace.data.response.PromoInfo
+import com.tokopedia.promocheckoutmarketplace.data.response.SecondaryCoupon
 import com.tokopedia.promocheckoutmarketplace.presentation.adapter.PromoCheckoutAdapterTypeFactory
 
 data class PromoListItemUiModel(
@@ -49,12 +51,16 @@ data class PromoListItemUiModel(
         var clashingInfos: List<ClashingInfo> = emptyList(),
         // Store current applied promo causing this promo clash and can't be selected, based on data from #clashingInfo
         var currentClashingPromo: MutableList<String> = mutableListOf(),
+        var currentClashingSecondaryPromo: MutableList<String> = mutableListOf(),
         var promoInfos: List<PromoInfo> = emptyList(),
         var remainingPromoCount: Int = 0,
         var tabId: String = "",
         var shippingOptions: String = "",
         var paymentOptions: String = "",
         var benefitDetail: BenefitDetail = BenefitDetail(),
+        var cta: CTA = CTA(),
+        var benefitAdjustmentMessage: String = "",
+        var secondaryCoupons: List<SecondaryCoupon> = emptyList(),
 
         // fields related to bebas ongkir promo
 
@@ -64,7 +70,19 @@ data class PromoListItemUiModel(
         // Store BO promo data
         // When user choose BO promo, get unique id and promo code from here
         var boAdditionalData: List<AdditionalBoData> = emptyList()
-    )
+    ) {
+
+        val hasClashingPromo: Boolean
+            get() = if (secondaryCoupons.isNotEmpty()) {
+                currentClashingSecondaryPromo.isNotEmpty()
+            } else {
+                currentClashingPromo.isNotEmpty()
+            }
+
+        val useSecondaryPromo: Boolean
+            get() = currentClashingPromo.isNotEmpty() &&
+                secondaryCoupons.isNotEmpty() && currentClashingSecondaryPromo.isEmpty()
+    }
 
     data class UiState(
         var isParentEnabled: Boolean = false,
@@ -77,6 +95,8 @@ data class PromoListItemUiModel(
         var isHighlighted: Boolean = false,
         var isUpdateSelectionStateAction: Boolean = false,
         var isLastPromoItem: Boolean = false,
-        var isBebasOngkir: Boolean = false
+        var isBebasOngkir: Boolean = false,
+        var isContainActionableGopayCicilCTA: Boolean = false,
+        var isLoading: Boolean = false
     )
 }

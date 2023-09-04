@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif"
             android:text="@string/saldo_prioritas_title"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             app:typographyType="heading_5" />
 
         <com.tokopedia.unifycomponents.Label
@@ -49,7 +49,7 @@
             android:layout_below="@+id/sp_title"
             android:layout_marginTop="@dimen/sd_dp_6"
             android:lineSpacingExtra="3sp"
-            android:textColor="@color/Unify_N700_44"
+            android:textColor="@color/Unify_NN950_44"
             app:typographyType="body_3" />
 
         <RelativeLayout
@@ -74,8 +74,8 @@
                     android:layout_width="@dimen/unify_space_16"
                     android:layout_height="@dimen/unify_space_16"
                     android:layout_centerVertical="true"
-                    app:icon_color_light_enable="@color/Unify_N400"
-                    app:icon_color_night_enable="@color/Unify_N400"
+                    app:icon_color_light_enable="@color/Unify_NN600"
+                    app:icon_color_night_enable="@color/Unify_NN600"
                     app:icon_name="INFORMATION" />
 
                 <com.tokopedia.unifyprinciples.Typography
@@ -88,7 +88,7 @@
                     android:layout_toEndOf="@+id/sp_status_info_icon"
                     android:lineSpacingExtra="3sp"
                     android:text="@string/saldo_kyc_description_text"
-                    android:textColor="@color/Unify_N700_68"
+                    android:textColor="@color/Unify_NN950_68"
                     app:typographyType="body_3" />
 
                 <com.tokopedia.iconunify.IconUnify
@@ -112,7 +112,7 @@
                 android:fontFamily="sans-serif"
                 android:lineSpacingExtra="4sp"
                 android:text="@string/saldo_kyc_description_text"
-                android:textColor="@color/Unify_N700_32"
+                android:textColor="@color/Unify_NN950_32"
                 app:typographyType="small" />
 
         </RelativeLayout>

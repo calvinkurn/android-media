@@ -2,10 +2,12 @@ package com.tokopedia.buyerorder.recharge.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.buyerorder.recharge.data.request.RechargeOrderDetailRequest
+import com.tokopedia.buyerorder.recharge.data.response.DigitalPaymentInfoMessage
 import com.tokopedia.buyerorder.recharge.domain.RechargeEmoneyVoidUseCase
 import com.tokopedia.buyerorder.recharge.domain.RechargeOrderDetailUseCase
 import com.tokopedia.buyerorder.recharge.presentation.model.*
 import com.tokopedia.digital.digital_recommendation.domain.DigitalRecommendationUseCase
+import com.tokopedia.home_component_header.model.ChannelHeader
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -296,7 +298,12 @@ class RechargeOrderDetailViewModelTest {
                 paymentDetails = emptyList(),
                 totalPriceLabel = "",
                 totalPrice = "",
-                additionalTicker = null
+                additionalTicker = null,
+                paymentInfoMessage = RechargePaymentInfoMessage(
+                    "Belum termasuk biaya layanan, jasa aplikasi dan biaya lainnya.",
+                    "Lihat SK",
+                    "tokopedia://mybills",
+                )
             ),
             helpUrl = "",
             actionButtonList = RechargeOrderDetailActionButtonListModel(
@@ -371,23 +378,24 @@ class RechargeOrderDetailViewModelTest {
             productCardModelList = emptyList(),
             recommendationItemList = emptyList(),
             filterChip = emptyList(),
-            seeMoreAppLink = ""
+            seeMoreAppLink = "",
+            channelHeader = ChannelHeader()
         )
         coEvery {
             getRecommendationUseCaseCoroutine.getData(any())
         } returns
-                listOf(
-                    RecommendationWidget(
-                        title = "",
-                        subtitle = "",
-                        pageName = "",
-                        recommendationFilterChips = emptyList(),
-                        seeMoreAppLink = "",
-                        recommendationItemList = listOf(
-                            RecommendationItem()
-                        )
+            listOf(
+                RecommendationWidget(
+                    title = "",
+                    subtitle = "",
+                    pageName = "",
+                    recommendationFilterChips = emptyList(),
+                    seeMoreAppLink = "",
+                    recommendationItemList = listOf(
+                        RecommendationItem()
                     )
                 )
+            )
         coEvery {
             bestSellerMapper.mappingRecommendationWidget(any())
         } returns bestSellerDataModel
@@ -408,5 +416,4 @@ class RechargeOrderDetailViewModelTest {
         // then
         assert(viewModel.orderDetailData.value == null)
     }
-
 }

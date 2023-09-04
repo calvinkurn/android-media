@@ -1,5 +1,0 @@
-query getProfile {
-    profile {
-      phone_verified
-    }
-  }

@@ -1,16 +1,9 @@
 package com.tokopedia.play.broadcaster.analytic.summary
 
+import com.tokopedia.content.analytic.BusinessUnit
+import com.tokopedia.content.analytic.Key
 import com.tokopedia.play.broadcaster.analytic.*
-import com.tokopedia.play.broadcaster.analytic.KEY_BUSINESS_UNIT
-import com.tokopedia.play.broadcaster.analytic.KEY_CURRENT_SITE
-import com.tokopedia.play.broadcaster.analytic.KEY_EVENT
-import com.tokopedia.play.broadcaster.analytic.KEY_EVENT_ACTION
-import com.tokopedia.play.broadcaster.analytic.KEY_EVENT_CATEGORY
-import com.tokopedia.play.broadcaster.analytic.KEY_EVENT_LABEL
-import com.tokopedia.play.broadcaster.analytic.KEY_SHOP_ID
-import com.tokopedia.play.broadcaster.analytic.KEY_TRACK_BUSINESS_UNIT
 import com.tokopedia.play.broadcaster.analytic.KEY_TRACK_CATEGORY
-import com.tokopedia.play.broadcaster.analytic.KEY_USER_ID
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -28,29 +21,29 @@ class PlayBroadcastSummaryAnalyticImpl @Inject constructor(
     override fun clickPostingVideoOnReportPage() {
         sendClickEvent(
             "click - post to shop page",
-            shopId,
+            shopId
         )
     }
 
     override fun clickPostingVideoNow() {
         sendClickEvent(
             "click - post video now",
-            shopId,
+            shopId
         )
     }
 
     override fun clickContentTag(tagName: String, isChosen: Boolean) {
-        val actionType = if(isChosen) "click" else "unclick"
+        val actionType = if (isChosen) "click" else "unclick"
         sendClickEvent(
             "$actionType - content tag",
-            "$shopId - $tagName",
+            "$shopId - $tagName"
         )
     }
 
     override fun clickCoverOnReportPage(channelID: String, channelTitle: String) {
         sendClickEvent(
             "click - cover image on report page",
-            "$shopId - $channelID - $channelTitle",
+            "$shopId - $channelID - $channelTitle"
         )
     }
 
@@ -58,9 +51,9 @@ class PlayBroadcastSummaryAnalyticImpl @Inject constructor(
         TrackApp.getInstance().gtm.sendScreenAuthenticated(
             "/seller broadcast - report summary - $shopId - $channelID",
             mapOf<String, String>(
-                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                KEY_CURRENT_SITE to currentSite,
-                KEY_IS_LOGGED_IN_STATUS to userSession.isLoggedIn.toString()
+                Key.businessUnit to BusinessUnit.play,
+                Key.currentSite to currentSite,
+                Key.isLoggedInStatus to userSession.isLoggedIn.toString()
             )
         )
     }
@@ -68,7 +61,7 @@ class PlayBroadcastSummaryAnalyticImpl @Inject constructor(
     override fun clickInteractiveParticipantDetail(channelID: String, channelTitle: String) {
         sendClickEvent(
             "click - lihat detail gamification",
-            "$shopId - $channelID - $channelTitle",
+            "$shopId - $channelID - $channelTitle"
         )
     }
 
@@ -78,14 +71,14 @@ class PlayBroadcastSummaryAnalyticImpl @Inject constructor(
     ) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
-                KEY_EVENT to KEY_TRACK_CLICK_EVENT,
-                KEY_EVENT_CATEGORY to KEY_TRACK_CATEGORY,
-                KEY_EVENT_ACTION to eventAction,
-                KEY_EVENT_LABEL to eventLabel,
-                KEY_CURRENT_SITE to currentSite,
-                KEY_SHOP_ID to userSession.shopId,
-                KEY_USER_ID to userSession.userId,
-                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT
+                Key.event to KEY_TRACK_CLICK_EVENT,
+                Key.eventCategory to KEY_TRACK_CATEGORY,
+                Key.eventAction to eventAction,
+                Key.eventLabel to eventLabel,
+                Key.currentSite to currentSite,
+                Key.shopId to userSession.shopId,
+                Key.userId to userSession.userId,
+                Key.businessUnit to BusinessUnit.play
             )
         )
     }

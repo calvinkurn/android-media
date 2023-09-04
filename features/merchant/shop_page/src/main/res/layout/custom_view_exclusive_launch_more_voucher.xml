@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rootLayout"
+    android:layout_width="87dp"
+    android:layout_height="68dp"
+    android:background="@drawable/bg_exclusive_launch_more_voucher_dark">
+
+    <View
+        android:id="@+id/view_pattern"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_exclusive_launch_more_voucher_pattern_dark" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_remaining_voucher"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginHorizontal="12dp"
+        android:layout_marginVertical="8dp"
+        android:text="@string/shop_page_placeholder_view_all"
+        android:textColor="@color/Unify_NN0"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_3"
+        tools:text="Lihat 10 Kupon Lainnya" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

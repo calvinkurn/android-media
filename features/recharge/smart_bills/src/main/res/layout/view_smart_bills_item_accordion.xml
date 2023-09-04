@@ -10,13 +10,13 @@
         android:id="@+id/smart_bills_view_margin"
         android:layout_width="match_parent"
         android:layout_height="@dimen/spacing_lvl3"
-        android:background="@color/Unify_N50"
+        android:background="@color/Unify_NN50"
         />
 
     <com.tokopedia.accordion.AccordionUnify
         android:id="@+id/accordion_smart_bills"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:background="@color/Unify_N0" />
+        android:background="@color/Unify_NN0" />
 
 </LinearLayout>

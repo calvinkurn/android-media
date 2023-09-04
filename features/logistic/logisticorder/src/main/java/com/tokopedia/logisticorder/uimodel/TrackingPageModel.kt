@@ -61,7 +61,8 @@ data class TrackHistoryModel(
 
 @Parcelize
 data class PageModel(
-    var additionalInfo: List<AdditionalInfoModel> = listOf()
+    var additionalInfo: List<AdditionalInfoModel> = listOf(),
+    var contactUsUrl: String = ""
 ) : Parcelable
 
 @Parcelize

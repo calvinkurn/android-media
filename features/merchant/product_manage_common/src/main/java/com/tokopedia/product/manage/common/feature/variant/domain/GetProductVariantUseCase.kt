@@ -13,7 +13,7 @@ import javax.inject.Inject
 @GqlQuery("GetProductVariantGqlQuery", GetProductVariant.QUERY)
 class GetProductVariantUseCase @Inject constructor(
     graphqlRepository: GraphqlRepository
-): GraphqlUseCase<GetProductVariantResponse>(graphqlRepository) {
+) : GraphqlUseCase<GetProductVariantResponse>(graphqlRepository) {
 
     companion object {
         private const val PARAM_PRODUCT_ID = "productID"
@@ -27,11 +27,14 @@ class GetProductVariantUseCase @Inject constructor(
         private const val PARAM_BUNDLE = "bundle"
         private const val PARAM_NOTIFY_ME = "notifyme"
         private const val PARAM_STOCK_ALERT = "stockAlert"
+        private const val PARAM_AGGREGATE = "aggregate"
 
-        fun createRequestParams(productId: String,
-                                paramEdit: Boolean = true,
-                                warehouseId: String? = null,
-                                isBundling: Boolean = false): RequestParams {
+        fun createRequestParams(
+            productId: String,
+            paramEdit: Boolean = true,
+            warehouseId: String? = null,
+            isBundling: Boolean = false
+        ): RequestParams {
             val optionsParam = RequestParams().apply {
                 putBoolean(PARAM_VARIANT, true)
                 putBoolean(PARAM_EDIT, paramEdit)
@@ -43,6 +46,7 @@ class GetProductVariantUseCase @Inject constructor(
                 putBoolean(PARAM_BUNDLE, isBundling)
                 putBoolean(PARAM_NOTIFY_ME, true)
                 putBoolean(PARAM_STOCK_ALERT, true)
+                putBoolean(PARAM_AGGREGATE, true)
             }.parameters
 
             return RequestParams().apply {

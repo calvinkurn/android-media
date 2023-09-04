@@ -4,17 +4,24 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewParent
+import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.ErrorNetworkViewHolder
-import com.tokopedia.feedplus.databinding.ItemFeedNoContentBinding
+import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingMoreViewHolder
+import com.tokopedia.feedplus.databinding.ItemFeedFollowRecommendationBinding
+import com.tokopedia.feedplus.databinding.ItemFeedLoadMoreContentBinding
 import com.tokopedia.feedplus.databinding.ItemFeedPostBinding
+import com.tokopedia.feedplus.databinding.ItemFeedPostErrorBinding
 import com.tokopedia.feedplus.databinding.ItemFeedPostLiveBinding
 import com.tokopedia.feedplus.databinding.ItemFeedPostVideoBinding
 import com.tokopedia.feedplus.domain.mapper.MapperFeedModelToTrackerDataModel
+import com.tokopedia.feedplus.presentation.adapter.listener.FeedFollowRecommendationListener
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
 import com.tokopedia.feedplus.presentation.adapter.viewholder.FeedErrorViewHolder
+import com.tokopedia.feedplus.presentation.adapter.viewholder.FeedFollowRecommendationViewHolder
+import com.tokopedia.feedplus.presentation.adapter.viewholder.FeedLoadMoreViewHolder
 import com.tokopedia.feedplus.presentation.adapter.viewholder.FeedNoContentViewHolder
 import com.tokopedia.feedplus.presentation.adapter.viewholder.FeedPostImageViewHolder
 import com.tokopedia.feedplus.presentation.adapter.viewholder.FeedPostLiveViewHolder
@@ -23,6 +30,7 @@ import com.tokopedia.feedplus.presentation.fragment.FeedFragment
 import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
 import com.tokopedia.feedplus.presentation.model.FeedCardLivePreviewContentModel
 import com.tokopedia.feedplus.presentation.model.FeedCardVideoContentModel
+import com.tokopedia.feedplus.presentation.model.FeedFollowRecommendationModel
 import com.tokopedia.feedplus.presentation.model.FeedNoContentModel
 
 /**
@@ -30,8 +38,10 @@ import com.tokopedia.feedplus.presentation.model.FeedNoContentModel
  */
 class FeedAdapterTypeFactory(
     context: FeedFragment,
+    private val lifecycleOwner: LifecycleOwner,
     private val parentToBeDisabled: ViewParent?,
-    private val trackerMapper: MapperFeedModelToTrackerDataModel
+    private val trackerMapper: MapperFeedModelToTrackerDataModel,
+    private val followRecommendationListener: FeedFollowRecommendationListener,
 ) : BaseAdapterTypeFactory() {
 
     private val feedListener: FeedListener
@@ -47,6 +57,8 @@ class FeedAdapterTypeFactory(
     fun type(model: FeedCardVideoContentModel) = FeedPostVideoViewHolder.LAYOUT
 
     fun type(model: FeedCardLivePreviewContentModel) = FeedPostLiveViewHolder.LAYOUT
+
+    fun type(model: FeedFollowRecommendationModel) = FeedFollowRecommendationViewHolder.LAYOUT
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>>? =
         when (type) {
@@ -79,15 +91,31 @@ class FeedAdapterTypeFactory(
                 trackerMapper
             )
             FeedNoContentViewHolder.LAYOUT -> FeedNoContentViewHolder(
-                ItemFeedNoContentBinding.inflate(
+                ItemFeedPostErrorBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent as ViewGroup,
                     false
                 ),
                 feedListener
             )
+            FeedFollowRecommendationViewHolder.LAYOUT -> FeedFollowRecommendationViewHolder(
+                ItemFeedFollowRecommendationBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent as ViewGroup,
+                    false
+                ),
+                lifecycleOwner,
+                followRecommendationListener
+            )
+            LoadingMoreViewHolder.LAYOUT -> FeedLoadMoreViewHolder(
+                ItemFeedLoadMoreContentBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent as ViewGroup,
+                    false
+                )
+            )
             ErrorNetworkViewHolder.LAYOUT -> FeedErrorViewHolder(
-                ItemFeedNoContentBinding.inflate(
+                ItemFeedPostErrorBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent as ViewGroup,
                     false

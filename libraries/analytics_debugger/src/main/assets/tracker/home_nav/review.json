@@ -9,52 +9,33 @@
       "eventLabel": "",
       "businessUnit": "home & browse",
       "currentSite": "tokopediamarketplace",
-      "pageSource": "pageSource:global menu;",
+      "pageSource": ".*",
       "promotions": [
         {
-          "creative_name": "",
+          "creative_name": ".*",
           "creative_slot": ".*",
-          "item_id": ".*_.*_.*",
-          "item_name": "/global_menu - review_card",
-          "creative_url": ""
-        }
-      ],
-      "userId": ".*",
-      "sessionIris": ".*"
-    },
-    {
-      "event": "select_content",
-      "eventAction": "click review card - product star rating",
-      "eventCategory": "global menu",
-      "eventLabel": "star rating - .* - .* - .*",
-      "businessUnit": "home & browse",
-      "currentSite": "tokopediamarketplace",
-      "pageSource": "pageSource:global menu;",
-      "promotions": [
-        {
-          "creative_name": "star rating_.*",
-          "creative_slot": ".*",
-          "item_id": ".*_.*_.*",
+          "item_id": ".* - .* - .* - .*",
           "item_name": "/global_menu - review_card"
         }
       ],
       "userId": ".*",
       "sessionIris": ".*",
-      "clientId": ".*"
+      "trackerId": "30840"
     },
     {
       "event": "select_content",
-      "eventAction": "click review card - product card",
+      "eventAction": "click on review card",
       "eventCategory": "global menu",
-      "eventLabel": "product card - .* - .*",
+      "eventLabel": ".* - .* - .*",
+      "trackerId": "30843",
       "businessUnit": "home & browse",
       "currentSite": "tokopediamarketplace",
-      "pageSource": "pageSource:global menu;",
+      "pageSource": ".*",
       "promotions": [
         {
-          "creative_name": "product card_.*",
+          "creative_name": ".*",
           "creative_slot": ".*",
-          "item_id": ".*_.*_.*",
+          "item_id": ".* - .* - .* - .*",
           "item_name": "/global_menu - review_card"
         }
       ],
@@ -64,14 +45,16 @@
     },
     {
       "event": "clickHomepage",
-      "eventAction": "click view all review",
+      "eventAction": "click view all card",
       "eventCategory": "global menu",
-      "eventLabel": "",
+      "eventLabel": "review",
       "businessUnit": "home & browse",
       "currentSite": "tokopediamarketplace",
+      "trackerId": "30854",
+      "pageSource": ".*",
+      "userId": ".*",
       "sessionIris": ".*",
-      "clientId": ".*",
-      "userId": ".*"
+      "clientId": ".*"
     }
   ]
 }

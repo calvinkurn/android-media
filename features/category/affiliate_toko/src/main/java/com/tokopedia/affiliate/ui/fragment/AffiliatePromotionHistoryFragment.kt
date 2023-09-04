@@ -24,7 +24,6 @@ import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.interfaces.ProductClickInterface
 import com.tokopedia.affiliate.model.pojo.AffiliatePromotionBottomSheetParams
-import com.tokopedia.affiliate.ui.bottomsheet.AffiliateHowToPromoteBottomSheet
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliatePromotionBottomSheet
 import com.tokopedia.affiliate.ui.viewholder.AffiliatePerformaSharedProductCardsItemVH
 import com.tokopedia.affiliate.ui.viewholder.AffiliateSharedProductCardsItemVH
@@ -52,15 +51,19 @@ class AffiliatePromotionHistoryFragment :
     private var listSize = 0
 
     @Inject
-    lateinit var userSessionInterface: UserSessionInterface
+    @JvmField
+    var userSessionInterface: UserSessionInterface? = null
 
     @Inject
-    lateinit var viewModelProvider: ViewModelProvider.Factory
+    @JvmField
+    var viewModelProvider: ViewModelProvider.Factory? = null
 
     private var loadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
 
-    private lateinit var affiliatePromotionViewModel: AffiliatePromotionHistoryViewModel
-    lateinit var adapter: AffiliateAdapter
+    private var affiliatePromotionViewModel: AffiliatePromotionHistoryViewModel? = null
+    private val adapter by lazy {
+        AffiliateAdapter(AffiliateAdapterFactory(productClickInterface = this))
+    }
     private var isUserBlackListed = false
 
     companion object {
@@ -73,12 +76,7 @@ class AffiliatePromotionHistoryFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        initAdapter()
         setObservers()
-    }
-
-    private fun initAdapter() {
-        adapter = AffiliateAdapter(AffiliateAdapterFactory(productClickInterface = this))
     }
 
     override fun onCreateView(
@@ -110,14 +108,14 @@ class AffiliatePromotionHistoryFragment :
         loadMoreTriggerListener = getEndlessRecyclerViewListener(layoutManager)
         productsRV?.adapter = adapter
         loadMoreTriggerListener?.let { productsRV?.addOnScrollListener(it) }
-        affiliatePromotionViewModel.getAffiliatePerformance(PAGE_ZERO)
+        affiliatePromotionViewModel?.getAffiliatePerformance(PAGE_ZERO)
     }
 
     private fun resetItems() {
         loadMoreTriggerListener?.resetState()
         listSize = 0
         adapter.resetList()
-        affiliatePromotionViewModel.getAffiliatePerformance(PAGE_ZERO)
+        affiliatePromotionViewModel?.getAffiliatePerformance(PAGE_ZERO)
     }
 
     private fun showNoAffiliate() {
@@ -144,7 +142,7 @@ class AffiliatePromotionHistoryFragment :
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 if (totalItemsCount < totalDataItemsCount) {
                     sendImpressionEvent()
-                    affiliatePromotionViewModel.getAffiliatePerformance(page - 1)
+                    affiliatePromotionViewModel?.getAffiliatePerformance(page - 1)
                 }
             }
         }
@@ -170,7 +168,7 @@ class AffiliatePromotionHistoryFragment :
                 AffiliateAnalytics.EventKeys.VIEW_ITEM_LIST,
                 AffiliateAnalytics.ActionKeys.IMPRESSION_DAFTAR_LINK_PRODUK,
                 AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE_GENERATED_LINK_HIST,
-                userSessionInterface.userId,
+                userSessionInterface?.userId.orEmpty(),
                 itemID,
                 listSize,
                 itemName,
@@ -180,7 +178,7 @@ class AffiliatePromotionHistoryFragment :
     }
 
     private fun setObservers() {
-        affiliatePromotionViewModel.getShimmerVisibility().observe(this) { visibility ->
+        affiliatePromotionViewModel?.getShimmerVisibility()?.observe(this) { visibility ->
             if (visibility != null) {
                 if (visibility) {
                     adapter.addShimmer()
@@ -189,7 +187,7 @@ class AffiliatePromotionHistoryFragment :
                 }
             }
         }
-        affiliatePromotionViewModel.getAffiliateDataItems().observe(this) { dataList ->
+        affiliatePromotionViewModel?.getAffiliateDataItems()?.observe(this) { dataList ->
             adapter.removeShimmer(listSize)
             if (isSwipeRefresh) {
                 view?.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout)?.isRefreshing = false
@@ -204,15 +202,17 @@ class AffiliatePromotionHistoryFragment :
                 showNoAffiliate()
             }
         }
-        affiliatePromotionViewModel.getErrorMessage().observe(this) { error ->
+        affiliatePromotionViewModel?.getErrorMessage()?.observe(this) { error ->
             view?.findViewById<GlobalError>(R.id.home_global_error)?.run {
                 when (error) {
                     is UnknownHostException, is SocketTimeoutException -> {
                         setType(GlobalError.NO_CONNECTION)
                     }
+
                     is IllegalStateException -> {
                         setType(GlobalError.PAGE_FULL)
                     }
+
                     else -> {
                         setType(GlobalError.SERVER_ERROR)
                     }
@@ -224,7 +224,7 @@ class AffiliatePromotionHistoryFragment :
                 }
             }
         }
-        affiliatePromotionViewModel.getAffiliateItemCount().observe(this) { itemCount ->
+        affiliatePromotionViewModel?.getAffiliateItemCount()?.observe(this) { itemCount ->
             if (itemCount != 0) {
                 view?.findViewById<Typography>(R.id.affiliate_products_count)?.text =
                     getString(R.string.affiliate_product_count, itemCount.toString())
@@ -242,7 +242,7 @@ class AffiliatePromotionHistoryFragment :
         }
     }
 
-    override fun getVMFactory(): ViewModelProvider.Factory {
+    override fun getVMFactory(): ViewModelProvider.Factory? {
         return viewModelProvider
     }
 
@@ -291,9 +291,6 @@ class AffiliatePromotionHistoryFragment :
                 AffiliatePromotionBottomSheet.Companion.SheetType.LINK_GENERATION,
                 null
             ).show(childFragmentManager, "")
-        } else {
-            AffiliateHowToPromoteBottomSheet.newInstance(AffiliateHowToPromoteBottomSheet.STATE_PRODUCT_INACTIVE)
-                .show(childFragmentManager, "")
         }
     }
 }

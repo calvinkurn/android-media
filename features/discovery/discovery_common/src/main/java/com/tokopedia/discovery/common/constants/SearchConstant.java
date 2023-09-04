@@ -153,6 +153,8 @@ public interface SearchConstant {
         String TYPE_INSPIRATION_CAROUSEL_SINGLE_BUNDLING = "single_bundling";
         String TYPE_INSPIRATION_CAROUSEL_MULTIPLE_BUNDLING = "multiple_bundling";
         String TYPE_SAME_SESSION_RECOMMENDATION = "same_session";
+
+        String TYPE_DILAYANI_TOKOPEDIA = "dilayani_tokopedia";
     }
 
     interface TopAdsComponent {
@@ -174,6 +176,8 @@ public interface SearchConstant {
     interface CustomDimension {
         String DEFAULT_VALUE_CUSTOM_DIMENSION_90_GLOBAL = "none.none.global_search.none";
         String DEFAULT_VALUE_CUSTOM_DIMENSION_90_GLOBAL_MPS = "none.none.global_search_mps.none";
+
+        String DIMENSION_90_GLOBAL_MPS = "global_search_mps";
         String DEFAULT_VALUE_CUSTOM_DIMENSION_90_GLOBAL_SHOP = "none.none.global_search_shop.none";
     }
 
@@ -195,5 +199,7 @@ public interface SearchConstant {
         String GIMMICK = "gimmick";
         String PORTRAIT = "portrait";
         String ETA = "eta";
+        String LIST_VIEW = "listview";
+        String FIXED_GRID = "fixedgrid";
     }
 }
