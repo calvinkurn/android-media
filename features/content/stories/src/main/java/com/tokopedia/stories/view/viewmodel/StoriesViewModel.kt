@@ -227,7 +227,7 @@ class StoriesViewModel @Inject constructor(
         val request = StoriesRequestModel(
             authorID = mShopId,
             authorType = StoriesAuthorType.SHOP.value,
-            source = "",
+            source = StoriesSource.STORY_GROUP.value,
             sourceID = mGroupItem.groupId,
         )
         return repository.getStoriesDetailData(request)
