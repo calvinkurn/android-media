@@ -5,7 +5,7 @@ import com.tokopedia.minicart.bmgm.presentation.model.BmgmMiniCartVisitable
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
 import com.tokopedia.minicart.common.data.response.minicartlist.Product
 import com.tokopedia.purchase_platform.common.feature.bmgm.data.response.BmGmData
-import com.tokopedia.purchase_platform.common.feature.bmgm.data.response.BmGmProductTier
+import com.tokopedia.purchase_platform.common.feature.bmgm.data.response.BmGmProduct
 import javax.inject.Inject
 
 /**
@@ -38,12 +38,12 @@ class BmgmMiniCartDataMapper @Inject constructor() {
             return BmgmMiniCartDataUiModel(
                 offerId = it.offerId,
                 offerName = it.offerName,
-                offerMessage = it.offerMessage.joinToString(" "),
+                offerMessage = it.offerMessage,
                 hasReachMaxDiscount = hasReachMaxDiscount,
                 priceBeforeBenefit = shoppingSummary.totalOriginalValue,
                 finalPrice = shoppingSummary.totalValue,
                 totalDiscount = it.totalDiscount,
-                tiersApplied = it.tiersApplied.map { tier ->
+                tiersApplied = it.tierProductList.map { tier ->
                     BmgmMiniCartVisitable.TierUiModel(
                         tierId = tier.tierId,
                         tierMessage = tier.tierMessage,
@@ -59,7 +59,7 @@ class BmgmMiniCartDataMapper @Inject constructor() {
     }
 
     private fun getProductList(
-        tierProductList: List<BmGmProductTier>,
+        tierProductList: List<BmGmProduct>,
         productMap: MutableMap<String, Product>
     ): List<BmgmMiniCartVisitable.ProductUiModel> {
         val products = mutableListOf<BmgmMiniCartVisitable.ProductUiModel>()
@@ -72,9 +72,9 @@ class BmgmMiniCartDataMapper @Inject constructor() {
                     productImage = p.productImage.imageSrc100Square,
                     cartId = p.cartId,
                     finalPrice = tierProduct.priceBeforeBenefit,
-                    quantity = tierProduct.qty
+                    quantity = tierProduct.quantity
                 )
-                repeat(tierProduct.qty) {
+                repeat(tierProduct.quantity) {
                     products.add(product)
                 }
             }

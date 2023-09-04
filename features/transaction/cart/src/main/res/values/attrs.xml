@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="title" format="string"/>
+    <attr name="icon_left" format="string"/>
+    <attr name="icon_right" format="string"/>
+
+    <declare-styleable name="BmGmWidgetView">
+        <attr name="stateTicker" format="enum">
+            <enum name="loading" value="0"/>
+            <enum name="active" value="1"/>
+            <enum name="inactive" value="2"/>
+        </attr>
+        <attr name="title"/>
+        <attr name="icon_left"/>
+        <attr name="icon_right"/>
+    </declare-styleable>
+</resources>

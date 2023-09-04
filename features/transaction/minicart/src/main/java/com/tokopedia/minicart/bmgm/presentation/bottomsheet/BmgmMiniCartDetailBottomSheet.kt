@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -29,6 +30,7 @@ import com.tokopedia.minicart.databinding.ViewBmgmMiniCartSubTotalBinding
 import com.tokopedia.purchase_platform.common.feature.bmgm.data.uimodel.BmgmCommonDataModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.currency.CurrencyFormatUtil
+import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
 /**
@@ -90,16 +92,19 @@ class BmgmMiniCartDetailBottomSheet : BottomSheetUnify() {
     }
 
     private fun observeCartListState() {
-        viewModel.setCheckListState.observe(viewLifecycleOwner) {
-            when (it) {
-                is BmgmState.Loading -> showLoadingButton()
-                is BmgmState.Success, is BmgmState.Error -> openCartPage()
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.setCheckListState.collectLatest {
+                when (it) {
+                    is BmgmState.Loading -> showLoadingButton()
+                    is BmgmState.Success, is BmgmState.Error -> openCartPage()
+                }
             }
         }
     }
 
     private fun openCartPage() {
         dismissLoadingButton()
+        dismiss()
         RouteManager.route(context, ApplinkConst.CART)
     }
 
@@ -129,7 +134,7 @@ class BmgmMiniCartDetailBottomSheet : BottomSheetUnify() {
         )
 
         commonData?.let { data ->
-            val productList = getDiscountedProductList(data.tiersApplied)
+            val productList = getDiscountedProductList(data.tiersApplied, data.hasReachMaxDiscount)
             listAdapter.clearAllElements()
             listAdapter.addElement(productList)
 
@@ -145,12 +150,20 @@ class BmgmMiniCartDetailBottomSheet : BottomSheetUnify() {
         binding?.containerSubTotal?.visible()
 
         footerBinding?.run {
-            tvBmgmFinalPrice.text =
-                CurrencyFormatUtil.convertPriceValueToIdrFormat(model.finalPrice, false)
-            tvBmgmPriceBeforeDiscount.text =
-                CurrencyFormatUtil.convertPriceValueToIdrFormat(model.priceBeforeBenefit, false)
-            tvBmgmPriceBeforeDiscount.paintFlags =
-                tvBmgmPriceBeforeDiscount.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+            tvBmgmFinalPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                model.finalPrice, false
+            )
+            val showCrossedPrice = model.finalPrice != model.priceBeforeBenefit
+            if (showCrossedPrice) {
+                tvBmgmPriceBeforeDiscount.visible()
+                tvBmgmPriceBeforeDiscount.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                    model.priceBeforeBenefit, false
+                )
+                tvBmgmPriceBeforeDiscount.paintFlags =
+                    tvBmgmPriceBeforeDiscount.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+            } else {
+                tvBmgmPriceBeforeDiscount.gone()
+            }
 
             btnBmgmOpenCart.isEnabled = true
             btnBmgmOpenCart.setOnClickListener {
@@ -163,7 +176,10 @@ class BmgmMiniCartDetailBottomSheet : BottomSheetUnify() {
         return tiersApplied.map { it.products }.flatten().map { it.cartId }
     }
 
-    private fun getDiscountedProductList(tiers: List<BmgmCommonDataModel.TierModel>): List<MiniCartDetailUiModel> {
+    private fun getDiscountedProductList(
+        tiers: List<BmgmCommonDataModel.TierModel>,
+        hasReachMaxDiscount: Boolean
+    ): List<MiniCartDetailUiModel> {
         val items = mutableListOf<MiniCartDetailUiModel>()
         tiers.forEach { tier ->
             val isDiscountedTier = !tier.isNonDiscountProducts()
@@ -171,8 +187,9 @@ class BmgmMiniCartDetailBottomSheet : BottomSheetUnify() {
                 items.add(getDiscountSectionText(tier, isDiscountedTier))
                 items.addAll(mapToProductList(tier.products, isDiscountedTier))
             } else {
-                items.add(getDiscountSectionText(tier, isDiscountedTier))
-                items.addAll(mapToProductList(tier.products, isDiscountedTier))
+                val isDiscounted = isDiscountedTier || !hasReachMaxDiscount
+                items.add(getDiscountSectionText(tier, isDiscounted))
+                items.addAll(mapToProductList(tier.products, isDiscounted))
             }
         }
         return items.toList()
@@ -186,7 +203,7 @@ class BmgmMiniCartDetailBottomSheet : BottomSheetUnify() {
             val isFirstItem = i == Int.ZERO
             val isLastItem = i == products.size.minus(Int.ONE)
             return@mapIndexed MiniCartDetailUiModel.Product(
-                isDiscountedProduct = isDiscountedTier,
+                showVerticalDivider = isDiscountedTier,
                 product = product,
                 showTopSpace = !isFirstItem,
                 showBottomSpace = !isLastItem

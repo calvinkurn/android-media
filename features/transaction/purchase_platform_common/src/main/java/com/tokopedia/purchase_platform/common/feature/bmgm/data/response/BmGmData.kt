@@ -1,8 +1,11 @@
 package com.tokopedia.purchase_platform.common.feature.bmgm.data.response
 
+import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class BmGmData(
     @Expose
     @SerializedName("offer_id")
@@ -30,5 +33,5 @@ data class BmGmData(
     val offerJsonData: String = "",
     @Expose
     @SerializedName("tier_product")
-    val tiersApplied: List<BmGmTiersApplied> = emptyList()
-)
+    val tierProductList: List<BmGmTierProduct> = emptyList()
+): Parcelable

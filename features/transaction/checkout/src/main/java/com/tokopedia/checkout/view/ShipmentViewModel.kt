@@ -847,7 +847,8 @@ class ShipmentViewModel @Inject constructor(
                         cornerId,
                         deviceId,
                         checkoutLeasingId,
-                        isPlusSelected
+                        isPlusSelected,
+                        false
                     )
                 )
                 if (view != null) {
@@ -2325,7 +2326,9 @@ class ShipmentViewModel @Inject constructor(
         val reloadedUniqueIds = ArrayList<String>()
         val unprocessedUniqueIds = ArrayList<String>()
         for (shipmentCartItemModel in shipmentCartItemModelList) {
-            unprocessedUniqueIds.add(shipmentCartItemModel.cartStringGroup)
+            if (shipmentCartItemModel is ShipmentCartItemModel) {
+                unprocessedUniqueIds.add(shipmentCartItemModel.cartStringGroup)
+            }
         }
         // loop to list voucher orders to be applied this will be used later
         val toBeAppliedVoucherOrders: MutableList<PromoCheckoutVoucherOrdersItemUiModel> =
@@ -2557,7 +2560,7 @@ class ShipmentViewModel @Inject constructor(
                                     shippingCourierUiModel.isSelected = false
                                 }
                                 val shippingCourierUiModel = shippingDurationUiModel.shippingCourierViewModelList.first()
-                                if (!shippingCourierUiModel.productData.error?.errorMessage.isNullOrEmpty()) {
+                                if (shippingCourierUiModel.productData.error.errorMessage.isNotEmpty()) {
                                     view?.renderCourierStateFailed(
                                         itemPosition,
                                         true,
@@ -2565,7 +2568,7 @@ class ShipmentViewModel @Inject constructor(
                                     )
                                     view?.logOnErrorLoadCourier(
                                         MessageErrorException(
-                                            shippingCourierUiModel.productData.error?.errorMessage
+                                            shippingCourierUiModel.productData.error.errorMessage
                                         ),
                                         itemPosition,
                                         boPromoCode
@@ -2668,7 +2671,7 @@ class ShipmentViewModel @Inject constructor(
                                 }
                                 for (shippingCourierUiModel in shippingDurationUiModel.shippingCourierViewModelList) {
                                     if (shippingCourierUiModel.productData.shipperProductId == spId && !shippingCourierUiModel.serviceData.isUiRatesHidden) {
-                                        if (!shippingCourierUiModel.productData.error?.errorMessage.isNullOrEmpty()) {
+                                        if (shippingCourierUiModel.productData.error.errorMessage.isNotEmpty()) {
                                             view?.renderCourierStateFailed(
                                                 itemPosition,
                                                 false,
@@ -2676,7 +2679,7 @@ class ShipmentViewModel @Inject constructor(
                                             )
                                             view?.logOnErrorLoadCourier(
                                                 MessageErrorException(
-                                                    shippingCourierUiModel.productData.error?.errorMessage
+                                                    shippingCourierUiModel.productData.error.errorMessage
                                                 ),
                                                 itemPosition,
                                                 boPromoCode
@@ -2816,7 +2819,7 @@ class ShipmentViewModel @Inject constructor(
                                     shippingCourierUiModel.isSelected = false
                                 }
                                 for (shippingCourierUiModel in shippingDurationUiModel.shippingCourierViewModelList) {
-                                    if (!shippingCourierUiModel.productData.error?.errorMessage.isNullOrEmpty()) {
+                                    if (shippingCourierUiModel.productData.error.errorMessage.isNotEmpty()) {
                                         view?.renderCourierStateFailed(
                                             itemPosition,
                                             true,
@@ -2824,7 +2827,7 @@ class ShipmentViewModel @Inject constructor(
                                         )
                                         view?.logOnErrorLoadCourier(
                                             MessageErrorException(
-                                                shippingCourierUiModel.productData.error?.errorMessage
+                                                shippingCourierUiModel.productData.error.errorMessage
                                             ),
                                             itemPosition,
                                             boPromoCode
@@ -2950,7 +2953,7 @@ class ShipmentViewModel @Inject constructor(
                                             }
                                             for (shippingCourierUiModel in shippingDurationUiModel.shippingCourierViewModelList) {
                                                 if (shippingCourierUiModel.productData.shipperProductId == logisticPromo.shipperProductId && shippingCourierUiModel.productData.shipperId == logisticPromo.shipperId) {
-                                                    if (!shippingCourierUiModel.productData.error?.errorMessage.isNullOrEmpty()) {
+                                                    if (shippingCourierUiModel.productData.error.errorMessage.isNotEmpty()) {
                                                         view?.renderCourierStateFailed(
                                                             shipmentGetCourierHolderData.itemPosition,
                                                             false,
@@ -2958,7 +2961,7 @@ class ShipmentViewModel @Inject constructor(
                                                         )
                                                         view?.logOnErrorLoadCourier(
                                                             MessageErrorException(
-                                                                shippingCourierUiModel.productData.error?.errorMessage
+                                                                shippingCourierUiModel.productData.error.errorMessage
                                                             ),
                                                             shipmentGetCourierHolderData.itemPosition,
                                                             boPromoCode
@@ -3050,7 +3053,7 @@ class ShipmentViewModel @Inject constructor(
                                             }
                                         for (shippingCourierUiModel in shippingDurationUiModel.shippingCourierViewModelList) {
                                             if (shippingCourierUiModel.productData.shipperProductId == selectedSpId && !shippingCourierUiModel.serviceData.isUiRatesHidden) {
-                                                if (!shippingCourierUiModel.productData.error?.errorMessage.isNullOrEmpty()) {
+                                                if (shippingCourierUiModel.productData.error.errorMessage.isNotEmpty()) {
                                                     view?.renderCourierStateFailed(
                                                         shipmentGetCourierHolderData.itemPosition,
                                                         false,
@@ -3058,7 +3061,7 @@ class ShipmentViewModel @Inject constructor(
                                                     )
                                                     view?.logOnErrorLoadCourier(
                                                         MessageErrorException(
-                                                            shippingCourierUiModel.productData.error?.errorMessage
+                                                            shippingCourierUiModel.productData.error.errorMessage
                                                         ),
                                                         shipmentGetCourierHolderData.itemPosition,
                                                         boPromoCode
@@ -3170,11 +3173,11 @@ class ShipmentViewModel @Inject constructor(
                                 // corner case auto selection if BE default duration failed
                                 if (shipmentGetCourierHolderData.shipmentCartItemModel.isAutoCourierSelection || shipmentGetCourierHolderData.shipmentCartItemModel.isDisableChangeCourier) {
                                     val shippingDuration =
-                                        shippingRecommendationData.shippingDurationUiModels.firstOrNull { it.serviceData.error?.errorId.isNullOrEmpty() && it.serviceData.error?.errorMessage.isNullOrEmpty() }
+                                        shippingRecommendationData.shippingDurationUiModels.firstOrNull { it.serviceData.error.errorId.isEmpty() && it.serviceData.error.errorMessage.isEmpty() }
                                     if (shippingDuration != null) {
                                         val shippingCourier =
                                             shippingDuration.shippingCourierViewModelList.firstOrNull {
-                                                it.productData.error?.errorMessage.isNullOrEmpty()
+                                                it.productData.error.errorMessage.isEmpty()
                                             }
                                         if (shippingCourier != null) {
                                             val courierItemData =
@@ -3328,7 +3331,7 @@ class ShipmentViewModel @Inject constructor(
                                             }
                                             for (shippingCourierUiModel in shippingDurationUiModel.shippingCourierViewModelList) {
                                                 if (shippingCourierUiModel.productData.shipperProductId == logisticPromo.shipperProductId && shippingCourierUiModel.productData.shipperId == logisticPromo.shipperId) {
-                                                    if (!shippingCourierUiModel.productData.error?.errorMessage.isNullOrEmpty()) {
+                                                    if (shippingCourierUiModel.productData.error.errorMessage.isNotEmpty()) {
                                                         view?.renderCourierStateFailed(
                                                             shipmentGetCourierHolderData.itemPosition,
                                                             false,
@@ -3336,7 +3339,7 @@ class ShipmentViewModel @Inject constructor(
                                                         )
                                                         view?.logOnErrorLoadCourier(
                                                             MessageErrorException(
-                                                                shippingCourierUiModel.productData.error?.errorMessage
+                                                                shippingCourierUiModel.productData.error.errorMessage
                                                             ),
                                                             shipmentGetCourierHolderData.itemPosition,
                                                             boPromoCode
@@ -3427,7 +3430,7 @@ class ShipmentViewModel @Inject constructor(
                                         )
                                         for (shippingCourierUiModel in shippingDurationUiModel.shippingCourierViewModelList) {
                                             if (shippingCourierUiModel.productData.shipperProductId == selectedSpId && !shippingCourierUiModel.serviceData.isUiRatesHidden) {
-                                                if (!shippingCourierUiModel.productData.error?.errorMessage.isNullOrEmpty()) {
+                                                if (shippingCourierUiModel.productData.error.errorMessage.isNotEmpty()) {
                                                     view?.renderCourierStateFailed(
                                                         shipmentGetCourierHolderData.itemPosition,
                                                         false,
@@ -3435,7 +3438,7 @@ class ShipmentViewModel @Inject constructor(
                                                     )
                                                     view?.logOnErrorLoadCourier(
                                                         MessageErrorException(
-                                                            shippingCourierUiModel.productData.error?.errorMessage
+                                                            shippingCourierUiModel.productData.error.errorMessage
                                                         ),
                                                         shipmentGetCourierHolderData.itemPosition,
                                                         boPromoCode
@@ -3546,11 +3549,11 @@ class ShipmentViewModel @Inject constructor(
                                 // corner case auto selection if BE default duration failed
                                 if (shipmentGetCourierHolderData.shipmentCartItemModel.isAutoCourierSelection) {
                                     val shippingDuration =
-                                        shippingRecommendationData.shippingDurationUiModels.firstOrNull { it.serviceData.error?.errorId.isNullOrEmpty() && it.serviceData.error?.errorMessage.isNullOrEmpty() }
+                                        shippingRecommendationData.shippingDurationUiModels.firstOrNull { it.serviceData.error.errorId.isEmpty() && it.serviceData.error.errorMessage.isEmpty() }
                                     if (shippingDuration != null) {
                                         val shippingCourier =
                                             shippingDuration.shippingCourierViewModelList.firstOrNull {
-                                                it.productData.error?.errorMessage.isNullOrEmpty()
+                                                it.productData.error.errorMessage.isEmpty()
                                             }
                                         if (shippingCourier != null) {
                                             val courierItemData = generateCourierItemData(
@@ -4033,7 +4036,7 @@ class ShipmentViewModel @Inject constructor(
                                     }
                                     for (shippingCourierUiModel in shippingDurationUiModel.shippingCourierViewModelList) {
                                         if (isTradeInDropOff || shippingCourierUiModel.productData.shipperProductId == spId && shippingCourierUiModel.productData.shipperId == shippingId) {
-                                            if (!shippingCourierUiModel.productData.error?.errorMessage.isNullOrEmpty()) {
+                                            if (shippingCourierUiModel.productData.error.errorMessage.isNotEmpty()) {
                                                 cancelAutoApplyPromoStackLogistic(
                                                     itemPosition,
                                                     promoCode,
@@ -4054,7 +4057,7 @@ class ShipmentViewModel @Inject constructor(
                                                     )
                                                     v.logOnErrorLoadCourier(
                                                         MessageErrorException(
-                                                            shippingCourierUiModel.productData.error?.errorMessage
+                                                            shippingCourierUiModel.productData.error.errorMessage
                                                         ),
                                                         itemPosition,
                                                         promoCode
@@ -5686,9 +5689,9 @@ class ShipmentViewModel @Inject constructor(
     companion object {
         private const val LAST_THREE_DIGIT_MODULUS: Long = 1000
 
-        private const val statusOK = "OK"
+        const val statusOK = "OK"
 
-        private const val statusCode200 = "200"
+        const val statusCode200 = "200"
 
         private const val WEIGHT_DIVIDER_TO_KG = 1000
     }

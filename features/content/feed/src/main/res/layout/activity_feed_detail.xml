@@ -6,7 +6,6 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/feed_detail_container"
-        android:name="com.tokopedia.feedplus.presentation.fragment.FeedFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"

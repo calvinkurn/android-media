@@ -1,7 +1,7 @@
 <resources>
-    <string name="title_bottomsheet_shipment_duration">Pilih Pengiriman</string>
+    <string name="title_bottomsheet_shipment_duration">Metode Pengiriman</string>
     <string name="title_bottomsheet_shipment">Pilih Pengiriman</string>
-    <string name="title_shipment_courier_bottomsheet">Pilih Kurir</string>
+    <string name="title_shipment_courier_bottomsheet">Kurir</string>
     <string name="label_title_showcase_shipping_duration">Pengiriman</string>
     <string name="label_body_showcase_shipping_duration">Durasi dihitung sejak barang diserahkan ke kurir.</string>
     <string name="label_shipping_show_case_finish">Mengerti</string>
@@ -15,7 +15,7 @@
     <string name="label_hardcoded_courier_ticker_same_day">Barang tiba maks. 8 jam sejak penjual menyerahkan ke kurir</string>
     <string name="title_shipment_courier_bottomsheet_occ">Pilih Kurir</string>
     <string name="label_shipping_information">Pembelian di atas 14:00 WIB berpotensi dikirim besok.</string>
-    <string name="tersedia_bayar_di_tempat">Tersedia Bayar di tempat</string>
+    <string name="tersedia_bayar_di_tempat">Bisa COD</string>
     <string name="jaminan_tepat_waktu">Jaminan Tepat Waktu</string>
     <string name="tv_courier">TIKI</string>
     <string name="tv_price">Rp10.000</string>
@@ -61,6 +61,7 @@
     <string name="label_choose_delivery_time">Pilih Waktu Pengiriman</string>
     <string name="title_coachmark_option_schedule_delivery">Bisa atur kapan pesanan tiba sesuai kebutuhan 😄</string>
     <string name="description_coachmark_option_schedule_delivery">Tersedia khusus pesanan Tokopedia NOW!</string>
+    <string name="other_option_title_widget_schedule_delivery">Pilih Jadwal Lain</string>
     <string name="bottomsheet_schedule_slot_title">Pilih jadwal pengiriman</string>
 
     <string name="checkout_whitelabel_otdg_url"><![CDATA[<a href="%1$s">%2$s</a>]]></string>
@@ -68,4 +69,13 @@
 
     <string name="checkout_error_shipping_title">Pengiriman tidak tersedia</string>
     <string name="checkout_error_shipping_description">Atur ulang pesananmu di keranjang, ya.</string>
+
+<!--    cart checkout revamp-->
+    <string name="checkout_bebas_ongkir_view_holder_description_template"><![CDATA[  •  <u>%1$s</u>]]></string>
+    <string name="checkout_product_shipment_detail_view_holder_description_template">Dikirim dari %1$s  •  Berat %2$s</string>
+
+<!--    shipping insurance-->
+    <string name="shipping_insurance_tnc_label">Asuransi Pengiriman</string>
+    <string name="shipping_insurance_title_mandatory">Dilindungi %1$s (%2$s)</string>
+    <string name="shipping_insurance_title_optional">Pakai %1$s (%2$s)</string>
 </resources>

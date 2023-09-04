@@ -243,7 +243,6 @@ class ShipmentFragment :
         onDestroyViewBinding()
     }
     private var progressDialogNormal: AlertDialog? = null
-    private var shippingCourierBottomsheet: ShippingCourierBottomsheet? = null
     private var shipmentTracePerformance: PerformanceMonitoring? = null
     private var isShipmentTraceStopped = false
 
@@ -376,7 +375,6 @@ class ShipmentFragment :
     override fun onDestroyView() {
         super.onDestroyView()
         toasterThrottleSubscription?.unsubscribe()
-        shippingCourierBottomsheet = null
         onDestroyViewBinding()
         shipmentViewModel.detachView()
     }
@@ -886,6 +884,7 @@ class ShipmentFragment :
             isReloadAfterPriceChangeHigher
         )
         shipmentAdapter.updateInsuranceTncVisibility()
+        shipmentViewModel.updateShipmentCostModel()
     }
 
     fun stopTrace() {
@@ -990,7 +989,6 @@ class ShipmentFragment :
         } else {
             val shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(position)
             if (shipmentCartItemModel != null) {
-                shippingCourierBottomsheet = null
                 val recipientAddressModel = shipmentViewModel.recipientAddressModel
                 onChangeShippingDuration(shipmentCartItemModel, recipientAddressModel, position)
             }
@@ -2879,8 +2877,7 @@ class ShipmentFragment :
             if (activity != null) {
                 val pslCode = getLogisticPromoCode(shipmentCartItemModel)
                 val products = shipmentViewModel.getProductForRatesRequest(shipmentCartItemModel)
-                val shippingDurationBottomsheet = ShippingDurationBottomsheet()
-                shippingDurationBottomsheet.show(
+                ShippingDurationBottomsheet.show(
                     activity,
                     parentFragmentManager,
                     this,
@@ -2929,9 +2926,7 @@ class ShipmentFragment :
             }
             val activity: Activity? = activity
             if (activity != null) {
-                shippingCourierBottomsheet = ShippingCourierBottomsheet()
-                shippingCourierBottomsheet!!.show(
-                    activity,
+                ShippingCourierBottomsheet.show(
                     fragmentManager!!,
                     this,
                     shippingCourierUiModels,
@@ -4392,8 +4387,8 @@ class ShipmentFragment :
         const val REQUEST_CODE_MINI_CONSULTATION = 10022
         const val REQUEST_CODE_ADD_ON_PRODUCT_SERVICE_BOTTOMSHEET = 10033
         private const val REQUEST_CODE_UPSELL = 777
-        private const val ADD_ON_STATUS_ACTIVE = 1
-        private const val ADD_ON_STATUS_DISABLE = 2
+        const val ADD_ON_STATUS_ACTIVE = 1
+        const val ADD_ON_STATUS_DISABLE = 2
         private const val SHIPMENT_TRACE = "mp_shipment"
         private const val PLATFORM_FEE_CODE = "platform_fee"
         private const val KEY_UPLOAD_PRESCRIPTION_IDS_EXTRA = "epharmacy_prescription_ids"

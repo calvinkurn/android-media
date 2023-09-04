@@ -92,6 +92,7 @@
     <string name="content_desc_tv_change_address_top">text pilih alamat lain</string>
     <string name="label_fulfilment">Dilayani Tokopedia</string>
     <string name="label_order_counter">Pesanan %d</string>
+    <string name="label_order_counter_new">PESANAN %d</string>
     <string name="estimasi_tidak_tersedia">Estimasi tidak tersedia</string>
     <string name="checkout_trade_in_default_address_info_description">
         <![CDATA[

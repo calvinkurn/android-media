@@ -412,6 +412,23 @@ class ShipmentMapper @Inject constructor() {
                         isBundlingItem = false
                         bundleId = "0"
                     }
+                    if (cartDetail.cartDetailInfo.cartDetailType.lowercase() == CART_DETAIL_TYPE_BMGM) {
+                        isBmgmItem = true
+                        bmgmOfferId = cartDetail.cartDetailInfo.bmgmData.offerId
+                        bmgmIconUrl = cartDetail.cartDetailInfo.bmgmData.offerIcon
+                        bmgmOfferName = cartDetail.cartDetailInfo.bmgmData.offerName
+                        bmgmOfferMessage = cartDetail.cartDetailInfo.bmgmData.offerMessage
+                        bmgmOfferStatus = cartDetail.cartDetailInfo.bmgmData.offerStatus
+                        bmgmItemPosition = if (cartDetail.products.firstOrNull()?.productId == productId) {
+                            BMGM_ITEM_HEADER
+                        } else {
+                            BMGM_ITEM_DEFAULT
+                        }
+                        bmgmTotalDiscount = cartDetail.cartDetailInfo.bmgmData.totalDiscount
+                        bmgmTierProductList = cartDetail.cartDetailInfo.bmgmData.tierProductList
+                    } else {
+                        isBmgmItem = false
+                    }
                     addOnGiftingProduct = mapAddOnsGiftingData(product.addOns)
                     ethicalDrugs = mapEthicalDrugData(product.ethicalDrugResponse)
                     addOnProduct = mapAddOnsProductData(product.addOnsProduct, product.productQuantity)
@@ -619,6 +636,7 @@ class ShipmentMapper @Inject constructor() {
                     type = item.type
                     qty = productQuantity
                     uniqueId = item.uniqueId
+                    iconUrl = item.iconUrl
                 }
             )
         }
@@ -978,6 +996,7 @@ class ShipmentMapper @Inject constructor() {
             description = shipmentAddressFormDataResponse.donation.description
             nominal = shipmentAddressFormDataResponse.donation.nominal
             isChecked = shipmentAddressFormDataResponse.isDonationCheckboxStatus
+            iconUrl = shipmentAddressFormDataResponse.donation.iconUrl
         }
     }
 
@@ -1038,6 +1057,7 @@ class ShipmentMapper @Inject constructor() {
             hyperlinkText = shipmentAddressFormDataResponse.egoldAttributes.hyperlinkText.text
             hyperlinkUrl = shipmentAddressFormDataResponse.egoldAttributes.hyperlinkText.url
             isShowHyperlink = shipmentAddressFormDataResponse.egoldAttributes.hyperlinkText.isShow
+            iconUrl = shipmentAddressFormDataResponse.egoldAttributes.iconUrl
 
             val tmpEgoldTieringModelArrayList: ArrayList<EgoldTieringModel> = arrayListOf()
             shipmentAddressFormDataResponse.egoldAttributes.egoldTieringDataArrayList.forEach {
@@ -1264,6 +1284,8 @@ class ShipmentMapper @Inject constructor() {
         private const val SHOP_TYPE_GOLD_MERCHANT = "gold_merchant"
         private const val SHOP_TYPE_REGULER = "reguler"
 
+        private const val CART_DETAIL_TYPE_BMGM = "bmgm"
+
         const val DISABLED_DROPSHIPPER = "dropshipper"
         const val DISABLED_ORDER_PRIORITY = "order_prioritas"
         const val DISABLED_EGOLD = "egold"
@@ -1274,5 +1296,8 @@ class ShipmentMapper @Inject constructor() {
         const val BUNDLING_ITEM_DEFAULT = 0
         const val BUNDLING_ITEM_HEADER = 1
         const val BUNDLING_ITEM_FOOTER = 2
+
+        const val BMGM_ITEM_DEFAULT = 0
+        const val BMGM_ITEM_HEADER = 1
     }
 }
