@@ -104,7 +104,7 @@ class OfferLandingPageFragment :
         }
     }
 
-    val isLogin: Boolean
+    private val isLogin: Boolean
         get() = viewModel.isLogin
 
     private val olpAdapterTypeFactory by lazy {
@@ -148,7 +148,6 @@ class OfferLandingPageFragment :
 
     override fun onResume() {
         super.onResume()
-//        loadInitialData()
         viewModel.processEvent(OlpEvent.GetNotification)
         fetchMiniCart()
     }
@@ -186,7 +185,10 @@ class OfferLandingPageFragment :
                     setupTncBottomSheet()
                     fetchMiniCart()
                 }
-                else -> { setViewState(VIEW_ERROR, offerInfoForBuyer.responseHeader.status) }
+
+                else -> {
+                    setViewState(VIEW_ERROR, offerInfoForBuyer.responseHeader.status)
+                }
             }
         }
 
@@ -283,6 +285,12 @@ class OfferLandingPageFragment :
         setViewState(VIEW_LOADING)
         resetPaging()
         viewModel.processEvent(
+            OlpEvent.SetSort(
+                sortId = Constant.DEFAULT_SORT_ID,
+                sortName = Constant.DEFAULT_SORT_NAME
+            )
+        )
+        viewModel.processEvent(
             OlpEvent.SetInitialUiState(
                 offerIds = listOf(offerId.toLongSafely()),
                 shopIds = shopIds.toLongSafely(),
@@ -312,11 +320,13 @@ class OfferLandingPageFragment :
                     renderSortFilter(sortId, sortName)
                 }
             }
+
             REQUEST_CODE_USER_LOGIN -> {
                 if (resultCode == Activity.RESULT_OK) {
                     loadInitialData()
                 }
             }
+
             REQUEST_CODE_USER_LOGIN_CART -> {
                 if (resultCode == Activity.RESULT_OK) {
                     loadInitialData()
@@ -333,8 +343,9 @@ class OfferLandingPageFragment :
     }
 
     override fun onSortChipClicked() {
+        val currentState = viewModel.currentState
         context?.run {
-            val intent = ShopProductSortActivity.createIntent(activity, sortId)
+            val intent = ShopProductSortActivity.createIntent(activity, currentState.sortId)
             startActivityForResult(intent, REQUEST_CODE_SORT)
         }
     }
@@ -603,6 +614,7 @@ class OfferLandingPageFragment :
             is ConnectException, is SocketException, is UnknownHostException -> {
                 setViewState(VIEW_ERROR, Status.NO_CONNECTION)
             }
+
             else -> {
                 setViewState(VIEW_ERROR)
             }
