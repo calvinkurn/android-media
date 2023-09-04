@@ -1276,7 +1276,7 @@ class CartItemViewHolder constructor(
                         }
                     }
                     binding.itemCartBmgm.bmgmWidgetView.state = BmGmWidgetView.State.ACTIVE
-                    binding.itemCartBmgm.bmgmWidgetView.title = MethodChecker.fromHtml(offerMessage).toString()
+                    binding.itemCartBmgm.bmgmWidgetView.title = Utils.getHtmlFormat(offerMessage)
                     binding.itemCartBmgm.bmgmWidgetView.offerId = data.bmGmCartInfoData.bmGmData.offerId
                     binding.itemCartBmgm.bmgmWidgetView.setOnClickListener {
                         actionListener?.onBmGmChevronRightClicked(data.bmGmCartInfoData.bmGmData.offerId)
