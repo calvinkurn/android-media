@@ -21,14 +21,12 @@ import com.tokopedia.stories.view.model.StoriesUiState
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction
 import com.tokopedia.stories.view.viewmodel.event.StoriesUiEvent
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 class StoriesViewModel @Inject constructor(
@@ -114,13 +112,10 @@ class StoriesViewModel @Inject constructor(
         mShopId = data?.getString(SHOP_ID, "").orEmpty()
 
         viewModelScope.launchCatchError(block = {
-            // TODO handle loading properly
-            delay(3000)
-
             _storiesGroup.value = requestStoriesInitialData()
             mGroupPos.value = _storiesGroup.value.selectedGroupPosition
         }) { exception ->
-            Timber.d("fail fetch main data $exception")
+            _uiEvent.emit(StoriesUiEvent.ErrorGroupPage(exception))
         }
     }
 
@@ -178,16 +173,14 @@ class StoriesViewModel @Inject constructor(
 
             updateGroupData(detail = detailData)
 
-            // TODO handle loading properly
-            delay(3000)
-
             val isReset = detailData.selectedDetailPositionCached == detailData.detailItems.size.minus(1)
             updateDetailData(
                 position = detailData.selectedDetailPositionCached,
                 isReset = isReset,
             )
         }) { exception ->
-            Timber.d("fail fetch new detail $exception")
+            updateGroupData(detail = StoriesDetailUiModel())
+            _uiEvent.emit(StoriesUiEvent.ErrorDetailPage(exception))
         }
     }
 
