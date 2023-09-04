@@ -27,6 +27,7 @@ import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferProductSortingUiMo
 import com.tokopedia.buy_more_get_more.olp.domain.entity.enum.Status
 import com.tokopedia.buy_more_get_more.olp.presentation.adapter.OlpAdapter
 import com.tokopedia.buy_more_get_more.olp.presentation.adapter.OlpAdapterTypeFactoryImpl
+import com.tokopedia.buy_more_get_more.olp.presentation.adapter.decoration.ProductListItemDecoration
 import com.tokopedia.buy_more_get_more.olp.presentation.bottomsheet.TncBottomSheet
 import com.tokopedia.buy_more_get_more.olp.presentation.listener.AtcProductListener
 import com.tokopedia.buy_more_get_more.olp.presentation.listener.OfferingInfoListener
@@ -364,6 +365,7 @@ class OfferLandingPageFragment :
                 PRODUCT_LIST_SPAN_COUNT,
                 StaggeredGridLayoutManager.VERTICAL
             )
+            addItemDecoration(ProductListItemDecoration())
             val config = HasPaginatedList.Config(
                 pageSize = PAGE_SIZE,
                 onLoadNextPage = {},

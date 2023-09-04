@@ -3,6 +3,8 @@ package com.tokopedia.buy_more_get_more.olp.presentation.adapter.decoration
 import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.tokopedia.kotlin.extensions.view.isZero
 
 class ProductListItemDecoration : RecyclerView.ItemDecoration() {
 
@@ -14,25 +16,16 @@ class ProductListItemDecoration : RecyclerView.ItemDecoration() {
     ) {
         super.getItemOffsets(outRect, view, parent, state)
         val position = parent.getChildAdapterPosition(view)
+        val spacing = 32
+        val productListItemPosition = 2
 
-        val spanCount = 2
-        val spacing = 24
-
-        if (position > 1) {
-            val column = position % spanCount
-            outRect.left =
-                spacing - column * spacing / spanCount
-            outRect.right =
-                (column + 1) * spacing / spanCount
-            if (position < spanCount) {
-                outRect.top = spacing
+        if (position >= productListItemPosition) {
+            val spanIndex = (view.layoutParams as StaggeredGridLayoutManager.LayoutParams).spanIndex
+            if (spanIndex.isZero()) { // 0 is left span, and 1 is right span
+                view.setPadding(spacing, 0, 0, 0) //set left padding
+            } else {
+                view.setPadding(0, 0, spacing, 0) //set right padding
             }
-            outRect.bottom = spacing
-        } else {
-            outRect.left = 0
-            outRect.right = 0
-            outRect.top = 0
-            outRect.bottom = 0
         }
     }
 }

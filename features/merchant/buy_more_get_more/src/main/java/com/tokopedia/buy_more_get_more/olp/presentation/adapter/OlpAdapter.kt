@@ -1,6 +1,5 @@
 package com.tokopedia.buy_more_get_more.olp.presentation.adapter
 
-import android.os.Parcelable
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -42,16 +41,11 @@ open class OlpAdapter(
     private fun getNewVisitableItems() = visitables.toMutableList()
 
     fun submitList(newList: List<Visitable<*>>) {
-        val currentRecyclerViewState: Parcelable? =
-            recyclerView?.layoutManager?.onSaveInstanceState()
         val diffCallback = OlpDiffUtilCallback(visitables, newList)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
         visitables.clear()
         visitables.addAll(newList)
         diffResult.dispatchUpdatesTo(this)
-//        currentRecyclerViewState?.let {
-//            recyclerView?.layoutManager?.onRestoreInstanceState(it)
-//        }
     }
 
     override fun onBindViewHolder(
