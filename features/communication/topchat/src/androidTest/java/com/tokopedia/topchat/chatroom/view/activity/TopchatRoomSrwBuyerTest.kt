@@ -22,6 +22,7 @@ import com.tokopedia.topchat.chatroom.view.activity.base.changeTimeStampTo
 import com.tokopedia.topchat.chatroom.view.activity.base.hasQuestion
 import com.tokopedia.topchat.chatroom.view.activity.base.matchProductWith
 import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralResult.assertViewInRecyclerViewAt
+import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralRobot.hideKeyboard
 import com.tokopedia.topchat.chatroom.view.activity.robot.srw.SrwResult.assertSrwCoachMark
 import com.tokopedia.topchat.chatroom.view.activity.robot.srw.SrwResult.assertSrwLabel
 import com.tokopedia.topchat.chatroom.view.activity.robot.srw.SrwResult.assertSrwLabelVisibility
@@ -40,6 +41,11 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         private const val DEFAULT_PRODUCT_ID = "1111"
     }
 
+    override fun before() {
+        super.before()
+        CoachMarkPreference.setShown(context, SrwFrameLayout.TAG, true)
+    }
+
     @Test
     fun srw_preview_displayed_if_buyer_attach_from_start_intent() {
         // Given
@@ -51,6 +57,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
+        hideKeyboard()
 
         // Then
         assertSrwPreviewContentIsVisible()
@@ -69,6 +76,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
+        hideKeyboard()
 
         // Then
         assertSrwPreviewContentIsVisible()
@@ -86,6 +94,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
             .generatePreAttachPayload(DEFAULT_PRODUCT_ID)
         launchChatRoomActivity()
         intendingAttachProduct(1)
+        hideKeyboard()
 
         // When
         clickPlusIconMenu()
@@ -108,6 +117,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
+        hideKeyboard()
 
         // Then
         assertSrwPreviewContentIsHidden()
@@ -127,6 +137,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
+        hideKeyboard()
 
         // Then
         // Simulate template chat load last after SRW
@@ -148,6 +159,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
+        hideKeyboard()
 
         // Then
         clickSendBtn()
@@ -166,6 +178,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
             .generatePreAttachPayload(DEFAULT_PRODUCT_ID)
         launchChatRoomActivity()
         intendingAttachProduct(1)
+        hideKeyboard()
 
         // When
         clickPlusIconMenu()
@@ -188,6 +201,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
+        hideKeyboard()
 
         // Then
         assertTemplateChatVisibility(not(isDisplayed()))
@@ -205,6 +219,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
+        hideKeyboard()
 
         // Then
         assertSrwPreviewContentIsError()
@@ -221,6 +236,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
+        hideKeyboard()
 
         // Then
         assertSrwPreviewContentIsVisible()
@@ -252,6 +268,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
+        hideKeyboard()
 
         // When
         clickSrwPreviewItemAt(0)
@@ -272,6 +289,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
+        hideKeyboard()
 
         // When
         clickComposeArea()
@@ -292,6 +310,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
+        hideKeyboard()
 
         // When
         clickComposeArea()
@@ -313,6 +332,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
+        hideKeyboard()
 
         // When
         clickComposeArea()
@@ -335,6 +355,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
+        hideKeyboard()
 
         // When
         clickComposeArea()
@@ -368,6 +389,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
                     getAttachProductData(1)
                 )
             )
+        hideKeyboard()
 
         // When
         clickComposeArea()
@@ -392,6 +414,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
+        hideKeyboard()
 
         // When
         clickSrwPreviewItemAt(0)
@@ -412,6 +435,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
+        hideKeyboard()
 
         // When
         clickSrwPreviewItemAt(0)
@@ -436,6 +460,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
+        hideKeyboard()
 
         // When
         clickSrwPreviewItemAt(0)
@@ -461,6 +486,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
             putProductAttachmentIntent(it)
         }
         intending(anyIntent()).respondWith(getAttachInvoiceResult())
+        hideKeyboard()
 
         // When
         clickSrwPreviewItemAt(0)
@@ -487,6 +513,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
+        hideKeyboard()
 
         // When
         clickSrwPreviewItemAt(0)
@@ -511,6 +538,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
             putProductAttachmentIntent(it)
         }
         intending(anyIntent()).respondWith(getAttachInvoiceResult())
+        hideKeyboard()
 
         // When
         clickPlusIconMenu()
@@ -535,6 +563,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         intending(anyIntent()).respondWith(
             Instrumentation.ActivityResult(Activity.RESULT_OK, getImageData())
         )
+        hideKeyboard()
 
         // When
         clickSrwPreviewItemAt(0)
@@ -560,6 +589,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         intending(anyIntent()).respondWith(
             Instrumentation.ActivityResult(Activity.RESULT_OK, getImageData())
         )
+        hideKeyboard()
 
         // When
         clickPlusIconMenu()
@@ -584,6 +614,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
             putProductAttachmentIntent(it)
         }
         intending(anyIntent()).respondWith(getAttachProductResult(1))
+        hideKeyboard()
 
         // When
         clickSrwPreviewItemAt(0)
@@ -609,6 +640,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
+        hideKeyboard()
 
         // When
         clickSrwPreviewItemAt(0)
@@ -630,6 +662,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
+        hideKeyboard()
 
         // When
         clickStickerIconMenu()
@@ -650,6 +683,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
+        hideKeyboard()
 
         // When
         clickStickerIconMenu()
@@ -671,6 +705,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
+        hideKeyboard()
 
         // When
         clickPlusIconMenu()
@@ -691,6 +726,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
+        hideKeyboard()
 
         // When
         clickPlusIconMenu()
@@ -712,6 +748,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
+        hideKeyboard()
 
         // When
         clickStickerIconMenu()
@@ -733,6 +770,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
+        hideKeyboard()
 
         // When
         clickComposeArea()
@@ -754,6 +792,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
+        hideKeyboard()
 
         // When
         clickPlusIconMenu()
@@ -776,6 +815,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
+        hideKeyboard()
 
         // When
         clickStickerIconMenu()
@@ -799,6 +839,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
+        hideKeyboard()
 
         // When
         clickSrwPreviewItemAt(0)
@@ -823,6 +864,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
+        hideKeyboard()
 
         // When
         clickSrwPreviewItemAt(0)
@@ -848,6 +890,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
+        hideKeyboard()
 
         // When
         clickSrwPreviewItemAt(0)
@@ -872,6 +915,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
+        hideKeyboard()
 
         // When
         clickSrwPreviewItemAt(0)
@@ -896,6 +940,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
+        hideKeyboard()
 
         // When
         clickSrwPreviewItemAt(0)
@@ -921,6 +966,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
+        hideKeyboard()
 
         // When
         clickSrwPreviewItemAt(0)
@@ -946,6 +992,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
+        hideKeyboard()
 
         // When
         clickSrwPreviewItemAt(0)
@@ -968,6 +1015,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
+        hideKeyboard()
 
         // When
         clickSrwPreviewItemAt(0)
@@ -991,6 +1039,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
+        hideKeyboard()
 
         // When
         clickSrwPreviewItemAt(0)
@@ -1014,6 +1063,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
+        hideKeyboard()
 
         // When
         clickSrwPreviewItemAt(0)
@@ -1038,6 +1088,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
             putProductAttachmentIntent(it)
         }
         intending(anyIntent()).respondWith(getAttachInvoiceResult())
+        hideKeyboard()
 
         // When
         clickSrwPreviewItemAt(0)
@@ -1062,6 +1113,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
             putProductAttachmentIntent(it)
         }
         intending(anyIntent()).respondWith(getAttachInvoiceResult())
+        hideKeyboard()
 
         // When
         clickSrwPreviewItemAt(0)
@@ -1087,6 +1139,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
             putProductAttachmentIntent(it)
         }
         intending(anyIntent()).respondWith(getAttachInvoiceResult())
+        hideKeyboard()
 
         // When
         clickSrwPreviewItemAt(0)
@@ -1112,6 +1165,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
             putProductAttachmentIntent(it)
         }
         intending(anyIntent()).respondWith(getAttachInvoiceResult())
+        hideKeyboard()
 
         // When
         clickSrwPreviewItemAt(0)
@@ -1137,6 +1191,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
+        hideKeyboard()
 
         // When
         clickSrwPreviewItemAt(0)
@@ -1161,6 +1216,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
+        hideKeyboard()
 
         // When
         clickStickerIconMenu()
@@ -1182,6 +1238,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
+        hideKeyboard()
 
         // When
         clickComposeArea()
@@ -1202,6 +1259,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
+        hideKeyboard()
 
         // When
         clickComposeArea()
@@ -1227,6 +1285,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
+        hideKeyboard()
 
         // When
         clickSrwPreviewItemAt(0)
@@ -1253,6 +1312,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
+        hideKeyboard()
 
         // When
         clickSrwPreviewItemAt(0)
@@ -1287,6 +1347,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         intending(anyIntent()).respondWith(
             Instrumentation.ActivityResult(Activity.RESULT_OK, getImageData())
         )
+        hideKeyboard()
 
         // When
         clickSrwPreviewItemAt(0)
@@ -1311,6 +1372,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
+        hideKeyboard()
 
         // When
         scrollChatToPosition(10)
@@ -1334,6 +1396,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
             .generatePreAttachPayload(DEFAULT_PRODUCT_ID)
         launchChatRoomActivity()
+        hideKeyboard()
 
         // When
         intendingAttachProduct(1)
@@ -1360,6 +1423,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
             .generatePreAttachPayload(DEFAULT_PRODUCT_ID)
         launchChatRoomActivity()
+        hideKeyboard()
 
         // When
         intendingAttachProduct(3)
@@ -1390,6 +1454,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
             it.putExtra(ApplinkConst.Chat.MESSAGE_ID, "")
             putProductAttachmentIntent(it)
         }
+        hideKeyboard()
 
         // Then
         assertSrwPreviewContentIsVisible()
@@ -1405,6 +1470,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
             .generatePreAttachPayload(DEFAULT_PRODUCT_ID)
         launchChatRoomActivity()
+        hideKeyboard()
 
         // When
         intendingAttachProduct(1)
@@ -1430,6 +1496,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
+        hideKeyboard()
 
         // Then
         assertSrwPreviewContentIsVisible()
@@ -1449,6 +1516,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
+        hideKeyboard()
 
         // Then
         assertSrwPreviewContentIsVisible()
@@ -1470,6 +1538,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
+        hideKeyboard()
 
         // Then
         assertSrwCoachMark(true, context.getString(R.string.coach_product_bundling_title))
@@ -1483,10 +1552,10 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         chatSrwUseCase.response = chatSrwProductBundlingResponse
         getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
             .generatePreAttachPayload(DEFAULT_PRODUCT_ID)
-        CoachMarkPreference.setShown(context, SrwFrameLayout.TAG, true)
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
+        hideKeyboard()
 
         // Then
         assertSrwCoachMark(false, context.getString(R.string.coach_product_bundling_title))
@@ -1500,10 +1569,10 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         chatSrwUseCase.response = chatSrwProductBundlingResponse
         getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
             .generatePreAttachPayload(DEFAULT_PRODUCT_ID)
-        CoachMarkPreference.setShown(context, SrwFrameLayout.TAG, false)
         launchChatRoomActivity {
             putProductAttachmentIntent(it)
         }
+        hideKeyboard()
 
         // When
         clickSrwQuestion(0)

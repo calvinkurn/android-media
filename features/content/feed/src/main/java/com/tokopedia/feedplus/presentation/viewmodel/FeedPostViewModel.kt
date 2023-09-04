@@ -207,7 +207,11 @@ class FeedPostViewModel @Inject constructor(
                         requireNotNull(postSource)
                         require(isNewData)
 
-                        repository.getRelevantPosts(postSource)
+                        if (postSource.source != FeedBaseFragment.TAB_TYPE_CDP) {
+                            repository.getRelevantPosts(postSource)
+                        } else {
+                            FeedModel.Empty
+                        }
                     } catch (_: Throwable) {
                         FeedModel.Empty
                     }.items
@@ -218,7 +222,8 @@ class FeedPostViewModel @Inject constructor(
                         Success(
                             getFeedPosts(
                                 source = source,
-                                cursor = _feedHome.value?.cursor.orEmpty()
+                                cursor = _feedHome.value?.cursor.orEmpty(),
+                                postSourceModel = postSource
                             )
                         )
                     } catch (e: Throwable) {
@@ -750,14 +755,16 @@ class FeedPostViewModel @Inject constructor(
 
     private suspend fun getFeedPosts(
         source: String,
-        cursor: String = ""
+        cursor: String = "",
+        postSourceModel: PostSourceModel?
     ): FeedModel {
         var response = FeedModel(emptyList(), FeedPaginationModel.Empty)
         var thresholdGet = 3
         var nextCursor = cursor
+        val detailId = if (postSourceModel?.source == FeedBaseFragment.TAB_TYPE_CDP) postSourceModel.id else ""
 
         while (response.items.isEmpty() && --thresholdGet >= 0) {
-            response = repository.getPost(source, nextCursor)
+            response = repository.getPost(source, nextCursor, detailId = detailId)
             nextCursor = response.pagination.cursor
         }
 

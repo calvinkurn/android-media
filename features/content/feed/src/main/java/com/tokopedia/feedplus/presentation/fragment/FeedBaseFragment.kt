@@ -797,7 +797,7 @@ class FeedBaseFragment :
 
         const val TAB_TYPE_FOR_YOU = "foryou"
         const val TAB_TYPE_FOLLOWING = "following"
-        const val CDP = "cdp"
+        const val TAB_TYPE_CDP = "cdp"
 
         private const val EXTRAS_UTM_MEDIUM = "utm_medium"
         private const val PARAM_PUSH_NOTIFICATION = "push"
