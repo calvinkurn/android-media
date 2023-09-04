@@ -12,11 +12,10 @@ import com.tokopedia.config.GlobalConfig
 class ChatMenuAttachmentView : RecyclerView {
 
     companion object {
-        const val SPAN_COUNT_MAIN_APP = 3
-        const val SPAN_COUNT_SELLER_APP = 4
+        private const val SPAN_COUNT = 4
     }
 
-    private val manager = GridLayoutManager(context, getTabCount())
+    private val manager = GridLayoutManager(context, SPAN_COUNT)
 
     private val adapter = AttachmentMenuAdapter()
 
@@ -36,10 +35,6 @@ class ChatMenuAttachmentView : RecyclerView {
         setAdapter(adapter)
     }
 
-    private fun getTabCount(): Int {
-        return if (GlobalConfig.isSellerApp()) SPAN_COUNT_SELLER_APP else SPAN_COUNT_MAIN_APP
-    }
-
     fun setAttachmentMenuListener(listener: AttachmentMenu.AttachmentMenuListener) {
         adapter.attachmentMenuListener = listener
     }
@@ -53,5 +48,4 @@ class ChatMenuAttachmentView : RecyclerView {
             adapter.addVoucherAttachmentMenu()
         }
     }
-
 }

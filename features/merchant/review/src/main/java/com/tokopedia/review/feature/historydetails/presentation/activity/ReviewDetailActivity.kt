@@ -87,7 +87,6 @@ class ReviewDetailActivity : BaseSimpleActivity(), ReviewPerformanceMonitoringLi
     }
 
     override fun onBackPressed() {
-        super.onBackPressed()
         reviewDetailFragment?.onBackPressed()
     }
 

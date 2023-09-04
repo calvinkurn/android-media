@@ -9,7 +9,7 @@ import com.tokopedia.product.detail.postatc.view.component.error.ErrorDelegate
 import com.tokopedia.product.detail.postatc.view.component.fallback.FallbackDelegate
 import com.tokopedia.product.detail.postatc.view.component.loading.LoadingDelegate
 import com.tokopedia.product.detail.postatc.view.component.productinfo.ProductInfoDelegate
-import com.tokopedia.product.detail.postatc.view.component.recommendation.RecommendationDelegate
+import com.tokopedia.product.detail.postatc.view.component.recommendation.GlobalRecommendationDelegate
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -35,9 +35,9 @@ class PostAtcAdapter(
             .addDelegate(AddonsDelegate(callback))
             .addDelegate(ErrorDelegate(callback))
             .addDelegate(FallbackDelegate(callback))
+            .addDelegate(GlobalRecommendationDelegate(callback))
             .addDelegate(LoadingDelegate())
             .addDelegate(ProductInfoDelegate(callback))
-            .addDelegate(RecommendationDelegate(callback))
     }
 
     private val mapUiModels = mutableMapOf<Int, PostAtcUiModel>()

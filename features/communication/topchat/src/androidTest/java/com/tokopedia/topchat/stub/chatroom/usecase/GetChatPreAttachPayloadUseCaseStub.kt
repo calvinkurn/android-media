@@ -2,7 +2,6 @@ package com.tokopedia.topchat.stub.chatroom.usecase
 
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
-import com.google.gson.JsonParser
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.topchat.chatroom.domain.pojo.preattach.PreAttachPayloadResponse
 import com.tokopedia.topchat.chatroom.domain.usecase.GetChatPreAttachPayloadUseCase
@@ -11,11 +10,15 @@ import com.tokopedia.topchat.common.fromJson
 import com.tokopedia.topchat.stub.common.GraphqlRepositoryStub
 
 class GetChatPreAttachPayloadUseCaseStub(
-        private val repository: GraphqlRepositoryStub,
-        dispatchers: CoroutineDispatchers
+    private val repository: GraphqlRepositoryStub,
+    dispatchers: CoroutineDispatchers
 ) : GetChatPreAttachPayloadUseCase(repository, dispatchers) {
 
-    private val defaultResponsePath = "success_get_pre_attach_payload.json"
+    private val defaultResponsePath = "product_preattach/success_get_pre_attach_payload.json"
+    private val preAttachDoubleProductResponsePath =
+        "product_preattach/success_get_pre_attach_payload_2.json"
+    private val preAttachTripleProductResponsePath =
+        "product_preattach/success_get_pre_attach_payload_3.json"
 
     var response: PreAttachPayloadResponse = PreAttachPayloadResponse()
         set(value) {
@@ -24,25 +27,22 @@ class GetChatPreAttachPayloadUseCaseStub(
         }
 
     fun generatePreAttachPayload(
-            productId: String
+        productId: String
     ): PreAttachPayloadResponse {
         return alterResponseOf(defaultResponsePath) {
             val list = it.getAsJsonObject(chatPreAttachPayload)
-                    .getAsJsonArray(list)
+                .getAsJsonArray(list)
             alterPreAttachPayload(list, productId)
         }
     }
 
+    fun generate2PreAttachPayload(): PreAttachPayloadResponse {
+        return alterResponseOf(preAttachDoubleProductResponsePath) {
+        }
+    }
+
     fun generate3PreAttachPayload(): PreAttachPayloadResponse {
-        return alterResponseOf(defaultResponsePath) { response ->
-            val list = response.getAsJsonObject(chatPreAttachPayload)
-                    .getAsJsonArray(list)
-            for (i in 0 until 2) {
-                val jsonString = list[0].toString()
-                val newJsonObject = JsonParser.parseString(jsonString).asJsonObject
-                list.add(newJsonObject)
-            }
-            alterPreAttachPayload(list)
+        return alterResponseOf(preAttachTripleProductResponsePath) {
         }
     }
 

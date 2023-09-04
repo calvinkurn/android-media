@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.postatc.base
 
 import android.content.Context
 import android.content.Intent
+import android.view.View
 import com.tokopedia.product.detail.databinding.PostAtcBottomSheetBinding
 import com.tokopedia.product.detail.databinding.ViewPostAtcFooterBinding
 import com.tokopedia.product.detail.postatc.view.PostAtcViewModel
@@ -19,5 +20,6 @@ interface PostAtcBottomSheetDelegate {
     fun dismissAllowingStateLoss()
     fun initData()
     fun getContext(): Context?
+    fun rootView(): View?
     fun startActivity(intent: Intent)
 }

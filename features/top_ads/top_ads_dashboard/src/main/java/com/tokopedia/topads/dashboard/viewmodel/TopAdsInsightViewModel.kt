@@ -4,12 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.top_ads_headline_usecase.model.TopAdsManageHeadlineInput2
+import com.tokopedia.topads.common.domain.model.createheadline.TopAdsManageHeadlineInput2
 import com.tokopedia.topads.dashboard.data.model.insightkey.RecommendedKeywordData
 import com.tokopedia.topads.dashboard.data.model.insightkey.TopAdsShopHeadlineKeyword
-import com.tokopedia.top_ads_headline_usecase.CreateHeadlineAdsUseCase
+import com.tokopedia.topads.common.domain.usecase.CreateHeadlineAdsUseCase
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsShopKeywordSuggestionUseCase
-import com.tokopedia.top_ads_headline_usecase.model.TopadsManageHeadlineAdResponse
+import com.tokopedia.topads.common.domain.model.createheadline.TopadsManageHeadlineAdResponse
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 
