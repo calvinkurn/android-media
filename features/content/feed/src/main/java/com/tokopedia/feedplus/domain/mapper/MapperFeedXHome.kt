@@ -2,8 +2,8 @@ package com.tokopedia.feedplus.domain.mapper
 
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.content.common.report_content.model.FeedContentData
-import com.tokopedia.content.common.report_content.model.FeedMenuIdentifier
-import com.tokopedia.content.common.report_content.model.FeedMenuItem
+import com.tokopedia.content.common.report_content.model.ContentMenuIdentifier
+import com.tokopedia.content.common.report_content.model.ContentMenuItem
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.data.FeedXAuthor
 import com.tokopedia.feedplus.data.FeedXCampaign
@@ -382,7 +382,7 @@ class MapperFeedXHome @Inject constructor(
             (author.type.isUser && author.id == userSession.userId)
     }
 
-    private fun getMenuItems(author: FeedAuthorModel, card: FeedXCard): List<FeedMenuItem> {
+    private fun getMenuItems(author: FeedAuthorModel, card: FeedXCard): List<ContentMenuItem> {
         val contentData = FeedContentData(
             card.text,
             card.id,
@@ -392,10 +392,10 @@ class MapperFeedXHome @Inject constructor(
             if (isMyContent(author)) {
                 if (card.performanceSummaryPageLink.isNotBlank()) {
                     add(
-                        FeedMenuItem(
+                        ContentMenuItem(
                             iconUnify = IconUnify.GRAPH,
                             name = contentCommonR.string.performance_see,
-                            type = FeedMenuIdentifier.SeePerformance,
+                            type = ContentMenuIdentifier.SeePerformance,
                             appLink = card.performanceSummaryPageLink,
                             contentData = contentData
                         )
@@ -403,10 +403,10 @@ class MapperFeedXHome @Inject constructor(
                 }
                 if (card.insightSummaryPageLink.isNotBlank()) {
                     add(
-                        FeedMenuItem(
+                        ContentMenuItem(
                             iconUnify = IconUnify.GRAPH_REPORT,
                             name = contentCommonR.string.performance_learn_video_insight,
-                            type = FeedMenuIdentifier.LearnVideoInsight,
+                            type = ContentMenuIdentifier.LearnVideoInsight,
                             appLink = card.insightSummaryPageLink,
                             contentData = contentData
                         )
@@ -414,29 +414,29 @@ class MapperFeedXHome @Inject constructor(
                 }
             }
             add(
-                FeedMenuItem(
+                ContentMenuItem(
                     iconUnify = IconUnify.VISIBILITY,
                     name = R.string.feed_watch_mode,
-                    type = FeedMenuIdentifier.WatchMode,
+                    type = ContentMenuIdentifier.WatchMode,
                     contentData = contentData
                 )
             )
             if (isReportable(card)) {
                 add(
-                    FeedMenuItem(
+                    ContentMenuItem(
                         iconUnify = IconUnify.WARNING,
                         name = contentCommonR.string.content_common_menu_report,
-                        type = FeedMenuIdentifier.Report,
+                        type = ContentMenuIdentifier.Report,
                         contentData = contentData
                     )
                 )
             }
             if (card.deletable) {
                 add(
-                    FeedMenuItem(
+                    ContentMenuItem(
                         iconUnify = IconUnify.DELETE,
                         name = contentCommonR.string.content_common_menu_delete,
-                        type = FeedMenuIdentifier.Delete,
+                        type = ContentMenuIdentifier.Delete,
                         contentData = contentData
                     )
                 )

@@ -39,8 +39,8 @@ import com.tokopedia.content.common.comment.uimodel.CommentUiModel
 import com.tokopedia.content.common.comment.uimodel.isParent
 import com.tokopedia.content.common.databinding.FragmentContentCommentBottomSheetBinding
 import com.tokopedia.content.common.report_content.bottomsheet.ContentThreeDotsMenuBottomSheet
-import com.tokopedia.content.common.report_content.model.FeedMenuIdentifier
-import com.tokopedia.content.common.report_content.model.FeedMenuItem
+import com.tokopedia.content.common.report_content.model.ContentMenuIdentifier
+import com.tokopedia.content.common.report_content.model.ContentMenuItem
 import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 import com.tokopedia.content.common.util.ConnectionHelper
@@ -493,10 +493,10 @@ class ContentCommentBottomSheet @Inject constructor(
         CommentUiModel.Shimmer
     }
 
-    override fun onMenuItemClick(feedMenuItem: FeedMenuItem, contentId: String) {
-        when (feedMenuItem.type) {
-            FeedMenuIdentifier.Delete -> deleteCommentChecker(contentId)
-            FeedMenuIdentifier.Report -> {
+    override fun onMenuItemClick(contentMenuItem: ContentMenuItem, contentId: String) {
+        when (contentMenuItem.type) {
+            ContentMenuIdentifier.Delete -> deleteCommentChecker(contentId)
+            ContentMenuIdentifier.Report -> {
                 viewModel.submitAction(CommentAction.RequestReportAction)
                 analytics?.clickReportComment()
             }
@@ -527,22 +527,22 @@ class ContentCommentBottomSheet @Inject constructor(
         sheetMenu.dismiss()
     }
 
-    private fun getMenuItems(item: CommentUiModel.Item): List<FeedMenuItem> = buildList {
+    private fun getMenuItems(item: CommentUiModel.Item): List<ContentMenuItem> = buildList {
         if (item.isOwner || viewModel.isCreator) {
             add(
-                FeedMenuItem(
+                ContentMenuItem(
                     name = R.string.content_common_menu_delete,
                     iconUnify = IconUnify.DELETE,
-                    type = FeedMenuIdentifier.Delete
+                    type = ContentMenuIdentifier.Delete
                 )
             )
         }
         if (item.isReportAllowed) {
             add(
-                FeedMenuItem(
+                ContentMenuItem(
                     iconUnify = IconUnify.WARNING,
                     name = R.string.content_common_menu_report,
-                    type = FeedMenuIdentifier.Report
+                    type = ContentMenuIdentifier.Report
                 )
             )
         }

@@ -1,6 +1,6 @@
 package com.tokopedia.feedplus.presentation.adapter.listener
 
-import com.tokopedia.content.common.report_content.model.FeedMenuItem
+import com.tokopedia.content.common.report_content.model.ContentMenuItem
 import com.tokopedia.feedcomponent.view.widget.FeedExoPlayer
 import com.tokopedia.feedplus.presentation.model.*
 import com.tokopedia.feedplus.presentation.uiview.FeedCampaignRibbonType
@@ -8,7 +8,7 @@ import com.tokopedia.feedplus.presentation.uiview.FeedCampaignRibbonType
 interface FeedListener {
     fun onMenuClicked(
         id: String,
-        menuItems: List<FeedMenuItem>,
+        menuItems: List<ContentMenuItem>,
         trackerModel: FeedTrackerDataModel
     )
 

@@ -2,7 +2,6 @@
 <resources>
     <string name="play_title">Play</string>
     <string name="play_chat_placeholder">Chat di sini&#8230;</string>
-    <string name="play_follow">Follow</string>
     <string name="play_watch_again">Tonton Ulang</string>
 
     <string name="play_title_variant">Detail Produk</string>

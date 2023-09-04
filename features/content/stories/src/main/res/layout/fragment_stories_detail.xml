@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/content_common_space_16"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/Unify_Static_Black">
+
+    <include
+        android:id="@+id/layout_timer"
+        layout="@layout/layout_loading_timer" />
+
+    <include
+        android:id="@+id/layout_declarative"
+        layout="@layout/layout_loading_declarative" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/iv_stories_detail_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintDimensionRatio="H,9:16"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/view_gradient_top"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/bg_overlay_top_stories"
+        app:layout_constraintBottom_toTopOf="@id/guideline_top_overlay"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/view_gradient_bot"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/bg_overlay_bot_stories"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/guideline_bot_overlay" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/stories_component"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="cv_stories_detail_timer, ic_close, rv_stories_category" />
+
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/cv_stories_detail_timer"
+        android:layout_width="0dp"
+        android:layout_height="4dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/ic_close"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="10dp"
+        app:icon_color_light_enable="@color/Unify_Static_White"
+        app:icon_color_night_enable="@color/Unify_Static_White"
+        app:icon_name="CLOSE"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/rv_stories_category" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_stories_category"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="12dp"
+        android:nestedScrollingEnabled="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/ic_close"
+        app:layout_constraintTop_toBottomOf="@id/cv_stories_detail_timer"
+        tools:itemCount="1"
+        tools:listitem="@layout/item_stories_group" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.15" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_top_overlay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.2" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_bot_overlay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.8" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_bot"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.85" />
+
+    <FrameLayout
+        android:id="@+id/fl_stories_prev"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/transparent"
+        app:layout_constraintBottom_toTopOf="@id/guideline_bot"
+        app:layout_constraintEnd_toStartOf="@id/fl_stories_next"
+        app:layout_constraintHorizontal_weight="0.4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/guideline_top" />
+
+    <FrameLayout
+        android:id="@+id/fl_stories_next"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/transparent"
+        app:layout_constraintBottom_toTopOf="@id/guideline_bot"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_weight="0.6"
+        app:layout_constraintStart_toEndOf="@id/fl_stories_prev"
+        app:layout_constraintTop_toBottomOf="@id/guideline_top" />
+
+    <FrameLayout
+        android:id="@+id/fl_stories_product"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/transparent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/guideline_bot" >
+    </FrameLayout>
+
+    <include
+        android:id="@+id/v_stories_partner"
+        layout="@layout/view_partner_info"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/content_common_space_16"
+        android:layout_marginTop="@dimen/content_common_space_12"
+        android:layout_marginEnd="@dimen/content_common_space_12"
+        android:layout_marginBottom="@dimen/content_common_space_16"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintEnd_toStartOf="@id/v_stories_product_icon"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintWidth_default="wrap"
+        app:layout_goneMarginEnd="@dimen/spacing_lvl5"
+        />
+
+    <include
+        android:id="@+id/v_stories_product_icon"
+        layout="@layout/view_product_see_more"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginEnd="@dimen/content_common_space_16"
+        android:layout_marginBottom="@dimen/content_common_space_16"
+        tools:visibility="visible" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/v_stories_kebab_icon"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
+        android:padding="@dimen/unify_space_4"
+        android:layout_marginBottom="@dimen/unify_space_8"
+        app:icon_color_light_enable="@color/Unify_Static_White"
+        app:icon_color_night_enable="@color/Unify_Static_White"
+        app:layout_constraintBottom_toTopOf="@id/v_stories_product_icon"
+        app:layout_constraintEnd_toEndOf="@+id/v_stories_product_icon"
+        app:layout_constraintStart_toStartOf="@+id/v_stories_product_icon"
+        app:icon_name="MENU_KEBAB_HORIZONTAL"
+        android:visibility="gone"
+        app:unify_image_type="circle" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/v_stories_share_icon"
+        android:layout_width="@dimen/layout_lvl5"
+        android:layout_height="@dimen/layout_lvl5"
+        android:padding="@dimen/unify_space_4"
+        android:layout_marginBottom="@dimen/unify_space_8"
+        app:icon_color_light_enable="@color/Unify_Static_White"
+        app:icon_color_night_enable="@color/Unify_Static_White"
+        app:layout_constraintBottom_toTopOf="@id/v_stories_kebab_icon"
+        app:layout_constraintEnd_toEndOf="@+id/v_stories_kebab_icon"
+        app:layout_constraintStart_toStartOf="@+id/v_stories_kebab_icon"
+        app:icon_name="SHARE"
+        app:unify_image_type="circle" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

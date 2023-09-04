@@ -1,25 +1,39 @@
 package com.tokopedia.stories.bottomsheet
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
 import androidx.fragment.app.FragmentManager
-import com.tokopedia.content.common.report_content.model.FeedMenuIdentifier
-import com.tokopedia.content.common.report_content.model.FeedMenuItem
-import com.tokopedia.iconunify.IconUnify
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import com.tokopedia.stories.view.model.BottomSheetType
+import com.tokopedia.stories.view.model.StoriesUiState
 import com.tokopedia.stories.view.showDialog
+import com.tokopedia.stories.view.viewmodel.StoriesViewModel
+import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction
+import com.tokopedia.stories.view.viewmodel.event.StoriesUiEvent
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.stories.R as storiesR
+import kotlinx.coroutines.flow.collectLatest
+import javax.inject.Inject
 import com.tokopedia.content.common.R as commonR
+import com.tokopedia.stories.R as storiesR
 
 /**
  * @author by astidhiyaa on 08/08/23
  */
-class StoriesThreeDotsBottomSheet : BottomSheetUnify() {
+class StoriesThreeDotsBottomSheet @Inject constructor(
+    private val viewModelFactory: ViewModelProvider.Factory,
+) : BottomSheetUnify() {
+
+    private val viewModel by activityViewModels<StoriesViewModel> { viewModelFactory }
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -27,28 +41,33 @@ class StoriesThreeDotsBottomSheet : BottomSheetUnify() {
     ): View? {
         val composeView = ComposeView(requireContext()).apply {
             setContent {
+                val state by viewModel.uiState.collectAsState(initial = StoriesUiState.Empty)
                 val ctx = LocalContext.current
                 LaunchedEffect(Unit) {
-                    //observe  event
-                }
-                ThreeDotsPage(menuList = List(1) {
-                    FeedMenuItem(
-                        iconUnify = IconUnify.DELETE,
-                        name = storiesR.string.stories_delete_story_title,
-                        type = FeedMenuIdentifier.Delete,
-                    )
-                }, onMenuClicked = { item ->
-                    //TODO() move it to event - show
-                    dismiss()
-                    this.context.showDialog(
-                        title = getString(storiesR.string.stories_delete_story_title),
-                        description = getString(storiesR.string.stories_delete_story_description),
-                        primaryCTAText = getString(commonR.string.card_dialog_title_delete),
-                        secondaryCTAText = getString(commonR.string.card_dialog_title_cancel),
-                        primaryAction = {
-                            //TODO () hit gql
+                    lifecycleScope.launchWhenStarted {
+                        viewModel.uiEvent.collectLatest { event ->
+                            when (event) {
+                                StoriesUiEvent.ShowDeleteDialog -> {
+                                    dismiss()
+                                    ctx.showDialog(
+                                        title = getString(storiesR.string.stories_delete_story_title),
+                                        description = getString(storiesR.string.stories_delete_story_description),
+                                        primaryCTAText = getString(commonR.string.card_dialog_title_delete),
+                                        secondaryCTAText = getString(commonR.string.card_dialog_title_cancel),
+                                        primaryAction = {
+                                            viewModel.submitAction(StoriesUiAction.DeleteStory)
+                                        }
+                                    )
+                                }
+
+                                else -> {}
+                            }
                         }
-                    )
+                    }
+                }
+                val currentItem = state.storiesDetail.detailItems.getOrNull(state.storiesDetail.selectedDetailPosition)?.menus ?: return@setContent
+                ThreeDotsPage(menuList = currentItem, onDeleteStoryClicked = { item ->
+                    viewModel.submitAction(StoriesUiAction.ShowDeleteDialog)
                 })
             }
         }
@@ -63,7 +82,13 @@ class StoriesThreeDotsBottomSheet : BottomSheetUnify() {
 
     override fun dismiss() {
         if (!isAdded) return
+        viewModel.submitAction(StoriesUiAction.DismissSheet(BottomSheetType.Kebab))
         super.dismiss()
+    }
+
+    override fun onCancel(dialog: DialogInterface) {
+        viewModel.submitAction(StoriesUiAction.DismissSheet(BottomSheetType.Kebab))
+        super.onCancel(dialog)
     }
 
     companion object {
