@@ -47,6 +47,7 @@ class PlacementImageActivity : BaseActivity(), NavToolbarComponent.Listener {
         initBundle(savedInstanceState)
         initFragment()
         initView()
+        initObserver()
 
         // clear cache file if more than 1 day old
         InternalStorageCleaner.cleanUpInternalStorageIfNeeded(
@@ -61,13 +62,8 @@ class PlacementImageActivity : BaseActivity(), NavToolbarComponent.Listener {
 
     override fun onContinueClicked() {
         getFragment().let {
-            it.captureImage { placementModel ->
-                val intent = Intent()
-                intent.putExtra(PLACEMENT_RESULT_KEY, placementModel)
-
-                setResult(0, intent)
-                finish()
-            }
+            viewModel.updateLoadingState(true)
+            it.captureImage()
         }
     }
 
@@ -99,6 +95,20 @@ class PlacementImageActivity : BaseActivity(), NavToolbarComponent.Listener {
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_view, fragment, "Tag")
             .commit()
+    }
+
+    private fun initObserver() {
+        viewModel.placementModelResult.observe(this) {
+            val x = 0
+            it?.let { resultModel ->
+                viewModel.updateLoadingState(false)
+                setResult(
+                    RESULT_OK,
+                    createIntentResult(resultModel)
+                )
+                finish()
+            }
+        }
     }
 
     private fun fragmentProvider(): EditorFragmentProvider {
@@ -162,6 +172,13 @@ class PlacementImageActivity : BaseActivity(), NavToolbarComponent.Listener {
 
             intent.putExtra(PLACEMENT_PARAM_KEY, imagePath)
             intent.putExtra(PLACEMENT_MODEL_KEY, previousState)
+
+            return intent
+        }
+
+        fun createIntentResult(placementModel: ImagePlacementModel?): Intent {
+            val intent = Intent()
+            intent.putExtra(PLACEMENT_RESULT_KEY, placementModel)
 
             return intent
         }

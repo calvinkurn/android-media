@@ -4,6 +4,7 @@ import android.net.Uri
 import android.os.Handler
 import androidx.core.graphics.values
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.editor.R
 import com.tokopedia.editor.base.BaseEditorFragment
@@ -78,30 +79,21 @@ class PlacementImageFragment @Inject constructor(
         initListener()
     }
 
-    fun captureImage(onFinish: (imageModel: ImagePlacementModel) -> Unit) {
+    fun captureImage() {
         viewBinding?.cropArea?.getCropImageView()?.let {
             CoroutineScope(dispatchers.io).launch {
                 it.customCrop { bitmap, matrix, outputUri ->
+                    val translateX = matrix[INDEX_TRANSLATE_X]
+                    val translateY = matrix[INDEX_TRANSLATE_Y]
 
-
-                    // save placement bitmap result
-                    try {
-                        outputUri?.path?.let { stringPath ->
-                            val outputPath = viewModel.savePlacementBitmap(stringPath, bitmap)
-                            val imageMatrixValue = matrix.values()
-
-                            // matrix to model
-                            val placementModel = ImagePlacementModel(
-                                path = outputPath,
-                                scale = it.currentScale,
-                                angle = it.currentAngle,
-                                translateX = imageMatrixValue[INDEX_TRANSLATE_X],
-                                translateY = imageMatrixValue[INDEX_TRANSLATE_Y]
-                            )
-
-                            onFinish(placementModel)
-                        }
-                    } catch (_: Exception) {}
+                    viewModel.savePlacementBitmap(
+                        outputUri,
+                        bitmap,
+                        translateX = translateX,
+                        translateY = translateY,
+                        scale = it.currentScale,
+                        angle = it.currentAngle
+                    )
                 }
             }
         }
@@ -168,17 +160,16 @@ class PlacementImageFragment @Inject constructor(
     }
 
     private fun showLoadingDialog() {
-        loaderDialog?.show() ?: run {
-            context?.let {
-                loaderDialog = LoaderDialog(it)
-                loaderDialog?.setLoadingText("")
-                loaderDialog?.show()
-            }
+        context?.let {
+            loaderDialog = LoaderDialog(it)
+            loaderDialog?.setLoadingText("")
+            loaderDialog?.show()
         }
     }
 
     private fun hideLoadingDialog() {
         loaderDialog?.dismiss()
+        loaderDialog = null
     }
 
     companion object {

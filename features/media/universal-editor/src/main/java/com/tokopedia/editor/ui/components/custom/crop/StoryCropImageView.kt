@@ -83,7 +83,7 @@ open class StoryCropImageView : CropImageView {
         }, FINISH_DELAY)
     }
 
-    suspend fun customCrop(onFinish: (bitmap: Bitmap, imageMatrix: Matrix, outputPath: Uri?) -> Unit) {
+    suspend fun customCrop(onFinish: (bitmap: Bitmap, imageMatrix: FloatArray, outputPath: String) -> Unit) {
         val imageState = ImageState(
             mCropRect,
             RectUtils.trapToRect(mCurrentImageCorners),
@@ -140,7 +140,7 @@ open class StoryCropImageView : CropImageView {
             )
         }
 
-        onFinish(bitmapResult, imageMatrix, outputPath)
+        onFinish(bitmapResult, imageMatrix.values(), outputPath?.path ?: "")
     }
 
     fun processStyledAttributesOpen(a: TypedArray) {
