@@ -1,6 +1,6 @@
 package com.tokopedia.stories.view.fragment
 
-import  android.os.Bundle
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,7 +19,6 @@ import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.isNumeric
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showToast
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -45,6 +44,7 @@ import com.tokopedia.stories.view.utils.STORIES_GROUP_ID
 import com.tokopedia.stories.view.utils.TouchEventStories
 import com.tokopedia.stories.view.utils.isNetworkError
 import com.tokopedia.stories.view.utils.onTouchEventStories
+import com.tokopedia.stories.view.utils.showToaster
 import com.tokopedia.stories.view.viewmodel.StoriesViewModel
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction.ContentIsLoaded
@@ -162,10 +162,17 @@ class StoriesDetailFragment @Inject constructor(
                     }
                     is StoriesUiEvent.NavigateEvent -> goTo(event.appLink)
                     is StoriesUiEvent.ShowVariantSheet -> openVariantBottomSheet(event.product)
-                    is StoriesUiEvent.ShowErrorEvent -> showToaster(message = event.message.message.orEmpty(), type = Toaster.TYPE_ERROR)
+                    is StoriesUiEvent.ShowErrorEvent -> {
+                        if (viewModel.isAnyBottomSheetShown) return@collectLatest
+                        requireView().showToaster(
+                            message = event.message.message.orEmpty(),
+                            type = Toaster.TYPE_ERROR
+                        )
+                    }
                     is StoriesUiEvent.ShowInfoEvent -> {
+                        if (viewModel.isAnyBottomSheetShown) return@collectLatest
                         val message = getString(event.message)
-                        showToaster(message = message,)
+                        requireView().showToaster(message = message,)
                     }
                     is StoriesUiEvent.ErrorDetailPage -> {
                         if (viewModel.mGroupId != groupId) return@collectLatest
@@ -396,20 +403,6 @@ class StoriesDetailFragment @Inject constructor(
             }
             variantSheet
         }
-    }
-    private fun showToaster(
-        message: String,
-        type: Int = Toaster.TYPE_NORMAL,
-        actionText: String = "",
-        clickListener: View.OnClickListener = View.OnClickListener {}
-    ) {
-        Toaster.build(
-            requireView(),
-            message,
-            type = type,
-            actionText = actionText,
-            clickListener = clickListener
-        ).show()
     }
 
     override fun onDestroyView() {

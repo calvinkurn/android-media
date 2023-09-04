@@ -21,10 +21,13 @@ import com.tokopedia.stories.databinding.FragmentStoriesProductBinding
 import com.tokopedia.stories.utils.withCache
 import com.tokopedia.stories.view.model.BottomSheetType
 import com.tokopedia.stories.view.model.ProductBottomSheetUiState
+import com.tokopedia.stories.view.utils.showToaster
 import com.tokopedia.stories.view.viewmodel.StoriesViewModel
 import com.tokopedia.stories.view.viewmodel.action.StoriesProductAction
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction
+import com.tokopedia.stories.view.viewmodel.event.StoriesUiEvent
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
@@ -60,6 +63,7 @@ class StoriesProductBottomSheet @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
         setupView()
         observeUiState()
+        observeUiEvent()
     }
 
     private fun setupView() {
@@ -74,7 +78,32 @@ class StoriesProductBottomSheet @Inject constructor(
         }
     }
 
-    private fun renderProducts(prevState: ProductBottomSheetUiState?, state: ProductBottomSheetUiState) {
+    private fun observeUiEvent() {
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            viewModel.uiEvent.collectLatest { event ->
+                when (event) {
+                    is StoriesUiEvent.ShowErrorEvent -> {
+                        requireView().showToaster(
+                            message = event.message.message.orEmpty(),
+                            type = Toaster.TYPE_ERROR
+                        )
+                    }
+
+                    is StoriesUiEvent.ShowInfoEvent -> {
+                        val message = getString(event.message)
+                        requireView().showToaster(message = message)
+                    }
+
+                    else -> {}
+                }
+            }
+        }
+    }
+
+    private fun renderProducts(
+        prevState: ProductBottomSheetUiState?,
+        state: ProductBottomSheetUiState
+    ) {
         if (prevState == state) return
 
         binding.storiesProductSheetLoader.showWithCondition(state.resultState is ResultState.Loading)
@@ -106,7 +135,10 @@ class StoriesProductBottomSheet @Inject constructor(
         handleProductAction(StoriesProductAction.Buy, product)
     }
 
-    private fun handleProductAction(type: StoriesProductAction, product: ContentTaggedProductUiModel) {
+    private fun handleProductAction(
+        type: StoriesProductAction,
+        product: ContentTaggedProductUiModel
+    ) {
         if (product.showGlobalVariant) {
             viewModel.submitAction(StoriesUiAction.ShowVariantSheet(product))
         } else {

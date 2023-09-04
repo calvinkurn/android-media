@@ -90,6 +90,9 @@ class StoriesViewModel @Inject constructor(
             return productCount?.isNotEmpty() == true || productCount != "0"
         }
 
+    val isAnyBottomSheetShown : Boolean
+        get() = bottomSheetStatus.value.isAnyShown
+
     private val _uiEvent = MutableSharedFlow<StoriesUiEvent>(extraBufferCapacity = 100)
     val uiEvent: Flow<StoriesUiEvent>
         get() = _uiEvent
