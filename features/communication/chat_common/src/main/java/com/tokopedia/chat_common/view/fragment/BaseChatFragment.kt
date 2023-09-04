@@ -1,4 +1,4 @@
-package com.tokopedia.chat_common
+package com.tokopedia.chat_common.view.fragment
 
 import android.content.Intent
 import android.net.Uri
@@ -20,7 +20,6 @@ import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandle
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageAnnouncementListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ProductAttachmentListener
-import com.tokopedia.chat_common.view.fragment.BaseChatActivityListener
 import com.tokopedia.chat_common.view.listener.BaseChatContract
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chat_common.view.listener.TypingListener
@@ -218,6 +217,7 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     }
 
     override fun onReceiveMessageEvent(visitable: Visitable<*>) {
+        // Do not remove, this code is used by chat bot
         viewState?.removeDummyIfExist(visitable)
         viewState?.onReceiveMessageEvent(visitable)
     }
