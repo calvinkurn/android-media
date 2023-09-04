@@ -18,8 +18,8 @@ data class PostAtcInfo(
     val productId: String = "",
     val session: String = "",
     val shopId: String = "",
-    val warehouseId: String = "",
-    val userLocationRequest: UserLocationRequest = UserLocationRequest()
+    val userLocationRequest: UserLocationRequest = UserLocationRequest(),
+    val warehouseInfo: WarehouseInfo = WarehouseInfo()
 ) {
     data class Footer(
         val image: String = "",
@@ -34,8 +34,11 @@ data class PostAtcInfo(
 
     data class Addons(
         val deselectedAddonsIds: List<String>,
+        @Deprecated("Please using isFulfillment in postAtc basicInfo")
         val isFulfillment: Boolean,
         val selectedAddonsIds: List<String>,
+        @Deprecated("Please using warehouseId in postAtc basicInfo")
+        val warehouseId: String = "",
         val quantity: Int
     ) {
         companion object {
@@ -43,8 +46,11 @@ data class PostAtcInfo(
                 deselectedAddonsIds = addons.deselectedAddonsIds,
                 isFulfillment = addons.isFulfillment,
                 selectedAddonsIds = addons.selectedAddonsIds,
+                warehouseId = addons.warehouseId,
                 quantity = addons.quantity
             )
         }
     }
+
+    data class WarehouseInfo(val warehouseId: String = "")
 }
