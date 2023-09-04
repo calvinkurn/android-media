@@ -2135,7 +2135,12 @@ class ShopPageHeaderFragmentV2 :
     }
 
     override fun onChatButtonClicked() {
+        sendClickHeaderShopChat()
         goToChatSeller()
+    }
+
+    private fun sendClickHeaderShopChat() {
+        shopPageTracking?.clickHeaderShopChat(shopId, userId)
     }
 
     override fun onFollowButtonClicked() {
