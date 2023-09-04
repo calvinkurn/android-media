@@ -54,6 +54,7 @@ class BroadMatchViewHolder(
             hideOldHeader()
             bindHeaderViewRevamp(element)
             bindReimagineCarousel(element)
+            paddingReimagineVariant()
         } else {
             hideHeaderRevamp()
             showOldHeader()
@@ -62,6 +63,7 @@ class BroadMatchViewHolder(
             bindSubtitleImage(element)
             bindSeeMore(element)
             bindCarousel(element)
+            paddingControlVariant()
         }
     }
 
@@ -288,5 +290,17 @@ class BroadMatchViewHolder(
 
     private fun FreeOngkirDataView.toProductCardModelFreeOngkir(): ProductCardModel.FreeOngkir {
         return ProductCardModel.FreeOngkir(isActive, imageUrl)
+    }
+
+    private fun paddingReimagineVariant() {
+        binding?.constraintContainerBroadMatchView?.setPadding(0,0,0,0)
+    }
+
+    private fun paddingControlVariant() {
+        val constraintContainer = binding?.constraintContainerBroadMatchView?:return
+        val contextResource = constraintContainer.context.resources
+        val paddingTop = contextResource.getDimensionPixelSize(R.dimen.search_board_inspiration_carousel_padding_top)
+        val paddingBottom = contextResource.getDimensionPixelSize(R.dimen.search_board_inspiration_carousel_padding_bottom)
+        binding?.constraintContainerBroadMatchView?.setPadding(0, paddingTop, 0, paddingBottom)
     }
 }
