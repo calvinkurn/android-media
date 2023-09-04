@@ -979,6 +979,14 @@ abstract class TopchatRoomTest {
             Instrumentation.ActivityResult(Activity.RESULT_OK, null)
         )
     }
+
+    protected fun putProductAttachmentIntent(
+        intent: Intent,
+        listOfProducts: List<String> = listOf(EX_PRODUCT_ID)
+    ) {
+        val stringProductPreviews = CommonUtil.toJson(listOfProducts)
+        intent.putExtra(ApplinkConst.Chat.PRODUCT_PREVIEWS, stringProductPreviews)
+    }
 }
 
 /*

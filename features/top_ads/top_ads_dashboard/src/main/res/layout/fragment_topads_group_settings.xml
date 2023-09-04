@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <com.tokopedia.header.HeaderUnify
+        android:id="@+id/headerGroupSettings"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:unify_header_is_show_back_button="true"
+        app:unify_header_is_show_shadow="false"
+        app:unify_header_title="@string/topads_insight_centre_group_settings" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/featuredProductsCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Produk Terpilih (6)"
+        app:typographyWeight="bold"
+        app:typographyType="display_2"
+        android:textSize="14sp"
+        app:layout_constraintTop_toBottomOf="@id/headerGroupSettings"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/reset"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/featuredProductsCount"
+        android:text="@string/topads_insight_centre_reset"
+        android:layout_marginEnd="16dp"
+        android:textColor="@color/Unify_GN500"
+        app:typographyType="display_2"
+        app:typographyWeight="bold"
+        android:textSize="14sp"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/productsRv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/featuredProductsCount"
+        android:layout_marginTop="16dp"
+        android:layout_marginHorizontal="16dp"/>
+
+    <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+        android:id="@+id/createNewGroupCta"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/productsRv"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        android:checked="true"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/createNewGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="@id/createNewGroupCta"
+        app:layout_constraintBottom_toBottomOf="@id/createNewGroupCta"
+        app:layout_constraintStart_toEndOf="@id/createNewGroupCta"
+        android:text="@string/topads_insight_centre_create_new_group"
+        app:typographyType="paragraph_2"
+        android:textSize="14sp"
+        android:textAlignment="center"/>
+
+    <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+        android:id="@+id/choseGroupCta"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        app:layout_constraintTop_toTopOf="@id/createNewGroupCta"
+        app:layout_constraintStart_toEndOf="@id/createNewGroup" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/choseGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="@id/choseGroupCta"
+        app:layout_constraintBottom_toBottomOf="@id/choseGroupCta"
+        app:layout_constraintStart_toEndOf="@id/choseGroupCta"
+        android:text="@string/topads_insight_centre_add_to_another_group"
+        app:typographyType="paragraph_2"
+        android:textSize="14sp"
+        android:textAlignment="center"/>
+
+    <FrameLayout
+        android:id="@+id/groupSettingsFragmentContainer"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/createNewGroupCta"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="16dp"
+        android:layout_marginHorizontal="16dp"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -89,6 +89,8 @@ class ShareComponentInstanceBuilder @Inject constructor() {
                 param.promoType == PromoType.FREE_SHIPPING -> ImageGeneratorConstants.CashbackType.NOMINAL
                 param.promoType == PromoType.CASHBACK && param.benefitType == BenefitType.NOMINAL -> ImageGeneratorConstants.CashbackType.NOMINAL
                 param.promoType == PromoType.CASHBACK && param.benefitType == BenefitType.PERCENTAGE -> ImageGeneratorConstants.CashbackType.PERCENTAGE
+                param.promoType == PromoType.DISCOUNT && param.benefitType == BenefitType.NOMINAL -> ImageGeneratorConstants.CashbackType.NOMINAL
+                param.promoType == PromoType.DISCOUNT && param.benefitType == BenefitType.PERCENTAGE -> ImageGeneratorConstants.CashbackType.PERCENTAGE
                 else -> ImageGeneratorConstants.CashbackType.NOMINAL
             }
 
@@ -96,6 +98,8 @@ class ShareComponentInstanceBuilder @Inject constructor() {
                 param.promoType == PromoType.FREE_SHIPPING -> param.discountAmount
                 param.promoType == PromoType.CASHBACK && param.benefitType == BenefitType.NOMINAL -> param.discountAmount
                 param.promoType == PromoType.CASHBACK && param.benefitType == BenefitType.PERCENTAGE -> param.discountAmountMax
+                param.promoType == PromoType.DISCOUNT && param.benefitType == BenefitType.NOMINAL -> param.discountAmount
+                param.promoType == PromoType.DISCOUNT && param.benefitType == BenefitType.PERCENTAGE -> param.discountAmountMax
                 else -> param.discountAmount
             }
 
