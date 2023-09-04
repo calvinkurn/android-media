@@ -621,7 +621,7 @@ class CartRevampFragment :
             if (isClickable) {
                 binding?.vDisabledGoToCourierPageButton?.setOnClickListener {
                     if (CartDataHelper.getAllAvailableCartItemData(viewModel.cartDataList.value)
-                        .isNotEmpty()
+                            .isNotEmpty()
                     ) {
                         showToastMessageGreen(getString(R.string.message_no_cart_item_selected))
                     }
@@ -1395,7 +1395,8 @@ class CartRevampFragment :
                 AddOnConstant.QUERY_PARAM_CART_ID to cartId,
                 AddOnConstant.QUERY_PARAM_SELECTED_ADDON_IDS to addOnIds.toString().replace("[", "")
                     .replace("]", ""),
-                AddOnConstant.QUERY_PARAM_DESELECTED_ADDON_IDS to deselectAddOnIds.toString().replace("[", "").replace("]", ""),
+                AddOnConstant.QUERY_PARAM_DESELECTED_ADDON_IDS to deselectAddOnIds.toString()
+                    .replace("[", "").replace("]", ""),
                 AddOnConstant.QUERY_PARAM_PAGE_ATC_SOURCE to AddOnConstant.SOURCE_NORMAL_CHECKOUT,
                 AddOnConstant.QUERY_PARAM_WAREHOUSE_ID to cartItemData.warehouseId,
                 AddOnConstant.QUERY_PARAM_IS_TOKOCABANG to cartItemData.isFulfillment,
@@ -3011,7 +3012,12 @@ class CartRevampFragment :
                 var newAddOnWording = ""
                 if (addOnProductDataResult.aggregatedData.title.isNotEmpty()) {
                     newAddOnWording =
-                        "${addOnProductDataResult.aggregatedData.title} <b>(${CurrencyFormatUtil.convertPriceValueToIdrFormat(addOnProductDataResult.aggregatedData.price, false).removeDecimalSuffix()})</b>"
+                        "${addOnProductDataResult.aggregatedData.title} <b>(${
+                            CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                                addOnProductDataResult.aggregatedData.price,
+                                false
+                            ).removeDecimalSuffix()
+                        })</b>"
                 }
 
                 viewModel.updateAddOnByCartId(
@@ -3033,8 +3039,11 @@ class CartRevampFragment :
                 data?.getBooleanExtra(KEY_IS_CHANGE_VARIANT, false) ?: false
             val toBeDeletedBundleGroupId = viewModel.cartModel.toBeDeletedBundleGroupId
             if (((oldBundleId.isNotBlank() && newBundleId.isNotBlank() && oldBundleId != newBundleId) || isChangeVariant) && toBeDeletedBundleGroupId.isNotEmpty()) {
-                val cartItems =
-                    viewModel.getCartItemByBundleGroupId(oldBundleId, toBeDeletedBundleGroupId)
+                val cartItems = CartDataHelper.getCartItemByBundleGroupId(
+                    viewModel.cartDataList.value,
+                    oldBundleId,
+                    toBeDeletedBundleGroupId
+                )
                 viewModel.cartModel.toBeDeletedBundleGroupId = ""
                 if (cartItems.isNotEmpty()) {
                     viewModel.processDeleteCartItem(
@@ -3538,7 +3547,7 @@ class CartRevampFragment :
 
             val onClickListener: (applied: Boolean) -> Unit = { applied ->
                 if (CartDataHelper.getSelectedCartItemData(viewModel.cartDataList.value)
-                    .isEmpty()
+                        .isEmpty()
                 ) {
                     showToastMessageGreen(getString(R.string.promo_choose_item_cart))
                     PromoRevampAnalytics.eventCartViewPromoMessage(getString(R.string.promo_choose_item_cart))
@@ -3567,7 +3576,7 @@ class CartRevampFragment :
             } else {
                 isApplied = false
                 if (CartDataHelper.getSelectedCartItemData(viewModel.cartDataList.value)
-                    .isEmpty()
+                        .isEmpty()
                 ) {
                     binding?.promoCheckoutBtnCart?.showInactive(
                         getString(R.string.promo_desc_no_selected_item),
@@ -3770,8 +3779,12 @@ class CartRevampFragment :
         } else {
             val quantityNumber = qty.toIntOrZero()
             val reachMaximumLimit = quantityNumber > QUANTITY_MAX_LIMIT
-            val stringResourceId = if (reachMaximumLimit) R.string.cart_item_button_checkout_count_format_reach_maximum_limit else R.string.cart_item_button_checkout_count_format
-            String.format(getString(stringResourceId), quantityNumber.coerceAtMost(QUANTITY_MAX_LIMIT))
+            val stringResourceId =
+                if (reachMaximumLimit) R.string.cart_item_button_checkout_count_format_reach_maximum_limit else R.string.cart_item_button_checkout_count_format
+            String.format(
+                getString(stringResourceId),
+                quantityNumber.coerceAtMost(QUANTITY_MAX_LIMIT)
+            )
         }
         if (totalPriceString == "-") {
             onCartDataDisableToCheckout()
@@ -4235,9 +4248,9 @@ class CartRevampFragment :
         plusCoachMark?.dismissCoachMark()
         mainFlowCoachMark?.dismissCoachMark()
         if ((
-            viewModel.cartModel.cartListData?.onboardingData?.size
-                ?: 0
-            ) < BULK_ACTION_ONBOARDING_MIN_QUANTITY_INDEX
+                viewModel.cartModel.cartListData?.onboardingData?.size
+                    ?: 0
+                ) < BULK_ACTION_ONBOARDING_MIN_QUANTITY_INDEX
         ) {
             return
         }

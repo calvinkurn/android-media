@@ -293,6 +293,32 @@ object CartDataHelper {
         return cartItemDataList
     }
 
+    fun getCartItemByBundleGroupId(
+        cartDataList: ArrayList<Any>,
+        bundleId: String,
+        bundleGroupId: String
+    ): List<CartItemHolderData> {
+        val cartItemHolderDataList = mutableListOf<CartItemHolderData>()
+        loop@ for (data in cartDataList) {
+            if (cartItemHolderDataList.isNotEmpty()) {
+                break@loop
+            }
+            when (data) {
+                is CartGroupHolderData -> {
+                    data.productUiModelList.forEach { cartItemHolderData ->
+                        if (cartItemHolderData.isBundlingItem && cartItemHolderData.bundleId == bundleId && cartItemHolderData.bundleGroupId == bundleGroupId) {
+                            cartItemHolderDataList.add(cartItemHolderData)
+                        }
+                    }
+                }
+
+                hasReachAllShopItems(data) -> break@loop
+            }
+        }
+
+        return cartItemHolderDataList
+    }
+
     fun hasReachAllShopItems(data: Any): Boolean {
         return data is CartRecentViewHolderData ||
             data is CartWishlistHolderData ||

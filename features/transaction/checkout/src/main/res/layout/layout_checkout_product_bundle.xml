@@ -70,7 +70,7 @@
         android:layout_width="2dp"
         android:layout_height="0dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="12dp"
         android:background="@color/Unify_NN50"
         android:fillViewport="true"
         android:visibility="visible"
@@ -84,7 +84,7 @@
         android:layout_width="56dp"
         android:layout_height="56dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="12dp"
         android:foreground="@drawable/checkout_module_bg_product_image"
         app:layout_constraintStart_toEndOf="@+id/v_bundling_product_separator"
         app:layout_constraintTop_toBottomOf="@id/tv_checkout_bundle_price">

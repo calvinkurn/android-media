@@ -52,7 +52,6 @@ class CheckoutAddOnProcessor @Inject constructor(
                         }
                         setPrescriptionIds(prescriptionIds, listData)
                         uploadPrescriptionUiModel.isError = false
-//                            view?.updateUploadPrescription(uploadPrescriptionUiModel)
                     }
                 } catch (e: Throwable) {
                     Timber.d(e)
@@ -462,7 +461,6 @@ class CheckoutAddOnProcessor @Inject constructor(
     fun validatePrescriptionOnBackPressed(uploadPrescriptionUiModel: UploadPrescriptionUiModel): Boolean {
         if (uploadPrescriptionUiModel.showImageUpload) {
             if (uploadPrescriptionUiModel.uploadedImageCount > 0 || uploadPrescriptionUiModel.hasInvalidPrescription) {
-//                view!!.showPrescriptionReminderDialog(uploadPrescriptionUiModel)
                 return false
             }
         }
