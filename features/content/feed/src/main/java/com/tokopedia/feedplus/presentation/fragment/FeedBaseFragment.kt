@@ -571,6 +571,7 @@ class FeedBaseFragment :
         }
 
         binding.containerFeedTopNav.btnFeedBrowse.setOnClickListener {
+            feedNavigationAnalytics.sendClickBrowseIconEvent()
             openAppLink.launch(meta.browseApplink)
         }
 

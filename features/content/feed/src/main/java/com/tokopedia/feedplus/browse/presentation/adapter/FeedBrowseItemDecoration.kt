@@ -11,12 +11,14 @@ import androidx.recyclerview.widget.RecyclerView
  */
 class FeedBrowseItemDecoration(
     private val context: Context,
-    @DimenRes spacing: Int
+    @DimenRes spacingHorizontal: Int,
+    @DimenRes spacingTop: Int,
 ) : RecyclerView.ItemDecoration() {
 
     private val spacingStart = getDimensionInPixel(com.tokopedia.feedplus.R.dimen.feed_space_16)
     private val spacingEnd = getDimensionInPixel(com.tokopedia.feedplus.R.dimen.feed_space_16)
-    private val spacingInPixel = getDimensionInPixel(spacing)
+    private val spacingHorizontalPx = getDimensionInPixel(spacingHorizontal)
+    private val spacingTopPx = getDimensionInPixel(spacingTop)
 
     private fun getDimensionInPixel(@DimenRes dimen: Int): Int {
         return context.resources.getDimensionPixelOffset(dimen)
@@ -28,11 +30,13 @@ class FeedBrowseItemDecoration(
         parent: RecyclerView,
         state: RecyclerView.State
     ) {
-        outRect.left = if (isPositionStart(parent, view)) spacingStart else spacingInPixel
+        outRect.left = if (isPositionStart(parent, view)) spacingStart else spacingHorizontalPx
 
         if (isPositionEnd(parent, view, state)) {
             outRect.right = spacingEnd
         }
+
+        outRect.top = spacingTopPx
     }
 
     private fun isPositionStart(parent: RecyclerView, view: View): Boolean {

@@ -3,8 +3,10 @@ package com.tokopedia.play.widget.ui.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import com.tokopedia.kotlin.extensions.view.gone
+import android.widget.LinearLayout
 import com.tokopedia.play.widget.databinding.ViewPlayWidgetCardChannelBinding
+import com.tokopedia.play.widget.ui.custom.PlayLiveBadgeView
+import com.tokopedia.play.widget.ui.custom.PlayTotalWatchBadgeView
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.play_common.view.RoundedConstraintLayout
@@ -22,24 +24,80 @@ class PlayWidgetCardView : RoundedConstraintLayout {
 
     private var mListener: Listener? = null
 
+    private val dp4 = context.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2)
+
     fun setListener(listener: Listener) {
         mListener = listener
     }
 
     fun setData(data: PlayWidgetChannelUiModel) {
         binding.viewPlayWidgetThumbnail.setImageUrl(data.video.coverUrl)
-        binding.viewPlayWidgetTotalViews.tvTotalViews.text = data.totalView.totalViewFmt
 
         if (data.channelType == PlayWidgetChannelType.Live) {
-            binding.viewPlayWidgetLive.inflate()
+            addLiveBadgeView()
         } else {
-            binding.viewPlayWidgetLive.gone()
+            removeLiveBadgeView()
         }
+
+        addTotalWatchView(data.totalView.totalViewFmt)
+        setupLayout()
 
         binding.root.setOnClickListener {
             mListener?.onCardClicked(this@PlayWidgetCardView, data)
         }
     }
+
+    private val totalWatchView: PlayTotalWatchBadgeView by lazy { PlayTotalWatchBadgeView(binding.root.context) }
+    private val liveBadgeView: PlayLiveBadgeView by lazy { PlayLiveBadgeView(binding.root.context) }
+
+    private fun addTotalWatchView(formattedNumber: String) {
+        with(binding.viewPlayWidgetChildContainer) {
+            val index = indexOfChild(totalWatchView)
+            if (index == -1) {
+                totalWatchView.setTotalWatch(formattedNumber)
+                addView(totalWatchView)
+            }
+        }
+    }
+
+    private fun addLiveBadgeView() {
+        with(binding.viewPlayWidgetChildContainer) {
+            val index = indexOfChild(liveBadgeView)
+            if (index == -1) {
+                addView(liveBadgeView)
+            }
+        }
+    }
+
+    private fun removeLiveBadgeView() {
+        with(binding.viewPlayWidgetChildContainer) {
+            val index = indexOfChild(liveBadgeView)
+            if (index > -1) {
+                removeViewAt(index)
+            }
+        }
+    }
+
+    private fun setupLayout() {
+        with(binding.viewPlayWidgetChildContainer) {
+            val liveBadgeIndex = indexOfChild(liveBadgeView)
+            val totalWatchIndex = indexOfChild(totalWatchView)
+
+            if (liveBadgeIndex != -1 && totalWatchIndex != -1) {
+                totalWatchView.apply {
+                    layoutParams = getDefaultLayoutParams().apply {
+                        leftMargin = dp4
+                    }
+                }
+            }
+        }
+    }
+
+    private fun getDefaultLayoutParams() =
+        LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        )
 
     interface Listener {
 

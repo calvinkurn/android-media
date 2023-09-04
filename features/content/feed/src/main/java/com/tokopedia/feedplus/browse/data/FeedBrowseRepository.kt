@@ -1,5 +1,6 @@
 package com.tokopedia.feedplus.browse.data
 
+import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemUiModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiModel
 
 /**
@@ -11,5 +12,5 @@ interface FeedBrowseRepository {
 
     suspend fun getSlots(): List<FeedBrowseUiModel>
 
-    suspend fun getCards(type: String): FeedBrowseUiModel.Cards
+    suspend fun getWidget(extraParams: Map<String, Any>): FeedBrowseItemUiModel
 }

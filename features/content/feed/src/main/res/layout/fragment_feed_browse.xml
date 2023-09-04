@@ -13,15 +13,6 @@
         app:unify_header_is_show_back_button="true"
         app:unify_header_is_show_shadow="true" />
 
-    <com.tokopedia.unifycomponents.LoaderUnify
-        android:id="@+id/feed_browse_refresh"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/feed_browse_header"
-        app:loader_type="decorative" />
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/feed_browse_list"
         android:layout_width="0dp"

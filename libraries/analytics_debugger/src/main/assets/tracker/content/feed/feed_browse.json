@@ -1,0 +1,104 @@
+{
+  "readme": "Feed Browse - Analytics",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "clickContent",
+      "eventAction": "click - browse icon",
+      "eventCategory": "unified feed",
+      "eventLabel": ".* - .*",
+      "trackerId": "45724",
+      "businessUnit": "content",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris":".*",
+      "userId": ".*"
+    },
+    {
+      "event": "view_item",
+      "eventAction": "view - channel card",
+      "eventCategory": "feed browse page",
+      "eventLabel":"BROWSE_PAGE_FEED - .* - .* - .* - .* - .* - null - .* - .*",
+      "trackerId": "45741",
+      "businessUnit": "content",
+      "currentSite": "tokopediamarketplace",
+      "promotions": [
+        {
+          "creative_name": "\\d+",
+          "creative_slot": "\\d+}",
+          "item_id": ".* - .*",
+          "item_name": "/ - BROWSE_PAGE_FEED - .* - channel card - .*"
+        }
+      ],
+      "sessionIris":".*",
+      "userId": ".*"
+    },
+    {
+      "event": "view_item",
+      "eventAction": "view - chips recom widget",
+      "eventCategory": "feed browse page",
+      "eventLabel": "BROWSE_PAGE_FEED - .* - .*",
+      "trackerId": "45742",
+      "businessUnit": "content",
+      "currentSite": "tokopediamarketplace",
+      "promotions": [
+        {
+          "creative_name": "\\d+",
+          "creative_slot": "\\d+",
+          "item_id": ".* - .*",
+          "item_name": ".*"
+        }
+      ],
+      "sessionIris":".*",
+      "userId": ".*"
+    },
+    {
+      "event": "select_content",
+      "eventAction": "click - channel card",
+      "eventCategory": "feed browse page",
+      "eventLabel":"BROWSE_PAGE_FEED - .* - .* - .* - .* - .* - null - .* - .*",
+      "trackerId": "45743",
+      "businessUnit": "content",
+      "currentSite": "tokopediamarketplace",
+      "promotions": [
+        {
+          "creative_name": "\\d+",
+          "creative_slot": "\\d+",
+          "item_id": ".* - .*",
+          "item_name": "/ - BROWSE_PAGE_FEED - .* - channel card - .*"
+        }
+      ],
+      "sessionIris":".*",
+      "userId": ".*"
+    },
+    {
+      "event": "select_content",
+      "eventAction": "click - chips recom widget",
+      "eventCategory": "feed browse page",
+      "eventLabel": ".* - .* - .*",
+      "trackerId": "45744",
+      "businessUnit": "content",
+      "currentSite": "tokopediamarketplace",
+      "promotions": [
+        {
+          "creative_name": "\\d+",
+          "creative_slot": "\\d+",
+          "item_id": ".* - .*",
+          "item_name": ".*"
+        }
+      ],
+      "sessionIris":".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickHomepage",
+      "eventAction": "click - back exit browse",
+      "eventCategory": "feed browse page",
+      "eventLabel": "BROWSE_PAGE_FEED",
+      "trackerId": "45745",
+      "businessUnit": "content",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris":".*",
+      "userId": ".*"
+    }
+  ]
+}

@@ -31,27 +31,15 @@
         android:background="@drawable/bg_play_widget_top_gradient"
         />
 
-    <ViewStub
-        android:id="@+id/view_play_widget_live"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/play_widget_badge_height"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:inflatedId="@+id/view_play_widget_live"
-        android:layout="@layout/layout_live_badge"
+    <LinearLayout
+        android:id="@+id/view_play_widget_child_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="8dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="gone" />
-
-    <include
-        android:id="@+id/view_play_widget_total_views"
-        layout="@layout/view_play_widget_total_views"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintStart_toEndOf="@id/view_play_widget_live"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_goneMarginStart="8dp" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 </com.tokopedia.play_common.view.RoundedConstraintLayout>

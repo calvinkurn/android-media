@@ -1,13 +1,14 @@
 package com.tokopedia.feedplus.browse.presentation.adapter
 
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
-import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseCardsViewHolder
+import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseChannelViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowsePlaceholderViewHolder
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiModel
-import com.tokopedia.feedplus.databinding.ItemFeedBrowseCardsBinding
+import com.tokopedia.feedplus.databinding.ItemFeedBrowseChannelBinding
 import com.tokopedia.feedplus.databinding.ItemFeedBrowsePlaceholderBinding
 
 /**
@@ -15,41 +16,16 @@ import com.tokopedia.feedplus.databinding.ItemFeedBrowsePlaceholderBinding
  */
 class FeedBrowseAdapterDelegate private constructor() {
 
-    internal class Cards:
-        TypedAdapterDelegate<FeedBrowseUiModel.Cards, FeedBrowseUiModel, FeedBrowseCardsViewHolder>(
-            com.tokopedia.feedplus.R.layout.item_feed_browse_cards
-        ) {
-
-        override fun onBindViewHolder(
-            item: FeedBrowseUiModel.Cards,
-            holder: FeedBrowseCardsViewHolder
-        ) {
-            holder.bind(item)
-        }
-
-        override fun onCreateViewHolder(
-            parent: ViewGroup,
-            basicView: View
-        ): FeedBrowseCardsViewHolder {
-            return FeedBrowseCardsViewHolder(
-                ItemFeedBrowseCardsBinding.inflate(
-                    LayoutInflater.from(parent.context),
-                    parent,
-                    false,
-                )
-            )
-        }
-    }
-
-    internal class Placeholder:
+    internal class Placeholder :
         TypedAdapterDelegate<FeedBrowseUiModel.Placeholder, FeedBrowseUiModel, FeedBrowsePlaceholderViewHolder>(
             com.tokopedia.feedplus.R.layout.item_feed_browse_placeholder
         ) {
+
         override fun onBindViewHolder(
             item: FeedBrowseUiModel.Placeholder,
             holder: FeedBrowsePlaceholderViewHolder
         ) {
-            holder.bind(item)
+            holder.bind(item.type)
         }
 
         override fun onCreateViewHolder(
@@ -60,8 +36,51 @@ class FeedBrowseAdapterDelegate private constructor() {
                 ItemFeedBrowsePlaceholderBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
-                    false,
+                    false
                 )
+            )
+        }
+    }
+
+    internal class Channel(
+        private val listener: FeedBrowseChannelViewHolder.Listener
+    ) :
+        TypedAdapterDelegate<FeedBrowseUiModel.Channel, FeedBrowseUiModel, FeedBrowseChannelViewHolder>(
+            com.tokopedia.feedplus.R.layout.item_feed_browse_channel
+        ) {
+
+        override fun onBindViewHolder(
+            item: FeedBrowseUiModel.Channel,
+            holder: FeedBrowseChannelViewHolder
+        ) {
+            holder.bind(item)
+        }
+
+        override fun onBindViewHolderWithPayloads(
+            item: FeedBrowseUiModel.Channel,
+            holder: FeedBrowseChannelViewHolder,
+            payloads: Bundle
+        ) {
+            if (payloads.getBoolean(FeedBrowseChannelViewHolder.NOTIFY_CHIP_STATE)) {
+                holder.bindChipUiState(item.chipUiState)
+            }
+            if (payloads.getBoolean(FeedBrowseChannelViewHolder.NOTIFY_CHANNEL_STATE)) {
+                holder.bindChannelUiState(item.channelUiState, item)
+            }
+            holder.updateItem(item)
+        }
+
+        override fun onCreateViewHolder(
+            parent: ViewGroup,
+            basicView: View
+        ): FeedBrowseChannelViewHolder {
+            return FeedBrowseChannelViewHolder(
+                ItemFeedBrowseChannelBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                ),
+                listener
             )
         }
     }
