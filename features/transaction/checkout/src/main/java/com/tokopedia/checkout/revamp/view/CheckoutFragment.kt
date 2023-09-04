@@ -1823,7 +1823,7 @@ class CheckoutFragment :
             if (viewModel.useNewPromoPage(lastApplyUiModel)) {
                 val totalAmount = viewModel.listData.value.buttonPayment()!!.totalPriceNum
                 val bottomSheetPromo = PromoUsageBottomSheet.newInstance(
-                    entryPoint = PromoPageEntryPoint.CART_PAGE,
+                    entryPoint = PromoPageEntryPoint.CHECKOUT_PAGE,
                     promoRequest = promoRequestParam,
                     validateUsePromoRequest = validateUseRequestParam,
                     boPromoCodes = viewModel.getBboPromoCodes(),
