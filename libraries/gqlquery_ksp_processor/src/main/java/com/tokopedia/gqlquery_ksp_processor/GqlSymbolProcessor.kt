@@ -107,9 +107,9 @@ class GqlSymbolProcessor(
         } else {
             "listOf(${queryInside.joinToString(",")})"
         }
-
-        outputStream.write(
-            """
+        outputStream.use {
+            it.write(
+                """
                 |package $packageName
                 
                 |import com.tokopedia.gql_query_annotation.GqlQueryInterface
@@ -126,10 +126,9 @@ class GqlSymbolProcessor(
                 
                 |    override fun getTopOperationName(): String = "$topOperationName"
                 |}
-            """.trimMargin().toByteArray()
-        )
-
-        outputStream.close()
+                """.trimMargin().toByteArray()
+            )
+        }
     }
 
     private fun String.formatToSingleLineString(): String {
