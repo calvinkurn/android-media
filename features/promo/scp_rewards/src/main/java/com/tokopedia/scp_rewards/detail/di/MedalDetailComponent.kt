@@ -1,6 +1,7 @@
 package com.tokopedia.scp_rewards.detail.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.scp_rewards.detail.presentation.ui.CouponListFragment
 import com.tokopedia.scp_rewards.detail.presentation.ui.MedalBonusBottomSheet
 import com.tokopedia.scp_rewards.detail.presentation.ui.MedalDetailFragment
 import dagger.Component
@@ -13,4 +14,5 @@ import dagger.Component
 interface MedalDetailComponent {
     fun inject(medalDetailFragment: MedalDetailFragment)
     fun inject(medalBonusBottomSheet: MedalBonusBottomSheet)
+    fun inject(couponListFragment: CouponListFragment)
 }

@@ -12,10 +12,10 @@ import javax.inject.Inject
 
 @GqlQuery("ScpRewardsGetMedaliBenefitGQL", SCP_REWARDS_MEDAL_BENEFIT_QUERY)
 class GetMedalBenefitUseCase @Inject constructor() : GraphqlUseCase<MedalBenefitResponseModel>() {
-    suspend fun getMedalBenefits(medaliSlug: String, sourceName: String, pageName: String): MedalBenefitResponseModel {
+    suspend fun getMedalBenefits(medaliSlug: String, sourceName: String, pageName: String, type: String = ""): MedalBenefitResponseModel {
         setTypeClass(MedalBenefitResponseModel::class.java)
         setGraphqlQuery(ScpRewardsGetMedaliBenefitGQL())
-        setRequestParams(getRequestParams(medaliSlug, sourceName, pageName))
+        setRequestParams(getRequestParams(medaliSlug, sourceName, pageName, type))
         return executeOnBackground()
     }
 
@@ -23,13 +23,13 @@ class GetMedalBenefitUseCase @Inject constructor() : GraphqlUseCase<MedalBenefit
         private const val MEDALI_SLUG_KEY = "medaliSlug"
     }
 
-    private fun getRequestParams(medaliSlug: String, sourceName: String, pageName: String, type:String = "") = mapOf(
-        PAGE_NAME_PARAM to pageName,
-        MEDALI_SLUG_KEY to medaliSlug,
-        SOURCE_NAME_PARAM to sourceName,
-        TYPE_PARAM to type,
-        PAGE_PARAM to 1,
-        PAGESIZE_PARAM to 1
+    private fun getRequestParams(medaliSlug: String, sourceName: String, pageName: String, type: String, pageNumber: Int = 1, pageSize: Int = 1) = mapOf(
+            PAGE_NAME_PARAM to pageName,
+            MEDALI_SLUG_KEY to medaliSlug,
+            SOURCE_NAME_PARAM to sourceName,
+            TYPE_PARAM to type,
+            PAGE_PARAM to pageNumber,
+            PAGESIZE_PARAM to pageSize
     )
 }
 

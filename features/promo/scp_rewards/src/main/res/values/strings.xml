@@ -9,4 +9,7 @@
     <string name="error_non_whitelisted_user_title">Medali-nya belum siap, nih</string>
     <string name="error_non_whitelisted_user_description">Pantau aja terus, ya. Nanti kita bakal kabarin kalau sudah tersedia buat kamu!</string>
     <string name="error_non_whitelisted_user_action">Ke Halaman Utama</string>
+    <string name="title_medali_bonus">Medali Bonus</string>
+    <string name="title_active">Active (%d)</string>
+    <string name="title_history">History (0)</string>
 </resources>

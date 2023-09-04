@@ -11,6 +11,7 @@ import com.google.android.material.card.MaterialCardView
 import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.shape.ShapeAppearanceModel
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.scp_rewards_common.dpToPx
 import com.tokopedia.scp_rewards_common.grayScaleFilter
@@ -22,9 +23,9 @@ import com.tokopedia.unifyprinciples.R as unifyPrinciplesR
 
 @SuppressLint("RestrictedApi")
 class CouponViewCard @JvmOverloads constructor(
-    context: Context,
-    attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0
+        context: Context,
+        attrs: AttributeSet? = null,
+        defStyleAttr: Int = 0
 ) : MaterialCardView(context, attrs, defStyleAttr) {
 
     private var binding = ItemCouponLayoutBinding.inflate(LayoutInflater.from(context), this)
@@ -36,34 +37,34 @@ class CouponViewCard @JvmOverloads constructor(
 
     private fun applyEdgeTreatment(infoColor: Int) {
         val edgeTreatment = CouponCardEdgeTreatment(
-            context,
-            horizontalOffset = (binding.divider.top - SCALLOP_RADIUS).toFloat()
+                context,
+                horizontalOffset = (binding.divider.top - SCALLOP_RADIUS).toFloat()
         )
-            .apply {
-                scallopDiameter = (2 * SCALLOP_RADIUS).toFloat()
-            }
+                .apply {
+                    scallopDiameter = (2 * SCALLOP_RADIUS).toFloat()
+                }
 
         shapeAppearanceModel = ShapeAppearanceModel.Builder()
-            .setRightEdge(edgeTreatment)
-            .setAllCornerSizes(dpToPx(context, CORNER_RADIUS))
-            .build()
+                .setRightEdge(edgeTreatment)
+                .setAllCornerSizes(dpToPx(context, CORNER_RADIUS))
+                .build()
 
         val shapeDrawable = MaterialShapeDrawable(shapeAppearanceModel)
         shapeDrawable.setTint(infoColor)
 
         val innerShapeDrawable = MaterialShapeDrawable(shapeAppearanceModel)
-            .apply {
-                setTint(ContextCompat.getColor(context, unifyPrinciplesR.color.Unify_NN0))
-            }
+                .apply {
+                    setTint(ContextCompat.getColor(context, unifyPrinciplesR.color.Unify_NN0))
+                }
 
         background = shapeDrawable
         binding.layoutDetails.background = innerShapeDrawable
     }
 
     fun setData(
-        data: MedalBenefitModel,
-        onApplyClick: (MedalBenefitModel) -> Unit = {},
-        onCardTap: ((MedalBenefitModel) -> Unit)? = null
+            data: MedalBenefitModel,
+            onApplyClick: (MedalBenefitModel) -> Unit = {},
+            onCardTap: ((MedalBenefitModel) -> Unit)? = null
     ) {
         with(binding) {
             tvTitle.text = data.title
@@ -83,6 +84,8 @@ class CouponViewCard @JvmOverloads constructor(
             applyColorToDrawable(data.typeBackgroundColor)
             tvExpiryLabel.text = data.statusDescription
             tvInfo.text = data.additionalInfoText
+
+            updateLoadingStatus(data.isLoading)
 
             if (data.isActive) {
                 btnApply.visible()
@@ -116,6 +119,14 @@ class CouponViewCard @JvmOverloads constructor(
                 }
                 applyEdgeTreatment(additionalInfoColor)
             }
+        }
+    }
+
+    fun showHideInfo(toShow: Boolean) {
+        if (toShow) {
+            binding.tvInfo.visible()
+        } else {
+            binding.tvInfo.hide()
         }
     }
 

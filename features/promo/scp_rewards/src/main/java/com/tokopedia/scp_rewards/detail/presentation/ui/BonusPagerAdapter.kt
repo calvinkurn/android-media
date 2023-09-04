@@ -1,31 +1,22 @@
 package com.tokopedia.scp_rewards.detail.presentation.ui
 
-import android.view.View
-import android.view.ViewGroup
-import androidx.viewpager.widget.PagerAdapter
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentPagerAdapter
+import com.tokopedia.scp_rewards.detail.domain.model.CouponList
 
-private const val POSITION_ACTIVE = 0
-private const val POSITION_HISTORY = 1
-
-class BonusPagerAdapter : PagerAdapter() {
-
-    override fun instantiateItem(container: ViewGroup, position: Int): Any {
-        return when (position) {
-            POSITION_ACTIVE -> {
-
-            }
-            POSITION_HISTORY -> {
-
-            }
-            else -> {  }
-        }
+class BonusPagerAdapter(
+        private val couponList: List<CouponList>,
+        fragmentManager: FragmentManager) :
+        FragmentPagerAdapter(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+    override fun getCount(): Int {
+        return couponList.size
     }
 
-    override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
-        container.removeView(`object` as View)
+    override fun getItem(position: Int): Fragment {
+        val couponData = couponList[position]
+        return CouponListFragment.newInstance(
+                pageStatus = couponData.status,
+                list = couponData.list)
     }
-
-    override fun isViewFromObject(view: View, `object`: Any) = view === `object`
-
-    override fun getCount() = 2
 }
