@@ -94,7 +94,7 @@ class BitmapCropping constructor(
 
         return Bitmap.createBitmap(
             bitmap,
-            offsetX.roundToInt(),
+            (offsetX.roundToInt() + (newW - (newH * 3 / 2).roundToInt()) / 2).roundToInt(),
             offsetY.roundToInt(),
             (newH * 3 / 2).roundToInt(),
             newH.roundToInt()
