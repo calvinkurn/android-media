@@ -49,7 +49,8 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleAdapterListener {
     private var rvBundles: RecyclerView? = null
     private var pageSource: String = ""
     private var productId: String = ""
-    private val bundleAdapter = ProductBundleWidgetAdapter()
+    private var isOverrideWidgetTheme: Boolean = false
+    private var bundleAdapter: ProductBundleWidgetAdapter? = null
     private var listener: ProductBundleWidgetListener? = null
     private var startActivityResult: ((intent: Intent, requestCode: Int) -> Unit)? = null
 
@@ -98,12 +99,22 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleAdapterListener {
         bundlePosition: Int
     ) {
         if (startActivityResult != null) {
-            val intent = RouteManager.getIntent(context, PRODUCT_BUNDLE_APPLINK_WITH_PARAM, PRODUCT_ID_DEFAULT_VALUE,
-                selectedBundle.bundleId, pageSource)
+            val intent = RouteManager.getIntent(
+                context,
+                PRODUCT_BUNDLE_APPLINK_WITH_PARAM,
+                PRODUCT_ID_DEFAULT_VALUE,
+                selectedBundle.bundleId,
+                pageSource
+            )
             startActivityResult?.invoke(intent, PRODUCT_BUNDLE_REQUEST_CODE)
         } else {
-            RouteManager.route(context, PRODUCT_BUNDLE_APPLINK_WITH_PARAM, PRODUCT_ID_DEFAULT_VALUE,
-                selectedBundle.bundleId, pageSource)
+            RouteManager.route(
+                context,
+                PRODUCT_BUNDLE_APPLINK_WITH_PARAM,
+                PRODUCT_ID_DEFAULT_VALUE,
+                selectedBundle.bundleId,
+                pageSource
+            )
         }
         listener?.onSingleBundleActionButtonClicked(selectedBundle, bundleProducts, bundlePosition)
     }
@@ -162,7 +173,7 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleAdapterListener {
         val lifecycleOwner = context as? LifecycleOwner
         lifecycleOwner?.run {
             viewModel.bundleUiModels.observe(this) {
-                bundleAdapter.updateDataSet(it)
+                bundleAdapter?.updateDataSet(it)
             }
             viewModel.error.observe(this) {
                 listener?.onError(it)
@@ -193,17 +204,18 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleAdapterListener {
     }
 
     private fun setupItems(rvBundles: RecyclerView) {
+        bundleAdapter = ProductBundleWidgetAdapter(isOverrideWidgetTheme)
         rvBundles.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             adapter = bundleAdapter
-            bundleAdapter.setListener(this@ProductBundleWidgetView)
+            bundleAdapter?.setListener(this@ProductBundleWidgetView)
         }
     }
 
     private fun adjustPadding(rvBundles: RecyclerView) {
         tfTitle?.setMargin(paddingStart, paddingTop, paddingEnd, 0)
         rvBundles.setPadding(paddingStart - PADDING_START_ADJUSTMENT_RV.toPx(), 0, paddingEnd, paddingBottom)
-        setPadding(0,0,0,0)
+        setPadding(0, 0, 0, 0)
     }
 
     private fun initInjector() {
@@ -233,12 +245,22 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleAdapterListener {
     ) {
         val fixedProductId = if (productId.isNotEmpty()) productId else PRODUCT_ID_DEFAULT_VALUE
         if (startActivityResult != null) {
-            val intent = RouteManager.getIntent(context, PRODUCT_BUNDLE_APPLINK_WITH_PARAM, fixedProductId,
-                selectedMultipleBundle.bundleId, pageSource)
+            val intent = RouteManager.getIntent(
+                context,
+                PRODUCT_BUNDLE_APPLINK_WITH_PARAM,
+                fixedProductId,
+                selectedMultipleBundle.bundleId,
+                pageSource
+            )
             startActivityResult?.invoke(intent, PRODUCT_BUNDLE_REQUEST_CODE)
         } else {
-            RouteManager.route(context, PRODUCT_BUNDLE_APPLINK_WITH_PARAM, fixedProductId,
-                selectedMultipleBundle.bundleId, pageSource)
+            RouteManager.route(
+                context,
+                PRODUCT_BUNDLE_APPLINK_WITH_PARAM,
+                fixedProductId,
+                selectedMultipleBundle.bundleId,
+                pageSource
+            )
         }
         if (bundlePosition == INVALID_POSITION) {
             listener?.onMultipleBundleActionButtonClicked(
@@ -266,6 +288,10 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleAdapterListener {
         this.listener = listener
     }
 
+    fun setIsOverrideWidgetTheme(isOverrideWidgetTheme: Boolean) {
+        this.isOverrideWidgetTheme = isOverrideWidgetTheme
+    }
+
     fun startActivityResult(startActivityResult: (intent: Intent, requestCode: Int) -> Unit) {
         this.startActivityResult = startActivityResult
     }
@@ -285,5 +311,4 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleAdapterListener {
             FirebaseCrashlytics.getInstance().recordException(e)
         }
     }
-
 }
