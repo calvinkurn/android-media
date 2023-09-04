@@ -24,6 +24,7 @@ import com.otaliastudios.cameraview.CameraOptions
 import com.otaliastudios.cameraview.CameraUtils
 import com.otaliastudios.cameraview.FileCallback
 import com.otaliastudios.cameraview.PictureResult
+import com.otaliastudios.cameraview.controls.Flash
 import com.otaliastudios.cameraview.engine.CameraEngine
 import com.otaliastudios.cameraview.size.Size
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -182,6 +183,8 @@ class HomeCreditCameraV2Fragment(
             binding?.camera?.clearCameraListeners()
             cameraListener?.let { binding?.camera?.addCameraListener(it) }
             binding?.camera?.facing = cameraDetail.cameraFacing
+            binding?.camera?.flash = Flash.OFF
+            binding?.camera?.useDeviceOrientation = false
             binding?.camera?.open()
         } catch (e: Throwable) {
             Timber.e(e)
