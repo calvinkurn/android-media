@@ -64,7 +64,7 @@ object ShopFlashSaleMapper {
             val trackingModel = currentDataModel.channelModel.trackingAttributionModel
             val carouselList = mutableListOf<Visitable<CommonCarouselProductCardTypeFactory>>().apply {
                 addAll(getProducts(recomWidget, trackingModel))
-                add(getViewAllCard(trackingModel, recomWidget.seeMoreAppLink))
+                add(getViewAllCard(trackingModel, recomWidget.seeMoreAppLink, currentDataModel))
             }
             currentDataModel.copy(
                 itemList = carouselList,
@@ -108,13 +108,14 @@ object ShopFlashSaleMapper {
     private fun getViewAllCard(
         trackingModel: TrackingAttributionModel,
         seeMoreAppLink: String,
+        currentDataModel: ShopFlashSaleWidgetDataModel,
     ): CarouselViewAllCardDataModel {
         val viewAllCardTitle = if(seeMoreAppLink.isEmpty())
             VIEW_ALL_CARD_TITLE_BELOW_THRESHOLD
         else VIEW_ALL_CARD_TITLE_ABOVE_THRESHOLD
         return CarouselViewAllCardDataModel(
             trackingAttributionModel = trackingModel,
-            applink = seeMoreAppLink,
+            applink = currentDataModel.tabList.firstOrNull { it.isActivated }?.channelGrid?.applink.orEmpty(),
             channelViewAllCard = ChannelViewAllCard(
                 title = viewAllCardTitle,
             ),
