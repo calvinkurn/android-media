@@ -10,6 +10,7 @@ import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.localizationchooseaddress.common.ChosenAddress
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
+import com.tokopedia.network.constant.TkpdBaseURL.Promo
 import com.tokopedia.promousage.data.request.ClearCacheAutoApplyStackParam
 import com.tokopedia.promousage.data.request.GetPromoListRecommendationParam
 import com.tokopedia.promousage.data.request.ValidateUsePromoUsageParam
@@ -353,11 +354,10 @@ internal class PromoUsageViewModel @Inject constructor(
         )
     }
 
-    fun loadPromoListWithPreSelectedPromo(
+    fun loadPromoListWithPreSelectedGopayLaterPromo(
         promoRequest: PromoRequest? = null,
         chosenAddress: ChosenAddress? = null,
         attemptedPromoCode: String = "",
-        preSelectPromoCode: String = ""
     ) {
         _promoPageUiState.postValue(PromoPageUiState.Initial)
         loadPromoList(
@@ -365,13 +365,12 @@ internal class PromoUsageViewModel @Inject constructor(
             chosenAddress = chosenAddress,
             attemptedPromoCode = attemptedPromoCode
         ) {
-            if (preSelectPromoCode.isNotBlank()) {
-                val pageState = _promoPageUiState.value
-                if (pageState is PromoPageUiState.Success) {
-                    val preSelectedPromo = pageState.items.getPromoByCode(preSelectPromoCode)
-                    if (preSelectedPromo != null) {
-                        onClickPromo(preSelectedPromo)
-                    }
+            _promoPageUiState.ifSuccess { pageState ->
+                val gopayLaterPromo = pageState.items
+                    .firstOrNull { item -> item is PromoItem
+                        && item.couponType.firstOrNull { type -> type == PromoItem.COUPON_TYPE_GOPAY_LATER_CICIL } != null } as? PromoItem
+                if (gopayLaterPromo != null) {
+                    onClickPromo(gopayLaterPromo)
                 }
             }
         }
