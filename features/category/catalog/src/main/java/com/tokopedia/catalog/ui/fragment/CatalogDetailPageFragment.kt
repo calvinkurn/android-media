@@ -9,9 +9,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.catalog.databinding.FragmentCatalogReimagineDetailPageBinding
 import com.tokopedia.catalog.di.DaggerCatalogComponent
 import com.tokopedia.catalog.ui.model.NavigationProperties
@@ -20,13 +21,6 @@ import com.tokopedia.catalogcommon.adapter.CatalogAdapterFactoryImpl
 import com.tokopedia.catalogcommon.adapter.WidgetCatalogAdapter
 import com.tokopedia.catalogcommon.customview.CatalogToolbar
 import com.tokopedia.catalogcommon.listener.HeroBannerListener
-import com.tokopedia.catalogcommon.uimodel.AccordionInformationUiModel
-import com.tokopedia.catalogcommon.uimodel.DummyUiModel
-import com.tokopedia.catalogcommon.uimodel.PanelImageUiModel
-import com.tokopedia.catalogcommon.uimodel.SliderImageTextUiModel
-import com.tokopedia.catalogcommon.uimodel.StickyNavigationUiModel
-import com.tokopedia.catalogcommon.uimodel.TopFeaturesUiModel
-import com.tokopedia.catalogcommon.uimodel.TrustMakerUiModel
 import com.tokopedia.catalogcommon.util.DrawableExtension
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -89,6 +83,9 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener {
         if (arguments != null) {
             val catalogId = requireArguments().getString(ARG_EXTRA_CATALOG_ID, "")
             viewModel.getProductCatalog(catalogId, "", "", "android")
+        }
+        binding?.globalerrorsAction?.setOnClickListener {
+            RouteManager.route(context, ApplinkConst.DISCOVERY_CATALOG_PRODUCT_LIST)
         }
     }
 

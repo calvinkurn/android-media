@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.oldcatalog.ui.fragment.CatalogAllReviewFragment
 import com.tokopedia.oldcatalog.ui.fragment.CatalogDetailPageFragment as OldCatalogDetailPageFragment
 import com.tokopedia.catalog.ui.fragment.CatalogDetailPageFragment
+import com.tokopedia.catalog.ui.fragment.CatalogProductListFragment
 import com.tokopedia.oldcatalog.ui.fragment.CatalogDetailProductListingFragment
 import com.tokopedia.oldcatalog.ui.fragment.CatalogProductComparisonFragment
 import com.tokopedia.oldcatalog.viewholder.products.CatalogForYouContainerViewHolder
@@ -23,4 +24,6 @@ interface CatalogComponent {
 
     // new
     fun inject(catalogDetailPageFragment: CatalogDetailPageFragment)
+    fun inject(catalogProductListFragment: CatalogProductListFragment)
+
 }
