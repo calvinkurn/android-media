@@ -4886,11 +4886,7 @@ class CartRevampFragment :
         }
     }
 
-    override fun onBmGmTickerReloadClicked(offerId: Long) {
-        val pairCartItemHolderData = cartAdapter.getCartItemHolderDataAndIndexByOfferId(offerId)
-        val cartGroupHolderData = cartAdapter.getCartGroupHolderDataByCartItemHolderData(pairCartItemHolderData.second)
-        if (cartGroupHolderData != null) {
-            getGroupProductTicker(cartGroupHolderData, offerId)
-        }
+    override fun onBmGmTickerReloadClicked() {
+        refreshCartWithSwipeToRefresh()
     }
 }
