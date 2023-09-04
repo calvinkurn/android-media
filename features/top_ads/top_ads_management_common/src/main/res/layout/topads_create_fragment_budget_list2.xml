@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/Unify_Background"
+    tools:ignore="MissingDefaultResource">
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loading"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/coordinator"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/Unify_NN0"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/app_bar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/Unify_NN0"
+            app:elevation="8dp"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.google.android.material.appbar.CollapsingToolbarLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_scrollFlags="scroll|enterAlways">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/Unify_NN0">
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/txtInfo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="16dp"
+                        android:text="Iklan di Pencarian adalah iklan yang tampil di halaman Pencarian calon pembeli. Pelajari"
+                        android:textColor="@color/Unify_NN950"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:typographyType="paragraph_3" />
+
+                    <com.tokopedia.unifycomponents.TextFieldUnify2
+                        android:id="@+id/budget"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="16dp"
+                        app:layout_constraintTop_toBottomOf="@id/txtInfo"
+                        app:unify_text_field_append_text="per klik"
+                        app:unify_text_field_clearable="false"
+                        app:unify_text_field_input_type="number"
+                        app:unify_text_field_label="Biaya Iklan di Pencarian"
+                        app:unify_text_field_label_static="true"
+                        app:unify_text_field_placeholder="Rp 0" />
+
+                    <com.tokopedia.unifycomponents.DividerUnify
+                        android:id="@+id/divider"
+                        android:layout_width="match_parent"
+                        android:layout_height="8dp"
+                        android:layout_marginTop="10dp"
+                        app:layout_constraintTop_toBottomOf="@id/budget" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/selected_keyword"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="20dp"
+                        android:text="@string/topads_common_label_top_ads_keyword"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/divider"
+                        app:typographyType="heading_5" />
+
+                    <com.tokopedia.unifycomponents.ImageUnify
+                        android:id="@+id/info2"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_marginStart="4dp"
+                        app:layout_constraintBottom_toBottomOf="@id/selected_keyword"
+                        app:layout_constraintStart_toEndOf="@id/selected_keyword"
+                        app:layout_constraintTop_toTopOf="@id/selected_keyword" />
+
+                    <com.tokopedia.unifycomponents.DividerUnify
+                        android:id="@+id/div"
+                        android:layout_width="match_parent"
+                        android:layout_height="2dp"
+                        android:layout_marginTop="12dp"
+                        app:layout_constraintTop_toBottomOf="@id/selected_keyword" />
+
+                    <com.tokopedia.unifycomponents.ticker.Ticker
+                        android:id="@+id/ticker"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="16dp"
+                        app:layout_constraintTop_toBottomOf="@id/div"
+                        app:tickerShapeType="loose"
+                        app:tickerType="announcement" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+            <LinearLayout
+                android:id="@+id/keyword_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@color/Unify_NN0"
+                android:orientation="horizontal">
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/selectedKeyword"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_weight="1"
+                    android:text="@string/topads_common_selected_keyword"
+                    app:typographyType="heading_6"
+                    app:typographyWeight="reguler" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/addKeyword"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:text="@string/add_keywords"
+                    android:textColor="@color/Unify_GN500" />
+
+            </LinearLayout>
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/bid_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="24dp"
+            android:background="@color/Unify_NN0"
+            android:clipToPadding="false"
+            android:nestedScrollingEnabled="true"
+            android:paddingBottom="@dimen/dp_120"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            tools:itemCount="4"
+            tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/topads_create_layout_budget_list_item"
+            tools:visibility="visible">
+
+        </androidx.recyclerview.widget.RecyclerView>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:layout_marginBottom="11dp"
+        android:background="@drawable/topads_bg_shader_gray"
+        app:layout_constraintBottom_toTopOf="@id/impressionPerformanceTextSearch" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/Unify_NN0"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/view" />
+
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/impressionPerformanceTextSearch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="Potensi tampil"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/btnNextSearch"
+        app:typographyType="paragraph_3" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/impressionPerformanceValueSearch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="300x"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/impressionPerformanceTextSearch"
+        app:typographyType="paragraph_2"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/impressionPerformanceValueSuffixSearch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="2dp"
+        android:text="/minggu"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintBottom_toBottomOf="@id/impressionPerformanceValueSearch"
+        app:layout_constraintStart_toEndOf="@id/impressionPerformanceValueSearch"
+        app:layout_constraintTop_toTopOf="@id/impressionPerformanceValueSearch"
+        app:typographyType="small"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="2dp"
+        app:icon_name="CHEVRON_UP"
+        app:layout_constraintBottom_toBottomOf="@id/impressionPerformanceValueSearch"
+        app:layout_constraintStart_toEndOf="@id/impressionPerformanceValueSuffixSearch"
+        app:layout_constraintTop_toTopOf="@id/impressionPerformanceValueSearch" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnNextSearch"
+        android:layout_width="140dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="12dp"
+        android:text="@string/lanjutkan"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:unifyButtonSize="medium"
+        app:unifyButtonType="main"
+        app:unifyButtonVariant="filled" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

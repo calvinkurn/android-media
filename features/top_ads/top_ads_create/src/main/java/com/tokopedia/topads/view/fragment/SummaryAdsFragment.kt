@@ -262,14 +262,14 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
     }
 
     private fun setUpInitialValues() {
-        suggestion = (stepperModel?.finalBidPerClick ?: 0) * MULTIPLIER
+        suggestion = (stepperModel?.finalSearchBidPerClick ?: 0) * MULTIPLIER
         minBudget = if (stepperModel?.autoBidState?.isEmpty() != true)
             AUTOBID_DEFUALT_BUDGET
         else
             suggestion
         stepperModel?.dailyBudget = suggestion
         dailyBudget = if (stepperModel?.autoBidState?.isEmpty() == true)
-            (stepperModel?.finalBidPerClick ?: 0) * MULTIPLIER
+            (stepperModel?.finalSearchBidPerClick ?: 0) * MULTIPLIER
         else
             AUTOBID_DEFUALT_BUDGET
         txtDailyBudget?.textFieldInput?.setText(dailyBudget.toString())
@@ -416,7 +416,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
     }
 
     private fun isMinValidation(input: Int): Boolean {
-        return (input < (stepperModel?.finalBidPerClick
+        return (input < (stepperModel?.finalSearchBidPerClick
             ?: 0) * MULTIPLIER && stepperModel?.autoBidState?.isEmpty() == true) ||
                 (input < minBudget && stepperModel?.autoBidState?.isEmpty() != true) && txtDailyBudget?.isVisible == true
     }
@@ -496,9 +496,9 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
             strategies.add(stepperModel?.autoBidState!!)
         } else {
             bidTypeData?.add(TopAdsBidSettingsModel(PRODUCT_SEARCH,
-                stepperModel?.finalBidPerClick?.toFloat()))
+                stepperModel?.finalSearchBidPerClick?.toFloat()))
             bidTypeData?.add(TopAdsBidSettingsModel(PRODUCT_BROWSE,
-                stepperModel?.finalBidPerClick?.toFloat()))
+                stepperModel?.finalSearchBidPerClick?.toFloat()))
             dataMap[BID_TYPE] = bidTypeData
         }
 
@@ -532,7 +532,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
     private fun getProductData(): Bundle {
         val datProduct = Bundle()
         adsItemsList.clear()
-        if (stepperModel?.selectedProductIds?.count() ?: 0 > 0) {
+        if ((stepperModel?.selectedProductIds?.count() ?: 0) > 0) {
             stepperModel?.selectedProductIds?.forEachIndexed { index, _ ->
                 addProducts(index)
             }
