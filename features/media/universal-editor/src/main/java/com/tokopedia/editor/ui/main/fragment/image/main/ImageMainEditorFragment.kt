@@ -14,7 +14,7 @@ import com.tokopedia.editor.ui.main.uimodel.InputTextParam
 import com.tokopedia.editor.ui.main.uimodel.MainEditorEvent
 import com.tokopedia.editor.ui.model.InputTextModel
 import com.tokopedia.editor.ui.widget.DynamicTextCanvasLayout
-import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -31,7 +31,9 @@ class ImageMainEditorFragment @Inject constructor(
 
         lifecycleScope.launchWhenCreated {
             val file = param.get().firstFile.path
-            binding?.imgSample?.loadImage(file)
+            binding?.imgSample?.loadImageWithoutPlaceholder(file) {
+                setErrorDrawable(0)
+            }
         }
     }
 
