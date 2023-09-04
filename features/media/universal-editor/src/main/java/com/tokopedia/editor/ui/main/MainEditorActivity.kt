@@ -3,9 +3,7 @@ package com.tokopedia.editor.ui.main
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
-import androidx.activity.result.ActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentFactory
@@ -17,9 +15,10 @@ import com.tokopedia.editor.ui.EditorFragmentProvider
 import com.tokopedia.editor.ui.EditorFragmentProviderImpl
 import com.tokopedia.editor.ui.main.component.NavigationToolUiComponent
 import com.tokopedia.editor.ui.main.component.PagerContainerUiComponent
+import com.tokopedia.editor.ui.main.uimodel.MainEditorEffect
+import com.tokopedia.editor.ui.main.uimodel.MainEditorEvent
 import com.tokopedia.editor.ui.model.InputTextModel
 import com.tokopedia.editor.ui.text.InputTextActivity
-import com.tokopedia.editor.ui.widget.DynamicTextCanvasView
 import com.tokopedia.picker.common.EXTRA_UNIVERSAL_EDITOR_PARAM
 import com.tokopedia.picker.common.RESULT_UNIVERSAL_EDITOR
 import com.tokopedia.picker.common.UniversalEditorParam
@@ -72,17 +71,9 @@ open class MainEditorActivity : AppCompatActivity(), NavToolbarComponent.Listene
         )
     }
 
-    private val inputTextIntent = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()
-    ) {
-        toolbar.setVisibility(true)
-        navigationTool.setVisibility(true)
-
-        val result = it.data?.getParcelableExtra<InputTextModel>(InputTextActivity.INPUT_TEXT_RESULT)
-
-        if (result?.text?.isNotEmpty() != true) return@registerForActivityResult
-
-        viewModel.setTextState(result)
+    private val inputTextIntent = registerForActivityResult(StartActivityForResult()) {
+        val result = InputTextActivity.result(it)
+        viewModel.onEvent(MainEditorEvent.InputTextResult(result))
     }
 
     private val viewModel: MainEditorViewModel by viewModels { viewModelFactory }
@@ -111,17 +102,28 @@ open class MainEditorActivity : AppCompatActivity(), NavToolbarComponent.Listene
 
     @Suppress("DEPRECATION")
     private fun setDataParam() {
-        val param = intent?.getParcelableExtra<UniversalEditorParam>(
-            EXTRA_UNIVERSAL_EDITOR_PARAM
-        ) ?: error("Please provide the universal media editor parameter.")
+        val param = intent?.getParcelableExtra<UniversalEditorParam>(EXTRA_UNIVERSAL_EDITOR_PARAM)
+            ?: error("Please provide the universal media editor parameter.")
 
-        viewModel.setAction(MainEditorEvent.SetupView(param))
+        viewModel.onEvent(MainEditorEvent.SetupView(param))
     }
 
     private fun initObserver() {
         lifecycleScope.launchWhenCreated {
-            viewModel.state.collect {
-                initView(it)
+            viewModel.mainEditorState.collect(::initView)
+        }
+
+        lifecycleScope.launchWhenCreated {
+            viewModel.uiEffect.collect {
+                when (it) {
+                    is MainEditorEffect.OpenInputText -> {
+                        navigateToInputTextTool(it.model)
+                    }
+                    is MainEditorEffect.ParentToolbarVisibility -> {
+                        toolbar.setVisibility(it.visible)
+                        navigationTool.setVisibility(it.visible)
+                    }
+                }
             }
         }
     }
@@ -134,25 +136,17 @@ open class MainEditorActivity : AppCompatActivity(), NavToolbarComponent.Listene
 
     private fun onToolClicked(@ToolType type: Int) {
         when (type) {
-            ToolType.TEXT -> {
-                toolbar.setVisibility(false)
-                navigationTool.setVisibility(false)
-
-                val intent = InputTextActivity.create(this)
-                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-
-                // TODO: only for development purpose for testing implement previous text state. this will be used on text edit state later
-                intent.putExtra(InputTextActivity.INPUT_TEXT_STATE, viewModel.state.value.model?.image?.texts?.toList()?.firstOrNull()?.second)
-
-                inputTextIntent.launch(intent)
-                this.overridePendingTransition(0,0)
-            }
+            ToolType.TEXT -> viewModel.onEvent(MainEditorEvent.AddInputTextPage)
             ToolType.PLACEMENT -> {}
             ToolType.AUDIO_MUTE -> {}
-            ToolType.TRIM -> {}
             else -> Unit
         }
+    }
+
+    private fun navigateToInputTextTool(model: InputTextModel) {
+        val intent = InputTextActivity.create(this, model)
+        inputTextIntent.launch(intent)
+        overridePendingTransition(0,0)
     }
 
     private fun setupToolbar(param: UniversalEditorParam) {
@@ -183,12 +177,5 @@ open class MainEditorActivity : AppCompatActivity(), NavToolbarComponent.Listene
         ModuleInjector
             .get(this)
             .inject(this)
-    }
-
-    private fun getRandomString(length: Int) : String {
-        val allowedChars = ('A'..'Z') + ('a'..'z') + ('0'..'9')
-        return (1..length)
-            .map { allowedChars.random() }
-            .joinToString("")
     }
 }

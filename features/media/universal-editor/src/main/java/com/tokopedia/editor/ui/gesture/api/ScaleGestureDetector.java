@@ -1,4 +1,4 @@
-package com.tokopedia.editor.ui.gesture.java;
+package com.tokopedia.editor.ui.gesture.api;
 
 import android.view.MotionEvent;
 import android.view.View;

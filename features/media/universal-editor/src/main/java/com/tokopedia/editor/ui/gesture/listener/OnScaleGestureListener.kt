@@ -1,7 +1,7 @@
 package com.tokopedia.editor.ui.gesture.listener
 
 import android.view.View
-import com.tokopedia.editor.ui.gesture.java.ScaleGestureDetector
+import com.tokopedia.editor.ui.gesture.api.ScaleGestureDetector
 
 interface OnScaleGestureListener {
 

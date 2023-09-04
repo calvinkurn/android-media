@@ -3,6 +3,7 @@ package com.tokopedia.editor.ui.text
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.result.ActivityResult
 import androidx.activity.viewModels
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProvider
@@ -12,6 +13,7 @@ import com.tokopedia.editor.di.ModuleInjector
 import com.tokopedia.editor.ui.EditorFragmentProvider
 import com.tokopedia.editor.ui.EditorFragmentProviderImpl
 import com.tokopedia.editor.ui.model.InputTextModel
+import com.tokopedia.editor.util.FontAlignment
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.component.NavToolbarComponent
 import com.tokopedia.picker.common.component.ToolbarTheme
@@ -67,9 +69,7 @@ class InputTextActivity : BaseActivity(), NavToolbarComponent.Listener {
     }
 
     private fun initState() {
-        intent?.getParcelableExtra<InputTextModel>(
-            INPUT_TEXT_STATE
-        )?.let {
+        intent?.getParcelableExtra<InputTextModel>(EXTRA_INPUT_TEXT_MODEL)?.let {
             var selectedColor = it.textColor
 
             it.backgroundColor?.let { backgroundColor ->
@@ -135,11 +135,19 @@ class InputTextActivity : BaseActivity(), NavToolbarComponent.Listener {
     }
 
     companion object {
-        const val INPUT_TEXT_RESULT = "input_text_result"
-        const val INPUT_TEXT_STATE = "input_text_state"
+        private const val INPUT_TEXT_RESULT = "input_text_result"
+        private const val EXTRA_INPUT_TEXT_MODEL = "extra_input_text_model"
 
-        fun create(context: Context): Intent {
-            return Intent(context, InputTextActivity::class.java)
+        fun create(context: Context, model: InputTextModel): Intent {
+            return Intent(context, InputTextActivity::class.java).also {
+                it.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+                it.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                it.putExtra(EXTRA_INPUT_TEXT_MODEL, model)
+            }
+        }
+
+        fun result(result: ActivityResult): InputTextModel {
+            return result.data?.getParcelableExtra(INPUT_TEXT_RESULT) ?: InputTextModel()
         }
     }
 }

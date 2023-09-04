@@ -1,20 +1,18 @@
-package com.tokopedia.editor.ui.gesture.java;
+package com.tokopedia.editor.ui.gesture.api;
 
 import android.animation.ObjectAnimator;
 import android.content.Context;
-
 import android.view.GestureDetector;
 import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.widget.Button;
 
 import com.tokopedia.editor.ui.gesture.listener.OnGestureControl;
 import com.tokopedia.editor.ui.gesture.listener.OnMultiTouchListener;
 import com.tokopedia.editor.ui.model.AddTextModel;
+import com.tokopedia.editor.ui.widget.DynamicTextCanvasLayout;
 import com.tokopedia.editor.ui.widget.GridGuidelineView;
-import com.tokopedia.unifyprinciples.Typography;
 
 public class MultiTouchListener implements View.OnTouchListener {
 
@@ -34,20 +32,21 @@ public class MultiTouchListener implements View.OnTouchListener {
     private final ScaleGestureDetector scaleGestureDetector;
     private OnMultiTouchListener onMultiTouchListener;
     private OnGestureControl onGestureControl;
-    boolean isTextPinchZoomable;
 
-    private final GridGuidelineView gridGuidelineView;
-    private final Button deleteView;
+    private GridGuidelineView gridGuidelineView;
+    private View deletionButtonView;
 
     private float originalScaleX;
     private float originalScaleY;
 
     boolean isSelectedViewDraggedToTrash = false;
+    boolean isTextPinchZoomable;
     boolean isDragging = false;
 
-    public MultiTouchListener(Context context, Typography view, GridGuidelineView guideline, Button deleteView) {
-        this.deleteView = deleteView;
+    private int lastPositionX = 0;
+    private int lastPositionY = 0;
 
+    public MultiTouchListener(Context context, View view) {
         // @Workaround: for initiate state
         originalScaleX = view.getScaleX();
         originalScaleY = view.getScaleY();
@@ -55,8 +54,6 @@ public class MultiTouchListener implements View.OnTouchListener {
         isTextPinchZoomable = true;
         scaleGestureDetector = new ScaleGestureDetector(new ScaleGestureListener(this));
         gestureListener = new GestureDetector(context, new GestureListener());
-
-        gridGuidelineView = guideline;
     }
 
     private float adjustAngle(float degrees) {
@@ -78,8 +75,8 @@ public class MultiTouchListener implements View.OnTouchListener {
         view.setScaleX(scale);
         view.setScaleY(scale);
 
-        // this condition will update original scale value and
-        // preventing the overlapping value while scale-down animation appear.
+        // this condition will update original scale value and prevent-
+        // the overlapping value while scale-down animation.
         if (!isSelectedViewDraggedToTrash) {
             originalScaleX = view.getScaleX();
             originalScaleY = view.getScaleY();
@@ -122,14 +119,28 @@ public class MultiTouchListener implements View.OnTouchListener {
         scaleGestureDetector.onTouchEvent(view, event);
         gestureListener.onTouchEvent(event);
 
-        if (!isTranslateEnabled) {
-            return true;
+        if (gridGuidelineView == null) {
+            gridGuidelineView = ((View) view.getParent()).findViewById(DynamicTextCanvasLayout.VIEW_GRID_GUIDELINE_ID);
         }
+
+        if (deletionButtonView == null) {
+            deletionButtonView = ((View) view.getParent()).findViewById(DynamicTextCanvasLayout.VIEW_DELETION_BUTTON_ID);
+        }
+
+        if (!isTranslateEnabled) return true;
 
         int action = event.getAction();
 
         int x = (int) event.getRawX();
         int y = (int) event.getRawY();
+
+        /*
+         * Save the last position of X and Y to set the ability of clickable of textView.
+         */
+        if (lastPositionX == 0 && lastPositionY == 0) {
+            lastPositionX = x;
+            lastPositionY = y;
+        }
 
         switch (action & event.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
@@ -219,6 +230,13 @@ public class MultiTouchListener implements View.OnTouchListener {
                     onMultiTouchListener.onRemoveView(view);
                 }
 
+                if (Math.abs(lastPositionX - x) < 10 && Math.abs(lastPositionY - y) < 10) {
+                    onGestureControl.onClick();
+                }
+
+                lastPositionX = 0;
+                lastPositionY = 0;
+
                 isDragging = false;
                 hideDeletionButton();
                 break;
@@ -245,21 +263,21 @@ public class MultiTouchListener implements View.OnTouchListener {
 
     private boolean isPointerContain(float x, float y) {
         int[] location = new int[2];
-        deleteView.getLocationOnScreen(location);
+        deletionButtonView.getLocationOnScreen(location);
 
-        int buttonWidth = deleteView.getWidth();
-        int buttonHeight = deleteView.getHeight();
+        int buttonWidth = deletionButtonView.getWidth();
+        int buttonHeight = deletionButtonView.getHeight();
 
         return ((x >= location[0]) && (x <= location[0] + buttonWidth)) &&
                 ((y >= location[1]) && (y <= location[1] + buttonHeight));
     }
 
     private void showDeletionButton() {
-        deleteView.setVisibility(View.VISIBLE);
+        deletionButtonView.setVisibility(View.VISIBLE);
     }
 
     private void hideDeletionButton() {
-        deleteView.setVisibility(View.GONE);
+        deletionButtonView.setVisibility(View.GONE);
     }
 
     private boolean isAlignedWithCenterX(View view) {
@@ -302,30 +320,11 @@ public class MultiTouchListener implements View.OnTouchListener {
         this.onGestureControl = onGestureControl;
     }
 
-    private final class GestureListener extends GestureDetector.SimpleOnGestureListener {
+    private static final class GestureListener extends GestureDetector.SimpleOnGestureListener {
 
         @Override
         public boolean onSingleTapConfirmed(MotionEvent e) {
-            if (onGestureControl != null) {
-                onGestureControl.onClick();
-            }
             return true;
-        }
-
-        @Override
-        public boolean onDown(MotionEvent e) {
-            if (onGestureControl != null) {
-                onGestureControl.onDown();
-            }
-            return true;
-        }
-
-        @Override
-        public void onLongPress(MotionEvent e) {
-            super.onLongPress(e);
-            if (onGestureControl != null) {
-                onGestureControl.onLongClick();
-            }
         }
     }
 }
