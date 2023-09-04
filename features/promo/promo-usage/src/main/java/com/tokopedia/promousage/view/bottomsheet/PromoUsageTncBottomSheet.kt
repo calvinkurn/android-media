@@ -101,7 +101,8 @@ class PromoUsageTncBottomSheet : BottomSheetUnify() {
         source: String,
         userId: String
     ): String {
-        val builder = Uri.parse(TokopediaUrl.getInstance().WEB)
+//        val builder = Uri.parse(TokopediaUrl.getInstance().WEB)
+        val builder = Uri.parse("66-staging-feature.tokopedia.com")
             .buildUpon()
             .path(PATH_PROMO_TNC)
             .appendQueryParameter(QUERY_KEY_CODES, promoCodes.joinToString(","))
