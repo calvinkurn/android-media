@@ -75,11 +75,44 @@ import com.tokopedia.cartrevamp.view.compoundview.CartToolbarListener
 import com.tokopedia.cartrevamp.view.decorator.CartItemDecoration
 import com.tokopedia.cartrevamp.view.di.DaggerCartRevampComponent
 import com.tokopedia.cartrevamp.view.helper.CartDataHelper
+import com.tokopedia.cartrevamp.view.mapper.BmGmTickerRequestMapper
 import com.tokopedia.cartrevamp.view.mapper.CartUiModelMapper
 import com.tokopedia.cartrevamp.view.mapper.PromoRequestMapper
 import com.tokopedia.cartrevamp.view.mapper.RecentViewMapper
 import com.tokopedia.cartrevamp.view.mapper.WishlistMapper
-import com.tokopedia.cartrevamp.view.uimodel.*
+import com.tokopedia.cartrevamp.view.uimodel.AddCartToWishlistV2Event
+import com.tokopedia.cartrevamp.view.uimodel.AddToCartEvent
+import com.tokopedia.cartrevamp.view.uimodel.AddToCartExternalEvent
+import com.tokopedia.cartrevamp.view.uimodel.CartBundlingBottomSheetData
+import com.tokopedia.cartrevamp.view.uimodel.CartCheckoutButtonState
+import com.tokopedia.cartrevamp.view.uimodel.CartGlobalEvent
+import com.tokopedia.cartrevamp.view.uimodel.CartGroupHolderData
+import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
+import com.tokopedia.cartrevamp.view.uimodel.CartMainCoachMarkUiModel
+import com.tokopedia.cartrevamp.view.uimodel.CartNoteBottomSheetData
+import com.tokopedia.cartrevamp.view.uimodel.CartRecentViewHolderData
+import com.tokopedia.cartrevamp.view.uimodel.CartRecentViewItemHolderData
+import com.tokopedia.cartrevamp.view.uimodel.CartRecommendationItemHolderData
+import com.tokopedia.cartrevamp.view.uimodel.CartSectionHeaderHolderData
+import com.tokopedia.cartrevamp.view.uimodel.CartSelectedAmountHolderData
+import com.tokopedia.cartrevamp.view.uimodel.CartShopGroupTickerState
+import com.tokopedia.cartrevamp.view.uimodel.CartState
+import com.tokopedia.cartrevamp.view.uimodel.CartTrackerEvent
+import com.tokopedia.cartrevamp.view.uimodel.CartWishlistItemHolderData
+import com.tokopedia.cartrevamp.view.uimodel.DeleteCartEvent
+import com.tokopedia.cartrevamp.view.uimodel.DisabledAccordionHolderData
+import com.tokopedia.cartrevamp.view.uimodel.DisabledItemHeaderHolderData
+import com.tokopedia.cartrevamp.view.uimodel.FollowShopEvent
+import com.tokopedia.cartrevamp.view.uimodel.GetBmGmGroupProductTickerState
+import com.tokopedia.cartrevamp.view.uimodel.LoadRecentReviewState
+import com.tokopedia.cartrevamp.view.uimodel.LoadRecommendationState
+import com.tokopedia.cartrevamp.view.uimodel.LoadWishlistV2State
+import com.tokopedia.cartrevamp.view.uimodel.RemoveFromWishlistEvent
+import com.tokopedia.cartrevamp.view.uimodel.SeamlessLoginEvent
+import com.tokopedia.cartrevamp.view.uimodel.UndoDeleteEvent
+import com.tokopedia.cartrevamp.view.uimodel.UpdateCartAndGetLastApplyEvent
+import com.tokopedia.cartrevamp.view.uimodel.UpdateCartCheckoutState
+import com.tokopedia.cartrevamp.view.uimodel.UpdateCartPromoState
 import com.tokopedia.cartrevamp.view.viewholder.CartItemViewHolder
 import com.tokopedia.cartrevamp.view.viewholder.CartRecommendationViewHolder
 import com.tokopedia.cartrevamp.view.viewholder.CartSelectedAmountViewHolder
@@ -120,6 +153,10 @@ import com.tokopedia.purchase_platform.common.constant.ARGS_PROMO_REQUEST
 import com.tokopedia.purchase_platform.common.constant.ARGS_VALIDATE_USE_DATA_RESULT
 import com.tokopedia.purchase_platform.common.constant.ARGS_VALIDATE_USE_REQUEST
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
+import com.tokopedia.purchase_platform.common.constant.BmGmConstant.CART_BMGM_STATE_TICKER_ACTIVE
+import com.tokopedia.purchase_platform.common.constant.BmGmConstant.CART_BMGM_STATE_TICKER_INACTIVE
+import com.tokopedia.purchase_platform.common.constant.BmGmConstant.CART_BMGM_STATE_TICKER_LOADING
+import com.tokopedia.purchase_platform.common.constant.BmGmConstant.CART_DETAIL_TYPE_BMGM
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.purchase_platform.common.constant.PAGE_CART
@@ -289,6 +326,7 @@ class CartRevampFragment :
         private const val BULK_ACTION_ONBOARDING_MIN_QUANTITY_INDEX = 4
 
         private const val TOKONOW_UPDATER_DEBOUNCE = 500L
+        private const val BMGM_TICKER_RELOAD_ACTION = "RELOAD"
 
         @JvmStatic
         fun newInstance(bundle: Bundle?, args: String): CartRevampFragment {
@@ -1084,6 +1122,17 @@ class CartRevampFragment :
         val selected = !cartItemHolderData.isSelected
         viewModel.setItemSelected(position, cartItemHolderData, selected)
         updateStateAfterCheckChanged(selected)
+
+        if (cartItemHolderData.bmGmCartInfoData.cartDetailType == CART_DETAIL_TYPE_BMGM) {
+            val (index, cartItem) = cartAdapter.getCartItemHolderDataAndIndexByOfferId(cartItemHolderData.bmGmCartInfoData.bmGmData.offerId)
+            cartItem.stateTickerBmGm = CART_BMGM_STATE_TICKER_LOADING
+            cartAdapter.notifyItemChanged(index)
+
+            val cartGroupHolderData = cartAdapter.getCartGroupHolderDataByCartItemHolderData(cartItemHolderData)
+            if (cartGroupHolderData != null) {
+                getGroupProductTicker(cartGroupHolderData, cartItemHolderData.bmGmCartInfoData.bmGmData.offerId)
+            }
+        }
     }
 
     override fun onBundleItemCheckChanged(cartItemHolderData: CartItemHolderData) {
@@ -1229,6 +1278,17 @@ class CartRevampFragment :
         } else if (cartItemHolderData.isTokoNow) {
             viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
                 viewModel.emitTokonowUpdated(true)
+            }
+        }
+
+        if (cartItemHolderData.bmGmCartInfoData.cartDetailType == CART_DETAIL_TYPE_BMGM) {
+            val (index, cartItem) = cartAdapter.getCartItemHolderDataAndIndexByOfferId(cartItemHolderData.bmGmCartInfoData.bmGmData.offerId)
+            cartItem.stateTickerBmGm = CART_BMGM_STATE_TICKER_LOADING
+            cartAdapter.notifyItemChanged(index)
+
+            val cartGroupHolderData = cartAdapter.getCartGroupHolderDataByCartItemHolderData(cartItemHolderData)
+            if (cartGroupHolderData != null) {
+                getGroupProductTicker(cartGroupHolderData, cartItemHolderData.bmGmCartInfoData.bmGmData.offerId)
             }
         }
     }
@@ -2176,6 +2236,8 @@ class CartRevampFragment :
         observeUpdateCartAndGetLastApply()
 
         observeWishlist()
+
+        observeBmGmGroupProductTicker()
     }
 
     private fun initToolbar() {
@@ -2680,6 +2742,40 @@ class CartRevampFragment :
                         }
                     }
                     renderPromoCheckoutButtonActiveDefault(emptyList())
+                }
+            }
+        }
+    }
+
+    private fun observeBmGmGroupProductTicker() {
+        viewModel.bmGmGroupProductTickerState.observe(viewLifecycleOwner) { data ->
+            when (data) {
+                is GetBmGmGroupProductTickerState.Success -> {
+                    if (data.pairOfferIdBmGmTickerResponse.second.data.action == BMGM_TICKER_RELOAD_ACTION) {
+                        val (index, cartItem) = cartAdapter.getCartItemHolderDataAndIndexByOfferId(data.pairOfferIdBmGmTickerResponse.first)
+                        cartItem.stateTickerBmGm = CART_BMGM_STATE_TICKER_INACTIVE
+                        cartAdapter.notifyItemChanged(index)
+                    } else if (data.pairOfferIdBmGmTickerResponse.second.data.action.isEmpty()) {
+                        val (index, cartItem) = cartAdapter.getCartItemHolderDataAndIndexByOfferId(data.pairOfferIdBmGmTickerResponse.first)
+                        cartItem.stateTickerBmGm = CART_BMGM_STATE_TICKER_ACTIVE
+                        val listOfferMessage = arrayListOf<String>()
+                        data.pairOfferIdBmGmTickerResponse.second.data.listMessage.forEachIndexed { i, s ->
+                            listOfferMessage.add(s.text)
+                        }
+                        cartItem.bmGmCartInfoData.bmGmData.offerMessage = listOfferMessage
+
+                        val cartGroupHolderData = cartAdapter.getCartGroupHolderDataByCartItemHolderData(cartItem)
+                        cartGroupHolderData?.cartGroupBmGmHolderData?.discountBmGmAmount = data.pairOfferIdBmGmTickerResponse.second.data.discountAmount
+                        viewModel.reCalculateSubTotal()
+
+                        cartAdapter.notifyItemChanged(index)
+                    }
+                }
+
+                is GetBmGmGroupProductTickerState.Failed -> {
+                    val (index, cartItem) = cartAdapter.getCartItemHolderDataAndIndexByOfferId(data.pairOfferIdThrowable.first)
+                    cartItem.stateTickerBmGm = CART_BMGM_STATE_TICKER_INACTIVE
+                    cartAdapter.notifyItemChanged(index)
                 }
             }
         }
@@ -4771,5 +4867,26 @@ class CartRevampFragment :
             trySend(isChecked).isSuccess
         }
         awaitClose { setOnCheckedChangeListener(null) }
+    }
+
+    private fun getGroupProductTicker(cartGroupHolderData: CartGroupHolderData, offerId: Long) {
+        viewModel.getBmGmGroupProductTicker(
+            BmGmTickerRequestMapper.generateGetGroupProductTickerRequestParams(cartGroupHolderData, offerId)
+        )
+    }
+
+    override fun onBmGmChevronRightClicked(offerId: Long) {
+        val applink = "tokopedia://buymoresavemore/$offerId"
+        activity?.let {
+            RouteManager.route(it, applink)
+        }
+    }
+
+    override fun onBmGmTickerReloadClicked(offerId: Long) {
+        val pairCartItemHolderData = cartAdapter.getCartItemHolderDataAndIndexByOfferId(offerId)
+        val cartGroupHolderData = cartAdapter.getCartGroupHolderDataByCartItemHolderData(pairCartItemHolderData.second)
+        if (cartGroupHolderData != null) {
+            getGroupProductTicker(cartGroupHolderData, offerId)
+        }
     }
 }

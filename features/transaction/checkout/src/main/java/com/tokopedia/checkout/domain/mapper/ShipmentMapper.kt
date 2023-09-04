@@ -425,7 +425,7 @@ class ShipmentMapper @Inject constructor() {
                             BMGM_ITEM_DEFAULT
                         }
                         bmgmTotalDiscount = cartDetail.cartDetailInfo.bmgmData.totalDiscount
-                        bmgmTierProductGroup = cartDetail.cartDetailInfo.bmgmData.tierProduct
+                        bmgmTierProductList = cartDetail.cartDetailInfo.bmgmData.tierProductList
                     } else {
                         isBmgmItem = false
                     }

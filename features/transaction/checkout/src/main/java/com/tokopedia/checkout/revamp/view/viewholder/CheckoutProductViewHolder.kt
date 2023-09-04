@@ -10,7 +10,6 @@ import android.text.style.UnderlineSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
-import androidx.core.text.bold
 import androidx.core.text.color
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
@@ -27,7 +26,6 @@ import com.tokopedia.checkout.revamp.utils.CheckoutBmgmMapper
 import com.tokopedia.checkout.revamp.view.adapter.CheckoutAdapterListener
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
-import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
@@ -222,6 +220,16 @@ class CheckoutProductViewHolder(
     }
 
     private fun renderBMGMItem(product: CheckoutProductModel) {
+        fun renderAdjustableFirstItemMarginBmgm() {
+            with(bmgmBinding) {
+                if (bindingAdapterPosition == Int.ZERO) {
+                    (ivProductImageFrameBmgm.layoutParams as? MarginLayoutParams)?.topMargin = 0.dpToPx(itemView.resources.displayMetrics)
+                } else {
+                    (ivProductImageFrameBmgm.layoutParams as? MarginLayoutParams)?.topMargin = 12.dpToPx(itemView.resources.displayMetrics)
+                }
+            }
+        }
+
         fun renderProductNameBmgm() {
             with(bmgmBinding) {
                 tvProductNameBmgm.text = product.name
@@ -279,8 +287,8 @@ class CheckoutProductViewHolder(
         fun renderAdjustableSeparatorMarginBmgm() {
             with(bmgmBinding) {
                 if (product.shouldShowBmgmInfo) {
-                    (vProductSeparatorBmgm.layoutParams as? MarginLayoutParams)?.topMargin = 8.dpToPx(itemView.resources.displayMetrics)
-                    (vProductSeparatorBmgm.layoutParams as? MarginLayoutParams)?.topMargin = 8.dpToPx(itemView.resources.displayMetrics)
+                    (vProductSeparatorBmgm.layoutParams as? MarginLayoutParams)?.topMargin = 12.dpToPx(itemView.resources.displayMetrics)
+                    (vProductSeparatorBmgm.layoutParams as? MarginLayoutParams)?.topMargin = 12.dpToPx(itemView.resources.displayMetrics)
                 } else {
                     (vProductSeparatorBmgm.layoutParams as? MarginLayoutParams)?.topMargin = 0
                 }
@@ -298,6 +306,7 @@ class CheckoutProductViewHolder(
         renderPriceBmgm()
         renderVariantBmgm()
         renderSellerNotesBmgm()
+        renderAdjustableFirstItemMarginBmgm()
         renderAdjustableSeparatorMarginBmgm()
 
         renderAddOnBMGM(product)
@@ -390,11 +399,10 @@ class CheckoutProductViewHolder(
             if (product.shouldShowBmgmInfo) {
                 val spannedTitle = SpannableStringBuilder()
                 val color = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
-                product.bmgmOfferMessage.forEachIndexed { idx, message ->
-                    if (idx == Int.ZERO) {
-                        spannedTitle.color(color) { bold { append("$message • ") } }
-                    } else if (idx < product.bmgmOfferMessage.size - Int.ONE) {
-                        spannedTitle.color(color) { append("$message • ") }
+                product.bmgmOfferMessage.forEachIndexed { idx, htmlMessage ->
+                    val message = MethodChecker.fromHtml(htmlMessage)
+                    if (idx > Int.ZERO) {
+                        spannedTitle.color(color) { append(" • $message") }
                     } else {
                         spannedTitle.color(color) { append(message) }
                     }

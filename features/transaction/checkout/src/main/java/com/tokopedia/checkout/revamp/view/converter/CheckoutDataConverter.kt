@@ -529,7 +529,7 @@ class CheckoutDataConverter @Inject constructor() {
             bmgmItemPosition = product.bmgmItemPosition,
             bmgmIconUrl = product.bmgmIconUrl,
             bmgmTotalDiscount = product.bmgmTotalDiscount,
-            bmgmTierProductGroup = product.bmgmTierProductGroup,
+            bmgmTierProductList = product.bmgmTierProductList,
             shouldShowBmgmInfo = product.bmgmItemPosition == BMGM_ITEM_HEADER
         )
     }

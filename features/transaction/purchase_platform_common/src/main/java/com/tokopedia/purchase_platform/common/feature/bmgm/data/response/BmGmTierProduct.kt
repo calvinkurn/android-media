@@ -6,16 +6,22 @@ import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class BmGmProductTier(
+data class BmGmTierProduct(
     @Expose
-    @SerializedName("product_id")
-    val productId: String = "",
+    @SerializedName("tier_id")
+    val tierId: Long = 0L,
     @Expose
-    @SerializedName("warehouse_id")
-    val warehouseId: Long = 0L,
+    @SerializedName("tier_name")
+    val tierName: String = "",
     @Expose
-    @SerializedName("quantity")
-    val quantity: Int = 0,
+    @SerializedName("tier_message")
+    val tierMessage: String = "",
+    @Expose
+    @SerializedName("tier_discount_text")
+    val tierDiscountText: String = "",
+    @Expose
+    @SerializedName("tier_discount_amount")
+    val tierDiscountAmount: String = "",
     @Expose
     @SerializedName("price_before_benefit")
     val priceBeforeBenefit: Double = 0.0,
@@ -23,6 +29,6 @@ data class BmGmProductTier(
     @SerializedName("price_after_benefit")
     val priceAfterBenefit: Double = 0.0,
     @Expose
-    @SerializedName("cart_id")
-    val cartId: String = ""
+    @SerializedName("list_product")
+    val listProduct: List<BmGmProduct> = emptyList()
 ) : Parcelable

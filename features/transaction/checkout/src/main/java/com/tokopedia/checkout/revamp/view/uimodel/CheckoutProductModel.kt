@@ -3,7 +3,7 @@ package com.tokopedia.checkout.revamp.view.uimodel
 import com.tokopedia.logisticcart.shipping.model.AnalyticsProductCheckoutData
 import com.tokopedia.logisticcart.shipping.model.ShopTypeInfoData
 import com.tokopedia.purchase_platform.common.feature.addons.data.model.AddOnProductDataModel
-import com.tokopedia.purchase_platform.common.feature.bmgm.data.response.BmGmTierProductGroup
+import com.tokopedia.purchase_platform.common.feature.bmgm.data.response.BmGmTierProduct
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.model.EthicalDrugDataModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingDataModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingWordingModel
@@ -93,7 +93,7 @@ data class CheckoutProductModel(
     val bmgmIconUrl: String = "",
     val bmgmTotalDiscount: Double = 0.0,
     val bmgmItemPosition: Int = 0,
-    val bmgmTierProductGroup: List<BmGmTierProductGroup> = emptyList(),
+    val bmgmTierProductList: List<BmGmTierProduct> = emptyList(),
     val shouldShowBmgmInfo: Boolean = false,
 
     // shop data

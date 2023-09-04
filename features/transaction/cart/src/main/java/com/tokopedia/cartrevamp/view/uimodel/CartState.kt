@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.atcexternal.AddToCartExternalModel
 import com.tokopedia.cartcommon.data.response.common.OutOfService
+import com.tokopedia.cartrevamp.domain.model.bmgm.response.BmGmGetGroupProductTickerResponse
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -147,12 +148,12 @@ sealed interface RemoveFromWishlistEvent {
 
     data class Success(
         val data: DeleteWishlistV2Response.Data.WishlistRemoveV2,
-        val productId: String,
+        val productId: String
     ) : RemoveFromWishlistEvent
 
     data class Failed(
         val throwable: Throwable,
-        val productId: String,
+        val productId: String
     ) : RemoveFromWishlistEvent
 }
 
@@ -192,7 +193,6 @@ sealed interface UpdateCartPromoState {
     data class Failed(val throwable: Throwable) : UpdateCartPromoState
 }
 
-
 @Suppress("UNCHECKED_CAST")
 class CartMutableLiveData<T>(initialValue: T) : LiveData<T>(initialValue) {
 
@@ -205,4 +205,9 @@ class CartMutableLiveData<T>(initialValue: T) : LiveData<T>(initialValue) {
     fun notifyObserver() {
         this.value = this.value
     }
+}
+
+sealed interface GetBmGmGroupProductTickerState {
+    data class Success(val pairOfferIdBmGmTickerResponse: Pair<Long, BmGmGetGroupProductTickerResponse>) : GetBmGmGroupProductTickerState
+    data class Failed(val pairOfferIdThrowable: Pair<Long, Throwable>) : GetBmGmGroupProductTickerState
 }

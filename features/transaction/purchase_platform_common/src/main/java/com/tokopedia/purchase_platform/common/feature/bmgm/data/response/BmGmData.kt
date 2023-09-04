@@ -30,5 +30,5 @@ data class BmGmData(
     val offerJsonData: String = "",
     @Expose
     @SerializedName("tier_product")
-    val tierProduct: List<BmGmTierProductGroup> = emptyList()
-) : Parcelable
+    val tierProductList: List<BmGmTierProduct> = emptyList()
+): Parcelable

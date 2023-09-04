@@ -13,7 +13,7 @@ object CheckoutBmgmMapper {
             offerName = product.bmgmOfferName,
             offerMessage = product.bmgmOfferMessage[0], // TODO: [Misael] ini update mapping array
             hasReachMaxDiscount = false, // TODO: [Misael] BE ETA 4 Sept, dummy false
-            tiersApplied = product.bmgmTierProductGroup.map { bmgmTier ->
+            tiersApplied = product.bmgmTierProductList.map { bmgmTier ->
                 BmgmCommonDataModel.TierModel(
                     tierId = bmgmTier.tierId,
                     tierMessage = bmgmTier.tierMessage,

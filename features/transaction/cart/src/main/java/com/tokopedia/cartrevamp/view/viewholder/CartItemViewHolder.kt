@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.cart.R
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.Action
 import com.tokopedia.cart.databinding.ItemCartProductRevampBinding
+import com.tokopedia.cartrevamp.view.BmGmWidgetView
 import com.tokopedia.cartrevamp.view.adapter.cart.CartItemAdapter
 import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData.Companion.BUNDLING_ITEM_FOOTER
@@ -90,6 +91,7 @@ class CartItemViewHolder constructor(
         renderProductInfo(data)
         renderQuantity(data, viewHolderListener)
         renderProductAction(data)
+        renderBmGmOfferTicker(data)
     }
 
     private fun initCoachMark() {
@@ -517,8 +519,7 @@ class CartItemViewHolder constructor(
     }
 
     private fun adjustProductVerticalSeparatorConstraint(data: CartItemHolderData) {
-        // TODO: perlu hide kalo index terakhir dari list BMGM
-        if ((data.isError || !data.isBundlingItem) && !data.isBmGm) {
+        if ((data.isError || !data.isBundlingItem) && !data.isShowBmGmDivider) {
             binding.vBundlingProductSeparator.gone()
             return
         }
@@ -528,79 +529,79 @@ class CartItemViewHolder constructor(
             clone(binding.containerProductInformation)
 
             // Top
-            if (data.isBmGm) {
+            if (data.isShowBmGmDivider) {
                 connect(
-                        R.id.v_bundling_product_separator,
-                        ConstraintSet.TOP,
-                        R.id.checkbox_product,
-                        ConstraintSet.BOTTOM,
-                        IMAGE_PRODUCT_MARGIN_START_6.dpToPx(itemView.resources.displayMetrics)
+                    R.id.v_bundling_product_separator,
+                    ConstraintSet.TOP,
+                    R.id.checkbox_product,
+                    ConstraintSet.BOTTOM,
+                    IMAGE_PRODUCT_MARGIN_START_6.dpToPx(itemView.resources.displayMetrics)
                 )
             } else {
                 if (data.isMultipleBundleProduct) {
                     if (data.bundlingItemPosition != BUNDLING_ITEM_HEADER) {
                         connect(
-                                R.id.v_bundling_product_separator,
-                                ConstraintSet.TOP,
-                                ConstraintSet.PARENT_ID,
-                                ConstraintSet.TOP,
-                                0
+                            R.id.v_bundling_product_separator,
+                            ConstraintSet.TOP,
+                            ConstraintSet.PARENT_ID,
+                            ConstraintSet.TOP,
+                            0
                         )
                     } else {
                         connect(
-                                R.id.v_bundling_product_separator,
-                                ConstraintSet.TOP,
-                                R.id.checkbox_bundle,
-                                ConstraintSet.BOTTOM,
-                                MARGIN_VERTICAL_SEPARATOR.dpToPx(itemView.resources.displayMetrics)
-                        )
-                    }
-                } else {
-                    connect(
                             R.id.v_bundling_product_separator,
                             ConstraintSet.TOP,
                             R.id.checkbox_bundle,
                             ConstraintSet.BOTTOM,
                             MARGIN_VERTICAL_SEPARATOR.dpToPx(itemView.resources.displayMetrics)
+                        )
+                    }
+                } else {
+                    connect(
+                        R.id.v_bundling_product_separator,
+                        ConstraintSet.TOP,
+                        R.id.checkbox_bundle,
+                        ConstraintSet.BOTTOM,
+                        MARGIN_VERTICAL_SEPARATOR.dpToPx(itemView.resources.displayMetrics)
                     )
                 }
             }
 
             // Bottom
-            if (data.isBmGm) {
+            if (data.isShowBmGmDivider) {
                 connect(
-                        R.id.v_bundling_product_separator,
-                        ConstraintSet.BOTTOM,
-                        ConstraintSet.PARENT_ID,
-                        ConstraintSet.BOTTOM,
-                        0
+                    R.id.v_bundling_product_separator,
+                    ConstraintSet.BOTTOM,
+                    ConstraintSet.PARENT_ID,
+                    ConstraintSet.BOTTOM,
+                    0
                 )
             } else {
                 if (data.isMultipleBundleProduct) {
                     if (data.bundlingItemPosition == BUNDLING_ITEM_FOOTER) {
                         connect(
-                                R.id.v_bundling_product_separator,
-                                ConstraintSet.BOTTOM,
-                                R.id.fl_image_product,
-                                ConstraintSet.BOTTOM,
-                                0
-                        )
-                    } else {
-                        connect(
-                                R.id.v_bundling_product_separator,
-                                ConstraintSet.BOTTOM,
-                                ConstraintSet.PARENT_ID,
-                                ConstraintSet.BOTTOM,
-                                0
-                        )
-                    }
-                } else {
-                    connect(
                             R.id.v_bundling_product_separator,
                             ConstraintSet.BOTTOM,
                             R.id.fl_image_product,
                             ConstraintSet.BOTTOM,
-                            MARGIN_VERTICAL_SEPARATOR.dpToPx(itemView.resources.displayMetrics)
+                            0
+                        )
+                    } else {
+                        connect(
+                            R.id.v_bundling_product_separator,
+                            ConstraintSet.BOTTOM,
+                            ConstraintSet.PARENT_ID,
+                            ConstraintSet.BOTTOM,
+                            0
+                        )
+                    }
+                } else {
+                    connect(
+                        R.id.v_bundling_product_separator,
+                        ConstraintSet.BOTTOM,
+                        R.id.fl_image_product,
+                        ConstraintSet.BOTTOM,
+                        MARGIN_VERTICAL_SEPARATOR.dpToPx(itemView.resources.displayMetrics)
                     )
                 }
             }
@@ -1256,6 +1257,40 @@ class CartItemViewHolder constructor(
             binding.bottomDivider.visible()
         } else {
             binding.bottomDivider.gone()
+        }
+    }
+
+    private fun renderBmGmOfferTicker(data: CartItemHolderData) {
+        if (data.isShowTickerBmGm) {
+            binding.itemCartBmgm.root.visible()
+            when (data.stateTickerBmGm) {
+                0 -> {
+                    binding.itemCartBmgm.bmgmWidgetView.state = BmGmWidgetView.State.LOADING
+                }
+                1 -> {
+                    var offerMessage = ""
+                    data.bmGmCartInfoData.bmGmData.offerMessage.forEachIndexed { index, s ->
+                        offerMessage += s
+                        if (index != (data.bmGmCartInfoData.bmGmData.offerMessage.size - 1)) {
+                            offerMessage += " • "
+                        }
+                    }
+                    binding.itemCartBmgm.bmgmWidgetView.state = BmGmWidgetView.State.ACTIVE
+                    binding.itemCartBmgm.bmgmWidgetView.title = offerMessage
+                    binding.itemCartBmgm.bmgmWidgetView.offerId = data.bmGmCartInfoData.bmGmData.offerId
+                    binding.itemCartBmgm.bmgmWidgetView.setOnClickListener {
+                        actionListener?.onBmGmChevronRightClicked(data.bmGmCartInfoData.bmGmData.offerId)
+                    }
+                }
+                2 -> {
+                    binding.itemCartBmgm.bmgmWidgetView.state = BmGmWidgetView.State.INACTIVE
+                    binding.itemCartBmgm.bmgmWidgetView.setOnClickListener {
+                        actionListener?.onBmGmTickerReloadClicked(data.bmGmCartInfoData.bmGmData.offerId)
+                    }
+                }
+            }
+        } else {
+            binding.itemCartBmgm.root.gone()
         }
     }
 
