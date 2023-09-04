@@ -2126,20 +2126,16 @@ class CartViewModel @Inject constructor(
             }
 
             var removeAccordion = false
-            if (errorItemCount == 1) {
+            val bundleIdCartIdSet = mutableSetOf<String>()
+            disabledCartItems.forEach {
+                if (it.isBundlingItem) {
+                    bundleIdCartIdSet.add(it.bundleId)
+                } else {
+                    bundleIdCartIdSet.add(it.cartId)
+                }
+            }
+            if (bundleIdCartIdSet.size <= 3) {
                 removeAccordion = true
-            } else {
-                val bundleIdCartIdSet = mutableSetOf<String>()
-                disabledCartItems.forEach {
-                    if (it.isBundlingItem) {
-                        bundleIdCartIdSet.add(it.bundleId)
-                    } else {
-                        bundleIdCartIdSet.add(it.cartId)
-                    }
-                }
-                if (bundleIdCartIdSet.size <= 1) {
-                    removeAccordion = true
-                }
             }
 
             if (removeAccordion) {

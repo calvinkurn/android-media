@@ -3129,7 +3129,7 @@ class CartRevampFragment :
         )
 
         // If action is on unavailable item, do collapse unavailable items if previously forced to expand (without user tap expand)
-        if (allDisabledCartItemData.size > 1) {
+        if (allDisabledCartItemData.size > 3) {
             if (forceExpandCollapsedUnavailableItems) {
                 collapseOrExpandDisabledItem()
             }
