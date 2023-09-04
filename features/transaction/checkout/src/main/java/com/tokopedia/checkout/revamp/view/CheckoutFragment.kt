@@ -26,6 +26,7 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
@@ -2012,6 +2013,10 @@ class CheckoutFragment :
                 onSuccessCheckout(it)
             }
         }
+    }
+
+    override fun onClickBmgmInfoIcon() {
+        RouteManager.route(context, ApplinkConstInternalGlobal.BMGM_MINI_CART)
     }
 
     private fun onTriggerEpharmacyTracker(showErrorToaster: Boolean) {

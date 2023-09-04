@@ -437,8 +437,7 @@ class CheckoutProductViewHolder(
                 ivCheckoutBmgmDetail.setOnClickListener {
                     val bmgmCommonData = CheckoutBmgmMapper.mapBmgmCommonDataModel(product)
                     PersistentCacheManager.instance.put(BmgmCommonDataModel.PARAM_KEY_BMGM_DATA, bmgmCommonData)
-
-                    // TODO: [Misael] Navigate mini cart detail punya ka Ilham
+                    listener.onClickBmgmInfoIcon()
                 }
 
                 ivCheckoutBmgmBadge.show()
