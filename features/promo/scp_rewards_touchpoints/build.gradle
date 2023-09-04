@@ -57,6 +57,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.lottie
+    implementation projectOrAar(rootProject.ext.features.scpRewardsCommon)
 
     implementation rootProject.ext.miscDependencies.viewModelKtx
 

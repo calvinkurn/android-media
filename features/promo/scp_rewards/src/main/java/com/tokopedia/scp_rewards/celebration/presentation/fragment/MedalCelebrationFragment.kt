@@ -1,9 +1,6 @@
 package com.tokopedia.scp_rewards.celebration.presentation.fragment
 
 import android.animation.Animator
-import android.animation.ObjectAnimator
-import android.animation.PropertyValuesHolder
-import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.graphics.Color
 import android.graphics.drawable.Drawable
@@ -14,11 +11,7 @@ import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AccelerateDecelerateInterpolator
-import android.view.animation.LinearInterpolator
-import android.view.animation.PathInterpolator
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.animation.addListener
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.ViewModelProvider
@@ -44,13 +37,18 @@ import com.tokopedia.scp_rewards.celebration.presentation.viewmodel.MedalCelebra
 import com.tokopedia.scp_rewards.celebration.presentation.viewmodel.MedalCelebrationViewModel.ScpResult.Loading
 import com.tokopedia.scp_rewards.celebration.presentation.viewmodel.MedalCelebrationViewModel.ScpResult.Success
 import com.tokopedia.scp_rewards.common.constants.NON_WHITELISTED_USER_ERROR_CODE
-import com.tokopedia.scp_rewards_common.utils.AudioFactory
-import com.tokopedia.scp_rewards_common.utils.DeviceInfo
 import com.tokopedia.scp_rewards.common.utils.hide
 import com.tokopedia.scp_rewards.common.utils.isNullOrZero
 import com.tokopedia.scp_rewards.common.utils.show
 import com.tokopedia.scp_rewards.databinding.CelebrationFragmentLayoutBinding
 import com.tokopedia.scp_rewards_common.constants.EASE_IN
+import com.tokopedia.scp_rewards_common.constants.LINEAR
+import com.tokopedia.scp_rewards_common.utils.AudioFactory
+import com.tokopedia.scp_rewards_common.utils.DeviceInfo
+import com.tokopedia.scp_rewards_common.utils.ViewUtil.fadeView
+import com.tokopedia.scp_rewards_common.utils.ViewUtil.rotate
+import com.tokopedia.scp_rewards_common.utils.ViewUtil.scaleAndFadeView
+import com.tokopedia.scp_rewards_common.utils.ViewUtil.translateAndFadeView
 import com.tokopedia.scp_rewards_common.utils.dpToPx
 import com.tokopedia.scp_rewards_common.utils.parseColor
 import java.net.SocketTimeoutException
@@ -95,7 +93,7 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
     private var soundaEffectUrl = ""
     private var backgroundImageUrl = ""
 
-    private var medaliSlug = "INJECT_BADGE_1"
+    private var medaliSlug = ""
 
     private var isFallbackCase = false
     private var mandatoryAssetFailure = false
@@ -395,75 +393,9 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun scaleView(view: View?, duration: Long, from: Int = 0, to: Int = 1, interpolatorType: Int, listener: Animator.AnimatorListener? = null) {
-        view?.let { _ ->
-            val scaleXPvh = getScaleXPropertyValueHolder()
-            val scaleYPvh = getScaleYPropertyValueHolder()
-            val opacityPvh = getOpacityPropertyValueHolder()
-            ObjectAnimator.ofPropertyValuesHolder(view, scaleXPvh, scaleYPvh, opacityPvh).apply {
-                this.duration = duration
-                interpolator = when (interpolatorType) {
-                    EASE_IN -> AccelerateDecelerateInterpolator()
-                    else -> PathInterpolator(0.63f, 0.01f, 0.29f, 1f)
-                }
-                addListener()
-                listener?.let {
-                    addListener(it)
-                }
-                start()
-            }
-        }
-    }
-
-    private fun translateView(view: View?, duration: Long, from: Int, to: Int = 0, interpolatorType: Int) {
-        view?.let {
-            val translatePvh = getTranslationPropertyValueHolder(from, to)
-            val opacityPvh = getOpacityPropertyValueHolder()
-            ObjectAnimator.ofPropertyValuesHolder(view, translatePvh, opacityPvh).apply {
-                this.duration = duration
-                interpolator = when (interpolatorType) {
-                    EASE_IN -> AccelerateDecelerateInterpolator()
-                    else -> PathInterpolator(0.63f, 0.01f, 0.29f, 1f)
-                }
-                start()
-            }
-        }
-    }
-
     private fun rotateSunflare() {
-        binding?.mainView?.sunflare?.apply {
-            ObjectAnimator.ofFloat(this, View.ROTATION, 0f, 360f).apply {
-                duration = ROTATION_DURATION
-                interpolator = null
-                repeatCount = ValueAnimator.INFINITE
-                start()
-            }
-        }
+        binding?.mainView?.sunflare?.rotate(animationDuration = ROTATION_DURATION)
     }
-
-    private fun getTranslationPropertyValueHolder(from: Int, to: Int = 0) = PropertyValuesHolder.ofFloat(
-        View.TRANSLATION_Y,
-        from.toFloat(),
-        to.toFloat()
-    )
-
-    private fun getOpacityPropertyValueHolder(from: Int = 0, to: Int = 255) = PropertyValuesHolder.ofFloat(
-        View.ALPHA,
-        from.toFloat(),
-        to.toFloat()
-    )
-
-    private fun getScaleXPropertyValueHolder(from: Int = 0, to: Int = 1) = PropertyValuesHolder.ofFloat(
-        View.SCALE_X,
-        from.toFloat(),
-        to.toFloat()
-    )
-
-    private fun getScaleYPropertyValueHolder(from: Int = 0, to: Int = 1) = PropertyValuesHolder.ofFloat(
-        View.SCALE_Y,
-        from.toFloat(),
-        to.toFloat()
-    )
 
     private fun loadLottieFromUrl(view: LottieAnimationView?, url: String, success: (composition: LottieComposition) -> Unit, error: (() -> Unit)? = null) {
         view?.let {
@@ -534,8 +466,7 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
             override fun onAnimationCancel(animation: Animator) {}
             override fun onAnimationRepeat(animation: Animator) {}
         }
-        scaleView(
-            view = binding?.mainView?.badgeImage,
+        binding?.mainView?.badgeImage?.scaleAndFadeView(
             duration = ANIMATION_DURATION,
             interpolatorType = EASE_IN,
             listener = listener
@@ -560,8 +491,7 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
                 pivotX = width / 2f
                 pivotY = 0f
             }
-            scaleView(
-                view = binding?.mainView?.spotlight,
+            binding?.mainView?.spotlight?.scaleAndFadeView(
                 duration = ANIMATION_DURATION,
                 interpolatorType = EASE_IN
             )
@@ -579,8 +509,7 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
                 override fun onAnimationCancel(animation: Animator) {}
                 override fun onAnimationRepeat(animation: Animator) {}
             }
-            scaleView(
-                view = binding?.mainView?.sunflare,
+            binding?.mainView?.sunflare?.scaleAndFadeView(
                 duration = ANIMATION_DURATION,
                 interpolatorType = EASE_IN,
                 listener = listener
@@ -594,26 +523,22 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
                 val dimen53 = it.resources.getDimension(R.dimen.dimen_53).toInt()
                 val dimen40 = it.resources.getDimension(R.dimen.dimen_40).toInt()
                 val dimen44 = it.resources.getDimension(R.dimen.dimen_44).toInt()
-                translateView(
-                    view = celebrationHeading,
+                celebrationHeading.translateAndFadeView(
                     duration = ANIMATION_DURATION,
                     from = dpToPx(it, -dimen53).toInt(),
                     interpolatorType = EASE_IN
                 )
-                translateView(
-                    view = badgeName,
+                badgeName.translateAndFadeView(
                     duration = ANIMATION_DURATION,
                     from = dpToPx(it, dimen40).toInt(),
                     interpolatorType = EASE_IN
                 )
-                translateView(
-                    view = sponsorCard,
+                sponsorCard.translateAndFadeView(
                     duration = ANIMATION_DURATION,
                     from = dpToPx(it, dimen44).toInt(),
                     interpolatorType = EASE_IN
                 )
-                translateView(
-                    view = badgeDescription,
+                badgeDescription.translateAndFadeView(
                     duration = ANIMATION_DURATION,
                     from = dpToPx(it, dimen40).toInt(),
                     interpolatorType = EASE_IN
@@ -720,22 +645,20 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
     }
 
     private fun fadeOutPage() {
-        binding?.mainView?.apply {
-            val opacityPvh = getOpacityPropertyValueHolder(from = 255, to = 0)
-            ObjectAnimator.ofPropertyValuesHolder(this.root, opacityPvh).apply {
-                duration = ANIMATION_DURATION
-                interpolator = LinearInterpolator()
-                addListener(object : Animator.AnimatorListener {
-                    override fun onAnimationStart(animation: Animator) {}
-                    override fun onAnimationEnd(animation: Animator) {
-                        redirectToMedaliDetail()
-                    }
-                    override fun onAnimationCancel(animation: Animator) {}
-                    override fun onAnimationRepeat(animation: Animator) {}
-                })
-                start()
+        binding?.mainView?.root?.fadeView(
+            from = 255,
+            to = 0,
+            duration = ANIMATION_DURATION,
+            interpolatorType = LINEAR,
+            listener = object : Animator.AnimatorListener {
+                override fun onAnimationStart(animation: Animator) {}
+                override fun onAnimationEnd(animation: Animator) {
+                    redirectToMedaliDetail()
+                }
+                override fun onAnimationCancel(animation: Animator) {}
+                override fun onAnimationRepeat(animation: Animator) {}
             }
-        }
+        )
     }
 
     private fun redirectToMedaliDetail() {

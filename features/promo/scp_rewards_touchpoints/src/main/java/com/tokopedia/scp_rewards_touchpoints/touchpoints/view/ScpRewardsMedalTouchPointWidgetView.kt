@@ -5,10 +5,10 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.cardview.widget.CardView
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.scp_rewards_touchpoints.touchpoints.data.model.ScpRewardsMedalTouchPointModel
+import com.tokopedia.scp_rewards_common.utils.ViewUtil.rotate
 import com.tokopedia.scp_rewards_touchpoints.bottomsheet.utils.loadImage
-import com.tokopedia.scp_rewards_touchpoints.common.util.ViewUtil.rotate
 import com.tokopedia.scp_rewards_touchpoints.databinding.LayoutScpRewardsMedalTouchPointWidgetViewBinding
+import com.tokopedia.scp_rewards_touchpoints.touchpoints.data.model.ScpRewardsMedalTouchPointModel
 
 class ScpRewardsMedalTouchPointWidgetView @JvmOverloads constructor(
     context: Context,

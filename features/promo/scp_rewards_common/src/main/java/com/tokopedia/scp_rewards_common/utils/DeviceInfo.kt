@@ -7,11 +7,10 @@ import android.view.WindowManager
 import kotlin.math.pow
 import kotlin.math.sqrt
 
-@Suppress("depe")
 object DeviceInfo {
     @SuppressLint("DeprecatedMethod")
-    fun getScreenSizeInInches(context:Context?) : Double{
-        if(context!=null){
+    fun getScreenSizeInInches(context: Context?): Double {
+        if (context != null) {
             val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
             val metrics = DisplayMetrics()
             wm.defaultDisplay.getRealMetrics(metrics)
