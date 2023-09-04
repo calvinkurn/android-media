@@ -444,6 +444,7 @@ object ShopPageTrackingConstant {
         const val CLICK_CTA_SLIDER_BANNER_HIGHLIGHT = "campaign tab - click jelajahi home anchor"
         const val IMPRESSION_CAMPAIGN_PLAY_WIDGET_ITEM = "campaign tab - impression product play"
         const val CLICK_CAMPAIGN_PLAY_WIDGET_ITEM = "campaign tab - click product play"
+        const val REIMAGINED_CLICK_HEADER_SHOP_NAME = "reimagined - click header shop name"
 
     }
 
@@ -517,6 +518,7 @@ object ShopPageTrackingConstant {
         const val TRACKER_ID_IMPRESSION_SLIDER_BANNER_HIGHLIGHT_WIDGET = "44365"
         const val TRACKER_ID_CLICK_PRODUCT_SLIDER_BANNER_HIGHLIGHT_WIDGET = "44366"
         const val TRACKER_ID_CLICK_EXPLORE_SHOP_SLIDER_BANNER_HIGHLIGHT_WIDGET = "44368"
+        const val TRACKER_ID_REIMAGINED_CLICK_HEADER_SHOP_NAME = "45907"
 
     }
 

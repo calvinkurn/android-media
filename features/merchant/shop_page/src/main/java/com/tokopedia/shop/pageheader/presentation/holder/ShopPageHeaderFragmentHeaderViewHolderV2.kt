@@ -98,10 +98,10 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
         get() = viewBinding?.imageShopLogo
     private val imageShopBadge: ImageUnify?
         get() = viewBinding?.imageShopBadge
-    private val containerShopBasicInfo: View?
-        get() = viewBinding?.containerShopBasicInfo
-    private val containerShopPerformance: View?
-        get() = viewBinding?.containerShopPerformance
+    private val sectionShopBasicInfo: View?
+        get() = viewBinding?.sectionShopBasicInfo
+    private val sectionShopPerformance: View?
+        get() = viewBinding?.sectionShopPerformance
     private val imageRatingIcon: ImageUnify?
         get() = viewBinding?.imageShopRatingIcon
     private val textRatingDescription: Typography?
@@ -350,7 +350,7 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
         val initialUspValue = listWidgetShopData.getDynamicUspComponent()?.text?.map { it.textHtml }.orEmpty()
         val isShowRating = ratingText.isNotEmpty()
         val isShowDynamicUsp = initialUspValue.isNotEmpty()
-        containerShopPerformance?.shouldShowWithAction(isShowRating || isShowDynamicUsp) {}
+        sectionShopPerformance?.shouldShowWithAction(isShowRating || isShowDynamicUsp) {}
         performanceSectionDotSeparator?.shouldShowWithAction(isShowRating && isShowDynamicUsp) {}
         imageRatingIcon?.shouldShowWithAction(isShowRating) {
             textRatingDescription?.apply {
@@ -404,7 +404,7 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
             getShopBasicDataShopNameComponent(shopBasicData)?.text?.firstOrNull()?.textLink.orEmpty()
         imageShopBadge?.loadImage(shopBadgeImageUrl)
         textShopName?.text = MethodChecker.fromHtml(shopName)
-        containerShopBasicInfo?.setOnClickListener {
+        sectionShopBasicInfo?.setOnClickListener {
             listenerHeader?.onClickShopBasicInfoSection(appLink)
         }
         if(isOverrideTheme){

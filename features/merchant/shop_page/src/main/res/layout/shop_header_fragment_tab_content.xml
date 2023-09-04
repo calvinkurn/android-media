@@ -127,12 +127,12 @@
                             app:layout_constraintTop_toTopOf="@id/image_shop_logo">
 
                             <androidx.constraintlayout.widget.ConstraintLayout
-                                android:id="@+id/container_shop_basic_info"
+                                android:id="@+id/section_shop_basic_info"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="8dp"
                                 app:layout_constrainedWidth="true"
-                                app:layout_constraintBottom_toTopOf="@id/container_shop_performance"
+                                app:layout_constraintBottom_toTopOf="@id/section_shop_performance"
                                 app:layout_constraintHorizontal_bias="0"
                                 app:layout_constraintLeft_toRightOf="@id/image_shop_logo"
                                 app:layout_constraintRight_toRightOf="parent"
@@ -188,16 +188,16 @@
                             </androidx.constraintlayout.widget.ConstraintLayout>
 
                             <androidx.constraintlayout.widget.ConstraintLayout
-                                android:id="@+id/container_shop_performance"
+                                android:id="@+id/section_shop_performance"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="8dp"
                                 android:layout_marginTop="4dp"
-                                app:layout_constraintBottom_toTopOf="@id/container_shop_status"
+                                app:layout_constraintBottom_toTopOf="@id/section_shop_status"
                                 app:layout_constraintHorizontal_bias="0"
                                 app:layout_constraintLeft_toRightOf="@id/image_shop_logo"
                                 app:layout_constraintRight_toRightOf="parent"
-                                app:layout_constraintTop_toBottomOf="@id/container_shop_basic_info"
+                                app:layout_constraintTop_toBottomOf="@id/section_shop_basic_info"
                                 app:layout_constraintVertical_bias="0">
 
                                 <com.tokopedia.unifycomponents.ImageUnify
@@ -250,16 +250,16 @@
                             </androidx.constraintlayout.widget.ConstraintLayout>
 
                             <androidx.constraintlayout.widget.ConstraintLayout
-                                android:id="@+id/container_shop_status"
+                                android:id="@+id/section_shop_status"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="8dp"
                                 android:layout_marginTop="4dp"
-                                app:layout_constraintBottom_toTopOf="@id/container_button"
+                                app:layout_constraintBottom_toTopOf="@id/section_button"
                                 app:layout_constraintHorizontal_bias="0"
                                 app:layout_constraintLeft_toRightOf="@id/image_shop_logo"
                                 app:layout_constraintRight_toRightOf="parent"
-                                app:layout_constraintTop_toBottomOf="@id/container_shop_performance">
+                                app:layout_constraintTop_toBottomOf="@id/section_shop_performance">
 
                                 <androidx.appcompat.widget.AppCompatImageView
                                     android:id="@+id/iv_online_icon"
@@ -323,7 +323,7 @@
                         </LinearLayout>
 
                         <LinearLayout
-                            android:id="@+id/container_button"
+                            android:id="@+id/section_button"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
@@ -364,7 +364,7 @@
                             android:visibility="gone"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintLeft_toLeftOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/container_button"
+                            app:layout_constraintTop_toBottomOf="@id/section_button"
                             tools:visibility="visible">
 
                             <androidx.cardview.widget.CardView

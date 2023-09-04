@@ -201,6 +201,7 @@ import java.net.URLEncoder
 import java.util.*
 import javax.inject.Inject
 
+//TODO need to cleanup tracker class in the future
 class ShopPageHeaderFragmentV2 :
     BaseDaggerFragment(),
     HasComponent<ShopPageHeaderComponent>,
@@ -2112,11 +2113,16 @@ class ShopPageHeaderFragmentV2 :
     }
 
     override fun onClickShopBasicInfoSection(appLink: String) {
+        sendClickHeaderShopName(shopId, userId)
         if (isShopInfoAppLink(appLink)) {
             redirectToShopInfoPage()
         } else {
             RouteManager.route(context, appLink)
         }
+    }
+
+    private fun sendClickHeaderShopName(shopId: String, userId: String) {
+        shopPageTracking?.clickHeaderShopName(shopId, userId)
     }
 
     override fun onShopRatingClicked(appLink: String) {
