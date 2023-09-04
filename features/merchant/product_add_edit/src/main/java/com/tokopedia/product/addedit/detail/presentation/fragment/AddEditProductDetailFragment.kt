@@ -92,6 +92,7 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.USED_PRODUCT_INDEX
 import com.tokopedia.product.addedit.detail.presentation.customview.TypoCorrectionView
 import com.tokopedia.product.addedit.detail.presentation.dialog.*
+import com.tokopedia.product.addedit.detail.presentation.model.CategoryMetadataInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PriceSuggestion
@@ -193,6 +194,7 @@ class AddEditProductDetailFragment :
     // product category
     private var productCategoryId: String = ""
     private var productCategoryName: String = ""
+    private var productCategoryManifestInputModel: CategoryMetadataInputModel? = null
     private var productCategoryLayout: ViewGroup? = null
     private var productCategoryRecListView: ListUnify? = null
     private var productCategoryPickerButton: AppCompatTextView? = null
@@ -620,6 +622,8 @@ class AddEditProductDetailFragment :
 
                     productCategoryId = categoryId.toString()
                     productCategoryName = categoryName ?: ""
+                    productCategoryManifestInputModel?.recommendationRank = Int.ZERO
+                    productCategoryManifestInputModel?.isFromRecommendation = false
 
                     val categoryRecommendationResult = viewModel.productCategoryRecommendationLiveData.value
                     val categoryList = if (categoryRecommendationResult != null && categoryRecommendationResult is Success) {
@@ -780,11 +784,11 @@ class AddEditProductDetailFragment :
     }
 
     private fun onFragmentResult() {
-        getNavigationResult(REQUEST_KEY_ADD_MODE)?.observe(viewLifecycleOwner, { bundle ->
+        getNavigationResult(REQUEST_KEY_ADD_MODE)?.observe(viewLifecycleOwner) { bundle ->
             setNavigationResult(bundle, REQUEST_KEY_ADD_MODE)
             removeNavigationResult(REQUEST_KEY_ADD_MODE)
             findNavController().navigateUp()
-        })
+        }
     }
 
     private fun sendDataBack() {
@@ -793,7 +797,7 @@ class AddEditProductDetailFragment :
             if (viewModel.isFirstMoved) {
                 inputAllDataInProductInputModel()
                 dataBackPressed = DETAIL_DATA
-                viewModel.productInputModel.requestCode = arrayOf(DETAIL_DATA, NO_DATA, NO_DATA)
+                viewModel.productInputModel.requestCode = arrayListOf(DETAIL_DATA, NO_DATA, NO_DATA)
             }
             setFragmentResultWithBundle(REQUEST_KEY_ADD_MODE, dataBackPressed)
         } else {
@@ -829,6 +833,7 @@ class AddEditProductDetailFragment :
             if (!productPictureList.isNullOrEmpty()) pictureList = productPictureList ?: listOf()
             if (productCategoryId.isNotBlank()) categoryId = productCategoryId
             if (productCategoryName.isNotBlank()) categoryName = productCategoryName
+            productCategoryManifestInputModel?.let { categoryMetadata = it }
             preorder.apply {
                 duration = preOrderDurationField.getTextIntOrZero()
                 timeUnit = selectedDurationPosition
@@ -2234,22 +2239,22 @@ class AddEditProductDetailFragment :
     }
 
     private fun showProductNameIconSuccess() {
-        showProductNameIconIndicator(com.tokopedia.unifyprinciples.R.color.Unify_G500, IconUnify.CHECK_CIRCLE)
+        showProductNameIconIndicator(com.tokopedia.unifyprinciples.R.color.Unify_GN500, IconUnify.CHECK_CIRCLE)
         productNameField?.isInputError = false
     }
 
     private fun showProductNameIconTypo() {
-        showProductNameIconIndicator(com.tokopedia.unifyprinciples.R.color.Unify_N700, IconUnify.INFORMATION)
+        showProductNameIconIndicator(com.tokopedia.unifyprinciples.R.color.Unify_NN950, IconUnify.INFORMATION)
         productNameField?.isInputError = false
     }
 
     private fun showProductNameIconNegative() {
-        showProductNameIconIndicator(com.tokopedia.unifyprinciples.R.color.Unify_Y300, IconUnify.INFORMATION)
+        showProductNameIconIndicator(com.tokopedia.unifyprinciples.R.color.Unify_YN300, IconUnify.INFORMATION)
         productNameField?.isInputError = false
     }
 
     private fun showProductNameIconError() {
-        showProductNameIconIndicator(com.tokopedia.unifyprinciples.R.color.Unify_R500, IconUnify.INFORMATION)
+        showProductNameIconIndicator(com.tokopedia.unifyprinciples.R.color.Unify_RN500, IconUnify.INFORMATION)
         productNameField?.isInputError = true
     }
 
@@ -2339,14 +2344,23 @@ class AddEditProductDetailFragment :
     private fun selectCategoryRecommendation(items: List<ListItemUnify>, position: Int) = productCategoryRecListView?.run {
         if (!hasCategoryFromPicker) {
             setSelected(items, position) {
-                val categoryId = it.getCategoryId().toString()
-                val categoryName = it.getCategoryName()
-                productCategoryId = categoryId
-                productCategoryName = categoryName
+                productCategoryId = it.getCategoryId().toString()
+                productCategoryName = it.getCategoryName()
                 getAnnotationCategory() // update annotation specification
                 true
             }
         }
+        productCategoryManifestInputModel = CategoryMetadataInputModel(
+            recommendationRank = position,
+            isFromRecommendation = true,
+            recommendationList = items.map {
+                CategoryMetadataInputModel.Recommendation(
+                    categoryID = it.getCategoryId(),
+                    confidenceScore = it.getConfidence(),
+                    precision = it.getPrecision()
+                )
+            }
+        )
     }
 
     private fun submitInput() {
@@ -2434,7 +2448,7 @@ class AddEditProductDetailFragment :
         val result = MediaPicker.result(data)
         val newUpdatedPhotos = viewModel.updateProductPhotos(
             result.editedImages.toMutableList(),
-            result.originalPaths.toMutableList()
+            result.selectedIncludeMedia.toMutableList()
         )
         productPictureList = newUpdatedPhotos.pictureList
         productPhotoAdapter?.setProductPhotoPaths(viewModel.productPhotoPaths)

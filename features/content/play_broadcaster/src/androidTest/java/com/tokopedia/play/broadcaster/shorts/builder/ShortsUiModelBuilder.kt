@@ -11,7 +11,9 @@ import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
 import com.tokopedia.play.broadcaster.ui.model.paged.PagedDataUiModel
+import com.tokopedia.play.broadcaster.ui.model.pinnedproduct.PinProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
+import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagItem
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 
 /**
@@ -136,7 +138,7 @@ class ShortsUiModelBuilder {
     ): List<ProductTagSectionUiModel> {
         return List(1) {
             ProductTagSectionUiModel("", CampaignStatus.Ongoing, List(size) { productCounter ->
-                ProductUiModel(productCounter.toString(), "Product $it", "", 1, OriginalPrice("Rp1000.00", 1000.0))
+                ProductUiModel(productCounter.toString(), "Product $it", false, "", 0, false,"", 1, OriginalPrice("Rp1000.00", 1000.0), PinProductUiModel.Empty, "")
             })
         }
     }
@@ -152,18 +154,25 @@ class ShortsUiModelBuilder {
     }
 
     fun buildTags(
-        size: Int = 3
-    ): Set<PlayTagUiModel> {
-        return mutableSetOf<PlayTagUiModel>().apply {
-            repeat(size) {
-                add(
-                    PlayTagUiModel(
-                        tag = "Tag $it",
-                        isChosen = false,
+        size: Int = 3,
+        minTags: Int = 1,
+        maxTags: Int = 2,
+    ): PlayTagUiModel {
+        return PlayTagUiModel(
+            tags = mutableSetOf<PlayTagItem>().apply {
+                repeat(size) {
+                    add(
+                        PlayTagItem(
+                            tag = "Tag $it",
+                            isChosen = false,
+                            isActive = true,
+                        )
                     )
-                )
-            }
-        }
+                }
+            },
+            minTags = minTags,
+            maxTags = maxTags,
+        )
     }
 
     fun buildLastTaggedProducts(

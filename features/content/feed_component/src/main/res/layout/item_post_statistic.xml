@@ -17,7 +17,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_feed_see_darker_grey"
+        android:tint="@color/Unify_NN500"
+        app:srcCompat="@drawable/iconunify_visibility"
         />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -26,7 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="6dp"
         android:layout_marginLeft="6dp"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:layout_constraintBottom_toBottomOf="@id/iv_icon"
         app:layout_constraintStart_toEndOf="@id/iv_icon"
         app:layout_constraintTop_toTopOf="@id/iv_icon"
@@ -40,7 +41,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN950_68"
         app:layout_constraintBottom_toBottomOf="@id/tv_count"
         app:layout_constraintStart_toEndOf="@id/tv_count"
         app:layout_constraintTop_toTopOf="@id/tv_count"
@@ -54,7 +55,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end"
         android:text="@string/feed_post_statistic_see_detail"
-        android:textColor="@color/Unify_G500"
+        android:textColor="@color/Unify_GN500"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/tv_subtitle"
         app:layout_constraintEnd_toEndOf="parent"

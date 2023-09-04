@@ -1,6 +1,8 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel
 
 import android.os.Bundle
+import com.tokopedia.analytics.performance.perf.BlocksLoadableComponent
+import com.tokopedia.analytics.performance.perf.LoadableComponent
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFactory
@@ -10,8 +12,14 @@ import com.tokopedia.kotlin.model.ImpressHolder
  * @author by errysuprayogi on 11/28/17.
  */
 
-class HomepageBannerDataModel : ImpressHolder(), HomeVisitable {
+class HomepageBannerDataModel : ImpressHolder(), HomeVisitable, LoadableComponent by BlocksLoadableComponent(
+    customBlocksName = "HomePageBanner"
+) {
     var slides: List<BannerSlidesModel>? = null
+    set(value) {
+        field = value
+        finishLoading()
+    }
     var createdTimeMillis = ""
     private var isCache: Boolean = false
     private var trackingData: Map<String, Any>? = null
@@ -19,6 +27,7 @@ class HomepageBannerDataModel : ImpressHolder(), HomeVisitable {
     private var isCombined: Boolean = false
 
     override fun equalsWith(b: Any?): Boolean {
+        this.finishLoading()
         return if (b is HomepageBannerDataModel) {
             createdTimeMillis == b.createdTimeMillis
         }

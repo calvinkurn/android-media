@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/unify_space_4"
             tools:text="Product Title"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             app:typographyType="heading_4" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -26,7 +26,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/unify_space_4"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             app:typographyType="body_2"
             tools:text="Nomor User ID dan Server ID Dapat dilihat di halaman ini." />
 
@@ -35,7 +35,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/vg_product_detail_url"
-            android:textColor="@color/Unify_G500"
+            android:textColor="@color/Unify_GN500"
             app:typographyType="body_2"
             app:typographyWeight="bold" />
 

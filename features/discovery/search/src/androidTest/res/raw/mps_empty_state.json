@@ -1,0 +1,109 @@
+{
+  "ace_search_shop_mps": {
+    "header": {
+      "total_data": 0
+    },
+    "data": []
+  },
+  "filter_sort_product": {
+    "data": {
+      "filter": [
+        {
+          "title": "Official Store",
+          "chip_name": "Official Store",
+          "options": [
+            {
+              "name": "Official Store",
+              "key": "shop_tier",
+              "icon": "https://ecs7.tokopedia.net/img/autocomplete/ic_os.png",
+              "value": "2",
+              "is_new": false,
+              "input_type": "checkbox",
+              "total_data": "",
+              "val_max": "",
+              "val_min": "",
+              "hex_color": "",
+              "child": []
+            }
+          ]
+        },
+        {
+          "title": "Gratis Ongkir",
+          "chip_name": "Gratis Ongkir",
+          "options": [
+            {
+              "name": "Gratis Ongkir",
+              "key": "free_shipping",
+              "icon": "",
+              "value": "true",
+              "is_new": false,
+              "input_type": "checkbox",
+              "total_data": "",
+              "val_max": "",
+              "val_min": "",
+              "hex_color": "",
+              "child": []
+            }
+          ]
+        },
+        {
+          "title": "COD",
+          "chip_name": "COD",
+          "options": [
+            {
+              "name": "COD",
+              "key": "cod",
+              "icon": "",
+              "value": "true",
+              "is_new": false,
+              "input_type": "checkbox",
+              "total_data": "",
+              "val_max": "",
+              "val_min": "",
+              "hex_color": "",
+              "child": []
+            }
+          ]
+        },
+        {
+          "title": "Power Merchant",
+          "chip_name": "Power Merchant",
+          "options": [
+            {
+              "name": "Power Merchant",
+              "key": "shop_tier",
+              "icon": "https://ecs7.tokopedia.net/img/autocomplete/ic_pm.png",
+              "value": "1",
+              "is_new": false,
+              "input_type": "checkbox",
+              "total_data": "",
+              "val_max": "",
+              "val_min": "",
+              "hex_color": "",
+              "child": []
+            }
+          ]
+        },
+        {
+          "title": "Power Merchant Pro",
+          "chip_name": "Power Merchant Pro",
+          "options": [
+            {
+              "name": "Power Merchant Pro",
+              "key": "shop_tier",
+              "icon": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro.png",
+              "value": "3",
+              "is_new": false,
+              "input_type": "checkbox",
+              "total_data": "",
+              "val_max": "",
+              "val_min": "",
+              "hex_color": "",
+              "child": []
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

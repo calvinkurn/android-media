@@ -26,11 +26,11 @@ class AffiliateRecommendedAdapter(
 
     fun setOnSelectView(tab : TabLayout.Tab) {
         val customView: Typography? = tab.customView as? Typography
-        customView?.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+        customView?.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
     }
 
     fun setUnSelectView(tab : TabLayout.Tab) {
         val customView: Typography? = tab.customView as? Typography
-        customView?.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
+        customView?.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_44))
     }
 }

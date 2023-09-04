@@ -16,6 +16,9 @@ import com.tokopedia.autocompletecomponent.initialstate.dynamic.DynamicInitialSt
 import com.tokopedia.autocompletecomponent.initialstate.dynamic.DynamicInitialStateTitleViewHolder
 import com.tokopedia.autocompletecomponent.initialstate.dynamic.DynamicInitialStateTitleDataView
 import com.tokopedia.autocompletecomponent.initialstate.dynamic.DynamicInitialStateViewHolder
+import com.tokopedia.autocompletecomponent.initialstate.mps.MpsDataView
+import com.tokopedia.autocompletecomponent.initialstate.mps.MpsInitialStateListener
+import com.tokopedia.autocompletecomponent.initialstate.mps.MpsViewHolder
 import com.tokopedia.autocompletecomponent.initialstate.popularsearch.PopularSearchTitleViewHolder
 import com.tokopedia.autocompletecomponent.initialstate.popularsearch.PopularSearchTitleDataView
 import com.tokopedia.autocompletecomponent.initialstate.popularsearch.PopularSearchViewHolder
@@ -45,6 +48,8 @@ class InitialStateAdapterTypeFactory(
     private val curatedCampaignListener: CuratedCampaignListener,
     private val chipListener: InitialStateChipListener,
     private val searchBarEducationListener: SearchBarEducationListener,
+    private val mpsChipListener: MpsInitialStateListener,
+    private var isReimagine: Boolean,
 ) : BaseAdapterTypeFactory(), InitialStateTypeFactory {
     override fun type(popularSearchTitleDataView: PopularSearchTitleDataView): Int {
         return PopularSearchTitleViewHolder.LAYOUT
@@ -106,12 +111,16 @@ class InitialStateAdapterTypeFactory(
         return SearchBarEducationViewHolder.LAYOUT
     }
 
+    override fun type(mpsDataView: MpsDataView): Int {
+        return MpsViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             PopularSearchViewHolder.LAYOUT ->
-                PopularSearchViewHolder(parent, popularSearchListener)
+                PopularSearchViewHolder(parent, popularSearchListener, isReimagine)
             RecentSearchViewHolder.LAYOUT ->
-                RecentSearchViewHolder(parent, recentSearchListener)
+                RecentSearchViewHolder(parent, recentSearchListener, isReimagine)
             RecentViewViewHolder.LAYOUT ->
                 RecentViewViewHolder(parent, recentViewListener)
             PopularSearchTitleViewHolder.LAYOUT ->
@@ -125,7 +134,7 @@ class InitialStateAdapterTypeFactory(
             DynamicInitialStateTitleViewHolder.LAYOUT ->
                 DynamicInitialStateTitleViewHolder(parent, dynamicInitialStateListener)
             DynamicInitialStateViewHolder.LAYOUT ->
-                DynamicInitialStateViewHolder(parent, dynamicInitialStateListener)
+                DynamicInitialStateViewHolder(parent, dynamicInitialStateListener, isReimagine)
             CuratedCampaignViewHolder.LAYOUT ->
                 CuratedCampaignViewHolder(parent, curatedCampaignListener)
             InitialStateProductListViewHolder.LAYOUT ->
@@ -137,7 +146,8 @@ class InitialStateAdapterTypeFactory(
             InitialStateChipWidgetTitleViewHolder.LAYOUT ->
                 InitialStateChipWidgetTitleViewHolder(parent)
             SearchBarEducationViewHolder.LAYOUT ->
-                SearchBarEducationViewHolder(parent, searchBarEducationListener)
+                SearchBarEducationViewHolder(parent, searchBarEducationListener, isReimagine)
+            MpsViewHolder.LAYOUT -> MpsViewHolder(parent, mpsChipListener)
             else -> super.createViewHolder(parent, type)
         }
     }

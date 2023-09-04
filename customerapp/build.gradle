@@ -1,9 +1,10 @@
 apply plugin: 'com.android.application'
-apply plugin: 'embrace-swazzler'
+if(project.hasProperty('enableEmbraceMa')) {
+    apply plugin: 'embrace-swazzler'
+}
 apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'kotlin-android'
 apply plugin: 'newrelic'
-apply plugin: 'robust'
 
 if (project.hasProperty("enable-shrinkresource")) {
     apply from: "$rootProject.projectDir/buildconfig/appcompile/enable-shrinkresource.gradle"
@@ -63,7 +64,7 @@ def isFirebasePerformanceLogEnabled() {
 }
 
 def isEnableMacrobenchmarkUtil() {
-    if (project.hasProperty('enableMacrobenchmarkUtil')?: "false") {
+    if (project.hasProperty('enableMacrobenchmarkUtil')) {
         return "true";
     }
     return "false";
@@ -102,6 +103,8 @@ ext.lintchecks = [
 apply plugin: "org.gradle.test-retry"
 
 android {
+    namespace 'com.tokopedia.tkpd'
+    testNamespace 'com.tokopedia.tkpd.test'
     packagingOptions {
         exclude 'META-INF/**'
         pickFirst '**/armeabi-v7a/libc++_shared.so'
@@ -288,7 +291,6 @@ android {
 }
 
 dependencies {
-
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     lintChecks rootProject.ext.tkpdInternalLibDependencies.lint
 
@@ -323,6 +325,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.appCommon)
 
     implementation projectOrAar(rootProject.ext.libraries.network)
+    implementation projectOrAar(rootProject.ext.libraries.youtubePlayer)
 
     implementation rootProject.ext.playServicesDependencies.maps
     implementation rootProject.ext.playServicesDependencies.core
@@ -332,6 +335,7 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.supportV13
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
     implementation rootProject.ext.miscDependencies.lottie
+    implementation rootProject.ext.gotoOneKyc.resource
 
     implementation rootProject.ext.firebase.config
     implementation rootProject.ext.firebase.messaging

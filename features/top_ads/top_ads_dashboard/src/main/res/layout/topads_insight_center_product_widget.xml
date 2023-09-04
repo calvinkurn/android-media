@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:card_background_color="@color/Unify_Background"
+    app:card_type="border_disabled">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:gravity="center"
+        android:minHeight="56dp">
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/icon_sample_ref"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            app:icon_enable_state="true"
+            app:icon_name="FIRE" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignRight="@id/chevron"
+            android:layout_toRightOf="@id/icon_sample_ref"
+            android:text="Cek produk berpotensi"
+            app:typographyType="body_2" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/chevron"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_alignParentRight="true"
+            app:icon_enable_state="true"
+            app:icon_name="CHEVRON_RIGHT" />
+
+    </RelativeLayout>
+</com.tokopedia.unifycomponents.CardUnify>

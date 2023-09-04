@@ -1,0 +1,144 @@
+{
+  "readme": "Play Widget - New Home Play Carousel Widget",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "view_item",
+      "eventAction": "view - video widget",
+      "eventCategory": "homepage-cmp",
+      "eventLabel": "HOME - .* - \\d+ - \\d+ - \\d+ - \\d+ - is autoplay (true|false) - .* - .*",
+      "trackerId": "43568",
+      "businessUnit": "play",
+      "channelId": ".*",
+      "currentSite": "tokopediamarketplace",
+      "promotions": [
+        {
+          "creative_name": "play widget in homepage",
+          "creative_slot": "\\d+",
+          "creative_url": "",
+          "item_id": ".*_0_\\d+",
+          "item_name": "/ - \\d+ - dynamic channel play home widget btf - banner - .*"
+        }
+      ],
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "select_content",
+      "eventAction": "click - video widget",
+      "eventCategory": "homepage-cmp",
+      "eventLabel": "HOME - .* - \\d+ - \\d+ - \\d+ - \\d+ - is autoplay (true|false) - .* - .*",
+      "trackerId": "43569",
+      "businessUnit": "play",
+      "channelId": ".*",
+      "campaignCode": "homewidget_\\d+",
+      "currentSite": "tokopediamarketplace",
+      "promotions": [
+        {
+          "creative_name": "play widget in homepage",
+          "creative_slot": "\\d+",
+          "creative_url": "",
+          "item_id": ".*_0_\\d+",
+          "item_name": "/ - \\d+ - dynamic channel play home widget btf - banner - .*"
+        }
+      ],
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - chevron video widget",
+      "eventCategory": "homepage-cmp",
+      "eventLabel": "HOME - \\d+ - .*",
+      "trackerId": "43571",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - creator name",
+      "eventCategory": "homepage-cmp",
+      "eventLabel": "HOME - .* - \\d+ - \\d+ - \\d+ - \\d+ - is autoplay (true|false) - .* - .*",
+      "trackerId": "43572",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - content mute button",
+      "eventCategory": "homepage-cmp",
+      "eventLabel": "HOME - .* - \\d+ - \\d+ - \\d+ - \\d+ - is autoplay (true|false) - .* - .*",
+      "trackerId": "43574",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - upcoming content bell",
+      "eventCategory": "homepage-cmp",
+      "eventLabel": "HOME - .* - \\d+ - \\d+ - \\d+ - \\d+ - is autoplay (true|false) - .* - .*",
+      "trackerId": "43576",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "view_item_list",
+      "eventAction": "view - product card video widget",
+      "eventCategory": "homepage-cmp",
+      "eventLabel": "HOME - .* - \\d+ - \\d+ - \\d+ - \\d+ - is autoplay (true|false) - .* - .* - \\d+",
+      "trackerId": "43577",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "item_list": "/ - \\d+ - dynamic channel play home widget btf - product - non topads - carousel - .* - .* - play - .*",
+      "item_list_name": "/ - \\d+ - dynamic channel play home widget btf - product - non topads - carousel - .* - .* - play - .*",
+      "items": [
+        {
+          "dimension40": "/ - \\d+ - dynamic channel play home widget btf - product - non topads - carousel - .* - .* - play - .*",
+          "dimension84": ".*",
+          "index": "\\d+",
+          "item_brand": "",
+          "item_category": "",
+          "item_id": "\\d+",
+          "item_name": ".*",
+          "item_variant": "",
+          "price": "\\d+.\\d+"
+        }
+      ],
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "select_content",
+      "eventAction": "click - product card video widget",
+      "eventCategory": "homepage-cmp",
+      "eventLabel": "HOME - .* - \\d+ - \\d+ - \\d+ - \\d+ - is autoplay (true|false) - .* - .* - \\d+",
+      "trackerId": "43578",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "item_list": "/ - \\d+ - dynamic channel play home widget btf - product - non topads - carousel - .* - .* - play - .*",
+      "items": [
+        {
+          "dimension40": "/ - \\d+ - dynamic channel play home widget btf - product - non topads - carousel - .* - .* - play - .*",
+          "dimension84": ".*",
+          "index": "\\d+",
+          "item_brand": "",
+          "item_category": "",
+          "item_id": "\\d+",
+          "item_name": ".*",
+          "item_variant": "",
+          "price": "\\d+.\\d+"
+        }
+      ],
+      "sessionIris": ".*",
+      "userId": ".*"
+    }
+  ]
+}

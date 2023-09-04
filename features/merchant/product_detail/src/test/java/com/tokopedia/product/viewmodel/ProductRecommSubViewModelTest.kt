@@ -81,6 +81,7 @@ class ProductRecommSubViewModelTest {
         val recomWidget = RecommendationWidget(recommendationItemList = listOf(RecommendationItem()))
         val response = listOf(recomWidget)
 
+        viewModel.onResetAlreadyRecomHit()
         every { GlobalConfig.isSellerApp() } returns false
         coEvery { getRecommendationUseCase.getData(any()) } returns response
 
@@ -95,6 +96,7 @@ class ProductRecommSubViewModelTest {
         val recomWidget = RecommendationWidget(recommendationItemList = listOf(RecommendationItem()))
         val response = listOf(recomWidget)
 
+        viewModel.onResetAlreadyRecomHit()
         every { GlobalConfig.isSellerApp() } returns true
         coEvery { getRecommendationUseCase.getData(any()) } returns response
 
@@ -105,6 +107,22 @@ class ProductRecommSubViewModelTest {
         }.onFailure {
             assertTrue(it is TimeoutException)
         }
+    }
+
+    @Test
+    fun `already hit recomm view to view when pdp on reload page`() {
+        val recomWidget = RecommendationWidget(recommendationItemList = listOf(RecommendationItem()))
+        val response = listOf(recomWidget)
+
+        viewModel.onResetAlreadyRecomHit()
+        every { GlobalConfig.isSellerApp() } returns false
+        coEvery { getRecommendationUseCase.getData(any()) } returns response
+
+        viewModel.loadViewToView("view_to_view", "", false)
+
+        viewModel.loadViewToView("view_to_view", "", false)
+
+        coVerify(exactly = 1) { getRecommendationUseCase.getData(any()) }
     }
     // endregion
 
@@ -245,6 +263,7 @@ class ProductRecommSubViewModelTest {
     fun `load recommendation already hitted`() {
         val recomWidget =
             RecommendationWidget(tid = "1", recommendationItemList = listOf(RecommendationItem()))
+        viewModel.onResetAlreadyRecomHit()
 
         coEvery {
             getProductRecommendationUseCase.executeOnBackground(any())

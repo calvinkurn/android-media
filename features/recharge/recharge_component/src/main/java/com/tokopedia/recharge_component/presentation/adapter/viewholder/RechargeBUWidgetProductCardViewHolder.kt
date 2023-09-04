@@ -6,22 +6,27 @@ import android.graphics.drawable.GradientDrawable
 import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import androidx.annotation.LayoutRes
-import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.recharge_component.R
+import com.tokopedia.recharge_component.databinding.HomeRechargeBuWidgetProductCardBinding
 import com.tokopedia.recharge_component.model.RechargeBUWidgetProductCardModel
 import com.tokopedia.unifycomponents.ProgressBarUnify
-import kotlinx.android.synthetic.main.home_recharge_bu_widget_product_card.view.*
 
 class RechargeBUWidgetProductCardViewHolder(
     itemView: View,
     private val channels: ChannelModel
 ) : AbstractViewHolder<RechargeBUWidgetProductCardModel>(itemView) {
+
+    private val binding = HomeRechargeBuWidgetProductCardBinding.bind(itemView)
 
     companion object {
         @LayoutRes
@@ -34,11 +39,11 @@ class RechargeBUWidgetProductCardViewHolder(
     }
 
     override fun bind(element: RechargeBUWidgetProductCardModel) {
-        with(itemView) {
-            addOnImpressionListener(element) {
+        with(binding) {
+            root.addOnImpressionListener(element) {
                 element.listener.onProductCardImpressed(channels, ChannelGrid(), adapterPosition)
             }
-            setOnClickListener {
+            root.setOnClickListener {
                 element.listener.onProductCardClicked(
                     channels,
                     ChannelGrid(),
@@ -138,12 +143,14 @@ class RechargeBUWidgetProductCardViewHolder(
             with(rechargeBuProgressStock) {
                 if (element.showSoldPercentage) {
                     setProgressIcon(
-                        icon = if (element.soldPercentage >= MIN_PROGRESS_TO_SHOW_FIRE)
+                        icon = if (element.soldPercentage >= MIN_PROGRESS_TO_SHOW_FIRE) {
                             ContextCompat.getDrawable(
                                 context,
                                 com.tokopedia.resources.common.R.drawable.ic_fire_filled_product_card
                             )
-                        else null,
+                        } else {
+                            null
+                        },
                         width = context.resources.getDimension(R.dimen.digital_card_progress_fire_icon_width)
                             .toInt(),
                         height = context.resources.getDimension(R.dimen.digital_card_progress_fire_icon_height)
@@ -167,7 +174,7 @@ class RechargeBUWidgetProductCardViewHolder(
                         throwable.printStackTrace()
                         ContextCompat.getColor(
                             context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_R600
+                            com.tokopedia.unifyprinciples.R.color.Unify_RN500
                         )
                     }
                     setTextColor(color)
@@ -177,53 +184,16 @@ class RechargeBUWidgetProductCardViewHolder(
                     hide()
                 }
             }
-
         }
     }
-
-//    override fun getCardMaxElevation() = cardViewProductCard?.maxCardElevation ?: 0f
-//
-//    override fun getCardRadius() = cardViewProductCard?.radius ?: 0f
 
     fun applyCarousel() {
         setCardHeightMatchParent()
     }
 
     private fun setCardHeightMatchParent() {
-        val cardViewProductCard: CardView = itemView.findViewById(R.id.cardViewProductCard)
-        val layoutParams = cardViewProductCard?.layoutParams
+        val layoutParams = binding.cardViewProductCard.layoutParams
         layoutParams?.height = MATCH_PARENT
-        cardViewProductCard?.layoutParams = layoutParams
+        binding.cardViewProductCard.layoutParams = layoutParams
     }
-
-//    override fun recycle() {
-//        imageProduct?.glideClear(context)
-//        imageFreeOngkirPromo?.glideClear(context)
-//        labelCampaignBackground?.glideClear(context)
-//    }
-
-//    private fun View.renderStockPercentage(productCardModel: ProductCardModel) {
-//        progressBarStock?.shouldShowWithAction(productCardModel.stockBarLabel.isNotEmpty()) {
-//            progressBarStock.progress = productCardModel.stockBarPercentage
-//        }
-//    }
-//
-//    private fun View.renderStockLabel(productCardModel: ProductCardModel) {
-//        textViewStockLabel?.shouldShowWithAction(productCardModel.stockBarLabel.isNotEmpty()) {
-//            textViewStockLabel.text = productCardModel.stockBarLabel
-//        }
-//    }
-
-//    private fun renderOutOfStockView(productCardModel: ProductCardModel) {
-//        if (productCardModel.isOutOfStock) {
-//            textViewStockLabel?.hide()
-//            progressBarStock?.hide()
-//            outOfStockOverlay?.visible()
-//        } else {
-//            outOfStockOverlay?.gone()
-//        }
-//    }
-
-//    override fun getThreeDotsButton(): View? = null
-
 }

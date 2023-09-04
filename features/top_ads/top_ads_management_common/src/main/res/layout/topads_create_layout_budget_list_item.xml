@@ -49,7 +49,7 @@
             android:layout_width="16dp"
             android:layout_height="16dp"
             android:layout_marginStart="4dp"
-            app:icon_color_light_enable="@color/Unify_G600"
+            app:icon_color_light_enable="@color/Unify_GN600"
             app:icon_name="EDIT"
             app:layout_constraintStart_toEndOf="@id/typeKeyword"
             app:layout_constraintBottom_toBottomOf="@id/typeKeyword" />
@@ -71,7 +71,7 @@
             android:layout_width="16dp"
             android:layout_height="16dp"
             android:layout_marginStart="4dp"
-            app:icon_color_light_enable="@color/Unify_G600"
+            app:icon_color_light_enable="@color/Unify_GN600"
             app:icon_name="EDIT"
             app:layout_constraintStart_toEndOf="@id/keywordBudget"
             app:layout_constraintBottom_toBottomOf="@id/keywordBudget" />

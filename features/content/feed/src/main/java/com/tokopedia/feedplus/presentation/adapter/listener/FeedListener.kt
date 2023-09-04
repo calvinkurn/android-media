@@ -3,6 +3,7 @@ package com.tokopedia.feedplus.presentation.adapter.listener
 import com.tokopedia.content.common.report_content.model.FeedMenuItem
 import com.tokopedia.feedcomponent.view.widget.FeedExoPlayer
 import com.tokopedia.feedplus.presentation.model.*
+import com.tokopedia.feedplus.presentation.model.type.AuthorType
 import com.tokopedia.feedplus.presentation.uiview.FeedCampaignRibbonType
 
 interface FeedListener {
@@ -10,6 +11,11 @@ interface FeedListener {
         id: String,
         menuItems: List<FeedMenuItem>,
         trackerModel: FeedTrackerDataModel
+    )
+
+    fun onProfileClicked(
+        appLink: String,
+        type: AuthorType,
     )
 
     fun onFollowClicked(
@@ -103,7 +109,7 @@ interface FeedListener {
     fun detachPlayer(player: FeedExoPlayer)
     fun onPauseVideoPost(trackerModel: FeedTrackerDataModel)
     fun onTapHoldSeekbarVideoPost(trackerModel: FeedTrackerDataModel)
-    fun onWatchPostVideo(trackerModel: FeedTrackerDataModel)
+    fun onWatchPostVideo(model: FeedCardVideoContentModel, trackerModel: FeedTrackerDataModel)
 
     fun onSwipeMultiplePost(trackerModel: FeedTrackerDataModel)
 

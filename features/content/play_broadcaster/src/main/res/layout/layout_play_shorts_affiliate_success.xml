@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/iv_success_shorts_affiliate"
+        android:layout_width="@dimen/play_shorts_tnc_image_height"
+        android:layout_height="@dimen/play_shorts_no_eligible_account_width"
+        android:layout_marginTop="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:unify_image_url_src="@string/play_shorts_affiliate_success" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_success_shorts_affiliate_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="16dp"
+        android:gravity="center"
+        android:text="@string/play_shorts_affiliate_success_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_success_shorts_affiliate"
+        app:typographyType="heading_2"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_success_shorts_affiliate_description"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/play_shorts_affiliate_success_description"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:typeface="normal"
+        app:layout_constraintTop_toBottomOf="@id/tv_success_shorts_affiliate_title"
+        app:typographyType="body_1" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

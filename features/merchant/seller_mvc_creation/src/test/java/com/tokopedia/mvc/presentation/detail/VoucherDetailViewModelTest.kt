@@ -12,6 +12,7 @@ import com.tokopedia.mvc.data.response.UpdateStatusVoucherDataModel
 import com.tokopedia.mvc.domain.entity.GenerateVoucherImageMetadata
 import com.tokopedia.mvc.domain.entity.VoucherDetailData
 import com.tokopedia.mvc.domain.entity.VoucherDetailWithVoucherCreationMetadata
+import com.tokopedia.mvc.domain.entity.enums.UpdateVoucherAction
 import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
 import com.tokopedia.mvc.domain.usecase.CancelVoucherUseCase
 import com.tokopedia.mvc.domain.usecase.GetInitiateVoucherPageUseCase
@@ -71,7 +72,7 @@ class VoucherDetailViewModelTest {
     lateinit var updateVoucherStatusDataObserver: Observer<in com.tokopedia.usecase.coroutines.Result<UpdateStatusVoucherDataModel>>
 
     @RelaxedMockK
-    lateinit var mapper: GetInitiateVoucherPageMapper
+    lateinit var initiateVoucherMapper: GetInitiateVoucherPageMapper
 
     @RelaxedMockK
     lateinit var shopBasicDataMapper: ShopBasicDataMapper
@@ -128,7 +129,7 @@ class VoucherDetailViewModelTest {
             val expectedResult = Success(
                 VoucherDetailWithVoucherCreationMetadata(
                     voucherDetail = VoucherDetailData(voucherId = 10),
-                    creationMetadata = mapper.map(GetInitiateVoucherPageResponse()),
+                    creationMetadata = initiateVoucherMapper.map(GetInitiateVoucherPageResponse()),
                     tickerWording = ""
                 )
             )
@@ -162,47 +163,6 @@ class VoucherDetailViewModelTest {
         }
     }
 
-//    @Test
-//    fun `when updateVoucherStatus() is called, should update voucher status data correctly`() {
-//        runBlocking {
-//            //Given
-//            val expectedResult = Success(UpdateStatusVoucherDataModel())
-//            val data = VoucherDetailData()
-//
-//            mockGetInitiateVoucherPageGqlCall()
-//            mockUpdateVoucherStatusGQLCall()
-//
-//            viewModel.getVoucherDetail(10L)
-//
-//            //When
-//            viewModel.updateVoucherStatus(data)
-//
-//            //Then
-//            val actual = viewModel.updateVoucherStatusData.getOrAwaitValue()
-//            assertEquals(expectedResult, actual)
-//        }
-//    }
-//
-//    @Test
-//    fun `when updateVoucherStatus() is error, should throw the error`() {
-//        runBlockingTest {
-//            // Given
-//            val voucherId = 10
-//            val error = MessageErrorException("Error")
-//
-//            coEvery { cancelVoucherUseCase.execute(voucherId, any(), any()) } throws error
-//
-//            val expected = Fail(error)
-//
-//            // When
-//            viewModel.updateVoucherStatus(VoucherDetailData())
-//
-//            // Then
-//            val actual = viewModel.updateVoucherStatusData.getOrAwaitValue()
-//            assertEquals(expected, actual)
-//        }
-//    }
-
     @Test
     fun `when getCurrentVoucherDetailData() is called, should return the latest voucher detail data`() {
         runBlockingTest {
@@ -214,7 +174,7 @@ class VoucherDetailViewModelTest {
             val expectedResult = Success(
                 VoucherDetailWithVoucherCreationMetadata(
                     voucherDetail = VoucherDetailData(voucherId = 10),
-                    creationMetadata = mapper.map(GetInitiateVoucherPageResponse()),
+                    creationMetadata = initiateVoucherMapper.map(GetInitiateVoucherPageResponse()),
                     tickerWording = ""
                 )
             )
@@ -357,7 +317,7 @@ class VoucherDetailViewModelTest {
     }
 
     private fun mockGetInitiateVoucherPageGqlCall() {
-        val result = mapper.map(GetInitiateVoucherPageResponse())
+        val result = initiateVoucherMapper.map(GetInitiateVoucherPageResponse())
         coEvery { getInitiateVoucherPageUseCase.execute() } returns result
     }
 
@@ -366,13 +326,14 @@ class VoucherDetailViewModelTest {
         coEvery { merchantPromotionGetMVDataByIDUseCase.execute(any()) } returns result
     }
 
-    private fun mockUpdateVoucherStatusGQLCall() {
+    private fun mockUpdateVoucherStatusGQLCall(data: VoucherDetailData) {
         val voucherId = 10
         val result = UpdateStatusVoucherDataModel()
+        val couponStatus = if (data.voucherStatus == VoucherStatus.NOT_STARTED) UpdateVoucherAction.DELETE else UpdateVoucherAction.STOP
 
         mockGetInitiateVoucherPageGqlCall()
 
-        coEvery { cancelVoucherUseCase.execute(voucherId, any(), any()) } returns result
+        coEvery { cancelVoucherUseCase.execute(voucherId, couponStatus, "token") } returns result
     }
 
     private fun mockShopBasicDataGQLCall() {

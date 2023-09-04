@@ -5,14 +5,15 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <ImageView
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/img_location"
         android:layout_width="22dp"
         android:layout_height="26dp"
         android:layout_marginStart="16dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/tv_warehouse_name"
-        tools:ignore="ContentDescription"/>
+        app:icon_name="LOCATION"
+        app:icon_color_light_enable="@color/Unify_GN500" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_warehouse_name"
@@ -20,7 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:layout_marginTop="12dp"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toEndOf="@id/img_location"
         app:layout_constraintTop_toBottomOf="@id/img_location"
@@ -34,7 +35,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
         android:ellipsize="end"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:layout_constraintStart_toStartOf="@id/tv_warehouse_name"
         app:layout_constraintTop_toBottomOf="@id/tv_warehouse_name"
         app:typographyType="body_3" />
@@ -46,7 +47,7 @@
         android:layout_marginTop="2dp"
         android:ellipsize="end"
         android:singleLine="true"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:layout_constraintStart_toStartOf="@id/tv_warehouse_district"
         app:layout_constraintTop_toBottomOf="@id/tv_warehouse_district"
         app:typographyType="body_3" />
@@ -56,7 +57,7 @@
         android:layout_width="0dp"
         android:layout_height="1dp"
         android:layout_marginTop="12dp"
-        android:background="@color/Unify_N75"
+        android:background="@color/Unify_NN50"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/tv_warehouse_name"

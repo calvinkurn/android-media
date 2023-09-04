@@ -17,10 +17,10 @@ import com.tokopedia.promocheckout.common.R
  */
 object ViewUtils {
     fun generateBackgroundWithShadow(view: View): Drawable {
-        val cornerRadiusValue = view.context.resources.getDimension(R.dimen.layout_lvl1)
-        val elevationValue = view.context.resources.getDimension(R.dimen.spacing_lvl1).toInt()
-        val shadowColorValue = ContextCompat.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44)
-        val backgroundColorValue = ContextCompat.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+        val cornerRadiusValue = view.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1)
+        val elevationValue = view.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl1).toInt()
+        val shadowColorValue = ContextCompat.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_44)
+        val backgroundColorValue = ContextCompat.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
 
         val outerRadius = floatArrayOf(cornerRadiusValue, cornerRadiusValue, cornerRadiusValue, cornerRadiusValue, cornerRadiusValue, cornerRadiusValue, cornerRadiusValue, cornerRadiusValue)
 
@@ -53,10 +53,10 @@ object ViewUtils {
     }
 
     fun generateBackgroundWithoutShadow(view: View): Drawable {
-        val cornerRadiusValue = view.context.resources.getDimension(R.dimen.layout_lvl1)
-        val elevationValue = view.context.resources.getDimension(R.dimen.spacing_lvl1).toInt()
-        val backgroundColorValue = ContextCompat.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
-        val borderColorValue = ContextCompat.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Unify_N100)
+        val cornerRadiusValue = view.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1)
+        val elevationValue = view.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl1).toInt()
+        val backgroundColorValue = ContextCompat.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+        val borderColorValue = ContextCompat.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Unify_NN200)
 
         val outerRadius = floatArrayOf(cornerRadiusValue, cornerRadiusValue, cornerRadiusValue, cornerRadiusValue, cornerRadiusValue, cornerRadiusValue, cornerRadiusValue, cornerRadiusValue)
 

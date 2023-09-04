@@ -1,7 +1,11 @@
 package com.tokopedia.tokopedianow.search.presentation.viewmodel
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
+import com.tokopedia.tokopedianow.common.constant.TokoNowStaticLayoutType
+import com.tokopedia.tokopedianow.common.model.TokoNowAdsCarouselUiModel
+import com.tokopedia.tokopedianow.common.util.ProductAdsMapper.mapProductAdsCarousel
 import com.tokopedia.tokopedianow.search.domain.model.SearchModel
 import com.tokopedia.tokopedianow.search.presentation.model.BroadMatchDataView
 import com.tokopedia.tokopedianow.searchcategory.AddToCartNonVariantTestHelper
@@ -14,8 +18,10 @@ import com.tokopedia.tokopedianow.searchcategory.AddToCartNonVariantTestHelper.C
 import com.tokopedia.tokopedianow.searchcategory.AddToCartNonVariantTestHelper.Companion.DeleteCartTestObject.deleteCartResponse
 import com.tokopedia.tokopedianow.searchcategory.AddToCartNonVariantTestHelper.Companion.PRODUCT_ID_NON_VARIANT_ATC
 import com.tokopedia.tokopedianow.searchcategory.jsonToObject
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.util.SearchCategoryDummyUtils.miniCartItems
 import com.tokopedia.tokopedianow.util.SearchCategoryDummyUtils.miniCartSimplifiedData
+import com.tokopedia.unit.test.ext.verifyValueEquals
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
 import org.hamcrest.CoreMatchers.`is` as shouldBe
@@ -88,6 +94,22 @@ class SearchAddToCartNonVariantTest: SearchTestFixtures(), Callback {
     @Test
     fun `delete cart failed`() {
         addToCartTestHelper.`delete cart failed`()
+    }
+
+    @Test
+    fun `test add to cart update ads carousel success`() {
+        addToCartTestHelper.run {
+            `Given first page API will be successful`()
+            `Given view already created`()
+            `Given add to cart API will success`(addToCartSuccessModel)
+            `Given get mini cart simplified use case will be successful`(miniCartSimplifiedData)
+
+            val productItemList = tokoNowSearchViewModel.visitableListLiveData.value!!.getProductItemList()
+            val productItemDataViewToATC = productItemList[0]
+
+            `When handle cart event ads product`(productItemDataViewToATC, addToCartQty)
+            `Then verify carousel ads updated`()
+        }
     }
 
     @Test
@@ -354,5 +376,32 @@ class SearchAddToCartNonVariantTest: SearchTestFixtures(), Callback {
                 expectedRefreshMiniCartCount = 1
             )
         }
+    }
+
+    private fun `Then verify carousel ads updated`() {
+        val adsCarouselUiModel = mapProductAdsCarousel(searchModel.productAds)
+        tokoNowSearchViewModel.updateAdsCarouselLiveData
+            .verifyValueEquals(Pair(6, adsCarouselUiModel))
+    }
+
+    private fun List<Visitable<*>>.getProductItemList(): List<ProductCardCompactCarouselItemUiModel> {
+        return filterIsInstance<TokoNowAdsCarouselUiModel>().first().items
+    }
+
+    private fun `When handle cart event ads product`(
+        productItemToATC: ProductCardCompactCarouselItemUiModel,
+        addToCartQty: Int,
+    ) {
+        val productItem = ProductItemDataView(
+            shop = ProductItemDataView.Shop(productItemToATC.shopId, productItemToATC.shopName),
+            productCardModel = productItemToATC.productCardModel,
+            widgetTitle = productItemToATC.headerName,
+            shopId = productItemToATC.shopId,
+            shopName = productItemToATC.shopName,
+            shopType = productItemToATC.shopType,
+            categoryBreadcrumbs = productItemToATC.categoryBreadcrumbs,
+            type = TokoNowStaticLayoutType.PRODUCT_ADS_CAROUSEL
+        )
+        tokoNowSearchViewModel.onViewATCProductNonVariant(productItem, addToCartQty)
     }
 }

@@ -92,7 +92,8 @@ class HomeClaimCouponWidgetViewHolder(
     private fun ItemTokopedianowClaimCouponWidgetBinding.showLoadingState(item: HomeClaimCouponWidgetUiModel) {
         val shimmeringUiModel = HomeClaimCouponWidgetItemShimmeringUiModel(
             id = SHIMMERING_ID,
-            isDouble = item.isDouble
+            isDouble = item.isDouble,
+            title = item.title
         )
         initHeader(title = String.EMPTY)
         initList(

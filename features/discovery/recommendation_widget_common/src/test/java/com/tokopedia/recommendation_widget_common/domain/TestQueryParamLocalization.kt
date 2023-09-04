@@ -1,6 +1,7 @@
 package com.tokopedia.recommendation_widget_common.domain
 
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.localizationchooseaddress.domain.model.LocalWarehouseModel
 import com.tokopedia.recommendation_widget_common.ext.toQueryParam
 import org.junit.Test
 
@@ -13,7 +14,7 @@ class TestQueryParamLocalization {
     fun testEmptyQueryParam() {
         val queryParam = ""
         val expected =
-            "user_addressId=1&user_cityId=2&user_districtId=3&user_lat=4&user_long=5&user_postCode=6&warehouse_ids=7"
+            "user_addressId=1&user_cityId=2&user_districtId=3&user_lat=4&user_long=5&user_postCode=6&warehouse_ids=7#fc"
         val localCache = LocalCacheModel(
             address_id = "1",
             label = "label",
@@ -22,7 +23,12 @@ class TestQueryParamLocalization {
             lat = "4",
             long = "5",
             postal_code = "6",
-            warehouse_id = "7"
+            warehouses = listOf(
+                LocalWarehouseModel(
+                    warehouse_id = 7,
+                    service_type = "fc"
+                )
+            )
         )
         assert(localCache.toQueryParam(queryParam) == expected)
     }
@@ -31,7 +37,7 @@ class TestQueryParamLocalization {
     fun testNonEmptyQueryParam() {
         val queryParam = "productIds=123123"
         val expected =
-            "productIds=123123&user_addressId=1&user_cityId=2&user_districtId=3&user_lat=4&user_long=5&user_postCode=6&warehouse_ids=7"
+            "productIds=123123&user_addressId=1&user_cityId=2&user_districtId=3&user_lat=4&user_long=5&user_postCode=6&warehouse_ids=7#fc"
         val localCache = LocalCacheModel(
             address_id = "1",
             label = "label",
@@ -40,7 +46,12 @@ class TestQueryParamLocalization {
             lat = "4",
             long = "5",
             postal_code = "6",
-            warehouse_id = "7"
+            warehouses = listOf(
+                LocalWarehouseModel(
+                    warehouse_id = 7,
+                    service_type = "fc"
+                )
+            )
         )
         assert(localCache.toQueryParam(queryParam) == expected)
     }

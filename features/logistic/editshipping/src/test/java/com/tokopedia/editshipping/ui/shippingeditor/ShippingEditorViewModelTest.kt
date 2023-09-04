@@ -13,15 +13,12 @@ import com.tokopedia.editshipping.domain.model.shippingEditor.ShippingEditorStat
 import com.tokopedia.editshipping.domain.model.shippingEditor.ValidateShippingEditorModel
 import com.tokopedia.editshipping.util.EditShippingConstant
 import com.tokopedia.editshipping.util.MultiLocShippingEditorDataProvider
-import com.tokopedia.logisticCommon.data.repository.ShopLocationRepository
 import com.tokopedia.logisticCommon.data.response.shippingeditor.GetShipperDetailResponse
 import com.tokopedia.logisticCommon.data.response.shippingeditor.GetShipperListResponse
 import com.tokopedia.logisticCommon.data.response.shippingeditor.GetShipperTickerResponse
 import com.tokopedia.logisticCommon.data.response.shippingeditor.SaveShippingEditorResponse
 import com.tokopedia.logisticCommon.data.response.shippingeditor.SaveShippingResponse
 import com.tokopedia.logisticCommon.data.response.shippingeditor.ValidateShippingEditorResponse
-import com.tokopedia.logisticCommon.data.response.shoplocation.ShopLocWhitelist
-import com.tokopedia.logisticCommon.data.response.shoplocation.ShopLocationWhitelistResponse
 import io.mockk.coEvery
 import io.mockk.mockk
 import io.mockk.verify
@@ -40,7 +37,6 @@ class ShippingEditorViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    private val shopRepo: ShopLocationRepository = mockk(relaxed = true)
     private val shippingEditorRepo: ShippingEditorRepository = mockk(relaxed = true)
     private val shippingEditorMapper = ShippingEditorMapper()
     private val validateShippingMapper = ValidateShippingNewMapper()
@@ -48,8 +44,6 @@ class ShippingEditorViewModelTest {
 
     private lateinit var shippingEditorViewModel: ShippingEditorViewModel
 
-    private val shopWhitelistObserver: Observer<ShippingEditorState<ShopLocWhitelist>> =
-        mockk(relaxed = true)
     private val shipperListObserver: Observer<ShippingEditorState<ShipperListModel>> =
         mockk(relaxed = true)
     private val shipperTickerListObserver: Observer<ShippingEditorState<ShipperTickerModel>> =
@@ -67,32 +61,16 @@ class ShippingEditorViewModelTest {
     fun setup() {
         Dispatchers.setMain(TestCoroutineDispatcher())
         shippingEditorViewModel = ShippingEditorViewModel(
-            shopRepo,
             shippingEditorRepo,
             shippingEditorMapper,
             validateShippingMapper,
             detailMapper
         )
-        shippingEditorViewModel.shopWhitelist.observeForever(shopWhitelistObserver)
         shippingEditorViewModel.shipperList.observeForever(shipperListObserver)
         shippingEditorViewModel.shipperTickerList.observeForever(shipperTickerListObserver)
         shippingEditorViewModel.shipperDetail.observeForever(shipperDetailsObserver)
         shippingEditorViewModel.validateDataShipper.observeForever(validateDataShipperObserver)
         shippingEditorViewModel.saveShippingData.observeForever(saveShippingDataObserver)
-    }
-
-    @Test
-    fun `Get shop location whitelist success`() {
-        coEvery { shopRepo.getShopLocationWhitelist(any()) } returns ShopLocationWhitelistResponse()
-        shippingEditorViewModel.getWhitelistData(1234)
-        verify { shopWhitelistObserver.onChanged(match { it is ShippingEditorState.Success }) }
-    }
-
-    @Test
-    fun `Get shop location whitelist failed`() {
-        coEvery { shopRepo.getShopLocationWhitelist(any()) } throws defaultThrowable
-        shippingEditorViewModel.getWhitelistData(1234)
-        verify { shopWhitelistObserver.onChanged(match { it is ShippingEditorState.Fail }) }
     }
 
     @Test

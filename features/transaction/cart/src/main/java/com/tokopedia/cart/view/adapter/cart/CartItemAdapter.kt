@@ -1,19 +1,12 @@
 package com.tokopedia.cart.view.adapter.cart
 
-import android.view.LayoutInflater
-import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.Action
-import com.tokopedia.cart.databinding.ItemCartProductBinding
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
-import com.tokopedia.cart.view.viewholder.CartItemViewHolder
-import com.tokopedia.cart.view.viewholder.CartItemViewHolder.Companion.TYPE_VIEW_ITEM_CART
-import com.tokopedia.cart.view.viewholder.CartItemViewHolder.ViewHolderListener
 
-class CartItemAdapter(private val actionListener: ActionListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>(), ViewHolderListener {
+class CartItemAdapter/*(private val actionListener: ActionListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>(), ViewHolderListener*/ {
 
-    private val cartItemHolderDataList: MutableList<CartItemHolderData> = mutableListOf()
+    /*private val cartItemHolderDataList: MutableList<CartItemHolderData> = mutableListOf()
 
     override fun getItemViewType(position: Int): Int {
         return TYPE_VIEW_ITEM_CART
@@ -67,22 +60,22 @@ class CartItemAdapter(private val actionListener: ActionListener) : RecyclerView
     override fun onNeedToRefreshAllShop() {
         actionListener.onNeedToRefreshMultipleShop()
         actionListener.onNeedToRecalculate()
-    }
+    }*/
 
     interface ActionListener {
         fun onCartItemDeleteButtonClicked(cartItemHolderData: CartItemHolderData)
         fun onCartItemQuantityPlusButtonClicked()
         fun onCartItemQuantityMinusButtonClicked()
-        fun onCartItemQuantityReseted(position: Int, cartItemHolderData: CartItemHolderData)
+
+//        fun onCartItemQuantityReseted(position: Int, cartItemHolderData: CartItemHolderData)
         fun onCartItemProductClicked(cartItemHolderData: CartItemHolderData)
         fun onCartItemQuantityInputFormClicked(qty: String)
         fun onCartItemLabelInputRemarkClicked()
         fun onCartItemCheckChanged(position: Int, cartItemHolderData: CartItemHolderData)
         fun onBundleItemCheckChanged(cartItemHolderData: CartItemHolderData)
         fun onWishlistCheckChanged(productId: String, cartId: String, imageView: ImageView, isError: Boolean, errorType: String)
-        fun onNeedToRefreshSingleShop(cartItemHolderData: CartItemHolderData)
+        fun onNeedToRefreshSingleShop(cartItemHolderData: CartItemHolderData, itemPosition: Int)
         fun onNeedToRefreshWeight(cartItemHolderData: CartItemHolderData)
-        fun onNeedToRefreshMultipleShop()
         fun onNeedToRecalculate()
         fun onCartItemQuantityChanged(cartItemHolderData: CartItemHolderData, newQuantity: Int)
         fun onCartItemShowRemainingQty(productId: String)
@@ -94,5 +87,11 @@ class CartItemAdapter(private val actionListener: ActionListener) : RecyclerView
         fun onShowActionSeeOtherProduct(productId: String, errorType: String)
         fun onFollowShopClicked(shopId: String, errorType: String)
         fun onVerificationClicked(applink: String)
+        fun onCartShopNameClicked(shopId: String?, shopName: String?, isTokoNow: Boolean)
+        fun onProductAddOnClicked(addOnId: CartItemHolderData)
+
+        fun onAddOnsProductWidgetImpression(addOnType: Int, productId: String)
+
+        fun onClickAddOnsProductWidgetCart(addOnType: Int, productId: String)
     }
 }

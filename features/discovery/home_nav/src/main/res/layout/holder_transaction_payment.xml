@@ -37,7 +37,7 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/order_payment_status"
-            android:textColor="@color/Unify_Y400"
+            android:textColor="@color/Unify_YN400"
             android:textSize="10sp"
             android:textStyle="bold"
             android:layout_marginTop="8dp"
@@ -65,7 +65,7 @@
             android:layout_height="wrap_content"/>
 
         <com.tokopedia.unifyprinciples.Typography
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             android:id="@+id/order_payment_description"
             app:typographyType="small"
             android:layout_marginTop="2dp"

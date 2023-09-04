@@ -2,7 +2,7 @@ apply plugin: 'java-library'
 apply plugin: 'kotlin'
 
 ext {
-    lintVersion = "27.2.1"
+    lintVersion = "31.1.0"
 }
 
 
@@ -22,7 +22,7 @@ dependencies {
 project.ext {
     artifactId = 'lint'
     groupId = 'com.tokopedia.library'
-    versionName = "0.0.62"
+    versionName = "0.0.67"
     artifactName = "lint"
 }
 

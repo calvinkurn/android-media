@@ -13,6 +13,7 @@ import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductIn
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductMerchantVoucherSummaryDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ShipmentPlusData
@@ -21,6 +22,7 @@ import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.Pro
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
 import com.tokopedia.product.detail.data.model.social_proof.SocialProofUiModel
 import com.tokopedia.product.detail.data.model.ticker.TickerActionBs
+import com.tokopedia.product.detail.view.viewholder.a_plus_content.APlusImageUiModel
 import com.tokopedia.product.detail.view.widget.ProductVideoCoordinator
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -37,7 +39,6 @@ interface DynamicProductDetailListener {
     fun refreshPage()
     fun isNavOld(): Boolean
     fun getFragmentTrackingQueue(): TrackingQueue?
-    fun getVariantString(): String
     fun getParentViewModelStoreOwner(): ViewModelStore
     fun getParentLifeCyclerOwner(): LifecycleOwner
     fun getRemoteConfigInstance(): RemoteConfig?
@@ -64,7 +65,10 @@ interface DynamicProductDetailListener {
         componentTrackDataModel: ComponentTrackDataModel?
     )
 
-    fun onMerchantVoucherSummaryClicked(shopId: String, @MvcSource source: Int, productId: String)
+    fun onMerchantVoucherSummaryClicked(
+        @MvcSource source: Int,
+        uiModel: ProductMerchantVoucherSummaryDataModel.UiModel
+    )
     fun showThumbnailImage(): Boolean
     fun onShowProductMediaRecommendationClicked()
 
@@ -441,17 +445,11 @@ interface DynamicProductDetailListener {
     )
 
     /**
-     * ProductBundlingViewHolder
+     * GlobalBundlingViewHolder
      */
     fun removeComponent(componentName: String)
 
     fun onImpressionProductBundling(
-        bundleId: String,
-        bundleType: String,
-        componentTrackDataModel: ComponentTrackDataModel
-    )
-
-    fun onClickCheckBundling(
         bundleId: String,
         bundleType: String,
         componentTrackDataModel: ComponentTrackDataModel
@@ -531,4 +529,12 @@ interface DynamicProductDetailListener {
      * Product Media Recom BottomSheet
      */
     fun onProductMediaRecomBottomSheetDismissed()
+
+    fun onClickDynamicOneLiner(title: String, component: ComponentTrackDataModel)
+
+    /**
+     * A+ Content
+     */
+    fun onToggleAPlus(expanded: Boolean, trackerData: APlusImageUiModel.TrackerData)
+    fun onImpressAPlus(trackerData: APlusImageUiModel.TrackerData)
 }

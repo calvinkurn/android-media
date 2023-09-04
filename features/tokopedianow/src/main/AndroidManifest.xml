@@ -109,7 +109,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.tokopedia.tokopedianow.category.presentation.view.TokoNowCategoryActivity"
+            android:name=".oldcategory.presentation.view.TokoNowCategoryActivity"
             android:screenOrientation="portrait"
             android:label="@string/title_tokopedia_now"
             android:windowSoftInputMode="adjustResize"
@@ -124,7 +124,26 @@
                 <data
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_tokopedia_now"
-                    android:pathPattern="@string/path_tokopedia_now_category" />
+                    android:pathPattern="@string/path_tokopedia_now_old_category" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".category.presentation.activity.TokoNowCategoryActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/title_tokopedia_now"
+            android:windowSoftInputMode="adjustResize"
+            android:theme="@style/Theme.WhiteUnify"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_tokopedia_now"
+                    android:pathPattern="@string/path_tokopedia_now_category_main" />
             </intent-filter>
         </activity>
         <activity
@@ -349,5 +368,23 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Transparent"
             android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name="com.tokopedia.tokopedianow.buyercomm.presentation.activity.TokoNowBuyerCommunicationActivity"
+            android:exported="false"
+            android:label="@string/title_tokopedia_now"
+            android:theme="@style/Theme.AppCompat.Translucent">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_tokopedia_now"
+                    android:pathPattern="@string/path_tokopedia_now_buyer_communication"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
     </application>
 </manifest>

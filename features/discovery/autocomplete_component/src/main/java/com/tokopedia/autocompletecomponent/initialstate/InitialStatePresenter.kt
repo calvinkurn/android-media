@@ -15,6 +15,7 @@ import com.tokopedia.autocompletecomponent.initialstate.dynamic.DynamicInitialSt
 import com.tokopedia.autocompletecomponent.initialstate.dynamic.DynamicInitialStateSearchDataView
 import com.tokopedia.autocompletecomponent.initialstate.dynamic.DynamicInitialStateTitleDataView
 import com.tokopedia.autocompletecomponent.initialstate.dynamic.convertToDynamicInitialStateSearchDataView
+import com.tokopedia.autocompletecomponent.initialstate.mps.MpsDataView
 import com.tokopedia.autocompletecomponent.initialstate.popularsearch.PopularSearchDataView
 import com.tokopedia.autocompletecomponent.initialstate.popularsearch.PopularSearchTitleDataView
 import com.tokopedia.autocompletecomponent.initialstate.popularsearch.convertToPopularSearchDataView
@@ -28,6 +29,8 @@ import com.tokopedia.autocompletecomponent.initialstate.searchbareducation.conve
 import com.tokopedia.autocompletecomponent.util.getShopIdFromApplink
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.NAVSOURCE
+import com.tokopedia.discovery.common.reimagine.ReimagineRollence
+import com.tokopedia.discovery.common.reimagine.Search1InstAuto
 import com.tokopedia.discovery.common.utils.Dimension90Utils
 import com.tokopedia.discovery.common.utils.UrlParamUtils
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
@@ -46,6 +49,7 @@ class InitialStatePresenter @Inject constructor(
     @Named(REFRESH_INITIAL_STATE_USE_CASE)
     private val refreshInitialStateUseCase: UseCase<List<InitialStateData>>,
     private val userSession: UserSessionInterface,
+    private val reimagine: ReimagineRollence
 ) : BaseDaggerPresenter<InitialStateContract.View>(), InitialStateContract.Presenter {
 
     private var listVisitable = mutableListOf<Visitable<*>>()
@@ -115,7 +119,9 @@ class InitialStatePresenter @Inject constructor(
 
         listVisitable = getInitialStateResult(initialStateDataView.list)
 
-        view?.showInitialStateResult(listVisitable)
+        val view = view ?: return
+        view.showInitialStateResult(listVisitable)
+        if (initialStateUniverse.isMps) view.enableMps() else view.disableMps()
     }
 
     private fun <E: Any, T: Collection<E>> T.withNotEmpty(func: T.() -> Unit): Unit {
@@ -221,11 +227,15 @@ class InitialStatePresenter @Inject constructor(
                     addRecentSearchData(data, initialStateData.items, initialStateData.trackingOption)
                 }
                 InitialStateData.INITIAL_STATE_RECENT_VIEW -> {
-                    val title = RecentViewTitleDataView(initialStateData.header)
+                    if(initialStateData.header.isNotEmpty()) {
+                        val title = RecentViewTitleDataView(initialStateData.header)
+                        data.add(title)
+                    }
+
                     val recentViewDataView = initialStateData
                         .convertToRecentViewDataView(getDimension90(), keyword)
 
-                    data.addAll(listOf(title, recentViewDataView))
+                    data.addAll(listOf(recentViewDataView))
 
                     onRecentViewImpressed(recentViewDataView, initialStateData.items)
                 }
@@ -270,6 +280,16 @@ class InitialStatePresenter @Inject constructor(
                     initialStateData.convertToSearchBarEducationDataView(
                         getDimension90(),
                         keyword,
+                    )?.let {
+                        data.add(it)
+                    }
+                }
+                InitialStateData.INITIAL_STATE_MPS -> {
+                    MpsDataView.create(
+                        initialStateData,
+                        getDimension90(),
+                        keyword,
+                        searchParameter,
                     )?.let {
                         data.add(it)
                     }
@@ -336,7 +356,7 @@ class InitialStatePresenter @Inject constructor(
         listInitialStateItem: List<InitialStateItem>,
         trackingOption: Int,
     ) {
-        if (listInitialStateItem.size <= RECENT_SEARCH_SEE_MORE_LIMIT)
+        if (listInitialStateItem.size <= RECENT_SEARCH_SEE_MORE_LIMIT || !isReimagineVariantControl())
             addRecentSearchDataWithoutSeeMoreButton(listVisitable, listInitialStateItem, trackingOption)
         else
             addRecentSearchDataWithSeeMoreButton(listVisitable, listInitialStateItem, trackingOption)
@@ -782,4 +802,6 @@ class InitialStatePresenter @Inject constructor(
         view.route(item.applink, searchParameter)
         view.finish()
     }
+
+    private fun isReimagineVariantControl() = reimagine.search1InstAuto() == Search1InstAuto.CONTROL
 }

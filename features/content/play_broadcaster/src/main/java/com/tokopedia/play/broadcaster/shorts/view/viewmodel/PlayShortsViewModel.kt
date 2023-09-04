@@ -8,6 +8,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.shorts.domain.PlayShortsRepository
 import com.tokopedia.play.broadcaster.shorts.domain.manager.PlayShortsAccountManager
+import com.tokopedia.play.broadcaster.shorts.domain.model.OnboardAffiliateRequestModel
 import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsConfigUiModel
 import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsMediaUiModel
 import com.tokopedia.play.broadcaster.shorts.ui.model.action.PlayShortsAction
@@ -18,8 +19,10 @@ import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsUiState
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsUploadUiState
 import com.tokopedia.play.broadcaster.shorts.view.custom.DynamicPreparationMenu
 import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel
+import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel.Companion.TYPE_SHORTS_AFFILIATE
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagItem
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play_common.model.result.NetworkResult
@@ -73,9 +76,6 @@ class PlayShortsViewModel @Inject constructor(
     val accountList: List<ContentAccountUiModel>
         get() = _accountList.value
 
-    val isAllowToSeePerformanceDashboard: Boolean
-        get() = selectedAccount.isShop
-
     val selectedAccount: ContentAccountUiModel
         get() = _selectedAccount.value
 
@@ -106,8 +106,11 @@ class PlayShortsViewModel @Inject constructor(
     private val _selectedAccount = MutableStateFlow(ContentAccountUiModel.Empty)
     private val _menuList = MutableStateFlow<List<DynamicPreparationMenu>>(emptyList())
     private val _productSectionList = MutableStateFlow<List<ProductTagSectionUiModel>>(emptyList())
-    private val _tags = MutableStateFlow<NetworkResult<Set<PlayTagUiModel>>>(NetworkResult.Unknown)
+    private val _tags = MutableStateFlow<NetworkResult<PlayTagUiModel>>(NetworkResult.Unknown)
     private val _uploadState = MutableStateFlow<PlayShortsUploadUiState>(PlayShortsUploadUiState.Unknown)
+    private val _isAffiliate = MutableStateFlow(false)
+    val isSelectedAccountAffiliate: Boolean
+        get() = _selectedAccount.value.isUser && _isAffiliate.value
 
     private val _titleForm = MutableStateFlow(PlayShortsTitleFormUiState.Empty)
     private val _coverForm = MutableStateFlow(PlayShortsCoverFormUiState.Empty)
@@ -119,14 +122,14 @@ class PlayShortsViewModel @Inject constructor(
         _productSectionList
     ) { menuList, titleForm, coverForm, productSectionList ->
         menuList.map {
-            when (it.menuId) {
-                DynamicPreparationMenu.TITLE -> {
+            when (it.menu) {
+                DynamicPreparationMenu.Menu.Title -> {
                     it.copy(isChecked = titleForm.title.isNotEmpty())
                 }
-                DynamicPreparationMenu.PRODUCT -> {
+                DynamicPreparationMenu.Menu.Product -> {
                     it.copy(isChecked = productSectionList.isNotEmpty())
                 }
-                DynamicPreparationMenu.COVER -> {
+                DynamicPreparationMenu.Menu.Cover -> {
                     it.copy(
                         isChecked = coverForm.coverUri.isNotEmpty(),
                         isEnabled = isAllMandatoryMenuChecked
@@ -151,6 +154,8 @@ class PlayShortsViewModel @Inject constructor(
         _productSectionList,
         _tags,
         _uploadState,
+        _isAffiliate,
+        _bannerPreparation,
     ) { globalLoader,
         config,
         media,
@@ -161,7 +166,9 @@ class PlayShortsViewModel @Inject constructor(
         coverForm,
         productSectionList,
         tags,
-        uploadState ->
+        uploadState,
+        isAffiliate,
+        bannerPreparation ->
         PlayShortsUiState(
             globalLoader = globalLoader,
             config = config,
@@ -174,6 +181,8 @@ class PlayShortsViewModel @Inject constructor(
             productSectionList = productSectionList,
             tags = tags,
             uploadState = uploadState,
+            isAffiliate = isAffiliate,
+            bannerPreparation = bannerPreparation,
         )
     }
 
@@ -216,11 +225,33 @@ class PlayShortsViewModel @Inject constructor(
             is PlayShortsAction.SelectTag -> handleSelectTag(action.tag)
             is PlayShortsAction.ClickUploadVideo -> handleClickUploadVideo()
 
+            /** Shorts x Affiliate */
+            is PlayShortsAction.SubmitOnboardAffiliateTnc -> handleSubmitOnboardAffiliateTnc()
+
             /** Others */
             is PlayShortsAction.SetShowSetupCoverCoachMark -> handleSetShowSetupCoverCoachMark()
             is PlayShortsAction.SetCoverUploadedSource -> handleSetCoverUploadedSource(action.source)
             is PlayShortsAction.ResetUploadState -> handleResetUploadState()
         }
+    }
+
+    private fun setupShortsAffiliateEntryPoint(needToShow: Boolean) {
+        val banner = PlayBroadcastPreparationBannerModel(TYPE_SHORTS_AFFILIATE)
+        if (needToShow) addBannerPreparation(banner)
+        else removeBannerPreparation(banner)
+    }
+
+    private fun addBannerPreparation(data: PlayBroadcastPreparationBannerModel) {
+        viewModelScope.launchCatchError(block = {
+            if (_bannerPreparation.value.contains(data)) return@launchCatchError
+            _bannerPreparation.update { it + data }
+        }, onError = {})
+    }
+
+    private fun removeBannerPreparation(data: PlayBroadcastPreparationBannerModel) {
+        viewModelScope.launchCatchError(block = {
+            _bannerPreparation.update { it - data }
+        }, onError = {})
     }
 
     private fun handleResetUploadState() {
@@ -259,6 +290,22 @@ class PlayShortsViewModel @Inject constructor(
             setupConfigurationIfEligible(bestEligibleAccount)
         }) {
             _uiEvent.emit(PlayShortsUiEvent.ErrorPreparingPage)
+        }
+    }
+
+    private fun handleSubmitOnboardAffiliateTnc() {
+        viewModelScope.launchCatchErrorWithLoader(block = {
+
+            val request = OnboardAffiliateRequestModel(
+                channelID = _config.value.shortsId.toLong(),
+                profileID = _selectedAccount.value.id,
+            )
+
+            repo.submitOnboardAffiliateTnc(request)
+
+            checkIsSuccessSubmitAffiliate()
+        }) {
+            _uiEvent.emit(PlayShortsUiEvent.ErrorOnboardAffiliate(it))
         }
     }
 
@@ -353,17 +400,15 @@ class PlayShortsViewModel @Inject constructor(
         oldProduct: List<ProductTagSectionUiModel>,
         newProduct: List<ProductTagSectionUiModel>,
     ) {
-        if (oldProduct.isNotEmpty() &&
-            newProduct.isEmpty() &&
-            isAfterUploadAutoGeneratedCover
-        ) {
+        if (!isAfterUploadAutoGeneratedCover) return
+
+        deleteSavedAutoGeneratedCover()
+        _coverForm.value = PlayShortsCoverFormUiState.Empty
+        if (oldProduct.isNotEmpty() && newProduct.isEmpty()) {
             _uiEvent.emit(PlayShortsUiEvent.AutoGeneratedCoverToaster(isToasterUpdate = false))
-        } else if (oldProduct.isNotEmpty() &&
-            oldProduct != newProduct &&
-            isAfterUploadAutoGeneratedCover
-        ) {
+        } else if (oldProduct.isNotEmpty() && oldProduct != newProduct) {
             _uiEvent.emit(PlayShortsUiEvent.AutoGeneratedCoverToaster(isToasterUpdate = true))
-        }
+        } else return
     }
 
     private fun handleClickNext() {
@@ -386,19 +431,32 @@ class PlayShortsViewModel @Inject constructor(
         }
     }
 
-    private fun handleSelectTag(tag: PlayTagUiModel) {
+    private fun handleSelectTag(tag: PlayTagItem) {
+
+        if (!tag.isActive) return
+
         val tagState = _tags.value
         when (tagState is NetworkResult.Success) {
             true -> {
                 _tags.update {
+                    val newTags = tagState.data.tags.map {
+                        if (it.isActive && it.tag == tag.tag) {
+                            it.copy(isChosen = !it.isChosen)
+                        } else {
+                            it
+                        }
+                    }.toSet()
+
+                    val finalTags = if (newTags.count { it.isChosen } == tagState.data.maxTags) {
+                        newTags.map { it.copy(isActive = it.isChosen) }
+                    } else {
+                        newTags.map { it.copy(isActive = true) }
+                    }.toSet()
+
                     NetworkResult.Success(
-                        data = tagState.data.map {
-                            if (it.tag == tag.tag) {
-                                it.copy(isChosen = !it.isChosen)
-                            } else {
-                                it
-                            }
-                        }.toSet()
+                        data = tagState.data.copy(
+                            tags = finalTags
+                        )
                     )
                 }
             }
@@ -430,7 +488,23 @@ class PlayShortsViewModel @Inject constructor(
         sharedPref.setUploadedCoverSource(source, selectedAccount.id, SOURCE)
     }
 
-    private fun setSelectedAccount(account: ContentAccountUiModel) {
+    private suspend fun checkIsUserAffiliate() {
+        if (selectedAccount.isShop) {
+            _isAffiliate.update { false }
+            setupShortsAffiliateEntryPoint(false)
+            return
+        }
+        val checkIsAffiliate = repo.getBroadcasterCheckAffiliate()
+        _isAffiliate.update { checkIsAffiliate.isAffiliate }
+        setupShortsAffiliateEntryPoint(!_isAffiliate.value)
+    }
+
+    private suspend fun checkIsSuccessSubmitAffiliate() {
+        checkIsUserAffiliate()
+        _uiEvent.emit(PlayShortsUiEvent.SuccessOnboardAffiliate)
+    }
+
+    private suspend fun setSelectedAccount(account: ContentAccountUiModel) {
         _selectedAccount.update { account }
         sharedPref.setLastSelectedAccountType(account.type)
         resetForm()
@@ -475,14 +549,16 @@ class PlayShortsViewModel @Inject constructor(
 
             _config.update { finalConfig }
             setSelectedAccount(account)
+            checkIsUserAffiliate()
         }
     }
 
-    private fun resetForm() {
+    private suspend fun resetForm() {
         _titleForm.update { PlayShortsTitleFormUiState.Empty }
         _productSectionList.update { emptyList() }
         _coverForm.update { PlayShortsCoverFormUiState.Empty }
         mDataStore.getSetupDataStore().setFullCover(PlayCoverUiModel.empty())
+        _uiEvent.emit(PlayShortsUiEvent.ResetForm)
     }
 
     private fun emitEventAccountBanned() {
@@ -525,7 +601,7 @@ class PlayShortsViewModel @Inject constructor(
     private suspend fun saveTag() {
         val tagState = _tags.value
         if (tagState is NetworkResult.Success) {
-            val selectedTag = tagState.data.filter { it.isChosen }.map { it.tag }.toSet()
+            val selectedTag = tagState.data.tags.filter { it.isChosen }.map { it.tag }.toSet()
 
             if (selectedTag.isNotEmpty()) {
                 val result = repo.saveTag(shortsId, selectedTag)

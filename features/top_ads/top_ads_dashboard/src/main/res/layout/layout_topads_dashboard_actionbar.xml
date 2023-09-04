@@ -32,6 +32,6 @@
         android:layout_height="wrap_content"
         app:typographyType="heading_5"
         android:text="@string/topads_dash_buat_iklan"
-        android:textColor="@color/Unify_G500"
+        android:textColor="@color/Unify_GN500"
         android:textSize="@dimen/unify_space_12" />
 </LinearLayout>

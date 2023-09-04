@@ -14,7 +14,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:resize_mode="fixed_width"
+        app:resize_mode="fixed_height"
         app:show_timeout="3000"
         app:shutter_background_color="@android:color/transparent"
         app:surface_type="texture_view"
@@ -142,26 +142,34 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@id/tv_feed_caption"
+        app:layout_constraintBottom_toTopOf="@id/layout_feed_caption"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/feed_live_wave_label" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_feed_caption"
+    <com.tokopedia.feedplus.presentation.customview.FeedCaptionFadingLayout
+        android:id="@+id/layout_feed_caption"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
-        android:ellipsize="end"
-        android:maxLines="2"
-        android:textColor="@color/Unify_Static_White"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/layout_author_info"
         app:layout_constraintStart_toStartOf="@id/layout_author_info"
         app:layout_constraintTop_toBottomOf="@id/layout_author_info"
-        app:layout_constraintVertical_bias="1"
-        app:layout_constraintVertical_chainStyle="packed"
-        app:typographyType="paragraph_2"
-        tools:text="Post Caption" />
+        >
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_feed_caption"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:ellipsize="end"
+            android:scrollbars="none"
+            android:textColor="@color/Unify_Static_White"
+            app:typographyType="paragraph_2"
+            tools:text="Post Caption"
+            />
+
+    </com.tokopedia.feedplus.presentation.customview.FeedCaptionFadingLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

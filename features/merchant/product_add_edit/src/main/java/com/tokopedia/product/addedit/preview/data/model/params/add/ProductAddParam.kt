@@ -53,8 +53,36 @@ data class ProductAddParam (
         @SerializedName("cpl")
         var cpl: CPLData? = null,
         @SerializedName("annotations")
-        var annotations: List<String>? = null
+        var annotations: List<String>? = null,
+        @SerializedName("metadata")
+        var categoryMetadata: Metadata = Metadata()
 ) : Parcelable
+
+@Parcelize
+data class Metadata (
+    @SerializedName("category")
+    var category: Category = Category(),
+): Parcelable {
+    @Parcelize
+    data class Category (
+        @SerializedName("isFromRecommendation")
+        var isFromRecommendation: Boolean = false,
+        @SerializedName("recommendationRank")
+        var recommendationRank: Int = 0,
+        @SerializedName("recommendationList")
+        var recommendationList: List<Recommendation> = emptyList()
+    ): Parcelable
+
+    @Parcelize
+    data class Recommendation (
+        @SerializedName("categoryID")
+        var categoryId: Long = 0,
+        @SerializedName("confidenceScore")
+        var confidenceScore: Double = 0.0,
+        @SerializedName("precision")
+        var precision: Double = 0.0
+    ): Parcelable
+}
 
 @Parcelize
 data class ShopParam(

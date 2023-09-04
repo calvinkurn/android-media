@@ -3,6 +3,7 @@ package com.tokopedia.autocompletecomponent.suggestion
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.tokopedia.autocompletecomponent.createFakeBaseAppComponent
+import com.tokopedia.autocompletecomponent.searchbar.SearchBarKeyword
 import com.tokopedia.autocompletecomponent.suggestion.SuggestionFragment.Companion.SUGGESTION_FRAGMENT_TAG
 import com.tokopedia.autocompletecomponent.suggestion.SuggestionFragment.SuggestionViewUpdateListener
 import com.tokopedia.autocompletecomponent.suggestion.di.SuggestionViewListenerModule
@@ -39,7 +40,10 @@ class SuggestionActivityTest:
     override fun onStart() {
         super.onStart()
 
-        suggestionFragment.getSuggestion(mapOf(SearchApiConst.Q to "samsung"))
+        suggestionFragment.getSuggestion(
+            mapOf(SearchApiConst.Q to "samsung"),
+            SearchBarKeyword(keyword = "samsung")
+        )
     }
 
     override fun showSuggestionView() {

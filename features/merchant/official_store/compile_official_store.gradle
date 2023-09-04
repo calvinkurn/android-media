@@ -7,7 +7,8 @@ include "libraries:track"
 include "libraries:remote_config"
 include "libraries:play_core"
 include "libraries:iris_session"
-include "libraries:kotlin_extensions"
+
+
 include "libraries:analytics"
 include "libraries:base_list"
 include "libraries:analytics_debugger"

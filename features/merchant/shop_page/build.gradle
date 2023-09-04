@@ -19,6 +19,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.shop'
+    testNamespace 'com.tokopedia.shop.test'
     defaultConfig {
         multiDexEnabled true
     }
@@ -41,8 +43,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.universal_sharing)
     implementation projectOrAar(rootProject.ext.libraries.analytics)
     implementation projectOrAar(rootProject.ext.libraries.trackingOptimizer)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
-    implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.webview)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation projectOrAar(rootProject.ext.features.shopCommon)
@@ -56,7 +56,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.localizationchooseaddress_common)
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.features.usercomponents)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.features.carouselProductCard)
     implementation projectOrAar(rootProject.ext.features.discoveryCommon)
     implementation projectOrAar(rootProject.ext.features.youtubeCommon)
@@ -137,6 +137,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.productDetailCommon)
     implementation projectOrAar(rootProject.ext.features.affiliateSDK)
     implementation project(rootProject.ext.libraries.foldable)
+    implementation projectOrAar(rootProject.ext.features.recommendationWidgetCommon)
 
     // UI Test
     androidTestImplementation projectOrAar(rootProject.ext.features.shopShowcase)

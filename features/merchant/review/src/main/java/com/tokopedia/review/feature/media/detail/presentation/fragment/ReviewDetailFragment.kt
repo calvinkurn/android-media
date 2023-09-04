@@ -47,6 +47,9 @@ class ReviewDetailFragment : BaseDaggerFragment(), CoroutineScope {
     lateinit var dispatchers: CoroutineDispatchers
 
     @Inject
+    lateinit var reviewDetailTracker: ReviewDetailTracker
+
+    @Inject
     @ReviewDetailViewModelFactory
     lateinit var reviewDetailViewModelFactory: ViewModelProvider.Factory
 
@@ -236,14 +239,17 @@ class ReviewDetailFragment : BaseDaggerFragment(), CoroutineScope {
             val invertedLikeStatus = reviewDetailViewModel.getInvertedLikeStatus()
             if (feedbackID != null && invertedLikeStatus != null) {
                 if (sharedReviewMediaGalleryViewModel.isProductReview()) {
-                    ReviewDetailTracker.trackOnLikeReviewClicked(
+                    reviewDetailTracker.trackOnLikeReviewClicked(
+                        loggedInUserId = sharedReviewMediaGalleryViewModel.getUserID(),
                         feedbackId = feedbackID,
-                        isLiked = invertedLikeStatus == ToggleLikeReviewUseCase.LIKED,
                         productId = sharedReviewMediaGalleryViewModel.getProductId(),
-                        isFromGallery = sharedReviewMediaGalleryViewModel.isFromGallery()
+                        isFromGallery = sharedReviewMediaGalleryViewModel.isFromGallery(),
+                        reviewUserId = sharedReviewMediaGalleryViewModel.getReviewUserID(),
+                        isReviewOwner = sharedReviewMediaGalleryViewModel.isReviewOwner,
+                        isLiked = invertedLikeStatus == ToggleLikeReviewUseCase.LIKED,
                     )
                 } else {
-                    ReviewDetailTracker.trackOnShopReviewLikeReviewClicked(
+                    reviewDetailTracker.trackOnShopReviewLikeReviewClicked(
                         feedbackId = feedbackID,
                         isLiked = invertedLikeStatus == ToggleLikeReviewUseCase.LIKED,
                         shopId = sharedReviewMediaGalleryViewModel.getShopId()
@@ -270,7 +276,7 @@ class ReviewDetailFragment : BaseDaggerFragment(), CoroutineScope {
                 ).build().toString()
             )
             if (routed) {
-                ReviewDetailTracker.trackClickReviewerName(
+                reviewDetailTracker.trackClickReviewerName(
                     sharedReviewMediaGalleryViewModel.isFromGallery(),
                     reviewDetailViewModel.getFeedbackID().orEmpty(),
                     userId,
@@ -291,13 +297,16 @@ class ReviewDetailFragment : BaseDaggerFragment(), CoroutineScope {
     private inner class ReviewDetailSupplementaryInfoListener: ReviewDetailSupplementaryInfo.Listener {
         override fun onDescriptionSeeMoreClicked() {
             if (sharedReviewMediaGalleryViewModel.isProductReview()) {
-                ReviewDetailTracker.trackOnSeeAllClicked(
-                    reviewDetailViewModel.getFeedbackID().orEmpty(),
-                    sharedReviewMediaGalleryViewModel.getProductId(),
-                    sharedReviewMediaGalleryViewModel.isFromGallery()
+                reviewDetailTracker.trackOnSeeAllClicked(
+                    loggedInUserId = sharedReviewMediaGalleryViewModel.getUserID(),
+                    feedbackId = reviewDetailViewModel.getFeedbackID().orEmpty(),
+                    productId = sharedReviewMediaGalleryViewModel.getProductId(),
+                    isFromGallery = sharedReviewMediaGalleryViewModel.isFromGallery(),
+                    reviewUserId = sharedReviewMediaGalleryViewModel.getReviewUserID(),
+                    isReviewOwner = sharedReviewMediaGalleryViewModel.isReviewOwner,
                 )
             } else {
-                ReviewDetailTracker.trackOnShopReviewSeeAllClicked(
+                reviewDetailTracker.trackOnShopReviewSeeAllClicked(
                     reviewDetailViewModel.getFeedbackID().orEmpty(),
                     sharedReviewMediaGalleryViewModel.getShopId()
                 )

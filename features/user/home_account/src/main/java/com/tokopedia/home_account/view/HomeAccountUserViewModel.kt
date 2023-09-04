@@ -27,7 +27,6 @@ import com.tokopedia.home_account.domain.usecase.HomeAccountUserUsecase
 import com.tokopedia.home_account.domain.usecase.OfferInterruptUseCase
 import com.tokopedia.home_account.domain.usecase.SaveAttributeOnLocalUseCase
 import com.tokopedia.home_account.domain.usecase.UpdateSafeModeUseCase
-import com.tokopedia.home_account.privacy_account.domain.GetLinkStatusUseCase
 import com.tokopedia.home_account.privacy_account.domain.GetUserProfile
 import com.tokopedia.home_account.view.mapper.ProfileWithDataStoreMapper
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -71,7 +70,6 @@ class HomeAccountUserViewModel @Inject constructor(
     private val getTokopointsBalanceAndPointUseCase: GetTokopointsBalanceAndPointUseCase,
     private val getSaldoBalanceUseCase: GetSaldoBalanceUseCase,
     private val getCoBrandCCBalanceAndPointUseCase: GetCoBrandCCBalanceAndPointUseCase,
-    private val getLinkStatusUseCase: GetLinkStatusUseCase,
     private val getPhoneUseCase: GetUserProfile,
     private val userProfileSafeModeUseCase: GetSafeModeUseCase,
     private val checkFingerprintToggleStatusUseCase: CheckFingerprintToggleStatusUseCase,
@@ -147,6 +145,7 @@ class HomeAccountUserViewModel @Inject constructor(
         }
     }
 
+    @Deprecated("Remove this class after integrating SCP Login to Tokopedia")
     fun refreshPhoneNo() {
         launchCatchError(block = {
             val profile = getPhoneUseCase(Unit)
@@ -223,7 +222,6 @@ class HomeAccountUserViewModel @Inject constructor(
             try {
                 coroutineScope {
                     val homeAccountUser = async { getHomeAccountUserUseCase(Unit) }
-                    val linkStatus = async { getLinkStatusUseCase(GetLinkStatusUseCase.ACCOUNT_LINKING_TYPE) }
                     val offerInterruption = offerInterruptUseCase(
                         mapOf(
                             OfferInterruptUseCase.PARAM_SUPPORT_BIOMETRIC to isSupportBiometric,
@@ -232,7 +230,6 @@ class HomeAccountUserViewModel @Inject constructor(
                     )
 
                     val accountModel = homeAccountUser.await().apply {
-                        this.linkStatus = linkStatus.await().response
                         this.offerInterrupt = offerInterruption.data
                     }
 
@@ -309,26 +306,35 @@ class HomeAccountUserViewModel @Inject constructor(
             })
     }
 
-    fun getBalanceAndPoint(walletId: String, hideTitle: Boolean, titleText: String) {
+    fun getBalanceAndPoint(walletId: String, hideTitleText: Boolean, titleText: String) {
         launchCatchError(block = {
             when (walletId) {
                 AccountConstants.WALLET.TOKOPOINT -> {
                     val result = getTokopointsBalanceAndPointUseCase(Unit)
-                    result.data.titleAsset = titleText
-                    setBalanceAndPointValue(result.data, walletId, hideTitle)
+                    result.data.apply {
+                        titleAsset = titleText
+                        hideTitle = hideTitleText
+                    }
+                    setBalanceAndPointValue(result.data, walletId)
                 }
                 AccountConstants.WALLET.SALDO -> {
                     val result = getSaldoBalanceUseCase(Unit)
-                    result.data.titleAsset = titleText
-                    setBalanceAndPointValue(result.data, walletId, hideTitle)
+                    result.data.apply {
+                        titleAsset = titleText
+                        hideTitle = hideTitleText
+                    }
+                    setBalanceAndPointValue(result.data, walletId)
                 }
                 AccountConstants.WALLET.CO_BRAND_CC -> {
                     val result = getCoBrandCCBalanceAndPointUseCase(Unit)
-                    result.data.titleAsset = titleText
-                    setBalanceAndPointValue(result.data, walletId, hideTitle)
+                    result.data.apply {
+                        titleAsset = titleText
+                        hideTitle = hideTitleText
+                    }
+                    setBalanceAndPointValue(result.data, walletId)
                 }
                 else -> {
-                    getOtherBalanceAndPoint(walletId, hideTitle)
+                    getOtherBalanceAndPoint(walletId, hideTitleText)
                 }
             }
         }, onError = {
@@ -339,13 +345,16 @@ class HomeAccountUserViewModel @Inject constructor(
     /**
      * same API
      */
-    private suspend fun getOtherBalanceAndPoint(walletId: String, hideTitle: Boolean) {
+    private suspend fun getOtherBalanceAndPoint(walletId: String, hideTitleText: Boolean) {
         val result = when (walletId) {
             AccountConstants.WALLET.GOPAY -> {
                 getBalanceAndPointUseCase(GOPAY_PARTNER_CODE)
             }
             AccountConstants.WALLET.GOPAYLATER -> {
                 getBalanceAndPointUseCase(GOPAYLATER_PARTNER_CODE)
+            }
+            AccountConstants.WALLET.GOPAYLATERCICIL -> {
+                getBalanceAndPointUseCase(GOPAYLATERCICIL_PARTNER_CODE)
             }
             AccountConstants.WALLET.OVO -> {
                 getBalanceAndPointUseCase(OVO_PARTNER_CODE)
@@ -354,12 +363,14 @@ class HomeAccountUserViewModel @Inject constructor(
                 BalanceAndPointDataModel()
             }
         }
-        setBalanceAndPointValue(result.data, walletId, hideTitle)
+        result.data.apply {
+            hideTitle = hideTitleText
+        }
+        setBalanceAndPointValue(result.data, walletId)
     }
 
-    private fun setBalanceAndPointValue(data: WalletappGetAccountBalance, walletId: String, hideTitle: Boolean) {
+    private fun setBalanceAndPointValue(data: WalletappGetAccountBalance, walletId: String) {
         if (data.id.isNotEmpty()) {
-            data.hideTitle = hideTitle
             _balanceAndPoint.value = ResultBalanceAndPoint.Success(data, walletId)
         } else {
             _balanceAndPoint.value = ResultBalanceAndPoint.Fail(IllegalArgumentException(), walletId)
@@ -393,6 +404,7 @@ class HomeAccountUserViewModel @Inject constructor(
 
         private const val GOPAY_PARTNER_CODE = "PEMUDA"
         private const val GOPAYLATER_PARTNER_CODE = "PEMUDAPAYLATER"
+        private const val GOPAYLATERCICIL_PARTNER_CODE = "PEMUDACICIL"
         private const val OVO_PARTNER_CODE = "OVO"
         private const val GOPAY_WALLET_CODE = "PEMUDAPOINTS"
     }

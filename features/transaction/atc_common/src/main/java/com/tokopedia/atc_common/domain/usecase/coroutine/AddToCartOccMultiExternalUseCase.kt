@@ -15,9 +15,11 @@ import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
-class AddToCartOccMultiExternalUseCase @Inject constructor(@ApplicationContext private val graphqlRepository: GraphqlRepository,
-                                                           private val addToCartExternalDataMapper: AddToCartExternalDataMapper,
-                                                           private val chosenAddressAddToCartRequestHelper: ChosenAddressRequestHelper) : UseCase<AddToCartOccMultiDataModel>() {
+class AddToCartOccMultiExternalUseCase @Inject constructor(
+    @ApplicationContext private val graphqlRepository: GraphqlRepository,
+    private val addToCartExternalDataMapper: AddToCartExternalDataMapper,
+    private val chosenAddressAddToCartRequestHelper: ChosenAddressRequestHelper
+) : UseCase<AddToCartOccMultiDataModel>() {
 
     private var productIds: List<String>? = null
     private var userId: String? = null
@@ -51,12 +53,19 @@ class AddToCartOccMultiExternalUseCase @Inject constructor(@ApplicationContext p
         if (!result.isStatusError()) {
             addToCartOccExternalGqlResponse.response.data.data.forEach {
                 AddToCartOccExternalAnalytics.sendEETracking(it)
-                AddToCartBaseAnalytics.sendAppsFlyerTracking(it.productId, it.productName, it.price.toString(),
-                        it.quantity.toString(), it.category)
-                AddToCartBaseAnalytics.sendBranchIoTracking(it.productId, it.productName, it.price.toString(),
-                        it.quantity.toString(), it.category, "",
-                        "", "", "",
-                        "", "", userId)
+                AddToCartBaseAnalytics.sendAppsFlyerTracking(
+                    it.productId,
+                    it.productName,
+                    it.price.toString(),
+                    it.quantity.toString(),
+                    it.category
+                )
+                AddToCartBaseAnalytics.sendBranchIoTracking(
+                    it.productId, it.productName, it.price.toString(),
+                    it.quantity.toString(), it.category, "",
+                    "", "", "",
+                    "", "", userId
+                )
             }
         }
         return result
@@ -64,10 +73,10 @@ class AddToCartOccMultiExternalUseCase @Inject constructor(@ApplicationContext p
 
     private fun getParams(productIds: List<String>): Map<String, Any> {
         return mapOf(
-                PARAM to mapOf(
-                        PARAM_PRODUCT_IDS to productIds,
-                        ChosenAddressRequestHelper.KEY_CHOSEN_ADDRESS to chosenAddressAddToCartRequestHelper.getChosenAddress()
-                )
+            PARAM to mapOf(
+                PARAM_PRODUCT_IDS to productIds,
+                ChosenAddressRequestHelper.KEY_CHOSEN_ADDRESS to chosenAddressAddToCartRequestHelper.getChosenAddress()
+            )
         )
     }
 

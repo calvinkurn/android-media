@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.get
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager.VERTICAL
 import androidx.recyclerview.widget.RecyclerView
@@ -21,6 +23,7 @@ import com.tokopedia.autocompletecomponent.initialstate.di.InitialStateComponent
 import com.tokopedia.autocompletecomponent.initialstate.dynamic.DynamicInitialStateItemTrackingModel
 import com.tokopedia.autocompletecomponent.initialstate.dynamic.DynamicInitialStateListener
 import com.tokopedia.autocompletecomponent.initialstate.dynamic.DynamicInitialStateSearchDataView
+import com.tokopedia.autocompletecomponent.initialstate.mps.MpsInitialStateListener
 import com.tokopedia.autocompletecomponent.initialstate.popularsearch.PopularSearchDataView
 import com.tokopedia.autocompletecomponent.initialstate.popularsearch.PopularSearchListener
 import com.tokopedia.autocompletecomponent.initialstate.productline.ProductLineListener
@@ -28,14 +31,18 @@ import com.tokopedia.autocompletecomponent.initialstate.recentsearch.RecentSearc
 import com.tokopedia.autocompletecomponent.initialstate.recentsearch.RecentSearchListener
 import com.tokopedia.autocompletecomponent.initialstate.recentview.RecentViewDataView
 import com.tokopedia.autocompletecomponent.initialstate.recentview.RecentViewListener
-import com.tokopedia.autocompletecomponent.initialstate.searchbareducation.SearchBarEducationDataView
 import com.tokopedia.autocompletecomponent.initialstate.searchbareducation.SearchBarEducationListener
+import com.tokopedia.autocompletecomponent.searchbar.SearchBarViewModel
+import com.tokopedia.autocompletecomponent.util.HasViewModelFactory
 import com.tokopedia.autocompletecomponent.util.OnScrollListenerAutocomplete
 import com.tokopedia.autocompletecomponent.util.SCREEN_UNIVERSEARCH
 import com.tokopedia.autocompletecomponent.util.getModifiedApplink
+import com.tokopedia.discovery.common.reimagine.ReimagineRollence
+import com.tokopedia.discovery.common.reimagine.Search1InstAuto
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.track.TrackApp
 import javax.inject.Inject
 
 class InitialStateFragment:
@@ -48,7 +55,8 @@ class InitialStateFragment:
     DynamicInitialStateListener,
     CuratedCampaignListener,
     InitialStateChipListener,
-    SearchBarEducationListener {
+    SearchBarEducationListener,
+    MpsInitialStateListener {
 
     companion object {
         const val INITIAL_STATE_FRAGMENT_TAG = "INITIAL_STATE_FRAGMENT"
@@ -72,18 +80,33 @@ class InitialStateFragment:
     var initialStateTracking: InitialStateTracking? = null
         @Inject set
 
+    private val viewModel: SearchBarViewModel? by lazy {
+        val activity = activity ?: return@lazy null
+        if (activity !is HasViewModelFactory) return@lazy null
+        val factory = activity.viewModelFactory ?: return@lazy null
+        ViewModelProvider(activity, factory).get()
+    }
+
     private var performanceMonitoring: PerformanceMonitoring? = null
-    private val initialStateAdapterTypeFactory = InitialStateAdapterTypeFactory(
-        recentViewListener = this,
-        recentSearchListener = this,
-        productLineListener = this,
-        popularSearchListener = this,
-        dynamicInitialStateListener = this,
-        curatedCampaignListener = this,
-        chipListener = this,
-        searchBarEducationListener = this,
-    )
-    private val initialStateAdapter = InitialStateAdapter(initialStateAdapterTypeFactory)
+
+    var reimagineRollence: ReimagineRollence? = null
+        @Inject set
+
+    private val initialStateAdapter by lazy {
+        val initialStateAdapterTypeFactory = InitialStateAdapterTypeFactory(
+            recentViewListener = this,
+            recentSearchListener = this,
+            productLineListener = this,
+            popularSearchListener = this,
+            dynamicInitialStateListener = this,
+            curatedCampaignListener = this,
+            chipListener = this,
+            searchBarEducationListener = this,
+            mpsChipListener = this,
+            isReimagine = reimagineRollence?.search1InstAuto() != Search1InstAuto.CONTROL
+        )
+        InitialStateAdapter(initialStateAdapterTypeFactory)
+    }
 
     private val recyclerViewInitialState by lazy {
         view?.findViewById<RecyclerView?>(R.id.recyclerViewInitialState)
@@ -400,5 +423,18 @@ class InitialStateFragment:
 
     override fun trackEventClickSearchBarEducation(item: BaseItemInitialStateSearch) {
         initialStateTracking?.eventClickSearchBarEducation(item)
+    }
+
+    override fun onMpsChipClicked(item: BaseItemInitialStateSearch) {
+        item.click(TrackApp.getInstance().gtm)
+        viewModel?.onInitialStateItemSelected(item)
+    }
+
+    override fun enableMps() {
+        viewModel?.enableMps()
+    }
+
+    override fun disableMps() {
+        viewModel?.disableMps()
     }
 }

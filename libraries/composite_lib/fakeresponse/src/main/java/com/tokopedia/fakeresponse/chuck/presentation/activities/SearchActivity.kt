@@ -174,6 +174,9 @@ class SearchActivity : BaseActivity() {
             when (it) {
                 is Success<String> -> sendData(it.data)
                 is Fail -> toast(it.ex.message)
+                else -> {
+                    // no-op
+                }
             }
         })
     }

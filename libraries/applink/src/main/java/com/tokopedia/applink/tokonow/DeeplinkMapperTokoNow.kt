@@ -5,15 +5,13 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 
 object DeeplinkMapperTokopediaNow {
-
-    private const val INDEX_CATEGORY_L1 = 4
-    private const val INDEX_CATEGORY_L2 = 5
     private const val INDEX_RECIPE_ID = 2
     private const val INDEX_URL_PATH = 2
 
     private const val PARAM_CATEGORY_L1 = "category_l1"
     private const val PARAM_CATEGORY_L2 = "category_l2"
     private const val PARAM_RECIPE_SLUG = "slug"
+    private const val PARAM_L1 = "l1"
 
     private const val RECIPE_SEGMENT_COUNT = 3
     private const val RECIPE_PATH_INDEX = 1
@@ -78,12 +76,17 @@ object DeeplinkMapperTokopediaNow {
 
         val content = deeplinkWithoutQuery.split("/")
 
-        val categoryL1 = "$PARAM_CATEGORY_L1=${content.getOrElse(INDEX_CATEGORY_L1) { "" }}"
-        val categoryL2 = content.getOrElse(INDEX_CATEGORY_L2) { "" }.let {
-            if (it.isNotEmpty()) "&$PARAM_CATEGORY_L2=$it" else ""
+        val indexCategoryId = 4
+        return if (content.getOrElse(indexCategoryId) { "" } == PARAM_L1) {
+            val categoryL1 = "$PARAM_CATEGORY_L1=${content.getOrElse(indexCategoryId+1) { "" }}"
+            "${ApplinkConstInternalTokopediaNow.CATEGORY}?$categoryL1$queryString"
+        } else {
+            val categoryL1 = "$PARAM_CATEGORY_L1=${content.getOrElse(indexCategoryId) { "" }}"
+            val categoryL2 = content.getOrElse(indexCategoryId+1) { "" }.let {
+                if (it.isNotEmpty()) "&$PARAM_CATEGORY_L2=$it" else ""
+            }
+            "${ApplinkConstInternalTokopediaNow.OLD_CATEGORY}?$categoryL1$categoryL2$queryString"
         }
-
-        return "${ApplinkConstInternalTokopediaNow.CATEGORY}?$categoryL1$categoryL2$queryString"
     }
 
     fun getRegisteredNavigationTokopediaNowRecipeDetail(deeplink: String): String {

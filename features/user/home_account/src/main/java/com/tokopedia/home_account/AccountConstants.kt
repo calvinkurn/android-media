@@ -1,7 +1,5 @@
 package com.tokopedia.home_account
 
-import com.tokopedia.imageassets.TokopediaImageUrl
-
 
 /**
  * @author okasurya on 7/20/18.
@@ -52,12 +50,15 @@ object AccountConstants {
         const val VALUE_WISHLIST_PRODUCT = "%s - wishlist on product recommendation"
         const val DATA_DIMENSION_83 = "dimension83"
         const val VALUE_BEBAS_ONGKIR = "bebas ongkir"
+        const val KEY_TRACKER_ID = "trackerId"
+        const val VALUE_TRACKER_ID_45930 = "45930"
 
         object Screen {
             const val SCREEN_FUNDS_AND_INVESTMENT = "dana dan investasi page"
         }
 
         object Event {
+            const val EVENT_VIEW_ACCOUNT_IRIS = "viewAccountIris"
             const val EVENT_CLICK_HOME_PAGE = "clickHomePage"
             const val EVENT_CLICK_ACCOUNT = "clickAccount"
             const val EVENT_PRODUCT_CLICK = "productClick"
@@ -74,11 +75,11 @@ object AccountConstants {
             const val CATEGORY_OVO_HOMEPAGE = "ovo home page"
             const val CATEGORY_SETTING_PAGE = "setting page"
             const val CATEGORY_ACCOUNT_PAGE_SETTING_GOJEK = "account page setting - gojek"
-            const val CATEGORY_ACCOUNT_PAGE_SETTING_LINK = "akun saya pembeli"
             const val CATEGORY_FUNDS_AND_INVESTMENT_PAGE = "dana and investasi page"
         }
 
         object Action {
+            const val ACTION_VIEW_ON_ACCOUNT_SAYA_PAGE = "view on akun saya page"
             const val ACTION_CLICK_TOGGLE_ON_GEOLOCATION = "click toggle on geolocation"
             const val ACTION_CLICK_PRODUCT_RECOMMENDATION = "click - product recommendation"
             const val ACTION_IMPRESSION_PRODUCT_RECOMMENDATION = "impression - product recommendation"
@@ -94,8 +95,6 @@ object AccountConstants {
             const val ACTION_CLICK_ABOUT_TOKOPEDIA_SECTION = "click on seputar tokopedia section"
             const val ACTION_CLICK_LOGOUT = "click on logout"
             const val ACTION_SIMPAN_THEME_SELECTION = "click simpan on theme selection"
-            const val ACTION_CLICK_LINK_ACC_GOJEK = "click link account to gojek"
-            const val ACTION_CLICK_SETTING_LINK_ACC = "click on application setting section"
             const val ACTION_CLICK_BACK = "click on button back"
             const val ACTION_CLICK_LINK_ACC = "click hubungkan akun"
             const val ACTION_CLICK_ACC_GOJEK = "click account gojek connected"
@@ -107,6 +106,7 @@ object AccountConstants {
         }
 
         object Label {
+            const val LABEL_M2 = "m2"
             const val LABEL_EMPTY = ""
             const val LABEL_HYPEN = "-"
             const val LABEL_CLICK = "click"
@@ -153,31 +153,12 @@ object AccountConstants {
         }
     }
 
-    interface ErrorCodes {
-        companion object {
-            const val ERROR_CODE_BUYER_ACCOUNT = "ACB001"
-        }
-    }
-
-    object Query {
-        const val QUERY_GET_BALANCE = "query_get_balance"
-        const val QUERY_GET_USER_ASSET_CONFIG = "query_get_user_asset_config"
-        const val QUERY_TOKOPOINTS_DRAWER_LIST = "query_tokopoints_drawerr_list"
-    }
-
     object Url {
-        const val BASE_MOBILE = "https://m.tokopedia.com/"
-        const val PATH_TERM_CONDITION = "terms.pl?isBack=true"
+        const val PATH_TERM_CONDITION = "terms?lang=id&isBack=true"
+        const val PATH_PRIVACY_POLICY = "privacy?lang=id&isBack=true"
         const val PATH_IP = "intellectual-property-protection"
-        const val PATH_PRIVACY_POLICY = "privacy.pl?isBack=true"
-        const val BASE_WEBVIEW_APPLINK = "tokopedia://webview?url="
         const val PATH_ABOUT_US = "about"
-        const val OVO_IMG = "/img/android/ovo/drawable-xxxhdpi/ovo.png"
-        const val CDN_URL = "https://images.tokopedia.net"
         const val PLAYSTORE_URL = "https://play.google.com/store/apps/details?id="
-        const val TOKOPOINTS_ICON = TokopediaImageUrl.TOKOPOINTS_ICON
-        const val SALDO_ICON = TokopediaImageUrl.SALDO_ICON
-        const val OVO_ICON = TokopediaImageUrl.OVO_ICON
     }
 
     object SettingCode {
@@ -207,7 +188,6 @@ object AccountConstants {
         const val SETTING_ABOUT_TOKOPEDIA = 47
         const val SETTING_QUALITY_SETTING = 49
         const val SETTING_DARK_MODE = 50
-        const val SETTING_LINK_ACCOUNT = 51
         const val SETTING_VIEW_ALL_BALANCE = 52
         const val SETTING_PLAY_WIDGET_AUTOPLAY = 53
         const val SETTING_EXPLICIT_PROFILE = 54
@@ -218,12 +198,10 @@ object AccountConstants {
         const val KEY_PREF_SHAKE = "notification_shake_shake"
         const val KEY_PREF_SAFE_SEARCH = "notification_safe_mode"
         const val KEY_SHOW_COACHMARK = "home_account_coachmark"
-        const val CLEAR_CACHE = "clear cache"
         const val KEY_PREF_PLAY_WIDGET_AUTOPLAY = "play_widget_autoplay"
     }
 
     object REQUEST {
-        const val REQUEST_ADD_PASSWORD = 100
         const val REQUEST_LOCATION_PERMISSION = 888
     }
 
@@ -240,20 +218,14 @@ object AccountConstants {
         const val LAYOUT_TITLE_LEFT_MARGIN = 20
     }
 
-    object LAYOUT {
-        const val TYPE_ERROR = -1
-    }
-
     object WALLET {
         const val OVO = "ovo"
         const val GOPAY = "gopay"
         const val GOPAYLATER = "gopaylater"
+        const val GOPAYLATERCICIL = "gopaylatercicil"
         const val TOKOPOINT = "tokopoints"
         const val SALDO = "saldo"
         const val CO_BRAND_CC = "cobrandcc"
-        const val REKSADANA = "reksadana"
-        const val EMAS = "emas"
-        const val PAYLATER = "paylater"
     }
 
     object RollenceKey {
@@ -263,7 +235,6 @@ object AccountConstants {
     object OfferInterruptionList {
         const val OFFER_PHONE = "phone"
         const val OFFER_VERIFY_PHONE = "phone-verif"
-        const val OFFER_ACCOUNT_LINKING = "account-link"
     }
 
     const val LABEL_OCL_BTM_SHEET = "one_click_login"

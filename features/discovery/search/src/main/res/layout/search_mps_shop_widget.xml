@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/searchMPSShopLogo"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:layout_width="0dp"
+        android:background="@drawable/search_mps_shop_logo_outline"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="@+id/searchMPSShopLogo"
+        app:layout_constraintEnd_toEndOf="@+id/searchMPSShopLogo"
+        app:layout_constraintStart_toStartOf="@+id/searchMPSShopLogo"
+        app:layout_constraintBottom_toBottomOf="@+id/searchMPSShopLogo" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/searchMPSShopBadge"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
+        android:layout_marginStart="10dp"
+        app:layout_constraintStart_toEndOf="@id/searchMPSShopLogo"
+        app:layout_constraintTop_toTopOf="@id/searchMPSShopName"
+        app:layout_constraintBottom_toBottomOf="@id/searchMPSShopName"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/searchMPSShopName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:layout_marginEnd="8dp"
+        android:ellipsize="end"
+        android:singleLine="true"
+        app:layout_constraintTop_toTopOf="@id/searchMPSShopLogo"
+        app:layout_constraintStart_toEndOf="@id/searchMPSShopBadge"
+        app:layout_constraintEnd_toStartOf="@id/searchMPSSeeShopButton"
+        app:typographyType="display_2"
+        app:typographyWeight="bold"
+        tools:text="Shop Name" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/searchMPSShopLocation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintTop_toBottomOf="@id/searchMPSShopName"
+        app:layout_constraintStart_toEndOf="@id/searchMPSShopLogo"
+        app:typographyType="display_3"
+        tools:text="Shop Location" />
+
+    <View
+        android:id="@+id/searchMPSShopLocationLine"
+        android:layout_width="1dp"
+        android:layout_height="10dp"
+        android:background="@color/Unify_NN300"
+        android:layout_marginStart="4dp"
+        app:layout_constraintStart_toEndOf="@id/searchMPSShopLocation"
+        app:layout_constraintTop_toTopOf="@id/searchMPSShopLocation"
+        app:layout_constraintBottom_toBottomOf="@id/searchMPSShopLocation"/>
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/searchMPSBebasOngkirLogo"
+        android:contentDescription="@string/content_desc_imageFreeOngkirPromo"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:adjustViewBounds="true"
+        android:gravity="center"
+        android:scaleType="fitStart"
+        android:visibility="gone"
+        android:layout_marginStart="4dp"
+        app:layout_constraintStart_toEndOf="@id/searchMPSShopLocationLine"
+        app:layout_constraintTop_toTopOf="@id/searchMPSShopLocation"
+        app:layout_constraintBottom_toBottomOf="@id/searchMPSShopLocation"
+        tools:layout_width="67dp"
+        tools:layout_height="20dp"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/searchMPSSeeShopButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintTop_toTopOf="@id/searchMPSShopLogo"
+        app:layout_constraintBottom_toBottomOf="@id/searchMPSShopLogo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:unifyButtonVariant="ghost"
+        app:unifyButtonSize="small"
+        tools:text="Lihat Toko" />
+
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/searchMPSShopTicker"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/searchMPSShopLogo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:closeButtonVisibility="visible"
+        app:tickerShapeType="loose"
+        app:tickerType="announcement" />
+
+    <com.tokopedia.carouselproductcard.CarouselProductCardView
+        android:id="@+id/searchMPSProductCarousel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@id/searchMPSShopTicker"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -28,7 +28,6 @@ import com.chuckerteam.chucker.api.ChuckerCollector;
 import com.google.firebase.FirebaseApp;
 import com.google.gson.Gson;
 import com.newrelic.agent.android.NewRelic;
-import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.abstraction.base.view.appupdate.AppUpdateDialogBuilder;
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
 import com.tokopedia.abstraction.base.view.appupdate.FirebaseRemoteAppForceUpdate;
@@ -72,6 +71,7 @@ import com.tokopedia.logger.LoggerProxy;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.media.loader.internal.MediaLoaderActivityLifecycle;
+import com.tokopedia.common.network.cdn.MonitoringActivityLifecycle;
 import com.tokopedia.network.authentication.AuthHelper;
 import com.tokopedia.notifications.inApp.CMInAppManager;
 import com.tokopedia.notifications.settings.NotificationGeneralPromptLifecycleCallbacks;
@@ -84,6 +84,7 @@ import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
 import com.tokopedia.shakedetect.ShakeDetectManager;
 import com.tokopedia.shakedetect.ShakeSubscriber;
 import com.tokopedia.telemetry.TelemetryActLifecycleCallback;
+import com.tokopedia.trackingoptimizer.activitylifecyclecallback.TrackingQueueActivityLifecycleCallback;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
@@ -94,7 +95,6 @@ import com.tokopedia.unifyprinciples.Typography;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
-import com.tokopedia.tokopatch.TokoPatch;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -184,7 +184,6 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         com.tokopedia.akamai_bot_lib.UtilsKt.initAkamaiBotManager(ConsumerMainApplication.this);
         createAndCallPreSeq();
         super.onCreate();
-        initRobust();
         createAndCallPostSeq();
         initializeAbTestVariant();
         createAndCallFetchAbTest();
@@ -202,12 +201,6 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         Typography.Companion.setFontTypeOpenSauceOne(true);
 
         showDevOptNotification();
-    }
-
-    private void initRobust() {
-        if(remoteConfig.getBoolean(RemoteConfigKey.CUSTOMER_ENABLE_ROBUST, false)) {
-            TokoPatch.init(this);
-        }
     }
 
     private void initializationNewRelic() {
@@ -269,6 +262,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
             }
         }));
 
+        registerActivityLifecycleCallbacks(new TrackingQueueActivityLifecycleCallback(this));
         registerActivityLifecycleCallbacks(new BetaSignActivityLifecycleCallbacks());
         registerActivityLifecycleCallbacks(new NFCSubscriber());
         registerActivityLifecycleCallbacks(new SessionActivityLifecycleCallbacks());
@@ -300,6 +294,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
             }
         }));
         registerActivityLifecycleCallbacks(new NotificationGeneralPromptLifecycleCallbacks());
+        registerActivityLifecycleCallbacks(new MonitoringActivityLifecycle(getApplicationContext()));
     }
 
     private void onCheckAppUpdateRemoteConfig(Activity activity, Function1<? super Boolean, Unit> onSuccessCheckAppListener) {

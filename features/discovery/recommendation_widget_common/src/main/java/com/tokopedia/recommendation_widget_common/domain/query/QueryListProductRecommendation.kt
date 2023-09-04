@@ -11,8 +11,8 @@ import com.tokopedia.recommendation_widget_common.domain.query.QueryListProductR
 object QueryListProductRecommendation {
     const val LIST_PRODUCT_RECOMMENDATION_QUERY_NAME = "ListProductRecommendationQuery"
     const val LIST_PRODUCT_RECOMMENDATION_QUERY: String = "" +
-        "query productRecommendation(${'$'}userID: Int!, ${'$'}pageName: String!, ${'$'}pageNumber: Int!, ${'$'}xDevice: String!, ${'$'}xSource: String!, ${'$'}queryParam: String!, ${'$'}productIDs: String!, ${'$'}categoryIDs: String!, ${'$'}keywords: [String!]!, ${'$'}tokoNow: Boolean) {\n" +
-        "                  productRecommendationWidget(userID: ${'$'}userID, pageName: ${'$'}pageName, pageNumber: ${'$'}pageNumber, xDevice: ${'$'}xDevice, xSource: ${'$'}xSource, queryParam: ${'$'}queryParam, productIDs : ${'$'}productIDs, categoryIDs : ${'$'}categoryIDs, keywords: ${'$'}keywords, tokoNow : ${'$'}tokoNow) {\n" +
+        "query productRecommendation(${'$'}userID: Int!, ${'$'}pageName: String!, ${'$'}pageNumber: Int!, ${'$'}xDevice: String!, ${'$'}xSource: String!, ${'$'}queryParam: String!, ${'$'}productIDs: String!, ${'$'}categoryIDs: String!, ${'$'}keywords: [String!]!, ${'$'}tokoNow: Boolean, ${'$'}shopIDs: String) {\n" +
+        "                  productRecommendationWidget(userID: ${'$'}userID, pageName: ${'$'}pageName, pageNumber: ${'$'}pageNumber, xDevice: ${'$'}xDevice, xSource: ${'$'}xSource, queryParam: ${'$'}queryParam, productIDs : ${'$'}productIDs, categoryIDs : ${'$'}categoryIDs, keywords: ${'$'}keywords, tokoNow : ${'$'}tokoNow, shopIDs : ${'$'}shopIDs) {\n" +
         "                    data {\n" +
         "                      tID\n" +
         "                      source\n" +
@@ -38,6 +38,7 @@ object QueryListProductRecommendation {
         "                            apps\n" +
         "                          }\n" +
         "                        }\n" +
+        "                        endDate\n" +
         "                      }\n" +
         "                      recommendation {\n" +
         "                        id\n" +
@@ -64,6 +65,7 @@ object QueryListProductRecommendation {
         "                          isGold\n" +
         "                          isOfficial\n" +
         "                        }\n" +
+        "                        warehouseID\n" +
         "                        departmentId\n" +
         "                        labels {\n" +
         "                          title\n" +

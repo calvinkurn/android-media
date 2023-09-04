@@ -1,8 +1,6 @@
 apply plugin: 'com.android.dynamic-feature'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'io.hansel.preprocessor.feature'
-apply plugin: 'robust'
-
 
 buildscript {
     repositories {
@@ -16,6 +14,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.df.base.sellerapp'
+    testNamespace 'com.tokopedia.df.base.sellerapp.test'
 
     signingConfigs {
         debug {
@@ -70,12 +70,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.layanan)
     implementation projectOrAar(rootProject.ext.features.withdraw)
 
-    //Media
-    implementation projectOrAar(rootProject.ext.features.liveBroadcaster)
-
-    //Content
-    implementation projectOrAar(rootProject.ext.features.playBroadcaster)
-
     //Discovery
     implementation projectOrAar(rootProject.ext.features.productCardOptions)
     //Fintech
@@ -97,13 +91,10 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.settingbank)
     implementation projectOrAar(rootProject.ext.features.settingnotif)
     implementation projectOrAar(rootProject.ext.features.attachinvoice)
-    implementation projectOrAar(rootProject.ext.features.kyccentralized)
 //    implementation projectOrAar(rootProject.ext.features.notifCenter)
-    implementation projectOrAar(rootProject.ext.features.talk)
     implementation projectOrAar(rootProject.ext.features.attachvoucher)
     implementation projectOrAar(rootProject.ext.features.attachproduct)
 //    implementation projectOrAar(rootProject.ext.features.topchat)
-    implementation projectOrAar(rootProject.ext.features.liveness)
     implementation projectOrAar(rootProject.ext.features.updateinactivephone)
     implementation projectOrAar(rootProject.ext.features.telephony_masking)
 
@@ -121,7 +112,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.shopPage)
     implementation projectOrAar(rootProject.ext.features.shopPageWidget)
     implementation projectOrAar(rootProject.ext.features.feedShop)
-    implementation projectOrAar(rootProject.ext.features.statistic)
     implementation projectOrAar(rootProject.ext.features.snapshot)
     implementation projectOrAar(rootProject.ext.features.atcVariant)
     implementation projectOrAar(rootProject.ext.features.shopAdmin)
@@ -131,7 +121,6 @@ dependencies {
 
     //Media
     implementation projectOrAar(rootProject.ext.features.mediaeditor)
-    implementation projectOrAar(rootProject.ext.features.mediapicker)
     implementation projectOrAar(rootProject.ext.libraries.imagePicker)
 
     implementation projectOrAar(rootProject.ext.features.tokomemberSellerDashboard)

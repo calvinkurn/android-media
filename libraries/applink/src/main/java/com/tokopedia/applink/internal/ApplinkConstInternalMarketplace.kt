@@ -89,6 +89,7 @@ object ApplinkConstInternalMarketplace {
 
     // CreateReviewActivity
     const val CREATE_REVIEW = "$INTERNAL_MARKETPLACE/product-review/create/{reputation_id}/{product_id}/"
+    const val CREATE_REVIEW_APP_LINK_PARAM_RATING = "rating"
 
     // BulkReviewActivity
     const val BULK_CREATE_REVIEW = "$INTERNAL_MARKETPLACE/product-review/bulk-create"
@@ -240,6 +241,7 @@ object ApplinkConstInternalMarketplace {
 
     // ShopPenaltyActivity
     const val SHOP_PENALTY = "$INTERNAL_MARKETPLACE/shop-penalty"
+    const val SHOP_PENALTY_OLD = "$INTERNAL_MARKETPLACE/shop-penalty-old"
 
     // ShopPenaltyDetailPageActivity
     @JvmField

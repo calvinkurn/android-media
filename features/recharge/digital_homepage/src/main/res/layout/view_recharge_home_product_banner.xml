@@ -20,7 +20,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:background="@color/Unify_G500" />
+            tools:background="@color/Unify_GN500" />
 
         <com.tokopedia.home_component.customview.DynamicChannelHeaderView
             android:id="@+id/view_recharge_home_product_banner_header"
@@ -101,7 +101,7 @@
                     android:layout_marginRight="@dimen/spacing_lvl3"
                     android:ellipsize="end"
                     android:maxLines="2"
-                    android:textColor="@color/Unify_N700_44"
+                    android:textColor="@color/Unify_NN950_44"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/view_recharge_home_product_banner_image"
                     app:layout_constraintTop_toBottomOf="@+id/tv_recharge_home_product_banner_name"
@@ -132,7 +132,7 @@
                     android:ellipsize="end"
                     android:gravity="center_vertical"
                     android:maxLines="1"
-                    android:textColor="@color/Unify_N700_44"
+                    android:textColor="@color/Unify_NN950_44"
                     app:layout_constraintBottom_toBottomOf="@+id/tv_recharge_home_product_banner_discount_label"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/tv_recharge_home_product_banner_discount_label"
@@ -152,7 +152,7 @@
                     android:layout_marginRight="@dimen/spacing_lvl3"
                     android:ellipsize="end"
                     android:maxLines="1"
-                    android:textColor="@color/Unify_Y500"
+                    android:textColor="@color/Unify_YN500"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/btn_recharge_home_product_banner_buy"

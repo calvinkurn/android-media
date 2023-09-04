@@ -60,10 +60,12 @@ class GraphqlRequest {
         url = urlPath
     }
 
-    constructor(gqlQueryInterface: GqlQueryInterface,
-                typeOfT: Type,
-                variables: Map<String, Any?>? = null,
-                shouldThrow: Boolean = true) {
+    constructor(
+        gqlQueryInterface: GqlQueryInterface,
+        typeOfT: Type,
+        variables: Map<String, Any?>? = null,
+        shouldThrow: Boolean = true
+    ) {
         this.query = gqlQueryInterface.getQuery()
         this.operationName = gqlQueryInterface.getTopOperationName()
         this.queryNameList = gqlQueryInterface.getOperationNameList()
@@ -114,7 +116,9 @@ class GraphqlRequest {
 
     @Deprecated("use constructor(GqlQueryInterface, ..)")
     constructor(
-        query: String?, typeOfT: Type?, variables: Map<String, Any?>?,
+        query: String?,
+        typeOfT: Type?,
+        variables: Map<String, Any?>?,
         shouldThrow: Boolean
     ) : this(query, typeOfT, variables) {
         isShouldThrow = shouldThrow
@@ -122,7 +126,9 @@ class GraphqlRequest {
 
     @Deprecated("use constructor(GqlQueryInterface, ..)")
     constructor(
-        query: String?, typeOfT: Type?, variables: Map<String, Any?>?,
+        query: String?,
+        typeOfT: Type?,
+        variables: Map<String, Any?>?,
         operationName: String?
     ) : this(query, typeOfT, variables) {
         this.operationName = operationName
@@ -130,21 +136,24 @@ class GraphqlRequest {
 
     @Deprecated("use constructor(GqlQueryInterface, ..)")
     constructor(
-        query: String?, typeOfT: Type?, variables: Map<String, Any?>?,
-        operationName: String?, shouldThrow: Boolean
+        query: String?,
+        typeOfT: Type?,
+        variables: Map<String, Any?>?,
+        operationName: String?,
+        shouldThrow: Boolean
     ) : this(query, typeOfT, variables, operationName) {
         isShouldThrow = shouldThrow
     }
 
-    //Do not rewrite on remove it
+    // Do not rewrite on remove it
     override fun toString(): String {
         return "GraphqlRequest{" +
-                "query='" + query + '\'' +
-                ", variables=" + variables +
-                ", operationName='" + operationName + '\'' +
-                ", typeOfT=" + typeOfT +
-                ", shouldThrow=" + isShouldThrow +
-                '}'
+            "query='" + query + '\'' +
+            ", variables=" + variables +
+            ", operationName='" + operationName + '\'' +
+            ", typeOfT=" + typeOfT +
+            ", shouldThrow=" + isShouldThrow +
+            '}'
     }
 
     fun cacheKey(): String {

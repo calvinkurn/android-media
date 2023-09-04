@@ -1,9 +1,12 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/core-kapt.gradle"
+apply from: "../../compile-instrument-test.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 apply plugin: 'kotlin-parcelize'
 
 android {
+    namespace 'com.tokopedia.tokofood'
+    testNamespace 'com.tokopedia.tokofood.test'
     buildFeatures {
         viewBinding true
     }
@@ -24,6 +27,17 @@ android {
                     pathSources + searchPath + 'searchresult'
             ]
         }
+        test {
+            java.srcDirs += "$projectDir/src/testCommon/java"
+        }
+        androidTest {
+            java.srcDirs += "$projectDir/src/testCommon/java"
+        }
+    }
+    defaultConfig {
+        multiDexEnabled true
+        testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
+        testInstrumentationRunnerArguments clearPackageData: 'true'
     }
 }
 
@@ -64,7 +78,6 @@ dependencies {
 
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.baseList)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
@@ -118,6 +131,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.flexBoxLayout
 
     implementation rootProject.ext.networkDependencies.glide
+    implementation rootProject.ext.debugToolsDependencies.chuck
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 
     implementation rootProject.ext.playServicesDependencies.analytics
     implementation rootProject.ext.playServicesDependencies.core
@@ -128,6 +143,22 @@ dependencies {
 
     kapt rootProject.ext.miscDependencies.daggerCompiler
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
+
+    androidTestImplementation rootProject.ext.miscDependencies.coroutineTest
+
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
+    androidTestImplementation rootProject.ext.testDependencies.espressoIdlingResource
+    androidTestImplementation rootProject.ext.testDependencies.espressoCore
+    androidTestImplementation rootProject.ext.testDependencies.espressoContrib
+    androidTestImplementation rootProject.ext.testDependencies.espressoIntents
+    androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
+    androidTestImplementation rootProject.ext.miscDependencies.dagger
+    androidTestImplementation rootProject.ext.testDependencies.testCore
+    kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
+    androidTestUtil rootProject.ext.testDependencies.orchestrator
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.analyticsDebugger)
+    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cassavaTest
+    androidTestImplementation rootProject.ext.miscDependencies.rxJava
 
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting

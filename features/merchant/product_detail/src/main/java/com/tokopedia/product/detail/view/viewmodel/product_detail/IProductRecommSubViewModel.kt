@@ -45,4 +45,6 @@ interface IProductRecommSubViewModel {
         isTokoNow: Boolean,
         miniCart: MutableMap<String, MiniCartItem.MiniCartItemProduct>?
     )
+
+    fun onResetAlreadyRecomHit()
 }

@@ -1,0 +1,13 @@
+{
+  "wishlist_remove_v2": {
+    "id": "5194296203",
+    "success": true,
+    "message": "Barang telah dihapus dari Wishlist.",
+    "toaster_color": "black",
+    "button": {
+      "text": "Oke",
+      "action": "",
+      "url": ""
+    }
+  }
+}

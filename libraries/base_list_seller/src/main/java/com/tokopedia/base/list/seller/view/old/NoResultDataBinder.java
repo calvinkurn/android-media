@@ -23,7 +23,7 @@ public class NoResultDataBinder extends DataBinder<NoResultDataBinder.ViewHolder
 
     protected boolean isFullScreen = false;
     @DrawableRes
-    private int drawableAsset = R.drawable.status_no_result;
+    private int drawableAsset = com.tokopedia.abstraction.R.drawable.status_no_result;
 
     public NoResultDataBinder(DataBindAdapter dataBindAdapter) {
         super(dataBindAdapter);
@@ -31,7 +31,7 @@ public class NoResultDataBinder extends DataBinder<NoResultDataBinder.ViewHolder
 
     @Override
     public NoResultDataBinder.ViewHolder newViewHolder(ViewGroup parent) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_view_no_result, null);
+        View view = LayoutInflater.from(parent.getContext()).inflate(com.tokopedia.baselist.R.layout.item_view_no_result, null);
         if (isFullScreen) {
             view.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         } else {
@@ -71,7 +71,7 @@ public class NoResultDataBinder extends DataBinder<NoResultDataBinder.ViewHolder
 
         public ViewHolder(View itemView) {
             super(itemView);
-            emptyImage = itemView.findViewById(R.id.no_result_image);
+            emptyImage = itemView.findViewById(com.tokopedia.baselist.R.id.no_result_image);
 
         }
     }

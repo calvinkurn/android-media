@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="user_profile_homepage_offlset">132dp</dimen>
-    <dimen name="user_profile_error_margin">85dp</dimen>
     <dimen name="user_profile_dp_1">1dp</dimen>
     <dimen name="user_profile_dp_2">2dp</dimen>
     <dimen name="user_profile_dp_4">4dp</dimen>

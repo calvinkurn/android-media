@@ -70,26 +70,11 @@ class ShopHomeProductBundleParentWidgetViewHolder(
             .setWidgetType(WidgetType.TYPE_1)
             .setPageSource(ShopPageConstant.SOURCE)
             .build()
-        setBundlingWidgetRvMarginTop()
         productBundleWidgetView?.setListener(this)
         productBundleWidgetView?.setTitleText(bundleWidgetTitle)
         productBundleWidgetView?.getBundleData(param)
+        productBundleWidgetView?.setBundlingCarouselTopMargin(BUNDLE_RV_MARGIN_TOP.dpToPx().toInt())
         checkFestivity(element)
-    }
-
-    private fun setBundlingWidgetRvMarginTop() {
-        productBundleWidgetView?.findViewById<RecyclerView>(R.id.rv_bundles).apply {
-            val params = this?.layoutParams as? LinearLayout.LayoutParams
-            params?.setMargins(
-                params.leftMargin,
-                BUNDLE_RV_MARGIN_TOP.dpToPx().toInt(),
-                params.rightMargin,
-                params.bottomMargin
-            )
-            if(params != null){
-                this?.layoutParams = params
-            }
-        }
     }
 
     private fun checkFestivity(element: ShopHomeProductBundleListUiModel) {

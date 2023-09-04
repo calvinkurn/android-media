@@ -10,9 +10,12 @@ import android.view.MotionEvent
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.imageassets.TokopediaImageUrl
+import com.tokopedia.imageassets.utils.loadProductImage
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
@@ -39,8 +42,8 @@ import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.view.binding.viewBinding
 
 open class SomListOrderViewHolder(
-        itemView: View,
-        protected val listener: SomListOrderItemListener
+    itemView: View,
+    protected val listener: SomListOrderItemListener
 ) : AbstractViewHolder<SomListOrderUiModel>(itemView) {
 
     companion object {
@@ -146,7 +149,7 @@ open class SomListOrderViewHolder(
     }
 
     protected open fun setupQuickActionButton(element: SomListOrderUiModel) {
-        binding?.run{
+        binding?.run {
             val firstButton = element.buttons.firstOrNull()
             if (firstButton != null && !element.multiSelectEnabled) {
                 btnQuickAction?.text = firstButton.displayName
@@ -180,7 +183,10 @@ open class SomListOrderViewHolder(
     private fun setupProductList(element: SomListOrderUiModel) {
         binding?.run {
             ivSomListProduct.apply {
-                loadImageRounded(element.orderProduct.firstOrNull()?.picture.orEmpty())
+                loadProductImage(
+                    url = element.orderProduct.firstOrNull()?.picture.orEmpty(),
+                    archivedUrl = TokopediaImageUrl.IMG_ARCHIVED_PRODUCT_SMALL
+                )
                 if (element.tickerInfo.text.isNotBlank()) {
                     setMargin(12.toPx(), 6.5f.dpToPx().toInt(), Int.ZERO, Int.ZERO)
                 } else {
@@ -236,15 +242,10 @@ open class SomListOrderViewHolder(
     private fun setupDeadline(element: SomListOrderUiModel) {
         binding?.run {
             val deadlineText = element.deadlineText
-            val deadlineBackground = Utils.getColoredDeadlineBackground(
-                context = root.context,
-                colorHex = element.deadlineColor,
-                defaultColor = com.tokopedia.unifyprinciples.R.color.Unify_YN600
-            )
             if (deadlineText.isNotBlank()) {
                 tvSomListDeadline.text = deadlineText
+                setupDeadlineStyleFromRollence(element)
                 tvSomListResponseLabel.text = composeDeadlineLabel(element.preOrderType != 0)
-                layoutSomListDeadline.background = deadlineBackground
                 tvSomListResponseLabel.show()
                 layoutSomListDeadline.show()
             } else {
@@ -252,6 +253,52 @@ open class SomListOrderViewHolder(
                 layoutSomListDeadline.gone()
             }
         }
+    }
+
+    private fun ItemSomListOrderBinding.setupDeadlineStyleFromRollence(element: SomListOrderUiModel) {
+        if (Utils.isEnableOperationalGuideline()) {
+            setupDeadlineStyle(element.deadlineStyle)
+        } else {
+            val deadlineBackground = Utils.getColoredDeadlineBackground(
+                context = root.context,
+                colorHex = element.deadlineColor,
+                defaultColor = com.tokopedia.unifyprinciples.R.color.Unify_YN600
+            )
+            layoutSomListDeadline.background = deadlineBackground
+        }
+    }
+
+    private fun ItemSomListOrderBinding.setupDeadlineStyle(deadlineStyle: Int) {
+        when (deadlineStyle) {
+            SomConsts.DEADLINE_MORE_THAN_24_HOURS -> setDeadlineMoreThan24Hours()
+            SomConsts.DEADLINE_BETWEEN_12_TO_24_HOURS -> setDeadlineBetween12To24Hours()
+            SomConsts.DEADLINE_LOWER_THAN_12_HOURS -> setDeadlineLowerThan12Hours()
+            else -> setDeadlineMoreThan24Hours()
+        }
+    }
+
+    private fun ItemSomListOrderBinding.setDeadlineLowerThan12Hours() {
+        val bgDeadline = Utils.getDeadlineDrawable(root.context, com.tokopedia.unifyprinciples.R.color.Unify_RN600)
+        val colorDeadline = MethodChecker.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+        layoutSomListDeadline.background = bgDeadline
+        icDeadline.setImage(newIconId = IconUnify.CLOCK, newLightEnable = colorDeadline)
+        tvSomListDeadline.setTextColor(colorDeadline)
+    }
+
+    private fun ItemSomListOrderBinding.setDeadlineBetween12To24Hours() {
+        val bgDeadline = Utils.getDeadlineDrawable(root.context, com.tokopedia.unifyprinciples.R.color.Unify_RN50)
+        val colorDeadline = MethodChecker.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_RN600)
+        layoutSomListDeadline.background = bgDeadline
+        icDeadline.setImage(newIconId = IconUnify.CLOCK, newLightEnable = colorDeadline)
+        tvSomListDeadline.setTextColor(colorDeadline)
+    }
+
+    private fun ItemSomListOrderBinding.setDeadlineMoreThan24Hours() {
+        val bgDeadline = Utils.getDeadlineDrawable(root.context, com.tokopedia.sellerorder.R.color._dms_som_operational_more_than_24_hour_color)
+        val colorDeadline = MethodChecker.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+        layoutSomListDeadline.background = bgDeadline
+        icDeadline.setImage(newIconId = IconUnify.CLOCK, newLightEnable = colorDeadline)
+        tvSomListDeadline.setTextColor(colorDeadline)
     }
 
     private fun setupInvoice(element: SomListOrderUiModel) {
@@ -362,8 +409,8 @@ open class SomListOrderViewHolder(
                 listener(onSuccess = { _, _ ->
                     binding?.loaderIcSomListOrderPlusRibbon?.gone()
                 }, onError = {
-                    binding?.loaderIcSomListOrderPlusRibbon?.gone()
-                })
+                        binding?.loaderIcSomListOrderPlusRibbon?.gone()
+                    })
             }
             showWithCondition(showOrderPlusRibbon)
         }
@@ -378,8 +425,11 @@ open class SomListOrderViewHolder(
                 CARD_ALPHA_SELECTABLE
             }
         binding?.root?.setOnClickListener {
-            if (element.multiSelectEnabled) touchCheckBox(element)
-            else listener.onOrderClicked(element)
+            if (element.multiSelectEnabled) {
+                touchCheckBox(element)
+            } else {
+                listener.onOrderClicked(element)
+            }
         }
         binding?.cardSomOrder?.setMargin(
             Int.ZERO,

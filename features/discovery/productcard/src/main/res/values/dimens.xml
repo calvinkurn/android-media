@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <dimen name="dp_13">13dp</dimen>
+
     <dimen name="product_card_padding_top">8dp</dimen>
     <dimen name="product_card_padding_bottom">8dp</dimen>
 
@@ -130,6 +132,7 @@
 
     <dimen name="carousel_product_card_grid_width">140dp</dimen>
     <dimen name="carousel_product_card_list_width">248dp</dimen>
+    <dimen name="carousel_paging_product_card_list_width">320dp</dimen>
     <dimen name="product_card_flashsale_width">140dp</dimen>
 
     <dimen name="product_card_quantity_editor_margin_top">8dp</dimen>
@@ -160,4 +163,9 @@
     <dimen name="product_card_button_primary_margin">8dp</dimen>
 
     <dimen name="product_card_sales_rating_margin_top">3dp</dimen>
+
+    <dimen name="product_card_button_see_other_product_margin_top">4dp</dimen>
+    <dimen name="product_card_button_see_other_product_height">32dp</dimen>
+
+    <dimen name="product_card_top_stock_bar_background_height">30dp</dimen>
 </resources>

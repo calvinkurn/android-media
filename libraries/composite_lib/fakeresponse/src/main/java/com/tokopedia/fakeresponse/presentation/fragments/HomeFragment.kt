@@ -98,6 +98,9 @@ class HomeFragment : BaseFragment() {
             when (it) {
                 is Success -> toggleGql(it.data.first, it.data.second)
                 is Fail -> showErrorToggle()
+                else -> {
+                    // no-op
+                }
             }
         })
     }

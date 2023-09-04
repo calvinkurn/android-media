@@ -1,5 +1,0 @@
-mutation save_cache_auto_apply($promoCode: String) {
-    save_cache_auto_apply(promoCode: $promoCode) {
-      Success
-    }
-  }

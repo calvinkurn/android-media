@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:tools="http://schemas.android.com/tools"
+<androidx.cardview.widget.CardView
     android:id="@+id/cv_educational_info"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:visibility="gone"
     android:layout_margin="16dp"
     app:cardCornerRadius="8dp"
     app:cardElevation="4dp"
@@ -21,8 +20,8 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/iu_time"
-            android:layout_width="@dimen/tokopedianow_usp_illustration_width"
-            android:layout_height="@dimen/tokopedianow_usp_illustration_height"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="parent"
@@ -41,12 +40,13 @@
             app:layout_constraintStart_toEndOf="@+id/iu_time"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintWidth_max="50dp"
-            app:typographyType="heading_6" />
+            app:typographyWeight="bold"
+            app:typographyType="small" />
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/iu_selected_product_free_shipping"
-            android:layout_width="@dimen/tokopedianow_usp_illustration_width"
-            android:layout_height="@dimen/tokopedianow_usp_illustration_height"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/tp_selected_product_free_shipping"
             app:layout_constraintStart_toStartOf="@+id/guideline1"
@@ -64,7 +64,8 @@
             app:layout_constraintStart_toEndOf="@+id/iu_selected_product_free_shipping"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintWidth_max="50dp"
-            app:typographyType="heading_6" />
+            app:typographyWeight="bold"
+            app:typographyType="small" />
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/iu_guaranteed_quality"
@@ -88,30 +89,16 @@
             app:layout_constraintStart_toEndOf="@+id/iu_guaranteed_quality"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintWidth_max="55dp"
-            app:typographyType="heading_6" />
-
-        <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/la_chevron"
-            android:layout_width="27dp"
-            android:layout_height="40dp"
-            android:paddingTop="16dp"
-            android:paddingEnd="2dp"
-            android:scaleType="centerCrop"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/guideline3"
-            app:layout_constraintTop_toTopOf="parent"
-            app:lottie_scale="0.1"
-            tools:ignore="RtlSymmetry" />
+            app:typographyWeight="bold"
+            app:typographyType="small" />
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/siv_chevron_down"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:background="@color/Unify_Static_White"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="@color/tokopedianow_cardview_background_dms_color"
             android:contentDescription="@string/tokopedianow_educational_information_chevron_entry_point_to_show_bottomsheet"
-            android:elevation="1dp"
-            android:visibility="gone"
+            android:elevation="2dp"
             app:layout_constraintBottom_toBottomOf="@+id/iu_guaranteed_quality"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/guideline3"

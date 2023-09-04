@@ -30,6 +30,7 @@ import com.tokopedia.product.detail.view.viewholder.ProductRecommendationVertica
 import com.tokopedia.product.detail.view.viewholder.ProductRecommendationVerticalViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductRecommendationViewHolder
 import com.tokopedia.product.detail.view.viewholder.ViewToViewWidgetViewHolder
+import com.tokopedia.product.detail.view.viewholder.a_plus_content.APlusImageUiModel
 
 /**
  * Created by Yehezkiel on 04/01/21
@@ -110,6 +111,11 @@ class ProductDetailAdapter(asyncDifferConfig: AsyncDifferConfig<DynamicPdpDataMo
         }
     }
 
+    override fun onViewRecycled(holder: AbstractViewHolder<*>) {
+        super.onViewRecycled(holder)
+        holder.onViewRecycled()
+    }
+
     fun bind(holder: AbstractViewHolder<DynamicPdpDataModel>, item: DynamicPdpDataModel) {
         holder.bind(item)
     }
@@ -160,5 +166,11 @@ class ProductDetailAdapter(asyncDifferConfig: AsyncDifferConfig<DynamicPdpDataMo
     ) {
         listener?.updateNavigationTabPosition()
         super.onCurrentListChanged(previousList, currentList)
+    }
+
+    fun getSeeMoreAPlusTogglePosition(): Int {
+        return currentList.indexOfFirst {
+            it is APlusImageUiModel && it.showOnCollapsed && it.ctaText.isNotBlank()
+        }
     }
 }

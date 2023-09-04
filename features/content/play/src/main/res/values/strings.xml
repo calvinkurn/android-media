@@ -93,16 +93,6 @@
     <string name="play_kebab_chromecast">Chromecast</string>
     <string name="play_kebab_watch_mode">Mode Nonton</string>
 
-    <!--User Report-->
-    <string name="play_user_report_footer"><![CDATA[<strong><span style="color:#03AC0E">Pelajari Selengkapnya</span></strong> tipe-tipe pelanggaran di Tokopedia.]]></string>
-    <string name="play_user_report_header">Pilih kategori pelanggaran yang terjadi pada video ini</string>
-    <string name="play_user_report_submission_button">Laporkan</string>
-    <string name="play_user_report_text_area_min">%1$s Min. %2$s karakter</string>
-    <string name="play_user_report_footer_weblink">https://www.tokopedia.com/help/article/tokopedia-play-live-streaming</string>
-    <string name="play_user_report_verification_dialog_title">Lanjutkan laporkan Produk</string>
-    <string name="play_user_report_verification_dialog_desc">Dengan klik \"Lapor\", saya menyatakan bahwa segala informasi yang dilaporkan memang benar dan bertanggung jawab atas informasi tersebut.</string>
-    <string name="play_user_report_verification_dialog_btn_ok">Lapor</string>
-
     <!-- Sharing Experience -->
     <string name="play_sharing_error_generate_link">Oops, ada gangguan yang perlu kami bereskan. Refresh atau balik lagi nanti.</string>
     <string name="play_sharing_refresh">Refresh</string>
@@ -135,6 +125,8 @@
     <string name="play_explore_widget_default_errmessage">Oops, gagal menampilkan video.</string>
     <string name="play_explore_widget_noconn_errmessage">Wah, internet putus. Cek Wi-Fi atau paket datamu, ya.</string>
     <string name="play_explore_widget_empty">Cek Sekarang</string>
+    <string name="play_explore_widget_reminded">Kami akan kirim pengingat, ya!</string>
+    <string name="play_explore_widget_unreminded">Yaah, pengingat batal dikirim.</string>
 
     <!--Vertical Swipe-->
     <string name="play_check_next_video">Cek video berikutnya</string>

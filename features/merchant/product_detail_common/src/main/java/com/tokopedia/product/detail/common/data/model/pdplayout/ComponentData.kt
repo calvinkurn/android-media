@@ -3,13 +3,13 @@ package com.tokopedia.product.detail.common.data.model.pdplayout
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.product.detail.common.data.model.product.Cashback
-import com.tokopedia.product.detail.common.data.model.product.PostAtcLayout
 import com.tokopedia.product.detail.common.data.model.product.PreOrder
 import com.tokopedia.product.detail.common.data.model.product.Stock
 import com.tokopedia.product.detail.common.data.model.product.VariantBasic
 import com.tokopedia.product.detail.common.data.model.product.YoutubeVideo
 import com.tokopedia.product.detail.common.data.model.variant.Variant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
+import com.tokopedia.product.detail.common.utils.extensions.validDimensionRatio
 
 data class ComponentData(
     //region General data
@@ -90,14 +90,19 @@ data class ComponentData(
     val sizeChart: String = "",
     @SerializedName("maxFinalPrice")
     val maxFinalPrice: Float = 0F,
-    @SerializedName("postATCLayout")
-    val postAtcLayout: PostAtcLayout = PostAtcLayout(),
     @SerializedName("defaultChild")
     val defaultChild: String = "",
     @SerializedName("variants")
     val variants: List<Variant> = listOf(),
     @SerializedName("children")
     val children: List<VariantChild> = listOf(),
+    /**
+     * used when landing on pdp, if it is empty use hardcode FE
+     * and if there’s a user activity for choosing the variant, use children.subText below
+     * Details: https://tokopedia.atlassian.net/wiki/spaces/PDP/pages/2245002923/PDP+P1+Product+Variant+Partial+OOS
+     */
+    @SerializedName("landingSubText")
+    val landingSubText: String = "",
     //endregioncopy
 
     //region one liners data
@@ -149,14 +154,24 @@ data class ComponentData(
     // endregion
 
     @SerializedName("variantCampaign")
-    val variantCampaign: VariantCampaign = VariantCampaign()
+    val variantCampaign: VariantCampaign = VariantCampaign(),
+    @SerializedName("text")
+    val text: String = "",
+    @SerializedName("chevronPos")
+    val chevronPos: String = "",
+
+    // region a plus content data
+    @SerializedName("contentMedia")
+    val contentMedia: List<ContentMedia> = listOf(),
+    @SerializedName("show")
+    val show: Boolean = false,
+    @SerializedName("ctaText")
+    val ctaText: String = ""
+    // endregion
 ) {
     companion object {
         private const val PRODUCT_IMAGE_TYPE = "image"
     }
-
-    val hasWholesale: Boolean
-        get() = wholesale != null && wholesale.isNotEmpty()
 
     fun getFirstProductImage(): String? {
         if (media.isEmpty()) return null
@@ -184,31 +199,6 @@ data class ComponentData(
         }?.uRLThumbnail
     }
 
-    fun getImagePathExceptVideo(): ArrayList<String>? {
-        val imageData =
-            media.filter { it.type == PRODUCT_IMAGE_TYPE && it.uRLOriginal.isNotEmpty() }
-                .map { it.uRLOriginal }
-        val arrayList = arrayListOf<String>()
-        return if (imageData.isEmpty()) {
-            null
-        } else {
-            arrayList.addAll(imageData)
-            arrayList
-        }
-    }
-
-    fun getImagePath(): ArrayList<String> {
-        return ArrayList(
-            media.map {
-                if (it.type == PRODUCT_IMAGE_TYPE) {
-                    it.uRLOriginal
-                } else {
-                    it.uRLThumbnail
-                }
-            }
-        )
-    }
-
     fun getGalleryItems(): List<ProductDetailGallery.Item> {
         return media.mapIndexed { index, media ->
             val url: String
@@ -233,6 +223,8 @@ data class ComponentData(
             )
         }
     }
+
+    fun requiredForContentMediaToggle() = ctaText.isNotBlank()
 }
 
 data class CategoryCarousel(
@@ -254,3 +246,12 @@ data class VariantCampaign(
     @SerializedName("thematicCampaigns")
     val thematicCampaigns: List<ThematicCampaign> = emptyList()
 )
+
+data class ContentMedia(
+    @SerializedName("url")
+    val url: String,
+    @SerializedName("ratio")
+    val ratio: String
+) {
+    fun valid() = url.isNotBlank() && ratio.validDimensionRatio()
+}

@@ -35,6 +35,7 @@ ext {
             exploreCategory                 : ":features:category:explore_category",
             categoryNavBottomSheet          : ":features:category:category_navbottomsheet",
 
+            contentAnalytic					: ":features:content:analytic",
             contentCommon                   : ":features:content:content_common",
             feed                            : ":features:content:feed",
             feedComponent                   : ":features:content:feed_component",
@@ -82,10 +83,10 @@ ext {
 
             umrah                           : ":features:salam:umrah",
 
-            categoryCommon                  : ":features:discovery:category_common",
             discoveryCommon                 : ":features:discovery:discovery_common",
             home                            : ":features:discovery:home",
             homeComponent                   : ":features:discovery:home_component",
+            homeComponentHeader				: ":features:discovery:home_component_header",
             homeRecom                       : ":features:discovery:home_recom",
             homeNav                         : ":features:discovery:home_nav",
             search                          : ":features:discovery:search",
@@ -114,7 +115,6 @@ ext {
             fintechHomeWidget               : ":features:fintech:fintech_home_widget",
             insurance                       : ":features:fintech:insurance",
 
-            dynamicBanner                   : ":features:home:dynamicbanner",
             navigation                      : ":features:home:navigation",
             navigationCommon                : ":features:home:navigation-common",
             searchbar                       : ":features:home:searchbar",
@@ -144,7 +144,6 @@ ext {
             productDraftDatabase            : ":features:merchant:product_draft_database",
             productDetailCommon             : ":features:merchant:product_detail_common",
             productDetailAdditionalInfo     : ":features:merchant:product_detail_additional_info",
-            variantCommon                   : ":features:merchant:variant_common",
             productDetail                   : ":features:merchant:product_detail",
             atcVariant                      : ":features:merchant:atc_variant",
             productAddEdit                  : ":features:merchant:product_add_edit",
@@ -210,7 +209,11 @@ ext {
             merchantVoucher                 : ":features:promo:merchant_voucher",
             additional_check                : ":features:user:additional_check",
             tokopoints                      : ":features:promo:tokopoints",
+			scpRewards                      : ":features:promo:scp_rewards",
+			scpRewardsCommon                : ":features:promo:scp_rewards_common",
+			scpRewardsWidgets               : ":features:promo:scp_rewards_widgets",
             tokopointsNotification          : ":features:promo:tokopoints_notification",
+            scpRewardsTouchpoints           : ":features:promo:scp_rewards_touchpoints",
             promoCheckout                   : ":features:promo:promo_checkout",
             promoCheckoutCommon             : ":features:promo:promo_checkout_common",
             promoGamificationCommon         : ":features:promo:promo_gamification_common",
@@ -228,7 +231,6 @@ ext {
             topAdsEdit                      : ":features:top_ads:top_ads_edit",
             topAdsManagementCommon          : ":features:top_ads:top_ads_management_common",
             topAdsHeadline                  : ":features:top_ads:top_ads_headline",
-            topAdsHeadlineUseCase           : ":features:top_ads:top_ads_headline_usecase",
             topAdsOnBoarding                : ":features:top_ads:top_ads_on_boarding",
 
             atc_common                      : ":features:transaction:atc_common",
@@ -296,7 +298,6 @@ ext {
             userIdentification              : ":features:user:user_identification",
             userIdentificationCommon        : ":features:user:user_identification_common",
             vote                            : ":features:user:vote",
-            tkpdcore                        : ":tkpdcore",
             tkpdsession                     : ":tkpdsession",
             promotionsTarget                : ":features:promo:promotions_target",
             logintestapp                    : ":testapp-features:user:logintestapp",

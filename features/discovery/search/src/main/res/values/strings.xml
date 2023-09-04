@@ -87,6 +87,11 @@
     <string name="search_product_boe_label_onboarding_title">Pengiriman gratis &amp; cepat dengan Dilayani Tokopedia</string>
     <string name="search_product_boe_label_onboarding_description">Dikirim dari penyimpanan Tokopedia terdekat, dan dapatkan Bebas Ongkir Rp0 sepuasnya!</string>
 
+    <string name="search_product_similar_search_three_dots_onboarding_description">Mau cari produk lain yang lebih cocok? Lihat lebih banyak pilihan dengan klik ikon ini, yuk.</string>
+
+    <string name="search_product_view_type_onboarding_title">Kamu bisa ganti tampilan halaman ini, lho</string>
+    <string name="search_product_view_type_onboarding_description">Klik ikon ini buat ganti tampilan hasil pencarian sesuai keinginanmu. Biar belanja makin nyaman!</string>
+
     <string name="search_inspiration_card_title">Mungkin maksud kamu ini?</string>
     <string name="search_inspiration_card_option">putih</string>
     <string name="search_inspiration_card_curated_title">Fashion Pria</string>
@@ -115,4 +120,31 @@
     <string name="search_same_session_recommendation_hide_recommendation">Rekomendasi disembunyikan</string>
 
     <string name="search_ads_low_organic_title">Menampilkan hasil yang serupa dengan \"%s\"</string>
+
+    <string name="content_desc_search_mps_loading">loading multi product search</string>
+
+    <string name="search_mps_loading_title_1">Siap! Toped lagi cari di semua toko</string>
+    <string name="search_mps_loading_title_2">Toped lagi lihatin toko demi toko</string>
+    <string name="search_mps_loading_title_3">Oh, kamu cari produk yang itu? Siap!</string>
+
+    <string name="search_mps_loading_subtitle_1">Ke Pasar Minggu pakai kebaya. Mohon tunggu sebentar, yaa.</string>
+    <string name="search_mps_loading_subtitle_2">Makan nasi kapau, lanjut minum jamu. Apapun yang kamu mau, Toped cariin untukmu.</string>
+    <string name="search_mps_loading_subtitle_3">Nongkrong di Gambir sambil makan bistik. Jangan khawatir, pasti kami cariin yang terbaik.</string>
+    <string name="search_mps_loading_subtitle_4">Main ke pasar, pulangnya beli kencur. Yuk santai sebentar, hasilnya siap meluncur.</string>
+    <string name="search_mps_loading_subtitle_5">Jalan-jalan ke Surabaya, tak lupa main di pantai. Siap-siap belanja ya, hasilnya segera sampai.</string>
+    <string name="search_mps_loading_subtitle_6">Beli batako di Palangkaraya. Toped bakal pilihin toko yang punya semuanya.</string>
+
+    <string name="search_mps_query_bottomsheet_title">Mau cari produk yang mana, nih?</string>
+    <string name="search_mps_query_bottomsheet_choose_query">Pilih satu produk yang ingin kamu cari di halaman pencarian.</string>
+    <string name="search_mps_query_bottomsheet_find_product">Cari Produk</string>
+
+    <string name="search_mps_empty_state_keyword_title">Oops, tokonya nggak ketemu</string>
+    <string name="search_mps_empty_state_keyword_description">Kami tidak menemukan toko yang menjual barang yang kamu cari.</string>
+    <string name="search_mps_empty_state_keyword_button_text">Periksa Kata Kunci</string>
+
+    <string name="search_mps_empty_state_filter_title">Nggak ada toko yang sesuai dari filter ini</string>
+    <string name="search_mps_empty_state_filter_description">Coba kurangi filter yang lagi aktif atau reset filter.</string>
+    <string name="search_mps_empty_state_filter_reset_button_text">Reset Filter</string>
+
+    <string name="search_inspiration_keyword_match_title">Banyak juga yang mencari</string>
 </resources>

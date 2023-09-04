@@ -2,24 +2,20 @@ package com.tokopedia.topchat.chatroom.view.activity.base
 
 import android.app.Activity
 import android.app.Instrumentation
-import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
-import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
-import androidx.test.espresso.action.ViewActions.*
-import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
-import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.action.ViewActions.pressBackUnconditionally
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.idling.CountingIdlingResource
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.intent.rule.IntentsTestRule
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.attachcommon.data.ResultProduct
@@ -27,7 +23,6 @@ import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_ANNOUN
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.chat_common.domain.pojo.Reply
 import com.tokopedia.chat_common.domain.pojo.imageannouncement.ImageAnnouncementPojo
-import com.tokopedia.chat_common.view.adapter.viewholder.chatmenu.AttachmentItemViewHolder
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.picker.common.EXTRA_RESULT_PICKER
@@ -37,7 +32,6 @@ import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.action.ClickChildViewWithIdAction
-import com.tokopedia.topchat.action.RecyclerViewAction
 import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule
 import com.tokopedia.topchat.chatroom.domain.mapper.TopChatRoomGetExistingChatMapper
 import com.tokopedia.topchat.chatroom.domain.pojo.FavoriteData.Companion.IS_FOLLOW
@@ -58,14 +52,30 @@ import com.tokopedia.topchat.chattemplate.domain.pojo.GetChatTemplateResponse
 import com.tokopedia.topchat.common.TopChatInternalRouter
 import com.tokopedia.topchat.common.network.TopchatCacheManager
 import com.tokopedia.topchat.common.websocket.FakeTopchatWebSocket
-import com.tokopedia.topchat.isKeyboardOpened
-import com.tokopedia.topchat.matchers.hasSrwBubble
-import com.tokopedia.topchat.matchers.withIndex
-import com.tokopedia.topchat.matchers.withRecyclerView
-import com.tokopedia.topchat.matchers.withTotalItem
 import com.tokopedia.topchat.stub.chatroom.di.ChatComponentStub
 import com.tokopedia.topchat.stub.chatroom.di.DaggerChatComponentStub
-import com.tokopedia.topchat.stub.chatroom.usecase.*
+import com.tokopedia.topchat.stub.chatroom.usecase.AddToCartOccMultiUseCaseStub
+import com.tokopedia.topchat.stub.chatroom.usecase.AddToCartUseCaseStub
+import com.tokopedia.topchat.stub.chatroom.usecase.AddToWishlistV2UseCaseStub
+import com.tokopedia.topchat.stub.chatroom.usecase.ChatAttachmentUseCaseStub
+import com.tokopedia.topchat.stub.chatroom.usecase.ChatListGroupStickerUseCaseStub
+import com.tokopedia.topchat.stub.chatroom.usecase.ChatListStickerUseCaseStub
+import com.tokopedia.topchat.stub.chatroom.usecase.ChatToggleBlockChatUseCaseStub
+import com.tokopedia.topchat.stub.chatroom.usecase.CloseReminderTickerStub
+import com.tokopedia.topchat.stub.chatroom.usecase.GetChatBackgroundUseCaseStub
+import com.tokopedia.topchat.stub.chatroom.usecase.GetChatPreAttachPayloadUseCaseStub
+import com.tokopedia.topchat.stub.chatroom.usecase.GetChatRoomSettingUseCaseStub
+import com.tokopedia.topchat.stub.chatroom.usecase.GetChatUseCaseStub
+import com.tokopedia.topchat.stub.chatroom.usecase.GetExistingMessageIdUseCaseStub
+import com.tokopedia.topchat.stub.chatroom.usecase.GetKeygenUseCaseStub
+import com.tokopedia.topchat.stub.chatroom.usecase.GetReminderTickerUseCaseStub
+import com.tokopedia.topchat.stub.chatroom.usecase.GetShopFollowingUseCaseStub
+import com.tokopedia.topchat.stub.chatroom.usecase.GetSmartReplyQuestionUseCaseStub
+import com.tokopedia.topchat.stub.chatroom.usecase.OrderProgressUseCaseStub
+import com.tokopedia.topchat.stub.chatroom.usecase.ReplyChatGQLUseCaseStub
+import com.tokopedia.topchat.stub.chatroom.usecase.ToggleFavouriteShopUseCaseStub
+import com.tokopedia.topchat.stub.chatroom.usecase.TopchatUploadImageUseCaseStub
+import com.tokopedia.topchat.stub.chatroom.usecase.UnsendReplyUseCaseStub
 import com.tokopedia.topchat.stub.chatroom.view.activity.TopChatRoomActivityStub
 import com.tokopedia.topchat.stub.chattemplate.usecase.GetTemplateUseCaseStub
 import com.tokopedia.topchat.stub.common.DefaultWebsocketPayloadFakeGenerator
@@ -74,10 +84,6 @@ import com.tokopedia.topchat.stub.common.di.module.FakeAppModule
 import com.tokopedia.topchat.stub.common.usecase.MutationMoveChatToTrashUseCaseStub
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.WebSocketResponse
-import org.hamcrest.CoreMatchers.allOf
-import org.hamcrest.CoreMatchers.`is`
-import org.hamcrest.CoreMatchers.not
-import org.hamcrest.Matcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -95,12 +101,12 @@ abstract class TopchatRoomTest {
     )
 
     protected val context: Context = InstrumentationRegistry.getInstrumentation().targetContext
-    protected val applicationContext: Context
+    private val applicationContext: Context
         get() = InstrumentationRegistry
             .getInstrumentation().context.applicationContext
 
-    protected val rvChatRoomId = R.id.recycler_view_chatroom
-    protected val flexBoxBubbleId = R.id.fxChat
+    private val rvChatRoomId = R.id.recycler_view_chatroom
+    private val flexBoxBubbleId = R.id.fxChat
 
     @Inject
     protected lateinit var getChatUseCase: GetChatUseCaseStub
@@ -206,7 +212,7 @@ abstract class TopchatRoomTest {
     protected var getShopFollowingStatus = ShopFollowingPojo()
     protected var chatSrwResponse = ChatSmartReplyQuestionResponse()
     protected var orderProgressResponse = OrderProgressResponse()
-    protected var chatBackgroundResponse = ChatBackgroundResponse()
+    private var chatBackgroundResponse = ChatBackgroundResponse()
     protected var chatRoomSettingResponse = RoomSettingResponse()
     protected var successGetTemplateResponse = GetChatTemplateResponse()
 
@@ -313,7 +319,7 @@ abstract class TopchatRoomTest {
         chatComponentStub!!.inject(this)
     }
 
-    protected fun setupDefaultResponseWhenFirstOpenChatRoom() {
+    private fun setupDefaultResponseWhenFirstOpenChatRoom() {
         getChatRoomSettingUseCase.response = chatRoomSettingResponse
         chatBackgroundUseCase.response = chatBackgroundResponse
         getChatUseCase.response = firstPageChatAsBuyer
@@ -377,492 +383,8 @@ abstract class TopchatRoomTest {
         webSocketModifier(response)
     }
 
-    protected fun clickAttachProductMenu() {
-        val viewAction = RecyclerViewActions
-            .actionOnItemAtPosition<AttachmentItemViewHolder>(
-                0,
-                click()
-            )
-        onView(withIndex(withId(R.id.rv_topchat_attachment_menu), 0))
-            .perform(viewAction)
-    }
-
-    protected fun clickAttachImageMenu() {
-        val viewAction = RecyclerViewActions
-            .actionOnItemAtPosition<AttachmentItemViewHolder>(
-                1,
-                click()
-            )
-        onView(withIndex(withId(R.id.rv_topchat_attachment_menu), 0))
-            .perform(viewAction)
-    }
-
-    protected fun clickAttachInvoiceMenu() {
-        val viewAction = RecyclerViewActions
-            .actionOnItemAtPosition<AttachmentItemViewHolder>(
-                2,
-                click()
-            )
-        onView(withIndex(withId(R.id.rv_topchat_attachment_menu), 0))
-            .perform(viewAction)
-    }
-
-    protected fun clickAttachVoucherMenu() {
-        val viewAction = RecyclerViewActions
-            .actionOnItemAtPosition<AttachmentItemViewHolder>(
-                3,
-                click()
-            )
-        onView(withIndex(withId(R.id.rv_topchat_attachment_menu), 0))
-            .perform(viewAction)
-    }
-
-    protected fun clickComposeArea() {
-        onView(withIndex(withId(R.id.new_comment), 0))
-            .perform(click())
-    }
-
-    protected fun typeMessage(msg: String) {
-        onView(withIndex(withId(R.id.new_comment), 0))
-            .perform(typeText(msg))
-    }
-
-    protected fun clickStickerIconMenu() {
-        onView(withIndex(withId(R.id.iv_chat_sticker), 0))
-            .perform(click())
-    }
-
-    protected fun clickPlusIconMenu() {
-        onView(withIndex(withId(R.id.iv_chat_menu), 0))
-            .perform(click())
-    }
-
-    protected fun clickSendBtn() {
-        onView(withIndex(withId(R.id.send_but), 0))
-            .perform(click())
-    }
-
-    protected fun clickTemplateChatAt(position: Int) {
-        val viewAction = RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
-            position,
-            click()
-        )
-        onView(withId(R.id.list_template)).perform(viewAction)
-    }
-
-    protected fun clickSrwPreviewExpandCollapse() {
-        onView(
-            allOf(
-                withId(R.id.rv_srw_content_container),
-                isDescendantOfA(withId(R.id.cl_attachment_preview))
-            )
-        ).perform(click())
-    }
-
-    protected fun clickSrwBubbleExpandCollapse(position: Int) {
-        onView(
-            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
-                position,
-                R.id.tp_srw_container_partial
-            )
-        ).perform(click())
-    }
-
-    protected fun assertLabelOnProductCard(
-        recyclerViewId: Int,
-        atPosition: Int,
-        viewMatcher: Matcher<in View>
-    ) {
-        onView(
-            withRecyclerView(recyclerViewId).atPositionOnView(
-                atPosition,
-                R.id.lb_product_label
-            )
-        ).check(matches(viewMatcher))
-    }
-
-    protected fun assertEmptyStockLabelOnProductCard(
-        recyclerViewId: Int,
-        atPosition: Int
-    ) {
-        assertLabelTextOnProductCard(recyclerViewId, atPosition, "Stok habis")
-    }
-
-    protected fun assertLabelTextOnProductCard(
-        recyclerViewId: Int,
-        atPosition: Int,
-        text: String
-    ) {
-        onView(
-            withRecyclerView(recyclerViewId).atPositionOnView(
-                atPosition,
-                R.id.lb_product_label
-            )
-        ).check(matches(withText(text)))
-    }
-
-    protected fun assertProductStockType(
-        recyclerViewId: Int,
-        atPosition: Int,
-        viewMatcher: Matcher<in View>
-    ) {
-        onView(
-            withRecyclerView(recyclerViewId).atPositionOnView(
-                atPosition,
-                R.id.tp_seller_stock_category
-            )
-        ).check(matches(viewMatcher))
-    }
-
-    protected fun assertProductStockTypeText(
-        recyclerViewId: Int,
-        atPosition: Int,
-        text: String
-    ) {
-        onView(
-            withRecyclerView(recyclerViewId).atPositionOnView(
-                atPosition,
-                R.id.tp_seller_stock_category
-            )
-        ).check(matches(withText(text)))
-    }
-
-    protected fun assertTemplateChatVisibility(
-        visibilityMatcher: Matcher<in View>
-    ) {
-        onView(withId(R.id.list_template)).check(
-            matches(visibilityMatcher)
-        )
-    }
-
-    protected fun assertSrwPreviewContentContainerVisibility(
-        visibilityMatcher: Matcher<in View>
-    ) {
-        onView(
-            allOf(
-                withId(R.id.rv_srw_content_container),
-                isDescendantOfA(withId(R.id.cl_attachment_preview))
-            )
-        ).check(matches(visibilityMatcher))
-    }
-
-    protected fun assertSrwBubbleContentContainerVisibility(
-        position: Int,
-        visibilityMatcher: Matcher<in View>
-    ) {
-        onView(
-            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
-                position,
-                R.id.rv_srw_content_container
-            )
-        ).check(matches(visibilityMatcher))
-    }
-
-    protected fun assertSrwTitle(
-        title: String
-    ) {
-        onView(withIndex(withId(R.id.tp_srw_partial), 0)).check(
-            matches(withText(title))
-        )
-    }
-
-    protected fun assertSrwTotalQuestion(
-        totalQuestion: Int
-    ) {
-        onView(withIndex(withId(R.id.rv_srw_partial), 0))
-            .check(matches(withTotalItem(totalQuestion)))
-    }
-
-    /**
-     * assert unify snackbar/toaster
-     */
-    protected fun assertSnackbarText(msg: String) {
-        onView(withText(msg)).check(matches(isDisplayed()))
-    }
-
-    protected fun assertNoSnackbarText(msg: String) {
-        onView(withText(msg)).check(doesNotExist())
-    }
-
-    protected fun assertSnackbarWithSubText(msg: String) {
-        onView(withSubstring(msg)).check(matches(isDisplayed()))
-    }
-
-    protected fun assertSrwPreviewContentIsVisible() {
-        assertSrwPreviewContentContainerVisibility(isDisplayed())
-        assertTemplateChatVisibility(not(isDisplayed()))
-    }
-
-    protected fun assertSrwBubbleDoesNotExist() {
-        onView(withId(R.id.recycler_view_chatroom)).check(matches(not(hasSrwBubble())))
-    }
-
-    protected fun assertSrwBubbleContentIsVisibleAt(
-        position: Int
-    ) {
-        assertSrwBubbleContentContainerVisibility(position, isDisplayed())
-        assertTemplateChatVisibility(not(isDisplayed()))
-    }
-
-    protected fun assertSrwPreviewContentIsLoading() {
-        assertSrwPreviewContentContainerVisibility(not(isDisplayed()))
-        assertTemplateChatVisibility(not(isDisplayed()))
-    }
-
-    protected fun assertSrwPreviewContentIsError() {
-        assertSrwPreviewContentContainerVisibility(not(isDisplayed()))
-        assertTemplateChatVisibility(isDisplayed())
-    }
-
-    protected fun assertSrwPreviewContentIsHidden() {
-        assertSrwPreviewContentContainerVisibility(not(isDisplayed()))
-    }
-
-    protected fun assertHeaderRightMsgBubbleVisibility(
-        position: Int,
-        visibilityMatcher: Matcher<in View>
-    ) {
-        onView(
-            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
-                position,
-                R.id.tvRole
-            )
-        ).check(matches(visibilityMatcher))
-    }
-
-    protected fun assertHeaderRightMsgBubbleText(position: Int, msg: String) {
-        onView(
-            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
-                position,
-                R.id.tvRole
-            )
-        ).check(matches(withText(msg)))
-    }
-
-    protected fun assertHeaderRightMsgBubbleBlueDotVisibility(
-        position: Int,
-        visibilityMatcher: Matcher<in View>
-    ) {
-        onView(
-            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
-                position,
-                R.id.img_sr_blue_dot
-            )
-        ).check(matches(visibilityMatcher))
-    }
-
-    protected fun assertKeyboardIsVisible() {
-        val isKeyboardOpened = isKeyboardOpened()
-        assertThat(isKeyboardOpened, `is`(true))
-    }
-
-    protected fun assertKeyboardIsNotVisible() {
-        val isKeyboardOpened = isKeyboardOpened()
-        assertThat(isKeyboardOpened, `is`(false))
-    }
-
-    protected fun assertLongClickMenu(matcher: Matcher<in View>) {
-        onView(withId(R.id.rvMenu)).check(
-            matches(matcher)
-        )
-    }
-
-    protected fun assertChatMenuVisibility(visibilityMatcher: Matcher<in View>) {
-        onView(withId(R.id.fl_chat_menu)).check(
-            matches(visibilityMatcher)
-        )
-    }
-
-    protected fun assertChatAttachmentMenuVisibility(visibilityMatcher: Matcher<in View>) {
-        onView(withIndex(withId(R.id.rv_topchat_attachment_menu), 0)).check(
-            matches(visibilityMatcher)
-        )
-    }
-
-    protected fun assertChatStickerMenuVisibility(
-        visibilityMatcher: Matcher<in View>
-    ) {
-        onView(withIndex(withId(R.id.ll_sticker_container), 0)).check(
-            matches(visibilityMatcher)
-        )
-    }
-
-    protected fun assertComposedTextValue(msg: String) {
-        onView(withIndex(withId(R.id.new_comment), 0)).check(
-            matches(withSubstring(msg))
-        )
-    }
-
-    protected fun assertChatRoomList(matcher: Matcher<in View>) {
-        onView(withId(R.id.recycler_view_chatroom)).check(matches(matcher))
-    }
-
     protected fun finishActivity() {
         activityTestRule.finishActivity()
-    }
-
-    protected fun assertMsgHeaderContainer(
-        position: Int,
-        matcher: Matcher<in View>
-    ) {
-        onView(
-            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
-                position,
-                R.id.ll_msg_header
-            )
-        ).check(matches(matcher))
-    }
-
-    protected fun assertDividerHeaderContainer(
-        position: Int,
-        matcher: Matcher<in View>
-    ) {
-        onView(
-            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
-                position,
-                R.id.v_header_divider
-            )
-        ).check(matches(matcher))
-    }
-
-    protected fun assertHeaderTitleMsgAtBubblePosition(
-        position: Int,
-        matcher: Matcher<in View>
-    ) {
-        onView(
-            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
-                position,
-                R.id.tp_header_title
-            )
-        ).check(matches(matcher))
-    }
-
-    protected fun assertCtaHeaderMsgAtBubblePosition(position: Int, matcher: Matcher<in View>) {
-        onView(
-            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
-                position,
-                R.id.tp_header_cta
-            )
-        ).check(matches(matcher))
-    }
-
-    protected fun clickCtaHeaderMsgAtBubblePosition(position: Int) {
-        onView(
-            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
-                position,
-                R.id.tp_header_cta
-            )
-        ).perform(click())
-    }
-
-    protected fun assertMsgBubbleAt(position: Int, matcher: Matcher<in View>) {
-        onView(
-            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
-                position,
-                R.id.tvMessage
-            )
-        ).check(matches(matcher))
-    }
-
-    protected fun assertChatRecyclerview(matcher: Matcher<in View>) {
-        onView(
-            withId(R.id.recycler_view_chatroom)
-        ).check(matches(matcher))
-    }
-
-    protected fun assertBroadcastCampaignLabelAt(
-        position: Int,
-        matcher: Matcher<in View>
-    ) {
-        onView(
-            withRecyclerView(R.id.recycler_view_chatroom)
-                .atPositionOnView(
-                    position,
-                    R.id.broadcast_campaign_label
-                )
-        ).check(matches(matcher))
-    }
-
-    protected fun assertBroadcastCampaignLabelDescAt(
-        position: Int,
-        matcher: Matcher<in View>
-    ) {
-        onView(
-            withRecyclerView(R.id.recycler_view_chatroom)
-                .atPositionOnView(
-                    position,
-                    R.id.tp_broadcast_campaign_status
-                )
-        ).check(matches(matcher))
-    }
-
-    protected fun assertBroadcastCampaignLabelCountdownAt(
-        position: Int,
-        matcher: Matcher<in View>
-    ) {
-        onView(
-            withRecyclerView(R.id.recycler_view_chatroom)
-                .atPositionOnView(
-                    position,
-                    R.id.tu_bc_countdown
-                )
-        ).check(matches(matcher))
-    }
-
-    protected fun assertBroadcastCampaignLabelStartDateIconAt(
-        position: Int,
-        matcher: Matcher<in View>
-    ) {
-        onView(
-            withRecyclerView(R.id.recycler_view_chatroom)
-                .atPositionOnView(
-                    position,
-                    R.id.iu_broadcast_start_date
-                )
-        ).check(matches(matcher))
-    }
-
-    protected fun assertBroadcastCampaignLabelStartDateTextAt(
-        position: Int,
-        matcher: Matcher<in View>
-    ) {
-        onView(
-            withRecyclerView(R.id.recycler_view_chatroom)
-                .atPositionOnView(
-                    position,
-                    R.id.iu_broadcast_start_date
-                )
-        ).check(matches(matcher))
-    }
-
-    protected fun assertToolbarTitle(expectedTitle: String) {
-        onView(
-            allOf(
-                withId(com.tokopedia.chat_common.R.id.title),
-                isDescendantOfA(withId(R.id.toolbar))
-            )
-        ).check(matches(withText(expectedTitle)))
-    }
-
-    protected fun assertStickerContainer() {
-        onView(withIndex(withId(R.id.ll_sticker_container), 0)).check(
-            matches(isDisplayed())
-        )
-    }
-
-    protected fun isKeyboardOpened(): Boolean {
-        val rootView = activity.findViewById<View>(R.id.main)
-        return isKeyboardOpened(rootView)
-    }
-
-    protected fun clickCloseAttachmentPreview(position: Int) {
-        val viewAction = RecyclerViewActions
-            .actionOnItemAtPosition<TopchatProductAttachmentViewHolder>(
-                position,
-                ClickChildViewWithIdAction()
-                    .clickChildViewWithId(R.id.iv_close)
-            )
-        onView(withId(R.id.rv_attachment_preview)).perform(viewAction)
     }
 
     protected fun clickStickerAtPosition(position: Int) {
@@ -873,34 +395,6 @@ abstract class TopchatRoomTest {
                     .clickChildViewWithId(R.id.iv_sticker)
             )
         onView(withId(R.id.rv_sticker)).perform(viewAction)
-    }
-
-    protected fun clickSrwPreviewItemAt(position: Int) {
-        onView(
-            allOf(
-                withRecyclerView(R.id.rv_srw_partial).atPositionOnView(
-                    position,
-                    R.id.tp_srw_title
-                ),
-                isDescendantOfA(withId(R.id.cl_attachment_preview))
-            )
-        ).perform(click())
-    }
-
-    protected fun clickOnSrwPartial() {
-        onView(withIndex(withId(R.id.tp_srw_container_partial), 0)).perform(click())
-    }
-
-    protected fun scrollChatToPosition(position: Int) {
-        onView(withId(R.id.recycler_view_chatroom)).perform(
-            RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(position)
-        )
-    }
-
-    protected fun smoothScrollChatToPosition(position: Int) {
-        onView(withId(R.id.recycler_view_chatroom)).perform(
-            RecyclerViewAction.smoothScrollTo(position)
-        )
     }
 
     protected fun intendingAttachProduct(totalProductAttached: Int) {
@@ -950,12 +444,6 @@ abstract class TopchatRoomTest {
         }
     }
 
-    protected fun getClipboardMsg(): CharSequence? {
-        val clipboard: ClipboardManager =
-            context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        return clipboard.primaryClip?.getItemAt(0)?.text
-    }
-
     protected fun getBubbleMsgAtPosition(position: Int): CharSequence {
         val rv = activity.findViewById<RecyclerView>(rvChatRoomId)
         (rv.layoutManager as? LinearLayoutManager)?.let {
@@ -966,18 +454,17 @@ abstract class TopchatRoomTest {
         return ""
     }
 
-    protected fun waitForIt(timeMillis: Long) {
-        Thread.sleep(timeMillis)
+    protected fun stubIntents() {
+        intending(anyIntent())
+            .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
     }
 
-    protected fun clickBroadcastHandlerFollowShop() {
-        onView(withId(R.id.btn_follow_shop)).perform(click())
-    }
-
-    protected fun preventOpenOtherActivity() {
-        intending(anyIntent()).respondWith(
-            Instrumentation.ActivityResult(Activity.RESULT_OK, null)
-        )
+    protected fun putProductAttachmentIntent(
+        intent: Intent,
+        listOfProducts: List<String> = listOf(EX_PRODUCT_ID)
+    ) {
+        val stringProductPreviews = CommonUtil.toJson(listOfProducts)
+        intent.putExtra(ApplinkConst.Chat.PRODUCT_PREVIEWS, stringProductPreviews)
     }
 }
 

@@ -67,8 +67,8 @@ class ServerErrorView : NestedScrollView {
             errorSubTitle = resources.getText(R.string.tp_label_try_again)
         }
         buttonFontSize = resources.getInteger(R.integer.tp_error_btn_large)
-        buttonColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
-        buttonFontColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+        buttonColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+        buttonFontColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
     }
 
     private fun inflateLayout() {

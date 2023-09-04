@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.DrawableRes
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -27,6 +28,7 @@ import com.tokopedia.attachinvoice.view.widget.AttachInvoiceItemDecoration
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.resources.isDarkMode
 import javax.inject.Inject
 
 class AttachInvoiceFragment : BaseListFragment<Visitable<*>, AttachInvoiceTypeFactory>(),
@@ -76,6 +78,11 @@ class AttachInvoiceFragment : BaseListFragment<Visitable<*>, AttachInvoiceTypeFa
         setupRecyclerView()
         setupObserver()
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupShadow()
     }
 
     override fun getScreenName(): String = screenName
@@ -177,6 +184,15 @@ class AttachInvoiceFragment : BaseListFragment<Visitable<*>, AttachInvoiceTypeFa
             putExtra(ApplinkConst.Chat.INVOICE_STATUS, invoice.status)
             putExtra(ApplinkConst.Chat.INVOICE_TOTAL_AMOUNT, invoice.productPrice)
         }
+    }
+
+    private fun setupShadow() {
+        @DrawableRes val drawableRes = if (context?.isDarkMode() == true) {
+            com.tokopedia.attachcommon.R.drawable.bg_attachcommon_shadow_attachment_dark
+        } else {
+            com.tokopedia.attachcommon.R.drawable.bg_attachcommon_shadow_attachment_light
+        }
+        binding.attachShadow?.setBackgroundResource(drawableRes)
     }
 
     companion object {

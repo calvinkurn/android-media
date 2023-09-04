@@ -36,6 +36,7 @@ import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.Visitab
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.VisitableDataHelper.isLastAvailableProduct
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.VisitableDataHelper.setCartId
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.VisitableDataHelper.setCollapsedUnavailableProducts
+import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.VisitableDataHelper.setQuantityChanged
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.mapper.TokoFoodPurchaseUiModelMapper
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.mapper.TokoFoodPurchaseUiModelMapper.updatePromoData
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.mapper.TokoFoodPurchaseUiModelMapper.updateShippingData
@@ -56,7 +57,6 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flow
@@ -65,7 +65,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @FlowPreview
-class TokoFoodPurchaseViewModel @Inject constructor(
+open class TokoFoodPurchaseViewModel @Inject constructor(
     private val keroEditAddressUseCase: Lazy<KeroEditAddressUseCase>,
     private val keroGetAddressUseCase: Lazy<KeroGetAddressUseCase>,
     private val cartListTokofoodUseCase: Lazy<CheckoutTokoFoodUseCase>,
@@ -111,6 +111,9 @@ class TokoFoodPurchaseViewModel @Inject constructor(
     private val _trackerPaymentCheckoutData = MutableSharedFlow<CartListData>()
     val trackerPaymentCheckoutData = _trackerPaymentCheckoutData.asSharedFlow()
 
+    private val _isPaymentButtonLoading = MutableSharedFlow<Boolean>()
+    val isPaymentButtonLoading = _isPaymentButtonLoading.asSharedFlow()
+
     init {
         viewModelScope.launch {
             _updateQuantityState
@@ -122,9 +125,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                     }
                 }
                 .collect {
-                    _visitables.value?.filterIsInstance<TokoFoodPurchaseProductTokoFoodPurchaseUiModel>()?.forEach { productUiModel ->
-                        productUiModel.isQuantityChanged = false
-                    }
+                    _visitables.value.setQuantityChanged()
                     _updateQuantityStateFlow.emit(it)
                 }
         }
@@ -158,6 +159,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
 
     fun loadData() {
         launchCatchError(block = {
+            _isPaymentButtonLoading.emit(false)
             withContext(dispatcher.io) {
                 cartListTokofoodUseCase.get().execute(SOURCE)
             }.let {
@@ -540,6 +542,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
 
     fun checkoutGeneral() {
         launchCatchError(block = {
+            _isPaymentButtonLoading.emit(true)
             checkoutTokoFoodResponse.value?.let { checkoutResponse ->
                 withContext(dispatcher.io) {
                     checkoutGeneralTokoFoodUseCase.get().execute(checkoutResponse)
@@ -559,15 +562,17 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                             throwable = MessageErrorException(errorMessage)
                         )
                     }
+                    _isPaymentButtonLoading.emit(false)
                 }
             }
         }, onError = {
-                _uiEvent.value = PurchaseUiEvent(
-                    state = PurchaseUiEvent.EVENT_FAILED_CHECKOUT_GENERAL_BOTTOMSHEET,
-                    data = it.getGlobalErrorType(),
-                    throwable = it
-                )
-            })
+            _uiEvent.value = PurchaseUiEvent(
+                state = PurchaseUiEvent.EVENT_FAILED_CHECKOUT_GENERAL_BOTTOMSHEET,
+                data = it.getGlobalErrorType(),
+                throwable = it
+            )
+            _isPaymentButtonLoading.emit(false)
+        })
     }
 
     fun setPaymentButtonLoading(isLoading: Boolean) {

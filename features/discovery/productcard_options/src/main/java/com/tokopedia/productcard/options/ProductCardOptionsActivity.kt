@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -22,7 +23,12 @@ internal class ProductCardOptionsActivity : BaseSimpleActivity() {
     lateinit var productCardOptionsViewModelFactory: ViewModelProvider.Factory
     private var bottomSheetProductCardOptions: BottomSheetUnify? = null
 
+    @Inject
+    lateinit var fragmentFactory: FragmentFactory
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        injectDependencies()
+        supportFragmentManager.fragmentFactory = fragmentFactory
         super.onCreate(savedInstanceState)
 
         configBottomsheet()
@@ -37,8 +43,6 @@ internal class ProductCardOptionsActivity : BaseSimpleActivity() {
     override fun setupStatusBar() { }
 
     override fun setupFragment(savedInstance: Bundle?) {
-        injectDependencies()
-
         setupViewModel()
 
         super.setupFragment(savedInstance)
@@ -65,7 +69,10 @@ internal class ProductCardOptionsActivity : BaseSimpleActivity() {
     }
 
     override fun getNewFragment(): Fragment {
-        return ProductCardOptionsFragment()
+        return ProductCardOptionsFragment.newInstance(
+            classLoader,
+            supportFragmentManager.fragmentFactory,
+        )
     }
 
     override fun inflateFragment() { }

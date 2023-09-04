@@ -3,6 +3,7 @@ package com.tokopedia.product.detail.view.viewmodel.product_detail
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asFlow
+import androidx.lifecycle.map
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateUseCase
 import com.tokopedia.analytics.performance.util.EmbraceKey
@@ -48,6 +49,7 @@ import com.tokopedia.product.detail.common.usecase.ToggleFavoriteUseCase
 import com.tokopedia.product.detail.data.model.ProductInfoP2Login
 import com.tokopedia.product.detail.data.model.ProductInfoP2Other
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
+import com.tokopedia.product.detail.data.model.bottom_sheet_edu.BottomSheetEduUiModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMediaRecomBottomSheetData
@@ -92,6 +94,7 @@ import com.tokopedia.recommendation_widget_common.affiliate.RecommendationNowAff
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.extension.DEFAULT_QTY_1
+import com.tokopedia.recommendation_widget_common.extension.PAGENAME_IDENTIFIER_RECOM_ATC
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
@@ -100,6 +103,9 @@ import com.tokopedia.topads.sdk.domain.interactor.GetTopadsIsAdsUseCase.Companio
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsGetDynamicSlottingDataProduct
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.universal_sharing.view.model.AffiliateInput
+import com.tokopedia.universal_sharing.view.model.GenerateAffiliateLinkEligibility
+import com.tokopedia.universal_sharing.view.usecase.AffiliateEligibilityCheckUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -154,10 +160,11 @@ class DynamicProductDetailViewModel @Inject constructor(
     private val updateCartUseCase: Lazy<UpdateCartUseCase>,
     private val deleteCartUseCase: Lazy<DeleteCartUseCase>,
     private val getTopadsIsAdsUseCase: Lazy<GetTopadsIsAdsUseCase>,
+    private val affiliateEligibilityUseCase: Lazy<AffiliateEligibilityCheckUseCase>,
     private val remoteConfig: RemoteConfig,
     val userSessionInterface: UserSessionInterface,
     private val affiliateCookieHelper: Lazy<AffiliateCookieHelper>,
-    productRecommSubViewModel: ProductRecommSubViewModel,
+    private val productRecommSubViewModel: ProductRecommSubViewModel,
     playWidgetSubViewModel: PlayWidgetSubViewModel
 ) : ParentSubViewModel(dispatcher.main, productRecommSubViewModel, playWidgetSubViewModel),
     IProductRecommSubViewModel by productRecommSubViewModel,
@@ -260,6 +267,17 @@ class DynamicProductDetailViewModel @Inject constructor(
     private val _oneTimeMethod = MutableStateFlow(OneTimeMethodState())
     val oneTimeMethodState: StateFlow<OneTimeMethodState> = _oneTimeMethod
 
+    val showBottomSheetEdu: LiveData<BottomSheetEduUiModel?> = p2Data.map {
+        val edu = it.bottomSheetEdu
+        val showEdu = edu.isShow && edu.appLink.isNotBlank()
+
+        if (showEdu) {
+            edu
+        } else {
+            null
+        }
+    }
+
     var videoTrackerData: Pair<Long, Long>? = null
 
     var getDynamicProductInfoP1: DynamicProductInfoP1? = null
@@ -276,8 +294,6 @@ class DynamicProductDetailViewModel @Inject constructor(
     private var userLocationCache: LocalCacheModel = LocalCacheModel()
     private var forceRefresh: Boolean = false
     private var shopDomain: String? = null
-    private var alreadyHitRecom: MutableList<String> = mutableListOf()
-
     private var updateCartCounterSubscription: Subscription? = null
 
     fun hasShopAuthority(): Boolean = isShopOwner() || getShopInfo().allowManage
@@ -292,10 +308,17 @@ class DynamicProductDetailViewModel @Inject constructor(
     val productMediaRecomBottomSheetState: LiveData<ProductMediaRecomBottomSheetState>
         get() = _productMediaRecomBottomSheetState
 
+    private val _resultAffiliate = MutableLiveData<Result<GenerateAffiliateLinkEligibility>>()
+
+    val resultAffiliate: LiveData<Result<GenerateAffiliateLinkEligibility>>
+        get() = _resultAffiliate
+
     val userId: String
         get() = userSessionInterface.userId
 
     var deviceId: String = userSessionInterface.deviceId ?: ""
+
+    private var aPlusContentExpanded: Boolean = ProductDetailConstant.A_PLUS_CONTENT_DEFAULT_EXPANDED_STATE
 
     override fun getP1(): DynamicProductInfoP1? = getDynamicProductInfoP1
 
@@ -480,14 +503,18 @@ class DynamicProductDetailViewModel @Inject constructor(
         data: ProductVariant,
         mapOfSelectedVariant: MutableMap<String, String>?
     ) {
-        launchCatchError(dispatcher.io, block = {
-            _singleVariantData.postValue(
+        launch(dispatcher.io) {
+            runCatching {
                 ProductDetailVariantLogic.determineVariant(
                     mapOfSelectedOptionIds = mapOfSelectedVariant.orEmpty(),
                     productVariant = data
                 )
-            )
-        }) {}
+            }.onSuccess {
+                launch(dispatcher.main) {
+                    _singleVariantData.postValue(it)
+                }
+            }
+        }
     }
 
     fun getProductP1(
@@ -500,10 +527,12 @@ class DynamicProductDetailViewModel @Inject constructor(
     ) {
         launch(context = dispatcher.io) {
             runCatching {
-                alreadyHitRecom = mutableListOf()
+                aPlusContentExpanded = ProductDetailConstant.A_PLUS_CONTENT_DEFAULT_EXPANDED_STATE
+                productRecommSubViewModel.onResetAlreadyRecomHit()
                 shopDomain = productParams.shopDomain
                 forceRefresh = refreshPage
                 userLocationCache = userLocationLocal
+                var hasQuantityEditor = false
                 getPdpLayout(
                     productId = productParams.productId.orEmpty(),
                     shopDomain = productParams.shopDomain.orEmpty(),
@@ -542,9 +571,12 @@ class DynamicProductDetailViewModel @Inject constructor(
 
                     // Render initial data
                     _productLayout.postValue(processedList.asSuccess())
+                    hasQuantityEditor = processedList.any {
+                        it.name().contains(PAGENAME_IDENTIFIER_RECOM_ATC)
+                    }
                 }
                 // Then update the following, it will not throw anything when error
-                getProductP2(urlQuery)
+                getProductP2(urlQuery, hasQuantityEditor)
             }.onFailure {
                 _productLayout.postValue(it.asFail())
             }
@@ -650,8 +682,7 @@ class DynamicProductDetailViewModel @Inject constructor(
             _addToCartLiveData.value = result.asSuccess()
         }
     }
-
-    private suspend fun getProductP2(urlQuery: String = "") {
+    private suspend fun getProductP2(urlQuery: String = "", hasQuantityEditor: Boolean = false) {
         getDynamicProductInfoP1?.let {
             val p2LoginDeferred: Deferred<ProductInfoP2Login>? = if (isUserSessionActive) {
                 getProductInfoP2LoginAsync(
@@ -665,7 +696,7 @@ class DynamicProductDetailViewModel @Inject constructor(
                 productId = it.basic.productID,
                 pdpSession = it.pdpSession,
                 shopId = it.basic.shopID,
-                isTokoNow = it.basic.isTokoNow
+                hasQuantityEditor = it.basic.isTokoNow || hasQuantityEditor,
             )
             val p2OtherDeffered: Deferred<ProductInfoP2Other> =
                 getProductInfoP2OtherAsync(it.basic.productID, it.basic.getShopId())
@@ -858,48 +889,56 @@ class DynamicProductDetailViewModel @Inject constructor(
     }
 
     fun toggleTeaserNotifyMe(isNotifyMeActive: Boolean, campaignId: Long, productId: Long) {
-        launchCatchError(block = {
-            val action = if (isNotifyMeActive) {
-                ProductDetailCommonConstant.VALUE_TEASER_ACTION_UNREGISTER
-            } else {
-                ProductDetailCommonConstant.VALUE_TEASER_ACTION_REGISTER
+        launch(context = coroutineContext) {
+            runCatching {
+                val action = if (isNotifyMeActive) {
+                    ProductDetailCommonConstant.VALUE_TEASER_ACTION_UNREGISTER
+                } else {
+                    ProductDetailCommonConstant.VALUE_TEASER_ACTION_REGISTER
+                }
+
+                action to toggleNotifyMeUseCase.get().executeOnBackground(
+                    ToggleNotifyMeUseCase.createParams(
+                        campaignId,
+                        productId,
+                        action,
+                        ProductDetailCommonConstant.VALUE_TEASER_SOURCE
+                    )
+                ).result
+            }.onSuccess { pair ->
+                updateNotifyMeData(productId.toString())
+                _toggleTeaserNotifyMe.value = NotifyMeUiData(
+                    pair.first,
+                    pair.second.isSuccess,
+                    pair.second.message
+                ).asSuccess()
+            }.onFailure {
+                _toggleTeaserNotifyMe.value = it.asFail()
             }
-
-            val result = toggleNotifyMeUseCase.get().executeOnBackground(
-                ToggleNotifyMeUseCase.createParams(
-                    campaignId,
-                    productId,
-                    action,
-                    ProductDetailCommonConstant.VALUE_TEASER_SOURCE
-                )
-            ).result
-
-            updateNotifyMeData(productId.toString())
-            _toggleTeaserNotifyMe.value = NotifyMeUiData(
-                action,
-                result.isSuccess,
-                result.message
-            ).asSuccess()
-        }) {
-            _toggleTeaserNotifyMe.value = it.asFail()
         }
     }
 
     fun getDiscussionMostHelpful(productId: String, shopId: String) {
-        launchCatchError(block = {
-            val response = withContext(dispatcher.io) {
-                discussionMostHelpfulUseCase.get().createRequestParams(productId, shopId)
-                discussionMostHelpfulUseCase.get().executeOnBackground()
+        launch(context = coroutineContext) {
+            runCatching {
+                withContext(dispatcher.io) {
+                    discussionMostHelpfulUseCase.get().createRequestParams(productId, shopId)
+                    discussionMostHelpfulUseCase.get().executeOnBackground()
+                }
+            }.onSuccess {
+                _discussionMostHelpful.postValue(it.asSuccess())
+            }.onFailure {
+                _discussionMostHelpful.postValue(it.asFail())
             }
-            _discussionMostHelpful.postValue(response.asSuccess())
-        }) {
-            _discussionMostHelpful.postValue(it.asFail())
         }
     }
 
     fun shouldHideFloatingButton(): Boolean {
-        return p2Data.value?.cartRedirection?.get(getDynamicProductInfoP1?.basic?.productID)
-            ?.hideFloatingButton.orFalse()
+        val cardRedirection = p2Data.value?.cartRedirection ?: return false
+        val p1 = getDynamicProductInfoP1 ?: return false
+        val pid = p1.basic.productID
+        val hideFloatingButton = cardRedirection[pid]?.shouldHideFloatingButtonInPdp.orFalse()
+        return hideFloatingButton && !isShopOwner()
     }
 
     fun onAtcRecomNonVariantQuantityChanged(
@@ -1092,7 +1131,7 @@ class DynamicProductDetailViewModel @Inject constructor(
         productId: String,
         pdpSession: String,
         shopId: String,
-        isTokoNow: Boolean
+        hasQuantityEditor: Boolean,
     ): Deferred<ProductInfoP2UiData> {
         return async(dispatcher.io) {
             getP2DataAndMiniCartUseCase.get().executeOnBackground(
@@ -1103,7 +1142,7 @@ class DynamicProductDetailViewModel @Inject constructor(
                     generateUserLocationRequest(userLocationCache),
                     generateTokoNowRequest(userLocationCache)
                 ),
-                isTokoNow = isTokoNow,
+                hasQuantityEditor = hasQuantityEditor,
                 shopId = shopId,
                 forceRefresh = forceRefresh,
                 isLoggedIn = isUserSessionActive,
@@ -1248,6 +1287,12 @@ class DynamicProductDetailViewModel @Inject constructor(
                     it.copy(event = event, impressRestriction = true)
                 }
             }
+            is OneTimeMethodEvent.ImpressGeneralEduBs -> {
+                if (_oneTimeMethod.value.impressGeneralEduBS) return
+                _oneTimeMethod.update {
+                    it.copy(event = event, impressGeneralEduBS = true)
+                }
+            }
             else -> {
                 // noop
             }
@@ -1260,26 +1305,41 @@ class DynamicProductDetailViewModel @Inject constructor(
         productId: String,
         isTokoNow: Boolean
     ) {
-        launchCatchError(dispatcher.main, block = {
-            val data = _productMediaRecomBottomSheetData.let { productMediaRecomBottomSheetData ->
-                if (
-                    productMediaRecomBottomSheetData?.pageName == pageName &&
-                    productMediaRecomBottomSheetData.recommendationWidget.recommendationItemList.isNotEmpty()
-                ) {
-                    productMediaRecomBottomSheetData
-                } else {
-                    setProductMediaRecomBottomSheetLoading(title)
-                    loadProductMediaRecomBottomSheetData(pageName, productId, isTokoNow)
+        launch(context = dispatcher.main) {
+            runCatching {
+                val data = _productMediaRecomBottomSheetData.let { productMediaRecomBottomSheetData ->
+                    if (
+                        productMediaRecomBottomSheetData?.pageName == pageName &&
+                        productMediaRecomBottomSheetData.recommendationWidget.recommendationItemList.isNotEmpty()
+                    ) {
+                        productMediaRecomBottomSheetData
+                    } else {
+                        setProductMediaRecomBottomSheetLoading(title)
+                        loadProductMediaRecomBottomSheetData(pageName, productId, isTokoNow)
+                    }
                 }
+                setProductMediaRecomBottomSheetData(title, data)
+            }.onFailure {
+                setProductMediaRecomBottomSheetError(title = title, error = it)
             }
-            setProductMediaRecomBottomSheetData(title, data)
-        }) {
-            setProductMediaRecomBottomSheetError(title = title, error = it)
         }
     }
 
     fun dismissProductMediaRecomBottomSheet() {
         _productMediaRecomBottomSheetState.value = ProductMediaRecomBottomSheetState.Dismissed
+    }
+
+    fun checkAffiliateEligibility(affiliatePDPInput: AffiliateInput) {
+        launch {
+            try {
+                val result = affiliateEligibilityUseCase.get().apply {
+                    params = AffiliateEligibilityCheckUseCase.createParam(affiliatePDPInput)
+                }.executeOnBackground()
+                _resultAffiliate.value = Success(result)
+            } catch (e: Exception) {
+                _resultAffiliate.value = Fail(e)
+            }
+        }
     }
 
     private suspend fun loadProductMediaRecomBottomSheetData(
@@ -1335,4 +1395,10 @@ class DynamicProductDetailViewModel @Inject constructor(
             error = error
         )
     }
+
+    fun setAPlusContentExpandedState(expanded: Boolean) {
+        aPlusContentExpanded = expanded
+    }
+
+    fun isAPlusContentExpanded() = aPlusContentExpanded
 }

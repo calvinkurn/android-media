@@ -80,6 +80,9 @@ data class Detail(
     @SerializedName("tenure_header") val optionalTenureHeader: String?,
     @SerializedName("linking_status") val linkingStatus: String?,
     @SerializedName("promo_name") val promoName: String?,
+    @SerializedName("new_rate") val newRate: String = "",
+    @SerializedName("previous_rate") val previousRate: String = "",
+    @SerializedName("price_section") val priceSection: PriceSection = PriceSection()
 ) : BasePayLaterWidgetUiModel, Parcelable {
     override fun type(typeFactory: PayLaterAdapterFactory): Int {
         return typeFactory.type(this)
@@ -122,17 +125,24 @@ data class GatewayModel(
 
 @Parcelize
 data class InstallmentDetails(
-
     @SerializedName("header") val header: String?,
     @SerializedName("content") val content: List<Content>?,
+    @SerializedName("ticker") val ticker: InstallmentDetailsTicker = InstallmentDetailsTicker()
 ) : Parcelable
 
 @Parcelize
-data class Content(
+data class InstallmentDetailsTicker(
+    @SerializedName("ticker_wordings") val tickerWordings: String = "",
+    @SerializedName("image") val image: String = "",
 
+    ) : Parcelable
+@Parcelize
+data class Content(
     @SerializedName("title") val title: String?,
     @SerializedName("value") val value: String?,
     @SerializedName("type") val type: Int?,
+    @SerializedName("title_formatted_light") val titleFormattedLight: String = "",
+    @SerializedName("title_formatted_dark") val titleFormattedDark: String = ""
 ) : BasePayLaterWidgetUiModel, Parcelable {
     override fun type(typeFactory: PayLaterAdapterFactory): Int {
         return typeFactory.type(this)
@@ -144,4 +154,12 @@ data class HowToUse(
 
     @SerializedName("notes") val notes: List<String>?,
     @SerializedName("steps") val steps: List<String>?
+) : Parcelable
+
+@Parcelize
+data class PriceSection(
+    @SerializedName("prefix") val prefix: String = "",
+    @SerializedName("installment_per_month") val installmentPerMonth: String = "",
+    @SerializedName("tenure") val tenure: Int = 0,
+    @SerializedName("original_per_month") val originalPerMonth: String = "",
 ) : Parcelable

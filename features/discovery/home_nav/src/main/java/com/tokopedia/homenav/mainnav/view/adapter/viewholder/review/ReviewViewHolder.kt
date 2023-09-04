@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.discovery.common.utils.toDpInt
+import com.tokopedia.homenav.MePage
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.databinding.HolderReviewListBinding
 import com.tokopedia.homenav.mainnav.view.adapter.typefactory.ReviewTypeFactoryImpl
@@ -22,6 +23,8 @@ import com.tokopedia.utils.view.binding.viewBinding
 /**
  * Created by Frenzel on 18/04/22
  */
+
+@MePage(MePage.Widget.REVIEW)
 class ReviewViewHolder(itemView: View,
                        val mainNavListener: MainNavListener
 ): AbstractViewHolder<ReviewListDataModel>(itemView) {
@@ -29,8 +32,8 @@ class ReviewViewHolder(itemView: View,
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.holder_review_list
-        private const val EDGE_MARGIN = 16f
-        private const val SPACING_BETWEEN = 8f
+        private const val EDGE_MARGIN = 12f
+        private const val SPACING_BETWEEN = 0f
         private const val MAX_CARD_HEIGHT = 80f
     }
 
@@ -51,13 +54,9 @@ class ReviewViewHolder(itemView: View,
             )
         }
         val visitableList = mutableListOf<Visitable<*>>()
-        visitableList.addAll(element.reviewList.map { ReviewModel(it) })
-        if(visitableList.isEmpty()){
-            visitableList.add(EmptyStateReviewDataModel())
-        } else if(element.showViewAll){
-            visitableList.add(OtherReviewModel())
-            binding?.reviewRv?.setHeightBasedOnCardMaxHeight()
-        }
+        visitableList.addAll(element.reviewList.mapIndexed { index, it -> ReviewModel(it, index) })
+        visitableList.add(OtherReviewModel())
+        binding?.reviewRv?.setHeightBasedOnCardMaxHeight()
         adapter.setVisitables(visitableList)
     }
 

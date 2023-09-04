@@ -30,6 +30,7 @@ import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.common.topupbills.data.RechargeSBMAddBillRequest
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiry
+import com.tokopedia.common.topupbills.data.TopupBillsEnquiryAttribute
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
 import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
@@ -53,6 +54,7 @@ import com.tokopedia.common.topupbills.widget.TopupBillsInputDropdownWidget.Comp
 import com.tokopedia.common.topupbills.widget.TopupBillsInputFieldWidget
 import com.tokopedia.common_digital.atc.DigitalAddToCartViewModel
 import com.tokopedia.common_digital.atc.data.response.ErrorAtc
+import com.tokopedia.common_digital.common.presentation.bottomsheet.DigitalDppoConsentBottomSheet
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
@@ -81,7 +83,6 @@ import com.tokopedia.rechargegeneral.presentation.activity.RechargeGeneralActivi
 import com.tokopedia.rechargegeneral.presentation.adapter.RechargeGeneralAdapter
 import com.tokopedia.rechargegeneral.presentation.adapter.RechargeGeneralAdapterFactory
 import com.tokopedia.rechargegeneral.presentation.adapter.viewholder.OnInputListener
-import com.tokopedia.rechargegeneral.presentation.bottomsheet.RechargeDppoConsentBottomSheet
 import com.tokopedia.rechargegeneral.presentation.model.RechargeGeneralProductSelectData
 import com.tokopedia.rechargegeneral.presentation.viewmodel.RechargeGeneralViewModel
 import com.tokopedia.rechargegeneral.presentation.viewmodel.SharedRechargeGeneralViewModel
@@ -99,6 +100,7 @@ import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import timber.log.Timber
 import javax.inject.Inject
 
 class RechargeGeneralFragment :
@@ -106,7 +108,8 @@ class RechargeGeneralFragment :
     OnInputListener,
     RechargeGeneralAdapter.LoaderListener,
     RechargeGeneralCheckoutBottomSheet.CheckoutListener,
-    TopupBillsMenuBottomSheets.MenuListener {
+    TopupBillsMenuBottomSheets.MenuListener,
+    AddSmartBillsInquiryCallBack{
 
     private var binding by autoClearedNullable<FragmentRechargeGeneralBinding>()
 
@@ -180,6 +183,11 @@ class RechargeGeneralFragment :
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        childFragmentManager.addFragmentOnAttachListener { _, fragment ->
+            if (fragment is AddSmartBillsInquiryBottomSheet) {
+                fragment.setCallback(this)
+            }
+        }
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
 
@@ -1294,22 +1302,22 @@ class RechargeGeneralFragment :
     }
 
     private fun renderBottomSheetAddBillInquiry(data: TopupBillsEnquiry) {
-        val inquiryBottomSheet = AddSmartBillsInquiryBottomSheet(object : AddSmartBillsInquiryCallBack {
-            override fun onInquiryClicked() {
-                commonTopupBillsAnalytics.clickAddInquiry(categoryName)
-                inputData[PARAM_CLIENT_NUMBER]?.let {
-                    addBills(productId, it)
-                }
-            }
-
-            override fun onInquiryClose() {
-                commonTopupBillsAnalytics.clickOnCloseInquiry(categoryName)
-            }
-        })
-        inquiryBottomSheet.addSBMInquiry(data.attributes)
-        fragmentManager?.let { fm ->
+        val inquiryBottomSheet = AddSmartBillsInquiryBottomSheet.newInstance(data.attributes)
+        inquiryBottomSheet.setCallback(this)
+        childFragmentManager.let { fm ->
             inquiryBottomSheet.show(fm, "")
         }
+    }
+
+    override fun onInquiryClicked(attribute: TopupBillsEnquiryAttribute) {
+        commonTopupBillsAnalytics.clickAddInquiry(categoryName)
+        inputData[PARAM_CLIENT_NUMBER]?.let {
+            addBills(productId, it)
+        }
+    }
+
+    override fun onInquiryClose() {
+        commonTopupBillsAnalytics.clickOnCloseInquiry(categoryName)
     }
 
     private fun renderCheckoutView(data: TopupBillsEnquiry) {
@@ -1519,15 +1527,19 @@ class RechargeGeneralFragment :
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         menu.clear()
-        val dppoConsentData = viewModel.dppoConsent.value
-        inflater.inflate(R.menu.menu, menu)
-        if (dppoConsentData is Success && dppoConsentData.data.description.isNotEmpty()) {
-            menu.showConsentIcon()
-            menu.setupConsentIcon(dppoConsentData.data.description)
-            menu.setupKebabIcon()
-        } else {
-            menu.hideConsentIcon()
-            menu.setupKebabIcon()
+        try {
+            val dppoConsentData = viewModel.dppoConsent.value
+            inflater.inflate(R.menu.menu, menu)
+            if (dppoConsentData is Success && dppoConsentData.data.description.isNotEmpty()) {
+                menu.showConsentIcon()
+                menu.setupConsentIcon(dppoConsentData.data.description)
+                menu.setupKebabIcon()
+            } else {
+                menu.hideConsentIcon()
+                menu.setupKebabIcon()
+            }
+        } catch (e: Exception) {
+            Timber.e(e)
         }
     }
 
@@ -1549,7 +1561,7 @@ class RechargeGeneralFragment :
                 )
                 iconUnify?.toBitmap()?.let {
                     getItem(0).setOnMenuItemClickListener {
-                        val bottomSheet = RechargeDppoConsentBottomSheet(description)
+                        val bottomSheet = DigitalDppoConsentBottomSheet(description)
                         bottomSheet.show(childFragmentManager)
                         true
                     }
