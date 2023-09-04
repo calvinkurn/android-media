@@ -448,7 +448,7 @@ object ShopPageTrackingConstant {
         const val CLICK_REIMAGINED_SHOWCASE_NAVIGATION = "reimagined - click navigasi etalase banner"
         const val CLICK_REIMAGINED_SHOWCASE_NAVIGATION_VIEW_ALL = "reimagined - click navigasi etalase all"
         const val IMPRESSION_REIMAGINED_SHOWCASE_NAVIGATION_WITH_TAB = "reimagined - impression navigasi etalase with tab"
-        const val CLICK_REIMAGINED_SHOWCASE_NAVIGATION_WITH_TAB = "reimagined - click navigasi etalase banner"
+        const val CLICK_REIMAGINED_SHOWCASE_NAVIGATION_WITH_TAB = "reimagined - click tab navigasi etalase with tab"
     }
 
     object EventCategory {

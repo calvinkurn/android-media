@@ -97,6 +97,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CLICK_PR
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CLICK_PRODUCT_ATC_RESET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CLICK_REIMAGINED_SHOWCASE_NAVIGATION
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CLICK_REIMAGINED_SHOWCASE_NAVIGATION_VIEW_ALL
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CLICK_REIMAGINED_SHOWCASE_NAVIGATION_WITH_TAB
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CLICK_REMIND_ME_EXCLUSIVE_LAUNCH_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.IMPRESSION_EXCLUSIVE_LAUNCH_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.IMPRESSION_PERSONALIZATION_TRENDING_WIDGET
@@ -210,6 +211,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_PERSONALIZATION_TRENDING_WIDGET_ITEM
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_PRODUCT_SHOP_DECOR
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_REIMAGINED_SHOWCASE_NAVIGATION
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_REIMAGINED_SHOWCASE_NAVIGATION_WITH_TAB
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_REMIND_ME_BANNER_TIMER_HOME_TAB
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_SHOP_DECOR
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_SHOP_PERSO_PRODUCT_COMPARISON
@@ -3533,110 +3535,114 @@ class ShopPageHomeTracking(
             .send()
     }
 
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4148
+    // Tracker ID: 45948
+    fun sendReimaginedClickTabNavigasiEtalaseWithTabEvent(
+        tabName: String,
+        shopId: String,
+        userId: String
+    ) {
+        Tracker.Builder()
+            .setEvent(CLICK_PG)
+            .setEventAction(CLICK_REIMAGINED_SHOWCASE_NAVIGATION_WITH_TAB)
+            .setEventCategory(SHOP_PAGE_BUYER)
+            .setEventLabel(tabName)
+            .setCustomProperty(TRACKER_ID, TRACKER_ID_CLICK_REIMAGINED_SHOWCASE_NAVIGATION_WITH_TAB)
+            .setBusinessUnit(PHYSICAL_GOODS_PASCAL_CASE)
+            .setCurrentSite(TOKOPEDIA_MARKETPLACE)
+            .setShopId(shopId)
+            .setUserId(userId)
+            .build()
+            .send()
+    }
+
+
     /*
-        // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4148
-        // Tracker ID: 45948
-        fun sendReimaginedClickTabNavigasiEtalaseWithTabEvent (eventLabel: String, sessionIris: String, shopId: String, userId: String) {
-            Tracker.Builder()
-                .setEvent("clickPG")
-                .setEventAction("reimagined - click tab navigasi etalase with tab")TRACKER_ID_CLICK_REIMAGINED_SHOWCASE_NAVIGATION_WITH_TAB
-                .setEventCategory("shop page - buyer")
-                .setEventLabel(eventLabel)
-                .setCustomProperty("trackerId", "45948")
-                .setBusinessUnit("Physical Goods")
-                .setCurrentSite("tokopediamarketplace")
+     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4148
+     // Tracker ID: 45949
+     fun sendReimaginedClickBannerNavigasiEtalaseWithTabEvent (eventLabel: String, promotions: JSONArray, sessionIris: String, shopId: String, userId: String) {
+         Tracker.Builder()
+             .setEvent("select_content")
+             .setEventAction("reimagined - click banner navigasi etalase with tab")
+             .setEventCategory("shop page - buyer")
+             .setEventLabel(eventLabel)
+             .setCustomProperty("trackerId", "45949")
+             .setBusinessUnit("Physical Goods")
+             .setCurrentSite("tokopediamarketplace")
+             .setCustomProperty("promotions", promotions)
 
-                .setShopId(shopId)
-                .setUserId(userId)
-                .build()
-                .send()
-        }
-
-
-        // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4148
-        // Tracker ID: 45949
-        fun sendReimaginedClickBannerNavigasiEtalaseWithTabEvent (eventLabel: String, promotions: JSONArray, sessionIris: String, shopId: String, userId: String) {
-            Tracker.Builder()
-                .setEvent("select_content")
-                .setEventAction("reimagined - click banner navigasi etalase with tab")
-                .setEventCategory("shop page - buyer")
-                .setEventLabel(eventLabel)
-                .setCustomProperty("trackerId", "45949")
-                .setBusinessUnit("Physical Goods")
-                .setCurrentSite("tokopediamarketplace")
-                .setCustomProperty("promotions", promotions)
-
-                .setShopId(shopId)
-                .setUserId(userId)
-                .build()
-                .send()
-            TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, eventBundle)
-        }
-        //endregion
+             .setShopId(shopId)
+             .setUserId(userId)
+             .build()
+             .send()
+         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, eventBundle)
+     }
+     //endregion
 
 
-        //region Product carousel widget tracker
-        // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4148
-        // Tracker ID: 45950
-        fun sendReimaginedImpressionAdvancedCarouselEvent (eventLabel: String, promotions: JSONArray, sessionIris: String, shopId: String, userId: String) {
-            Tracker.Builder()
-                .setEvent("view_item")
-                .setEventAction("reimagined - impression advanced carousel")
-                .setEventCategory("shop page - buyer")
-                .setEventLabel(eventLabel)
-                .setCustomProperty("trackerId", "45950")
-                .setBusinessUnit("Physical Goods")
-                .setCurrentSite("tokopediamarketplace")
-                .setCustomProperty("promotions", promotions)
+     //region Product carousel widget tracker
+     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4148
+     // Tracker ID: 45950
+     fun sendReimaginedImpressionAdvancedCarouselEvent (eventLabel: String, promotions: JSONArray, sessionIris: String, shopId: String, userId: String) {
+         Tracker.Builder()
+             .setEvent("view_item")
+             .setEventAction("reimagined - impression advanced carousel")
+             .setEventCategory("shop page - buyer")
+             .setEventLabel(eventLabel)
+             .setCustomProperty("trackerId", "45950")
+             .setBusinessUnit("Physical Goods")
+             .setCurrentSite("tokopediamarketplace")
+             .setCustomProperty("promotions", promotions)
 
-                .setShopId(shopId)
-                .setUserId(userId)
-                .build()
-                .send()
-            TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, eventBundle)
-        }
-
-
-        // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4148
-        // Tracker ID: 45951
-        fun sendReimaginedClickBannerAdvancedCarouselEvent (eventLabel: String, promotions: JSONArray, sessionIris: String, shopId: String, userId: String) {
-            Tracker.Builder()
-                .setEvent("select_content")
-                .setEventAction("reimagined - click banner advanced carousel")
-                .setEventCategory("shop page - buyer")
-                .setEventLabel(eventLabel)
-                .setCustomProperty("trackerId", "45951")
-                .setBusinessUnit("Physical Goods")
-                .setCurrentSite("tokopediamarketplace")
-                .setCustomProperty("promotions", promotions)
-
-                .setShopId(shopId)
-                .setUserId(userId)
-                .build()
-                .send()
-            TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, eventBundle)
-        }
+             .setShopId(shopId)
+             .setUserId(userId)
+             .build()
+             .send()
+         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, eventBundle)
+     }
 
 
-        // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4148
-        // Tracker ID: 45952
-        fun sendReimaginedClickProductAdvancedCarouselEvent (eventLabel: String, items: JSONArray, sessionIris: String, shopId: String, userId: String) {
-            Tracker.Builder()
-                .setEvent("select_content")
-                .setEventAction("reimagined - click product advanced carousel")
-                .setEventCategory("shop page - buyer")
-                .setEventLabel(eventLabel)
-                .setCustomProperty("trackerId", "45952")
-                .setBusinessUnit("Physical Goods")
-                .setCurrentSite("tokopediamarketplace")
-                .setCustomProperty("item_list", "/shoppage reimagined - advanced carousel")
-                .setCustomProperty("items", items)
+     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4148
+     // Tracker ID: 45951
+     fun sendReimaginedClickBannerAdvancedCarouselEvent (eventLabel: String, promotions: JSONArray, sessionIris: String, shopId: String, userId: String) {
+         Tracker.Builder()
+             .setEvent("select_content")
+             .setEventAction("reimagined - click banner advanced carousel")
+             .setEventCategory("shop page - buyer")
+             .setEventLabel(eventLabel)
+             .setCustomProperty("trackerId", "45951")
+             .setBusinessUnit("Physical Goods")
+             .setCurrentSite("tokopediamarketplace")
+             .setCustomProperty("promotions", promotions)
 
-                .setShopId(shopId)
-                .setUserId(userId)
-                .build()
-                .send()
-            TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, eventBundle)
-        }
-        //endregion*/
+             .setShopId(shopId)
+             .setUserId(userId)
+             .build()
+             .send()
+         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, eventBundle)
+     }
+
+
+     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4148
+     // Tracker ID: 45952
+     fun sendReimaginedClickProductAdvancedCarouselEvent (eventLabel: String, items: JSONArray, sessionIris: String, shopId: String, userId: String) {
+         Tracker.Builder()
+             .setEvent("select_content")
+             .setEventAction("reimagined - click product advanced carousel")
+             .setEventCategory("shop page - buyer")
+             .setEventLabel(eventLabel)
+             .setCustomProperty("trackerId", "45952")
+             .setBusinessUnit("Physical Goods")
+             .setCurrentSite("tokopediamarketplace")
+             .setCustomProperty("item_list", "/shoppage reimagined - advanced carousel")
+             .setCustomProperty("items", items)
+
+             .setShopId(shopId)
+             .setUserId(userId)
+             .build()
+             .send()
+         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, eventBundle)
+     }
+     //endregion*/
 }
