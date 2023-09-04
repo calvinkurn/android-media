@@ -27,6 +27,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CLICK_PR
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CLICK_PRODUCT_ATC_RESET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.IMPRESSION_PRODUCT_ATC
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.REIMAGINED_CLICK_HEADER_SHOP_CHAT
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.REIMAGINED_CLICK_HEADER_SHOP_FOLLOW
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.REIMAGINED_CLICK_HEADER_SHOP_NAME
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.REIMAGINED_CLICK_HEADER_SHOP_REVIEW
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.REIMAGINED_CLICK_HEADER_SHOP_USP
@@ -58,6 +59,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_ATC_CLICK_QUANTITY
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_OPEN_SCREEN_CAMPAIGN_TAB
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_REIMAGINED_CLICK_HEADER_SHOP_CHAT
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_REIMAGINED_CLICK_HEADER_SHOP_FOLLOW
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_REIMAGINED_CLICK_HEADER_SHOP_NAME
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_REIMAGINED_CLICK_HEADER_SHOP_REVIEW
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_REIMAGINED_CLICK_HEADER_SHOP_USP
@@ -1710,6 +1712,21 @@ class ShopPageTrackingBuyer(
             EVENT_CATEGORY to SHOP_PAGE_BUYER,
             EVENT_LABEL to "",
             TRACKER_ID to TRACKER_ID_REIMAGINED_CLICK_HEADER_SHOP_CHAT,
+            BUSINESS_UNIT to PHYSICAL_GOODS,
+            CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
+            SHOP_ID to shopId,
+            USER_ID to userId
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(eventMap)
+    }
+
+    fun clickHeaderShopFollow(shopId: String, userId: String) {
+        val eventMap = mapOf(
+            EVENT to CLICK_PG,
+            EVENT_ACTION to REIMAGINED_CLICK_HEADER_SHOP_FOLLOW,
+            EVENT_CATEGORY to SHOP_PAGE_BUYER,
+            EVENT_LABEL to "",
+            TRACKER_ID to TRACKER_ID_REIMAGINED_CLICK_HEADER_SHOP_FOLLOW,
             BUSINESS_UNIT to PHYSICAL_GOODS,
             CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
             SHOP_ID to shopId,

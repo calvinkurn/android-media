@@ -2113,7 +2113,7 @@ class ShopPageHeaderFragmentV2 :
     }
 
     override fun onClickShopBasicInfoSection(appLink: String) {
-        sendClickHeaderShopName()
+        sendTrackerClickHeaderShopName()
         if (isShopInfoAppLink(appLink)) {
             redirectToShopInfoPage()
         } else {
@@ -2121,37 +2121,42 @@ class ShopPageHeaderFragmentV2 :
         }
     }
 
-    private fun sendClickHeaderShopName() {
+    private fun sendTrackerClickHeaderShopName() {
         shopPageTracking?.clickHeaderShopName(shopId, userId)
     }
 
     override fun onShopReviewClicked(appLink: String) {
-        sendClickHeaderShopReview()
+        sendTrackerClickHeaderShopReview()
         RouteManager.route(context, appLink)
     }
 
-    private fun sendClickHeaderShopReview() {
+    private fun sendTrackerClickHeaderShopReview() {
         shopPageTracking?.clickHeaderShopReview(shopId, userId)
     }
 
     override fun onChatButtonClicked() {
-        sendClickHeaderShopChat()
+        sendTrackerClickHeaderShopChat()
         goToChatSeller()
     }
 
-    private fun sendClickHeaderShopChat() {
+    private fun sendTrackerClickHeaderShopChat() {
         shopPageTracking?.clickHeaderShopChat(shopId, userId)
     }
 
     override fun onFollowButtonClicked() {
+        sendTrackerClickHeaderShopFollow()
         toggleFollowUnfollowButton()
     }
 
-    override fun onUspClicked(listDynamicUspValue: List<String>) {
-        sendClickHeaderShopUsp(listDynamicUspValue)
+    private fun sendTrackerClickHeaderShopFollow() {
+        shopPageTracking?.clickHeaderShopFollow(shopId, userId)
     }
 
-    private fun sendClickHeaderShopUsp(listDynamicUspValue: List<String>) {
+    override fun onUspClicked(listDynamicUspValue: List<String>) {
+        sendTrackerClickHeaderShopUsp(listDynamicUspValue)
+    }
+
+    private fun sendTrackerClickHeaderShopUsp(listDynamicUspValue: List<String>) {
         shopPageTracking?.clickHeaderShopUsp(shopId, userId, listDynamicUspValue)
     }
 
