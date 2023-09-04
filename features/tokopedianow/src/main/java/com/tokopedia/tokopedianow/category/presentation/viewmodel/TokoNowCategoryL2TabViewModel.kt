@@ -15,6 +15,7 @@ import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet.ApplySortFilterMod
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
+import com.tokopedia.filter.common.helper.isNotFilterAndSortKey
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.filter.newdynamicfilter.helper.FilterHelper
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
@@ -23,6 +24,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
+import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2QuickFilterMapper
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.addLoadMoreLoading
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.addProductCardItems
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.filterNotLoadedLayout
@@ -33,6 +35,7 @@ import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.rem
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.updateAllProductQuantity
 import com.tokopedia.tokopedianow.category.domain.response.GetCategoryLayoutResponse.Component
 import com.tokopedia.tokopedianow.category.domain.usecase.GetCategoryProductUseCase
+import com.tokopedia.tokopedianow.category.presentation.model.CategoryEmptyStateModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryProductListUiModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryQuickFilterUiModel
 import com.tokopedia.tokopedianow.common.base.viewmodel.BaseTokoNowViewModel
@@ -46,6 +49,7 @@ import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.searchcategory.domain.mapper.VisitableMapper.updateProductItem
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
+import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.Violation
 import com.tokopedia.tokopedianow.searchcategory.domain.usecase.GetSortFilterUseCase
 import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_TOKONOW_DIRECTORY
 import com.tokopedia.tokopedianow.searchcategory.utils.QUICK_FILTER_TOKONOW_DIRECTORY
@@ -94,11 +98,13 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
     private val _dynamicFilterModelLiveData = MutableLiveData<DynamicFilterModel?>(null)
     private val _visitableListLiveData = MutableLiveData<List<Visitable<*>>>()
     private val _routeAppLinkLiveData = MutableLiveData<String>()
+    private val _emptyStateLiveData = MutableLiveData<CategoryEmptyStateModel>()
 
     val filterProductCountLiveData: LiveData<String> = _filterProductCountLiveData
     val dynamicFilterModelLiveData: LiveData<DynamicFilterModel?> = _dynamicFilterModelLiveData
     val visitableListLiveData: LiveData<List<Visitable<*>>> = _visitableListLiveData
     val routeAppLinkLiveData: LiveData<String> = _routeAppLinkLiveData
+    val emptyStateLiveData: LiveData<CategoryEmptyStateModel> = _emptyStateLiveData
 
     private val filterController = FilterController()
     private val visitableList = mutableListOf<Visitable<*>>()
@@ -111,6 +117,8 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
     private var filterBottomSheetOpened: Boolean = false
 
     private var getProductJob: Job? = null
+    private var violation: Violation = Violation()
+    private var excludedFilter: Option? = null
     private var isAllProductShown = false
 
     init {
@@ -138,25 +146,6 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
         )
         initAffiliateCookie()
         loadFirstPage()
-    }
-
-    fun loadMore() {
-        if (getProductJob?.isCompleted != false && !isAllProductShown) {
-            launchCatchError(block = {
-                showLoadMoreLoading()
-
-                val productList = getProductList()
-                if(productList.isEmpty()) {
-                    isAllProductShown = true
-                }
-
-                hideLoadMoreLoading()
-                page++
-            }) {
-            }.let {
-                getProductJob = it
-            }
-        }
     }
 
     fun updateWishlistStatus(productId: String, hasBeenWishlist: Boolean) {
@@ -264,6 +253,17 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
         if(atTheBottomOfThePage) loadMore()
     }
 
+    fun getFilterController(): FilterController {
+        return filterController
+    }
+
+    fun onRemoveFilter(option: Option) {
+        resetSortFilterIfExclude(option)
+        resetSortFilterIfPminPmax(option)
+        filterController.refreshMapParameter(queryParams)
+        applyFilter(option, false)
+    }
+
     private fun setCategoryData(
         categoryIdL1: String,
         categoryIdL2: String,
@@ -285,14 +285,29 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
             visitableList.filterNotLoadedLayout().forEach {
                 when (it) {
                     is CategoryQuickFilterUiModel -> getQuickFilterAsync(it).await()
-                    is CategoryProductListUiModel -> getProductListAsync(it).await()
                     is TokoNowAdsCarouselUiModel -> getAdsProductListAsync(it).await()
+                    is CategoryProductListUiModel -> getProductListAsync(it).await()
                 }
             }
             page++
         }) {
         }.let {
             getProductJob = it
+        }
+    }
+
+    private fun loadMore() {
+        if (getProductJob?.isCompleted != false && !isAllProductShown) {
+            launchCatchError(block = {
+                showLoadMoreLoading()
+                val productList = getProductList()
+                isAllProductShown = productList.isEmpty()
+                hideLoadMoreLoading()
+                page++
+            }) {
+            }.let {
+                getProductJob = it
+            }
         }
     }
 
@@ -309,12 +324,18 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
             val categoryFilterResponse = getCategoryFilter()
             initFilterController(quickFilterResponse, categoryFilterResponse)
 
-            visitableList.mapToQuickFilter(
+            val quickFilter = CategoryL2QuickFilterMapper.mapQuickFilter(
                 quickFilterUiModel = item,
                 quickFilterResponse = quickFilterResponse,
                 categoryFilterResponse = categoryFilterResponse,
                 filterController = filterController
             )
+
+            visitableList.mapToQuickFilter(
+                quickFilterUiModel = quickFilter
+            )
+
+            findExcludedFilter(quickFilter)
             updateVisitableListLiveData()
         }) {
         }
@@ -329,14 +350,18 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
         filterController.initFilterController(queryParams, filterList)
     }
 
-    private fun getProductListAsync(
-        item: CategoryProductListUiModel
-    ): Deferred<List<AceSearchProductModel.Product>?> {
+    private fun getProductListAsync(item: CategoryProductListUiModel): Deferred<Any?> {
         return asyncCatchError(block = {
             visitableList.remove(item)
-            getProductList()
+            val productList = getProductList()
+            val isEmptyState = _emptyStateLiveData.value != null
+
+            when {
+                productList.isEmpty() -> showEmptyState()
+                isEmptyState -> hideEmptyState()
+            }
         }) {
-            emptyList()
+
         }
     }
 
@@ -493,6 +518,48 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
         filterController.refreshMapParameter(queryParams)
     }
 
+    private fun resetSortFilterIfExclude(option: Option) {
+        val isOptionKeyHasExclude = option.key.startsWith(OptionHelper.EXCLUDE_PREFIX)
+
+        if (!isOptionKeyHasExclude) return
+
+        queryParams.remove(option.key)
+        queryParams.entries.retainAll { it.isNotFilterAndSortKey() }
+        queryParams[SearchApiConst.OB] = SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SORT
+    }
+
+    private fun resetSortFilterIfPminPmax(option: Option) {
+        val isOptionKeyHasPminPmax = option.key == SearchApiConst.PMIN || option.key == SearchApiConst.PMAX
+
+        if (!isOptionKeyHasPminPmax) return
+
+        queryParams.remove(SearchApiConst.PMIN)
+        queryParams.remove(SearchApiConst.PMAX)
+    }
+
+    private fun findExcludedFilter(quickFilter: CategoryQuickFilterUiModel) {
+        for (filterItem in quickFilter.itemList) {
+            val options = filterItem.filter.options
+            if(options.count() == 1) return
+
+            excludedFilter = options.find {
+                it.key.startsWith(OptionHelper.EXCLUDE_PREFIX)
+            }
+        }
+    }
+
+    private fun showEmptyState() {
+        val emptyStateModel = CategoryEmptyStateModel(
+            queryParams, violation, excludedFilter, true)
+        _emptyStateLiveData.postValue(emptyStateModel)
+    }
+
+    private fun hideEmptyState() {
+        val emptyStateModel = CategoryEmptyStateModel(
+            queryParams, violation, excludedFilter, false)
+        _emptyStateLiveData.postValue(emptyStateModel)
+    }
+
     private fun showLoadMoreLoading() {
         visitableList.addLoadMoreLoading()
         updateVisitableListLiveData()
@@ -509,6 +576,7 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
 
     private fun resetPageState() {
         page = FIRST_PAGE
+        isAllProductShown = false
         filterBottomSheetOpened = false
         _dynamicFilterModelLiveData.postValue(null)
     }

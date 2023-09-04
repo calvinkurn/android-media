@@ -63,7 +63,9 @@ class TokoNowChooseAddressWidgetViewHolder(
 
                 override fun getLocalizingAddressHostSourceData(): String = SOURCE
 
-                override fun getLocalizingAddressHostSourceTrackingData(): String = SOURCE_TRACKING
+                override fun getLocalizingAddressHostSourceTrackingData(): String = element.trackingSource
+
+                override fun getEventLabelHostPage(): String = element.eventLabelHostPage
 
                 override fun onLocalizingAddressUpdatedFromBackground() { /* to do : nothing */ }
 

@@ -37,6 +37,7 @@ import com.tokopedia.tokopedianow.category.domain.response.GetCategoryLayoutResp
 import com.tokopedia.tokopedianow.category.presentation.adapter.CategoryL2TabAdapter
 import com.tokopedia.tokopedianow.category.presentation.adapter.differ.CategoryL2TabDiffer
 import com.tokopedia.tokopedianow.category.presentation.adapter.typefactory.CategoryL2TabAdapterTypeFactory
+import com.tokopedia.tokopedianow.category.presentation.view.CategoryL2MainView
 import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryQuickFilterViewHolder.CategoryQuickFilterListener
 import com.tokopedia.tokopedianow.category.presentation.viewmodel.TokoNowCategoryL2TabViewModel
 import com.tokopedia.tokopedianow.common.listener.ProductAdsCarouselListener
@@ -74,6 +75,8 @@ open class TokoNowCategoryL2TabFragment : Fragment() {
 
         private const val SCROLL_DOWN_DIRECTION = 1
     }
+
+    var categoryL2MainView: CategoryL2MainView? = null
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -142,16 +145,8 @@ open class TokoNowCategoryL2TabFragment : Fragment() {
         super.onAttach(context)
     }
 
-    fun loadMore() {
-        if(::viewModelFactory.isInitialized) {
-            viewModel.loadMore()
-        }
-    }
-
-    fun handleOnResume() {
-        if(::viewModelFactory.isInitialized) {
-            viewModel.onResume()
-        }
+    fun onRemoveFilter(option: Option) {
+        viewModel.onRemoveFilter(option)
     }
 
     private fun observeLiveData() {
@@ -197,6 +192,15 @@ open class TokoNowCategoryL2TabFragment : Fragment() {
 
         observe(viewModel.openLoginPage) {
             openLoginPage()
+        }
+
+        observe(viewModel.emptyStateLiveData) {
+            if(it.shouldShow) {
+                val filterController = viewModel.getFilterController()
+                categoryL2MainView?.onShowEmptyState(it, filterController)
+            } else {
+                categoryL2MainView?.onHideEmptyState()
+            }
         }
     }
 

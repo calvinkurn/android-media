@@ -1,16 +1,30 @@
 package com.tokopedia.tokopedianow.category.domain.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.filter.newdynamicfilter.controller.FilterController
+import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
+import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.filterTabComponents
 import com.tokopedia.tokopedianow.category.domain.response.CategoryDetailResponse
 import com.tokopedia.tokopedianow.category.domain.response.GetCategoryLayoutResponse.CategoryGetDetailModular
 import com.tokopedia.tokopedianow.category.domain.response.GetCategoryLayoutResponse.Component
 import com.tokopedia.tokopedianow.category.presentation.constant.CategoryComponentType.Companion.HEADLINE_L1
 import com.tokopedia.tokopedianow.category.presentation.constant.CategoryComponentType.Companion.TABS_HORIZONTAL_SCROLL
+import com.tokopedia.tokopedianow.category.presentation.constant.CategoryStaticLayoutId
+import com.tokopedia.tokopedianow.category.presentation.model.CategoryEmptyStateDivider
+import com.tokopedia.tokopedianow.category.presentation.model.CategoryEmptyStateModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryL2HeaderUiModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryL2TabUiModel
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
+import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateNoResultUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationUiModel
+import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
+import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.Category.TOKONOW_CATEGORY_PAGE
+import com.tokopedia.tokopedianow.oldcategory.utils.TOKONOW_CATEGORY_L2
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.TokoNowFeedbackWidgetUiModel
 
 object CategoryL2Mapper {
 
@@ -38,7 +52,65 @@ object CategoryL2Mapper {
     }
 
     fun MutableList<Visitable<*>>.addChooseAddress() {
-        add(TokoNowChooseAddressWidgetUiModel())
+        add(TokoNowChooseAddressWidgetUiModel(
+            trackingSource = CategoryStaticLayoutId.CHOOSE_ADDRESS,
+            eventLabelHostPage = TOKONOW_CATEGORY_PAGE
+        ))
+    }
+
+    fun MutableList<Visitable<*>>.addEmptyState(
+        model: CategoryEmptyStateModel,
+        filterController: FilterController
+    ) {
+        val violation = model.violation
+        val queryParams = model.queryParams
+        val activeFilterList = filterController.getActiveFilterOptionList()
+        val newActiveFilterList = activeFilterList.filter { queryParams.containsValue(it.value) }
+        val emptyStateUiModel = TokoNowEmptyStateNoResultUiModel(
+            activeFilterList = newActiveFilterList,
+            excludeFilter = model.excludedFilter,
+            defaultTitle = violation.headerText,
+            defaultDescription = violation.descriptionText,
+            defaultImage = violation.imageUrl,
+            defaultTextPrimaryButton = violation.buttonText,
+            defaultUrlPrimaryButton = violation.ctaUrl
+        )
+        add(emptyStateUiModel)
+    }
+
+    fun MutableList<Visitable<*>>.addProductRecommendation() {
+        val recommendationUiModel = TokoNowProductRecommendationUiModel(
+            requestParam = GetRecommendationRequestParam(
+                pageName = RecomPageConstant.TOKONOW_NO_RESULT,
+                categoryIds = emptyList(),
+                xSource = RecomPageConstant.RECOM_WIDGET,
+                isTokonow = true,
+                pageNumber = RecomPageConstant.PAGE_NUMBER_RECOM_WIDGET,
+                keywords = emptyList(),
+                xDevice = SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE
+            ),
+            tickerPageSource = GetTargetedTickerUseCase.CATEGORY_PAGE
+        )
+        add(recommendationUiModel)
+    }
+
+    fun MutableList<Visitable<*>>.addCategoryMenu() {
+        val categoryMenuUiModel = TokoNowCategoryMenuUiModel(
+            id = CategoryStaticLayoutId.CATEGORY_MENU_EMPTY_STATE,
+            title = "",
+            categoryListUiModel = null,
+            state = TokoNowLayoutState.LOADING,
+            source = TOKONOW_CATEGORY_L2
+        )
+        add(categoryMenuUiModel)
+    }
+
+    fun MutableList<Visitable<*>>.addFeedbackWidget() {
+        add(TokoNowFeedbackWidgetUiModel(isDivider = true))
+    }
+
+    fun MutableList<Visitable<*>>.addEmptyStateDivider() {
+        add(CategoryEmptyStateDivider())
     }
 
     fun MutableList<Visitable<*>>.filterNotLoadedLayout(): MutableList<Visitable<*>> {

@@ -97,7 +97,9 @@ abstract class BaseCategoryViewModel(
         tickerList: List<TickerData>
     )
 
-    protected abstract suspend fun loadNextPage()
+    protected open suspend fun loadNextPage() {
+
+    }
 
     protected open fun onSuccessGetCategoryProduct(
         response: AceSearchProductModel,

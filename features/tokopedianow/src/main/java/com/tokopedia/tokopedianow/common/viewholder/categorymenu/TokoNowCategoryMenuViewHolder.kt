@@ -21,6 +21,7 @@ import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuU
 import com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderView
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowCategoryMenuBinding
 import com.tokopedia.tokopedianow.oldcategory.utils.TOKONOW_CATEGORY_L1
+import com.tokopedia.tokopedianow.oldcategory.utils.TOKONOW_CATEGORY_L2
 import com.tokopedia.utils.view.binding.viewBinding
 
 class TokoNowCategoryMenuViewHolder(
@@ -119,7 +120,8 @@ class TokoNowCategoryMenuViewHolder(
         header.setModel(
             model = TokoNowDynamicHeaderUiModel(
                 title = data.title.ifEmpty {
-                    if (data.source == TOKONOW_CATEGORY_L1) {
+                    val source = data.source
+                    if (source == TOKONOW_CATEGORY_L1 || source == TOKONOW_CATEGORY_L2) {
                         root.context.getString(R.string.tokopedianow_category_l1_category_menu_title)
                     } else {
                         root.context.getString(R.string.tokopedianow_repurchase_category_menu_title)

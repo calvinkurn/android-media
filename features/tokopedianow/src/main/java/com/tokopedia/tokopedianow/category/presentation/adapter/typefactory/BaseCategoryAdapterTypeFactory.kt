@@ -18,9 +18,9 @@ import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetVi
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder.TokoNowChooseAddressWidgetListener
 
 open class BaseCategoryAdapterTypeFactory(
-    private val chooseAddressListener: TokoNowChooseAddressWidgetListener,
-    private val productAdsCarouselListener: ProductAdsCarouselListener,
-    private val tokoNowView: TokoNowView?,
+    private var chooseAddressListener: TokoNowChooseAddressWidgetListener? = null,
+    private var productAdsCarouselListener: ProductAdsCarouselListener? = null,
+    private var tokoNowView: TokoNowView? = null,
 ) : BaseAdapterTypeFactory(),
     CategoryHeaderSpaceTypeFactory,
     TokoNowChooseAddressWidgetTypeFactory,
@@ -46,5 +46,11 @@ open class BaseCategoryAdapterTypeFactory(
             )
             else -> super.createViewHolder(view, type)
         }
+    }
+
+    open fun onDestroy() {
+        chooseAddressListener = null
+        productAdsCarouselListener = null
+        tokoNowView = null
     }
 }

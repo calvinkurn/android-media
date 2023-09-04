@@ -173,7 +173,6 @@ class TokoNowCategoryFragment : BaseCategoryFragment() {
         observeProductRecommendationUpdateCartItem()
         observeProductRecommendationToolbarNotification()
         observeProductRecommendationAtcDataTracker()
-        observeOpenScreenTracker()
     }
 
     private fun observeScrollNotNeeded() {
@@ -226,20 +225,6 @@ class TokoNowCategoryFragment : BaseCategoryFragment() {
     private fun observeProductRecommendationToolbarNotification() {
         productRecommendationViewModel.updateToolbarNotification.observe(viewLifecycleOwner) { needToUpdate ->
             if (needToUpdate) updateToolbarNotification()
-        }
-    }
-
-    private fun observeOpenScreenTracker() {
-        viewModel.openScreenTracker.observe(viewLifecycleOwner) { model ->
-            val uri = Uri.parse(model.url)
-            uri.lastPathSegment?.let { categorySlug ->
-                analytic.sendOpenScreenEvent(
-                    slug = categorySlug,
-                    id = model.id,
-                    name = model.name,
-                    isLoggedInStatus = viewModel.isLoggedIn()
-                )
-            }
         }
     }
 

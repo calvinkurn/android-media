@@ -1,13 +1,16 @@
 package com.tokopedia.tokopedianow.category.presentation.fragment
 
 import android.content.Context
+import android.net.Uri
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -44,6 +47,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.category.analytic.CategoryAnalytic
 import com.tokopedia.tokopedianow.category.presentation.adapter.CategoryAdapter
+import com.tokopedia.tokopedianow.category.presentation.adapter.typefactory.BaseCategoryAdapterTypeFactory
 import com.tokopedia.tokopedianow.category.presentation.callback.TokoNowViewCallback
 import com.tokopedia.tokopedianow.category.presentation.viewmodel.BaseCategoryViewModel
 import com.tokopedia.tokopedianow.common.base.adapter.BaseTokopediaNowDiffer
@@ -53,6 +57,7 @@ import com.tokopedia.tokopedianow.common.util.GlobalErrorUtil
 import com.tokopedia.tokopedianow.common.util.StringUtil.getOrDefaultZeroString
 import com.tokopedia.tokopedianow.common.util.TokoNowUniversalShareUtil
 import com.tokopedia.tokopedianow.common.view.NoAddressEmptyStateView
+import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHolder
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowCategoryBaseBinding
 import com.tokopedia.unifycomponents.Toaster
@@ -110,7 +115,7 @@ abstract class BaseCategoryFragment : Fragment(), ScreenShotListener,
 
     protected abstract fun createMainView(): View?
 
-    protected abstract fun createAdapterTypeFactory(): BaseAdapterTypeFactory
+    protected abstract fun createAdapterTypeFactory(): BaseCategoryAdapterTypeFactory
 
     protected abstract fun createAdapterDiffer(): BaseTokopediaNowDiffer
 
@@ -128,8 +133,12 @@ abstract class BaseCategoryFragment : Fragment(), ScreenShotListener,
     private var screenshotDetector: ScreenshotDetector? = null
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
 
+    private val adapterTypeFactory: BaseCategoryAdapterTypeFactory by lazy {
+        createAdapterTypeFactory()
+    }
+
     private val adapter: CategoryAdapter by lazy {
-        CategoryAdapter(createAdapterTypeFactory(), createAdapterDiffer())
+        CategoryAdapter(adapterTypeFactory, createAdapterDiffer())
     }
 
     private var binding by autoClearedNullable<FragmentTokopedianowCategoryBaseBinding>()
@@ -186,6 +195,7 @@ abstract class BaseCategoryFragment : Fragment(), ScreenShotListener,
 
     override fun onDestroy() {
         SharingUtil.clearState(screenshotDetector)
+        adapterTypeFactory.onDestroy()
         recycledViewPool.clear()
         super.onDestroy()
     }
@@ -356,14 +366,45 @@ abstract class BaseCategoryFragment : Fragment(), ScreenShotListener,
         activity?.startActivityForResult(intent, RequestCode.REQUEST_CODE_LOGIN)
     }
 
-    protected fun createTokoNowViewCallback() = TokoNowViewCallback(
-        fragment = this@BaseCategoryFragment
-    ) {
-        viewModel.refreshLayout()
+    protected fun createTokoNowViewCallback(): TokoNowView {
+        return object : TokoNowView {
+            override fun getFragmentManagerPage() = this@BaseCategoryFragment.childFragmentManager
+
+            override fun getFragmentPage() = this@BaseCategoryFragment
+
+            override fun refreshLayoutPage() = viewModel.refreshLayout()
+
+            override fun getScrollState(adapterPosition: Int): Parcelable? = null
+
+            override fun saveScrollState(adapterPosition: Int, scrollState: Parcelable?) {
+            }
+        }
     }
 
     protected fun updateToolbarNotification() {
         navToolbar?.updateNotification()
+    }
+
+    protected fun showToaster(
+        message: String?,
+        toasterType: Int,
+        actionText: String = "",
+        clickListener: (View) -> Unit = { },
+    ) {
+        val view = view ?: return
+        message ?: return
+        if (message.isEmpty()) return
+
+        Toaster.toasterCustomBottomHeight = getMiniCartHeight()
+
+        Toaster.build(
+            view,
+            message,
+            Toaster.LENGTH_LONG,
+            toasterType,
+            actionText,
+            clickListener,
+        ).show()
     }
 
     private fun observeLiveData() {
@@ -378,6 +419,7 @@ abstract class BaseCategoryFragment : Fragment(), ScreenShotListener,
         observeToolbarNotification()
         observeOpenLoginPage()
         observePageError()
+        observeOpenScreenTracker()
     }
 
     private fun observePageError() {
@@ -462,6 +504,20 @@ abstract class BaseCategoryFragment : Fragment(), ScreenShotListener,
     private fun observeToolbarNotification() {
         viewModel.updateToolbarNotification.observe(viewLifecycleOwner) { needToUpdate ->
             if (needToUpdate) updateToolbarNotification()
+        }
+    }
+
+    private fun observeOpenScreenTracker() {
+        viewModel.openScreenTracker.observe(viewLifecycleOwner) { model ->
+            val uri = Uri.parse(model.url)
+            uri.lastPathSegment?.let { categorySlug ->
+                analytic.sendOpenScreenEvent(
+                    slug = categorySlug,
+                    id = model.id,
+                    name = model.name,
+                    isLoggedInStatus = viewModel.isLoggedIn()
+                )
+            }
         }
     }
 

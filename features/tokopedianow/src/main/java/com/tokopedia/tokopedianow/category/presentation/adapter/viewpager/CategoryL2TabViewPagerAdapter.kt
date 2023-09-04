@@ -24,15 +24,11 @@ class CategoryL2TabViewPagerAdapter(fragment: Fragment) : FragmentStateAdapter(f
         selectedTabPosition = position
     }
 
-    fun loadMore() {
-        fragments[selectedTabPosition].loadMore()
-    }
-
-    fun onResume() {
-        fragments[selectedTabPosition].handleOnResume()
-    }
-
     fun clearFragments() {
         fragments.clear()
+    }
+
+    fun getSelectedTabFragment(): TokoNowCategoryL2TabFragment {
+        return fragments[selectedTabPosition]
     }
 }

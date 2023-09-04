@@ -3,19 +3,17 @@ package com.tokopedia.tokopedianow.category.domain.mapper
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
+import com.tokopedia.kotlin.extensions.view.removeFirst
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryProductMapper.mapResponseToProductItem
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryProductMapper.updateProductCardItems
-import com.tokopedia.tokopedianow.category.domain.response.CategoryDetailResponse
-import com.tokopedia.tokopedianow.category.domain.response.GetCategoryLayoutResponse
 import com.tokopedia.tokopedianow.category.domain.response.GetCategoryLayoutResponse.Component
 import com.tokopedia.tokopedianow.category.presentation.constant.CategoryComponentType.Companion.FEATURED_PRODUCT
 import com.tokopedia.tokopedianow.category.presentation.constant.CategoryComponentType.Companion.PRODUCT_LIST_FILTER
 import com.tokopedia.tokopedianow.category.presentation.constant.CategoryComponentType.Companion.PRODUCT_LIST_INFINITE_SCROLL
 import com.tokopedia.tokopedianow.category.presentation.constant.CategoryComponentType.Companion.STATIC_TEXT
 import com.tokopedia.tokopedianow.category.presentation.constant.CategoryStaticLayoutId
-import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryL2TabUiModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryProductListUiModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryQuickFilterUiModel
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
@@ -67,6 +65,14 @@ object CategoryL2TabMapper {
                 categoryFilterResponse = categoryFilterResponse,
                 filterController = filterController
             )
+        }
+    }
+
+    fun MutableList<Visitable<*>>.mapToQuickFilter(
+        quickFilterUiModel: CategoryQuickFilterUiModel
+    ) {
+        updateItemById(quickFilterUiModel.id) {
+            quickFilterUiModel
         }
     }
 
@@ -152,6 +158,10 @@ object CategoryL2TabMapper {
             is CategoryProductListUiModel -> state
             else -> null
         }
+    }
+
+    inline fun <reified T: Visitable<*>>MutableList<Visitable<*>>.removeItem() {
+        removeFirst { it is T }
     }
 
     fun MutableList<Visitable<*>>.removeItem(id: String?) {
