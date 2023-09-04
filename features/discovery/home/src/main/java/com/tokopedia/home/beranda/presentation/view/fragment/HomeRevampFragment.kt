@@ -31,7 +31,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.base.view.listener.TouchListenerActivity
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry
 import com.tokopedia.analytics.performance.perf.*
@@ -60,7 +59,6 @@ import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getBannerImpre
 import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getOverlayBannerClick
 import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getOverlayBannerImpression
 import com.tokopedia.home.analytics.v2.BestSellerWidgetTracker
-import com.tokopedia.home.analytics.v2.LegoBannerTracking
 import com.tokopedia.home.analytics.v2.LoginWidgetTracking
 import com.tokopedia.home.analytics.v2.PopularKeywordTracking
 import com.tokopedia.home.analytics.v2.RecommendationListTracking
@@ -131,6 +129,7 @@ import com.tokopedia.home.beranda.presentation.view.listener.RechargeRecommendat
 import com.tokopedia.home.beranda.presentation.view.listener.RecommendationListCarouselComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.SalamWidgetCallback
 import com.tokopedia.home.beranda.presentation.view.listener.SpecialReleaseComponentCallback
+import com.tokopedia.home.beranda.presentation.view.listener.SpecialReleaseRevampCallback
 import com.tokopedia.home.beranda.presentation.view.listener.TodoWidgetComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.VpsWidgetComponentCallback
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
@@ -548,7 +547,6 @@ open class HomeRevampFragment :
     private fun castContextToHomeCoachmarkListener(context: Context): HomeCoachmarkListener? =
         if (context is HomeCoachmarkListener) context else null
 
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         BenchmarkHelper.beginSystraceSection(TRACE_INFLATE_HOME_FRAGMENT)
         isUsingNewPullRefresh = isUseNewPullRefresh()
@@ -958,9 +956,12 @@ open class HomeRevampFragment :
     }
 
     private fun initStickyLogin() {
-        stickyLoginView = if(!HomeRollenceController.isUsingAtf2Variant())
-            view?.findViewById(R.id.sticky_login_text) else null
-        if(stickyLoginView == null) return
+        stickyLoginView = if (!HomeRollenceController.isUsingAtf2Variant()) {
+            view?.findViewById(R.id.sticky_login_text)
+        } else {
+            null
+        }
+        if (stickyLoginView == null) return
         stickyLoginView?.page = StickyLoginConstant.Page.HOME
         stickyLoginView?.lifecycleOwner = viewLifecycleOwner
         stickyLoginView?.setStickyAction(object : StickyLoginAction {
@@ -1330,7 +1331,7 @@ open class HomeRevampFragment :
                 visitableListCount = data.size,
                 scrollPosition = layoutManager?.findLastVisibleItemPosition()
             )
-            performanceTrace?.setBlock(data)
+            performanceTrace?.setBlock(data.take(6))
             adapter?.submitList(data)
         }
     }
@@ -1471,6 +1472,7 @@ open class HomeRevampFragment :
             FlashSaleWidgetCallback(this),
             CarouselPlayWidgetCallback(getTrackingQueueObj(), userSession, this),
             BestSellerWidgetCallback(context, this, getHomeViewModel()),
+            SpecialReleaseRevampCallback(this)
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
             .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
@@ -1932,11 +1934,7 @@ open class HomeRevampFragment :
         val combinedTracking: MutableList<Any> = ArrayList()
         for (visitable in visitables) {
             if (visitable is HomeVisitable) {
-                if (visitable.isTrackingCombined && visitable.trackingDataForCombination != null) {
-                    getTrackingQueueObj()?.putEETracking(
-                        LegoBannerTracking.getHomeBannerImpression(visitable.trackingDataForCombination) as HashMap<String, Any>
-                    )
-                } else if (!visitable.isTrackingCombined && visitable.trackingData != null) {
+                if (!visitable.isTrackingCombined && visitable.trackingData != null) {
                     HomePageTracking.eventEnhancedImpressionWidgetHomePage(getTrackingQueueObj(), visitable.trackingData)
                 }
             }

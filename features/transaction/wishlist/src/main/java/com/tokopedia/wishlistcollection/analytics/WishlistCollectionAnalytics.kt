@@ -64,6 +64,7 @@ object WishlistCollectionAnalytics {
     private const val CLICK_HAPUS_DARI_SEMUA_WISHLIST_ON_MULITPLE_WISHLISTED_PRODUCTS = "click hapus dari semua wishlist on mulitple wishlisted products"
     private const val CLICK_HAPUS_ON_WISHLIST_PRODUCT = "click hapus on wishlist product"
     private const val CLICK_PRODUCT_CARD_ON_WISHLIST_PAGE = "click product card on wishlist page"
+    private const val VIEW_PRODUCT_CARD_ON_WISHLIST_PAGE = "view product card on wishlist page"
     private const val CLICK_ADD_TO_CART_ON_WISHLIST_PAGE = "click add to cart on wishlist page"
     private const val CLICK_LIHAT_BUTTON_ON_ATC_SUCCESS_TOASTER = "click lihat button on atc success toaster"
     private const val CLICK_LIHAT_BARANG_SERUPA_ON_PRODUCT_CARD = "click lihat barang serupa on product card"
@@ -541,6 +542,40 @@ object WishlistCollectionAnalytics {
             putParcelableArrayList(ITEMS, arrayWishlistItems)
         }
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, bundle)
+    }
+
+    fun sendViewProductCardOnWishlistPageEvent(wishlistItem: WishlistV2UiModel.Item, userId: String, position: String) {
+        val arrayWishlistItems = arrayListOf<Bundle>()
+        val bundleProduct = Bundle().apply {
+            putString(DIMENSION_38, "")
+            putString(DIMENSION_40, WISHLIST_COLLECTION)
+            putString(DIMENSION_79, wishlistItem.shop.id)
+            putString(DIMENSION_83, "")
+            putString(INDEX, position)
+            putString(ITEM_BRAND, "")
+            putString(ITEM_NAME, wishlistItem.name)
+            putString(ITEM_ID, wishlistItem.id)
+            putString(ITEM_CATEGORY, "")
+            putString(PRICE, wishlistItem.price)
+            putString(ITEM_VARIANT, "")
+        }
+        arrayWishlistItems.add(bundleProduct)
+
+        val bundle = Bundle().apply {
+            putString(EVENT, VIEW_ITEM_LIST)
+            putString(EVENT_CATEGORY, COLLECTION_PAGE)
+            putString(EVENT_ACTION, VIEW_PRODUCT_CARD_ON_WISHLIST_PAGE)
+            putString(EVENT_LABEL, "${wishlistItem.id} - ${if (wishlistItem.available) "available" else "unavailable"}")
+            putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
+            putString(BUSINESS_UNIT, PURCHASE_PLATFORM)
+            putString(USER_ID, userId)
+            putString(WISHLIST_ID, wishlistItem.wishlistId)
+            putString(TRACKER_ID, VIEW_PRODUCT_CARD_ON_WISHLIST_PAGE_TRACKER_ID)
+            putString(ITEM_LIST, WISHLIST_COLLECTION)
+            putParcelableArrayList(ITEMS, arrayWishlistItems)
+        }
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM_LIST, bundle)
     }
 
     fun sendClickAddToCartOnWishlistPageEvent(collectionId: String, wishlistItem: WishlistV2UiModel.Item, userId: String, position: Int, cartId: String) {

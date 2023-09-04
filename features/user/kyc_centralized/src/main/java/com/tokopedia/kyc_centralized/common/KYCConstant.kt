@@ -4,6 +4,7 @@ package com.tokopedia.kyc_centralized.common
  * @author by nisie on 12/11/18.
  */
 object KYCConstant {
+    const val KEY_KNOWN_ERROR_CODE = "KYC-KNOW-ERROR-CODE"
     const val ERROR_STATUS_UNKNOWN = "1001"
     const val KYC_PROJECT_ID = 1
     const val EXTRA_STRING_IMAGE_RESULT = "image_result"

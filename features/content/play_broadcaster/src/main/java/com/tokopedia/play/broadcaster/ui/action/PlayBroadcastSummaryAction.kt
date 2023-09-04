@@ -2,6 +2,7 @@ package com.tokopedia.play.broadcaster.ui.action
 
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagItem
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 
 /**
@@ -17,7 +18,7 @@ sealed class PlayBroadcastSummaryAction {
     object ClickBackToReportPage: PlayBroadcastSummaryAction()
     object ClickEditCover: PlayBroadcastSummaryAction()
     data class SetCover(val cover: PlayCoverUiModel): PlayBroadcastSummaryAction()
-    data class ToggleTag(val tagUiModel: PlayTagUiModel): PlayBroadcastSummaryAction()
+    data class ToggleTag(val tagUiModel: PlayTagItem): PlayBroadcastSummaryAction()
     object ClickPostVideoNow: PlayBroadcastSummaryAction()
     object RefreshLoadTag: PlayBroadcastSummaryAction()
 }

@@ -30,7 +30,7 @@ class ProductBundlingItemAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.item_buyer_order_detail_product_bundling_list_item, parent, false)
+            .inflate(R.layout.item_buyer_order_detail_product_bundling_list_item, parent, false)
         return ViewHolder(view, listener)
     }
 
@@ -191,7 +191,7 @@ class ProductBundlingItemAdapter(
 
         private fun onItemActionClicked(key: String) {
             element?.let {
-                when(key) {
+                when (key) {
                     BuyerOrderDetailActionButtonKey.BUY_AGAIN -> {
                         listener.onBundleItemAddToCart(it)
                     }
