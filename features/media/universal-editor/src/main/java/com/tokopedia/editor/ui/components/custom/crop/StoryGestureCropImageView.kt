@@ -11,10 +11,8 @@ import android.view.ScaleGestureDetector.SimpleOnScaleGestureListener
 import com.yalantis.ucrop.util.RotationGestureDetector
 import com.yalantis.ucrop.util.RotationGestureDetector.SimpleOnRotationGestureListener
 
-class GestureCropImageViewStories : CropImageViewStories {
-    constructor(context: Context) : super(context)
-    constructor(context: Context, attributeSet: AttributeSet) : super(context, attributeSet)
-
+class StoryGestureCropImageView(context: Context, attributeSet: AttributeSet) :
+    StoryCropImageView(context, attributeSet) {
     private var mScaleDetector: ScaleGestureDetector? = null
     private var mRotateDetector: RotationGestureDetector? = null
     private var mGestureDetector: GestureDetector? = null
@@ -67,7 +65,7 @@ class GestureCropImageViewStories : CropImageViewStories {
     private fun getDoubleTapTargetScale(): Float {
         return currentScale * Math.pow(
             (maxScale / minScale).toDouble(),
-            (1.0f / mDoubleTapScaleSteps).toDouble()
+            (BASE_SCALE_TAP / mDoubleTapScaleSteps).toDouble()
         ).toFloat()
     }
 
@@ -80,7 +78,7 @@ class GestureCropImageViewStories : CropImageViewStories {
     private fun scaleListener(): SimpleOnScaleGestureListener {
         return object : SimpleOnScaleGestureListener() {
             override fun onScale(detector: ScaleGestureDetector): Boolean {
-                this@GestureCropImageViewStories.postScale(detector.scaleFactor, mMidPntX, mMidPntY)
+                this@StoryGestureCropImageView.postScale(detector.scaleFactor, mMidPntX, mMidPntY)
                 return true
             }
         }
@@ -121,5 +119,6 @@ class GestureCropImageViewStories : CropImageViewStories {
 
     companion object {
         private const val DOUBLE_TAP_ZOOM_DURATION = 200L
+        private const val BASE_SCALE_TAP = 1.0f
     }
 }

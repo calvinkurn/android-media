@@ -13,6 +13,7 @@ import com.tokopedia.editor.di.ModuleInjector
 import com.tokopedia.editor.ui.EditorFragmentProvider
 import com.tokopedia.editor.ui.EditorFragmentProviderImpl
 import com.tokopedia.editor.ui.model.ImagePlacementModel
+import com.tokopedia.editor.util.getEditorCacheFolderPath
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.component.NavToolbarComponent
 import com.tokopedia.picker.common.component.ToolbarTheme
@@ -73,10 +74,6 @@ class PlacementImageActivity : BaseActivity(), NavToolbarComponent.Listener {
 
     override fun onBackPressed() {
         onPageExit()
-    }
-
-    fun getEditorCacheFolderPath(): String {
-        return FileUtil.getTokopediaInternalDirectory(CACHE_FOLDER).path
     }
 
     private fun initBundle(savedInstanceState: Bundle?) {
@@ -151,19 +148,23 @@ class PlacementImageActivity : BaseActivity(), NavToolbarComponent.Listener {
     }
 
     private fun getFragment(): PlacementImageFragment {
+        fragmentProvider()
         return supportFragmentManager.findFragmentById(R.id.fragment_view) as PlacementImageFragment
     }
 
     companion object {
-        private const val CACHE_FOLDER = "Tokopedia/editor-stories"
-
         const val PLACEMENT_RESULT_KEY = "input_placement_result"
 
         const val PLACEMENT_PARAM_KEY = "placement_param_key"
         const val PLACEMENT_MODEL_KEY = "placement_model_key"
 
-        fun create(context: Context): Intent {
-            return Intent(context, PlacementImageActivity::class.java)
+        fun create(context: Context, imagePath: String, previousState: ImagePlacementModel?): Intent {
+            val intent = Intent(context, PlacementImageActivity::class.java)
+
+            intent.putExtra(PLACEMENT_PARAM_KEY, imagePath)
+            intent.putExtra(PLACEMENT_MODEL_KEY, previousState)
+
+            return intent
         }
     }
 }

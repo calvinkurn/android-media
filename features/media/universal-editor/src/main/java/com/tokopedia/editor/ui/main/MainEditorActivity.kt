@@ -168,11 +168,10 @@ open class MainEditorActivity : AppCompatActivity(), NavToolbarComponent.Listene
                 this.overridePendingTransition(0,0)
             }
             ToolType.PLACEMENT -> {
-                val intent = PlacementImageActivity.create(this)
+                val imagePath = viewModel.state.value.param.paths.first()
+                val previousState = viewModel.state.value.model?.image?.placement
 
-                // need to improve for support multiple media
-                intent.putExtra(PlacementImageActivity.PLACEMENT_PARAM_KEY, viewModel.state.value.param.paths.first())
-                intent.putExtra(PlacementImageActivity.PLACEMENT_MODEL_KEY, viewModel.state.value.model?.image?.placement)
+                val intent = PlacementImageActivity.create(this, imagePath, previousState)
 
                 placementIntent.launch(intent)
             }

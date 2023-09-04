@@ -13,7 +13,6 @@ import android.os.Handler
 import android.util.AttributeSet
 import androidx.core.graphics.values
 import com.tokopedia.editor.ui.model.ImagePlacementModel
-import com.tokopedia.unifycomponents.toPx
 import com.yalantis.ucrop.model.ImageState
 import com.yalantis.ucrop.util.BitmapLoadUtils
 import com.yalantis.ucrop.util.RectUtils
@@ -25,7 +24,7 @@ import kotlinx.coroutines.launch
 import java.io.File
 import java.io.OutputStream
 
-open class CropImageViewStories : CropImageView {
+open class StoryCropImageView : CropImageView {
 
     private val mCropRect: RectF = RectF()
 
@@ -169,8 +168,6 @@ open class CropImageViewStories : CropImageView {
     }
 
     private fun saveImage(croppedBitmap: Bitmap) {
-        val context: Context = context ?: return
-
         outputPath?.path?.let {
             var outputStream: OutputStream? = null
             try {

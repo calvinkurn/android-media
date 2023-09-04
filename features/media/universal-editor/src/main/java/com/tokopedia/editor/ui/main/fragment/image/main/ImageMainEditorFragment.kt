@@ -31,7 +31,6 @@ class ImageMainEditorFragment @Inject constructor(
             it.clearImage()
             it.loadImage(path) {
                 useCache(false)
-                setCacheStrategy(MediaCacheStrategy.NONE)
             }
         }
     }

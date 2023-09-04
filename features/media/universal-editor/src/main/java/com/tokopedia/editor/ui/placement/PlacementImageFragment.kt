@@ -2,21 +2,18 @@ package com.tokopedia.editor.ui.placement
 
 import android.net.Uri
 import android.os.Handler
-import android.widget.Toast
 import androidx.core.graphics.values
 import androidx.fragment.app.activityViewModels
-import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.editor.R
 import com.tokopedia.editor.base.BaseEditorFragment
 import com.tokopedia.editor.databinding.FragmentPlacementBinding
-import com.tokopedia.editor.ui.components.custom.crop.StoriesEditorUcrop
+import com.tokopedia.editor.ui.components.custom.crop.StoryEditorUCropLayout
 import com.tokopedia.editor.ui.model.ImagePlacementModel
+import com.tokopedia.editor.util.getEditorCacheFolderPath
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.utils.file.FileUtil
 import com.tokopedia.utils.view.binding.viewBinding
-import com.yalantis.ucrop.view.TransformImageView
 import java.io.File
-import java.lang.Exception
 import javax.inject.Inject
 
 class PlacementImageFragment @Inject constructor() : BaseEditorFragment(R.layout.fragment_placement) {
@@ -40,7 +37,7 @@ class PlacementImageFragment @Inject constructor() : BaseEditorFragment(R.layout
                         outputUri = Uri.parse(getOutputPath())
                     )
 
-                    ucropRef.listener = object: StoriesEditorUcrop.Listener {
+                    ucropRef.listener = object: StoryEditorUCropLayout.Listener {
                         override fun onFinish() {
                             gestureCropImage.post {
                                 ucropRef.getOverlayView()?.setTargetAspectRatio(IMAGE_RATIO)
@@ -109,7 +106,7 @@ class PlacementImageFragment @Inject constructor() : BaseEditorFragment(R.layout
     }
 
     private fun getOutputPath(): String {
-        return (activity as PlacementImageActivity).getEditorCacheFolderPath() + FileUtil.generateUniqueFileName()
+        return getEditorCacheFolderPath() + FileUtil.generateUniqueFileName()
     }
 
     private fun initListener() {
