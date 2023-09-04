@@ -13,7 +13,6 @@ import android.view.ViewGroup
 import android.view.ViewOutlineProvider
 import android.widget.FrameLayout
 import android.widget.RelativeLayout
-import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
@@ -156,9 +155,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         ViewModelProvider(this, viewModelFactory)[PromoUsageViewModel::class.java]
     }
 
-    private var _binding by autoClearedNullable<PromoUsageBottomsheetBinding>()
-    private val binding: PromoUsageBottomsheetBinding
-        get() = _binding!!
+    private var binding by autoClearedNullable<PromoUsageBottomsheetBinding>()
     var listener: Listener? = null
     var currentPeekHeight: Int = 0
     val maxPeekHeight: Int
@@ -218,22 +215,22 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        _binding = PromoUsageBottomsheetBinding.inflate(inflater, container, false)
+    ): View? {
+        binding = PromoUsageBottomsheetBinding.inflate(inflater, container, false)
         dialog?.setOnShowListener {
             applyBottomSheetMaxHeightRule()
         }
-        return binding.root
+        return binding?.root
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         renderLoadingDialog(false)
-        _binding = null
+        binding = null
     }
 
     private fun applyBottomSheetMaxHeightRule() {
-        val frameDialogView = binding.rlBottomSheetWrapper.parent as FrameLayout
+        val frameDialogView = binding?.rlBottomSheetWrapper?.parent as FrameLayout
         frameDialogView.setBackgroundColor(Color.TRANSPARENT)
         frameDialogView.bringToFront()
         frameDialogView.layoutParams.height = maxPeekHeight
@@ -276,8 +273,8 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         val boPromoCodes: List<String> = arguments?.getStringArrayList(BUNDLE_KEY_BO_PROMO_CODES)
             ?: emptyList()
 
-        binding.tpgBottomSheetHeaderTitle.text = context?.getString(R.string.promo_voucher_promo)
-        binding.btnBottomSheetHeaderClose.setOnClickListener {
+        binding?.tpgBottomSheetHeaderTitle?.text = context?.getString(R.string.promo_voucher_promo)
+        binding?.btnBottomSheetHeaderClose?.setOnClickListener {
             renderLoadingDialog(true)
             viewModel.onClosePromoPage(
                 entryPoint = entryPoint,
@@ -285,25 +282,27 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                 boPromoCodes = boPromoCodes
             )
         }
-        binding.clTickerInfo.gone()
-        binding.clBottomSheetContent.background = BottomSheetUtil
-            .generateBackgroundDrawableWithColor(
-                binding.root.context,
-                com.tokopedia.unifyprinciples.R.color.Unify_Background
-            )
-        binding.ivPromoRecommendationBackground.invisible()
-        binding.rvPromo.layoutManager = LinearLayoutManager(context)
-        binding.rvPromo.adapter = recyclerViewAdapter
+        binding?.clTickerInfo?.gone()
+        context?.let {
+            binding?.clBottomSheetContent?.background = BottomSheetUtil
+                .generateBackgroundDrawableWithColor(
+                    it,
+                    com.tokopedia.unifyprinciples.R.color.Unify_Background
+                )
+        }
+        binding?.ivPromoRecommendationBackground?.invisible()
+        binding?.rvPromo?.layoutManager = LinearLayoutManager(context)
+        binding?.rvPromo?.adapter = recyclerViewAdapter
         when (entryPoint) {
             PromoPageEntryPoint.CART_PAGE -> {
-                binding.tpgTotalAmountLabel.visible()
-                binding.tpgTotalAmount.text = context?.getString(
+                binding?.tpgTotalAmountLabel?.visible()
+                binding?.tpgTotalAmount?.text = context?.getString(
                     R.string.promo_voucher_placeholder_total_price,
                     totalAmount.splitByThousand()
                 )
-                binding.tpgTotalAmount.visible()
-                binding.cvTotalAmount.visible()
-                binding.buttonBuy.setOnClickListener {
+                binding?.tpgTotalAmount?.visible()
+                binding?.cvTotalAmount?.visible()
+                binding?.buttonBuy?.setOnClickListener {
                     renderLoadingDialog(true)
                     viewModel.onClickBuy(
                         entryPoint = entryPoint,
@@ -311,23 +310,23 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                         boPromoCodes = boPromoCodes
                     )
                 }
-                binding.buttonBuy.visible()
-                binding.buttonBackToShipment.gone()
+                binding?.buttonBuy?.visible()
+                binding?.buttonBackToShipment?.gone()
             }
 
             PromoPageEntryPoint.OCC_PAGE -> {
-                binding.tpgTotalAmountLabel.visible()
-                binding.tpgTotalAmount.text = context?.getString(
+                binding?.tpgTotalAmountLabel?.visible()
+                binding?.tpgTotalAmount?.text = context?.getString(
                     R.string.promo_voucher_placeholder_total_price,
                     totalAmount.splitByThousand()
                 )
-                binding.tpgTotalAmount.visible()
-                binding.cvTotalAmount.visible()
+                binding?.tpgTotalAmount?.visible()
+                binding?.cvTotalAmount?.visible()
                 val icon = ContextCompat.getDrawable(
                     context ?: return, R.drawable.promo_usage_ic_protection_check
                 )
-                binding.buttonBuy.setDrawable(icon)
-                binding.buttonBuy.setOnClickListener {
+                binding?.buttonBuy?.setDrawable(icon)
+                binding?.buttonBuy?.setOnClickListener {
                     renderLoadingDialog(true)
                     viewModel.onClickBuy(
                         entryPoint = entryPoint,
@@ -335,24 +334,24 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                         boPromoCodes = boPromoCodes
                     )
                 }
-                binding.buttonBuy.visible()
-                binding.buttonBackToShipment.gone()
+                binding?.buttonBuy?.visible()
+                binding?.buttonBackToShipment?.gone()
             }
 
             PromoPageEntryPoint.CHECKOUT_PAGE -> {
-                binding.tpgTotalAmountLabel.gone()
-                binding.tpgTotalAmount.gone()
-                binding.buttonBuy.gone()
-                binding.buttonBackToShipment.text =
+                binding?.tpgTotalAmountLabel?.gone()
+                binding?.tpgTotalAmount?.gone()
+                binding?.buttonBuy?.gone()
+                binding?.buttonBackToShipment?.text =
                     context?.getString(R.string.promo_voucher_back_to_shipment)
-                binding.buttonBackToShipment.setOnClickListener {
+                binding?.buttonBackToShipment?.setOnClickListener {
                     viewModel.onBackToCheckout(
                         entryPoint = entryPoint,
                         validateUsePromoRequest = validateUsePromoRequest,
                         boPromoCodes = boPromoCodes
                     )
                 }
-                binding.buttonBackToShipment.visible()
+                binding?.buttonBackToShipment?.visible()
             }
         }
         observeKeyboardVisibility()
@@ -361,9 +360,9 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
     private var backgroundTranslationY = 0
     private var promoRecommendationHeight = 0
     private fun addScrollListeners() {
-        binding.rvPromo.clearOnScrollListeners()
+        binding?.rvPromo?.clearOnScrollListeners()
         // Header scroll listener
-        binding.rvPromo.addOnScrollListener(object : OnScrollListener() {
+        binding?.rvPromo?.addOnScrollListener(object : OnScrollListener() {
             var scrollY = 0f
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
@@ -392,9 +391,9 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                 // Handle background translation
                 val bgTranslationY = backgroundTranslationY - scrollY
                 if (bgTranslationY >= BOTTOM_SHEET_HEADER_HEIGHT_IN_DP.toPx()) {
-                    binding.dummyBackground.translationY = bgTranslationY
+                    binding?.dummyBackground?.translationY = bgTranslationY
                 } else {
-                    binding.dummyBackground.translationY =
+                    binding?.dummyBackground?.translationY =
                         BOTTOM_SHEET_HEADER_HEIGHT_IN_DP.toPx().toFloat()
                 }
             }
@@ -406,7 +405,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
             delay(100L)
             val promoRecommendation = items.getRecommendationItem()
             if (promoRecommendation != null) {
-                val layoutManager = binding.rvPromo.layoutManager as? LinearLayoutManager
+                val layoutManager = binding?.rvPromo?.layoutManager as? LinearLayoutManager
                 if (layoutManager != null) {
                     val currentItemPosition = layoutManager.findFirstVisibleItemPosition()
                     if (currentItemPosition == 0) {
@@ -419,7 +418,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                         val translationY =
                             BOTTOM_SHEET_HEADER_HEIGHT_IN_DP.toPx() + promoRecommendationHeight
                         backgroundTranslationY = translationY
-                        binding.dummyBackground.translationY = translationY.toFloat()
+                        binding?.dummyBackground?.translationY = translationY.toFloat()
                     }
                 }
             }
@@ -427,34 +426,36 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
     }
 
     private fun clearHeaderScrollListener() {
-        binding.rvPromo.clearOnScrollListeners()
+        binding?.rvPromo?.clearOnScrollListeners()
     }
 
     private fun renderWhiteHeader() {
-        with(binding) {
-            clBottomSheetHeader.background = BottomSheetUtil
+        context?.let {
+            binding?.clBottomSheetHeader?.background = BottomSheetUtil
                 .generateBackgroundDrawableWithColor(
-                    binding.root.context,
+                    it,
                     com.tokopedia.unifyprinciples.R.color.Unify_Background
                 )
-            tpgBottomSheetHeaderTitle
-                .setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_NN950)
-            btnBottomSheetHeaderClose.setImageDrawable(
-                if (binding.root.context.isDarkMode()) {
+        }
+        binding?.tpgBottomSheetHeaderTitle
+            ?.setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_NN950)
+        context?.let {
+            binding?.btnBottomSheetHeaderClose?.setImageDrawable(
+                if (binding?.root?.context.isDarkMode()) {
                     getIconUnifyDrawable(
-                        context = binding.root.context,
+                        context = it,
                         iconId = IconUnify.CLOSE,
                         assetColor = ContextCompat.getColor(
-                            binding.root.context,
+                            it,
                             com.tokopedia.unifyprinciples.R.color.Unify_Static_White
                         )
                     )
                 } else {
                     getIconUnifyDrawable(
-                        context = binding.root.context,
+                        context = it,
                         iconId = IconUnify.CLOSE,
                         assetColor = ContextCompat.getColor(
-                            binding.root.context,
+                            it,
                             com.tokopedia.unifyprinciples.R.color.Unify_Static_Black
                         )
                     )
@@ -464,16 +465,16 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
     }
 
     private fun renderTransparentHeader() {
-        with(binding) {
-            clBottomSheetHeader.background = null
-            tpgBottomSheetHeaderTitle
-                .setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
-            btnBottomSheetHeaderClose.setImageDrawable(
+        binding?.clBottomSheetHeader?.background = null
+        binding?.tpgBottomSheetHeaderTitle
+            ?.setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
+        context?.let {
+            binding?.btnBottomSheetHeaderClose?.setImageDrawable(
                 getIconUnifyDrawable(
-                    context = binding.root.context,
+                    context = it,
                     iconId = IconUnify.CLOSE,
                     assetColor = ContextCompat.getColor(
-                        binding.root.context,
+                        it,
                         com.tokopedia.unifyprinciples.R.color.Unify_Static_White
                     )
                 )
@@ -499,14 +500,14 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
 
     private fun scrollToVoucherCodeTextField(keyboardHeight: Int) {
         val itemCount = recyclerViewAdapter.itemCount
-        binding.rvPromo.smoothScrollToPosition(itemCount)
+        binding?.rvPromo?.smoothScrollToPosition(itemCount)
 
         // Add padding to make voucher code text field displayed above keyboard
-        binding.rvPromo.setPadding(0, 0, 0, keyboardHeight.toDp())
+        binding?.rvPromo?.setPadding(0, 0, 0, keyboardHeight.toDp())
     }
 
     private fun resetFocusFromVoucherCodeTextField() {
-        binding.rvPromo.setPadding(0, 0, 0, 0)
+        binding?.rvPromo?.setPadding(0, 0, 0, 0)
     }
 
     private fun setupObservers() {
@@ -611,67 +612,63 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
     }
 
     private fun renderPromoRecommendationBackground(promoRecommendation: PromoRecommendationItem) {
-        with(binding) {
-            clBottomSheetContent.outlineProvider = object : ViewOutlineProvider() {
-                override fun getOutline(view: View?, outline: Outline?) {
-                    val cornerRadius = 16.toPx()
-                    val width = view?.width ?: 0
-                    val height = view?.height ?: 0
-                    outline?.setRoundRect(
-                        0,
-                        0,
-                        width,
-                        height.plus(cornerRadius),
-                        cornerRadius.toFloat()
-                    )
-                }
+        binding?.clBottomSheetContent?.outlineProvider = object : ViewOutlineProvider() {
+            override fun getOutline(view: View?, outline: Outline?) {
+                val cornerRadius = 16.toPx()
+                val width = view?.width ?: 0
+                val height = view?.height ?: 0
+                outline?.setRoundRect(
+                    0,
+                    0,
+                    width,
+                    height.plus(cornerRadius),
+                    cornerRadius.toFloat()
+                )
             }
-            clBottomSheetContent.clipToOutline = true
-            clBottomSheetContent.clipChildren = true
-            ivPromoRecommendationBackground.loadImage(promoRecommendation.backgroundUrl)
-            ivPromoRecommendationBackground.setBackgroundColor(Color.parseColor(promoRecommendation.backgroundColor))
-            ivPromoRecommendationBackground.visible()
         }
+        binding?.clBottomSheetContent?.clipToOutline = true
+        binding?.clBottomSheetContent?.clipChildren = true
+        binding?.ivPromoRecommendationBackground?.loadImage(promoRecommendation.backgroundUrl)
+        binding?.ivPromoRecommendationBackground?.setBackgroundColor(Color.parseColor(promoRecommendation.backgroundColor))
+        binding?.ivPromoRecommendationBackground?.visible()
     }
 
     private fun renderTickerInfo(tickerInfo: PromoPageTickerInfo) {
-        with(binding) {
-            val hasTickerInfo = tickerInfo.message.isNotBlank() && tickerInfo.iconUrl.isNotBlank()
-                && tickerInfo.backgroundUrl.isNotBlank()
-            if (hasTickerInfo) {
-                ivTickerInfoBackground.loadImage(
-                    url = tickerInfo.backgroundUrl,
-                    properties = {
-                        centerCrop()
-                    }
-                )
-                iuTickerInfoIcon.loadImage(tickerInfo.iconUrl)
-                tpgTickerInfoMessage.text = tickerInfo.message
-                clTickerInfo.visible()
-            } else {
-                val layoutParams =
-                    clBottomSheetContent.layoutParams as? RelativeLayout.LayoutParams
-                layoutParams?.setMargins(0, 0, 0, 0)
-                clBottomSheetContent.layoutParams = layoutParams
-                clBottomSheetContent.requestLayout()
-                clTickerInfo.gone()
-            }
+        val hasTickerInfo = tickerInfo.message.isNotBlank() && tickerInfo.iconUrl.isNotBlank()
+            && tickerInfo.backgroundUrl.isNotBlank()
+        if (hasTickerInfo) {
+            binding?.ivTickerInfoBackground?.loadImage(
+                url = tickerInfo.backgroundUrl,
+                properties = {
+                    centerCrop()
+                }
+            )
+            binding?.iuTickerInfoIcon?.loadImage(tickerInfo.iconUrl)
+            binding?.tpgTickerInfoMessage?.text = tickerInfo.message
+            binding?.clTickerInfo?.visible()
+        } else {
+            val layoutParams =
+                binding?.clBottomSheetContent?.layoutParams as? RelativeLayout.LayoutParams
+            layoutParams?.setMargins(0, 0, 0, 0)
+            binding?.clBottomSheetContent?.layoutParams = layoutParams
+            binding?.clBottomSheetContent?.requestLayout()
+            binding?.clTickerInfo?.gone()
         }
     }
 
     private fun refreshBottomSheetHeight(state: PromoPageUiState) {
-        binding.root.addOneTimeGlobalLayoutListener {
+        binding?.root?.addOneTimeGlobalLayoutListener {
             val contentHeight = when (state) {
                 is PromoPageUiState.Initial -> {
                     maxPeekHeight
                 }
 
                 is PromoPageUiState.Error -> {
-                    binding.layoutGlobalError.root.height
+                    binding?.layoutGlobalError?.root?.height ?: 0
                 }
 
                 is PromoPageUiState.Success -> {
-                    binding.root.height
+                    binding?.root?.height ?: 0
                 }
             }
             if (currentPeekHeight == contentHeight) {
@@ -682,7 +679,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
             } else {
                 maxPeekHeight
             }
-            val frameDialogView = binding.rlBottomSheetWrapper.parent as FrameLayout
+            val frameDialogView = binding?.rlBottomSheetWrapper?.parent as FrameLayout
             frameDialogView.layoutParams.height = currentPeekHeight
             val bottomSheetBehavior = BottomSheetBehavior.from(frameDialogView)
             bottomSheetBehavior.peekHeight = currentPeekHeight
@@ -694,49 +691,18 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
     }
 
     private fun renderLoadingShimmer(isVisible: Boolean) {
-        with(binding) {
-            if (isVisible) {
-                layoutShimmer.iuCloseIcon.setOnClickListener {
-                    dismiss()
-                }
-                rlBottomSheetWrapper.background =
+        if (isVisible) {
+            binding?.layoutShimmer?.iuCloseIcon?.setOnClickListener {
+                dismiss()
+            }
+            context?.let {
+                binding?.rlBottomSheetWrapper?.background =
                     BottomSheetUtil.generateBackgroundDrawableWithColor(
-                        root.context,
+                        it,
                         com.tokopedia.unifyprinciples.R.color.Unify_Background
                     )
-                rlBottomSheetWrapper.outlineProvider = object : ViewOutlineProvider() {
-                    override fun getOutline(view: View?, outline: Outline?) {
-                        val cornerRadius = 16.toPx()
-                        val width = view?.width ?: 0
-                        val height = view?.height ?: 0
-                        outline?.setRoundRect(
-                            0,
-                            0,
-                            width,
-                            height.plus(cornerRadius),
-                            cornerRadius.toFloat()
-                        )
-                    }
-                }
-                rlBottomSheetWrapper.clipToOutline = true
-                clBottomSheetContent.clipChildren = true
             }
-            layoutShimmer.root.isVisible = isVisible
-        }
-    }
-
-    private fun renderHeader(isVisible: Boolean) {
-        binding.clBottomSheetHeader.isVisible = isVisible
-    }
-
-    private fun renderContent(isVisible: Boolean) {
-        with(binding) {
-            rlBottomSheetWrapper.background =
-                BottomSheetUtil.generateBackgroundDrawableWithColor(
-                    binding.root.context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_Background
-                )
-            rlBottomSheetWrapper.outlineProvider = object : ViewOutlineProvider() {
+            binding?.rlBottomSheetWrapper?.outlineProvider = object : ViewOutlineProvider() {
                 override fun getOutline(view: View?, outline: Outline?) {
                     val cornerRadius = 16.toPx()
                     val width = view?.width ?: 0
@@ -750,59 +716,86 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                     )
                 }
             }
-            rlBottomSheetWrapper.clipToOutline = true
-            clBottomSheetContent.clipChildren = true
-            rvPromo.isVisible = isVisible
-            cvTotalAmount.isVisible = isVisible
+            binding?.rlBottomSheetWrapper?.clipToOutline = true
+            binding?.clBottomSheetContent?.clipChildren = true
         }
+        binding?.layoutShimmer?.root?.isVisible = isVisible
+    }
+
+    private fun renderHeader(isVisible: Boolean) {
+        binding?.clBottomSheetHeader?.isVisible = isVisible
+    }
+
+    private fun renderContent(isVisible: Boolean) {
+        context?.let {
+            binding?.rlBottomSheetWrapper?.background =
+                BottomSheetUtil.generateBackgroundDrawableWithColor(
+                    it,
+                    com.tokopedia.unifyprinciples.R.color.Unify_Background
+                )
+        }
+        binding?.rlBottomSheetWrapper?.outlineProvider = object : ViewOutlineProvider() {
+            override fun getOutline(view: View?, outline: Outline?) {
+                val cornerRadius = 16.toPx()
+                val width = view?.width ?: 0
+                val height = view?.height ?: 0
+                outline?.setRoundRect(
+                    0,
+                    0,
+                    width,
+                    height.plus(cornerRadius),
+                    cornerRadius.toFloat()
+                )
+            }
+        }
+        binding?.rlBottomSheetWrapper?.clipToOutline = true
+        binding?.clBottomSheetContent?.clipChildren = true
+        binding?.rvPromo?.isVisible = isVisible
+        binding?.cvTotalAmount?.isVisible = isVisible
     }
 
     private fun renderSavingInfo(promoSavingInfo: PromoSavingInfo) {
-        with(binding) {
-            val formattedTotalVoucherAmount =
-                promoSavingInfo.totalSelectedPromoBenefitAmount.splitByThousand()
-            val text =
-                "${promoSavingInfo.message} <b>Rp{{benefit_amount}}</b> ({{promo_count}} promo)"
-                    .replace("{{benefit_amount}}", formattedTotalVoucherAmount)
-                    .replace("{{promo_count}}", promoSavingInfo.selectedPromoCount.toString())
-            tpgTotalSavings.text = text.toSpannableHtmlString(tpgTotalSavings.context)
-            clSavingInfo.isVisible = promoSavingInfo.isVisible
-        }
+        val formattedTotalVoucherAmount =
+            promoSavingInfo.totalSelectedPromoBenefitAmount.splitByThousand()
+        val text =
+            "${promoSavingInfo.message} <b>Rp{{benefit_amount}}</b> ({{promo_count}} promo)"
+                .replace("{{benefit_amount}}", formattedTotalVoucherAmount)
+                .replace("{{promo_count}}", promoSavingInfo.selectedPromoCount.toString())
+        context?.let { binding?.tpgTotalSavings?.text = text.toSpannableHtmlString(it) }
+        binding?.clSavingInfo?.isVisible = promoSavingInfo.isVisible
     }
 
     private fun renderError(isVisible: Boolean, throwable: Throwable? = null) {
-        with(binding) {
-            if (isVisible) {
-                layoutGlobalError.iuCloseIcon.setOnClickListener {
-                    dismiss()
-                }
-                val errorType = if (throwable != null) {
-                    getGlobalErrorType(throwable)
-                } else {
-                    GlobalError.SERVER_ERROR
-                }
-                layoutGlobalError.globalErrorPromoUsage.setType(errorType)
-                layoutGlobalError.globalErrorPromoUsage.errorAction.text =
-                    context?.getText(com.tokopedia.promousage.R.string.promo_usage_error_try_again)
+        if (isVisible) {
+            binding?.layoutGlobalError?.iuCloseIcon?.setOnClickListener {
+                dismiss()
+            }
+            val errorType = if (throwable != null) {
+                getGlobalErrorType(throwable)
+            } else {
+                GlobalError.SERVER_ERROR
+            }
+            binding?.layoutGlobalError?.globalErrorPromoUsage?.setType(errorType)
+            binding?.layoutGlobalError?.globalErrorPromoUsage?.errorAction?.text =
+                context?.getText(com.tokopedia.promousage.R.string.promo_usage_error_try_again)
+                    ?: ""
+            if (errorType == GlobalError.NO_CONNECTION) {
+                binding?.layoutGlobalError?.globalErrorPromoUsage?.errorSecondaryAction?.text =
+                    context?.getText(com.tokopedia.promousage.R.string.promo_usage_error_to_settings)
                         ?: ""
-                if (errorType == GlobalError.NO_CONNECTION) {
-                    layoutGlobalError.globalErrorPromoUsage.errorSecondaryAction.text =
-                        context?.getText(com.tokopedia.promousage.R.string.promo_usage_error_to_settings)
-                            ?: ""
-                    layoutGlobalError.globalErrorPromoUsage.setActionClickListener {
-                        resetView()
-                    }
-                    layoutGlobalError.globalErrorPromoUsage.setSecondaryActionClickListener {
-                        openNetworkSettings()
-                    }
-                } else {
-                    layoutGlobalError.globalErrorPromoUsage.setActionClickListener {
-                        resetView()
-                    }
+                binding?.layoutGlobalError?.globalErrorPromoUsage?.setActionClickListener {
+                    resetView()
+                }
+                binding?.layoutGlobalError?.globalErrorPromoUsage?.setSecondaryActionClickListener {
+                    openNetworkSettings()
+                }
+            } else {
+                binding?.layoutGlobalError?.globalErrorPromoUsage?.setActionClickListener {
+                    resetView()
                 }
             }
-            layoutGlobalError.root.isVisible = isVisible
         }
+        binding?.layoutGlobalError?.root?.isVisible = isVisible
     }
 
     private fun getGlobalErrorType(throwable: Throwable): Int {
@@ -961,15 +954,15 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
     private fun showPromoRecommendationAnimation(item: PromoRecommendationItem) {
         LottieCompositionFactory.fromUrl(context, item.animationUrl)
             .addListener { result ->
-                binding.lottieAnimationView.visible()
-                binding.lottieAnimationView.setComposition(result)
-                binding.lottieAnimationView.addAnimatorListener(object : Animator.AnimatorListener {
+                binding?.lottieAnimationView?.visible()
+                binding?.lottieAnimationView?.setComposition(result)
+                binding?.lottieAnimationView?.addAnimatorListener(object : Animator.AnimatorListener {
                     override fun onAnimationStart(animator: Animator) {
                         // no-op
                     }
 
                     override fun onAnimationEnd(animator: Animator) {
-                        binding.lottieAnimationView.gone()
+                        binding?.lottieAnimationView?.gone()
                     }
 
                     override fun onAnimationCancel(animator: Animator) {
@@ -980,7 +973,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                         // no-op
                     }
                 })
-                binding.lottieAnimationView.playAnimation()
+                binding?.lottieAnimationView?.playAnimation()
             }
     }
 
@@ -997,9 +990,9 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
             chosenAddress = chosenAddress,
             attemptedPromoCode = attemptedPromoCode,
             onSuccess = {
-                val itemCount = binding.rvPromo.adapter?.itemCount ?: 0
+                val itemCount = binding?.rvPromo?.adapter?.itemCount ?: 0
                 if (itemCount > 0) {
-                    binding.rvPromo.scrollToPosition(itemCount - 1)
+                    binding?.rvPromo?.scrollToPosition(itemCount - 1)
                 }
             }
         )
@@ -1020,11 +1013,13 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
     }
 
     private fun showToastMessage(throwable: Throwable) {
-        binding.root.context?.let { showToastMessage(throwable.getErrorMessage(it)) }
+        binding?.root?.context?.let { showToastMessage(throwable.getErrorMessage(it)) }
     }
 
     private fun showToastMessage(message: String) {
-        Toaster.build(binding.root, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
+        binding?.root?.let {
+            Toaster.build(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
+        }
     }
 
     interface Listener {
