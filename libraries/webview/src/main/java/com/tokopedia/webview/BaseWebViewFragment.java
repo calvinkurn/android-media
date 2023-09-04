@@ -482,7 +482,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             proceedPartnerKyc(intent);
         }
 
-        contactPicker.onContactSelected(requestCode, resultCode, intent, BaseWebViewFragment.this.getActivity().getContentResolver(), getContext());
+        contactPicker.onContactSelected(requestCode, resultCode, intent, BaseWebViewFragment.this.getActivity().getContentResolver(), getContext(), webView);
     }
 
     private void proceedPartnerKyc(Intent intent) {
@@ -885,33 +885,21 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         if (activity == null) {
             return false;
         }
+
+        if (url.contains("tokopedia://open-contact-picker")) {
+            contactPicker.openContactPicker(
+                    BaseWebViewFragment.this,
+                    intent -> startActivityForResult(intent, ContactPicker.CONTACT_PICKER_REQUEST_CODE)
+            );
+            return true;
+        }
+
         if ("".equals(url)) {
             return false;
         }
 
         if (url.contains("gift-card/redemption")) {
-            ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(
-                    new ActivityResultContracts.StartActivityForResult(),
-                    new ActivityResultCallback<ActivityResult>() {
-                        @Override
-                        public void onActivityResult(ActivityResult result) {
-                            if (result.getResultCode() == Activity.RESULT_OK) {
-                                // There are no request codes
-                                Intent data = result.getData();
 
-                            }
-                        }
-                    });
-
-            Intent intent2 = new Intent(
-                    Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
-//            startActivityForResult(intent2, ContactPicker.CONTACT_PICKER_REQUEST_CODE);
-            someActivityResultLauncher.launch(intent2);
-//            contactPicker.openContactPicker(
-//                    BaseWebViewFragment.this,
-//                    intent -> startActivityForReasult(intent2, ContactPicker.CONTACT_PICKER_REQUEST_CODE)
-//            );
-            return true;
         }
 
         Uri uri = Uri.parse(url);
