@@ -61,7 +61,6 @@ import com.tokopedia.cart.data.model.response.shopgroupsimplified.LocalizationCh
 import com.tokopedia.cart.databinding.FragmentCartRevampBinding
 import com.tokopedia.cart.view.CartActivity
 import com.tokopedia.cart.view.CartFragment
-import com.tokopedia.cart.view.uimodel.CartShopGroupTickerData
 import com.tokopedia.cartcommon.data.response.common.Button
 import com.tokopedia.cartcommon.data.response.common.OutOfService
 import com.tokopedia.cartrevamp.view.adapter.cart.CartAdapter
@@ -80,6 +79,8 @@ import com.tokopedia.cartrevamp.view.mapper.CartUiModelMapper
 import com.tokopedia.cartrevamp.view.mapper.PromoRequestMapper
 import com.tokopedia.cartrevamp.view.mapper.RecentViewMapper
 import com.tokopedia.cartrevamp.view.mapper.WishlistMapper
+import com.tokopedia.cartrevamp.view.uimodel.*
+import com.tokopedia.cartrevamp.view.util.CartPageAnalyticsUtil
 import com.tokopedia.cartrevamp.view.uimodel.AddCartToWishlistV2Event
 import com.tokopedia.cartrevamp.view.uimodel.AddToCartEvent
 import com.tokopedia.cartrevamp.view.uimodel.AddToCartExternalEvent
@@ -595,7 +596,9 @@ class CartRevampFragment :
 
     override fun checkCartShopGroupTicker(cartGroupHolderData: CartGroupHolderData) {
         if (cartGroupHolderData.cartShopGroupTicker.enableCartAggregator && !cartGroupHolderData.isError && cartGroupHolderData.hasSelectedProduct) {
-            cartGroupHolderData.cartShopGroupTicker.state = CartShopGroupTickerState.LOADING
+            if (cartGroupHolderData.cartShopGroupTicker.needToShowLoading()) {
+                cartGroupHolderData.cartShopGroupTicker.state = CartShopGroupTickerState.LOADING
+            }
             viewModel.checkCartShopGroupTicker(cartGroupHolderData)
         }
     }
@@ -3322,7 +3325,7 @@ class CartRevampFragment :
             viewModel.cartModel
         )
         cartPageAnalytics.enhancedECommerceCartLoadedStep0(
-            viewModel.generateCheckoutDataAnalytics(
+            CartPageAnalyticsUtil.generateCheckoutDataAnalytics(
                 cartItemDataList,
                 EnhancedECommerceActionField.STEP_0
             ),
