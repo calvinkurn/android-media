@@ -129,7 +129,7 @@ class StoriesViewModel @Inject constructor(
         when {
             newDetailPosition > -1 -> updateDetailData(position = newDetailPosition)
             newGroupPosition > -1 -> handleSetGroup(position = newGroupPosition, true)
-            else -> updateDetailData(event = RESUME, isReset = true)
+            else -> updateDetailData(isReset = true)
         }
     }
 
@@ -154,10 +154,9 @@ class StoriesViewModel @Inject constructor(
 
             updateGroupData(detail = detailData)
 
-            val isReset = detailData.selectedDetailPositionCached == detailData.detailItems.size.minus(1)
             updateDetailData(
                 position = detailData.selectedDetailPositionCached,
-                isReset = isReset,
+                isReset = true,
             )
         }) { exception ->
             updateGroupData(detail = StoriesDetailUiModel())
