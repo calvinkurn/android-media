@@ -462,7 +462,17 @@ class CheckoutDataConverter @Inject constructor() {
             groupPreOrderInfo = if (groupShop.shipmentInformationData.preorder.isPreorder) groupShop.shipmentInformationData.preorder.duration else "",
             freeShippingBadgeUrl = groupShop.shipmentInformationData.freeShippingGeneral.badgeUrl,
             isFreeShippingPlus = groupShop.shipmentInformationData.freeShippingGeneral.isBoTypePlus(),
-            shouldShowGroupInfo = index == 0
+            shouldShowGroupInfo = index == 0,
+            isBMGMItem = product.isBmgmItem,
+            bmgmOfferId = product.bmgmOfferId,
+            bmgmOfferName = product.bmgmOfferName,
+            bmgmOfferMessage = product.bmgmOfferMessage,
+            bmgmOfferStatus = product.bmgmOfferStatus,
+            bmgmItemPosition = product.bmgmItemPosition,
+            bmgmIconUrl = product.bmgmIconUrl,
+            bmgmTotalDiscount = product.bmgmTotalDiscount,
+            bmgmTierProductList = product.bmgmTierProductList,
+            shouldShowBmgmInfo = product.bmgmItemPosition == BMGM_ITEM_HEADER
         )
     }
 
@@ -477,5 +487,7 @@ class CheckoutDataConverter @Inject constructor() {
         private const val PRIME_ADDRESS = 2
         private const val MERCHANT_VOUCHER_TYPE = "merchant"
         private const val LOGISTIC_VOUCHER_TYPE = "logistic"
+
+        private const val BMGM_ITEM_HEADER = 1
     }
 }
