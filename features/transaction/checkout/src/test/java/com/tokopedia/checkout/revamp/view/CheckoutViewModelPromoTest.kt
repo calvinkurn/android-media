@@ -661,16 +661,66 @@ class CheckoutViewModelPromoTest : BaseCheckoutViewModelTest() {
         assertEquals(arrayListOf("boCode"), result)
     }
 
-//    @Test
-//    fun remove_invalid_bo_code_from_promo_request() {
-//        var validateUsePromoRequest = ValidateUsePromoRequest()
-//        viewModel.removeInvalidBoCodeFromPromoRequest(CheckoutOrderModel("123", isFreeShippingPlus = true), listOf(),
-//            validateUsePromoRequest
-//        )
-//        assertEquals(ValidateUsePromoRequest(), validateUsePromoRequest)
-//
-//        viewModel.removeInvalidBoCodeFromPromoRequest(CheckoutOrderModel("123"), listOf(),
-//            validateUsePromoRequest
-//        )
-//    }
+    @Test
+    fun remove_invalid_bo_code_from_promo_request() {
+        var validateUsePromoRequest = ValidateUsePromoRequest(
+            orders = listOf(
+                OrdersItem(cartStringGroup = "123", codes = mutableListOf("boCode")),
+                OrdersItem(cartStringGroup = "234", codes = mutableListOf("boCode1"))
+            )
+        )
+        viewModel.removeInvalidBoCodeFromPromoRequest(
+            CheckoutOrderModel("123", isFreeShippingPlus = true),
+            listOf(
+                CheckoutOrderModel("123", isFreeShippingPlus = true),
+                CheckoutOrderModel("234", isFreeShippingPlus = true)
+            ),
+            validateUsePromoRequest
+        )
+        assertEquals(
+            ValidateUsePromoRequest(
+                orders = listOf(
+                    OrdersItem(cartStringGroup = "123", codes = mutableListOf("boCode")),
+                    OrdersItem(cartStringGroup = "234", codes = mutableListOf("boCode1"))
+                )
+            ),
+            validateUsePromoRequest
+        )
+
+        viewModel.removeInvalidBoCodeFromPromoRequest(
+            CheckoutOrderModel("123"),
+            listOf(
+                CheckoutOrderModel("123"),
+                CheckoutOrderModel("234", isFreeShippingPlus = true)
+            ),
+            validateUsePromoRequest
+        )
+        assertEquals(
+            ValidateUsePromoRequest(
+                orders = listOf(
+                    OrdersItem(cartStringGroup = "123", codes = mutableListOf("boCode")),
+                    OrdersItem(cartStringGroup = "234", codes = mutableListOf("boCode1"))
+                )
+            ),
+            validateUsePromoRequest
+        )
+
+        viewModel.removeInvalidBoCodeFromPromoRequest(
+            CheckoutOrderModel("123"),
+            listOf(
+                CheckoutOrderModel("123"),
+                CheckoutOrderModel("234", shipment = CheckoutOrderShipment(courierItemData = CourierItemData(logPromoCode = "boCode1")))
+            ),
+            validateUsePromoRequest
+        )
+        assertEquals(
+            ValidateUsePromoRequest(
+                orders = listOf(
+                    OrdersItem(cartStringGroup = "123", codes = mutableListOf("boCode")),
+                    OrdersItem(cartStringGroup = "234")
+                )
+            ),
+            validateUsePromoRequest
+        )
+    }
 }

@@ -137,8 +137,6 @@ class CheckoutViewModel @Inject constructor(
 
     var checkoutPageSource: String = CheckoutConstant.CHECKOUT_PAGE_SOURCE_PDP
 
-    private var isPurchaseProtectionPage: Boolean = false
-
     val cornerId: String?
         get() = recipientAddressModel.cornerId
 
@@ -215,17 +213,6 @@ class CheckoutViewModel @Inject constructor(
 
                     isUsingDdp = saf.cartShipmentAddressFormData.isUsingDdp
                     shipmentPlatformFeeData = saf.cartShipmentAddressFormData.shipmentPlatformFee
-                    val ppImpressionData: List<String> =
-                        saf.cartShipmentAddressFormData.getAvailablePurchaseProtection
-                    if (ppImpressionData.isNotEmpty()) {
-                        isPurchaseProtectionPage = true
-                        mTrackerPurchaseProtection.eventImpressionOfProduct(
-                            userSessionInterface.userId,
-                            ppImpressionData
-                        )
-                    } else {
-                        isPurchaseProtectionPage = false
-                    }
                     cartDataForRates = saf.cartShipmentAddressFormData.cartData
                     codData = saf.cartShipmentAddressFormData.cod
                     campaignTimer = saf.cartShipmentAddressFormData.campaignTimerUi
@@ -280,7 +267,7 @@ class CheckoutViewModel @Inject constructor(
                                 CheckoutCrossSellModel(
                                     crossSellModel,
                                     crossSellModel.isChecked,
-                                    crossSellModel.checkboxDisabled,
+                                    !crossSellModel.checkboxDisabled,
                                     0
                                 )
                             )
@@ -307,7 +294,12 @@ class CheckoutViewModel @Inject constructor(
                             )
                         }
                         if (saf.cartShipmentAddressFormData.donation != null && saf.cartShipmentAddressFormData.donation!!.title.isNotEmpty() && saf.cartShipmentAddressFormData.donation!!.nominal != 0) {
-                            crossSellList.add(CheckoutDonationModel(saf.cartShipmentAddressFormData.donation!!))
+                            crossSellList.add(
+                                CheckoutDonationModel(
+                                    saf.cartShipmentAddressFormData.donation!!,
+                                    saf.cartShipmentAddressFormData.donation!!.isChecked
+                                )
+                            )
                             if (saf.cartShipmentAddressFormData.donation!!.isChecked) {
                                 mTrackerShipment.eventViewAutoCheckDonation(
                                     userSessionInterface.userId
@@ -1349,19 +1341,7 @@ class CheckoutViewModel @Inject constructor(
                     }
                 }
             }
-            val shipmentCartItemModelLists = listData.value.filterIsInstance(CheckoutOrderModel::class.java)
-            if (shipmentCartItemModelLists.isNotEmpty() && !shipmentCartItemModel.isFreeShippingPlus) {
-                for (tmpShipmentCartItemModel in shipmentCartItemModelLists) {
-                    for (order in validateUsePromoRequest.orders) {
-                        if (shipmentCartItemModel.cartStringGroup != tmpShipmentCartItemModel.cartStringGroup && tmpShipmentCartItemModel.cartStringGroup == order.cartStringGroup && tmpShipmentCartItemModel.shipment.courierItemData?.selectedShipper?.logPromoCode != null &&
-                            !tmpShipmentCartItemModel.isFreeShippingPlus
-                        ) {
-                            order.codes.remove(tmpShipmentCartItemModel.shipment.courierItemData.selectedShipper.logPromoCode)
-                            order.boCode = ""
-                        }
-                    }
-                }
-            }
+            removeInvalidBoCodeFromPromoRequest(shipmentCartItemModel, listData.value, validateUsePromoRequest)
             for (ordersItem in validateUsePromoRequest.orders) {
                 if (ordersItem.cartStringGroup == shipmentCartItemModel.cartStringGroup) {
                     ordersItem.spId = courierItemData.shipperProductId
@@ -1500,20 +1480,7 @@ class CheckoutViewModel @Inject constructor(
                 }
             }
         }
-        val shipmentCartItemModelLists =
-            listData.value.filterIsInstance(CheckoutOrderModel::class.java)
-        if (shipmentCartItemModelLists.isNotEmpty()) {
-            for (tmpShipmentCartItemModel in shipmentCartItemModelLists) {
-                for (orderPromo in validateUsePromoRequest.orders) {
-                    if (order.cartStringGroup != tmpShipmentCartItemModel.cartStringGroup && tmpShipmentCartItemModel.cartStringGroup == orderPromo.cartStringGroup && tmpShipmentCartItemModel.shipment.courierItemData?.selectedShipper?.logPromoCode != null &&
-                        !tmpShipmentCartItemModel.isFreeShippingPlus
-                    ) {
-                        orderPromo.codes.remove(tmpShipmentCartItemModel.shipment.courierItemData.selectedShipper.logPromoCode)
-                        orderPromo.boCode = ""
-                    }
-                }
-            }
-        }
+        removeInvalidBoCodeFromPromoRequest(order, listData.value, validateUsePromoRequest)
         for (ordersItem in validateUsePromoRequest.orders) {
             if (ordersItem.cartStringGroup == order.cartStringGroup) {
                 ordersItem.spId = selectedShipper.shipperProductId
@@ -1883,12 +1850,6 @@ class CheckoutViewModel @Inject constructor(
             hasClearPromoBeforeCheckout
         )
         if (checkoutResult.success) {
-            if (isPurchaseProtectionPage) {
-                mTrackerPurchaseProtection.eventClickOnBuy(
-                    userSessionInterface.userId,
-                    checkoutResult.checkoutRequest.protectionAnalyticsData
-                )
-            }
             sendEEStep4(
                 checkoutResult.transactionId,
                 checkoutResult.deviceModel,
