@@ -1,24 +1,24 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs
 
-import android.graphics.Color
 import android.view.View
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.R as RUnify
+import com.tokopedia.unifyprinciples.Typography as RTypography
 
 class TabsItemIconViewHolder(itemView: View, fragment: Fragment) :
     AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
     private val tabIconImageView: ImageView = itemView.findViewById(R.id.tab_icon_image)
-    private var tabTextView: Typography = itemView.findViewById(R.id.tab_text)
+    private var tabTextView: RTypography = itemView.findViewById(R.id.tab_text)
     private var tabsItemIconViewModel: TabsItemIconViewModel? = null
     private var positionForParentAdapter: Int = -1
     private var itemData: DataItem? = null
@@ -94,7 +94,7 @@ class TabsItemIconViewHolder(itemView: View, fragment: Fragment) :
                 )
             }
         } catch (e: Exception) {
-            e.printStackTrace()
+            FirebaseCrashlytics.getInstance().recordException(e)
         }
     }
 }

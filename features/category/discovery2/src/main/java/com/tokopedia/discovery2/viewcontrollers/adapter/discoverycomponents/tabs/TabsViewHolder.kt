@@ -44,6 +44,10 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
     private var isParentUnifyTab: Boolean = true
     private val navigateToTabPositionHandler = Handler(Looper.getMainLooper())
     private var navigateToTabPositionRunnable: Runnable? = null
+    private val tabsHandler = Handler(Looper.getMainLooper())
+    private val tabsRunnable = Runnable {
+        tabsHolder.show()
+    }
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         tabsViewModel = discoveryBaseViewModel as TabsViewModel
         tabsViewModel?.let {
@@ -68,8 +72,8 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
                 }
                 tabsHolder.getUnifyTabLayout()
                     .setSelectedTabIndicator(
-                    tabsHolder.getUnifyTabLayout().tabSelectedIndicator
-                )
+                        tabsHolder.getUnifyTabLayout().tabSelectedIndicator
+                    )
                 var selectedPosition = 0
                 it.forEachIndexed { index, tabItem ->
                     if (tabItem.data?.isNotEmpty() == true) {
@@ -91,7 +95,7 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
                             if (selectedPosition >= 0 && tabsViewModel.isFromCategory()) {
                                 tabsHolder.gone()
                                 tabsHolder.tabLayout.getTabAt(selectedPosition)?.select()
-                                Handler().postDelayed({
+                                tabsHandler.postDelayed({
                                     tabsHolder.show()
                                 }, DELAY_400)
                                 selectedPosition = -1
@@ -172,7 +176,7 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
                             if (selectedPosition >= 0 && tabsViewModel.isFromCategory()) {
                                 tabsHolder.gone()
                                 tabsHolder.tabLayout.getTabAt(selectedPosition)?.select()
-                                Handler().postDelayed({
+                                tabsHandler.postDelayed({
                                     tabsHolder.show()
                                 }, DELAY_400)
                                 selectedPosition = -1
@@ -205,8 +209,8 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
         tabsViewModel?.let { tabsViewModel ->
             (fragment as DiscoveryFragment).getDiscoveryAnalytics()
                 .trackCategoryTreeDropDownClick(
-                tabsViewModel.isUserLoggedIn()
-            )
+                    tabsViewModel.isUserLoggedIn()
+                )
             selectedTab?.position?.let { it ->
                 if (tabsViewModel.isFromCategory()) {
                     CategoryNavBottomSheet.getInstance(
@@ -238,6 +242,7 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
             navigateToTabPositionHandler.removeCallbacks(it)
         }
         tabsViewModel?.getColorTabComponentLiveData()?.removeObservers(fragment.viewLifecycleOwner)
+        tabsHandler.removeCallbacksAndMessages(null)
     }
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
@@ -373,15 +378,15 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
     override fun onL2Expanded(id: String?, name: String?) {
         (fragment as DiscoveryFragment).getDiscoveryAnalytics()
             .trackClickExpandNavigationAccordion(
-            id
-        )
+                id
+            )
     }
 
     override fun onL2Collapsed(id: String?, name: String?) {
         (fragment as DiscoveryFragment).getDiscoveryAnalytics()
             .trackClickCollapseNavigationAccordion(
-            id
-        )
+                id
+            )
     }
 
     override fun onL3Clicked(id: String?, name: String?) {
