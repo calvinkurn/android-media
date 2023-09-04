@@ -23,6 +23,8 @@ import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCat
 import com.tokopedia.product.detail.common.getCurrencyFormatted
 import com.tokopedia.product.detail.data.model.ProductInfoP2Other
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
+import com.tokopedia.product.detail.data.model.bmgm.BMGMData
+import com.tokopedia.product.detail.data.model.bmgm.asUiModel
 import com.tokopedia.product.detail.data.model.datamodel.ArButtonDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicOneLinerDataModel
@@ -33,7 +35,6 @@ import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel
 import com.tokopedia.product.detail.data.model.datamodel.OngoingCampaignDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PdpComparisonWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PdpRecommendationWidgetDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductBundlingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentMainData
 import com.tokopedia.product.detail.data.model.datamodel.ProductCustomInfoTitleDataModel
@@ -73,6 +74,8 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_7
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_9_TOKONOW
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.RECOM_VERTICAL
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.VIEW_TO_VIEW
+import com.tokopedia.product.detail.view.viewholder.bmgm.BMGMDataModel
+import com.tokopedia.product.detail.view.viewholder.bmgm.model.BMGMWidgetUiState
 import com.tokopedia.recommendation_widget_common.extension.LAYOUTTYPE_HORIZONTAL_ATC
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModels
 import com.tokopedia.recommendation_widget_common.extension.toViewToViewItemModels
@@ -163,9 +166,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     val productDetailInfoData: ProductDetailInfoDataModel?
         get() = mapOfData[ProductDetailConstant.PRODUCT_DETAIL] as? ProductDetailInfoDataModel
 
-    val productBundlingData: ProductBundlingDataModel?
-        get() = mapOfData[ProductDetailConstant.PRODUCT_BUNDLING] as? ProductBundlingDataModel
-
     val topAdsProductBundlingData: TopadsHeadlineUiModel?
         get() = mapOfData[ProductDetailConstant.SHOPADS_CAROUSEL] as? TopadsHeadlineUiModel
 
@@ -189,6 +189,9 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
 
     val ongoingCampaignData: OngoingCampaignDataModel?
         get() = mapOfData[ProductDetailConstant.ONGOING_CAMPAIGN] as? OngoingCampaignDataModel
+
+    val bmgmSneakPeak: BMGMDataModel?
+        get() = mapOfData[ProductDetailConstant.BMGM_SNEAK_PEEK_NAME] as? BMGMDataModel
 
     fun updateDataP1(
         dataP1: DynamicProductInfoP1?,
@@ -535,10 +538,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 }
             }
 
-            updateData(ProductDetailConstant.PRODUCT_BUNDLING) {
-                productBundlingData?.bundleInfo = it.bundleInfoMap[productId]
-            }
-
             if (it.ticker.tickerInfo.isEmpty()) {
                 removeComponent(ProductDetailConstant.TICKER_INFO)
             } else {
@@ -576,6 +575,8 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 updateReviewList(it)
             }
             updateDynamicOneLiner(it)
+
+            updateBMGMSneakPeak(productId = productId, bmgm = it.bmgm)
         }
     }
 
@@ -820,10 +821,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             removeComponent(ProductDetailConstant.SHIPMENT)
         }
 
-        if (it.bundleInfoMap.isEmpty()) {
-            removeComponent(ProductDetailConstant.PRODUCT_BUNDLING)
-        }
-
         if (!it.validateTradeIn.isEligible) {
             removeComponent(ProductDetailConstant.TRADE_IN)
         }
@@ -1005,7 +1002,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         mapOfData.filterValues { it is ProductRecommendationDataModel }.keys.forEach { key ->
             val productRecom = (mapOfData[key] as ProductRecommendationDataModel).copy()
             productRecom.recomWidgetData?.let { recomData ->
-                if (recomData.layoutType == LAYOUTTYPE_HORIZONTAL_ATC) {
+                if (recomData.hasQuantityEditor()) {
                     updateRecomWidgetQtyDataFromMiniCart(recomData.copy(), miniCart, key)
                 }
             }
@@ -1139,13 +1136,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
     }
 
-    fun updateProductBundlingData(p2Data: ProductInfoP2UiData?, productId: String?) {
-        if (p2Data == null || productId == null) return
-        updateData(ProductDetailConstant.PRODUCT_BUNDLING) {
-            productBundlingData?.bundleInfo = p2Data.bundleInfoMap[productId]
-        }
-    }
-
     fun updatePlayWidget(playWidgetState: PlayWidgetState) {
         updateData(ProductDetailConstant.PLAY_CAROUSEL) {
             contentWidgetData?.playWidgetState = playWidgetState
@@ -1248,6 +1238,24 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     icon = item.icon,
                     status = item.status,
                     chevronPos = item.chevronPos
+                )
+            }
+        }
+    }
+
+    fun updateBMGMSneakPeak(productId: String, bmgm: BMGMData) {
+        val bmgmSelected = bmgm.data.firstOrNull {
+            it.productIDs.contains(productId)
+        }
+
+        updateData(ProductDetailConstant.BMGM_SNEAK_PEEK_NAME) {
+            if (bmgm.data.isEmpty()) {
+                removeComponent(ProductDetailConstant.BMGM_SNEAK_PEEK_NAME)
+            } else if (bmgmSelected == null) {
+                bmgmSneakPeak?.state = BMGMWidgetUiState.Hide
+            } else {
+                bmgmSneakPeak?.state = BMGMWidgetUiState.Show(
+                    uiModel = bmgmSelected.asUiModel(separator = bmgm.separator)
                 )
             }
         }

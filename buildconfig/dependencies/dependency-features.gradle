@@ -2,10 +2,11 @@ ext {
 
     // Sort and categorize alphabetically by folder name
     features = [
-			sellerShopNib		: ":features:merchant:seller_shop_nib",
-			sellerPersona		: ":features:merchant:seller_persona",
-			sellerMvcCreation		: ":features:merchant:seller_mvc_creation",
-			shopDiscount		: ":features:merchant:shop_discount",
+			buyMoreGetMore					: ":features:merchant:buy_more_get_more",
+			sellerShopNib					: ":features:merchant:seller_shop_nib",
+			sellerPersona					: ":features:merchant:seller_persona",
+			sellerMvcCreation				: ":features:merchant:seller_mvc_creation",
+			shopDiscount					: ":features:merchant:shop_discount",
 			productAr		                : ":features:merchant:product_ar",
             campaignShakeLanding            : ":features:user:campaign_shake_landing",
 
@@ -255,8 +256,9 @@ ext {
             ordermanagementhistory          : ":features:ordermanagement:orderhistory",
             buyerorderdetail                : ":features:ordermanagement:buyer_order_detail",
             buyercancellationorder          : ":features:ordermanagement:buyercancellationorder",
+			orderManagementCommon           : ":features:ordermanagement:order_management_common",
 
-            pushNotificationCommon          : ":features:communication:push-notification-common",
+			pushNotificationCommon          : ":features:communication:push-notification-common",
             attachproduct                   : ":features:communication:attachproduct",
             attachinvoice                   : ":features:communication:attachinvoice",
             attachcommon                    : ":features:communication:attachcommon",

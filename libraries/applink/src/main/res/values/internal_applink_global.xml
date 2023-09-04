@@ -62,7 +62,6 @@
     <string name="path_image_picker_insta">/image-picker/v2/</string>
     <string name="up_path_user_profile_follower">/people/followers/</string>
     <string name="path_data_explorer">/data-explorer</string>
-
     <string name="path_login_helper">/login-helper</string>
-
+    <string name="path_bmgm_mini_cart" translatable="false">/bmgm-mini-cart</string>
 </resources>

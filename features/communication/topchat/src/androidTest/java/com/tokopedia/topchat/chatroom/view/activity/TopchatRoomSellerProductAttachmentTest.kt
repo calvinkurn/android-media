@@ -14,7 +14,12 @@ import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStat
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.activity.base.BaseSellerTopchatRoomTest
+import com.tokopedia.topchat.chatroom.view.activity.robot.composearea.ComposeAreaRobot.setComposedText
 import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralRobot.doScrollChatToPosition
+import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardResult.hasProductCarouselStockButtonWithText
+import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardResult.hasProductCarouselWithTotal
+import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardResult.hasProductPreviewAttachmentAtPosition
+import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardResult.hasProductStockButtonWithText
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardRobot.clickProductAttachmentAt
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductResult.hasNoVisibleEmptyStockLabelAt
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductResult.hasNoVisibleRemindMeBtnAt
@@ -274,7 +279,7 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
         intendingAttachProduct(1)
 
         // When
-        Thread.sleep(10000)
+        Thread.sleep(1000)
         clickPlusIconMenu()
         clickAttachProductMenu()
 
@@ -675,5 +680,74 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
         hasProductPrice(1, "")
         hasNoVisibleEmptyStockLabelAt(1)
         hasNoVisibleRemindMeBtnAt(1)
+    }
+
+    @Test
+    fun seller_can_sent_preview_single_product() {
+        // Given
+        getChatUseCase.response = firstPageChatAsSeller
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generatePreAttachPayload(EX_PRODUCT_ID)
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
+
+        // When
+        setComposedText("Hi barang ini ready?")
+        clickSendBtn()
+
+        // Then
+        hasProductPreviewAttachmentAtPosition(position = 1)
+        hasProductStockButtonWithText(position = 1)
+    }
+
+    @Test
+    fun seller_can_sent_preview_double_product() {
+        // Given
+        getChatUseCase.response = firstPageChatAsSeller
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generate2PreAttachPayload()
+        launchChatRoomActivity {
+            putProductAttachmentIntent(
+                it,
+                listOf("2495612915", "4533627959")
+            )
+        }
+
+        // When
+        setComposedText("Hi barang ini ready?")
+        clickSendBtn()
+
+        // Then
+        hasProductCarouselWithTotal(position = 1, total = 2)
+        hasProductCarouselStockButtonWithText(position = 0)
+        hasProductCarouselStockButtonWithText(position = 1)
+    }
+
+    @Test
+    fun seller_can_sent_preview_triple_product() {
+        // Given
+        getChatUseCase.response = firstPageChatAsSeller
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        getChatPreAttachPayloadUseCase.response = getChatPreAttachPayloadUseCase
+            .generate3PreAttachPayload()
+        launchChatRoomActivity {
+            putProductAttachmentIntent(
+                it,
+                listOf("2495612915", "4533627959", "1988283205")
+            )
+        }
+
+        // When
+        setComposedText("Hi barang ini ready?")
+        clickSendBtn()
+
+        // Then
+        hasProductCarouselWithTotal(position = 1, total = 3)
+        hasProductCarouselStockButtonWithText(position = 0)
+        hasProductCarouselStockButtonWithText(position = 1)
+        hasProductCarouselStockButtonWithText(position = 2)
     }
 }

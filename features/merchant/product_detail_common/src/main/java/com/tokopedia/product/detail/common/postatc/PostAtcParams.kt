@@ -9,6 +9,7 @@ data class PostAtcParams(
     val layoutId: String = "",
     val pageSource: String = "",
     val session: String = "",
+    val warehouseId: String = "",
     val addons: Addons? = null
 ) : Parcelable {
 
@@ -17,7 +18,6 @@ data class PostAtcParams(
         val deselectedAddonsIds: List<String>,
         val isFulfillment: Boolean,
         val selectedAddonsIds: List<String>,
-        val warehouseId: String,
         val quantity: Int
     ) : Parcelable
 

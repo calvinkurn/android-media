@@ -2,9 +2,9 @@ package com.tokopedia.product.detail.data.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.product.detail.data.model.bmgm.BMGMData
 import com.tokopedia.product.detail.common.data.model.ar.ProductArInfo
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkir
-import com.tokopedia.product.detail.common.data.model.bundleinfo.BundleInfo
 import com.tokopedia.product.detail.common.data.model.carttype.CartRedirection
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimate
 import com.tokopedia.product.detail.common.data.model.re.RestrictionInfoResponse
@@ -136,10 +136,6 @@ data class ProductInfoP2Data(
     @Expose
     var reviewImage: ProductReviewImageListQuery = ProductReviewImageListQuery(),
 
-    @SerializedName("bundleInfo")
-    @Expose
-    var bundleInfoList: List<BundleInfo> = emptyList(),
-
     @SerializedName("rating")
     @Expose
     var rating: ProductRatingCount = ProductRatingCount(),
@@ -186,7 +182,11 @@ data class ProductInfoP2Data(
 
     @SerializedName("dynamicOneLiner")
     @Expose
-    val dynamicOneLiner: List<DynamicOneLiner> = emptyList()
+    val dynamicOneLiner: List<DynamicOneLiner> = emptyList(),
+
+    @SerializedName("bmgm")
+    @Expose
+    val bmgm: BMGMData = BMGMData()
 ) {
     data class Response(
         @SerializedName("pdpGetData")
@@ -219,7 +219,6 @@ fun ProductInfoP2Data.asUiModel() = ProductInfoP2UiData(
     helpfulReviews = mostHelpFulReviewData.list,
     imageReview = DynamicProductDetailMapper.generateImageReview(reviewImage),
     alternateCopy = cartRedirection.alternateCopy,
-    bundleInfoMap = bundleInfoList.associateBy { it.productId },
     rating = rating,
     ticker = ticker,
     navBar = navBar,
@@ -231,5 +230,6 @@ fun ProductInfoP2Data.asUiModel() = ProductInfoP2UiData(
     socialProof = socialProof.asUiModel(),
     shopReview = shopReview.asUiModel(),
     bottomSheetEdu = bottomSheetEdu.asUiModel(),
-    dynamicOneLiner = dynamicOneLiner
+    dynamicOneLiner = dynamicOneLiner,
+    bmgm = bmgm
 )

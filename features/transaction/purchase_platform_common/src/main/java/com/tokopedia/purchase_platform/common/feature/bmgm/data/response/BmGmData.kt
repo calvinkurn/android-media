@@ -15,7 +15,10 @@ data class BmGmData(
     val offerIcon: String = "",
     @Expose
     @SerializedName("offer_message")
-    val offerMessage: List<String> = emptyList(),
+    val offerMessage: List<String> = listOf(),
+    @Expose
+    @SerializedName("offer_status")
+    val offerStatus: Int = 1,
     @Expose
     @SerializedName("offer_landing_page_link")
     val offerLandingPageLink: String = "",

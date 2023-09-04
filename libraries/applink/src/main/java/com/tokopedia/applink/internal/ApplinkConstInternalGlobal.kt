@@ -254,4 +254,6 @@ object ApplinkConstInternalGlobal {
 
     //LoginHelperActivity
     const val LOGIN_HELPER = "$INTERNAL_GLOBAL/login-helper"
+
+    const val BMGM_MINI_CART = "$INTERNAL_GLOBAL/bmgm-mini-cart"
 }

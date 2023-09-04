@@ -444,17 +444,11 @@ interface DynamicProductDetailListener {
     )
 
     /**
-     * ProductBundlingViewHolder
+     * GlobalBundlingViewHolder
      */
     fun removeComponent(componentName: String)
 
     fun onImpressionProductBundling(
-        bundleId: String,
-        bundleType: String,
-        componentTrackDataModel: ComponentTrackDataModel
-    )
-
-    fun onClickCheckBundling(
         bundleId: String,
         bundleType: String,
         componentTrackDataModel: ComponentTrackDataModel
@@ -536,4 +530,7 @@ interface DynamicProductDetailListener {
     fun onProductMediaRecomBottomSheetDismissed()
 
     fun onClickDynamicOneLiner(title: String, component: ComponentTrackDataModel)
+
+    // region BMGM
+    fun onBMGMClicked(title: String, component: ComponentTrackDataModel)
 }

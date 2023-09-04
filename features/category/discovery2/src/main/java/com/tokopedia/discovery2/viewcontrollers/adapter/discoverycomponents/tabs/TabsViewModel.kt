@@ -22,6 +22,7 @@ const val TAB_DEFAULT_BACKGROUND = "plain"
 class TabsViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
     private val setColorTabs: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
     private val setUnifyTabs: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
+    private var shouldAddSpace = MutableLiveData<Boolean>()
 
     @JvmField
     @Inject
@@ -42,6 +43,10 @@ class TabsViewModel(val application: Application, val components: ComponentsItem
                 setColorTabs.value = it
             }
         }
+    }
+
+    fun shouldAddSpace(state: Boolean) {
+        this.shouldAddSpace.value = state
     }
 
     fun fetchDynamicTabData() {
@@ -66,6 +71,10 @@ class TabsViewModel(val application: Application, val components: ComponentsItem
 
     fun getUnifyTabLiveData(): LiveData<ArrayList<ComponentsItem>> {
         return setUnifyTabs
+    }
+
+    fun getTabMargin(): LiveData<Boolean> {
+        return shouldAddSpace
     }
 
     override val coroutineContext: CoroutineContext
