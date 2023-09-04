@@ -229,7 +229,7 @@ class RequestPickupFragment :
                     val htmlCourierNameService = HtmlLinkHelper(it, "<b>${shipper.name} -  ${shipper.service}</b>")
                     tvCourierNameService.text = htmlCourierNameService.spannedString
 
-                    val htmlCourierCountService = HtmlLinkHelper(it, "${shipper.countText} <b>${shipper.count}</b>")
+                    val htmlCourierCountService = HtmlLinkHelper(it, "${shipper.count} pesanan")
                     tvCourierCount.text = htmlCourierCountService.spannedString
                 }
 

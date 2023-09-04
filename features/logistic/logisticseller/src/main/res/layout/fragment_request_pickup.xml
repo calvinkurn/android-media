@@ -129,7 +129,7 @@
                             android:layout_marginTop="@dimen/unify_space_24"
                             android:text="Akan dipick-up oleh:"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/ticker_info_courier"
                             app:typographyType="heading_3"
                             app:typographyWeight="bold" />
 
@@ -137,11 +137,9 @@
                             android:id="@+id/ticker_info_courier"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_margin="16dp"
-                            app:layout_constraintBottom_toTopOf="@id/card_courier"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/label_courier" />
+                            app:layout_constraintTop_toTopOf="parent" />
 
 
                         <androidx.constraintlayout.widget.ConstraintLayout
@@ -152,7 +150,7 @@
                             android:layout_marginTop="16dp"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/ticker_info_courier">
+                            app:layout_constraintTop_toBottomOf="@id/label_courier">
 
                             <ImageView
                                 android:id="@+id/iv_courier"
@@ -195,7 +193,7 @@
                                 app:layout_constraintStart_toEndOf="@id/ic_product_info"
                                 app:layout_constraintTop_toTopOf="@id/ic_product_info"
                                 app:typographyType="body_3"
-                                tools:text="Jumlah: 1 Pesanaan" />
+                                tools:text="1 Pesanaan" />
 
                             <com.tokopedia.iconunify.IconUnify
                                 android:id="@+id/ic_hourgrass"
@@ -337,7 +335,6 @@
                                 android:orientation="vertical"
                                 android:padding="10dp">
 
-
                                 <com.tokopedia.unifyprinciples.Typography
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
@@ -349,6 +346,7 @@
 
                                 <com.tokopedia.unifyprinciples.Typography
                                     android:layout_width="match_parent"
+                                    android:paddingTop="5dp"
                                     android:layout_height="wrap_content"
                                     android:text="Jika kurir belum pickup pesananmu, kamu juga bisa drop off langsung ke gerai terdekat dari tokomu.
 Cek Gerai"
@@ -358,6 +356,7 @@ Cek Gerai"
                                 <com.tokopedia.unifyprinciples.Typography
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
+                                    android:paddingTop="5dp"
                                     android:text="Cek Gerai Terdekat"
                                     app:typographyType="body_3"
                                     app:typographyWeight="reguler" />
