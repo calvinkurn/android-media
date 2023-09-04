@@ -114,6 +114,31 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         initInjection(activity);
     }
 
+    private static Uri replaceUriParameter(Uri uri, UserSessionInterface userSession) {
+        final Set<String> params = uri.getQueryParameterNames();
+        final Uri.Builder newUri = uri.buildUpon().clearQuery();
+        for (String param : params) {
+            if (param.equals(USER_ID_PARAM)) {
+                newUri.appendQueryParameter(param, userSession.getUserId());
+            } else if (param.equals(ENV_PARAM)) {
+                newUri.appendQueryParameter(param, ENV_VALUE);
+            } else {
+                newUri.appendQueryParameter(param, uri.getQueryParameter(param));
+            }
+        }
+        return newUri.build();
+    }
+
+    private static String constructSearchApplink(Uri uriData) {
+        String q = uriData.getQueryParameter("q");
+
+        String applink = TextUtils.isEmpty(q) ?
+                ApplinkConstInternalDiscovery.AUTOCOMPLETE :
+                ApplinkConstInternalDiscovery.SEARCH_RESULT;
+
+        return applink + "?" + uriData.getEncodedQuery();
+    }
+
     @Override
     public void checkUriLogin(Uri uriData) {
         UserSessionInterface userSession = new UserSession(context);
@@ -326,21 +351,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         map.put("type", "request");
         map.put("uri", uriData.toString());
         ServerLogger.log(Priority.P2, TOP_ADS_REDIRECTION, map);
-    }
-
-    private static Uri replaceUriParameter(Uri uri, UserSessionInterface userSession) {
-        final Set<String> params = uri.getQueryParameterNames();
-        final Uri.Builder newUri = uri.buildUpon().clearQuery();
-        for (String param : params) {
-            if (param.equals(USER_ID_PARAM)) {
-                newUri.appendQueryParameter(param, userSession.getUserId());
-            } else if (param.equals(ENV_PARAM)) {
-                newUri.appendQueryParameter(param, ENV_VALUE);
-            } else {
-                newUri.appendQueryParameter(param, uri.getQueryParameter(param));
-            }
-        }
-        return newUri.build();
     }
 
     private void openSaldoDeposit() {
@@ -929,16 +939,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         }
     }
 
-    private static String constructSearchApplink(Uri uriData) {
-        String q = uriData.getQueryParameter("q");
-
-        String applink = TextUtils.isEmpty(q) ?
-                ApplinkConstInternalDiscovery.AUTOCOMPLETE :
-                ApplinkConstInternalDiscovery.SEARCH_RESULT;
-
-        return applink + "?" + uriData.getEncodedQuery();
-    }
-
     private boolean isHotAlias(Uri uri) {
         return uri.getQueryParameter("alk") != null;
     }
@@ -960,7 +960,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     @Override
-    public void sendAuthenticatedEvent(Uri uriData, Campaign campaign, String screenName) {
+    public void sendAuthenticatedEvent(Uri uriData, Campaign campaign, String screenName, Uri extraReferrer) {
         Map<String, Object> campaignMap = campaign.getCampaign();
         if (!TrackingUtils.isValidCampaign(campaignMap)) return;
         try {
@@ -971,6 +971,9 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             String utmMedium = (String) campaignMap.get(AppEventTracking.GTM.UTM_MEDIUM);
             customDimension.put("utmSource", utmSource);
             customDimension.put("utmMedium", utmMedium);
+
+            if(extraReferrer!=null)
+                customDimension.put("extra_referrer", extraReferrer.toString());
 
             Object xClid = campaignMap.get(AppEventTracking.GTM.X_CLID);
             if (xClid != null && xClid instanceof String) {
