@@ -23,5 +23,7 @@ data class CpmModel(
     var header: Header = Header(),
 
     @SerializedName(KEY_DATA)
-    var data: MutableList<CpmData> = ArrayList()
+    var data: MutableList<CpmData> = ArrayList(),
+
+    var isReimagine: Boolean = false
 ) : Parcelable

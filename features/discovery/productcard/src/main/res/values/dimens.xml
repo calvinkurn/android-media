@@ -168,4 +168,26 @@
     <dimen name="product_card_button_see_other_product_height">32dp</dimen>
 
     <dimen name="product_card_top_stock_bar_background_height">30dp</dimen>
+
+    <!-- Reimagine dimens -->
+    <dimen name="product_card_reimagine_carousel_width">132dp</dimen>
+    <dimen name="product_card_reimagine_carousel_image_radius">12dp</dimen>
+    <dimen name="product_card_reimagine_carousel_padding_bottom">8dp</dimen>
+
+    <dimen name="product_card_reimagine_name_image_margin_top">8dp</dimen>
+    <dimen name="product_card_reimagine_price_margin_top">4dp</dimen>
+    <dimen name="product_card_reimagine_price_height">18dp</dimen>
+    <dimen name="product_card_reimagine_slashed_price_margin_top">2dp</dimen>
+    <dimen name="product_card_reimagine_slashed_price_height">12dp</dimen>
+    <dimen name="product_card_reimagine_discount_percentage_margin_top">2dp</dimen>
+    <dimen name="product_card_reimagine_discount_percentage_height">12dp</dimen>
+    <dimen name="product_card_reimagine_label_benefit_margin_top">4dp</dimen>
+    <dimen name="product_card_reimagine_label_benefit_height">20dp</dimen>
+    <dimen name="product_card_reimagine_credibility_margin_top">4dp</dimen>
+    <dimen name="product_card_reimagine_credibility_height">16dp</dimen>
+    <dimen name="product_card_reimagine_shop_section_margin_top">4dp</dimen>
+    <dimen name="product_card_reimagine_shop_section_height">16dp</dimen>
+    <dimen name="product_card_reimagine_bebas_ongkir_margin_top">4dp</dimen>
+    <dimen name="product_card_reimagine_bebas_ongkir_height">16dp</dimen>
+
 </resources>

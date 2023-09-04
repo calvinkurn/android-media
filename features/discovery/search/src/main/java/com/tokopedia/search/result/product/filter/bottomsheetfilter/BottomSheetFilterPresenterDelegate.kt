@@ -71,9 +71,7 @@ class BottomSheetFilterPresenterDelegate @Inject constructor(
         if (searchParameter == null) return
         if (!isBottomSheetFilterEnabled) return
 
-        isBottomSheetFilterEnabled = false
-
-        view.sendTrackingOpenFilterPage()
+        initialOpenFilterSortPage()
         view.openBottomSheetFilter(dynamicFilterModel, this)
 
         if (dynamicFilterModel == null) {
@@ -88,12 +86,34 @@ class BottomSheetFilterPresenterDelegate @Inject constructor(
         }
     }
 
-    private fun createGetDynamicFilterModelSubscriber(): Subscriber<DynamicFilterModel> {
+    override fun openSortPage(searchParameter: Map<String, Any>?) {
+        if (searchParameter == null) return
+        if (!isBottomSheetFilterEnabled) return
+        initialOpenFilterSortPage()
+        view.openBottomSheetSort(dynamicFilterModel, this)
+        if (dynamicFilterModel == null) {
+            val getDynamicFilterRequestParams = requestParamsGenerator.createRequestDynamicFilterParams(
+                searchParameter,
+                chooseAddressDelegate.getChooseAddressParams(),
+            )
+            getDynamicFilterUseCase.get().execute(
+                getDynamicFilterRequestParams,
+                createGetDynamicFilterModelSubscriber(isSortFilterPage = false)
+            )
+        }
+    }
+
+    private fun initialOpenFilterSortPage() {
+        isBottomSheetFilterEnabled = false
+        view.sendTrackingOpenFilterPage()
+    }
+
+    private fun createGetDynamicFilterModelSubscriber(isSortFilterPage: Boolean = true): Subscriber<DynamicFilterModel> {
         return object : Subscriber<DynamicFilterModel>() {
             override fun onCompleted() {}
 
             override fun onNext(dynamicFilterModel: DynamicFilterModel) {
-                handleGetDynamicFilterSuccess(dynamicFilterModel)
+                handleGetDynamicFilterSuccess(dynamicFilterModel, isSortFilterPage)
             }
 
             override fun onError(e: Throwable) {
@@ -102,17 +122,17 @@ class BottomSheetFilterPresenterDelegate @Inject constructor(
         }
     }
 
-    private fun handleGetDynamicFilterSuccess(dynamicFilterModel: DynamicFilterModel) {
+    private fun handleGetDynamicFilterSuccess(dynamicFilterModel: DynamicFilterModel, isSortFilterPage: Boolean) {
         if (!dynamicFilterModel.isEmpty()) {
             this.dynamicFilterModel = dynamicFilterModel
-            getViewToSetDynamicFilterModel(dynamicFilterModel)
+            getViewToSetDynamicFilterModel(dynamicFilterModel, isSortFilterPage)
         } else {
             handleGetDynamicFilterFailed()
         }
     }
 
-    private fun getViewToSetDynamicFilterModel(dynamicFilterModel: DynamicFilterModel) {
-        view.setDynamicFilter(dynamicFilterModel)
+    private fun getViewToSetDynamicFilterModel(dynamicFilterModel: DynamicFilterModel, isSortFilterPage: Boolean = true) {
+        view.setDynamicFilter(dynamicFilterModel, isSortFilterPage)
     }
 
     private fun handleGetDynamicFilterFailed() {

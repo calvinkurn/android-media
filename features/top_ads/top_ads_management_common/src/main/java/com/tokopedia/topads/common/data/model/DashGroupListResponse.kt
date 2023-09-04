@@ -13,6 +13,9 @@ data class GetTopadsDashboardGroups(
         @field:SerializedName("data")
         val data: List<GroupListDataItem> = listOf(),
 
+        @field:SerializedName("errors")
+        val errors: List<ErrorsItem> = listOf(),
+
         @field:SerializedName("meta")
         val meta: Meta = Meta()
 )

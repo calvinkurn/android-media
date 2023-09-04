@@ -36,6 +36,7 @@ import com.tokopedia.discovery.common.reimagine.ReimagineRollence
 import com.tokopedia.discovery.common.reimagine.Search2Component
 import com.tokopedia.discovery.common.utils.Dimension90Utils
 import com.tokopedia.filter.bottomsheet.filtergeneraldetail.FilterGeneralDetailBottomSheet
+import com.tokopedia.filter.bottomsheet.filtergeneraldetail.GeneralFilterSortOptions
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.common.helper.getSortFilterCount
@@ -45,7 +46,6 @@ import com.tokopedia.filter.common.helper.toMapParam
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.iris.Iris
 import com.tokopedia.iris.util.IrisSession
-import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.ErrorHandler
@@ -419,6 +419,9 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     private fun setupRecyclerView(rootView: View) {
+        val isReimagineSearchComponent =
+            reimagineRollence.search2Component() != Search2Component.CONTROL
+
         gridLayoutManager.spanSizeLookup = spanSizeLookup
         recyclerViewUpdater.initialize(
             rootView.findViewById(R.id.recyclerview),
@@ -429,7 +432,7 @@ class ProductListFragment: BaseDaggerFragment(),
             ),
             createProductListTypeFactory(),
             viewLifecycleOwner,
-            presenter?.isReimagine().orFalse(),
+            isReimagineSearchComponent,
         )
 
         recyclerViewUpdater.recyclerView?.let {
@@ -526,7 +529,7 @@ class ProductListFragment: BaseDaggerFragment(),
                 this,
                 this
             ),
-            isReimagine = presenter?.isReimagine().orFalse(),
+            reimagineSearch2Component = reimagineRollence.search2Component(),
         )
     }
 
@@ -1138,7 +1141,7 @@ class ProductListFragment: BaseDaggerFragment(),
 
         override fun onFilterClicked() { openBottomSheetFilterRevamp() }
 
-        override fun onSortClicked() { }
+        override fun onSortClicked() { openBottomSheetSortRevamp() }
     }
 
     private fun setSortFilterNewNotification(items: List<SortFilterItem>) {
@@ -1383,6 +1386,12 @@ class ProductListFragment: BaseDaggerFragment(),
     }
     //endregion
 
+    //region Bottom Sheet Sort
+    private fun openBottomSheetSortRevamp() {
+        presenter?.openSortPage(getSearchParameter()?.getSearchParameterMap())
+    }
+    //endregion
+
     override fun onLocalizingAddressSelected() {
         presenter?.onLocalizingAddressSelected()
     }
@@ -1390,8 +1399,8 @@ class ProductListFragment: BaseDaggerFragment(),
     //region dropdown quick filter
     override fun openBottomsheetMultipleOptionsQuickFilter(filter: Filter) {
         val filterDetailCallback = object: FilterGeneralDetailBottomSheet.Callback {
-            override fun onApplyButtonClicked(optionList: List<Option>?) {
-                presenter?.onApplyDropdownQuickFilter(optionList)
+            override fun onApplyButtonClicked(optionList: List<GeneralFilterSortOptions>?) {
+                presenter?.onApplyDropdownQuickFilter(optionList?.filterIsInstance<Option>())
             }
         }
 

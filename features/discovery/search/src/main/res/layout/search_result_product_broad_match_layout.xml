@@ -95,6 +95,17 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@+id/searchBroadMatchBarrier"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <com.tokopedia.carouselproductcard.reimagine.CarouselProductCardView
+        android:id="@+id/searchBroadMatchReimagineList"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@+id/searchBroadMatchBarrier"
         app:layout_goneMarginTop="0dp"
         app:layout_constraintStart_toStartOf="parent"

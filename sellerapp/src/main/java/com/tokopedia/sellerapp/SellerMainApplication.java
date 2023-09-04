@@ -310,7 +310,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
 
     private void registerActivityLifecycleCallbacks() {
         registerActivityLifecycleCallbacks(new TrackingQueueActivityLifecycleCallback(this));
-        registerActivityLifecycleCallbacks(new NewRelicInteractionActCall());
+        registerActivityLifecycleCallbacks(new NewRelicInteractionActCall(getUserSession()));
         registerActivityLifecycleCallbacks(new SessionActivityLifecycleCallbacks());
         if (GlobalConfig.isAllowDebuggingTools()) {
             registerActivityLifecycleCallbacks(new ViewInspectorSubscriber());

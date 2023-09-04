@@ -1008,7 +1008,7 @@ class ProductListPresenter @Inject constructor(
         quickFilterList.clear()
         quickFilterList.addAll(quickFilterData.filter)
 
-        if (reimagineRollence.search2Component() == Search2Component.QF_VAR) {
+        if (reimagineRollence.search2Component().isReimagineQuickFilter()) {
             val sortFilterItems = quickFilterData.mapFilter(::sortFilterItemReimagine)
             if (sortFilterItems.isNotEmpty())
                 view.setQuickFilterReimagine(sortFilterItems)
@@ -1099,11 +1099,6 @@ class ProductListPresenter @Inject constructor(
     override fun onApplyDropdownQuickFilter(optionList: List<Option>?) {
         view.applyDropdownQuickFilter(optionList)
         view.trackEventApplyDropdownQuickFilter(optionList, dimension90)
-    }
-
-    override fun isReimagine(): Boolean {
-        return reimagineRollence.search2Component() == Search2Component.CAROUSEL_VAR
-            || reimagineRollence.search2Component() == Search2Component.QF_VAR
     }
 
     private fun getViewToSendTrackingSearchAttempt(productDataView: ProductDataView) {

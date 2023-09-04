@@ -55,7 +55,7 @@ internal class CarouselProductCardGridActivityTest: AppCompatActivity() {
         }
 
         private val item: CarouselProductCardView? by lazy {
-            itemView.findViewById<CarouselProductCardView>(R.id.carouselProductCard)
+            itemView as? CarouselProductCardView
         }
 
         fun bind(productCardModelList: List<ProductCardModel>) {
