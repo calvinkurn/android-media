@@ -6,19 +6,41 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.scp_rewards.databinding.FragmentMedalBonusBottomSheetBinding
-import com.tokopedia.scp_rewards.detail.domain.model.CouponList
+import com.tokopedia.scp_rewards.detail.domain.model.TabData
 import com.tokopedia.scp_rewards_widgets.constants.CouponState
 import com.tokopedia.scp_rewards_widgets.model.MedalBenefitModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import java.util.Locale
+import com.tokopedia.unifycomponents.setCounter
 import com.tokopedia.scp_rewards.R as scp_rewardsR
 
-class MedalBonusBottomSheet : BottomSheetUnify() {
+class MedalBonusBottomSheet : BottomSheetUnify(), CouponListFragment.OnCouponListCallBack {
 
     private var binding: FragmentMedalBonusBottomSheetBinding? = null
+    private var listOfTabs: List<TabData>? = null
+
+    @SuppressLint("DeprecatedMethod")
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val couponList = arguments?.getParcelableArrayList<MedalBenefitModel?>(COUPON_LIST)
+        val medaliSlug = arguments?.getString(MEDALI_SLUG).orEmpty()
+
+        listOfTabs = listOf(
+            TabData(
+                title = getString(scp_rewardsR.string.title_active),
+                status = CouponState.ACTIVE,
+                list = couponList,
+                medaliSlug = medaliSlug
+            ),
+            TabData(
+                title = getString(scp_rewardsR.string.title_history),
+                status = CouponState.INACTIVE,
+                list = null,
+                medaliSlug = medaliSlug
+            )
+        )
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -27,38 +49,21 @@ class MedalBonusBottomSheet : BottomSheetUnify() {
     ): View? {
         clearContentPadding = true
         isFullpage = true
-        isDragable = true
         binding = FragmentMedalBonusBottomSheetBinding.inflate(inflater, container, false)
         setChild(binding?.root)
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
-    @SuppressLint("DeprecatedMethod")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setTitle(getString(scp_rewardsR.string.title_medali_bonus))
         binding?.apply {
-            val couponList = arguments?.getParcelableArrayList<MedalBenefitModel?>(COUPON_LIST)
-
-            val list = listOf(
-                CouponList(
-                    title = String.format(Locale.getDefault(), getString(scp_rewardsR.string.title_active), couponList?.size.orZero()),
-                    status = CouponState.ACTIVE,
-                    list = couponList
-                ),
-//                TODO: History tab is not yet ready, hence not showing it for now
-//                CouponList(
-//                    title = getString(scp_rewardsR.string.title_history),
-//                    status = CouponState.INACTIVE,
-//                    list = null
-//                )
-            )
-            // TODO: Remove once History tab is done
-            tabs.hide()
-
-            list.forEach { tabs.addNewTab(it.title) }
-            viewPager.adapter = BonusPagerAdapter(list, childFragmentManager)
-            tabs.setupWithViewPager(viewPager)
+            listOfTabs?.let { safeList ->
+                safeList.forEach { tabs.addNewTab(it.title).setCounter(it.list?.size.orZero()) }
+                viewPager.adapter =
+                    BonusPagerAdapter(safeList, childFragmentManager, this@MedalBonusBottomSheet)
+                tabs.setupWithViewPager(viewPager)
+            }
         }
     }
 
@@ -82,5 +87,10 @@ class MedalBonusBottomSheet : BottomSheetUnify() {
             }
             medalBonusBottomSheet.show(fragmentManager, TAG)
         }
+    }
+
+    override fun onReceiveCoupons(couponStatus: String, count: Int) {
+        val position = listOfTabs?.indexOfFirst { it.status == couponStatus }.orZero()
+        binding?.tabs?.tabLayout?.getTabAt(position)?.setCounter(count)
     }
 }

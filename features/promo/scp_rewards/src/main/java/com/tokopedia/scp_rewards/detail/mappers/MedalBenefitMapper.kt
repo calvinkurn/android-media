@@ -1,16 +1,16 @@
 package com.tokopedia.scp_rewards.detail.mappers
 
 import com.tokopedia.scp_rewards.detail.domain.model.Cta
-import com.tokopedia.scp_rewards.detail.domain.model.MedaliBenefitList
+import com.tokopedia.scp_rewards.detail.domain.model.MedaliBenefit
 import com.tokopedia.scp_rewards_widgets.common.model.CtaButton
 import com.tokopedia.scp_rewards_widgets.model.MedalBenefitModel
 
 object MedalBenefitMapper {
 
     fun mapBenefitApiResponseToBenefitModelList(
-        data: MedaliBenefitList?
+        list: List<MedaliBenefit>?
     ): List<MedalBenefitModel>? {
-        return data?.benefitList?.map {
+        return list?.map {
             MedalBenefitModel(
                 title = it.title,
                 isActive = it.isActive,

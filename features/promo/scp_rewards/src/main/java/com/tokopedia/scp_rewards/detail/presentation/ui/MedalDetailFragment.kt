@@ -533,7 +533,7 @@ class MedalDetailFragment : BaseDaggerFragment() {
                 benefitSection?.medaliSectionTitle?.content,
                 benefitSection?.backgroundColor,
                 list.benefitInfo,
-                MedalBenefitMapper.mapBenefitApiResponseToBenefitModelList(list),
+                MedalBenefitMapper.mapBenefitApiResponseToBenefitModelList(list.benefitList),
                 benefitSection?.jsonParameter,
                 MedalBenefitMapper.mapBenefitApiResponseCtaToCta(list.cta)
             )

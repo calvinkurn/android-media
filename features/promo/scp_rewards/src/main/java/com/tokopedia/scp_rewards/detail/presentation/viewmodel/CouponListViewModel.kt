@@ -8,8 +8,8 @@ import com.tokopedia.scp_rewards.common.constants.SUCCESS_CODE
 import com.tokopedia.scp_rewards.common.utils.launchCatchError
 import com.tokopedia.scp_rewards.detail.domain.CouponAutoApplyUseCase
 import com.tokopedia.scp_rewards.detail.domain.GetMedalBenefitUseCase
-import com.tokopedia.scp_rewards.detail.domain.model.MedaliBenefit
 import com.tokopedia.scp_rewards.detail.domain.model.ScpRewardsCouponAutoApply
+import com.tokopedia.scp_rewards.detail.mappers.MedalBenefitMapper
 import com.tokopedia.scp_rewards_widgets.model.MedalBenefitModel
 import javax.inject.Inject
 
@@ -18,25 +18,28 @@ class CouponListViewModel @Inject constructor(
         private val couponAutoApplyUseCase: CouponAutoApplyUseCase,
 ) : ViewModel() {
 
+    var couponPageStatus: String? = ""
+
     private val _couponListLiveData: MutableLiveData<CouponState> = MutableLiveData(CouponState.Loading)
     val couponListLiveData: LiveData<CouponState> = _couponListLiveData
 
     private val _autoApplyCoupon: MutableLiveData<AutoApplyState> = MutableLiveData()
     val autoApplyCoupon: LiveData<AutoApplyState> = _autoApplyCoupon
 
-    fun getCouponList(medaliSlug: String = "", sourceName: String, pageName: String = "", type: String = "") {
+    fun getCouponList(medaliSlug: String = "", sourceName: String, pageName: String = "") {
         viewModelScope.launchCatchError(
                 block = {
                     val response = getMedalBenefitUseCase.getMedalBenefits(
                             medaliSlug = medaliSlug,
                             sourceName = sourceName,
                             pageName = pageName,
-                            type = type
+                            type = couponPageStatus.orEmpty()
                     )
 
                     when (val responseCode = response.scpRewardsMedaliBenefitList?.resultStatus?.code) {
                         SUCCESS_CODE -> {
-                            _couponListLiveData.postValue(CouponState.Success(response.scpRewardsMedaliBenefitList.medaliBenefitList?.benefitList))
+                            val list = MedalBenefitMapper.mapBenefitApiResponseToBenefitModelList(response.scpRewardsMedaliBenefitList.medaliBenefitList?.benefitList)
+                            _couponListLiveData.postValue(CouponState.Success(list))
                         }
 
                         else -> {
@@ -71,9 +74,13 @@ class CouponListViewModel @Inject constructor(
         )
     }
 
+    fun setCouponsList(list: List<MedalBenefitModel>?) {
+        _couponListLiveData.postValue(CouponState.Success(list))
+    }
+
 
     sealed class CouponState {
-        class Success(val data: List<MedaliBenefit>?) : CouponState()
+        class Success(val list: List<MedalBenefitModel>?) : CouponState()
         class Error(val error: Throwable, val errorCode: String = "") : CouponState()
         object Loading : CouponState()
     }

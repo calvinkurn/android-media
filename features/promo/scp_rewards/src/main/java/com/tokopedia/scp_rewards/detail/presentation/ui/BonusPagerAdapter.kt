@@ -3,20 +3,23 @@ package com.tokopedia.scp_rewards.detail.presentation.ui
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
-import com.tokopedia.scp_rewards.detail.domain.model.CouponList
+import com.tokopedia.scp_rewards.detail.domain.model.TabData
 
 class BonusPagerAdapter(
-        private val couponList: List<CouponList>,
-        fragmentManager: FragmentManager) :
+        private val tabList: List<TabData>,
+        fragmentManager: FragmentManager,
+        private val onCouponListCallBack: CouponListFragment.OnCouponListCallBack) :
         FragmentPagerAdapter(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
     override fun getCount(): Int {
-        return couponList.size
+        return tabList.size
     }
 
     override fun getItem(position: Int): Fragment {
-        val couponData = couponList[position]
+        val couponData = tabList[position]
         return CouponListFragment.newInstance(
                 pageStatus = couponData.status,
-                list = couponData.list)
+                medaliSlug = couponData.medaliSlug,
+                list = couponData.list,
+                onCouponListCallBack = onCouponListCallBack)
     }
 }

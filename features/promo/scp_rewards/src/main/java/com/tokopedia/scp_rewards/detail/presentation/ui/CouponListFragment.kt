@@ -15,6 +15,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.scp_rewards.common.utils.launchLink
 import com.tokopedia.scp_rewards.databinding.FragmentCouponListBinding
@@ -44,6 +45,8 @@ class CouponListFragment : BaseDaggerFragment() {
     private var _binding: FragmentCouponListBinding? = null
     private val binding get() = _binding!!
 
+    private var couponListCallBack: OnCouponListCallBack? = null
+
     private val listAdapter by lazy {
         BaseAdapter(
             CouponListViewTypeFactory({ data, position ->
@@ -68,8 +71,6 @@ class CouponListFragment : BaseDaggerFragment() {
         return binding.root
     }
 
-    private var list: List<MedalBenefitModel>? = null
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         extractData()
@@ -79,6 +80,22 @@ class CouponListFragment : BaseDaggerFragment() {
 
     private fun observeViewModel() {
         observeCouponAutoApply()
+        observeCouponList()
+    }
+
+    private fun observeCouponList() {
+        couponListViewModel.couponListLiveData.observe(viewLifecycleOwner) {
+            it?.let { safeState ->
+                when (safeState) {
+                    is CouponListViewModel.CouponState.Error -> {}
+                    CouponListViewModel.CouponState.Loading -> {}
+                    is CouponListViewModel.CouponState.Success -> {
+                        couponListCallBack?.onReceiveCoupons(couponListViewModel.couponPageStatus.orEmpty(), safeState.list?.size.orZero())
+                        listAdapter.setVisitables(safeState.list)
+                    }
+                }
+            }
+        }
     }
 
     private fun observeCouponAutoApply() {
@@ -124,34 +141,28 @@ class CouponListFragment : BaseDaggerFragment() {
         listAdapter.setElement(position, benefit.apply { isLoading = toShow })
     }
 
-    private fun showToastAndNavigateToLink(
-        message: String?,
-        appLink: String?,
-        url: String?
-    ) {
+    private fun showToastAndNavigateToLink(message: String?, appLink: String?, url: String?) {
         Toaster.apply {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
                 toasterCustomBottomHeight = getNavigationBarHeight()
             }
-        }.build(binding.root, message.orEmpty())
+        }
+            .build(binding.root, message.orEmpty())
             .addCallback(object : Snackbar.Callback() {
                 override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
                     super.onDismissed(transientBottomBar, event)
                     context?.launchLink(appLink, url)
                 }
-            })
-            .show()
+            }).show()
     }
 
     private fun getNavigationBarHeight(): Int {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
-            val imm =
-                activity?.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+            val imm = activity?.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(view?.windowToken, 0)
         }
         val resources = context?.resources
-        val resourceId: Int =
-            resources?.getIdentifier("navigation_bar_height", "dimen", "android").toZeroIfNull()
+        val resourceId: Int = resources?.getIdentifier("navigation_bar_height", "dimen", "android").toZeroIfNull()
         return if (resourceId > 0) {
             resources?.getDimensionPixelSize(resourceId) ?: 0
         } else {
@@ -161,11 +172,15 @@ class CouponListFragment : BaseDaggerFragment() {
 
     @SuppressLint("DeprecatedMethod")
     private fun extractData() {
-        val status = arguments?.getString(PAGE_STATUS)
-        list = arguments?.getParcelableArrayList<MedalBenefitModel?>(COUPON_LIST)
-
-        if (list == null) {
-            couponListViewModel.getCouponList(sourceName = "", type = status.orEmpty())
+        couponListViewModel.couponPageStatus = arguments?.getString(PAGE_STATUS)
+        val list = arguments?.getParcelableArrayList<MedalBenefitModel?>(COUPON_LIST)
+        if (list != null) {
+            couponListViewModel.setCouponsList(list)
+        } else {
+            couponListViewModel.getCouponList(
+                medaliSlug = arguments?.getString(MEDALI_SLUG).orEmpty(),
+                sourceName = ""
+            )
         }
     }
 
@@ -173,10 +188,6 @@ class CouponListFragment : BaseDaggerFragment() {
         binding.rvCoupons.apply {
             adapter = listAdapter
             layoutManager = LinearLayoutManager(context)
-        }
-
-        if (list != null) {
-            listAdapter.setVisitables(list)
         }
     }
 
@@ -188,11 +199,24 @@ class CouponListFragment : BaseDaggerFragment() {
     companion object {
         private const val COUPON_LIST = "list"
         private const val PAGE_STATUS = "pageStatus"
-        fun newInstance(pageStatus: String, list: List<MedalBenefitModel>? = null) = CouponListFragment().apply {
+        private const val MEDALI_SLUG = "medaliSlug"
+        fun newInstance(
+            pageStatus: String,
+            medaliSlug: String,
+            list: List<MedalBenefitModel>? = null,
+            onCouponListCallBack: OnCouponListCallBack
+        ) = CouponListFragment().apply {
             arguments = bundleOf(
                 PAGE_STATUS to pageStatus,
+                MEDALI_SLUG to medaliSlug,
                 COUPON_LIST to list
             )
+
+            this.couponListCallBack = onCouponListCallBack
         }
+    }
+
+    interface OnCouponListCallBack {
+        fun onReceiveCoupons(couponStatus: String, count: Int)
     }
 }
