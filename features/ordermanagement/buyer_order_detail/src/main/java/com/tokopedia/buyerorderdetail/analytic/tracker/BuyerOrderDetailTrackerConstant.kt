@@ -82,6 +82,7 @@ object BuyerOrderDetailTrackerConstant {
     // business unit
     const val BUSINESS_UNIT_MARKETPLACE = "Seller Order Management"
     const val BUSINESS_UNIT_PHYSICAL_GOODS = "Physical Goods"
+    const val BUSINESS_UNIT_SHARING_EXPERIENCE = "Sharing Experience"
 
     // current site
     const val CURRENT_SITE_TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"

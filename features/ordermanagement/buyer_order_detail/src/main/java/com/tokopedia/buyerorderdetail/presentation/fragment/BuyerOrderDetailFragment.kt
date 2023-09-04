@@ -111,7 +111,10 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.text.currency.StringUtils
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
+import java.text.SimpleDateFormat
+import java.util.*
 import javax.inject.Inject
+import kotlin.collections.HashMap
 
 open class BuyerOrderDetailFragment :
     BaseDaggerFragment(),
@@ -995,6 +998,11 @@ open class BuyerOrderDetailFragment :
 
             enableDefaultShareIntent()
 
+            val sharingDate: String = SimpleDateFormat("ddMMyy", Locale.getDefault()).format(
+                Date()
+            )
+            setUtmCampaignData("Order", userSession.userId, listOf(element.productId, element.orderId, sharingDate), "share")
+
             val shareString = this@BuyerOrderDetailFragment.getString(R.string.buyer_order_detail_share_text, element.priceText)
             setShareText("$shareString%s")
 
@@ -1005,7 +1013,7 @@ open class BuyerOrderDetailFragment :
                     ogImageUrl = element.productThumbnailUrl,
                     desktopUrl = element.productUrl,
                     deeplink = Uri.parse(UriUtil.buildUri(ApplinkConst.PRODUCT_INFO, element.productId)).toString(),
-                    id = element.orderDetailId
+                    id = element.orderId
                 )
             )
             setMetaData(

@@ -417,7 +417,7 @@ object BuyerOrderDetailTracker {
             eventCategory = BuyerOrderDetailTrackerConstant.EVENT_ORDER_DETAIL_HISTORY,
             eventAction = BuyerOrderDetailTrackerConstant.EVENT_ACTION_CLICK_SHARE_BUTTON,
             eventLabel = eventLabel
-        ).appendBusinessUnit(BuyerOrderDetailTrackerConstant.BUSINESS_UNIT_PHYSICAL_GOODS)
+        ).appendBusinessUnit(BuyerOrderDetailTrackerConstant.BUSINESS_UNIT_SHARING_EXPERIENCE)
             .appendCurrentSite(BuyerOrderDetailTrackerConstant.CURRENT_SITE_TOKOPEDIA_MARKETPLACE)
             .appendTrackerId(BuyerOrderDetailTrackerConstant.TRACKER_ID_45653)
             .sendGeneralEvent()
@@ -430,7 +430,7 @@ object BuyerOrderDetailTracker {
             eventCategory = BuyerOrderDetailTrackerConstant.EVENT_ORDER_DETAIL_HISTORY,
             eventAction = BuyerOrderDetailTrackerConstant.EVENT_ACTION_CLICK_CLOSE_SHARE_BOTTOM_SHEET,
             eventLabel = eventLabel
-        ).appendBusinessUnit(BuyerOrderDetailTrackerConstant.BUSINESS_UNIT_PHYSICAL_GOODS)
+        ).appendBusinessUnit(BuyerOrderDetailTrackerConstant.BUSINESS_UNIT_SHARING_EXPERIENCE)
             .appendCurrentSite(BuyerOrderDetailTrackerConstant.CURRENT_SITE_TOKOPEDIA_MARKETPLACE)
             .appendTrackerId(BuyerOrderDetailTrackerConstant.TRACKER_ID_45654)
             .sendGeneralEvent()
@@ -443,7 +443,7 @@ object BuyerOrderDetailTracker {
             eventCategory = BuyerOrderDetailTrackerConstant.EVENT_ORDER_DETAIL_HISTORY,
             eventAction = BuyerOrderDetailTrackerConstant.EVENT_ACTION_CLICK_SHARING_CHANNEL,
             eventLabel = eventLabel
-        ).appendBusinessUnit(BuyerOrderDetailTrackerConstant.BUSINESS_UNIT_PHYSICAL_GOODS)
+        ).appendBusinessUnit(BuyerOrderDetailTrackerConstant.BUSINESS_UNIT_SHARING_EXPERIENCE)
             .appendCurrentSite(BuyerOrderDetailTrackerConstant.CURRENT_SITE_TOKOPEDIA_MARKETPLACE)
             .appendTrackerId(BuyerOrderDetailTrackerConstant.TRACKER_ID_45655)
             .sendGeneralEvent()
@@ -456,7 +456,7 @@ object BuyerOrderDetailTracker {
             eventCategory = BuyerOrderDetailTrackerConstant.EVENT_ORDER_DETAIL_HISTORY,
             eventAction = BuyerOrderDetailTrackerConstant.EVENT_ACTION_IMPRESSION_SHARE_BOTTOM_SHEET,
             eventLabel = eventLabel
-        ).appendBusinessUnit(BuyerOrderDetailTrackerConstant.BUSINESS_UNIT_PHYSICAL_GOODS)
+        ).appendBusinessUnit(BuyerOrderDetailTrackerConstant.BUSINESS_UNIT_SHARING_EXPERIENCE)
             .appendCurrentSite(BuyerOrderDetailTrackerConstant.CURRENT_SITE_TOKOPEDIA_MARKETPLACE)
             .appendTrackerId(BuyerOrderDetailTrackerConstant.TRACKER_ID_45656)
             .sendGeneralEvent()
