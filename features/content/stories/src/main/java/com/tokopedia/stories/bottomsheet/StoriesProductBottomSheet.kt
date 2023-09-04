@@ -13,6 +13,7 @@ import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.content.common.ui.adapter.ContentTaggedProductBottomSheetAdapter
 import com.tokopedia.content.common.ui.viewholder.ContentTaggedProductBottomSheetViewHolder
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
@@ -85,13 +86,19 @@ class StoriesProductBottomSheet @Inject constructor(
                     is StoriesUiEvent.ShowErrorEvent -> {
                         requireView().showToaster(
                             message = event.message.message.orEmpty(),
-                            type = Toaster.TYPE_ERROR
+                            type = Toaster.TYPE_ERROR,
+                            bottomHeight = context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_48)
+                                .orZero()
                         )
                     }
 
                     is StoriesUiEvent.ShowInfoEvent -> {
                         val message = getString(event.message)
-                        requireView().showToaster(message = message)
+                        requireView().showToaster(
+                            message = message,
+                            bottomHeight = context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_48)
+                                .orZero()
+                        )
                     }
 
                     else -> {}

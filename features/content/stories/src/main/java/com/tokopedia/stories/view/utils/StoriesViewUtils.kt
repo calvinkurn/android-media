@@ -56,8 +56,10 @@ internal fun View.showToaster(
     message: String,
     type: Int = Toaster.TYPE_NORMAL,
     actionText: String = "",
+    bottomHeight : Int = 0,
     clickListener: View.OnClickListener = View.OnClickListener {}
 ) {
+    Toaster.toasterCustomBottomHeight = bottomHeight
     Toaster.build(
         this,
         message,
