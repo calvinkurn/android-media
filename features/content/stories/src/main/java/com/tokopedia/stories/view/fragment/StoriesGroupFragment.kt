@@ -146,7 +146,7 @@ class StoriesGroupFragment @Inject constructor(
             // TODO handle error empty data state here
             Toast.makeText(
                 requireContext(),
-                "Don't worry this is debug: data categories is empty"
+                "Don't worry this is debug: ask BE team why data categories is empty :)"
                 , Toast.LENGTH_LONG
             ).show()
             return
