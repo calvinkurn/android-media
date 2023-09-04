@@ -28,7 +28,7 @@ data class BmGmGetGroupProductTickerParams(
         ) {
             data class BundleDetail(
                 @SerializedName("bundle_id")
-                var bundleId: String = "",
+                var bundleId: Long = 0L,
 
                 @SerializedName("bundle_group_id")
                 var bundleGroupId: String = ""

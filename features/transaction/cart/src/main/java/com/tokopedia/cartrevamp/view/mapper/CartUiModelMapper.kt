@@ -833,18 +833,27 @@ object CartUiModelMapper {
         var hasBmGm = false
         var totalDiscount = 0.0
         var offerId = 0L
+        var offerJsonData = ""
+        var bundleId = 0L
+        var bundleGroupId = ""
         cartDetail?.forEach {
             if (it.cartDetailInfo.cartDetailType == CART_DETAIL_TYPE_BMGM) {
                 hasBmGm = true
                 totalDiscount += it.cartDetailInfo.bmgmData.totalDiscount
                 offerId = it.cartDetailInfo.bmgmData.offerId
+                bundleId = it.bundleDetail.bundleId.toLongOrZero()
+                bundleGroupId = it.bundleDetail.bundleGroupId
+                offerJsonData = it.cartDetailInfo.bmgmData.offerJsonData
             }
         }
         return CartGroupBmGmHolderData(
             hasBmGmOffer = hasBmGm,
             discountBmGmAmount = totalDiscount,
             offerId = offerId,
-            cartBmGmGroupTickerCartString = "$cartString-$offerId"
+            offerJsonData = offerJsonData,
+            cartBmGmGroupTickerCartString = "$cartString-$offerId",
+            bundleId = bundleId,
+            bundleGroupId = bundleGroupId
         )
     }
 
