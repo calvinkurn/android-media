@@ -16,7 +16,6 @@ class StoriesGroupPagerAdapter(
     lifecycle: Lifecycle,
 ) : FragmentStateAdapter(fragmentManager, lifecycle) {
 
-    private var mCurrentPosition: Int = -1
     private var _groupData: StoriesGroupUiModel = StoriesGroupUiModel()
     private val groupData: StoriesGroupUiModel
         get() = _groupData
@@ -25,18 +24,23 @@ class StoriesGroupPagerAdapter(
         _groupData = data
     }
 
-    private fun getCurrentPageGroupId() = groupData.groupItems.getOrNull(mCurrentPosition)?.groupId
+    fun getCurrentPageGroupName(position: Int): String {
+        return groupData.groupItems.getOrNull(position)?.groupName.orEmpty()
+    }
+
+    private fun getCurrentPageGroupId(instancePosition: Int): String {
+        return groupData.groupItems.getOrNull(instancePosition)?.groupId.orEmpty()
+    }
 
     override fun getItemCount(): Int = groupData.groupItems.size
 
     override fun createFragment(position: Int): Fragment {
-        mCurrentPosition = position
         return StoriesDetailFragment.getFragment(
             fragmentManager = fragmentManager,
             classLoader = fragmentActivity.classLoader,
-        ).apply { 
+        ).apply {
             arguments = Bundle().apply {
-                putString(STORY_GROUP_ID, getCurrentPageGroupId())
+                putString(STORY_GROUP_ID, getCurrentPageGroupId(position))
             }
         }
     }

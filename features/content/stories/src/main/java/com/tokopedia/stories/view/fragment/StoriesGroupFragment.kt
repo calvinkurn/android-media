@@ -21,7 +21,9 @@ import com.tokopedia.stories.view.utils.isNetworkError
 import com.tokopedia.stories.view.viewmodel.StoriesViewModel
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction
 import com.tokopedia.stories.view.viewmodel.event.StoriesUiEvent
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class StoriesGroupFragment @Inject constructor(
@@ -36,6 +38,7 @@ class StoriesGroupFragment @Inject constructor(
 
     private val pagerListener = object : ViewPager2.OnPageChangeCallback() {
         override fun onPageSelected(position: Int) {
+            showSelectedGroupHighlight(position)
             viewModelAction(StoriesUiAction.SetGroupMainData(position))
             super.onPageSelected(position)
         }
@@ -90,6 +93,17 @@ class StoriesGroupFragment @Inject constructor(
     private fun setupObserver() {
         setupUiStateObserver()
         setupUiEventObserver()
+    }
+
+    private fun showSelectedGroupHighlight(position: Int) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            binding.storiesGroupViewPager.isUserInputEnabled = false
+            binding.tvHighlight.text = pagerAdapter.getCurrentPageGroupName(position)
+            binding.tvHighlight.animate().alpha(1f)
+            delay(1000)
+            binding.tvHighlight.animate().alpha(0f)
+            binding.storiesGroupViewPager.isUserInputEnabled = true
+        }
     }
 
     private fun setupUiStateObserver() {

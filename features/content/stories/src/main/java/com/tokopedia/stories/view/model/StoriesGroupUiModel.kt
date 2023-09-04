@@ -16,6 +16,7 @@ data class StoriesGroupHeader(
 
 data class StoriesGroupItemUiModel(
     val groupId: String = "",
+    val groupName: String = "",
     val detail: StoriesDetailUiModel = StoriesDetailUiModel(),
 )
 
