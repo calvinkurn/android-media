@@ -268,7 +268,11 @@ class ProductListTypeFactoryImpl(
                 BigGridProductItemViewHolder(view, productListener, isSneakPeekEnabled)
             CpmViewHolder.LAYOUT -> CpmViewHolder(view, bannerAdsListener)
             TickerViewHolder.LAYOUT -> TickerViewHolder(view, tickerListener)
-            SuggestionViewHolder.LAYOUT -> SuggestionViewHolder(view, suggestionListener, isReimagine)
+            SuggestionViewHolder.LAYOUT -> SuggestionViewHolder(
+                view,
+                suggestionListener,
+                reimagineSearch2Component.isReimagineCarousel(),
+            )
             EmptyStateKeywordViewHolder.LAYOUT -> EmptyStateKeywordViewHolder(view, emptyStateListener)
             EmptyStateFilterViewHolder.LAYOUT -> EmptyStateFilterViewHolder(view, emptyStateListener)
             GlobalNavViewHolder.LAYOUT -> GlobalNavViewHolder(view, globalNavListener)
@@ -286,7 +290,9 @@ class ProductListTypeFactoryImpl(
                     networkMonitor
                 )
             InspirationProductBundleViewHolder.LAYOUT -> InspirationProductBundleViewHolder(
-                view, inspirationBundleListener, isReimagine
+                view,
+                inspirationBundleListener,
+                reimagineSearch2Component.isReimagineCarousel(),
             )
             SearchLoadingMoreViewHolder.LAYOUT -> SearchLoadingMoreViewHolder(view)
             RecommendationTitleViewHolder.LAYOUT -> RecommendationTitleViewHolder(view)

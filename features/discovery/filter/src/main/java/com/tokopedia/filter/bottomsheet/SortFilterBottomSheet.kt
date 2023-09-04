@@ -24,7 +24,7 @@ import com.tokopedia.filter.bottomsheet.pricefilter.PriceFilterViewListener
 import com.tokopedia.filter.bottomsheet.pricefilter.PriceFilterViewModel
 import com.tokopedia.filter.bottomsheet.pricefilter.PriceOptionViewModel
 import com.tokopedia.filter.bottomsheet.filter.pricerangecheckbox.PriceRangeFilterCheckboxListener
-import com.tokopedia.filter.bottomsheet.filtergeneraldetail.GeneralFilterSortOptions
+import com.tokopedia.filter.common.data.IOption
 import com.tokopedia.filter.bottomsheet.sort.SortItemViewModel
 import com.tokopedia.filter.bottomsheet.sort.SortViewListener
 import com.tokopedia.filter.common.data.DynamicFilterModel
@@ -110,8 +110,8 @@ class SortFilterBottomSheet: BottomSheetUnify() {
     }
 
     private fun onSeeAllFilterGeneralClick(filterViewModel: FilterViewModel) {
-        val filterDetailCallback = object: FilterGeneralDetailBottomSheet.Callback {
-            override fun onApplyButtonClicked(optionList: List<GeneralFilterSortOptions>?) {
+        val filterDetailCallback = object: FilterGeneralDetailBottomSheet.OptionCallback {
+            override fun onApplyButtonClicked(optionList: List<IOption>?) {
                 sortFilterBottomSheetViewModel?.onApplyFilterFromDetailPage(
                     filterViewModel,
                     optionList?.filterIsInstance<Option>(),
@@ -122,7 +122,7 @@ class SortFilterBottomSheet: BottomSheetUnify() {
         FilterGeneralDetailBottomSheet().show(
             fragmentManager = parentFragmentManager,
             filter = filterViewModel.filter,
-            callback = filterDetailCallback,
+            optionCallback = filterDetailCallback,
         )
     }
 

@@ -3,7 +3,6 @@ package com.tokopedia.filter.common.data
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.filter.bottomsheet.filtergeneraldetail.GeneralFilterSortOptions
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
@@ -13,19 +12,19 @@ class Option(@SerializedName("name")
 
              @SerializedName("key")
              @Expose
-             var key: String = "",
+             override var key: String = "",
 
              @SerializedName("value")
              @Expose
-             var value: String = "",
+             override var value: String = "",
 
              @SerializedName(value = "input_type", alternate = ["inputType"])
              @Expose
-             var inputType: String = "",
+             override var inputType: String = "",
 
              @SerializedName(value = "hex_color", alternate = ["hexColor"])
              @Expose
-             var hexColor: String = "",
+             override var hexColor: String = "",
 
              @SerializedName("metric")
              @Expose
@@ -45,11 +44,11 @@ class Option(@SerializedName("name")
 
              @SerializedName("icon")
              @Expose
-             var iconUrl: String = "",
+             override var iconUrl: String = "",
 
              @SerializedName(value = "description", alternate = ["Description"])
              @Expose
-             var description: String = "",
+             override var description: String = "",
 
              @SerializedName(value = "is_popular", alternate = ["isPopular"])
              @Expose
@@ -57,13 +56,14 @@ class Option(@SerializedName("name")
 
              @SerializedName(value = "is_new", alternate = ["isNew"])
              @Expose
-             var isNew: Boolean = false,
+             override var isNew: Boolean = false,
 
              @SerializedName("child")
              @Expose
              var levelTwoCategoryList: List<LevelTwoCategory> = listOf(),
 
-             override var inputState: String = "") : Parcelable, Cloneable, GeneralFilterSortOptions {
+             override var inputState: String = ""
+) : Parcelable, Cloneable, IOption {
 
     public override fun clone(): Option {
         return Option(
@@ -92,7 +92,7 @@ class Option(@SerializedName("name")
     val isOfficialOption: Boolean
         get() = KEY_OFFICIAL == key
 
-    override val uniqueId: String
+    val uniqueId: String
         get() = key + UID_FIRST_SEPARATOR_SYMBOL + value + UID_SECOND_SEPARATOR_SYMBOL + name
 
     val isTypeRadio: Boolean
@@ -118,26 +118,6 @@ class Option(@SerializedName("name")
 
     val isRatingOption: Boolean
         get() = key == KEY_RATING
-
-    override fun isTypeOptionRadio(): Boolean {
-        return isTypeRadio
-    }
-
-    override fun getHexColorOption(): String {
-        return hexColor
-    }
-
-    override fun getOptionsIconUrl(): String {
-        return iconUrl
-    }
-
-    override fun isNewOption(): Boolean {
-        return isNew
-    }
-
-    override fun getDescriptionOption(): String {
-        return description
-    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

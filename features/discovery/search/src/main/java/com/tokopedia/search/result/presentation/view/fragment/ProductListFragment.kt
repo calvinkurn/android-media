@@ -36,7 +36,7 @@ import com.tokopedia.discovery.common.reimagine.ReimagineRollence
 import com.tokopedia.discovery.common.reimagine.Search2Component
 import com.tokopedia.discovery.common.utils.Dimension90Utils
 import com.tokopedia.filter.bottomsheet.filtergeneraldetail.FilterGeneralDetailBottomSheet
-import com.tokopedia.filter.bottomsheet.filtergeneraldetail.GeneralFilterSortOptions
+import com.tokopedia.filter.common.data.IOption
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.common.helper.getSortFilterCount
@@ -1141,7 +1141,7 @@ class ProductListFragment: BaseDaggerFragment(),
 
         override fun onFilterClicked() { openBottomSheetFilterRevamp() }
 
-        override fun onSortClicked() { openBottomSheetSortRevamp() }
+        override fun onSortClicked() { openBottomSheetSort() }
     }
 
     private fun setSortFilterNewNotification(items: List<SortFilterItem>) {
@@ -1384,10 +1384,8 @@ class ProductListFragment: BaseDaggerFragment(),
     private fun openBottomSheetFilterRevamp() {
         presenter?.openFilterPage(getSearchParameter()?.getSearchParameterMap())
     }
-    //endregion
 
-    //region Bottom Sheet Sort
-    private fun openBottomSheetSortRevamp() {
+    private fun openBottomSheetSort() {
         presenter?.openSortPage(getSearchParameter()?.getSearchParameterMap())
     }
     //endregion
@@ -1398,8 +1396,8 @@ class ProductListFragment: BaseDaggerFragment(),
 
     //region dropdown quick filter
     override fun openBottomsheetMultipleOptionsQuickFilter(filter: Filter) {
-        val filterDetailCallback = object: FilterGeneralDetailBottomSheet.Callback {
-            override fun onApplyButtonClicked(optionList: List<GeneralFilterSortOptions>?) {
+        val filterDetailCallback = object: FilterGeneralDetailBottomSheet.OptionCallback {
+            override fun onApplyButtonClicked(optionList: List<IOption>?) {
                 presenter?.onApplyDropdownQuickFilter(optionList?.filterIsInstance<Option>())
             }
         }
@@ -1407,10 +1405,10 @@ class ProductListFragment: BaseDaggerFragment(),
         setupActiveOptionsQuickFilter(filter)
 
         FilterGeneralDetailBottomSheet().show(
-            parentFragmentManager,
-            filter,
-            filterDetailCallback,
-            getString(R.string.search_quick_filter_dropdown_apply_button_text)
+            fragmentManager = parentFragmentManager,
+            filter = filter,
+            optionCallback = filterDetailCallback,
+            buttonApplyFilterDetailText = getString(R.string.search_quick_filter_dropdown_apply_button_text)
         )
     }
 

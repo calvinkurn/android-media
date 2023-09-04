@@ -5,7 +5,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.filter.R
+import com.tokopedia.filter.common.data.IOption
 import com.tokopedia.filter.common.helper.createColorSampleDrawable
+import com.tokopedia.filter.common.helper.isTypeRadio
 import com.tokopedia.filter.databinding.FilterGeneralDetailItemViewHolderBinding
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -16,9 +18,9 @@ internal class FilterGeneralDetailAdapter(
         private val callback: Callback
 ): RecyclerView.Adapter<FilterGeneralDetailAdapter.FilterGeneralDetailViewHolder>() {
 
-    private val optionList = mutableListOf<GeneralFilterSortOptions>()
+    private val optionList = mutableListOf<IOption>()
 
-    fun setOptionList(optionList: List<GeneralFilterSortOptions>) {
+    fun setOptionList(optionList: List<IOption>) {
         this.optionList.clear()
         this.optionList.addAll(optionList)
         notifyDataSetChanged()
@@ -47,7 +49,7 @@ internal class FilterGeneralDetailAdapter(
     inner class FilterGeneralDetailViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         private var binding: FilterGeneralDetailItemViewHolderBinding? by viewBinding()
 
-        fun bind(option: GeneralFilterSortOptions, payload: List<Any>? = null) {
+        fun bind(option: IOption, payload: List<Any>? = null) {
             if (!isBindInputStateOnly(payload)) {
                 bindOnClickListener(option)
                 bindColorSample(option)
@@ -60,60 +62,60 @@ internal class FilterGeneralDetailAdapter(
             bindCheckedState(option)
         }
 
-        private fun bindOnClickListener(option: GeneralFilterSortOptions) {
+        private fun bindOnClickListener(option: IOption) {
             binding?.filterDetailContainer?.setOnClickListener {
                 callback.onOptionClick(option, !option.isSelected(), adapterPosition)
             }
         }
 
-        private fun bindColorSample(option: GeneralFilterSortOptions) {
+        private fun bindColorSample(option: IOption) {
             val colorSampleImageView = binding?.colorSampleImageView ?: return
-            colorSampleImageView.shouldShowWithAction(option.getHexColorOption().isNotEmpty()) {
-                val gradientDrawable = createColorSampleDrawable(itemView.context, option.getHexColorOption())
+            colorSampleImageView.shouldShowWithAction(option.hexColor.isNotEmpty()) {
+                val gradientDrawable = createColorSampleDrawable(itemView.context, option.hexColor)
                 colorSampleImageView.setImageDrawable(gradientDrawable)
             }
         }
 
-        private fun bindIconOption(option: GeneralFilterSortOptions) {
+        private fun bindIconOption(option: IOption) {
             val iconOptionImageView = binding?.optionIconImageView ?: return
-            iconOptionImageView.shouldShowWithAction(option.getOptionsIconUrl().isNotEmpty()) {
-                iconOptionImageView.loadImage(option.getOptionsIconUrl())
+            iconOptionImageView.shouldShowWithAction(option.iconUrl.isNotEmpty()) {
+                iconOptionImageView.loadImage(option.iconUrl)
             }
         }
 
 
-        private fun bindNewIcon(option: GeneralFilterSortOptions) {
-            binding?.newNotification?.showWithCondition(option.isNewOption())
+        private fun bindNewIcon(option: IOption) {
+            binding?.newNotification?.showWithCondition(option.isNew)
         }
 
-        private fun bindTitle(option: GeneralFilterSortOptions) {
+        private fun bindTitle(option: IOption) {
             binding?.filterDetailTitle?.text = option.name
         }
 
-        private fun bindDescription(option: GeneralFilterSortOptions) {
+        private fun bindDescription(option: IOption) {
             val filterDetailDescription = binding?.filterDetailDescription ?: return
-            filterDetailDescription.shouldShowWithAction(option.getDescriptionOption().isNotEmpty()) {
-                filterDetailDescription.text = option.getDescriptionOption()
+            filterDetailDescription.shouldShowWithAction(option.description.isNotEmpty()) {
+                filterDetailDescription.text = option.description
             }
         }
 
-        private fun bindRadioState(option: GeneralFilterSortOptions) {
+        private fun bindRadioState(option: IOption) {
             val filterDetailRadio = binding?.filterDetailRadio ?: return
-            filterDetailRadio.shouldShowWithAction(option.isTypeOptionRadio()) {
+            filterDetailRadio.shouldShowWithAction(option.isTypeRadio) {
                 filterDetailRadio.isChecked = option.isSelected()
                 filterDetailRadio.setOnClickListener {
-                    callback.onOptionClick(option, !option.isSelected(), adapterPosition)
+                    callback.onOptionClick(option, !option.isSelected(), bindingAdapterPosition)
                 }
             }
         }
 
-        private fun bindCheckedState(option: GeneralFilterSortOptions) {
+        private fun bindCheckedState(option: IOption) {
             val filterDetailCheckBox = binding?.filterDetailCheckBox ?: return
-            filterDetailCheckBox.shouldShowWithAction(!option.isTypeOptionRadio()) {
+            filterDetailCheckBox.shouldShowWithAction(!option.isTypeRadio) {
                 filterDetailCheckBox.setOnCheckedChangeListener(null)
                 filterDetailCheckBox.isChecked = option.isSelected()
                 filterDetailCheckBox.setOnCheckedChangeListener { _, isChecked ->
-                    callback.onOptionClick(option, isChecked, adapterPosition)
+                    callback.onOptionClick(option, isChecked, bindingAdapterPosition)
                 }
             }
         }
@@ -121,11 +123,11 @@ internal class FilterGeneralDetailAdapter(
         private fun isBindInputStateOnly(payload: List<Any>?): Boolean =
             payload?.contains(Payload.BIND_INPUT_STATE_ONLY) ?: false
 
-        private fun GeneralFilterSortOptions.isSelected() = inputState.toBoolean()
+        private fun IOption.isSelected() = inputState.toBoolean()
     }
 
     interface Callback {
-        fun onOptionClick(option: GeneralFilterSortOptions, isChecked: Boolean, position: Int)
+        fun onOptionClick(option: IOption, isChecked: Boolean, position: Int)
     }
 
     enum class Payload {

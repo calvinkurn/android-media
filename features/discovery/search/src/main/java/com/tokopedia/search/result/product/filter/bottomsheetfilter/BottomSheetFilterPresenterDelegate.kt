@@ -68,17 +68,31 @@ class BottomSheetFilterPresenterDelegate @Inject constructor(
     }
 
     override fun openFilterPage(searchParameter: Map<String, Any>?) {
-        if (searchParameter == null) return
-        if (!isBottomSheetFilterEnabled) return
+        if (searchParameter == null || !isBottomSheetFilterEnabled) return
 
-        initialOpenFilterSortPage()
+        isBottomSheetFilterEnabled = false
+        view.sendTrackingOpenFilterPage()
         view.openBottomSheetFilter(dynamicFilterModel, this)
 
+        getDynamicFilter(searchParameter)
+    }
+
+    override fun openSortPage(searchParameter: Map<String, Any>?) {
+        if (searchParameter == null || !isBottomSheetFilterEnabled) return
+
+        isBottomSheetFilterEnabled = false
+        view.openBottomSheetSort(dynamicFilterModel, this)
+
+        getDynamicFilter(searchParameter)
+    }
+
+    private fun getDynamicFilter(searchParameter: Map<String, Any>) {
         if (dynamicFilterModel == null) {
-            val getDynamicFilterRequestParams = requestParamsGenerator.createRequestDynamicFilterParams(
-                searchParameter,
-                chooseAddressDelegate.getChooseAddressParams(),
-            )
+            val getDynamicFilterRequestParams =
+                requestParamsGenerator.createRequestDynamicFilterParams(
+                    searchParameter,
+                    chooseAddressDelegate.getChooseAddressParams(),
+                )
             getDynamicFilterUseCase.get().execute(
                 getDynamicFilterRequestParams,
                 createGetDynamicFilterModelSubscriber()
@@ -86,34 +100,12 @@ class BottomSheetFilterPresenterDelegate @Inject constructor(
         }
     }
 
-    override fun openSortPage(searchParameter: Map<String, Any>?) {
-        if (searchParameter == null) return
-        if (!isBottomSheetFilterEnabled) return
-        initialOpenFilterSortPage()
-        view.openBottomSheetSort(dynamicFilterModel, this)
-        if (dynamicFilterModel == null) {
-            val getDynamicFilterRequestParams = requestParamsGenerator.createRequestDynamicFilterParams(
-                searchParameter,
-                chooseAddressDelegate.getChooseAddressParams(),
-            )
-            getDynamicFilterUseCase.get().execute(
-                getDynamicFilterRequestParams,
-                createGetDynamicFilterModelSubscriber(isSortFilterPage = false)
-            )
-        }
-    }
-
-    private fun initialOpenFilterSortPage() {
-        isBottomSheetFilterEnabled = false
-        view.sendTrackingOpenFilterPage()
-    }
-
-    private fun createGetDynamicFilterModelSubscriber(isSortFilterPage: Boolean = true): Subscriber<DynamicFilterModel> {
+    private fun createGetDynamicFilterModelSubscriber(): Subscriber<DynamicFilterModel> {
         return object : Subscriber<DynamicFilterModel>() {
             override fun onCompleted() {}
 
             override fun onNext(dynamicFilterModel: DynamicFilterModel) {
-                handleGetDynamicFilterSuccess(dynamicFilterModel, isSortFilterPage)
+                handleGetDynamicFilterSuccess(dynamicFilterModel)
             }
 
             override fun onError(e: Throwable) {
@@ -122,17 +114,17 @@ class BottomSheetFilterPresenterDelegate @Inject constructor(
         }
     }
 
-    private fun handleGetDynamicFilterSuccess(dynamicFilterModel: DynamicFilterModel, isSortFilterPage: Boolean) {
+    private fun handleGetDynamicFilterSuccess(dynamicFilterModel: DynamicFilterModel) {
         if (!dynamicFilterModel.isEmpty()) {
             this.dynamicFilterModel = dynamicFilterModel
-            getViewToSetDynamicFilterModel(dynamicFilterModel, isSortFilterPage)
+            getViewToSetDynamicFilterModel(dynamicFilterModel)
         } else {
             handleGetDynamicFilterFailed()
         }
     }
 
-    private fun getViewToSetDynamicFilterModel(dynamicFilterModel: DynamicFilterModel, isSortFilterPage: Boolean = true) {
-        view.setDynamicFilter(dynamicFilterModel, isSortFilterPage)
+    private fun getViewToSetDynamicFilterModel(dynamicFilterModel: DynamicFilterModel) {
+        view.setDynamicFilter(dynamicFilterModel)
     }
 
     private fun handleGetDynamicFilterFailed() {
