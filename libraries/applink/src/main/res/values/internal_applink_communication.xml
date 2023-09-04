@@ -11,4 +11,6 @@
     <string name="title_applink_universal_inbox">Universal Inbox</string>
     <string name="path_universal_inbox">/universal-inbox</string>
 
+    <!--SHARING EXPERIENCE-->
+    <string name="path_post_purchase_sharing">/sharing/post-purchase</string>
 </resources>
