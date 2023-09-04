@@ -1,0 +1,155 @@
+{
+  "data": [
+    {
+      "id": "c3ec1087-a7f0-438d-8e6a-2f55ffa78877",
+      "name": "F-68720537282",
+      "type": "group-booking",
+      "created_by": {
+        "id": "00000000-0000-0000-0000-000000000000",
+        "name": "",
+        "phone": "",
+        "country_code": ""
+      },
+      "members": [
+        {
+          "id": "7b43637f-c332-4b6c-866c-b5922c91e804",
+          "name": "Kartolo",
+          "owner_type": "driver",
+          "phone": "82240158006",
+          "country_code": "62",
+          "image_url": "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/6/29/2aa21dbc-42e5-45e8-9fc1-3c0a0eca67d4.png",
+          "unread_message_count": 0,
+          "unread_channel_count": 0,
+          "metadata": {
+            "licence_plate": "X001OAI"
+          }
+        },
+        {
+          "id": "93aa677d-fde6-47ff-a527-5c473f64e13d",
+          "name": "bcsatu",
+          "owner_type": "tokopedia_customer",
+          "phone": "85782377781",
+          "country_code": "62",
+          "image_url": "https://ecs7.tokopedia.net/img/cache/300/default_picture_user/default_toped-17.jpg",
+          "unread_message_count": 0,
+          "unread_channel_count": 0
+        }
+      ],
+      "unread_count": 1,
+      "last_message_sent": {
+        "id": "1893d7ba-b112-4c87-8240-48a4a782cb5d",
+        "channel_id": "c3ec1087-a7f0-438d-8e6a-2f55ffa78877",
+        "text": "Kak saya otw ya, udah mau sampai ya. Tolong nanti langsung diterima.",
+        "data": "{\"tracking_id\":\"9a537bac-2fac-495c-801b-eb28105884d3\"}",
+        "type": "text",
+        "sender": {
+          "id": "7b43637f-c332-4b6c-866c-b5922c91e804",
+          "name": "Kartolo",
+          "phone": "82240158006",
+          "country_code": "62"
+        },
+        "sent_at": 1690441670772
+      },
+      "last_read": {
+        "7b43637f-c332-4b6c-866c-b5922c91e804": 1690441671277,
+        "93aa677d-fde6-47ff-a527-5c473f64e13d": 1690441438722
+      },
+      "created_at": 1690347441960,
+      "read_only": true,
+      "metadata": {
+        "order_info": {
+          "chat_type": "driver",
+          "service_type": 5,
+          "id": "F-68720537282",
+          "description_info": "Michael Jordan Official Store, Karet Kuningan, Setiabudi",
+          "status": "completed",
+          "driver": {
+            "driver_id": "942881876",
+            "driver_name": "Kartolo",
+            "driver_phone": "+6282240158006",
+            "display_name": "Driver",
+            "driver_photo": "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/6/29/2aa21dbc-42e5-45e8-9fc1-3c0a0eca67d4.png"
+          },
+          "shopper": null,
+          "chat_window": {
+            "disabled": false
+          },
+          "country_code": "ID"
+        }
+      },
+      "read_mode_starts_at": 1690447698477,
+      "expires_at": 9223372036854775807,
+      "updated_at": 1690441671341
+    },
+    {
+      "id": "de9846e4-db72-4607-a977-f1ca9cbd2c8e",
+      "name": "F-68720537283",
+      "type": "group-booking",
+      "created_by": {
+        "id": "00000000-0000-0000-0000-000000000000",
+        "name": "",
+        "phone": "",
+        "country_code": ""
+      },
+      "members": [
+        {
+          "id": "f1f3ee3c-f6f4-4035-8779-8e9bfa829da5",
+          "name": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+          "owner_type": "driver",
+          "phone": "81215622024",
+          "country_code": "62",
+          "image_url": "https://images.tokopedia.net/img/cache/300/tPxBYm/2022/9/21/ac3cb4d9-00e5-43fe-a745-eb007a887c03.jpg",
+          "unread_message_count": 0,
+          "unread_channel_count": 0,
+          "metadata": {
+            "licence_plate": "X001ONW"
+          }
+        },
+        {
+          "id": "93aa677d-fde6-47ff-a527-5c473f64e13d",
+          "name": "bcsatu",
+          "owner_type": "tokopedia_customer",
+          "phone": "85782377781",
+          "country_code": "62",
+          "image_url": "https://ecs7.tokopedia.net/img/cache/300/default_picture_user/default_toped-17.jpg",
+          "unread_message_count": 0,
+          "unread_channel_count": 0
+        }
+      ],
+      "unread_count": 0,
+      "last_message_sent": null,
+      "last_read": {
+        "93aa677d-fde6-47ff-a527-5c473f64e13d": 1690441129589,
+        "f1f3ee3c-f6f4-4035-8779-8e9bfa829da5": 1690441387231
+      },
+      "created_at": 1690441129589,
+      "read_only": true,
+      "metadata": {
+        "order_info": {
+          "chat_type": "driver",
+          "service_type": 5,
+          "id": "F-68720537283",
+          "description_info": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+          "status": "completed",
+          "driver": {
+            "driver_id": "941652613",
+            "driver_name": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+            "driver_phone": "+6281215622024",
+            "display_name": "Driver",
+            "driver_photo": "https://images.tokopedia.net/img/cache/300/tPxBYm/2022/9/21/ac3cb4d9-00e5-43fe-a745-eb007a887c03.jpg"
+          },
+          "shopper": null,
+          "chat_window": {
+            "disabled": false
+          },
+          "country_code": "ID"
+        }
+      },
+      "read_mode_starts_at": 1690448938651,
+      "expires_at": 9223372036854775806,
+      "updated_at": 1690441738657
+    }
+  ],
+  "success": true,
+  "errors": []
+}

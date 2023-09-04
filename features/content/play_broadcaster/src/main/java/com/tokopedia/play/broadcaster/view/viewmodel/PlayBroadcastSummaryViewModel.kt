@@ -2,9 +2,11 @@ package com.tokopedia.play.broadcaster.view.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.domain.model.GetLiveStatisticsResponse
 import com.tokopedia.play.broadcaster.domain.usecase.*
@@ -281,7 +283,7 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
                                         channel.basic.coverUrl,
                                         convertDate(channel.basic.timestamp.publishedAt),
                                         reportChannelSummary.duration,
-                                        _channelSummary.value.isEligiblePostVideo,
+                                        isEligiblePostVideo(reportChannelSummary.duration),
                                         hydraConfigStore.getAuthor(),
                                     )
             getSellerLeaderboardUseCase.setRequestParams(GetSellerLeaderboardUseCase.createParams(channelId))
@@ -304,9 +306,14 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
             }.toList()
 
             _trafficMetric.value = NetworkResult.Success(metrics)
+
+            if (!isEligiblePostVideo(reportChannelSummary.duration)) {
+                _uiEvent.emit(PlayBroadcastSummaryEvent.VideoUnder60Seconds)
+            }
         }) {
             _channelSummary.value = ChannelSummaryUiModel.empty()
             _trafficMetric.value = NetworkResult.Fail(it) { fetchLiveTraffic() }
+            _uiEvent.emit(PlayBroadcastSummaryEvent.VideoUnder60Seconds)
         }
     }
 
@@ -347,6 +354,28 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
     /** Helper */
     private fun convertDate(raw: String): String =
         PlayDateTimeFormatter.formatDate(raw, outputPattern = PlayDateTimeFormatter.dMMMMyyyy)
+
+    @Suppress("MagicNumber")
+    private fun isEligiblePostVideo(duration: String): Boolean {
+        return try {
+            val split = duration.split(":")
+
+            val (hour, minute) = when (split.size) {
+                /** HH:mm:ss */
+                3 -> Pair(split[0].toIntOrZero(), split[1].toIntOrZero())
+
+                /** mm:ss */
+                2 -> Pair(0, split[0].toIntOrZero())
+
+                else -> Pair(0, 0)
+            }
+
+            hour > 0 || minute > 0
+        } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
+            false
+        }
+    }
 
     companion object {
         private const val LIVE_STATISTICS_DELAY = 300L

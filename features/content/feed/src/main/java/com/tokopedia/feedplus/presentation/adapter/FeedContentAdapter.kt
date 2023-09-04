@@ -10,6 +10,8 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.ErrorNetworkViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingMoreViewHolder
+import com.tokopedia.feedplus.presentation.adapter.viewholder.FeedErrorViewHolder
+import com.tokopedia.feedplus.presentation.adapter.viewholder.FeedFollowRecommendationViewHolder
 import com.tokopedia.feedplus.presentation.adapter.viewholder.FeedNoContentViewHolder
 import com.tokopedia.feedplus.presentation.adapter.viewholder.FeedPostImageViewHolder
 import com.tokopedia.feedplus.presentation.adapter.viewholder.FeedPostLiveViewHolder
@@ -17,6 +19,7 @@ import com.tokopedia.feedplus.presentation.adapter.viewholder.FeedPostVideoViewH
 import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
 import com.tokopedia.feedplus.presentation.model.FeedCardLivePreviewContentModel
 import com.tokopedia.feedplus.presentation.model.FeedCardVideoContentModel
+import com.tokopedia.feedplus.presentation.model.FeedFollowRecommendationModel
 import com.tokopedia.feedplus.presentation.model.FeedNoContentModel
 
 /**
@@ -38,6 +41,8 @@ class FeedContentAdapter(
                 oldItem.data.id == newItem.data.id
             } else if (oldItem.data is FeedCardLivePreviewContentModel && newItem.data is FeedCardLivePreviewContentModel) {
                 oldItem.data.id == newItem.data.id
+            } else if (oldItem.data is FeedFollowRecommendationModel && newItem.data is FeedFollowRecommendationModel) {
+                oldItem.data.id == newItem.data.id
             } else {
                 oldItem == newItem
             }
@@ -49,6 +54,8 @@ class FeedContentAdapter(
             } else if (oldItem.data is FeedCardVideoContentModel && newItem.data is FeedCardVideoContentModel) {
                 oldItem == newItem
             } else if (oldItem.data is FeedCardLivePreviewContentModel && newItem.data is FeedCardLivePreviewContentModel) {
+                oldItem == newItem
+            } else if (oldItem.data is FeedFollowRecommendationModel && newItem.data is FeedFollowRecommendationModel) {
                 oldItem == newItem
             } else {
                 oldItem == newItem
@@ -132,10 +139,13 @@ class FeedContentAdapter(
             holder is FeedNoContentViewHolder && item.data is FeedNoContentModel -> {
                 holder.bind(item.data)
             }
+            holder is FeedFollowRecommendationViewHolder && item.data is FeedFollowRecommendationModel -> {
+                holder.bind(item)
+            }
             holder is LoadingMoreViewHolder && item.data is LoadingMoreModel -> {
                 holder.bind(item.data)
             }
-            holder is ErrorNetworkViewHolder && item.data is ErrorNetworkModel -> {
+            holder is FeedErrorViewHolder && item.data is ErrorNetworkModel -> {
                 holder.bind(item.data)
             }
         }
@@ -162,13 +172,16 @@ class FeedContentAdapter(
                 holder is FeedPostLiveViewHolder && item.data is FeedCardLivePreviewContentModel -> {
                     holder.bind(item, payloads)
                 }
+                holder is FeedFollowRecommendationViewHolder && item.data is FeedFollowRecommendationModel -> {
+                    holder.bind(item, payloads)
+                }
                 holder is FeedNoContentViewHolder && item.data is FeedNoContentModel -> {
                     holder.bind(item.data, payloads)
                 }
                 holder is LoadingMoreViewHolder && item.data is LoadingMoreModel -> {
                     holder.bind(item.data, payloads)
                 }
-                holder is ErrorNetworkViewHolder && item.data is ErrorNetworkModel -> {
+                holder is FeedErrorViewHolder && item.data is ErrorNetworkModel -> {
                     holder.bind(item.data, payloads)
                 }
             }
@@ -180,6 +193,7 @@ class FeedContentAdapter(
             is FeedCardImageContentModel -> FeedPostImageViewHolder.LAYOUT
             is FeedCardVideoContentModel -> FeedPostVideoViewHolder.LAYOUT
             is FeedCardLivePreviewContentModel -> FeedPostLiveViewHolder.LAYOUT
+            is FeedFollowRecommendationModel -> FeedFollowRecommendationViewHolder.LAYOUT
             is FeedNoContentModel -> FeedNoContentViewHolder.LAYOUT
             is LoadingMoreModel -> LoadingMoreViewHolder.LAYOUT
             is ErrorNetworkModel -> ErrorNetworkViewHolder.LAYOUT
@@ -212,6 +226,14 @@ class FeedContentAdapter(
     fun removeErrorNetwork() {
         val currentList = this.currentList
         submitList(currentList - errorNetworkModel)
+    }
+
+    fun pauseFollowRecommendationVideo(position: Int) {
+        notifyItemChanged(position, FeedViewHolderPayloadActions.FEED_FOLLOW_RECOM_PAUSE_VIDEO)
+    }
+
+    fun resumeFollowRecommendationVideo(position: Int) {
+        notifyItemChanged(position, FeedViewHolderPayloadActions.FEED_FOLLOW_RECOM_RESUME_VIDEO)
     }
 
     fun addElement(element: Any) {

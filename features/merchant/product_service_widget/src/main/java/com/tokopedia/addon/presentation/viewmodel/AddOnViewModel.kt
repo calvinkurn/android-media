@@ -33,7 +33,12 @@ class AddOnViewModel @Inject constructor(
     private val mGetAddOnResult = MutableLiveData<List<AddOnGroupUIModel>>()
     val getAddOnResult = Transformations.map(mGetAddOnResult) {
         val addonGroups = AddOnMapper.mapAddOnWithSelectedIds(it, preselectedAddonIds, predeselectedAddonIds)
-        AddOnMapper.simplifyAddonGroup(addonGroups, isSimplified)
+        if (addonGroups.size > Int.ONE) {
+            AddOnMapper.simplifyAddonGroup(addonGroups, isSimplified)
+        } else {
+            isSimplified = false
+            addonGroups
+        }
     }
 
     private val mErrorThrowable = MutableLiveData<Throwable>()
@@ -159,7 +164,7 @@ class AddOnViewModel @Inject constructor(
         }
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
-                getAddOnDetailUseCase.setParams(addOnIds, addOnTypes, addOnWidgetParam)
+                getAddOnDetailUseCase.setParams(addOnIds, addOnTypes, addOnWidgetParam, lastSelectedAddOn)
                 getAddOnDetailUseCase.executeOnBackground().getAddOnByID
             }
             mAggregatedData.value = AddOnPageResult.AggregatedData(

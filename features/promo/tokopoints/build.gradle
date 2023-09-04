@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-kapt.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
+apply plugin: 'kotlin-parcelize'
 
 repositories {
     maven { url 'https://maven-hansel.tokopedia.com/maven' }
@@ -18,6 +19,9 @@ buildscript {
 android {
     namespace 'com.tokopedia.tokopoints'
     testNamespace 'com.tokopedia.tokopoints.test'
+    buildFeatures {
+        viewBinding true
+    }
 }
 
 dependencies {
@@ -67,6 +71,10 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
 
+    implementation rootProject.ext.supportLibDependencies.swipeRefresh
+    implementation rootProject.ext.supportLibDependencies.design
+    implementation rootProject.ext.miscDependencies.rxAndroid
+    implementation rootProject.ext.miscDependencies.rxJava
     implementation rootProject.ext.miscDependencies.viewModel
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     testImplementation rootProject.ext.testDependencies.mockk
