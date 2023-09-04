@@ -22,6 +22,10 @@ abstract class TrackingDataSource<U : TrackingDbModel, T : TrackingDatabaseDao<U
         trackingDatabaseDao.deleteTable()
     }
 
+    override fun hasRowExist(): Boolean {
+        return trackingDatabaseDao.hasRowExist()
+    }
+
     override fun get(event: EventModel): U? {
         return trackingDatabaseDao.getTrackingModel(event.key)
     }

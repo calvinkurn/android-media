@@ -3,7 +3,9 @@ package com.tokopedia.feedplus.domain.mapper
 import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
 import com.tokopedia.feedplus.presentation.model.FeedCardLivePreviewContentModel
 import com.tokopedia.feedplus.presentation.model.FeedCardVideoContentModel
+import com.tokopedia.feedplus.presentation.model.FeedFollowRecommendationModel
 import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
+import com.tokopedia.feedplus.presentation.model.type.AuthorType
 
 /**
  * Created By : Muhammad Furqan on 03/05/23
@@ -106,4 +108,21 @@ class MapperFeedModelToTrackerDataModel(
                 },
             entryPoint = entryPoint
         )
+
+    fun transformProfileRecommendationToTrackerModel(
+        profile: FeedFollowRecommendationModel.Profile
+    ) = FeedTrackerDataModel(
+        activityId = "",
+        authorId = profile.id,
+        tabType = tabType,
+        typename = "",
+        type = "",
+        authorType = if (profile.isShop) AuthorType.Shop else AuthorType.User,
+        mediaType = "",
+        isFollowing = profile.isFollowed,
+        contentScore = "",
+        hasVoucher = false,
+        campaignStatus = "",
+        entryPoint = entryPoint
+    )
 }

@@ -24,4 +24,7 @@
 
     <dimen name="sp_14">14sp</dimen>
     <dimen name="sp_34">34sp</dimen>
+
+    <dimen name="banner_default_size_debug">64dp</dimen>
+
 </resources>

@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.analytics.LIST
 import com.tokopedia.discovery2.data.ComponentsItem
@@ -121,6 +122,17 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parent
         dataList?.let { componentItemsList ->
             addDataList(componentItemsList as List<ComponentsItem>)
         }
+    }
+
+    fun getTabItem(): DiscoveryBaseViewModel?{
+       var tabsIndex = 0
+       componentList.forEachIndexed { index, item ->
+            if (item.name == ComponentNames.Tabs.componentName ) {
+                tabsIndex =  index
+                return@forEachIndexed
+            }
+        }
+        return getViewModelAtPosition(tabsIndex)
     }
 
     override fun onViewAttachedToWindow(holder: AbstractViewHolder) {

@@ -11,7 +11,7 @@ abstract class AffiliateBaseFragment<T : BaseViewModel> : BaseViewModelFragment<
         const val ANNOUNCEMENT = "announcement"
     }
     fun onGetValidateUserData(validateUserdata: AffiliateValidateUserData?) {
-        validateUserdata?.validateAffiliateUserStatus?.data?.let {
+        validateUserdata?.validateAffiliateUserStatus?.userStatusData?.let {
             if (it.isEligible == false) {
                 onNotEligible()
             } else if (it.isRegistered == false) {

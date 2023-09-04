@@ -15,6 +15,7 @@ import com.tokopedia.home_component.databinding.HomeComponentBannerRevampBinding
 import com.tokopedia.home_component.listener.BannerComponentListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.util.NpaLinearLayoutManager
 import com.tokopedia.home_component.util.recordCrashlytics
 import com.tokopedia.home_component.viewholders.adapter.BannerItemListener
 import com.tokopedia.home_component.widget.atf_banner.BannerRevampItemModel
@@ -43,7 +44,7 @@ class BannerRevampViewHolder(
     CoroutineScope {
     private var binding: HomeComponentBannerRevampBinding? by viewBinding()
     private var isCache = true
-    private var layoutManager = LinearLayoutManager(itemView.context)
+    private val layoutManager by lazy { NpaLinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL) }
 
     private val masterJob = Job()
     override val coroutineContext: CoroutineContext
@@ -65,9 +66,7 @@ class BannerRevampViewHolder(
             channelModel = element.channelModel
             isCache = element.isCache
             renderBanner()
-        } catch (e: Exception) {
-            e.recordCrashlytics()
-        }
+        } catch (_: Exception) { }
     }
 
     private fun renderBanner() {
@@ -159,11 +158,6 @@ class BannerRevampViewHolder(
         }
     }
 
-    private fun getLayoutManager(): LinearLayoutManager {
-        layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
-        return layoutManager
-    }
-
     private fun initBanner(list: List<BannerVisitable>) {
         if (list.size > Int.ONE) {
             val snapHelper: SnapHelper = BannerComponentViewHolder.CubicBezierSnapHelper(itemView.context)
@@ -176,7 +170,7 @@ class BannerRevampViewHolder(
         val layoutParams = binding?.rvBannerRevamp?.layoutParams as ConstraintLayout.LayoutParams
         binding?.rvBannerRevamp?.layoutParams = layoutParams
 
-        binding?.rvBannerRevamp?.layoutManager = getLayoutManager()
+        binding?.rvBannerRevamp?.layoutManager = this.layoutManager
         binding?.cardContainerBanner?.let {
             it.animateOnPress = if (cardInteraction) CardUnify2.ANIMATE_OVERLAY_BOUNCE else CardUnify2.ANIMATE_OVERLAY
             val halfIntegerSize = Integer.MAX_VALUE / DIVIDE_HALF_BANNER_SIZE_INT_SIZE
