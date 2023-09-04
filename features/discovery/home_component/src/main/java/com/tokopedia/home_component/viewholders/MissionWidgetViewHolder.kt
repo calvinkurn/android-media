@@ -3,21 +3,21 @@ package com.tokopedia.home_component.viewholders
 import android.annotation.SuppressLint
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.databinding.GlobalComponentMissionWidgetBinding
 import com.tokopedia.home_component.decoration.MissionWidgetItemDecoration
 import com.tokopedia.home_component.listener.MissionWidgetComponentListener
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselMissionWidgetDataModel
-import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCarouselProductCardTypeFactoryImpl
+import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCarouselProductCardTypeFactory
 import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.home_component.util.MissionWidgetUtil
 import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
-import com.tokopedia.home_component.widget.common.CarouselListAdapter
-import com.tokopedia.home_component.widget.mission.MissionWidgetDiffUtil
+import com.tokopedia.home_component.widget.common.carousel.CarouselListAdapter
+import com.tokopedia.home_component.widget.common.carousel.CommonCarouselDiffUtilCallback
 import com.tokopedia.home_component.widget.mission.MissionWidgetTypeFactory
 import com.tokopedia.home_component.widget.mission.MissionWidgetTypeFactoryImpl
-import com.tokopedia.home_component.widget.mission.MissionWidgetVisitable
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.utils.view.binding.viewBinding
@@ -28,8 +28,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 @SuppressLint("PII Data Exposure")
 class MissionWidgetViewHolder(
     itemView: View,
-    private val missionWidgetComponentListener: MissionWidgetComponentListener,
-    private val cardInteraction: Boolean = false
+    private val missionWidgetComponentListener: MissionWidgetComponentListener
 ) : AbstractViewHolder<MissionWidgetListDataModel>(itemView) {
 
     companion object {
@@ -37,10 +36,10 @@ class MissionWidgetViewHolder(
     }
 
     private var binding: GlobalComponentMissionWidgetBinding? by viewBinding()
-    private val adapter: CarouselListAdapter<MissionWidgetVisitable, MissionWidgetTypeFactory> by lazy {
+    private val adapter by lazy {
         CarouselListAdapter(
             MissionWidgetTypeFactoryImpl(missionWidgetComponentListener),
-            MissionWidgetDiffUtil()
+            CommonCarouselDiffUtilCallback()
         )
     }
 
@@ -71,13 +70,13 @@ class MissionWidgetViewHolder(
         binding?.homeComponentMissionWidgetRcv?.adapter = adapter
     }
 
-    private fun mappingItem(visitables: List<MissionWidgetVisitable>) {
-        adapter.submitList(visitables) {
+    private fun mappingItem(visitables: List<Visitable<MissionWidgetTypeFactory>>) {
+        adapter.submitList(visitables as? List<Visitable<CommonCarouselProductCardTypeFactory>>) {
             binding?.homeComponentMissionWidgetRcv?.scrollToPosition(0)
         }
     }
 
-    private fun convertDataToMissionWidgetData(element: MissionWidgetListDataModel): List<MissionWidgetVisitable> {
+    private fun convertDataToMissionWidgetData(element: MissionWidgetListDataModel): List<Visitable<MissionWidgetTypeFactory>> {
         val subtitleHeight = MissionWidgetUtil.findMaxHeightSubtitleText(
             element.missionWidgetList,
             itemView.context
@@ -148,8 +147,4 @@ class MissionWidgetViewHolder(
     override fun bind(element: MissionWidgetListDataModel) {
         setLayoutByStatus(element)
     }
-
-//    override fun bind(element: MissionWidgetListDataModel, payloads: MutableList<Any>) {
-//        bind(element)
-//    }
 }

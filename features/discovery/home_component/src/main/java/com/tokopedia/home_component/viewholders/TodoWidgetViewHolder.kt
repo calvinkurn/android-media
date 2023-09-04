@@ -4,21 +4,21 @@ import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.SimpleItemAnimator
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.databinding.HomeComponentTodoWidgetBinding
 import com.tokopedia.home_component.decoration.TodoWidgetItemDecoration
 import com.tokopedia.home_component.listener.TodoWidgetComponentListener
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselTodoWidgetDataModel
+import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCarouselProductCardTypeFactory
 import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.home_component.visitable.TodoWidgetListDataModel
-import com.tokopedia.home_component.widget.common.CarouselListAdapter
+import com.tokopedia.home_component.widget.common.carousel.CarouselListAdapter
+import com.tokopedia.home_component.widget.common.carousel.CommonCarouselDiffUtilCallback
 import com.tokopedia.home_component.widget.todo.TodoErrorDataModel
 import com.tokopedia.home_component.widget.todo.TodoShimmerDataModel
-import com.tokopedia.home_component.widget.todo.TodoWidgetDiffUtil
-import com.tokopedia.home_component.widget.todo.TodoWidgetTypeFactory
 import com.tokopedia.home_component.widget.todo.TodoWidgetTypeFactoryImpl
-import com.tokopedia.home_component.widget.todo.TodoWidgetVisitable
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.utils.view.binding.viewBinding
@@ -36,8 +36,11 @@ class TodoWidgetViewHolder(
     }
 
     private var binding: HomeComponentTodoWidgetBinding? by viewBinding()
-    private val todoAdapter: CarouselListAdapter<TodoWidgetVisitable, TodoWidgetTypeFactory> by lazy {
-        CarouselListAdapter(TodoWidgetTypeFactoryImpl(todoWidgetComponentListener, this), TodoWidgetDiffUtil())
+    private val todoAdapter by lazy {
+        CarouselListAdapter(
+            TodoWidgetTypeFactoryImpl(todoWidgetComponentListener, this),
+            CommonCarouselDiffUtilCallback()
+        )
     }
 
     init {
@@ -76,11 +79,11 @@ class TodoWidgetViewHolder(
     }
 
     private fun renderError() {
-        todoAdapter.submitList(listOf(TodoErrorDataModel()))
+        todoAdapter.submitList(listOf(TodoErrorDataModel()) as? List<Visitable<CommonCarouselProductCardTypeFactory>>)
     }
 
     private fun renderShimmering() {
-        todoAdapter.submitList(listOf(TodoShimmerDataModel()))
+        todoAdapter.submitList(listOf(TodoShimmerDataModel()) as? List<Visitable<CommonCarouselProductCardTypeFactory>>)
     }
 
     private fun renderTodoWidget(element: TodoWidgetListDataModel) {
@@ -95,7 +98,7 @@ class TodoWidgetViewHolder(
                 cardInteraction = true
             )
         }
-        todoAdapter.submitList(items)
+        todoAdapter.submitList(items as? List<Visitable<CommonCarouselProductCardTypeFactory>>)
         binding?.homeComponentTodoWidgetRv?.scrollToPosition(0)
     }
 

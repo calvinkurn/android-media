@@ -1,17 +1,19 @@
 package com.tokopedia.home_component.widget.todo
 
-import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.home_component.widget.common.carousel.HomeComponentCarouselDiffUtil
 
 /**
  * Created by frenzel
  */
-class TodoShimmerDataModel: TodoWidgetVisitable, ImpressHolder() {
+class TodoShimmerDataModel: Visitable<TodoWidgetTypeFactory>, HomeComponentCarouselDiffUtil {
     companion object {
         const val ID = "TODO_SHIMMER"
     }
 
     override fun getId(): String = ID
-    override fun equalsWith(visitable: TodoWidgetVisitable): Boolean {
+
+    override fun equalsWith(visitable: Any?): Boolean {
         return visitable is TodoShimmerDataModel
     }
 
