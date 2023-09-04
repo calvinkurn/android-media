@@ -332,7 +332,7 @@ class StoriesDetailFragment @Inject constructor(
     }
 
     private fun renderNotch(state: StoriesDetailItemUiModel) {
-        binding.vStoriesProductIcon.root.showWithCondition(state.productCount.isNotEmpty() && state.productCount != "0")
+        binding.vStoriesProductIcon.root.showWithCondition(viewModel.isProductAvailable)
         binding.vStoriesProductIcon.tvPlayProductCount.text = state.productCount
         with(binding.notchStoriesProduct) {
             apply {
@@ -342,6 +342,7 @@ class StoriesDetailFragment @Inject constructor(
                         viewModelAction(StoriesUiAction.OpenProduct)
                     }
                 }
+                showWithCondition(viewModel.isProductAvailable)
             }
         }
     }

@@ -83,6 +83,13 @@ class StoriesViewModel @Inject constructor(
             return currentItem.getOrNull(mGroupItem.detail.selectedDetailPosition)?.id.orEmpty()
         }
 
+    val isProductAvailable : Boolean
+        get() {
+            val currentItem = mGroupItem.detail.detailItems
+            val productCount = currentItem.getOrNull(mGroupItem.detail.selectedDetailPosition)?.productCount
+            return productCount?.isNotEmpty() == true || productCount != "0"
+        }
+
     private val _uiEvent = MutableSharedFlow<StoriesUiEvent>(extraBufferCapacity = 100)
     val uiEvent: Flow<StoriesUiEvent>
         get() = _uiEvent
@@ -252,7 +259,7 @@ class StoriesViewModel @Inject constructor(
     }
 
     private fun handleOpenProduct() {
-        if (bottomSheetStatus.value.isAnyShown) return
+        if (bottomSheetStatus.value.isAnyShown || !isProductAvailable) return
 
         viewModelScope.launch {
             _uiEvent.emit(StoriesUiEvent.OpenProduct)
