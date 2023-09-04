@@ -63,7 +63,7 @@ dependencies {
     //track
     implementation projectOrAar(rootProject.ext.libraries.track)
 
-    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
+    ksp project(rootProject.ext.libraries.gqlKspProcessor)
 
     //test
     testImplementation rootProject.ext.miscDependencies.coroutineTest
