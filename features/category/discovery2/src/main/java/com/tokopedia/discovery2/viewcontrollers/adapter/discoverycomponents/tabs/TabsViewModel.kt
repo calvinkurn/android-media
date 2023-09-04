@@ -24,6 +24,7 @@ class TabsViewModel(val application: Application, val components: ComponentsItem
     private val setColorTabs: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
     private val setUnifyTabs: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
     private val setTabIcons: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
+    private var shouldAddSpace = MutableLiveData<Boolean>()
 
     @JvmField
     @Inject
@@ -46,6 +47,10 @@ class TabsViewModel(val application: Application, val components: ComponentsItem
                 setColorTabs.value = it
             }
         }
+    }
+
+    fun shouldAddSpace(state: Boolean) {
+        this.shouldAddSpace.value = state
     }
 
     fun fetchDynamicTabData() {
@@ -74,6 +79,10 @@ class TabsViewModel(val application: Application, val components: ComponentsItem
 
     fun getIconTabLiveData(): LiveData<ArrayList<ComponentsItem>> {
         return setTabIcons
+    }
+
+    fun getTabMargin(): LiveData<Boolean> {
+        return shouldAddSpace
     }
 
     override val coroutineContext: CoroutineContext
