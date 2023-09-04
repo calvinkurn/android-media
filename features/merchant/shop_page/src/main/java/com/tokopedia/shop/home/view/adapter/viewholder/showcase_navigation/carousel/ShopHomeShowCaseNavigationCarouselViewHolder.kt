@@ -46,19 +46,22 @@ class ShopHomeShowCaseNavigationCarouselViewHolder(
                 model.header.isOverrideTheme,
                 model.header.colorSchema,
                 model.appearance,
-                showcases
+                showcases,
+                model
             )
             setupColors(model.header.isOverrideTheme, model.header.colorSchema,)
         }
+        listener.onNavigationBannerImpression(model)
     }
 
     private fun setupShowCaseRecyclerView(
         overrideTheme: Boolean,
         colorSchema: ShopPageColorSchema,
         appearance: ShopHomeShowcaseNavigationBannerWidgetAppearance,
-        showcases: List<Showcase>
+        showcases: List<Showcase>,
+        uiModel: ShowcaseNavigationUiModel
     ) {
-        val showCaseAdapter = ShopHomeShowCaseNavigationAdapter(appearance, listener, overrideTheme, colorSchema)
+        val showCaseAdapter = ShopHomeShowCaseNavigationAdapter(appearance, uiModel, listener, overrideTheme, colorSchema)
 
         val recyclerView = viewBinding?.recyclerView
         recyclerView?.apply {

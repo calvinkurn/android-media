@@ -208,6 +208,8 @@ import com.tokopedia.shop.home.view.customview.directpurchase.DirectPurchaseWidg
 import com.tokopedia.shop.home.view.customview.directpurchase.ProductCardDirectPurchaseDataModel
 import com.tokopedia.shop.home.view.model.banner_product_group.appearance.ShimmerItemType
 import com.tokopedia.shop.home.view.model.banner_product_group.appearance.ShopHomeBannerProductGroupItemType
+import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseNavigationUiModel
+import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.ShopHomeShowcaseNavigationBannerWidgetAppearance
 import com.tokopedia.shop.home.view.viewmodel.ShopBannerProductGroupWidgetTabViewModel
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragment
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragmentV2
@@ -5072,9 +5074,14 @@ open class ShopPageHomeFragment :
     }
 
     override fun onNavigationBannerShowcaseClick(
-        selectedShowcase: Showcase
+        selectedShowcase: Showcase,
+        uiModel: ShowcaseNavigationUiModel
     ) {
         RouteManager.route(activity ?: return, selectedShowcase.ctaLink)
+    }
+
+    override fun onNavigationBannerImpression(uiModel: ShowcaseNavigationUiModel) {
+        shopPageHomeTracking.sendReimaginedImpressionNavigasiEtalaseBannerEvent(shopId, userId, uiModel)
     }
 
     override val productCarouselHostFragmentManager: FragmentManager

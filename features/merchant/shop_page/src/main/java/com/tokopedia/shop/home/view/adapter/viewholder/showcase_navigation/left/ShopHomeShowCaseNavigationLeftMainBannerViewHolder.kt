@@ -43,7 +43,8 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
     override fun bind(model: ShowcaseNavigationUiModel) {
         val tabs = if (model.appearance is LeftMainBannerAppearance) model.appearance.tabs else emptyList()
         setupShowcaseHeader(model.appearance.title, model.appearance.viewAllCtaAppLink, tabs)
-        setupTabs(tabs, model.header.isOverrideTheme, model.header.colorSchema)
+        setupTabs(tabs, model.header.isOverrideTheme, model.header.colorSchema, model)
+        listener.onNavigationBannerImpression(model)
     }
 
     private fun setupShowcaseHeader(title: String, viewAllCtaAppLink: String, tabs: List<ShowcaseTab>) {
@@ -61,9 +62,10 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
     private fun setupTabs(
         tabs: List<ShowcaseTab>,
         overrideTheme: Boolean,
-        colorSchema: ShopPageColorSchema
+        colorSchema: ShopPageColorSchema,
+        uiModel: ShowcaseNavigationUiModel
     ) {
-        val fragments = createFragments(tabs, overrideTheme, colorSchema)
+        val fragments = createFragments(tabs, overrideTheme, colorSchema, uiModel)
         val pagerAdapter = TabPagerAdapter(provider.currentFragment, fragments)
 
         viewBinding?.run {
@@ -108,7 +110,8 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
     private fun createFragments(
         tabs: List<ShowcaseTab>,
         overrideTheme: Boolean,
-        colorSchema: ShopPageColorSchema
+        colorSchema: ShopPageColorSchema,
+        uiModel: ShowcaseNavigationUiModel
     ): List<Pair<String, Fragment>> {
         val pages = mutableListOf<Pair<String, Fragment>>()
 
@@ -119,7 +122,7 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
                 colorSchema
             )
             fragment.setOnShowcaseClick { selectedShowcase ->
-                listener.onNavigationBannerShowcaseClick(selectedShowcase)
+                listener.onNavigationBannerShowcaseClick(selectedShowcase, uiModel)
             }
 
             val displayedTabName = currentTab.text

@@ -48,14 +48,16 @@ class ShopHomeShowCaseNavigationTopMainBannerViewHolder(
             val showcases = model.appearance.showcases
 
             setupViewAllIcon(showcases)
-            setupMainBanner(showcases)
+            setupMainBanner(showcases, model)
             setupShowCaseRecyclerView(
                 model.header.isOverrideTheme,
                 model.header.colorSchema,
                 model.appearance,
+                model,
                 showcases
             )
             setupColors(model.header.isOverrideTheme, model.header.colorSchema)
+            listener.onNavigationBannerImpression(model)
         }
 
     }
@@ -64,7 +66,10 @@ class ShopHomeShowCaseNavigationTopMainBannerViewHolder(
         viewBinding?.iconChevron?.isVisible = showcases.size > SHOW_VIEW_ALL_SHOWCASE_THRESHOLD
     }
 
-    private fun setupMainBanner(showcases: List<Showcase>) {
+    private fun setupMainBanner(
+        showcases: List<Showcase>,
+        uiModel: ShowcaseNavigationUiModel
+    ) {
         val firstShowcase = showcases.getOrNull(0)
 
         firstShowcase?.let {
@@ -73,8 +78,8 @@ class ShopHomeShowCaseNavigationTopMainBannerViewHolder(
             viewBinding?.imgFirstBanner?.visible()
             viewBinding?.tpgFirstBannerTitle?.visible()
 
-            viewBinding?.imgFirstBanner?.setOnClickListener { listener.onNavigationBannerShowcaseClick(firstShowcase) }
-            viewBinding?.tpgFirstBannerTitle?.setOnClickListener { listener.onNavigationBannerShowcaseClick(firstShowcase)  }
+            viewBinding?.imgFirstBanner?.setOnClickListener { listener.onNavigationBannerShowcaseClick(firstShowcase, uiModel) }
+            viewBinding?.tpgFirstBannerTitle?.setOnClickListener { listener.onNavigationBannerShowcaseClick(firstShowcase, uiModel)  }
         }
     }
 
@@ -82,12 +87,13 @@ class ShopHomeShowCaseNavigationTopMainBannerViewHolder(
         overrideTheme: Boolean,
         colorSchema: ShopPageColorSchema,
         appearance: ShopHomeShowcaseNavigationBannerWidgetAppearance,
+        uiModel: ShowcaseNavigationUiModel,
         showcases: List<Showcase>
     ) {
         val filteredShowcases =
             showcases.filterIndexed { index, _ -> index in SECOND_SHOWCASE_INDEX..TWELVE_SHOWCASE_INDEX }
 
-        val showCaseAdapter = ShopHomeShowCaseNavigationAdapter(appearance, listener, overrideTheme, colorSchema)
+        val showCaseAdapter = ShopHomeShowCaseNavigationAdapter(appearance, uiModel, listener, overrideTheme, colorSchema)
 
         val recyclerView = viewBinding?.recyclerView
         recyclerView?.apply {

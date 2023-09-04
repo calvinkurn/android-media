@@ -13,6 +13,7 @@ import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.Carouse
 import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.LeftMainBannerAppearance
 import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.ShopHomeShowcaseNavigationBannerWidgetAppearance
 import com.tokopedia.shop.home.view.model.showcase_navigation.Showcase
+import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseNavigationUiModel
 import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.TopMainBannerAppearance
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.R as unifycomponentsR
@@ -20,6 +21,7 @@ import com.tokopedia.unifycomponents.toPx
 
 class ShopHomeShowCaseNavigationAdapter(
     private val appearance: ShopHomeShowcaseNavigationBannerWidgetAppearance,
+    private val uiModel: ShowcaseNavigationUiModel,
     private val listener: ShopHomeShowcaseNavigationListener,
     private val overrideTheme: Boolean,
     private val colorSchema: ShopPageColorSchema
@@ -47,7 +49,7 @@ class ShopHomeShowCaseNavigationAdapter(
     override fun getItemCount() = showcases.size
 
     override fun onBindViewHolder(holder: ShowCaseViewHolder, position: Int) {
-        holder.bind(showcases[position])
+        holder.bind(showcases[position], uiModel)
     }
 
     inner class ShowCaseViewHolder(
@@ -66,10 +68,10 @@ class ShopHomeShowCaseNavigationAdapter(
             }
         }
 
-        fun bind(showcase: Showcase) {
+        fun bind(showcase: Showcase, uiModel: ShowcaseNavigationUiModel) {
             binding.tpgBannerTitle.text = showcase.name
             binding.imgBanner.loadShowcaseImage(showcase.imageUrl, appearance)
-            binding.root.setOnClickListener { listener.onNavigationBannerShowcaseClick(showcase) }
+            binding.root.setOnClickListener { listener.onNavigationBannerShowcaseClick(showcase, uiModel) }
             setupColors(overrideTheme, colorSchema)
         }
 
