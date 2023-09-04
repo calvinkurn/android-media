@@ -17,8 +17,10 @@ import com.tokopedia.home_component_header.R
 import com.tokopedia.home_component_header.model.ChannelHeader
 import com.tokopedia.home_component_header.util.getLink
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifyprinciples.Typography
 
@@ -106,13 +108,13 @@ class HeaderRevampLayoutStrategy : HeaderLayoutStrategy {
     override fun renderIconSubtitle(
         itemView: View,
         channelHeader: ChannelHeader,
-        stubChannelIconSubtitle: View?,
+        stubChannelIconSubtitle: View?
     ) {
-        val subtitleIcon : ImageView
-        if(hasIconSubtitle(channelHeader)){
+        val subtitleIcon: ImageView
+        if (hasIconSubtitle(channelHeader)) {
             if (stubChannelIconSubtitle is ViewStub &&
                 !isViewStubHasBeenInflated(stubChannelIconSubtitle)
-            ){
+            ) {
                 stubChannelIconSubtitle.inflate().apply {
                     subtitleIcon = findViewById(R.id.channel_subtitle_icon)
                 }
@@ -245,8 +247,12 @@ class HeaderRevampLayoutStrategy : HeaderLayoutStrategy {
         return !TextUtils.isEmpty(channelHeader.iconSubtitleUrl)
     }
 
-    private fun renderIcon(channelIconSubtitle:  ImageView, channelHeader: ChannelHeader){
-        channelIconSubtitle.loadImage(channelHeader.iconSubtitleUrl)
-        channelIconSubtitle.visibility = View.VISIBLE
+    private fun renderIcon(channelIconSubtitle: ImageView, channelHeader: ChannelHeader) {
+        if (channelHeader.subtitle.isEmpty()) {
+            channelIconSubtitle.loadImage(channelHeader.iconSubtitleUrl)
+            channelIconSubtitle.visible()
+        } else {
+            channelIconSubtitle.gone()
+        }
     }
 }

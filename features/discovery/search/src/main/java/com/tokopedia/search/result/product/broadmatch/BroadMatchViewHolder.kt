@@ -53,6 +53,7 @@ class BroadMatchViewHolder(
             bindSubtitleImage(element)
             bindSeeMore(element)
         }
+        setPadding()
         setupRecyclerView(element)
     }
 
@@ -218,5 +219,25 @@ class BroadMatchViewHolder(
 
     private fun FreeOngkirDataView.toProductCardModelFreeOngkir(): ProductCardModel.FreeOngkir {
         return ProductCardModel.FreeOngkir(isActive, imageUrl)
+    }
+
+    private fun setPadding(){
+        if(isReimagine) {
+            paddingReimagineVariant()
+        } else {
+            paddingControlVariant()
+        }
+    }
+
+    private fun paddingReimagineVariant() {
+        binding?.constraintContainerBroadMatchView?.setPadding(0,0,0,0)
+    }
+
+    private fun paddingControlVariant() {
+        val constraintContainer = binding?.constraintContainerBroadMatchView?:return
+        val contextResource = constraintContainer.context.resources
+        val paddingTop = contextResource.getDimensionPixelSize(R.dimen.search_board_inspiration_carousel_padding_top)
+        val paddingBottom = contextResource.getDimensionPixelSize(R.dimen.search_board_inspiration_carousel_padding_bottom)
+        binding?.constraintContainerBroadMatchView?.setPadding(0, paddingTop, 0, paddingBottom)
     }
 }

@@ -17,4 +17,16 @@
     <dimen name="search_inspiration_chips_margin_top_revamp">4dp</dimen>
     <dimen name="search_inspiration_chips_margin_top_control">7dp</dimen>
 
+    <dimen name="search_board_inspiration_carousel_padding_bottom">4dp</dimen>
+    <dimen name="search_board_inspiration_carousel_padding_top">16dp</dimen>
+
+    <dimen name="search_suggestion_inspiration_carousel_padding_bottom">8dp</dimen>
+    <dimen name="search_suggestion_inspiration_carousel_padding_top">10dp</dimen>
+    <dimen name="search_suggestion_inspiration_carousel_padding_top_reimagine">18dp</dimen>
+    <dimen name="search_suggestion_inspiration_carousel_padding_left_right">16dp</dimen>
+
+    <dimen name="search_bundle_carousel_padding_top">16dp</dimen>
+    <dimen name="search_bundle_carousel_bundle_list_margin_top_reimagine">12dp</dimen>
+    <dimen name="search_bundle_carousel_bundle_list_margin_control">8dp</dimen>
+
 </resources>
