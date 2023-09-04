@@ -80,7 +80,6 @@ import com.tokopedia.cartrevamp.view.mapper.PromoRequestMapper
 import com.tokopedia.cartrevamp.view.mapper.RecentViewMapper
 import com.tokopedia.cartrevamp.view.mapper.WishlistMapper
 import com.tokopedia.cartrevamp.view.uimodel.*
-import com.tokopedia.cartrevamp.view.util.CartPageAnalyticsUtil
 import com.tokopedia.cartrevamp.view.uimodel.AddCartToWishlistV2Event
 import com.tokopedia.cartrevamp.view.uimodel.AddToCartEvent
 import com.tokopedia.cartrevamp.view.uimodel.AddToCartExternalEvent
@@ -114,6 +113,7 @@ import com.tokopedia.cartrevamp.view.uimodel.UndoDeleteEvent
 import com.tokopedia.cartrevamp.view.uimodel.UpdateCartAndGetLastApplyEvent
 import com.tokopedia.cartrevamp.view.uimodel.UpdateCartCheckoutState
 import com.tokopedia.cartrevamp.view.uimodel.UpdateCartPromoState
+import com.tokopedia.cartrevamp.view.util.CartPageAnalyticsUtil
 import com.tokopedia.cartrevamp.view.viewholder.CartItemViewHolder
 import com.tokopedia.cartrevamp.view.viewholder.CartRecommendationViewHolder
 import com.tokopedia.cartrevamp.view.viewholder.CartSelectedAmountViewHolder
@@ -4887,6 +4887,7 @@ class CartRevampFragment :
 
     private fun getGroupProductTicker(cartGroupHolderData: CartGroupHolderData, offerId: Long) {
         viewModel.getBmGmGroupProductTicker(
+            cartGroupHolderData.cartGroupBmGmHolderData.cartBmGmGroupTickerCartString,
             BmGmTickerRequestMapper.generateGetGroupProductTickerRequestParams(cartGroupHolderData, offerId)
         )
     }
@@ -4898,11 +4899,7 @@ class CartRevampFragment :
         }
     }
 
-    override fun onBmGmTickerReloadClicked(offerId: Long) {
-        val pairCartItemHolderData = cartAdapter.getCartItemHolderDataAndIndexByOfferId(offerId)
-        val cartGroupHolderData = cartAdapter.getCartGroupHolderDataByCartItemHolderData(pairCartItemHolderData.second)
-        if (cartGroupHolderData != null) {
-            getGroupProductTicker(cartGroupHolderData, offerId)
-        }
+    override fun onBmGmTickerReloadClicked() {
+        refreshCartWithSwipeToRefresh()
     }
 }

@@ -1276,7 +1276,7 @@ class CartItemViewHolder constructor(
                         }
                     }
                     binding.itemCartBmgm.bmgmWidgetView.state = BmGmWidgetView.State.ACTIVE
-                    binding.itemCartBmgm.bmgmWidgetView.title = offerMessage
+                    binding.itemCartBmgm.bmgmWidgetView.title = MethodChecker.fromHtml(offerMessage).toString()
                     binding.itemCartBmgm.bmgmWidgetView.offerId = data.bmGmCartInfoData.bmGmData.offerId
                     binding.itemCartBmgm.bmgmWidgetView.setOnClickListener {
                         actionListener?.onBmGmChevronRightClicked(data.bmGmCartInfoData.bmGmData.offerId)
@@ -1285,7 +1285,7 @@ class CartItemViewHolder constructor(
                 2 -> {
                     binding.itemCartBmgm.bmgmWidgetView.state = BmGmWidgetView.State.INACTIVE
                     binding.itemCartBmgm.bmgmWidgetView.setOnClickListener {
-                        actionListener?.onBmGmTickerReloadClicked(data.bmGmCartInfoData.bmGmData.offerId)
+                        actionListener?.onBmGmTickerReloadClicked()
                     }
                 }
             }

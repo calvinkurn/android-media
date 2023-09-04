@@ -3,7 +3,6 @@ package com.tokopedia.cartrevamp.view.adapter.cart
 import android.widget.ImageView
 import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.Action
-import com.tokopedia.cartrevamp.view.uimodel.CartDetailInfo
 import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
 import com.tokopedia.iconunify.IconUnify
 
@@ -37,7 +36,6 @@ class CartItemAdapter {
         fun onAddOnsProductWidgetImpression(addOnType: Int, productId: String)
         fun onClickAddOnsProductWidgetCart(addOnType: Int, productId: String)
         fun onBmGmChevronRightClicked(offerId: Long)
-        fun onBmGmTickerReloadClicked(offerId: Long)
-
+        fun onBmGmTickerReloadClicked()
     }
 }
