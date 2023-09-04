@@ -4,10 +4,16 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.catalog.ui.model.CatalogProductAtcUiModel
 import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.oldcatalog.usecase.listing.CatalogDynamicFilterUseCase
 import com.tokopedia.oldcatalog.usecase.listing.CatalogQuickFilterUseCase
 import com.tokopedia.usecase.RequestParams
@@ -20,7 +26,8 @@ import javax.inject.Inject
 class CatalogProductListViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private var quickFilterUseCase: CatalogQuickFilterUseCase,
-    private val dynamicFilterUseCase: CatalogDynamicFilterUseCase
+    private val dynamicFilterUseCase: CatalogDynamicFilterUseCase,
+    private val addToCartUseCase: AddToCartUseCase
 ) : BaseViewModel(dispatchers.main) {
 
     val quickFilterResult = MutableLiveData<Result<DynamicFilterModel>>()
@@ -45,6 +52,14 @@ class CatalogProductListViewModel @Inject constructor(
 
     val mDynamicFilterModel: LiveData<Result<DynamicFilterModel>>
         get() = dynamicFilterResult
+
+    private val _errorsToaster = MutableLiveData<Throwable>()
+    val errorsToaster: LiveData<Throwable>
+        get() = _errorsToaster
+
+    private val _textToaster = MutableLiveData<String>()
+    val textToaster: LiveData<String>
+        get() = _textToaster
 
     fun fetchQuickFilters(params: RequestParams) {
 
@@ -75,5 +90,31 @@ class CatalogProductListViewModel @Inject constructor(
                 dynamicFilterResult.value = (Fail(e))
             }
         })
+    }
+
+    fun addProductToCart(atcUiModel: CatalogProductAtcUiModel) {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val param = AddToCartRequestParams(
+                    productId = atcUiModel.productId,
+                    shopId = atcUiModel.shopId,
+                    quantity = atcUiModel.quantity
+                )
+                addToCartUseCase.setParams(param)
+                showAtcResult(addToCartUseCase.executeOnBackground())
+            },
+            onError = {
+                _errorsToaster.postValue(it)
+            }
+        )
+    }
+
+    private fun showAtcResult(atcResult: AddToCartDataModel) {
+        if (atcResult.isStatusError()) {
+            _errorsToaster.postValue(MessageErrorException(atcResult.getAtcErrorMessage()))
+        } else {
+            _textToaster.postValue(atcResult.getAtcErrorMessage())
+        }
     }
 }

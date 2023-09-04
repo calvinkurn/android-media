@@ -13,7 +13,7 @@ import javax.inject.Inject
 
 class CatalogDetailPageViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
-    private var catalogDetailUseCase: CatalogDetailUseCase
+    private val catalogDetailUseCase: CatalogDetailUseCase
 ) : BaseViewModel(dispatchers.main) {
 
     private val _errorsToaster = MutableLiveData<Throwable>()

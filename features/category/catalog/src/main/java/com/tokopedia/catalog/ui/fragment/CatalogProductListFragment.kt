@@ -12,6 +12,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.catalog.R
 import com.tokopedia.catalog.databinding.FragmentCatalogProductListBinding
 import com.tokopedia.catalog.di.DaggerCatalogComponent
+import com.tokopedia.catalog.ui.model.CatalogProductAtcUiModel
 import com.tokopedia.catalog.ui.viewmodel.CatalogProductListViewModel
 import com.tokopedia.common_category.constants.CategoryNavConstants
 import com.tokopedia.common_category.interfaces.QuickFilterListener
@@ -30,8 +31,11 @@ import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.oldcatalog.model.util.CatalogConstant
 import com.tokopedia.oldcatalog.model.util.CatalogSearchApiConst
+import com.tokopedia.product.detail.common.AtcVariantHelper
+import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -82,13 +86,23 @@ class CatalogProductListFragment : BaseDaggerFragment(), ChooseAddressWidget.Cho
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupObserver()
+        setupObserver(view)
         initToolbar()
         initChooseAddressWidget()
         initSearchQuickSortFilter()
         viewModel.fetchQuickFilters(getQuickFilterParams())
         viewModel.fetchDynamicAttribute(getDynamicFilterParams())
         sortFilterBottomSheet = SortFilterBottomSheet()
+        view.postDelayed(
+            {
+                addToCart(
+                    CatalogProductAtcUiModel(
+                        productId = "15632963",
+                        shopId = "480048"
+                    )
+                )
+            }, 1000
+        )
     }
 
     private fun loadPage(){
@@ -137,7 +151,7 @@ class CatalogProductListFragment : BaseDaggerFragment(), ChooseAddressWidget.Cho
         }
     }
 
-    private fun setupObserver(){
+    private fun setupObserver(view: View) {
         viewModel.quickFilterClicked.observe(
             viewLifecycleOwner
         ) {
@@ -173,6 +187,14 @@ class CatalogProductListFragment : BaseDaggerFragment(), ChooseAddressWidget.Cho
                 is Fail -> {
                 }
             }
+        }
+
+        viewModel.errorsToaster.observe(viewLifecycleOwner) {
+            Toaster.build(view, it.message.orEmpty(), type = Toaster.TYPE_ERROR).show()
+        }
+
+        viewModel.textToaster.observe(viewLifecycleOwner) {
+            Toaster.build(view, it).show()
         }
     }
 
@@ -440,5 +462,27 @@ class CatalogProductListFragment : BaseDaggerFragment(), ChooseAddressWidget.Cho
         }
         param.putString(CatalogConstant.PRODUCT_PARAMS, createParametersForQuery(searchProductRequestParams.parameters))
         return param
+    }
+
+    fun addToCart(atcModel: CatalogProductAtcUiModel) {
+        if (atcModel.isVariant) {
+            openVariantBottomSheet(atcModel)
+        } else {
+            viewModel.addProductToCart(atcModel)
+        }
+    }
+
+    fun openVariantBottomSheet(atcModel: CatalogProductAtcUiModel) {
+        context?.let {
+            AtcVariantHelper.goToAtcVariant(
+                it,
+                atcModel.productId,
+                VariantPageSource.CATALOG_PAGESOURCE,
+                shopId = atcModel.shopId,
+                startActivitResult = { intent, reqCode ->
+                    startActivityForResult(intent, reqCode)
+                }
+            )
+        }
     }
 }

@@ -206,4 +206,5 @@ enum class VariantPageSource(val source: String) {
     SHOP_COUPON_PAGESOURCE("shop-coupon-product"),
     SRP_PAGESOURCE("srp_search"),
     FEED_PAGESOURCE("feed"),
+    CATALOG_PAGESOURCE("catalog"),
 }

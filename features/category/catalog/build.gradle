@@ -71,8 +71,11 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     api projectOrAar(rootProject.ext.features.localizationchooseaddress)
     implementation projectOrAar(rootProject.ext.features.localizationchooseaddress_common)
+    implementation projectOrAar(rootProject.ext.features.atc_common)
     implementation projectOrAar(rootProject.ext.features.medialoader)
     implementation projectOrAar(rootProject.ext.features.reviewCommon)
+    implementation project(rootProject.ext.features.atcVariant)
+    implementation project(rootProject.ext.features.productDetailCommon)
 
     androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
     androidTestImplementation rootProject.ext.testDependencies.androidxTest
