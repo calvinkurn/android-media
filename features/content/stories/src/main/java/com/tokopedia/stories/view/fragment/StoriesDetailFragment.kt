@@ -19,6 +19,7 @@ import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isNumeric
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showToast
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -331,6 +332,7 @@ class StoriesDetailFragment @Inject constructor(
     }
 
     private fun renderNotch(state: StoriesDetailItemUiModel) {
+        binding.vStoriesProductIcon.root.showWithCondition(state.productCount.isNotEmpty() && state.productCount != "0")
         binding.vStoriesProductIcon.tvPlayProductCount.text = state.productCount
         with(binding.notchStoriesProduct) {
             apply {
