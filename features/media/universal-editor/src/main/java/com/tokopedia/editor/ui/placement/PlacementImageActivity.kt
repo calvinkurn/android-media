@@ -17,7 +17,6 @@ import com.tokopedia.editor.util.getEditorCacheFolderPath
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.component.NavToolbarComponent
 import com.tokopedia.picker.common.component.ToolbarTheme
-import com.tokopedia.utils.file.FileUtil
 import com.tokopedia.utils.file.cleaner.InternalStorageCleaner
 import javax.inject.Inject
 

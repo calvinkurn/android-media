@@ -4,6 +4,7 @@ import android.net.Uri
 import android.os.Handler
 import androidx.core.graphics.values
 import androidx.fragment.app.activityViewModels
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.editor.R
 import com.tokopedia.editor.base.BaseEditorFragment
 import com.tokopedia.editor.databinding.FragmentPlacementBinding
@@ -13,10 +14,14 @@ import com.tokopedia.editor.util.getEditorCacheFolderPath
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.utils.file.FileUtil
 import com.tokopedia.utils.view.binding.viewBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
 
-class PlacementImageFragment @Inject constructor() : BaseEditorFragment(R.layout.fragment_placement) {
+class PlacementImageFragment @Inject constructor(
+    private val dispatchers: CoroutineDispatchers
+) : BaseEditorFragment(R.layout.fragment_placement) {
 
     private val viewModel: PlacementImageViewModel by activityViewModels()
     private val viewBinding: FragmentPlacementBinding? by viewBinding()
@@ -31,7 +36,9 @@ class PlacementImageFragment @Inject constructor() : BaseEditorFragment(R.layout
         viewModel.imagePath.observe(viewLifecycleOwner) {
             viewBinding?.cropArea?.let { ucropRef ->
                 ucropRef.getCropImageView()?.let { gestureCropImage ->
-                    showLoadingDialog()
+
+                    viewModel.updateLoadingState(true)
+
                     gestureCropImage.setImageUri(
                         imageUri = Uri.fromFile(File(it)),
                         outputUri = Uri.parse(getOutputPath())
@@ -57,16 +64,45 @@ class PlacementImageFragment @Inject constructor() : BaseEditorFragment(R.layout
                 }
             }
         }
+
+        viewModel.isLoadingShow.observe(viewLifecycleOwner) {
+            if (it) {
+                showLoadingDialog()
+            } else {
+                hideLoadingDialog()
+            }
+        }
     }
 
     override fun initView() {
         initListener()
     }
 
-    fun captureImage(onFinish: (placementModel: ImagePlacementModel) -> Unit) {
+    fun captureImage(onFinish: (imageModel: ImagePlacementModel) -> Unit) {
         viewBinding?.cropArea?.getCropImageView()?.let {
-            it.customCrop { placementModel ->
-                onFinish(placementModel)
+            CoroutineScope(dispatchers.io).launch {
+                it.customCrop { bitmap, matrix, outputUri ->
+
+
+                    // save placement bitmap result
+                    try {
+                        outputUri?.path?.let { stringPath ->
+                            val outputPath = viewModel.savePlacementBitmap(stringPath, bitmap)
+                            val imageMatrixValue = matrix.values()
+
+                            // matrix to model
+                            val placementModel = ImagePlacementModel(
+                                path = outputPath,
+                                scale = it.currentScale,
+                                angle = it.currentAngle,
+                                translateX = imageMatrixValue[INDEX_TRANSLATE_X],
+                                translateY = imageMatrixValue[INDEX_TRANSLATE_Y]
+                            )
+
+                            onFinish(placementModel)
+                        }
+                    } catch (_: Exception) {}
+                }
             }
         }
     }
@@ -95,18 +131,18 @@ class PlacementImageFragment @Inject constructor() : BaseEditorFragment(R.layout
 
                     viewModel.initialImageMatrix = it.cropArea.getCropImageView()?.imageMatrix?.values()
 
-                    hideLoadingDialog()
+                    viewModel.updateLoadingState(false)
                 }, PREV_STATE_DELAY)
             } ?: run{
                 viewModel.initialImageMatrix = it.cropArea.getCropImageView()?.imageMatrix?.values()
 
-                hideLoadingDialog()
+                viewModel.updateLoadingState(false)
             }
         }
     }
 
     private fun getOutputPath(): String {
-        return getEditorCacheFolderPath() + FileUtil.generateUniqueFileName()
+        return getEditorCacheFolderPath() + FileUtil.generateUniqueFileName() + IMAGE_EXTENSION
     }
 
     private fun initListener() {
@@ -152,5 +188,7 @@ class PlacementImageFragment @Inject constructor() : BaseEditorFragment(R.layout
         private const val IMAGE_RATIO = 9/16f
 
         private const val PREV_STATE_DELAY = 500L
+
+        private const val IMAGE_EXTENSION = ".png"
     }
 }

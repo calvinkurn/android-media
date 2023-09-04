@@ -83,7 +83,7 @@ open class StoryCropImageView : CropImageView {
         }, FINISH_DELAY)
     }
 
-    fun customCrop(onFinish: (placementModel: ImagePlacementModel) -> Unit) {
+    suspend fun customCrop(onFinish: (bitmap: Bitmap, imageMatrix: Matrix, outputPath: Uri?) -> Unit) {
         val imageState = ImageState(
             mCropRect,
             RectUtils.trapToRect(mCurrentImageCorners),
@@ -140,27 +140,7 @@ open class StoryCropImageView : CropImageView {
             )
         }
 
-        CoroutineScope(Dispatchers.IO).launch {
-            async {
-                saveImage(bitmapResult)
-
-                with(Dispatchers.Main) {
-                    val imageMatrix = imageMatrix.values()
-                    val translateX = imageMatrix[INDEX_TRANSLATE_X]
-                    val translateY = imageMatrix[INDEX_TRANSLATE_Y]
-
-                    onFinish(
-                        ImagePlacementModel(
-                            outputPath?.path ?: "",
-                            currentScale,
-                            currentAngle,
-                            translateX,
-                            translateY
-                        )
-                    )
-                }
-            }
-        }
+        onFinish(bitmapResult, imageMatrix, outputPath)
     }
 
     fun processStyledAttributesOpen(a: TypedArray) {
@@ -186,9 +166,6 @@ open class StoryCropImageView : CropImageView {
     }
 
     companion object {
-        private const val INDEX_TRANSLATE_X = 2
-        private const val INDEX_TRANSLATE_Y = 5
-
         private const val IMAGE_QUALITY = 100
 
         private const val FINISH_DELAY = 250L
