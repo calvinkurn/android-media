@@ -226,7 +226,6 @@ class HomeCreditCameraV2Fragment(
 
                                         CameraUtils.writeToFile(byteArray, getFileLocationFromDirectory()) {
                                             finalCameraResultFilePath = it?.path ?: ""
-                                            Glide.with(context!!).load(finalCameraResultFilePath).into(binding?.testajadulu!!)
                                             loadImagePreview()
                                             showCameraPreviewActionButtons()
                                             hideCameraProp()
