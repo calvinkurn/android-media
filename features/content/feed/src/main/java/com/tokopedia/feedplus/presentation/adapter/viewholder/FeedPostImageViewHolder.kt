@@ -98,6 +98,7 @@ class FeedPostImageViewHolder(
     private var isAutoSwipeOn = true
 
     private var trackerDataModel: FeedTrackerDataModel? = null
+    private var topAdsTrackerDataModel: FeedTopAdsTrackerDataModel? = null
 
     private var isInClearView: Boolean = false
 
@@ -241,6 +242,11 @@ class FeedPostImageViewHolder(
         mData = element
         element?.let { data ->
             trackerDataModel = trackerMapper.transformImageContentToTrackerModel(data)
+            if (data.isTopAds) {
+                setTopAdsTrackerModel(data)
+            } else {
+                topAdsTrackerDataModel = null
+            }
 
             with(binding) {
                 if (data.isTopAds) {
@@ -299,7 +305,9 @@ class FeedPostImageViewHolder(
             val newPayloads = mutableListOf<Any>().apply {
                 addAll(payloads)
                 if (feedPayloads.payloads.contains(FEED_POST_SELECTED_CHANGED)) add(selectedPayload)
-                if (feedPayloads.payloads.contains(FEED_POST_SCROLLING_CHANGED)) add(scrollingPayload)
+                if (feedPayloads.payloads.contains(FEED_POST_SCROLLING_CHANGED)) add(
+                    scrollingPayload
+                )
             }
             bind(item.data as FeedCardImageContentModel, newPayloads)
         }
@@ -430,14 +438,8 @@ class FeedPostImageViewHolder(
             absoluteAdapterPosition
         )
         if (element.isTopAds) {
-            listener.onTopAdsImpression(
-                adViewUrl = element.adViewUrl,
-                id = element.id,
-                shopId = element.author.id,
-                uri = element.adViewUri,
-                fullEcs = element.author.logoUrl,
-                position = absoluteAdapterPosition
-            )
+            if (topAdsTrackerDataModel == null) setTopAdsTrackerModel(element)
+            topAdsTrackerDataModel?.let { listener.onTopAdsImpression(it) }
         }
     }
 
@@ -469,7 +471,13 @@ class FeedPostImageViewHolder(
     }
 
     private fun bindAuthor(model: FeedCardImageContentModel) {
-        authorView.bindData(model.author, false, !model.followers.isFollowed, trackerDataModel)
+        authorView.bindData(
+            model.author,
+            false,
+            !model.followers.isFollowed,
+            trackerDataModel,
+            topAdsTrackerDataModel
+        )
     }
 
     private fun bindCaption(model: FeedCardImageContentModel) {
@@ -507,7 +515,8 @@ class FeedPostImageViewHolder(
             products = model.products,
             totalProducts = model.totalProducts,
             trackerData = trackerDataModel,
-            positionInFeed = absoluteAdapterPosition
+            positionInFeed = absoluteAdapterPosition,
+            topAdsTrackerData = topAdsTrackerDataModel
         )
         updateProductTagText(model)
     }
@@ -659,13 +668,20 @@ class FeedPostImageViewHolder(
         }
     }
 
+    private fun setTopAdsTrackerModel(element: FeedCardImageContentModel) {
+        topAdsTrackerDataModel = FeedTopAdsTrackerDataModel(
+            adViewUrl = element.adViewUrl,
+            id = element.id,
+            shopId = element.author.id,
+            uri = element.adViewUri,
+            fullEcs = element.author.logoUrl,
+            position = absoluteAdapterPosition
+        )
+    }
+
     companion object {
         const val PRODUCT_COUNT_ZERO = 0
         const val PRODUCT_COUNT_ONE = 1
-
-        const val SCROLL_OPACITY = .3f
-        const val FULL_OPACITY = 1f
-        const val OPACITY_ANIMATE_DURATION = 100L
 
         private const val MINIMUM_DISTANCE_SWIPE = 100
 

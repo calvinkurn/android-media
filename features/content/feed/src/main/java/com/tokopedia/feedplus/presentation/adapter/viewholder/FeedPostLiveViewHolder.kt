@@ -54,7 +54,12 @@ class FeedPostLiveViewHolder(
     }
 
     private val authorView = FeedAuthorInfoView(binding.layoutAuthorInfo, listener)
-    private val captionView = FeedCaptionView(binding.tvFeedCaption, binding.layoutFeedCaption, listener, captionViewListener)
+    private val captionView = FeedCaptionView(
+        binding.tvFeedCaption,
+        binding.layoutFeedCaption,
+        listener,
+        captionViewListener
+    )
 
     private var trackerDataModel: FeedTrackerDataModel? = null
 
@@ -122,7 +127,9 @@ class FeedPostLiveViewHolder(
             val newPayloads = mutableListOf<Any>().apply {
                 addAll(payloads)
                 if (feedPayloads.payloads.contains(FEED_POST_SELECTED_CHANGED)) add(selectedPayload)
-                if (feedPayloads.payloads.contains(FEED_POST_SCROLLING_CHANGED)) add(scrollingPayload)
+                if (feedPayloads.payloads.contains(FEED_POST_SCROLLING_CHANGED)) add(
+                    scrollingPayload
+                )
             }
             bind(item.data as FeedCardLivePreviewContentModel, newPayloads)
         }
@@ -186,7 +193,7 @@ class FeedPostLiveViewHolder(
     }
 
     private fun bindAuthor(data: FeedCardLivePreviewContentModel) {
-        authorView.bindData(data.author, true, !data.followers.isFollowed, trackerDataModel)
+        authorView.bindData(data.author, true, !data.followers.isFollowed, trackerDataModel, null)
     }
 
     private fun bindCaption(data: FeedCardLivePreviewContentModel) {
