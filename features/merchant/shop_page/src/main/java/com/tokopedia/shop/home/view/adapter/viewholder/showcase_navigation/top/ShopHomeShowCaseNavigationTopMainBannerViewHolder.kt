@@ -29,7 +29,6 @@ class ShopHomeShowCaseNavigationTopMainBannerViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_shop_home_showcase_navigation_top_main_banner
-        private const val SHOW_VIEW_ALL_SHOWCASE_THRESHOLD = 5
         private const val SECOND_SHOWCASE_INDEX = 1
         private const val TWELVE_SHOWCASE_INDEX = 12
     }
@@ -47,7 +46,7 @@ class ShopHomeShowCaseNavigationTopMainBannerViewHolder(
 
             val showcases = model.appearance.showcases
 
-            setupViewAllIcon(showcases)
+            setupViewAllIcon(model.appearance.viewAllCtaAppLink)
             setupMainBanner(showcases, model)
             setupShowCaseRecyclerView(
                 model.header.isOverrideTheme,
@@ -62,8 +61,8 @@ class ShopHomeShowCaseNavigationTopMainBannerViewHolder(
 
     }
 
-    private fun setupViewAllIcon(showcases: List<Showcase>) {
-        viewBinding?.iconChevron?.isVisible = showcases.size > SHOW_VIEW_ALL_SHOWCASE_THRESHOLD
+    private fun setupViewAllIcon(viewAllCtaAppLink: String) {
+        viewBinding?.iconChevron?.isVisible = viewAllCtaAppLink.isNotEmpty()
     }
 
     private fun setupMainBanner(

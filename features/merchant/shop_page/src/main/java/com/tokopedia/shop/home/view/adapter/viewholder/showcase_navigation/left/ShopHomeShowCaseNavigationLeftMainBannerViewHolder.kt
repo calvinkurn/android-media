@@ -33,7 +33,6 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_shop_home_showcase_navigation_left_main_banner
-        private const val SHOW_VIEW_ALL_SHOWCASE_THRESHOLD = 5
         private const val ONE_TAB = 1
     }
 
@@ -54,9 +53,7 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
         viewBinding?.iconChevron?.setOnClickListener {
             listener.onNavigationBannerViewAllShowcaseClick(viewAllCtaAppLink)
         }
-
-        val showcases = tabs.getOrNull(0)?.showcases ?: emptyList()
-        viewBinding?.iconChevron?.isVisible = showcases.size > SHOW_VIEW_ALL_SHOWCASE_THRESHOLD
+        viewBinding?.iconChevron?.isVisible = viewAllCtaAppLink.isNotEmpty()
     }
 
     private fun setupTabs(

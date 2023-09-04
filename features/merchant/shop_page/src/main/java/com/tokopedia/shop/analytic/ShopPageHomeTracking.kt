@@ -219,7 +219,6 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_SHOP_PERSO_PRODUCT_COMPARISON
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_SINGLE_BUNDLE_PRODUCT
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_VIEW_ALL_REIMAGINED_SHOWCASE_NAVIGATION
-import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_VIEW_ALL_REIMAGINED_SHOWCASE_NAVIGATION_WITH_TAB
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_IMPRESSION_BANNER_TIMER_HOME_TAB
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_IMPRESSION_MULTIPLE_BUNDLING_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_IMPRESSION_PERSONALIZATION_TRENDING_WIDGET
@@ -3595,7 +3594,7 @@ class ShopPageHomeTracking(
      //endregion
 
 
-     //region Product carousel widget tracker
+     /*//region Product carousel widget tracker
      // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4148
      // Tracker ID: 45950
      fun sendReimaginedImpressionAdvancedCarouselEvent (eventLabel: String, promotions: JSONArray, sessionIris: String, shopId: String, userId: String) {
