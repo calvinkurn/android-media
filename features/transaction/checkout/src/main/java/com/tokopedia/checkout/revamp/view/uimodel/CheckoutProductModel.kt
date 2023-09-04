@@ -89,6 +89,7 @@ data class CheckoutProductModel(
     val bmgmOfferId: Long = 0,
     val bmgmOfferName: String = "",
     val bmgmOfferMessage: List<String> = emptyList(),
+    val bmgmOfferStatus: Int = 0,
     val bmgmIconUrl: String = "",
     val bmgmTotalDiscount: Double = 0.0,
     val bmgmItemPosition: Int = 0,

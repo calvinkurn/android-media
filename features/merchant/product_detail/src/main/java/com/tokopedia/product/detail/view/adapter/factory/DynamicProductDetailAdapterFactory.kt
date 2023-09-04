@@ -13,7 +13,6 @@ import com.tokopedia.product.detail.data.model.datamodel.OngoingCampaignDataMode
 import com.tokopedia.product.detail.data.model.datamodel.PageErrorDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PdpComparisonWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PdpRecommendationWidgetDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductBundlingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductCategoryCarouselDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductCustomInfoDataModel
@@ -43,6 +42,7 @@ import com.tokopedia.product.detail.data.model.datamodel.TopadsHeadlineUiModel
 import com.tokopedia.product.detail.data.model.datamodel.ViewToViewWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
 import com.tokopedia.product.detail.data.model.datamodel.review_list.ProductShopReviewDataModel
+import com.tokopedia.product.detail.view.viewholder.bmgm.BMGMDataModel
 
 interface DynamicProductDetailAdapterFactory {
     fun type(data: ProductMostHelpfulReviewDataModel): Int
@@ -71,7 +71,6 @@ interface DynamicProductDetailAdapterFactory {
     fun type(data: OneLinersDataModel): Int
     fun type(data: ProductCategoryCarouselDataModel): Int
     fun type(data: TopadsHeadlineUiModel): Int
-    fun type(data: ProductBundlingDataModel): Int
     fun type(data: ContentWidgetDataModel): Int
     fun type(data: FintechWidgetDataModel): Int
     fun type(data: ProductRecommendationVerticalDataModel): Int
@@ -85,6 +84,7 @@ interface DynamicProductDetailAdapterFactory {
     fun type(data: ProductShopReviewDataModel): Int
     fun type(data: OngoingCampaignDataModel): Int
     fun type(data: DynamicOneLinerDataModel): Int
+    fun type(data: BMGMDataModel): Int
 
     // This is the new centralized recom widget model.
     // After migration, all recom widgets will only be mapped into this model

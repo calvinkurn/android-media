@@ -235,6 +235,7 @@ const val SHIPMENT_ADDRESS_FORM_V4_QUERY =
                           offer_name
                           offer_icon
                           offer_message
+                          offer_status
                           offer_landing_page_link
                           total_discount
                           offer_json_data

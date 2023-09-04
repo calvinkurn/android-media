@@ -413,12 +413,12 @@ class ShipmentMapper @Inject constructor() {
                         bundleId = "0"
                     }
                     if (cartDetail.cartDetailInfo.cartDetailType.lowercase() == CART_DETAIL_TYPE_BMGM) {
-                        // TODO: [Misael] Map bmgm products
                         isBmgmItem = true
                         bmgmOfferId = cartDetail.cartDetailInfo.bmgmData.offerId
                         bmgmIconUrl = cartDetail.cartDetailInfo.bmgmData.offerIcon
                         bmgmOfferName = cartDetail.cartDetailInfo.bmgmData.offerName
                         bmgmOfferMessage = cartDetail.cartDetailInfo.bmgmData.offerMessage
+                        bmgmOfferStatus = cartDetail.cartDetailInfo.bmgmData.offerStatus
                         bmgmItemPosition = if (cartDetail.products.firstOrNull()?.productId == productId) {
                             BMGM_ITEM_HEADER
                         } else {

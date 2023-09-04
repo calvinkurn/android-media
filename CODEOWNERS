@@ -81,6 +81,7 @@
 /features/ordermanagement/buyercancellationorder/       @tokopedia/android-minionstuart-dev
 /features/ordermanagement/orderhistory/                 @tokopedia/android-minionstuart-dev
 /features/transaction/sellerorder/                      @tokopedia/android-minionstuart-dev
+/features/ordermanagement/order_management_common/      @tokopedia/android-minionstuart-dev
 /features/merchant/shop_score/                          @tokopedia/android-minionstuart-dev
 /features/tokofood/                                     @tokopedia/android-minionstuart-dev
 /features/merchant/shop_admin/                          @tokopedia/android-minionstuart-dev

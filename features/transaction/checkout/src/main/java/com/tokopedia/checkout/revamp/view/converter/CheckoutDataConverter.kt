@@ -467,6 +467,7 @@ class CheckoutDataConverter @Inject constructor() {
             bmgmOfferId = product.bmgmOfferId,
             bmgmOfferName = product.bmgmOfferName,
             bmgmOfferMessage = product.bmgmOfferMessage,
+            bmgmOfferStatus = product.bmgmOfferStatus,
             bmgmItemPosition = product.bmgmItemPosition,
             bmgmIconUrl = product.bmgmIconUrl,
             bmgmTotalDiscount = product.bmgmTotalDiscount,

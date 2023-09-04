@@ -69,6 +69,7 @@ data class Product(
     var bmgmOfferId: Long = 0,
     var bmgmOfferName: String = "",
     var bmgmOfferMessage: List<String> = emptyList(),
+    var bmgmOfferStatus: Int = 0,
     var bmgmItemPosition: Int = 0,
     var bmgmTotalDiscount: Double = 0.0,
     var bmgmTierProductList: List<BmGmTierProduct> = emptyList(),

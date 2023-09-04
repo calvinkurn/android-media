@@ -210,6 +210,9 @@
     <!--Shop NIB-->
     <string name="title_seller_shop_nib">Nomor Induk Berusaha</string>
 
+    <!--BMGM-->
+    <string name="title_buy_more_get_more">Buy More Get More</string>
+
     <!-- Payment Thank You -->
     <string name="payment_title_thank_you">Thank You Page</string>
 </resources>

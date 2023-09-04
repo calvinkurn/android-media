@@ -213,6 +213,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.inboxCommon)
     implementation projectOrAar(rootProject.ext.features.shopCommon)
     implementation projectOrAar(rootProject.ext.features.shopAdminCommon)
+    implementation projectOrAar(rootProject.ext.features.orderManagementCommon)
     implementation projectOrAar(rootProject.ext.features.youtubeCommon)
     implementation projectOrAar(rootProject.ext.features.merchantVoucher)
     implementation projectOrAar(rootProject.ext.features.navigationCommon)

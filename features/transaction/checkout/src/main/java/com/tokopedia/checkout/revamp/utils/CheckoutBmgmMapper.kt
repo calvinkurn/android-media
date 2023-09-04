@@ -5,14 +5,15 @@ import com.tokopedia.purchase_platform.common.feature.bmgm.data.uimodel.BmgmComm
 
 object CheckoutBmgmMapper {
 
+    private const val OFFER_STATUS_HAS_REACH_MAX_DISC = 2
+
     fun mapBmgmCommonDataModel(
         product: CheckoutProductModel
     ): BmgmCommonDataModel {
         return BmgmCommonDataModel(
             offerId = product.bmgmOfferId,
             offerName = product.bmgmOfferName,
-            offerMessage = product.bmgmOfferMessage[0], // TODO: [Misael] ini update mapping array
-            hasReachMaxDiscount = false, // TODO: [Misael] BE ETA 4 Sept, dummy false
+            hasReachMaxDiscount = product.bmgmOfferStatus == OFFER_STATUS_HAS_REACH_MAX_DISC,
             tiersApplied = product.bmgmTierProductList.map { bmgmTier ->
                 BmgmCommonDataModel.TierModel(
                     tierId = bmgmTier.tierId,
@@ -27,7 +28,8 @@ object CheckoutBmgmMapper {
                             productName = product.name,
                             productImage = product.imageUrl,
                             productPrice = bmgmProduct.priceBeforeBenefit,
-                            quantity = bmgmProduct.quantity
+                            quantity = bmgmProduct.quantity,
+                            cartId = bmgmProduct.cartId
                         )
                     }
                 )
