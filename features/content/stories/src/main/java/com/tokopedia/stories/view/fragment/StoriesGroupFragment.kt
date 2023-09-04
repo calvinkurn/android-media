@@ -97,12 +97,10 @@ class StoriesGroupFragment @Inject constructor(
 
     private fun showSelectedGroupHighlight(position: Int) {
         viewLifecycleOwner.lifecycleScope.launch {
-            binding.storiesGroupViewPager.isUserInputEnabled = false
             binding.tvHighlight.text = pagerAdapter.getCurrentPageGroupName(position)
             binding.tvHighlight.animate().alpha(1f)
             delay(1000)
             binding.tvHighlight.animate().alpha(0f)
-            binding.storiesGroupViewPager.isUserInputEnabled = true
         }
     }
 
