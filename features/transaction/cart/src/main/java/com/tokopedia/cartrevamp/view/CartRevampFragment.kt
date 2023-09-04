@@ -820,7 +820,7 @@ class CartRevampFragment :
                 getMultipleDisabledItemsDialogDeleteConfirmation(allDisabledCartItemDataList.size)
             dialog?.setPrimaryCTAClickListener {
                 var forceExpand = false
-                if (allDisabledCartItemDataList.size > 1 && unavailableItemAccordionCollapseState) {
+                if (allDisabledCartItemDataList.size > 3 && unavailableItemAccordionCollapseState) {
                     collapseOrExpandDisabledItem()
                     forceExpand = true
                 }
@@ -1046,7 +1046,7 @@ class CartRevampFragment :
                 viewModel.cartDataList.value,
                 viewModel.cartModel
             )
-            if (allDisabledCartItemData.size > 1 && unavailableItemAccordionCollapseState) {
+            if (allDisabledCartItemData.size > 3 && unavailableItemAccordionCollapseState) {
                 collapseOrExpandDisabledItem()
                 forceExpand = true
             }
