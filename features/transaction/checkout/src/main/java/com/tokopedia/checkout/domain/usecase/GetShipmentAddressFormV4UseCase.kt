@@ -1,6 +1,5 @@
 package com.tokopedia.checkout.domain.usecase
 
-import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.checkout.data.model.request.saf.ShipmentAddressFormRequest
@@ -32,7 +31,6 @@ class GetShipmentAddressFormV4UseCase @Inject constructor(
     }
 
     override suspend fun execute(params: ShipmentAddressFormRequest): CartShipmentAddressFormData {
-        val gson = Gson()
         val paramMap: MutableMap<String, Any> = HashMap()
         paramMap[ChosenAddressRequestHelper.KEY_CHOSEN_ADDRESS] =
             chosenAddressRequestHelper.getChosenAddress()

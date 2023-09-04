@@ -247,9 +247,9 @@ class CheckoutProductViewHolder(
         fun renderAdjustableFirstItemMarginBmgm() {
             with(bmgmBinding) {
                 if (bindingAdapterPosition == Int.ZERO) {
-                    (ivProductImageFrameBmgm.layoutParams as? MarginLayoutParams)?.topMargin = 0.dpToPx(itemView.resources.displayMetrics)
+                    (ivProductImageFrameBmgm.layoutParams as? MarginLayoutParams)?.topMargin = Int.ZERO.dpToPx(itemView.resources.displayMetrics)
                 } else {
-                    (ivProductImageFrameBmgm.layoutParams as? MarginLayoutParams)?.topMargin = 12.dpToPx(itemView.resources.displayMetrics)
+                    (ivProductImageFrameBmgm.layoutParams as? MarginLayoutParams)?.topMargin = MARGIN_TOP_BMGM_CARD.dpToPx(itemView.resources.displayMetrics)
                 }
             }
         }
@@ -311,10 +311,10 @@ class CheckoutProductViewHolder(
         fun renderAdjustableSeparatorMarginBmgm() {
             with(bmgmBinding) {
                 if (product.shouldShowBmgmInfo) {
-                    (vProductSeparatorBmgm.layoutParams as? MarginLayoutParams)?.topMargin = 12.dpToPx(itemView.resources.displayMetrics)
-                    (vProductSeparatorBmgm.layoutParams as? MarginLayoutParams)?.topMargin = 12.dpToPx(itemView.resources.displayMetrics)
+                    (vProductSeparatorBmgm.layoutParams as? MarginLayoutParams)?.topMargin = MARGIN_TOP_BMGM_CARD.dpToPx(itemView.resources.displayMetrics)
+                    (vProductSeparatorBmgm.layoutParams as? MarginLayoutParams)?.topMargin = MARGIN_TOP_BMGM_CARD.dpToPx(itemView.resources.displayMetrics)
                 } else {
-                    (vProductSeparatorBmgm.layoutParams as? MarginLayoutParams)?.topMargin = 0
+                    (vProductSeparatorBmgm.layoutParams as? MarginLayoutParams)?.topMargin = Int.ZERO
                 }
             }
         }
@@ -419,8 +419,9 @@ class CheckoutProductViewHolder(
     }
 
     private fun renderBMGMGroupInfo(product: CheckoutProductModel) {
-        with(binding) {
-            if (product.shouldShowBmgmInfo) {
+
+        fun renderBmgmGroupTitle() {
+            binding.tvCheckoutBmgmTitle.shouldShowWithAction(product.shouldShowBmgmInfo) {
                 val spannedTitle = SpannableStringBuilder()
                 val color = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
                 product.bmgmOfferMessage.forEachIndexed { idx, htmlMessage ->
@@ -431,24 +432,29 @@ class CheckoutProductViewHolder(
                         spannedTitle.color(color) { append(message) }
                     }
                 }
+                binding.tvCheckoutBmgmTitle.text = spannedTitle
+            }
+        }
 
-                ivCheckoutBmgmBadge.setImageUrl(product.bmgmIconUrl)
-                tvCheckoutBmgmTitle.text = spannedTitle
-                ivCheckoutBmgmDetail.setOnClickListener {
+        fun renderBmgmGroupBadge() {
+            binding.ivCheckoutBmgmBadge.shouldShowWithAction(product.shouldShowBmgmInfo) {
+                binding.ivCheckoutBmgmBadge.setImageUrl(product.bmgmIconUrl)
+            }
+        }
+
+        fun renderBmgmGroupDetail() {
+            binding.ivCheckoutBmgmDetail.shouldShowWithAction(product.shouldShowBmgmInfo) {
+                binding.ivCheckoutBmgmDetail.setOnClickListener {
                     val bmgmCommonData = CheckoutBmgmMapper.mapBmgmCommonDataModel(product)
                     PersistentCacheManager.instance.put(BmgmCommonDataModel.PARAM_KEY_BMGM_DATA, bmgmCommonData)
                     listener.onClickBmgmInfoIcon()
                 }
-
-                ivCheckoutBmgmBadge.show()
-                tvCheckoutBmgmTitle.show()
-                ivCheckoutBmgmDetail.show()
-            } else {
-                ivCheckoutBmgmBadge.hide()
-                tvCheckoutBmgmTitle.hide()
-                ivCheckoutBmgmDetail.hide()
             }
         }
+
+        renderBmgmGroupTitle()
+        renderBmgmGroupBadge()
+        renderBmgmGroupDetail()
     }
 
     private fun renderShopInfo(product: CheckoutProductModel) {
@@ -961,5 +967,7 @@ class CheckoutProductViewHolder(
         private const val VIEW_ALPHA_ENABLED = 1.0f
         private const val VIEW_ALPHA_DISABLED = 0.5f
         private const val DEBOUNCE_TIME_ADDON = 500L
+
+        private const val MARGIN_TOP_BMGM_CARD = 12
     }
 }

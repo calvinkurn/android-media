@@ -170,7 +170,6 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="4dp"
         android:visibility="gone"
-        app:srcCompat="@drawable/ic_bmgm_ticker"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/tv_checkout_bmgm_title"
         app:layout_constraintTop_toBottomOf="@id/iv_checkout_shop_badge"
