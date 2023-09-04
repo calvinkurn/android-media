@@ -868,6 +868,9 @@ object DeeplinkDFMapper : CoroutineScope {
 
             // Toko Chat
             add(DFP({ it.startsWithPattern(ApplinkConstInternalCommunication.TOKO_CHAT) }, DF_TOKOCHAT, R.string.title_applink_toko_chat))
+
+            // Sharing Experience
+            add(DFP({ it.startsWithPattern(ApplinkConstInternalCommunication.POST_PURCHASE_SHARING) }, DF_BASE, R.string.title_applink_sharing_experience))
         }
     }
 
