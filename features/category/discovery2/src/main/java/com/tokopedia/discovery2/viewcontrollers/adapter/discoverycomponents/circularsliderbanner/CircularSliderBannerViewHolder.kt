@@ -40,6 +40,11 @@ class CircularSliderBannerViewHolder(itemView: View, val fragment: Fragment) : A
     private var isDraggingWithExpandableIndicator = false
     private var expandableIndicatorPosition = 0
     private var debounceHandler = Handler(Looper.getMainLooper())
+    private var debounceRunnable = Runnable {
+        sliderBannerViewModel?.onBannerChanged(expandableIndicatorPosition)
+        sliderExpandableIndicator.startIndicatorByPosition(expandableIndicatorPosition)
+        isDraggingWithExpandableIndicator = false
+    }
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         sliderBannerViewModel = discoveryBaseViewModel as? CircularSliderBannerViewModel
@@ -130,13 +135,9 @@ class CircularSliderBannerViewHolder(itemView: View, val fragment: Fragment) : A
                          * because when swiping manually quickly, sometimes the indicator animation is not back to the initial state.
                          */
                         if (isDraggingWithExpandableIndicator) {
-                            debounceHandler.removeCallbacksAndMessages(null)
+                            debounceHandler.removeCallbacks(debounceRunnable)
                             debounceHandler.postDelayed(
-                                {
-                                    sliderBannerViewModel?.onBannerChanged(expandableIndicatorPosition)
-                                    sliderExpandableIndicator.startIndicatorByPosition(expandableIndicatorPosition)
-                                    isDraggingWithExpandableIndicator = false
-                                },
+                                debounceRunnable,
                                 FLING_DURATION.toLong()
                             )
                         }

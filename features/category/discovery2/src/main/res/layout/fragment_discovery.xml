@@ -18,8 +18,8 @@
 
             <com.tokopedia.unifycomponents.LoaderUnify
                 android:id="@+id/progressBar"
-                android:layout_width="@dimen/dp_50"
-                android:layout_height="@dimen/dp_50"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:layout_gravity="center"
                 android:visibility="gone"
                 app:loader_corner_radius="10dp"
@@ -92,7 +92,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:visibility="gone"
-                    tools:layout_height="@dimen/dp_56"
+                    tools:layout_height="56dp"
                     tools:visibility="visible" />
 
                 <com.tokopedia.searchbar.navigation_component.NavToolbar
