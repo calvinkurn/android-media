@@ -51,7 +51,6 @@ import com.tokopedia.scp_rewards_touchpoints.bottomsheet.viewmodel.MedalCelebrat
 import com.tokopedia.scp_rewards_touchpoints.common.Error
 import com.tokopedia.scp_rewards_touchpoints.common.Loading
 import com.tokopedia.scp_rewards_touchpoints.common.PRIMARY_STYLE
-import com.tokopedia.scp_rewards_touchpoints.common.ScpResult
 import com.tokopedia.scp_rewards_touchpoints.common.Success
 import com.tokopedia.scp_rewards_touchpoints.common.di.DaggerCelebrationComponent
 import com.tokopedia.scp_rewards_touchpoints.databinding.CelebrationBottomSheetFragmentLayoutBinding
@@ -64,7 +63,6 @@ import com.tokopedia.unifycomponents.toPx
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
-import com.tokopedia.design.R as designR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 @Suppress("SameParameterValue")
@@ -148,7 +146,7 @@ class MedalCelebrationBottomSheet : BottomSheetUnify() {
     private fun setupViewModelObservers() {
         medalCelebrationViewModel.badgeLiveData.observe(viewLifecycleOwner) {
             when (it) {
-                is Success<*> -> {
+                is Success -> {
                     changeStatusBarIconsToLight()
                     setupBackground()
                     downloadAssets()
@@ -196,7 +194,7 @@ class MedalCelebrationBottomSheet : BottomSheetUnify() {
 
     @SuppressLint("Range")
     private fun setupBackground() {
-        (medalCelebrationViewModel.badgeLiveData.value as Success<ScpRewardsCelebrationModel>).data.apply {
+        (medalCelebrationViewModel.badgeLiveData.value as Success).data.apply {
             binding?.apply {
                 bgColor = scpRewardsCelebrationPage?.celebrationPage?.backgroundColor
                 parentContainer.backgroundTintList = ColorStateList.valueOf(Color.parseColor(bgColor))
@@ -255,7 +253,7 @@ class MedalCelebrationBottomSheet : BottomSheetUnify() {
     }
 
     private fun setAssetUrls() {
-        (medalCelebrationViewModel.badgeLiveData.value as Success<ScpRewardsCelebrationModel>).data.apply {
+        (medalCelebrationViewModel.badgeLiveData.value as Success).data.apply {
             badgeUrl = scpRewardsCelebrationPage?.celebrationPage?.medaliIconImageURL ?: ""
             sunflareUrl = scpRewardsCelebrationPage?.celebrationPage?.medaliEffectImageURL ?: ""
             spotlightUrl = scpRewardsCelebrationPage?.celebrationPage?.medaliSpotLightImageURL ?: ""
@@ -401,7 +399,7 @@ class MedalCelebrationBottomSheet : BottomSheetUnify() {
 
     private fun setAllText() {
         binding?.mainView?.apply {
-            (medalCelebrationViewModel.badgeLiveData.value as Success<ScpRewardsCelebrationModel>).data.apply {
+            (medalCelebrationViewModel.badgeLiveData.value as Success).data.apply {
                 celebrationHeading.text = scpRewardsCelebrationPage?.celebrationPage?.title
                 badgeName.text = scpRewardsCelebrationPage?.celebrationPage?.medaliName
                 val benefitList = scpRewardsCelebrationPage?.celebrationPage?.benefitButton ?: listOf()
@@ -418,7 +416,7 @@ class MedalCelebrationBottomSheet : BottomSheetUnify() {
 
     private fun setupSponsorCard() {
         binding?.mainView?.apply {
-            (medalCelebrationViewModel.badgeLiveData.value as Success<ScpRewardsCelebrationModel>).data.apply {
+            (medalCelebrationViewModel.badgeLiveData.value as Success).data.apply {
                 val medaliSourceText = scpRewardsCelebrationPage?.celebrationPage?.medaliSourceText.orEmpty()
                 val medaliSourceBgColor = scpRewardsCelebrationPage?.celebrationPage?.medaliSourceBackgroundColor.orEmpty()
                 val medaliSourceFontColor = scpRewardsCelebrationPage?.celebrationPage?.medaliSourceFontColor.orEmpty()
@@ -438,7 +436,7 @@ class MedalCelebrationBottomSheet : BottomSheetUnify() {
     }
 
     private fun configureBackgroundImage(bgImage: Drawable) {
-        (medalCelebrationViewModel.badgeLiveData.value as Success<ScpRewardsCelebrationModel>).data.apply {
+        (medalCelebrationViewModel.badgeLiveData.value as Success).data.apply {
             binding?.mainView?.backgroundImage?.apply {
                 show()
                 cornerRadius = CORNER_RADIUS_BG
@@ -503,7 +501,7 @@ class MedalCelebrationBottomSheet : BottomSheetUnify() {
     }
 
     private fun setupCouponCtaListeners() {
-        (medalCelebrationViewModel.badgeLiveData.value as Success<ScpRewardsCelebrationModel>).data.apply {
+        (medalCelebrationViewModel.badgeLiveData.value as Success).data.apply {
             binding?.mainView?.couponUi?.apply {
                 val benefitList = scpRewardsCelebrationPage?.celebrationPage?.benefitButton ?: listOf()
                 benefitList.forEach { benefit ->
@@ -771,8 +769,8 @@ class MedalCelebrationBottomSheet : BottomSheetUnify() {
     }
 
     private fun getBenefitCta(buttonType: String): ScpRewardsCelebrationModel.RewardsGetMedaliCelebrationPage.CelebrationPage.BenefitButton? {
-        return if (medalCelebrationViewModel.badgeLiveData.value is Success<*>) {
-            (medalCelebrationViewModel.badgeLiveData.value as Success<ScpRewardsCelebrationModel>).data.getBenefitCta(buttonType)
+        return if (medalCelebrationViewModel.badgeLiveData.value is Success) {
+            (medalCelebrationViewModel.badgeLiveData.value as Success).data.getBenefitCta(buttonType)
         } else {
             null
         }

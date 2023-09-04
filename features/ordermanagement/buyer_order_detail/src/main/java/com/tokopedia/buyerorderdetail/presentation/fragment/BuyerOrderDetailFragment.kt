@@ -86,7 +86,6 @@ import com.tokopedia.scp_rewards_touchpoints.touchpoints.adapter.viewholder.ScpR
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.analytics.ScpRewardsCelebrationWidgetAnalytics
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.data.model.AnalyticsData
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.data.model.ScpToasterModel
-import com.tokopedia.scp_rewards_touchpoints.touchpoints.data.response.ScpRewardsMedalTouchPointResponse
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.viewmodel.ScpRewardsMedalTouchPointViewModel
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.LoaderUnify
@@ -241,9 +240,9 @@ open class BuyerOrderDetailFragment :
                 null
             ) as? BuyerOrderDetailToolbarMenu
             )?.apply {
-                setViewModel(viewModel)
-                setNavigator(navigator)
-            }
+            setViewModel(viewModel)
+            setNavigator(navigator)
+        }
     }
 
     override fun getScreenName() = BuyerOrderDetailFragment::class.java.simpleName
@@ -467,8 +466,8 @@ open class BuyerOrderDetailFragment :
     private fun observeMedalTouchPoint() {
         scpMedalTouchPointViewModel.medalTouchPointData.observe(viewLifecycleOwner) {
             when (it.result) {
-                is com.tokopedia.scp_rewards_touchpoints.common.Success<*> -> {
-                    val data = ((it.result as com.tokopedia.scp_rewards_touchpoints.common.Success<*>).data as ScpRewardsMedalTouchPointResponse)
+                is com.tokopedia.scp_rewards_touchpoints.common.Success -> {
+                    val data = (it.result as com.tokopedia.scp_rewards_touchpoints.common.Success).data
                     if (data.scpRewardsMedaliTouchpointOrder.isShown) {
                         view?.let { view ->
                             if (!it.initialLoad) {
@@ -943,9 +942,9 @@ open class BuyerOrderDetailFragment :
     }
 
     override fun onClickWidgetListener(appLink: String) {
-        val data = ((scpMedalTouchPointViewModel.medalTouchPointData.value?.result as? com.tokopedia.scp_rewards_touchpoints.common.Success<*>)?.data as ScpRewardsMedalTouchPointResponse)
+        val data = (scpMedalTouchPointViewModel.medalTouchPointData.value?.result as? com.tokopedia.scp_rewards_touchpoints.common.Success)?.data
         ScpRewardsCelebrationWidgetAnalytics.clickCelebrationWidget(
-            badgeId = data.scpRewardsMedaliTouchpointOrder.medaliTouchpointOrder.medaliID.toString(),
+            badgeId = data?.scpRewardsMedaliTouchpointOrder?.medaliTouchpointOrder?.medaliID.toString(),
             orderId = viewModel.getOrderId(),
             pagePath = BUYER_ORDER_DETAIL_PAGE,
             pageType = BUYER_ORDER_DETAIL_PAGE

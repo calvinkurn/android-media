@@ -1,7 +1,7 @@
 package com.tokopedia.scp_rewards_touchpoints.common
 
-sealed interface ScpResult
+sealed interface ScpResult<out T : Any>
 
-class Success<T>(val data:T) : ScpResult
-class Error(val error:Throwable) : ScpResult
-object Loading : ScpResult
+class Success<out T : Any>(val data: T) : ScpResult<T>
+class Error(val error: Throwable) : ScpResult<Nothing>
+object Loading : ScpResult<Nothing>
