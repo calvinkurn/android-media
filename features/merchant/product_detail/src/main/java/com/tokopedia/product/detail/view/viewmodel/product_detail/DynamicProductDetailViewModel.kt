@@ -318,6 +318,8 @@ class DynamicProductDetailViewModel @Inject constructor(
 
     var deviceId: String = userSessionInterface.deviceId ?: ""
 
+    private var aPlusContentExpanded: Boolean = ProductDetailConstant.A_PLUS_CONTENT_DEFAULT_EXPANDED_STATE
+
     override fun getP1(): DynamicProductInfoP1? = getDynamicProductInfoP1
 
     override fun getP2(): ProductInfoP2UiData? = p2Data.value
@@ -525,6 +527,7 @@ class DynamicProductDetailViewModel @Inject constructor(
     ) {
         launch(context = dispatcher.io) {
             runCatching {
+                aPlusContentExpanded = ProductDetailConstant.A_PLUS_CONTENT_DEFAULT_EXPANDED_STATE
                 productRecommSubViewModel.onResetAlreadyRecomHit()
                 shopDomain = productParams.shopDomain
                 forceRefresh = refreshPage
@@ -1392,4 +1395,10 @@ class DynamicProductDetailViewModel @Inject constructor(
             error = error
         )
     }
+
+    fun setAPlusContentExpandedState(expanded: Boolean) {
+        aPlusContentExpanded = expanded
+    }
+
+    fun isAPlusContentExpanded() = aPlusContentExpanded
 }
