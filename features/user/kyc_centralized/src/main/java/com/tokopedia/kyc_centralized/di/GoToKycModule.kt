@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.gojek.OneKycSdk
-import com.gojek.jago.onekyc.configs.UnifiedKycConfigsDefault
 import com.gojek.kyc.sdk.config.DefaultRemoteConfigProvider
 import com.gojek.kyc.sdk.config.KycSdkAnalyticsConfig
 import com.gojek.kyc.sdk.config.KycSdkClientConfig
@@ -228,7 +227,7 @@ open class GoToKycModule {
         gotoKycEventTrackingProvider: GotoKycEventTrackingProvider,
         gotoKycErrorHandler: GotoKycErrorHandler,
         gotoKycImageLoader: GotoKycImageLoader,
-        unifiedKycConfigsDefault: UnifiedKycConfigsDefault,
+        gotoKycUnifiedConfigs: GotoKycUnifiedConfigs,
         kycPlusDefaultCard: GotoKycDefaultCard,
         okHttpClient: OkHttpClient,
         kycSdkConfig: KycSdkConfig
@@ -239,7 +238,7 @@ open class GoToKycModule {
             gotoKycEventTrackingProvider,
             gotoKycErrorHandler,
             gotoKycImageLoader,
-            unifiedKycConfigsDefault,
+            gotoKycUnifiedConfigs,
             kycPlusDefaultCard,
             okHttpClient,
             kycSdkConfig
