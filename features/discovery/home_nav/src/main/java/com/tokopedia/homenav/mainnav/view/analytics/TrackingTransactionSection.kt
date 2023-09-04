@@ -17,6 +17,8 @@ object TrackingTransactionSection : BaseTrackerConst() {
     private const val REVIEW_PROMOTION_ID_FORMAT = "%s - %s - %s - %s"
     private const val ORDER_PROMOTION_ID_FORMAT = "%s - %s"
     private const val ITEM_NAME_WISHLIST = "/global_menu - wishlist_card"
+    private const val STAR_RATING = "star rating"
+    private const val PRODUCT_CARD = "product card"
 
     /**
      * Tracker ID: 18484
@@ -222,6 +224,7 @@ object TrackingTransactionSection : BaseTrackerConst() {
         position: Int,
         userId: String,
         element: NavReviewModel,
+        isClickStar: Boolean,
         starRating: String,
         pageSource: NavSource,
         pageSourcePath: String = ""
@@ -244,10 +247,7 @@ object TrackingTransactionSection : BaseTrackerConst() {
         bundle.putString(UserId.KEY, userId)
         bundle.putString(TrackerId.KEY, "30843")
         val promotion = Bundle()
-        promotion.putString(
-            Promotion.CREATIVE_NAME,
-            element.productName
-        )
+        promotion.putString(Promotion.CREATIVE_NAME, if(isClickStar) STAR_RATING else PRODUCT_CARD)
         val horizontalPosition = (position + 1).toString()
         promotion.putString(Promotion.CREATIVE_SLOT, horizontalPosition)
         promotion.putString(

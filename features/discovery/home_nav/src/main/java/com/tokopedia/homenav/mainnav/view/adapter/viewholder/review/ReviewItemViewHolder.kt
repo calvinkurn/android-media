@@ -45,6 +45,7 @@ class ReviewItemViewHolder(itemView: View, val mainNavListener: MainNavListener)
         mainNavListener.onReviewCardClicked(
             element.navReviewModel,
             element.position,
+            true,
             rateStars,
             generateUriShowBottomSheetReview(element, rateStars)
         )
@@ -81,6 +82,7 @@ class ReviewItemViewHolder(itemView: View, val mainNavListener: MainNavListener)
             mainNavListener.onReviewCardClicked(
                 element.navReviewModel,
                 element.position,
+                false,
                 RATE_STARS_5,
                 generateUriShowBottomSheetReview(element, RATE_STARS_5)
             )

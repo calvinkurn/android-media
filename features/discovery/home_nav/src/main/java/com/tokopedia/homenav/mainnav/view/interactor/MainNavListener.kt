@@ -36,7 +36,7 @@ interface MainNavListener : HomeNavListener {
 
     fun onWishlistCardImpressed(wishlistModel: NavWishlistModel, position: Int)
 
-    fun onReviewCardClicked(element: NavReviewModel, position: Int, ratingValue: String, uri: String)
+    fun onReviewCardClicked(element: NavReviewModel, position: Int, isClickStar: Boolean, ratingValue: String, uri: String)
 
     fun onReviewCardImpressed(element: NavReviewModel, position: Int)
 
