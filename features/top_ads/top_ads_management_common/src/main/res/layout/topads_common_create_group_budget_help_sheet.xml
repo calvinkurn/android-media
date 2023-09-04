@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
-        android:text="@string/mp_create_group_budget_help_desc"
+        android:text="@string/topads_common_create_group_budget_help_desc"
         app:typographyType="paragraph_2"
         android:textColor="@color/Unify_NN950"/>
 
