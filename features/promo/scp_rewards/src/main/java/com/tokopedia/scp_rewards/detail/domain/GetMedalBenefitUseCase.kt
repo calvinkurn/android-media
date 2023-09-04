@@ -23,14 +23,15 @@ class GetMedalBenefitUseCase @Inject constructor() : GraphqlUseCase<MedalBenefit
         private const val MEDALI_SLUG_KEY = "medaliSlug"
     }
 
-    private fun getRequestParams(medaliSlug: String, sourceName: String, pageName: String, type: String, pageNumber: Int = 1, pageSize: Int = 1) = mapOf(
+    private fun getRequestParams(medaliSlug: String, sourceName: String, pageName: String, type: String, pageNumber: Int = 1, pageSize: Int = 1) =
+        mapOf(
             PAGE_NAME_PARAM to pageName,
             MEDALI_SLUG_KEY to medaliSlug,
             SOURCE_NAME_PARAM to sourceName,
             TYPE_PARAM to type,
             PAGE_PARAM to pageNumber,
             PAGESIZE_PARAM to pageSize
-    )
+        )
 }
 
 private const val SCP_REWARDS_MEDAL_BENEFIT_QUERY = """

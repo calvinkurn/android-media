@@ -23,9 +23,9 @@ import com.tokopedia.unifyprinciples.R as unifyPrinciplesR
 
 @SuppressLint("RestrictedApi")
 class CouponViewCard @JvmOverloads constructor(
-        context: Context,
-        attrs: AttributeSet? = null,
-        defStyleAttr: Int = 0
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
 ) : MaterialCardView(context, attrs, defStyleAttr) {
 
     private var binding = ItemCouponLayoutBinding.inflate(LayoutInflater.from(context), this)
@@ -37,34 +37,34 @@ class CouponViewCard @JvmOverloads constructor(
 
     private fun applyEdgeTreatment(infoColor: Int) {
         val edgeTreatment = CouponCardEdgeTreatment(
-                context,
-                horizontalOffset = (binding.divider.top - SCALLOP_RADIUS).toFloat()
+            context,
+            horizontalOffset = (binding.divider.top - SCALLOP_RADIUS).toFloat()
         )
-                .apply {
-                    scallopDiameter = (2 * SCALLOP_RADIUS).toFloat()
-                }
+            .apply {
+                scallopDiameter = (2 * SCALLOP_RADIUS).toFloat()
+            }
 
         shapeAppearanceModel = ShapeAppearanceModel.Builder()
-                .setRightEdge(edgeTreatment)
-                .setAllCornerSizes(dpToPx(context, CORNER_RADIUS))
-                .build()
+            .setRightEdge(edgeTreatment)
+            .setAllCornerSizes(dpToPx(context, CORNER_RADIUS))
+            .build()
 
         val shapeDrawable = MaterialShapeDrawable(shapeAppearanceModel)
         shapeDrawable.setTint(infoColor)
 
         val innerShapeDrawable = MaterialShapeDrawable(shapeAppearanceModel)
-                .apply {
-                    setTint(ContextCompat.getColor(context, unifyPrinciplesR.color.Unify_NN0))
-                }
+            .apply {
+                setTint(ContextCompat.getColor(context, unifyPrinciplesR.color.Unify_NN0))
+            }
 
         background = shapeDrawable
         binding.layoutDetails.background = innerShapeDrawable
     }
 
     fun setData(
-            data: MedalBenefitModel,
-            onApplyClick: (MedalBenefitModel) -> Unit = {},
-            onCardTap: ((MedalBenefitModel) -> Unit)? = null
+        data: MedalBenefitModel,
+        onApplyClick: (MedalBenefitModel) -> Unit = {},
+        onCardTap: ((MedalBenefitModel) -> Unit)? = null
     ) {
         with(binding) {
             tvTitle.text = data.title

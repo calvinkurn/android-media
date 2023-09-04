@@ -58,7 +58,7 @@ class CouponListFragment : BaseDaggerFragment() {
                     context?.launchLink(data.appLink, data.url)
                 }
             }, { data ->
-                requireContext().launchLink(data.appLink, data.url)
+                context?.launchLink(data.appLink, data.url)
             })
         )
     }
@@ -137,7 +137,7 @@ class CouponListFragment : BaseDaggerFragment() {
             .addCallback(object : Snackbar.Callback() {
                 override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
                     super.onDismissed(transientBottomBar, event)
-                    requireContext().launchLink(appLink, url)
+                    context?.launchLink(appLink, url)
                 }
             })
             .show()

@@ -1,16 +1,13 @@
 package com.tokopedia.scp_rewards.detail.presentation.ui
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.scp_rewards.databinding.FragmentMedalBonusBottomSheetBinding
-import com.tokopedia.scp_rewards.detail.di.DaggerMedalDetailComponent
 import com.tokopedia.scp_rewards.detail.domain.model.CouponList
 import com.tokopedia.scp_rewards_widgets.constants.CouponState
 import com.tokopedia.scp_rewards_widgets.model.MedalBenefitModel
@@ -22,15 +19,10 @@ class MedalBonusBottomSheet : BottomSheetUnify() {
 
     private var binding: FragmentMedalBonusBottomSheetBinding? = null
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        DaggerMedalDetailComponent.builder().baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent).build().inject(this)
-    }
-
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         clearContentPadding = true
         isFullpage = true
@@ -47,15 +39,17 @@ class MedalBonusBottomSheet : BottomSheetUnify() {
             val couponList = arguments?.getParcelableArrayList<MedalBenefitModel?>(COUPON_LIST)
 
             val list = listOf(
-                    CouponList(
-                            title = String.format(Locale.getDefault(), getString(scp_rewardsR.string.title_active), couponList?.size.orZero()),
-                            status = CouponState.ACTIVE,
-                            list = couponList,
-                    ),
-                    CouponList(
-                            title = getString(scp_rewardsR.string.title_history),
-                            status = CouponState.INACTIVE,
-                            list = null))
+                CouponList(
+                    title = String.format(Locale.getDefault(), getString(scp_rewardsR.string.title_active), couponList?.size.orZero()),
+                    status = CouponState.ACTIVE,
+                    list = couponList
+                ),
+                CouponList(
+                    title = getString(scp_rewardsR.string.title_history),
+                    status = CouponState.INACTIVE,
+                    list = null
+                )
+            )
 
             list.forEach { tabs.addNewTab(it.title) }
             viewPager.adapter = BonusPagerAdapter(list, childFragmentManager)
@@ -70,9 +64,9 @@ class MedalBonusBottomSheet : BottomSheetUnify() {
         private const val COUPON_LIST = "couponList"
 
         fun show(
-                fragmentManager: FragmentManager,
-                medaliSlug: String,
-                list: List<MedalBenefitModel>?
+            fragmentManager: FragmentManager,
+            medaliSlug: String,
+            list: List<MedalBenefitModel>?
         ) {
             val bundle = Bundle().apply {
                 putString(MEDALI_SLUG, medaliSlug)

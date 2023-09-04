@@ -186,7 +186,7 @@ class MedalDetailFragment : BaseDaggerFragment() {
             .addCallback(object : Snackbar.Callback() {
                 override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
                     super.onDismissed(transientBottomBar, event)
-                    requireContext().launchLink(appLink, url)
+                    context?.launchLink(appLink, url)
                 }
             })
             .show()
@@ -255,7 +255,7 @@ class MedalDetailFragment : BaseDaggerFragment() {
                     )
                 }
             ) { data ->
-                requireContext().launchLink(data.appLink, data.url)
+                context?.launchLink(data.appLink, data.url)
                 sendClickCtaAnalytics(data)
             }
             sendViewCtaAnalytics(listOfButtons)
@@ -354,7 +354,9 @@ class MedalDetailFragment : BaseDaggerFragment() {
             binding.tvTermsConditions.text = text
             binding.tvTermsConditions.setOnClickListener {
                 MedalDetailAnalyticsImpl.sendClickTncCta(medaliSlug)
-                launchWeblink(requireContext(), url.orEmpty())
+                context?.let {
+                    launchWeblink(it, url.orEmpty())
+                }
             }
         }
     }
@@ -544,7 +546,7 @@ class MedalDetailFragment : BaseDaggerFragment() {
                             couponCode = data.cta?.couponCode.orEmpty()
                         )
                     } else {
-                        requireContext().launchLink(data.appLink)
+                        context?.launchLink(data.appLink)
                     }
                 },
                 onCtaClick = { _, _ ->
@@ -552,7 +554,7 @@ class MedalDetailFragment : BaseDaggerFragment() {
                 },
                 onCardTap = { data, isSingle ->
                     if (isSingle) {
-                        requireContext().launchLink(data.appLink, data.url)
+                        context?.launchLink(data.appLink, data.url)
                     } else {
                         MedalBonusBottomSheet.show(childFragmentManager, medaliSlug, benefitSectionModel.benefitList)
                     }
