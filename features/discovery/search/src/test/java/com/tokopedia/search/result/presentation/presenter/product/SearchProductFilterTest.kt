@@ -236,7 +236,7 @@ internal class SearchProductFilterTest: ProductListPresenterTestFixtures() {
     private fun `Then verify interactions bottom sheet filter opened only once`(dynamicFilterModel: DynamicFilterModel) {
         verify(exactly = 1) {
             bottomSheetFilterView.sendTrackingOpenFilterPage()
-            bottomSheetFilterView.openBottomSheetFilter(null, bottomSheetFilterPresenter)
+            bottomSheetFilterView.openBottomSheetFilter(any(), bottomSheetFilterPresenter)
             getDynamicFilterUseCase.execute(any(), any())
             bottomSheetFilterView.setDynamicFilter(dynamicFilterModel)
         }
@@ -284,6 +284,30 @@ internal class SearchProductFilterTest: ProductListPresenterTestFixtures() {
     private fun `Then verify get dynamic filter is called twice`() {
         verify(exactly = 2) {
             getDynamicFilterUseCase.execute(any(), any())
+        }
+    }
+
+    @Test
+    fun `Open sort page`() {
+        val dynamicFilterModel = "searchproduct/dynamicfilter/dynamic-filter-model-common.json".jsonToObject<DynamicFilterModel>()
+        val getDynamicFilterRequestParamSlot = slot<RequestParams>()
+        val mapParameter = mapOf(SearchApiConst.Q to "samsung", SearchApiConst.OFFICIAL to true)
+
+        `Given get dynamic filter model API will success`(getDynamicFilterRequestParamSlot, dynamicFilterModel)
+
+        `When open sort page`(mapParameter)
+
+        `Then verify open bottomsheet sort`(dynamicFilterModel)
+    }
+
+    private fun `When open sort page`(mapParameter: Map<String, Any>) {
+        productListPresenter.openSortPage(mapParameter)
+    }
+
+    private fun `Then verify open bottomsheet sort`(dynamicFilterModel: DynamicFilterModel) {
+        verify {
+            bottomSheetFilterView.openBottomSheetSort(null, bottomSheetFilterPresenter)
+            bottomSheetFilterView.setDynamicFilter(dynamicFilterModel)
         }
     }
 }

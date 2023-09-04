@@ -4,15 +4,14 @@ import android.os.Parcelable
 import com.google.gson.Gson
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.filter.bottomsheet.filtergeneraldetail.GeneralFilterSort
-import com.tokopedia.filter.bottomsheet.filtergeneraldetail.GeneralFilterSortOptions
+import com.tokopedia.filter.common.helper.copyParcelable
 import kotlinx.android.parcel.Parcelize
 import java.util.ArrayList
 
 @Parcelize
 class Filter(@SerializedName("title")
              @Expose
-             var title: String = "",
+             override var title: String = "",
 
              @SerializedName("subTitle", alternate = ["subtitle"])
              @Expose
@@ -24,7 +23,7 @@ class Filter(@SerializedName("title")
 
              @SerializedName("search")
              @Expose
-             var search: Search = Search(),
+             override var search: Search = Search(),
 
              @SerializedName("isNew")
              @Expose
@@ -40,7 +39,8 @@ class Filter(@SerializedName("title")
 
              @SerializedName("options")
              @Expose
-             var options: List<Option> = ArrayList()) : Parcelable, GeneralFilterSort {
+             override var options: List<Option> = ArrayList(),
+) : Parcelable, OptionHolder {
 
     fun clone(
         title: String? = null,
@@ -68,7 +68,7 @@ class Filter(@SerializedName("title")
     val isCategoryFilter: Boolean
         get() = TEMPLATE_NAME_CATEGORY.equals(templateName)
 
-    val isColorFilter: Boolean
+    override val isColorFilter: Boolean
         get() = TEMPLATE_NAME_COLOR.equals(templateName)
 
     val isOfferingFilter: Boolean
@@ -83,7 +83,7 @@ class Filter(@SerializedName("title")
     val isSizeFilter: Boolean
         get() = TEMPLATE_NAME_SIZE.equals(templateName)
 
-    val isLocationFilter: Boolean
+    override val isLocationFilter: Boolean
         get() = TEMPLATE_NAME_LOCATION.equals(templateName)
 
     val isBrandFilter: Boolean
@@ -113,25 +113,7 @@ class Filter(@SerializedName("title")
         }
     }
 
-    override fun getItemOptions(): List<GeneralFilterSortOptions> {
-        return options
-    }
-
-    override fun getTitleOptions(): String {
-        return title
-    }
-
-    override fun isFilterForLocation(): Boolean {
-        return isLocationFilter
-    }
-
-    override fun isFilterForColor(): Boolean {
-        return isColorFilter
-    }
-
-    override fun getSearchable(): Search {
-        return search
-    }
+    override fun copy(): OptionHolder? = copyParcelable()
 
     override fun toString(): String {
         return Gson().toJson(this)

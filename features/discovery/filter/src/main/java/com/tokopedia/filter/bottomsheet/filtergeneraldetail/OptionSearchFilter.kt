@@ -1,16 +1,17 @@
 package com.tokopedia.filter.bottomsheet.filtergeneraldetail
 
 import android.widget.Filter
+import com.tokopedia.filter.common.data.IOption
 import com.tokopedia.filter.common.data.Option
 import java.util.*
 
 internal class OptionSearchFilter(
-        private val onReceiveFilterResult: (List<GeneralFilterSortOptions>) -> Unit
+    private val onReceiveFilterResult: (List<IOption>) -> Unit
 ): Filter() {
 
-    private val sourceData = mutableListOf<GeneralFilterSortOptions>()
+    private val sourceData = mutableListOf<IOption>()
 
-    fun setOptionList(optionList: List<GeneralFilterSortOptions>) {
+    fun setOptionList(optionList: List<IOption>) {
         sourceData.clear()
         sourceData.addAll(optionList)
     }
@@ -27,7 +28,7 @@ internal class OptionSearchFilter(
     }
 
     override fun publishResults(constraint: CharSequence, results: FilterResults) {
-        val resultList = results.values as List<Option>? ?: return
+        val resultList = results.values as List<IOption>? ?: return
 
         onReceiveFilterResult(resultList)
     }

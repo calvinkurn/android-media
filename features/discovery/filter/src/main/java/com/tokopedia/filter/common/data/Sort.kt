@@ -4,7 +4,7 @@ import android.os.Parcelable
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.filter.bottomsheet.filtergeneraldetail.GeneralFilterSortOptions
+import com.tokopedia.filter.common.helper.toMapParam
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
@@ -14,15 +14,15 @@ class Sort(@SerializedName("name")
 
            @SerializedName("key")
            @Expose
-           var key: String = "",
+           override var key: String = "",
 
            @SerializedName("value")
            @Expose
-           var value: String = "",
+           override var value: String = "",
 
            @SerializedName(value = "input_type", alternate = ["inputType"])
            @Expose
-           private var inputType: String = "",
+           override var inputType: String = "",
 
            @SerializedName("applyFilter")
            @Expose
@@ -30,12 +30,24 @@ class Sort(@SerializedName("name")
 
            override var inputState: String = "",
 
-) : Parcelable, GeneralFilterSortOptions {
+) : Parcelable, IOption {
 
-    override val uniqueId: String
-        get() = key + Option.UID_FIRST_SEPARATOR_SYMBOL + value + Option.UID_SECOND_SEPARATOR_SYMBOL + name
+    override val isNew: Boolean
+        get() = false
+
+    override val iconUrl: String
+        get() = ""
+
+    override val hexColor: String
+        get() = ""
+
+    override val description: String
+        get() = ""
 
     override fun toString(): String {
         return name
     }
+
+    fun toMapParam(): Map<String, String> =
+        mapOf(key to value) + applyFilter.toMapParam()
 }
