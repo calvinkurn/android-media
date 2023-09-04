@@ -356,13 +356,13 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
             textRatingDescription?.apply {
                 text = MethodChecker.fromHtml(ratingText)
                 setOnClickListener {
-                    listenerHeader?.onShopRatingClicked(appLink)
+                    listenerHeader?.onShopReviewClicked(appLink)
                 }
             }
         }
 
         imageRatingIcon?.setOnClickListener {
-            listenerHeader?.onShopRatingClicked(appLink)
+            listenerHeader?.onShopReviewClicked(appLink)
         }
         val listDynamicUspValue = listWidgetShopData.getDynamicUspComponent()?.text?.map { it.textHtml }.orEmpty()
         updateDynamicUspValue(listDynamicUspValue.firstOrNull().orEmpty())

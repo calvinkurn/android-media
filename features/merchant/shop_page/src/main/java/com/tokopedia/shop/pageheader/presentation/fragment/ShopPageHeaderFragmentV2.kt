@@ -2113,7 +2113,7 @@ class ShopPageHeaderFragmentV2 :
     }
 
     override fun onClickShopBasicInfoSection(appLink: String) {
-        sendClickHeaderShopName(shopId, userId)
+        sendClickHeaderShopName()
         if (isShopInfoAppLink(appLink)) {
             redirectToShopInfoPage()
         } else {
@@ -2121,12 +2121,17 @@ class ShopPageHeaderFragmentV2 :
         }
     }
 
-    private fun sendClickHeaderShopName(shopId: String, userId: String) {
+    private fun sendClickHeaderShopName() {
         shopPageTracking?.clickHeaderShopName(shopId, userId)
     }
 
-    override fun onShopRatingClicked(appLink: String) {
+    override fun onShopReviewClicked(appLink: String) {
+        sendClickHeaderShopReview()
         RouteManager.route(context, appLink)
+    }
+
+    private fun sendClickHeaderShopReview() {
+        shopPageTracking?.clickHeaderShopReview(shopId, userId)
     }
 
     override fun onChatButtonClicked() {
