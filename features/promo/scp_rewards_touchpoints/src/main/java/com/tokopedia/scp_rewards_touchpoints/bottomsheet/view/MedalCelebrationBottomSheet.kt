@@ -51,6 +51,7 @@ import com.tokopedia.scp_rewards_touchpoints.bottomsheet.viewmodel.MedalCelebrat
 import com.tokopedia.scp_rewards_touchpoints.common.Error
 import com.tokopedia.scp_rewards_touchpoints.common.Loading
 import com.tokopedia.scp_rewards_touchpoints.common.PRIMARY_STYLE
+import com.tokopedia.scp_rewards_touchpoints.common.ScpResult
 import com.tokopedia.scp_rewards_touchpoints.common.Success
 import com.tokopedia.scp_rewards_touchpoints.common.di.DaggerCelebrationComponent
 import com.tokopedia.scp_rewards_touchpoints.databinding.CelebrationBottomSheetFragmentLayoutBinding
@@ -675,7 +676,7 @@ class MedalCelebrationBottomSheet : BottomSheetUnify() {
 
     private fun showErrorView(error: Throwable) {
         context?.let {
-            val defaultBg = ContextCompat.getColor(it, designR.color.white)
+            val defaultBg = ContextCompat.getColor(it, unifyprinciplesR.color.Unify_NN0)
             binding?.mainFlipper?.backgroundTintList = ColorStateList.valueOf(defaultBg)
         }
         binding?.mainFlipper?.displayedChild = ERROR_STATE
@@ -690,7 +691,6 @@ class MedalCelebrationBottomSheet : BottomSheetUnify() {
                     (errorSecondaryAction as UnifyButton).buttonVariant = UnifyButton.Variant.TEXT_ONLY
                 }
                 errorSecondaryAction.text = context?.getString(R.string.go_back_text)
-                errorSecondaryAction.setTextColor(ContextCompat.getColor(context, R.color.dark_grey_nav_color))
                 val buttonColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
                 errorSecondaryAction.setBackgroundColor(buttonColor)
                 setSecondaryActionClickListener {
