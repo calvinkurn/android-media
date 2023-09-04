@@ -27,6 +27,7 @@ import com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk.GotoKycErrorHandler
 import com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk.GotoKycEventTrackingProvider
 import com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk.GotoKycImageLoader
 import com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk.GotoKycInterceptor
+import com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk.GotoKycUnifiedConfigs
 import com.tokopedia.kyc_centralized.util.KycSharedPreference
 import com.tokopedia.kyc_centralized.util.KycSharedPreferenceImpl
 import com.tokopedia.network.NetworkRouter
@@ -195,7 +196,7 @@ open class GoToKycModule {
 
     @Provides
     @ActivityScope
-    fun provideUnifiedKycConfigsDefault() = UnifiedKycConfigsDefault()
+    fun provideUnifiedKycConfigsDefault() = GotoKycUnifiedConfigs()
 
     @Provides
     @ActivityScope
