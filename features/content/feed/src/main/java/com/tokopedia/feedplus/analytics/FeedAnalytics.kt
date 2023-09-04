@@ -40,6 +40,7 @@ class FeedAnalytics @Inject constructor(
         const val CLICK_PAUSE_VIDEO = "click - screen pause video"
         const val VIEW_PRODUCT_LIST_BOTTOMSHEET = "view - product list bottomsheet"
         const val CLICK_HOLD_SEEKER_BAR_VIDEO = "click - tap hold seeker bar video"
+        const val WATCH_VIDEO_POST = "watch video post"
         const val SWIPE_UP_DOWN_CONTENT = "swipe - up down content"
         const val SWIPE_RIGHT_LEFT_MULTIPLE_POST = "swipe - right left multiple post"
         const val CLICK_CTA_BUTTON_CAMPAIGN = "click - cta button campaign"
@@ -173,13 +174,15 @@ class FeedAnalytics @Inject constructor(
         )
     }
 
-    fun eventWatchVideoPost() {
+    fun eventWatchVideoPost(
+        trackerData: FeedTrackerDataModel
+    ) {
         val trackerData =
             generateGeneralTrackerData(
                 Event.OPEN_SCREEN,
                 CATEGORY_UNIFIED_FEED,
-                Action.CLICK_HOLD_SEEKER_BAR_VIDEO,
-                "",
+                Action.WATCH_VIDEO_POST,
+                getEventLabel(trackerData),
                 "41570"
             ).toMutableMap()
         trackerData[KEY_IS_LOGGED_IN_STATUS] = userSession.isLoggedIn
@@ -920,7 +923,7 @@ class FeedAnalytics @Inject constructor(
             when (tabType) {
                 FeedBaseFragment.TAB_TYPE_FOR_YOU -> TAB_TYPE_FOR_YOU
                 FeedBaseFragment.TAB_TYPE_FOLLOWING -> TAB_TYPE_FOLLOWING
-                FeedBaseFragment.CDP -> TAB_TYPE_CDP
+                FeedBaseFragment.TAB_TYPE_CDP -> TAB_TYPE_CDP
                 else -> ""
             }
 

@@ -2325,7 +2325,9 @@ class ShipmentViewModel @Inject constructor(
         val reloadedUniqueIds = ArrayList<String>()
         val unprocessedUniqueIds = ArrayList<String>()
         for (shipmentCartItemModel in shipmentCartItemModelList) {
-            unprocessedUniqueIds.add(shipmentCartItemModel.cartStringGroup)
+            if (shipmentCartItemModel is ShipmentCartItemModel) {
+                unprocessedUniqueIds.add(shipmentCartItemModel.cartStringGroup)
+            }
         }
         // loop to list voucher orders to be applied this will be used later
         val toBeAppliedVoucherOrders: MutableList<PromoCheckoutVoucherOrdersItemUiModel> =
