@@ -10,6 +10,7 @@ import com.tokopedia.home_component.widget.common.DataStatus
 import com.tokopedia.home_component.widget.shop_flash_sale.item.ShopFlashSaleErrorDataModel
 import com.tokopedia.home_component.widget.shop_flash_sale.item.ShopFlashSaleProductGridShimmerDataModel
 import com.tokopedia.home_component.widget.shop_flash_sale.tab.ShopFlashSaleTabDataModel
+import com.tokopedia.home_component.widget.shop_flash_sale.tab.ShopTabDataModel
 import com.tokopedia.home_component_header.model.ChannelHeader
 
 /**
@@ -19,7 +20,7 @@ import com.tokopedia.home_component_header.model.ChannelHeader
  * @param[channelModel] channel model for divider, query param, tracking, etc.
  * @param[channelHeader] header model
  * @param[tabList] list of tab models
- * @param[itemList] visitable list of carousel component (optional). Won't be rendered if null.
+ * @param[itemList] visitable list of carousel component.
  * @param[timer] timer model (optional). Won't be rendered if null.
  */
 data class ShopFlashSaleWidgetDataModel(
@@ -65,5 +66,12 @@ data class ShopFlashSaleWidgetDataModel(
 
     fun getActivatedTab(): ShopFlashSaleTabDataModel? {
         return tabList.find { it.isActivated }
+    }
+
+    fun activateShopTab(id: String): ShopFlashSaleWidgetDataModel {
+        val newList = tabList.map {
+            it.copy(isActivated = it.channelGrid.id == id)
+        }
+        return copy(tabList = newList)
     }
 }

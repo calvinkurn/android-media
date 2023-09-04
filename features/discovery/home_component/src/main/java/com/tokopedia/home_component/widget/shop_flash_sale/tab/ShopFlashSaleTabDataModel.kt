@@ -8,8 +8,4 @@ data class ShopFlashSaleTabDataModel(
     val trackingAttributionModel: TrackingAttributionModel = TrackingAttributionModel(),
     val isActivated: Boolean = false,
     val shopTabListener: ShopTabListener? = null,
-) {
-    companion object {
-        const val PAYLOAD_ACTIVATED = "isActivatedChange"
-    }
-}
+)

@@ -16,8 +16,10 @@ import com.tokopedia.home_component.widget.common.carousel.CarouselListAdapter
 import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleWidgetDataModel.Companion.PAYLOAD_ITEM_LIST_CHANGED
 import com.tokopedia.home_component.widget.shop_flash_sale.item.ShopFlashSaleItemDecoration
 import com.tokopedia.home_component.widget.shop_flash_sale.item.ShopFlashSaleItemTypeFactoryImpl
+import com.tokopedia.home_component.widget.shop_flash_sale.tab.ShopTabDataModel
+import com.tokopedia.home_component.widget.shop_flash_sale.item.ShopFlashSaleErrorListener
 import com.tokopedia.home_component.widget.shop_flash_sale.tab.ShopFlashSaleTabDataModel
-import com.tokopedia.home_component.widget.shop_flash_sale.tab.ShopFlashSaleShopListener
+import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleWidgetMapper.mapShopTabModel
 import com.tokopedia.home_component.widget.shop_flash_sale.tab.ShopTabListener
 import com.tokopedia.home_component_header.model.ChannelHeader
 import com.tokopedia.home_component_header.view.HomeChannelHeaderListener
@@ -30,7 +32,7 @@ import com.tokopedia.home_component.R as home_componentR
 class ShopFlashSaleWidgetViewHolder(
     itemView: View,
     val listener: ShopFlashSaleWidgetListener
-): AbstractViewHolder<ShopFlashSaleWidgetDataModel>(itemView), ShopFlashSaleShopListener, ShopTabListener {
+): AbstractViewHolder<ShopFlashSaleWidgetDataModel>(itemView), ShopFlashSaleErrorListener, ShopTabListener {
 
     companion object {
         @LayoutRes
@@ -61,7 +63,7 @@ class ShopFlashSaleWidgetViewHolder(
         shopFlashSaleWidgetDataModel = element
         setChannelDivider(element.channelModel)
         setHeaderComponent(element.channelHeader, element.channelModel.trackingAttributionModel)
-        updateTab(element.tabList)
+        setTabList(element.tabList)
         updateContent(element)
         renderTimer(element.timer)
     }
@@ -101,8 +103,8 @@ class ShopFlashSaleWidgetViewHolder(
         )
     }
 
-    private fun updateTab(tabList: List<ShopFlashSaleTabDataModel>) {
-        binding?.homeComponentShopFlashSaleTab?.submitList(tabList, this)
+    private fun setTabList(tabList: List<ShopFlashSaleTabDataModel>) {
+        binding?.homeComponentShopFlashSaleTab?.setShopTabs(tabList.map(::mapShopTabModel), this)
     }
 
     private fun updateContent(model: ShopFlashSaleWidgetDataModel) {
@@ -127,16 +129,6 @@ class ShopFlashSaleWidgetViewHolder(
         } catch (_: Exception) { }
     }
 
-    private fun renderShimmerTimer() {
-        if(shopFlashSaleWidgetDataModel?.timer != null) {
-            binding?.shimmerTimerShopFlashSale?.show()
-            binding?.timerShopFlashSale?.invisible()
-        } else {
-            binding?.shimmerTimerShopFlashSale?.hide()
-            binding?.timerShopFlashSale?.hide()
-        }
-    }
-
     private fun initItemAdapter() {
         binding?.homeComponentShopFlashSaleItemRv?.apply {
             layoutManager = itemLayoutManager
@@ -148,29 +140,20 @@ class ShopFlashSaleWidgetViewHolder(
         }
     }
 
-    override fun onShopTabClick(element: ShopFlashSaleTabDataModel) {
-        activateShopTab(element)
-        renderShimmerTimer()
-        shopFlashSaleWidgetDataModel?.let {
-            listener.onShopTabClicked(it, element.trackingAttributionModel, element.channelGrid)
+    override fun onShopTabClick(element: ShopTabDataModel) {
+        val widgetDataModel = shopFlashSaleWidgetDataModel?.activateShopTab(element.id)
+        widgetDataModel?.let {
+            it.getActivatedTab()?.let { tab ->
+                listener.onShopTabClicked(it, tab.trackingAttributionModel, tab.channelGrid)
+            }
         }
     }
 
     override fun onRefreshClick() {
-        renderShimmerTimer()
         shopFlashSaleWidgetDataModel?.let { model ->
             model.getActivatedTab()?.let { tab ->
                 listener.onRefreshClick(model, tab.channelGrid)
             }
         }
-    }
-
-    private fun activateShopTab(element: ShopFlashSaleTabDataModel) {
-        val widgetDataModel = shopFlashSaleWidgetDataModel ?: return
-        val newList = widgetDataModel.tabList.map {
-            it.copy(isActivated = it.channelGrid.id == element.channelGrid.id)
-        }
-        shopFlashSaleWidgetDataModel = widgetDataModel.copy(tabList = newList)
-        updateTab(newList)
     }
 }

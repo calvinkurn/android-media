@@ -4,12 +4,11 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCarouselProductCardTypeFactory
 import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCarouselProductCardTypeFactoryImpl
-import com.tokopedia.home_component.widget.shop_flash_sale.tab.ShopFlashSaleShopListener
 import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleWidgetListener
 
 internal open class ShopFlashSaleItemTypeFactoryImpl(
     listener: ShopFlashSaleWidgetListener,
-    private val internalListener: ShopFlashSaleShopListener,
+    private val errorListener: ShopFlashSaleErrorListener,
     private val commonCarouselTypeFactory: CommonCarouselProductCardTypeFactory = CommonCarouselProductCardTypeFactoryImpl(listener = listener)
 ): ShopFlashSaleItemTypeFactory,
     CommonCarouselProductCardTypeFactory by commonCarouselTypeFactory {
@@ -25,7 +24,7 @@ internal open class ShopFlashSaleItemTypeFactoryImpl(
     override fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<*> {
         return when(viewType) {
             ShopFlashSaleProductGridShimmerViewHolder.LAYOUT -> ShopFlashSaleProductGridShimmerViewHolder(view)
-            ShopFlashSaleErrorViewHolder.LAYOUT -> ShopFlashSaleErrorViewHolder(view, internalListener)
+            ShopFlashSaleErrorViewHolder.LAYOUT -> ShopFlashSaleErrorViewHolder(view, errorListener)
             else -> commonCarouselTypeFactory.createViewHolder(view, viewType)
         }
     }

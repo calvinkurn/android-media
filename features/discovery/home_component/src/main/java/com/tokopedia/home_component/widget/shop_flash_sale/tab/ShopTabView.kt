@@ -33,10 +33,12 @@ class ShopTabView : LinearLayout, ShopTabListener {
 
     private val tabAdapter by lazy {
         ShopFlashSaleTabAdapter(
-            ShopFlashSaleTabDiffUtilCallback(),
+            ShopTabDiffUtilCallback(),
             this
         )
     }
+
+    private val shopTabList = mutableListOf<ShopTabDataModel>()
 
     init {
         binding = HomeComponentShopFlashSaleTabListBinding.inflate(LayoutInflater.from(context), this, true)
@@ -51,15 +53,31 @@ class ShopTabView : LinearLayout, ShopTabListener {
         }
     }
 
-    fun submitList(
-        tabList: List<ShopFlashSaleTabDataModel>,
-        listener: ShopTabListener
+    fun setShopTabs(
+        tabList: List<ShopTabDataModel>,
+        listener: ShopTabListener,
     ) {
         this.listener = listener
-        tabAdapter.submitList(tabList)
+        updateShopTabList(tabList)
     }
 
-    override fun onShopTabClick(element: ShopFlashSaleTabDataModel) {
-        listener?.onShopTabClick(element)
+    private fun updateShopTabList(
+        tabList: List<ShopTabDataModel>,
+        onUpdateFinished: () -> Unit = { },
+    ) {
+        shopTabList.clear()
+        shopTabList.addAll(tabList)
+        tabAdapter.submitList(shopTabList.toList()) {
+            onUpdateFinished.invoke()
+        }
+    }
+
+    override fun onShopTabClick(element: ShopTabDataModel) {
+        val newList = shopTabList.map {
+            it.copy(isActivated = it.id == element.id)
+        }
+        updateShopTabList(newList) {
+            listener?.onShopTabClick(element)
+        }
     }
 }

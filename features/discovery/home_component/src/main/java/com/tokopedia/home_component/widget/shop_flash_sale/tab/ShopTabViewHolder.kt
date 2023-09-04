@@ -17,7 +17,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.home_component.R as home_componentR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
-internal class ShopFlashSaleTabViewHolder(
+internal class ShopTabViewHolder(
     itemView: View,
     private val shopTabListener: ShopTabListener? = null,
 ): RecyclerView.ViewHolder(itemView) {
@@ -28,23 +28,23 @@ internal class ShopFlashSaleTabViewHolder(
 
     private val binding: HomeComponentShopFlashSaleTabItemBinding? by viewBinding()
 
-    fun bind(tab: ShopFlashSaleTabDataModel) {
+    fun bind(tab: ShopTabDataModel) {
         setTabListener(tab)
         bindIndicator(tab)
         bindShop(tab)
     }
 
-    fun bindIndicator(tab: ShopFlashSaleTabDataModel) {
+    fun bindIndicator(tab: ShopTabDataModel) {
         setTabBackground(tab.isActivated)
         setTabIndicator(tab.isActivated)
     }
 
-    fun bindShop(tab: ShopFlashSaleTabDataModel) {
-        renderShopImage(tab.channelGrid)
-        renderShopName(tab.channelGrid)
+    fun bindShop(tab: ShopTabDataModel) {
+        renderShopImage(tab)
+        renderShopName(tab)
     }
 
-    private fun setTabListener(tab: ShopFlashSaleTabDataModel) {
+    private fun setTabListener(tab: ShopTabDataModel) {
         binding?.containerShopFlashSaleTab?.setOnClickListener {
             shopTabListener?.onShopTabClick(tab)
         }
@@ -71,17 +71,17 @@ internal class ShopFlashSaleTabViewHolder(
         }
     }
 
-    private fun renderShopImage(grid: ChannelGrid) {
-        binding?.imgShopFlashSaleTabShopImage?.loadImage(grid.imageUrl)
-        if(grid.badges.isEmpty()) {
+    private fun renderShopImage(tab: ShopTabDataModel) {
+        binding?.imgShopFlashSaleTabShopImage?.loadImage(tab.imageUrl)
+        if(tab.badgesUrl.isEmpty()) {
             binding?.containerShopFlashSaleTabShopBadge?.gone()
         } else {
             binding?.containerShopFlashSaleTabShopBadge?.visible()
-            binding?.imgShopFlashSaleTabShopBadge?.loadImage(grid.badges[0].imageUrl)
+            binding?.imgShopFlashSaleTabShopBadge?.loadImage(tab.badgesUrl)
         }
     }
 
-    private fun renderShopName(grid: ChannelGrid) {
-        binding?.txtShopFlashSaleTabName?.text = grid.name
+    private fun renderShopName(tab: ShopTabDataModel) {
+        binding?.txtShopFlashSaleTabName?.text = tab.shopName
     }
 }

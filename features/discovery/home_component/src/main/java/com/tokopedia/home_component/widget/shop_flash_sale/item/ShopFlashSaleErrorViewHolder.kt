@@ -4,13 +4,12 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.databinding.HomeComponentErrorStateBinding
-import com.tokopedia.home_component.widget.shop_flash_sale.tab.ShopFlashSaleShopListener
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.home_component.R as home_componentR
 
 internal class ShopFlashSaleErrorViewHolder(
     itemView: View,
-    private val listener: ShopFlashSaleShopListener,
+    private val listener: ShopFlashSaleErrorListener,
 ): AbstractViewHolder<ShopFlashSaleErrorDataModel>(itemView) {
     companion object {
         @LayoutRes

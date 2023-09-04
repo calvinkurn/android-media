@@ -47,6 +47,7 @@ object ShopFlashSaleMapper {
                     index == 0
                 )
             },
+            timer = ShopFlashSaleTimerDataModel(isLoading = true),
             itemList = ShopFlashSaleProductGridShimmerDataModel.getAsList(),
         )
     }
