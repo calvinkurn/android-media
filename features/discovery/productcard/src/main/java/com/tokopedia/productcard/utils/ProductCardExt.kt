@@ -251,7 +251,7 @@ private fun Typography.showTypography(labelGroup: ProductCardModel.LabelGroup) {
     }
 }
 
-private fun String?.toUnifyTextColor(context: Context): Int {
+internal fun String?.toUnifyTextColor(context: Context): Int {
     return try {
         when (this) {
             TEXT_DARK_ORANGE -> ContextCompat.getColor(
@@ -483,7 +483,7 @@ internal fun getStockLabelColor(productCardModel: ProductCardModel, it: Typograp
             MethodChecker.getColor(it.context, unifyRColor.Unify_N700_68)
     }
 
-fun <T : View?> View.findViewById(viewStubId: ViewStubId, viewId: ViewId): T? {
+internal fun <T : View?> View.findViewById(viewStubId: ViewStubId, viewId: ViewId): T? {
     val viewStub = findViewById<ViewStub?>(viewStubId.id)
     if (viewStub == null) {
         return findViewById<T>(viewId.id)
@@ -493,7 +493,7 @@ fun <T : View?> View.findViewById(viewStubId: ViewStubId, viewId: ViewId): T? {
     return findViewById<T>(viewId.id)
 }
 
-fun <T : View?> View.showWithCondition(viewStubId: ViewStubId, viewId: ViewId, isShow: Boolean) {
+internal fun <T : View?> View.showWithCondition(viewStubId: ViewStubId, viewId: ViewId, isShow: Boolean) {
     if (isShow) {
         findViewById<T>(viewStubId, viewId)?.show()
     } else {

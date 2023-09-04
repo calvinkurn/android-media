@@ -46,7 +46,6 @@ import com.tokopedia.filter.common.helper.toMapParam
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.iris.Iris
 import com.tokopedia.iris.util.IrisSession
-import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.ErrorHandler
@@ -420,6 +419,9 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     private fun setupRecyclerView(rootView: View) {
+        val isReimagineSearchComponent =
+            reimagineRollence.search2Component() != Search2Component.CONTROL
+
         gridLayoutManager.spanSizeLookup = spanSizeLookup
         recyclerViewUpdater.initialize(
             rootView.findViewById(R.id.recyclerview),
@@ -430,7 +432,7 @@ class ProductListFragment: BaseDaggerFragment(),
             ),
             createProductListTypeFactory(),
             viewLifecycleOwner,
-            presenter?.isReimagine().orFalse(),
+            isReimagineSearchComponent,
         )
 
         recyclerViewUpdater.recyclerView?.let {
@@ -527,7 +529,7 @@ class ProductListFragment: BaseDaggerFragment(),
                 this,
                 this
             ),
-            isReimagine = presenter?.isReimagine().orFalse(),
+            reimagineSearch2Component = reimagineRollence.search2Component(),
         )
     }
 

@@ -6,11 +6,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
 import com.tokopedia.carouselproductcard.CarouselViewAllCardData
+import com.tokopedia.carouselproductcard.reimagine.CarouselProductCardModel
+import com.tokopedia.carouselproductcard.reimagine.grid.CarouselProductCardGridModel
+import com.tokopedia.carouselproductcard.reimagine.viewallcard.CarouselProductCardViewAllCardModel
 import com.tokopedia.home_component_header.view.HomeChannelHeaderListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.model.ImpressHolder
@@ -24,6 +28,10 @@ import com.tokopedia.search.result.presentation.model.LabelGroupDataView
 import com.tokopedia.search.utils.SEARCH_PAGE_RESULT_MAX_LINE
 import com.tokopedia.search.utils.convertToChannelHeader
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.productcard.reimagine.ProductCardModel as ProductCardModelReimagine
+import com.tokopedia.productcard.reimagine.ProductCardModel.FreeShipping as FreeShippingReimagine
+import com.tokopedia.productcard.reimagine.ProductCardModel.LabelGroup as LabelGroupReimagine
+import com.tokopedia.productcard.reimagine.ProductCardModel.ShopBadge as ShopBadgeReimagine
 
 class BroadMatchViewHolder(
         itemView: View,
@@ -45,6 +53,7 @@ class BroadMatchViewHolder(
             showHeaderRevamp()
             hideOldHeader()
             bindHeaderViewRevamp(element)
+            bindReimagineCarousel(element)
         } else {
             hideHeaderRevamp()
             showOldHeader()
@@ -52,8 +61,20 @@ class BroadMatchViewHolder(
             bindSubtitle(element)
             bindSubtitleImage(element)
             bindSeeMore(element)
+            bindCarousel(element)
         }
-        setupRecyclerView(element)
+    }
+
+    private fun showHeaderRevamp() {
+        val headerView = binding?.searchBroadMatchHeader ?: return
+        headerView.visible()
+    }
+
+    private fun hideOldHeader() {
+        binding?.searchBroadMatchTitle?.gone()
+        binding?.searchBroadMatchSubtitle?.gone()
+        binding?.searchBroadMatchSubtitleIcon?.gone()
+        binding?.searchBroadMatchSeeMore?.gone()
     }
 
     private fun bindHeaderViewRevamp(broadMatchDataView: BroadMatchDataView) {
@@ -72,21 +93,67 @@ class BroadMatchViewHolder(
         }
     }
 
-    private fun showHeaderRevamp() {
-        val headerView = binding?.searchBroadMatchHeader ?: return
-        headerView.visible()
+    private fun bindReimagineCarousel(element: BroadMatchDataView) {
+        binding?.searchBroadMatchList?.hide()
+        binding?.searchBroadMatchReimagineList?.visible()
+
+        val carouselProductCardList = productCardReimagineList(element)
+        val viewAllCard = viewAllCardReimagine(element)
+
+        binding?.searchBroadMatchReimagineList?.bind(
+            CarouselProductCardModel(
+                itemList = carouselProductCardList + listOfNotNull(viewAllCard),
+                recycledViewPool = recycledViewPool,
+            )
+        )
     }
+
+    private fun productCardReimagineList(element: BroadMatchDataView) =
+        element.broadMatchItemDataViewList.map { item ->
+            val shopBadge = item.badgeItemDataViewList.firstOrNull()
+
+            CarouselProductCardGridModel(
+                productCardModel = ProductCardModelReimagine(
+                    imageUrl = item.imageUrl,
+                    isAds = item.isOrganicAds,
+                    name = item.name,
+                    price = item.priceString,
+                    slashedPrice = item.originalPrice,
+                    discountPercentage = item.discountPercentage,
+                    rating = item.ratingAverage,
+                    labelGroupList = item.labelGroupDataList.map { labelGroup ->
+                        LabelGroupReimagine(
+                            title = labelGroup.title,
+                            position = labelGroup.position,
+                            type = labelGroup.type,
+                            imageUrl = labelGroup.imageUrl,
+                        )
+                    },
+                    shopBadge = ShopBadgeReimagine(
+                        imageUrl = shopBadge?.imageUrl ?: "",
+                        title = shopBadge?.title ?: "",
+                    ),
+                    freeShipping = FreeShippingReimagine(
+                        imageUrl = item.freeOngkirDataView.imageUrl,
+                    ),
+                ),
+                impressHolder = { item },
+                onImpressed = { broadMatchListener.onBroadMatchItemImpressed(item) },
+                onClick = { broadMatchListener.onBroadMatchItemClicked(item) },
+            )
+        }
+
+    private fun viewAllCardReimagine(element: BroadMatchDataView) =
+        if (element.cardButton.title.isNotEmpty())
+            CarouselProductCardViewAllCardModel(
+                title = element.cardButton.title,
+                onClick = { broadMatchListener.onBroadMatchViewAllCardClicked(element) }
+            )
+        else null
 
     private fun hideHeaderRevamp() {
         val headerView = binding?.searchBroadMatchHeader ?: return
         headerView.hide()
-    }
-
-    private fun hideOldHeader() {
-        binding?.searchBroadMatchTitle?.gone()
-        binding?.searchBroadMatchSubtitle?.gone()
-        binding?.searchBroadMatchSubtitleIcon?.gone()
-        binding?.searchBroadMatchSeeMore?.gone()
     }
 
     private fun showOldHeader() {
@@ -135,7 +202,10 @@ class BroadMatchViewHolder(
         }
     }
 
-    private fun setupRecyclerView(dataView: BroadMatchDataView){
+    private fun bindCarousel(dataView: BroadMatchDataView){
+        binding?.searchBroadMatchReimagineList?.hide()
+        binding?.searchBroadMatchList?.show()
+
         val products = dataView.broadMatchItemDataViewList
         val viewAllCardData: CarouselViewAllCardData? =
             if (dataView.cardButton.title.isNotEmpty())

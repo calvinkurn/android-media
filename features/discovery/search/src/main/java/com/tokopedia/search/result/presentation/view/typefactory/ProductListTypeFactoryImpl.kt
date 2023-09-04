@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.discovery.common.reimagine.Search2Component
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.search.result.product.broadmatch.BroadMatchDataView
 import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
@@ -127,7 +128,7 @@ class ProductListTypeFactoryImpl(
     private val isSneakPeekEnabled: Boolean = false,
     private val inspirationKeywordListener: InspirationKeywordListener,
     private val inspirationProductListener: InspirationProductListener,
-    private val isReimagine: Boolean = false,
+    private val reimagineSearch2Component: Search2Component = Search2Component.CONTROL,
 ) : BaseAdapterTypeFactory(), ProductListTypeFactory {
 
     override fun type(cpmDataView: CpmDataView): Int {
@@ -272,7 +273,12 @@ class ProductListTypeFactoryImpl(
             EmptyStateFilterViewHolder.LAYOUT -> EmptyStateFilterViewHolder(view, emptyStateListener)
             GlobalNavViewHolder.LAYOUT -> GlobalNavViewHolder(view, globalNavListener)
             InspirationCarouselViewHolder.LAYOUT ->
-                InspirationCarouselViewHolder(view, inspirationCarouselListener, recycledViewPool, isReimagine)
+                InspirationCarouselViewHolder(
+                    view,
+                    inspirationCarouselListener,
+                    recycledViewPool,
+                    reimagineSearch2Component.isReimagineCarousel(),
+                )
             InspirationCarouselVideoViewHolder.LAYOUT -> InspirationCarouselVideoViewHolder(
                     view,
                     videoCarouselListener,
@@ -289,7 +295,12 @@ class ProductListTypeFactoryImpl(
                 RecommendationItemViewHolder(view, recommendationListener)
             BannedProductsEmptySearchViewHolder.LAYOUT -> BannedProductsEmptySearchViewHolder(view)
             BroadMatchViewHolder.LAYOUT ->
-                BroadMatchViewHolder(view, broadMatchListener, recycledViewPool, isReimagine)
+                BroadMatchViewHolder(
+                    view,
+                    broadMatchListener,
+                    recycledViewPool,
+                    reimagineSearch2Component.isReimagineCarousel(),
+                )
             SmallGridInspirationCardViewHolder.LAYOUT ->
                 SmallGridInspirationCardViewHolder(view, inspirationCardListener)
             BigGridInspirationCardViewHolder.LAYOUT ->
