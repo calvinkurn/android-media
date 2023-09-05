@@ -198,12 +198,11 @@ class BmgmMiniCartDetailBottomSheet : BottomSheetUnify() {
         tiers.forEach { tier ->
             val isDiscountedTier = !tier.isNonDiscountProducts()
             if (isDiscountedTier) {
-                items.add(getDiscountSectionText(tier, isDiscountedTier))
-                items.addAll(mapToProductList(tier.products, isDiscountedTier))
+                items.add(getDiscountSectionText(tier, isDiscountedTier = true))
+                items.addAll(mapToProductList(tier.products, isDiscountedTier = true))
             } else {
-                val isDiscounted = isDiscountedTier || !hasReachMaxDiscount
-                items.add(getDiscountSectionText(tier, isDiscounted))
-                items.addAll(mapToProductList(tier.products, isDiscounted))
+                items.add(getDiscountSectionText(tier, !hasReachMaxDiscount))
+                items.addAll(mapToProductList(tier.products, !hasReachMaxDiscount))
             }
         }
         return items.toList()
