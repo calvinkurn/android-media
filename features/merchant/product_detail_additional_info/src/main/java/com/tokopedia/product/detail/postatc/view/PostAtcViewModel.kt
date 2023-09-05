@@ -11,6 +11,7 @@ import com.tokopedia.product.detail.postatc.base.PostAtcUiModel
 import com.tokopedia.product.detail.postatc.data.model.PostAtcInfo
 import com.tokopedia.product.detail.postatc.data.model.PostAtcLayout
 import com.tokopedia.product.detail.postatc.mapper.mapToUiModel
+import com.tokopedia.product.detail.postatc.mapper.toPostAtcInfo
 import com.tokopedia.product.detail.postatc.mapper.toUserLocationRequest
 import com.tokopedia.product.detail.postatc.usecase.GetPostAtcLayoutUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -52,7 +53,6 @@ class PostAtcViewModel @Inject constructor(
             pageSource = postAtcParams.pageSource,
             productId = productId,
             session = postAtcParams.session,
-            warehouseId = postAtcParams.warehouseId,
             userLocationRequest = localCacheModel.toUserLocationRequest()
         )
 
@@ -98,7 +98,8 @@ class PostAtcViewModel @Inject constructor(
             shopId = basicInfo.shopId,
             price = basicInfo.price,
             originalPrice = basicInfo.originalPrice,
-            condition = basicInfo.condition
+            condition = basicInfo.condition,
+            warehouseInfo = data.warehouseInfo.toPostAtcInfo()
         )
     }
 }

@@ -1,7 +1,6 @@
 // Sort alphabetically by name
 includeDynamicFeatureIfEnabled("customerapp")
 
-includeIfEnabled("features:merchant:buy_more_get_more")
 includeIfEnabled("features:common:developer_options")
 includeIfEnabled("features:common:developer_options_noop")
 includeIfEnabled("features:common:nps")
@@ -152,6 +151,7 @@ includeIfEnabled("features:merchant:product_detail_common")
 includeIfEnabled("features:merchant:product_ar")
 includeIfEnabled("features:merchant:product_detail_additional_info")
 includeIfEnabled("features:merchant:atc_variant")
+includeIfEnabled("features:merchant:buy_more_get_more")
 includeIfEnabled("features:merchant:product_manage_list")
 includeIfEnabled("features:merchant:product_manage_common")
 includeIfEnabled("features:merchant:seller_menu")
