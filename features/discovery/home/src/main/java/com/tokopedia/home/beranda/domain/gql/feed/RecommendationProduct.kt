@@ -7,6 +7,9 @@ data class RecommendationProduct(
     @SerializedName("pageName")
     @Expose
     val pageName: String = "",
+    @SerializedName("layoutName")
+    @Expose
+    val layoutName: String = "",
     @SerializedName("product", alternate = ["products"])
     @Expose
     val product: List<Product> = listOf(),
