@@ -44,13 +44,11 @@ class SelectBankFragment : BottomSheetUnify(), BankListClickListener {
 
     private lateinit var onBankSelectedListener: OnBankSelectedListener
 
-    var childView: View? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val isInjectorInitialized = initInjector()
         if (isInjectorInitialized) {
-            setChild()
+            initView()
             initViewModels()
         } else {
             dismiss()
@@ -77,13 +75,9 @@ class SelectBankFragment : BottomSheetUnify(), BankListClickListener {
         }
     }
 
-    private fun setChild() {
-        childView = LayoutInflater.from(context).inflate(
-            R.layout.fragment_choose_bank,
-            null,
-            false
-        )
-        setChild(childView)
+    private fun initView() {
+        binding = FragmentChooseBankBinding.inflate(LayoutInflater.from(context))
+        setChild(binding?.root)
     }
 
     private fun initViewModels() {
