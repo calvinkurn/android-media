@@ -10,6 +10,7 @@ import com.tokopedia.feedplus.browse.presentation.model.ChipUiState
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseChipUiModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemUiModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiModel
+import com.tokopedia.feedplus.data.FeedXCard
 import com.tokopedia.feedplus.data.FeedXHomeEntity
 import com.tokopedia.play.widget.ui.model.PlayGridType
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelTypeTransition
@@ -34,16 +35,19 @@ class FeedBrowseMapper @Inject constructor() {
     }
 
     fun mapSlots(response: FeedXHomeEntity): List<FeedBrowseUiModel> {
-        return response.items.map { item ->
-            FeedBrowseUiModel.Channel(
-                id = item.id,
-                title = item.title,
-                extraParams = mapOf(
-                    "group" to item.type
-                ),
-                chipUiState = ChipUiState.Placeholder,
-                channelUiState = ChannelUiState.Placeholder
-            )
+        return response.items.mapNotNull { item ->
+            if (item.typename == FeedXCard.TYPE_FEED_X_CARD_PLACEHOLDER) {
+                FeedBrowseUiModel.Channel(
+                    id = item.id,
+                    title = item.title,
+                    extraParams = mapOf(
+                        "group" to item.type
+                    ),
+                    chipUiState = ChipUiState.Placeholder,
+                    channelUiState = ChannelUiState.Placeholder
+                )
+            }
+            null
         }
     }
 

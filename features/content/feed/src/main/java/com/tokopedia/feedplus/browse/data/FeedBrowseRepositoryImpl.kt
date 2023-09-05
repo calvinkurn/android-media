@@ -43,11 +43,13 @@ class FeedBrowseRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getSlots(): List<FeedBrowseUiModel> {
-       return withContext(dispatchers.io) {
-           val response = feedXHomeUseCase(
-               feedXHomeUseCase.createParams(source = "browse")
-           )
-           mapper.mapSlots(response)
+        return withContext(dispatchers.io) {
+            val response = feedXHomeUseCase(
+                feedXHomeUseCase.createParams(source = "browse")
+            )
+            mapper.mapSlots(response).ifEmpty {
+                throw IllegalStateException("no slot available")
+            }
         }
     }
 
