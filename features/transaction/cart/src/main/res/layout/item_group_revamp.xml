@@ -15,14 +15,6 @@
         android:visibility="gone"
         android:background="@color/Unify_NN50" />
 
-    <com.tokopedia.unifycomponents.ticker.Ticker
-        android:id="@+id/ticker_warning"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp" />
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_shop_header"
         android:layout_width="match_parent"
@@ -133,6 +125,19 @@
                 app:typographyType="display_3"
                 app:typographyWeight="reguler"
                 tools:text="Tangerang Selatan" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_overweight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:lines="1"
+                android:ellipsize="end"
+                android:gravity="center_vertical"
+                android:textColor="@color/Unify_NN600"
+                app:typographyType="display_3"
+                app:typographyWeight="reguler"
+                tools:text="Kelebihan 5 kg. Kurangi barang dulu, ya." />
 
         </com.google.android.flexbox.FlexboxLayout>
 
