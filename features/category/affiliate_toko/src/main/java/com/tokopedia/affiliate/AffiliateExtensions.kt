@@ -23,8 +23,11 @@ import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.user.session.UserSession
+import timber.log.Timber
 
-fun AffiliateTermsAndConditionFragment.createListForTermsAndCondition(context: Context?): ArrayList<Visitable<AffiliateAdapterTypeFactory>> {
+fun AffiliateTermsAndConditionFragment.createListForTermsAndCondition(
+    context: Context?
+): ArrayList<Visitable<AffiliateAdapterTypeFactory>> {
     val itemList: ArrayList<Visitable<AffiliateAdapterTypeFactory>> = ArrayList()
     context?.let {
         itemList.add(AffiliateHeaderModel(AffiliateHeaderItemData(isForPortfolio = false)))
@@ -70,14 +73,20 @@ fun AffiliateTermsAndConditionFragment.createListForTermsAndCondition(context: C
 
 fun View.hideKeyboard(context: Context?) {
     try {
-        val imm = context?.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager?
+        val imm = context?.getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
         imm?.hideSoftInputFromWindow(this.windowToken, 0)
-    } catch (e: Exception) {
-        e.printStackTrace()
+    } catch (e: IllegalStateException) {
+        Timber.e(e)
+    } catch (e: ClassCastException) {
+        Timber.e(e)
     }
 }
 
-fun Ticker.setAnnouncementData(announcementData: AffiliateAnnouncementDataV2, context: FragmentActivity?, source: Int = PAGE_ANNOUNCEMENT_ALL) {
+fun Ticker.setAnnouncementData(
+    announcementData: AffiliateAnnouncementDataV2,
+    context: FragmentActivity?,
+    source: Int = PAGE_ANNOUNCEMENT_ALL
+) {
     when (announcementData.getAffiliateAnnouncementV2?.data?.type) {
         AffiliateBaseFragment.WARNING -> {
             setupTickerView(
@@ -88,6 +97,7 @@ fun Ticker.setAnnouncementData(announcementData: AffiliateAnnouncementDataV2, co
                 context
             )
         }
+
         AffiliateBaseFragment.ERROR -> {
             setupTickerView(
                 source,
@@ -97,6 +107,7 @@ fun Ticker.setAnnouncementData(announcementData: AffiliateAnnouncementDataV2, co
                 context
             )
         }
+
         AffiliateBaseFragment.ANNOUNCEMENT -> {
             setupTickerView(
                 source,
@@ -106,6 +117,7 @@ fun Ticker.setAnnouncementData(announcementData: AffiliateAnnouncementDataV2, co
                 context
             )
         }
+
         else -> {
             setupTickerView(
                 source,
@@ -118,7 +130,13 @@ fun Ticker.setAnnouncementData(announcementData: AffiliateAnnouncementDataV2, co
     }
 }
 
-private fun setupTickerView(source: Int, data: AffiliateAnnouncementDataV2.GetAffiliateAnnouncementV2.Data?, view: Ticker?, type: Int, context: FragmentActivity?) {
+private fun setupTickerView(
+    source: Int,
+    data: AffiliateAnnouncementDataV2.GetAffiliateAnnouncementV2.Data?,
+    view: Ticker?,
+    type: Int,
+    context: FragmentActivity?
+) {
     data?.tickerData?.size?.let {
         if (it > 0) {
             setTickerView(source, data, view, type, context)
@@ -128,7 +146,13 @@ private fun setupTickerView(source: Int, data: AffiliateAnnouncementDataV2.GetAf
     } ?: view?.hide()
 }
 
-private fun setTickerView(source: Int, data: AffiliateAnnouncementDataV2.GetAffiliateAnnouncementV2.Data?, view: Ticker?, type: Int, context: FragmentActivity?) {
+private fun setTickerView(
+    source: Int,
+    data: AffiliateAnnouncementDataV2.GetAffiliateAnnouncementV2.Data?,
+    view: Ticker?,
+    type: Int,
+    context: FragmentActivity?
+) {
     val tickers = getTickerData(data?.tickerData, type)
     val adapter = TickerPagerAdapter(context, tickers)
     view?.addPagerView(adapter, tickers)
@@ -149,11 +173,13 @@ private fun setTickerView(source: Int, data: AffiliateAnnouncementDataV2.GetAffi
                         category = AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE
                         position = PAGE_ANNOUNCEMENT_HOME
                     }
+
                     PAGE_ANNOUNCEMENT_PROMO_PERFORMA -> {
                         item = AffiliateAnalytics.ItemKeys.AFFILIATE_PROMOSIKAN_TICKER_COMMUNICATION
                         category = AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_PAGE
                         position = PAGE_ANNOUNCEMENT_HOME
                     }
+
                     PAGE_ANNOUNCEMENT_TRANSACTION_HISTORY -> {
                         item = AffiliateAnalytics.ItemKeys.AFFILIATE_PENDAPATAN_TICKER_COMMUNICATION
                         category = AffiliateAnalytics.CategoryKeys.AFFILIATE_PENDAPATAN_PAGE
@@ -175,7 +201,10 @@ private fun setTickerView(source: Int, data: AffiliateAnnouncementDataV2.GetAffi
     })
 }
 
-private fun getTickerData(tickerData: List<AffiliateAnnouncementDataV2.GetAffiliateAnnouncementV2.Data.TickerData?>?, type: Int): ArrayList<TickerData> {
+private fun getTickerData(
+    tickerData: List<AffiliateAnnouncementDataV2.GetAffiliateAnnouncementV2.Data.TickerData?>?,
+    type: Int
+): ArrayList<TickerData> {
     val tempList = arrayListOf<TickerData>()
     tickerData?.forEach { ticker ->
         val title = ticker?.announcementTitle ?: ""

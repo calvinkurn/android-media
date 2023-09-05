@@ -16,6 +16,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.topads.sdk'
+    testNamespace 'com.tokopedia.topads.sdk.test'
     buildFeatures {
         buildConfig true
         viewBinding true
@@ -30,7 +32,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.features.goldMerchantCommon)
     implementation projectOrAar(rootProject.ext.libraries.analytics)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation rootProject.ext.firebase.core
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation projectOrAar(rootProject.ext.libraries.trackingOptimizer)
@@ -87,6 +89,8 @@ dependencies {
     testImplementation rootProject.ext.miscDependencies.coroutineTest
     testImplementation rootProject.ext.miscDependencies.coroutineCore
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
+
+    api rootProject.ext.kotlinParcelizeRuntimeDependencies
 }
 
 project.ext {

@@ -21,7 +21,6 @@ import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.dialog.DialogUnify
@@ -39,7 +38,9 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.linker.LinkerConstants
 import com.tokopedia.linker.LinkerManager
+import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerData.NOW_HOME
 import com.tokopedia.linker.model.LinkerData.NOW_TYPE
 import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
@@ -64,6 +65,7 @@ import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.helper.ViewHelper
+import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
@@ -93,6 +95,7 @@ import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseProductUiModel
 import com.tokopedia.tokopedianow.common.util.CustomLinearLayoutManager
 import com.tokopedia.tokopedianow.common.util.SharedPreferencesUtil
+import com.tokopedia.tokopedianow.common.util.ShopIdProvider
 import com.tokopedia.tokopedianow.common.util.StringUtil.getOrDefaultZeroString
 import com.tokopedia.tokopedianow.common.util.TokoMartHomeErrorLogger
 import com.tokopedia.tokopedianow.common.util.TokoMartHomeErrorLogger.ATC_QUANTITY_ERROR
@@ -141,6 +144,7 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSwitcherUiModel.
 import com.tokopedia.tokopedianow.home.presentation.view.HomeProductCarouselChipsView.HomeProductCarouselChipsViewListener
 import com.tokopedia.tokopedianow.home.presentation.view.coachmark.SwitcherCoachMark
 import com.tokopedia.tokopedianow.home.presentation.view.listener.BannerComponentCallback
+import com.tokopedia.tokopedianow.home.presentation.view.listener.BundleWidgetCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.ClaimCouponWidgetCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.ClaimCouponWidgetItemCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.DynamicLegoBannerCallback
@@ -152,7 +156,6 @@ import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeProductRec
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeProductRecomOocCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeRealTimeRecommendationListener
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeSwitcherListener
-import com.tokopedia.tokopedianow.home.presentation.view.listener.BundleWidgetCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.OnBoard20mBottomSheetCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.QuestWidgetCallback
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeEducationalInformationWidgetViewHolder.HomeEducationalInformationListener
@@ -470,7 +473,10 @@ class TokoNowHomeFragment :
 
     override fun onShareBtnReferralSenderClicked(referral: HomeSharingReferralWidgetUiModel) {
         setupReferralData(referral)
-        showUniversalShareBottomSheet(shareHomeTokonow)
+        showUniversalShareBottomSheet(
+            shareHomeTokonow = shareHomeTokonow,
+            isEnableAffiliate = false
+        )
         trackClickShareSenderReferralWidget(referral)
     }
 
@@ -815,7 +821,7 @@ class TokoNowHomeFragment :
     }
 
     private fun setIconNewTopNavigation() {
-        val icons = IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
+        val icons = IconBuilder(IconBuilderFlag(pageSource = NavSource.TOKONOW))
             .addIcon(IconList.ID_SHARE, onClick = ::onClickShareButton, disableDefaultGtmTracker = true)
             .addIcon(IconList.ID_CART, onClick = ::onClickCartButton)
             .addIcon(IconList.ID_NAV_GLOBAL) {}
@@ -823,7 +829,7 @@ class TokoNowHomeFragment :
     }
 
     private fun setIconOldTopNavigation() {
-        val icons = IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
+        val icons = IconBuilder(IconBuilderFlag(pageSource = NavSource.TOKONOW))
             .addIcon(IconList.ID_SHARE, onClick = ::onClickShareButton, disableDefaultGtmTracker = true)
             .addIcon(IconList.ID_CART, onClick = ::onClickCartButton)
         navToolbar?.setIcon(icons)
@@ -1286,12 +1292,16 @@ class TokoNowHomeFragment :
     }
 
     private fun setupReferralData(referral: HomeSharingReferralWidgetUiModel) {
+        val referralCode = referral.sharingUrlParam.removePrefix("${referral.slug}/")
+        val url = "$SHARE_HOME_URL?${LinkerConstants.QUERY_KEY_REFERRAL_CODE}=$referralCode"
+
         updateShareHomeData(
             pageIdConstituents = listOf(PAGE_TYPE_HOME),
             isScreenShot = false,
             thumbNailTitle = context?.resources?.getString(R.string.tokopedianow_share_thumbnail_title).orEmpty(),
             linkerType = NOW_HOME,
-            id = referral.sharingUrlParam.removePrefix("${referral.slug}/")
+            id = referralCode,
+            url = url
         )
 
         shareHomeTokonow?.apply {
@@ -1813,14 +1823,17 @@ class TokoNowHomeFragment :
             .isNotEmpty()
     }
 
-    private fun showUniversalShareBottomSheet(shareHomeTokonow: ShareTokonow?, path: String? = null) {
+    private fun showUniversalShareBottomSheet(
+        shareHomeTokonow: ShareTokonow?,
+        path: String? = null,
+        isEnableAffiliate: Boolean = isEnableAffiliate()
+    ) {
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
             setFeatureFlagRemoteConfigKey()
             path?.let {
                 setImageOnlySharingOption(true)
                 setScreenShotImagePath(path)
             }
-            val shareInput = viewModelTokoNow.getAffiliateShareInput()
 
             init(this@TokoNowHomeFragment)
             setUtmCampaignData(
@@ -1836,8 +1849,10 @@ class TokoNowHomeFragment :
             // set the Image Url of the Image that represents page
             setOgImageUrl(imgUrl = shareHomeTokonow?.ogImageUrl.orEmpty())
 
-            if (isEnableAffiliate()) {
+            if (isEnableAffiliate) {
+                val shareInput = viewModelTokoNow.getAffiliateShareInput()
                 enableAffiliateCommission(shareInput)
+                updateShareDataForAffiliate()
             }
         }
 
@@ -1848,6 +1863,13 @@ class TokoNowHomeFragment :
         }
 
         showShareBottomSheet()
+    }
+
+    private fun updateShareDataForAffiliate() {
+        shareHomeTokonow?.apply {
+            id = ShopIdProvider.getShopId()
+            linkerType = LinkerData.SHOP_TYPE
+        }
     }
 
     private fun showShareBottomSheet() {
@@ -1984,8 +2006,8 @@ class TokoNowHomeFragment :
     private fun createCategoryMenuCallback(): HomeCategoryMenuCallback {
         return HomeCategoryMenuCallback(
             analytics = analytics,
-            warehouseId = localCacheModel?.warehouse_id.orEmpty(),
-            viewModel = viewModelTokoNow,
+            localCacheModel = localCacheModel,
+            viewModel = viewModelTokoNow
         )
     }
 

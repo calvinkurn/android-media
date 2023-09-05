@@ -16,6 +16,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.customer_mid_app'
+    testNamespace 'com.tokopedia.customer_mid_app.test'
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
 
@@ -92,12 +94,13 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.inappupdate)
     implementation projectOrAar(rootProject.ext.libraries.youtubeutil)
     implementation projectOrAar(rootProject.ext.features.tokopointsNotification)
+    implementation projectOrAar(rootProject.ext.features.scpRewardsTouchpoints)
     implementation projectOrAar(rootProject.ext.libraries.collapsingTabLayout)
     implementation projectOrAar(rootProject.ext.libraries.websocket)
-    implementation projectOrAar(rootProject.ext.libraries.tokopatch)
     implementation projectOrAar(rootProject.ext.libraries.baseAdapter)
     implementation projectOrAar(rootProject.ext.features.csat_rating)
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
+    implementation projectOrAar(rootProject.ext.features.scpRewards)
     implementation projectOrAar(rootProject.ext.features.agerestriction)
     implementation projectOrAar(rootProject.ext.features.appCommon)
     implementation projectOrAar(rootProject.ext.features.autocompleteComponent)
@@ -113,6 +116,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticFirebaseRules
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticParam
     implementation rootProject.ext.composeDependencies.composeActivity
+    implementation rootProject.ext.composeDependencies.composeConstraint
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.nestComponents
     implementation rootProject.ext.unifyDependencies.icons
@@ -203,7 +207,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.coreNetwork)
     implementation projectOrAar(rootProject.ext.libraries.trackingOptimizer)
     implementation projectOrAar(rootProject.ext.libraries.utils)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.devMonitoringTools)
     implementation projectOrAar(rootProject.ext.features.reviewCommon)
     implementation projectOrAar(rootProject.ext.features.reviewInbox)

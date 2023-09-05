@@ -10,7 +10,7 @@ private fun generateColorRGBAString(colorInt: Int): String {
 
 fun constructContentToHtml(context: Context, content: String): String {
     val backgroundColor = generateColorRGBAString(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Background))
-    val pColor = generateColorRGBAString(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+    val pColor = generateColorRGBAString(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96))
     val htmlText = """
 <html>
 	<style>

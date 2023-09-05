@@ -3,8 +3,9 @@
     <string name="page_name_wishlist">Wishlist</string>
     <string name="page_name_wishlist_collection">Wishlist Collection</string>
     <string name="page_name_wishlist_collection_detail">Wishlist Collection Detail</string>
-    <string name="page_name_wishlist_edit">Ubah Wishlist</string>
+    <string name="page_name_wishlist_edit">Ubah Koleksi</string>
     <string name="page_name_wishlist_collection_host_bottomsheet">Wishlist Collection Host BottomSheet Activity</string>
+    <string name="page_name_wishlist_collection_create_host_bottomsheet">Wishlist Collection Create Host BottomSheet Activity</string>
     <string name="content_desc_wishlist_checkbox">checkbox pilih wishlist</string>
     <string name="hint_cari_wishlist">Cari di Wishlist</string>
     <string name="error_message_minimum_search_keyword">Masukkan min. 1 karakter di kolom pencarian.</string>
@@ -123,4 +124,18 @@
 
     <string name="collection_privacy_message">Cuma kamu yang bisa melihat Koleksi ini, kecuali kalau kamu membagikannya ke orang lain.</string>
     <string name="collection_other_select_items_label">Pilih Barang (%s)</string>
+
+    <string name="wishlist_affiliate_ticker_title">Dari Wishlist jadi komisi!💰</string>
+    <string name="wishlist_affiliate_ticker_desc">Buat Koleksi Wishlist &amp; bagikan link-nya buat dapet komisi dari Tokopedia Affiliate!</string>
+    <string name="wishlist_affiliate_ticker_cta">Pelajari</string>
+    <string name="affiliate_onboarding_title">Kamu pasti ingin mewujudkan Wishlist-mu. Gimana kalau bisa sambil dapat komisi juga?</string>
+    <string name="affiliate_onboarding_first">Buat Koleksi Wishlist dari barang-barang yang diimpinkan. Pastikan semua kategori produknya bisa dipromosikan, dan dari toko PM, PM Pro, atau Official Store.</string>
+    <string name="affiliate_onboarding_second_register">Selanjutnya, segera daftar Tokopedia Affiliate.</string>
+    <string name="affiliate_onboarding_second_login">Setelah itu, klik ikon Bagikan di Koleksi Wishlist-mu. Lihat perkiraan komisi yang didapatkan, salin link, dan bagikan di sosial media! Jika ada yang beli produk dari Koleksimu, kamu bisa dapat komisi.</string>
+    <string name="affiliate_onboarding_third">Setelah itu, kamu bisa klik ikon Bagikan di Koleksi Wishlist-mu. Lihat juga perkiraan komisi yang didapatkan berdasarkan kategori produk di koleksimu. Salin link-nya dan bagikan di sosial media!</string>
+    <string name="affiliate_onboarding_register_footer">Udah siap wujudkan mimpi &amp; komisi bareng Tokopedia Affiliate? Yuk, daftar sekarang!</string>
+    <string name="affiliate_onboarding_login_footer">Cek komisi yang kamu dapatkan di Tokopedia Affiliate Dashboard, yuk!</string>
+    <string name="affiliate_onboarding_login_action">Cek Tokopedia Affiliate</string>
+    <string name="affiliate_onboarding_register_action">Daftar Tokopedia Affiliate</string>
+    <string name="affiliate_onboarding_bottomsheet_title">Dari Wishlist jadi komisi!</string>
 </resources>

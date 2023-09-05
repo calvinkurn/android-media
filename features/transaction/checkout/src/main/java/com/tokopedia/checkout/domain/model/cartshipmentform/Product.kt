@@ -2,8 +2,10 @@ package com.tokopedia.checkout.domain.model.cartshipmentform
 
 import android.os.Parcelable
 import com.tokopedia.logisticcart.shipping.model.AnalyticsProductCheckoutData
+import com.tokopedia.logisticcart.shipping.model.ShopTypeInfoData
+import com.tokopedia.purchase_platform.common.feature.addons.data.model.AddOnProductDataModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.model.EthicalDrugDataModel
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingDataModel
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
 import kotlinx.parcelize.Parcelize
 
@@ -15,24 +17,16 @@ data class Product(
     var cartId: Long = 0,
     var productId: Long = 0,
     var productName: String = "",
-    var productPriceFmt: String = "",
     var productPrice: Double = 0.0,
     var productOriginalPrice: Double = 0.0,
     var productWholesalePrice: Double = 0.0,
-    var productWholesalePriceFmt: String = "",
     var productWeightFmt: String = "",
     var productWeight: Int = 0,
     var productWeightActual: Int = 0,
-    var productCondition: Int = 0,
-    var productUrl: String = "",
-    var isProductReturnable: Boolean = false,
     var isProductIsFreeReturns: Boolean = false,
     var isProductIsPreorder: Boolean = false,
     var preOrderDurationDay: Int = 0,
     var productCashback: String = "",
-    var productMinOrder: Int = 0,
-    var productInvenageValue: Int = 0,
-    var productSwitchInvenage: Int = 0,
     var productPriceCurrency: Int = 0,
     var productImageSrc200Square: String = "",
     var productNotes: String = "",
@@ -64,6 +58,14 @@ data class Product(
     var bundleOriginalPrice: Double = 0.0,
     var bundleQuantity: Int = 0,
     var bundleIconUrl: String = "",
-    var addOnProduct: AddOnsDataModel = AddOnsDataModel(),
-    var ethicalDrugs: EthicalDrugDataModel = EthicalDrugDataModel()
+    var addOnGiftingProduct: AddOnGiftingDataModel = AddOnGiftingDataModel(),
+    var ethicalDrugs: EthicalDrugDataModel = EthicalDrugDataModel(),
+    var addOnProduct: AddOnProductDataModel = AddOnProductDataModel(),
+
+    // new
+    val shouldShowShopInfo: Boolean = false,
+    val shopName: String = "",
+    val shopTypeInfoData: ShopTypeInfoData = ShopTypeInfoData(),
+    val originWarehouseIds: List<Long> = emptyList(),
+    var campaignId: Int = -1
 ) : Parcelable

@@ -9,7 +9,7 @@
         android:id="@+id/title_headline"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:typographyType="display_1"
         app:typographyWeight="bold"
         android:layout_marginStart="16dp"

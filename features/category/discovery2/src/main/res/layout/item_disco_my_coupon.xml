@@ -13,5 +13,5 @@
     android:layout_marginStart="@dimen/dp_4"
     android:layout_marginEnd="@dimen/dp_4"
     app:unify_image_corner_radius="8"
-    tools:background="@color/Unify_N100"
+    tools:background="@color/Unify_NN200"
     tools:visibility="visible" />

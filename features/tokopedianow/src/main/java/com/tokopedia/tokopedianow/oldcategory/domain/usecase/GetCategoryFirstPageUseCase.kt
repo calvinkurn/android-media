@@ -16,8 +16,8 @@ import com.tokopedia.tokopedianow.searchcategory.data.createDynamicChannelReques
 import com.tokopedia.tokopedianow.searchcategory.data.createFeedbackFieldToggleRequest
 import com.tokopedia.tokopedianow.searchcategory.data.createQuickFilterRequest
 import com.tokopedia.tokopedianow.searchcategory.data.createRepurchaseWidgetRequest
-import com.tokopedia.tokopedianow.searchcategory.data.getTokonowQueryParam
 import com.tokopedia.tokopedianow.searchcategory.data.getFeedbackFieldToggleData
+import com.tokopedia.tokopedianow.searchcategory.data.getTokonowQueryParam
 import com.tokopedia.tokopedianow.searchcategory.data.mapper.getBanner
 import com.tokopedia.tokopedianow.searchcategory.data.mapper.getCategoryFilter
 import com.tokopedia.tokopedianow.searchcategory.data.mapper.getQuickFilter
@@ -32,8 +32,8 @@ import com.tokopedia.tokopedianow.searchcategory.utils.WAREHOUSE_ID
 import com.tokopedia.usecase.coroutines.UseCase
 
 class GetCategoryFirstPageUseCase(
-        private val graphqlUseCase: MultiRequestGraphqlUseCase,
-): UseCase<CategoryModel>() {
+    private val graphqlUseCase: MultiRequestGraphqlUseCase
+) : UseCase<CategoryModel>() {
 
     override suspend fun executeOnBackground(): CategoryModel {
         val queryParams = getTokonowQueryParam(useCaseRequestParams)
@@ -58,29 +58,28 @@ class GetCategoryFirstPageUseCase(
         val graphqlResponse = graphqlUseCase.executeOnBackground()
 
         return CategoryModel(
-                targetedTicker = getTargetedTickerResponse(graphqlResponse),
-                categoryDetail = getCategoryDetail(graphqlResponse),
-                searchProduct = getSearchProduct(graphqlResponse),
-                categoryFilter = getCategoryFilter(graphqlResponse),
-                quickFilter = getQuickFilter(graphqlResponse),
-                bannerChannel = getBanner(graphqlResponse),
-                tokonowRepurchaseWidget = getRepurchaseWidget(graphqlResponse),
-                feedbackFieldToggle = getFeedbackFieldToggleData(graphqlResponse)
+            targetedTicker = getTargetedTickerResponse(graphqlResponse),categoryDetail = getCategoryDetail(graphqlResponse),
+            searchProduct = getSearchProduct(graphqlResponse),
+            categoryFilter = getCategoryFilter(graphqlResponse),
+            quickFilter = getQuickFilter(graphqlResponse),
+            bannerChannel = getBanner(graphqlResponse),
+            tokonowRepurchaseWidget = getRepurchaseWidget(graphqlResponse),
+            feedbackFieldToggle = getFeedbackFieldToggleData(graphqlResponse)
         )
     }
 
     private fun createTokonowCategoryDetailRequest(): GraphqlRequest {
         val categoryID = useCaseRequestParams.parameters[CATEGORY_ID] ?: ""
-        val warehouseID = useCaseRequestParams.parameters[WAREHOUSE_ID] ?: ""
+        val warehouseId = useCaseRequestParams.parameters[WAREHOUSE_ID] ?: ""
 
         return GraphqlRequest(
-                TOKONOW_CATEGORY_DETAIL_GQL_QUERY,
-                TokonowCategoryDetail::class.java,
-                mapOf(
-                        CATEGORY_ID to categoryID,
-                        SLUG to "",
-                        WAREHOUSE_ID to warehouseID,
-                )
+            TOKONOW_CATEGORY_DETAIL_GQL_QUERY,
+            TokonowCategoryDetail::class.java,
+            mapOf(
+                CATEGORY_ID to categoryID,
+                SLUG to "",
+                WAREHOUSE_ID to warehouseId
+            )
         )
     }
 
@@ -100,8 +99,8 @@ class GetCategoryFirstPageUseCase(
 
     private fun getCategoryDetail(graphqlResponse: GraphqlResponse): CategoryDetail {
         return graphqlResponse
-                .getData<TokonowCategoryDetail?>(TokonowCategoryDetail::class.java)
-                ?.categoryDetail ?: CategoryDetail()
+            .getData<TokonowCategoryDetail?>(TokonowCategoryDetail::class.java)
+            ?.categoryDetail ?: CategoryDetail()
     }
 
     companion object {

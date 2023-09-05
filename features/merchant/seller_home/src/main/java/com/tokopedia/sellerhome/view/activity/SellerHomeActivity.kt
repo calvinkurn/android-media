@@ -12,7 +12,6 @@ import android.os.Looper
 import android.provider.Settings
 import android.view.View
 import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -34,7 +33,9 @@ import com.tokopedia.dynamicfeatures.DFInstaller
 import com.tokopedia.internal_review.factory.createReviewHelper
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.getResColor
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.requestStatusBarDark
 import com.tokopedia.kotlin.extensions.view.requestStatusBarLight
 import com.tokopedia.kotlin.extensions.view.show
@@ -143,13 +144,12 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
         initSellerHomePlt()
         super.onCreate(savedInstanceState)
         setContentView()
+        setupNavigator()
 
         setupBackground()
         setupToolbar()
         setupStatusBar()
         setupBottomNav()
-        setupNavigator()
-        setupShadow()
 
         setupDefaultPage(savedInstanceState)
 
@@ -262,6 +262,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
             FragmentType.OTHER -> {
                 UpdateShopActiveWorker.execute(this)
                 showOtherSettingsFragment()
+                showToolbar(FragmentType.OTHER)
             }
         }
         return true
@@ -385,6 +386,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
             binding?.sahBottomNav?.getMenuViewByIndex(NAVIGATION_HOME_MENU_POSITION)
         navigator = SellerHomeNavigator(
             this,
+            lifecycleScope,
             supportFragmentManager,
             sellerHomeRouter,
             userSession,
@@ -400,23 +402,6 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
             navigationView = binding?.sahBottomNav,
             otherMenuView = navigationOtherMenuView
         )
-    }
-
-    private fun setupShadow() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            val isAppDarkMode = isDarkMode()
-            if (isAppDarkMode) {
-                ContextCompat.getDrawable(this, R.drawable.sah_shadow_dark).let {
-                    binding?.statusBarShadow?.background = it
-                    binding?.navBarShadow?.background = it
-                }
-            } else {
-                ContextCompat.getDrawable(this, R.drawable.sah_shadow).let {
-                    binding?.statusBarShadow?.background = it
-                    binding?.navBarShadow?.background = it
-                }
-            }
-        }
     }
 
     private fun showToolbarNotificationBadge() {
@@ -437,18 +422,25 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
     }
 
     private fun showToolbar(@FragmentType pageType: Int = FragmentType.HOME) {
-        if (pageType != FragmentType.OTHER && pageType != FragmentType.ORDER) {
-            val pageTitle = navigator?.getPageTitle(pageType)
-            supportActionBar?.title = pageTitle
-            binding?.sahToolbar?.show()
-            binding?.statusBarShadow?.hide()
-        } else {
-            if (!DeviceScreenInfo.isTablet(this)) {
-                binding?.statusBarShadow?.hide()
-            } else {
-                binding?.statusBarShadow?.show()
+        binding?.run {
+            when (pageType) {
+                FragmentType.HOME, FragmentType.PRODUCT, FragmentType.CHAT -> {
+                    val pageTitle = navigator?.getPageTitle(pageType)
+                    supportActionBar?.title = pageTitle
+                    sahToolbar.show()
+                    val showStatusBar = pageType == FragmentType.HOME
+                    statusBarShadow?.isVisible = showStatusBar
+                }
+
+                else -> {
+                    if (!DeviceScreenInfo.isTablet(this@SellerHomeActivity)) {
+                        statusBarShadow?.gone()
+                    } else {
+                        statusBarShadow?.show()
+                    }
+                    sahToolbar.gone()
+                }
             }
-            binding?.sahToolbar?.hide()
         }
     }
 
@@ -654,7 +646,6 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
             )
         )
         binding?.sahBottomNav?.setMenu(menu)
-
         binding?.sahBottomNav?.setMenuClickListener(this)
     }
 

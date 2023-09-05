@@ -2,9 +2,11 @@ package com.tokopedia.checkout.domain.mapper
 
 import com.tokopedia.logisticcart.shipping.model.CartItemModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnBottomSheetModel
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnWordingModel
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.SOURCE_NORMAL_CHECKOUT
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.SOURCE_ONE_CLICK_SHIPMENT
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingBottomSheetModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingDataModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingWordingModel
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnData
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnMetadata
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnNote
@@ -18,20 +20,21 @@ object ShipmentAddOnMapper {
     private const val QTY = "{{qty}}"
 
     fun mapAddOnBottomSheetParam(
-        addOnsDataModel: AddOnsDataModel,
+        addOnsDataModel: AddOnGiftingDataModel,
         availableBottomSheetData: AvailableBottomSheetData,
-        unavailableBottomSheetData: UnavailableBottomSheetData
+        unavailableBottomSheetData: UnavailableBottomSheetData,
+        isOneClickShipment: Boolean
     ): AddOnProductData {
         return AddOnProductData(
             bottomSheetType = addOnsDataModel.addOnsButtonModel.action,
             bottomSheetTitle = addOnsDataModel.addOnsBottomSheetModel.headerTitle,
-            source = AddOnProductData.SOURCE_NORMAL_CHECKOUT,
+            source = if (isOneClickShipment) SOURCE_ONE_CLICK_SHIPMENT else SOURCE_NORMAL_CHECKOUT,
             availableBottomSheetData = availableBottomSheetData,
             unavailableBottomSheetData = unavailableBottomSheetData
         )
     }
 
-    fun mapAvailableBottomSheetOrderLevelData(addOnWordingModel: AddOnWordingModel, shipmentCartItemModel: ShipmentCartItemModel): AvailableBottomSheetData {
+    fun mapAvailableBottomSheetOrderLevelData(addOnWordingModel: AddOnGiftingWordingModel, shipmentCartItemModel: ShipmentCartItemModel): AvailableBottomSheetData {
         val addOnsDataModel = shipmentCartItemModel.addOnsOrderLevelModel
 
         val addOnWordingData = AddOnWordingData()
@@ -53,14 +56,14 @@ object ShipmentAddOnMapper {
         }
 
         val addOnDataList = arrayListOf<AddOnData>()
-        if (addOnsDataModel?.addOnsDataItemModelList?.isNotEmpty() == true) {
-            for ((addOnPrice, addOnId, addOnMetadata1, addOnQty) in addOnsDataModel.addOnsDataItemModelList) {
+        if (addOnsDataModel.addOnsDataItemModelList.isNotEmpty()) {
+            for (addOnItemModel in addOnsDataModel.addOnsDataItemModelList) {
                 val addOnData = AddOnData()
-                addOnData.addOnId = addOnId
-                addOnData.addOnPrice = addOnPrice
-                addOnData.addOnQty = addOnQty.toInt()
+                addOnData.addOnId = addOnItemModel.addOnId
+                addOnData.addOnPrice = addOnItemModel.addOnPrice
+                addOnData.addOnQty = addOnItemModel.addOnQty.toInt()
                 val addOnNote = AddOnNote()
-                val addOnNoteItemModel = addOnMetadata1.addOnNoteItemModel
+                val addOnNoteItemModel = addOnItemModel.addOnMetadata.addOnNoteItemModel
                 addOnNote.isCustomNote = addOnNoteItemModel.isCustomNote
                 addOnNote.notes = addOnNoteItemModel.notes
                 addOnNote.from = addOnNoteItemModel.from
@@ -77,7 +80,7 @@ object ShipmentAddOnMapper {
             shopName = shipmentCartItemModel.shopName ?: "",
             products = listProduct,
             addOnSavedStates = addOnDataList,
-            cartString = shipmentCartItemModel.cartString ?: "",
+            cartString = shipmentCartItemModel.cartStringGroup ?: "",
             isTokoCabang = shipmentCartItemModel.isFulfillment,
             warehouseId = shipmentCartItemModel.fulfillmentId.toString(),
             defaultFrom = shipmentCartItemModel.addOnDefaultFrom ?: "",
@@ -85,7 +88,7 @@ object ShipmentAddOnMapper {
         )
     }
 
-    fun mapUnavailableBottomSheetOrderLevelData(addOnBottomSheetModel: AddOnBottomSheetModel, shipmentCartItemModel: ShipmentCartItemModel): UnavailableBottomSheetData {
+    fun mapUnavailableBottomSheetOrderLevelData(addOnBottomSheetModel: AddOnGiftingBottomSheetModel, shipmentCartItemModel: ShipmentCartItemModel): UnavailableBottomSheetData {
         val listUnavailableProduct: MutableList<Product> = arrayListOf()
         for ((_, productName) in addOnBottomSheetModel.products) {
             for ((cartId, _, _, productId, _, name, price, _, _, _, variantParentId, _, _, _, _, quantity, _, imageUrl) in shipmentCartItemModel.cartItemModels) {
@@ -111,7 +114,7 @@ object ShipmentAddOnMapper {
         )
     }
 
-    fun mapAvailableBottomSheetProductLevelData(addOnWordingModel: AddOnWordingModel, cartItemModel: CartItemModel): AvailableBottomSheetData {
+    fun mapAvailableBottomSheetProductLevelData(addOnWordingModel: AddOnGiftingWordingModel, cartItemModel: CartItemModel): AvailableBottomSheetData {
         val addOnWordingData = AddOnWordingData()
         var onlyGreetingCard: String = addOnWordingModel.onlyGreetingCard
         if (onlyGreetingCard.contains(QTY)) {
@@ -139,15 +142,16 @@ object ShipmentAddOnMapper {
         listProduct.add(product)
 
         val addOnDataList = arrayListOf<AddOnData>()
-        val (_, addOnsDataItemModelList) = cartItemModel.addOnProductLevelModel
-        if (cartItemModel.addOnProductLevelModel.addOnsDataItemModelList.isNotEmpty()) {
-            for ((addOnPrice, addOnId, addOnMetadata1, addOnQty) in addOnsDataItemModelList) {
+        val (_, addOnsDataItemModelList) = cartItemModel.addOnGiftingProductLevelModel
+        if (cartItemModel.addOnGiftingProductLevelModel.addOnsDataItemModelList.isNotEmpty()) {
+            for (addOnDataItemModel in addOnsDataItemModelList) {
                 val addOnData = AddOnData()
-                addOnData.addOnId = addOnId
-                addOnData.addOnPrice = addOnPrice
-                addOnData.addOnQty = addOnQty.toInt()
+                addOnData.addOnId = addOnDataItemModel.addOnId
+                addOnData.addOnUniqueId = addOnDataItemModel.addOnUniqueId
+                addOnData.addOnPrice = addOnDataItemModel.addOnPrice
+                addOnData.addOnQty = addOnDataItemModel.addOnQty.toInt()
                 val addOnNote = AddOnNote()
-                val addOnNoteItemModel = addOnMetadata1.addOnNoteItemModel
+                val addOnNoteItemModel = addOnDataItemModel.addOnMetadata.addOnNoteItemModel
                 addOnNote.isCustomNote = addOnNoteItemModel.isCustomNote
                 addOnNote.notes = addOnNoteItemModel.notes
                 addOnNote.from = addOnNoteItemModel.from
@@ -164,7 +168,7 @@ object ShipmentAddOnMapper {
             shopName = cartItemModel.shopName,
             products = listProduct,
             addOnSavedStates = addOnDataList,
-            cartString = cartItemModel.cartString,
+            cartString = cartItemModel.cartStringGroup,
             isTokoCabang = cartItemModel.isTokoCabang,
             warehouseId = cartItemModel.warehouseId,
             defaultFrom = cartItemModel.addOnDefaultFrom,
@@ -172,7 +176,7 @@ object ShipmentAddOnMapper {
         )
     }
 
-    fun mapUnavailableBottomSheetProductLevelData(addOnBottomSheetModel: AddOnBottomSheetModel, cartItemModel: CartItemModel): UnavailableBottomSheetData {
+    fun mapUnavailableBottomSheetProductLevelData(addOnBottomSheetModel: AddOnGiftingBottomSheetModel, cartItemModel: CartItemModel): UnavailableBottomSheetData {
         val listUnavailableProduct = arrayListOf<Product>()
         for ((productImageUrl, productName) in addOnBottomSheetModel.products) {
             val product = Product()

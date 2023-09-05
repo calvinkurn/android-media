@@ -13,16 +13,18 @@ import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
-class AddToCartBundleUseCase @Inject constructor(@ApplicationContext private val graphqlRepository: GraphqlRepository,
-                                                 private val addToCartBundleDataMapper: AddToCartBundleDataMapper,
-                                                 private val chosenAddressRequestHelper: ChosenAddressRequestHelper) : UseCase<AddToCartBundleModel>() {
+class AddToCartBundleUseCase @Inject constructor(
+    @ApplicationContext private val graphqlRepository: GraphqlRepository,
+    private val addToCartBundleDataMapper: AddToCartBundleDataMapper,
+    private val chosenAddressRequestHelper: ChosenAddressRequestHelper
+) : UseCase<AddToCartBundleModel>() {
 
     private var params: Map<String, Any?> = emptyMap()
 
     fun setParams(addToCartBundleRequestParam: AddToCartBundleRequestParams, source: String = "") {
         params = mapOf(
-                KEY_PARAMS to addToCartBundleRequestParam,
-                ChosenAddressRequestHelper.KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress()
+            KEY_PARAMS to addToCartBundleRequestParam,
+            ChosenAddressRequestHelper.KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress()
         )
     }
 

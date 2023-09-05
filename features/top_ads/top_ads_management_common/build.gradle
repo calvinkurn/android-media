@@ -14,6 +14,11 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.topads.common'
+    testNamespace 'com.tokopedia.topads.common.test'
+}
+
 dependencies {
     implementation rootProject.ext.unifyDependencies.dialog
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
@@ -42,7 +47,6 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.adapterDelegate)
     implementation rootProject.ext.unifyDependencies.datepicker
 }

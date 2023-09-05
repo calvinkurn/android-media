@@ -2,16 +2,17 @@ package com.tokopedia.home_component
 
 import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.home_component.visitable.BannerRevampDataModel
+import com.tokopedia.home_component.visitable.BestSellerDataModel
 import com.tokopedia.home_component.visitable.CampaignWidgetDataModel
-import com.tokopedia.home_component.visitable.CategoryNavigationDataModel
+import com.tokopedia.home_component.visitable.CategoryWidgetDataModel
 import com.tokopedia.home_component.visitable.CategoryWidgetV2DataModel
 import com.tokopedia.home_component.visitable.CueCategoryDataModel
+import com.tokopedia.home_component.visitable.DealsDataModel
 import com.tokopedia.home_component.visitable.DynamicIconComponentDataModel
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
 import com.tokopedia.home_component.visitable.DynamicLegoBannerSixAutoDataModel
-import com.tokopedia.home_component.visitable.FeaturedBrandDataModel
 import com.tokopedia.home_component.visitable.FeaturedShopDataModel
-import com.tokopedia.home_component.visitable.Lego4AutoDataModel
+import com.tokopedia.home_component.visitable.FlashSaleDataModel
 import com.tokopedia.home_component.visitable.Lego4ProductDataModel
 import com.tokopedia.home_component.visitable.MerchantVoucherDataModel
 import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
@@ -19,35 +20,30 @@ import com.tokopedia.home_component.visitable.MixLeftDataModel
 import com.tokopedia.home_component.visitable.MixLeftPaddingDataModel
 import com.tokopedia.home_component.visitable.MixTopDataModel
 import com.tokopedia.home_component.visitable.ProductHighlightDataModel
-import com.tokopedia.home_component.visitable.QuestWidgetModel
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.home_component.visitable.SpecialReleaseDataModel
 import com.tokopedia.home_component.visitable.TodoWidgetListDataModel
 import com.tokopedia.home_component.visitable.VpsDataModel
-import com.tokopedia.home_component.visitable.DealsDataModel
-import com.tokopedia.home_component.visitable.FlashSaleDataModel
+import com.tokopedia.home_component.widget.special_release.SpecialReleaseRevampDataModel
 
 /**
  * Created by Devara on 2020-04-28
  */
 interface HomeComponentTypeFactory {
+    fun type(categoryWidgetDataModel: CategoryWidgetDataModel): Int = 0
     fun type(categoryWidgetV2DataModel: CategoryWidgetV2DataModel): Int = 0
-    fun type(dynamicLegoBannerDataModel: DynamicLegoBannerDataModel): Int
-    fun type(dynamicLegoBannerSixAutoDataModel: DynamicLegoBannerSixAutoDataModel): Int
-    fun type(recommendationListCarouselDataModel: RecommendationListCarouselDataModel): Int
-    fun type(reminderWidgetModel: ReminderWidgetModel): Int
-    fun type(mixLeftDataModel: MixLeftDataModel): Int
+    fun type(dynamicLegoBannerDataModel: DynamicLegoBannerDataModel): Int = 0
+    fun type(dynamicLegoBannerSixAutoDataModel: DynamicLegoBannerSixAutoDataModel): Int = 0
+    fun type(recommendationListCarouselDataModel: RecommendationListCarouselDataModel): Int = 0
+    fun type(reminderWidgetModel: ReminderWidgetModel): Int = 0
+    fun type(mixLeftDataModel: MixLeftDataModel): Int = 0
     fun type(mixLeftPaddingDataModel: MixLeftPaddingDataModel): Int = 0
-    fun type(mixTopDataModel: MixTopDataModel): Int
-    fun type(productHighlightDataModel: ProductHighlightDataModel): Int
-    fun type(lego4AutoDataModel: Lego4AutoDataModel): Int
-    fun type(featuredShopDataModel: FeaturedShopDataModel): Int
-    fun type(categoryNavigationDataModel: CategoryNavigationDataModel): Int
-    fun type(bannerDataModel: BannerDataModel): Int
-    fun type(dynamicIconComponentDataModel: DynamicIconComponentDataModel): Int
-    fun type(featuredBrandDataModel: FeaturedBrandDataModel): Int
-    fun type(questWidgetModel: QuestWidgetModel): Int
+    fun type(mixTopDataModel: MixTopDataModel): Int = 0
+    fun type(productHighlightDataModel: ProductHighlightDataModel): Int = 0
+    fun type(featuredShopDataModel: FeaturedShopDataModel): Int = 0
+    fun type(bannerDataModel: BannerDataModel): Int = 0
+    fun type(dynamicIconComponentDataModel: DynamicIconComponentDataModel): Int = 0
     fun type(campaignWidgetDataModel: CampaignWidgetDataModel): Int = 0
     fun type(merchantVoucherDataModel: MerchantVoucherDataModel): Int = 0
     fun type(specialReleaseDataModel: SpecialReleaseDataModel): Int = 0
@@ -59,4 +55,6 @@ interface HomeComponentTypeFactory {
     fun type(todoWidgetListDataModel: TodoWidgetListDataModel): Int = 0
     fun type(dealsDataModel: DealsDataModel): Int = 0
     fun type(flashSaleDataModel: FlashSaleDataModel): Int = 0
+    fun type(bestSellerDataModel: BestSellerDataModel): Int = 0
+    fun type(specialReleaseDataModel: SpecialReleaseRevampDataModel): Int = 0
 }

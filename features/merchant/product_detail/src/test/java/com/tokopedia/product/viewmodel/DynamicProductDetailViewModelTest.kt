@@ -1142,6 +1142,8 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
         viewModel.getProductP1(productParams, true, "", userLocationLocal = getUserLocationCache())
 
+        verify { viewModel.onResetAlreadyRecomHit() }
+
         Assert.assertTrue(
             getPdpLayoutUseCase.requestParams.getString(
                 PARAM_PRODUCT_ID,
@@ -1187,6 +1189,8 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         )
 
         viewModel.getProductP1(productParams, true, " ", userLocationLocal = getUserLocationCache())
+
+        verify { viewModel.onResetAlreadyRecomHit() }
 
         Assert.assertTrue(
             getPdpLayoutUseCase.requestParams.getString(PARAM_PRODUCT_ID, "").isEmpty()
@@ -1276,6 +1280,8 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         `co every p1 success`(dataP1, getMockP2Data(), miniCart)
 
         viewModel.getProductP1(productParams, true, "", userLocationLocal = getUserLocationCache())
+
+        verify { viewModel.onResetAlreadyRecomHit() }
 
         `co verify p1 success`()
 
@@ -1472,6 +1478,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             refreshPage = true,
             userLocationLocal = getUserLocationCache()
         )
+        verify { viewModel.onResetAlreadyRecomHit() }
 
         val p1Result = (viewModel.productLayout.value as Success).data
         Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.TRADE_IN })
@@ -1522,6 +1529,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             refreshPage = true,
             userLocationLocal = getUserLocationCache()
         )
+        verify { viewModel.onResetAlreadyRecomHit() }
 
         val p1Result = (viewModel.productLayout.value as Success).data
         Assert.assertTrue(p1Result.none { it.type() == ProductDetailConstant.PRODUCT_LIST })
@@ -1567,6 +1575,8 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             refreshPage = true,
             userLocationLocal = getUserLocationCache()
         )
+        verify { viewModel.onResetAlreadyRecomHit() }
+
         val p1Result = (viewModel.productLayout.value as Success).data
         Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.AR_BUTTON })
     }
@@ -1961,7 +1971,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         `co every p1 success`(dataP1, getMockP2Data(), miniCart)
 
         viewModel.getProductP1(productParams, true, "", userLocationLocal = getUserLocationCache())
-
+        verify { viewModel.onResetAlreadyRecomHit() }
         `co verify p1 success`()
     }
 

@@ -117,6 +117,7 @@ import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.AttachedI
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.ChatActionListBubbleListener
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.ChatOptionListListener
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.ChatRatingListener
+import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.ChatbotOwocListener
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.CsatOptionListListener
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.DynamicStickyButtonListener
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.QuickReplyListener
@@ -252,7 +253,8 @@ class ChatbotFragment2 :
     com.tokopedia.chatbot.chatbot2.view.customview.chatroom.listener.ReplyBoxClickListener,
     ChatbotRejectReasonsBottomSheet.ChatbotRejectReasonsListener,
     DynamicStickyButtonListener,
-    ChatbotRejectReasonsChipListener {
+    ChatbotRejectReasonsChipListener,
+    ChatbotOwocListener {
 
     @Inject
     lateinit var session: UserSessionInterface
@@ -341,6 +343,7 @@ class ChatbotFragment2 :
     private var bigReplyBoxBottomSheet: BigReplyBoxBottomSheet? = null
     private var dynamicAttachmentRejectReasons: DynamicAttachmentRejectReasons? = null
     private var reasonsBottomSheet: ChatbotRejectReasonsBottomSheet? = null
+    private var rejectReasonsText: String = ""
 
     val selectedList = mutableListOf<DynamicAttachmentRejectReasons.RejectReasonFeedbackForm.RejectReasonReasonChip>()
     companion object {
@@ -646,6 +649,7 @@ class ChatbotFragment2 :
 
     override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {
         return ChatbotTypeFactoryImpl(
+            this,
             this,
             this,
             this,
@@ -1527,6 +1531,9 @@ class ChatbotFragment2 :
 
     private fun processDynamicAttachmentButtonAction(model: QuickReplyUiModel) {
         getViewState()?.hideQuickReplyOnClick()
+        selectedList.clear()
+        reasonsBottomSheet?.clearChipList()
+        rejectReasonsText = ""
         viewModel.sendDynamicAttachment108ForAcknowledgement(
             messageId,
             opponentId,
@@ -1556,12 +1563,14 @@ class ChatbotFragment2 :
             if (reasonsBottomSheet == null) {
                 reasonsBottomSheet = ChatbotRejectReasonsBottomSheet.newInstance(
                     it,
-                    selectedList
+                    selectedList,
+                    rejectReasonsText
                 )
             }
         }
         reasonsBottomSheet?.setUpListener(this)
         reasonsBottomSheet?.setUpChipClickListener(this)
+        reasonsBottomSheet?.setText(rejectReasonsText)
         reasonsBottomSheet?.updateSendButtonStatus(false)
         reasonsBottomSheet?.show(childFragmentManager, "")
     }
@@ -2907,6 +2916,8 @@ class ChatbotFragment2 :
         getViewState()?.hideQuickReplyOnClick()
         hideKeyboard()
         selectedList.clear()
+        reasonsBottomSheet?.clearChipList()
+        rejectReasonsText = ""
         val list = mutableListOf<Long>()
         selectedReasons.forEach {
             list.add(it.code)
@@ -2925,11 +2936,16 @@ class ChatbotFragment2 :
         reasonsBottomSheet?.updateSendButtonStatus(false)
     }
 
-    override fun isDismissClicked(isDismissClickOnRejectReasons: Boolean) {
+    override fun isDismissClicked(isDismissClickOnRejectReasons: Boolean, text: String) {
         this.isDismissClickOnRejectReasons = isDismissClickOnRejectReasons
+        this.rejectReasonsText = text
     }
 
     override fun onChipClick(count: Int) {
         reasonsBottomSheet?.checkChipCounter(count)
+    }
+
+    override fun onReceiveOwocInvoiceList() {
+        hideKeyboard()
     }
 }

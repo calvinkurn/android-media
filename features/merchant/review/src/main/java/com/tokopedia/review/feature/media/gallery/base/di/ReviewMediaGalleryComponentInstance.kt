@@ -7,14 +7,12 @@ import com.tokopedia.review.feature.media.gallery.base.di.component.ReviewMediaG
 import com.tokopedia.review.feature.media.gallery.detailed.di.DetailedReviewMediaGalleryComponentInstance
 
 object ReviewMediaGalleryComponentInstance {
-    private var INSTANCE: ReviewMediaGalleryComponent? = null
 
     @JvmStatic
     fun getInstance(context: Context): ReviewMediaGalleryComponent {
-        return INSTANCE ?: DaggerReviewMediaGalleryComponent.builder()
+        return DaggerReviewMediaGalleryComponent.builder()
             .baseAppComponent((context.applicationContext as BaseMainApplication).baseAppComponent)
             .detailedReviewMediaGalleryComponent(DetailedReviewMediaGalleryComponentInstance.getInstance(context))
             .build()
-            .also { INSTANCE = it }
     }
 }

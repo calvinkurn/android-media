@@ -118,7 +118,7 @@ public class ImpressedImageView extends AppCompatImageView {
 
         int[] location = new int[2];
         view.getLocationOnScreen(location);
-        int offset = getResources().getDimensionPixelOffset(R.dimen.dp_45);
+        int offset = getResources().getDimensionPixelOffset(com.tokopedia.topads.sdk.R.dimen.impressed_image_view_offset);
         float X = location[0] + offset;
         float Y = location[1] + offset;
         if (screen.top <= Y && screen.bottom >= Y && (screen.left) <= X && (screen.right) >= X) {
@@ -132,7 +132,7 @@ public class ImpressedImageView extends AppCompatImageView {
         if (offset > 0) {
             return getScreenHeight() - offset;
         } else {
-            return getScreenHeight() - getResources().getDimensionPixelOffset(R.dimen.dp_45);
+            return getScreenHeight() - getResources().getDimensionPixelOffset(com.tokopedia.topads.sdk.R.dimen.impressed_image_view_offset);
         }
     }
 

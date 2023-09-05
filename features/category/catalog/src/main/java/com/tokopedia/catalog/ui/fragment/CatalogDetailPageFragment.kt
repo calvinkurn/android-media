@@ -25,6 +25,7 @@ import com.google.android.youtube.player.YouTubeInitializationResult
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.catalog.R
 import com.tokopedia.catalog.adapter.CatalogAnimationListener
@@ -47,7 +48,6 @@ import com.tokopedia.catalog.model.util.CatalogUiUpdater
 import com.tokopedia.catalog.model.util.CatalogUtil
 import com.tokopedia.catalog.model.util.nestedrecyclerview.NestedRecyclerView
 import com.tokopedia.catalog.ui.activity.CatalogGalleryActivity
-import com.tokopedia.catalog.ui.activity.CatalogYoutubePlayerActivity
 import com.tokopedia.catalog.ui.bottomsheet.CatalogComponentBottomSheet
 import com.tokopedia.catalog.ui.bottomsheet.CatalogPreferredProductsBottomSheet
 import com.tokopedia.catalog.ui.bottomsheet.CatalogSpecsAndDetailBottomSheet
@@ -65,8 +65,10 @@ import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareData
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.searchbar.data.HintData
+import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.toPx
@@ -409,7 +411,7 @@ class CatalogDetailPageFragment :
         navToolbar?.apply {
             viewLifecycleOwner.lifecycle.addObserver(this)
             setIcon(
-                IconBuilder()
+                IconBuilder(builderFlags = IconBuilderFlag(pageSource = NavSource.CATALOG))
                     .addIcon(IconList.ID_SHARE) {
                         generateCatalogShareData(catalogId, true)
                     }
@@ -735,9 +737,8 @@ class CatalogDetailPageFragment :
             if (YouTubeApiServiceUtil.isYouTubeApiServiceAvailable(it.applicationContext)
                 == YouTubeInitializationResult.SUCCESS
             ) {
-                catalogVideo.url?.let { videoUrl ->
-                    // Sending only one video so selectedIndex to be 0 always
-                    startActivity(CatalogYoutubePlayerActivity.createIntent(it, listOf(videoUrl), 0))
+                catalogVideo.videoId?.let { videoId ->
+                    redirectToYoutubePlayerPage(videoId)
                 }
             } else {
                 // Handle if user didn't have any apps to open Youtube * Usually rooted phone
@@ -752,6 +753,10 @@ class CatalogDetailPageFragment :
                 }
             }
         }
+    }
+
+    private fun redirectToYoutubePlayerPage(videoId: String) {
+        RouteManager.route(context, ApplinkConst.YOUTUBE_PLAYER, videoId)
     }
 
     override fun comparisonCatalogClicked(comparisonCatalogId: String) {

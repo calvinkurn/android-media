@@ -7,6 +7,7 @@
       "eventAction": "merchant voucher multiple - view coupon",
       "eventCategory": "homepage",
       "eventLabel": "",
+      "trackerId": "26978",
       "businessUnit": "home & browse",
       "currentSite": "tokopediamarketplace",
       "promotions": [
@@ -26,6 +27,7 @@
       "eventAction": "merchant voucher multiple - click shop",
       "eventCategory": "homepage",
       "eventLabel": ".*",
+      "trackerId": "26979",
       "businessUnit": "home & browse",
       "currentSite": "tokopediamarketplace",
       "promotions": [
@@ -46,6 +48,7 @@
       "eventAction": "merchant voucher multiple - click product detail",
       "eventCategory": "homepage",
       "eventLabel": ".* - .*",
+      "trackerId": "26981",
       "businessUnit": "home & browse",
       "currentSite": "tokopediamarketplace",
       "item_list": "/ - p.* - merchant_voucher_multiple - product - .* - .* - .* - .* - .* - .*",

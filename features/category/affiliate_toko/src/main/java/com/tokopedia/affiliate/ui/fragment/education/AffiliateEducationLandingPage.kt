@@ -37,8 +37,10 @@ import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.searchbar.data.HintData
+import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.url.Env
 import com.tokopedia.url.TokopediaUrl
@@ -139,7 +141,7 @@ class AffiliateEducationLandingPage :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding?.eduNavToolbar?.run {
-            val iconBuilder = IconBuilder()
+            val iconBuilder = IconBuilder(builderFlags = IconBuilderFlag(pageSource = NavSource.AFFILIATE))
             if (isAffiliateNCEnabled()) {
                 iconBuilder.addIcon(IconList.ID_NOTIFICATION, disableRouteManager = true) {
                     eduViewModel?.resetNotificationCount()
@@ -220,7 +222,7 @@ class AffiliateEducationLandingPage :
                 }
             }
         )
-        navToolbar.findViewById<EditText>(R.id.et_search)
+        navToolbar.findViewById<EditText>(com.tokopedia.searchbar.R.id.et_search)
             ?.setOnFocusChangeListener { v: View, hasFocus ->
                 (v as EditText).hint = if (hasFocus) {
                     getString(R.string.affiliate_landing_page_search_active_placeholder)

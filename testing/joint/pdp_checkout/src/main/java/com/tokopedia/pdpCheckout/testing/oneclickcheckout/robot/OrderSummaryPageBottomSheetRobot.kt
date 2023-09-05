@@ -19,14 +19,16 @@ import org.junit.Assert.assertEquals
 
 class OrderPriceSummaryBottomSheetRobot {
 
-    fun assertSummary(productPrice: String = "",
-                      productDiscount: String? = null,
-                      shippingPrice: String = "",
-                      shippingDiscount: String? = null,
-                      isBbo: Boolean = false,
-                      insurancePrice: String? = null,
-                      paymentFee: String? = null,
-                      totalPrice: String = "") {
+    fun assertSummary(
+        productPrice: String = "",
+        productDiscount: String? = null,
+        shippingPrice: String = "",
+        shippingDiscount: String? = null,
+        isBbo: Boolean = false,
+        insurancePrice: String? = null,
+        paymentFee: String? = null,
+        totalPrice: String = ""
+    ) {
         onView(withId(R.id.tv_total_product_price_value)).check(matches(withText(productPrice)))
         onView(withId(R.id.tv_total_product_discount_value)).check { view, noViewFoundException ->
             noViewFoundException?.printStackTrace()
@@ -99,13 +101,13 @@ class InstallmentDetailBottomSheetRobot {
 class OvoActivationBottomSheetRobot {
 
     fun performActivation(isSuccess: Boolean) {
-        //block main thread for webview processing
+        // block main thread for webview processing
         Thread.sleep(5000)
         onView(withId(R.id.web_view)).check { view, noViewFoundException ->
             noViewFoundException?.printStackTrace()
             (view as WebView).loadUrl("https://api-staging.tokopedia.com/cart/v2/receiver/?is_success=${if (isSuccess) 1 else 0}")
         }
-        //block main thread for webview processing
+        // block main thread for webview processing
         Thread.sleep(5000)
     }
 }

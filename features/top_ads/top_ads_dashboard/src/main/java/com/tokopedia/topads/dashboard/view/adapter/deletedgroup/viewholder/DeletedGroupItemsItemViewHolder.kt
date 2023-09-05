@@ -117,7 +117,7 @@ class DeletedGroupItemsItemViewHolder(
         val colorSpan = ForegroundColorSpan(
             ContextCompat.getColor(
                 view.context,
-                com.tokopedia.unifycomponents.R.color.Unify_N700
+                com.tokopedia.unifyprinciples.R.color.Unify_NN950
             )
         )
         spannableString.setSpan(colorSpan, 0, priceBid.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)

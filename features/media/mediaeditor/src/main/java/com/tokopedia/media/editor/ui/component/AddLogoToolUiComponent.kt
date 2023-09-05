@@ -18,6 +18,7 @@ import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.media.editor.R as editorR
 import com.tokopedia.media.editor.databinding.AddLogoTipsBottomsheetBinding
 import com.tokopedia.media.editor.ui.uimodel.EditorAddLogoUiModel
+import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateUiModel
 import com.tokopedia.media.editor.utils.cropCenterImage
 import com.tokopedia.media.editor.utils.roundedBitmap
 import com.tokopedia.media.loader.loadImageWithEmptyTarget
@@ -149,9 +150,14 @@ class AddLogoToolUiComponent constructor(
             {},
             MediaBitmapEmptyTarget(
                 onReady = { loadedBitmap ->
-                    val finalBitmap =
-                        cropCenterImage(loadedBitmap, ImageRatioType.RATIO_1_1)?.first
-                            ?: loadedBitmap
+                    var finalBitmap: Bitmap = loadedBitmap
+
+                    val cropDetail = cropCenterImage(loadedBitmap, ImageRatioType.RATIO_1_1)
+                    cropDetail?.let { cropRotateData ->
+                        listener.onStandardizeAvatar(loadedBitmap, cropRotateData)?.let {
+                            finalBitmap = it
+                        }
+                    }
 
                     shopAvatar.setImageBitmap(
                         roundedBitmap(context, finalBitmap, isCircular = true)
@@ -165,6 +171,11 @@ class AddLogoToolUiComponent constructor(
                 }
             )
         )
+    }
+
+    // for tracker only
+    fun getUploadState(): String {
+        return uploadText.text.toString()
     }
 
     private fun isLogoChosen(finishedUrl: String) {
@@ -245,6 +256,8 @@ class AddLogoToolUiComponent constructor(
     private fun shopLoadFailedToaster() {
         toaster?.dismiss()
         Handler().postDelayed({
+            listener.onLoadFailedToasterShow()
+
             toaster = Toaster.build(
                 container(),
                 resources().getString(editorR.string.editor_add_logo_toast_text),
@@ -254,8 +267,6 @@ class AddLogoToolUiComponent constructor(
                 clickListener = {
                     if (retryNumber >= RETRY_LIMIT) {
                         listener.onLoadFailed()
-                    } else {
-                        listener.onLoadRetry()
                     }
                     retryNumber++
                     initShopAvatar()
@@ -269,7 +280,9 @@ class AddLogoToolUiComponent constructor(
         fun onLogoChosen(bitmap: Bitmap?, newSize: Pair<Int, Int>, isCircular: Boolean)
         fun onUpload()
         fun onLoadFailed()
-        fun onLoadRetry()
+        fun onLoadFailedToasterShow()
+
+        fun onStandardizeAvatar(source: Bitmap, cropRotateData: EditorCropRotateUiModel): Bitmap?
     }
 
     companion object {

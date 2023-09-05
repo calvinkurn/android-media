@@ -4,6 +4,8 @@ import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.utils.UrlParamUtils.generateUrlParamString
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.tokopedianow.common.domain.model.GetProductAdsResponse
+import com.tokopedia.tokopedianow.common.domain.query.GetProductAdsQuery
 import com.tokopedia.tokopedianow.home.domain.model.GetRepurchaseResponse
 import com.tokopedia.tokopedianow.home.domain.query.GetRepurchaseWidget
 import com.tokopedia.tokopedianow.home.domain.usecase.GetRepurchaseWidgetUseCase
@@ -14,6 +16,7 @@ import com.tokopedia.tokopedianow.searchcategory.domain.model.DynamicChannelMode
 import com.tokopedia.tokopedianow.searchcategory.domain.model.GetFeedbackFieldModel
 import com.tokopedia.tokopedianow.searchcategory.domain.model.QuickFilterModel
 import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_ID
+import com.tokopedia.tokopedianow.searchcategory.utils.PRODUCT_ADS_PARAMS
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_QUERY_PARAMS
 import com.tokopedia.tokopedianow.searchcategory.utils.TYPE
 import com.tokopedia.tokopedianow.searchcategory.utils.WAREHOUSE_ID
@@ -23,28 +26,34 @@ internal fun getTokonowQueryParam(requestParams: RequestParams): Map<String?, An
     return requestParams.parameters[TOKONOW_QUERY_PARAMS] as? Map<String?, Any> ?: mapOf()
 }
 
+internal fun createGetProductAdsRequest(requestParams: RequestParams) = GraphqlRequest(
+    GetProductAdsQuery.getQuery(),
+    GetProductAdsResponse::class.java,
+    mapOf(GetProductAdsQuery.DISPLAY_PARAMS to requestParams.parameters[PRODUCT_ADS_PARAMS])
+)
+
 internal fun createAceSearchProductRequest(params: Map<String?, Any>) = GraphqlRequest(
-        ACE_SEARCH_PRODUCT_QUERY,
-        AceSearchProductModel::class.java,
-        mapOf(SearchConstant.GQL.KEY_PARAMS to generateUrlParamString(params))
+    ACE_SEARCH_PRODUCT_QUERY,
+    AceSearchProductModel::class.java,
+    mapOf(SearchConstant.GQL.KEY_PARAMS to generateUrlParamString(params))
 )
 
 internal fun createCategoryFilterRequest(params: Map<String?, Any>) = GraphqlRequest(
-        FILTER_SORT_PRODUCT_QUERY,
-        CategoryFilterModel::class.java,
-        mapOf(SearchConstant.GQL.KEY_PARAMS to generateUrlParamString(params))
+    FILTER_SORT_PRODUCT_QUERY,
+    CategoryFilterModel::class.java,
+    mapOf(SearchConstant.GQL.KEY_PARAMS to generateUrlParamString(params))
 )
 
 internal fun createQuickFilterRequest(params: Map<String?, Any>) = GraphqlRequest(
-        FILTER_SORT_PRODUCT_QUERY,
-        QuickFilterModel::class.java,
-        mapOf(SearchConstant.GQL.KEY_PARAMS to generateUrlParamString(params))
+    FILTER_SORT_PRODUCT_QUERY,
+    QuickFilterModel::class.java,
+    mapOf(SearchConstant.GQL.KEY_PARAMS to generateUrlParamString(params))
 )
 
 internal fun createDynamicChannelRequest(type: String) = GraphqlRequest(
-        DYNAMIC_CHANNEL_QUERY,
-        DynamicChannelModel::class.java,
-        mapOf(TYPE to type)
+    DYNAMIC_CHANNEL_QUERY,
+    DynamicChannelModel::class.java,
+    mapOf(TYPE to type)
 )
 
 internal fun createRepurchaseWidgetRequest(params: Map<String, Any>): GraphqlRequest {
@@ -55,25 +64,24 @@ internal fun createRepurchaseWidgetRequest(params: Map<String, Any>): GraphqlReq
         GetRepurchaseWidget.getQuery(),
         GetRepurchaseResponse::class.java,
         mapOf(
-            GetRepurchaseWidgetUseCase.PARAM_WAREHOUSE_ID to warehouseID,
-            GetRepurchaseWidgetUseCase.PARAM_QUERY_PARAM to queryParam,
+            GetRepurchaseWidgetUseCase.PARAM_WAREHOUSES to warehouseID,
+            GetRepurchaseWidgetUseCase.PARAM_QUERY_PARAM to queryParam
         )
     )
 }
 
 internal fun getFeedbackFieldToggleData(
     graphqlResponse: GraphqlResponse
-) : GetFeedbackFieldModel {
+): GetFeedbackFieldModel {
     return graphqlResponse
         .getData<GetFeedbackFieldModel?>(GetFeedbackFieldModel::class.java) ?: GetFeedbackFieldModel()
 }
 
-internal fun createFeedbackFieldToggleRequest() : GraphqlRequest = GraphqlRequest(
+internal fun createFeedbackFieldToggleRequest(): GraphqlRequest = GraphqlRequest(
     FEEDBACK_FIELD_TOGGLE_QUERY,
     GetFeedbackFieldModel::class.java,
     mapOf()
 )
-
 
 private fun createRepurchaseQueryParam(params: Map<String, Any>): String {
     val categoryID = params[CATEGORY_ID]?.toString() ?: ""
@@ -171,6 +179,13 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
               hex_color
             }
             wishlist
+          }
+          violation {
+            headerText
+            descriptionText
+            imageURL
+            ctaURL
+            buttonText
           }
         }
       }

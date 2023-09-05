@@ -20,6 +20,11 @@ project.ext {
     artifactName = "graphql_beta_notif-debug"
 }
 
+android {
+    namespace 'com.tokopedia.graphql.beta.notif'
+    testNamespace 'com.tokopedia.graphql.beta.notif.test'
+}
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig

@@ -16,7 +16,7 @@ class CategoryShowcaseItemCallback(
     private val onClickProductCard: (appLink: String, headerName: String, index: Int, productId: String, productName: String, productPrice: String, isOos: Boolean) -> Unit,
     private val onImpressProductCard: (headerName: String, index: Int, productId: String, productName: String, productPrice: String, isOos: Boolean) -> Unit,
     private val onAddToCartBlocked: () -> Unit,
-    private val onProductCartQuantityChanged: (position: Int, product: CategoryShowcaseItemUiModel, quantity: Int) -> Unit,
+    private val onProductCartQuantityChanged: (product: CategoryShowcaseItemUiModel, quantity: Int) -> Unit,
     private val startActivityForResult: (Intent, Int) -> Unit,
     private val onWishlistButtonClicked: (productId: String, isWishlistSelected: Boolean, descriptionToaster: String, ctaToaster: String, type: Int, ctaClickListener: (() -> Unit)?) -> Unit
 ): CategoryShowcaseItemViewHolder.CategoryShowcaseItemListener {
@@ -41,11 +41,7 @@ class CategoryShowcaseItemCallback(
         product: CategoryShowcaseItemUiModel,
         quantity: Int
     ) {
-        onProductCartQuantityChanged(
-            position,
-            product,
-            quantity
-        )
+        onProductCartQuantityChanged(product, quantity)
     }
 
     override fun onProductCardClicked(
@@ -55,7 +51,7 @@ class CategoryShowcaseItemCallback(
     ) {
         val appLink = UriUtil.buildUri(
             ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-            product.parentProductId
+            product.productCardModel.productId
         )
         onClickProductCard(
             appLink,

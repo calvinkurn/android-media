@@ -7,7 +7,8 @@ import com.tokopedia.kotlin.model.ImpressHolder
 
 @MePage(MePage.Widget.TRANSACTION)
 data class OrderProductRevampModel(
-        val navProductModel: NavProductOrder
+        val navProductModel: NavProductOrder,
+        val position: Int
 ): OrderNavVisitable, ImpressHolder() {
     override fun type(factory: OrderListTypeFactory): Int {
         return factory.type(this)

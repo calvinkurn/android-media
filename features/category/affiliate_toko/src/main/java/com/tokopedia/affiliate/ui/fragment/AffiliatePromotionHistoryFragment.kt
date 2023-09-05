@@ -51,15 +51,19 @@ class AffiliatePromotionHistoryFragment :
     private var listSize = 0
 
     @Inject
-    lateinit var userSessionInterface: UserSessionInterface
+    @JvmField
+    var userSessionInterface: UserSessionInterface? = null
 
     @Inject
-    lateinit var viewModelProvider: ViewModelProvider.Factory
+    @JvmField
+    var viewModelProvider: ViewModelProvider.Factory? = null
 
     private var loadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
 
     private lateinit var affiliatePromotionViewModel: AffiliatePromotionHistoryViewModel
-    lateinit var adapter: AffiliateAdapter
+    private val adapter by lazy {
+        AffiliateAdapter(AffiliateAdapterFactory(productClickInterface = this))
+    }
     private var isUserBlackListed = false
 
     companion object {
@@ -72,12 +76,7 @@ class AffiliatePromotionHistoryFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        initAdapter()
         setObservers()
-    }
-
-    private fun initAdapter() {
-        adapter = AffiliateAdapter(AffiliateAdapterFactory(productClickInterface = this))
     }
 
     override fun onCreateView(
@@ -169,7 +168,7 @@ class AffiliatePromotionHistoryFragment :
                 AffiliateAnalytics.EventKeys.VIEW_ITEM_LIST,
                 AffiliateAnalytics.ActionKeys.IMPRESSION_DAFTAR_LINK_PRODUK,
                 AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE_GENERATED_LINK_HIST,
-                userSessionInterface.userId,
+                userSessionInterface?.userId.orEmpty(),
                 itemID,
                 listSize,
                 itemName,
@@ -209,9 +208,11 @@ class AffiliatePromotionHistoryFragment :
                     is UnknownHostException, is SocketTimeoutException -> {
                         setType(GlobalError.NO_CONNECTION)
                     }
+
                     is IllegalStateException -> {
                         setType(GlobalError.PAGE_FULL)
                     }
+
                     else -> {
                         setType(GlobalError.SERVER_ERROR)
                     }
@@ -241,7 +242,7 @@ class AffiliatePromotionHistoryFragment :
         }
     }
 
-    override fun getVMFactory(): ViewModelProvider.Factory {
+    override fun getVMFactory(): ViewModelProvider.Factory? {
         return viewModelProvider
     }
 

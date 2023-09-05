@@ -14,8 +14,6 @@ import android.view.ViewGroup
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
-import com.gojek.kyc.sdk.core.extensions.isKtpExist
-import com.gojek.kyc.sdk.core.extensions.isSelfieExist
 import com.gojek.OneKycSdk
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -24,9 +22,9 @@ import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.kyc_centralized.databinding.LayoutGotoKycOnboardNonProgressiveBinding
 import com.tokopedia.kyc_centralized.di.DaggerGoToKycComponent
 import com.tokopedia.kyc_centralized.ui.gotoKyc.analytics.GotoKycAnalytics
-import com.tokopedia.kyc_centralized.ui.gotoKyc.main.GotoKycMainActivity
-import com.tokopedia.kyc_centralized.ui.gotoKyc.main.GotoKycMainParam
-import com.tokopedia.kyc_centralized.ui.gotoKyc.main.GotoKycRouterFragment
+import com.tokopedia.kyc_centralized.ui.gotoKyc.main.router.GotoKycMainActivity
+import com.tokopedia.kyc_centralized.ui.gotoKyc.main.router.GotoKycMainParam
+import com.tokopedia.kyc_centralized.ui.gotoKyc.main.router.GotoKycRouterFragment
 import com.tokopedia.kyc_centralized.util.KycSharedPreference
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -72,7 +70,7 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
         activity?.finish()
     }
 
-    private val requestPermissionLocation = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+    private val requestPermissionCamera = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
         if (isGranted) {
             val parameter = GotoKycMainParam(
                 projectId = projectId,
@@ -151,7 +149,7 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
             if (isAccountLinked or (binding?.layoutAccountLinking?.root?.isShown == false)) {
                 activity?.let {
                     if (ContextCompat.checkSelfPermission(it, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                        requestPermissionLocation.launch(Manifest.permission.CAMERA)
+                        requestPermissionCamera.launch(Manifest.permission.CAMERA)
                     } else {
                         val parameter = GotoKycMainParam(
                             projectId = projectId,

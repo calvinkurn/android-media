@@ -110,6 +110,17 @@
     <string name="new_shop_page_header_shop_close_description_seller_clickable_text" formatted="true">Buka Toko</string>
     <string name="shop_page_choose_address_widget_coachmark_title">Bisa pilih alamat pengirimanmu dulu</string>
     <string name="shop_page_choose_address_widget_coachmark_description">Biar pengalaman belanja lebih asyik &amp; dapatkan rekomendasi barang terdekat dari alamatmu.</string>
+    <string name="shop_home_tab_banner_timer_finish_date_format"><![CDATA[Berakhir sejak <b>%1s</b> WIB]]></string>
+    <string name="shop_widget_date_format_wib">%1s WIB</string>
+
+    <!--  campaign tab  -->
+    <string name="shop_campaign_tab_banner_timer_date_format">%1s WIB</string>
+    <string name="shop_campaign_tab_voucher_redeem_success_message">Kupon berhasil di klaim, yuk gunakan di halaman keranjang sebelum kehabisan!</string>
+    <string name="shop_campaign_tab_timer_days">Hari</string>
+    <string name="shop_campaign_tab_timer_hours">Jam</string>
+    <string name="shop_campaign_tab_timer_minutes">Menit</string>
+    <string name="shop_campaign_tab_timer_seconds">Detik</string>
+
 
     <!-- product -->
     <string name="shop_page_product_no_upload_product">Agar tidak dinonaktifkan, tambah produk sebelum 90 hari</string>
@@ -160,6 +171,7 @@
     <string name="shop_page_share_action_copy_success">Teks berhasil disalin</string>
     <string name="shop_page_share_text_with_link">Hai kamu! Belanja produk dari %1$s jadi makin mudah di Tokopedia! Cek barang-barang yang kamu suka, yuk. \n%2$s</string>
     <string name="shop_page_share_text">Hai kamu! Belanja produk dari %1$s jadi makin mudah di Tokopedia! Cek barang-barang yang kamu suka, yuk. \n</string>
+    <string name="shop_etalase_page_share_text">Yuk, cek produk menarik di Etalase %1$s dari Toko %2$s di @Tokopedia! \n</string>
     <string name="label_close">Tutup</string>
     <string name="shop_page_share_chat_bubble_operational_hour_format">Buka %1s WIB</string>
 
@@ -196,4 +208,39 @@
     <!-- operational hours -->
     <string name="shop_ops_hour_open_all_day">Buka 24 jam</string>
     <string name="shop_ops_hour_holiday">Libur</string>
+
+    <!--Exlusive launch voucher list bottomsheet-->
+    <string name="shop_page_exclusive_launch_voucher">Kupon Spesial Launching</string>
+    <string name="shop_page_claim">Klaim</string>
+    <string name="shop_page_use">Pakai</string>
+    <string name="shop_page_claimed">Diklaim</string>
+    <string name="shop_page_voucher_background">Voucher background</string>
+    <string name="shop_page_view_all_voucher">Lihat voucher lainnya</string>
+    <string name="shop_page_placeholder_minimal_purchase_million">Min. belanja Rp%s jt</string>
+    <string name="shop_page_placeholder_minimal_purchase_thousand">Min. belanja Rp%s rb</string>
+    <string name="shop_page_placeholder_minimal_purchase">Min. belanja Rp%s</string>
+    <string name="shop_page_placeholder_remaining_quota">Sisa %d</string>
+    <string name="shop_page_no_voucher_quota">Kupon Habis</string>
+    <string name="shop_page_placeholder_view_all" formatted="true">Lihat &lt;b>%d&lt;/b> Kupon Lainnya</string>
+
+    <!--Promo voucher detail bottomsheet-->
+    <string name="shop_page_promo_period">Periode Promo</string>
+    <string name="shop_page_min_transaction">Min. Transaksi</string>
+    <string name="shop_page_active_until">Berlaku hingga</string>
+    <string name="shop_page_tnc">Syarat dan Ketentuan</string>
+    <string name="shop_page_use_promo">Gunakan</string>
+    <string name="shop_page_how_to_use">Cara Pakai</string>
+    <string name="shop_page_rupiah_icon">Icon rupiah</string>
+    <string name="shop_page_clock_icon">Icon jam</string>
+    <string name="shop_page_shop_using_promo">Belanja Pakai Promo</string>
+
+    <string name="shop_page_please_wait">Tunggu sebentar</string>
+    <string name="shop_page_use_voucher_success">Kupon sudah terpasang, transaksi sekarang yuk!</string>
+    <string name="shop_page_use_merchant_voucher">Belanja Pakai Promo</string>
+
+    <string name="shop_page_etalase_url">%1$s/etalase/%2$s</string>
+    <string name="text_title_etalase_not_found">Waduh, tujuanmu nggak ada!</string>
+    <string name="text_desc_etalase_not_found">Mungkin kamu salah jalan atau alamat. Ayo balik sebelum gelap!</string>
+    <string name="text_back_to_shop_page">Balik ke Halaman Toko</string>
+
 </resources>

@@ -1,7 +1,6 @@
 package com.tokopedia.entertainment.search.data
 
 import com.google.gson.annotations.SerializedName
-import javax.annotation.Generated
 
 data class EventSearchFullLocationResponse(
 

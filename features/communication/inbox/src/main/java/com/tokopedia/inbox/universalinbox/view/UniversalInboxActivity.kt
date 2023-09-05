@@ -3,6 +3,7 @@ package com.tokopedia.inbox.universalinbox.view
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
+import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
@@ -19,8 +20,8 @@ import com.tokopedia.inbox.universalinbox.util.UniversalInboxViewUtil.ICON_DEFAU
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxViewUtil.ICON_MAX_PERCENTAGE_X_POSITION
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxViewUtil.ICON_PERCENTAGE_Y_POSITION
 import com.tokopedia.inbox.universalinbox.view.listener.UniversalInboxCounterListener
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.NotificationUnify
 import javax.inject.Inject
 
@@ -88,15 +89,19 @@ class UniversalInboxActivity : BaseSimpleActivity(), HasComponent<UniversalInbox
         toolbarNotificationIcon = toolbarCustomView.findViewById<IconNotification>(
             R.id.inbox_icon_notif
         ).apply {
-            notificationRef.hide()
             setImageWithUnifyIcon(IconUnify.BELL)
             notificationGravity = Gravity.TOP or Gravity.END
+            notificationRef.gone()
             setOnClickListener {
                 listener?.onNotificationIconClicked(notificationCounter)
             }
         }
+        setActionBarView(toolbarCustomView)
+        setBackButton(toolbarCustomView)
+    }
+
+    private fun setActionBarView(toolbarCustomView: View) {
         viewBinding?.inboxToolbar?.apply {
-            isShowShadow = true
             customView(toolbarCustomView)
             headerWrapperView.setPadding(0, 0, 0, 0)
             textWrapperView.updateLayoutParams<ConstraintLayout.LayoutParams> {
@@ -106,6 +111,12 @@ class UniversalInboxActivity : BaseSimpleActivity(), HasComponent<UniversalInbox
                 endToEnd = ConstraintLayout.LayoutParams.PARENT_ID
             }
             setSupportActionBar(this)
+        }
+    }
+
+    private fun setBackButton(toolbarCustomView: View) {
+        toolbarCustomView.findViewById<IconUnify>(R.id.inbox_icon_back).setOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
         }
     }
 
@@ -119,7 +130,6 @@ class UniversalInboxActivity : BaseSimpleActivity(), HasComponent<UniversalInbox
 
     fun updateNotificationCounter(strCounter: String) {
         toolbarNotificationIcon?.apply {
-            notificationRef.showWithCondition(strCounter.isNotEmpty())
             notificationRef.setNotification(
                 notif = strCounter,
                 notificationType = NotificationUnify.COUNTER_TYPE,
@@ -134,6 +144,12 @@ class UniversalInboxActivity : BaseSimpleActivity(), HasComponent<UniversalInbox
                 xPosition,
                 ICON_PERCENTAGE_Y_POSITION
             )
+            if (strCounter.isBlank()) {
+                notificationRef.setBackgroundDrawable(null)
+                notificationRef.gone()
+            } else {
+                notificationRef.show()
+            }
         }
         notificationCounter = strCounter
     }

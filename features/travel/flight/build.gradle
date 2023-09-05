@@ -3,6 +3,8 @@ apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 android {
+    namespace 'com.tokopedia.flight'
+    testNamespace 'com.tokopedia.flight.test'
     configurations {
         all {
             resolutionStrategy {
@@ -73,7 +75,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation projectOrAar(rootProject.ext.libraries.linker)
     implementation projectOrAar(rootProject.ext.libraries.webview)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.universal_sharing)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
@@ -95,8 +97,6 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.header
     implementation rootProject.ext.unifyDependencies.carousel
     implementation rootProject.ext.firebase.crashlytics
-    implementation projectOrAar(rootProject.ext.libraries.webview)
-    implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.features.medialoader)
     implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
@@ -145,6 +145,9 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
     androidTestImplementation(rootProject.ext.testDependencies.androidRulesVersion) {
         exclude module: 'support-annotations'
+    }
+    androidTestImplementation(rootProject.ext.tkpdLibDependencies.showcase) {
+        exclude group: "com.android.support"
     }
     androidTestImplementation(rootProject.ext.testDependencies.espressoIntents) {
         exclude group: 'com.android.support', module: 'support-annotations'

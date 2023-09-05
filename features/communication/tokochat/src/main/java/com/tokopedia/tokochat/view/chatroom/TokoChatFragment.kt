@@ -200,7 +200,7 @@ open class TokoChatFragment :
 
     override fun onFragmentBackPressed(): Boolean {
         val shouldShowBubblesAwarenessBottomSheet =
-            TokoChatValueUtil.shouldShowBubblesAwareness() &&
+            TokoChatValueUtil.shouldShowBubblesAwareness(context) &&
                 (activity?.isFromBubble() == false) &&
                 viewModel.shouldShowBottomsheetBubblesCache() &&
                 !viewModel.isFromBubble
@@ -619,7 +619,7 @@ open class TokoChatFragment :
     }
 
     private fun addBubbleTicker() {
-        if (TokoChatValueUtil.shouldShowBubblesAwareness() &&
+        if (TokoChatValueUtil.shouldShowBubblesAwareness(context) &&
             viewModel.shouldShowTickerBubblesCache() &&
             (activity?.isFromBubble() == false) &&
             !viewModel.isFromBubble
@@ -706,7 +706,7 @@ open class TokoChatFragment :
     private fun observeMemberLeft() {
         // reset member left live data before observe to remove old data
         viewModel.resetMemberLeft()
-        observe(viewModel.getMemberLeft()) {
+        viewModel.getMemberLeft()?.observe(viewLifecycleOwner) {
             // If the livedata gives null, then do nothing
             // If the livedata gives old data, then do nothing
             if (it != null && it == headerUiModel?.id) {
@@ -764,7 +764,7 @@ open class TokoChatFragment :
     }
 
     private fun observeLiveChannel() {
-        observe(viewModel.getLiveChannel(viewModel.channelId)) {
+        viewModel.getLiveChannel(viewModel.channelId)?.observe(viewLifecycleOwner) {
             it?.let { channel ->
                 // Show bottom sheet if channel expires
                 expiresAt = channel.expiresAt
@@ -1006,7 +1006,7 @@ open class TokoChatFragment :
     }
 
     private fun observeChatHistory() {
-        observe(viewModel.getChatHistory(viewModel.channelId)) {
+        viewModel.getChatHistory(viewModel.channelId)?.observe(viewLifecycleOwner) {
             // First time get Chat History
             handleFirstTimeGetChatHistory()
 
@@ -1048,7 +1048,7 @@ open class TokoChatFragment :
     }
 
     private fun observerTyping() {
-        viewModel.getTypingStatus().observe(viewLifecycleOwner) {
+        viewModel.getTypingStatus()?.observe(viewLifecycleOwner) {
             if (headerUiModel != null && it.contains(headerUiModel?.id)) {
                 showInterlocutorTypingStatus()
             } else {
@@ -1136,6 +1136,7 @@ open class TokoChatFragment :
         element: TokoChatImageBubbleUiModel,
         isFromRetry: Boolean
     ) {
+        if (element.isImageReady) return
         viewModel.getImageWithId(
             imageId = element.imageId,
             channelId = viewModel.channelId,

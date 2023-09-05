@@ -26,7 +26,12 @@
     <color name="feed_dms_ribbon_special_release_start">#4A3576</color>
     <color name="feed_dms_ribbon_special_release_end">#58BCE4</color>
 
+    <color name="feed_dms_progress_bar_track_color">#80FFFFFF</color>
+
     <color name="feed_dms_overlay">#B32E3137</color>
+
+    <color name="feed_dms_bottom_action_background">#121212</color>
+    <color name="feed_dms_bottom_action_text">#6D7588</color>
 
     <!--other-->
     <color name="feed_dms_tag_product_background">#2E3137</color>

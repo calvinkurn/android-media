@@ -10,9 +10,6 @@ public class RemoteConfigKey {
     public static final String MAINAPP_WALLET_LABEL_NAME = "mainapp_wallet_label_name";
     public static final String MAINAPP_WALLET_LABEL_REGISTER = "mainapp_wallet_label_register";
 
-    public static final String CUSTOMER_ENABLE_ROBUST = "android_customer_robust_enable";
-    public static final String SELLER_ENABLE_ROBUST = "android_sellerapp_robust_enable";
-
     public static final String APP_SHARE_DESCRIPTION = "app_share_description";
     public static final String MAINAPP_ACTIVATE_BRANCH_LINKS = "mainapp_activate_branch_links";
 
@@ -53,6 +50,8 @@ public class RemoteConfigKey {
 
     public static final String IRIS_GTM_ENABLED_TOGGLE = "app_iris_gtm_enabled";
     public static final String IRIS_GTM_CONFIG_TOGGLE = "android_customer_iris_config";
+    public static final String IRIS_PERF_CONFIG = "android_customer_iris_perf_config";
+    public static final String IRIS_PERFORMANCE_TOGGLE = "android_customer_iris_performance_config";
     public static final String IRIS_WORK_MANAGER_ENABLE = "android_iris_work_manager_enabled";
 
 
@@ -248,4 +247,15 @@ public class RemoteConfigKey {
     public static final String FEED_NEW_ICON = "FeedNewIcon";
 
     public static final String IS_SHOP_PENALTY_NEW_PAGE = "android_shop_penalty_new";
+
+    public static final String SCP_REWARDS_MEDALI_TOUCH_POINT = "android_scp_rewards_medali_touch_point";
+
+    public static final String ANDROID_FINTECH_ENABLE_RISK_BASED_PRICING = "android_fintech_enable_risk_based_pricing";
+
+    public static final String IS_TOKOCHAT_BUBBLES_ENABLED = "android_tokochat_bubbles_enabled";
+
+    public static final String HOME_NEW_LEGO_TRACKING = "android_home_enable_new_lego_tracking";
+
+    public static final String CONTACT_US_DISABLE_FORCE_RELOAD_URLS = "android_contact_us_disable_force_reload_urls";
+
 }

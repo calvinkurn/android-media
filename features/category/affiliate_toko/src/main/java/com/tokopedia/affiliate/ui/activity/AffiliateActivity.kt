@@ -11,9 +11,12 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.fragment.lifecycle.FragmentLifecycleObserver.onFragmentSelected
 import com.tokopedia.abstraction.base.view.fragment.lifecycle.FragmentLifecycleObserver.onFragmentUnSelected
+import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.affiliate.AFFILIATE_PROMOTE_HOME
+import com.tokopedia.affiliate.AFFILIATE_PROMO_WEBVIEW
 import com.tokopedia.affiliate.AffiliateAnalytics
 import com.tokopedia.affiliate.COACHMARK_TAG
 import com.tokopedia.affiliate.FIRST_TAB
@@ -39,14 +42,14 @@ import com.tokopedia.affiliate.ui.custom.LottieBottomNavbar
 import com.tokopedia.affiliate.ui.fragment.AffiliateAdpFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliateIncomeFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliatePromoFragment
+import com.tokopedia.affiliate.ui.fragment.AffiliatePromoWebViewFragment
 import com.tokopedia.affiliate.ui.fragment.education.AffiliateEducationLandingPage
 import com.tokopedia.affiliate.viewmodel.AffiliateViewModel
 import com.tokopedia.affiliate_toko.R
-import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelActivity
-import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.coachmark.CoachMarkPreference
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.RemoteConfigInstance
@@ -61,32 +64,42 @@ import java.util.*
 import javax.inject.Inject
 
 class AffiliateActivity :
-    BaseViewModelActivity<AffiliateViewModel>(),
+    BaseSimpleActivity(),
+    HasComponent<AffiliateComponent>,
     IBottomClickListener,
     AffiliateBottomNavBarInterface,
     AffiliateActivityInterface {
+    private val affiliateComponent: AffiliateComponent by lazy(LazyThreadSafetyMode.NONE) { initInject() }
 
     @Inject
-    lateinit var userSessionInterface: UserSessionInterface
+    @JvmField
+    var userSessionInterface: UserSessionInterface? = null
 
     @Inject
-    lateinit var viewModelProvider: ViewModelProvider.Factory
+    @JvmField
+    var viewModelProvider: ViewModelProvider.Factory? = null
 
-    private lateinit var affiliateVM: AffiliateViewModel
+    private var affiliateVM: AffiliateViewModel? = null
     private var fragmentStack = Stack<String>()
     private var affiliateBottomNavigation: AffiliateBottomNavbar? = null
 
     private var fromHelpAppLink = false
     private var fromAppLink = false
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        affiliateComponent.injectActivity(this)
+        affiliateVM = viewModelProvider?.let { ViewModelProvider(this, it) }
+            ?.get(AffiliateViewModel::class.java)
         intent?.data?.let { data ->
             fromAppLink = data.pathSegments.contains(PAGE_SEGMENT_EDU_PAGE)
             fromHelpAppLink = data.pathSegments.contains(PAGE_SEGMENT_HELP)
             if (data.pathSegments?.contains(PAGE_SEGMENT_ONBOARDING) == true) {
                 if (data.queryParameterNames.isNotEmpty()) {
-                    showLoginPortal(intent?.data?.getQueryParameter(data.queryParameterNames.first()))
+                    showLoginPortal(
+                        data.queryParameterNames.first() to intent?.data?.getQueryParameter(
+                            data.queryParameterNames.first()
+                        )
+                    )
                 } else {
                     showLoginPortal()
                 }
@@ -97,10 +110,6 @@ class AffiliateActivity :
     }
 
     override fun getLayoutRes(): Int = R.layout.affiliate_layout
-
-    override fun getViewModelType(): Class<AffiliateViewModel> {
-        return AffiliateViewModel::class.java
-    }
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
@@ -136,7 +145,12 @@ class AffiliateActivity :
                     if (intent?.data?.queryParameterNames.isNullOrEmpty()) {
                         showLoginPortal()
                     } else {
-                        showLoginPortal(intent?.data?.getQueryParameter(intent.data?.queryParameterNames?.first()))
+                        showLoginPortal(
+                            intent?.data?.queryParameterNames?.first()
+                                .orEmpty() to intent?.data?.getQueryParameter(
+                                intent.data?.queryParameterNames?.first()
+                            )
+                        )
                     }
                 }
 
@@ -145,41 +159,34 @@ class AffiliateActivity :
         }
     }
 
-    override fun getVMFactory(): ViewModelProvider.Factory {
-        return viewModelProvider
-    }
+    private fun initInject() = DaggerAffiliateComponent.builder()
+        .baseAppComponent((application as BaseMainApplication).baseAppComponent).build()
 
-    override fun initInject() {
-        getComponent().injectActivity(this)
-    }
-
-    private fun getComponent(): AffiliateComponent =
-        DaggerAffiliateComponent
-            .builder()
-            .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-            .build()
-
-    override fun setViewModel(viewModel: BaseViewModel) {
-        affiliateVM = viewModel as AffiliateViewModel
-    }
+    override fun getComponent(): AffiliateComponent = affiliateComponent
 
     override fun getNewFragment(): Fragment? {
         return null
     }
 
     private fun afterViewCreated() {
-        if (userSessionInterface.isLoggedIn) {
+        if (userSessionInterface?.isLoggedIn == true) {
             setObservers()
-            affiliateVM.getAffiliateValidateUser()
+            affiliateVM?.getAffiliateValidateUser()
         } else {
             showLoginPortal()
         }
     }
 
-    private fun showLoginPortal(productId: String? = null) {
-        AffiliateRegistrationActivity.newInstance(this, productId = productId)
+    private fun showLoginPortal(queryData: Pair<String, String?>? = null) {
+        AffiliateRegistrationActivity.newInstance(this, queryData = queryData)
         finish()
     }
+
+    private fun isAffiliatePromoWebViewEnabled() =
+        RemoteConfigInstance.getInstance()?.abTestPlatform?.getString(
+            AFFILIATE_PROMO_WEBVIEW,
+            ""
+        ) == AFFILIATE_PROMO_WEBVIEW
 
     private fun showAffiliatePortal() {
         updateHomeTab()
@@ -239,7 +246,11 @@ class AffiliateActivity :
                                     coachMarkItemList[currentIndex].anchorView = it
                                     viewFound = true
                                 }
-                                setBottomState(AffiliatePromoFragment::class.java.name)
+                                if (isAffiliatePromoWebViewEnabled()) {
+                                    setBottomState(AffiliatePromoWebViewFragment::class.java.name)
+                                } else {
+                                    setBottomState(AffiliatePromoFragment::class.java.name)
+                                }
                             }
                         }
                     }
@@ -265,22 +276,26 @@ class AffiliateActivity :
     }
 
     private fun getPromoFragmentView(): AffiliateLinkTextField? {
-        openFragment(AffiliatePromoFragment.getFragmentInstance())
-        val currentFragment =
-            supportFragmentManager.findFragmentByTag(AffiliatePromoFragment::class.java.name)
-        currentFragment?.let { fragment ->
-            return (fragment as? AffiliatePromoFragment)?.view?.findViewById(
-                R.id.product_link_et
-            )
+        if (!isAffiliatePromoWebViewEnabled()) {
+            openFragment(AffiliatePromoFragment.getFragmentInstance())
+            val currentFragment =
+                supportFragmentManager.findFragmentByTag(AffiliatePromoFragment::class.java.name)
+            currentFragment?.let { fragment ->
+                return (fragment as? AffiliatePromoFragment)?.view?.findViewById(
+                    R.id.product_link_et
+                )
+            }
         }
         return null
     }
 
     private fun getHomeFragmentView(): Typography? {
-        val currentFragment =
-            supportFragmentManager.findFragmentByTag(AffiliatePromoFragment::class.java.name)
-        currentFragment?.let { fragment ->
-            return (fragment as? AffiliatePromoFragment)?.view?.findViewById(R.id.user_name)
+        if (!isAffiliatePromoWebViewEnabled()) {
+            val currentFragment =
+                supportFragmentManager.findFragmentByTag(AffiliatePromoFragment::class.java.name)
+            currentFragment?.let { fragment ->
+                return (fragment as? AffiliatePromoFragment)?.view?.findViewById(R.id.user_name)
+            }
         }
         return null
     }
@@ -289,8 +304,8 @@ class AffiliateActivity :
         AffiliateAnalytics.sendOpenScreenEvent(
             AffiliateAnalytics.EventKeys.OPEN_SCREEN,
             AffiliateAnalytics.ScreenKeys.AFFILIATE_HOME_SCREEN_NAME,
-            userSessionInterface.isLoggedIn,
-            userSessionInterface.userId
+            userSessionInterface?.isLoggedIn.orFalse(),
+            userSessionInterface?.userId.orEmpty()
         )
     }
 
@@ -333,28 +348,51 @@ class AffiliateActivity :
             this,
             selectedTab
         )
-        affiliateBottomNavigation?.showBottomNav()
+        if (selectedTab == PROMO_MENU) {
+            affiliateBottomNavigation?.hideBottomNav()
+        } else {
+            affiliateBottomNavigation?.showBottomNav()
+        }
         affiliateBottomNavigation?.populateBottomNavigationView()
     }
 
     override fun menuClicked(position: Int, id: Int, isNotFromBottom: Boolean): Boolean {
         when (position) {
-            ADP_MENU -> openFragment(AffiliateAdpFragment.getFragmentInstance(this, this))
-            PROMO_MENU -> openFragment(AffiliatePromoFragment.getFragmentInstance())
-            INCOME_MENU -> openFragment(
-                AffiliateIncomeFragment.getFragmentInstance(
-                    userSessionInterface.name,
-                    userSessionInterface.profilePicture,
-                    this
-                )
-            )
+            ADP_MENU -> {
+                affiliateBottomNavigation?.showBottomNav()
+                openFragment(AffiliateAdpFragment.getFragmentInstance(this, this))
+            }
 
-            EDUKASI_MENU -> openFragment(
-                AffiliateEducationLandingPage.getFragmentInstance(
-                    fromAppLink = fromAppLink,
-                    fromHelpAppLink = fromHelpAppLink
+            PROMO_MENU -> {
+                if (isAffiliatePromoWebViewEnabled()) {
+                    openFragment(AffiliatePromoWebViewFragment.getFragmentInstance())
+                    affiliateBottomNavigation?.hideBottomNav()
+                } else {
+                    openFragment(AffiliatePromoFragment.getFragmentInstance())
+                    affiliateBottomNavigation?.showBottomNav()
+                }
+            }
+
+            INCOME_MENU -> {
+                affiliateBottomNavigation?.showBottomNav()
+                openFragment(
+                    AffiliateIncomeFragment.getFragmentInstance(
+                        userSessionInterface?.name.orEmpty(),
+                        userSessionInterface?.profilePicture.orEmpty(),
+                        this
+                    )
                 )
-            )
+            }
+
+            EDUKASI_MENU -> {
+                affiliateBottomNavigation?.showBottomNav()
+                openFragment(
+                    AffiliateEducationLandingPage.getFragmentInstance(
+                        fromAppLink = fromAppLink,
+                        fromHelpAppLink = fromHelpAppLink
+                    )
+                )
+            }
         }
         if (!isNotFromBottom) sendBottomNavClickEvent(position)
         return true
@@ -363,17 +401,15 @@ class AffiliateActivity :
     override fun menuReselected(position: Int, id: Int) = Unit
 
     private fun setObservers() {
-        affiliateVM.getValidateUserdata().observe(this) { validateUserdata ->
-            if (validateUserdata.validateAffiliateUserStatus.data?.isRegistered == true &&
-                validateUserdata.validateAffiliateUserStatus.data?.isEligible == true
-            ) {
+        affiliateVM?.getValidateUserdata()?.observe(this) { validateUserdata ->
+            if (validateUserdata.validateAffiliateUserStatus.data?.isRegistered == true && validateUserdata.validateAffiliateUserStatus.data?.isEligible == true) {
                 showAffiliatePortal()
             } else {
                 showLoginPortal()
             }
         }
 
-        affiliateVM.progressBar().observe(this) {
+        affiliateVM?.progressBar()?.observe(this) {
             if (it) {
                 findViewById<LoaderUnify>(R.id.affiliate_home_progress_bar)?.show()
             } else {
@@ -381,7 +417,7 @@ class AffiliateActivity :
             }
         }
 
-        affiliateVM.getErrorMessage().observe(this) { error ->
+        affiliateVM?.getErrorMessage()?.observe(this) { error ->
             when (error) {
                 is UnknownHostException, is SocketTimeoutException -> {
                     Toaster.build(
@@ -428,7 +464,7 @@ class AffiliateActivity :
             eventAction,
             AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE,
             "",
-            userSessionInterface.userId
+            userSessionInterface?.userId.orEmpty()
         )
     }
 
@@ -475,16 +511,33 @@ class AffiliateActivity :
 
     override fun selectItem(position: Int, id: Int, isNotFromBottom: Boolean) {
         affiliateBottomNavigation?.setSelected(position, isNotFromBottom)
+        if (position == PROMO_MENU) {
+            affiliateBottomNavigation?.hideBottomNav()
+        } else {
+            affiliateBottomNavigation?.showBottomNav()
+        }
     }
 
     override fun onBackPressed() {
         val currentFragment =
-            supportFragmentManager.findFragmentByTag(AffiliatePromoFragment::class.java.name)
+            supportFragmentManager.findFragmentById(R.id.parent_view)
         if (currentFragment != null && currentFragment.isVisible) {
-            if (currentFragment is AffiliatePromoFragment) {
-                (currentFragment as? AffiliatePromoFragment)?.handleBack()
-            } else if (currentFragment is AffiliateEducationLandingPage) {
-                (currentFragment as? AffiliateEducationLandingPage)?.handleBack()
+            when (currentFragment) {
+                is AffiliatePromoFragment -> {
+                    (currentFragment as? AffiliatePromoFragment)?.handleBack()
+                }
+
+                is AffiliateEducationLandingPage -> {
+                    (currentFragment as? AffiliateEducationLandingPage)?.handleBack()
+                }
+
+                is AffiliatePromoWebViewFragment -> {
+                    (currentFragment as? AffiliatePromoWebViewFragment)?.handleBack()
+                }
+
+                else -> {
+                    handleBackButton(false)
+                }
             }
         } else {
             handleBackButton(false)
@@ -529,6 +582,10 @@ class AffiliateActivity :
             )
 
             AffiliatePromoFragment::class.java.name -> affiliateBottomNavigation?.selectBottomTab(
+                PROMO_MENU
+            )
+
+            AffiliatePromoWebViewFragment::class.java.name -> affiliateBottomNavigation?.selectBottomTab(
                 PROMO_MENU
             )
 

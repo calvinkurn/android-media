@@ -10,7 +10,8 @@ data class LastApplyVoucherOrdersItemUiModel(
     var message: LastApplyMessageUiModel = LastApplyMessageUiModel(),
     var shippingId: Int = 0,
     var spId: Int = 0,
-    var type: String = ""
+    var type: String = "",
+    var cartStringGroup: String = ""
 ) : Parcelable {
 
     companion object {

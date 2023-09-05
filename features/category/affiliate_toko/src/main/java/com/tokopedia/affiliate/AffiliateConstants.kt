@@ -2,8 +2,8 @@ package com.tokopedia.affiliate
 
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
-import com.tokopedia.applink.user.DeeplinkMapperUser
 import com.tokopedia.unifyprinciples.Typography
+import java.util.Locale
 
 const val AFFILIATE_LOGIN_REQUEST_CODE = 1023
 const val AFFILIATE_REGISTER_REQUEST_CODE = 1024
@@ -70,11 +70,18 @@ const val APP_LINK_DESTINATION =
 
 const val QUERY_CONST = "titlebar=false"
 
-val uri = String.format("%s?%s?url=%s", ApplinkConst.WEBVIEW, QUERY_CONST, APP_LINK_DESTINATION)
+val uri = String.format(
+    Locale.ENGLISH,
+    "%s?%s?url=%s",
+    ApplinkConst.WEBVIEW,
+    QUERY_CONST,
+    APP_LINK_DESTINATION
+)
 
 const val SOURCE_AFFILIATE = "Tokopedia Affiliate"
 
-val APP_LINK_KYC = ApplinkConstInternalUserPlatform.getGotoKYCApplink(PROJECT_ID.toString(), SOURCE_AFFILIATE, uri)
+val APP_LINK_KYC =
+    ApplinkConstInternalUserPlatform.getGotoKYCApplink(PROJECT_ID.toString(), SOURCE_AFFILIATE, uri)
 
 const val AFFILIATE_MICRO_SITE_LINK = "https://affiliate.tokopedia.com/"
 
@@ -193,10 +200,12 @@ const val AFFILIATE_DISCO_PROMO = "aff_disco_link_gen"
 const val AFFILIATE_TOKONOW_BANNER = "aff_now_att"
 const val AFFILIATE_NC = "Affiliate_NC"
 const val AFFILIATE_PROMOTE_HOME = "aff_promote_home"
+const val AFFILIATE_PROMO_WEBVIEW = "aff_webview"
 
 const val AFFILIATE_GAMIFICATION_VISIBILITY = "affil_banner_gami"
 const val AFFILIATE_GAMIFICATION_REDIRECTION = "affil_gami_disco"
-const val AFFILIATE_GAMIFICATION_REDIRECTION_APPLINK = "tokopedia://discovery/tantangan-hadiah-ramadan"
+const val AFFILIATE_GAMIFICATION_REDIRECTION_APPLINK =
+    "tokopedia://discovery/tantangan-hadiah-ramadan"
 
 const val AFFILIATE_TOKONOW_DATA = "android_affiliate_tokonow_static_data"
 
@@ -239,3 +248,7 @@ val SOCIAL_CHANNEL_LINK = mapOf(
 )
 const val AFFILIATE_SSE_URL_STAGING = "https://sse-staging.tokopedia.com/affiliate/sse/connect"
 const val AFFILIATE_SSE_URL_PROD = "https://sse.tokopedia.com/affiliate/sse/connect"
+const val PROMO_WEBVIEW_URL_STAGING =
+    "https://affiliate-staging.tokopedia.com/browse"
+const val PROMO_WEBVIEW_URL_PROD =
+    "https://affiliate.tokopedia.com/browse?titlebar=false"

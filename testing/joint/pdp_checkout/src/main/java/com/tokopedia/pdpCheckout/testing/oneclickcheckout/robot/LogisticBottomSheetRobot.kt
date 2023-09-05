@@ -15,15 +15,20 @@ import org.hamcrest.Matcher
 class AddressBottomSheetRobot {
 
     fun clickAddress(position: Int = 0) {
-        onView(withId(R.id.rv_address_list)).perform(actionOnItemAtPosition<AddressListItemViewHolder>(position, object : ViewAction {
-            override fun getDescription(): String = "perform click on address item"
+        onView(withId(R.id.rv_address_list)).perform(
+            actionOnItemAtPosition<AddressListItemViewHolder>(
+                position,
+                object : ViewAction {
+                    override fun getDescription(): String = "perform click on address item"
 
-            override fun getConstraints(): Matcher<View>? = null
+                    override fun getConstraints(): Matcher<View>? = null
 
-            override fun perform(uiController: UiController?, view: View) {
-                view.performClick()
-            }
-        }))
+                    override fun perform(uiController: UiController?, view: View) {
+                        view.performClick()
+                    }
+                }
+            )
+        )
         // Wait for bottom sheet to close
         Thread.sleep(1000)
     }

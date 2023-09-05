@@ -15,7 +15,8 @@ data class FragmentUiModel(
         var boClashingMessage: String = "",
         var boClashingImage: String = "",
         var unApplyBoMessage: String = "",
-        var unApplyBoIcon: String = ""
+        var unApplyBoIcon: String = "",
+        var benefitAdjustmentMessage: String = ""
     )
 
     data class UiState(
@@ -24,6 +25,7 @@ data class FragmentUiModel(
         var hasAnyPromoSelected: Boolean = false,
         var hasPreAppliedBo: Boolean = false,
         var hasFailedToLoad: Boolean = false,
-        var shouldShowTickerBoClashing: Boolean = false
+        var shouldShowTickerBoClashing: Boolean = false,
+        var shouldShowToasterBenefitAdjustmentMessage: Boolean = true
     )
 }

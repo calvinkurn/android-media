@@ -80,7 +80,8 @@ object SharingUtil {
         CoroutineScope(Dispatchers.IO).launchCatchError(block = {
             withContext(Dispatchers.IO) {
                 loadImageWithEmptyTarget(
-                    context = context, url = shareImageUrl,
+                    context = context,
+                    url = shareImageUrl,
                     mediaTarget = MediaBitmapEmptyTarget(onReady = { resource ->
                         val savedFile = ImageProcessingUtil.writeImageToTkpdPath(
                             resource,
@@ -277,7 +278,7 @@ object SharingUtil {
     ) {
         try {
             var shareImageFileUri: Uri? = null
-            if (!TextUtils.isEmpty(shareModel.savedImageFilePath)) {
+            if (!TextUtils.isEmpty(shareModel.savedImageFilePath) && shareModel.savedImageFilePath != UniversalShareConst.ImageType.MEDIA_VALUE_PLACEHOLDER) {
                 shareImageFileUri = MethodChecker.getUri(activity, File(shareModel.savedImageFilePath))
                 shareModel.appIntent?.clipData = ClipData.newRawUri("", shareImageFileUri)
                 shareModel.appIntent?.removeExtra(Intent.EXTRA_STREAM)
@@ -297,7 +298,7 @@ object SharingUtil {
                             if (it != null) {
                                 Toaster.build(view = it, text = copyLinkToastString, actionText = actionBtnTxt).show()
                             }
-                        } 
+                        }
                     } else {
                         onSuccessCopyLink.invoke()
                     }

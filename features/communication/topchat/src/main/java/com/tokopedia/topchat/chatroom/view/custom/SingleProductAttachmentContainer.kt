@@ -35,7 +35,6 @@ import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.item_topchat_product_card.view.*
 
 class SingleProductAttachmentContainer : ConstraintLayout {
 
@@ -62,6 +61,14 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     private var btnUpdateStock: UnifyButton? = null
     private var footerContainer: LinearLayout? = null
     private var shippingLocation: Typography? = null
+    private var variant: LinearLayout? = null
+    private var productColorVariant: LinearLayout? = null
+    private var productColorVariantValue: Typography? = null
+    private var productSizeVariant: LinearLayout? = null
+    private var productVariantSize: Typography? = null
+    private var campaignDiscount: Label? = null
+    private var campaignPrice: Typography? = null
+    private var price: Typography? = null
     private var adapterPosition: Int = RecyclerView.NO_POSITION
 
     private var listener: TopchatProductAttachmentListener? = null
@@ -72,16 +79,16 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     private var parentMetaData: ParentViewHolderMetaData? = null
     private val bgOpposite: Drawable? by lazy(LazyThreadSafetyMode.NONE) {
         ViewUtil.generateBackgroundWithShadow(
-          this,
-          com.tokopedia.unifyprinciples.R.color.Unify_NN0,
-          com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-          com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-          com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-          com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-          ViewUtil.getShadowColorViewHolder(context),
-          R.dimen.dp_topchat_2,
-          R.dimen.dp_topchat_1,
-          Gravity.CENTER
+            this,
+            com.tokopedia.unifyprinciples.R.color.Unify_NN0,
+            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+            ViewUtil.getShadowColorViewHolder(context),
+            R.dimen.dp_topchat_2,
+            R.dimen.dp_topchat_1,
+            Gravity.CENTER
         )
     }
     private var bgSender: Drawable? = null
@@ -112,14 +119,19 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     }
 
     constructor(
-        context: Context?, attrs: AttributeSet?, defStyleAttr: Int
+        context: Context?,
+        attrs: AttributeSet?,
+        defStyleAttr: Int
     ) : super(context, attrs, defStyleAttr) {
         initAttr(context, attrs)
     }
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     constructor(
-        context: Context?, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int
+        context: Context?,
+        attrs: AttributeSet?,
+        defStyleAttr: Int,
+        defStyleRes: Int
     ) : super(context, attrs, defStyleAttr, defStyleRes) {
         initAttr(context, attrs)
     }
@@ -153,6 +165,14 @@ class SingleProductAttachmentContainer : ConstraintLayout {
         btnUpdateStock = findViewById(R.id.btn_update_stock)
         footerContainer = findViewById(R.id.ll_footer)
         shippingLocation = findViewById(R.id.tv_shipping_location)
+        productColorVariant = findViewById(R.id.ll_variant_color)
+        productColorVariantValue = findViewById(R.id.tv_variant_color)
+        productSizeVariant = findViewById(R.id.ll_variant_size)
+        productVariantSize = findViewById(R.id.tv_variant_size)
+        campaignDiscount = findViewById(R.id.tv_campaign_discount)
+        campaignPrice = findViewById(R.id.tv_campaign_price)
+        price = findViewById(R.id.tv_price)
+        variant = findViewById(R.id.ll_variant)
     }
 
     private fun initLayoutView() {
@@ -162,7 +182,10 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     private fun initAttr(context: Context?, attrs: AttributeSet?) {
         if (context == null || attrs == null) return
         context.theme.obtainStyledAttributes(
-            attrs, R.styleable.SingleProductAttachmentContainer, 0, 0
+            attrs,
+            R.styleable.SingleProductAttachmentContainer,
+            0,
+            0
         ).apply {
             try {
                 widthMultiplier = getFloat(
@@ -257,7 +280,8 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     }
 
     private fun initViewHolderData(
-        adapterPosition: Int, parentMetaData: ParentViewHolderMetaData?
+        adapterPosition: Int,
+        parentMetaData: ParentViewHolderMetaData?
     ) {
         this.adapterPosition = adapterPosition
         this.parentMetaData = parentMetaData
@@ -349,21 +373,23 @@ class SingleProductAttachmentContainer : ConstraintLayout {
 
         showVariantLayout()
         if (product.hasColorVariant()) {
-            ll_variant_color?.show()
-            tv_variant_color?.text = ellipsizeLongText(
-                product.colorVariant, MAX_VARIANT_LABEL_CHAR
+            productColorVariant?.show()
+            productColorVariantValue?.text = ellipsizeLongText(
+                product.colorVariant,
+                MAX_VARIANT_LABEL_CHAR
             )
         } else {
-            ll_variant_color?.hide()
+            productColorVariant?.hide()
         }
 
         if (product.hasSizeVariant()) {
-            ll_variant_size?.show()
-            tv_variant_size?.text = ellipsizeLongText(
-                product.sizeVariant, MAX_VARIANT_LABEL_CHAR
+            productSizeVariant?.show()
+            productVariantSize?.text = ellipsizeLongText(
+                product.sizeVariant,
+                MAX_VARIANT_LABEL_CHAR
             )
         } else {
-            ll_variant_size?.hide()
+            productSizeVariant?.hide()
         }
     }
 
@@ -378,7 +404,11 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     }
 
     private fun bindSellerRemainingStock(product: ProductAttachmentUiModel) {
-        if (commonListener?.isSeller() == true && !product.isUpcomingCampaign) {
+        // Show only when user is seller, product is not upcoming product and not product archived
+        if (commonListener?.isSeller() == true &&
+            !product.isUpcomingCampaign &&
+            !product.isProductArchived()
+        ) {
             sellerStockContainer?.show()
             bindSellerStockCount(product)
             bindSellerStockType(product)
@@ -413,8 +443,12 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     }
 
     private fun bindSellerUpdateStockBtn(product: ProductAttachmentUiModel) {
+        // Only show button seller update stock when
+        // user is seller, product is not product campaign and not product archived
+        // note: can show footer is for buyer
         if (product.canShowFooter || commonListener?.isSeller() == false ||
-            product.isProductCampaign() || !enableUpdateStockSeller()
+            product.isProductCampaign() || !enableUpdateStockSeller() ||
+            product.isProductArchived()
         ) {
             btnUpdateStockContainer?.hide()
         } else {
@@ -492,7 +526,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     }
 
     private fun bindImageClick(product: ProductAttachmentUiModel) {
-        iv_thumbnail?.setOnClickListener {
+        thumbnail?.setOnClickListener {
             listener?.trackClickProductThumbnail(product)
             it.context.startActivity(
                 ImagePreviewActivity.getCallingIntent(
@@ -507,18 +541,18 @@ class SingleProductAttachmentContainer : ConstraintLayout {
 
     @SuppressLint("SetTextI18n")
     private fun bindDiscount(product: ProductAttachmentUiModel) {
-        tv_campaign_discount?.text = "${product.dropPercentage}%"
+        campaignDiscount?.text = "${product.dropPercentage}%"
     }
 
     private fun bindDropPrice(product: ProductAttachmentUiModel) {
-        tv_campaign_price?.let {
+        campaignPrice?.let {
             it.paintFlags = it.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
             it.text = product.priceBefore
         }
     }
 
     private fun bindPrice(product: ProductAttachmentUiModel) {
-        tv_price?.text = product.productPrice
+        price?.text = product.productPrice
     }
 
     @SuppressLint("SetTextI18n")
@@ -573,7 +607,11 @@ class SingleProductAttachmentContainer : ConstraintLayout {
 
     private fun bindEmptyStockLabel(product: ProductAttachmentUiModel) {
         label?.apply {
-            if (product.hasEmptyStock() && !product.isUpcomingCampaign) {
+            // Show stok habis only when product is empty but not archived and not upcoming product
+            if (product.hasEmptyStock() &&
+                !product.isProductArchived() &&
+                !product.isUpcomingCampaign
+            ) {
                 show()
                 setText(R.string.title_topchat_empty_stock)
                 unlockFeature = true
@@ -634,7 +672,11 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     }
 
     private fun bindWishList(product: ProductAttachmentUiModel) {
-        if (product.hasEmptyStock() || product.isUpcomingCampaign) {
+        // Show wishlist only when product is empty but not archived
+        // or product is upcoming campaign (0 because campaign is not started)
+        if ((product.hasEmptyStock() && !product.isProductArchived()) ||
+            product.isUpcomingCampaign
+        ) {
             btnWishList?.show()
             setupWishlistButton(product)
         } else {
@@ -675,16 +717,16 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     }
 
     private fun hideVariantLayout() {
-        ll_variant?.hide()
+        variant?.hide()
     }
 
     private fun showVariantLayout() {
-        ll_variant?.show()
+        variant?.show()
     }
 
     private fun toggleCampaign(visibility: Int) {
-        tv_campaign_discount?.visibility = visibility
-        tv_campaign_price?.visibility = visibility
+        campaignDiscount?.visibility = visibility
+        campaignPrice?.visibility = visibility
     }
 
     private fun setLayoutGravity(@Slide.GravityFlag gravity: Int) {

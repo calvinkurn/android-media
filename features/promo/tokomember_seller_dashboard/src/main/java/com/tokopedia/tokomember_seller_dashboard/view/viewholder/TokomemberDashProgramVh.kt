@@ -64,9 +64,9 @@ class TokomemberDashProgramVh(itemView: View, val fragmentManager: FragmentManag
         programMemberValue = itemView.findViewById(R.id.programMemberValue)
         programMemberTransaksiLabel = itemView.findViewById(R.id.programMemberTransaksiLabel)
         programMemberTransaksivalue = itemView.findViewById(R.id.programMemberTransaksivalue)
-        btn_edit = itemView.findViewById(R.id.btn_edit)
+        btn_edit = itemView.findViewById(com.tokopedia.tokomember_common_widget.R.id.btn_edit)
         view_status = itemView.findViewById(R.id.view_status)
-        optionMenu = itemView.findViewById(R.id.optionMenu)
+        optionMenu = itemView.findViewById(com.tokopedia.tokomember_common_widget.R.id.optionMenu)
 
         programStatus.text = item.statusStr
         programStartDate.text = item.timeWindow?.startTime?.let { getDate(it) }

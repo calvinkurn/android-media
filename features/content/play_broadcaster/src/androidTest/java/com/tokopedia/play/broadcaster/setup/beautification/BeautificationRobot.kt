@@ -61,7 +61,8 @@ class BeautificationRobot {
         mockCoachMarkSharedPref = mockContentCoachMarkSharedPref,
         mockBroadcastTimer = mockBroadcastTimer,
         mockGetChannelUseCase = mockGetChannelUseCase,
-        mockValueWrapper = mockValueWrapper,
+        mockGetAddedTagUseCase = mockGetAddedTagUseCase,
+        mockValueWrapper = mockValueWrapper
     )
 
     private val playBroadcastRepositoryTestModule = PlayBroadcastRepositoryTestModule(
@@ -101,7 +102,7 @@ class BeautificationRobot {
         coEvery {
             mockContentCoachMarkSharedPref.hasBeenShown(
                 ContentCoachMarkSharedPref.Key.PlayBroadcasterFaceFilter,
-                any(),
+                any()
             )
         } returns true
     }
@@ -123,8 +124,8 @@ class BeautificationRobot {
         } returns channelPausedResponse
 
         launch()
+            .performDelay(1000)
             .clickDialogPrimaryCTA()
-
     }
 
     fun launchLiveWithNoDownloadedPreset() = chainable {
@@ -143,7 +144,6 @@ class BeautificationRobot {
 
         launch()
             .clickDialogPrimaryCTA()
-
     }
 
     fun clickBeautificationMenu() = chainable {

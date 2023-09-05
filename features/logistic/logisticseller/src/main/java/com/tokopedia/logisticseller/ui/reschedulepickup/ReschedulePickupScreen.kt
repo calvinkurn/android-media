@@ -7,6 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -28,7 +29,6 @@ import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.ReschedulePickup
 import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.ReschedulePickupState
 import com.tokopedia.logisticseller.ui.reschedulepickup.uimodel.ReschedulePickupUiEvent
 import com.tokopedia.nest.components.ButtonSize
-import com.tokopedia.nest.components.NestBottomSheetShape
 import com.tokopedia.nest.components.NestButton
 import com.tokopedia.nest.components.NestTextField
 import com.tokopedia.nest.components.NestTips
@@ -85,7 +85,12 @@ fun ReschedulePickupScreen(
     }) { paddingValues ->
         ModalBottomSheetLayout(
             modifier = Modifier.padding(paddingValues),
-            sheetShape = NestBottomSheetShape(),
+            sheetShape = RoundedCornerShape(
+                topStart = 20.dp,
+                topEnd = 20.dp,
+                bottomEnd = 0.dp,
+                bottomStart = 0.dp
+            ),
             sheetState = sheetState,
             sheetContent = {
                 RescheduleBottomSheetLayout(

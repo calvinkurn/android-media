@@ -146,7 +146,7 @@ class PlayWidgetCardCarouselChannelView : FrameLayout, PlayVideoPlayerReceiver {
         } else {
             if (::mModel.isInitialized) {
                 player.videoUrl = mModel.video.videoUrl
-                player.shouldCache = !mModel.video.isLive
+                player.isLive = mModel.video.isLive
                 player.repeat(!mModel.video.isLive)
                 player.mute(mModel.isMuted)
                 player.start()

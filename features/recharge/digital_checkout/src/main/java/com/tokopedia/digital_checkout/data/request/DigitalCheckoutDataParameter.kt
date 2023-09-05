@@ -24,5 +24,6 @@ data class DigitalCheckoutDataParameter(
     var crossSellProducts: HashMap<String, DigitalCrossSellData> = hashMapOf(),
     var userInputPriceValue: Long? = null,
 
-    var isInstantCheckout: Boolean = false
+    var isInstantCheckout: Boolean = false,
+    var productConsentPayload: String = ""
 ) : Parcelable

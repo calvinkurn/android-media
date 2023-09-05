@@ -148,7 +148,7 @@ class UniversalInboxMenuTest : BaseUniversalInboxTest() {
     }
 
     @Test
-    fun should_show_pull_to_refresh() {
+    fun should_show_pull_to_refresh_and_show_counter() {
         // When
         launchActivity()
 
@@ -164,8 +164,36 @@ class UniversalInboxMenuTest : BaseUniversalInboxTest() {
         menuRobot {
             swipeDown()
         }
+        Thread.sleep(1000)
 
         // Then
         assertNotificationCounter("1")
+    }
+
+    @Test
+    fun should_show_pull_to_refresh_and_remove_counter() {
+        // Given
+        GqlResponseStub.counterResponse.editAndGetResponseObject {
+            it.allCounter.notifCenterUnread.notifUnread = "1"
+        }
+
+        // When
+        launchActivity()
+
+        // Then
+        assertNotificationCounter("1")
+
+        // Given
+        GqlResponseStub.counterResponse.editAndGetResponseObject {
+            it.allCounter.notifCenterUnread.notifUnread = "0"
+        }
+
+        // When
+        menuRobot {
+            swipeDown()
+        }
+
+        // Then
+        assertNotificationCounterGone()
     }
 }

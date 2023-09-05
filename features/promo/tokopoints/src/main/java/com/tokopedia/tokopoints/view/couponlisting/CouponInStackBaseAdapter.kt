@@ -96,9 +96,9 @@ class CouponInStackBaseAdapter(callback: AdapterCallback, val data: TokoPointPro
         ImageHandler.loadImageFitCenter(itemContext, holder.imgBanner, item.imageUrlMobile)
 
         if (item.isNewCoupon) {
-            holder.itemView.setBackgroundColor(MethodChecker.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_G200))
-            holder.cv1.setCardBackgroundColor(MethodChecker.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_G200))
-            holder.cv2.setCardBackgroundColor(MethodChecker.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_G200))
+            holder.itemView.setBackgroundColor(MethodChecker.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_GN100))
+            holder.cv1.setCardBackgroundColor(MethodChecker.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_GN100))
+            holder.cv2.setCardBackgroundColor(MethodChecker.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_GN100))
         } else {
             holder.cv1.setCardBackgroundColor(MethodChecker.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_Background))
             holder.cv2.setCardBackgroundColor(MethodChecker.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_Background))
@@ -177,7 +177,7 @@ class CouponInStackBaseAdapter(callback: AdapterCallback, val data: TokoPointPro
                         holder.value.text = String.format(Locale.ENGLISH, "%02d : %02d : %02d", hours, minutes, seconds)
 
                         try {
-                            holder.value.setTextColor(ContextCompat.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_R500))
+                            holder.value.setTextColor(ContextCompat.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_RN500))
                         } catch (e: Exception) {
                         }
                         holder.progressTimer.progress = l.toInt() / 1000
@@ -199,19 +199,19 @@ class CouponInStackBaseAdapter(callback: AdapterCallback, val data: TokoPointPro
             } else {
                 holder.progressTimer.hide()
                 holder.value.setPadding(0, 0, 0, 0)
-                holder.value.setTextColor(ContextCompat.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+                holder.value.setTextColor(ContextCompat.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68))
             }
         } else {
             holder.progressTimer.hide()
-            holder.value.setTextColor(ContextCompat.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+            holder.value.setTextColor(ContextCompat.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68))
         }
 
         if (item.usage.activeCountDown > 0) {
-            holder.imgLabel.setColorFilter(ContextCompat.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_N200), android.graphics.PorterDuff.Mode.SRC_IN)
-            holder.ivMinTxn.setColorFilter(ContextCompat.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_N200), android.graphics.PorterDuff.Mode.SRC_IN)
+            holder.imgLabel.setColorFilter(ContextCompat.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_NN500), android.graphics.PorterDuff.Mode.SRC_IN)
+            holder.ivMinTxn.setColorFilter(ContextCompat.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_NN500), android.graphics.PorterDuff.Mode.SRC_IN)
         } else {
-            holder.imgLabel.setColorFilter(ContextCompat.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_G400), android.graphics.PorterDuff.Mode.SRC_IN)
-            holder.ivMinTxn.setColorFilter(ContextCompat.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_G400), android.graphics.PorterDuff.Mode.SRC_IN)
+            holder.imgLabel.setColorFilter(ContextCompat.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_GN500), android.graphics.PorterDuff.Mode.SRC_IN)
+            holder.ivMinTxn.setColorFilter(ContextCompat.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_GN500), android.graphics.PorterDuff.Mode.SRC_IN)
         }
 
         if (holder.itemView != null) {

@@ -37,7 +37,7 @@ object ColorDrawableGenerator {
                     strokeWidth,
                     MethodChecker.getColor(
                             context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_N100
+                            com.tokopedia.unifyprinciples.R.color.Unify_NN200
                     )
             )
         }

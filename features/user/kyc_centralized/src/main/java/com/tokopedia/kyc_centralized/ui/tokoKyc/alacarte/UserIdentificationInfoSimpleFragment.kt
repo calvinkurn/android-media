@@ -17,10 +17,12 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kyc_centralized.common.KYCConstant
+import com.tokopedia.kyc_centralized.common.KycServerLogger
 import com.tokopedia.kyc_centralized.common.KycUrl
 import com.tokopedia.kyc_centralized.databinding.FragmentUserIdentificationInfoSimpleBinding
 import com.tokopedia.kyc_centralized.di.UserIdentificationCommonComponent
 import com.tokopedia.kyc_centralized.ui.customview.KycOnBoardingViewInflater
+import com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet.FailedSavePreferenceBottomSheet
 import com.tokopedia.kyc_centralized.util.KycSharedPreference
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.url.Env
@@ -41,6 +43,7 @@ class UserIdentificationInfoSimpleFragment : BaseDaggerFragment() {
     private var showWrapperLayout = false
     private var redirectUrl = ""
     private var kycType = ""
+    private var savedInstanceState: Bundle? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -53,10 +56,6 @@ class UserIdentificationInfoSimpleFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        kycSharedPreference.saveStringCache(
-            key = KYCConstant.SharedPreference.KEY_KYC_FLOW_TYPE,
-            value = KYCConstant.SharedPreference.VALUE_KYC_FLOW_TYPE_ALA_CARTE
-        )
 
         activity?.intent?.data?.let {
             projectId = it.getQueryParameter(PARAM_PROJECT_ID).toIntOrZero()
@@ -69,6 +68,11 @@ class UserIdentificationInfoSimpleFragment : BaseDaggerFragment() {
             kycType = arguments?.getString(PARAM_KYC_TYPE).orEmpty()
         }
 
+        this.savedInstanceState = savedInstanceState
+        saveInitDataToPreference()
+    }
+
+    private fun initAction() {
         loadUserConsent()
         if (showWrapperLayout) {
             viewBinding?.loader?.hide()
@@ -78,12 +82,50 @@ class UserIdentificationInfoSimpleFragment : BaseDaggerFragment() {
             viewBinding?.uiiSimpleButton?.setOnClickListener { _ ->
                 finishAndRedirectKycResult()
             }
-            setupKycBenefitView(view)
+            setupKycBenefitView(requireView())
         } else {
             viewBinding?.loader?.show()
             //If savedInstanceState is null, then first time open (solve problem in ONE UI 3.1)
             if (savedInstanceState == null) {
                 startKyc()
+            }
+        }
+    }
+
+    private fun saveInitDataToPreference() {
+        viewBinding?.loader?.show()
+        val isSuccessSavePreference = kycSharedPreference.saveStringCache(
+            key = KYCConstant.SharedPreference.KEY_KYC_FLOW_TYPE,
+            value = KYCConstant.SharedPreference.VALUE_KYC_FLOW_TYPE_ALA_CARTE
+        )
+
+        KycServerLogger.sendLogStatusSavePreferenceKyc(
+            flow = KycServerLogger.FLOW_ALA_CARTE,
+            isSuccess = isSuccessSavePreference
+        )
+
+        if (isSuccessSavePreference) {
+            initAction()
+        } else {
+            viewBinding?.loader?.hide()
+            showFailedSavePreferenceBottomSheet()
+        }
+    }
+
+    private fun showFailedSavePreferenceBottomSheet() {
+        val failedSavePreferenceBottomSheet = FailedSavePreferenceBottomSheet()
+
+        failedSavePreferenceBottomSheet.show(
+            childFragmentManager,
+            TAG_BOTTOM_SHEET_FAILED_SAVE_PREFERENCE
+        )
+
+        failedSavePreferenceBottomSheet.setOnDismissWithDataListener { isReload ->
+            if (isReload) {
+                saveInitDataToPreference()
+            } else {
+                activity?.setResult(Activity.RESULT_CANCELED)
+                activity?.finish()
             }
         }
     }
@@ -169,5 +211,6 @@ class UserIdentificationInfoSimpleFragment : BaseDaggerFragment() {
     companion object {
         private const val TAG = "UserIdentificationInfoSimpleFragment"
         private const val KYC_REQUEST_CODE = 9902
+        private const val TAG_BOTTOM_SHEET_FAILED_SAVE_PREFERENCE = "bottom_sheet_failed_save_preference"
     }
 }

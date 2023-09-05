@@ -16,6 +16,7 @@ import com.intellij.psi.PsiElement
 import org.jetbrains.uast.UCallExpression
 import org.jetbrains.uast.UElement
 import org.jetbrains.uast.UField
+import org.jetbrains.uast.UFieldEx
 import org.jetbrains.uast.ULocalVariable
 import org.jetbrains.uast.UReturnExpression
 import java.io.File
@@ -60,7 +61,7 @@ class ResourcePackageDetector : Detector(), SourceCodeScanner {
 
     override fun getApplicableUastTypes(): List<Class<out UElement>> {
         return listOf(
-            UField::class.java,
+            UFieldEx::class.java,
             ULocalVariable::class.java,
             UCallExpression::class.java,
             UReturnExpression::class.java
@@ -72,7 +73,7 @@ class ResourcePackageDetector : Detector(), SourceCodeScanner {
             override fun visitField(node: UField) {
                 val resource = node.text.substringAfter("= ")
 
-                if(shouldScanResource(resource)) {
+                if (shouldScanResource(resource)) {
                     scanResource(
                         context = context,
                         node = node,
@@ -84,7 +85,7 @@ class ResourcePackageDetector : Detector(), SourceCodeScanner {
             override fun visitLocalVariable(node: ULocalVariable) {
                 val resource = node.text.substringAfter("= ")
 
-                if(shouldScanResource(resource)) {
+                if (shouldScanResource(resource)) {
                     scanResource(
                         context = context,
                         node = node,
@@ -110,7 +111,7 @@ class ResourcePackageDetector : Detector(), SourceCodeScanner {
                 val element = node.sourcePsi?.lastChild
                 val resource = element?.text.orEmpty()
 
-                if(shouldScanResource(resource)) {
+                if (shouldScanResource(resource)) {
                     scanResource(
                         context = context,
                         psi = element,
@@ -139,13 +140,13 @@ class ResourcePackageDetector : Detector(), SourceCodeScanner {
         value: String
     ) {
         val resourceName = value.substringAfterLast(".")
-        if(!resourceIds.contains(resourceName)) {
+        if (!resourceIds.contains(resourceName)) {
             reportError(context, node, psi)
         }
     }
 
     private fun reportError(context: JavaContext, node: UElement?, psi: PsiElement?) {
-        if(psi != null) {
+        if (psi != null) {
             context.report(
                 JAVA_ISSUE,
                 psi,

@@ -353,9 +353,9 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
         val idFilter = SomConsts.FILTER_SORT
         val mockSomFilterUiModels = getMockSomFilterList()
         val indexOfSelectedSortFilterItem = mockSomFilterUiModels.filterIsInstance<SomFilterUiModel>()
-                .find {
-                    it.nameFilter == idFilter
-                }!!.somFilterData.indexOfFirst { it.id == SomConsts.SORT_BY_PAYMENT_DATE_ASCENDING }
+            .find {
+                it.nameFilter == idFilter
+            }!!.somFilterData.indexOfFirst { it.id == SomConsts.SORT_BY_PAYMENT_DATE_ASCENDING }
         coEvery {
             getSomOrderFilterUseCase.execute()
         } returns mockSomFilterUiModels

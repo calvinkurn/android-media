@@ -54,7 +54,7 @@ class ReviewViewHolder(itemView: View,
             )
         }
         val visitableList = mutableListOf<Visitable<*>>()
-        visitableList.addAll(element.reviewList.map { ReviewModel(it) })
+        visitableList.addAll(element.reviewList.mapIndexed { index, it -> ReviewModel(it, index) })
         if(visitableList.isEmpty()){
             visitableList.add(EmptyStateReviewDataModel())
         } else if(element.showViewAll){

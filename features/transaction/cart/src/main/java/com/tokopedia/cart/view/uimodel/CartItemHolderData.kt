@@ -2,12 +2,12 @@ package com.tokopedia.cart.view.uimodel
 
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.Action
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.ProductInformationWithIcon
-import com.tokopedia.cart.data.model.response.shopgroupsimplified.ShopTypeInfo
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.WholesalePrice
 import com.tokopedia.purchase_platform.common.feature.bometadata.BoMetadata
 
 data class CartItemHolderData(
     var cartString: String = "",
+    var cartStringOrder: String = "",
     var actionsData: List<Action> = emptyList(),
     var isError: Boolean = false,
     var errorType: String = "",
@@ -62,11 +62,14 @@ data class CartItemHolderData(
     var needPrescription: Boolean = false,
     var butuhResepText: String = "",
     var butuhResepIconUrl: String = "",
+    var isFinalItem: Boolean = false,
+
+    // OWOC
+    var shopHolderData: CartShopHolderData = CartShopHolderData(),
+    var isShopShown: Boolean = false,
+    var originWarehouseIds: List<Int> = emptyList(),
 
     // Analytics data
-    var shopId: String = "",
-    var shopTypeInfoData: ShopTypeInfo = ShopTypeInfo(),
-    var shopName: String = "",
     var category: String = "",
     var categoryId: String = "",
     var trackerAttribution: String = "",
@@ -88,7 +91,10 @@ data class CartItemHolderData(
 
     // Will be set after calculation
     var wholesalePrice: Double = 0.0,
-    var wholesalePriceFormatted: String? = null
+    var wholesalePriceFormatted: String? = null,
+
+    // AddOns Product
+    var addOnsProduct: CartAddOnData = CartAddOnData()
 ) {
     companion object {
         const val BUNDLING_ITEM_DEFAULT = 0

@@ -330,7 +330,7 @@ class ShippingOccWidget : ConstraintLayout {
                     ForegroundColorSpan(
                         ContextCompat.getColor(
                             it,
-                            com.tokopedia.unifyprinciples.R.color.Unify_G500
+                            com.tokopedia.unifyprinciples.R.color.Unify_GN500
                         )
                     ),
                     errorMessage.length + 1,
@@ -415,7 +415,7 @@ class ShippingOccWidget : ConstraintLayout {
                     ForegroundColorSpan(
                         ContextCompat.getColor(
                             it,
-                            com.tokopedia.unifyprinciples.R.color.Unify_G500
+                            com.tokopedia.unifyprinciples.R.color.Unify_GN500
                         )
                     ),
                     errorDescription.length + 1,

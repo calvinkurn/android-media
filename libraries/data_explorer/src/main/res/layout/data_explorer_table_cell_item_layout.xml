@@ -14,7 +14,7 @@
         android:layout_marginStart="@dimen/unify_space_8"
         android:layout_marginEnd="@dimen/unify_space_8"
         android:gravity="center_vertical"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         android:ellipsize="end"
         android:maxWidth="@dimen/unify_space_128"
         android:minHeight="@dimen/unify_space_40"

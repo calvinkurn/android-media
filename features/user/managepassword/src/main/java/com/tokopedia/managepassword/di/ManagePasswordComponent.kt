@@ -5,7 +5,6 @@ import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.managepassword.addpassword.view.activity.AddPasswordActivity
 import com.tokopedia.managepassword.addpassword.view.fragment.AddPasswordFragment
 import com.tokopedia.managepassword.di.module.ManagePasswordModule
-import com.tokopedia.managepassword.di.module.ManagePasswordUseCaseModule
 import com.tokopedia.managepassword.di.module.ManagePasswordViewModelModule
 import com.tokopedia.managepassword.forgotpassword.view.activity.ForgotPasswordActivity
 import com.tokopedia.managepassword.haspassword.view.activity.HasPasswordActivity
@@ -15,9 +14,9 @@ import dagger.Component
 @Component(
     modules = [
         ManagePasswordModule::class,
-        ManagePasswordUseCaseModule::class,
         ManagePasswordViewModelModule::class
-    ], dependencies = [
+    ],
+    dependencies = [
         BaseAppComponent::class
     ]
 )

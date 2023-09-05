@@ -13,7 +13,7 @@ object CourierEventLogger {
 
     fun logCourierEventToServerLogger(
         name: String,
-        properties: Map<String, Any>
+        properties: Map<String, Any?>
     ) {
         val message = createMapEvent(name, properties)
         ServerLogger.log(Priority.P2, TAG, message)
@@ -29,7 +29,7 @@ object CourierEventLogger {
 
     private fun createMapEvent(
         name: String,
-        properties: Map<String, Any>
+        properties: Map<String, Any?>
     ): Map<String, String> {
         val stringMap = properties.entries.associate { (key, value) ->
             key to value.toString()

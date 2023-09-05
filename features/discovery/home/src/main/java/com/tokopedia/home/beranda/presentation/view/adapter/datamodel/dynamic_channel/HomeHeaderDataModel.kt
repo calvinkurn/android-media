@@ -9,7 +9,7 @@ import com.tokopedia.kotlin.model.ImpressHolder
 data class HomeHeaderDataModel(
         var needToShowChooseAddress: Boolean = true,
         var headerDataModel: HeaderDataModel? = HeaderDataModel()
-) : ImpressHolder(), HomeVisitable {
+) : ImpressHolder(), HomeVisitable{
     var createdTimeMillis = ""
     private var isCache: Boolean = false
     private var trackingData: Map<String, Any>? = null

@@ -769,7 +769,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String requestUrl) {
-            if (hasCheckOverrideAtInitialization(requestUrl) && !isHelpUrl(requestUrl)) return false;
+            if (hasCheckOverrideAtInitialization(requestUrl) && !shouldReloadContactUsUrl(requestUrl)) return false;
             boolean overrideUrl = BaseWebViewFragment.this.shouldOverrideUrlLoading(view, requestUrl);
             checkActivityFinish();
             return overrideUrl;
@@ -856,6 +856,14 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         return url.contains(HELP_URL);
     }
 
+    public Boolean shouldReloadContactUsUrl(String url) {
+        if (!userSession.isLoggedIn()) return false;
+        if (getContext() != null) {
+            return WebViewHelper.shouldReloadContactUsUrl(getContext(), url);
+        }
+        return false;
+    }
+
     // to be overridden
     protected void webViewClientShouldInterceptRequest(WebView view, WebResourceRequest request) {
         //noop
@@ -878,7 +886,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             return false;
         }
 
-        if(webView != null && isHelpUrl(url)){
+        if (webView != null && shouldReloadContactUsUrl(url)){
             launchWebviewForNewUrl(url);
             return true;
         }
@@ -1223,7 +1231,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         if (globalError != null) {
             globalError.setVisibility(View.GONE);
         }
-        if(isHelpUrl(url)){
+        if (shouldReloadContactUsUrl(url)){
             launchWebviewForNewUrl(url);
             return;
         }

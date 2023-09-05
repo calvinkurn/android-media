@@ -101,6 +101,12 @@ class DeepLinkDFMapperCustomerAppTest : DeepLinkDFMapperTestFixture() {
     }
 
     @Test
+    fun `check profile settings appLink then should return DF_CONTENT_PROFILE in customerapp`() {
+        val appLink = "${DeeplinkConstant.SCHEME_INTERNAL}://people/settings/12345"
+        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_PEOPLE)
+    }
+
+    @Test
     fun `check play detail appLink then should return DF_BASE in customerapp`() {
         val appLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://play/12345"
         assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_BASE)
@@ -820,6 +826,12 @@ class DeepLinkDFMapperCustomerAppTest : DeepLinkDFMapperTestFixture() {
     }
 
     @Test
+    fun `check profile management from applink then should return DF_USER_SETTINGS in customerapp`() {
+        val appLink = "${ApplinkConstInternalUserPlatform.NEW_INTERNAL_USER}/profile-management"
+        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_USER_SETTINGS)
+    }
+
+    @Test
     fun `check goto kyc from applink then should return DF_USER_SETTINGS in customerapp`() {
         val appLink = "${ApplinkConstInternalUserPlatform.NEW_INTERNAL_USER}/goto-kyc?projectId=123456"
         assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_USER_SETTINGS)
@@ -1085,7 +1097,17 @@ class DeepLinkDFMapperCustomerAppTest : DeepLinkDFMapperTestFixture() {
         val internalApplink = "${DeeplinkConstant.SCHEME_INTERNAL}://food/search"
         assertEqualDeepLinkCustomerApp(internalApplink, DeeplinkDFMapper.DF_TOKOFOOD)
     }
+    @Test
+    fun `check shop nib applink should return DF_BASE in customerapp`() {
+        val appLink = ApplinkConst.SHOP_NIB_CUSTOMER_APP
+        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_BASE)
+    }
 
+    @Test
+    fun `check shop nib internal applink should return DF_BASE in customerapp`() {
+        val appLink = ApplinkConstInternalMechant.SHOP_NIB_CUSTOMER_APP
+        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_BASE)
+    }
     @Test
     fun `check tokochat applink should return DF_COMM_TOKOCHAT in customerapp`() {
         val source = "tokofood"

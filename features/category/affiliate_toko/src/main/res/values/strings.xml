@@ -53,7 +53,7 @@
     <string name="affiliate_tutorial_title_2">Rekomendasi produk sesuai personamu</string>
     <string name="affiliate_tutorial_subtitle_2"><![CDATA[Tokopedia akan bantu pilihkan produk best seller dan yang lagi trending!]]></string>
     <string name="affiliate_tutorial_title_3">Semua bisa kamu lakukan di Dashboard Affiliate</string>
-    <string name="affiliate_tutorial_subtitle_3"><![CDATA[Mudah cek performa Affiliate, hingga kembangin skill kamu dengan Content Creator Academy!]]></string>
+    <string name="affiliate_tutorial_subtitle_3">Cek performa, tarik saldo, hingga kembangin skill kamu dengan Akademi Kreator Tokopedia!</string>
     <string name="affiliate_pelajari">Pelajari</string>
     <string name="affiliate_daftar_sekarang">Daftar Sekarang</string>
     <string name="affiliate_daftar_affiliate_dengan_akun_lain"><![CDATA[Daftar Affiliate dengan akun lain?\u0020]]></string>
@@ -206,4 +206,6 @@
     <string name="affiliate_tokonow_promo_title">Komisi fresh dari Tokopedia NOW!</string>
     <string name="affiliate_tokonow_promo_subtitle">Kini udah bisa promosi &amp; share link NOW!</string>
     <string name="link_history_entry">Riwayat link dipromosikan</string>
+    <string name="affiliate_back_to_wishlist">Kembali ke Koleksi Wishlist</string>
+    <string name="affiliate_go_to_promote">Ke Halaman Promosikan</string>
 </resources>

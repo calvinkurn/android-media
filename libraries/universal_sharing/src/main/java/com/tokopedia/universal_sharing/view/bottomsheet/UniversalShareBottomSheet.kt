@@ -33,7 +33,9 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
@@ -73,11 +75,13 @@ import com.tokopedia.universal_sharing.usecase.ImagePolicyUseCase
 import com.tokopedia.universal_sharing.util.DateUtil
 import com.tokopedia.universal_sharing.util.MimeType
 import com.tokopedia.universal_sharing.util.UniversalShareConst
+import com.tokopedia.universal_sharing.view.bottomsheet.adapter.ChipsAdapter
 import com.tokopedia.universal_sharing.view.bottomsheet.adapter.ImageListAdapter
 import com.tokopedia.universal_sharing.view.bottomsheet.adapter.ShareBottomSheetAdapter
 import com.tokopedia.universal_sharing.view.bottomsheet.adapter.TickerListAdapter
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.AffiliateInput
+import com.tokopedia.universal_sharing.view.model.ChipProperties
 import com.tokopedia.universal_sharing.view.model.GenerateAffiliateLinkEligibility
 import com.tokopedia.universal_sharing.view.model.LinkProperties
 import com.tokopedia.universal_sharing.view.model.ShareModel
@@ -132,7 +136,11 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
     private var affiliateRegisterContainer: CardUnify? = null
     private var rvTicker: RecyclerView? = null
 
-    // Optons Flag
+    // View - Chip
+    private var chipOptionHeader: Typography? = null
+    private var lstChip: RecyclerView? = null
+
+    // Options Flag
     private var featureFlagRemoteConfigKey: String = ""
     private var isImageOnlySharing: Boolean = false
     private var screenShotImagePath: String = ""
@@ -172,6 +180,9 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
     private var affiliateInputTemp: AffiliateInput? = null
     private var userType: String = KEY_GENERAL_USER
     private var isAffiliateCommissionEnabled = false
+    private var chipListData: List<ChipProperties>? = null
+    private var currentGenerateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility? = null
+    private var currentDeeplinkRegistrationBanner: String = ""
 
     private var showLoader: Boolean = false
     private var handler: Handler? = null
@@ -227,6 +238,20 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
 
     private val tickerListAdapter by lazy {
         TickerListAdapter(::onClickTicker)
+    }
+
+    private var chipSelectedListener: ChipsAdapter.Listener? = null
+
+    /* flag to show chip list */
+    private var isShowChipList = false
+
+    private val chipListAdapter by lazy {
+        ChipsAdapter(object : ChipsAdapter.Listener {
+            override fun onChipChanged(chip: ChipProperties) {
+                chipSelectedListener?.onChipChanged(chip)
+                setLinkProperties(chip.properties)
+            }
+        })
     }
 
     override fun getComponent(): UniversalShareComponent? {
@@ -295,6 +320,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
     override fun onDismiss(dialog: DialogInterface) {
         try {
             affiliateListener = null
+            chipSelectedListener = null
             imageThumbnailListener = null
             removeLifecycleObserverAndSavedImage()
             if (gqlCallJob?.isActive == true) {
@@ -422,6 +448,23 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
         affiliateInputTemp = affiliateInput
     }
 
+    /**
+     * this function is used when the bottomsheet already shown and hide the affiliate ticker
+     */
+    fun hideAffiliateTicker() {
+        affiliateRegisterContainer?.gone()
+        affiliateCommissionTextView?.gone()
+    }
+
+    /**
+     * this function is used when the bottomsheet already shown and show the affiliate ticker
+     */
+    fun showAffiliateTicker() {
+        currentGenerateAffiliateLinkEligibility?.let {
+            showAffiliateTicker(it, currentDeeplinkRegistrationBanner)
+        }
+    }
+
     fun isAffiliateCommissionEnabled() = isAffiliateCommissionEnabled
 
     @Deprecated("this function is deprecated. Please use enableAffiliateCommission")
@@ -468,6 +511,18 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
      */
     fun setShareText(text: String) {
         shareText = text
+    }
+
+    fun setChipList(chips: List<ChipProperties>) {
+        chipListData = chips
+    }
+
+    fun onChipChangedListener(invoke: (ChipProperties) -> Unit) {
+        chipSelectedListener = object : ChipsAdapter.Listener {
+            override fun onChipChanged(chip: ChipProperties) {
+                invoke(chip)
+            }
+        }
     }
 
     fun setSelectThumbnailImageListener(listener: (imgUrl: String) -> Unit) {
@@ -626,7 +681,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
 
     fun getImageFromMedia(getImageFromMediaFlag: Boolean) {
         getImageFromMedia = getImageFromMediaFlag
-        savedImagePath = "{media_image}"
+        savedImagePath = UniversalShareConst.ImageType.MEDIA_VALUE_PLACEHOLDER
     }
 
     fun setImageGeneratorParam(param: ImageGeneratorParamModel) {
@@ -694,6 +749,10 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
             revImageOptionsContainer = findViewById(R.id.image_list_container)
             imageListViewGroup = findViewById(R.id.image_selection_view_group)
 
+            // chip
+            lstChip = findViewById(R.id.lst_chip)
+            chipOptionHeader = findViewById(R.id.chip_options_heading)
+
             // setting click listeners for fixed options
             copyLinkImage = findViewById(R.id.copy_link_img)
             copyLinkImage?.setBackgroundResource(R.drawable.universal_sharing_ic_ellipse_49)
@@ -715,6 +774,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
             setFixedOptionsClickListeners()
 
             setUserVisualData()
+            setChipContentList()
             setTitle(context.getString(R.string.label_to_social_media_text))
             setChild(this)
             setCloseClickListener {
@@ -736,6 +796,15 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
             rvTicker?.apply {
                 layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
                 adapter = tickerListAdapter
+            }
+        }
+
+        lstChip?.shouldShowWithAction(isShowChipList) {
+            chipOptionHeader?.show()
+
+            lstChip?.apply {
+                layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                adapter = chipListAdapter
             }
         }
     }
@@ -986,9 +1055,11 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
                 val generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility = affiliateUsecase.apply {
                     params = AffiliateEligibilityCheckUseCase.createParam(affiliateInput!!)
                 }.executeOnBackground()
+                currentGenerateAffiliateLinkEligibility = generateAffiliateLinkEligibility
                 var deeplink = ""
                 if (isExecuteExtractBranchLink(generateAffiliateLinkEligibility)) {
                     deeplink = executeExtractBranchLink(generateAffiliateLinkEligibility)
+                    currentDeeplinkRegistrationBanner = deeplink
                 }
                 withContext(Dispatchers.Main) {
                     showAffiliateTicker(generateAffiliateLinkEligibility, deeplink)
@@ -1027,7 +1098,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
         clearLoader()
         removeHandlerTimeout()
         if (isShowAffiliateComission(generateAffiliateLinkEligibility)) {
-            showAffiliateCommission(generateAffiliateLinkEligibility)
+            showAffiliateTicker(generateAffiliateLinkEligibility)
         } else if (isShowAffiliateRegister(generateAffiliateLinkEligibility)) {
             showAffiliateRegister(generateAffiliateLinkEligibility, deeplink)
         }
@@ -1052,7 +1123,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
             userSession.shopId != affiliateInput?.shop?.shopID
     }
 
-    private fun showAffiliateCommission(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility) {
+    private fun showAffiliateTicker(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility) {
         val commissionMessage = generateAffiliateLinkEligibility.eligibleCommission?.message ?: ""
         if (!TextUtils.isEmpty(commissionMessage)) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -1282,6 +1353,15 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
         if (getImageFromMedia) {
             shareModel.campaign = shareModel.campaign?.replace(UniversalShareConst.ImageType.KEY_CONTEXTUAL_IMAGE, sourceId)
         }
+    }
+
+    private fun setChipContentList() {
+        if (chipListData == null) return
+
+        // validation the chip list visibility
+        isShowChipList = chipListData?.isNotEmpty() == true
+
+        chipListAdapter.setData(chipListData)
     }
 
     private fun setUserVisualData() {

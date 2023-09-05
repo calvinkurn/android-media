@@ -1,9 +1,10 @@
 apply plugin: 'com.android.application'
-apply plugin: 'embrace-swazzler'
+if(project.hasProperty('enableEmbrace')) {
+    apply plugin: 'embrace-swazzler'
+}
 apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'kotlin-android'
 apply plugin: 'newrelic'
-apply plugin: 'robust'
 
 if (project.hasProperty("enable-shrinkresource")) {
     apply from: "$rootProject.projectDir/buildconfig/appcompile/enable-shrinkresource.gradle"
@@ -102,6 +103,8 @@ ext.lintchecks = [
 apply plugin: "org.gradle.test-retry"
 
 android {
+    namespace 'com.tokopedia.tkpd'
+    testNamespace 'com.tokopedia.tkpd.test'
     packagingOptions {
         exclude 'META-INF/**'
         pickFirst '**/armeabi-v7a/libc++_shared.so'

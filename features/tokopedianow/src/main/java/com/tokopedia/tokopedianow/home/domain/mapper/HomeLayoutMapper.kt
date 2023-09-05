@@ -34,14 +34,13 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.RE
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.SHARING_EDUCATION
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.SHARING_REFERRAL
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.SMALL_PLAY_WIDGET
-import com.tokopedia.tokopedianow.common.domain.mapper.CategoryMenuMapper.APPLINK_PARAM_WAREHOUSE_ID
+import com.tokopedia.tokopedianow.common.domain.mapper.CategoryMenuMapper.mapToCategoryLayout
 import com.tokopedia.tokopedianow.common.domain.mapper.CategoryMenuMapper.mapToCategoryList
 import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse
 import com.tokopedia.tokopedianow.common.model.TokoNowBundleUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
-import com.tokopedia.tokopedianow.common.domain.mapper.CategoryMenuMapper.mapToCategoryLayout
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationOocUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowServerErrorUiModel
@@ -157,7 +156,8 @@ object HomeLayoutMapper {
         val productRecomUiModel = TokoNowProductRecommendationOocUiModel(
             pageName = OOC_TOKONOW,
             isFirstLoad = true,
-            isBindWithPageName = true
+            isBindWithPageName = true,
+            isTokoNow = false
         )
         add(HomeLayoutItemUiModel(productRecomUiModel, HomeLayoutItemState.LOADED))
     }
@@ -248,7 +248,7 @@ object HomeLayoutMapper {
         firstOrNull { it?.layout is TokoNowCategoryMenuUiModel }?.let {
             val item = it.layout as TokoNowCategoryMenuUiModel
             val newItem = if (!response.isNullOrEmpty()) {
-                val seeAllAppLink = ApplinkConstInternalTokopediaNow.SEE_ALL_CATEGORY + APPLINK_PARAM_WAREHOUSE_ID + warehouseId
+                val seeAllAppLink = ApplinkConstInternalTokopediaNow.SEE_ALL_CATEGORY
                 val categoryList = mapToCategoryList(
                     response = response,
                     headerName = item.title,
