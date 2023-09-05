@@ -16,7 +16,7 @@
     <string name="host_profile" translatable="false">people</string>
     <string name="path_profile_settings" translatable="false">/settings/.*\</string>
     <string name="path_profile_detail" translatable="false">/.*\</string>
-    <string name="path_stories_creation" translatable="false">/creation/.*\</string>
+    <string name="path_stories_creation" translatable="false">/creation</string>
 
     <string name="applink_title_on_boarding">Onboarding</string>
 
