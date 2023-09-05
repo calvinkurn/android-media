@@ -1132,7 +1132,7 @@ internal class PromoUsageViewModel @Inject constructor(
                 shopId = item.shopId
             }
             if (item.state is PromoItemState.Selected) {
-                if (shopId.isZero() && validateUsePromoRequest.codes.contains(promoCode)) {
+                if (shopId.isZero() && !validateUsePromoRequest.codes.contains(promoCode)) {
                     codes.add(promoCode)
                 }
             } else {
