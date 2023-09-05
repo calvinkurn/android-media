@@ -25,6 +25,7 @@ import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.common.helper.getSortFilterCount
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
@@ -97,11 +98,12 @@ class CatalogProductListFragment : BaseDaggerFragment(), ChooseAddressWidget.Cho
             {
                 addToCart(
                     CatalogProductAtcUiModel(
-                        productId = "15632963",
-                        shopId = "480048"
+                        productId = "2150860905",
+                        shopId = "6550986",
+                        isVariant = false
                     )
                 )
-            }, 1000
+            }, 5000
         )
     }
 
@@ -464,7 +466,7 @@ class CatalogProductListFragment : BaseDaggerFragment(), ChooseAddressWidget.Cho
         return param
     }
 
-    fun addToCart(atcModel: CatalogProductAtcUiModel) {
+    private fun addToCart(atcModel: CatalogProductAtcUiModel) {
         if (atcModel.isVariant) {
             openVariantBottomSheet(atcModel)
         } else {
@@ -472,13 +474,14 @@ class CatalogProductListFragment : BaseDaggerFragment(), ChooseAddressWidget.Cho
         }
     }
 
-    fun openVariantBottomSheet(atcModel: CatalogProductAtcUiModel) {
+    private fun openVariantBottomSheet(atcModel: CatalogProductAtcUiModel) {
         context?.let {
             AtcVariantHelper.goToAtcVariant(
                 it,
                 atcModel.productId,
                 VariantPageSource.CATALOG_PAGESOURCE,
                 shopId = atcModel.shopId,
+                dismissAfterTransaction = true,
                 startActivitResult = { intent, reqCode ->
                     startActivityForResult(intent, reqCode)
                 }

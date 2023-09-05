@@ -8,6 +8,8 @@ import android.widget.FrameLayout
 import androidx.annotation.ColorInt
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.catalogcommon.R
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.applyIconUnifyColor
@@ -97,6 +99,7 @@ class CatalogToolbar : Toolbar {
         shareButton = findViewById(R.id.share)
         searchButton = findViewById(R.id.search)
         navigationIcon = backIconWhite
+        setupIconRedirection()
     }
 
     private fun initWithAttr(context: Context, attributeSet: AttributeSet) {
@@ -125,5 +128,17 @@ class CatalogToolbar : Toolbar {
         applyIconUnifyColor(shareButton?.drawable ?: return, color)
         applyIconUnifyColor(searchButton?.drawable ?: return, color)
         tpgTitle?.setTextColor(color)
+    }
+
+    fun setupIconRedirection() {
+        cartButton?.setOnClickListener {
+            RouteManager.route(context, ApplinkConst.CART)
+        }
+        moreMenuButton?.setOnClickListener {
+            RouteManager.route(context, ApplinkConst.HOME_NAVIGATION)
+        }
+        searchButton?.setOnClickListener {
+            RouteManager.route(context, ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE)
+        }
     }
 }
