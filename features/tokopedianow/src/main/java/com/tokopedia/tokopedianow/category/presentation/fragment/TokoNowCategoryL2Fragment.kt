@@ -399,7 +399,7 @@ class TokoNowCategoryL2Fragment : BaseCategoryFragment(), CategoryL2MainView {
     private fun createChooseAddressWidgetCallback(): TokoNowChooseAddressWidgetListener {
         return object : TokoNowChooseAddressWidgetListener {
             override fun onChooseAddressWidgetRemoved() {
-
+                viewModel.removeChooseAddressWidget()
             }
 
             override fun onClickChooseAddressWidgetTracker() {
