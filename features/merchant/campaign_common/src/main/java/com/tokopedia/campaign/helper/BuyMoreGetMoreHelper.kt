@@ -17,7 +17,7 @@ object BuyMoreGetMoreHelper {
     */
     fun goToOfferLandingPage(
         context: Context,
-        shopId: String,
+        shopId: String = "",
         offerId: String,
         warehouseIds: List<Int> = arrayListOf(),
         productIds: List<Int> = arrayListOf()

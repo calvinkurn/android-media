@@ -27,6 +27,7 @@ import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferProductSortingUiMo
 import com.tokopedia.buy_more_get_more.olp.domain.entity.enum.Status
 import com.tokopedia.buy_more_get_more.olp.presentation.adapter.OlpAdapter
 import com.tokopedia.buy_more_get_more.olp.presentation.adapter.OlpAdapterTypeFactoryImpl
+import com.tokopedia.buy_more_get_more.olp.presentation.adapter.decoration.ProductListItemDecoration
 import com.tokopedia.buy_more_get_more.olp.presentation.bottomsheet.TncBottomSheet
 import com.tokopedia.buy_more_get_more.olp.presentation.listener.AtcProductListener
 import com.tokopedia.buy_more_get_more.olp.presentation.listener.OfferingInfoListener
@@ -46,6 +47,7 @@ import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.toLongSafely
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.usecase.coroutines.Fail
@@ -104,7 +106,7 @@ class OfferLandingPageFragment :
         }
     }
 
-    val isLogin: Boolean
+    private val isLogin: Boolean
         get() = viewModel.isLogin
 
     private val olpAdapterTypeFactory by lazy {
@@ -148,7 +150,6 @@ class OfferLandingPageFragment :
 
     override fun onResume() {
         super.onResume()
-//        loadInitialData()
         viewModel.processEvent(OlpEvent.GetNotification)
         fetchMiniCart()
     }
@@ -191,7 +192,10 @@ class OfferLandingPageFragment :
                     setupTncBottomSheet()
                     fetchMiniCart()
                 }
-                else -> { setViewState(VIEW_ERROR, offerInfoForBuyer.responseHeader.status) }
+
+                else -> {
+                    setViewState(VIEW_ERROR, offerInfoForBuyer.responseHeader.status)
+                }
             }
         }
 
@@ -220,7 +224,6 @@ class OfferLandingPageFragment :
                 }
 
                 is Fail -> {
-                    binding?.miniCartView.showToaster(message = atc.throwable.localizedMessage)
                     setDefaultErrorSelection(atc.throwable)
                 }
             }
@@ -288,6 +291,12 @@ class OfferLandingPageFragment :
         setViewState(VIEW_LOADING)
         resetPaging()
         viewModel.processEvent(
+            OlpEvent.SetSort(
+                sortId = Constant.DEFAULT_SORT_ID,
+                sortName = Constant.DEFAULT_SORT_NAME
+            )
+        )
+        viewModel.processEvent(
             OlpEvent.SetInitialUiState(
                 offerIds = listOf(offerId.toLongSafely()),
                 shopIds = shopIds.toLongSafely(),
@@ -317,11 +326,13 @@ class OfferLandingPageFragment :
                     renderSortFilter(sortId, sortName)
                 }
             }
+
             REQUEST_CODE_USER_LOGIN -> {
                 if (resultCode == Activity.RESULT_OK) {
                     loadInitialData()
                 }
             }
+
             REQUEST_CODE_USER_LOGIN_CART -> {
                 if (resultCode == Activity.RESULT_OK) {
                     loadInitialData()
@@ -330,13 +341,17 @@ class OfferLandingPageFragment :
             }
         }
         AtcVariantHelper.onActivityResultAtcVariant(requireContext(), requestCode, data) {
+            if (atcMessage.isNotEmpty()) {
+                binding?.miniCartView.showToaster(atcMessage)
+            }
             fetchMiniCart()
         }
     }
 
     override fun onSortChipClicked() {
+        val currentState = viewModel.currentState
         context?.run {
-            val intent = ShopProductSortActivity.createIntent(activity, sortId)
+            val intent = ShopProductSortActivity.createIntent(activity, currentState.sortId)
             startActivityForResult(intent, REQUEST_CODE_SORT)
         }
     }
@@ -355,6 +370,7 @@ class OfferLandingPageFragment :
                 PRODUCT_LIST_SPAN_COUNT,
                 StaggeredGridLayoutManager.VERTICAL
             )
+            addItemDecoration(ProductListItemDecoration())
             val config = HasPaginatedList.Config(
                 pageSize = PAGE_SIZE,
                 onLoadNextPage = {},
@@ -529,7 +545,7 @@ class OfferLandingPageFragment :
                 productId = product.productId.toString(),
                 pageSource = VariantPageSource.BUY_MORE_GET_MORE,
                 shopId = shopId.toString(),
-                dismissAfterTransaction = true,
+                saveAfterClose = false,
                 extParams = AtcVariantHelper.generateExtParams(
                     mapOf(
                         Constant.EXT_PARAM_OFFER_ID to stringOfferIds,
@@ -605,6 +621,11 @@ class OfferLandingPageFragment :
             is ConnectException, is SocketException, is UnknownHostException -> {
                 setViewState(VIEW_ERROR, Status.NO_CONNECTION)
             }
+
+            is ResponseErrorException -> {
+                binding?.miniCartView.showToaster(message = throwable.localizedMessage)
+            }
+
             else -> {
                 setViewState(VIEW_ERROR)
             }
