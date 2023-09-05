@@ -159,6 +159,13 @@ subprojects {
             } else if (isLibrary && !isDF ){
                 task = project.path + ":testDebugUnitTest"
                 rootProject.tasks.runUnitTest.dependsOn(task)
+                if (project.name == "applink") {
+                    android.libraryVariants.all { variant ->
+                        tasks.getByName("test${variant.name.capitalize()}UnitTest") {
+                            dependsOn(rootProject.path + ":readDf")
+                        }
+                    }
+                }
             }
         }
         if (project.tasks.findByName("lint")!= null) {

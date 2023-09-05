@@ -56,6 +56,7 @@ dependencies {
     implementation (rootProject.ext.firebase.crashlytics) {
         transitive = true
     }
+    testImplementation rootProject.ext.miscDependencies.gson
 }
 
 project.ext {

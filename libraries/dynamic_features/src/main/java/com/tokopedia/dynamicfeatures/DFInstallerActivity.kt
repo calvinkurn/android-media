@@ -97,7 +97,6 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
         val uri = intent.data
         if (uri != null) {
             moduleName = uri.lastPathSegment ?: ""
-            moduleNameTranslated = uri.getQueryParameter(EXTRA_NAME) ?: ""
             deeplink = Uri.decode(uri.getQueryParameter(EXTRA_DEEPLINK)) ?: ""
             isAutoDownload = true
             fallbackUrl = uri.getQueryParameter(EXTRA_FALLBACK_WEB) ?: ""
@@ -112,9 +111,6 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
         allowRunningServiceFromActivity = dfConfig.allowRunningServiceFromActivity(moduleName)
         cancelDownloadBeforeInstallInPage = dfConfig.cancelDownloadBeforeInstallInPage
 
-        if (moduleNameTranslated.isNotEmpty()) {
-            title = getString(R.string.installing_x, moduleNameTranslated)
-        }
         setContentView(R.layout.activity_dynamic_feature_installer)
         initializeViews()
         if (DFInstaller.isInstalled(this, moduleName)) {
@@ -288,7 +284,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
     private fun showOnBoardingView() {
         updateInformationView(
             R.drawable.ic_ill_onboarding,
-            String.format(getString(R.string.feature_download_title), moduleNameTranslated),
+            "",
             String.format(getString(R.string.feature_download_subtitle), moduleNameTranslated),
             getString(R.string.start_download),
             {
@@ -509,7 +505,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
 
     override fun onDownload(state: SplitInstallSessionState) {
         //  In order to see this, the application has to be uploaded to the Play Store.
-        displayLoadingState(state, getString(R.string.downloading_x, moduleNameTranslated))
+        displayLoadingState(state, getString(R.string.downloading_x))
         if (moduleSize == 0L) {
             moduleSize = state.totalBytesToDownload()
         }
@@ -527,7 +523,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
     }
 
     override fun onInstalling(state: SplitInstallSessionState) {
-        updateProgressMessage(getString(R.string.installing_x, moduleNameTranslated))
+        updateProgressMessage(getString(R.string.installing_x))
     }
 
     override fun onFailed(errorString: String) {
