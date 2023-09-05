@@ -542,7 +542,7 @@ class FeedBaseFragment :
 
         binding.containerFeedTopNav.btnFeedBrowse.setOnClickListener {
             feedNavigationAnalytics.sendClickBrowseIconEvent()
-            openAppLink.launch(meta.browseApplink)
+            openAppLink.launch(meta.browseApplink) // todo: setup login, non-login?
         }
 
         binding.containerFeedTopNav.feedUserProfileImage.setOnClickListener {
@@ -648,6 +648,13 @@ class FeedBaseFragment :
                         null
                     }
                 )
+                .setBrowseIconView(
+                    if (meta.showBrowse && !feedMainViewModel.hasShownBrowseEntryPoint()) {
+                        binding.containerFeedTopNav.btnFeedBrowse
+                    } else {
+                        null
+                    }
+                )
                 .setListener(object : ImmersiveFeedOnboarding.Listener {
                     override fun onStarted() {
                     }
@@ -658,6 +665,10 @@ class FeedBaseFragment :
 
                     override fun onCompleteProfileEntryPointOnboarding() {
                         feedMainViewModel.setHasShownProfileEntryPoint()
+                    }
+
+                    override fun onCompleteBrowseEntryPointOnboarding() {
+                        feedMainViewModel.setHasShownBrowseEntryPoint()
                     }
 
                     override fun onFinished(isForcedDismiss: Boolean) {
