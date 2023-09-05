@@ -6,12 +6,20 @@
     android:layout_width="80dp"
     android:layout_height="wrap_content">
 
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/image_product"
+    <FrameLayout
+        android:id="@+id/fl_image_product"
         android:layout_width="56dp"
         android:layout_height="56dp"
+        android:foreground="@drawable/bg_cart_product_image"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/image_product"
+            android:layout_width="56dp"
+            android:layout_height="56dp" />
+
+    </FrameLayout>
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/image_bundle_icon"
@@ -20,8 +28,8 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:background="@color/icon_bundling_dms_color"
-        app:layout_constraintBottom_toBottomOf="@+id/image_product"
-        app:layout_constraintEnd_toEndOf="@+id/image_product"
+        app:layout_constraintBottom_toBottomOf="@+id/fl_image_product"
+        app:layout_constraintEnd_toEndOf="@+id/fl_image_product"
         app:shapeAppearanceOverlay="@style/roundedImageDisplay" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -34,7 +42,7 @@
         android:maxLines="1"
         android:textColor="@color/Unify_NN600"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/image_product"
+        app:layout_constraintTop_toBottomOf="@+id/fl_image_product"
         app:typographyType="display_3"
         tools:visibility="gone"
         tools:text="Biru" />
