@@ -9,6 +9,7 @@ import com.tokopedia.minicart.bmgm.presentation.model.BmgmMiniCartDataUiModel
 import com.tokopedia.minicart.bmgm.presentation.model.BmgmState
 import com.tokopedia.purchase_platform.common.feature.bmgm.domain.usecase.SetCartListCheckboxStateUseCase
 import dagger.Lazy
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -30,8 +31,11 @@ class BmgmMiniCartViewModel @Inject constructor(
     val cartData: StateFlow<BmgmState<BmgmMiniCartDataUiModel>>
         get() = _cartData
 
+    private var miniCartJob: Job? = null
+
     fun getMiniCartData(shopIds: List<Long>, param: BmgmParamModel, showLoadingState: Boolean) {
-        viewModelScope.launch {
+        miniCartJob?.cancel()
+        miniCartJob = viewModelScope.launch {
             runCatching {
                 if (showLoadingState) {
                     _cartData.emit(BmgmState.Loading)
@@ -45,6 +49,7 @@ class BmgmMiniCartViewModel @Inject constructor(
                 _cartData.emit(BmgmState.Error(it))
             }
         }
+        miniCartJob?.start()
     }
 
     fun clearCartDataLocalCache() {
