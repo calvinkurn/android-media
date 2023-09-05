@@ -30,17 +30,14 @@ import com.tokopedia.home.beranda.di.module.query.TokopoinstListQuery
 import com.tokopedia.home.beranda.domain.gql.CloseChannelMutation
 import com.tokopedia.home.beranda.domain.gql.ProductrevDismissSuggestion
 import com.tokopedia.home.beranda.domain.gql.feed.GetHomeRecommendationContent
-import com.tokopedia.home.beranda.domain.gql.feed.HomeFeedContentGqlResponse
 import com.tokopedia.home.beranda.domain.gql.feed.HomeFeedTabGqlResponse
 import com.tokopedia.home.beranda.domain.interactor.DismissHomeReviewUseCase
 import com.tokopedia.home.beranda.domain.interactor.GetCoroutinePendingCashbackUseCase
 import com.tokopedia.home.beranda.domain.interactor.GetDynamicChannelsUseCase
 import com.tokopedia.home.beranda.domain.interactor.GetHomeBalanceWidgetUseCase
 import com.tokopedia.home.beranda.domain.interactor.GetHomeRecommendationUseCase
-import com.tokopedia.home.beranda.domain.interactor.GetHomeRecommendationV2UseCase
 import com.tokopedia.home.beranda.domain.interactor.GetHomeTokopointsListDataUseCase
 import com.tokopedia.home.beranda.domain.interactor.GetRecommendationTabUseCase
-import com.tokopedia.home.beranda.domain.interactor.HomeRecommendationFeedUseCase
 import com.tokopedia.home.beranda.domain.interactor.InjectCouponTimeBasedUseCase
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeAtfRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeBusinessUnitDataRepository
@@ -173,21 +170,12 @@ class HomeUseCaseModule {
     @Provides
     fun provideGetHomeRecommendationUseCase(
         graphqlRepository: GraphqlRepository,
-        homeRecommendationMapper: HomeRecommendationMapper,
-        remoteConfig: RemoteConfig
-    ): HomeRecommendationFeedUseCase {
-        val isUsingV2 = remoteConfig.getBoolean(RemoteConfigKey.HOME_USE_GQL_FED_QUERY, true)
-        return if (isUsingV2) {
-            GetHomeRecommendationV2UseCase(
-                com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<GetHomeRecommendationContent>(graphqlRepository),
-                homeRecommendationMapper
-            )
-        } else {
-            GetHomeRecommendationUseCase(
-                com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeFeedContentGqlResponse>(graphqlRepository),
-                homeRecommendationMapper
-            )
-        }
+        homeRecommendationMapper: HomeRecommendationMapper
+    ): GetHomeRecommendationUseCase {
+        return GetHomeRecommendationUseCase(
+            com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<GetHomeRecommendationContent>(graphqlRepository),
+            homeRecommendationMapper
+        )
     }
 
     @Provides
@@ -256,8 +244,7 @@ class HomeUseCaseModule {
     @Provides
     fun getRecommendationTabUseCase(graphqlRepository: GraphqlRepository, remoteConfig: RemoteConfig): GetRecommendationTabUseCase {
         val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeFeedTabGqlResponse>(graphqlRepository)
-        val isUsingV2 = remoteConfig.getBoolean(RemoteConfigKey.HOME_USE_GQL_FED_QUERY, true)
-        return GetRecommendationTabUseCase(useCase, isUsingV2)
+        return GetRecommendationTabUseCase(useCase)
     }
 
     @Provides
