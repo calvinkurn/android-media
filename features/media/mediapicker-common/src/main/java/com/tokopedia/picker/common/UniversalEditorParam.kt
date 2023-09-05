@@ -24,7 +24,7 @@ data class UniversalEditorParam(
 ) : Parcelable {
 
     @IgnoredOnParcel
-    val firstFile = MediaFile(paths.firstOrNull())
+    val firstFile = MediaFile(paths.first())
 
     /**
      * Page source is a mandatory field to detect
