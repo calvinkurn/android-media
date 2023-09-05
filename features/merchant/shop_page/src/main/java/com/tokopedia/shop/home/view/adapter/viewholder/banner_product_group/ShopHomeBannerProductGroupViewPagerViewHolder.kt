@@ -49,7 +49,7 @@ class ShopHomeBannerProductGroupViewPagerViewHolder(
         if (!isProductSuccessfullyLoaded){
             setupTitle(model)
             setupViewAllChevron(model)
-            setupTabs(model.tabs, model.widgetStyle, model.header.isOverrideTheme, model.header.colorSchema)
+            setupTabs(model.widgetId, model.tabs, model.widgetStyle, model.header.isOverrideTheme, model.header.colorSchema)
             setupColors(model.header.isOverrideTheme, model.header.colorSchema)
         }
     }
@@ -69,12 +69,13 @@ class ShopHomeBannerProductGroupViewPagerViewHolder(
     }
 
     private fun setupTabs(
+        widgetId: String,
         tabs: List<ShopWidgetComponentBannerProductGroupUiModel.Tab>,
         widgetStyle: String,
         overrideTheme: Boolean,
         colorScheme: ShopPageColorSchema
     ) {
-        val fragments = createFragments(tabs, widgetStyle, overrideTheme, colorScheme)
+        val fragments = createFragments(widgetId, tabs, widgetStyle, overrideTheme, colorScheme)
         val pagerAdapter = TabPagerAdapter(provider.productCarouselHostFragmentManager, provider.productCarouselHostLifecycle, fragments)
 
         viewBinding?.run {
@@ -117,6 +118,7 @@ class ShopHomeBannerProductGroupViewPagerViewHolder(
     }
 
     private fun createFragments(
+        widgetId: String,
         tabs: List<ShopWidgetComponentBannerProductGroupUiModel.Tab>,
         widgetStyle: String,
         overrideTheme: Boolean,
@@ -126,6 +128,7 @@ class ShopHomeBannerProductGroupViewPagerViewHolder(
 
         tabs.forEachIndexed { _, currentTab ->
             val fragment = ShopBannerProductGroupWidgetTabFragment.newInstance(
+                widgetId,
                 provider.currentShopId,
                 currentTab.componentList,
                 widgetStyle,

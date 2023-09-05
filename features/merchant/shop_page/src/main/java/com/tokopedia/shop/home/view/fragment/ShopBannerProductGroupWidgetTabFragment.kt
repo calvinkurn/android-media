@@ -14,6 +14,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.ShopComponentHelper
+import com.tokopedia.shop.analytic.ShopPageHomeTracking
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.FragmentShopBannerProductGroupWidgetTabBinding
@@ -30,10 +31,12 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 import com.tokopedia.shop.home.view.model.banner_product_group.ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.ComponentName
+import com.tokopedia.user.session.UserSessionInterface
 
 class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
 
     companion object {
+        private const val BUNDLE_KEY_WIDGET_ID = "widget_id"
         private const val BUNDLE_KEY_SHOP_ID = "shop_id"
         private const val BUNDLE_KEY_WIDGETS = "widgets"
         private const val BUNDLE_KEY_WIDGET_STYLE = "widget_style"
@@ -42,6 +45,7 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
 
         @JvmStatic
         fun newInstance(
+            widgetId: String,
             shopId: String,
             widgets: List<ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList>,
             widgetStyle: String,
@@ -50,6 +54,7 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
         ): ShopBannerProductGroupWidgetTabFragment {
             return ShopBannerProductGroupWidgetTabFragment().apply {
                 arguments = Bundle().apply {
+                    putString(BUNDLE_KEY_WIDGET_ID, widgetId)
                     putString(BUNDLE_KEY_SHOP_ID, shopId)
                     putParcelableArrayList(BUNDLE_KEY_WIDGETS, ArrayList(widgets))
                     putString(BUNDLE_KEY_WIDGET_STYLE, widgetStyle)
@@ -61,7 +66,7 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
 
     }
 
-
+    private val widgetId by lazy { arguments?.getString(BUNDLE_KEY_WIDGET_ID).orEmpty() }
     private val shopId by lazy { arguments?.getString(BUNDLE_KEY_SHOP_ID).orEmpty() }
     private val widgets by lazy {
         arguments?.getParcelableArrayList<ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList>(
@@ -75,6 +80,12 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
         arguments?.getParcelable(BUNDLE_KEY_COLOR_SCHEME) ?: ShopPageColorSchema()
     }
     private var onProductSuccessfullyLoaded: (Boolean) -> Unit = {}
+
+    @Inject
+    lateinit var tracker: ShopPageHomeTracking
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -166,6 +177,7 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
 
                 is ShopBannerProductGroupWidgetTabViewModel.UiState.Success -> {
                     showResult(result.data)
+                    sendImpressionTracker(result.data)
                     onProductSuccessfullyLoaded(true)
                 }
 
@@ -214,5 +226,17 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
 
     fun setOnProductSuccessfullyLoaded(onProductSuccessfullyLoaded: (Boolean) -> Unit) {
         this.onProductSuccessfullyLoaded = onProductSuccessfullyLoaded
+    }
+
+    private fun sendImpressionTracker(items: List<ShopHomeBannerProductGroupItemType>) {
+        val products = items.filterIsInstance<ProductItemType>()
+
+        tracker.sendProductCarouselImpression(
+            widgetId,
+            widgetStyle,
+            products,
+            shopId,
+            userSession.userId
+        )
     }
 }

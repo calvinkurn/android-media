@@ -2,6 +2,7 @@ package com.tokopedia.shop.analytic
 
 import android.os.Bundle
 import com.tokopedia.atc_common.domain.model.response.AddToCartBundleModel
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.digitsOnly
 import com.tokopedia.kotlin.extensions.view.getDigits
@@ -3460,7 +3461,7 @@ class ShopPageHomeTracking(
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4148
     // Tracker ID: 45925
-    fun sendShowcaseNavigationBannerWidgetClick (shopId: String, userId: String, uiModel: ShowcaseNavigationUiModel, showcase: Showcase) {
+    fun sendShowcaseNavigationBannerWidgetClick(shopId: String, userId: String, uiModel: ShowcaseNavigationUiModel, showcase: Showcase) {
         val eventLabel = when(uiModel.appearance) {
             is LeftMainBannerAppearance -> "hero etalase-left - ${showcase.id}"
             is TopMainBannerAppearance -> "hero etalase-top - ${showcase.id}"
@@ -3606,32 +3607,34 @@ class ShopPageHomeTracking(
      // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4148
      // Tracker ID: 45950
      fun sendProductCarouselImpression(
-         product: ProductItemType,
+         widgetId: String,
          widgetStyle: String,
-         showProductInfo: Boolean,
+         products: List<ProductItemType>,
          shopId: String,
          userId: String
      ) {
+
+         val showProductInfo = products.firstOrNull()?.showProductInfo.orFalse()
+         val productCardVariant = if (showProductInfo) "with_info" else "without_info"
+
+         val bundledProducts = products.mapIndexed { index, product ->
+             Bundle().apply {
+                 putString(CREATIVE_NAME, "")
+                 putInt(CREATIVE_SLOT, index)
+                 putString(ITEM_ID, widgetId)
+                 putString(ITEM_NAME, product.name)
+             }
+         }
+
+
          val bannerVariant = when (widgetStyle) {
              WidgetStyle.VERTICAL.id -> "vertical"
              WidgetStyle.HORIZONTAL.id -> "horizontal"
              else -> "no_banner"
          }
 
-         val productCardVariant = if (showProductInfo) {
-             "with_info"
-         } else {
-             "without_info"
-         }
-
          val eventLabel = "$bannerVariant - $productCardVariant"
-
-         val bundledShowcase = Bundle().apply {
-             putString(CREATIVE_NAME, "")
-             putInt(CREATIVE_SLOT, 0)
-             putString(ITEM_ID, product.productId)
-             putString(ITEM_NAME, product.name)
-         }
+         val promotions = ArrayList(bundledProducts)
 
          val bundle = Bundle().apply {
              putString(EVENT, VIEW_ITEM)
@@ -3643,7 +3646,7 @@ class ShopPageHomeTracking(
              putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
              putString(SHOP_ID, shopId)
              putString(USER_ID, userId)
-             putParcelableArrayList(PROMOTIONS, arrayListOf(bundledShowcase))
+             putParcelableArrayList(PROMOTIONS, promotions)
          }
 
          TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(PROMO_VIEW, bundle)
