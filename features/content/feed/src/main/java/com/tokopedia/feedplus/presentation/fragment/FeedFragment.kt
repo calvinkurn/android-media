@@ -26,7 +26,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_AFFILIATE_CREATE_POST_V2
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_FEED_SOURCE_ID
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_FEED_SOURCE_NAME
@@ -76,13 +75,13 @@ import com.tokopedia.feedplus.presentation.model.FeedCardLivePreviewContentModel
 import com.tokopedia.feedplus.presentation.model.FeedCardProductModel
 import com.tokopedia.feedplus.presentation.model.FeedCardVideoContentModel
 import com.tokopedia.feedplus.presentation.model.FeedDataModel
+import com.tokopedia.feedplus.presentation.model.FeedFollowRecommendationModel
 import com.tokopedia.feedplus.presentation.model.FeedMainEvent
 import com.tokopedia.feedplus.presentation.model.FeedNoContentModel
 import com.tokopedia.feedplus.presentation.model.FeedPostEvent
 import com.tokopedia.feedplus.presentation.model.FeedShareModel
 import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
 import com.tokopedia.feedplus.presentation.model.PostSourceModel
-import com.tokopedia.feedplus.presentation.model.FeedFollowRecommendationModel
 import com.tokopedia.feedplus.presentation.model.type.AuthorType
 import com.tokopedia.feedplus.presentation.uiview.FeedCampaignRibbonType
 import com.tokopedia.feedplus.presentation.uiview.FeedProductTagView
@@ -148,7 +147,7 @@ class FeedFragment :
         ) {
             if (feedPostViewModel.shouldShowNoMoreContent || !feedPostViewModel.hasNext) return@FeedContentAdapter
             adapter.showLoading()
-            feedPostViewModel.fetchFeedPosts(data?.type ?: "")
+            feedPostViewModel.fetchFeedPosts(data?.type ?: "", postSource = postSourceModel)
         }
     }
     private var currentTrackerData: FeedTrackerDataModel? = null
@@ -183,10 +182,10 @@ class FeedFragment :
 
     @Inject
     lateinit var viewModelAssistedFactory: FeedMainViewModel.Factory
-      
+
     @Inject
     lateinit var router: Router
-      
+
     private val feedMainViewModel: FeedMainViewModel by viewModels(
         ownerProducer = {
             parentFragment ?: this
@@ -203,7 +202,7 @@ class FeedFragment :
         isCdp = arguments?.getBoolean(ARGUMENT_IS_CDP, false) ?: false
 
         MapperFeedModelToTrackerDataModel(
-            if (isCdp) FeedBaseFragment.CDP else data?.type.orEmpty(),
+            if (isCdp) FeedBaseFragment.TAB_TYPE_CDP else data?.type.orEmpty(),
             arguments?.getString(ARGUMENT_ENTRY_POINT) ?: ENTRY_POINT_DEFAULT
         )
     }
@@ -324,6 +323,8 @@ class FeedFragment :
     private var mHasVoucher: Boolean = false
     private var mCampaign: FeedCardCampaignModel? = null
 
+    private var postSourceModel: PostSourceModel? = null
+
     private val feedFollowRecommendationListener = object : FeedFollowRecommendationListener {
 
         override fun onImpressProfile(profile: FeedFollowRecommendationModel.Profile) {
@@ -338,9 +339,17 @@ class FeedFragment :
             )
 
             if (profile.isFollowed) {
-                feedPostViewModel.doUnfollowProfileRecommendation(profile.id, profile.encryptedId, profile.isShop)
+                feedPostViewModel.doUnfollowProfileRecommendation(
+                    profile.id,
+                    profile.encryptedId,
+                    profile.isShop
+                )
             } else {
-                feedPostViewModel.doFollowProfileRecommendation(profile.id, profile.encryptedId, profile.isShop)
+                feedPostViewModel.doFollowProfileRecommendation(
+                    profile.id,
+                    profile.encryptedId,
+                    profile.isShop
+                )
             }
         }
 
@@ -439,12 +448,18 @@ class FeedFragment :
         super.onViewCreated(view, savedInstanceState)
 
         showLoading()
+        postSourceModel = arguments?.getString(UF_EXTRA_FEED_SOURCE_ID)?.let { sourceId ->
+            PostSourceModel(
+                id = sourceId,
+                source = if (isCdp) FeedBaseFragment.TAB_TYPE_CDP
+                else arguments?.getString(UF_EXTRA_FEED_SOURCE_NAME)
+            )
+        }
+
         feedPostViewModel.fetchFeedPosts(
             data?.type ?: "",
             isNewData = true,
-            postSource = arguments?.getString(UF_EXTRA_FEED_SOURCE_ID)?.let { sourceId ->
-                PostSourceModel(sourceId, arguments?.getString(UF_EXTRA_FEED_SOURCE_NAME))
-            }
+            postSource = postSourceModel
         )
 
         initView()
@@ -700,7 +715,7 @@ class FeedFragment :
     }
 
     override fun reload() {
-        feedPostViewModel.fetchFeedPosts(data?.type ?: "")
+        feedPostViewModel.fetchFeedPosts(data?.type ?: "", postSource = postSourceModel)
         adapter.removeErrorNetwork()
         showLoading()
         adapter.showLoading()
@@ -726,7 +741,7 @@ class FeedFragment :
         model: FeedCardVideoContentModel,
         trackerModel: FeedTrackerDataModel
     ) {
-        feedAnalytics.eventWatchVideoPost()
+        feedAnalytics.eventWatchVideoPost(trackerModel)
         feedPostViewModel.trackVisitChannel(model)
         feedPostViewModel.trackChannelPerformance(model)
     }
@@ -1143,7 +1158,7 @@ class FeedFragment :
     private fun initView() {
         binding.let {
             it.swipeRefreshFeedLayout.setOnRefreshListener {
-                feedPostViewModel.fetchFeedPosts(data?.type ?: "", isNewData = true)
+                feedPostViewModel.fetchFeedPosts(data?.type ?: "", isNewData = true, postSource = postSourceModel)
             }
 
             it.rvFeedPost.adapter = adapter

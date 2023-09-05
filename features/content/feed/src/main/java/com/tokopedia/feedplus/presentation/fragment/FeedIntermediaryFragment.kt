@@ -11,9 +11,7 @@ import com.tokopedia.feedplus.oldFeed.view.fragment.FeedPlusContainerFragment
 import com.tokopedia.navigation_common.listener.FragmentListener
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.remoteconfig.RollenceKey
 
 /**
  * Created by kenny.hadisaputra on 12/05/23
@@ -66,15 +64,7 @@ class FeedIntermediaryFragment : Fragment(), FragmentListener {
 
     private fun isUsingImmersiveFeed(): Boolean =
         try {
-            // check for the remote config
-            if (remoteConfig.getBoolean(RemoteConfigKey.IS_USING_NEW_FEED, true)) {
-                // check for rollence
-                RemoteConfigInstance.getInstance()
-                    .abTestPlatform?.getString(RollenceKey.AB_TEST_IMMERSIVE_FEED, "")
-                    .orEmpty().isNotEmpty()
-            } else {
-                false
-            }
+            remoteConfig.getBoolean(RemoteConfigKey.IS_USING_NEW_FEED, true)
         } catch (_: Throwable) {
             true
         }
