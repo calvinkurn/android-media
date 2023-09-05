@@ -203,6 +203,7 @@ internal class PromoUsageViewModel @Inject constructor(
             )
         }
         items = sortPromo(items, true)
+        items = addTncPromo(items)
         _promoPageUiState.postValue(
             PromoPageUiState.Success(
                 tickerInfo = tickerInfo,
@@ -471,16 +472,7 @@ internal class PromoUsageViewModel @Inject constructor(
                         updatedItems = sortPromo(updatedItems)
 
                         // Update TnC section
-                        val selectedPromoCodes = updatedItems.getSelectedPromoCodes()
-                        updatedItems = if (selectedPromoCodes.isNotEmpty()) {
-                            val tncItem = updatedItems.getTncItem() ?: PromoTncItem()
-                            updatedItems
-                                .filterNot { it is PromoTncItem }
-                                .plus(tncItem.copy(selectedPromoCodes = selectedPromoCodes))
-                        } else {
-                            updatedItems
-                                .filterNot { it is PromoTncItem }
-                        }
+                        updatedItems = addTncPromo(updatedItems)
 
                         // Update SavingInfo section
                         val updatedSavingInfo = calculatePromoSavingInfo(
@@ -786,6 +778,21 @@ internal class PromoUsageViewModel @Inject constructor(
             .sortedBy { it.index }
         resultItems.addAll(ineligibleItems)
         return resultItems
+    }
+
+    private fun addTncPromo(
+        items: List<DelegateAdapterItem>
+    ) : List<DelegateAdapterItem> {
+        val selectedPromoCodes = items.getSelectedPromoCodes()
+        return if (selectedPromoCodes.isNotEmpty()) {
+            val tncItem = items.getTncItem() ?: PromoTncItem()
+            items
+                .filterNot { it is PromoTncItem }
+                .plus(tncItem.copy(selectedPromoCodes = selectedPromoCodes))
+        } else {
+            items
+                .filterNot { it is PromoTncItem }
+        }
     }
 
     fun onClickAccordionHeader(clickedItem: PromoAccordionHeaderItem) {
