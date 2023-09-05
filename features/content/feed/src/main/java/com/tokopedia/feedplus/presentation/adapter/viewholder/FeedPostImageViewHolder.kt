@@ -271,6 +271,7 @@ class FeedPostImageViewHolder(
                     trackerDataModel ?: trackerMapper.transformImageContentToTrackerModel(data)
 
                 menuButton.setOnClickListener {
+                    sendTopAdsClick(data)
                     listener.onMenuClicked(
                         data.id,
                         data.menuItems.map {
@@ -282,6 +283,7 @@ class FeedPostImageViewHolder(
                     )
                 }
                 shareButton.setOnClickListener {
+                    sendTopAdsClick(data)
                     listener.onSharePostClicked(getShareModel(data), trackerData)
                 }
 
@@ -305,9 +307,11 @@ class FeedPostImageViewHolder(
             val newPayloads = mutableListOf<Any>().apply {
                 addAll(payloads)
                 if (feedPayloads.payloads.contains(FEED_POST_SELECTED_CHANGED)) add(selectedPayload)
-                if (feedPayloads.payloads.contains(FEED_POST_SCROLLING_CHANGED)) add(
-                    scrollingPayload
-                )
+                if (feedPayloads.payloads.contains(FEED_POST_SCROLLING_CHANGED)) {
+                    add(
+                        scrollingPayload
+                    )
+                }
             }
             bind(item.data as FeedCardImageContentModel, newPayloads)
         }
@@ -503,7 +507,8 @@ class FeedPostImageViewHolder(
             products = products,
             totalProducts = model.totalProducts,
             trackerData = trackerDataModel,
-            positionInFeed = absoluteAdapterPosition
+            positionInFeed = absoluteAdapterPosition,
+            topAdsTrackerData = topAdsTrackerDataModel
         )
         productButtonView.bindData(
             postId = model.id,
@@ -671,12 +676,20 @@ class FeedPostImageViewHolder(
     private fun setTopAdsTrackerModel(element: FeedCardImageContentModel) {
         topAdsTrackerDataModel = FeedTopAdsTrackerDataModel(
             adViewUrl = element.adViewUrl,
+            adClickUrl = element.adClickUrl,
             id = element.id,
             shopId = element.author.id,
             uri = element.adViewUri,
             fullEcs = element.author.logoUrl,
             position = absoluteAdapterPosition
         )
+    }
+
+    private fun sendTopAdsClick(element: FeedCardImageContentModel) {
+        if (element.isTopAds) {
+            if (topAdsTrackerDataModel == null) setTopAdsTrackerModel(element)
+            topAdsTrackerDataModel?.let { listener.onTopAdsImpression(it) }
+        }
     }
 
     companion object {

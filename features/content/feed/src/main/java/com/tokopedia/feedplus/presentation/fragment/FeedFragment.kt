@@ -143,7 +143,7 @@ class FeedFragment :
                 viewLifecycleOwner,
                 binding.rvFeedPost,
                 trackerModelMapper,
-                feedFollowRecommendationListener,
+                feedFollowRecommendationListener
             )
         ) {
             if (feedPostViewModel.shouldShowNoMoreContent || !feedPostViewModel.hasNext) return@FeedContentAdapter
@@ -385,7 +385,7 @@ class FeedFragment :
         override fun onSwipeProfileRecommendation() {
             feedFollowRecommendationAnalytics.eventSwipeProfileRecommendation(
                 tabType = trackerModelMapper.tabType,
-                entryPoint = trackerModelMapper.entryPoint,
+                entryPoint = trackerModelMapper.entryPoint
             )
         }
 
@@ -452,8 +452,11 @@ class FeedFragment :
         postSourceModel = arguments?.getString(UF_EXTRA_FEED_SOURCE_ID)?.let { sourceId ->
             PostSourceModel(
                 id = sourceId,
-                source = if (isCdp) FeedBaseFragment.TAB_TYPE_CDP
-                else arguments?.getString(UF_EXTRA_FEED_SOURCE_NAME)
+                source = if (isCdp) {
+                    FeedBaseFragment.TAB_TYPE_CDP
+                } else {
+                    arguments?.getString(UF_EXTRA_FEED_SOURCE_NAME)
+                }
             )
         }
 
@@ -936,7 +939,7 @@ class FeedFragment :
         with(topadsTrackerData) {
             topAdsUrlHitter.hitClickUrl(
                 this::class.java.simpleName,
-                adViewUrl,
+                adClickUrl,
                 id,
                 uri,
                 fullEcs
