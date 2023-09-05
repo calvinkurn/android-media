@@ -9,6 +9,7 @@ import com.tokopedia.editor.R
 import com.tokopedia.editor.base.BaseEditorFragment
 import com.tokopedia.editor.databinding.FragmentImageMainEditorBinding
 import com.tokopedia.editor.ui.main.EditorParamFetcher
+import com.tokopedia.media.loader.clearImage
 import com.tokopedia.editor.ui.main.MainEditorViewModel
 import com.tokopedia.editor.ui.main.uimodel.InputTextParam
 import com.tokopedia.editor.ui.main.uimodel.MainEditorEvent
@@ -41,6 +42,15 @@ class ImageMainEditorFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 viewModel.inputTextState.collect(::addOrEditTextOnLayout)
+            }
+        }
+    }
+
+    override fun onLoadContent(path: String) {
+        binding?.imgSample?.let {
+            it.clearImage()
+            it.loadImage(path) {
+                useCache(false)
             }
         }
     }

@@ -46,6 +46,8 @@ abstract class BaseEditorFragment(layoutId: Int) : Fragment(layoutId) {
      */
     protected open fun onLoadSavedState(bundle: Bundle?) = Unit
 
+    open fun onLoadContent(path: String) = Unit
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         onLoadSavedState(savedInstanceState)

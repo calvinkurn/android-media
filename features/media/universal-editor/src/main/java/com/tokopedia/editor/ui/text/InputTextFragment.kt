@@ -10,8 +10,8 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.editor.base.BaseEditorFragment
 import com.tokopedia.editor.databinding.FragmentInputTextBinding
-import com.tokopedia.editor.ui.components.InputTextColorItemView
-import com.tokopedia.editor.ui.components.InputTextStyleItemView
+import com.tokopedia.editor.ui.widget.InputTextColorItemView
+import com.tokopedia.editor.ui.widget.InputTextStyleItemView
 import com.tokopedia.editor.util.ColorProvider
 import com.tokopedia.editor.util.FontAlignment
 import com.tokopedia.editor.util.FontDetail

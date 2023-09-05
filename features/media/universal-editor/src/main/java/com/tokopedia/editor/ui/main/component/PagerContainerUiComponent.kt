@@ -6,6 +6,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.editor.R
 import com.tokopedia.editor.ui.EditorFragmentProvider
 import com.tokopedia.editor.ui.main.adapter.EditorPagerStateAdapter
+import com.tokopedia.editor.ui.main.fragment.image.main.ImageMainEditorFragment
 import com.tokopedia.picker.common.UniversalEditorParam
 import com.tokopedia.picker.common.basecomponent.UiComponent
 import com.tokopedia.picker.common.utils.wrapper.PickerFile.Companion.asPickerFile
@@ -33,6 +34,12 @@ class PagerContainerUiComponent constructor(
         }
 
         setFragmentDisplayed(param)
+    }
+
+    fun updateView(newPath: String?) {
+        if (newPath == null) return
+        val fragment = mAdapter?.fragments?.first() ?: return
+        fragment.onLoadContent(newPath)
     }
 
     private fun setFragmentDisplayed(param: UniversalEditorParam) {

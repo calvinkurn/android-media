@@ -1,5 +1,6 @@
 package com.tokopedia.editor.ui.main.uimodel
 
+import com.tokopedia.editor.ui.model.ImagePlacementModel
 import com.tokopedia.editor.ui.model.InputTextModel
 import com.tokopedia.picker.common.UniversalEditorParam
 
@@ -19,4 +20,8 @@ sealed class MainEditorEvent {
     data class InputTextResult(val model: InputTextModel) : MainEditorEvent()
 
     object ResetActiveInputText : MainEditorEvent()
+
+    object PlacementImagePage : MainEditorEvent()
+
+    data class PlacementImageResult(val model: ImagePlacementModel?) : MainEditorEvent()
 }

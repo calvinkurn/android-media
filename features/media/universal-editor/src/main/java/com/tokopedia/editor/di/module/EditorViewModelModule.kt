@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.editor.ui.main.MainEditorViewModel
+import com.tokopedia.editor.ui.placement.PlacementImageViewModel
 import com.tokopedia.editor.ui.text.InputTextViewModel
 import dagger.Binds
 import dagger.Module
@@ -29,5 +30,11 @@ abstract class EditorViewModelModule {
     @ActivityScope
     @ViewModelKey(InputTextViewModel::class)
     internal abstract fun getInputTextViewModel(viewModel: InputTextViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ActivityScope
+    @ViewModelKey(PlacementImageViewModel::class)
+    internal abstract fun getPlacementViewModel(viewModel: PlacementImageViewModel): ViewModel
 
 }

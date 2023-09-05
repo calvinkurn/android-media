@@ -16,4 +16,13 @@
     <!-- Input Text -->
     <string name="universal_editor_input_text_hint">Tambah teks</string>
     <string name="universal_editor_input_text_style_text">Aa</string>
+
+    <!-- Tool Exit Confirmation -->
+    <string name="universal_editor_input_tool_confirmation_title">Yakin batal simpan perubahan?</string>
+    <string name="universal_editor_input_tool_confirmation_desc">Hasilnya akan hilang jika tidak disimpan, lho.</string>
+    <string name="universal_editor_input_tool_confirmation_primary_cta">Simpan dan Keluar</string>
+    <string name="universal_editor_input_tool_confirmation_secondary_cta">Keluar tanpa Simpan</string>
+
+    <!-- Placement Text -->
+    <string name="universal_editor_placement_tool_reset">Reset</string>
 </resources>

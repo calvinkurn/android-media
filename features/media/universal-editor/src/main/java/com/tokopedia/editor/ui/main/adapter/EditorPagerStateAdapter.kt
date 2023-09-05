@@ -3,22 +3,22 @@
 package com.tokopedia.editor.ui.main.adapter
 
 import android.annotation.SuppressLint
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.tokopedia.editor.base.BaseEditorFragment
 
 class EditorPagerStateAdapter constructor(
     activity: FragmentActivity
 ) : FragmentStateAdapter(activity) {
 
-    var fragments = mutableListOf<Fragment>()
+    var fragments = mutableListOf<BaseEditorFragment>()
         private set
 
     override fun getItemCount(): Int {
         return fragments.size
     }
 
-    override fun createFragment(position: Int): Fragment {
+    override fun createFragment(position: Int): BaseEditorFragment {
         return fragments[position]
     }
 
@@ -32,17 +32,17 @@ class EditorPagerStateAdapter constructor(
         }
     }
 
-    fun addSingleFragment(fragment: Fragment) {
+    fun addSingleFragment(fragment: BaseEditorFragment) {
         fragments.clear()
         addFragment(fragment)
     }
 
-    fun addFragment(fragment: Fragment) {
+    fun addFragment(fragment: BaseEditorFragment) {
         fragments.add(fragment)
         notifyDataSetChanged()
     }
 
-    fun addFragments(mFragments: List<Fragment>) {
+    fun addFragments(mFragments: List<BaseEditorFragment>) {
         fragments.clear()
         fragments.addAll(mFragments)
         notifyDataSetChanged()

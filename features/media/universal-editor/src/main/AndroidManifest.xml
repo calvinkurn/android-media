@@ -39,6 +39,13 @@
             android:label="Preview"
             android:screenOrientation="portrait"
             android:theme="@style/InputText"/>
+
+        <activity
+            android:noHistory="true"
+            android:name="com.tokopedia.editor.ui.placement.PlacementImageActivity"
+            android:exported="false"
+            android:label="Preview"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

@@ -15,9 +15,11 @@ import com.tokopedia.editor.ui.EditorFragmentProvider
 import com.tokopedia.editor.ui.EditorFragmentProviderImpl
 import com.tokopedia.editor.ui.main.component.NavigationToolUiComponent
 import com.tokopedia.editor.ui.main.component.PagerContainerUiComponent
+import com.tokopedia.editor.ui.model.ImagePlacementModel
 import com.tokopedia.editor.ui.main.uimodel.MainEditorEffect
 import com.tokopedia.editor.ui.main.uimodel.MainEditorEvent
 import com.tokopedia.editor.ui.model.InputTextModel
+import com.tokopedia.editor.ui.placement.PlacementImageActivity
 import com.tokopedia.editor.ui.text.InputTextActivity
 import com.tokopedia.picker.common.EXTRA_UNIVERSAL_EDITOR_PARAM
 import com.tokopedia.picker.common.RESULT_UNIVERSAL_EDITOR
@@ -48,6 +50,8 @@ open class MainEditorActivity : AppCompatActivity(), NavToolbarComponent.Listene
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
+    private var isPageInitialize = false
+
     private val toolbar by uiComponent {
         NavToolbarComponent(
             listener = this,
@@ -74,6 +78,15 @@ open class MainEditorActivity : AppCompatActivity(), NavToolbarComponent.Listene
     private val inputTextIntent = registerForActivityResult(StartActivityForResult()) {
         val result = InputTextActivity.result(it)
         viewModel.onEvent(MainEditorEvent.InputTextResult(result))
+    }
+
+    private val placementIntent = registerForActivityResult(StartActivityForResult()) {
+        val result = PlacementImageActivity.result(it)
+        viewModel.onEvent(MainEditorEvent.PlacementImageResult(result))
+
+//        if (result?.path?.isNotEmpty() == true) {
+//            viewModel.updatePlacement(result)
+//        }
     }
 
     private val viewModel: MainEditorViewModel by viewModels { viewModelFactory }
@@ -123,21 +136,29 @@ open class MainEditorActivity : AppCompatActivity(), NavToolbarComponent.Listene
                         toolbar.setVisibility(it.visible)
                         navigationTool.setVisibility(it.visible)
                     }
+                    is MainEditorEffect.OpenPlacementPage -> {
+                        navigateToPlacementImagePage(it.sourcePath, it.model)
+                    }
+                    is MainEditorEffect.UpdatePagerSourcePath -> {
+                        pagerContainer.updateView(it.newSourcePath)
+                    }
                 }
             }
         }
     }
 
     private fun initView(model: MainEditorUiModel) {
+        if (isPageInitialize) return
         setupToolbar(model.param)
         pagerContainer.setupView(model.param)
         navigationTool.setupView(model.tools)
+        isPageInitialize = true
     }
 
     private fun onToolClicked(@ToolType type: Int) {
         when (type) {
             ToolType.TEXT -> viewModel.onEvent(MainEditorEvent.AddInputTextPage)
-            ToolType.PLACEMENT -> {}
+            ToolType.PLACEMENT -> viewModel.onEvent(MainEditorEvent.PlacementImagePage)
             ToolType.AUDIO_MUTE -> {}
             else -> Unit
         }
@@ -147,6 +168,11 @@ open class MainEditorActivity : AppCompatActivity(), NavToolbarComponent.Listene
         val intent = InputTextActivity.create(this, model)
         inputTextIntent.launch(intent)
         overridePendingTransition(0,0)
+    }
+
+    private fun navigateToPlacementImagePage(sourcePath: String, model: ImagePlacementModel?) {
+        val intent = PlacementImageActivity.create(this, sourcePath, model)
+        placementIntent.launch(intent)
     }
 
     private fun setupToolbar(param: UniversalEditorParam) {

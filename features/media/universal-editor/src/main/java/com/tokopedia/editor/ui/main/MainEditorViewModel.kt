@@ -2,9 +2,11 @@ package com.tokopedia.editor.ui.main
 
 import androidx.lifecycle.ViewModel
 import com.tokopedia.editor.data.repository.NavigationToolRepository
+import com.tokopedia.editor.ui.model.ImagePlacementModel
 import com.tokopedia.editor.ui.main.uimodel.InputTextParam
 import com.tokopedia.editor.ui.main.uimodel.MainEditorEffect
 import com.tokopedia.editor.ui.main.uimodel.MainEditorEvent
+import com.tokopedia.editor.ui.model.ImageModel
 import com.tokopedia.editor.ui.model.InputTextModel
 import com.tokopedia.editor.util.setValue
 import com.tokopedia.picker.common.UniversalEditorParam
@@ -50,6 +52,25 @@ class MainEditorViewModel @Inject constructor(
             }
             is MainEditorEvent.ResetActiveInputText -> {
                 _inputTextState.value = InputTextParam.reset()
+            }
+            is MainEditorEvent.PlacementImagePage -> {
+                mainEditorState.value.let {
+                    setAction(MainEditorEffect.OpenPlacementPage(
+                        sourcePath = it.param.paths.first(),
+                        model = it.imageModel?.placement
+                    ))
+                }
+            }
+            is MainEditorEvent.PlacementImageResult -> {
+                event.model?.let {
+                    _mainEditorState.setValue {
+                        val newModel = this.imageModel?.apply { placement = it } ?: ImageModel(placement = it)
+                        copy(imageModel = newModel)
+                    }
+
+                    // Tag will be replace with identifier for pager item
+                    setAction(MainEditorEffect.UpdatePagerSourcePath(it.path, "Tag"))
+                }
             }
         }
     }
