@@ -204,7 +204,8 @@ object DeeplinkDFApp {
 
     private fun getDfCommTokochat() = mutableListOf(
         // tokochat
-        DFP(INTERNAL, HOST_COMMUNICATION, PathType.PATTERN, "/tokochat")
+        DFP(INTERNAL, HOST_COMMUNICATION, PathType.PATTERN, "/tokochat"),
+        DFP(INTERNAL, HOST_COMMUNICATION, PathType.PATTERN, "/tokochat/list"),
     )
 
     private fun getDfContentPlayBroadcaster() = mutableListOf(

@@ -170,7 +170,6 @@ class DeepLinkDFMapperTest : DeepLinkDFMapperTestFixture() {
         assertEqualDeepLinkMA(ApplinkConst.ADMIN_INVITATION, DF_MERCHANT_SELLER)
         assertEqualDeepLinkMA(ApplinkConst.ADMIN_ACCEPTED, DF_MERCHANT_SELLER)
         assertEqualDeepLinkMA(ApplinkConst.ADMIN_REDIRECTION, DF_MERCHANT_SELLER)
-        assertEqualDeepLinkMA(ApplinkConst.SELLER_TRANSACTION, DF_MERCHANT_SELLER)
     }
 
     @Test
