@@ -2763,21 +2763,19 @@ class CartRevampFragment :
             when (data) {
                 is GetBmGmGroupProductTickerState.Success -> {
                     val (index, cartItem) = cartAdapter.getCartItemHolderDataAndIndexByOfferId(data.pairOfferIdBmGmTickerResponse.first)
-                    if (data.pairOfferIdBmGmTickerResponse.second.data.action == BMGM_TICKER_RELOAD_ACTION) {
+                    if (data.pairOfferIdBmGmTickerResponse.second.getGroupProductTicker.data.action == BMGM_TICKER_RELOAD_ACTION) {
                         cartItem.stateTickerBmGm = CART_BMGM_STATE_TICKER_INACTIVE
-                    } else if (data.pairOfferIdBmGmTickerResponse.second.data.action.isNotEmpty()) {
+                    } else if (data.pairOfferIdBmGmTickerResponse.second.getGroupProductTicker.data.action.isEmpty()) {
                         cartItem.stateTickerBmGm = CART_BMGM_STATE_TICKER_ACTIVE
                         val listOfferMessage = arrayListOf<String>()
-                        data.pairOfferIdBmGmTickerResponse.second.data.listMessage.forEachIndexed { i, s ->
+                        data.pairOfferIdBmGmTickerResponse.second.getGroupProductTicker.data.listMessage.forEachIndexed { i, s ->
                             listOfferMessage.add(s.text)
                         }
                         cartItem.bmGmCartInfoData.bmGmData.offerMessage = listOfferMessage
 
                         val cartGroupHolderData = cartAdapter.getCartGroupHolderDataByCartItemHolderData(cartItem)
-                        cartGroupHolderData?.cartGroupBmGmHolderData?.discountBmGmAmount = data.pairOfferIdBmGmTickerResponse.second.data.discountAmount
+                        cartGroupHolderData?.cartGroupBmGmHolderData?.discountBmGmAmount = data.pairOfferIdBmGmTickerResponse.second.getGroupProductTicker.data.discountAmount
                         viewModel.reCalculateSubTotal()
-                    } else if (data.pairOfferIdBmGmTickerResponse.second.data.action.isEmpty()) {
-                        cartItem.stateTickerBmGm = CART_BMGM_STATE_TICKER_INACTIVE
                     }
                     cartAdapter.notifyItemChanged(index)
                 }
@@ -2787,6 +2785,8 @@ class CartRevampFragment :
                     cartItem.stateTickerBmGm = CART_BMGM_STATE_TICKER_INACTIVE
                     cartAdapter.notifyItemChanged(index)
                 }
+
+                else -> {}
             }
         }
     }

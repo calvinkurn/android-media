@@ -3,42 +3,48 @@ package com.tokopedia.cartrevamp.domain.model.bmgm.response
 import com.google.gson.annotations.SerializedName
 
 data class BmGmGetGroupProductTickerResponse(
-    @SerializedName("error_message")
-    val errorMessage: List<String> = emptyList(),
 
-    @SerializedName("data")
-    val data: Data = Data(),
-
-    @SerializedName("status")
-    val status: String = ""
+    @SerializedName("get_group_product_ticker")
+    val getGroupProductTicker: GetGroupProductTicker = GetGroupProductTicker()
 ) {
-    data class Data(
-        @SerializedName("type")
-        val type: String = "",
+    data class GetGroupProductTicker(
+        @SerializedName("error_message")
+        val errorMessage: List<String> = emptyList(),
 
-        @SerializedName("action")
-        val action: String = "",
+        @SerializedName("data")
+        val data: Data = Data(),
 
-        @SerializedName("icon")
-        val icon: Icon = Icon(),
-
-        @SerializedName("message")
-        val listMessage: List<Message> = emptyList(),
-
-        @SerializedName("discount_amount")
-        val discountAmount: Double = 0.0
+        @SerializedName("status")
+        val status: String = ""
     ) {
-        data class Icon(
-            @SerializedName("url")
-            val url: String = ""
-        )
+        data class Data(
+            @SerializedName("type")
+            val type: String = "",
 
-        data class Message(
-            @SerializedName("text")
-            val text: String = "",
+            @SerializedName("action")
+            val action: String = "",
 
-            @SerializedName("url")
-            val url: String = ""
-        )
+            @SerializedName("icon")
+            val icon: Icon = Icon(),
+
+            @SerializedName("message")
+            val listMessage: List<Message> = emptyList(),
+
+            @SerializedName("discount_amount")
+            val discountAmount: Double = 0.0
+        ) {
+            data class Icon(
+                @SerializedName("url")
+                val url: String = ""
+            )
+
+            data class Message(
+                @SerializedName("text")
+                val text: String = "",
+
+                @SerializedName("url")
+                val url: String = ""
+            )
+        }
     }
 }
