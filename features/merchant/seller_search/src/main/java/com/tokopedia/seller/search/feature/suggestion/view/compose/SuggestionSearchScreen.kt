@@ -22,13 +22,14 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.rememberUpdatedState
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
@@ -42,6 +43,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.flowlayout.FlowRow
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.iconunify.IconUnify
@@ -66,7 +68,6 @@ import com.tokopedia.seller.search.common.util.indexOfSearchQuery
 import com.tokopedia.seller.search.feature.initialsearch.view.compose.OPACITY_68
 import com.tokopedia.seller.search.feature.suggestion.view.model.SellerSearchNoResultUiModel
 import com.tokopedia.seller.search.feature.suggestion.view.model.compose.SuggestionSearchUiEvent
-import com.tokopedia.seller.search.feature.suggestion.view.model.compose.SuggestionSearchUiState
 import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.ArticleSellerSearchUiModel
 import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.DividerSellerSearchUiModel
 import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.FaqSellerSearchUiModel
@@ -79,17 +80,34 @@ import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.Ti
 import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.hightlights.HighlightSuggestionSearchUiModel
 import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.hightlights.ItemHighlightSuggestionSearchUiModel
 import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.hightlights.ItemTitleHighlightSuggestionSearchUiModel
+import com.tokopedia.seller.search.feature.suggestion.view.viewmodel.SuggestionSearchComposeViewModel
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SuggestionSearchScreen(
-    uiState: SuggestionSearchUiState?,
+    viewModel: SuggestionSearchComposeViewModel,
     uiEvent: (SuggestionSearchUiEvent) -> Unit,
+    startRenderPerformanceMonitoring: () -> Unit,
     finishMonitoring: () -> Unit
 ) {
-    if (uiState?.isLoadingState == true) {
+    val softwareKeyboardController = LocalSoftwareKeyboardController.current
+
+    val suggestionUiState by viewModel.uiState.collectAsStateWithLifecycle(null)
+
+    LaunchedEffect(suggestionUiState) {
+        suggestionUiState?.let {
+            startRenderPerformanceMonitoring()
+        }
+
+        if (suggestionUiState?.isDismissedKeyboard == true) {
+            softwareKeyboardController?.hide()
+        }
+    }
+
+    if (suggestionUiState?.isLoadingState == true) {
         SellerSearchShimmerCompose()
     } else {
         val lazyListState = rememberLazyListState()
@@ -116,9 +134,12 @@ fun SuggestionSearchScreen(
                 .padding(bottom = 8.dp),
             state = lazyListState
         ) {
-            itemsIndexed(uiState?.suggestionSellerSearchList.orEmpty(), key = { _, suggestionItem ->
-                suggestionItem.hashCode()
-            }) { index, item ->
+            itemsIndexed(
+                suggestionUiState?.suggestionSellerSearchList.orEmpty(),
+                key = { _, suggestionItem ->
+                    suggestionItem.hashCode()
+                }
+            ) { index, item ->
                 when (item) {
                     is TitleHeaderSellerSearchUiModel -> {
                         TitleHeaderSellerSearch(item)

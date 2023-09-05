@@ -14,10 +14,13 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -27,6 +30,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.flowlayout.FlowRow
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -42,26 +46,42 @@ import com.tokopedia.seller.search.R
 import com.tokopedia.seller.search.common.GlobalSearchSellerConstant
 import com.tokopedia.seller.search.feature.initialsearch.view.model.SellerSearchNoHistoryUiModel
 import com.tokopedia.seller.search.feature.initialsearch.view.model.compose.InitialSearchUiEvent
-import com.tokopedia.seller.search.feature.initialsearch.view.model.compose.InitialSearchUiState
 import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.HighlightInitialSearchUiModel
 import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.ItemHighlightInitialSearchUiModel
 import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.ItemInitialSearchUiModel
 import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.ItemTitleHighlightInitialSearchUiModel
 import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.ItemTitleInitialSearchUiModel
+import com.tokopedia.seller.search.feature.initialsearch.view.viewmodel.InitialSearchComposeViewModel
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 
 const val OPACITY_68 = 0.68f
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun InitialSearchFragmentScreen(
-    uiState: InitialSearchUiState?,
+    viewModel: InitialSearchComposeViewModel,
     uiEvent: (InitialSearchUiEvent) -> Unit,
+    startRenderPerformanceMonitoring: () -> Unit,
     finishMonitoring: () -> Unit
 ) {
+    val softwareKeyboardController = LocalSoftwareKeyboardController.current
+
+    val initialUiState by viewModel.uiState.collectAsStateWithLifecycle(null)
+
     val lazyListState = rememberLazyListState()
     val localView = LocalView.current
+
+    LaunchedEffect(initialUiState) {
+        initialUiState?.let {
+            startRenderPerformanceMonitoring()
+        }
+
+        if (initialUiState?.isDismissKeyboard == true) {
+            softwareKeyboardController?.hide()
+        }
+    }
 
     val viewObserver = rememberUpdatedState(
         ViewTreeObserver.OnGlobalLayoutListener {
@@ -83,7 +103,7 @@ fun InitialSearchFragmentScreen(
             .fillMaxSize(),
         state = lazyListState
     ) {
-        itemsIndexed(uiState?.initialStateList.orEmpty(), key = { _, item ->
+        itemsIndexed(initialUiState?.initialStateList.orEmpty(), key = { _, item ->
             item.hashCode()
         }) { index, item ->
             when (item) {
@@ -92,7 +112,7 @@ fun InitialSearchFragmentScreen(
                 }
 
                 is ItemTitleInitialSearchUiModel -> {
-                    HistorySearchSectionTitle(uiState?.titleList.orEmpty(), uiEvent)
+                    HistorySearchSectionTitle(initialUiState?.titleList.orEmpty(), uiEvent)
                 }
 
                 is ItemInitialSearchUiModel -> {

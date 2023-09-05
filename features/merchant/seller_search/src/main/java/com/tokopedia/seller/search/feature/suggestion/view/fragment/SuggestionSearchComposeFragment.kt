@@ -4,14 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.seller.search.common.plt.GlobalSearchSellerPerformanceMonitoringListener
@@ -60,23 +57,10 @@ class SuggestionSearchComposeFragment : BaseDaggerFragment() {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
 
             setContent {
-                val softwareKeyboardController = LocalSoftwareKeyboardController.current
-
-                val sellerSearchResult by viewModel.uiState.collectAsStateWithLifecycle(null)
-
-                LaunchedEffect(sellerSearchResult) {
-                    sellerSearchResult?.let {
-                        startRenderPerformanceMonitoring()
-                    }
-
-                    if (sellerSearchResult?.isDismissedKeyboard == true) {
-                        softwareKeyboardController?.hide()
-                    }
-                }
-
                 SuggestionSearchScreen(
-                    sellerSearchResult,
+                    viewModel,
                     ::onUiEvent,
+                    ::startRenderPerformanceMonitoring,
                     ::finishMonitoring
                 )
             }

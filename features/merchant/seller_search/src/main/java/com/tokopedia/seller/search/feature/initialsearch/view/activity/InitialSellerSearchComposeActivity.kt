@@ -120,11 +120,6 @@ class InitialSellerSearchComposeActivity :
         setSearchKeyword()
     }
 
-    override fun onStart() {
-        super.onStart()
-        SellerSearchTracking.sendScreenSearchEvent(userSession.userId)
-    }
-
     override fun getComponent(): InitialSearchComponent {
         return DaggerInitialSearchComponent
             .builder()

@@ -14,12 +14,16 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.tokopedia.nest.components.NestImage
 import com.tokopedia.nest.components.NestImageType
 import com.tokopedia.nest.components.NestSearchBar
+import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.ImageSource
 import com.tokopedia.seller.search.R
 import com.tokopedia.seller.search.feature.initialsearch.view.model.compose.GlobalSearchUiEvent
@@ -79,7 +83,14 @@ private fun SearchBarUnify(
     uiEffect: (GlobalSearchUiEvent) -> Unit
 ) {
     NestSearchBar(
-        value = TextFieldValue(text = searchBarKeyword, selection = TextRange(searchBarKeyword.length)),
+        value = TextFieldValue(
+            annotatedString = buildAnnotatedString {
+                withStyle(style = SpanStyle(color = NestTheme.colors.NN._950)) {
+                    append(searchBarKeyword)
+                }
+            },
+            selection = TextRange(searchBarKeyword.length)
+        ),
         placeholderText = searchBarPlaceholder.ifBlank { stringResource(id = R.string.placeholder_search_seller) },
         modifier = modifier,
         onSearchBarCleared = {
