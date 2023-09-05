@@ -1639,7 +1639,6 @@ class ShopPageHeaderFragmentV2 :
         setViewState(VIEW_CONTENT)
         setupTabs()
         sendShopPageOpenScreenTracker()
-        sendShopPageTabImpressionTracker()
         if (shouldOpenShopNoteBottomSheet) {
             showShopNoteBottomSheet()
         }
@@ -1655,14 +1654,6 @@ class ShopPageHeaderFragmentV2 :
         } != null
     }
 
-    private fun sendShopPageTabImpressionTracker() {
-        listShopPageTabModel.onEach {
-            if (!isMyShop) {
-                shopPageTracking?.sendImpressionShopTab(shopId, it.tabTitle)
-            }
-        }
-    }
-
     private fun sendShopPageOpenScreenTracker() {
         val selectedTabName = getSelectedTabName()
         if (selectedTabName.isNotEmpty()) {
@@ -1676,7 +1667,7 @@ class ShopPageHeaderFragmentV2 :
     fun getSelectedTabName(): String {
         return listShopPageTabModel.getOrNull(
             getSelectedDynamicTabPosition()
-        )?.tabTitle.orEmpty()
+        )?.tabName.orEmpty()
     }
 
     override fun onBackPressed() {
@@ -1735,7 +1726,6 @@ class ShopPageHeaderFragmentV2 :
                 }
                 if (isTabClickByUser) {
                     sendShopPageClickTabTracker(position)
-                    sendShopPageTabImpressionTracker()
                 }
                 if (isSellerMigrationEnabled(context)) {
                     getFeedTabFragmentClassName()?.let {
@@ -1841,7 +1831,7 @@ class ShopPageHeaderFragmentV2 :
 
     private fun sendShopPageClickTabTracker(position: Int) {
         if (!isMyShop) {
-            shopPageTracking?.clickTab(listShopPageTabModel[position].tabTitle, shopId, userId)
+            shopPageTracking?.clickShopBottomNav(listShopPageTabModel[position].tabName, shopId, userId)
         }
     }
 
@@ -1885,7 +1875,7 @@ class ShopPageHeaderFragmentV2 :
 
     private fun getTabPositionBasedOnTabName(overrideTabName: String): Int {
         return listShopPageTabModel.indexOfFirst {
-            it.tabTitle == overrideTabName
+            it.tabName == overrideTabName
         }.takeIf {
             it >= Int.ZERO
         } ?: Int.ZERO
@@ -1912,7 +1902,7 @@ class ShopPageHeaderFragmentV2 :
             }
             listShopPageTabModel.add(
                 ShopPageHeaderTabModel(
-                    tabTitle = it.name,
+                    tabName = it.name,
                     tabFragment = tabContentWrapper,
                     iconUrl = it.icon,
                     iconActiveUrl = it.iconFocus,
