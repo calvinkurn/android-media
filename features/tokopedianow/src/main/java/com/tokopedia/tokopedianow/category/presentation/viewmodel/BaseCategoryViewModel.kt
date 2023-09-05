@@ -133,7 +133,8 @@ abstract class BaseCategoryViewModel(
                 addressData = addressData.getAddressData(),
                 src = SRC_DIRECTORY_TOKONOW,
                 userId = getUserId()
-            )
+            ).generateQueryParams()
+
             val response = getProductAdsUseCase.execute(params)
 
             if (response.productList.isNotEmpty()) {

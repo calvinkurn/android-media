@@ -31,7 +31,6 @@ import com.tokopedia.tokopedianow.common.domain.model.GetProductAdsResponse
 import com.tokopedia.tokopedianow.common.domain.model.GetProductAdsResponse.ProductAdsResponse
 import com.tokopedia.tokopedianow.common.domain.model.GetTargetedTickerResponse
 import com.tokopedia.tokopedianow.common.domain.model.WarehouseData
-import com.tokopedia.tokopedianow.common.domain.param.GetProductAdsParam
 import com.tokopedia.tokopedianow.common.domain.usecase.GetProductAdsUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
@@ -369,7 +368,7 @@ open class TokoNowCategoryViewModelTestFixture {
         }
     }
 
-    protected fun verifyGetProductAdsParam(expectedParam: GetProductAdsParam) {
+    protected fun verifyGetProductAdsParam(expectedParam: Map<String?, Any>) {
         coVerify { getProductAdsUseCase.execute(expectedParam) }
     }
 

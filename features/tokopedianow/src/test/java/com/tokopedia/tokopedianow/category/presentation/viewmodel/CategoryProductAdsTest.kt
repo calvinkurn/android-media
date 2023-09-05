@@ -115,7 +115,7 @@ class CategoryProductAdsTest : TokoNowCategoryViewModelTestFixture() {
             page = 1,
             userId = userId,
             addressData = addressData
-        )
+        ).generateQueryParams()
 
         verifyGetProductAdsParam(expectedGetProductAdsParam)
 
@@ -208,7 +208,7 @@ class CategoryProductAdsTest : TokoNowCategoryViewModelTestFixture() {
             page = 1,
             userId = userId,
             addressData = addressData
-        )
+        ).generateQueryParams()
 
         verifyGetProductAdsParam(expectedGetProductAdsParam)
 
