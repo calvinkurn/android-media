@@ -1,10 +1,11 @@
 <?xml version = "1.0" encoding = "utf-8" ?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
-
     <gradient
         android:angle="90"
-        android:startColor="@color/product_detail_dms_toolbar_gradient_start"
+        android:centerColor="@color/product_detail_dms_toolbar_gradient_center"
+        android:centerY="0.35"
         android:endColor="@color/product_detail_dms_toolbar_gradient_end"
+        android:startColor="@color/product_detail_dms_toolbar_gradient_start"
         android:type="linear" />
 </shape>
