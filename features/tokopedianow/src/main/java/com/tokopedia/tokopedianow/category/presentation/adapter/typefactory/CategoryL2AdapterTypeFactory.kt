@@ -36,8 +36,8 @@ class CategoryL2AdapterTypeFactory(
     private var productRecommendationListener: TokoNowProductRecommendationListener? = null,
     private var categoryMenuListener: TokoNowCategoryMenuListener? = null,
     private var feedbackWidgetListener: FeedbackWidgetListener? = null,
-    chooseAddressListener: TokoNowChooseAddressWidgetListener,
-    productAdsCarouselListener: ProductAdsCarouselListener,
+    chooseAddressListener: TokoNowChooseAddressWidgetListener? = null,
+    productAdsCarouselListener: ProductAdsCarouselListener? = null
 ) : BaseCategoryAdapterTypeFactory(chooseAddressListener, productAdsCarouselListener, tokoNowView),
     CategoryL2TypeFactory,
     TokoNowEmptyStateNoResultTypeFactory,

@@ -11,6 +11,7 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.TokoNowStaticLayoutType.Companion.PRODUCT_ADS_CAROUSEL
 import com.tokopedia.tokopedianow.common.domain.mapper.AddToCartMapper.getAddToCartQuantity
 import com.tokopedia.tokopedianow.common.domain.mapper.AddToCartMapper.removeProductAtcQuantity
+import com.tokopedia.tokopedianow.common.domain.mapper.ProductAdsMapper.updateProductCarouselItem
 import com.tokopedia.tokopedianow.common.domain.model.GetProductAdsResponse.Product
 import com.tokopedia.tokopedianow.common.domain.model.GetProductAdsResponse.ProductAdsResponse
 import com.tokopedia.tokopedianow.common.domain.model.GetProductAdsResponse.Shop
@@ -30,11 +31,13 @@ object ProductAdsMapper {
     fun MutableList<Visitable<*>>.addProductAdsCarousel(
         id: String = PRODUCT_ADS_CAROUSEL
     ) {
-        add(TokoNowAdsCarouselUiModel(
-            id = id,
-            items = emptyList(),
-            state = TokoNowLayoutState.LOADING
-        ))
+        add(
+            TokoNowAdsCarouselUiModel(
+                id = id,
+                items = emptyList(),
+                state = TokoNowLayoutState.LOADING
+            )
+        )
     }
 
     fun mapProductAdsCarousel(
@@ -115,7 +118,7 @@ object ProductAdsMapper {
                     val productId = it.getProductId()
                     var updatedProductItem = it
 
-                    if(productId in cartProductIds) {
+                    if (productId in cartProductIds) {
                         val orderQuantity = miniCartData.getAddToCartQuantity(it.getProductId())
                         updatedProductItem = it.updateProductCarouselItem(
                             orderQuantity,
@@ -132,6 +135,25 @@ object ProductAdsMapper {
 
                     updatedProductItem
                 }
+                adsCarousel.copy(items = items)
+            }
+        }
+    }
+
+    fun MutableList<Visitable<*>>.updateProductAdsQuantity(
+        productId: String,
+        quantity: Int,
+        hasBlockedAddToCart: Boolean
+    ) {
+        filterIsInstance<TokoNowAdsCarouselUiModel>().forEach { adsCarousel ->
+            updateItemById(adsCarousel.id) {
+                val items = adsCarousel.items.toMutableList()
+                val item = items.first { it.getProductId() == productId }
+                val index = items.indexOf(item)
+                items[index] = item.updateProductCarouselItem(
+                    quantity,
+                    hasBlockedAddToCart
+                )
                 adsCarousel.copy(items = items)
             }
         }

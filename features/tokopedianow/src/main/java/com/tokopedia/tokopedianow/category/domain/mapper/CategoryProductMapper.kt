@@ -91,6 +91,23 @@ object CategoryProductMapper {
         }
     }
 
+    fun MutableList<Visitable<*>>.updateProductCardItems(
+        productId: String,
+        quantity: Int,
+        hasBlockedAddToCart: Boolean
+    ) {
+        filterIsInstance<ProductItemDataView>().find {
+            it.productCardModel.productId == productId
+        }?.let { product ->
+            val index = indexOf(product)
+            val updatedProduct = product.updateProductCardModel(
+                orderQuantity = quantity,
+                hasBlockedAddToCart = hasBlockedAddToCart
+            )
+            set(index, updatedProduct)
+        }
+    }
+
     private fun ProductItemDataView.updateProductCardModel(
         orderQuantity: Int,
         hasBlockedAddToCart: Boolean

@@ -24,6 +24,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
+import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2QuickFilterMapper
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.addLoadMoreLoading
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.addProductCardItems
@@ -146,6 +147,33 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
         )
         initAffiliateCookie()
         loadFirstPage()
+        getMiniCart()
+    }
+
+    fun onCartQuantityChanged(
+        product: ProductCardCompactUiModel,
+        shopId: String,
+        quantity: Int
+    ) {
+        val productId = product.productId
+        val isVariant = product.isVariant
+        val stock = product.availableStock
+
+        onCartQuantityChanged(
+            productId = productId,
+            shopId = shopId,
+            quantity = quantity,
+            stock = stock,
+            isVariant = isVariant,
+            onSuccessUpdateCart = { _, _ ->
+                visitableList.updateAllProductQuantity(
+                    productId = productId,
+                    quantity = quantity,
+                    hasBlockedAddToCart = hasBlockedAddToCart
+                )
+                updateVisitableListLiveData()
+            }
+        )
     }
 
     fun updateWishlistStatus(productId: String, hasBeenWishlist: Boolean) {
@@ -245,12 +273,8 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
         getMiniCart()
     }
 
-    fun onResume() {
-        getMiniCart()
-    }
-
     fun onScroll(atTheBottomOfThePage: Boolean) {
-        if(atTheBottomOfThePage) loadMore()
+        if (atTheBottomOfThePage) loadMore()
     }
 
     fun getFilterController(): FilterController {
@@ -361,7 +385,6 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
                 isEmptyState -> hideEmptyState()
             }
         }) {
-
         }
     }
 
@@ -547,7 +570,7 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
     private fun findExcludedFilter(quickFilter: CategoryQuickFilterUiModel) {
         for (filterItem in quickFilter.itemList) {
             val options = filterItem.filter.options
-            if(options.count() == 1) return
+            if (options.count() == 1) return
 
             excludedFilter = options.find {
                 it.key.startsWith(OptionHelper.EXCLUDE_PREFIX)
@@ -557,13 +580,21 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
 
     private fun showEmptyState() {
         val emptyStateModel = CategoryEmptyStateModel(
-            queryParams, violation, excludedFilter, true)
+            queryParams,
+            violation,
+            excludedFilter,
+            true
+        )
         _emptyStateLiveData.postValue(emptyStateModel)
     }
 
     private fun hideEmptyState() {
         val emptyStateModel = CategoryEmptyStateModel(
-            queryParams, violation, excludedFilter, false)
+            queryParams,
+            violation,
+            excludedFilter,
+            false
+        )
         _emptyStateLiveData.postValue(emptyStateModel)
     }
 

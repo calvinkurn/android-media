@@ -113,6 +113,15 @@ object CategoryL2TabMapper {
         updateProductAdsQuantity(cartProductIds, miniCartData, hasBlockedAddToCart)
     }
 
+    fun MutableList<Visitable<*>>.updateAllProductQuantity(
+        productId: String,
+        quantity: Int,
+        hasBlockedAddToCart: Boolean
+    ) {
+        updateProductCardItems(productId, quantity, hasBlockedAddToCart)
+        updateProductAdsQuantity(productId, quantity, hasBlockedAddToCart)
+    }
+
     fun MutableList<Visitable<*>>.addLoadMoreLoading() {
         add(TokoNowProgressBarUiModel(CategoryStaticLayoutId.LOAD_MORE_PROGRESS_BAR))
     }
@@ -160,7 +169,7 @@ object CategoryL2TabMapper {
         }
     }
 
-    inline fun <reified T: Visitable<*>>MutableList<Visitable<*>>.removeItem() {
+    inline fun <reified T : Visitable<*>>MutableList<Visitable<*>>.removeItem() {
         removeFirst { it is T }
     }
 

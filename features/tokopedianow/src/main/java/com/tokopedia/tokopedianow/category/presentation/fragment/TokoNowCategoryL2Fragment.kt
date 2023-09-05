@@ -39,9 +39,7 @@ import com.tokopedia.tokopedianow.category.presentation.model.CategoryEmptyState
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryL2TabUiModel
 import com.tokopedia.tokopedianow.category.presentation.view.CategoryL2MainView
 import com.tokopedia.tokopedianow.category.presentation.viewmodel.TokoNowCategoryL2ViewModel
-import com.tokopedia.tokopedianow.common.constant.TokoNowStaticLayoutType
 import com.tokopedia.tokopedianow.common.domain.mapper.ProductRecommendationMapper
-import com.tokopedia.tokopedianow.common.listener.ProductAdsCarouselListener
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuItemUiModel
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.view.TokoNowProductRecommendationView.TokoNowProductRecommendationListener
@@ -113,7 +111,6 @@ class TokoNowCategoryL2Fragment : BaseCategoryFragment(), CategoryL2MainView {
             emptyStateNoResultListener = createEmptyStateNoResultListener(),
             productRecommendationListener = createProductRecommendationListener(),
             chooseAddressListener = createChooseAddressWidgetCallback(),
-            productAdsCarouselListener = createProductAdsCarouselListener(),
             categoryMenuListener = createCategoryMenuListener(),
             feedbackWidgetListener = createFeedbackWidgetListener()
         )
@@ -182,7 +179,7 @@ class TokoNowCategoryL2Fragment : BaseCategoryFragment(), CategoryL2MainView {
         }
 
         observe(viewModel.showEmptyState) { showEmptyState ->
-            if(showEmptyState) {
+            if (showEmptyState) {
                 hideCategoryTabs()
             } else {
                 showCategoryTabs()
@@ -305,7 +302,7 @@ class TokoNowCategoryL2Fragment : BaseCategoryFragment(), CategoryL2MainView {
             isTokoNow = true,
             shopId = shopId,
             trackerCdListName = String.format(CategoryTracking.Misc.TOKONOW_CATEGORY_ORGANIC, categoryIdL1),
-            startActivitResult = ::startActivityForResult,
+            startActivitResult = ::startActivityForResult
         )
     }
 
@@ -403,49 +400,7 @@ class TokoNowCategoryL2Fragment : BaseCategoryFragment(), CategoryL2MainView {
             }
 
             override fun onClickChooseAddressWidgetTracker() {
-
             }
-        }
-    }
-
-    private fun createProductAdsCarouselListener() = object : ProductAdsCarouselListener {
-        override fun onProductCardClicked(
-            position: Int,
-            title: String,
-            product: ProductCardCompactCarouselItemUiModel
-        ) {
-            goToProductDetailPage(product.appLink)
-        }
-
-        override fun onProductCardImpressed(
-            position: Int,
-            title: String,
-            product: ProductCardCompactCarouselItemUiModel
-        ) {
-        }
-
-        override fun onProductCardQuantityChanged(
-            position: Int,
-            product: ProductCardCompactCarouselItemUiModel,
-            quantity: Int
-        ) {
-            viewModel.onCartQuantityChanged(
-                product = product.productCardModel,
-                shopId = product.shopId,
-                quantity = quantity,
-                layoutType = TokoNowStaticLayoutType.PRODUCT_ADS_CAROUSEL
-            )
-        }
-
-        override fun onProductCardAddVariantClicked(
-            position: Int,
-            product: ProductCardCompactCarouselItemUiModel
-        ) {
-            goToAtcVariant(product.getProductId(), product.shopId)
-        }
-
-        override fun onProductCardAddToCartBlocked() {
-            showShopClosedToaster()
         }
     }
 
@@ -547,7 +502,7 @@ class TokoNowCategoryL2Fragment : BaseCategoryFragment(), CategoryL2MainView {
         return object : FeedbackWidgetListener {
             override fun onFeedbackCtaClicked() {
                 TokoNowProductFeedbackBottomSheet().also {
-                    it.showBottomSheet(activity?.supportFragmentManager,view)
+                    it.showBottomSheet(activity?.supportFragmentManager, view)
                 }
             }
         }

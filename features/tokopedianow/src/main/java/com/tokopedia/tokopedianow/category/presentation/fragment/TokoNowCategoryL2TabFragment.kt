@@ -177,7 +177,9 @@ open class TokoNowCategoryL2TabFragment : Fragment() {
 
         observe(viewModel.filterProductCountLiveData) {
             val countText = String.format(
-                getString(R.string.tokopedianow_apply_filter_text), it)
+                getString(R.string.tokopedianow_apply_filter_text),
+                it
+            )
             sortFilterBottomSheet?.setResultCountText(countText)
             categoryChooserBottomSheet?.setResultCountText(countText)
         }
@@ -195,7 +197,7 @@ open class TokoNowCategoryL2TabFragment : Fragment() {
         }
 
         observe(viewModel.emptyStateLiveData) {
-            if(it.shouldShow) {
+            if (it.shouldShow) {
                 val filterController = viewModel.getFilterController()
                 categoryL2MainView?.onShowEmptyState(it, filterController)
             } else {
@@ -308,7 +310,8 @@ open class TokoNowCategoryL2TabFragment : Fragment() {
 
     private fun showAddToCartBlockedToaster() {
         val message = getString(
-            R.string.tokopedianow_home_toaster_description_you_are_not_be_able_to_shop)
+            R.string.tokopedianow_home_toaster_description_you_are_not_be_able_to_shop
+        )
         showToaster(message = message)
     }
 
@@ -334,7 +337,7 @@ open class TokoNowCategoryL2TabFragment : Fragment() {
             parentFragmentManager,
             viewModel.getMapParameter(),
             filter,
-            callback,
+            callback
         )
     }
 
@@ -371,13 +374,10 @@ open class TokoNowCategoryL2TabFragment : Fragment() {
                 product: ProductCardCompactCarouselItemUiModel,
                 quantity: Int
             ) {
-                val productCardModel = product.productCardModel
                 viewModel.onCartQuantityChanged(
-                    productId = product.getProductId(),
+                    product = product.productCardModel,
                     shopId = product.shopId,
-                    quantity = quantity,
-                    stock = productCardModel.availableStock,
-                    isVariant = productCardModel.isVariant
+                    quantity = quantity
                 )
             }
 
@@ -389,7 +389,6 @@ open class TokoNowCategoryL2TabFragment : Fragment() {
             }
 
             override fun onProductCardAddToCartBlocked() {
-
             }
         }
     }
@@ -397,7 +396,6 @@ open class TokoNowCategoryL2TabFragment : Fragment() {
     private fun createProductItemListener(): ProductItemListener {
         return object : ProductItemListener {
             override fun onProductImpressed(productItemDataView: ProductItemDataView) {
-
             }
 
             override fun onProductClick(productItemDataView: ProductItemDataView) {
@@ -409,13 +407,10 @@ open class TokoNowCategoryL2TabFragment : Fragment() {
                 productItemDataView: ProductItemDataView,
                 quantity: Int
             ) {
-                val productCardModel = productItemDataView.productCardModel
                 viewModel.onCartQuantityChanged(
-                    productId = productCardModel.productId,
+                    product = productItemDataView.productCardModel,
                     shopId = productItemDataView.shop.id,
-                    quantity = quantity,
-                    stock = productCardModel.availableStock,
-                    isVariant = productCardModel.isVariant
+                    quantity = quantity
                 )
             }
 
@@ -468,7 +463,6 @@ open class TokoNowCategoryL2TabFragment : Fragment() {
                 similarProduct: ProductCardCompactSimilarProductUiModel,
                 productIdTriggered: String
             ) {
-
             }
 
             override fun trackClickProduct(
@@ -477,7 +471,6 @@ open class TokoNowCategoryL2TabFragment : Fragment() {
                 similarProduct: ProductCardCompactSimilarProductUiModel,
                 productIdTriggered: String
             ) {
-
             }
 
             override fun trackClickAddToCart(
@@ -487,7 +480,6 @@ open class TokoNowCategoryL2TabFragment : Fragment() {
                 productIdTriggered: String,
                 newQuantity: Int
             ) {
-
             }
 
             override fun trackClickCloseBottomsheet(
@@ -495,7 +487,6 @@ open class TokoNowCategoryL2TabFragment : Fragment() {
                 warehouseId: String,
                 productIdTriggered: String
             ) {
-
             }
 
             override fun trackClickSimilarProductBtn(
@@ -503,7 +494,6 @@ open class TokoNowCategoryL2TabFragment : Fragment() {
                 warehouseId: String,
                 productIdTriggered: String
             ) {
-
             }
 
             override fun trackImpressionEmptyState(
@@ -511,7 +501,6 @@ open class TokoNowCategoryL2TabFragment : Fragment() {
                 warehouseId: String,
                 productIdTriggered: String
             ) {
-
             }
         }
     }
@@ -533,7 +522,7 @@ open class TokoNowCategoryL2TabFragment : Fragment() {
     }
 
     private fun openFilterBottomSheet(dynamicFilterModel: DynamicFilterModel?) {
-        if(dynamicFilterModel == null) return
+        if (dynamicFilterModel == null) return
         val mapParameter = viewModel.getMapParameter()
 
         sortFilterBottomSheet = SortFilterBottomSheet().apply {
