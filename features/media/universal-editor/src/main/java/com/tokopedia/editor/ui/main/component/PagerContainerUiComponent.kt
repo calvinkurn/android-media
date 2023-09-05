@@ -44,7 +44,7 @@ class PagerContainerUiComponent constructor(
 
     private fun setFragmentDisplayed(param: UniversalEditorParam) {
         // Since current editor only supported single selection, hence we've get the first item of [paths]
-        val file = param.firstFile.path ?: return
+        val file = param.firstFile.path
 
         // check the file whether image or video type
         val mFragment = if (file.asPickerFile().isVideo().not()) {

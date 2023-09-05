@@ -1,13 +1,13 @@
 package com.tokopedia.picker.common.utils
 
+import java.io.File
+
 @JvmInline
-value class MediaFile(val path: String?) {
+value class MediaFile(val path: String) {
 
-    fun isVideo() = path?.let {
-        isVideoFormat(it)
-    } ?: false
+    fun isVideo() = isVideoFormat(path)
 
-    fun isImage() = path?.let {
-        isImageFormat(it)
-    } ?: false
+    fun isImage() = isImageFormat(path)
+
+    fun exist() = File(path).exists()
 }
