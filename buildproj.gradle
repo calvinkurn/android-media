@@ -55,8 +55,8 @@ allprojects {
         maven {
             url = uri("https://maven.pkg.github.com/carousell/lk6-tkpd-android-sdk")
             credentials {
-                username = properties.getProperty("laku.usr")
-                password = properties.getProperty("laku.key")
+                username = properties.getProperty("laku.usr") ?: System.getenv("LAKU_USR")
+                password = properties.getProperty("laku.key") ?: System.getenv("LAKU_API_KEY")
             }
         }
         maven {
