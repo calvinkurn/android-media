@@ -30,14 +30,15 @@ class ContentCardItemViewHolder(itemView: View, private val fragment: Fragment) 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         super.setUpObservers(lifecycleOwner)
         lifecycleOwner?.let { it ->
-            contentCardItemViewModel?.getComponentLiveData()?.observe(fragment.viewLifecycleOwner) { componentItem ->
-                componentItem.data?.let {
-                    if (it.isNotEmpty()) {
-                        setupImage(it.first())
-                        setupData(it.first())
+            contentCardItemViewModel?.getComponentLiveData()
+                ?.observe(fragment.viewLifecycleOwner) { componentItem ->
+                    componentItem.data?.let {
+                        if (it.isNotEmpty()) {
+                            setupImage(it.first())
+                            setupData(it.first())
+                        }
                     }
                 }
-            }
             contentCardItemViewModel?.getTimerData()?.observe(it) { timerData ->
                 if (timerData.days > 0) {
                     binding.hoursLayout.text = String.format(TIME_DISPLAY_FORMAT, timerData.days)
@@ -47,8 +48,10 @@ class ContentCardItemViewHolder(itemView: View, private val fragment: Fragment) 
                     binding.secondsLayout.gone()
                 } else {
                     binding.hoursLayout.text = String.format(TIME_DISPLAY_FORMAT, timerData.hours)
-                    binding.minutesLayout.text = String.format(TIME_DISPLAY_FORMAT, timerData.minutes)
-                    binding.secondsLayout.text = String.format(TIME_DISPLAY_FORMAT, timerData.seconds)
+                    binding.minutesLayout.text =
+                        String.format(TIME_DISPLAY_FORMAT, timerData.minutes)
+                    binding.secondsLayout.text =
+                        String.format(TIME_DISPLAY_FORMAT, timerData.seconds)
                     binding.hoursSeparatorTextView.show()
                     binding.minutesSeparatorTextView.show()
                     binding.secondsLayout.show()

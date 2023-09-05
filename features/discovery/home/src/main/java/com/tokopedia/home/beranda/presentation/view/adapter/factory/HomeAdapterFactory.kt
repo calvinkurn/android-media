@@ -145,6 +145,9 @@ import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.home_component.visitable.SpecialReleaseDataModel
 import com.tokopedia.home_component.visitable.TodoWidgetListDataModel
 import com.tokopedia.home_component.visitable.VpsDataModel
+import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleWidgetListener
+import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleWidgetDataModel
+import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleWidgetViewHolder
 import com.tokopedia.home_component.widget.special_release.SpecialReleaseRevampDataModel
 import com.tokopedia.home_component.widget.special_release.SpecialReleaseRevampListener
 import com.tokopedia.home_component.widget.special_release.SpecialReleaseRevampViewHolder
@@ -198,7 +201,8 @@ class HomeAdapterFactory(
     private val flashSaleWidgetListener: FlashSaleWidgetListener,
     private val carouselPlayWidgetCallback: CarouselPlayWidgetCallback,
     private val bestSellerListener: BestSellerListener,
-    private val specialReleaseRevampListener: SpecialReleaseRevampListener
+    private val specialReleaseRevampListener: SpecialReleaseRevampListener,
+    private val shopFlashSaleWidgetListener: ShopFlashSaleWidgetListener,
 ) : BaseAdapterTypeFactory(),
     HomeTypeFactory,
     HomeComponentTypeFactory,
@@ -445,6 +449,10 @@ class HomeAdapterFactory(
         return SpecialReleaseRevampViewHolder.LAYOUT
     }
 
+    override fun type(shopFlashSaleWidgetDataModel: ShopFlashSaleWidgetDataModel): Int {
+        return ShopFlashSaleWidgetViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         val viewHolder: AbstractViewHolder<*>
         when (type) {
@@ -619,6 +627,7 @@ class HomeAdapterFactory(
                     parentRecycledViewPool
                 )
             SpecialReleaseRevampViewHolder.LAYOUT -> viewHolder = SpecialReleaseRevampViewHolder(view, specialReleaseRevampListener)
+            ShopFlashSaleWidgetViewHolder.LAYOUT -> viewHolder = ShopFlashSaleWidgetViewHolder(view, shopFlashSaleWidgetListener)
             else -> viewHolder = super.createViewHolder(view, type)
         }
 
