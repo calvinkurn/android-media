@@ -20,6 +20,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.buy_more_get_more.R
 import com.tokopedia.buy_more_get_more.databinding.FragmentOfferLandingPageBinding
 import com.tokopedia.buy_more_get_more.olp.di.component.DaggerBuyMoreGetMoreComponent
+import com.tokopedia.buy_more_get_more.olp.domain.entity.EmptyStateUiModel
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel.OlpEvent
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferProductListUiModel
@@ -42,6 +43,8 @@ import com.tokopedia.campaign.delegates.HasPaginatedListImpl
 import com.tokopedia.campaign.helper.BuyMoreGetMoreHelper
 import com.tokopedia.campaign.utils.extension.showToaster
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.imageassets.TokopediaImageUrl
+import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.toLongSafely
@@ -165,6 +168,7 @@ class OfferLandingPageFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        applyUnifyBackgroundColor()
         initMiniCart()
         setupObservables()
         setupProductRv()
@@ -406,6 +410,7 @@ class OfferLandingPageFragment :
             VIEW_ERROR -> {
                 activity?.setDefaultStatusBar()
                 viewModel.processEvent(OlpEvent.GetNotification)
+                val currentState = viewModel.currentState
                 when (status) {
                     Status.INVALID_OFFER_ID -> {
                         setErrorPage(
@@ -413,27 +418,34 @@ class OfferLandingPageFragment :
                             description = getString(R.string.bmgm_description_error_not_found),
                             errorType = GlobalError.PAGE_NOT_FOUND,
                             primaryCtaText = getString(R.string.bmgm_cta_text_error_not_found),
-                            primaryCtaAction = { loadInitialData() }
+                            primaryCtaAction = { loadInitialData() },
+                            imageUrl = TokopediaImageUrl.ILLUSTRATION_SHOP_ETALASE_NOT_FOUND,
+                            isShowProductList = false
                         )
                     }
 
                     Status.OFFER_ALREADY_FINISH -> {
                         setErrorPage(
                             title = getString(R.string.bmgm_title_error_ended_promo),
-                            description = getString(R.string.bmgm_description_error_ended_promo),
+                            description = getString(R.string.bmgm_description_error_ended_promo, currentState.shopData.shopName),
                             errorType = GlobalError.PAGE_NOT_FOUND,
                             primaryCtaText = getString(R.string.bmgm_cta_text_error_ended_promo),
-                            primaryCtaAction = { activity?.finish() }
+                            primaryCtaAction = { activity?.finish() },
+                            imageUrl = TokopediaImageUrl.ILLUSTRATION_SHOP_ETALASE_NOT_FOUND,
+                            isShowProductList = true
                         )
                     }
+
 
                     Status.OOS -> {
                         setErrorPage(
                             title = getString(R.string.bmgm_title_error_out_of_stock),
-                            description = getString(R.string.bmgm_description_error_out_of_stock),
+                            description = getString(R.string.bmgm_description_error_out_of_stock, currentState.shopData.shopName),
                             errorType = GlobalError.PAGE_NOT_FOUND,
                             primaryCtaText = getString(R.string.bmgm_cta_text_error_out_of_stock),
-                            primaryCtaAction = { activity?.finish() }
+                            primaryCtaAction = { activity?.finish() },
+                            imageUrl = TokopediaImageUrl.ILLUSTRATION_SHOP_ETALASE_NOT_FOUND,
+                            isShowProductList = true
                         )
                     }
 
@@ -443,7 +455,9 @@ class OfferLandingPageFragment :
                             description = getString(R.string.bmgm_description_error_no_internet_connection),
                             errorType = GlobalError.NO_CONNECTION,
                             primaryCtaText = getString(R.string.bmgm_cta_text_error_no_internet_connection),
-                            primaryCtaAction = { loadInitialData() }
+                            primaryCtaAction = { loadInitialData() },
+                            imageUrl = TokopediaImageUrl.REVIEW_INBOX_UNIFY_GLOBAL_ERROR_CONNECTION,
+                            isShowProductList = false
                         )
                     }
 
@@ -453,7 +467,9 @@ class OfferLandingPageFragment :
                             description = getString(R.string.bmgm_description_error_server),
                             errorType = GlobalError.SERVER_ERROR,
                             primaryCtaText = getString(R.string.bmgm_cta_text_error_server),
-                            primaryCtaAction = { loadInitialData() }
+                            primaryCtaAction = { loadInitialData() },
+                            imageUrl = TokopediaImageUrl.OLP_SERVER_ERROR_ILLUSTRATION,
+                            isShowProductList = false
                         )
                     }
                 }
@@ -479,23 +495,39 @@ class OfferLandingPageFragment :
         description: String,
         errorType: Int,
         primaryCtaText: String,
-        primaryCtaAction: () -> Unit
+        primaryCtaAction: () -> Unit,
+        imageUrl: String,
+        isShowProductList: Boolean = false
     ) {
         setupToolbarForErrorState()
         binding?.apply {
             loadingStateOlp.root.gone()
             headerBackground.gone()
-            stickyContent.gone()
-            errorPageLarge.apply {
-                visible()
-                setType(errorType)
-                errorTitle.text = title
-                errorDescription.text = description
-                errorAction.text = primaryCtaText
-                setActionClickListener {
-                    primaryCtaAction.invoke()
+            when(isShowProductList) {
+                true -> {
+                    stickyContent.visible()
+                    errorPageLarge.gone()
+                    val emptyStateUiModel = EmptyStateUiModel(
+                        title = title,
+                        description = description,
+                        imageUrl = imageUrl
+                    )
+                    olpAdapter?.submitList(listOf(emptyStateUiModel))
                 }
-            }
+                false -> {
+                    stickyContent.gone()
+                    errorPageLarge.apply {
+                        visible()
+                        setType(errorType)
+                        errorTitle.text = title
+                        errorDescription.text = description
+                        errorAction.text = primaryCtaText
+                        setActionClickListener {
+                            primaryCtaAction.invoke()
+                        }
+                    }
+                }
+             }
             miniCartView.gone()
         }
     }

@@ -7,7 +7,8 @@ import com.tokopedia.buy_more_get_more.olp.presentation.adapter.OlpAdapterTypeFa
 data class EmptyStateUiModel(
     val status: Status = Status.SUCCESS,
     val title: String = "",
-    val description: String = ""
+    val description: String = "",
+    val imageUrl: String = ""
 ) : Visitable<OlpAdapterTypeFactory> {
     override fun type(typeFactory: OlpAdapterTypeFactory): Int {
         return typeFactory.type(this)

@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
     <!--    OLP Header-->
@@ -11,12 +12,12 @@
     <string name="sort_title_activity">Urutkan</string>
     
     <!-- Error State-->
-    <string name="bmgm_title_error_ended_promo">Oops, promosi ini sudah berakhir</string>
-    <string name="bmgm_description_error_ended_promo">Tapi tenang, kamu masih bisa beli barang di halaman ini tanpa promo.</string>
+    <string name="bmgm_title_error_ended_promo">Promosi ini sudah berakhir</string>
+    <string name="bmgm_description_error_ended_promo">Kamu tetap bisa beli barang di toko %s ini dengan harga normal atau cek barang di bawah ini.</string>
     <string name="bmgm_cta_text_error_ended_promo">Balik</string>
 
-    <string name="bmgm_title_error_out_of_stock">Oops, barang di halaman ini sudah habis</string>
-    <string name="bmgm_description_error_out_of_stock">Kamu bisa cek promosi atau barang lain di halaman toko</string>
+    <string name="bmgm_title_error_out_of_stock">Barang promosi sudah habis</string>
+    <string name="bmgm_description_error_out_of_stock">Kamu bisa cek barang lain di toko %s atau cek barang di bawah ini.</string>
     <string name="bmgm_cta_text_error_out_of_stock">Balik</string>
 
     <string name="bmgm_title_error_no_internet_connection">Koneksi Internetmu terganggu</string>
@@ -30,5 +31,7 @@
     <string name="bmgm_title_error_not_found">Oops. halaman ini gagal dimuat</string>
     <string name="bmgm_description_error_not_found">Klik Tombol di bawah ini untuk refresh halaman ini, ya!</string>
     <string name="bmgm_cta_text_error_not_found">Coba lagi</string>
+
+    <string name="bmgm_empty_state_product_list_title">Sering dibeli bareng belanjaanmu</string>
 
 </resources>
