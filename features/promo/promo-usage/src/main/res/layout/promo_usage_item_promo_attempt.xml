@@ -6,11 +6,10 @@
     android:background="@color/Unify_Background"
     android:orientation="vertical">
 
-    <View
+    <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/topDivider"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/Unify_NN200" />
+        android:layout_height="1dp" />
 
     <com.tokopedia.unifycomponents.TextAreaUnify2
         android:id="@+id/tauVoucherCode"
@@ -22,11 +21,10 @@
         app:unify_text_field_label="@string/promo_voucher_input_promo_code_label"
         app:unify_text_field_label_static="false" />
 
-    <View
+    <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/bottomDivider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="24dp"
-        android:background="@color/Unify_NN200" />
+        android:layout_marginTop="24dp" />
 
 </LinearLayout>
