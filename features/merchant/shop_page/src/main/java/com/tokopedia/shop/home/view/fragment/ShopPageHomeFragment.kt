@@ -203,12 +203,10 @@ import com.tokopedia.shop.pageheader.presentation.activity.ShopPageHeaderActivit
 import com.tokopedia.shop.common.view.interfaces.InterfaceShopPageHeader
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.home.util.ShopBannerProductGroupWidgetTabDependencyProvider
+import com.tokopedia.shop.home.view.adapter.viewholder.advance_carousel_banner.ShopHomeDisplayAdvanceCarouselBannerWidgetListener
 import com.tokopedia.shop.home.view.listener.ShopBannerProductGroupListener
 import com.tokopedia.shop.home.view.customview.directpurchase.DirectPurchaseWidgetView
 import com.tokopedia.shop.home.view.customview.directpurchase.ProductCardDirectPurchaseDataModel
-import com.tokopedia.shop.home.view.model.banner_product_group.appearance.ShimmerItemType
-import com.tokopedia.shop.home.view.model.banner_product_group.appearance.ShopHomeBannerProductGroupItemType
-import com.tokopedia.shop.home.view.viewmodel.ShopBannerProductGroupWidgetTabViewModel
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragment
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragmentV2
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPageHeaderPerformanceMonitoringListener
@@ -269,7 +267,8 @@ open class ShopPageHomeFragment :
     ShopHomeV4TerlarisViewHolder.ShopHomeV4TerlarisViewHolderListener,
     ShopBannerProductGroupWidgetTabDependencyProvider,
     ShopBannerProductGroupListener,
-    DirectPurchaseWidgetView.DirectPurchaseWidgetViewListener {
+    DirectPurchaseWidgetView.DirectPurchaseWidgetViewListener,
+    ShopHomeDisplayAdvanceCarouselBannerWidgetListener {
 
     companion object {
         const val KEY_SHOP_ID = "SHOP_ID"
@@ -431,7 +430,8 @@ open class ShopPageHomeFragment :
             shopHomeShowcaseNavigationDependencyProvider = this,
             shopHomeV4TerlarisViewHolderListener = this,
             shopBannerProductGroupListener = this,
-            shopBannerProductGroupWidgetTabDependencyProvider = this
+            shopBannerProductGroupWidgetTabDependencyProvider = this,
+            shopHomeDisplayAdvanceCarouselBannerWidgetListener = this
         )
     }
 
@@ -5167,5 +5167,36 @@ open class ShopPageHomeFragment :
 
     private fun redirectToEtalasePage(etalaseId: String) {
         RouteManager.route(context, ApplinkConst.SHOP_ETALASE, shopId, etalaseId)
+    }
+
+    override fun onImpressionAdvanceCarouselBannerItem(
+        uiModel: ShopHomeDisplayWidgetUiModel,
+        bannerItemUiModel: ShopHomeDisplayWidgetUiModel.DisplayWidgetItem,
+        position: Int
+    ) {
+        shopPageHomeTracking.impressionAdvanceCarouselBannerItem(
+            bannerItemUiModel.bannerId,
+            uiModel.header.ratio,
+            ShopUtil.getActualPositionFromIndex(position),
+            uiModel.widgetId,
+            shopId,
+            userId
+        )
+    }
+
+    override fun onClickAdvanceCarouselBannerItem(
+        uiModel: ShopHomeDisplayWidgetUiModel,
+        bannerItemUiModel: ShopHomeDisplayWidgetUiModel.DisplayWidgetItem,
+        position: Int
+    ) {
+        shopPageHomeTracking.clickAdvanceCarouselBannerItem(
+            bannerItemUiModel.bannerId,
+            uiModel.header.ratio,
+            ShopUtil.getActualPositionFromIndex(position),
+            uiModel.widgetId,
+            shopId,
+            userId
+        )
+        RouteManager.route(context, bannerItemUiModel.appLink)
     }
 }

@@ -997,7 +997,8 @@ object ShopPageHomeMapper {
             data.imageUrl,
             data.appLink,
             data.webLink,
-            data.videoUrl
+            data.videoUrl,
+            data.bannerId
         )
     }
 

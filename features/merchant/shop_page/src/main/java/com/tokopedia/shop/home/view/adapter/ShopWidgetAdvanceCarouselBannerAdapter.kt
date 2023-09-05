@@ -6,10 +6,12 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.shop.databinding.ShopHomeDisplayAdvanceCarouselBannerItemBinding
-import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeDisplayAdvanceCarouselBannerItemViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.advance_carousel_banner.ShopHomeDisplayAdvanceCarouselBannerItemViewHolder
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 
-class ShopWidgetAdvanceCarouselBannerAdapter : RecyclerView.Adapter<ShopHomeDisplayAdvanceCarouselBannerItemViewHolder>() {
+class ShopWidgetAdvanceCarouselBannerAdapter(
+    private val parentUiModel: ShopHomeDisplayWidgetUiModel
+) : RecyclerView.Adapter<ShopHomeDisplayAdvanceCarouselBannerItemViewHolder>() {
 
     private val differCallback = object :
         DiffUtil.ItemCallback<ShopHomeDisplayWidgetUiModel.DisplayWidgetItem>() {
@@ -29,7 +31,6 @@ class ShopWidgetAdvanceCarouselBannerAdapter : RecyclerView.Adapter<ShopHomeDisp
     }
 
     private val differ = AsyncListDiffer(this, differCallback)
-    private var ratio: String = ""
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -42,7 +43,7 @@ class ShopWidgetAdvanceCarouselBannerAdapter : RecyclerView.Adapter<ShopHomeDisp
         )
         return ShopHomeDisplayAdvanceCarouselBannerItemViewHolder(
             binding,
-            ratio
+            parentUiModel
         )
     }
 
@@ -61,10 +62,6 @@ class ShopWidgetAdvanceCarouselBannerAdapter : RecyclerView.Adapter<ShopHomeDisp
 
     fun submit(data: List<ShopHomeDisplayWidgetUiModel.DisplayWidgetItem>) {
         differ.submitList(data)
-    }
-
-    fun setRatio(ratio: String) {
-        this.ratio = ratio
     }
 
 }

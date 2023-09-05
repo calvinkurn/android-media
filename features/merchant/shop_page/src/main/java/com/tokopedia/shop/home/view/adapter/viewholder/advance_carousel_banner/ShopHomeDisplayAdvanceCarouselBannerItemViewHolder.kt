@@ -1,7 +1,8 @@
-package com.tokopedia.shop.home.view.adapter.viewholder
+package com.tokopedia.shop.home.view.adapter.viewholder.advance_carousel_banner
 
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.databinding.ShopHomeDisplayAdvanceCarouselBannerItemBinding
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
@@ -10,10 +11,10 @@ import com.tokopedia.unifycomponents.ImageUnify
 
 class ShopHomeDisplayAdvanceCarouselBannerItemViewHolder(
     viewBinding: ShopHomeDisplayAdvanceCarouselBannerItemBinding,
-    private val ratio: String,
+    private val parentUiModel: ShopHomeDisplayWidgetUiModel
 ) : RecyclerView.ViewHolder(viewBinding.root) {
 
-    companion object{
+    companion object {
         private const val DEFAULT_RATIO = "1:1"
     }
 
@@ -21,7 +22,9 @@ class ShopHomeDisplayAdvanceCarouselBannerItemViewHolder(
 
     fun bind(uiModel: ShopHomeDisplayWidgetUiModel.DisplayWidgetItem) {
         imageBanner.apply {
-            (imageBanner.layoutParams as? ConstraintLayout.LayoutParams)?.dimensionRatio = ratio.takeIf { it.isNotEmpty() } ?: DEFAULT_RATIO
+            val ratio = parentUiModel.header.ratio
+            (imageBanner.layoutParams as? ConstraintLayout.LayoutParams)?.dimensionRatio =
+                ratio.takeIf { it.isNotEmpty() } ?: DEFAULT_RATIO
             loadImage(uiModel.imageUrl)
         }
     }

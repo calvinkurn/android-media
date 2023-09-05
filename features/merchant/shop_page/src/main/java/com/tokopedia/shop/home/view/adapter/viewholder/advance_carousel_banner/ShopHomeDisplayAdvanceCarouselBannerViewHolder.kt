@@ -1,4 +1,4 @@
-package com.tokopedia.shop.home.view.adapter.viewholder
+package com.tokopedia.shop.home.view.adapter.viewholder.advance_carousel_banner
 
 import android.os.Handler
 import android.os.Looper
@@ -20,17 +20,15 @@ import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.ShopAdvanceCarouselBannerViewholderLayoutBinding
 import com.tokopedia.shop.home.WidgetName
 import com.tokopedia.shop.home.view.adapter.ShopWidgetAdvanceCarouselBannerAdapter
-import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 import com.tokopedia.unifycomponents.PageControl
-import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 import java.util.*
 
-class ShopHomeAdvanceCarouselBannerViewHolder(
+class ShopHomeDisplayAdvanceCarouselBannerViewHolder(
     view: View?,
-    private val listener: ShopHomeDisplayWidgetListener
+    private val listener: ShopHomeDisplayAdvanceCarouselBannerWidgetListener
 ) : AbstractViewHolder<ShopHomeDisplayWidgetUiModel>(view) {
 
     companion object {
@@ -89,10 +87,9 @@ class ShopHomeAdvanceCarouselBannerViewHolder(
 
     private fun setItemClickListener(position: Int) {
         uiModel.data?.getOrNull(position)?.let {
-            listener.onDisplayItemClicked(
+            listener.onClickAdvanceCarouselBannerItem(
                 uiModel,
                 it,
-                bindingAdapterPosition,
                 position
             )
             it.invoke()
@@ -169,8 +166,9 @@ class ShopHomeAdvanceCarouselBannerViewHolder(
     }
 
     private fun setupAdapter(uiModel: ShopHomeDisplayWidgetUiModel) {
-        adapterShopWidgetAdvanceCarouselBanner = ShopWidgetAdvanceCarouselBannerAdapter()
-        adapterShopWidgetAdvanceCarouselBanner?.setRatio(uiModel.header.ratio)
+        adapterShopWidgetAdvanceCarouselBanner = ShopWidgetAdvanceCarouselBannerAdapter(
+            uiModel
+        )
         adapterShopWidgetAdvanceCarouselBanner?.submit(uiModel.data.orEmpty())
     }
 
@@ -232,10 +230,9 @@ class ShopHomeAdvanceCarouselBannerViewHolder(
 
     private fun setImpressionListener(position: Int) {
         uiModel.data?.getOrNull(position)?.let {
-            listener.onDisplayItemImpression(
+            listener.onImpressionAdvanceCarouselBannerItem(
                 uiModel,
                 it,
-                bindingAdapterPosition,
                 position
             )
             it.invoke()

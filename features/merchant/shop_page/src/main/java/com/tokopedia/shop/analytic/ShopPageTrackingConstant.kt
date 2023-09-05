@@ -451,6 +451,8 @@ object ShopPageTrackingConstant {
         const val REIMAGINED_CLICK_HEADER_SHOP_FOLLOW = "reimagined - click header shop follow"
         const val REIMAGINED_IMPRESSION_BOTTOM_NAV = "reimagined - impression bottom navigation"
         const val REIMAGINED_CLICK_BOTTOM_NAV = "reimagined - click bottom navigation"
+        const val REIMAGINED_IMPRESSION_BANNER_CAROUSEL = "reimagined - impression banner carousel"
+        const val REIMAGINED_CLICK_BANNER_CAROUSEL = "reimagined - click banner carousel"
 
 
     }
@@ -532,6 +534,8 @@ object ShopPageTrackingConstant {
         const val TRACKER_ID_REIMAGINED_CLICK_HEADER_SHOP_FOLLOW = "45912"
         const val TRACKER_ID_REIMAGINED_IMPRESSION_BOTTOM_NAV = "45913"
         const val TRACKER_ID_REIMAGINED_CLICK_BOTTOM_NAV = "45914"
+        const val TRACKER_ID_REIMAGINED_IMPRESSION_BANNER_CAROUSEL = "45920"
+        const val TRACKER_ID_REIMAGINED_CLICK_BANNER_CAROUSEL = "45921"
     }
 
     object Key {
