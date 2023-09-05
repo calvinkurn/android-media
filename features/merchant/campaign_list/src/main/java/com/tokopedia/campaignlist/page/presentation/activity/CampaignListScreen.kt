@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
@@ -62,6 +63,7 @@ fun CampaignListScreen(
     onTapCampaignStatusFilter: (List<CampaignStatusSelection>) -> Unit,
     onTapCampaignTypeFilter: (List<CampaignTypeSelection>) -> Unit,
     onClearFilter: () -> Unit,
+    searchBarKeyword: String,
     onSearchBarKeywordChanged: (String) -> Unit,
     onSearchBarKeywordSubmit: () -> Unit,
     onSearchbarCleared: () -> Unit,
@@ -83,6 +85,7 @@ fun CampaignListScreen(
 
             SearchBar(
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+                searchBarKeyword = searchBarKeyword,
                 onSearchBarKeywordChanged = onSearchBarKeywordChanged,
                 onSearchBarKeywordSubmit = onSearchBarKeywordSubmit,
                 onSearchbarCleared = onSearchbarCleared
@@ -134,12 +137,13 @@ fun List(
 @Composable
 private fun SearchBar(
     modifier: Modifier = Modifier,
+    searchBarKeyword: String,
     onSearchBarKeywordChanged: (String) -> Unit,
     onSearchBarKeywordSubmit: () -> Unit,
     onSearchbarCleared: () -> Unit
 ) {
     NestSearchBar(
-        value = TextFieldValue(),
+        value = TextFieldValue(searchBarKeyword, selection = TextRange(searchBarKeyword.length)),
         placeholderText = stringResource(id = R.string.cl_search_active_campaign),
         modifier = modifier.fillMaxWidth(),
         onSearchBarCleared = onSearchbarCleared,
@@ -458,6 +462,7 @@ private fun CampaignListPreview() {
             onTapShareCampaignButton = {},
             onToolbarBackIconPressed = {},
             onCampaignScrolled = {},
+            searchBarKeyword = "",
             onSearchBarKeywordChanged = {}
         )
     }
@@ -499,7 +504,8 @@ private fun CampaignListFilterSelectedPreview() {
             onTapShareCampaignButton = {},
             onToolbarBackIconPressed = {},
             onCampaignScrolled = {},
-            onSearchBarKeywordChanged = { }
+            onSearchBarKeywordChanged = { },
+            searchBarKeyword = ""
         )
     }
 }
