@@ -31,12 +31,6 @@ abstract class BaseViewModelTest {
 
     abstract fun initVariables()
 
-    protected fun <T : Any> LiveData<BmgmState<T>>.verifySuccessEquals(expected: BmgmState.Success<T>) {
-        val expectedResult = expected.data
-        val actualResult = (value as? BmgmState.Success<T>)?.data
-        Assert.assertEquals(expectedResult, actualResult)
-    }
-
     protected fun <T : Any> BmgmState<T>.verifyErrorEquals(expected: BmgmState.Error) {
         val expectedResult = expected.t::class.java
         val actualResult = (this as? BmgmState.Error)?.let {

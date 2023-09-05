@@ -2,7 +2,7 @@ package com.tokopedia.minicart.bmgm.presentation.viewmodel
 
 import com.tokopedia.minicart.bmgm.domain.model.BmgmParamModel
 import com.tokopedia.minicart.bmgm.domain.usecase.GetBmgmMiniCartDataUseCase
-import com.tokopedia.minicart.bmgm.domain.usecase.LocalCacheUseCase
+import com.tokopedia.minicart.bmgm.domain.usecase.MiniCartLocalCacheUseCases
 import com.tokopedia.minicart.bmgm.presentation.model.BmgmMiniCartDataUiModel
 import com.tokopedia.minicart.bmgm.presentation.model.BmgmState
 import io.mockk.coEvery
@@ -30,7 +30,7 @@ class BmgmMiniCartViewModelTest : BaseCartCheckboxViewModelTest<BmgmMiniCartView
     lateinit var getBmgmMiniCartDataUseCase: GetBmgmMiniCartDataUseCase
 
     @RelaxedMockK
-    lateinit var localCacheUseCase: LocalCacheUseCase
+    lateinit var localCacheUseCase: MiniCartLocalCacheUseCases
 
     private lateinit var param: BmgmParamModel
     private lateinit var privateMiniCartData: Field
