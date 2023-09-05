@@ -836,6 +836,10 @@ const val CART_REVAMP_V4_QUERY =
                       sp_ids
                       poml_auto_applied
                     }
+                    user_group_metadata {
+                      key
+                      value
+                    }
                   }
                   code
                 }
