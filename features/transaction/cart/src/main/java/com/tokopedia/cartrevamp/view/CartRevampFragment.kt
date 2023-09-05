@@ -2776,7 +2776,7 @@ class CartRevampFragment :
                         val cartGroupHolderData = cartAdapter.getCartGroupHolderDataByCartItemHolderData(cartItem)
                         cartGroupHolderData?.cartGroupBmGmHolderData?.discountBmGmAmount = data.pairOfferIdBmGmTickerResponse.second.data.discountAmount
                         viewModel.reCalculateSubTotal()
-                    } else {
+                    } else if (data.pairOfferIdBmGmTickerResponse.second.data.action.isEmpty()) {
                         cartItem.stateTickerBmGm = CART_BMGM_STATE_TICKER_INACTIVE
                     }
                     cartAdapter.notifyItemChanged(index)
