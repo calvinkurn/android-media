@@ -365,6 +365,7 @@ open class DiscoveryFragment :
                 permissionListener = this
             )
         }
+        requestStatusBarLight()
     }
 
     override fun onRequestPermissionsResult(
@@ -965,7 +966,6 @@ open class DiscoveryFragment :
         discoveryViewModel.getDiscoveryNavToolbarConfigLiveData().observe(viewLifecycleOwner) { config ->
             if (config.color.isNotEmpty() || config.isExtendedLayout) {
                 hasColouredStatusBar = true
-                requestStatusBarLight()
                 setupNavToolbarWithStatusBar()
                 setupExtendedLayout(config)
                 setupBackgroundColorForHeader(config)
