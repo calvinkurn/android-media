@@ -6,11 +6,6 @@
         android:label="@string/app_name"
         android:supportsRtl="true">
         <activity
-            android:name="com.tokopedia.editshipping.ui.EditShippingActivity"
-            android:label="@string/shop_shipping_setting"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"></activity>
-        <activity
             android:name=".ui.shippingeditor.ShippingEditorActivity"
             android:label="@string/title_shipping_editor"
             android:screenOrientation="portrait"

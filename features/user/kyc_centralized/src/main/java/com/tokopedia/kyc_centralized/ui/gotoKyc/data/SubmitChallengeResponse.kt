@@ -21,5 +21,8 @@ data class SubmitKYCChallenge(
     val message: String = "",
 
     @SerializedName("errorMessages")
-	val errorMessages: List<String> = emptyList()
+	val errorMessages: List<String> = emptyList(),
+
+    @SerializedName("errorCode")
+    val errorCode: String = ""
 )

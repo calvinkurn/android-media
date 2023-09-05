@@ -1,0 +1,796 @@
+{
+  "productRecommendationWidget": {
+    "data": [
+      {
+        "tID": "EsGQWAqG0r0xvk1CQFhZR1D4Z4c\u003d",
+        "source": "custom",
+        "title": "Pilihan lainnya untukmu",
+        "subtitle": "",
+        "foreignTitle": "Recommendation for you",
+        "widgetUrl": "",
+        "pageName": "pdp_fbt_hatc",
+        "seeMoreAppLink": "tokopedia://rekomendasi/1538031268/d/?ref\u003dpdp_fbt_hatc\u0026product_ids\u003d1538031268",
+        "layoutType": "custom-horizontal",
+        "pagination": {
+          "currentPage": 1,
+          "nextPage": 2,
+          "prevPage": -1,
+          "hasNext": true
+        },
+        "campaign": {
+          "appLandingPageLink": "",
+          "landingPageLink": "",
+          "thematicID": 0,
+          "assets": {
+            "banner": {
+              "apps": ""
+            }
+          }
+        },
+        "recommendation": [
+          {
+            "id": 1630603713,
+            "name": "Somethinc 10% Niacinamide + Moisture Sabi Beet Brightening Serum 20ML",
+            "categoryBreadcrumbs": "Kecantikan/Perawatan Wajah/Serum Wajah",
+            "url": "https://www.tokopedia.com/rantoutletcosmetic/somethinc-10-niacinamide-moisture-sabi-beet-brightening-serum-20ml",
+            "appUrl": "tokopedia://product/1630603713",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d2265\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003dpdp_fbt_hatc\u0026pid\u003d1630603713\u0026pos\u003d1\u0026recommendation\u003dgraph_embedding_v7\u0026rectype\u003dgraph_embedding_v7\u0026redirect\u003dhttps://www.tokopedia.com/rantoutletcosmetic/somethinc-10-niacinamide-moisture-sabi-beet-brightening-serum-20ml?catid2265\u003d%26ref\u003dpdp_fbt_hatc_pa1_po1%26src\u003dr3graph_embedding_v7\u0026tid\u003dEsGQWAqG0r0xvk1CQFhZR1D4Z4c\u003d\u0026uid\u003d16939915\u0026unique_id\u003d\u0026utime\u003d1684725870\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.221",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/2/26/4cf25e15-de76-4539-b781-83e998fb2beb.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/2/26/4cf25e15-de76-4539-b781-83e998fb2beb.jpg",
+            "price": "Rp 115.500",
+            "priceInt": 115500,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 39,
+            "shop": {
+              "id": 10916130,
+              "name": "RANT OUTLET COSMETIC",
+              "city": "Jakarta Utara",
+              "isGold": false,
+              "isOfficial": false
+            },
+            "departmentId": 2265,
+            "labels": [],
+            "labelgroup": [
+              {
+                "position": "eta",
+                "title": "",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 1",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": false,
+              "imageUrl": ""
+            },
+            "rating": 5,
+            "countReview": 1,
+            "ratingAverage": "5.0",
+            "recommendationType": "graph_embedding_v7",
+            "stock": 39,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 1578003235,
+            "name": "SOMETHINC 10% Niacinamide + Moisture Sabi Beet Brightening Serum 20ml",
+            "categoryBreadcrumbs": "Kecantikan/Perawatan Wajah/Serum Wajah",
+            "url": "https://www.tokopedia.com/kangbeauty/somethinc-10-niacinamide-moisture-sabi-beet-brightening-serum-20ml",
+            "appUrl": "tokopedia://product/1578003235",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d2265\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003dpdp_fbt_hatc\u0026pid\u003d1578003235\u0026pos\u003d2\u0026recommendation\u003dgraph_embedding_v7\u0026rectype\u003dgraph_embedding_v7\u0026redirect\u003dhttps://www.tokopedia.com/kangbeauty/somethinc-10-niacinamide-moisture-sabi-beet-brightening-serum-20ml?catid2265\u003d%26ref\u003dpdp_fbt_hatc_pa1_po2%26src\u003dr3graph_embedding_v7\u0026tid\u003dEsGQWAqG0r0xvk1CQFhZR1D4Z4c\u003d\u0026uid\u003d16939915\u0026unique_id\u003d\u0026utime\u003d1684725870\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.221",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/2/2/74d04ed0-c149-4242-a243-b988daa518e9.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/2/2/74d04ed0-c149-4242-a243-b988daa518e9.jpg",
+            "price": "Rp 115.500",
+            "priceInt": 115500,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 3,
+            "shop": {
+              "id": 10916130,
+              "name": "kangbeauty",
+              "city": "Kota Makassar",
+              "isGold": true,
+              "isOfficial": false
+            },
+            "departmentId": 2265,
+            "labels": [],
+            "labelgroup": [
+              {
+                "position": "eta",
+                "title": "Tiba 25 - 30 May",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 7",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Power Merchant",
+                "imageUrl": "https://images.tokopedia.net/img/power_merchant_badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/img/promo/targeting/red_bo_20k.png"
+            },
+            "rating": 5,
+            "countReview": 6,
+            "ratingAverage": "5.0",
+            "recommendationType": "graph_embedding_v7",
+            "stock": 3,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 1614387824,
+            "name": "SOMETHINC 10% Niacinamide + Moisture Sabi Beet Brightening Serum 20ml",
+            "categoryBreadcrumbs": "Kecantikan/Perawatan Wajah/Serum Wajah",
+            "url": "https://www.tokopedia.com/bussindo/somethinc-10-niacinamide-moisture-sabi-beet-brightening-serum-20ml",
+            "appUrl": "tokopedia://product/1614387824",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d2265\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003dpdp_fbt_hatc\u0026pid\u003d1614387824\u0026pos\u003d3\u0026recommendation\u003dgraph_embedding_v7\u0026rectype\u003dgraph_embedding_v7\u0026redirect\u003dhttps://www.tokopedia.com/bussindo/somethinc-10-niacinamide-moisture-sabi-beet-brightening-serum-20ml?catid2265\u003d%26ref\u003dpdp_fbt_hatc_pa1_po3%26src\u003dr3graph_embedding_v7\u0026tid\u003dEsGQWAqG0r0xvk1CQFhZR1D4Z4c\u003d\u0026uid\u003d16939915\u0026unique_id\u003d\u0026utime\u003d1684725870\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.221",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/2/19/e5618e21-a7fe-4431-a71c-b294112dd213.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/2/19/e5618e21-a7fe-4431-a71c-b294112dd213.jpg",
+            "price": "Rp 90.000",
+            "priceInt": 90000,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 4,
+            "shop": {
+              "id": 10916130,
+              "name": "Buss Indo",
+              "city": "Kota Sukabumi",
+              "isGold": true,
+              "isOfficial": false
+            },
+            "departmentId": 2265,
+            "labels": [],
+            "labelgroup": [
+              {
+                "position": "eta",
+                "title": "Tiba 24 - 26 May",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 7",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Power Merchant Pro",
+                "imageUrl": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro@2x.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/img/promo/targeting/red_bo_20k.png"
+            },
+            "rating": 5,
+            "countReview": 4,
+            "ratingAverage": "5.0",
+            "recommendationType": "graph_embedding_v7",
+            "stock": 4,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 3132258458,
+            "name": "SOMETHINC 10% Niacinamide + Moisture Sabi Beet Brightening Serum 20ml",
+            "categoryBreadcrumbs": "Kecantikan/Perawatan Wajah/Serum Wajah",
+            "url": "https://www.tokopedia.com/goodlooking-/somethinc-10-niacinamide-moisture-sabi-beet-brightening-serum-20ml",
+            "appUrl": "tokopedia://product/3132258458",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d2265\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003dpdp_fbt_hatc\u0026pid\u003d3132258458\u0026pos\u003d4\u0026recommendation\u003dgraph_embedding_v7\u0026rectype\u003dgraph_embedding_v7\u0026redirect\u003dhttps://www.tokopedia.com/goodlooking-/somethinc-10-niacinamide-moisture-sabi-beet-brightening-serum-20ml?catid2265\u003d%26ref\u003dpdp_fbt_hatc_pa1_po4%26src\u003dr3graph_embedding_v7\u0026tid\u003dEsGQWAqG0r0xvk1CQFhZR1D4Z4c\u003d\u0026uid\u003d16939915\u0026unique_id\u003d\u0026utime\u003d1684725870\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.221",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/3/5/4b48f2dd-8395-45e7-bb3e-31a923dc88b8.png",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/3/5/4b48f2dd-8395-45e7-bb3e-31a923dc88b8.png",
+            "price": "Rp 115.500",
+            "priceInt": 115500,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 4,
+            "shop": {
+              "id": 10916130,
+              "name": "MonVisage",
+              "city": "Jakarta Barat",
+              "isGold": true,
+              "isOfficial": false
+            },
+            "departmentId": 2265,
+            "labels": [],
+            "labelgroup": [
+              {
+                "position": "eta",
+                "title": "Tiba 24 - 27 May",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 8",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Power Merchant Pro",
+                "imageUrl": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro@2x.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/img/promo/targeting/red_bo_20k.png"
+            },
+            "rating": 5,
+            "countReview": 4,
+            "ratingAverage": "5.0",
+            "recommendationType": "graph_embedding_v7",
+            "stock": 4,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 1634393085,
+            "name": "SOMETHINC -10% Niacinamide + Moisture Sabi Beet Brightening Serum 20ml",
+            "categoryBreadcrumbs": "Kecantikan/Perawatan Wajah/Serum Wajah",
+            "url": "https://www.tokopedia.com/koreayoja/somethinc-10-niacinamide-moisture-sabi-beet-brightening-serum-20ml",
+            "appUrl": "tokopedia://product/1634393085",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d2265\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003dpdp_fbt_hatc\u0026pid\u003d1634393085\u0026pos\u003d5\u0026recommendation\u003dgraph_embedding_v7\u0026rectype\u003dgraph_embedding_v7\u0026redirect\u003dhttps://www.tokopedia.com/koreayoja/somethinc-10-niacinamide-moisture-sabi-beet-brightening-serum-20ml?catid2265\u003d%26ref\u003dpdp_fbt_hatc_pa1_po5%26src\u003dr3graph_embedding_v7\u0026tid\u003dEsGQWAqG0r0xvk1CQFhZR1D4Z4c\u003d\u0026uid\u003d16939915\u0026unique_id\u003d\u0026utime\u003d1684725870\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.221",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/2/28/7b54af50-49ab-4639-8bfc-333aa97ae321.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/2/28/7b54af50-49ab-4639-8bfc-333aa97ae321.jpg",
+            "price": "Rp 115.000",
+            "priceInt": 115000,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 3,
+            "shop": {
+              "id": 10916130,
+              "name": "Korea Yoja",
+              "city": "Jakarta Pusat",
+              "isGold": true,
+              "isOfficial": false
+            },
+            "departmentId": 2265,
+            "labels": [],
+            "labelgroup": [
+              {
+                "position": "eta",
+                "title": "Tiba 24 - 27 May",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 1",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Power Merchant",
+                "imageUrl": "https://images.tokopedia.net/img/power_merchant_badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/img/promo/targeting/red_bo_20k.png"
+            },
+            "rating": 5,
+            "countReview": 1,
+            "ratingAverage": "5.0",
+            "recommendationType": "graph_embedding_v7",
+            "stock": 3,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 1569761089,
+            "name": "SOMETHINC 10% Niacinamide + Moisture Sabi Beet Brightening Serum 20ml",
+            "categoryBreadcrumbs": "Kecantikan/Perawatan Wajah/Serum Wajah",
+            "url": "https://www.tokopedia.com/dbaroom/somethinc-10-niacinamide-moisture-sabi-beet-brightening-serum-20ml",
+            "appUrl": "tokopedia://product/1569761089",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d2265\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003dpdp_fbt_hatc\u0026pid\u003d1569761089\u0026pos\u003d6\u0026recommendation\u003dgraph_embedding_v7\u0026rectype\u003dgraph_embedding_v7\u0026redirect\u003dhttps://www.tokopedia.com/dbaroom/somethinc-10-niacinamide-moisture-sabi-beet-brightening-serum-20ml?catid2265\u003d%26ref\u003dpdp_fbt_hatc_pa1_po6%26src\u003dr3graph_embedding_v7\u0026tid\u003dEsGQWAqG0r0xvk1CQFhZR1D4Z4c\u003d\u0026uid\u003d16939915\u0026unique_id\u003d\u0026utime\u003d1684725870\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.221",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/1/30/d491c0b6-0399-47cc-85cb-cf568b068557.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/1/30/d491c0b6-0399-47cc-85cb-cf568b068557.jpg",
+            "price": "Rp 95.865",
+            "priceInt": 95865,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 95,
+            "shop": {
+              "id": 10916130,
+              "name": "DBA Room",
+              "city": "Jakarta Barat",
+              "isGold": true,
+              "isOfficial": false
+            },
+            "departmentId": 2265,
+            "labels": [],
+            "labelgroup": [
+              {
+                "position": "eta",
+                "title": "Tiba 24 - 27 May",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 500+",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Power Merchant",
+                "imageUrl": "https://images.tokopedia.net/img/power_merchant_badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/img/promo/targeting/red_bo_20k.png"
+            },
+            "rating": 5,
+            "countReview": 297,
+            "ratingAverage": "5.0",
+            "recommendationType": "graph_embedding_v7",
+            "stock": 95,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 1605292068,
+            "name": "SOMETHINC 10% Niacinamide + Moisture Sabi Beet Brightening Serum 20ml",
+            "categoryBreadcrumbs": "Kecantikan/Perawatan Wajah/Serum Wajah",
+            "url": "https://www.tokopedia.com/velovestudio/somethinc-10-niacinamide-moisture-sabi-beet-brightening-serum-20ml",
+            "appUrl": "tokopedia://product/1605292068",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d2265\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003dpdp_fbt_hatc\u0026pid\u003d1605292068\u0026pos\u003d7\u0026recommendation\u003dgraph_embedding_v7\u0026rectype\u003dgraph_embedding_v7\u0026redirect\u003dhttps://www.tokopedia.com/velovestudio/somethinc-10-niacinamide-moisture-sabi-beet-brightening-serum-20ml?catid2265\u003d%26ref\u003dpdp_fbt_hatc_pa1_po7%26src\u003dr3graph_embedding_v7\u0026tid\u003dEsGQWAqG0r0xvk1CQFhZR1D4Z4c\u003d\u0026uid\u003d16939915\u0026unique_id\u003d\u0026utime\u003d1684725870\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.221",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/2/16/baa67730-d4b4-42f0-ac3f-d85b8713eeb9.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/2/16/baa67730-d4b4-42f0-ac3f-d85b8713eeb9.jpg",
+            "price": "Rp 105.000",
+            "priceInt": 105000,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 127,
+            "shop": {
+              "id": 10916130,
+              "name": "Velove Studio",
+              "city": "Kota Makassar",
+              "isGold": false,
+              "isOfficial": false
+            },
+            "departmentId": 2265,
+            "labels": [
+              {
+                "title": "Cashback",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "promo",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "price",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "eta",
+                "title": "Tiba 25 - 30 May",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 50+",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/img/promo/targeting/red_bo_20k.png"
+            },
+            "rating": 5,
+            "countReview": 24,
+            "ratingAverage": "5.0",
+            "recommendationType": "graph_embedding_v7",
+            "stock": 127,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 2162842458,
+            "name": "SOMETHINC 10% Niacinamide + Moisture Sabi Beet Brightening Serum 20ml",
+            "categoryBreadcrumbs": "Kecantikan/Perawatan Wajah/Serum Wajah",
+            "url": "https://www.tokopedia.com/onelipstickaday/somethinc-10-niacinamide-moisture-sabi-beet-brightening-serum-20ml",
+            "appUrl": "tokopedia://product/2162842458",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d2265\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003dpdp_fbt_hatc\u0026pid\u003d2162842458\u0026pos\u003d8\u0026recommendation\u003dgraph_embedding_v7\u0026rectype\u003dgraph_embedding_v7\u0026redirect\u003dhttps://www.tokopedia.com/onelipstickaday/somethinc-10-niacinamide-moisture-sabi-beet-brightening-serum-20ml?catid2265\u003d%26ref\u003dpdp_fbt_hatc_pa1_po8%26src\u003dr3graph_embedding_v7\u0026tid\u003dEsGQWAqG0r0xvk1CQFhZR1D4Z4c\u003d\u0026uid\u003d16939915\u0026unique_id\u003d\u0026utime\u003d1684725870\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.221",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/9/12/f992cd2a-af27-49b2-a272-e76a403e5804.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/9/12/f992cd2a-af27-49b2-a272-e76a403e5804.jpg",
+            "price": "Rp 103.950",
+            "priceInt": 103950,
+            "discountPercentage": 10,
+            "slashedPrice": "Rp 115.500",
+            "slashedPriceInt": 115500,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 45,
+            "shop": {
+              "id": 10916130,
+              "name": "onelipstickaday",
+              "city": "Kota Surabaya",
+              "isGold": true,
+              "isOfficial": false
+            },
+            "departmentId": 2265,
+            "labels": [
+              {
+                "title": "Cashback",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "promo",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "eta",
+                "title": "Tiba 24 - 27 May",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 40+",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Power Merchant Pro",
+                "imageUrl": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro@2x.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/img/promo/targeting/red_bo_20k.png"
+            },
+            "rating": 5,
+            "countReview": 25,
+            "ratingAverage": "5.0",
+            "recommendationType": "graph_embedding_v7",
+            "stock": 45,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 1679550909,
+            "name": "SOMETHINC 10% Niacinamide + Moisture Sabi Beet Brightening Serum 20ml",
+            "categoryBreadcrumbs": "Kecantikan/Perawatan Wajah/Serum Wajah",
+            "url": "https://www.tokopedia.com/grosirjaya/somethinc-10-niacinamide-moisture-sabi-beet-brightening-serum-20ml-10-niacinamide",
+            "appUrl": "tokopedia://product/1679550909",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d2265\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003dpdp_fbt_hatc\u0026pid\u003d1679550909\u0026pos\u003d9\u0026recommendation\u003dgraph_embedding_v7\u0026rectype\u003dgraph_embedding_v7\u0026redirect\u003dhttps://www.tokopedia.com/grosirjaya/somethinc-10-niacinamide-moisture-sabi-beet-brightening-serum-20ml-10-niacinamide?catid2265\u003d%26ref\u003dpdp_fbt_hatc_pa1_po9%26src\u003dr3graph_embedding_v7\u0026tid\u003dEsGQWAqG0r0xvk1CQFhZR1D4Z4c\u003d\u0026uid\u003d16939915\u0026unique_id\u003d\u0026utime\u003d1684725870\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.221",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/3/17/f2a9a9ea-d28f-461a-b904-fd8407ba1f3b.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/3/17/f2a9a9ea-d28f-461a-b904-fd8407ba1f3b.jpg",
+            "price": "Rp 115.500",
+            "priceInt": 115500,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 0,
+            "maxOrder": 16,
+            "shop": {
+              "id": 10916130,
+              "name": "Grosir Laris",
+              "city": "Jakarta Timur",
+              "isGold": true,
+              "isOfficial": false
+            },
+            "departmentId": 2265,
+            "labels": [],
+            "labelgroup": [
+              {
+                "position": "eta",
+                "title": "Tiba 24 - 27 May",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 6",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Power Merchant Pro",
+                "imageUrl": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro@2x.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/img/promo/targeting/red_bo_20k.png"
+            },
+            "rating": 5,
+            "countReview": 3,
+            "ratingAverage": "5.0",
+            "recommendationType": "graph_embedding_v7",
+            "stock": 16,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 1679550904
+          },
+          {
+            "id": 1555944977,
+            "name": "SOMETHINC 10% Niacinamide Moisture Sabi Beet Brightening Serum 20mL",
+            "categoryBreadcrumbs": "Kecantikan/Perawatan Wajah/Serum Wajah",
+            "url": "https://www.tokopedia.com/cherrydps/somethinc-10-niacinamide-moisture-sabi-beet-brightening-serum-20ml",
+            "appUrl": "tokopedia://product/1555944977",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d2265\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003dpdp_fbt_hatc\u0026pid\u003d1555944977\u0026pos\u003d10\u0026recommendation\u003dgraph_embedding_v7\u0026rectype\u003dgraph_embedding_v7\u0026redirect\u003dhttps://www.tokopedia.com/cherrydps/somethinc-10-niacinamide-moisture-sabi-beet-brightening-serum-20ml?catid2265\u003d%26ref\u003dpdp_fbt_hatc_pa1_po10%26src\u003dr3graph_embedding_v7\u0026tid\u003dEsGQWAqG0r0xvk1CQFhZR1D4Z4c\u003d\u0026uid\u003d16939915\u0026unique_id\u003d\u0026utime\u003d1684725870\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.221",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/1/24/d85d2d8f-6072-47b5-8fcd-72d0969adfc5.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/1/24/d85d2d8f-6072-47b5-8fcd-72d0969adfc5.jpg",
+            "price": "Rp 103.950",
+            "priceInt": 103950,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 96,
+            "shop": {
+              "id": 10916130,
+              "name": "cherryblossomdps",
+              "city": "Kota Denpasar",
+              "isGold": true,
+              "isOfficial": false
+            },
+            "departmentId": 2265,
+            "labels": [],
+            "labelgroup": [
+              {
+                "position": "eta",
+                "title": "Tiba 25 - 28 May",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 5",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Power Merchant Pro",
+                "imageUrl": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro@2x.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/img/promo/targeting/red_bo_20k.png"
+            },
+            "rating": 5,
+            "countReview": 1,
+            "ratingAverage": "5.0",
+            "recommendationType": "graph_embedding_v7",
+            "stock": 96,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 5051266144,
+            "name": "SOMETHINC 10 % Niacinamide + Moisture Sabi Beet Brightening Serum 20ml",
+            "categoryBreadcrumbs": "Kecantikan/Perawatan Wajah/Serum Wajah",
+            "url": "https://www.tokopedia.com/ayolacosmetics/somethinc-10-niacinamide-moisture-sabi-beet-brightening-serum-20ml",
+            "appUrl": "tokopedia://product/5051266144",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d2265\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003dpdp_fbt_hatc\u0026pid\u003d5051266144\u0026pos\u003d11\u0026recommendation\u003dgraph_embedding_v7\u0026rectype\u003dgraph_embedding_v7\u0026redirect\u003dhttps://www.tokopedia.com/ayolacosmetics/somethinc-10-niacinamide-moisture-sabi-beet-brightening-serum-20ml?catid2265\u003d%26ref\u003dpdp_fbt_hatc_pa1_po11%26src\u003dr3graph_embedding_v7\u0026tid\u003dEsGQWAqG0r0xvk1CQFhZR1D4Z4c\u003d\u0026uid\u003d16939915\u0026unique_id\u003d\u0026utime\u003d1684725870\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.221",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/7/27/221526bb-f0f6-4508-bb4a-e1872157207b.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/7/27/221526bb-f0f6-4508-bb4a-e1872157207b.jpg",
+            "price": "Rp 115.000",
+            "priceInt": 115000,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 46,
+            "shop": {
+              "id": 10916130,
+              "name": "Ayola Cosmetics",
+              "city": "Kota Pekanbaru",
+              "isGold": true,
+              "isOfficial": false
+            },
+            "departmentId": 2265,
+            "labels": [],
+            "labelgroup": [
+              {
+                "position": "eta",
+                "title": "Tiba 25 May - 1 Jun",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 2",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Power Merchant",
+                "imageUrl": "https://images.tokopedia.net/img/power_merchant_badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/img/promo/targeting/red_bo_20k.png"
+            },
+            "rating": 5,
+            "countReview": 1,
+            "ratingAverage": "5.0",
+            "recommendationType": "graph_embedding_v7",
+            "stock": 46,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 2782162881,
+            "name": "Whitelab Intensive Care Serum - Granactive Retinoid 1% - Anti Aging",
+            "categoryBreadcrumbs": "Kecantikan/Perawatan Wajah/Serum Wajah",
+            "url": "https://www.tokopedia.com/whitelab/whitelab-intensive-care-serum-granactive-retinoid-1-anti-aging-improved",
+            "appUrl": "tokopedia://product/2782162881",
+            "clickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUE6_jd6_JpoAnDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUsthomFiPcBWgZUEH_ydoArao_KRHmFiyRCsUsthHAnFbm-xgVYpyfYagZUEHsj7bsKdH_rFo_Jh6AeO6Ar7bm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-Hjhk3_-6qBja_M2gHjNk3_-6qBja_SB-r7BWPchB3czfyfOZgMHa_SgsQuu2_fB-P7B2PfBiQ_BO3_-uq1Y2Z9Poucxk3uz-PO2AH3xo8BuE_VzzoJOku9zguV1a_OHFouB1QcOoHj1h_BP-Hu2JqfBHe72fyfODQMV9o3gqzOgR3A-Dq7BkQfBoe7BpZ37N83V9gICiQABRyf7Nqfz9_sCyHMh0Z325q1OAZ9o-Q_BNyuPjrc-D692xzpBR3A-Dq7BkQfBoe7BpZ3NcHu2yZsuyHO-t3sooq1Y2Z3BHe72E3_UN8u2363BsQ_jpyp-uq1Y2Z9BvuVVO_7zS8JNEe_VouJ17_jzuoJNE13BHe72E3_UN8u23692qu7gN3_-Sq1Y2Z926qjuO_jz0H7YJqpz6qMPN_92zH7NNZsjibm-Orfua9fBjUstiH_yNHpjNH_1ibm-pg9opq3YX9fBjUstigM7Nz7N1_Mo1HVPSqJOv83yfrcdfHs2C1JJNH3-UrJ1pzJ-ugSPMPczso1gHg12-y7PugSokH7NR33YVqJth_IgV_JuZ_Ao_8c-Fo7gFQI-3g1hOuSBCzMOZZAPor1-mZ1-G33YZ19xU9puI3M7f69zk9fPu_fg03jgB17u16chNoA-H8A-IosCU3SuMQjV-zjKa8_BR8V2I97ofyOtfzfVsHZUDUMVDgaUEUSoDQRz7q3NS9f-aQRPpgZUDUMNOQ3-BrBY5gBYxgIHi6sJhbm-XP3Oig9-wy3zp9R-BrZUEoA1DUMoxPVY2gIHi6BDfHZF7H_yDHsUfou7DUMNwyfVXgcBjy9zB9fVjraUEH_JDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-pQcY7PcBXgOYirMYRrf1ibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUsthHAH7HiFiq9owgIBXy3O2yOYpQcY7PcBXgaUEPI-OgZFirI-2yfuwyMBjUsthHAnFbm-SQfVD9fBjUstpwe?r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fwhitelab%2Fwhitelab-intensive-care-serum-granactive-retinoid-1-anti-aging-improved%3Fsrc%3Dtopads\u0026src\u003drecom_widget_pdp_fbt_hatc\u0026t\u003dandroid\u0026dv\u003dandroid-3.221\u0026management_type\u003d1\u0026page\u003d1\u0026keywords\u003drecom\u0026sid\u003dfm9GNTNcT0WghMOyf6pn62%3AAPA91bHpE3DBUfwftdc5FLeJIcGUfsj3NwYoEhJ1LvELERL3Sxbp7FplrVeLuVyAFmRH7MqBBIBJYoRQxH_5GZm69tj_gUOfkZFeSET8ly42Lx2G60HZufnAIFH2y9wxZG_CvcZ6Gac1\u0026is_search\u003d1",
+            "wishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUE6_jd6_JpoAnDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUsthomFiPcBWgZUEH_ydoArao_KRHmFiyRCsUsthHAnFbm-xgVYpyfYagZUEHsj7bsKdH_rFo_Jh6AeO6Ar7bm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-Hjhk3_-6qBja_M2gHjNk3_-6qBja_SB-r7BWPchB3czfyfOZgMHa_SgsQuu2_fB-P7B2PfBiQ_BO3_-uq1Y2Z9Poucxk3uz-PO2AH3xo8BuE_VzzoJOku9zguV1a_OHFouB1QcOoHj1h_BP-Hu2JqfBHe72fyfODQMV9o3gqzOgR3A-Dq7BkQfBoe7BpZ37N83V9gICiQABRyf7Nqfz9_sCyHMh0Z325q1OAZ9o-Q_BNyuPjrc-D692xzpBR3A-Dq7BkQfBoe7BpZ3NcHu2yZsuyHO-t3sooq1Y2Z3BHe72E3_UN8u2363BsQ_jpyp-uq1Y2Z9BvuVVO_7zS8JNEe_VouJ17_jzuoJNE13BHe72E3_UN8u23692qu7gN3_-Sq1Y2Z926qjuO_jz0H7YJqpz6qMPN_92zH7NNZsjibm-Orfua9fBjUstiH_yNHpjNH_1ibm-pg9opq3YX9fBjUstigM7Nz7N1_Mo1HVPSqJOv83yfrcdfHs2C1JJNH3-UrJ1pzJ-ugSPMPczso1gHg12-y7PugSokH7NR33YVqJth_IgV_JuZ_Ao_8c-Fo7gFQI-3g1hOuSBCzMOZZAPor1-mZ1-G33YZ19xU9puI3M7f69zk9fPu_fg03jgB17u16chNoA-H8A-IosCU3SuMQjV-zjKa8_BR8V2I97ofyOtfzfVsHZUDUMVDgaUEUSoDQRz7q3NS9f-aQRPpgZUDUMNOQ3-BrBY5gBYxgIHi6sJhbm-XP3Oig9-wy3zp9R-BrZUEoA1DUMoxPVY2gIHi6BDfHZF7H_yDHsUfou7DUMNwyfVXgcBjy9zB9fVjraUEH_JDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-pQcY7PcBXgOYirMYRrf1ibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUsthHAH7HiFiq9owgIBXy3O2yOYpQcY7PcBXgaUEPI-OgZFirI-2yfuwyMBjUsthHAnFbm-SQfVD9fBjUstpwe?dv\u003dandroid-3.221\u0026uid\u003d16939915\u0026page\u003d1\u0026t\u003dandroid\u0026src\u003drecom_widget_pdp_fbt_hatc\u0026sid\u003dfm9GNTNcT0WghMOyf6pn62%3AAPA91bHpE3DBUfwftdc5FLeJIcGUfsj3NwYoEhJ1LvELERL3Sxbp7FplrVeLuVyAFmRH7MqBBIBJYoRQxH_5GZm69tj_gUOfkZFeSET8ly42Lx2G60HZufnAIFH2y9wxZG_CvcZ6Gac1\u0026keywords\u003drecom\u0026management_type\u003d1\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fwhitelab%2Fwhitelab-intensive-care-serum-granactive-retinoid-1-anti-aging-improved%3Fsrc%3Dtopads\u0026is_search\u003d1\u0026product_id\u003d2782162881",
+            "trackerImageUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sjN6AjhHpeFbm-xgVY789CBUsthbm-FQRo2PcB5QiUEH_eDUSz2Q31i6sJf6AeRHs1dopnDUSCxPcKi6i-2Q3VSg9HXPcY0QRCBgcBxbMNBPmY2Q3r5yfVsqc15HpnFbOghyMoW_Z4aHAUpbp156Z47HMeFyfzxoi7OH_-ib_ziypyW6coBHi7pysBigsBiHsJ7y31XqSCSUiFiy3zwrfo5rM1i6sUNomdd6AJRHA1hH_K7o_KRomFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z_-HqBja_M2gHjNk3_-6qBja_M2gHjNNZ9o-Q9zDguxjPMoW1MgsHjNfyfOuq1Y2Z9P-q9P2yM7NPujau3Bvq1BR_uztqBB1Z9PqepVt_92u8jh11_zoqBu73uzuHjY_HAuguchW__-VH1N9Z_VqzcW2_JoGPMoWQcNxupuM3jP3POKaQcW-qMY2_1o-r7BW69BxufzFyMFNPfoW63Wju7dF3A-Dq7BkQfBoe7BpZ37N83V9gICiQABEy1rNPOKaQcW-qMY2_1o-r7BXzsVq3JtO3AoZqVtp_3Bvq1B2_JoG8Bja69BqusB2yf7NHfHau3Bvq1BN_OzzP1YJgRx68jJh_uzVoJNJu_z68BV2_JoG8Bja69BqusBE3BPc8ujagfBvq1BE_M2VP1NJqpovzcD7_M2S81OE1_o681tNUiFiP9oBrBY2gmUEUsJf6_HN6_JOUiFirfuprfB5QBY2gmUEUMgW61P6uJNsuAC9gfxo_RBMoSCXosUEeuCC6_ViZICVH7zmu3gRgSzjypuc_cuGZ3oIu3gpqso6POB5z3xGH1hfz1hV1jFp1RxirAPcrchauMuHPugNe1gW1jKR_9VmejBmZBB51BVdZV4OzO2WosB7qBYSu1YMqO2cguoVuAxD8_ea_IKazpyFZV2OgMNCZ1gUHSjNPRxqzOYAPMoqojPxypJibm-xQcri6i-pQcY7PcBXgOYirMYRrf1ibm-XP3Oig9-wQfgwy3zpUsthHZFiQSuWyMua9fVjrOYag9Ji6seObm-X9foxQMz2gcV7guYxgIHi6sJhbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUs2QUSoDQRz7q3NS9f-aQRPpgZ-Pbm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUsthHAH7HiFiq9owgIBXy3O2yOYpQcY7PcBXgaUEPI-OgZFirI-2yfuwyMBjUsthHAnFbm-SQfVD9fBjUstpwe?keywords\u003drecom\u0026t\u003dandroid\u0026is_search\u003d1\u0026page\u003d1\u0026dv\u003dandroid-3.221\u0026management_type\u003d1\u0026sid\u003dfm9GNTNcT0WghMOyf6pn62%3AAPA91bHpE3DBUfwftdc5FLeJIcGUfsj3NwYoEhJ1LvELERL3Sxbp7FplrVeLuVyAFmRH7MqBBIBJYoRQxH_5GZm69tj_gUOfkZFeSET8ly42Lx2G60HZufnAIFH2y9wxZG_CvcZ6Gac1\u0026src\u003drecom_widget_pdp_fbt_hatc",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/5/9/42d0cda6-512b-4bc6-8ce2-3b9bf9b214ae.jpg",
+            "price": "Rp 100.110",
+            "priceInt": 100110,
+            "discountPercentage": 6,
+            "slashedPrice": "Rp 106.500",
+            "slashedPriceInt": 106500,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 96,
+            "shop": {
+              "id": 10916130,
+              "name": "Whitelab Official Store",
+              "city": "Jakarta Utara",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "departmentId": 2265,
+            "labels": [
+              {
+                "title": "Cashback",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "promo",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "eta",
+                "title": "Tiba 24 - 27 May",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 5 rb+",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Official Store",
+                "imageUrl": "https://images.tokopedia.net/img/official_store_badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/img/promo/targeting/red_bo_20k.png"
+            },
+            "rating": 5,
+            "countReview": 3048,
+            "ratingAverage": "4.9",
+            "recommendationType": "cluster_by_product_category",
+            "stock": 96,
+            "isTopads": true,
+            "specificationLabels": [],
+            "parentID": 1661170779
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -22,7 +22,7 @@ import com.tokopedia.top_ads_headline.view.activity.*
 import com.tokopedia.top_ads_headline.view.adapter.SINGLE_SELECTION
 import com.tokopedia.top_ads_headline.view.sheet.PromotionalMessageBottomSheet
 import com.tokopedia.top_ads_headline.view.viewmodel.SharedEditHeadlineViewModel
-import com.tokopedia.top_ads_headline_usecase.model.TopAdsManageHeadlineInput
+import com.tokopedia.topads.common.domain.model.createheadline.TopAdsManageHeadlineInput
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.response.TopAdsProductModel
 import com.tokopedia.topads.common.view.TopAdsProductImagePreviewWidget
