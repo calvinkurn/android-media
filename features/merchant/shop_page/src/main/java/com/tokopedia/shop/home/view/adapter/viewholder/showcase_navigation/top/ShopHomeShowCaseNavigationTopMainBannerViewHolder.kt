@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
@@ -57,7 +58,12 @@ class ShopHomeShowCaseNavigationTopMainBannerViewHolder(
                 showcases
             )
             setupColors(model.header.isOverrideTheme, model.header.colorSchema)
-            listener.onNavigationBannerImpression(model)
+            listener.onNavigationBannerImpression(
+                uiModel = model,
+                tabCount = Int.ZERO,
+                tabName = "",
+                showcaseId = ""
+            )
         }
 
     }

@@ -207,9 +207,6 @@ import com.tokopedia.shop.home.view.listener.ShopBannerProductGroupListener
 import com.tokopedia.shop.home.view.customview.directpurchase.DirectPurchaseWidgetView
 import com.tokopedia.shop.home.view.customview.directpurchase.ProductCardDirectPurchaseDataModel
 import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseNavigationUiModel
-import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.CarouselAppearance
-import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.LeftMainBannerAppearance
-import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.TopMainBannerAppearance
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragment
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragmentV2
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPageHeaderPerformanceMonitoringListener
@@ -5088,8 +5085,17 @@ open class ShopPageHomeFragment :
         RouteManager.route(activity ?: return, selectedShowcase.ctaLink)
     }
 
-    override fun onNavigationBannerImpression(uiModel: ShowcaseNavigationUiModel) {
-        shopPageHomeTracking.sendShowcaseNavigationBannerWidgetImpression(shopId, userId, uiModel)
+    override fun onNavigationBannerImpression(
+        uiModel: ShowcaseNavigationUiModel,
+        tabCount: Int,
+        tabName: String,
+        showcaseId: String
+    ) {
+        if (tabCount > 1) {
+            shopPageHomeTracking.sendShowcaseNavigationBannerWidgetWithTabImpression(tabName, showcaseId, shopId, userId)
+        } else {
+            shopPageHomeTracking.sendShowcaseNavigationBannerWidgetImpression(shopId, userId, uiModel)
+        }
     }
 
     override fun onNavigationBannerTabClick(tabName: String) {

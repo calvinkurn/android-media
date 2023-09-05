@@ -70,6 +70,7 @@ class ShopShowcaseNavigationTabWidgetFragment : BaseDaggerFragment() {
     }
 
     private var onShowcaseClick : (Showcase, String) -> Unit = {_, _ -> }
+    private var onShowcaseVisible : (String, String) -> Unit = {_, _ -> }
 
     private var binding by autoClearedNullable<FragmentShopShowcaseNavigationTabWidgetBinding>()
 
@@ -97,6 +98,7 @@ class ShopShowcaseNavigationTabWidgetFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        onShowcaseVisible(showcases.firstOrNull()?.id.orEmpty(), tabName)
         renderShowcase(showcases)
         setupColors(overrideTheme, colorScheme)
     }
@@ -168,6 +170,10 @@ class ShopShowcaseNavigationTabWidgetFragment : BaseDaggerFragment() {
 
     fun setOnShowcaseClick(onShowcaseClick: (Showcase, String) -> Unit) {
         this.onShowcaseClick = onShowcaseClick
+    }
+
+    fun setOnShowcaseVisible(onShowcaseVisible: (String, String) -> Unit) {
+        this.onShowcaseVisible = onShowcaseVisible
     }
 
     private fun setupColors(overrideTheme: Boolean, colorSchema: ShopPageColorSchema) {

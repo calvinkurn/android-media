@@ -11,6 +11,11 @@ interface ShopHomeShowcaseNavigationListener {
         tabCount: Int,
         tabName: String
     )
-    fun onNavigationBannerImpression(uiModel: ShowcaseNavigationUiModel)
+    fun onNavigationBannerImpression(
+        uiModel: ShowcaseNavigationUiModel,
+        tabCount: Int,
+        tabName: String,
+        showcaseId: String
+    )
     fun onNavigationBannerTabClick(tabName: String)
 }

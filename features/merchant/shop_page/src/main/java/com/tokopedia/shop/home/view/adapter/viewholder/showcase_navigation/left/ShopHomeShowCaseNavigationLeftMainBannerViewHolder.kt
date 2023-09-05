@@ -9,6 +9,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
@@ -43,8 +44,7 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
     override fun bind(model: ShowcaseNavigationUiModel) {
         val tabs = if (model.appearance is LeftMainBannerAppearance) model.appearance.tabs else emptyList()
         setupShowcaseHeader(model.appearance.title, model.appearance.viewAllCtaAppLink, tabs)
-        setupTabs(tabs, model.header.isOverrideTheme, model.header.colorSchema, model)
-        listener.onNavigationBannerImpression(model)
+        setupTabs(tabs, model)
     }
 
     private fun setupShowcaseHeader(title: String, viewAllCtaAppLink: String, tabs: List<ShowcaseTab>) {
@@ -59,11 +59,9 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
 
     private fun setupTabs(
         tabs: List<ShowcaseTab>,
-        overrideTheme: Boolean,
-        colorSchema: ShopPageColorSchema,
         uiModel: ShowcaseNavigationUiModel
     ) {
-        val fragments = createFragments(tabs, overrideTheme, colorSchema, uiModel)
+        val fragments = createFragments(tabs, uiModel)
         val pagerAdapter = TabPagerAdapter(provider.currentFragment, fragments)
 
         viewBinding?.run {
@@ -121,18 +119,15 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
 
     private fun createFragments(
         tabs: List<ShowcaseTab>,
-        overrideTheme: Boolean,
-        colorSchema: ShopPageColorSchema,
         uiModel: ShowcaseNavigationUiModel
     ): List<Pair<String, Fragment>> {
         val pages = mutableListOf<Pair<String, Fragment>>()
-
         tabs.forEachIndexed { _, currentTab ->
             val fragment = ShopShowcaseNavigationTabWidgetFragment.newInstance(
                 currentTab.text,
                 currentTab.showcases,
-                overrideTheme,
-                colorSchema
+                uiModel.header.isOverrideTheme,
+                uiModel.header.colorSchema
             )
             fragment.setOnShowcaseClick { selectedShowcase, tabName ->
                 listener.onNavigationBannerShowcaseClick(
@@ -143,6 +138,14 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
                 )
             }
 
+            fragment.setOnShowcaseVisible { showcaseId, tabName ->
+                listener.onNavigationBannerImpression(
+                    uiModel = uiModel,
+                    tabCount = tabs.size,
+                    tabName = tabName,
+                    showcaseId = showcaseId
+                )
+            }
             val displayedTabName = currentTab.text
             pages.add(Pair(displayedTabName, fragment))
         }

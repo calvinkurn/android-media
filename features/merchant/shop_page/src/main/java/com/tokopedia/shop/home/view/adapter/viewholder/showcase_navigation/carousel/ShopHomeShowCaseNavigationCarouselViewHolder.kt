@@ -49,9 +49,14 @@ class ShopHomeShowCaseNavigationCarouselViewHolder(
                 showcases,
                 model
             )
-            setupColors(model.header.isOverrideTheme, model.header.colorSchema,)
+            setupColors(model.header.isOverrideTheme, model.header.colorSchema)
+            listener.onNavigationBannerImpression(
+                uiModel = model,
+                tabCount = 0,
+                tabName = "",
+                showcaseId = ""
+            )
         }
-        listener.onNavigationBannerImpression(model)
     }
 
     private fun setupShowCaseRecyclerView(

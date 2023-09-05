@@ -3524,7 +3524,7 @@ class ShopPageHomeTracking(
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4148
     // Tracker ID: 45927
-    fun sendShowcaseNavigationBannerTabImpression(
+    fun sendShowcaseNavigationBannerWidgetWithTabImpression(
         tabName: String,
         showcaseId: String,
         shopId: String,
