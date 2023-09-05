@@ -847,7 +847,8 @@ class CartRevampFragment :
     }
 
     override fun onCollapseAvailableItem(index: Int) {
-        val cartShopBottomHolderData = cartAdapter.getCartShopBottomHolderDataFromIndex(index)
+        val cartShopBottomHolderData =
+            CartDataHelper.getCartShopBottomHolderDataFromIndex(viewModel.cartDataList.value, index)
         if (cartShopBottomHolderData != null) {
             cartShopBottomHolderData.shopData.isCollapsed = true
             viewModel.cartDataList.value.removeAll(cartShopBottomHolderData.shopData.productUiModelList.toSet())
@@ -868,7 +869,10 @@ class CartRevampFragment :
     }
 
     override fun onExpandAvailableItem(index: Int) {
-        val cartShopBottomHolderData = cartAdapter.getCartShopBottomHolderDataFromIndex(index)
+        val cartShopBottomHolderData = CartDataHelper.getCartShopBottomHolderDataFromIndex(
+            viewModel.cartDataList.value,
+            index
+        )
         if (cartShopBottomHolderData != null) {
             // TODO: reinsert analytics
 //            if (cartShopBottomHolderData.shopData.productUiModelList.size > TOKONOW_SEE_OTHERS_OR_ALL_LIMIT) {
@@ -888,7 +892,8 @@ class CartRevampFragment :
     }
 
     override fun onCollapsedProductClicked(index: Int, cartItemHolderData: CartItemHolderData) {
-        val (shopIndex, groupData) = cartAdapter.getCartGroupHolderDataAndIndexByCartString(
+        val (shopIndex, groupData) = CartDataHelper.getCartGroupHolderDataAndIndexByCartString(
+            viewModel.cartDataList.value,
             cartItemHolderData.cartString,
             false
         )
@@ -1026,8 +1031,10 @@ class CartRevampFragment :
         }
         val toBeDeletedProducts = mutableListOf<CartItemHolderData>()
         if (cartItemHolderData.isBundlingItem) {
-            val cartGroupHolderData =
-                cartAdapter.getCartGroupHolderDataByCartItemHolderData(cartItemHolderData)
+            val cartGroupHolderData = CartDataHelper.getCartGroupHolderDataByCartItemHolderData(
+                viewModel.cartDataList.value,
+                cartItemHolderData
+            )
             cartGroupHolderData?.let {
                 it.productUiModelList.forEach { product ->
                     if (product.isBundlingItem && product.bundleId == cartItemHolderData.bundleId && product.bundleGroupId == cartItemHolderData.bundleGroupId) {
@@ -1092,7 +1099,8 @@ class CartRevampFragment :
     }
 
     override fun onBundleItemCheckChanged(cartItemHolderData: CartItemHolderData) {
-        val (index, groupData) = cartAdapter.getCartGroupHolderDataAndIndexByCartString(
+        val (index, groupData) = CartDataHelper.getCartGroupHolderDataAndIndexByCartString(
+            viewModel.cartDataList.value,
             cartItemHolderData.cartString,
             false
         )
@@ -1175,7 +1183,8 @@ class CartRevampFragment :
         cartItemHolderData: CartItemHolderData,
         itemPosition: Int
     ) {
-        val (index, groupData) = cartAdapter.getCartGroupHolderDataAndIndexByCartString(
+        val (index, groupData) = CartDataHelper.getCartGroupHolderDataAndIndexByCartString(
+            viewModel.cartDataList.value,
             cartItemHolderData.cartString,
             false
         )
@@ -1190,7 +1199,8 @@ class CartRevampFragment :
     }
 
     override fun onNeedToRefreshWeight(cartItemHolderData: CartItemHolderData) {
-        val (index, groupData) = cartAdapter.getCartGroupHolderDataAndIndexByCartString(
+        val (index, groupData) = CartDataHelper.getCartGroupHolderDataAndIndexByCartString(
+            viewModel.cartDataList.value,
             cartItemHolderData.cartString,
             false
         )
@@ -1212,8 +1222,10 @@ class CartRevampFragment :
         newQuantity: Int
     ) {
         if (cartItemHolderData.isBundlingItem) {
-            val cartGroupHolderData =
-                cartAdapter.getCartGroupHolderDataByCartItemHolderData(cartItemHolderData)
+            val cartGroupHolderData = CartDataHelper.getCartGroupHolderDataByCartItemHolderData(
+                viewModel.cartDataList.value,
+                cartItemHolderData
+            )
             cartGroupHolderData?.let { cartGroup ->
                 cartGroup.productUiModelList.forEach { cartItem ->
                     if (cartItem.isBundlingItem && cartItem.bundleId == cartItemHolderData.bundleId && cartItem.bundleGroupId == cartItemHolderData.bundleGroupId) {
@@ -3121,11 +3133,11 @@ class CartRevampFragment :
     }
 
     private fun removeLocalCartItem(
-        updateListResult: Triple<List<Int>, List<Int>, ArrayList<Any>>,
+        updateListResult: ArrayList<Any>,
         forceExpandCollapsedUnavailableItems: Boolean
     ) {
         val allDisabledCartItemData = CartDataHelper.getAllDisabledCartItemData(
-            updateListResult.third,
+            updateListResult,
             viewModel.cartModel
         )
 
@@ -3138,27 +3150,7 @@ class CartRevampFragment :
             viewModel.removeAccordionDisabledItem()
         }
 
-        val allShopGroupDataList =
-            CartDataHelper.getAllShopGroupDataList(updateListResult.third)
-
-        // Check if cart list has exactly 1 shop, and it's a toko now
-        if (allShopGroupDataList.isNotEmpty() && allShopGroupDataList[0].isTokoNow) {
-            allShopGroupDataList[0].let {
-                val (index, _) = cartAdapter.getCartGroupHolderDataAndIndexByCartString(
-                    it.cartString,
-                    it.isError
-                )
-                if (index != RecyclerView.NO_POSITION) {
-                    if (it.isCollapsed) {
-                        viewModel.addItems(index + 1, it.productUiModelList)
-                    }
-                    it.isCollapsible = false
-                    it.isCollapsed = false
-                }
-            }
-        }
-
-        viewModel.updateCartDataList(updateListResult.third)
+        viewModel.updateCartDataList(updateListResult)
 
         viewModel.reCalculateSubTotal()
         notifyBottomCartParent()
@@ -3830,7 +3822,10 @@ class CartRevampFragment :
             }
 
             if (hasProducts) {
-                val shopIndex = cartAdapter.getCartShopHolderIndexByCartId(cartId)
+                val shopIndex = CartDataHelper.getCartShopHolderIndexByCartId(
+                    viewModel.cartDataList.value,
+                    cartId
+                )
                 if (shopIndex != RecyclerView.NO_POSITION) {
                     val offset =
                         context?.resources?.getDimensionPixelSize(R.dimen.select_all_view_holder_height)
@@ -4507,7 +4502,8 @@ class CartRevampFragment :
     }
 
     private fun updateCartShopGroupTicker(cartGroupHolderData: CartGroupHolderData) {
-        val (index, _) = cartAdapter.getCartGroupHolderDataAndIndexByCartString(
+        val (index, _) = CartDataHelper.getCartGroupHolderDataAndIndexByCartString(
+            viewModel.cartDataList.value,
             cartGroupHolderData.cartString,
             cartGroupHolderData.isError
         )
