@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
@@ -21,7 +22,9 @@ import com.tokopedia.stories.view.utils.isNetworkError
 import com.tokopedia.stories.view.viewmodel.StoriesViewModel
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction
 import com.tokopedia.stories.view.viewmodel.event.StoriesUiEvent
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class StoriesGroupFragment @Inject constructor(
@@ -36,6 +39,7 @@ class StoriesGroupFragment @Inject constructor(
 
     private val pagerListener = object : ViewPager2.OnPageChangeCallback() {
         override fun onPageSelected(position: Int) {
+            showSelectedGroupHighlight(position)
             viewModelAction(StoriesUiAction.SetGroupMainData(position))
             super.onPageSelected(position)
         }
@@ -92,6 +96,15 @@ class StoriesGroupFragment @Inject constructor(
         setupUiEventObserver()
     }
 
+    private fun showSelectedGroupHighlight(position: Int) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            binding.tvHighlight.text = pagerAdapter.getCurrentPageGroupName(position)
+            binding.tvHighlight.animate().alpha(1f)
+            delay(1000)
+            binding.tvHighlight.animate().alpha(0f)
+        }
+    }
+
     private fun setupUiStateObserver() {
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
             viewModel.uiState.withCache().collectLatest { (prevState, state) ->
@@ -104,11 +117,17 @@ class StoriesGroupFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
             viewModel.uiEvent.collect { event ->
                 when (event) {
-                    is StoriesUiEvent.SelectGroup -> selectGroupEvent(event.position)
+                    is StoriesUiEvent.SelectGroup -> selectGroupEvent(event.position, event.showAnimation)
                     StoriesUiEvent.FinishedAllStories -> activity?.finish()
                     is StoriesUiEvent.ErrorGroupPage -> {
-                        if (event.throwable.isNetworkError) showToast("error group network ${event.throwable}")
-                        else showToast("error group content ${event.throwable}")
+                        if (event.throwable.isNetworkError) {
+                            // TODO handle error network here
+                            showToast("error group network ${event.throwable}")
+                        }
+                        else {
+                            // TODO handle error fetch here
+                            showToast("error group content ${event.throwable}")
+                        }
                         showPageLoading(false)
                     }
                     else -> {}
@@ -123,14 +142,24 @@ class StoriesGroupFragment @Inject constructor(
     ) {
         if (prevState == null || prevState.groupItems.size == state.groupItems.size) return
 
+        if (state.groupItems.isEmpty()) {
+            // TODO handle error empty data state here
+            Toast.makeText(
+                requireContext(),
+                "Don't worry this is debug: ask BE team why data categories is empty :)"
+                , Toast.LENGTH_LONG
+            ).show()
+            return
+        }
+
         pagerAdapter.setStoriesGroup(state)
         pagerAdapter.notifyItemRangeChanged(0, state.groupItems.size)
 
         showPageLoading(false)
     }
 
-    private fun selectGroupEvent(position: Int) = with(binding.storiesGroupViewPager) {
-        currentItem = position
+    private fun selectGroupEvent(position: Int, showAnimation: Boolean ) = with(binding.storiesGroupViewPager) {
+        setCurrentItem(position, showAnimation)
     }
 
     private fun showPageLoading(isShowLoading: Boolean) = with(binding){
