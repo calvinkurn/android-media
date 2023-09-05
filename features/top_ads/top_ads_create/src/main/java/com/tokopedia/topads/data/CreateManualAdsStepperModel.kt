@@ -26,4 +26,7 @@ open class CreateManualAdsStepperModel(
     var redirectionToSummary: Boolean = false,
     var goToSummary: Boolean = false,
     var autoBidState: String = "auto_bid",
-    var selectedNonPromo: MutableList<String> = mutableListOf()) : StepperModel
+    var selectedNonPromo: MutableList<String> = mutableListOf(),
+    var recomPrediction: Int = 0,
+    var searchPrediction: Int = 0
+) : StepperModel

@@ -50,7 +50,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="16dp"
-                        android:text="Iklan di Pencarian adalah iklan yang tampil di halaman Pencarian calon pembeli. Pelajari"
+                        android:text="@string/top_ads_create_text_info_search_bid"
                         android:textColor="@color/Unify_NN950"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"

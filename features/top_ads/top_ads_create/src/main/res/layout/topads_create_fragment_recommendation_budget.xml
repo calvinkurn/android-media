@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:text="Iklan di Rekomendasi tampil sesuai ketertarikan pembeli di bagian Rekomendasi Produk. Pelajari"
+        android:text="@string/top_ads_create_text_info_recom_bid"
         android:textColor="@color/Unify_NN950"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -87,7 +87,7 @@
         app:typographyWeight="bold" />
 
     <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/inbox_icon_widget"
+        android:id="@+id/infoImpressionPrediction"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_marginStart="2dp"

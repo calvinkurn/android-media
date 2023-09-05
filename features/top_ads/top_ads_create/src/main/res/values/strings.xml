@@ -220,6 +220,11 @@
     <string name="topads_ads_price_format_2">%s dari Rp%s</string>
     <string name="topads_ads_price_format_3">Rp %s</string>
     <string name="topads_ads_price_format_4">Rp %s dari %s</string>
+
+<!--    <string name="top_ads_create_text_info_search_bid"><![CDATA[Iklan di Pencarian adalah iklan yang tampil di halaman Pencarian calon pembeli <a href="#b" style="color:#00AA5B;">Pelajari</a>]]></string>-->
+    <string name="top_ads_create_text_info_search_bid"><![CDATA[Iklan di Pencarian adalah iklan yang tampil di halaman Pencarian calon pembeli <strong><span style="color:#00AA5B">Pelajari</span></strong>]]></string>
+    <string name="top_ads_create_text_info_recom_bid"><![CDATA[Iklan di Rekomendasi tampil sesuai ketertarikan pembeli di bagian Rekomendasi Produk. <strong><span style="color:#00AA5B">Pelajari</span></strong>]]></string>
+
     <string name="topads_ads_performance_status_info_description"><![CDATA[
         <ul>
             <li>&nbsp;&nbsp;Kredit TopAds tidak mencukupi</li>

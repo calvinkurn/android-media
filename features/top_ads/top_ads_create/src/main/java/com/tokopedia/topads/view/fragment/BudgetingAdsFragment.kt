@@ -33,6 +33,7 @@ import com.tokopedia.topads.common.data.response.KeywordData
 import com.tokopedia.topads.common.data.response.KeywordDataItem
 import com.tokopedia.topads.common.data.response.TopadsBidInfo
 import com.tokopedia.topads.common.data.util.Utils.removeCommaRawString
+import com.tokopedia.topads.common.sheet.TopAdsToolTipBottomSheet
 import com.tokopedia.topads.common.view.sheet.TopAdsEditKeywordBidSheet
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.CreateManualAdsStepperModel
@@ -58,6 +59,9 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.text.currency.NumberTextWatcher
 import javax.inject.Inject
+import com.tokopedia.topads.common.R as topadscommonR
+import com.tokopedia.topads.dashboard.R as topadsdashboardR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Author errysuprayogi on 29,October,2019
@@ -91,6 +95,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
     //    private lateinit var info1: ImageUnify
     private lateinit var info2: ImageUnify
     private lateinit var bidList: RecyclerView
+    private lateinit var txtInfo: Typography
     private lateinit var impressionPerformanceValueSearch: Typography
 //    private lateinit var bottomLayout: ConstraintLayout
 //    private lateinit var tipLayout: ConstraintLayout
@@ -134,17 +139,18 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
     }
 
     private fun setupView(view: View) {
-        ticker = view.findViewById(com.tokopedia.topads.common.R.id.ticker)
-        buttonNext = view.findViewById(com.tokopedia.topads.common.R.id.btnNextSearch)
-        addKeyword = view.findViewById(com.tokopedia.topads.common.R.id.addKeyword)
-        budget = view.findViewById(com.tokopedia.topads.common.R.id.budget)
-        selectedkeyword = view.findViewById(com.tokopedia.topads.common.R.id.selectedKeyword)
+        ticker = view.findViewById(R.id.ticker)
+        buttonNext = view.findViewById(R.id.btnNextSearch)
+        addKeyword = view.findViewById(R.id.addKeyword)
+        budget = view.findViewById(R.id.budget)
+        selectedkeyword = view.findViewById(R.id.selectedKeyword)
 //        tipButton = view.findViewById(com.tokopedia.topads.common.R.id.tip_btn)
-        loading = view.findViewById(com.tokopedia.topads.common.R.id.loading)
+        loading = view.findViewById(R.id.loading)
 //        info1 = view.findViewById(com.tokopedia.topads.common.R.id.info1)
-        info2 = view.findViewById(com.tokopedia.topads.common.R.id.info2)
-        bidList = view.findViewById(com.tokopedia.topads.common.R.id.bid_list)
-        impressionPerformanceValueSearch = view.findViewById(com.tokopedia.topads.common.R.id.impressionPerformanceValueSearch)
+        info2 = view.findViewById(R.id.info2)
+        bidList = view.findViewById(R.id.bid_list)
+        txtInfo = view.findViewById(R.id.txtInfo)
+        impressionPerformanceValueSearch = view.findViewById(R.id.impressionPerformanceValueSearch)
 //        bottomLayout = view.findViewById(com.tokopedia.topads.common.R.id.bottom)
 //        tipLayout = view.findViewById(com.tokopedia.topads.common.R.id.tipView)
 //        view.findViewById<TextFieldUnify>(com.tokopedia.topads.common.R.id.biaya_pencarian).hide()
@@ -164,7 +170,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
         updateString()
         setCount()
         view?.let {
-            Toaster.build(it, getString(com.tokopedia.topads.common.R.string.topads_keyword_common_del_toaster),
+            Toaster.build(it, getString(topadscommonR.string.topads_keyword_common_del_toaster),
                 Snackbar.LENGTH_LONG,
                 Toaster.TYPE_NORMAL).show()
         }
@@ -282,7 +288,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(com.tokopedia.topads.common.R.layout.topads_create_fragment_budget_list2, container, false)
+        return inflater.inflate(R.layout.topads_create_fragment_budget_list2, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -320,6 +326,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
         viewModel.performanceData.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
+                    stepperModel?.searchPrediction = it.data.umpGetImpressionPrediction.impressionPredictionData.impression.finalImpression
                     impressionPerformanceValueSearch.text = String.format("%sx", it.data.umpGetImpressionPrediction.impressionPredictionData.impression.finalImpression)
                 }
                 else -> {
@@ -376,14 +383,14 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
         }
         bidInfoAdapter.notifyDataSetChanged()
         setCount()
-        ticker.setTextDescription(MethodChecker.fromHtml(String.format(getString(com.tokopedia.topads.common.R.string.topads_common_added_key_ticker_text), bidInfoAdapter.itemCount)))
+        ticker.setTextDescription(MethodChecker.fromHtml(String.format(getString(topadscommonR.string.topads_common_added_key_ticker_text), bidInfoAdapter.itemCount)))
     }
 
     private fun setCount() {
         if (bidInfoAdapter.items.count() == 1 && bidInfoAdapter.items[0] is BidInfoEmptyViewModel) {
-            selectedkeyword.text = String.format(getString(com.tokopedia.topads.common.R.string.topads_common_selected_keyword), 0)
+            selectedkeyword.text = String.format(getString(topadscommonR.string.topads_common_selected_keyword), 0)
         } else {
-            selectedkeyword.text = String.format(getString(com.tokopedia.topads.common.R.string.topads_common_selected_keyword), bidInfoAdapter.items.count())
+            selectedkeyword.text = String.format(getString(topadscommonR.string.topads_common_selected_keyword), bidInfoAdapter.items.count())
         }
     }
 
@@ -458,6 +465,8 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
         info2.setOnClickListener {
             InfoBottomSheet.newInstance().show(childFragmentManager, 1)
         }
+        txtInfo.text = MethodChecker.fromHtml(getString(R.string.top_ads_create_text_info_search_bid))
+        setClicksOnViews()
 
 //        tipButton.visibility = View.VISIBLE
 //        tipButton.addItem(tooltipView)
@@ -531,11 +540,25 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
         bidList.layoutManager = LinearLayoutManager(context)
     }
 
+    private fun setClicksOnViews() {
+        txtInfo.setOnClickListener {
+            TopAdsToolTipBottomSheet.newInstance().also {
+                it.setTitle("Biaya Iklan di Pencarian")
+                it.setDescription(
+                    "Biaya iklan baru akan dikenakan setiap ada calon pembeli yang klik iklan produkmu baik itu secara organik ataupun saat iklanmu tampil sesuai dengan kata kunci pilihanmu.\n" +
+                        "\n" +
+                        "Tips:\n" +
+                        "Semakin tinggi biaya iklanmu, maka semakin tinggi peluang iklanmu ditampilkan."
+                )
+            }.show(childFragmentManager)
+        }
+    }
+
     private fun getClickableString(
         bid: Int,
     ): SpannableString {
         val msg = String.format(
-            getString(com.tokopedia.topads.dashboard.R.string.topads_insight_recommended_bid_apply),
+            getString(topadsdashboardR.string.topads_insight_recommended_bid_apply),
             bid
         )
         val ss = SpannableString(msg)
@@ -549,7 +572,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
                 if (context != null) {
                     ds.color = ContextCompat.getColor(
                         context!!,
-                        com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                        unifyprinciplesR.color.Unify_GN500
                     )
                 }
 

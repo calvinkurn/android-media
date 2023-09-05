@@ -12,14 +12,19 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.topads.common.sheet.TopAdsToolTipBottomSheet
 import com.tokopedia.topads.create.databinding.TopadsCreateFragmentRecommendationBudgetBinding
 import com.tokopedia.topads.data.CreateManualAdsStepperModel
 import com.tokopedia.topads.di.CreateAdsComponent
 import com.tokopedia.topads.view.activity.StepperActivity
 import com.tokopedia.topads.view.model.RecommendationBidViewModel
+import com.tokopedia.topads.view.sheet.TopAdsPredictionImpressionBottomSheet
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.text.currency.NumberTextWatcher
 import javax.inject.Inject
+import com.tokopedia.topads.dashboard.R as topadsdashboardR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.topads.create.R as topadscreateR
 
 
 class ProductRecommendationBidAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
@@ -44,6 +49,7 @@ class ProductRecommendationBidAdsFragment : BaseStepperFragment<CreateManualAdsS
 
     private fun setupView() {
         binding?.recommendationBudget?.editText?.setText(stepperModel?.suggestedBidPerClick.toString())
+        binding?.txtInfoRecommendation?.text = MethodChecker.fromHtml(getString(topadscreateR.string.top_ads_create_text_info_recom_bid))
     }
 
 
@@ -82,6 +88,7 @@ class ProductRecommendationBidAdsFragment : BaseStepperFragment<CreateManualAdsS
         viewModel?.performanceData?.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
+                    stepperModel?.recomPrediction = it.data.umpGetImpressionPrediction.impressionPredictionData.impression.finalImpression
                     binding?.impressionPerformanceValue?.text = String.format("%sx", it.data.umpGetImpressionPrediction.impressionPredictionData.impression.finalImpression)
                 }
 
@@ -105,7 +112,32 @@ class ProductRecommendationBidAdsFragment : BaseStepperFragment<CreateManualAdsS
 //        }
 //        setCount()
         setObservers()
+        setClicksOnViews()
 
+    }
+
+    private fun setClicksOnViews() {
+        binding?.txtInfoRecommendation?.setOnClickListener {
+            TopAdsToolTipBottomSheet.newInstance().also {
+                it.setTitle("Iklan di Rekomendasi")
+                it.setDescription(
+                    "Iklanmu akan tampil pada berbagai halaman strategis seperti di halaman home, keranjang, inbox dan detail produk.\n" +
+                        "\n" +
+                        "Sistem Tokopedia akan menampilkan iklan produkmu dengan kemampuan teknologi yang dapat menyesuaikan ketertarikan dan riwayat penjelajahan calon pembeli memungkinkan iklanmu menjangkau calon pembeli dengan lebih luas dan tepat.\n" +
+                        "\n" +
+                        "Tips:\n" +
+                        "Semakin tinggi biaya iklanmu, maka semakin tinggi peluang iklanmu ditampilkan."
+                )
+            }.show(childFragmentManager)
+        }
+        binding?.infoImpressionPrediction?.setOnClickListener {
+            stepperModel?.let {
+                TopAdsPredictionImpressionBottomSheet.newInstance(searchPrediction = it.searchPrediction, recomPrediction = it.recomPrediction, totalPrediction = 0).apply {
+
+                }.show(childFragmentManager)
+            }
+
+        }
     }
 
     private fun setEditTextListeners() {
@@ -139,7 +171,7 @@ class ProductRecommendationBidAdsFragment : BaseStepperFragment<CreateManualAdsS
         bid: Int,
     ): SpannableString {
         val msg = String.format(
-            getString(com.tokopedia.topads.dashboard.R.string.topads_insight_recommended_bid_apply),
+            getString(topadsdashboardR.string.topads_insight_recommended_bid_apply),
             bid
         )
         val ss = SpannableString(msg)
@@ -153,7 +185,7 @@ class ProductRecommendationBidAdsFragment : BaseStepperFragment<CreateManualAdsS
                 if (context != null) {
                     ds.color = ContextCompat.getColor(
                         context!!,
-                        com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                        unifyprinciplesR.color.Unify_GN500
                     )
                 }
 
