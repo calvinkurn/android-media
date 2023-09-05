@@ -8,7 +8,7 @@
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/product_bundling_separator_top"
         android:layout_width="match_parent"
-        android:layout_height="2dp"
+        android:layout_height="@dimen/divider_height_component"
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible" />
 

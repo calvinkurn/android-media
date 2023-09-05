@@ -9,7 +9,7 @@
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/product_detail_info_separator"
         android:layout_width="0dp"
-        android:layout_height="2dp"
+        android:layout_height="@dimen/divider_height_component"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -14,7 +14,7 @@
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/recom_separator"
         android:layout_width="match_parent"
-        android:layout_height="2dp"/>
+        android:layout_height="@dimen/divider_height_component"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/pdp_recom_header_container"

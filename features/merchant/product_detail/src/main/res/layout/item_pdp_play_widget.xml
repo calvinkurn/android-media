@@ -7,7 +7,7 @@
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:layout_width="match_parent"
-        android:layout_height="2dp" />
+        android:layout_height="@dimen/divider_height_component" />
 
     <com.tokopedia.play.widget.ui.PlayWidgetView
         android:id="@+id/pdp_play_widget_view"

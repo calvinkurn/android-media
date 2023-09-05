@@ -45,7 +45,7 @@
         <com.tokopedia.unifycomponents.DividerUnify
             android:id="@+id/dynamic_one_liner_separator_top"
             android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_height="@dimen/divider_height_component"
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.tokopedia.unifycomponents.ImageUnify
@@ -93,7 +93,7 @@
         <com.tokopedia.unifycomponents.DividerUnify
             android:id="@+id/dynamic_one_liner_separator_bottom"
             android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_height="@dimen/divider_height_component"
             app:layout_constraintBottom_toBottomOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 

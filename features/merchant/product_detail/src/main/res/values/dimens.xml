@@ -22,5 +22,5 @@
 
     <dimen name="viewpager_next_item_visible">78dp</dimen>
     <dimen name="viewpager_current_item_horizontal_margin">84dp</dimen>
-    <dimen name="divider_height_component">2dp</dimen>
+    <dimen name="divider_height_component">8dp</dimen>
 </resources>

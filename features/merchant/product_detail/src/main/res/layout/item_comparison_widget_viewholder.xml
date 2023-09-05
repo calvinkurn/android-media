@@ -7,7 +7,7 @@
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/comparison_widget_separator"
         android:layout_width="match_parent"
-        android:layout_height="2dp" />
+        android:layout_height="@dimen/divider_height_component" />
 
     <com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonWidgetView
         android:id="@+id/comparison_widget"
