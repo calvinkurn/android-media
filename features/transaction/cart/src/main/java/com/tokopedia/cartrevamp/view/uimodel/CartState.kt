@@ -1,11 +1,9 @@
 package com.tokopedia.cartrevamp.view.uimodel
 
-import android.widget.ImageView
 import androidx.lifecycle.LiveData
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.atcexternal.AddToCartExternalModel
 import com.tokopedia.cartcommon.data.response.common.OutOfService
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.promousage.domain.entity.PromoEntryPointInfo
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
@@ -60,9 +58,7 @@ sealed interface AddCartToWishlistV2Event {
         val data: AddToWishlistV2Response.Data.WishlistAddV2,
         val productId: String,
         val isLastItem: Boolean,
-        val source: String,
-        val wishlistIcon: IconUnify,
-        val animatedWishlistImage: ImageView
+        val source: String
     ) : AddCartToWishlistV2Event
 
     data class Failed(val throwable: Throwable) : AddCartToWishlistV2Event
@@ -138,10 +134,7 @@ sealed interface LoadWishlistV2State {
 
 sealed interface RemoveFromWishlistEvent {
 
-    data class RemoveWishlistFromCartSuccess(
-        val wishlistIcon: IconUnify?,
-        val position: Int
-    ) : RemoveFromWishlistEvent
+    data class RemoveWishlistFromCartSuccess(val position: Int) : RemoveFromWishlistEvent
 
     data class RemoveWishlistFromCartFailed(
         val throwable: Throwable
@@ -149,12 +142,12 @@ sealed interface RemoveFromWishlistEvent {
 
     data class Success(
         val data: DeleteWishlistV2Response.Data.WishlistRemoveV2,
-        val productId: String,
+        val productId: String
     ) : RemoveFromWishlistEvent
 
     data class Failed(
         val throwable: Throwable,
-        val productId: String,
+        val productId: String
     ) : RemoveFromWishlistEvent
 }
 
@@ -193,7 +186,6 @@ sealed interface UpdateCartPromoState {
 
     data class Failed(val throwable: Throwable) : UpdateCartPromoState
 }
-
 
 sealed class EntryPointInfoEvent {
 

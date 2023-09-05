@@ -282,6 +282,9 @@ class CartRevampFragment :
     private var bulkActionCoachMarkLastActiveIndex: Int = 0
     private var isMockMainFlowCoachMarkShown = false
 
+    private var wishlistIcon: IconUnify? = null
+    private var animatedWishlistImage: ImageView? = null
+
     private lateinit var editBundleActivityResult: ActivityResultLauncher<Intent>
     private lateinit var shipmentActivityResult: ActivityResultLauncher<Intent>
     private lateinit var pdpActivityResult: ActivityResultLauncher<Intent>
@@ -615,7 +618,7 @@ class CartRevampFragment :
             if (isClickable) {
                 binding?.vDisabledGoToCourierPageButton?.setOnClickListener {
                     if (CartDataHelper.getAllAvailableCartItemData(viewModel.cartDataList.value)
-                            .isNotEmpty()
+                        .isNotEmpty()
                     ) {
                         showToastMessageGreen(getString(R.string.message_no_cart_item_selected))
                     }
@@ -850,7 +853,7 @@ class CartRevampFragment :
                 getMultipleDisabledItemsDialogDeleteConfirmation(allDisabledCartItemDataList.size)
             dialog?.setPrimaryCTAClickListener {
                 var forceExpand = false
-                if (allDisabledCartItemDataList.size > 1 && unavailableItemAccordionCollapseState) {
+                if (allDisabledCartItemDataList.size > 3 && unavailableItemAccordionCollapseState) {
                     collapseOrExpandDisabledItem()
                     forceExpand = true
                 }
@@ -877,7 +880,8 @@ class CartRevampFragment :
     }
 
     override fun onCollapseAvailableItem(index: Int) {
-        val cartShopBottomHolderData = cartAdapter.getCartShopBottomHolderDataFromIndex(index)
+        val cartShopBottomHolderData =
+            CartDataHelper.getCartShopBottomHolderDataFromIndex(viewModel.cartDataList.value, index)
         if (cartShopBottomHolderData != null) {
             cartShopBottomHolderData.shopData.isCollapsed = true
             viewModel.cartDataList.value.removeAll(cartShopBottomHolderData.shopData.productUiModelList.toSet())
@@ -898,7 +902,10 @@ class CartRevampFragment :
     }
 
     override fun onExpandAvailableItem(index: Int) {
-        val cartShopBottomHolderData = cartAdapter.getCartShopBottomHolderDataFromIndex(index)
+        val cartShopBottomHolderData = CartDataHelper.getCartShopBottomHolderDataFromIndex(
+            viewModel.cartDataList.value,
+            index
+        )
         if (cartShopBottomHolderData != null) {
             // TODO: reinsert analytics
 //            if (cartShopBottomHolderData.shopData.productUiModelList.size > TOKONOW_SEE_OTHERS_OR_ALL_LIMIT) {
@@ -918,7 +925,8 @@ class CartRevampFragment :
     }
 
     override fun onCollapsedProductClicked(index: Int, cartItemHolderData: CartItemHolderData) {
-        val (shopIndex, groupData) = cartAdapter.getCartGroupHolderDataAndIndexByCartString(
+        val (shopIndex, groupData) = CartDataHelper.getCartGroupHolderDataAndIndexByCartString(
+            viewModel.cartDataList.value,
             cartItemHolderData.cartString,
             false
         )
@@ -1056,8 +1064,10 @@ class CartRevampFragment :
         }
         val toBeDeletedProducts = mutableListOf<CartItemHolderData>()
         if (cartItemHolderData.isBundlingItem) {
-            val cartGroupHolderData =
-                cartAdapter.getCartGroupHolderDataByCartItemHolderData(cartItemHolderData)
+            val cartGroupHolderData = CartDataHelper.getCartGroupHolderDataByCartItemHolderData(
+                viewModel.cartDataList.value,
+                cartItemHolderData
+            )
             cartGroupHolderData?.let {
                 it.productUiModelList.forEach { product ->
                     if (product.isBundlingItem && product.bundleId == cartItemHolderData.bundleId && product.bundleGroupId == cartItemHolderData.bundleGroupId) {
@@ -1076,7 +1086,7 @@ class CartRevampFragment :
                 viewModel.cartDataList.value,
                 viewModel.cartModel
             )
-            if (allDisabledCartItemData.size > 1 && unavailableItemAccordionCollapseState) {
+            if (allDisabledCartItemData.size > 3 && unavailableItemAccordionCollapseState) {
                 collapseOrExpandDisabledItem()
                 forceExpand = true
             }
@@ -1122,7 +1132,8 @@ class CartRevampFragment :
     }
 
     override fun onBundleItemCheckChanged(cartItemHolderData: CartItemHolderData) {
-        val (index, groupData) = cartAdapter.getCartGroupHolderDataAndIndexByCartString(
+        val (index, groupData) = CartDataHelper.getCartGroupHolderDataAndIndexByCartString(
+            viewModel.cartDataList.value,
             cartItemHolderData.cartString,
             false
         )
@@ -1160,21 +1171,20 @@ class CartRevampFragment :
             viewModel.cartModel
         )
         val isLastItem = allCartItemData.size == 1
+        this.wishlistIcon = wishlistIcon
         if (cartItemHolderData.isWishlisted) {
+            this.animatedWishlistImage = animatedWishlistImage
             viewModel.processAddCartToWishlist(
                 cartItemHolderData.productId,
                 userSession.userId,
                 isLastItem,
-                if (cartItemHolderData.isError) WISHLIST_SOURCE_UNAVAILABLE_ITEM else WISHLIST_SOURCE_AVAILABLE_ITEM,
-                wishlistIcon,
-                animatedWishlistImage
+                if (cartItemHolderData.isError) WISHLIST_SOURCE_UNAVAILABLE_ITEM else WISHLIST_SOURCE_AVAILABLE_ITEM
             )
         } else {
             viewModel.processRemoveFromWishlistV2(
                 cartItemHolderData.productId,
                 userSession.userId,
                 true,
-                wishlistIcon,
                 position
             )
         }
@@ -1206,7 +1216,8 @@ class CartRevampFragment :
         cartItemHolderData: CartItemHolderData,
         itemPosition: Int
     ) {
-        val (index, groupData) = cartAdapter.getCartGroupHolderDataAndIndexByCartString(
+        val (index, groupData) = CartDataHelper.getCartGroupHolderDataAndIndexByCartString(
+            viewModel.cartDataList.value,
             cartItemHolderData.cartString,
             false
         )
@@ -1221,7 +1232,8 @@ class CartRevampFragment :
     }
 
     override fun onNeedToRefreshWeight(cartItemHolderData: CartItemHolderData) {
-        val (index, groupData) = cartAdapter.getCartGroupHolderDataAndIndexByCartString(
+        val (index, groupData) = CartDataHelper.getCartGroupHolderDataAndIndexByCartString(
+            viewModel.cartDataList.value,
             cartItemHolderData.cartString,
             false
         )
@@ -1243,8 +1255,10 @@ class CartRevampFragment :
         newQuantity: Int
     ) {
         if (cartItemHolderData.isBundlingItem) {
-            val cartGroupHolderData =
-                cartAdapter.getCartGroupHolderDataByCartItemHolderData(cartItemHolderData)
+            val cartGroupHolderData = CartDataHelper.getCartGroupHolderDataByCartItemHolderData(
+                viewModel.cartDataList.value,
+                cartItemHolderData
+            )
             cartGroupHolderData?.let { cartGroup ->
                 cartGroup.productUiModelList.forEach { cartItem ->
                     if (cartItem.isBundlingItem && cartItem.bundleId == cartItemHolderData.bundleId && cartItem.bundleGroupId == cartItemHolderData.bundleGroupId) {
@@ -2278,13 +2292,17 @@ class CartRevampFragment :
         viewModel.addCartToWishlistV2Event.observe(viewLifecycleOwner) { addCartToWishlistV2Event ->
             when (addCartToWishlistV2Event) {
                 is AddCartToWishlistV2Event.Success -> {
-                    onAddCartToWishlistSuccess(
-                        addCartToWishlistV2Event.productId,
-                        addCartToWishlistV2Event.isLastItem,
-                        addCartToWishlistV2Event.source,
-                        addCartToWishlistV2Event.wishlistIcon,
-                        addCartToWishlistV2Event.animatedWishlistImage
-                    )
+                    if (wishlistIcon != null && animatedWishlistImage != null) {
+                        onAddCartToWishlistSuccess(
+                            addCartToWishlistV2Event.productId,
+                            addCartToWishlistV2Event.isLastItem,
+                            addCartToWishlistV2Event.source,
+                            wishlistIcon!!,
+                            animatedWishlistImage!!
+                        )
+                    } else {
+                        showToastMessageRed()
+                    }
                 }
 
                 is AddCartToWishlistV2Event.Failed -> {
@@ -2519,7 +2537,7 @@ class CartRevampFragment :
                 }
 
                 is RemoveFromWishlistEvent.RemoveWishlistFromCartSuccess -> {
-                    removeFromWishlistEvent.wishlistIcon?.let {
+                    this.wishlistIcon?.let {
                         onRemoveFromWishlistSuccess(
                             it,
                             removeFromWishlistEvent.position
@@ -2926,8 +2944,6 @@ class CartRevampFragment :
 
         if (isLastItem) {
             refreshCartWithSwipeToRefresh()
-        } else {
-            viewModel.setLastItemAlwaysSelected()
         }
     }
 
@@ -3029,10 +3045,6 @@ class CartRevampFragment :
             isFromEditBundle -> {
                 refreshCartWithProgressDialog()
             }
-
-            else -> {
-                setLastItemAlwaysSelected()
-            }
         }
     }
 
@@ -3128,10 +3140,10 @@ class CartRevampFragment :
                 if (addOnProductDataResult.aggregatedData.title.isNotEmpty()) {
                     newAddOnWording =
                         "${addOnProductDataResult.aggregatedData.title} <b>(${
-                            CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                                addOnProductDataResult.aggregatedData.price,
-                                false
-                            ).removeDecimalSuffix()
+                        CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                            addOnProductDataResult.aggregatedData.price,
+                            false
+                        ).removeDecimalSuffix()
                         })</b>"
                 }
 
@@ -3290,6 +3302,7 @@ class CartRevampFragment :
 
     private fun refreshCartWithSwipeToRefresh() {
         bulkActionCoachMark?.dismissCoachMark()
+        hasShowBulkActionCoachMark = false
         refreshHandler?.isRefreshing = true
         resetRecentViewList()
         if (viewModel.dataHasChanged()) {
@@ -3331,16 +3344,16 @@ class CartRevampFragment :
     }
 
     private fun removeLocalCartItem(
-        updateListResult: Triple<List<Int>, List<Int>, ArrayList<Any>>,
+        updateListResult: ArrayList<Any>,
         forceExpandCollapsedUnavailableItems: Boolean
     ) {
         val allDisabledCartItemData = CartDataHelper.getAllDisabledCartItemData(
-            updateListResult.third,
+            updateListResult,
             viewModel.cartModel
         )
 
         // If action is on unavailable item, do collapse unavailable items if previously forced to expand (without user tap expand)
-        if (allDisabledCartItemData.size > 1) {
+        if (allDisabledCartItemData.size > 3) {
             if (forceExpandCollapsedUnavailableItems) {
                 collapseOrExpandDisabledItem()
             }
@@ -3348,27 +3361,7 @@ class CartRevampFragment :
             viewModel.removeAccordionDisabledItem()
         }
 
-        val allShopGroupDataList =
-            CartDataHelper.getAllShopGroupDataList(updateListResult.third)
-
-        // Check if cart list has exactly 1 shop, and it's a toko now
-        if (allShopGroupDataList.isNotEmpty() && allShopGroupDataList[0].isTokoNow) {
-            allShopGroupDataList[0].let {
-                val (index, _) = cartAdapter.getCartGroupHolderDataAndIndexByCartString(
-                    it.cartString,
-                    it.isError
-                )
-                if (index != RecyclerView.NO_POSITION) {
-                    if (it.isCollapsed) {
-                        viewModel.addItems(index + 1, it.productUiModelList)
-                    }
-                    it.isCollapsible = false
-                    it.isCollapsed = false
-                }
-            }
-        }
-
-        viewModel.updateCartDataList(updateListResult.third)
+        viewModel.updateCartDataList(updateListResult)
 
         viewModel.reCalculateSubTotal()
         notifyBottomCartParent()
@@ -3959,7 +3952,10 @@ class CartRevampFragment :
             }
 
             if (hasProducts) {
-                val shopIndex = cartAdapter.getCartShopHolderIndexByCartId(cartId)
+                val shopIndex = CartDataHelper.getCartShopHolderIndexByCartId(
+                    viewModel.cartDataList.value,
+                    cartId
+                )
                 if (shopIndex != RecyclerView.NO_POSITION) {
                     val offset =
                         context?.resources?.getDimensionPixelSize(R.dimen.select_all_view_holder_height)
@@ -4109,13 +4105,6 @@ class CartRevampFragment :
 
     private fun setHasTriedToLoadRecommendation() {
         hasTriedToLoadRecommendation = true
-    }
-
-    private fun setLastItemAlwaysSelected() {
-        val tmpIsLastItem = viewModel.setLastItemAlwaysSelected()
-        if (tmpIsLastItem) {
-            binding?.checkboxGlobal?.isChecked = true
-        }
     }
 
     private fun setSelectedAmountVisibility() {
@@ -4284,9 +4273,9 @@ class CartRevampFragment :
         plusCoachMark?.dismissCoachMark()
         mainFlowCoachMark?.dismissCoachMark()
         if ((
-                viewModel.cartModel.cartListData?.onboardingData?.size
-                    ?: 0
-                ) < BULK_ACTION_ONBOARDING_MIN_QUANTITY_INDEX
+            viewModel.cartModel.cartListData?.onboardingData?.size
+                ?: 0
+            ) < BULK_ACTION_ONBOARDING_MIN_QUANTITY_INDEX
         ) {
             return
         }
@@ -4646,7 +4635,8 @@ class CartRevampFragment :
     }
 
     private fun updateCartShopGroupTicker(cartGroupHolderData: CartGroupHolderData) {
-        val (index, _) = cartAdapter.getCartGroupHolderDataAndIndexByCartString(
+        val (index, _) = CartDataHelper.getCartGroupHolderDataAndIndexByCartString(
+            viewModel.cartDataList.value,
             cartGroupHolderData.cartString,
             cartGroupHolderData.isError
         )

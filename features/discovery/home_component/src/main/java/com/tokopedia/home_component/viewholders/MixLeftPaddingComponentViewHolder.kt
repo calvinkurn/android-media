@@ -141,7 +141,7 @@ class MixLeftPaddingComponentViewHolder(
                 SimpleHorizontalLinearLayoutDecoration()
             )
         }
-        val typeFactoryImpl = CommonCarouselProductCardTypeFactoryImpl(channel, cardInteraction)
+        val typeFactoryImpl = CommonCarouselProductCardTypeFactoryImpl(channel, cardInteraction, this)
         val listData = mutableListOf<Visitable<*>>()
         listData.add(
             CarouselBannerCardDataModel(
@@ -202,7 +202,6 @@ class MixLeftPaddingComponentViewHolder(
                     blankSpaceConfig = BlankSpaceConfig(),
                     grid = element,
                     applink = element.applink,
-                    listener = this,
                     componentName = FPM_MIX_LEFT
                 )
             )
