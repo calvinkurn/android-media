@@ -39,7 +39,13 @@ class ShopHomeShowCaseNavigationCarouselViewHolder(
             val showcases = model.appearance.showcases
             viewBinding?.tpgTitle?.text = model.appearance.title
             viewBinding?.tpgTitle?.isVisible = model.appearance.title.isNotEmpty() && showcases.isNotEmpty()
-            viewBinding?.iconChevron?.setOnClickListener { listener.onNavigationBannerViewAllShowcaseClick(model.appearance.viewAllCtaAppLink) }
+            viewBinding?.iconChevron?.setOnClickListener {
+                listener.onNavigationBannerViewAllShowcaseClick(
+                    model.appearance.viewAllCtaAppLink,
+                    model.appearance,
+                    showcases.firstOrNull()?.id.orEmpty()
+                )
+            }
             viewBinding?.iconChevron?.isVisible = showcases.size > SHOW_VIEW_ALL_SHOWCASE_THRESHOLD
 
             setupShowCaseRecyclerView(

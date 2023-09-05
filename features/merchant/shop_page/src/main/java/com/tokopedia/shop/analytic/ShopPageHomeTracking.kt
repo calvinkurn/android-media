@@ -301,6 +301,7 @@ import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.builder.Tracker
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.shop.home.view.model.banner_product_group.ShopWidgetComponentBannerProductGroupUiModel.WidgetStyle
+import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.ShopHomeShowcaseNavigationBannerWidgetAppearance
 
 /*
 Data Layer Docs:
@@ -3496,15 +3497,15 @@ class ShopPageHomeTracking(
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4148
     // Tracker ID: 45926
     fun sendShowcaseNavigationBannerWidgetViewAllClick(
-        uiModel: ShowcaseNavigationUiModel,
-        showcase: Showcase,
+        appearance: ShopHomeShowcaseNavigationBannerWidgetAppearance,
+        showcaseId: String,
         shopId: String,
         userId: String
     ) {
-        val eventLabel = when(uiModel.appearance) {
-            is LeftMainBannerAppearance -> "hero etalase-left - ${showcase.id}"
-            is TopMainBannerAppearance -> "hero etalase-top - ${showcase.id}"
-            is CarouselAppearance -> "no hero etalase - ${showcase.id}"
+        val eventLabel = when(appearance) {
+            is LeftMainBannerAppearance -> "hero etalase-left - $showcaseId"
+            is TopMainBannerAppearance -> "hero etalase-top - $showcaseId"
+            is CarouselAppearance -> "no hero etalase - $showcaseId"
         }
 
         Tracker.Builder()

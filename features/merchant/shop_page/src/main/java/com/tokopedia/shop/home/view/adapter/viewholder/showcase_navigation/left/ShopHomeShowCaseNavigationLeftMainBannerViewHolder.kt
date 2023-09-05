@@ -9,12 +9,10 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.shop.R
-import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.ItemShopHomeShowcaseNavigationLeftMainBannerBinding
 import com.tokopedia.shop.home.util.ShopHomeShowcaseNavigationDependencyProvider
 import com.tokopedia.shop.home.view.fragment.ShopShowcaseNavigationTabWidgetFragment
@@ -43,18 +41,22 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
 
     override fun bind(model: ShowcaseNavigationUiModel) {
         val tabs = if (model.appearance is LeftMainBannerAppearance) model.appearance.tabs else emptyList()
-        setupShowcaseHeader(model.appearance.title, model.appearance.viewAllCtaAppLink, tabs)
+        setupShowcaseHeader(model, tabs)
         setupTabs(tabs, model)
     }
 
-    private fun setupShowcaseHeader(title: String, viewAllCtaAppLink: String, tabs: List<ShowcaseTab>) {
-        viewBinding?.tpgTitle?.text = title
-        viewBinding?.tpgTitle?.isVisible = title.isNotEmpty() && tabs.isNotEmpty()
+    private fun setupShowcaseHeader(model: ShowcaseNavigationUiModel, tabs: List<ShowcaseTab>) {
+        viewBinding?.tpgTitle?.text = model.appearance.title
+        viewBinding?.tpgTitle?.isVisible = model.appearance.title.isNotEmpty() && tabs.isNotEmpty()
 
         viewBinding?.iconChevron?.setOnClickListener {
-            listener.onNavigationBannerViewAllShowcaseClick(viewAllCtaAppLink)
+            listener.onNavigationBannerViewAllShowcaseClick(
+                model.appearance.viewAllCtaAppLink,
+                model.appearance,
+                tabs.firstOrNull()?.showcases?.firstOrNull()?.id.orEmpty()
+            )
         }
-        viewBinding?.iconChevron?.isVisible = viewAllCtaAppLink.isNotEmpty()
+        viewBinding?.iconChevron?.isVisible = model.appearance.viewAllCtaAppLink.isNotEmpty()
     }
 
     private fun setupTabs(

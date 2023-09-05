@@ -207,6 +207,7 @@ import com.tokopedia.shop.home.view.listener.ShopBannerProductGroupListener
 import com.tokopedia.shop.home.view.customview.directpurchase.DirectPurchaseWidgetView
 import com.tokopedia.shop.home.view.customview.directpurchase.ProductCardDirectPurchaseDataModel
 import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseNavigationUiModel
+import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.ShopHomeShowcaseNavigationBannerWidgetAppearance
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragment
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragmentV2
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPageHeaderPerformanceMonitoringListener
@@ -5065,7 +5066,17 @@ open class ShopPageHomeFragment :
         }
     }
 
-    override fun onNavigationBannerViewAllShowcaseClick(viewAllCtaAppLink: String) {
+    override fun onNavigationBannerViewAllShowcaseClick(
+        viewAllCtaAppLink: String,
+        appearance: ShopHomeShowcaseNavigationBannerWidgetAppearance,
+        showcaseId: String
+    ) {
+        shopPageHomeTracking.sendShowcaseNavigationBannerWidgetViewAllClick(
+            appearance,
+            showcaseId,
+            shopId,
+            userId
+        )
         RouteManager.route(activity ?: return, viewAllCtaAppLink)
     }
 
