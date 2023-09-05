@@ -46,6 +46,8 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.C
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
+import com.tokopedia.purchase_platform.common.revamp.CartCheckoutRevampRollenceManager
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import kotlinx.coroutines.delay
 import timber.log.Timber
 import javax.inject.Inject
@@ -889,7 +891,12 @@ internal class PromoUsageViewModel @Inject constructor(
                 selectedPromoCodes = selectedPromoCodes,
                 boPromoCodes = boPromoCodes
             )
-            newValidateUseRequest = newValidateUseRequest.copy(skipApply = 0)
+            newValidateUseRequest = newValidateUseRequest.copy(
+                skipApply = 0,
+                isCartCheckoutRevamp = CartCheckoutRevampRollenceManager(
+                    RemoteConfigInstance.getInstance().abTestPlatform
+                ).isRevamp()
+            )
 
             val param = ValidateUsePromoUsageParam.create(
                 newValidateUseRequest,

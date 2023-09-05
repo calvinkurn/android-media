@@ -109,8 +109,9 @@ object PromoRequestMapper {
             state = CartConstant.PARAM_CART
             skipApply = 0
             cartType = CartConstant.PARAM_DEFAULT
-            isCartCheckoutRevamp = CartCheckoutRevampRollenceManager(RemoteConfigInstance.getInstance()
-                .abTestPlatform).isRevamp()
+            isCartCheckoutRevamp = CartCheckoutRevampRollenceManager(
+                RemoteConfigInstance.getInstance().abTestPlatform
+            ).isRevamp()
         }
     }
 

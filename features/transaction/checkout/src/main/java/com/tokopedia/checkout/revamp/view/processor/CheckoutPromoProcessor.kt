@@ -250,6 +250,8 @@ class CheckoutPromoProcessor @Inject constructor(
         validateUsePromoRequest.state = CheckoutConstant.PARAM_CHECKOUT
         validateUsePromoRequest.cartType = CartConstant.PARAM_DEFAULT
         validateUsePromoRequest.skipApply = 0
+        validateUsePromoRequest.isCartCheckoutRevamp = CartCheckoutRevampRollenceManager(
+            RemoteConfigInstance.getInstance().abTestPlatform).isRevamp()
         if (isTradeIn) {
             validateUsePromoRequest.isTradeIn = 1
             validateUsePromoRequest.isTradeInDropOff = if (isTradeInByDropOff) 1 else 0

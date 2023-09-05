@@ -356,6 +356,8 @@ class PromoEntryPointWidget @JvmOverloads constructor(
                 switcherView?.displayedChild = 0
             } else if (animateWording) {
                 activeViewWording?.setText(HtmlLinkHelper(context, wording).spannedString)
+            } else {
+                activeViewWording?.setCurrentText(HtmlLinkHelper(context, wording).spannedString)
             }
             errorView?.visibility = View.GONE
             loadingView?.visibility = View.GONE
