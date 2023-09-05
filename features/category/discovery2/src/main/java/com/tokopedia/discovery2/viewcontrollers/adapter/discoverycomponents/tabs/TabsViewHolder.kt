@@ -1,6 +1,7 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs
 
 import android.os.Handler
+import android.os.Looper
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
@@ -92,9 +93,7 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
                             if (selectedPosition >= 0 && tabsViewModel.isFromCategory()) {
                                 tabsHolder.gone()
                                 tabsHolder.tabLayout.getTabAt(selectedPosition)?.select()
-                                tabsHandler.postDelayed({
-                                    tabsHolder.show()
-                                }, DELAY_400)
+                                tabsHandler.postDelayed(tabsRunnable, DELAY_400)
                                 selectedPosition = -1
                             }
                         }
@@ -173,9 +172,7 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
                             if (selectedPosition >= 0 && tabsViewModel.isFromCategory()) {
                                 tabsHolder.gone()
                                 tabsHolder.tabLayout.getTabAt(selectedPosition)?.select()
-                                tabsHandler.postDelayed({
-                                    tabsHolder.show()
-                                }, DELAY_400)
+                                tabsHandler.postDelayed(tabsRunnable, DELAY_400)
                                 selectedPosition = -1
                             }
                         }
@@ -236,7 +233,7 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
         super.onViewDetachedToWindow()
         tabsHolder.tabLayout.removeOnTabSelectedListener(this)
         tabsViewModel?.getColorTabComponentLiveData()?.removeObservers(fragment.viewLifecycleOwner)
-        tabsHandler.removeCallbacksAndMessages(null)
+        tabsHandler.removeCallbacks(tabsRunnable)
     }
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
