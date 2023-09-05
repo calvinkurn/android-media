@@ -2,6 +2,7 @@ package com.tokopedia.editor.ui.main
 
 import com.tokopedia.editor.data.model.NavigationTool
 import com.tokopedia.editor.data.repository.NavigationToolRepository
+import com.tokopedia.editor.data.repository.VideoFlattenRepository
 import com.tokopedia.editor.ui.main.uimodel.MainEditorEffect
 import com.tokopedia.editor.ui.main.uimodel.MainEditorEvent
 import com.tokopedia.editor.ui.model.InputTextModel
@@ -24,7 +25,10 @@ import org.junit.Test
 class MainEditorViewModelTest {
 
     private val navigationToolRepository = mockk<NavigationToolRepository>()
+    private val videoFlattenRepository = mockk<VideoFlattenRepository>()
     private val paramFetcher = mockk<EditorParamFetcher>()
+
+    private val dispatchers = CoroutineTestDispatchers
 
     private lateinit var viewModel: MainEditorViewModel
 
@@ -32,6 +36,8 @@ class MainEditorViewModelTest {
     fun setUp() {
         viewModel = MainEditorViewModel(
             navigationToolRepository,
+            videoFlattenRepository,
+            dispatchers,
             paramFetcher
         )
     }
@@ -60,9 +66,9 @@ class MainEditorViewModelTest {
         // Verify
         onEvent(MainEditorEvent.AddInputTextPage)
 
-        val effect = recordEffect()
-        assertTrue(effect[0] is MainEditorEffect.OpenInputText)
-        assertTrue(effect[1] is MainEditorEffect.ParentToolbarVisibility)
+        val effects = recordEffect()
+        assertTrue(effects[0] is MainEditorEffect.OpenInputText)
+        assertTrue(effects[1] is MainEditorEffect.ParentToolbarVisibility)
 
         // Verify
         onEvent(MainEditorEvent.InputTextResult(model))
@@ -79,9 +85,9 @@ class MainEditorViewModelTest {
         onEvent(MainEditorEvent.EditInputTextPage(typographyId, model))
         assertTrue(viewModel.inputTextState.value.viewId.isMoreThanZero())
 
-        val effect = recordEffect()
-        assertTrue(effect[0] is MainEditorEffect.OpenInputText)
-        assertTrue(effect[1] is MainEditorEffect.ParentToolbarVisibility)
+        val effects = recordEffect()
+        assertTrue(effects[0] is MainEditorEffect.OpenInputText)
+        assertTrue(effects[1] is MainEditorEffect.ParentToolbarVisibility)
 
         // Verify
         val newModel = InputTextModel(text = "a new text")

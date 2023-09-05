@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.tokopedia.editor.ui.model.InputTextModel
-import com.tokopedia.editor.util.ColorProvider
+import com.tokopedia.editor.util.provider.ColorProvider
 import com.tokopedia.editor.util.FontAlignment
 import com.tokopedia.editor.util.FontAlignment.Companion.next
 import com.tokopedia.editor.util.FontDetail
