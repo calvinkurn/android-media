@@ -53,6 +53,13 @@ allprojects {
             }
         }
         maven {
+            url = uri("https://maven.pkg.github.com/carousell/lk6-tkpd-android-sdk")
+            credentials {
+                username = properties.getProperty("laku.usr")
+                password = properties.getProperty("laku.key")
+            }
+        }
+        maven {
             url "https://jitpack.io"
             credentials { username authToken }
         }
@@ -60,6 +67,7 @@ allprojects {
             dirs rootProject.file('aars')
         }
         maven { url 'https://maven-hansel.tokopedia.com/maven' }
+
     }
 }
 

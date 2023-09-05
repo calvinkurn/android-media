@@ -5,7 +5,8 @@ import android.os.Build
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
-import com.laku6.tradeinsdk.api.Laku6TradeIn
+import com.laku6.tradeinsdk.api.TradeInApiService
+import com.laku6.tradeinsdk.api.TradeInListener
 import com.tokopedia.common_tradein.model.*
 import com.tokopedia.common_tradein.usecase.ProcessMessageUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -18,11 +19,12 @@ import org.json.JSONObject
 import javax.inject.Inject
 
 class MoneyInHomeViewModel @Inject constructor(
-        private val processMessageUseCase: ProcessMessageUseCase,
-        private val checkMoneyInUseCase: CheckMoneyInUseCase,
-        private val userSession: UserSessionInterface
+    private val processMessageUseCase: ProcessMessageUseCase,
+    private val checkMoneyInUseCase: CheckMoneyInUseCase,
+    private val userSession: UserSessionInterface
 ) : BaseMoneyInViewModel(),
-        LifecycleObserver, Laku6TradeIn.TradeInListener {
+    LifecycleObserver,
+    TradeInListener {
     val homeResultData: MutableLiveData<HomeResult> = MutableLiveData()
     val askUserLogin = MutableLiveData<Int>()
     var tradeInParams = TradeInParams()
@@ -38,9 +40,9 @@ class MoneyInHomeViewModel @Inject constructor(
     }
 
     fun checkLogin() {
-        if (!userSession.isLoggedIn)
+        if (!userSession.isLoggedIn) {
             askUserLogin.value = MoneyinConstants.LOGIN_REQUIRED
-        else {
+        } else {
             askUserLogin.value = MoneyinConstants.LOGEED_IN
         }
     }
@@ -52,11 +54,18 @@ class MoneyInHomeViewModel @Inject constructor(
         }
         tradeInParams.deviceId = diagnostics.imei
         launchCatchError(block = {
-            setDiagnoseResult(processMessageUseCase.processMessage(tradeInParams, diagnostics, tradeInType), diagnostics)
+            setDiagnoseResult(
+                processMessageUseCase.processMessage(
+                    tradeInParams,
+                    diagnostics,
+                    tradeInType
+                ),
+                diagnostics
+            )
         }, onError = {
-            it.printStackTrace()
-            warningMessage.value = it.localizedMessage
-        })
+                it.printStackTrace()
+                warningMessage.value = it.localizedMessage
+            })
     }
 
     fun setDiagnoseResult(response: DeviceDiagInputResponse?, diagnostics: DeviceDiagnostics) {
@@ -67,11 +76,17 @@ class MoneyInHomeViewModel @Inject constructor(
                 if (homeResultData.value?.deviceDisplayName != null) {
                     result.deviceDisplayName = homeResultData.value?.deviceDisplayName ?: ""
                 }
-                result.displayMessage = CurrencyFormatUtil.convertPriceValueToIdrFormat(diagnostics.tradeInPrice!!, true)
+                result.displayMessage = CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                    diagnostics.tradeInPrice!!,
+                    true
+                )
                 result.priceStatus = HomeResult.PriceState.DIAGNOSED_VALID
             } else {
                 result.priceStatus = HomeResult.PriceState.DIAGNOSED_INVALID
-                result.displayMessage = CurrencyFormatUtil.convertPriceValueToIdrFormat(diagnostics.tradeInPrice!!, true)
+                result.displayMessage = CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                    diagnostics.tradeInPrice!!,
+                    true
+                )
                 errorMessage.setValue(response.deviceDiagInputRepsponse.message)
             }
             homeResultData.value = result
@@ -86,12 +101,20 @@ class MoneyInHomeViewModel @Inject constructor(
     fun checkMoneyIn(modelId: Int, jsonObject: JSONObject) {
         progBarVisibility.value = true
         launchCatchError(block = {
-            checkIfElligible(checkMoneyInUseCase.checkMoneyIn(getResource(), modelId, tradeInParams, userSession.userId), jsonObject)
+            checkIfElligible(
+                checkMoneyInUseCase.checkMoneyIn(
+                    getResource(),
+                    modelId,
+                    tradeInParams,
+                    userSession.userId
+                ),
+                jsonObject
+            )
         }, onError = {
-            progBarVisibility.value = false
-            it.printStackTrace()
-            warningMessage.value = it.localizedMessage
-        })
+                progBarVisibility.value = false
+                it.printStackTrace()
+                warningMessage.value = it.localizedMessage
+            })
     }
 
     private fun checkIfElligible(validateTradePDP: ValidateTradePDP?, jsonObject: JSONObject) {
@@ -131,7 +154,6 @@ class MoneyInHomeViewModel @Inject constructor(
             imeiStateLiveData.value = false
             checkMoneyIn(modelId, jsonObject)
         }
-
     }
 
     private fun setHomeResultData(jsonObject: JSONObject) {
@@ -152,10 +174,13 @@ class MoneyInHomeViewModel @Inject constructor(
         result.minPrice = minPrice
         if (diagnosedPrice > 0) {
             result.priceStatus = HomeResult.PriceState.DIAGNOSED_VALID
-            result.displayMessage = CurrencyFormatUtil.convertPriceValueToIdrFormat(diagnosedPrice, true)
+            result.displayMessage =
+                CurrencyFormatUtil.convertPriceValueToIdrFormat(diagnosedPrice, true)
         } else {
-            result.displayMessage = String.format("%1\$s",
-                    CurrencyFormatUtil.convertPriceValueToIdrFormat(maxPrice, true))
+            result.displayMessage = String.format(
+                "%1\$s",
+                CurrencyFormatUtil.convertPriceValueToIdrFormat(maxPrice, true)
+            )
             result.priceStatus = HomeResult.PriceState.NOT_DIAGNOSED
         }
         if (homeResultData.value?.deviceDisplayName != null) {
@@ -191,13 +216,12 @@ class MoneyInHomeViewModel @Inject constructor(
         }
     }
 
-    fun getMaxPrice(laku6TradeIn: Laku6TradeIn) {
+    fun getMaxPrice(tradeInApiService: TradeInApiService) {
         progBarVisibility.value = true
-        laku6TradeIn.getMinMaxPrice(-1, this)
+        tradeInApiService.getMinMaxPrice(-1, this)
     }
 
     fun setDeviceId(deviceId: String?) {
         tradeInParams.deviceId = deviceId
     }
-
 }
