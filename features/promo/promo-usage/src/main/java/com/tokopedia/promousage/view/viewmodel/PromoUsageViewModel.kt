@@ -735,10 +735,13 @@ internal class PromoUsageViewModel @Inject constructor(
         shouldSortRecommendedSection: Boolean = false
     ): List<DelegateAdapterItem> {
         val resultItems = items.toMutableList()
-
         val sectionHeaders = items.mapIndexed { index, item -> index to item }
             .filter {
-                it.second is PromoRecommendationItem || it.second is PromoAccordionHeaderItem
+                if (shouldSortRecommendedSection) {
+                    it.second is PromoRecommendationItem || it.second is PromoAccordionHeaderItem
+                } else {
+                    it.second is PromoAccordionHeaderItem
+                }
             }
             .toMap()
         sectionHeaders.forEach { header ->
@@ -747,8 +750,7 @@ internal class PromoUsageViewModel @Inject constructor(
             val headerItems = items.filterIsInstance<PromoItem>()
                 .filter { it.headerId == headerId }
             var sortedItems = sortPromoInSection(headerItems)
-            if (shouldSortRecommendedSection
-                && headerId == PromoPageSection.SECTION_RECOMMENDATION) {
+            if (headerId == PromoPageSection.SECTION_RECOMMENDATION) {
                 val recommendedItemCount = sortedItems.size
                 sortedItems = sortedItems.mapIndexed { index, item ->
                     val isLastRecommended = index == recommendedItemCount - 1
