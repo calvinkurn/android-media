@@ -16,7 +16,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.stories.databinding.FragmentStoriesGroupBinding
 import com.tokopedia.stories.utils.withCache
 import com.tokopedia.stories.view.adapter.StoriesGroupPagerAdapter
-import com.tokopedia.stories.view.animation.ZoomOutPageTransformer
+import com.tokopedia.stories.view.animation.StoriesPageAnimation
 import com.tokopedia.stories.view.model.StoriesGroupUiModel
 import com.tokopedia.stories.view.utils.isNetworkError
 import com.tokopedia.stories.view.viewmodel.StoriesViewModel
@@ -87,7 +87,7 @@ class StoriesGroupFragment @Inject constructor(
         layoutGroupLoading.icCloseLoading.setOnClickListener { activity?.finish() }
         if (storiesGroupViewPager.adapter != null) return@with
         storiesGroupViewPager.adapter = pagerAdapter
-        storiesGroupViewPager.setPageTransformer(ZoomOutPageTransformer())
+        storiesGroupViewPager.setPageTransformer(StoriesPageAnimation())
         storiesGroupViewPager.registerOnPageChangeCallback(pagerListener)
     }
 
