@@ -120,7 +120,9 @@ internal class PromoUsageViewModel @Inject constructor(
         attemptedPromoCode: String = "",
         onSuccess: (() -> Unit)? = null
     ) {
-        _promoPageUiState.postValue(PromoPageUiState.Initial)
+        if (attemptedPromoCode.isBlank()) {
+            _promoPageUiState.postValue(PromoPageUiState.Initial)
+        }
 
         // Reset pre-selected promo param
         var newPromoRequest = promoRequest?.copy() ?: PromoRequest()
@@ -253,7 +255,7 @@ internal class PromoUsageViewModel @Inject constructor(
                 item.code
             }
             if (item.state is PromoItemState.Selected) {
-                if (item.shopId.isZero() && promoRequest.codes.contains(promoCode)) {
+                if (item.shopId.isZero() && !promoRequest.codes.contains(promoCode)) {
                     codes.add(promoCode)
                 }
             } else {

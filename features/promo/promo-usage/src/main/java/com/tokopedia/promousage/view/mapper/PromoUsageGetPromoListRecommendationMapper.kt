@@ -102,17 +102,18 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
                 }
 
                 else -> {
-                    if (couponSection.coupons.isNotEmpty()) {
-                        hasRecommendedOrOtherSection = true
-                        items.add(
-                            PromoAccordionHeaderItem(
-                                id = couponSection.id,
-                                title = couponSection.title,
-                                isExpanded = !couponSection.isCollapsed
+                    if (couponSection.id != PromoPageSection.SECTION_INPUT_PROMO_CODE) {
+                        if (couponSection.coupons.isNotEmpty()) {
+                            hasRecommendedOrOtherSection = true
+                            items.add(
+                                PromoAccordionHeaderItem(
+                                    id = couponSection.id,
+                                    title = couponSection.title,
+                                    isExpanded = !couponSection.isCollapsed
+                                )
                             )
-                        )
-                        val coupons = couponSection.coupons.filter { it.isGroupHeader }
-                        coupons.forEachIndexed { index, coupon ->
+                            val coupons = couponSection.coupons.filter { it.isGroupHeader }
+                            coupons.forEachIndexed { index, coupon ->
                                 items.add(
                                     mapCouponToPromo(
                                         index = index,
@@ -123,19 +124,20 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
                                     )
                                 )
                             }
-                        val totalPromoInSectionCount = coupons.size
-                        if (totalPromoInSectionCount > 1) {
-                            val isExpanded = !couponSection.isCollapsed
-                            if (isExpanded) {
-                                val hiddenPromoCount = totalPromoInSectionCount - 1
-                                items.add(
-                                    PromoAccordionViewAllItem(
-                                        headerId = couponSection.id,
-                                        hiddenPromoCount = hiddenPromoCount,
-                                        isExpanded = true,
-                                        isVisible = true
+                            val totalPromoInSectionCount = coupons.size
+                            if (totalPromoInSectionCount > 1) {
+                                val isExpanded = !couponSection.isCollapsed
+                                if (isExpanded) {
+                                    val hiddenPromoCount = totalPromoInSectionCount - 1
+                                    items.add(
+                                        PromoAccordionViewAllItem(
+                                            headerId = couponSection.id,
+                                            hiddenPromoCount = hiddenPromoCount,
+                                            isExpanded = true,
+                                            isVisible = true
+                                        )
                                     )
-                                )
+                                }
                             }
                         }
                     }
@@ -150,7 +152,8 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
                 id = PromoPageSection.SECTION_INPUT_PROMO_CODE,
                 label = attemptedPromoSection?.title ?: "",
                 errorMessage = attemptedPromoError.message,
-                hasOtherSection = hasRecommendedOrOtherSection
+                hasOtherSection = hasRecommendedOrOtherSection,
+                hasAttemptedPromo = attemptedPromoSection?.coupons?.isNotEmpty() ?: false
             )
         )
         attemptedPromoSection?.coupons?.forEachIndexed { index, coupon ->

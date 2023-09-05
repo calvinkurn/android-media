@@ -5,6 +5,7 @@ import android.text.InputFilter
 import android.text.InputType
 import android.view.LayoutInflater
 import android.view.MotionEvent
+import android.view.View
 import android.view.ViewGroup
 import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.RecyclerView
@@ -22,7 +23,7 @@ import com.tokopedia.promousage.view.custom.TextDrawable
 import com.tokopedia.unifycomponents.toPx
 
 internal class PromoAttemptCodeDelegateAdapter(
-    private val onAttemptPromoCode: (String) -> Unit
+    private val onAttemptPromoCode: (View, String) -> Unit
 ) : DelegateAdapter<PromoAttemptItem, PromoAttemptCodeDelegateAdapter.ViewHolder>(
     PromoAttemptItem::class.java
 ) {
@@ -67,7 +68,7 @@ internal class PromoAttemptCodeDelegateAdapter(
                 if (item.attemptedPromoCode.isNotBlank()) {
                     tauVoucherCode.editText.setText(item.attemptedPromoCode)
                 }
-                bottomDivider.isVisible = item.promos.isEmpty()
+                bottomDivider.isVisible = !item.hasAttemptedPromo
                 if (item.errorMessage.isNotBlank()) {
                     tauVoucherCode.isInputError = true
                     tauVoucherCode.setMessage(item.errorMessage)
@@ -101,7 +102,7 @@ internal class PromoAttemptCodeDelegateAdapter(
                 if (hasUseVoucherCodeCta && motionEvent.action == MotionEvent.ACTION_UP) {
                     if (motionEvent.rawX >= (binding.tauVoucherCode.editText.right - rightDrawable?.bounds?.width().orZero())) {
                         val attemptedPromoCode = binding.tauVoucherCode.editText.text.toString()
-                        onAttemptPromoCode(attemptedPromoCode)
+                        onAttemptPromoCode(binding.tauVoucherCode.editText, attemptedPromoCode)
                         return@setOnTouchListener true
                     }
                 }
