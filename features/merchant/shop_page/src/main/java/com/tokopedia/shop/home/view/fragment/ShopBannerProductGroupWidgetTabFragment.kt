@@ -37,6 +37,7 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
 
     companion object {
         private const val BUNDLE_KEY_WIDGET_ID = "widget_id"
+        private const val BUNDLE_KEY_WIDGET_NAME = "widget_name"
         private const val BUNDLE_KEY_SHOP_ID = "shop_id"
         private const val BUNDLE_KEY_WIDGETS = "widgets"
         private const val BUNDLE_KEY_WIDGET_STYLE = "widget_style"
@@ -46,6 +47,7 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
         @JvmStatic
         fun newInstance(
             widgetId: String,
+            widgetName: String,
             shopId: String,
             widgets: List<ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList>,
             widgetStyle: String,
@@ -55,6 +57,7 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
             return ShopBannerProductGroupWidgetTabFragment().apply {
                 arguments = Bundle().apply {
                     putString(BUNDLE_KEY_WIDGET_ID, widgetId)
+                    putString(BUNDLE_KEY_WIDGET_NAME, widgetName)
                     putString(BUNDLE_KEY_SHOP_ID, shopId)
                     putParcelableArrayList(BUNDLE_KEY_WIDGETS, ArrayList(widgets))
                     putString(BUNDLE_KEY_WIDGET_STYLE, widgetStyle)
@@ -67,6 +70,7 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
     }
 
     private val widgetId by lazy { arguments?.getString(BUNDLE_KEY_WIDGET_ID).orEmpty() }
+    private val widgetName by lazy { arguments?.getString(BUNDLE_KEY_WIDGET_NAME).orEmpty() }
     private val shopId by lazy { arguments?.getString(BUNDLE_KEY_SHOP_ID).orEmpty() }
     private val widgets by lazy {
         arguments?.getParcelableArrayList<ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList>(
@@ -144,6 +148,13 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
                 binding?.imgMainBanner?.visible()
                 binding?.imgMainBanner?.loadImage(mainBannerImageUrl)
                 binding?.imgMainBanner?.setOnClickListener {
+                    tracker.sendProductCarouselMainBannerClick(
+                        widgetId,
+                        widgetName,
+                        "horizontal",
+                        shopId,
+                        userSession.userId
+                    )
                     onMainBannerClick(mainBanner ?: return@setOnClickListener)
                 }
             }
@@ -164,6 +175,13 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
 
         bannerProductGroupAdapter.setOnVerticalBannerClick { verticalBanner ->
             onVerticalBannerClick(verticalBanner)
+            tracker.sendProductCarouselMainBannerClick(
+                widgetId,
+                widgetName,
+                "vertical",
+                shopId,
+                userSession.userId
+            )
         }
     }
 

@@ -3656,30 +3656,24 @@ class ShopPageHomeTracking(
      // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4148
      // Tracker ID: 45951
      fun sendProductCarouselMainBannerClick(
-         product: ProductItemType,
+         widgetId: String,
+         widgetName: String,
          widgetStyle: String,
          shopId: String,
          userId: String
      ) {
-
-         val bannerVariant = when (widgetStyle) {
-             WidgetStyle.VERTICAL.id -> "vertical"
-             WidgetStyle.HORIZONTAL.id -> "horizontal"
-             else -> "no_banner"
-         }
-
          val bundledShowcase = Bundle().apply {
              putString(CREATIVE_NAME, "")
              putInt(CREATIVE_SLOT, 0)
-             putString(ITEM_ID, product.productId)
-             putString(ITEM_NAME, product.name)
+             putString(ITEM_ID, widgetId)
+             putString(ITEM_NAME, widgetName)
          }
 
          val bundle = Bundle().apply {
              putString(EVENT, SELECT_CONTENT)
              putString(EVENT_ACTION, CLICK_REIMAGINED_BANNER_PRODUCT_CAROUSEL)
              putString(EVENT_CATEGORY, SHOP_PAGE_BUYER)
-             putString(EVENT_LABEL, bannerVariant)
+             putString(EVENT_LABEL, widgetStyle)
              putString(TRACKER_ID, TRACKER_ID_CLICK_REIMAGINED_BANNER_PRODUCT_CAROUSEL)
              putString(BUSINESS_UNIT, PHYSICAL_GOODS_PASCAL_CASE)
              putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
@@ -3697,7 +3691,6 @@ class ShopPageHomeTracking(
      fun sendProductCarouselProductClick(
          product: ProductItemType,
          widgetStyle: String,
-         showProductInfo: Boolean,
          shopId: String,
          userId: String
      ) {
@@ -3707,7 +3700,7 @@ class ShopPageHomeTracking(
              else -> "no_banner"
          }
 
-         val productCardVariant = if (showProductInfo) {
+         val productCardVariant = if (product.showProductInfo) {
              "with_info"
          } else {
              "without_info"
