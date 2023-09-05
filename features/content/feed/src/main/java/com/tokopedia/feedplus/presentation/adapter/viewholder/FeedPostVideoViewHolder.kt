@@ -374,7 +374,8 @@ class FeedPostVideoViewHolder(
             products = data.products,
             totalProducts = data.totalProducts,
             trackerData = trackerDataModel,
-            positionInFeed = absoluteAdapterPosition
+            positionInFeed = absoluteAdapterPosition,
+            topAdsTrackerData = null
         )
 
         productButtonView.bindData(
