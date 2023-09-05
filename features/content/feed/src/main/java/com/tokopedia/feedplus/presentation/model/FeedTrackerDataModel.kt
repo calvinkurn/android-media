@@ -22,6 +22,7 @@ data class FeedTrackerDataModel(
 
 data class FeedTopAdsTrackerDataModel(
     val adViewUrl: String,
+    val adClickUrl: String,
     val id: String,
     val shopId: String,
     val uri: String,
