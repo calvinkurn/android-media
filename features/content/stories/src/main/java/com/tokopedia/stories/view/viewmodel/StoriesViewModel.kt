@@ -8,6 +8,7 @@ import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.stories.R
 import com.tokopedia.stories.data.repository.StoriesRepository
 import com.tokopedia.stories.domain.model.StoriesAuthorType
 import com.tokopedia.stories.domain.model.StoriesRequestModel
@@ -28,21 +29,28 @@ import com.tokopedia.stories.view.viewmodel.action.StoriesProductAction
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction
 import com.tokopedia.stories.view.viewmodel.event.StoriesUiEvent
 import com.tokopedia.user.session.UserSessionInterface
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import com.tokopedia.stories.R
-import javax.inject.Inject
 
-class StoriesViewModel @Inject constructor(
+class StoriesViewModel @AssistedInject constructor(
+    @Assisted private val authorId: String,
     private val repository: StoriesRepository,
     private val userSession: UserSessionInterface,
 ) : ViewModel() {
 
-    var mShopId: String = ""
+    @AssistedFactory
+    interface Factory  {
+        fun create(
+            authorId: String,
+        ) : StoriesViewModel
+    }
 
     private val _storiesGroup = MutableStateFlow(StoriesGroupUiModel())
     private val _storiesDetail = MutableStateFlow(StoriesDetailUiModel())
@@ -137,8 +145,6 @@ class StoriesViewModel @Inject constructor(
     }
 
     private fun handleSetInitialData(data: Bundle?) {
-        mShopId = data?.getString(SHOP_ID, "").orEmpty()
-
         viewModelScope.launchCatchError(block = {
             _storiesGroup.value = requestStoriesInitialData()
             mGroupPos.value = _storiesGroup.value.selectedGroupPosition
@@ -279,7 +285,7 @@ class StoriesViewModel @Inject constructor(
     private fun getProducts() {
         viewModelScope.launchCatchError(block = {
             products.update { product -> product.copy(resultState = ResultState.Loading) }
-            val productList = repository.getStoriesProducts(mShopId, storyId)
+            val productList = repository.getStoriesProducts(authorId, storyId)
             products.update { products -> products.copy(products = productList, resultState = ResultState.Success) }
         }, onError = {
             products.update { product -> product.copy(resultState = ResultState.Fail(it)) } //TODO() change result state?
@@ -292,7 +298,7 @@ class StoriesViewModel @Inject constructor(
                 val response = repository.addToCart(
                     productId = product.id,
                     price = product.finalPrice,
-                    shopId = mShopId,
+                    shopId = authorId,
                     productName = product.title
                 )
 
@@ -402,7 +408,7 @@ class StoriesViewModel @Inject constructor(
 
     private suspend fun requestStoriesInitialData(): StoriesGroupUiModel {
         val request = StoriesRequestModel(
-            authorID = mShopId,
+            authorID = authorId,
             authorType = StoriesAuthorType.SHOP.value,
             source = StoriesSource.SHOP_ENTRY_POINT.value,
             sourceID = "",
@@ -412,7 +418,7 @@ class StoriesViewModel @Inject constructor(
 
     private suspend fun requestStoriesDetailData(): StoriesDetailUiModel {
         val request = StoriesRequestModel(
-            authorID = mShopId,
+            authorID = authorId,
             authorType = StoriesAuthorType.SHOP.value,
             source = StoriesSource.STORY_GROUP.value,
             sourceID = mGroupItem.groupId,

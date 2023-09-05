@@ -12,8 +12,8 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.tokopedia.stories.view.fragment.StoriesDetailFragment
 import com.tokopedia.stories.view.model.BottomSheetType
 import com.tokopedia.stories.view.model.StoriesUiState
 import com.tokopedia.stories.view.showDialog
@@ -30,10 +30,9 @@ import com.tokopedia.stories.R as storiesR
  * @author by astidhiyaa on 08/08/23
  */
 class StoriesThreeDotsBottomSheet @Inject constructor(
-    private val viewModelFactory: ViewModelProvider.Factory,
 ) : BottomSheetUnify() {
 
-    private val viewModel by activityViewModels<StoriesViewModel> { viewModelFactory }
+    private val viewModel by activityViewModels<StoriesViewModel> { (requireParentFragment() as StoriesDetailFragment).viewModelProvider }
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

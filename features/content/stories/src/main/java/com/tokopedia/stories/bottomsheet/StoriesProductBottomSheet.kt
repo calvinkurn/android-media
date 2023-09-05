@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.content.common.ui.adapter.ContentTaggedProductBottomSheetAdapter
@@ -20,6 +19,7 @@ import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.stories.R
 import com.tokopedia.stories.databinding.FragmentStoriesProductBinding
 import com.tokopedia.stories.utils.withCache
+import com.tokopedia.stories.view.fragment.StoriesDetailFragment
 import com.tokopedia.stories.view.model.BottomSheetType
 import com.tokopedia.stories.view.model.ProductBottomSheetUiState
 import com.tokopedia.stories.view.utils.showToaster
@@ -36,10 +36,9 @@ import javax.inject.Inject
  * @author by astidhiyaa on 25/07/23
  */
 class StoriesProductBottomSheet @Inject constructor(
-    private val viewModelFactory: ViewModelProvider.Factory,
 ) : BottomSheetUnify(), ContentTaggedProductBottomSheetViewHolder.Listener {
 
-    private val viewModel by activityViewModels<StoriesViewModel> { viewModelFactory }
+    private val viewModel by activityViewModels<StoriesViewModel> { (requireParentFragment() as StoriesDetailFragment).viewModelProvider }
 
     private var _binding: FragmentStoriesProductBinding? = null
     private val binding: FragmentStoriesProductBinding get() = _binding!!

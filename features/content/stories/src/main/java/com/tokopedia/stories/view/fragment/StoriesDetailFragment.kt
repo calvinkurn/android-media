@@ -39,10 +39,10 @@ import com.tokopedia.stories.view.model.BottomSheetType
 import com.tokopedia.stories.view.model.StoriesDetailItemUiModel
 import com.tokopedia.stories.view.model.StoriesDetailUiModel
 import com.tokopedia.stories.view.model.StoriesGroupUiModel
-import com.tokopedia.stories.view.utils.StoriesSharingComponent
 import com.tokopedia.stories.view.model.isAnyShown
 import com.tokopedia.stories.view.utils.SHOP_ID
 import com.tokopedia.stories.view.utils.STORIES_GROUP_ID
+import com.tokopedia.stories.view.utils.StoriesSharingComponent
 import com.tokopedia.stories.view.utils.TouchEventStories
 import com.tokopedia.stories.view.utils.isNetworkError
 import com.tokopedia.stories.view.utils.onTouchEventStories
@@ -60,7 +60,6 @@ import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
 class StoriesDetailFragment @Inject constructor(
-    private val viewModelFactory: ViewModelProvider.Factory,
     private val router: Router,
 ) : TkpdBaseV4Fragment() {
 
@@ -68,7 +67,11 @@ class StoriesDetailFragment @Inject constructor(
     private val binding: FragmentStoriesDetailBinding
         get() = _binding!!
 
-    private val viewModel by activityViewModels<StoriesViewModel> { viewModelFactory }
+    val viewModelProvider by lazyThreadSafetyNone {
+        (requireParentFragment() as StoriesGroupFragment).viewModelProvider
+    }
+
+    private val viewModel by activityViewModels<StoriesViewModel> { viewModelProvider }
 
     private val mAdapter: StoriesGroupAdapter by lazyThreadSafetyNone {
         StoriesGroupAdapter(object : StoriesGroupAdapter.Listener {
