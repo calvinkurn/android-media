@@ -13,9 +13,13 @@
         android:outAnimation="@anim/anim_promo_slide_down_out"
         android:visibility="gone">
 
-        <include android:id="@+id/active_promo_checkout_view" layout="@layout/layout_widget_promo_checkout" />
+        <include
+            android:id="@+id/active_promo_checkout_view"
+            layout="@layout/layout_widget_promo_checkout" />
 
-        <include android:id="@+id/inactive_promo_checkout_view" layout="@layout/layout_widget_promo_checkout" />
+        <include
+            android:id="@+id/inactive_promo_checkout_view"
+            layout="@layout/layout_widget_promo_checkout" />
 
     </ViewSwitcher>
 
@@ -30,7 +34,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingHorizontal="16dp"
-            android:paddingVertical="12dp">
+            android:paddingVertical="8dp">
 
             <com.tokopedia.unifycomponents.LoaderUnify
                 android:id="@+id/loader_promo_start"
@@ -79,13 +83,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingHorizontal="16dp"
-            android:paddingVertical="12dp">
+            android:paddingVertical="8dp">
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_error_promo_checkout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Promo gagal ditampilkan. Coba lagi, yuk!"
+                android:text="@string/promo_checkout_failed_label_new"
                 android:textColor="@color/Unify_NN950"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/ic_error_promo_checkout"

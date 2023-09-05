@@ -42,6 +42,7 @@ import com.tokopedia.product.detail.data.model.datamodel.TopadsHeadlineUiModel
 import com.tokopedia.product.detail.data.model.datamodel.ViewToViewWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
 import com.tokopedia.product.detail.data.model.datamodel.review_list.ProductShopReviewDataModel
+import com.tokopedia.product.detail.view.viewholder.a_plus_content.APlusImageUiModel
 import com.tokopedia.product.detail.view.viewholder.bmgm.BMGMDataModel
 
 interface DynamicProductDetailAdapterFactory {
@@ -84,6 +85,7 @@ interface DynamicProductDetailAdapterFactory {
     fun type(data: ProductShopReviewDataModel): Int
     fun type(data: OngoingCampaignDataModel): Int
     fun type(data: DynamicOneLinerDataModel): Int
+    fun type(data: APlusImageUiModel): Int
     fun type(data: BMGMDataModel): Int
 
     // This is the new centralized recom widget model.

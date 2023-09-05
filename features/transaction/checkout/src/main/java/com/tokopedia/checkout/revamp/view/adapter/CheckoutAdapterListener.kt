@@ -107,5 +107,5 @@ interface CheckoutAdapterListener {
 
     fun onProcessToPayment()
 
-    fun onBindButtonPayment()
+    fun onClickBmgmInfoIcon()
 }

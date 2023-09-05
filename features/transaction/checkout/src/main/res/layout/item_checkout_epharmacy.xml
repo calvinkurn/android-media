@@ -16,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingHorizontal="16dp"
-        android:paddingVertical="12dp">
+        android:paddingVertical="8dp">
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/upload_icon"
@@ -55,10 +55,11 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
                 android:textColor="@color/Unify_NN600"
-                app:typographyType="display_3"
                 android:visibility="gone"
+                app:typographyType="display_3"
                 app:typographyWeight="reguler"
-                tools:text="2 foto resep di-upload" />
+                tools:text="2 foto resep di-upload"
+                tools:visibility="visible" />
 
         </LinearLayout>
 

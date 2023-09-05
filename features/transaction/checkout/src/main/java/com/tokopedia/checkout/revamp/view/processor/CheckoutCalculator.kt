@@ -116,6 +116,7 @@ class CheckoutCalculator @Inject constructor(
         var totalAddOnGiftingPrice = 0.0
         var totalAddOnProductServicePrice = 0.0
         var qtyAddOn = 0
+        var totalBmgmDiscount = 0.0
         val countMapSummaries = hashMapOf<Int, Pair<Double, Int>>()
         val listShipmentAddOnSummary: ArrayList<ShipmentAddOnSummaryModel> = arrayListOf()
         val checkoutCostModel = listData.cost()!!
@@ -141,6 +142,9 @@ class CheckoutCalculator @Inject constructor(
                             }
                         } else {
                             totalItemPrice += cartItem.quantity * cartItem.price
+                        }
+                        if (cartItem.isBMGMItem && cartItem.bmgmItemPosition == ShipmentMapper.BMGM_ITEM_HEADER) {
+                            totalBmgmDiscount += cartItem.bmgmTotalDiscount
                         }
                         if (cartItem.addOnGiftingProductLevelModel.status == 1) {
                             if (cartItem.addOnGiftingProductLevelModel.addOnsDataItemModelList.isNotEmpty()) {
@@ -219,12 +223,12 @@ class CheckoutCalculator @Inject constructor(
         }
         totalPrice =
             totalItemPrice + finalShippingFee + insuranceFee + totalPurchaseProtectionPrice + additionalFee + totalBookingFee -
-            shipmentCost.productDiscountAmount - tradeInPrice + totalAddOnGiftingPrice + totalAddOnProductServicePrice
+            shipmentCost.productDiscountAmount - tradeInPrice + totalAddOnGiftingPrice + totalAddOnProductServicePrice -
+            totalBmgmDiscount
         shipmentCost = shipmentCost.copy(totalWeight = totalWeight)
         shipmentCost = shipmentCost.copy(additionalFee = additionalFee)
         shipmentCost = shipmentCost.copy(originalItemPrice = totalItemPrice)
-        shipmentCost =
-            shipmentCost.copy(finalItemPrice = totalItemPrice - shipmentCost.productDiscountAmount)
+        shipmentCost = shipmentCost.copy(finalItemPrice = totalItemPrice - shipmentCost.productDiscountAmount - totalBmgmDiscount)
         shipmentCost = shipmentCost.copy(totalItem = totalItem)
         shipmentCost = shipmentCost.copy(originalShippingFee = shippingFee)
         shipmentCost = shipmentCost.copy(finalShippingFee = finalShippingFee)
@@ -236,14 +240,6 @@ class CheckoutCalculator @Inject constructor(
         shipmentCost.tradeInPrice = tradeInPrice
         shipmentCost.totalAddOnPrice = totalAddOnGiftingPrice
         shipmentCost.hasAddOn = hasAddOnSelected
-//        if (shipmentDonationModel != null && shipmentDonationModel!!.isChecked) {
-//            shipmentCost.donation = shipmentDonationModel!!.donation.nominal.toDouble()
-//        } else {
-//            if (shipmentCost.donation > 0) {
-//                shipmentCost.donation = 0.0
-//            }
-//        }
-//        totalPrice += shipmentCost.donation
         shipmentCost = shipmentCost.copy(totalPrice = totalPrice)
         var upsellCost: CheckoutCrossSellModel? = null
         val upsellModel = listData.upsell()
@@ -337,7 +333,6 @@ class CheckoutCalculator @Inject constructor(
         }
 
         shipmentCost.listAddOnSummary = listShipmentAddOnSummary
-//        checkoutCostModel.value = shipmentCost
         shipmentCost =
             shipmentCost.copy(dynamicPlatformFee = shipmentCost.dynamicPlatformFee.copy(isLoading = true))
 
@@ -366,14 +361,12 @@ class CheckoutCalculator @Inject constructor(
         var shouldShowInsuranceTnc = false
         for (shipmentCartItemModel in newList) {
             if (shipmentCartItemModel is CheckoutOrderModel) {
-//                if (shipmentCartItemModel.shipment.courierItemData != null) {
                 if ((shipmentCartItemModel.shipment.courierItemData != null && !isTradeInByDropOff) /*|| (shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourierTradeInDropOff != null && isTradeInByDropOff)*/) {
                     if (!hasLoadingItem) {
                         hasLoadingItem = validateLoadingItem(shipmentCartItemModel)
                     }
                     cartItemCounter++
                 }
-//                }
                 if (shipmentCartItemModel.isError) {
                     cartItemErrorCounter++
                 } else if (!shouldShowInsuranceTnc) {
@@ -407,13 +400,7 @@ class CheckoutCalculator @Inject constructor(
                 useInsurance = shouldShowInsuranceTnc,
                 enable = !hasLoadingItem,
                 totalPrice = priceTotalFormatted
-                /*loading = if (isValidatingFinalPromo) {
-                true
-            } else {*/
-//                buttonPaymentModel.loading
-                /*}*/
             )
-//            return updateShipmentButtonPaymentModel(listData.buttonPayment()!!, enable = !hasLoadingItem, totalPrice = priceTotalFormatted)
         } else {
             shipmentCost = shipmentCost.copy(totalPriceString = "-")
             buttonPaymentModel = buttonPaymentModel.copy(
@@ -421,14 +408,8 @@ class CheckoutCalculator @Inject constructor(
                 enable = cartItemErrorCounter < checkoutOrderModels.size,
                 totalPrice = "-"
             )
-//            return updateShipmentButtonPaymentModel(
-//                listData.buttonPayment()!!,
-//                enable = cartItemErrorCounter < checkoutOrderModels.size,
-//                totalPrice = "-"
-//            )
         }
 
-//        val buttonPaymentModel = updateCheckoutButtonData(listData, shipmentCost, isTradeInByDropOff)
         buttonPaymentModel = buttonPaymentModel.copy(
             totalPriceNum = finalPrice
         )
@@ -502,14 +483,12 @@ class CheckoutCalculator @Inject constructor(
         var hasLoadingItem = false
         for (shipmentCartItemModel in listData) {
             if (shipmentCartItemModel is CheckoutOrderModel) {
-//                if (shipmentCartItemModel.shipment.courierItemData != null) {
                 if ((shipmentCartItemModel.shipment.courierItemData != null && !isTradeInByDropOff) /*|| (shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourierTradeInDropOff != null && isTradeInByDropOff)*/) {
                     if (!hasLoadingItem) {
                         hasLoadingItem = validateLoadingItem(shipmentCartItemModel)
                     }
                     cartItemCounter++
                 }
-//                }
                 if (shipmentCartItemModel.isError) {
                     cartItemErrorCounter++
                 }

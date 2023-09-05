@@ -52,7 +52,6 @@ class CheckoutAddOnProcessor @Inject constructor(
                         }
                         setPrescriptionIds(prescriptionIds, listData)
                         uploadPrescriptionUiModel.isError = false
-//                            view?.updateUploadPrescription(uploadPrescriptionUiModel)
                     }
                 } catch (e: Throwable) {
                     Timber.d(e)
@@ -459,14 +458,13 @@ class CheckoutAddOnProcessor @Inject constructor(
         return checkoutItems
     }
 
-    fun validatePrescriptionOnBackPressed(uploadPrescriptionUiModel: UploadPrescriptionUiModel): Boolean {
-        if (uploadPrescriptionUiModel.showImageUpload) {
-            if (uploadPrescriptionUiModel.uploadedImageCount > 0 || uploadPrescriptionUiModel.hasInvalidPrescription) {
-//                view!!.showPrescriptionReminderDialog(uploadPrescriptionUiModel)
-                return false
+    fun validatePrescriptionOnBackPressed(epharmacy: CheckoutEpharmacyModel?): CheckoutEpharmacyModel? {
+        if (epharmacy != null && epharmacy.epharmacy.showImageUpload) {
+            if (epharmacy.epharmacy.uploadedImageCount > 0 || epharmacy.epharmacy.hasInvalidPrescription) {
+                return epharmacy
             }
         }
-        return true
+        return null
     }
 
     suspend fun saveAddonsProduct(product: CheckoutProductModel, isOneClickShipment: Boolean) {

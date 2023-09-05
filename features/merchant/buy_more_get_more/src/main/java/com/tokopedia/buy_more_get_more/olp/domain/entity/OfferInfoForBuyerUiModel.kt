@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel.Offering.ShopData
 import com.tokopedia.buy_more_get_more.olp.domain.entity.enum.Status
 import com.tokopedia.buy_more_get_more.olp.presentation.adapter.OlpAdapterTypeFactory
+import com.tokopedia.buy_more_get_more.olp.utils.Constant
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 
 data class OfferInfoForBuyerUiModel(
@@ -27,7 +28,7 @@ data class OfferInfoForBuyerUiModel(
         val maxAppliedTier: Int = 0,
         val tierList: List<Tier> = emptyList(),
         val shopData: ShopData = ShopData(),
-        val tnc: List<String> = emptyList(),
+        val tnc: List<String> = emptyList()
     ) {
         data class ShopData(
             val shopId: Long = 0,
@@ -68,8 +69,8 @@ data class OfferInfoForBuyerUiModel(
         val offeringJsonData: String = "",
         val startDate: String = "",
         val endDate: String = "",
-        val sortId: String = "0",
-        val sortName: String = "Urutkan"
+        val sortId: String = Constant.DEFAULT_SORT_ID,
+        val sortName: String = Constant.DEFAULT_SORT_NAME
     )
 
     sealed class OlpEvent {
@@ -81,19 +82,19 @@ data class OfferInfoForBuyerUiModel(
             val localCacheModel: LocalCacheModel?
         ) : OlpEvent()
 
-        object GetOfferingInfo: OlpEvent()
+        object GetOfferingInfo : OlpEvent()
 
         data class GetOffreringProductList(val page: Int, val pageSize: Int) : OlpEvent()
 
-        data class SetSort(val sortId: String, val sortName: String): OlpEvent()
+        data class SetSort(val sortId: String, val sortName: String) : OlpEvent()
 
-        data class SetWarehouseIds(val warehouseIds: List<Long>): OlpEvent()
+        data class SetWarehouseIds(val warehouseIds: List<Long>) : OlpEvent()
 
-        data class SetShopData(val shopData: ShopData?): OlpEvent()
+        data class SetShopData(val shopData: ShopData?) : OlpEvent()
 
-        data class SetOfferingJsonData(val offeringJsonData: String): OlpEvent()
+        data class SetOfferingJsonData(val offeringJsonData: String) : OlpEvent()
 
-        data class SetTncData(val tnc: List<String>): OlpEvent()
+        data class SetTncData(val tnc: List<String>) : OlpEvent()
 
         object GetNotification : OlpEvent()
 

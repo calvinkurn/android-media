@@ -148,6 +148,9 @@ data class CartShopGroupTickerData(
     var cartIds: String = "",
     var hasSeenTicker: Boolean = false
 ) {
+    fun needToShowLoading(): Boolean {
+        return state == CartShopGroupTickerState.SUCCESS_AFFORD || state == CartShopGroupTickerState.SUCCESS_NOT_AFFORD
+    }
 
     companion object {
         const val ACTION_REDIRECT_PAGE = "redirect_page"

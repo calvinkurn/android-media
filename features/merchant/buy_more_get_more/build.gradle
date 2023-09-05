@@ -27,7 +27,8 @@ android {
     }
 }
 
-dependencies {implementation rootProject.ext.supportLibDependencies.recyclerViewV7
+dependencies {
+    implementation rootProject.ext.supportLibDependencies.recyclerViewV7
     implementation rootProject.ext.supportLibDependencies.design
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.coroutineAndroid
@@ -40,11 +41,6 @@ dependencies {implementation rootProject.ext.supportLibDependencies.recyclerView
     implementation rootProject.ext.supportLibDependencies.supportV4
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
-    implementation 'com.google.android.material:material:1.5.0'
-    implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.6.0'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.6.0'
     kapt rootProject.ext.miscDependencies.daggerCompiler
 
     implementation projectOrAar(rootProject.ext.libraries.imagePreview)
@@ -135,7 +131,7 @@ dependencies {implementation rootProject.ext.supportLibDependencies.recyclerView
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
     androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
 
-    implementation (rootProject.ext.firebase.crashlytics) {
+    implementation(rootProject.ext.firebase.crashlytics) {
         transitive = true
     }
 }
@@ -144,7 +140,7 @@ project.ext {
     artifactId = 'buy_more_get_more'
     groupId = 'com.tokopedia.merchant'
     versionName = "0.0.2"
-    artifactName ="buy_more_get_more"
+    artifactName = "buy_more_get_more"
 }
 
 apply from: '../../../publish_local.gradle'

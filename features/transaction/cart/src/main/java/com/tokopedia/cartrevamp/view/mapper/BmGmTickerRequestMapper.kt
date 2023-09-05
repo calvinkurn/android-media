@@ -2,52 +2,49 @@ package com.tokopedia.cartrevamp.view.mapper
 
 import com.tokopedia.cartrevamp.domain.model.bmgm.request.BmGmGetGroupProductTickerParams
 import com.tokopedia.cartrevamp.view.uimodel.CartGroupHolderData
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 
 object BmGmTickerRequestMapper {
     fun generateGetGroupProductTickerRequestParams(cartGroup: CartGroupHolderData, offerId: Long): BmGmGetGroupProductTickerParams {
         val listCart = arrayListOf<BmGmGetGroupProductTickerParams.BmGmCart>()
         val cartDetailsBmGm = arrayListOf<BmGmGetGroupProductTickerParams.BmGmCart.BmGmCartDetails>()
-        cartGroup.productUiModelList.forEach { cartItem ->
-            val listProductBmGm = arrayListOf<BmGmGetGroupProductTickerParams.BmGmCart.BmGmCartDetails.Product>()
-            if (cartItem.bmGmCartInfoData.bmGmData.offerId == offerId) {
-                cartItem.bmGmCartInfoData.bmGmTierProductList.forEach { tiersApplied ->
-                    tiersApplied.listProduct.forEach { product ->
-                        listProductBmGm.add(
-                            BmGmGetGroupProductTickerParams.BmGmCart.BmGmCartDetails.Product(
-                                cartId = product.cartId,
-                                shopId = product.shopId,
-                                productId = product.productId,
-                                warehouseId = product.warehouseId,
-                                qty = product.qty,
-                                finalPrice = product.finalPrice,
-                                checkboxState = product.checkboxState
-                            )
-                        )
-                    }
-                }
-
-                cartDetailsBmGm.add(
-                    BmGmGetGroupProductTickerParams.BmGmCart.BmGmCartDetails(
-                        bundleDetail = BmGmGetGroupProductTickerParams.BmGmCart.BmGmCartDetails.BundleDetail(
-                            bundleId = cartItem.bundleId,
-                            bundleGroupId = cartItem.bundleGroupId
-                        ),
-                        offer = BmGmGetGroupProductTickerParams.BmGmCart.BmGmCartDetails.Offer(
-                            offerId = cartItem.bmGmCartInfoData.bmGmData.offerId,
-                            offerJsonData = cartItem.bmGmCartInfoData.bmGmData.offerJsonData
-                        ),
-                        products = listProductBmGm
-                    )
-                )
-
-                listCart.add(
-                    BmGmGetGroupProductTickerParams.BmGmCart(
-                        cartStringOrder = cartItem.cartStringOrder,
-                        cartDetails = cartDetailsBmGm
+        val listProductBmGm = arrayListOf<BmGmGetGroupProductTickerParams.BmGmCart.BmGmCartDetails.Product>()
+        if (cartGroup.cartGroupBmGmHolderData.offerId == offerId) {
+            cartGroup.productUiModelList.forEach { cartItemProduct ->
+                listProductBmGm.add(
+                    BmGmGetGroupProductTickerParams.BmGmCart.BmGmCartDetails.Product(
+                        cartId = cartItemProduct.cartId,
+                        shopId = cartItemProduct.shopHolderData.shopId,
+                        productId = cartItemProduct.productId,
+                        warehouseId = cartItemProduct.warehouseId.toLongOrZero(),
+                        qty = cartItemProduct.quantity,
+                        finalPrice = cartItemProduct.productOriginalPrice,
+                        checkboxState = cartItemProduct.isSelected
                     )
                 )
             }
         }
+
+        cartDetailsBmGm.add(
+            BmGmGetGroupProductTickerParams.BmGmCart.BmGmCartDetails(
+                bundleDetail = BmGmGetGroupProductTickerParams.BmGmCart.BmGmCartDetails.BundleDetail(
+                    bundleId = cartGroup.cartGroupBmGmHolderData.bundleId,
+                    bundleGroupId = cartGroup.cartGroupBmGmHolderData.bundleGroupId
+                ),
+                offer = BmGmGetGroupProductTickerParams.BmGmCart.BmGmCartDetails.Offer(
+                    offerId = offerId,
+                    offerJsonData = cartGroup.cartGroupBmGmHolderData.offerJsonData
+                ),
+                products = listProductBmGm
+            )
+        )
+
+        listCart.add(
+            BmGmGetGroupProductTickerParams.BmGmCart(
+                cartStringOrder = cartGroup.cartString,
+                cartDetails = cartDetailsBmGm
+            )
+        )
 
         return BmGmGetGroupProductTickerParams(
             carts = listCart

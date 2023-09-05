@@ -219,7 +219,7 @@ class FeedContentAdapter(
 
     fun showErrorNetwork() {
         val currentList = this.currentList
-        if (currentList.contains(errorNetworkModel)) return
+        if (currentList.filter { it.data is ErrorNetworkModel }.size >= 2) return
         submitList(currentList + errorNetworkModel)
     }
 
@@ -285,6 +285,8 @@ class FeedContentAdapter(
         }
         mIsScrolling = false
         submitList(newList)
+
+        if (mSelectedPosition >= itemCount - 2) onLoadMore()
     }
 
     fun setList(elements: List<Any>, commitCallback: () -> Unit = {}) {
@@ -296,7 +298,11 @@ class FeedContentAdapter(
 
         submitList(
             elements.mapIndexed { index, element ->
-                Item(element, index == mSelectedPosition, if (mIsScrolling) index == mSelectedPosition else false)
+                Item(
+                    element,
+                    index == mSelectedPosition,
+                    if (mIsScrolling) index == mSelectedPosition else false
+                )
             },
             commitCallback
         )
