@@ -583,6 +583,8 @@ class ShopPageHeaderFragmentV2 :
                 is Success -> {
                     onSuccessGetShopPageP1Data(result.data)
                     initMiniCart()
+                    //TODO sendTrackerImpressionShopHeader()
+                    sendTrackerImpressionShopBottomNav()
                 }
 
                 is Fail -> {
@@ -792,6 +794,10 @@ class ShopPageHeaderFragmentV2 :
                 updateShareIcon(it.data.eligibleCommission?.isEligible.orFalse())
             }
         }
+    }
+
+    private fun sendTrackerImpressionShopBottomNav() {
+        shopPageTracking?.impressionShopBottomNav(shopId, userId)
     }
 
     private fun setFragmentTabContentWrapperSgcPlayWidget() {

@@ -20,6 +20,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EVENT_CATEGORY
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EVENT_LABEL
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.Event.DIRECT_PURCHASE_ADD_TO_CART
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.Event.OPEN_SCREEN
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.Event.VIEW_PG_IRIS
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.ALL_PRODUCT_CLICKED
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.ALL_PRODUCT_IMPRESSION
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CLICK_PRODUCT_ATC
@@ -31,6 +32,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.REIMAGIN
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.REIMAGINED_CLICK_HEADER_SHOP_NAME
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.REIMAGINED_CLICK_HEADER_SHOP_REVIEW
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.REIMAGINED_CLICK_HEADER_SHOP_USP
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.REIMAGINED_IMPRESSION_BOTTOM_NAV
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventCategory.SHOP_PAGE_BUYER_DIRECT_PURCHASE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.IS_LOGGED_IN_STATUS
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEMS
@@ -63,6 +65,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_REIMAGINED_CLICK_HEADER_SHOP_NAME
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_REIMAGINED_CLICK_HEADER_SHOP_REVIEW
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_REIMAGINED_CLICK_HEADER_SHOP_USP
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_REIMAGINED_IMPRESSION_BOTTOM_NAV
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.USER_ID
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VIEW_ITEM
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
@@ -1727,6 +1730,21 @@ class ShopPageTrackingBuyer(
             EVENT_CATEGORY to SHOP_PAGE_BUYER,
             EVENT_LABEL to "",
             TRACKER_ID to TRACKER_ID_REIMAGINED_CLICK_HEADER_SHOP_FOLLOW,
+            BUSINESS_UNIT to PHYSICAL_GOODS,
+            CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
+            SHOP_ID to shopId,
+            USER_ID to userId
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(eventMap)
+    }
+
+    fun impressionShopBottomNav(shopId: String, userId: String) {
+        val eventMap = mapOf(
+            EVENT to VIEW_PG_IRIS,
+            EVENT_ACTION to REIMAGINED_IMPRESSION_BOTTOM_NAV,
+            EVENT_CATEGORY to SHOP_PAGE_BUYER,
+            EVENT_LABEL to "",
+            TRACKER_ID to TRACKER_ID_REIMAGINED_IMPRESSION_BOTTOM_NAV,
             BUSINESS_UNIT to PHYSICAL_GOODS,
             CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
             SHOP_ID to shopId,

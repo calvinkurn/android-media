@@ -449,6 +449,8 @@ object ShopPageTrackingConstant {
         const val REIMAGINED_CLICK_HEADER_SHOP_USP = "reimagined - click header shop usp"
         const val REIMAGINED_CLICK_HEADER_SHOP_CHAT = "reimagined - click header shop chat"
         const val REIMAGINED_CLICK_HEADER_SHOP_FOLLOW = "reimagined - click header shop follow"
+        const val REIMAGINED_IMPRESSION_BOTTOM_NAV = "reimagined - impression bottom navigation"
+
 
     }
 
@@ -527,6 +529,7 @@ object ShopPageTrackingConstant {
         const val TRACKER_ID_REIMAGINED_CLICK_HEADER_SHOP_USP = "45909"
         const val TRACKER_ID_REIMAGINED_CLICK_HEADER_SHOP_CHAT = "45911"
         const val TRACKER_ID_REIMAGINED_CLICK_HEADER_SHOP_FOLLOW = "45912"
+        const val TRACKER_ID_REIMAGINED_IMPRESSION_BOTTOM_NAV = "45913"
     }
 
     object Key {
