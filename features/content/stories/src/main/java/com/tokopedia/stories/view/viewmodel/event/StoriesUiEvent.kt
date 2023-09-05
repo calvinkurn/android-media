@@ -4,7 +4,7 @@ import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.stories.view.model.StoriesDetailItemUiModel
 
 sealed interface StoriesUiEvent {
-    data class SelectGroup(val position: Int) : StoriesUiEvent
+    data class SelectGroup(val position: Int, val showAnimation: Boolean) : StoriesUiEvent
     object OpenKebab : StoriesUiEvent
     data class TapSharing (val metadata: StoriesDetailItemUiModel.Sharing) : StoriesUiEvent
     object ShowDeleteDialog : StoriesUiEvent

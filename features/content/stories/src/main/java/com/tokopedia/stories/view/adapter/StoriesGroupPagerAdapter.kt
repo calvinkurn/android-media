@@ -24,6 +24,14 @@ class StoriesGroupPagerAdapter(
         _groupData = data
     }
 
+    fun getCurrentPageGroupName(position: Int): String {
+        return groupData.groupItems.getOrNull(position)?.groupName.orEmpty()
+    }
+
+    private fun getCurrentPageGroupId(instancePosition: Int): String {
+        return groupData.groupItems.getOrNull(instancePosition)?.groupId.orEmpty()
+    }
+
     override fun getItemCount(): Int = groupData.groupItems.size
 
     override fun createFragment(position: Int): Fragment {

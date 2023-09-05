@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
@@ -72,7 +73,7 @@ class StoriesDetailFragment @Inject constructor(
     private val mAdapter: StoriesGroupAdapter by lazyThreadSafetyNone {
         StoriesGroupAdapter(object : StoriesGroupAdapter.Listener {
             override fun onClickGroup(position: Int) {
-                viewModelAction(StoriesUiAction.SetGroup(position))
+                viewModelAction(StoriesUiAction.SetGroup(position, false))
             }
         })
     }
@@ -187,8 +188,14 @@ class StoriesDetailFragment @Inject constructor(
                     }
                     is StoriesUiEvent.ErrorDetailPage -> {
                         if (viewModel.mGroupId != groupId) return@collectLatest
-                        if (event.throwable.isNetworkError) showToast("error detail network ${event.throwable}")
-                        else showToast("error detail content ${event.throwable}")
+                        if (event.throwable.isNetworkError) {
+                            // TODO handle error network here
+                            showToast("error detail network ${event.throwable}")
+                        }
+                        else {
+                            // TODO handle error fetch here
+                            showToast("error detail content ${event.throwable}")
+                        }
                         showPageLoading(false)
                     }
                     else -> {}
@@ -220,6 +227,16 @@ class StoriesDetailFragment @Inject constructor(
         ) return
 
         val currentItem = state.detailItems[state.selectedDetailPosition]
+
+        if (state.detailItems.isEmpty()) {
+            // TODO handle error empty data state here
+            Toast.makeText(
+                requireContext(),
+                "Don't worry this is debug: ask BE team why data stories $groupId is empty :)"
+                , Toast.LENGTH_LONG
+            ).show()
+            return
+        }
 
         storiesDetailsTimer(state)
         renderAuthor(currentItem)
