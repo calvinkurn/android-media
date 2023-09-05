@@ -47,6 +47,7 @@ import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.toLongSafely
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.usecase.coroutines.Fail
@@ -223,7 +224,6 @@ class OfferLandingPageFragment :
                 }
 
                 is Fail -> {
-                    binding?.miniCartView.showToaster(message = atc.throwable.localizedMessage)
                     setDefaultErrorSelection(atc.throwable)
                 }
             }
@@ -620,6 +620,10 @@ class OfferLandingPageFragment :
         when (throwable) {
             is ConnectException, is SocketException, is UnknownHostException -> {
                 setViewState(VIEW_ERROR, Status.NO_CONNECTION)
+            }
+
+            is ResponseErrorException -> {
+                binding?.miniCartView.showToaster(message = throwable.localizedMessage)
             }
 
             else -> {
