@@ -73,5 +73,38 @@
 
     <string name="topads_edit_keyword_title">Biaya Iklan dan Kata Kunci</string>
     <string name="topads_edit_auto_bid_ticker_title"><![CDATA[Biaya iklan dan kata kunci pada grup iklan ini akan diatur oleh TopAds untuk memaksimalkan penjualanmu. <font color = "#03AC0E"><a href="">Pelajari Selengkapnya</a></font>]]></string>
+    <string name="footer_potential_widget_edit_ad_group_text">Perkiraan seberapa sering iklanmu tampil berdasarkan perubahan pada produk yang dipilih, biaya grup iklan, dan anggaran harian.</string>
+
+    <string name="top_ads_edit_ad_activity_title">Ubah Grup Iklan</string>
+    <string name="top_ads_edit_ad_group_apply_bottom_sheet_cta">Terapkan</string>
+
+    <string name="top_ads_edit_ad_group_name_bottom_sheet_title">Ubah nama grup</string>
+    <string name="top_ads_edit_ad_group_name_bottom_sheet_label">Nama grup iklan</string>
+    <string name="top_ads_edit_ad_group_name_bottom_sheet_cta">Ubah Nama</string>
+
+    <string name="top_ads_edit_ad_group_recommendation_bid_bottom_sheet_title">Iklan di rekomendasi</string>
+    <string name="top_ads_edit_ad_group_recommendation_bid_bottom_sheet_desc">Iklanmu akan tampil pada bagian halaman strategis seperti di halaman home, keranjang, inbox dan detail produk. Pelajari</string>
+    <string name="top_ads_edit_ad_group_recommendation_bid_bottom_sheet_label">Biaya Iklan di Rekomendasi</string>
+
+    <string name="top_ads_edit_ad_group_daily_budget_bottom_sheet_title">Ubah anggaran harian</string>
+    <string name="top_ads_edit_ad_group_daily_budget_bottom_sheet_label">Anggaran harian</string>
+    <string name="top_ads_edit_ad_group_daily_budget_bottom_sheet_toggle_title">Batasi anggaran harian</string>
+    <string name="top_ads_edit_ad_group_daily_budget_bottom_sheet_toggle_subtitle">Atur anggaran iklan sesuai kebutuhan.</string>
+
+    <string name="top_ads_edit_ad_group_setting_mode_bottom_sheet_title">Mode pengaturan</string>
+
+    <string name="top_ads_edit_ad_group_item_mode_manual">Iklan diatur manual</string>
+    <string name="top_ads_edit_ad_group_item_mode_automatic">Iklan diatur sistem Topads</string>
+
+    <string name="edit_ad_item_title_name">Nama Grup</string>
+    <string name="edit_ad_item_title_product">Produk</string>
+    <string name="edit_ad_item_title_mode">Mode Pengaturan</string>
+    <string name="edit_ad_item_title_ads_search">Iklan di Pencarian</string>
+    <string name="edit_ad_item_title_ads_recommendation">Iklan di Rekomendasi</string>
+    <string name="edit_ad_item_title_daily_budget">Anggaran Harian</string>
+    <string name="edit_ad_item_title_potential_performance">Potensi tampil</string>
+    <string name="selected_product">%d produk dipilih</string>
+    <string name="ads_search_item_template">Biaya iklan %s dan %s kata kunci</string>
+
 
 </resources>

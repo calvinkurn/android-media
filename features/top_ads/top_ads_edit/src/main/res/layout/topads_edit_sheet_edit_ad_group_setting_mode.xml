@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical">
+
+
+    <com.tokopedia.unifycomponents.CardUnify2
+        android:id="@+id/card_automatic"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp">
+
+            <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+                android:id="@+id/radiobtn_otomatis"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:gravity="center"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/title_otomatis"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/pengaturan_iklan_title_1"
+                app:layout_constraintBottom_toBottomOf="@+id/radiobtn_otomatis"
+                app:layout_constraintStart_toEndOf="@+id/radiobtn_otomatis"
+                app:layout_constraintTop_toTopOf="@+id/radiobtn_otomatis"
+                app:typographyType="body_2"
+                app:typographyWeight="bold" />
+
+
+            <View
+                android:id="@+id/space_auto"
+                android:layout_width="match_parent"
+                android:layout_height="16dp"
+                app:layout_constraintTop_toBottomOf="@+id/radiobtn_otomatis"
+                tools:layout_editor_absoluteX="16dp" />
+
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/icon_1"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                app:icon_color_light_enable="@color/Unify_NN900"
+                app:icon_enable_state="true"
+                app:icon_name="CHECK"
+                app:layout_constraintEnd_toEndOf="@+id/radiobtn_otomatis"
+                app:layout_constraintStart_toStartOf="@+id/radiobtn_otomatis"
+                app:layout_constraintTop_toBottomOf="@+id/space_auto" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/title_otomatis_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/pengaturan_iklan_auto_1"
+                app:layout_constraintBottom_toBottomOf="@+id/icon_1"
+                app:layout_constraintStart_toEndOf="@+id/radiobtn_otomatis"
+                app:layout_constraintTop_toBottomOf="@+id/space_auto"
+                app:typographyType="paragraph_3" />
+
+
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/icon_2"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                app:icon_color_light_enable="@color/Unify_NN900"
+                app:icon_enable_state="true"
+                app:icon_name="CHECK"
+                app:layout_constraintEnd_toEndOf="@+id/icon_1"
+                app:layout_constraintStart_toStartOf="@+id/icon_1"
+                app:layout_constraintTop_toBottomOf="@+id/icon_1" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/title_otomatis_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/pengaturan_iklan_auto_2"
+                app:layout_constraintBottom_toBottomOf="@+id/icon_2"
+                app:layout_constraintStart_toEndOf="@+id/radiobtn_otomatis"
+                app:layout_constraintTop_toBottomOf="@+id/icon_1"
+                app:typographyType="paragraph_3" />
+
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/icon_3"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                app:icon_color_light_enable="@color/Unify_NN900"
+                app:icon_enable_state="true"
+                app:icon_name="CHECK"
+                app:layout_constraintEnd_toEndOf="@+id/icon_2"
+                app:layout_constraintStart_toStartOf="@+id/icon_2"
+                app:layout_constraintTop_toBottomOf="@+id/icon_2" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/title_otomatis_3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/pengaturan_iklan_auto_3"
+                app:layout_constraintBottom_toBottomOf="@+id/icon_3"
+                app:layout_constraintStart_toEndOf="@+id/radiobtn_otomatis"
+                app:layout_constraintTop_toBottomOf="@+id/icon_2"
+                app:typographyType="paragraph_3" />
+
+
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/icon_4"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                app:icon_color_light_enable="@color/Unify_NN900"
+                app:icon_enable_state="true"
+                app:icon_name="CHECK"
+                app:layout_constraintEnd_toEndOf="@+id/icon_3"
+                app:layout_constraintStart_toStartOf="@+id/icon_3"
+                app:layout_constraintTop_toBottomOf="@+id/icon_3" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/title_otomatis_4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/pengaturan_iklan_auto_4"
+                app:layout_constraintBottom_toBottomOf="@+id/icon_4"
+                app:layout_constraintStart_toEndOf="@+id/radiobtn_otomatis"
+                app:layout_constraintTop_toBottomOf="@+id/icon_3"
+                app:typographyType="paragraph_3" />
+
+
+            <View
+                android:id="@+id/space_auto_2"
+                android:layout_width="match_parent"
+                android:layout_height="16dp"
+                app:layout_constraintTop_toBottomOf="@+id/icon_4"
+                tools:layout_editor_absoluteX="16dp" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/otomatis_learn_more"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/top_ads_auto_bid_learn_more"
+                android:textColor="@color/Unify_GN500"
+                android:textSize="@dimen/fontSize_lvl2"
+                app:layout_constraintStart_toStartOf="@+id/radiobtn_otomatis"
+                app:layout_constraintTop_toBottomOf="@+id/space_auto_2"
+                app:typographyType="paragraph_3"
+                app:typographyWeight="bold" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.tokopedia.unifycomponents.CardUnify2>
+
+    <View
+        android:id="@+id/space"
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        android:layout_below="@id/card_automatic"
+        tools:layout_editor_absoluteX="16dp" />
+
+    <com.tokopedia.unifycomponents.CardUnify2
+        android:id="@+id/card_manual"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/space">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp">
+
+            <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+                android:id="@+id/radiobtn_manual"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:gravity="center"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/title_manual"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/pengaturan_iklan_title_2"
+                app:layout_constraintBottom_toBottomOf="@+id/radiobtn_manual"
+                app:layout_constraintStart_toEndOf="@+id/radiobtn_manual"
+                app:layout_constraintTop_toTopOf="@+id/radiobtn_manual"
+                app:typographyType="body_2"
+                app:typographyWeight="bold" />
+
+            <View
+                android:id="@+id/space_manual"
+                android:layout_width="match_parent"
+                android:layout_height="16dp"
+                app:layout_constraintTop_toBottomOf="@+id/radiobtn_manual"
+                tools:layout_editor_absoluteX="16dp" />
+
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/icon_5"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                app:icon_color_light_enable="@color/Unify_NN900"
+                app:icon_enable_state="true"
+                app:icon_name="CHECK"
+                app:layout_constraintEnd_toEndOf="@+id/radiobtn_manual"
+                app:layout_constraintStart_toStartOf="@+id/radiobtn_manual"
+                app:layout_constraintTop_toBottomOf="@+id/space_manual" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/title_manual_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/pengaturan_iklan_manual_1"
+                app:layout_constraintBottom_toBottomOf="@+id/icon_5"
+                app:layout_constraintStart_toEndOf="@+id/radiobtn_manual"
+                app:layout_constraintTop_toTopOf="@+id/icon_5"
+                app:typographyType="paragraph_3" />
+
+
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/icon_6"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                app:icon_color_light_enable="@color/Unify_NN900"
+                app:icon_enable_state="true"
+                app:icon_name="CHECK"
+                app:layout_constraintEnd_toEndOf="@+id/icon_5"
+                app:layout_constraintStart_toStartOf="@+id/icon_5"
+                app:layout_constraintTop_toBottomOf="@+id/icon_5" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/title_manual_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/pengaturan_iklan_manual_2"
+                app:layout_constraintBottom_toBottomOf="@+id/icon_6"
+                app:layout_constraintStart_toEndOf="@+id/radiobtn_manual"
+                app:layout_constraintTop_toBottomOf="@+id/icon_5"
+                app:typographyType="paragraph_3" />
+
+
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/icon_7"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                app:icon_color_light_enable="@color/Unify_NN900"
+                app:icon_enable_state="true"
+                app:icon_name="CHECK"
+                app:layout_constraintEnd_toEndOf="@+id/icon_6"
+                app:layout_constraintStart_toStartOf="@+id/icon_6"
+                app:layout_constraintTop_toBottomOf="@+id/icon_6" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/title_manual_3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/pengaturan_iklan_manual_3"
+                app:layout_constraintBottom_toBottomOf="@+id/icon_7"
+                app:layout_constraintStart_toEndOf="@+id/radiobtn_manual"
+                app:layout_constraintTop_toBottomOf="@+id/icon_6"
+                app:typographyType="paragraph_3" />
+
+
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/icon_8"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                app:icon_color_light_enable="@color/Unify_NN900"
+                app:icon_enable_state="true"
+                app:icon_name="CHECK"
+                app:layout_constraintEnd_toEndOf="@+id/icon_7"
+                app:layout_constraintStart_toStartOf="@+id/icon_7"
+                app:layout_constraintTop_toTopOf="@+id/title_manual_4"
+                app:layout_constraintBottom_toBottomOf="@id/title_manual_4"/>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/title_manual_4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/pengaturan_iklan_manual_4"
+                app:layout_constraintStart_toEndOf="@+id/radiobtn_manual"
+                app:layout_constraintTop_toBottomOf="@+id/title_manual_3"
+                app:typographyType="paragraph_3"
+                android:layout_marginTop="8dp"/>
+
+            <View
+                android:id="@+id/space_manual_2"
+                android:layout_width="match_parent"
+                android:layout_height="16dp"
+                app:layout_constraintTop_toBottomOf="@+id/icon_8"
+                tools:layout_editor_absoluteX="16dp" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/manual_learn_more"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/top_ads_auto_bid_learn_more"
+                android:textColor="@color/Unify_GN500"
+                android:textSize="@dimen/fontSize_lvl2"
+                app:layout_constraintStart_toStartOf="@+id/radiobtn_manual"
+                app:layout_constraintTop_toBottomOf="@+id/space_manual_2"
+                app:typographyType="paragraph_3"
+                app:typographyWeight="bold" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.tokopedia.unifycomponents.CardUnify2>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="16dp"/>
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/edit_ad_group_name_cta"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/top_ads_edit_ad_group_apply_bottom_sheet_cta"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="16dp"/>
+
+</LinearLayout>

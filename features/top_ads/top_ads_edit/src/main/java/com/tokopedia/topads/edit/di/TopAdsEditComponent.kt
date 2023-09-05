@@ -3,6 +3,7 @@ package com.tokopedia.topads.edit.di
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.topads.edit.di.module.TopAdEditModule
 import com.tokopedia.topads.edit.di.module.ViewModelModule
+import com.tokopedia.topads.edit.view.activity.EditAdGroupActivity
 import com.tokopedia.topads.edit.view.activity.EditFormAdActivity
 import com.tokopedia.topads.edit.view.activity.KeywordSearchActivity
 import com.tokopedia.topads.edit.view.fragment.edit.*
@@ -29,5 +30,8 @@ interface TopAdsEditComponent {
     fun inject(editFormAdActivity: EditFormAdActivity)
     fun inject(editFormWithoutGroupFragment: EditFormWithoutGroupFragment)
     fun inject(searchActivity: KeywordSearchActivity)
+
+    fun inject(editAdGroupFragment: EditAdGroupActivity)
+    fun inject(editAdGroupFragment: EditAdGroupFragment)
 }
 
