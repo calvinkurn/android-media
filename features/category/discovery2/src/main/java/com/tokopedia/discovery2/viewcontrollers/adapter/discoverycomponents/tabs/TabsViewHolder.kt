@@ -24,7 +24,6 @@ import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.TabsUnify
-import kotlinx.coroutines.Runnable
 
 private const val TAB_START_PADDING = 20
 private const val DELAY_400: Long = 400
@@ -42,8 +41,8 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
     private var tabsViewModel: TabsViewModel? = null
     private var selectedTab: TabLayout.Tab? = null
     private var isParentUnifyTab: Boolean = true
-    private val navigateToTabPositionHandler = Handler(Looper.getMainLooper())
-    private var navigateToTabPositionRunnable: Runnable? = null
+    private val navigateToTabHandler = Handler(Looper.getMainLooper())
+
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         tabsViewModel = discoveryBaseViewModel as TabsViewModel
         tabsViewModel?.let {
@@ -183,9 +182,7 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
     override fun onViewDetachedToWindow() {
         super.onViewDetachedToWindow()
         tabsHolder.tabLayout.removeOnTabSelectedListener(this)
-        navigateToTabPositionRunnable?.let {
-            navigateToTabPositionHandler.removeCallbacks(it)
-        }
+        navigateToTabHandler.removeCallbacksAndMessages(null)
         tabsViewModel?.getColorTabComponentLiveData()?.removeObservers(fragment.viewLifecycleOwner)
     }
 
@@ -222,15 +219,10 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
                     true
                 )
             }
-            navigateToTabPositionRunnable = Runnable {
-                tabsHolder.tabLayout.getTabAt(tab.position)?.select()
-            }
-            navigateToTabPositionRunnable?.let {
-                navigateToTabPositionHandler.postDelayed(
-                    it,
-                    DELAY_400
-                )
-            }
+            navigateToTabHandler.postDelayed(
+                { tabsHolder.tabLayout.getTabAt(tab.position)?.select() },
+                DELAY_400
+            )
         }
     }
 
