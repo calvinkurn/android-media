@@ -10,6 +10,7 @@ internal object QueryHomeFeedV2 {
     const val HOME_FEED_V2_QUERY = "query getHomeRecommendationProductV2(\$sourceType: String, \$productPage: Int, \$location: String) {\n" +
         "  getHomeRecommendationProductV2(sourceType: \$sourceType, page: \"home\", type: \"banner,banner_ads,position\", productPage: \$productPage, location: \$location) {\n" +
         "    pageName\n" +
+        "    layoutName\n" +
         "    hasNextPage\n" +
         "    products {\n" +
         "      id\n" +
