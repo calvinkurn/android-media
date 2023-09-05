@@ -332,6 +332,7 @@ import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import kotlin.math.abs
 
 /**
  * Separator Rule
@@ -589,6 +590,7 @@ open class DynamicProductDetailFragment :
                 toolbarTransitionRangePixel = TOOLBAR_TRANSITION_RANGES,
                 navScrollCallback = object : NavRecyclerViewScrollListener.NavScrollCallback {
                     override fun onAlphaChanged(offsetAlpha: Float) {
+                        binding?.pdpToolbarShadow?.alpha = abs(offsetAlpha - NavToolbar.ALPHA_MAX) / NavToolbar.ALPHA_MAX
                     }
 
                     override fun onSwitchToDarkToolbar() {

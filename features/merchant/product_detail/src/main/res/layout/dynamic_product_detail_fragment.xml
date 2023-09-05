@@ -27,7 +27,7 @@
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/pdp_toolbar_shadow"
         android:layout_width="0dp"
-        android:layout_height="84dp"
+        android:layout_height="100dp"
         android:contentDescription="pdp_toolbar_shadow"
         android:scaleType="fitXY"
         app:layout_constraintEnd_toEndOf="parent"

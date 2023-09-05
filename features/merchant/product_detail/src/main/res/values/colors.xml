@@ -15,7 +15,7 @@
     <color name="product_detail_dms_regulatory_info_overlay">#29000000</color>
     <color name="product_detail_dms_label_carousel_background">#AD31353B</color>
     <color name="product_detail_dms_toolbar_gradient_start">#00000000</color>
-    <color name="product_detail_dms_toolbar_gradient_center">#52000000</color>
-    <color name="product_detail_dms_toolbar_gradient_end">#B3000000</color>
+    <color name="product_detail_dms_toolbar_gradient_center">#63000000</color>
+    <color name="product_detail_dms_toolbar_gradient_end">#B2000000</color>
     <color name="product_detail_dms_divider_decorator_color">@color/Unify_NN50</color>
 </resources>
