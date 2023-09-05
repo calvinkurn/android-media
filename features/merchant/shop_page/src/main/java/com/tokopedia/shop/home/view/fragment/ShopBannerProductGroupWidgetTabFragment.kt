@@ -145,7 +145,7 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
                     tracker.sendProductCarouselBannerClick(
                         singleBanners?.componentId.toString(),
                         singleBanners?.componentName?.id?.lowercase().toString(),
-                        widgetStyle,
+                        ShopWidgetComponentBannerProductGroupUiModel.WidgetStyle.HORIZONTAL.id,
                         shopId,
                         userSession.userId
                     )
@@ -178,7 +178,7 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
             tracker.sendProductCarouselBannerClick(
                 verticalBanner.componentId.orZero().toString(),
                 verticalBanner.componentName?.id?.lowercase().toString(),
-                widgetStyle,
+                ShopWidgetComponentBannerProductGroupUiModel.WidgetStyle.VERTICAL.id,
                 shopId,
                 userSession.userId
             )
