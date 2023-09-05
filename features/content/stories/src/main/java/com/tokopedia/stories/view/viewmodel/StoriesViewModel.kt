@@ -102,6 +102,7 @@ class StoriesViewModel @Inject constructor(
 
     private fun handleGroupMainData(selectedGroup: Int) {
         mGroupPos.update { selectedGroup }
+        fetchAndCacheNextGroupDetail()
         setInitialDetailData()
     }
 
@@ -145,26 +146,38 @@ class StoriesViewModel @Inject constructor(
         updateDetailData(event = RESUME, isSameContent = true)
     }
 
+    private fun fetchAndCacheNextGroupDetail() {
+        val nextGroupPos = mGroupPos.value.plus(1)
+        val isNextGroupExist = nextGroupPos < mGroupSize
+        if (!isNextGroupExist) return
+        val nextGroupId = _storiesGroup.value.groupItems[nextGroupPos].groupId
+
+        viewModelScope.launchCatchError(block = {
+            val nextGroupData = requestStoriesDetailData(nextGroupId)
+            updateGroupData(detail = nextGroupData, groupPosition = nextGroupPos)
+        }) { updateGroupData(detail = StoriesDetailUiModel(), groupPosition = nextGroupPos) }
+    }
+
     private fun setInitialDetailData() {
         viewModelScope.launchCatchError(block = {
             val isCached = mGroupItem.detail != StoriesDetailUiModel()
 
             val detailData = if (isCached) mGroupItem.detail
-            else requestStoriesDetailData()
+            else requestStoriesDetailData(mGroupId)
 
-            updateGroupData(detail = detailData)
+            updateGroupData(detail = detailData, groupPosition = mGroupPos.value)
 
             updateDetailData(
                 position = detailData.selectedDetailPositionCached,
                 isReset = true,
             )
         }) { exception ->
-            updateGroupData(detail = StoriesDetailUiModel())
+            updateGroupData(detail = StoriesDetailUiModel(), groupPosition = mGroupPos.value)
             _uiEvent.emit(StoriesUiEvent.ErrorDetailPage(exception))
         }
     }
 
-    private fun updateGroupData(detail: StoriesDetailUiModel) {
+    private fun updateGroupData(detail: StoriesDetailUiModel, groupPosition: Int) {
         _storiesGroup.update { group ->
             group.copy(
                 selectedGroupId = mGroupId,
@@ -173,7 +186,7 @@ class StoriesViewModel @Inject constructor(
                     storiesGroupHeader.copy(isSelected = index == mGroupPos.value)
                 },
                 groupItems = group.groupItems.mapIndexed { index, storiesGroupItemUiModel ->
-                    if (index == mGroupPos.value) {
+                    if (index == groupPosition) {
                         storiesGroupItemUiModel.copy(
                             detail = detail.copy(
                                 selectedGroupId = storiesGroupItemUiModel.groupId,
@@ -209,7 +222,7 @@ class StoriesViewModel @Inject constructor(
             }
         )
 
-        updateGroupData(detail = currentDetail)
+        updateGroupData(detail = currentDetail, groupPosition = mGroupPos.value)
         _storiesDetail.update { currentDetail }
     }
 
@@ -223,12 +236,12 @@ class StoriesViewModel @Inject constructor(
         return repository.getStoriesInitialData(request)
     }
 
-    private suspend fun requestStoriesDetailData(): StoriesDetailUiModel {
+    private suspend fun requestStoriesDetailData(sourceId: String): StoriesDetailUiModel {
         val request = StoriesRequestModel(
             authorID = mShopId,
             authorType = StoriesAuthorType.SHOP.value,
             source = StoriesSource.STORY_GROUP.value,
-            sourceID = mGroupItem.groupId,
+            sourceID = sourceId,
         )
         return repository.getStoriesDetailData(request)
     }
