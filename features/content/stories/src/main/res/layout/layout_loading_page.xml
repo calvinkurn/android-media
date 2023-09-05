@@ -6,21 +6,35 @@
     android:layout_height="match_parent"
     android:background="@color/Unify_Static_Black">
 
-    <include
-        android:id="@+id/layout_timer"
-        layout="@layout/layout_loading_timer" />
+    <View
+        android:id="@+id/view_timer"
+        android:layout_width="0dp"
+        android:layout_height="4dp"
+        android:layout_marginHorizontal="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_weight="1"
+        android:background="@drawable/bg_timer_stories"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/ic_close_loading"
         android:layout_width="28dp"
         android:layout_height="28dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="23dp"
         app:icon_color_light_enable="@color/Unify_Static_White"
         app:icon_color_night_enable="@color/Unify_Static_White"
         app:icon_name="CLOSE"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/loader_circle_1" />
+        app:layout_constraintTop_toBottomOf="@id/view_timer" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/categories_loader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="loader_circle_1, loader_circle_2, loader_circle_3, loader_react_1, loader_react_2, loader_react_3"/>
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader_circle_1"
@@ -29,7 +43,7 @@
         android:layout_marginStart="14dp"
         android:layout_marginTop="18dp"
         app:layout_constraintStart_toEndOf="@id/ic_close_loading"
-        app:layout_constraintTop_toBottomOf="@id/layout_timer"
+        app:layout_constraintTop_toBottomOf="@id/view_timer"
         app:loader_type="circle" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
@@ -49,7 +63,7 @@
         android:layout_marginStart="12dp"
         android:layout_marginTop="18dp"
         app:layout_constraintStart_toEndOf="@id/loader_circle_1"
-        app:layout_constraintTop_toBottomOf="@id/layout_timer"
+        app:layout_constraintTop_toBottomOf="@id/view_timer"
         app:loader_type="circle" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
@@ -69,7 +83,7 @@
         android:layout_marginStart="12dp"
         android:layout_marginTop="18dp"
         app:layout_constraintStart_toEndOf="@id/loader_circle_2"
-        app:layout_constraintTop_toBottomOf="@id/layout_timer"
+        app:layout_constraintTop_toBottomOf="@id/view_timer"
         app:loader_type="circle" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
@@ -82,8 +96,14 @@
         app:layout_constraintTop_toBottomOf="@+id/loader_circle_3"
         app:loader_type="rect" />
 
-    <include
-        android:id="@+id/layout_declarative"
-        layout="@layout/layout_loading_declarative" />
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader_decorative_white"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:loader_type="decorative_white" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

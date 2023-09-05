@@ -158,7 +158,6 @@ class StoriesDetailFragment @Inject constructor(
         binding.ivStoriesDetailContent.apply {
             setImageUrl(currContent.imageContent)
             onUrlLoaded = {
-                showStoriesComponent(true)
                 contentIsLoaded()
             }
         }
@@ -267,9 +266,9 @@ class StoriesDetailFragment @Inject constructor(
     }
 
     private fun showPageLoading(isShowLoading: Boolean) = with(binding){
-        layoutTimer.llTimer.showWithCondition(isShowLoading)
-        layoutDeclarative.loaderDecorativeWhite.showWithCondition(isShowLoading)
+        rvStoriesCategory.showWithCondition(!isShowLoading)
         ivStoriesDetailContent.showWithCondition(!isShowLoading)
+        layoutDetailLoading.container.showWithCondition(isShowLoading)
     }
 
     override fun onDestroyView() {

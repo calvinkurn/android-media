@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showToast
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.stories.databinding.FragmentStoriesGroupBinding
@@ -99,6 +100,7 @@ class StoriesGroupFragment @Inject constructor(
     private fun showSelectedGroupHighlight(position: Int) {
         viewLifecycleOwner.lifecycleScope.launch {
             binding.tvHighlight.text = pagerAdapter.getCurrentPageGroupName(position)
+            binding.tvHighlight.show()
             binding.tvHighlight.animate().alpha(1f)
             delay(1000)
             binding.tvHighlight.animate().alpha(0f)
