@@ -16,6 +16,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.oldcatalog.usecase.listing.CatalogDynamicFilterUseCase
 import com.tokopedia.oldcatalog.usecase.listing.CatalogQuickFilterUseCase
+import com.tokopedia.searchbar.navigation_component.domain.GetNotificationUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -27,7 +28,8 @@ class CatalogProductListViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private var quickFilterUseCase: CatalogQuickFilterUseCase,
     private val dynamicFilterUseCase: CatalogDynamicFilterUseCase,
-    private val addToCartUseCase: AddToCartUseCase
+    private val addToCartUseCase: AddToCartUseCase,
+    private val getNotificationUseCase: GetNotificationUseCase
 ) : BaseViewModel(dispatchers.main) {
 
     val quickFilterResult = MutableLiveData<Result<DynamicFilterModel>>()
@@ -60,6 +62,10 @@ class CatalogProductListViewModel @Inject constructor(
     private val _textToaster = MutableLiveData<String>()
     val textToaster: LiveData<String>
         get() = _textToaster
+
+    private val _totalCartItem = MutableLiveData<Int>()
+    val totalCartItem: LiveData<Int>
+        get() = _totalCartItem
 
     fun fetchQuickFilters(params: RequestParams) {
 
@@ -116,5 +122,18 @@ class CatalogProductListViewModel @Inject constructor(
         } else {
             _textToaster.postValue(atcResult.getAtcErrorMessage())
         }
+    }
+
+    fun refreshNotification() {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val result = getNotificationUseCase.executeOnBackground()
+                _totalCartItem.postValue(result.totalCart)
+            },
+            onError = {
+                _errorsToaster.postValue(it)
+            }
+        )
     }
 }

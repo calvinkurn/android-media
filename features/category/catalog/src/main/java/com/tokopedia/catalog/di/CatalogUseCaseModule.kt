@@ -17,6 +17,8 @@ import com.tokopedia.oldcatalog.usecase.listing.CatalogQuickFilterUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import dagger.Module
@@ -54,6 +56,10 @@ class CatalogUseCaseModule {
     fun provideCatalogAllReviewRepository(): CatalogAllReviewRepository {
         return CatalogAllReviewRepository()
     }
+
+    @CatalogScope
+    @Provides
+    fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface = UserSession(context)
 
     @CatalogScope
     @Provides

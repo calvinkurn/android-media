@@ -93,7 +93,9 @@ class CatalogProductListFragment : BaseDaggerFragment(), ChooseAddressWidget.Cho
         initSearchQuickSortFilter()
         viewModel.fetchQuickFilters(getQuickFilterParams())
         viewModel.fetchDynamicAttribute(getDynamicFilterParams())
+        viewModel.refreshNotification()
         sortFilterBottomSheet = SortFilterBottomSheet()
+
         view.postDelayed(
             {
                 addToCart(
@@ -197,6 +199,10 @@ class CatalogProductListFragment : BaseDaggerFragment(), ChooseAddressWidget.Cho
 
         viewModel.textToaster.observe(viewLifecycleOwner) {
             Toaster.build(view, it).show()
+        }
+
+        viewModel.totalCartItem.observe(viewLifecycleOwner) {
+            binding?.toolbar?.cartCount = it
         }
     }
 
@@ -403,6 +409,7 @@ class CatalogProductListFragment : BaseDaggerFragment(), ChooseAddressWidget.Cho
         super.onResume()
         updateChooseAddressWidget()
         checkAddressUpdate(false)
+        viewModel.refreshNotification()
     }
 
     private fun fetchUserLatestAddressData() {
