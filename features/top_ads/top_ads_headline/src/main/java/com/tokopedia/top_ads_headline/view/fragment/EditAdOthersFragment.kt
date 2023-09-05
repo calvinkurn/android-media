@@ -247,9 +247,11 @@ class EditAdOthersFragment : BaseDaggerFragment() {
         }
         startDate.textFieldInput.isFocusable = false
         endDate.textFieldInput.isFocusable = false
-        val padding = resources.getDimensionPixelSize(abstractionR.dimen.dp_8)
-        startDate.textFieldIcon1.setPadding(padding, padding, padding, padding)
-        endDate.textFieldIcon1.setPadding(padding, padding, padding, padding)
+        context?.let {
+            val padding = it.resources.getDimensionPixelSize(abstractionR.dimen.dp_8)
+            startDate.textFieldIcon1.setPadding(padding, padding, padding, padding)
+            endDate.textFieldIcon1.setPadding(padding, padding, padding, padding)
+        }
         context?.run {
             setDate()
             startDate.textFieldInput.setOnClickListener {
