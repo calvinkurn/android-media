@@ -35,6 +35,7 @@ class StoriesSharingComponent (rootView: View) {
             tnTitle = data.metadata.ogTitle,
         )
         sharingSheet.setLinkProperties(data.metadata)
+        sharingSheet.setOnDismissListener { mListener?.onDismissEvent(this@StoriesSharingComponent) }
         sharingSheet.show(fg, TAG)
     }
 
