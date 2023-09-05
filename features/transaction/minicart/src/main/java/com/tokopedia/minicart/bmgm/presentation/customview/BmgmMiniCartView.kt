@@ -60,6 +60,7 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
     private var param = BmgmParamModel()
     private var shopIds = listOf<Long>()
     private var messageIndex = Int.ZERO
+    private var offerCount: Int = Int.ZERO
 
     private var binding: ViewBmgmMiniCartWidgetBinding? = null
     private var footerBinding: ViewBmgmMiniCartSubTotalBinding? = null
@@ -111,12 +112,17 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
     }
 
     fun fetchData(
-        shopIds: List<Long>, offerIds: List<Long>, offerJsonData: String, warehouseIds: List<String>
+        shopIds: List<Long>,
+        offerIds: List<Long>,
+        offerJsonData: String,
+        warehouseIds: List<String>,
+        offerCount: Int
     ) {
         this.param = BmgmParamModel(
             offerIds = offerIds, offerJsonData = offerJsonData, warehouseIds = warehouseIds
         )
         this.shopIds = shopIds
+        this.offerCount = offerCount
         viewModel.getMiniCartData(shopIds, param, false)
     }
 
@@ -323,7 +329,6 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
 
     private fun getProductList(data: BmgmMiniCartDataUiModel): List<BmgmMiniCartVisitable> {
         val productList = mutableListOf<BmgmMiniCartVisitable>()
-        val hasReachMaxDiscount = data.hasReachMaxDiscount
         data.tiersApplied.forEach { t ->
             if (t.isDiscountTier()) {
                 productList.add(t)
@@ -331,10 +336,12 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
                 t.products.forEach { p ->
                     productList.add(p)
                 }
-                if (!hasReachMaxDiscount) {
-                    productList.add(BmgmMiniCartVisitable.PlaceholderUiModel)
-                }
             }
+        }
+        val numOfDiscountTier = data.tiersApplied.count { it.isDiscountTier() }
+        val hasReachMaxDiscount = numOfDiscountTier == offerCount
+        if (!hasReachMaxDiscount) {
+            productList.add(BmgmMiniCartVisitable.PlaceholderUiModel)
         }
         return productList
     }

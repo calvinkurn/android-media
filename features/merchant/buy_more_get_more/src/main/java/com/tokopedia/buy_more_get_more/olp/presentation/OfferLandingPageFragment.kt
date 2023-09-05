@@ -43,6 +43,7 @@ import com.tokopedia.campaign.utils.extension.showToaster
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongSafely
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
@@ -191,7 +192,10 @@ class OfferLandingPageFragment :
                     setupTncBottomSheet()
                     fetchMiniCart()
                 }
-                else -> { setViewState(VIEW_ERROR, offerInfoForBuyer.responseHeader.status) }
+
+                else -> {
+                    setViewState(VIEW_ERROR, offerInfoForBuyer.responseHeader.status)
+                }
             }
         }
 
@@ -317,11 +321,13 @@ class OfferLandingPageFragment :
                     renderSortFilter(sortId, sortName)
                 }
             }
+
             REQUEST_CODE_USER_LOGIN -> {
                 if (resultCode == Activity.RESULT_OK) {
                     loadInitialData()
                 }
             }
+
             REQUEST_CODE_USER_LOGIN_CART -> {
                 if (resultCode == Activity.RESULT_OK) {
                     loadInitialData()
@@ -543,11 +549,14 @@ class OfferLandingPageFragment :
 
     private fun fetchMiniCart() {
         val currentUiState = viewModel.currentState
+        val offeringInfo = viewModel.offeringInfo.value
+        val offerCount = offeringInfo?.offerings?.firstOrNull()?.tierList?.size.orZero()
         binding?.miniCartView?.fetchData(
             shopIds = listOf(currentUiState.shopData.shopId),
             offerIds = currentUiState.offerIds,
             offerJsonData = currentUiState.offeringJsonData,
-            warehouseIds = currentUiState.warehouseIds.map { it.toString() }
+            warehouseIds = currentUiState.warehouseIds.map { it.toString() },
+            offerCount = offerCount
         )
     }
 
@@ -605,6 +614,7 @@ class OfferLandingPageFragment :
             is ConnectException, is SocketException, is UnknownHostException -> {
                 setViewState(VIEW_ERROR, Status.NO_CONNECTION)
             }
+
             else -> {
                 setViewState(VIEW_ERROR)
             }
