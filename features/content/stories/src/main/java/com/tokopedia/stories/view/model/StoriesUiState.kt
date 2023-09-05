@@ -36,12 +36,14 @@ enum class BottomSheetType {
 
 data class ProductBottomSheetUiState(
     val products: List<ContentTaggedProductUiModel>,
-    val resultState: ResultState
+    val campaign: StoriesCampaignUiModel,
+    val resultState: ResultState,
 ) {
     companion object {
         val Empty
             get() = ProductBottomSheetUiState(
                 products = emptyList(),
+                campaign = StoriesCampaignUiModel.Unknown,
                 resultState = ResultState.Loading,
             )
     }

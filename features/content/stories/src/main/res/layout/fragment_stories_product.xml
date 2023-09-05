@@ -6,6 +6,14 @@
     android:layout_height="wrap_content"
     android:paddingBottom="@dimen/content_common_space_16">
 
+    <include
+        android:id="@+id/v_stories_campaign"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        layout="@layout/item_content_product_sheet_section"
+        android:visibility="visible" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_stories_product"
         android:layout_width="match_parent"
@@ -20,7 +28,7 @@
         app:layout_constraintHeight_default="wrap"
         app:layout_constraintStart_toStartOf="parent"
         tools:itemCount="40"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/v_stories_campaign" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/stories_product_sheet_loader"

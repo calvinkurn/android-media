@@ -22,6 +22,9 @@ import com.tokopedia.stories.databinding.FragmentStoriesProductBinding
 import com.tokopedia.stories.utils.withCache
 import com.tokopedia.stories.view.model.BottomSheetType
 import com.tokopedia.stories.view.model.ProductBottomSheetUiState
+import com.tokopedia.stories.view.model.StoriesCampaignUiModel
+import com.tokopedia.stories.view.model.isNotAvailable
+import com.tokopedia.stories.view.model.isOngoing
 import com.tokopedia.stories.view.utils.showToaster
 import com.tokopedia.stories.view.viewmodel.StoriesViewModel
 import com.tokopedia.stories.view.viewmodel.action.StoriesProductAction
@@ -29,7 +32,10 @@ import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction
 import com.tokopedia.stories.view.viewmodel.event.StoriesUiEvent
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.timer.TimerUnifySingle
+import com.tokopedia.utils.date.DateUtil
 import kotlinx.coroutines.flow.collectLatest
+import java.util.Date
 import javax.inject.Inject
 
 /**
@@ -75,6 +81,7 @@ class StoriesProductBottomSheet @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             viewModel.uiState.withCache().collectLatest { (prevState, state) ->
                 renderProducts(prevState?.productSheet, state.productSheet)
+                renderCampaign(prevState?.productSheet, state.productSheet)
             }
         }
     }
@@ -117,6 +124,37 @@ class StoriesProductBottomSheet @Inject constructor(
         binding.rvStoriesProduct.shouldShowWithAction(state.resultState is ResultState.Success) {
             productAdapter.setItemsAndAnimateChanges(state.products)
         }
+    }
+
+    private fun renderCampaign(
+        prevState: ProductBottomSheetUiState?,
+        state: ProductBottomSheetUiState
+    ) {
+        if (prevState == state) return
+        val campaign = state.campaign
+        binding.vStoriesCampaign.root.showWithCondition(!campaign.isNotAvailable)
+
+        binding.vStoriesCampaign.tvHeaderTitle.text = when (campaign) {
+            is StoriesCampaignUiModel.Ongoing -> campaign.title
+            is StoriesCampaignUiModel.Upcoming -> campaign.title
+            else -> ""
+        }
+
+        binding.vStoriesCampaign.sectionTimer.timerVariant = if (campaign.isOngoing) {
+            TimerUnifySingle.VARIANT_MAIN
+        } else TimerUnifySingle.VARIANT_INFORMATIVE
+
+        val targetTime = when (campaign) {
+            is StoriesCampaignUiModel.Ongoing -> campaign.endTime
+            is StoriesCampaignUiModel.Upcoming -> campaign.startTime
+            else -> null
+        } ?: return
+
+        val dt = DateUtil.getCurrentCalendar().apply {
+            time = Date(targetTime.time)
+        }
+
+        binding.vStoriesCampaign.sectionTimer.targetDate = dt
     }
 
     override fun onResume() {
