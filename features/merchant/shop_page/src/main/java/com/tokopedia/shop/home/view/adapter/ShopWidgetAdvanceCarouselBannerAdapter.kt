@@ -29,6 +29,7 @@ class ShopWidgetAdvanceCarouselBannerAdapter : RecyclerView.Adapter<ShopHomeDisp
     }
 
     private val differ = AsyncListDiffer(this, differCallback)
+    private var ratio: String = ""
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -41,6 +42,7 @@ class ShopWidgetAdvanceCarouselBannerAdapter : RecyclerView.Adapter<ShopHomeDisp
         )
         return ShopHomeDisplayAdvanceCarouselBannerItemViewHolder(
             binding,
+            ratio
         )
     }
 
@@ -59,6 +61,10 @@ class ShopWidgetAdvanceCarouselBannerAdapter : RecyclerView.Adapter<ShopHomeDisp
 
     fun submit(data: List<ShopHomeDisplayWidgetUiModel.DisplayWidgetItem>) {
         differ.submitList(data)
+    }
+
+    fun setRatio(ratio: String) {
+        this.ratio = ratio
     }
 
 }

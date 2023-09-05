@@ -23,6 +23,7 @@ import com.tokopedia.shop.home.view.adapter.ShopWidgetAdvanceCarouselBannerAdapt
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 import com.tokopedia.unifycomponents.PageControl
+import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 import java.util.*
@@ -169,6 +170,7 @@ class ShopHomeAdvanceCarouselBannerViewHolder(
 
     private fun setupAdapter(uiModel: ShopHomeDisplayWidgetUiModel) {
         adapterShopWidgetAdvanceCarouselBanner = ShopWidgetAdvanceCarouselBannerAdapter()
+        adapterShopWidgetAdvanceCarouselBanner?.setRatio(uiModel.header.ratio)
         adapterShopWidgetAdvanceCarouselBanner?.submit(uiModel.data.orEmpty())
     }
 
