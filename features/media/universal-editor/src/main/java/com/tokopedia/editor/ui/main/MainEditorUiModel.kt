@@ -11,6 +11,7 @@ import com.tokopedia.picker.common.UniversalEditorParam
 data class MainEditorUiModel(
     val param: UniversalEditorParam = UniversalEditorParam(),
     val tools: List<NavigationTool> = emptyList(),
+    val activeFilePath: String = "",
     val imageModel: ImageModel? = null,
     val videoModel: VideoModel? = null
 )
