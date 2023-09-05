@@ -85,6 +85,7 @@ import com.tokopedia.cartrevamp.view.uimodel.UpdateCartCheckoutState
 import com.tokopedia.cartrevamp.view.uimodel.UpdateCartPromoState
 import com.tokopedia.cartrevamp.view.util.CartPageAnalyticsUtil
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.toZeroStringIfNullOrBlank
@@ -425,7 +426,8 @@ class CartViewModel @Inject constructor(
                         cartId = cartId,
                         getCartState = getCartState
                     )
-                    val updateAndReloadCartListData = updateAndReloadCartUseCase(updateCartWrapperRequest)
+                    val updateAndReloadCartListData =
+                        updateAndReloadCartUseCase(updateCartWrapperRequest)
                     withContext(dispatchers.main) {
                         _globalEvent.value = CartGlobalEvent.ProgressLoading(false)
                         processInitialGetCartData(
@@ -2012,10 +2014,8 @@ class CartViewModel @Inject constructor(
         cartIds: List<String>,
         needRefresh: Boolean,
         isFromGlobalCheckbox: Boolean
-    ): Triple<List<Int>, List<Int>, ArrayList<Any>> {
+    ): ArrayList<Any> {
         val toBeRemovedItems = mutableListOf<Any>()
-        val toBeRemovedIndices = mutableListOf<Int>()
-        val toBeUpdatedIndices = mutableListOf<Int>()
 
         val newCartDataList = ArrayList(cartDataList.value.toMutableList())
 
@@ -2058,11 +2058,9 @@ class CartViewModel @Inject constructor(
                                 val previousData = newCartDataList[previousIndex]
                                 if (previousData is DisabledReasonHolderData) {
                                     toBeRemovedItems.add(previousData)
-                                    toBeRemovedIndices.add(previousIndex)
                                 }
                             }
                             toBeRemovedItems.add(data)
-                            toBeRemovedIndices.add(index)
                         } else {
                             // update selection
                             data.productUiModelList.last().isFinalItem = true
@@ -2074,7 +2072,6 @@ class CartViewModel @Inject constructor(
                             if (!needRefresh && (isFromGlobalCheckbox || hasSelectDeletedProducts) && selectedNonDeletedProducts > 0) {
                                 _globalEvent.value = CartGlobalEvent.CheckGroupShopCartTicker(data)
                             }
-                            toBeUpdatedIndices.add(index)
                         }
                     }
                 }
@@ -2082,12 +2079,22 @@ class CartViewModel @Inject constructor(
                 data is CartItemHolderData -> {
                     if (cartIds.contains(data.cartId)) {
                         toBeRemovedItems.add(data)
-                        toBeRemovedIndices.add(index)
                     }
                 }
 
                 hasReachAllShopItems(data) -> break@loop
             }
+        }
+
+        val allGroupDataList = CartDataHelper.getAllShopGroupDataListWithIndex(newCartDataList)
+
+        allGroupDataList.forEach { groupPair ->
+            checkAvailableShopBottomHolderData(
+                newCartDataList,
+                groupPair.second,
+                toBeRemovedItems,
+                groupPair.first
+            )
         }
 
         newCartDataList.removeAll(toBeRemovedItems.toSet())
@@ -2107,18 +2114,15 @@ class CartViewModel @Inject constructor(
             disabledItemHeaderHolderDataIndexPair?.let {
                 newCartDataList.remove(it.first)
                 toBeRemovedItems.add(it.second)
-                toBeRemovedIndices.add(it.second)
             }
             disabledAccordionHolderDataIndexPair?.let {
                 newCartDataList.remove(it.first)
                 toBeRemovedItems.add(it.second)
-                toBeRemovedIndices.add(it.second)
             }
         } else {
             val errorItemCount = disabledCartItems.size
             disabledItemHeaderHolderDataIndexPair?.let {
                 it.first.disabledItemCount = errorItemCount
-                toBeUpdatedIndices.add(it.second)
             }
 
             var removeAccordion = false
@@ -2137,12 +2141,63 @@ class CartViewModel @Inject constructor(
             if (removeAccordion) {
                 disabledAccordionHolderDataIndexPair?.let {
                     newCartDataList.remove(it.first)
-                    toBeRemovedItems.add(it.second)
-                    toBeRemovedIndices.add(it.second)
                 }
             }
         }
-        return Triple(toBeRemovedIndices, toBeUpdatedIndices, newCartDataList)
+        return newCartDataList
+    }
+
+    internal fun checkAvailableShopBottomHolderData(
+        newCartDataList: ArrayList<Any>,
+        data: CartGroupHolderData,
+        toBeRemovedItems: MutableList<Any>,
+        index: Int
+    ) {
+        val shopBottomDataPair = getShopBottomHolderDataIndex(newCartDataList, data, index)
+        val cartShopBottomHolderData = shopBottomDataPair.first
+        if (cartShopBottomHolderData != null) {
+            if (data.productUiModelList.isEmpty()) {
+                toBeRemovedItems.add(cartShopBottomHolderData)
+            } else if (data.isTokoNow) {
+                val needToExpand = data.isCollapsed && data.productUiModelList.size <= 3
+                if (needToExpand) {
+                    newCartDataList.addAll(index + 1, data.productUiModelList)
+                    val newCartGroupHolderData = data.copy(
+                        isCollapsible = data.productUiModelList.size > 3,
+                        isCollapsed = false
+                    )
+                    newCartDataList[index] = newCartGroupHolderData
+                    newCartDataList[index + data.productUiModelList.size + 1] =
+                        cartShopBottomHolderData.copy(
+                            shopData = newCartGroupHolderData
+                        )
+                } else {
+                    val newCartGroupHolderData =
+                        data.copy(isCollapsible = data.productUiModelList.size > 3)
+                    newCartDataList[index] = newCartGroupHolderData
+                    newCartDataList[shopBottomDataPair.second] =
+                        cartShopBottomHolderData.copy(shopData = newCartGroupHolderData)
+                }
+            }
+        }
+    }
+
+    internal fun getShopBottomHolderDataIndex(
+        cartDataList: ArrayList<Any>,
+        cartGroupHolderData: CartGroupHolderData,
+        groupIndex: Int
+    ): Pair<CartShopBottomHolderData?, Int> {
+        if (cartGroupHolderData.isTokoNow) {
+            val shopBottomData = CartDataHelper.getNearestShopBottomHolderDataIndex(
+                cartDataList,
+                groupIndex,
+                cartGroupHolderData
+            )
+            if (shopBottomData.second > Int.ZERO) {
+                return Pair(shopBottomData.first, shopBottomData.second)
+            }
+        }
+        return Pair(null, RecyclerView.NO_POSITION)
     }
 
     internal fun updateShopShownByCartGroup(cartGroupHolderData: CartGroupHolderData) {
