@@ -102,8 +102,12 @@ class StoriesViewModel @Inject constructor(
 
     private fun handleGroupMainData(selectedGroup: Int) {
         mGroupPos.update { selectedGroup }
-        fetchAndCacheNextGroupDetail()
-        setInitialDetailData()
+        viewModelScope.launchCatchError(block = {
+            setInitialDetailData()
+            fetchAndCacheNextGroupDetail()
+        }) { exception ->
+            _uiEvent.emit(StoriesUiEvent.ErrorDetailPage(exception))
+        }
     }
 
     private fun handleSetGroup(position: Int, showAnimation: Boolean) {
@@ -146,35 +150,29 @@ class StoriesViewModel @Inject constructor(
         updateDetailData(event = RESUME, isSameContent = true)
     }
 
-    private fun fetchAndCacheNextGroupDetail() {
+    private suspend fun setInitialDetailData() {
+        val isCached = mGroupItem.detail.detailItems.isNotEmpty()
+        val detail = if (isCached) mGroupItem.detail
+        else {
+            val detailData = requestStoriesDetailData(mGroupId)
+            updateGroupData(detail = detailData, groupPosition = mGroupPos.value)
+            detailData
+        }
+
+        updateDetailData(position = detail.selectedDetailPositionCached, isReset = true)
+    }
+
+    private suspend fun fetchAndCacheNextGroupDetail() {
         val nextGroupPos = mGroupPos.value.plus(1)
         val isNextGroupExist = nextGroupPos < mGroupSize
         if (!isNextGroupExist) return
+
         val nextGroupId = _storiesGroup.value.groupItems[nextGroupPos].groupId
 
         viewModelScope.launchCatchError(block = {
             val nextGroupData = requestStoriesDetailData(nextGroupId)
             updateGroupData(detail = nextGroupData, groupPosition = nextGroupPos)
-        }) { updateGroupData(detail = StoriesDetailUiModel(), groupPosition = nextGroupPos) }
-    }
-
-    private fun setInitialDetailData() {
-        viewModelScope.launchCatchError(block = {
-            val isCached = mGroupItem.detail != StoriesDetailUiModel()
-
-            val detailData = if (isCached) mGroupItem.detail
-            else requestStoriesDetailData(mGroupId)
-
-            updateGroupData(detail = detailData, groupPosition = mGroupPos.value)
-
-            updateDetailData(
-                position = detailData.selectedDetailPositionCached,
-                isReset = true,
-            )
-        }) { exception ->
-            updateGroupData(detail = StoriesDetailUiModel(), groupPosition = mGroupPos.value)
-            _uiEvent.emit(StoriesUiEvent.ErrorDetailPage(exception))
-        }
+        }) { }
     }
 
     private fun updateGroupData(detail: StoriesDetailUiModel, groupPosition: Int) {

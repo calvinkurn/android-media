@@ -123,8 +123,7 @@ class StoriesGroupFragment @Inject constructor(
                         if (event.throwable.isNetworkError) {
                             // TODO handle error network here
                             showToast("error group network ${event.throwable}")
-                        }
-                        else {
+                        } else {
                             // TODO handle error fetch here
                             showToast("error group content ${event.throwable}")
                         }
@@ -162,7 +161,7 @@ class StoriesGroupFragment @Inject constructor(
         setCurrentItem(position, showAnimation)
     }
 
-    private fun showPageLoading(isShowLoading: Boolean) = with(binding){
+    private fun showPageLoading(isShowLoading: Boolean) = with(binding) {
         layoutGroupLoading.container.showWithCondition(isShowLoading)
         storiesGroupViewPager.showWithCondition(!isShowLoading)
     }

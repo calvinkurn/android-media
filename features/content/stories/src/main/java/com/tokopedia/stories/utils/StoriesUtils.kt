@@ -33,6 +33,6 @@ internal data class CachedState<T>(val prevValue: T? = null, val value: T) {
 
 internal fun Int.getRandomNumber(): Int {
     val oldValue = this
-    val newValue = (1 until 5).random()
-    return if (oldValue == newValue) newValue.minus(1) else newValue
+    val newValue = (1 until 100).random()
+    return if (oldValue == newValue) newValue.plus(1) else newValue
 }
