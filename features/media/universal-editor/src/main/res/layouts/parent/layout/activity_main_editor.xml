@@ -10,7 +10,7 @@
     <include layout="@layout/uc_pager_container" />
 
     <com.tokopedia.editor.ui.widget.DynamicTextCanvasLayout
-        android:id="@+id/canvas"
+        android:id="@+id/container"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintDimensionRatio="H,9:16"
@@ -51,5 +51,26 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />
+
+    <View
+        android:id="@+id/overlay_loader"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/Unify_NN900_96"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/global_loader"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_gravity="center_horizontal"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:loader_type="decorative_white"
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
