@@ -19,6 +19,7 @@ import com.tokopedia.editor.ui.gesture.listener.OnMultiTouchListener
 import com.tokopedia.editor.ui.model.InputTextModel
 import com.tokopedia.editor.util.FontAlignment
 import com.tokopedia.editor.util.FontAlignment.Companion.toGravity
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 
 class DynamicTextCanvasLayout @JvmOverloads constructor(
     private val context: Context,
@@ -59,13 +60,18 @@ class DynamicTextCanvasLayout @JvmOverloads constructor(
         createDeletionButtonView()
     }
 
-    fun addOrEditText(id: Int, model: InputTextModel) {
-        if (id != -1) {
-            editText(id, model)
+    fun addOrEditText(viewId: Int, model: InputTextModel) {
+        if (viewId != -1) {
+            editText(viewId, model)
             return
         }
 
         addText(model)
+    }
+
+    fun setTextVisibility(viewId: Int, isShown: Boolean) {
+        findViewById<EditorEditTextView>(viewId)
+            .showWithCondition(isShown)
     }
 
     fun setListener(listener: Listener) {
@@ -75,9 +81,7 @@ class DynamicTextCanvasLayout @JvmOverloads constructor(
     fun exportAsBitmap(): Bitmap {
         val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
-
         draw(canvas)
-
         return bitmap
     }
 
@@ -114,8 +118,7 @@ class DynamicTextCanvasLayout @JvmOverloads constructor(
         // Propagate each click listener of any textView were added on this container.
         touchListener.setOnGestureControl(object : OnGestureControl {
             override fun onClick() {
-                val model = models[textView.id] ?: return
-                listener?.onTextClick(textView, model)
+                listener?.onTextClick(textView, models[textView.id])
             }
         })
 
@@ -162,7 +165,7 @@ class DynamicTextCanvasLayout @JvmOverloads constructor(
         LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
 
     interface Listener {
-        fun onTextClick(text: View, model: InputTextModel)
+        fun onTextClick(text: View, model: InputTextModel?)
     }
 
     companion object {
