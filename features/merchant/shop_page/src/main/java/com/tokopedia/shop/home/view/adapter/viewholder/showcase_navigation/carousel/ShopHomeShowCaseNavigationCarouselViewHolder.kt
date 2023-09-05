@@ -39,16 +39,29 @@ class ShopHomeShowCaseNavigationCarouselViewHolder(
             val showcases = model.appearance.showcases
             viewBinding?.tpgTitle?.text = model.appearance.title
             viewBinding?.tpgTitle?.isVisible = model.appearance.title.isNotEmpty() && showcases.isNotEmpty()
-            viewBinding?.iconChevron?.setOnClickListener { listener.onNavigationBannerViewAllShowcaseClick(model.appearance.viewAllCtaAppLink) }
+            viewBinding?.iconChevron?.setOnClickListener {
+                listener.onNavigationBannerViewAllShowcaseClick(
+                    model.appearance.viewAllCtaAppLink,
+                    model.appearance,
+                    showcases.firstOrNull()?.id.orEmpty()
+                )
+            }
             viewBinding?.iconChevron?.isVisible = showcases.size > SHOW_VIEW_ALL_SHOWCASE_THRESHOLD
 
             setupShowCaseRecyclerView(
                 model.header.isOverrideTheme,
                 model.header.colorSchema,
                 model.appearance,
-                showcases
+                showcases,
+                model
             )
-            setupColors(model.header.isOverrideTheme, model.header.colorSchema,)
+            setupColors(model.header.isOverrideTheme, model.header.colorSchema)
+            listener.onNavigationBannerImpression(
+                uiModel = model,
+                tabCount = 0,
+                tabName = "",
+                showcaseId = ""
+            )
         }
     }
 
@@ -56,9 +69,10 @@ class ShopHomeShowCaseNavigationCarouselViewHolder(
         overrideTheme: Boolean,
         colorSchema: ShopPageColorSchema,
         appearance: ShopHomeShowcaseNavigationBannerWidgetAppearance,
-        showcases: List<Showcase>
+        showcases: List<Showcase>,
+        uiModel: ShowcaseNavigationUiModel
     ) {
-        val showCaseAdapter = ShopHomeShowCaseNavigationAdapter(appearance, listener, overrideTheme, colorSchema)
+        val showCaseAdapter = ShopHomeShowCaseNavigationAdapter(appearance, uiModel, listener, overrideTheme, colorSchema)
 
         val recyclerView = viewBinding?.recyclerView
         recyclerView?.apply {

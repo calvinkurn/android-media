@@ -10,10 +10,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.ShopComponentHelper
+import com.tokopedia.shop.analytic.ShopPageHomeTracking
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.FragmentShopBannerProductGroupWidgetTabBinding
@@ -30,6 +32,7 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 import com.tokopedia.shop.home.view.model.banner_product_group.ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.ComponentName
+import com.tokopedia.user.session.UserSessionInterface
 
 class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
 
@@ -61,7 +64,6 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
 
     }
 
-
     private val shopId by lazy { arguments?.getString(BUNDLE_KEY_SHOP_ID).orEmpty() }
     private val widgets by lazy {
         arguments?.getParcelableArrayList<ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList>(
@@ -75,6 +77,12 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
         arguments?.getParcelable(BUNDLE_KEY_COLOR_SCHEME) ?: ShopPageColorSchema()
     }
     private var onProductSuccessfullyLoaded: (Boolean) -> Unit = {}
+
+    @Inject
+    lateinit var tracker: ShopPageHomeTracking
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -119,6 +127,7 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
     override fun onResume() {
         super.onResume()
         getCarouselWidgets()
+        sendProductCarouselImpressionTracker(widgets)
     }
 
     private fun showMainBanner() {
@@ -133,6 +142,13 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
                 binding?.imgMainBanner?.visible()
                 binding?.imgMainBanner?.loadImage(mainBannerImageUrl)
                 binding?.imgMainBanner?.setOnClickListener {
+                    tracker.sendProductCarouselBannerClick(
+                        singleBanners?.componentId.toString(),
+                        singleBanners?.componentName?.id?.lowercase().toString(),
+                        ShopWidgetComponentBannerProductGroupUiModel.WidgetStyle.HORIZONTAL.id,
+                        shopId,
+                        userSession.userId
+                    )
                     onMainBannerClick(mainBanner ?: return@setOnClickListener)
                 }
             }
@@ -149,10 +165,23 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
         }
         bannerProductGroupAdapter.setOnProductClick { selectedProduct ->
             onProductClick(selectedProduct)
+            tracker.sendProductCarouselProductCardClick(
+                selectedProduct,
+                widgetStyle,
+                shopId,
+                userSession.userId
+            )
         }
 
         bannerProductGroupAdapter.setOnVerticalBannerClick { verticalBanner ->
             onVerticalBannerClick(verticalBanner)
+            tracker.sendProductCarouselBannerClick(
+                verticalBanner.componentId.orZero().toString(),
+                verticalBanner.componentName?.id?.lowercase().toString(),
+                ShopWidgetComponentBannerProductGroupUiModel.WidgetStyle.VERTICAL.id,
+                shopId,
+                userSession.userId
+            )
         }
     }
 
@@ -214,5 +243,14 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
 
     fun setOnProductSuccessfullyLoaded(onProductSuccessfullyLoaded: (Boolean) -> Unit) {
         this.onProductSuccessfullyLoaded = onProductSuccessfullyLoaded
+    }
+
+    private fun sendProductCarouselImpressionTracker(widgets: List<ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList>) {
+        tracker.sendProductCarouselImpression(
+            widgetStyle,
+            widgets,
+            shopId,
+            userSession.userId
+        )
     }
 }

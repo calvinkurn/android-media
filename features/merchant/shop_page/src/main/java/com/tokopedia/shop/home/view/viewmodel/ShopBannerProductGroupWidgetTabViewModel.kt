@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.shop.common.constant.ShopPageConstant
@@ -101,9 +102,11 @@ class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
         return if (bannerWidgets.isEmpty()) {
             emptyList()
         } else {
+            val componentId = banner?.componentId
+            val componentName = banner?.componentName
             val bannerImageUrl = bannerWidgets[0].imageUrl
             val ctaLink = bannerWidgets[0].ctaLink
-            listOf(VerticalBannerItemType(bannerImageUrl, ctaLink))
+            listOf(VerticalBannerItemType(componentId, componentName, bannerImageUrl, ctaLink))
         }
     }
 

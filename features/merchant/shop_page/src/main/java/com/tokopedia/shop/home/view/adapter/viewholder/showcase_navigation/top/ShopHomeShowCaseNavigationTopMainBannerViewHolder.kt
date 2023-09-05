@@ -6,6 +6,8 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
@@ -29,7 +31,6 @@ class ShopHomeShowCaseNavigationTopMainBannerViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_shop_home_showcase_navigation_top_main_banner
-        private const val SHOW_VIEW_ALL_SHOWCASE_THRESHOLD = 5
         private const val SECOND_SHOWCASE_INDEX = 1
         private const val TWELVE_SHOWCASE_INDEX = 12
     }
@@ -47,24 +48,34 @@ class ShopHomeShowCaseNavigationTopMainBannerViewHolder(
 
             val showcases = model.appearance.showcases
 
-            setupViewAllIcon(showcases)
-            setupMainBanner(showcases)
+            setupViewAllIcon(model.appearance.viewAllCtaAppLink)
+            setupMainBanner(showcases, model)
             setupShowCaseRecyclerView(
                 model.header.isOverrideTheme,
                 model.header.colorSchema,
                 model.appearance,
+                model,
                 showcases
             )
             setupColors(model.header.isOverrideTheme, model.header.colorSchema)
+            listener.onNavigationBannerImpression(
+                uiModel = model,
+                tabCount = Int.ZERO,
+                tabName = "",
+                showcaseId = ""
+            )
         }
 
     }
 
-    private fun setupViewAllIcon(showcases: List<Showcase>) {
-        viewBinding?.iconChevron?.isVisible = showcases.size > SHOW_VIEW_ALL_SHOWCASE_THRESHOLD
+    private fun setupViewAllIcon(viewAllCtaAppLink: String) {
+        viewBinding?.iconChevron?.isVisible = viewAllCtaAppLink.isNotEmpty()
     }
 
-    private fun setupMainBanner(showcases: List<Showcase>) {
+    private fun setupMainBanner(
+        showcases: List<Showcase>,
+        uiModel: ShowcaseNavigationUiModel
+    ) {
         val firstShowcase = showcases.getOrNull(0)
 
         firstShowcase?.let {
@@ -73,8 +84,22 @@ class ShopHomeShowCaseNavigationTopMainBannerViewHolder(
             viewBinding?.imgFirstBanner?.visible()
             viewBinding?.tpgFirstBannerTitle?.visible()
 
-            viewBinding?.imgFirstBanner?.setOnClickListener { listener.onNavigationBannerShowcaseClick(firstShowcase) }
-            viewBinding?.tpgFirstBannerTitle?.setOnClickListener { listener.onNavigationBannerShowcaseClick(firstShowcase)  }
+            viewBinding?.imgFirstBanner?.setOnClickListener {
+                listener.onNavigationBannerShowcaseClick(
+                    selectedShowcase = firstShowcase,
+                    uiModel = uiModel,
+                    tabCount = Int.ONE,
+                    tabName = ""
+                )
+            }
+            viewBinding?.tpgFirstBannerTitle?.setOnClickListener {
+                listener.onNavigationBannerShowcaseClick(
+                    selectedShowcase = firstShowcase,
+                    uiModel = uiModel,
+                    tabCount = Int.ONE,
+                    tabName = ""
+                )
+            }
         }
     }
 
@@ -82,12 +107,13 @@ class ShopHomeShowCaseNavigationTopMainBannerViewHolder(
         overrideTheme: Boolean,
         colorSchema: ShopPageColorSchema,
         appearance: ShopHomeShowcaseNavigationBannerWidgetAppearance,
+        uiModel: ShowcaseNavigationUiModel,
         showcases: List<Showcase>
     ) {
         val filteredShowcases =
             showcases.filterIndexed { index, _ -> index in SECOND_SHOWCASE_INDEX..TWELVE_SHOWCASE_INDEX }
 
-        val showCaseAdapter = ShopHomeShowCaseNavigationAdapter(appearance, listener, overrideTheme, colorSchema)
+        val showCaseAdapter = ShopHomeShowCaseNavigationAdapter(appearance, uiModel, listener, overrideTheme, colorSchema)
 
         val recyclerView = viewBinding?.recyclerView
         recyclerView?.apply {
