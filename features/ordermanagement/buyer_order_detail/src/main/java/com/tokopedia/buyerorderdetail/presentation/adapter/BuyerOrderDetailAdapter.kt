@@ -29,6 +29,8 @@ import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailUiSta
 import com.tokopedia.buyerorderdetail.presentation.uistate.OrderInsuranceUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.OrderResolutionTicketStatusUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.ScpRewardsMedalTouchPointWidgetUiState
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.adapter.uimodel.ScpRewardsMedalTouchPointWidgetUiModel
 
 @Suppress("UNCHECKED_CAST")
@@ -234,7 +236,11 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
         context: Context?,
         productListHeaderUiModel: ProductListUiModel.ProductListHeaderUiModel
     ) {
-        if (productListHeaderUiModel.shouldShow(context)) add(productListHeaderUiModel)
+        val remoteConfig = FirebaseRemoteConfigImpl(context)
+        val isEnableProductListHeader = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_IS_ENABLE_ORDER_STATUS_DETAIL)
+        if (productListHeaderUiModel.shouldShow(context) && isEnableProductListHeader) {
+            add(productListHeaderUiModel)
+        }
     }
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addTickerDetailsSection(
