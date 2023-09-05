@@ -171,11 +171,16 @@ class PartialProductItemViewHolder(
         when (element.button.key) {
             BuyerOrderDetailActionButtonKey.BUY_AGAIN -> addToCart()
             BuyerOrderDetailActionButtonKey.SEE_SIMILAR_PRODUCTS -> seeSimilarProducts()
+            BuyerOrderDetailActionButtonKey.WARRANTY_CLAIM -> goToWarrantyClaim()
         }
     }
 
     private fun addToCart() {
         listener.onBuyAgainButtonClicked(element)
+    }
+
+    private fun goToWarrantyClaim() {
+        navigator.openAppLink(element.button.url, true)
     }
 
     private fun seeSimilarProducts() {
