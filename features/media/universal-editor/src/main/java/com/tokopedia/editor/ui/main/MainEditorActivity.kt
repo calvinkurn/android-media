@@ -135,7 +135,7 @@ open class MainEditorActivity : AppCompatActivity()
         val param = intent?.getParcelableExtra<UniversalEditorParam>(EXTRA_UNIVERSAL_EDITOR_PARAM)
             ?: error("Please provide the universal media editor parameter.")
 
-        check(param.paths.isEmpty()) { "Please add at least 1 media file to edit" }
+        check(param.paths.isNotEmpty()) { "Please add at least 1 media file to edit" }
 
         viewModel.onEvent(MainEditorEvent.SetupView(param))
     }

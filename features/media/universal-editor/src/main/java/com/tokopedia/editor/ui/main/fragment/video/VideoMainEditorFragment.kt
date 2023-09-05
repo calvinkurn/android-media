@@ -1,30 +1,28 @@
 package com.tokopedia.editor.ui.main.fragment.video
 
-import androidx.lifecycle.lifecycleScope
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.editor.R
 import com.tokopedia.editor.base.BaseEditorFragment
 import com.tokopedia.editor.databinding.FragmentVodMainEditorBinding
-import com.tokopedia.editor.ui.main.EditorParamFetcher
+import com.tokopedia.editor.ui.main.MainEditorViewModel
 import com.tokopedia.editor.ui.player.EditorVideoPlayer
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
 class VideoMainEditorFragment @Inject constructor(
-    private val param: EditorParamFetcher
+    private val viewModelFactory: ViewModelProvider.Factory
 ) : BaseEditorFragment(R.layout.fragment_vod_main_editor) {
 
     private val binding: FragmentVodMainEditorBinding? by viewBinding()
+    private val viewModel: MainEditorViewModel by activityViewModels { viewModelFactory }
 
     private val videoPlayer by lazy {
         EditorVideoPlayer(requireContext())
     }
 
     override fun initView() {
-        lifecycleScope.launchWhenCreated {
-            val file = param.get().firstFile
-            if (file.isImage()) return@launchWhenCreated
-            setupViewPlayer(file.path)
-        }
+        setupViewPlayer(viewModel.filePath)
     }
 
     override fun initObserver() = Unit

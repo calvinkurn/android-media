@@ -45,7 +45,7 @@ class MainEditorViewModel @Inject constructor(
      * Whether comes from image placement, video source file, etc.
      * we need to set this [activeFilePath] immediately as of current file.
      */
-    private val filePath
+    val filePath: String
         get() = _mainEditorState.value.activeFilePath
 
     val mainEditorState = _mainEditorState.asStateFlow()
@@ -105,12 +105,14 @@ class MainEditorViewModel @Inject constructor(
 
     private fun exportFinalMedia(filePath: String, canvasText: Bitmap) {
         val file = MediaFile(filePath)
+
         if (file.exist().not()) return
+        val path = file.path ?: return
 
         if (file.isImage()) {
-            mergeImageAndTextAsFile(file.path, canvasText)
+            mergeImageAndTextAsFile(path, canvasText)
         } else {
-            mergeVideoAndTextAsFile(file.path, canvasText)
+            mergeVideoAndTextAsFile(path, canvasText)
         }
     }
 
@@ -119,7 +121,7 @@ class MainEditorViewModel @Inject constructor(
             videoFlattenRepository
                 .flatten(videoPath, canvasText)
                 .flowOn(dispatchers.computation)
-                .onCompletion { setAction(MainEditorEffect.HideLoading)}
+                .onCompletion { setAction(MainEditorEffect.HideLoading) }
                 .collect {
                     if (it.isNotEmpty()) {
                         setAction(MainEditorEffect.FinishEditorPage(it))
@@ -161,7 +163,7 @@ class MainEditorViewModel @Inject constructor(
         _mainEditorState.setValue {
             copy(
                 param = param,
-                activeFilePath = param.firstFile.path
+                activeFilePath = param.firstFile.path ?: ""
             )
         }
     }

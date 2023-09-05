@@ -70,8 +70,10 @@ class DynamicTextCanvasLayout @JvmOverloads constructor(
     }
 
     fun setTextVisibility(viewId: Int, isShown: Boolean) {
-        findViewById<EditorEditTextView>(viewId)
-            .showWithCondition(isShown)
+        try {
+            findViewById<EditorEditTextView>(viewId)
+                .showWithCondition(isShown)
+        } catch (ignored: Throwable) {}
     }
 
     fun setListener(listener: Listener) {
