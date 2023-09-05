@@ -1,5 +1,6 @@
 package com.tokopedia.seller.search.feature.suggestion.view.compose
 
+import android.view.ViewTreeObserver
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -16,8 +17,12 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -81,13 +86,29 @@ import kotlinx.coroutines.flow.map
 @Composable
 fun SuggestionSearchScreen(
     uiState: SuggestionSearchUiState?,
-    uiEvent: (SuggestionSearchUiEvent) -> Unit
+    uiEvent: (SuggestionSearchUiEvent) -> Unit,
+    finishMonitoring: () -> Unit
 ) {
     if (uiState?.isLoadingState == true) {
         SellerSearchShimmerCompose()
     } else {
         val lazyListState = rememberLazyListState()
         val localView = LocalView.current
+
+        val viewObserver = rememberUpdatedState(
+            ViewTreeObserver.OnGlobalLayoutListener {
+                finishMonitoring()
+            }
+        )
+
+        DisposableEffect(localView) {
+            val viewTreeObserver = localView.viewTreeObserver
+            viewTreeObserver.addOnGlobalLayoutListener(viewObserver.value)
+
+            onDispose {
+                viewTreeObserver.removeOnGlobalLayoutListener(viewObserver.value)
+            }
+        }
 
         LazyColumn(
             Modifier
@@ -163,6 +184,9 @@ fun SuggestionSearchScreen(
 
 @Composable
 fun SellerSuggestionNoResult(uiEvent: (SuggestionSearchUiEvent) -> Unit) {
+    LaunchedEffect(key1 = Unit, block = {
+        uiEvent(SuggestionSearchUiEvent.OnSellerSearchNoResult)
+    })
     ConstraintLayout(
         modifier = Modifier
             .fillMaxWidth()
@@ -192,7 +216,6 @@ fun SellerSuggestionNoResult(uiEvent: (SuggestionSearchUiEvent) -> Unit) {
             }
         )
     }
-    uiEvent(SuggestionSearchUiEvent.OnSellerSearchNoResult)
 }
 
 @Composable

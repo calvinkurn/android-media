@@ -5,13 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.lifecycle.ViewModelProvider
@@ -22,7 +18,6 @@ import com.tokopedia.seller.search.common.plt.GlobalSearchSellerPerformanceMonit
 import com.tokopedia.seller.search.common.util.addWWWPrefix
 import com.tokopedia.seller.search.feature.analytics.SellerSearchTracking
 import com.tokopedia.seller.search.feature.initialsearch.di.component.InitialSearchComponent
-import com.tokopedia.seller.search.feature.initialsearch.view.activity.InitialSellerSearchComposeActivity
 import com.tokopedia.seller.search.feature.suggestion.view.compose.SuggestionSearchScreen
 import com.tokopedia.seller.search.feature.suggestion.view.model.compose.SuggestionSearchUiEvent
 import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.ArticleSellerSearchUiModel
@@ -65,18 +60,13 @@ class SuggestionSearchComposeFragment : BaseDaggerFragment() {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
 
             setContent {
-                val isMonitoringStarted = remember { mutableStateOf(false) }
-                val isMonitoringFinished = remember { mutableStateOf(false) }
-
                 val softwareKeyboardController = LocalSoftwareKeyboardController.current
 
-                val getActivity = LocalContext.current as? InitialSellerSearchComposeActivity
                 val sellerSearchResult by viewModel.uiState.collectAsStateWithLifecycle(null)
 
                 LaunchedEffect(sellerSearchResult) {
-                    if (!isMonitoringStarted.value) {
-                        (getActivity as? GlobalSearchSellerPerformanceMonitoringListener)?.startRenderPerformanceMonitoring()
-                        isMonitoringStarted.value = true
+                    sellerSearchResult?.let {
+                        startRenderPerformanceMonitoring()
                     }
 
                     if (sellerSearchResult?.isDismissedKeyboard == true) {
@@ -84,16 +74,11 @@ class SuggestionSearchComposeFragment : BaseDaggerFragment() {
                     }
                 }
 
-                SideEffect {
-                    sellerSearchResult?.let { result ->
-                        if (!isMonitoringFinished.value) {
-                            (getActivity as? GlobalSearchSellerPerformanceMonitoringListener)?.finishMonitoring()
-                            isMonitoringFinished.value = true
-                        }
-                    }
-                }
-
-                SuggestionSearchScreen(sellerSearchResult, ::onUiEvent)
+                SuggestionSearchScreen(
+                    sellerSearchResult,
+                    ::onUiEvent,
+                    ::finishMonitoring
+                )
             }
         }
     }
@@ -294,5 +279,13 @@ class SuggestionSearchComposeFragment : BaseDaggerFragment() {
         )
         val appUrlFormatted = appUrl.addWWWPrefix
         RouteManager.route(activity, appUrlFormatted)
+    }
+
+    private fun startRenderPerformanceMonitoring() {
+        (activity as? GlobalSearchSellerPerformanceMonitoringListener)?.startRenderPerformanceMonitoring()
+    }
+
+    private fun finishMonitoring() {
+        (activity as? GlobalSearchSellerPerformanceMonitoringListener)?.finishMonitoring()
     }
 }

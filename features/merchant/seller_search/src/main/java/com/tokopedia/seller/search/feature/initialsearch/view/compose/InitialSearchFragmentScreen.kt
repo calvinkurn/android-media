@@ -1,5 +1,6 @@
 package com.tokopedia.seller.search.feature.initialsearch.view.compose
 
+import android.view.ViewTreeObserver
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,8 +12,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.key
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalView
@@ -54,13 +57,30 @@ const val OPACITY_68 = 0.68f
 @Composable
 fun InitialSearchFragmentScreen(
     uiState: InitialSearchUiState?,
-    uiEvent: (InitialSearchUiEvent) -> Unit
+    uiEvent: (InitialSearchUiEvent) -> Unit,
+    finishMonitoring: () -> Unit
 ) {
     val lazyListState = rememberLazyListState()
     val localView = LocalView.current
 
+    val viewObserver = rememberUpdatedState(
+        ViewTreeObserver.OnGlobalLayoutListener {
+            finishMonitoring()
+        }
+    )
+
+    DisposableEffect(localView) {
+        val viewTreeObserver = localView.viewTreeObserver
+        viewTreeObserver.addOnGlobalLayoutListener(viewObserver.value)
+
+        onDispose {
+            viewTreeObserver.removeOnGlobalLayoutListener(viewObserver.value)
+        }
+    }
+
     LazyColumn(
-        Modifier.fillMaxSize(),
+        Modifier
+            .fillMaxSize(),
         state = lazyListState
     ) {
         itemsIndexed(uiState?.initialStateList.orEmpty(), key = { _, item ->

@@ -3,7 +3,6 @@ package com.tokopedia.seller.search.feature.initialsearch.view.activity
 import android.os.Bundle
 import android.view.View
 import androidx.activity.compose.setContent
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
@@ -13,6 +12,7 @@ import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.commit
 import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.nest.principles.ui.NestTheme
@@ -37,7 +37,7 @@ import javax.inject.Inject
 
 @OptIn(ExperimentalComposeUiApi::class)
 class InitialSellerSearchComposeActivity :
-    AppCompatActivity(),
+    BaseActivity(),
     HasComponent<InitialSearchComponent>,
     HistoryViewUpdateComposeListener,
     GlobalSearchSellerPerformanceMonitoringListener {
@@ -64,8 +64,6 @@ class InitialSellerSearchComposeActivity :
         overridePendingTransition(0, 0)
         super.onCreate(savedInstanceState)
         initInjector()
-        fetchSearchPlaceholder()
-        setSearchKeyword()
 
         setContent {
             NestTheme {
@@ -117,6 +115,9 @@ class InitialSellerSearchComposeActivity :
                 )
             }
         }
+
+        fetchSearchPlaceholder()
+        setSearchKeyword()
     }
 
     override fun onStart() {

@@ -5,13 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.lifecycle.ViewModelProvider
@@ -21,7 +18,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.seller.search.common.plt.GlobalSearchSellerPerformanceMonitoringListener
 import com.tokopedia.seller.search.feature.analytics.SellerSearchTracking
 import com.tokopedia.seller.search.feature.initialsearch.di.component.InitialSearchComponent
-import com.tokopedia.seller.search.feature.initialsearch.view.activity.InitialSellerSearchComposeActivity
 import com.tokopedia.seller.search.feature.initialsearch.view.compose.InitialSearchFragmentScreen
 import com.tokopedia.seller.search.feature.initialsearch.view.model.compose.InitialSearchUiEvent
 import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.HistoryViewUpdateComposeListener
@@ -53,18 +49,13 @@ class InitialSearchComposeFragment : BaseDaggerFragment() {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
 
             setContent {
-                val isMonitoringStarted = remember { mutableStateOf(false) }
-                val isMonitoringFinished = remember { mutableStateOf(false) }
-
                 val softwareKeyboardController = LocalSoftwareKeyboardController.current
 
-                val getActivity = LocalContext.current as? InitialSellerSearchComposeActivity
                 val sellerSearchResult by viewModel.uiState.collectAsStateWithLifecycle(null)
 
                 LaunchedEffect(sellerSearchResult) {
-                    if (!isMonitoringStarted.value) {
-                        (getActivity as? GlobalSearchSellerPerformanceMonitoringListener)?.startRenderPerformanceMonitoring()
-                        isMonitoringStarted.value = true
+                    sellerSearchResult?.let {
+                        startRenderPerformanceMonitoring()
                     }
 
                     if (sellerSearchResult?.isDismissKeyboard == true) {
@@ -72,21 +63,18 @@ class InitialSearchComposeFragment : BaseDaggerFragment() {
                     }
                 }
 
-                SideEffect {
-                    sellerSearchResult?.let { result ->
-                        if (!isMonitoringFinished.value) {
-                            (getActivity as? GlobalSearchSellerPerformanceMonitoringListener)?.finishMonitoring()
-                            isMonitoringFinished.value = true
-                        }
-                    }
-                }
-
                 InitialSearchFragmentScreen(
                     sellerSearchResult,
-                    ::onUiEvent
+                    ::onUiEvent,
+                    ::finishMonitoring
                 )
             }
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        SellerSearchTracking.sendScreenSearchEvent(userSession.userId.orEmpty())
     }
 
     override fun getScreenName(): String = ""
@@ -127,6 +115,14 @@ class InitialSearchComposeFragment : BaseDaggerFragment() {
                 // no op
             }
         }
+    }
+
+    private fun startRenderPerformanceMonitoring() {
+        (activity as? GlobalSearchSellerPerformanceMonitoringListener)?.startRenderPerformanceMonitoring()
+    }
+
+    private fun finishMonitoring() {
+        (activity as? GlobalSearchSellerPerformanceMonitoringListener)?.finishMonitoring()
     }
 
     private fun startActivityFromAutoComplete(appLink: String) {

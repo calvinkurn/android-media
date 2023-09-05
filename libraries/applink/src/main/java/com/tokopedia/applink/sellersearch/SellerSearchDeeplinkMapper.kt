@@ -18,7 +18,7 @@ object SellerSearchDeeplinkMapper {
 
     private fun isSellerSearchCompose(context: Context): Boolean {
         return FirebaseRemoteConfigInstance.get(context)
-            .getBoolean(RemoteConfigKey.SELLER_SEARCH_COMPOSE, true)
+            .getBoolean(RemoteConfigKey.SELLER_SEARCH_COMPOSE, false)
             .orFalse()
     }
 }
