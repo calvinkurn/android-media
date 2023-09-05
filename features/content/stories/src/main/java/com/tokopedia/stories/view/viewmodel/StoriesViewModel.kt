@@ -164,10 +164,12 @@ class StoriesViewModel @Inject constructor(
 
     private suspend fun fetchAndCacheNextGroupDetail() {
         val nextGroupPos = mGroupPos.value.plus(1)
-        val isNextGroupExist = nextGroupPos < mGroupSize
-        if (!isNextGroupExist) return
+        val groupItem = _storiesGroup.value.groupItems.getOrNull(nextGroupPos) ?: return
+        val isNotLastGroup = nextGroupPos < mGroupSize
+        val isNextGroupCached = groupItem.detail.detailItems.isNotEmpty()
+        if (isNotLastGroup && isNextGroupCached) return
 
-        val nextGroupId = _storiesGroup.value.groupItems[nextGroupPos].groupId
+        val nextGroupId = groupItem.groupId
 
         viewModelScope.launchCatchError(block = {
             val nextGroupData = requestStoriesDetailData(nextGroupId)
@@ -176,6 +178,9 @@ class StoriesViewModel @Inject constructor(
     }
 
     private fun updateGroupData(detail: StoriesDetailUiModel, groupPosition: Int) {
+        val sameDetail = _storiesGroup.value.groupItems[groupPosition].detail == detail
+        if (sameDetail) return
+
         _storiesGroup.update { group ->
             group.copy(
                 selectedGroupId = mGroupId,
