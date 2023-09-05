@@ -200,7 +200,7 @@ internal class PromoUsageViewModel @Inject constructor(
                 AttemptPromoUiAction.Failed(attemptedPromoCodeError.message)
             )
         }
-        items = sortPromo(items)
+        items = sortPromo(items, true)
         _promoPageUiState.postValue(
             PromoPageUiState.Success(
                 tickerInfo = tickerInfo,
@@ -737,7 +737,8 @@ internal class PromoUsageViewModel @Inject constructor(
     }
 
     private fun sortPromo(
-        items: List<DelegateAdapterItem>
+        items: List<DelegateAdapterItem>,
+        shouldSortRecommendedSection: Boolean = false
     ): List<DelegateAdapterItem> {
         val resultItems = items.toMutableList()
 
@@ -752,7 +753,8 @@ internal class PromoUsageViewModel @Inject constructor(
             val headerItems = items.filterIsInstance<PromoItem>()
                 .filter { it.headerId == headerId }
             var sortedItems = sortPromoInSection(headerItems)
-            if (headerId == PromoPageSection.SECTION_RECOMMENDATION) {
+            if (shouldSortRecommendedSection
+                && headerId == PromoPageSection.SECTION_RECOMMENDATION) {
                 val recommendedItemCount = sortedItems.size
                 sortedItems = sortedItems.mapIndexed { index, item ->
                     val isLastRecommended = index == recommendedItemCount - 1
