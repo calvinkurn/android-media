@@ -10,12 +10,10 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.ifNull
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.promocheckout.common.view.uimodel.PromoEntryPointSummaryItem
-import com.tokopedia.promousage.data.response.EntryPointInfo
 import com.tokopedia.promousage.data.response.ResultStatus
 import com.tokopedia.promousage.domain.entity.PromoEntryPointInfo
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.UserGroupMetadata
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUsageSummariesUiModel
 
 class CheckoutPromoViewHolder(private val binding: ItemCheckoutPromoBinding, private val listener: CheckoutAdapterListener) :
     RecyclerView.ViewHolder(binding.root) {
@@ -31,10 +29,9 @@ class CheckoutPromoViewHolder(private val binding: ItemCheckoutPromoBinding, pri
         }
 
         val promo = promoModel.promo
-
         if (promo.userGroupPromoAbTest == UserGroupMetadata.PROMO_USER_GROUP_A
             || promo.userGroupPromoAbTest == UserGroupMetadata.PROMO_USER_GROUP_B) {
-            processNewEntryPointInfo(promo, promoModel.entryPointInfo)
+            processNewEntryPointInfo(promo, promoModel.entryPointInfo, promoModel.isAnimateWording)
         } else {
             processOldEntryPointInfo(promo)
         }
@@ -42,7 +39,8 @@ class CheckoutPromoViewHolder(private val binding: ItemCheckoutPromoBinding, pri
 
     private fun processNewEntryPointInfo(
         lastApply: LastApplyUiModel,
-        entryPointInfo: PromoEntryPointInfo?
+        entryPointInfo: PromoEntryPointInfo?,
+        isAnimateWording: Boolean = false
     ) {
         val isUsingGlobalPromo = lastApply.codes.isNotEmpty()
         val isUsingBoPromo = lastApply.voucherOrders
@@ -50,8 +48,36 @@ class CheckoutPromoViewHolder(private val binding: ItemCheckoutPromoBinding, pri
         if (!isUsingGlobalPromo && !isUsingBoPromo) {
             if (entryPointInfo != null) {
                 if (!entryPointInfo.isSuccess) {
-                    binding.btnCheckoutPromo.showError {
-                        listener.onClickReloadPromoWidget()
+                    if (entryPointInfo.statusCode == ResultStatus.STATUS_USER_BLACKLISTED
+                        || entryPointInfo.statusCode == ResultStatus.STATUS_PHONE_NOT_VERIFIED
+                        || entryPointInfo.statusCode == ResultStatus.STATUS_COUPON_LIST_EMPTY) {
+                        val message = entryPointInfo.messages.firstOrNull().ifNull { "" }
+                        if (entryPointInfo.color == PromoEntryPointInfo.COLOR_GREEN) {
+                            binding.btnCheckoutPromo.showActiveNew(
+                                leftImageUrl = entryPointInfo.iconUrl,
+                                wording = message,
+                                rightIcon = IconUnify.CHEVRON_RIGHT,
+                                onClickListener = {
+                                    if (entryPointInfo.isClickable) {
+                                        listener.onClickPromoCheckout(lastApply)
+                                    }
+                                }
+                            )
+                        } else {
+                            binding.btnCheckoutPromo.showInactiveNew(
+                                leftImageUrl = entryPointInfo.iconUrl,
+                                wording = message,
+                                onClickListener = {
+                                    if (entryPointInfo.isClickable) {
+                                        listener.onClickPromoCheckout(lastApply)
+                                    }
+                                }
+                            )
+                        }
+                    } else {
+                        binding.btnCheckoutPromo.showError {
+                            listener.onClickReloadPromoWidget()
+                        }
                     }
                 } else {
                     val message = entryPointInfo.messages.firstOrNull().ifNull { "" }
@@ -126,7 +152,7 @@ class CheckoutPromoViewHolder(private val binding: ItemCheckoutPromoBinding, pri
                 secondaryText = secondaryText,
                 isSecondaryTextEnabled = isSecondaryTextEnabled,
                 isExpanded = isExpanded,
-                animateWording = true,
+                animateWording = isAnimateWording,
                 onClickListener = {
                     listener.onClickPromoCheckout(lastApply)
                 }

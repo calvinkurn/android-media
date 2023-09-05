@@ -1146,14 +1146,18 @@ class CheckoutPromoProcessor @Inject constructor(
     suspend fun getEntryPointInfo(
         promoRequest: PromoRequest
     ): PromoEntryPointInfo {
-        val param = GetPromoListRecommendationParam.create(
-            promoRequest = promoRequest,
-            chosenAddress = chosenAddressRequestHelper.getChosenAddress(),
-            isPromoRevamp = true
-        )
-        val response = getPromoListRecommendationEntryPointUseCase(param)
-        return getPromoListRecommendationMapper
-            .mapPromoListRecommendationEntryPointResponseToEntryPointInfo(response)
+        return try {
+            val param = GetPromoListRecommendationParam.create(
+                promoRequest = promoRequest,
+                chosenAddress = chosenAddressRequestHelper.getChosenAddress(),
+                isPromoRevamp = true
+            )
+            val response = getPromoListRecommendationEntryPointUseCase(param)
+            getPromoListRecommendationMapper
+                .mapPromoListRecommendationEntryPointResponseToEntryPointInfo(response)
+        } catch (_: Throwable) {
+            PromoEntryPointInfo(isSuccess = false)
+        }
     }
 
     companion object {

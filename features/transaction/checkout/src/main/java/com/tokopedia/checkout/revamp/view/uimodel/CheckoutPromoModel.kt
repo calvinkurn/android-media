@@ -7,6 +7,7 @@ data class CheckoutPromoModel(
     override val cartStringGroup: String = "",
     val isLoading: Boolean = false,
     val isEnable: Boolean = true,
+    val isAnimateWording: Boolean = false,
     val promo: LastApplyUiModel,
     val entryPointInfo: PromoEntryPointInfo? = null
 ) : CheckoutItem

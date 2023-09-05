@@ -1,7 +1,6 @@
 package com.tokopedia.checkout.revamp.view
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.addon.presentation.uimodel.AddOnPageResult
@@ -47,6 +46,7 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutUpsellModel
 import com.tokopedia.checkout.view.CheckoutLogger
 import com.tokopedia.checkout.view.CheckoutMutableLiveData
 import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultationResult
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.logisticCommon.data.constant.InsuranceConstant
@@ -726,6 +726,16 @@ class CheckoutViewModel @Inject constructor(
             if (!useNewPromoPage(checkoutModel.promo)) {
                 return@launch
             }
+            withContext(dispatchers.main) {
+                val currentListData = listData.value
+                listData.value = currentListData.map { model ->
+                    if (model is CheckoutPromoModel) {
+                        return@map checkoutModel.copy(isLoading = true)
+                    } else {
+                        return@map model
+                    }
+                }
+            }
             val isUsingGlobalPromo = checkoutModel.promo
                 .codes.isNotEmpty()
             val isUsingPromo = checkoutModel
@@ -735,9 +745,13 @@ class CheckoutViewModel @Inject constructor(
                     generateCouponListRecommendationRequest()
                 )
                 withContext(dispatchers.main) {
-                    listData.value = listData.value.map { model ->
+                    val currentListData = listData.value
+                    listData.value = currentListData.map { model ->
                         if (model is CheckoutPromoModel) {
-                            return@map checkoutModel.copy(entryPointInfo = entryPointInfo)
+                            return@map checkoutModel.copy(
+                                entryPointInfo = entryPointInfo,
+                                isLoading = false
+                            )
                         } else {
                             return@map model
                         }
@@ -747,26 +761,43 @@ class CheckoutViewModel @Inject constructor(
         }
     }
 
-    private suspend fun fetchEntryPointInfo(data: List<CheckoutItem>) : List<CheckoutItem> {
-        val checkoutModel = data.promo()!!
-        if (!useNewPromoPage(checkoutModel.promo)) {
-            return data
-        }
-        val entryPointInfo = promoProcessor
-            .getEntryPointInfo(generateCouponListRecommendationRequest())
-        return data.map { model ->
-            if (model is CheckoutPromoModel) {
-                return@map model.copy(entryPointInfo = entryPointInfo)
+    private suspend fun fetchEntryPointInfo(
+        checkoutItems: List<CheckoutItem>,
+        oldCheckoutItems: List<CheckoutItem>?
+    ) : List<CheckoutItem> {
+        val checkoutModel = checkoutItems.firstOrNull { it is CheckoutPromoModel } as? CheckoutPromoModel
+        val oldCheckoutModel = oldCheckoutItems?.firstOrNull { it is CheckoutPromoModel } as? CheckoutPromoModel
+
+        if (checkoutModel != null && oldCheckoutModel != null) {
+            if (!useNewPromoPage(checkoutModel.promo)) {
+                return checkoutItems
             } else {
-                return@map model
+                val oldTotalPromoAmount = oldCheckoutModel.promo.additionalInfo.usageSummaries.sumOf { it.amount }
+                val newTotalPromoAmount = checkoutModel.promo.additionalInfo.usageSummaries.sumOf { it.amount }
+                val isAnimateWording = newTotalPromoAmount > oldTotalPromoAmount
+
+                val entryPointInfo = promoProcessor
+                    .getEntryPointInfo(generateCouponListRecommendationRequest())
+                return checkoutItems.map { model ->
+                    if (model is CheckoutPromoModel) {
+                        return@map model.copy(
+                            entryPointInfo = entryPointInfo,
+                            isLoading = false,
+                            isAnimateWording = isAnimateWording
+                        )
+                    } else {
+                        return@map model
+                    }
+                }
             }
         }
+        return checkoutItems
     }
 
     fun reloadEntryPointInfo() {
         viewModelScope.launch(dispatchers.immediate) {
             val data = listData.value
-            val newData = fetchEntryPointInfo(data)
+            val newData = fetchEntryPointInfo(data, null)
             withContext(dispatchers.main) {
                 listData.value = newData
             }
@@ -1356,7 +1387,7 @@ class CheckoutViewModel @Inject constructor(
             isTradeIn,
             isTradeInByDropOff
         )
-        newItems = fetchEntryPointInfo(newItems)
+        newItems = fetchEntryPointInfo(newItems, checkoutItems)
         listData.value = newItems
         calculateTotal()
         sendEEStep3()
@@ -1447,14 +1478,26 @@ class CheckoutViewModel @Inject constructor(
     ) {
         if (showLoading) {
             pageState.value = CheckoutPageState.Loading
-            val checkoutItems = listData.value.toMutableList()
-            val checkoutOrderModel = checkoutItems[cartPosition] as CheckoutOrderModel
-            checkoutItems[cartPosition] =
-                checkoutOrderModel.copy(
-                    shipment = checkoutOrderModel.shipment.copy(isLoading = true),
-                    isShippingBorderRed = false
-                )
-            listData.value = checkoutItems
+            listData.value = listData.value.map { model ->
+                when (model) {
+                    is CheckoutOrderModel -> {
+                        return@map model.copy(
+                            shipment = model.shipment.copy(isLoading = true),
+                            isShippingBorderRed = false
+                        )
+                    }
+
+                    is CheckoutPromoModel -> {
+                        return@map model.copy(
+                            isLoading = true
+                        )
+                    }
+
+                    else -> {
+                        return@map model
+                    }
+                }
+            }
         }
         var newItems = promoProcessor.validateUseLogisticPromo(
             validateUsePromoRequest,
@@ -1466,7 +1509,7 @@ class CheckoutViewModel @Inject constructor(
             isTradeIn,
             isTradeInByDropOff
         )
-        newItems = fetchEntryPointInfo(newItems)
+        newItems = fetchEntryPointInfo(newItems, listData.value)
         listData.value = newItems
         cartProcessor.processSaveShipmentState(
             listData.value,
