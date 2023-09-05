@@ -52,6 +52,8 @@ ext {
             playBroadcaster                 : ":features:content:play_broadcaster",
             contentTest                     : ":features:content:content_test",
             playWidget                      : ":features:content:play_widget",
+			storiesCreation					: ":features:content:stories_creation",
+
             commonTopupBills                : ":features:recharge:common_topup_bills",
             commonDigital                   : ":features:recharge:common_digital",
             digitalRecommendation           : ":features:recharge:digital_recommendation",
