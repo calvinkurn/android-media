@@ -78,5 +78,7 @@
     <string name="cart_min_quantity_error">Min. beli %d</string>
     <string name="cart_text_buy">Beli</string>
     <string name="cart_text_note_hint">Pastikan tidak ada data pribadi, ya.</string>
+    <string name="cart_button_notes_empty_content_desc">button change note empty</string>
+    <string name="cart_button_notes_filled_content_desc">button change note filled</string>
     <string name="cart_text_overweight">Kelebihan %s kg. Kurangi barang dulu, ya.</string>
 </resources>

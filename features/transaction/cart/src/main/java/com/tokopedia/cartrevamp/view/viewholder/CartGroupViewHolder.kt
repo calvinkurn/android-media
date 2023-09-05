@@ -346,7 +346,7 @@ class CartGroupViewHolder(
                 )
             ),
             0,
-            firstSentenceIndex,
+            firstSentenceIndex + 1,
             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
         )
         spannableString.setSpan(
@@ -356,7 +356,7 @@ class CartGroupViewHolder(
                     com.tokopedia.unifyprinciples.R.color.Unify_NN600
                 )
             ),
-            firstSentenceIndex + 1,
+            firstSentenceIndex + 2,
             text.lastIndex,
             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
         )

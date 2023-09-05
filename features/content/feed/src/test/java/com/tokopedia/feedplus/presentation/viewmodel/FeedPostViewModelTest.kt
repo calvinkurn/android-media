@@ -45,6 +45,7 @@ import com.tokopedia.feedplus.domain.usecase.FeedCampaignCheckReminderUseCase
 import com.tokopedia.feedplus.domain.usecase.FeedCampaignReminderUseCase
 import com.tokopedia.feedplus.domain.usecase.FeedXHomeUseCase
 import com.tokopedia.feedplus.domain.usecase.FeedXRecomWidgetUseCase
+import com.tokopedia.feedplus.presentation.fragment.FeedBaseFragment
 import com.tokopedia.feedplus.presentation.model.FeedAuthorModel
 import com.tokopedia.feedplus.presentation.model.FeedCardCampaignModel
 import com.tokopedia.feedplus.presentation.model.FeedCardCtaModel
@@ -637,12 +638,37 @@ class FeedPostViewModelTest {
         coEvery { feedXHomeUseCase(any()) } throws MessageErrorException("Failed")
 
         // when
-        viewModel.fetchFeedPosts("", true, null)
+        viewModel.fetchFeedPosts("", postSource = null)
 
         // then
         assert(viewModel.feedHome.value is Fail)
         assert((viewModel.feedHome.value as Fail).throwable is MessageErrorException)
         assert((viewModel.feedHome.value as Fail).throwable.message == "Failed")
+    }
+
+    @Test
+    fun onFetchFeedPosts_whenSuccessWithoutRelevantPostInCDP() {
+        // given
+        val dummyData = getDummyFeedModel()
+        coEvery { feedXHomeUseCase.createParams(any(), any(), any(), any()) } returns emptyMap()
+        coEvery { feedXHomeUseCase(any()) } returns dummyData
+
+        // when
+        viewModel.fetchFeedPosts("", true, postSource = PostSourceModel("1", FeedBaseFragment.TAB_TYPE_CDP))
+
+        // then
+        assert(!viewModel.shouldShowNoMoreContent)
+        assert(viewModel.feedHome.value is Success)
+        val data = (viewModel.feedHome.value as Success).data
+        assert(data.items.size == dummyData.items.size)
+        assert(data.items[0] is FeedCardImageContentModel)
+        assert(data.items[1] is FeedCardVideoContentModel)
+        assert(data.items[2] is FeedCardLivePreviewContentModel)
+        assert(data.items[3] is FeedCardImageContentModel)
+        assert(data.items[4] is FeedCardVideoContentModel)
+        assert(data.items[5] is FeedCardLivePreviewContentModel)
+        assert(data.items[6] is FeedFollowRecommendationModel)
+        assert(data.items[7] is FeedNoContentModel)
     }
 
     @Test
@@ -652,7 +678,7 @@ class FeedPostViewModelTest {
         coEvery { feedXHomeUseCase(any()) } returns getDummyFeedModel()
 
         // when
-        viewModel.fetchFeedPosts("")
+        viewModel.fetchFeedPosts("", postSource = PostSourceModel("1", FeedBaseFragment.TAB_TYPE_CDP))
 
         // then
         assert(!viewModel.shouldShowNoMoreContent)

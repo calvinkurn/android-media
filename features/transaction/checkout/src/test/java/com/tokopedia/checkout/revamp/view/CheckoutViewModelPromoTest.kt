@@ -66,6 +66,10 @@ class CheckoutViewModelPromoTest : BaseCheckoutViewModelTest() {
             CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
             CheckoutProductModel("123"),
             CheckoutOrderModel("123"),
+            CheckoutProductModel("234"),
+            CheckoutOrderModel("234", shipment = CheckoutOrderShipment(courierItemData = CourierItemData(shipperProductId = 1, serviceId = 2, shipperId = 3))),
+            CheckoutProductModel("345"),
+            CheckoutOrderModel("345", shipment = CheckoutOrderShipment(courierItemData = CourierItemData(shipperProductId = 1, serviceId = 2, shipperId = 3, logPromoCode = "boCode", freeShippingMetadata = "metadata"))),
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
             CheckoutCostModel(),
@@ -86,6 +90,22 @@ class CheckoutViewModelPromoTest : BaseCheckoutViewModelTest() {
                         cartStringGroup = "123",
                         product_details = listOf(ProductDetail(quantity = 0)),
                         isChecked = true
+                    ),
+                    Order(
+                        cartStringGroup = "234",
+                        product_details = listOf(ProductDetail(quantity = 0)),
+                        isChecked = true,
+                        shippingId = 3,
+                        spId = 1
+                    ),
+                    Order(
+                        cartStringGroup = "345",
+                        product_details = listOf(ProductDetail(quantity = 0)),
+                        isChecked = true,
+                        shippingId = 3,
+                        spId = 1,
+                        freeShippingMetadata = "metadata",
+                        codes = mutableListOf("boCode")
                     )
                 )
             ),
@@ -646,6 +666,16 @@ class CheckoutViewModelPromoTest : BaseCheckoutViewModelTest() {
                 "123",
                 shipment = CheckoutOrderShipment(courierItemData = CourierItemData(logPromoCode = "boCode"))
             ),
+            CheckoutProductModel("234"),
+            CheckoutOrderModel(
+                "234",
+                shipment = CheckoutOrderShipment()
+            ),
+            CheckoutProductModel("345"),
+            CheckoutOrderModel(
+                "345",
+                shipment = CheckoutOrderShipment(courierItemData = CourierItemData())
+            ),
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
             CheckoutCostModel(),
@@ -659,5 +689,68 @@ class CheckoutViewModelPromoTest : BaseCheckoutViewModelTest() {
 
         // then
         assertEquals(arrayListOf("boCode"), result)
+    }
+
+    @Test
+    fun remove_invalid_bo_code_from_promo_request() {
+        var validateUsePromoRequest = ValidateUsePromoRequest(
+            orders = listOf(
+                OrdersItem(cartStringGroup = "123", codes = mutableListOf("boCode")),
+                OrdersItem(cartStringGroup = "234", codes = mutableListOf("boCode1"))
+            )
+        )
+        viewModel.removeInvalidBoCodeFromPromoRequest(
+            CheckoutOrderModel("123", isFreeShippingPlus = true),
+            listOf(
+                CheckoutOrderModel("123", isFreeShippingPlus = true),
+                CheckoutOrderModel("234", isFreeShippingPlus = true)
+            ),
+            validateUsePromoRequest
+        )
+        assertEquals(
+            ValidateUsePromoRequest(
+                orders = listOf(
+                    OrdersItem(cartStringGroup = "123", codes = mutableListOf("boCode")),
+                    OrdersItem(cartStringGroup = "234", codes = mutableListOf("boCode1"))
+                )
+            ),
+            validateUsePromoRequest
+        )
+
+        viewModel.removeInvalidBoCodeFromPromoRequest(
+            CheckoutOrderModel("123"),
+            listOf(
+                CheckoutOrderModel("123"),
+                CheckoutOrderModel("234", isFreeShippingPlus = true)
+            ),
+            validateUsePromoRequest
+        )
+        assertEquals(
+            ValidateUsePromoRequest(
+                orders = listOf(
+                    OrdersItem(cartStringGroup = "123", codes = mutableListOf("boCode")),
+                    OrdersItem(cartStringGroup = "234", codes = mutableListOf("boCode1"))
+                )
+            ),
+            validateUsePromoRequest
+        )
+
+        viewModel.removeInvalidBoCodeFromPromoRequest(
+            CheckoutOrderModel("123"),
+            listOf(
+                CheckoutOrderModel("123"),
+                CheckoutOrderModel("234", shipment = CheckoutOrderShipment(courierItemData = CourierItemData(logPromoCode = "boCode1")))
+            ),
+            validateUsePromoRequest
+        )
+        assertEquals(
+            ValidateUsePromoRequest(
+                orders = listOf(
+                    OrdersItem(cartStringGroup = "123", codes = mutableListOf("boCode")),
+                    OrdersItem(cartStringGroup = "234")
+                )
+            ),
+            validateUsePromoRequest
+        )
     }
 }

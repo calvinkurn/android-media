@@ -1,5 +1,6 @@
 package com.tokopedia.checkout.revamp.view
 
+import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutAddressModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutButtonPaymentModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCostModel
@@ -452,6 +453,81 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
     }
 
     @Test
+    fun load_shipping_normal_with_last_applied_bo_found_but_fail_validate_use() {
+        // given
+        val orderModel = CheckoutOrderModel("123", boCode = "boCode", boUniqueId = "12")
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(
+                recipientAddressModel = RecipientAddressModel().apply {
+                    id = "1"
+                    destinationDistrictId = "1"
+                    addressName = "jakarta"
+                    postalCode = "123"
+                    latitude = "123"
+                    longitude = "321"
+                }
+            ),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel("123", cartStringOrder = "12"),
+            orderModel,
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+
+        viewModel.logisticProcessor.isBoUnstackEnabled = true
+
+        val shippingCourierUiModel = ShippingCourierUiModel()
+        coEvery { ratesUseCase.invoke(any()) } returns ShippingRecommendationData(
+            shippingDurationUiModels = listOf(
+                ShippingDurationUiModel(
+                    shippingCourierViewModelList = listOf(
+                        shippingCourierUiModel
+                    )
+                )
+            ),
+            listLogisticPromo = listOf(
+                LogisticPromoUiModel("boCode")
+            )
+        )
+
+        coEvery {
+            validateUsePromoRevampUseCase.setParam(any()).executeOnBackground()
+        } throws IOException()
+
+        coEvery {
+            clearCacheAutoApplyStackUseCase.setParams(
+                match {
+                    it.orderData.orders[0].codes.contains(
+                        "boCode"
+                    )
+                }
+            ).executeOnBackground()
+        } returns ClearPromoUiModel(SuccessDataUiModel(true))
+
+        // when
+        viewModel.loadShipping(orderModel, 5)
+
+        // then
+        assertEquals(
+            CheckoutOrderShipment(
+                courierItemData = null
+            ),
+            (viewModel.listData.value[5] as CheckoutOrderModel).shipment
+        )
+        coVerify {
+            validateUsePromoRevampUseCase.setParam(any()).executeOnBackground()
+        }
+        coVerify(exactly = 1) {
+            clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground()
+        }
+    }
+
+    @Test
     fun `WHEN get shipping rates and schedule delivery rates success THEN should render success`() {
         // Given
         val ratesResponse = DataProvider.provideRatesV3Response()
@@ -463,7 +539,8 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
 
         coEvery { ratesWithScheduleUseCase(any()) } returns shippingRecommendationData
 
-        val orderModel = CheckoutOrderModel("123", ratesValidationFlow = true, shippingId = 1, spId = 1)
+        val orderModel =
+            CheckoutOrderModel("123", ratesValidationFlow = true, shippingId = 1, spId = 1)
         viewModel.listData.value = listOf(
             CheckoutTickerErrorModel(errorMessage = ""),
             CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
@@ -494,7 +571,10 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
         coVerify {
             ratesWithScheduleUseCase(any())
         }
-        assertEquals(false, (viewModel.listData.value[5] as CheckoutOrderModel).shipment.courierItemData!!.scheduleDeliveryUiModel!!.isSelected)
+        assertEquals(
+            false,
+            (viewModel.listData.value[5] as CheckoutOrderModel).shipment.courierItemData!!.scheduleDeliveryUiModel!!.isSelected
+        )
     }
 
     @Test
@@ -527,7 +607,8 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             )
         )
 
-        val orderModel = CheckoutOrderModel("1", ratesValidationFlow = true, shippingId = 1, spId = 1)
+        val orderModel =
+            CheckoutOrderModel("1", ratesValidationFlow = true, shippingId = 1, spId = 1)
         viewModel.listData.value = listOf(
             CheckoutTickerErrorModel(errorMessage = ""),
             CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
@@ -558,7 +639,10 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
         coVerify {
             ratesWithScheduleUseCase(any())
         }
-        assertEquals(true, (viewModel.listData.value[5] as CheckoutOrderModel).shipment.courierItemData!!.scheduleDeliveryUiModel!!.isSelected)
+        assertEquals(
+            true,
+            (viewModel.listData.value[5] as CheckoutOrderModel).shipment.courierItemData!!.scheduleDeliveryUiModel!!.isSelected
+        )
     }
 
     @Test
@@ -573,7 +657,13 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
 
         coEvery { ratesWithScheduleUseCase(any()) } returns shippingRecommendationData
 
-        val orderModel = CheckoutOrderModel("1", ratesValidationFlow = true, isAutoCourierSelection = true, shippingId = 2, spId = 2)
+        val orderModel = CheckoutOrderModel(
+            "1",
+            ratesValidationFlow = true,
+            isAutoCourierSelection = true,
+            shippingId = 2,
+            spId = 2
+        )
         viewModel.listData.value = listOf(
             CheckoutTickerErrorModel(errorMessage = ""),
             CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
@@ -604,7 +694,10 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
         coVerify {
             ratesWithScheduleUseCase(any())
         }
-        assertEquals(false, (viewModel.listData.value[5] as CheckoutOrderModel).shipment.courierItemData!!.scheduleDeliveryUiModel!!.isSelected)
+        assertEquals(
+            false,
+            (viewModel.listData.value[5] as CheckoutOrderModel).shipment.courierItemData!!.scheduleDeliveryUiModel!!.isSelected
+        )
     }
 
     @Test
@@ -636,7 +729,13 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             )
         )
 
-        val orderModel = CheckoutOrderModel("1", ratesValidationFlow = true, isDisableChangeCourier = true, shippingId = 1, spId = 1)
+        val orderModel = CheckoutOrderModel(
+            "1",
+            ratesValidationFlow = true,
+            isDisableChangeCourier = true,
+            shippingId = 1,
+            spId = 1
+        )
         viewModel.listData.value = listOf(
             CheckoutTickerErrorModel(errorMessage = ""),
             CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
@@ -667,7 +766,10 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
         coVerify {
             validateUsePromoRevampUseCase.setParam(any()).executeOnBackground()
         }
-        assertEquals("WGOIN", (viewModel.listData.value[5] as CheckoutOrderModel).shipment.courierItemData!!.selectedShipper.logPromoCode)
+        assertEquals(
+            "WGOIN",
+            (viewModel.listData.value[5] as CheckoutOrderModel).shipment.courierItemData!!.selectedShipper.logPromoCode
+        )
     }
 
     @Test
@@ -699,7 +801,13 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             )
         )
 
-        val orderModel = CheckoutOrderModel("1", ratesValidationFlow = true, isDisableChangeCourier = true, shippingId = 0, spId = 0)
+        val orderModel = CheckoutOrderModel(
+            "1",
+            ratesValidationFlow = true,
+            isDisableChangeCourier = true,
+            shippingId = 0,
+            spId = 0
+        )
         viewModel.listData.value = listOf(
             CheckoutTickerErrorModel(errorMessage = ""),
             CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
@@ -730,7 +838,10 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
         coVerify {
             validateUsePromoRevampUseCase.setParam(any()).executeOnBackground()
         }
-        assertEquals("WGOIN", (viewModel.listData.value[5] as CheckoutOrderModel).shipment.courierItemData!!.selectedShipper.logPromoCode)
+        assertEquals(
+            "WGOIN",
+            (viewModel.listData.value[5] as CheckoutOrderModel).shipment.courierItemData!!.selectedShipper.logPromoCode
+        )
     }
 
     @Test
@@ -745,7 +856,8 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
 
         coEvery { ratesWithScheduleUseCase(any()) } returns shippingRecommendationData
 
-        val orderModel = CheckoutOrderModel("1", ratesValidationFlow = true, shippingId = 1, spId = 1)
+        val orderModel =
+            CheckoutOrderModel("1", ratesValidationFlow = true, shippingId = 1, spId = 1)
         viewModel.listData.value = listOf(
             CheckoutTickerErrorModel(errorMessage = ""),
             CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
@@ -776,7 +888,10 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
         coVerify {
             ratesWithScheduleUseCase(any())
         }
-        assertEquals(null, (viewModel.listData.value[5] as CheckoutOrderModel).shipment.courierItemData)
+        assertEquals(
+            null,
+            (viewModel.listData.value[5] as CheckoutOrderModel).shipment.courierItemData
+        )
     }
 
     @Test
@@ -789,7 +904,8 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
 
         coEvery { ratesWithScheduleUseCase(any()) } returns shippingRecommendationData
 
-        val orderModel = CheckoutOrderModel("1", ratesValidationFlow = true, shippingId = 1, spId = 1)
+        val orderModel =
+            CheckoutOrderModel("1", ratesValidationFlow = true, shippingId = 1, spId = 1)
         viewModel.listData.value = listOf(
             CheckoutTickerErrorModel(errorMessage = ""),
             CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
@@ -820,7 +936,10 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
         coVerify {
             ratesWithScheduleUseCase(any())
         }
-        assertEquals(null, (viewModel.listData.value[5] as CheckoutOrderModel).shipment.courierItemData)
+        assertEquals(
+            null,
+            (viewModel.listData.value[5] as CheckoutOrderModel).shipment.courierItemData
+        )
     }
 
     @Test
@@ -833,7 +952,8 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
 
         coEvery { ratesWithScheduleUseCase(any()) } throws IOException()
 
-        val orderModel = CheckoutOrderModel("1", ratesValidationFlow = true, shippingId = 1, spId = 1)
+        val orderModel =
+            CheckoutOrderModel("1", ratesValidationFlow = true, shippingId = 1, spId = 1)
         viewModel.listData.value = listOf(
             CheckoutTickerErrorModel(errorMessage = ""),
             CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
@@ -864,7 +984,10 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
         coVerify {
             ratesWithScheduleUseCase(any())
         }
-        assertEquals(null, (viewModel.listData.value[5] as CheckoutOrderModel).shipment.courierItemData)
+        assertEquals(
+            null,
+            (viewModel.listData.value[5] as CheckoutOrderModel).shipment.courierItemData
+        )
     }
 
     @Test
@@ -897,7 +1020,13 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             )
         )
 
-        val orderModel = CheckoutOrderModel("1", ratesValidationFlow = true, boCode = "WGOIN", shippingId = 1, spId = 1)
+        val orderModel = CheckoutOrderModel(
+            "1",
+            ratesValidationFlow = true,
+            boCode = "WGOIN",
+            shippingId = 1,
+            spId = 1
+        )
         viewModel.listData.value = listOf(
             CheckoutTickerErrorModel(errorMessage = ""),
             CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
@@ -951,7 +1080,13 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
 
         coEvery { ratesWithScheduleUseCase(any()) } returns shippingRecommendationData
 
-        val orderModel = CheckoutOrderModel("1", ratesValidationFlow = true, boCode = "WGOIN", shippingId = 1, spId = 1)
+        val orderModel = CheckoutOrderModel(
+            "1",
+            ratesValidationFlow = true,
+            boCode = "WGOIN",
+            shippingId = 1,
+            spId = 1
+        )
         viewModel.listData.value = listOf(
             CheckoutTickerErrorModel(errorMessage = ""),
             CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
@@ -982,7 +1117,10 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
         coVerify(inverse = true) {
             validateUsePromoRevampUseCase.setParam(any()).executeOnBackground()
         }
-        assertEquals(null, (viewModel.listData.value[5] as CheckoutOrderModel).shipment.courierItemData)
+        assertEquals(
+            null,
+            (viewModel.listData.value[5] as CheckoutOrderModel).shipment.courierItemData
+        )
     }
 
     @Test
@@ -1006,7 +1144,13 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
 
         coEvery { ratesWithScheduleUseCase(any()) } returns shippingRecommendationData
 
-        val orderModel = CheckoutOrderModel("1", ratesValidationFlow = true, boCode = "WGOIN", shippingId = 1, spId = 1)
+        val orderModel = CheckoutOrderModel(
+            "1",
+            ratesValidationFlow = true,
+            boCode = "WGOIN",
+            shippingId = 1,
+            spId = 1
+        )
         viewModel.listData.value = listOf(
             CheckoutTickerErrorModel(errorMessage = ""),
             CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
@@ -1037,7 +1181,10 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
         coVerify(inverse = true) {
             validateUsePromoRevampUseCase.setParam(any()).executeOnBackground()
         }
-        assertEquals(null, (viewModel.listData.value[5] as CheckoutOrderModel).shipment.courierItemData)
+        assertEquals(
+            null,
+            (viewModel.listData.value[5] as CheckoutOrderModel).shipment.courierItemData
+        )
     }
 
     @Test
@@ -1093,7 +1240,11 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             SuccessDataUiModel(true)
         )
 
-        val orderModel = CheckoutOrderModel("123", boUniqueId = "12", shipment = CheckoutOrderShipment(courierItemData = CourierItemData(logPromoCode = "boCode")))
+        val orderModel = CheckoutOrderModel(
+            "123",
+            boUniqueId = "12",
+            shipment = CheckoutOrderShipment(courierItemData = CourierItemData(logPromoCode = "boCode"))
+        )
         viewModel.listData.value = listOf(
             CheckoutTickerErrorModel(errorMessage = ""),
             CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
@@ -1105,7 +1256,13 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             CheckoutPromoModel(
                 promo = LastApplyUiModel(
                     voucherOrders = listOf(
-                        LastApplyVoucherOrdersItemUiModel(code = "boCode", "12", message = LastApplyMessageUiModel(state = "green"), type = "logistic", cartStringGroup = "123")
+                        LastApplyVoucherOrdersItemUiModel(
+                            code = "boCode",
+                            "12",
+                            message = LastApplyMessageUiModel(state = "green"),
+                            type = "logistic",
+                            cartStringGroup = "123"
+                        )
                     )
                 )
             ),
@@ -1149,7 +1306,13 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             errorCode = "200",
             promoUiModel = PromoUiModel(
                 voucherOrderUiModels = listOf(
-                    PromoCheckoutVoucherOrdersItemUiModel("boCode2", "12", type = "logistic", messageUiModel = MessageUiModel(state = "green"), cartStringGroup = "123")
+                    PromoCheckoutVoucherOrdersItemUiModel(
+                        "boCode2",
+                        "12",
+                        type = "logistic",
+                        messageUiModel = MessageUiModel(state = "green"),
+                        cartStringGroup = "123"
+                    )
                 )
             )
         )
@@ -1160,7 +1323,10 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             SuccessDataUiModel(true)
         )
 
-        val orderModel = CheckoutOrderModel("123", shipment = CheckoutOrderShipment(courierItemData = CourierItemData(logPromoCode = "boCode")))
+        val orderModel = CheckoutOrderModel(
+            "123",
+            shipment = CheckoutOrderShipment(courierItemData = CourierItemData(logPromoCode = "boCode"))
+        )
         viewModel.listData.value = listOf(
             CheckoutTickerErrorModel(errorMessage = ""),
             CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
@@ -1172,7 +1338,13 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             CheckoutPromoModel(
                 promo = LastApplyUiModel(
                     voucherOrders = listOf(
-                        LastApplyVoucherOrdersItemUiModel(code = "boCode", "12", message = LastApplyMessageUiModel(state = "green"), type = "logistic", cartStringGroup = "123")
+                        LastApplyVoucherOrdersItemUiModel(
+                            code = "boCode",
+                            "12",
+                            message = LastApplyMessageUiModel(state = "green"),
+                            type = "logistic",
+                            cartStringGroup = "123"
+                        )
                     )
                 )
             ),
@@ -1180,7 +1352,15 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
         )
-        val scheduleDeliveryUiModel = ScheduleDeliveryUiModel(true, deliveryProduct = DeliveryProduct(promoStacking = PromoStacking(disabled = false, promoCode = "boCode2")))
+        val scheduleDeliveryUiModel = ScheduleDeliveryUiModel(
+            true,
+            deliveryProduct = DeliveryProduct(
+                promoStacking = PromoStacking(
+                    disabled = false,
+                    promoCode = "boCode2"
+                )
+            )
+        )
         val courierItemData = CourierItemData(scheduleDeliveryUiModel = scheduleDeliveryUiModel)
 
         // when
@@ -1214,7 +1394,121 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
         coVerify(exactly = 1) {
             clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground()
         }
-        coVerify(exactly = 2) {
+        coVerify(exactly = 1) {
+            validateUsePromoRevampUseCase.setParam(any()).executeOnBackground()
+        }
+    }
+
+    @Test
+    fun set_selected_schedule_delivery_with_same_promo_and_apply_new() {
+        // given
+        coEvery {
+            validateUsePromoRevampUseCase.setParam(any()).executeOnBackground()
+        } returns ValidateUsePromoRevampUiModel(
+            status = "OK",
+            errorCode = "200",
+            promoUiModel = PromoUiModel(
+                voucherOrderUiModels = listOf(
+                    PromoCheckoutVoucherOrdersItemUiModel(
+                        "boCode",
+                        "12",
+                        type = "logistic",
+                        messageUiModel = MessageUiModel(state = "green"),
+                        cartStringGroup = "123"
+                    )
+                )
+            )
+        )
+
+        coEvery {
+            clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground()
+        } returns ClearPromoUiModel(
+            SuccessDataUiModel(true)
+        )
+
+        val scheduleDeliveryUiModel = ScheduleDeliveryUiModel(
+            true,
+            deliveryProduct = DeliveryProduct(
+                promoStacking = PromoStacking(
+                    disabled = false,
+                    promoCode = "boCode"
+                )
+            )
+        )
+        val orderModel = CheckoutOrderModel(
+            "123",
+            shipment = CheckoutOrderShipment(
+                courierItemData = CourierItemData(
+                    logPromoCode = "boCode",
+                    scheduleDeliveryUiModel = scheduleDeliveryUiModel,
+                    etaText = ""
+                )
+            )
+        )
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(recipientAddressModel = RecipientAddressModel()),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel("123"),
+            orderModel,
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(
+                promo = LastApplyUiModel(
+                    voucherOrders = listOf(
+                        LastApplyVoucherOrdersItemUiModel(
+                            code = "boCode",
+                            "12",
+                            message = LastApplyMessageUiModel(state = "green"),
+                            type = "logistic",
+                            cartStringGroup = "123"
+                        )
+                    )
+                )
+            ),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+        val newScheduleDeliveryUiModel = scheduleDeliveryUiModel.copy(false)
+        val courierItemData = CourierItemData(
+            logPromoCode = "boCode",
+            scheduleDeliveryUiModel = newScheduleDeliveryUiModel,
+            etaText = ""
+        )
+
+        // when
+        viewModel.setSelectedScheduleDelivery(
+            5,
+            orderModel,
+            orderModel.shipment.courierItemData!!,
+            newScheduleDeliveryUiModel,
+            courierItemData
+        )
+
+        // then
+        assertEquals(
+            courierItemData,
+            (viewModel.listData.value[5] as CheckoutOrderModel).shipment.courierItemData
+        )
+        assertEquals(
+            LastApplyUiModel(
+                voucherOrders = listOf(
+                    LastApplyVoucherOrdersItemUiModel(
+                        code = "boCode",
+                        "12",
+                        message = LastApplyMessageUiModel(state = "green"),
+                        type = "logistic",
+                        cartStringGroup = "123"
+                    )
+                )
+            ),
+            (viewModel.listData.value[7] as CheckoutPromoModel).promo
+        )
+        coVerify(inverse = true) {
+            clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground()
+        }
+        coVerify(exactly = 1) {
             validateUsePromoRevampUseCase.setParam(any()).executeOnBackground()
         }
     }
@@ -1246,7 +1540,8 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             CheckoutButtonPaymentModel()
         )
 
-        val shippingCourierUiModel = ShippingCourierUiModel(productData = ProductData(shipperId = 1, shipperProductId = 1))
+        val shippingCourierUiModel =
+            ShippingCourierUiModel(productData = ProductData(shipperId = 1, shipperProductId = 1))
         coEvery { ratesUseCase.invoke(any()) } returns ShippingRecommendationData(
             shippingDurationUiModels = listOf(
                 ShippingDurationUiModel(
@@ -1299,6 +1594,93 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
     }
 
     @Test
+    fun should_auto_load_courier() {
+        assertEquals(false, viewModel.shouldAutoLoadCourier(CheckoutOrderModel("123"), null))
+        assertEquals(
+            false,
+            viewModel.shouldAutoLoadCourier(
+                CheckoutOrderModel("123"),
+                RecipientAddressModel().apply {
+                    this.isTradeIn = true
+                    this.selectedTabIndex = 0
+                }
+            )
+        )
+        assertEquals(
+            false,
+            viewModel.shouldAutoLoadCourier(
+                CheckoutOrderModel("123", shippingId = 1),
+                RecipientAddressModel().apply {
+                    this.isTradeIn = true
+                    this.selectedTabIndex = 1
+                }
+            )
+        )
+        assertEquals(
+            false,
+            viewModel.shouldAutoLoadCourier(
+                CheckoutOrderModel("123", shippingId = 1, spId = 1),
+                RecipientAddressModel().apply {
+                    this.isTradeIn = true
+                    this.selectedTabIndex = 1
+                }
+            )
+        )
+        assertEquals(
+            true,
+            viewModel.shouldAutoLoadCourier(
+                CheckoutOrderModel("123", shippingId = 1, spId = 1),
+                RecipientAddressModel().apply {
+                    this.isTradeIn = true
+                    this.selectedTabIndex = 1
+                    this.dropOffAddressName = "a"
+                }
+            )
+        )
+        assertEquals(
+            false,
+            viewModel.shouldAutoLoadCourier(
+                CheckoutOrderModel("123", shippingId = 1, spId = 1),
+                RecipientAddressModel().apply {
+                    this.isTradeIn = true
+                    this.selectedTabIndex = 0
+                }
+            )
+        )
+        assertEquals(
+            false,
+            viewModel.shouldAutoLoadCourier(
+                CheckoutOrderModel("123", shippingId = 1),
+                RecipientAddressModel().apply {
+                    this.isTradeIn = true
+                    this.selectedTabIndex = 0
+                }
+            )
+        )
+        assertEquals(
+            false,
+            viewModel.shouldAutoLoadCourier(
+                CheckoutOrderModel("123"),
+                RecipientAddressModel().apply {
+                    this.isTradeIn = true
+                    this.selectedTabIndex = 1
+                }
+            )
+        )
+        assertEquals(
+            true,
+            viewModel.shouldAutoLoadCourier(
+                CheckoutOrderModel("123", shippingId = 1, spId = 1),
+                RecipientAddressModel().apply {
+                    this.isTradeIn = true
+                    this.selectedTabIndex = 0
+                    this.provinceName = "a"
+                }
+            )
+        )
+    }
+
+    @Test
     fun set_selected_courier_insurance() {
         // given
         val orderModel = CheckoutOrderModel(
@@ -1333,13 +1715,29 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
                 CheckoutProductModel("123"),
                 CheckoutOrderModel(
                     "123",
-                    shipment = CheckoutOrderShipment(courierItemData = CourierItemData(insurancePrice = 100), insurance = CheckoutOrderInsurance(true))
+                    shipment = CheckoutOrderShipment(
+                        courierItemData = CourierItemData(
+                            insurancePrice = 100
+                        ),
+                        insurance = CheckoutOrderInsurance(true)
+                    )
                 ),
                 CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
                 CheckoutPromoModel(promo = LastApplyUiModel()),
-                CheckoutCostModel(totalPrice = 100.0, totalPriceString = "Rp100", hasSelectAllShipping = true, shippingInsuranceFee = 100.0, totalOtherFee = 100.0),
+                CheckoutCostModel(
+                    totalPrice = 100.0,
+                    totalPriceString = "Rp100",
+                    hasSelectAllShipping = true,
+                    shippingInsuranceFee = 100.0,
+                    totalOtherFee = 100.0
+                ),
                 CheckoutCrossSellGroupModel(),
-                CheckoutButtonPaymentModel(totalPrice = "Rp100", totalPriceNum = 100.0, enable = true, useInsurance = true)
+                CheckoutButtonPaymentModel(
+                    totalPrice = "Rp100",
+                    totalPriceNum = 100.0,
+                    enable = true,
+                    useInsurance = true
+                )
             ),
             viewModel.listData.value
         )
@@ -1380,7 +1778,12 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
                 CheckoutProductModel("123"),
                 CheckoutOrderModel(
                     "123",
-                    shipment = CheckoutOrderShipment(courierItemData = CourierItemData(insurancePrice = 100), insurance = CheckoutOrderInsurance())
+                    shipment = CheckoutOrderShipment(
+                        courierItemData = CourierItemData(
+                            insurancePrice = 100
+                        ),
+                        insurance = CheckoutOrderInsurance()
+                    )
                 ),
                 CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
                 CheckoutPromoModel(promo = LastApplyUiModel()),
@@ -1502,11 +1905,150 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
             "123",
             "boCode",
             true,
-            CourierItemData(logPromoCode = "boCode"),
+            CourierItemData(logPromoCode = "boCode", etaText = ""),
             InsuranceData()
         )
 
         // then
-        assertEquals(CheckoutOrderModel("123", boUniqueId = "12", shipment = CheckoutOrderShipment(courierItemData = CourierItemData(logPromoCode = "boCode"))), (viewModel.listData.value[5] as CheckoutOrderModel))
+        assertEquals(
+            CheckoutOrderModel(
+                "123",
+                boUniqueId = "12",
+                shipment = CheckoutOrderShipment(
+                    courierItemData = CourierItemData(
+                        logPromoCode = "boCode",
+                        etaText = ""
+                    )
+                )
+            ),
+            (viewModel.listData.value[5] as CheckoutOrderModel)
+        )
+    }
+
+    @Test
+    fun do_validate_bo_failed() {
+        // given
+        val orderModel = CheckoutOrderModel("123")
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(
+                recipientAddressModel = RecipientAddressModel().apply {
+                    id = "1"
+                    destinationDistrictId = "1"
+                    addressName = "jakarta"
+                    postalCode = "123"
+                    latitude = "123"
+                    longitude = "321"
+                }
+            ),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel("123", cartStringOrder = "12"),
+            orderModel,
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+
+        viewModel.logisticProcessor.isBoUnstackEnabled = true
+
+        val ioException = IOException("error")
+        coEvery {
+            validateUsePromoRevampUseCase.setParam(any()).executeOnBackground()
+        } throws ioException
+
+        // when
+        viewModel.doValidateUseLogisticPromoNew(
+            5,
+            "123",
+            "boCode",
+            true,
+            CourierItemData(logPromoCode = "boCode", etaText = ""),
+            InsuranceData()
+        )
+
+        // then
+        assertEquals(
+            CheckoutOrderModel(
+                "123",
+                shipment = CheckoutOrderShipment(
+                    courierItemData = null
+                )
+            ),
+            (viewModel.listData.value[5] as CheckoutOrderModel)
+        )
+        assertEquals("error", latestToaster!!.toasterMessage)
+    }
+
+    @Test
+    fun do_validate_bo_failed_akamai() {
+        // given
+        val orderModel = CheckoutOrderModel("123")
+        viewModel.listData.value = listOf(
+            CheckoutTickerErrorModel(errorMessage = ""),
+            CheckoutTickerModel(ticker = TickerAnnouncementHolderData()),
+            CheckoutAddressModel(
+                recipientAddressModel = RecipientAddressModel().apply {
+                    id = "1"
+                    destinationDistrictId = "1"
+                    addressName = "jakarta"
+                    postalCode = "123"
+                    latitude = "123"
+                    longitude = "321"
+                }
+            ),
+            CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
+            CheckoutProductModel("123", cartStringOrder = "12"),
+            orderModel,
+            CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutCostModel(),
+            CheckoutCrossSellGroupModel(),
+            CheckoutButtonPaymentModel()
+        )
+
+        viewModel.logisticProcessor.isBoUnstackEnabled = true
+
+        val exception = AkamaiErrorException("error akamai")
+        coEvery {
+            validateUsePromoRevampUseCase.setParam(any()).executeOnBackground()
+        } throws exception
+
+        coEvery {
+            clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground()
+        } returns ClearPromoUiModel(
+            SuccessDataUiModel(true)
+        )
+
+        // when
+        viewModel.doValidateUseLogisticPromoNew(
+            5,
+            "123",
+            "boCode",
+            true,
+            CourierItemData(logPromoCode = "boCode", etaText = ""),
+            InsuranceData()
+        )
+
+        // then
+        assertEquals(
+            CheckoutOrderModel(
+                "123",
+                shipment = CheckoutOrderShipment(
+                    courierItemData = null
+                )
+            ),
+            (viewModel.listData.value[5] as CheckoutOrderModel)
+        )
+        assertEquals(
+            CheckoutPromoModel(promo = LastApplyUiModel()),
+            (viewModel.listData.value[7] as CheckoutPromoModel)
+        )
+        assertEquals("error akamai", latestToaster!!.toasterMessage)
+        coVerify(exactly = 1) {
+            clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground()
+        }
     }
 }

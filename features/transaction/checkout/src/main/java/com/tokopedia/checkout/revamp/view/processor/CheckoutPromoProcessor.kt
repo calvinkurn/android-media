@@ -47,7 +47,6 @@ class CheckoutPromoProcessor @Inject constructor(
     private val dispatchers: CoroutineDispatchers
 ) {
 
-    //    private var lastValidateUseRequest: ValidateUsePromoRequest? = null
     var bboPromoCodes: List<String> = emptyList()
     internal var validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel? = null
 
@@ -138,13 +137,6 @@ class CheckoutPromoProcessor @Inject constructor(
                         }
                         ordersItem.validationMetadata =
                             shipmentCartItemModel.validationMetadata
-//                            } else {
-//                                ordersItem.shippingId = 0
-//                                ordersItem.spId = 0
-//                                ordersItem.freeShippingMetadata = ""
-//                                ordersItem.validationMetadata = ""
-//                            }
-//                        }
                     }
                     listOrderItem.add(ordersItem)
                 }
@@ -321,45 +313,32 @@ class CheckoutPromoProcessor @Inject constructor(
 //                    ordersItem.validationMetadata = ""
 //                }
 //            } else {
-            if (shipmentCartItemModel.shipment.courierItemData != null) {
-                ordersItem.shippingId =
-                    shipmentCartItemModel.shipment.courierItemData.selectedShipper.shipperId
-                ordersItem.spId =
-                    shipmentCartItemModel.shipment.courierItemData.selectedShipper.shipperProductId
-                if (!shipmentCartItemModel.shipment.courierItemData.selectedShipper.logPromoCode.isNullOrEmpty()) {
-                    ordersItem.freeShippingMetadata =
-                        shipmentCartItemModel.shipment.courierItemData.selectedShipper.freeShippingMetadata
-                    ordersItem.benefitClass =
-                        shipmentCartItemModel.shipment.courierItemData.selectedShipper.benefitClass
-                    ordersItem.shippingSubsidy =
-                        shipmentCartItemModel.shipment.courierItemData.selectedShipper.shippingSubsidy
-                    ordersItem.shippingPrice =
-                        shipmentCartItemModel.shipment.courierItemData.selectedShipper.shippingRate.toDouble()
-                    ordersItem.etaText =
-                        shipmentCartItemModel.shipment.courierItemData.selectedShipper.etaText.toEmptyStringIfNull()
-                    ordersItem.boCampaignId =
-                        shipmentCartItemModel.shipment.courierItemData.selectedShipper.boCampaignId
-                } else {
-                    ordersItem.freeShippingMetadata = ""
-                    ordersItem.boCampaignId = 0
-                    ordersItem.benefitClass = ""
-                    ordersItem.shippingSubsidy = 0
-                    ordersItem.shippingPrice = 0.0
-                    ordersItem.etaText = ""
-                }
-                ordersItem.validationMetadata = shipmentCartItemModel.validationMetadata
+            ordersItem.shippingId =
+                shipmentCartItemModel.shipment.courierItemData.selectedShipper.shipperId
+            ordersItem.spId =
+                shipmentCartItemModel.shipment.courierItemData.selectedShipper.shipperProductId
+            if (!shipmentCartItemModel.shipment.courierItemData.selectedShipper.logPromoCode.isNullOrEmpty()) {
+                ordersItem.freeShippingMetadata =
+                    shipmentCartItemModel.shipment.courierItemData.selectedShipper.freeShippingMetadata
+                ordersItem.benefitClass =
+                    shipmentCartItemModel.shipment.courierItemData.selectedShipper.benefitClass
+                ordersItem.shippingSubsidy =
+                    shipmentCartItemModel.shipment.courierItemData.selectedShipper.shippingSubsidy
+                ordersItem.shippingPrice =
+                    shipmentCartItemModel.shipment.courierItemData.selectedShipper.shippingRate.toDouble()
+                ordersItem.etaText =
+                    shipmentCartItemModel.shipment.courierItemData.selectedShipper.etaText.toEmptyStringIfNull()
+                ordersItem.boCampaignId =
+                    shipmentCartItemModel.shipment.courierItemData.selectedShipper.boCampaignId
             } else {
-                ordersItem.shippingId = 0
-                ordersItem.spId = 0
                 ordersItem.freeShippingMetadata = ""
                 ordersItem.boCampaignId = 0
                 ordersItem.benefitClass = ""
                 ordersItem.shippingSubsidy = 0
                 ordersItem.shippingPrice = 0.0
                 ordersItem.etaText = ""
-                ordersItem.validationMetadata = ""
             }
-//            }
+            ordersItem.validationMetadata = shipmentCartItemModel.validationMetadata
         }
     }
 
@@ -379,12 +358,6 @@ class CheckoutPromoProcessor @Inject constructor(
                 validateUsePromoRevampUseCase.setParam(validateUsePromoRequest)
                     .executeOnBackground()
             }
-//            promoQueue.remove()
-//            itemToProcess = promoQueue.peek()
-//            if (promoQueue.any { it.cartString == shipmentValidatePromoHolderData.cartString && it.validateUsePromoRequest != null }) {
-            // ignore this, because there is a new one in the queue
-//                continue@loopProcess
-//            }
             return onValidatePromoSuccess(
                 validateUsePromoRevampUiModel,
                 cartString,
@@ -396,12 +369,6 @@ class CheckoutPromoProcessor @Inject constructor(
                 isTradeInByDropOff
             )
         } catch (t: Throwable) {
-//            promoQueue.remove()
-//            itemToProcess = promoQueue.peek()
-//            if (promoQueue.any { it.cartString == shipmentValidatePromoHolderData.cartString }) {
-            // ignore this, because there is a new one in the queue
-//                continue@loopProcess
-//            }
             return onValidatePromoError(
                 t,
                 cartString,
@@ -440,9 +407,6 @@ class CheckoutPromoProcessor @Inject constructor(
         isTradeIn: Boolean,
         isTradeInByDropOff: Boolean
     ): List<CheckoutItem> {
-//        if (view != null) {
-//            this@ShipmentViewModel.validateUsePromoRevampUiModel =
-//                validateUsePromoRevampUiModel
         val isValidatePromoRevampSuccess =
             validateUsePromoRevampUiModel.status.equals(
                 statusOK,
@@ -560,15 +524,6 @@ class CheckoutPromoProcessor @Inject constructor(
                                 boUniqueId = voucherOrder.uniqueId,
                                 isShippingBorderRed = false
                             )
-//                            if (view != null && recommendedCourier != null) {
-//                                view!!.setSelectedCourier(
-//                                    cartItemPosition,
-//                                    recommendedCourier,
-//                                    true,
-//                                    false
-//                                )
-//                                processSaveShipmentState(shipmentCartItemModel)
-//                            }
                         }
                     }
                 }
@@ -595,16 +550,6 @@ class CheckoutPromoProcessor @Inject constructor(
                             isTradeInByDropOff,
                             promoCode
                         )
-//                        if (view != null) {
-//                            view!!.resetCourier(shipmentCartItemModel)
-//                            view!!.logOnErrorApplyBo(
-//                                MessageErrorException(
-//                                    voucherOrder.messageUiModel.text
-//                                ),
-//                                shipmentCartItemModel,
-//                                voucherOrder.code
-//                            )
-//                        }
                     }
                 }
             }
@@ -630,15 +575,6 @@ class CheckoutPromoProcessor @Inject constructor(
                         isTradeInByDropOff,
                         promoCode
                     )
-//                    if (view != null) {
-//                        view!!.resetCourier(shipmentCartItemModel)
-//                        view!!.logOnErrorApplyBo(
-//                            MessageErrorException("voucher order not found"),
-//                            shipmentCartItemModel,
-//                            promoCode
-//                        )
-//                        break
-//                    }
                 }
             }
         }
@@ -667,11 +603,6 @@ class CheckoutPromoProcessor @Inject constructor(
             ),
             isShippingBorderRed = false
         )
-//        if (view != null) {
-//            view!!.setStateLoadingCourierStateAtIndex(
-//                shipmentValidatePromoHolderData.cartPosition,
-//                false
-//            )
         mTrackerShipment.eventClickLanjutkanTerapkanPromoError(t.message)
         if (t is AkamaiErrorException) {
             clearAllPromo(validateUsePromoRequest)
@@ -691,10 +622,6 @@ class CheckoutPromoProcessor @Inject constructor(
                 )
             )
         } else {
-//            newOrderModel =
-//                newOrderModel.copy(shipment = newOrderModel.shipment.copy(courierItemData = null))
-//                view!!.showToastError(t.message)
-//                view!!.resetCourier(shipmentValidatePromoHolderData.cartPosition)
             if (orderModel.boCode.isNotEmpty()) {
                 doClearBoSilently(orderModel)
                 newOrderModel = newOrderModel.copy(boCode = "", boUniqueId = "")
@@ -784,23 +711,12 @@ class CheckoutPromoProcessor @Inject constructor(
         responseData: ClearPromoUiModel,
         promoCode: String
     ): Boolean {
-        if (responseData.successDataModel.tickerMessage.isNotEmpty()) {
-            //                        val ticker = tickerAnnouncementHolderData.value
-            //                        ticker.title = ""
-            //                        ticker.message =
-            //                            responseData.successDataModel.tickerMessage
-            //                        tickerAnnouncementHolderData.value = ticker
-        }
         val isLastAppliedPromo =
             isLastAppliedPromo(promoCode)
         if (isLastAppliedPromo) {
             validateUsePromoRevampUiModel = null
         }
         return isLastAppliedPromo
-        //                    view!!.onSuccessClearPromoLogistic(
-        //                        shipmentValidatePromoHolderData.cartPosition,
-        //                        isLastAppliedPromo
-        //                    )
     }
 
     private fun isLastAppliedPromo(promoCode: String?): Boolean {
@@ -852,7 +768,6 @@ class CheckoutPromoProcessor @Inject constructor(
                             voucherOrder.messageUiModel.text
                         )
                     )
-//                    view?.showToastError(voucherOrder.messageUiModel.text)
                     return
                 }
             }
@@ -866,7 +781,6 @@ class CheckoutPromoProcessor @Inject constructor(
                     messageInfo
                 )
             )
-//            view?.showToastNormal(messageInfo)
         }
     }
 
@@ -926,14 +840,7 @@ class CheckoutPromoProcessor @Inject constructor(
                             message
                         )
                     )
-//                        view!!.renderErrorCheckPromoShipmentData(message)
-//                        view!!.resetPromoBenefit()
-//                        view!!.resetAllCourier()
                 } else {
-//                        view!!.updateButtonPromoCheckout(
-//                            validateUsePromoRevampUiModel.promoUiModel,
-//                            false
-//                        )
                     val newPromo = items.promo()!!.copy(
                         promo = LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(
                             validateUsePromoRevampUiModel.promoUiModel
@@ -951,14 +858,6 @@ class CheckoutPromoProcessor @Inject constructor(
                         }
                     }
                 }
-//                    reloadCourierForMvc(
-//                        validateUsePromoRevampUiModel,
-//                        lastSelectedCourierOrderIndex,
-//                        cartString
-//                    )
-//                    checkUnCompletedPublisher()
-//                    isValidatingFinalPromo = false
-//                    updateShipmentButtonPaymentModel(loading = false)
                 return@withContext items
             } catch (t: Throwable) {
                 Timber.d(t)
@@ -982,9 +881,6 @@ class CheckoutPromoProcessor @Inject constructor(
                             t
                         )
                     )
-//                    view!!.showToastError(t.message)
-//                    view!!.resetAllCourier()
-//                    view!!.doResetButtonPromoCheckout()
                 } else {
                     items[items.size - 4] = items.promo()!!.copy(promo = LastApplyUiModel())
                     for ((index, checkoutItem) in items.withIndex()) {
@@ -1003,16 +899,7 @@ class CheckoutPromoProcessor @Inject constructor(
                             throwable = t
                         )
                     )
-//                    view!!.renderErrorCheckPromoShipmentData(
-//                        ErrorHandler.getErrorMessage(
-//                            view!!.activity,
-//                            t
-//                        )
-//                    )
                 }
-//                    checkUnCompletedPublisher()
-//                    isValidatingFinalPromo = false
-//                    updateShipmentButtonPaymentModel(loading = false)
                 return@withContext items
             }
         }
@@ -1054,18 +941,6 @@ class CheckoutPromoProcessor @Inject constructor(
                             voucherOrder.code
                         )
                         break@voucherLoop
-//                        if (view != null) {
-//                            updatedCartStringGroup.add(voucherOrder.cartStringGroup)
-//                            view!!.resetCourier(shipmentCartItemModel)
-//                            view!!.logOnErrorApplyBo(
-//                                MessageErrorException(
-//                                    voucherOrder.messageUiModel.text
-//                                ),
-//                                shipmentCartItemModel,
-//                                voucherOrder.code
-//                            )
-//                            break@voucherLoop
-//                        }
                     }
                 }
             } else if (voucherOrder.type.equals(
@@ -1100,12 +975,6 @@ class CheckoutPromoProcessor @Inject constructor(
                         isTradeInByDropOff,
                         code
                     )
-//                    view!!.resetCourier(shipmentCartItemModel)
-//                    view!!.logOnErrorApplyBo(
-//                        MessageErrorException("voucher order not found"),
-//                        shipmentCartItemModel,
-//                        code
-//                    )
                 }
             }
         }
@@ -1121,20 +990,8 @@ class CheckoutPromoProcessor @Inject constructor(
                 validateUsePromoRevampUseCase.setParam(validateUsePromoRequest)
                     .executeOnBackground()
             }
-//            promoQueue.remove()
-//            itemToProcess = promoQueue.peek()
-//            if (promoQueue.any { it.cartString == shipmentValidatePromoHolderData.cartString && it.validateUsePromoRequest != null }) {
-            // ignore this, because there is a new one in the queue
-//                continue@loopProcess
-//            }
             return validateUsePromoRevampUiModel
         } catch (t: Throwable) {
-//            promoQueue.remove()
-//            itemToProcess = promoQueue.peek()
-//            if (promoQueue.any { it.cartString == shipmentValidatePromoHolderData.cartString }) {
-            // ignore this, because there is a new one in the queue
-//                continue@loopProcess
-//            }
             return null
         }
     }
@@ -1195,7 +1052,6 @@ class CheckoutPromoProcessor @Inject constructor(
             } catch (t: Throwable) {
                 Timber.d(t)
                 return false
-//                    view?.removeIneligiblePromo()
             }
         }
         return true

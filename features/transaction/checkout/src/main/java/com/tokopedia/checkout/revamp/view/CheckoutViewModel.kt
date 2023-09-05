@@ -56,7 +56,6 @@ import com.tokopedia.logisticcart.shipping.model.CodModel
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.logisticcart.shipping.model.RatesParam
 import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel
-import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
@@ -138,8 +137,6 @@ class CheckoutViewModel @Inject constructor(
 
     var checkoutPageSource: String = CheckoutConstant.CHECKOUT_PAGE_SOURCE_PDP
 
-    private var isPurchaseProtectionPage: Boolean = false
-
     val cornerId: String?
         get() = recipientAddressModel.cornerId
 
@@ -155,15 +152,11 @@ class CheckoutViewModel @Inject constructor(
 
     private var isUsingDdp = false
 
-    private var shipmentPlatformFeeData: ShipmentPlatformFeeData = ShipmentPlatformFeeData()
+    internal var shipmentPlatformFeeData: ShipmentPlatformFeeData = ShipmentPlatformFeeData()
 
     private var cartDataForRates = ""
 
     private var codData: CodModel? = null
-
-    // add ons product
-    // list summary add on - ready to render
-//    private var listSummaryAddOnModel: List<ShipmentAddOnSummaryModel> = emptyList()
 
     // list summary default
     private var summariesAddOnUiModel: HashMap<Int, String> = hashMapOf()
@@ -220,17 +213,6 @@ class CheckoutViewModel @Inject constructor(
 
                     isUsingDdp = saf.cartShipmentAddressFormData.isUsingDdp
                     shipmentPlatformFeeData = saf.cartShipmentAddressFormData.shipmentPlatformFee
-                    val ppImpressionData: List<String> =
-                        saf.cartShipmentAddressFormData.getAvailablePurchaseProtection
-                    if (ppImpressionData.isNotEmpty()) {
-                        isPurchaseProtectionPage = true
-                        mTrackerPurchaseProtection.eventImpressionOfProduct(
-                            userSessionInterface.userId,
-                            ppImpressionData
-                        )
-                    } else {
-                        isPurchaseProtectionPage = false
-                    }
                     cartDataForRates = saf.cartShipmentAddressFormData.cartData
                     codData = saf.cartShipmentAddressFormData.cod
                     campaignTimer = saf.cartShipmentAddressFormData.campaignTimerUi
@@ -285,10 +267,22 @@ class CheckoutViewModel @Inject constructor(
                                 CheckoutCrossSellModel(
                                     crossSellModel,
                                     crossSellModel.isChecked,
-                                    crossSellModel.checkboxDisabled,
+                                    !crossSellModel.checkboxDisabled,
                                     0
                                 )
                             )
+                            if (crossSellModel.isChecked) {
+                                val digitalCategoryName = crossSellModel.orderSummary.title
+                                val digitalProductName = crossSellModel.info.title
+                                val eventLabel = "$digitalCategoryName - ${crossSellModel.id}"
+                                mTrackerShipment.eventViewAutoCheckCrossSell(
+                                    userSessionInterface.userId,
+                                    0.toString(),
+                                    eventLabel,
+                                    digitalProductName,
+                                    ArrayList(items.mapNotNull { if (it is CheckoutProductModel) it.productCatId else null })
+                                )
+                            }
                         }
                         if (saf.cartShipmentAddressFormData.egoldAttributes != null && saf.cartShipmentAddressFormData.egoldAttributes!!.isEnabled && saf.cartShipmentAddressFormData.egoldAttributes!!.isEligible) {
                             crossSellList.add(
@@ -300,7 +294,12 @@ class CheckoutViewModel @Inject constructor(
                             )
                         }
                         if (saf.cartShipmentAddressFormData.donation != null && saf.cartShipmentAddressFormData.donation!!.title.isNotEmpty() && saf.cartShipmentAddressFormData.donation!!.nominal != 0) {
-                            crossSellList.add(CheckoutDonationModel(saf.cartShipmentAddressFormData.donation!!))
+                            crossSellList.add(
+                                CheckoutDonationModel(
+                                    saf.cartShipmentAddressFormData.donation!!,
+                                    saf.cartShipmentAddressFormData.donation!!.isChecked
+                                )
+                            )
                             if (saf.cartShipmentAddressFormData.donation!!.isChecked) {
                                 mTrackerShipment.eventViewAutoCheckDonation(
                                     userSessionInterface.userId
@@ -591,7 +590,7 @@ class CheckoutViewModel @Inject constructor(
         }
     }
 
-    private fun shouldAutoLoadCourier(
+    internal fun shouldAutoLoadCourier(
         shipmentCartItemModel: CheckoutOrderModel,
         recipientAddressModel: RecipientAddressModel?
     ): Boolean {
@@ -656,22 +655,22 @@ class CheckoutViewModel @Inject constructor(
                     )
                 )
                 pageState.value = CheckoutPageState.Normal
-                if (isHandleFallback) {
-                    // todo test this in trade in
-                    val address = listData.value.address()?.recipientAddressModel
-                    if (address != null) {
-                        if (address.selectedTabIndex == RecipientAddressModel.TAB_ACTIVE_ADDRESS_DEFAULT) {
-                            address.selectedTabIndex =
-                                RecipientAddressModel.TAB_ACTIVE_ADDRESS_TRADE_IN
-                            address.isIgnoreSelectionAction = true
-                        } else if (address.selectedTabIndex == RecipientAddressModel.TAB_ACTIVE_ADDRESS_TRADE_IN) {
-                            address.locationDataModel = null
-                            address.dropOffAddressDetail = ""
-                            address.dropOffAddressName = ""
-                        }
-                        listData.value = listData.value
-                    }
-                }
+//                if (isHandleFallback) {
+//                    // todo test this in trade in
+//                    val address = listData.value.address()?.recipientAddressModel
+//                    if (address != null) {
+//                        if (address.selectedTabIndex == RecipientAddressModel.TAB_ACTIVE_ADDRESS_DEFAULT) {
+//                            address.selectedTabIndex =
+//                                RecipientAddressModel.TAB_ACTIVE_ADDRESS_TRADE_IN
+//                            address.isIgnoreSelectionAction = true
+//                        } else if (address.selectedTabIndex == RecipientAddressModel.TAB_ACTIVE_ADDRESS_TRADE_IN) {
+//                            address.locationDataModel = null
+//                            address.dropOffAddressDetail = ""
+//                            address.dropOffAddressName = ""
+//                        }
+//                        listData.value = listData.value
+//                    }
+//                }
             }
         }
     }
@@ -1263,7 +1262,7 @@ class CheckoutViewModel @Inject constructor(
         return ArrayList(promoProcessor.bboPromoCodes)
     }
 
-    private fun removeInvalidBoCodeFromPromoRequest(
+    internal fun removeInvalidBoCodeFromPromoRequest(
         order: CheckoutOrderModel,
         list: List<CheckoutItem>,
         validateUsePromoRequest: ValidateUsePromoRequest
@@ -1271,15 +1270,13 @@ class CheckoutViewModel @Inject constructor(
         if (!order.isFreeShippingPlus) {
             val shipmentCartItemModelLists =
                 list.filterIsInstance(
-                    ShipmentCartItemModel::class.java
+                    CheckoutOrderModel::class.java
                 )
             for (tmpShipmentCartItemModel in shipmentCartItemModelLists) {
                 for (promoOrder in validateUsePromoRequest.orders) {
-                    if (order.cartStringGroup != tmpShipmentCartItemModel.cartStringGroup && tmpShipmentCartItemModel.cartStringGroup == promoOrder.cartStringGroup && tmpShipmentCartItemModel.selectedShipmentDetailData != null && tmpShipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier != null &&
-                        !tmpShipmentCartItemModel.isFreeShippingPlus
-                    ) {
+                    if (order.cartStringGroup != tmpShipmentCartItemModel.cartStringGroup && tmpShipmentCartItemModel.cartStringGroup == promoOrder.cartStringGroup && tmpShipmentCartItemModel.shipment.courierItemData != null && !tmpShipmentCartItemModel.isFreeShippingPlus) {
                         promoOrder.codes.remove(
-                            tmpShipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier!!.selectedShipper.logPromoCode
+                            tmpShipmentCartItemModel.shipment.courierItemData.selectedShipper.logPromoCode
                         )
                         promoOrder.boCode = ""
                     }
@@ -1344,19 +1341,7 @@ class CheckoutViewModel @Inject constructor(
                     }
                 }
             }
-            val shipmentCartItemModelLists = listData.value.filterIsInstance(CheckoutOrderModel::class.java)
-            if (shipmentCartItemModelLists.isNotEmpty() && !shipmentCartItemModel.isFreeShippingPlus) {
-                for (tmpShipmentCartItemModel in shipmentCartItemModelLists) {
-                    for (order in validateUsePromoRequest.orders) {
-                        if (shipmentCartItemModel.cartStringGroup != tmpShipmentCartItemModel.cartStringGroup && tmpShipmentCartItemModel.cartStringGroup == order.cartStringGroup && tmpShipmentCartItemModel.shipment.courierItemData?.selectedShipper?.logPromoCode != null &&
-                            !tmpShipmentCartItemModel.isFreeShippingPlus
-                        ) {
-                            order.codes.remove(tmpShipmentCartItemModel.shipment.courierItemData.selectedShipper.logPromoCode)
-                            order.boCode = ""
-                        }
-                    }
-                }
-            }
+            removeInvalidBoCodeFromPromoRequest(shipmentCartItemModel, listData.value, validateUsePromoRequest)
             for (ordersItem in validateUsePromoRequest.orders) {
                 if (ordersItem.cartStringGroup == shipmentCartItemModel.cartStringGroup) {
                     ordersItem.spId = courierItemData.shipperProductId
@@ -1366,7 +1351,7 @@ class CheckoutViewModel @Inject constructor(
                     ordersItem.shippingSubsidy = courierItemData.shippingSubsidy
                     ordersItem.benefitClass = courierItemData.benefitClass
                     ordersItem.shippingPrice = courierItemData.shippingRate.toDouble()
-                    ordersItem.etaText = courierItemData.etaText ?: ""
+                    ordersItem.etaText = courierItemData.etaText!!
                 }
             }
             doValidateUseLogisticPromo(
@@ -1495,20 +1480,7 @@ class CheckoutViewModel @Inject constructor(
                 }
             }
         }
-        val shipmentCartItemModelLists =
-            listData.value.filterIsInstance(CheckoutOrderModel::class.java)
-        if (shipmentCartItemModelLists.isNotEmpty()) {
-            for (tmpShipmentCartItemModel in shipmentCartItemModelLists) {
-                for (orderPromo in validateUsePromoRequest.orders) {
-                    if (order.cartStringGroup != tmpShipmentCartItemModel.cartStringGroup && tmpShipmentCartItemModel.cartStringGroup == orderPromo.cartStringGroup && tmpShipmentCartItemModel.shipment.courierItemData?.selectedShipper?.logPromoCode != null &&
-                        !tmpShipmentCartItemModel.isFreeShippingPlus
-                    ) {
-                        orderPromo.codes.remove(tmpShipmentCartItemModel.shipment.courierItemData.selectedShipper.logPromoCode)
-                        orderPromo.boCode = ""
-                    }
-                }
-            }
-        }
+        removeInvalidBoCodeFromPromoRequest(order, listData.value, validateUsePromoRequest)
         for (ordersItem in validateUsePromoRequest.orders) {
             if (ordersItem.cartStringGroup == order.cartStringGroup) {
                 ordersItem.spId = selectedShipper.shipperProductId
@@ -1680,7 +1652,6 @@ class CheckoutViewModel @Inject constructor(
             pageState.value = CheckoutPageState.Loading
             val items = listData.value.toMutableList()
             var firstErrorIndex = -1
-            var continueCheckout = true
             var hasValidOrder = false
             var hasUnselectedCourier = false
             var isPrescriptionFrontEndValidationError = false
@@ -1742,6 +1713,15 @@ class CheckoutViewModel @Inject constructor(
                     triggerEpharmacyTracker.invoke(true)
                 }
                 return@launch
+            }
+            if (!hasValidOrder) {
+                commonToaster.emit(
+                    CheckoutPageToaster(
+                        Toaster.TYPE_ERROR,
+                        "Barangmu lagi nggak bisa dibeli. Silakan balik ke keranjang untuk cek belanjaanmu."
+                    )
+                )
+                pageState.value = CheckoutPageState.Normal
             }
             val errorToaster =
                 addOnProcessor.saveAddOnsProductBeforeCheckout(listData.value, isOneClickShipment)
@@ -1808,15 +1788,13 @@ class CheckoutViewModel @Inject constructor(
                                 deletedVoucherOrder.add(voucherOrdersItemUiModel)
                             }
                         }
-                        if (deletedVoucherOrder.size > 0) {
-                            for (voucherOrdersItemUiModel in deletedVoucherOrder) {
-                                voucherOrderUiModels.remove(
-                                    voucherOrdersItemUiModel
-                                )
-                            }
-                            validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels =
-                                voucherOrderUiModels
+                        for (voucherOrdersItemUiModel in deletedVoucherOrder) {
+                            voucherOrderUiModels.remove(
+                                voucherOrdersItemUiModel
+                            )
                         }
+                        validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels =
+                            voucherOrderUiModels
                         doCheckout(
                             validateUsePromoRevampUiModel,
                             fingerprintPublicKey,
@@ -1847,6 +1825,7 @@ class CheckoutViewModel @Inject constructor(
                         CheckoutConstant.DEFAULT_ERROR_MESSAGE_VALIDATE_PROMO
                     )
                 )
+                pageState.value = CheckoutPageState.Normal
             }
         }
     }
@@ -1871,12 +1850,6 @@ class CheckoutViewModel @Inject constructor(
             hasClearPromoBeforeCheckout
         )
         if (checkoutResult.success) {
-            if (isPurchaseProtectionPage) {
-                mTrackerPurchaseProtection.eventClickOnBuy(
-                    userSessionInterface.userId,
-                    checkoutResult.checkoutRequest.protectionAnalyticsData
-                )
-            }
             sendEEStep4(
                 checkoutResult.transactionId,
                 checkoutResult.deviceModel,
@@ -2016,13 +1989,7 @@ class CheckoutViewModel @Inject constructor(
     }
 
     fun validatePrescriptionOnBackPressed(): CheckoutEpharmacyModel? {
-        val epharmacy = listData.value.epharmacy()
-        if (epharmacy != null && epharmacy.epharmacy.showImageUpload) {
-            if (epharmacy.epharmacy.uploadedImageCount > 0 || epharmacy.epharmacy.hasInvalidPrescription) {
-                return epharmacy
-            }
-        }
-        return null
+        return addOnProcessor.validatePrescriptionOnBackPressed(listData.value.epharmacy())
     }
 
     fun validateClearAllBoPromo(
