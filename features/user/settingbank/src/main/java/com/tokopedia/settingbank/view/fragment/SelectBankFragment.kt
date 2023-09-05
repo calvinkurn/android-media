@@ -15,6 +15,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.settingbank.R
+import com.tokopedia.settingbank.databinding.FragmentChooseBankBinding
 import com.tokopedia.settingbank.domain.model.Bank
 import com.tokopedia.settingbank.view.activity.AddBankActivity
 import com.tokopedia.settingbank.view.activity.ChooseBankActivity
@@ -25,11 +26,13 @@ import com.tokopedia.settingbank.view.viewState.OnBankListLoaded
 import com.tokopedia.settingbank.view.viewState.OnBankListLoadingError
 import com.tokopedia.settingbank.view.viewState.OnBankSearchResult
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.main.fragment_choose_bank.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.*
 import javax.inject.Inject
 
-class SelectBankFragment : BottomSheetUnify(),  BankListClickListener {
+class SelectBankFragment : BottomSheetUnify(), BankListClickListener {
+
+    private var binding by autoClearedNullable<FragmentChooseBankBinding>()
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -75,14 +78,17 @@ class SelectBankFragment : BottomSheetUnify(),  BankListClickListener {
     }
 
     private fun setChild() {
-        childView = LayoutInflater.from(context).inflate(R.layout.fragment_choose_bank,
-                null, false)
+        childView = LayoutInflater.from(context).inflate(
+            R.layout.fragment_choose_bank,
+            null,
+            false
+        )
         setChild(childView)
     }
 
     private fun initViewModels() {
         selectBankViewModel = ViewModelProvider(this, viewModelFactory)
-                .get(SelectBankViewModel::class.java)
+            .get(SelectBankViewModel::class.java)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -99,28 +105,33 @@ class SelectBankFragment : BottomSheetUnify(),  BankListClickListener {
     }
 
     private fun startObservingViewModels() {
-        selectBankViewModel.bankListState.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is OnBankListLoaded -> showBankList(it.bankList)
-                is OnBankListLoadingError -> {
-                    hideUI()
-                    showLoadingError(it.throwable)
+        selectBankViewModel.bankListState.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is OnBankListLoaded -> showBankList(it.bankList)
+                    is OnBankListLoadingError -> {
+                        hideUI()
+                        showLoadingError(it.throwable)
+                    }
+                    is OnBankSearchResult -> showBankSearchResult(it.bankList)
                 }
-                is OnBankSearchResult -> showBankSearchResult(it.bankList)
             }
-        })
+        )
     }
 
     private fun showBankSearchResult(bankList: ArrayList<Bank>) {
-        rvChooseBank.post {
+        binding?.rvChooseBank?.post {
             bankListAdapter.updateItem(bankList)
         }
     }
 
     private fun hideUI() {
-        progressBar.gone()
-        searchInputTextView.gone()
-        rvChooseBank.gone()
+        binding?.run {
+            progressBar.gone()
+            searchInputTextView.gone()
+            rvChooseBank.gone()
+        }
     }
 
     private fun showLoadingError(throwable: Throwable) {
@@ -133,63 +144,70 @@ class SelectBankFragment : BottomSheetUnify(),  BankListClickListener {
     }
 
     private fun showGlobalError(errorType: Int, retryAction: () -> Unit) {
-        globalError.visible()
-        globalError.setType(errorType)
-        globalError.errorAction.visible()
-        globalError.errorAction.setOnClickListener {
-            showBankListLoading()
-            retryAction.invoke()
+        binding?.run {
+            globalError.visible()
+            globalError.setType(errorType)
+            globalError.errorAction.visible()
+            globalError.errorAction.setOnClickListener {
+                showBankListLoading()
+                retryAction.invoke()
+            }
         }
     }
 
     private fun showBankList(bankList: ArrayList<Bank>) {
-        globalError.gone()
-        if (bankList.isNotEmpty()) {
-            progressBar.gone()
-            searchInputTextView.visible()
-            rvChooseBank.visible()
-            rvChooseBank.post {
-                bankListAdapter.updateItem(bankList)
+        binding?.run {
+            globalError.gone()
+            if (bankList.isNotEmpty()) {
+                progressBar.gone()
+                searchInputTextView.visible()
+                rvChooseBank.visible()
+                rvChooseBank.post {
+                    bankListAdapter.updateItem(bankList)
+                }
+            } else {
+                searchInputTextView.gone()
+                rvChooseBank.gone()
             }
-        } else {
-            searchInputTextView.gone()
-            rvChooseBank.gone()
         }
     }
 
     private fun showBankListLoading() {
-        progressBar.visible()
-        rvChooseBank.gone()
-        searchInputTextView.gone()
-        globalError.gone()
+        binding?.run {
+            progressBar.visible()
+            rvChooseBank.gone()
+            searchInputTextView.gone()
+            globalError.gone()
+        }
     }
 
     private fun initBankRecyclerView() {
-        rvChooseBank.layoutManager = LinearLayoutManager(activity)
-        rvChooseBank.adapter = bankListAdapter
-        bankListAdapter.listener = this
+        binding?.run {
+            rvChooseBank.layoutManager = LinearLayoutManager(activity)
+            rvChooseBank.adapter = bankListAdapter
+            bankListAdapter.listener = this@SelectBankFragment
+        }
     }
 
     override fun onBankSelected(bank: Bank) {
-        if (::onBankSelectedListener.isInitialized)
+        if (::onBankSelectedListener.isInitialized) {
             onBankSelectedListener.onBankSelected(bank)
+        }
         dismiss()
     }
 
     private fun setupSearchInputView() {
-        searchInputTextView.searchBarTextField.addTextChangedListener(object : TextWatcher {
+        binding?.searchInputTextView?.searchBarTextField?.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
-                s?.toString()?.apply { onSearchTextChanged(this) } ?: run { onSearchTextChanged("")}
+                s?.toString()?.apply { onSearchTextChanged(this) } ?: run { onSearchTextChanged("") }
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
-        searchInputTextView.clearListener = { onSearchReset() }
+        binding?.searchInputTextView?.clearListener = { onSearchReset() }
     }
-
-
 
     fun onSearchTextChanged(text: String?) {
         text?.let {
@@ -210,8 +228,10 @@ class SelectBankFragment : BottomSheetUnify(),  BankListClickListener {
 
     companion object {
         private const val TAG = "SelectBankFragment"
-        fun showChooseBankBottomSheet(context: Context,
-                                      fragmentManager: FragmentManager): SelectBankFragment {
+        fun showChooseBankBottomSheet(
+            context: Context,
+            fragmentManager: FragmentManager
+        ): SelectBankFragment {
             val selectBankFragment = SelectBankFragment()
             selectBankFragment.setTitle(context.getString(R.string.sbank_choose_a_bank))
             selectBankFragment.isFullpage = true
@@ -221,7 +241,6 @@ class SelectBankFragment : BottomSheetUnify(),  BankListClickListener {
             return selectBankFragment
         }
     }
-
 }
 
 interface OnBankSelectedListener {
