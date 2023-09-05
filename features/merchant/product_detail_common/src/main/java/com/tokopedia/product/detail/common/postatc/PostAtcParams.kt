@@ -15,10 +15,10 @@ data class PostAtcParams(
     @Parcelize
     data class Addons(
         val deselectedAddonsIds: List<String>,
-        @Deprecated("Please using isFulfillment in postAtc basicInfo")
+        @Deprecated("Please use `isFulfillment` from PostAtcInfo")
         val isFulfillment: Boolean,
         val selectedAddonsIds: List<String>,
-        @Deprecated("Please using warehouseId in postAtc basicInfo")
+        @Deprecated("Please use `warehouseId` from PostAtcInfo.warehouseInfo")
         val warehouseId: String,
         val quantity: Int
     ) : Parcelable
