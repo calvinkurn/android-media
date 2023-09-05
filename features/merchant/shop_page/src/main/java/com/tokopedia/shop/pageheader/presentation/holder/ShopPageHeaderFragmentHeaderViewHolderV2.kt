@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -103,7 +104,7 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
         get() = viewBinding?.sectionShopBasicInfo
     private val sectionShopPerformance: View?
         get() = viewBinding?.sectionShopPerformance
-    private val imageRatingIcon: ImageUnify?
+    private val imageRatingIcon: IconUnify?
         get() = viewBinding?.imageShopRatingIcon
     private val textRatingDescription: Typography?
         get() = viewBinding?.textRatingDescription

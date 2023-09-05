@@ -28,5 +28,6 @@
     <color name="dms_static_status_bar_dark_color">#99AAAAAA</color>
     <color name="dms_static_Unify_RN500_light">#F94D63</color>
     <color name="dms_static_Unify_RN100_light">#FFDBE2</color>
+    <color name="dms_static_Unify_Y300_light">#FFC400</color>
 
 </resources>
