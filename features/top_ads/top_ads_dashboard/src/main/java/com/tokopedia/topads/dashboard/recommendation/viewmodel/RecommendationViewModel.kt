@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.topads.common.domain.usecase.TopAdsInsightProductsUseCase
 import com.tokopedia.topads.dashboard.data.model.beranda.RecommendationStatistics
 import com.tokopedia.topads.dashboard.domain.interactor.TopadsRecommendationStatisticsUseCase
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.HEADLINE_KEY
@@ -24,6 +25,7 @@ import javax.inject.Inject
 
 class RecommendationViewModel @Inject constructor(
     private val recommendationStatisticsUseCase: TopadsRecommendationStatisticsUseCase,
+    private val topAdsInsightProductsUseCase: TopAdsInsightProductsUseCase,
     private val dispatcher: CoroutineDispatchers,
     private val topAdsGetShopInfoUseCase: TopAdsGetShopInfoUseCase,
     private val topAdsGetTotalAdGroupsWithInsightUseCase: TopAdsGetTotalAdGroupsWithInsightUseCase
@@ -66,8 +68,22 @@ class RecommendationViewModel @Inject constructor(
                     Fail(Throwable())
                 }
         }, onError = {
-            _recommendationStatsLiveData.value = Fail(it)
-        })
+                _recommendationStatsLiveData.value = Fail(it)
+            })
+    }
+
+    fun getOutOfStockProducts() {
+        launchCatchError(block = {
+            val data = topAdsInsightProductsUseCase("")
+//            _recommendationStatsLiveData.value =
+//                if (data?.statistics?.data != null) {
+//                    Success(data.statistics.data)
+//                } else {
+//                    Fail(Throwable())
+//                }
+        }, onError = {
+//            _recommendationStatsLiveData.value = Fail(it)
+            })
     }
 
     private fun getAdGroupWithInsight() {
