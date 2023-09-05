@@ -201,7 +201,7 @@ object CheckoutCrossSellItemView {
         listener: CheckoutAdapterListener
     ) {
         GeneralBottomSheet().apply {
-            setTitle(egoldAttributeModel.titleText ?: "")
+            setTitle(egoldAttributeModel.tooltipTitleText ?: "")
             setDesc(egoldAttributeModel.tooltipText ?: "")
             setButtonText(itemBinding.root.context.getString(com.tokopedia.purchase_platform.common.R.string.label_button_bottomsheet_close))
             setButtonOnClickListener { it.dismiss() }

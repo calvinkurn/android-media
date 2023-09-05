@@ -3,12 +3,18 @@ package com.tokopedia.checkout.revamp.view
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData.Companion.ERROR_CODE_TO_OPEN_ADDRESS_LIST
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData.Companion.ERROR_CODE_TO_OPEN_ADD_NEW_ADDRESS
+import com.tokopedia.checkout.domain.model.cartshipmentform.Donation
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupAddress
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShopV2
 import com.tokopedia.checkout.domain.model.cartshipmentform.Product
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCrossSellModel
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutDonationModel
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutEgoldModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPageState
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutTickerModel
+import com.tokopedia.checkout.view.uimodel.CrossSellModel
+import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress
 import com.tokopedia.logisticCommon.data.response.EligibleForAddressFeature
 import com.tokopedia.logisticCommon.data.response.KeroAddrIsEligibleForAddressFeatureData
@@ -247,11 +253,283 @@ class CheckoutViewModelLoadSafTest : BaseCheckoutViewModelTest() {
 
         // then
         assertEquals(
-            CheckoutTickerModel(ticker = TickerAnnouncementHolderData(tickerData.id, tickerData.title, tickerData.message)),
+            CheckoutTickerModel(
+                ticker = TickerAnnouncementHolderData(
+                    tickerData.id,
+                    tickerData.title,
+                    tickerData.message
+                )
+            ),
             viewModel.listData.value[1]
         )
         verify {
             mTrackerShipment.eventViewInformationAndWarningTickerInCheckout(tickerData.id)
+        }
+    }
+
+    @Test
+    fun load_SAF_with_cross_sell_auto_checked() {
+        // given
+        val response = CartShipmentAddressFormData(
+            isError = false,
+            groupAddress = listOf(
+                GroupAddress(
+                    groupShop = listOf(
+                        GroupShop(
+                            groupShopData = listOf(
+                                GroupShopV2(
+                                    products = listOf(
+                                        Product()
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            ),
+            crossSell = listOf(
+                CrossSellModel(
+                    isChecked = true,
+                    checkboxDisabled = false
+                )
+            )
+        )
+        coEvery {
+            getShipmentAddressFormV4UseCase.invoke(any())
+        } returns response
+
+        // when
+        viewModel.loadSAF(false, false, false)
+
+        // then
+        assertEquals(
+            CheckoutCrossSellModel(
+                crossSellModel = CrossSellModel(isChecked = true),
+                isChecked = true,
+                isEnabled = true,
+                index = 0
+            ),
+            viewModel.listData.value.crossSellGroup()!!.crossSellList[0]
+        )
+        verify {
+            mTrackerShipment.eventViewAutoCheckCrossSell(any(), "0", any(), any(), any())
+        }
+    }
+
+    @Test
+    fun load_SAF_with_cross_sell_no_auto_checked() {
+        // given
+        val response = CartShipmentAddressFormData(
+            isError = false,
+            groupAddress = listOf(
+                GroupAddress(
+                    groupShop = listOf(
+                        GroupShop(
+                            groupShopData = listOf(
+                                GroupShopV2(
+                                    products = listOf(
+                                        Product()
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            ),
+            crossSell = listOf(
+                CrossSellModel(
+                    isChecked = false,
+                    checkboxDisabled = false
+                )
+            )
+        )
+        coEvery {
+            getShipmentAddressFormV4UseCase.invoke(any())
+        } returns response
+
+        // when
+        viewModel.loadSAF(false, false, false)
+
+        // then
+        assertEquals(
+            CheckoutCrossSellModel(
+                crossSellModel = CrossSellModel(isChecked = false),
+                isChecked = false,
+                isEnabled = true,
+                index = 0
+            ),
+            viewModel.listData.value.crossSellGroup()!!.crossSellList[0]
+        )
+        verify(inverse = true) {
+            mTrackerShipment.eventViewAutoCheckCrossSell(any(), "0", any(), any(), any())
+        }
+    }
+
+    @Test
+    fun load_SAF_with_cross_sell_disabled() {
+        // given
+        val response = CartShipmentAddressFormData(
+            isError = false,
+            groupAddress = listOf(
+                GroupAddress(
+                    groupShop = listOf(
+                        GroupShop(
+                            groupShopData = listOf(
+                                GroupShopV2(
+                                    products = listOf(
+                                        Product()
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            ),
+            crossSell = listOf(
+                CrossSellModel(
+                    isChecked = false,
+                    checkboxDisabled = true
+                )
+            )
+        )
+        coEvery {
+            getShipmentAddressFormV4UseCase.invoke(any())
+        } returns response
+
+        // when
+        viewModel.loadSAF(false, false, false)
+
+        // then
+        assertEquals(
+            0,
+            viewModel.listData.value.crossSellGroup()!!.crossSellList.size
+        )
+        verify(inverse = true) {
+            mTrackerShipment.eventViewAutoCheckCrossSell(any(), "0", any(), any(), any())
+        }
+    }
+
+    @Test
+    fun load_SAF_with_egold() {
+        // given
+        val response = CartShipmentAddressFormData(
+            isError = false,
+            groupAddress = listOf(
+                GroupAddress(
+                    groupShop = listOf(
+                        GroupShop(
+                            groupShopData = listOf(
+                                GroupShopV2(
+                                    products = listOf(
+                                        Product()
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            ),
+            egoldAttributes = EgoldAttributeModel(
+                isEligible = true,
+                isEnabled = true
+            )
+        )
+        coEvery {
+            getShipmentAddressFormV4UseCase.invoke(any())
+        } returns response
+
+        // when
+        viewModel.loadSAF(false, false, false)
+
+        // then
+        assertEquals(
+            CheckoutEgoldModel(EgoldAttributeModel(isEligible = true, isEnabled = true)),
+            viewModel.listData.value.crossSellGroup()!!.crossSellList[0]
+        )
+    }
+
+    @Test
+    fun load_SAF_with_donation() {
+        // given
+        val response = CartShipmentAddressFormData(
+            isError = false,
+            groupAddress = listOf(
+                GroupAddress(
+                    groupShop = listOf(
+                        GroupShop(
+                            groupShopData = listOf(
+                                GroupShopV2(
+                                    products = listOf(
+                                        Product()
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            ),
+            donation = Donation(
+                title = "donasi",
+                nominal = 1
+            )
+        )
+        coEvery {
+            getShipmentAddressFormV4UseCase.invoke(any())
+        } returns response
+
+        // when
+        viewModel.loadSAF(false, false, false)
+
+        // then
+        assertEquals(
+            CheckoutDonationModel(Donation(title = "donasi", nominal = 1)),
+            viewModel.listData.value.crossSellGroup()!!.crossSellList[0]
+        )
+        verify(inverse = true) {
+            mTrackerShipment.eventViewAutoCheckDonation(any())
+        }
+    }
+
+    @Test
+    fun load_SAF_with_donation_auto_checked() {
+        // given
+        val response = CartShipmentAddressFormData(
+            isError = false,
+            groupAddress = listOf(
+                GroupAddress(
+                    groupShop = listOf(
+                        GroupShop(
+                            groupShopData = listOf(
+                                GroupShopV2(
+                                    products = listOf(
+                                        Product()
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            ),
+            donation = Donation(
+                title = "donasi",
+                nominal = 1,
+                isChecked = true
+            )
+        )
+        coEvery {
+            getShipmentAddressFormV4UseCase.invoke(any())
+        } returns response
+
+        // when
+        viewModel.loadSAF(false, false, false)
+
+        // then
+        assertEquals(
+            CheckoutDonationModel(Donation(title = "donasi", nominal = 1, isChecked = true), isChecked = true),
+            viewModel.listData.value.crossSellGroup()!!.crossSellList[0]
+        )
+        verify {
+            mTrackerShipment.eventViewAutoCheckDonation(any())
         }
     }
 }

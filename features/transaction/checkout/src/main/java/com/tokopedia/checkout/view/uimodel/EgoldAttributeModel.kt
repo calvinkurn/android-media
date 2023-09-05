@@ -13,6 +13,7 @@ data class EgoldAttributeModel(
     var subText: String? = null,
     var tickerText: String? = null,
     var tooltipText: String? = null,
+    var tooltipTitleText: String? = null,
     var isChecked: Boolean = false,
     var buyEgoldValue: Long = 0,
     var egoldTieringModelArrayList: ArrayList<EgoldTieringModel> = ArrayList(),

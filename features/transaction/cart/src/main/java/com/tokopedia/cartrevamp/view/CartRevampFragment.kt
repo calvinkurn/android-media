@@ -283,6 +283,9 @@ class CartRevampFragment :
     private var bulkActionCoachMarkLastActiveIndex: Int = 0
     private var isMockMainFlowCoachMarkShown = false
 
+    private var wishlistIcon: IconUnify? = null
+    private var animatedWishlistImage: ImageView? = null
+
     private lateinit var editBundleActivityResult: ActivityResultLauncher<Intent>
     private lateinit var shipmentActivityResult: ActivityResultLauncher<Intent>
     private lateinit var pdpActivityResult: ActivityResultLauncher<Intent>
@@ -621,7 +624,7 @@ class CartRevampFragment :
             if (isClickable) {
                 binding?.vDisabledGoToCourierPageButton?.setOnClickListener {
                     if (CartDataHelper.getAllAvailableCartItemData(viewModel.cartDataList.value)
-                            .isNotEmpty()
+                        .isNotEmpty()
                     ) {
                         showToastMessageGreen(getString(R.string.message_no_cart_item_selected))
                     }
@@ -856,7 +859,7 @@ class CartRevampFragment :
                 getMultipleDisabledItemsDialogDeleteConfirmation(allDisabledCartItemDataList.size)
             dialog?.setPrimaryCTAClickListener {
                 var forceExpand = false
-                if (allDisabledCartItemDataList.size > 1 && unavailableItemAccordionCollapseState) {
+                if (allDisabledCartItemDataList.size > 3 && unavailableItemAccordionCollapseState) {
                     collapseOrExpandDisabledItem()
                     forceExpand = true
                 }
@@ -1082,7 +1085,7 @@ class CartRevampFragment :
                 viewModel.cartDataList.value,
                 viewModel.cartModel
             )
-            if (allDisabledCartItemData.size > 1 && unavailableItemAccordionCollapseState) {
+            if (allDisabledCartItemData.size > 3 && unavailableItemAccordionCollapseState) {
                 collapseOrExpandDisabledItem()
                 forceExpand = true
             }
@@ -1177,21 +1180,20 @@ class CartRevampFragment :
             viewModel.cartModel
         )
         val isLastItem = allCartItemData.size == 1
+        this.wishlistIcon = wishlistIcon
         if (cartItemHolderData.isWishlisted) {
+            this.animatedWishlistImage = animatedWishlistImage
             viewModel.processAddCartToWishlist(
                 cartItemHolderData.productId,
                 userSession.userId,
                 isLastItem,
-                if (cartItemHolderData.isError) WISHLIST_SOURCE_UNAVAILABLE_ITEM else WISHLIST_SOURCE_AVAILABLE_ITEM,
-                wishlistIcon,
-                animatedWishlistImage
+                if (cartItemHolderData.isError) WISHLIST_SOURCE_UNAVAILABLE_ITEM else WISHLIST_SOURCE_AVAILABLE_ITEM
             )
         } else {
             viewModel.processRemoveFromWishlistV2(
                 cartItemHolderData.productId,
                 userSession.userId,
                 true,
-                wishlistIcon,
                 position
             )
         }
@@ -2303,13 +2305,17 @@ class CartRevampFragment :
         viewModel.addCartToWishlistV2Event.observe(viewLifecycleOwner) { addCartToWishlistV2Event ->
             when (addCartToWishlistV2Event) {
                 is AddCartToWishlistV2Event.Success -> {
-                    onAddCartToWishlistSuccess(
-                        addCartToWishlistV2Event.productId,
-                        addCartToWishlistV2Event.isLastItem,
-                        addCartToWishlistV2Event.source,
-                        addCartToWishlistV2Event.wishlistIcon,
-                        addCartToWishlistV2Event.animatedWishlistImage
-                    )
+                    if (wishlistIcon != null && animatedWishlistImage != null) {
+                        onAddCartToWishlistSuccess(
+                            addCartToWishlistV2Event.productId,
+                            addCartToWishlistV2Event.isLastItem,
+                            addCartToWishlistV2Event.source,
+                            wishlistIcon!!,
+                            animatedWishlistImage!!
+                        )
+                    } else {
+                        showToastMessageRed()
+                    }
                 }
 
                 is AddCartToWishlistV2Event.Failed -> {
@@ -2545,7 +2551,7 @@ class CartRevampFragment :
                 }
 
                 is RemoveFromWishlistEvent.RemoveWishlistFromCartSuccess -> {
-                    removeFromWishlistEvent.wishlistIcon?.let {
+                    this.wishlistIcon?.let {
                         onRemoveFromWishlistSuccess(
                             it,
                             removeFromWishlistEvent.position
@@ -2811,8 +2817,6 @@ class CartRevampFragment :
 
         if (isLastItem) {
             refreshCartWithSwipeToRefresh()
-        } else {
-            viewModel.setLastItemAlwaysSelected()
         }
     }
 
@@ -2914,10 +2918,6 @@ class CartRevampFragment :
             isFromEditBundle -> {
                 refreshCartWithProgressDialog()
             }
-
-            else -> {
-                setLastItemAlwaysSelected()
-            }
         }
     }
 
@@ -3013,10 +3013,10 @@ class CartRevampFragment :
                 if (addOnProductDataResult.aggregatedData.title.isNotEmpty()) {
                     newAddOnWording =
                         "${addOnProductDataResult.aggregatedData.title} <b>(${
-                            CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                                addOnProductDataResult.aggregatedData.price,
-                                false
-                            ).removeDecimalSuffix()
+                        CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                            addOnProductDataResult.aggregatedData.price,
+                            false
+                        ).removeDecimalSuffix()
                         })</b>"
                 }
 
@@ -3175,6 +3175,7 @@ class CartRevampFragment :
 
     private fun refreshCartWithSwipeToRefresh() {
         bulkActionCoachMark?.dismissCoachMark()
+        hasShowBulkActionCoachMark = false
         refreshHandler?.isRefreshing = true
         resetRecentViewList()
         if (viewModel.dataHasChanged()) {
@@ -3226,7 +3227,7 @@ class CartRevampFragment :
         )
 
         // If action is on unavailable item, do collapse unavailable items if previously forced to expand (without user tap expand)
-        if (allDisabledCartItemData.size > 1) {
+        if (allDisabledCartItemData.size > 3) {
             if (forceExpandCollapsedUnavailableItems) {
                 collapseOrExpandDisabledItem()
             }
@@ -3547,7 +3548,7 @@ class CartRevampFragment :
 
             val onClickListener: (applied: Boolean) -> Unit = { applied ->
                 if (CartDataHelper.getSelectedCartItemData(viewModel.cartDataList.value)
-                        .isEmpty()
+                    .isEmpty()
                 ) {
                     showToastMessageGreen(getString(R.string.promo_choose_item_cart))
                     PromoRevampAnalytics.eventCartViewPromoMessage(getString(R.string.promo_choose_item_cart))
@@ -3576,7 +3577,7 @@ class CartRevampFragment :
             } else {
                 isApplied = false
                 if (CartDataHelper.getSelectedCartItemData(viewModel.cartDataList.value)
-                        .isEmpty()
+                    .isEmpty()
                 ) {
                     binding?.promoCheckoutBtnCart?.showInactive(
                         getString(R.string.promo_desc_no_selected_item),
@@ -4078,13 +4079,6 @@ class CartRevampFragment :
         hasTriedToLoadRecommendation = true
     }
 
-    private fun setLastItemAlwaysSelected() {
-        val tmpIsLastItem = viewModel.setLastItemAlwaysSelected()
-        if (tmpIsLastItem) {
-            binding?.checkboxGlobal?.isChecked = true
-        }
-    }
-
     private fun setSelectedAmountVisibility() {
         if (CartDataHelper.hasSelectedCartItem(viewModel.cartDataList.value)) {
             binding?.rlTopLayout?.visible()
@@ -4248,9 +4242,9 @@ class CartRevampFragment :
         plusCoachMark?.dismissCoachMark()
         mainFlowCoachMark?.dismissCoachMark()
         if ((
-                viewModel.cartModel.cartListData?.onboardingData?.size
-                    ?: 0
-                ) < BULK_ACTION_ONBOARDING_MIN_QUANTITY_INDEX
+            viewModel.cartModel.cartListData?.onboardingData?.size
+                ?: 0
+            ) < BULK_ACTION_ONBOARDING_MIN_QUANTITY_INDEX
         ) {
             return
         }

@@ -86,6 +86,8 @@ import com.tokopedia.product.detail.view.viewholder.ProductTopAdsImageViewHolder
 import com.tokopedia.product.detail.view.viewholder.ShipmentViewHolder
 import com.tokopedia.product.detail.view.viewholder.TopAdsHeadlineViewHolder
 import com.tokopedia.product.detail.view.viewholder.ViewToViewWidgetViewHolder
+import com.tokopedia.product.detail.view.viewholder.a_plus_content.APlusImageUiModel
+import com.tokopedia.product.detail.view.viewholder.a_plus_content.APlusImageViewHolder
 import com.tokopedia.product.detail.view.viewholder.bmgm.BMGMDataModel
 import com.tokopedia.product.detail.view.viewholder.bmgm.BMGMViewHolder
 import com.tokopedia.product.detail.view.viewholder.product_detail_info.ProductDetailInfoViewHolder
@@ -264,6 +266,10 @@ class DynamicProductDetailAdapterFactoryImpl(
         return DynamicOneLinerViewHolder.LAYOUT
     }
 
+    override fun type(data: APlusImageUiModel): Int {
+        return APlusImageViewHolder.LAYOUT
+    }
+
     override fun type(data: BMGMDataModel): Int {
         return BMGMViewHolder.LAYOUT
     }
@@ -371,6 +377,7 @@ class DynamicProductDetailAdapterFactoryImpl(
             )
             OngoingCampaignViewHolder.LAYOUT -> OngoingCampaignViewHolder(view, listener)
             DynamicOneLinerViewHolder.LAYOUT -> DynamicOneLinerViewHolder(view, listener)
+            APlusImageViewHolder.LAYOUT -> APlusImageViewHolder(view, listener)
             BMGMViewHolder.LAYOUT -> BMGMViewHolder(view, listener)
             else -> super.createViewHolder(view, type)
         }

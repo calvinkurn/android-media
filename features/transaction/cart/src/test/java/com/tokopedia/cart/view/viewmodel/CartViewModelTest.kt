@@ -1,8 +1,12 @@
 package com.tokopedia.cart.view.viewmodel
 
 import androidx.lifecycle.Observer
+import com.tokopedia.addon.presentation.uimodel.AddOnUIModel
 import com.tokopedia.cart.data.model.response.promo.LastApplyPromoData
 import com.tokopedia.cart.data.model.response.promo.VoucherOrders
+import com.tokopedia.cartrevamp.view.uimodel.AddCartToWishlistV2Event
+import com.tokopedia.cartrevamp.view.uimodel.CartAddOnData
+import com.tokopedia.cartrevamp.view.uimodel.CartAddOnProductData
 import com.tokopedia.cartrevamp.view.uimodel.CartCheckoutButtonState
 import com.tokopedia.cartrevamp.view.uimodel.CartEmptyHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartGlobalEvent
@@ -22,6 +26,7 @@ import com.tokopedia.cartrevamp.view.uimodel.DisabledAccordionHolderData
 import com.tokopedia.cartrevamp.view.uimodel.DisabledCollapsedHolderData
 import com.tokopedia.cartrevamp.view.uimodel.DisabledItemHeaderHolderData
 import com.tokopedia.cartrevamp.view.uimodel.DisabledReasonHolderData
+import com.tokopedia.cartrevamp.view.uimodel.RemoveFromWishlistEvent
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.OrdersItem
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
@@ -30,13 +35,24 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyVoucherOrdersItemUiModel
 import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
+import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
+import io.mockk.spyk
 import io.mockk.verify
+import io.mockk.verifyOrder
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -283,87 +299,6 @@ class CartViewModelTest : BaseCartViewModelTest() {
     }
     // endregion
 
-    // region setLastItemAlwaysSelected
-    @Test
-    fun `WHEN setLastItemAlwaysSelected group with one cart item THEN should return true`() {
-        // GIVEN
-        val itemCartOne = CartItemHolderData(isSelected = false)
-
-        val cartGroupHolderData = CartGroupHolderData(
-            isAllSelected = false,
-            isError = false,
-            isCollapsed = true,
-            productUiModelList = mutableListOf(
-                itemCartOne
-            )
-        )
-        cartViewModel.cartDataList.value = arrayListOf(cartGroupHolderData)
-
-        // WHEN
-        val isSelected = cartViewModel.setLastItemAlwaysSelected()
-
-        // THEN
-        assertTrue(isSelected)
-    }
-
-    @Test
-    fun `WHEN setLastItemAlwaysSelected group with multiple cart items THEN should return false`() {
-        // GIVEN
-        val itemCartOne = CartItemHolderData(isSelected = false)
-        val itemCartTwo = CartItemHolderData(isSelected = false)
-
-        val cartGroupHolderData = CartGroupHolderData(
-            isAllSelected = false,
-            isError = false,
-            isCollapsed = true,
-            productUiModelList = mutableListOf(
-                itemCartOne,
-                itemCartTwo
-            )
-        )
-        cartViewModel.cartDataList.value = arrayListOf(cartGroupHolderData)
-
-        // WHEN
-        val isSelected = cartViewModel.setLastItemAlwaysSelected()
-
-        // THEN
-        assertFalse(isSelected)
-    }
-
-    @Test
-    fun `WHEN setLastItemAlwaysSelected with empty cart items THEN should return false`() {
-        // GIVEN
-        val cartGroupHolderData = CartGroupHolderData(
-            isAllSelected = false,
-            isError = false,
-            isCollapsed = true,
-            productUiModelList = arrayListOf()
-        )
-        cartViewModel.cartDataList.value = arrayListOf(cartGroupHolderData)
-
-        // WHEN
-        val isSelected = cartViewModel.setLastItemAlwaysSelected()
-
-        // THEN
-        assertFalse(isSelected)
-    }
-
-    @Test
-    fun `WHEN setLastItemAlwaysSelected with unavailable items THEN should return false`() {
-        // GIVEN
-        val disabledItemHeaderData = DisabledItemHeaderHolderData()
-        val cartSectionHeaderHolderData = CartSectionHeaderHolderData()
-        cartViewModel.cartDataList.value =
-            arrayListOf(disabledItemHeaderData, cartSectionHeaderHolderData)
-
-        // WHEN
-        val isSelected = cartViewModel.setLastItemAlwaysSelected()
-
-        // THEN
-        assertFalse(isSelected)
-    }
-    // endregion
-
     // region removeAccordionDisabledItem
     @Test
     fun `WHEN removeAccordionDisabledItem THEN DisabledItemHeaderHolderData should be removed`() {
@@ -598,7 +533,7 @@ class CartViewModelTest : BaseCartViewModelTest() {
                 )
             ),
             cartItemOne,
-            cartItemTwo,
+            cartItemTwo
         )
 
         val disabledAccordion = listOf(DisabledAccordionHolderData())
@@ -636,7 +571,7 @@ class CartViewModelTest : BaseCartViewModelTest() {
                 )
             ),
             cartItemOne,
-            cartItemTwo,
+            cartItemTwo
         )
         cartViewModel.cartModel.apply {
             tmpCollapsedUnavailableShop = disabledCollapsedData
@@ -1017,7 +952,8 @@ class CartViewModelTest : BaseCartViewModelTest() {
         val currentList = arrayListOf(
             CartGroupHolderData(
                 cartString = "1"
-            ), CartItemHolderData()
+            ),
+            CartItemHolderData()
         )
         cartViewModel.cartDataList.value = currentList
         val toBeInsertedList = listOf(
@@ -1184,6 +1120,28 @@ class CartViewModelTest : BaseCartViewModelTest() {
             cartGlobalEventObserver.onChanged(CartGlobalEvent.AdapterItemChanged(0))
         }
     }
+
+    @Test
+    fun `WHEN updateRecentViewData with empty recentViewList THEN recent view data in cartDataList should not be updated`() {
+        // GIVEN
+        cartViewModel.cartDataList.value = arrayListOf(
+            CartGroupHolderData(),
+            CartItemHolderData(),
+            CartItemHolderData(),
+            CartRecentViewHolderData(recentViewList = emptyList())
+        )
+        cartViewModel.cartDataList.observeForever(cartDataListObserver)
+        val productId = "123"
+        val isWishlist = true
+
+        // WHEN
+        cartViewModel.updateRecentViewData(productId, isWishlist)
+
+        // THEN
+        verify(inverse = true) {
+            cartGlobalEventObserver.onChanged(CartGlobalEvent.AdapterItemChanged(0))
+        }
+    }
     // endregion
 
     // region removeWishlist
@@ -1208,6 +1166,570 @@ class CartViewModelTest : BaseCartViewModelTest() {
 
         // THEN
         assertTrue(cartViewModel.globalEvent.value is CartGlobalEvent.OnNeedUpdateWishlistAdapterData)
+    }
+
+    @Test
+    fun `WHEN removeWishlist from cartDataList with empty wishlist THEN should notify all data`() {
+        // GIVEN
+        val productId = "123"
+        val cartWishlistHolderData = CartWishlistHolderData(wishList = mutableListOf())
+        cartViewModel.cartDataList.value = arrayListOf(
+            CartGroupHolderData(),
+            CartItemHolderData(),
+            CartItemHolderData(),
+            cartWishlistHolderData
+        )
+        cartViewModel.cartDataList.observeForever(cartDataListObserver)
+
+        // WHEN
+        cartViewModel.removeWishlist(productId)
+
+        // THEN
+        assertFalse(cartViewModel.globalEvent.value is CartGlobalEvent.OnNeedUpdateWishlistAdapterData)
+    }
+    // endregion
+
+    // region updateWishlistHolderData
+    @Test
+    fun `WHEN updateWishlistHolderData to wishlist THEN data in cartDataList should be updated`() {
+        // GIVEN
+        val cartWishlistItemHolderData = CartWishlistItemHolderData(id = "123")
+        val cartWishlistItemHolderDataTwo = CartWishlistItemHolderData(id = "124")
+        val cartWishlistHolderData = CartWishlistHolderData(
+            wishList = mutableListOf(
+                cartWishlistItemHolderData,
+                cartWishlistItemHolderDataTwo
+            )
+        )
+        val productId = "123"
+        cartViewModel.cartDataList.value = arrayListOf(
+            CartGroupHolderData(),
+            CartItemHolderData(),
+            CartItemHolderData(),
+            cartWishlistHolderData
+        )
+        cartViewModel.cartDataList.observeForever(cartDataListObserver)
+
+        // WHEN
+        cartViewModel.updateWishlistHolderData(productId, true)
+
+        // THEN
+        assertEquals(true, cartWishlistItemHolderData.isWishlist)
+        verify {
+            cartGlobalEventObserver.onChanged(CartGlobalEvent.AdapterItemChanged(0))
+        }
+    }
+
+    @Test
+    fun `WHEN updateWishlistHolderData with empty wishlist THEN data in cartDataList should not be updated`() {
+        // GIVEN
+        val cartWishlistHolderData = CartWishlistHolderData(wishList = mutableListOf())
+        val productId = "123"
+        cartViewModel.cartDataList.value = arrayListOf(
+            CartGroupHolderData(),
+            CartItemHolderData(),
+            CartItemHolderData(),
+            cartWishlistHolderData
+        )
+        cartViewModel.cartDataList.observeForever(cartDataListObserver)
+
+        // WHEN
+        cartViewModel.updateWishlistHolderData(productId, false)
+
+        // THEN
+        verify(inverse = true) {
+            cartGlobalEventObserver.onChanged(CartGlobalEvent.AdapterItemChanged(0))
+        }
+    }
+
+    @Test
+    fun `WHEN updateWishlistHolderData to non wishlist THEN data in cartDataList should be updated`() {
+        // GIVEN
+        val cartWishlistItemHolderData = CartWishlistItemHolderData(id = "123")
+        val cartWishlistItemHolderDataTwo = CartWishlistItemHolderData(id = "124")
+        val cartWishlistHolderData = CartWishlistHolderData(
+            wishList = mutableListOf(
+                cartWishlistItemHolderData,
+                cartWishlistItemHolderDataTwo
+            )
+        )
+        val productId = "123"
+        cartViewModel.cartDataList.value = arrayListOf(
+            CartGroupHolderData(),
+            CartItemHolderData(),
+            CartItemHolderData(),
+            cartWishlistHolderData
+        )
+        cartViewModel.cartDataList.observeForever(cartDataListObserver)
+
+        // WHEN
+        cartViewModel.updateWishlistHolderData(productId, false)
+
+        // THEN
+        assertEquals(false, cartWishlistItemHolderData.isWishlist)
+        verify {
+            cartGlobalEventObserver.onChanged(CartGlobalEvent.AdapterItemChanged(0))
+        }
+    }
+
+    @Test
+    fun `WHEN updateWishlistHolderData with no wishlist data THEN data in cartDataList should be updated`() {
+        // GIVEN
+        val productId = "123"
+        cartViewModel.cartDataList.value = arrayListOf(
+            CartGroupHolderData(),
+            CartItemHolderData(),
+            CartItemHolderData()
+        )
+        cartViewModel.cartDataList.observeForever(cartDataListObserver)
+
+        // WHEN
+        cartViewModel.updateWishlistHolderData(productId, false)
+
+        // THEN
+        verify(inverse = true) {
+            cartGlobalEventObserver.onChanged(CartGlobalEvent.AdapterItemChanged(0))
+        }
+    }
+    // end region
+
+    // region updateWishlistDataByProductId
+    @Test
+    fun `WHEN updateWishlistDataByProductId to wishlist with collapsed state THEN should udpate group item`() {
+        // GIVEN
+        val cartItemHolderData = CartItemHolderData(productId = "123")
+        val cartItemHolderDataTwo = CartItemHolderData(productId = "124")
+        val cartGroupHolderData = CartGroupHolderData(
+            isCollapsed = true,
+            productUiModelList = mutableListOf(
+                cartItemHolderData,
+                cartItemHolderDataTwo
+            )
+        )
+        val productId = "123"
+        cartViewModel.cartDataList.value = arrayListOf(
+            cartGroupHolderData,
+            cartItemHolderData,
+            cartItemHolderDataTwo
+        )
+        cartViewModel.cartDataList.observeForever(cartDataListObserver)
+
+        // WHEN
+        cartViewModel.updateWishlistDataByProductId(productId, true)
+
+        // THEN
+        assertEquals(true, cartGroupHolderData.productUiModelList[0].isWishlisted)
+        assertEquals(true, cartItemHolderData.isWishlisted)
+
+        assertEquals(false, cartGroupHolderData.productUiModelList[1].isWishlisted)
+        assertEquals(false, cartItemHolderDataTwo.isWishlisted)
+
+        verify {
+            cartGlobalEventObserver.onChanged(CartGlobalEvent.AdapterItemChanged(0))
+        }
+        verify(inverse = true) {
+            cartGlobalEventObserver.onChanged(CartGlobalEvent.AdapterItemChanged(1))
+            cartGlobalEventObserver.onChanged(CartGlobalEvent.AdapterItemChanged(2))
+        }
+    }
+
+    @Test
+    fun `WHEN updateWishlistDataByProductId to wishlist with expanded group THEN should update cart item`() {
+        // GIVEN
+        val cartItemHolderData = CartItemHolderData(productId = "123")
+        val cartItemHolderDataTwo = CartItemHolderData(productId = "124")
+        val cartGroupHolderData = CartGroupHolderData(
+            isCollapsed = false,
+            productUiModelList = mutableListOf(
+                cartItemHolderData,
+                cartItemHolderDataTwo
+            )
+        )
+        val productId = "123"
+        cartViewModel.cartDataList.value = arrayListOf(
+            cartGroupHolderData,
+            cartItemHolderData,
+            cartItemHolderDataTwo
+        )
+        cartViewModel.cartDataList.observeForever(cartDataListObserver)
+
+        // WHEN
+        cartViewModel.updateWishlistDataByProductId(productId, true)
+
+        // THEN
+        assertEquals(true, cartGroupHolderData.productUiModelList[0].isWishlisted)
+        assertEquals(true, cartItemHolderData.isWishlisted)
+
+        assertEquals(false, cartGroupHolderData.productUiModelList[1].isWishlisted)
+        assertEquals(false, cartItemHolderDataTwo.isWishlisted)
+
+        verify {
+            cartGlobalEventObserver.onChanged(CartGlobalEvent.AdapterItemChanged(1))
+        }
+        verify(inverse = true) {
+            cartGlobalEventObserver.onChanged(CartGlobalEvent.AdapterItemChanged(0))
+            cartGlobalEventObserver.onChanged(CartGlobalEvent.AdapterItemChanged(2))
+        }
+    }
+    // endregion
+
+    // region updateAddOnByCartId
+    @Test
+    fun `WHEN updateAddOnByCartId THEN data in cartDataList should be updated`() {
+        // GIVEN
+        val cartItemHolderData = CartItemHolderData(
+            cartId = "123",
+            addOnsProduct = CartAddOnData(
+                listData = arrayListOf(
+                    CartAddOnProductData()
+                )
+            )
+        )
+        val cartItemHolderDataTwo = CartItemHolderData(cartId = "124")
+        val newAddOnWording = "new add on wording"
+        val addonsOne = AddOnUIModel()
+        val addonsTwo = AddOnUIModel()
+        val selectedAddons = arrayListOf(addonsOne, addonsTwo)
+        val cartId = "123"
+        val spyViewModel = spyk(cartViewModel)
+        spyViewModel.cartDataList.value = arrayListOf(
+            CartGroupHolderData(),
+            cartItemHolderData,
+            cartItemHolderDataTwo
+        )
+        spyViewModel.cartDataList.observeForever(cartDataListObserver)
+
+        // WHEN
+        spyViewModel.updateAddOnByCartId(cartId, newAddOnWording, selectedAddons)
+
+        // THEN
+        assertEquals(selectedAddons.size, cartItemHolderData.addOnsProduct.listData.size)
+        verifyOrder {
+            cartGlobalEventObserver.onChanged(CartGlobalEvent.AdapterItemChanged(1))
+            spyViewModel.reCalculateSubTotal()
+            cartGlobalEventObserver.onChanged(CartGlobalEvent.SubTotalUpdated(0.0, "0", 0.0, false))
+        }
+    }
+
+    @Test
+    fun `WHEN updateAddOnByCartId with no matching cart id THEN data in cartDataList should be updated`() {
+        // GIVEN
+        val cartItemHolderData = CartItemHolderData(
+            cartId = "124",
+            addOnsProduct = CartAddOnData(
+                listData = arrayListOf(
+                    CartAddOnProductData()
+                )
+            )
+        )
+        val cartItemHolderDataTwo = CartItemHolderData(cartId = "125")
+        val newAddOnWording = "new add on wording"
+        val addonsOne = AddOnUIModel()
+        val addonsTwo = AddOnUIModel()
+        val selectedAddons = arrayListOf(addonsOne, addonsTwo)
+        val cartId = "123"
+        val spyViewModel = spyk(cartViewModel)
+        spyViewModel.cartDataList.value = arrayListOf(
+            CartGroupHolderData(),
+            cartItemHolderData,
+            cartItemHolderDataTwo
+        )
+        spyViewModel.cartDataList.observeForever(cartDataListObserver)
+
+        // WHEN
+        spyViewModel.updateAddOnByCartId(cartId, newAddOnWording, selectedAddons)
+
+        // THEN
+        assertEquals(1, cartItemHolderData.addOnsProduct.listData.size)
+        verify(inverse = true) {
+            cartGlobalEventObserver.onChanged(CartGlobalEvent.AdapterItemChanged(0))
+            cartGlobalEventObserver.onChanged(CartGlobalEvent.AdapterItemChanged(1))
+            cartGlobalEventObserver.onChanged(CartGlobalEvent.AdapterItemChanged(2))
+        }
+        verify {
+            spyViewModel.reCalculateSubTotal()
+        }
+    }
+    // endregion
+
+    // region emitTokonowUpdated
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun `WHEN emitTokonowUpdated true THEN should emit true`() {
+        runTest(UnconfinedTestDispatcher()) {
+            val deferred = async {
+                cartViewModel.tokoNowProductUpdater.first()
+            }
+
+            cartViewModel.emitTokonowUpdated(true)
+
+            assertTrue(deferred.await())
+        }
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun `WHEN emitTokonowUpdated false THEN should emit false`() {
+        runTest(UnconfinedTestDispatcher()) {
+            val deferred = async {
+                cartViewModel.tokoNowProductUpdater.first()
+            }
+
+            cartViewModel.emitTokonowUpdated(false)
+
+            assertFalse(deferred.await())
+        }
+    }
+    // endregion
+
+    // region updateShowShownByCartGroup
+    @Test
+    fun `WHEN updateShopShownByCartGroup THEN first shop in each group data should set to true`() {
+        // GIVEN
+        val cartItemHolderData = CartItemHolderData(
+            cartId = "124",
+            cartStringOrder = "222"
+        )
+        val cartItemHolderDataTwo = CartItemHolderData(
+            cartId = "125",
+            isShopShown = true,
+            cartStringOrder = "222"
+        )
+
+        val cartGroupHolderData = CartGroupHolderData(
+            uiGroupType = 1,
+            productUiModelList = mutableListOf(
+                cartItemHolderData,
+                cartItemHolderDataTwo
+            )
+        )
+
+        cartViewModel.cartDataList.value = arrayListOf(cartGroupHolderData)
+
+        // WHEN
+        cartViewModel.updateShopShownByCartGroup(cartGroupHolderData)
+
+        // THEN
+        assertTrue(cartItemHolderData.isShopShown)
+        assertFalse(cartItemHolderDataTwo.isShopShown)
+    }
+
+    @Test
+    fun `WHEN updateShopShownByCartGroup with non owoc design THEN shop shown should false`() {
+        // GIVEN
+        val cartItemHolderData = CartItemHolderData(
+            cartId = "124",
+            cartStringOrder = "222"
+        )
+        val cartItemHolderDataTwo = CartItemHolderData(
+            cartId = "125",
+            cartStringOrder = "222"
+        )
+        val cartGroupHolderData = CartGroupHolderData(
+            uiGroupType = 0,
+            productUiModelList = mutableListOf(
+                cartItemHolderData,
+                cartItemHolderDataTwo
+            )
+        )
+
+        cartViewModel.cartDataList.value = arrayListOf(cartGroupHolderData)
+
+        // WHEN
+        cartViewModel.updateShopShownByCartGroup(cartGroupHolderData)
+
+        // THEN
+        assertFalse(cartItemHolderData.isShopShown)
+        assertFalse(cartItemHolderDataTwo.isShopShown)
+    }
+    // endregion
+
+    // region processAddCartToWishlist
+    @Test
+    fun `WHEN processAddCartToWishlist success THEN should notify success`() {
+        // GIVEN
+        val productId = "123"
+        val userId = "12223"
+        val isLastItem = true
+        val source = "source"
+        every { addToWishListV2UseCase.setParams(any(), any()) } just Runs
+        coEvery { addToWishListV2UseCase.executeOnBackground() } returns Success(
+            AddToWishlistV2Response.Data.WishlistAddV2()
+        )
+
+        // WHEN
+        cartViewModel.processAddCartToWishlist(
+            productId,
+            userId,
+            isLastItem,
+            source
+        )
+
+        // THEN
+        assertTrue(cartViewModel.addCartToWishlistV2Event.value is AddCartToWishlistV2Event.Success)
+    }
+
+    @Test
+    fun `WHEN processAddCartToWishlist failed THEN should notify failed`() {
+        // GIVEN
+        val productId = "123"
+        val userId = "12223"
+        val isLastItem = true
+        val source = "source"
+        val exception = mockk<Throwable>("fail")
+        every { addToWishListV2UseCase.setParams(any(), any()) } just Runs
+        coEvery { addToWishListV2UseCase.executeOnBackground() } returns Fail(exception)
+
+        // WHEN
+        cartViewModel.processAddCartToWishlist(
+            productId,
+            userId,
+            isLastItem,
+            source
+        )
+
+        // THEN
+        assertTrue(cartViewModel.addCartToWishlistV2Event.value is AddCartToWishlistV2Event.Failed)
+    }
+    // endregion
+
+    // region processRemoveFromWishlistV2
+    @Test
+    fun `WHEN processRemoveFromWishlistV2 from cart success THEN should notify success from cart`() {
+        // GIVEN
+        val productId = "123"
+        val userId = "12223"
+        val isFromCart = true
+        every { deleteWishlistV2UseCase.setParams(any(), any()) } just Runs
+        coEvery { deleteWishlistV2UseCase.executeOnBackground() } returns Success(
+            DeleteWishlistV2Response.Data.WishlistRemoveV2()
+        )
+
+        // WHEN
+        cartViewModel.processRemoveFromWishlistV2(
+            productId,
+            userId,
+            isFromCart
+        )
+
+        // THEN
+        assertTrue(cartViewModel.removeFromWishlistEvent.value is RemoveFromWishlistEvent.RemoveWishlistFromCartSuccess)
+    }
+
+    @Test
+    fun `WHEN processRemoveFromWishlistV2 not from cart THEN should notify success`() {
+        // GIVEN
+        val productId = "123"
+        val userId = "12223"
+        val isFromCart = false
+        every { deleteWishlistV2UseCase.setParams(any(), any()) } just Runs
+        coEvery { deleteWishlistV2UseCase.executeOnBackground() } returns Success(
+            DeleteWishlistV2Response.Data.WishlistRemoveV2()
+        )
+
+        // WHEN
+        cartViewModel.processRemoveFromWishlistV2(
+            productId,
+            userId,
+            isFromCart
+        )
+
+        // THEN
+        assertTrue(cartViewModel.removeFromWishlistEvent.value is RemoveFromWishlistEvent.Success)
+    }
+
+    @Test
+    fun `WHEN processRemoveFromWishlistV2 from cart failed THEN should notify failed from cart`() {
+        // GIVEN
+        val productId = "123"
+        val userId = "12223"
+        val isFromCart = true
+        val exception = mockk<Throwable>("fail")
+        every { deleteWishlistV2UseCase.setParams(any(), any()) } just Runs
+        coEvery { deleteWishlistV2UseCase.executeOnBackground() } returns Fail(exception)
+
+        // WHEN
+        cartViewModel.processRemoveFromWishlistV2(
+            productId,
+            userId,
+            isFromCart
+        )
+
+        // THEN
+        assertTrue(cartViewModel.removeFromWishlistEvent.value is RemoveFromWishlistEvent.RemoveWishlistFromCartFailed)
+    }
+
+    @Test
+    fun `WHEN processRemoveFromWishlistV2 not from cart failed THEN should notify failed`() {
+        // GIVEN
+        val productId = "123"
+        val userId = "12223"
+        val isFromCart = false
+        val exception = mockk<Throwable>("fail")
+        every { deleteWishlistV2UseCase.setParams(any(), any()) } just Runs
+        coEvery { deleteWishlistV2UseCase.executeOnBackground() } returns Fail(exception)
+
+        // WHEN
+        cartViewModel.processRemoveFromWishlistV2(
+            productId,
+            userId,
+            isFromCart
+        )
+
+        // THEN
+        assertTrue(cartViewModel.removeFromWishlistEvent.value is RemoveFromWishlistEvent.Failed)
+    }
+    // end region
+
+    // region removeProductByCartId
+    @Test
+    fun `WHEN removeProductByCartId THEN `() {
+        // GIVEN
+        val cartItemHolderData = CartItemHolderData(cartId = "123", isSelected = true)
+        val cartItemHolderDataTwo = CartItemHolderData(cartId = "124", isSelected = true)
+        val cartItemHolderDataThree = CartItemHolderData(cartId = "125", isSelected = true)
+        val cartItemHolderDataFour = CartItemHolderData(cartId = "126", isSelected = false)
+        val cartGroupHolderData = CartGroupHolderData(
+            productUiModelList = mutableListOf(
+                cartItemHolderData,
+                cartItemHolderDataTwo,
+                cartItemHolderDataThree,
+                cartItemHolderDataFour
+            )
+        )
+
+        val disabledReasonHolderData = DisabledReasonHolderData()
+        val cartItemHolderSecondData = CartItemHolderData(cartId = "234", isSelected = true, isError = true)
+        val cartItemHolderSecondDataTwo = CartItemHolderData(cartId = "235", isSelected = true, isError = true)
+        val cartGroupHolderDataTwo = CartGroupHolderData(
+            productUiModelList = mutableListOf(
+                cartItemHolderSecondData,
+                cartItemHolderSecondDataTwo
+            )
+        )
+
+        cartViewModel.cartDataList.value = arrayListOf(
+            cartGroupHolderData,
+            cartItemHolderData,
+            cartItemHolderDataTwo,
+            cartItemHolderDataThree,
+            cartItemHolderDataFour,
+            disabledReasonHolderData,
+            cartGroupHolderDataTwo,
+            cartItemHolderSecondData,
+            cartItemHolderSecondDataTwo
+        )
+
+        // WHEN
+        cartViewModel.removeProductByCartId(
+            listOf("123", "124", "234", "235"),
+            needRefresh = true,
+            isFromGlobalCheckbox = false
+        )
+
+        // THEN
+        val toBeRemovedIndices = listOf(5, 6, 7, 8)
+        val toBeUpdatedIndices = listOf(0)
     }
     // endregion
 

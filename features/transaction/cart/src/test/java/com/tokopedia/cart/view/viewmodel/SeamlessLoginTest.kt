@@ -53,6 +53,28 @@ class SeamlessLoginTest : BaseCartViewModelTest() {
     }
 
     @Test
+    fun `WHEN get seamless login url adsId empty failed THEN should render error`() {
+        // GIVEN
+        val url = "http://"
+        val errorMessage = "error"
+
+        val slot = slot<SeamlessLoginSubscriber>()
+        every {
+            seamlessLoginUsecase.generateSeamlessUrl(url, capture(slot))
+        } answers {
+            val captured = slot.captured
+            captured.onError(errorMessage)
+        }
+        val adsId = ""
+
+        // WHEN
+        cartViewModel.redirectToLite(url, adsId)
+
+        // THEN
+        assertEquals(SeamlessLoginEvent.Failed(""), cartViewModel.seamlessLoginEvent.value)
+    }
+
+    @Test
     fun `WHEN get seamless login url failed because error params THEN should render error`() {
         // GIVEN
         val url = "http://"
