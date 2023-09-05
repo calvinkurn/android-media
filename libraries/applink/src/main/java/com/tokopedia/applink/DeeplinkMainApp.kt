@@ -691,6 +691,11 @@ object DeeplinkMainApp {
                 DeeplinkMapperContent.getRegisteredNavigation(deeplink)
             }
         ),
+        "stories" to mutableListOf(
+            DLP.matchPattern("creation") { deeplink: String ->
+                DeeplinkMapperContent.getRegisteredNavigation(deeplink)
+            }
+        ),
         "play-notif-video" to mutableListOf(
             DLP.goToLink { ApplinkConstInternalGlobal.YOUTUBE_VIDEO }
         ),

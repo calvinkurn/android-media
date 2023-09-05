@@ -376,6 +376,8 @@ public interface ApplinkConst {
     String PLAY_SHORTS = "tokopedia://play-shorts";
     String PLAY_RECOM = "tokopedia://play/channel_recom";
 
+    String STORIES_CREATION = "tokopedia://stories/creation";
+
     String CHALLENGE = "tokopedia://challenges";
     String ADD_NAME_REGISTER = "tokopedia://addnameregister/{phone}";
     String ADD_NAME_PROFILE = "tokopedia://addname";
