@@ -116,8 +116,6 @@ class ShopHomeBannerProductGroupViewPagerViewHolder(
 
         model.tabs.forEachIndexed { _, currentTab ->
             val fragment = ShopBannerProductGroupWidgetTabFragment.newInstance(
-                model.widgetId,
-                model.name,
                 provider.currentShopId,
                 currentTab.componentList,
                 model.widgetStyle,

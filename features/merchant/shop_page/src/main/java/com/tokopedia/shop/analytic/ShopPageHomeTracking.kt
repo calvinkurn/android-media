@@ -301,6 +301,8 @@ import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.builder.Tracker
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.shop.home.view.model.banner_product_group.ShopWidgetComponentBannerProductGroupUiModel.WidgetStyle
+import com.tokopedia.shop.home.view.model.banner_product_group.appearance.ShopHomeBannerProductGroupItemType
+
 /*
 Data Layer Docs:
 
@@ -3607,34 +3609,51 @@ class ShopPageHomeTracking(
      // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4148
      // Tracker ID: 45950
      fun sendProductCarouselImpression(
-         widgetId: String,
          widgetStyle: String,
-         products: List<ProductItemType>,
+         widgets: List<ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList>,
          shopId: String,
          userId: String
      ) {
+         val bannerWidget =
+             widgets.firstOrNull { it.componentName == ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.ComponentName.DISPLAY_SINGLE_COLUMN }
+         val productWidget =
+             widgets.firstOrNull { it.componentName == ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.ComponentName.PRODUCT }
 
-         val showProductInfo = products.firstOrNull()?.showProductInfo.orFalse()
+         val hasBanner = bannerWidget != null
+         val hasProduct = productWidget != null
+
+         val showProductInfo = productWidget?.data?.any { it.isShowProductInfo }.orFalse()
          val productCardVariant = if (showProductInfo) "with_info" else "without_info"
 
-         val bundledProducts = products.mapIndexed { index, product ->
-             Bundle().apply {
+         val promotions = mutableListOf<Bundle>()
+         if (hasBanner) {
+             val bannerBundle = Bundle().apply {
                  putString(CREATIVE_NAME, "")
-                 putInt(CREATIVE_SLOT, index)
-                 putString(ITEM_ID, widgetId)
-                 putString(ITEM_NAME, product.name)
+                 putInt(CREATIVE_SLOT, 0)
+                 putString(ITEM_ID, bannerWidget?.componentId.toString())
+                 putString(ITEM_NAME, bannerWidget?.componentName?.id)
              }
+             promotions.add(bannerBundle)
          }
 
+         if (hasProduct) {
+             val productBundle = Bundle().apply {
+                 putString(CREATIVE_NAME, "")
+                 putInt(CREATIVE_SLOT, 0)
+                 putString(ITEM_ID, productWidget?.componentId.toString())
+                 putString(ITEM_NAME, productWidget?.componentName?.id)
+             }
+             promotions.add(productBundle)
+         }
 
-         val bannerVariant = when (widgetStyle) {
-             WidgetStyle.VERTICAL.id -> "vertical"
-             WidgetStyle.HORIZONTAL.id -> "horizontal"
+         val bannerVariant = when {
+             hasBanner && widgetStyle == WidgetStyle.VERTICAL.id -> "vertical"
+             hasBanner && widgetStyle == WidgetStyle.HORIZONTAL.id -> "horizontal"
+             !hasBanner -> "no_banner"
              else -> "no_banner"
          }
 
          val eventLabel = "$bannerVariant - $productCardVariant"
-         val promotions = ArrayList(bundledProducts)
 
          val bundle = Bundle().apply {
              putString(EVENT, VIEW_ITEM)
@@ -3646,7 +3665,7 @@ class ShopPageHomeTracking(
              putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
              putString(SHOP_ID, shopId)
              putString(USER_ID, userId)
-             putParcelableArrayList(PROMOTIONS, promotions)
+             putParcelableArrayList(PROMOTIONS, ArrayList(promotions))
          }
 
          TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(PROMO_VIEW, bundle)
@@ -3655,9 +3674,9 @@ class ShopPageHomeTracking(
 
      // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4148
      // Tracker ID: 45951
-     fun sendProductCarouselMainBannerClick(
-         widgetId: String,
-         widgetName: String,
+     fun sendProductCarouselBannerClick(
+         componentId: String,
+         componentName: String,
          widgetStyle: String,
          shopId: String,
          userId: String
@@ -3665,8 +3684,8 @@ class ShopPageHomeTracking(
          val bundledShowcase = Bundle().apply {
              putString(CREATIVE_NAME, "")
              putInt(CREATIVE_SLOT, 0)
-             putString(ITEM_ID, widgetId)
-             putString(ITEM_NAME, widgetName)
+             putString(ITEM_ID, componentId)
+             putString(ITEM_NAME, componentName)
          }
 
          val bundle = Bundle().apply {
@@ -3688,7 +3707,7 @@ class ShopPageHomeTracking(
 
      // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4148
      // Tracker ID: 45952
-     fun sendProductCarouselProductClick(
+     fun sendProductCarouselProductCardClick(
          product: ProductItemType,
          widgetStyle: String,
          shopId: String,

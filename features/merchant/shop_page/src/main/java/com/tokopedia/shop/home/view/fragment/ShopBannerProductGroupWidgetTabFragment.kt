@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.media.loader.loadImage
@@ -36,8 +37,6 @@ import com.tokopedia.user.session.UserSessionInterface
 class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
 
     companion object {
-        private const val BUNDLE_KEY_WIDGET_ID = "widget_id"
-        private const val BUNDLE_KEY_WIDGET_NAME = "widget_name"
         private const val BUNDLE_KEY_SHOP_ID = "shop_id"
         private const val BUNDLE_KEY_WIDGETS = "widgets"
         private const val BUNDLE_KEY_WIDGET_STYLE = "widget_style"
@@ -46,8 +45,6 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
 
         @JvmStatic
         fun newInstance(
-            widgetId: String,
-            widgetName: String,
             shopId: String,
             widgets: List<ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList>,
             widgetStyle: String,
@@ -56,8 +53,6 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
         ): ShopBannerProductGroupWidgetTabFragment {
             return ShopBannerProductGroupWidgetTabFragment().apply {
                 arguments = Bundle().apply {
-                    putString(BUNDLE_KEY_WIDGET_ID, widgetId)
-                    putString(BUNDLE_KEY_WIDGET_NAME, widgetName)
                     putString(BUNDLE_KEY_SHOP_ID, shopId)
                     putParcelableArrayList(BUNDLE_KEY_WIDGETS, ArrayList(widgets))
                     putString(BUNDLE_KEY_WIDGET_STYLE, widgetStyle)
@@ -69,8 +64,6 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
 
     }
 
-    private val widgetId by lazy { arguments?.getString(BUNDLE_KEY_WIDGET_ID).orEmpty() }
-    private val widgetName by lazy { arguments?.getString(BUNDLE_KEY_WIDGET_NAME).orEmpty() }
     private val shopId by lazy { arguments?.getString(BUNDLE_KEY_SHOP_ID).orEmpty() }
     private val widgets by lazy {
         arguments?.getParcelableArrayList<ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList>(
@@ -134,6 +127,7 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
     override fun onResume() {
         super.onResume()
         getCarouselWidgets()
+        sendProductCarouselImpressionTracker(widgets)
     }
 
     private fun showMainBanner() {
@@ -148,10 +142,10 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
                 binding?.imgMainBanner?.visible()
                 binding?.imgMainBanner?.loadImage(mainBannerImageUrl)
                 binding?.imgMainBanner?.setOnClickListener {
-                    tracker.sendProductCarouselMainBannerClick(
-                        widgetId,
-                        widgetName,
-                        "horizontal",
+                    tracker.sendProductCarouselBannerClick(
+                        singleBanners?.componentId.toString(),
+                        singleBanners?.componentName?.id?.lowercase().toString(),
+                        widgetStyle,
                         shopId,
                         userSession.userId
                     )
@@ -171,14 +165,20 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
         }
         bannerProductGroupAdapter.setOnProductClick { selectedProduct ->
             onProductClick(selectedProduct)
+            tracker.sendProductCarouselProductCardClick(
+                selectedProduct,
+                widgetStyle,
+                shopId,
+                userSession.userId
+            )
         }
 
         bannerProductGroupAdapter.setOnVerticalBannerClick { verticalBanner ->
             onVerticalBannerClick(verticalBanner)
-            tracker.sendProductCarouselMainBannerClick(
-                widgetId,
-                widgetName,
-                "vertical",
+            tracker.sendProductCarouselBannerClick(
+                verticalBanner.componentId.orZero().toString(),
+                verticalBanner.componentName?.id?.lowercase().toString(),
+                widgetStyle,
                 shopId,
                 userSession.userId
             )
@@ -195,7 +195,6 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
 
                 is ShopBannerProductGroupWidgetTabViewModel.UiState.Success -> {
                     showResult(result.data)
-                    sendImpressionTracker(result.data)
                     onProductSuccessfullyLoaded(true)
                 }
 
@@ -246,13 +245,10 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
         this.onProductSuccessfullyLoaded = onProductSuccessfullyLoaded
     }
 
-    private fun sendImpressionTracker(items: List<ShopHomeBannerProductGroupItemType>) {
-        val products = items.filterIsInstance<ProductItemType>()
-
+    private fun sendProductCarouselImpressionTracker(widgets: List<ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList>) {
         tracker.sendProductCarouselImpression(
-            widgetId,
             widgetStyle,
-            products,
+            widgets,
             shopId,
             userSession.userId
         )
