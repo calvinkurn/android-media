@@ -6,6 +6,9 @@ data class BmGmGetGroupProductTickerParams(
     @SerializedName("lang")
     var lang: String = "id",
 
+    @SerializedName("type")
+    var type: String = "bmgm",
+
     @SerializedName("carts")
     var carts: ArrayList<BmGmCart> = arrayListOf()
 ) {
@@ -53,13 +56,13 @@ data class BmGmGetGroupProductTickerParams(
                 var productId: String = "",
 
                 @SerializedName("warehouse_id")
-                var warehouseId: Long = 0L,
+                var warehouseId: String = "",
 
                 @SerializedName("qty")
                 var qty: Int = 0,
 
                 @SerializedName("final_price")
-                var finalPrice: Double = 0.0,
+                var finalPrice: String = "",
 
                 @SerializedName("checkbox_state")
                 var checkboxState: Boolean = false

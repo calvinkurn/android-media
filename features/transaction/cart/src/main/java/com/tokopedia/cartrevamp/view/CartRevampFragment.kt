@@ -159,6 +159,7 @@ import com.tokopedia.purchase_platform.common.constant.BmGmConstant.CART_BMGM_ST
 import com.tokopedia.purchase_platform.common.constant.BmGmConstant.CART_BMGM_STATE_TICKER_LOADING
 import com.tokopedia.purchase_platform.common.constant.BmGmConstant.CART_DETAIL_TYPE_BMGM
 import com.tokopedia.purchase_platform.common.constant.CartConstant
+import com.tokopedia.purchase_platform.common.constant.CartConstant.BMGM_APPLINK
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.purchase_platform.common.constant.PAGE_CART
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
@@ -2761,12 +2762,10 @@ class CartRevampFragment :
         viewModel.bmGmGroupProductTickerState.observe(viewLifecycleOwner) { data ->
             when (data) {
                 is GetBmGmGroupProductTickerState.Success -> {
+                    val (index, cartItem) = cartAdapter.getCartItemHolderDataAndIndexByOfferId(data.pairOfferIdBmGmTickerResponse.first)
                     if (data.pairOfferIdBmGmTickerResponse.second.data.action == BMGM_TICKER_RELOAD_ACTION) {
-                        val (index, cartItem) = cartAdapter.getCartItemHolderDataAndIndexByOfferId(data.pairOfferIdBmGmTickerResponse.first)
                         cartItem.stateTickerBmGm = CART_BMGM_STATE_TICKER_INACTIVE
-                        cartAdapter.notifyItemChanged(index)
-                    } else if (data.pairOfferIdBmGmTickerResponse.second.data.action.isEmpty()) {
-                        val (index, cartItem) = cartAdapter.getCartItemHolderDataAndIndexByOfferId(data.pairOfferIdBmGmTickerResponse.first)
+                    } else if (data.pairOfferIdBmGmTickerResponse.second.data.action.isNotEmpty()) {
                         cartItem.stateTickerBmGm = CART_BMGM_STATE_TICKER_ACTIVE
                         val listOfferMessage = arrayListOf<String>()
                         data.pairOfferIdBmGmTickerResponse.second.data.listMessage.forEachIndexed { i, s ->
@@ -2777,9 +2776,10 @@ class CartRevampFragment :
                         val cartGroupHolderData = cartAdapter.getCartGroupHolderDataByCartItemHolderData(cartItem)
                         cartGroupHolderData?.cartGroupBmGmHolderData?.discountBmGmAmount = data.pairOfferIdBmGmTickerResponse.second.data.discountAmount
                         viewModel.reCalculateSubTotal()
-
-                        cartAdapter.notifyItemChanged(index)
+                    } else {
+                        cartItem.stateTickerBmGm = CART_BMGM_STATE_TICKER_INACTIVE
                     }
+                    cartAdapter.notifyItemChanged(index)
                 }
 
                 is GetBmGmGroupProductTickerState.Failed -> {
@@ -4887,7 +4887,7 @@ class CartRevampFragment :
     }
 
     override fun onBmGmChevronRightClicked(offerId: Long) {
-        val applink = "tokopedia://buymoresavemore/$offerId"
+        val applink = "$BMGM_APPLINK$offerId"
         activity?.let {
             RouteManager.route(it, applink)
         }
