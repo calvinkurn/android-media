@@ -20,6 +20,11 @@ object RollenceKey {
     const val HOME_COMPONENT_DYNAMIC_CHANNEL_HEADER_VARIANT = "header_variant"
     // end of home component rollence section
 
+    // navigation rollence section
+    const val ME_PAGE_EXP = "GlobalMenuRV"
+    const val ME_PAGE_VARIANT = "Varian1"
+    // end of navigation rollence section
+
     // TBD
     const val EXPERIMENT_NAME_TOKOPOINT = "tokopoints_glmenu"
 
@@ -76,15 +81,11 @@ object RollenceKey {
     const val TOKOPEDIA_NOW_AFFILIATE = "aff_now_att"
     const val TOKOPEDIA_NOW_REPURCHASE = "now_repurchase"
 
-    // Feed
-    const val AB_TEST_IMMERSIVE_FEED = "immersive_feed"
-
     // FS Toko OOS Gradual Rollout
     const val FLASH_SALE_OUT_OF_STOCK_GRADUAL_ROLLOUT = "fst_oosimprovement"
 
     // Seller Order Management
     const val KEY_SOM_OG = "android_som_og"
-
 
     // Share affiliate
     const val AFFILIATE_SHARE_ICON = "ShareAff_pdpshop"
@@ -92,7 +93,7 @@ object RollenceKey {
     // Wishlist
     const val WISHLIST_AFFILIATE_TICKER = "aff_ticker_col"
 
-    //New Universal Share BottomSheet in Shop
+    // New Universal Share BottomSheet in Shop
     const val NEW_UNIVERSAL_SHARE_BOTTOM_SHEET = "shop_sharing"
 
     // Search Reimagine

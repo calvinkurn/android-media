@@ -111,7 +111,8 @@ fun RecommendationEntity.RecommendationData.toRecommendationWidget(): Recommenda
         hasNext = pagination.hasNext,
         pageName = pageName,
         recommendationBanner = campaign.mapToBannerData(),
-        isTokonow = isTokonow()
+        isTokonow = isTokonow(),
+        endDate = campaign.endDate,
     )
 }
 
@@ -129,6 +130,7 @@ fun RecommendationItem.toProductCardModel(
     hasThreeDots: Boolean = false,
     cardInteraction: Boolean? = null,
     productCardListType: ProductListType = ProductListType.CONTROL,
+    cardType: Int = CardUnify2.TYPE_SHADOW,
     animateOnPress: Int = CardUnify2.ANIMATE_OVERLAY,
 ): ProductCardModel {
     val productCardAnimate = if(cardInteraction == true) CardUnify2.ANIMATE_OVERLAY_BOUNCE else animateOnPress
@@ -172,6 +174,7 @@ fun RecommendationItem.toProductCardModel(
         addToCartButtonType = addToCartButtonType,
         variant = if (isProductHasParentID()) variant else null,
         nonVariant = if (isProductHasParentID()) null else nonVariant,
+        cardType = cardType,
         animateOnPress = productCardAnimate,
         productListType = productCardListType,
     )

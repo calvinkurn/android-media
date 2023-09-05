@@ -1,6 +1,5 @@
 package com.tokopedia.cartrevamp.view.uimodel
 
-import android.widget.ImageView
 import androidx.lifecycle.LiveData
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.atcexternal.AddToCartExternalModel
@@ -59,9 +58,7 @@ sealed interface AddCartToWishlistV2Event {
         val data: AddToWishlistV2Response.Data.WishlistAddV2,
         val productId: String,
         val isLastItem: Boolean,
-        val source: String,
-        val wishlistIcon: IconUnify,
-        val animatedWishlistImage: ImageView
+        val source: String
     ) : AddCartToWishlistV2Event
 
     data class Failed(val throwable: Throwable) : AddCartToWishlistV2Event
@@ -137,10 +134,7 @@ sealed interface LoadWishlistV2State {
 
 sealed interface RemoveFromWishlistEvent {
 
-    data class RemoveWishlistFromCartSuccess(
-        val wishlistIcon: IconUnify?,
-        val position: Int
-    ) : RemoveFromWishlistEvent
+    data class RemoveWishlistFromCartSuccess(val position: Int) : RemoveFromWishlistEvent
 
     data class RemoveWishlistFromCartFailed(
         val throwable: Throwable

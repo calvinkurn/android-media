@@ -455,6 +455,7 @@ const val SHIPMENT_ADDRESS_FORM_V4_QUERY =
                   sub_text
                   ticker_text
                   tooltip_text
+                  tooltip_title_text
                 }
                 tier_data {
                   minimum_total_amount
