@@ -4,9 +4,15 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.remoteconfig.ConfigUpdate;
+import com.google.firebase.remoteconfig.ConfigUpdateListener;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigException;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.tokopedia.config.GlobalConfig;
 
@@ -38,6 +44,32 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
 
     private boolean isDebug() {
         return GlobalConfig.isAllowDebuggingTools() && sharedPrefs != null;
+    }
+
+    private void setRealTimeUpdates(@Nullable final Listener listener) {
+        try {
+            if (firebaseRemoteConfig != null) {
+                firebaseRemoteConfig.addOnConfigUpdateListener(new ConfigUpdateListener() {
+                    @Override
+                    public void onUpdate(@NonNull ConfigUpdate configUpdate) {
+                        firebaseRemoteConfig.activate().addOnCompleteListener(task -> {
+                            if (listener != null) {
+                                listener.onComplete(FirebaseRemoteConfigImpl.this);
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onError(FirebaseRemoteConfigException error) {
+                        if (listener != null) {
+                            listener.onError(error);
+                        }
+                    }
+                });
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -188,6 +220,8 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
                                 listener.onError(exception);
                             }
                         });
+
+                setRealTimeUpdates(listener);
             }
         } catch (Exception e) {
             e.printStackTrace();
