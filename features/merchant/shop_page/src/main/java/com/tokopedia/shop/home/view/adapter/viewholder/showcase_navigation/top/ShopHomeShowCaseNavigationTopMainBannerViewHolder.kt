@@ -6,6 +6,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
@@ -77,8 +78,22 @@ class ShopHomeShowCaseNavigationTopMainBannerViewHolder(
             viewBinding?.imgFirstBanner?.visible()
             viewBinding?.tpgFirstBannerTitle?.visible()
 
-            viewBinding?.imgFirstBanner?.setOnClickListener { listener.onNavigationBannerShowcaseClick(firstShowcase, uiModel) }
-            viewBinding?.tpgFirstBannerTitle?.setOnClickListener { listener.onNavigationBannerShowcaseClick(firstShowcase, uiModel)  }
+            viewBinding?.imgFirstBanner?.setOnClickListener {
+                listener.onNavigationBannerShowcaseClick(
+                    selectedShowcase = firstShowcase,
+                    uiModel = uiModel,
+                    tabCount = Int.ONE,
+                    tabName = ""
+                )
+            }
+            viewBinding?.tpgFirstBannerTitle?.setOnClickListener {
+                listener.onNavigationBannerShowcaseClick(
+                    selectedShowcase = firstShowcase,
+                    uiModel = uiModel,
+                    tabCount = Int.ONE,
+                    tabName = ""
+                )
+            }
         }
     }
 

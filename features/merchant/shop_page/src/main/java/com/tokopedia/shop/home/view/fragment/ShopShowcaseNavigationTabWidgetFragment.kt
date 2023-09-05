@@ -19,10 +19,13 @@ import com.tokopedia.unifycomponents.R as unifycomponentsR
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlin.collections.ArrayList
 import com.tokopedia.shop.R
+import com.tokopedia.shop.analytic.ShopPageHomeTracking
+import javax.inject.Inject
 
 class ShopShowcaseNavigationTabWidgetFragment : BaseDaggerFragment() {
 
     companion object {
+        private const val BUNDLE_KEY_TAB_NAME = "tab_name"
         private const val BUNDLE_KEY_SHOWCASES = "showcases"
         private const val BUNDLE_KEY_OVERRIDE_THEME = "override_theme"
         private const val BUNDLE_KEY_COLOR_SCHEME = "color_scheme"
@@ -35,12 +38,14 @@ class ShopShowcaseNavigationTabWidgetFragment : BaseDaggerFragment() {
 
         @JvmStatic
         fun newInstance(
+            tabName: String,
             showcases: List<Showcase>,
             overrideTheme: Boolean,
             colorScheme: ShopPageColorSchema,
         ): ShopShowcaseNavigationTabWidgetFragment {
             return ShopShowcaseNavigationTabWidgetFragment().apply {
                 arguments = Bundle().apply {
+                    putString(BUNDLE_KEY_TAB_NAME, tabName)
                     putParcelableArrayList(BUNDLE_KEY_SHOWCASES, ArrayList(showcases))
                     putBoolean(BUNDLE_KEY_OVERRIDE_THEME, overrideTheme)
                     putParcelable(BUNDLE_KEY_COLOR_SCHEME, colorScheme)
@@ -50,6 +55,10 @@ class ShopShowcaseNavigationTabWidgetFragment : BaseDaggerFragment() {
 
     }
 
+    @Inject
+    lateinit var tracker: ShopPageHomeTracking
+
+    private val tabName by lazy { arguments?.getString(BUNDLE_KEY_TAB_NAME).orEmpty() }
     private val showcases by lazy {
         arguments?.getParcelableArrayList<Showcase>(BUNDLE_KEY_SHOWCASES)?.toList().orEmpty()
     }
@@ -60,7 +69,7 @@ class ShopShowcaseNavigationTabWidgetFragment : BaseDaggerFragment() {
         arguments?.getParcelable(BUNDLE_KEY_COLOR_SCHEME) ?: ShopPageColorSchema()
     }
 
-    private var onShowcaseClick : (Showcase) -> Unit = {}
+    private var onShowcaseClick : (Showcase, String) -> Unit = {_, _ -> }
 
     private var binding by autoClearedNullable<FragmentShopShowcaseNavigationTabWidgetBinding>()
 
@@ -108,8 +117,8 @@ class ShopShowcaseNavigationTabWidgetFragment : BaseDaggerFragment() {
             binding?.imgMainShowcase?.visible()
             binding?.tpgMainShowcaseTitle?.visible()
 
-            binding?.imgMainShowcase?.setOnClickListener { onShowcaseClick(mainShowcase) }
-            binding?.tpgMainShowcaseTitle?.setOnClickListener { onShowcaseClick(mainShowcase) }
+            binding?.imgMainShowcase?.setOnClickListener { onShowcaseClick(mainShowcase, tabName) }
+            binding?.tpgMainShowcaseTitle?.setOnClickListener { onShowcaseClick(mainShowcase, tabName) }
         }
 
         firstShowcase?.let {
@@ -119,8 +128,8 @@ class ShopShowcaseNavigationTabWidgetFragment : BaseDaggerFragment() {
             binding?.imgFirstShowcase?.visible()
             binding?.tpgFirstShowcaseTitle?.visible()
 
-            binding?.imgFirstShowcase?.setOnClickListener { onShowcaseClick(firstShowcase) }
-            binding?.tpgFirstShowcaseTitle?.setOnClickListener { onShowcaseClick(firstShowcase) }
+            binding?.imgFirstShowcase?.setOnClickListener { onShowcaseClick(firstShowcase, tabName) }
+            binding?.tpgFirstShowcaseTitle?.setOnClickListener { onShowcaseClick(firstShowcase, tabName) }
         }
 
         secondShowcase?.let {
@@ -130,8 +139,8 @@ class ShopShowcaseNavigationTabWidgetFragment : BaseDaggerFragment() {
             binding?.imgSecondShowcase?.visible()
             binding?.tpgSecondShowcaseTitle?.visible()
 
-            binding?.imgSecondShowcase?.setOnClickListener { onShowcaseClick(secondShowcase) }
-            binding?.tpgSecondShowcaseTitle?.setOnClickListener { onShowcaseClick(secondShowcase) }
+            binding?.imgSecondShowcase?.setOnClickListener { onShowcaseClick(secondShowcase, tabName) }
+            binding?.tpgSecondShowcaseTitle?.setOnClickListener { onShowcaseClick(secondShowcase, tabName) }
         }
 
         thirdShowcase?.let {
@@ -141,8 +150,8 @@ class ShopShowcaseNavigationTabWidgetFragment : BaseDaggerFragment() {
             binding?.imgThirdShowcase?.visible()
             binding?.tpgThirdShowcaseTitle?.visible()
 
-            binding?.imgThirdShowcase?.setOnClickListener { onShowcaseClick(thirdShowcase) }
-            binding?.tpgThirdShowcaseTitle?.setOnClickListener { onShowcaseClick(thirdShowcase) }
+            binding?.imgThirdShowcase?.setOnClickListener { onShowcaseClick(thirdShowcase, tabName) }
+            binding?.tpgThirdShowcaseTitle?.setOnClickListener { onShowcaseClick(thirdShowcase, tabName) }
         }
 
         fourthShowcase?.let {
@@ -152,12 +161,12 @@ class ShopShowcaseNavigationTabWidgetFragment : BaseDaggerFragment() {
             binding?.imgFourthShowcase?.visible()
             binding?.tpgFourthShowcaseTitle?.visible()
 
-            binding?.imgFourthShowcase?.setOnClickListener { onShowcaseClick(fourthShowcase) }
-            binding?.tpgFourthShowcaseTitle?.setOnClickListener { onShowcaseClick(fourthShowcase) }
+            binding?.imgFourthShowcase?.setOnClickListener { onShowcaseClick(fourthShowcase, tabName) }
+            binding?.tpgFourthShowcaseTitle?.setOnClickListener { onShowcaseClick(fourthShowcase, tabName) }
         }
     }
 
-    fun setOnShowcaseClick(onShowcaseClick: (Showcase) -> Unit) {
+    fun setOnShowcaseClick(onShowcaseClick: (Showcase, String) -> Unit) {
         this.onShowcaseClick = onShowcaseClick
     }
 

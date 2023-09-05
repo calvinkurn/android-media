@@ -301,7 +301,6 @@ import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.builder.Tracker
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.shop.home.view.model.banner_product_group.ShopWidgetComponentBannerProductGroupUiModel.WidgetStyle
-import com.tokopedia.shop.home.view.model.banner_product_group.appearance.ShopHomeBannerProductGroupItemType
 
 /*
 Data Layer Docs:
@@ -3463,7 +3462,7 @@ class ShopPageHomeTracking(
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4148
     // Tracker ID: 45925
-    fun sendShowcaseNavigationBannerWidgetClick(shopId: String, userId: String, uiModel: ShowcaseNavigationUiModel, showcase: Showcase) {
+    fun sendShowcaseNavigationBannerWidgetShowcaseClick(shopId: String, userId: String, uiModel: ShowcaseNavigationUiModel, showcase: Showcase) {
         val eventLabel = when(uiModel.appearance) {
             is LeftMainBannerAppearance -> "hero etalase-left - ${showcase.id}"
             is TopMainBannerAppearance -> "hero etalase-top - ${showcase.id}"
@@ -3573,7 +3572,7 @@ class ShopPageHomeTracking(
 
      // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4148
      // Tracker ID: 45949
-     fun sendShowcaseNavigationMainBannerClick(
+     fun sendShowcaseNavigationShowcaseWithinTabClick(
          tabName: String,
          showcase: Showcase,
          shopId: String,
@@ -3631,7 +3630,7 @@ class ShopPageHomeTracking(
                  putString(CREATIVE_NAME, "")
                  putInt(CREATIVE_SLOT, 0)
                  putString(ITEM_ID, bannerWidget?.componentId.toString())
-                 putString(ITEM_NAME, bannerWidget?.componentName?.id)
+                 putString(ITEM_NAME, bannerWidget?.componentName?.id?.lowercase())
              }
              promotions.add(bannerBundle)
          }
@@ -3641,7 +3640,7 @@ class ShopPageHomeTracking(
                  putString(CREATIVE_NAME, "")
                  putInt(CREATIVE_SLOT, 0)
                  putString(ITEM_ID, productWidget?.componentId.toString())
-                 putString(ITEM_NAME, productWidget?.componentName?.id)
+                 putString(ITEM_NAME, productWidget?.componentName?.id?.lowercase())
              }
              promotions.add(productBundle)
          }

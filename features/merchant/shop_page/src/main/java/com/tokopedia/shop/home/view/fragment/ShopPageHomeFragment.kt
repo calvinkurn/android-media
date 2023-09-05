@@ -207,6 +207,9 @@ import com.tokopedia.shop.home.view.listener.ShopBannerProductGroupListener
 import com.tokopedia.shop.home.view.customview.directpurchase.DirectPurchaseWidgetView
 import com.tokopedia.shop.home.view.customview.directpurchase.ProductCardDirectPurchaseDataModel
 import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseNavigationUiModel
+import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.CarouselAppearance
+import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.LeftMainBannerAppearance
+import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.TopMainBannerAppearance
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragment
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragmentV2
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPageHeaderPerformanceMonitoringListener
@@ -5071,14 +5074,28 @@ open class ShopPageHomeFragment :
 
     override fun onNavigationBannerShowcaseClick(
         selectedShowcase: Showcase,
-        uiModel: ShowcaseNavigationUiModel
+        uiModel: ShowcaseNavigationUiModel,
+        tabCount: Int,
+        tabName: String
     ) {
-        shopPageHomeTracking.sendShowcaseNavigationBannerWidgetClick(shopId, userId, uiModel, selectedShowcase)
+        if (tabCount > 1) {
+            shopPageHomeTracking.sendShowcaseNavigationShowcaseWithinTabClick(tabName, selectedShowcase, shopId, userId)
+        } else {
+            shopPageHomeTracking.sendShowcaseNavigationBannerWidgetShowcaseClick(shopId, userId, uiModel, selectedShowcase)
+        }
+
+
         RouteManager.route(activity ?: return, selectedShowcase.ctaLink)
     }
 
     override fun onNavigationBannerImpression(uiModel: ShowcaseNavigationUiModel) {
         shopPageHomeTracking.sendShowcaseNavigationBannerWidgetImpression(shopId, userId, uiModel)
+    }
+
+    override fun onNavigationBannerTabClick(tabName: String) {
+        if (tabName.isNotEmpty()) {
+            shopPageHomeTracking.sendShowcaseNavigationTabClick(tabName, shopId, userId)
+        }
     }
 
     override val productCarouselHostFragmentManager: FragmentManager

@@ -7,6 +7,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -72,6 +73,20 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
             tabsUnify.tabLayout.setBackgroundColor(Color.TRANSPARENT)
             tabsUnify.whiteShadeLeft.gone()
             tabsUnify.whiteShadeRight.gone()
+            tabsUnify.tabLayout.addOnTabSelectedListener(object : OnTabSelectedListener {
+                override fun onTabSelected(tab: TabLayout.Tab?) {
+                    listener.onNavigationBannerTabClick(tab?.text?.toString().orEmpty())
+                }
+
+                override fun onTabUnselected(tab: TabLayout.Tab?) {
+
+                }
+
+                override fun onTabReselected(tab: TabLayout.Tab?) {
+
+                }
+
+            })
 
             when {
                 tabs.isEmpty() -> tabsUnify.gone()
@@ -114,12 +129,18 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
 
         tabs.forEachIndexed { _, currentTab ->
             val fragment = ShopShowcaseNavigationTabWidgetFragment.newInstance(
+                currentTab.text,
                 currentTab.showcases,
                 overrideTheme,
                 colorSchema
             )
-            fragment.setOnShowcaseClick { selectedShowcase ->
-                listener.onNavigationBannerShowcaseClick(selectedShowcase, uiModel)
+            fragment.setOnShowcaseClick { selectedShowcase, tabName ->
+                listener.onNavigationBannerShowcaseClick(
+                    selectedShowcase,
+                    uiModel,
+                    tabs.size,
+                    tabName
+                )
             }
 
             val displayedTabName = currentTab.text

@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.ItemShopHomeShowcaseNavigationBinding
@@ -71,7 +72,14 @@ class ShopHomeShowCaseNavigationAdapter(
         fun bind(showcase: Showcase, uiModel: ShowcaseNavigationUiModel) {
             binding.tpgBannerTitle.text = showcase.name
             binding.imgBanner.loadShowcaseImage(showcase.imageUrl, appearance)
-            binding.root.setOnClickListener { listener.onNavigationBannerShowcaseClick(showcase, uiModel) }
+            binding.root.setOnClickListener {
+                listener.onNavigationBannerShowcaseClick(
+                    selectedShowcase = showcase,
+                    uiModel = uiModel,
+                    tabCount = Int.ONE,
+                    tabName = ""
+                )
+            }
             setupColors(overrideTheme, colorSchema)
         }
 

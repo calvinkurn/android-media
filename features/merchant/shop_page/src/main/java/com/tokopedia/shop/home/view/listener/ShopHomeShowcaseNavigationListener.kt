@@ -5,6 +5,12 @@ import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseNavigation
 
 interface ShopHomeShowcaseNavigationListener {
     fun onNavigationBannerViewAllShowcaseClick(viewAllCtaAppLink: String)
-    fun onNavigationBannerShowcaseClick(selectedShowcase: Showcase, uiModel: ShowcaseNavigationUiModel)
+    fun onNavigationBannerShowcaseClick(
+        selectedShowcase: Showcase,
+        uiModel: ShowcaseNavigationUiModel,
+        tabCount: Int,
+        tabName: String
+    )
     fun onNavigationBannerImpression(uiModel: ShowcaseNavigationUiModel)
+    fun onNavigationBannerTabClick(tabName: String)
 }
