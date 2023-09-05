@@ -367,13 +367,7 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
 
     private fun getAdsProductListAsync(item: TokoNowAdsCarouselUiModel): Deferred<Unit?> {
         return asyncCatchError(block = {
-            val params = GetProductAdsParam(
-                categoryId = categoryIdL2,
-                addressData = addressData.getAddressData(),
-                src = SRC_DIRECTORY_TOKONOW,
-                userId = userSession.userId
-            )
-
+            val params = createProductAdsParam()
             val response = getProductAdsUseCase.execute(params)
 
             if (response.productList.isNotEmpty()) {
@@ -492,6 +486,19 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
         getProductCountRequestParams.putAll(getProductCountParams)
 
         return getProductCountRequestParams
+    }
+
+    private fun createProductAdsParam(): Map<String?, Any> {
+        val getProductAdsParam = GetProductAdsParam(
+            categoryId = categoryIdL2,
+            addressData = addressData.getAddressData(),
+            src = SRC_DIRECTORY_TOKONOW,
+            userId = userSession.userId
+        ).generateQueryParams()
+
+        return getProductAdsParam.also {
+            it.putAll(FilterHelper.createParamsWithoutExcludes(queryParams))
+        }
     }
 
     private fun refreshQueryParamFromFilterController() {
