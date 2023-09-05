@@ -13,7 +13,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
@@ -88,15 +87,34 @@ class BmgmMiniCartDetailBottomSheet : BottomSheetUnify() {
         super.onViewCreated(view, savedInstanceState)
 
         setupProductList()
-        observeCartListState()
+        observeCartList()
+        observeCartCheckedListState()
     }
 
-    private fun observeCartListState() {
+    private fun observeCartList() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.cartData.collect {
+                when (it) {
+                    is BmgmState.Success -> showProducts(it.data)
+                    is BmgmState.Error -> setOnError()
+                    else -> {
+                        /* no-op */
+                    }
+                }
+            }
+        }
+        viewModel.getCartData()
+    }
+
+    private fun observeCartCheckedListState() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.setCheckListState.collectLatest {
                 when (it) {
                     is BmgmState.Loading -> showLoadingButton()
                     is BmgmState.Success, is BmgmState.Error -> openCartPage()
+                    else -> {
+                        /* no-op */
+                    }
                 }
             }
         }
@@ -124,22 +142,14 @@ class BmgmMiniCartDetailBottomSheet : BottomSheetUnify() {
             layoutManager = LinearLayoutManager(context)
             adapter = listAdapter
         }
-
-        showProducts()
     }
 
-    private fun showProducts() {
-        val commonData = PersistentCacheManager.instance.get<BmgmCommonDataModel>(
-            BmgmCommonDataModel.PARAM_KEY_BMGM_DATA, BmgmCommonDataModel::class.java, null
-        )
+    private fun showProducts(data: BmgmCommonDataModel) {
+        val productList = getDiscountedProductList(data.tiersApplied, data.hasReachMaxDiscount)
+        listAdapter.clearAllElements()
+        listAdapter.addElement(productList)
 
-        commonData?.let { data ->
-            val productList = getDiscountedProductList(data.tiersApplied, data.hasReachMaxDiscount)
-            listAdapter.clearAllElements()
-            listAdapter.addElement(productList)
-
-            setupCartEntryPoint(data)
-        }
+        setupCartEntryPoint(data)
     }
 
     private fun setupCartEntryPoint(model: BmgmCommonDataModel) {
@@ -170,6 +180,10 @@ class BmgmMiniCartDetailBottomSheet : BottomSheetUnify() {
                 viewModel.setCartListCheckboxState(getCartIds(model.tiersApplied))
             }
         }
+    }
+
+    private fun setOnError() {
+        activity?.finish()
     }
 
     private fun getCartIds(tiersApplied: List<BmgmCommonDataModel.TierModel>): List<String> {

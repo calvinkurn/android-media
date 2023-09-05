@@ -135,6 +135,9 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
                     is BmgmState.Loading -> showMiniCartLoadingState()
                     is BmgmState.Success -> setOnSuccessGetCartData(it.data)
                     is BmgmState.Error -> showErrorState()
+                    else -> {
+                        /* no-op */
+                    }
                 }
             }
         }
@@ -146,6 +149,9 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
                 when (it) {
                     is BmgmState.Loading -> showLoadingButton()
                     is BmgmState.Success, is BmgmState.Error -> openCartPage()
+                    else -> {
+                        /* no-op */
+                    }
                 }
             }
         }

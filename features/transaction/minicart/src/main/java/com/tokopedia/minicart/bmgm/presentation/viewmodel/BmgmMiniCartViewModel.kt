@@ -4,7 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.minicart.bmgm.domain.model.BmgmParamModel
 import com.tokopedia.minicart.bmgm.domain.usecase.GetBmgmMiniCartDataUseCase
-import com.tokopedia.minicart.bmgm.domain.usecase.LocalCacheUseCase
+import com.tokopedia.minicart.bmgm.domain.usecase.MiniCartLocalCacheUseCases
 import com.tokopedia.minicart.bmgm.presentation.model.BmgmMiniCartDataUiModel
 import com.tokopedia.minicart.bmgm.presentation.model.BmgmState
 import com.tokopedia.purchase_platform.common.feature.bmgm.domain.usecase.SetCartListCheckboxStateUseCase
@@ -22,7 +22,7 @@ import javax.inject.Inject
 class BmgmMiniCartViewModel @Inject constructor(
     setCartListCheckboxStateUseCase: Lazy<SetCartListCheckboxStateUseCase>,
     private val getMiniCartDataUseCase: Lazy<GetBmgmMiniCartDataUseCase>,
-    private val localCacheUseCase: Lazy<LocalCacheUseCase>,
+    private val miniCartLocalCacheUseCases: Lazy<MiniCartLocalCacheUseCases>,
     private val dispatchers: Lazy<CoroutineDispatchers>
 ) : BaseCartCheckboxViewModel(setCartListCheckboxStateUseCase.get(), dispatchers.get()) {
 
@@ -48,13 +48,13 @@ class BmgmMiniCartViewModel @Inject constructor(
     }
 
     fun clearCartDataLocalCache() {
-        localCacheUseCase.get().clearLocalCache()
+        miniCartLocalCacheUseCases.get().clearLocalCache()
     }
 
     fun storeCartDataToLocalCache() {
         val result = _cartData.value
         if (result is BmgmState.Success) {
-            localCacheUseCase.get().saveToLocalCache(result.data)
+            miniCartLocalCacheUseCases.get().saveToLocalCache(result.data)
         }
     }
 }
