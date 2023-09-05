@@ -1,7 +1,6 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs
 
 import android.os.Handler
-import android.os.Looper
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
@@ -24,7 +23,6 @@ import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.TabsUnify
-import kotlinx.coroutines.Runnable
 
 private const val TAB_START_PADDING = 20
 private const val DELAY_400: Long = 400
@@ -42,8 +40,7 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
     private var tabsViewModel: TabsViewModel? = null
     private var selectedTab: TabLayout.Tab? = null
     private var isParentUnifyTab: Boolean = true
-    private val navigateToTabPositionHandler = Handler(Looper.getMainLooper())
-    private var navigateToTabPositionRunnable: Runnable? = null
+
     private val tabsHandler = Handler(Looper.getMainLooper())
     private val tabsRunnable = Runnable {
         tabsHolder.show()
@@ -238,9 +235,6 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
     override fun onViewDetachedToWindow() {
         super.onViewDetachedToWindow()
         tabsHolder.tabLayout.removeOnTabSelectedListener(this)
-        navigateToTabPositionRunnable?.let {
-            navigateToTabPositionHandler.removeCallbacks(it)
-        }
         tabsViewModel?.getColorTabComponentLiveData()?.removeObservers(fragment.viewLifecycleOwner)
         tabsHandler.removeCallbacksAndMessages(null)
     }
@@ -275,15 +269,6 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
             }
             if (tab.customView != null && tab.customView is CustomViewCreator) {
                 setSelectedTabItem(tabsViewModel, tab, true)
-            }
-            navigateToTabPositionRunnable = Runnable {
-                tabsHolder.tabLayout.getTabAt(tab.position)?.select()
-            }
-            navigateToTabPositionRunnable?.let {
-                navigateToTabPositionHandler.postDelayed(
-                    it,
-                    DELAY_400
-                )
             }
         }
     }
