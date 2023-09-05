@@ -355,6 +355,7 @@ object DeeplinkDFApp {
         DFP(INTERNAL, HOST_TOPADS, PathType.PATH, "/history-credit"),
         DFP(INTERNAL, HOST_TOPADS, PathType.PATH, "/auto-topup"),
         DFP(INTERNAL, HOST_TOPADS, PathType.PATH, "/ad-selection"),
+        DFP(INTERNAL, HOST_TOPADS, PathType.PATTERN, "/product-recommendation"),
         // sellerorder
         DFP(INTERNAL, HOST_SELLER, PathType.PATH, "/new-order", SELLER_ORDER),
         DFP(INTERNAL, HOST_SELLER, PathType.PATH, "/ready-to-ship", SELLER_ORDER),
