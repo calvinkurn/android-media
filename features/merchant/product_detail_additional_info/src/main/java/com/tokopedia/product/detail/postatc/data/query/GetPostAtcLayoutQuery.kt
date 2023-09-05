@@ -43,6 +43,9 @@ object GetPostAtcLayoutQuery : GqlQueryInterface {
                     originalPrice
                     condition
                 }
+                warehouseInfo {
+                    warehouseID
+                }
                 postATCInfo {
                     title
                     image
