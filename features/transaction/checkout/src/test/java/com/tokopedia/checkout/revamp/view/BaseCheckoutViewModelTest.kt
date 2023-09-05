@@ -108,7 +108,7 @@ open class BaseCheckoutViewModelTest {
     @MockK(relaxUnitFun = true)
     lateinit var saveAddOnProductUseCase: SaveAddOnStateUseCase
 
-    @MockK
+    @MockK(relaxUnitFun = true)
     lateinit var getPaymentFeeCheckoutUseCase: GetPaymentFeeCheckoutUseCase
 
     @MockK
