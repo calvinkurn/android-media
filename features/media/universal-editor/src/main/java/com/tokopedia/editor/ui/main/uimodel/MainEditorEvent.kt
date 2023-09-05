@@ -1,5 +1,6 @@
 package com.tokopedia.editor.ui.main.uimodel
 
+import android.graphics.Bitmap
 import com.tokopedia.editor.ui.model.ImagePlacementModel
 import com.tokopedia.editor.ui.model.InputTextModel
 import com.tokopedia.picker.common.UniversalEditorParam
@@ -13,11 +14,13 @@ sealed class MainEditorEvent {
     object AddInputTextPage : MainEditorEvent()
 
     data class EditInputTextPage(
-        val typographyId: Int,
+        val viewId: Int,
         val model: InputTextModel
     ) : MainEditorEvent()
 
     data class InputTextResult(val model: InputTextModel) : MainEditorEvent()
+
+    data class ExportMedia(val canvasTextBitmap: Bitmap) : MainEditorEvent()
 
     object ResetActiveInputText : MainEditorEvent()
 
