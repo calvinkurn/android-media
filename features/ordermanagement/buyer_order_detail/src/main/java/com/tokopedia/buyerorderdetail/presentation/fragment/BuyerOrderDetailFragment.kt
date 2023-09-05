@@ -996,6 +996,7 @@ open class BuyerOrderDetailFragment :
             })
 
             enableDefaultShareIntent()
+            imageSaved(element.productThumbnailUrl)
             setUtmCampaignData("Order", userSession.userId, listOf(element.productId, element.orderId), "share")
 
             val shareString = this@BuyerOrderDetailFragment.getString(R.string.buyer_order_detail_share_text, element.priceText)
