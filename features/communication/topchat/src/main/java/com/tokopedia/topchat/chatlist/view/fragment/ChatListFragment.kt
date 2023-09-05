@@ -45,7 +45,7 @@ import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
 import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
 import com.tokopedia.stories.widget.StoriesWidgetManager
-import com.tokopedia.stories.widget.domain.StoriesEntryPoint
+import com.tokopedia.stories.widget.domain.StoriesEntrySource
 import com.tokopedia.stories.widget.storiesManager
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.analytic.ChatListAnalytic
@@ -137,7 +137,7 @@ class ChatListFragment :
     private var menu: Menu? = null
     private var broadCastButton: BroadcastButtonLayout? = null
 
-    private val mStoriesWidgetManager by storiesManager(StoriesEntryPoint.TopChatList) {
+    private val mStoriesWidgetManager by storiesManager(StoriesEntryPoint.TopChatList(userSession.shopId)) {
         setScrollingParent(rv)
     }
 

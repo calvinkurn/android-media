@@ -95,7 +95,7 @@ import com.tokopedia.reputation.common.constant.ReputationCommonConstants
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.stories.widget.StoriesWidgetManager
-import com.tokopedia.stories.widget.domain.StoriesEntryPoint
+import com.tokopedia.stories.widget.domain.StoriesEntrySource
 import com.tokopedia.stories.widget.storiesManager
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.data.ImageUploadServiceModel
@@ -317,7 +317,7 @@ open class TopChatRoomFragment :
     var chatRoomFlexModeListener: TopChatRoomFlexModeListener? = null
     var chatBoxPadding: View? = null
 
-    private val mStoriesWidgetManager by storiesManager(StoriesEntryPoint.TopChatRoom)
+    private val mStoriesWidgetManager by storiesManager(StoriesEntrySource.TopChatRoom(getCommonShopId()))
 
     override fun getRecyclerViewResourceId() = R.id.recycler_view_chatroom
     override fun getAnalytic(): TopChatAnalytics = analytics
