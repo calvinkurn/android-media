@@ -329,6 +329,7 @@ object ShopPageWidgetMapper {
                 appLink = data.appLink,
                 imageUrl = data.imageUrl,
                 linkType = data.linkType,
+                bannerId = data.bannerId,
                 listProductHotspot = data.productHotspot.map {
                     ShopWidgetDisplayBannerProductHotspotUiModel.Data.ProductHotspot(
                         productId = it.productID,

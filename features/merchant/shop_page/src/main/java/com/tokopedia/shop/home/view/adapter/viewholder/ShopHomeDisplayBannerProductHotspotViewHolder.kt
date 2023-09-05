@@ -13,6 +13,7 @@ import com.tokopedia.carousellayoutmanager.CarouselZoomPostLayoutListener
 import com.tokopedia.carousellayoutmanager.CenterScrollListener
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
@@ -43,10 +44,17 @@ class ShopHomeDisplayBannerProductHotspotViewHolder(
     }
 
     interface Listener {
-        fun onHotspotBubbleClicked(
+        fun onClickProductBannerHotspot(
             uiModel: ShopWidgetDisplayBannerProductHotspotUiModel,
+            bannerItemUiModel: ShopWidgetDisplayBannerProductHotspotUiModel.Data,
             imageBannerPosition: Int,
             bubblePosition: Int
+        )
+
+        fun onImpressionBannerHotspotImage(
+            uiModel: ShopWidgetDisplayBannerProductHotspotUiModel,
+            bannerItemUiModel: ShopWidgetDisplayBannerProductHotspotUiModel.Data,
+            imageBannerPosition: Int
         )
     }
 
@@ -124,6 +132,19 @@ class ShopHomeDisplayBannerProductHotspotViewHolder(
             } else if (dataSize == Int.ONE) {
                 setupViewForOnlyOneImageBanner()
                 setupImageBannerHotspotData(it)
+                addImpressionForOneBanner(it)
+            }
+        }
+    }
+
+    private fun addImpressionForOneBanner(uiModel: ShopWidgetDisplayBannerProductHotspotUiModel) {
+        uiModel.data.firstOrNull()?.let { bannerItemUiModel ->
+            imageBannerHotspot?.addOnImpressionListener(bannerItemUiModel) {
+                listener.onImpressionBannerHotspotImage(
+                    uiModel,
+                    bannerItemUiModel,
+                    Int.ZERO
+                )
             }
         }
     }
@@ -215,7 +236,14 @@ class ShopHomeDisplayBannerProductHotspotViewHolder(
     ) {
         //value should always be 0 because this one is for when we only have 1 image banner
         uiModel?.let {
-            listener.onHotspotBubbleClicked(it, Int.ZERO, index)
+            it.data.firstOrNull()?.let { bannerItemUiModel ->
+                listener.onClickProductBannerHotspot(
+                    it,
+                    bannerItemUiModel,
+                    Int.ZERO,
+                    index
+                )
+            }
         }
     }
 

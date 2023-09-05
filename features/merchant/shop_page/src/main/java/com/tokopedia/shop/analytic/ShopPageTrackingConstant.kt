@@ -337,6 +337,7 @@ object ShopPageTrackingConstant {
     const val VALUE_SHOP_PAGE_THEMATIC = "/shoppagethematic"
     const val ITEM_LIST_PERSO_TRENDING_WIDGET = "/shoppage - trending"
     const val ITEM_LIST_PERSO_PRODUCT_COMPARISON = "/shoppage - comparison"
+    const val ITEM_LIST_REIMAGINED_HOTSPOT_WIDGET = "/shoppage reimagined - hotspot widget"
     const val VALUE_MULTIPLE_BUNDLING = "multiple bundling"
     const val VALUE_SINGLE_BUNDLING = "single bundling"
     const val SHOP_AFFILIATE = "affiliate"
@@ -453,6 +454,8 @@ object ShopPageTrackingConstant {
         const val REIMAGINED_CLICK_BOTTOM_NAV = "reimagined - click bottom navigation"
         const val REIMAGINED_IMPRESSION_BANNER_CAROUSEL = "reimagined - impression banner carousel"
         const val REIMAGINED_CLICK_BANNER_CAROUSEL = "reimagined - click banner carousel"
+        const val REIMAGINED_IMPRESSION_BANNER_HOTSPOT = "reimagined - impression banner hotspot"
+        const val REIMAGINED_CLICK_PRODUCT_BANNER_HOTSPOT = "reimagined - click product hotspot"
 
 
     }
@@ -536,6 +539,8 @@ object ShopPageTrackingConstant {
         const val TRACKER_ID_REIMAGINED_CLICK_BOTTOM_NAV = "45914"
         const val TRACKER_ID_REIMAGINED_IMPRESSION_BANNER_CAROUSEL = "45920"
         const val TRACKER_ID_REIMAGINED_CLICK_BANNER_CAROUSEL = "45921"
+        const val TRACKER_ID_REIMAGINED_IMPRESSION_BANNER_HOTSPOT = "45922"
+        const val TRACKER_ID_REIMAGINED_CLICK_PRODUCT_BANNER_HOTSPOT = "45923"
     }
 
     object Key {

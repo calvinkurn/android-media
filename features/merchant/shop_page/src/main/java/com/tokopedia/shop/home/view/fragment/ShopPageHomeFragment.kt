@@ -5028,8 +5028,85 @@ open class ShopPageHomeFragment :
         }
     }
 
-    override fun onHotspotBubbleClicked(uiModel: ShopWidgetDisplayBannerProductHotspotUiModel, imageBannerPosition: Int, bubblePosition: Int) {
-        RouteManager.route(context, uiModel.data.getOrNull(imageBannerPosition)?.listProductHotspot?.getOrNull(bubblePosition)?.productUrl.orEmpty())
+    override fun onClickProductBannerHotspot(
+        uiModel: ShopWidgetDisplayBannerProductHotspotUiModel,
+        bannerItemUiModel: ShopWidgetDisplayBannerProductHotspotUiModel.Data,
+        imageBannerPosition: Int,
+        bubblePosition: Int
+    ) {
+        val isSingleBannerImage = uiModel.data.size == Int.ONE
+        sendClickProductBannerHotspot(
+            bannerItemUiModel.bannerId,
+            uiModel.header.ratio,
+            bannerItemUiModel.listProductHotspot.getOrNull(bubblePosition)?.productId.orEmpty(),
+            bannerItemUiModel.listProductHotspot.getOrNull(bubblePosition)?.name.orEmpty(),
+            bannerItemUiModel.listProductHotspot.getOrNull(bubblePosition)?.displayedPrice.orEmpty(),
+            imageBannerPosition,
+            bubblePosition,
+            isSingleBannerImage,
+            shopId,
+            userId
+        )
+        RouteManager.route(context, bannerItemUiModel.listProductHotspot.getOrNull(bubblePosition)?.productUrl.orEmpty())
+    }
+
+    private fun sendClickProductBannerHotspot(
+        bannerId: String,
+        ratio: String,
+        productId: String,
+        productName: String,
+        productPrice: String,
+        imageBannerPosition: Int,
+        bubblePosition: Int,
+        singleBannerImage: Boolean,
+        shopId: String,
+        userId: String
+    ) {
+        shopPageHomeTracking.clickProductBannerHotspot(
+            bannerId,
+            ratio,
+            productId,
+            productName,
+            productPrice,
+            imageBannerPosition,
+            bubblePosition,
+            singleBannerImage,
+            shopId,
+            userId
+        )
+    }
+
+    override fun onImpressionBannerHotspotImage(
+        uiModel: ShopWidgetDisplayBannerProductHotspotUiModel,
+        bannerItemUiModel: ShopWidgetDisplayBannerProductHotspotUiModel.Data,
+        imageBannerPosition: Int
+    ) {
+        val isSingleBannerImage = uiModel.data.size == Int.ONE
+        sendImpressionBannerHotspot(
+            bannerItemUiModel.bannerId,
+            uiModel.header.ratio,
+            uiModel.widgetId,
+            imageBannerPosition,
+            isSingleBannerImage
+        )
+    }
+
+    private fun sendImpressionBannerHotspot(
+        bannerId: String,
+        ratio: String,
+        widgetId: String,
+        imageBannerPosition: Int,
+        singleBannerImage: Boolean
+    ) {
+        shopPageHomeTracking.impressionBannerHotspot(
+            bannerId,
+            ratio,
+            widgetId,
+            imageBannerPosition,
+            singleBannerImage,
+            shopId,
+            userId
+        )
     }
 
 

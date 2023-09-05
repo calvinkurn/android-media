@@ -21,6 +21,7 @@ data class ShopWidgetDisplayBannerProductHotspotUiModel(
         val appLink: String = "",
         val imageUrl: String = "",
         val linkType: String = "",
+        val bannerId: String = "",
         val listProductHotspot: List<ProductHotspot> = listOf(),
     ) : ImpressHolder() {
         data class ProductHotspot(
