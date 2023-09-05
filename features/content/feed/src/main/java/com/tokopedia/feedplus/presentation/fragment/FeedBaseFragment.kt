@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.launch
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.viewModels
@@ -69,7 +68,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
-import com.tokopedia.content.common.R as contentCommonR
+import com.tokopedia.content.common.R as contentcommonR
 
 /**
  * Created By : Muhammad Furqan on 02/02/23
@@ -113,15 +112,15 @@ class FeedBaseFragment :
     private var mCoachMarkJob: Job? = null
 
     private val toasterBottomMargin by lazy {
-        resources.getDimensionPixelOffset(R.dimen.feed_toaster_bottom_margin)
+        requireContext().resources.getDimensionPixelOffset(R.dimen.feed_toaster_bottom_margin)
     }
 
     private val tabExtraTopOffset24 by lazy {
-        resources.getDimensionPixelOffset(R.dimen.feed_space_24)
+        requireContext().resources.getDimensionPixelOffset(R.dimen.feed_space_24)
     }
 
     private val tabExtraTopOffset16 by lazy {
-        resources.getDimensionPixelOffset(R.dimen.feed_space_16)
+        requireContext().resources.getDimensionPixelOffset(R.dimen.feed_space_16)
     }
 
     private val adapter by lazy {
@@ -160,23 +159,6 @@ class FeedBaseFragment :
         }
 
     private val openAppLink = registerForActivityResult(RouteContract()) {}
-
-    private val onNonLoginGoToFollowingTab =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            if (userSession.isLoggedIn) {
-                showNormalToaster(
-                    text = getString(
-                        R.string.feed_report_login_success_toaster_text,
-                        userSession.name
-                    ),
-                    duration = Toaster.LENGTH_LONG
-                )
-
-                feedMainViewModel.setActiveTab(TAB_TYPE_FOLLOWING)
-            } else {
-                feedMainViewModel.setActiveTab(TAB_TYPE_FOR_YOU)
-            }
-        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         childFragmentManager.addFragmentOnAttachListener { _, fragment ->
@@ -281,7 +263,7 @@ class FeedBaseFragment :
                     )
                     putExtra(
                         BundleData.TITLE,
-                        getString(contentCommonR.string.feed_post_sebagai)
+                        getString(contentcommonR.string.feed_post_sebagai)
                     )
                     putExtra(
                         BundleData.APPLINK_FOR_GALLERY_PROCEED,
@@ -310,13 +292,6 @@ class FeedBaseFragment :
 
     private fun setupView() {
         binding.vpFeedTabItemsContainer.adapter = adapter
-
-        if (isJustLoggedIn) {
-            showJustLoggedInToaster()
-            feedMainViewModel.setActiveTab(TAB_TYPE_FOLLOWING)
-        }
-        isJustLoggedIn = false
-
         binding.vpFeedTabItemsContainer.reduceDragSensitivity(3)
         binding.vpFeedTabItemsContainer.registerOnPageChangeCallback(object :
                 OnPageChangeCallback() {
@@ -333,12 +308,7 @@ class FeedBaseFragment :
                         activeTabSource.tabName == null // not coming from appLink
                     ) {
                         if (position == TAB_SECOND_INDEX) {
-                            onNonLoginGoToFollowingTab.launch(
-                                RouteManager.getIntent(
-                                    context,
-                                    ApplinkConst.LOGIN
-                                )
-                            )
+                            openAppLink.launch(ApplinkConst.LOGIN)
                         }
                     }
 
@@ -626,7 +596,15 @@ class FeedBaseFragment :
             binding.containerFeedTopNav.tyFeedSecondTab.hide()
         }
 
-        setupActiveTab(tab)
+        if (isJustLoggedIn) {
+            if (userSession.isLoggedIn) {
+                showJustLoggedInToaster()
+            }
+            feedMainViewModel.setActiveTab(TAB_TYPE_FOLLOWING)
+        } else {
+            setupActiveTab(tab)
+        }
+        isJustLoggedIn = false
     }
 
     private fun setupActiveTab(tab: FeedTabModel) {
@@ -787,7 +765,7 @@ class FeedBaseFragment :
     private fun getAllMotionScene(): List<ConstraintSet> {
         return listOf(
             binding.containerFeedTopNav.root.getConstraintSet(R.id.start),
-            binding.containerFeedTopNav.root.getConstraintSet(R.id.end),
+            binding.containerFeedTopNav.root.getConstraintSet(R.id.end)
         )
     }
 
