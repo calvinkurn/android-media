@@ -410,7 +410,7 @@ object BuyerOrderDetailTracker {
             .send()
     }
 
-    fun sendClickOnShareButton(orderId: String, productId: String, orderStatusId: String) {
+    fun sendClickOnShareButton(orderId: String, productId: String, orderStatusId: String, userId: String) {
         val eventLabel = "$productId - $orderId - $orderStatusId"
         mutableMapOf<String, Any>().appendGeneralEventData(
             eventName = BuyerOrderDetailTrackerConstant.EVENT_NAME_CLICK_COMMUNICATION,
@@ -420,10 +420,11 @@ object BuyerOrderDetailTracker {
         ).appendBusinessUnit(BuyerOrderDetailTrackerConstant.BUSINESS_UNIT_SHARING_EXPERIENCE)
             .appendCurrentSite(BuyerOrderDetailTrackerConstant.CURRENT_SITE_TOKOPEDIA_MARKETPLACE)
             .appendTrackerId(BuyerOrderDetailTrackerConstant.TRACKER_ID_45653)
+            .appendUserId(userId)
             .sendGeneralEvent()
     }
 
-    fun sendClickOnClosingBottomSheet(orderId: String, productId: String, orderStatusId: String) {
+    fun sendClickOnClosingBottomSheet(orderId: String, productId: String, orderStatusId: String, userId: String) {
         val eventLabel = "$productId - $orderId - $orderStatusId"
         mutableMapOf<String, Any>().appendGeneralEventData(
             eventName = BuyerOrderDetailTrackerConstant.EVENT_NAME_CLICK_COMMUNICATION,
@@ -433,10 +434,11 @@ object BuyerOrderDetailTracker {
         ).appendBusinessUnit(BuyerOrderDetailTrackerConstant.BUSINESS_UNIT_SHARING_EXPERIENCE)
             .appendCurrentSite(BuyerOrderDetailTrackerConstant.CURRENT_SITE_TOKOPEDIA_MARKETPLACE)
             .appendTrackerId(BuyerOrderDetailTrackerConstant.TRACKER_ID_45654)
+            .appendUserId(userId)
             .sendGeneralEvent()
     }
 
-    fun sendClickOnSelectionOfSharingChannels(channel: String, orderId: String, productId: String, orderStatusId: String) {
+    fun sendClickOnSelectionOfSharingChannels(channel: String, orderId: String, productId: String, orderStatusId: String, userId: String) {
         val eventLabel = "$channel - $productId - $orderId - $orderStatusId"
         mutableMapOf<String, Any>().appendGeneralEventData(
             eventName = BuyerOrderDetailTrackerConstant.EVENT_NAME_CLICK_COMMUNICATION,
@@ -446,10 +448,11 @@ object BuyerOrderDetailTracker {
         ).appendBusinessUnit(BuyerOrderDetailTrackerConstant.BUSINESS_UNIT_SHARING_EXPERIENCE)
             .appendCurrentSite(BuyerOrderDetailTrackerConstant.CURRENT_SITE_TOKOPEDIA_MARKETPLACE)
             .appendTrackerId(BuyerOrderDetailTrackerConstant.TRACKER_ID_45655)
+            .appendUserId(userId)
             .sendGeneralEvent()
     }
 
-    fun eventImpressionShareBottomSheet(orderId: String, productId: String, orderStatusId: String) {
+    fun eventImpressionShareBottomSheet(orderId: String, productId: String, orderStatusId: String, userId: String) {
         val eventLabel = "$productId - $orderId - $orderStatusId"
         mutableMapOf<String, Any>().appendGeneralEventData(
             eventName = BuyerOrderDetailTrackerConstant.EVENT_NAME_VIEW_COMMUNICATION_IRIS,
@@ -459,6 +462,7 @@ object BuyerOrderDetailTracker {
         ).appendBusinessUnit(BuyerOrderDetailTrackerConstant.BUSINESS_UNIT_SHARING_EXPERIENCE)
             .appendCurrentSite(BuyerOrderDetailTrackerConstant.CURRENT_SITE_TOKOPEDIA_MARKETPLACE)
             .appendTrackerId(BuyerOrderDetailTrackerConstant.TRACKER_ID_45656)
+            .appendUserId(userId)
             .sendGeneralEvent()
     }
 }

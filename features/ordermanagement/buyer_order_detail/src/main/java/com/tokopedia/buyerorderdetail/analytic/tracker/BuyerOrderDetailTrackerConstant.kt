@@ -61,9 +61,9 @@ object BuyerOrderDetailTrackerConstant {
     const val EVENT_ACTION_CLICK_ESTIMATE_ICON_POF_BOM_DETAIL = "click icon estimasi dana dikembalikan"
     const val EVENT_ACTION_CLICK_ON_ORDER_WIDGET = "click on order group widget"
     const val EVENT_ACTION_CLICK_VIEW_DETAIL_ORDER_GROUP = "click lihat detail on order group detail"
-    const val EVENT_ACTION_CLICK_SHARE_BUTTON = "click share button"
-    const val EVENT_ACTION_CLICK_CLOSE_SHARE_BOTTOM_SHEET = "click close share bottom sheet"
-    const val EVENT_ACTION_CLICK_SHARING_CHANNEL = "click sharing channel"
+    const val EVENT_ACTION_CLICK_SHARE_BUTTON = "click - share button"
+    const val EVENT_ACTION_CLICK_CLOSE_SHARE_BOTTOM_SHEET = "click - close share bottom sheet"
+    const val EVENT_ACTION_CLICK_SHARING_CHANNEL = "click - sharing channel"
     const val EVENT_ACTION_IMPRESSION_SHARE_BOTTOM_SHEET = "view on sharing channel"
 
     // pof
@@ -82,7 +82,7 @@ object BuyerOrderDetailTrackerConstant {
     // business unit
     const val BUSINESS_UNIT_MARKETPLACE = "Seller Order Management"
     const val BUSINESS_UNIT_PHYSICAL_GOODS = "Physical Goods"
-    const val BUSINESS_UNIT_SHARING_EXPERIENCE = "Sharing Experience"
+    const val BUSINESS_UNIT_SHARING_EXPERIENCE = "sharingexperience"
 
     // current site
     const val CURRENT_SITE_TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"

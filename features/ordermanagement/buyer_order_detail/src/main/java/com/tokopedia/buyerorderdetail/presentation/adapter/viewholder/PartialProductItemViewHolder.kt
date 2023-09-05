@@ -12,6 +12,7 @@ import com.tokopedia.buyerorderdetail.common.utils.Utils
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImage
@@ -19,6 +20,8 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 
 class PartialProductItemViewHolder(
     private val itemView: View?,
@@ -33,6 +36,8 @@ class PartialProductItemViewHolder(
         const val CARD_ALPHA_NON_POF = 1f
         const val CARD_ALPHA_POF = 0.5f
     }
+
+    private val userSession: UserSessionInterface = UserSession(itemView?.context)
 
     private val container = itemView?.findViewById<ConstraintLayout>(R.id.container)
 
@@ -65,6 +70,13 @@ class PartialProductItemViewHolder(
         setupProductNote(element.productNote)
         setupTotalPrice(element.totalPriceText)
         setupInsurance(element.insurance)
+        setupShareButton(element.productUrl)
+    }
+
+    private fun setupShareButton(productUrl: String?) {
+        if (productUrl?.isEmpty() == true) {
+            btnShareProduct?.hide()
+        }
     }
 
     fun bindProductItemPayload(
@@ -201,7 +213,7 @@ class PartialProductItemViewHolder(
 
     private fun openShareBottomSheet() {
         bottomSheetListener.onShareButtonClicked(element)
-        BuyerOrderDetailTracker.sendClickOnShareButton(element.orderId, element.productId, element.orderStatusId)
+        BuyerOrderDetailTracker.sendClickOnShareButton(element.orderId, element.productId, element.orderStatusId, userSession.userId)
     }
 
     interface ProductViewListener {

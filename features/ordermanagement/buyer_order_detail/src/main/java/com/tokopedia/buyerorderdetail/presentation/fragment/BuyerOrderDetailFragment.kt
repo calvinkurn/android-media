@@ -986,11 +986,11 @@ open class BuyerOrderDetailFragment :
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance(view).apply {
             init(object : ShareBottomsheetListener {
                 override fun onShareOptionClicked(shareModel: ShareModel) {
-                    BuyerOrderDetailTracker.sendClickOnSelectionOfSharingChannels(shareModel.channel ?: "", element.orderId, element.productId, element.orderStatusId)
+                    BuyerOrderDetailTracker.sendClickOnSelectionOfSharingChannels(shareModel.channel ?: "", element.orderId, element.productId, element.orderStatusId, userSession.userId)
                 }
 
                 override fun onCloseOptionClicked() {
-                    BuyerOrderDetailTracker.sendClickOnClosingBottomSheet(element.orderId, element.productId, element.orderStatusId)
+                    BuyerOrderDetailTracker.sendClickOnClosingBottomSheet(element.orderId, element.productId, element.orderStatusId, userSession.userId)
                     dismiss()
                 }
             })
@@ -1040,6 +1040,6 @@ open class BuyerOrderDetailFragment :
             requireActivity().supportFragmentManager,
             this@BuyerOrderDetailFragment
         )
-        BuyerOrderDetailTracker.eventImpressionShareBottomSheet(element.orderId, element.productId, element.orderStatusId)
+        BuyerOrderDetailTracker.eventImpressionShareBottomSheet(element.orderId, element.productId, element.orderStatusId, userSession.userId)
     }
 }
