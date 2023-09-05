@@ -2,7 +2,7 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
     <gradient
-        android:centerColor="@color/Unify_NN0"
+        android:centerColor="@color/Unify_Static_White"
         android:endColor="@color/mini_cart_shining_gradient_dms"
         android:startColor="@color/mini_cart_shining_gradient_dms" />
 </shape>
