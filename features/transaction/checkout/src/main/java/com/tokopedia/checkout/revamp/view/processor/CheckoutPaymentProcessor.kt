@@ -67,8 +67,7 @@ class CheckoutPaymentProcessor @Inject constructor(
                     return cost.copy(dynamicPlatformFee = platformFee)
                 } else {
                     return cost.copy(
-                        dynamicPlatformFee = cost.dynamicPlatformFee.copy(
-                            isLoading = false,
+                        dynamicPlatformFee = ShipmentPaymentFeeModel(
                             isShowTicker = true,
                             ticker = shipmentPlatformFeeData.errorWording
                         )
@@ -79,7 +78,7 @@ class CheckoutPaymentProcessor @Inject constructor(
         return cost.copy(dynamicPlatformFee = cost.dynamicPlatformFee.copy(isLoading = false))
     }
 
-    suspend fun getDynamicPaymentFee(request: PaymentFeeCheckoutRequest): PaymentFeeResponse? {
+    private suspend fun getDynamicPaymentFee(request: PaymentFeeCheckoutRequest): PaymentFeeResponse? {
         return withContext(dispatchers.io) {
             try {
                 getPaymentFeeCheckoutUseCase.setParams(request)
