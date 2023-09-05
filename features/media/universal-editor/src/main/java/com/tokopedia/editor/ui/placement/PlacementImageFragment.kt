@@ -4,6 +4,7 @@ import android.net.Uri
 import android.os.Handler
 import androidx.core.graphics.values
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.editor.R
 import com.tokopedia.editor.base.BaseEditorFragment
@@ -15,6 +16,7 @@ import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.utils.file.FileUtil
 import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
@@ -80,8 +82,8 @@ class PlacementImageFragment @Inject constructor(
 
     fun captureImage() {
         viewBinding?.cropArea?.getCropImageView()?.let {
-            CoroutineScope(dispatchers.io).launch {
-                it.customCrop { bitmap, matrix, outputUri ->
+            lifecycleScope.launch(dispatchers.io) {
+                it.customCrop { (bitmap, matrix, outputUri) ->
                     val translateX = matrix[INDEX_TRANSLATE_X]
                     val translateY = matrix[INDEX_TRANSLATE_Y]
 

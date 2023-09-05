@@ -12,6 +12,7 @@ import android.net.Uri
 import android.os.Handler
 import android.util.AttributeSet
 import androidx.core.graphics.values
+import com.tokopedia.editor.ui.model.CustomCropResult
 import com.yalantis.ucrop.model.ImageState
 import com.yalantis.ucrop.util.BitmapLoadUtils
 import com.yalantis.ucrop.util.RectUtils
@@ -78,7 +79,7 @@ open class StoryCropImageView : CropImageView {
         }, FINISH_DELAY)
     }
 
-    suspend fun customCrop(onFinish: (bitmap: Bitmap, imageMatrix: FloatArray, outputPath: String) -> Unit) {
+    fun customCrop(onFinish: (cropResult: CustomCropResult) -> Unit) {
         val imageState = ImageState(
             mCropRect,
             RectUtils.trapToRect(mCurrentImageCorners),
@@ -135,7 +136,11 @@ open class StoryCropImageView : CropImageView {
             )
         }
 
-        onFinish(bitmapResult, imageMatrix.values(), outputPath?.path ?: "")
+        onFinish(
+            CustomCropResult(
+                bitmapResult, imageMatrix.values(), outputPath?.path ?: ""
+            )
+        )
     }
 
     fun processStyledAttributesOpen(a: TypedArray) {

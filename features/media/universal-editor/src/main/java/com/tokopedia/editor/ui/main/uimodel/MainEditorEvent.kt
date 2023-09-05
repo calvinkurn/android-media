@@ -1,6 +1,5 @@
 package com.tokopedia.editor.ui.main.uimodel
 
-import com.tokopedia.editor.ui.model.EditorModel
 import com.tokopedia.editor.ui.model.ImagePlacementModel
 import com.tokopedia.editor.ui.model.InputTextModel
 import com.tokopedia.picker.common.UniversalEditorParam

@@ -39,12 +39,12 @@ class StoryGestureCropImageView(context: Context, attributeSet: AttributeSet) :
             mMidPntX = (event.getX(0) + event.getX(1)) / 2
             mMidPntY = (event.getY(0) + event.getY(1)) / 2
         }
-        mGestureDetector!!.onTouchEvent(event)
+        mGestureDetector?.onTouchEvent(event)
         if (mIsScaleEnabled) {
-            mScaleDetector!!.onTouchEvent(event)
+            mScaleDetector?.onTouchEvent(event)
         }
         if (mIsRotateEnabled) {
-            mRotateDetector!!.onTouchEvent(event)
+            mRotateDetector?.onTouchEvent(event)
         }
         if (event.action and MotionEvent.ACTION_MASK == MotionEvent.ACTION_UP) {
             setImageToWrapCropBounds()
