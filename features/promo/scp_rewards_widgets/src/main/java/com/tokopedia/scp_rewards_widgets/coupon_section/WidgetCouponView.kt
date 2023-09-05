@@ -64,12 +64,14 @@ class WidgetCouponView @JvmOverloads constructor(
         when (benefit.status) {
             CouponState.EMPTY -> {
                 binding.ivErrorState.hide()
+                binding.stackCoupon.hide()
                 binding.cardEmptyCoupon.visible()
                 binding.cardEmptyCoupon.setData(benefit, onCtaClick)
             }
 
             CouponState.ERROR -> {
                 binding.cardEmptyCoupon.hide()
+                binding.stackCoupon.hide()
                 binding.ivErrorState.visible()
                 binding.ivErrorState.loadImageOrFallback(
                     benefit.medaliImageURL,
@@ -78,8 +80,6 @@ class WidgetCouponView @JvmOverloads constructor(
             }
 
             else -> {
-                binding.ivErrorState.hide()
-                binding.cardEmptyCoupon.hide()
                 binding.ivErrorState.hide()
                 binding.cardEmptyCoupon.hide()
                 binding.stackCoupon.visible()
