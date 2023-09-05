@@ -269,6 +269,8 @@
                                     android:id="@+id/iv_online_icon"
                                     android:layout_width="6dp"
                                     android:layout_height="6dp"
+                                    android:visibility="gone"
+                                    tools:visibility="visible"
                                     android:layout_marginEnd="2dp"
                                     app:layout_constraintBottom_toBottomOf="@id/text_online_description"
                                     app:layout_constraintHorizontal_bias="0"
@@ -294,8 +296,6 @@
                                     app:layout_constraintLeft_toRightOf="@id/iv_online_icon"
                                     app:layout_constraintRight_toLeftOf="@id/dot_separator_shop_status"
                                     app:layout_constraintVertical_bias="0"
-                                    app:layout_goneMarginLeft="12dp"
-                                    app:layout_goneMarginStart="12dp"
                                     app:typographyType="body_3"
                                     tools:text="Terakhir online Feb 2020" />
 
@@ -309,14 +309,15 @@
                                     app:layout_constraintBottom_toBottomOf="@id/text_online_description"
                                     app:layout_constraintHorizontal_chainStyle="packed"
                                     app:layout_constraintLeft_toRightOf="@id/text_online_description"
-                                    app:layout_constraintRight_toLeftOf="@id/image_shop_value"
+                                    app:layout_constraintRight_toLeftOf="@id/image_shop_static_usp"
                                     app:layout_constraintTop_toTopOf="@id/text_online_description"
                                     app:typographyType="display_3" />
 
                                 <com.tokopedia.unifycomponents.ImageUnify
-                                    android:id="@+id/image_shop_value"
+                                    android:id="@+id/image_shop_static_usp"
                                     android:layout_width="wrap_content"
-                                    android:layout_height="15dp"
+                                    android:layout_height="16dp"
+                                    android:adjustViewBounds="true"
                                     app:layout_constraintBottom_toBottomOf="@id/text_online_description"
                                     app:layout_constraintHorizontal_bias="0"
                                     app:layout_constraintLeft_toRightOf="@id/dot_separator_shop_status"
