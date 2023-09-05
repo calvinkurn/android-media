@@ -143,7 +143,9 @@ class CheckoutPromoViewHolder(private val binding: ItemCheckoutPromoBinding, pri
                 ""
             }
             val isSecondaryTextEnabled = otherPromoSummaries.isEmpty()
-            val isExpanded = otherPromoSummaries.isEmpty()
+                && secondaryText.isNotEmpty()
+                && entryPointInfo?.color == PromoEntryPointInfo.COLOR_GREEN
+            val isExpanded = boPromoSummaries.isNotEmpty() && isSecondaryTextEnabled
             binding.btnCheckoutPromo.showActiveNewExpandable(
                 leftImageUrl = ICON_URL_ENTRY_POINT_APPLIED,
                 wording = message,
