@@ -26,7 +26,6 @@
         android:maxLines="1"
         android:textColor="@color/Unify_Static_White"
         app:typographyType="display_3"
-        app:typographyWeight="bold"
         tools:text="16,5rb"
         />
 
