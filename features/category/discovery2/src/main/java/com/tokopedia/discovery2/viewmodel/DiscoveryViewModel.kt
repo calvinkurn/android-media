@@ -383,11 +383,13 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     }
 
     private fun setNavToolbarConfigData(pageInfoData: PageInfo) {
-        val firstComponent = components.firstOrNull()
-        discoveryNavToolbarConfig.value = NavToolbarConfig(
-            isExtendedLayout = firstComponent != null && firstComponent.name == ComponentNames.SliderBanner.componentName && firstComponent.properties?.type == ATF_BANNER,
-            color = pageInfoData.thematicHeader?.color.orEmpty()
-        )
+        if (discoveryNavToolbarConfig.value == null) {
+            val firstComponent = components.firstOrNull()
+            discoveryNavToolbarConfig.value = NavToolbarConfig(
+                isExtendedLayout = firstComponent != null && firstComponent.name == ComponentNames.SliderBanner.componentName && firstComponent.properties?.type == ATF_BANNER,
+                color = pageInfoData.thematicHeader?.color.orEmpty()
+            )
+        }
     }
 
     fun getDiscoveryPageInfo(): LiveData<Result<PageInfo>> = discoveryPageInfo

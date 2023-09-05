@@ -365,7 +365,6 @@ open class DiscoveryFragment :
                 permissionListener = this
             )
         }
-        requestStatusBarLight()
     }
 
     override fun onRequestPermissionsResult(
@@ -850,7 +849,11 @@ open class DiscoveryFragment :
                 if (widgetVisibilityStatus) {
                     if (shouldShowChooseAddressWidget) {
                         chooseAddressWidget?.show()
-                        chooseAddressWidgetDivider?.show()
+                        if (isLightThemeStatusBar != true) {
+                            chooseAddressWidgetDivider?.show()
+                        } else {
+                            chooseAddressWidgetDivider?.hide()
+                        }
                     }
                     if (ChooseAddressUtils.isLocalizingAddressNeedShowCoachMark(it) == true) {
                         ChooseAddressUtils.coachMarkLocalizingAddressAlreadyShown(it)
@@ -966,6 +969,7 @@ open class DiscoveryFragment :
         discoveryViewModel.getDiscoveryNavToolbarConfigLiveData().observe(viewLifecycleOwner) { config ->
             if (config.color.isNotEmpty() || config.isExtendedLayout) {
                 hasColouredStatusBar = true
+                requestStatusBarLight()
                 setupNavToolbarWithStatusBar()
                 setupExtendedLayout(config)
                 setupBackgroundColorForHeader(config)
