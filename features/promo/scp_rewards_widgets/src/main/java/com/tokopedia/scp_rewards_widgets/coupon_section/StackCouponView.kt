@@ -43,8 +43,8 @@ class StackCouponView @JvmOverloads constructor(
                 cardMiddle.gone()
                 cardBack.gone()
             } else {
-                cardMiddle.setData(list.first().apply { statusBadgeEnabled = false })
-                cardBack.setData(list.first().apply { statusBadgeEnabled = false })
+                cardMiddle.setData(list.first().copy().apply { statusBadgeEnabled = false })
+                cardBack.setData(list.first().copy().apply { statusBadgeEnabled = false })
 
                 cardMore.apply {
                     shapeAppearanceModel = ShapeAppearanceModel.Builder()
