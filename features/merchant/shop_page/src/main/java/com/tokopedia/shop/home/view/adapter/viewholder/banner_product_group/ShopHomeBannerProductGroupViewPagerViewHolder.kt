@@ -49,7 +49,7 @@ class ShopHomeBannerProductGroupViewPagerViewHolder(
         if (!isProductSuccessfullyLoaded){
             setupTitle(model)
             setupViewAllChevron(model)
-            setupTabs(model.tabs, model.widgetStyle, model.header.isOverrideTheme, model.header.colorSchema)
+            setupTabs(model)
             setupColors(model.header.isOverrideTheme, model.header.colorSchema)
         }
     }
@@ -68,13 +68,8 @@ class ShopHomeBannerProductGroupViewPagerViewHolder(
         viewBinding?.tpgTitle?.isVisible = model.title.isNotEmpty() && model.tabs.isNotEmpty()
     }
 
-    private fun setupTabs(
-        tabs: List<ShopWidgetComponentBannerProductGroupUiModel.Tab>,
-        widgetStyle: String,
-        overrideTheme: Boolean,
-        colorScheme: ShopPageColorSchema
-    ) {
-        val fragments = createFragments(tabs, widgetStyle, overrideTheme, colorScheme)
+    private fun setupTabs(model: ShopWidgetComponentBannerProductGroupUiModel) {
+        val fragments = createFragments(model)
         val pagerAdapter = TabPagerAdapter(provider.productCarouselHostFragmentManager, provider.productCarouselHostLifecycle, fragments)
 
         viewBinding?.run {
@@ -86,8 +81,8 @@ class ShopHomeBannerProductGroupViewPagerViewHolder(
             tabsUnify.whiteShadeRight.gone()
 
             when {
-                tabs.isEmpty() -> tabsUnify.gone()
-                tabs.size == ONE_TAB -> tabsUnify.gone()
+                model.tabs.isEmpty() -> tabsUnify.gone()
+                model.tabs.size == ONE_TAB -> tabsUnify.gone()
                 else -> {
                     tabsUnify.visible()
                     tabsUnify.customTabMode = TabLayout.MODE_SCROLLABLE
@@ -116,21 +111,16 @@ class ShopHomeBannerProductGroupViewPagerViewHolder(
         override fun createFragment(position: Int) = fragments[position].second
     }
 
-    private fun createFragments(
-        tabs: List<ShopWidgetComponentBannerProductGroupUiModel.Tab>,
-        widgetStyle: String,
-        overrideTheme: Boolean,
-        colorScheme: ShopPageColorSchema
-    ): List<Pair<String, Fragment>> {
+    private fun createFragments(model: ShopWidgetComponentBannerProductGroupUiModel): List<Pair<String, Fragment>> {
         val pages = mutableListOf<Pair<String, Fragment>>()
 
-        tabs.forEachIndexed { _, currentTab ->
+        model.tabs.forEachIndexed { _, currentTab ->
             val fragment = ShopBannerProductGroupWidgetTabFragment.newInstance(
                 provider.currentShopId,
                 currentTab.componentList,
-                widgetStyle,
-                overrideTheme,
-                colorScheme
+                model.widgetStyle,
+                model.header.isOverrideTheme,
+                model.header.colorSchema
             )
             fragment.setOnMainBannerClick { mainBanner -> listener.onBannerProductGroupMainBannerClick(mainBanner) }
             fragment.setOnProductClick { selectedShowcase -> listener.onBannerProductGroupProductClick(selectedShowcase) }
