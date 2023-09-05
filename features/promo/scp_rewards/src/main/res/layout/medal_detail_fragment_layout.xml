@@ -79,6 +79,7 @@
             </androidx.core.widget.NestedScrollView>
 
             <View
+                android:id="@+id/shadow_footer"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_8"
                 android:background="@drawable/shadow"

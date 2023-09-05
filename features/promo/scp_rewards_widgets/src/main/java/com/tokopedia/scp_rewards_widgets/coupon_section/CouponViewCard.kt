@@ -3,6 +3,7 @@ package com.tokopedia.scp_rewards_widgets.coupon_section
 //noinspection WrongResourceImportAlias
 import android.annotation.SuppressLint
 import android.content.Context
+import android.os.Build
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.core.content.ContextCompat
@@ -51,7 +52,7 @@ class CouponViewCard @JvmOverloads constructor(
 
         val shapeDrawable = MaterialShapeDrawable(shapeAppearanceModel)
         shapeDrawable.setTint(infoColor)
-
+        addShadow(shapeDrawable)
         val innerShapeDrawable = MaterialShapeDrawable(shapeAppearanceModel)
             .apply {
                 setTint(ContextCompat.getColor(context, unifyPrinciplesR.color.Unify_NN0))
@@ -59,6 +60,14 @@ class CouponViewCard @JvmOverloads constructor(
 
         background = shapeDrawable
         binding.layoutDetails.background = innerShapeDrawable
+    }
+
+    private fun addShadow(shapeDrawable: MaterialShapeDrawable) {
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
+            shapeDrawable.shadowCompatibilityMode = MaterialShapeDrawable.SHADOW_COMPAT_MODE_ALWAYS
+            shapeDrawable.initializeElevationOverlay(context)
+            shapeDrawable.elevation = elevation
+        }
     }
 
     fun setData(

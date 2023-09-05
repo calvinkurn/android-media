@@ -242,6 +242,7 @@ class MedalDetailFragment : BaseDaggerFragment() {
         val listOfButtons = medaliDetailPage?.benefitButtons
         if (listOfButtons.isNullOrEmpty()) {
             binding.viewMedalFooter.gone()
+            binding.shadowFooter.gone()
         } else {
             binding.viewMedalFooter.bindData(
                 listOfButtons.map {

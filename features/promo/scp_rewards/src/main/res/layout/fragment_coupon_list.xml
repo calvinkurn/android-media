@@ -7,5 +7,7 @@
         android:id="@+id/rv_coupons"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/Unify_NN50" />
+        android:background="@color/Unify_NN50"
+        android:clipChildren="false"
+        android:clipToPadding="false" />
 </androidx.constraintlayout.widget.ConstraintLayout>
