@@ -5,6 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.sellerhomecommon.common.WidgetType
 import com.tokopedia.sellerhomecommon.domain.model.ParamCommonWidgetModel
 import com.tokopedia.sellerhomecommon.domain.model.ParamTableWidgetModel
 import com.tokopedia.sellerhomecommon.domain.model.TableAndPostDataKey
@@ -14,6 +16,7 @@ import com.tokopedia.sellerhomecommon.domain.usecase.GetCardDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetCarouselDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetLayoutUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetLineGraphDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetMultiComponentDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetMultiLineGraphUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetPieChartDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetPostDataUseCase
@@ -22,6 +25,7 @@ import com.tokopedia.sellerhomecommon.domain.usecase.GetTableDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetTickerUseCase
 import com.tokopedia.sellerhomecommon.presentation.model.AnnouncementDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.BarChartDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.BaseDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.BaseWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CardDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CarouselDataUiModel
@@ -41,8 +45,11 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.withContext
 import java.util.*
+import java.util.concurrent.Flow
 import javax.inject.Inject
 
 /**
@@ -63,6 +70,7 @@ class StatisticViewModel @Inject constructor(
     private val getPieChartDataUseCase: Lazy<GetPieChartDataUseCase>,
     private val getBarChartDataUseCase: Lazy<GetBarChartDataUseCase>,
     private val getAnnouncementDataUseCase: Lazy<GetAnnouncementDataUseCase>,
+    private val getMultiComponentDataUseCase: Lazy<GetMultiComponentDataUseCase>,
     private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
@@ -112,6 +120,7 @@ class StatisticViewModel @Inject constructor(
     private val _barChartWidgetData = MutableLiveData<Result<List<BarChartDataUiModel>>>()
     private val _announcementWidgetData = MutableLiveData<Result<List<AnnouncementDataUiModel>>>()
     private val _multiComponentWidgetData = MutableLiveData<Result<List<MultiComponentDataUiModel>>>()
+    private val _multiComponentTabsData = MutableSharedFlow<Map<MultiComponentTab, List<BaseDataUiModel>>>()
 
     private var dynamicParameter = ParamCommonWidgetModel()
 
@@ -242,14 +251,7 @@ class StatisticViewModel @Inject constructor(
     fun getTableWidgetData(dataKeys: List<TableAndPostDataKey>) {
         launchCatchError(block = {
             val result: Success<List<TableDataUiModel>> = Success(withContext(dispatcher.io) {
-                val dynamicParam = ParamTableWidgetModel(
-                    startDate = dynamicParameter.startDate,
-                    endDate = dynamicParameter.endDate,
-                    pageSource = dynamicParameter.pageSource
-                )
-                val param = GetTableDataUseCase.getRequestParams(dataKeys, dynamicParam)
-                getTableDataUseCase.get().params = param
-                return@withContext getTableDataUseCase.get().executeOnBackground()
+                return@withContext getTableData(dataKeys)
             })
             _tableWidgetData.postValue(result)
         }, onError = {
@@ -260,9 +262,7 @@ class StatisticViewModel @Inject constructor(
     fun getPieChartWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
             val result: Success<List<PieChartDataUiModel>> = Success(withContext(dispatcher.io) {
-                getPieChartDataUseCase.get().params =
-                    GetPieChartDataUseCase.getRequestParams(dataKeys, dynamicParameter)
-                return@withContext getPieChartDataUseCase.get().executeOnBackground()
+                return@withContext getPieChartData(dataKeys)
             })
             _pieChartWidgetData.postValue(result)
         }, onError = {
@@ -273,9 +273,7 @@ class StatisticViewModel @Inject constructor(
     fun getBarChartWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
             val result: Success<List<BarChartDataUiModel>> = Success(withContext(dispatcher.io) {
-                getBarChartDataUseCase.get().params =
-                    GetBarChartDataUseCase.getRequestParams(dataKeys, dynamicParameter)
-                return@withContext getBarChartDataUseCase.get().executeOnBackground()
+                return@withContext getBarChartData(dataKeys)
             })
             _barChartWidgetData.postValue(result)
         }, onError = {
@@ -298,47 +296,74 @@ class StatisticViewModel @Inject constructor(
 
     fun getMultiComponentWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
-            val result = Success(
-                listOf(
-                    MultiComponentDataUiModel(
-                        tabs = listOf(
-                            MultiComponentTab(
-                                id = "tab_plus",
-                                title = "PLUS",
-                                components = listOf(
-                                    MultiComponentData(
-                                        componentType = "pieChart",
-                                        dataKey = "plusSelling",
-                                        configuration = "",
-                                        metricParam = ""
-                                    )
-                                ),
-                                isError = false,
-                                isLoaded = false,
-                                data = listOf()
-                            ),
-                            MultiComponentTab(
-                                id = "tab_bebas_ongkir",
-                                title = "Bebas Ongkir",
-                                components = listOf(
-                                    MultiComponentData(
-                                        componentType = "pieChart",
-                                        dataKey = "bebasOngkirSelling",
-                                        configuration = "",
-                                        metricParam = ""
-                                    )
-                                ),
-                                isError = false,
-                                isLoaded = false,
-                                data = listOf()
-                            )
-                        )
-                    )
-                )
-            )
+            getMultiComponentDataUseCase.get().params =
+                GetMultiComponentDataUseCase.createRequestParams(dataKeys)
+            val result = Success(withContext(dispatcher.io) {
+                return@withContext getMultiComponentDataUseCase.get().executeOnBackground()
+            })
             _multiComponentWidgetData.postValue(result)
         }, onError = {
             _multiComponentWidgetData.postValue(Fail(it))
         })
     }
+
+    fun getMultiComponentInfoWidgetData(
+        tab: MultiComponentTab,
+        components: List<MultiComponentData>
+    ) {
+        launchCatchError(block = {
+            val 
+            _multiComponentTabsData.emit(
+                mapOf(tab, )
+            )
+        })
+    }
+
+    private suspend fun getComponentData(component: MultiComponentData): List<BaseDataUiModel>? {
+        return when (component.componentType) {
+            WidgetType.BAR_CHART -> getBarChartData(listOf(component.dataKey))
+            WidgetType.PIE_CHART -> getPieChartData(listOf(component.dataKey))
+            WidgetType.TABLE -> {
+                val dataKeys = getPieChartDataKeys(component)
+                getTableData(dataKeys)
+            }
+            else -> null
+        }
+    }
+
+    private suspend fun getBarChartData(dataKeys: List<String>): List<BarChartDataUiModel> {
+        getBarChartDataUseCase.get().params =
+            GetBarChartDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+        return getBarChartDataUseCase.get().executeOnBackground()
+    }
+
+    private suspend fun getTableData(dataKeys: List<TableAndPostDataKey>): List<TableDataUiModel> {
+        val dynamicParam = ParamTableWidgetModel(
+            startDate = dynamicParameter.startDate,
+            endDate = dynamicParameter.endDate,
+            pageSource = dynamicParameter.pageSource
+        )
+        val param = GetTableDataUseCase.getRequestParams(dataKeys, dynamicParam)
+        getTableDataUseCase.get().params = param
+        return getTableDataUseCase.get().executeOnBackground()
+    }
+
+    private suspend fun getPieChartData(dataKeys: List<String>): List<PieChartDataUiModel> {
+        getPieChartDataUseCase.get().params =
+            GetPieChartDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+        return getPieChartDataUseCase.get().executeOnBackground()
+    }
+
+    private fun getPieChartDataKeys(component: MultiComponentData): List<TableAndPostDataKey> {
+        // TODO: get from configuration
+        return listOf(
+            TableAndPostDataKey(
+                component.dataKey,
+                String.EMPTY,
+                0,
+                0
+            )
+        )
+    }
+
 }

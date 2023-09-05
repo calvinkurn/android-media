@@ -1,4 +1,4 @@
-package com.tokopedia.sellerhomecommon.presentation.view.fragment
+package com.tokopedia.sellerhomecommon.presentation.view.viewholder.multicomponent
 
 import android.graphics.Color
 import android.view.View
@@ -17,7 +17,8 @@ import com.tokopedia.sellerhomecommon.presentation.model.multicomponent.BarMulti
 import com.tokopedia.sellerhomecommon.presentation.view.adapter.MultiComponentTabAdapter
 import com.tokopedia.utils.view.binding.viewBinding
 
-class MultiComponentTabViewHolder(itemView: View): RecyclerView.ViewHolder(itemView), MultiComponentTabFragmentInterface {
+class MultiComponentTabViewHolder(itemView: View): RecyclerView.ViewHolder(itemView),
+    MultiComponentTabFragmentInterface {
 
     private var viewBinding: ShcMultiComponentViewBinding? by viewBinding()
 

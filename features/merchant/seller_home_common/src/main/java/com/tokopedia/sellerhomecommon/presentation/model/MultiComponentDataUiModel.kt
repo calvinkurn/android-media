@@ -18,9 +18,10 @@ data class MultiComponentTab(
     val id: String,
     val title: String,
     val components: List<MultiComponentData>,
+    val isSelected: Boolean,
     val isLoaded: Boolean,
     val isError: Boolean,
-    val data: List<BaseDataUiModel>
+    val data: List<BaseDataUiModel>?
 )
 
 data class MultiComponentData(

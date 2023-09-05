@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.presentation.model.MultiComponentTab
-import com.tokopedia.sellerhomecommon.presentation.view.fragment.MultiComponentTabViewHolder
+import com.tokopedia.sellerhomecommon.presentation.view.viewholder.multicomponent.MultiComponentTabViewHolder
 
 class MultiComponentAdapter(private val items: List<MultiComponentTab>) :
     RecyclerView.Adapter<MultiComponentTabViewHolder>() {
