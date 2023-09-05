@@ -53,6 +53,10 @@ class StoriesWidgetManager private constructor(
             component.router().route(view.context, state.appLink)
             options.trackingManager.clickEntryPoints(entryPoint)
         }
+
+        override fun onImpressed(view: StoriesWidgetLayout, state: StoriesWidgetState) {
+            options.trackingManager.impressEntryPoints(entryPoint)
+        }
     }
 
     @Suppress("UNCHECKED_CAST")

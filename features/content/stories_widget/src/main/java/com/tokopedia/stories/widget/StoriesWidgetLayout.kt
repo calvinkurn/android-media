@@ -8,6 +8,8 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.FrameLayout
 import androidx.core.view.children
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.stories.widget.databinding.LayoutStoriesBorderBinding
 import kotlin.properties.Delegates
 
@@ -33,6 +35,9 @@ class StoriesWidgetLayout @JvmOverloads constructor(
         super.setOnClickListener {
             if (mState.status == StoriesStatus.NoStories) return@setOnClickListener
             mListener?.onClickedWhenHasStories(this, mState)
+        }
+        addOnImpressionListener(ImpressHolder()) {
+            mListener?.onImpressed(this, mState)
         }
     }
 
@@ -97,5 +102,6 @@ class StoriesWidgetLayout @JvmOverloads constructor(
 
     interface Listener {
         fun onClickedWhenHasStories(view: StoriesWidgetLayout, state: StoriesWidgetState)
+        fun onImpressed(view: StoriesWidgetLayout, state: StoriesWidgetState)
     }
 }
