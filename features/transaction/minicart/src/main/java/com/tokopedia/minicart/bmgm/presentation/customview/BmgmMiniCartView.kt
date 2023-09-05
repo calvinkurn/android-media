@@ -228,23 +228,40 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
     private fun setupMessageWithAnimation(messages: List<String>) {
         if (messages.isEmpty()) return
         binding?.run {
-            tvBmgmCartDiscount.visible()
             if (messages.size > Int.ONE) {
-                if (hasVisited) {
-                    hasVisited = true
-                    tvBmgmCartDiscount.setCurrentText(
-                        messages.firstOrNull().orEmpty().parseAsHtml()
-                    )
-                } else {
-                    tvBmgmCartDiscount.setText(
-                        messages.firstOrNull().orEmpty().parseAsHtml()
-                    )
-                }
-                flipTextWithAnimation(messages)
+                showMultipleMessage(messages)
             } else {
-                tvBmgmCartDiscount.setCurrentText(
-                    messages.firstOrNull().orEmpty().parseAsHtml()
-                )
+                val message = messages.firstOrNull().orEmpty()
+                showSingleMessageWithNoAnimation(message)
+            }
+        }
+    }
+
+    private fun showMultipleMessage(messages: List<String>) {
+        binding?.run {
+            val firstMessage = messages.firstOrNull().orEmpty()
+            if (!hasVisited) {
+                hasVisited = true
+                showSingleMessageWithNoAnimation(firstMessage)
+            } else {
+                if (firstMessage.isBlank()) {
+                    tvBmgmCartDiscount.gone()
+                } else {
+                    tvBmgmCartDiscount.visible()
+                    tvBmgmCartDiscount.setText(firstMessage.parseAsHtml())
+                }
+            }
+            flipTextWithAnimation(messages)
+        }
+    }
+
+    private fun showSingleMessageWithNoAnimation(message: String) {
+        binding?.run {
+            if (message.isBlank()) {
+                tvBmgmCartDiscount.gone()
+            } else {
+                tvBmgmCartDiscount.visible()
+                tvBmgmCartDiscount.setCurrentText(message.parseAsHtml())
             }
         }
     }
@@ -255,7 +272,13 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
                 if (messageIndex == messages.size.minus(Int.ONE)) {
                     messageIndex = Int.ZERO
                 } else {
-                    setText(messages.getOrNull(++messageIndex).orEmpty().parseAsHtml())
+                    val message = messages.getOrNull(++messageIndex).orEmpty()
+                    if (message.isBlank()) {
+                        gone()
+                    } else {
+                        visible()
+                        setText(message.parseAsHtml())
+                    }
                     flipTextWithAnimation(messages)
                 }
             }, TimeUnit.SECONDS.toMillis(MESSAGE_SWITCH_INITIAL_DELAY))
