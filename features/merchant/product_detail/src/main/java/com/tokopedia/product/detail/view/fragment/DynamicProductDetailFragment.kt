@@ -1120,16 +1120,19 @@ open class DynamicProductDetailFragment :
 
     private fun reloadMiniCart() {
         val hasQuantityEditor =
-            viewModel.getDynamicProductInfoP1?.basic?.isTokoNow == true
-                || (viewModel.productLayout.value as? Success<List<DynamicPdpDataModel>>)
+            viewModel.getDynamicProductInfoP1?.basic?.isTokoNow == true ||
+                (viewModel.productLayout.value as? Success<List<DynamicPdpDataModel>>)
                     ?.data
                     ?.any { it.name().contains(PAGENAME_IDENTIFIER_RECOM_ATC) } == true
 
-        if (viewModel.getDynamicProductInfoP1 == null
-            || context == null
-            || !hasQuantityEditor
-            || firstOpenPage == true
-            || !viewModel.isUserSessionActive) return
+        if (viewModel.getDynamicProductInfoP1 == null ||
+            context == null ||
+            !hasQuantityEditor ||
+            firstOpenPage == true ||
+            !viewModel.isUserSessionActive
+        ) {
+            return
+        }
 
         val data = viewModel.getDynamicProductInfoP1
         viewModel.getMiniCart(data?.basic?.shopID ?: "")
@@ -3719,6 +3722,7 @@ open class DynamicProductDetailFragment :
             deselectedAddonsIds = addonsIds[2] ?: emptyList(),
             isFulfillment = cartDataModel.isFulfillment,
             selectedAddonsIds = addonsIds[1] ?: emptyList(),
+            warehouseId = cartDataModel.warehouseId,
             quantity = cartDataModel.quantity
         )
 
@@ -3727,7 +3731,6 @@ open class DynamicProductDetailFragment :
             layoutId = postAtcLayout.layoutId,
             pageSource = PostAtcParams.Source.PDP.name,
             session = postAtcLayout.postAtcSession,
-            warehouseId = cartDataModel.warehouseId,
             addons = addons
         )
 

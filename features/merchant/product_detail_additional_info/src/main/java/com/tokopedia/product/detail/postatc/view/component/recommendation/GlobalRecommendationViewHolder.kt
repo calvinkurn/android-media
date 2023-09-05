@@ -12,14 +12,14 @@ import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWi
 
 class GlobalRecommendationViewHolder(
     private val binding: ItemGlobalRecommendationBinding,
-    private val callback: PostAtcCallback,
+    private val callback: PostAtcCallback
 ) : PostAtcViewHolder<RecommendationUiModel>(binding.root) {
 
     override fun bind(element: RecommendationUiModel) {
         binding.apply {
             postAtcGlobalRecom.bind(
                 model = recommendationWidgetModel(element),
-                parentRootView = callback.rootView(),
+                parentRootView = callback.rootView()
             )
 
             root.addOnImpressionListener(element.impressHolder) {
@@ -32,15 +32,17 @@ class GlobalRecommendationViewHolder(
         RecommendationWidgetModel(
             metadata = RecommendationWidgetMetadata(
                 pageName = element.name,
-                productIds = listOf(element.productId)
+                productIds = listOf(element.productId),
+                queryParam = element.queryParam
             ),
             miniCart = RecommendationWidgetMiniCart(
-                miniCartSource = MiniCartSource.PDP,
+                miniCartSource = MiniCartSource.PDP
             ),
             source = RecommendationWidgetSource.PDPAfterATC(
-                element.productId,
-                callback.userSession.isLoggedIn,
-                callback.userSession.userId,
-            ),
+                anchorProductId = element.productId,
+                isUserLoggedIn = callback.userSession.isLoggedIn,
+                userId = callback.userSession.userId,
+                warehouseId = element.warehouseId
+            )
         )
 }
