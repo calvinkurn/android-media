@@ -39,7 +39,7 @@ data class StoriesDetailItemUiModel(
     val isSameContent: Boolean = false,
     val author: StoryAuthor = StoryAuthor.Unknown,
     val menus: List<ContentMenuItem> = emptyList(),
-    val share: Sharing,
+    val share: Sharing = Sharing.Empty,
     val productCount: String = "",
 ) {
 
