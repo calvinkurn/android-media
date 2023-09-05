@@ -117,7 +117,7 @@ class StoriesViewModel @Inject constructor(
         when (action) {
             is StoriesUiAction.SetArgumentsData -> handleSetInitialData(action.data)
             is StoriesUiAction.SetGroupMainData -> handleGroupMainData(action.selectedGroup)
-            is StoriesUiAction.SetGroup -> handleSetGroup(action.selectedGroup)
+            is StoriesUiAction.SetGroup -> handleSetGroup(action.selectedGroup, action.showAnimation)
             StoriesUiAction.NextDetail -> handleNext()
             StoriesUiAction.PreviousDetail -> handlePrevious()
             StoriesUiAction.PauseStories -> handleOnPauseStories()
@@ -151,9 +151,9 @@ class StoriesViewModel @Inject constructor(
         setInitialDetailData()
     }
 
-    private fun handleSetGroup(position: Int) {
+    private fun handleSetGroup(position: Int, showAnimation: Boolean) {
         viewModelScope.launch {
-            _uiEvent.emit(StoriesUiEvent.SelectGroup(position))
+            _uiEvent.emit(StoriesUiEvent.SelectGroup(position, showAnimation))
         }
     }
 
@@ -163,7 +163,7 @@ class StoriesViewModel @Inject constructor(
 
         when {
             newDetailPosition < mDetailSize -> updateDetailData(position = newDetailPosition)
-            newGroupPosition < mGroupSize -> handleSetGroup(position = newGroupPosition)
+            newGroupPosition < mGroupSize -> handleSetGroup(position = newGroupPosition, true)
             else -> viewModelScope.launch { _uiEvent.emit(StoriesUiEvent.FinishedAllStories) }
         }
     }
@@ -174,8 +174,8 @@ class StoriesViewModel @Inject constructor(
 
         when {
             newDetailPosition > -1 -> updateDetailData(position = newDetailPosition)
-            newGroupPosition > -1 -> handleSetGroup(position = newGroupPosition)
-            else -> updateDetailData(event = RESUME, isReset = true)
+            newGroupPosition > -1 -> handleSetGroup(position = newGroupPosition, true)
+            else -> updateDetailData(isReset = true)
         }
     }
 
@@ -200,10 +200,9 @@ class StoriesViewModel @Inject constructor(
 
             updateGroupData(detail = detailData)
 
-            val isReset = detailData.selectedDetailPositionCached == detailData.detailItems.size.minus(1)
             updateDetailData(
                 position = detailData.selectedDetailPositionCached,
-                isReset = isReset,
+                isReset = true,
             )
         }) { exception ->
             updateGroupData(detail = StoriesDetailUiModel())
@@ -402,7 +401,7 @@ class StoriesViewModel @Inject constructor(
         val request = StoriesRequestModel(
             authorID = mShopId,
             authorType = StoriesAuthorType.SHOP.value,
-            source = "",
+            source = StoriesSource.STORY_GROUP.value,
             sourceID = mGroupItem.groupId,
         )
         return repository.getStoriesDetailData(request)

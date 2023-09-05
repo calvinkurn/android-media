@@ -38,6 +38,7 @@ class StoriesMapperImpl @Inject constructor(private val userSession: UserSession
             groupItems = dataGroup.data.groups.mapIndexed { indexGroupItem, group ->
                 StoriesGroupItemUiModel(
                     groupId = group.value,
+                    groupName = group.name,
                     detail = if (dataGroup.data.meta.selectedGroupIndex == indexGroupItem) {
                         StoriesDetailUiModel(
                             selectedGroupId = group.value,

@@ -3,7 +3,7 @@ package com.tokopedia.stories.view.viewmodel.event
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 
 sealed interface StoriesUiEvent {
-    data class SelectGroup(val position: Int) : StoriesUiEvent
+    data class SelectGroup(val position: Int, val showAnimation: Boolean) : StoriesUiEvent
     object OpenKebab : StoriesUiEvent
     object ShowDeleteDialog : StoriesUiEvent
     object OpenProduct : StoriesUiEvent

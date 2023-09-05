@@ -10,7 +10,7 @@ sealed interface StoriesUiAction {
     data class SetGroupMainData(val selectedGroup: Int) : StoriesUiAction
 
     object NextDetail : StoriesUiAction
-    data class SetGroup(val selectedGroup: Int) : StoriesUiAction
+    data class SetGroup(val selectedGroup: Int, val showAnimation: Boolean): StoriesUiAction
 
     object PreviousDetail : StoriesUiAction
 
