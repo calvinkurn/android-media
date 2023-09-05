@@ -1,0 +1,42 @@
+{
+  "readme": "Play Viewer - All Analytic",
+  "mode": "exact",
+  "query": [
+    {
+      "eventAction": "click - story entry point",
+      "event": "select_content",
+      "eventCategory": "(shop page - buyer|product detail page|inbox-chat|message room)",
+      "eventLabel": "(shop-page|pdp-page|topchat-page) - \\d+ - (story|live) - (user|shop)",
+      "promotion": [
+        {
+          "item_id": "\\d+",
+          "item_name": "/ - \\d+ - stories entry point",
+          "creative_name": "",
+          "creative_slot": ""
+        }
+      ],
+      "sessionIris": ".*",
+      "currentSite": "tokopediamarketplace",
+      "userId": ".*",
+      "businessUnit": "content"
+    },
+    {
+      "eventAction": "view - story entry point",
+      "event": "view_item",
+      "eventCategory": "(shop page - buyer|product detail page|inbox-chat|message room)",
+      "eventLabel": "(shop-page|pdp-page|topchat-page) - \\d+ - (story|live) - (user|shop)",
+      "promotion": [
+        {
+          "item_id": "\\d+",
+          "item_name": "/ - \\d+ - stories entry point",
+          "creative_name": "",
+          "creative_slot": ""
+        }
+      ],
+      "sessionIris": ".*",
+      "currentSite": "tokopediamarketplace",
+      "userId": ".*",
+      "businessUnit": "content"
+    }
+  ]
+}

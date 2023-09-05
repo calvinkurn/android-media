@@ -13,7 +13,7 @@ import com.tokopedia.user.session.UserSessionInterface
  * Created by kenny.hadisaputra on 23/08/23
  */
 class DefaultTrackingManager(
-    private val entryPoint: StoriesEntrySource,
+    entryPoint: StoriesEntrySource,
     private val trackingQueue: TrackingQueue,
     private val userSession: UserSessionInterface
 ) : TrackingManager {
@@ -26,16 +26,15 @@ class DefaultTrackingManager(
     }
 
     override fun impressEntryPoints(key: StoriesEntrySource) {
-        //TODO() not yet implemented
         val map = BaseTrackerBuilder().constructBasicPromotionView(
             event = Event.promoView,
             eventCategory = eventCategory,
             eventAction = "view - story entry point",
-            eventLabel = "story",
+            eventLabel = "${key.sourceName} - ${key.id} - story - shop",
             promotions = listOf(
                 BaseTrackerConst.Promotion(
-                    id = "",
-                    name = "",
+                    id = key.id,
+                    name = "/ - ${key.id} - stories entry point",
                     creative = "",
                     position = "",
                 )
@@ -54,11 +53,11 @@ class DefaultTrackingManager(
             event = Event.promoClick,
             eventCategory = eventCategory,
             eventAction = "click - story entry point",
-            eventLabel = "${key.sourceName} - ${key.key} - story - shop", //TODO() shopId
+            eventLabel = "${key.sourceName} - ${key.id} - story - shop",
             promotions = listOf(
                 BaseTrackerConst.Promotion(
-                    id = "",
-                    name = "",
+                    id = key.id,
+                    name = "/ - ${key.id} - stories entry point",
                     creative = "",
                     position = "",
                 )
