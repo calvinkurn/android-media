@@ -3,7 +3,7 @@
     package="com.tokopedia.stories.creation">
 
     <application>
-        <activity android:name=".StoriesCreationActivity"
+        <activity android:name=".view.activity.StoriesCreationActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan"
             android:exported="false">
