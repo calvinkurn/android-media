@@ -12,7 +12,7 @@ import com.tokopedia.stories.widget.StoriesStatus
 import com.tokopedia.stories.widget.StoriesWidgetState
 import com.tokopedia.stories.widget.TimeMillis
 import com.tokopedia.stories.widget.domain.GetShopStoriesStatusUseCase
-import com.tokopedia.stories.widget.domain.StoriesEntryPoint
+import com.tokopedia.stories.widget.domain.StoriesEntrySource
 import com.tokopedia.stories.widget.domain.StoriesWidgetRepository
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -47,7 +47,7 @@ internal class StoriesWidgetRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getStoriesWidgetState(
-        entryPoint: StoriesEntryPoint,
+        entryPoint: StoriesEntrySource,
         shopIds: List<String>
     ): List<StoriesWidgetState> = withContext(dispatchers.io) {
         val isEntryPointAllowed = isEntryPointAllowed(entryPoint)
@@ -89,7 +89,7 @@ internal class StoriesWidgetRepositoryImpl @Inject constructor(
         }
     }
 
-    private fun isEntryPointAllowed(key: StoriesEntryPoint): Boolean {
+    private fun isEntryPointAllowed(key: StoriesEntrySource): Boolean {
         val disabledEntryPoints = getDisabledEntryPoints()
         return !disabledEntryPoints.contains(key.key)
     }

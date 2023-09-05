@@ -5,7 +5,7 @@ import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.play_common.lifecycle.AbstractLifecycleBoundDelegate
 import com.tokopedia.play_common.lifecycle.lifecycleBound
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
-import com.tokopedia.stories.widget.domain.StoriesEntryPoint
+import com.tokopedia.stories.widget.domain.StoriesEntrySource
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
@@ -22,7 +22,7 @@ class StoriesWidgetDelegate<LO : LifecycleOwner>(
 }
 
 fun activityStoriesManager(
-    key: StoriesEntryPoint,
+    key: StoriesEntrySource,
     builderOptions: StoriesWidgetManager.Builder.() -> Unit = {},
 ): StoriesWidgetDelegate<AppCompatActivity> {
     return StoriesWidgetDelegate(
@@ -33,7 +33,7 @@ fun activityStoriesManager(
 }
 
 fun storiesManager(
-    key: StoriesEntryPoint,
+    key: StoriesEntrySource,
     builderOptions: StoriesWidgetManager.Builder.() -> Unit = {},
 ) = StoriesWidgetDelegate(
     viewLifecycleBound(
