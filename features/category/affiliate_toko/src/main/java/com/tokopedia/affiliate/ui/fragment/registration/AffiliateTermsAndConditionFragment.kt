@@ -1,5 +1,6 @@
 package com.tokopedia.affiliate.ui.fragment.registration
 
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -91,8 +92,15 @@ class AffiliateTermsAndConditionFragment :
 
     private fun getChannel(savedInstanceState: Bundle?) {
         if (registrationSharedViewModel?.listOfChannels.isNullOrEmpty()) {
-            savedInstanceState?.getSerializable(CHANNEL_LIST)?.let {
-                channels = it as ArrayList<OnboardAffiliateRequest.OnboardAffiliateChannelRequest>
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                savedInstanceState?.getParcelableArrayList(
+                    CHANNEL_LIST,
+                    OnboardAffiliateRequest.OnboardAffiliateChannelRequest::class.java
+                )?.let { channels = it }
+            } else {
+                savedInstanceState?.getParcelableArrayList<OnboardAffiliateRequest.OnboardAffiliateChannelRequest>(
+                    CHANNEL_LIST
+                )?.let { channels = it }
             }
         } else {
             channels = registrationSharedViewModel?.listOfChannels
@@ -203,7 +211,7 @@ class AffiliateTermsAndConditionFragment :
 
     private fun initObserver() {
         affiliateTermsAndConditionViewModel?.getOnBoardingData()?.observe(this) { onBoardingData ->
-            if (onBoardingData.data?.status == REGISTRATION_SUCCESS) {
+            if (onBoardingData.onBoardData?.status == REGISTRATION_SUCCESS) {
                 registrationSharedViewModel?.onRegisterationSuccess()
             } else {
                 view?.let {
@@ -265,7 +273,7 @@ class AffiliateTermsAndConditionFragment :
             .build()
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putSerializable(CHANNEL_LIST, registrationSharedViewModel?.listOfChannels)
+        outState.putParcelableArrayList(CHANNEL_LIST, registrationSharedViewModel?.listOfChannels)
         super.onSaveInstanceState(outState)
     }
 

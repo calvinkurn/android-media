@@ -54,6 +54,7 @@ import com.tokopedia.unifycomponents.Toaster
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class MedalDetailFragment : BaseDaggerFragment() {
 
@@ -427,7 +428,7 @@ class MedalDetailFragment : BaseDaggerFragment() {
             binding.tvTermsConditions.setTextColor(
                 ContextCompat.getColor(
                     this,
-                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                    unifyprinciplesR.color.Unify_GN500
                 )
             )
         }

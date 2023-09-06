@@ -19,4 +19,7 @@ interface TrackingEEDatabaseDao : TrackingDatabaseDao<TrackingEEDbModel> {
     @Query("DELETE FROM ${TrackingEEDbModel.TRACKING_EE_TABLE_NAME} WHERE key = :key")
     override fun deleteByKey(key: String)
 
+    @Query("SELECT EXISTS(SELECT * FROM ${TrackingEEDbModel.TRACKING_EE_TABLE_NAME} LIMIT 1)")
+    override fun hasRowExist(): Boolean
+
 }

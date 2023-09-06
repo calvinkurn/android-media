@@ -3,6 +3,7 @@ package com.tokopedia.shop.pageheader.presentation.fragment
 import android.animation.Animator
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.Activity.RESULT_OK
 import android.content.ClipData
 import android.content.Context
 import android.content.Intent
@@ -777,6 +778,8 @@ class ShopPageHeaderFragment :
                             )
                             isFollowing = this?.status?.userIsFollowing == true
                         }
+
+                        setActivityResult()
                     }
 
                     else -> {
@@ -800,6 +803,7 @@ class ShopPageHeaderFragment :
                     is Success -> {
                         it.data.followShop?.let { followShop ->
                             onSuccessUpdateFollowStatus(followShop)
+                            setActivityResult()
                         }
                     }
 
@@ -4108,4 +4112,13 @@ class ShopPageHeaderFragment :
         }
     }
 
+    /**
+     * Set activity result
+     */
+    private fun setActivityResult() {
+        requireActivity().setResult(
+            RESULT_OK,
+            ShopPageActivityResult.createResult(shopId, isFollowing)
+        )
+    }
 }
