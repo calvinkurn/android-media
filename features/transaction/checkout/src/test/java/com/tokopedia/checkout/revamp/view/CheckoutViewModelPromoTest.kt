@@ -66,6 +66,10 @@ class CheckoutViewModelPromoTest : BaseCheckoutViewModelTest() {
             CheckoutUpsellModel(upsell = ShipmentNewUpsellModel()),
             CheckoutProductModel("123"),
             CheckoutOrderModel("123"),
+            CheckoutProductModel("234"),
+            CheckoutOrderModel("234", shipment = CheckoutOrderShipment(courierItemData = CourierItemData(shipperProductId = 1, serviceId = 2, shipperId = 3))),
+            CheckoutProductModel("345"),
+            CheckoutOrderModel("345", shipment = CheckoutOrderShipment(courierItemData = CourierItemData(shipperProductId = 1, serviceId = 2, shipperId = 3, logPromoCode = "boCode", freeShippingMetadata = "metadata"))),
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),
             CheckoutCostModel(),
@@ -86,6 +90,22 @@ class CheckoutViewModelPromoTest : BaseCheckoutViewModelTest() {
                         cartStringGroup = "123",
                         product_details = listOf(ProductDetail(quantity = 0)),
                         isChecked = true
+                    ),
+                    Order(
+                        cartStringGroup = "234",
+                        product_details = listOf(ProductDetail(quantity = 0)),
+                        isChecked = true,
+                        shippingId = 3,
+                        spId = 1
+                    ),
+                    Order(
+                        cartStringGroup = "345",
+                        product_details = listOf(ProductDetail(quantity = 0)),
+                        isChecked = true,
+                        shippingId = 3,
+                        spId = 1,
+                        freeShippingMetadata = "metadata",
+                        codes = mutableListOf("boCode")
                     )
                 )
             ),
@@ -645,6 +665,16 @@ class CheckoutViewModelPromoTest : BaseCheckoutViewModelTest() {
             CheckoutOrderModel(
                 "123",
                 shipment = CheckoutOrderShipment(courierItemData = CourierItemData(logPromoCode = "boCode"))
+            ),
+            CheckoutProductModel("234"),
+            CheckoutOrderModel(
+                "234",
+                shipment = CheckoutOrderShipment()
+            ),
+            CheckoutProductModel("345"),
+            CheckoutOrderModel(
+                "345",
+                shipment = CheckoutOrderShipment(courierItemData = CourierItemData())
             ),
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
             CheckoutPromoModel(promo = LastApplyUiModel()),

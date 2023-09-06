@@ -177,7 +177,7 @@ class ShippingScheduleRevampWidget : ConstraintLayout {
                 ScheduleDeliveryAnalytics.sendChooseScheduledDeliveryOptionRadioButtonOnTokopediaNowEvent()
             },
             onClickIconListener = onClickIconListener,
-            showOtherScheduleButton = true
+            showOtherScheduleButton = available
         )
     }
 

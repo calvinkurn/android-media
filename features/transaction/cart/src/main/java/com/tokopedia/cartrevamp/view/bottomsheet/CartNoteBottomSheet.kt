@@ -88,14 +88,14 @@ class CartNoteBottomSheet : BottomSheetUnify() {
     }
 
     private fun renderContent(data: CartNoteBottomSheetData) {
-        setTitle(getString(R.string.cart_label_add_note))
+        setTitle(getString(R.string.cart_label_new_note_bottom_sheet_title))
         binding?.apply {
             iuCartItem.loadImage(data.productImage)
             labelProductName.text = data.productName
             labelProductVariant.text = data.variant
 
             textAreaNote.setCounter(NOTE_MAX_LENGTH)
-            textAreaNote.editText.setText(data.note)
+            textAreaNote.editText.setText(data.note.trim())
             textAreaNote.editText.addTextChangedListener {
                 btnSave.isEnabled = it.toString() != data.note
             }

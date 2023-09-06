@@ -1,6 +1,9 @@
 package com.tokopedia.cartrevamp.view.viewholder
 
-import android.view.View
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
+import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -26,8 +29,6 @@ import com.tokopedia.purchase_platform.common.prefs.PlusCoachmarkPrefs
 import com.tokopedia.purchase_platform.common.utils.Utils
 import com.tokopedia.purchase_platform.common.utils.rxViewClickDebounce
 import com.tokopedia.unifycomponents.LoaderUnify
-import com.tokopedia.unifycomponents.ticker.Ticker.Companion.SHAPE_LOOSE
-import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_WARNING
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.resources.isDarkMode
 import rx.Subscriber
@@ -54,7 +55,7 @@ class CartGroupViewHolder(
         renderCartItems(cartGroupHolderData)
         renderCheckBox(cartGroupHolderData)
         renderFulfillment(cartGroupHolderData)
-        validateFulfillmentLayout(cartGroupHolderData)
+        validateProductPoliciesLayout(cartGroupHolderData)
         renderFreeShipping(cartGroupHolderData)
         renderMaximumWeight(cartGroupHolderData)
         renderCartShopGroupTicker(cartGroupHolderData)
@@ -198,17 +199,17 @@ class CartGroupViewHolder(
         binding.cbSelectShop.let {
             compositeSubscription.add(
                 rxViewClickDebounce(it, CHECKBOX_WATCHER_DEBOUNCE_TIME).subscribe(object :
-                        Subscriber<Boolean>() {
-                        override fun onNext(isChecked: Boolean) {
-                            cbSelectShopClickListener(cartGroupHolderData)
-                        }
+                    Subscriber<Boolean>() {
+                    override fun onNext(isChecked: Boolean) {
+                        cbSelectShopClickListener(cartGroupHolderData)
+                    }
 
-                        override fun onCompleted() {
-                        }
+                    override fun onCompleted() {
+                    }
 
-                        override fun onError(e: Throwable?) {
-                        }
-                    })
+                    override fun onError(e: Throwable?) {
+                    }
+                })
             )
         }
     }
@@ -233,11 +234,11 @@ class CartGroupViewHolder(
         }
     }
 
-    private fun validateFulfillmentLayout(cartGroupHolderData: CartGroupHolderData) {
+    private fun validateProductPoliciesLayout(cartGroupHolderData: CartGroupHolderData) {
         with(binding) {
             val constraintSet = ConstraintSet()
             constraintSet.clone(clShopHeader)
-            if (cartGroupHolderData.fulfillmentName.isNotBlank()) {
+            if (cartGroupHolderData.fulfillmentName.isNotBlank() || (cartGroupHolderData.shouldValidateWeight && cartGroupHolderData.extraWeight > 0)) {
                 constraintSet.apply {
                     clear(R.id.image_shop_badge, ConstraintSet.BOTTOM)
                 }
@@ -316,43 +317,50 @@ class CartGroupViewHolder(
 
     private fun renderMaximumWeight(cartGroupHolderData: CartGroupHolderData) {
         if (cartGroupHolderData.shouldValidateWeight) {
-            val currentWeight = cartGroupHolderData.totalWeight
-            val maximumWeight = cartGroupHolderData.maximumShippingWeight
-            val extraWeight = (currentWeight - maximumWeight) / 1000
-            val descriptionText = cartGroupHolderData.maximumWeightWording
-            if (extraWeight > 0 && descriptionText.isNotEmpty()) {
-                with(binding) {
-                    tickerWarning.tickerTitle = null
-                    tickerWarning.setTextDescription(
-                        descriptionText.replace(
-                            CartGroupHolderData.MAXIMUM_WEIGHT_WORDING_REPLACE_KEY,
-                            NumberFormat.getNumberInstance(
-                                Locale("in", "id")
-                            ).format(extraWeight)
-                        )
-                    )
-                    tickerWarning.tickerType = TYPE_WARNING
-                    tickerWarning.tickerShape = SHAPE_LOOSE
-                    tickerWarning.closeButtonVisibility = View.GONE
-                    tickerWarning.show()
-                    tickerWarning.post {
-                        binding.tickerWarning.measure(
-                            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
-                            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
-                        )
-                        binding.tickerWarning.requestLayout()
-                    }
-                }
+            val extraWeight = cartGroupHolderData.extraWeight
+            if (extraWeight > 0) {
+                binding.rlProductPoliciesLayout.show()
+                setOverweightText(extraWeight)
+                binding.tvOverweight.show()
             } else {
-                with(binding) {
-                    tickerWarning.gone()
-                }
+                binding.tvOverweight.gone()
             }
         } else {
-            with(binding) {
-                tickerWarning.gone()
-            }
+            binding.tvOverweight.gone()
         }
+    }
+
+    private fun setOverweightText(extraWeight: Double) {
+        val text = itemView.resources.getString(R.string.cart_text_overweight).replace(
+            "%s", NumberFormat.getNumberInstance(
+                Locale("in", "id")
+            ).format(extraWeight)
+        )
+        val spannableString = SpannableString(text)
+        val firstSentenceIndex = text.indexOf(".")
+        spannableString.setSpan(
+            ForegroundColorSpan(
+                ContextCompat.getColor(
+                    itemView.context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_YN500
+                )
+            ),
+            0,
+            firstSentenceIndex + 1,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+        spannableString.setSpan(
+            ForegroundColorSpan(
+                ContextCompat.getColor(
+                    itemView.context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                )
+            ),
+            firstSentenceIndex + 2,
+            text.lastIndex,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+        binding.tvOverweight.setText(spannableString, TextView.BufferType.SPANNABLE)
     }
 
     private fun renderCartShopGroupTicker(cartGroupHolderData: CartGroupHolderData) {
@@ -401,8 +409,17 @@ class CartGroupViewHolder(
 //                            } else {
 //                                iuTickerRightIcon.setImageUrl(cartShopGroupTicker.rightIcon)
 //                            }
-                            val color = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN500)
-                            iuTickerRightIcon.setImage(IconUnify.CHEVRON_RIGHT, color, null, color, null)
+                            val color = ContextCompat.getColor(
+                                itemView.context,
+                                com.tokopedia.unifyprinciples.R.color.Unify_NN500
+                            )
+                            iuTickerRightIcon.setImage(
+                                IconUnify.CHEVRON_RIGHT,
+                                color,
+                                null,
+                                color,
+                                null
+                            )
                             iuTickerRightIcon.show()
                         } else {
                             iuTickerRightIcon.gone()
@@ -428,7 +445,8 @@ class CartGroupViewHolder(
                             root.context,
                             com.tokopedia.unifyprinciples.R.color.Unify_NN900
                         )
-                        val reloadIcon = getIconUnifyDrawable(root.context, IconUnify.RELOAD, iconColor)
+                        val reloadIcon =
+                            getIconUnifyDrawable(root.context, IconUnify.RELOAD, iconColor)
                         iuTickerRightIcon.setImageDrawable(reloadIcon)
                         iuTickerRightIcon.show()
                         ivTickerBg.setImageResource(R.drawable.bg_cart_basket_building_error_ticker)

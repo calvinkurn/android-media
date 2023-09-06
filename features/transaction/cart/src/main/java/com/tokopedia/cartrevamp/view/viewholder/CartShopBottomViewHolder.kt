@@ -27,15 +27,12 @@ class CartShopBottomViewHolder(
         if (!cartShopBottomHolderData.shopData.isError && cartShopBottomHolderData.shopData.isCollapsible) {
             val showMoreWording = itemView.context.getString(R.string.cart_new_default_wording_show_more)
             val showLessWording = itemView.context.getString(R.string.cart_new_default_wording_show_less)
-            val separatorAccordionLayoutParams = binding.separatorAccordion.layoutParams as ViewGroup.MarginLayoutParams
             if (cartShopBottomHolderData.shopData.isCollapsed) {
                 binding.imageChevron.rotation = CHEVRON_ROTATION_0
                 binding.textAccordion.text = showMoreWording
-                separatorAccordionLayoutParams.topMargin = SEPARATOR_MARGIN_TOP.dpToPx(itemView.resources.displayMetrics)
             } else {
                 binding.imageChevron.rotation = CHEVRON_ROTATION_180
                 binding.textAccordion.text = showLessWording
-                separatorAccordionLayoutParams.topMargin = 0
             }
 
             binding.layoutAccordion.setOnClickListener {
@@ -50,10 +47,8 @@ class CartShopBottomViewHolder(
             }
 
             binding.layoutAccordion.show()
-            binding.separatorAccordion.show()
         } else {
             binding.layoutAccordion.gone()
-            binding.separatorAccordion.gone()
         }
     }
 

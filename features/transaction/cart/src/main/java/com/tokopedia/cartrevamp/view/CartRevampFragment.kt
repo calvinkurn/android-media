@@ -132,6 +132,7 @@ import com.tokopedia.kotlin.extensions.view.pxToDp
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
@@ -618,7 +619,7 @@ class CartRevampFragment :
             if (isClickable) {
                 binding?.vDisabledGoToCourierPageButton?.setOnClickListener {
                     if (CartDataHelper.getAllAvailableCartItemData(viewModel.cartDataList.value)
-                        .isNotEmpty()
+                            .isNotEmpty()
                     ) {
                         showToastMessageGreen(getString(R.string.message_no_cart_item_selected))
                     }
@@ -2106,7 +2107,9 @@ class CartRevampFragment :
     private fun initializeToasterLocation() {
         activity?.let {
             if (it is CartActivity) {
-                Toaster.toasterCustomBottomHeight = resources.getDimensionPixelSize(R.dimen.dp_140)
+                val bottomLayoutHeight = binding?.bottomLayout?.height.toZeroIfNull()
+                val promoHeight = binding?.llPromoCheckout?.height.toZeroIfNull()
+                Toaster.toasterCustomBottomHeight = bottomLayoutHeight + promoHeight
             } else {
                 Toaster.toasterCustomBottomHeight = resources.getDimensionPixelSize(R.dimen.dp_210)
             }
@@ -3140,10 +3143,10 @@ class CartRevampFragment :
                 if (addOnProductDataResult.aggregatedData.title.isNotEmpty()) {
                     newAddOnWording =
                         "${addOnProductDataResult.aggregatedData.title} <b>(${
-                        CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                            addOnProductDataResult.aggregatedData.price,
-                            false
-                        ).removeDecimalSuffix()
+                            CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                                addOnProductDataResult.aggregatedData.price,
+                                false
+                            ).removeDecimalSuffix()
                         })</b>"
                 }
 
@@ -4273,9 +4276,9 @@ class CartRevampFragment :
         plusCoachMark?.dismissCoachMark()
         mainFlowCoachMark?.dismissCoachMark()
         if ((
-            viewModel.cartModel.cartListData?.onboardingData?.size
-                ?: 0
-            ) < BULK_ACTION_ONBOARDING_MIN_QUANTITY_INDEX
+                viewModel.cartModel.cartListData?.onboardingData?.size
+                    ?: 0
+                ) < BULK_ACTION_ONBOARDING_MIN_QUANTITY_INDEX
         ) {
             return
         }

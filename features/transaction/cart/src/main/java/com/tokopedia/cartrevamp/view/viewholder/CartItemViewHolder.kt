@@ -886,10 +886,12 @@ class CartItemViewHolder constructor(
 
     private fun renderProductNotesEmpty() {
         binding.buttonChangeNote.setImageResource(R.drawable.ic_cart_add_note)
+        binding.buttonChangeNote.contentDescription = binding.root.context.getString(R.string.cart_button_notes_empty_content_desc)
     }
 
     private fun renderProductNotesFilled() {
         binding.buttonChangeNote.setImageResource(R.drawable.ic_cart_add_note_completed)
+        binding.buttonChangeNote.contentDescription = binding.root.context.getString(R.string.cart_button_notes_filled_content_desc)
     }
 
     private fun renderQuantity(data: CartItemHolderData, viewHolderListener: ViewHolderListener?) {
