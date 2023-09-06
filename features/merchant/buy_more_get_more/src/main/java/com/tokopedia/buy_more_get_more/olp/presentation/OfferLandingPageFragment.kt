@@ -53,6 +53,9 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
+import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
+import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
@@ -395,6 +398,7 @@ class OfferLandingPageFragment :
         swipeRefreshLayout?.isEnabled = true
         when (viewState) {
             VIEW_LOADING -> {
+                activity?.setDefaultStatusBar()
                 binding?.apply {
                     loadingStateOlp.root.visible()
                     statusBar.gone()
@@ -435,7 +439,6 @@ class OfferLandingPageFragment :
                             isShowProductList = true
                         )
                     }
-
 
                     Status.OOS -> {
                         setErrorPage(
@@ -503,7 +506,7 @@ class OfferLandingPageFragment :
         binding?.apply {
             loadingStateOlp.root.gone()
             headerBackground.gone()
-            when(isShowProductList) {
+            when (isShowProductList) {
                 true -> {
                     stickyContent.visible()
                     errorPageLarge.gone()
@@ -527,7 +530,7 @@ class OfferLandingPageFragment :
                         }
                     }
                 }
-             }
+            }
             miniCartView.gone()
         }
     }
@@ -646,6 +649,31 @@ class OfferLandingPageFragment :
             val intent = RouteManager.getIntent(it, ApplinkConst.LOGIN)
             startActivityForResult(intent, requestCode)
         }
+    }
+
+    private fun openShareBottomSheet() {
+        UniversalShareBottomSheet.createInstance().apply {
+            setOgImageUrl("")
+
+            init(object : ShareBottomsheetListener {
+                override fun onShareOptionClicked(shareModel: ShareModel) {
+                }
+
+                override fun onCloseOptionClicked() {
+                }
+            })
+            enableDefaultShareIntent()
+            setMetaData(
+                tnTitle = "",
+                tnImage = ""
+            )
+            setUtmCampaignData(
+                "",
+                "",
+                "",
+                ""
+            )
+        }.show(childFragmentManager, "")
     }
 
     private fun setDefaultErrorSelection(throwable: Throwable) {
