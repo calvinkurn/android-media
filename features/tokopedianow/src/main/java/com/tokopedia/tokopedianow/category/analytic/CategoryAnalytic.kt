@@ -85,7 +85,7 @@ class CategoryAnalytic @Inject constructor(
         const val ID_CLICK_ATC_ON_SHOWCASE= "43860"
         const val ID_CLICK_ATC_ON_PRODUCT_RECOM_WIDGET = "43862"
         const val ID_CLICK_CHOOSE_ADDRESS_WIDGET = "44681"
-        const val ID_CLICK_CART_BUTTON = "44680"
+        const val ID_CLICK_CART_BUTTON = "44737"
         const val ID_CLICK_SEARCH_BAR = "44678"
     }
 
