@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.editshipping.data.repository.ShippingEditorRepository
+import com.tokopedia.editshipping.data.usecase.GetShipperInfoUseCase
 import com.tokopedia.editshipping.domain.mapper.ShipperDetailMapper
 import com.tokopedia.editshipping.domain.mapper.ShippingEditorMapper
 import com.tokopedia.editshipping.domain.mapper.ValidateShippingNewMapper
@@ -26,7 +27,8 @@ class ShippingEditorViewModel @Inject constructor(
     private val shippingEditorRepo: ShippingEditorRepository,
     private val mapper: ShippingEditorMapper,
     private val validateShippingMapper: ValidateShippingNewMapper,
-    private val detailMapper: ShipperDetailMapper
+    private val detailMapper: ShipperDetailMapper,
+    private val getShipperInfoUseCase: GetShipperInfoUseCase
 ) : ViewModel() {
 
     private val _shipperList = MutableLiveData<ShippingEditorState<ShipperListModel>>()
@@ -51,11 +53,10 @@ class ShippingEditorViewModel @Inject constructor(
         get() = _saveShippingData
 
     fun getShipperList(shopId: Long) {
-        _shipperList.value = ShippingEditorState.Loading
         viewModelScope.launch(onErrorGetShipperData) {
-            val getShipperListData = shippingEditorRepo.getShippingEditor(shopId)
-            val model = mapper.mapShipperList(getShipperListData)
-            getShipperTickerList(shopId, model)
+            _shipperList.value = ShippingEditorState.Loading
+            val getShipperListData = getShipperInfoUseCase(shopId)
+            _shipperList.value = ShippingEditorState.Success(getShipperListData)
         }
     }
 

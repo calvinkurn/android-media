@@ -9,6 +9,7 @@ import com.tokopedia.editshipping.domain.model.shippingEditor.ShipperModel
 import com.tokopedia.editshipping.domain.model.shippingEditor.ShipperProductTickerModel
 import com.tokopedia.editshipping.domain.model.shippingEditor.ShipperTickerModel
 import com.tokopedia.editshipping.domain.param.ShippingEditorParam
+import com.tokopedia.editshipping.domain.param.ShippingEditorShopMultiLocInput
 import com.tokopedia.editshipping.util.EditShippingConstant
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
@@ -23,15 +24,16 @@ class GetShipperInfoUseCase @Inject constructor(
     private val mapper: ShippingEditorMapper,
     dispatcher: CoroutineDispatchers
 ) :
-    CoroutineUseCase<ShippingEditorParam, ShipperListModel>(dispatcher.io) {
+    CoroutineUseCase<Long, ShipperListModel>(dispatcher.io) {
     override fun graphqlQuery(): String {
         return ""
     }
 
-    override suspend fun execute(params: ShippingEditorParam): ShipperListModel {
+    override suspend fun execute(params: Long): ShipperListModel {
         return coroutineScope {
-            val shipperList = async { getShipperListUseCase(params) }
-            val shipperTicker = async { getShipperTickerUseCase(params) }
+            val param = ShippingEditorParam(input = ShippingEditorShopMultiLocInput(params))
+            val shipperList = async { getShipperListUseCase(param) }
+            val shipperTicker = async { getShipperTickerUseCase(param) }
             val shipperModel = mapper.mapShipperList(shipperList.await())
             val tickerModel = mapper.mapShipperTickerList(shipperTicker.await())
             return@coroutineScope combineTickerAndShipperList(shipperModel, tickerModel)

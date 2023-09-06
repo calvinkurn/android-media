@@ -71,6 +71,7 @@
                         app:tickerShapeType="loose"
                         app:tickerType="error"
                         android:visibility="gone"
+                        tools:visibility="visible"
                         app:layout_constraintTop_toBottomOf="@id/tv_layanan_pengiriman"
                         app:layout_constraintStart_toStartOf="parent"/>
 
