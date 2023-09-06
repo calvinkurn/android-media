@@ -4,15 +4,21 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.compose.material.BottomSheetScaffoldState
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
-import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.content.common.util.Router
+import com.tokopedia.nest.components.NestBottomSheetScreen
+import com.tokopedia.nest.components.rememberNestBottomSheetState
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.picker.common.MediaPicker
 import com.tokopedia.picker.common.PageSource
@@ -26,15 +32,15 @@ import com.tokopedia.stories.creation.view.viewmodel.StoriesCreationViewModel
 import com.tokopedia.utils.lifecycle.collectAsStateWithLifecycle
 import com.tokopedia.stories.creation.R
 import com.tokopedia.stories.creation.view.model.action.StoriesCreationAction
+import com.tokopedia.stories.creation.view.model.event.StoriesCreationUiEvent
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
  * Created By : Jonathan Darwin on September 05, 2023
  */
 class StoriesCreationActivity : BaseActivity() {
-
-    @Inject
-    lateinit var fragmentFactory: FragmentFactory
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -60,10 +66,7 @@ class StoriesCreationActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
-        setupFragmentFactory()
-
         super.onCreate(savedInstanceState)
-
         setupContentView()
     }
 
@@ -75,10 +78,7 @@ class StoriesCreationActivity : BaseActivity() {
             .inject(this)
     }
 
-    private fun setupFragmentFactory() {
-        supportFragmentManager.fragmentFactory = fragmentFactory
-    }
-
+    @OptIn(ExperimentalMaterialApi::class)
     private fun setupContentView() {
         setContent {
             NestTheme {
@@ -86,29 +86,60 @@ class StoriesCreationActivity : BaseActivity() {
 
                     val context = LocalContext.current
                     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+                    val scope = rememberCoroutineScope()
+                    val sheetState = rememberNestBottomSheetState()
+
+                    LaunchedEffect(Unit) {
+                        observeUiEvent(scope, sheetState)
+                    }
 
                     LaunchedEffect(Unit) {
                         openMediaPicker()
                     }
 
-                    StoriesCreationScreen(
-                        uiState = uiState,
-                        onLoadMediaPreview = { mediaFilePath ->
-                            videoSnapshotHelper.snapVideoBitmap(context, mediaFilePath)
-                        },
-                        onBackPressed = {
-
-                        },
-                        onClickChangeAccount = {
-
-                        },
-                        onClickAddProduct = {
-
-                        },
-                        onClickUpload = {
-
+                    NestBottomSheetScreen(
+                        state = sheetState,
+                        showCloseIcon = true,
+                        isHideable = true,
+                        bottomSheetContent = {
+                            Text("Testing")
                         }
-                    )
+                    ) {
+                        StoriesCreationScreen(
+                            uiState = uiState,
+                            onLoadMediaPreview = { mediaFilePath ->
+                                videoSnapshotHelper.snapVideoBitmap(context, mediaFilePath)
+                            },
+                            onBackPressed = {
+
+                            },
+                            onClickChangeAccount = {
+
+                            },
+                            onClickAddProduct = {
+
+                            },
+                            onClickUpload = {
+
+                            }
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    @OptIn(ExperimentalMaterialApi::class)
+    private fun observeUiEvent(
+        scope: CoroutineScope,
+        sheetState: BottomSheetScaffoldState
+    ) {
+        lifecycleScope.launchWhenStarted {
+            viewModel.uiEvent.collect { event ->
+                when (event) {
+                    is StoriesCreationUiEvent.ShowTooManyStoriesReminder -> {
+                        showTooManyStoriesReminder(scope, sheetState)
+                    }
                 }
             }
         }
@@ -127,5 +158,15 @@ class StoriesCreationActivity : BaseActivity() {
         }
 
         router.route(mediaPickerResult, intent)
+    }
+
+    @OptIn(ExperimentalMaterialApi::class)
+    private fun showTooManyStoriesReminder(
+        scope: CoroutineScope,
+        sheetState: BottomSheetScaffoldState
+    ) {
+        scope.launch {
+            sheetState.bottomSheetState.expand()
+        }
     }
 }

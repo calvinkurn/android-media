@@ -2,7 +2,10 @@ package com.tokopedia.stories.creation.view.viewmodel
 
 import androidx.lifecycle.ViewModel
 import com.tokopedia.stories.creation.view.model.action.StoriesCreationAction
+import com.tokopedia.stories.creation.view.model.event.StoriesCreationUiEvent
 import com.tokopedia.stories.creation.view.model.state.StoriesCreationUiState
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -16,8 +19,10 @@ class StoriesCreationViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(StoriesCreationUiState.Empty)
-
     val uiState: StateFlow<StoriesCreationUiState> = _uiState
+
+    private val _uiEvent = MutableSharedFlow<StoriesCreationUiEvent>()
+    val uiEvent: Flow<StoriesCreationUiEvent> = _uiEvent
 
     fun submitAction(action: StoriesCreationAction) {
         when (action) {
