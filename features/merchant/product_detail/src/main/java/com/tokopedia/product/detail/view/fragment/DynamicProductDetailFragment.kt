@@ -1116,16 +1116,19 @@ open class DynamicProductDetailFragment :
 
     private fun reloadMiniCart() {
         val hasQuantityEditor =
-            viewModel.getDynamicProductInfoP1?.basic?.isTokoNow == true
-                || (viewModel.productLayout.value as? Success<List<DynamicPdpDataModel>>)
+            viewModel.getDynamicProductInfoP1?.basic?.isTokoNow == true ||
+                (viewModel.productLayout.value as? Success<List<DynamicPdpDataModel>>)
                     ?.data
                     ?.any { it.name().contains(PAGENAME_IDENTIFIER_RECOM_ATC) } == true
 
-        if (viewModel.getDynamicProductInfoP1 == null
-            || context == null
-            || !hasQuantityEditor
-            || firstOpenPage == true
-            || !viewModel.isUserSessionActive) return
+        if (viewModel.getDynamicProductInfoP1 == null ||
+            context == null ||
+            !hasQuantityEditor ||
+            firstOpenPage == true ||
+            !viewModel.isUserSessionActive
+        ) {
+            return
+        }
 
         val data = viewModel.getDynamicProductInfoP1
         viewModel.getMiniCart(data?.basic?.shopID ?: "")
@@ -3662,17 +3665,22 @@ open class DynamicProductDetailFragment :
     }
 
     private fun determineInitialOptionId(productId: String?): MutableMap<String, String> {
-        // thumbnail variant not auto-select when first open pdp or refresh event
         val singleVariant = pdpUiUpdater?.productSingleVariant ?: return mutableMapOf()
-        if (singleVariant.isThumbnailType) {
-            return mutableMapOf()
-        }
         val variantData = viewModel.variantData ?: return mutableMapOf()
         val selectedChild = variantData.children.firstOrNull { it.productId == productId.orEmpty() }
         singleVariant.mapOfSelectedVariant = DynamicProductDetailMapper.determineSelectedOptionIds(
             variantData,
             selectedChild
         )
+
+        // thumbnail variant not auto-select when first open pdp or refresh event
+        // but variant lvl-2 keep selected
+        if (singleVariant.isThumbnailType) {
+            singleVariant.mapOfSelectedVariant.keys.firstOrNull()?.let {
+                singleVariant.mapOfSelectedVariant[it] = ""
+            }
+        }
+
         pdpUiUpdater?.updateSingleVariant(singleVariant)
 
         return singleVariant.mapOfSelectedVariant
