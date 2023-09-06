@@ -6,9 +6,11 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.tokopedianow.category.presentation.adapter.typefactory.listener.CategoryL2TypeFactory
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryEmptyStateDivider
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryL2HeaderUiModel
+import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryL2ShimmerUiModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryL2TabUiModel
 import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryEmptyStateDividerViewHolder
 import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryL2HeaderViewHolder
+import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryL2ShimmerViewHolder
 import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryL2TabViewHolder
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowCategoryMenuTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowEmptyStateNoResultTypeFactory
@@ -59,6 +61,8 @@ class CategoryL2AdapterTypeFactory(
 
     override fun type(uiModel: TokoNowFeedbackWidgetUiModel): Int = TokoNowFeedbackWidgetViewHolder.LAYOUT
 
+    override fun type(uiModel: CategoryL2ShimmerUiModel): Int = CategoryL2ShimmerViewHolder.LAYOUT
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             CategoryL2HeaderViewHolder.LAYOUT -> {
@@ -86,6 +90,7 @@ class CategoryL2AdapterTypeFactory(
             CategoryEmptyStateDividerViewHolder.LAYOUT -> CategoryEmptyStateDividerViewHolder(
                 itemView = view
             )
+            CategoryL2ShimmerViewHolder.LAYOUT -> CategoryL2ShimmerViewHolder(view)
             else -> super.createViewHolder(view, type)
         }
     }

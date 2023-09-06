@@ -47,6 +47,7 @@ import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetVi
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener
 import com.tokopedia.tokopedianow.common.viewholder.categorymenu.TokoNowCategoryMenuViewHolder.TokoNowCategoryMenuListener
 import com.tokopedia.tokopedianow.common.viewmodel.TokoNowProductRecommendationViewModel
+import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowCategoryBaseBinding
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowCategoryL2Binding
 import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking
 import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.Action.CLICK_CLP_PRODUCT_TOKONOW
@@ -149,6 +150,17 @@ class TokoNowCategoryL2Fragment : BaseCategoryFragment(), CategoryL2MainView {
             )
             constraintSet.applyTo(container)
         }
+    }
+
+    override fun showPageLoading(
+        binding: FragmentTokopedianowCategoryBaseBinding?
+    ) {
+        binding?.apply {
+            mainLayout.show()
+            globalError.hide()
+            oocLayout.hide()
+        }
+        viewModel.showPageLoading()
     }
 
     override fun onShowEmptyState(

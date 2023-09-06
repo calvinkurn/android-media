@@ -10,11 +10,9 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -48,7 +46,6 @@ import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.category.analytic.CategoryAnalytic
 import com.tokopedia.tokopedianow.category.presentation.adapter.CategoryAdapter
 import com.tokopedia.tokopedianow.category.presentation.adapter.typefactory.BaseCategoryAdapterTypeFactory
-import com.tokopedia.tokopedianow.category.presentation.callback.TokoNowViewCallback
 import com.tokopedia.tokopedianow.category.presentation.viewmodel.BaseCategoryViewModel
 import com.tokopedia.tokopedianow.common.base.adapter.BaseTokopediaNowDiffer
 import com.tokopedia.tokopedianow.common.constant.RequestCode
@@ -302,6 +299,17 @@ abstract class BaseCategoryFragment : Fragment(), ScreenShotListener,
         }
     }
 
+    protected open fun showPageLoading(
+        binding: FragmentTokopedianowCategoryBaseBinding?
+    ) {
+        binding?.apply {
+            mainLayout.hide()
+            categoryShimmering.root.show()
+            globalError.hide()
+            oocLayout.hide()
+        }
+    }
+
     protected open fun onGetMiniCartSuccess(
         data: MiniCartSimplifiedData
     ) {
@@ -437,7 +445,7 @@ abstract class BaseCategoryFragment : Fragment(), ScreenShotListener,
     private fun observePageLoading() {
         observe(viewModel.isPageLoading) { loading ->
             if(loading) {
-                showShimmeringLayout()
+                showPageLoading(binding)
             } else {
                 showMainLayout()
             }
@@ -570,15 +578,6 @@ abstract class BaseCategoryFragment : Fragment(), ScreenShotListener,
             }
         }
         show()
-    }
-
-    private fun showShimmeringLayout() {
-        binding?.apply {
-            mainLayout.hide()
-            categoryShimmering.root.show()
-            globalError.hide()
-            oocLayout.hide()
-        }
     }
 
     private fun showMainLayout() {

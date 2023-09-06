@@ -170,12 +170,12 @@ abstract class BaseCategoryViewModel(
         visitableList.removeItem(visitableId)
     }
 
-    protected fun showPageLoading() {
-        _isPageLoading.postValue(true)
-    }
-
     protected fun hidePageLoading() {
         _isPageLoading.postValue(false)
+    }
+
+    private fun showPageLoading() {
+        _isPageLoading.postValue(true)
     }
 
     fun onViewCreated() {

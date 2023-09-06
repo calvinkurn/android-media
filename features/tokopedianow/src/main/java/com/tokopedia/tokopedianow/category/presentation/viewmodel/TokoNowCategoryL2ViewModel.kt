@@ -27,6 +27,7 @@ import com.tokopedia.tokopedianow.category.domain.usecase.GetCategoryDetailUseCa
 import com.tokopedia.tokopedianow.category.domain.usecase.GetCategoryLayoutUseCase
 import com.tokopedia.tokopedianow.category.domain.usecase.GetCategoryProductUseCase
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryEmptyStateModel
+import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryL2ShimmerUiModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryL2TabUiModel
 import com.tokopedia.tokopedianow.common.domain.mapper.AceSearchParamMapper
 import com.tokopedia.tokopedianow.common.domain.mapper.AddressMapper
@@ -181,6 +182,13 @@ class TokoNowCategoryL2ViewModel @Inject constructor(
         visitableList.addAll(lastVisitableList)
         updateVisitableListLiveData()
         updateEmptyState(show = false)
+    }
+
+    fun showPageLoading() {
+        visitableList.clear()
+        visitableList.addChooseAddress()
+        visitableList.add(CategoryL2ShimmerUiModel)
+        updateVisitableListLiveData()
     }
 
     fun isEmptyState(): Boolean {
