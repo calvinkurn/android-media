@@ -696,7 +696,7 @@ class DynamicProductDetailViewModel @Inject constructor(
                 productId = it.basic.productID,
                 pdpSession = it.pdpSession,
                 shopId = it.basic.shopID,
-                hasQuantityEditor = it.basic.isTokoNow || hasQuantityEditor,
+                hasQuantityEditor = it.basic.isTokoNow || hasQuantityEditor
             )
             val p2OtherDeffered: Deferred<ProductInfoP2Other> =
                 getProductInfoP2OtherAsync(it.basic.productID, it.basic.getShopId())
@@ -1131,7 +1131,7 @@ class DynamicProductDetailViewModel @Inject constructor(
         productId: String,
         pdpSession: String,
         shopId: String,
-        hasQuantityEditor: Boolean,
+        hasQuantityEditor: Boolean
     ): Deferred<ProductInfoP2UiData> {
         return async(dispatcher.io) {
             getP2DataAndMiniCartUseCase.get().executeOnBackground(
@@ -1270,7 +1270,7 @@ class DynamicProductDetailViewModel @Inject constructor(
         variants[newVariantCategoryKey] = newVariantId
 
         // if mapOfSelected still don't select yet with variant lvl two, so set default lvl2 with fist lvl2 item
-        if (variantLevelTwo != null && variantsSelected.size < MAX_VARIANT_LEVEL) {
+        if (variantLevelTwo != null && variantsSelected.size <= MAX_VARIANT_LEVEL) {
             // in case, thumb variant selected but variant two never select from vbs
             val variantLevelTwoId = variantLevelTwo.options.firstOrNull()?.id
             variants[variantLevelTwo.pv.orEmpty()] = variantLevelTwoId.orEmpty()
