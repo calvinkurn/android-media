@@ -29,7 +29,9 @@ import com.tokopedia.minicart.databinding.BottomSheetBmgmMiniCartDetailBinding
 import com.tokopedia.minicart.databinding.ViewBmgmMiniCartSubTotalBinding
 import com.tokopedia.purchase_platform.common.feature.bmgm.data.uimodel.BmgmCommonDataModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.currency.CurrencyFormatUtil
+import dagger.Lazy
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
@@ -58,6 +60,9 @@ class BmgmMiniCartDetailBottomSheet : BottomSheetUnify() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+
+    @Inject
+    lateinit var userSession: Lazy<UserSessionInterface>
 
     private var binding: BottomSheetBmgmMiniCartDetailBinding? = null
     private var footerBinding: ViewBmgmMiniCartSubTotalBinding? = null
@@ -160,7 +165,7 @@ class BmgmMiniCartDetailBottomSheet : BottomSheetUnify() {
                 offerId = data.offerId.toString(),
                 warehouseId = data.warehouseId.toString(),
                 shopId = data.shopId,
-                userId = data.userId
+                userId = userSession.get().userId
             )
             dismiss()
         }

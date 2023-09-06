@@ -10,7 +10,6 @@ class BmgmCommonDataModel(
     val offerId: Long = 0L,
     val warehouseId: Long = 0L,
     val shopId: String = "0",
-    val userId: String = "0",
     val hasReachMaxDiscount: Boolean = false,
     val priceBeforeBenefit: Double = 0.0,
     val finalPrice: Double = 0.0,

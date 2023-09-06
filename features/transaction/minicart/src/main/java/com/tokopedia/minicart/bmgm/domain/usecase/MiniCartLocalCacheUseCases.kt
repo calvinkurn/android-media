@@ -5,7 +5,6 @@ import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.minicart.bmgm.presentation.model.BmgmMiniCartDataUiModel
 import com.tokopedia.minicart.bmgm.presentation.model.BmgmMiniCartVisitable
 import com.tokopedia.purchase_platform.common.feature.bmgm.data.uimodel.BmgmCommonDataModel
-import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -16,7 +15,6 @@ import kotlin.coroutines.CoroutineContext
  */
 
 class MiniCartLocalCacheUseCases @Inject constructor(
-    private val userSession: UserSessionInterface,
     private val dispatchers: CoroutineDispatchers
 ) : CoroutineScope {
 
@@ -53,12 +51,10 @@ class MiniCartLocalCacheUseCases @Inject constructor(
         warehouseId: Long,
         showMiniCartFooter: Boolean = true
     ): BmgmCommonDataModel {
-        val userId = userSession.userId
         return BmgmCommonDataModel(
             offerId = model.offerId,
             warehouseId = warehouseId,
             shopId = shopId.toString(),
-            userId = userId,
             finalPrice = model.finalPrice,
             priceBeforeBenefit = model.priceBeforeBenefit,
             hasReachMaxDiscount = model.hasReachMaxDiscount,
