@@ -91,20 +91,16 @@ class StoriesProductBottomSheet @Inject constructor(
             viewModel.uiEvent.collectLatest { event ->
                 when (event) {
                     is StoriesUiEvent.ShowErrorEvent -> {
-                        requireView().showToaster(
+                        requireView().rootView.showToaster(
                             message = event.message.message.orEmpty(),
                             type = Toaster.TYPE_ERROR,
-                            bottomHeight = context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_48)
-                                .orZero()
                         )
                     }
 
                     is StoriesUiEvent.ShowInfoEvent -> {
                         val message = getString(event.message)
-                        requireView().showToaster(
+                        requireView().rootView.showToaster(
                             message = message,
-                            bottomHeight = context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_48)
-                                .orZero()
                         )
                     }
 
