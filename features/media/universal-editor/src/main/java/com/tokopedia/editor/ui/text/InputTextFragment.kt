@@ -2,9 +2,11 @@ package com.tokopedia.editor.ui.text
 
 import android.graphics.Color
 import android.graphics.PorterDuff
+import android.graphics.Typeface
 import android.view.Gravity
 import android.widget.EditText
 import android.widget.LinearLayout
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
@@ -87,9 +89,10 @@ class InputTextFragment @Inject constructor(
     private fun initFontStyleObserver() {
         viewModel.selectedFontStyle.observe(viewLifecycleOwner) {
             viewBinding?.addTextInput?.apply {
-                unifyTypeFaceGetter(context, it.fontName)?.let { loadedTypeFace ->
-                    setTypeface(loadedTypeFace, it.fontStyle)
-                }
+                try {
+                    val typeFace = Typeface.createFromAsset(context.assets, it.fontName)
+                    setTypeface(typeFace, it.fontStyle)
+                } catch (_: Exception) {}
             }
         }
     }
