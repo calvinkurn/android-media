@@ -1,7 +1,7 @@
 package com.tokopedia.minicart.bmgm.presentation.viewmodel
 
+import com.tokopedia.minicart.bmgm.domain.usecase.SetCartListCheckboxStateUseCase
 import com.tokopedia.minicart.bmgm.presentation.model.BmgmState
-import com.tokopedia.purchase_platform.common.feature.bmgm.domain.usecase.SetCartListCheckboxStateUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK

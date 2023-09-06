@@ -5,9 +5,9 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.minicart.bmgm.domain.model.BmgmParamModel
 import com.tokopedia.minicart.bmgm.domain.usecase.GetBmgmMiniCartDataUseCase
 import com.tokopedia.minicart.bmgm.domain.usecase.MiniCartLocalCacheUseCases
+import com.tokopedia.minicart.bmgm.domain.usecase.SetCartListCheckboxStateUseCase
 import com.tokopedia.minicart.bmgm.presentation.model.BmgmMiniCartDataUiModel
 import com.tokopedia.minicart.bmgm.presentation.model.BmgmState
-import com.tokopedia.purchase_platform.common.feature.bmgm.domain.usecase.SetCartListCheckboxStateUseCase
 import dagger.Lazy
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow

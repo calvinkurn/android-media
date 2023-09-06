@@ -3,9 +3,9 @@ package com.tokopedia.minicart.bmgm.presentation.viewmodel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.minicart.bmgm.domain.usecase.MiniCartLocalCacheUseCases
+import com.tokopedia.minicart.bmgm.domain.usecase.SetCartListCheckboxStateUseCase
 import com.tokopedia.minicart.bmgm.presentation.model.BmgmState
 import com.tokopedia.purchase_platform.common.feature.bmgm.data.uimodel.BmgmCommonDataModel
-import com.tokopedia.purchase_platform.common.feature.bmgm.domain.usecase.SetCartListCheckboxStateUseCase
 import dagger.Lazy
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
