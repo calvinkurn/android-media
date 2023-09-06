@@ -10,7 +10,7 @@ interface StoriesSharingAnalytics {
         ): StoriesSharingAnalytics
     }
     fun onClickShareIcon(storyId: String)
-    fun onClickShareOptions(storyId: String)
+    fun onClickShareOptions(storyId: String, channel: String)
     fun onImpressShareSheet(storyId: String)
     fun onCloseShareSheet(storyId: String)
 }
