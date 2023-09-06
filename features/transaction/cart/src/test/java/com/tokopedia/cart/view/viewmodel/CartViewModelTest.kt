@@ -1683,10 +1683,10 @@ class CartViewModelTest : BaseCartViewModelTest() {
 
     // region removeProductByCartId
     @Test
-    fun `WHEN removeProductByCartId THEN `() {
+    fun `WHEN removeProductByCartId THEN should return correct new list after being deleted`() {
         // GIVEN
         val cartItemHolderData = CartItemHolderData(cartId = "123", isSelected = true)
-        val cartItemHolderDataTwo = CartItemHolderData(cartId = "124", isSelected = true)
+        val cartItemHolderDataTwo = CartItemHolderData(cartId = "124", isSelected = false)
         val cartItemHolderDataThree = CartItemHolderData(cartId = "125", isSelected = true)
         val cartItemHolderDataFour = CartItemHolderData(cartId = "126", isSelected = false)
         val cartGroupHolderData = CartGroupHolderData(
@@ -1702,34 +1702,196 @@ class CartViewModelTest : BaseCartViewModelTest() {
         val cartItemHolderSecondData = CartItemHolderData(cartId = "234", isSelected = true, isError = true)
         val cartItemHolderSecondDataTwo = CartItemHolderData(cartId = "235", isSelected = true, isError = true)
         val cartGroupHolderDataTwo = CartGroupHolderData(
+            isError = true,
             productUiModelList = mutableListOf(
                 cartItemHolderSecondData,
                 cartItemHolderSecondDataTwo
             )
         )
 
+        val cartItemHolderThirdData = CartItemHolderData(cartId = "345")
+        val cartGroupHolderDataThree = CartGroupHolderData(
+            productUiModelList = mutableListOf(cartItemHolderThirdData)
+        )
+
+        val cartItemHolderFourData = CartItemHolderData(cartId = "456")
+        val cartGroupHolderDataFour = CartGroupHolderData(
+            productUiModelList = mutableListOf(cartItemHolderFourData)
+        )
+
+        val selectedAmountHolderData = CartSelectedAmountHolderData()
+        val disabledItemHeaderHolderData = DisabledItemHeaderHolderData()
+        val disabledAccordionHolderData = DisabledAccordionHolderData()
+
         cartViewModel.cartDataList.value = arrayListOf(
+            selectedAmountHolderData,
             cartGroupHolderData,
             cartItemHolderData,
             cartItemHolderDataTwo,
             cartItemHolderDataThree,
             cartItemHolderDataFour,
+            cartGroupHolderDataThree,
+            cartItemHolderThirdData,
+            cartGroupHolderDataFour,
+            cartItemHolderFourData,
+            disabledItemHeaderHolderData,
             disabledReasonHolderData,
             cartGroupHolderDataTwo,
             cartItemHolderSecondData,
-            cartItemHolderSecondDataTwo
+            cartItemHolderSecondDataTwo,
+            disabledAccordionHolderData,
+            CartWishlistHolderData(),
+            CartRecommendationItemHolderData(recommendationItem = RecommendationItem()),
+            CartTopAdsHeadlineData(),
+            CartRecentViewHolderData()
         )
 
         // WHEN
-        cartViewModel.removeProductByCartId(
-            listOf("123", "124", "234", "235"),
+        val newCartDataList = cartViewModel.removeProductByCartId(
+            listOf("123", "124", "234", "235", "456"),
             needRefresh = true,
             isFromGlobalCheckbox = false
         )
 
         // THEN
-        val toBeRemovedIndices = listOf(5, 6, 7, 8)
-        val toBeUpdatedIndices = listOf(0)
+        assertEquals(10, newCartDataList.size)
+    }
+
+    @Test
+    fun `WHEN removeProductByCartId all availableItems THEN cartSelectedAmountHolder should be deleted`() {
+        // GIVEN
+        val cartItemHolderData = CartItemHolderData(cartId = "123", isSelected = true)
+        val cartItemHolderDataTwo = CartItemHolderData(cartId = "124", isSelected = false)
+        val cartGroupHolderData = CartGroupHolderData(
+            productUiModelList = mutableListOf(
+                cartItemHolderData,
+                cartItemHolderDataTwo
+            )
+        )
+
+        val selectedAmountHolderData = CartSelectedAmountHolderData()
+
+        cartViewModel.cartDataList.value = arrayListOf(
+            selectedAmountHolderData,
+            cartGroupHolderData,
+            cartItemHolderData,
+            cartItemHolderDataTwo
+        )
+
+        // WHEN
+        val newCartDataList = cartViewModel.removeProductByCartId(
+            listOf("123", "124"),
+            needRefresh = true,
+            isFromGlobalCheckbox = false
+        )
+
+        // THEN
+        assertTrue(newCartDataList.isEmpty())
+    }
+
+    @Test
+    fun `WHEN removeProductByCartId some of disabled items THEN should remove accordion if disabled items less than three items`() {
+        // GIVEN
+        val cartItemHolderData = CartItemHolderData(cartId = "123", isSelected = true)
+        val cartItemHolderDataTwo = CartItemHolderData(cartId = "124", isSelected = false)
+        val cartGroupHolderData = CartGroupHolderData(
+            productUiModelList = mutableListOf(
+                cartItemHolderData,
+                cartItemHolderDataTwo
+            )
+        )
+
+        val disabledReasonHolderData = DisabledReasonHolderData()
+        val disabledCartItemHolderData = CartItemHolderData(cartId = "234", isSelected = true, isError = true)
+        val disabledCartItemHolderSecondData = CartItemHolderData(cartId = "235", isSelected = true, isError = true)
+        val disabledCartGroupHolderData = CartGroupHolderData(
+            isError = true,
+            productUiModelList = mutableListOf(
+                disabledCartItemHolderData,
+                disabledCartItemHolderSecondData
+            )
+        )
+
+        val selectedAmountHolderData = CartSelectedAmountHolderData()
+        val disabledItemHeaderHolderData = DisabledItemHeaderHolderData()
+        val disabledAccordionHolderData = DisabledAccordionHolderData()
+
+        cartViewModel.cartDataList.value = arrayListOf(
+            selectedAmountHolderData,
+            cartGroupHolderData,
+            cartItemHolderData,
+            cartItemHolderDataTwo,
+            disabledItemHeaderHolderData,
+            disabledReasonHolderData,
+            disabledCartGroupHolderData,
+            disabledCartItemHolderData,
+            disabledCartItemHolderSecondData,
+            disabledAccordionHolderData
+        )
+
+        // WHEN
+        val newCartDataList = cartViewModel.removeProductByCartId(
+            listOf("234"),
+            needRefresh = true,
+            isFromGlobalCheckbox = false
+        )
+
+        // THEN
+        assertEquals(8, newCartDataList.size)
+    }
+
+    @Test
+    fun `WHEN checkAvailableShopBottomHolderData THEN should remove cartShopBottomHolderData if product is empty after deletion`() {
+        // GIVEN
+        val cartGroupHolderData = CartGroupHolderData(
+            productUiModelList = mutableListOf()
+        )
+        val cartShopBottomHolderData = CartShopBottomHolderData(cartGroupHolderData)
+
+        val newCartDataList = arrayListOf(
+            cartGroupHolderData,
+            cartShopBottomHolderData
+        )
+        val toBeRemovedItems: MutableList<Any> = mutableListOf()
+
+        // WHEN
+        cartViewModel.checkAvailableShopBottomHolderData(
+            newCartDataList,
+            0,
+            cartGroupHolderData,
+            toBeRemovedItems
+        )
+
+        // THEN
+        assertEquals(1, toBeRemovedItems.size)
+        assertEquals(cartShopBottomHolderData, toBeRemovedItems[0])
+    }
+
+    @Test
+    fun `WHEN checkAvailableShopBottomHolderData for tokonow THEN should expand if after deletion is less than 3`() {
+        // GIVEN
+        val cartGroupHolderData = CartGroupHolderData(
+            productUiModelList = mutableListOf()
+        )
+        val cartShopBottomHolderData = CartShopBottomHolderData(cartGroupHolderData)
+
+        val newCartDataList = arrayListOf(
+            cartGroupHolderData,
+            cartShopBottomHolderData
+        )
+        val toBeRemovedItems: MutableList<Any> = mutableListOf()
+
+        // WHEN
+        cartViewModel.checkAvailableShopBottomHolderData(
+            newCartDataList,
+            0,
+            cartGroupHolderData,
+            toBeRemovedItems
+        )
+
+        // THEN
+        assertEquals(1, toBeRemovedItems.size)
+        assertEquals(cartShopBottomHolderData, toBeRemovedItems[0])
     }
     // endregion
 

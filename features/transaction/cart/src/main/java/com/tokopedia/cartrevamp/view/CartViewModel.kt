@@ -2091,9 +2091,9 @@ class CartViewModel @Inject constructor(
         allGroupDataList.forEach { groupPair ->
             checkAvailableShopBottomHolderData(
                 newCartDataList,
+                groupPair.first,
                 groupPair.second,
-                toBeRemovedItems,
-                groupPair.first
+                toBeRemovedItems
             )
         }
 
@@ -2149,9 +2149,9 @@ class CartViewModel @Inject constructor(
 
     internal fun checkAvailableShopBottomHolderData(
         newCartDataList: ArrayList<Any>,
+        index: Int,
         data: CartGroupHolderData,
-        toBeRemovedItems: MutableList<Any>,
-        index: Int
+        toBeRemovedItems: MutableList<Any>
     ) {
         val shopBottomDataPair = getShopBottomHolderDataIndex(newCartDataList, data, index)
         val cartShopBottomHolderData = shopBottomDataPair.first
@@ -2187,15 +2187,13 @@ class CartViewModel @Inject constructor(
         cartGroupHolderData: CartGroupHolderData,
         groupIndex: Int
     ): Pair<CartShopBottomHolderData?, Int> {
-        if (cartGroupHolderData.isTokoNow) {
-            val shopBottomData = CartDataHelper.getNearestShopBottomHolderDataIndex(
-                cartDataList,
-                groupIndex,
-                cartGroupHolderData
-            )
-            if (shopBottomData.second > Int.ZERO) {
-                return Pair(shopBottomData.first, shopBottomData.second)
-            }
+        val shopBottomData = CartDataHelper.getNearestShopBottomHolderDataIndex(
+            cartDataList,
+            groupIndex,
+            cartGroupHolderData
+        )
+        if (shopBottomData.second > Int.ZERO) {
+            return Pair(shopBottomData.first, shopBottomData.second)
         }
         return Pair(null, RecyclerView.NO_POSITION)
     }
