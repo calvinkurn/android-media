@@ -80,6 +80,7 @@ import com.tokopedia.feedplus.presentation.model.FeedMainEvent
 import com.tokopedia.feedplus.presentation.model.FeedNoContentModel
 import com.tokopedia.feedplus.presentation.model.FeedPostEvent
 import com.tokopedia.feedplus.presentation.model.FeedShareModel
+import com.tokopedia.feedplus.presentation.model.FeedTopAdsTrackerDataModel
 import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
 import com.tokopedia.feedplus.presentation.model.PostSourceModel
 import com.tokopedia.feedplus.presentation.model.type.AuthorType
@@ -143,7 +144,7 @@ class FeedFragment :
                 viewLifecycleOwner,
                 binding.rvFeedPost,
                 trackerModelMapper,
-                feedFollowRecommendationListener,
+                feedFollowRecommendationListener
             )
         ) {
             if (feedPostViewModel.shouldShowNoMoreContent || !feedPostViewModel.hasNext) return@FeedContentAdapter
@@ -385,7 +386,7 @@ class FeedFragment :
         override fun onSwipeProfileRecommendation() {
             feedFollowRecommendationAnalytics.eventSwipeProfileRecommendation(
                 tabType = trackerModelMapper.tabType,
-                entryPoint = trackerModelMapper.entryPoint,
+                entryPoint = trackerModelMapper.entryPoint
             )
         }
 
@@ -452,8 +453,11 @@ class FeedFragment :
         postSourceModel = arguments?.getString(UF_EXTRA_FEED_SOURCE_ID)?.let { sourceId ->
             PostSourceModel(
                 id = sourceId,
-                source = if (isCdp) FeedBaseFragment.TAB_TYPE_CDP
-                else arguments?.getString(UF_EXTRA_FEED_SOURCE_NAME)
+                source = if (isCdp) {
+                    FeedBaseFragment.TAB_TYPE_CDP
+                } else {
+                    arguments?.getString(UF_EXTRA_FEED_SOURCE_NAME)
+                }
             )
         }
 
@@ -920,21 +924,28 @@ class FeedFragment :
         feedPostViewModel.setUnsetReminder(campaignId, setReminder, type)
     }
 
-    override fun onTopAdsImpression(
-        adViewUrl: String,
-        id: String,
-        shopId: String,
-        uri: String,
-        fullEcs: String?,
-        position: Int
-    ) {
-        topAdsUrlHitter.hitImpressionUrl(
-            this::class.java.simpleName,
-            adViewUrl,
-            id,
-            uri,
-            fullEcs
-        )
+    override fun onTopAdsImpression(topadsTrackerData: FeedTopAdsTrackerDataModel) {
+        with(topadsTrackerData) {
+            topAdsUrlHitter.hitImpressionUrl(
+                this::class.java.simpleName,
+                adViewUrl,
+                id,
+                uri,
+                fullEcs
+            )
+        }
+    }
+
+    override fun onTopAdsClick(topadsTrackerData: FeedTopAdsTrackerDataModel) {
+        with(topadsTrackerData) {
+            topAdsUrlHitter.hitClickUrl(
+                this::class.java.simpleName,
+                adClickUrl,
+                id,
+                uri,
+                fullEcs
+            )
+        }
     }
 
     override fun onOngoingCampaignClicked(
@@ -1159,7 +1170,11 @@ class FeedFragment :
     private fun initView() {
         binding.let {
             it.swipeRefreshFeedLayout.setOnRefreshListener {
-                feedPostViewModel.fetchFeedPosts(data?.type ?: "", isNewData = true, postSource = postSourceModel)
+                feedPostViewModel.fetchFeedPosts(
+                    data?.type ?: "",
+                    isNewData = true,
+                    postSource = postSourceModel
+                )
             }
 
             it.rvFeedPost.adapter = adapter
