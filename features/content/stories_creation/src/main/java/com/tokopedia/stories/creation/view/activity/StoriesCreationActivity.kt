@@ -5,6 +5,7 @@ import androidx.fragment.app.FragmentFactory
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.stories.creation.databinding.ActivityStoriesCreationBinding
 import com.tokopedia.stories.creation.di.DaggerStoriesCreationComponent
@@ -50,17 +51,15 @@ class StoriesCreationActivity : BaseActivity() {
     }
 
     private fun setupFragmentContainer() {
-
         var bundle = intent.extras
+
         if (intent.data != null) {
             bundle = UriUtil.destructiveUriBundle(
-                ApplinkConstInternalGlobal.USER_PROFILE_LANDING,
+                ApplinkConstInternalContent.INTERNAL_STORIES_CREATION,
                 intent.data,
                 bundle,
             )
         }
-
-        println("JOE LOG bundle : $bundle")
 
         supportFragmentManager.beginTransaction()
             .replace(
