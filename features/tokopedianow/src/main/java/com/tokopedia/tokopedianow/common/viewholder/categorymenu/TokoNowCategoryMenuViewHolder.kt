@@ -72,11 +72,25 @@ class TokoNowCategoryMenuViewHolder(
     }
 
     override fun onCategoryItemClicked(data: TokoNowCategoryMenuItemUiModel, itemPosition: Int) {
-        listener?.onCategoryMenuItemClicked(data, itemPosition)
+        binding?.apply {
+            listener?.onCategoryMenuItemClicked(data.copy(
+                headerName = getHeaderName(
+                    binding = this,
+                    headerName = data.headerName
+                )
+            ), itemPosition)
+        }
     }
 
     override fun onCategoryItemImpressed(data: TokoNowCategoryMenuItemUiModel, itemPosition: Int) {
-        listener?.onCategoryMenuItemImpressed(data, itemPosition)
+        binding?.apply {
+            listener?.onCategoryMenuItemImpressed(data.copy(
+                headerName = getHeaderName(
+                    binding = this,
+                    headerName = data.headerName
+                )
+            ), itemPosition)
+        }
     }
 
     override fun onChannelExpired() { /* nothing to do */ }
@@ -117,7 +131,10 @@ class TokoNowCategoryMenuViewHolder(
         header.setListener(this@TokoNowCategoryMenuViewHolder)
         header.setModel(
             model = TokoNowDynamicHeaderUiModel(
-                title = data.title.ifEmpty { root.context.getString(R.string.tokopedianow_repurchase_category_menu_title) },
+                title = getHeaderName(
+                    binding = this,
+                    headerName = data.title
+                ),
                 ctaText = root.context.getString(R.string.tokopedianow_see_all),
                 ctaTextLink = data.seeAllAppLink
             )
@@ -155,6 +172,13 @@ class TokoNowCategoryMenuViewHolder(
     private fun onClickSeeAll(appLink: String) {
         RouteManager.route(itemView.context, appLink)
         listener?.onSeeAllCategoryClicked()
+    }
+
+    private fun getHeaderName(
+        binding: ItemTokopedianowCategoryMenuBinding,
+        headerName: String
+    ): String {
+        return headerName.ifEmpty { binding.root.context.getString(R.string.tokopedianow_repurchase_category_menu_title) }
     }
 
     interface TokoNowCategoryMenuListener {

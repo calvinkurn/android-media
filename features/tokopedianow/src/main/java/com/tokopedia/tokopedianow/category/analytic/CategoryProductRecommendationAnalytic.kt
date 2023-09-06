@@ -86,6 +86,7 @@ class CategoryProductRecommendationAnalytic(
     ): Bundle {
         val items = Bundle()
         items.putString(KEY_CATEGORY_ID, categoryId)
+        items.putString(KEY_DIMENSION_40, String.EMPTY)
         items.putString(KEY_DIMENSION_56, productWarehouseId)
         items.putString(KEY_DIMENSION_98, (!isOos).toString())
         items.putString(KEY_ITEM_BRAND, String.EMPTY)
@@ -107,7 +108,6 @@ class CategoryProductRecommendationAnalytic(
         headerName: String,
         index: Int,
         productId: String,
-        localWarehouseId: String,
         isOos: Boolean,
         name: String,
         price: Long,
@@ -117,11 +117,11 @@ class CategoryProductRecommendationAnalytic(
             putString(EVENT, EVENT_VIEW_ITEM_LIST)
             putString(EVENT_ACTION, EVENT_ACTION_IMPRESS_PRODUCT_CAROUSEL)
             putString(EVENT_CATEGORY, EVENT_CATEGORY_PAGE_L1)
-            putString(EVENT_LABEL, joinDash(categoryIdL1, headerName, index.toString(), productId, localWarehouseId))
+            putString(EVENT_LABEL, joinDash(categoryIdL1, headerName.trim(), index.toString(), productId))
             putString(KEY_TRACKER_ID, ID_IMPRESS_PRODUCT_CAROUSEL)
             putString(KEY_BUSINESS_UNIT, BUSINESS_UNIT_GROCERIES)
             putString(KEY_CURRENT_SITE, CURRENT_SITE_TOKOPEDIA_MARKET_PLACE)
-            putString(KEY_ITEM_LIST, joinDash(ITEM_LIST_SLASH_TOKONOW, ITEM_LIST_CATEGORY_L1, ITEM_LIST_RECOMPRODUCT, headerName))
+            putString(KEY_ITEM_LIST, joinDash(ITEM_LIST_SLASH_TOKONOW, ITEM_LIST_CATEGORY_L1, ITEM_LIST_RECOMPRODUCT, headerName.trim()))
             putBundle(KEY_ITEMS, getItems(
                     isOos = isOos,
                     index = index,
@@ -142,7 +142,6 @@ class CategoryProductRecommendationAnalytic(
         headerName: String,
         index: Int,
         productId: String,
-        localWarehouseId: String,
         isOos: Boolean,
         name: String,
         price: Long,
@@ -152,11 +151,11 @@ class CategoryProductRecommendationAnalytic(
             putString(EVENT, EVENT_SELECT_CONTENT)
             putString(EVENT_ACTION, EVENT_ACTION_CLICK_PRODUCT_CAROUSEL)
             putString(EVENT_CATEGORY, EVENT_CATEGORY_PAGE_L1)
-            putString(EVENT_LABEL, joinDash(categoryIdL1, headerName, index.toString(), productId, localWarehouseId))
+            putString(EVENT_LABEL, joinDash(categoryIdL1, headerName.trim(), index.toString(), productId))
             putString(KEY_TRACKER_ID, ID_CLICK_PRODUCT_CAROUSEL)
             putString(KEY_BUSINESS_UNIT, BUSINESS_UNIT_GROCERIES)
             putString(KEY_CURRENT_SITE, CURRENT_SITE_TOKOPEDIA_MARKET_PLACE)
-            putString(KEY_ITEM_LIST, joinDash(ITEM_LIST_SLASH_TOKONOW, ITEM_LIST_CATEGORY_L1, ITEM_LIST_RECOMPRODUCT, headerName))
+            putString(KEY_ITEM_LIST, joinDash(ITEM_LIST_SLASH_TOKONOW, ITEM_LIST_CATEGORY_L1, ITEM_LIST_RECOMPRODUCT, headerName.trim()))
             putBundle(KEY_ITEMS, getItems(
                     isOos = isOos,
                     index = index,
@@ -176,7 +175,6 @@ class CategoryProductRecommendationAnalytic(
         categoryIdL1: String,
         index: Int,
         productId: String,
-        localWarehouseId: String,
         isOos: Boolean,
         name: String,
         price: Int,
@@ -188,11 +186,11 @@ class CategoryProductRecommendationAnalytic(
             putString(EVENT, EVENT_ADD_TO_CART)
             putString(EVENT_ACTION, EVENT_ACTION_CLICK_ATC_ON_PRODUCT_RECOM_WIDGET)
             putString(EVENT_CATEGORY, EVENT_CATEGORY_PAGE_L1)
-            putString(EVENT_LABEL, joinDash(categoryIdL1, index.toString(), productId, localWarehouseId))
+            putString(EVENT_LABEL, joinDash(categoryIdL1, headerName.trim(), index.toString(), productId))
             putString(KEY_TRACKER_ID, ID_CLICK_ATC_ON_PRODUCT_RECOM_WIDGET)
             putString(KEY_BUSINESS_UNIT, BUSINESS_UNIT_GROCERIES)
             putString(KEY_CURRENT_SITE, CURRENT_SITE_TOKOPEDIA_MARKET_PLACE)
-            putString(KEY_ITEM_LIST, joinDash(ITEM_LIST_SLASH_TOKONOW, ITEM_LIST_CATEGORY_L1, ITEM_LIST_RECOMPRODUCT, headerName))
+            putString(KEY_ITEM_LIST, joinDash(ITEM_LIST_SLASH_TOKONOW, ITEM_LIST_CATEGORY_L1, ITEM_LIST_RECOMPRODUCT, headerName.trim()))
             putBundle(KEY_ITEMS, getAtcItems(
                     categoryId = categoryIdL1,
                     isOos = isOos,

@@ -5,7 +5,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderView
 
 class CategoryShowcaseHeaderCallback(
-    private val onClickSeeMore: (widgetId: String) -> Unit
+    private val onClickSeeMore: (headerName: String, widgetId: String) -> Unit
 ): TokoNowDynamicHeaderView.TokoNowDynamicHeaderListener {
     override fun onSeeAllClicked(
         context: Context,
@@ -14,7 +14,7 @@ class CategoryShowcaseHeaderCallback(
         widgetId: String
     ) {
         RouteManager.route(context, appLink)
-        onClickSeeMore(widgetId)
+        onClickSeeMore(headerName, widgetId)
     }
 
     override fun onChannelExpired() { /* nothing to do */ }

@@ -38,6 +38,7 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_SHOP_TYPE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_TRACKER_ID
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_USER_ID
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_WAREHOUSE_ID
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_GROCERIES
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.ITEM_LIST_SLASH_TOKONOW
@@ -90,6 +91,7 @@ class CategoryShowcaseAnalytic(
     ): Bundle {
         val items = Bundle()
         items.putString(KEY_CATEGORY_ID, categoryId)
+        items.putString(KEY_DIMENSION_40, String.EMPTY)
         items.putString(KEY_DIMENSION_56, productWarehouseId)
         items.putString(KEY_DIMENSION_98, (!isOos).toString())
         items.putString(KEY_ITEM_BRAND, String.EMPTY)
@@ -110,7 +112,6 @@ class CategoryShowcaseAnalytic(
         categoryIdL1: String,
         index: Int,
         productId: String,
-        localWarehouseId: String,
         isOos: Boolean,
         name: String,
         price: Long,
@@ -121,11 +122,11 @@ class CategoryShowcaseAnalytic(
             putString(EVENT, EVENT_VIEW_ITEM_LIST)
             putString(EVENT_ACTION, EVENT_ACTION_IMPRESS_PRODUCT_SHOWCASE)
             putString(EVENT_CATEGORY, EVENT_CATEGORY_PAGE_L1)
-            putString(EVENT_LABEL, joinDash(categoryIdL1, index.toString(), productId, localWarehouseId))
+            putString(EVENT_LABEL, joinDash(categoryIdL1, headerName.trim(), index.toString(), productId))
             putString(KEY_TRACKER_ID, ID_IMPRESS_PRODUCT_SHOWCASE)
             putString(KEY_BUSINESS_UNIT, BUSINESS_UNIT_GROCERIES)
             putString(KEY_CURRENT_SITE, CURRENT_SITE_TOKOPEDIA_MARKET_PLACE)
-            putString(KEY_ITEM_LIST, joinDash(ITEM_LIST_SLASH_TOKONOW, ITEM_LIST_CATEGORY_L1, ITEM_LIST_SHOWCASE, headerName))
+            putString(KEY_ITEM_LIST, joinDash(ITEM_LIST_SLASH_TOKONOW, ITEM_LIST_CATEGORY_L1, ITEM_LIST_SHOWCASE, headerName.trim()))
             putBundle(KEY_ITEMS, getItems(
                     isOos = isOos,
                     index = index,
@@ -145,7 +146,6 @@ class CategoryShowcaseAnalytic(
         categoryIdL1: String,
         index: Int,
         productId: String,
-        localWarehouseId: String,
         isOos: Boolean,
         name: String,
         price: Long,
@@ -156,11 +156,11 @@ class CategoryShowcaseAnalytic(
             putString(EVENT, EVENT_SELECT_CONTENT)
             putString(EVENT_ACTION, EVENT_ACTION_CLICK_PRODUCT_SHOWCASE)
             putString(EVENT_CATEGORY, EVENT_CATEGORY_PAGE_L1)
-            putString(EVENT_LABEL, joinDash(categoryIdL1, index.toString(), productId, localWarehouseId))
+            putString(EVENT_LABEL, joinDash(categoryIdL1, headerName.trim(), index.toString(), productId))
             putString(KEY_TRACKER_ID, ID_CLICK_PRODUCT_SHOWCASE)
             putString(KEY_BUSINESS_UNIT, BUSINESS_UNIT_GROCERIES)
             putString(KEY_CURRENT_SITE, CURRENT_SITE_TOKOPEDIA_MARKET_PLACE)
-            putString(KEY_ITEM_LIST, joinDash(ITEM_LIST_SLASH_TOKONOW, ITEM_LIST_CATEGORY_L1, ITEM_LIST_SHOWCASE, headerName))
+            putString(KEY_ITEM_LIST, joinDash(ITEM_LIST_SLASH_TOKONOW, ITEM_LIST_CATEGORY_L1, ITEM_LIST_SHOWCASE, headerName.trim()))
             putBundle(KEY_ITEMS, getItems(
                     isOos = isOos,
                     index = index,
@@ -180,7 +180,6 @@ class CategoryShowcaseAnalytic(
         categoryIdL1: String,
         index: Int,
         productId: String,
-        localWarehouseId: String,
         isOos: Boolean,
         name: String,
         price: Long,
@@ -192,11 +191,11 @@ class CategoryShowcaseAnalytic(
             putString(EVENT, EVENT_ADD_TO_CART)
             putString(EVENT_ACTION, EVENT_ACTION_CLICK_ATC_ON_SHOWCASE)
             putString(EVENT_CATEGORY, EVENT_CATEGORY_PAGE_L1)
-            putString(EVENT_LABEL, joinDash(categoryIdL1, index.toString(), productId, localWarehouseId))
+            putString(EVENT_LABEL, joinDash(categoryIdL1, headerName.trim(), index.toString(), productId))
             putString(KEY_TRACKER_ID, ID_CLICK_ATC_ON_SHOWCASE)
             putString(KEY_BUSINESS_UNIT, BUSINESS_UNIT_GROCERIES)
             putString(KEY_CURRENT_SITE, CURRENT_SITE_TOKOPEDIA_MARKET_PLACE)
-            putString(KEY_ITEM_LIST, joinDash(ITEM_LIST_SLASH_TOKONOW, ITEM_LIST_CATEGORY_L1, ITEM_LIST_SHOWCASE, headerName))
+            putString(KEY_ITEM_LIST, joinDash(ITEM_LIST_SLASH_TOKONOW, ITEM_LIST_CATEGORY_L1, ITEM_LIST_SHOWCASE, headerName.trim()))
             putBundle(KEY_ITEMS, getAtcItems(
                     categoryId = categoryIdL1,
                     isOos = isOos,
@@ -213,13 +212,19 @@ class CategoryShowcaseAnalytic(
     }
 
     // Tracker ID: 43854
-    fun sendClickArrowButtonShowcaseLEvent(categoryIdL1: String, categoryIdL2: String, warehouseId: String) {
+    fun sendClickArrowButtonShowcaseLEvent(
+        categoryIdL1: String,
+        categoryIdL2: String,
+        warehouseId: String,
+        headerName: String
+    ) {
         Tracker.Builder()
             .setEvent(EVENT_CLICK_GROCERIES)
             .setEventAction(EVENT_ACTION_CLICK_ARROW_BUTTON_SHOWCASE)
             .setEventCategory(EVENT_CATEGORY_PAGE_L1)
-            .setEventLabel(joinDash(categoryIdL1, categoryIdL2, warehouseId))
+            .setEventLabel(joinDash(categoryIdL1, categoryIdL2, headerName))
             .setCustomProperty(KEY_TRACKER_ID, ID_CLICK_ARROW_BUTTON_SHOWCASE)
+            .setCustomProperty(KEY_WAREHOUSE_ID, warehouseId)
             .setBusinessUnit(BUSINESS_UNIT_GROCERIES)
             .setCurrentSite(CURRENT_SITE_TOKOPEDIA_MARKET_PLACE)
             .build()

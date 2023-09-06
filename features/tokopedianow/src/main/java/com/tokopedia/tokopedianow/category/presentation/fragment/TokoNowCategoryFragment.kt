@@ -915,7 +915,6 @@ class TokoNowCategoryFragment :
                 categoryIdL1 = categoryIdL1,
                 index = model.position,
                 productId = model.productRecommendation.getProductId(),
-                localWarehouseId = viewModel.getWarehouseId(),
                 isOos = model.productRecommendation.productCardModel.isOos(),
                 name = model.productRecommendation.getProductName(),
                 price = model.productRecommendation.getProductPrice().toIntSafely(),
@@ -954,7 +953,6 @@ class TokoNowCategoryFragment :
             headerName = headerName,
             index = index.getTrackerPosition(),
             productId = productId,
-            localWarehouseId = viewModel.getWarehouseId(),
             isOos = isOos,
             name = productName,
             price = productPrice.getDigits()?.toLong().orZero(),
@@ -979,7 +977,6 @@ class TokoNowCategoryFragment :
             headerName = headerName,
             index = index.getTrackerPosition(),
             productId = productId,
-            localWarehouseId = viewModel.getWarehouseId(),
             isOos = isOos,
             name = productName,
             price = productPrice.getDigits()?.toLong().orZero(),
@@ -1001,7 +998,6 @@ class TokoNowCategoryFragment :
             headerName = headerName,
             index = index.getTrackerPosition(),
             productId = productId,
-            localWarehouseId = viewModel.getWarehouseId(),
             isOos = isOos,
             name = productName,
             price = productPrice.getDigits()?.toLong().orZero(),
@@ -1023,7 +1019,6 @@ class TokoNowCategoryFragment :
             headerName = headerName,
             index = index.getTrackerPosition(),
             productId = productId,
-            localWarehouseId = viewModel.getWarehouseId(),
             isOos = isOos,
             name = productName,
             price = productPrice.getDigits()?.toLong().orZero(),
@@ -1059,32 +1054,38 @@ class TokoNowCategoryFragment :
     }
 
     private fun clickCategoryMenu(
-        categoryRecomIdL1: String
+        categoryRecomIdL1: String,
+        headerName: String
     ) {
         analytic.categoryMenuAnalytic.sendClickCategoryRecomWidgetEvent(
             categoryIdL1 = categoryIdL1,
             categoryRecomIdL1 = categoryRecomIdL1,
-            warehouseId = viewModel.getWarehouseId()
+            warehouseId = viewModel.getWarehouseId(),
+            headerName = headerName
         )
     }
 
     private fun impressCategoryMenu(
-        categoryRecomIdL1: String
+        categoryRecomIdL1: String,
+        headerName: String
     ) {
         analytic.categoryMenuAnalytic.sendImpressionCategoryRecomWidgetEvent(
             categoryIdL1 = categoryIdL1,
             categoryRecomIdL1 = categoryRecomIdL1,
-            warehouseId = viewModel.getWarehouseId()
+            warehouseId = viewModel.getWarehouseId(),
+            headerName = headerName
         )
     }
 
     private fun clickSeeMoreShowcase(
+        headerName: String,
         categoryIdL2: String
     ) {
         analytic.categoryShowcaseAnalytic.sendClickArrowButtonShowcaseLEvent(
             categoryIdL1 = categoryIdL1,
             categoryIdL2 = categoryIdL2,
-            warehouseId = viewModel.getWarehouseId()
+            warehouseId = viewModel.getWarehouseId(),
+            headerName = headerName
         )
     }
 
@@ -1093,7 +1094,6 @@ class TokoNowCategoryFragment :
             categoryIdL1 = categoryIdL1,
             index = model.index,
             productId = model.product.productId,
-            localWarehouseId = viewModel.getWarehouseId(),
             isOos = model.product.isOos(),
             name = model.product.name,
             price = model.product.getPriceLong(),

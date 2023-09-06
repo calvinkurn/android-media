@@ -104,6 +104,7 @@ object TokoNowCommonAnalyticConstants {
         const val ITEM_LIST_SLASH_TOKONOW = "/tokonow"
         const val ITEM_LIST_PRODUCT_CARD = "product card"
         const val ITEM_LIST_SIMILAR_PRODUCT_RECOM = "similar product recom"
+        const val NULL = "null"
     }
 
     object ACTION{
