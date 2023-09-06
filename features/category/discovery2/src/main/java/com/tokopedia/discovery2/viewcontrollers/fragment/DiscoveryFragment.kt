@@ -122,6 +122,7 @@ import com.tokopedia.discovery2.viewmodel.livestate.GoToAgeRestriction
 import com.tokopedia.discovery2.viewmodel.livestate.RouteToApplink
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -285,6 +286,8 @@ open class DiscoveryFragment :
     private var isLightThemeStatusBar: Boolean? = null
 
     companion object {
+        private const val FIRST_POSITION = 0
+
         fun getInstance(
             endPoint: String?,
             queryParameterMap: Map<String, String?>?
@@ -464,6 +467,7 @@ open class DiscoveryFragment :
                         }
                     }
                 }
+                enableRefreshWhenFirstItemCompletelyVisible()
             }
 
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -559,6 +563,13 @@ open class DiscoveryFragment :
             activity?.let {
                 navToolbar.setupToolbarWithStatusBar(it)
             }
+        }
+    }
+
+    private fun enableRefreshWhenFirstItemCompletelyVisible() {
+        if (!mSwipeRefreshLayout.isRefreshing) {
+            val firstPosition: Int = staggeredGridLayoutManager?.findFirstCompletelyVisibleItemPositions(null)?.getOrNull(FIRST_POSITION).orZero()
+            mSwipeRefreshLayout.isEnabled = firstPosition == FIRST_POSITION
         }
     }
 
