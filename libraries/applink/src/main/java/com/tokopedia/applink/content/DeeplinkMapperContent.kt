@@ -8,7 +8,6 @@ import com.tokopedia.applink.home.DeeplinkMapperHome
 import com.tokopedia.applink.internal.ApplinkConsInternalHome
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_AFFILIATE_CREATE_POST_V2
-import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_FEED_BROWSE
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_FEED_CREATION_PRODUCT_SEARCH
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_FEED_CREATION_SHOP_SEARCH
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_PRODUCT_PICKER_FROM_SHOP
@@ -57,7 +56,7 @@ object DeeplinkMapperContent {
         return if (pathSegments.startsWith("detail/", false)) {
             goToAppLinkFeedDetailInternal(uri)
         } else if (pathSegments.startsWith("browse", false)) {
-            INTERNAL_FEED_BROWSE
+            "${ApplinkConstInternalContent.INTERNAL_CONTENT}/browse"
         } else if (pathSegments.startsWith("creation-product-search", false)) {
             INTERNAL_FEED_CREATION_PRODUCT_SEARCH
         } else if (pathSegments.startsWith("creation-shop-search", false)) {
