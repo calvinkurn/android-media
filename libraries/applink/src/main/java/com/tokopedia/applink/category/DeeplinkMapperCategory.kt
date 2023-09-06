@@ -41,9 +41,6 @@ object DeeplinkMapperCategory {
     }
 
     fun getRegisteredNavigationCatalog(deeplink: String): String {
-        val appLink = Uri.parse(deeplink)
-
-
         return deeplink.replace(DeeplinkConstant.SCHEME_TOKOPEDIA, DeeplinkConstant.SCHEME_INTERNAL)
     }
 

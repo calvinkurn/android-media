@@ -5,13 +5,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
+import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.catalog.R
 import com.tokopedia.catalog.databinding.FragmentCatalogProductListBinding
 import com.tokopedia.catalog.di.DaggerCatalogComponent
+import com.tokopedia.catalog.ui.adapter.CatalogDiffutilAdapter
+import com.tokopedia.catalog.ui.adapter.CatalogProductListAdapterFactoryImpl
 import com.tokopedia.catalog.ui.viewmodel.CatalogProductListViewModel
 import com.tokopedia.common_category.constants.CategoryNavConstants
 import com.tokopedia.common_category.interfaces.QuickFilterListener
@@ -25,6 +32,7 @@ import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.common.helper.getSortFilterCount
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
@@ -37,11 +45,13 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import kotlinx.android.synthetic.main.fragment_catalog_detail_product_listing.*
 import javax.inject.Inject
 
 
-class CatalogProductListFragment : BaseDaggerFragment(), ChooseAddressWidget.ChooseAddressWidgetListener,
+class CatalogProductListFragment :
+    BaseListFragment<Visitable<*>, CatalogProductListAdapterFactoryImpl>(),
+
+    ChooseAddressWidget.ChooseAddressWidgetListener,
     QuickFilterListener, SortFilterBottomSheet.Callback {
 
     @Inject
@@ -49,24 +59,48 @@ class CatalogProductListFragment : BaseDaggerFragment(), ChooseAddressWidget.Cho
 
     private var binding by autoClearedNullable<FragmentCatalogProductListBinding>()
 
-    private var sortFilterBottomSheet: SortFilterBottomSheet? = null
+    private val sortFilterBottomSheet: SortFilterBottomSheet by lazy {
+        SortFilterBottomSheet()
+    }
 
     private var userAddressData: LocalCacheModel? = null
 
-    val userSession: UserSession by lazy {
+    private val userSession: UserSession by lazy {
         UserSession(activity)
+    }
+
+    private val catalogTitle: String by lazy {
+        arguments?.getString(ARG_EXTRA_CATALOG_TITLE).orEmpty()
+    }
+
+    private val catalogId: String by lazy {
+        arguments?.getString(ARG_EXTRA_CATALOG_ID).orEmpty()
+    }
+
+    private val productSortingStatus: String by lazy {
+        arguments?.getString(ARG_EXTRA_PRODUCT_SORTING_STATUS).orEmpty()
     }
 
     private val PAGING_ROW_COUNT = 20
 
+    private val products = ArrayList<Visitable<*>>()
 
     companion object {
+        private const val SHOP_TIER_VALUE = 2
         private const val ARG_EXTRA_CATALOG_ID = "ARG_EXTRA_CATALOG_ID"
+        private const val ARG_EXTRA_PRODUCT_SORTING_STATUS = "ARG_EXTRA_PRODUCT_SORTING_STATUS"
+        private const val ARG_EXTRA_CATALOG_TITLE = "ARG_EXTRA_CATALOG_TITLE"
         const val CATALOG_PRODUCT_LIST_PAGE_FRAGMENT_TAG = "CATALOG_PRODUCT_LIST_PAGE_FRAGMENT_TAG"
-        fun newInstance(catalogId: String): CatalogProductListFragment {
+        fun newInstance(
+            catalogId: String,
+            catalogTitle: String,
+            productSortingStatus: String
+        ): CatalogProductListFragment {
             val fragment = CatalogProductListFragment()
             val bundle = Bundle()
             bundle.putString(ARG_EXTRA_CATALOG_ID, catalogId)
+            bundle.putString(ARG_EXTRA_CATALOG_TITLE, catalogTitle)
+            bundle.putString(ARG_EXTRA_PRODUCT_SORTING_STATUS, productSortingStatus)
             fragment.arguments = bundle
             return fragment
         }
@@ -88,10 +122,10 @@ class CatalogProductListFragment : BaseDaggerFragment(), ChooseAddressWidget.Cho
         initSearchQuickSortFilter()
         viewModel.fetchQuickFilters(getQuickFilterParams())
         viewModel.fetchDynamicAttribute(getDynamicFilterParams())
-        sortFilterBottomSheet = SortFilterBottomSheet()
     }
 
-    private fun loadPage(){
+
+    private fun loadPage() {
         viewModel.quickFilterClicked.value = true
         setSortFilterIndicatorCounter()
     }
@@ -100,6 +134,7 @@ class CatalogProductListFragment : BaseDaggerFragment(), ChooseAddressWidget.Cho
         binding?.apply {
             toolbar.shareButton?.hide()
             toolbar.searchButton?.hide()
+            toolbar.title = catalogTitle
             toolbar.cartButton?.setOnClickListener {
                 RouteManager.route(context, ApplinkConst.CART)
             }
@@ -107,7 +142,6 @@ class CatalogProductListFragment : BaseDaggerFragment(), ChooseAddressWidget.Cho
                 activity?.finish()
             }
         }
-
     }
 
     override fun getScreenName() = CatalogProductListFragment::class.java.canonicalName.orEmpty()
@@ -119,6 +153,23 @@ class CatalogProductListFragment : BaseDaggerFragment(), ChooseAddressWidget.Cho
             .inject(this)
     }
 
+    override fun loadData(page: Int) {
+        isLoadingInitialData = false
+        viewModel.fetchProductListing(getProductListParams(page))
+    }
+
+    override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, CatalogProductListAdapterFactoryImpl> {
+        return CatalogDiffutilAdapter(adapterTypeFactory)
+    }
+
+    override fun getAdapterTypeFactory(): CatalogProductListAdapterFactoryImpl {
+        return CatalogProductListAdapterFactoryImpl()
+    }
+
+    override fun onItemClicked(t: Visitable<*>?) {
+
+    }
+
     private fun initChooseAddressWidget() {
         fetchUserLatestAddressData()
         binding?.chooseAddressWidget?.bindChooseAddress(this)
@@ -127,17 +178,34 @@ class CatalogProductListFragment : BaseDaggerFragment(), ChooseAddressWidget.Cho
     private fun initSearchQuickSortFilter() {
         if (viewModel.searchParametersMap.value == null) {
             addDefaultSelectedSort()
-            viewModel.searchParametersMap.value = viewModel.searchParameter.getSearchParameterHashMap()
+            viewModel.searchParametersMap.value =
+                viewModel.searchParameter.getSearchParameterHashMap()
         }
     }
 
     private fun addDefaultSelectedSort() {
         if (viewModel.searchParameter.get(CatalogSearchApiConst.OB).isEmpty()) {
-            viewModel.searchParameter.set(CatalogSearchApiConst.OB, CatalogSearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SORT)
+            viewModel.searchParameter.set(
+                CatalogSearchApiConst.OB,
+                CatalogSearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SORT
+            )
         }
     }
 
-    private fun setupObserver(){
+    private fun setupObserver() {
+        viewModel.productList.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    products.addAll(it.data)
+                    renderList(products)
+                }
+
+                is Fail -> {
+                    binding?.searchProductQuickSortFilter?.hide()
+                }
+            }
+        }
+
         viewModel.quickFilterClicked.observe(
             viewLifecycleOwner
         ) {
@@ -153,11 +221,10 @@ class CatalogProductListFragment : BaseDaggerFragment(), ChooseAddressWidget.Cho
                 }
 
                 is Fail -> {
-                    search_product_quick_sort_filter.hide()
+                    binding?.searchProductQuickSortFilter?.hide()
                 }
             }
         }
-
         viewModel.dynamicFilterModel.observe(viewLifecycleOwner) {
             it?.let { dm ->
                 setDynamicFilter(dm)
@@ -208,7 +275,10 @@ class CatalogProductListFragment : BaseDaggerFragment(), ChooseAddressWidget.Cho
     }
 
     private fun initFilterControllerForQuickFilter(quickFilterList: List<Filter>) {
-        viewModel.filterController?.initFilterController(viewModel.searchParameter.getSearchParameterHashMap(), quickFilterList)
+        viewModel.filterController?.initFilterController(
+            viewModel.searchParameter.getSearchParameterHashMap(),
+            quickFilterList
+        )
     }
 
     private fun convertToSortFilterItem(title: String, options: List<Option>) =
@@ -253,11 +323,14 @@ class CatalogProductListFragment : BaseDaggerFragment(), ChooseAddressWidget.Cho
             sortFilterItemShowNew(item, quickFilterOption.isNew)
         }
     }
+
     private fun sortFilterItemShowNew(item: SortFilterItem, isNew: Boolean) {
         item.refChipUnify.showNewNotification = isNew
     }
+
     private fun setSortFilterIndicatorCounter() {
-        viewModel.selectedSortIndicatorCount.value = getSortFilterCount(viewModel.searchParameter.getSearchParameterMap())
+        viewModel.selectedSortIndicatorCount.value =
+            getSortFilterCount(viewModel.searchParameter.getSearchParameterMap())
     }
 
     override fun onLocalizingAddressUpdatedFromWidget() {
@@ -335,7 +408,10 @@ class CatalogProductListFragment : BaseDaggerFragment(), ChooseAddressWidget.Cho
             putString(CategoryNavConstants.Q, "")
             putString(CategoryNavConstants.SOURCE, CatalogConstant.QUICK_FILTER_SOURCE)
         }
-        param.putString(CatalogConstant.QUICK_FILTER_PARAMS, createParametersForQuery(searchFilterParams.parameters))
+        param.putString(
+            CatalogConstant.QUICK_FILTER_PARAMS,
+            createParametersForQuery(searchFilterParams.parameters)
+        )
         return param
     }
 
@@ -358,7 +434,8 @@ class CatalogProductListFragment : BaseDaggerFragment(), ChooseAddressWidget.Cho
         applySort(applySortFilterModel)
         viewModel.filterController?.refreshMapParameter(applySortFilterModel.mapParameter)
         viewModel.searchParameter.getSearchParameterHashMap().clear()
-        viewModel.searchParameter.getSearchParameterHashMap().putAll(applySortFilterModel.mapParameter)
+        viewModel.searchParameter.getSearchParameterHashMap()
+            .putAll(applySortFilterModel.mapParameter)
         viewModel.searchParametersMap.value = viewModel.searchParameter.getSearchParameterHashMap()
 //        reloadData()
     }
@@ -386,13 +463,15 @@ class CatalogProductListFragment : BaseDaggerFragment(), ChooseAddressWidget.Cho
             userAddressData = ChooseAddressUtils.getLocalizingAddressData(it)
         }
     }
+
     private fun checkAddressUpdate(isReload: Boolean = true) {
         context?.let {
             if (userAddressData != null) {
                 if (ChooseAddressUtils.isLocalizingAddressHasUpdated(it, userAddressData!!)) {
                     userAddressData = ChooseAddressUtils.getLocalizingAddressData(it)
                     if (isReload) {
-//                        refreshPage()
+                        products.clear()
+                        viewModel.fetchProductListing(getProductListParams(viewModel.pageCount))
                     }
                 }
             }
@@ -426,19 +505,28 @@ class CatalogProductListFragment : BaseDaggerFragment(), ChooseAddressWidget.Cho
             putString(CategoryNavConstants.USER_ID, userSession.userId)
             putString(CategoryNavConstants.ROWS, PAGING_ROW_COUNT.toString())
             putString(CategoryNavConstants.SOURCE, CatalogConstant.SOURCE)
-//            putString(CategoryNavConstants.CTG_ID, catalogId)
+            putString(CategoryNavConstants.CTG_ID, catalogId)
             putString(CategoryNavConstants.USER_CITY_ID, userAddressData?.city_id ?: "")
             putString(CategoryNavConstants.USER_DISTRICT_ID, userAddressData?.district_id ?: "")
-//            if (productSortingStatus == 1) {
-//                putInt(CategoryNavConstants.SHOP_TIER,
-//                    CatalogDetailProductListingFragment.SHOP_TIER_VALUE
-//                )
-//            }
+            if (productSortingStatus.toIntSafely() == 1) {
+                putInt(
+                    CategoryNavConstants.SHOP_TIER,
+                    SHOP_TIER_VALUE
+                )
+            }
             viewModel.searchParametersMap.value?.let { safeSearchParams ->
                 putAllString(safeSearchParams)
             }
         }
-        param.putString(CatalogConstant.PRODUCT_PARAMS, createParametersForQuery(searchProductRequestParams.parameters))
+        param.putString(
+            CatalogConstant.PRODUCT_PARAMS,
+            createParametersForQuery(searchProductRequestParams.parameters)
+        )
         return param
     }
+
+
+    override fun getRecyclerView(view: View?): RecyclerView? = binding?.productRecyclerview
+
+    override fun getSwipeRefreshLayout(view: View?) = binding?.swipeRefreshLayout
 }

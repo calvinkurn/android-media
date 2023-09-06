@@ -40,9 +40,11 @@
         app:layout_constraintTop_toBottomOf="@+id/search_product_quick_sort_filter" />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/choose_address_widget">
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/choose_address_widget"
+        app:layout_constraintBottom_toBottomOf="parent">
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/product_recyclerview"
             android:layout_width="match_parent"
@@ -53,15 +55,15 @@
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 
-<!--    <include-->
-<!--        android:id="@+id/layouNoData"-->
-<!--        layout="@layout/catalog_products_no_data_view"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        app:layout_constraintTop_toBottomOf="@id/search_product_quick_sort_filter"-->
-<!--        android:visibility="gone"-->
-<!--        tools:visibility="visible"-->
-<!--        android:layout_marginStart="16dp"-->
-<!--        android:layout_marginEnd="16dp"-->
-<!--        />-->
+    <include
+        android:id="@+id/layouNoData"
+        layout="@layout/catalog_products_no_data_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/choose_address_widget"
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,16 +1,17 @@
-package com.tokopedia.oldcatalog.model.raw
+package com.tokopedia.catalog.domain.model
 
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.catalog.ui.adapter.CatalogProductListAdapterFactory
 import com.tokopedia.oldcatalog.adapter.factory.CatalogTypeFactory
 import com.tokopedia.common_category.model.productModel.BadgesItem
 import com.tokopedia.topads.sdk.domain.model.ImpressHolder
 import kotlinx.android.parcel.Parcelize
 import java.util.*
 
-data class CatalogSearchProductResponse(
+data class CatalogSearchProductForReimaganeResponse(
         @SerializedName("ace_search_product_v4")
         @Expose
         val searchProduct: SearchProduct = SearchProduct()
@@ -121,7 +122,7 @@ data class CatalogProductItem(
 
         @SerializedName("categoryId")
         @Expose
-        val categoryId: Int = 0,
+        val categoryId: Long = 0,
 
         @SerializedName("categoryName")
         @Expose
@@ -207,10 +208,10 @@ data class CatalogProductItem(
         @Expose
         var countReview: Int = 0
 
-) : ImpressHolder() , Parcelable , Visitable<CatalogTypeFactory> {
+) : ImpressHolder() , Parcelable , Visitable<CatalogProductListAdapterFactory> {
 
-    override fun type(typeFactory: CatalogTypeFactory?): Int {
-        return typeFactory!!.type(this)
+    override fun type(typeFactory: CatalogProductListAdapterFactory): Int {
+        return typeFactory.type(this)
     }
 }
 
