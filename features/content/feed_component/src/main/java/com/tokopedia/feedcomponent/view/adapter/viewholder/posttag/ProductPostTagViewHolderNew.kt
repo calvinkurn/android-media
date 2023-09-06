@@ -26,6 +26,7 @@ import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import kotlin.math.roundToInt
+import com.tokopedia.content.common.R as contentCommonR
 
 private const val RATING_FORMAT = 20.0
 
@@ -158,8 +159,8 @@ class ProductPostTagViewHolderNew(
 
     private fun setGradientColorForProgressBar(item: ProductPostTagModelNew ){
         val progressBarColor: IntArray = intArrayOf(
-            ContextCompat.getColor(itemView.context, com.tokopedia.feedcomponent.R.color.content_dms_asgc_progress_0_color),
-            ContextCompat.getColor(itemView.context, com.tokopedia.feedcomponent.R.color.content_dms_asgc_progress_100_color)
+            ContextCompat.getColor(itemView.context, contentCommonR.color.content_dms_asgc_progress_0_color),
+            ContextCompat.getColor(itemView.context, contentCommonR.color.content_dms_asgc_progress_100_color)
         )
 
         val value = (item.product.stockSoldPercentage).roundToInt()

@@ -27,6 +27,7 @@ import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
 import java.util.*
 import kotlin.math.roundToInt
+import com.tokopedia.content.common.R as contentCommonR
 
 /**
  * @author by shruti on 01/09/22
@@ -97,8 +98,8 @@ class FlashSaleRilisanCampaignOngoingView @JvmOverloads constructor(
     }
     private fun setGradientColorForProgressBar(){
         val progressBarColor: IntArray = intArrayOf(
-            MethodChecker.getColor(context, com.tokopedia.feedcomponent.R.color.content_dms_asgc_progress_0_color),
-            MethodChecker.getColor(context, com.tokopedia.feedcomponent.R.color.content_dms_asgc_progress_100_color)
+            MethodChecker.getColor(context, contentCommonR.color.content_dms_asgc_progress_0_color),
+            MethodChecker.getColor(context, contentCommonR.color.content_dms_asgc_progress_100_color)
         )
         stockProgressBar.progressBarColor = progressBarColor
 

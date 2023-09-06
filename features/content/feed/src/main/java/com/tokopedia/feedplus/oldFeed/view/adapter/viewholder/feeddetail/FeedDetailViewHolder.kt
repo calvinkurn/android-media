@@ -58,11 +58,11 @@ class FeedDetailViewHolder(itemView: View, private val viewListener: FeedPlusDet
         intArrayOf(
             MethodChecker.getColor(
                 itemView.context,
-                feedComponentR.color.content_dms_asgc_progress_0_color
+                contentCommonR.color.content_dms_asgc_progress_0_color
             ),
             MethodChecker.getColor(
                 itemView.context,
-                feedComponentR.color.content_dms_asgc_progress_100_color
+                contentCommonR.color.content_dms_asgc_progress_100_color
             )
         )
     }
