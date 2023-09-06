@@ -2,6 +2,7 @@ package com.tokopedia.stories.view.activity
 
 import android.content.res.Resources
 import android.os.Bundle
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.stories.R
@@ -59,21 +60,26 @@ class StoriesActivity : BaseActivity() {
     }
 
     private fun openFragment() {
-        supportFragmentManager.executePendingTransactions()
-        val existingFragment = supportFragmentManager.findFragmentByTag(StoriesGroupFragment.TAG)
-        if (existingFragment is StoriesGroupFragment && existingFragment.isVisible) return
+        supportFragmentManager.apply {
+            executePendingTransactions()
+            val existingFragment = findFragmentByTag(StoriesGroupFragment.TAG)
+            if (existingFragment is StoriesGroupFragment && existingFragment.isVisible) return
+            beginTransaction().apply {
+                replace(
+                    binding.fragmentContainer.id,
+                    getStoriesFragment(),
+                    StoriesGroupFragment.TAG,
+                )
+            }.commit()
+        }
+    }
 
-        supportFragmentManager.beginTransaction().apply {
-            add(
-                binding.fragmentContainer.id,
-                StoriesGroupFragment.getFragment(
-                    fragmentManager = supportFragmentManager,
-                    classLoader = classLoader,
-                    bundle = bundle ?: Bundle(),
-                ),
-                StoriesGroupFragment.TAG,
-            )
-        }.commit()
+    private fun getStoriesFragment(): Fragment {
+        return StoriesGroupFragment.getFragment(
+            fragmentManager = supportFragmentManager,
+            classLoader = classLoader,
+            bundle = bundle ?: Bundle(),
+        )
     }
 
     override fun onDestroy() {

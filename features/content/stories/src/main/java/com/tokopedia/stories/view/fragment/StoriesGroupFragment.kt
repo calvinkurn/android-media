@@ -22,6 +22,8 @@ import com.tokopedia.stories.view.model.StoriesGroupUiModel
 import com.tokopedia.stories.view.utils.isNetworkError
 import com.tokopedia.stories.view.viewmodel.StoriesViewModel
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction
+import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction.PauseStories
+import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction.ResumeStories
 import com.tokopedia.stories.view.viewmodel.event.StoriesUiEvent
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
@@ -71,11 +73,17 @@ class StoriesGroupFragment @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
         setupViews()
         setupObserver()
+        viewModelAction(StoriesUiAction.SetArgumentsData(arguments))
+    }
+
+    override fun onPause() {
+        super.onPause()
+        viewModelAction(PauseStories)
     }
 
     override fun onResume() {
         super.onResume()
-        viewModelAction(StoriesUiAction.SetArgumentsData(arguments))
+        viewModelAction(ResumeStories)
     }
 
     private fun viewModelAction(event: StoriesUiAction) {
@@ -141,7 +149,7 @@ class StoriesGroupFragment @Inject constructor(
         prevState: StoriesGroupUiModel?,
         state: StoriesGroupUiModel
     ) {
-        if (prevState == null || prevState.groupItems.size == state.groupItems.size) return
+        if (prevState == null || pagerAdapter.getCurrentData().size == state.groupItems.size) return
 
         if (state.groupItems.isEmpty()) {
             // TODO handle error empty data state here

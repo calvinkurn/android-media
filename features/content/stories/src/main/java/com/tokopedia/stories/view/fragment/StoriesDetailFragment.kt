@@ -62,6 +62,9 @@ class StoriesDetailFragment @Inject constructor(
     private val groupId: String
         get() = arguments?.getString(STORY_GROUP_ID).orEmpty()
 
+    private val isEligiblePage: Boolean
+        get() = groupId == viewModel.mGroupId
+
     override fun getScreenName(): String {
         return TAG
     }
@@ -100,7 +103,7 @@ class StoriesDetailFragment @Inject constructor(
             viewModel.uiEvent.collect { event ->
                 when (event) {
                     is StoriesUiEvent.ErrorDetailPage -> {
-                        if (viewModel.mGroupId != groupId) return@collect
+                        if (!isEligiblePage) return@collect
                         if (event.throwable.isNetworkError) {
                             // TODO handle error network here
                             showToast("error detail network ${event.throwable}")
@@ -180,8 +183,7 @@ class StoriesDetailFragment @Inject constructor(
                          * it also causing broken timer experience when (ui action swipe)
                          * invalid -> groupId != viewModel.mGroupId
                          **/
-                        if (groupId != viewModel.mGroupId) return@StoriesDetailTimer
-                        viewModelAction(NextDetail)
+                        if (isEligiblePage) viewModelAction(NextDetail)
                     }
                 }
             }

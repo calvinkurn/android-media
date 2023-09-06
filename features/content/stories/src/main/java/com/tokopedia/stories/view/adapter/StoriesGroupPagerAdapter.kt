@@ -28,6 +28,8 @@ class StoriesGroupPagerAdapter(
         return groupData.groupItems.getOrNull(position)?.groupName.orEmpty()
     }
 
+    fun getCurrentData() = groupData.groupItems
+
     private fun getCurrentPageGroupId(instancePosition: Int): String {
         return groupData.groupItems.getOrNull(instancePosition)?.groupId.orEmpty()
     }

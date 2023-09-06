@@ -207,6 +207,7 @@ class StoriesViewModel @Inject constructor(
         isReset: Boolean = false,
         isSameContent: Boolean = false,
     ) {
+        if (position == -1) return
         mDetailPos.value = position
         val positionCached = mGroupItem.detail.selectedDetailPositionCached
         val currentDetail = mGroupItem.detail.copy(
