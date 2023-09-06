@@ -40,6 +40,7 @@ data class MedaliDetailPage(
     @SerializedName("coachMark") val coachMark: CoachMark? = null,
     @SerializedName("mission") val mission: Mission? = null,
     @SerializedName("benefit") val benefits: List<Benefit>? = null,
+    @SerializedName("section") val section: List<MdpSection>? = null,
     @SerializedName("benefitButton") val benefitButtons: List<BenefitButton>? = null
 )
 
@@ -65,6 +66,18 @@ data class Task(
     @SerializedName("isCompleted") val isCompleted: Boolean = false,
     @SerializedName("title") val title: String? = null,
     @SerializedName("progressInfo") val progressInfo: String? = null,
+)
+
+data class MdpSection(
+    @SerializedName("id") val id:  Int? = null,
+    @SerializedName("layout") val type: String? = null,
+    @SerializedName("medaliSectionTitle") val medaliSectionTitle: MedaliSectionTitle? = null,
+    @SerializedName("backgroundColor") val backgroundColor: String? = null,
+    @SerializedName("jsonParameter") val jsonParameter: String? = null,
+)
+
+data class MedaliSectionTitle(
+    @SerializedName("content") val content: String? = null
 )
 
 data class Benefit(
