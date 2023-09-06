@@ -173,19 +173,20 @@ open class GoToKycModule {
     @ActivityScope
     fun provideDefaultRemoteConfigProvider(
         @ApplicationContext context: Context,
-        remoteConfigImpl: FirebaseRemoteConfigImpl,
-        gson: Gson
+        remoteConfigImpl: FirebaseRemoteConfigImpl
     ): DefaultRemoteConfigProvider {
+
+        val gson = Gson()
 
         val kycConfigString = remoteConfigImpl.getString(RemoteConfigKey.GOTO_ONE_KYC_CONFIG)
         val kycAuroraConfigString = remoteConfigImpl.getString(RemoteConfigKey.GOTO_ONE_KYC_AURORA)
 
-        val customKycConfigs = Gson().parseDataFromString(
+        val customKycConfigs = gson.parseDataFromString(
             kycConfigString,
             UnifiedKycConfigs::class.java
         )
 
-        val customAuroraConfigs = Gson().parseDataFromString(
+        val customAuroraConfigs = gson.parseDataFromString(
             kycAuroraConfigString,
             UnifiedKycAuroraConfigs::class.java
         )
