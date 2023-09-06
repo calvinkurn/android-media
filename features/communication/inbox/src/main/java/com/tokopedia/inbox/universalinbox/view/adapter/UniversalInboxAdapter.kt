@@ -137,6 +137,7 @@ class UniversalInboxAdapter(
                     MenuItemType.REVIEW -> {
                         item.counter = counterData.othersUnread.reviewUnread
                     }
+                    else -> Unit // no-op
                 }
                 listIndex.add(index)
             } else if (item is UniversalInboxMenuSeparatorUiModel) { // Not in static menu anymore

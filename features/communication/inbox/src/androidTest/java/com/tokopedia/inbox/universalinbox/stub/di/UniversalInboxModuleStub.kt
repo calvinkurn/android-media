@@ -4,14 +4,14 @@ import android.content.Context
 import com.gojek.conversations.courier.BabbleCourierClient
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
-import com.tokopedia.inbox.universalinbox.stub.common.UniversalInboxMenuMapperStub
+import com.tokopedia.inbox.universalinbox.domain.mapper.UniversalInboxMenuMapper
+import com.tokopedia.inbox.universalinbox.stub.common.UniversalInboxMapperStub
 import com.tokopedia.inbox.universalinbox.stub.common.UserSessionStub
 import com.tokopedia.inbox.universalinbox.stub.common.util.FakeAbTestPlatformImpl
 import com.tokopedia.inbox.universalinbox.stub.data.repository.TokoChatRepositoryStub
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxResourceProvider
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxResourceProviderImpl
 import com.tokopedia.inbox.universalinbox.util.toggle.UniversalInboxAbPlatform
-import com.tokopedia.inbox.universalinbox.view.UniversalInboxMenuMapper
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.tokochat.config.di.qualifier.TokoChatQualifier
@@ -49,7 +49,7 @@ object UniversalInboxModuleStub {
     fun provideUniversalInboxMenuMapper(
         resourceProvider: UniversalInboxResourceProvider
     ): UniversalInboxMenuMapper {
-        return UniversalInboxMenuMapperStub(
+        return UniversalInboxMapperStub(
             resourceProvider
         )
     }

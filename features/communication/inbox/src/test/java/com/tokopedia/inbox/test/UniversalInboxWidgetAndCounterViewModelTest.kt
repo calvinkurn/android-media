@@ -4,9 +4,9 @@ import androidx.lifecycle.liveData
 import com.gojek.conversations.channel.ConversationsChannel
 import com.tokopedia.inbox.base.UniversalInboxViewModelTestFixture
 import com.tokopedia.inbox.universalinbox.data.entity.UniversalInboxAllCounterResponse
+import com.tokopedia.inbox.universalinbox.data.entity.UniversalInboxMenuAndWidgetMetaResponse
 import com.tokopedia.inbox.universalinbox.data.entity.UniversalInboxWidgetDataResponse
-import com.tokopedia.inbox.universalinbox.data.entity.UniversalInboxWidgetMetaResponse
-import com.tokopedia.inbox.universalinbox.data.entity.UniversalInboxWidgetWrapperResponse
+import com.tokopedia.inbox.universalinbox.data.entity.UniversalInboxWrapperResponse
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.GOJEK_TYPE
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxWidgetMetaUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxWidgetUiModel
@@ -23,9 +23,9 @@ import org.junit.Test
 class UniversalInboxWidgetAndCounterViewModelTest : UniversalInboxViewModelTestFixture() {
 
     private val dummyIcon = "99"
-    private val dummyWidgetMetaResponse = UniversalInboxWidgetWrapperResponse(
-        chatInboxWidgetMeta = UniversalInboxWidgetMetaResponse(
-            metaData = arrayListOf(
+    private val dummyWidgetMetaResponse = UniversalInboxWrapperResponse(
+        chatInboxMenu = UniversalInboxMenuAndWidgetMetaResponse(
+            widgetMenu = arrayListOf(
                 UniversalInboxWidgetDataResponse(
                     icon = dummyIcon,
                     type = GOJEK_TYPE

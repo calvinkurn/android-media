@@ -14,11 +14,11 @@ class UniversalInboxStaticMenuViewModelTest : UniversalInboxViewModelTestFixture
             // Given
             val dummyStaticMenu = listOf(UniversalInboxMenuSeparatorUiModel())
             every {
-                inboxMenuMapper.getStaticMenu(any())
+                inboxMenuMapper.getFallbackStaticMenu(any())
             } returns dummyStaticMenu
 
             // When
-            viewModel.generateStaticMenu()
+            viewModel.loadInboxMenuAndWidgetMeta()
 
             // Then
             Assert.assertEquals(

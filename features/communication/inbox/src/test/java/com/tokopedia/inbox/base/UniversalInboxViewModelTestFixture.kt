@@ -3,10 +3,10 @@ package com.tokopedia.inbox.base
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
-import com.tokopedia.inbox.universalinbox.domain.UniversalInboxGetAllCounterUseCase
-import com.tokopedia.inbox.universalinbox.domain.UniversalInboxGetAllDriverChannelsUseCase
-import com.tokopedia.inbox.universalinbox.domain.UniversalInboxGetWidgetMetaUseCase
-import com.tokopedia.inbox.universalinbox.view.UniversalInboxMenuMapper
+import com.tokopedia.inbox.universalinbox.domain.mapper.UniversalInboxMenuMapper
+import com.tokopedia.inbox.universalinbox.domain.usecase.UniversalInboxGetAllCounterUseCase
+import com.tokopedia.inbox.universalinbox.domain.usecase.UniversalInboxGetAllDriverChannelsUseCase
+import com.tokopedia.inbox.universalinbox.domain.usecase.UniversalInboxGetInboxMenuAndWidgetMetaUseCase
 import com.tokopedia.inbox.universalinbox.view.UniversalInboxViewModel
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
@@ -35,7 +35,7 @@ abstract class UniversalInboxViewModelTestFixture {
     protected lateinit var getAllCounterUseCase: UniversalInboxGetAllCounterUseCase
 
     @RelaxedMockK
-    protected lateinit var getWidgetMetaUseCase: UniversalInboxGetWidgetMetaUseCase
+    protected lateinit var getWidgetMetaUseCase: UniversalInboxGetInboxMenuAndWidgetMetaUseCase
 
     @RelaxedMockK
     protected lateinit var getRecommendationUseCase: GetRecommendationUseCase

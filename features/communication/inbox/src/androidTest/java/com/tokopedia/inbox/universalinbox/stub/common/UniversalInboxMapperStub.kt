@@ -2,7 +2,7 @@ package com.tokopedia.inbox.universalinbox.stub.common
 
 import com.tokopedia.inbox.universalinbox.stub.common.util.AndroidFileUtil
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxResourceProvider
-import com.tokopedia.inbox.universalinbox.view.UniversalInboxMenuMapper
+import com.tokopedia.inbox.universalinbox.domain.mapper.UniversalInboxMenuMapper
 import com.tokopedia.inbox.universalinbox.view.adapter.viewholder.UniversalInboxTopAdsBannerViewHolder.Companion.DIMEN_ID
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxTopAdsBannerUiModel
 import com.tokopedia.topads.sdk.TopAdsConstants
@@ -10,7 +10,7 @@ import com.tokopedia.topads.sdk.domain.model.TopAdsBannerResponse
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import javax.inject.Inject
 
-class UniversalInboxMenuMapperStub @Inject constructor(
+class UniversalInboxMapperStub @Inject constructor(
     resourceProvider: UniversalInboxResourceProvider
 ) : UniversalInboxMenuMapper(resourceProvider) {
 

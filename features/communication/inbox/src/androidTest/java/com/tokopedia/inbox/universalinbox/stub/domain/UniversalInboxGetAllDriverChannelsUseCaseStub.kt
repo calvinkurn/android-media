@@ -2,7 +2,7 @@ package com.tokopedia.inbox.universalinbox.stub.domain
 
 import androidx.lifecycle.LiveData
 import com.gojek.conversations.channel.ConversationsChannel
-import com.tokopedia.inbox.universalinbox.domain.UniversalInboxGetAllDriverChannelsUseCase
+import com.tokopedia.inbox.universalinbox.domain.usecase.UniversalInboxGetAllDriverChannelsUseCase
 import com.tokopedia.tokochat.config.repository.TokoChatRepository
 import javax.inject.Inject
 

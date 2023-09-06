@@ -7,6 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
@@ -36,7 +39,6 @@ import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.getHeadli
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.getRoleUser
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.getShopIdTracker
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.shouldRefreshProductRecommendation
-import com.tokopedia.inbox.universalinbox.util.UniversalInboxViewUtil
 import com.tokopedia.inbox.universalinbox.util.toggle.UniversalInboxAbPlatform
 import com.tokopedia.inbox.universalinbox.view.adapter.UniversalInboxAdapter
 import com.tokopedia.inbox.universalinbox.view.adapter.decorator.UniversalInboxRecommendationDecoration
@@ -53,8 +55,6 @@ import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxTopadsHeadl
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxWidgetUiModel
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.removeObservers
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -68,16 +68,16 @@ import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.topads.sdk.viewmodel.TopAdsHeadlineViewModel
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
-import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class UniversalInboxFragment @Inject constructor(
     var viewModel: UniversalInboxViewModel,
@@ -195,106 +195,110 @@ class UniversalInboxFragment @Inject constructor(
     }
 
     private fun setupObservers() {
-        viewModel.inboxMenu.observe(viewLifecycleOwner) {
-            binding?.inboxLayoutSwipeRefresh?.isRefreshing = false
-            if (it.isNotEmpty()) {
-                adapter.addItems(it)
-                binding?.inboxRv?.post {
-                    adapter.notifyItemRangeChanged(Int.ZERO, it.size - Int.ONE)
-                }
-            }
-            loadWidgetMetaAndCounter()
-            loadTopAdsAndRecommendation()
-        }
-
-        viewModel.widget.observe(viewLifecycleOwner) { (widget, counter) ->
-            if (adapter.isWidgetMetaAdded()) {
-                adapter.removeItemAt(Int.ZERO)
-            }
-            // If not empty (if empty then should hide) or Error, show the widget meta
-            if (widget.widgetList.isNotEmpty() || widget.isError) {
-                adapter.addItem(Int.ZERO, widget)
-            }
-            binding?.inboxRv?.post {
-                val rangePosition = adapter.getFirstTopAdsBannerPositionPair()?.first
-                adapter.notifyItemRangeChanged(Int.ZERO, rangePosition ?: adapter.itemCount)
-                counter?.let {
-                    trackInboxPageImpression(it)
-                }
-            }
-            observeDriverCounter() // Observe only after widget loaded
-        }
-
-        viewModel.allCounter.observe(viewLifecycleOwner) {
-            when (it) {
-                is Success -> {
-                    // Update notif & static menu counters
-                    if (activity is UniversalInboxActivity) {
-                        val notifUnread = it.data.notifCenterUnread.notifUnread.toIntOrZero()
-                        (activity as UniversalInboxActivity).updateNotificationCounter(
-                            UniversalInboxViewUtil.getStringCounter(
-                                notifUnread
-                            )
-                        )
-                    }
-                    val updatedMenuList = adapter.updateAllCounters(it.data)
-                    binding?.inboxRv?.post {
-                        if (updatedMenuList.isNotEmpty()) {
-                            adapter.notifyItemRangeChanged(Int.ZERO, updatedMenuList.size)
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.inboxMenu.collectLatest {
+                    binding?.inboxLayoutSwipeRefresh?.isRefreshing = false
+                    if (!it.isNullOrEmpty()) {
+                        adapter.addItems(it)
+                        binding?.inboxRv?.post {
+                            adapter.notifyItemRangeChanged(Int.ZERO, it.size - Int.ONE)
+                            loadTopAdsAndRecommendation()
                         }
                     }
                 }
-                is Fail -> {
-                    // No-op
-                }
             }
         }
+        //            loadWidgetMetaAndCounter()
 
-        viewModel.firstPageRecommendation.observe(viewLifecycleOwner) {
-            removeLoadMoreLoading()
-            when (it) {
-                is Success -> onSuccessGetFirstRecommendationData(it.data)
-                is Fail -> {
-                    // no-op
-                }
-            }
-        }
+//        viewModel.widget.observe(viewLifecycleOwner) { (widget, counter) ->
+//            if (adapter.isWidgetMetaAdded()) {
+//                adapter.removeItemAt(Int.ZERO)
+//            }
+//            // If not empty (if empty then should hide) or Error, show the widget meta
+//            if (widget.widgetList.isNotEmpty() || widget.isError) {
+//                adapter.addItem(Int.ZERO, widget)
+//            }
+//            binding?.inboxRv?.post {
+//                val rangePosition = adapter.getFirstTopAdsBannerPositionPair()?.first
+//                adapter.notifyItemRangeChanged(Int.ZERO, rangePosition ?: adapter.itemCount)
+//                counter?.let {
+//                    trackInboxPageImpression(it)
+//                }
+//            }
+//            observeDriverCounter() // Observe only after widget loaded
+//        }
 
-        viewModel.morePageRecommendation.observe(viewLifecycleOwner) {
-            removeLoadMoreLoading()
-            when (it) {
-                is Success -> {
-                    addRecommendationItem(it.data)
-                }
-                is Fail -> {
-                    // no-op
-                }
-            }
-        }
+//        viewModel.allCounter.observe(viewLifecycleOwner) {
+//            when (it) {
+//                is Success -> {
+//                    // Update notif & static menu counters
+//                    if (activity is UniversalInboxActivity) {
+//                        val notifUnread = it.data.notifCenterUnread.notifUnread.toIntOrZero()
+//                        (activity as UniversalInboxActivity).updateNotificationCounter(
+//                            UniversalInboxViewUtil.getStringCounter(
+//                                notifUnread
+//                            )
+//                        )
+//                    }
+//                    val updatedMenuList = adapter.updateAllCounters(it.data)
+//                    binding?.inboxRv?.post {
+//                        if (updatedMenuList.isNotEmpty()) {
+//                            adapter.notifyItemRangeChanged(Int.ZERO, updatedMenuList.size)
+//                        }
+//                    }
+//                }
+//                is Fail -> {
+//                    // No-op
+//                }
+//            }
+//        }
 
-        viewModel.error.observe(viewLifecycleOwner) {
-            Timber.d(it.first)
-            UniversalInboxErrorLogger.logExceptionToServerLogger(
-                it.first,
-                userSession.deviceId.orEmpty(),
-                it.second
-            )
-        }
+//        viewModel.firstPageRecommendation.observe(viewLifecycleOwner) {
+//            removeLoadMoreLoading()
+//            when (it) {
+//                is Success -> onSuccessGetFirstRecommendationData(it.data)
+//                is Fail -> {
+//                    // no-op
+//                }
+//            }
+//        }
+//
+//        viewModel.morePageRecommendation.observe(viewLifecycleOwner) {
+//            removeLoadMoreLoading()
+//            when (it) {
+//                is Success -> {
+//                    addRecommendationItem(it.data)
+//                }
+//                is Fail -> {
+//                    // no-op
+//                }
+//            }
+//        }
+
+//        viewModel.error.observe(viewLifecycleOwner) {
+//            Timber.d(it.first)
+//            UniversalInboxErrorLogger.logExceptionToServerLogger(
+//                it.first,
+//                userSession.deviceId.orEmpty(),
+//                it.second
+//            )
+//        }
     }
 
-    private fun observeDriverCounter() {
-        viewLifecycleOwner.removeObservers(viewModel.driverChatCounter)
-        viewModel.driverChatCounter.let { liveData ->
-            liveData.observe(viewLifecycleOwner) {
-                viewModel.driverChatData = it // Always save data
-                when (it) {
-                    is Success -> onSuccessGetDriverChat(it.data.first, it.data.second)
-                    is Fail -> onErrorGetDriverChat(it.throwable)
-                    else -> Unit // no op
-                }
-            }
-        }
-    }
+//    private fun observeDriverCounter() {
+//        viewLifecycleOwner.removeObservers(viewModel.driverChatCounter)
+//        viewModel.driverChatCounter.let { liveData ->
+//            liveData.observe(viewLifecycleOwner) {
+//                viewModel.driverChatData = it // Always save data
+//                when (it) {
+//                    is Success -> onSuccessGetDriverChat(it.data.first, it.data.second)
+//                    is Fail -> onErrorGetDriverChat(it.throwable)
+//                    else -> Unit // no op
+//                }
+//            }
+//        }
+//    }
 
     private fun onSuccessGetDriverChat(activeChannel: Int, unreadTotal: Int) {
         /**
@@ -328,23 +332,23 @@ class UniversalInboxFragment @Inject constructor(
     }
 
     private fun addDriverWidget(activeChannel: Int, unreadTotal: Int) {
-        viewModel.driverChatWidgetData?.let { (position, data) ->
-            adapter.addWidget(
-                position,
-                UniversalInboxWidgetUiModel(
-                    icon = data.icon.toIntOrZero(),
-                    title = data.title,
-                    subtext = data.subtext.replace(
-                        oldValue = GOJEK_REPLACE_TEXT,
-                        newValue = "$activeChannel",
-                        ignoreCase = true
-                    ),
-                    applink = data.applink,
-                    counter = unreadTotal,
-                    type = GOJEK_TYPE
-                )
-            )
-        }
+//        viewModel.driverChatWidgetData?.let { (position, data) ->
+//            adapter.addWidget(
+//                position,
+//                UniversalInboxWidgetUiModel(
+//                    icon = data.icon.toIntOrZero(),
+//                    title = data.title,
+//                    subtext = data.subtext.replace(
+//                        oldValue = GOJEK_REPLACE_TEXT,
+//                        newValue = "$activeChannel",
+//                        ignoreCase = true
+//                    ),
+//                    applink = data.applink,
+//                    counter = unreadTotal,
+//                    type = GOJEK_TYPE
+//                )
+//            )
+//        }
     }
 
     private fun updateWidgetDriverCounter(
@@ -381,20 +385,20 @@ class UniversalInboxFragment @Inject constructor(
          */
         val driverChatWidgetPosition = adapter.getWidgetPosition(GOJEK_TYPE)
         if (driverChatWidgetPosition < Int.ZERO) {
-            viewModel.driverChatWidgetData?.let { (position, data) ->
-                adapter.addWidget(
-                    position,
-                    UniversalInboxWidgetUiModel(
-                        icon = data.icon.toIntOrZero(),
-                        title = data.title,
-                        subtext = data.subtext,
-                        applink = data.applink,
-                        counter = Int.ZERO,
-                        type = GOJEK_TYPE,
-                        isError = true
-                    )
-                )
-            }
+//            viewModel.driverChatWidgetData?.let { (position, data) ->
+//                adapter.addWidget(
+//                    position,
+//                    UniversalInboxWidgetUiModel(
+//                        icon = data.icon.toIntOrZero(),
+//                        title = data.title,
+//                        subtext = data.subtext,
+//                        applink = data.applink,
+//                        counter = Int.ZERO,
+//                        type = GOJEK_TYPE,
+//                        isError = true
+//                    )
+//                )
+//            }
         } else {
             adapter.updateWidgetCounter(driverChatWidgetPosition, Int.ZERO) {
                 it.isError = true
@@ -504,12 +508,12 @@ class UniversalInboxFragment @Inject constructor(
     }
 
     private fun setupInboxMenu() {
-        binding?.inboxLayoutSwipeRefresh?.isRefreshing = true
-        viewModel.generateStaticMenu()
+//        binding?.inboxLayoutSwipeRefresh?.isRefreshing = true
+//        viewModel.loadInboxMenuAndWidgetMeta()
     }
 
     override fun loadWidgetMetaAndCounter() {
-        viewModel.loadWidgetMetaAndCounter()
+//        viewModel.loadWidgetMetaAndCounter()
     }
 
     private fun loadTopAdsAndRecommendation() {
@@ -522,10 +526,10 @@ class UniversalInboxFragment @Inject constructor(
                     return@getTopAdsHeadlineData
                 }
                 setHeadlineIndexList(data)
-                viewModel.loadFirstPageRecommendation()
+//                viewModel.loadFirstPageRecommendation()
             },
             {
-                viewModel.loadFirstPageRecommendation()
+//                viewModel.loadFirstPageRecommendation()
             }
         )
     }
@@ -540,7 +544,7 @@ class UniversalInboxFragment @Inject constructor(
 
     private fun setupListeners() {
         binding?.inboxLayoutSwipeRefresh?.setColorSchemeResources(
-            com.tokopedia.unifyprinciples.R.color.Unify_GN500
+            unifyprinciplesR.color.Unify_GN500
         )
         binding?.inboxLayoutSwipeRefresh?.setOnRefreshListener {
             isAdded = false
@@ -590,7 +594,7 @@ class UniversalInboxFragment @Inject constructor(
                 loadWidgetMetaAndCounter()
             }
             GOJEK_TYPE -> {
-                viewModel.setAllDriverChannels()
+//                viewModel.setAllDriverChannels()
             }
         }
     }
@@ -657,6 +661,7 @@ class UniversalInboxFragment @Inject constructor(
                     reviewCounter = item.counter.toString()
                 )
             }
+            else -> Unit // no-op
         }
         context?.let {
             val intent = RouteManager.getIntent(it, item.applink)
@@ -679,7 +684,7 @@ class UniversalInboxFragment @Inject constructor(
 
     override fun onLoadMore(page: Int, totalItemsCount: Int) {
         showLoadMoreLoading()
-        viewModel.loadMoreRecommendation(page)
+//        viewModel.loadMoreRecommendation(page)
     }
 
     private fun showLoadMoreLoading() {
@@ -818,50 +823,50 @@ class UniversalInboxFragment @Inject constructor(
     override fun onWishlistV2Click(item: RecommendationItem, isAddWishlist: Boolean) {
         if (isAddWishlist) {
             // Anonymous used because we need RecommendationItem
-            viewModel.addWishlistV2(
-                item,
-                object : WishlistV2ActionListener {
-                    override fun onSuccessAddWishlist(
-                        result: AddToWishlistV2Response.Data.WishlistAddV2,
-                        productId: String
-                    ) {
-                        showSuccessAddWishlistV2(wishlistAddResult = result)
-                        if (item.isTopAds) {
-                            onClickTopAdsWishlistItem(item)
-                        }
-                    }
-                    override fun onErrorAddWishList(throwable: Throwable, productId: String) {
-                        showErrorAddRemoveWishlistV2(throwable = throwable)
-                    }
-
-                    override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {}
-                    override fun onSuccessRemoveWishlist(
-                        result: DeleteWishlistV2Response.Data.WishlistRemoveV2,
-                        productId: String
-                    ) {}
-                }
-            )
+//            viewModel.addWishlistV2(
+//                item,
+//                object : WishlistV2ActionListener {
+//                    override fun onSuccessAddWishlist(
+//                        result: AddToWishlistV2Response.Data.WishlistAddV2,
+//                        productId: String
+//                    ) {
+//                        showSuccessAddWishlistV2(wishlistAddResult = result)
+//                        if (item.isTopAds) {
+//                            onClickTopAdsWishlistItem(item)
+//                        }
+//                    }
+//                    override fun onErrorAddWishList(throwable: Throwable, productId: String) {
+//                        showErrorAddRemoveWishlistV2(throwable = throwable)
+//                    }
+//
+//                    override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {}
+//                    override fun onSuccessRemoveWishlist(
+//                        result: DeleteWishlistV2Response.Data.WishlistRemoveV2,
+//                        productId: String
+//                    ) {}
+//                }
+//            )
         } else {
-            viewModel.removeWishlistV2(
-                item,
-                object : WishlistV2ActionListener {
-                    override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {
-                        showErrorAddRemoveWishlistV2(throwable = throwable)
-                    }
-                    override fun onSuccessRemoveWishlist(
-                        result: DeleteWishlistV2Response.Data.WishlistRemoveV2,
-                        productId: String
-                    ) {
-                        showSuccessRemoveWishlistV2(wishListRemoveResult = result)
-                    }
-
-                    override fun onErrorAddWishList(throwable: Throwable, productId: String) {}
-                    override fun onSuccessAddWishlist(
-                        result: AddToWishlistV2Response.Data.WishlistAddV2,
-                        productId: String
-                    ) {}
-                }
-            )
+//            viewModel.removeWishlistV2(
+//                item,
+//                object : WishlistV2ActionListener {
+//                    override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {
+//                        showErrorAddRemoveWishlistV2(throwable = throwable)
+//                    }
+//                    override fun onSuccessRemoveWishlist(
+//                        result: DeleteWishlistV2Response.Data.WishlistRemoveV2,
+//                        productId: String
+//                    ) {
+//                        showSuccessRemoveWishlistV2(wishListRemoveResult = result)
+//                    }
+//
+//                    override fun onErrorAddWishList(throwable: Throwable, productId: String) {}
+//                    override fun onSuccessAddWishlist(
+//                        result: AddToWishlistV2Response.Data.WishlistAddV2,
+//                        productId: String
+//                    ) {}
+//                }
+//            )
         }
     }
 
