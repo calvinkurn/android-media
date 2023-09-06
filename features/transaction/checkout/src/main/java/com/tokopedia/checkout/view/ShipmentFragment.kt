@@ -885,6 +885,7 @@ class ShipmentFragment :
             isReloadAfterPriceChangeHigher
         )
         shipmentAdapter.updateInsuranceTncVisibility()
+        shipmentViewModel.updateShipmentCostModel()
     }
 
     fun stopTrace() {

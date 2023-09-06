@@ -211,6 +211,7 @@ import com.tokopedia.product.detail.data.util.VariantMapper
 import com.tokopedia.product.detail.data.util.VariantMapper.generateVariantString
 import com.tokopedia.product.detail.data.util.roundToIntOrZero
 import com.tokopedia.product.detail.di.ProductDetailComponent
+import com.tokopedia.product.detail.tracking.APlusContentTracking
 import com.tokopedia.product.detail.tracking.CommonTracker
 import com.tokopedia.product.detail.tracking.ContentWidgetTracker
 import com.tokopedia.product.detail.tracking.ContentWidgetTracking
@@ -254,6 +255,7 @@ import com.tokopedia.product.detail.view.util.ProductDetailLogger
 import com.tokopedia.product.detail.view.util.ProductDetailVariantLogic
 import com.tokopedia.product.detail.view.util.doSuccessOrFail
 import com.tokopedia.product.detail.view.viewholder.ProductSingleVariantViewHolder
+import com.tokopedia.product.detail.view.viewholder.a_plus_content.APlusImageUiModel
 import com.tokopedia.product.detail.view.viewholder.product_variant_thumbail.ProductThumbnailVariantViewHolder
 import com.tokopedia.product.detail.view.viewmodel.ProductDetailSharedViewModel
 import com.tokopedia.product.detail.view.viewmodel.product_detail.DynamicProductDetailViewModel
@@ -274,6 +276,7 @@ import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormReque
 import com.tokopedia.recommendation_widget_common.RecommendationTypeConst
 import com.tokopedia.recommendation_widget_common.affiliate.RecommendationNowAffiliateData
 import com.tokopedia.recommendation_widget_common.extension.DEFAULT_QTY_1
+import com.tokopedia.recommendation_widget_common.extension.PAGENAME_IDENTIFIER_RECOM_ATC
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -1115,7 +1118,18 @@ open class DynamicProductDetailFragment :
     }
 
     private fun reloadMiniCart() {
-        if (viewModel.getDynamicProductInfoP1 == null || context == null || viewModel.getDynamicProductInfoP1?.basic?.isTokoNow == false || firstOpenPage == true || !viewModel.isUserSessionActive) return
+        val hasQuantityEditor =
+            viewModel.getDynamicProductInfoP1?.basic?.isTokoNow == true
+                || (viewModel.productLayout.value as? Success<List<DynamicPdpDataModel>>)
+                    ?.data
+                    ?.any { it.name().contains(PAGENAME_IDENTIFIER_RECOM_ATC) } == true
+
+        if (viewModel.getDynamicProductInfoP1 == null
+            || context == null
+            || !hasQuantityEditor
+            || firstOpenPage == true
+            || !viewModel.isUserSessionActive) return
+
         val data = viewModel.getDynamicProductInfoP1
         viewModel.getMiniCart(data?.basic?.shopID ?: "")
     }
@@ -3295,7 +3309,7 @@ open class DynamicProductDetailFragment :
     }
 
     private fun updateUi() {
-        val newData = pdpUiUpdater?.getCurrentDataModels().orEmpty()
+        val newData = pdpUiUpdater?.getCurrentDataModels(viewModel.isAPlusContentExpanded()).orEmpty()
         submitList(newData)
     }
 
@@ -3318,6 +3332,11 @@ open class DynamicProductDetailFragment :
             productInfo.data.containerType,
             productInfo.data.productMediaRecomBasicInfo
         )
+        pdpUiUpdater?.updateInitialAPlusContent(
+            productInfo = productInfo,
+            userID = viewModel.userId,
+            aPlusContentExpanded = viewModel.isAPlusContentExpanded()
+        )
         actionButtonView.setButtonP1(productInfo.data.preOrder)
 
         if ((productInfo.basic.category.isAdult && !viewModel.isUserSessionActive) ||
@@ -3336,7 +3355,7 @@ open class DynamicProductDetailFragment :
 
         setupProductVideoCoordinator()
         recommendationWidgetViewModel?.refresh()
-        submitInitialList(pdpUiUpdater?.mapOfData?.values?.toList().orEmpty())
+        submitInitialList(pdpUiUpdater?.getInitialItems(viewModel.isAPlusContentExpanded()).orEmpty())
     }
 
     private fun setupProductVideoCoordinator() {
@@ -3561,6 +3580,24 @@ open class DynamicProductDetailFragment :
 
     override fun onProductMediaRecomBottomSheetDismissed() {
         viewModel.dismissProductMediaRecomBottomSheet()
+    }
+
+    override fun onToggleAPlus(expanded: Boolean, trackerData: APlusImageUiModel.TrackerData) {
+        viewModel.setAPlusContentExpandedState(expanded)
+        pdpUiUpdater?.updateAPlusContentMediaOnExpandedStateChange(viewModel.isAPlusContentExpanded())
+        updateUi()
+        if (!viewModel.isAPlusContentExpanded()) {
+            val seeMorePosition = adapter.getSeeMoreAPlusTogglePosition()
+            if (seeMorePosition != RecyclerView.NO_POSITION) {
+                binding?.pdpNavigation?.disableNavigationScrollUpListener()
+                snapScrollToPosition(position = seeMorePosition)
+            }
+        }
+        APlusContentTracking.trackClickExpandCollapseToggle(trackerData)
+    }
+
+    override fun onImpressAPlus(trackerData: APlusImageUiModel.TrackerData) {
+        APlusContentTracking.trackImpressAPlusMedia(trackerData, trackingQueue)
     }
 
     private fun goToAtcVariant(customCartRedirection: Map<String, CartTypeData>? = null) {

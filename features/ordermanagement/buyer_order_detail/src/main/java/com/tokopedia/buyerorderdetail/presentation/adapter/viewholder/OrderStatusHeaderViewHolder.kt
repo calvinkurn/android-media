@@ -19,8 +19,8 @@ import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
 
 class OrderStatusHeaderViewHolder(
-        itemView: View?,
-        private val navigator: BuyerOrderDetailNavigator
+    itemView: View?,
+    private val navigator: BuyerOrderDetailNavigator
 ) : BaseToasterViewHolder<OrderStatusUiModel.OrderStatusHeaderUiModel>(itemView) {
 
     companion object {

@@ -72,6 +72,7 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_7
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_9_TOKONOW
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.RECOM_VERTICAL
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.VIEW_TO_VIEW
+import com.tokopedia.product.detail.view.viewholder.a_plus_content.APlusImageUiModel
 import com.tokopedia.recommendation_widget_common.extension.LAYOUTTYPE_HORIZONTAL_ATC
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModels
 import com.tokopedia.recommendation_widget_common.extension.toViewToViewItemModels
@@ -993,7 +994,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         mapOfData.filterValues { it is ProductRecommendationDataModel }.keys.forEach { key ->
             val productRecom = (mapOfData[key] as ProductRecommendationDataModel).copy()
             productRecom.recomWidgetData?.let { recomData ->
-                if (recomData.layoutType == LAYOUTTYPE_HORIZONTAL_ATC) {
+                if (recomData.hasQuantityEditor()) {
                     updateRecomWidgetQtyDataFromMiniCart(recomData.copy(), miniCart, key)
                 }
             }
@@ -1163,19 +1164,54 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         updateAction.invoke()
     }
 
-    fun getCurrentDataModels(): List<DynamicPdpDataModel> {
-        val mutableItems = mapOfData.values.toMutableList()
+    /**
+     * Return a new [List] of [DynamicPdpDataModel] filled with components that will be showed on PDP.
+     * Only call this to supply a list of components for [com.tokopedia.product.detail.view.fragment.DynamicProductDetailFragment.submitInitialList].
+     *
+     * @param aPlusContentExpanded A [Boolean] indicating whether A+ content section is expanded or not.
+     */
+    fun getInitialItems(aPlusContentExpanded: Boolean): List<DynamicPdpDataModel> {
+        return mapOfData
+            .values
+            .toMutableList()
+            .adjustAPlusMedia(aPlusContentExpanded)
+            .toList()
+    }
 
-        val indexVerticalRecommendation = mutableItems.indexOfLast {
+    /**
+     * Return a new [List] of [DynamicPdpDataModel] filled with components that will be showed on PDP.
+     * Only call this to supply a list of components for [com.tokopedia.product.detail.view.fragment.DynamicProductDetailFragment.submitList].
+     *
+     * @param aPlusContentExpanded A [Boolean] indicating whether A+ content section is expanded or not.
+     */
+    fun getCurrentDataModels(aPlusContentExpanded: Boolean): List<DynamicPdpDataModel> {
+        return mapOfData
+            .values
+            .toMutableList()
+            .adjustAPlusMedia(aPlusContentExpanded)
+            .addVerticalRecommendation()
+            .toList()
+    }
+
+    private fun MutableList<DynamicPdpDataModel>.addVerticalRecommendation(): MutableList<DynamicPdpDataModel> {
+        val indexVerticalRecommendation = indexOfLast {
             it is ProductRecommendationVerticalPlaceholderDataModel
         }
 
-        if (indexVerticalRecommendation == -1) return mutableItems
-        verticalRecommendationItems.forEachIndexed { index, item ->
-            item.position = index + 1
+        if (indexVerticalRecommendation != -1) {
+            verticalRecommendationItems.forEachIndexed { index, item ->
+                item.position = index + 1
+            }
+            addAll(indexVerticalRecommendation + 1, verticalRecommendationItems)
         }
-        mutableItems.addAll(indexVerticalRecommendation + 1, verticalRecommendationItems)
-        return mutableItems
+        return this
+    }
+
+    private fun MutableList<DynamicPdpDataModel>.adjustAPlusMedia(
+        expanded: Boolean
+    ): MutableList<DynamicPdpDataModel> {
+        if (!expanded) removeAll { it is APlusImageUiModel && !it.showOnCollapsed }
+        return this
     }
 
     private fun updateCustomInfoTitleP2(p2: ProductInfoP2UiData) {
@@ -1233,4 +1269,61 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             }
         }
     }
+
+    fun updateInitialAPlusContent(
+        productInfo: DynamicProductInfoP1,
+        userID: String,
+        aPlusContentExpanded: Boolean
+    ) {
+        val lastShowedAPlusMediaName = findLastShowedAPlusMediaName(aPlusContentExpanded)
+        val mediaCount = getAPlusMediaCount()
+        var mediaPosition = 0
+        mapOfData.forEach { (key, _) ->
+            updateData(key, true) {
+                (mapOfData[key] as? APlusImageUiModel)?.apply {
+                    mediaPosition++
+
+                    expanded = aPlusContentExpanded
+                    haveBottomPadding = name() == lastShowedAPlusMediaName
+                    trackerData = APlusImageUiModel.TrackerData(
+                        mediaCount = mediaCount,
+                        mediaPosition = mediaPosition,
+                        mediaUrl = url,
+                        expanded = aPlusContentExpanded,
+                        userID = userID,
+                        shopID = productInfo.basic.shopID,
+                        productID = productInfo.basic.productID,
+                        layoutName = productInfo.layoutName,
+                        categoryId = productInfo.basic.category.id,
+                        categoryName = productInfo.basic.category.name
+                    )
+                }
+            }
+        }
+    }
+
+    fun updateAPlusContentMediaOnExpandedStateChange(aPlusContentExpanded: Boolean) {
+        val lastShowedAPlusMediaName = findLastShowedAPlusMediaName(aPlusContentExpanded)
+        mapOfData.forEach { (key, _) ->
+            updateData(key, false) {
+                (mapOfData[key] as? APlusImageUiModel)?.apply {
+                    expanded = aPlusContentExpanded
+                    haveBottomPadding = name() == lastShowedAPlusMediaName
+                    trackerData.expanded = aPlusContentExpanded
+                }
+            }
+        }
+    }
+
+    private fun findLastShowedAPlusMediaName(
+        aPlusContentExpanded: Boolean
+    ) = mapOfData.values.findLast {
+        if (aPlusContentExpanded) {
+            it is APlusImageUiModel
+        } else {
+            it is APlusImageUiModel && it.showOnCollapsed
+        }
+    }?.name()
+
+    private fun getAPlusMediaCount() = mapOfData.values.count { it is APlusImageUiModel }
 }
