@@ -71,6 +71,31 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation projectOrAar(rootProject.ext.libraries.network)
 
+    implementation rootProject.ext.tkpdInternalLibDependencies.url
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+    implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
+    implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
+    implementation rootProject.ext.tkpdInternalLibDependencies.larixBroadcaster
+
+    implementation rootProject.ext.miscDependencies.coroutineCore
+    implementation rootProject.ext.miscDependencies.coroutineAndroid
+    implementation rootProject.ext.miscDependencies.lottie
+    implementation rootProject.ext.miscDependencies.multiDex
+    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
+    implementation rootProject.ext.miscDependencies.transition
+    implementation rootProject.ext.miscDependencies.viewModelKtx
+    implementation rootProject.ext.miscDependencies.flexBoxLayout
+    implementation rootProject.ext.miscDependencies.liveDataKtx
+    implementation rootProject.ext.miscDependencies.fragmentKtx
+    implementation rootProject.ext.miscDependencies.exoPlayerCore
+    implementation rootProject.ext.miscDependencies.exoPlayerUi
+
+    implementation rootProject.ext.networkDependencies.glide
+
+    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
+
     androidTestImplementation rootProject.ext.testDependencies.fragmentTest
 
     testImplementation rootProject.ext.testDependencies.mockk

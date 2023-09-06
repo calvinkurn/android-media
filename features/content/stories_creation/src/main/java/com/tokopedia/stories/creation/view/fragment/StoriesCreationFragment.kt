@@ -5,18 +5,26 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.stories.creation.databinding.FragmentStoriesCreationBinding
+import com.tokopedia.stories.creation.view.viewmodel.StoriesCreationViewModel
 import javax.inject.Inject
 
 /**
  * Created By : Jonathan Darwin on September 06, 2023
  */
-class StoriesCreationFragment @Inject constructor(): TkpdBaseV4Fragment() {
+class StoriesCreationFragment @Inject constructor(
+    private val viewModelFactory: ViewModelProvider.Factory,
+): TkpdBaseV4Fragment() {
 
     private var _binding: FragmentStoriesCreationBinding? = null
 
-    private val binding: FragmentStoriesCreationBinding = _binding!!
+    private val binding: FragmentStoriesCreationBinding
+        get() = _binding!!
+
+    private val viewModel by viewModels<StoriesCreationViewModel> { viewModelFactory }
 
     override fun getScreenName(): String = TAG
 
