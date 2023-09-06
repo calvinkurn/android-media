@@ -152,20 +152,16 @@ object DynamicProductDetailMapper {
                     listOfComponent.add(ProductMiniShopWidgetDataModel(type = component.type, name = component.componentName))
                 }
                 ProductDetailConstant.PRODUCT_LIST -> {
-                    when (component.componentName) {
-                        PDP_7, PDP_9_TOKONOW ->
-                            listOfComponent.add(ProductRecomWidgetDataModel(type = component.type, name = component.componentName, position = index))
-                        SHOPADS_CAROUSEL -> {
-                            listOfComponent.add(TopadsHeadlineUiModel(type = component.type, name = component.componentName))
-                        }
-                        else -> {
-                            if (component.componentName.startsWith(RECOM_VERTICAL)) {
-                                listOfComponent.add(PdpRecommendationWidgetDataModel(mapPdpRecommendationWidgetModel(component)))
-                            } else {
-                                listOfComponent.add(ProductRecommendationDataModel(type = component.type, name = component.componentName, position = index))
-                            }
-                        }
-                    }
+                    val componentData = component.componentData.firstOrNull()
+                        ?: return@forEachIndexed
+
+                    val productList = mapToProductList(
+                        component = component,
+                        index = index,
+                        componentData = componentData
+                    )
+
+                    listOfComponent.add(productList)
                 }
                 ProductDetailConstant.VIEW_TO_VIEW -> {
                     listOfComponent.add(ViewToViewWidgetDataModel(type = component.type, name = component.componentName, position = index))
@@ -343,6 +339,48 @@ object DynamicProductDetailMapper {
             }
         }
         return listOfComponent
+    }
+
+    private fun mapToProductList(
+        component: Component,
+        index: Int,
+        componentData: ComponentData
+    ) = when (component.componentName) {
+        PDP_7, PDP_9_TOKONOW ->
+            ProductRecomWidgetDataModel(
+                type = component.type,
+                name = component.componentName,
+                position = index,
+                queryParam = componentData.queryParam,
+                thematicId = componentData.thematicId
+            )
+
+        SHOPADS_CAROUSEL -> {
+            TopadsHeadlineUiModel(
+                type = component.type,
+                name = component.componentName,
+                queryParam = componentData.queryParam,
+                thematicId = componentData.thematicId
+            )
+        }
+
+        else -> {
+            if (component.componentName.startsWith(RECOM_VERTICAL)) {
+                PdpRecommendationWidgetDataModel(
+                    recommendationWidgetModel = mapPdpRecommendationWidgetModel(component),
+                    queryParam = componentData.queryParam,
+                    thematicId = componentData.thematicId
+                )
+            } else {
+                ProductRecommendationDataModel(
+                    type = component.type,
+                    name = component.componentName,
+                    position = index,
+                    queryParam = componentData.queryParam,
+                    thematicId = componentData.thematicId
+                )
+            }
+        }
     }
 
     /**

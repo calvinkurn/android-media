@@ -10,14 +10,16 @@ import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationC
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 
 data class ProductRecommendationDataModel(
-        val type: String = "",
-        val name: String = "",
-        var recomWidgetData: RecommendationWidget? = null,
+    val type: String = "",
+    val name: String = "",
+    var recomWidgetData: RecommendationWidget? = null,
 
-        //UI Data
-        var filterData: List<AnnotationChip>? = null,
-        var cardModel: List<ProductCardModel>? = null,
-        var position: Int = -1
+    // UI Data
+    var filterData: List<AnnotationChip>? = null,
+    var cardModel: List<ProductCardModel>? = null,
+    val queryParam: String,
+    val thematicId: String,
+    var position: Int = -1
 ) : DynamicPdpDataModel {
 
     override val impressHolder: ImpressHolder = ImpressHolder()
@@ -35,10 +37,10 @@ data class ProductRecommendationDataModel(
 
     override fun equalsWith(newData: DynamicPdpDataModel): Boolean {
         return if (newData is ProductRecommendationDataModel) {
-            recomWidgetData?.title == newData.recomWidgetData?.title
-                    && recomWidgetData?.recommendationFilterChips == newData.recomWidgetData?.recommendationFilterChips
-                    && areRecomItemTheSame(newData.recomWidgetData)
-                    && areRecomQtyItemTheSame(newData.recomWidgetData)
+            recomWidgetData?.title == newData.recomWidgetData?.title &&
+                recomWidgetData?.recommendationFilterChips == newData.recomWidgetData?.recommendationFilterChips &&
+                areRecomItemTheSame(newData.recomWidgetData) &&
+                areRecomQtyItemTheSame(newData.recomWidgetData)
         } else {
             false
         }
@@ -83,8 +85,9 @@ data class ProductRecommendationDataModel(
         if (recomWidgetData?.recommendationItemList?.size == newRecomWidgetData?.recommendationItemList?.size && isOldAndItemIsTokonow(newRecomWidgetData)) {
             val itemSize = recomWidgetData?.recommendationItemList?.size ?: 0
             for (i in 0 until itemSize) {
-                if (recomWidgetData?.recommendationItemList?.get(i)?.quantity != newRecomWidgetData?.recommendationItemList?.get(i)?.quantity
-                        || recomWidgetData?.recommendationItemList?.get(i)?.currentQuantity != newRecomWidgetData?.recommendationItemList?.get(i)?.currentQuantity) {
+                if (recomWidgetData?.recommendationItemList?.get(i)?.quantity != newRecomWidgetData?.recommendationItemList?.get(i)?.quantity ||
+                    recomWidgetData?.recommendationItemList?.get(i)?.currentQuantity != newRecomWidgetData?.recommendationItemList?.get(i)?.currentQuantity
+                ) {
                     return false
                 }
             }
@@ -93,18 +96,21 @@ data class ProductRecommendationDataModel(
     }
 
     private fun isOldAndItemIsTokonow(newRecomWidgetData: RecommendationWidget?): Boolean {
-        return recomWidgetData?.layoutType == LAYOUTTYPE_HORIZONTAL_ATC
-                && newRecomWidgetData?.layoutType == LAYOUTTYPE_HORIZONTAL_ATC
+        return recomWidgetData?.layoutType == LAYOUTTYPE_HORIZONTAL_ATC &&
+            newRecomWidgetData?.layoutType == LAYOUTTYPE_HORIZONTAL_ATC
     }
 
     private fun areFilterTheSame(newRecomWidgetData: RecommendationWidget?): Boolean {
         var areSame = false
         if (recomWidgetData?.recommendationFilterChips == null && newRecomWidgetData?.recommendationFilterChips == null ||
-                recomWidgetData?.recommendationFilterChips?.isEmpty() == true && newRecomWidgetData?.recommendationFilterChips?.isEmpty() == true) {
+            recomWidgetData?.recommendationFilterChips?.isEmpty() == true && newRecomWidgetData?.recommendationFilterChips?.isEmpty() == true
+        ) {
             return true
         }
-        val currentFilterData = recomWidgetData?.recommendationFilterChips?.zip(newRecomWidgetData?.recommendationFilterChips
-                ?: listOf())
+        val currentFilterData = recomWidgetData?.recommendationFilterChips?.zip(
+            newRecomWidgetData?.recommendationFilterChips
+                ?: listOf()
+        )
 
         if (currentFilterData != null) {
             for ((oldItem, newItem) in currentFilterData) {
@@ -117,13 +123,14 @@ data class ProductRecommendationDataModel(
         return areSame
     }
 
-    fun cloneData(data : ProductRecommendationDataModel) : ProductRecommendationDataModel {
+    fun cloneData(data: ProductRecommendationDataModel): ProductRecommendationDataModel {
         return ProductRecommendationDataModel(
-                type = data.type,
-                name = data.name,
-                recomWidgetData = data.recomWidgetData?.copy(),
-                filterData = data.filterData,
-                cardModel = data.cardModel,
-                position = data.position)
+            type = data.type,
+            name = data.name,
+            recomWidgetData = data.recomWidgetData?.copy(),
+            filterData = data.filterData,
+            cardModel = data.cardModel,
+            position = data.position
+        )
     }
 }
