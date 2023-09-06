@@ -38,7 +38,8 @@ abstract class InspirationProductItemViewHolder(
             stockBarPercentage = this.stockBarDataView.percentageValue,
             stockBarLabel = this.stockBarDataView.value,
             stockBarLabelColor = this.stockBarDataView.color,
-            isWideContent = false
+            isWideContent = false,
+            pageSource = ProductCardModel.PageSource.SEARCH,
         )
 
     private fun List<BadgeItemDataView>?.toProductCardModelShopBadges(): List<ProductCardModel.ShopBadge> {
