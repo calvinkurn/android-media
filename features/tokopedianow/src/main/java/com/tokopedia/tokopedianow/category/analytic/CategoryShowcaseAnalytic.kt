@@ -222,7 +222,7 @@ class CategoryShowcaseAnalytic(
             .setEvent(EVENT_CLICK_GROCERIES)
             .setEventAction(EVENT_ACTION_CLICK_ARROW_BUTTON_SHOWCASE)
             .setEventCategory(EVENT_CATEGORY_PAGE_L1)
-            .setEventLabel(joinDash(categoryIdL1, categoryIdL2, headerName))
+            .setEventLabel(joinDash(categoryIdL1, categoryIdL2, headerName.trim()))
             .setCustomProperty(KEY_TRACKER_ID, ID_CLICK_ARROW_BUTTON_SHOWCASE)
             .setCustomProperty(KEY_WAREHOUSE_ID, warehouseId)
             .setBusinessUnit(BUSINESS_UNIT_GROCERIES)
