@@ -3,7 +3,7 @@ package com.tokopedia.stories.data.repository
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
-import com.tokopedia.content.common.view.ContentTaggedProductUiModel
+import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.stories.data.mapper.StoriesMapperImpl
 import com.tokopedia.stories.domain.model.StoriesRequestModel
 import com.tokopedia.stories.domain.usecase.StoriesDetailsUseCase
@@ -12,6 +12,7 @@ import com.tokopedia.stories.uimodel.StoryActionType
 import com.tokopedia.stories.usecase.ProductMapper
 import com.tokopedia.stories.usecase.StoriesProductUseCase
 import com.tokopedia.stories.usecase.UpdateStoryUseCase
+import com.tokopedia.stories.view.model.ProductBottomSheetUiState
 import com.tokopedia.stories.view.model.StoriesDetailUiModel
 import com.tokopedia.stories.view.model.StoriesGroupUiModel
 import com.tokopedia.user.session.UserSessionInterface
@@ -50,7 +51,7 @@ class StoriesRepositoryImpl @Inject constructor(
     override suspend fun getStoriesProducts(
         shopId: String,
         storyId: String,
-    ): List<ContentTaggedProductUiModel> {
+    ): ProductBottomSheetUiState {
         return withContext(dispatchers.io) {
             val response = storiesProductUseCase(
                 storiesProductUseCase.convertToMap(
@@ -59,7 +60,11 @@ class StoriesRepositoryImpl @Inject constructor(
                     )
                 )
             )
-            productMapper.mapProducts(response.data, shopId)
+            ProductBottomSheetUiState(
+                products = productMapper.mapProducts(response.data, shopId),
+                campaign = productMapper.mapCampaign(response.data.campaign),
+                resultState = ResultState.Success,
+            )
         }
     }
 

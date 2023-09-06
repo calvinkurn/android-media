@@ -286,7 +286,7 @@ class StoriesViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(block = {
             products.update { product -> product.copy(resultState = ResultState.Loading) }
             val productList = repository.getStoriesProducts(authorId, storyId)
-            products.update { products -> products.copy(products = productList, resultState = ResultState.Success) }
+            products.update { productList }
         }, onError = {
             products.update { product -> product.copy(resultState = ResultState.Fail(it)) } //TODO() change result state?
         })

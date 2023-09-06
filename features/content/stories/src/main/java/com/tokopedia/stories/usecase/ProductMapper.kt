@@ -4,6 +4,8 @@ import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.stories.uimodel.StoriesCampaignStatus
 import com.tokopedia.stories.uimodel.StoriesCampaignType
 import com.tokopedia.stories.usecase.response.StoriesProductResponse
+import com.tokopedia.stories.view.model.StoriesCampaignUiModel
+import com.tokopedia.utils.date.toDate
 import javax.inject.Inject
 
 /**
@@ -15,7 +17,7 @@ class ProductMapper @Inject constructor() {
         shopId: String
     ): List<ContentTaggedProductUiModel> {
         return response.products.map { product ->
-            val campaign = mapCampaign(response.campaign, product)
+            val campaign = mapProductCampaign(response.campaign, product)
             ContentTaggedProductUiModel(
                 id = product.id,
                 shop = ContentTaggedProductUiModel.Shop(
@@ -53,7 +55,7 @@ class ProductMapper @Inject constructor() {
         }
     }
 
-    private fun mapCampaign(
+    private fun mapProductCampaign(
         campaign: StoriesProductResponse.Data.Campaign,
         product: StoriesProductResponse.Data.Product
     ): ContentTaggedProductUiModel.Campaign {
@@ -75,6 +77,17 @@ class ProductMapper @Inject constructor() {
         return ContentTaggedProductUiModel.Campaign(
             type = type, status = status, isExclusiveForMember = campaign.isFollowRestriction
         )
+    }
+
+    fun mapCampaign(
+        campaign: StoriesProductResponse.Data.Campaign,
+    ): StoriesCampaignUiModel {
+        val timeFormat = "yyyy-MM-dd HH:mm"
+        return when (campaign.status) {
+            "ongoing" -> StoriesCampaignUiModel.Ongoing(title = campaign.name, endTime = campaign.endTime.toDate(timeFormat))
+            "upcoming" -> StoriesCampaignUiModel.Ongoing(title = campaign.name, endTime = campaign.endTime.toDate(timeFormat))
+            else -> StoriesCampaignUiModel.Unknown
+        }
     }
 }
 

@@ -17,6 +17,8 @@ import com.tokopedia.kotlin.extensions.convertToDate
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.top_ads_headline.R
+import com.tokopedia.topads.common.R as topadscommonR
+import com.tokopedia.abstraction.R as abstractionR
 import com.tokopedia.top_ads_headline.data.HeadlineAdStepperModel
 import com.tokopedia.top_ads_headline.di.DaggerHeadlineAdsComponent
 import com.tokopedia.top_ads_headline.view.activity.SaveButtonState
@@ -155,7 +157,9 @@ class EditAdOthersFragment : BaseDaggerFragment() {
 
     fun setDailyBudget(minBid: Double) {
         val budget: Long = (minBid * MULTIPLIER).toLong()
-        stepperModel?.dailyBudget = budget.toFloat()
+        stepperModel?.let {
+            it.dailyBudget = if(it.dailyBudget > 0) budget.toFloat() else it.dailyBudget
+        }
         budgetCost.textFieldInput.setText(Utils.convertToCurrency(budget))
     }
 
@@ -205,7 +209,6 @@ class EditAdOthersFragment : BaseDaggerFragment() {
                         MAX_DAILY_BUDGET))
                     saveButtonState?.setButtonState(false)
                 } else {
-                    stepperModel?.dailyBudget = number.toFloat()
                     budgetCost.setMessage("")
                     budgetCost.setError(false)
                     saveButtonState?.setButtonState(true)
@@ -244,9 +247,11 @@ class EditAdOthersFragment : BaseDaggerFragment() {
         }
         startDate.textFieldInput.isFocusable = false
         endDate.textFieldInput.isFocusable = false
-        val padding = resources.getDimensionPixelSize(com.tokopedia.topads.common.R.dimen.dp_8)
-        startDate.textFieldIcon1.setPadding(padding, padding, padding, padding)
-        endDate.textFieldIcon1.setPadding(padding, padding, padding, padding)
+        context?.let {
+            val padding = it.resources.getDimensionPixelSize(abstractionR.dimen.dp_8)
+            startDate.textFieldIcon1.setPadding(padding, padding, padding, padding)
+            endDate.textFieldIcon1.setPadding(padding, padding, padding, padding)
+        }
         context?.run {
             setDate()
             startDate.textFieldInput.setOnClickListener {
@@ -339,12 +344,12 @@ class EditAdOthersFragment : BaseDaggerFragment() {
 
     private fun setUpToolTip() {
         val tooltipView =
-            layoutInflater.inflate(com.tokopedia.topads.common.R.layout.tooltip_custom_view, null)
+            layoutInflater.inflate(topadscommonR.layout.tooltip_custom_view, null)
                 .apply {
-                    val tvToolTipText = this.findViewById<Typography>(R.id.tooltip_text)
+                    val tvToolTipText = this.findViewById<Typography>(topadscommonR.id.tooltip_text)
                     tvToolTipText?.text = getString(R.string.topads_headline_schedule_tooltip_text)
-                    val imgTooltipIcon = this.findViewById<ImageUnify>(R.id.tooltip_icon)
-                    imgTooltipIcon?.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_tips))
+                    val imgTooltipIcon = this.findViewById<ImageUnify>(topadscommonR.id.tooltip_icon)
+                    imgTooltipIcon?.setImageDrawable(context?.getResDrawable(topadscommonR.drawable.topads_ic_tips))
                 }
         tooltipBtn.addItem(tooltipView)
         tooltipBtn.setOnClickListener {
@@ -354,11 +359,11 @@ class EditAdOthersFragment : BaseDaggerFragment() {
                 add(TipsUiRowModel(R.string.topads_headline_tips_schedule_row1))
                 add(TipsUiHeaderModel(R.string.topads_headline_tips_budget_header))
                 add(TipsUiRowModel(R.string.topads_headline_tips_budget_row1,
-                    R.drawable.topads_create_ic_checklist))
+                    topadscommonR.drawable.topads_create_ic_checklist))
                 add(TipsUiRowModel(R.string.topads_headline_tips_budget_row2,
-                    R.drawable.topads_create_ic_checklist))
+                    topadscommonR.drawable.topads_create_ic_checklist))
                 add(TipsUiRowModel(R.string.topads_headline_tips_budget_row3,
-                    R.drawable.topads_create_ic_checklist))
+                    topadscommonR.drawable.topads_create_ic_checklist))
             }
             val tipsListSheet =
                 context?.let { it1 -> TipsListSheet.newInstance(it1, tipsList = tipsList) }

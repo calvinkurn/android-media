@@ -40,6 +40,8 @@ data class PlayWidgetUiModel(
 
 sealed class PlayWidgetItemUiModel
 
+object PlayWidgetShimmerUiModel: PlayWidgetItemUiModel()
+
 data class PlayWidgetBannerUiModel(
     val appLink: String,
     val imageUrl: String,

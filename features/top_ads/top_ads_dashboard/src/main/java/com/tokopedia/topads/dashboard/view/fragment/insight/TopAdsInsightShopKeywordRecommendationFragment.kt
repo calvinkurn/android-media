@@ -12,7 +12,7 @@ import com.tokopedia.accordion.AccordionDataUnify
 import com.tokopedia.accordion.AccordionUnify
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.top_ads_headline_usecase.model.TopAdsManageHeadlineInput2
+import com.tokopedia.topads.common.domain.model.createheadline.TopAdsManageHeadlineInput2
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsInsightConstants.BID_KEYWORD
 import com.tokopedia.topads.dashboard.data.constant.TopAdsInsightConstants.NEGATIVE_KEYWORD

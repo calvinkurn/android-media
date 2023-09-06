@@ -1,18 +1,35 @@
 package com.tokopedia.thankyou_native.analytics
 
+import android.os.Bundle
 import com.google.gson.Gson
 import com.google.gson.JsonArray
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.thankyou_native.analytics.EnhancedEcommerceKey.KEY_CREATIVE_NAME
+import com.tokopedia.thankyou_native.analytics.EnhancedEcommerceKey.KEY_CREATIVE_SLOT
+import com.tokopedia.thankyou_native.analytics.EnhancedEcommerceKey.KEY_ITEM_ID
+import com.tokopedia.thankyou_native.analytics.EnhancedEcommerceKey.KEY_ITEM_NAME
 import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_BUSINESS_UNIT_NON_E_COMMERCE_VALUE
+import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_CURRENT_SITE
+import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_ECOMMERCE
+import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_EVENT
+import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_EVENT_ACTION
+import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_EVENT_CATEGORY
+import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_EVENT_LABEL
+import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_EVENT_SELECT_CONTENT
+import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_EVENT_VIEW_ITEM
 import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_MERCHANT_CODE
 import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_PAYMENT_ID
+import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_PROMOTION
+import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_TRACKER_ID
 import com.tokopedia.thankyou_native.data.mapper.*
 import com.tokopedia.thankyou_native.di.qualifier.CoroutineBackgroundDispatcher
 import com.tokopedia.thankyou_native.di.qualifier.CoroutineMainDispatcher
 import com.tokopedia.thankyou_native.domain.model.PurchaseItem
 import com.tokopedia.thankyou_native.domain.model.ShopOrder
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
+import com.tokopedia.thankyou_native.presentation.adapter.model.BannerItem
 import com.tokopedia.track.AFInAppEventParameterName
 import com.tokopedia.track.AFInAppEventType
 import com.tokopedia.track.TrackApp
@@ -249,6 +266,48 @@ class ThankYouPageAnalytics @Inject constructor(
         analyticTracker.sendGeneralEvent(map)
     }
 
+    fun sendBannerClickEvent(thanksPageData: ThanksPageData, banner: BannerItem, position: Int) {
+        val promotionBundle = getEnhancedECommerceBanner(banner, position)
+        val bundle = Bundle().apply {
+            putString(KEY_EVENT, KEY_EVENT_SELECT_CONTENT)
+            putString(KEY_EVENT_CATEGORY, EVENT_CATEGORY_ORDER_COMPLETE)
+            putString(KEY_EVENT_ACTION, EVENT_ACTION_CLICK_BANNER)
+            putString(KEY_EVENT_LABEL, String.EMPTY)
+            putString(KEY_TRACKER_ID, TRACKER_45032)
+            putString(KEY_CURRENT_SITE, thanksPageData.currentSite)
+            putBundle(KEY_PROMOTION, promotionBundle)
+        }
+
+        analyticTracker.sendEnhanceEcommerceEvent(KEY_EVENT_SELECT_CONTENT, bundle)
+    }
+
+    fun sendBannerImpressionEvent(thanksPageData: ThanksPageData, banner: BannerItem, position: Int) {
+        val promotionBundle = getEnhancedECommerceBanner(banner, position)
+        val bundle = Bundle().apply {
+            putString(KEY_EVENT, KEY_EVENT_VIEW_ITEM)
+            putString(KEY_EVENT_CATEGORY, EVENT_CATEGORY_ORDER_COMPLETE)
+            putString(KEY_EVENT_ACTION, EVENT_ACTION_VIEW_BANNER)
+            putString(KEY_EVENT_LABEL, String.EMPTY)
+            putString(KEY_TRACKER_ID, TRACKER_45031)
+            putString(KEY_CURRENT_SITE, thanksPageData.currentSite)
+            putBundle(KEY_PROMOTION, promotionBundle)
+        }
+
+        analyticTracker.sendEnhanceEcommerceEvent(KEY_EVENT_SELECT_CONTENT, bundle)
+    }
+
+    private fun getEnhancedECommerceBanner(
+        banner: BannerItem,
+        position: Int
+    ): Bundle {
+        return Bundle().apply {
+            putString(KEY_ITEM_NAME, banner.assetUrl)
+            putString(KEY_ITEM_ID, banner.itemId)
+            putString(KEY_CREATIVE_NAME, banner.assetUrl)
+            putString(KEY_CREATIVE_SLOT, position.toString())
+        }
+    }
+
     private fun addCommonTrackingData(map: MutableMap<String, Any>, paymentId: String) {
         map[ParentTrackingKey.KEY_USER_ID] = userSession.get().userId
         map[ParentTrackingKey.KEY_PAYMENT_ID_NON_E_COMMERCE] = paymentId
@@ -349,13 +408,16 @@ class ThankYouPageAnalytics @Inject constructor(
         const val EVENT_ACTION_SALIN_CLICK = "click salin kode pembayaran"
         const val EVENT_ACTION_LIHAT_CARA_PEMBARYAN_CLICK = "click lihat cara pembayaran"
         const val EVENT_ACTION_CLICK_CHECK_PAYMENT_STATUS = "click cek status pembayaran"
-
+        const val EVENT_ACTION_CLICK_BANNER = "click banner in thank you page"
+        const val EVENT_ACTION_VIEW_BANNER = "view banner in thank you page"
 
         const val EVENT_LABEL_INSTANT = "instant"
         const val EVENT_LABEL_DEFERRED = "deffer"
         const val EVENT_LABEL_PROCESSING = "processing"
 
         const val EVENT_ACTION_PUSH_GTM_FALSE = "push false gtm"
+        const val TRACKER_45032 = "45032"
+        const val TRACKER_45031 = "45031"
     }
 }
 
@@ -369,6 +431,8 @@ object ParentTrackingKey {
     val KEY_MERCHANT_CODE = "merchantCode"
     val KEY_PAYMENT_STATUS = "payment_status"
     val KEY_PAYMENT_TYPE = "payment_type"
+    val KEY_EVENT_VIEW_ITEM = "view_item"
+    val KEY_EVENT_SELECT_CONTENT = "select_content"
 
     val KEY_SHOP_ID = "shopId"
     val KEY_SHOP_TYPE = "shopType"
@@ -376,6 +440,7 @@ object ParentTrackingKey {
     val KEY_ECOMMERCE = "ecommerce"
     val KEY_CURRENT_SITE = "currentSite"
     val KEY_BUSINESS_UNIT = "businessUnit"
+    val KEY_PROMOTION = "promotion"
     const val IS_NEW_USER = "isNewUser"
     const val NEW_CUSTOMER = "new_customer"
     const val KEY_ID = "id"
@@ -392,7 +457,7 @@ object ParentTrackingKey {
     const val KEY_PROFILE_ID = "profileId"
     const val KEY_PAYMENT_ID_NON_E_COMMERCE = "paymentId"
     const val KEY_BUSINESS_UNIT_NON_E_COMMERCE_VALUE = "payment"
-
+    const val KEY_TRACKER_ID = "trackerId"
 }
 
 object ECommerceNodeTrackingKey {
@@ -419,4 +484,11 @@ object ProductNodeTrackingKey {
     val KEY_BRAND = "brand"
     val KEY_VARIANT = "variant"
     val KEY_DIMENSION83 = "dimension83"
+}
+
+object EnhancedEcommerceKey {
+    val KEY_CREATIVE_NAME = "creative_name"
+    val KEY_CREATIVE_SLOT = "creative_slot"
+    val KEY_ITEM_ID = "item_id"
+    val KEY_ITEM_NAME = "item_name"
 }

@@ -31,6 +31,7 @@ import com.tokopedia.shop.common.constant.ShopCommonExtraConstant
 import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop.common.view.model.ShopEtalaseUiModel
+import com.tokopedia.shop.common.view.model.ShopSharingInShowCaseUiModel
 import com.tokopedia.shop_showcase.R
 import com.tokopedia.shop_showcase.common.ShopShowcaseUtil
 import com.tokopedia.shop_showcase.databinding.FragmentShopPageShowcaseBinding
@@ -72,6 +73,7 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(),
         private const val SHOWCASE_REQUEST_CODE = 201
         const val SHOP_SRP_EXTRA_SHOP_REF = "EXTRA_SHOP_REF"
         const val SHOP_SRP_EXTRA_ATTRIBUTION = "EXTRA_ATTRIBUTION"
+        const val SHOP_SHARING_FOR_SHOW_CASE = "shop_header_for_sharing"
 
         @JvmStatic
         fun createInstance(
@@ -121,6 +123,8 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(),
     private var isOfficialStore: Boolean = false
     private var isGoldMerchant: Boolean = false
     private var maxShowcaseList: Int = 0
+    private var shopSharingInShowCaseUiModel: ShopSharingInShowCaseUiModel? = null
+
     private val viewBinding : FragmentShopPageShowcaseBinding? by viewBinding()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -144,11 +148,6 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(),
         initListener()
         observeLiveData()
         loadShowcaseInitialData()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        shopShowcaseTabTracking.sendAllTrackingQueue()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -318,6 +317,7 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(),
             shopAttribution = args.getString(KEY_SHOP_ATTRIBUTION, "")
             isOfficialStore = args.getBoolean(KEY_IS_OS, false)
             isGoldMerchant = args.getBoolean(KEY_IS_GOLD_MERCHANT, false)
+            shopSharingInShowCaseUiModel = args.getParcelable(SHOP_SHARING_FOR_SHOW_CASE)
         }
     }
 
@@ -494,6 +494,7 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(),
             putExtra(ShopCommonExtraConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, isNeedToReloadData)
             putExtra(SHOP_SRP_EXTRA_ATTRIBUTION, shopAttribution)
             putExtra(SHOP_SRP_EXTRA_SHOP_REF, shopRef)
+            putExtra(SHOP_SHARING_FOR_SHOW_CASE, shopSharingInShowCaseUiModel)
         }
         startActivity(intentShopPageSrp)
     }

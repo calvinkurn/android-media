@@ -63,12 +63,12 @@ class CartPageRobot {
     }
 
     fun assertMainContent() {
-        onView(withId(R.id.ll_cart_container)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        onView(withId(R.id.rv_cart)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        onView(withId(com.tokopedia.cart.R.id.ll_cart_container)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        onView(withId(com.tokopedia.cart.R.id.rv_cart)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
     }
 
     fun assertTickerAnnouncementViewHolder(position: Int) {
-        onView(withId(R.id.rv_cart)).perform(
+        onView(withId(com.tokopedia.cart.R.id.rv_cart)).perform(
             RecyclerViewActions.actionOnItemAtPosition<TickerAnnouncementViewHolder>(
                 position,
                 object : ViewAction {
@@ -77,7 +77,7 @@ class CartPageRobot {
                     override fun getConstraints(): Matcher<View>? = null
 
                     override fun perform(uiController: UiController?, view: View) {
-                        assertEquals(View.VISIBLE, view.findViewById<Ticker>(R.id.cartTicker).visibility)
+                        assertEquals(View.VISIBLE, view.findViewById<Ticker>(com.tokopedia.purchase_platform.common.R.id.cartTicker).visibility)
                     }
                 }
             )
@@ -85,22 +85,22 @@ class CartPageRobot {
     }
 
     fun assertCartSelectAllViewHolder() {
-        onView(withId(R.id.top_layout)).perform(object : ViewAction {
+        onView(withId(com.tokopedia.cart.R.id.top_layout)).perform(object : ViewAction {
             override fun getDescription(): String = "performing assertion action on Top Layout"
 
             override fun getConstraints(): Matcher<View> = ViewMatchers.isDisplayed()
 
             override fun perform(uiController: UiController?, view: View) {
-                assertEquals(View.VISIBLE, view.findViewById<CheckboxUnify>(R.id.checkbox_global).visibility)
-                assertEquals(true, view.findViewById<CheckboxUnify>(R.id.checkbox_global).isChecked)
-                assertEquals(View.VISIBLE, view.findViewById<Typography>(R.id.text_select_all).visibility)
+                assertEquals(View.VISIBLE, view.findViewById<CheckboxUnify>(com.tokopedia.cart.R.id.checkbox_global).visibility)
+                assertEquals(true, view.findViewById<CheckboxUnify>(com.tokopedia.cart.R.id.checkbox_global).isChecked)
+                assertEquals(View.VISIBLE, view.findViewById<Typography>(com.tokopedia.cart.R.id.text_select_all).visibility)
                 assertEquals(View.VISIBLE, view.visibility)
             }
         })
     }
 
     fun assertCartTickerErrorViewHolder(position: Int, message: String) {
-        onView(withId(R.id.rv_cart)).perform(
+        onView(withId(com.tokopedia.cart.R.id.rv_cart)).perform(
             RecyclerViewActions.actionOnItemAtPosition<CartTickerErrorViewHolder>(
                 position,
                 object : ViewAction {
@@ -109,7 +109,7 @@ class CartPageRobot {
                     override fun getConstraints(): Matcher<View>? = null
 
                     override fun perform(uiController: UiController?, view: View) {
-                        assertEquals(message, view.findViewById<Typography>(R.id.ticker_description).text)
+                        assertEquals(message, view.findViewById<Typography>(com.tokopedia.unifycomponents.R.id.ticker_description).text)
                     }
                 }
             )
@@ -121,7 +121,7 @@ class CartPageRobot {
         position: Int,
         shopIndex: Int
     ) {
-        onView(withId(R.id.rv_cart)).perform(
+        onView(withId(com.tokopedia.cart.R.id.rv_cart)).perform(
             RecyclerViewActions.actionOnItemAtPosition<CartGroupViewHolder>(
                 position,
                 object : ViewAction {
@@ -130,12 +130,12 @@ class CartPageRobot {
                     override fun getConstraints(): Matcher<View>? = null
 
                     override fun perform(uiController: UiController?, view: View) {
-                        assertEquals(availableCartList[shopIndex].groupName, view.findViewById<Typography>(R.id.tv_shop_name).text)
-                        assertEquals(availableCartList[shopIndex].fulfillmentName, view.findViewById<Typography>(R.id.tv_fulfill_district).text)
-                        assertEquals(View.VISIBLE, view.findViewById<ImageView>(R.id.image_shop_badge).visibility)
-                        assertEquals(View.VISIBLE, view.findViewById<ImageUnify>(R.id.img_free_shipping).visibility)
-                        assertEquals(View.VISIBLE, view.findViewById<RecyclerView>(R.id.rv_cart_item).visibility)
-                        assertTrue(view.findViewById<CheckBox>(R.id.cb_select_shop).isChecked)
+                        assertEquals(availableCartList[shopIndex].groupName, view.findViewById<Typography>(com.tokopedia.cart.R.id.tv_shop_name).text)
+                        assertEquals(availableCartList[shopIndex].fulfillmentName, view.findViewById<Typography>(com.tokopedia.cart.R.id.tv_fulfill_district).text)
+                        assertEquals(View.VISIBLE, view.findViewById<ImageView>(com.tokopedia.cart.R.id.image_shop_badge).visibility)
+                        assertEquals(View.VISIBLE, view.findViewById<ImageUnify>(com.tokopedia.cart.R.id.img_free_shipping).visibility)
+                        assertEquals(View.VISIBLE, view.findViewById<RecyclerView>(com.tokopedia.cart.R.id.rv_cart_item).visibility)
+                        assertTrue(view.findViewById<CheckBox>(com.tokopedia.cart.R.id.cb_select_shop).isChecked)
                     }
                 }
             )
@@ -143,7 +143,7 @@ class CartPageRobot {
 
         assertOnEachCartItem(
             view = view,
-            recyclerViewId = R.id.rv_cart_item,
+            recyclerViewId = com.tokopedia.cart.R.id.rv_cart_item,
             shopIndex = shopIndex
         )
     }
@@ -167,7 +167,7 @@ class CartPageRobot {
                                 override fun getConstraints(): Matcher<View>? = null
 
                                 override fun perform(uiController: UiController?, view: View) {
-                                    assertEquals(availableCartList[shopIndex].productUiModelList[i].productName, view.findViewById<Typography>(R.id.text_product_name).text.toString())
+                                    assertEquals(availableCartList[shopIndex].productUiModelList[i].productName, view.findViewById<Typography>(com.tokopedia.cart.R.id.text_product_name).text.toString())
                                 }
                             }
                         )
@@ -180,7 +180,7 @@ class CartPageRobot {
     }
 
     fun assertCartGroupViewHolderOnPosition(position: Int, func: CartGroupViewHolderRobot.() -> Unit) {
-        onView(withId(R.id.rv_cart)).perform(
+        onView(withId(com.tokopedia.cart.R.id.rv_cart)).perform(
             RecyclerViewActions.actionOnItemAtPosition<CartGroupViewHolder>(
                 position,
                 object : ViewAction {
@@ -197,7 +197,7 @@ class CartPageRobot {
     }
 
     fun clickPromoButton() {
-        onView(withId(R.id.promo_checkout_btn_cart)).check(ViewAssertions.matches(ViewMatchers.isDisplayed())).perform(object : ViewAction {
+        onView(withId(com.tokopedia.cart.R.id.promo_checkout_btn_cart)).check(ViewAssertions.matches(ViewMatchers.isDisplayed())).perform(object : ViewAction {
             override fun getConstraints(): Matcher<View> {
                 return ViewMatchers.isDisplayed()
             }
@@ -213,7 +213,7 @@ class CartPageRobot {
     }
 
     fun clickBuyButton() {
-        onView(withId(R.id.go_to_courier_page_button)).perform(object : ViewAction {
+        onView(withId(com.tokopedia.cart.R.id.go_to_courier_page_button)).perform(object : ViewAction {
             override fun getConstraints(): Matcher<View> {
                 return ViewMatchers.isDisplayed()
             }

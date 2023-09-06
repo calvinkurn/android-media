@@ -33,6 +33,8 @@ data class ThanksPageData(
     val amountStr: String,
     @SerializedName("combine_amount")
     val combinedAmount: Double,
+    @SerializedName("order_group_list")
+    val orderGroupList: ArrayList<OrderGroupList>,
     @SerializedName("order_list")
     val shopOrder: ArrayList<ShopOrder>,
     @SerializedName("additional_info")
@@ -260,11 +262,35 @@ data class AdditionalInfo(
 ) : Parcelable
 
 @Parcelize
+data class OrderGroupList(
+    @SerializedName("id")
+    val id: String,
+    @SerializedName("total_shipping_fee")
+    val totalShippingFee: Float,
+    @SuppressLint("Invalid Data Type")
+    @SerializedName("total_bebasongkir_price")
+    val totalBebasongkirPrice: Float,
+    @SerializedName("dest_address")
+    val destAddress: String,
+    @SerializedName("shipping_service_name")
+    val shippingServiceName: String,
+    @SuppressLint("Invalid Data Type")
+    @SerializedName("total_insurance_price")
+    val totalInsurancePrice: Float,
+    @SerializedName("shipper_name")
+    val shipperName: String,
+    @SerializedName("shipper_eta")
+    val shipperEta: String,
+) : Parcelable
+
+@Parcelize
 data class ShopOrder(
     @SerializedName("order_id")
     val orderId: String,
     @SerializedName("store_id")
     val storeId: String,
+    @SerializedName("order_group_id")
+    val orderGroupId: String,
     @SerializedName("store_type")
     val storeType: String,
     @SerializedName("logistic_type")

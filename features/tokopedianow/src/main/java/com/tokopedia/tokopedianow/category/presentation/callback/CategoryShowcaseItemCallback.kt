@@ -51,7 +51,7 @@ class CategoryShowcaseItemCallback(
     ) {
         val appLink = UriUtil.buildUri(
             ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-            product.parentProductId
+            product.productCardModel.productId
         )
         onClickProductCard(
             appLink,

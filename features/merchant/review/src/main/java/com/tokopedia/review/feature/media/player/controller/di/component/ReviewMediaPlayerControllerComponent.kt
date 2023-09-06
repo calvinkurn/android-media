@@ -2,7 +2,6 @@ package com.tokopedia.review.feature.media.player.controller.di.component
 
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.review.feature.media.gallery.base.di.component.ReviewMediaGalleryComponent
 import com.tokopedia.review.feature.media.gallery.detailed.di.component.DetailedReviewMediaGalleryComponent
 import com.tokopedia.review.feature.media.player.controller.di.module.ReviewMediaPlayerControllerViewModelModule
 import com.tokopedia.review.feature.media.player.controller.di.qualifier.ReviewMediaPlayerControllerViewModelFactory
@@ -12,11 +11,7 @@ import dagger.Component
 
 @Component(
     modules = [ReviewMediaPlayerControllerViewModelModule::class],
-    dependencies = [
-        BaseAppComponent::class,
-        ReviewMediaGalleryComponent::class,
-        DetailedReviewMediaGalleryComponent::class
-    ]
+    dependencies = [BaseAppComponent::class, DetailedReviewMediaGalleryComponent::class]
 )
 @ReviewMediaPlayerControllerScope
 interface ReviewMediaPlayerControllerComponent {
