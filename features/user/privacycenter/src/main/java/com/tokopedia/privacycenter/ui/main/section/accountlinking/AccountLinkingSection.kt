@@ -9,14 +9,15 @@ import com.tokopedia.privacycenter.databinding.ItemAccountLinkingBinding
 import com.tokopedia.privacycenter.ui.main.analytics.MainPrivacyCenterAnalytics
 import com.tokopedia.privacycenter.ui.main.section.BasePrivacyCenterSection
 import com.tokopedia.privacycenter.utils.getMessage
-
+@Deprecated("Remove this class after integrating SCP Login to Tokopedia")
 class AccountLinkingSection(
     context: Context?,
     private val viewModel: AccountLinkingViewModel,
     private val listener: Listener
 ) : BasePrivacyCenterSection(context) {
-
+    @Deprecated("Remove this class after integrating SCP Login to Tokopedia")
     interface Listener {
+        @Deprecated("Remove this class after integrating SCP Login to Tokopedia")
         fun onItemAccountLinkingClicked(isLinked: Boolean)
     }
 

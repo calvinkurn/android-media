@@ -1,5 +1,7 @@
 package com.tokopedia.applink
 
+import android.content.Context
+import android.net.Uri
 import com.tokopedia.applink.Hotlist.DeeplinkMapperHotlist
 import com.tokopedia.applink.account.DeeplinkMapperAccount
 import com.tokopedia.applink.category.DeeplinkMapperCategory
@@ -34,7 +36,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalOperational
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
-import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
@@ -73,74 +74,87 @@ import com.tokopedia.applink.user.DeeplinkMapperUser
 object DeeplinkMainApp {
     val deeplinkPatternTokopediaSchemeListv2: Map<String, MutableList<DLP>> = mapOf(
         "account" to mutableListOf(
-            DLP.goTo(DeeplinkMapperAccount::getAccountInternalApplink)
+            DLP.goTo { deeplink: String ->
+                DeeplinkMapperAccount.getAccountInternalApplink(deeplink)
+            }
         ),
         "add-phone" to mutableListOf(
-            DLP.matchPattern("", DeeplinkMapperUser::getRegisteredNavigationUser)
+            DLP.matchPattern("") { deeplink: String ->
+                DeeplinkMapperUser.getRegisteredNavigationUser(deeplink)
+            }
         ),
         "add-pin-onboarding" to mutableListOf(
-            DLP.matchPattern("", DeeplinkMapperUser::getRegisteredNavigationUser)
+            DLP.matchPattern("") { deeplink: String ->
+                DeeplinkMapperUser.getRegisteredNavigationUser(deeplink)
+            }
         ),
         "addname" to mutableListOf(
-            DLP.matchPattern("", ApplinkConstInternalUserPlatform.MANAGE_NAME)
+            DLP.matchPattern("") { _: String ->
+                ApplinkConstInternalUserPlatform.MANAGE_NAME
+            }
+        ),
+        "addon" to mutableListOf(
+            DLP.matchPattern("{addon_id}") { _, _, _, idList ->
+                UriUtil.buildUri(ApplinkConstInternalMechant.MERCHANT_ADDON, idList?.getOrNull(0))
+            }
         ),
         "affiliate" to mutableListOf(
-            DLP.matchPattern("", DeeplinkMapperCategory::getRegisteredNavigationAffiliate),
-            DLP.matchPattern("help", DeeplinkMapperCategory::getRegisteredNavigationAffiliate),
-            DLP.matchPattern(
-                "transaction-history",
-                DeeplinkMapperCategory::getRegisteredNavigationAffiliate
-            ),
-            DLP.matchPattern(
-                "edu-page",
-                DeeplinkMapperCategory::getRegisteredNavigationAffiliate
-            ),
-            DLP.matchPattern(
-                "shoplist-dipromosikan-affiliate",
-                DeeplinkMapperCategory::getRegisteredNavigationAffiliate
-            ),
-            DLP.matchPattern(
-                "discopage-list",
-                DeeplinkMapperCategory::getRegisteredNavigationAffiliate
-            ),
-            DLP.matchPattern(
-                "promosikan",
-                DeeplinkMapperCategory::getRegisteredNavigationAffiliate
-            ),
-            DLP.matchPattern(
-                "onboarding",
-                DeeplinkMapperCategory::getRegisteredNavigationAffiliate
-            ),
-            DLP.matchPattern(
-                "performa",
-                DeeplinkMapperCategory::getRegisteredNavigationAffiliate
-            ),
-            DLP.startsWith(
-                "create_post_v2",
-                DeeplinkMapperContent::getContentCreatePostDeepLink
-            )
+            DLP.matchPattern("") { deeplink: String ->
+                DeeplinkMapperCategory.getRegisteredNavigationAffiliate(deeplink)
+            },
+            DLP.matchPattern("help") { deeplink: String ->
+                DeeplinkMapperCategory.getRegisteredNavigationAffiliate(deeplink)
+            },
+            DLP.matchPattern("transaction-history") { deeplink: String ->
+                DeeplinkMapperCategory.getRegisteredNavigationAffiliate(deeplink)
+            },
+            DLP.matchPattern("edu-page") { deeplink: String ->
+                DeeplinkMapperCategory.getRegisteredNavigationAffiliate(deeplink)
+            },
+            DLP.matchPattern("shoplist-dipromosikan-affiliate") { deeplink: String ->
+                DeeplinkMapperCategory.getRegisteredNavigationAffiliate(deeplink)
+            },
+            DLP.matchPattern("discopage-list") { deeplink: String ->
+                DeeplinkMapperCategory.getRegisteredNavigationAffiliate(deeplink)
+            },
+            DLP.matchPattern("promosikan") { deeplink: String ->
+                DeeplinkMapperCategory.getRegisteredNavigationAffiliate(deeplink)
+            },
+            DLP.matchPattern("onboarding") { deeplink: String ->
+                DeeplinkMapperCategory.getRegisteredNavigationAffiliate(deeplink)
+            },
+            DLP.matchPattern("performa") { deeplink: String ->
+                DeeplinkMapperCategory.getRegisteredNavigationAffiliate(deeplink)
+            },
+            DLP.startsWith("create_post_v2") { deeplink: String ->
+                DeeplinkMapperContent.getContentCreatePostDeepLink(deeplink)
+            }
         ),
         "amp" to mutableListOf(
-            DLP.startsWith(
-                "find",
-                DeepLinkMapperFind::getRegisteredFind
-            )
+            DLP.startsWith("find") { deeplink: String ->
+                DeepLinkMapperFind.getRegisteredFind(deeplink)
+            }
         ),
         "belanja" to mutableListOf(
-            DLP.matchPattern("order", DeeplinkMapperUoh::getRegisteredNavigationUohOrder)
+            DLP.matchPattern("order") { context: Context, deeplink: String ->
+                DeeplinkMapperUoh.getRegisteredNavigationUohOrder(context, deeplink)
+            }
         ),
         "browser" to mutableListOf(
-            DLP.goTo(ApplinkConstInternalGlobal.BROWSER)
+            DLP.goToLink { ApplinkConstInternalGlobal.BROWSER }
         ),
         "buka-toko-online-gratis" to mutableListOf(
-            DLP.matchPattern("", ApplinkConstInternalUserPlatform.LANDING_SHOP_CREATION)
+            DLP.matchPattern("") { _: String ->
+                ApplinkConstInternalUserPlatform.LANDING_SHOP_CREATION
+            }
         ),
         "buyer" to mutableListOf(
-            DLP.matchPattern("payment", ApplinkConstInternalPayment.PMS_PAYMENT_LIST),
-            DLP.startsWith(
-                "cancellationrequest",
-                DeeplinkMapperOrder::getBuyerCancellationRequestInternalAppLink
-            ),
+            DLP.matchPattern("payment") { _: String ->
+                ApplinkConstInternalPayment.PMS_PAYMENT_LIST
+            },
+            DLP.startsWith("cancellationrequest") { _: String ->
+                DeeplinkMapperOrder.getBuyerCancellationRequestInternalAppLink()
+            },
             DLP(
                 MatchPattern("order")
                     .or(MatchPattern("confirmed"))
@@ -155,115 +169,147 @@ object DeeplinkMainApp {
             }
         ),
         "cart" to mutableListOf(
-            DLP.goTo(DeeplinkMapperMarketplace::getRegisteredNavigationMarketplace)
+            DLP.goTo { deeplink: String ->
+                DeeplinkMapperMarketplace.getRegisteredNavigationMarketplace(deeplink)
+            }
         ),
         "catalog" to mutableListOf(
-            DLP.goTo(DeeplinkMapperCategory::getRegisteredNavigationCatalog)
+            DLP.goTo { deeplink: String ->
+                DeeplinkMapperCategory.getRegisteredNavigationCatalog(deeplink)
+            }
         ),
         "catalog-library" to mutableListOf(
-            DLP.goTo(DeeplinkMapperCategory::getRegisteredNavigationCategory)
+            DLP.goTo { deeplink: String ->
+                DeeplinkMapperCategory.getRegisteredNavigationCategory(deeplink)
+            }
         ),
         "category" to mutableListOf(
-            DLP.startsWith("tradein", DeeplinkMapperCategory::getRegisteredTradeinNavigation),
-            DLP.goTo(DeeplinkMapperCategory::getRegisteredCategoryNavigation)
+            DLP.startsWith("tradein") { deeplink: String ->
+                DeeplinkMapperCategory.getRegisteredTradeinNavigation(deeplink)
+            },
+            DLP.goTo { uri: Uri ->
+                DeeplinkMapperCategory.getRegisteredCategoryNavigation(uri)
+            }
         ),
         "category-explore" to mutableListOf(
-            DLP.goTo(DeeplinkMapperCategory::getRegisteredNavigationExploreCategory)
+            DLP.goTo { deeplink: String ->
+                DeeplinkMapperCategory.getRegisteredNavigationExploreCategory(deeplink)
+            }
         ),
         "changeinactivephone" to mutableListOf(
-            DLP.goTo(DeeplinkMapperUser::getRegisteredNavigationUser)
+            DLP.goTo { deeplink: String ->
+                DeeplinkMapperUser.getRegisteredNavigationUser(deeplink)
+            }
         ),
         "chat" to mutableListOf(
-            DLP.matchPattern(
-                "settings/templatechat",
+            DLP.matchPattern("settings/templatechat") { _: String ->
                 ApplinkConstInternalMarketplace.CHAT_SETTING_TEMPLATE
-            )
+            }
         ),
         "chatbot" to mutableListOf(
-            DLP.goTo(DeeplinkMapperChatbot::getChatbotDeeplink)
+            DLP.goTo { deeplink: String ->
+                DeeplinkMapperChatbot.getChatbotDeeplink(deeplink)
+            }
         ),
         "chatsettings" to mutableListOf(
-            DLP.matchPattern(
-                "bubble-activation",
-                DeeplinkMapperCommunication::getRegisteredNavigationBubbleActivation
-            )
+            DLP.matchPattern("bubble-activation") { deeplink: String ->
+                DeeplinkMapperCommunication.getRegisteredNavigationBubbleActivation(deeplink)
+            }
         ),
         "checkout" to mutableListOf(
-            DLP.goTo(DeeplinkMapperMarketplace::getRegisteredNavigationMarketplace)
+            DLP.goTo { deeplink: String ->
+                DeeplinkMapperMarketplace.getRegisteredNavigationMarketplace(deeplink)
+            }
         ),
         "contact-us" to mutableListOf(
-            DLP.goTo(DeeplinkMapperContactUs::getNavigationContactUs)
+            DLP.goTo { deeplink: String ->
+                DeeplinkMapperContactUs.getNavigationContactUs(deeplink)
+            }
         ),
         "content" to mutableListOf(
-            DLP.matchPattern(
-                "explore/{tab_name}/{category_id}",
-                DeeplinkMapperHome::getRegisteredNavigationHomeContentExplore
-            ),
-            DLP.matchPattern("{source_id}", DeeplinkMapperContent::getContentFeedDeeplink)
+            DLP.goTo { deeplink: String ->
+                DeeplinkMapperContent.getNavContentFromAppLink(deeplink)
+            }
         ),
         "customercare" to mutableListOf(
-            DLP.matchPattern("", ApplinkConstInternalOperational.INTERNAL_INBOX_LIST)
+            DLP.matchPattern("") { _: String ->
+                ApplinkConstInternalOperational.INTERNAL_INBOX_LIST
+            }
         ),
         "deals" to mutableListOf(
-            DLP.matchPattern("order", DeeplinkMapperUoh::getRegisteredNavigationUohOrder),
-            DLP.goTo(DeeplinkMapperDeals::getRegisteredNavigationDeals)
+            DLP.matchPattern("order") { context: Context, deeplink: String ->
+                DeeplinkMapperUoh.getRegisteredNavigationUohOrder(context, deeplink)
+            },
+            DLP.goTo { context: Context, deeplink: String ->
+                DeeplinkMapperDeals.getRegisteredNavigationDeals(context, deeplink)
+            }
         ),
         "digital" to mutableListOf(
-            DLP.startsWith("order", DeeplinkMapperUoh::getRegisteredNavigationUohOrder),
-            DLP.goTo(DeeplinkMapperDigital::getRegisteredNavigationDigital)
+            DLP.startsWith("order") { context: Context, deeplink: String ->
+                DeeplinkMapperUoh.getRegisteredNavigationUohOrder(context, deeplink)
+            },
+            DLP.goTo { context: Context, deeplink: String ->
+                DeeplinkMapperDigital.getRegisteredNavigationDigital(context, deeplink)
+            }
         ),
         "dilayani-tokopedia" to mutableListOf(
-            DLP.matchPattern("", ApplinkConstInternalDilayaniTokopedia.HOME)
+            DLP.matchPattern("") { _: String ->
+                ApplinkConstInternalDilayaniTokopedia.HOME
+            }
         ),
         "discovery" to mutableListOf(
-            DLP.goTo(ApplinkConstInternalCategory::getDiscoveryDeeplink)
+            DLP.goTo { deeplink: String ->
+                ApplinkConstInternalCategory.getDiscoveryDeeplink(deeplink)
+            }
         ),
         "epharmacy" to mutableListOf(
-            DLP.goTo(DeeplinkMapperCategory::getRegisteredNavigationCategory)
+            DLP.goTo { deeplink: String ->
+                DeeplinkMapperCategory.getRegisteredNavigationCategory(deeplink)
+            }
         ),
         "events" to mutableListOf(
-            DLP.matchPattern("order", DeeplinkMapperUoh::getRegisteredNavigationUohOrder),
-            DLP.goTo(DeeplinkMapperEntertainment::getRegisteredNavigationEvents)
+            DLP.matchPattern("order") { context: Context, deeplink: String ->
+                DeeplinkMapperUoh.getRegisteredNavigationUohOrder(context, deeplink)
+            },
+            DLP.goTo { context: Context, deeplink: String ->
+                DeeplinkMapperEntertainment.getRegisteredNavigationEvents(context, deeplink)
+            }
         ),
         "explicit-profile" to mutableListOf(
-            DLP.matchPattern("", ApplinkConstInternalUserPlatform.EXPLICIT_PROFILE)
+            DLP.matchPattern("") { _: String ->
+                ApplinkConstInternalUserPlatform.EXPLICIT_PROFILE
+            }
         ),
         "feed" to mutableListOf(
-            DLP.matchPattern("", DeeplinkMapperHome::getRegisteredNavigationHomeFeed),
-            DLP.matchPattern(
-                "explore",
-                DeeplinkMapperContent::getRegisteredNavigationHomeFeedExplore
-            ),
-            DLP.matchPattern(
-                "video",
-                DeeplinkMapperContent::getRegisteredNavigationHomeFeedVideo
-            ),
-            DLP.startsWith(
-                "following",
-                DeeplinkMapperContent::getRegisteredNavigationHomeFeedFollowing
-            ),
-            DLP.startsWith(
-                "creation-product-search",
-                DeeplinkMapperContent::getContentCreatePostDeepLink
-            ),
-            DLP.startsWith(
-                "creation-shop-search",
-                DeeplinkMapperContent::getContentCreatePostDeepLink
-            )
+            DLP.goTo { deeplink: String ->
+                DeeplinkMapperContent.getNavContentFromAppLink(deeplink)
+            }
         ),
         "feedcommunicationdetail" to mutableListOf(
-            DLP.goTo(DeepLinkMapperFeed::getRegisteredFeed)
+            DLP.goTo { deeplink: String ->
+                DeepLinkMapperFeed.getRegisteredFeed(deeplink)
+            }
         ),
         "feedplaylivedetail" to mutableListOf(
-            DLP.goTo(ApplinkConstInternalFeed.INTERNAL_PLAY_LIVE_DETAILS)
+            DLP.goTo { _: String ->
+                ApplinkConstInternalFeed.INTERNAL_PLAY_LIVE_DETAILS
+            }
         ),
         "find" to mutableListOf(
-            DLP.goTo(DeepLinkMapperFind::getRegisteredFind)
+            DLP.goTo { deeplink: String ->
+                DeepLinkMapperFind.getRegisteredFind(deeplink)
+            }
         ),
         "fintech" to mutableListOf(
-            DLP.startsWith("paylater", ApplinkConstInternalFintech.PAYLATER),
-            DLP.startsWith("activate_gopay", ApplinkConstInternalFintech.ACTIVATE_GOPAY),
-            DLP.startsWith("opt-checkout", ApplinkConstInternalFintech.OCC_CHECKOUT),
+            DLP.startsWith("paylater") { _: String ->
+                ApplinkConstInternalFintech.PAYLATER
+            },
+            DLP.startsWith("activate_gopay") { _: String ->
+                ApplinkConstInternalFintech.ACTIVATE_GOPAY
+            },
+            DLP.startsWith("opt-checkout") { _: String ->
+                ApplinkConstInternalFintech.OCC_CHECKOUT
+            },
             DLP(
                 MatchPattern("home-credit/selfie")
                     .or(MatchPattern("home-credit/ktp"))
@@ -282,23 +328,37 @@ object DeeplinkMainApp {
             }
         ),
         "food" to mutableListOf(
-            DLP.matchPattern("order", DeeplinkMapperUoh::getRegisteredNavigationUohOrder),
-            DLP.goTo(DeeplinkMapperTokoFood::mapperInternalApplinkTokoFood)
+            DLP.matchPattern("order") { context: Context, deeplink: String ->
+                DeeplinkMapperUoh.getRegisteredNavigationUohOrder(context, deeplink)
+            },
+            DLP.goTo { context: Context, uri: Uri ->
+                DeeplinkMapperTokoFood.mapperInternalApplinkTokoFood(context, uri)
+            }
         ),
         "gamification" to mutableListOf(
-            DLP.goTo(DeeplinkMapperGamification::getGamificationDeeplink)
+            DLP.goTo { deeplink: String ->
+                DeeplinkMapperGamification.getGamificationDeeplink(deeplink)
+            }
         ),
         "gamification2" to mutableListOf(
-            DLP.goTo(DeeplinkMapperGamification::getGamificationDeeplink)
+            DLP.goTo { deeplink: String ->
+                DeeplinkMapperGamification.getGamificationDeeplink(deeplink)
+            }
         ),
         "gamification_gift_60s" to mutableListOf(
-            DLP.goTo(DeeplinkMapperGamification::getGamificationDeeplink)
+            DLP.goTo { deeplink: String ->
+                DeeplinkMapperGamification.getGamificationDeeplink(deeplink)
+            }
         ),
         "gamification_gift_daily" to mutableListOf(
-            DLP.goTo(DeeplinkMapperGamification::getGamificationDeeplink)
+            DLP.goTo { deeplink: String ->
+                DeeplinkMapperGamification.getGamificationDeeplink(deeplink)
+            }
         ),
         "giftcards" to mutableListOf(
-            DLP.matchPattern("order", DeeplinkMapperUoh::getRegisteredNavigationUohOrder)
+            DLP.matchPattern("order") { context: Context, deeplink: String ->
+                DeeplinkMapperUoh.getRegisteredNavigationUohOrder(context, deeplink)
+            }
         ),
         "gifting" to mutableListOf(
             DLP.matchPattern("{addon_id}") { _, _, _, idList ->
@@ -306,240 +366,343 @@ object DeeplinkMainApp {
             }
         ),
         "gofood" to mutableListOf(
-            DLP.goTo(DeeplinkMapperTokoFood::mapperInternalApplinkTokoFood)
+            DLP.goTo { context: Context, uri: Uri ->
+                DeeplinkMapperTokoFood.mapperInternalApplinkTokoFood(context, uri)
+            }
         ),
         "gojek-account-link" to mutableListOf(
-            DLP.matchPattern("", ApplinkConstInternalUserPlatform.LINK_ACCOUNT_WEBVIEW)
+            DLP.matchPattern("") { _: String ->
+                ApplinkConstInternalUserPlatform.LINK_ACCOUNT_WEBVIEW
+            }
         ),
         "gold-merchant-statistic-dashboard" to mutableListOf(
-            DLP.goTo(DeeplinkMapperMarketplace::getRegisteredNavigationMarketplace)
+            DLP.goTo { deeplink: String ->
+                DeeplinkMapperMarketplace.getRegisteredNavigationMarketplace(deeplink)
+            }
         ),
         "goto-kyc" to mutableListOf(
-            DLP.goTo(DeeplinkMapperUser::getRegisteredNavigationUser)
+            DLP.goTo { deeplink: String ->
+                DeeplinkMapperUser.getRegisteredNavigationUser(deeplink)
+            }
         ),
         "home" to mutableListOf(
-            DLP.goTo(DeeplinkMapperHome::getRegisteredNavigationHome)
+            DLP.goTo { context: Context, deeplink: String ->
+                DeeplinkMapperHome.getRegisteredNavigationHome(context, deeplink)
+            }
         ),
         "hot" to mutableListOf(
-            DLP.goTo(DeeplinkMapperHotlist::getRegisteredHotlist)
+            DLP.goTo { deeplink: String ->
+                DeeplinkMapperHotlist.getRegisteredHotlist(deeplink)
+            }
         ),
         "hotel" to mutableListOf(
-            DLP.matchPattern("order", DeeplinkMapperUoh::getRegisteredNavigationUohOrder),
-            DLP.goTo(DeeplinkMapperTravel::getRegisteredNavigationTravel)
+            DLP.matchPattern("order") { context: Context, deeplink: String ->
+                DeeplinkMapperUoh.getRegisteredNavigationUohOrder(context, deeplink)
+            },
+            DLP.goTo { context: Context, deeplink: String ->
+                DeeplinkMapperTravel.getRegisteredNavigationTravel(context, deeplink)
+            }
         ),
         "howtopay" to mutableListOf(
-            DLP.matchPattern("", ApplinkConstInternalPayment.INTERNAL_HOW_TO_PAY)
+            DLP.matchPattern("") { _: String ->
+                ApplinkConstInternalPayment.INTERNAL_HOW_TO_PAY
+            }
         ),
         "image-picker" to mutableListOf(
-            DLP.matchPattern("v2", DeeplinkMapperImagePicker::getImagePickerV2Deeplink)
+            DLP.matchPattern("v2") { deeplink: String ->
+                DeeplinkMapperImagePicker.getImagePickerV2Deeplink(deeplink)
+            }
         ),
         "inbox" to mutableListOf(
-            DLP.goTo(DeeplinkMapperCommunication::getRegisteredNavigationInbox)
+            DLP.goTo { context: Context, deeplink: String ->
+                DeeplinkMapperCommunication.getRegisteredNavigationInbox(context, deeplink)
+            }
         ),
         "inputinactivenumber" to mutableListOf(
-            DLP.matchPattern("", DeeplinkMapperUser::getRegisteredNavigationUser)
+            DLP.matchPattern("") { deeplink: String ->
+                DeeplinkMapperUser.getRegisteredNavigationUser(deeplink)
+            }
         ),
         "insurance" to mutableListOf(
-            DLP.matchPattern("order", DeeplinkMapperUoh::getRegisteredNavigationUohOrder)
+            DLP.matchPattern("order") { context: Context, deeplink: String ->
+                DeeplinkMapperUoh.getRegisteredNavigationUohOrder(context, deeplink)
+            }
         ),
         "internal-feedback" to mutableListOf(
-            DLP.matchPattern("", ApplinkConstInternalGlobal.FEEDBACK_FORM)
+            DLP.matchPattern("") { _: String ->
+                ApplinkConstInternalGlobal.FEEDBACK_FORM
+            }
         ),
         "jump" to mutableListOf(
-            DLP.goTo(DeeplinkMapperHome::getRegisteredExplore)
+            DLP.goTo { deeplink: String ->
+                DeeplinkMapperHome.getRegisteredExplore(deeplink)
+            }
         ),
         "kereta" to mutableListOf(
-            DLP.matchPattern("order", DeeplinkMapperUoh::getRegisteredNavigationUohOrder)
+            DLP.matchPattern("order") { context: Context, deeplink: String ->
+                DeeplinkMapperUoh.getRegisteredNavigationUohOrder(context, deeplink)
+            }
         ),
         "kyc" to mutableListOf(
-            DLP.matchPattern("", ApplinkConstInternalUserPlatform.KYC_INFO_BASE)
+            DLP.matchPattern("") { _: String ->
+                ApplinkConstInternalUserPlatform.KYC_INFO_BASE
+            }
         ),
         "kyc-form" to mutableListOf(
-            DLP.goTo(ApplinkConstInternalUserPlatform.KYC_FORM_BASE)
+            DLP.goToLink { ApplinkConstInternalUserPlatform.KYC_FORM_BASE }
         ),
         "layanan-finansial" to mutableListOf(
-            DLP.goTo(DeeplinkMapperFintech::getRegisteredNavigationForLayanan)
+            DLP.goTo { deeplink: String ->
+                DeeplinkMapperFintech.getRegisteredNavigationForLayanan(deeplink)
+            }
         ),
         "login" to mutableListOf(
-            DLP.startsWith("qr", ApplinkConstInternalUserPlatform.QR_LOGIN),
-            DLP.matchPattern("", ApplinkConstInternalUserPlatform.LOGIN)
+            DLP.startsWith("qr") { _: String ->
+                ApplinkConstInternalUserPlatform.QR_LOGIN
+            },
+            DLP.matchPattern("") { _: String ->
+                ApplinkConstInternalUserPlatform.LOGIN
+            }
         ),
         "marketplace" to mutableListOf(
-            DLP.startsWith("order", DeeplinkMapperUoh::getRegisteredNavigationUohOrder),
-            DLP.startsWith(
-                "buyer-order-extension",
+            DLP.startsWith("order") { context: Context, deeplink: String ->
+                DeeplinkMapperUoh.getRegisteredNavigationUohOrder(context, deeplink)
+            },
+            DLP.startsWith("buyer-order-extension") { _: String ->
                 ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_BUYER_ORDER_EXTENSION
-            ),
-            DLP.startsWith(
-                "buyer-partial-order-fulfillment",
+            },
+            DLP.startsWith("buyer-partial-order-fulfillment") { _: String ->
                 ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_BUYER_PARTIAL_ORDER_FULFILLMENT
-            ),
-            DLP.startsWith("onboarding", ApplinkConstInternalMarketplace.ONBOARDING)
+            },
+            DLP.startsWith("onboarding") { _: String ->
+                ApplinkConstInternalMarketplace.ONBOARDING
+            }
         ),
         "medali" to mutableListOf(
-            DLP.matchPattern(ApplinkConst.ScpRewards.CELEBRATION_BASE) { _, uri, _, _ -> getInternalDeeplinkForScpCelebration(uri) },
-            DLP.startsWith(ApplinkConst.ScpRewards.CELEBRATION_BOTTOMSHEET) { _, uri, _, _ -> getCelebrationBottomsheetDeeplink(uri) },
-            DLP.startsWith(ApplinkConst.ScpRewards.SCP_TOASTER) { ctx, uri, _, _ -> invokeScpToasterUniversalAppLink(ctx, uri) },
-            DLP.startsWith(ApplinkConst.ScpRewards.MEDAL_DETAIL_BASE) { _, uri, _, _ -> getInternalDeeplinkForScpMedalDetail(uri) },
-            DLP.startsWith(ApplinkConst.ScpRewards.SEE_MORE_MEDAL) { _, uri, _, _ -> getInternalDeeplinkForScpMedalCabinetSeeMore(uri) },
+            DLP.matchPattern(ApplinkConst.ScpRewards.CELEBRATION_BASE) { _, uri, _, _ ->
+                getInternalDeeplinkForScpCelebration(
+                    uri
+                )
+            },
+            DLP.startsWith(ApplinkConst.ScpRewards.CELEBRATION_BOTTOMSHEET) { _, uri, _, _ ->
+                getCelebrationBottomsheetDeeplink(
+                    uri
+                )
+            },
+            DLP.startsWith(ApplinkConst.ScpRewards.SCP_TOASTER) { ctx, uri, _, _ ->
+                invokeScpToasterUniversalAppLink(
+                    ctx,
+                    uri
+                )
+            },
+            DLP.startsWith(ApplinkConst.ScpRewards.MEDAL_DETAIL_BASE) { _, uri, _, _ ->
+                getInternalDeeplinkForScpMedalDetail(
+                    uri
+                )
+            },
+            DLP.startsWith(ApplinkConst.ScpRewards.SEE_MORE_MEDAL) { _, uri, _, _ ->
+                getInternalDeeplinkForScpMedalCabinetSeeMore(
+                    uri
+                )
+            },
             DLP.matchPattern("") { _, uri, _, _ -> getInternalDeeplinkForScpMedalCabinet(uri) }
         ),
         "media-editor" to mutableListOf(
-            DLP.matchPattern("", ApplinkConstInternalMedia.INTERNAL_MEDIA_EDITOR)
+            DLP.matchPattern("") { _: String ->
+                ApplinkConstInternalMedia.INTERNAL_MEDIA_EDITOR
+            }
         ),
         "media-picker" to mutableListOf(
-            DLP.matchPattern("", ApplinkConstInternalMedia.INTERNAL_MEDIA_PICKER)
+            DLP.matchPattern("") { _: String ->
+                ApplinkConstInternalMedia.INTERNAL_MEDIA_PICKER
+            }
         ),
         "media-picker-preview" to mutableListOf(
-            DLP.matchPattern("", ApplinkConstInternalMedia.INTERNAL_MEDIA_PICKER_PREVIEW)
+            DLP.matchPattern("") { _: String ->
+                ApplinkConstInternalMedia.INTERNAL_MEDIA_PICKER_PREVIEW
+            }
         ),
         "merchant-voucher" to mutableListOf(
-            DLP.matchPattern("list", ApplinkConstInternalSellerapp.SELLER_MVC_LIST_ACTIVE)
+            DLP.matchPattern("list") { _: String ->
+                ApplinkConstInternalSellerapp.SELLER_MVC_LIST_ACTIVE
+            }
         ),
         "modaltoko" to mutableListOf(
-            DLP.matchPattern("order", DeeplinkMapperUoh::getRegisteredNavigationUohOrder)
+            DLP.matchPattern("order") { context: Context, deeplink: String ->
+                DeeplinkMapperUoh.getRegisteredNavigationUohOrder(context, deeplink)
+            }
         ),
         "money_in" to mutableListOf(
-            DLP.startsWith(
-                "device_validation",
-                DeeplinkMapperMoneyIn::getRegisteredNavigationMoneyIn
-            )
+            DLP.startsWith("device_validation") { deeplink: String ->
+                DeeplinkMapperMoneyIn.getRegisteredNavigationMoneyIn(deeplink)
+            }
         ),
         "my-shop" to mutableListOf(
-            DLP.matchPattern(
-                "etalase/list",
+            DLP.matchPattern("etalase/list") { _: String ->
                 ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_LIST
-            )
+            }
         ),
         "navigation" to mutableListOf(
-            DLP.matchPattern("main", ApplinkConsInternalNavigation.MAIN_NAVIGATION)
+            DLP.matchPattern("main") { _: String ->
+                ApplinkConsInternalNavigation.MAIN_NAVIGATION
+            }
         ),
         "new-wishlist" to mutableListOf(
-            DLP.matchPattern("", DeeplinkMapperWishlist::getRegisteredNavigationWishlist)
+            DLP.matchPattern("") { _: String ->
+                DeeplinkMapperWishlist.getRegisteredNavigationWishlist()
+            }
         ),
         "notif-center" to mutableListOf(
-            DLP.matchPattern("", DeeplinkMapperInbox::getRegisteredNavigationNotifcenter)
+            DLP.matchPattern("") { _: String ->
+                DeeplinkMapperInbox.getRegisteredNavigationNotifcenter()
+            }
         ),
         "notification" to mutableListOf(
-            DLP.matchPattern("", DeeplinkMapperInbox::getRegisteredNavigationNotifcenter)
+            DLP.matchPattern("") { _: String ->
+                DeeplinkMapperInbox.getRegisteredNavigationNotifcenter()
+            }
         ),
         "notification-troubleshooter" to mutableListOf(
-            DLP.matchPattern(
-                "",
+            DLP.matchPattern("") { _: String ->
                 ApplinkConstInternalUserPlatform.PUSH_NOTIFICATION_TROUBLESHOOTER
-            )
+            }
         ),
         "now" to mutableListOf(
-            DLP.matchPattern(
-                "",
-                DeeplinkMapperTokopediaNow::getRegisteredNavigationTokopediaNowHome
-            ),
-            DLP.startsWith(
-                "search",
-                DeeplinkMapperTokopediaNow::getRegisteredNavigationTokopediaNowSearch
-            ),
-            DLP.startsWith(
-                "category",
-                DeeplinkMapperTokopediaNow::getRegisteredNavigationTokopediaNowCategory
-            ),
-            DLP.startsWith("repurchase-page", ApplinkConstInternalTokopediaNow::REPURCHASE),
-            DLP.matchPattern(
-                "recipe/detail/{recipe_id}",
-                DeeplinkMapperTokopediaNow::getRegisteredNavigationTokopediaNowRecipeDetail
-            ),
-            DLP.startsWith(
-                "recipe/bookmarks",
-                DeeplinkMapperTokopediaNow::getRegisteredNavigationTokopediaNowRecipeBookmark
-            ),
-            DLP.matchPattern(
-                "recipe",
-                DeeplinkMapperTokopediaNow::getRegisteredNavigationTokopediaNowRecipeHome
-            ),
-            DLP.startsWith(
-                "recipe/search",
-                DeeplinkMapperTokopediaNow::getRegisteredNavigationTokopediaNowRecipeSearch
-            ),
-            DLP.startsWith(
-                "recipe/autocomplete",
-                DeeplinkMapperTokopediaNow::getRegisteredNavigationTokopediaNowRecipeAutoComplete
-            ),
-            DLP.startsWith(
-                "see-all-category",
-                ApplinkConstInternalTokopediaNow::SEE_ALL_CATEGORY
-            )
+            DLP.matchPattern("") { deeplink: String ->
+                DeeplinkMapperTokopediaNow.getRegisteredNavigationTokopediaNowHome(deeplink)
+            },
+            DLP.startsWith("search") { deeplink: String ->
+                DeeplinkMapperTokopediaNow.getRegisteredNavigationTokopediaNowSearch(deeplink)
+            },
+            DLP.startsWith("category") { deeplink: String ->
+                DeeplinkMapperTokopediaNow.getRegisteredNavigationTokopediaNowCategory(deeplink)
+            },
+            DLP.startsWith("repurchase-page") { _: String ->
+                ApplinkConstInternalTokopediaNow.REPURCHASE
+            },
+            DLP.matchPattern("recipe/detail/{recipe_id}") { deeplink: String ->
+                DeeplinkMapperTokopediaNow.getRegisteredNavigationTokopediaNowRecipeDetail(deeplink)
+            },
+            DLP.startsWith("recipe/bookmarks") { deeplink: String ->
+                DeeplinkMapperTokopediaNow.getRegisteredNavigationTokopediaNowRecipeBookmark(deeplink)
+            },
+            DLP.matchPattern("recipe") { deeplink: String ->
+                DeeplinkMapperTokopediaNow.getRegisteredNavigationTokopediaNowRecipeHome(deeplink)
+            },
+            DLP.startsWith("recipe/search") { deeplink: String ->
+                DeeplinkMapperTokopediaNow.getRegisteredNavigationTokopediaNowRecipeSearch(deeplink)
+            },
+            DLP.startsWith("recipe/autocomplete") { deeplink: String ->
+                DeeplinkMapperTokopediaNow.getRegisteredNavigationTokopediaNowRecipeAutoComplete(deeplink)
+            },
+            DLP.startsWith("see-all-category") { _: String ->
+                ApplinkConstInternalTokopediaNow.SEE_ALL_CATEGORY
+            }
         ),
         "occ" to mutableListOf(
-            DLP.goTo(DeeplinkMapperMarketplace::getRegisteredNavigationMarketplace)
+            DLP.goTo { deeplink: String ->
+                DeeplinkMapperMarketplace.getRegisteredNavigationMarketplace(deeplink)
+            }
         ),
         "official-store" to mutableListOf(
-            DLP.goTo(DeeplinkMapperHome::getRegisteredNavigationHomeOfficialStore)
+            DLP.goTo { deeplink: String ->
+                DeeplinkMapperHome.getRegisteredNavigationHomeOfficialStore(deeplink)
+            }
         ),
         "official-stores" to mutableListOf(
-            DLP.goTo(DeeplinkMapperHome::getRegisteredNavigationHomeOfficialStore)
+            DLP.goTo { deeplink: String ->
+                DeeplinkMapperHome.getRegisteredNavigationHomeOfficialStore(deeplink)
+            }
         ),
         "order" to mutableListOf(
-            DLP.goTo(DeeplinkMapperUoh::getRegisteredNavigationUohOrder)
+            DLP.goTo { context: Context, deeplink: String ->
+                DeeplinkMapperUoh.getRegisteredNavigationUohOrder(context, deeplink)
+            }
         ),
         "order-details" to mutableListOf(
-            DLP.startsWith(
-                "umroh",
-                DeeplinkMapperSalam::getRegisteredNavigationSalamUmrahOrderDetail
-            )
+            DLP.startsWith("umroh") { deeplink: String ->
+                DeeplinkMapperSalam.getRegisteredNavigationSalamUmrahOrderDetail(deeplink)
+            }
         ),
         "order_list" to mutableListOf(
-            DLP.goTo(DeeplinkMapperUoh::getRegisteredNavigationUohOrder)
+            DLP.goTo { context: Context, deeplink: String ->
+                DeeplinkMapperUoh.getRegisteredNavigationUohOrder(context, deeplink)
+            }
         ),
         "otp" to mutableListOf(
-            DLP.matchPattern("", ApplinkConstInternalUserPlatform.COTP)
+            DLP.matchPattern("") { _: String ->
+                ApplinkConstInternalUserPlatform.COTP
+            }
         ),
         "otp-verify" to mutableListOf(
-            DLP.matchPattern("", ApplinkConstInternalUserPlatform.OTP_PUSH_NOTIF_RECEIVER)
+            DLP.matchPattern("") { _: String ->
+                ApplinkConstInternalUserPlatform.OTP_PUSH_NOTIF_RECEIVER
+            }
         ),
         "ovoqrthanks" to mutableListOf(
-            DLP.goTo(DeeplinkMapperFintech::getRegisteredNavigationForFintech)
+            DLP.goTo { uri: Uri ->
+                DeeplinkMapperFintech.getRegisteredNavigationForFintech(uri)
+            }
         ),
         "p" to mutableListOf(
-            DLP.goTo(DeeplinkMapperCategory::getRegisteredCategoryNavigation)
+            DLP.goTo { uri: Uri ->
+                DeeplinkMapperCategory.getRegisteredCategoryNavigation(uri)
+            }
         ),
         "payment" to mutableListOf(
-            DLP.matchPattern(
-                "credit-card/add",
+            DLP.matchPattern("credit-card/add") { _: String ->
                 ApplinkConstInternalPayment.PAYMENT_ADD_CREDIT_CARD
-            ),
-            DLP.matchPattern("gopayKyc", ApplinkConstInternalPayment.GOPAY_KYC),
-            DLP.matchPattern("thankyou", ApplinkConstInternalPayment.PAYMENT_THANK_YOU_PAGE)
+            },
+            DLP.matchPattern("gopayKyc") { _: String ->
+                ApplinkConstInternalPayment.GOPAY_KYC
+            },
+            DLP.matchPattern("thankyou") { _: String ->
+                ApplinkConstInternalPayment.PAYMENT_THANK_YOU_PAGE
+            }
         ),
         "people" to mutableListOf(
-            DLP.matchPattern(
-                "{user_id}",
-                DeeplinkMapperContent::getProfileDeeplink
-            ),
-            DLP.matchPattern(
-                "settings/{user_id}",
-                DeeplinkMapperContent::getProfileDeeplink
-            ),
+            DLP.matchPattern("{user_id}") { deeplink: String ->
+                DeeplinkMapperContent.getProfileDeeplink(deeplink)
+            },
+            DLP.matchPattern("settings/{user_id}") { deeplink: String ->
+                DeeplinkMapperContent.getProfileDeeplink(deeplink)
+            }
         ),
         "pesawat" to mutableListOf(
-            DLP.matchPattern("order", DeeplinkMapperUoh::getRegisteredNavigationUohOrder),
-            DLP.matchPattern("", ApplinkConstInternalTravel.DASHBOARD_FLIGHT)
+            DLP.matchPattern("order") { context: Context, deeplink: String ->
+                DeeplinkMapperUoh.getRegisteredNavigationUohOrder(context, deeplink)
+            },
+            DLP.matchPattern("") { _: String ->
+                ApplinkConstInternalTravel.DASHBOARD_FLIGHT
+            }
         ),
         "pin-point-picker-result" to mutableListOf(
-            DLP.goTo(DeeplinkMapperLogistic::getRegisteredNavigationPinpointWebview)
+            DLP.goTo { deeplink: String ->
+                DeeplinkMapperLogistic.getRegisteredNavigationPinpointWebview(deeplink)
+            }
         ),
         "play" to mutableListOf(
-            DLP.matchPattern("{channel_id}", DeeplinkMapperContent::getRegisteredNavigation)
+            DLP.matchPattern("{channel_id}") { deeplink: String ->
+                DeeplinkMapperContent.getRegisteredNavigation(deeplink)
+            }
         ),
         "play-broadcaster" to mutableListOf(
-            DLP.goTo(DeeplinkMapperContent::getRegisteredNavigation)
+            DLP.goTo { deeplink: String ->
+                DeeplinkMapperContent.getRegisteredNavigation(deeplink)
+            }
         ),
         "play-notif-video" to mutableListOf(
-            DLP.goTo(ApplinkConstInternalGlobal.YOUTUBE_VIDEO)
+            DLP.goToLink { ApplinkConstInternalGlobal.YOUTUBE_VIDEO }
         ),
         "play-shorts" to mutableListOf(
-            DLP.goTo(DeeplinkMapperContent::getRegisteredNavigation)
+            DLP.goTo { deeplink: String ->
+                DeeplinkMapperContent.getRegisteredNavigation(deeplink)
+            }
         ),
         "plus" to mutableListOf(
-            DLP.matchPattern("order", DeeplinkMapperUoh::getRegisteredNavigationUohOrder)
+            DLP.matchPattern("order") { context: Context, deeplink: String ->
+                DeeplinkMapperUoh.getRegisteredNavigationUohOrder(context, deeplink)
+            }
         ),
         "post-atc" to mutableListOf(
             DLP.matchPattern("{productId}") { _, _, _, idList ->
@@ -550,19 +713,23 @@ object DeeplinkMainApp {
             }
         ),
         "power_merchant" to mutableListOf(
-            DLP.startsWith("subscribe", PowerMerchantDeepLinkMapper::getPowerMerchantAppLink),
-            DLP.matchPattern(
-                "benefit_package",
+            DLP.startsWith("subscribe") { context: Context, uri: Uri ->
+                PowerMerchantDeepLinkMapper.getPowerMerchantAppLink(context, uri)
+            },
+            DLP.matchPattern("benefit_package") { _: String ->
                 ApplinkConstInternalMarketplace.PM_BENEFIT_PACKAGE
-            ),
-            DLP.startsWith(
-                "interrupt",
-                PowerMerchantDeepLinkMapper::getInternalAppLinkPmProInterrupt
-            )
+            },
+            DLP.startsWith("interrupt") { deeplink: String ->
+                PowerMerchantDeepLinkMapper.getInternalAppLinkPmProInterrupt(deeplink)
+            }
         ),
         "privacy-center" to mutableListOf(
-            DLP.matchPattern("", DeeplinkMapperUser::getRegisteredNavigationUser),
-            DLP.matchPattern("dsar", DeeplinkMapperUser::getRegisteredNavigationUser)
+            DLP.matchPattern("") { deeplink: String ->
+                DeeplinkMapperUser.getRegisteredNavigationUser(deeplink)
+            },
+            DLP.matchPattern("dsar") { deeplink: String ->
+                DeeplinkMapperUser.getRegisteredNavigationUser(deeplink)
+            }
         ),
         "product" to mutableListOf(
             DLP.matchPattern("edit/{product_id}") { _, _, _, idList ->
@@ -570,18 +737,15 @@ object DeeplinkMainApp {
                     idList?.getOrNull(0) ?: ""
                 )
             },
-            DLP.matchPattern(
-                "{id}/review",
-                DeeplinkMapperMerchant::getRegisteredNavigationProductDetailReview
-            ),
-            DLP.matchPattern(
-                "{id}/review/gallery",
-                DeeplinkMapperMerchant::getRegisteredNavigationProductDetailReviewGallery
-            ),
-            DLP.matchPattern(
-                "{product_id}",
-                DeeplinkMapperMarketplace::getTokopediaInternalProduct
-            ),
+            DLP.matchPattern("{id}/review") { uri: Uri ->
+                DeeplinkMapperMerchant.getRegisteredNavigationProductDetailReview(uri)
+            },
+            DLP.matchPattern("{id}/review/gallery") { uri: Uri ->
+                DeeplinkMapperMerchant.getRegisteredNavigationProductDetailReviewGallery(uri)
+            },
+            DLP.matchPattern("{product_id}") { uri: Uri, idList: List<String>? ->
+                DeeplinkMapperMarketplace.getTokopediaInternalProduct(uri, idList)
+            },
             DLP.matchPattern("{product_id}/talk") { _, _, _, idList ->
                 DeeplinkMapper.getRegisteredNavigationProductTalk(idList?.getOrNull(0))
             }
@@ -609,14 +773,17 @@ object DeeplinkMainApp {
                     idList?.getOrNull(0)
                 )
             },
-            DLP.goTo(DeeplinkMapperUoh::getRegisteredNavigationUohOrder)
+            DLP.goTo { context: Context, deeplink: String ->
+                DeeplinkMapperUoh.getRegisteredNavigationUohOrder(context, deeplink)
+            }
         ),
         "product-review" to mutableListOf(
-            DLP.startsWith(
-                "create",
-                DeeplinkMapperMerchant::getRegisteredNavigationProductReview
-            ),
-            DLP.matchPattern("bulk-create", ApplinkConstInternalMarketplace.BULK_CREATE_REVIEW)
+            DLP.startsWith("create") { uri: Uri ->
+                DeeplinkMapperMerchant.getRegisteredNavigationProductReview(uri)
+            },
+            DLP.matchPattern("bulk-create") { _: String ->
+                ApplinkConstInternalMarketplace.BULK_CREATE_REVIEW
+            }
         ),
         "productar" to mutableListOf(
             DLP.matchPattern("{product_id}") { _, _, _, idList ->
@@ -624,10 +791,14 @@ object DeeplinkMainApp {
             }
         ),
         "productpickerfromshop" to mutableListOf(
-            DLP.goTo(DeeplinkMapperContent::getContentCreatePostDeepLink)
+            DLP.goTo { deeplink: String ->
+                DeeplinkMapperContent.getContentCreatePostDeepLink(deeplink)
+            }
         ),
         "profilecompletion" to mutableListOf(
-            DLP.matchPattern("", ApplinkConstInternalUserPlatform.PROFILE_COMPLETION)
+            DLP.matchPattern("") { _: String ->
+                ApplinkConstInternalUserPlatform.PROFILE_COMPLETION
+            }
         ),
         "promo" to mutableListOf(
             DLP.matchPattern("") { _, _, _, _ ->
@@ -646,163 +817,214 @@ object DeeplinkMainApp {
             }
         ),
         "recharge" to mutableListOf(
-            DLP.goTo(DeeplinkMapperDigital::getRegisteredNavigationDigital)
+            DLP.goTo { context: Context, deeplink: String ->
+                DeeplinkMapperDigital.getRegisteredNavigationDigital(context, deeplink)
+            }
         ),
         "register-init" to mutableListOf(
-            DLP.goTo(ApplinkConstInternalUserPlatform.INIT_REGISTER)
+            DLP.goTo { _: String ->
+                ApplinkConstInternalUserPlatform.INIT_REGISTER
+            }
         ),
         "registration" to mutableListOf(
-            DLP.matchPattern("", ApplinkConstInternalUserPlatform.INIT_REGISTER)
+            DLP.matchPattern("") { _: String ->
+                ApplinkConstInternalUserPlatform.INIT_REGISTER
+            }
         ),
         "rekomendasi" to mutableListOf(
-            DLP.goTo(DeeplinkMapperRecommendation::getRegisteredNavigationRecommendation)
+            DLP.goTo { deeplink: String ->
+                DeeplinkMapperRecommendation.getRegisteredNavigationRecommendation(deeplink)
+            }
         ),
         "resetpassword" to mutableListOf(
-            DLP.goTo(ApplinkConstInternalUserPlatform.FORGOT_PASSWORD)
+            DLP.goTo { _: String ->
+                ApplinkConstInternalUserPlatform.FORGOT_PASSWORD
+            }
         ),
         "resolution" to mutableListOf(
-            DLP.matchPattern(
-                "success-create",
-                ApplinkConstInternalOperational::buildApplinkResolution
-            )
+            DLP.matchPattern("success-create") { uri: Uri ->
+                ApplinkConstInternalOperational.buildApplinkResolution(uri)
+            }
         ),
         "review" to mutableListOf(
-            DLP.goTo(DeeplinkMapperMerchant::getRegisteredNavigationReputation)
+            DLP.goTo { deeplink: String ->
+                DeeplinkMapperMerchant.getRegisteredNavigationReputation(deeplink)
+            }
         ),
         "review-reminder" to mutableListOf(
-            DLP.matchPattern("", ApplinkConstInternalSellerapp.REVIEW_REMINDER)
+            DLP.matchPattern("") { _: String ->
+                ApplinkConstInternalSellerapp.REVIEW_REMINDER
+            }
         ),
         "rewards" to mutableListOf(
-            DLP.goTo(DeeplinkMapperPromo::getRegisteredNavigationTokopoints)
+            DLP.goTo { deeplink: String ->
+                DeeplinkMapperPromo.getRegisteredNavigationTokopoints(deeplink)
+            }
         ),
         "s" to mutableListOf(
-            DLP.startsWith("umroh", DeeplinkMapperSalam::getRegisteredNavigationSalamUmrah)
+            DLP.startsWith("umroh") { deeplink: String ->
+                DeeplinkMapperSalam.getRegisteredNavigationSalamUmrah(deeplink)
+            }
         ),
         "saldo" to mutableListOf(
-            DLP.matchPattern("", ApplinkConstInternalGlobal.SALDO_DEPOSIT)
+            DLP.matchPattern("") { _: String ->
+                ApplinkConstInternalGlobal.SALDO_DEPOSIT
+            }
         ),
         "saldo-intro" to mutableListOf(
-            DLP.matchPattern("", ApplinkConstInternalGlobal.SALDO_INTRO)
+            DLP.matchPattern("") { _: String ->
+                ApplinkConstInternalGlobal.SALDO_INTRO
+            }
         ),
         "scanqr" to mutableListOf(
-            DLP.goTo(ApplinkConstInternalMarketplace.QR_SCANNEER)
+            DLP.goToLink { ApplinkConstInternalMarketplace.QR_SCANNEER }
         ),
         "search" to mutableListOf(
-            DLP.goTo(DeeplinkMapperSearch::getRegisteredNavigationSearch)
+            DLP.goTo { deeplink: String ->
+                DeeplinkMapperSearch.getRegisteredNavigationSearch(deeplink)
+            }
         ),
         "search-autocomplete" to mutableListOf(
-            DLP.goTo(DeeplinkMapperSearch::getRegisteredNavigationSearch)
+            DLP.goTo { deeplink: String ->
+                DeeplinkMapperSearch.getRegisteredNavigationSearch(deeplink)
+            }
         ),
         "seller" to mutableListOf(
-            DLP.startsWith(
-                "product/manage",
-                DeepLinkMapperProductManage::getProductListInternalAppLink
-            ),
-            DLP.startsWith("order", DeeplinkMapperOrder::getRegisteredNavigationOrder),
-            DLP.startsWith(
-                "reschedulepickup",
-                DeeplinkMapperLogistic::getReschedulePickupDeeplink
-            ),
-            DLP.startsWith("new-order", AppLinkMapperSellerHome::getSomNewOrderAppLink),
-            DLP.startsWith("ready-to-ship", AppLinkMapperSellerHome::getSomReadyToShipAppLink),
-            DLP.startsWith(
-                "delivered",
-                DeeplinkMapperOrder::getRegisteredNavigationMainAppSellerDelivered
-            ),
-            DLP.startsWith(
-                "waitingpickup",
-                DeeplinkMapperOrder::getRegisteredNavigationMainAppSellerWaitingPickup
-            ),
-            DLP.startsWith(
-                "waitingawb",
-                DeeplinkMapperOrder::getRegisteredNavigationMainAppSellerWaitingAwb
-            ),
-            DLP.startsWith(
-                "awbinvalid",
-                DeeplinkMapperOrder::getRegisteredNavigationMainAppSellerAwbInvalid
-            ),
-            DLP.startsWith(
-                "awbchange",
-                DeeplinkMapperOrder::getRegisteredNavigationMainAppSellerAwbChange
-            ),
-            DLP.startsWith(
-                "retur",
-                DeeplinkMapperOrder::getRegisteredNavigationMainAppSellerRetur
-            ),
-            DLP.startsWith(
-                "complaint",
-                DeeplinkMapperOrder::getRegisteredNavigationMainAppSellerComplaint
-            ),
-            DLP.startsWith("history", AppLinkMapperSellerHome::getSomAllOrderAppLink),
-            DLP.startsWith("shipped", AppLinkMapperSellerHome::getSomShippedAppLink),
-            DLP.startsWith("shipment", AppLinkMapperSellerHome::getSomReadyToShipAppLink),
-            DLP.startsWith("finished", AppLinkMapperSellerHome::getSomDoneAppLink),
-            DLP.startsWith("cancelled", AppLinkMapperSellerHome::getSomCancelledAppLink),
-            DLP.startsWith(
-                "cancellationrequest",
-                AppLinkMapperSellerHome::getSomCancellationRequestAppLink
-            ),
-            DLP.startsWith("status", AppLinkMapperSellerHome::getSomShippedAppLink),
-            DLP.matchPattern(
-                "setting/shipping-editor",
+            DLP.startsWith("product/manage") { deeplink: String ->
+                DeepLinkMapperProductManage.getProductListInternalAppLink(deeplink)
+            },
+            DLP.startsWith("order") { context: Context, uri: Uri, deeplink: String ->
+                DeeplinkMapperOrder.getRegisteredNavigationOrder(context, uri, deeplink)
+            },
+            DLP.startsWith("reschedulepickup") { uri: Uri ->
+                DeeplinkMapperLogistic.getReschedulePickupDeeplink(uri)
+            },
+            DLP.startsWith("new-order") { uri: Uri ->
+                AppLinkMapperSellerHome.getSomNewOrderAppLink(uri)
+            },
+            DLP.startsWith("ready-to-ship") { uri: Uri ->
+                AppLinkMapperSellerHome.getSomReadyToShipAppLink(uri)
+            },
+            DLP.startsWith("delivered") { _: String ->
+                DeeplinkMapperOrder.getRegisteredNavigationMainAppSellerDelivered()
+            },
+            DLP.startsWith("waitingpickup") { _: String ->
+                DeeplinkMapperOrder.getRegisteredNavigationMainAppSellerWaitingPickup()
+            },
+            DLP.startsWith("waitingawb") { _: String ->
+                DeeplinkMapperOrder.getRegisteredNavigationMainAppSellerWaitingAwb()
+            },
+            DLP.startsWith("awbinvalid") { _: String ->
+                DeeplinkMapperOrder.getRegisteredNavigationMainAppSellerAwbInvalid()
+            },
+            DLP.startsWith("awbchange") { _: String ->
+                DeeplinkMapperOrder.getRegisteredNavigationMainAppSellerAwbChange()
+            },
+            DLP.startsWith("retur") { _: String ->
+                DeeplinkMapperOrder.getRegisteredNavigationMainAppSellerRetur()
+            },
+            DLP.startsWith("complaint") { _: String ->
+                DeeplinkMapperOrder.getRegisteredNavigationMainAppSellerComplaint()
+            },
+            DLP.startsWith("history") { uri: Uri ->
+                AppLinkMapperSellerHome.getSomAllOrderAppLink(uri)
+            },
+            DLP.startsWith("shipped") { uri: Uri ->
+                AppLinkMapperSellerHome.getSomShippedAppLink(uri)
+            },
+            DLP.startsWith("shipment") { uri: Uri ->
+                AppLinkMapperSellerHome.getSomReadyToShipAppLink(uri)
+            },
+            DLP.startsWith("finished") { uri: Uri ->
+                AppLinkMapperSellerHome.getSomDoneAppLink(uri)
+            },
+            DLP.startsWith("cancelled") { uri: Uri ->
+                AppLinkMapperSellerHome.getSomCancelledAppLink(uri)
+            },
+            DLP.startsWith("cancellationrequest") { uri: Uri ->
+                AppLinkMapperSellerHome.getSomCancellationRequestAppLink(uri)
+            },
+            DLP.startsWith("status") { uri: Uri ->
+                AppLinkMapperSellerHome.getSomShippedAppLink(uri)
+            },
+            DLP.matchPattern("setting/shipping-editor") { _: String ->
                 ApplinkConstInternalMarketplace.SHOP_SETTINGS_SHIPPING
-            ),
-            DLP.matchPattern(
-                "setting/custom-product-logistic",
+            },
+            DLP.matchPattern("setting/custom-product-logistic") { _: String ->
                 ApplinkConstInternalLogistic.CUSTOM_PRODUCT_LOGISTIC
-            ),
-            DLP.matchPattern(
-                "setting/cod-activation",
+            },
+            DLP.matchPattern("setting/cod-activation") { _: String ->
                 ApplinkConstInternalMarketplace.SHOP_SETTINGS_COD
-            ),
-            DLP.matchPattern(
-                "setting/shop-address",
+            },
+            DLP.matchPattern("setting/shop-address") { _: String ->
                 ApplinkConstInternalMarketplace.SHOP_SETTINGS_ADDRESS
-            ),
-            DLP.matchPattern(
-                "setting/operational-hours",
+            },
+            DLP.matchPattern("setting/operational-hours") { _: String ->
                 ApplinkConstInternalMarketplace.SHOP_SETTINGS_OPERATIONAL_HOURS
-            ),
-            DLP.startsWith("seller-center", DeeplinkMapperMerchant::getRegisteredSellerCenter)
+            },
+            DLP.startsWith("seller-center") { _: String ->
+                DeeplinkMapperMerchant.getRegisteredSellerCenter()
+            }
         ),
         "seller-review-detail" to mutableListOf(
-            DLP.goTo(ApplinkConstInternalMarketplace.SELLER_REVIEW_DETAIL)
+            DLP.goToLink { ApplinkConstInternalMarketplace.SELLER_REVIEW_DETAIL }
         ),
         "sellerinfo" to mutableListOf(
-            DLP.startsWith("detail", DeeplinkMapperMerchant::getSellerInfoDetailApplink)
+            DLP.startsWith("detail") { uri: Uri ->
+                DeeplinkMapperMerchant.getSellerInfoDetailApplink(uri)
+            }
         ),
         "setting" to mutableListOf(
-            DLP.startsWith("editaddress", DeeplinkMapperLogistic::getEditAddressDeeplink),
-            DLP.matchPattern("shop/note", ApplinkConstInternalMarketplace.SHOP_SETTINGS_NOTES),
-            DLP.matchPattern("shop/info", ApplinkConstInternalMarketplace.SHOP_SETTINGS_INFO),
-            DLP.matchPattern("profile", DeeplinkMapperUser::getRegisteredNavigationUser),
-            DLP.matchPattern("address", ApplinkConstInternalLogistic.MANAGE_ADDRESS),
-            DLP.matchPattern("payment", ApplinkConstInternalUserPlatform.PAYMENT_SETTING),
-            DLP.matchPattern("account", ApplinkConstInternalUserPlatform.ACCOUNT_SETTING)
+            DLP.startsWith("editaddress") { deeplink: String ->
+                DeeplinkMapperLogistic.getEditAddressDeeplink(deeplink)
+            },
+            DLP.matchPattern("shop/note") { _: String ->
+                ApplinkConstInternalMarketplace.SHOP_SETTINGS_NOTES
+            },
+            DLP.matchPattern("shop/info") { _: String ->
+                ApplinkConstInternalMarketplace.SHOP_SETTINGS_INFO
+            },
+            DLP.matchPattern("profile") { deeplink: String ->
+                DeeplinkMapperUser.getRegisteredNavigationUser(deeplink)
+            },
+            DLP.matchPattern("address") { _: String ->
+                ApplinkConstInternalLogistic.MANAGE_ADDRESS
+            },
+            DLP.matchPattern("payment") { _: String ->
+                ApplinkConstInternalUserPlatform.PAYMENT_SETTING
+            },
+            DLP.matchPattern("account") { _: String ->
+                ApplinkConstInternalUserPlatform.ACCOUNT_SETTING
+            }
         ),
         "settings" to mutableListOf(
-            DLP.matchPattern(
-                "notification",
+            DLP.matchPattern("notification") { _: String ->
                 ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING
-            ),
-            DLP.matchPattern("bankaccount", ApplinkConstInternalGlobal.SETTING_BANK),
-            DLP.matchPattern("haspassword", ApplinkConstInternalUserPlatform.HAS_PASSWORD)
+            },
+            DLP.matchPattern("bankaccount") { _: String ->
+                ApplinkConstInternalGlobal.SETTING_BANK
+            },
+            DLP.matchPattern("haspassword") { _: String ->
+                ApplinkConstInternalUserPlatform.HAS_PASSWORD
+            }
         ),
         "share_address" to mutableListOf(
-            DLP.matchPattern("", DeeplinkMapperLogistic::getRegisteredNavigationShareAddress)
+            DLP.matchPattern("") { deeplink: String ->
+                DeeplinkMapperLogistic.getRegisteredNavigationShareAddress(deeplink)
+            }
         ),
         "sharing" to mutableListOf(
-            DLP.goTo(DeeplinkMapperExternal::getRegisteredNavigation)
+            DLP.goTo { deeplink: String ->
+                DeeplinkMapperExternal.getRegisteredNavigation(deeplink)
+            }
         ),
         "shipping" to mutableListOf(
-            DLP.matchPattern(
-                "tracking/{order_id}",
-                DeeplinkMapperLogistic::getRegisteredNavigationOrder
-            ),
-            DLP.matchPattern(
-                "pod/{order_id}",
-                DeeplinkMapperLogistic::getRegisteredNavigationPod
-            )
+            DLP.matchPattern("tracking/{order_id}") { deeplink: String ->
+                DeeplinkMapperLogistic.getRegisteredNavigationOrder(deeplink)
+            },
+            DLP.matchPattern("pod/{order_id}") { deeplink: String ->
+                DeeplinkMapperLogistic.getRegisteredNavigationPod(deeplink)
+            }
         ),
         "shop" to mutableListOf(
             DLP.matchPattern("{shop_id}/etalase-list") { _, _, _, idList ->
@@ -947,18 +1169,20 @@ object DeeplinkMainApp {
             }
         ),
         "shop-admin" to mutableListOf(
-            DLP.matchPattern("invitation-page", ApplinkConstInternalMarketplace.ADMIN_INVITATION),
-            DLP.matchPattern(
-                "redirection-page",
+            DLP.matchPattern("invitation-page") { _: String ->
+                ApplinkConstInternalMarketplace.ADMIN_INVITATION
+            },
+            DLP.matchPattern("redirection-page") { _: String ->
                 ApplinkConstInternalMarketplace.ADMIN_REDIRECTION
-            ),
-            DLP.startsWith(
-                "accepted-page",
-                ShopAdminDeepLinkMapper::getInternalAppLinkAdminAccepted
-            )
+            },
+            DLP.startsWith("accepted-page") { uri: Uri ->
+                ShopAdminDeepLinkMapper.getInternalAppLinkAdminAccepted(uri)
+            }
         ),
         "shop-nib" to mutableListOf(
-            DLP.matchPattern("", ApplinkConstInternalMechant.SHOP_NIB_CUSTOMER_APP)
+            DLP.matchPattern("") { _: String ->
+                ApplinkConstInternalMechant.SHOP_NIB_CUSTOMER_APP
+            }
         ),
         "shop-penalty" to mutableListOf(
             DLP.matchPattern("") { context, _, _, _ ->
@@ -966,28 +1190,46 @@ object DeeplinkMainApp {
             }
         ),
         "shop-penalty-detail" to mutableListOf(
-            DLP.matchPattern("", ApplinkConstInternalMarketplace.SHOP_PENALTY_DETAIL)
+            DLP.matchPattern("") { _: String ->
+                ApplinkConstInternalMarketplace.SHOP_PENALTY_DETAIL
+            }
         ),
         "shop-score-detail" to mutableListOf(
-            DLP.goTo(ShopScoreDeepLinkMapper::getInternalAppLinkShopScore)
+            DLP.goTo { uri: Uri ->
+                ShopScoreDeepLinkMapper.getInternalAppLinkShopScore(uri)
+            }
         ),
         "snapshot" to mutableListOf(
-            DLP.startsWith("order", DeeplinkMapperOrder::getSnapshotOrderInternalAppLink)
+            DLP.startsWith("order") { deeplink: String ->
+                DeeplinkMapperOrder.getSnapshotOrderInternalAppLink(deeplink)
+            }
         ),
         "talk" to mutableListOf(
-            DLP.goTo(DeeplinkMapper::getRegisteredNavigationTalk)
+            DLP.goTo { deeplink: String ->
+                DeeplinkMapper.getRegisteredNavigationTalk(deeplink)
+            }
         ),
         "telephony-masking" to mutableListOf(
-            DLP.goTo(ApplinkConstInternalUserPlatform.TELEPHONY_MASKING)
+            DLP.goToLink { ApplinkConstInternalUserPlatform.TELEPHONY_MASKING }
         ),
         "telkomselomni" to mutableListOf(
-            DLP.goTo(DeeplinkMapperDigital::getRegisteredNavigationDigital)
+            DLP.goTo { context: Context, deeplink: String ->
+                DeeplinkMapperDigital.getRegisteredNavigationDigital(context, deeplink)
+            }
         ),
         "tokochat" to mutableListOf(
-            DLP.goTo(DeeplinkMapperCommunication::getRegisteredNavigationTokoChat)
+            DLP.matchPattern("") { context: Context, deeplink: String ->
+                DeeplinkMapperCommunication.getRegisteredNavigationTokoChat(context, deeplink)
+            },
+            DLP.matchPattern("list") { context: Context, deeplink: String ->
+                DeeplinkMapperCommunication.getRegisteredNavigationTokoChatList(context, deeplink)
+            }
+
         ),
         "tokopoints" to mutableListOf(
-            DLP.goTo(DeeplinkMapperPromo::getRegisteredNavigationTokopoints)
+            DLP.goTo { deeplink: String ->
+                DeeplinkMapperPromo.getRegisteredNavigationTokopoints(deeplink)
+            }
         ),
         "stories" to mutableListOf(
             DLP.matchPattern(
@@ -996,49 +1238,61 @@ object DeeplinkMainApp {
             ),
         ),
         "topads" to mutableListOf(
-            DLP.startsWith(
-                "create-manual-ads",
+            DLP.startsWith("create-manual-ads") { _: String ->
                 ApplinkConstInternalTopAds.TOPADS_AUTOADS_CREATE_MANUAL_ADS
-            )
+            }
         ),
         "topchat" to mutableListOf(
-            DLP.goTo(DeeplinkMapper::getRegisteredNavigationTopChat)
+            DLP.goTo { uri: Uri, deeplink: String ->
+                DeeplinkMapper.getRegisteredNavigationTopChat(uri, deeplink)
+            }
         ),
         "topchatold" to mutableListOf(
-            DLP.goTo(DeeplinkMapper::getRegisteredNavigationTopChat)
+            DLP.goTo { uri: Uri, deeplink: String ->
+                DeeplinkMapper.getRegisteredNavigationTopChat(uri, deeplink)
+            }
         ),
         "travelent" to mutableListOf(
-            DLP.matchPattern("order", DeeplinkMapperUoh::getRegisteredNavigationUohOrder)
+            DLP.matchPattern("order") { context: Context, deeplink: String ->
+                DeeplinkMapperUoh.getRegisteredNavigationUohOrder(context, deeplink)
+            }
         ),
         "travelentertainment" to mutableListOf(
-            DLP.goTo(DeeplinkMapperDigital::getRegisteredNavigationDigital)
+            DLP.goTo { context: Context, deeplink: String ->
+                DeeplinkMapperDigital.getRegisteredNavigationDigital(context, deeplink)
+            }
         ),
         "universal-page" to mutableListOf(
-            DLP.matchPattern("", DeeplinkMapperSearch::getRegisteredNavigationSearch)
+            DLP.matchPattern("") { deeplink: String ->
+                DeeplinkMapperSearch.getRegisteredNavigationSearch(deeplink)
+            }
         ),
         "user-identification-only" to mutableListOf(
-            DLP.goTo(DeeplinkMapperUser::getRegisteredUserNavigation)
+            DLP.goTo { deeplink: String ->
+                DeeplinkMapperUser.getRegisteredUserNavigation(deeplink)
+            }
         ),
         "webview" to mutableListOf(
-            DLP.goTo(ApplinkConstInternalGlobal.WEBVIEW_BASE)
+            DLP.goToLink { ApplinkConstInternalGlobal.WEBVIEW_BASE }
         ),
         "webviewbackhome" to mutableListOf(
-            DLP.goTo(ApplinkConstInternalGlobal.WEBVIEW_BACK_HOME)
+            DLP.goToLink { ApplinkConstInternalGlobal.WEBVIEW_BACK_HOME }
         ),
         "webviewdownload" to mutableListOf(
-            DLP.goTo(ApplinkConstInternalGlobal.WEBVIEW_DOWNLOAD)
+            DLP.goToLink { ApplinkConstInternalGlobal.WEBVIEW_DOWNLOAD }
         ),
         "wishlist" to mutableListOf(
-            DLP.matchPattern("", DeeplinkMapperWishlist::getRegisteredNavigationWishlist),
-            DLP.matchPattern("collection/{collection_id}") { _, _, _, idList ->
-                UriUtil.buildUri(
-                    ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_DETAIL_INTERNAL,
-                    idList?.getOrNull(0)
-                )
+            DLP.matchPattern("") { _: String ->
+                DeeplinkMapperWishlist.getRegisteredNavigationWishlist()
+            },
+            DLP.matchPattern("collection/{collection_id}") { uri: Uri, idList: List<String>? ->
+                DeeplinkMapperMarketplace.getRegisteredWishlistCollectionDetail(uri, idList)
             }
         ),
         "www.tokopedia.com" to mutableListOf(
-            DLP.goTo(DeeplinkMapperContent::getWebHostWebViewLink)
+            DLP.goTo { deeplink: String ->
+                DeeplinkMapperContent.getWebHostWebViewLink(deeplink)
+            }
         ),
         "youtube-player" to mutableListOf(
             DLP.matchPattern("{video_id}") { _, _, _, idList ->
