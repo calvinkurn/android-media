@@ -25,6 +25,20 @@ data class UniversalInboxMenuUiModel(
         ): Boolean {
             return oldItem.title == newItem.title
         }
+
+        fun areContentsTheSame(
+            oldItem: UniversalInboxMenuUiModel,
+            newItem: UniversalInboxMenuUiModel
+        ): Boolean {
+            return (
+                oldItem.type == newItem.type &&
+                    oldItem.applink == newItem.applink &&
+                    oldItem.counter == newItem.counter &&
+                    oldItem.icon == newItem.counter &&
+                    oldItem.label == newItem.label &&
+                    oldItem.additionalInfo == newItem.additionalInfo
+                )
+        }
     }
 }
 

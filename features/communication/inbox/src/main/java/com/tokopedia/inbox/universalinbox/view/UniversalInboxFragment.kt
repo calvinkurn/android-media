@@ -80,7 +80,6 @@ import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.lang.Integer.max
 import javax.inject.Inject
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
@@ -290,10 +289,7 @@ class UniversalInboxFragment @Inject constructor(
             toggleLoading(it.isLoading)
 
             // Set menu list
-            updateRecyclerViewList(it.menuList)
-
-            // Set other list
-            updateRecyclerViewList(it.miscList)
+            updateMenuList(newList = it.menuList + it.miscList)
 
             // Update counters
             updateNotificationCounter(it.notificationCounter)
@@ -307,21 +303,12 @@ class UniversalInboxFragment @Inject constructor(
         binding?.inboxLayoutSwipeRefresh?.isRefreshing = isLoading
     }
 
-    private fun updateRecyclerViewList(newList: List<Any>) {
-        var lastIndex = -1
-        newList.forEach loop@{
-            adapter.findItem(it).also { index ->
-                lastIndex = if (index < Int.ZERO) {
-                    adapter.addItem(it)
-                    adapter.lastIndex
-                } else {
-                    adapter.updateItemAtPosition(index, it)
-                    max(lastIndex, index)
-                }
-            }
-        }
-        binding?.inboxRv?.post {
-            adapter.notifyItemRangeChanged(Int.ZERO, lastIndex)
+    private fun updateMenuList(newList: List<Any>) {
+        if (newList.isEmpty()) return
+        if (adapter.getItems().isEmpty()) {
+            adapter.setItemsAndAnimateChanges(newList)
+        } else {
+            adapter.tryUpdateMenuItemsAtPosition(newList = newList)
         }
     }
 

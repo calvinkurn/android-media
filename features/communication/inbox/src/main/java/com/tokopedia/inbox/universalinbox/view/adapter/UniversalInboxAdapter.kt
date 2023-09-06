@@ -1,7 +1,7 @@
 package com.tokopedia.inbox.universalinbox.view.adapter
 
+import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.adapterdelegate.BaseCommonAdapter
-import com.tokopedia.inbox.universalinbox.data.entity.UniversalInboxAllCounterResponse
 import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxMenuItemDelegate
 import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxMenuSeparatorDelegate
 import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxRecommendationDelegate
@@ -13,7 +13,6 @@ import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxTo
 import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxWidgetMetaDelegate
 import com.tokopedia.inbox.universalinbox.view.listener.UniversalInboxMenuListener
 import com.tokopedia.inbox.universalinbox.view.listener.UniversalInboxWidgetListener
-import com.tokopedia.inbox.universalinbox.view.uimodel.MenuItemType
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuSeparatorUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationLoaderUiModel
@@ -57,6 +56,45 @@ class UniversalInboxAdapter(
     private var recommendationViewType: Int? = null
     private var recommendationFirstPosition: Int? = null
 
+    override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
+        return when {
+            // Menu items name are the same
+            (newItem is UniversalInboxMenuUiModel && oldItem is UniversalInboxMenuUiModel) ->
+                UniversalInboxMenuUiModel.areItemsTheSame(oldItem, newItem)
+
+            // Only one separator should exist
+            (
+                newItem is UniversalInboxMenuSeparatorUiModel &&
+                    oldItem is UniversalInboxMenuSeparatorUiModel
+                ) -> true
+
+            // Only one banner should exist
+            (
+                newItem is UniversalInboxTopAdsBannerUiModel &&
+                    oldItem is UniversalInboxTopAdsBannerUiModel
+                ) -> true
+
+            // Only one recommendation widget should exist
+            (
+                newItem is RecommendationWidgetModel &&
+                    oldItem is RecommendationWidgetModel
+                ) -> true
+
+            else -> newItem == oldItem
+        }
+    }
+
+    override fun areContentsTheSame(oldItem: Any, newItem: Any): Boolean {
+        return when {
+            // Menu items contents are the same
+            (newItem is UniversalInboxMenuUiModel && oldItem is UniversalInboxMenuUiModel) ->
+                UniversalInboxMenuUiModel.areContentsTheSame(oldItem, newItem)
+
+            // Put the contents check above, else default true to skip it
+            else -> true
+        }
+    }
+
     fun getProductRecommendationViewType(): Int? {
         if (recommendationViewType != null) {
             return recommendationViewType
@@ -72,27 +110,22 @@ class UniversalInboxAdapter(
     }
 
     fun getProductRecommendationFirstPosition(): Int? {
-        if (checkCachedRecommendationFirstPosition()) {
-            return recommendationFirstPosition
+        return if (checkCachedRecommendationFirstPosition()) {
+            recommendationFirstPosition
         } else {
-            itemList.forEachIndexed { index, item ->
-                if (item is RecommendationItem) {
-                    recommendationFirstPosition = index
-                    return recommendationFirstPosition
-                }
+            // get first index or -1
+            itemList.indexOfFirst {
+                it is RecommendationItem
+            }.takeIf { it != -1 }?.also { // get result when it not -1 (found)
+                recommendationFirstPosition = it
             }
-            return null
         }
     }
 
     private fun checkCachedRecommendationFirstPosition(): Boolean {
-        var result = false
-        recommendationFirstPosition?.let {
-            if (it < itemList.size) {
-                result = itemList[it] is RecommendationItem
-            }
-        }
-        return result
+        return recommendationFirstPosition?.let {
+            it < itemList.size && itemList[it] is RecommendationItem
+        } ?: false
     }
 
     private fun isRecommendationLoader(position: Int): Boolean {
@@ -119,33 +152,6 @@ class UniversalInboxAdapter(
             }
         }
         return null
-    }
-
-    fun updateAllCounters(counterData: UniversalInboxAllCounterResponse): List<Int> {
-        val listIndex = arrayListOf<Int>()
-        itemList.forEachIndexed { index, item ->
-            if (item is UniversalInboxMenuUiModel) {
-                when (item.type) {
-                    MenuItemType.CHAT_BUYER -> {
-                        item.counter = counterData.chatUnread.unreadBuyer
-                    }
-                    MenuItemType.CHAT_SELLER -> {
-                        item.counter = counterData.chatUnread.unreadSeller
-                    }
-                    MenuItemType.DISCUSSION -> {
-                        item.counter = counterData.othersUnread.discussionUnread
-                    }
-                    MenuItemType.REVIEW -> {
-                        item.counter = counterData.othersUnread.reviewUnread
-                    }
-                    else -> Unit // no-op
-                }
-                listIndex.add(index)
-            } else if (item is UniversalInboxMenuSeparatorUiModel) { // Not in static menu anymore
-                return@forEachIndexed
-            }
-        }
-        return listIndex
     }
 
     fun isWidgetMetaAdded(): Boolean {
@@ -226,39 +232,21 @@ class UniversalInboxAdapter(
         return itemList[position]::class == UniversalInboxRecommendationTitleUiModel::class
     }
 
-    fun findItem(newItem: Any): Int {
-        return itemList.indexOfFirst { oldItem ->
-            when {
-                // Menu items name are the same
-                (newItem is UniversalInboxMenuUiModel && oldItem is UniversalInboxMenuUiModel) ->
-                    UniversalInboxMenuUiModel.areItemsTheSame(oldItem, newItem)
-
-                // Only one separator should exist
-                (
-                    newItem is UniversalInboxMenuSeparatorUiModel &&
-                        oldItem is UniversalInboxMenuSeparatorUiModel
-                    ) -> true
-
-                // Only one banner should exist
-                (
-                    newItem is UniversalInboxTopAdsBannerUiModel &&
-                        oldItem is UniversalInboxTopAdsBannerUiModel
-                    ) -> true
-
-                // Only one recommendation widget should exist
-                (
-                    newItem is RecommendationWidgetModel &&
-                        oldItem is RecommendationWidgetModel
-                    ) -> true
-
-                else -> newItem == oldItem
+    fun tryUpdateMenuItemsAtPosition(newList: List<Any>) {
+        try {
+            val editedList = itemList
+            editedList.subList(
+                fromIndex = 0, // fromIndex start with 0 and toIndex matched with item count
+                toIndex = getProductRecommendationFirstPosition() ?: itemCount
+            ).apply {
+                clear()
+                addAll(newList) // replace the sublist
             }
-        }
-    }
-
-    fun updateItemAtPosition(position: Int, newItem: Any) {
-        if (itemList.lastIndex >= position) {
-            itemList[position] = newItem
+            val diffCallback = BaseDiffUtilCallback(itemList, editedList)
+            val diffResult = DiffUtil.calculateDiff(diffCallback)
+            diffResult.dispatchUpdatesTo(this)
+        } catch (throwable: Throwable) {
+            Timber.d(throwable)
         }
     }
 }

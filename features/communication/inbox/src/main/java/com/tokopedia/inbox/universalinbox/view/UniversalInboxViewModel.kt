@@ -116,7 +116,14 @@ class UniversalInboxViewModel @Inject constructor(
     private fun observeInboxMenuAndWidgetMeta() {
         viewModelScope.launch {
             getInboxMenuAndWidgetMetaUseCase.observe()
-                .filter { it != null }
+                .filter {
+                    val isDataNull = it != null
+                    if (isDataNull) {
+                        // If cache is null, it means new user, create the default menu first
+                        setFallbackInboxMenu()
+                    }
+                    isDataNull
+                }
                 .combine(getAllCounterUseCase.observe()) { menu, counter ->
                     combineMenuAndCounter(menu!!, counter) // Safe !! because of filter
                 }
