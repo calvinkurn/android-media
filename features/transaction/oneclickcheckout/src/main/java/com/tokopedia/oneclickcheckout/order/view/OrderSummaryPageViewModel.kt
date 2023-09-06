@@ -198,6 +198,7 @@ class OrderSummaryPageViewModel @Inject constructor(
                 orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.LOADING)
                 getRatesSuspend()
                 sendPaymentTracker()
+                // todo: first load if no promo, then get entry point?
             } else {
                 orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
             }
@@ -428,6 +429,7 @@ class OrderSummaryPageViewModel @Inject constructor(
                 }
                 sendViewShippingErrorMessage(result.shippingErrorId)
                 calculateTotal()
+                // todo: hit entry point?
             }
         }
         updateCart()
@@ -470,6 +472,7 @@ class OrderSummaryPageViewModel @Inject constructor(
                     validateUsePromoRevampUiModel = resultValidateUse
                     globalEvent.value = newEvent
                     updatePromoState(resultValidateUse.promoUiModel)
+                    // todo: hit entry point -> BO applied
                     updateCart()
                     sendViewOspEe()
                     sendPreselectedCourierOption(ratesResult.preselectedSpId)
@@ -486,6 +489,7 @@ class OrderSummaryPageViewModel @Inject constructor(
                 validateUsePromoRevampUiModel = resultValidateUse
                 globalEvent.value = OccGlobalEvent.Normal
                 updatePromoState(resultValidateUse.promoUiModel)
+                // todo: hit entry point -> BO not applied
                 updateCart()
                 sendViewOspEe()
                 sendPreselectedCourierOption(ratesResult.preselectedSpId)
@@ -649,6 +653,7 @@ class OrderSummaryPageViewModel @Inject constructor(
                     }
                     validateUsePromoRevampUiModel = resultValidateUse
                     updatePromoState(resultValidateUse.promoUiModel)
+                    // todo: hit entry point -> BO applied
                     globalEvent.value = newEvent
                     updateCart()
                     return@launch
@@ -661,6 +666,7 @@ class OrderSummaryPageViewModel @Inject constructor(
                 }
                 globalEvent.value = newGlobalEvent
                 updateCart()
+                // todo: hit entry point ? -> BO not applied
             }
         }
     }
@@ -925,6 +931,7 @@ class OrderSummaryPageViewModel @Inject constructor(
                     calculateTotal()
                 }
             }
+            // todo: get entry point after validate use?
             updateCart()
         }
     }
@@ -1071,6 +1078,7 @@ class OrderSummaryPageViewModel @Inject constructor(
                 if (resultValidateUse != null) {
                     validateUsePromoRevampUiModel = resultValidateUse
                     updatePromoStateWithoutCalculate(resultValidateUse.promoUiModel)
+                    // todo: hit entry point? -> ini pas final validate
                     if (isSuccess) {
                         doCheckout(products, shop, profile, onSuccessCheckout)
                         return@launch
