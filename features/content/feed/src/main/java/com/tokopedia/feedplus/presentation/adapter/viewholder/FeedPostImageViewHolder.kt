@@ -688,7 +688,7 @@ class FeedPostImageViewHolder(
     private fun sendTopAdsClick(element: FeedCardImageContentModel) {
         if (element.isTopAds) {
             if (topAdsTrackerDataModel == null) setTopAdsTrackerModel(element)
-            topAdsTrackerDataModel?.let { listener.onTopAdsImpression(it) }
+            topAdsTrackerDataModel?.let { listener.onTopAdsClick(it) }
         }
     }
 

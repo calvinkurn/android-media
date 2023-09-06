@@ -50,6 +50,9 @@ class FeedAuthorInfoView(
             bindFollow(author, showFollow, trackerData, topAdsTrackerDataModel)
 
             root.setOnClickListener {
+                topAdsTrackerDataModel?.let { topadsTrackerData ->
+                    feedListener.onTopAdsClick(topadsTrackerData)
+                }
                 feedListener.onProfileClicked(author.appLink, author.type)
             }
         }
