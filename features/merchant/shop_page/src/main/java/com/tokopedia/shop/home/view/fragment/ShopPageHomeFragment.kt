@@ -204,11 +204,13 @@ import com.tokopedia.shop.common.view.interfaces.InterfaceShopPageHeader
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.home.util.ShopBannerProductGroupWidgetTabDependencyProvider
 import com.tokopedia.shop.home.view.adapter.viewholder.advance_carousel_banner.ShopHomeDisplayAdvanceCarouselBannerWidgetListener
+import com.tokopedia.shop.home.view.adapter.viewholder.directpurchasebyetalase.ShopHomeDirectPurchaseByEtalaseWidgetListener
 import com.tokopedia.shop.home.view.listener.ShopBannerProductGroupListener
 import com.tokopedia.shop.home.view.customview.directpurchase.DirectPurchaseWidgetView
 import com.tokopedia.shop.home.view.customview.directpurchase.ProductCardDirectPurchaseDataModel
 import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseNavigationUiModel
 import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.ShopHomeShowcaseNavigationBannerWidgetAppearance
+import com.tokopedia.shop.home.view.model.viewholder.ShopDirectPurchaseByEtalaseUiModel
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragment
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragmentV2
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPageHeaderPerformanceMonitoringListener
@@ -270,7 +272,8 @@ open class ShopPageHomeFragment :
     ShopBannerProductGroupWidgetTabDependencyProvider,
     ShopBannerProductGroupListener,
     DirectPurchaseWidgetView.DirectPurchaseWidgetViewListener,
-    ShopHomeDisplayAdvanceCarouselBannerWidgetListener {
+    ShopHomeDisplayAdvanceCarouselBannerWidgetListener,
+    ShopHomeDirectPurchaseByEtalaseWidgetListener {
 
     companion object {
         const val KEY_SHOP_ID = "SHOP_ID"
@@ -433,7 +436,8 @@ open class ShopPageHomeFragment :
             shopHomeV4TerlarisViewHolderListener = this,
             shopBannerProductGroupListener = this,
             shopBannerProductGroupWidgetTabDependencyProvider = this,
-            shopHomeDisplayAdvanceCarouselBannerWidgetListener = this
+            shopHomeDisplayAdvanceCarouselBannerWidgetListener = this,
+            shopHomeDirectPurchaseByEtalaseWidgetListener = this
         )
     }
 
@@ -5316,5 +5320,35 @@ open class ShopPageHomeFragment :
             userId
         )
         RouteManager.route(context, bannerItemUiModel.appLink)
+    }
+
+    override fun onImpressionDirectPurchaseByEtalaseWidget(
+        uiModel: ShopDirectPurchaseByEtalaseUiModel,
+        position: Int
+    ) {
+        val totalEtalaseGroup = uiModel.widgetData.titleList.size
+        val etalaseId = uiModel.widgetData.titleList.firstOrNull()?.etalaseList?.firstOrNull()?.etalaseId.orEmpty()
+        sendImpressionDirectPurchaseByEtalaseWidget(
+            totalEtalaseGroup,
+            etalaseId,
+            position,
+            uiModel.widgetId
+        )
+    }
+
+    private fun sendImpressionDirectPurchaseByEtalaseWidget(
+        totalEtalaseGroup: Int,
+        etalaseId: String,
+        position: Int,
+        widgetId: String
+    ) {
+        shopPageHomeTracking.impressionDirectPurchaseByEtalaseWidget(
+            totalEtalaseGroup,
+            etalaseId,
+            position,
+            widgetId,
+            shopId,
+            userId
+        )
     }
 }
