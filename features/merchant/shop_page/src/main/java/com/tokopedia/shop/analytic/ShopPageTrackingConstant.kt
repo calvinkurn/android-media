@@ -337,6 +337,7 @@ object ShopPageTrackingConstant {
     const val VALUE_SHOP_PAGE_THEMATIC = "/shoppagethematic"
     const val ITEM_LIST_PERSO_TRENDING_WIDGET = "/shoppage - trending"
     const val ITEM_LIST_PERSO_PRODUCT_COMPARISON = "/shoppage - comparison"
+    const val ITEM_LIST_REIMAGINED_HOTSPOT_WIDGET = "/shoppage reimagined - hotspot widget"
     const val VALUE_MULTIPLE_BUNDLING = "multiple bundling"
     const val VALUE_SINGLE_BUNDLING = "single bundling"
     const val SHOP_AFFILIATE = "affiliate"
@@ -444,6 +445,18 @@ object ShopPageTrackingConstant {
         const val CLICK_CTA_SLIDER_BANNER_HIGHLIGHT = "campaign tab - click jelajahi home anchor"
         const val IMPRESSION_CAMPAIGN_PLAY_WIDGET_ITEM = "campaign tab - impression product play"
         const val CLICK_CAMPAIGN_PLAY_WIDGET_ITEM = "campaign tab - click product play"
+        const val REIMAGINED_CLICK_HEADER_SHOP_NAME = "reimagined - click header shop name"
+        const val REIMAGINED_CLICK_HEADER_SHOP_REVIEW = "reimagined - click header shop review"
+        const val REIMAGINED_CLICK_HEADER_SHOP_USP = "reimagined - click header shop usp"
+        const val REIMAGINED_CLICK_HEADER_SHOP_CHAT = "reimagined - click header shop chat"
+        const val REIMAGINED_CLICK_HEADER_SHOP_FOLLOW = "reimagined - click header shop follow"
+        const val REIMAGINED_IMPRESSION_BOTTOM_NAV = "reimagined - impression bottom navigation"
+        const val REIMAGINED_CLICK_BOTTOM_NAV = "reimagined - click bottom navigation"
+        const val REIMAGINED_IMPRESSION_BANNER_CAROUSEL = "reimagined - impression banner carousel"
+        const val REIMAGINED_CLICK_BANNER_CAROUSEL = "reimagined - click banner carousel"
+        const val REIMAGINED_IMPRESSION_BANNER_HOTSPOT = "reimagined - impression banner hotspot"
+        const val REIMAGINED_CLICK_PRODUCT_BANNER_HOTSPOT = "reimagined - click product hotspot"
+
 
         //Showcase Navigation Widget - Without tab
         const val IMPRESSION_REIMAGINED_SHOWCASE_NAVIGATION = "reimagined - impression navigasi etalase banner"
@@ -545,6 +558,17 @@ object ShopPageTrackingConstant {
         const val TRACKER_ID_IMPRESSION_REIMAGINED_BANNER_PRODUCT_CAROUSEL = "45950"
         const val TRACKER_ID_CLICK_REIMAGINED_BANNER_PRODUCT_CAROUSEL = "45951"
         const val TRACKER_ID_CLICK_REIMAGINED_PRODUCT_CAROUSEL = "45952"
+        const val TRACKER_ID_REIMAGINED_CLICK_HEADER_SHOP_NAME = "45907"
+        const val TRACKER_ID_REIMAGINED_CLICK_HEADER_SHOP_REVIEW = "45908"
+        const val TRACKER_ID_REIMAGINED_CLICK_HEADER_SHOP_USP = "45909"
+        const val TRACKER_ID_REIMAGINED_CLICK_HEADER_SHOP_CHAT = "45911"
+        const val TRACKER_ID_REIMAGINED_CLICK_HEADER_SHOP_FOLLOW = "45912"
+        const val TRACKER_ID_REIMAGINED_IMPRESSION_BOTTOM_NAV = "45913"
+        const val TRACKER_ID_REIMAGINED_CLICK_BOTTOM_NAV = "45914"
+        const val TRACKER_ID_REIMAGINED_IMPRESSION_BANNER_CAROUSEL = "45920"
+        const val TRACKER_ID_REIMAGINED_CLICK_BANNER_CAROUSEL = "45921"
+        const val TRACKER_ID_REIMAGINED_IMPRESSION_BANNER_HOTSPOT = "45922"
+        const val TRACKER_ID_REIMAGINED_CLICK_PRODUCT_BANNER_HOTSPOT = "45923"
     }
 
     object Key {

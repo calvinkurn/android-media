@@ -46,7 +46,8 @@ class ShopWidgetProductHotspotAdapter(
         return ShopHomeDisplayBannerProductHotspotItemViewHolder(
             binding,
             widgetUiModel,
-            listener
+            listener,
+            widgetUiModel?.header?.ratio
         )
     }
 

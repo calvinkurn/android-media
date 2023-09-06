@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -24,6 +25,7 @@ import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.media.loader.data.Resize
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.state.PlayVideoState
@@ -49,6 +51,7 @@ import com.tokopedia.shop.pageheader.presentation.uimodel.ShopFollowButtonUiMode
 import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageHeaderLayoutUiModel
 import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageHeaderTickerData
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.BaseShopPageHeaderComponentUiModel
+import com.tokopedia.shop.pageheader.presentation.uimodel.component.BaseShopPageHeaderComponentUiModel.ComponentName.FREE_SHIPPING
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.BaseShopPageHeaderComponentUiModel.ComponentName.SHOP_LOGO
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.BaseShopPageHeaderComponentUiModel.ComponentName.SHOP_NAME
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.BaseShopPageHeaderComponentUiModel.ComponentName.SHOP_RATING
@@ -66,6 +69,7 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.unifyprinciples.ColorMode
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.UnifyMotion
 import java.util.*
@@ -82,6 +86,7 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
 
     companion object{
         private const val CYCLE_DURATION = 5000L
+        private const val MAXIMUM_WIDTH_STATIC_USP = 100
     }
 
     private val chooseAddressWidget: ChooseAddressWidget?
@@ -98,22 +103,28 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
         get() = viewBinding?.imageShopLogo
     private val imageShopBadge: ImageUnify?
         get() = viewBinding?.imageShopBadge
-    private val containerShopBasicInfo: View?
-        get() = viewBinding?.containerShopBasicInfo
-    private val containerShopPerformance: View?
-        get() = viewBinding?.containerShopPerformance
-    private val imageRatingIcon: ImageUnify?
+    private val sectionShopBasicInfo: View?
+        get() = viewBinding?.sectionShopBasicInfo
+    private val sectionShopPerformance: View?
+        get() = viewBinding?.sectionShopPerformance
+    private val imageRatingIcon: IconUnify?
         get() = viewBinding?.imageShopRatingIcon
     private val textRatingDescription: Typography?
         get() = viewBinding?.textRatingDescription
     private val performanceSectionDotSeparator: View?
         get() = viewBinding?.dotSeparatorShopPerformance
-    private val textShopOnlineDescription: Typography?
-        get() = viewBinding?.textOnlineDescription
     private val textDynamicUspPerformance: Typography?
         get() = viewBinding?.textDynamicUspPerformance
+    private val textShopOnlineDescription: Typography?
+        get() = viewBinding?.textOnlineDescription
+    private val sectionShopStatus: View?
+        get() = viewBinding?.sectionShopStatus
     private val imageOnlineIcon: ImageView?
         get() = viewBinding?.ivOnlineIcon
+    private val shopStatusSectionDotSeparator: View?
+        get() = viewBinding?.dotSeparatorShopStatus
+    private val imageShopStaticUsp: ImageUnify?
+        get() = viewBinding?.imageShopStaticUsp
     private val buttonChat: UnifyButton?
         get() = viewBinding?.buttonChat
     private val buttonFollow: UnifyButton?
@@ -296,6 +307,13 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
             buttonChat?.hide()
             buttonFollow?.hide()
         }
+        if (isOverrideTheme) {
+            buttonChat?.applyColorMode(ColorMode.LIGHT_MODE)
+            buttonFollow?.applyColorMode(ColorMode.LIGHT_MODE)
+        } else {
+            buttonChat?.applyColorMode(ColorMode.DEFAULT)
+            buttonFollow?.applyColorMode(ColorMode.DEFAULT)
+        }
     }
 
     private fun getShopActionButtonData(listWidgetShopData: List<ShopPageHeaderWidgetUiModel>): ShopPageHeaderWidgetUiModel? {
@@ -307,34 +325,49 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
         shopHeaderConfig: ShopPageHeaderLayoutUiModel.Config?,
         isOverrideTheme: Boolean
     ) {
-        //TODO Replace color from BE with unify color -> need to implement this after BE has contract for the expected value
-//        val lastOnlineColor = ShopUtil.getColorHexString(itemView.context, R.color.clr_dms_31353B)
-//        val lastOnlineUnifyColor = ShopUtil.getColorHexString(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
-//        val unifiedShopAdditionalInfo = shopAdditionalInfo.replace(lastOnlineColor, lastOnlineUnifyColor)
         val shopBasicData = getShopBasicInfoData(listWidgetShopData)
-        val shopOnlineStatusIcon =
-            getShopBasicDataShopNameComponent(shopBasicData)?.text?.getOrNull(1)?.icon.orEmpty()
-        val shopStatusText =
-            getShopBasicDataShopNameComponent(shopBasicData)?.text?.getOrNull(1)?.textHtml.orEmpty()
-        textShopOnlineDescription?.text = MethodChecker.fromHtml(shopStatusText)
-        imageOnlineIcon?.apply {
-            if (shopOnlineStatusIcon.isNotEmpty()) {
-                show()
-                loadImage(shopOnlineStatusIcon)
-            } else {
-                hide()
+        val shopPerformanceData = getShopPerformanceData(listWidgetShopData)
+        val shopOnlineStatusIcon = getShopBasicDataShopNameComponent(
+            shopBasicData
+        )?.text?.getOrNull(Int.ONE)?.icon.orEmpty()
+        val shopStatusText = getShopBasicDataShopNameComponent(
+            shopBasicData
+        )?.text?.getOrNull(Int.ONE)?.textHtml.orEmpty()
+        val shopStaticUspUrl = getShopPerformanceFreeShippingComponent(shopPerformanceData)?.image.orEmpty()
+        val isShowShopOnlineStatus = shopStatusText.isNotEmpty()
+        val isShowShopStaticUsp = shopStaticUspUrl.isNotEmpty()
+        sectionShopStatus?.shouldShowWithAction(isShowShopOnlineStatus || isShowShopStaticUsp) {}
+        shopStatusSectionDotSeparator?.shouldShowWithAction(isShowShopOnlineStatus && isShowShopStaticUsp) {}
+        textShopOnlineDescription?.shouldShowWithAction(isShowShopOnlineStatus){
+            textShopOnlineDescription?.text = MethodChecker.fromHtml(shopStatusText)
+            imageOnlineIcon?.apply {
+                if (shopOnlineStatusIcon.isNotEmpty()) {
+                    show()
+                    loadImage(shopOnlineStatusIcon)
+                } else {
+                    hide()
+                }
+            }
+        }
+        imageShopStaticUsp?.shouldShowWithAction(isShowShopStaticUsp) {
+            imageShopStaticUsp?.loadImage(shopStaticUspUrl) {
+                overrideSize(Resize(MAXIMUM_WIDTH_STATIC_USP.toPx(), imageShopStaticUsp?.layoutParams?.height.orZero()))
             }
         }
         if(isOverrideTheme){
             val textColor = shopHeaderConfig?.colorSchema?.getColorSchema(
                 ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS
             )?.value.orEmpty()
-            textShopName?.setTextColor(ShopUtil.parseColorFromHexString(textColor))
+            textShopOnlineDescription?.setTextColor(ShopUtil.parseColorFromHexString(textColor))
         }
     }
 
     private fun getShopPerformanceShopRatingComponent(shopPerformanceData: ShopPageHeaderWidgetUiModel?): ShopPageHeaderBadgeTextValueComponentUiModel? {
         return (shopPerformanceData?.componentPages?.firstOrNull { it.name == SHOP_RATING } as? ShopPageHeaderBadgeTextValueComponentUiModel)
+    }
+
+    private fun getShopPerformanceFreeShippingComponent(shopPerformanceData: ShopPageHeaderWidgetUiModel?): ShopPageHeaderImageOnlyComponentUiModel? {
+        return (shopPerformanceData?.componentPages?.firstOrNull { it.name == FREE_SHIPPING } as? ShopPageHeaderImageOnlyComponentUiModel)
     }
 
     private fun setShopPerformanceSection(
@@ -350,23 +383,21 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
         val initialUspValue = listWidgetShopData.getDynamicUspComponent()?.text?.map { it.textHtml }.orEmpty()
         val isShowRating = ratingText.isNotEmpty()
         val isShowDynamicUsp = initialUspValue.isNotEmpty()
-        containerShopPerformance?.shouldShowWithAction(isShowRating || isShowDynamicUsp) {}
+        sectionShopPerformance?.shouldShowWithAction(isShowRating || isShowDynamicUsp) {}
         performanceSectionDotSeparator?.shouldShowWithAction(isShowRating && isShowDynamicUsp) {}
         imageRatingIcon?.shouldShowWithAction(isShowRating) {
             textRatingDescription?.apply {
                 text = MethodChecker.fromHtml(ratingText)
                 setOnClickListener {
-                    listenerHeader?.onShopRatingClicked(appLink)
+                    listenerHeader?.onShopReviewClicked(appLink)
                 }
             }
         }
 
         imageRatingIcon?.setOnClickListener {
-            listenerHeader?.onShopRatingClicked(appLink)
+            listenerHeader?.onShopReviewClicked(appLink)
         }
-        val listDynamicUspValue = listWidgetShopData.getDynamicUspComponent()?.text?.map { it.textHtml }.orEmpty()
-        updateDynamicUspValue(listDynamicUspValue.firstOrNull().orEmpty())
-        startDynamicUspCycle(listWidgetShopData)
+        configDynamicUsp(listWidgetShopData)
         if(isOverrideTheme) {
             val textColor = shopHeaderConfig?.colorSchema?.getColorSchema(
                 ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS
@@ -374,6 +405,15 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
             textRatingDescription?.setTextColor(ShopUtil.parseColorFromHexString(textColor))
             textDynamicUspPerformance?.setTextColor(ShopUtil.parseColorFromHexString(textColor))
         }
+    }
+
+    private fun configDynamicUsp(listWidgetShopData: List<ShopPageHeaderWidgetUiModel>) {
+        val listDynamicUspValue = listWidgetShopData.getDynamicUspComponent()?.text?.map { it.textHtml }.orEmpty()
+        updateDynamicUspValue(listDynamicUspValue.firstOrNull().orEmpty())
+        textDynamicUspPerformance?.setOnClickListener {
+            listenerHeader?.onUspClicked(listDynamicUspValue)
+        }
+        startDynamicUspCycle(listWidgetShopData)
     }
 
     private fun setShopLogoImage(listWidgetShopData: List<ShopPageHeaderWidgetUiModel>) {
@@ -404,7 +444,7 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
             getShopBasicDataShopNameComponent(shopBasicData)?.text?.firstOrNull()?.textLink.orEmpty()
         imageShopBadge?.loadImage(shopBadgeImageUrl)
         textShopName?.text = MethodChecker.fromHtml(shopName)
-        containerShopBasicInfo?.setOnClickListener {
+        sectionShopBasicInfo?.setOnClickListener {
             listenerHeader?.onClickShopBasicInfoSection(appLink)
         }
         if(isOverrideTheme){
@@ -473,36 +513,11 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
     }
 
     fun updateFollowButton(model: ShopFollowButtonUiModel) {
-        val shopFollowButtonVariantType = ShopUtil.getShopFollowButtonAbTestVariant().orEmpty()
         val isFollowing = model.isFollowing
         buttonFollow?.apply {
-            when (shopFollowButtonVariantType) {
-                RollenceKey.AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_OLD -> {
-                    // existing/old variant type follow button
-                    buttonSize = UnifyButton.Size.MICRO
-                    buttonVariant = UnifyButton.Variant.GHOST
-                    buttonType =
-                        UnifyButton.Type.ALTERNATE.takeIf { isFollowing } ?: UnifyButton.Type.MAIN
-                }
-
-                RollenceKey.AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_SMALL -> {
-                    // new variant type follow button micro size
-                    buttonSize = UnifyButton.Size.MICRO
-                    buttonVariant = UnifyButton.Variant.GHOST.takeIf { isFollowing }
-                        ?: UnifyButton.Variant.FILLED
-                    buttonType =
-                        UnifyButton.Type.ALTERNATE.takeIf { isFollowing } ?: UnifyButton.Type.MAIN
-                }
-
-                RollenceKey.AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_BIG -> {
-                    // new variant type follow button small size
-                    buttonSize = UnifyButton.Size.SMALL
-                    buttonVariant = UnifyButton.Variant.GHOST.takeIf { isFollowing }
-                        ?: UnifyButton.Variant.FILLED
-                    buttonType =
-                        UnifyButton.Type.ALTERNATE.takeIf { isFollowing } ?: UnifyButton.Type.MAIN
-                }
-            }
+            buttonSize = UnifyButton.Size.MICRO
+            buttonVariant = UnifyButton.Variant.FILLED.takeIf { !isFollowing } ?: UnifyButton.Variant.GHOST
+            buttonType = UnifyButton.Type.MAIN
             val isShowLoading = model.isShowLoading
             isLoading = isShowLoading
             if (!isShowLoading)

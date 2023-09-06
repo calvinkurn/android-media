@@ -1,6 +1,7 @@
 package com.tokopedia.shop.home.view.adapter.viewholder
 
 import android.annotation.SuppressLint
+import android.graphics.PorterDuff
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -11,6 +12,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
 import com.tokopedia.carouselproductcard.CarouselProductCardView
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ProductCardModel
@@ -43,7 +45,7 @@ class ShopHomeCarousellProductViewHolder(
     }
     private val viewBinding: ItemShopHomeProductCarouselBinding? by viewBinding()
     private var textViewTitle: TextView? = null
-    private var textViewCta: TextView? = null
+    private var iconCtaChevron: IconUnify? = null
     private var ivBadge: ImageView? = null
     private var etalaseHeaderContainer: View? = null
     private var recyclerView: CarouselProductCardView? = null
@@ -63,7 +65,7 @@ class ShopHomeCarousellProductViewHolder(
     private fun initView() {
         textViewTitle = viewBinding?.etalaseHeaderContainer?.tvTitle
         ivBadge = viewBinding?.etalaseHeaderContainer?.imageViewEtalaseBadge
-        textViewCta = viewBinding?.etalaseHeaderContainer?.tvSeeAll
+        iconCtaChevron = viewBinding?.etalaseHeaderContainer?.iconCtaChevron
         etalaseHeaderContainer = viewBinding?.etalaseHeaderContainer?.root
         recyclerView = viewBinding?.recyclerViewCarousel
         recyclerViewForSingleOrDoubleProductCard = viewBinding?.recyclerViewCarouselSingleOrDoubleProductCard
@@ -79,10 +81,9 @@ class ShopHomeCarousellProductViewHolder(
         }
         ivBadge?.visibility = View.GONE
         textViewTitle?.text = MethodChecker.fromHtml(title)
-        textViewCta?.apply {
+        iconCtaChevron?.apply {
             if (ctaText.isNotEmpty()) {
                 show()
-                text = MethodChecker.fromHtml(shopHomeCarousellProductUiModel.header.ctaText)
                 setOnClickListener {
                     shopHomeCarouselProductListener.onCtaClicked(shopHomeCarousellProductUiModel)
                 }
@@ -110,7 +111,7 @@ class ShopHomeCarousellProductViewHolder(
         val titleColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS)
         val ctaColor  = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_LOW_EMPHASIS)
         textViewTitle?.setTextColor(titleColor)
-        textViewCta?.setTextColor(ctaColor)
+        iconCtaChevron?.setColorFilter(ctaColor, PorterDuff.Mode.SRC_ATOP)
     }
 
     private fun configFestivityColor() {
@@ -119,7 +120,7 @@ class ShopHomeCarousellProductViewHolder(
             com.tokopedia.unifyprinciples.R.color.Unify_Static_White
         )
         textViewTitle?.setTextColor(festivityTextColor)
-        textViewCta?.setTextColor(festivityTextColor)
+        iconCtaChevron?.setColorFilter(festivityTextColor, PorterDuff.Mode.SRC_ATOP)
     }
 
     private fun configDefaultColor() {
@@ -129,10 +130,10 @@ class ShopHomeCarousellProductViewHolder(
         )
         val defaultCtaColor = MethodChecker.getColor(
             itemView.context,
-            com.tokopedia.unifyprinciples.R.color.Unify_GN500
+            com.tokopedia.unifyprinciples.R.color.Unify_NN900
         )
         textViewTitle?.setTextColor(defaultTitleColor)
-        textViewCta?.setTextColor(defaultCtaColor)
+        iconCtaChevron?.setColorFilter(defaultCtaColor, PorterDuff.Mode.SRC_ATOP)
     }
 
     private fun setWidgetImpressionListener(model: ShopHomeCarousellProductUiModel) {

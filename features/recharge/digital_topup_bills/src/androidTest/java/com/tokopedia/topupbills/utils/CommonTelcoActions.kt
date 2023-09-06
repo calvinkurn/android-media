@@ -88,17 +88,17 @@ object CommonTelcoActions {
     }
 
     fun kebabMenu_validateContents() {
-        onView(withId(R.id.menu_promo)).check(matches(isDisplayed()))
-        onView(withId(R.id.menu_help)).check(matches(isDisplayed()))
-        onView(withId(R.id.menu_order_list)).check(matches(isDisplayed()))
+        onView(withId(com.tokopedia.common.topupbills.R.id.menu_promo)).check(matches(isDisplayed()))
+        onView(withId(com.tokopedia.common.topupbills.R.id.menu_help)).check(matches(isDisplayed()))
+        onView(withId(com.tokopedia.common.topupbills.R.id.menu_order_list)).check(matches(isDisplayed()))
     }
 
     fun clientNumberWidget_clickClearBtn() {
-        onView(withId(R.id.text_field_icon_close)).perform(click())
+        onView(withId(com.tokopedia.unifycomponents.R.id.text_field_icon_close)).perform(click())
     }
 
     fun clientNumberWidget_clickContactBook() {
-        onView(withId(R.id.text_field_icon_1)).perform(click())
+        onView(withId(com.tokopedia.unifycomponents.R.id.text_field_icon_1)).perform(click())
     }
 
     fun kebabMenu_click() {
@@ -109,7 +109,7 @@ object CommonTelcoActions {
         viewInteraction.perform(
             RecyclerViewActions.actionOnItemAtPosition<TopupBillsPromoListAdapter.PromoItemViewHolder>(
                 0,
-                CommonActions.clickChildViewWithId(R.id.btn_copy_promo)
+                CommonActions.clickChildViewWithId(com.tokopedia.common.topupbills.R.id.btn_copy_promo)
             )
         )
     }
@@ -119,7 +119,7 @@ object CommonTelcoActions {
             RecyclerViewActions
                 .actionOnItemAtPosition<TopupBillsPromoListAdapter.PromoItemViewHolder>(
                     3,
-                    CommonActions.clickChildViewWithId(R.id.promo_container)
+                    CommonActions.clickChildViewWithId(com.tokopedia.common.topupbills.R.id.promo_container)
                 )
         )
     }
@@ -137,12 +137,12 @@ object CommonTelcoActions {
     }
 
     fun tabLayout_clickTabWithText(text: String) {
-        onView(AllOf.allOf(withId(R.id.tab_item_text_id), ViewMatchers.withText(text))).perform(
+        onView(AllOf.allOf(withId(com.tokopedia.unifycomponents.R.id.tab_item_text_id), ViewMatchers.withText(text))).perform(
             click()
         )
     }
 
     fun bottomSheet_close() {
-        onView(withId(R.id.bottom_sheet_close)).perform(click())
+        onView(withId(com.tokopedia.unifycomponents.R.id.bottom_sheet_close)).perform(click())
     }
 }

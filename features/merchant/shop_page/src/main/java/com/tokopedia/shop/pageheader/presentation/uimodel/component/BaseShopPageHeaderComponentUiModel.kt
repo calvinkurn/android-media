@@ -17,6 +17,7 @@ interface BaseShopPageHeaderComponentUiModel : Visitable<BaseAdapterTypeFactory>
         const val SHOP_NAME = "shop_name"
         const val SHOP_DYNAMIC_USP = "shop_attribute_list"
         const val SHOP_RATING = "shop_rating"
+        const val FREE_SHIPPING = "bebas_ongkir"
         const val SHOP_OPERATIONAL_HOUR = "shop_operational_hour"
         const val BUTTON_SHOP_NOTES = "shop_notes"
         const val BUTTON_CHAT = "chat"

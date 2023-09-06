@@ -2,6 +2,8 @@ package com.tokopedia.shop.home.view.adapter.viewholder
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.shop.common.view.customview.bannerhotspot.ImageHotspotView
 import com.tokopedia.shop.common.view.model.ImageHotspotData
 import com.tokopedia.shop.databinding.ShopHomeDisplayBannerProductHotspotItemBinding
@@ -11,13 +13,27 @@ import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerProductHotspotU
 class ShopHomeDisplayBannerProductHotspotItemViewHolder(
     viewBinding: ShopHomeDisplayBannerProductHotspotItemBinding,
     private val widgetUiModel: ShopWidgetDisplayBannerProductHotspotUiModel?,
-    private val listener: ShopHomeDisplayBannerProductHotspotViewHolder.Listener?
+    private val listener: ShopHomeDisplayBannerProductHotspotViewHolder.Listener?,
+    private val ratio: String?
 ) : RecyclerView.ViewHolder(viewBinding.root), ImageHotspotView.Listener {
 
     private val imageBannerHotspot: ImageHotspotView = viewBinding.imageBannerHotspot
 
     fun bind(uiModel: ShopWidgetDisplayBannerProductHotspotUiModel.Data) {
         setupImageBannerHotspotData(uiModel)
+        addImpressionListener(uiModel)
+    }
+
+    private fun addImpressionListener(itemModel: ShopWidgetDisplayBannerProductHotspotUiModel.Data) {
+        itemView.addOnImpressionListener(itemModel){
+            widgetUiModel?.let {
+                listener?.onImpressionBannerHotspotImage(
+                    widgetUiModel,
+                    itemModel,
+                    bindingAdapterPosition
+                )
+            }
+        }
     }
 
     private fun setupImageBannerHotspotData(uiModel: ShopWidgetDisplayBannerProductHotspotUiModel.Data) {
@@ -33,7 +49,9 @@ class ShopHomeDisplayBannerProductHotspotItemViewHolder(
                         productPrice = productHotspot.displayedPrice,
                     )
                 },
-            ), listenerBubbleView = this
+            ),
+            listenerBubbleView = this,
+            ratio = ratio
         )
     }
 
@@ -43,7 +61,14 @@ class ShopHomeDisplayBannerProductHotspotItemViewHolder(
         index: Int
     ) {
         widgetUiModel?.let {
-            listener?.onHotspotBubbleClicked(it, bindingAdapterPosition, index)
+            it.data.firstOrNull()?.let { bannerItemUiModel ->
+                listener?.onClickProductBannerHotspot(
+                    it,
+                    bannerItemUiModel,
+                    Int.ZERO,
+                    index
+                )
+            }
         }
     }
 

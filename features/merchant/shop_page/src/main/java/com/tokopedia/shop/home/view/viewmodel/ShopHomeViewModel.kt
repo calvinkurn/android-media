@@ -26,6 +26,7 @@ import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -47,6 +48,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.constant.ShopPageConstant.ALL_SHOWCASE_ID
 import com.tokopedia.shop.common.constant.ShopPageConstant.CODE_STATUS_SUCCESS
+import com.tokopedia.shop.common.constant.ShopPageConstant.LABEL_GROUP_INTEGRITY_POSITION_VALUE
 import com.tokopedia.shop.common.constant.ShopPageConstant.RequestParamValue.PAGE_NAME_SHOP_COMPARISON_WIDGET
 import com.tokopedia.shop.common.data.mapper.ShopPageWidgetMapper
 import com.tokopedia.shop.common.data.model.*
@@ -1421,12 +1423,21 @@ class ShopHomeViewModel @Inject constructor(
 
     fun updateBannerTimerWidgetUiModel(
         newList: MutableList<Visitable<*>>,
-        bannerTimerUiModel: ShopWidgetDisplayBannerTimerUiModel
+        newBannerTimerUiModel: ShopWidgetDisplayBannerTimerUiModel
     ) {
         launchCatchError(dispatcherProvider.io, block = {
             val position = newList.indexOfFirst{ it is ShopWidgetDisplayBannerTimerUiModel }
+            val currentBannerTimerUiModel = (newList.getOrNull(position) as? ShopWidgetDisplayBannerTimerUiModel) ?: ShopWidgetDisplayBannerTimerUiModel()
             if(position != -1){
-                newList.setElement(position, bannerTimerUiModel.copy().apply {
+                newList.setElement(position, currentBannerTimerUiModel.copy(
+                    data = currentBannerTimerUiModel.data?.copy(
+                        totalNotify = newBannerTimerUiModel.data?.totalNotify.orZero(),
+                        totalNotifyWording = newBannerTimerUiModel.data?.totalNotifyWording.orEmpty(),
+                        isRemindMe = newBannerTimerUiModel.data?.isRemindMe.orFalse(),
+                        showRemindMeLoading = newBannerTimerUiModel.data?.showRemindMeLoading.orFalse(),
+                        isHideRemindMeTextAfterXSeconds = newBannerTimerUiModel.data?.isHideRemindMeTextAfterXSeconds.orFalse()
+                    )
+                ).apply {
                     isNewData = true
                 })
             }
@@ -1499,8 +1510,7 @@ class ShopHomeViewModel @Inject constructor(
                                 isVariant = it.isVariant,
                                 minimumOrder = it.minimumOrder,
                                 stock = it.stock,
-                                //TODO need to confirm on whether we can use this hardcoded value or not
-                                label = it.labelGroupList.firstOrNull { it.position == "integrity" }?.title.orEmpty()
+                                label = it.labelGroupList.firstOrNull { it.position == LABEL_GROUP_INTEGRITY_POSITION_VALUE }?.title.orEmpty()
                             )
                         }
                         etalase.lastTimeStampProductListCaptured = System.currentTimeMillis()

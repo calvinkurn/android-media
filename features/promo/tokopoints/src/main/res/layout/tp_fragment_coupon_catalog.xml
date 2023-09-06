@@ -5,15 +5,21 @@
     android:layout_height="match_parent"
     android:background="@color/Unify_Background">
 
-    <include layout="@layout/tp_shimmer_coupon_detail" />
+    <include
+        android:id="@+id/tp_shimmer_coupon_detail"
+        layout="@layout/tp_shimmer_coupon_detail" />
 
-    <include layout="@layout/tp_content_coupon_catalog" />
+    <include
+        android:id="@+id/tp_content_coupon_catalog"
+        layout="@layout/tp_content_coupon_catalog" />
 
     <com.tokopedia.tokopoints.view.customview.ServerErrorView
         android:id="@+id/server_error_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <include layout="@layout/tp_coupon_notfound_error" />
+    <include
+        android:id="@+id/tp_coupon_notfound_error"
+        layout="@layout/tp_coupon_notfound_error" />
 
 </ViewFlipper>

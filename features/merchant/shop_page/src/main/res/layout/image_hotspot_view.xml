@@ -10,7 +10,8 @@
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/image_banner"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintVertical_bias="0"
         android:adjustViewBounds="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

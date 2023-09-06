@@ -1,6 +1,7 @@
 package com.tokopedia.shop.home.view.adapter.viewholder
 
 import android.view.View
+import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -12,9 +13,9 @@ import com.tokopedia.carousellayoutmanager.CarouselZoomPostLayoutListener
 import com.tokopedia.carousellayoutmanager.CenterScrollListener
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.setLayoutHeight
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.shop.R
@@ -43,10 +44,17 @@ class ShopHomeDisplayBannerProductHotspotViewHolder(
     }
 
     interface Listener {
-        fun onHotspotBubbleClicked(
+        fun onClickProductBannerHotspot(
             uiModel: ShopWidgetDisplayBannerProductHotspotUiModel,
+            bannerItemUiModel: ShopWidgetDisplayBannerProductHotspotUiModel.Data,
             imageBannerPosition: Int,
             bubblePosition: Int
+        )
+
+        fun onImpressionBannerHotspotImage(
+            uiModel: ShopWidgetDisplayBannerProductHotspotUiModel,
+            bannerItemUiModel: ShopWidgetDisplayBannerProductHotspotUiModel.Data,
+            imageBannerPosition: Int
         )
     }
 
@@ -124,6 +132,19 @@ class ShopHomeDisplayBannerProductHotspotViewHolder(
             } else if (dataSize == Int.ONE) {
                 setupViewForOnlyOneImageBanner()
                 setupImageBannerHotspotData(it)
+                addImpressionForOneBanner(it)
+            }
+        }
+    }
+
+    private fun addImpressionForOneBanner(uiModel: ShopWidgetDisplayBannerProductHotspotUiModel) {
+        uiModel.data.firstOrNull()?.let { bannerItemUiModel ->
+            imageBannerHotspot?.addOnImpressionListener(bannerItemUiModel) {
+                listener.onImpressionBannerHotspotImage(
+                    uiModel,
+                    bannerItemUiModel,
+                    Int.ZERO
+                )
             }
         }
     }
@@ -151,7 +172,9 @@ class ShopHomeDisplayBannerProductHotspotViewHolder(
                             productPrice = productHotspot.displayedPrice,
                         )
                     },
-                ), listenerBubbleView = this
+                ),
+                listenerBubbleView = this,
+                ratio = ratio
             )
         }
     }
@@ -198,7 +221,9 @@ class ShopHomeDisplayBannerProductHotspotViewHolder(
                 val firstChildHeight = recyclerViewProductHotspot.findViewHolderForAdapterPosition(
                     Int.ZERO
                 )?.itemView?.height.orZero()
-                recyclerViewProductHotspot.setLayoutHeight(firstChildHeight)
+                val lp = recyclerViewProductHotspot.layoutParams as? ViewGroup.LayoutParams
+                lp?.height = firstChildHeight
+                recyclerViewProductHotspot.layoutParams = lp
                 recyclerViewProductHotspot.viewTreeObserver.removeOnGlobalLayoutListener(this)
             }
         })
@@ -211,7 +236,14 @@ class ShopHomeDisplayBannerProductHotspotViewHolder(
     ) {
         //value should always be 0 because this one is for when we only have 1 image banner
         uiModel?.let {
-            listener.onHotspotBubbleClicked(it, Int.ZERO, index)
+            it.data.firstOrNull()?.let { bannerItemUiModel ->
+                listener.onClickProductBannerHotspot(
+                    it,
+                    bannerItemUiModel,
+                    Int.ZERO,
+                    index
+                )
+            }
         }
     }
 

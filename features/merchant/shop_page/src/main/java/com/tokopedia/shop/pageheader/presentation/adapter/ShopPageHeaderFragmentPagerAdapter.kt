@@ -25,6 +25,7 @@ import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderTabIconUrlModel
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderTabModel
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragmentTabContentWrapper
 import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageHeaderLayoutUiModel
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.resources.isDarkMode
 import java.lang.ref.WeakReference
 
@@ -81,7 +82,35 @@ internal class ShopPageHeaderFragmentPagerAdapter(
         isActive: Boolean
     ): ShopPageDynamicTabViewBinding? {
         return getDynamicTabViewBinding(view)?.apply {
-            setDynamicTabIcon(this, tab.position, isActive)
+            setupTabView(this, tab.position, isActive)
+        }
+    }
+
+    private fun setupTabView(
+        shopPageDynamicTabViewBinding: ShopPageDynamicTabViewBinding,
+        position: Int,
+        isActive: Boolean
+    ) {
+        setDynamicTabIcon(shopPageDynamicTabViewBinding, position, isActive)
+        if (ShopUtil.isEnableShopPageReImagined()) {
+            setTabName(shopPageDynamicTabViewBinding.textTabName, position, isActive)
+        } else {
+            shopPageDynamicTabViewBinding.textTabName.hide()
+        }
+    }
+
+    private fun setTabName(textTabName: Typography, position: Int, active: Boolean) {
+        ctx?.let {
+            textTabName.apply {
+                show()
+                //TODO need to check colorSchema for this one
+//                if (active) {
+//                    setTextColor(ContextCompat.getColor(it, ICON_COLOR_LIGHT_ENABLE))
+//                } else {
+//                    setTextColor(ContextCompat.getColor(it, ICON_COLOR_LIGHT))
+//                }
+                text = listShopPageTabModel.getOrNull(position)?.tabText.orEmpty()
+            }
         }
     }
 
@@ -94,7 +123,7 @@ internal class ShopPageHeaderFragmentPagerAdapter(
     }
 
     fun getDynamicTabView(position: Int, selectedPosition: Int): View = ShopPageDynamicTabViewBinding.inflate(LayoutInflater.from(ctxRef.get())).apply {
-        setDynamicTabIcon(this, position, position == selectedPosition)
+        setupTabView(this, position, position == selectedPosition)
     }.root
 
     private fun getTabIconDrawable(position: Int, isActive: Boolean): Int? = ctxRef.get()?.run {

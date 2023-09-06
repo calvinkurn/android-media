@@ -22,7 +22,7 @@ suspend fun List<DataItem>?.getMaxHeightForCarouselView(context: Context?, corou
             val calendarDescription = getCalendarDescriptionHeight(context)
             val calendarButton = getCalendarButtonHeight(context, dataItem.buttonApplink)
             val calendarImage = getCalendarImageHeight(context, dataItem.imageUrl, calendarLayout)
-            val padding = context.resources.getDimensionPixelSize(R.dimen.dp_4)
+            val padding = context.resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_4)
 
             calendarCardHeightList.add(
                         calendarDate +
@@ -39,7 +39,7 @@ suspend fun List<DataItem>?.getMaxHeightForCarouselView(context: Context?, corou
     }
 }
 private fun getCalendarDateHeight(context: Context): Int {
-    return context.resources.getDimensionPixelSize(R.dimen.dp_32)
+    return context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_32)
 }
 
 private fun getCalendarTitleImageHeight(context: Context, titleLogoUrl: String?, title: String?): Int {

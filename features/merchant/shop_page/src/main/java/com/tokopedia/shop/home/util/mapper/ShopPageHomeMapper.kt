@@ -33,6 +33,7 @@ import com.tokopedia.shop.home.WidgetName.IS_SHOW_ETALASE_NAME
 import com.tokopedia.shop.home.WidgetName.NEW_PRODUCT_LAUNCH_CAMPAIGN
 import com.tokopedia.shop.home.WidgetName.PERSO_PRODUCT_COMPARISON
 import com.tokopedia.shop.home.WidgetName.PRODUCT
+import com.tokopedia.shop.home.WidgetName.PRODUCT_VERTICAL
 import com.tokopedia.shop.home.WidgetName.RECENT_ACTIVITY
 import com.tokopedia.shop.home.WidgetName.REMINDER
 import com.tokopedia.shop.home.WidgetName.SHOWCASE_NAVIGATION_BANNER
@@ -73,7 +74,6 @@ import com.tokopedia.shop.home.view.model.ShopHomeShowcaseListSliderUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeVoucherUiModel
 import com.tokopedia.shop.home.view.model.ShopPageLayoutUiModel
 import com.tokopedia.shop.home.view.model.StatusCampaign
-import com.tokopedia.shop.home.view.model.viewholder.ShopDirectPurchaseByEtalaseUiModel
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.view.datamodel.LabelGroupUiModel
 import com.tokopedia.shop_widget.common.uimodel.DynamicHeaderUiModel
@@ -453,23 +453,30 @@ object ShopPageHomeMapper {
             }
             // Includes V4 Widgets: Terlaris widget
             PRODUCT.toLowerCase() -> {
-//                // =========== For testing Purpose =========== //
-//                mapToProducTerlaristWidgetUiModel(
-//                    widgetModel = widgetResponse,
-//                    isMyOwnProduct = isMyOwnProduct,
-//                    isEnableDirectPurchase = isEnableDirectPurchase,
-//                    widgetLayout = widgetLayout
-//                )
-//                // =========== For testing Purpose =========== //
-                // TODO: Enable codes below to dynamically map data from BE
-                mapToProductWidgetUiModel(
-                    widgetModel = widgetResponse,
-                    isMyOwnProduct = isMyOwnProduct,
-                    isEnableDirectPurchase = isEnableDirectPurchase,
-                    widgetLayout = widgetLayout,
-                    isOverrideTheme = isOverrideTheme,
-                    colorSchema = colorSchema
-                )
+                when(widgetResponse.name){
+                    PRODUCT -> {
+                        mapToProductWidgetUiModel(
+                            widgetModel = widgetResponse,
+                            isMyOwnProduct = isMyOwnProduct,
+                            isEnableDirectPurchase = isEnableDirectPurchase,
+                            widgetLayout = widgetLayout,
+                            isOverrideTheme = isOverrideTheme,
+                            colorSchema = colorSchema
+                        )
+                    }
+                    PRODUCT_VERTICAL -> {
+                        mapToProductTerlarisWidgetUiModel(
+                            widgetModel = widgetResponse,
+                            isMyOwnProduct = isMyOwnProduct,
+                            isEnableDirectPurchase = isEnableDirectPurchase,
+                            widgetLayout = widgetLayout,
+                            isOverrideTheme = isOverrideTheme,
+                            colorSchema = colorSchema
+                        )
+                    }
+                    else -> null
+
+                }
             }
             CAMPAIGN.toLowerCase() -> {
                 if (isThematicWidgetShown) {
@@ -990,7 +997,8 @@ object ShopPageHomeMapper {
             data.imageUrl,
             data.appLink,
             data.webLink,
-            data.videoUrl
+            data.videoUrl,
+            data.bannerId
         )
     }
 
@@ -1017,7 +1025,7 @@ object ShopPageHomeMapper {
         )
     }
 
-    fun mapToProducTerlaristWidgetUiModel(
+    private fun mapToProductTerlarisWidgetUiModel(
         widgetModel: ShopLayoutWidget.Widget,
         isMyOwnProduct: Boolean,
         isEnableDirectPurchase: Boolean,
@@ -1028,118 +1036,16 @@ object ShopPageHomeMapper {
         return ShopHomeCarousellProductUiModel(
             widgetId = widgetModel.widgetID,
             layoutOrder = widgetModel.layoutOrder,
-            name = "terlaris",
+            name = widgetModel.name,
             type = widgetModel.type,
             header = mapToHeaderModel(widgetModel.header, widgetLayout, isOverrideTheme, colorSchema),
             isFestivity = widgetLayout?.isFestivity.orFalse(),
-            productList = getDummyData()
+            productList = mapToWidgetProductListItemViewModel(
+                data = widgetModel.data,
+                isMyOwnProduct = isMyOwnProduct,
+                isEnableDirectPurchase = isEnableDirectPurchase
+            )
         )
-    }
-
-    private fun getDummyData(): List<ShopHomeProductUiModel> {
-        val _data = listOf(
-            ShopHomeProductUiModel().apply {
-                id = "11014116628"
-                name = "TRESemme Shampoo 170ml + Conditioner 170ml + Spray 236ml FREE Serum"
-                displayedPrice = "Rp 29.000"
-                originalPrice = "Rp 50.000"
-                discountPercentage = "5%"
-                imageUrl = "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2023/8/4/72dc5b20-0d22-46c0-81bb-de65f689e2b2.jpg"
-                productUrl = "https://www.tokopedia.com/unilever/tresemme-shampoo-170ml-conditioner-170ml-spray-236ml-free-serum?extParam=whid%3D13056835"
-                this.isEnableDirectPurchase = false
-            },
-            ShopHomeProductUiModel().apply {
-                id = "11416628"
-                name = "TRESemme Shampoo 170ml + Conditio70ml + Spray 236ml FREE Serum"
-                displayedPrice = "Rp 129.000"
-                originalPrice = "Rp 760.000"
-                discountPercentage = "15%"
-                imageUrl = "https://images.tokopedia.net/img/cache/200-square/hDjmkQ/2023/7/25/4bd26fb3-4828-4e7f-8b87-e3af30a77f8c.jpg"
-                productUrl = "https://www.tokopedia.com/unilever/tresemme-shampoo-170ml-conditioner-170ml-spray-236ml-free-serum?extParam=whid%3D13056835"
-                this.isEnableDirectPurchase = false
-            },
-            ShopHomeProductUiModel().apply {
-                id = "110628"
-                name = "TRESemme Shampoo 170mlml + Spray 236ml FREE Serum"
-                displayedPrice = "Rp 19.000"
-                originalPrice = "Rp 20.000"
-                discountPercentage = "5%"
-                imageUrl = "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2023/7/31/a9928989-80ba-4ad6-87ed-5c9ea5f9ac26.jpg"
-                productUrl = "https://www.tokopedia.com/unilever/tresemme-shampoo-170ml-conditioner-170ml-spray-236ml-free-serum?extParam=whid%3D13056835"
-                this.isEnableDirectPurchase = false
-            },
-            ShopHomeProductUiModel().apply {
-                id = "110141628"
-                name = "TRESemme Shampoo 170ml +ml + Spray 236ml FREE Serum"
-                displayedPrice = "Rp 39.000"
-                originalPrice = "Rp 40.000"
-                discountPercentage = "2%"
-                imageUrl = "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2023/7/31/553dcf16-dfe8-4a0f-abc3-e29fc319f779.jpg"
-                productUrl = "https://www.tokopedia.com/unilever/tresemme-shampoo-170ml-conditioner-170ml-spray-236ml-free-serum?extParam=whid%3D13056835"
-                this.isEnableDirectPurchase = false
-            },
-            ShopHomeProductUiModel().apply {
-                id = "11416628"
-                name = "TRESemme Shampoo 170ml + Conditio70ml + Spray 236ml FREE Serum"
-                displayedPrice = "Rp 129.000"
-                originalPrice = "Rp 760.000"
-                discountPercentage = "15%"
-                imageUrl = "https://images.tokopedia.net/img/cache/200-square/hDjmkQ/2023/7/25/4bd26fb3-4828-4e7f-8b87-e3af30a77f8c.jpg"
-                productUrl = "https://www.tokopedia.com/unilever/tresemme-shampoo-170ml-conditioner-170ml-spray-236ml-free-serum?extParam=whid%3D13056835"
-                this.isEnableDirectPurchase = false
-            },
-            ShopHomeProductUiModel().apply {
-                id = "110628"
-                name = "TRESemme Shampoo 170mlml + Spray 236ml FREE Serum"
-                displayedPrice = "Rp 19.000"
-                originalPrice = "Rp 20.000"
-                discountPercentage = "5%"
-                imageUrl = "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2023/7/31/a9928989-80ba-4ad6-87ed-5c9ea5f9ac26.jpg"
-                productUrl = "https://www.tokopedia.com/unilever/tresemme-shampoo-170ml-conditioner-170ml-spray-236ml-free-serum?extParam=whid%3D13056835"
-                this.isEnableDirectPurchase = false
-            },
-            ShopHomeProductUiModel().apply {
-                id = "110141628"
-                name = "TRESemme Shampoo 170ml +ml + Spray 236ml FREE Serum"
-                displayedPrice = "Rp 39.000"
-                originalPrice = "Rp 40.000"
-                discountPercentage = "2%"
-                imageUrl = "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2023/7/31/553dcf16-dfe8-4a0f-abc3-e29fc319f779.jpg"
-                productUrl = "https://www.tokopedia.com/unilever/tresemme-shampoo-170ml-conditioner-170ml-spray-236ml-free-serum?extParam=whid%3D13056835"
-                this.isEnableDirectPurchase = false
-            },
-            ShopHomeProductUiModel().apply {
-                id = "11416628"
-                name = "TRESemme Shampoo 170ml + Conditio70ml + Spray 236ml FREE Serum"
-                displayedPrice = "Rp 129.000"
-                originalPrice = "Rp 760.000"
-                discountPercentage = "15%"
-                imageUrl = "https://images.tokopedia.net/img/cache/200-square/hDjmkQ/2023/7/25/4bd26fb3-4828-4e7f-8b87-e3af30a77f8c.jpg"
-                productUrl = "https://www.tokopedia.com/unilever/tresemme-shampoo-170ml-conditioner-170ml-spray-236ml-free-serum?extParam=whid%3D13056835"
-                this.isEnableDirectPurchase = false
-            },
-            ShopHomeProductUiModel().apply {
-                id = "110628"
-                name = "TRESemme Shampoo 170mlml + Spray 236ml FREE Serum"
-                displayedPrice = "Rp 19.000"
-                originalPrice = "Rp 20.000"
-                discountPercentage = "5%"
-                imageUrl = "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2023/7/31/a9928989-80ba-4ad6-87ed-5c9ea5f9ac26.jpg"
-                productUrl = "https://www.tokopedia.com/unilever/tresemme-shampoo-170ml-conditioner-170ml-spray-236ml-free-serum?extParam=whid%3D13056835"
-                this.isEnableDirectPurchase = false
-            },
-            ShopHomeProductUiModel().apply {
-                id = "110141628"
-                name = "TRESemme Shampoo 170ml +ml + Spray 236ml FREE Serum"
-                displayedPrice = "Rp 39.000"
-                originalPrice = "Rp 40.000"
-                discountPercentage = "2%"
-                imageUrl = "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2023/7/31/553dcf16-dfe8-4a0f-abc3-e29fc319f779.jpg"
-                productUrl = "https://www.tokopedia.com/unilever/tresemme-shampoo-170ml-conditioner-170ml-spray-236ml-free-serum?extParam=whid%3D13056835"
-                this.isEnableDirectPurchase = false
-            }
-        )
-        return _data
     }
 
     fun mapToHeaderModel(

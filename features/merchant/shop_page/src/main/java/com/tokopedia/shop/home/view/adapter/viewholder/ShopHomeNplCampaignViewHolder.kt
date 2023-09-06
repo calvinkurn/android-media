@@ -1,6 +1,7 @@
 package com.tokopedia.shop.home.view.adapter.viewholder
 
 import android.content.Context
+import android.graphics.PorterDuff
 import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
@@ -64,7 +65,7 @@ class ShopHomeNplCampaignViewHolder(
     private val timerUnify: TimerUnifySingle? = viewBinding?.nplTimer
     private val timerMoreThanOneDay: Typography? = viewBinding?.textTimerMoreThan1Day
     private val textTimeDescription: Typography? = viewBinding?.nplTimerDescription
-    private val textSeeAll: Typography? = viewBinding?.textSeeAll
+    private var iconCtaChevron: IconUnify? = viewBinding?.iconCtaChevron
     private val loaderRemindMe: LoaderUnify? = viewBinding?.loaderRemindMe
     private val nplReminderView: CardUnify2? = viewBinding?.nplReminderView
     private val remindMeText: Typography? = viewBinding?.tvNplRemindMe
@@ -135,7 +136,7 @@ class ShopHomeNplCampaignViewHolder(
         val informationIconColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.ICON_CTA_LINK_COLOR)
         textTitle?.setTextColor(titleColor)
         textTimeDescription?.setTextColor(subTitleColor)
-        textSeeAll?.setTextColor(ctaColor)
+        iconCtaChevron?.setColorFilter(ctaColor, PorterDuff.Mode.SRC_ATOP)
         imageTnc?.setColorFilter(informationIconColor)
         timerUnify?.timerVariant = TimerUnifySingle.VARIANT_MAIN
         timerMoreThanOneDay?.apply {
@@ -149,7 +150,7 @@ class ShopHomeNplCampaignViewHolder(
         val festivityTextColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
         textTitle?.setTextColor(festivityTextColor)
         textTimeDescription?.setTextColor(festivityTextColor)
-        textSeeAll?.setTextColor(festivityTextColor)
+        iconCtaChevron?.setColorFilter(festivityTextColor, PorterDuff.Mode.SRC_ATOP)
         imageTnc?.setColorFilter(festivityTextColor)
         timerUnify?.timerVariant = TimerUnifySingle.VARIANT_ALTERNATE
         timerMoreThanOneDay?.apply {
@@ -166,7 +167,7 @@ class ShopHomeNplCampaignViewHolder(
         val defaultInformationIconColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN900)
         textTitle?.setTextColor(defaultTitleColor)
         textTimeDescription?.setTextColor(defaultSubTitleColor)
-        textSeeAll?.setTextColor(defaultCtaColor)
+        iconCtaChevron?.setColorFilter(defaultCtaColor, PorterDuff.Mode.SRC_ATOP)
         imageTnc?.setColorFilter(defaultInformationIconColor)
         timerUnify?.timerVariant = TimerUnifySingle.VARIANT_MAIN
         timerMoreThanOneDay?.apply {
@@ -391,22 +392,11 @@ class ShopHomeNplCampaignViewHolder(
             textTimeDescription?.text = timeDescription
             textTimeDescription?.show()
             val days = model.data?.firstOrNull()?.timeCounter?.millisecondsToDays().orZero()
-            val dateCampaign = when {
-                isStatusCampaignUpcoming(statusCampaign) -> {
-                    DateHelper.getDateFromString(model.data?.firstOrNull()?.startDate.orEmpty())
-                }
-                isStatusCampaignOngoing(statusCampaign) -> {
-                    DateHelper.getDateFromString(model.data?.firstOrNull()?.endDate.orEmpty())
-                }
-                else -> {
-                    Date()
-                }
-            }
             if (days >= Int.ONE) {
                 timerUnify?.gone()
                 timerMoreThanOneDay?.apply {
-                    text =
-                        dateCampaign.toString(SHOP_NPL_CAMPAIGN_WIDGET_MORE_THAT_1_DAY_DATE_FORMAT)
+                    val dateFormatted = getFormattedDate(statusCampaign, model, false).toString(SHOP_NPL_CAMPAIGN_WIDGET_MORE_THAT_1_DAY_DATE_FORMAT)
+                    text = getString(R.string.shop_widget_date_format_wib, dateFormatted)
                     show()
                 }
             } else {
@@ -415,7 +405,7 @@ class ShopHomeNplCampaignViewHolder(
                     timerUnify?.apply {
                         show()
                         targetDate = Calendar.getInstance().apply {
-                            time = dateCampaign
+                            time = getFormattedDate(statusCampaign, model, true)
                         }
                         onFinish = {
                             shopHomeCampaignNplWidgetListener.onTimerFinished(model)
@@ -432,17 +422,40 @@ class ShopHomeNplCampaignViewHolder(
         }
     }
 
+    private fun getFormattedDate(
+        statusCampaign: String,
+        model: ShopHomeNewProductLaunchCampaignUiModel,
+        isUseDefaultTimeZone: Boolean
+    ): Date {
+        val timeZone = if (isUseDefaultTimeZone) {
+            DateHelper.getDefaultTimeZone()
+        } else {
+            null
+        }
+        return when {
+            isStatusCampaignUpcoming(statusCampaign) -> {
+                DateHelper.getDateFromString(model.data?.firstOrNull()?.startDate.orEmpty(), timeZone)
+            }
+
+            isStatusCampaignOngoing(statusCampaign) -> {
+                DateHelper.getDateFromString(model.data?.firstOrNull()?.endDate.orEmpty(), timeZone)
+            }
+
+            else -> {
+                Date()
+            }
+        }
+    }
+
     private fun setCta(model: ShopHomeNewProductLaunchCampaignUiModel) {
         val ctaText = model.header.ctaText
         val productList = model.data?.firstOrNull()?.productList ?: listOf()
         val statusCampaign = model.data?.firstOrNull()?.statusCampaign.orEmpty()
         val isShowCta = (ctaText.isNotEmpty()) && (isStatusCampaignOngoing(statusCampaign)) && (productList.size > Int.ONE)
-        textSeeAll?.apply {
+        iconCtaChevron?.apply {
             if (!isShowCta) {
-                text = ""
                 hide()
             } else {
-                text = ctaText
                 setOnClickListener {
                     shopHomeCampaignNplWidgetListener.onClickCtaCampaignNplWidget(model)
                 }

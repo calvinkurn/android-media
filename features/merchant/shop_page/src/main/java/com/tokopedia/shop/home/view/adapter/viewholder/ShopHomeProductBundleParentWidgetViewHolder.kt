@@ -9,6 +9,7 @@ import com.tokopedia.productbundlewidget.model.*
 import com.tokopedia.productbundlewidget.presentation.ProductBundleWidgetView
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.constant.ShopPageConstant
+import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleDetailUiModel
 import com.tokopedia.shop.common.widget.bundle.viewholder.MultipleProductBundleListener
@@ -54,6 +55,9 @@ class ShopHomeProductBundleParentWidgetViewHolder(
     }
 
     override fun bind(element: ShopHomeProductBundleListUiModel) {
+        val isFestivity = element.isFestivity
+        val isOverrideWidgetTheme = element.header.isOverrideTheme
+
         bundleListUiModel = element
         shopId = element.productBundleList.firstOrNull()?.shopId.orEmpty()
         warehouseId = element.productBundleList.firstOrNull()?.warehouseId.orEmpty()
@@ -70,15 +74,34 @@ class ShopHomeProductBundleParentWidgetViewHolder(
             .setWidgetType(WidgetType.TYPE_1)
             .setPageSource(ShopPageConstant.SOURCE)
             .build()
+        productBundleWidgetView?.setIsOverrideWidgetTheme(isOverrideWidgetTheme = isOverrideWidgetTheme)
         productBundleWidgetView?.setListener(this)
         productBundleWidgetView?.setTitleText(bundleWidgetTitle)
         productBundleWidgetView?.getBundleData(param)
         productBundleWidgetView?.setBundlingCarouselTopMargin(BUNDLE_RV_MARGIN_TOP.dpToPx().toInt())
-        checkFestivity(element)
+
+        checkFestivity(isFestivity = isFestivity)
+        configColorTheme(
+            isFestivity = isFestivity,
+            isOverrideWidgetTheme = isOverrideWidgetTheme,
+            colorSchema = element.header.colorSchema
+        )
     }
 
-    private fun checkFestivity(element: ShopHomeProductBundleListUiModel) {
-        if (element.isFestivity) {
+    private fun configColorTheme(isFestivity: Boolean, isOverrideWidgetTheme: Boolean, colorSchema: ShopPageColorSchema) {
+        if (isFestivity) {
+            configFestivity()
+        } else {
+            if (isOverrideWidgetTheme) {
+                configReimaginedColor(colorSchema)
+            } else {
+                configNonFestivity()
+            }
+        }
+    }
+
+    private fun checkFestivity(isFestivity: Boolean) {
+        if (isFestivity) {
             configFestivity()
         } else {
             configNonFestivity()
@@ -93,6 +116,15 @@ class ShopHomeProductBundleParentWidgetViewHolder(
     private fun configNonFestivity() {
         val defaultTitleColorRes = com.tokopedia.unifyprinciples.R.color.Unify_NN950
         productBundleWidgetView?.setTitleTextColor(defaultTitleColorRes)
+    }
+
+    private fun configReimaginedColor(colorSchema: ShopPageColorSchema) {
+        val titleColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS)
+        val subTitleColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_LOW_EMPHASIS)
+        val ctaColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.CTA_TEXT_LINK_COLOR)
+        val informationIconColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.ICON_CTA_LINK_COLOR)
+
+        productBundleWidgetView?.setTitleTextColor(titleColor)
     }
 
     override fun onBundleProductClicked(

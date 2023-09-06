@@ -2,6 +2,7 @@ package com.tokopedia.shop_showcase.shop_showcase_tab.presentation.fragment
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.PorterDuff
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,12 +17,14 @@ import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
@@ -30,7 +33,9 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.common.constant.ShopCommonExtraConstant
 import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
+import com.tokopedia.shop.common.view.interfaces.InterfaceShopPageHeader
 import com.tokopedia.shop.common.view.model.ShopEtalaseUiModel
+import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.common.view.model.ShopSharingInShowCaseUiModel
 import com.tokopedia.shop_showcase.R
 import com.tokopedia.shop_showcase.common.ShopShowcaseUtil
@@ -60,7 +65,8 @@ import javax.inject.Inject
 class ShopPageShowcaseFragment : BaseDaggerFragment(),
         HasComponent<ShopPageShowcaseComponent>,
     ShopPageFeaturedShowcaseListener,
-    ShopShowcaseListImageListener {
+    ShopShowcaseListImageListener,
+    ShopShowcaseTabInterface {
 
     companion object {
 
@@ -94,6 +100,10 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(),
         }
 
     }
+
+    private var featuredShowcaseTitleColor: Int = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
+    private var allShowcaseTitleColor: Int = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
+    private var icShowcaseSearchColor: Int = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -148,11 +158,36 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(),
         initListener()
         observeLiveData()
         loadShowcaseInitialData()
+        configColorTheme()
     }
 
-    override fun onPause() {
-        super.onPause()
-        shopShowcaseTabTracking.sendAllTrackingQueue()
+    private fun configColorTheme() {
+        if (isOverrideTheme()) {
+            configReimaginedColor()
+        } else {
+            configDefaultColor()
+        }
+        tvFeaturedShowcaseTitle?.setTextColor(featuredShowcaseTitleColor)
+        tvAllShowcaseTitle?.setTextColor(allShowcaseTitleColor)
+        icShowcaseSearch?.setColorFilter(icShowcaseSearchColor, PorterDuff.Mode.SRC_ATOP)
+    }
+
+    private fun configDefaultColor() {
+        featuredShowcaseTitleColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
+        allShowcaseTitleColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
+        icShowcaseSearchColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
+    }
+
+    private fun configReimaginedColor() {
+        featuredShowcaseTitleColor = getShopPageColorSchema().getColorIntValue(
+                ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS
+        )
+        allShowcaseTitleColor = getShopPageColorSchema().getColorIntValue(
+            ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS
+        )
+        icShowcaseSearchColor = getShopPageColorSchema().getColorIntValue(
+            ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS
+        )
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -286,7 +321,7 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(),
 
     private fun initRecyclerView() {
         featuredShowcaseAdapter = ShopPageFeaturedShowcaseAdapter(this)
-        allShowcaseListAdapter = ShopPageShowcaseListAdapter(this)
+        allShowcaseListAdapter = ShopPageShowcaseListAdapter(this, this)
 
         val featuredShowcaseLayoutManager = LinearLayoutManager(
                 context,
@@ -565,4 +600,15 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(),
         localLoadFeaturedShowcase?.hide()
     }
 
+    override fun isOverrideTheme(): Boolean {
+        return (parentFragment?.parentFragment as? InterfaceShopPageHeader)?.isOverrideTheme().orFalse()
+    }
+
+    override fun getShopPageColorSchema(): ShopPageColorSchema {
+        return (parentFragment?.parentFragment as? InterfaceShopPageHeader)?.getBodyColorSchema() ?: ShopPageColorSchema()
+    }
+
+    override fun getPatternColorType(): String {
+        return (parentFragment?.parentFragment as? InterfaceShopPageHeader)?.getBodyPatternColorType().orEmpty()
+    }
 }

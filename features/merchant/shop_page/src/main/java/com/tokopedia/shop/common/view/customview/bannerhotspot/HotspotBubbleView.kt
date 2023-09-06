@@ -1,5 +1,6 @@
 package com.tokopedia.shop.common.view.customview.bannerhotspot
 
+import android.animation.Animator
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -7,6 +8,7 @@ import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.LifecycleObserver
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
@@ -23,7 +25,7 @@ class HotspotBubbleView @JvmOverloads constructor(
 ) : ConstraintLayout(context, attrs, defStyleAttr), LifecycleObserver {
 
     companion object {
-        private const val THRESHOLD_POS_Y_TO_INFLATE_TAGGING_BUBBLE_DOWNWARD = 0.70
+        private const val THRESHOLD_POS_Y_TO_INFLATE_TAGGING_BUBBLE_DOWNWARD = 0.60
         private const val POSITION_TOP = 1
         private const val POSITION_BOTTOM = 2
         private const val INT_TWO = 2
@@ -58,6 +60,7 @@ class HotspotBubbleView @JvmOverloads constructor(
         alpha = ALPHA_HIDE
         scaleX = SCALE_X_HIDE
         scaleY = SCALE_Y_HIDE
+        gone()
     }
 
     fun bindData(
@@ -99,7 +102,7 @@ class HotspotBubbleView @JvmOverloads constructor(
             (measuredWidth.toFloat() / INT_TWO) - finalPointerView?.measuredWidth?.toFloat()
                 ?.div(INT_TWO)
                 .orZero()
-        y = if (position > POSITION_TOP) {
+        y = if (position == POSITION_TOP) {
             (bannerImageHeight.toFloat() * (hotspotData.y)) - measuredHeight - finalPointerView?.measuredHeight.orZero()
         } else {
             (bannerImageHeight.toFloat() * (hotspotData.y)) + hotspotTagView.measuredHeight
@@ -117,10 +120,10 @@ class HotspotBubbleView @JvmOverloads constructor(
 
     private fun determineBubbleVerticalPosition(hotspotData: ImageHotspotData.HotspotData) {
         position = if (hotspotData.y > THRESHOLD_POS_Y_TO_INFLATE_TAGGING_BUBBLE_DOWNWARD) {
-            finalPointerView = productTagPointerTop
+            finalPointerView = productTagPointerBottom
             POSITION_TOP
         } else {
-            finalPointerView = productTagPointerBottom
+            finalPointerView = productTagPointerTop
             POSITION_BOTTOM
         }
     }
@@ -129,18 +132,42 @@ class HotspotBubbleView @JvmOverloads constructor(
         animate().scaleX(SCALE_X_SHOW).scaleY(SCALE_Y_SHOW)
             .alpha(ALPHA_SHOW)
             .setInterpolator(UnifyMotion.EASE_OUT)
-            .duration = UnifyMotion.T3
+            .setDuration(UnifyMotion.T3)
+            .setListener(object : Animator.AnimatorListener {
+                override fun onAnimationStart(p0: Animator) {
+                    show()
+                }
+
+                override fun onAnimationEnd(p0: Animator) {
+                }
+
+                override fun onAnimationCancel(p0: Animator) {
+                }
+
+                override fun onAnimationRepeat(p0: Animator) {
+                }
+            })
     }
 
     fun hideWithAnimation() {
         animate().scaleX(SCALE_X_HIDE).scaleY(SCALE_Y_HIDE)
             .alpha(ALPHA_HIDE)
             .setInterpolator(UnifyMotion.EASE_IN_OUT)
-            .duration = UnifyMotion.T3
-    }
+            .setDuration(UnifyMotion.T3)
+            .setListener(object : Animator.AnimatorListener {
+                override fun onAnimationStart(p0: Animator) {
+                }
 
-    fun hideWithAlpha() {
-        alpha = Int.ZERO.toFloat()
+                override fun onAnimationEnd(p0: Animator) {
+                    gone()
+                }
+
+                override fun onAnimationCancel(p0: Animator) {
+                }
+
+                override fun onAnimationRepeat(p0: Animator) {
+                }
+            })
     }
 
     fun isVisibleWithAlpha(): Boolean {

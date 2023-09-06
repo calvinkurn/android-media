@@ -1,8 +1,11 @@
 package com.tokopedia.shop.home.view.adapter.viewholder
 
+import android.graphics.Paint
 import android.view.View
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.LayoutRes
+import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -10,11 +13,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.shop.R
+import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.LayoutShopHomeV4TerlarisWidgetBinding
 import com.tokopedia.shop.home.view.adapter.ShopHomeV4TerlarisAdapter
 import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -50,22 +55,32 @@ class ShopHomeV4TerlarisViewHolder(
     private var productName1: TextView? = viewBinding?.terlarisProductName1
     private var productPrice1: TextView? = viewBinding?.terlarisProductPrice1
     private var productRank1: TextView? = viewBinding?.terlarisProductRankNumber1
+    private var containerDiscount1: LinearLayoutCompat? = viewBinding?.terlarisContainerDiscount1
+    private var labelDiscount1: Label? = viewBinding?.terlarisLabelDiscountPercentage1
+    private var productOriginalPrice1: TextView? = viewBinding?.terlarisOriginalPrice1
     private var prodcutCard2: ConstraintLayout? = viewBinding?.terlarisProductDetail2
     private var productImg2: ImageUnify? = viewBinding?.terlarisImgProduct2
     private var productName2: TextView? = viewBinding?.terlarisProductName2
     private var productPrice2: TextView? = viewBinding?.terlarisProductPrice2
     private var productRank2: TextView? = viewBinding?.terlarisProductRankNumber2
+    private var containerDiscount2: LinearLayoutCompat? = viewBinding?.terlarisContainerDiscount2
+    private var labelDiscount2: Label? = viewBinding?.terlarisLabelDiscountPercentage1
+    private var productOriginalPrice2: TextView? = viewBinding?.terlarisOriginalPrice2
     private var prodcutCard3: ConstraintLayout? = viewBinding?.terlarisProductDetail3
     private var productImg3: ImageUnify? = viewBinding?.terlarisImgProduct3
     private var productName3: TextView? = viewBinding?.terlarisProductName3
     private var productPrice3: TextView? = viewBinding?.terlarisProductPrice3
     private var productRank3: TextView? = viewBinding?.terlarisProductRankNumber3
-    private val whiteColor = com.tokopedia.unifyprinciples.R.color.Unify_N0
+    private var containerDiscount3: LinearLayoutCompat? = viewBinding?.terlarisContainerDiscount3
+    private var labelDiscount3: Label? = viewBinding?.terlarisLabelDiscountPercentage1
+    private var productOriginalPrice3: TextView? = viewBinding?.terlarisOriginalPrice3
 
     override fun bind(element: ShopHomeCarousellProductUiModel?) {
         element?.let {
+            val isOverrideTheme = it.header.isOverrideTheme
+            val colorSchema = it.header.colorSchema
             val linearLayoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
-            terlarisWidgetAdapter = ShopHomeV4TerlarisAdapter(listener)
+            terlarisWidgetAdapter = ShopHomeV4TerlarisAdapter(listener, isOverrideTheme ,colorSchema)
             rvProductCarousel?.apply {
                 isNestedScrollingEnabled = false
                 layoutManager = linearLayoutManager
@@ -76,14 +91,13 @@ class ShopHomeV4TerlarisViewHolder(
             productCarouselData?.let { carouselData ->
                 val sanitizedProductListCarouselData = getCarouselData(carouselData)
                 if (sanitizedProductListCarouselData.size == PRODUCT_ONE) {
-                    // TODO: Put validation here to check whether we should override fontColor or not
-                    // Call this function overrideWidgetTheme() if you want to override the color with the ones from BE
+                    if (isOverrideTheme) {
+                        overrideWidgetTheme(colorSchema = colorSchema)
+                    }
                     showThreeItemLayout(productList = sanitizedProductListCarouselData)
                 } else if (sanitizedProductListCarouselData.size > PRODUCT_ONE) {
-                    // TODO: Put validation here to check whether we should override fontColor or not
                     showMoreThanThreeItemLayout(
-                        productList = sanitizedProductListCarouselData,
-                        fontColor = null // Use null if you don't want to override the fontColor using the ones from BE
+                        productList = sanitizedProductListCarouselData
                     )
                 } else {
                     hideTheWidget()
@@ -98,14 +112,13 @@ class ShopHomeV4TerlarisViewHolder(
         hideHorizontalProductCarousel()
     }
 
-    private fun showMoreThanThreeItemLayout(productList: List<List<ShopHomeProductUiModel>>, fontColor: Int?) {
+    private fun showMoreThanThreeItemLayout(
+        productList: List<List<ShopHomeProductUiModel>>
+    ) {
         showTheContainer()
         hideLayoutThreeItem()
         showHorizontalProductCarousel()
-        terlarisWidgetAdapter?.updateData(
-            productList = productList,
-            color = fontColor
-        )
+        terlarisWidgetAdapter?.updateData(productList = productList)
     }
 
     private fun hideTheWidget() {
@@ -116,6 +129,7 @@ class ShopHomeV4TerlarisViewHolder(
 
     private fun showLayoutThreeItem(productList: List<List<ShopHomeProductUiModel>>) {
         if (productList.isNotEmpty() && productList[0].size == PRODUCT_THREE) {
+            // First product
             containerThreeProducts?.visibility = View.VISIBLE
             prodcutCard1?.setOnClickListener {
                 listener.onProductClick(productList[0][0].id)
@@ -124,6 +138,16 @@ class ShopHomeV4TerlarisViewHolder(
             productName1?.text = productList[0][0].name
             productPrice1?.text = productList[0][0].displayedPrice
             productRank1?.text = "1"
+            if (!productList[0][0].discountPercentage.isNullOrEmpty() &&
+                !productList[0][0].originalPrice.isNullOrEmpty()) {
+                containerDiscount1?.visibility = View.VISIBLE
+                labelDiscount1?.text = productList[0][0].discountPercentage
+                productOriginalPrice1?.text = productList[0][0].originalPrice
+                productOriginalPrice1?.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
+            } else {
+                containerDiscount1?.visibility = View.GONE
+            }
+            // Second product
             prodcutCard2?.setOnClickListener {
                 listener.onProductClick(productList[0][1].id)
             }
@@ -131,6 +155,16 @@ class ShopHomeV4TerlarisViewHolder(
             productName2?.text = productList[0][1].name
             productPrice2?.text = productList[0][1].displayedPrice
             productRank2?.text = "2"
+            if (!productList[0][1].discountPercentage.isNullOrEmpty() &&
+                !productList[0][1].originalPrice.isNullOrEmpty()) {
+                containerDiscount2?.visibility = View.VISIBLE
+                labelDiscount2?.text = productList[0][1].discountPercentage
+                productOriginalPrice2?.text = productList[0][1].originalPrice
+                productOriginalPrice2?.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
+            } else {
+                containerDiscount2?.visibility = View.GONE
+            }
+            // Third product
             prodcutCard3?.setOnClickListener {
                 listener.onProductClick(productList[0][2].id)
             }
@@ -138,6 +172,15 @@ class ShopHomeV4TerlarisViewHolder(
             productName3?.text = productList[0][2].name
             productPrice3?.text = productList[0][2].displayedPrice
             productRank3?.text = "3"
+            if (!productList[0][2].discountPercentage.isNullOrEmpty() &&
+                !productList[0][2].originalPrice.isNullOrEmpty()) {
+                containerDiscount3?.visibility = View.VISIBLE
+                labelDiscount3?.text = productList[0][2].discountPercentage
+                productOriginalPrice3?.text = productList[0][2].originalPrice
+                productOriginalPrice3?.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
+            } else {
+                containerDiscount3?.visibility = View.GONE
+            }
         }
     }
 
@@ -184,17 +227,14 @@ class ShopHomeV4TerlarisViewHolder(
         terlarisWidgetContainer?.visibility = View.VISIBLE
     }
 
-    // TODO
-    // 1. Need to handle light & dark theme from BE
-    // 2. Need to handle light & dark theme from User Preferences
-    private fun overrideWidgetTheme(fontColor: Int) {
-        widgetTitle?.setTextColor(ContextCompat.getColor(itemView.context, fontColor))
-        widgetSubtitle?.setTextColor(ContextCompat.getColor(itemView.context, fontColor))
-        productName1?.setTextColor(ContextCompat.getColor(itemView.context, fontColor))
-        productPrice1?.setTextColor(ContextCompat.getColor(itemView.context, fontColor))
-        productName2?.setTextColor(ContextCompat.getColor(itemView.context, fontColor))
-        productPrice2?.setTextColor(ContextCompat.getColor(itemView.context, fontColor))
-        productName3?.setTextColor(ContextCompat.getColor(itemView.context, fontColor))
-        productPrice3?.setTextColor(ContextCompat.getColor(itemView.context, fontColor))
+    private fun overrideWidgetTheme(colorSchema: ShopPageColorSchema) {
+        widgetTitle?.setTextColor(colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS))
+        widgetSubtitle?.setTextColor(colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_LOW_EMPHASIS))
+        productName1?.setTextColor(colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS))
+        productPrice1?.setTextColor(colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS))
+        productName2?.setTextColor(colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS))
+        productPrice2?.setTextColor(colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS))
+        productName3?.setTextColor(colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS))
+        productPrice3?.setTextColor(colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS))
     }
 }

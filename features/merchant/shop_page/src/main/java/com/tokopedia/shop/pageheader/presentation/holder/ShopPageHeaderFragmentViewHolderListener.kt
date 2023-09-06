@@ -17,8 +17,10 @@ interface ShopPageHeaderFragmentViewHolderListener {
     fun onCompleteCheckRequestModerateStatus(moderateStatusResult: ShopModerateRequestResult)
     fun setShopUnmoderateRequestBottomSheet(bottomSheetPageHeader: ShopPageHeaderRequestUnmoderateBottomSheet)
     fun onClickShopBasicInfoSection(appLink: String){}
-    fun onShopRatingClicked(appLink: String){}
+    fun onShopReviewClicked(appLink: String){}
     fun onChatButtonClicked(){}
 
     fun onFollowButtonClicked(){}
+
+    fun onUspClicked(listDynamicUspValue: List<String>) {}
 }

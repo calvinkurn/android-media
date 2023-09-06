@@ -23,6 +23,7 @@ class ImageHotspotView @JvmOverloads constructor(
 
     companion object {
         private val DEFAULT_CORNER_RADIUS = 4f.dpToPx().toInt()
+        private const val DEFAULT_RATIO = "1:1"
     }
 
     interface Listener {
@@ -43,14 +44,18 @@ class ImageHotspotView @JvmOverloads constructor(
 
     init {
         viewBinding = ImageHotspotViewBinding.inflate(LayoutInflater.from(context), this)
+        setOnClickListener {
+            hideAllBubbleView()
+        }
     }
 
     fun setData(
         imageHotspotData: ImageHotspotData,
         listenerBubbleView: Listener,
-        cornerRadius: Int = DEFAULT_CORNER_RADIUS
+        cornerRadius: Int = DEFAULT_CORNER_RADIUS,
+        ratio: String? = DEFAULT_RATIO
     ) {
-        setImageBanner(imageHotspotData.imageBannerUrl, cornerRadius)
+        setImageBanner(imageHotspotData.imageBannerUrl, cornerRadius, ratio)
         setHotspot(imageHotspotData.listHotspot, listenerBubbleView)
         setOnImageShoppingBagClicked()
     }
@@ -85,13 +90,25 @@ class ImageHotspotView @JvmOverloads constructor(
     ) {
         this.listHotspot = listHotspot
         imageBanner.doOnLayout {
-            listHotspot.forEachIndexed { index, hotspotData ->
-                val hotspotTagView = createHotspotTagView(hotspotData)
-                val bubbleView =
-                    createBubbleView(hotspotData, hotspotTagView, index, listenerBubbleView)
-                addView(hotspotTagView)
-                addView(bubbleView)
-            }
+            addHotspotTagView(listHotspot, listenerBubbleView)
+            addBubbleView(listHotspot)
+        }
+    }
+
+    private fun addBubbleView(listHotspot: List<ImageHotspotData.HotspotData>) {
+        listHotspot.forEach {
+            addView(it.bubbleView)
+        }
+    }
+
+    private fun addHotspotTagView(
+        listHotspot: List<ImageHotspotData.HotspotData>,
+        listenerBubbleView: Listener
+    ) {
+        listHotspot.forEachIndexed { index, hotspotData ->
+            val hotspotTagView = createHotspotTagView(hotspotData)
+            createBubbleView(hotspotData, hotspotTagView, index, listenerBubbleView)
+            addView(hotspotTagView)
         }
     }
 
@@ -121,8 +138,9 @@ class ImageHotspotView @JvmOverloads constructor(
         return hotspotTagView
     }
 
-    private fun setImageBanner(imageBannerUrl: String, cornerRadius: Int) {
+    private fun setImageBanner(imageBannerUrl: String, cornerRadius: Int, ratio: String?) {
         imageBanner.apply {
+            (imageBanner.layoutParams as? LayoutParams)?.dimensionRatio = ratio.takeIf { !it.isNullOrEmpty() } ?: DEFAULT_RATIO
             loadImage(imageBannerUrl)
             this.cornerRadius = cornerRadius
         }
@@ -146,7 +164,7 @@ class ImageHotspotView @JvmOverloads constructor(
 
     private fun hideAllBubbleView() {
         listHotspot.forEach {
-            it.bubbleView?.hideWithAlpha()
+            it.bubbleView?.hideWithAnimation()
         }
     }
 

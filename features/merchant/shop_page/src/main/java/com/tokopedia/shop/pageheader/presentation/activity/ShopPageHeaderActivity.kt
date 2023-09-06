@@ -144,7 +144,11 @@ class ShopPageHeaderActivity :
         when (requestCode) {
             MvcView.REQUEST_CODE -> {
                 if (resultCode == MvcView.RESULT_CODE_OK) {
-                    (fragment as? ShopPageHeaderFragment)?.refreshData()
+                    if(ShopUtil.isEnableShopPageReImagined()) {
+                        (fragment as? ShopPageHeaderFragmentV2)?.refreshData()
+                    }else {
+                        (fragment as? ShopPageHeaderFragment)?.refreshData()
+                    }
                 }
             }
             else -> {
@@ -218,7 +222,13 @@ class ShopPageHeaderActivity :
     }
 
     override fun createPdpAffiliateLink(basePdpAppLink: String): String {
-        return (fragment as? ShopPageHeaderFragment)?.createPdpAffiliateLink(basePdpAppLink).orEmpty()
+        return if(ShopUtil.isEnableShopPageReImagined()) {
+            (fragment as? ShopPageHeaderFragmentV2)?.createPdpAffiliateLink(basePdpAppLink)
+                .orEmpty()
+        } else {
+            (fragment as? ShopPageHeaderFragment)?.createPdpAffiliateLink(basePdpAppLink)
+                .orEmpty()
+        }
     }
 
     override fun createAffiliateCookieAtcProduct(
@@ -226,10 +236,18 @@ class ShopPageHeaderActivity :
         isVariant: Boolean,
         stockQty: Int
     ) {
-        (fragment as? ShopPageHeaderFragment)?.createAffiliateCookieAtcProduct(
-            productId,
-            isVariant,
-            stockQty
-        )
+        if(ShopUtil.isEnableShopPageReImagined()){
+            (fragment as? ShopPageHeaderFragmentV2)?.createAffiliateCookieAtcProduct(
+                productId,
+                isVariant,
+                stockQty
+            )
+        } else {
+            (fragment as? ShopPageHeaderFragment)?.createAffiliateCookieAtcProduct(
+                productId,
+                isVariant,
+                stockQty
+            )
+        }
     }
 }

@@ -1,9 +1,7 @@
 <resources>
     <string name="inbox_title">Inbox</string>
-    <string name="universal_inbox_section_chat">Percakapan</string>
     <string name="universal_inbox_menu_chat_buyer">Chat Penjual</string>
     <string name="universal_inbox_menu_chat_seller">Chat Pembeli</string>
-    <string name="universal_inbox_section_others">Lainnya</string>
     <string name="universal_inbox_menu_discussion">Diskusi Produk</string>
     <string name="universal_inbox_menu_review">Ulasan</string>
 </resources>

@@ -5,13 +5,15 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.shop.common.databinding.ItemShopShowcaseListImageBinding
 import com.tokopedia.shop.common.view.model.ShopEtalaseUiModel
 import com.tokopedia.shop.common.view.viewholder.ShopShowcaseListImageBaseViewHolder
+import com.tokopedia.shop_showcase.shop_showcase_tab.presentation.fragment.ShopShowcaseTabInterface
 
 /**
  * Created by Rafli Syam on 30/03/2021
  */
 class ShopShowcaseListImageViewHolder(
-        itemViewBinding: ItemShopShowcaseListImageBinding,
-        private val listener: ShopShowcaseListImageListener
+    itemViewBinding: ItemShopShowcaseListImageBinding,
+    private val listener: ShopShowcaseListImageListener,
+    private val shopShowcaseTabInterface: ShopShowcaseTabInterface
 ) : ShopShowcaseListImageBaseViewHolder(itemViewBinding) {
 
     override fun bind(element: Any) {
@@ -20,7 +22,11 @@ class ShopShowcaseListImageViewHolder(
         val showcaseItem = element as ShopEtalaseUiModel
 
         // render showcase info
-        renderShowcaseMainInfo(showcaseItem)
+        renderShowcaseMainInfo(
+            showcaseItem,
+            isOverrideTheme = shopShowcaseTabInterface.isOverrideTheme(),
+            shopPageColorSchema = shopShowcaseTabInterface.getShopPageColorSchema()
+        )
 
         // showcase item impressed listener
         itemIvShowcaseImage?.addOnImpressionListener(
