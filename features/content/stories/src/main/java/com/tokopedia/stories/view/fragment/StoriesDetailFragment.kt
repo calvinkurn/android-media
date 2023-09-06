@@ -158,7 +158,7 @@ class StoriesDetailFragment @Inject constructor(
 
         showPageLoading(false)
 
-        binding.ivStoriesDetailContent.apply {
+        binding.layoutStoriesContent.ivStoriesDetailContent.apply {
             setImageUrl(currContent.imageContent)
             onUrlLoaded = {
                 contentIsLoaded()
@@ -269,7 +269,7 @@ class StoriesDetailFragment @Inject constructor(
 
     private fun showPageLoading(isShowLoading: Boolean) = with(binding){
         rvStoriesCategory.showWithCondition(!isShowLoading)
-        ivStoriesDetailContent.showWithCondition(!isShowLoading)
+        layoutStoriesContent.container.showWithCondition(!isShowLoading)
         layoutDetailLoading.container.showWithCondition(isShowLoading)
     }
 
