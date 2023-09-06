@@ -27,12 +27,13 @@
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/pdp_toolbar_shadow"
         android:layout_width="0dp"
-        android:layout_height="100dp"
+        android:layout_height="0dp"
         android:contentDescription="pdp_toolbar_shadow"
         android:scaleType="fitXY"
+        app:layout_constraintBottom_toBottomOf="@id/pdp_navtoolbar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@id/pdp_navtoolbar"
         app:srcCompat="@drawable/bg_pdp_toolbar_gradient"
         app:unify_image_corner_radius="0"
         tools:ignore="HardcodedText" />
