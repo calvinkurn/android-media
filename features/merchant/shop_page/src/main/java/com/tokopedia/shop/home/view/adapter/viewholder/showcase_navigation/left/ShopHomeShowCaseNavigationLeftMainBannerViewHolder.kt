@@ -9,10 +9,13 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.shop.R
+import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.ItemShopHomeShowcaseNavigationLeftMainBannerBinding
 import com.tokopedia.shop.home.util.ShopHomeShowcaseNavigationDependencyProvider
 import com.tokopedia.shop.home.view.fragment.ShopShowcaseNavigationTabWidgetFragment
@@ -23,6 +26,7 @@ import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseTab
 import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.unifycomponents.setCustomText
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
     itemView: View,
@@ -34,6 +38,7 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
         @LayoutRes
         val LAYOUT = R.layout.item_shop_home_showcase_navigation_left_main_banner
         private const val ONE_TAB = 1
+        private const val FIVE_SHOWCASE = 5
     }
 
     private val viewBinding: ItemShopHomeShowcaseNavigationLeftMainBannerBinding? by viewBinding()
@@ -41,14 +46,17 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
 
     override fun bind(model: ShowcaseNavigationUiModel) {
         val tabs = if (model.appearance is LeftMainBannerAppearance) model.appearance.tabs else emptyList()
-        setupShowcaseHeader(model, tabs)
+        setupTitle(model, tabs)
         setupTabs(tabs, model)
+        setupChevronViewAll(model, tabs, model.header.isOverrideTheme, model.header.colorSchema)
     }
 
-    private fun setupShowcaseHeader(model: ShowcaseNavigationUiModel, tabs: List<ShowcaseTab>) {
-        viewBinding?.tpgTitle?.text = model.appearance.title
-        viewBinding?.tpgTitle?.isVisible = model.appearance.title.isNotEmpty() && tabs.isNotEmpty()
-
+    private fun setupChevronViewAll(
+        model: ShowcaseNavigationUiModel,
+        tabs: List<ShowcaseTab>,
+        overrideTheme: Boolean,
+        colorSchema: ShopPageColorSchema
+    ) {
         viewBinding?.iconChevron?.setOnClickListener {
             listener.onNavigationBannerViewAllShowcaseClick(
                 model.appearance.viewAllCtaAppLink,
@@ -56,7 +64,34 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
                 tabs.firstOrNull()?.showcases?.firstOrNull()?.id.orEmpty()
             )
         }
-        viewBinding?.iconChevron?.isVisible = model.appearance.viewAllCtaAppLink.isNotEmpty()
+
+        val chevronColor = if (overrideTheme && colorSchema.listColorSchema.isNotEmpty()) {
+            colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.ICON_CTA_LINK_COLOR)
+        } else {
+            ContextCompat.getColor(viewBinding?.iconChevron?.context ?: return, unifycomponentsR.color.Unify_NN950)
+        }
+
+        viewBinding?.iconChevron?.setImage(
+            newIconId = IconUnify.CHEVRON_RIGHT,
+            newLightEnable = chevronColor,
+            newDarkEnable = chevronColor
+        )
+
+        val hasTab = tabs.size > ONE_TAB
+        val showChevronViewAll = if (hasTab) {
+            model.appearance.viewAllCtaAppLink.isNotEmpty() && model.appearance.title.isNotEmpty() && tabs.isNotEmpty()
+        } else {
+            val firstTab = tabs.firstOrNull()
+            val showcaseCountOnFirstTab = firstTab?.showcases?.size.orZero()
+            model.appearance.viewAllCtaAppLink.isNotEmpty() && model.appearance.title.isNotEmpty() && showcaseCountOnFirstTab > FIVE_SHOWCASE
+        }
+
+        viewBinding?.iconChevron?.isVisible = showChevronViewAll
+    }
+
+    private fun setupTitle(model: ShowcaseNavigationUiModel, tabs: List<ShowcaseTab>) {
+        viewBinding?.tpgTitle?.text = model.appearance.title
+        viewBinding?.tpgTitle?.isVisible = model.appearance.title.isNotEmpty() && tabs.isNotEmpty()
     }
 
     private fun setupTabs(
