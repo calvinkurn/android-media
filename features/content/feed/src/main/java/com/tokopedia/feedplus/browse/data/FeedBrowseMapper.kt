@@ -46,8 +46,9 @@ class FeedBrowseMapper @Inject constructor() {
                     chipUiState = ChipUiState.Placeholder,
                     channelUiState = ChannelUiState.Placeholder
                 )
+            } else {
+                null
             }
-            null
         }
     }
 
