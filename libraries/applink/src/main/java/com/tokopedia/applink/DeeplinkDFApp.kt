@@ -89,21 +89,62 @@ import java.io.InputStreamReader
  * DF Module with configuration "install-time" is excluded.
  */
 object DeeplinkDFApp {
-    private var deeplinkDFPatternListCustomerAppv2: List<DFPSchemeToDF>? = null
-    private var deeplinkDFPatternListSellerAppv2: List<DFPSchemeToDF>? = null
+    private var deeplinkDFPatternListCustomerAppv2: MutableList<DFPSchemeToDF>? = null
+    private var deeplinkDFPatternListSellerAppv2: MutableList<DFPSchemeToDF>? = null
 
     private const val INTERNAL = DeeplinkConstant.SCHEME_INTERNAL
     private const val TOKOPEDIA = DeeplinkConstant.SCHEME_TOKOPEDIA
 
-    fun deeplinkDFPatternListCustomerAppv2(context: Context): List<DFPSchemeToDF> {
-        val d = deeplinkDFPatternListCustomerAppv2
+    fun getDeeplinkDFPatternList(isSellerapp: Boolean, context: Context): List<DFPSchemeToDF> {
+        val d = getDeeplinkPattern(isSellerapp)
         if (d == null) {
             getDfCustomerappMap().filteredOnDF(context).mapDF().also {
-                deeplinkDFPatternListCustomerAppv2 = it
+                if (isSellerapp) {
+                    deeplinkDFPatternListSellerAppv2 = it
+                } else {
+                    deeplinkDFPatternListCustomerAppv2 = it
+                }
                 return it
             }
         } else {
             return d
+        }
+    }
+
+    fun getDeeplinkPattern(isSellerapp: Boolean): MutableList<DFPSchemeToDF>? {
+        return if (isSellerapp) {
+            deeplinkDFPatternListSellerAppv2
+        } else {
+            deeplinkDFPatternListCustomerAppv2
+        }
+    }
+
+    /**
+     * remove selected df module from path.
+     * If the host/scheme does not have the path anymore, remove it.
+     */
+    fun removeDFModuleFromList(isSellerapp: Boolean, moduleId: String) {
+        val dfpList = getDeeplinkPattern(isSellerapp)
+        val dfpIterator = dfpList?.iterator() ?: return
+        while (dfpIterator.hasNext()) {
+            val dfpSchemeToDF = dfpIterator.next()
+            val hostIterator = dfpSchemeToDF.hostList.iterator()
+            while (hostIterator.hasNext()) {
+                val dfpHost = hostIterator.next()
+                val dfpPathIterator = dfpHost.dfpPathObj.iterator()
+                while (dfpPathIterator.hasNext()) {
+                    val dfpPath = dfpPathIterator.next()
+                    if (dfpPath.dfTarget == moduleId) {
+                        dfpPathIterator.remove()
+                    }
+                }
+                if (dfpHost.dfpPathObj.isEmpty()) {
+                    hostIterator.remove()
+                }
+            }
+            if (dfpSchemeToDF.hostList.isEmpty()) {
+                dfpIterator.remove()
+            }
         }
     }
 
@@ -131,18 +172,6 @@ object DeeplinkDFApp {
         DF_USER_LIVENESS to getDfUserLiveness(),
         DF_USER_SETTINGS to getDfUserSettings(),
     )
-
-    fun deeplinkDFPatternListSellerAppv2(context: Context): List<DFPSchemeToDF> {
-        val d = deeplinkDFPatternListSellerAppv2
-        if (d == null) {
-            getDfSellerappMap().filteredOnDF(context).mapDF().also {
-                deeplinkDFPatternListSellerAppv2 = it
-                return it
-            }
-        } else {
-            return d
-        }
-    }
 
     fun getDfSellerappMap() = mapOf(
         DF_CAMPAIGN_LIST to getDfCampaignList(),
@@ -624,7 +653,7 @@ object DeeplinkDFApp {
         DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/shop-page/.*/settings"),
     )
 
-    fun Map<String, List<DFP>>.mapDF(): List<DFPSchemeToDF> {
+    fun Map<String, List<DFP>>.mapDF(): MutableList<DFPSchemeToDF> {
         val dfpSchemeToDf = mutableListOf<DFPSchemeToDF>()
         forEach { dfMapItem ->
             dfMapItem.value.forEach { dfpItem ->

@@ -60,6 +60,7 @@ open class DeepLinkDFMapperTestFixture {
             mockkClass(GlobalConfig::class)
             mockkStatic(RemoteConfigInstance::class)
             mockkObject(FirebaseRemoteConfigInstance)
+            mockkObject(DeeplinkDFApp)
 
             internalDeeplinkDFPatternListCustomerApp = DeeplinkDFApp.getDfCustomerappMap().mapDF()
             internalDeeplinkDFPatternListSellerApp = DeeplinkDFApp.getDfSellerappMap().mapDF()

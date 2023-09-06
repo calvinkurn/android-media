@@ -15,6 +15,7 @@ import com.tokopedia.applink.ApplinkConst.REVIEW_DETAIL
 import com.tokopedia.applink.ApplinkConst.SELLER_REVIEW
 import com.tokopedia.applink.ApplinkConst.TOKOPEDIA_REWARD
 import com.tokopedia.applink.ApplinkConst.TOKOPOINTS
+import com.tokopedia.applink.DeeplinkDFApp
 import com.tokopedia.applink.DeeplinkDFMapper.DF_ALPHA_TESTING
 import com.tokopedia.applink.DeeplinkDFMapper.DF_CATEGORY_AFFILIATE
 import com.tokopedia.applink.DeeplinkDFMapper.DF_CATEGORY_TRADE_IN
@@ -38,11 +39,16 @@ import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.DROPOFF_PICKER
 import com.tokopedia.applink.internal.ApplinkConstInternalMedia
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOARD_CUSTOMER
+import com.tokopedia.applink.model.DFPHost
+import com.tokopedia.applink.model.DFPPath
+import com.tokopedia.applink.model.DFPSchemeToDF
 import com.tokopedia.applink.powermerchant.PowerMerchantDeepLinkMapper
 import io.mockk.every
+import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import rx.Subscriber
 
 @RunWith(RobolectricTestRunner::class)
 class DeepLinkDFMapperTest : DeepLinkDFMapperTestFixture() {
@@ -54,6 +60,51 @@ class DeepLinkDFMapperTest : DeepLinkDFMapperTestFixture() {
     @Test
     fun `Deeplink DF Sellerapp`() {
         checkDeeplink(true)
+    }
+
+    @Test
+    fun `test remove deeplink`() {
+        var list : MutableList<DFPSchemeToDF>? = null
+        every { DeeplinkDFApp.getDeeplinkPattern(any()) }.answers {
+            mutableListOf(
+                DFPSchemeToDF(
+                    "scheme1",
+                    mutableListOf(
+                        DFPHost(
+                            "hosta",
+                            mutableListOf(DFPPath("/abc".toRegex(), "df_abc"))
+                        ),
+                        DFPHost(
+                            "hostb",
+                            mutableListOf(DFPPath(null, "df_abc"))
+                        ),
+                        DFPHost(
+                            "hostc",
+                            mutableListOf(DFPPath("/abcd".toRegex(), "df_def"))
+                        ),
+                        DFPHost(
+                            "hostd",
+                            mutableListOf(DFPPath("/abcdef".toRegex(), "df_abc"))
+                        )
+                    )
+                ),
+                DFPSchemeToDF(
+                    "scheme2",
+                    mutableListOf(
+                        DFPHost(
+                            "hoste",
+                            mutableListOf(DFPPath("/abc".toRegex(), "df_abc"))
+                        )
+                    )
+                )
+            ).also {
+                list = it
+            }
+        }
+        DeeplinkDFApp.removeDFModuleFromList(false, "df_abc")
+        Assert.assertEquals(1, list?.size)
+        Assert.assertEquals("scheme1", list?.get(0)?.scheme ?: "")
+        Assert.assertEquals("hostc", list?.get(0)?.hostList?.get(0)?.host)
     }
 
     @Test
