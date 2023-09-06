@@ -664,7 +664,7 @@ class FeedBaseFragment :
                     }
                 )
                 .setBrowseIconView(
-                    if (meta.showBrowse && !feedMainViewModel.hasShownBrowseEntryPoint()) {
+                    if (meta.showBrowse && userSession.isLoggedIn && !feedMainViewModel.hasShownBrowseEntryPoint()) {
                         binding.containerFeedTopNav.btnFeedBrowse
                     } else {
                         null
