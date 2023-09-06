@@ -20,8 +20,6 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.user.session.UserSession
-import com.tokopedia.user.session.UserSessionInterface
 
 class PartialProductItemViewHolder(
     private val itemView: View?,
@@ -36,8 +34,6 @@ class PartialProductItemViewHolder(
         const val CARD_ALPHA_NON_POF = 1f
         const val CARD_ALPHA_POF = 0.5f
     }
-
-    private val userSession: UserSessionInterface = UserSession(itemView?.context)
 
     private val container = itemView?.findViewById<ConstraintLayout>(R.id.container)
 
@@ -80,8 +76,7 @@ class PartialProductItemViewHolder(
     }
 
     fun bindProductItemPayload(
-        oldItem: ProductListUiModel.ProductUiModel,
-        newItem: ProductListUiModel.ProductUiModel
+        oldItem: ProductListUiModel.ProductUiModel, newItem: ProductListUiModel.ProductUiModel
     ) {
         container?.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING)
         this.element = newItem
@@ -213,7 +208,6 @@ class PartialProductItemViewHolder(
 
     private fun openShareBottomSheet() {
         bottomSheetListener.onShareButtonClicked(element)
-        BuyerOrderDetailTracker.sendClickOnShareButton(element.orderId, element.productId, element.orderStatusId, userSession.userId)
     }
 
     interface ProductViewListener {

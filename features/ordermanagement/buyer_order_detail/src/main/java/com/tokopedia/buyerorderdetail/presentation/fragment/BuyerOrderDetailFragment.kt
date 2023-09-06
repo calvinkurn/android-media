@@ -28,6 +28,11 @@ import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailCommonInt
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailIntentCode
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailIntentParamKey
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConstant
+import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConstant.MAX_PRODUCT_PRICE_AFFILIATE_LINK_ELIGIBILITY
+import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConstant.PRODUCT_STATUS_AFFILIATE_LINK_ELIGIBILITY
+import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConstant.SHOP_STATUS_AFFILIATE_LINK_ELIGIBILITY
+import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConstant.SITE_ID_AFFILIATE_LINK_ELIGIBILITY
+import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConstant.VERTICAL_ID_AFFILIATE_LINK_ELIGIBILITY
 import com.tokopedia.buyerorderdetail.common.extension.collectLatestWhenResumed
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.databinding.FragmentBuyerOrderDetailBinding
@@ -156,7 +161,6 @@ open class BuyerOrderDetailFragment :
     private var toolbarBuyerOrderDetail: HeaderUnify? = null
     private var globalErrorBuyerOrderDetail: GlobalError? = null
     protected var loaderBuyerOrderDetail: LoaderUnify? = null
-    private var universalShareBottomSheet: UniversalShareBottomSheet? = null
 
     private var binding by autoClearedNullable<FragmentBuyerOrderDetailBinding>()
 
@@ -983,7 +987,8 @@ open class BuyerOrderDetailFragment :
     }
 
     override fun onShareButtonClicked(element: ProductListUiModel.ProductUiModel) {
-        universalShareBottomSheet = UniversalShareBottomSheet.createInstance(view).apply {
+        BuyerOrderDetailTracker.sendClickOnShareButton(element.orderId, element.productId, element.orderStatusId, userSession.userId)
+        val universalShareBottomSheet = UniversalShareBottomSheet.createInstance(view).apply {
             init(object : ShareBottomsheetListener {
                 override fun onShareOptionClicked(shareModel: ShareModel) {
                     BuyerOrderDetailTracker.sendClickOnSelectionOfSharingChannels(shareModel.channel ?: "", element.orderId, element.productId, element.orderStatusId, userSession.userId)
@@ -1021,24 +1026,24 @@ open class BuyerOrderDetailFragment :
                 pageDetail = PageDetail(
                     pageId = element.shopId ?: "",
                     pageType = PageType.PDP.value,
-                    siteId = "1",
-                    verticalId = "1"
+                    siteId = SITE_ID_AFFILIATE_LINK_ELIGIBILITY,
+                    verticalId = VERTICAL_ID_AFFILIATE_LINK_ELIGIBILITY
                 )
                 pageType = PageType.PDP.value
                 product = Product(
                     element.productId,
                     element.categoryId,
                     productPrice = element.price.toString(),
-                    productStatus = "active",
-                    maxProductPrice = "0"
+                    productStatus = PRODUCT_STATUS_AFFILIATE_LINK_ELIGIBILITY,
+                    maxProductPrice = MAX_PRODUCT_PRICE_AFFILIATE_LINK_ELIGIBILITY
                 )
-                shop = Shop(shopID = element.shopId, shopStatus = 1, isOS = false, isPM = false)
+                shop = Shop(shopID = element.shopId, shopStatus = SHOP_STATUS_AFFILIATE_LINK_ELIGIBILITY, isOS = false, isPM = false)
                 affiliateLinkType = AffiliateLinkType.PDP
             }
             enableAffiliateCommission(AffiliateInput())
         }
-        universalShareBottomSheet?.show(
-            requireActivity().supportFragmentManager,
+        universalShareBottomSheet.show(
+            childFragmentManager,
             this@BuyerOrderDetailFragment
         )
         BuyerOrderDetailTracker.eventImpressionShareBottomSheet(element.orderId, element.productId, element.orderStatusId, userSession.userId)
