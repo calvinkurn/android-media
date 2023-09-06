@@ -18,10 +18,15 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tpgTitle"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:minLines="1"
         android:textColor="@color/Unify_NN950"
+        app:layout_constraintEnd_toStartOf="@+id/iconChevron"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="display_1"
