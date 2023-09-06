@@ -72,11 +72,11 @@ class GotoKycTransparentViewModel @Inject constructor(
         )
     }
 
-    fun accountLikingStatus() {
+    fun accountLikingStatus(projectId: Int) {
         _accountLinkingStatus.value = AccountLinkingStatusResult.Loading
         launchCatchError(
             block = {
-                val response = accountLinkingStatusUseCase(Unit)
+                val response = accountLinkingStatusUseCase(projectId)
                 _accountLinkingStatus.value = response
                 isAccountLinked = response is AccountLinkingStatusResult.Linked
             }, onError = {
