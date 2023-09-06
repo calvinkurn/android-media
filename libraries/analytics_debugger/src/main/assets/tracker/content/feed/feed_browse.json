@@ -24,7 +24,7 @@
       "promotions": [
         {
           "creative_name": "\\d+",
-          "creative_slot": "\\d+}",
+          "creative_slot": "\\d+",
           "item_id": ".* - .*",
           "item_name": "/ - BROWSE_PAGE_FEED - .* - channel card - .*"
         }
