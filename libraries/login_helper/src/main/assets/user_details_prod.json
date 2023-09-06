@@ -3,23 +3,28 @@
   "users" : [
     {
       "email" : "vesiXn1xTyqsw8NSv7n124UCCDyIrwpENmHO7ojElHhijn08AGRTOSZrPlA1C4wo",
-      "password" : "qiqbLTvjg+7QuOoazoKHpA=="
+      "password" : "qiqbLTvjg+7QuOoazoKHpA==",
+      "tribe": "All"
     },
     {
       "email" : "dVgd5Z87z8KIWa9vFmOviwSe6HxZyYmnvGP1FJpS4FWZoQ8oyeEuhaCHSDSB1VQus6vjQ7PkNZhGazOHk33Kmw==",
-      "password" : "whKNMn33pPJgjVAm2mTj9A=="
+      "password" : "whKNMn33pPJgjVAm2mTj9A==",
+      "tribe": "Fintech"
     },
     {
       "email" : "dVgd5Z87z8KIWa9vFmOvi45PrEuHS3H5D65ffkKBWhcaoPhQfjGhEFV2swb3Sab8iD8AyJ+YZtLE0KoRMrrxxg==",
-      "password" : "whKNMn33pPJgjVAm2mTj9A=="
+      "password" : "whKNMn33pPJgjVAm2mTj9A==",
+      "tribe": "Fintech"
     },
     {
       "email" : "7I/hGsdzmhNoc8lqb6r2ukX71yMNQeGRmDWrBc1t33u7mTw+asgoeoEHudRaP5bd",
-      "password" : "G5qJb0va57imuNVmWgTYBg=="
+      "password" : "G5qJb0va57imuNVmWgTYBg==",
+      "tribe": "TopAds"
     },
     {
       "email" : "w8li7xwERhGYpvjKkJNd9vO9nJHyIhSWewnkBwA5IZEem2YsXy8BZx8cmuP/VlO2pxyO59edLlE+xgYXA8QTcw==",
-      "password" : "vHbL0kAdHQk7/Q8Rx0CoPQ=="
+      "password" : "vHbL0kAdHQk7/Q8Rx0CoPQ==",
+      "tribe": "Chatbot"
     }
   ]
 }
