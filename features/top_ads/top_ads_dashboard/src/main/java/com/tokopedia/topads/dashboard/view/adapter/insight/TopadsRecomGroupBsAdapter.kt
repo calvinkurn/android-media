@@ -7,7 +7,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.topads.common.data.model.GroupListDataItem
 import com.tokopedia.topads.dashboard.R
-import com.tokopedia.topads.dashboard.data.model.CountDataItem
+import com.tokopedia.topads.common.data.model.CountDataItem
 import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
 
 private const val VIEW_SHIMMER = 0

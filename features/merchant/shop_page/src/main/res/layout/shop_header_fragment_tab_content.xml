@@ -127,12 +127,12 @@
                             app:layout_constraintTop_toTopOf="@id/image_shop_logo">
 
                             <androidx.constraintlayout.widget.ConstraintLayout
-                                android:id="@+id/container_shop_basic_info"
+                                android:id="@+id/section_shop_basic_info"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="8dp"
                                 app:layout_constrainedWidth="true"
-                                app:layout_constraintBottom_toTopOf="@id/container_shop_performance"
+                                app:layout_constraintBottom_toTopOf="@id/section_shop_performance"
                                 app:layout_constraintHorizontal_bias="0"
                                 app:layout_constraintLeft_toRightOf="@id/image_shop_logo"
                                 app:layout_constraintRight_toRightOf="parent"
@@ -188,25 +188,29 @@
                             </androidx.constraintlayout.widget.ConstraintLayout>
 
                             <androidx.constraintlayout.widget.ConstraintLayout
-                                android:id="@+id/container_shop_performance"
+                                android:id="@+id/section_shop_performance"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="8dp"
                                 android:layout_marginTop="4dp"
-                                app:layout_constraintBottom_toTopOf="@id/container_shop_status"
+                                app:layout_constraintBottom_toTopOf="@id/section_shop_status"
                                 app:layout_constraintHorizontal_bias="0"
                                 app:layout_constraintLeft_toRightOf="@id/image_shop_logo"
                                 app:layout_constraintRight_toRightOf="parent"
-                                app:layout_constraintTop_toBottomOf="@id/container_shop_basic_info"
+                                app:layout_constraintTop_toBottomOf="@id/section_shop_basic_info"
                                 app:layout_constraintVertical_bias="0">
 
-                                <com.tokopedia.unifycomponents.ImageUnify
+                                <com.tokopedia.iconunify.IconUnify
+                                    app:icon_name="STAR_FILLED"
                                     android:id="@+id/image_shop_rating_icon"
                                     android:layout_width="16dp"
+                                    app:icon_color_light_disabled="@color/dms_static_Unify_Y300_light"
+                                    app:icon_color_light_enable="@color/dms_static_Unify_Y300_light"
+                                    app:icon_color_night_disabled="@color/dms_static_Unify_Y300_light"
+                                    app:icon_color_night_enable="@color/dms_static_Unify_Y300_light"
                                     android:layout_height="16dp"
                                     app:layout_constraintLeft_toLeftOf="parent"
                                     app:layout_constraintTop_toTopOf="parent"
-                                    app:srcCompat="@drawable/ic_shop_rating"
                                     app:unify_image_corner_radius="0" />
 
                                 <com.tokopedia.unifyprinciples.Typography
@@ -250,21 +254,23 @@
                             </androidx.constraintlayout.widget.ConstraintLayout>
 
                             <androidx.constraintlayout.widget.ConstraintLayout
-                                android:id="@+id/container_shop_status"
+                                android:id="@+id/section_shop_status"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="8dp"
                                 android:layout_marginTop="4dp"
-                                app:layout_constraintBottom_toTopOf="@id/container_button"
+                                app:layout_constraintBottom_toTopOf="@id/section_button"
                                 app:layout_constraintHorizontal_bias="0"
                                 app:layout_constraintLeft_toRightOf="@id/image_shop_logo"
                                 app:layout_constraintRight_toRightOf="parent"
-                                app:layout_constraintTop_toBottomOf="@id/container_shop_performance">
+                                app:layout_constraintTop_toBottomOf="@id/section_shop_performance">
 
                                 <androidx.appcompat.widget.AppCompatImageView
                                     android:id="@+id/iv_online_icon"
                                     android:layout_width="6dp"
                                     android:layout_height="6dp"
+                                    android:visibility="gone"
+                                    tools:visibility="visible"
                                     android:layout_marginEnd="2dp"
                                     app:layout_constraintBottom_toBottomOf="@id/text_online_description"
                                     app:layout_constraintHorizontal_bias="0"
@@ -290,8 +296,6 @@
                                     app:layout_constraintLeft_toRightOf="@id/iv_online_icon"
                                     app:layout_constraintRight_toLeftOf="@id/dot_separator_shop_status"
                                     app:layout_constraintVertical_bias="0"
-                                    app:layout_goneMarginLeft="12dp"
-                                    app:layout_goneMarginStart="12dp"
                                     app:typographyType="body_3"
                                     tools:text="Terakhir online Feb 2020" />
 
@@ -305,14 +309,15 @@
                                     app:layout_constraintBottom_toBottomOf="@id/text_online_description"
                                     app:layout_constraintHorizontal_chainStyle="packed"
                                     app:layout_constraintLeft_toRightOf="@id/text_online_description"
-                                    app:layout_constraintRight_toLeftOf="@id/image_shop_value"
+                                    app:layout_constraintRight_toLeftOf="@id/image_shop_static_usp"
                                     app:layout_constraintTop_toTopOf="@id/text_online_description"
                                     app:typographyType="display_3" />
 
                                 <com.tokopedia.unifycomponents.ImageUnify
-                                    android:id="@+id/image_shop_value"
+                                    android:id="@+id/image_shop_static_usp"
                                     android:layout_width="wrap_content"
-                                    android:layout_height="15dp"
+                                    android:layout_height="16dp"
+                                    android:adjustViewBounds="true"
                                     app:layout_constraintBottom_toBottomOf="@id/text_online_description"
                                     app:layout_constraintHorizontal_bias="0"
                                     app:layout_constraintLeft_toRightOf="@id/dot_separator_shop_status"
@@ -323,7 +328,7 @@
                         </LinearLayout>
 
                         <LinearLayout
-                            android:id="@+id/container_button"
+                            android:id="@+id/section_button"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
@@ -364,7 +369,7 @@
                             android:visibility="gone"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintLeft_toLeftOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/container_button"
+                            app:layout_constraintTop_toBottomOf="@id/section_button"
                             tools:visibility="visible">
 
                             <androidx.cardview.widget.CardView

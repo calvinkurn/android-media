@@ -4,8 +4,9 @@ import android.view.View
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralResult.assertViewInRecyclerViewAt
+import com.tokopedia.topchat.chatroom.view.activity.robot.generalResult
 import org.hamcrest.Matcher
+import com.tokopedia.chat_common.R as chat_commonR
 
 object MsgBubbleResult {
 
@@ -18,13 +19,86 @@ object MsgBubbleResult {
         position: Int,
         matcher: Matcher<View>
     ) {
-        assertViewInRecyclerViewAt(0, R.id.iu_msg_icon, matcher)
+        generalResult {
+            assertViewInRecyclerViewAt(position, R.id.iu_msg_icon, matcher)
+        }
     }
 
-    private fun assertBubbleMsg(
+    fun assertBubbleMsg(
         position: Int,
         matcher: Matcher<View>
     ) {
-        assertViewInRecyclerViewAt(0, R.id.tvMessage, matcher)
+        generalResult {
+            assertViewInRecyclerViewAt(position, R.id.tvMessage, matcher)
+        }
+    }
+
+    fun assertHeaderTitleMsgAtBubblePosition(
+        position: Int,
+        matcher: Matcher<View>
+    ) {
+        generalResult {
+            assertViewInRecyclerViewAt(position, R.id.tp_header_title, matcher)
+        }
+    }
+
+    fun assertCtaHeaderMsgAtBubblePosition(
+        position: Int,
+        matcher: Matcher<View>
+    ) {
+        generalResult {
+            assertViewInRecyclerViewAt(position, R.id.tp_header_cta, matcher)
+        }
+    }
+
+    fun assertDividerHeaderContainer(
+        position: Int,
+        matcher: Matcher<View>
+    ) {
+        generalResult {
+            assertViewInRecyclerViewAt(position, R.id.v_header_divider, matcher)
+        }
+    }
+
+    fun assertMsgHeaderContainer(
+        position: Int,
+        matcher: Matcher<View>
+    ) {
+        generalResult {
+            assertViewInRecyclerViewAt(position, R.id.ll_msg_header, matcher)
+        }
+    }
+
+    fun assertMsgInfo(
+        position: Int,
+        matcher: Matcher<View>
+    ) {
+        generalResult {
+            assertViewInRecyclerViewAt(position, R.id.txt_info, matcher)
+        }
+    }
+
+    fun assertChatStatus(position: Int, matcher: Matcher<View>) {
+        generalResult {
+            assertViewInRecyclerViewAt(position, chat_commonR.id.chat_status, matcher)
+        }
+    }
+
+    fun assertHeaderRightMsgBubbleAt(
+        position: Int,
+        matcher: Matcher<View>
+    ) {
+        generalResult {
+            assertViewInRecyclerViewAt(position, R.id.tvRole, matcher)
+        }
+    }
+
+    fun assertHeaderRightMsgBubbleBlueDotAt(
+        position: Int,
+        matcher: Matcher<View>
+    ) {
+        generalResult {
+            assertViewInRecyclerViewAt(position, R.id.img_sr_blue_dot, matcher)
+        }
     }
 }

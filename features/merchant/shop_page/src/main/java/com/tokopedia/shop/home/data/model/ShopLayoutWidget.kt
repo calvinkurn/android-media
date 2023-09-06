@@ -191,8 +191,9 @@ data class ShopLayoutWidget(
                 @SerializedName("tabName")
                 val tabName: String = "",
                 @SerializedName("componentList")
-                val componentList: List<Component> = emptyList()
-
+                val componentList: List<Component> = emptyList(),
+                @SerializedName("bannerID")
+                val bannerId: String = "",
         ) {
             data class Component(
                 @SerializedName("componentID")

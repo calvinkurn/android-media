@@ -203,6 +203,7 @@ import com.tokopedia.shop.pageheader.presentation.activity.ShopPageHeaderActivit
 import com.tokopedia.shop.common.view.interfaces.InterfaceShopPageHeader
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.home.util.ShopBannerProductGroupWidgetTabDependencyProvider
+import com.tokopedia.shop.home.view.adapter.viewholder.advance_carousel_banner.ShopHomeDisplayAdvanceCarouselBannerWidgetListener
 import com.tokopedia.shop.home.view.listener.ShopBannerProductGroupListener
 import com.tokopedia.shop.home.view.customview.directpurchase.DirectPurchaseWidgetView
 import com.tokopedia.shop.home.view.customview.directpurchase.ProductCardDirectPurchaseDataModel
@@ -268,7 +269,8 @@ open class ShopPageHomeFragment :
     ShopHomeV4TerlarisViewHolder.ShopHomeV4TerlarisViewHolderListener,
     ShopBannerProductGroupWidgetTabDependencyProvider,
     ShopBannerProductGroupListener,
-    DirectPurchaseWidgetView.DirectPurchaseWidgetViewListener {
+    DirectPurchaseWidgetView.DirectPurchaseWidgetViewListener,
+    ShopHomeDisplayAdvanceCarouselBannerWidgetListener {
 
     companion object {
         const val KEY_SHOP_ID = "SHOP_ID"
@@ -430,7 +432,8 @@ open class ShopPageHomeFragment :
             shopHomeShowcaseNavigationDependencyProvider = this,
             shopHomeV4TerlarisViewHolderListener = this,
             shopBannerProductGroupListener = this,
-            shopBannerProductGroupWidgetTabDependencyProvider = this
+            shopBannerProductGroupWidgetTabDependencyProvider = this,
+            shopHomeDisplayAdvanceCarouselBannerWidgetListener = this
         )
     }
 
@@ -5027,8 +5030,85 @@ open class ShopPageHomeFragment :
         }
     }
 
-    override fun onHotspotBubbleClicked(uiModel: ShopWidgetDisplayBannerProductHotspotUiModel, imageBannerPosition: Int, bubblePosition: Int) {
-        RouteManager.route(context, uiModel.data.getOrNull(imageBannerPosition)?.listProductHotspot?.getOrNull(bubblePosition)?.productUrl.orEmpty())
+    override fun onClickProductBannerHotspot(
+        uiModel: ShopWidgetDisplayBannerProductHotspotUiModel,
+        bannerItemUiModel: ShopWidgetDisplayBannerProductHotspotUiModel.Data,
+        imageBannerPosition: Int,
+        bubblePosition: Int
+    ) {
+        val isSingleBannerImage = uiModel.data.size == Int.ONE
+        sendClickProductBannerHotspot(
+            bannerItemUiModel.bannerId,
+            uiModel.header.ratio,
+            bannerItemUiModel.listProductHotspot.getOrNull(bubblePosition)?.productId.orEmpty(),
+            bannerItemUiModel.listProductHotspot.getOrNull(bubblePosition)?.name.orEmpty(),
+            bannerItemUiModel.listProductHotspot.getOrNull(bubblePosition)?.displayedPrice.orEmpty(),
+            imageBannerPosition,
+            bubblePosition,
+            isSingleBannerImage,
+            shopId,
+            userId
+        )
+        RouteManager.route(context, bannerItemUiModel.listProductHotspot.getOrNull(bubblePosition)?.productUrl.orEmpty())
+    }
+
+    private fun sendClickProductBannerHotspot(
+        bannerId: String,
+        ratio: String,
+        productId: String,
+        productName: String,
+        productPrice: String,
+        imageBannerPosition: Int,
+        bubblePosition: Int,
+        singleBannerImage: Boolean,
+        shopId: String,
+        userId: String
+    ) {
+        shopPageHomeTracking.clickProductBannerHotspot(
+            bannerId,
+            ratio,
+            productId,
+            productName,
+            productPrice,
+            imageBannerPosition,
+            bubblePosition,
+            singleBannerImage,
+            shopId,
+            userId
+        )
+    }
+
+    override fun onImpressionBannerHotspotImage(
+        uiModel: ShopWidgetDisplayBannerProductHotspotUiModel,
+        bannerItemUiModel: ShopWidgetDisplayBannerProductHotspotUiModel.Data,
+        imageBannerPosition: Int
+    ) {
+        val isSingleBannerImage = uiModel.data.size == Int.ONE
+        sendImpressionBannerHotspot(
+            bannerItemUiModel.bannerId,
+            uiModel.header.ratio,
+            uiModel.widgetId,
+            imageBannerPosition,
+            isSingleBannerImage
+        )
+    }
+
+    private fun sendImpressionBannerHotspot(
+        bannerId: String,
+        ratio: String,
+        widgetId: String,
+        imageBannerPosition: Int,
+        singleBannerImage: Boolean
+    ) {
+        shopPageHomeTracking.impressionBannerHotspot(
+            bannerId,
+            ratio,
+            widgetId,
+            imageBannerPosition,
+            singleBannerImage,
+            shopId,
+            userId
+        )
     }
 
 
@@ -5205,5 +5285,36 @@ open class ShopPageHomeFragment :
 
     private fun redirectToEtalasePage(etalaseId: String) {
         RouteManager.route(context, ApplinkConst.SHOP_ETALASE, shopId, etalaseId)
+    }
+
+    override fun onImpressionAdvanceCarouselBannerItem(
+        uiModel: ShopHomeDisplayWidgetUiModel,
+        bannerItemUiModel: ShopHomeDisplayWidgetUiModel.DisplayWidgetItem,
+        position: Int
+    ) {
+        shopPageHomeTracking.impressionAdvanceCarouselBannerItem(
+            bannerItemUiModel.bannerId,
+            uiModel.header.ratio,
+            ShopUtil.getActualPositionFromIndex(position),
+            uiModel.widgetId,
+            shopId,
+            userId
+        )
+    }
+
+    override fun onClickAdvanceCarouselBannerItem(
+        uiModel: ShopHomeDisplayWidgetUiModel,
+        bannerItemUiModel: ShopHomeDisplayWidgetUiModel.DisplayWidgetItem,
+        position: Int
+    ) {
+        shopPageHomeTracking.clickAdvanceCarouselBannerItem(
+            bannerItemUiModel.bannerId,
+            uiModel.header.ratio,
+            ShopUtil.getActualPositionFromIndex(position),
+            uiModel.widgetId,
+            shopId,
+            userId
+        )
+        RouteManager.route(context, bannerItemUiModel.appLink)
     }
 }

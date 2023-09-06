@@ -112,7 +112,9 @@ class DiscoveryPageDataMapper(
         val listComponents: ArrayList<ComponentsItem> = ArrayList()
         component.position = position
         when (component.name) {
-            ComponentNames.Tabs.componentName -> listComponents.addAll(parseTab(component, position))
+            ComponentNames.Tabs.componentName, ComponentNames.TabsIcon.componentName -> listComponents.addAll(
+                parseTab(component, position)
+            )
             ComponentNames.ProductCardRevamp.componentName,
             ComponentNames.ProductCardSprintSale.componentName -> {
                 addRecomQueryProdID(component)
@@ -287,8 +289,22 @@ class DiscoveryPageDataMapper(
             }
         }
         if (component.getComponentsItem().isNullOrEmpty()) {
-            component.setComponentsItem(DiscoveryDataMapper.mapTabsListToComponentList(component, ComponentNames.TabsItem.componentName), component.tabName)
-        } else if (!component.getComponentsItem().isNullOrEmpty() && queryParameterMap[FORCED_NAVIGATION] == "true") { //this is for the forced redirection case only, whenever tabs position is change using the product click from one tab to other
+            if (component.name == ComponentNames.TabsIcon.componentName) {
+                component.setComponentsItem(
+                    DiscoveryDataMapper.mapTabsListToComponentList(
+                        component,
+                        ComponentNames.TabsIconItem.componentName
+                    ), component.tabName
+                )
+            } else {
+                component.setComponentsItem(
+                    DiscoveryDataMapper.mapTabsListToComponentList(
+                        component,
+                        ComponentNames.TabsItem.componentName
+                    ), component.tabName
+                )
+            }
+        } else if (!component.getComponentsItem().isNullOrEmpty() && queryParameterMap[FORCED_NAVIGATION] == "true") { // this is for the forced redirection case only, whenever tabs position is change using the product click from one tab to other
             val activeTabIndex = queryParameterMapWithoutRpc[ACTIVE_TAB]?.toIntOrNull()
             if (activeTabIndex != null) {
                 component.getComponentsItem()?.forEachIndexed { index, it ->

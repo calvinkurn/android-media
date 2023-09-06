@@ -7,18 +7,13 @@ import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.home.DeeplinkMapperHome
 import com.tokopedia.applink.internal.ApplinkConsInternalHome
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
-import com.tokopedia.applink.internal.ApplinkConstInternalContent.ARGS_FEED_VIDEO_TAB_SELECT_CHIP
-import com.tokopedia.applink.internal.ApplinkConstInternalContent.EXTRA_FEED_TAB_POSITION
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_AFFILIATE_CREATE_POST_V2
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_FEED_CREATION_PRODUCT_SEARCH
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_FEED_CREATION_SHOP_SEARCH
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_PRODUCT_PICKER_FROM_SHOP
-import com.tokopedia.applink.internal.ApplinkConstInternalContent.TAB_POSITION_EXPLORE
-import com.tokopedia.applink.internal.ApplinkConstInternalContent.TAB_POSITION_VIDEO
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_FEED_SOURCE_ID
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_FEED_SOURCE_NAME
-import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_TAB_POSITION_FOLLOWING
-import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_TAB_POSITION_FOR_YOU
+import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_FEED_TAB_NAME
 import com.tokopedia.applink.startsWithPattern
 import com.tokopedia.config.GlobalConfig
 
@@ -29,62 +24,118 @@ object DeeplinkMapperContent {
 
     private const val EXTRA_SOURCE_NAME = "source"
 
-    fun getRegisteredNavigationContentFromHttp(uri: Uri, deepLink: String): String {
-        return if (uri.pathSegments
-            .joinToString("/")
-            .startsWith(ApplinkConstInternalContent.PLAY_PATH_LITE, false)
+    /**
+     * https://www.tokopedia.com/
+     */
+    fun getNavContentFromHttp(uri: Uri, deepLink: String): String {
+        val pathSegments = uri.pathSegments.joinToString("/")
+        return if (pathSegments.startsWith("play", false)) {
+            goToAppLinkPlayInternal(uri)
+        } else if (pathSegments.startsWith("feed", false) ||
+            pathSegments.startsWith("content", false)
         ) {
-            handleNavigationPlay(uri)
-        } else {
-            ""
-        }
-    }
-
-    fun getRegisteredNavigationFeedVideoFromHttp(uri: Uri, deepLink: String): String {
-        return if (uri.pathSegments
-            .joinToString("/")
-            .startsWith(ApplinkConstInternalContent.FEED_VIDEO, false)
-        ) {
-            handleNavigationFeedVideo(uri)
+            if (pathSegments.startsWith("feed/detail/", false) ||
+                pathSegments.startsWith("content/detail/", false)
+            ) {
+                goToAppLinkFeedDetailInternal(uri)
+            } else {
+                goToAppLinkFeedHomeInternal(uri)
+            }
         } else {
             ""
         }
     }
 
     /**
-     * Replace "tokopedia" scheme to "tokopedia-android-internal"
-     * This method keeps the query parameters intact on the deeplink
+     * tokopedia://content/
+     * tokopedia://feed/
      */
-    fun getProfileDeeplink(deepLink: String): String {
-        return if (GlobalConfig.isSellerApp()) {
-            getProfileSellerAppDeepLink()
+    fun getNavContentFromAppLink(deepLink: String): String {
+        val uri = Uri.parse(deepLink)
+        val pathSegments = uri.pathSegments.joinToString("/")
+        return if (pathSegments.startsWith("detail/", false)) {
+            goToAppLinkFeedDetailInternal(uri)
+        } else if (pathSegments.startsWith("creation-product-search", false)) {
+            INTERNAL_FEED_CREATION_PRODUCT_SEARCH
+        } else if (pathSegments.startsWith("creation-shop-search", false)) {
+            INTERNAL_FEED_CREATION_SHOP_SEARCH
+        } else if (pathSegments.startsWith("hashtag", false)) {
+            ""
         } else {
-            getRegisteredNavigation(deepLink)
+            goToAppLinkFeedHomeInternal(uri)
         }
     }
 
-    fun getRegisteredNavigation(deeplink: String): String {
-        return if (deeplink.startsWith(DeeplinkConstant.SCHEME_TOKOPEDIA)) deeplink.replaceFirst(DeeplinkConstant.SCHEME_TOKOPEDIA, DeeplinkConstant.SCHEME_INTERNAL)
-        else deeplink
+    /**
+     * /play
+     * /play/{channelId}
+     * /play/channel/{channelId}
+     */
+    private fun goToAppLinkPlayInternal(uri: Uri): String {
+        return "${ApplinkConstInternalContent.INTERNAL_PLAY}/${uri.lastPathSegment}"
     }
 
-    fun isPostDetailDeepLink(uri: Uri): Boolean {
-        val lastPathSegment = uri.lastPathSegment?.toIntOrNull()
-        return uri.host == ApplinkConstInternalContent.HOST_CONTENT && uri.pathSegments.size == 1 && lastPathSegment != null
-    }
-
-    @OptIn(ExperimentalStdlibApi::class)
-    fun getContentFeedDeeplink(deepLink: String): String {
-        val uri = Uri.parse(deepLink)
+    /**
+     *
+     * /content
+     * /feed
+     * /content/{postId}
+     * /feed/{postId}
+     *
+     * ?tab={tab_name}
+     * ?source={source_name}
+     */
+    private fun goToAppLinkFeedHomeInternal(uri: Uri): String {
         return UriUtil.buildUriAppendParams(
             ApplinkConsInternalHome.HOME_NAVIGATION,
             buildMap {
                 put(DeeplinkMapperHome.EXTRA_TAB_POSITION, DeeplinkMapperHome.TAB_POSITION_FEED)
-                put(EXTRA_FEED_TAB_POSITION, UF_TAB_POSITION_FOR_YOU)
 
-                val postId = uri.lastPathSegment ?: return@buildMap
+                val sourceName = uri.getQueryParameter(EXTRA_SOURCE_NAME)
+                if (sourceName != null) put(UF_EXTRA_FEED_SOURCE_NAME, sourceName)
+
+                val tabName = getActiveFeedTab(uri)
+                if (tabName != null) {
+                    put(UF_EXTRA_FEED_TAB_NAME, tabName)
+                }
+
+                val postId = uri.lastPathSegment?.toIntOrNull() ?: return@buildMap
                 put(UF_EXTRA_FEED_SOURCE_ID, postId)
+            }
+        )
+    }
 
+    /**
+     *
+     * *backward compatibility*
+     * /content/explore
+     * /content/following
+     * /feed/explore
+     * /feed/video
+     */
+    private fun getActiveFeedTab(uri: Uri): String? {
+        return if (uri.pathSegments.contains("video")) {
+            "video"
+        } else if (uri.pathSegments.contains("explore")) {
+            "explore"
+        } else if (uri.pathSegments.contains("following")) {
+            "following"
+        } else {
+            uri.getQueryParameter("tab")
+        }
+    }
+
+    /**
+     *
+     * /content/detail/{postId}
+     * /feed/detail/{postId}
+     *
+     * ?source={source_name}
+     */
+    private fun goToAppLinkFeedDetailInternal(uri: Uri): String {
+        return UriUtil.buildUriAppendParams(
+            "${ApplinkConstInternalContent.INTERNAL_CONTENT}/detail/${uri.lastPathSegment}",
+            buildMap {
                 val sourceName = uri.getQueryParameter(EXTRA_SOURCE_NAME)
                 if (sourceName != null) put(UF_EXTRA_FEED_SOURCE_NAME, sourceName)
             }
@@ -115,17 +166,28 @@ object DeeplinkMapperContent {
         return deepLink
     }
 
+    fun getRegisteredNavigation(deeplink: String): String {
+        return if (deeplink.startsWith(DeeplinkConstant.SCHEME_TOKOPEDIA)) {
+            deeplink.replaceFirst(DeeplinkConstant.SCHEME_TOKOPEDIA, DeeplinkConstant.SCHEME_INTERNAL)
+        } else {
+            deeplink
+        }
+    }
+
     fun getWebHostWebViewLink(deeplink: String): String {
         return deeplink.replace("tokopedia://", "https://")
     }
 
-    private fun handleNavigationPlay(uri: Uri): String {
-        return "${ApplinkConstInternalContent.INTERNAL_PLAY}/${uri.lastPathSegment}"
-    }
-
-    private fun handleNavigationFeedVideo(uri: Uri): String {
-        val finalDeeplink = "${ApplinkConst.FEED_VIDEO}?${uri.query}"
-        return getRegisteredNavigationHomeFeedVideo(finalDeeplink)
+    /**
+     * Replace "tokopedia" scheme to "tokopedia-android-internal"
+     * This method keeps the query parameters intact on the deeplink
+     */
+    fun getProfileDeeplink(deepLink: String): String {
+        return if (GlobalConfig.isSellerApp()) {
+            getProfileSellerAppDeepLink()
+        } else {
+            getRegisteredNavigation(deepLink)
+        }
     }
 
     /**
@@ -133,47 +195,5 @@ object DeeplinkMapperContent {
      */
     private fun getProfileSellerAppDeepLink(): String {
         return ApplinkConstInternalContent.INTERNAL_FEATURE_PREVENTION
-    }
-
-    fun getRegisteredNavigationHomeFeedExplore(): String {
-        return UriUtil.buildUriAppendParams(
-            ApplinkConsInternalHome.HOME_NAVIGATION,
-            mapOf(
-                DeeplinkMapperHome.EXTRA_TAB_POSITION to DeeplinkMapperHome.TAB_POSITION_FEED,
-                EXTRA_FEED_TAB_POSITION to TAB_POSITION_EXPLORE
-            )
-        )
-    }
-    fun getRegisteredNavigationHomeFeedVideo(deeplink: String): String {
-        val selectedChip =
-            Uri.parse(deeplink).getQueryParameter(ARGS_FEED_VIDEO_TAB_SELECT_CHIP) ?: ""
-        return UriUtil.buildUriAppendParams(
-            ApplinkConsInternalHome.HOME_NAVIGATION,
-            mapOf(
-                DeeplinkMapperHome.EXTRA_TAB_POSITION to DeeplinkMapperHome.TAB_POSITION_FEED,
-                EXTRA_FEED_TAB_POSITION to TAB_POSITION_VIDEO,
-                ARGS_FEED_VIDEO_TAB_SELECT_CHIP to selectedChip
-            )
-        )
-    }
-
-    /**
-     * Unified Feed
-     */
-    @OptIn(ExperimentalStdlibApi::class)
-    fun getRegisteredNavigationHomeFeedFollowing(deeplink: String): String {
-        val uri = Uri.parse(deeplink)
-        return UriUtil.buildUriAppendParams(
-            ApplinkConsInternalHome.HOME_NAVIGATION,
-            buildMap {
-                put(DeeplinkMapperHome.EXTRA_TAB_POSITION, DeeplinkMapperHome.TAB_POSITION_FEED)
-                put(EXTRA_FEED_TAB_POSITION, UF_TAB_POSITION_FOLLOWING)
-
-                uri.queryParameterNames.forEach {
-                    val queryValue = uri.getQueryParameter(it) ?: return@forEach
-                    put(it, queryValue)
-                }
-            }
-        )
     }
 }

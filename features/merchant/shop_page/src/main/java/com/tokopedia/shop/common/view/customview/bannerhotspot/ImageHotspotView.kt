@@ -44,6 +44,9 @@ class ImageHotspotView @JvmOverloads constructor(
 
     init {
         viewBinding = ImageHotspotViewBinding.inflate(LayoutInflater.from(context), this)
+        setOnClickListener {
+            hideAllBubbleView()
+        }
     }
 
     fun setData(
@@ -161,7 +164,6 @@ class ImageHotspotView @JvmOverloads constructor(
 
     private fun hideAllBubbleView() {
         listHotspot.forEach {
-//            it.bubbleView?.hideWithAlpha()
             it.bubbleView?.hideWithAnimation()
         }
     }

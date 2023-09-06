@@ -7,7 +7,6 @@ import com.tokopedia.chat_common.view.listener.BaseChatContract
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.ChatOrderProgress
 import com.tokopedia.topchat.chatroom.view.custom.ChatMenuView
-import com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer
 import com.tokopedia.topchat.chatroom.view.uimodel.SendablePreview
 
 /**
@@ -16,10 +15,6 @@ import com.tokopedia.topchat.chatroom.view.uimodel.SendablePreview
 interface TopChatContract {
 
     interface View : BaseChatContract.View {
-
-        fun addDummyMessage(visitable: Visitable<*>)
-
-        fun removeDummy(visitable: Visitable<*>)
 
         fun clearEditText()
 
@@ -74,13 +69,5 @@ interface TopChatContract {
         fun clearReferredMsg()
         fun notifyPreviewRemoved(model: SendablePreview)
         fun reloadCurrentAttachment()
-    }
-
-    interface Presenter : BaseChatContract.Presenter<View> {
-        fun addOngoingUpdateProductStock(
-            productId: String,
-            product: ProductAttachmentUiModel, adapterPosition: Int,
-            parentMetaData: SingleProductAttachmentContainer.ParentViewHolderMetaData?
-        )
     }
 }

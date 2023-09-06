@@ -95,6 +95,7 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
                       campaignID
                       totalNotify
                       totalNotifyWording
+                      bannerID
                       dynamicRule {
                         dynamicRoleData {
                           ruleName

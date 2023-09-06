@@ -150,26 +150,17 @@ class ShopHomeDisplayBannerTimerViewHolder(
             textTimeDescription?.text = timeDescription
             textTimeDescription?.show()
             val days = model.data?.timeCounter?.millisecondsToDays().orZero()
-            val dateCampaign = when {
-                isStatusCampaignUpcoming(statusCampaign) -> {
-                    DateHelper.getDateFromString(model.data?.startDate.orEmpty())
-                }
-                isStatusCampaignOngoing(statusCampaign) -> {
-                    DateHelper.getDateFromString(model.data?.endDate.orEmpty())
-                }
-                else -> {
-                    Date()
-                }
-            }
             if (days >= Int.ONE) {
-                setTimerNonUnify(dateCampaign)
+                val formattedDate = getFormattedDate(statusCampaign, model,false)
+                setTimerNonUnify(formattedDate)
             } else {
-                setTimerUnify(dateCampaign, timeCounter, model)
+                val formattedDate = getFormattedDate(statusCampaign, model, true)
+                setTimerUnify(formattedDate, timeCounter, model)
             }
         } else {
             timerUnify?.gone()
             timerMoreThanOneDay?.gone()
-            val endDate = DateHelper.getDateFromString(model.data?.endDate.orEmpty())
+            val endDate = DateHelper.getDateFromString(model.data?.endDate.orEmpty(), null)
             val textTimeDescriptionFinished = MethodChecker.fromHtml(
                 itemView.context.getString(
                     R.string.shop_home_tab_banner_timer_finish_date_format,
@@ -179,6 +170,31 @@ class ShopHomeDisplayBannerTimerViewHolder(
             textTimeDescription?.apply {
                 show()
                 text = textTimeDescriptionFinished
+            }
+        }
+    }
+
+    private fun getFormattedDate(
+        statusCampaign: StatusCampaign?,
+        model: ShopWidgetDisplayBannerTimerUiModel,
+        isUseDefaultTimeZone: Boolean
+    ): Date {
+        val timeZone = if (isUseDefaultTimeZone) {
+            DateHelper.getDefaultTimeZone()
+        } else {
+            null
+        }
+        return when {
+            isStatusCampaignUpcoming(statusCampaign) -> {
+                DateHelper.getDateFromString(model.data?.startDate.orEmpty(), timeZone)
+            }
+
+            isStatusCampaignOngoing(statusCampaign) -> {
+                DateHelper.getDateFromString(model.data?.endDate.orEmpty(), timeZone)
+            }
+
+            else -> {
+                Date()
             }
         }
     }
@@ -207,8 +223,8 @@ class ShopHomeDisplayBannerTimerViewHolder(
     private fun setTimerNonUnify(dateCampaign: Date) {
         timerUnify?.gone()
         timerMoreThanOneDay?.apply {
-            text =
-                dateCampaign.toString(SHOP_NPL_CAMPAIGN_WIDGET_MORE_THAT_1_DAY_DATE_FORMAT)
+            val dateFormatted = dateCampaign.toString(SHOP_NPL_CAMPAIGN_WIDGET_MORE_THAT_1_DAY_DATE_FORMAT)
+            text = getString(R.string.shop_widget_date_format_wib, dateFormatted)
             show()
         }
     }

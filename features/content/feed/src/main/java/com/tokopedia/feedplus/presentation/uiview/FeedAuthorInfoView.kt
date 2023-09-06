@@ -27,7 +27,7 @@ class FeedAuthorInfoView(
             imgFeedOwnerProfile.showWithCondition(imageConditions(author.logoUrl))
             imgFeedOwnerProfile.setOnClickListener {
                 feedListener.onAuthorProfilePictureClicked(trackerData)
-                RouteManager.route(root.context, author.appLink)
+                feedListener.onProfileClicked(author.appLink, author.type)
             }
 
             imgFeedOwnerBadge.setImageUrl(author.badgeUrl)
@@ -36,14 +36,14 @@ class FeedAuthorInfoView(
             tvFeedOwnerName.text = author.name
             tvFeedOwnerName.setOnClickListener {
                 feedListener.onAuthorNameClicked(trackerData)
-                RouteManager.route(root.context, author.appLink)
+                feedListener.onProfileClicked(author.appLink, author.type)
             }
 
             bindLiveLabel(isLive)
             bindFollow(author, showFollow, trackerData)
 
             root.setOnClickListener {
-                navigateToAuthorProfile(author.appLink)
+                feedListener.onProfileClicked(author.appLink, author.type)
             }
         }
     }
@@ -78,10 +78,6 @@ class FeedAuthorInfoView(
         } else {
             binding.labelFeedLive.hide()
         }
-    }
-
-    private fun navigateToAuthorProfile(applink: String) {
-        RouteManager.route(binding.root.context, applink)
     }
 
     private fun imageConditions(url: String) = url.isNotEmpty()

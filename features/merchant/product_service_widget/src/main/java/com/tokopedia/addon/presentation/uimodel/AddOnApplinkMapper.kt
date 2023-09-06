@@ -72,6 +72,7 @@ object AddOnApplinkMapper {
         val price = uri.getQueryParameter(PRICE).toLongOrZero()
         val discountedPrice = uri.getQueryParameter(DISCOUNTED_PRICE).toLongOrZero()
         val condition = uri.getQueryParameter(CONDITION).toString()
+        val pageSource = uri.getQueryParameter(SOURCE).orEmpty()
         return AddOnParam(
             productId = productId,
             warehouseId = warehouseId,
@@ -82,6 +83,7 @@ object AddOnApplinkMapper {
             price = price,
             discountedPrice = discountedPrice,
             condition = condition,
+            pageSource = pageSource
         )
     }
 }

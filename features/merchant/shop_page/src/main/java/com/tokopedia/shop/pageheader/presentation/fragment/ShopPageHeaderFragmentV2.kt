@@ -201,6 +201,7 @@ import java.net.URLEncoder
 import java.util.*
 import javax.inject.Inject
 
+//TODO need to cleanup tracker class in the future
 class ShopPageHeaderFragmentV2 :
     BaseDaggerFragment(),
     HasComponent<ShopPageHeaderComponent>,
@@ -582,6 +583,8 @@ class ShopPageHeaderFragmentV2 :
                 is Success -> {
                     onSuccessGetShopPageP1Data(result.data)
                     initMiniCart()
+                    //TODO sendTrackerImpressionShopHeader()
+                    sendTrackerImpressionShopBottomNav()
                 }
 
                 is Fail -> {
@@ -791,6 +794,10 @@ class ShopPageHeaderFragmentV2 :
                 updateShareIcon(it.data.eligibleCommission?.isEligible.orFalse())
             }
         }
+    }
+
+    private fun sendTrackerImpressionShopBottomNav() {
+        shopPageTracking?.impressionShopBottomNav(shopId, userId)
     }
 
     private fun setFragmentTabContentWrapperSgcPlayWidget() {
@@ -1632,7 +1639,6 @@ class ShopPageHeaderFragmentV2 :
         setViewState(VIEW_CONTENT)
         setupTabs()
         sendShopPageOpenScreenTracker()
-        sendShopPageTabImpressionTracker()
         if (shouldOpenShopNoteBottomSheet) {
             showShopNoteBottomSheet()
         }
@@ -1648,14 +1654,6 @@ class ShopPageHeaderFragmentV2 :
         } != null
     }
 
-    private fun sendShopPageTabImpressionTracker() {
-        listShopPageTabModel.onEach {
-            if (!isMyShop) {
-                shopPageTracking?.sendImpressionShopTab(shopId, it.tabTitle)
-            }
-        }
-    }
-
     private fun sendShopPageOpenScreenTracker() {
         val selectedTabName = getSelectedTabName()
         if (selectedTabName.isNotEmpty()) {
@@ -1669,7 +1667,7 @@ class ShopPageHeaderFragmentV2 :
     fun getSelectedTabName(): String {
         return listShopPageTabModel.getOrNull(
             getSelectedDynamicTabPosition()
-        )?.tabTitle.orEmpty()
+        )?.tabName.orEmpty()
     }
 
     override fun onBackPressed() {
@@ -1728,7 +1726,6 @@ class ShopPageHeaderFragmentV2 :
                 }
                 if (isTabClickByUser) {
                     sendShopPageClickTabTracker(position)
-                    sendShopPageTabImpressionTracker()
                 }
                 if (isSellerMigrationEnabled(context)) {
                     getFeedTabFragmentClassName()?.let {
@@ -1834,7 +1831,7 @@ class ShopPageHeaderFragmentV2 :
 
     private fun sendShopPageClickTabTracker(position: Int) {
         if (!isMyShop) {
-            shopPageTracking?.clickTab(listShopPageTabModel[position].tabTitle, shopId, userId)
+            shopPageTracking?.clickShopBottomNav(listShopPageTabModel[position].tabName, shopId, userId)
         }
     }
 
@@ -1878,7 +1875,7 @@ class ShopPageHeaderFragmentV2 :
 
     private fun getTabPositionBasedOnTabName(overrideTabName: String): Int {
         return listShopPageTabModel.indexOfFirst {
-            it.tabTitle == overrideTabName
+            it.tabName == overrideTabName
         }.takeIf {
             it >= Int.ZERO
         } ?: Int.ZERO
@@ -1905,7 +1902,7 @@ class ShopPageHeaderFragmentV2 :
             }
             listShopPageTabModel.add(
                 ShopPageHeaderTabModel(
-                    tabTitle = it.name,
+                    tabName = it.name,
                     tabFragment = tabContentWrapper,
                     iconUrl = it.icon,
                     iconActiveUrl = it.iconFocus,
@@ -2112,6 +2109,7 @@ class ShopPageHeaderFragmentV2 :
     }
 
     override fun onClickShopBasicInfoSection(appLink: String) {
+        sendTrackerClickHeaderShopName()
         if (isShopInfoAppLink(appLink)) {
             redirectToShopInfoPage()
         } else {
@@ -2119,16 +2117,43 @@ class ShopPageHeaderFragmentV2 :
         }
     }
 
-    override fun onShopRatingClicked(appLink: String) {
+    private fun sendTrackerClickHeaderShopName() {
+        shopPageTracking?.clickHeaderShopName(shopId, userId)
+    }
+
+    override fun onShopReviewClicked(appLink: String) {
+        sendTrackerClickHeaderShopReview()
         RouteManager.route(context, appLink)
     }
 
+    private fun sendTrackerClickHeaderShopReview() {
+        shopPageTracking?.clickHeaderShopReview(shopId, userId)
+    }
+
     override fun onChatButtonClicked() {
+        sendTrackerClickHeaderShopChat()
         goToChatSeller()
     }
 
+    private fun sendTrackerClickHeaderShopChat() {
+        shopPageTracking?.clickHeaderShopChat(shopId, userId)
+    }
+
     override fun onFollowButtonClicked() {
+        sendTrackerClickHeaderShopFollow()
         toggleFollowUnfollowButton()
+    }
+
+    private fun sendTrackerClickHeaderShopFollow() {
+        shopPageTracking?.clickHeaderShopFollow(shopId, userId)
+    }
+
+    override fun onUspClicked(listDynamicUspValue: List<String>) {
+        sendTrackerClickHeaderShopUsp(listDynamicUspValue)
+    }
+
+    private fun sendTrackerClickHeaderShopUsp(listDynamicUspValue: List<String>) {
+        shopPageTracking?.clickHeaderShopUsp(shopId, userId, listDynamicUspValue)
     }
 
     override fun onCompleteCheckRequestModerateStatus(moderateStatusResult: ShopModerateRequestResult) {

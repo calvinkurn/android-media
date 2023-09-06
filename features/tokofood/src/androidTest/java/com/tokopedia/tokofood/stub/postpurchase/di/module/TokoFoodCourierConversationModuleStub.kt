@@ -10,9 +10,9 @@ import com.gojek.conversations.database.ConversationsDatabase
 import com.gojek.courier.CourierConnection
 import com.gojek.courier.config.CourierRemoteConfig
 import com.google.gson.Gson
-import com.tokochat.tokochat_config_common.di.qualifier.TokoChatQualifier
-import com.tokochat.tokochat_config_common.remote_config.TokoChatCourierRemoteConfigImpl
-import com.tokochat.tokochat_config_common.repository.courier.TokoChatCourierClientProvider
+import com.tokopedia.tokochat.config.di.qualifier.TokoChatQualifier
+import com.tokopedia.tokochat.config.remoteconfig.TokoChatCourierRemoteConfigImpl
+import com.tokopedia.tokochat.config.repository.courier.TokoChatCourierClientProvider
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.tokofood.feature.ordertracking.di.scope.TokoFoodOrderTrackingScope
