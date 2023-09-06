@@ -46,6 +46,14 @@ class LayananFragment : BaseListFragment<Visitable<*>, LayananViewHolderFactory>
         performanceInterface.startMonitoring(LAYANAN_PLT)
         performanceInterface.startPreparePagePerformanceMonitoring()
         super.onCreate(savedInstanceState)
+        context?.let {
+            activity?.window?.decorView?.setBackgroundColor(
+                androidx.core.content.ContextCompat.getColor(
+                    it,
+                    com.tokopedia.unifyprinciples.R.color.Unify_Background
+                )
+            )
+        }
     }
 
     private fun addObserver() = viewModel.liveData.observe(this, Observer {
