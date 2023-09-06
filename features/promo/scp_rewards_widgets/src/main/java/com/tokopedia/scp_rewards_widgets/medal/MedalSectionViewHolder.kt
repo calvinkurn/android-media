@@ -14,6 +14,7 @@ import com.tokopedia.scp_rewards_widgets.R
 import com.tokopedia.scp_rewards_widgets.common.GridSpacingItemDecoration
 import com.tokopedia.scp_rewards_widgets.databinding.ItemMedalSectionBinding
 import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.scp_rewards_common.R as scp_rewards_commonR
 
 class MedalSectionViewHolder(
     itemView: View,
@@ -70,7 +71,7 @@ class MedalSectionViewHolder(
 
     private fun handleList(medalList: List<MedalItem>?, bannerData: BannerData?, position: Int?) {
         if (medalList.isNullOrEmpty()) {
-            binding.ivEmptyList.loadImageOrFallback(bannerData?.imageUrl, R.drawable.ic_error_medal_list) {
+            binding.ivEmptyList.loadImageOrFallback(bannerData?.imageUrl, scp_rewards_commonR.drawable.ic_error_medal_list) {
                 val layoutParams = binding.ivEmptyList.layoutParams as ConstraintLayout.LayoutParams
                 layoutParams.dimensionRatio = "H, 0.4"
                 binding.ivEmptyList.layoutParams = layoutParams

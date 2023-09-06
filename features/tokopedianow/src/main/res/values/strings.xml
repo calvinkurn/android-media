@@ -31,6 +31,7 @@
     <string name="tokopedianow_search_title">Hasil pencarian di Tokopedia NOW!</string>
     <string name="tokopedianow_all_category">Semua Kategori</string>
     <string name="tokopedianow_category_title_another_category">Kategori Lain</string>
+    <string name="tokopedianow_category_l1_category_menu_title">Sekalian cek kebutuhan yang lain</string>
     <string name="tokopedianow_search_category_product_count_template">%s Produk</string>
     <string name="tokopedianow_2h_category_aisle_header">Lihat kategori lainnya di 2 jam tiba</string>
     <string name="tokopedianow_20m_category_aisle_header">Kategori 20 menit tiba lainnya</string>
@@ -40,7 +41,7 @@
     <string name="tokopedianow_feedback_widget_desc">Kirim saran biar produk yang kamu butuhkan tersedia di NOW!</string>
     <string name="tokopedianow_feedback_widget_cta_text">Sarankan Produk</string>
     <string name="tokopedianow_feedback_bottomsheet_desc">Produk apa yang kamu butuhkan?</string>
-    <string name="tokopedianow_feedback_bottomsheet_input_hint">Tulis nama brand produk, boleh\n lengkap dengan varian, ukuran\n dll.</string>
+    <string name="tokopedianow_feedback_bottomsheet_input_hint">Tulis nama brand produk, boleh lengkap dengan varian, ukuran dll.</string>
     <string name="tokopedianow_feedback_bottomsheet_btn_text">Kirim</string>
     <string name="tokopedianow_feedback_bottomsheet_title">Sarankan produk untuk NOW!</string>
     <string name="tokopedianow_feedback_bottomsheet_input_message">Gunakan koma (,) jika produk lebih dari 1</string>
@@ -263,4 +264,16 @@
     <string name="tokopedianow_similar_product_bottom_sheet_see">Lihat</string>
     <string name="tokopedianow_similar_product_bottom_sheet_title">Produk serupa</string>
     <string name="tokopedianow_product_ads_carousel_title">Penawaran spesial</string>
+    <string name="tokopedianow_home_header_subtitle"><![CDATA[<b>%1$s &#8226;</b> %2$s]]></string>
+    <string name="tokopedianow_buyer_communication_title">Info Tokopedia NOW!</string>
+    <string name="tokopedianow_operational_hour_label">Jam Operasional</string>
+    <string name="tokopedianow_shipping_option_label">Pilihan pengiriman</string>
+    <string name="tokopedianow_operational_hour_format">&#8226; %1$s</string>
+    <string name="tokopedianow_text_dot">•</string>
+    <string name="tokopedianow_benefit_section_title">Keuntungan pakai Tokopedia NOW!</string>
+    <string name="tokopedianow_buyer_communication_schedule_benefit">Bebas pilih jadwal. Pilih produk dan jadwal pengiriman sesuai kebutuhanmu.</string>
+    <string name="tokopedianow_buyer_communication_delivery_benefit">Gratis ongkir. Belanja harian mudah &amp; instan, gratis biaya pengiriman.</string>
+    <string name="tokopedianow_buyer_communication_two_hour_benefit">Bisa 2 jam tiba. Ingin opsi cepat? Pakai 2 jam tiba, bisa lebih cepat lagi sesuai alamatmu.</string>
+    <string name="tokopedianow_buyer_communication_tnc"><![CDATA[Dengan belanja, kamu menyetujui syarat & ketentuan.]]></string>
+    <string name="tokopedianow_buyer_communication_tnc_label">syarat &amp; ketentuan.</string>
 </resources>

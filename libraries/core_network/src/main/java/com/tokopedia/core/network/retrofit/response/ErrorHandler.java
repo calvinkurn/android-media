@@ -66,9 +66,9 @@ public class ErrorHandler {
             return "";
         }
         if (e instanceof UnknownHostException) {
-            return context.getString(R.string.msg_no_connection);
+            return context.getString(com.tokopedia.network.R.string.msg_no_connection);
         } else if (e instanceof SocketTimeoutException) {
-            return context.getString(R.string.default_request_error_timeout);
+            return context.getString(com.tokopedia.network.R.string.default_request_error_timeout);
         } else if (e instanceof RuntimeException &&
                 e.getLocalizedMessage() != null &&
                 !e.getLocalizedMessage().equals("") &&
@@ -78,30 +78,30 @@ public class ErrorHandler {
                 case ResponseStatus.SC_REQUEST_TIMEOUT:
                     Log.d(TAG, getErrorInfo(code, TIMEOUT_INFO));
                     return
-                            context.getString(R.string.default_request_error_timeout);
+                            context.getString(com.tokopedia.network.R.string.default_request_error_timeout);
                 case ResponseStatus.SC_GATEWAY_TIMEOUT:
                     Log.d(TAG, getErrorInfo(code, TIMEOUT_INFO));
                     return
-                            context.getString(R.string.default_request_error_timeout);
+                            context.getString(com.tokopedia.network.R.string.default_request_error_timeout);
                 case ResponseStatus.SC_INTERNAL_SERVER_ERROR:
                     Log.d(TAG, getErrorInfo(code, SERVER_INFO));
                     return
-                            context.getString(R.string.default_request_error_internal_server);
+                            context.getString(com.tokopedia.network.R.string.default_request_error_internal_server);
                 case ResponseStatus.SC_FORBIDDEN:
                     Log.d(TAG, getErrorInfo(code, FORBIDDEN_INFO));
-                    return context.getString(R.string.default_request_error_forbidden_auth);
+                    return context.getString(com.tokopedia.network.R.string.default_request_error_forbidden_auth);
                 case ResponseStatus.SC_BAD_GATEWAY:
                     Log.d(TAG, getErrorInfo(code, BAD_REQUEST_INFO));
                     return
-                            context.getString(R.string.default_request_error_bad_request);
+                            context.getString(com.tokopedia.network.R.string.default_request_error_bad_request);
                 case ResponseStatus.SC_BAD_REQUEST:
                     Log.d(TAG, getErrorInfo(code, BAD_REQUEST_INFO));
                     return
-                            context.getString(R.string.default_request_error_bad_request);
+                            context.getString(com.tokopedia.network.R.string.default_request_error_bad_request);
                 default:
                     Log.d(TAG, getErrorInfo(code, UNKNOWN_INFO));
                     return
-                            context.getString(R.string.default_request_error_unknown);
+                            context.getString(com.tokopedia.network.R.string.default_request_error_unknown);
             }
         } else if (e instanceof ErrorMessageException
                 && !TextUtils.isEmpty(e.getLocalizedMessage())) {
@@ -109,9 +109,9 @@ public class ErrorHandler {
         } else if (e instanceof ResponseV4ErrorException) {
             return ((ResponseV4ErrorException) e).getErrorList().get(0);
         } else if (e instanceof IOException) {
-            return context.getString(R.string.default_request_error_internal_server);
+            return context.getString(com.tokopedia.network.R.string.default_request_error_internal_server);
         } else {
-            return context.getString(R.string.default_request_error_unknown);
+            return context.getString(com.tokopedia.network.R.string.default_request_error_unknown);
         }
     }
 

@@ -266,6 +266,7 @@
     <string name="topads_dash_insight_dialog_desc">Cek rekomendasi berikut agar performa iklanmu meningkat.</string>
     <string name="topads_dash_insight_dialog_btn">Cek Rekomendasi</string>
     <string name="topads_dash_product_suggestion_insight_count">Produk Berpotensi (%d)</string>
+    <string name="topads_insight_centre_suggestion_insight_count">Ada %d produk berpotensi</string>
     <string name="topads_dash_bid_suggestion_insight_count">Anggaran Harian  (%d)</string>
     <string name="topads_dash_insight_widget_title">Rekomendasi TopAds</string>
     <string name="topads_dash_insight_widget_desc">Performa iklanmu kurang maksimal? Rekomendasi berikut bisa meningkatkan performa iklanmu.</string>
@@ -615,4 +616,24 @@
     <string name="topads_insight_min_budget_rp">Min. anggaran Rp%d</string>
     <string name="topads_insight_max_budget_rp">Maks. anggaran Rp%d</string>
     <string name="topads_dashboard_saran_ads_info_sheet_desc">Kumpulan rekomendasi untuk iklanmu yang masih bisa dimaksimalkan.</string>
+    <string name="top_ads_optimised_widget_title_groups_page">Semua iklan tokomu sudah maksimal!</string>
+    <string name="top_ads_optimised_widget_subtitle_groups_page">Biar iklanmu lebih maksimal, lihat tips pada halaman Saran TopAds juga yuk.</string>
+    <string name="top_ads_non_optimised_widget_title_groups_page">Baru %d dari %d iklan tokomu yang maksimal</string>
+    <string name="top_ads_non_optimised_widget_subtitle_groups_page">Yuk, cek Saran TopAds untuk maksimalkan performa iklanmu!</string>
+    <string name="top_ads_optimised_widget_title_group_detail_page">Pengaturan iklanmu sudah maksimal!</string>
+    <string name="top_ads_non_optimised_widget_title_group_detail_page">%d pengaturan iklan belum maksimal</string>
+    <string name="topads_insight_centre_choose_potential_products_with_count">Pilih Produk Berpotensi (%d)</string>
+    <string name="topads_insight_centre_choose_product">Pilih Produk</string>
+    <string name="topads_insight_centre_product_item_description"><![CDATA[<font size="13">Dicari sebanyak: <b>%s kali</b></font>]]></string>
+    <string name="topads_insight_centre_choose_product_title">Iklankan Produk</string>
+    <string name="topads_insight_centre_advertise_product_with_count">Iklankan Produk (%d)</string>
+    <string name="topads_insight_centre_potential_products_empty_state_title">Produk berpotensi gagal ditampilkan</string>
+    <string name="topads_insight_centre_potential_products_empty_state_desc">Oops, ada gangguan pada sistem. Coba klik Muat Ulang, ya.</string>
+    <string name="topads_insight_centre_potential_products_emtpy_state_cta">Muat Ulang</string>
+    <string name="topads_insight_centre_group_settings">Pengaturan Grup</string>
+    <string name="topads_insight_centre_featured_products">Produk Terpilih (%d)</string>
+    <string name="topads_insight_centre_reset">Atur Ulang</string>
+    <string name="topads_insight_centre_create_new_group">Buat Grup Baru</string>
+    <string name="topads_insight_centre_add_to_another_group">Tambah ke Grup Lain</string>
+    <string name="topads_insight_centre_create_group_title_info">Nama grup dapat disesuaikan berdasarkan kategori atau tema iklanmu.</string>
 </resources>

@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/divider_product_detail_a_plus_image"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_product_detail_a_plus_image_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="0dp"
+        android:visibility="gone"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toTopOf="@id/tv_product_detail_a_plus_image_description"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/divider_product_detail_a_plus_image"
+        app:layout_constraintVertical_bias="0"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:layout_goneMarginBottom="16dp"
+        app:typographyType="display_1"
+        app:typographyWeight="bold"
+        tools:text="Konten dari penjual"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_product_detail_a_plus_image_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginVertical="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:visibility="gone"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toTopOf="@id/iv_product_detail_a_plus_image"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_product_detail_a_plus_image_title"
+        app:layout_goneMarginBottom="0dp"
+        app:typographyType="body_2"
+        tools:text="Konten dari penjual"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/iv_product_detail_a_plus_image"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="16dp"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/layout_product_detail_a_plus_image_toggle"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintTop_toBottomOf="@id/tv_product_detail_a_plus_image_description"
+        app:unify_image_corner_radius="0"
+        tools:src="@drawable/qc_launcher"
+        tools:visibility="visible" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_product_detail_a_plus_image_toggle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="18dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_product_detail_a_plus_image"
+        tools:visibility="visible">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_product_detail_a_plus_image_toggle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Unify_GN500"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/ic_product_detail_a_plus_image_toggle"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="display_3"
+            app:typographyWeight="bold"
+            tools:text="Baca Selengkapnya" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/ic_product_detail_a_plus_image_toggle"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="4dp"
+            app:icon_color_light_disabled="@color/Unify_GN500"
+            app:icon_color_light_enable="@color/Unify_GN500"
+            app:icon_color_night_disabled="@color/Unify_GN500"
+            app:icon_color_night_enable="@color/Unify_GN500"
+            app:icon_name="CHEVRON_DOWN"
+            app:layout_constraintBottom_toBottomOf="@id/tv_product_detail_a_plus_image_toggle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tv_product_detail_a_plus_image_toggle"
+            app:layout_constraintTop_toTopOf="@id/tv_product_detail_a_plus_image_toggle" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

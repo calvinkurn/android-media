@@ -54,5 +54,8 @@ data class FeedCardImageContentModel(
     val isTopAds: Boolean
         get() = type == TYPE_FEED_TOP_ADS && typename == TYPE_FEED_X_CARD_PLACEHOLDER
 
+    val showComment: Boolean
+        get() = !isTopAds && !isTypeProductHighlight
+
     val contentScore = detailScore.firstOrNull { it.isContentScore }?.value ?: ""
 }

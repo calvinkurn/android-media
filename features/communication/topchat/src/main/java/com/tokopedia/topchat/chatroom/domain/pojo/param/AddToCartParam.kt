@@ -4,7 +4,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.chat_common.data.ProductAttachmentUiModel
 
-data class AddToCartParam (
+data class AddToCartParam(
     var productId: String = "",
     var productName: String = "",
     var shopId: String = "0",
@@ -16,6 +16,7 @@ data class AddToCartParam (
     var productUrl: String = "",
     var blastId: String = "0",
     var source: String = "",
+    var action: String = "",
     var dataModel: DataModel? = null
 ) {
     fun getAtcDimension40(sourcePage: String): String {
@@ -28,6 +29,11 @@ data class AddToCartParam (
     private fun getField(): String {
         return if (blastId != "0") {
             FIELD_BC
+        } else if (source.contains("smart", true) &&
+            source.contains("reply", true)
+        ) {
+            // If source is smart reply in any form, return smart_reply
+            FIELD_SMART_REPLY
         } else {
             FIELD_CHAT
         }
@@ -42,14 +48,15 @@ data class AddToCartParam (
     }
 
     companion object {
-        const val SOURCE_ACTION_ATC = "atc"
-        const val SOURCE_ACTION_BUY = "buy"
+        const val ACTION_ATC = "atc"
+        const val ACTION_BUY = "buy"
         const val EVENT_ACTION_ATC = "click atc on product thumbnail"
         const val EVENT_ACTION_BUY = "click buy on product thumbnail"
         private const val FIELD_BC = "/broadcast"
         private const val FIELD_CHAT = "/chat"
+        private const val FIELD_SMART_REPLY = "/smart_reply"
 
-        fun mapUiModelToParam(uiModel: ProductAttachmentUiModel, source: String): AddToCartParam {
+        fun mapUiModelToParam(uiModel: ProductAttachmentUiModel, action: String): AddToCartParam {
             return AddToCartParam(
                 productId = uiModel.productId,
                 productName = uiModel.productName,
@@ -61,7 +68,8 @@ data class AddToCartParam (
                 freeShipping = uiModel.hasFreeShipping(),
                 productUrl = uiModel.productUrl,
                 blastId = uiModel.blastId,
-                source = source
+                source = uiModel.source,
+                action = action
             )
         }
     }

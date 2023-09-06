@@ -1,78 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/parent_frame"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    android:id="@+id/parent_coordinator"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appbarLayout"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/parent_coordinator"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:animateLayoutChanges="true"
-        android:background="@color/Unify_Background"
-        android:clipChildren="false"
-        android:clipToPadding="false"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar">
+        android:layout_height="match_parent">
 
-        <include
-            android:id="@+id/oldToolbar"
-            layout="@layout/item_toolbar"
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appbarLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone"
-            tools:layout_height="@dimen/dp_56"
-            tools:visibility = "visible"/>
+            android:animateLayoutChanges="true"
+            android:background="@color/Unify_Background"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:theme="@style/ThemeOverlay.AppCompat.ActionBar">
 
-        <com.tokopedia.searchbar.navigation_component.NavToolbar
-            android:id="@+id/navToolbar"
+            <com.tokopedia.searchbar.navigation_component.NavToolbar
+                android:id="@+id/navToolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="top"
+                android:minHeight="?actionBarSize"
+                app:contentInsetLeft="0dp"
+                app:contentInsetStart="0dp"
+                app:toolbarBackButton="back"
+                app:toolbarContentType="typeSearchbar"
+                app:toolbarDefaultHint="@string/discovery_default_search_title"
+                app:toolbarInitialFillColor="transparent"
+                app:toolbarInitialTheme="light"
+                app:toolbarPageName="@string/discovery_page_name"
+                tools:visibility="visible" />
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/progressBar"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            app:loader_corner_radius="10dp"
+            app:loader_type="circular"
+            tools:visibility="visible" />
+
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swiperefresh"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="top"
-            android:minHeight="?actionBarSize"
-            app:contentInsetLeft="0dp"
-            app:contentInsetStart="0dp"
-            app:toolbarInitialTheme = "light"
-            app:toolbarInitialFillColor="transparent"
-            app:toolbarDefaultHint = "@string/discovery_default_search_title"
-            app:toolbarContentType="typeSearchbar"
-            app:toolbarBackButton="back"
-            app:toolbarPageName="@string/discovery_page_name"
-            android:visibility="gone"
-            tools:visibility = "visible"/>
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <com.tokopedia.unifycomponents.LoaderUnify
-        android:id="@+id/progressBar"
-        android:layout_width="@dimen/dp_50"
-        android:layout_height="@dimen/dp_50"
-        android:layout_gravity="center"
-        android:visibility="gone"
-        tools:visibility="visible"
-        app:loader_corner_radius="10dp"
-        app:loader_type="circular" />
-
-<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-    android:id="@+id/swiperefresh"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-<include
-    android:id="@+id/item_discovery_fragment_view"
-    layout="@layout/item_discovery_fragment_view"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent" />
+            <include
+                android:id="@+id/item_discovery_fragment_view"
+                layout="@layout/item_discovery_fragment_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
 
 
-</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </FrameLayout>

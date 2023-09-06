@@ -3,11 +3,11 @@ package com.tokopedia.chat_common.view.adapter.viewholder.chatmenu
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.chat_common.R
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.unifycomponents.setImage
 
 class AttachmentItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -16,7 +16,7 @@ class AttachmentItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemVie
         fun closeMenu()
     }
 
-    private var icon: ImageView? = itemView.findViewById(R.id.ivIcon)
+    private var icon: IconUnify? = itemView.findViewById(R.id.ivIcon)
     private var title: TextView? = itemView.findViewById(R.id.tvTitle)
 
     fun bind(
@@ -24,7 +24,7 @@ class AttachmentItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemVie
             listener: AttachmentMenu.AttachmentMenuListener?,
             viewHolderListener: AttachmentViewHolderListener?
     ) {
-        icon?.setImage(attachmentMenu.icon, 0f)
+        icon?.setImage(attachmentMenu.icon)
         title?.text = attachmentMenu.title
         if (listener == null) return
         itemView.setOnClickListener {
