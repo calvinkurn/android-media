@@ -84,12 +84,12 @@ class ShopHomeShowCaseNavigationTopMainBannerViewHolder(
         val firstShowcase = showcases.getOrNull(0)
 
         firstShowcase?.let {
-            viewBinding?.imgFirstBanner?.loadImage(firstShowcase.imageUrl)
-            viewBinding?.tpgFirstBannerTitle?.text = firstShowcase.name
-            viewBinding?.imgFirstBanner?.visible()
-            viewBinding?.tpgFirstBannerTitle?.visible()
+            viewBinding?.imgMainBanner?.loadImage(firstShowcase.imageUrl)
+            viewBinding?.tpgMainBannerTitle?.text = firstShowcase.name
+            viewBinding?.imgMainBanner?.visible()
+            viewBinding?.tpgMainBannerTitle?.visible()
 
-            viewBinding?.imgFirstBanner?.setOnClickListener {
+            viewBinding?.imgMainBanner?.setOnClickListener {
                 listener.onNavigationBannerShowcaseClick(
                     selectedShowcase = firstShowcase,
                     uiModel = uiModel,
@@ -97,7 +97,7 @@ class ShopHomeShowCaseNavigationTopMainBannerViewHolder(
                     tabName = ""
                 )
             }
-            viewBinding?.tpgFirstBannerTitle?.setOnClickListener {
+            viewBinding?.tpgMainBannerTitle?.setOnClickListener {
                 listener.onNavigationBannerShowcaseClick(
                     selectedShowcase = firstShowcase,
                     uiModel = uiModel,
@@ -143,11 +143,8 @@ class ShopHomeShowCaseNavigationTopMainBannerViewHolder(
             ContextCompat.getColor(viewBinding?.tpgTitle?.context ?: return, unifycomponentsR.color.Unify_NN950)
         }
 
-        val lowEmphasizeColor = if (overrideTheme && colorSchema.listColorSchema.isNotEmpty()) {
-            colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_LOW_EMPHASIS)
-        } else {
-            ContextCompat.getColor(viewBinding?.tpgFirstBannerTitle?.context ?: return, unifycomponentsR.color.Unify_NN950)
-        }
+
+        val mainBannerColor = ContextCompat.getColor(viewBinding?.tpgMainBannerTitle?.context ?: return, R.color.clr_dms_icon_white)
 
         viewBinding?.apply {
             iconChevron.setImage(
@@ -156,7 +153,7 @@ class ShopHomeShowCaseNavigationTopMainBannerViewHolder(
                 newDarkEnable = chevronColor
             )
             tpgTitle.setTextColor(highEmphasizeColor)
-            tpgFirstBannerTitle.setTextColor(lowEmphasizeColor)
+            tpgMainBannerTitle.setTextColor(mainBannerColor)
         }
     }
 }

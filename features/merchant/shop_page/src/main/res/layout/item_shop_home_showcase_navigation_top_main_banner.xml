@@ -30,8 +30,19 @@
         app:typographyWeight="bold"
         tools:text="Explore categories" />
 
+    <ImageView
+        android:id="@+id/imgBackgroundGradient"
+        android:layout_width="0dp"
+        android:layout_height="44dp"
+        android:elevation="1dp"
+        android:alpha="0.7"
+        android:background="@drawable/shop_shape_showcase_gradient_background"
+        app:layout_constraintBottom_toBottomOf="@+id/imgMainBanner"
+        app:layout_constraintEnd_toEndOf="@+id/imgMainBanner"
+        app:layout_constraintStart_toStartOf="@+id/imgMainBanner" />
+
     <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/imgFirstBanner"
+        android:id="@+id/imgMainBanner"
         android:layout_width="328dp"
         android:layout_height="328dp"
         android:layout_marginTop="12dp"
@@ -43,23 +54,20 @@
         tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tpgFirstBannerTitle"
+        android:id="@+id/tpgMainBannerTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
         android:layout_marginBottom="12dp"
         android:ellipsize="end"
-        android:textColor="@color/Unify_NN0"
         android:gravity="center"
+        android:elevation="2dp"
         android:maxLines="1"
         android:minLines="1"
+        android:textColor="@color/Unify_NN0"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/imgFirstBanner"
-        app:layout_constraintEnd_toEndOf="@+id/imgFirstBanner"
-        app:layout_constraintStart_toStartOf="@+id/imgFirstBanner"
-        app:layout_constraintTop_toTopOf="@+id/imgFirstBanner"
-        app:layout_constraintVertical_bias="1.0"
+        app:layout_constraintBottom_toBottomOf="@+id/imgMainBanner"
+        app:layout_constraintEnd_toEndOf="@+id/imgMainBanner"
+        app:layout_constraintStart_toStartOf="@+id/imgMainBanner"
         app:typographyType="display_2"
         app:typographyWeight="bold"
         tools:text="Power Bank"
@@ -73,8 +81,8 @@
         android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/imgFirstBanner"
-        app:layout_constraintTop_toBottomOf="@+id/imgFirstBanner"
+        app:layout_constraintStart_toStartOf="@+id/imgMainBanner"
+        app:layout_constraintTop_toBottomOf="@+id/imgMainBanner"
         tools:itemCount="2"
         tools:listitem="@layout/item_shop_home_showcase_navigation" />
 

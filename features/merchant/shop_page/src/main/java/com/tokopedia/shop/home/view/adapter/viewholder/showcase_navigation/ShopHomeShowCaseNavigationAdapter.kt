@@ -1,5 +1,6 @@
 package com.tokopedia.shop.home.view.adapter.viewholder.showcase_navigation
 
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
@@ -59,10 +60,16 @@ class ShopHomeShowCaseNavigationAdapter(
 
         init {
             if (appearance is CarouselAppearance) {
+                binding.tpgBannerTitle.maxLines = 2
+                binding.tpgBannerTitle.minLines = 1
+                binding.tpgBannerTitle.ellipsize = TextUtils.TruncateAt.END
                 binding.imgBanner.layoutParams.height = SHOWCASE_CAROUSEL_SIZE_HEIGHT.toPx()
                 binding.imgBanner.layoutParams.width = SHOWCASE_CAROUSEL_SIZE_WIDTH.toPx()
                 binding.imgBanner.requestLayout()
             } else {
+                binding.tpgBannerTitle.maxLines = 1
+                binding.tpgBannerTitle.minLines = 1
+                binding.tpgBannerTitle.ellipsize = TextUtils.TruncateAt.END
                 binding.imgBanner.layoutParams.height = SHOWCASE_DEFAULT_SIZE_HEIGHT.toPx()
                 binding.imgBanner.layoutParams.width = SHOWCASE_DEFAULT_SIZE_WIDTH.toPx()
                 binding.imgBanner.requestLayout()
