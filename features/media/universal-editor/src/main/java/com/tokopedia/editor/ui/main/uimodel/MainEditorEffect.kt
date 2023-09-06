@@ -15,4 +15,8 @@ sealed class MainEditorEffect {
     data class OpenPlacementPage(val sourcePath: String, val model: ImagePlacementModel?) : MainEditorEffect()
 
     data class UpdatePagerSourcePath(val newSourcePath: String, val pagerTag: String) : MainEditorEffect()
+
+    object ShowCloseDialogConfirmation : MainEditorEffect()
+
+    object CloseMainEditorPage : MainEditorEffect()
 }

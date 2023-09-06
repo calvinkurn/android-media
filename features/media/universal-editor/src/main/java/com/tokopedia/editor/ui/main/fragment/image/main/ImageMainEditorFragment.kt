@@ -59,6 +59,10 @@ class ImageMainEditorFragment @Inject constructor(
         viewModel.onEvent(MainEditorEvent.EditInputTextPage(text.id, model))
     }
 
+    override fun getTextCount(): Int {
+        return binding?.container?.getTextCount() ?: 0
+    }
+
     private fun addOrEditTextOnLayout(state: InputTextParam) {
         val (typographyId, model) = state
         if (model == null) return

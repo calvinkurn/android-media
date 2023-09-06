@@ -25,4 +25,10 @@
 
     <!-- Placement Text -->
     <string name="universal_editor_placement_tool_reset">Reset</string>
+
+    <!-- Main Editor Exit Confirmation -->
+    <string name="universal_editor_main_confirmation_title">Yakin mau keluar?</string>
+    <string name="universal_editor_main_confirmation_desc">Kalau keluar, hasil perubahan kamu sudah kamu atur akan hilang.</string>
+    <string name="universal_editor_main_confirmation_primary_cta">Keluar</string>
+    <string name="universal_editor_main_confirmation_secondary_cta">Tetap di Sini</string>
 </resources>

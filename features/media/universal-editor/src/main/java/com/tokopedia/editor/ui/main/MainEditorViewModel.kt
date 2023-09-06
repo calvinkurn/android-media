@@ -72,6 +72,20 @@ class MainEditorViewModel @Inject constructor(
                     setAction(MainEditorEffect.UpdatePagerSourcePath(it.path, "Tag"))
                 }
             }
+            is MainEditorEvent.ClickHeaderClose -> {
+                var isPlacementEdited: Boolean
+                val isTextAdded = event.textNumber >= 1
+
+                _mainEditorState.value.let {
+                    isPlacementEdited = it.imageModel?.placement?.path != null
+                }
+
+                if ((isPlacementEdited || isTextAdded) && !event.isFinish) {
+                    setAction(MainEditorEffect.ShowCloseDialogConfirmation)
+                } else {
+                    setAction(MainEditorEffect.CloseMainEditorPage)
+                }
+            }
         }
     }
 

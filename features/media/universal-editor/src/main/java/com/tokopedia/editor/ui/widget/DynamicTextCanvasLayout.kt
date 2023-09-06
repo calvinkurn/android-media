@@ -81,6 +81,10 @@ class DynamicTextCanvasLayout @JvmOverloads constructor(
         return bitmap
     }
 
+    fun getTextCount(): Int {
+        return models.toList().size
+    }
+
     override fun onRemoveView(view: View) {
         removeView(view)
     }

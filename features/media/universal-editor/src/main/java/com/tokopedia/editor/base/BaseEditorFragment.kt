@@ -48,6 +48,8 @@ abstract class BaseEditorFragment(layoutId: Int) : Fragment(layoutId) {
 
     open fun onLoadContent(path: String) = Unit
 
+    open fun getTextCount() = 0
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         onLoadSavedState(savedInstanceState)

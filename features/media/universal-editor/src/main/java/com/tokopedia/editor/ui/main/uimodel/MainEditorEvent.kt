@@ -24,4 +24,6 @@ sealed class MainEditorEvent {
     object PlacementImagePage : MainEditorEvent()
 
     data class PlacementImageResult(val model: ImagePlacementModel?) : MainEditorEvent()
+
+    data class ClickHeaderClose(val textNumber: Int = 0, val isFinish: Boolean = false) : MainEditorEvent()
 }
