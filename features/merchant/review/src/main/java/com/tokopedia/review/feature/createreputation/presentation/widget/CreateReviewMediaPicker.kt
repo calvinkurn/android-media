@@ -99,7 +99,9 @@ class CreateReviewMediaPicker @JvmOverloads constructor(
         animate: Boolean
     ) {
         if (animate) {
-            binding.layoutMediaPicker.root.itemAnimator = itemAnimator
+            if (binding.layoutMediaPicker.root.itemAnimator == null) {
+                binding.layoutMediaPicker.root.itemAnimator = itemAnimator
+            }
         } else {
             binding.layoutMediaPicker.root.itemAnimator = null
         }
