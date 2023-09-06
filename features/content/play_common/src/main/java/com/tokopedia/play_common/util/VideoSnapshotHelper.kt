@@ -27,15 +27,24 @@ class VideoSnapshotHelper @Inject constructor(
         filePath: String,
     ): File? {
         return withContext(dispatchers.io) {
-            val bitmap = Glide.with(context)
-                .asBitmap()
-                .load(filePath)
-                .submit()
-                .get()
+            val bitmap = snapVideoBitmap(context, filePath)
 
             ImageProcessingUtil.writeImageToTkpdPath(bitmap, Bitmap.CompressFormat.JPEG).also { file ->
                 tempFile = file
             }
+        }
+    }
+
+    suspend fun snapVideoBitmap(
+        context: Context,
+        filePath: String,
+    ): Bitmap {
+        return withContext(dispatchers.io) {
+            Glide.with(context)
+                .asBitmap()
+                .load(filePath)
+                .submit()
+                .get()
         }
     }
 
