@@ -1231,6 +1231,12 @@ object DeeplinkMainApp {
                 DeeplinkMapperPromo.getRegisteredNavigationTokopoints(deeplink)
             }
         ),
+        "stories" to mutableListOf(
+            DLP.matchPattern(
+                "shop/{shop_id}",
+                DeeplinkMapperContent::getRegisteredNavigation
+            ),
+        ),
         "topads" to mutableListOf(
             DLP.startsWith("create-manual-ads") { _: String ->
                 ApplinkConstInternalTopAds.TOPADS_AUTOADS_CREATE_MANUAL_ADS
