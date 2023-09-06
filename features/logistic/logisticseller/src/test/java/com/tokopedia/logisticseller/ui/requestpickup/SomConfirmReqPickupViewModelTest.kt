@@ -5,8 +5,8 @@ import com.tokopedia.logisticseller.ui.requestpickup.data.model.SomConfirmReqPic
 import com.tokopedia.logisticseller.ui.requestpickup.data.model.SomConfirmReqPickupParam
 import com.tokopedia.logisticseller.ui.requestpickup.data.model.SomProcessReqPickup
 import com.tokopedia.logisticseller.ui.requestpickup.data.model.SomProcessReqPickupParam
-import com.tokopedia.logisticseller.ui.requestpickup.domain.usecase.SomConfirmReqPickupUseCase
-import com.tokopedia.logisticseller.ui.requestpickup.domain.usecase.SomProcessReqPickupUseCase
+import com.tokopedia.logisticseller.ui.requestpickup.domain.usecase.ConfirmRequestPickupUseCase
+import com.tokopedia.logisticseller.ui.requestpickup.domain.usecase.ProcessRequestPickupUseCase
 import com.tokopedia.logisticseller.ui.requestpickup.presentation.viewmodel.RequestPickupViewModel
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
@@ -38,18 +38,18 @@ class SomConfirmReqPickupViewModelTest {
     private var listMsg = listOf<String>()
 
     @RelaxedMockK
-    lateinit var somConfirmReqPickupUseCase: SomConfirmReqPickupUseCase
+    lateinit var confirmRequestPickupUseCase: ConfirmRequestPickupUseCase
 
     @RelaxedMockK
-    lateinit var somProcessReqPickupUseCase: SomProcessReqPickupUseCase
+    lateinit var processRequestPickupUseCase: ProcessRequestPickupUseCase
 
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
         somConfirmReqPickupViewModel = RequestPickupViewModel(
             coroutineTestRule.dispatchers,
-            somConfirmReqPickupUseCase,
-            somProcessReqPickupUseCase
+            confirmRequestPickupUseCase,
+            processRequestPickupUseCase
         )
 
         val courier1 = SomConfirmReqPickup.Data.MpLogisticPreShipInfo.DataSuccess.Detail.Shipper(name = "JNETesting")
@@ -63,7 +63,7 @@ class SomConfirmReqPickupViewModelTest {
     fun confirmReqPickup_shouldReturnSuccess() = coroutineTestRule.runTest {
         //given
         coEvery {
-            somConfirmReqPickupUseCase.execute(any())
+            confirmRequestPickupUseCase.execute(any())
         } returns SomConfirmReqPickup.Data(SomConfirmReqPickup.Data.MpLogisticPreShipInfo(
                 dataSuccess = SomConfirmReqPickup.Data.MpLogisticPreShipInfo.DataSuccess(
                         detail = SomConfirmReqPickup.Data.MpLogisticPreShipInfo.DataSuccess.Detail(
@@ -81,7 +81,7 @@ class SomConfirmReqPickupViewModelTest {
     fun getShippingList_shouldReturnFail() = coroutineTestRule.runTest {
         //given
         coEvery {
-            somConfirmReqPickupUseCase.execute(any())
+            confirmRequestPickupUseCase.execute(any())
         } throws Throwable()
 
         //when
@@ -95,7 +95,7 @@ class SomConfirmReqPickupViewModelTest {
     fun getShippingList_shouldNotReturnEmpty() = coroutineTestRule.runTest {
         //given
         coEvery {
-            somConfirmReqPickupUseCase.execute(any())
+            confirmRequestPickupUseCase.execute(any())
         } returns SomConfirmReqPickup.Data(SomConfirmReqPickup.Data.MpLogisticPreShipInfo(
                 dataSuccess = SomConfirmReqPickup.Data.MpLogisticPreShipInfo.DataSuccess(
                         detail = SomConfirmReqPickup.Data.MpLogisticPreShipInfo.DataSuccess.Detail(
@@ -114,7 +114,7 @@ class SomConfirmReqPickupViewModelTest {
     fun processReqPickup_shouldReturnSuccess() = coroutineTestRule.runTest {
         //given
         coEvery {
-            somProcessReqPickupUseCase.execute(any())
+            processRequestPickupUseCase.execute(any())
         } returns SomProcessReqPickup.Data(SomProcessReqPickup.Data.MpLogisticRequestPickup(listMessage = listMsg))
 
         //when
@@ -129,7 +129,7 @@ class SomConfirmReqPickupViewModelTest {
     fun processReqPickup_shouldReturnFail() = coroutineTestRule.runTest {
         //given
         coEvery {
-            somProcessReqPickupUseCase.execute(any())
+            processRequestPickupUseCase.execute(any())
         } throws Throwable()
 
         //when
@@ -143,7 +143,7 @@ class SomConfirmReqPickupViewModelTest {
     fun processReqPickup_shouldNotReturnEmpty() = coroutineTestRule.runTest {
         //given
         coEvery {
-            somProcessReqPickupUseCase.execute(any())
+            processRequestPickupUseCase.execute(any())
         } returns SomProcessReqPickup.Data(SomProcessReqPickup.Data.MpLogisticRequestPickup(listMessage = listMsg))
 
         //when

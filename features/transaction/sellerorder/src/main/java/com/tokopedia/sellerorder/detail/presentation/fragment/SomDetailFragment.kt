@@ -60,6 +60,7 @@ import com.tokopedia.sellerorder.common.navigator.SomNavigator
 import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToChangeCourierPage
 import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToConfirmShippingPage
 import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToReschedulePickupPage
+import com.tokopedia.sellerorder.common.presenter.bottomsheet.SomConfirmShippingBottomSheet
 import com.tokopedia.sellerorder.common.presenter.bottomsheet.SomOrderEditAwbBottomSheet
 import com.tokopedia.sellerorder.common.presenter.bottomsheet.SomOrderRequestCancelBottomSheet
 import com.tokopedia.sellerorder.common.presenter.dialogs.SomOrderHasRequestCancellationDialog
@@ -72,6 +73,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts.KEY_ASK_BUYER
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_BATALKAN_PESANAN
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_CHANGE_COURIER
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_CONFIRM_SHIPPING
+import com.tokopedia.sellerorder.common.util.SomConsts.KEY_CONFIRM_SHIPPING_AUTO
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_ORDER_EXTENSION_REQUEST
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_PRINT_AWB
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_REJECT_ORDER
@@ -119,7 +121,6 @@ import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBaseRejectOr
 import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBottomSheetRejectOrderAdapter
 import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBottomSheetRejectReasonsAdapter
 import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBottomSheetSetDelivered
-import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomConfirmShippingBottomSheet
 import com.tokopedia.sellerorder.detail.presentation.fragment.SomDetailLogisticInfoFragment.Companion.KEY_ID_CACHE_MANAGER_INFO_ALL
 import com.tokopedia.sellerorder.detail.presentation.mapper.SomDetailMapper
 import com.tokopedia.sellerorder.detail.presentation.model.LogisticInfoAllWrapper
@@ -609,6 +610,10 @@ open class SomDetailFragment :
                                 binding?.btnPrimary?.isLoading = true
                                 setActionConfirmShipping(buttonResp.displayName)
                             }
+                            buttonResp.key.equals(KEY_CONFIRM_SHIPPING_AUTO, true) -> {
+                                binding?.btnPrimary?.isLoading = true
+                                setActionConfirmShippingAuto(buttonResp)
+                            }
                             buttonResp.key.equals(KEY_VIEW_COMPLAINT_SELLER, true) -> setActionSeeComplaint(buttonResp.url)
                             buttonResp.key.equals(KEY_BATALKAN_PESANAN, true) -> setActionRejectOrder()
                             buttonResp.key.equals(KEY_ASK_BUYER, true) -> goToAskBuyer()
@@ -785,37 +790,18 @@ open class SomDetailFragment :
             confirmShipping()
         }
     }
+    private fun setActionConfirmShippingAuto(buttonResp: SomDetailOrder.Data.GetSomDetail.Button) {
+        val popUp = buttonResp.popUp
+        if (popUp.template.code != "") {
+            SomConfirmShippingBottomSheet.instance(context, view, popUp)
+        }
+        binding?.btnPrimary?.isLoading = false
+    }
 
     private fun confirmShipping() {
         context?.let { context ->
-            val view = view
-            if (view is ViewGroup) {
-                binding?.btnPrimary?.isLoading = true
-                if (detailResponse?.onlineBooking?.isRemoveInputAwb == true) {
-                    val btSheet = SomConfirmShippingBottomSheet(context)
-                    childFragmentManager.let {
-                        btSheet.init(view)
-
-
-                        /**
-                         * temporary for slicing ui. remove latet after be contract
-                         */
-                        val listInfo = listOf<String>(
-                            "Capai min. jumlah pesanan pickup dalam sebulan untuk bisa pakai layanan pickup di bulan berikutnya (khusus kurir tertentu). Pelajari",
-                            "Cukup anterin paket ke gerai, resi akan diterbitkan oleh gerai & konfirmasi pengiriman otomatis maks. 3 jam setelah paket diserahkan ke kurir.",
-                            "Cek lokasi gerai drop off paket terdekat dari tokomu. Cek Gerai Terdekat"
-                        )
-//                        btSheet.setInfoText(detailResponse?.onlineBooking?.infoText.orEmpty())
-                        btSheet.setInfoText(listInfo)
-                        btSheet.setOnDismiss {
-                            binding?.btnPrimary?.isLoading = false
-                        }
-                        btSheet.show()
-                    }
-                } else {
-                    createIntentConfirmShipping(false)
-                }
-            }
+            binding?.btnPrimary?.isLoading = true
+            createIntentConfirmShipping(false)
         }
     }
 

@@ -56,6 +56,7 @@ object SomConsts {
     const val KEY_TRACK_SELLER = "track"
     const val KEY_REQUEST_PICKUP = "request_pickup"
     const val KEY_CONFIRM_SHIPPING = "confirm_shipping"
+    const val KEY_CONFIRM_SHIPPING_AUTO = "confirm_shipping_auto"
     const val KEY_STATUS_COMPLAINT = "complaint"
     const val KEY_VIEW_COMPLAINT_SELLER = "view_complaint"
     const val KEY_SET_DELIVERED = "set_delivered"
@@ -164,4 +165,9 @@ object SomConsts {
 
     const val COACHMARK_KEY = "coachmark"
     const val COACHMARK_DISABLED = "disabled"
+
+    const val SOM_DROP_OFF_BOTTOM_SHEET_TEMPLATE_1 ="LG_FMD_1"
+    const val SOM_DROP_OFF_BOTTOM_SHEET_TEMPLATE_2 ="LG_FMD_2"
+    const val SOM_DROP_OFF_BOTTOM_SHEET_TEMPLATE_3 ="LG_FMD_3"
+
 }

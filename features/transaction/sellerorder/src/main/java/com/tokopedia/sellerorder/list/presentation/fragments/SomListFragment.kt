@@ -97,6 +97,7 @@ import com.tokopedia.sellerorder.common.util.Utils.setUserNotAllowedToViewSom
 import com.tokopedia.sellerorder.common.util.Utils.updateShopActive
 import com.tokopedia.sellerorder.databinding.FragmentSomListBinding
 import com.tokopedia.sellerorder.databinding.SomListHeaderBinding
+import com.tokopedia.sellerorder.common.presenter.bottomsheet.SomConfirmShippingBottomSheet
 import com.tokopedia.sellerorder.filter.presentation.bottomsheet.SomFilterBottomSheet
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterCancelWrapper
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModel
@@ -658,6 +659,14 @@ open class SomListFragment :
         }
     }
 
+    override fun onConfirmShippingAutoButtonClicked(popUp: PopUp?) {
+        popUp?.apply {
+            if (popUp.template.code != "") {
+                SomConfirmShippingBottomSheet.instance(context, view, popUp)
+            }
+        }
+    }
+
     override fun onAcceptOrderButtonClicked(
         actionName: String,
         orderId: String,
@@ -776,6 +785,7 @@ open class SomListFragment :
                     SomAnalytics.eventClickBulkPrintAwb(userSession.userId)
                 }
             }
+
             KEY_REQUEST_PICKUP -> {
                 showProgressBulkRequestPickupDialog(getSelectedOrderIds().size.toLong().orZero())
                 viewModel.bulkRequestPickup(getSelectedOrderIds())

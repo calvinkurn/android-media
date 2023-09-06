@@ -269,17 +269,19 @@ class RequestPickupFragment :
 
             val dropOffNotes = confirmReqPickupResponse.dataSuccess.dropOffLocation.dropOffNotes
 
-//            if (dropOffNotes.text.isNotEmpty() && dropOffNotes.title.isNotEmpty() && dropOffNotes.urlText.isNotEmpty()) {
+            if (dropOffNotes.text.isNotEmpty() && dropOffNotes.title.isNotEmpty() && dropOffNotes.urlText.isNotEmpty()) {
 
-            dropoffInfoTitle.text = dropOffNotes.title
+                dropoffInfoTitle.text = dropOffNotes.title
                 dropoffInfoText.text = dropOffNotes.text
-            dropoffInfoButton.apply {
-//                text = dropOffNotes.urlText
-                setOnClickListener {
-                    openWebview("www.google.com")
+                dropoffInfoButton.apply {
+                    text = dropOffNotes.urlText
+                    setOnClickListener {
+                        openWebview(dropOffNotes.urlDetail)
+                    }
                 }
+            }else{
+                cardDropOff.visibility = View.GONE
             }
-//            }
 
 
             if (confirmReqPickupResponse.dataSuccess.schedule_time.today.isNotEmpty() || confirmReqPickupResponse.dataSuccess.schedule_time.tomorrow.isNotEmpty()) {

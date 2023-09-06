@@ -9,8 +9,8 @@ import com.tokopedia.logisticseller.ui.requestpickup.data.model.SomConfirmReqPic
 import com.tokopedia.logisticseller.ui.requestpickup.data.model.SomConfirmReqPickupParam
 import com.tokopedia.logisticseller.ui.requestpickup.data.model.SomProcessReqPickup
 import com.tokopedia.logisticseller.ui.requestpickup.data.model.SomProcessReqPickupParam
-import com.tokopedia.logisticseller.ui.requestpickup.domain.usecase.SomConfirmReqPickupUseCase
-import com.tokopedia.logisticseller.ui.requestpickup.domain.usecase.SomProcessReqPickupUseCase
+import com.tokopedia.logisticseller.ui.requestpickup.domain.usecase.ConfirmRequestPickupUseCase
+import com.tokopedia.logisticseller.ui.requestpickup.domain.usecase.ProcessRequestPickupUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -21,8 +21,8 @@ import javax.inject.Inject
  */
 class RequestPickupViewModel @Inject constructor(
     dispatcher: CoroutineDispatchers,
-    private val somConfirmReqPickupUseCase: SomConfirmReqPickupUseCase,
-    private val somProcessReqPickupUseCase: SomProcessReqPickupUseCase
+    private val confirmRequestPickupUseCase: ConfirmRequestPickupUseCase,
+    private val processRequestPickupUseCase: ProcessRequestPickupUseCase
 ) : BaseViewModel(dispatcher.io) {
 
     private val _confirmReqPickupResult = MutableLiveData<Result<SomConfirmReqPickup.Data>>()
@@ -35,7 +35,7 @@ class RequestPickupViewModel @Inject constructor(
 
     fun loadConfirmRequestPickup(reqPickupParam: SomConfirmReqPickupParam) {
         launchCatchError(block = {
-            _confirmReqPickupResult.postValue(Success(somConfirmReqPickupUseCase.execute(reqPickupParam)))
+            _confirmReqPickupResult.postValue(Success(confirmRequestPickupUseCase.execute(reqPickupParam)))
         }, onError = {
             _confirmReqPickupResult.postValue(Fail(it))
         })
@@ -43,7 +43,7 @@ class RequestPickupViewModel @Inject constructor(
 
     fun processRequestPickup(processReqPickupParam: SomProcessReqPickupParam) {
         launchCatchError(block = {
-            _processReqPickupResult.postValue(Success(somProcessReqPickupUseCase.execute(processReqPickupParam)))
+            _processReqPickupResult.postValue(Success(processRequestPickupUseCase.execute(processReqPickupParam)))
         }, onError = {
             _processReqPickupResult.postValue(Fail(it))
         })

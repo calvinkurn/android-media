@@ -10,7 +10,7 @@ import javax.inject.Inject
 /**
  * Created by fwidjaja on 12/05/20.
  */
-class SomProcessReqPickupUseCase @Inject constructor(private val useCase: GraphqlUseCase<SomProcessReqPickup.Data>) {
+class ProcessRequestPickupUseCase @Inject constructor(private val useCase: GraphqlUseCase<SomProcessReqPickup.Data>) {
 
     init {
         useCase.setTypeClass(SomProcessReqPickup.Data::class.java)
