@@ -50,6 +50,7 @@ import org.json.JSONObject
 import timber.log.Timber
 import java.util.*
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.moneyin.R as moneyinR
 
 open class MoneyInHomeActivity : BaseMoneyInActivity<MoneyInHomeViewModel>(), TradeInListener {
     private var mTvPriceElligible: Typography? = null
@@ -119,7 +120,7 @@ open class MoneyInHomeActivity : BaseMoneyInActivity<MoneyInHomeViewModel>(), Tr
             }
         }
     }
-    private lateinit var tradeInApiService: TradeInApiService
+    private var tradeInApiService: TradeInApiService? = null
 
     override fun initInject() {
         component.inject(this)
@@ -222,7 +223,7 @@ open class MoneyInHomeActivity : BaseMoneyInActivity<MoneyInHomeViewModel>(), Tr
                                 when {
                                     editTextImei?.text?.length == 15 -> {
                                         showProgressBar()
-                                        tradeInApiService.checkImeiValidation(
+                                        tradeInApiService?.checkImeiValidation(
                                             this,
                                             editTextImei?.text.toString()
                                         )
@@ -251,7 +252,7 @@ open class MoneyInHomeActivity : BaseMoneyInActivity<MoneyInHomeViewModel>(), Tr
                                     }
                                 }
                             } else {
-                                tradeInApiService.startGUITest()
+                                tradeInApiService?.startGUITest()
                             }
                             sendGeneralEvent(
                                 clickEvent,
@@ -261,7 +262,7 @@ open class MoneyInHomeActivity : BaseMoneyInActivity<MoneyInHomeViewModel>(), Tr
                             )
                         }
                         if (inputImei) {
-                            tradeInApiService.startGUITest()
+                            tradeInApiService?.startGUITest()
                             return@observe
                         }
                         viewMoneyInPriceGTM(homeResult.deviceDisplayName + " - " + homeResult.displayMessage)
@@ -370,12 +371,12 @@ open class MoneyInHomeActivity : BaseMoneyInActivity<MoneyInHomeViewModel>(), Tr
             TokopediaUrl.getInstance().TYPE == Env.STAGING,
             TEST_TYPE
         )
-        tradeInApiService.setTokopediaTestType(TEST_TYPE)
+        tradeInApiService?.setTokopediaTestType(TEST_TYPE)
         requestPermission()
     }
 
     private fun requestPermission() {
-        if (!tradeInApiService.ispermissionGranted()) {
+        if (tradeInApiService?.ispermissionGranted() == false) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 ActivityCompat.requestPermissions(
                     this,
@@ -401,7 +402,7 @@ open class MoneyInHomeActivity : BaseMoneyInActivity<MoneyInHomeViewModel>(), Tr
                 )
             }
         } else {
-            moneyInHomeViewModel.getMaxPrice(tradeInApiService)
+            tradeInApiService?.let { moneyInHomeViewModel.getMaxPrice(it) }
         }
     }
 
@@ -457,7 +458,7 @@ open class MoneyInHomeActivity : BaseMoneyInActivity<MoneyInHomeViewModel>(), Tr
                         ) {
                             showMessageWithAction(
                                 getString(R.string.tradein_permission_setting),
-                                getString(com.tokopedia.abstraction.R.string.title_ok)
+                                getString(moneyinR.string.money_in_title_ok)
                             ) {
                                 val intent = Intent()
                                 intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
@@ -468,18 +469,18 @@ open class MoneyInHomeActivity : BaseMoneyInActivity<MoneyInHomeViewModel>(), Tr
                         } else {
                             showMessageWithAction(
                                 getString(R.string.tradein_requires_permission_for_diagnostic),
-                                getString(com.tokopedia.abstraction.R.string.title_ok)
+                                getString(moneyinR.string.money_in_title_ok)
                             ) { requestPermission() }
                         }
                         return
                     }
                 }
                 showProgressBar()
-                moneyInHomeViewModel.getMaxPrice(tradeInApiService)
+                tradeInApiService?.let { moneyInHomeViewModel.getMaxPrice(it) }
             } else {
                 showMessageWithAction(
                     getString(R.string.tradein_requires_permission_for_diagnostic),
-                    getString(com.tokopedia.abstraction.R.string.title_ok)
+                    getString(moneyinR.string.money_in_title_ok)
                 ) { requestPermission() }
             }
         }

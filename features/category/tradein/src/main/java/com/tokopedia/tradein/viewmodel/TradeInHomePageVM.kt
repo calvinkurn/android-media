@@ -28,6 +28,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
@@ -100,7 +101,7 @@ class TradeInHomePageVM @Inject constructor(
             tradeInUniqueCode = deviceModel?.uniqueCode ?: ""
             laku6DeviceModel.value = deviceModel
         } catch (e: Exception) {
-            e.printStackTrace()
+            Timber.d(e)
         }
     }
 

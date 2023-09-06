@@ -16,6 +16,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import org.json.JSONException
 import org.json.JSONObject
+import java.util.*
 import javax.inject.Inject
 
 class MoneyInHomeViewModel @Inject constructor(
@@ -178,6 +179,7 @@ class MoneyInHomeViewModel @Inject constructor(
                 CurrencyFormatUtil.convertPriceValueToIdrFormat(diagnosedPrice, true)
         } else {
             result.displayMessage = String.format(
+                Locale.getDefault(),
                 "%1\$s",
                 CurrencyFormatUtil.convertPriceValueToIdrFormat(maxPrice, true)
             )
