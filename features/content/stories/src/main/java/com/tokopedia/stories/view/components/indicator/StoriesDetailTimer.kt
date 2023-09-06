@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.tokopedia.stories.view.model.StoriesDetailItemUiModel
@@ -83,11 +84,11 @@ private fun StoriesDetailTimerContent(
                     .height(4.dp)
                     .clip(RoundedCornerShape(60))
                     .weight(1f)
-                    .background(Color.White.copy(alpha = 0.4f))
+                    .background(colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_Static_White).copy(alpha = 0.4f))
             ) {
                 Box(
                     modifier = Modifier
-                        .background(Color.White)
+                        .background(colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
                         .fillMaxHeight().let {
                             when (index) {
                                 currentPosition -> it.fillMaxWidth(progress)

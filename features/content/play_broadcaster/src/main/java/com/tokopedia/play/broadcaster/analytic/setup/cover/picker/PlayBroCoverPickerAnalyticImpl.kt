@@ -1,17 +1,9 @@
 package com.tokopedia.play.broadcaster.analytic.setup.cover.picker
 
+import com.tokopedia.content.analytic.BusinessUnit
+import com.tokopedia.content.analytic.Key
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.play.broadcaster.analytic.*
-import com.tokopedia.play.broadcaster.analytic.KEY_BUSINESS_UNIT
-import com.tokopedia.play.broadcaster.analytic.KEY_CURRENT_SITE
-import com.tokopedia.play.broadcaster.analytic.KEY_EVENT
-import com.tokopedia.play.broadcaster.analytic.KEY_EVENT_ACTION
-import com.tokopedia.play.broadcaster.analytic.KEY_EVENT_CATEGORY
-import com.tokopedia.play.broadcaster.analytic.KEY_EVENT_LABEL
-import com.tokopedia.play.broadcaster.analytic.KEY_SHOP_ID
-import com.tokopedia.play.broadcaster.analytic.KEY_TRACK_BUSINESS_UNIT
-import com.tokopedia.play.broadcaster.analytic.KEY_TRACK_CATEGORY
-import com.tokopedia.play.broadcaster.analytic.KEY_USER_ID
 import com.tokopedia.play.broadcaster.analytic.currentSite
 import com.tokopedia.play.broadcaster.shorts.analytic.helper.PlayShortsAnalyticHelper
 import com.tokopedia.play.broadcaster.ui.model.page.PlayBroPageSource
@@ -27,7 +19,7 @@ import javax.inject.Inject
  * Source : https://docs.google.com/spreadsheets/d/1i9Y8hLT97dLx6c3399f9ajQBORfQguzwBYtTHPDqQFI/edit#gid=0
  */
 class PlayBroCoverPickerAnalyticImpl @Inject constructor(
-    private val userSession: UserSessionInterface,
+    private val userSession: UserSessionInterface
 ) : PlayBroCoverPickerAnalytic {
 
     override fun viewAddCoverTitleBottomSheet(
@@ -164,11 +156,11 @@ class PlayBroCoverPickerAnalyticImpl @Inject constructor(
     override fun clickTimerCameraOnCameraPage(
         account: ContentAccountUiModel,
         source: PlayBroPageSource,
-        seconds: Int,
+        seconds: Int
     ) {
         clickGeneralEvent(
             action = "timer",
-            label = "${getCoverPickerBasicLabel(account, source)} - $seconds",
+            label = "${getCoverPickerBasicLabel(account, source)} - $seconds"
         )
     }
 
@@ -212,14 +204,14 @@ class PlayBroCoverPickerAnalyticImpl @Inject constructor(
     private fun sendGeneralEvent(event: String, action: String, label: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
-                KEY_EVENT to event,
-                KEY_EVENT_CATEGORY to KEY_TRACK_CATEGORY_PLAY,
-                KEY_EVENT_ACTION to action,
-                KEY_EVENT_LABEL to label,
-                KEY_CURRENT_SITE to currentSite,
-                KEY_SHOP_ID to userSession.shopId,
-                KEY_USER_ID to userSession.userId,
-                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT
+                Key.event to event,
+                Key.eventCategory to KEY_TRACK_CATEGORY_PLAY,
+                Key.eventAction to action,
+                Key.eventLabel to label,
+                Key.currentSite to currentSite,
+                Key.shopId to userSession.shopId,
+                Key.userId to userSession.userId,
+                Key.businessUnit to BusinessUnit.play
             )
         )
     }
@@ -228,8 +220,8 @@ class PlayBroCoverPickerAnalyticImpl @Inject constructor(
         TrackApp.getInstance().gtm.sendScreenAuthenticated(
             screenName,
             hashMapOf(
-                KEY_CURRENT_SITE to currentSite,
-                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT
+                Key.currentSite to currentSite,
+                Key.businessUnit to BusinessUnit.play
             )
         )
     }
@@ -239,7 +231,7 @@ class PlayBroCoverPickerAnalyticImpl @Inject constructor(
     }
 
     private fun getPageSourceAnalytic(pageSource: PlayBroPageSource): String {
-        return when(pageSource) {
+        return when (pageSource) {
             PlayBroPageSource.Live -> LIVE
             PlayBroPageSource.Shorts -> SHORTS
             else -> ""

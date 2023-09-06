@@ -30,6 +30,7 @@ class UserProfileViewModelRobot(
     private val userSession: UserSessionInterface = mockk(relaxed = true),
     private val dispatcher: CoroutineTestDispatchers = CoroutineTestDispatchers,
     private val userProfileSharedPref: UserProfileSharedPref = mockk(relaxed = true),
+    private val dispatchers: CoroutineTestDispatchers = CoroutineTestDispatchers,
 ) : Closeable {
 
     val viewModel = UserProfileViewModel(
@@ -38,6 +39,7 @@ class UserProfileViewModelRobot(
         followRepo = followRepo,
         userSession = userSession,
         userProfileSharedPref = userProfileSharedPref,
+        dispatchers = dispatchers,
     )
 
     fun setup(fn: suspend UserProfileViewModelRobot.() -> Unit): UserProfileViewModelRobot {

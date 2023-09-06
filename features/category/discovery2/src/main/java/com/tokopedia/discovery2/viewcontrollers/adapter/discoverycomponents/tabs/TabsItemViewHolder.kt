@@ -7,13 +7,13 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.Observer
+import com.tokopedia.discovery2.Constant.TAB_BACKGROUND
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifyprinciples.R as RUnify
 
 class TabsItemViewHolder(itemView: View, fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
@@ -30,26 +30,27 @@ class TabsItemViewHolder(itemView: View, fragment: Fragment) : AbstractViewHolde
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         lifecycleOwner?.let {
             tabsItemViewModel?.getComponentLiveData()?.observe(
-                lifecycleOwner,
-                Observer {
-                    val itemData = it.data?.get(0)
-                    positionForParentAdapter = itemData?.positionForParentItem ?: -1
-                    itemData?.let { item ->
-                        tabImageView.loadImage(item.backgroundImage ?: "")
-                        item.name?.let { name ->
-                            setTabText(name)
-                        }
-                        setFontColor(item.fontColor)
-                        showSelectedView(item.isSelected)
+                lifecycleOwner
+            ) { componentsItem ->
+                val itemData = componentsItem.data?.get(0)
+                positionForParentAdapter = itemData?.positionForParentItem ?: -1
+                itemData?.let { item ->
+                    tabImageView.loadImage(
+                        item.backgroundImage.takeIf { !it.isNullOrEmpty() }
+                            ?: TAB_BACKGROUND
+                    )
+                    item.name?.let { name ->
+                        setTabText(name)
                     }
+                    setFontColor(item.fontColor)
+                    showSelectedView(item.isSelected)
                 }
-            )
+            }
             tabsItemViewModel?.getSelectionChangeLiveData()?.observe(
-                lifecycleOwner,
-                Observer {
-                    showSelectedView(it)
-                }
-            )
+                lifecycleOwner
+            ) {
+                showSelectedView(it)
+            }
         }
     }
 

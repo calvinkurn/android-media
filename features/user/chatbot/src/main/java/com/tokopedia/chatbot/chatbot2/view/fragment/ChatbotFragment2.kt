@@ -39,7 +39,6 @@ import com.tokopedia.abstraction.common.utils.network.URLGenerator
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.chat_common.BaseChatFragment
 import com.tokopedia.chat_common.BaseChatToolbarActivity
 import com.tokopedia.chat_common.data.AttachmentType
 import com.tokopedia.chat_common.data.BaseChatUiModel
@@ -53,6 +52,7 @@ import com.tokopedia.chat_common.domain.pojo.Attachment
 import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.VideoMenu
+import com.tokopedia.chat_common.view.fragment.BaseChatFragment
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chat_common.view.widget.AttachmentMenuRecyclerView
@@ -117,6 +117,7 @@ import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.AttachedI
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.ChatActionListBubbleListener
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.ChatOptionListListener
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.ChatRatingListener
+import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.ChatbotOwocListener
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.CsatOptionListListener
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.DynamicStickyButtonListener
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.QuickReplyListener
@@ -252,7 +253,8 @@ class ChatbotFragment2 :
     com.tokopedia.chatbot.chatbot2.view.customview.chatroom.listener.ReplyBoxClickListener,
     ChatbotRejectReasonsBottomSheet.ChatbotRejectReasonsListener,
     DynamicStickyButtonListener,
-    ChatbotRejectReasonsChipListener {
+    ChatbotRejectReasonsChipListener,
+    ChatbotOwocListener {
 
     @Inject
     lateinit var session: UserSessionInterface
@@ -647,6 +649,7 @@ class ChatbotFragment2 :
 
     override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {
         return ChatbotTypeFactoryImpl(
+            this,
             this,
             this,
             this,
@@ -2940,5 +2943,9 @@ class ChatbotFragment2 :
 
     override fun onChipClick(count: Int) {
         reasonsBottomSheet?.checkChipCounter(count)
+    }
+
+    override fun onReceiveOwocInvoiceList() {
+        hideKeyboard()
     }
 }

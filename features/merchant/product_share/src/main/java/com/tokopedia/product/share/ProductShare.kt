@@ -512,6 +512,8 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
                 )
                 universalShareBottomSheet = this
 
+                setOnDismissListener { universalShareBottomSheet = null }
+
                 setOnGetAffiliateData {
                     onImpressShareWidget(
                         this.getShareBottomSheetType(),

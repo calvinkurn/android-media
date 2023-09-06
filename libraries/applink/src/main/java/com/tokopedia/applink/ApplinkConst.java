@@ -39,6 +39,7 @@ public interface ApplinkConst {
     String SHOP_ETALASE_WITH_KEYWORD_AND_SORT = "tokopedia://shop/{shop_id}/etalase/{etalase_id}/?search={search}&sort={sort}";
     String PRODUCT_BUNDLE = "tokopedia://product-bundle/{product_id}";
     String GIFTING = "tokopedia://gifting/{addon_id}";
+    String ADDON = "tokopedia://addon/{addon_id}";
     String SHOP_REVIEW = "tokopedia://shop/{shop_id}/review?review-source={source}";
     String SHOP_NOTE = "tokopedia://shop/{shop_id}/note";
     String SHOP_INFO = "tokopedia://shop/{shop_id}/info";
@@ -189,6 +190,7 @@ public interface ApplinkConst {
      * Tokochat (Chat with Gojek)
      */
     String TOKO_CHAT = "tokopedia://tokochat";
+    String TOKO_CHAT_LIST = "tokopedia://tokochat/list";
 
     String CHATBOT_HOST = "chatbot";
     String CHATBOT = "tokopedia://chatbot/{message_id}";
@@ -563,6 +565,7 @@ public interface ApplinkConst {
         String GOLD_MERCHANT = "sellerapp://gold";
         String SELLER_APP_HOME = "sellerapp://home";
         String TOPADS_DASHBOARD = "sellerapp://topads";
+        String TOPADS_DASH_BOARD = "sellerapp://topads/dashboard";
         String POWER_MERCHANT_SUBSCRIBE = "sellerapp://power_merchant/subscribe";
         String PM_BENEFIT_PACKAGE = "sellerapp://power_merchant/benefit-package";
         String BROWSER = "sellerapp://browser";
@@ -666,6 +669,9 @@ public interface ApplinkConst {
     interface Query {
         String ORDER_TRACKING_ORDER_ID = "order_id";
         String ORDER_TRACKING_URL_LIVE_TRACKING = "url_live_tracking";
+
+        String TX_ID = "tx_id";
+        String GROUP_TYPE = "group_type";
         String ORDER_TRACKING_CALLER = "caller";
 
         String IMAGE_PREVIEW_FILELOC = "fileloc";

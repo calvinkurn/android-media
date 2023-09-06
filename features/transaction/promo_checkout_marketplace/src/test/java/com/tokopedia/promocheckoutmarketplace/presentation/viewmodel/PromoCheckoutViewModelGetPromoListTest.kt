@@ -1,5 +1,6 @@
 package com.tokopedia.promocheckoutmarketplace.presentation.viewmodel
 
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideCurrentSelectedExpandedGlobalPromoData
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideCurrentSelectedExpandedMerchantPromoData
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideGetPromoListRequest
@@ -25,6 +26,7 @@ import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoListItem
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import io.mockk.Runs
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.just
 import org.junit.Assert.assertNotNull
@@ -686,5 +688,65 @@ class PromoCheckoutViewModelGetPromoListTest : BasePromoCheckoutViewModelTest() 
 
         // then
         assert(viewModel.fragmentUiModel.value?.uiState?.shouldShowTickerBoClashing == false)
+    }
+
+    @Test
+    fun `WHEN get promo list with promo code error and non-empty message THEN should send analytics error`() {
+        // given
+        val errorMessage = "Tokopedia"
+        val promoCode = "dummy"
+        val response = MessageErrorException(errorMessage)
+
+        coEvery { analytics.eventViewErrorAfterClickTerapkanPromo(any(), any(), any(), any()) } just Runs
+        coEvery { getCouponListRecommendationUseCase.setParams(any(), any()) } just Runs
+        coEvery { getCouponListRecommendationUseCase.execute(any(), any()) } answers {
+            secondArg<(Throwable) -> Unit>().invoke(response)
+        }
+
+        // when
+        viewModel.getPromoList(PromoRequest(), promoCode)
+
+        // then
+        coVerify { analytics.eventViewErrorAfterClickTerapkanPromo(any(), errorMessage, any(), promoCode) }
+    }
+
+    @Test
+    fun `WHEN get promo list with promo code error and empty message THEN should send analytics error`() {
+        // given
+        val errorMessage = ""
+        val promoCode = "dummy"
+        val response = MessageErrorException(errorMessage)
+
+        coEvery { analytics.eventViewErrorAfterClickTerapkanPromo(any(), any(), any(), any()) } just Runs
+        coEvery { getCouponListRecommendationUseCase.setParams(any(), any()) } just Runs
+        coEvery { getCouponListRecommendationUseCase.execute(any(), any()) } answers {
+            secondArg<(Throwable) -> Unit>().invoke(response)
+        }
+
+        // when
+        viewModel.getPromoList(PromoRequest(), promoCode)
+
+        // then
+        coVerify { analytics.eventViewErrorAfterClickTerapkanPromo(any(), errorMessage, any(), promoCode) }
+    }
+
+    @Test
+    fun `WHEN get promo list with empty promo code error THEN should NOT send analytics error`() {
+        // given
+        val errorMessage = "Tokopedia"
+        val promoCode = ""
+        val response = MessageErrorException(errorMessage)
+
+        coEvery { analytics.eventViewErrorAfterClickTerapkanPromo(any(), any(), any(), any()) } just Runs
+        coEvery { getCouponListRecommendationUseCase.setParams(any(), any()) } just Runs
+        coEvery { getCouponListRecommendationUseCase.execute(any(), any()) } answers {
+            secondArg<(Throwable) -> Unit>().invoke(response)
+        }
+
+        // when
+        viewModel.getPromoList(PromoRequest(), promoCode)
+
+        // then
+        coVerify(exactly = 0) { analytics.eventViewErrorAfterClickTerapkanPromo(any(), any(), any(), any()) }
     }
 }

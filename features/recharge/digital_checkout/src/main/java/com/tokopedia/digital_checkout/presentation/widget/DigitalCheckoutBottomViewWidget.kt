@@ -129,9 +129,11 @@ class DigitalCheckoutBottomViewWidget @JvmOverloads constructor(
     fun setProductConsentWidget(
         lifecycleOwner: LifecycleOwner,
         viewModelStoreOwner: ViewModelStoreOwner,
-        consentCollectionParam: ConsentCollectionParam
+        consentCollectionParam: ConsentCollectionParam,
+        hasDataElements: Boolean
     ) {
         with(binding.viewProductConsentWidget) {
+            hideWhenAlreadySubmittedConsent = hasDataElements
             setOnCheckedChangeListener { isChecked ->
                 isCheckoutButtonEnabled = isChecked
             }

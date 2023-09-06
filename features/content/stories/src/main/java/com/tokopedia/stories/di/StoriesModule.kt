@@ -11,8 +11,6 @@ import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.DebugInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
-import com.tokopedia.trackingoptimizer.TrackingQueue
-import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
@@ -20,21 +18,11 @@ import okhttp3.OkHttpClient
 import java.util.concurrent.TimeUnit
 
 @Module
-class StoriesModule(private val activityContext: Context) {
-
-    @Provides
-    @StoriesScope
-    fun provideActivityContext() = activityContext
+class StoriesModule {
 
     @Provides
     fun provideGraphQLRepository(): GraphqlRepository {
         return GraphqlInteractor.getInstance().graphqlRepository
-    }
-
-    @Provides
-    @StoriesScope
-    fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
-        return UserSession(context)
     }
 
     @Provides
@@ -88,7 +76,4 @@ class StoriesModule(private val activityContext: Context) {
         return TkpdAuthInterceptor(context, networkRouter, userSession)
     }
 
-    @Provides
-    @StoriesScope
-    fun provideTrackingQueue(@ApplicationContext context: Context) = TrackingQueue(context)
 }

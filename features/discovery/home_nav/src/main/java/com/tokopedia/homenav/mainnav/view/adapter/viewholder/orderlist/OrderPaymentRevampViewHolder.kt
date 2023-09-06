@@ -13,6 +13,7 @@ import com.tokopedia.homenav.databinding.HolderTransactionPaymentRevampBinding
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderPaymentRevampModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -24,24 +25,12 @@ class OrderPaymentRevampViewHolder(itemView: View, val mainNavListener: MainNavL
         val LAYOUT = R.layout.holder_transaction_payment_revamp
     }
 
-    private fun setLayoutFullWidth(element: OrderPaymentRevampModel) {
-        val layoutParams = binding?.orderPaymentCard?.layoutParams
-        if (element.navPaymentModel.fullWidth) {
-            layoutParams?.width = ViewGroup.LayoutParams.MATCH_PARENT
-        } else {
-            layoutParams?.width =
-                itemView.resources.getDimension(com.tokopedia.homenav.R.dimen.nav_card_me_page_size).toInt()
-        }
-        binding?.orderPaymentCard?.layoutParams = layoutParams
-    }
-
     override fun bind(element: OrderPaymentRevampModel, payloads: MutableList<Any>) {
         bind(element)
     }
 
     override fun bind(paymentRevampModel: OrderPaymentRevampModel) {
         val context = itemView.context
-        setLayoutFullWidth(paymentRevampModel)
 
         itemView.addOnImpressionListener(paymentRevampModel)  {
             mainNavListener.onOrderCardImpressed(
@@ -50,6 +39,9 @@ class OrderPaymentRevampViewHolder(itemView: View, val mainNavListener: MainNavL
                 paymentRevampModel.position
             )
         }
+
+        binding?.orderPaymentCard?.animateOnPress = CardUnify2.ANIMATE_OVERLAY
+
         //title
         binding?.orderPaymentName?.text = String.format(
                 context.getString(R.string.transaction_rupiah_value),
@@ -73,7 +65,9 @@ class OrderPaymentRevampViewHolder(itemView: View, val mainNavListener: MainNavL
 
         var paymentStatusColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_YN500)
         if (paymentRevampModel.navPaymentModel.statusTextColor.isNotEmpty()) {
-            paymentStatusColor = Color.parseColor(paymentRevampModel.navPaymentModel.statusTextColor)
+            try {
+                paymentStatusColor = Color.parseColor(paymentRevampModel.navPaymentModel.statusTextColor)
+            } catch (_: Exception) { }
         }
         binding?.orderPaymentStatus?.setTextColor(paymentStatusColor)
 
@@ -81,7 +75,12 @@ class OrderPaymentRevampViewHolder(itemView: View, val mainNavListener: MainNavL
             val applink = if(binding?.orderPaymentStatus?.text == context.getString(R.string.transaction_item_default_status))
                 ApplinkConst.PMS
             else paymentRevampModel.navPaymentModel.applink
-            mainNavListener.onOrderCardClicked(applink, binding?.orderPaymentStatus?.text.toString())
+            mainNavListener.onOrderCardClicked(
+                applink,
+                binding?.orderPaymentStatus?.text.toString(),
+                paymentRevampModel.navPaymentModel.id,
+                paymentRevampModel.position
+            )
         }
     }
 }

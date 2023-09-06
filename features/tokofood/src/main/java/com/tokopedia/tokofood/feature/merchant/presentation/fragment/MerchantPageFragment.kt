@@ -100,7 +100,7 @@ import com.tokopedia.tokofood.feature.merchant.presentation.mvc.TokofoodMerchant
 import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.MerchantCarouseItemViewHolder
 import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.ProductCardViewHolder
 import com.tokopedia.tokofood.feature.merchant.presentation.viewmodel.MerchantPageViewModel
-import com.tokopedia.tokofood.feature.purchase.promopage.presentation.TokoFoodPromoFragmentOld
+import com.tokopedia.tokofood.feature.purchase.promopage.presentation.MerchantTokoFoodPromoFragment
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.TokoFoodPurchaseFragment
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -1666,7 +1666,7 @@ class MerchantPageFragment : BaseMultiFragment(),
     private fun goToPromoPage() {
         merchantPageAnalytics.clickPromoMvc(currentPromoName.orEmpty(), merchantId)
         navigateToNewFragment(
-            TokoFoodPromoFragmentOld.createInstance(
+            MerchantTokoFoodPromoFragment.createInstance(
                 SOURCE,
                 merchantId,
                 true

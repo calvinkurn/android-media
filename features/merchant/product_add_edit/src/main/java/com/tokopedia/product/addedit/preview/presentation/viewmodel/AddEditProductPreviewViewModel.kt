@@ -38,6 +38,7 @@ import com.tokopedia.product.addedit.productlimitation.domain.usecase.ProductLim
 import com.tokopedia.product.addedit.specification.domain.model.AnnotationCategoryData
 import com.tokopedia.product.addedit.specification.domain.usecase.AnnotationCategoryUseCase
 import com.tokopedia.product.addedit.specification.presentation.model.SpecificationInputModel
+import com.tokopedia.product.addedit.variant.presentation.extension.getValueOrDefault
 import com.tokopedia.product.addedit.variant.presentation.model.ValidationResultModel
 import com.tokopedia.product.addedit.variant.presentation.model.ValidationResultModel.Result.*
 import com.tokopedia.product.manage.common.feature.draft.data.model.ProductDraft
@@ -141,6 +142,10 @@ class AddEditProductPreviewViewModel @Inject constructor(
 
     val mustFillParentWeight = Transformations.map(productInputModel) {
         !it.shipmentInputModel.isUsingParentWeight && !it.variantInputModel.hasVariant()
+    }
+
+    val isRemovingSingleVariant = Transformations.map(productInputModel) {
+        it.isRemovingSingleVariant
     }
 
     private val mImageUrlOrPathList = MutableLiveData<MutableList<String>>()
@@ -665,22 +670,26 @@ class AddEditProductPreviewViewModel @Inject constructor(
      * */
     fun clearProductPhotoUrl(
         imagePickerResult: ArrayList<String>,
-        originalImageUrl: ArrayList<String>
+        originalImageUrls: ArrayList<String>
     ): Pair<ArrayList<String>, ArrayList<Boolean>> {
         val resultCleaner = arrayListOf<String>()
         val isEdited = arrayListOf<Boolean>()
         imagePickerResult.forEachIndexed { index, uriEditImage ->
+            val originalImageUrl = originalImageUrls.getOrNull(index)
             when {
                 uriEditImage.isNotEmpty() -> {
                     resultCleaner.add(uriEditImage)
                     isEdited.add(true)
                 }
-                isPictureFromInternet(originalImageUrl[index]) -> {
-                    resultCleaner.add(originalImageUrl[index])
+                originalImageUrl.isNullOrEmpty() -> {
+                    return@forEachIndexed
+                }
+                isPictureFromInternet(originalImageUrl) -> {
+                    resultCleaner.add(originalImageUrl)
                     isEdited.add(false)
                 }
                 else -> {
-                    resultCleaner.add(originalImageUrl[index])
+                    resultCleaner.add(originalImageUrl)
                     isEdited.add(true)
                 }
             }
@@ -690,5 +699,10 @@ class AddEditProductPreviewViewModel @Inject constructor(
 
     private fun isPictureFromInternet(urlOrPath: String): Boolean {
         return urlOrPath.contains(PREFIX_CACHE)
+    }
+
+    fun convertToNonVariant() {
+        productInputModel.getValueOrDefault().convertToNonVariant()
+        productInputModel.value = productInputModel.value // refresh and re-trigger livedata changes
     }
 }

@@ -10,9 +10,9 @@ internal object CategoryDetail: GqlQueryInterface {
                 ${'$'}categoryID: String!, 
                 ${'$'}slug: String!, 
                 ${'$'}source: String!, 
-                ${'$'}warehouseID: String!
+                ${'$'}warehouses: [WarehousePerService!]
             ){
-              TokonowCategoryDetail(categoryID: ${'$'}categoryID, slug: ${'$'}slug, source: ${'$'}source, warehouseID: ${'$'}warehouseID) {
+              TokonowCategoryDetail(categoryID: ${'$'}categoryID, slug: ${'$'}slug, source: ${'$'}source, warehouses: ${'$'}warehouses) {
                 header {
                   process_time
                   messages
@@ -25,7 +25,10 @@ internal object CategoryDetail: GqlQueryInterface {
                   url
                   applinks
                   imageUrl
-                  color
+                  colorObj {
+                    hexLight
+                    hexDark
+                  }
                   child {
                     id
                     name
@@ -35,7 +38,10 @@ internal object CategoryDetail: GqlQueryInterface {
                     isKyc
                     isAdult
                     minAge
-                    color
+                    colorObj {
+                      hexLight
+                      hexDark
+                    }
                   }
                   recommendation {
                     id
@@ -43,7 +49,10 @@ internal object CategoryDetail: GqlQueryInterface {
                     url
                     applinks
                     imageUrl
-                    color
+                    colorObj {
+                      hexLight
+                      hexDark
+                    }
                   }
                   navigation {
                     prev {

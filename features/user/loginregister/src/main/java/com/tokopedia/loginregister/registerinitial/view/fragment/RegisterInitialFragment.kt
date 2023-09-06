@@ -593,7 +593,7 @@ class RegisterInitialFragment :
     private fun onFailedGetProvider(throwable: Throwable) {
         if (isUsingRedefineRegisterEmailMandatoryOptionalVariant()) {
             registerInitialViewModel.setOtherMethodState(
-                OtherMethodState.Failed(context?.getString(R.string.default_request_error_unknown))
+                OtherMethodState.Failed(context?.getString(com.tokopedia.network.R.string.default_request_error_unknown))
             )
             bottomSheetOtherMethod?.setState(registerInitialViewModel.otherMethodState)
         }
