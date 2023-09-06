@@ -2,7 +2,7 @@ package com.tokopedia.cartrevamp.view.mapper
 
 import com.tokopedia.cartrevamp.domain.model.bmgm.request.BmGmGetGroupProductTickerParams
 import com.tokopedia.cartrevamp.view.uimodel.CartGroupHolderData
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.purchase_platform.common.utils.removeSingleDecimalSuffix
 
 object BmGmTickerRequestMapper {
     fun generateGetGroupProductTickerRequestParams(cartGroup: CartGroupHolderData, offerId: Long): BmGmGetGroupProductTickerParams {
@@ -16,9 +16,9 @@ object BmGmTickerRequestMapper {
                         cartId = cartItemProduct.cartId,
                         shopId = cartItemProduct.shopHolderData.shopId,
                         productId = cartItemProduct.productId,
-                        warehouseId = cartItemProduct.warehouseId.toLongOrZero(),
+                        warehouseId = cartItemProduct.warehouseId,
                         qty = cartItemProduct.quantity,
-                        finalPrice = cartItemProduct.productOriginalPrice,
+                        finalPrice = cartItemProduct.productPrice.toString().removeSingleDecimalSuffix(),
                         checkboxState = cartItemProduct.isSelected
                     )
                 )

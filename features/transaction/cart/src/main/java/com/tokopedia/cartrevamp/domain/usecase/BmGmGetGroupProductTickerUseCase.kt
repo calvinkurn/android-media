@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 @GqlQuery("GetGroupProductTickerQuery", BmGmGetGroupProductTickerUseCase.query)
 class BmGmGetGroupProductTickerUseCase @Inject constructor(
-    @ApplicationContext private val repository: GraphqlRepository,
+    @ApplicationContext private val graphqlRepository: GraphqlRepository,
     dispatchers: CoroutineDispatchers
 ) :
     CoroutineUseCase<BmGmGetGroupProductTickerParams, BmGmGetGroupProductTickerResponse>(dispatchers.io) {
@@ -20,7 +20,7 @@ class BmGmGetGroupProductTickerUseCase @Inject constructor(
     override fun graphqlQuery(): String = query
 
     override suspend fun execute(params: BmGmGetGroupProductTickerParams): BmGmGetGroupProductTickerResponse {
-        return repository.request(GetGroupProductTickerQuery(), createVariables(params))
+        return graphqlRepository.request(GetGroupProductTickerQuery(), createVariables(params))
     }
 
     private fun createVariables(params: BmGmGetGroupProductTickerParams): Map<String, Any> {
@@ -38,6 +38,7 @@ class BmGmGetGroupProductTickerUseCase @Inject constructor(
                     status
                     data {
                         type
+                        action
                         icon {
                             url
                         }
