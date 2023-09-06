@@ -116,8 +116,8 @@ class FilterGeneralDetailBottomSheet: BottomSheetUnify(), FilterGeneralDetailAda
     }
 
     private fun renderLoading(isLoading : Boolean) {
-        binding?.progressBarSortBottomSheet?.showWithCondition(isLoading)
-        binding?.buttonApplyFilterDetailContainer?.showWithCondition(!isLoading)
+        binding?.progressBarSortBottomSheet?.showWithCondition(!isLoading)
+        binding?.buttonApplyFilterDetailContainer?.showWithCondition(isLoading)
     }
 
     private fun initButtonReset() {
