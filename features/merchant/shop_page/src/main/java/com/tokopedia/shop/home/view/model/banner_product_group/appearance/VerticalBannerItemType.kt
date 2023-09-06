@@ -2,13 +2,13 @@ package com.tokopedia.shop.home.view.model.banner_product_group.appearance
 
 import android.os.Parcelable
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
-import com.tokopedia.shop.home.view.model.banner_product_group.ShopWidgetComponentBannerProductGroupUiModel
+import com.tokopedia.shop.home.view.model.banner_product_group.BannerProductGroupUiModel
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class VerticalBannerItemType(
     val componentId: Long?,
-    val componentName: ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.ComponentName?,
+    val componentName: BannerProductGroupUiModel.Tab.ComponentList.ComponentName?,
     val imageUrl: String,
     val appLink: String,
     override val id : String = imageUrl,

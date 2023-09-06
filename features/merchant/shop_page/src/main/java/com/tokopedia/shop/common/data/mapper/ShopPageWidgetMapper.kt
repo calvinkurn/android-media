@@ -14,7 +14,7 @@ import com.tokopedia.shop.home.data.model.ShopPageWidgetRequestModel
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.CarouselAppearance
 import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.LeftMainBannerAppearance
-import com.tokopedia.shop.home.view.model.banner_product_group.ShopWidgetComponentBannerProductGroupUiModel
+import com.tokopedia.shop.home.view.model.banner_product_group.BannerProductGroupUiModel
 import com.tokopedia.shop.home.view.customview.directpurchase.Etalase
 import com.tokopedia.shop.home.view.customview.directpurchase.Title
 import com.tokopedia.shop.home.view.customview.directpurchase.WidgetData
@@ -24,8 +24,8 @@ import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerTimerUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetVoucherSliderUiModel
 import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseNavigationBannerWidgetStyle
 import com.tokopedia.shop.home.view.model.StatusCampaign
-import com.tokopedia.shop.home.view.model.banner_product_group.ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.ComponentName
-import com.tokopedia.shop.home.view.model.banner_product_group.ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.Data.LinkType
+import com.tokopedia.shop.home.view.model.banner_product_group.BannerProductGroupUiModel.Tab.ComponentList.ComponentName
+import com.tokopedia.shop.home.view.model.banner_product_group.BannerProductGroupUiModel.Tab.ComponentList.Data.LinkType
 import com.tokopedia.shop.home.view.model.showcase_navigation.Showcase
 import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseCornerShape
 import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseTab
@@ -245,7 +245,7 @@ object ShopPageWidgetMapper {
         widgetLayout: ShopPageWidgetUiModel?,
         isOverrideTheme: Boolean,
         colorSchema: ShopPageColorSchema
-    ): ShopWidgetComponentBannerProductGroupUiModel {
+    ): BannerProductGroupUiModel {
         val tabs = response.data.map { tab ->
             val componentList = tab.componentList.map { component ->
 
@@ -263,7 +263,7 @@ object ShopPageWidgetMapper {
                         else -> LinkType.PRODUCT
                     }
 
-                    ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.Data(
+                    BannerProductGroupUiModel.Tab.ComponentList.Data(
                         data.imageUrl,
                         data.ctaLink,
                         data.linkID,
@@ -272,19 +272,19 @@ object ShopPageWidgetMapper {
                     )
                 }
 
-                ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList(
+                BannerProductGroupUiModel.Tab.ComponentList(
                     component.componentID,
                     componentName,
                     data
                 )
             }
 
-            ShopWidgetComponentBannerProductGroupUiModel.Tab(tab.tabLabel, tab.tabName, componentList)
+            BannerProductGroupUiModel.Tab(tab.tabLabel, tab.tabName, componentList)
         }
 
         val viewAllChevronAppLink = response.header.ctaLink
 
-        return ShopWidgetComponentBannerProductGroupUiModel(
+        return BannerProductGroupUiModel(
             widgetId = response.widgetID,
             layoutOrder = response.layoutOrder,
             title = response.header.title,

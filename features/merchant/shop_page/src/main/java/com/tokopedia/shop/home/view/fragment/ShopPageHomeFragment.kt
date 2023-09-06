@@ -187,7 +187,7 @@ import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeFlashSaleUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeNewProductLaunchCampaignUiModel
-import com.tokopedia.shop.home.view.model.banner_product_group.ShopWidgetComponentBannerProductGroupUiModel
+import com.tokopedia.shop.home.view.model.banner_product_group.BannerProductGroupUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeShowcaseListItemUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeShowcaseListSliderUiModel
@@ -5117,7 +5117,7 @@ open class ShopPageHomeFragment :
         RouteManager.route(context, ApplinkConst.PRODUCT_INFO, productId)
     }
 
-    override fun onBannerProductGroupMainBannerClick(mainBanner: ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.Data) {
+    override fun onBannerProductGroupMainBannerClick(mainBanner: BannerProductGroupUiModel.Tab.ComponentList.Data) {
         try {
             RouteManager.route(activity ?: return, mainBanner.ctaLink)
         } catch (_: Exception) {

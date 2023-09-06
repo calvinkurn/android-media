@@ -6,24 +6,23 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.home.view.model.banner_product_group.appearance.ProductItemType
-import com.tokopedia.shop.home.view.model.banner_product_group.ShopWidgetComponentBannerProductGroupUiModel
+import com.tokopedia.shop.home.view.model.banner_product_group.BannerProductGroupUiModel
 import com.tokopedia.shop.home.view.model.banner_product_group.appearance.ShopHomeBannerProductGroupItemType
 import com.tokopedia.shop.home.view.model.banner_product_group.appearance.VerticalBannerItemType
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import javax.inject.Inject
-import com.tokopedia.shop.home.view.model.banner_product_group.ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.ComponentName
+import com.tokopedia.shop.home.view.model.banner_product_group.BannerProductGroupUiModel.Tab.ComponentList.ComponentName
 import com.tokopedia.shop.product.data.model.ShopFeaturedProductParams
 import com.tokopedia.shop.product.domain.interactor.GetShopFeaturedProductUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.shop.common.data.source.cloud.model.LabelGroup
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
-import com.tokopedia.shop.home.view.model.banner_product_group.ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.Data.LinkType
+import com.tokopedia.shop.home.view.model.banner_product_group.BannerProductGroupUiModel.Tab.ComponentList.Data.LinkType
 import kotlinx.coroutines.SupervisorJob
 import kotlin.coroutines.CoroutineContext
 
@@ -57,7 +56,7 @@ class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
     }
 
     fun getCarouselWidgets(
-        widgets: List<ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList>,
+        widgets: List<BannerProductGroupUiModel.Tab.ComponentList>,
         shopId: String,
         userAddress: LocalCacheModel,
         widgetStyle: String,
@@ -76,7 +75,7 @@ class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
 
                     val products = getProductsByProductMetadata(shopId, userAddress, productMetadata, overrideTheme, colorSchema)
 
-                    val hasVerticalBanner = widgetStyle == ShopWidgetComponentBannerProductGroupUiModel.WidgetStyle.VERTICAL.id
+                    val hasVerticalBanner = widgetStyle == BannerProductGroupUiModel.WidgetStyle.VERTICAL.id
                     val carouselWidgets = if (hasVerticalBanner) {
                         val verticalBanner = getVerticalBanner(widgets)
                         verticalBanner + products
@@ -94,7 +93,7 @@ class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
         }
     }
 
-    private fun getVerticalBanner(widgets: List<ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList>): List<VerticalBannerItemType> {
+    private fun getVerticalBanner(widgets: List<BannerProductGroupUiModel.Tab.ComponentList>): List<VerticalBannerItemType> {
         val bannerComponents = widgets.filter { widget -> widget.componentName == ComponentName.DISPLAY_SINGLE_COLUMN }
         val banner = bannerComponents.getOrNull(0)
         val bannerWidgets = banner?.data ?: emptyList()
@@ -111,8 +110,8 @@ class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
     }
 
     private fun getProductMetadata(
-        widgets: List<ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList>
-    ): ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.Data? {
+        widgets: List<BannerProductGroupUiModel.Tab.ComponentList>
+    ): BannerProductGroupUiModel.Tab.ComponentList.Data? {
         val productComponents = widgets.filter { widget -> widget.componentName == ComponentName.PRODUCT }
 
         val product = productComponents.getOrNull(0)
@@ -123,7 +122,7 @@ class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
     private suspend fun getProductsByProductMetadata(
         shopId: String,
         userAddress: LocalCacheModel,
-        productWidget: ShopWidgetComponentBannerProductGroupUiModel.Tab.ComponentList.Data,
+        productWidget: BannerProductGroupUiModel.Tab.ComponentList.Data,
         overrideTheme: Boolean,
         colorSchema: ShopPageColorSchema
     ): List<ProductItemType> {
