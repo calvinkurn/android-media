@@ -120,6 +120,27 @@ class SomListGetOrderListUseCase @Inject constructor(
                         color
                         type
                       }
+                      template {
+                        code
+                        params {
+                          lg_fmd_txt_learn_more {
+                            type
+                            data
+                          }
+                          lg_fmd_txt_open_dropoff_maps{
+                            type
+                            data
+                          }
+                          lg_fmd_url_learn_more{
+                            type
+                            data
+                          }
+                          lg_fmd_url_open_dropoff_maps{
+                            type
+                            data
+                          }
+                        }
+                      }
                     }
                   }
                   have_product_bundle
