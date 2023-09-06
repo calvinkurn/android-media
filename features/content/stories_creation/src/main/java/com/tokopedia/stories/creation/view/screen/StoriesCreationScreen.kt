@@ -75,6 +75,7 @@ fun StoriesCreationScreen(
                 imageUrl = uiState.selectedAccount.iconUrl,
                 authorName = uiState.selectedAccount.name,
                 badge = uiState.selectedAccount.badge,
+                isEligibleToSwitchAccount = uiState.accountList.size > 1,
                 onBackPressed = onBackPressed,
                 onClickChangeAccount = onClickChangeAccount,
                 modifier = Modifier.constrainAs(header) {
@@ -158,6 +159,7 @@ private fun StoriesCreationHeader(
     imageUrl: String,
     authorName: String,
     badge: String,
+    isEligibleToSwitchAccount: Boolean,
     onBackPressed: () -> Unit,
     onClickChangeAccount: () -> Unit,
     modifier: Modifier = Modifier,
@@ -172,14 +174,19 @@ private fun StoriesCreationHeader(
                 this.setOnBackClickListener {
                     onBackPressed()
                 }
-                this.setOnAccountClickListener {
-                    onClickChangeAccount()
-                }
             }
         },
         update = {
             it.subtitle = authorName
             it.icon = imageUrl
+
+            if (isEligibleToSwitchAccount) {
+                it.setOnAccountClickListener {
+                    onClickChangeAccount()
+                }
+            } else {
+                it.setOnAccountClickListener(null)
+            }
         }
     )
 }
