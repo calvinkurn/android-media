@@ -868,17 +868,19 @@ internal class PromoUsageViewModel @Inject constructor(
         validateUsePromoRequest: ValidateUsePromoRequest,
         boPromoCodes: List<String>
     ) {
-        if (isChangedFromInitialState()) {
-            _promoPageUiState.ifSuccess { pageState ->
+        _promoPageUiState.ifSuccess { pageState ->
+            val hasSelectedAttemptedCode = pageState.items.getAttemptedItems()
+                .any { it.state is PromoItemState.Selected }
+            if (isChangedFromInitialState() || hasSelectedAttemptedCode) {
                 val hasSelectedPromo = pageState.items.getSelectedPromoCodes().isNotEmpty()
                 if (hasSelectedPromo) {
                     onApplyPromo(entryPoint, validateUsePromoRequest, boPromoCodes)
                 } else {
                     onClearPromo(entryPoint, validateUsePromoRequest, boPromoCodes)
                 }
+            } else {
+                _applyPromoUiAction.postValue(ApplyPromoUiAction.SuccessNoAction)
             }
-        } else {
-            _applyPromoUiAction.postValue(ApplyPromoUiAction.SuccessNoAction)
         }
     }
 
@@ -1784,18 +1786,16 @@ internal fun LiveData<PromoPageUiState>?.asSuccessOrNull(): PromoPageUiState.Suc
     return this?.value as? PromoPageUiState.Success
 }
 
-internal fun List<DelegateAdapterItem>.getPromoByCode(promoCode: String): PromoItem? {
-    return asSequence()
-        .filterIsInstance<PromoItem>()
-        .firstOrNull { it.code == promoCode || it.secondaryPromo.code == promoCode }
-}
-
 internal fun List<DelegateAdapterItem>.getRecommendationItem(): PromoRecommendationItem? {
     return filterIsInstance<PromoRecommendationItem>().firstOrNull()
 }
 
 internal fun List<DelegateAdapterItem>.getTncItem(): PromoTncItem? {
     return filterIsInstance<PromoTncItem>().firstOrNull()
+}
+
+internal fun List<DelegateAdapterItem>.getAttemptedItems(): List<PromoItem> {
+    return filterIsInstance<PromoItem>().filter { it.isAttempted }
 }
 
 internal fun List<DelegateAdapterItem>.getSelectedPromoCodes(): List<String> {
