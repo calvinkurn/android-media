@@ -23,7 +23,6 @@ import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.EMPTY
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.library.subviewmodel.ParentSubViewModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
@@ -89,6 +88,7 @@ import com.tokopedia.product.detail.view.util.asSuccess
 import com.tokopedia.product.detail.view.viewmodel.product_detail.mediator.GetProductDetailDataMediator
 import com.tokopedia.product.detail.view.viewmodel.product_detail.sub_viewmodel.PlayWidgetSubViewModel
 import com.tokopedia.product.detail.view.viewmodel.product_detail.sub_viewmodel.ProductRecommSubViewModel
+import com.tokopedia.product.detail.view.viewmodel.product_detail.sub_viewmodel.ThumbnailVariantSubViewModel
 import com.tokopedia.recommendation_widget_common.affiliate.RecommendationNowAffiliate
 import com.tokopedia.recommendation_widget_common.affiliate.RecommendationNowAffiliateData
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
@@ -165,10 +165,12 @@ class DynamicProductDetailViewModel @Inject constructor(
     val userSessionInterface: UserSessionInterface,
     private val affiliateCookieHelper: Lazy<AffiliateCookieHelper>,
     private val productRecommSubViewModel: ProductRecommSubViewModel,
-    playWidgetSubViewModel: PlayWidgetSubViewModel
-) : ParentSubViewModel(dispatcher.main, productRecommSubViewModel, playWidgetSubViewModel),
+    playWidgetSubViewModel: PlayWidgetSubViewModel,
+    thumbnailVariantSubViewModel: ThumbnailVariantSubViewModel
+) : ParentSubViewModel(dispatcher.main, productRecommSubViewModel, playWidgetSubViewModel, thumbnailVariantSubViewModel),
     IProductRecommSubViewModel by productRecommSubViewModel,
     IPlayWidgetSubViewModel by playWidgetSubViewModel,
+    IThumbnailVariantSubViewModel by thumbnailVariantSubViewModel,
     GetProductDetailDataMediator {
 
     companion object {
@@ -182,8 +184,6 @@ class DynamicProductDetailViewModel @Inject constructor(
         private const val PARAM_TXSC = "txsc"
         private const val CODE_200 = 200
         private const val CODE_300 = 300
-        private const val VARIANT_LEVEL_TWO_INDEX = 1
-        private const val MAX_VARIANT_LEVEL = 2
     }
 
     private val _productLayout = MutableLiveData<Result<List<DynamicPdpDataModel>>>()
@@ -227,11 +227,6 @@ class DynamicProductDetailViewModel @Inject constructor(
     private val _singleVariantData = MutableLiveData<VariantCategory?>()
     val singleVariantData: LiveData<VariantCategory?>
         get() = _singleVariantData
-
-    // slicing from _onVariantClickedData, because thumbnail variant feature using vbs for refresh pdp info
-    private val _onThumbnailVariantSelectedData = MutableLiveData<ProductSingleVariantDataModel?>()
-    val onThumbnailVariantSelectedData: LiveData<ProductSingleVariantDataModel?>
-        get() = _onThumbnailVariantSelectedData
 
     private val _toggleTeaserNotifyMe = MutableLiveData<Result<NotifyMeUiData>>()
     val toggleTeaserNotifyMe: LiveData<Result<NotifyMeUiData>>
@@ -1211,77 +1206,6 @@ class DynamicProductDetailViewModel @Inject constructor(
         return variantDataNonNull.children.firstOrNull {
             it.optionIds == selectedOptionIds
         }
-    }
-
-    /**
-     * Thumbnail variant selected is variant level one only
-     */
-    fun onThumbnailVariantSelected(
-        uiData: ProductSingleVariantDataModel?,
-        variantId: String,
-        categoryKey: String
-    ) {
-        val singleVariant = uiData ?: return
-        val variantSelected = singleVariant.mapOfSelectedVariant
-        val variantDataNonNull = variantData ?: ProductVariant()
-        val variantSelectUpdated = selectVariantTwoOnThumbnailVariantSelected(
-            productVariant = variantDataNonNull,
-            variantsSelected = variantSelected,
-            newVariantId = variantId,
-            newVariantCategoryKey = categoryKey
-        )
-        val variantLevelOneUpdated = ProductDetailVariantLogic.determineVariant(
-            variantSelectUpdated,
-            variantDataNonNull
-        )
-
-        if (variantLevelOneUpdated != null) {
-            _onThumbnailVariantSelectedData.postValue(
-                singleVariant.copy(
-                    mapOfSelectedVariant = variantSelectUpdated,
-                    variantLevelOne = variantLevelOneUpdated
-                )
-            )
-        }
-    }
-
-    private fun selectVariantTwoOnThumbnailVariantSelected(
-        productVariant: ProductVariant,
-        variantsSelected: Map<String, String>,
-        newVariantId: String,
-        newVariantCategoryKey: String
-    ): MutableMap<String, String> {
-        val variants = variantsSelected.toMutableMap()
-        val variantLevelTwo = productVariant.variants.getOrNull(VARIANT_LEVEL_TWO_INDEX)
-
-        // in case, when swipe media but media is not variant
-        if (newVariantId.isEmpty()) {
-            // set empty to variant level 1, and keep variant level2 if available
-            val variantLevelOne = productVariant.variants.getOrNull(Int.ZERO)
-
-            if (variantLevelOne != null) {
-                variants[variantLevelOne.pv.orEmpty()] = ""
-            }
-
-            return variants
-        }
-
-        // don't move this order, because level 1 always on top and level 2 always below lvl1 in map
-        variants[newVariantCategoryKey] = newVariantId
-
-        if (variantLevelTwo == null) {
-            return variants
-        }
-
-        // if mapOfSelected still don't select yet with variant lvl two, so set default lvl2 with fist lvl2 item
-        val variantLvl2Value = variants[variantLevelTwo.pv]
-        if (variantLvl2Value.isNullOrBlank() || variantLvl2Value == "0") {
-            // in case, thumb variant selected but variant two never select from vbs
-            val variantLevelTwoId = variantLevelTwo.options.firstOrNull()?.id
-            variants[variantLevelTwo.pv.orEmpty()] = variantLevelTwoId.orEmpty()
-        }
-
-        return variants
     }
 
     fun changeOneTimeMethod(event: OneTimeMethodEvent) {

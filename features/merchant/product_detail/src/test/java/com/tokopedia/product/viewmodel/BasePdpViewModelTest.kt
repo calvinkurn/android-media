@@ -24,6 +24,7 @@ import com.tokopedia.product.detail.usecase.ToggleNotifyMeUseCase
 import com.tokopedia.product.detail.view.viewmodel.product_detail.DynamicProductDetailViewModel
 import com.tokopedia.product.detail.view.viewmodel.product_detail.sub_viewmodel.PlayWidgetSubViewModel
 import com.tokopedia.product.detail.view.viewmodel.product_detail.sub_viewmodel.ProductRecommSubViewModel
+import com.tokopedia.product.detail.view.viewmodel.product_detail.sub_viewmodel.ThumbnailVariantSubViewModel
 import com.tokopedia.recommendation_widget_common.affiliate.RecommendationNowAffiliate
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
@@ -139,6 +140,9 @@ abstract class BasePdpViewModelTest {
     lateinit var playWidgetSubViewModel: PlayWidgetSubViewModel
 
     @RelaxedMockK
+    lateinit var thumbnailVariantSubViewModel: ThumbnailVariantSubViewModel
+
+    @RelaxedMockK
     lateinit var affiliateEligibilityCheckUseCase: AffiliateEligibilityCheckUseCase
 
     lateinit var spykViewModel: DynamicProductDetailViewModel
@@ -207,6 +211,7 @@ abstract class BasePdpViewModelTest {
             affiliateCookieHelper = { affiliateCookieHelper },
             productRecommSubViewModel = productRecommSubViewModel,
             playWidgetSubViewModel = playWidgetSubViewModel,
+            thumbnailVariantSubViewModel = thumbnailVariantSubViewModel,
             affiliateEligibilityUseCase = { affiliateEligibilityCheckUseCase }
         )
     }
