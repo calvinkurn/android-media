@@ -8,5 +8,6 @@ data class UniversalInboxMenuUiState(
     val widgetMeta: UniversalInboxWidgetMetaUiModel = UniversalInboxWidgetMetaUiModel(),
     val menuList: List<UniversalInboxMenuUiModel> = listOf(),
     val miscList: List<Any> = listOf(),
+    val notificationCounter: String = "0",
     val error: Pair<Throwable, String>? = null
 )

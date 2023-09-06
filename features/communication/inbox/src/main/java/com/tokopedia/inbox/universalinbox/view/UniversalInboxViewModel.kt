@@ -1,8 +1,7 @@
 package com.tokopedia.inbox.universalinbox.view
 
+import android.content.Intent
 import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -15,8 +14,8 @@ import com.tokopedia.inbox.universalinbox.domain.usecase.UniversalInboxGetAllDri
 import com.tokopedia.inbox.universalinbox.domain.usecase.UniversalInboxGetInboxMenuAndWidgetMetaUseCase
 import com.tokopedia.inbox.universalinbox.util.Result
 import com.tokopedia.inbox.universalinbox.view.uiState.UniversalInboxMenuUiState
+import com.tokopedia.inbox.universalinbox.view.uiState.UniversalInboxNavigationUiState
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
@@ -55,13 +54,13 @@ class UniversalInboxViewModel @Inject constructor(
     val inboxMenuUiState: StateFlow<UniversalInboxMenuUiState>
         get() = _inboxMenuUiState
 
+    private val _inboxNavigationState = MutableStateFlow(UniversalInboxNavigationUiState())
+    val inboxNavigationUiState: StateFlow<UniversalInboxNavigationUiState>
+        get() = _inboxNavigationState
+
     private val _inboxMenu = MutableStateFlow<List<Any>?>(emptyList())
     val inboxMenu: StateFlow<List<Any>?>
         get() = _inboxMenu
-
-    private val _allCounter = MutableLiveData<Result<UniversalInboxAllCounterResponse>>()
-    val allCounter: LiveData<Result<UniversalInboxAllCounterResponse>>
-        get() = _allCounter
 
 //    private val _firstPageRecommendation = MutableLiveData<Result<RecommendationWidget>>()
 //    val firstPageRecommendation: LiveData<Result<RecommendationWidget>>
@@ -96,7 +95,15 @@ class UniversalInboxViewModel @Inject constructor(
 
     private fun Flow<UniversalInboxAction>.process() = onEach {
         when (it) {
-            is UniversalInboxAction.NavigateToPage -> {}
+            is UniversalInboxAction.NavigateWithIntent -> {
+                navigateWithIntent(it.intent)
+            }
+            is UniversalInboxAction.NavigateToPage -> {
+                navigateToPage(it.applink)
+            }
+            is UniversalInboxAction.ResetNavigation -> {
+                resetNavigation()
+            }
             is UniversalInboxAction.ShowErrorMessage -> {
                 showErrorMessage(it.error)
             }
@@ -111,7 +118,6 @@ class UniversalInboxViewModel @Inject constructor(
             getInboxMenuAndWidgetMetaUseCase.observe()
                 .filter { it != null }
                 .combine(getAllCounterUseCase.observe()) { menu, counter ->
-                    _allCounter.value = counter
                     combineMenuAndCounter(menu!!, counter) // Safe !! because of filter
                 }
                 .catch {
@@ -174,7 +180,8 @@ class UniversalInboxViewModel @Inject constructor(
                 uiState.copy(
                     isLoading = false,
                     menuList = menuList,
-                    miscList = miscList
+                    miscList = miscList,
+                    notificationCounter = counterResponse.notifCenterUnread.notifUnread
                 )
             }
         } catch (throwable: Throwable) {
@@ -205,10 +212,10 @@ class UniversalInboxViewModel @Inject constructor(
             try {
                 // Show loading first
                 showLoading()
-                // Fetch inbox menu & widget from remote
-                getInboxMenuAndWidgetMetaUseCase.fetchInboxMenuAndWidgetMeta(Unit)
                 // Refresh counter
                 getAllCounterUseCase.refreshCounter(userSession.shopId)
+                // Fetch inbox menu & widget from remote
+                getInboxMenuAndWidgetMetaUseCase.fetchInboxMenuAndWidgetMeta(Unit)
             } catch (throwable: Throwable) {
                 setFallbackInboxMenu()
                 showErrorMessage(Pair(throwable, ::loadInboxMenuAndWidgetMeta.name))
@@ -233,6 +240,26 @@ class UniversalInboxViewModel @Inject constructor(
                 it.copy(isLoading = true)
             }
         }
+    }
+
+    private fun navigateWithIntent(intent: Intent) {
+        viewModelScope.launch {
+            _inboxNavigationState.update {
+                it.copy(intent = intent)
+            }
+        }
+    }
+
+    private fun navigateToPage(applink: String) {
+        viewModelScope.launch {
+            _inboxNavigationState.update {
+                it.copy(applink = applink)
+            }
+        }
+    }
+
+    private fun resetNavigation() {
+        navigateToPage("")
     }
 
 //    fun loadWidgetMetaAndCounter() {

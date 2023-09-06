@@ -11,6 +11,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -39,6 +40,7 @@ import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.getHeadli
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.getRoleUser
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.getShopIdTracker
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.shouldRefreshProductRecommendation
+import com.tokopedia.inbox.universalinbox.util.UniversalInboxViewUtil
 import com.tokopedia.inbox.universalinbox.util.toggle.UniversalInboxAbPlatform
 import com.tokopedia.inbox.universalinbox.view.adapter.UniversalInboxAdapter
 import com.tokopedia.inbox.universalinbox.view.adapter.decorator.UniversalInboxRecommendationDecoration
@@ -55,6 +57,7 @@ import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxTopadsHeadl
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxWidgetUiModel
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -68,6 +71,7 @@ import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.topads.sdk.viewmodel.TopAdsHeadlineViewModel
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
@@ -76,6 +80,7 @@ import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.lang.Integer.max
 import javax.inject.Inject
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
@@ -165,8 +170,8 @@ class UniversalInboxFragment @Inject constructor(
         setupRecyclerView()
         setupRecyclerViewLoadMore()
         setupObservers()
-        setupInboxMenu()
         setupListeners()
+        loadWidgetMetaAndCounter()
     }
 
     private fun setupRecyclerView() {
@@ -197,18 +202,30 @@ class UniversalInboxFragment @Inject constructor(
     private fun setupObservers() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.inboxMenu.collectLatest {
-                    binding?.inboxLayoutSwipeRefresh?.isRefreshing = false
-                    if (!it.isNullOrEmpty()) {
-                        adapter.addItems(it)
-                        binding?.inboxRv?.post {
-                            adapter.notifyItemRangeChanged(Int.ZERO, it.size - Int.ONE)
-                            loadTopAdsAndRecommendation()
-                        }
-                    }
-                }
+                observeInboxMenuAndCounter()
             }
         }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                observeInboxNavigation()
+            }
+        }
+
+//        viewLifecycleOwner.lifecycleScope.launch {
+//            repeatOnLifecycle(Lifecycle.State.STARTED) {
+//                viewModel.inboxMenu.collectLatest {
+//                    binding?.inboxLayoutSwipeRefresh?.isRefreshing = false
+//                    if (!it.isNullOrEmpty()) {
+//                        adapter.addItems(it)
+//                        binding?.inboxRv?.post {
+//                            adapter.notifyItemRangeChanged(Int.ZERO, it.size - Int.ONE)
+//                            loadTopAdsAndRecommendation()
+//                        }
+//                    }
+//                }
+//            }
+//        }
         //            loadWidgetMetaAndCounter()
 
 //        viewModel.widget.observe(viewLifecycleOwner) { (widget, counter) ->
@@ -227,31 +244,6 @@ class UniversalInboxFragment @Inject constructor(
 //                }
 //            }
 //            observeDriverCounter() // Observe only after widget loaded
-//        }
-
-//        viewModel.allCounter.observe(viewLifecycleOwner) {
-//            when (it) {
-//                is Success -> {
-//                    // Update notif & static menu counters
-//                    if (activity is UniversalInboxActivity) {
-//                        val notifUnread = it.data.notifCenterUnread.notifUnread.toIntOrZero()
-//                        (activity as UniversalInboxActivity).updateNotificationCounter(
-//                            UniversalInboxViewUtil.getStringCounter(
-//                                notifUnread
-//                            )
-//                        )
-//                    }
-//                    val updatedMenuList = adapter.updateAllCounters(it.data)
-//                    binding?.inboxRv?.post {
-//                        if (updatedMenuList.isNotEmpty()) {
-//                            adapter.notifyItemRangeChanged(Int.ZERO, updatedMenuList.size)
-//                        }
-//                    }
-//                }
-//                is Fail -> {
-//                    // No-op
-//                }
-//            }
 //        }
 
 //        viewModel.firstPageRecommendation.observe(viewLifecycleOwner) {
@@ -275,15 +267,6 @@ class UniversalInboxFragment @Inject constructor(
 //                }
 //            }
 //        }
-
-//        viewModel.error.observe(viewLifecycleOwner) {
-//            Timber.d(it.first)
-//            UniversalInboxErrorLogger.logExceptionToServerLogger(
-//                it.first,
-//                userSession.deviceId.orEmpty(),
-//                it.second
-//            )
-//        }
     }
 
 //    private fun observeDriverCounter() {
@@ -299,6 +282,94 @@ class UniversalInboxFragment @Inject constructor(
 //            }
 //        }
 //    }
+
+    private suspend fun observeInboxMenuAndCounter() {
+        // Inbox Menu & Counter
+        viewModel.inboxMenuUiState.collectLatest {
+            // Set loading
+            toggleLoading(it.isLoading)
+
+            // Set menu list
+            updateRecyclerViewList(it.menuList)
+
+            // Set other list
+            updateRecyclerViewList(it.miscList)
+
+            // Update counters
+            updateNotificationCounter(it.notificationCounter)
+
+            // Log Error and Show Toaster
+            logErrorAndShowToaster(it.error)
+        }
+    }
+
+    private fun toggleLoading(isLoading: Boolean) {
+        binding?.inboxLayoutSwipeRefresh?.isRefreshing = isLoading
+    }
+
+    private fun updateRecyclerViewList(newList: List<Any>) {
+        var lastIndex = -1
+        newList.forEach loop@{
+            adapter.findItem(it).also { index ->
+                lastIndex = if (index < Int.ZERO) {
+                    adapter.addItem(it)
+                    adapter.lastIndex
+                } else {
+                    adapter.updateItemAtPosition(index, it)
+                    max(lastIndex, index)
+                }
+            }
+        }
+        binding?.inboxRv?.post {
+            adapter.notifyItemRangeChanged(Int.ZERO, lastIndex)
+        }
+    }
+
+    private suspend fun observeInboxNavigation() {
+        viewModel.inboxNavigationUiState.collectLatest {
+            when {
+                (it.intent != null) -> {
+                    inboxMenuResultLauncher.launch(it.intent)
+                }
+                (it.applink.isNotBlank() && context != null) -> {
+                    val intent = RouteManager.getIntent(context, it.applink)
+                    inboxMenuResultLauncher.launch(intent)
+                }
+            }
+            viewModel.processAction(UniversalInboxAction.ResetNavigation)
+        }
+    }
+
+    private fun updateNotificationCounter(counter: String) {
+        if (activity is UniversalInboxActivity) {
+            val notifUnread = counter.toIntOrZero()
+            (activity as UniversalInboxActivity).updateNotificationCounter(
+                UniversalInboxViewUtil.getStringCounter(
+                    notifUnread
+                )
+            )
+        }
+    }
+
+    private fun logErrorAndShowToaster(errorPair: Pair<Throwable, String>?) {
+        errorPair?.let { (throwable, methodName) ->
+            Timber.d(throwable)
+            if (view != null) {
+                Toaster.build(
+                    requireView(),
+                    ErrorHandler.getErrorMessage(context, throwable),
+                    Snackbar.LENGTH_LONG,
+                    Toaster.TYPE_ERROR
+                ).show()
+            }
+
+            UniversalInboxErrorLogger.logExceptionToServerLogger(
+                throwable,
+                userSession.deviceId.orEmpty(),
+                methodName
+            )
+        }
+    }
 
     private fun onSuccessGetDriverChat(activeChannel: Int, unreadTotal: Int) {
         /**
@@ -507,13 +578,8 @@ class UniversalInboxFragment @Inject constructor(
         }
     }
 
-    private fun setupInboxMenu() {
-//        binding?.inboxLayoutSwipeRefresh?.isRefreshing = true
-//        viewModel.loadInboxMenuAndWidgetMeta()
-    }
-
     override fun loadWidgetMetaAndCounter() {
-//        viewModel.loadWidgetMetaAndCounter()
+        viewModel.processAction(UniversalInboxAction.RefreshPage)
     }
 
     private fun loadTopAdsAndRecommendation() {
@@ -551,7 +617,7 @@ class UniversalInboxFragment @Inject constructor(
             isTopAdsBannerAdded = false
             endlessRecyclerViewScrollListener?.resetState()
             adapter.clearAllItemsAndAnimateChanges()
-            setupInboxMenu()
+            loadWidgetMetaAndCounter()
         }
         if (activity is UniversalInboxActivity) {
             (activity as UniversalInboxActivity).listener = this
@@ -578,10 +644,7 @@ class UniversalInboxFragment @Inject constructor(
                 )
             }
         }
-        context?.let {
-            val intent = RouteManager.getIntent(it, item.applink)
-            inboxMenuResultLauncher.launch(intent)
-        }
+        viewModel.processAction(UniversalInboxAction.NavigateToPage(item.applink))
     }
 
     override fun onRefreshWidgetMeta() {
@@ -663,10 +726,7 @@ class UniversalInboxFragment @Inject constructor(
             }
             else -> Unit // no-op
         }
-        context?.let {
-            val intent = RouteManager.getIntent(it, item.applink)
-            inboxMenuResultLauncher.launch(intent)
-        }
+        viewModel.processAction(UniversalInboxAction.NavigateToPage(item.applink))
     }
 
     override fun onNotificationIconClicked(counter: String) {
@@ -676,10 +736,7 @@ class UniversalInboxFragment @Inject constructor(
             shopId = getShopIdTracker(userSession),
             notifCenterCounter = counter
         )
-        context?.let {
-            val intent = RouteManager.getIntent(it, ApplinkConst.NOTIFICATION)
-            inboxMenuResultLauncher.launch(intent)
-        }
+        viewModel.processAction(UniversalInboxAction.NavigateToPage(ApplinkConst.NOTIFICATION))
     }
 
     override fun onLoadMore(page: Int, totalItemsCount: Int) {
@@ -769,7 +826,7 @@ class UniversalInboxFragment @Inject constructor(
         if (position.isNotEmpty()) {
             intent.putExtra(PDP_EXTRA_UPDATED_POSITION, position[Int.ZERO])
         }
-        inboxMenuResultLauncher.launch(intent)
+        viewModel.processAction(UniversalInboxAction.NavigateWithIntent(intent))
     }
 
     private fun onClickTopAds(item: RecommendationItem) {

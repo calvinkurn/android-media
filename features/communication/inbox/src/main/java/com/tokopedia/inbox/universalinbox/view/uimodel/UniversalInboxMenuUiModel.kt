@@ -17,6 +17,15 @@ data class UniversalInboxMenuUiModel(
             null
         }
     }
+
+    companion object {
+        fun areItemsTheSame(
+            oldItem: UniversalInboxMenuUiModel,
+            newItem: UniversalInboxMenuUiModel
+        ): Boolean {
+            return oldItem.title == newItem.title
+        }
+    }
 }
 
 data class UniversalInboxMenuLabel(

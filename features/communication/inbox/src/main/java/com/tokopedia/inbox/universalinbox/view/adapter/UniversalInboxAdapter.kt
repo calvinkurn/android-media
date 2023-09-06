@@ -25,6 +25,7 @@ import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetModel
 import com.tokopedia.topads.sdk.listener.TdnBannerResponseListener
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
 import com.tokopedia.user.session.UserSessionInterface
@@ -223,5 +224,41 @@ class UniversalInboxAdapter(
 
     private fun isRecommendationTitle(position: Int): Boolean {
         return itemList[position]::class == UniversalInboxRecommendationTitleUiModel::class
+    }
+
+    fun findItem(newItem: Any): Int {
+        return itemList.indexOfFirst { oldItem ->
+            when {
+                // Menu items name are the same
+                (newItem is UniversalInboxMenuUiModel && oldItem is UniversalInboxMenuUiModel) ->
+                    UniversalInboxMenuUiModel.areItemsTheSame(oldItem, newItem)
+
+                // Only one separator should exist
+                (
+                    newItem is UniversalInboxMenuSeparatorUiModel &&
+                        oldItem is UniversalInboxMenuSeparatorUiModel
+                    ) -> true
+
+                // Only one banner should exist
+                (
+                    newItem is UniversalInboxTopAdsBannerUiModel &&
+                        oldItem is UniversalInboxTopAdsBannerUiModel
+                    ) -> true
+
+                // Only one recommendation widget should exist
+                (
+                    newItem is RecommendationWidgetModel &&
+                        oldItem is RecommendationWidgetModel
+                    ) -> true
+
+                else -> newItem == oldItem
+            }
+        }
+    }
+
+    fun updateItemAtPosition(position: Int, newItem: Any) {
+        if (itemList.lastIndex >= position) {
+            itemList[position] = newItem
+        }
     }
 }
