@@ -36,12 +36,15 @@ private fun toProductInfoUiModel(component: PostAtcLayout.Component): ProductInf
 
 private fun toRecommendationUiModel(
     component: PostAtcLayout.Component,
-    postAtcInfo: PostAtcInfo,
+    postAtcInfo: PostAtcInfo
 ): RecommendationUiModel {
+    val data = component.data.firstOrNull()
     return RecommendationUiModel(
         name = component.name,
         type = component.type,
         productId = postAtcInfo.productId,
+        queryParam = data?.queryParam.orEmpty(),
+        thematicId = data?.thematicId.orEmpty()
     )
 }
 

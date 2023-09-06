@@ -18,5 +18,13 @@ data class PostAtcComponentData(
 
     @SerializedName("button")
     @Expose
-    val button: PostAtcLayout.ProductPostAtcInfo.Button = PostAtcLayout.ProductPostAtcInfo.Button()
+    val button: PostAtcLayout.ProductPostAtcInfo.Button = PostAtcLayout.ProductPostAtcInfo.Button(),
+
+    @SerializedName("queryParam")
+    @Expose
+    val queryParam: String = "",
+
+    @SerializedName("thematicID")
+    @Expose
+    val thematicId: String = ""
 )
