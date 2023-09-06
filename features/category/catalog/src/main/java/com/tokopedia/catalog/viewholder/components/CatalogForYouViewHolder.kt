@@ -5,10 +5,15 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.catalog.R
 import com.tokopedia.catalog.listener.CatalogDetailListener
+import com.tokopedia.catalog.listener.CatalogProductCardListener
 import com.tokopedia.catalog.model.datamodel.CatalogForYouModel
+import com.tokopedia.catalog.model.datamodel.CatalogStaggeredProductModel
+import com.tokopedia.catalog.model.raw.CatalogComparisonProductsResponse
 import com.tokopedia.kotlin.extensions.view.displayTextOrHide
 import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
 class CatalogForYouViewHolder(itemView: View, private val catalogDetailListener: CatalogDetailListener?)

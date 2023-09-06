@@ -61,4 +61,8 @@
     <string name="epharmacy_total_harga">Total Harga</string>
     <string name="epharmacy_perbarui_pesanan">Perbarui Pesanan</string>
     <string name="epharmacy_reminder_back_text">Balik ke Home</string>
+    <string name="epharmacy_masa_berlaku_resep">Masa Berlaku Resep</string>
+    <string name="epharmacy_lihat_invoice">Lihat Invoice</string>
+    <string name="epharmacy_tanggal_pembelian">Tanggal Pembelian</string>
+    <string name="epharmacy_masa_berlaku_hingga">Masa Berlaku hingga</string>
 </resources>

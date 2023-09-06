@@ -7,10 +7,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/detail_product_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:typographyType="heading_5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"
+        tools:text="Detail Produk"
+        tools:visibility="visible"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/service_type"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/detail_product_header"
         app:layout_constraintStart_toStartOf="parent"
         app:typographyType="body_2"
         android:text="@string/epharmacy_jenis_layanan"
@@ -47,6 +60,19 @@
         android:layout_marginTop="4dp"
         app:typographyType="body_2"
         android:text="@string/epharmacy_biaya_chat_dokter"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/validity_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/fee"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="4dp"
+        app:typographyType="body_2"
+        android:text="@string/epharmacy_masa_berlaku_resep"
+        android:visibility="gone"
+        tools:visibility="visible"
         />
 
     <androidx.constraintlayout.widget.Barrier
@@ -107,6 +133,21 @@
         app:typographyType="body_2"
         app:typographyWeight="bold"
         tools:text="Rp10.000"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/validity_value"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/validity_time"
+        app:layout_constraintStart_toEndOf="@id/barrier"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="32dp"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
+        android:visibility="gone"
+        tools:text="26 Des 2023, 05:00 WIB"
+        tools:visibility="visible"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
