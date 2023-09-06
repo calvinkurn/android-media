@@ -121,6 +121,18 @@ class CentralizedPromoFragment : BaseDaggerFragment(),
 
     private var binding by autoClearedNullable<FragmentCentralizedPromoBinding>()
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        context?.let {
+            activity?.window?.decorView?.setBackgroundColor(
+                androidx.core.content.ContextCompat.getColor(
+                    it,
+                    com.tokopedia.unifyprinciples.R.color.Unify_Background
+                )
+            )
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
