@@ -73,7 +73,13 @@ class StoriesGroupFragment @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
         setupViews()
         setupObserver()
-        viewModelAction(StoriesUiAction.SetArgumentsData(arguments))
+
+        initializeData(savedInstanceState)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        viewModelAction(StoriesUiAction.SaveInstanceStateData(outState))
     }
 
     override fun onPause() {
@@ -84,6 +90,11 @@ class StoriesGroupFragment @Inject constructor(
     override fun onResume() {
         super.onResume()
         viewModelAction(ResumeStories)
+    }
+
+    private fun initializeData(savedInstanceState: Bundle?) {
+        if (savedInstanceState == null) viewModelAction(StoriesUiAction.SetArgumentsData(arguments))
+        else viewModelAction(StoriesUiAction.SetSavedInstanceStateData(savedInstanceState))
     }
 
     private fun viewModelAction(event: StoriesUiAction) {
@@ -127,7 +138,7 @@ class StoriesGroupFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
             viewModel.uiEvent.collect { event ->
                 when (event) {
-                    is StoriesUiEvent.SelectGroup -> selectGroupEvent(event.position, event.showAnimation)
+                    is StoriesUiEvent.SelectGroup -> selectGroupPosition(event.position, event.showAnimation)
                     StoriesUiEvent.FinishedAllStories -> activity?.finish()
                     is StoriesUiEvent.ErrorGroupPage -> {
                         if (event.throwable.isNetworkError) {
@@ -163,11 +174,14 @@ class StoriesGroupFragment @Inject constructor(
 
         pagerAdapter.setStoriesGroup(state)
         pagerAdapter.notifyItemRangeChanged(0, state.groupItems.size)
+        selectGroupPosition(viewModel.mGroupPos, false)
 
         showPageLoading(false)
     }
 
-    private fun selectGroupEvent(position: Int, showAnimation: Boolean ) = with(binding.storiesGroupViewPager) {
+    private fun selectGroupPosition(position: Int, showAnimation: Boolean ) = with(binding.storiesGroupViewPager) {
+        if (position < 0) return@with
+
         setCurrentItem(position, showAnimation)
     }
 
