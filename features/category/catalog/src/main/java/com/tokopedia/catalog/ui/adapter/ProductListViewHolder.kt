@@ -6,10 +6,14 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.catalog.R
 import com.tokopedia.catalog.databinding.ItemCatalogPrefferedProductBinding
 import com.tokopedia.catalog.domain.model.CatalogProductItem
+import com.tokopedia.catalog.ui.mapper.ProductListMapper.Companion.mapperToCatalogProductAtcUiModel
 import com.tokopedia.catalog.ui.mapper.ProductListMapper.Companion.mapperToCatalogProductModel
 import com.tokopedia.utils.view.binding.viewBinding
 
-class ProductListViewHolder(itemView: View) : AbstractViewHolder<CatalogProductItem>(itemView) {
+class ProductListViewHolder(
+    itemView: View,
+    private val productListListener: ProductListAdapterListener
+) : AbstractViewHolder<CatalogProductItem>(itemView) {
 
     companion object {
         @LayoutRes
@@ -23,9 +27,10 @@ class ProductListViewHolder(itemView: View) : AbstractViewHolder<CatalogProductI
         binding?.productCard?.apply {
             setProductModel(data)
             setAddToCartOnClickListener {
-
+                productListListener.onAtcButtonClicked(
+                    mapperToCatalogProductAtcUiModel(element ?: return@setAddToCartOnClickListener)
+                )
             }
-            
         }
     }
 }

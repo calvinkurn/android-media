@@ -17,6 +17,7 @@ import com.tokopedia.catalog.databinding.FragmentCatalogProductListBinding
 import com.tokopedia.catalog.di.DaggerCatalogComponent
 import com.tokopedia.catalog.ui.adapter.CatalogDiffutilAdapter
 import com.tokopedia.catalog.ui.adapter.CatalogProductListAdapterFactoryImpl
+import com.tokopedia.catalog.ui.adapter.ProductListAdapterListener
 import com.tokopedia.catalog.ui.model.CatalogProductAtcUiModel
 import com.tokopedia.catalog.ui.viewmodel.CatalogProductListViewModel
 import com.tokopedia.common_category.constants.CategoryNavConstants
@@ -54,7 +55,7 @@ class CatalogProductListFragment :
     BaseListFragment<Visitable<*>, CatalogProductListAdapterFactoryImpl>(),
 
     ChooseAddressWidget.ChooseAddressWidgetListener,
-    QuickFilterListener, SortFilterBottomSheet.Callback {
+    QuickFilterListener, SortFilterBottomSheet.Callback, ProductListAdapterListener {
 
     @Inject
     lateinit var viewModel: CatalogProductListViewModel
@@ -125,18 +126,6 @@ class CatalogProductListFragment :
         viewModel.fetchQuickFilters(getQuickFilterParams())
         viewModel.fetchDynamicAttribute(getDynamicFilterParams())
         viewModel.refreshNotification()
-
-        view.postDelayed(
-            {
-                addToCart(
-                    CatalogProductAtcUiModel(
-                        productId = "2150860905",
-                        shopId = "6550986",
-                        isVariant = false
-                    )
-                )
-            }, 5000
-        )
     }
 
 
@@ -178,7 +167,7 @@ class CatalogProductListFragment :
     }
 
     override fun getAdapterTypeFactory(): CatalogProductListAdapterFactoryImpl {
-        return CatalogProductListAdapterFactoryImpl()
+        return CatalogProductListAdapterFactoryImpl(this)
     }
 
     override fun onItemClicked(t: Visitable<*>?) {
@@ -396,6 +385,10 @@ class CatalogProductListFragment :
             refreshFilterControllers(HashMap(queryParams))
         }
 //        reloadData()
+    }
+
+    override fun onAtcButtonClicked(atcModel: CatalogProductAtcUiModel) {
+        addToCart(atcModel)
     }
 
     private fun setFilterToQuickFilterController(option: Option, isQuickFilterSelected: Boolean) {

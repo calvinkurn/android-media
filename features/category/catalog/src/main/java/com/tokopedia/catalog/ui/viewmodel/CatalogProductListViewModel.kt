@@ -184,7 +184,8 @@ class CatalogProductListViewModel @Inject constructor(
                 val param = AddToCartRequestParams(
                     productId = atcUiModel.productId,
                     shopId = atcUiModel.shopId,
-                    quantity = atcUiModel.quantity
+                    quantity = atcUiModel.quantity,
+                    warehouseId = atcUiModel.warehouseId
                 )
                 addToCartUseCase.setParams(param)
                 showAtcResult(addToCartUseCase.executeOnBackground())

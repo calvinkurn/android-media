@@ -206,7 +206,11 @@ data class CatalogProductItem(
 
         @SerializedName("countReview")
         @Expose
-        var countReview: Int = 0
+        var countReview: Int = 0,
+
+        @SerializedName("childs")
+        @Expose
+        var childs: List<Long> = emptyList()
 
 ) : ImpressHolder() , Parcelable , Visitable<CatalogProductListAdapterFactory> {
 
