@@ -2,7 +2,6 @@ package com.tokopedia.recommendation_widget_common.data
 
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.kotlin.extensions.view.EMPTY
 
 /**
  * Created by devara fikry on 16/04/19.

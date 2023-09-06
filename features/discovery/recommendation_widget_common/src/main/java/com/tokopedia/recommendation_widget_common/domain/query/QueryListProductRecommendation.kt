@@ -107,7 +107,6 @@ object QueryListProductRecommendation {
         "                            }\n" +
         "                        }\n" +
         "                        parentID\n" +
-        "                        warehouseID\n"+
         "                      }\n" +
         "                    }\n" +
         "                  }\n" +
