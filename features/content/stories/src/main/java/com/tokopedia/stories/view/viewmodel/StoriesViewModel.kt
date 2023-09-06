@@ -82,7 +82,7 @@ class StoriesViewModel @Inject constructor(
         when (action) {
             is StoriesUiAction.SetArgumentsData -> handleSetInitialData(action.bundle)
             is StoriesUiAction.SaveInstanceStateData -> handleSaveInstanceStateData(action.bundle)
-            is StoriesUiAction.SetSavedInstanceStateData -> handleSetSavedInstanceStateData(action.bundle)
+            is StoriesUiAction.GetSavedInstanceStateData -> handleGetSavedInstanceStateData(action.bundle)
             is StoriesUiAction.SetGroupMainData -> handleGroupMainData(action.selectedGroup)
             is StoriesUiAction.SetGroup -> handleSetGroup(action.selectedGroup, action.showAnimation)
             StoriesUiAction.NextDetail -> handleNext()
@@ -111,7 +111,7 @@ class StoriesViewModel @Inject constructor(
         }
     }
 
-    private fun handleSetSavedInstanceStateData(bundle: Bundle?) {
+    private fun handleGetSavedInstanceStateData(bundle: Bundle?) {
         if (bundle == null) return
 
         val shopId = bundle.getString(SAVED_INSTANCE_STORIES_SHOP_ID, "")

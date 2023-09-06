@@ -6,7 +6,7 @@ sealed interface StoriesUiAction {
 
     data class SetArgumentsData(val bundle: Bundle?): StoriesUiAction
     data class SaveInstanceStateData(val bundle: Bundle?): StoriesUiAction
-    data class SetSavedInstanceStateData(val bundle: Bundle?): StoriesUiAction
+    data class GetSavedInstanceStateData(val bundle: Bundle?): StoriesUiAction
     data class SetGroupMainData(val selectedGroup: Int): StoriesUiAction
     data class SetGroup(val selectedGroup: Int, val showAnimation: Boolean): StoriesUiAction
 

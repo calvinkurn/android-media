@@ -130,6 +130,7 @@ class StoriesDetailFragment @Inject constructor(
 
         mAdapter.setItems(state.groupHeader)
         mAdapter.notifyItemRangeInserted(mAdapter.itemCount, state.groupHeader.size)
+        binding.layoutDetailLoading.categoriesLoader.hide()
     }
 
     private fun renderStoriesDetail(

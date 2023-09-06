@@ -94,7 +94,7 @@ class StoriesGroupFragment @Inject constructor(
 
     private fun initializeData(savedInstanceState: Bundle?) {
         if (savedInstanceState == null) viewModelAction(StoriesUiAction.SetArgumentsData(arguments))
-        else viewModelAction(StoriesUiAction.SetSavedInstanceStateData(savedInstanceState))
+        else viewModelAction(StoriesUiAction.GetSavedInstanceStateData(savedInstanceState))
     }
 
     private fun viewModelAction(event: StoriesUiAction) {
