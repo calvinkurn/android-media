@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -74,7 +75,7 @@ class ShopHomeV4TerlarisAdapter(
         private var productImg1: ImageUnify? = itemView.findViewById(R.id.terlaris_item_img_product_1)
         private var productName1: Typography? = itemView.findViewById(R.id.terlaris_item_product_name_1)
         private var productPrice1: Typography? = itemView.findViewById(R.id.terlaris_item_product_price_1)
-        private var terlarisContainerDiscount1: LinearLayout? = itemView.findViewById(R.id.terlaris_container_discount_1)
+        private var terlarisContainerDiscount1: LinearLayoutCompat? = itemView.findViewById(R.id.terlaris_container_discount_1)
         private var productOriginalPrice1: TextView? = itemView.findViewById(R.id.terlaris_original_price_1)
         private var labelDiscount1: Label? = itemView.findViewById(R.id.terlaris_label_discount_percentage_1)
         private var productRank1: Typography? = itemView.findViewById(R.id.terlaris_item_product_rank_number_1)
@@ -82,7 +83,7 @@ class ShopHomeV4TerlarisAdapter(
         private var productImg2: ImageUnify? = itemView.findViewById(R.id.terlaris_item_img_product_2)
         private var productName2: Typography? = itemView.findViewById(R.id.terlaris_item_product_name_2)
         private var productPrice2: Typography? = itemView.findViewById(R.id.terlaris_item_product_price_2)
-        private var terlarisContainerDiscount2: LinearLayout? = itemView.findViewById(R.id.terlaris_container_discount_2)
+        private var terlarisContainerDiscount2: LinearLayoutCompat? = itemView.findViewById(R.id.terlaris_container_discount_2)
         private var labelDiscount2: Label? = itemView.findViewById(R.id.terlaris_label_discount_percentage_2)
         private var productOriginalPrice2: TextView? = itemView.findViewById(R.id.terlaris_original_price_2)
         private var productRank2: Typography? = itemView.findViewById(R.id.terlaris_item_product_rank_number_2)
@@ -90,7 +91,7 @@ class ShopHomeV4TerlarisAdapter(
         private var productImg3: ImageUnify? = itemView.findViewById(R.id.terlaris_item_img_product_3)
         private var productName3: Typography? = itemView.findViewById(R.id.terlaris_item_product_name_3)
         private var productPrice3: Typography? = itemView.findViewById(R.id.terlaris_item_product_price_3)
-        private var terlarisContainerDiscount3: LinearLayout? = itemView.findViewById(R.id.terlaris_container_discount_3)
+        private var terlarisContainerDiscount3: LinearLayoutCompat? = itemView.findViewById(R.id.terlaris_container_discount_3)
         private var labelDiscount3: Label? = itemView.findViewById(R.id.terlaris_label_discount_percentage_3)
         private var productOriginalPrice3: TextView? = itemView.findViewById(R.id.terlaris_original_price_3)
         private var productRank3: Typography? = itemView.findViewById(R.id.terlaris_item_product_rank_number_3)
