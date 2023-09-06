@@ -1,6 +1,7 @@
 package com.tokopedia.stories.creation.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.content.common.di.ContentFragmentFactoryModule
 import com.tokopedia.stories.creation.view.activity.StoriesCreationActivity
 import dagger.Component
 
@@ -13,6 +14,7 @@ import dagger.Component
         StoriesCreationBindModule::class,
         StoriesCreationViewModelModule::class,
         StoriesCreationFragmentModule::class,
+        ContentFragmentFactoryModule::class,
     ],
     dependencies = [BaseAppComponent::class]
 )
