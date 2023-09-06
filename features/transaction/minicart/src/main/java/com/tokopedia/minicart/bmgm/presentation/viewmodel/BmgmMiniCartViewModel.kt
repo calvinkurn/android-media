@@ -4,11 +4,12 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.minicart.bmgm.domain.model.BmgmParamModel
 import com.tokopedia.minicart.bmgm.domain.usecase.GetBmgmMiniCartDataUseCase
-import com.tokopedia.minicart.bmgm.domain.usecase.LocalCacheUseCase
+import com.tokopedia.minicart.bmgm.domain.usecase.MiniCartLocalCacheUseCases
+import com.tokopedia.minicart.bmgm.domain.usecase.SetCartListCheckboxStateUseCase
 import com.tokopedia.minicart.bmgm.presentation.model.BmgmMiniCartDataUiModel
 import com.tokopedia.minicart.bmgm.presentation.model.BmgmState
-import com.tokopedia.purchase_platform.common.feature.bmgm.domain.usecase.SetCartListCheckboxStateUseCase
 import dagger.Lazy
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -22,7 +23,7 @@ import javax.inject.Inject
 class BmgmMiniCartViewModel @Inject constructor(
     setCartListCheckboxStateUseCase: Lazy<SetCartListCheckboxStateUseCase>,
     private val getMiniCartDataUseCase: Lazy<GetBmgmMiniCartDataUseCase>,
-    private val localCacheUseCase: Lazy<LocalCacheUseCase>,
+    private val miniCartLocalCacheUseCases: Lazy<MiniCartLocalCacheUseCases>,
     private val dispatchers: Lazy<CoroutineDispatchers>
 ) : BaseCartCheckboxViewModel(setCartListCheckboxStateUseCase.get(), dispatchers.get()) {
 
@@ -30,8 +31,11 @@ class BmgmMiniCartViewModel @Inject constructor(
     val cartData: StateFlow<BmgmState<BmgmMiniCartDataUiModel>>
         get() = _cartData
 
+    private var miniCartJob: Job? = null
+
     fun getMiniCartData(shopIds: List<Long>, param: BmgmParamModel, showLoadingState: Boolean) {
-        viewModelScope.launch {
+        miniCartJob?.cancel()
+        miniCartJob = viewModelScope.launch {
             runCatching {
                 if (showLoadingState) {
                     _cartData.emit(BmgmState.Loading)
@@ -45,16 +49,17 @@ class BmgmMiniCartViewModel @Inject constructor(
                 _cartData.emit(BmgmState.Error(it))
             }
         }
+        miniCartJob?.start()
     }
 
     fun clearCartDataLocalCache() {
-        localCacheUseCase.get().clearLocalCache()
+        miniCartLocalCacheUseCases.get().clearLocalCache()
     }
 
     fun storeCartDataToLocalCache() {
         val result = _cartData.value
         if (result is BmgmState.Success) {
-            localCacheUseCase.get().saveToLocalCache(result.data)
+            miniCartLocalCacheUseCases.get().saveToLocalCache(result.data)
         }
     }
 }

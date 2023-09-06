@@ -1,4 +1,4 @@
-package com.tokopedia.purchase_platform.common.feature.bmgm.data.response
+package com.tokopedia.minicart.bmgm.domain.model
 
 import com.google.gson.annotations.SerializedName
 
@@ -8,8 +8,6 @@ data class SetCartlistCheckboxGqlResponse(
 )
 
 data class SetCartlistCheckboxStateResponse(
-    @SerializedName("status")
-    val status: String = "",
     @SerializedName("error_message")
     val errorMessage: List<String> = emptyList(),
     @SerializedName("data")

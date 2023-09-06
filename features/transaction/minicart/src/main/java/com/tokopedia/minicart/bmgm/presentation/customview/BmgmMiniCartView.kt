@@ -60,6 +60,7 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
     private var param = BmgmParamModel()
     private var shopIds = listOf<Long>()
     private var messageIndex = Int.ZERO
+    private var offerCount: Int = Int.ZERO
 
     private var binding: ViewBmgmMiniCartWidgetBinding? = null
     private var footerBinding: ViewBmgmMiniCartSubTotalBinding? = null
@@ -111,12 +112,17 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
     }
 
     fun fetchData(
-        shopIds: List<Long>, offerIds: List<Long>, offerJsonData: String, warehouseIds: List<String>
+        shopIds: List<Long>,
+        offerIds: List<Long>,
+        offerJsonData: String,
+        warehouseIds: List<String>,
+        offerCount: Int
     ) {
         this.param = BmgmParamModel(
             offerIds = offerIds, offerJsonData = offerJsonData, warehouseIds = warehouseIds
         )
         this.shopIds = shopIds
+        this.offerCount = offerCount
         viewModel.getMiniCartData(shopIds, param, false)
     }
 
@@ -135,6 +141,9 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
                     is BmgmState.Loading -> showMiniCartLoadingState()
                     is BmgmState.Success -> setOnSuccessGetCartData(it.data)
                     is BmgmState.Error -> showErrorState()
+                    else -> {
+                        /* no-op */
+                    }
                 }
             }
         }
@@ -146,6 +155,9 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
                 when (it) {
                     is BmgmState.Loading -> showLoadingButton()
                     is BmgmState.Success, is BmgmState.Error -> openCartPage()
+                    else -> {
+                        /* no-op */
+                    }
                 }
             }
         }
@@ -222,23 +234,40 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
     private fun setupMessageWithAnimation(messages: List<String>) {
         if (messages.isEmpty()) return
         binding?.run {
-            tvBmgmCartDiscount.visible()
             if (messages.size > Int.ONE) {
-                if (hasVisited) {
-                    hasVisited = true
-                    tvBmgmCartDiscount.setCurrentText(
-                        messages.firstOrNull().orEmpty().parseAsHtml()
-                    )
-                } else {
-                    tvBmgmCartDiscount.setText(
-                        messages.firstOrNull().orEmpty().parseAsHtml()
-                    )
-                }
-                flipTextWithAnimation(messages)
+                showMultipleMessage(messages)
             } else {
-                tvBmgmCartDiscount.setCurrentText(
-                    messages.firstOrNull().orEmpty().parseAsHtml()
-                )
+                val message = messages.firstOrNull().orEmpty()
+                showSingleMessageWithNoAnimation(message)
+            }
+        }
+    }
+
+    private fun showMultipleMessage(messages: List<String>) {
+        binding?.run {
+            val firstMessage = messages.firstOrNull().orEmpty()
+            if (!hasVisited) {
+                hasVisited = true
+                showSingleMessageWithNoAnimation(firstMessage)
+            } else {
+                if (firstMessage.isBlank()) {
+                    tvBmgmCartDiscount.gone()
+                } else {
+                    tvBmgmCartDiscount.visible()
+                    tvBmgmCartDiscount.setText(firstMessage.parseAsHtml())
+                }
+            }
+            flipTextWithAnimation(messages)
+        }
+    }
+
+    private fun showSingleMessageWithNoAnimation(message: String) {
+        binding?.run {
+            if (message.isBlank()) {
+                tvBmgmCartDiscount.gone()
+            } else {
+                tvBmgmCartDiscount.visible()
+                tvBmgmCartDiscount.setCurrentText(message.parseAsHtml())
             }
         }
     }
@@ -249,7 +278,13 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
                 if (messageIndex == messages.size.minus(Int.ONE)) {
                     messageIndex = Int.ZERO
                 } else {
-                    setText(messages.getOrNull(++messageIndex).orEmpty().parseAsHtml())
+                    val message = messages.getOrNull(++messageIndex).orEmpty()
+                    if (message.isBlank()) {
+                        gone()
+                    } else {
+                        visible()
+                        setText(message.parseAsHtml())
+                    }
                     flipTextWithAnimation(messages)
                 }
             }, TimeUnit.SECONDS.toMillis(MESSAGE_SWITCH_INITIAL_DELAY))
@@ -294,7 +329,6 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
 
     private fun getProductList(data: BmgmMiniCartDataUiModel): List<BmgmMiniCartVisitable> {
         val productList = mutableListOf<BmgmMiniCartVisitable>()
-        val hasReachMaxDiscount = data.hasReachMaxDiscount
         data.tiersApplied.forEach { t ->
             if (t.isDiscountTier()) {
                 productList.add(t)
@@ -302,10 +336,12 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
                 t.products.forEach { p ->
                     productList.add(p)
                 }
-                if (!hasReachMaxDiscount) {
-                    productList.add(BmgmMiniCartVisitable.PlaceholderUiModel)
-                }
             }
+        }
+        val numOfDiscountTier = data.tiersApplied.count { it.isDiscountTier() }
+        val hasReachMaxDiscount = numOfDiscountTier == offerCount
+        if (!hasReachMaxDiscount) {
+            productList.add(BmgmMiniCartVisitable.PlaceholderUiModel)
         }
         return productList
     }

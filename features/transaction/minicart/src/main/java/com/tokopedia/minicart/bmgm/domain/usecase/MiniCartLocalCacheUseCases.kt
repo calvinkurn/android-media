@@ -14,7 +14,7 @@ import kotlin.coroutines.CoroutineContext
  * Created by @ilhamsuaib on 14/08/23.
  */
 
-class LocalCacheUseCase @Inject constructor(
+class MiniCartLocalCacheUseCases @Inject constructor(
     private val dispatchers: CoroutineDispatchers
 ) : CoroutineScope {
 
@@ -34,7 +34,16 @@ class LocalCacheUseCase @Inject constructor(
         }
     }
 
-    private fun mapToCommonData(model: BmgmMiniCartDataUiModel, showMiniCartFooter: Boolean = true): BmgmCommonDataModel {
+    fun getCartData(): BmgmCommonDataModel {
+        val commonData = PersistentCacheManager.instance.get<BmgmCommonDataModel>(
+            BmgmCommonDataModel.PARAM_KEY_BMGM_DATA, BmgmCommonDataModel::class.java, null
+        )
+        return commonData ?: throw RuntimeException("No cart data stored in local cache")
+    }
+
+    private fun mapToCommonData(
+        model: BmgmMiniCartDataUiModel, showMiniCartFooter: Boolean = true
+    ): BmgmCommonDataModel {
         return BmgmCommonDataModel(
             offerId = model.offerId,
             offerName = model.offerName,
