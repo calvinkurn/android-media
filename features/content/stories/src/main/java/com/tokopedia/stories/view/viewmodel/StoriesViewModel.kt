@@ -5,6 +5,8 @@ import android.os.Build.VERSION_CODES.TIRAMISU
 import android.os.Bundle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.stories.data.repository.StoriesRepository
 import com.tokopedia.stories.domain.model.StoriesAuthorType
 import com.tokopedia.stories.domain.model.StoriesRequestModel
@@ -19,7 +21,6 @@ import com.tokopedia.stories.view.model.StoriesGroupUiModel
 import com.tokopedia.stories.view.model.StoriesUiState
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction
 import com.tokopedia.stories.view.viewmodel.event.StoriesUiEvent
-import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -46,9 +47,6 @@ class StoriesViewModel @Inject constructor(
             return if (currPosition < 0) ""
             else _storiesGroup.value.groupItems[currPosition].groupId
         }
-
-    val mGroupPos: Int
-        get() = _groupPos.value
 
     private val mGroupSize: Int
         get() = _storiesGroup.value.groupItems.size
@@ -137,8 +135,8 @@ class StoriesViewModel @Inject constructor(
     private fun handleGroupMainData(selectedGroup: Int) {
         _groupPos.update { selectedGroup }
         viewModelScope.launchCatchError(block = {
-            setInitialDetailData()
-            fetchAndCacheNextGroupDetail()
+            setInitialData()
+            setCachingData()
         }) { exception ->
             _uiEvent.emit(StoriesUiEvent.ErrorDetailPage(exception))
         }
@@ -184,7 +182,7 @@ class StoriesViewModel @Inject constructor(
         updateDetailData(event = RESUME, isSameContent = true)
     }
 
-    private suspend fun setInitialDetailData() {
+    private suspend fun setInitialData() {
         val isCached = mGroupItem.detail.detailItems.isNotEmpty()
         val detail = if (isCached) mGroupItem.detail
         else {
@@ -196,19 +194,47 @@ class StoriesViewModel @Inject constructor(
         updateDetailData(position = detail.selectedDetailPositionCached, isReset = true)
     }
 
+    private fun setCachingData() {
+        viewModelScope.launchCatchError(block = {
+            val prevRequest = asyncCatchError(block = {
+                fetchAndCachePreviousGroupDetail()
+            }) { it }
+            val nextRequest = asyncCatchError(block = {
+                fetchAndCacheNextGroupDetail()
+            }) { it }
+            prevRequest.await()
+            nextRequest.await()
+        }) { }
+    }
+
+    private suspend fun fetchAndCachePreviousGroupDetail() {
+        val prevGroupPos = _groupPos.value.minus(1)
+        val prevGroupItem = _storiesGroup.value.groupItems.getOrNull(prevGroupPos) ?: return
+        val isNotFirstGroup = prevGroupPos > -1
+        val isPrevGroupCached = prevGroupItem.detail.detailItems.isNotEmpty()
+        if (isNotFirstGroup && isPrevGroupCached) return
+
+        val prevGroupId = prevGroupItem.groupId
+
+        try {
+            val prevGroupData = requestStoriesDetailData(prevGroupId)
+            updateGroupData(detail = prevGroupData, groupPosition = prevGroupPos)
+        } catch (_: Throwable) { }
+    }
+
     private suspend fun fetchAndCacheNextGroupDetail() {
         val nextGroupPos = _groupPos.value.plus(1)
-        val groupItem = _storiesGroup.value.groupItems.getOrNull(nextGroupPos) ?: return
+        val nextGroupItem = _storiesGroup.value.groupItems.getOrNull(nextGroupPos) ?: return
         val isNotLastGroup = nextGroupPos < mGroupSize
-        val isNextGroupCached = groupItem.detail.detailItems.isNotEmpty()
+        val isNextGroupCached = nextGroupItem.detail.detailItems.isNotEmpty()
         if (isNotLastGroup && isNextGroupCached) return
 
-        val nextGroupId = groupItem.groupId
+        val nextGroupId = nextGroupItem.groupId
 
-        viewModelScope.launchCatchError(block = {
+        try {
             val nextGroupData = requestStoriesDetailData(nextGroupId)
             updateGroupData(detail = nextGroupData, groupPosition = nextGroupPos)
-        }) { }
+        } catch (_: Throwable) { }
     }
 
     private fun updateGroupData(detail: StoriesDetailUiModel, groupPosition: Int) {
