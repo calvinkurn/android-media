@@ -69,7 +69,7 @@ import java.net.UnknownHostException
 import javax.inject.Inject
 import com.tokopedia.design.R as designR
 import com.tokopedia.scp_rewards_common.R as scp_rewards_commonR
-import com.tokopedia.unifyprinciples.R as unifyPrinciplesR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class MedalCelebrationBottomSheet : BottomSheetUnify() {
 
@@ -219,9 +219,9 @@ class MedalCelebrationBottomSheet : BottomSheetUnify() {
     private fun setCloseBtnColor(whiteBtn: Boolean = true) {
         context?.let {
             val iconColor = if (whiteBtn) {
-                ResourcesCompat.getColor(it.resources, unifyPrinciplesR.color.Unify_NN0, null)
+                ResourcesCompat.getColor(it.resources, unifyprinciplesR.color.Unify_NN0, null)
             } else {
-                ResourcesCompat.getColor(it.resources, unifyPrinciplesR.color.Unify_NN900, null)
+                ResourcesCompat.getColor(it.resources, unifyprinciplesR.color.Unify_NN900, null)
             }
             binding?.btnClose?.setImage(
                 newLightEnable = iconColor,
