@@ -1269,8 +1269,13 @@ class DynamicProductDetailViewModel @Inject constructor(
         // don't move this order, because level 1 always on top and level 2 always below lvl1 in map
         variants[newVariantCategoryKey] = newVariantId
 
+        if (variantLevelTwo == null) {
+            return variants
+        }
+
         // if mapOfSelected still don't select yet with variant lvl two, so set default lvl2 with fist lvl2 item
-        if (variantLevelTwo != null && variantsSelected.size <= MAX_VARIANT_LEVEL) {
+        val variantLvl2Value = variants[variantLevelTwo.pv]
+        if (variantLvl2Value.isNullOrBlank() || variantLvl2Value == "0") {
             // in case, thumb variant selected but variant two never select from vbs
             val variantLevelTwoId = variantLevelTwo.options.firstOrNull()?.id
             variants[variantLevelTwo.pv.orEmpty()] = variantLevelTwoId.orEmpty()
