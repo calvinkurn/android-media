@@ -115,7 +115,7 @@ class ProductListAdapter(
             holder.itemView.setMargin(0,
                 0,
                 0,
-                holder.itemView.context.resources.getDimensionPixelSize(com.tokopedia.topads.common.R.dimen.dp_72))
+                holder.itemView.context.resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_72))
         } else {
             holder.itemView.setMargin(0, 0, 0, 0)
         }
@@ -137,11 +137,11 @@ class ProductListAdapter(
         if (productRating != 0) {
             showRating(productRating, ratingView)
             val ratingText = "($reviewCount)"
-            ratingView.findViewById<Typography>(R.id.txt_rating_count).text = ratingText
-            ratingView.findViewById<Typography>(R.id.txt_rating_count).show()
+            ratingView.findViewById<Typography>(com.tokopedia.topads.common.R.id.txt_rating_count).text = ratingText
+            ratingView.findViewById<Typography>(com.tokopedia.topads.common.R.id.txt_rating_count).show()
         } else {
             ratingView.hide()
-            ratingView.findViewById<Typography>(R.id.txt_rating_count).hide()
+            ratingView.findViewById<Typography>(com.tokopedia.topads.common.R.id.txt_rating_count).hide()
         }
     }
 
@@ -227,51 +227,51 @@ class ProductListAdapter(
         when (i) {
             STAR_1 -> {
                 if (show)
-                    ratingView.findViewById<ImageUnify>(R.id.imageViewRating1)
+                    ratingView.findViewById<ImageUnify>(com.tokopedia.topads.common.R.id.imageViewRating1)
                         .setImageDrawable(AppCompatResources.getDrawable(ratingView.context,
                             com.tokopedia.topads.common.R.drawable.topads_ic_rating_active))
                 else
-                    ratingView.findViewById<ImageUnify>(R.id.imageViewRating1)
+                    ratingView.findViewById<ImageUnify>(com.tokopedia.topads.common.R.id.imageViewRating1)
                         .setImageDrawable(AppCompatResources.getDrawable(ratingView.context,
                             com.tokopedia.topads.common.R.drawable.topads_ic_rating_default))
             }
             STAR_2 -> {
                 if (show)
-                    ratingView.findViewById<ImageUnify>(R.id.imageViewRating2)
+                    ratingView.findViewById<ImageUnify>(com.tokopedia.topads.common.R.id.imageViewRating2)
                         .setImageDrawable(AppCompatResources.getDrawable(ratingView.context,
                             com.tokopedia.topads.common.R.drawable.topads_ic_rating_active))
                 else
-                    ratingView.findViewById<ImageUnify>(R.id.imageViewRating2)
+                    ratingView.findViewById<ImageUnify>(com.tokopedia.topads.common.R.id.imageViewRating2)
                         .setImageDrawable(AppCompatResources.getDrawable(ratingView.context,
                             com.tokopedia.topads.common.R.drawable.topads_ic_rating_default))
             }
             STAR_3 -> {
                 if (show)
-                    ratingView.findViewById<ImageUnify>(R.id.imageViewRating3)
+                    ratingView.findViewById<ImageUnify>(com.tokopedia.topads.common.R.id.imageViewRating3)
                         .setImageDrawable(AppCompatResources.getDrawable(ratingView.context,
                             com.tokopedia.topads.common.R.drawable.topads_ic_rating_active))
                 else
-                    ratingView.findViewById<ImageUnify>(R.id.imageViewRating3)
+                    ratingView.findViewById<ImageUnify>(com.tokopedia.topads.common.R.id.imageViewRating3)
                         .setImageDrawable(AppCompatResources.getDrawable(ratingView.context,
                             com.tokopedia.topads.common.R.drawable.topads_ic_rating_default))
             }
             STAR_4 -> {
                 if (show)
-                    ratingView.findViewById<ImageUnify>(R.id.imageViewRating4)
+                    ratingView.findViewById<ImageUnify>(com.tokopedia.topads.common.R.id.imageViewRating4)
                         .setImageDrawable(AppCompatResources.getDrawable(ratingView.context,
                             com.tokopedia.topads.common.R.drawable.topads_ic_rating_active))
                 else
-                    ratingView.findViewById<ImageUnify>(R.id.imageViewRating4)
+                    ratingView.findViewById<ImageUnify>(com.tokopedia.topads.common.R.id.imageViewRating4)
                         .setImageDrawable(AppCompatResources.getDrawable(ratingView.context,
                             com.tokopedia.topads.common.R.drawable.topads_ic_rating_default))
             }
             STAR_5 -> {
                 if (show)
-                    ratingView.findViewById<ImageUnify>(R.id.imageViewRating5)
+                    ratingView.findViewById<ImageUnify>(com.tokopedia.topads.common.R.id.imageViewRating5)
                         .setImageDrawable(AppCompatResources.getDrawable(ratingView.context,
                             com.tokopedia.topads.common.R.drawable.topads_ic_rating_active))
                 else
-                    ratingView.findViewById<ImageUnify>(R.id.imageViewRating5)
+                    ratingView.findViewById<ImageUnify>(com.tokopedia.topads.common.R.id.imageViewRating5)
                         .setImageDrawable(AppCompatResources.getDrawable(ratingView.context,
                             com.tokopedia.topads.common.R.drawable.topads_ic_rating_default))
             }

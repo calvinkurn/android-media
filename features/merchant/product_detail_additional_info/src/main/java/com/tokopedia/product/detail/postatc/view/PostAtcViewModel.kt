@@ -5,13 +5,14 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.product.detail.common.postatc.PostAtcParams
 import com.tokopedia.product.detail.postatc.base.PostAtcUiModel
 import com.tokopedia.product.detail.postatc.data.model.PostAtcInfo
 import com.tokopedia.product.detail.postatc.data.model.PostAtcLayout
 import com.tokopedia.product.detail.postatc.mapper.mapToUiModel
+import com.tokopedia.product.detail.postatc.mapper.toUserLocationRequest
 import com.tokopedia.product.detail.postatc.usecase.GetPostAtcLayoutUseCase
-import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
-import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.viewutil.asFail
 import com.tokopedia.recommendation_widget_common.viewutil.asSuccess
@@ -20,7 +21,6 @@ import javax.inject.Inject
 
 class PostAtcViewModel @Inject constructor(
     private val getPostAtcLayoutUseCase: GetPostAtcLayoutUseCase,
-    private val getRecommendationUseCase: GetRecommendationUseCase,
     dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
@@ -30,79 +30,74 @@ class PostAtcViewModel @Inject constructor(
     private val _recommendations = MutableLiveData<Pair<Int, Result<RecommendationWidget>>>()
     val recommendations: LiveData<Pair<Int, Result<RecommendationWidget>>> = _recommendations
 
-    val postAtcInfo: PostAtcInfo = PostAtcInfo()
+    var postAtcInfo: PostAtcInfo = PostAtcInfo()
+        private set
 
-    fun fetchLayout(
+    /**
+     * Pass data from Arguments
+     */
+    fun initializeParameters(
         productId: String,
-        cartId: String,
-        layoutId: String,
-        pageSource: String
+        postAtcParams: PostAtcParams,
+        localCacheModel: LocalCacheModel
     ) {
+        val addons = postAtcParams.addons?.let {
+            PostAtcInfo.Addons.parse(it)
+        }
+
+        postAtcInfo = postAtcInfo.copy(
+            addons = addons,
+            cartId = postAtcParams.cartId,
+            layoutId = postAtcParams.layoutId,
+            pageSource = postAtcParams.pageSource,
+            productId = productId,
+            session = postAtcParams.session,
+            userLocationRequest = localCacheModel.toUserLocationRequest()
+        )
+
+        fetchLayout()
+    }
+
+    private fun fetchLayout() {
         launchCatchError(block = {
             val result = getPostAtcLayoutUseCase.execute(
-                productId,
-                cartId,
-                layoutId,
-                pageSource
+                postAtcInfo.productId,
+                postAtcInfo.cartId,
+                postAtcInfo.layoutId,
+                postAtcInfo.pageSource,
+                postAtcInfo.session,
+                postAtcInfo.userLocationRequest
             )
 
-            updateInfo(
-                productId,
-                cartId,
-                layoutId,
-                pageSource,
-                result
-            )
+            updateInfo(result)
 
             val components = result.components
             if (components.isEmpty()) throw Throwable()
 
-            val uiModels = result.components.mapToUiModel()
+            val uiModels = result.components.mapToUiModel(postAtcInfo)
             _layouts.value = uiModels.asSuccess()
         }, onError = { _layouts.value = it.asFail() })
     }
 
-    fun fetchRecommendation(
-        productId: String,
-        pageName: String,
-        uniqueId: Int
-    ) {
-        launchCatchError(block = {
-            val requestParams = GetRecommendationRequestParam(
-                pageName = pageName,
-                productIds = listOf(productId)
-            )
-            val result = getRecommendationUseCase.getData(requestParams)
-            if (result.isEmpty()) throw Throwable()
+    private fun updateInfo(data: PostAtcLayout) {
+        val basicInfo = data.basicInfo
+        val category = basicInfo.category
+        val footer = PostAtcInfo.Footer(
+            image = data.postAtcInfo.image,
+            description = data.postAtcInfo.title,
+            buttonText = data.postAtcInfo.button.text,
+            cartId = data.postAtcInfo.button.cartId
+        )
 
-            val widget = result.first()
-            if (widget.recommendationItemList.isEmpty()) throw Throwable()
-
-            _recommendations.value = uniqueId to widget.asSuccess()
-        }, onError = {
-            _recommendations.value = uniqueId to it.asFail()
-        })
-    }
-
-    private fun updateInfo(
-        productId: String,
-        cartId: String,
-        layoutId: String,
-        pageSource: String,
-        data: PostAtcLayout
-    ) {
-        postAtcInfo.apply {
-            this.productId = productId
-            this.cartId = cartId
-            this.layoutId = layoutId
-            this.pageSource = pageSource
-            layoutName = data.name
-
-            val basicInfo = data.basicInfo
-            val category = basicInfo.category
-            categoryId = category.id
-            categoryName = category.name
-            shopId = basicInfo.shopId
-        }
+        postAtcInfo = postAtcInfo.copy(
+            categoryId = category.id,
+            categoryName = category.name,
+            footer = footer,
+            layoutName = data.name,
+            shopId = basicInfo.shopId,
+            price = basicInfo.price,
+            originalPrice = basicInfo.originalPrice,
+            condition = basicInfo.condition
+        )
     }
 }

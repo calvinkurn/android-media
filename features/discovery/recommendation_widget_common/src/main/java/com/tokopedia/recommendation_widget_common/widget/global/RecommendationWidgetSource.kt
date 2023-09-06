@@ -10,4 +10,15 @@ sealed interface RecommendationWidgetSource {
         override val trackingValue: String
             get() = "product detail page"
     }
+
+    class PDPAfterATC(
+        val anchorProductId: String,
+        val isUserLoggedIn: Boolean,
+        val userId: String,
+    ): RecommendationWidgetSource {
+        override val xSourceValue: String
+            get() = "pdp"
+        override val trackingValue: String
+            get() = "product detail page"
+    }
 }

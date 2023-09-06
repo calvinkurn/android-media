@@ -1,9 +1,9 @@
 package com.tokopedia.tokochat.stub.common
 
 import androidx.collection.ArrayMap
-import com.tokopedia.tokochat_common.util.TokoChatCacheManager
+import com.tokopedia.tokochat.common.util.TokoChatCacheManager
 
-class TokoChatCacheManagerStub: TokoChatCacheManager {
+class TokoChatCacheManagerStub : TokoChatCacheManager {
 
     private val cacheMap: ArrayMap<Any, Any> = ArrayMap()
     var throwError: Boolean = false
@@ -24,7 +24,7 @@ class TokoChatCacheManagerStub: TokoChatCacheManager {
     }
 
     override fun getPreviousState(stateCacheKey: String): Boolean {
-        return cacheMap[stateCacheKey] as? Boolean?: false
+        return cacheMap[stateCacheKey] as? Boolean ?: false
     }
 
     fun resetAll() {

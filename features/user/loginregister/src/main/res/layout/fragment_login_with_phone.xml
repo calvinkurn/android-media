@@ -12,7 +12,7 @@
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_lvl0"
-        app:layout_constraintBottom_toTopOf="@+id/to_tokopedia_care"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
@@ -118,20 +118,6 @@
         </LinearLayout>
 
     </ScrollView>
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/to_tokopedia_care"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/spacing_lvl5"
-        android:gravity="center_horizontal"
-        android:text="@string/need_help_call_tokopedia_care"
-        android:textAlignment="center"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:typographyType="body_2"
-        app:typographyWeight="reguler" />
 
     <RelativeLayout
         android:id="@+id/progressBarLoginWithPhone"
