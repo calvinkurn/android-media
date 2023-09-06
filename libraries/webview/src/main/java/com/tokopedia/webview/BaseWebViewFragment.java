@@ -289,7 +289,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         }
 
         WebSettings webSettings = webView.getSettings();
-        webSettings.setUserAgentString(webSettings.getUserAgentString() + " Mobile webview ");
+        webSettings.setUserAgentString(webSettings.getUserAgentString() + " Tokopedia webview ");
         webSettings.setJavaScriptEnabled(true);
         webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
         webSettings.setDomStorageEnabled(true);
