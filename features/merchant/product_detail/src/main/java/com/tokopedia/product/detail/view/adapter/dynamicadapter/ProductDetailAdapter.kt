@@ -35,10 +35,12 @@ import com.tokopedia.product.detail.view.viewholder.a_plus_content.APlusImageUiM
 /**
  * Created by Yehezkiel on 04/01/21
  */
-class ProductDetailAdapter(asyncDifferConfig: AsyncDifferConfig<DynamicPdpDataModel>,
-                           private val listener: DynamicProductDetailListener?,
-                           private val adapterTypeFactory: DynamicProductDetailAdapterFactory) :
-        ListAdapter<DynamicPdpDataModel, AbstractViewHolder<*>>(asyncDifferConfig) {
+class ProductDetailAdapter(
+    asyncDifferConfig: AsyncDifferConfig<DynamicPdpDataModel>,
+    private val listener: DynamicProductDetailListener?,
+    private val adapterTypeFactory: DynamicProductDetailAdapterFactory
+) :
+    ListAdapter<DynamicPdpDataModel, AbstractViewHolder<*>>(asyncDifferConfig) {
 
     var shouldRedrawLayout: Boolean = false
 
@@ -67,38 +69,61 @@ class ProductDetailAdapter(asyncDifferConfig: AsyncDifferConfig<DynamicPdpDataMo
     override fun getItemViewType(position: Int): Int {
         return if (position < 0 || position >= currentList.size) {
             HideViewHolder.LAYOUT
-        } else currentList[position]?.type(adapterTypeFactory) ?: HideViewHolder.LAYOUT
+        } else {
+            currentList[position]?.type(adapterTypeFactory) ?: HideViewHolder.LAYOUT
+        }
     }
 
     override fun onViewAttachedToWindow(holder: AbstractViewHolder<out Visitable<*>>) {
         super.onViewAttachedToWindow(holder)
 
-        val dataModel = currentList[holder.adapterPosition]
+        val currentPosition = holder.bindingAdapterPosition
+        val dataModel = currentList[currentPosition]
 
         if (holder is ProductRecommendationViewHolder &&
-            holder.adapterPosition < currentList.size &&
+            currentPosition < currentList.size &&
             (dataModel as? ProductRecommendationDataModel)?.recomWidgetData == null
-        ) listener?.loadTopads((dataModel as ProductRecommendationDataModel).name)
+        ) {
+            val recommData = dataModel as? ProductRecommendationDataModel
+            listener?.loadTopads(
+                pageName = recommData?.name.orEmpty(),
+                queryParam = recommData?.queryParam.orEmpty(),
+                thematicId = recommData?.thematicId.orEmpty()
+            )
+        }
 
         if (holder is ProductRecomWidgetViewHolder &&
-            holder.adapterPosition < currentList.size &&
+            currentPosition < currentList.size &&
             (dataModel as? ProductRecomWidgetDataModel)?.recomWidgetData == null
-        ) listener?.loadTopads((dataModel as ProductRecomWidgetDataModel).name)
+        ) {
+            val recommData = dataModel as? ProductRecomWidgetDataModel
+            listener?.loadTopads(
+                pageName = recommData?.name.orEmpty(),
+                queryParam = recommData?.queryParam.orEmpty(),
+                thematicId = recommData?.thematicId.orEmpty()
+            )
+        }
 
         if (holder is ViewToViewWidgetViewHolder &&
-            holder.adapterPosition < currentList.size &&
+            currentPosition < currentList.size &&
             (dataModel as? ViewToViewWidgetDataModel)?.recomWidgetData == null
-        ) listener?.loadViewToView((dataModel as ViewToViewWidgetDataModel).name)
+        ) {
+            listener?.loadViewToView((dataModel as ViewToViewWidgetDataModel).name)
+        }
 
         if (holder is ContentWidgetViewHolder &&
-            holder.adapterPosition < currentList.size &&
+            currentPosition < currentList.size &&
             (dataModel as? ContentWidgetDataModel)?.playWidgetState?.isLoading == true
-        ) listener?.loadPlayWidget()
+        ) {
+            listener?.loadPlayWidget()
+        }
 
         if (holder is ProductRecommendationVerticalPlaceholderViewHolder) {
-            if (holder.adapterPosition < currentList.size &&
+            if (currentPosition < currentList.size &&
                 (dataModel as? ProductRecommendationVerticalPlaceholderDataModel)?.recomWidgetData == null
-            ) listener?.startVerticalRecommendation(dataModel.name())
+            ) {
+                listener?.startVerticalRecommendation(dataModel.name())
+            }
             shouldRedrawLayout = true
         }
     }
@@ -144,11 +169,11 @@ class ProductDetailAdapter(asyncDifferConfig: AsyncDifferConfig<DynamicPdpDataMo
     }
 
     private fun isLoading(): Boolean {
-        val lastIndex = if (currentList.size == 0) -1 else currentList.size -1
+        val lastIndex = if (currentList.size == 0) -1 else currentList.size - 1
         return if (lastIndex > -1) {
             currentList[lastIndex] is LoadingModel ||
-                    currentList[lastIndex] is LoadingMoreModel ||
-                    currentList[lastIndex] is ProductLoadingDataModel
+                currentList[lastIndex] is LoadingMoreModel ||
+                currentList[lastIndex] is ProductLoadingDataModel
         } else {
             false
         }

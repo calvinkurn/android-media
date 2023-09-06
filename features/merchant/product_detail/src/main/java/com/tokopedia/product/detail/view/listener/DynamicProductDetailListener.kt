@@ -297,7 +297,7 @@ interface DynamicProductDetailListener {
     /**
      * ProductRecom
      */
-    fun loadTopads(pageName: String)
+    fun loadTopads(pageName: String, queryParam: String, thematicId: String)
     fun loadViewToView(pageName: String)
 
     fun loadPlayWidget()

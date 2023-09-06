@@ -176,7 +176,9 @@ class ProductRecommSubViewModel @Inject constructor(
         pageName: String,
         productId: String,
         isTokoNow: Boolean,
-        miniCart: MutableMap<String, MiniCartItem.MiniCartItemProduct>?
+        miniCart: MutableMap<String, MiniCartItem.MiniCartItemProduct>?,
+        queryParam: String,
+        thematicId: String
     ) {
         if (GlobalConfig.isSellerApp()) {
             return
@@ -195,7 +197,9 @@ class ProductRecommSubViewModel @Inject constructor(
                         productId = productId,
                         pageName = pageName,
                         isTokoNow = isTokoNow,
-                        miniCartData = miniCart
+                        miniCartData = miniCart,
+                        queryParam = queryParam,
+                        thematicId = thematicId
                     )
                 )
                 _loadTopAdsProduct.value = response.asSuccess()

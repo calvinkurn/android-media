@@ -43,7 +43,9 @@ interface IProductRecommSubViewModel {
         pageName: String,
         productId: String,
         isTokoNow: Boolean,
-        miniCart: MutableMap<String, MiniCartItem.MiniCartItemProduct>?
+        miniCart: MutableMap<String, MiniCartItem.MiniCartItemProduct>?,
+        queryParam: String,
+        thematicId: String
     )
 
     fun onResetAlreadyRecomHit()
