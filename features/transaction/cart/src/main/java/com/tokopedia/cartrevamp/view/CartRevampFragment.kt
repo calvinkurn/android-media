@@ -2930,12 +2930,12 @@ class CartRevampFragment :
                 var newAddOnWording = ""
                 if (addOnProductDataResult.aggregatedData.title.isNotEmpty()) {
                     newAddOnWording =
-                        "${addOnProductDataResult.aggregatedData.title} <b>(${
+                        "${addOnProductDataResult.aggregatedData.title} (${
                             CurrencyFormatUtil.convertPriceValueToIdrFormat(
                                 addOnProductDataResult.aggregatedData.price,
                                 false
                             ).removeDecimalSuffix()
-                        })</b>"
+                        })"
                 }
 
                 viewModel.updateAddOnByCartId(
@@ -4695,13 +4695,14 @@ class CartRevampFragment :
     }
 
     private fun validateRenderCart(cartData: CartData) {
-        if (cartData.availableSection.availableGroupGroups.isEmpty() && cartData.unavailableSections.isEmpty()) {
+        val isAvailableGroupEmpty = cartData.availableSection.availableGroupGroups.isEmpty()
+        val isUnavailableGroupEmpty = cartData.unavailableSections.isEmpty()
+        if ((isAvailableGroupEmpty && isUnavailableGroupEmpty) || (isAvailableGroupEmpty && !isUnavailableGroupEmpty)) {
             renderCartEmpty(cartData)
             setTopLayoutVisibility(false)
-        } else {
-            renderCartNotEmpty(cartData)
-            setTopLayoutVisibility(cartData.availableSection.availableGroupGroups.isNotEmpty())
         }
+        renderCartNotEmpty(cartData)
+        setTopLayoutVisibility(cartData.availableSection.availableGroupGroups.isNotEmpty())
     }
 
     private fun validateRenderPromo(cartData: CartData) {

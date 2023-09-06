@@ -1699,8 +1699,10 @@ class CartViewModelTest : BaseCartViewModelTest() {
         )
 
         val disabledReasonHolderData = DisabledReasonHolderData()
-        val cartItemHolderSecondData = CartItemHolderData(cartId = "234", isSelected = true, isError = true)
-        val cartItemHolderSecondDataTwo = CartItemHolderData(cartId = "235", isSelected = true, isError = true)
+        val cartItemHolderSecondData =
+            CartItemHolderData(cartId = "234", isSelected = true, isError = true)
+        val cartItemHolderSecondDataTwo =
+            CartItemHolderData(cartId = "235", isSelected = true, isError = true)
         val cartGroupHolderDataTwo = CartGroupHolderData(
             isError = true,
             productUiModelList = mutableListOf(
@@ -1802,8 +1804,10 @@ class CartViewModelTest : BaseCartViewModelTest() {
         )
 
         val disabledReasonHolderData = DisabledReasonHolderData()
-        val disabledCartItemHolderData = CartItemHolderData(cartId = "234", isSelected = true, isError = true)
-        val disabledCartItemHolderSecondData = CartItemHolderData(cartId = "235", isSelected = true, isError = true)
+        val disabledCartItemHolderData =
+            CartItemHolderData(cartId = "234", isSelected = true, isError = true)
+        val disabledCartItemHolderSecondData =
+            CartItemHolderData(cartId = "235", isSelected = true, isError = true)
         val disabledCartGroupHolderData = CartGroupHolderData(
             isError = true,
             productUiModelList = mutableListOf(
@@ -1868,10 +1872,19 @@ class CartViewModelTest : BaseCartViewModelTest() {
     }
 
     @Test
-    fun `WHEN checkAvailableShopBottomHolderData for tokonow THEN should expand if after deletion is less than 3`() {
+    fun `WHEN checkAvailableShopBottomHolderData for tokonow THEN should expand if after deletion is less than or equal 3`() {
         // GIVEN
+        val cartItemHolderData = CartItemHolderData(cartId = "123", isSelected = true)
+        val cartItemHolderDataTwo = CartItemHolderData(cartId = "124", isSelected = false)
+        val cartItemHolderDataThree = CartItemHolderData(cartId = "125", isSelected = true)
         val cartGroupHolderData = CartGroupHolderData(
-            productUiModelList = mutableListOf()
+            isTokoNow = true,
+            isCollapsed = true,
+            productUiModelList = mutableListOf(
+                cartItemHolderData,
+                cartItemHolderDataTwo,
+                cartItemHolderDataThree
+            )
         )
         val cartShopBottomHolderData = CartShopBottomHolderData(cartGroupHolderData)
 
@@ -1890,9 +1903,302 @@ class CartViewModelTest : BaseCartViewModelTest() {
         )
 
         // THEN
-        assertEquals(1, toBeRemovedItems.size)
-        assertEquals(cartShopBottomHolderData, toBeRemovedItems[0])
+        val newCartGroupHolderData = newCartDataList[0] as CartGroupHolderData
+        val newCartShopBottomHolderData = newCartDataList[4] as CartShopBottomHolderData
+        assertTrue(toBeRemovedItems.isEmpty())
+        assertEquals(5, newCartDataList.size)
+        assertEquals(newCartGroupHolderData, newCartShopBottomHolderData.shopData)
+        assertFalse(newCartGroupHolderData.isCollapsible)
+        assertFalse(newCartGroupHolderData.isCollapsed)
     }
+
+    @Test
+    fun `WHEN checkAvailableShopBottomHolderData for tokonow THEN should update data only if after deletion is more than 3`() {
+        // GIVEN
+        val cartItemHolderData = CartItemHolderData(cartId = "123", isSelected = true)
+        val cartItemHolderDataTwo = CartItemHolderData(cartId = "124", isSelected = false)
+        val cartItemHolderDataThree = CartItemHolderData(cartId = "125", isSelected = true)
+        val cartItemHolderDataFour = CartItemHolderData(cartId = "126", isSelected = true)
+        val cartGroupHolderData = CartGroupHolderData(
+            isTokoNow = true,
+            productUiModelList = mutableListOf(
+                cartItemHolderData,
+                cartItemHolderDataTwo,
+                cartItemHolderDataThree,
+                cartItemHolderDataFour
+            )
+        )
+        val cartShopBottomHolderData = CartShopBottomHolderData(cartGroupHolderData)
+
+        val newCartDataList = arrayListOf(
+            cartGroupHolderData,
+            cartItemHolderData,
+            cartItemHolderDataTwo,
+            cartItemHolderDataThree,
+            cartItemHolderDataFour,
+            cartShopBottomHolderData
+        )
+        val toBeRemovedItems: MutableList<Any> = mutableListOf()
+
+        // WHEN
+        cartViewModel.checkAvailableShopBottomHolderData(
+            newCartDataList,
+            0,
+            cartGroupHolderData,
+            toBeRemovedItems
+        )
+
+        // THEN
+        val newCartGroupHolderData = newCartDataList[0] as CartGroupHolderData
+        val newCartShopBottomHolderData = newCartDataList[5] as CartShopBottomHolderData
+        assertTrue(toBeRemovedItems.isEmpty())
+        assertEquals(6, newCartDataList.size)
+        assertEquals(newCartGroupHolderData, newCartShopBottomHolderData.shopData)
+        assertTrue(newCartGroupHolderData.isCollapsible)
+    }
+
+    @Test
+    fun `WHEN checkAvailableShopBottomHolderData but no shopBottomHolder THEN should return same data`() {
+        // GIVEN
+        val cartItemHolderData = CartItemHolderData(cartId = "123", isSelected = true)
+        val cartItemHolderDataTwo = CartItemHolderData(cartId = "124", isSelected = false)
+        val cartGroupHolderData = CartGroupHolderData(
+            isTokoNow = true,
+            isCollapsed = true,
+            productUiModelList = mutableListOf(
+                cartItemHolderData,
+                cartItemHolderDataTwo
+            )
+        )
+
+        val newCartDataList = arrayListOf(
+            cartGroupHolderData,
+            cartItemHolderData,
+            cartItemHolderDataTwo
+        )
+        val toBeRemovedItems: MutableList<Any> = mutableListOf()
+
+        // WHEN
+        cartViewModel.checkAvailableShopBottomHolderData(
+            newCartDataList,
+            0,
+            cartGroupHolderData,
+            toBeRemovedItems
+        )
+
+        // THEN
+        assertTrue(toBeRemovedItems.isEmpty())
+        assertEquals(3, newCartDataList.size)
+    }
+
+    @Test
+    fun `WHEN getShopBottomHolderDataIndex THEN should return group nearest shopBottomHolder`() {
+        // GIVEN
+        val cartItemHolderData = CartItemHolderData(cartId = "123", isSelected = true)
+        val cartItemHolderDataTwo = CartItemHolderData(cartId = "124", isSelected = false)
+        val cartItemHolderDataThree = CartItemHolderData(cartId = "125", isSelected = true)
+        val cartGroupHolderData = CartGroupHolderData(
+            isCollapsed = true,
+            productUiModelList = mutableListOf(
+                cartItemHolderData,
+                cartItemHolderDataTwo,
+                cartItemHolderDataThree
+            )
+        )
+        val cartShopBottomHolderData = CartShopBottomHolderData(cartGroupHolderData)
+        val cartShopBottomHolderDataTwo = CartShopBottomHolderData(CartGroupHolderData())
+
+        val newCartDataList = arrayListOf(
+            cartGroupHolderData,
+            cartShopBottomHolderData,
+            cartShopBottomHolderDataTwo
+        )
+
+        // WHEN
+        val shopBottomDataPair =
+            cartViewModel.getShopBottomHolderDataIndex(newCartDataList, cartGroupHolderData, 0)
+
+        // THEN
+        assertEquals(cartShopBottomHolderData, shopBottomDataPair.first)
+        assertEquals(1, shopBottomDataPair.second)
+    }
+
+    @Test
+    fun `WHEN getShopBottomHolderDataIndex not found THEN should return null`() {
+        // GIVEN
+        val cartItemHolderData = CartItemHolderData(cartId = "123", isSelected = true)
+        val cartItemHolderDataTwo = CartItemHolderData(cartId = "124", isSelected = false)
+        val cartItemHolderDataThree = CartItemHolderData(cartId = "125", isSelected = true)
+        val cartGroupHolderData = CartGroupHolderData(
+            cartString = "123",
+            productUiModelList = mutableListOf(
+                cartItemHolderData,
+                cartItemHolderDataTwo,
+                cartItemHolderDataThree
+            )
+        )
+
+        val cartGroupHolderDataTwo = CartGroupHolderData(cartString = "124")
+        val cartShopBottomHolderDataTwo = CartShopBottomHolderData(cartGroupHolderData)
+
+        val newCartDataList = arrayListOf(
+            cartGroupHolderData,
+            cartItemHolderData,
+            cartItemHolderDataTwo,
+            cartItemHolderDataThree,
+            cartGroupHolderDataTwo,
+            cartShopBottomHolderDataTwo
+        )
+
+        // WHEN
+        val shopBottomDataPair =
+            cartViewModel.getShopBottomHolderDataIndex(newCartDataList, cartGroupHolderData, 0)
+
+        // THEN
+        assertEquals(null, shopBottomDataPair.first)
+        assertEquals(-1, shopBottomDataPair.second)
+    }
+    // endregion
+
+    // region setItemSelected
+    @Test
+    fun `WHEN setItemSelected true to one item in shop THEN all checkbox should checked`() {
+        // GIVEN
+        val cartItemHolderData = CartItemHolderData(
+            cartString = "123",
+            isError = false,
+            isSelected = false
+        )
+        val cartGroupHolderData = CartGroupHolderData(
+            cartString = "123",
+            isError = false,
+            productUiModelList = mutableListOf(
+                cartItemHolderData
+            )
+        )
+        val cartShopBottomHolderData = CartShopBottomHolderData(cartGroupHolderData)
+        cartViewModel.cartDataList.value = arrayListOf(
+            cartGroupHolderData,
+            cartItemHolderData,
+            cartShopBottomHolderData
+        )
+
+        // WHEN
+        cartViewModel.setItemSelected(1, cartItemHolderData, true)
+
+        // THEN
+        val newCartShopBottomHolderData = cartViewModel.cartDataList.value[2] as CartShopBottomHolderData
+        assertTrue(cartItemHolderData.isSelected)
+        assertTrue(cartGroupHolderData.isAllSelected)
+        assertFalse(cartGroupHolderData.isPartialSelected)
+        assertEquals(
+            cartGroupHolderData,
+            newCartShopBottomHolderData.shopData
+        )
+    }
+
+
+    @Test
+    fun `WHEN setItemSelected true to one item in multiple item shop THEN partial checked should true`() {
+        // GIVEN
+        val cartItemHolderData = CartItemHolderData(
+            cartString = "123",
+            isError = false,
+            isSelected = false
+        )
+        val cartItemHolderDataTwo = CartItemHolderData(
+            cartString = "123",
+            isError = false,
+            isSelected = false
+        )
+        val cartGroupHolderData = CartGroupHolderData(
+            cartString = "123",
+            isError = false,
+            productUiModelList = mutableListOf(
+                cartItemHolderData,
+                cartItemHolderDataTwo
+            )
+        )
+        cartViewModel.cartDataList.value = arrayListOf(
+            cartGroupHolderData,
+            cartItemHolderData,
+            cartItemHolderDataTwo
+        )
+
+        // WHEN
+        cartViewModel.setItemSelected(1, cartItemHolderData, true)
+
+        // THEN
+        assertTrue(cartItemHolderData.isSelected)
+        assertTrue(cartGroupHolderData.isPartialSelected)
+        assertFalse(cartGroupHolderData.isAllSelected)
+    }
+
+    @Test
+    fun `WHEN setItemSelected false to one item in single item shop THEN all checked status should false`() {
+        // GIVEN
+        val cartItemHolderData = CartItemHolderData(
+            cartString = "123",
+            isError = false,
+            isSelected = true
+        )
+        val cartGroupHolderData = CartGroupHolderData(
+            cartString = "123",
+            isError = false,
+            productUiModelList = mutableListOf(
+                cartItemHolderData
+            )
+        )
+        cartViewModel.cartDataList.value = arrayListOf(
+            cartGroupHolderData,
+            cartItemHolderData
+        )
+
+        // WHEN
+        cartViewModel.setItemSelected(1, cartItemHolderData, false)
+
+        // THEN
+        assertFalse(cartItemHolderData.isSelected)
+        assertFalse(cartGroupHolderData.isPartialSelected)
+        assertFalse(cartGroupHolderData.isAllSelected)
+    }
+
+    @Test
+    fun `WHEN setItemSelected false to one item in multiple item shop THEN all checked status should false`() {
+        // GIVEN
+        val cartItemHolderData = CartItemHolderData(
+            cartString = "123",
+            isError = false,
+            isSelected = true
+        )
+        val cartItemHolderDataTwo = CartItemHolderData(
+            cartString = "123",
+            isError = false,
+            isSelected = true
+        )
+        val cartGroupHolderData = CartGroupHolderData(
+            cartString = "123",
+            isError = false,
+            productUiModelList = mutableListOf(
+                cartItemHolderData,
+                cartItemHolderDataTwo
+            )
+        )
+        cartViewModel.cartDataList.value = arrayListOf(
+            cartGroupHolderData,
+            cartItemHolderData,
+            cartItemHolderDataTwo
+        )
+
+        // WHEN
+        cartViewModel.setItemSelected(1, cartItemHolderData, false)
+
+        // THEN
+        assertFalse(cartItemHolderData.isSelected)
+        assertFalse(cartGroupHolderData.isAllSelected)
+        assertTrue(cartGroupHolderData.isPartialSelected)
+    }
+
     // endregion
 
     override fun tearDown() {
