@@ -222,6 +222,7 @@ class ShippingEditorFragment :
                     renderTicker(it.data.ticker)
                     checkWhitelabelCoachmarkState()
                     renderDropOffButton(it.data.dropOffMapsUrl)
+                    updateHeaderTickerData(it.data.tickerHeader)
                 }
 
                 is ShippingEditorState.Fail -> {

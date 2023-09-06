@@ -9,7 +9,8 @@ sealed class ShippingEditorVisitable
 data class ShipperListModel(
     var shippers: ShipperGroupModel = ShipperGroupModel(),
     var ticker: List<TickerModel> = emptyList(),
-    var dropOffMapsUrl: String = ""
+    var dropOffMapsUrl: String = "",
+    var tickerHeader: HeaderTickerModel = HeaderTickerModel()
 )
 
 data class ShipperGroupModel(
