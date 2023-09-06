@@ -256,11 +256,11 @@ open class DiscoveryFragment :
     val trackingQueue: TrackingQueue by lazy {
         provideTrackingQueue()
     }
+    var mSwipeRefreshLayout: SwipeRefreshLayout? = null
     open fun provideTrackingQueue(): TrackingQueue {
         return (context as DiscoveryActivity).trackingQueue
     }
 
-    private lateinit var mSwipeRefreshLayout: SwipeRefreshLayout
     private lateinit var mProgressBar: LoaderUnify
     var pageEndPoint = ""
     private var componentPosition: Int? = null
@@ -434,7 +434,7 @@ open class DiscoveryFragment :
         miniCartWidget = view.findViewById(R.id.miniCartWidget)
 
         mProgressBar.show()
-        mSwipeRefreshLayout.setOnRefreshListener(this)
+        mSwipeRefreshLayout?.setOnRefreshListener(this)
         ivToTop.setOnClickListener(this)
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             var dy = 0
@@ -757,7 +757,7 @@ open class DiscoveryFragment :
             when (it) {
                 is Success -> {
                     it.data.let { listComponent ->
-                        if (mSwipeRefreshLayout.isRefreshing) setAdapter()
+                        if (mSwipeRefreshLayout?.isRefreshing == true) setAdapter()
                         discoveryAdapter.addDataList(listComponent)
                         if (listComponent.isNullOrEmpty()) {
                             discoveryAdapter.addDataList(ArrayList())
@@ -780,7 +780,8 @@ open class DiscoveryFragment :
                     setPageErrorState(it)
                 }
             }
-            mSwipeRefreshLayout.isRefreshing = false
+            mSwipeRefreshLayout?.isEnabled = true
+            mSwipeRefreshLayout?.isRefreshing = false
         }
 
         discoveryViewModel.getDiscoveryFabLiveData().observe(viewLifecycleOwner, {
@@ -1359,7 +1360,7 @@ open class DiscoveryFragment :
             setupSearchBar(null)
         }
         mProgressBar.hide()
-        mSwipeRefreshLayout.isRefreshing = false
+        mSwipeRefreshLayout?.isRefreshing = false
     }
 
     private fun setCartAndNavIcon() {
