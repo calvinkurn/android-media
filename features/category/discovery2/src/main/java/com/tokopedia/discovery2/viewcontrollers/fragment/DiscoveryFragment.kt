@@ -48,7 +48,6 @@ import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery.common.utils.toDpInt
-import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.Constant.DISCO_PAGE_SOURCE
 import com.tokopedia.discovery2.R
@@ -112,7 +111,6 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.mast
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvoucher.DiscoMerchantVoucherViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.playwidget.DiscoveryPlayWidgetViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel.ProductCardCarouselViewModel
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomTopChatView
 import com.tokopedia.discovery2.viewcontrollers.customview.StickyHeadRecyclerView
@@ -549,9 +547,9 @@ open class DiscoveryFragment :
                     if (hasColouredHeader) {
                         if (isLightThemeStatusBar != false) {
                             requestStatusBarDark()
-                  // Don't uncomment - It will show a black line between toolbar and choose address in dark mode
-                 //           navToolbar.setShowShadowEnabled(true)
-                 //           navToolbar.showShadow(true)
+                            // Don't uncomment - It will show a black line between toolbar and choose address in dark mode
+                            //           navToolbar.setShowShadowEnabled(true)
+                            //           navToolbar.showShadow(true)
                         }
                     }
                 }
@@ -772,7 +770,6 @@ open class DiscoveryFragment :
                     stopDiscoveryPagePerformanceMonitoring()
                     recyclerView.post {
                         scrollToLastSection()
-                        addMarginInRuntime(it.data)
                     }
                 }
                 is Fail -> {
@@ -956,35 +953,6 @@ open class DiscoveryFragment :
         })
     }
 
-    private fun addMarginInRuntime(data: List<ComponentsItem>) {
-        val componentsToExclude = mutableSetOf<String>(ComponentsList.CLPFeatureProducts.componentName,
-            ComponentsList.MerchantVoucherCarousel.componentName,
-            ComponentsList.ProductCardRevamp.componentName,
-            ComponentsList.LihatSemua.componentName
-        )
-        data.let { data ->
-            data.forEachIndexed { index, item ->
-                if (item.name == ComponentNames.Tabs.componentName) {
-                    val tabsViewModel = discoveryAdapter.getTabItem() as? TabsViewModel
-                    if (componentsToExclude.contains(data.getOrNull(index+1)?.name ?: "")) {
-                        tabsViewModel?.shouldAddSpace(false)
-                    } else if (data.getOrNull(index+1)?.name == ComponentsList.Section.componentName) {
-                        val latestComponent = data.getOrNull(index+1)?.getComponentsItem()?.getOrNull(0)?.name
-                            ?: return@let
-                        if (latestComponent == ComponentsList.LihatSemua.componentName || componentsToExclude.contains(latestComponent)) {
-                            tabsViewModel?.shouldAddSpace(false)
-                        } else {
-                            tabsViewModel?.shouldAddSpace(true)
-                        }
-                    }
-                    else
-                        tabsViewModel?.shouldAddSpace(true)
-                    return@let
-                }
-            }
-        }
-    }
-
     private fun setupBackgroundForHeader(data: PageInfo?) {
         if (!data?.thematicHeader?.color.isNullOrEmpty()) {
             hasColouredHeader = true
@@ -995,9 +963,9 @@ open class DiscoveryFragment :
             if (isLightThemeStatusBar == true) {
                 navToolbar.hideShadow()
             } else {
-        // Don't uncomment - It will show a black line between toolbar and choose address in dark mode
-       //         navToolbar.setShowShadowEnabled(true)
-      //          navToolbar.showShadow(true)
+                // Don't uncomment - It will show a black line between toolbar and choose address in dark mode
+                //         navToolbar.setShowShadowEnabled(true)
+                //          navToolbar.showShadow(true)
                 navToolbar.hideShadow()
             }
             appBarLayout.elevation = 0f
@@ -1455,7 +1423,7 @@ open class DiscoveryFragment :
                     userPressed = false
                     if (position > 0 && isTabPresent) {
                         handleAutoScrollUI()
-                        if(isFromForcedNavigation){
+                        if (isFromForcedNavigation) {
                             var pos = -1
                             CoroutineScope(Dispatchers.Main).launch {
                                 delay(2000)
@@ -1487,36 +1455,35 @@ open class DiscoveryFragment :
         recyclerView.setPaddingToInnerRV(0, recyclerView.dpToPx(55).toInt(), 0, 0)
     }
 
-
     private fun removePaddingIfComponent() {
         recyclerView.viewTreeObserver.addOnGlobalLayoutListener(object :
-            ViewTreeObserver.OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                var pos = Int.MIN_VALUE
-                discoveryAdapter.currentList.forEachIndexed { index, componentsItem ->
-                    if (componentsItem.name == ComponentsList.Tabs.componentName) {
-                        pos = index
-                    }
-                    if(index == pos + 1){
-                        val i = pos+1
-                        val firstVisibleItemPositions = staggeredGridLayoutManager?.findFirstVisibleItemPositions(null)
-                        val lastVisibleItemPositions = staggeredGridLayoutManager?.findLastVisibleItemPositions(null)
+                ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    var pos = Int.MIN_VALUE
+                    discoveryAdapter.currentList.forEachIndexed { index, componentsItem ->
+                        if (componentsItem.name == ComponentsList.Tabs.componentName) {
+                            pos = index
+                        }
+                        if (index == pos + 1) {
+                            val i = pos + 1
+                            val firstVisibleItemPositions = staggeredGridLayoutManager?.findFirstVisibleItemPositions(null)
+                            val lastVisibleItemPositions = staggeredGridLayoutManager?.findLastVisibleItemPositions(null)
 
-                        if (firstVisibleItemPositions != null && lastVisibleItemPositions != null) {
-                            val firstVisibleItemPosition = firstVisibleItemPositions.minOrNull() ?: -1
-                            val lastVisibleItemPosition = lastVisibleItemPositions.maxOrNull() ?: -1
+                            if (firstVisibleItemPositions != null && lastVisibleItemPositions != null) {
+                                val firstVisibleItemPosition = firstVisibleItemPositions.minOrNull() ?: -1
+                                val lastVisibleItemPosition = lastVisibleItemPositions.maxOrNull() ?: -1
 
-                            if (firstVisibleItemPosition != RecyclerView.NO_POSITION && lastVisibleItemPosition != RecyclerView.NO_POSITION) {
-                                if (i in firstVisibleItemPosition..lastVisibleItemPosition) {
-                                    recyclerView.setPaddingToInnerRV(0, recyclerView.dpToPx(0).toInt(), 0, 0)
+                                if (firstVisibleItemPosition != RecyclerView.NO_POSITION && lastVisibleItemPosition != RecyclerView.NO_POSITION) {
+                                    if (i in firstVisibleItemPosition..lastVisibleItemPosition) {
+                                        recyclerView.setPaddingToInnerRV(0, recyclerView.dpToPx(0).toInt(), 0, 0)
+                                    }
                                 }
                             }
                         }
                     }
+                    recyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 }
-                recyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
-            }
-        })
+            })
     }
 
     fun scrollToComponentWithID(componentID: String) {
