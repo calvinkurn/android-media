@@ -13,7 +13,8 @@ data class StoriesCreationUiState(
     companion object {
         val Empty: StoriesCreationUiState
             get() = StoriesCreationUiState(
-                mediaFilePath = "/storage/emulated/0/Movies/VID_20230905_113525.mp4",
+//                mediaFilePath = "/storage/emulated/0/Movies/VID_20230905_113525.mp4",
+                mediaFilePath = "",
                 accountList = listOf(
                     ContentAccountUiModel(
                         id = "123",

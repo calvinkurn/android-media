@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="stories_creation_continue">Lanjut</string>
     <string name="stories_creation_upload_as">Upload Sebagai</string>
     <string name="stories_creation_add_product">Tambah Produk</string>
     <string name="stories_creation_upload">Upload</string>

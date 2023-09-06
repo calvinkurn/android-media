@@ -57,100 +57,102 @@ fun StoriesCreationScreen(
     onClickAddProduct: () -> Unit,
     onClickUpload: () -> Unit,
 ) {
-    if (uiState.mediaFilePath.isNotEmpty()) {
-        ConstraintLayout(
-            modifier = Modifier.fillMaxSize()
-        ) {
-            val (
-                header,
-                headerDivider,
-                mediaCover,
-                mediaCoverDivider,
-                addProduct,
-                uploadButtonDivider,
-                uploadButton,
-            ) = createRefs()
+    if (uiState.mediaFilePath.isEmpty()) {
+        return
+    }
 
-            StoriesCreationHeader(
-                imageUrl = uiState.selectedAccount.iconUrl,
-                authorName = uiState.selectedAccount.name,
-                badge = uiState.selectedAccount.badge,
-                isEligibleToSwitchAccount = uiState.accountList.size > 1,
-                onBackPressed = onBackPressed,
-                onClickChangeAccount = onClickChangeAccount,
-                modifier = Modifier.constrainAs(header) {
-                    top.linkTo(parent.top)
+    ConstraintLayout(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        val (
+            header,
+            headerDivider,
+            mediaCover,
+            mediaCoverDivider,
+            addProduct,
+            uploadButtonDivider,
+            uploadButton,
+        ) = createRefs()
+
+        StoriesCreationHeader(
+            imageUrl = uiState.selectedAccount.iconUrl,
+            authorName = uiState.selectedAccount.name,
+            badge = uiState.selectedAccount.badge,
+            isEligibleToSwitchAccount = uiState.accountList.size > 1,
+            onBackPressed = onBackPressed,
+            onClickChangeAccount = onClickChangeAccount,
+            modifier = Modifier.constrainAs(header) {
+                top.linkTo(parent.top)
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+            }
+        )
+
+        NestDivider(
+            size = NestDividerSize.Small,
+            modifier = Modifier
+                .fillMaxWidth()
+                .constrainAs(headerDivider) {
+                    top.linkTo(header.bottom)
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
                 }
-            )
+        )
 
-            NestDivider(
-                size = NestDividerSize.Small,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .constrainAs(headerDivider) {
-                        top.linkTo(header.bottom)
-                        start.linkTo(parent.start)
-                        end.linkTo(parent.end)
-                    }
-            )
+        StoriesCreationMediaCover(
+            mediaFilePath = uiState.mediaFilePath,
+            onLoadMediaPreview = onLoadMediaPreview,
+            modifier = Modifier.constrainAs(mediaCover) {
+                top.linkTo(headerDivider.bottom, 16.dp)
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+            }
+        )
 
-            StoriesCreationMediaCover(
-                mediaFilePath = uiState.mediaFilePath,
-                onLoadMediaPreview = onLoadMediaPreview,
-                modifier = Modifier.constrainAs(mediaCover) {
-                    top.linkTo(headerDivider.bottom, 16.dp)
+
+        NestDivider(
+            size = NestDividerSize.Small,
+            modifier = Modifier
+                .fillMaxWidth()
+                .constrainAs(mediaCoverDivider) {
+                    top.linkTo(mediaCover.bottom, 16.dp)
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
                 }
-            )
+        )
 
+        StoriesCreationAddProductSettings(
+            selectedProductSize = 0, /** TODO JOE: will handle it later */
+            onClickAddProduct = onClickAddProduct,
+            modifier = Modifier.constrainAs(addProduct) {
+                top.linkTo(mediaCoverDivider.bottom)
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+            }
+        )
 
-            NestDivider(
-                size = NestDividerSize.Small,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .constrainAs(mediaCoverDivider) {
-                        top.linkTo(mediaCover.bottom, 16.dp)
-                        start.linkTo(parent.start)
-                        end.linkTo(parent.end)
-                    }
-            )
-
-            StoriesCreationAddProductSettings(
-                selectedProductSize = 0, /** TODO: will handle it later */
-                onClickAddProduct = onClickAddProduct,
-                modifier = Modifier.constrainAs(addProduct) {
-                    top.linkTo(mediaCoverDivider.bottom)
+        NestDivider(
+            size = NestDividerSize.Small,
+            modifier = Modifier
+                .fillMaxWidth()
+                .constrainAs(uploadButtonDivider) {
+                    bottom.linkTo(uploadButton.top, 8.dp)
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
                 }
-            )
+        )
 
-            NestDivider(
-                size = NestDividerSize.Small,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .constrainAs(uploadButtonDivider) {
-                        bottom.linkTo(uploadButton.top, 8.dp)
-                        start.linkTo(parent.start)
-                        end.linkTo(parent.end)
-                    }
-            )
-            
-            NestButton(
-                text = stringResource(id = R.string.stories_creation_upload),
-                onClick = onClickUpload,
-                modifier = Modifier.constrainAs(uploadButton) {
-                    bottom.linkTo(parent.bottom, 8.dp)
-                    start.linkTo(parent.start, 16.dp)
-                    end.linkTo(parent.end, 16.dp)
+        NestButton(
+            text = stringResource(id = R.string.stories_creation_upload),
+            onClick = onClickUpload,
+            modifier = Modifier.constrainAs(uploadButton) {
+                bottom.linkTo(parent.bottom, 8.dp)
+                start.linkTo(parent.start, 16.dp)
+                end.linkTo(parent.end, 16.dp)
 
-                    width = Dimension.fillToConstraints
-                }
-            )
-        }
+                width = Dimension.fillToConstraints
+            }
+        )
     }
 }
 
@@ -296,24 +298,16 @@ private fun StoriesCreationAddProductSettings(
 @Preview
 private fun StoriesCreationScreenPreview() {
     NestTheme {
-        Surface() {
+        Surface {
             val uiState = StoriesCreationUiState.Empty
 
             StoriesCreationScreen(
                 uiState = uiState,
                 onLoadMediaPreview = { null },
-                onBackPressed = {
-
-                },
-                onClickChangeAccount = {
-
-                },
-                onClickAddProduct = {
-
-                },
-                onClickUpload = {
-
-                }
+                onBackPressed = {},
+                onClickChangeAccount = {},
+                onClickAddProduct = {},
+                onClickUpload = {}
             )
         }
     }
