@@ -1,7 +1,6 @@
 package com.tokopedia.feedplus.browse.presentation.model
 
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
 
 /**
  * Created by meyta.taliti on 11/08/23.
@@ -23,7 +22,7 @@ sealed class ChannelUiState : FeedBrowseItemUiModel() {
 
     data class Data(
         val items: List<PlayWidgetChannelUiModel>,
-        val config: PlayWidgetConfigUiModel
+        val config: FeedBrowseConfigUiModel
     ) : ChannelUiState()
 
     data class Error(

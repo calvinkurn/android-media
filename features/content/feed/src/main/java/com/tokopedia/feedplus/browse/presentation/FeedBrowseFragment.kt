@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.feedplus.browse.data.tracker.FeedBrowseTracker
 import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseAdapter
@@ -45,6 +46,7 @@ import javax.inject.Inject
  */
 class FeedBrowseFragment @Inject constructor(
     viewModelFactory: ViewModelProvider.Factory,
+    coroutineDispatchers: CoroutineDispatchers,
     private val tracker: FeedBrowseTracker
 ) : TkpdBaseV4Fragment() {
 
@@ -83,7 +85,6 @@ class FeedBrowseFragment @Inject constructor(
             widgetModel: FeedBrowseUiModel.Channel,
             channelPositionInList: Int,
             verticalWidgetPosition: Int
-
         ) {
             tracker.sendClickChannelCardEvent(
                 item = channelModel,
@@ -132,8 +133,17 @@ class FeedBrowseFragment @Inject constructor(
                 FeedBrowseUiAction.FetchCards(chipModel.extraParams, widgetModel.id)
             )
         }
+
+        override fun onWidgetShouldRefresh(
+            extraParams: Map<String, Any>,
+            widgetModel: FeedBrowseUiModel.Channel
+        ) {
+            viewModel.submitAction(
+                FeedBrowseUiAction.FetchCards(extraParams, widgetModel.id)
+            )
+        }
     }
-    private val adapter by lazy { FeedBrowseAdapter(channelListener) }
+    private val adapter by lazy { FeedBrowseAdapter(channelListener, lifecycleScope, coroutineDispatchers) }
 
     private val viewModel: FeedBrowseViewModel by viewModels { viewModelFactory }
 
@@ -199,7 +209,7 @@ class FeedBrowseFragment @Inject constructor(
                             showContent()
 
                             renderHeader(if (prevState is FeedBrowseUiState.Success) prevState.title else null, state.title)
-                            renderContent(if (prevState is FeedBrowseUiState.Success) prevState.widgets else null, state.widgets)
+                            renderContent(state.widgets)
                         }
                         is FeedBrowseUiState.Error -> {
                             hideContent()
@@ -232,7 +242,7 @@ class FeedBrowseFragment @Inject constructor(
 
     private fun showPlaceholder() {
         renderContent(
-            newWidgets = listOf(
+            listOf(
                 FeedBrowseUiModel.Placeholder(type = FeedBrowsePlaceholderView.Type.Title),
                 FeedBrowseUiModel.Placeholder(type = FeedBrowsePlaceholderView.Type.Chips),
                 FeedBrowseUiModel.Placeholder(type = FeedBrowsePlaceholderView.Type.Cards),
@@ -280,14 +290,8 @@ class FeedBrowseFragment @Inject constructor(
         binding.feedBrowseHeader.title = newTitle
     }
 
-    private fun renderContent(
-        cachedWidgets: List<FeedBrowseUiModel>? = null,
-        newWidgets: List<FeedBrowseUiModel>
-    ) {
-        if (cachedWidgets == newWidgets) return
-        if (newWidgets.isEmpty()) return
-
-        adapter.setItemsAndAnimateChanges(newWidgets)
+    private fun renderContent(widgets: List<FeedBrowseUiModel>) {
+        adapter.setItemsAndAnimateChanges(widgets)
     }
 
     private fun goToPage(appLink: String) {

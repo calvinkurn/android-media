@@ -4,6 +4,7 @@ import android.view.View
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.feedplus.browse.presentation.adapter.CenterScrollLayoutManager
 import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseCardAdapter
 import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseChipAdapter
@@ -11,14 +12,17 @@ import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseItemDecorati
 import com.tokopedia.feedplus.browse.presentation.model.ChannelUiState
 import com.tokopedia.feedplus.browse.presentation.model.ChipUiState
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseChipUiModel
+import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseConfigUiModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiModel
 import com.tokopedia.feedplus.browse.presentation.view.FeedBrowseErrorView
 import com.tokopedia.feedplus.browse.presentation.view.FeedBrowsePlaceholderView
 import com.tokopedia.feedplus.databinding.ItemFeedBrowseChannelBinding
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.play.widget.ui.coordinator.PlayWidgetAutoRefreshCoordinator
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
+import kotlinx.coroutines.CoroutineScope
 import com.tokopedia.feedplus.R as feedplusR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
@@ -27,8 +31,10 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
  */
 class FeedBrowseChannelViewHolder(
     private val binding: ItemFeedBrowseChannelBinding,
-    private val listener: Listener
-) : RecyclerView.ViewHolder(binding.root) {
+    private val listener: Listener,
+    lifecycleScope: CoroutineScope,
+    coroutineDispatchers: CoroutineDispatchers
+) : RecyclerView.ViewHolder(binding.root), PlayWidgetAutoRefreshCoordinator.Listener {
 
     private val errorView: FeedBrowseErrorView = FeedBrowseErrorView(binding.root.context).apply {
         layoutParams = LinearLayout.LayoutParams(
@@ -75,13 +81,13 @@ class FeedBrowseChannelViewHolder(
         override fun onCardImpressed(item: PlayWidgetChannelUiModel, position: Int) {
             val widgetData = mData ?: return
             val config = (widgetData.channelUiState as? ChannelUiState.Data)?.config ?: return
-            listener.onCardImpressed(item, config, widgetData, position, bindingAdapterPosition)
+            listener.onCardImpressed(item, config.data, widgetData, position, bindingAdapterPosition)
         }
 
         override fun onCardClicked(item: PlayWidgetChannelUiModel, position: Int) {
             val widgetData = mData ?: return
             val config = (widgetData.channelUiState as? ChannelUiState.Data)?.config ?: return
-            listener.onCardClicked(item, config, widgetData, position, bindingAdapterPosition)
+            listener.onCardClicked(item, config.data, widgetData, position, bindingAdapterPosition)
         }
     }
     private val cardAdapter by lazy { FeedBrowseCardAdapter(cardListener) }
@@ -89,6 +95,13 @@ class FeedBrowseChannelViewHolder(
         context = binding.root.context,
         spacingHorizontal = feedplusR.dimen.feed_space_8,
         spacingTop = unifyprinciplesR.dimen.layout_lvl0
+    )
+
+    private val autoRefreshCoordinator = PlayWidgetAutoRefreshCoordinator(
+        lifecycleScope,
+        coroutineDispatchers.immediate,
+        coroutineDispatchers.default,
+        this@FeedBrowseChannelViewHolder
     )
 
     private var mData: FeedBrowseUiModel.Channel? = null
@@ -177,6 +190,11 @@ class FeedBrowseChannelViewHolder(
 
     private fun setupCards(channel: ChannelUiState.Data) {
         cardAdapter.setItemsAndAnimateChanges(channel.items)
+        configureAutoRefresh(channel.config)
+    }
+
+    fun configureAutoRefresh(configUiModel: FeedBrowseConfigUiModel) {
+        autoRefreshCoordinator.configureAutoRefresh(configUiModel.data)
     }
 
     private fun addToPlaceholderView(view: View) {
@@ -200,6 +218,18 @@ class FeedBrowseChannelViewHolder(
     private fun onRetryClicked(extraParams: Map<String, Any>, widgetModel: FeedBrowseUiModel.Channel) {
         errorView.startAnimating()
         listener.onRetryClicked(extraParams, widgetModel)
+    }
+
+    override fun onWidgetShouldRefresh() {
+        val widgetData = mData ?: return
+        val chipUiState = widgetData.chipUiState
+        val extraParams = if (chipUiState is ChipUiState.Data) {
+            val selectedChip = chipUiState.items.first { it.isSelected }
+            selectedChip.extraParams
+        } else {
+            widgetData.extraParams
+        }
+        listener.onWidgetShouldRefresh(extraParams, widgetData)
     }
 
     interface Listener {
@@ -239,11 +269,17 @@ class FeedBrowseChannelViewHolder(
             chipPositionInList: Int,
             verticalWidgetPosition: Int
         )
+
+        fun onWidgetShouldRefresh(
+            extraParams: Map<String, Any>,
+            widgetModel: FeedBrowseUiModel.Channel
+        )
     }
 
     companion object {
 
         const val NOTIFY_CHANNEL_STATE = "NotifyChannelState"
         const val NOTIFY_CHIP_STATE = "NotifyChipState"
+        const val NOTIFY_AUTO_REFRESH = "NotifyAutoRefresh"
     }
 }

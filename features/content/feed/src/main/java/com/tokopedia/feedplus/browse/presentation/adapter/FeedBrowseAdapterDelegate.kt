@@ -4,12 +4,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseChannelViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowsePlaceholderViewHolder
+import com.tokopedia.feedplus.browse.presentation.model.ChannelUiState
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiModel
 import com.tokopedia.feedplus.databinding.ItemFeedBrowseChannelBinding
 import com.tokopedia.feedplus.databinding.ItemFeedBrowsePlaceholderBinding
+import kotlinx.coroutines.CoroutineScope
+import com.tokopedia.feedplus.R as feedplusR
 
 /**
  * Created by meyta.taliti on 11/08/23.
@@ -18,7 +22,7 @@ class FeedBrowseAdapterDelegate private constructor() {
 
     internal class Placeholder :
         TypedAdapterDelegate<FeedBrowseUiModel.Placeholder, FeedBrowseUiModel, FeedBrowsePlaceholderViewHolder>(
-            com.tokopedia.feedplus.R.layout.item_feed_browse_placeholder
+            feedplusR.layout.item_feed_browse_placeholder
         ) {
 
         override fun onBindViewHolder(
@@ -43,10 +47,12 @@ class FeedBrowseAdapterDelegate private constructor() {
     }
 
     internal class Channel(
-        private val listener: FeedBrowseChannelViewHolder.Listener
+        private val listener: FeedBrowseChannelViewHolder.Listener,
+        private val lifeCycleScope: CoroutineScope,
+        private val coroutineDispatchers: CoroutineDispatchers
     ) :
         TypedAdapterDelegate<FeedBrowseUiModel.Channel, FeedBrowseUiModel, FeedBrowseChannelViewHolder>(
-            com.tokopedia.feedplus.R.layout.item_feed_browse_channel
+            feedplusR.layout.item_feed_browse_channel
         ) {
 
         override fun onBindViewHolder(
@@ -67,6 +73,10 @@ class FeedBrowseAdapterDelegate private constructor() {
             if (payloads.getBoolean(FeedBrowseChannelViewHolder.NOTIFY_CHANNEL_STATE)) {
                 holder.bindChannelUiState(item.channelUiState, item)
             }
+            if (payloads.getBoolean(FeedBrowseChannelViewHolder.NOTIFY_AUTO_REFRESH)) {
+                if (item.channelUiState !is ChannelUiState.Data) return
+                holder.configureAutoRefresh(item.channelUiState.config)
+            }
             holder.updateItem(item)
         }
 
@@ -75,12 +85,14 @@ class FeedBrowseAdapterDelegate private constructor() {
             basicView: View
         ): FeedBrowseChannelViewHolder {
             return FeedBrowseChannelViewHolder(
-                ItemFeedBrowseChannelBinding.inflate(
+                binding = ItemFeedBrowseChannelBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
                 ),
-                listener
+                listener = listener,
+                lifecycleScope = lifeCycleScope,
+                coroutineDispatchers = coroutineDispatchers
             )
         }
     }

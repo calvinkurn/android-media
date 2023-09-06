@@ -8,6 +8,7 @@ import com.tokopedia.content.common.model.WidgetSlot
 import com.tokopedia.feedplus.browse.presentation.model.ChannelUiState
 import com.tokopedia.feedplus.browse.presentation.model.ChipUiState
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseChipUiModel
+import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseConfigUiModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemUiModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiModel
 import com.tokopedia.feedplus.data.FeedXCard
@@ -90,12 +91,15 @@ class FeedBrowseMapper @Inject constructor() {
         }
     }
 
-    private fun mapConfig(data: ContentSlotMeta): PlayWidgetConfigUiModel {
-        return PlayWidgetConfigUiModel.Empty.copy(
-            autoRefresh = data.autoRefresh,
-            autoRefreshTimer = data.autoRefreshTimer,
-            autoPlay = data.isAutoplay,
-            autoPlayAmount = data.maxAutoplayInCell
+    private fun mapConfig(data: ContentSlotMeta): FeedBrowseConfigUiModel {
+        return FeedBrowseConfigUiModel(
+            data = PlayWidgetConfigUiModel.Empty.copy(
+                autoRefresh = data.autoRefresh,
+                autoRefreshTimer = data.autoRefreshTimer,
+                autoPlay = data.isAutoplay,
+                autoPlayAmount = data.maxAutoplayInCell
+            ),
+            lastUpdated = System.currentTimeMillis()
         )
     }
 
