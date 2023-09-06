@@ -9,6 +9,7 @@ import com.tokopedia.play.view.uimodel.recom.ExploreWidgetConfig
 import com.tokopedia.play.view.uimodel.recom.PinnedMessageUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayChannelDetailUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayChannelInfoUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayChannelRecommendationConfig
 import com.tokopedia.play.view.uimodel.recom.PlayChannelReportUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayEmptyBottomSheetInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayLikeInfoUiModel
@@ -71,7 +72,7 @@ class ChannelBuilderImpl(
         emptyBottomSheetInfo: PlayEmptyBottomSheetInfoUiModel,
         bottomSheetTitle: String,
         popupConfig: PlayPopUpConfigUiModel,
-        exploreWidgetConfig: ExploreWidgetConfig,
+        channelRecomConfig: PlayChannelRecommendationConfig,
         showCart: Boolean
     ) = PlayChannelDetailUiModel(
         shareInfo = shareInfo,
@@ -81,7 +82,7 @@ class ChannelBuilderImpl(
         emptyBottomSheetInfo = emptyBottomSheetInfo,
         bottomSheetTitle = bottomSheetTitle,
         popupConfig = popupConfig,
-        exploreWidgetConfig = exploreWidgetConfig,
+        channelRecomConfig = channelRecomConfig,
         showCart = showCart,
     )
 

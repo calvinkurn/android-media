@@ -137,7 +137,7 @@ class AffiliateAdpViewModel @Inject constructor(
             block = {
                 if (firstTime) {
                     affiliateUserPerformanceUseCase.getAffiliateFilter().let { filters ->
-                        filters.data?.getAffiliateDateFilter?.forEach { filter ->
+                        filters.dateFilterData?.getAffiliateDateFilter?.forEach { filter ->
                             if (filter?.filterType == FILTER_LAST_THIRTY_DAYS) {
                                 filter.filterDescription?.let { selectedDateMessage = it }
                                 filter.filterValue?.let { selectedDateValue = it }
@@ -173,7 +173,7 @@ class AffiliateAdpViewModel @Inject constructor(
                     selectedDateValue,
                     lastID,
                     lastSelectedChip?.pageType?.toIntOrZero() ?: 0
-                ).getAffiliatePerformanceList?.data?.data.let {
+                ).getAffiliatePerformanceList?.performanceList?.performanceListData.let {
                     lastID = it?.lastID ?: "0"
                     if (page == PAGE_ZERO && isFullLoad) dataPlatformShimmerVisibility.value = false
                     convertDataToVisitable(
@@ -288,7 +288,7 @@ class AffiliateAdpViewModel @Inject constructor(
         affiliatePerformanceResponse: AffiliateUserPerformaListItemData?
     ): ArrayList<Visitable<AffiliateAdapterTypeFactory>> {
         val performanceTempList: ArrayList<Visitable<AffiliateAdapterTypeFactory>> = ArrayList()
-        affiliatePerformanceResponse?.getAffiliatePerformance?.data?.userData?.let { userData ->
+        affiliatePerformanceResponse?.getAffiliatePerformance?.performanceData?.userData?.let { userData ->
             userData.metrics = userData.metrics.sortedBy { metrics -> metrics?.order }
             userData.metrics.forEach { metrics ->
                 if (metrics?.order != NO_UI_METRICS && metrics?.metricType != CONVERSION_METRIC) {

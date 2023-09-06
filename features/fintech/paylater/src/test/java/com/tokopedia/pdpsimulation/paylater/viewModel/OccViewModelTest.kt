@@ -206,6 +206,8 @@ class OccViewModelTest {
                 "",
                 "",
                 "",
+                "",
+                ""
             )
         } coAnswers {
             firstArg<(PaylaterGetOptimizedModel) -> Unit>().invoke(basePayLaterOptimizedModel)
@@ -229,6 +231,8 @@ class OccViewModelTest {
                 "",
                 "",
                 "",
+                "",
+                ""
             )
         } coAnswers {
             firstArg<(PaylaterGetOptimizedModel) -> Unit>().invoke(basePayLaterOptimizedModel)
@@ -251,6 +255,8 @@ class OccViewModelTest {
                 "",
                 "",
                 "",
+                "",
+                ""
             )
         } coAnswers {
             secondArg<(Throwable) -> Unit>().invoke(mockThrowable)

@@ -10,6 +10,7 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tokopedia.product.detail.data.model.datamodel.ArButtonDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
+import com.tokopedia.product.detail.data.model.datamodel.DynamicOneLinerDataModel
 import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.GlobalBundlingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.LoadingDataModel
@@ -18,7 +19,6 @@ import com.tokopedia.product.detail.data.model.datamodel.OngoingCampaignDataMode
 import com.tokopedia.product.detail.data.model.datamodel.PageErrorDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PdpComparisonWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PdpRecommendationWidgetDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductBundlingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductCategoryCarouselDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductCustomInfoDataModel
@@ -50,6 +50,7 @@ import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.Pro
 import com.tokopedia.product.detail.data.model.datamodel.review_list.ProductShopReviewDataModel
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.viewholder.ContentWidgetViewHolder
+import com.tokopedia.product.detail.view.viewholder.DynamicOneLinerViewHolder
 import com.tokopedia.product.detail.view.viewholder.FintechWidgetViewHolder
 import com.tokopedia.product.detail.view.viewholder.GlobalBundlingViewHolder
 import com.tokopedia.product.detail.view.viewholder.LoadingViewHolder
@@ -59,7 +60,6 @@ import com.tokopedia.product.detail.view.viewholder.PageErrorViewHolder
 import com.tokopedia.product.detail.view.viewholder.PdpComparisonWidgetViewHolder
 import com.tokopedia.product.detail.view.viewholder.PdpRecommendationWidgetViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductArViewHolder
-import com.tokopedia.product.detail.view.viewholder.ProductBundlingViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductCategoryCarouselViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductContentViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductCustomInfoTitleViewHolder
@@ -86,6 +86,8 @@ import com.tokopedia.product.detail.view.viewholder.ProductTopAdsImageViewHolder
 import com.tokopedia.product.detail.view.viewholder.ShipmentViewHolder
 import com.tokopedia.product.detail.view.viewholder.TopAdsHeadlineViewHolder
 import com.tokopedia.product.detail.view.viewholder.ViewToViewWidgetViewHolder
+import com.tokopedia.product.detail.view.viewholder.a_plus_content.APlusImageUiModel
+import com.tokopedia.product.detail.view.viewholder.a_plus_content.APlusImageViewHolder
 import com.tokopedia.product.detail.view.viewholder.product_detail_info.ProductDetailInfoViewHolder
 import com.tokopedia.product.detail.view.viewholder.product_variant_thumbail.ProductThumbnailVariantViewHolder
 import com.tokopedia.product.detail.view.viewholder.show_review.ProductShopReviewViewHolder
@@ -206,10 +208,6 @@ class DynamicProductDetailAdapterFactoryImpl(
         return TopAdsHeadlineViewHolder.LAYOUT
     }
 
-    override fun type(data: ProductBundlingDataModel): Int {
-        return ProductBundlingViewHolder.LAYOUT
-    }
-
     override fun type(data: ContentWidgetDataModel): Int {
         return ContentWidgetViewHolder.LAYOUT
     }
@@ -260,6 +258,14 @@ class DynamicProductDetailAdapterFactoryImpl(
 
     override fun type(data: OngoingCampaignDataModel): Int {
         return OngoingCampaignViewHolder.LAYOUT
+    }
+
+    override fun type(data: DynamicOneLinerDataModel): Int {
+        return DynamicOneLinerViewHolder.LAYOUT
+    }
+
+    override fun type(data: APlusImageUiModel): Int {
+        return APlusImageViewHolder.LAYOUT
     }
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
@@ -327,7 +333,6 @@ class DynamicProductDetailAdapterFactoryImpl(
                 listener
             )
             TopAdsHeadlineViewHolder.LAYOUT -> TopAdsHeadlineViewHolder(view, userId, listener)
-            ProductBundlingViewHolder.LAYOUT -> ProductBundlingViewHolder(view, listener)
             ContentWidgetViewHolder.LAYOUT -> {
                 val playWidgetView: View? = view.findViewById(R.id.pdp_play_widget_view)
                 if (playWidgetView != null) {
@@ -365,6 +370,8 @@ class DynamicProductDetailAdapterFactoryImpl(
                 listener = listener
             )
             OngoingCampaignViewHolder.LAYOUT -> OngoingCampaignViewHolder(view, listener)
+            DynamicOneLinerViewHolder.LAYOUT -> DynamicOneLinerViewHolder(view, listener)
+            APlusImageViewHolder.LAYOUT -> APlusImageViewHolder(view, listener)
             else -> super.createViewHolder(view, type)
         }
     }

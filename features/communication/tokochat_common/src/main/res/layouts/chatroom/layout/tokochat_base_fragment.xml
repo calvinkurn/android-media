@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
 
-    <com.tokopedia.tokochat_common.view.customview.TokoChatTransactionOrderWidget
+    <com.tokopedia.tokochat.common.view.chatroom.customview.TokoChatTransactionOrderWidget
         android:id="@+id/tokochat_transaction_order"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -20,7 +20,7 @@
         android:visibility="visible"
         tools:visibility="visible" />
 
-    <com.tokopedia.tokochat_common.view.customview.TokoChatBgImageView
+    <com.tokopedia.tokochat.common.view.chatroom.customview.TokoChatBgImageView
         android:id="@+id/tokochat_iv_bg_chat"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -51,7 +51,7 @@
         app:barrierAllowsGoneWidgets="false"
         app:constraint_referenced_ids="tokochat_reply_box,tokochat_expired_info,tokochat_reply_box" />
 
-    <com.tokopedia.tokochat_common.view.customview.TokoChatReplyMessageView
+    <com.tokopedia.tokochat.common.view.chatroom.customview.TokoChatReplyMessageView
         android:id="@+id/tokochat_reply_box"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -64,7 +64,7 @@
         app:layout_constraintTop_toBottomOf="@id/tokochat_barrier_reply_chat"
         app:layout_constraintBottom_toTopOf="@id/tokochat_layout_menu" />
 
-    <com.tokopedia.tokochat_common.view.customview.TokoChatExpiredInfoView
+    <com.tokopedia.tokochat.common.view.chatroom.customview.TokoChatExpiredInfoView
         android:id="@+id/tokochat_expired_info"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -74,7 +74,7 @@
         app:layout_constraintTop_toBottomOf="@id/tokochat_barrier_reply_chat"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
-    <com.tokopedia.tokochat_common.view.customview.attachment.TokoChatMenuLayout
+    <com.tokopedia.tokochat.common.view.chatroom.customview.attachment.TokoChatMenuLayout
         android:id="@+id/tokochat_layout_menu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

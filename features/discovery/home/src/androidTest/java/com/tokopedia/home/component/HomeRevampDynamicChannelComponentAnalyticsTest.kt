@@ -31,6 +31,7 @@ import com.tokopedia.home.util.ViewVisibilityIdlingResource
 import com.tokopedia.home_component.model.ReminderEnum
 import com.tokopedia.home_component.viewholders.*
 import com.tokopedia.home_component.visitable.*
+import com.tokopedia.home_component.widget.special_release.SpecialReleaseRevampDataModel
 import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
 import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.test.application.assertion.topads.TopAdsVerificationTestReportUtil
@@ -286,7 +287,7 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
     fun testComponentTicker() {
         visibilityIdlingResource = ViewVisibilityIdlingResource(
             activity = activityRule.activity,
-            viewId = R.id.ticker_description,
+            viewId = com.tokopedia.unifycomponents.R.id.ticker_description,
             expectedVisibility = View.VISIBLE
         )
         IdlingRegistry.getInstance().register(visibilityIdlingResource)
@@ -383,9 +384,9 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
         HomeDCCassavaTest {
             initTest()
             doActivityTestByModelClass(dataModelClass = RecommendationListCarouselDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
-                activityRule.runOnUiThread { viewHolder.itemView.findViewById<View>(R.id.buttonAddToCart).performClick() }
+                activityRule.runOnUiThread { viewHolder.itemView.findViewById<View>(com.tokopedia.productcard.R.id.buttonAddToCart).performClick() }
                 CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.recycleList, 0)
-                onView(withId(R.id.buy_again_close_image_view)).perform(ViewActions.click())
+                onView(withId(com.tokopedia.home_component.R.id.buy_again_close_image_view)).perform(ViewActions.click())
             }
         } validateAnalytics {
             addDebugEnd()
@@ -514,6 +515,19 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
         }
     }
 
+    @Test
+    fun testComponentSpecialReleaseRevampWidget() {
+        HomeDCCassavaTest {
+            initTest()
+            doActivityTestByModelClass(dataModelClass = SpecialReleaseRevampDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+                actionOnSpecialReleaseRevampWidget(viewHolder, i)
+            }
+        } validateAnalytics {
+            addDebugEnd()
+            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_SPECIAL_RELEASE_REVAMP)
+        }
+    }
+
     private fun initTest() {
         login()
         waitForData()
@@ -522,7 +536,7 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
 
     private fun hideStickyLogin() {
         activityRule.runOnUiThread {
-            val layout = activityRule.activity.findViewById<ConstraintLayout>(R.id.layout_sticky_container)
+            val layout = activityRule.activity.findViewById<ConstraintLayout>(com.tokopedia.usercomponents.R.id.layout_sticky_container)
             if (layout.visibility == View.VISIBLE) {
                 layout.visibility = View.GONE
             }

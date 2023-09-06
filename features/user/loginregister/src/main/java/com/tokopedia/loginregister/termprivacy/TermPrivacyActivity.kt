@@ -3,11 +3,12 @@ package com.tokopedia.loginregister.termprivacy
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.constant.DeeplinkConstant
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PAGE_PRIVACY_POLICY
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PAGE_TERM_AND_CONDITION
+import com.tokopedia.url.TokopediaUrl
 
 /**
  * @author rival
@@ -47,17 +48,17 @@ class TermPrivacyActivity : BaseSimpleActivity() {
     }
 
     private fun openTermPage() {
-        RouteManager.route(this, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URL_TERM))
+        RouteManager.route(this, ApplinkConstInternalGlobal.WEBVIEW, URL_TERM)
         finish()
     }
 
     private fun openPrivacyPage() {
-        RouteManager.route(this, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URL_PRIVACY))
+        RouteManager.route(this, ApplinkConstInternalGlobal.WEBVIEW, URL_PRIVACY)
         finish()
     }
 
     companion object {
-        private const val URL_TERM = "https://m.tokopedia.com/terms.pl?device=android&flag_app=1"
-        private const val URL_PRIVACY = "https://m.tokopedia.com/privacy.pl?device=android&flag_app=1"
+        private val URL_TERM = "${TokopediaUrl.getInstance().WEB}terms?lang=id"
+        private val URL_PRIVACY = "${TokopediaUrl.getInstance().WEB}privacy?lang=id"
     }
 }

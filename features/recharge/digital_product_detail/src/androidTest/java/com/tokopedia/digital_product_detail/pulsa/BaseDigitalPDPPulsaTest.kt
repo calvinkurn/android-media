@@ -99,17 +99,17 @@ abstract class BaseDigitalPDPPulsaTest {
     }
 
     protected fun clientNumberWidget_clickClearIcon() {
-        onView(withId(R.id.text_field_icon_close)).perform(click())
+        onView(withId(com.tokopedia.unifycomponents.R.id.text_field_icon_close)).perform(click())
     }
 
     protected fun clientNumberWidget_clickContactIcon() {
-        onView(withId(R.id.text_field_icon_2)).perform(click())
+        onView(withId(com.tokopedia.unifycomponents.R.id.text_field_icon_2)).perform(click())
     }
 
     protected fun favoriteChips_clickChip_withText(text: String) {
         onView(allOf(
-            withId(R.id.chip_text),
-            isDescendantOfA(withId(R.id.sort_filter_items)),
+            withId(com.tokopedia.analyticsdebugger.R.id.chip_text),
+            isDescendantOfA(withId(com.tokopedia.sortfilter.R.id.sort_filter_items)),
             withText(text))
         ).perform(click())
     }
@@ -122,19 +122,19 @@ abstract class BaseDigitalPDPPulsaTest {
     }
 
     protected fun buyWidget_clickChevron() {
-        onView(withId(R.id.icon_buy_widget_chevron)).perform(click())
+        onView(withId(com.tokopedia.recharge_component.R.id.icon_buy_widget_chevron)).perform(click())
     }
 
     protected fun recommendations_clickCard() {
-        onView(withId(R.id.rv_recharge_recommendation_card_title)).perform(click())
+        onView(withId(com.tokopedia.recharge_component.R.id.rv_recharge_recommendation_card_title)).perform(click())
     }
 
     protected fun mccm_clickCard_withIndex(index: Int) {
-        onView(withId(R.id.rv_mccm_grid)).perform(RecyclerViewActions.actionOnItemAtPosition<DenomGridViewHolder>(index, click()))
+        onView(withId(com.tokopedia.recharge_component.R.id.rv_mccm_grid)).perform(RecyclerViewActions.actionOnItemAtPosition<DenomGridViewHolder>(index, click()))
     }
 
     protected fun denom_clickCard_withIndex(index: Int) {
-        onView(withId(R.id.rv_denom_grid_card)).perform(RecyclerViewActions.actionOnItemAtPosition<DenomGridViewHolder>(index, click()))
+        onView(withId(com.tokopedia.recharge_component.R.id.rv_denom_grid_card)).perform(RecyclerViewActions.actionOnItemAtPosition<DenomGridViewHolder>(index, click()))
     }
 
     abstract fun getApplink(): String

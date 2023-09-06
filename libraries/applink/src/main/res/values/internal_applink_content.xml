@@ -48,4 +48,7 @@
 
     <string name="applink_content_feature_prevention" translatable="false" tools:ignore="UnusedResources">/content-prevention</string>
 
+    <string name="host_unified_feed_page" translatable="false">content</string>
+    <string name="path_content_detail_page" translatable="false">/detail/.*\</string>
+
 </resources>

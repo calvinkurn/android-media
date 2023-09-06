@@ -12,7 +12,6 @@ import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.chatlist.di.ActivityComponentFactory
 import com.tokopedia.topchat.chatlist.domain.pojo.ChatListPojo
 import com.tokopedia.topchat.chatlist.view.activity.ChatListActivity
-import com.tokopedia.topchat.chatlist.view.adapter.viewholder.ChatItemListViewHolder.Companion.ROLLENCE_MVC_ICON
 import com.tokopedia.topchat.chatlist.view.viewmodel.ChatTabCounterViewModel
 import com.tokopedia.topchat.chatlist.view.widget.BroadcastButtonLayout.Companion.BROADCAST_FAB_LABEL_PREF_NAME
 import com.tokopedia.topchat.chatlist.view.widget.BroadcastButtonLayout.Companion.BROADCAST_FAB_LABEL_ROLLENCE_KEY
@@ -104,10 +103,6 @@ abstract class ChatListTest {
         activity = activityTestRule.activity
     }
 
-    protected fun setRollenceMVCIcon(isActive: Boolean) {
-        abTestPlatform.setString(ROLLENCE_MVC_ICON, if (isActive) ROLLENCE_MVC_ICON else "")
-    }
-
     protected fun setLastSeenTab(isSellerTab: Boolean) {
         context.getSharedPreferences(
             ChatTabCounterViewModel.PREF_CHAT_LIST_TAB,
@@ -125,7 +120,7 @@ abstract class ChatListTest {
 
     protected fun setLabelNew(value: Boolean) {
         cacheManager.saveState(
-            BROADCAST_FAB_LABEL_PREF_NAME,
+            "${BROADCAST_FAB_LABEL_PREF_NAME}_${userSession.userId}",
             value
         )
     }
