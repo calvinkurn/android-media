@@ -78,7 +78,6 @@ import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.Pr
 import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.TitleHasMoreSellerSearchUiModel
 import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.TitleHeaderSellerSearchUiModel
 import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.hightlights.HighlightSuggestionSearchUiModel
-import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.hightlights.ItemHighlightSuggestionSearchUiModel
 import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.hightlights.ItemTitleHighlightSuggestionSearchUiModel
 import com.tokopedia.seller.search.feature.suggestion.view.viewmodel.SuggestionSearchComposeViewModel
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -179,7 +178,7 @@ fun SuggestionSearchScreen(
 
                     is HighlightSuggestionSearchUiModel -> {
                         ItemHighlightSuggestionChips(
-                            chips = item.highlightSuggestionSearch,
+                            item = item,
                             uiEvent = uiEvent
                         )
                     }
@@ -639,7 +638,7 @@ fun TitleHeaderSellerSearch(
 
 @Composable
 fun ItemHighlightSuggestionChips(
-    chips: List<ItemHighlightSuggestionSearchUiModel>,
+    item: HighlightSuggestionSearchUiModel,
     uiEvent: (SuggestionSearchUiEvent) -> Unit
 ) {
     FlowRow(
@@ -649,7 +648,7 @@ fun ItemHighlightSuggestionChips(
             .padding(start = 8.dp, end = 8.dp, top = 8.dp)
             .fillMaxWidth()
     ) {
-        chips.forEachIndexed { index, item ->
+        item.highlightSuggestionSearch.forEachIndexed { index, item ->
             key(item.id.orEmpty()) {
                 NestChips(
                     text = item.title.orEmpty(),

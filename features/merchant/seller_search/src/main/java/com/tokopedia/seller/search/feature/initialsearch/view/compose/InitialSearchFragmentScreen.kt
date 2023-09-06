@@ -46,6 +46,7 @@ import com.tokopedia.seller.search.R
 import com.tokopedia.seller.search.common.GlobalSearchSellerConstant
 import com.tokopedia.seller.search.feature.initialsearch.view.model.SellerSearchNoHistoryUiModel
 import com.tokopedia.seller.search.feature.initialsearch.view.model.compose.InitialSearchUiEvent
+import com.tokopedia.seller.search.feature.initialsearch.view.model.compose.InitialSearchUiState
 import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.HighlightInitialSearchUiModel
 import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.ItemHighlightInitialSearchUiModel
 import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.ItemInitialSearchUiModel
@@ -112,7 +113,7 @@ fun InitialSearchFragmentScreen(
                 }
 
                 is ItemTitleInitialSearchUiModel -> {
-                    HistorySearchSectionTitle(initialUiState?.titleList.orEmpty(), uiEvent)
+                    HistorySearchSectionTitle(initialUiState, uiEvent)
                 }
 
                 is ItemInitialSearchUiModel -> {
@@ -124,7 +125,7 @@ fun InitialSearchFragmentScreen(
                 }
 
                 is HighlightInitialSearchUiModel -> {
-                    ItemHighlightChips(item.highlightInitialList, uiEvent)
+                    ItemHighlightChips(item, uiEvent)
                 }
             }
         }
@@ -143,7 +144,7 @@ fun InitialSearchFragmentScreen(
 
 @Composable
 fun HistorySearchSectionTitle(
-    titleList: List<String>,
+    initialSearchUiState: InitialSearchUiState?,
     uiEvent: (InitialSearchUiEvent) -> Unit
 ) {
     ConstraintLayout(
@@ -184,7 +185,7 @@ fun HistorySearchSectionTitle(
                     end.linkTo(parent.end)
                 }
                 .clickable {
-                    uiEvent(InitialSearchUiEvent.OnClearAllHistory(titleList))
+                    uiEvent(InitialSearchUiEvent.OnClearAllHistory(initialSearchUiState?.titleList.orEmpty()))
                 }
         )
     }
@@ -274,7 +275,7 @@ fun TitleSearchRecommendation() {
 
 @Composable
 fun ItemHighlightChips(
-    chips: List<ItemHighlightInitialSearchUiModel>,
+    item: HighlightInitialSearchUiModel,
     uiEvent: (InitialSearchUiEvent) -> Unit
 ) {
     FlowRow(
@@ -284,7 +285,7 @@ fun ItemHighlightChips(
             .padding(start = 16.dp, end = 16.dp, top = 8.dp)
             .fillMaxWidth()
     ) {
-        chips.forEachIndexed { index, item ->
+        item.highlightInitialList.forEachIndexed { index, item ->
             key(item.id.orEmpty()) {
                 NestChips(
                     text = item.title.orEmpty(),
@@ -349,14 +350,15 @@ fun NoHistoryState() {
 @Composable
 fun TitleHistorySearchSectionPreview() {
     ItemHighlightChips(
-        chips =
-        listOf(
-            ItemHighlightInitialSearchUiModel(title = "Cara Menjadi Power Merchant"),
-            ItemHighlightInitialSearchUiModel(title = "Bebas Ongkir"),
-            ItemHighlightInitialSearchUiModel(title = "Cara Menjadi Power Merchant"),
-            ItemHighlightInitialSearchUiModel(title = "Cara Pakai Bebas Ongkir"),
-            ItemHighlightInitialSearchUiModel(title = "Cara Menjadi Power Merchant"),
-            ItemHighlightInitialSearchUiModel(title = "Cara Pakai Bebas Ongkir")
+        item = HighlightInitialSearchUiModel(
+            listOf(
+                ItemHighlightInitialSearchUiModel(title = "Cara Menjadi Power Merchant"),
+                ItemHighlightInitialSearchUiModel(title = "Bebas Ongkir"),
+                ItemHighlightInitialSearchUiModel(title = "Cara Menjadi Power Merchant"),
+                ItemHighlightInitialSearchUiModel(title = "Cara Pakai Bebas Ongkir"),
+                ItemHighlightInitialSearchUiModel(title = "Cara Menjadi Power Merchant"),
+                ItemHighlightInitialSearchUiModel(title = "Cara Pakai Bebas Ongkir")
+            )
         )
     ) {}
 }
