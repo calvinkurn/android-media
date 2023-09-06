@@ -44,7 +44,6 @@ class BmgmMiniCartViewModel @Inject constructor(
                     getMiniCartDataUseCase.get().invoke(shopIds, param)
                 }
                 _cartData.emit(BmgmState.Success(data))
-                storeCartDataToLocalCache()
             }.onFailure {
                 _cartData.emit(BmgmState.Error(it))
             }
@@ -56,10 +55,10 @@ class BmgmMiniCartViewModel @Inject constructor(
         miniCartLocalCacheUseCases.get().clearLocalCache()
     }
 
-    fun storeCartDataToLocalCache() {
+    fun saveCartDataToLocalStorage(shopId: Long, warehouseId: Long) {
         val result = _cartData.value
         if (result is BmgmState.Success) {
-            miniCartLocalCacheUseCases.get().saveToLocalCache(result.data)
+            miniCartLocalCacheUseCases.get().saveToLocalCache(result.data, shopId, warehouseId)
         }
     }
 }

@@ -18,6 +18,7 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.minicart.R
+import com.tokopedia.minicart.bmgm.analytics.BmgmMiniCartTracker
 import com.tokopedia.minicart.bmgm.common.di.DaggerBmgmComponent
 import com.tokopedia.minicart.bmgm.presentation.adapter.BmgmMiniCartDetailAdapter
 import com.tokopedia.minicart.bmgm.presentation.adapter.itemdecoration.BmgmMiniCartDetailItemDecoration
@@ -150,6 +151,19 @@ class BmgmMiniCartDetailBottomSheet : BottomSheetUnify() {
         listAdapter.addElement(productList)
 
         setupCartEntryPoint(data)
+        setOnCloseClicked(data)
+    }
+
+    private fun setOnCloseClicked(data: BmgmCommonDataModel) {
+        super.setCloseClickListener {
+            BmgmMiniCartTracker.sendClickCloseMinicartEvent(
+                offerId = data.offerId.toString(),
+                warehouseId = data.warehouseId.toString(),
+                shopId = data.shopId,
+                userId = data.userId
+            )
+            dismiss()
+        }
     }
 
     private fun setupCartEntryPoint(model: BmgmCommonDataModel) {

@@ -1,7 +1,6 @@
 package com.tokopedia.minicart.bmgm.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.LiveData
 import com.tokopedia.minicart.bmgm.presentation.model.BmgmState
 import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import io.mockk.MockKAnnotations

@@ -566,7 +566,7 @@ class OfferLandingPageFragment :
             shopIds = listOf(currentUiState.shopData.shopId),
             offerIds = currentUiState.offerIds,
             offerJsonData = currentUiState.offeringJsonData,
-            warehouseIds = currentUiState.warehouseIds.map { it.toString() },
+            warehouseIds = currentUiState.warehouseIds,
             offerCount = offerCount
         )
     }
