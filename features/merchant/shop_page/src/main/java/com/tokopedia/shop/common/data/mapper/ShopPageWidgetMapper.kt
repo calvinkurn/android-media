@@ -227,7 +227,7 @@ object ShopPageWidgetMapper {
             ShowcaseNavigationBannerWidgetStyle.CAROUSEL_CIRCLE.id -> {
                 CarouselAppearance(response.header.title, showcases, response.header.ctaLink, ShowcaseCornerShape.CIRCLE)
             }
-            else -> TopMainBannerAppearance(response.header.title, showcases, response.header.ctaLink, ShowcaseCornerShape.ROUNDED_CORNER)
+            else -> LeftMainBannerAppearance(tabs, response.header.title, response.header.ctaLink, ShowcaseCornerShape.CIRCLE)
         }
 
 

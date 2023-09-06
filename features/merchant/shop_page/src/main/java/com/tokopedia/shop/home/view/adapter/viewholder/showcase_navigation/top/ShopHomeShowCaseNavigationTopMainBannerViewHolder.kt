@@ -42,13 +42,10 @@ class ShopHomeShowCaseNavigationTopMainBannerViewHolder(
         if (model.appearance is TopMainBannerAppearance) {
             viewBinding?.tpgTitle?.text = model.appearance.title
             viewBinding?.tpgTitle?.isVisible = model.appearance.title.isNotEmpty()
-            viewBinding?.iconChevron?.setOnClickListener {
-                listener.onNavigationBannerViewAllShowcaseClick(model.appearance.viewAllCtaAppLink)
-            }
 
             val showcases = model.appearance.showcases
 
-            setupViewAllIcon(model.appearance.viewAllCtaAppLink)
+            setupViewAllIcon(model.appearance)
             setupMainBanner(showcases, model)
             setupShowCaseRecyclerView(
                 model.header.isOverrideTheme,
@@ -68,8 +65,15 @@ class ShopHomeShowCaseNavigationTopMainBannerViewHolder(
 
     }
 
-    private fun setupViewAllIcon(viewAllCtaAppLink: String) {
-        viewBinding?.iconChevron?.isVisible = viewAllCtaAppLink.isNotEmpty()
+    private fun setupViewAllIcon(appearance: TopMainBannerAppearance) {
+        viewBinding?.iconChevron?.isVisible = appearance.viewAllCtaAppLink.isNotEmpty()
+        viewBinding?.iconChevron?.setOnClickListener {
+            listener.onNavigationBannerViewAllShowcaseClick(
+                appearance.viewAllCtaAppLink,
+                appearance,
+                appearance.showcases.firstOrNull()?.id.orEmpty()
+            )
+        }
     }
 
     private fun setupMainBanner(
