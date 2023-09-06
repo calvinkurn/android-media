@@ -99,7 +99,7 @@ class StoriesActivity : BaseActivity() {
     }
 
     private fun observeEvent() {
-        lifecycleScope.launchWhenResumed {
+        lifecycleScope.launchWhenCreated {
             viewModel.uiEvent.collectLatest { event ->
                 when (event) {
                     is StoriesUiEvent.OnboardShown -> binding.vStoriesOnboarding.root.showWithCondition(event.needToShow)

@@ -123,18 +123,13 @@ class StoriesViewModel @AssistedInject constructor(
         )
     }
 
-    private val isOnboard : Boolean
-        get() = sharedPref.isVisited()
-
-    init {
-        setupOnboard()
-    }
-
     private fun setupOnboard() {
-        viewModelScope.launch {
-            _uiEvent.emit(StoriesUiEvent.OnboardShown(!isOnboard))
+        if (!sharedPref.isVisited()) {
+            viewModelScope.launch {
+                _uiEvent.emit(StoriesUiEvent.OnboardShown(true))
+            }
+            sharedPref.setVisit()
         }
-        if (!isOnboard) sharedPref.setVisit()
     }
 
     fun submitAction(action: StoriesUiAction) {
@@ -167,6 +162,7 @@ class StoriesViewModel @AssistedInject constructor(
         }) { exception ->
             _uiEvent.emit(StoriesUiEvent.ErrorGroupPage(exception))
         }
+        setupOnboard()
     }
 
     private fun handleGroupMainData(selectedGroup: Int) {
