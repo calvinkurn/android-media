@@ -128,7 +128,7 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
                 tabs.size == ONE_TAB -> tabsUnify.gone()
                 else -> {
                     tabsUnify.visible()
-                    tabsUnify.customTabMode = TabLayout.MODE_FIXED
+                    tabsUnify.customTabMode = TabLayout.MODE_SCROLLABLE
                     tabsUnify.customTabGravity = TabLayout.GRAVITY_FILL
                 }
             }

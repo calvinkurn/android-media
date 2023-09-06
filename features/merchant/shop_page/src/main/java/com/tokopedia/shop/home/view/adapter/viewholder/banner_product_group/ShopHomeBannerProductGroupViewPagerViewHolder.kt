@@ -86,7 +86,7 @@ class ShopHomeBannerProductGroupViewPagerViewHolder(
                 else -> {
                     tabsUnify.visible()
                     tabsUnify.customTabMode = TabLayout.MODE_SCROLLABLE
-                    tabsUnify.customTabGravity = TabLayout.GRAVITY_CENTER
+                    tabsUnify.customTabGravity = TabLayout.GRAVITY_FILL
                 }
             }
 
