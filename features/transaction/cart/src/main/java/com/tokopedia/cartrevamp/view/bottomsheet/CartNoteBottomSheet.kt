@@ -95,7 +95,7 @@ class CartNoteBottomSheet : BottomSheetUnify() {
             labelProductVariant.text = data.variant
 
             textAreaNote.setCounter(NOTE_MAX_LENGTH)
-            textAreaNote.editText.setText(data.note.trim())
+            textAreaNote.editText.setText(data.note)
             textAreaNote.editText.addTextChangedListener {
                 btnSave.isEnabled = it.toString() != data.note
             }
