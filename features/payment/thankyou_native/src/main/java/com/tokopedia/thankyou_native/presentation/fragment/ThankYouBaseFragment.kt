@@ -175,11 +175,6 @@ abstract class ThankYouBaseFragment :
         }
     }
 
-    override fun onPause() {
-        super.onPause()
-        digitalRecomTrackingQueue?.sendAll()
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getFeatureListingContainer()?.gone()
@@ -738,27 +733,6 @@ abstract class ThankYouBaseFragment :
         val isAboveRecomm = cpmModel.data[0].cpm.position == 1
 
         if (isWidgetOrderingEnabled) {
-            if (!isAboveRecomm) {
-                val newList = thanksPageDataViewModel.widgetOrder.toMutableList()
-
-                val digitalIndex = newList.indexOf(DigitalRecommendationWidgetModel.TAG)
-                val marketplaceIndex = newList.indexOf(MarketplaceRecommendationWidgetModel.TAG)
-                val headlineIndex = newList.indexOf(HeadlineAdsWidgetModel.TAG)
-
-                if (headlineIndex != -1) {
-                    if (digitalIndex != -1 || marketplaceIndex != -1) {
-                        newList.removeAt(headlineIndex)
-
-                        newList.add(
-                            maxOf(marketplaceIndex, digitalIndex) + 1,
-                            HeadlineAdsWidgetModel.TAG
-                        )
-                    }
-                }
-
-                thanksPageDataViewModel.widgetOrder = newList
-            }
-
             thanksPageDataViewModel.addBottomContentWidget(HeadlineAdsWidgetModel(cpmModel))
             return
         }

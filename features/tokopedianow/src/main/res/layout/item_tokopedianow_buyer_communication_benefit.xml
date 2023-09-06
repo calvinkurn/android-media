@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="16dp"
+    android:orientation="horizontal">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_number"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/tokopedianow_bg_circle_green"
+        android:gravity="center"
+        android:textColor="@color/Unify_NN0"
+        app:typographyType="heading_6"
+        tools:text="1" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:gravity="top"
+        android:textColor="@color/Unify_NN950"
+        app:typographyType="paragraph_3"
+        tools:text="Bebas pilih jadwal. Pilih produk dan jadwal pengiriman sesuai kebutuhanmu. " />
+</LinearLayout>

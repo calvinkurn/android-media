@@ -9,7 +9,9 @@ import android.widget.ImageView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
@@ -19,10 +21,10 @@ import com.gojek.conversations.groupbooking.ConversationsGroupBookingListener
 import com.gojek.conversations.groupbooking.GroupBookingChannelDetails
 import com.gojek.conversations.network.ConversationsNetworkError
 import com.google.android.material.snackbar.Snackbar
-import com.tokochat.tokochat_config_common.util.TokoChatErrorLogger
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.imagepreview.imagesecure.ImageSecurePreviewActivity
 import com.tokopedia.kotlin.extensions.view.ONE
@@ -43,8 +45,41 @@ import com.tokopedia.picker.common.types.ModeType
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.tokochat.analytics.TokoChatAnalytics
 import com.tokopedia.tokochat.analytics.TokoChatAnalyticsConstants
+import com.tokopedia.tokochat.common.util.OrderStatusType
+import com.tokopedia.tokochat.common.util.TokoChatNetworkUtil
+import com.tokopedia.tokochat.common.util.TokoChatUrlUtil.IC_TOKOFOOD_SOURCE
+import com.tokopedia.tokochat.common.util.TokoChatValueUtil.CUSTOMER
+import com.tokopedia.tokochat.common.util.TokoChatValueUtil.DEFAULT_CENSOR_PERCENTAGE
+import com.tokopedia.tokochat.common.util.TokoChatValueUtil.DRIVER
+import com.tokopedia.tokochat.common.util.TokoChatValueUtil.IS_FROM_BUBBLE_KEY
+import com.tokopedia.tokochat.common.util.TokoChatValueUtil.TOKOFOOD
+import com.tokopedia.tokochat.common.util.TokoChatViewUtil
+import com.tokopedia.tokochat.common.util.TokoChatViewUtil.EIGHT_DP
+import com.tokopedia.tokochat.common.view.chatroom.TokoChatBaseFragment
+import com.tokopedia.tokochat.common.view.chatroom.adapter.TokoChatBaseAdapter
+import com.tokopedia.tokochat.common.view.chatroom.customview.TokoChatReplyMessageView
+import com.tokopedia.tokochat.common.view.chatroom.customview.TokoChatTransactionOrderWidget
+import com.tokopedia.tokochat.common.view.chatroom.customview.attachment.TokoChatMenuLayout
+import com.tokopedia.tokochat.common.view.chatroom.customview.bottomsheet.MaskingPhoneNumberBottomSheet
+import com.tokopedia.tokochat.common.view.chatroom.customview.bottomsheet.TokoChatConsentBottomSheet
+import com.tokopedia.tokochat.common.view.chatroom.customview.bottomsheet.TokoChatGuideChatBottomSheet
+import com.tokopedia.tokochat.common.view.chatroom.customview.bottomsheet.TokoChatLongTextBottomSheet
+import com.tokopedia.tokochat.common.view.chatroom.customview.bottomsheet.bubbleawareness.TokoChatBubblesAwarenessBottomSheet
+import com.tokopedia.tokochat.common.view.chatroom.listener.TokoChatAttachmentMenuListener
+import com.tokopedia.tokochat.common.view.chatroom.listener.TokoChatImageAttachmentListener
+import com.tokopedia.tokochat.common.view.chatroom.listener.TokoChatMessageBubbleListener
+import com.tokopedia.tokochat.common.view.chatroom.listener.TokoChatMessageCensorListener
+import com.tokopedia.tokochat.common.view.chatroom.listener.TokoChatReplyAreaListener
+import com.tokopedia.tokochat.common.view.chatroom.listener.TokoChatReplyTextListener
+import com.tokopedia.tokochat.common.view.chatroom.listener.TokoChatTypingListener
+import com.tokopedia.tokochat.common.view.chatroom.listener.TokochatReminderTickerListener
+import com.tokopedia.tokochat.common.view.chatroom.uimodel.TokoChatHeaderUiModel
+import com.tokopedia.tokochat.common.view.chatroom.uimodel.TokoChatImageBubbleUiModel
+import com.tokopedia.tokochat.common.view.chatroom.uimodel.TokoChatMessageBubbleUiModel
+import com.tokopedia.tokochat.common.view.chatroom.uimodel.TokoChatOrderProgressUiModel
+import com.tokopedia.tokochat.common.view.chatroom.uimodel.TokoChatReminderTickerUiModel
+import com.tokopedia.tokochat.config.util.TokoChatErrorLogger
 import com.tokopedia.tokochat.databinding.TokochatChatroomFragmentBinding
-import com.tokopedia.tokochat.di.TokoChatComponent
 import com.tokopedia.tokochat.domain.response.orderprogress.TokoChatOrderProgressResponse
 import com.tokopedia.tokochat.util.TokoChatMediaCleanupStorageWorker
 import com.tokopedia.tokochat.util.TokoChatValueUtil
@@ -54,38 +89,6 @@ import com.tokopedia.tokochat.util.TokoChatValueUtil.CHAT_DOES_NOT_EXIST
 import com.tokopedia.tokochat.util.TokoChatValueUtil.NOTIFCENTER_NOTIFICATION_TEMPLATE_KEY
 import com.tokopedia.tokochat.util.isFromBubble
 import com.tokopedia.tokochat.view.chatroom.bottomsheet.TokoChatGeneralUnavailableBottomSheet
-import com.tokopedia.tokochat_common.util.OrderStatusType
-import com.tokopedia.tokochat_common.util.TokoChatUrlUtil.IC_TOKOFOOD_SOURCE
-import com.tokopedia.tokochat_common.util.TokoChatValueUtil.CUSTOMER
-import com.tokopedia.tokochat_common.util.TokoChatValueUtil.DEFAULT_CENSOR_PERCENTAGE
-import com.tokopedia.tokochat_common.util.TokoChatValueUtil.DRIVER
-import com.tokopedia.tokochat_common.util.TokoChatValueUtil.IS_FROM_BUBBLE_KEY
-import com.tokopedia.tokochat_common.util.TokoChatValueUtil.TOKOFOOD
-import com.tokopedia.tokochat_common.util.TokoChatViewUtil
-import com.tokopedia.tokochat_common.util.TokoChatViewUtil.EIGHT_DP
-import com.tokopedia.tokochat_common.view.adapter.TokoChatBaseAdapter
-import com.tokopedia.tokochat_common.view.customview.TokoChatReplyMessageView
-import com.tokopedia.tokochat_common.view.customview.TokoChatTransactionOrderWidget
-import com.tokopedia.tokochat_common.view.customview.attachment.TokoChatMenuLayout
-import com.tokopedia.tokochat_common.view.customview.bottomsheet.MaskingPhoneNumberBottomSheet
-import com.tokopedia.tokochat_common.view.customview.bottomsheet.TokoChatConsentBottomSheet
-import com.tokopedia.tokochat_common.view.customview.bottomsheet.TokoChatGuideChatBottomSheet
-import com.tokopedia.tokochat_common.view.customview.bottomsheet.TokoChatLongTextBottomSheet
-import com.tokopedia.tokochat_common.view.customview.bottomsheet.bubble_awareness.TokoChatBubblesAwarenessBottomSheet
-import com.tokopedia.tokochat_common.view.fragment.TokoChatBaseFragment
-import com.tokopedia.tokochat_common.view.listener.TokoChatAttachmentMenuListener
-import com.tokopedia.tokochat_common.view.listener.TokoChatImageAttachmentListener
-import com.tokopedia.tokochat_common.view.listener.TokoChatMessageBubbleListener
-import com.tokopedia.tokochat_common.view.listener.TokoChatMessageCensorListener
-import com.tokopedia.tokochat_common.view.listener.TokoChatReplyAreaListener
-import com.tokopedia.tokochat_common.view.listener.TokoChatReplyTextListener
-import com.tokopedia.tokochat_common.view.listener.TokoChatTypingListener
-import com.tokopedia.tokochat_common.view.listener.TokochatReminderTickerListener
-import com.tokopedia.tokochat_common.view.uimodel.TokoChatHeaderUiModel
-import com.tokopedia.tokochat_common.view.uimodel.TokoChatImageBubbleUiModel
-import com.tokopedia.tokochat_common.view.uimodel.TokoChatMessageBubbleUiModel
-import com.tokopedia.tokochat_common.view.uimodel.TokoChatOrderProgressUiModel
-import com.tokopedia.tokochat_common.view.uimodel.TokoChatReminderTickerUiModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -94,11 +97,20 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.io.File
 import javax.inject.Inject
+import com.tokopedia.tokochat_common.R as tokochat_commonR
 
-open class TokoChatFragment :
+open class TokoChatFragment @Inject constructor(
+    private var viewModel: TokoChatViewModel,
+    private var userSession: UserSessionInterface,
+    private var mapper: TokoChatConversationUiMapper,
+    private var remoteConfig: RemoteConfig,
+    private var networkUtil: TokoChatNetworkUtil
+) :
     TokoChatBaseFragment<TokochatChatroomFragmentBinding>(),
     ConversationsGroupBookingListener,
     TokoChatTypingListener,
@@ -113,19 +125,7 @@ open class TokoChatFragment :
     MaskingPhoneNumberBottomSheet.AnalyticsListener,
     TokoChatBubblesAwarenessBottomSheet.AnalyticsListener {
 
-    @Inject
-    lateinit var viewModel: TokoChatViewModel
-
-    @Inject
-    lateinit var userSession: UserSessionInterface
-
-    @Inject
-    lateinit var mapper: TokoChatConversationUiMapper
-
     private var tokoChatAnalytics: TokoChatAnalytics? = null
-
-    @Inject
-    lateinit var remoteConfig: RemoteConfig
 
     private var headerUiModel: TokoChatHeaderUiModel? = null
     private var selfUiModel: TokoChatHeaderUiModel? = null
@@ -146,7 +146,7 @@ open class TokoChatFragment :
     override fun getScreenName(): String = TAG
 
     override fun initInjector() {
-        getComponent(TokoChatComponent::class.java).inject(this)
+        // no-op
     }
 
     override fun onClickAttachmentButton() {
@@ -191,6 +191,7 @@ open class TokoChatFragment :
         setDataFromArguments(savedInstanceState)
         askTokoChatConsent()
         setupLifeCycleObserver()
+        setupListeners()
     }
 
     override fun onResume() {
@@ -245,6 +246,10 @@ open class TokoChatFragment :
         this.lifecycle.addObserver(viewModel)
     }
 
+    private fun setupListeners() {
+        baseBinding?.tokochatTransactionOrder?.assignListener(this)
+    }
+
     protected open fun initializeChatRoom(savedInstanceState: Bundle?) {
         setDataFromArguments(savedInstanceState)
         loadChatRoomData()
@@ -254,7 +259,12 @@ open class TokoChatFragment :
         addInitialShimmering()
         // Do not init when order id empty
         if (viewModel.gojekOrderId.isNotBlank()) {
-            initGroupBooking()
+            // All trackers need tkpd order id
+            if (viewModel.tkpdOrderId.isNotBlank()) {
+                initGroupBooking()
+            } else {
+                viewModel.translateGojekOrderId(viewModel.gojekOrderId)
+            }
         }
     }
 
@@ -276,6 +286,22 @@ open class TokoChatFragment :
                 is Fail -> {
                     // Show chat room
                     loadChatRoomData()
+                }
+            }
+        }
+    }
+
+    private fun observeTkpdOrderId() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                var isFinished = false
+                viewModel.isTkpdOrderStatus.collectLatest { status ->
+                    if (!isFinished) {
+                        status?.let {
+                            isFinished = it
+                            initGroupBooking() // Success or fail, init group booking
+                        }
+                    }
                 }
             }
         }
@@ -396,6 +422,7 @@ open class TokoChatFragment :
         observeImageUploadError()
         observeError()
         observeUserConsent()
+        observeTkpdOrderId()
     }
 
     private fun observeError() {
@@ -560,9 +587,6 @@ open class TokoChatFragment :
                     ) {
                         viewModel.updateOrderStatusParam(Pair(viewModel.tkpdOrderId, viewModel.source))
                     }
-                    tokoChatAnalytics?.sendPendingImpressionOnImageAttachment(
-                        it.data.tokochatOrderProgress.state
-                    )
                 }
                 is Fail -> {
                     logExceptionTokoChat(
@@ -625,7 +649,7 @@ open class TokoChatFragment :
             !viewModel.isFromBubble
         ) {
             val tickerBubble = TokoChatReminderTickerUiModel(
-                message = getString(com.tokopedia.tokochat_common.R.string.tokochat_bubbles_ticker_desc),
+                message = getString(tokochat_commonR.string.tokochat_bubbles_ticker_desc),
                 tickerType = Ticker.TYPE_ANNOUNCEMENT,
                 showCloseButton = true,
                 tag = BUBBLES_NOTIF
@@ -715,9 +739,19 @@ open class TokoChatFragment :
         }
     }
 
-    private fun loadTransactionWidget() {
-        baseBinding?.tokochatTransactionOrder?.showShimmeringWidget()
-        viewModel.loadOrderCompletedStatus(viewModel.tkpdOrderId, viewModel.source)
+    private fun loadTransactionWidget(isFromLocalLoad: Boolean = false) {
+        if (viewModel.tkpdOrderId.isNotBlank()) {
+            baseBinding?.tokochatTransactionOrder?.showShimmeringWidget()
+            viewModel.loadOrderCompletedStatus(viewModel.tkpdOrderId, viewModel.source)
+        } else if (isFromLocalLoad) {
+            // Re-fetch tkpd order id from local load click
+            baseBinding?.tokochatTransactionOrder?.showShimmeringWidget()
+            viewModel.translateGojekOrderId(viewModel.gojekOrderId)
+        } else {
+            // No tkpd order id from param & fail to get tkpd order id from remote
+            // Set local load & the header
+            setShowTransactionLocalLoad()
+        }
     }
 
     private fun updateShowTransactionWidget(tokoChatOrderProgress: TokoChatOrderProgressResponse.TokoChatOrderProgress) {
@@ -753,7 +787,6 @@ open class TokoChatFragment :
         )
 
         baseBinding?.tokochatTransactionOrder?.showTransactionWidget(
-            this,
             orderProgressUiModel
         )
 
@@ -855,7 +888,9 @@ open class TokoChatFragment :
             }
 
             callMenu.run {
-                val isCallIconDisabled = getOrderState() in listOf(OrderStatusType.COMPLETED, OrderStatusType.CANCELLED)
+                val isCallIconDisabled = getOrderState() in
+                    listOf(OrderStatusType.COMPLETED, OrderStatusType.CANCELLED) ||
+                    getOrderState().isBlank()
 
                 if (isCallIconDisabled) {
                     isEnabled = false
@@ -1066,7 +1101,7 @@ open class TokoChatFragment :
     }
 
     override fun onLocalLoadRetryClicked() {
-        loadTransactionWidget()
+        loadTransactionWidget(isFromLocalLoad = true)
     }
 
     override fun onTransactionWidgetClicked(appLink: String) {
@@ -1502,6 +1537,22 @@ open class TokoChatFragment :
             source = viewModel.source,
             role = TokoChatAnalyticsConstants.BUYER
         )
+    }
+
+    protected fun isConnectedToNetwork(): Boolean {
+        return if (context != null) {
+            networkUtil.isNetworkAvailable(requireContext())
+        } else {
+            false
+        }
+    }
+
+    override fun getErrorType(): Int {
+        return if (isConnectedToNetwork()) {
+            GlobalError.SERVER_ERROR
+        } else {
+            GlobalError.NO_CONNECTION
+        }
     }
 
     companion object {

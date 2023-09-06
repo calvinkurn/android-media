@@ -148,13 +148,6 @@ open class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAd
         ReadReviewSortFilterFactory()
     }
 
-    override fun onPause() {
-        super.onPause()
-        if (::trackingQueue.isInitialized) {
-            trackingQueue.sendAll()
-        }
-    }
-
     override fun getSwipeRefreshLayoutResourceId(): Int {
         return R.id.read_review_swipe_refresh_layout
     }
