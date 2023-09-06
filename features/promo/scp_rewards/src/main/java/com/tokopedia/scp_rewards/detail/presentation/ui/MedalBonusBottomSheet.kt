@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.scp_rewards.databinding.FragmentMedalBonusBottomSheetBinding
 import com.tokopedia.scp_rewards.detail.domain.model.CouponList
@@ -26,6 +27,7 @@ class MedalBonusBottomSheet : BottomSheetUnify() {
     ): View? {
         clearContentPadding = true
         isFullpage = true
+        isDragable = true
         binding = FragmentMedalBonusBottomSheetBinding.inflate(inflater, container, false)
         setChild(binding?.root)
         return super.onCreateView(inflater, container, savedInstanceState)
@@ -44,12 +46,15 @@ class MedalBonusBottomSheet : BottomSheetUnify() {
                     status = CouponState.ACTIVE,
                     list = couponList
                 ),
-                CouponList(
-                    title = getString(scp_rewardsR.string.title_history),
-                    status = CouponState.INACTIVE,
-                    list = null
-                )
+//                TODO: History tab is not yet ready, hence not showing it for now
+//                CouponList(
+//                    title = getString(scp_rewardsR.string.title_history),
+//                    status = CouponState.INACTIVE,
+//                    list = null
+//                )
             )
+            // TODO: Remove once History tab is done
+            tabs.hide()
 
             list.forEach { tabs.addNewTab(it.title) }
             viewPager.adapter = BonusPagerAdapter(list, childFragmentManager)

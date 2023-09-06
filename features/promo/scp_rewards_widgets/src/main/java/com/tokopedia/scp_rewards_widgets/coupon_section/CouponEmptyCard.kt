@@ -5,6 +5,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import com.google.android.material.card.MaterialCardView
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.scp_rewards_widgets.databinding.ItemCouponEmptyLayoutBinding
 import com.tokopedia.scp_rewards_widgets.model.MedalBenefitModel
 
@@ -23,9 +24,11 @@ class CouponEmptyCard @JvmOverloads constructor(
             tvDescription.text = data.statusDescription
             ivIcon.setImageUrl(data.medaliImageURL.orEmpty())
             btnSeeBonusHistory.text = data.cta?.text
-            btnSeeBonusHistory.setOnClickListener {
-                onCtaClick(data.cta?.appLink, data.cta?.url)
-            }
+//            TODO: Removed for first launch since bonus bottom sheet is not ready yet
+//            btnSeeBonusHistory.setOnClickListener {
+//                onCtaClick(data.cta?.appLink, data.cta?.url)
+//            }
+            btnSeeBonusHistory.hide()
         }
     }
 }

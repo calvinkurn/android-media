@@ -10,6 +10,7 @@ import androidx.core.content.ContextCompat
 import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.shape.ShapeAppearanceModel
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.scp_rewards_common.dpToPx
 import com.tokopedia.scp_rewards_widgets.databinding.StackCouponLayoutBinding
 import com.tokopedia.scp_rewards_widgets.model.MedalBenefitModel
@@ -30,7 +31,7 @@ class StackCouponView @JvmOverloads constructor(
 
     fun setData(
         list: List<MedalBenefitModel>,
-        additionalInfo: String?,
+        benefitInfo: String?,
         onApplyClick: (MedalBenefitModel) -> Unit = {},
         onCardTap: (MedalBenefitModel, Boolean) -> Unit = { _, _ -> }
     ) {
@@ -46,20 +47,22 @@ class StackCouponView @JvmOverloads constructor(
                 cardMiddle.setData(list.first().copy().apply { statusBadgeEnabled = false })
                 cardBack.setData(list.first().copy().apply { statusBadgeEnabled = false })
 
-                cardMore.apply {
-                    shapeAppearanceModel = ShapeAppearanceModel.Builder()
-                        .setAllCornerSizes(0f)
-                        .setTopLeftCornerSize(dpToPx(context, CORNER_RADIUS))
-                        .setTopRightCornerSize(dpToPx(context, CORNER_RADIUS))
-                        .build()
+                if (benefitInfo.isNullOrEmpty()) {
+                    cardMore.invisible()
+                } else {
+                    cardMore.apply {
+                        shapeAppearanceModel = ShapeAppearanceModel.Builder()
+                            .setAllCornerSizes(0f)
+                            .setTopLeftCornerSize(dpToPx(context, CORNER_RADIUS))
+                            .setTopRightCornerSize(dpToPx(context, CORNER_RADIUS))
+                            .build()
 
-                    background = MaterialShapeDrawable(shapeAppearanceModel)
-                        .apply {
+                        background = MaterialShapeDrawable(shapeAppearanceModel).apply {
                             setTint(ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN0))
                         }
+                    }
+                    tvMore.text = benefitInfo
                 }
-
-                tvMore.text = additionalInfo
             }
         }
     }
