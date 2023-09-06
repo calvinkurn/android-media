@@ -8,6 +8,7 @@ object ShippingEditorQuery {
             status
             message
             data {
+              drop_off_maps_url
               shippers {
                 ondemand {
                   shipper_id

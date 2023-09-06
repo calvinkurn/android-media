@@ -21,7 +21,9 @@ data class Data(
     @SerializedName("shippers")
     var shippers: Shippers = Shippers(),
     @SerializedName("ticker")
-    var ticker: List<Ticker> = listOf()
+    var ticker: List<Ticker> = listOf(),
+    @SerializedName("drop_off_maps_url")
+    val dropOffMapsUrl: String = ""
 )
 
 data class Shippers(

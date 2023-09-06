@@ -50,9 +50,9 @@ import com.tokopedia.editshipping.ui.shippingeditor.adapter.WarehouseInactiveAda
 import com.tokopedia.editshipping.util.EditShippingConstant
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
-import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.remoteconfig.RemoteConfigInstance
@@ -65,7 +65,6 @@ import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
-import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.CoroutineScope
@@ -152,17 +151,6 @@ class ShippingEditorFragment :
         renderTextDetailCourier()
         binding?.run {
             btnSaveShipper.setOnClickListener { saveButtonShippingEditor() }
-            buttonDropOff.let {
-                if (showDropOffMaps()) {
-                    it.setDrawable(getIconUnifyDrawable(root.context, IconUnify.LOCATION))
-                    it.setOnClickListener {
-                        RouteManager.route(root.context, generateWebviewApplink("${TokopediaUrl.getInstance().WEB}$DROPOFF_MAPS_URL"))
-                    }
-                    it.visible()
-                } else {
-                    it.gone()
-                }
-            }
         }
     }
 
@@ -233,6 +221,7 @@ class ShippingEditorFragment :
                     updateData(it.data.shippers)
                     renderTicker(it.data.ticker)
                     checkWhitelabelCoachmarkState()
+                    renderDropOffButton(it.data.dropOffMapsUrl)
                 }
 
                 is ShippingEditorState.Fail -> {
@@ -318,6 +307,20 @@ class ShippingEditorFragment :
                     showToaster(it.errorMessage, Toaster.TYPE_ERROR)
                 }
                 else -> binding?.swipeRefresh?.isRefreshing = true
+            }
+        }
+    }
+
+    private fun renderDropOffButton(dropOffMapsUrl: String) {
+        binding?.buttonDropOff?.run {
+            if (dropOffMapsUrl.isNotEmpty()) {
+                setDrawable(getIconUnifyDrawable(context, IconUnify.LOCATION))
+                setOnClickListener {
+                    RouteManager.route(context, generateWebviewApplink(dropOffMapsUrl))
+                }
+                visible()
+            } else {
+                gone()
             }
         }
     }
@@ -970,6 +973,5 @@ class ShippingEditorFragment :
 
         private const val STATE_AWB_VALIDATION = "awb_otomatis"
         private const val ERROR_CODE_NO_ACCESS = "555"
-        private const val DROPOFF_MAPS_URL = "dropoff-maps?source=shipping-editor"
     }
 }

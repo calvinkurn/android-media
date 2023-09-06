@@ -1,8 +1,32 @@
 package com.tokopedia.editshipping.domain.mapper
 
-import com.tokopedia.editshipping.domain.model.shippingEditor.*
+import com.tokopedia.editshipping.domain.model.shippingEditor.CourierTickerModel
+import com.tokopedia.editshipping.domain.model.shippingEditor.FeatureInfoModel
+import com.tokopedia.editshipping.domain.model.shippingEditor.HeaderTickerModel
+import com.tokopedia.editshipping.domain.model.shippingEditor.PartnerIdModel
+import com.tokopedia.editshipping.domain.model.shippingEditor.ShipperGroupModel
+import com.tokopedia.editshipping.domain.model.shippingEditor.ShipperListModel
+import com.tokopedia.editshipping.domain.model.shippingEditor.ShipperModel
+import com.tokopedia.editshipping.domain.model.shippingEditor.ShipperProductModel
+import com.tokopedia.editshipping.domain.model.shippingEditor.ShipperProductTickerModel
+import com.tokopedia.editshipping.domain.model.shippingEditor.ShipperTickerModel
+import com.tokopedia.editshipping.domain.model.shippingEditor.ShopIdModel
+import com.tokopedia.editshipping.domain.model.shippingEditor.TickerModel
+import com.tokopedia.editshipping.domain.model.shippingEditor.WarehousesModel
 import com.tokopedia.editshipping.util.EditShippingConstant.WHITELABEL_SHIPPER_ID
-import com.tokopedia.logisticCommon.data.response.shippingeditor.*
+import com.tokopedia.logisticCommon.data.response.shippingeditor.Conventional
+import com.tokopedia.logisticCommon.data.response.shippingeditor.CourierTicker
+import com.tokopedia.logisticCommon.data.response.shippingeditor.Data
+import com.tokopedia.logisticCommon.data.response.shippingeditor.FeatureInfo
+import com.tokopedia.logisticCommon.data.response.shippingeditor.GetShipperListResponse
+import com.tokopedia.logisticCommon.data.response.shippingeditor.GetShipperTickerResponse
+import com.tokopedia.logisticCommon.data.response.shippingeditor.HeaderTicker
+import com.tokopedia.logisticCommon.data.response.shippingeditor.OnDemand
+import com.tokopedia.logisticCommon.data.response.shippingeditor.PartnerId
+import com.tokopedia.logisticCommon.data.response.shippingeditor.ShipperProduct
+import com.tokopedia.logisticCommon.data.response.shippingeditor.ShipperProductTicker
+import com.tokopedia.logisticCommon.data.response.shippingeditor.ShopId
+import com.tokopedia.logisticCommon.data.response.shippingeditor.Warehouses
 import javax.inject.Inject
 
 class ShippingEditorMapper @Inject constructor() {
@@ -11,6 +35,7 @@ class ShippingEditorMapper @Inject constructor() {
         return ShipperListModel().apply {
             shippers = mapShipper(response.ongkirShippingEditor.data)
             ticker = mapTickerShipperList(response)
+            dropOffMapsUrl = response.ongkirShippingEditor.data.dropOffMapsUrl
         }
     }
 
