@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
@@ -22,6 +23,8 @@ const val TAB_DEFAULT_BACKGROUND = "plain"
 class TabsViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
     private val setColorTabs: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
     private val setUnifyTabs: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
+    private val setTabIcons: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
+    private var shouldAddSpace = MutableLiveData<Boolean>()
 
     @JvmField
     @Inject
@@ -36,12 +39,18 @@ class TabsViewModel(val application: Application, val components: ComponentsItem
     private fun updateTabItems() {
         components.getComponentsItem()?.let {
             it as ArrayList<ComponentsItem>
-            if (components.properties?.background == TAB_DEFAULT_BACKGROUND) {
+            if (components.name == ComponentNames.TabsIcon.componentName) {
+                setTabIcons.value = it
+            } else if (components.properties?.background == TAB_DEFAULT_BACKGROUND) {
                 setUnifyTabs.value = it
             } else {
                 setColorTabs.value = it
             }
         }
+    }
+
+    fun shouldAddSpace(state: Boolean) {
+        this.shouldAddSpace.value = state
     }
 
     fun fetchDynamicTabData() {
@@ -66,6 +75,14 @@ class TabsViewModel(val application: Application, val components: ComponentsItem
 
     fun getUnifyTabLiveData(): LiveData<ArrayList<ComponentsItem>> {
         return setUnifyTabs
+    }
+
+    fun getIconTabLiveData(): LiveData<ArrayList<ComponentsItem>> {
+        return setTabIcons
+    }
+
+    fun getTabMargin(): LiveData<Boolean> {
+        return shouldAddSpace
     }
 
     override val coroutineContext: CoroutineContext

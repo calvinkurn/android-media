@@ -31,8 +31,11 @@ class PlayBroadcastPreparationBannerAdapter(
         fun onBannerClick(data: PlayBroadcastPreparationBannerModel)
     }
 
+    fun getShortsEntryPointPosition(): Int {
+        return itemList.indexOfFirst { it.type == PlayBroadcastPreparationBannerModel.TYPE_SHORTS }
+    }
+
     fun getPerformanceDashboardPosition(): Int {
         return itemList.indexOfFirst { it.type == PlayBroadcastPreparationBannerModel.TYPE_DASHBOARD }
     }
-
 }

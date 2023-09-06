@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.homenav.MePage
 import com.tokopedia.homenav.R
+import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_ALL_TRANSACTION
 import com.tokopedia.homenav.databinding.HolderViewAllRevampBinding
 import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OtherTransactionRevampModel
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
@@ -31,7 +32,7 @@ class OtherTransactionRevampViewHolder(itemView: View, val mainNavListener: Main
         binding?.cardViewAll?.cardView?.animateOnPress = CardUnify2.ANIMATE_OVERLAY
 
         binding?.cardViewAll?.cardView?.setOnClickListener {
-            mainNavListener.onOrderCardClicked(ApplinkConst.PURCHASE_ORDER)
+            mainNavListener.onViewAllCardClicked(ID_ALL_TRANSACTION, ApplinkConst.PURCHASE_ORDER)
         }
     }
 }
