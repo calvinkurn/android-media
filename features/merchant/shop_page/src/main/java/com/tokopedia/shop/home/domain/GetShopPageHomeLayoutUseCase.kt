@@ -59,7 +59,6 @@ class GetShopPageHomeLayoutUseCase @Inject constructor(
                     isATC
                     etalaseID
                     isShowEtalaseName
-                    widgetStyle
                   }
                   data {
                     ... on DisplayWidget {
