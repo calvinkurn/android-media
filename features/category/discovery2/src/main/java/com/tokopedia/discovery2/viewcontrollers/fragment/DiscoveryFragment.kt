@@ -567,8 +567,10 @@ open class DiscoveryFragment :
     }
 
     private fun enableRefreshWhenFirstItemCompletelyVisible() {
-        val firstPosition: Int = staggeredGridLayoutManager?.findFirstCompletelyVisibleItemPositions(null)?.getOrNull(FIRST_POSITION).orZero()
-        mSwipeRefreshLayout.isEnabled = firstPosition == FIRST_POSITION
+        if (!mSwipeRefreshLayout.isRefreshing) {
+            val firstPosition: Int = staggeredGridLayoutManager?.findFirstCompletelyVisibleItemPositions(null)?.getOrNull(FIRST_POSITION).orZero()
+            mSwipeRefreshLayout.isEnabled = firstPosition == FIRST_POSITION
+        }
     }
 
     private fun hideShowChooseAddressOnScroll() {
