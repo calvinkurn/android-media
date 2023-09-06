@@ -20,6 +20,11 @@ object RollenceKey {
     const val HOME_COMPONENT_DYNAMIC_CHANNEL_HEADER_VARIANT = "header_variant"
     // end of home component rollence section
 
+    // navigation rollence section
+    const val ME_PAGE_EXP = "GlobalMenuRV"
+    const val ME_PAGE_VARIANT = "Varian1"
+    // end of navigation rollence section
+
     // TBD
     const val EXPERIMENT_NAME_TOKOPOINT = "tokopoints_glmenu"
 
@@ -49,7 +54,7 @@ object RollenceKey {
     const val SEARCH_SIMILAR_SEARCH_COACHMARK_VARIANT = "experiment_variant"
 
     // Product Card Experiment
-    const val PRODUCT_CARD_EXPERIMENT = "newcard1"
+    const val PRODUCT_CARD_EXPERIMENT = "newcard2"
     const val PRODUCT_CARD_EXPERIMENT_GIMMICK = "gimmick"
     const val PRODUCT_CARD_EXPERIMENT_PORTRAIT = "portrait"
     const val PRODUCT_CARD_EXPERIMENT_ETA = "eta"
@@ -61,9 +66,6 @@ object RollenceKey {
 
     // Review
     const val CREATE_REVIEW_REVIEW_INSPIRATION_EXPERIMENT_NAME = "review_inspiration"
-
-    // Logistic
-    const val KEY_ADDRESS_IMPROVEMENTS = "address_improvements"
 
     // Fulfillment
     const val KEY_DISABLE_DILAYANI_TOKOPEDIA_HOMEPAGE = "disabledthomepage"
@@ -78,20 +80,35 @@ object RollenceKey {
     const val TOKOPEDIA_NOW_AFFILIATE = "aff_now_att"
     const val TOKOPEDIA_NOW_REPURCHASE = "now_repurchase"
 
-    // Feed
-    const val AB_TEST_IMMERSIVE_FEED = "immersive_feed"
-
-    // Tokochat Bubbles
-    const val TOKOCHAT_BUBBLES = "tokochat_bubble_chat"
-
     // FS Toko OOS Gradual Rollout
     const val FLASH_SALE_OUT_OF_STOCK_GRADUAL_ROLLOUT = "fst_oosimprovement"
 
     // Seller Order Management
     const val KEY_SOM_OG = "android_som_og"
 
-
     // Share affiliate
     const val AFFILIATE_SHARE_ICON = "ShareAff_pdpshop"
+
+    // Wishlist
+    const val WISHLIST_AFFILIATE_TICKER = "aff_ticker_col"
+
+    // New Universal Share BottomSheet in Shop
+    const val NEW_UNIVERSAL_SHARE_BOTTOM_SHEET = "shop_sharing"
+
+    // Search Reimagine
+    const val SEARCH_1_INST_AUTO = "search_1_inst_auto"
+    const val SEARCH_1_INST_AUTO_CONTROL = "control_variant"
+    const val SEARCH_1_INST_AUTO_VARIANT_1 = "variant_1"
+    const val SEARCH_1_INST_AUTO_VARIANT_2 = "variant_2"
+    const val SEARCH_1_INST_AUTO_VARIANT_3 = "variant_3"
+    const val SEARCH_1_INST_AUTO_VARIANT_4 = "variant_4"
+    const val SEARCH_2_COMPONENT = "search_2_component"
+    const val SEARCH_2_COMPONENT_CONTROL = "control_variant"
+    const val SEARCH_2_COMPONENT_CAROUSEL_VAR = "ads_crsl_var"
+    const val SEARCH_2_COMPONENT_QF_VAR = "ads_crsl_qf_var"
+    const val SEARCH_3_PRODUCT_CARD = "search_3_prdcard"
+    const val SEARCH_3_PRODUCT_CARD_CONTROL = "control"
+    const val SEARCH_3_PRODUCT_CARD_PC_VAR = "pc_var"
+    const val SEARCH_3_PRODUCT_CARD_PC_NEWLABEL_VAR = "pc_newlabel_var"
 
 }

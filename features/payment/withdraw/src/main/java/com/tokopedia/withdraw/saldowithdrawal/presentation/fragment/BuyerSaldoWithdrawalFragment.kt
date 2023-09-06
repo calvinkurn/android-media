@@ -19,25 +19,28 @@ class BuyerSaldoWithdrawalFragment : BaseWithdrawalFragment() {
 
     override fun updateWithdrawalHint(bankAccount: BankAccount?, withdrawalAmount: Long) {
         bankAccount?.let {
-            when (withdrawalAmount) {
-                0L -> {
+            when {
+                withdrawalAmount == 0L -> {
                     val minStr = getString(R.string.swd_rp,
                             CurrencyFormatHelper.convertToRupiah(bankAccount.minAmount.toString()))
                     changeHint(false,
                             String.format(getString(R.string.swd_min_saldo_withdraw_hint), minStr))
                 }
-                !in 1L..buyerSaldoBalance -> {
+                withdrawalAmount !in 1L..bankAccount.maxAmount && bankAccount.isGopayEligible() -> {
                     changeHint(true,
-                            getString(R.string.swd_saldo_exceeding_withdraw_balance))
+                        context?.getString(R.string.swd_saldo_exceeding_withdraw_balance_gopay) ?: "")
                 }
-
-                in 1L until bankAccount.minAmount -> {
+                withdrawalAmount !in 1L..buyerSaldoBalance -> {
+                    changeHint(true,
+                        context?.getString(R.string.swd_saldo_exceeding_withdraw_balance) ?: "")
+                }
+                withdrawalAmount in 1L until bankAccount.minAmount -> {
                     val minStr = getString(R.string.swd_rp,
                             CurrencyFormatHelper.convertToRupiah(bankAccount.minAmount.toString()))
                     changeHint(true,
                             String.format(getString(R.string.swd_min_saldo_withdraw_hint), minStr))
                 }
-                in bankAccount.minAmount..bankAccount.maxAmount -> {
+                withdrawalAmount in bankAccount.minAmount..bankAccount.maxAmount -> {
                     val minStr= getString(R.string.swd_rp,
                             CurrencyFormatHelper.convertToRupiah(bankAccount.minAmount.toString()))
                     changeHint(false,

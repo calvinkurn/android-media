@@ -23,6 +23,8 @@ def isEnableMacrobenchmarkUtil() {
     return "false";
 }
 android {
+    namespace 'com.tokopedia.tkpd'
+    testNamespace 'com.tokopedia.tkpd.test'
     packagingOptions {
         exclude 'META-INF/**'
     }
@@ -96,6 +98,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.analyticsDebugger)
+    implementation projectOrAar(rootProject.ext.libraries.analytics)
 
     implementation projectOrAar(rootProject.ext.libraries.commonNetwork)
     implementation projectOrAar(rootProject.ext.libraries.graphql)

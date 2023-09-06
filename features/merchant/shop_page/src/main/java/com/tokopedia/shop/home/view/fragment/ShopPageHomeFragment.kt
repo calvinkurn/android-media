@@ -4089,7 +4089,7 @@ open class ShopPageHomeFragment :
             shopId,
             extParam,
             ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel(),
-            "CampaignTab"
+            getSelectedTabName()
         )
     }
 
@@ -4216,8 +4216,9 @@ open class ShopPageHomeFragment :
         }
     }
 
-    override fun scrollToTop() {
-        isClickToScrollToTop = true
+    override fun scrollToTop(isUserClick: Boolean) {
+        if(isUserClick)
+            isClickToScrollToTop = true
         getRecyclerView(view)?.scrollToPosition(0)
     }
 
@@ -4819,7 +4820,7 @@ open class ShopPageHomeFragment :
     private fun checkShouldSelectCampaignTab(appLink: String) {
         val tabValue = Uri.parse(appLink).getQueryParameter(QUERY_PARAM_TAB).orEmpty()
         if (tabValue == ShopPageHeaderTabName.CAMPAIGN) {
-            (parentFragment as? ShopPageHeaderFragment)?.selectShopTab(ShopPageHeaderTabName.CAMPAIGN)
+            (parentFragment as? ShopPageHeaderFragment)?.selectShopTab(ShopPageHeaderTabName.CAMPAIGN, true)
         }
     }
 
@@ -4889,7 +4890,6 @@ open class ShopPageHomeFragment :
 
     protected fun refreshShopHeader(){
         (parentFragment as? ShopPageHeaderFragment)?.apply {
-            resetSelectedPosition()
             refreshData()
         }
     }

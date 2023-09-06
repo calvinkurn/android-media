@@ -14,7 +14,6 @@ import com.tokopedia.analytics.performance.fpi.FragmentFramePerformanceIndexMoni
 import com.tokopedia.analytics.performance.perf.BlocksPerformanceTrace
 import com.tokopedia.analytics.performance.util.*
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment
-import com.tokopedia.home.beranda.presentation.view.listener.FramePerformanceIndexInterface
 import com.tokopedia.home.di.DaggerHomeTestComponent
 import com.tokopedia.home.test.R
 import com.tokopedia.navigation_common.listener.HomePerformanceMonitoringListener
@@ -76,19 +75,12 @@ class InstrumentationHomeRevampTestActivity :
             }
         }
 
-        initializeFragmentFramePerformanceIndex(homeFragment)
         val fragmentTransaction = supportFragmentManager
             .beginTransaction()
         fragmentTransaction
             .replace(R.id.container_home, homeFragment)
         fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()
-    }
-
-    private fun initializeFragmentFramePerformanceIndex(homeFragment: Fragment) {
-        if (homeFragment is FramePerformanceIndexInterface) {
-            fragmentFramePerformanceIndexMonitoring = homeFragment.framePerformanceIndexData
-        }
     }
 
     override fun getFpiPerformanceResultData(): FpiPerformanceData? {

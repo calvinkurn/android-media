@@ -78,6 +78,9 @@ data class RecommendationEntity(
         @SerializedName("shop")
         val shop: Shop = Shop()
 
+        @SerializedName("warehouseID")
+        val warehouseId: Long = 0L
+
         @SerializedName("freeOngkir")
         val freeOngkirInformation: FreeOngkirInformation = FreeOngkirInformation()
 
@@ -239,6 +242,9 @@ data class RecommendationEntity(
 
         @SerializedName("thematicID")
         val thematicID: Long = 0L
+
+        @SerializedName("endDate")
+        val endDate: String = ""
 
         class Assets {
             @SerializedName("banner")

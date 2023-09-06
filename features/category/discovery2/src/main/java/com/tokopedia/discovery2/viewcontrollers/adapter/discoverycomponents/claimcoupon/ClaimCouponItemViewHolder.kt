@@ -77,7 +77,11 @@ class ClaimCouponItemViewHolder(itemView: View, private val fragment: Fragment) 
                     try {
                         if (item == NOT_LOGGEDIN) {
                             Toaster.make(
-                                itemView.rootView, itemView.context.getString(R.string.discovery_please_log_in), Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, itemView.context.getString(R.string.discovery_login),
+                                itemView.rootView,
+                                itemView.context.getString(R.string.discovery_please_log_in),
+                                Snackbar.LENGTH_LONG,
+                                Toaster.TYPE_NORMAL,
+                                itemView.context.getString(R.string.discovery_login),
                                 View.OnClickListener {
                                     (fragment as DiscoveryFragment).openLoginScreen()
                                 }
@@ -127,6 +131,9 @@ class ClaimCouponItemViewHolder(itemView: View, private val fragment: Fragment) 
         } else {
             claimBtn.isInverse = false
             claimBtn.buttonVariant = UnifyButton.Variant.FILLED
+        }
+        if (claimBtn.text.isNullOrEmpty()) {
+            claimBtn.visibility = View.GONE
         }
     }
 }

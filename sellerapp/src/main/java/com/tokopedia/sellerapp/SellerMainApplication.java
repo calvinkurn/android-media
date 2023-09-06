@@ -15,6 +15,7 @@ import androidx.work.Configuration;
 import com.google.android.play.core.splitcompat.SplitCompat;
 import com.tokopedia.abstraction.relic.NewRelicInteractionActCall;
 import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber;
+import com.tokopedia.analytics.performance.fpi.FrameMetricsMonitoring;
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring;
 import com.tokopedia.analyticsdebugger.cassava.Cassava;
 import com.tokopedia.analyticsdebugger.cassava.data.RemoteSpec;
@@ -56,6 +57,7 @@ import com.tokopedia.sellerapp.fcm.AppNotificationReceiver;
 import com.tokopedia.sellerapp.utils.SessionActivityLifecycleCallbacks;
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
 import com.tokopedia.track.TrackApp;
+import com.tokopedia.trackingoptimizer.activitylifecyclecallback.TrackingQueueActivityLifecycleCallback;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 
@@ -307,12 +309,14 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
     }
 
     private void registerActivityLifecycleCallbacks() {
-        registerActivityLifecycleCallbacks(new NewRelicInteractionActCall());
+        registerActivityLifecycleCallbacks(new TrackingQueueActivityLifecycleCallback(this));
+        registerActivityLifecycleCallbacks(new NewRelicInteractionActCall(getUserSession()));
         registerActivityLifecycleCallbacks(new SessionActivityLifecycleCallbacks());
         if (GlobalConfig.isAllowDebuggingTools()) {
             registerActivityLifecycleCallbacks(new ViewInspectorSubscriber());
             registerActivityLifecycleCallbacks(new DevOptsSubscriber());
             registerActivityLifecycleCallbacks(new JourneySubscriber());
+            registerActivityLifecycleCallbacks(new FrameMetricsMonitoring(this));
         }
         registerActivityLifecycleCallbacks(new TwoFactorCheckerSubscriber());
         registerActivityLifecycleCallbacks(new MediaLoaderActivityLifecycle(this));

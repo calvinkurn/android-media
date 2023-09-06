@@ -19,6 +19,7 @@ import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topads.UrlConstant
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.BROAD_POSITIVE
@@ -138,7 +139,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
         bidList = view.findViewById(com.tokopedia.topads.common.R.id.bid_list)
         bottomLayout = view.findViewById(com.tokopedia.topads.common.R.id.bottom)
         tipLayout = view.findViewById(com.tokopedia.topads.common.R.id.tipView)
-        view.findViewById<TextFieldUnify>(R.id.biaya_pencarian).hide()
+        view.findViewById<TextFieldUnify>(com.tokopedia.topads.common.R.id.biaya_pencarian).hide()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -384,6 +385,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
         loading.visibility = View.VISIBLE
         userID = UserSession(view.context).userId
         shopID = UserSession(view.context).shopId
+        buttonNext.show()
         buttonNext.setOnClickListener {
             gotoNextPage()
         }
@@ -396,9 +398,9 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
             InfoBottomSheet.newInstance().show(childFragmentManager, 1)
         }
         val tooltipView = layoutInflater.inflate(com.tokopedia.topads.common.R.layout.tooltip_custom_view, null).apply {
-            tvToolTipText = this.findViewById(R.id.tooltip_text)
+            tvToolTipText = this.findViewById(com.tokopedia.topads.common.R.id.tooltip_text)
             tvToolTipText?.text = getString(R.string.tip_biaya_iklan)
-            imgTooltipIcon = this.findViewById(R.id.tooltip_icon)
+            imgTooltipIcon = this.findViewById(com.tokopedia.topads.common.R.id.tooltip_icon)
             imgTooltipIcon?.setImageDrawable(view.context.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_tips))
         }
 
@@ -407,9 +409,9 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
         tipButton.setOnClickListener {
             val tipsList: ArrayList<TipsUiModel> = ArrayList()
             tipsList.apply {
-                add(TipsUiRowModel(R.string.biaya_iklan_tip_1, R.drawable.topads_create_ic_checklist))
-                add(TipsUiRowModel(R.string.biaya_iklan_tip_2, R.drawable.topads_create_ic_checklist))
-                add(TipsUiRowModel(R.string.biaya_iklan_tip_3, R.drawable.topads_create_ic_checklist))
+                add(TipsUiRowModel(R.string.biaya_iklan_tip_1, com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist))
+                add(TipsUiRowModel(R.string.biaya_iklan_tip_2, com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist))
+                add(TipsUiRowModel(R.string.biaya_iklan_tip_3, com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist))
             }
             val tipsListSheet = context?.let { it1 -> TipsListSheet.newInstance(it1, tipsList = tipsList) }
             tipsListSheet?.showHeader = true
