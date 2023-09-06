@@ -42,7 +42,7 @@ class FeedBrowseChannelTrackerImpl @AssistedInject constructor(
     ) {
         val widgetPosition = verticalWidgetPosition + 1
         val channelPosition = channelPositionInList + 1
-        val trackerMap = BaseTrackerBuilder().constructBasicPromotionClick(
+        val trackerMap = BaseTrackerBuilder().constructBasicPromotionView(
             event = Event.promoView,
             eventCategory = EventCategory.browseFeed,
             eventAction = "view - channel card",
@@ -83,7 +83,7 @@ class FeedBrowseChannelTrackerImpl @AssistedInject constructor(
     ) {
         val widgetPosition = verticalWidgetPosition + 1
         val channelPosition = chipPositionInList + 1
-        val trackerMap = BaseTrackerBuilder().constructBasicPromotionClick(
+        val trackerMap = BaseTrackerBuilder().constructBasicPromotionView(
             event = Event.promoView,
             eventCategory = EventCategory.browseFeed,
             eventAction = "view - chips recom widget",
