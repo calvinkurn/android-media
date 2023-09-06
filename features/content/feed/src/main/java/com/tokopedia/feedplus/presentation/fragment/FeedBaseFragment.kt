@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.launch
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.viewModels
@@ -159,6 +160,14 @@ class FeedBaseFragment :
         }
 
     private val openAppLink = registerForActivityResult(RouteContract()) {}
+
+    private val openFeedBrowseLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        // this doesn't work, if the previous `browseAppLink` is empty :(
+        if (userSession.isLoggedIn) {
+            val metaModel = feedMainViewModel.metaData.value
+            RouteManager.route(requireContext(), metaModel.browseApplink)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         childFragmentManager.addFragmentOnAttachListener { _, fragment ->
@@ -542,7 +551,13 @@ class FeedBaseFragment :
 
         binding.containerFeedTopNav.btnFeedBrowse.setOnClickListener {
             feedNavigationAnalytics.sendClickBrowseIconEvent()
-            openAppLink.launch(meta.browseApplink) // todo: setup login, non-login?
+            if (!userSession.isLoggedIn) {
+                openFeedBrowseLauncher.launch(
+                    RouteManager.getIntent(requireContext(), ApplinkConst.LOGIN)
+                )
+            } else {
+                openAppLink.launch(meta.browseApplink)
+            }
         }
 
         binding.containerFeedTopNav.feedUserProfileImage.setOnClickListener {
