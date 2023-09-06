@@ -137,7 +137,7 @@ class ChatListFragment :
     private var menu: Menu? = null
     private var broadCastButton: BroadcastButtonLayout? = null
 
-    private val mStoriesWidgetManager by storiesManager(StoriesEntryPoint.TopChatList(userSession.shopId)) {
+    private val mStoriesWidgetManager by storiesManager(StoriesEntrySource.TopChatList(userSession.shopId)) {
         setScrollingParent(rv)
     }
 
