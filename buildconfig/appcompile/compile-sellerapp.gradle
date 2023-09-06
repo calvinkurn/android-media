@@ -30,6 +30,7 @@ includeIfEnabled("features:content:play_common")
 includeIfEnabled("features:content:play_broadcaster")
 includeIfEnabled("features:content:play_widget")
 includeIfEnabled("features:content:content_test")
+includeIfEnabled("features:content:creation_common")
 
 includeIfEnabled("features:discovery:discovery_common")
 includeIfEnabled("features:discovery:productcard")

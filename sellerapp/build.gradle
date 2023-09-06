@@ -279,6 +279,7 @@ dependencies {
 
     implementation projectOrAar(rootProject.ext.features.playCommon)
     implementation projectOrAar(rootProject.ext.features.contentAnalytic)
+    implementation projectOrAar(rootProject.ext.features.creationCommon)
     implementation projectOrAar(rootProject.ext.features.filter)
 
     implementation projectOrAar(rootProject.ext.features.additional_check)
