@@ -74,11 +74,17 @@ class TokoNowCategoryMenuViewHolder(
         onClickSeeAll(appLink)
     }
 
-    override fun onCategoryItemClicked(data: TokoNowCategoryMenuItemUiModel, itemPosition: Int) {
+    override fun onCategoryItemClicked(
+        data: TokoNowCategoryMenuItemUiModel,
+        itemPosition: Int
+    ) {
         listener?.onCategoryMenuItemClicked(data.copy(headerName = headerName), itemPosition)
     }
 
-    override fun onCategoryItemImpressed(data: TokoNowCategoryMenuItemUiModel, itemPosition: Int) {
+    override fun onCategoryItemImpressed(
+        data: TokoNowCategoryMenuItemUiModel,
+        itemPosition: Int
+    ) {
         listener?.onCategoryMenuItemImpressed(data.copy(headerName = headerName), itemPosition)
     }
 

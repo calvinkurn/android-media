@@ -23,7 +23,7 @@ object ProductRecommendationMapper {
         hasBlockedAddToCart: Boolean
     ): ProductCardCompactUiModel = ProductCardCompactUiModel(
         productId = item.productId.toString(),
-        warehouseId = item.warehouseId,
+        warehouseId = item.warehouseId.toString(),
         imageUrl = item.imageUrl,
         minOrder = item.minOrder,
         maxOrder = item.maxOrder,

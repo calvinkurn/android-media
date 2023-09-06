@@ -127,9 +127,6 @@ data class RecommendationEntity(
         @SerializedName("parentID")
         val parentID: Long = 0L
 
-        @SerializedName("warehouseID")
-        val warehouseID: String = String.EMPTY
-
         class SpecificationsLabels {
             @SerializedName("key")
             val key: String = ""
