@@ -1,6 +1,7 @@
 package com.tokopedia.stories.creation.view.viewmodel
 
 import androidx.lifecycle.ViewModel
+import com.tokopedia.stories.creation.view.model.action.StoriesCreationAction
 import javax.inject.Inject
 
 /**
@@ -9,4 +10,8 @@ import javax.inject.Inject
 class StoriesCreationViewModel @Inject constructor(
 
 ) : ViewModel() {
+
+    fun submitAction(action: StoriesCreationAction) {
+
+    }
 }
