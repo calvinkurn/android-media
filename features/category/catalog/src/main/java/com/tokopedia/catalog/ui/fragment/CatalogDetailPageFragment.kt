@@ -2,6 +2,7 @@ package com.tokopedia.catalog.ui.fragment
 
 import android.graphics.Color
 import android.graphics.Rect
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +14,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.catalog.databinding.FragmentCatalogReimagineDetailPageBinding
 import com.tokopedia.catalog.di.DaggerCatalogComponent
 import com.tokopedia.catalog.ui.model.NavigationProperties
@@ -46,7 +48,14 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener {
         )
     }
 
+    var title = ""
+
+    var productSortingStatus = 0
+
     companion object {
+        private const val QUERY_CATALOG_ID = "catalog_id"
+        private const val QUERY_PRODUCT_SORTING_STATUS = "product_sorting_status"
+
         private const val ARG_EXTRA_CATALOG_ID = "ARG_EXTRA_CATALOG_ID"
         private const val COLOR_VALUE_MAX = 255
         const val CATALOG_DETAIL_PAGE_FRAGMENT_TAG = "CATALOG_DETAIL_PAGE_FRAGMENT_TAG"
@@ -80,13 +89,21 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupObservers()
+        var catalogId = ""
         if (arguments != null) {
-            val catalogId = requireArguments().getString(ARG_EXTRA_CATALOG_ID, "")
+            catalogId = requireArguments().getString(ARG_EXTRA_CATALOG_ID, "")
             viewModel.getProductCatalog(catalogId, "", "", "android")
             viewModel.refreshNotification()
         }
         binding?.globalerrorsAction?.setOnClickListener {
-            RouteManager.route(context, ApplinkConst.DISCOVERY_CATALOG_PRODUCT_LIST)
+            val catalogProductList =
+                Uri.parse(UriUtil.buildUri(ApplinkConst.DISCOVERY_CATALOG_PRODUCT_LIST))
+                    .buildUpon()
+                    .appendQueryParameter(QUERY_CATALOG_ID, catalogId)
+                    .appendQueryParameter(QUERY_PRODUCT_SORTING_STATUS, productSortingStatus.toString())
+                    .appendPath(title).toString()
+
+            RouteManager.route(context, catalogProductList)
         }
     }
 
@@ -110,10 +127,15 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener {
     private fun setupObservers() {
         viewModel.catalogDetailDataModel.observe(viewLifecycleOwner) {
             if (it is Success) {
+                productSortingStatus = productSortingStatus
                 widgetAdapter.addMoreData(it.data.widgets)
+                title = it.data.navigationProperties.title
                 binding?.setupToolbar(it.data.navigationProperties)
                 binding?.setupRvWidgets(it.data.navigationProperties)
-                setPriceCtaWidgetTheme(it.data.priceCtaProperties.textColor, it.data.priceCtaProperties.bgColor)
+                setPriceCtaWidgetTheme(
+                    it.data.priceCtaProperties.textColor,
+                    it.data.priceCtaProperties.bgColor
+                )
             }
         }
         viewModel.totalCartItem.observe(viewLifecycleOwner) {

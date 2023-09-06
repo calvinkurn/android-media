@@ -3,6 +3,7 @@ package com.tokopedia.catalog.di
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.basemvvm.repository.BaseRepository
+import com.tokopedia.catalog.domain.GetProductListFromSearchUseCase
 import com.tokopedia.catalog.ui.mapper.CatalogDetailUiMapper
 import com.tokopedia.oldcatalog.repository.CatalogAllReviewRepository
 import com.tokopedia.oldcatalog.repository.CatalogComparisonProductRepository
@@ -128,4 +129,10 @@ class CatalogUseCaseModule {
     @CatalogScope
     @Provides
     fun providesTrackingQueue(@ApplicationContext context: Context): TrackingQueue = TrackingQueue(context)
+
+    @CatalogScope
+    @Provides
+    fun providesNewCatalogGetProductListUseCase(@ApplicationContext graphqlRepository: GraphqlRepository): GetProductListFromSearchUseCase {
+        return GetProductListFromSearchUseCase(graphqlRepository)
+    }
 }
