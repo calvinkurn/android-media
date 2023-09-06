@@ -37,12 +37,10 @@ class BmgmMiniCartDataMapper @Inject constructor() {
             val hasReachMaxDiscount = it.offerStatus == OFFER_STATUS_HAS_REACH_MAX_DISC
             return BmgmMiniCartDataUiModel(
                 offerId = it.offerId,
-                offerName = it.offerName,
                 offerMessage = it.offerMessage,
                 hasReachMaxDiscount = hasReachMaxDiscount,
                 priceBeforeBenefit = shoppingSummary.totalOriginalValue,
                 finalPrice = shoppingSummary.totalValue,
-                totalDiscount = it.totalDiscount,
                 tiersApplied = it.tierProductList.map { tier ->
                     BmgmMiniCartVisitable.TierUiModel(
                         tierId = tier.tierId,

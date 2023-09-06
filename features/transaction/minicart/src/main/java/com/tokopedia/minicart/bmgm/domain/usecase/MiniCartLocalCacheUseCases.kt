@@ -21,9 +21,13 @@ class MiniCartLocalCacheUseCases @Inject constructor(
     override val coroutineContext: CoroutineContext
         get() = dispatchers.io
 
-    fun saveToLocalCache(model: BmgmMiniCartDataUiModel) {
+    fun saveToLocalCache(
+        model: BmgmMiniCartDataUiModel,
+        shopId: Long,
+        warehouseId: Long,
+    ) {
         launch {
-            val data = mapToCommonData(model)
+            val data = mapToCommonData(model, shopId, warehouseId)
             PersistentCacheManager.instance.put(BmgmCommonDataModel.PARAM_KEY_BMGM_DATA, data)
         }
     }
@@ -42,12 +46,15 @@ class MiniCartLocalCacheUseCases @Inject constructor(
     }
 
     private fun mapToCommonData(
-        model: BmgmMiniCartDataUiModel, showMiniCartFooter: Boolean = true
+        model: BmgmMiniCartDataUiModel,
+        shopId: Long,
+        warehouseId: Long,
+        showMiniCartFooter: Boolean = true
     ): BmgmCommonDataModel {
         return BmgmCommonDataModel(
             offerId = model.offerId,
-            offerName = model.offerName,
-            totalDiscount = model.totalDiscount,
+            warehouseId = warehouseId,
+            shopId = shopId.toString(),
             finalPrice = model.finalPrice,
             priceBeforeBenefit = model.priceBeforeBenefit,
             hasReachMaxDiscount = model.hasReachMaxDiscount,

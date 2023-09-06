@@ -18,6 +18,7 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.minicart.R
+import com.tokopedia.minicart.bmgm.analytics.BmgmMiniCartTracker
 import com.tokopedia.minicart.bmgm.common.di.DaggerBmgmComponent
 import com.tokopedia.minicart.bmgm.presentation.adapter.BmgmMiniCartDetailAdapter
 import com.tokopedia.minicart.bmgm.presentation.adapter.itemdecoration.BmgmMiniCartDetailItemDecoration
@@ -28,7 +29,9 @@ import com.tokopedia.minicart.databinding.BottomSheetBmgmMiniCartDetailBinding
 import com.tokopedia.minicart.databinding.ViewBmgmMiniCartSubTotalBinding
 import com.tokopedia.purchase_platform.common.feature.bmgm.data.uimodel.BmgmCommonDataModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.currency.CurrencyFormatUtil
+import dagger.Lazy
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
@@ -57,6 +60,9 @@ class BmgmMiniCartDetailBottomSheet : BottomSheetUnify() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+
+    @Inject
+    lateinit var userSession: Lazy<UserSessionInterface>
 
     private var binding: BottomSheetBmgmMiniCartDetailBinding? = null
     private var footerBinding: ViewBmgmMiniCartSubTotalBinding? = null
@@ -150,6 +156,19 @@ class BmgmMiniCartDetailBottomSheet : BottomSheetUnify() {
         listAdapter.addElement(productList)
 
         setupCartEntryPoint(data)
+        setOnCloseClicked(data)
+    }
+
+    private fun setOnCloseClicked(data: BmgmCommonDataModel) {
+        super.setCloseClickListener {
+            BmgmMiniCartTracker.sendClickCloseMinicartEvent(
+                offerId = data.offerId.toString(),
+                warehouseId = data.warehouseId.toString(),
+                shopId = data.shopId,
+                userId = userSession.get().userId
+            )
+            dismiss()
+        }
     }
 
     private fun setupCartEntryPoint(model: BmgmCommonDataModel) {

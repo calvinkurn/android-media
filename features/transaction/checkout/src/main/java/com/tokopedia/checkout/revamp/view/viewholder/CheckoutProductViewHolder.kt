@@ -34,6 +34,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toLongSafely
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.getBitmapImageUrl
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
@@ -445,7 +446,9 @@ class CheckoutProductViewHolder(
         fun renderBmgmGroupDetail() {
             binding.ivCheckoutBmgmDetail.shouldShowWithAction(product.shouldShowBmgmInfo) {
                 binding.ivCheckoutBmgmDetail.setOnClickListener {
-                    val bmgmCommonData = CheckoutBmgmMapper.mapBmgmCommonDataModel(product)
+                    val bmgmCommonData = CheckoutBmgmMapper.mapBmgmCommonDataModel(
+                        product, product.warehouseId.toLongSafely(), product.shopId
+                    )
                     PersistentCacheManager.instance.put(BmgmCommonDataModel.PARAM_KEY_BMGM_DATA, bmgmCommonData)
                     listener.onClickBmgmInfoIcon()
                 }

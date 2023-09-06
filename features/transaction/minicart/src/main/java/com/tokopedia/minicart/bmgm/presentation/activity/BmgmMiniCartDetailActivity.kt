@@ -3,6 +3,7 @@ package com.tokopedia.minicart.bmgm.presentation.activity
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
+import com.tokopedia.minicart.bmgm.analytics.BmgmMiniCartTracker
 import com.tokopedia.minicart.bmgm.presentation.bottomsheet.BmgmMiniCartDetailBottomSheet
 
 /**

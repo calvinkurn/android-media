@@ -8,11 +8,14 @@ object CheckoutBmgmMapper {
     private const val OFFER_STATUS_HAS_REACH_MAX_DISC = 2
 
     fun mapBmgmCommonDataModel(
-        product: CheckoutProductModel
+        product: CheckoutProductModel,
+        warehouseId: Long,
+        shopId: String
     ): BmgmCommonDataModel {
         return BmgmCommonDataModel(
             offerId = product.bmgmOfferId,
-            offerName = product.bmgmOfferName,
+            warehouseId = warehouseId,
+            shopId = shopId,
             hasReachMaxDiscount = product.bmgmOfferStatus == OFFER_STATUS_HAS_REACH_MAX_DISC,
             tiersApplied = product.bmgmTierProductList.map { bmgmTier ->
                 BmgmCommonDataModel.TierModel(

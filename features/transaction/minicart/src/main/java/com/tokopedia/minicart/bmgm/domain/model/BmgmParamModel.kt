@@ -12,5 +12,5 @@ data class BmgmParamModel(
     @SerializedName("offer_json_data")
     val offerJsonData: String = "{}",
     @SerializedName("warehouse_ids")
-    val warehouseIds: List<String> = emptyList()
+    val warehouseIds: List<Long> = emptyList()
 )
