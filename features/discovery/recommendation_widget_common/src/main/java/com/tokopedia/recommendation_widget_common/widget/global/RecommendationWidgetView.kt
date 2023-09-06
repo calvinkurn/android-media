@@ -46,7 +46,7 @@ class RecommendationWidgetView : LinearLayout {
     fun bind(
         model: RecommendationWidgetModel,
         parentRootView: View? = null,
-        callback: Callback? = null
+        callback: Callback? = null,
     ) {
         val lifecycleOwner = context.asLifecycleOwner() ?: return
 
@@ -59,7 +59,7 @@ class RecommendationWidgetView : LinearLayout {
         lifecycleOwner: LifecycleOwner,
         model: RecommendationWidgetModel,
         parentRootView: View?,
-        callback: Callback?
+        callback: Callback?,
     ) {
         job?.forEach { it.cancel() }
         job?.clear()
@@ -119,11 +119,13 @@ class RecommendationWidgetView : LinearLayout {
 
     private fun renderView(
         visitableList: List<RecommendationVisitable>?,
-        callback: Callback?
+        callback: Callback?,
     ) {
         if (visitableList.isNullOrEmpty()) {
             hide()
-            callback?.onHide()
+
+            if (visitableList?.isEmpty() == true)
+                callback?.onError()
         } else {
             show()
             callback?.onShow()
@@ -169,6 +171,6 @@ class RecommendationWidgetView : LinearLayout {
 
     interface Callback {
         fun onShow() { }
-        fun onHide() { }
+        fun onError() { }
     }
 }

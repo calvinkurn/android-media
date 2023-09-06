@@ -48,7 +48,7 @@ class GlobalRecommendationViewHolder(
 
     private fun recommendationWidgetCallback(element: RecommendationUiModel) =
         object : RecommendationWidgetView.Callback {
-            override fun onHide() {
+            override fun onError() {
                 callback.removeComponent(element.id)
             }
         }
