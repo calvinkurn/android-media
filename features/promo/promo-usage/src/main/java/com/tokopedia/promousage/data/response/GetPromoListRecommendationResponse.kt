@@ -73,6 +73,8 @@ data class PromoRecommendation(
     val messageSelected: String = "",
     @SerializedName("background_url")
     val backgroundUrl: String = "",
+    @SerializedName("background_color")
+    val backgroundColor: String = "",
     @SerializedName("animation_url")
     val animationUrl: String = "",
 )

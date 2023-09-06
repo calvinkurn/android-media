@@ -10,7 +10,6 @@ import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.localizationchooseaddress.common.ChosenAddress
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
-import com.tokopedia.network.constant.TkpdBaseURL.Promo
 import com.tokopedia.promousage.data.request.ClearCacheAutoApplyStackParam
 import com.tokopedia.promousage.data.request.GetPromoListRecommendationParam
 import com.tokopedia.promousage.data.request.ValidateUsePromoUsageParam
@@ -1604,8 +1603,10 @@ internal class PromoUsageViewModel @Inject constructor(
         validateUsePromoRequest: ValidateUsePromoRequest,
         boPromoCodes: List<String>
     ) {
-        if (isChangedFromInitialState()) {
-            _promoPageUiState.ifSuccess { pageState ->
+        _promoPageUiState.ifSuccess { pageState ->
+            val hasSelectedAttemptedCode = pageState.items.getAttemptedItems()
+                .any { it.state is PromoItemState.Selected }
+            if (isChangedFromInitialState() || hasSelectedAttemptedCode) {
                 val hasSelectedPromo = pageState.items.getSelectedPromoCodes().isNotEmpty()
                 if (hasSelectedPromo) {
                     onApplyPromo(
@@ -1632,9 +1633,9 @@ internal class PromoUsageViewModel @Inject constructor(
                         boPromoCodes = boPromoCodes,
                     )
                 }
+            } else {
+                _closePromoPageUiAction.postValue(ClosePromoPageUiAction.SuccessNoAction)
             }
-        } else {
-            _closePromoPageUiAction.postValue(ClosePromoPageUiAction.SuccessNoAction)
         }
     }
 

@@ -42,6 +42,7 @@ class PromoUsageGetPromoListRecommendationUseCase @Inject constructor(
                     message
                     message_selected_state
                     background_url
+                    background_color
                     animation_url
                   }
                   coupon_sections {
