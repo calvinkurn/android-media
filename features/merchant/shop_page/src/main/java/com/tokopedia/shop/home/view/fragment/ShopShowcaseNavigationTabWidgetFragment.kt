@@ -178,7 +178,7 @@ class ShopShowcaseNavigationTabWidgetFragment : BaseDaggerFragment() {
 
     private fun setupColors(overrideTheme: Boolean, colorSchema: ShopPageColorSchema) {
         val mainShowcaseTextColor = ContextCompat.getColor(context ?: return, R.color.clr_dms_icon_white)
-        val lowEmphasizeColor = if (overrideTheme) {
+        val lowEmphasizeColor = if (overrideTheme && colorSchema.listColorSchema.isNotEmpty()) {
             colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_LOW_EMPHASIS)
         } else {
             ContextCompat.getColor(context ?: return, unifycomponentsR.color.Unify_NN950)

@@ -4,18 +4,18 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.shop.R
-import com.tokopedia.shop.home.view.model.banner_product_group.ShopWidgetComponentBannerProductGroupUiModel
+import com.tokopedia.shop.home.view.model.banner_product_group.BannerProductGroupUiModel
 
 class ShopHomeBannerProductGroupViewPagerVerticalPlaceholderViewHolder(
     itemView: View
-) : AbstractViewHolder<ShopWidgetComponentBannerProductGroupUiModel>(itemView) {
+) : AbstractViewHolder<BannerProductGroupUiModel>(itemView) {
 
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_shop_home_banner_product_group_viewpager_vertical_placeholder
     }
 
-    override fun bind(model: ShopWidgetComponentBannerProductGroupUiModel) {
+    override fun bind(model: BannerProductGroupUiModel) {
 
     }
 

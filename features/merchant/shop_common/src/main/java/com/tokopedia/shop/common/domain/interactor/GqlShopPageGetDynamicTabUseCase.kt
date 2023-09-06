@@ -134,6 +134,7 @@ class GqlShopPageGetDynamicTabUseCase @Inject constructor(
                             errMsgBrokenLink
                             etalaseID
                             isShowEtalaseName
+                            widgetStyle
                             data {
                                 linkID
                                 linkType

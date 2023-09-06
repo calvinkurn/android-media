@@ -33,6 +33,7 @@ class ShopHomeShowCaseNavigationTopMainBannerViewHolder(
         val LAYOUT = R.layout.item_shop_home_showcase_navigation_top_main_banner
         private const val SECOND_SHOWCASE_INDEX = 1
         private const val TWELVE_SHOWCASE_INDEX = 12
+        private const val FIVE_SHOWCASE = 5
     }
 
     private val viewBinding: ItemShopHomeShowcaseNavigationTopMainBannerBinding? by viewBinding()
@@ -45,7 +46,6 @@ class ShopHomeShowCaseNavigationTopMainBannerViewHolder(
 
             val showcases = model.appearance.showcases
 
-            setupViewAllIcon(model.appearance)
             setupMainBanner(showcases, model)
             setupShowCaseRecyclerView(
                 model.header.isOverrideTheme,
@@ -61,12 +61,13 @@ class ShopHomeShowCaseNavigationTopMainBannerViewHolder(
                 tabName = "",
                 showcaseId = ""
             )
+            setupViewAllIcon(model.appearance)
         }
 
     }
 
     private fun setupViewAllIcon(appearance: TopMainBannerAppearance) {
-        viewBinding?.iconChevron?.isVisible = appearance.viewAllCtaAppLink.isNotEmpty()
+        viewBinding?.iconChevron?.isVisible = appearance.title.isNotEmpty() && appearance.viewAllCtaAppLink.isNotEmpty() && appearance.showcases.size > FIVE_SHOWCASE
         viewBinding?.iconChevron?.setOnClickListener {
             listener.onNavigationBannerViewAllShowcaseClick(
                 appearance.viewAllCtaAppLink,
@@ -83,12 +84,12 @@ class ShopHomeShowCaseNavigationTopMainBannerViewHolder(
         val firstShowcase = showcases.getOrNull(0)
 
         firstShowcase?.let {
-            viewBinding?.imgFirstBanner?.loadImage(firstShowcase.imageUrl)
-            viewBinding?.tpgFirstBannerTitle?.text = firstShowcase.name
-            viewBinding?.imgFirstBanner?.visible()
-            viewBinding?.tpgFirstBannerTitle?.visible()
+            viewBinding?.imgMainBanner?.loadImage(firstShowcase.imageUrl)
+            viewBinding?.tpgMainBannerTitle?.text = firstShowcase.name
+            viewBinding?.imgMainBanner?.visible()
+            viewBinding?.tpgMainBannerTitle?.visible()
 
-            viewBinding?.imgFirstBanner?.setOnClickListener {
+            viewBinding?.imgMainBanner?.setOnClickListener {
                 listener.onNavigationBannerShowcaseClick(
                     selectedShowcase = firstShowcase,
                     uiModel = uiModel,
@@ -96,7 +97,7 @@ class ShopHomeShowCaseNavigationTopMainBannerViewHolder(
                     tabName = ""
                 )
             }
-            viewBinding?.tpgFirstBannerTitle?.setOnClickListener {
+            viewBinding?.tpgMainBannerTitle?.setOnClickListener {
                 listener.onNavigationBannerShowcaseClick(
                     selectedShowcase = firstShowcase,
                     uiModel = uiModel,
@@ -130,23 +131,20 @@ class ShopHomeShowCaseNavigationTopMainBannerViewHolder(
     }
 
     private fun setupColors(overrideTheme: Boolean, colorSchema: ShopPageColorSchema) {
-        val chevronColor = if (overrideTheme) {
+        val chevronColor = if (overrideTheme && colorSchema.listColorSchema.isNotEmpty()) {
             colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.ICON_CTA_LINK_COLOR)
         } else {
             ContextCompat.getColor(viewBinding?.iconChevron?.context ?: return, unifycomponentsR.color.Unify_NN950)
         }
 
-        val highEmphasizeColor = if (overrideTheme) {
+        val highEmphasizeColor = if (overrideTheme && colorSchema.listColorSchema.isNotEmpty()) {
             colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS)
         } else {
             ContextCompat.getColor(viewBinding?.tpgTitle?.context ?: return, unifycomponentsR.color.Unify_NN950)
         }
 
-        val lowEmphasizeColor = if (overrideTheme) {
-            colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_LOW_EMPHASIS)
-        } else {
-            ContextCompat.getColor(viewBinding?.tpgFirstBannerTitle?.context ?: return, unifycomponentsR.color.Unify_NN950)
-        }
+
+        val mainBannerColor = ContextCompat.getColor(viewBinding?.tpgMainBannerTitle?.context ?: return, R.color.clr_dms_icon_white)
 
         viewBinding?.apply {
             iconChevron.setImage(
@@ -155,7 +153,7 @@ class ShopHomeShowCaseNavigationTopMainBannerViewHolder(
                 newDarkEnable = chevronColor
             )
             tpgTitle.setTextColor(highEmphasizeColor)
-            tpgFirstBannerTitle.setTextColor(lowEmphasizeColor)
+            tpgMainBannerTitle.setTextColor(mainBannerColor)
         }
     }
 }

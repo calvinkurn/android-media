@@ -37,25 +37,18 @@ class ShopHomeShowCaseNavigationCarouselViewHolder(
     override fun bind(model: ShowcaseNavigationUiModel) {
         if (model.appearance is CarouselAppearance) {
             val showcases = model.appearance.showcases
-            viewBinding?.tpgTitle?.text = model.appearance.title
-            viewBinding?.tpgTitle?.isVisible = model.appearance.title.isNotEmpty() && showcases.isNotEmpty()
-            viewBinding?.iconChevron?.setOnClickListener {
-                listener.onNavigationBannerViewAllShowcaseClick(
-                    model.appearance.viewAllCtaAppLink,
-                    model.appearance,
-                    showcases.firstOrNull()?.id.orEmpty()
-                )
-            }
-            viewBinding?.iconChevron?.isVisible = showcases.size > SHOW_VIEW_ALL_SHOWCASE_THRESHOLD
 
+            setupColors(model.header.isOverrideTheme, model.header.colorSchema)
+            setupTitle(model.appearance.title, showcases)
+            setupChevronViewAll(model.appearance.title, model.appearance.viewAllCtaAppLink, model.appearance, showcases)
             setupShowCaseRecyclerView(
                 model.header.isOverrideTheme,
                 model.header.colorSchema,
                 model.appearance,
-                showcases,
+                model.appearance.showcases,
                 model
             )
-            setupColors(model.header.isOverrideTheme, model.header.colorSchema)
+
             listener.onNavigationBannerImpression(
                 uiModel = model,
                 tabCount = 0,
@@ -63,6 +56,27 @@ class ShopHomeShowCaseNavigationCarouselViewHolder(
                 showcaseId = ""
             )
         }
+    }
+
+    private fun setupTitle(title: String, showcases: List<Showcase>) {
+        viewBinding?.tpgTitle?.text = title
+        viewBinding?.tpgTitle?.isVisible = title.isNotEmpty() && showcases.isNotEmpty()
+    }
+
+    private fun setupChevronViewAll(
+        title: String,
+        viewAllCtaAppLink: String,
+        appearance: ShopHomeShowcaseNavigationBannerWidgetAppearance,
+        showcases: List<Showcase>
+    ) {
+        viewBinding?.iconChevron?.setOnClickListener {
+            listener.onNavigationBannerViewAllShowcaseClick(
+                viewAllCtaAppLink,
+                appearance,
+                showcases.firstOrNull()?.id.orEmpty()
+            )
+        }
+        viewBinding?.iconChevron?.isVisible = showcases.size > SHOW_VIEW_ALL_SHOWCASE_THRESHOLD && viewAllCtaAppLink.isNotEmpty() && title.isNotEmpty()
     }
 
     private fun setupShowCaseRecyclerView(
@@ -88,13 +102,13 @@ class ShopHomeShowCaseNavigationCarouselViewHolder(
     }
 
     private fun setupColors(overrideTheme: Boolean, colorSchema: ShopPageColorSchema) {
-        val chevronColor = if (overrideTheme) {
+        val chevronColor = if (overrideTheme && colorSchema.listColorSchema.isNotEmpty()) {
             colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.ICON_CTA_LINK_COLOR)
         } else {
             ContextCompat.getColor(viewBinding?.iconChevron?.context ?: return, unifycomponentsR.color.Unify_NN950)
         }
 
-        val highEmphasizeColor = if (overrideTheme) {
+        val highEmphasizeColor = if (overrideTheme && colorSchema.listColorSchema.isNotEmpty()) {
             colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS)
         } else {
             ContextCompat.getColor(viewBinding?.tpgTitle?.context ?: return, unifycomponentsR.color.Unify_NN950)
