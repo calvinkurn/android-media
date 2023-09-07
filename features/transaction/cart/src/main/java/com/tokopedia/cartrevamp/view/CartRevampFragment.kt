@@ -2258,7 +2258,7 @@ class CartRevampFragment :
     private fun initTopLayout() {
         binding?.checkboxGlobal?.checks()?.debounce(DELAY_CHECK_BOX_GLOBAL)?.onEach { pair ->
             handleCheckboxGlobalChangeEvent()
-            if (pair.first.isPressed) {
+            if (pair.first) {
                 val listCartGroupHolderDataWithBmGm = CartDataHelper.getListCartGroupHolderDataWithBmgm(viewModel.cartDataList.value)
                 listCartGroupHolderDataWithBmGm.forEach { cartGroupHolderData ->
                     getGroupProductTicker(cartGroupHolderData, cartGroupHolderData.cartGroupBmGmHolderData.offerId)
@@ -4880,9 +4880,9 @@ class CartRevampFragment :
         }
     }
 
-    private fun CompoundButton.checks(): Flow<Pair<CompoundButton, Boolean>> = callbackFlow {
+    private fun CompoundButton.checks(): Flow<Pair<Boolean, Boolean>> = callbackFlow {
         setOnCheckedChangeListener { buttonView, isChecked ->
-            trySend(Pair(buttonView, isChecked)).isSuccess
+            trySend(Pair(buttonView.isPressed, isChecked)).isSuccess
         }
         awaitClose { setOnCheckedChangeListener(null) }
     }
