@@ -4,6 +4,7 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.addon.domain.model.Additional
 import com.tokopedia.addon.presentation.uimodel.AddOnParam
+import com.tokopedia.addon.presentation.uimodel.AddOnUIModel
 import com.tokopedia.common.ProductServiceWidgetConstant.SQUAD_VALUE
 import com.tokopedia.common.ProductServiceWidgetConstant.USECASE_GIFTING_VALUE
 import com.tokopedia.gifting.domain.model.*
@@ -75,11 +76,12 @@ class GetAddOnUseCase @Inject constructor(
     fun setParams(
         addOnIds: List<String>,
         addOnTypes: List<String> = emptyList(),
-        addOnWidgetParam: AddOnParam? = null
+        addOnWidgetParam: AddOnParam? = null,
+        selectedAddOn: List<AddOnUIModel> = emptyList()
     ) {
         val requestParams = RequestParams.create()
         requestParams.putObject(PARAM_INPUT, GetAddOnRequest(
-            addOnRequest = addOnIds.mapToAddonRequest(addOnTypes, addOnWidgetParam),
+            addOnRequest = addOnIds.mapToAddonRequest(addOnTypes, addOnWidgetParam, selectedAddOn),
             source = Source(usecase = USECASE_GIFTING_VALUE, squad = SQUAD_VALUE)
         ))
         setRequestParams(requestParams.parameters)
@@ -91,13 +93,17 @@ class GetAddOnUseCase @Inject constructor(
 
     private fun List<String>.mapToAddonRequest(
         addOnTypes: List<String>,
-        addOnWidgetParam: AddOnParam?
+        addOnWidgetParam: AddOnParam?,
+        selectedAddOn: List<AddOnUIModel>
     ) = mapIndexed { index, addOnId ->
         val param = addOnWidgetParam ?: AddOnParam()
+        val addonKey = selectedAddOn.firstOrNull()?.uniqueId.orEmpty()
         AddOnRequest(
             addOnID = addOnId,
             addOnType = addOnTypes.getOrNull(index).orEmpty(),
+            addOnKey = addonKey,
             additional = Additional(
+                productID = param.productId,
                 categoryID = param.categoryID,
                 shopID = param.shopID,
                 quantity = param.quantity,
