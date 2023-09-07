@@ -46,6 +46,7 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
     private val tabsRunnable = Runnable {
         tabsHolder.show()
     }
+
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         tabsViewModel = discoveryBaseViewModel as TabsViewModel
         tabsViewModel?.let {
@@ -180,20 +181,22 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
             }
 
             tabsViewModel.getTabMargin().observe(fragment.viewLifecycleOwner) {
-                if (it) {
-                    val params = LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.WRAP_CONTENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT
-                    )
-                    params.setMargins(0, 0, 0, 16)
-                    tabsHolder.layoutParams = params
-                } else {
-                    val params = LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.WRAP_CONTENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT
-                    )
-                    params.setMargins(0, 0, 0, 0)
-                    tabsHolder.layoutParams = params
+                if (!tabsViewModel.isFromCategory()) {
+                    if (it) {
+                        val params = LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.WRAP_CONTENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT
+                        )
+                        params.setMargins(0, 0, 0, 16)
+                        tabsHolder.layoutParams = params
+                    } else {
+                        val params = LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.WRAP_CONTENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT
+                        )
+                        params.setMargins(0, 0, 0, 0)
+                        tabsHolder.layoutParams = params
+                    }
                 }
             }
         }
