@@ -6,11 +6,12 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.logisticseller.common.LogisticSellerConst.PARAM_CURR_IS_CHANGE_SHIPPING
 import com.tokopedia.logisticseller.common.LogisticSellerConst.PARAM_ORDER_ID
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created by fwidjaja on 2019-11-15.
  */
-class ConfirmShippingActivity: BaseSimpleActivity(){
+class ConfirmShippingActivity : BaseSimpleActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -18,7 +19,7 @@ class ConfirmShippingActivity: BaseSimpleActivity(){
             decorView.setBackgroundColor(
                 MethodChecker.getColor(
                     this@ConfirmShippingActivity,
-                    com.tokopedia.unifyprinciples.R.color.Unify_Background
+                    unifyprinciplesR.color.Unify_Background
                 )
             )
         }
@@ -33,5 +34,4 @@ class ConfirmShippingActivity: BaseSimpleActivity(){
         }
         return ConfirmShippingFragment.newInstance(bundle)
     }
-
 }

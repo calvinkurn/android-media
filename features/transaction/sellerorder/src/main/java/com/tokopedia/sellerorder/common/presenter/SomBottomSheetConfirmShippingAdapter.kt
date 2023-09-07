@@ -20,7 +20,7 @@ import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.presenter.model.ConfirmShippingNotes
 import com.tokopedia.sellerorder.databinding.BottomsheetConfirmshippingItemBinding
 import com.tokopedia.utils.view.binding.viewBinding
-import com.tokopedia.unifyprinciples.R as unifyPrinciplesR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created by irpan on 30/08/23.
@@ -56,7 +56,7 @@ class SomBottomSheetConfirmShippingAdapter() : RecyclerView.Adapter<SomBottomShe
                 ds.isUnderlineText = false
                 ds.color = MethodChecker.getColor(
                     holder.itemView.context,
-                    unifyPrinciplesR.color.Unify_GN500
+                    unifyprinciplesR.color.Unify_GN500
                 )
             }
         }
