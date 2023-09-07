@@ -12,5 +12,6 @@ data class MainEditorUiModel(
     val tools: List<NavigationTool> = emptyList(),
     val activeFilePath: String = "",
     val imagePlacementModel: ImagePlacementModel? = null,
+    val hasTextAdded: Boolean = false,
     val isRemoveAudio: Boolean = false,
 )

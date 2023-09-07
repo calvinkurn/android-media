@@ -65,6 +65,9 @@ class MainEditorViewModel @Inject constructor(
                 prepareSetupView(event.param)
                 renderNavigationTools()
             }
+            is MainEditorEvent.HasTextAdded -> {
+                updateTextAddedState(event.isAdded)
+            }
             is MainEditorEvent.AddInputTextPage -> {
                 setAction(MainEditorEffect.OpenInputText(InputTextModel.default()))
                 setAction(MainEditorEffect.ParentToolbarVisibility(false))
@@ -76,6 +79,7 @@ class MainEditorViewModel @Inject constructor(
             }
             is MainEditorEvent.InputTextResult -> {
                 updateModelOnUiParam(event.model)
+                setAction(MainEditorEffect.UpdateTextAddedState)
                 setAction(MainEditorEffect.ParentToolbarVisibility(true))
             }
             is MainEditorEvent.ExportMedia -> {
@@ -137,6 +141,12 @@ class MainEditorViewModel @Inject constructor(
     private fun updateCurrentPlacementModel(model: ImagePlacementModel?) {
         _mainEditorState.setValue {
             copy(imagePlacementModel = model)
+        }
+    }
+
+    private fun updateTextAddedState(isAdded: Boolean) {
+        _mainEditorState.setValue {
+            copy(hasTextAdded = isAdded)
         }
     }
 

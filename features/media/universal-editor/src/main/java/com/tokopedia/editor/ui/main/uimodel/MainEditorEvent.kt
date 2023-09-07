@@ -11,6 +11,8 @@ import com.tokopedia.picker.common.UniversalEditorParam
 sealed class MainEditorEvent {
     data class SetupView(val param: UniversalEditorParam) : MainEditorEvent()
 
+    data class HasTextAdded(val isAdded: Boolean) : MainEditorEvent()
+
     object AddInputTextPage : MainEditorEvent()
 
     data class EditInputTextPage(

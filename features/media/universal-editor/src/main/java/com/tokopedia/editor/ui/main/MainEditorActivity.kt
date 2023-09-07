@@ -94,10 +94,6 @@ open class MainEditorActivity : AppCompatActivity()
     private val placementIntent = registerForActivityResult(StartActivityForResult()) {
         val result = PlacementImageActivity.result(it)
         viewModel.onEvent(MainEditorEvent.PlacementImageResult(result))
-
-//        if (result?.path?.isNotEmpty() == true) {
-//            viewModel.updatePlacement(result)
-//        }
     }
 
     private val viewModel: MainEditorViewModel by viewModels { viewModelFactory }
@@ -171,6 +167,10 @@ open class MainEditorActivity : AppCompatActivity()
                     }
                     is MainEditorEffect.FinishEditorPage -> {
                         navigateBackToPickerAndFinishIntent(it.filePath)
+                    }
+                    is MainEditorEffect.UpdateTextAddedState -> {
+                        val hasTextAdded = binding.container.hasTextAdded()
+                        viewModel.onEvent(MainEditorEvent.HasTextAdded(hasTextAdded))
                     }
                     is MainEditorEffect.ShowLoading -> onShowLoading()
                     is MainEditorEffect.HideLoading -> onHideLoading()

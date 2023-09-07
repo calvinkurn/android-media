@@ -22,5 +22,6 @@ sealed class MainEditorEffect {
     object HideLoading : MainEditorEffect()
 
     // Common
+    object UpdateTextAddedState : MainEditorEffect()
     data class UpdatePagerSourcePath(val newSourcePath: String) : MainEditorEffect()
 }
