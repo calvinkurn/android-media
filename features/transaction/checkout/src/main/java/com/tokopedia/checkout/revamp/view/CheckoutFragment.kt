@@ -1083,8 +1083,9 @@ class CheckoutFragment :
         )
     }
 
-    override fun onClickAddonProductInfoIcon(addOnDataInfoLink: String) {
-        RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=$addOnDataInfoLink")
+    override fun onClickAddonProductInfoIcon(addOn: AddOnProductDataItemModel) {
+        RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=${addOn.infoLink}")
+        checkoutAnalyticsCourierSelection.sendClicksInfoButtonOfAddonsEvent(addOn.type)
     }
 
     override fun onClickSeeAllAddOnProductService(product: CheckoutProductModel) {
@@ -1994,6 +1995,7 @@ class CheckoutFragment :
                 getString(R.string.title_activity_checkout_tnc_webview)
             )
             startActivity(intent)
+            checkoutAnalyticsCourierSelection.sendClickSnkAsuransiDanProteksiEvent()
         }
     }
 
