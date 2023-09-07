@@ -22,10 +22,11 @@ class FeedXHeaderUseCase @Inject constructor(
 
     companion object {
         private const val PARAM_FIELDS = "fields"
+        private const val PARAM_SOURCES = "sources"
         const val QUERY_NAME = "FeedXHeaderQuery"
         const val QUERY = """
-        query FeedXHeader(${'$'}$PARAM_FIELDS: [String!]!) {
-          feedXHeader(req: {fields: ${'$'}$PARAM_FIELDS}) {
+        query FeedXHeader(${'$'}$PARAM_FIELDS: [String!]!, ${'$'}$PARAM_SOURCES: [FeedXHeaderSources]) {
+          feedXHeader(req: {fields: ${'$'}$PARAM_FIELDS, sources: ${'$'}$PARAM_SOURCES}) {
             data {
               ...FeedXHeaderData
               __typename
@@ -54,6 +55,10 @@ class FeedXHeaderUseCase @Inject constructor(
           }
           browse {
             ...FeedXHeaderBrowse
+            __typename
+          }
+          cdpTitle {
+            ...FeedXHeaderCDPTitle
             __typename
           }
         }
@@ -122,14 +127,24 @@ class FeedXHeaderUseCase @Inject constructor(
           title
           __typename
         }
+        
+        fragment FeedXHeaderCDPTitle on FeedXHeaderCDPTitle {
+          title
+          __typename
+        }
         """
 
         fun createParam(
-            fields: List<String> = FeedXHeaderRequestFields.values().map { it.value }
+            fields: List<String> = FeedXHeaderRequestFields.values().map { it.value },
+            sources: List<Map<String, String>> = emptyList()
         ): Map<String, Any> {
-            return mapOf(
+            val params = mutableMapOf<String, Any>(
                 PARAM_FIELDS to fields
             )
+            if (sources.isNotEmpty()) {
+                params[PARAM_SOURCES] = sources
+            }
+            return params
         }
     }
 }

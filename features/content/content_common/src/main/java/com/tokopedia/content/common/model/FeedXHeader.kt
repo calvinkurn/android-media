@@ -22,6 +22,8 @@ data class FeedXHeaderData(
     val userProfile: UserProfile = UserProfile(),
     @SerializedName("browse")
     val browse: FeedXHeaderBrowse = FeedXHeaderBrowse(),
+    @SerializedName("cdpTitle")
+    val detail: FeedXHeaderDetail = FeedXHeaderDetail(),
     @SerializedName("__typename")
     val typename: String = ""
 )
@@ -35,4 +37,9 @@ data class FeedXHeaderBrowse(
     val applink: String = "",
     @SerializedName("__typename")
     val typeName: String = ""
+)
+
+data class FeedXHeaderDetail(
+    @SerializedName("title")
+    val title: String = ""
 )

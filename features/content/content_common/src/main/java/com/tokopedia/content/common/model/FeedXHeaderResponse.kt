@@ -11,5 +11,6 @@ enum class FeedXHeaderRequestFields(val value: String) {
     TAB("tab"),
     LIVE("live"),
     USER("user-profile"),
-    BROWSE("browse")
+    BROWSE("browse"),
+    DETAIL("cdp-title")
 }
