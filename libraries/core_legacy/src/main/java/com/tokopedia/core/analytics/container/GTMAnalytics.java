@@ -1154,7 +1154,7 @@ public class GTMAnalytics extends ContextAnalytics {
     private int hashCodeTrack(Map<String, Object> param) {
         int hashCode = 0;
         for (Map.Entry<String, Object> entry : param.entrySet()) {
-            if (SCREEN_NAME.equals(entry.getKey())) {
+            if (AppEventTracking.GTM.SCREEN_NAME.equals(entry.getKey())) {
                 continue;
             }
             hashCode += entry.getValue().hashCode();
