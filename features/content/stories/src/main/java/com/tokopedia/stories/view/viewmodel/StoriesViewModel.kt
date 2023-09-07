@@ -12,6 +12,8 @@ import com.tokopedia.stories.data.repository.StoriesRepository
 import com.tokopedia.stories.domain.model.StoriesAuthorType
 import com.tokopedia.stories.domain.model.StoriesRequestModel
 import com.tokopedia.stories.domain.model.StoriesSource
+import com.tokopedia.stories.domain.model.StoriesTrackActivityActionType
+import com.tokopedia.stories.domain.model.StoriesTrackActivityRequestModel
 import com.tokopedia.stories.view.model.StoriesDetailItemUiModel.StoriesDetailItemUiEvent
 import com.tokopedia.stories.view.model.StoriesDetailItemUiModel.StoriesDetailItemUiEvent.PAUSE
 import com.tokopedia.stories.view.model.StoriesDetailItemUiModel.StoriesDetailItemUiEvent.RESUME
@@ -47,9 +49,9 @@ class StoriesViewModel @AssistedInject constructor(
 
     val mGroupId: String
         get() {
-            val currPosition = _groupPos.value
-            return if (currPosition < 0) ""
-            else _storiesMainData.value.groupItems[currPosition].groupId
+            val groupPosition = _groupPos.value
+            return if (groupPosition < 0) ""
+            else _storiesMainData.value.groupItems[groupPosition].groupId
         }
 
     private val mStoriesMainData: StoriesUiModel
@@ -66,15 +68,15 @@ class StoriesViewModel @AssistedInject constructor(
 
     private val mGroupItem: StoriesGroupItemUiModel
         get() {
-            val currPosition = _groupPos.value
-            return if (currPosition < 0) StoriesGroupItemUiModel()
-            else _storiesMainData.value.groupItems[currPosition]
+            val groupPosition = _groupPos.value
+            return if (groupPosition < 0) StoriesGroupItemUiModel()
+            else _storiesMainData.value.groupItems[groupPosition]
         }
 
     private val mDetailSize: Int
         get() {
-            val currPosition = _groupPos.value
-            return _storiesMainData.value.groupItems[currPosition].detail.detailItems.size
+            val groupPosition = _groupPos.value
+            return _storiesMainData.value.groupItems[groupPosition].detail.detailItems.size
         }
 
     private val mResetValue: Int
@@ -183,6 +185,7 @@ class StoriesViewModel @AssistedInject constructor(
 
     private fun handleContentIsLoaded() {
         updateDetailData(event = RESUME, isSameContent = true)
+        checkAndHitTrackActivity()
     }
 
     private suspend fun setInitialData() {
@@ -301,6 +304,13 @@ class StoriesViewModel @AssistedInject constructor(
         }
     }
 
+    private fun checkAndHitTrackActivity() {
+        viewModelScope.launchCatchError(block = {
+            val trackerId = mGroupItem.detail.detailItems[mDetailPos].meta.activityTracker
+            requestSetStoriesTrackActivity(trackerId)
+        }) {}
+    }
+
     private suspend fun requestStoriesInitialData(): StoriesUiModel {
         val request = StoriesRequestModel(
             authorID = authorId,
@@ -319,6 +329,14 @@ class StoriesViewModel @AssistedInject constructor(
             sourceID = sourceId,
         )
         return repository.getStoriesDetailData(request)
+    }
+
+    private suspend fun requestSetStoriesTrackActivity(trackerId: String): Boolean {
+        val request = StoriesTrackActivityRequestModel(
+            id = trackerId,
+            action = StoriesTrackActivityActionType.LAST_SEEN.value,
+        )
+        return repository.setStoriesTrackActivity(request)
     }
 
     companion object {

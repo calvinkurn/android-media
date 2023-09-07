@@ -42,7 +42,13 @@ data class StoriesDetailItemUiModel(
     val content: StoriesItemContent = StoriesItemContent(),
     val resetValue: Int = -1,
     val isSameContent: Boolean = false,
+    val meta: Meta = Meta()
 ): Parcelable {
+
+    @Parcelize
+    data class Meta(
+        val activityTracker: String = "",
+    ): Parcelable
 
     @Parcelize
     data class StoriesItemContent(
