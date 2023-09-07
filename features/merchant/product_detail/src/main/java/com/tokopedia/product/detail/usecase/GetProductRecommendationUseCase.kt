@@ -119,7 +119,7 @@ class GetProductRecommendationUseCase @Inject constructor(
                 productIds = arrayListOf(productId),
                 isTokonow = isTokoNowParam,
                 queryParam = queryParam,
-                criteriaThematicIDs = arrayListOf(thematicId)
+                criteriaThematicIDs = listOf(thematicId)
             )
 
             val recomResponse = getRecommendationUseCase.getData(recomRequestParams)

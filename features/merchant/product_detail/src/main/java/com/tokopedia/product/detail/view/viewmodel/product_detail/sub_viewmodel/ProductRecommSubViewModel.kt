@@ -57,7 +57,9 @@ class ProductRecommSubViewModel @Inject constructor(
     override fun loadViewToView(
         pageName: String,
         productId: String,
-        isTokoNow: Boolean
+        isTokoNow: Boolean,
+        queryParam: String,
+        thematicId: String
     ) {
         if (GlobalConfig.isSellerApp()) return
 
@@ -74,7 +76,9 @@ class ProductRecommSubViewModel @Inject constructor(
                         pageNumber = ProductDetailConstant.DEFAULT_PAGE_NUMBER,
                         pageName = pageName,
                         productIds = arrayListOf(productId),
-                        isTokonow = isTokoNow
+                        isTokonow = isTokoNow,
+                        queryParam = queryParam,
+                        criteriaThematicIDs = listOf(thematicId)
                     )
                 )
 
@@ -90,7 +94,13 @@ class ProductRecommSubViewModel @Inject constructor(
         }
     }
 
-    override fun getVerticalRecommendationData(pageName: String, page: Int?, productId: String?) {
+    override fun getVerticalRecommendationData(
+        pageName: String,
+        page: Int?,
+        productId: String?,
+        queryParam: String,
+        thematicId: String
+    ) {
         val nonNullPage = page ?: ProductDetailConstant.DEFAULT_PAGE_NUMBER
         val nonNullProductId = productId.orEmpty()
 
@@ -99,7 +109,9 @@ class ProductRecommSubViewModel @Inject constructor(
                 val requestParams = GetRecommendationRequestParam(
                     pageNumber = nonNullPage,
                     pageName = pageName,
-                    productIds = arrayListOf(nonNullProductId)
+                    productIds = arrayListOf(nonNullProductId),
+                    queryParam = queryParam,
+                    criteriaThematicIDs = listOf(thematicId)
                 )
                 val recommendationResponse = getRecommendationUseCase.get().getData(requestParams)
                 val dataResponse = recommendationResponse.firstOrNull()

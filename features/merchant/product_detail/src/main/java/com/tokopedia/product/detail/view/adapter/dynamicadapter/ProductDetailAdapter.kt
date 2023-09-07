@@ -108,7 +108,12 @@ class ProductDetailAdapter(
             currentPosition < currentList.size &&
             (dataModel as? ViewToViewWidgetDataModel)?.recomWidgetData == null
         ) {
-            listener?.loadViewToView((dataModel as ViewToViewWidgetDataModel).name)
+            val recommData = dataModel as? ProductRecomWidgetDataModel
+            listener?.loadViewToView(
+                pageName = recommData?.name.orEmpty(),
+                queryParam = recommData?.queryParam.orEmpty(),
+                thematicId = recommData?.thematicId.orEmpty()
+            )
         }
 
         if (holder is ContentWidgetViewHolder &&
@@ -122,7 +127,12 @@ class ProductDetailAdapter(
             if (currentPosition < currentList.size &&
                 (dataModel as? ProductRecommendationVerticalPlaceholderDataModel)?.recomWidgetData == null
             ) {
-                listener?.startVerticalRecommendation(dataModel.name())
+                val recommData = dataModel as? ProductRecomWidgetDataModel
+                listener?.startVerticalRecommendation(
+                    pageName = recommData?.name.orEmpty(),
+                    queryParam = recommData?.queryParam.orEmpty(),
+                    thematicId = recommData?.thematicId.orEmpty()
+                )
             }
             shouldRedrawLayout = true
         }

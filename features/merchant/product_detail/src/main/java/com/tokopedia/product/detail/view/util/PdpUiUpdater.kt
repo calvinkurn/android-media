@@ -73,7 +73,6 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_9_TOKONO
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.RECOM_VERTICAL
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.VIEW_TO_VIEW
 import com.tokopedia.product.detail.view.viewholder.a_plus_content.APlusImageUiModel
-import com.tokopedia.recommendation_widget_common.extension.LAYOUTTYPE_HORIZONTAL_ATC
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModels
 import com.tokopedia.recommendation_widget_common.extension.toViewToViewItemModels
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
@@ -801,6 +800,9 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             }
         }
     }
+
+    fun getVerticalRecommendationPlaceholder(pageName: String) =
+        mapOfData[pageName] as? ProductRecommendationVerticalPlaceholderDataModel
 
     fun getVerticalRecommendationNextPage(pageName: String): Int? {
         val dataModel = (mapOfData[pageName] as? ProductRecommendationVerticalPlaceholderDataModel)

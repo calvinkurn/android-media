@@ -11,9 +11,7 @@ import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWi
  * Created by frenzel on 27/03/23
  */
 data class PdpRecommendationWidgetDataModel(
-    val recommendationWidgetModel: RecommendationWidgetModel,
-    val queryParam: String,
-    val thematicId: String
+    val recommendationWidgetModel: RecommendationWidgetModel
 ) : DynamicPdpDataModel {
 
     override val impressHolder: ImpressHolder = ImpressHolder()

@@ -370,18 +370,14 @@ object DynamicProductDetailMapper {
         SHOPADS_CAROUSEL -> {
             TopadsHeadlineUiModel(
                 type = component.type,
-                name = component.componentName,
-                queryParam = componentData.queryParam,
-                thematicId = componentData.thematicId
+                name = component.componentName
             )
         }
 
         else -> {
             if (component.componentName.startsWith(RECOM_VERTICAL)) {
                 PdpRecommendationWidgetDataModel(
-                    recommendationWidgetModel = mapPdpRecommendationWidgetModel(component),
-                    queryParam = componentData.queryParam,
-                    thematicId = componentData.thematicId
+                    recommendationWidgetModel = mapPdpRecommendationWidgetModel(component)
                 )
             } else {
                 ProductRecommendationDataModel(
@@ -987,10 +983,18 @@ object DynamicProductDetailMapper {
     }
 
     private fun mapPdpRecommendationWidgetModel(component: Component): RecommendationWidgetModel {
+        val data = component.componentData.firstOrNull()
+        val thematicIds = if (data?.thematicId.isNullOrBlank()) {
+            emptyList()
+        } else {
+            listOf(data?.thematicId.orEmpty())
+        }
         val metadata = RecommendationWidgetMetadata(
             pageSource = RecommendationWidgetSource.PDP.xSourceValue,
             pageName = component.componentName,
-            pageType = component.type
+            pageType = component.type,
+            queryParam = data?.queryParam.orEmpty(),
+            criteriaThematicIDs = thematicIds
         )
         val trackingModel = RecommendationWidgetTrackingModel(
             androidPageName = RecommendationCarouselTrackingConst.Category.PDP,

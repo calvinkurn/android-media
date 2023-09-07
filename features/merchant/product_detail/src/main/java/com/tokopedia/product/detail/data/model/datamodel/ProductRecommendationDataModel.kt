@@ -17,8 +17,8 @@ data class ProductRecommendationDataModel(
     // UI Data
     var filterData: List<AnnotationChip>? = null,
     var cardModel: List<ProductCardModel>? = null,
-    val queryParam: String,
-    val thematicId: String,
+    val queryParam: String = "",
+    val thematicId: String = "",
     var position: Int = -1
 ) : DynamicPdpDataModel {
 
@@ -130,7 +130,9 @@ data class ProductRecommendationDataModel(
             recomWidgetData = data.recomWidgetData?.copy(),
             filterData = data.filterData,
             cardModel = data.cardModel,
-            position = data.position
+            position = data.position,
+            queryParam = data.queryParam,
+            thematicId = data.thematicId
         )
     }
 }
