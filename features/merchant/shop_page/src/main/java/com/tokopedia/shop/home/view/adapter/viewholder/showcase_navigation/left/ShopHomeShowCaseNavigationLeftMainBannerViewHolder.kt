@@ -42,6 +42,7 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
         private const val ONE_TAB = 1
         private const val FIVE_SHOWCASE = 5
         private const val MARGIN_16_DP = 16f
+        private const val MINIMAL_SHOWCASE_COUNT_ON_A_TAB = 5
     }
 
     private var tabTotalWidth = 0
@@ -50,9 +51,16 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
 
     override fun bind(model: ShowcaseNavigationUiModel) {
         val tabs = if (model.appearance is LeftMainBannerAppearance) model.appearance.tabs else emptyList()
-        setupTitle(model, tabs)
-        setupTabs(tabs, model)
-        setupChevronViewAll(model, tabs, model.header.isOverrideTheme, model.header.colorSchema)
+
+        //Render tab only if it has 5 showcase or more than 5 showcase
+        val validatedTabs = tabs.filter {
+            val showcaseCount = it.showcases.size
+            showcaseCount >= MINIMAL_SHOWCASE_COUNT_ON_A_TAB
+        }
+
+        setupTitle(model, validatedTabs)
+        setupTabs(validatedTabs, model)
+        setupChevronViewAll(model, validatedTabs, model.header.isOverrideTheme, model.header.colorSchema)
     }
 
     private fun setupChevronViewAll(

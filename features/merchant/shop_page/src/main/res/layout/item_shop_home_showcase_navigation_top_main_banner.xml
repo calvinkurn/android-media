@@ -12,12 +12,14 @@
         android:id="@+id/iconChevron"
         android:layout_width="24dp"
         android:layout_height="24dp"
+        android:visibility="gone"
         app:icon_color_light_enable="@color/Unify_NN900"
         app:icon_color_night_enable="@color/Unify_NN900"
         app:icon_name="CHEVRON_RIGHT"
         app:layout_constraintBottom_toBottomOf="@+id/tpgTitle"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tpgTitle" />
+        app:layout_constraintTop_toTopOf="@+id/tpgTitle"
+        tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tpgTitle"
@@ -29,12 +31,14 @@
         android:maxLines="1"
         android:minLines="1"
         android:textColor="@color/Unify_NN950"
+        android:visibility="gone"
         app:layout_constraintEnd_toStartOf="@+id/iconChevron"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="display_1"
         app:typographyWeight="bold"
-        tools:text="Explore categories" />
+        tools:text="Explore categories"
+        tools:visibility="visible" />
 
     <ImageView
         android:id="@+id/imgBackgroundGradient"
@@ -63,9 +67,9 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="12dp"
+        android:elevation="2dp"
         android:ellipsize="end"
         android:gravity="center"
-        android:elevation="2dp"
         android:maxLines="1"
         android:minLines="1"
         android:textColor="@color/Unify_NN0"
@@ -84,11 +88,13 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="16dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/imgMainBanner"
         app:layout_constraintTop_toBottomOf="@+id/imgMainBanner"
         tools:itemCount="2"
-        tools:listitem="@layout/item_shop_home_showcase_navigation" />
+        tools:listitem="@layout/item_shop_home_showcase_navigation"
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
