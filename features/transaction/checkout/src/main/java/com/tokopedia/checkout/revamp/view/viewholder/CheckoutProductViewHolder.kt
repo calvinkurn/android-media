@@ -397,7 +397,7 @@ class CheckoutProductViewHolder(
                             }
                         }
                         tvCheckoutAddOnsItemName.setOnClickListener {
-                            listener.onClickAddonProductInfoIcon(addon.infoLink)
+                            listener.onClickAddonProductInfoIcon(addon)
                         }
                     }
                     productBinding.llAddonProductItems.addView(addOnView.root)
@@ -486,7 +486,7 @@ class CheckoutProductViewHolder(
                             }
                         }
                         tvCheckoutAddOnsItemName.setOnClickListener {
-                            listener.onClickAddonProductInfoIcon(addon.infoLink)
+                            listener.onClickAddonProductInfoIcon(addon)
                         }
                     }
                     bundleBinding.llAddonProductItemsBundle.addView(addOnView.root)
