@@ -1820,7 +1820,7 @@ class CheckoutFragment :
         if (!viewModel.isLoading()) {
             val validateUseRequestParam = viewModel.generateValidateUsePromoRequest()
             val promoRequestParam = viewModel.generateCouponListRecommendationRequest()
-            if (viewModel.useNewPromoPage(lastApplyUiModel)) {
+            if (viewModel.useNewPromoPage()) {
                 val totalAmount = viewModel.listData.value.buttonPayment()!!.totalPriceNum
                 val bottomSheetPromo = PromoUsageBottomSheet.newInstance(
                     entryPoint = PromoPageEntryPoint.CHECKOUT_PAGE,

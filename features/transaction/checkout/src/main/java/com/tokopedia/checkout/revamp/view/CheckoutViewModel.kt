@@ -2552,6 +2552,10 @@ class CheckoutViewModel @Inject constructor(
         }
     }
 
+    fun useNewPromoPage(): Boolean {
+        return isPromoRevamp == true
+    }
+
     companion object {
         const val PLATFORM_FEE_CODE = "platform_fee"
     }
