@@ -1,5 +1,6 @@
 package com.tokopedia.discovery2.datamapper
 
+import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.Constant.Calendar.DYNAMIC
@@ -20,6 +21,7 @@ import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.ACTIVE_TAB
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.CATEGORY_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.FORCED_NAVIGATION
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.QUERY_PARENT
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.RECOM_PRODUCT_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_COMP_ID
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.youtubeview.AutoPlayController
@@ -603,8 +605,11 @@ class DiscoveryPageDataMapper(
         return listComponents
     }
 
-    private fun handleQuickFilter(component: ComponentsItem){
+    private fun handleQuickFilter(component: ComponentsItem) {
+        setSearchParameter(component)
+
         component.isSticky = component.properties?.chipSize == Constant.ChipSize.LARGE
+
         if (!component.isSelectedFiltersFromQueryApplied && queryParameterMapWithRpc.isNotEmpty()) {
             component.isSelectedFiltersFromQueryApplied = true
             getFiltersFromQuery(
@@ -625,6 +630,15 @@ class DiscoveryPageDataMapper(
                 parentFilterComponentId = component.id
             }
         }
+    }
+
+    private fun setSearchParameter(component: ComponentsItem) {
+        val query = discoComponentQuery?.get(QUERY_PARENT)
+
+        val parameter = SearchParameterFactory
+            .construct(query, component.pagePath)
+
+        parameter?.run { component.searchParameter = SearchParameter(this) }
     }
 }
 
