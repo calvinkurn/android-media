@@ -9,6 +9,7 @@ import com.tokopedia.stories.R
 import com.tokopedia.stories.databinding.ActivityStoriesBinding
 import com.tokopedia.stories.di.StoriesInjector
 import com.tokopedia.stories.view.fragment.StoriesGroupFragment
+import com.tokopedia.stories.view.utils.SHOP_ID
 import javax.inject.Inject
 
 class StoriesActivity : BaseActivity() {
@@ -88,7 +89,6 @@ class StoriesActivity : BaseActivity() {
     }
 
     companion object {
-        private const val SHOP_ID = "shop_id"
         private const val SHOP_ID_INDEX = 1
     }
 

@@ -8,7 +8,6 @@ import android.widget.Toast
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
@@ -39,15 +38,17 @@ import com.tokopedia.stories.view.viewmodel.event.StoriesUiEvent
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
-class StoriesDetailFragment @Inject constructor(
-    private val viewModelFactory: ViewModelProvider.Factory
-) : TkpdBaseV4Fragment() {
+class StoriesDetailFragment @Inject constructor() : TkpdBaseV4Fragment() {
 
     private var _binding: FragmentStoriesDetailBinding? = null
     private val binding: FragmentStoriesDetailBinding
         get() = _binding!!
 
-    private val viewModel by activityViewModels<StoriesViewModel> { viewModelFactory }
+    val viewModelProvider by lazyThreadSafetyNone {
+        (requireParentFragment() as StoriesGroupFragment).viewModelProvider
+    }
+
+    private val viewModel by activityViewModels<StoriesViewModel> { viewModelProvider }
 
     private val mAdapter: StoriesGroupAdapter by lazyThreadSafetyNone {
         StoriesGroupAdapter(object : StoriesGroupAdapter.Listener {
@@ -109,8 +110,7 @@ class StoriesDetailFragment @Inject constructor(
                         if (event.throwable.isNetworkError) {
                             // TODO handle error network here
                             showToast("error detail network ${event.throwable}")
-                        }
-                        else {
+                        } else {
                             // TODO handle error fetch here
                             showToast("error detail content ${event.throwable}")
                         }
@@ -148,8 +148,8 @@ class StoriesDetailFragment @Inject constructor(
             // TODO handle error empty data state here
             Toast.makeText(
                 requireContext(),
-                "Don't worry this is debug: ask BE team why data stories $groupId is empty :)"
-                , Toast.LENGTH_LONG
+                "data stories $groupId is empty",
+                Toast.LENGTH_LONG
             ).show()
             return
         }
@@ -275,7 +275,7 @@ class StoriesDetailFragment @Inject constructor(
         viewModel.submitAction(event)
     }
 
-    private fun showPageLoading(isShowLoading: Boolean) = with(binding){
+    private fun showPageLoading(isShowLoading: Boolean) = with(binding) {
         rvStoriesCategory.showWithCondition(!isShowLoading)
         layoutStoriesContent.container.showWithCondition(!isShowLoading)
         layoutDetailLoading.container.showWithCondition(isShowLoading)

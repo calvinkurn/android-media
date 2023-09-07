@@ -28,3 +28,5 @@ internal fun View.onTouchEventStories(
 enum class TouchEventStories {
     PAUSE, RESUME, NEXT_PREV
 }
+
+const val SHOP_ID = "shop_id"

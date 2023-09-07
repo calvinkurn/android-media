@@ -22,19 +22,25 @@ import com.tokopedia.stories.view.model.StoriesGroupUiModel
 import com.tokopedia.stories.view.model.StoriesUiState
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction
 import com.tokopedia.stories.view.viewmodel.event.StoriesUiEvent
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-class StoriesViewModel @Inject constructor(
+class StoriesViewModel @AssistedInject constructor(
+    @Assisted private val authorId: String,
     private val repository: StoriesRepository,
 ) : ViewModel() {
 
-    private var mShopId: String = ""
+    @AssistedFactory
+    interface Factory  {
+        fun create(authorId: String) : StoriesViewModel
+    }
 
     private val _storiesGroup = MutableStateFlow(StoriesGroupUiModel())
     private val _storiesDetail = MutableStateFlow(StoriesDetailUiModel())
@@ -97,7 +103,6 @@ class StoriesViewModel @Inject constructor(
     private fun handleSetInitialData(bundle: Bundle?) {
         if (bundle == null) return
 
-        mShopId = bundle.getString(SHOP_ID, "").orEmpty()
         launchRequestInitialData()
     }
 
@@ -105,7 +110,6 @@ class StoriesViewModel @Inject constructor(
         if (bundle == null) return
 
         bundle.apply {
-            putString(SAVED_INSTANCE_STORIES_SHOP_ID, mShopId)
             putParcelable(SAVED_INSTANCE_STORIES_GROUP_DATA, _storiesGroup.value)
             putInt(SAVED_INSTANCE_STORIES_GROUP_POSITION, _groupPos.value)
             putInt(SAVED_INSTANCE_STORIES_DETAIL_POSITION, _detailPos.value)
@@ -116,18 +120,14 @@ class StoriesViewModel @Inject constructor(
     private fun handleGetSavedInstanceStateData(bundle: Bundle?) {
         if (bundle == null) return
 
-        val shopId = bundle.getString(SAVED_INSTANCE_STORIES_SHOP_ID, "")
         val groupData = if (SDK_INT >= TIRAMISU) {
             bundle.getParcelable(SAVED_INSTANCE_STORIES_GROUP_DATA, StoriesGroupUiModel::class.java)
         } else bundle.getParcelable(SAVED_INSTANCE_STORIES_GROUP_DATA)
         val groupPosition = bundle.getInt(SAVED_INSTANCE_STORIES_GROUP_POSITION, 0)
         val detailPosition = bundle.getInt(SAVED_INSTANCE_STORIES_DETAIL_POSITION, 0)
 
-        if (groupData == null) {
-            mShopId = shopId
-            launchRequestInitialData()
-        } else {
-            mShopId = shopId
+        if (groupData == null) launchRequestInitialData()
+        else {
             _storiesGroup.value = groupData
             _groupPos.value = groupPosition
             _detailPos.value = detailPosition
@@ -303,7 +303,7 @@ class StoriesViewModel @Inject constructor(
 
     private suspend fun requestStoriesInitialData(): StoriesGroupUiModel {
         val request = StoriesRequestModel(
-            authorID = mShopId,
+            authorID = authorId,
             authorType = StoriesAuthorType.SHOP.value,
             source = StoriesSource.SHOP_ENTRY_POINT.value,
             sourceID = "",
@@ -313,7 +313,7 @@ class StoriesViewModel @Inject constructor(
 
     private suspend fun requestStoriesDetailData(sourceId: String): StoriesDetailUiModel {
         val request = StoriesRequestModel(
-            authorID = mShopId,
+            authorID = authorId,
             authorType = StoriesAuthorType.SHOP.value,
             source = StoriesSource.STORY_GROUP.value,
             sourceID = sourceId,
@@ -322,8 +322,6 @@ class StoriesViewModel @Inject constructor(
     }
 
     companion object {
-        private const val SHOP_ID = "shop_id"
-        private const val SAVED_INSTANCE_STORIES_SHOP_ID = "stories_shop_id"
         private const val SAVED_INSTANCE_STORIES_GROUP_DATA = "stories_group_data"
         private const val SAVED_INSTANCE_STORIES_GROUP_POSITION = "stories_group_position"
         private const val SAVED_INSTANCE_STORIES_DETAIL_POSITION = "stories_detail_position"

@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
@@ -19,8 +18,10 @@ import com.tokopedia.stories.utils.withCache
 import com.tokopedia.stories.view.adapter.StoriesGroupPagerAdapter
 import com.tokopedia.stories.view.animation.StoriesPageAnimation
 import com.tokopedia.stories.view.model.StoriesGroupUiModel
+import com.tokopedia.stories.view.utils.SHOP_ID
 import com.tokopedia.stories.view.utils.isNetworkError
 import com.tokopedia.stories.view.viewmodel.StoriesViewModel
+import com.tokopedia.stories.view.viewmodel.StoriesViewModelFactory
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction.PauseStories
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction.ResumeStories
@@ -31,14 +32,19 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class StoriesGroupFragment @Inject constructor(
-    private val viewModelFactory: ViewModelProvider.Factory
+    private val viewModelFactory: StoriesViewModelFactory.Creator,
 ) : TkpdBaseV4Fragment() {
 
     private var _binding: FragmentStoriesGroupBinding? = null
     private val binding: FragmentStoriesGroupBinding
         get() = _binding!!
 
-    private val viewModel by activityViewModels<StoriesViewModel> { viewModelFactory }
+    private val shopId: String
+        get() = arguments?.getString(SHOP_ID).orEmpty()
+
+    val viewModelProvider get() = viewModelFactory.create(shopId)
+
+    private val viewModel by activityViewModels<StoriesViewModel> { viewModelProvider }
 
     private val pagerListener = object : ViewPager2.OnPageChangeCallback() {
         override fun onPageSelected(position: Int) {
@@ -166,8 +172,8 @@ class StoriesGroupFragment @Inject constructor(
             // TODO handle error empty data state here
             Toast.makeText(
                 requireContext(),
-                "Don't worry this is debug: ask BE team why data categories is empty :)"
-                , Toast.LENGTH_LONG
+                "data categories is empty",
+                Toast.LENGTH_LONG
             ).show()
             return
         }
@@ -179,7 +185,7 @@ class StoriesGroupFragment @Inject constructor(
         showPageLoading(false)
     }
 
-    private fun selectGroupPosition(position: Int, showAnimation: Boolean ) = with(binding.storiesGroupViewPager) {
+    private fun selectGroupPosition(position: Int, showAnimation: Boolean) = with(binding.storiesGroupViewPager) {
         if (position < 0) return@with
 
         setCurrentItem(position, showAnimation)
