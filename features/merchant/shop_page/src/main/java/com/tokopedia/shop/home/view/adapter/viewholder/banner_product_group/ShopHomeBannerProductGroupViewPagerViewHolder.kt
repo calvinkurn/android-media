@@ -10,6 +10,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -22,6 +23,7 @@ import com.tokopedia.shop.home.view.fragment.ShopBannerProductGroupWidgetTabFrag
 import com.tokopedia.shop.home.view.listener.ShopBannerProductGroupListener
 import com.tokopedia.shop.home.view.model.banner_product_group.BannerProductGroupUiModel
 import com.tokopedia.unifycomponents.TabsUnifyMediator
+import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.unifycomponents.setCustomText
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.unifycomponents.R as unifycomponentsR
@@ -36,10 +38,12 @@ class ShopHomeBannerProductGroupViewPagerViewHolder(
         @LayoutRes
         val LAYOUT = R.layout.item_shop_home_banner_product_group_viewpager
         private const val ONE_TAB = 1
+        private const val MARGIN_16_DP = 16f
     }
 
     private val viewBinding: ItemShopHomeBannerProductGroupViewpagerBinding? by viewBinding()
     private var isProductSuccessfullyLoaded = false
+    private var tabTotalWidth = 0
 
     init {
         disableTabSwipeBehavior()
@@ -80,22 +84,35 @@ class ShopHomeBannerProductGroupViewPagerViewHolder(
             tabsUnify.whiteShadeLeft.gone()
             tabsUnify.whiteShadeRight.gone()
 
-            when {
-                model.tabs.isEmpty() -> tabsUnify.gone()
-                model.tabs.size == ONE_TAB -> tabsUnify.gone()
-                else -> {
-                    tabsUnify.visible()
-                    tabsUnify.customTabMode = TabLayout.MODE_SCROLLABLE
-                    tabsUnify.customTabGravity = TabLayout.GRAVITY_FILL
-                }
-            }
-
-
             val centeredTabIndicator = ContextCompat.getDrawable(tabsUnify.tabLayout.context, R.drawable.shape_showcase_tab_indicator_color)
             tabsUnify.tabLayout.setSelectedTabIndicator(centeredTabIndicator)
 
             TabsUnifyMediator(tabsUnify, viewPager) { tab, currentPosition ->
                 tab.setCustomText(fragments[currentPosition].first)
+                tab.view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+                val tabWidth = (tab.view.measuredWidth + MARGIN_16_DP.dpToPx() + MARGIN_16_DP.dpToPx()).toInt()
+                tabTotalWidth += tabWidth
+            }
+
+            tabsUnify.post {
+
+                when {
+                    model.tabs.isEmpty() -> tabsUnify.gone()
+                    model.tabs.size == ONE_TAB -> tabsUnify.gone()
+                    else -> {
+                        tabsUnify.visible()
+
+                        val screenWidth = DeviceScreenInfo.getScreenWidth(tabsUnify.context) - MARGIN_16_DP.dpToPx() - MARGIN_16_DP.dpToPx()
+                        if(tabTotalWidth < screenWidth) {
+                            tabsUnify.customTabMode = TabLayout.MODE_FIXED
+                            tabsUnify.customTabGravity = TabLayout.GRAVITY_FILL
+                        } else {
+                            tabsUnify.customTabMode = TabLayout.MODE_SCROLLABLE
+                            tabsUnify.customTabGravity = TabLayout.GRAVITY_FILL
+                        }
+                    }
+                }
+
             }
         }
 

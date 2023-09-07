@@ -41,6 +41,7 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
         val LAYOUT = R.layout.item_shop_home_showcase_navigation_left_main_banner
         private const val ONE_TAB = 1
         private const val FIVE_SHOWCASE = 5
+        private const val MARGIN_16_DP = 16f
     }
 
     private var tabTotalWidth = 0
@@ -134,7 +135,7 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
             TabsUnifyMediator(tabsUnify, viewPager) { tab, currentPosition ->
                 tab.setCustomText(fragments[currentPosition].first)
                 tab.view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
-                val tabWidth = (tab.view.measuredWidth + 16f.dpToPx() + 16f.dpToPx()).toInt()
+                val tabWidth = (tab.view.measuredWidth + MARGIN_16_DP.dpToPx() + MARGIN_16_DP.dpToPx()).toInt()
                 tabTotalWidth += tabWidth
             }
 
@@ -146,7 +147,7 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
                     else -> {
                         tabsUnify.visible()
 
-                        val screenWidth = DeviceScreenInfo.getScreenWidth(tabsUnify.context) - 16f.dpToPx() - 16f.dpToPx()
+                        val screenWidth = DeviceScreenInfo.getScreenWidth(tabsUnify.context) - MARGIN_16_DP.dpToPx() - MARGIN_16_DP.dpToPx()
                         if(tabTotalWidth < screenWidth) {
                             tabsUnify.customTabMode = TabLayout.MODE_FIXED
                             tabsUnify.customTabGravity = TabLayout.GRAVITY_FILL
