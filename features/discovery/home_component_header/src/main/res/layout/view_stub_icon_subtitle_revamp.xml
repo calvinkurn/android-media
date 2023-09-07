@@ -4,4 +4,5 @@
     android:id="@+id/channel_subtitle_icon"
     android:contentDescription="@string/content_desc_icon_subtitle"
     android:layout_width="16dp"
-    android:layout_height="16dp" />
+    android:layout_height="16dp"
+    android:visibility="gone"/>
