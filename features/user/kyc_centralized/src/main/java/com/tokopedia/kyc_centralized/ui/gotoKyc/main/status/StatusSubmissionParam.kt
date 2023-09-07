@@ -1,8 +1,10 @@
 package com.tokopedia.kyc_centralized.ui.gotoKyc.main.status
 
+import android.annotation.SuppressLint
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
+@SuppressLint("ParamFieldAnnotation")
 @Parcelize
 data class StatusSubmissionParam(
     val projectId: String,
@@ -33,5 +35,13 @@ data class StatusSubmissionParam(
     * */
     val gotoKycType: String = "",
 
-    val waitMessage: String = ""
+    /*
+    * The purpose of this field is to set the text in status page
+    * */
+    val waitMessage: String = "",
+
+    /*
+    * The purpose of this field is to redirect to callback when verified
+    * */
+    val callback: String = ""
 ): Parcelable

@@ -165,7 +165,8 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
                     setButtonLoading(false)
                     val parameter = DobChallengeParam(
                         projectId = args.parameter.projectId,
-                        challengeId = it.challengeId
+                        challengeId = it.challengeId,
+                        callback = args.parameter.callback
                     )
                     gotoDobChallenge(parameter)
                 }
@@ -176,7 +177,8 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
                         sourcePage = args.parameter.source,
                         gotoKycType = KYCConstant.GotoKycFlow.PROGRESSIVE,
                         status = it.status.toString(),
-                        rejectionReason = it.rejectionReason
+                        rejectionReason = it.rejectionReason,
+                        callback = args.parameter.callback
                     )
                     gotoStatusSubmissionPending(parameter)
                 }
@@ -371,7 +373,8 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
     private fun gotoCaptureKycDocuments() {
         val parameter = CaptureKycDocumentsParam(
             projectId = args.parameter.projectId,
-            source = args.parameter.source
+            source = args.parameter.source,
+            callback = args.parameter.callback
         )
         val toCaptureKycDocuments = BridgingAccountLinkingFragmentDirections.actionBridgingAccountLinkingFragmentToCaptureKycDocumentsFragment(parameter)
         view?.findNavController()?.navigate(toCaptureKycDocuments)

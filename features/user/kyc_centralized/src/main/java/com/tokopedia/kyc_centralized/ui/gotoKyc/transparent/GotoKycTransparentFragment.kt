@@ -75,6 +75,9 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
                 directShowBottomSheetInOnboardBenefit = true
                 viewModel.getProjectInfo(viewModel.projectId.toIntSafely())
             }
+            KYCConstant.ActivityResult.LAUNCH_CALLBACK -> {
+                gotoCallbackApplink(viewModel.callback)
+            }
             else -> {
                 finishWithResult(result.resultCode)
             }
@@ -90,6 +93,11 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
                 finishWithResult(Activity.RESULT_CANCELED)
             }
         }
+    }
+
+    // this callback for support when user re-verify flow
+    private val startCallbackForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { _: ActivityResult ->
+        finishWithResult(Activity.RESULT_OK)
     }
 
     private fun finishWithResult(result: Int) {
@@ -134,18 +142,20 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
         oneKycSdk.init()
         val projectId = activity?.intent?.extras?.getString(ApplinkConstInternalUserPlatform.PARAM_PROJECT_ID)
         val source = activity?.intent?.extras?.getString(ApplinkConstInternalUserPlatform.PARAM_SOURCE)
+        val callback = activity?.intent?.extras?.getString(ApplinkConstInternalUserPlatform.PARAM_CALL_BACK)
         isReVerify = activity?.intent?.extras?.getBoolean(IS_RE_VERIFY).orFalse()
-        validationParameter(projectId = projectId, source = source)
+        validationParameter(projectId = projectId, source = source, callback)
         initObserver()
     }
 
-    private fun validationParameter(projectId: String?, source: String?) {
+    private fun validationParameter(projectId: String?, source: String?, callback: String?) {
         if (projectId?.toIntOrNull() == null) {
             finishWithResult(Activity.RESULT_CANCELED)
         } else {
             // set value project id
             viewModel.setProjectId(projectId)
             viewModel.setSource(source.orEmpty())
+            viewModel.setCallback(callback.orEmpty())
 
             handleRequireLogin()
         }
@@ -165,6 +175,14 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
             ApplinkConstInternalUserPlatform.LOGIN
         )
         startLoginForResult.launch(intent)
+    }
+
+    private fun gotoCallbackApplink(callback: String) {
+        val intent = RouteManager.getIntent(
+            context,
+            callback
+        )
+        startCallbackForResult.launch(intent)
     }
 
     private fun saveInitDataToPreference() {
@@ -203,7 +221,8 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
                         sourcePage = viewModel.source,
                         status = it.status,
                         rejectionReason = it.rejectionReason,
-                        waitMessage = it.waitMessage
+                        waitMessage = it.waitMessage,
+                        callback = viewModel.callback
                     )
                     gotoStatusSubmission(parameter)
                 }
@@ -270,13 +289,15 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
                 encryptedName = encryptedName,
                 isAccountLinked = viewModel.isAccountLinked,
                 sourcePage = viewModel.source,
-                directShowBottomSheet = directShowBottomSheetInOnboardBenefit
+                directShowBottomSheet = directShowBottomSheetInOnboardBenefit,
+                callback = viewModel.callback
             )
             gotoOnboardBenefit(parameter)
         } else {
             showProgressiveBottomSheet(
                 source = viewModel.source,
-                encryptedName = encryptedName
+                encryptedName = encryptedName,
+                callback = viewModel.callback
             )
         }
     }
@@ -288,14 +309,16 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
                 gotoKycType = KYCConstant.GotoKycFlow.NON_PROGRESSIVE,
                 isAccountLinked = viewModel.isAccountLinked,
                 sourcePage = viewModel.source,
-                directShowBottomSheet = directShowBottomSheetInOnboardBenefit
+                directShowBottomSheet = directShowBottomSheetInOnboardBenefit,
+                callback = viewModel.callback
             )
             gotoOnboardBenefit(parameter)
         } else {
             showNonProgressiveBottomSheet(
                 projectId = viewModel.projectId,
                 source = viewModel.source,
-                isAccountLinked = viewModel.isAccountLinked
+                isAccountLinked = viewModel.isAccountLinked,
+                callback = viewModel.callback
             )
         }
     }
@@ -306,7 +329,8 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
                 projectId = viewModel.projectId,
                 gotoKycType = KYCConstant.GotoKycFlow.AWAITING_APPROVAL_GOPAY,
                 sourcePage = viewModel.source,
-                directShowBottomSheet = directShowBottomSheetInOnboardBenefit
+                directShowBottomSheet = directShowBottomSheetInOnboardBenefit,
+                callback = viewModel.callback
             )
             gotoOnboardBenefit(parameter)
         } else {
@@ -356,11 +380,12 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun showProgressiveBottomSheet(source: String, encryptedName: String) {
+    private fun showProgressiveBottomSheet(source: String, encryptedName: String, callback: String) {
         val onBoardProgressiveBottomSheet = OnboardProgressiveBottomSheet.newInstance(
             projectId = viewModel.projectId,
             source = source,
-            encryptedName = encryptedName
+            encryptedName = encryptedName,
+            callback = callback
         )
 
         onBoardProgressiveBottomSheet.show(
@@ -380,11 +405,12 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun showNonProgressiveBottomSheet(projectId: String, source: String, isAccountLinked: Boolean) {
+    private fun showNonProgressiveBottomSheet(projectId: String, source: String, isAccountLinked: Boolean, callback: String) {
         val onBoardNonProgressiveBottomSheet = OnboardNonProgressiveBottomSheet.newInstance(
             projectId = projectId,
             source = source,
-            isAccountLinked = isAccountLinked
+            isAccountLinked = isAccountLinked,
+            callback = callback
         )
 
         onBoardNonProgressiveBottomSheet.show(

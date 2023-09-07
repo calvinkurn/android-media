@@ -100,7 +100,8 @@ class FinalLoaderFragment : BaseDaggerFragment() {
                 is RegisterProgressiveResult.RiskyUser -> {
                     val parameter = DobChallengeParam(
                         projectId = args.parameter.projectId,
-                        challengeId = args.parameter.challengeId
+                        challengeId = args.parameter.challengeId,
+                        callback = args.parameter.callback
                     )
                     gotoDobChallenge(parameter)
                 }
@@ -110,7 +111,8 @@ class FinalLoaderFragment : BaseDaggerFragment() {
                         gotoKycType = KYCConstant.GotoKycFlow.PROGRESSIVE,
                         status = it.status.toString(),
                         sourcePage = args.parameter.source,
-                        rejectionReason = it.rejectionReason
+                        rejectionReason = it.rejectionReason,
+                        callback = args.parameter.callback
                     )
                     gotoStatusSubmission(parameter)
                 }
@@ -129,7 +131,8 @@ class FinalLoaderFragment : BaseDaggerFragment() {
                         gotoKycType = KYCConstant.GotoKycFlow.NON_PROGRESSIVE,
                         status = it.status,
                         sourcePage = args.parameter.source,
-                        rejectionReason = it.rejectionReason
+                        rejectionReason = it.rejectionReason,
+                        callback = args.parameter.callback
                     )
                     gotoStatusSubmission(parameter)
                 }

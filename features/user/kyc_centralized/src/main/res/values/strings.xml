@@ -218,11 +218,13 @@
     <string name="goto_kyc_status_pending_hours">%s jam</string>
     <string name="goto_kyc_status_pending_minutes">%s menit</string>
     <string name="goto_kyc_status_pending_seconds">%s detik</string>
-    <string name="goto_kyc_status_pending_button">Balik ke %s</string>
     <string name="goto_kyc_status_pending_refresh_status">Cek Status Verifikasi</string>
     <string name="goto_kyc_status_verified_title">Hore, dokumenmu berhasil terverifikasi!</string>
     <string name="goto_kyc_status_verified_subtitle">Tenang, data yang kamu berikan akan dijaga kerahasiannya dan disimpan di sistem kami.</string>
+    <string name="goto_kyc_back_with_source">Balik ke %s</string>
     <string name="goto_kyc_back_to_source">Balik</string>
+    <string name="goto_kyc_next_to_callback">Lanjut</string>
+    <string name="goto_kyc_next_to_callback_with_source">Lanjut ke %s</string>
     <string name="goto_kyc_status_blacklisted_title">Yaah, dokumen kamu nggak sesuai Syarat &amp; Ketentuan</string>
     <string name="goto_kyc_status_blacklisted_subtitle">Untuk informasi lebih lanjut, coba hubungi Tokopedia Care ya.</string>
     <string name="goto_kyc_status_blacklisted_button">Kontak Tokopedia Care</string>

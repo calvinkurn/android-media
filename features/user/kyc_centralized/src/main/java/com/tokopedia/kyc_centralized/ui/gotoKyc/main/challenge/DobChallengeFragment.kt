@@ -275,7 +275,8 @@ class DobChallengeFragment : BaseDaggerFragment() {
             source = args.parameter.pageSource,
             projectId = args.parameter.projectId,
             challengeId = args.parameter.challengeId,
-            gotoKycType = KYCConstant.GotoKycFlow.PROGRESSIVE
+            gotoKycType = KYCConstant.GotoKycFlow.PROGRESSIVE,
+            callback = args.parameter.callback
         )
         val toFinalLoaderPage = DobChallengeFragmentDirections.actionDobChallengeFragmentToFinalLoaderFragment(parameter)
         view?.findNavController()?.navigate(toFinalLoaderPage)

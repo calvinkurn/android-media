@@ -109,7 +109,8 @@ class OnboardBenefitFragment: BaseDaggerFragment() {
         val onBoardProgressiveBottomSheet = OnboardProgressiveBottomSheet.newInstance(
             projectId = args.parameter.projectId,
             source = source,
-            encryptedName = encryptedName
+            encryptedName = encryptedName,
+            callback = args.parameter.callback
         )
 
         onBoardProgressiveBottomSheet.show(
@@ -131,7 +132,8 @@ class OnboardBenefitFragment: BaseDaggerFragment() {
         val onBoardNonProgressiveBottomSheet = OnboardNonProgressiveBottomSheet.newInstance(
             projectId = projectId,
             source = source,
-            isAccountLinked = isAccountLinked
+            isAccountLinked = isAccountLinked,
+            callback = args.parameter.callback
         )
 
         onBoardNonProgressiveBottomSheet.show(

@@ -76,6 +76,7 @@ class OnboardProgressiveBottomSheet: BottomSheetUnify() {
 
     private var projectId = ""
     private var source = ""
+    private var callback = ""
     private var encryptedName = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -85,6 +86,7 @@ class OnboardProgressiveBottomSheet: BottomSheetUnify() {
         arguments?.let {
             projectId = it.getString(PROJECT_ID).orEmpty()
             source = it.getString(SOURCE).orEmpty()
+            callback = it.getString(CALLBACK).orEmpty()
             encryptedName = it.getString(ENCRYPTED_NAME).orEmpty()
         }
     }
@@ -176,7 +178,8 @@ class OnboardProgressiveBottomSheet: BottomSheetUnify() {
                     setButtonLoading(false)
                     val parameter = GotoKycMainParam(
                         projectId = projectId,
-                        challengeId = it.challengeId
+                        challengeId = it.challengeId,
+                        callback = callback
                     )
                     gotoDobChallenge(parameter)
                 }
@@ -187,7 +190,8 @@ class OnboardProgressiveBottomSheet: BottomSheetUnify() {
                         sourcePage = source,
                         gotoKycType = KYCConstant.GotoKycFlow.PROGRESSIVE,
                         status = it.status.toString(),
-                        rejectionReason = it.rejectionReason
+                        rejectionReason = it.rejectionReason,
+                        callback = callback
                     )
                     gotoStatusSubmissionPending(parameter)
                 }
@@ -289,13 +293,15 @@ class OnboardProgressiveBottomSheet: BottomSheetUnify() {
 
         private const val PROJECT_ID = "project_id"
         private const val SOURCE = "source"
+        private const val CALLBACK = "callBack"
         private const val ENCRYPTED_NAME = "encrypted_name"
 
-        fun newInstance(projectId: String, source: String, encryptedName: String) =
+        fun newInstance(projectId: String, source: String, encryptedName: String, callback: String) =
             OnboardProgressiveBottomSheet().apply {
                 arguments = Bundle().apply {
                     putString(PROJECT_ID, projectId)
                     putString(SOURCE, source)
+                    putString(CALLBACK, callback)
                     putString(ENCRYPTED_NAME, encryptedName)
                 }
             }

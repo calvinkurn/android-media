@@ -44,6 +44,7 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
 
     private var projectId = ""
     private var source = ""
+    private var callback = ""
     private var isAccountLinked = false
     private var isReload = false
 
@@ -74,7 +75,8 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
         if (isGranted) {
             val parameter = GotoKycMainParam(
                 projectId = projectId,
-                sourcePage = source
+                sourcePage = source,
+                callback = callback
             )
             gotoCaptureKycDocuments(parameter)
         } else {
@@ -92,6 +94,7 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
             projectId = it.getString(PROJECT_ID).orEmpty()
             source = it.getString(SOURCE).orEmpty()
             isAccountLinked = it.getBoolean(ACCOUNT_LINKED)
+            callback = it.getString(CALLBACK).orEmpty()
         }
     }
 
@@ -153,7 +156,8 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
                     } else {
                         val parameter = GotoKycMainParam(
                             projectId = projectId,
-                            sourcePage = source
+                            sourcePage = source,
+                            callback = callback
                         )
                         gotoCaptureKycDocuments(parameter)
                     }
@@ -161,7 +165,8 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
             } else {
                 val parameter = GotoKycMainParam(
                     projectId = projectId,
-                    sourcePage = source
+                    sourcePage = source,
+                    callback = callback
                 )
                 gotoBridgingAccountLinking(parameter)
             }
@@ -267,15 +272,17 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
     companion object {
         private const val PROJECT_ID = "project_id"
         private const val SOURCE = "source"
+        private const val CALLBACK = "callBack"
         private const val ACCOUNT_LINKED = "account_linked"
         private const val PACKAGE = "package"
 
-        fun newInstance(projectId: String, source: String = "", isAccountLinked: Boolean) =
+        fun newInstance(projectId: String, source: String = "", isAccountLinked: Boolean, callback: String) =
             OnboardNonProgressiveBottomSheet().apply {
                 arguments = Bundle().apply {
                     putString(PROJECT_ID, projectId)
                     putString(SOURCE, source)
                     putBoolean(ACCOUNT_LINKED, isAccountLinked)
+                    putString(CALLBACK, callback)
                 }
             }
     }

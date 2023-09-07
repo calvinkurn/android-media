@@ -44,6 +44,7 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
     private val args: StatusSubmissionFragmentArgs by navArgs()
     private var kycFlowType: String = ""
     private var sourcePage: String = ""
+    private var callback: String = ""
     private var status: String = ""
     private var rejectionReason: String = ""
     private var isAccountPage: Boolean = false
@@ -70,6 +71,7 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
 
         kycFlowType = args.parameter.gotoKycType
         status = args.parameter.status
+        callback = args.parameter.callback
         sourcePage = args.parameter.sourcePage
         rejectionReason = args.parameter.rejectionReason
         isAccountPage = args.parameter.projectId == KYCConstant.PROJECT_ID_ACCOUNT
@@ -209,7 +211,12 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
                     goToTransparentActivityToReVerify()
                 }
                 else -> {
-                    activity?.setResult(Activity.RESULT_OK)
+                    val activityResult = if (status == KycStatus.VERIFIED.code.toString() && callback.isNotEmpty()) {
+                        KYCConstant.ActivityResult.LAUNCH_CALLBACK
+                    } else {
+                        Activity.RESULT_OK
+                    }
+                    activity?.setResult(activityResult)
                     activity?.finish()
                 }
             }
@@ -275,11 +282,20 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
         binding?.layoutStatusSubmission?.apply {
             tvHeader.text = getString(R.string.goto_kyc_status_verified_title)
             tvDescription.text = getString(R.string.goto_kyc_status_verified_subtitle)
-            btnPrimary.text = if (sourcePage.isEmpty()) {
-                getString(R.string.goto_kyc_back_to_source)
-            } else {
-                getString(R.string.goto_kyc_status_pending_button, sourcePage)
-            }
+            btnPrimary.text =
+                when {
+                    callback.isNotEmpty() -> if (sourcePage.isEmpty()) {
+                        getString(R.string.goto_kyc_next_to_callback)
+                    } else {
+                        getString(R.string.goto_kyc_next_to_callback_with_source, sourcePage)
+                    }
+                    else -> if (sourcePage.isEmpty()) {
+                        getString(R.string.goto_kyc_back_to_source)
+                    } else {
+                        getString(R.string.goto_kyc_back_with_source, sourcePage)
+                    }
+                }
+
             btnSecondary.hide()
             btnPrimary.showWithCondition(!isAccountPage)
         }
@@ -311,7 +327,7 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
             btnPrimary.text = if (sourcePage.isEmpty()) {
                 getString(R.string.goto_kyc_back_to_source)
             } else {
-                getString(R.string.goto_kyc_status_pending_button, sourcePage)
+                getString(R.string.goto_kyc_back_with_source, sourcePage)
             }
             btnSecondary.text = getString(R.string.goto_kyc_status_pending_refresh_status)
             btnSecondary.show()

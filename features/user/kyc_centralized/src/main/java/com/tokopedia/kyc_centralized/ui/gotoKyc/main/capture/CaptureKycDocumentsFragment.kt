@@ -209,7 +209,8 @@ class CaptureKycDocumentsFragment : BaseDaggerFragment() {
         val parameter = FinalLoaderParam(
             source = args.parameter.source,
             projectId = args.parameter.projectId,
-            gotoKycType = KYCConstant.GotoKycFlow.NON_PROGRESSIVE
+            gotoKycType = KYCConstant.GotoKycFlow.NON_PROGRESSIVE,
+            callback = args.parameter.callback
         )
         val toFinalLoaderPage =
             CaptureKycDocumentsFragmentDirections.actionCaptureKycDocumentsFragmentToFinalLoaderFragment(
