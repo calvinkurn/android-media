@@ -32,7 +32,7 @@ data class PromoItem(
     val expiryInfo: String = "",
     val expiryTimestamp: Long = 0,
     val cta: PromoCta = PromoCta(),
-    val couponAppLink: String = "",
+    val couponUrl: String = "",
     val couponType: List<String> = emptyList(),
     val secondaryPromo: SecondaryPromoItem = SecondaryPromoItem(),
 

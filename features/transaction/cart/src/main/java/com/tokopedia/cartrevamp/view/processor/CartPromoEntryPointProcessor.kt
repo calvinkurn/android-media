@@ -75,7 +75,7 @@ class CartPromoEntryPointProcessor @Inject constructor(
         }
         val hasSelectedItemInCart = CartDataHelper.hasSelectedCartItem(cartDataList)
 
-        if (isPromoRevamp != null && isPromoRevamp == true) {
+        if (isPromoRevamp == true) {
             if (!hasSelectedItemInCart) {
                 return EntryPointInfoEvent.InactiveNew(
                     lastApply = lastApply,

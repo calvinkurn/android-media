@@ -69,6 +69,9 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
         val recommendedPromoCodes = response.promoListRecommendation.data.promoRecommendation.codes
         val selectedPromoCodes = response.promoListRecommendation.data.couponSections
             .flatMap { it.coupons }.filter { it.isSelected }.map { it.code }
+        val selectedSecondaryPromoCodes = response.promoListRecommendation.data.couponSections
+            .flatMap { it.coupons }.flatMap { it.secondaryCoupon }.filter { it.isSelected }.map { it.code }
+        val allSelectedPromoCodes = selectedPromoCodes.plus(selectedSecondaryPromoCodes)
 
         var hasRecommendedOrOtherSection = false
         val items = mutableListOf<DelegateAdapterItem>()
@@ -82,7 +85,7 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
                                 promoRecommendation = response.promoListRecommendation.data.promoRecommendation,
                                 couponSection = couponSection,
                                 recommendedPromoCodes = recommendedPromoCodes,
-                                selectedPromoCodes = selectedPromoCodes
+                                selectedPromoCodes = allSelectedPromoCodes
                             )
                         )
                         couponSection.coupons.filter { it.isGroupHeader }
@@ -93,7 +96,7 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
                                         couponSection = couponSection,
                                         coupon = coupon,
                                         recommendedPromoCodes = recommendedPromoCodes,
-                                        selectedPromoCodes = selectedPromoCodes
+                                        selectedPromoCodes = allSelectedPromoCodes
                                     )
                                 )
                             }
@@ -119,7 +122,7 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
                                         couponSection = couponSection,
                                         coupon = coupon,
                                         recommendedPromoCodes = recommendedPromoCodes,
-                                        selectedPromoCodes = selectedPromoCodes
+                                        selectedPromoCodes = allSelectedPromoCodes
                                     )
                                 )
                             }
@@ -162,7 +165,7 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
                     couponSection = attemptedPromoSection,
                     coupon = coupon,
                     recommendedPromoCodes = recommendedPromoCodes,
-                    selectedPromoCodes = selectedPromoCodes
+                    selectedPromoCodes = allSelectedPromoCodes
                 )
             )
         }
@@ -195,33 +198,30 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
         recommendedPromoCodes: List<String>,
         selectedPromoCodes: List<String>,
     ): PromoItem {
-        val secondaryCoupon: SecondaryCoupon = if (coupon.secondaryCoupon.isNotEmpty()) {
-            coupon.secondaryCoupon.first()
-        } else {
-            SecondaryCoupon()
-        }
+        val secondaryCoupon: SecondaryCoupon? = coupon.secondaryCoupon.firstOrNull()
         val remainingPromoCount = couponSection.couponGroups
             .firstOrNull { it.id == coupon.groupId }?.count ?: 1
 
         val isRecommended = recommendedPromoCodes.isNotEmpty() &&
             (recommendedPromoCodes.contains(coupon.code)
-                || recommendedPromoCodes.contains(secondaryCoupon.code))
-        val isSelected = coupon.isSelected || secondaryCoupon.isSelected
+                || recommendedPromoCodes.contains(secondaryCoupon?.code))
+        val isSelected = coupon.isSelected || secondaryCoupon?.isSelected ?: false
 
         val primaryClashingInfos =
             coupon.clashingInfos.filter { selectedPromoCodes.contains(it.code) }
         val secondaryClashingInfos =
-            secondaryCoupon.clashingInfos.filter { selectedPromoCodes.contains(it.code) }
+            secondaryCoupon?.clashingInfos?.filter { selectedPromoCodes.contains(it.code) } ?: emptyList()
 
-        var state: PromoItemState = if (isSelected) {
-            PromoItemState.Selected
+        var state: PromoItemState = if (primaryClashingInfos.isNotEmpty() && secondaryCoupon != null && secondaryClashingInfos.isNotEmpty()) {
+            PromoItemState.Disabled(secondaryClashingInfos.first().message)
+        } else if (primaryClashingInfos.isNotEmpty() && secondaryCoupon == null) {
+            PromoItemState.Disabled(primaryClashingInfos.first().message)
         } else {
-            PromoItemState.Normal
-        }
-        if (primaryClashingInfos.isNotEmpty()) {
-            state = PromoItemState.Disabled(primaryClashingInfos.first().message)
-        } else if (secondaryClashingInfos.isNotEmpty()) {
-            state = PromoItemState.Disabled(secondaryClashingInfos.first().message)
+            if (isSelected) {
+                PromoItemState.Selected
+            } else {
+                PromoItemState.Normal
+            }
         }
         if (coupon.radioCheckState == "disabled") {
             state = PromoItemState.Ineligible(coupon.message)
@@ -245,6 +245,11 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
             else -> {
                 isExpanded && index.isZero()
             }
+        }
+        val secondaryPromo = if (secondaryCoupon != null) {
+            mapSecondaryCouponToSecondaryPromo(couponSection, secondaryCoupon)
+        } else {
+            SecondaryPromoItem()
         }
         return PromoItem(
             id = coupon.id,
@@ -295,17 +300,17 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
                 appLink = coupon.cta.applink
             ),
             couponType = coupon.couponType,
-            couponAppLink = coupon.couponUrl,
-            secondaryPromo = mapSecondaryCouponToSecondaryPromo(couponSection, secondaryCoupon),
+            couponUrl = coupon.couponUrl,
+            secondaryPromo = secondaryPromo,
 
             state = state,
             currentClashingPromoCodes = primaryClashingInfos.map { it.code },
             currentClashingSecondaryPromoCodes = secondaryClashingInfos.map { it.code },
             isRecommended = isRecommended,
             isPreSelected = isSelected,
-            isAttempted = coupon.isAttempted || secondaryCoupon.isAttempted,
-            isBebasOngkir = coupon.isBebasOngkir || secondaryCoupon.isBebasOngkir,
-            isHighlighted = coupon.isHighlighted || secondaryCoupon.isHighlighted,
+            isAttempted = coupon.isAttempted || secondaryCoupon?.isAttempted ?: false,
+            isBebasOngkir = coupon.isBebasOngkir || secondaryCoupon?.isBebasOngkir ?: false,
+            isHighlighted = coupon.isHighlighted || secondaryCoupon?.isHighlighted ?: false,
             isLastRecommended = isRecommended && index == couponSection.coupons.size - 1,
             isExpanded = isExpanded,
             isVisible = isVisible,
@@ -363,6 +368,7 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
                 text = secondaryCoupon.cta.text,
                 appLink = secondaryCoupon.cta.applink
             ),
+            couponUrl = secondaryCoupon.couponUrl,
             couponType = secondaryCoupon.couponType
         )
     }

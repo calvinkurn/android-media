@@ -168,7 +168,12 @@ class PromoCompoundView @JvmOverloads constructor(
                 else -> com.tokopedia.unifyprinciples.R.color.Unify_NN950
             }
             tpgPromoBenefitAmount.setTextColorCompat(defaultTextColorResId)
-            tpgPromoBenefitAmount.text = promo.benefitAmountStr.toSpannableHtmlString(context)
+            val benefitAmountStr = if (promo.useSecondaryPromo) {
+                promo.secondaryPromo.benefitAmountStr
+            } else {
+                promo.benefitAmountStr
+            }
+            tpgPromoBenefitAmount.text = benefitAmountStr.toSpannableHtmlString(context)
             if (promo.state !is PromoItemState.Loading) {
                 tpgPromoBenefitAmount.visible()
             } else {

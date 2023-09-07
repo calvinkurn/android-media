@@ -147,7 +147,7 @@ data class Coupon(
     val promoInfos: List<PromoInfo> = emptyList(),
     @SerializedName("cta")
     val cta: Cta = Cta(),
-    @SerializedName("secondary_promo")
+    @SerializedName("secondary_coupons")
     val secondaryCoupon: List<SecondaryCoupon> = emptyList()
 )
 
@@ -246,6 +246,8 @@ data class SecondaryCoupon(
     val message: String = "",
     @SerializedName("code")
     val code: String = "",
+    @SerializedName("coupon_url")
+    val couponUrl: String = "",
     @SerializedName("coupon_type")
     val couponType: List<String> = emptyList(),
     @SerializedName("expiry_info")
@@ -287,7 +289,7 @@ data class SecondaryCoupon(
     @SerializedName("promo_infos")
     val promoInfos: List<PromoInfo> = emptyList(),
     @SerializedName("cta")
-    val cta: Cta = Cta()
+    val cta: Cta = Cta(),
 )
 
 data class EntryPointInfo(
