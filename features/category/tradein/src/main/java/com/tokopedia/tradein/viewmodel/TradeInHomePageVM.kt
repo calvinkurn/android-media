@@ -2,6 +2,7 @@ package com.tokopedia.tradein.viewmodel
 
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
@@ -96,12 +97,25 @@ class TradeInHomePageVM @Inject constructor(
                     tradeInApiService?.getDeviceModel().toString(),
                     Laku6DeviceModel::class.java
                 )
-            deviceModel.modelInfoBase64 = Base64.getEncoder()
-                .encodeToString(tradeInApiService?.getDeviceModel().toString().toByteArray())
+            deviceModel.modelInfoBase64 = getEncodedDeviceModelString()
             tradeInUniqueCode = deviceModel?.uniqueCode ?: ""
             laku6DeviceModel.value = deviceModel
         } catch (e: Exception) {
             Timber.d(e)
+        }
+    }
+
+    private fun getEncodedDeviceModelString(): String {
+        tradeInApiService?.getDeviceModel().toString().toByteArray().let { deviceModelBytes ->
+            return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                Base64.getEncoder()
+                    .encodeToString(deviceModelBytes)
+            } else {
+                android.util.Base64.encodeToString(
+                    deviceModelBytes,
+                    android.util.Base64.DEFAULT
+                )
+            }
         }
     }
 
