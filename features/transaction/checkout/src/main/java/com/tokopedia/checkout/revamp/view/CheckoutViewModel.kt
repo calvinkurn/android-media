@@ -163,6 +163,8 @@ class CheckoutViewModel @Inject constructor(
     // list summary default
     private var summariesAddOnUiModel: HashMap<Int, String> = hashMapOf()
 
+    private var isPromoRevamp: Boolean? = null
+
     fun stopEmbraceTrace() {
         val emptyMap: Map<String, Any> = HashMap()
         EmbraceMonitoring.stopMoments(EmbraceKey.KEY_ACT_BUY, null, emptyMap)
@@ -251,10 +253,12 @@ class CheckoutViewModel @Inject constructor(
                         epharmacy = uploadPrescriptionUiModel
                     )
 
+                    isPromoRevamp = promoUsageRollenceManager
+                        .isRevamp(saf.cartShipmentAddressFormData.lastApplyData.userGroupMetadata)
                     val promo = CheckoutPromoModel(
                         isEnable = !tickerError.isError,
                         promo = saf.cartShipmentAddressFormData.lastApplyData,
-                        isPromoRevamp = promoUsageRollenceManager.isRevamp(saf.cartShipmentAddressFormData.lastApplyData.userGroupMetadata)
+                        isPromoRevamp = isPromoRevamp ?: false
                     )
                     if (promo.isEnable && saf.cartShipmentAddressFormData.lastApplyData.additionalInfo.errorDetail.message.isNotEmpty()) {
                         PromoRevampAnalytics.eventCartViewPromoMessage(saf.cartShipmentAddressFormData.lastApplyData.additionalInfo.errorDetail.message)
@@ -727,7 +731,7 @@ class CheckoutViewModel @Inject constructor(
     private fun fetchInitialEntryPointInfo() {
         viewModelScope.launch(dispatchers.immediate) {
             val checkoutModel = listData.value.promo()!!
-            if (!useNewPromoPage(checkoutModel.promo)) {
+            if (isPromoRevamp == null || isPromoRevamp == false) {
                 return@launch
             }
             withContext(dispatchers.main) {
@@ -773,7 +777,7 @@ class CheckoutViewModel @Inject constructor(
         val oldCheckoutModel = oldCheckoutItems?.firstOrNull { it is CheckoutPromoModel } as? CheckoutPromoModel
 
         if (checkoutModel != null && oldCheckoutModel != null) {
-            if (!useNewPromoPage(checkoutModel.promo)) {
+            if (isPromoRevamp == null || isPromoRevamp == false) {
                 return checkoutItems
             } else {
                 val oldTotalPromoAmount = oldCheckoutModel.promo.additionalInfo.usageSummaries.sumOf { it.amount }
@@ -2546,10 +2550,6 @@ class CheckoutViewModel @Inject constructor(
             )
             validatePromo()
         }
-    }
-
-    fun useNewPromoPage(lastApplyUiModel: LastApplyUiModel) : Boolean {
-        return promoUsageRollenceManager.isRevamp(lastApplyUiModel.userGroupMetadata)
     }
 
     companion object {

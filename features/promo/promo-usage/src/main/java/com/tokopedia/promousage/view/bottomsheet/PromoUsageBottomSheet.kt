@@ -366,7 +366,6 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         // Header scroll listener
         binding?.rvPromo?.addOnScrollListener(object : OnScrollListener() {
             var scrollY = 0f
-            var offsetScrollY = 0f
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 scrollY += dy.toFloat()
@@ -581,13 +580,13 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
 
                 is PromoPageUiState.Success -> {
                     renderHeader(true)
-                    renderTickerInfo(state.tickerInfo)
                     submitItems(state.items)
                     renderLoadingDialog(false)
                     renderLoadingShimmer(false)
                     renderContent(true)
                     renderSavingInfo(state.savingInfo)
                     renderError(false)
+                    renderTickerInfo(state.tickerInfo)
                     refreshBottomSheetHeight(state)
                     adjustDummyBackground(state.items)
                 }
@@ -659,7 +658,6 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                 binding?.clBottomSheetContent?.layoutParams as? RelativeLayout.LayoutParams
             layoutParams?.setMargins(0, 0, 0, 0)
             binding?.clBottomSheetContent?.layoutParams = layoutParams
-            binding?.clBottomSheetContent?.requestLayout()
             binding?.clTickerInfo?.gone()
         }
     }

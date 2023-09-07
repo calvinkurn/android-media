@@ -24,6 +24,8 @@ class CartPromoEntryPointProcessor @Inject constructor(
     private val promoUsageRollenceManager: PromoUsageRollenceManager
 ) {
 
+    private var isPromoRevamp: Boolean? = null
+
     companion object {
         const val ICON_URL_ENTRY_POINT_APPLIED = "https://images.tokopedia.net/img/promo/icon/Applied.png"
     }
@@ -68,10 +70,12 @@ class CartPromoEntryPointProcessor @Inject constructor(
         cartModel: CartModel,
         cartDataList: ArrayList<Any>
     ): EntryPointInfoEvent {
-        val isPromoRevamp = promoUsageRollenceManager.isRevamp(lastApply.userGroupMetadata)
+        if (isPromoRevamp == null) {
+            isPromoRevamp = promoUsageRollenceManager.isRevamp(lastApply.userGroupMetadata)
+        }
         val hasSelectedItemInCart = CartDataHelper.hasSelectedCartItem(cartDataList)
 
-        if (isPromoRevamp) {
+        if (isPromoRevamp != null && isPromoRevamp == true) {
             if (!hasSelectedItemInCart) {
                 return EntryPointInfoEvent.InactiveNew(
                     lastApply = lastApply,

@@ -15,6 +15,7 @@ import com.tokopedia.promousage.data.request.GetPromoListRecommendationParam
 import com.tokopedia.promousage.data.request.ValidateUsePromoUsageParam
 import com.tokopedia.promousage.data.response.GetPromoListRecommendationResponse
 import com.tokopedia.promousage.data.response.PromoListRecommendation
+import com.tokopedia.promousage.data.response.ResultStatus
 import com.tokopedia.promousage.domain.entity.BoAdditionalData
 import com.tokopedia.promousage.domain.entity.PromoCta
 import com.tokopedia.promousage.domain.entity.PromoItemState
@@ -154,11 +155,15 @@ internal class PromoUsageViewModel @Inject constructor(
                     handleLoadPromoListSuccess(response)
                     onSuccess?.invoke()
                 } else {
-                    PromoUsageLogger.logOnErrorLoadPromoUsagePage(
-                        PromoErrorException(message = "response status error")
-                    )
-                    val exception = PromoErrorException()
-                    handleLoadPromoListFailed(exception)
+                    if (response.promoListRecommendation.data.resultStatus.code == ResultStatus.STATUS_COUPON_LIST_EMPTY) {
+                        handleLoadPromoListSuccess(response)
+                    } else {
+                        PromoUsageLogger.logOnErrorLoadPromoUsagePage(
+                            PromoErrorException(message = "response status error")
+                        )
+                        val exception = PromoErrorException()
+                        handleLoadPromoListFailed(exception)
+                    }
                 }
             },
             onError = { throwable ->
@@ -181,15 +186,15 @@ internal class PromoUsageViewModel @Inject constructor(
             .mapPromoListRecommendationResponseToPageTickerInfo(response)
         var items = getPromoListRecommendationMapper
             .mapPromoListRecommendationResponseToPromoSections(response)
+        val attemptedPromoCodeError = getPromoListRecommendationMapper
+            .mapPromoListRecommendationResponseToAttemptedPromoCodeError(response)
+
         var savingInfo = calculatePromoSavingInfo(items)
         savingInfo = savingInfo.copy(
             message = getPromoListRecommendationMapper
                 .mapPromoListRecommendationResponseToSavingInfo(response)
                 .message
         )
-        val attemptedPromoCodeError = getPromoListRecommendationMapper
-            .mapPromoListRecommendationResponseToAttemptedPromoCodeError(response)
-
         val promoRecommendation = items.getRecommendationItem()
         if (promoRecommendation != null) {
             _getPromoRecommendationUiAction.postValue(
@@ -209,7 +214,8 @@ internal class PromoUsageViewModel @Inject constructor(
             PromoPageUiState.Success(
                 tickerInfo = tickerInfo,
                 items = items,
-                savingInfo = savingInfo
+                savingInfo = savingInfo,
+                promoAttemptedError = attemptedPromoCodeError
             )
         )
     }

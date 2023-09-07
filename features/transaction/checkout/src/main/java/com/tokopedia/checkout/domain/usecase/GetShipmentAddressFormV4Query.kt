@@ -559,6 +559,10 @@ const val SHIPMENT_ADDRESS_FORM_V4_QUERY =
                         is_bo_unstack_enabled
                       }
                     }
+                    user_group_metadata {
+                      key
+                      value
+                    }
                   }
                 }
               }
