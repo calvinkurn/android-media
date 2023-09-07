@@ -21,7 +21,7 @@ class PlayQueryParamStorage @Inject constructor() {
         }
 
     fun setPageSourceName(pageSourceName: String, isChannelRecom: Boolean) {
-        this.pageSourceName = if (isChannelRecom) HOME_DYNAMIC_ICON else pageSourceName
+        this.pageSourceName = if (pageSourceName.isEmpty() && isChannelRecom) HOME_DYNAMIC_ICON else pageSourceName
     }
 
     companion object {
