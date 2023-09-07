@@ -15,19 +15,23 @@ import com.tokopedia.editshipping.domain.model.shippingEditor.ShipperDetailModel
 import com.tokopedia.editshipping.domain.model.shippingEditor.ShipperListModel
 import com.tokopedia.editshipping.domain.model.shippingEditor.ShippingEditorState
 import com.tokopedia.editshipping.domain.model.shippingEditor.ValidateShippingEditorModel
+import com.tokopedia.editshipping.util.EditShippingConstant
+import com.tokopedia.editshipping.util.MultiLocShippingEditorDataProvider
 import com.tokopedia.logisticCommon.data.response.shippingeditor.GetShipperDetailResponse
 import com.tokopedia.logisticCommon.data.response.shippingeditor.GetShipperListResponse
 import com.tokopedia.logisticCommon.data.response.shippingeditor.GetShipperTickerResponse
 import com.tokopedia.logisticCommon.data.response.shippingeditor.SaveShippingEditorResponse
 import com.tokopedia.logisticCommon.data.response.shippingeditor.SaveShippingResponse
 import com.tokopedia.logisticCommon.data.response.shippingeditor.ValidateShippingEditorResponse
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import io.mockk.coEvery
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.setMain
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -43,13 +47,8 @@ class ShippingEditorViewModelTest {
 
     private val getShipperListUseCase: GetShipperListUseCase = mockk(relaxed = true)
     private val getShipperTickerUseCase: GetShipperTickerUseCase = mockk(relaxed = true)
-    private val getShipperInfoUseCase: GetShipperInfoUseCase = GetShipperInfoUseCase(
-        mockk(relaxed = true),
-        getShipperListUseCase,
-        getShipperTickerUseCase,
-        ShippingEditorMapper(),
-        mockk(relaxed = true)
-    )
+    val testDispatchers: CoroutineTestDispatchers = CoroutineTestDispatchers
+    private lateinit var getShipperInfoUseCase: GetShipperInfoUseCase
     private val getShipperDetailUseCase: GetShipperDetailUseCase = mockk(relaxed = true)
     private val validateShipperUseCase: ValidateShippingEditorUseCase = mockk(relaxed = true)
     private val saveShipperUseCase: SaveShippingUseCase = mockk(relaxed = true)
@@ -69,7 +68,13 @@ class ShippingEditorViewModelTest {
 
     @Before
     fun setup() {
-        Dispatchers.setMain(TestCoroutineDispatcher())
+        getShipperInfoUseCase = GetShipperInfoUseCase(
+            getShipperListUseCase,
+            getShipperTickerUseCase,
+            ShippingEditorMapper(),
+            testDispatchers
+        )
+        Dispatchers.setMain(UnconfinedTestDispatcher())
         shippingEditorViewModel = ShippingEditorViewModel(
             validateShippingMapper,
             detailMapper,
@@ -86,15 +91,24 @@ class ShippingEditorViewModelTest {
 
     @Test
     fun `Get shipper list success`() {
-        coEvery { getShipperListUseCase(any()) } returns GetShipperListResponse()
-        coEvery { getShipperTickerUseCase(any()) } returns GetShipperTickerResponse()
+        coEvery { getShipperListUseCase.invoke(any()) } returns GetShipperListResponse()
+        coEvery { getShipperTickerUseCase.invoke(any()) } returns GetShipperTickerResponse()
         shippingEditorViewModel.getShipperList(1234)
         verify { shipperListObserver.onChanged(match { it is ShippingEditorState.Success }) }
     }
 
     @Test
     fun `Get shipper list failed`() {
-        coEvery { getShipperInfoUseCase(any()) } throws defaultThrowable
+        coEvery { getShipperListUseCase.invoke(any()) } returns GetShipperListResponse()
+        coEvery { getShipperTickerUseCase.invoke(any()) } throws Throwable()
+        shippingEditorViewModel.getShipperList(1234)
+        verify { shipperListObserver.onChanged(match { it is ShippingEditorState.Fail }) }
+    }
+
+    @Test
+    fun `Get shipper ticker failed`() {
+        coEvery { getShipperListUseCase.invoke(any()) } throws defaultThrowable
+        coEvery { getShipperTickerUseCase.invoke(any()) } returns GetShipperTickerResponse()
         shippingEditorViewModel.getShipperList(1234)
         verify { shipperListObserver.onChanged(match { it is ShippingEditorState.Fail }) }
     }
@@ -157,148 +171,148 @@ class ShippingEditorViewModelTest {
         verify { saveShippingDataObserver.onChanged(match { it is ShippingEditorState.Fail }) }
     }
 
-//    @Test
-//    fun `WHEN shipper ticker state not found THEN shipper and all products should be available`() {
-//        val tickerModel = MultiLocShippingEditorDataProvider.provideShipperTickerState()
-//        val shipperModel = MultiLocShippingEditorDataProvider.provideShipperList()
-//        val mockShipperId = 1986L
-//        shipperModel.ongkirShippingEditor.data.shippers.conventional.first().shipperId =
-//            mockShipperId
-//        coEvery { shippingEditorRepo.getShippingEditor(any()) } returns shipperModel
-//        coEvery { shippingEditorRepo.getShippingEditorShipperTicker(any()) } returns tickerModel
-//
-//        shippingEditorViewModel.getShipperList(12345)
-//
-//        val result = (shippingEditorViewModel.shipperList.value as ShippingEditorState.Success).data
-//        val shipperResult = result.shippers.conventional.find { it.shipperId == mockShipperId }
-//        Assert.assertTrue(shipperResult!!.isAvailable)
-//        Assert.assertTrue(shipperResult.shipperProduct.all { it.isAvailable })
-//    }
-//
-//    @Test
-//    fun `WHEN shipper ticker state is unavailable THEN shipper should be disabled and not active`() {
-//        val tickerModel = MultiLocShippingEditorDataProvider.provideShipperTickerState()
-//        val shipperModel = MultiLocShippingEditorDataProvider.provideShipperList()
-//        val unavailableShipperId = 1L
-//        val unavailableShipperTickerState =
-//            tickerModel.ongkirShippingEditorGetShipperTicker.data.courierTicker.find { courierTickerModel -> courierTickerModel.shipperId == unavailableShipperId }
-//        unavailableShipperTickerState?.tickerState = EditShippingConstant.TICKER_STATE_UNAVAILABLE
-//        coEvery { shippingEditorRepo.getShippingEditor(any()) } returns shipperModel
-//        coEvery { shippingEditorRepo.getShippingEditorShipperTicker(any()) } returns tickerModel
-//
-//        shippingEditorViewModel.getShipperList(12345)
-//
-//        val result = (shippingEditorViewModel.shipperList.value as ShippingEditorState.Success).data
-//        val shipperResult =
-//            result.shippers.conventional.find { it.shipperId == unavailableShipperId }
-//        Assert.assertFalse(shipperResult!!.isActive)
-//        Assert.assertFalse(shipperResult.isAvailable)
-//    }
-//
-//    @Test
-//    fun `WHEN shipper product state not found THEN shipper product state should be from shipper state`() {
-//        val tickerModel = MultiLocShippingEditorDataProvider.provideShipperTickerState()
-//        val shipperModel = MultiLocShippingEditorDataProvider.provideShipperList()
-//        val unavailableShipperId = 1L
-//        val unavailableShipperTickerState =
-//            tickerModel.ongkirShippingEditorGetShipperTicker.data.courierTicker.find { courierTickerModel -> courierTickerModel.shipperId == unavailableShipperId }
-//        unavailableShipperTickerState?.tickerState = EditShippingConstant.TICKER_STATE_UNAVAILABLE
-//        unavailableShipperTickerState?.shipperProduct = listOf()
-//        coEvery { shippingEditorRepo.getShippingEditor(any()) } returns shipperModel
-//        coEvery { shippingEditorRepo.getShippingEditorShipperTicker(any()) } returns tickerModel
-//
-//        shippingEditorViewModel.getShipperList(12345)
-//
-//        val result = (shippingEditorViewModel.shipperList.value as ShippingEditorState.Success).data
-//        val shipperResult =
-//            result.shippers.conventional.find { it.shipperId == unavailableShipperId }?.shipperProduct
-//        Assert.assertFalse(shipperResult!!.all { it.isActive })
-//        Assert.assertFalse(shipperResult.all { it.isAvailable })
-//    }
-//
-//    @Test
-//    fun `WHEN shipper ticker state is available but shipper product not available THEN shipper product state should be unabled`() {
-//        val tickerModel = MultiLocShippingEditorDataProvider.provideShipperTickerState()
-//        val shipperModel = MultiLocShippingEditorDataProvider.provideShipperList()
-//        val shipperId = 1L
-//        val unavailableShipperProductId = 6L
-//        val shipperTickerState =
-//            tickerModel.ongkirShippingEditorGetShipperTicker.data.courierTicker.find { courierTickerModel -> courierTickerModel.shipperId == shipperId }
-//        val unavailableShipperProductTicker =
-//            shipperTickerState?.shipperProduct?.find { it -> it.shipperProductId == unavailableShipperProductId }
-//        unavailableShipperProductTicker?.isAvailable = false
-//        coEvery { shippingEditorRepo.getShippingEditor(any()) } returns shipperModel
-//        coEvery { shippingEditorRepo.getShippingEditorShipperTicker(any()) } returns tickerModel
-//
-//        shippingEditorViewModel.getShipperList(12345)
-//
-//        val result = (shippingEditorViewModel.shipperList.value as ShippingEditorState.Success).data
-//        val shipperResult = result.shippers.conventional.find { it.shipperId == shipperId }
-//        val shipperProductResult =
-//            shipperResult?.shipperProduct?.find { it.shipperProductId == unavailableShipperProductId.toString() }
-//        Assert.assertTrue(shipperResult!!.isAvailable)
-//        Assert.assertFalse(shipperProductResult!!.isAvailable)
-//        Assert.assertFalse(shipperProductResult.isActive)
-//    }
-//
-//    @Test
-//    fun `WHEN unavailable shipper product is the only one activated THEN shipper should be inactive`() {
-//        val tickerModel = MultiLocShippingEditorDataProvider.provideShipperTickerState()
-//        val shipperModel = MultiLocShippingEditorDataProvider.provideShipperList()
-//        val shipperId = 10L
-//        val unavailableShipperProductId = 20L
-//        val shipperData =
-//            shipperModel.ongkirShippingEditor.data.shippers.onDemand.find { it.shipperId == shipperId }
-//        shipperData?.isActive = true
-//        shipperData?.shipperProduct?.forEach { it.isActive = false }
-//        val unavailableShipperProduct =
-//            shipperData?.shipperProduct?.find { it.shipperProductId == unavailableShipperProductId.toString() }
-//        unavailableShipperProduct?.isActive = true
-//        val shipperTickerState =
-//            tickerModel.ongkirShippingEditorGetShipperTicker.data.courierTicker.find { courierTickerModel -> courierTickerModel.shipperId == shipperId }
-//        val unavailableShipperProductTicker =
-//            shipperTickerState?.shipperProduct?.find { it -> it.shipperProductId == unavailableShipperProductId }
-//        unavailableShipperProductTicker?.isAvailable = false
-//        coEvery { shippingEditorRepo.getShippingEditor(any()) } returns shipperModel
-//        coEvery { shippingEditorRepo.getShippingEditorShipperTicker(any()) } returns tickerModel
-//
-//        shippingEditorViewModel.getShipperList(12345)
-//
-//        val result = (shippingEditorViewModel.shipperList.value as ShippingEditorState.Success).data
-//        val shipperResult = result.shippers.onDemand.find { it.shipperId == shipperId }
-//        val shipperProductResult =
-//            shipperResult?.shipperProduct?.find { it.shipperProductId == unavailableShipperProductId.toString() }
-//        Assert.assertFalse(shipperResult!!.isActive)
-//        Assert.assertFalse(shipperProductResult!!.isAvailable)
-//        Assert.assertFalse(shipperProductResult.isActive)
-//    }
-//
-//    @Test
-//    fun `WHEN theres unavailable activated shipper product and other available shipper product activated THEN shipper should be still active`() {
-//        val tickerModel = MultiLocShippingEditorDataProvider.provideShipperTickerState()
-//        val shipperModel = MultiLocShippingEditorDataProvider.provideShipperList()
-//        val shipperId = 10L
-//        val unavailableShipperProductId = 20L
-//        val shipperData =
-//            shipperModel.ongkirShippingEditor.data.shippers.onDemand.find { it.shipperId == shipperId }
-//        shipperData?.isActive = true
-//        shipperData?.shipperProduct?.forEach { it.isActive = true }
-//        val shipperTickerState =
-//            tickerModel.ongkirShippingEditorGetShipperTicker.data.courierTicker.find { courierTickerModel -> courierTickerModel.shipperId == shipperId }
-//        val unavailableShipperProductTicker =
-//            shipperTickerState?.shipperProduct?.find { it -> it.shipperProductId == unavailableShipperProductId }
-//        unavailableShipperProductTicker?.isAvailable = false
-//        coEvery { shippingEditorRepo.getShippingEditor(any()) } returns shipperModel
-//        coEvery { shippingEditorRepo.getShippingEditorShipperTicker(any()) } returns tickerModel
-//
-//        shippingEditorViewModel.getShipperList(12345)
-//
-//        val result = (shippingEditorViewModel.shipperList.value as ShippingEditorState.Success).data
-//        val shipperResult = result.shippers.onDemand.find { it.shipperId == shipperId }
-//        val shipperProductResult =
-//            shipperResult?.shipperProduct?.find { it.shipperProductId == unavailableShipperProductId.toString() }
-//        Assert.assertTrue(shipperResult!!.isActive)
-//        Assert.assertFalse(shipperProductResult!!.isAvailable)
-//        Assert.assertFalse(shipperProductResult.isActive)
-//    }
+    @Test
+    fun `WHEN shipper ticker state not found THEN shipper and all products should be available`() {
+        val tickerModel = MultiLocShippingEditorDataProvider.provideShipperTickerState()
+        val shipperModel = MultiLocShippingEditorDataProvider.provideShipperList()
+        val mockShipperId = 1986L
+        shipperModel.ongkirShippingEditor.data.shippers.conventional.first().shipperId =
+            mockShipperId
+        coEvery { getShipperListUseCase(any()) } returns shipperModel
+        coEvery { getShipperTickerUseCase(any()) } returns tickerModel
+
+        shippingEditorViewModel.getShipperList(12345)
+
+        val result = (shippingEditorViewModel.shipperList.value as ShippingEditorState.Success).data
+        val shipperResult = result.shippers.conventional.find { it.shipperId == mockShipperId }
+        Assert.assertTrue(shipperResult!!.isAvailable)
+        Assert.assertTrue(shipperResult.shipperProduct.all { it.isAvailable })
+    }
+
+    @Test
+    fun `WHEN shipper ticker state is unavailable THEN shipper should be disabled and not active`() {
+        val tickerModel = MultiLocShippingEditorDataProvider.provideShipperTickerState()
+        val shipperModel = MultiLocShippingEditorDataProvider.provideShipperList()
+        val unavailableShipperId = 1L
+        val unavailableShipperTickerState =
+            tickerModel.ongkirShippingEditorGetShipperTicker.data.courierTicker.find { courierTickerModel -> courierTickerModel.shipperId == unavailableShipperId }
+        unavailableShipperTickerState?.tickerState = EditShippingConstant.TICKER_STATE_UNAVAILABLE
+        coEvery { getShipperListUseCase(any()) } returns shipperModel
+        coEvery { getShipperTickerUseCase(any()) } returns tickerModel
+
+        shippingEditorViewModel.getShipperList(12345)
+
+        val result = (shippingEditorViewModel.shipperList.value as ShippingEditorState.Success).data
+        val shipperResult =
+            result.shippers.conventional.find { it.shipperId == unavailableShipperId }
+        Assert.assertFalse(shipperResult!!.isActive)
+        Assert.assertFalse(shipperResult.isAvailable)
+    }
+
+    @Test
+    fun `WHEN shipper product state not found THEN shipper product state should be from shipper state`() {
+        val tickerModel = MultiLocShippingEditorDataProvider.provideShipperTickerState()
+        val shipperModel = MultiLocShippingEditorDataProvider.provideShipperList()
+        val unavailableShipperId = 1L
+        val unavailableShipperTickerState =
+            tickerModel.ongkirShippingEditorGetShipperTicker.data.courierTicker.find { courierTickerModel -> courierTickerModel.shipperId == unavailableShipperId }
+        unavailableShipperTickerState?.tickerState = EditShippingConstant.TICKER_STATE_UNAVAILABLE
+        unavailableShipperTickerState?.shipperProduct = listOf()
+        coEvery { getShipperListUseCase(any()) } returns shipperModel
+        coEvery { getShipperTickerUseCase(any()) } returns tickerModel
+
+        shippingEditorViewModel.getShipperList(12345)
+
+        val result = (shippingEditorViewModel.shipperList.value as ShippingEditorState.Success).data
+        val shipperResult =
+            result.shippers.conventional.find { it.shipperId == unavailableShipperId }?.shipperProduct
+        Assert.assertFalse(shipperResult!!.all { it.isActive })
+        Assert.assertFalse(shipperResult.all { it.isAvailable })
+    }
+
+    @Test
+    fun `WHEN shipper ticker state is available but shipper product not available THEN shipper product state should be unabled`() {
+        val tickerModel = MultiLocShippingEditorDataProvider.provideShipperTickerState()
+        val shipperModel = MultiLocShippingEditorDataProvider.provideShipperList()
+        val shipperId = 1L
+        val unavailableShipperProductId = 6L
+        val shipperTickerState =
+            tickerModel.ongkirShippingEditorGetShipperTicker.data.courierTicker.find { courierTickerModel -> courierTickerModel.shipperId == shipperId }
+        val unavailableShipperProductTicker =
+            shipperTickerState?.shipperProduct?.find { it -> it.shipperProductId == unavailableShipperProductId }
+        unavailableShipperProductTicker?.isAvailable = false
+        coEvery { getShipperListUseCase(any()) } returns shipperModel
+        coEvery { getShipperTickerUseCase(any()) } returns tickerModel
+
+        shippingEditorViewModel.getShipperList(12345)
+
+        val result = (shippingEditorViewModel.shipperList.value as ShippingEditorState.Success).data
+        val shipperResult = result.shippers.conventional.find { it.shipperId == shipperId }
+        val shipperProductResult =
+            shipperResult?.shipperProduct?.find { it.shipperProductId == unavailableShipperProductId.toString() }
+        Assert.assertTrue(shipperResult!!.isAvailable)
+        Assert.assertFalse(shipperProductResult!!.isAvailable)
+        Assert.assertFalse(shipperProductResult.isActive)
+    }
+
+    @Test
+    fun `WHEN unavailable shipper product is the only one activated THEN shipper should be inactive`() {
+        val tickerModel = MultiLocShippingEditorDataProvider.provideShipperTickerState()
+        val shipperModel = MultiLocShippingEditorDataProvider.provideShipperList()
+        val shipperId = 10L
+        val unavailableShipperProductId = 20L
+        val shipperData =
+            shipperModel.ongkirShippingEditor.data.shippers.onDemand.find { it.shipperId == shipperId }
+        shipperData?.isActive = true
+        shipperData?.shipperProduct?.forEach { it.isActive = false }
+        val unavailableShipperProduct =
+            shipperData?.shipperProduct?.find { it.shipperProductId == unavailableShipperProductId.toString() }
+        unavailableShipperProduct?.isActive = true
+        val shipperTickerState =
+            tickerModel.ongkirShippingEditorGetShipperTicker.data.courierTicker.find { courierTickerModel -> courierTickerModel.shipperId == shipperId }
+        val unavailableShipperProductTicker =
+            shipperTickerState?.shipperProduct?.find { it -> it.shipperProductId == unavailableShipperProductId }
+        unavailableShipperProductTicker?.isAvailable = false
+        coEvery { getShipperListUseCase(any()) } returns shipperModel
+        coEvery { getShipperTickerUseCase(any()) } returns tickerModel
+
+        shippingEditorViewModel.getShipperList(12345)
+
+        val result = (shippingEditorViewModel.shipperList.value as ShippingEditorState.Success).data
+        val shipperResult = result.shippers.onDemand.find { it.shipperId == shipperId }
+        val shipperProductResult =
+            shipperResult?.shipperProduct?.find { it.shipperProductId == unavailableShipperProductId.toString() }
+        Assert.assertFalse(shipperResult!!.isActive)
+        Assert.assertFalse(shipperProductResult!!.isAvailable)
+        Assert.assertFalse(shipperProductResult.isActive)
+    }
+
+    @Test
+    fun `WHEN theres unavailable activated shipper product and other available shipper product activated THEN shipper should be still active`() {
+        val tickerModel = MultiLocShippingEditorDataProvider.provideShipperTickerState()
+        val shipperModel = MultiLocShippingEditorDataProvider.provideShipperList()
+        val shipperId = 10L
+        val unavailableShipperProductId = 20L
+        val shipperData =
+            shipperModel.ongkirShippingEditor.data.shippers.onDemand.find { it.shipperId == shipperId }
+        shipperData?.isActive = true
+        shipperData?.shipperProduct?.forEach { it.isActive = true }
+        val shipperTickerState =
+            tickerModel.ongkirShippingEditorGetShipperTicker.data.courierTicker.find { courierTickerModel -> courierTickerModel.shipperId == shipperId }
+        val unavailableShipperProductTicker =
+            shipperTickerState?.shipperProduct?.find { it -> it.shipperProductId == unavailableShipperProductId }
+        unavailableShipperProductTicker?.isAvailable = false
+        coEvery { getShipperListUseCase(any()) } returns shipperModel
+        coEvery { getShipperTickerUseCase(any()) } returns tickerModel
+
+        shippingEditorViewModel.getShipperList(12345)
+
+        val result = (shippingEditorViewModel.shipperList.value as ShippingEditorState.Success).data
+        val shipperResult = result.shippers.onDemand.find { it.shipperId == shipperId }
+        val shipperProductResult =
+            shipperResult?.shipperProduct?.find { it.shipperProductId == unavailableShipperProductId.toString() }
+        Assert.assertTrue(shipperResult!!.isActive)
+        Assert.assertFalse(shipperProductResult!!.isAvailable)
+        Assert.assertFalse(shipperProductResult.isActive)
+    }
 }

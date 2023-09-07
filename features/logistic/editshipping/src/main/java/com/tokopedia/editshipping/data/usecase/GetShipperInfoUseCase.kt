@@ -1,6 +1,5 @@
 package com.tokopedia.editshipping.data.usecase
 
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.editshipping.domain.mapper.ShippingEditorMapper
 import com.tokopedia.editshipping.domain.model.shippingEditor.CourierTickerModel
@@ -11,14 +10,12 @@ import com.tokopedia.editshipping.domain.model.shippingEditor.ShipperTickerModel
 import com.tokopedia.editshipping.domain.param.ShippingEditorParam
 import com.tokopedia.editshipping.domain.param.ShippingEditorShopMultiLocInput
 import com.tokopedia.editshipping.util.EditShippingConstant
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import javax.inject.Inject
 
 class GetShipperInfoUseCase @Inject constructor(
-    @ApplicationContext private val gql: GraphqlRepository,
     private val getShipperListUseCase: GetShipperListUseCase,
     private val getShipperTickerUseCase: GetShipperTickerUseCase,
     private val mapper: ShippingEditorMapper,
