@@ -6,7 +6,6 @@ import android.graphics.Typeface
 import android.view.Gravity
 import android.widget.EditText
 import android.widget.LinearLayout
-import androidx.core.content.res.ResourcesCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
@@ -21,7 +20,6 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 import com.tokopedia.editor.R as resourceR
-import com.tokopedia.unifyprinciples.getTypeface as unifyTypeFaceGetter
 
 class InputTextFragment @Inject constructor(
     private val colorProvider: ColorProvider,

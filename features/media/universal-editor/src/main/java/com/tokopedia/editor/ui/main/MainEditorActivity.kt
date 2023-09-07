@@ -113,7 +113,7 @@ open class MainEditorActivity : AppCompatActivity()
     }
 
     override fun onCloseClicked() {
-        viewModel.onEvent(MainEditorEvent.ClickHeaderClose(textNumber = pagerContainer.getTextCount()))
+        viewModel.onEvent(MainEditorEvent.ClickHeaderCloseButton(isTextEmpty = binding.container.hasTextAdded()))
     }
 
     override fun onContinueClicked() {
@@ -129,7 +129,7 @@ open class MainEditorActivity : AppCompatActivity()
 
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
-        viewModel.onEvent(MainEditorEvent.ClickHeaderClose(textNumber = pagerContainer.getTextCount()))
+        viewModel.onEvent(MainEditorEvent.ClickHeaderCloseButton(isTextEmpty = binding.container.hasTextAdded()))
     }
 
     @Suppress("DEPRECATION")
@@ -170,14 +170,12 @@ open class MainEditorActivity : AppCompatActivity()
                     is MainEditorEffect.OpenPlacementPage -> {
                         navigateToPlacementImagePage(it.sourcePath, it.model)
                     }
-
                     is MainEditorEffect.UpdatePagerSourcePath -> {
                         pagerContainer.updateView(it.newSourcePath)
                     }
                     is MainEditorEffect.CloseMainEditorPage -> {
                         finish()
                     }
-
                     is MainEditorEffect.ShowCloseDialogConfirmation -> {
                         showConfirmationBackDialog()
                     }
@@ -288,7 +286,7 @@ open class MainEditorActivity : AppCompatActivity()
             dialogPrimaryCTA.apply {
                 text = getString(R.string.universal_editor_main_confirmation_primary_cta)
                 setOnClickListener {
-                    viewModel.onEvent(MainEditorEvent.ClickHeaderClose(isFinish = true))
+                    viewModel.onEvent(MainEditorEvent.ClickHeaderCloseButton(isSkipConfirmation = true))
                 }
             }
 

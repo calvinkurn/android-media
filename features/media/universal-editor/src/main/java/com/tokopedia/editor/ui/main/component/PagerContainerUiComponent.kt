@@ -42,10 +42,6 @@ class PagerContainerUiComponent constructor(
         fragment.onLoadContent(newPath)
     }
 
-    fun getTextCount(): Int {
-        return mAdapter?.fragments?.first()?.getTextCount() ?: 0
-    }
-
     private fun setFragmentDisplayed(param: UniversalEditorParam) {
         // Since current editor only supported single selection, hence we've get the first item of [paths]
         val file = param.firstFile.path ?: return

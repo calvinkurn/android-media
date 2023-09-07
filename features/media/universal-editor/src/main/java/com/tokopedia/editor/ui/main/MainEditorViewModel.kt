@@ -94,15 +94,13 @@ class MainEditorViewModel @Inject constructor(
             is MainEditorEvent.ResetActiveInputText -> {
                 _inputTextState.value = InputTextParam.reset()
             }
-            is MainEditorEvent.ClickHeaderClose -> {
-                var isPlacementEdited: Boolean
-                val isTextAdded = event.textNumber >= 1
+            is MainEditorEvent.ClickHeaderCloseButton -> {
+                val currentState = mainEditorState.value
 
-                _mainEditorState.value.let {
-                    isPlacementEdited = it.imagePlacementModel?.path != null
-                }
+                val isPlacementEdited = currentState.imagePlacementModel?.path != null
+                val isTextAdded = currentState.hasTextAdded
 
-                if ((isPlacementEdited || isTextAdded) && !event.isFinish) {
+                if ((isPlacementEdited || isTextAdded) && !event.isSkipConfirmation) {
                     setAction(MainEditorEffect.ShowCloseDialogConfirmation)
                 } else {
                     setAction(MainEditorEffect.CloseMainEditorPage)
