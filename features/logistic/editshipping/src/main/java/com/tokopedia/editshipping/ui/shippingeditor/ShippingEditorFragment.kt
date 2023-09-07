@@ -208,6 +208,7 @@ class ShippingEditorFragment :
         ) {
             when (it) {
                 is ShippingEditorState.Success -> {
+                    showSuccessLayout()
                     updateData(it.data.shippers)
                     renderTicker(it.data.ticker)
                     checkWhitelabelCoachmarkState()
@@ -300,6 +301,13 @@ class ShippingEditorFragment :
                 else -> binding?.swipeRefresh?.isRefreshing = true
             }
         }
+    }
+
+    private fun showSuccessLayout() {
+        binding?.swipeRefresh?.isRefreshing = false
+        binding?.shippingEditorLayout?.visible()
+        binding?.btnSaveShipper?.visible()
+        binding?.globalError?.gone()
     }
 
     private fun renderDropOffButton(dropOffMapsUrl: String) {
