@@ -1,8 +1,10 @@
 package com.tokopedia.feedplus.browse.presentation
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -40,6 +42,7 @@ import java.net.SocketException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
+import com.tokopedia.content.common.R as contentcommonR
 
 /**
  * Created by meyta.taliti on 11/08/23.
@@ -268,6 +271,16 @@ class FeedBrowseFragment @Inject constructor(
             } else {
                 viewModel.submitAction(FeedBrowseUiAction.LoadInitialPage)
             }
+        }
+        if (errorType == GlobalError.NO_CONNECTION) {
+            binding.feedBrowseError.errorSecondaryAction.show()
+            binding.feedBrowseError.errorSecondaryAction.text =
+                getString(contentcommonR.string.content_global_error_secondary_text)
+            binding.feedBrowseError.setSecondaryActionClickListener {
+                startActivity(Intent(Settings.ACTION_WIRELESS_SETTINGS))
+            }
+        } else {
+            binding.feedBrowseError.errorSecondaryAction.hide()
         }
         binding.feedBrowseError.setType(errorType)
         binding.feedBrowseError.show()
