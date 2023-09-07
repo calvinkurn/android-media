@@ -1,31 +1,42 @@
 package com.tokopedia.editor.ui.main
 
+import android.graphics.BitmapFactory
 import com.tokopedia.editor.data.model.NavigationTool
 import com.tokopedia.editor.data.repository.NavigationToolRepository
-import com.tokopedia.editor.data.repository.VideoFlattenRepository
+import com.tokopedia.editor.faker.FakeVideoFlattenRepository
 import com.tokopedia.editor.ui.main.uimodel.MainEditorEffect
 import com.tokopedia.editor.ui.main.uimodel.MainEditorEvent
 import com.tokopedia.editor.ui.model.InputTextModel
+import com.tokopedia.editor.util.provider.ResourceProvider
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.picker.common.UniversalEditorParam
 import com.tokopedia.picker.common.types.ToolType
+import com.tokopedia.picker.common.utils.isVideoFormat
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import io.mockk.Runs
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
+import io.mockk.mockkStatic
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.shadows.ShadowBitmapFactory
 
+@RunWith(RobolectricTestRunner::class)
 class MainEditorViewModelTest {
 
     private val navigationToolRepository = mockk<NavigationToolRepository>()
-    private val videoFlattenRepository = mockk<VideoFlattenRepository>()
+    private val fakeVideoFlattenRepository = FakeVideoFlattenRepository()
+    private val resourceProvider = mockk<ResourceProvider>()
     private val paramFetcher = mockk<EditorParamFetcher>()
 
     private val dispatchers = CoroutineTestDispatchers
@@ -36,10 +47,13 @@ class MainEditorViewModelTest {
     fun setUp() {
         viewModel = MainEditorViewModel(
             navigationToolRepository,
-            videoFlattenRepository,
+            fakeVideoFlattenRepository,
+            resourceProvider,
             dispatchers,
             paramFetcher
         )
+
+        mockkStatic(::isVideoFormat)
     }
 
     @Test
@@ -118,6 +132,42 @@ class MainEditorViewModelTest {
 
         // Then
         assertTrue(viewModel.inputTextState.value.model == null)
+    }
+
+    @Test
+    fun `it should able to export a video file`() = runTest {
+        // Given
+        val bitmap = ShadowBitmapFactory.create("", BitmapFactory.Options())
+
+        fakeVideoFlattenRepository.emit("result")
+        every { isVideoFormat(any()) } returns true
+
+        // When
+        onEvent(MainEditorEvent.ExportMedia(bitmap))
+
+        // Verify
+        val effects = recordEffect()
+        assertTrue(effects[0] is MainEditorEffect.ShowLoading)
+        assertTrue(effects[1] is MainEditorEffect.FinishEditorPage)
+        assertTrue(effects[2] is MainEditorEffect.HideLoading)
+    }
+
+    @Test
+    fun `it should fail to export a video file and show error toast`() = runTest {
+        // Given
+        val bitmap = ShadowBitmapFactory.create("", BitmapFactory.Options())
+
+        every { resourceProvider.getString(any()) } returns ""
+        fakeVideoFlattenRepository.emit("")
+
+        // When
+        onEvent(MainEditorEvent.ExportMedia(bitmap))
+
+        // Verify
+        val effects = recordEffect()
+        assertTrue(effects[0] is MainEditorEffect.ShowLoading)
+        assertTrue(effects[1] is MainEditorEffect.ShowToastErrorMessage)
+        assertTrue(effects[2] is MainEditorEffect.HideLoading)
     }
 
     @Test

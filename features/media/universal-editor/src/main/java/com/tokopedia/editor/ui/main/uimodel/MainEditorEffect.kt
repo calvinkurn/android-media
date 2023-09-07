@@ -14,6 +14,7 @@ sealed class MainEditorEffect {
     data class OpenPlacementPage(val sourcePath: String, val model: ImagePlacementModel?) : MainEditorEffect()
 
     // Visibility handler
+    data class ShowToastErrorMessage(val message: String) : MainEditorEffect()
     data class ParentToolbarVisibility(val visible: Boolean) : MainEditorEffect()
 
     // Global loader

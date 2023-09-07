@@ -132,10 +132,11 @@ open class MainEditorActivity : AppCompatActivity()
 
     @Suppress("DEPRECATION")
     private fun setDataParam() {
-        val param = intent?.getParcelableExtra<UniversalEditorParam>(EXTRA_UNIVERSAL_EDITOR_PARAM)
-            ?: error("Please provide the universal media editor parameter.")
-
-        check(param.paths.isNotEmpty()) { "Please add at least 1 media file to edit" }
+        val param = intent?.getParcelableExtra<UniversalEditorParam>(
+            EXTRA_UNIVERSAL_EDITOR_PARAM
+        ) ?: error("Please provide the universal media editor parameter.")
+        require(param.paths.isNotEmpty()) { "Please add at least 1 media file to edit." }
+        require(param.pageSource.isUnknown().not()) { "We unable to find the page source." }
 
         viewModel.onEvent(MainEditorEvent.SetupView(param))
     }
@@ -149,15 +150,12 @@ open class MainEditorActivity : AppCompatActivity()
             viewModel.inputTextState.collect(::addOrEditTextOnLayout)
         }
 
-        lifecycleScope.launchWhenStarted {
-            viewModel.errorMessageState.collect(::onShowToastErrorMessage)
-        }
-
         lifecycleScope.launchWhenCreated {
             viewModel.uiEffect.collect {
                 when (it) {
-                    is MainEditorEffect.ShowLoading -> onShowLoading()
-                    is MainEditorEffect.HideLoading -> onHideLoading()
+                    is MainEditorEffect.ShowToastErrorMessage -> {
+                        onShowToastErrorMessage(it.message)
+                    }
                     is MainEditorEffect.OpenInputText -> {
                         navigateToInputTextTool(it.model)
                     }
@@ -174,6 +172,8 @@ open class MainEditorActivity : AppCompatActivity()
                     is MainEditorEffect.FinishEditorPage -> {
                         navigateBackToPickerAndFinishIntent(it.filePath)
                     }
+                    is MainEditorEffect.ShowLoading -> onShowLoading()
+                    is MainEditorEffect.HideLoading -> onHideLoading()
                 }
             }
         }

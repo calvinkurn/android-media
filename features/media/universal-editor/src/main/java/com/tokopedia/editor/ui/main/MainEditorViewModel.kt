@@ -21,8 +21,10 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -37,7 +39,6 @@ class MainEditorViewModel @Inject constructor(
     private var _uiEffect = MutableSharedFlow<MainEditorEffect>(replay = 50)
     private var _mainEditorState = MutableStateFlow(MainEditorUiModel())
     private var _inputTextState = MutableStateFlow(InputTextParam())
-    private var _errorMessageState = MutableStateFlow("")
 
     /**
      * A path is active file path.
@@ -50,7 +51,6 @@ class MainEditorViewModel @Inject constructor(
 
     val mainEditorState = _mainEditorState.asStateFlow()
     val inputTextState = _inputTextState.asStateFlow()
-    val errorMessageState = _errorMessageState.asStateFlow()
 
     val uiEffect: Flow<MainEditorEffect>
         get() = _uiEffect
@@ -110,31 +110,32 @@ class MainEditorViewModel @Inject constructor(
         val path = file.path ?: return
 
         if (file.isImage()) {
-            mergeImageAndTextAsFile(path, canvasText)
+            flattenImageFileWithTextCanvas(path, canvasText)
         } else {
-            mergeVideoAndTextAsFile(path, canvasText)
+            flattenVideoFileWithTextCanvas(path, canvasText)
         }
     }
 
-    private fun mergeVideoAndTextAsFile(videoPath: String, canvasText: Bitmap) {
+    private fun flattenVideoFileWithTextCanvas(videoPath: String, canvasText: Bitmap) {
         viewModelScope.launch {
             videoFlattenRepository
                 .flatten(videoPath, canvasText)
                 .flowOn(dispatchers.computation)
                 .onCompletion { setAction(MainEditorEffect.HideLoading) }
-                .collect {
+                .onEach {
                     if (it.isNotEmpty()) {
                         setAction(MainEditorEffect.FinishEditorPage(it))
                     } else {
                         val message = resourceProvider.getString(R.string.universal_editor_flatten_error)
-                        setErrorMessage(message)
+                        setAction(MainEditorEffect.ShowToastErrorMessage(message))
                     }
                 }
+                .collect()
         }
     }
 
-    private fun mergeImageAndTextAsFile(imagePath: String, canvasText: Bitmap) {
-        // TODO
+    private fun flattenImageFileWithTextCanvas(imagePath: String, canvasText: Bitmap) {
+        // TODO: Will be handled by @calvin.
     }
 
     private fun updateViewIdOnUiParam(id: Int) {
@@ -161,18 +162,21 @@ class MainEditorViewModel @Inject constructor(
         paramFetcher.set(param)
 
         _mainEditorState.setValue {
-            copy(
-                param = param,
-                activeFilePath = param.firstFile.path ?: ""
-            )
+            copy(param = param)
+        }
+
+        param.firstFile.path?.let {
+            setActiveEditableFilePath(it)
+        }
+    }
+
+    private fun setActiveEditableFilePath(path: String) {
+        _mainEditorState.setValue {
+            copy(activeFilePath = path)
         }
     }
 
     private fun setAction(effect: MainEditorEffect) {
         _uiEffect.tryEmit(effect)
-    }
-
-    private fun setErrorMessage(message: String) {
-        _errorMessageState.value = message
     }
 }
