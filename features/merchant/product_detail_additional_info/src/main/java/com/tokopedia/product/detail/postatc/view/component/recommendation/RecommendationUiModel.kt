@@ -10,6 +10,8 @@ data class RecommendationUiModel(
     override val type: String,
     override val impressHolder: ImpressHolder = ImpressHolder(),
     val productId: String,
+    val queryParam: String,
+    val thematicId: String
 ) : PostAtcUiModel {
     override val id = hashCode()
     override fun equalsWith(newItem: PostAtcUiModel): Boolean {

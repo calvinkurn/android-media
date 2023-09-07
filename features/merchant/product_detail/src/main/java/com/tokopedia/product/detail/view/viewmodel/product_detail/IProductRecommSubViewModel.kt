@@ -25,12 +25,20 @@ interface IProductRecommSubViewModel {
 
     val loadTopAdsProduct: LiveData<Result<RecommendationWidget>>
 
-    fun loadViewToView(pageName: String, productId: String, isTokoNow: Boolean)
+    fun loadViewToView(
+        pageName: String,
+        productId: String,
+        isTokoNow: Boolean,
+        queryParam: String,
+        thematicId: String
+    )
 
     fun getVerticalRecommendationData(
         pageName: String,
         page: Int? = ProductDetailConstant.DEFAULT_PAGE_NUMBER,
-        productId: String?
+        productId: String?,
+        queryParam: String,
+        thematicId: String
     )
 
     fun recommendationChipClicked(
@@ -43,7 +51,9 @@ interface IProductRecommSubViewModel {
         pageName: String,
         productId: String,
         isTokoNow: Boolean,
-        miniCart: MutableMap<String, MiniCartItem.MiniCartItemProduct>?
+        miniCart: MutableMap<String, MiniCartItem.MiniCartItemProduct>?,
+        queryParam: String,
+        thematicId: String
     )
 
     fun onResetAlreadyRecomHit()

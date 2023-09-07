@@ -12,10 +12,12 @@ data class ViewToViewWidgetDataModel(
     val name: String = "",
     var recomWidgetData: RecommendationWidget? = null,
 
-    //UI Data
+    // UI Data
     var cardModel: List<ViewToViewItemData>? = null,
     var position: Int = -1,
     var state: Int = RecommendationCarouselData.STATE_LOADING,
+    val queryParam: String,
+    val thematicId: String
 ) : DynamicPdpDataModel {
 
     override val impressHolder: ImpressHolder = ImpressHolder()
@@ -36,9 +38,9 @@ data class ViewToViewWidgetDataModel(
 
     override fun equalsWith(newData: DynamicPdpDataModel): Boolean {
         return if (newData is ViewToViewWidgetDataModel) {
-            recomWidgetData?.title == newData.recomWidgetData?.title
-                && areRecomItemTheSame(newData.recomWidgetData)
-                && state == newData.state
+            recomWidgetData?.title == newData.recomWidgetData?.title &&
+                areRecomItemTheSame(newData.recomWidgetData) &&
+                state == newData.state
         } else {
             false
         }
