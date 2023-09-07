@@ -23,7 +23,9 @@ import com.tokopedia.stories.view.components.indicator.StoriesDetailTimer
 import com.tokopedia.stories.view.model.StoriesDetailItemUiModel.StoriesItemContentType.IMAGE
 import com.tokopedia.stories.view.model.StoriesDetailItemUiModel.StoriesItemContentType.VIDEO
 import com.tokopedia.stories.view.model.StoriesDetailUiModel
-import com.tokopedia.stories.view.model.StoriesGroupUiModel
+import com.tokopedia.stories.view.model.StoriesUiModel
+import com.tokopedia.stories.view.utils.FRAGMENT_DETAIL_TAG
+import com.tokopedia.stories.view.utils.STORY_GROUP_ID
 import com.tokopedia.stories.view.utils.TouchEventStories
 import com.tokopedia.stories.view.utils.isNetworkError
 import com.tokopedia.stories.view.utils.onTouchEventStories
@@ -53,7 +55,7 @@ class StoriesDetailFragment @Inject constructor() : TkpdBaseV4Fragment() {
     private val mAdapter: StoriesGroupAdapter by lazyThreadSafetyNone {
         StoriesGroupAdapter(object : StoriesGroupAdapter.Listener {
             override fun onClickGroup(position: Int) {
-                viewModelAction(StoriesUiAction.SetGroup(position, false))
+                viewModelAction(StoriesUiAction.SelectGroup(position, false))
             }
         })
     }
@@ -69,7 +71,7 @@ class StoriesDetailFragment @Inject constructor() : TkpdBaseV4Fragment() {
         get() = groupId == viewModel.mGroupId
 
     override fun getScreenName(): String {
-        return TAG
+        return FRAGMENT_DETAIL_TAG
     }
 
     override fun onCreateView(
@@ -95,8 +97,11 @@ class StoriesDetailFragment @Inject constructor() : TkpdBaseV4Fragment() {
     private fun setupUiStateObserver() {
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
             viewModel.uiState.withCache().collectLatest { (prevState, state) ->
-                renderStoriesGroupHeader(prevState?.storiesGroup, state.storiesGroup)
-                renderStoriesDetail(prevState?.storiesDetail, state.storiesDetail)
+                renderStoriesGroupHeader(prevState, state)
+                renderStoriesDetail(
+                    prevState?.groupItems?.get(prevState.selectedGroupPosition)?.detail,
+                    state.groupItems[state.selectedGroupPosition].detail,
+                )
             }
         }
     }
@@ -123,8 +128,8 @@ class StoriesDetailFragment @Inject constructor() : TkpdBaseV4Fragment() {
     }
 
     private fun renderStoriesGroupHeader(
-        prevState: StoriesGroupUiModel?,
-        state: StoriesGroupUiModel,
+        prevState: StoriesUiModel?,
+        state: StoriesUiModel,
     ) {
         if (prevState?.groupHeader == state.groupHeader ||
             groupId != state.selectedGroupId
@@ -287,14 +292,11 @@ class StoriesDetailFragment @Inject constructor() : TkpdBaseV4Fragment() {
     }
 
     companion object {
-        private const val TAG = "StoriesDetailFragment"
-        const val STORY_GROUP_ID = "StoriesGroupId"
-
         fun getFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader
         ): StoriesDetailFragment {
-            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? StoriesDetailFragment
+            val oldInstance = fragmentManager.findFragmentByTag(FRAGMENT_DETAIL_TAG) as? StoriesDetailFragment
             return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
                 classLoader,
                 StoriesDetailFragment::class.java.name

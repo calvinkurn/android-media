@@ -25,8 +25,18 @@ internal fun View.onTouchEventStories(
     }
 }
 
+internal fun Int.getRandomNumber(): Int {
+    val oldValue = this
+    val newValue = (1 until 100).random()
+    return if (oldValue == newValue) newValue.plus(1) else newValue
+}
+
 enum class TouchEventStories {
     PAUSE, RESUME, NEXT_PREV
 }
 
 const val SHOP_ID = "shop_id"
+const val SHOP_ID_INDEX_APP_LINK = 1
+const val STORY_GROUP_ID = "stories_group_id"
+const val FRAGMENT_GROUP_TAG = "stories_group_fragment"
+const val FRAGMENT_DETAIL_TAG = "stories_detail_fragment"

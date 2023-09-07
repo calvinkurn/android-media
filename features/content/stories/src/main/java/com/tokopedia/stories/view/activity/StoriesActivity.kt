@@ -9,7 +9,9 @@ import com.tokopedia.stories.R
 import com.tokopedia.stories.databinding.ActivityStoriesBinding
 import com.tokopedia.stories.di.StoriesInjector
 import com.tokopedia.stories.view.fragment.StoriesGroupFragment
+import com.tokopedia.stories.view.utils.FRAGMENT_GROUP_TAG
 import com.tokopedia.stories.view.utils.SHOP_ID
+import com.tokopedia.stories.view.utils.SHOP_ID_INDEX_APP_LINK
 import javax.inject.Inject
 
 class StoriesActivity : BaseActivity() {
@@ -50,7 +52,7 @@ class StoriesActivity : BaseActivity() {
 
         val path = data.pathSegments
         bundle = Bundle().apply {
-            putString(SHOP_ID, path[SHOP_ID_INDEX])
+            putString(SHOP_ID, path[SHOP_ID_INDEX_APP_LINK])
         }
     }
 
@@ -63,13 +65,13 @@ class StoriesActivity : BaseActivity() {
     private fun openFragment() {
         supportFragmentManager.apply {
             executePendingTransactions()
-            val existingFragment = findFragmentByTag(StoriesGroupFragment.TAG)
+            val existingFragment = findFragmentByTag(FRAGMENT_GROUP_TAG)
             if (existingFragment is StoriesGroupFragment && existingFragment.isVisible) return
             beginTransaction().apply {
                 replace(
                     binding.fragmentContainer.id,
                     getStoriesFragment(),
-                    StoriesGroupFragment.TAG,
+                    FRAGMENT_GROUP_TAG,
                 )
             }.commit()
         }
@@ -86,10 +88,6 @@ class StoriesActivity : BaseActivity() {
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
-    }
-
-    companion object {
-        private const val SHOP_ID_INDEX = 1
     }
 
 }

@@ -10,7 +10,7 @@ import com.tokopedia.stories.view.model.StoriesDetailItemUiModel.StoriesItemCont
 import com.tokopedia.stories.view.model.StoriesDetailUiModel
 import com.tokopedia.stories.view.model.StoriesGroupHeader
 import com.tokopedia.stories.view.model.StoriesGroupItemUiModel
-import com.tokopedia.stories.view.model.StoriesGroupUiModel
+import com.tokopedia.stories.view.model.StoriesUiModel
 import javax.inject.Inject
 
 class StoriesMapperImpl @Inject constructor() : StoriesMapper {
@@ -18,8 +18,8 @@ class StoriesMapperImpl @Inject constructor() : StoriesMapper {
     override fun mapStoriesInitialData(
         dataGroup: StoriesGroupsResponseModel,
         dataDetail: StoriesDetailsResponseModel
-    ): StoriesGroupUiModel {
-        return StoriesGroupUiModel(
+    ): StoriesUiModel {
+        return StoriesUiModel(
             selectedGroupId = dataGroup.data.groups[dataGroup.data.meta.selectedGroupIndex].value,
             selectedGroupPosition = dataGroup.data.meta.selectedGroupIndex,
             groupHeader = dataGroup.data.groups.mapIndexed { indexGroupHeader, group ->

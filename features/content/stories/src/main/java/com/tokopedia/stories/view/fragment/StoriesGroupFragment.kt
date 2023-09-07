@@ -10,14 +10,15 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.content.common.util.withCache
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showToast
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.stories.databinding.FragmentStoriesGroupBinding
-import com.tokopedia.stories.utils.withCache
 import com.tokopedia.stories.view.adapter.StoriesGroupPagerAdapter
 import com.tokopedia.stories.view.animation.StoriesPageAnimation
-import com.tokopedia.stories.view.model.StoriesGroupUiModel
+import com.tokopedia.stories.view.model.StoriesUiModel
+import com.tokopedia.stories.view.utils.FRAGMENT_GROUP_TAG
 import com.tokopedia.stories.view.utils.SHOP_ID
 import com.tokopedia.stories.view.utils.isNetworkError
 import com.tokopedia.stories.view.viewmodel.StoriesViewModel
@@ -49,7 +50,7 @@ class StoriesGroupFragment @Inject constructor(
     private val pagerListener = object : ViewPager2.OnPageChangeCallback() {
         override fun onPageSelected(position: Int) {
             showSelectedGroupHighlight(position)
-            viewModelAction(StoriesUiAction.SetGroupMainData(position))
+            viewModelAction(StoriesUiAction.SetMainData(position))
             super.onPageSelected(position)
         }
     }
@@ -63,7 +64,7 @@ class StoriesGroupFragment @Inject constructor(
     }
 
     override fun getScreenName(): String {
-        return TAG
+        return FRAGMENT_GROUP_TAG
     }
 
     override fun onCreateView(
@@ -135,7 +136,7 @@ class StoriesGroupFragment @Inject constructor(
     private fun setupUiStateObserver() {
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
             viewModel.uiState.withCache().collectLatest { (prevState, state) ->
-                renderStoriesGroup(prevState?.storiesGroup, state.storiesGroup)
+                renderStoriesGroup(prevState, state)
             }
         }
     }
@@ -163,8 +164,8 @@ class StoriesGroupFragment @Inject constructor(
     }
 
     private fun renderStoriesGroup(
-        prevState: StoriesGroupUiModel?,
-        state: StoriesGroupUiModel
+        prevState: StoriesUiModel?,
+        state: StoriesUiModel
     ) {
         if (prevState == null || pagerAdapter.getCurrentData().size == state.groupItems.size) return
 
@@ -203,14 +204,12 @@ class StoriesGroupFragment @Inject constructor(
     }
 
     companion object {
-        const val TAG = "StoriesGroupFragment"
-
         fun getFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
             bundle: Bundle
         ): StoriesGroupFragment {
-            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? StoriesGroupFragment
+            val oldInstance = fragmentManager.findFragmentByTag(FRAGMENT_GROUP_TAG) as? StoriesGroupFragment
             return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
                 classLoader,
                 StoriesGroupFragment::class.java.name

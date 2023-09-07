@@ -5,7 +5,7 @@ import com.tokopedia.stories.view.model.StoriesDetailItemUiModel.StoriesItemCont
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class StoriesGroupUiModel(
+data class StoriesUiModel(
     val selectedGroupId: String = "",
     val selectedGroupPosition: Int = -1,
     val groupHeader: List<StoriesGroupHeader> = emptyList(),

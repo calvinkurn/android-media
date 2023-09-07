@@ -39,7 +39,7 @@ class StoriesGroupAdapter(
     internal class StoriesGroupAdapterDelegate {
 
         internal class StoriesGroup(
-            private val listener: StoriesGroupAdapter.Listener
+            private val listener: Listener
         ) : TypedAdapterDelegate<StoriesGroupHeader, StoriesGroupHeader,
             StoriesGroupViewHolder>(R.layout.layout_empty) {
 
@@ -60,7 +60,7 @@ class StoriesGroupAdapter(
     }
 
     internal class StoriesGroupViewHolder(
-        private val listener: StoriesGroupAdapter.Listener,
+        private val listener: Listener,
         private val binding: ItemStoriesGroupBinding,
     ) : RecyclerView.ViewHolder(binding.root) {
 
@@ -88,7 +88,7 @@ class StoriesGroupAdapter(
 
         companion object {
             fun create(
-                listener: StoriesGroupAdapter.Listener,
+                listener: Listener,
                 parent: ViewGroup,
             ) = StoriesGroupViewHolder(
                 listener,
